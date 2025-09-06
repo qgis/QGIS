@@ -90,6 +90,11 @@ Starts a single undo command
 Ends a single undo command
 %End
 
+    void abortCommand();
+%Docstring
+Aborts pending undo command
+%End
+
 
     enum ClipboardOperation /BaseType=IntEnum/
     {
@@ -184,6 +189,11 @@ Emitted when an undo command is started in the view.
     void commandEnded();
 %Docstring
 Emitted when an undo command in the view has ended.
+%End
+
+    void commandAborted();
+%Docstring
+Emitted when an undo command in the view was aborted.
 %End
 
     void deleteSelectedItems();
