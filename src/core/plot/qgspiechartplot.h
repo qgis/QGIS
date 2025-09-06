@@ -141,7 +141,7 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
 
     QgsTextFormat mLabelTextFormat;
-    QgsPieChartPlot::LabelType mLabelType;
+    QgsPieChartPlot::LabelType mLabelType = QgsPieChartPlot::LabelType::NoLabels;
 };
 
 #endif // QGSLINECHARTPLOT_H
