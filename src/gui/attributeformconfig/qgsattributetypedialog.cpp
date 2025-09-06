@@ -529,6 +529,16 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
   }
 
   const QVariant val = exp.evaluate( &context );
+
+  QgsFields fields = qvariant_cast<QgsFields>( context.variable( QgsExpressionContext::EXPR_FIELDS ) );
+  int index = fields.lookupField( exp.expression() );
+  // evaluate does not set "Field '' not found" when layer has feature(s)
+  if ( index < 0 )
+    exp.setEvalErrorString( tr( "Field '%1' not found" ).arg( exp.expression() ) );
+  // inform user that NULL cannot be added through the default value
+  if ( val.isNull() && !exp.hasEvalError() && editorWidgetConfig().contains( "AllowNull" ) )
+    exp.setEvalErrorString( tr( "Value is NULL. Use \"Allow NULL value\" checkbox instead" ) );
+
   if ( exp.hasEvalError() )
   {
     mDefaultPreviewLabel->setText( "<i>" + exp.evalErrorString() + "</i>" );
