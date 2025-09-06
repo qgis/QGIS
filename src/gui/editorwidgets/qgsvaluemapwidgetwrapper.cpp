@@ -16,7 +16,7 @@
 #include "qgsvaluemapwidgetwrapper.h"
 #include "moc_qgsvaluemapwidgetwrapper.cpp"
 #include "qgsvaluemapconfigdlg.h"
-#include "qgsvaluemapfieldformatter.h"
+#include "qgsfieldformatter.h"
 #include "qgsapplication.h"
 
 #include <QSettings>
@@ -37,7 +37,7 @@ QVariant QgsValueMapWidgetWrapper::value() const
     v = mComboBox->currentData();
   }
 
-  if ( v == QgsValueMapFieldFormatter::NULL_VALUE )
+  if ( v == QgsFieldFormatter::NULL_VALUE )
     v = QgsVariantUtils::createNullVariant( field().type() );
 
   return v;
@@ -78,25 +78,5 @@ bool QgsValueMapWidgetWrapper::valid() const
 
 void QgsValueMapWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
-  QString v;
-  if ( QgsVariantUtils::isNull( value ) )
-    v = QgsValueMapFieldFormatter::NULL_VALUE;
-  else
-    v = value.toString();
-
-  if ( mComboBox )
-  {
-    if ( mComboBox->findData( v ) == -1 )
-    {
-      if ( QgsVariantUtils::isNull( value ) )
-      {
-        mComboBox->addItem( QgsApplication::nullRepresentation().prepend( '(' ).append( ')' ), v );
-      }
-      else
-      {
-        mComboBox->addItem( QString( v ).prepend( '(' ).append( ')' ), v );
-      }
-    }
-    mComboBox->setCurrentIndex( mComboBox->findData( v ) );
-  }
+  updateComboBoxValues( value, mComboBox );
 }
