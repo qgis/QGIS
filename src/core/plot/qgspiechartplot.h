@@ -22,6 +22,8 @@
 #include "qgscolorramp.h"
 #include "qgsfillsymbol.h"
 #include "qgsplot.h"
+#include "qgsnumericformat.h"
+
 
 class QgsVectorLayerAbstractPlotDataGatherer;
 
@@ -37,6 +39,13 @@ class QgsVectorLayerAbstractPlotDataGatherer;
 class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
 {
   public:
+
+    enum class LabelType : int
+    {
+      NoLabels,       //!< Labels are not drawn
+      CategoryLabels, //!< Category labels are drawn
+      ValueLabels,     //!< Value labels are drawn
+    };
 
     QgsPieChartPlot();
     ~QgsPieChartPlot() = default;
@@ -78,6 +87,46 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
      */
     int colorRampCount() const { return mColorRamps.size(); }
 
+    /**
+     * Returns the text format used for the pie chart labels.
+     *
+     * \see setTextFormat()
+     */
+    QgsTextFormat textFormat() const { return mLabelTextFormat; }
+
+    /**
+     * Sets the text \a format used for the pie chart labels.
+     *
+     * \see textFormat()
+     */
+    void setTextFormat( const QgsTextFormat &format );
+
+    /**
+     * Returns the numeric format used for the pie chart labels.
+     *
+     * \see setNumericFormat()
+     */
+    QgsNumericFormat *numericFormat() const { return mNumericFormat.get(); }
+
+    /**
+     * Sets the numeric \a format used for the pie chart labels.
+     *
+     * Ownership of \a format is transferred to the plot.
+     *
+     * \see numericFormat()
+     */
+    void setNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
+
+    /**
+     * Returns the pie chart label type.
+     */
+    QgsPieChartPlot::LabelType labelType() const { return mLabelType; }
+
+    /**
+     * Sets the pie chart label type.
+     */
+    void setLabelType( QgsPieChartPlot::LabelType type );
+
     //! Returns a new pie chart.
     static QgsPieChartPlot *create() SIP_FACTORY;
 
@@ -88,6 +137,11 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
 
     std::vector<std::unique_ptr<QgsFillSymbol>> mFillSymbols;
     std::vector<std::unique_ptr<QgsColorRamp>> mColorRamps;
+
+    std::unique_ptr< QgsNumericFormat > mNumericFormat;
+
+    QgsTextFormat mLabelTextFormat;
+    QgsPieChartPlot::LabelType mLabelType;
 };
 
 #endif // QGSLINECHARTPLOT_H

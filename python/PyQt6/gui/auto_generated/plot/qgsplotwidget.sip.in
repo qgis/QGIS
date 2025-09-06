@@ -107,6 +107,37 @@ Creates a new line chart plot configuration widget.
 
 };
 
+
+
+class QgsPieChartPlotWidget : QgsPlotWidget
+{
+%Docstring(signature="appended")
+Widget class to control the properties of pie chart plots.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplotwidget.h"
+%End
+  public:
+    QgsPieChartPlotWidget( QWidget *parent = 0 );
+%Docstring
+Constructor for :py:class:`QgsLineChartPlotWidget`.
+
+:param parent: parent widget
+%End
+
+    virtual void setPlot( QgsPlot *plot );
+    virtual QgsPlot *createPlot() /Factory/;
+
+    static QgsPlotWidget *create( QWidget *parent ) /Factory/;
+%Docstring
+Creates a new line chart plot configuration widget.
+%End
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

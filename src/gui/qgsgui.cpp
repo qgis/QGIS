@@ -554,6 +554,7 @@ void QgsGui::initPlotWidgets()
 
     _initPlotWidgetFunction( QStringLiteral( "bar" ), QgsBarChartPlotWidget::create );
     _initPlotWidgetFunction( QStringLiteral( "line" ), QgsLineChartPlotWidget::create );
+    _initPlotWidgetFunction( QStringLiteral( "pie" ), QgsPieChartPlotWidget::create );
   } );
 }
 
