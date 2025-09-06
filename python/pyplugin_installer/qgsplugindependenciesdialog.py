@@ -80,13 +80,22 @@ class QgsPluginDependenciesDialog(
             self.pluginList.setCellWidget(i, 0, widget)
             self.pluginList.resizeColumnToContents(0)
             widget = QtWidgets.QTableWidgetItem(_display(data["version_installed"]))
-            widget.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+            widget.setTextAlignment(
+                QtCore.Qt.AlignmentFlag.AlignHCenter
+                | QtCore.Qt.AlignmentFlag.AlignVCenter
+            )
             self.pluginList.setItem(i, 1, widget)
             widget = QtWidgets.QTableWidgetItem(_display(data["version_required"]))
-            widget.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+            widget.setTextAlignment(
+                QtCore.Qt.AlignmentFlag.AlignHCenter
+                | QtCore.Qt.AlignmentFlag.AlignVCenter
+            )
             self.pluginList.setItem(i, 2, widget)
             widget = QtWidgets.QTableWidgetItem(_display(data["version_available"]))
-            widget.setTextAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+            widget.setTextAlignment(
+                QtCore.Qt.AlignmentFlag.AlignHCenter
+                | QtCore.Qt.AlignmentFlag.AlignVCenter
+            )
             self.pluginList.setItem(i, 3, widget)
 
         i = 0
