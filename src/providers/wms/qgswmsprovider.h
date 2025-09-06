@@ -355,6 +355,8 @@ class QgsWmsProvider final : public QgsRasterDataProvider
 
     static bool isUrlForWMTS( const QString &url );
 
+    virtual QVariantMap metadata() const override;
+
   private slots:
     void identifyReplyFinished();
     void getLegendGraphicReplyFinished( const QImage & );

@@ -481,7 +481,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         source = os.path.join(testDataPath, "dem.tif")
         alg = ClipRasterByExtent()
         alg.initAlgorithm()
-        extent = QgsRectangle(1, 2, 3, 4)
+        extent = QgsRectangle(18.67, 45.78, 18.68, 45.79)
 
         with tempfile.TemporaryDirectory() as outdir:
             # with no NODATA value
@@ -489,20 +489,27 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "OUTPUT": outdir + "/check.jpg",
                     },
                     context,
                     feedback,
                 ),
-                ["gdal_translate", "-of JPEG " + source + " " + outdir + "/check.jpg"],
+                [
+                    "gdal_translate",
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
+                ],
             )
             # with NODATA value
             self.assertEqual(
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "NODATA": 9999,
                         "OUTPUT": outdir + "/check.jpg",
                     },
@@ -511,7 +518,11 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-a_nodata 9999.0 -of JPEG " + source + " " + outdir + "/check.jpg",
+                    "-projwin 18.67 45.79 18.68 45.78 -a_nodata 9999.0 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
                 ],
             )
             # with "0" NODATA value
@@ -519,7 +530,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "NODATA": 0,
                         "OUTPUT": outdir + "/check.jpg",
                     },
@@ -528,7 +539,11 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-a_nodata 0.0 -of JPEG " + source + " " + outdir + "/check.jpg",
+                    "-projwin 18.67 45.79 18.68 45.78 -a_nodata 0.0 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
                 ],
             )
             # with "0" NODATA value and custom data type
@@ -536,7 +551,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "NODATA": 0,
                         "DATA_TYPE": 6,
                         "OUTPUT": outdir + "/check.jpg",
@@ -546,7 +561,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-a_nodata 0.0 -ot Float32 -of JPEG "
+                    "-projwin 18.67 45.79 18.68 45.78 -a_nodata 0.0 -ot Float32 -of JPEG "
                     + source
                     + " "
                     + outdir
@@ -559,7 +574,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "CREATION_OPTIONS": "COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9",
                         "DATA_TYPE": 0,
                         "OUTPUT": outdir + "/check.jpg",
@@ -569,7 +584,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 "
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 "
                     + source
                     + " "
                     + outdir
@@ -581,7 +596,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "OPTIONS": "COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9",
                         "DATA_TYPE": 0,
                         "OUTPUT": outdir + "/check.jpg",
@@ -591,7 +606,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 "
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 "
                     + source
                     + " "
                     + outdir
@@ -604,7 +619,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "EXTRA": "-s_srs EPSG:4326 -tps -tr 0.1 0.1",
                         "DATA_TYPE": 0,
                         "OUTPUT": outdir + "/check.jpg",
@@ -614,7 +629,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-of JPEG -s_srs EPSG:4326 -tps -tr 0.1 0.1 "
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG -s_srs EPSG:4326 -tps -tr 0.1 0.1 "
                     + source
                     + " "
                     + outdir
@@ -627,7 +642,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "OVERCRS": True,
                         "OUTPUT": outdir + "/check.jpg",
                     },
@@ -636,7 +651,11 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-a_srs EPSG:4326 -of JPEG " + source + " " + outdir + "/check.jpg",
+                    "-projwin 18.67 45.79 18.68 45.78 -a_srs EPSG:4326 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
                 ],
             )
 
@@ -645,7 +664,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     {
                         "INPUT": source
                         + "|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y",
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "OUTPUT": outdir + "/check.jpg",
                     },
                     context,
@@ -653,7 +672,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-of JPEG "
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG "
                     + source
                     + " "
                     + outdir
@@ -665,7 +684,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source + "|credential:X=Y|credential:Z=A",
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "OUTPUT": outdir + "/check.jpg",
                     },
                     context,
@@ -673,7 +692,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-of JPEG "
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG "
                     + source
                     + " "
                     + outdir

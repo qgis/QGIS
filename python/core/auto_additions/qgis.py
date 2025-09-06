@@ -11590,6 +11590,21 @@ Qgis.StacObjectType.__doc__ = """Available types of stac objects
 """
 # --
 Qgis.StacObjectType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RasterProcessingParameterCapability.WmsScale.__doc__ = "The parameter supports a reference scale"
+Qgis.RasterProcessingParameterCapability.WmsDpi.__doc__ = "The paramenter supports a server resolution (e.g., for a WMS server)"
+Qgis.RasterProcessingParameterCapability.__doc__ = """Capabilities of a raster layer processing parameter.
+
+.. versionadded:: 4.0
+
+* ``WmsScale``: The parameter supports a reference scale
+* ``WmsDpi``: The paramenter supports a server resolution (e.g., for a WMS server)
+
+"""
+# --
+Qgis.RasterProcessingParameterCapability.baseClass = Qgis
+Qgis.RasterProcessingParameterCapabilities.baseClass = Qgis
+RasterProcessingParameterCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 from enum import Enum
 
 
