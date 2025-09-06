@@ -530,6 +530,13 @@ if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
   endif()
 endif()
 
+if (WITH_SFCGAL)
+  set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
+
+    processing/qgsalgorithmapproximatemedialaxis.cpp
+  )
+endif()
+
 include_directories(SYSTEM ${SPATIALINDEX_INCLUDE_DIR})
 include_directories(BEFORE raster)
 include_directories(BEFORE mesh)
@@ -633,6 +640,10 @@ endif()
 
 if (WITH_DRACO)
   target_link_libraries(qgis_analysis ${DRACO_LIBRARY})
+endif()
+
+if (WITH_SFCGAL)
+  target_link_libraries(qgis_analysis SFCGAL::SFCGAL)
 endif()
 
 target_compile_definitions(qgis_analysis PRIVATE "-DQT_NO_FOREACH")
