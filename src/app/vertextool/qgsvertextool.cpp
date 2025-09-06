@@ -2165,10 +2165,46 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
     QgsPoint pt( layerPoint );
     if ( QgsWkbTypes::hasZ( dragLayer->wkbType() ) && !pt.is3D() )
+    {
       pt.addZValue( defaultZValue() );
+      if ( !addingAtEndpoint )
+      {
+        // try to linearly interpolate z from adjacent vertices
+        const QgsPoint pointBefore = geomTmp->vertexAt( QgsVertexId( vid.part, vid.ring, vid.vertex - 1 ) );
+        const QgsPoint pointAfter = geomTmp->vertexAt( vid );
+        // we can only do this if the adjacent vertices HAVE valid z values
+        if ( !std::isnan( pointBefore.z() ) && !std::isnan( pointAfter.z() ) )
+        {
+          const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
+          const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
+          if ( newDistanceBetweenOriginalAdjacentVertices )
+          {
+            pt.setZ( pointBefore.z() + ( pointAfter.z() - pointBefore.z() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
+          }
+        }
+      }
+    }
 
     if ( QgsWkbTypes::hasM( dragLayer->wkbType() ) && !pt.isMeasure() )
+    {
       pt.addMValue( defaultMValue() );
+      if ( !addingAtEndpoint )
+      {
+        // try to linearly interpolate m from adjacent vertices
+        const QgsPoint pointBefore = geomTmp->vertexAt( QgsVertexId( vid.part, vid.ring, vid.vertex - 1 ) );
+        const QgsPoint pointAfter = geomTmp->vertexAt( vid );
+        // we can only do this if the adjacent vertices HAVE valid m values
+        if ( !std::isnan( pointBefore.m() ) && !std::isnan( pointAfter.m() ) )
+        {
+          const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
+          const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
+          if ( newDistanceBetweenOriginalAdjacentVertices )
+          {
+            pt.setM( pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
+          }
+        }
+      }
+    }
 
     if ( !geomTmp->insertVertex( vid, pt ) )
     {
