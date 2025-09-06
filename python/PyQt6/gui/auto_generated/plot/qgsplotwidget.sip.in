@@ -8,7 +8,7 @@
 
 
 
-class QgsPlotWidget : QgsPanelWidget
+class QgsPlotWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
 Base class for widgets which allow control over the properties of plots.
@@ -41,6 +41,31 @@ Creates a plot defined by the current settings in the widget.
 
 .. seealso:: :py:func:`setPlot`
 %End
+
+    QgsExpressionContext &expressionContext() /HoldGIL/;
+%Docstring
+Returns the expression context associated with the plot widget.
+%End
+
+    void setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Sets the expression ``context`` associated with the plot widget.
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+  protected:
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsPlot::DataDefinedProperty key );
+%Docstring
+Initiate a data-defined property button tied to a plot widget.
+%End
+
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+%Docstring
+Initiate a data-defined property button tied to a plot widget.
+%End
+
+
 };
 
 

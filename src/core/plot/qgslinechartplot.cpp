@@ -62,8 +62,20 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
   context.painter()->save();
   context.painter()->setClipRect( plotArea );
 
-  const double xScale = plotArea.width() / ( xMaximum() - xMinimum() );
-  const double yScale = plotArea.height() / ( yMaximum() - yMinimum() );
+  double minX = xMinimum();
+  double maxX = xMaximum();
+  double minY = yMinimum();
+  double maxY = yMaximum();
+  double majorIntervalX = xAxis().gridIntervalMajor();
+  double minorIntervalX = xAxis().gridIntervalMinor();
+  double labelIntervalX = xAxis().labelInterval();
+  double majorIntervalY = yAxis().gridIntervalMajor();
+  double minorIntervalY = yAxis().gridIntervalMinor();
+  double labelIntervalY = yAxis().labelInterval();
+  Qgs2DXyPlot::applyDataDefinedSymbology( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
+
+  const double xScale = plotArea.width() / ( maxX - minX );
+  const double yScale = plotArea.height() / ( maxY - minY );
   const double categoriesWidth = plotArea.width() / categories.size();
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
@@ -106,10 +118,10 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
               x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 );
               break;
             case Qgis::PlotAxisType::Interval:
-              x = ( pair.first - xMinimum() ) * xScale;
+              x = ( pair.first - minX ) * xScale;
               break;
           }
-          double y = ( pair.second - yMinimum() ) * yScale;
+          double y = ( pair.second - minY ) * yScale;
 
           const QPointF point( plotArea.x() + x, plotArea.y() + plotArea.height() - y );
           points.replace( xAxis().type() == Qgis::PlotAxisType::Interval ? dataIndex : pair.first, point );

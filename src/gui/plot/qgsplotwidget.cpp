@@ -26,6 +26,40 @@
 #include "qgsnumericformatselectorwidget.h"
 
 
+void QgsPlotWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsPlot::DataDefinedProperty key )
+{
+  button->blockSignals( true );
+  button->init( static_cast< int >( key ), mPropertyCollection, QgsPlot::propertyDefinitions(), nullptr );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsPlotWidget::updateProperty );
+  button->registerExpressionContextGenerator( this );
+  button->blockSignals( false );
+}
+
+void QgsPlotWidget::updateDataDefinedButton( QgsPropertyOverrideButton *button )
+{
+  if ( !button )
+  {
+    return;
+  }
+
+  if ( button->propertyKey() < 0 )
+  {
+    return;
+  }
+
+  const QgsPlot::DataDefinedProperty key = static_cast<QgsPlot::DataDefinedProperty>( button->propertyKey() );
+  whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
+}
+
+void QgsPlotWidget::updateProperty()
+{
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  const QgsPlot::DataDefinedProperty key = static_cast<QgsPlot::DataDefinedProperty>( button->propertyKey() );
+  mPropertyCollection.setProperty( key, button->toProperty() );
+  emit widgetChanged();
+}
+
+
 QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
   : QgsPlotWidget( parent )
 {
@@ -241,6 +275,30 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
       return;
     emit widgetChanged();
   } );
+
+  mXAxisMajorLinesSymbolButton->registerExpressionContextGenerator( this );
+  mXAxisMinorLinesSymbolButton->registerExpressionContextGenerator( this );
+  mChartBackgroundSymbolButton->registerExpressionContextGenerator( this );
+  mChartBorderSymbolButton->registerExpressionContextGenerator( this );
+  mXAxisLabelFontButton->registerExpressionContextGenerator( this );
+  mYAxisLabelFontButton->registerExpressionContextGenerator( this );
+
+  initializeDataDefinedButton( mDDBtnMinXAxis, QgsPlot::DataDefinedProperty::XAxisMinimum );
+  initializeDataDefinedButton( mDDBtnMaxXAxis, QgsPlot::DataDefinedProperty::XAxisMaximum );
+  initializeDataDefinedButton( mDDBtnMinYAxis, QgsPlot::DataDefinedProperty::YAxisMinimum );
+  initializeDataDefinedButton( mDDBtnMaxYAxis, QgsPlot::DataDefinedProperty::YAxisMaximum );
+
+  initializeDataDefinedButton( mDDBtnXAxisMajorInterval, QgsPlot::DataDefinedProperty::XAxisMajorInterval );
+  initializeDataDefinedButton( mDDBtnXAxisMinorInterval, QgsPlot::DataDefinedProperty::XAxisMinorInterval );
+  initializeDataDefinedButton( mDDBtnXAxisLabelInterval, QgsPlot::DataDefinedProperty::XAxisLabelInterval );
+  initializeDataDefinedButton( mDDBtnYAxisMajorInterval, QgsPlot::DataDefinedProperty::YAxisMajorInterval );
+  initializeDataDefinedButton( mDDBtnYAxisMinorInterval, QgsPlot::DataDefinedProperty::YAxisMinorInterval );
+  initializeDataDefinedButton( mDDBtnYAxisLabelInterval, QgsPlot::DataDefinedProperty::YAxisLabelInterval );
+
+  initializeDataDefinedButton( mDDBtnLeftMargin, QgsPlot::DataDefinedProperty::MarginLeft );
+  initializeDataDefinedButton( mDDBtnRightMargin, QgsPlot::DataDefinedProperty::MarginRight );
+  initializeDataDefinedButton( mDDBtnTopMargin, QgsPlot::DataDefinedProperty::MarginTop );
+  initializeDataDefinedButton( mDDBtnBottomMargin, QgsPlot::DataDefinedProperty::MarginBottom );
 }
 
 void QgsBarChartPlotWidget::mAddSymbolPushButton_clicked()
@@ -256,6 +314,7 @@ void QgsBarChartPlotWidget::mAddSymbolPushButton_clicked()
   symbolButton->setSymbolType( Qgis::SymbolType::Fill );
   symbolButton->setShowNull( true );
   symbolButton->setSymbol( QgsPlotDefaultSettings::barChartFillSymbol() );
+  symbolButton->registerExpressionContextGenerator( this );
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
@@ -304,6 +363,7 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
     symbolButton->setSymbolType( Qgis::SymbolType::Fill );
     symbolButton->setShowNull( true );
     symbolButton->setSymbol( chartPlot->fillSymbolAt( i )->clone() );
+    symbolButton->registerExpressionContextGenerator( this );
     connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
       if ( mBlockChanges )
         return;
@@ -351,6 +411,25 @@ void QgsBarChartPlotWidget::setPlot( QgsPlot *plot )
   mSpinRightMargin->setValue( chartPlot->margins().right() );
   mSpinTopMargin->setValue( chartPlot->margins().top() );
   mSpinBottomMargin->setValue( chartPlot->margins().bottom() );
+
+  mPropertyCollection = chartPlot->dataDefinedProperties();
+
+  updateDataDefinedButton( mDDBtnMinXAxis );
+  updateDataDefinedButton( mDDBtnMaxXAxis );
+  updateDataDefinedButton( mDDBtnMinYAxis );
+  updateDataDefinedButton( mDDBtnMaxYAxis );
+
+  updateDataDefinedButton( mDDBtnXAxisMajorInterval );
+  updateDataDefinedButton( mDDBtnXAxisMinorInterval );
+  updateDataDefinedButton( mDDBtnXAxisLabelInterval );
+  updateDataDefinedButton( mDDBtnYAxisMajorInterval );
+  updateDataDefinedButton( mDDBtnYAxisMinorInterval );
+  updateDataDefinedButton( mDDBtnYAxisLabelInterval );
+
+  updateDataDefinedButton( mDDBtnLeftMargin );
+  updateDataDefinedButton( mDDBtnRightMargin );
+  updateDataDefinedButton( mDDBtnTopMargin );
+  updateDataDefinedButton( mDDBtnBottomMargin );
 
   mBlockChanges--;
 }
@@ -410,6 +489,8 @@ QgsPlot *QgsBarChartPlotWidget::createPlot()
   margins.setTop( mSpinTopMargin->value() );
   margins.setBottom( mSpinBottomMargin->value() );
   chartPlot->setMargins( margins );
+
+  chartPlot->setDataDefinedProperties( mPropertyCollection );
 
   return plot;
 }
@@ -631,7 +712,32 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
       return;
     emit widgetChanged();
   } );
+
+  mXAxisMajorLinesSymbolButton->registerExpressionContextGenerator( this );
+  mXAxisMinorLinesSymbolButton->registerExpressionContextGenerator( this );
+  mChartBackgroundSymbolButton->registerExpressionContextGenerator( this );
+  mChartBorderSymbolButton->registerExpressionContextGenerator( this );
+  mXAxisLabelFontButton->registerExpressionContextGenerator( this );
+  mYAxisLabelFontButton->registerExpressionContextGenerator( this );
+
+  initializeDataDefinedButton( mDDBtnMinXAxis, QgsPlot::DataDefinedProperty::XAxisMinimum );
+  initializeDataDefinedButton( mDDBtnMaxXAxis, QgsPlot::DataDefinedProperty::XAxisMaximum );
+  initializeDataDefinedButton( mDDBtnMinYAxis, QgsPlot::DataDefinedProperty::YAxisMinimum );
+  initializeDataDefinedButton( mDDBtnMaxYAxis, QgsPlot::DataDefinedProperty::YAxisMaximum );
+
+  initializeDataDefinedButton( mDDBtnXAxisMajorInterval, QgsPlot::DataDefinedProperty::XAxisMajorInterval );
+  initializeDataDefinedButton( mDDBtnXAxisMinorInterval, QgsPlot::DataDefinedProperty::XAxisMinorInterval );
+  initializeDataDefinedButton( mDDBtnXAxisLabelInterval, QgsPlot::DataDefinedProperty::XAxisLabelInterval );
+  initializeDataDefinedButton( mDDBtnYAxisMajorInterval, QgsPlot::DataDefinedProperty::YAxisMajorInterval );
+  initializeDataDefinedButton( mDDBtnYAxisMinorInterval, QgsPlot::DataDefinedProperty::YAxisMinorInterval );
+  initializeDataDefinedButton( mDDBtnYAxisLabelInterval, QgsPlot::DataDefinedProperty::YAxisLabelInterval );
+
+  initializeDataDefinedButton( mDDBtnLeftMargin, QgsPlot::DataDefinedProperty::MarginLeft );
+  initializeDataDefinedButton( mDDBtnRightMargin, QgsPlot::DataDefinedProperty::MarginRight );
+  initializeDataDefinedButton( mDDBtnTopMargin, QgsPlot::DataDefinedProperty::MarginTop );
+  initializeDataDefinedButton( mDDBtnBottomMargin, QgsPlot::DataDefinedProperty::MarginBottom );
 }
+
 void QgsLineChartPlotWidget::mAddSymbolPushButton_clicked()
 {
   const int row = mSymbolsList->rowCount();
@@ -646,6 +752,7 @@ void QgsLineChartPlotWidget::mAddSymbolPushButton_clicked()
   symbolButton->setSymbolType( Qgis::SymbolType::Line );
   symbolButton->setShowNull( true );
   symbolButton->setSymbol( QgsPlotDefaultSettings::lineChartLineSymbol() );
+  symbolButton->registerExpressionContextGenerator( this );
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
@@ -659,6 +766,7 @@ void QgsLineChartPlotWidget::mAddSymbolPushButton_clicked()
   symbolButton->setSymbolType( Qgis::SymbolType::Marker );
   symbolButton->setShowNull( true );
   symbolButton->setSymbol( QgsPlotDefaultSettings::lineChartMarkerSymbol() );
+  symbolButton->registerExpressionContextGenerator( this );
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
@@ -708,6 +816,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
     symbolButton->setSymbolType( Qgis::SymbolType::Line );
     symbolButton->setShowNull( true );
     symbolButton->setSymbol( i < chartPlot->lineSymbolCount() ? chartPlot->lineSymbolAt( i )->clone() : nullptr );
+    symbolButton->registerExpressionContextGenerator( this );
     connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
       if ( mBlockChanges )
         return;
@@ -721,6 +830,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
     symbolButton->setSymbolType( Qgis::SymbolType::Marker );
     symbolButton->setShowNull( true );
     symbolButton->setSymbol( i < chartPlot->markerSymbolCount() ? chartPlot->markerSymbolAt( i )->clone() : nullptr );
+    symbolButton->registerExpressionContextGenerator( this );
     connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
       if ( mBlockChanges )
         return;
@@ -766,6 +876,25 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
   mSpinRightMargin->setValue( chartPlot->margins().right() );
   mSpinTopMargin->setValue( chartPlot->margins().top() );
   mSpinBottomMargin->setValue( chartPlot->margins().bottom() );
+
+  mPropertyCollection = chartPlot->dataDefinedProperties();
+
+  updateDataDefinedButton( mDDBtnMinXAxis );
+  updateDataDefinedButton( mDDBtnMaxXAxis );
+  updateDataDefinedButton( mDDBtnMinYAxis );
+  updateDataDefinedButton( mDDBtnMaxYAxis );
+
+  updateDataDefinedButton( mDDBtnXAxisMajorInterval );
+  updateDataDefinedButton( mDDBtnXAxisMinorInterval );
+  updateDataDefinedButton( mDDBtnXAxisLabelInterval );
+  updateDataDefinedButton( mDDBtnYAxisMajorInterval );
+  updateDataDefinedButton( mDDBtnYAxisMinorInterval );
+  updateDataDefinedButton( mDDBtnYAxisLabelInterval );
+
+  updateDataDefinedButton( mDDBtnLeftMargin );
+  updateDataDefinedButton( mDDBtnRightMargin );
+  updateDataDefinedButton( mDDBtnTopMargin );
+  updateDataDefinedButton( mDDBtnBottomMargin );
 
   mBlockChanges--;
 }
@@ -829,6 +958,8 @@ QgsPlot *QgsLineChartPlotWidget::createPlot()
   margins.setTop( mSpinTopMargin->value() );
   margins.setBottom( mSpinBottomMargin->value() );
   chartPlot->setMargins( margins );
+
+  chartPlot->setDataDefinedProperties( mPropertyCollection );
 
   return plot;
 }
@@ -909,6 +1040,13 @@ QgsPieChartPlotWidget::QgsPieChartPlotWidget( QWidget *parent )
 
   connect( mAddSymbolPushButton, &QPushButton::clicked, this, &QgsPieChartPlotWidget::mAddSymbolPushButton_clicked );
   connect( mRemoveSymbolPushButton, &QPushButton::clicked, this, &QgsPieChartPlotWidget::mRemoveSymbolPushButton_clicked );
+
+  mLabelFontButton->registerExpressionContextGenerator( this );
+
+  initializeDataDefinedButton( mDDBtnLeftMargin, QgsPlot::DataDefinedProperty::MarginLeft );
+  initializeDataDefinedButton( mDDBtnRightMargin, QgsPlot::DataDefinedProperty::MarginRight );
+  initializeDataDefinedButton( mDDBtnTopMargin, QgsPlot::DataDefinedProperty::MarginTop );
+  initializeDataDefinedButton( mDDBtnBottomMargin, QgsPlot::DataDefinedProperty::MarginBottom );
 }
 
 void QgsPieChartPlotWidget::mAddSymbolPushButton_clicked()
@@ -925,6 +1063,7 @@ void QgsPieChartPlotWidget::mAddSymbolPushButton_clicked()
   symbolButton->setSymbolType( Qgis::SymbolType::Fill );
   symbolButton->setShowNull( true );
   symbolButton->setSymbol( QgsPlotDefaultSettings::pieChartFillSymbol() );
+  symbolButton->registerExpressionContextGenerator( this );
   connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
     if ( mBlockChanges )
       return;
@@ -985,6 +1124,7 @@ void QgsPieChartPlotWidget::setPlot( QgsPlot *plot )
     symbolButton->setSymbolType( Qgis::SymbolType::Fill );
     symbolButton->setShowNull( true );
     symbolButton->setSymbol( i < chartPlot->fillSymbolCount() ? chartPlot->fillSymbolAt( i )->clone() : nullptr );
+    symbolButton->registerExpressionContextGenerator( this );
     connect( symbolButton, &QgsSymbolButton::changed, this, [this] {
       if ( mBlockChanges )
         return;
@@ -1008,6 +1148,13 @@ void QgsPieChartPlotWidget::setPlot( QgsPlot *plot )
   mLabelFontButton->setTextFormat( chartPlot->textFormat() );
 
   mLabelCombo->setCurrentIndex( mLabelCombo->findData( QVariant::fromValue( chartPlot->labelType() ) ) );
+
+  mPropertyCollection = chartPlot->dataDefinedProperties();
+
+  updateDataDefinedButton( mDDBtnLeftMargin );
+  updateDataDefinedButton( mDDBtnRightMargin );
+  updateDataDefinedButton( mDDBtnTopMargin );
+  updateDataDefinedButton( mDDBtnBottomMargin );
 
   mBlockChanges--;
 }
@@ -1047,6 +1194,8 @@ QgsPlot *QgsPieChartPlotWidget::createPlot()
   margins.setTop( mSpinTopMargin->value() );
   margins.setBottom( mSpinBottomMargin->value() );
   chartPlot->setMargins( margins );
+
+  chartPlot->setDataDefinedProperties( mPropertyCollection );
 
   return plot;
 }

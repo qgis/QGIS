@@ -21,6 +21,7 @@
 #include "qgis_sip.h"
 #include "qgstextformat.h"
 #include "qgsmargins.h"
+#include "qgspropertycollection.h"
 
 #include <QSizeF>
 #include <memory>
@@ -86,6 +87,28 @@ class CORE_EXPORT QgsPlot
 
   public:
 
+    /**
+     * Data defined properties for different plot types
+     * \since QGIS 4.0
+     */
+    enum class DataDefinedProperty SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPlot, Property ) : int
+      {
+      MarginLeft, //!< Left margin
+      MarginTop, //!< Top margin
+      MarginRight, //!< Right margin
+      MarginBottom, //!< Bottom margin
+      XAxisMajorInterval, //!< Major grid line interval for X axis
+      XAxisMinorInterval, //!< Minor grid line interval for X axis
+      XAxisLabelInterval, //!< Label interval for X axis
+      YAxisMajorInterval, //!< Major grid line interval for Y axis
+      YAxisMinorInterval, //!< Minor grid line interval for Y axis
+      YAxisLabelInterval, //!< Label interval for Y axis
+      XAxisMinimum, //!< Minimum X axis value
+      XAxisMaximum, //!< Maximum X axis value
+      YAxisMinimum, //!< Minimum Y axis value
+      YAxisMaximum, //!< Maximum Y axis value
+    };
+
     QgsPlot() = default;
 
     virtual ~QgsPlot();
@@ -97,6 +120,38 @@ class CORE_EXPORT QgsPlot
     virtual QString type() const { return QString(); }
 
     /**
+     * Sets a data defined property for the plot. Any existing property with the same key
+     * will be overwritten.
+     * \see dataDefinedProperties()
+     * \see Property
+     * \since QGIS 4.0
+     */
+    void setDataDefinedProperty( DataDefinedProperty key, const QgsProperty &property ) { mDataDefinedProperties.setProperty( key, property ); }
+
+    /**
+     * Returns a reference to the plot's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \see Property
+     * \since QGIS 4.0
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /**
+     * Returns a reference to the plot's property collection, used for data defined overrides.
+     * \see setDataDefinedProperties()
+     * \since QGIS 4.0
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
+
+    /**
+     * Sets the plot's property collection, used for data defined overrides.
+     * \param collection property collection. Existing properties will be replaced.
+     * \see dataDefinedProperties()
+     * \since QGIS 4.0
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+    /**
      * Writes the plot's properties into an XML \a element.
      */
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -106,9 +161,17 @@ class CORE_EXPORT QgsPlot
      */
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
+    /**
+     * Returns the plot property definitions.
+     */
+    static const QgsPropertiesDefinition &propertyDefinitions();
+
+  protected:
+    QgsPropertyCollection mDataDefinedProperties;
+
   private:
-
-
+    static void initPropertyDefinitions();
+    static QgsPropertiesDefinition sPropertyDefinitions;
 };
 
 
@@ -563,6 +626,10 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
      */
     void setMargins( const QgsMargins &margins );
 
+  protected:
+
+    void applyDataDefinedSymbology( QgsRenderContext &context, QgsMargins &margins ) const;
+
   private:
 
 #ifdef SIP_RUN
@@ -738,6 +805,10 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
      * \see chartBorderSymbol()
      */
     void setChartBorderSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
+
+  protected:
+
+    void applyDataDefinedSymbology( QgsRenderContext &context, double &minX, double &maxX, double &minY, double &maxY, double &majorIntervalX, double &minorIntervalX, double &labelIntervalX, double &majorIntervalY, double &minorIntervalY, double &labelIntervalY ) const;
 
   private:
 

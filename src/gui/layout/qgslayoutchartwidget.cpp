@@ -188,6 +188,7 @@ void QgsLayoutChartWidget::mChartPropertiesButton_clicked()
     return;
   }
 
+  widget->setExpressionContext( mChartItem->createExpressionContext() );
   widget->setPlot( mChartItem->plot() );
 
   connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {

@@ -23,6 +23,7 @@ from qgis.core import (
     QgsLineSymbol,
     QgsPalLayerSettings,
     QgsPieChartPlot,
+    QgsPlot,
     QgsPlotData,
     QgsPlotRenderContext,
     QgsPresetSchemeColorRamp,
@@ -1195,6 +1196,168 @@ class TestQgsPlot(QgisTestCase):
 
         assert self.image_check(
             "line_chart_plot_x_axis_category", "line_chart_plot_x_axis_category", im
+        )
+
+    def testLineChartPlotDataDefined(self):
+        width = 600
+        height = 500
+        dpi = 96
+
+        plot = QgsLineChartPlot()
+        plot.setSize(QSizeF(width, height))
+
+        sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
+        plot.setChartBackgroundSymbol(sym1)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {
+                "outline_color": "#000000",
+                "style": "no",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setChartBorderSymbol(sym2)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#00ffff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff00ff", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.xAxis().setGridMinorSymbol(sym4)
+
+        sym3 = QgsLineSymbol.createSimple(
+            {"outline_color": "#0066ff", "outline_width": 1, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMajorSymbol(sym3)
+
+        sym4 = QgsLineSymbol.createSimple(
+            {"outline_color": "#ff4433", "outline_width": 0.5, "capstyle": "flat"}
+        )
+        plot.yAxis().setGridMinorSymbol(sym4)
+
+        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        x_axis_format = QgsTextFormat.fromQFont(font)
+        plot.xAxis().setTextFormat(x_axis_format)
+
+        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        y_axis_format = QgsTextFormat.fromQFont(font)
+        plot.yAxis().setTextFormat(y_axis_format)
+
+        plot.xAxis().setType(Qgis.PlotAxisType.Interval)
+
+        plot.xAxis().setGridIntervalMinor(2)
+        plot.xAxis().setGridIntervalMajor(8)
+        plot.xAxis().setLabelInterval(2)
+        plot.yAxis().setGridIntervalMinor(2)
+        plot.yAxis().setGridIntervalMajor(8)
+        plot.yAxis().setLabelInterval(2)
+        plot.setXMinimum(-5)
+        plot.setXMaximum(5)
+        plot.setYMinimum(-5)
+        plot.setYMaximum(5)
+
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.XAxisMinimum, QgsProperty.fromExpression("-10")
+        )
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.XAxisMaximum, QgsProperty.fromExpression("10")
+        )
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.YAxisMinimum, QgsProperty.fromExpression("-10")
+        )
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.YAxisMaximum, QgsProperty.fromExpression("10")
+        )
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.XAxisMinorInterval,
+            QgsProperty.fromExpression("1"),
+        )
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.XAxisMajorInterval,
+            QgsProperty.fromExpression("5"),
+        )
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.XAxisLabelInterval,
+            QgsProperty.fromExpression("1"),
+        )
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.YAxisMinorInterval,
+            QgsProperty.fromExpression("1"),
+        )
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.YAxisMajorInterval,
+            QgsProperty.fromExpression("5"),
+        )
+        plot.setDataDefinedProperty(
+            QgsPlot.DataDefinedProperty.YAxisLabelInterval,
+            QgsProperty.fromExpression("1"),
+        )
+
+        # set symbol for first series
+        series_symbol = QgsLineSymbol.createSimple(
+            {
+                "outline_color": "#00BB00",
+                "outline_style": "dash",
+                "outline_width": 1,
+            }
+        )
+        plot.setLineSymbolAt(0, series_symbol)
+        # remove default marker
+        plot.setMarkerSymbolAt(0, None)
+
+        # set symbols for second series
+        series_symbol = QgsLineSymbol.createSimple(
+            {
+                "outline_color": "#BB0000",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setLineSymbolAt(1, series_symbol)
+        series_symbol = QgsMarkerSymbol.createSimple(
+            {
+                "color": "#BB0000",
+                "outline_color": "#330000",
+                "outline_style": "solid",
+                "outline_width": 1,
+                "width": 3,
+            }
+        )
+        plot.setMarkerSymbolAt(1, series_symbol)
+
+        data = QgsPlotData()
+        series = QgsXyPlotSeries()
+        series.append(-8, 1)
+        series.append(0, 5)
+        series.append(4, 5)
+        series.append(9, 9)
+        data.addSeries(series)
+        series = QgsXyPlotSeries()
+        # Test data() to insure SIP conversion works well
+        series.setData([(-7.0, -5.0), (1.0, -2.0), (4.0, 5.0), (8.0, 4.0)])
+        self.assertEqual(
+            series.data(), [(-7.0, -5.0), (1.0, -2.0), (4.0, 5.0), (8.0, 4.0)]
+        )
+        data.addSeries(series)
+
+        im = QImage(width, height, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
+        im.setDotsPerMeterX(int(dpi / 25.4 * 1000))
+        im.setDotsPerMeterY(int(dpi / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        rc.setScaleFactor(dpi / 25.4)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc, data)
+        painter.end()
+
+        assert self.image_check(
+            "line_chart_plot_data_defined", "line_chart_plot_data_defined", im
         )
 
     def testLineChartPlotXAxisValue(self):
