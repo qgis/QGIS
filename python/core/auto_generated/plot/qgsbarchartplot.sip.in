@@ -9,6 +9,7 @@
 
 
 
+
 class QgsBarChartPlot : Qgs2DXyPlot
 {
 %Docstring(signature="appended")
@@ -57,6 +58,11 @@ Returns the fill symbols list count.
     static QgsBarChartPlot *create() /Factory/;
 %Docstring
 Returns a new bar chart.
+%End
+
+    static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) /TransferBack/;
+%Docstring
+Returns a new data gatherer for a given bar chart ``plot``.
 %End
 
 };

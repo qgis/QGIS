@@ -20,6 +20,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvectorlayerplotdatagatherer.h"
 
 
 QgsPieChartPlot::QgsPieChartPlot()
@@ -261,4 +262,15 @@ bool QgsPieChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
 QgsPieChartPlot *QgsPieChartPlot::create()
 {
   return new QgsPieChartPlot();
+}
+
+QgsVectorLayerAbstractPlotDataGatherer *QgsPieChartPlot::createDataGatherer( QgsPlot *plot )
+{
+  QgsPieChartPlot *chart = dynamic_cast<QgsPieChartPlot *>( plot );
+  if ( !chart )
+  {
+    return nullptr;
+  }
+
+  return new QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAxisType::Categorical );
 }

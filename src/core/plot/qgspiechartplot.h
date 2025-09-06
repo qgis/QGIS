@@ -23,6 +23,8 @@
 #include "qgsfillsymbol.h"
 #include "qgsplot.h"
 
+class QgsVectorLayerAbstractPlotDataGatherer;
+
 
 /**
  * \brief A simple pie chart class.
@@ -78,6 +80,9 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
 
     //! Returns a new pie chart.
     static QgsPieChartPlot *create() SIP_FACTORY;
+
+    //! Returns a new data gatherer for a given pie chart \a plot.
+    static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) SIP_TRANSFERBACK;
 
   private:
 

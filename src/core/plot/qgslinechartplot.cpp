@@ -20,6 +20,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvectorlayerplotdatagatherer.h"
 
 
 QgsLineChartPlot::QgsLineChartPlot()
@@ -320,4 +321,15 @@ bool QgsLineChartPlot::readXml( const QDomElement &element, const QgsReadWriteCo
 QgsLineChartPlot *QgsLineChartPlot::create()
 {
   return new QgsLineChartPlot();
+}
+
+QgsVectorLayerAbstractPlotDataGatherer *QgsLineChartPlot::createDataGatherer( QgsPlot *plot )
+{
+  QgsLineChartPlot *chart = dynamic_cast<QgsLineChartPlot *>( plot );
+  if ( !chart )
+  {
+    return nullptr;
+  }
+
+  return new QgsVectorLayerXyPlotDataGatherer( chart->xAxis().type() );
 }
