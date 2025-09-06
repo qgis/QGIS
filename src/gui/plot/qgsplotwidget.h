@@ -136,4 +136,43 @@ class GUI_EXPORT QgsLineChartPlotWidget : public QgsPlotWidget, private Ui::QgsL
     std::unique_ptr< QgsNumericFormat > mYAxisNumericFormat;
 };
 
+//
+// QgsLineChartPlotWidget
+//
+
+#include "ui_qgspiechartplotwidgetbase.h"
+
+/**
+ * \ingroup gui
+ * \class QgsPieChartPlotWidget
+ * \brief Widget class to control the properties of pie chart plots.
+ * \since QGIS 4.0
+ */
+class GUI_EXPORT QgsPieChartPlotWidget : public QgsPlotWidget, private Ui::QgsPieChartPlotWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    /**
+     * Constructor for QgsLineChartPlotWidget.
+     * \param parent parent widget
+     */
+    QgsPieChartPlotWidget( QWidget *parent = nullptr );
+
+    virtual void setPlot( QgsPlot *plot ) override;
+    virtual QgsPlot *createPlot() override SIP_FACTORY;
+
+    //! Creates a new line chart plot configuration widget.
+    static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsPieChartPlotWidget( parent ); }
+
+  private slots:
+    void mAddSymbolPushButton_clicked();
+    void mRemoveSymbolPushButton_clicked();
+
+  private:
+    int mBlockChanges = 0;
+
+    std::unique_ptr< QgsNumericFormat > mNumericFormat;
+};
+
 #endif //QGSPLOTWIDGET_H

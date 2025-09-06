@@ -8,6 +8,8 @@ try:
     QgsPlotDefaultSettings.lineChartMarkerSymbol = staticmethod(QgsPlotDefaultSettings.lineChartMarkerSymbol)
     QgsPlotDefaultSettings.lineChartLineSymbol = staticmethod(QgsPlotDefaultSettings.lineChartLineSymbol)
     QgsPlotDefaultSettings.barChartFillSymbol = staticmethod(QgsPlotDefaultSettings.barChartFillSymbol)
+    QgsPlotDefaultSettings.pieChartFillSymbol = staticmethod(QgsPlotDefaultSettings.pieChartFillSymbol)
+    QgsPlotDefaultSettings.pieChartColorRamp = staticmethod(QgsPlotDefaultSettings.pieChartColorRamp)
     QgsPlotDefaultSettings.__group__ = ['plot']
 except (NameError, AttributeError):
     pass

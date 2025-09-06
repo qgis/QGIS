@@ -22,6 +22,8 @@
 #include "qgsfillsymbol.h"
 #include "qgsplot.h"
 
+class QgsVectorLayerAbstractPlotDataGatherer;
+
 
 /**
  * \brief A simple bar chart class.
@@ -62,6 +64,9 @@ class CORE_EXPORT QgsBarChartPlot : public Qgs2DXyPlot
 
     //! Returns a new bar chart.
     static QgsBarChartPlot *create() SIP_FACTORY;
+
+    //! Returns a new data gatherer for a given bar chart \a plot.
+    static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) SIP_TRANSFERBACK;
 
   private:
 
