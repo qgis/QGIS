@@ -31,6 +31,7 @@
 #include "qgsmaptoolscalefeature.h"
 #include "qgsmaptoolmovefeature.h"
 #include "qgsmaptooloffsetcurve.h"
+#include "qgsmaptoolchamferfillet.h"
 #include "qgsmaptoolreshape.h"
 #include "qgsmaptoolsplitfeatures.h"
 #include "qgsmaptoolsplitparts.h"
@@ -77,6 +78,7 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::RotateFeature, new QgsMapToolRotateFeature( canvas ) );
   mTools.insert( Tool::ScaleFeature, new QgsMapToolScaleFeature( canvas ) );
   mTools.insert( Tool::OffsetCurve, new QgsMapToolOffsetCurve( canvas ) );
+  mTools.insert( Tool::ChamferFillet, new QgsMapToolChamferFillet( canvas ) );
   mTools.insert( Tool::ReshapeFeatures, new QgsMapToolReshape( canvas ) );
   mTools.insert( Tool::ReverseLine, new QgsMapToolReverseLine( canvas ) );
   mTools.insert( Tool::SplitFeatures, new QgsMapToolSplitFeatures( canvas ) );

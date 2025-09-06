@@ -16,6 +16,7 @@ email                : loic dot bartoletti at oslandia dot com
 #include "qgsgeometryutils_base.h"
 #include "qgsvector3d.h"
 #include "qgsvector.h"
+#include "qgsexception.h"
 
 double QgsGeometryUtilsBase::sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX, double &minDistY, double epsilon )
 {
@@ -759,7 +760,7 @@ bool QgsGeometryUtilsBase::createFillet(
 
   if ( !isIntersection )
   {
-    return false;
+    throw QgsInvalidArgumentException( "Segments do not intersect." );
   }
 
   // Calculate distances from intersection to all segment endpoints
@@ -800,7 +801,7 @@ bool QgsGeometryUtilsBase::createFillet(
   // Validate angle - must be meaningful for fillet creation
   if ( std::abs( angle ) < epsilon || std::abs( angle - M_PI ) < epsilon )
   {
-    return false; // Parallel or anti-parallel rays
+    throw QgsInvalidArgumentException( "Parallel or anti-parallel segments." );
   }
 
   // Use the interior angle (always ≤ π) for fillet calculations
@@ -813,7 +814,8 @@ bool QgsGeometryUtilsBase::createFillet(
   const double halfAngle = workingAngle / 2.0;
   if ( std::abs( std::sin( halfAngle ) ) < epsilon )
   {
-    return false; // Avoid division by very small numbers
+    // Avoid division by very small numbers.
+    throw QgsInvalidArgumentException( "Segment angle near 0 will generate wrong division" );
   }
 
   // Calculate distance from intersection to tangent points using trigonometry
@@ -833,12 +835,12 @@ bool QgsGeometryUtilsBase::createFillet(
   // This allows fillets on non-touching segments (like chamfer behavior)
   if ( intersectionOnSeg1 && distanceToTangent > maxDist1 - epsilon )
   {
-    return false;
+    throw QgsInvalidArgumentException( "Intersection 1 on segment but too far." );
   }
 
   if ( intersectionOnSeg2 && distanceToTangent > maxDist2 - epsilon )
   {
-    return false;
+    throw QgsInvalidArgumentException( "Intersection 2 on segment but too far." );
   }
 
   // Calculate tangent points along the rays
@@ -929,13 +931,13 @@ bool QgsGeometryUtilsBase::createChamfer(
   double *trim2EndX, double *trim2EndY,
   const double epsilon )
 {
+  // Apply symmetric distance if distance2 is negative
+  if ( distance2 <= 0 )
+    distance2 = distance1;
 
   // Only for positive distance
-  if ( distance1 < 0 )
-  {
-    return false;
-  }
-
+  if ( distance1 <= 0 || distance2 <= 0 )
+    throw QgsInvalidArgumentException( "Negative distances." );
 
   // Find intersection point between segments (or their infinite line extensions)
   double intersectionX, intersectionY;
@@ -947,7 +949,7 @@ bool QgsGeometryUtilsBase::createChamfer(
 
   if ( !isIntersection )
   {
-    return false;
+    throw QgsInvalidArgumentException( "Segments do not intersect." );
   }
 
   // Apply symmetric distance if distance2 is negative
