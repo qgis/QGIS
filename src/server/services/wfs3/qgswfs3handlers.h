@@ -59,6 +59,16 @@ class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
      * \return QgsFields list with filters applied
      */
     QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
+
+    /**
+     * Returns the HTML template path for the handler in the given \a context
+     *
+     * The template path is calculated from QgsServerSettings's apiResourcesDirectory() as follow:
+     * apiResourcesDirectory() + "/ogc/templates/wfs3/" + operationId + ".html"
+     * e.g. for an handler with operationId "collectionItems", the path
+     * will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
+     */
+    const QString templatePath( const QgsServerApiContext &context ) const override;
 };
 
 /**

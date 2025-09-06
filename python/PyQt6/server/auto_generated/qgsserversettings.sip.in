@@ -48,6 +48,7 @@ configuration.
       QGIS_SERVER_WMS_MAX_WIDTH,
       QGIS_SERVER_API_RESOURCES_DIRECTORY,
       QGIS_SERVER_API_WFS3_MAX_LIMIT,
+      QGIS_SERVER_API_WFS3_ROOT_PATH,
       QGIS_SERVER_TRUST_LAYER_METADATA,
       QGIS_SERVER_FORCE_READONLY_LAYERS,
       QGIS_SERVER_DISABLE_GETPRINT,
@@ -271,6 +272,20 @@ The default value is 10000, this value can be changed by setting the
 environment variable QGIS_SERVER_API_WFS3_MAX_LIMIT.
 
 .. versionadded:: 3.10
+%End
+
+    QString apiWfs3RootPath() const;
+%Docstring
+Returns the server-wide root path for OAPIF (WFS3) service API.
+
+The default value is "/wfs3", this value can be changed by setting the
+environment variable QGIS_SERVER_API_WFS3_ROOT_PATH.
+
+.. note::
+
+   The default will be changed to "/oapif" for QGIS 4.
+
+.. versionadded:: 3.44.3
 %End
 
     bool ignoreBadLayers() const;
