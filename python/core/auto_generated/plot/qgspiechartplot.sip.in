@@ -9,6 +9,7 @@
 
 
 
+
 class QgsPieChartPlot : Qgs2DPlot
 {
 %Docstring(signature="appended")
@@ -72,6 +73,11 @@ Returns the color ramps list count.
     static QgsPieChartPlot *create() /Factory/;
 %Docstring
 Returns a new pie chart.
+%End
+
+    static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) /TransferBack/;
+%Docstring
+Returns a new data gatherer for a given pie chart ``plot``.
 %End
 
 };

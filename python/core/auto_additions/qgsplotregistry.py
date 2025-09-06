@@ -6,7 +6,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsPlotAbstractMetadata.__abstract_methods__ = ['createPlot', 'createPlotWidget']
+    QgsPlotAbstractMetadata.__abstract_methods__ = ['createPlot', 'createPlotDataGatherer', 'createPlotWidget']
     QgsPlotAbstractMetadata.__group__ = ['plot']
 except (NameError, AttributeError):
     pass

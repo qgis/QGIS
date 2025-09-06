@@ -38,9 +38,9 @@ bool QgsPlotRegistry::populate()
   if ( !mMetadata.isEmpty() )
     return false;
 
-  addPlotType( new QgsPlotMetadata( QLatin1String( "bar" ), QObject::tr( "Bar chart" ), QgsBarChartPlot::create ) );
-  addPlotType( new QgsPlotMetadata( QLatin1String( "line" ), QObject::tr( "Line chart" ), QgsLineChartPlot::create ) );
-  addPlotType( new QgsPlotMetadata( QLatin1String( "pie" ), QObject::tr( "Pie chart" ), QgsPieChartPlot::create ) );
+  addPlotType( new QgsPlotMetadata( QLatin1String( "bar" ), QObject::tr( "Bar chart" ), QgsBarChartPlot::create, QgsBarChartPlot::createDataGatherer ) );
+  addPlotType( new QgsPlotMetadata( QLatin1String( "line" ), QObject::tr( "Line chart" ), QgsLineChartPlot::create, QgsLineChartPlot::createDataGatherer ) );
+  addPlotType( new QgsPlotMetadata( QLatin1String( "pie" ), QObject::tr( "Pie chart" ), QgsPieChartPlot::create, QgsPieChartPlot::createDataGatherer ) );
 
   return true;
 }
