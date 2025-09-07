@@ -165,6 +165,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
         path.moveTo( center );
         path.arcTo( boundingBox, -degreesStart, -degreesForward );
 
+        chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
         chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), pair.second, true ) );
         symbol->setColor( categoriesColor[categories[pair.first]] );
         symbol->renderPolygon( path.toFillPolygon(), nullptr, nullptr, context );
@@ -223,6 +224,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
           }
           const double labelYAdjustment = degreesMid > 0 && degreesMid <= 180 ? maxLabelHeight / 2 : 0;
 
+          chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
           chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), pair.second, true ) );
           QgsTextRenderer::drawText( QPointF( labelX, labelY + labelYAdjustment ), 0, horizontalAlignment, { text }, context, mLabelTextFormat );
 

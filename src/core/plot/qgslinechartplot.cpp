@@ -156,13 +156,19 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
                 break;
 
               case Qgis::PlotAxisType::Categorical:
+                bool found = false;
                 for ( const std::pair<double, double> &pair : data )
                 {
                   if ( pair.first == pointIndex )
                   {
                     value = pair.second;
+                    chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
                     break;
                   }
+                }
+                if ( !found )
+                {
+                  continue;
                 }
                 break;
             }

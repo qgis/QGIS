@@ -3,7 +3,7 @@
 QgsPieChartPlot.LabelType.NoLabels.__doc__ = "Labels are not drawn"
 QgsPieChartPlot.LabelType.CategoryLabels.__doc__ = "Category labels are drawn"
 QgsPieChartPlot.LabelType.ValueLabels.__doc__ = "Value labels are drawn"
-QgsPieChartPlot.LabelType.__doc__ = """
+QgsPieChartPlot.LabelType.__doc__ = """The label types available to pie charts.
 
 * ``NoLabels``: Labels are not drawn
 * ``CategoryLabels``: Category labels are drawn

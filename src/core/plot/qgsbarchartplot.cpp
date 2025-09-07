@@ -92,6 +92,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
               continue;
             }
             x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustement;
+            chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
             break;
 
           case Qgis::PlotAxisType::Interval:

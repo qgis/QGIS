@@ -40,11 +40,12 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
 {
   public:
 
+    //! The label types available to pie charts.
     enum class LabelType : int
     {
       NoLabels,       //!< Labels are not drawn
       CategoryLabels, //!< Category labels are drawn
-      ValueLabels,     //!< Value labels are drawn
+      ValueLabels,    //!< Value labels are drawn
     };
 
     QgsPieChartPlot();
