@@ -460,9 +460,9 @@ QgsPlot *QgsBarChartPlotWidget::createPlot()
   chartPlot->setYMaximum( mSpinMaxYAxis->value() );
 
   chartPlot->xAxis().setGridMajorSymbol( mXAxisMajorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
-  chartPlot->xAxis().setGridMajorSymbol( mXAxisMinorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
+  chartPlot->xAxis().setGridMinorSymbol( mXAxisMinorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
   chartPlot->yAxis().setGridMajorSymbol( mYAxisMajorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
-  chartPlot->yAxis().setGridMajorSymbol( mYAxisMinorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
+  chartPlot->yAxis().setGridMinorSymbol( mYAxisMinorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
 
   chartPlot->xAxis().setTextFormat( mXAxisLabelFontButton->textFormat() );
   chartPlot->xAxis().setNumericFormat( mXAxisNumericFormat.get()->clone() );
@@ -931,9 +931,9 @@ QgsPlot *QgsLineChartPlotWidget::createPlot()
   chartPlot->setYMaximum( mSpinMaxYAxis->value() );
 
   chartPlot->xAxis().setGridMajorSymbol( mXAxisMajorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
-  chartPlot->xAxis().setGridMajorSymbol( mXAxisMinorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
+  chartPlot->xAxis().setGridMinorSymbol( mXAxisMinorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
   chartPlot->yAxis().setGridMajorSymbol( mYAxisMajorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
-  chartPlot->yAxis().setGridMajorSymbol( mYAxisMinorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
+  chartPlot->yAxis().setGridMinorSymbol( mYAxisMinorLinesSymbolButton->clonedSymbol<QgsLineSymbol>() );
 
   chartPlot->xAxis().setTextFormat( mXAxisLabelFontButton->textFormat() );
   chartPlot->yAxis().setTextFormat( mYAxisLabelFontButton->textFormat() );
