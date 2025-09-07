@@ -67,6 +67,13 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
         settings.setForceLabelsInsideFeature(True)
         self.assertEqual(len(spy), 3)
 
+        self.assertFalse(settings.clipFrame())
+        settings.setClipFrame(True)
+        self.assertTrue(settings.clipFrame())
+        self.assertEqual(len(spy), 4)
+        settings.setClipFrame(True)
+        self.assertEqual(len(spy), 3)
+
         l1 = QgsVectorLayer(
             "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
         )
@@ -109,6 +116,7 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
             QgsMapClippingRegion.FeatureClippingType.NoClipping
         )
         settings.setForceLabelsInsideFeature(True)
+        settings.setClipFrame(True)
         settings.setRestrictToLayers(True)
         settings.setLayersToClip([l2])
 
@@ -132,6 +140,7 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
             QgsMapClippingRegion.FeatureClippingType.NoClipping,
         )
         self.assertTrue(map2.atlasClippingSettings().forceLabelsInsideFeature())
+        self.assertTrue(map2.atlasClippingSettings().clipFrame())
         self.assertEqual(map2.atlasClippingSettings().layersToClip(), [l2])
         self.assertTrue(map2.atlasClippingSettings().restrictToLayers())
 
