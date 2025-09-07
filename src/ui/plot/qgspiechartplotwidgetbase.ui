@@ -249,14 +249,14 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Label placement</string>
+             <string>Label type</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_17">
             <property name="text">
-             <string>Label format</string>
+             <string>Label numerical format</string>
             </property>
            </widget>
           </item>

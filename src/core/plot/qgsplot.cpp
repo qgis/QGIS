@@ -985,6 +985,11 @@ QgsColorRamp *QgsPlotDefaultSettings::pieChartColorRamp()
   return new QgsPresetSchemeColorRamp( { QColor( 89, 150, 50 ), QColor( 228, 26, 28 ), QColor( 55, 126, 184 ), QColor( 152, 78, 163 ), QColor( 255, 127, 0 ), QColor( 166, 86, 40 ), QColor( 247, 129, 191 ), QColor( 153, 153, 153 ) } );
 }
 
+QgsNumericFormat *QgsPlotDefaultSettings::pieChartNumericFormat()
+{
+  return new QgsBasicNumericFormat();
+}
+
 //
 // QgsPlotData
 //

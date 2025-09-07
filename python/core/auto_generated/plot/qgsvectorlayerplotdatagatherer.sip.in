@@ -44,8 +44,22 @@ An abstract vector layer plot data gatherer base class.
 
     virtual QgsPlotData data() const = 0;
 %Docstring
-Returns the plot data
+Returns the plot data.
 %End
+
+    void setFeatureIterator( QgsFeatureIterator &iterator );
+%Docstring
+Sets the feature ``iterator`` used to gather data from.
+%End
+
+    void setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Sets the expression ``context`` used when evaluating values being
+gathered.
+%End
+
+  protected:
+
 
 };
 
@@ -73,15 +87,29 @@ An vector layer plot data gatherer class for XY series.
     };
 
     explicit QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval );
+%Docstring
+The vector layer XY plot data gatherer constructor.
+
+:param xAxisType: The X-axis type that will define what type of X values
+                  to gather.
+%End
     ~QgsVectorLayerXyPlotDataGatherer();
 
-    void setFeatureIterator( QgsFeatureIterator &iterator );
+    void setSeriesDetails( const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &details );
+%Docstring
+Sets the series ``details`` list that will be used to prepare the data
+being gathered.
+%End
 
-    void setExpressionContext( const QgsExpressionContext &expressionContext );
+    void setPredefinedCategories( const QStringList &categories );
+%Docstring
+Sets the predefined ``categories`` list that will be used to restrict
+the categories used when gathering the data.
 
-    void setSeriesDetails( const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails );
+.. note::
 
-    void setPredefinedCategories( const QStringList &predefinedCategories );
+   This is only used when the gatherer's X-axis type is set to categorical.
+%End
 
     virtual bool run();
 
@@ -90,6 +118,7 @@ An vector layer plot data gatherer class for XY series.
 
 
   protected:
+
 
 };
 

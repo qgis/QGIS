@@ -835,6 +835,12 @@ class CORE_EXPORT QgsPlotDefaultSettings
      * \since QGIS 4.0
      */
     static QgsColorRamp *pieChartColorRamp() SIP_FACTORY;
+
+    /**
+     * Returns the default color ramp to use for pie charts.
+     * \since QGIS 4.0
+     */
+    static QgsNumericFormat *pieChartNumericFormat() SIP_FACTORY;
 };
 
 #endif // QGSPLOT_H

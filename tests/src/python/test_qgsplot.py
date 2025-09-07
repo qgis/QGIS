@@ -1386,6 +1386,71 @@ class TestQgsPlot(QgisTestCase):
         font = QgsFontUtils.getStandardTestFont("Bold", 16)
         text_format = QgsTextFormat.fromQFont(font)
         plot.setTextFormat(text_format)
+        plot.setLabelType(QgsPieChartPlot.LabelType.CategoryLabels)
+
+        # set symbol for first series (also used in second series)
+        series_symbol = QgsFillSymbol.createSimple(
+            {
+                "color": "#00BB00",
+                "outline_color": "#003300",
+                "outline_style": "solid",
+                "outline_width": 1,
+            }
+        )
+        plot.setFillSymbolAt(0, series_symbol)
+
+        series_color_ramp = QgsPresetSchemeColorRamp(
+            [
+                QColor(255, 0, 0),
+                QColor(0, 255, 0),
+                QColor(0, 0, 255),
+                QColor(150, 150, 150),
+            ]
+        )
+        plot.setColorRampAt(0, series_color_ramp)
+
+        data = QgsPlotData()
+        series = QgsXyPlotSeries()
+        series.append(0, 1)
+        series.append(1, 5)
+        series.append(2, 5)
+        series.append(3, 9)
+        data.addSeries(series)
+        series = QgsXyPlotSeries()
+        series.append(0, 5)
+        series.append(1, 2)
+        series.append(2, 5)
+        series.append(3, 4)
+        data.addSeries(series)
+        data.setCategories(["Q1", "Q2", "Q3", "Q4"])
+
+        im = QImage(width, height, QImage.Format.Format_ARGB32)
+        im.fill(Qt.GlobalColor.white)
+        im.setDotsPerMeterX(int(dpi / 25.4 * 1000))
+        im.setDotsPerMeterY(int(dpi / 25.4 * 1000))
+
+        painter = QPainter(im)
+        rc = QgsRenderContext.fromQPainter(painter)
+        rc.setScaleFactor(dpi / 25.4)
+        prc = QgsPlotRenderContext()
+        plot.render(rc, prc, data)
+        painter.end()
+
+        assert self.image_check(
+            "pie_chart_plot_category_labels", "pie_chart_plot_category_labels", im
+        )
+
+    def testPieChartPlotValueLabels(self):
+        width = 900
+        height = 300
+        dpi = 96
+
+        plot = QgsPieChartPlot()
+        plot.setSize(QSizeF(width, height))
+
+        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        text_format = QgsTextFormat.fromQFont(font)
+        plot.setTextFormat(text_format)
         plot.setLabelType(QgsPieChartPlot.LabelType.ValueLabels)
 
         # set symbol for first series (also used in second series)

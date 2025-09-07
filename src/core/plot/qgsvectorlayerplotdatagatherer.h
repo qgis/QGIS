@@ -62,10 +62,19 @@ class CORE_EXPORT QgsVectorLayerAbstractPlotDataGatherer : public QgsTask
     QgsVectorLayerAbstractPlotDataGatherer() = default;
     virtual ~QgsVectorLayerAbstractPlotDataGatherer() = default;
 
-    //! Returns the plot data
+    //! Returns the plot data.
     virtual QgsPlotData data() const = 0;
 
-  private:
+    //! Sets the feature \a iterator used to gather data from.
+    void setFeatureIterator( QgsFeatureIterator &iterator ) { mIterator = iterator; }
+
+    //! Sets the expression \a context used when evaluating values being gathered.
+    void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
+
+  protected:
+
+    QgsFeatureIterator mIterator;
+    QgsExpressionContext mExpressionContext;
 
 };
 
@@ -100,28 +109,31 @@ class CORE_EXPORT QgsVectorLayerXyPlotDataGatherer : public QgsVectorLayerAbstra
       QString filterExpression;
     };
 
+    /**
+     * The vector layer XY plot data gatherer constructor.
+     * \param xAxisType The X-axis type that will define what type of X values to gather.
+     */
     explicit QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval );
     ~QgsVectorLayerXyPlotDataGatherer() override = default;
 
-    void setFeatureIterator( QgsFeatureIterator &iterator );
+    //! Sets the series \a details list that will be used to prepare the data being gathered.
+    void setSeriesDetails( const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &details );
 
-    void setExpressionContext( const QgsExpressionContext &expressionContext );
-
-    void setSeriesDetails( const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails );
-
-    void setPredefinedCategories( const QStringList &predefinedCategories );
+    /**
+     * Sets the predefined \a categories list that will be used to restrict the categories used when gathering the data.
+     * \note This is only used when the gatherer's X-axis type is set to categorical.
+     */
+    void setPredefinedCategories( const QStringList &categories );
 
     bool run() override;
 
     QgsPlotData data() const override;
 
   protected:
+
     QgsPlotData mData;
 
   private:
-
-    QgsFeatureIterator mIterator;
-    QgsExpressionContext mExpressionContext;
 
     Qgis::PlotAxisType mXAxisType = Qgis::PlotAxisType::Interval;
     QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> mSeriesDetails;

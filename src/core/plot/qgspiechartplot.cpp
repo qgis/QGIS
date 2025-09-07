@@ -30,6 +30,7 @@ QgsPieChartPlot::QgsPieChartPlot()
 {
   setFillSymbolAt( 0, QgsPlotDefaultSettings::pieChartFillSymbol() );
   setColorRampAt( 0, QgsPlotDefaultSettings::pieChartColorRamp() );
+  mNumericFormat.reset( QgsPlotDefaultSettings::pieChartNumericFormat() );
 }
 
 void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
@@ -322,9 +323,12 @@ bool QgsPieChartPlot::writeXml( QDomElement &element, QDomDocument &document, co
   textFormatElement.appendChild( mLabelTextFormat.writeXml( document, context ) );
   element.appendChild( textFormatElement );
 
-  QDomElement numericFormatElement = document.createElement( QStringLiteral( "numericFormat" ) );
-  mNumericFormat->writeXml( numericFormatElement, document, context );
-  element.appendChild( numericFormatElement );
+  if ( mNumericFormat )
+  {
+    QDomElement numericFormatElement = document.createElement( QStringLiteral( "numericFormat" ) );
+    mNumericFormat->writeXml( numericFormatElement, document, context );
+    element.appendChild( numericFormatElement );
+  }
 
   element.setAttribute( QStringLiteral( "pieChartLabelType" ), static_cast<int>( mLabelType ) );
 
@@ -377,7 +381,14 @@ bool QgsPieChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
   mLabelTextFormat.readXml( textFormatElement, context );
 
   const QDomElement numericFormatElement = element.firstChildElement( QStringLiteral( "numericFormat" ) );
-  mNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElement, context ) );
+  if ( !numericFormatElement.isNull() )
+  {
+    mNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElement, context ) );
+  }
+  else
+  {
+    mNumericFormat.reset();
+  }
 
   mLabelType = static_cast<QgsPieChartPlot::LabelType>( element.attribute( QStringLiteral( "pieChartLabelType" ) ).toInt() );
 

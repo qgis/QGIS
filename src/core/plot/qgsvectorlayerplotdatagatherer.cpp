@@ -25,16 +25,6 @@ QgsVectorLayerXyPlotDataGatherer::QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAx
 {
 }
 
-void QgsVectorLayerXyPlotDataGatherer::setFeatureIterator( QgsFeatureIterator &iterator )
-{
-  mIterator = iterator;
-}
-
-void QgsVectorLayerXyPlotDataGatherer::setExpressionContext( const QgsExpressionContext &expressionContext )
-{
-  mExpressionContext = expressionContext;
-}
-
 void QgsVectorLayerXyPlotDataGatherer::setSeriesDetails( const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails )
 {
   mSeriesDetails = seriesDetails;

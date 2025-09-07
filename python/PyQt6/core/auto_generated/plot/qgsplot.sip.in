@@ -810,6 +810,13 @@ Returns the default color ramp to use for pie charts.
 
 .. versionadded:: 4.0
 %End
+
+    static QgsNumericFormat *pieChartNumericFormat() /Factory/;
+%Docstring
+Returns the default color ramp to use for pie charts.
+
+.. versionadded:: 4.0
+%End
 };
 
 /************************************************************************
