@@ -558,7 +558,6 @@ class GdalUtils:
                     res_xml_wms, xml_wms_error = (
                         GdalUtils.gdal_wms_xml_description_file(
                             layer,
-                            QgsWmsUtils.wmsVersion(layer),
                             extent,
                             width,
                             height,
@@ -679,7 +678,6 @@ class GdalUtils:
     @staticmethod
     def gdal_wms_xml_description_file(
         layer: QgsRasterLayer,
-        version: str,
         extent: QgsRectangle,
         width: int,
         height: int,
@@ -689,7 +687,6 @@ class GdalUtils:
         Creates an XML description file to access a WMS via GDAL.
 
         :param layer: WMS layer.
-        :param version: WMS version.
         :param extent: Extent to be requested.
         :param width: Width of the image to be requested.
         :param height: Height of the image to be requested.
@@ -699,6 +696,7 @@ class GdalUtils:
         """
         # Prepare data
         uri = layer.publicSource()
+        version = QgsWmsUtils.wmsVersion(layer)
         source = QgsProviderRegistry.instance().decodeUri("wms", uri)
         base_url = source.get("url", "")
         crs_obj = layer.crs()
