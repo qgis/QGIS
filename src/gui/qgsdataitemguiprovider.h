@@ -239,8 +239,8 @@ class GUI_EXPORT QgsDataItemGuiProvider
      * Add an \a actionToAdd to the sub menu with \a subMenuName in \a mainMenu. If the sub menu with given name does not exist it will be created.
      *
      * \param mainMenu The menu in which sub menu is search for or created.
-     * @param actionToAdd The action to add.
-     * @param subMenuName Name of the sub menu that is searched for or created.
+     * \param actionToAdd The action to add.
+     * \param subMenuName Name of the sub menu that is searched for or created.
      *
      * \since QGIS 4.0
      */
