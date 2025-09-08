@@ -164,6 +164,11 @@
 #include "qgsdirectionallightsettings.h"
 #endif
 
+#ifdef WITH_SFCGAL
+#include <SFCGAL/capi/sfcgal_c.h>
+#include <SFCGAL/version.h>
+#endif
+
 #ifdef HAVE_GEOREFERENCER
 #include "georeferencer/qgsgeorefmainwindow.h"
 #endif
@@ -5557,6 +5562,20 @@ QString QgisApp::getVersionString()
   {
     versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, geosVersionRunning, runLabel );
   }
+  versionString += QLatin1String( "</td></tr><tr>" );
+
+  // SFCGAL version
+#ifdef WITH_SFCGAL
+  const QString sfcgalVersionCompiled { SFCGAL_VERSION };
+  const QString sfcgalVersionRunning { sfcgal_version() };
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "SFCGAL version" ), sfcgalVersionCompiled );
+  if ( sfcgalVersionCompiled != sfcgalVersionRunning )
+  {
+    versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, sfcgalVersionRunning, runLabel );
+  }
+#else
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "SFCGAL version" ), tr( "No support" ) );
+#endif
   versionString += QLatin1String( "</td></tr><tr>" );
 
   // SQLite version
