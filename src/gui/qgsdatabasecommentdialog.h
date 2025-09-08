@@ -20,12 +20,9 @@
 #include <QDialogButtonBox>
 #include <QPlainTextEdit>
 
-#include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsdatabaseschemacombobox.h"
-
 /**
  * \ingroup gui
- * \brief Dialog which displays selection of a dialog for a specific database item.
+ * \brief Dialog which displays comment for a specific database item.
  *
  * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation.
  *
@@ -36,9 +33,9 @@ class GUI_EXPORT QgsDatabaseCommentDialog : public QDialog
     Q_OBJECT
   public:
     /**
-     * Constructor for QgsDatabaseCommentDialog, for the specified \a connection.
-     *
-     * Ownership of \a connection is transferred.
+     * Constructor for QgsDatabaseCommentDialog.
+     * \param title 
+     * \param comment Initial comment text.
      */
     explicit QgsDatabaseCommentDialog( QString title, QString comment = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
