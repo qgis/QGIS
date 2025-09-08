@@ -835,6 +835,7 @@ class TestQgsProcessing : public QgsTest
     void combineLayerExtent();
     void processingFeatureSource();
     void processingFeatureSink();
+    void processingRasterLayer();
     void algorithmScope();
     void validateInputCrs();
     void generateIteratingDestination();
@@ -6105,6 +6106,8 @@ void TestQgsProcessing::parameterRasterLayer()
   QVERIFY( def->checkValueIsAcceptable( "layer12312312" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingRasterLayerDefinition( "layer12312312" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QgsProcessingRasterLayerDefinition( "" ) ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( r1 ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant::fromValue( v1 ) ) );
 
@@ -6147,9 +6150,22 @@ void TestQgsProcessing::parameterRasterLayer()
   QVERIFY( !QgsProcessingParameters::parameterAsRasterLayer( def.get(), params, context ) );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( "abc" ) ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( "abc'def" ) ), context ), QStringLiteral( "\"abc'def\"" ) );
   QCOMPARE( def->valueAsPythonString( raster1, context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "tenbytenraster.asc'" ) ) );
   QCOMPARE( def->valueAsPythonString( r1->id(), context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "tenbytenraster.asc'" ) ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( r1->id() ) ), context ), QStringLiteral( "'%1'" ).arg( raster1 ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( r1 ), context ), QString( QString( "'" ) + testDataDir + QStringLiteral( "tenbytenraster.asc'" ) ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromValue( "abc" ), 1000 ) ), context ), QStringLiteral( "QgsProcessingRasterLayerDefinition('abc', referenceScale=1000, dpi=96)" ) );
+
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ) ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"abc\" || \"def\"')" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromExpression( "\"abc\" || 'def'" ) ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"abc\" || \\'def\\'')" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), 1000 ) ), context ), QStringLiteral( "QgsProcessingRasterLayerDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'), referenceScale=1000, dpi=96)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromValue( "abc" ), 0, 96 ) ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), 0, 96 ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"abc\" || \"def\"')" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromValue( "abc" ), 2500, 90 ) ), context ), QStringLiteral( "QgsProcessingRasterLayerDefinition('abc', referenceScale=2500, dpi=90)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), 2500, 90 ) ), context ), QStringLiteral( "QgsProcessingRasterLayerDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'), referenceScale=2500, dpi=90)" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
 
@@ -6158,6 +6174,12 @@ void TestQgsProcessing::parameterRasterLayer()
   QCOMPARE( def->valueAsJsonObject( r1->id(), context ), QVariant( testDataDir + QStringLiteral( "tenbytenraster.asc" ) ) );
   QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( r1 ), context ), QVariant( testDataDir + QStringLiteral( "tenbytenraster.asc" ) ) );
   QCOMPARE( def->valueAsJsonObject( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QVariant( QStringLiteral( "c:\\test\\new data\\test.dat" ) ) );
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProcessingRasterLayerDefinition( "abc" ) ), context ), QVariant( QStringLiteral( "abc" ) ) );
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProcessingRasterLayerDefinition( "abc'def" ) ), context ), QVariant( QStringLiteral( "abc'def" ) ) );
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProcessingRasterLayerDefinition( r1->id() ) ), context ), QVariant( raster1 ) );
+  // currently scale and dpi from raster layer definitions cannot be serialized to JSON...
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromValue( "abc" ), 1000 ) ), context ), QVariant( QStringLiteral( "abc" ) ) );
+  QCOMPARE( def->valueAsJsonObject( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromValue( "abc" ), 1000, 90 ) ), context ), QVariant( QStringLiteral( "abc" ) ) );
 
   bool ok = false;
   QCOMPARE( def->valueAsString( QVariant(), context, ok ), QString() );
@@ -6170,6 +6192,15 @@ void TestQgsProcessing::parameterRasterLayer()
   QVERIFY( ok );
   QCOMPARE( def->valueAsString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context, ok ), QStringLiteral( "c:\\test\\new data\\test.dat" ) );
   QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( "abc" ) ), context, ok ), QStringLiteral( "abc" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( "abc'def" ) ), context, ok ), QStringLiteral( "abc'def" ) );
+  QVERIFY( ok );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( r1->id() ) ), context, ok ), raster1 );
+  QVERIFY( ok );
+  // currently scale and dpi from raster layer definitions cannot be serialized to JSON...
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromValue( "abc" ), 1000 ) ), context, ok ), QStringLiteral( "abc" ) );
+  QCOMPARE( def->valueAsString( QVariant::fromValue( QgsProcessingRasterLayerDefinition( QgsProperty::fromValue( "abc" ), 1000, 90 ) ), context, ok ), QStringLiteral( "abc" ) );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterRasterLayer('non_optional', '', defaultValue=None)" ) );
@@ -6192,6 +6223,8 @@ void TestQgsProcessing::parameterRasterLayer()
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   // acceptable, falls back to default value
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingRasterLayerDefinition( "layer12312312" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QgsProcessingRasterLayerDefinition( "" ) ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( r1 ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant::fromValue( v1 ) ) );
 
@@ -6205,6 +6238,7 @@ void TestQgsProcessing::parameterRasterLayer()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif" ) );
   QVERIFY( def->checkValueIsAcceptable( "" ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingRasterLayerDefinition( "layer1231123" ) ) );
 
   params.insert( "optional", QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsRasterLayer( def.get(), params, context )->id(), r1->id() );
@@ -6235,12 +6269,27 @@ void TestQgsProcessing::parameterRasterLayer()
   def.reset( new QgsProcessingParameterRasterLayer( "optional", QString(), QVariant::fromValue( r1 ), true ) );
   QCOMPARE( QgsProcessingParameters::parameterAsRasterLayer( def.get(), params, context )->id(), r1->id() );
 
+  // test raster parameter capabilities flag
+  Qgis::RasterProcessingParameterCapabilities caps;
+  QCOMPARE( caps, def->parameterCapabilities() );
+
+  caps = def->parameterCapabilities() | Qgis::RasterProcessingParameterCapability::WmsScale;
+  def->setParameterCapabilities( caps );
+  QVERIFY( def->parameterCapabilities() & Qgis::RasterProcessingParameterCapability::WmsScale );
+  QVERIFY( !( def->parameterCapabilities() & Qgis::RasterProcessingParameterCapability::WmsDpi ) );
+
+  caps = def->parameterCapabilities() | Qgis::RasterProcessingParameterCapability::WmsDpi;
+  def->setParameterCapabilities( caps );
+  QVERIFY( def->parameterCapabilities() & Qgis::RasterProcessingParameterCapability::WmsScale && def->parameterCapabilities() & Qgis::RasterProcessingParameterCapability::WmsDpi );
+
   // invalidRasterError
   params.clear();
   QCOMPARE( QgsProcessingAlgorithm::invalidRasterError( params, QStringLiteral( "MISSING" ) ), QStringLiteral( "Could not load source layer for MISSING: no value specified for parameter" ) );
   params.insert( QStringLiteral( "INPUT" ), QStringLiteral( "my layer" ) );
   QCOMPARE( QgsProcessingAlgorithm::invalidRasterError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: my layer not found" ) );
   params.insert( QStringLiteral( "INPUT" ), QgsProperty::fromValue( "my prop layer" ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidRasterError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: my prop layer not found" ) );
+  params.insert( QStringLiteral( "INPUT" ), QgsProcessingRasterLayerDefinition( QStringLiteral( "my prop layer" ) ) );
   QCOMPARE( QgsProcessingAlgorithm::invalidRasterError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: my prop layer not found" ) );
   params.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( v1 ) );
   QCOMPARE( QgsProcessingAlgorithm::invalidRasterError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: invalid value" ) );
@@ -12350,6 +12399,49 @@ void TestQgsProcessing::processingFeatureSink()
   QVERIFY( !def->supportsAppend() );
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterFeatureSink('layer', '', optional=True, type=QgsProcessing.TypeMapLayer, createByDefault=True, defaultValue='memory:defaultlayer')" ) );
+}
+
+void TestQgsProcessing::processingRasterLayer()
+{
+  const QString sourceString = QStringLiteral( "test.tif" );
+  const QgsProcessingRasterLayerDefinition rld( sourceString, 2500, 90 );
+  QCOMPARE( rld.source.staticValue().toString(), sourceString );
+  QCOMPARE( rld.referenceScale, 2500 );
+  QCOMPARE( rld.dpi, 90 );
+
+  // test storing QgsProcessingFeatureSource in variant and retrieving
+  const QVariant rldInVariant = QVariant::fromValue( rld );
+  QVERIFY( rldInVariant.isValid() );
+
+  // test converting to variant map and back
+  const QVariant res = rld.toVariant();
+  QgsProcessingRasterLayerDefinition dd;
+  QVERIFY( dd.loadVariant( res.toMap() ) );
+  QCOMPARE( dd.source.staticValue().toString(), sourceString );
+  QCOMPARE( dd.referenceScale, 2500 );
+  QCOMPARE( dd.dpi, 90 );
+
+  const QgsProcessingRasterLayerDefinition fromVar = qvariant_cast<QgsProcessingRasterLayerDefinition>( rldInVariant );
+  QCOMPARE( fromVar.source.staticValue().toString(), sourceString );
+  QCOMPARE( fromVar.referenceScale, 2500 );
+  QCOMPARE( fromVar.dpi, 90 );
+
+  // test evaluating parameter as raster layer
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  const QString raster1 = testDataDir + "tenbytenraster.asc";
+  const QFileInfo fi1( raster1 );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+
+  QgsProject p;
+  p.addMapLayer( r1 );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // using static string definition
+  std::unique_ptr<QgsProcessingParameterDefinition> def( new QgsProcessingParameterString( QStringLiteral( "layer" ) ) );
+  QVariantMap params;
+  params.insert( QStringLiteral( "layer" ), QgsProcessingRasterLayerDefinition( r1->id() ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsRasterLayer( def.get(), params, context )->id(), r1->id() );
 }
 
 void TestQgsProcessing::algorithmScope()

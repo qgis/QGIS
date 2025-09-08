@@ -210,8 +210,12 @@ class ClipRasterByExtent(GdalAlgorithm):
         arguments = []
 
         # If not a WMS or scale/DPI were not given, add -projwin
-        if inLayer.providerType() != "wms" or not isinstance(
-            parameters[self.INPUT], QgsProcessingRasterLayerDefinition
+        if (
+            inLayer.providerType() != "wms"
+            or not isinstance(
+                parameters[self.INPUT], QgsProcessingRasterLayerDefinition
+            )
+            or parameters[self.INPUT].referenceScale == 0
         ):
             arguments.extend(
                 [
