@@ -12,6 +12,7 @@ __author__ = "Germán Carrillo"
 __date__ = "2025-09-08"
 __copyright__ = "Copyright 2025, Germán Carrillo"
 
+import os.path
 import shutil
 import tempfile
 import unittest
@@ -22,9 +23,11 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsSettings,
     QgsRasterLayer,
+    QgsWmsUtils,
 )
 from qgis.testing import start_app, QgisTestCase
 from raster_provider_test_base import RasterProviderTestCase
+from utilities import unitTestDataPath
 
 
 class TestPyQgsWMSProvider(QgisTestCase, RasterProviderTestCase):
@@ -39,6 +42,7 @@ class TestPyQgsWMSProvider(QgisTestCase, RasterProviderTestCase):
         QCoreApplication.setApplicationName("TestPyQgsWMSProvider")
         QgsSettings().clear()
         start_app()
+        cls.TEST_DATA_DIR = unitTestDataPath()
 
         cls.basetestpath = tempfile.mkdtemp().replace("\\", "/")
 
@@ -149,6 +153,25 @@ class TestPyQgsWMSProvider(QgisTestCase, RasterProviderTestCase):
         self.assertEqual(rl.dataProvider().bandOffset(1), 0)
         self.assertEqual(rl.dataProvider().maximumTileSize().width(), 4000)
         self.assertEqual(rl.dataProvider().maximumTileSize().height(), 4000)
+
+    def test_wms_utils(self):
+        """
+        Test WMS utils
+        """
+        rl = self.get_layer("basic")
+
+        self.assertTrue(rl.isValid())
+        self.assertTrue(QgsWmsUtils.isWmsLayer(rl))
+        self.assertEqual(QgsWmsUtils.wmsVersion(rl), "1.3.0")
+
+        # Test any other raster layer
+        rl2 = QgsRasterLayer(
+            os.path.join(self.TEST_DATA_DIR, "landsat_4326.tif"), "landsat", "gdal"
+        )
+
+        self.assertTrue(rl2.isValid())
+        self.assertFalse(QgsWmsUtils.isWmsLayer(rl2))
+        self.assertEqual(QgsWmsUtils.wmsVersion(rl2), "")
 
 
 if __name__ == "__main__":
