@@ -3034,6 +3034,9 @@ QColor QgsProcessingParameterDefinition::modelColor() const
 
 QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &value ) const
 {
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
   if ( value.userType() == qMetaTypeId<QgsPointXY>() )
   {
     const QgsPointXY r = value.value<QgsPointXY>();
@@ -3044,10 +3047,10 @@ QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &va
   else if ( value.userType() == qMetaTypeId<QgsReferencedPointXY>() )
   {
     const QgsReferencedPointXY r = value.value<QgsReferencedPointXY>();
-    return QStringLiteral( "[%1] %2, %3" ).arg(
-             r.crs().authid(),
+    return QStringLiteral( "%1, %2 [%3]" ).arg(
              qgsDoubleToString( r.x(), 4 ),
-             qgsDoubleToString( r.y(), 4 )
+             qgsDoubleToString( r.y(), 4 ),
+             r.crs().authid()
            );
   }
 
@@ -3063,7 +3066,7 @@ QString QgsProcessingParameterDefinition::userFriendlyString( const QVariant &va
     if ( !g.isNull() )
     {
 
-      return QStringLiteral( "[%1] %2" ).arg( g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), QgsWkbTypes::geometryDisplayString( g.type() ) );
+      return QStringLiteral( "%1 [%2]" ).arg( QgsWkbTypes::geometryDisplayString( g.type() ), g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
     }
     return QgsWkbTypes::geometryDisplayString( g.type() );
   }
@@ -3247,6 +3250,9 @@ QgsProcessingParameterCrs *QgsProcessingParameterCrs::fromScriptCode( const QStr
 
 QString QgsProcessingParameterCrs::userFriendlyString( const QVariant &value ) const
 {
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
   QgsCoordinateReferenceSystem crs( value.toString() );
   if ( crs.isValid() )
     return crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString );
@@ -3669,7 +3675,7 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
            qgsDoubleToString( r.yMinimum() ),
            qgsDoubleToString( r.xMaximum() ),
            qgsDoubleToString( r.yMaximum() ),
-           r.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
+           r.crs().authid() );
   }
   else if ( value.userType() == qMetaTypeId< QgsGeometry>() )
   {
@@ -4093,6 +4099,9 @@ QgsProcessingParameterGeometry *QgsProcessingParameterGeometry::fromScriptCode( 
 
 QString QgsProcessingParameterGeometry::userFriendlyString( const QVariant &value ) const
 {
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
   if ( value.isValid() )
   {
 
@@ -4107,7 +4116,7 @@ QString QgsProcessingParameterGeometry::userFriendlyString( const QVariant &valu
       const QgsReferencedGeometry g = value.value<QgsReferencedGeometry>();
       if ( !g.isNull() )
       {
-        return QStringLiteral( "[%1] %2" ).arg( g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), QgsWkbTypes::geometryDisplayString( g.type() ) );
+        return QStringLiteral( "%1 [%2]" ).arg( QgsWkbTypes::geometryDisplayString( g.type() ), g.crs().userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ));
       }
       return QgsWkbTypes::geometryDisplayString( g.type() );
     }
@@ -5383,6 +5392,9 @@ QString QgsProcessingParameterEnum::asPythonString( const QgsProcessing::PythonO
 
 QString QgsProcessingParameterEnum::userFriendlyString( const QVariant &value ) const
 {
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
   return options().at( value.toInt() );
 }
 
@@ -7850,6 +7862,9 @@ bool QgsProcessingParameterDistance::fromVariantMap( const QVariantMap &map )
 
 QString QgsProcessingParameterDistance::userFriendlyString( const QVariant &value ) const
 {
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
   return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toAbbreviatedString( defaultUnit() ) );
 }
 
@@ -7937,7 +7952,10 @@ bool QgsProcessingParameterArea::fromVariantMap( const QVariantMap &map )
 
 QString QgsProcessingParameterArea::userFriendlyString( const QVariant &value ) const
 {
-  return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toString( defaultUnit() ) );
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toAbbreviatedString( defaultUnit() ) );
 }
 
 
@@ -8023,7 +8041,10 @@ bool QgsProcessingParameterVolume::fromVariantMap( const QVariantMap &map )
 
 QString QgsProcessingParameterVolume::userFriendlyString( const QVariant &value ) const
 {
-  return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toString( defaultUnit() ) );
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
+  return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toAbbreviatedString( defaultUnit() ) );
 }
 
 //
@@ -8084,6 +8105,9 @@ bool QgsProcessingParameterDuration::fromVariantMap( const QVariantMap &map )
 
 QString QgsProcessingParameterDuration::userFriendlyString( const QVariant &value ) const
 {
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
   return QStringLiteral( "%1 %2" ).arg( value.toString(), QgsUnitTypes::toAbbreviatedString( defaultUnit() ) );
 }
 
@@ -8946,19 +8970,16 @@ QgsProcessingParameterDateTime *QgsProcessingParameterDateTime::fromScriptCode( 
 
 QString QgsProcessingParameterDateTime:: userFriendlyString( const QVariant &value ) const
 {
+  if ( QgsVariantUtils::isNull( value ) )
+    return QString();
+
   if ( value.userType() == QMetaType::Type::QDateTime )
   {
     const QDateTime dt = value.toDateTime();
     if ( !dt.isValid() )
       return QObject::tr( "Invalid datetime" );
     else
-      return QStringLiteral( "%1-%2-%3T%4:%5:%6" )
-             .arg( dt.date().year() )
-             .arg( dt.date().month() )
-             .arg( dt.date().day() )
-             .arg( dt.time().hour() )
-             .arg( dt.time().minute() )
-             .arg( dt.time().second() );
+      return dt.toString( Qt::ISODate );
   }
 
   else if ( value.userType() == QMetaType::Type::QDate )
@@ -8967,10 +8988,7 @@ QString QgsProcessingParameterDateTime:: userFriendlyString( const QVariant &val
     if ( !dt.isValid() )
       return QObject::tr( "Invalid date" );
     else
-      return QStringLiteral( "%1-%2-%3" )
-             .arg( dt.year() )
-             .arg( dt.month() )
-             .arg( dt.day() );
+      return dt.toString( Qt::ISODate );
   }
 
   else if ( value.userType() == QMetaType::Type::QTime )
@@ -8979,10 +8997,7 @@ QString QgsProcessingParameterDateTime:: userFriendlyString( const QVariant &val
     if ( !dt.isValid() )
       return QObject::tr( "Invalid time" );
     else
-      return QStringLiteral( "%4:%5:%6" )
-             .arg( dt.hour() )
-             .arg( dt.minute() )
-             .arg( dt.second() );
+      return dt.toString( Qt::ISODate );
   }
 
   return value.toString();

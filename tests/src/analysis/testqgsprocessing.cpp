@@ -3213,7 +3213,7 @@ void TestQgsProcessing::parameterCrs()
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( QVariant::fromValue( r1 ) ) ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( r1->id() ) ) );
 
-  QCOMPARE( def->userFriendlyString( QVariant( "EPSG:3857" ) ), QgsCoordinateReferenceSystem( QVariant( "EPSG:3857" ).toString() ).userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
+  QCOMPARE( def->userFriendlyString( QVariant( "EPSG:3857" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ).userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
 
   // using map layer
   QVariantMap params;
