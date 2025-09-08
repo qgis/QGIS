@@ -5207,7 +5207,7 @@ QString QgsPostgresProvider::htmlMetadata() const
   QgsPostgresResult resTableComment( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlTableComment ) );
   QString tableComment;
 
-  if ( resSpatialIndexes.PQntuples() > 0 )
+  if ( resTableComment.PQntuples() > 0 )
   {
     tableComment = resTableComment.PQgetvalue( 0, 0 );
     tableComment = tableComment.replace( QStringLiteral( "/n" ), QStringLiteral( "</br>" ) );
