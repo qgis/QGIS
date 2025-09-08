@@ -68,6 +68,9 @@ with this symbol.
       {
       Height,
       ExtrusionHeight,
+      ScaleX,
+      ScaleY,
+      ScaleZ,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();

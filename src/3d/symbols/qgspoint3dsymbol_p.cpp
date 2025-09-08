@@ -83,13 +83,14 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
 
   private:
     static QgsMaterial *material( const QgsPoint3DSymbol *symbol, const QgsMaterialContext &materialContext );
-    static Qt3DRender::QGeometryRenderer *renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions );
+    static Qt3DRender::QGeometryRenderer *renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions, const QVector<QVector3D> &scales );
     static Qt3DQGeometry *symbolGeometry( const QgsPoint3DSymbol *symbol );
 
     //! temporary data we will pass to the tessellator
     struct PointData
     {
         QVector<QVector3D> positions; // contains triplets of float x,y,z for each point
+        QVector<QVector3D> scales;
     };
 
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
@@ -110,11 +111,12 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
 
 bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
 {
-  Q_UNUSED( context )
-  Q_UNUSED( attributeNames )
-
   mChunkOrigin = chunkOrigin;
 
+  QSet<QString> attrs = mSymbol->dataDefinedProperties().referencedFields( context.expressionContext() );
+  attributeNames.unite( attrs );
+  attrs = mSymbol->materialSettings()->dataDefinedProperties().referencedFields( context.expressionContext() );
+  attributeNames.unite( attrs );
   return true;
 }
 
@@ -125,7 +127,32 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
   if ( feature.geometry().isNull() )
     return;
 
+  const auto oldSize = out.positions.size();
   Qgs3DUtils::extractPointPositions( feature, context, mChunkOrigin, mSymbol->altitudeClamping(), out.positions );
+
+  const auto added = out.positions.size() - oldSize;
+
+  const QgsPropertyCollection &ddp = mSymbol->dataDefinedProperties();
+  const bool hasDDScale = ddp.isActive( QgsAbstract3DSymbol::Property::ScaleX )
+                          || ddp.isActive( QgsAbstract3DSymbol::Property::ScaleY )
+                          || ddp.isActive( QgsAbstract3DSymbol::Property::ScaleZ );
+
+  if ( hasDDScale )
+  {
+    out.scales.resize( out.positions.size() );
+    QVector3D *outScale = out.scales.data() + oldSize;
+
+    // TODO -- needs to override default scale
+    const double scaleX = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::ScaleX, context.expressionContext(), 1 );
+    const double scaleY = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::ScaleY, context.expressionContext(), 1 );
+    const double scaleZ = ddp.valueAsDouble( QgsAbstract3DSymbol::Property::ScaleZ, context.expressionContext(), 1 );
+
+    for ( auto i = 0; i < added; ++i )
+    {
+      ( *outScale++ ) = QVector3D( scaleX, scaleY, scaleZ );
+    }
+  }
+
   mFeatureCount++;
 }
 
@@ -134,74 +161,96 @@ void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, cons
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
 
-  updateZRangeFromPositions( outNormal.positions );
-  updateZRangeFromPositions( outSelected.positions );
-
-  // the elevation offset is applied in the vertex shader so let's account for it as well
-  const float symbolOffset = mSymbol->transform().data()[14];
-
-  // also account for the actual height of the objects themselves
-  // NOTE -- these calculations are naive, and assume no rotation or scaling of the symbol!
-  switch ( mSymbol->shape() )
+  const QVector3D *scales = outNormal.scales.empty() ? nullptr : outNormal.scales.constData();
+  for ( const QVector3D &pos : std::as_const( outNormal.positions ) )
   {
-    case Qgis::Point3DShape::Cylinder:
+    double minZ = 0;
+    double maxZ = 0;
+
+    // the elevation offset is applied in the vertex shader so let's account for it as well
+    const float symbolOffset = mSymbol->transform().data()[13];
+
+    // also account for the actual height of the objects themselves
+    // NOTE -- these calculations are naive, and assume no rotation or scaling of the symbol!
+    switch ( mSymbol->shape() )
     {
-      const float length = mSymbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
-      mZMin -= length * 0.5f;
-      mZMax += length * 0.5f;
-      break;
+      case Qgis::Point3DShape::Cylinder:
+      {
+        const float length = mSymbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
+        minZ -= length * 0.5f;
+        maxZ += length * 0.5f;
+        break;
+      }
+
+      case Qgis::Point3DShape::Sphere:
+      {
+        const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
+        minZ -= radius;
+        maxZ += radius;
+        break;
+      }
+
+      case Qgis::Point3DShape::Cone:
+      {
+        const float length = mSymbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
+        minZ -= length * 0.5f;
+        maxZ += length * 0.5f;
+        break;
+      }
+
+      case Qgis::Point3DShape::Cube:
+      {
+        const float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
+        minZ -= size * 0.5f;
+        maxZ += size * 0.5f;
+        break;
+      }
+
+      case Qgis::Point3DShape::Torus:
+      {
+        const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
+        minZ -= radius;
+        maxZ += radius;
+        break;
+      }
+
+      case Qgis::Point3DShape::Plane:
+      {
+        // worst case scenario -- even though planes are usually rotated so that they are flat,
+        // let's account for possible overridden rotation
+        const float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
+        minZ -= size * 0.5f;
+        maxZ += size * 0.5f;
+        break;
+      }
+
+      case Qgis::Point3DShape::ExtrudedText:
+      case Qgis::Point3DShape::Model:
+      case Qgis::Point3DShape::Billboard:
+        break;
     }
 
-    case Qgis::Point3DShape::Sphere:
+    minZ += pos.y();
+    maxZ += pos.y();
+
+    if ( scales )
     {
-      const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
-      mZMin -= radius;
-      mZMax += radius;
-      break;
+      const double scale = ( *scales++ )[1];
+      minZ *= scale;
+      maxZ *= scale;
     }
 
-    case Qgis::Point3DShape::Cone:
-    {
-      const float length = mSymbol->shapeProperty( QStringLiteral( "length" ) ).toFloat();
-      mZMin -= length * 0.5f;
-      mZMax += length * 0.5f;
-      break;
-    }
+    minZ += symbolOffset;
+    maxZ += symbolOffset;
 
-    case Qgis::Point3DShape::Cube:
-    {
-      const float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
-      mZMin -= size * 0.5f;
-      mZMax += size * 0.5f;
-      break;
-    }
-
-    case Qgis::Point3DShape::Torus:
-    {
-      const float radius = mSymbol->shapeProperty( QStringLiteral( "radius" ) ).toFloat();
-      mZMin -= radius;
-      mZMax += radius;
-      break;
-    }
-
-    case Qgis::Point3DShape::Plane:
-    {
-      // worst case scenario -- even though planes are usually rotated so that they are flat,
-      // let's account for possible overridden rotation
-      const float size = mSymbol->shapeProperty( QStringLiteral( "size" ) ).toFloat();
-      mZMin -= size * 0.5f;
-      mZMax += size * 0.5f;
-      break;
-    }
-
-    case Qgis::Point3DShape::ExtrudedText:
-    case Qgis::Point3DShape::Model:
-    case Qgis::Point3DShape::Billboard:
-      break;
+    if ( minZ < mZMin )
+      mZMin = minZ;
+    if ( maxZ > mZMax )
+      mZMax = maxZ;
   }
 
-  mZMin += symbolOffset;
-  mZMax += symbolOffset;
+  //updateZRangeFromPositions( outNormal.positions );
+  updateZRangeFromPositions( outSelected.positions );
 }
 
 void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected )
@@ -212,13 +261,15 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   materialContext.setSelectionColor( context.selectionColor() );
   QgsMaterial *mat = material( mSymbol.get(), materialContext );
 
+  mat->addParameter( new Qt3DRender::QParameter( "useInstanceScale", !out.scales.empty(), mat ) );
+
   // add transform (our geometry has coordinates relative to mChunkOrigin)
   QgsGeoTransform *tr = new QgsGeoTransform;
   tr->setGeoTranslation( mChunkOrigin );
 
   // build the entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
-  entity->addComponent( renderer( mSymbol.get(), out.positions ) );
+  entity->addComponent( renderer( mSymbol.get(), out.positions, out.scales ) );
   entity->addComponent( mat );
   entity->addComponent( tr );
   entity->setParent( parent );
@@ -282,7 +333,7 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
   return material;
 }
 
-Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions )
+Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const QgsPoint3DSymbol *symbol, const QVector<QVector3D> &positions, const QVector<QVector3D> &scales )
 {
   const int count = positions.count();
   const int byteCount = positions.count() * sizeof( QVector3D );
@@ -307,6 +358,34 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   Qt3DQGeometry *geometry = symbolGeometry( symbol );
   geometry->addAttribute( instanceDataAttribute );
   geometry->setBoundingVolumePositionAttribute( instanceDataAttribute );
+
+  Qt3DQBuffer *scaleBuffer = new Qt3DQBuffer();
+  Qt3DQAttribute *instanceScaleDataAttribute = new Qt3DQAttribute;
+  instanceScaleDataAttribute->setName( QStringLiteral( "scale" ) );
+  instanceScaleDataAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  instanceScaleDataAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  instanceScaleDataAttribute->setVertexSize( 3 );
+  instanceScaleDataAttribute->setByteOffset( 0 );
+  instanceScaleDataAttribute->setDivisor( 1 );
+  instanceScaleDataAttribute->setByteStride( 3 * sizeof( float ) );
+
+  if ( !scales.empty() )
+  {
+    QByteArray scaleBa;
+    scaleBa.resize( byteCount );
+    memcpy( scaleBa.data(), scales.constData(), byteCount );
+
+    scaleBuffer->setData( scaleBa );
+    instanceScaleDataAttribute->setCount( count );
+  }
+  else
+  {
+    scaleBuffer->setData( QByteArray() );
+    instanceScaleDataAttribute->setCount( 0 );
+  }
+
+  instanceScaleDataAttribute->setBuffer( scaleBuffer );
+  geometry->addAttribute( instanceScaleDataAttribute );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
