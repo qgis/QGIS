@@ -93,7 +93,14 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
 {
   const bool prevSkip = outputIsSkipped();
   mUseRemapping = false;
-  if ( !value.isValid() || ( value.userType() == QMetaType::Type::QString && ( value.toString().isEmpty() || isTemporaryLayer( value.toString() ) ) ) )
+  if ( !value.isValid() || ( value.userType() == QMetaType::Type::QString && value.toString().isEmpty() ) )
+  {
+    if ( mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
+      skipOutput();
+    else
+      saveToTemporary();
+  }
+  else if ( value.userType() == QMetaType::Type::QString && isTemporaryLayer( value.toString() ) )
   {
     if ( mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
       skipOutput();
