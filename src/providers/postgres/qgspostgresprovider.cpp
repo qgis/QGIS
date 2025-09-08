@@ -5184,7 +5184,7 @@ QString QgsPostgresProvider::htmlMetadata() const
     estimateRowCount = resRowCount.PQgetvalue( 0, 0 ).toLongLong();
   }
 
-  const QString sqlSpatialIndex = QStringLiteral( "SELECT * FROM pg_indexes WHERE schemaname = %1 AND tablename = %2 AND indexdef LIKE USING %gist%'" )
+  const QString sqlSpatialIndex = QStringLiteral( "SELECT * FROM pg_indexes WHERE schemaname = %1 AND tablename = %2 AND indexdef LIKE 'USING %gist%'" )
                                     .arg( QgsPostgresConn::quotedValue( mSchemaName ), QgsPostgresConn::quotedValue( mTableName ) );
 
   QgsPostgresResult resSpatialIndexes( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlSpatialIndex ) );
