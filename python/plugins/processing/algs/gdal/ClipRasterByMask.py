@@ -293,8 +293,10 @@ class ClipRasterByMask(GdalAlgorithm):
         _bbox = None
         # If it's a WMS layer and scale/DPI were given,
         # choose a BBOX depending on alg parameters
-        if inLayer.providerType() == "wms" and isinstance(
-            parameters[self.INPUT], QgsProcessingRasterLayerDefinition
+        if (
+            inLayer.providerType() == "wms"
+            and isinstance(parameters[self.INPUT], QgsProcessingRasterLayerDefinition)
+            and parameters[self.INPUT].referenceScale > 0
         ):
             # For the input WMS's BBOX, if -te is given, then use -te, projected to input's
             # crs. Otherwise, use mask layer's extent, projected to input's crs.
