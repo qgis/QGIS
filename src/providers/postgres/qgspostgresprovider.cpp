@@ -5233,10 +5233,10 @@ QString QgsPostgresProvider::htmlMetadata() const
   long long estimateRowCount = -1;
   if ( resRowCount.PQntuples() > 0 )
   {
-    estimateRowCount = QVariant( resRowCount.PQgetvalue( 0, 0 ) ).toLongLong();
+    estimateRowCount = resRowCount.PQgetvalue( 0, 0 ).toLongLong();
   }
 
-  const QString sqlSpatialIndex = QStringLiteral( "SELECT * FROM pg_indexes WHERE schemaname = %1 AND tablename = %2 AND indexdef LIKE '%gist%'" )
+  const QString sqlSpatialIndex = QStringLiteral( "SELECT * FROM pg_indexes WHERE schemaname = %1 AND tablename = %2 AND indexdef LIKE USING %gist%'" )
                                     .arg( QgsPostgresConn::quotedValue( mSchemaName ), QgsPostgresConn::quotedValue( mTableName ) );
 
   QgsPostgresResult resSpatialIndexes( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlSpatialIndex ) );
