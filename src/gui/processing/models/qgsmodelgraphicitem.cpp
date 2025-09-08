@@ -209,9 +209,12 @@ void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOp
 
   painter->setRenderHint( QPainter::Antialiasing );
 
+  // Radius of the socket circle
   constexpr float DISPLAY_SIZE = 4;
-  float ellipseOffset = 0.4;
-  QPointF ellipsePosition = QPointF( position().x() + ellipseOffset, position().y() + ellipseOffset );
+
+  // Offset of the socket to separate from the label
+  constexpr float ELLIPSE_OFFSET = 0.4;
+  QPointF ellipsePosition = QPointF( position().x() + ELLIPSE_OFFSET, position().y() + ELLIPSE_OFFSET );
   painter->drawEllipse( ellipsePosition, DISPLAY_SIZE, DISPLAY_SIZE );
 
   /* Uncomment to display bounding box */
@@ -255,18 +258,15 @@ bool QgsModelDesignerSocketGraphicItem::isDefaultParameterValue() const
       // Input params
       case Qt::TopEdge:
       {
-        QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
-
-        if ( mIndex > ( params.length() - 1 ) )
-        {
+        const QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
+        const QgsProcessingParameterDefinition *param = params.value( mIndex );
+        if ( !param )
           break;
-        }
 
-        const QgsProcessingParameterDefinition *param = params.at( mIndex );
-        QString name = param->name();
+        const QString name = param->name();
 
         QgsProcessingModelChildParameterSources paramSources = child->parameterSources().value( name );
-        if ( paramSources.size() == 0 )
+        if ( paramSources.empty() )
         {
           break;
         }
