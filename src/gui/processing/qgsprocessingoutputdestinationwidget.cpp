@@ -774,7 +774,7 @@ bool QgsProcessingLayerOutputDestinationWidget::isTemporaryLayer( const QString 
   QString uri;
   bool hasProviderAndUri = QgsProcessingUtils::decodeProviderKeyAndUri( value, provider, uri );
 
-  if ( provider.startsWith( QStringLiteral( "memory" ) ) )
+  if ( provider == QLatin1String( "memory" ) )
     return true;
 
   if ( hasProviderAndUri )
