@@ -5449,6 +5449,10 @@ QgsPercentageWidget.valueChanged: src/gui/qgspercentagewidget.h#L68
 QgsPercentageWidget: src/gui/qgspercentagewidget.h#L32
 QgsPictureSourceLineEditBase.setMode: src/gui/qgsfilecontentsourcelineedit.h#L208
 QgsPictureSourceLineEditBase: src/gui/qgsfilecontentsourcelineedit.h#L185
+QgsPieChartPlotWidget.create: src/gui/plot/qgsplotwidget.h#L166
+QgsPieChartPlotWidget.createPlot: src/gui/plot/qgsplotwidget.h#L163
+QgsPieChartPlotWidget.setPlot: src/gui/plot/qgsplotwidget.h#L162
+QgsPieChartPlotWidget: src/gui/plot/qgsplotwidget.h#L151
 QgsPixmapLabel.QgsPixmapLabel: src/gui/qgspixmaplabel.h#L34
 QgsPixmapLabel.clear: src/gui/qgspixmaplabel.h#L57
 QgsPixmapLabel.heightForWidth: src/gui/qgspixmaplabel.h#L42
