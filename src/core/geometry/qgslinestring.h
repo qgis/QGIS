@@ -933,11 +933,11 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param startDistance distance to extend start of line
      * \param endDistance distance to extend end of line
      * \param strict if TRUE, throws QgsException when encountering stacked vertices;
-     *               if FALSE, silently skips stacked vertices (default: FALSE for user-friendliness)
+     *               if FALSE, silently skips stacked vertices (default: TRUE)
      * \throws QgsException if strict=TRUE and stacked vertices are encountered
      * \since QGIS 3.40
      */
-    void extend( double startDistance, double endDistance, bool strict = false );
+    void extend( double startDistance, double endDistance, bool strict = true );
 
 #ifndef SIP_RUN
 
