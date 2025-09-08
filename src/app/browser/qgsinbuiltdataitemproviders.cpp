@@ -68,6 +68,7 @@
 #include "qgshistoryproviderregistry.h"
 #include "qgsdataitemguiproviderutils.h"
 #include "qgsdatabaseschemaselectiondialog.h"
+#include "qgsdatabasecommentdialog.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -2059,6 +2060,68 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           else if ( context.messageBar() )
           {
             context.messageBar()->pushMessage( tr( "Spatial index deleted on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), Qgis::MessageLevel::Success );
+          }
+        }
+      } );
+    }
+
+    if ( isTable && conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::SetTableComment ) )
+    {
+      QAction *editComment = new QAction( tr( "Edit Comment…" ), menu );
+
+      addToSubMenu( menu, editComment, tr( "Manage" ) );
+
+      const QString connectionUri = conn->uri();
+      const QString providerKey = conn->providerKey();
+
+      connect( editComment, &QAction::triggered, editComment, [connectionUri, providerKey, item, context] {
+        QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+        if ( !md )
+          return;
+
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+
+        const QString schemaName = item->parent()->name();
+        const QString tableName = item->name();
+
+        const QString comment = conn2->table( schemaName, tableName ).comment();
+
+        QgsDatabaseCommentDialog *dlg = new QgsDatabaseCommentDialog( tr( "Table Comment" ), comment );
+
+        if ( dlg->exec() == QDialog::Accepted )
+        {
+          QString errCause;
+          if ( conn2 )
+          {
+            try
+            {
+              QgsTemporaryCursorOverride override( Qt::WaitCursor );
+              conn2->setTableComment( schemaName, tableName, dlg->comment() );
+            }
+            catch ( QgsProviderConnectionException &ex )
+            {
+              errCause = ex.what();
+            }
+          }
+          else
+          {
+            errCause = QObject::tr( "There was an error retrieving the connection to %1" ).arg( connectionUri );
+          }
+
+          QString fullName;
+          if ( schemaName.isEmpty() )
+            fullName = tableName;
+          else
+            fullName = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
+
+          if ( !errCause.isEmpty() )
+          {
+            notify( tr( "Cannot edit comment on %1" ).arg( fullName ), errCause, context, Qgis::MessageLevel::Critical );
+            return;
+          }
+          else if ( context.messageBar() )
+          {
+            context.messageBar()->pushMessage( tr( "Edited comment on %1" ).arg( fullName ), Qgis::MessageLevel::Success );
           }
         }
       } );
