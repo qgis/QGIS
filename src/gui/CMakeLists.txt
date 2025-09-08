@@ -593,6 +593,7 @@ set(QGIS_GUI_SRCS
   qgscustomdrophandler.cpp
   qgscustomprojectopenhandler.cpp
   qgscurveeditorwidget.cpp
+  qgsdatabasecommentdialog.cpp
   qgsdatabaseschemacombobox.cpp
   qgsdatabaseschemaselectiondialog.cpp
   qgsdatabasetablecombobox.cpp
@@ -862,6 +863,7 @@ set(QGIS_GUI_HDRS
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
   qgscustomprojectopenhandler.h
+  qgsdatabasecommentdialog.h
   qgsdatabaseschemacombobox.h
   qgsdatabasetablecombobox.h
   qgsdataitemguiprovider.h
