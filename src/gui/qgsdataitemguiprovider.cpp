@@ -132,3 +132,25 @@ void QgsDataItemGuiProvider::notify( const QString &title, const QString &messag
     }
   }
 }
+
+void QgsDataItemGuiProvider::addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, QString subMenuName )
+{
+  // this action should sit in the Manage menu. If one does not exist, create it now
+  bool foundExistingManageMenu = false;
+  QList<QAction *> actions = mainMenu->actions();
+  for ( QAction *action : std::as_const( actions ) )
+  {
+    if ( action->text() == subMenuName )
+    {
+      action->menu()->addAction( actionToAdd );
+      foundExistingManageMenu = true;
+      break;
+    }
+  }
+  if ( !foundExistingManageMenu )
+  {
+    QMenu *addSubMenu = new QMenu( subMenuName, mainMenu );
+    addSubMenu->addAction( actionToAdd );
+    mainMenu->addMenu( addSubMenu );
+  }
+}
