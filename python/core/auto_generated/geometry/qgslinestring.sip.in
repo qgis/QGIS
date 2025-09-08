@@ -594,7 +594,7 @@ Returns the geometry converted to the more generic curve type
 :return: the converted geometry. Caller takes ownership
 %End
 
-    void extend( double startDistance, double endDistance, bool strict = false );
+    void extend( double startDistance, double endDistance, bool strict = true );
 %Docstring
 Extends the line geometry by extrapolating out the start or end of the
 line by a specified distance. Lines are extended using the bearing of
@@ -604,8 +604,7 @@ the first or last segment in the line.
 :param endDistance: distance to extend end of line
 :param strict: if ``True``, throws :py:class:`QgsException` when
                encountering stacked vertices; if ``False``, silently
-               skips stacked vertices (default: ``False`` for
-               user-friendliness)
+               skips stacked vertices (default: ``True``)
 
 :raises QgsException: if strict=``True`` and stacked vertices are
                       encountered
