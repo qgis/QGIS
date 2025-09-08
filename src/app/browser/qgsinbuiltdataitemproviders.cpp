@@ -2081,17 +2081,24 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
 
+        QString errCause;
+
         const QString schemaName = item->parent()->name();
         const QString tableName = item->name();
 
-        const QString comment = conn2->table( schemaName, tableName ).comment();
+        QString fullName;
+        if ( schemaName.isEmpty() )
+          fullName = tableName;
+        else
+          fullName = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
 
-        QgsDatabaseCommentDialog *dlg = new QgsDatabaseCommentDialog( tr( "Table Comment" ), comment );
-
-        if ( dlg->exec() == QDialog::Accepted )
+        if ( conn2 )
         {
-          QString errCause;
-          if ( conn2 )
+          const QString comment = conn2->table( schemaName, tableName ).comment();
+
+          QgsDatabaseCommentDialog *dlg = new QgsDatabaseCommentDialog( tr( "Table Comment" ), comment );
+
+          if ( dlg->exec() == QDialog::Accepted )
           {
             try
             {
@@ -2103,26 +2110,20 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
               errCause = ex.what();
             }
           }
-          else
-          {
-            errCause = QObject::tr( "There was an error retrieving the connection to %1" ).arg( connectionUri );
-          }
+        }
+        else
+        {
+          errCause = QObject::tr( "There was an error retrieving the connection to %1" ).arg( connectionUri );
+        }
 
-          QString fullName;
-          if ( schemaName.isEmpty() )
-            fullName = tableName;
-          else
-            fullName = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
-
-          if ( !errCause.isEmpty() )
-          {
-            notify( tr( "Cannot edit comment on %1" ).arg( fullName ), errCause, context, Qgis::MessageLevel::Critical );
-            return;
-          }
-          else if ( context.messageBar() )
-          {
-            context.messageBar()->pushMessage( tr( "Edited comment on %1" ).arg( fullName ), Qgis::MessageLevel::Success );
-          }
+        if ( !errCause.isEmpty() )
+        {
+          notify( tr( "Cannot edit comment on %1" ).arg( fullName ), errCause, context, Qgis::MessageLevel::Critical );
+          return;
+        }
+        else if ( context.messageBar() )
+        {
+          context.messageBar()->pushMessage( tr( "Edited comment on %1" ).arg( fullName ), Qgis::MessageLevel::Success );
         }
       } );
     }
