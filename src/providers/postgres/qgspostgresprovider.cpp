@@ -5253,10 +5253,22 @@ QString QgsPostgresProvider::htmlMetadata() const
     spatialIndexText = tr( "Spatial index/indices exists (%1)." ).arg( spatialIndexes.join( ", " ) );
   }
 
+  const QString sqlTableComment = QStringLiteral( "SELECT description FROM pg_description WHERE objoid = %1" )
+                                    .arg( QgsPostgresConn::quotedValue( tableOid ) );
+
+  QgsPostgresResult resTableComment( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlTableComment ) );
+  QString tableComment;
+
+  if ( resSpatialIndexes.PQntuples() > 0 )
+  {
+    tableComment = resTableComment.PQgetvalue( 0, 0 );
+  }
+
   const QVariantMap additionalInformation {
     { tr( "Privileges" ), privileges.join( ", " ) },
     { tr( "Rows (estimation)" ), estimateRowCount },
     { tr( "Spatial Index" ), spatialIndexText },
+    { tr( "Table Comment" ), tableComment }
   };
 
   return QgsPostgresUtils::variantMapToHtml( additionalInformation, tr( "Additional information" ) );
