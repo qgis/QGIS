@@ -73,6 +73,7 @@ Copy constructor
 %End
 
 
+
     std::unique_ptr<QgsAbstractGeometry> asQgisGeometry() const;
 %Docstring
 Returns the geometry converted to a QGIS geometry object. This method is
