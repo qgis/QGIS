@@ -43,6 +43,7 @@ from qgis.core import (
     QgsProcessingFeatureSourceDefinition,
     QgsDistanceArea,
     QgsCoordinateTransformContext,
+    QgsProviderRegistry,
 )
 
 from qgis.testing import QgisTestCase, start_app
@@ -50,6 +51,12 @@ from qgis.testing import QgisTestCase, start_app
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
+
+from processing.tests.TestData import (
+    wms_layer_1_1_1,
+    wms_layer_1_3_0,
+    wms_layer_1_3_0_frankfurt,
+)
 
 testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
@@ -415,8 +422,9 @@ class TestGdalAlgorithms(QgisTestCase):
 
     def testGdalWmsXmlDescriptionFile(self):
         # Version 1.1.1
+        wms_layer = wms_layer_1_1_1("xml_desc", "EPSG:3857")
+        self.assertTrue(wms_layer.isValid())
         with tempfile.TemporaryDirectory() as outdir:
-            uri = "contextualWMSLegend=0&crs=EPSG:3857&dpiMode=7&featureCount=10&format=image/jpeg&layers=OSM-WMS&styles&tilePixelRatio=0&url=http://ows.terrestris.de/osm/service"
             version = "1.1.1"
             extent = QgsRectangle(955435.75, 6465956.5, 960260.5625, 6469745.0)
             width = 489
@@ -424,7 +432,7 @@ class TestGdalAlgorithms(QgisTestCase):
 
             out_path = os.path.join(outdir, "osm_xml_01.xml")
             res, _ = GdalUtils.gdal_wms_xml_description_file(
-                QgsRasterLayer(uri, "Test WMS", "wms"), version, extent, width, height, out_path
+                wms_layer, extent, width, height, out_path
             )
             self.assertTrue(res)
 
@@ -448,7 +456,12 @@ class TestGdalAlgorithms(QgisTestCase):
             self.assertEqual(version_element.text(), version)
 
             url_element = service.firstChildElement("ServerUrl")
-            self.assertEqual(url_element.text(), "http://ows.terrestris.de/osm/service")
+            self.assertEqual(
+                url_element.text(),
+                QgsProviderRegistry.instance()
+                .decodeUri("wms", wms_layer.publicSource())
+                .get("url"),
+            )
 
             layers_element = service.firstChildElement("Layers")
             self.assertEqual(layers_element.text(), "OSM-WMS")
@@ -478,8 +491,9 @@ class TestGdalAlgorithms(QgisTestCase):
             self.assertEqual(height_element.text(), str(height))
 
         # Version 1.3.0, PCS, no axis inverted
+        wms_layer = wms_layer_1_3_0_frankfurt("xml_desc", "EPSG:25832")
+        self.assertTrue(wms_layer.isValid())
         with tempfile.TemporaryDirectory() as outdir:
-            uri = "contextualWMSLegend=0&crs=EPSG:25832&dpiMode=7&featureCount=10&format=image/png&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url=https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service"
             version = "1.3.0"
             extent = QgsRectangle(
                 472036.22487, 5552340.41684, 472376.9869, 5552638.65929
@@ -489,7 +503,7 @@ class TestGdalAlgorithms(QgisTestCase):
 
             out_path = os.path.join(outdir, "osm_xml_02.xml")
             res, _ = GdalUtils.gdal_wms_xml_description_file(
-                QgsRasterLayer(uri, "Test WMS", "wms"), version, extent, width, height, out_path
+                wms_layer, extent, width, height, out_path
             )
             self.assertTrue(res)
 
@@ -515,7 +529,9 @@ class TestGdalAlgorithms(QgisTestCase):
             url_element = service.firstChildElement("ServerUrl")
             self.assertEqual(
                 url_element.text(),
-                "https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service",
+                QgsProviderRegistry.instance()
+                .decodeUri("wms", wms_layer.publicSource())
+                .get("url"),
             )
 
             layers_element = service.firstChildElement("Layers")
@@ -546,8 +562,9 @@ class TestGdalAlgorithms(QgisTestCase):
             self.assertEqual(height_element.text(), str(height))
 
         # Version 1.3.0, GCS, axis inverted
+        wms_layer = wms_layer_1_3_0("xml_desc", "EPSG:4326")
+        self.assertTrue(wms_layer.isValid())
         with tempfile.TemporaryDirectory() as outdir:
-            uri = "contextualWMSLegend=0&crs=EPSG:4326&dpiMode=7&featureCount=10&format=image/png&layers=de_basemapde_web_raster_farbe&styles&tilePixelRatio=0&url=https://stadtplan.goettingen.de/Goettingen/proxy.action?url%3Dhttps://stadtplan.goettingen.de/geoserver/goettingen/wms"
             version = "1.3.0"
             extent = QgsRectangle(9.877185822, 51.524547577, 9.956344604, 51.553283691)
             width = 831
@@ -555,7 +572,7 @@ class TestGdalAlgorithms(QgisTestCase):
 
             out_path = os.path.join(outdir, "osm_xml_03.xml")
             res, _ = GdalUtils.gdal_wms_xml_description_file(
-                QgsRasterLayer(uri, "Test WMS", "wms"), version, extent, width, height, out_path
+                wms_layer, extent, width, height, out_path
             )
             self.assertTrue(res)
 
@@ -581,7 +598,9 @@ class TestGdalAlgorithms(QgisTestCase):
             url_element = service.firstChildElement("ServerUrl")
             self.assertEqual(
                 url_element.text(),
-                "https://stadtplan.goettingen.de/Goettingen/proxy.action?url=https://stadtplan.goettingen.de/geoserver/goettingen/wms",
+                QgsProviderRegistry.instance()
+                .decodeUri("wms", wms_layer.publicSource())
+                .get("url"),
             )
 
             layers_element = service.firstChildElement("Layers")
