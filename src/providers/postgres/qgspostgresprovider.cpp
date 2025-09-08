@@ -5332,7 +5332,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
       QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
       if ( res.PQresultStatus() != PGRES_COMMAND_OK )
       {
-        errCause = QObject::tr( "Unable to add column type to layer_.PQgetvaluestyles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
+        errCause = QObject::tr( "Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
         conn->unref();
         return false;
       }
