@@ -5210,6 +5210,7 @@ QString QgsPostgresProvider::htmlMetadata() const
   if ( resSpatialIndexes.PQntuples() > 0 )
   {
     tableComment = resTableComment.PQgetvalue( 0, 0 );
+    tableComment = tableComment.replace( QStringLiteral( "/n" ), QStringLiteral( "</br>" ) );
   }
 
   const QVariantMap additionalInformation {
