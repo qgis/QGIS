@@ -1899,6 +1899,13 @@ The development version
       Categorical,
     };
 
+    enum class PieChartLabelType /BaseType=IntEnum/
+    {
+      NoLabels,
+      Categories,
+      Values,
+    };
+
     enum class DpiMode
     {
       All,

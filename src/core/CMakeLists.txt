@@ -92,6 +92,7 @@ set(QGIS_CORE_SRCS
 
   plot/qgsbarchartplot.cpp
   plot/qgslinechartplot.cpp
+  plot/qgspiechartplot.cpp
   plot/qgsplotregistry.cpp
   plot/qgsplot.cpp
   plot/qgsvectorlayerplotdatagatherer.cpp
@@ -1747,6 +1748,7 @@ set(QGIS_CORE_HDRS
 
   plot/qgsbarchartplot.h
   plot/qgslinechartplot.h
+  plot/qgspiechartplot.h
   plot/qgsplotregistry.h
   plot/qgsplot.h
   plot/qgsvectorlayerplotdatagatherer.cpp

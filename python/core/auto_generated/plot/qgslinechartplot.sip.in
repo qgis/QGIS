@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLineChartPlot : Qgs2DXyPlot
 {
 %Docstring(signature="appended")
@@ -72,6 +73,11 @@ Returns the line symbols list count.
     static QgsLineChartPlot *create() /Factory/;
 %Docstring
 Returns a new line chart.
+%End
+
+    static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) /TransferBack/;
+%Docstring
+Returns a new data gatherer for a given line chart ``plot``.
 %End
 
 };

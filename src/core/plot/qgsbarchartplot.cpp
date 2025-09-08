@@ -20,6 +20,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvectorlayerplotdatagatherer.h"
 
 
 QgsBarChartPlot::QgsBarChartPlot()
@@ -91,6 +92,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
               continue;
             }
             x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustement;
+            chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
             break;
 
           case Qgis::PlotAxisType::Interval:
@@ -192,4 +194,15 @@ bool QgsBarChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
 QgsBarChartPlot *QgsBarChartPlot::create()
 {
   return new QgsBarChartPlot();
+}
+
+QgsVectorLayerAbstractPlotDataGatherer *QgsBarChartPlot::createDataGatherer( QgsPlot *plot )
+{
+  QgsBarChartPlot *chart = dynamic_cast<QgsBarChartPlot *>( plot );
+  if ( !chart )
+  {
+    return nullptr;
+  }
+
+  return new QgsVectorLayerXyPlotDataGatherer( chart->xAxis().type() );
 }

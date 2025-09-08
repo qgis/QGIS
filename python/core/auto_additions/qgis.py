@@ -6100,6 +6100,21 @@ Qgis.PlotAxisType.__doc__ = """Plots axis types.
 # --
 Qgis.PlotAxisType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.PieChartLabelType.NoLabels.__doc__ = "Labels are not drawn"
+Qgis.PieChartLabelType.Categories.__doc__ = "Category labels are drawn"
+Qgis.PieChartLabelType.Values.__doc__ = "Value labels are drawn"
+Qgis.PieChartLabelType.__doc__ = """Pie chart label types.
+
+.. versionadded:: 4.0
+
+* ``NoLabels``: Labels are not drawn
+* ``Categories``: Category labels are drawn
+* ``Values``: Value labels are drawn
+
+"""
+# --
+Qgis.PieChartLabelType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.DpiMode.All.__doc__ = "All"
 Qgis.DpiMode.Off.__doc__ = "Off"
 Qgis.DpiMode.QGIS.__doc__ = "QGIS"

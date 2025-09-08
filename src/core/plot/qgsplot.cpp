@@ -14,7 +14,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsplot.h"
+#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgslinesymbol.h"
@@ -27,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgsnumericformatregistry.h"
 #include "qgsexpressioncontextutils.h"
+
 #include <functional>
 
 QgsPlot::~QgsPlot() = default;
@@ -232,9 +236,14 @@ void Qgs2DPlot::setSize( QSizeF size )
   mSize = size;
 }
 
-QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &, QgsPlotRenderContext & ) const
+QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext & ) const
 {
-  return QRectF( 0, 0, mSize.width(), mSize.height() );
+  const double leftMargin = context.convertToPainterUnits( mMargins.left(), Qgis::RenderUnit::Millimeters );
+  const double rightMargin = context.convertToPainterUnits( mMargins.right(), Qgis::RenderUnit::Millimeters );
+  const double topMargin = context.convertToPainterUnits( mMargins.top(), Qgis::RenderUnit::Millimeters );
+  const double bottomMargin = context.convertToPainterUnits( mMargins.bottom(), Qgis::RenderUnit::Millimeters );
+
+  return QRectF( leftMargin, topMargin, mSize.width() - rightMargin - leftMargin, mSize.height() - bottomMargin - topMargin );
 }
 
 const QgsMargins &Qgs2DPlot::margins() const
@@ -963,6 +972,22 @@ QgsFillSymbol *QgsPlotDefaultSettings::barChartFillSymbol()
 {
   auto chartFill = std::make_unique< QgsSimpleFillSymbolLayer>( QColor( 89, 150, 50 ) );
   return new QgsFillSymbol( QgsSymbolLayerList( { chartFill.release() } ) );
+}
+
+QgsFillSymbol *QgsPlotDefaultSettings::pieChartFillSymbol()
+{
+  auto chartFill = std::make_unique< QgsSimpleFillSymbolLayer>( QColor( 150, 150, 150 ) );
+  return new QgsFillSymbol( QgsSymbolLayerList( { chartFill.release() } ) );
+}
+
+QgsColorRamp *QgsPlotDefaultSettings::pieChartColorRamp()
+{
+  return new QgsPresetSchemeColorRamp( { QColor( 89, 150, 50 ), QColor( 228, 26, 28 ), QColor( 55, 126, 184 ), QColor( 152, 78, 163 ), QColor( 255, 127, 0 ), QColor( 166, 86, 40 ), QColor( 247, 129, 191 ), QColor( 153, 153, 153 ) } );
+}
+
+QgsNumericFormat *QgsPlotDefaultSettings::pieChartNumericFormat()
+{
+  return new QgsBasicNumericFormat();
 }
 
 //

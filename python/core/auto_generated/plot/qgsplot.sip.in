@@ -26,6 +26,7 @@ Base class for plot/chart/graphs.
 #include "qgsplot.h"
 #include "qgsbarchartplot.h"
 #include "qgslinechartplot.h"
+#include "qgspiechartplot.h"
 %End
 %ConvertToSubClassCode
     if ( QgsPlot *item = dynamic_cast< QgsPlot * >( sipCpp ) )
@@ -37,6 +38,10 @@ Base class for plot/chart/graphs.
       else if ( dynamic_cast<QgsLineChartPlot *>( item ) != NULL )
       {
         sipType = sipType_QgsLineChartPlot;
+      }
+      else if ( dynamic_cast<QgsPieChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsPieChartPlot;
       }
       else if ( dynamic_cast<Qgs2DXyPlot *>( item ) != NULL )
       {
@@ -788,6 +793,27 @@ Returns the default line symbol to use for line charts.
     static QgsFillSymbol *barChartFillSymbol() /Factory/;
 %Docstring
 Returns the default fill symbol to use for bar charts.
+
+.. versionadded:: 4.0
+%End
+
+    static QgsFillSymbol *pieChartFillSymbol() /Factory/;
+%Docstring
+Returns the default fill symbol to use for pie charts.
+
+.. versionadded:: 4.0
+%End
+
+    static QgsColorRamp *pieChartColorRamp() /Factory/;
+%Docstring
+Returns the default color ramp to use for pie charts.
+
+.. versionadded:: 4.0
+%End
+
+    static QgsNumericFormat *pieChartNumericFormat() /Factory/;
+%Docstring
+Returns the default color ramp to use for pie charts.
 
 .. versionadded:: 4.0
 %End

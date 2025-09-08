@@ -3281,6 +3281,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( PlotAxisType )
 
     /**
+     * Pie chart label types.
+     *
+     * \since QGIS 4.0
+     */
+    enum class PieChartLabelType : int
+    {
+      NoLabels,       //!< Labels are not drawn
+      Categories, //!< Category labels are drawn
+      Values,    //!< Value labels are drawn
+    };
+    Q_ENUM( PieChartLabelType )
+
+    /**
      * DpiMode enum
      * \since QGIS 3.26
      */
