@@ -20,6 +20,7 @@
 #include <QDialogButtonBox>
 #include <QPlainTextEdit>
 
+#include "qgis_gui.h"
 /**
  * \ingroup gui
  * \brief Dialog which displays comment for a specific database item.
