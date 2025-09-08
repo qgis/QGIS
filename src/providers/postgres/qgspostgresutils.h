@@ -131,7 +131,7 @@ class QgsPostgresUtils
     /*
     * Turns variant map into HTML code.
     *
-    * \since QGIS 3.46
+    * \since QGIS 4.0
     */
     static QString variantMapToHtml( const QVariantMap &variantMap, const QString &title = QString() );
 };
