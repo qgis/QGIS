@@ -1386,7 +1386,7 @@ class TestQgsPlot(QgisTestCase):
         font = QgsFontUtils.getStandardTestFont("Bold", 16)
         text_format = QgsTextFormat.fromQFont(font)
         plot.setTextFormat(text_format)
-        plot.setLabelType(QgsPieChartPlot.LabelType.CategoryLabels)
+        plot.setLabelType(Qgis.PieChartLabelType.Categories)
 
         # set symbol for first series (also used in second series)
         series_symbol = QgsFillSymbol.createSimple(
@@ -1451,7 +1451,7 @@ class TestQgsPlot(QgisTestCase):
         font = QgsFontUtils.getStandardTestFont("Bold", 16)
         text_format = QgsTextFormat.fromQFont(font)
         plot.setTextFormat(text_format)
-        plot.setLabelType(QgsPieChartPlot.LabelType.ValueLabels)
+        plot.setLabelType(Qgis.PieChartLabelType.Values)
 
         # set symbol for first series (also used in second series)
         series_symbol = QgsFillSymbol.createSimple(

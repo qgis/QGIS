@@ -851,9 +851,9 @@ QgsPieChartPlotWidget::QgsPieChartPlotWidget( QWidget *parent )
   mSymbolsList->horizontalHeader()->hide();
   mSymbolsList->verticalHeader()->hide();
 
-  mLabelCombo->addItem( tr( "None" ), static_cast<int>( QgsPieChartPlot::LabelType::NoLabels ) );
-  mLabelCombo->addItem( tr( "Category Labels" ), static_cast<int>( QgsPieChartPlot::LabelType::CategoryLabels ) );
-  mLabelCombo->addItem( tr( "Value Labels" ), static_cast<int>( QgsPieChartPlot::LabelType::ValueLabels ) );
+  mLabelCombo->addItem( tr( "None" ), QVariant::fromValue( Qgis::PieChartLabelType::NoLabels ) );
+  mLabelCombo->addItem( tr( "Category Labels" ), QVariant::fromValue( Qgis::PieChartLabelType::Categories ) );
+  mLabelCombo->addItem( tr( "Value Labels" ), QVariant::fromValue( Qgis::PieChartLabelType::Values ) );
   connect( mLabelCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( mBlockChanges )
       return;
@@ -1006,7 +1006,8 @@ void QgsPieChartPlotWidget::setPlot( QgsPlot *plot )
 
   mNumericFormat.reset( chartPlot->numericFormat()->clone() );
   mLabelFontButton->setTextFormat( chartPlot->textFormat() );
-  mLabelCombo->setCurrentIndex( mLabelCombo->findData( static_cast<int>( chartPlot->labelType() ) ) );
+
+  mLabelCombo->setCurrentIndex( mLabelCombo->findData( QVariant::fromValue( chartPlot->labelType() ) ) );
 
   mBlockChanges--;
 }
@@ -1038,7 +1039,7 @@ QgsPlot *QgsPieChartPlotWidget::createPlot()
 
   chartPlot->setNumericFormat( mNumericFormat.get()->clone() );
   chartPlot->setTextFormat( mLabelFontButton->textFormat() );
-  chartPlot->setLabelType( static_cast<QgsPieChartPlot::LabelType>( mLabelCombo->currentData().toInt() ) );
+  chartPlot->setLabelType( mLabelCombo->currentData().value<Qgis::PieChartLabelType>() );
 
   QgsMargins margins;
   margins.setLeft( mSpinLeftMargin->value() );

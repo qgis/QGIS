@@ -28,13 +28,6 @@ A simple pie chart class.
 %End
   public:
 
-    enum class LabelType /BaseType=IntEnum/
-    {
-      NoLabels,
-      CategoryLabels,
-      ValueLabels,
-    };
-
     QgsPieChartPlot();
     ~QgsPieChartPlot();
 
@@ -108,12 +101,12 @@ Ownership of ``format`` is transferred to the plot.
 .. seealso:: :py:func:`numericFormat`
 %End
 
-    QgsPieChartPlot::LabelType labelType() const;
+    Qgis::PieChartLabelType labelType() const;
 %Docstring
 Returns the pie chart label type.
 %End
 
-    void setLabelType( QgsPieChartPlot::LabelType type );
+    void setLabelType( Qgis::PieChartLabelType type );
 %Docstring
 Sets the pie chart label type.
 %End

@@ -17,6 +17,7 @@
 
 #include "qgspiechartplot.h"
 #include "qgsapplication.h"
+#include "qgscolorrampimpl.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsnumericformatregistry.h"
 #include "qgssymbol.h"
@@ -50,7 +51,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   double maxLabelHeight = 0;
   switch ( mLabelType )
   {
-    case QgsPieChartPlot::LabelType::CategoryLabels:
+    case Qgis::PieChartLabelType::Categories:
     {
       for ( const QString &category : categories )
       {
@@ -59,7 +60,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
       break;
     }
 
-    case QgsPieChartPlot::LabelType::ValueLabels:
+    case Qgis::PieChartLabelType::Values:
     {
       QgsNumericFormatContext numericContext;
       QString text;
@@ -86,7 +87,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
       break;
     }
 
-    case QgsPieChartPlot::LabelType::NoLabels:
+    case Qgis::PieChartLabelType::NoLabels:
       break;
   }
 
@@ -108,6 +109,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     pieArea = plotArea.width() * pieStackCount > plotArea.height() ? plotArea.height() / pieStackCount : plotArea.width();
   }
 
+  QgsNumericFormatContext numericContext;
   QMap<QString, QColor> categoriesColor;
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
@@ -122,6 +124,12 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     const double pieWidth = pieArea - QgsSymbolLayerUtils::estimateMaxSymbolBleed( symbol, context ) - maxLabelHeight * 3;
 
     QgsColorRamp *ramp = colorRampAt( seriesIndex % mColorRamps.size() );
+    if ( QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp ) )
+    {
+      //ramp is a random colors ramp, so inform it of the total number of required colors
+      //this allows the ramp to pregenerate a set of visually distinctive colors
+      randomRamp->setTotalColorCount( categories.size() );
+    }
 
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {
@@ -173,9 +181,8 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
         ySum += pair.second;
       }
 
-      if ( mLabelType != QgsPieChartPlot::LabelType::NoLabels )
+      if ( mLabelType != Qgis::PieChartLabelType::NoLabels )
       {
-        QgsNumericFormatContext numericContext;
         QString text;
         ySum = 0;
         for ( const std::pair<double, double> &pair : data )
@@ -196,6 +203,7 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
 
           const double labelX = ( ( pieWidth + maxLabelHeight ) / 2 ) * std::cos( degreesMid * M_PI / 180 ) + center.x();
           const double labelY = ( ( pieWidth + maxLabelHeight ) / 2 ) * std::sin( degreesMid * M_PI / 180 ) + center.y();
+          const double labelYAdjustment = degreesMid > 0 && degreesMid <= 180 ? maxLabelHeight / 2 : 0;
 
           Qgis::TextHorizontalAlignment horizontalAlignment = Qgis::TextHorizontalAlignment::Left;
           if ( degreesMid < -85 || ( degreesMid > 85 && degreesMid <= 95 ) || degreesMid > 265 )
@@ -207,22 +215,26 @@ void QgsPieChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
             horizontalAlignment = Qgis::TextHorizontalAlignment::Right;
           }
 
-          if ( mLabelType == QgsPieChartPlot::LabelType::CategoryLabels )
+          switch ( mLabelType )
           {
-            text = categories[pair.first];
+            case Qgis::PieChartLabelType::Categories:
+              text = categories[pair.first];
+              break;
+
+            case Qgis::PieChartLabelType::Values:
+              if ( mNumericFormat )
+              {
+                text = mNumericFormat->formatDouble( pair.second, numericContext );
+              }
+              else
+              {
+                text = QString::number( pair.second );
+              }
+              break;
+
+            case Qgis::PieChartLabelType::NoLabels:
+              break;
           }
-          else
-          {
-            if ( mNumericFormat )
-            {
-              text = mNumericFormat->formatDouble( pair.second, numericContext );
-            }
-            else
-            {
-              text = QString::number( pair.second );
-            }
-          }
-          const double labelYAdjustment = degreesMid > 0 && degreesMid <= 180 ? maxLabelHeight / 2 : 0;
 
           chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
           chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), pair.second, true ) );
@@ -332,7 +344,7 @@ bool QgsPieChartPlot::writeXml( QDomElement &element, QDomDocument &document, co
     element.appendChild( numericFormatElement );
   }
 
-  element.setAttribute( QStringLiteral( "pieChartLabelType" ), static_cast<int>( mLabelType ) );
+  element.setAttribute( QStringLiteral( "pieChartLabelType" ), qgsEnumValueToKey( mLabelType ) );
 
   return true;
 }
@@ -392,7 +404,7 @@ bool QgsPieChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
     mNumericFormat.reset();
   }
 
-  mLabelType = static_cast<QgsPieChartPlot::LabelType>( element.attribute( QStringLiteral( "pieChartLabelType" ) ).toInt() );
+  mLabelType = qgsEnumKeyToValue( element.attribute( QStringLiteral( "pieChartLabelType" ) ), Qgis::PieChartLabelType::NoLabels );
 
   return true;
 }
@@ -423,7 +435,7 @@ void QgsPieChartPlot::setNumericFormat( QgsNumericFormat *format )
   mNumericFormat.reset( format );
 }
 
-void QgsPieChartPlot::setLabelType( QgsPieChartPlot::LabelType type )
+void QgsPieChartPlot::setLabelType( Qgis::PieChartLabelType type )
 {
   mLabelType = type;
 }

@@ -40,14 +40,6 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
 {
   public:
 
-    //! The label types available to pie charts.
-    enum class LabelType : int
-    {
-      NoLabels,       //!< Labels are not drawn
-      CategoryLabels, //!< Category labels are drawn
-      ValueLabels,    //!< Value labels are drawn
-    };
-
     QgsPieChartPlot();
     ~QgsPieChartPlot() = default;
 
@@ -121,12 +113,12 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
     /**
      * Returns the pie chart label type.
      */
-    QgsPieChartPlot::LabelType labelType() const { return mLabelType; }
+    Qgis::PieChartLabelType labelType() const { return mLabelType; }
 
     /**
      * Sets the pie chart label type.
      */
-    void setLabelType( QgsPieChartPlot::LabelType type );
+    void setLabelType( Qgis::PieChartLabelType type );
 
     //! Returns a new pie chart.
     static QgsPieChartPlot *create() SIP_FACTORY;
@@ -142,7 +134,7 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
 
     QgsTextFormat mLabelTextFormat;
-    QgsPieChartPlot::LabelType mLabelType = QgsPieChartPlot::LabelType::NoLabels;
+    Qgis::PieChartLabelType mLabelType = Qgis::PieChartLabelType::NoLabels;
 };
 
 #endif // QGSLINECHARTPLOT_H

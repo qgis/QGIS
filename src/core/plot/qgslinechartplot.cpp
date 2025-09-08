@@ -161,6 +161,7 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
                 {
                   if ( pair.first == pointIndex )
                   {
+                    found = true;
                     value = pair.second;
                     chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
                     break;
