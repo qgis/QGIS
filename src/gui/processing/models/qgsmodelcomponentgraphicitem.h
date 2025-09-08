@@ -138,10 +138,20 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void setItemRect( QRectF rect );
 
+    /**
+     * Returns the data type of the linked parameter at the specified \a index on the specified \a edge.
+     * 
+     * \since QGIS 4.0
+     */
     virtual QString linkedParameterDataType( Qt::Edge edge, int index ) const;
 
 #ifndef SIP_RUN
 
+    /**
+     * Returns the color of the link at the specified \a index on the specified \a edge.
+     * 
+     * \since QGIS 4.0
+     */
     virtual QColor linkColor( Qt::Edge edge, int index ) const;
 
     /**
@@ -440,7 +450,7 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
 
-    QString linkedParameterDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index ) const override;
+    QString linkedParameterDataType( Qt::Edge, int index ) const override;
 
     QColor linkColor( Qt::Edge edge, int index ) const override;
 
