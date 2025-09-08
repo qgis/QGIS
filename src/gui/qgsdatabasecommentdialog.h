@@ -35,9 +35,6 @@ class GUI_EXPORT QgsDatabaseCommentDialog : public QDialog
   public:
     /**
      * Constructor for QgsDatabaseCommentDialog.
-     * \param title Window title.
-     * \param comment Initial comment text.
-     * \param parent Parent widget.
      */
     explicit QgsDatabaseCommentDialog( QString title, QString comment = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
 

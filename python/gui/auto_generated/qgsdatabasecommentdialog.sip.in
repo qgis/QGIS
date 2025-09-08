@@ -27,10 +27,6 @@ Dialog which displays comment for a specific database item.
     explicit QgsDatabaseCommentDialog( QString title, QString comment = QString(), QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDatabaseCommentDialog.
-
-:param title: Window title.
-:param comment: Initial comment text.
-:param parent: Parent widget.
 %End
 
     QString comment() const;
