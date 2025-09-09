@@ -36,7 +36,7 @@ class GUI_EXPORT QgsDatabaseCommentDialog : public QDialog
     /**
      * Constructor for QgsDatabaseCommentDialog.
      */
-    explicit QgsDatabaseCommentDialog( QString title, QString comment = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsDatabaseCommentDialog( const QString &title, const QString &comment = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the comment for the current item.

@@ -240,11 +240,11 @@ class GUI_EXPORT QgsDataItemGuiProvider
      *
      * \param mainMenu The menu in which sub menu is search for or created.
      * \param actionToAdd The action to add.
-     * \param subMenuName Name of the sub menu that is searched for or created.
+     * \param subMenuName Translated name of the sub menu that is searched for or created.
      *
      * \since QGIS 4.0
      */
-    void addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, QString subMenuName );
+    void addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, const QString &subMenuName );
 };
 
 #endif // QGSDATAITEMGUIPROVIDER_H
