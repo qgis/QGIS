@@ -70,7 +70,7 @@ if(QGISPOSTFIX)
 endif()
 set_property(TARGET qgis_native PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# require c++17
+# require c++20
 target_compile_features(qgis_native PRIVATE cxx_std_20)
 
 target_include_directories(qgis_native PUBLIC
