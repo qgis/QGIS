@@ -16,6 +16,7 @@
 #include "qgsplotwidget.h"
 #include "moc_qgsplotwidget.cpp"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgscolorrampbutton.h"
 #include "qgsfillsymbol.h"
 #include "qgslinechartplot.h"
@@ -33,7 +34,29 @@ void QgsPlotWidget::registerExpressionContextGenerator( QgsExpressionContextGene
 
 QgsExpressionContext QgsPlotWidget::createExpressionContext() const
 {
-  return mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : QgsExpressionContext();
+  QgsExpressionContext context;
+  if ( mExpressionContextGenerator )
+  {
+    context = mExpressionContextGenerator->createExpressionContext();
+  }
+  else
+  {
+    context.appendScope( QgsExpressionContextUtils::globalScope() );
+  }
+
+  std::unique_ptr<QgsExpressionContextScope> plotScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "plot" ) );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QString(), true ) );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), 0.0, true ) );
+  context.appendScope( plotScope.release() );
+
+  std::unique_ptr<QgsExpressionContextScope> chartScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "chart" ) );
+  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), QString(), true ) );
+  chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), 0.0, true ) );
+  context.appendScope( chartScope.release() );
+
+  context.setHighlightedVariables( { QStringLiteral( "plot_axis" ), QStringLiteral( "plot_axis_value" ), QStringLiteral( "chart_category" ), QStringLiteral( "chart_value" ) } );
+
+  return context;
 }
 
 void QgsPlotWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsPlot::DataDefinedProperty key )
