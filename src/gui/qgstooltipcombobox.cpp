@@ -34,13 +34,18 @@ bool QgsToolTipComboBox::event( QEvent *event )
   if ( event->type() == QEvent::ToolTip )
   {
     const QString description = currentData( Qt::ToolTipRole ).toString();
-    if ( !description.isEmpty() )
+    QString toolTipText = this->toolTip();
+
+    if ( !toolTipText.isEmpty() || !description.isEmpty() )
     {
       QHelpEvent *helpEvent = static_cast<QHelpEvent *>( event );
       QPoint pos = mapToGlobal( helpEvent->pos() );
-      QToolTip::showText( pos, description );
+      if ( !toolTipText.isEmpty() )
+        QToolTip::showText( pos, toolTipText );
+      else
+        QToolTip::showText( pos, description );
+      return true;
     }
-    return true;
   }
   return QComboBox::event( event );
 }
