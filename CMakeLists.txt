@@ -598,6 +598,9 @@ if(WITH_CORE)
 
   set (WITH_PDF4QT FALSE CACHE BOOL "Determines whether the embedded PDF4Qt library should be build for PDF and HTML to QPainter conversion")
   if (WITH_PDF4QT)
+    if(NOT BUILD_WITH_QT6)
+      message(FATAL_ERROR "PDF4Qt requires a Qt 6 build")
+    endif()
     set(HAVE_PDF4QT TRUE)  # used in qgisconfig.h
     message(STATUS "PDF4Qt enabled")
   else()
