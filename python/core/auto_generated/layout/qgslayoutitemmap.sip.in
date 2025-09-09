@@ -77,22 +77,22 @@ geometry.
 .. seealso:: :py:func:`forceLabelsInsideFeature`
 %End
 
-    bool clipFrame() const;
+    bool clipItemShape() const;
 %Docstring
-Returns ``True`` if the map item frame will be clipped to the atlas
+Returns ``True`` if the map item shape will be clipped to the atlas
 feature geometry.
 
-.. seealso:: :py:func:`setClipFrame`
+.. seealso:: :py:func:`setClipItemShape`
 
 .. versionadded:: 4.0
 %End
 
-    void setClipFrame( bool clipFrame );
+    void setClipItemShape( bool clipItemShape );
 %Docstring
-Sets whether the map item frame will be clipped to the atlas feature
+Sets whether the map item shape will be clipped to the atlas feature
 geometry.
 
-.. seealso:: :py:func:`clipFrame`
+.. seealso:: :py:func:`clipItemShape`
 
 .. versionadded:: 4.0
 %End

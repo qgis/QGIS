@@ -92,20 +92,20 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
     void setForceLabelsInsideFeature( bool forceInside );
 
     /**
-     * Returns TRUE if the map item frame will be clipped to the atlas feature geometry.
+     * Returns TRUE if the map item shape will be clipped to the atlas feature geometry.
      *
-     * \see setClipFrame()
+     * \see setClipItemShape()
      * \since QGIS 4.0
      */
-    bool clipFrame() const;
+    bool clipItemShape() const;
 
     /**
-     * Sets whether the map item frame will be clipped to the atlas feature geometry.
+     * Sets whether the map item shape will be clipped to the atlas feature geometry.
      *
-     * \see clipFrame()
+     * \see clipItemShape()
      * \since QGIS 4.0
      */
-    void setClipFrame( bool clipFrame );
+    void setClipItemShape( bool clipItemShape );
 
     /**
      * Returns TRUE if clipping should be restricted to a subset of layers.
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
     QList< QgsMapLayerRef > mLayersToClip;
     QgsMapClippingRegion::FeatureClippingType mFeatureClippingType = QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly;
     bool mForceLabelsInsideFeature = false;
-    bool mClipFrame = false;
+    bool mClipItemShape = false;
 };
 
 

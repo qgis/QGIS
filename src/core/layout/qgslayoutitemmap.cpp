@@ -318,18 +318,16 @@ QPolygonF QgsLayoutItemMap::calculateVisibleExtentPolygon( bool includeClipping 
 
   if ( includeClipping )
   {
-    bool clippedByAtlas = false;
-    if ( mAtlasClippingSettings->enabled() && mAtlasClippingSettings->clipFrame() )
+    if ( mAtlasClippingSettings->enabled() && mAtlasClippingSettings->clipItemShape() )
     {
       QgsGeometry geom( mLayout->reportContext().currentGeometry( crs() ) );
       if ( !geom.isEmpty() && geom.type() == Qgis::GeometryType::Polygon )
       {
-        poly = poly.intersected( geom.asQPolygonF() ); \
-        clippedByAtlas = true;
+        poly = poly.intersected( geom.asQPolygonF() );
       }
     }
 
-    if ( !clippedByAtlas && mItemClippingSettings->isActive() )
+    if ( mItemClippingSettings->isActive() )
     {
       const QgsGeometry geom = mItemClippingSettings->clippedMapExtent();
       if ( !geom.isEmpty() )
@@ -1106,7 +1104,7 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
 
 bool QgsLayoutItemMap::hasCustomFramePath() const
 {
-  if ( mAtlasClippingSettings->enabled() && mAtlasClippingSettings->clipFrame() )
+  if ( mAtlasClippingSettings->enabled() && mAtlasClippingSettings->clipItemShape() )
   {
     QgsGeometry g( mLayout->reportContext().currentGeometry( crs() ) );
     if ( !g.isEmpty() && g.type() == Qgis::GeometryType::Polygon )
@@ -1120,7 +1118,8 @@ bool QgsLayoutItemMap::hasCustomFramePath() const
 
 QPainterPath QgsLayoutItemMap::framePath() const
 {
-  if ( mAtlasClippingSettings->enabled() && mAtlasClippingSettings->clipFrame() )
+  QPainterPath customFramePath;
+  if ( mAtlasClippingSettings->enabled() && mAtlasClippingSettings->clipItemShape() )
   {
     QgsGeometry g( mLayout->reportContext().currentGeometry( crs() ) );
     if ( !g.isEmpty() && g.type() == Qgis::GeometryType::Polygon )
@@ -1138,7 +1137,9 @@ QPainterPath QgsLayoutItemMap::framePath() const
       g.transform( transform );
 
       if ( !g.isNull() )
-        return g.constGet()->asQPainterPath();
+      {
+        customFramePath = g.constGet()->asQPainterPath();
+      }
     }
   }
 
@@ -1146,9 +1147,20 @@ QPainterPath QgsLayoutItemMap::framePath() const
   {
     const QgsGeometry g = mItemClippingSettings->clipPathInMapItemCoordinates();
     if ( !g.isNull() )
-      return g.constGet()->asQPainterPath();
+    {
+      if ( !customFramePath.isEmpty() )
+      {
+        customFramePath = customFramePath.intersected( g.constGet()->asQPainterPath() );
+        customFramePath.closeSubpath();
+      }
+      else
+      {
+        customFramePath = g.constGet()->asQPainterPath();
+      }
+    }
   }
-  return QgsLayoutItem::framePath();
+
+  return !customFramePath.isEmpty() ? customFramePath : QgsLayoutItem::framePath();
 }
 
 void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *style, QWidget * )
@@ -3234,17 +3246,17 @@ void QgsLayoutItemMapAtlasClippingSettings::setForceLabelsInsideFeature( bool fo
   emit changed();
 }
 
-bool QgsLayoutItemMapAtlasClippingSettings::clipFrame() const
+bool QgsLayoutItemMapAtlasClippingSettings::clipItemShape() const
 {
-  return mClipFrame;
+  return mClipItemShape;
 }
 
-void QgsLayoutItemMapAtlasClippingSettings::setClipFrame( bool clipFrame )
+void QgsLayoutItemMapAtlasClippingSettings::setClipItemShape( bool clipItemShape )
 {
-  if ( clipFrame == mClipFrame )
+  if ( clipItemShape == mClipItemShape )
     return;
 
-  mClipFrame = clipFrame;
+  mClipItemShape = clipItemShape;
   emit changed();
 }
 
@@ -3278,7 +3290,10 @@ bool QgsLayoutItemMapAtlasClippingSettings::writeXml( QDomElement &element, QDom
   QDomElement settingsElem = document.createElement( QStringLiteral( "atlasClippingSettings" ) );
   settingsElem.setAttribute( QStringLiteral( "enabled" ), mClipToAtlasFeature ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   settingsElem.setAttribute( QStringLiteral( "forceLabelsInside" ), mForceLabelsInsideFeature ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  settingsElem.setAttribute( QStringLiteral( "clipFrame" ), mClipFrame ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  if ( mClipItemShape )
+  {
+    settingsElem.setAttribute( QStringLiteral( "clipItemShape" ), QStringLiteral( "1" ) );
+  }
   settingsElem.setAttribute( QStringLiteral( "clippingType" ), QString::number( static_cast<int>( mFeatureClippingType ) ) );
   settingsElem.setAttribute( QStringLiteral( "restrictLayers" ), mRestrictToLayers ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
@@ -3310,7 +3325,7 @@ bool QgsLayoutItemMapAtlasClippingSettings::readXml( const QDomElement &element,
 
   mClipToAtlasFeature = settingsElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
   mForceLabelsInsideFeature = settingsElem.attribute( QStringLiteral( "forceLabelsInside" ), QStringLiteral( "0" ) ).toInt();
-  mClipFrame = settingsElem.attribute( QStringLiteral( "clipFrame" ), QStringLiteral( "0" ) ).toInt();
+  mClipItemShape = settingsElem.attribute( QStringLiteral( "clipItemShape" ), QStringLiteral( "0" ) ).toInt();
   mFeatureClippingType = static_cast< QgsMapClippingRegion::FeatureClippingType >( settingsElem.attribute( QStringLiteral( "clippingType" ), QStringLiteral( "0" ) ).toInt() );
   mRestrictToLayers = settingsElem.attribute( QStringLiteral( "restrictLayers" ), QStringLiteral( "0" ) ).toInt();
 

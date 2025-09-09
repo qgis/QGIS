@@ -707,7 +707,7 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
         map.setAtlasMargin(0.1)
         map.atlasClippingSettings().setEnabled(True)
-        map.atlasClippingSettings().setClipFrame(True)
+        map.atlasClippingSettings().setClipItemShape(True)
 
         layout.addLayoutItem(map)
 

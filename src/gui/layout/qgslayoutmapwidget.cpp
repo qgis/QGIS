@@ -2165,7 +2165,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
     if ( !mBlockUpdates )
     {
       mMapItem->beginCommand( tr( "Change Atlas Clipping Label Behavior" ) );
-      mMapItem->atlasClippingSettings()->setClipFrame( active );
+      mMapItem->atlasClippingSettings()->setClipItemShape( active );
       mMapItem->endCommand();
     }
   } );
@@ -2301,7 +2301,7 @@ void QgsLayoutMapClippingWidget::updateGuiElements()
   mClipToAtlasCheckBox->setChecked( mMapItem->atlasClippingSettings()->enabled() );
   mAtlasClippingTypeComboBox->setCurrentIndex( mAtlasClippingTypeComboBox->findData( static_cast<int>( mMapItem->atlasClippingSettings()->featureClippingType() ) ) );
   mForceLabelsInsideCheckBox->setChecked( mMapItem->atlasClippingSettings()->forceLabelsInsideFeature() );
-  mClipFrameCheckBox->setChecked( mMapItem->atlasClippingSettings()->clipFrame() );
+  mClipFrameCheckBox->setChecked( mMapItem->atlasClippingSettings()->clipItemShape() );
 
   mRadioClipAllLayers->setChecked( !mMapItem->atlasClippingSettings()->restrictToLayers() );
   mRadioClipSelectedLayers->setChecked( mMapItem->atlasClippingSettings()->restrictToLayers() );
