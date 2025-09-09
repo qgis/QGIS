@@ -311,10 +311,12 @@ QgsBarChartPlotWidget::QgsBarChartPlotWidget( QWidget *parent )
 
   mXAxisMajorLinesSymbolButton->registerExpressionContextGenerator( this );
   mXAxisMinorLinesSymbolButton->registerExpressionContextGenerator( this );
+  mXAxisLabelFontButton->registerExpressionContextGenerator( this );
+  mYAxisMajorLinesSymbolButton->registerExpressionContextGenerator( this );
+  mYAxisMinorLinesSymbolButton->registerExpressionContextGenerator( this );
+  mYAxisLabelFontButton->registerExpressionContextGenerator( this );
   mChartBackgroundSymbolButton->registerExpressionContextGenerator( this );
   mChartBorderSymbolButton->registerExpressionContextGenerator( this );
-  mXAxisLabelFontButton->registerExpressionContextGenerator( this );
-  mYAxisLabelFontButton->registerExpressionContextGenerator( this );
 
   initializeDataDefinedButton( mDDBtnMinXAxis, QgsPlot::DataDefinedProperty::XAxisMinimum );
   initializeDataDefinedButton( mDDBtnMaxXAxis, QgsPlot::DataDefinedProperty::XAxisMaximum );
@@ -748,10 +750,12 @@ QgsLineChartPlotWidget::QgsLineChartPlotWidget( QWidget *parent )
 
   mXAxisMajorLinesSymbolButton->registerExpressionContextGenerator( this );
   mXAxisMinorLinesSymbolButton->registerExpressionContextGenerator( this );
+  mXAxisLabelFontButton->registerExpressionContextGenerator( this );
+  mYAxisMajorLinesSymbolButton->registerExpressionContextGenerator( this );
+  mYAxisMinorLinesSymbolButton->registerExpressionContextGenerator( this );
+  mYAxisLabelFontButton->registerExpressionContextGenerator( this );
   mChartBackgroundSymbolButton->registerExpressionContextGenerator( this );
   mChartBorderSymbolButton->registerExpressionContextGenerator( this );
-  mXAxisLabelFontButton->registerExpressionContextGenerator( this );
-  mYAxisLabelFontButton->registerExpressionContextGenerator( this );
 
   initializeDataDefinedButton( mDDBtnMinXAxis, QgsPlot::DataDefinedProperty::XAxisMinimum );
   initializeDataDefinedButton( mDDBtnMaxXAxis, QgsPlot::DataDefinedProperty::XAxisMaximum );
