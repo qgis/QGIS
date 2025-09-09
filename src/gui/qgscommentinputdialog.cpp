@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsdatabasecommentdialog.cpp
+    qgscommentinputdialog.cpp
     ---------------------
     begin                : September 2025
     copyright            : (C) 2025 by Jan Caha
@@ -18,10 +18,10 @@
 #include <QGridLayout>
 #include <QLabel>
 
-#include "qgsdatabasecommentdialog.h"
-#include "moc_qgsdatabasecommentdialog.cpp"
+#include "qgscommentinputdialog.h"
+#include "moc_qgscommentinputdialog.cpp"
 
-QgsDatabaseCommentDialog::QgsDatabaseCommentDialog( QString title, QString comment, QWidget *parent )
+QgsCommentInputDialog::QgsCommentInputDialog( const QString &title, const QString &comment, QWidget *parent )
   : QDialog( parent )
 {
   setWindowTitle( title );
@@ -36,13 +36,13 @@ QgsDatabaseCommentDialog::QgsDatabaseCommentDialog( QString title, QString comme
   mButtonBox = new QDialogButtonBox( this );
   mButtonBox->setOrientation( Qt::Horizontal );
   mButtonBox->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
-  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsDatabaseCommentDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsDatabaseCommentDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsCommentInputDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsCommentInputDialog::accept );
 
   layout->addWidget( mButtonBox, 1, 0, 2, 0 );
 }
 
-QString QgsDatabaseCommentDialog::comment() const
+QString QgsCommentInputDialog::comment() const
 {
   return mCommentEdit->toPlainText();
 }

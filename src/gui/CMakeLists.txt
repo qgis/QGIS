@@ -588,12 +588,12 @@ set(QGIS_GUI_SRCS
   qgscolorswatchgrid.cpp
   qgscolorwidgets.cpp
   qgscompoundcolorwidget.cpp
+  qgscommentinputdialog.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
   qgscustomprojectopenhandler.cpp
   qgscurveeditorwidget.cpp
-  qgsdatabasecommentdialog.cpp
   qgsdatabaseschemacombobox.cpp
   qgsdatabaseschemaselectiondialog.cpp
   qgsdatabasetablecombobox.cpp
@@ -858,12 +858,12 @@ set(QGIS_GUI_HDRS
   qgscolorswatchgrid.h
   qgscolorwidgets.h
   qgscompoundcolorwidget.h
+  qgscommentinputdialog.h
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
   qgscustomprojectopenhandler.h
-  qgsdatabasecommentdialog.h
   qgsdatabaseschemacombobox.h
   qgsdatabasetablecombobox.h
   qgsdataitemguiprovider.h

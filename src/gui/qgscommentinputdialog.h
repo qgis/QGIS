@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsdatabasecommentdialog.h
+    qgscommentinputdialog.h
     ---------------------
     begin                : September 2025
     copyright            : (C) 2025 by Jan Caha
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSDATABASECOMMENTDIALOG_H
-#define QGSDATABASECOMMENTDIALOG_H
+#ifndef QGSCOMMENTINPUTDIALOG_H
+#define QGSCOMMENTINPUTDIALOG_H
 
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -23,20 +23,20 @@
 #include "qgis_gui.h"
 /**
  * \ingroup gui
- * \brief Dialog which displays comment for a specific database item.
+ * \brief Dialog which displays comment for a specific item.
  *
  * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation.
  *
  * \since QGIS 4.0
  */
-class GUI_EXPORT QgsDatabaseCommentDialog : public QDialog
+class GUI_EXPORT QgsCommentInputDialog : public QDialog
 {
     Q_OBJECT
   public:
     /**
-     * Constructor for QgsDatabaseCommentDialog.
+     * Constructor for QgsCommentInputDialog.
      */
-    explicit QgsDatabaseCommentDialog( const QString &title, const QString &comment = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsCommentInputDialog( const QString &title, const QString &comment = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the comment for the current item.
@@ -47,4 +47,4 @@ class GUI_EXPORT QgsDatabaseCommentDialog : public QDialog
     QDialogButtonBox *mButtonBox = nullptr;
     QPlainTextEdit *mCommentEdit = nullptr;
 };
-#endif // QGSDATABASESCHEMACOMMENTDIALOG_H
+#endif // QGSCOMMENTINPUTDIALOG_H

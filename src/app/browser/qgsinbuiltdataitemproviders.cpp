@@ -68,7 +68,7 @@
 #include "qgshistoryproviderregistry.h"
 #include "qgsdataitemguiproviderutils.h"
 #include "qgsdatabaseschemaselectiondialog.h"
-#include "qgsdatabasecommentdialog.h"
+#include "qgscommentinputdialog.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -2096,7 +2096,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         {
           const QString comment = conn2->table( schemaName, tableName ).comment();
 
-          QgsDatabaseCommentDialog *dlg = new QgsDatabaseCommentDialog( tr( "Table Comment" ), comment );
+          QgsCommentInputDialog *dlg = new QgsCommentInputDialog( tr( "Table Comment" ), comment );
 
           if ( dlg->exec() == QDialog::Accepted )
           {
