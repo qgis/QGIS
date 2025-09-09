@@ -29,6 +29,9 @@
 #include "qgspdalalgorithms.h"
 #endif
 #endif
+#ifdef WITH_SFCGAL
+#include <SFCGAL/capi/sfcgal_c.h>
+#endif
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsprocessingparametertype.h"
@@ -1320,6 +1323,12 @@ void QgsProcessingExec::addVersionInformation( QVariantMap &json )
 
   PJ_INFO info = proj_info();
   json.insert( QStringLiteral( "proj_version" ), info.release );
+
+#ifdef WITH_SFCGAL
+  json.insert( QStringLiteral( "sfcgal_version" ), sfcgal_version() );
+#else
+  json.insert( QStringLiteral( "sfcgal_version" ), "no support" );
+#endif
 }
 
 void QgsProcessingExec::addAlgorithmInformation( QVariantMap &algorithmJson, const QgsProcessingAlgorithm *algorithm )
