@@ -88,8 +88,8 @@ void QgsGeometryCheckOverlapAlgorithm::initAlgorithm( const QVariantMap &configu
     QStringLiteral( "OUTPUT" ), QObject::tr( "Overlap features" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, false
   ) );
 
-  addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "MIN_OVERLAP_AREA" ), QObject::tr( "min overlap area" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0, 180.0
+  addParameter( new QgsProcessingParameterArea(
+    QStringLiteral( "MIN_OVERLAP_AREA" ), QObject::tr( "min overlap area" ), 0, QStringLiteral( "INPUT" ), false, 0.0
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
