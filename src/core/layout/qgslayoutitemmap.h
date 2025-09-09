@@ -92,6 +92,22 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
     void setForceLabelsInsideFeature( bool forceInside );
 
     /**
+     * Returns TRUE if the map item shape will be clipped to the atlas feature geometry.
+     *
+     * \see setClipItemShape()
+     * \since QGIS 4.0
+     */
+    bool clipItemShape() const;
+
+    /**
+     * Sets whether the map item shape will be clipped to the atlas feature geometry.
+     *
+     * \see clipItemShape()
+     * \since QGIS 4.0
+     */
+    void setClipItemShape( bool clipItemShape );
+
+    /**
      * Returns TRUE if clipping should be restricted to a subset of layers.
      *
      * \see layersToClip()
@@ -159,6 +175,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
     QList< QgsMapLayerRef > mLayersToClip;
     QgsMapClippingRegion::FeatureClippingType mFeatureClippingType = QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly;
     bool mForceLabelsInsideFeature = false;
+    bool mClipItemShape = false;
 };
 
 
@@ -1256,6 +1273,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
      * Key is the original layer id, value is the cloned group
      */
     std::map<QString, std::unique_ptr<QgsGroupLayer>> mGroupLayers;
+
+    /**
+     * Return TRUE if the map item has a custom frame path.
+     */
+    bool hasCustomFramePath() const;
 
     friend class QgsLayoutItemMapGrid;
     friend class QgsLayoutItemMapOverview;

@@ -77,6 +77,26 @@ geometry.
 .. seealso:: :py:func:`forceLabelsInsideFeature`
 %End
 
+    bool clipItemShape() const;
+%Docstring
+Returns ``True`` if the map item shape will be clipped to the atlas
+feature geometry.
+
+.. seealso:: :py:func:`setClipItemShape`
+
+.. versionadded:: 4.0
+%End
+
+    void setClipItemShape( bool clipItemShape );
+%Docstring
+Sets whether the map item shape will be clipped to the atlas feature
+geometry.
+
+.. seealso:: :py:func:`clipItemShape`
+
+.. versionadded:: 4.0
+%End
+
     bool restrictToLayers() const;
 %Docstring
 Returns ``True`` if clipping should be restricted to a subset of layers.
