@@ -38,6 +38,8 @@
 #include <QMimeData>
 
 
+const QString QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE = QStringLiteral( "elevationProfileRegistry" );
+
 QgsElevationProfileLayerTreeModel::QgsElevationProfileLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
@@ -492,7 +494,7 @@ void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString
   std::unique_ptr< QgsLayerTreeCustomNode > customNode = std::make_unique< QgsLayerTreeCustomNode >( sourceId, sourceName.isEmpty() ? sourceId : sourceName );
   customNode->setItemVisibilityChecked( true );
   // Mark the node so that we know which custom nodes correspond to elevation profile sources
-  customNode->setCustomProperty( QStringLiteral( "source" ), QStringLiteral( "elevationProfileRegistry" ) );
+  customNode->setCustomProperty( QStringLiteral( "source" ), QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE );
 
   QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( -1, customNode.release() );
   if ( !node )

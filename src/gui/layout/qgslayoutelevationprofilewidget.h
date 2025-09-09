@@ -64,7 +64,6 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget : public QgsLayoutItemBaseWidge
   private slots:
 
     void setGuiElementValues();
-    void updateItemLayers();
     void updateItemSources();
     void layoutAtlasToggled( bool atlasEnabled );
     void atlasLayerChanged( QgsVectorLayer *layer );

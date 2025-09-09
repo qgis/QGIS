@@ -56,11 +56,8 @@ QgsLayerTreeCustomNode *QgsLayerTreeCustomNode::readXml( const QDomElement &elem
   const QString nodeId = element.attribute( QStringLiteral( "id" ) );
   const QString name =  element.attribute( QStringLiteral( "name" ) );
   bool checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) ) != Qt::Unchecked;
-  bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
 
   QgsLayerTreeCustomNode *customNode = new QgsLayerTreeCustomNode( nodeId, name, checked );
-  customNode->setExpanded( isExpanded );
-
   customNode->readCommonXml( element );
 
   return customNode;
@@ -72,7 +69,6 @@ void QgsLayerTreeCustomNode::writeXml( QDomElement &parentElement, const QgsRead
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-custom-node" ) );
   elem.setAttribute( QStringLiteral( "id" ), mId );
   elem.setAttribute( QStringLiteral( "name" ), mName );
-  elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
 
   writeCommonXml( elem );
@@ -82,7 +78,7 @@ void QgsLayerTreeCustomNode::writeXml( QDomElement &parentElement, const QgsRead
 
 QString QgsLayerTreeCustomNode::dump() const
 {
-  return QStringLiteral( "CUSTOM NODE: %1 checked=%2 expanded=%3 id=%4\n" ).arg( mName ).arg( mChecked ).arg( mExpanded ).arg( mId );
+  return QStringLiteral( "CUSTOM NODE: %1 checked=%2 id=%3\n" ).arg( mName ).arg( mChecked ).arg( mId );
 }
 
 QgsLayerTreeCustomNode *QgsLayerTreeCustomNode::clone() const

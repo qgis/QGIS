@@ -517,7 +517,7 @@ QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
     // More legacy: elevation profile layers are in opposite direction
     // to what the layer tree requires, and are in the same direction as
     // the renderer expects, but since we reverse sources() (i.e., layers)
-    // before passing them to the renderer, then we need to revers here first.
+    // before passing them to the renderer, then we need to reverse here first.
     std::reverse( sources.begin(), sources.end() );
 
     return sources;

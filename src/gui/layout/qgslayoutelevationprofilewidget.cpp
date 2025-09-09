@@ -686,7 +686,7 @@ void QgsLayoutElevationProfileWidget::syncLayerTreeAndProfileItemSources()
 
       source = layer->profileSource();
     }
-    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QStringLiteral( "elevationProfileRegistry" ) )
+    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
       source = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() );
@@ -818,24 +818,6 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
   mBlockChanges--;
 }
 
-void QgsLayoutElevationProfileWidget::updateItemLayers() // TODO: remove
-{
-  if ( mBlockChanges )
-    return;
-
-  QList<QgsMapLayer *> layers;
-  const QList<QgsMapLayer *> layerOrder = mLayerTree->layerOrder();
-  layers.reserve( layerOrder.size() );
-  for ( QgsMapLayer *layer : layerOrder )
-  {
-    if ( mLayerTree->findLayer( layer )->isVisible() )
-      layers << layer;
-  }
-
-  mProfile->setLayers( layers );
-  mProfile->update();
-}
-
 void QgsLayoutElevationProfileWidget::updateItemSources()
 {
   if ( mBlockChanges )
@@ -855,7 +837,7 @@ void QgsLayoutElevationProfileWidget::updateItemSources()
         sources << layer->profileSource();
       }
     }
-    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QStringLiteral( "elevationProfileRegistry" ) )
+    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
       if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )

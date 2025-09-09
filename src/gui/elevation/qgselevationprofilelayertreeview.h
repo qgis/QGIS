@@ -113,6 +113,8 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
     Q_OBJECT
 
   public:
+    static const QString CUSTOM_NODE_ELEVATION_PROFILE_SOURCE;
+
     /**
      * Construct a new tree view with given layer tree (root node must not be NULLPTR).
      * The root node is not transferred by the view.

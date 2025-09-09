@@ -678,7 +678,7 @@ void QgsElevationProfileWidget::updateCanvasSources()
         sources << layer->profileSource();
       }
     }
-    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QStringLiteral( "elevationProfileRegistry" ) )
+    else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
       if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )
@@ -695,7 +695,6 @@ void QgsElevationProfileWidget::updateCanvasSources()
   std::reverse( layers.begin(), layers.end() );
   mCanvas->setLayers( layers );
 
-  // std::reverse( sources.begin(), sources.end() );
   mCanvas->setSources( sources );
   scheduleUpdate();
 }
