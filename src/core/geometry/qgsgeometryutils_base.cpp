@@ -750,6 +750,9 @@ bool QgsGeometryUtilsBase::createFillet(
   double *trim2EndX, double *trim2EndY,
   const double epsilon )
 {
+  if ( radius <= 0 )
+    throw QgsInvalidArgumentException( "Radius must be greater than 0." );
+
   // Find intersection point between segments (or their infinite line extensions)
   double intersectionX, intersectionY;
   bool isIntersection;

@@ -1308,7 +1308,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \param chamferEnd calculated end point of the chamfer
      * \param epsilon tolerance for geometric calculations
      * \returns true if chamfer was successfully created
-     * \throws QgsInvalidArgumentException
+     * \throws QgsInvalidArgumentException same as QgsGeometryUtilsBase::createChamfer
+     * \see QgsGeometryUtilsBase::createChamfer
      * \since QGIS 4.0
      */
     static bool createChamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
@@ -1332,6 +1333,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \param epsilon tolerance for geometric calculations
      * \returns true if fillet was successfully created
      * \throws QgsInvalidArgumentException
+     * \throws QgsInvalidArgumentException same as QgsGeometryUtilsBase::createFillet
+     * \see QgsGeometryUtilsBase::createFillet
      * \since QGIS 4.0
      */
     static bool createFillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
@@ -1351,7 +1354,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \param distance1 chamfer distance along first segment
      * \param distance2 chamfer distance along second segment (if negative, uses distance1)
      * \returns QgsLineString geometry connecting the segments through the chamfer
-     * \throws QgsInvalidArgumentException
+     * \throws QgsInvalidArgumentException same as QgsGeometryUtilsBase::createChamfer
+     * \see QgsGeometryUtilsBase::createChamfer
      * \since QGIS 4.0
      */
     static std::unique_ptr< QgsLineString > createChamferGeometry(
@@ -1369,7 +1373,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \param radius fillet radius
      * \param segments number of segments for arc discretization (≤0 for circular arc)
      * \returns geometry connecting the segments through the fillet
-     * \throws QgsInvalidArgumentException
+     * \throws QgsInvalidArgumentException same as QgsGeometryUtilsBase::createFillet
+     * \see QgsGeometryUtilsBase::createFillet
      * \since QGIS 4.0
      */
     static std::unique_ptr< QgsAbstractGeometry > createFilletGeometry(
@@ -1385,7 +1390,11 @@ class CORE_EXPORT QgsGeometryUtils
      * \param distance1 chamfer distance along first segment
      * \param distance2 chamfer distance along second segment
      * \returns new geometry with chamfer applied, or None on failure
-     * \throws QgsInvalidArgumentException
+     * \throws QgsInvalidArgumentException same as QgsGeometryUtilsBase::createChamfer and
+     *         when curve is null
+     *         when curve has not enough points
+     *
+     * \see QgsGeometryUtilsBase::createChamfer
      * \since QGIS 4.0
      */
     static std::unique_ptr< QgsAbstractGeometry > chamferVertex(
@@ -1400,7 +1409,11 @@ class CORE_EXPORT QgsGeometryUtils
      * \param radius fillet radius
      * \param segments number of segments for arc discretization (≤0 for circular arc)
      * \returns new geometry with fillet applied, or None on failure
-     * \throws QgsInvalidArgumentException
+     * \throws QgsInvalidArgumentException same as QgsGeometryUtilsBase::createFillet and
+     *         when curve is null
+     *         when curve has not enough points
+     *
+     * \see QgsGeometryUtilsBase::createFillet
      * \since QGIS 4.0
      */
     static std::unique_ptr< QgsAbstractGeometry > filletVertex(
@@ -1411,7 +1424,8 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * Convenient method of createFillet using array output.
      * \note Not available in Python bindings.
-     * \throws QgsInvalidArgumentException
+     * \throws QgsInvalidArgumentException same as QgsGeometryUtilsBase::createFillet
+     * \see QgsGeometryUtilsBase::createFillet
      * \since QGIS 4.0
      */
     static bool createFilletArray( const QgsPoint &segment1Start, const QgsPoint &segment1End,
@@ -1435,7 +1449,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 4.0
      */
     static std::unique_ptr< QgsAbstractGeometry > doChamferFilletOnVertex(
-      const QString &operation, const QgsCurve *curve, int vertexIndex,
+      QgsGeometry::ChamferFilletOperationType operation, const QgsCurve *curve, int vertexIndex,
       double value1, double value2, int segments
     );
 };

@@ -1318,14 +1318,6 @@ bool QgsGeometryUtils::createChamfer( const QgsPoint &segment1Start, const QgsPo
                                       QgsPoint &chamferStart, QgsPoint &chamferEnd,
                                       double epsilon )
 {
-  // Apply symmetric distance if distance2 is negative
-  if ( distance2 <= 0 )
-    distance2 = distance1;
-
-  // Validate input parameters
-  if ( distance1 <= 0 || distance2 <= 0 )
-    throw QgsInvalidArgumentException( "Negative distances." );
-
   // Create chamfer points using the utility function
   double chamferStartX, chamferStartY, chamferEndX, chamferEndY;
 
@@ -1354,9 +1346,6 @@ bool QgsGeometryUtils::createFillet( const QgsPoint &segment1Start, const QgsPoi
                                      QgsPoint &filletPoint2,
                                      double epsilon )
 {
-  if ( radius <= 0 )
-    throw QgsInvalidArgumentException( "Radius <= 0." );
-
   // Create fillet arc using the utility function
   double filletPointsX[3], filletPointsY[3];
 
@@ -1429,6 +1418,11 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
     segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(),
     intersectionX, intersectionY, isIntersection, 1e-8, true );
 
+  if ( !isIntersection )
+  {
+    throw QgsInvalidArgumentException( "Segments do not intersect." );
+  }
+
   const double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1Start.x(), segment1Start.y() );
   const double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1End.x(), segment1End.y() );
   const double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2Start.x(), segment2Start.y() );
@@ -1490,18 +1484,18 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
   const QgsCurve *curve, int vertexIndex,
   double distance1, double distance2 )
 {
-  return doChamferFilletOnVertex( "chamfer", curve, vertexIndex, distance1, distance2, 0 );
+  return doChamferFilletOnVertex( QgsGeometry::ChamferFilletOperationType::Chamfer, curve, vertexIndex, distance1, distance2, 0 );
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
   const QgsCurve *curve, int vertexIndex,
   double radius, int segments )
 {
-  return doChamferFilletOnVertex( "fillet", curve, vertexIndex, radius, 0.0, segments );
+  return doChamferFilletOnVertex( QgsGeometry::ChamferFilletOperationType::Fillet, curve, vertexIndex, radius, 0.0, segments );
 }
 
 std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex(
-  const QString &operation, const QgsCurve *curve, int vertexIndex,
+  QgsGeometry::ChamferFilletOperationType operation, const QgsCurve *curve, int vertexIndex,
   double value1, double value2, int segments
 )
 {
@@ -1519,7 +1513,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     if ( curve->numPoints() < 3 )
       throw QgsInvalidArgumentException( "Opened curve must have at least 3 points." );
     if ( vertexIndex <= 0 || vertexIndex >= curve->numPoints() - 1 )
-      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in ]0, %2[." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
+      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in (0, %2)." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
   }
 
   // Extract the three consecutive vertices
@@ -1536,11 +1530,8 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
 
   QgsPoint firstNewPoint, middlePoint, lastNewPoint;
 
-  if ( operation == "fillet" )
+  if ( operation == QgsGeometry::ChamferFilletOperationType::Fillet )
   {
-    if ( value1 <= 0 )
-      throw QgsInvalidArgumentException( "Radius <= 0." );
-
     double rad = std::min( value1, pPrev.distance( p ) * 0.95 );
     rad = std::min( rad, pNext.distance( p ) * 0.95 );
 
@@ -1552,20 +1543,13 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     middlePoint = filletPoints[1];
     lastNewPoint = filletPoints[2];
   }
-  else if ( operation == "chamfer" )
+  else if ( operation == QgsGeometry::ChamferFilletOperationType::Chamfer )
   {
-    // Apply symmetric distance if distance2 is negative
-    if ( value2 <= 0 )
-      value2 = value1;
-
-    if ( value1 <= 0 || value2 <= 0 )
-      throw QgsInvalidArgumentException( "Negative distances." );
-
     // Create chamfer
     createChamfer( pPrev, p, p, pNext, value1, value2, firstNewPoint, lastNewPoint );
   }
   else
-    throw QgsInvalidArgumentException( QStringLiteral( "Operation '%1' is unknown." ).arg( operation ) );
+    throw QgsInvalidArgumentException( QStringLiteral( "Operation '%1' is unknown." ).arg( QgsGeometry::chamferFilletOperationToString( operation ) ) );
 
   // Handle LineString geometries
   if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
@@ -1582,7 +1566,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
       points.append( curve->vertexAt( QgsVertexId( 0, 0, i ) ) );
     }
 
-    if ( operation == "fillet" )
+    if ( operation == QgsGeometry::ChamferFilletOperationType::Fillet )
     {
       // Add fillet arc as line segments with proper segmentation
       QgsCircularString tempArc;
@@ -1653,13 +1637,13 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     // Add curves before the target curve
     for ( int i = 0; i < targetCurveIndex; ++i )
     {
-      QgsCurve *tmpCurv = compound->curveAt( i )->clone();
+      std::unique_ptr<QgsCurve> tmpCurv( compound->curveAt( i )->clone() );
       if ( curve->isClosed() && vertexIndex == curve->numPoints() - 1 )
       {
         tmpCurv->insertVertex( QgsVertexId( 0, 0, 1 ), lastNewPoint );
         tmpCurv->deleteVertex( QgsVertexId( 0, 0, 0 ) );
       }
-      newCompound->addCurve( tmpCurv );
+      newCompound->addCurve( tmpCurv.release() );
     }
 
     // Handle the curve containing the vertex
@@ -1679,7 +1663,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
       }
     }
 
-    if ( operation == "fillet" )
+    if ( operation == QgsGeometry::ChamferFilletOperationType::Fillet )
     {
       // Add the fillet arc - for CompoundCurve, preserve circular nature unless segments > 0
       if ( segments <= 0 )
@@ -1728,13 +1712,13 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     // Add curves after the target curve
     for ( int i = targetCurveIndex + 1; i < compound->nCurves(); ++i )
     {
-      QgsCurve *tmpCurv = compound->curveAt( i )->clone();
+      std::unique_ptr<QgsCurve> tmpCurv( compound->curveAt( i )->clone() );
       if ( curve->isClosed() && vertexIndex == 0 )
       {
         tmpCurv->insertVertex( QgsVertexId( 0, 0, tmpCurv->numPoints() - 1 ), firstNewPoint );
         tmpCurv->deleteVertex( QgsVertexId( 0, 0, tmpCurv->numPoints() - 1 ) );
       }
-      newCompound->addCurve( tmpCurv );
+      newCompound->addCurve( tmpCurv.release() );
     }
 
     return newCompound;

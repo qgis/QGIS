@@ -3194,17 +3194,17 @@ void TestQgsGeometry::chamferFillet()
   g = QgsGeometry::fromWkt( QStringLiteral( "Point( 4 5 )" ) );
   QCOMPARE( g.lastError(), "" );
   g.chamfer( 1, 0.5, 0.5 );
-  QCOMPARE( g.lastError(), "Operation 'chamfer' needs curve geometry." );
+  QCOMPARE( g.lastError(), "Operation 'Chamfer' needs curve geometry." );
 
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.chamfer( 1, 0.5, 0.5 );
-  QCOMPARE( g.lastError(), "Opened curve must have at least 3 points." );
+  QCOMPARE( g.lastError(), "Opened curve must have at least 3 points. Requested vertex: 1 was resolved as: [part: -1, ring: -1, vertex: 1]" );
 
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.chamfer( 5, 0.5, 0.5 );
-  QCOMPARE( g.lastError(), "Vertex index out of range. -1 must be in ]0, 2[." );
+  QCOMPARE( g.lastError(), "Vertex index out of range. -1 must be in (0, 2). Requested vertex: 5 was resolved as: [part: -1, ring: -1, vertex: -1]" );
 
   g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
   QCOMPARE( g.lastError(), "" );
@@ -3263,7 +3263,7 @@ void TestQgsGeometry::chamferFillet()
   g = QgsGeometry::fromWkt( QStringLiteral( "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.chamfer( 0, 1.0 );
-  QCOMPARE( g.lastError(), "Vertex index out of range. 0 must be in ]0, 5[." );
+  QCOMPARE( g.lastError(), "Vertex index out of range. 0 must be in (0, 5). Requested vertex: 0 was resolved as: [part: -1, ring: -1, vertex: 0]" );
 
   // Compound curve chamfer CircurlarString
   g = QgsGeometry::fromWkt( QStringLiteral( "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))" ) );
@@ -3278,6 +3278,25 @@ void TestQgsGeometry::chamferFillet()
   g2 = g.chamfer( 5, 1.0 );
   QCOMPARE( g.lastError(), "" );
   QCOMPARE( g2.asWkt( 2 ), "CompoundCurve ((1 0, 10 0),CircularString (6.27 -0.74, 11.41 0.59, 12 2),(12 2, 12 4, 0.95 0.32),(0.95 0.32, 1 0))" );
+
+  // check for multistring
+  g = QgsGeometry::fromWkt( QStringLiteral( "MultiLineString((0 0, 10 0), (10 0.5, 11.41 0.59, 12 2), (12 2.5, 12 4, 0 0))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 5, 1.0 );
+  QCOMPARE( g.lastError(), "Vertex index out of range. 0 must be in (0, 2). Requested vertex: 5 was resolved as: [part: 2, ring: -1, vertex: 0]" );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "MultiLineString((0 0, 10 0), (10 0.5, 11.41 0.59, 12 2), (12 2.5, 12 4, 0 0))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 6, 1.0 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "MultiLineString ((0 0, 10 0),(10 0.5, 11.41 0.59, 12 2),(12 2.5, 12 3, 11.05 3.68, 0 0))" );
+
+  // check for multipolygon
+  g = QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon((( 5 15, 10 15, 10 20, 5 20, 5 15 )),(( 105 15, 110 15, 110 20, 105 20, 105 15 )))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.fillet( 6, 2.0, 4 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "MultiPolygon (((5 15, 10 15, 10 20, 5 20, 5 15)),((105 15, 108.77 15.15, 109.41 15.59, 109.85 16.23, 110 20, 105 20, 105 15)))" );
 }
 
 QGSTEST_MAIN( TestQgsGeometry )

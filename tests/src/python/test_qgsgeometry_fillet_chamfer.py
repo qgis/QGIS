@@ -291,7 +291,8 @@ class TestQgsGeometry(QgisTestCase):
         result = linestring.chamfer(0, 0.1, 0.1)
         self.assertTrue(result.isEmpty())
         self.assertEqual(
-            linestring.lastError(), "Vertex index out of range. 0 must be in ]0, 2[."
+            linestring.lastError(),
+            "Vertex index out of range. 0 must be in (0, 2). Requested vertex: 0 was resolved as: [part: -1, ring: -1, vertex: 0]",
         )
 
     def test_chamfer_vertex_invalid_index_last(self):
@@ -302,7 +303,8 @@ class TestQgsGeometry(QgisTestCase):
 
         self.assertTrue(result.isEmpty())
         self.assertEqual(
-            linestring.lastError(), "Vertex index out of range. 2 must be in ]0, 2[."
+            linestring.lastError(),
+            "Vertex index out of range. 2 must be in (0, 2). Requested vertex: 2 was resolved as: [part: -1, ring: -1, vertex: 2]",
         )
 
     def test_chamfer_vertex_acute_angle(self):
@@ -616,7 +618,7 @@ class TestQgsGeometry(QgisTestCase):
             )
             self.fail("Should have failed!")
         except QgsInvalidArgumentException as e:
-            self.assertEqual(e.__str__(), "Radius <= 0.")
+            self.assertEqual(e.__str__(), "Radius must be greater than 0.")
 
     def test_fillet_segments_acute_angle(self):
         """Test fillet creation with acute angle"""
@@ -688,7 +690,8 @@ class TestQgsGeometry(QgisTestCase):
         result = linestring.fillet(0, 0.1)
         self.assertTrue(result.isEmpty())
         self.assertEqual(
-            linestring.lastError(), "Vertex index out of range. 0 must be in ]0, 2[."
+            linestring.lastError(),
+            "Vertex index out of range. 0 must be in (0, 2). Requested vertex: 0 was resolved as: [part: -1, ring: -1, vertex: 0]",
         )
 
     def test_fillet_vertex_invalid_index_last(self):
@@ -698,7 +701,8 @@ class TestQgsGeometry(QgisTestCase):
         result = linestring.fillet(2, 0.1)
         self.assertTrue(result.isEmpty())
         self.assertEqual(
-            linestring.lastError(), "Vertex index out of range. 2 must be in ]0, 2[."
+            linestring.lastError(),
+            "Vertex index out of range. 2 must be in (0, 2). Requested vertex: 2 was resolved as: [part: -1, ring: -1, vertex: 2]",
         )
 
     def test_fillet_vertex_large_radius_failure(self):
@@ -751,7 +755,8 @@ class TestQgsGeometry(QgisTestCase):
         result = linestring.chamfer(1, 0.1, 0.1)
         self.assertTrue(result.isEmpty())
         self.assertEqual(
-            linestring.lastError(), "Opened curve must have at least 3 points."
+            linestring.lastError(),
+            "Opened curve must have at least 3 points. Requested vertex: 1 was resolved as: [part: -1, ring: -1, vertex: 1]",
         )
 
     def test_two_point_linestring_fillet(self):
@@ -761,7 +766,8 @@ class TestQgsGeometry(QgisTestCase):
         result = linestring.fillet(1, 0.1)
         self.assertTrue(result.isEmpty())
         self.assertEqual(
-            linestring.lastError(), "Opened curve must have at least 3 points."
+            linestring.lastError(),
+            "Opened curve must have at least 3 points. Requested vertex: 1 was resolved as: [part: -1, ring: -1, vertex: 1]",
         )
 
     def test_geometryutils_two_point_linestring_fillet(self):
@@ -1085,7 +1091,8 @@ class TestQgsGeometry(QgisTestCase):
         # Apply chamfer at vertex index 0 ==> out of range
         result = compound.chamfer(0, 1)
         self.assertEqual(
-            compound.lastError(), "Vertex index out of range. 0 must be in ]0, 5[."
+            compound.lastError(),
+            "Vertex index out of range. 0 must be in (0, 5). Requested vertex: 0 was resolved as: [part: -1, ring: -1, vertex: 0]",
         )
 
     def test_chamfer_vertex_compound_curve_preserve_circular_closed_first_vertex(self):

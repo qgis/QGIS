@@ -4531,29 +4531,28 @@ bool QgsGeometry::Error::hasWhere() const
   return mHasLocation;
 }
 
-QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, double distance1, double distance2, int segments ) const
+QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int vertexIndex, double distance1, double distance2, int segments ) const
 {
-  QgsDebugMsgLevel( QStringLiteral( "============== %1 starts: %2" ).arg( op ).arg( asWkt( 2 ) ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "%1 starts: %2" ).arg( QgsGeometry::chamferFilletOperationToString( op ) ).arg( asWkt( 2 ) ), 3 );
   if ( isNull() )
   {
+    mLastError = QStringLiteral( "Operation '%1' needs non-null geometry." ).arg( QgsGeometry::chamferFilletOperationToString( op ) );
     return QgsGeometry();
   }
 
-  QgsCurve *curve;
+  QgsCurve *curve = nullptr;
 
   int modifiedPart = -1;
   int modifiedRing = -1;
   QgsVertexId vertexId;
   vertexIdFromVertexNr( vertexIndex, vertexId );
-  vertexIndex = vertexId.vertex;
-  //QgsLineString * tmpLs;
-  QgsMultiLineString *inputMultiLine;
-  QgsMultiPolygon *inputMultiPoly;
+  int resolvedVertexIndex = vertexId.vertex;
+  QgsMultiLineString *inputMultiLine = nullptr;
+  QgsMultiPolygon *inputMultiPoly = nullptr;
   const Qgis::GeometryType geomType = QgsWkbTypes::geometryType( wkbType() );
 
   if ( geomType == Qgis::GeometryType::Line )
   {
-    QgsDebugMsgLevel( QStringLiteral( "input geom IS Line" ), 1 );
     if ( isMultipart() )
     {
       modifiedPart = vertexId.part;
@@ -4568,9 +4567,7 @@ QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, do
   }
   else if ( geomType == Qgis::GeometryType::Polygon )
   {
-    QgsDebugMsgLevel( QStringLiteral( "input geom IS Polygon" ), 1 );
-
-    QgsPolygon *poly;
+    QgsPolygon *poly = nullptr;
     if ( isMultipart() )
     {
       modifiedPart = vertexId.part;
@@ -4595,21 +4592,26 @@ QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, do
 
   if ( !curve )
   {
-    mLastError = QStringLiteral( "Operation '%1' needs curve geometry." ).arg( op );
+    mLastError = QStringLiteral( "Operation '%1' needs curve geometry." ).arg( QgsGeometry::chamferFilletOperationToString( op ) );
     return QgsGeometry();
   }
 
   std::unique_ptr<QgsAbstractGeometry> result;
   try
   {
-    if ( op == "chamfer" )
-      result = QgsGeometryUtils::chamferVertex( curve, vertexIndex, distance1, distance2 );
+    if ( op == ChamferFilletOperationType::Chamfer )
+      result = QgsGeometryUtils::chamferVertex( curve, resolvedVertexIndex, distance1, distance2 );
     else
-      result = QgsGeometryUtils::filletVertex( curve, vertexIndex, distance1, segments );
+      result = QgsGeometryUtils::filletVertex( curve, resolvedVertexIndex, distance1, segments );
   }
   catch ( QgsInvalidArgumentException &e )
   {
-    mLastError = e.what();
+    mLastError = QStringLiteral( "%1 Requested vertex: %2 was resolved as: [part: %3, ring: %4, vertex: %5]" ) //
+                 .arg( e.what() )
+                 .arg( vertexIndex )
+                 .arg( modifiedPart )
+                 .arg( modifiedRing )
+                 .arg( resolvedVertexIndex );
     return QgsGeometry();
   }
 
@@ -4619,18 +4621,13 @@ QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, do
     return QgsGeometry();
   }
 
-  //QgsGeometry resultGeom( std::move( result ) );
-
-  QgsDebugMsgLevel( QStringLiteral( "Temp result Wkt: %1" ).arg( result->asWkt( 2 ) ), 1 );
   if ( result->isEmpty() )
     return QgsGeometry( std::move( result ) );
 
-  QgsDebugMsgLevel( QStringLiteral( "modifiedPart %1, modifiedRing %2" ).arg( modifiedPart ).arg( modifiedRing ), 1 );
-
-  auto updatePolygon = []( const QgsPolygon * inputPoly, QgsAbstractGeometry * result, int modifiedRing ) -> QgsPolygon *
+  // insert \a result geometry (obtain by the chamfer/fillet operation) back into original \a inputPoly polygon
+  auto updatePolygon = []( const QgsPolygon * inputPoly, QgsAbstractGeometry * result, int modifiedRing ) -> std::unique_ptr<QgsPolygon>
   {
-    QgsPolygon newPoly;
-    //    for ( QgsAbstractGeometry::part_iterator ringIte = inputPoly->parts_begin(); ringIte != inputPoly->parts_end(); ++ringIte )
+    std::unique_ptr<QgsPolygon> newPoly = std::make_unique<QgsPolygon>();
     for ( int ringIndex = 0; ringIndex < inputPoly->numInteriorRings() + 1; ++ringIndex )
     {
       if ( ringIndex == modifiedRing )
@@ -4638,29 +4635,28 @@ QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, do
         for ( QgsAbstractGeometry::part_iterator resPartIte = result->parts_begin(); resPartIte != result->parts_end(); ++resPartIte )
         {
           if ( ringIndex == 0 && resPartIte == result->parts_begin() )
-            newPoly.setExteriorRing( qgsgeometry_cast<QgsCurve *>( ( *resPartIte )->clone() ) );
+            newPoly->setExteriorRing( qgsgeometry_cast<QgsCurve *>( ( *resPartIte )->clone() ) );
           else
-            newPoly.addInteriorRing( qgsgeometry_cast<QgsCurve *>( ( *resPartIte )->clone() ) );
+            newPoly->addInteriorRing( qgsgeometry_cast<QgsCurve *>( ( *resPartIte )->clone() ) );
         }
       }
       else
       {
         if ( ringIndex == 0 )
-          newPoly.setExteriorRing( qgsgeometry_cast<QgsCurve *>( inputPoly->exteriorRing()->clone() ) );
+          newPoly->setExteriorRing( qgsgeometry_cast<QgsCurve *>( inputPoly->exteriorRing()->clone() ) );
         else
-          newPoly.addInteriorRing( qgsgeometry_cast<QgsCurve *>( inputPoly->interiorRing( ringIndex - 1 )->clone() ) );
+          newPoly->addInteriorRing( qgsgeometry_cast<QgsCurve *>( inputPoly->interiorRing( ringIndex - 1 )->clone() ) );
       }
     }
-    return newPoly.clone();
+    return newPoly;
   };
 
   std::unique_ptr<QgsAbstractGeometry> finalGeom;
   if ( geomType == Qgis::GeometryType::Line )
   {
-    QgsDebugMsgLevel( QStringLiteral( "input geom was Line modifiedPart %1" ).arg( modifiedPart ), 1 );
     if ( modifiedPart >= 0 )
     {
-      QgsMultiLineString newMultiLine;
+      std::unique_ptr<QgsMultiLineString> newMultiLine = std::make_unique<QgsMultiLineString>();
       int partIndex = 0;
       for ( QgsMultiLineString::part_iterator partIte = inputMultiLine->parts_begin(); partIte != inputMultiLine->parts_end(); ++partIte )
       {
@@ -4668,64 +4664,86 @@ QgsGeometry QgsGeometry::doChamferFillet( const QString &op, int vertexIndex, do
         {
           for ( QgsAbstractGeometry::part_iterator resPartIte = result->parts_begin(); resPartIte != result->parts_end(); ++resPartIte )
           {
-            newMultiLine.addGeometry( *resPartIte );
+            newMultiLine->addGeometry( ( *resPartIte )->clone() );
           }
         }
         else
-          newMultiLine.addGeometry( *partIte );
+        {
+          newMultiLine->addGeometry( ( *partIte )->clone() );
+        }
         partIndex++;
       }
-      finalGeom.reset( newMultiLine.clone() );
+      finalGeom = std::move( newMultiLine );
     }
     else
     {
       // resultGeom is already the correct result!
-      finalGeom.reset( result.release() );
+      finalGeom = std::move( result );
     }
   }
   else
   {
     // geomType == Qgis::GeometryType::Polygon
-    QgsDebugMsgLevel( QStringLiteral( "input geom was Polygon modifiedPart %1, modifiedRing %2 " ).arg( modifiedPart ).arg( modifiedRing ), 1 );
     if ( modifiedPart >= 0 )
     {
-      QgsMultiPolygon newMultiPoly;
+      std::unique_ptr<QgsMultiPolygon> newMultiPoly = std::make_unique<QgsMultiPolygon>();
       int partIndex = 0;
       for ( QgsAbstractGeometry::part_iterator partIte = inputMultiPoly->parts_begin(); partIte != inputMultiPoly->parts_end(); ++partIte )
       {
         if ( partIndex == modifiedPart )
         {
-          QgsPolygon *newPoly = updatePolygon( qgsgeometry_cast<const QgsPolygon *>( *partIte ), result.get(), modifiedRing );
-          newMultiPoly.addGeometry( newPoly );
+          std::unique_ptr<QgsPolygon> newPoly = updatePolygon( qgsgeometry_cast<const QgsPolygon *>( *partIte ), result.get(), modifiedRing );
+          newMultiPoly->addGeometry( newPoly.release() );
         }
         else
         {
-          newMultiPoly.addGeometry( *partIte );
+          newMultiPoly->addGeometry( ( *partIte )->clone() );
         }
         partIndex++;
       }
-      finalGeom.reset( newMultiPoly.clone() );
+      finalGeom.reset( dynamic_cast<QgsAbstractGeometry *>( newMultiPoly.release() ) );
     }
     else
     {
-      QgsPolygon *newPoly = updatePolygon( qgsgeometry_cast<const QgsPolygon *>( d->geometry.get() ), result.get(), modifiedRing );
-      finalGeom.reset( newPoly );
+      std::unique_ptr<QgsPolygon> newPoly = updatePolygon( qgsgeometry_cast<const QgsPolygon *>( d->geometry.get() ), result.get(), modifiedRing );
+      finalGeom = std::move( newPoly );
     }
   }
 
   QgsGeometry finalResult( std::move( finalGeom ) );
 
+  QgsDebugMsgLevel( QStringLiteral( "Final result Wkt: %1" ).arg( finalResult.asWkt( 2 ) ), 3 );
+
   return finalResult;
+}
+
+
+QString QgsGeometry::chamferFilletOperationToString( ChamferFilletOperationType op )
+{
+  QString out;
+  switch ( op )
+  {
+    case ChamferFilletOperationType::Chamfer:
+      out = "Chamfer";
+      break;
+    case ChamferFilletOperationType::Fillet:
+      out = "Fillet";
+      break;
+    default:
+      out = "unknown";
+      break;
+  }
+  return out;
 }
 
 QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double distance2 ) const
 {
-  return doChamferFillet( "chamfer", vertexIndex, distance1, distance2, 0 );
+  return doChamferFillet( ChamferFilletOperationType::Chamfer, vertexIndex, distance1, distance2, 0 );
 }
 
 QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) const
 {
-  return doChamferFillet( "fillet", vertexIndex, radius, 0.0, segments );
+  return doChamferFillet( ChamferFilletOperationType::Fillet, vertexIndex, radius, 0.0, segments );
 }
 
 QgsGeometry QgsGeometry::chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2 )

@@ -1207,7 +1207,10 @@ Creates a chamfer between two line segments using :py:class:`QgsPoint`.
          - chamferStart: calculated start point of the chamfer
          - chamferEnd: calculated end point of the chamfer
 
-:raises QgsInvalidArgumentException: 
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createChamfer
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createChamfer`
 
 .. versionadded:: 4.0
 %End
@@ -1239,6 +1242,11 @@ parameters to define a CircularString.
 
 :raises QgsInvalidArgumentException: 
 
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createFillet
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createFillet`
+
 .. versionadded:: 4.0
 %End
 
@@ -1261,7 +1269,10 @@ Creates a complete chamfer geometry connecting two segments.
 :return: :py:class:`QgsLineString` geometry connecting the segments
          through the chamfer
 
-:raises QgsInvalidArgumentException: 
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createChamfer
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createChamfer`
 
 .. versionadded:: 4.0
 %End
@@ -1284,7 +1295,10 @@ Creates a complete fillet geometry connecting two segments.
 
 :return: geometry connecting the segments through the fillet
 
-:raises QgsInvalidArgumentException: 
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createFillet
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createFillet`
 
 .. versionadded:: 4.0
 %End
@@ -1303,7 +1317,12 @@ Applies chamfer to a vertex in a curve geometry.
 
 :return: new geometry with chamfer applied, or None on failure
 
-:raises QgsInvalidArgumentException: 
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createChamfer
+                                     and when curve is null when curve
+                                     has not enough points
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createChamfer`
 
 .. versionadded:: 4.0
 %End
@@ -1323,7 +1342,12 @@ Applies fillet to a vertex in a curve geometry.
 
 :return: new geometry with fillet applied, or None on failure
 
-:raises QgsInvalidArgumentException: 
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createFillet
+                                     and when curve is null when curve
+                                     has not enough points
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createFillet`
 
 .. versionadded:: 4.0
 %End

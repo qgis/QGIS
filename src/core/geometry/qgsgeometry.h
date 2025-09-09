@@ -3198,6 +3198,23 @@ class CORE_EXPORT QgsGeometry
     }
 
     /**
+     * Privatly used in chamfer/fillet functions
+     * \note not available in Python bindings
+     */
+    enum ChamferFilletOperationType : int SIP_SKIP
+    {
+      Chamfer = 1,
+      Fillet,
+    };
+
+    /**
+     * Returns string version for the enum \a op else returns 'unknown'.
+     * \param op the enum to translate to string
+     * \since QGIS 4.0
+     */
+    static QString chamferFilletOperationToString( ChamferFilletOperationType op ) SIP_SKIP;
+
+    /**
      * Creates a fillet (rounded corner) at the specified vertex.
      *
      * This method replaces a sharp corner at the given vertex with a smooth circular arc.
@@ -3227,7 +3244,9 @@ class CORE_EXPORT QgsGeometry
      * \param radius radius of the fillet arc
      * \param segments number of segments to use for LineString approximation (returns a CircularString when segments = 0)
      * \returns new geometry with fillet applied, or invalid geometry on failure
-     * \throws QgsInvalidArgumentException
+     * \throws QgsInvalidArgumentException same as QgsGeometryUtils::createFilletGeometry
+     *
+     * \see QgsGeometryUtils::createFilletGeometry
      *
      * \since QGIS 4.0
      */
@@ -3260,7 +3279,9 @@ class CORE_EXPORT QgsGeometry
      * \param distance1 distance along the first segment from intersection
      * \param distance2 distance along the second segment from intersection (if < 0, uses distance1)
      * \returns new geometry with chamfer applied, or invalid geometry on failure
-     * \throws QgsInvalidArgumentException
+     * \throws QgsInvalidArgumentException same as QgsGeometryUtils::createChamferGeometry
+     *
+     * \see QgsGeometryUtils::createChamferGeometry
      *
      * \since QGIS 4.0
      */
@@ -3323,7 +3344,7 @@ class CORE_EXPORT QgsGeometry
     std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, unsigned int iterations = 1, double offset = 0.25,
         double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
-    QgsGeometry doChamferFillet( const QString &op, int vertexIndex, double distance1, double distance2, int segments ) const;
+    QgsGeometry doChamferFillet( ChamferFilletOperationType op, int vertexIndex, double distance1, double distance2, int segments ) const;
 
     friend class QgsInternalGeometryEngine;
 

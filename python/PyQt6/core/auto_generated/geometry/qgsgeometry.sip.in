@@ -3251,6 +3251,8 @@ Downgrades a point list from :py:class:`QgsPoint` to
 
     operator QVariant() const;
 
+
+
     QgsGeometry fillet( int vertexIndex, double radius, int segments = 8 ) const;
 %Docstring
 Creates a fillet (rounded corner) at the specified vertex.
@@ -3290,7 +3292,10 @@ This method creates a smooth circular arc connecting two line segments.
 :return: new geometry with fillet applied, or invalid geometry on
          failure
 
-:raises QgsInvalidArgumentException: 
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtils.createFilletGeometry
+
+.. seealso:: :py:func:`QgsGeometryUtils.createFilletGeometry`
 
 .. versionadded:: 4.0
 %End
@@ -3334,7 +3339,10 @@ specified distances.
 :return: new geometry with chamfer applied, or invalid geometry on
          failure
 
-:raises QgsInvalidArgumentException: 
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtils.createChamferGeometry
+
+.. seealso:: :py:func:`QgsGeometryUtils.createChamferGeometry`
 
 .. versionadded:: 4.0
 %End
