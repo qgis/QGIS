@@ -184,9 +184,6 @@ include_directories (
 
 add_library (provider_mdal MODULE ${MDAL_SRCS} ${MDAL_LIB_SRCS} ${MDAL_LIB_HDRS})
 
-# require c++20
-target_compile_features(provider_mdal PRIVATE cxx_std_20)
-
 target_link_libraries (provider_mdal
   qgis_core
   ${MDAL_LIBRARY}

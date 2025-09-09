@@ -13,9 +13,6 @@ set (LANDINGPAGE_SRCS
 
 add_library (landingpage MODULE ${LANDINGPAGE_SRCS})
 
-# require c++20
-target_compile_features(landingpage PRIVATE cxx_std_20)
-
 if(QGISPOSTFIX)
   set_target_properties(landingpage PROPERTIES
     LIBRARY_OUTPUT_NAME landingpage${QGISPOSTFIX}

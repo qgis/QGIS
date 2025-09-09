@@ -475,9 +475,6 @@ else()
   target_compile_definitions(qgis PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 endif()
 
-# require c++20
-target_compile_features(qgis PRIVATE cxx_std_20)
-
 set_target_properties(qgis PROPERTIES OUTPUT_NAME "${QGIS_APP_NAME}")
 
 if(NOT LIBRARY_TYPE EQUAL STATIC)
@@ -497,9 +494,6 @@ if(QGISPOSTFIX)
      LIBRARY_OUTPUT_NAME ${QGIS_APP_NAME}${QGISPOSTFIX}
   )
 endif()
-
-# require c++20
-target_compile_features(qgis_app PRIVATE cxx_std_20)
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")

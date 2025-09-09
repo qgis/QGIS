@@ -31,9 +31,6 @@ target_include_directories(provider_wms_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/wms
 )
 
-# require c++20
-target_compile_features(provider_wms_a PRIVATE cxx_std_20)
-
 if (WITH_GUI)
   qt_wrap_ui(WMS_UIS_H ${WMS_UIS})
 
@@ -44,9 +41,6 @@ if (WITH_GUI)
   target_include_directories (provider_wms_gui_a PUBLIC
     ${CMAKE_BINARY_DIR}/src/providers/wms
   )
-
-  # require c++20
-  target_compile_features(provider_wms_gui_a PRIVATE cxx_std_20)
 
   add_dependencies(provider_wms_a ui)
   add_dependencies(provider_wms_gui_a ui)
@@ -79,9 +73,6 @@ else()
   add_library(provider_wms MODULE ${WMS_SRCS} ${WMS_GUI_SRCS})
 
   set_target_properties(provider_wms PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
-
-  # require c++20
-  target_compile_features(provider_wms PRIVATE cxx_std_20)
 
   target_link_libraries(provider_wms
     qgis_core

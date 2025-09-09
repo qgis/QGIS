@@ -25,9 +25,6 @@ add_library(authmethod_apiheader_a STATIC ${AUTH_APIHEADER_SRCS} ${AUTH_APIHEADE
 
 target_include_directories(authmethod_apiheader_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/apiheader/core)
 
-# require c++20
-target_compile_features(authmethod_apiheader_a PRIVATE cxx_std_20)
-
 target_link_libraries(authmethod_apiheader_a qgis_core)
 
 if (WITH_GUI)
@@ -46,9 +43,6 @@ if (FORCE_STATIC_LIBS)
 else()
   # dynamically loaded module
   add_library(authmethod_apiheader MODULE ${AUTH_APIHEADER_SRCS} ${AUTH_APIHEADER_HDRS} ${AUTH_APIHEADER_UIS_H})
-
-  # require c++20
-  target_compile_features(authmethod_apiheader PRIVATE cxx_std_20)
 
   target_link_libraries(authmethod_apiheader qgis_core)
 

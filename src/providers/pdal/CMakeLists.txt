@@ -211,8 +211,6 @@ endif()
 
 add_library (provider_pdal MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
 
-target_compile_features(provider_pdal PRIVATE cxx_std_20)
-
 target_link_libraries (provider_pdal
   qgis_core
   ${PDAL_LIBRARIES}
@@ -236,9 +234,6 @@ endif()
 # static library
 add_library (provider_pdal_a STATIC ${PDAL_SRCS} ${PDAL_HDRS})
 
-# require c++20
-target_compile_features(provider_pdal_a PRIVATE cxx_std_20)
-
 target_link_libraries (provider_pdal_a
   ${PDAL_LIBRARIES}
   ${QT_VERSION_BASE}::Xml
@@ -252,9 +247,6 @@ target_link_libraries (provider_pdal_a
 
 if (WITH_GUI)
   add_library (provider_pdal_gui_a STATIC ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
-
-  # require c++20
-  target_compile_features(provider_pdal_gui_a PRIVATE cxx_std_20)
 
   target_link_libraries (provider_pdal_gui_a
     ${PDAL_LIBRARIES}
