@@ -231,7 +231,7 @@ be used.
 .. versionadded:: 3.16
 %End
 
-    void addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, QString subMenuName );
+    void addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, const QString &subMenuName );
 %Docstring
 Add an ``actionToAdd`` to the sub menu with ``subMenuName`` in
 ``mainMenu``. If the sub menu with given name does not exist it will be
@@ -239,8 +239,8 @@ created.
 
 :param mainMenu: The menu in which sub menu is search for or created.
 :param actionToAdd: The action to add.
-:param subMenuName: Name of the sub menu that is searched for or
-                    created.
+:param subMenuName: Translated name of the sub menu that is searched for
+                    or created.
 
 .. versionadded:: 4.0
 %End

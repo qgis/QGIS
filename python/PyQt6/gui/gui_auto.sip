@@ -37,12 +37,12 @@
 %Include auto_generated/qgscolorswatchgrid.sip
 %Include auto_generated/qgscolorwidgets.sip
 %Include auto_generated/qgscompoundcolorwidget.sip
+%Include auto_generated/qgscommentinputdialog.sip
 %Include auto_generated/qgsconfigureshortcutsdialog.sip
 %Include auto_generated/qgscredentialdialog.sip
 %Include auto_generated/qgscurveeditorwidget.sip
 %Include auto_generated/qgscustomdrophandler.sip
 %Include auto_generated/qgscustomprojectopenhandler.sip
-%Include auto_generated/qgsdatabasecommentdialog.sip
 %Include auto_generated/qgsdatabaseschemacombobox.sip
 %Include auto_generated/qgsdatabasetablecombobox.sip
 %Include auto_generated/qgsdataitemguiprovider.sip
