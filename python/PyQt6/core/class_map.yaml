@@ -9705,7 +9705,7 @@ QgsMapSettings.setZRange: src/core/qgsmapsettings.h#L851
 QgsMapSettings.testFlag: src/core/qgsmapsettings.h#L431
 QgsMapSettings.textRenderFormat: src/core/qgsmapsettings.h#L442
 QgsMapSettings.transformContext: src/core/qgsmapsettings.h#L513
-QgsMapSettings.updateDerived: src/core/qgsmapsettings.h#L1016
+QgsMapSettings.updateDerived: src/core/qgsmapsettings.h#L1019
 QgsMapSettings.visibleExtent: src/core/qgsmapsettings.h#L469
 QgsMapSettings.visiblePolygon: src/core/qgsmapsettings.h#L474
 QgsMapSettings.visiblePolygonWithBuffer: src/core/qgsmapsettings.h#L481
