@@ -150,7 +150,10 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &feature, 
 
   QgsAbstractGeometry *buffered = engine.buffer( width / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
   if ( !buffered )
+  {
+    QgsDebugError( QStringLiteral( "Failed to create a buffer for the 3D line." ) );
     return;
+  }
 
   if ( QgsWkbTypes::flatType( buffered->wkbType() ) == Qgis::WkbType::Polygon )
   {
