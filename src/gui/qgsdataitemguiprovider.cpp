@@ -133,7 +133,7 @@ void QgsDataItemGuiProvider::notify( const QString &title, const QString &messag
   }
 }
 
-void QgsDataItemGuiProvider::addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, QString subMenuName )
+void QgsDataItemGuiProvider::addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, const QString &subMenuName )
 {
   // this action should sit in the Manage menu. If one does not exist, create it now
   bool foundExistingManageMenu = false;
