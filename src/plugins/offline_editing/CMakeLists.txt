@@ -26,9 +26,6 @@ add_library (plugin_offlineediting MODULE
   ${offline_editing_plugin_UIS_H}
 )
 
-# require c++20
-target_compile_features(plugin_offlineediting PRIVATE cxx_std_20)
-
 target_link_libraries(plugin_offlineediting
   qgis_core
   qgis_gui

@@ -43,8 +43,6 @@ target_link_libraries(provider_spatialite_a
   spatialite::spatialite
 )
 
-# require c++20
-target_compile_features(provider_spatialite_a PRIVATE cxx_std_20)
 target_compile_definitions(provider_spatialite_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 target_compile_definitions(provider_spatialite_a PRIVATE "-DQT_NO_FOREACH")
@@ -67,8 +65,6 @@ if (WITH_GUI)
     qgis_gui
   )
 
-  # require c++20
-  target_compile_features(provider_spatialite_gui_a PRIVATE cxx_std_20)
   target_compile_definitions(provider_spatialite_gui_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
   target_compile_definitions(provider_spatialite_gui_a PRIVATE "-DQT_NO_FOREACH")
@@ -92,8 +88,6 @@ else()
 
   set_target_properties(provider_spatialite PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
-  # require c++20
-  target_compile_features(provider_spatialite PRIVATE cxx_std_20)
   target_compile_definitions(provider_spatialite PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
   target_compile_definitions(provider_spatialite PRIVATE "-DQT_NO_FOREACH")

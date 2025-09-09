@@ -105,8 +105,6 @@ add_library(authmethod_oauth2_a STATIC ${AUTH_OAUTH2_SRCS} ${AUTH_OAUTH2_HDRS} $
 
 target_include_directories(authmethod_oauth2_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/oauth2/core)
 
-# require c++20
-target_compile_features(authmethod_oauth2_a PRIVATE cxx_std_20)
 target_compile_definitions(authmethod_oauth2_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 target_link_libraries(authmethod_oauth2_a qgis_core)
@@ -141,8 +139,6 @@ else()
     ${CMAKE_SOURCE_DIR}/src/auth/oauth2/core
   )
 
-  # require c++20
-  target_compile_features(authmethod_oauth2 PRIVATE cxx_std_20)
   target_compile_definitions(authmethod_oauth2 PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
   target_link_libraries(authmethod_oauth2 qgis_core)

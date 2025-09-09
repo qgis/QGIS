@@ -50,8 +50,6 @@ endif()
 
 add_library (provider_oracle MODULE ${ORACLE_SRCS} ${ORACLE_HDRS})
 
-# require c++20
-target_compile_features(provider_oracle PRIVATE cxx_std_20)
 target_compile_definitions(provider_oracle PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 target_link_libraries (provider_oracle

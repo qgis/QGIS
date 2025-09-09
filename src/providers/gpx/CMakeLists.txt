@@ -30,9 +30,6 @@ include_directories (SYSTEM
 
 add_library(provider_gpx MODULE ${GPX_SRCS})
 
-# require c++20
-target_compile_features(provider_gpx PRIVATE cxx_std_20)
-
 target_link_libraries(provider_gpx
   qgis_core
 )

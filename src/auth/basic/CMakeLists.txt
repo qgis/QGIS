@@ -25,9 +25,6 @@ add_library(authmethod_basic_a STATIC ${AUTH_BASIC_SRCS} ${AUTH_BASIC_HDRS} ${AU
 
 target_include_directories(authmethod_basic_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/basic/core)
 
-# require c++20
-target_compile_features(authmethod_basic_a PRIVATE cxx_std_20)
-
 target_link_libraries(authmethod_basic_a qgis_core)
 
 if (WITH_GUI)
@@ -49,9 +46,6 @@ if (FORCE_STATIC_LIBS)
 else()
   # dynamically loaded module
   add_library(authmethod_basic MODULE ${AUTH_BASIC_SRCS} ${AUTH_BASIC_HDRS} ${AUTH_BASIC_UIS_H})
-
-  # require c++20
-  target_compile_features(authmethod_basic PRIVATE cxx_std_20)
 
   target_link_libraries(authmethod_basic qgis_core)
 

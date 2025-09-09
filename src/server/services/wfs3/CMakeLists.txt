@@ -12,9 +12,6 @@ set (WFS3_SRCS
 
 add_library (wfs3 MODULE ${WFS3_SRCS})
 
-# require c++17
-target_compile_features(wfs3 PRIVATE cxx_std_17)
-
 include_directories(
 
   ${CMAKE_SOURCE_DIR}/src/server

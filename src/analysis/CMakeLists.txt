@@ -579,9 +579,6 @@ endif()
 
 set_target_properties(qgis_analysis PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
-# require c++20
-target_compile_features(qgis_analysis PRIVATE cxx_std_20)
-
 target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/georeferencing
