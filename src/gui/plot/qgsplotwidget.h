@@ -58,16 +58,12 @@ class GUI_EXPORT QgsPlotWidget : public QgsPanelWidget, public QgsExpressionCont
     virtual QgsPlot *createPlot() = 0 SIP_FACTORY;
 
     /**
-     * Returns the expression context associated with the plot widget.
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for configuration widgets when required.
      */
-    QgsExpressionContext &expressionContext() SIP_HOLDGIL { return mExpressionContext; }
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
-    /**
-     * Sets the expression \a context associated with the plot widget.
-     */
-    void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
-
-    QgsExpressionContext createExpressionContext() const override { return QgsExpressionContext( mExpressionContext ); }
+    QgsExpressionContext createExpressionContext() const override;
 
   protected:
     /**
@@ -87,7 +83,7 @@ class GUI_EXPORT QgsPlotWidget : public QgsPanelWidget, public QgsExpressionCont
     void updateProperty();
 
   private:
-    QgsExpressionContext mExpressionContext;
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };
 
 

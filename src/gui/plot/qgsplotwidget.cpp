@@ -26,6 +26,16 @@
 #include "qgsnumericformatselectorwidget.h"
 
 
+void QgsPlotWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mExpressionContextGenerator = generator;
+}
+
+QgsExpressionContext QgsPlotWidget::createExpressionContext() const
+{
+  return mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : QgsExpressionContext();
+}
+
 void QgsPlotWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsPlot::DataDefinedProperty key )
 {
   button->blockSignals( true );

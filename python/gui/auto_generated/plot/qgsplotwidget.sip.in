@@ -42,17 +42,14 @@ Creates a plot defined by the current settings in the widget.
 .. seealso:: :py:func:`setPlot`
 %End
 
-    QgsExpressionContext &expressionContext() /HoldGIL/;
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 %Docstring
-Returns the expression context associated with the plot widget.
-%End
-
-    void setExpressionContext( const QgsExpressionContext &context );
-%Docstring
-Sets the expression ``context`` associated with the plot widget.
+Register an expression context generator class that will be used to
+retrieve an expression context for configuration widgets when required.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 
   protected:
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsPlot::DataDefinedProperty key );

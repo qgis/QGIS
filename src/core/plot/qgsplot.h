@@ -123,7 +123,6 @@ class CORE_EXPORT QgsPlot
      * Sets a data defined property for the plot. Any existing property with the same key
      * will be overwritten.
      * \see dataDefinedProperties()
-     * \see Property
      * \since QGIS 4.0
      */
     void setDataDefinedProperty( DataDefinedProperty key, const QgsProperty &property ) { mDataDefinedProperties.setProperty( key, property ); }
@@ -131,7 +130,6 @@ class CORE_EXPORT QgsPlot
     /**
      * Returns a reference to the plot's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
-     * \see Property
      * \since QGIS 4.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
@@ -628,7 +626,8 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
 
   protected:
 
-    void applyDataDefinedSymbology( QgsRenderContext &context, QgsMargins &margins ) const;
+    //! Applies 2D plot data-defined properties
+    void applyDataDefinedProperties( QgsRenderContext &context, QgsMargins &margins ) const;
 
   private:
 
@@ -808,7 +807,8 @@ class CORE_EXPORT Qgs2DXyPlot : public Qgs2DPlot
 
   protected:
 
-    void applyDataDefinedSymbology( QgsRenderContext &context, double &minX, double &maxX, double &minY, double &maxY, double &majorIntervalX, double &minorIntervalX, double &labelIntervalX, double &majorIntervalY, double &minorIntervalY, double &labelIntervalY ) const;
+    //! Applies 2D XY plot data-defined properties
+    void applyDataDefinedProperties( QgsRenderContext &context, double &minX, double &maxX, double &minY, double &maxY, double &majorIntervalX, double &minorIntervalX, double &labelIntervalX, double &majorIntervalY, double &minorIntervalY, double &labelIntervalY ) const;
 
   private:
 

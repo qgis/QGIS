@@ -279,7 +279,7 @@ void Qgs2DPlot::setSize( QSizeF size )
 QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext & ) const
 {
   QgsMargins usedMargins = mMargins;
-  applyDataDefinedSymbology( context, usedMargins );
+  applyDataDefinedProperties( context, usedMargins );
 
   const double leftMargin = context.convertToPainterUnits( usedMargins.left(), Qgis::RenderUnit::Millimeters );
   const double rightMargin = context.convertToPainterUnits( usedMargins.right(), Qgis::RenderUnit::Millimeters );
@@ -299,7 +299,7 @@ void Qgs2DPlot::setMargins( const QgsMargins &margins )
   mMargins = margins;
 }
 
-void Qgs2DPlot::applyDataDefinedSymbology( QgsRenderContext &context, QgsMargins &margins ) const
+void Qgs2DPlot::applyDataDefinedProperties( QgsRenderContext &context, QgsMargins &margins ) const
 {
   if ( !dataDefinedProperties().hasActiveProperties() )
   {
@@ -422,7 +422,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
   mYAxis.gridMajorSymbol()->startRender( context );
 
   QgsMargins margins = mMargins;
-  Qgs2DPlot::applyDataDefinedSymbology( context, margins );
+  Qgs2DPlot::applyDataDefinedProperties( context, margins );
   double minX = mMinX;
   double maxX = mMaxX;
   double minY = mMinY;
@@ -433,7 +433,7 @@ void Qgs2DXyPlot::render( QgsRenderContext &context, QgsPlotRenderContext &plotC
   double majorIntervalY = mYAxis.gridIntervalMajor();
   double minorIntervalY = mYAxis.gridIntervalMinor();
   double labelIntervalY = mYAxis.labelInterval();
-  applyDataDefinedSymbology( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
+  applyDataDefinedProperties( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
 
   const double firstMinorXGrid = std::ceil( minX / minorIntervalX ) * minorIntervalX;
   const double firstMajorXGrid = std::ceil( minX / majorIntervalX ) * majorIntervalX;
@@ -769,7 +769,7 @@ QRectF Qgs2DXyPlot::interiorPlotArea( QgsRenderContext &context, QgsPlotRenderCo
   double majorIntervalY = mYAxis.gridIntervalMajor();
   double minorIntervalY = mYAxis.gridIntervalMinor();
   double labelIntervalY = mYAxis.labelInterval();
-  applyDataDefinedSymbology( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
+  applyDataDefinedProperties( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
 
   QgsExpressionContextScope *plotScope = new QgsExpressionContextScope( QStringLiteral( "plot" ) );
   const QgsExpressionContextScopePopper scopePopper( context.expressionContext(), plotScope );
@@ -877,7 +877,7 @@ QRectF Qgs2DXyPlot::interiorPlotArea( QgsRenderContext &context, QgsPlotRenderCo
   const double topTextSize = 0;
 
   QgsMargins margins = mMargins;
-  Qgs2DPlot::applyDataDefinedSymbology( context, margins );
+  Qgs2DPlot::applyDataDefinedProperties( context, margins );
   const double leftMargin = context.convertToPainterUnits( margins.left(), Qgis::RenderUnit::Millimeters ) + leftTextSize;
   const double rightMargin = context.convertToPainterUnits( margins.right(), Qgis::RenderUnit::Millimeters ) + rightTextSize;
   const double topMargin = context.convertToPainterUnits( margins.top(), Qgis::RenderUnit::Millimeters ) + topTextSize;
@@ -897,7 +897,7 @@ void Qgs2DXyPlot::calculateOptimisedIntervals( QgsRenderContext &context, QgsPlo
   constexpr int MAX_LABELS = 1000;
 
   QgsMargins margins = mMargins;
-  Qgs2DPlot::applyDataDefinedSymbology( context, margins );
+  Qgs2DPlot::applyDataDefinedProperties( context, margins );
   const double leftMargin = context.convertToPainterUnits( margins.left(), Qgis::RenderUnit::Millimeters );
   const double rightMargin = context.convertToPainterUnits( margins.right(), Qgis::RenderUnit::Millimeters );
   const double topMargin = context.convertToPainterUnits( margins.top(), Qgis::RenderUnit::Millimeters );
@@ -995,7 +995,7 @@ void Qgs2DXyPlot::calculateOptimisedIntervals( QgsRenderContext &context, QgsPlo
   double majorIntervalY = mYAxis.gridIntervalMajor();
   double minorIntervalY = mYAxis.gridIntervalMinor();
   double labelIntervalY = mYAxis.labelInterval();
-  applyDataDefinedSymbology( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
+  applyDataDefinedProperties( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
 
   {
     const QString suffixX = mXAxis.labelSuffix();
@@ -1049,7 +1049,7 @@ void Qgs2DXyPlot::setChartBorderSymbol( QgsFillSymbol *symbol )
   mChartBorderSymbol.reset( symbol );
 }
 
-void Qgs2DXyPlot::applyDataDefinedSymbology( QgsRenderContext &context, double &minX, double &maxX, double &minY, double &maxY, double &majorIntervalX, double &minorIntervalX, double &labelIntervalX, double &majorIntervalY, double &minorIntervalY, double &labelIntervalY ) const
+void Qgs2DXyPlot::applyDataDefinedProperties( QgsRenderContext &context, double &minX, double &maxX, double &minY, double &maxY, double &majorIntervalX, double &minorIntervalX, double &labelIntervalX, double &majorIntervalY, double &minorIntervalY, double &labelIntervalY ) const
 {
   if ( !dataDefinedProperties().hasActiveProperties() )
   {

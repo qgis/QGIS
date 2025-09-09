@@ -72,7 +72,7 @@ void QgsLineChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCo
   double majorIntervalY = yAxis().gridIntervalMajor();
   double minorIntervalY = yAxis().gridIntervalMinor();
   double labelIntervalY = yAxis().labelInterval();
-  Qgs2DXyPlot::applyDataDefinedSymbology( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
+  Qgs2DXyPlot::applyDataDefinedProperties( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
 
   const double xScale = plotArea.width() / ( maxX - minX );
   const double yScale = plotArea.height() / ( maxY - minY );
