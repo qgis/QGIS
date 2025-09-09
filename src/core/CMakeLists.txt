@@ -2409,7 +2409,7 @@ else()
 endif()
 
 # require c++20
-target_compile_features(qgis_core PRIVATE cxx_std_20)
+target_compile_features(qgis_core PUBLIC cxx_std_20)
 
 # Exiv still uses std::auto_ptr
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
