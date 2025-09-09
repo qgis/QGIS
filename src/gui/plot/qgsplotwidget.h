@@ -16,8 +16,12 @@
 #define QGSPLOTWIDGET_H
 
 #include "qgis_sip.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextgenerator.h"
 #include "qgspanelwidget.h"
 #include "qgsplot.h"
+#include "qgspropertycollection.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgsnumericformat.h"
 
 #include <QWidget>
@@ -28,7 +32,7 @@
  * \brief Base class for widgets which allow control over the properties of plots.
  * \since QGIS 4.0
  */
-class GUI_EXPORT QgsPlotWidget : public QgsPanelWidget
+class GUI_EXPORT QgsPlotWidget : public QgsPanelWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -52,6 +56,34 @@ class GUI_EXPORT QgsPlotWidget : public QgsPanelWidget
      * \see setPlot()
      */
     virtual QgsPlot *createPlot() = 0 SIP_FACTORY;
+
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for configuration widgets when required.
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
+    QgsExpressionContext createExpressionContext() const override;
+
+  protected:
+    /**
+     * Initiate a data-defined property button tied to a plot widget.
+     */
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsPlot::DataDefinedProperty key );
+
+    /**
+     * Initiate a data-defined property button tied to a plot widget.
+     */
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+
+    QgsPropertyCollection mPropertyCollection;
+
+  private slots:
+
+    void updateProperty();
+
+  private:
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };
 
 
