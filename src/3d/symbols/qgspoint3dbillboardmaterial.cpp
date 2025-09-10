@@ -106,10 +106,8 @@ QSizeF QgsPoint3DBillboardMaterial::windowSize() const
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromImage( const QImage &image )
 {
-  const QImage flippedSymbolImage = image.mirrored();
-
   // Create texture image
-  QgsImageTexture *textureImage = new QgsImageTexture( flippedSymbolImage );
+  QgsImageTexture *textureImage = new QgsImageTexture( image );
   setTexture2DFromTextureImage( textureImage );
 
   setSize( QSizeF( image.size().width() * 2, image.size().height() * 2 ) );
