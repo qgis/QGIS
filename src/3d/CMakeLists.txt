@@ -8,6 +8,8 @@ set(QGIS_3D_SRCS
   qgsaabb.cpp
   qgsabstract3dengine.cpp
   qgsabstractvectorlayer3drenderer.cpp
+  qgsannotationlayer3drenderer.cpp
+  qgsannotationlayerchunkloader_p.cpp
   qgs3danimationsettings.cpp
   qgs3dexportobject.cpp
   qgs3dmapexportsettings.cpp
@@ -154,6 +156,8 @@ set(QGIS_3D_HDRS
   qgsaabb.h
   qgsabstract3dengine.h
   qgsabstractvectorlayer3drenderer.h
+  qgsannotationlayer3drenderer.h
+  qgsannotationlayerchunkloader_p.h
   qgscameracontroller.h
   qgscamerapose.h
   qgsgeotransform.h
