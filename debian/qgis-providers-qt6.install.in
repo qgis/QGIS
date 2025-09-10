@@ -7,6 +7,8 @@ usr/lib/qgis-qt6/plugins/libauthmethod_identcert.so
 usr/lib/qgis-qt6/plugins/libauthmethod_maptilerhmacsha256.so
 usr/lib/qgis-qt6/plugins/libauthmethod_pkcs12.so
 usr/lib/qgis-qt6/plugins/libauthmethod_pkipaths.so
+usr/lib/qgis-qt6/plugins/libauthmethod_oauth2.so
+usr/lib/qgis-qt6/plugins/libauthmethod_planetary_computer.so
 usr/lib/qgis-qt6/plugins/libprovider_arcgisfeatureserver.so
 usr/lib/qgis-qt6/plugins/libprovider_arcgismapserver.so
 usr/lib/qgis-qt6/plugins/libprovider_delimitedtext.so
