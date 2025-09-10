@@ -349,10 +349,10 @@ bool QgsGrassRasterImport::import()
     int iterTop = 0;
     int iterCols = 0;
     int iterRows = 0;
-    QgsRasterBlock *block = nullptr;
+    std::unique_ptr< QgsRasterBlock > block;
     mProcess->setReadChannel( QProcess::StandardOutput );
     mProgress->setRange( 0, mYSize - 1 );
-    while ( iter.readNextRasterPart( band, iterCols, iterRows, &block, iterLeft, iterTop ) )
+    while ( iter.readNextRasterPart( band, iterCols, iterRows, block, iterLeft, iterTop ) )
     {
       for ( int row = 0; row < iterRows; row++ )
       {
@@ -418,7 +418,6 @@ bool QgsGrassRasterImport::import()
         outStream >> result;
 #endif
       }
-      delete block;
       if ( isCanceled() )
       {
         outStream << true; // cancel module
