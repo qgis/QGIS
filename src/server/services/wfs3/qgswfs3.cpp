@@ -33,7 +33,7 @@ class QgsWfs3Module : public QgsServiceModule
     {
       // TODO: remove when QGIS 4 is released
 #if _QGIS_VERSION_INT >= 40000
-      QString rootPath = QStringLiteral( "/oapif" );
+      QString rootPath = QStringLiteral( "/ogcapi" );
 #else
       QString rootPath = QStringLiteral( "/wfs3" );
 #endif

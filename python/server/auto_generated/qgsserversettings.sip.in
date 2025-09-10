@@ -283,7 +283,7 @@ environment variable QGIS_SERVER_API_WFS3_ROOT_PATH.
 
 .. note::
 
-   The default will be changed to "/oapif" for QGIS 4.
+   The default will be changed to "/ogcapi" for QGIS 4.
 
 .. versionadded:: 3.44.3
 %End

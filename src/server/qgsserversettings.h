@@ -66,7 +66,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_WMS_MAX_WIDTH,                        //!< Maximum width for a WMS request. The most conservative between this and the project one is used \since QGIS 3.6.2
       QGIS_SERVER_API_RESOURCES_DIRECTORY,              //!< Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for \since QGIS 3.10
       QGIS_SERVER_API_WFS3_MAX_LIMIT,                   //!< Maximum value for "limit" in a features request, defaults to 10000 \since QGIS 3.10
-      QGIS_SERVER_API_WFS3_ROOT_PATH,                   //!< Root path for OAPIF (WFS3) service API, default value is "/wfs3" \note Default will be changed to "/oapif" for QGIS 4. \since QGIS 3.44.3
+      QGIS_SERVER_API_WFS3_ROOT_PATH,                   //!< Root path for OAPIF (WFS3) service API, default value is "/wfs3" \note Default will be changed to "/ogcapi" for QGIS 4. \since QGIS 3.44.3
       QGIS_SERVER_TRUST_LAYER_METADATA,                 //!< Trust layer metadata. Improves project read time. \since QGIS 3.16
       QGIS_SERVER_FORCE_READONLY_LAYERS,                //!< Force to open layers in read-only mode. \since QGIS 3.28
       QGIS_SERVER_DISABLE_GETPRINT,                     //!< Disabled WMS GetPrint request and don't load layouts. Improves project read time. \since QGIS 3.16
@@ -268,7 +268,7 @@ class SERVER_EXPORT QgsServerSettings
      *
      * The default value is "/wfs3", this value can be changed by setting the environment
      * variable QGIS_SERVER_API_WFS3_ROOT_PATH.
-     * \note The default will be changed to "/oapif" for QGIS 4.
+     * \note The default will be changed to "/ogcapi" for QGIS 4.
      * \since QGIS 3.44.3
      */
     QString apiWfs3RootPath() const;
