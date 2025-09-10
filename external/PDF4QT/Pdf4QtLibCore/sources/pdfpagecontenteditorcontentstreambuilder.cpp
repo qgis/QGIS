@@ -52,8 +52,8 @@ public:
     virtual void updateState(const QPaintEngineState& state) override;
     virtual void drawPixmap(const QRectF& r, const QPixmap& pm, const QRectF& sr) override;
 
-    virtual void drawPath(const QPainterPath& path);
-    virtual void drawPolygon(const QPointF* points, int pointCount, PolygonDrawMode mode);
+    virtual void drawPath(const QPainterPath& path) override;
+    virtual void drawPolygon(const QPointF* points, int pointCount, PolygonDrawMode mode) override;
 
 private:
     PDFPageContentProcessorState m_state;
