@@ -25,7 +25,7 @@
 
 #include "qgspoint3dbillboardmaterial.h"
 #include "moc_qgspoint3dbillboardmaterial.cpp"
-#include "qgsterraintextureimage_p.h"
+#include "qgsimagetexture.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgs3drendercontext.h"
@@ -104,14 +104,15 @@ QSizeF QgsPoint3DBillboardMaterial::windowSize() const
   return mViewportSize->value().value<QSizeF>();
 }
 
-void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double size )
+void QgsPoint3DBillboardMaterial::setTexture2DFromImage( const QImage &image )
 {
-  // Create texture image
-  const QgsRectangle randomExtent = QgsRectangle( rand(), rand(), rand(), rand() );
-  QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, randomExtent, QStringLiteral( "billboard material." ) );
+  const QImage flippedSymbolImage = image.mirrored();
 
-  setTexture2DFromTextureImage( billboardTextureImage );
-  setSize( QSizeF( size + size, size + size ) );
+  // Create texture image
+  QgsImageTexture *textureImage = new QgsImageTexture( flippedSymbolImage );
+  setTexture2DFromTextureImage( textureImage );
+
+  setSize( QSizeF( image.size().width() * 2, image.size().height() * 2 ) );
 }
 
 void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DRenderContext &context, bool selected )
@@ -121,7 +122,7 @@ void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DRenderContext &co
   setTexture2DFromSymbol( defaultSymbol.get(), context, selected );
 }
 
-void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, const Qgs3DRenderContext &context, bool selected )
+QImage QgsPoint3DBillboardMaterial::renderSymbolToImage( const QgsMarkerSymbol *markerSymbol, const Qgs3DRenderContext &context, bool selected )
 {
   QgsRenderContext context2D;
   context2D.setSelectionColor( context.selectionColor() );
@@ -139,9 +140,13 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
   const double extraPixel = minimumExtraSize > pixelSize * strokeRatio ? minimumExtraSize : pixelSize * strokeRatio;
   const int pixelWithExtra = std::ceil( pixelSize + extraPixel );
   const QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( pixelWithExtra, pixelWithExtra ), 0, &context2D, selected );
-  const QImage symbolImage = symbolPixmap.toImage();
-  const QImage flippedSymbolImage = symbolImage.mirrored();
-  setTexture2DFromImage( flippedSymbolImage, pixelWithExtra );
+  return symbolPixmap.toImage();
+}
+
+void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( const QgsMarkerSymbol *markerSymbol, const Qgs3DRenderContext &context, bool selected )
+{
+  const QImage symbolImage = renderSymbolToImage( markerSymbol, context, selected );
+  setTexture2DFromImage( symbolImage );
 }
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage )
