@@ -85,8 +85,8 @@ void QgsGeometryCheckGapAlgorithm::initAlgorithm( const QVariantMap &configurati
   addParameter( new QgsProcessingParameterField(
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
-  addParameter( new QgsProcessingParameterArea(
-    QStringLiteral( "GAP_THRESHOLD" ), QObject::tr( "Gap threshold" ), 0, QStringLiteral( "INPUT" ), false, 0.0
+  addParameter( new QgsProcessingParameterNumber(
+    QStringLiteral( "GAP_THRESHOLD" ), QObject::tr( "Gap threshold" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0
   ) );
 
   // Optional allowed gaps layer and buffer value

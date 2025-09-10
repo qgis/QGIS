@@ -89,8 +89,8 @@ void QgsGeometryCheckSegmentLengthAlgorithm::initAlgorithm( const QVariantMap &c
     QStringLiteral( "OUTPUT" ), QObject::tr( "Short segments features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
-  addParameter( new QgsProcessingParameterDistance(
-    QStringLiteral( "MIN_SEGMENT_LENGTH" ), QObject::tr( "minimum segment length" ), 0, QStringLiteral( "INPUT" ), false, 0.0
+  addParameter( new QgsProcessingParameterNumber(
+    QStringLiteral( "MIN_SEGMENT_LENGTH" ), QObject::tr( "minimum segment length" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
