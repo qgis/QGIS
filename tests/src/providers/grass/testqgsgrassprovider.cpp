@@ -297,8 +297,11 @@ void TestQgsGrassProvider::initTestCase()
 
 bool TestQgsGrassProvider::verify( bool ok )
 {
-  reportRow( QLatin1String( "" ) );
-  reportRow( QStringLiteral( "Test result: " ) + ( ok ? "ok" : "error" ) );
+  if ( !ok )
+  {
+    reportRow( QLatin1String( "" ) );
+    reportRow( QStringLiteral( "Test result: " ) + ( ok ? "ok" : "error" ) );
+  }
   return ok;
 }
 
@@ -1402,10 +1405,6 @@ void TestQgsGrassProvider::edit()
               commandOk = false;
               break;
             }
-            else
-            {
-              reportRow( QStringLiteral( "undo OK" ) );
-            }
           }
         }
       }
@@ -1432,10 +1431,6 @@ void TestQgsGrassProvider::edit()
               commandOk = false;
               break;
             }
-            else
-            {
-              reportRow( QStringLiteral( "redo OK" ) );
-            }
           }
         }
       }
@@ -1459,10 +1454,6 @@ void TestQgsGrassProvider::edit()
         {
           reportRow( QStringLiteral( "command failed" ) );
           break;
-        }
-        else
-        {
-          reportRow( QStringLiteral( "command OK" ) );
         }
       }
     }
@@ -1586,10 +1577,6 @@ bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool
     if ( !compare( grassUri, layer, ok ) )
     {
       reportRow( "comparison failed: " + grassUri );
-    }
-    else
-    {
-      reportRow( "comparison OK: " + grassUri );
     }
   }
   return ok;
