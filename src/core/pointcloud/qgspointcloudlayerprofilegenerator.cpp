@@ -531,6 +531,11 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
     const QVector<QgsPointCloudNodeId> nodes = traverseTree( pc, pc.root(), maximumErrorPixels, rootErrorPixels, context.elevationRange() );
 
+    if ( nodes.empty() )
+    {
+      return false;
+    }
+
     const double rootErrorInLayerCoordinates = rootNodeExtentLayerCoords.width() / pc.span();
     const double maxErrorInMapCoordinates = maximumErrorPixels * mapUnitsPerPixel;
 
