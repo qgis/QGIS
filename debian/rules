@@ -92,6 +92,10 @@ $(error neither qt5 nor qt6)
 endif
 endif
 
+ifneq (,$(filter $(DISTRIBUTION),sid))
+	CONTROL_EXPRESSIONS += sfcgal
+endif
+
 ifneq (,$(filter oracle,$(DEB_BUILD_OPTIONS)))
 	CONTROL_EXPRESSIONS += oracle
 
@@ -113,6 +117,10 @@ ifneq (,$(filter pdal,$(DEB_BUILD_OPTIONS)))
 ifeq ($(shell pkg-config --exists pdal && dpkg --compare-versions $$(pkg-config --modversion pdal) ge 2.5 && echo 1 || echo 0),1)
 CONTROL_EXPRESSIONS += pdal_wrench
 endif
+endif
+
+ifneq (,$(filter sfcgal,$(DEB_BUILD_OPTIONS)))
+	CONTROL_EXPRESSIONS += sfcgal
 endif
 
 define gentemplate
@@ -253,6 +261,12 @@ ifneq (,$(filter pdal,$(CONTROL_EXPRESSIONS)))
 	CMAKE_OPTS += -DWITH_PDAL=TRUE
 else
 	CMAKE_OPTS += -DWITH_PDAL=FALSE
+endif
+
+ifneq (,$(filter sfcgal,$(CONTROL_EXPRESSIONS)))
+	CMAKE_OPTS += -DWITH_SFCGAL=TRUE
+else
+	CMAKE_OPTS += -DWITH_SFCGAL=FALSE
 endif
 
 ifneq (,$(filter oracle,$(DEB_BUILD_OPTIONS)))
