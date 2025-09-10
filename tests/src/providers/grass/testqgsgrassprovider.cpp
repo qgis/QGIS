@@ -596,8 +596,7 @@ void TestQgsGrassProvider::info()
   }
 
   reportRow( QLatin1String( "" ) );
-  QgsCoordinateReferenceSystem expectedCrs;
-  expectedCrs.createFromString( QStringLiteral( "WKT:GEOGCS[\"wgs84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.257223563],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]]" ) );
+  QgsCoordinateReferenceSystem expectedCrs( QStringLiteral( "EPSG:4326" ) );
 
   reportRow( "expectedCrs: " + expectedCrs.toWkt() );
   QString error;
@@ -763,7 +762,7 @@ bool TestQgsGrassProvider::createTmpLocation( QString &tmpGisdbase, QString &tmp
   }
 
   QStringList cpFiles;
-  cpFiles << QStringLiteral( "DEFAULT_WIND" ) << QStringLiteral( "WIND" ) << QStringLiteral( "PROJ_INFO" ) << QStringLiteral( "PROJ_UNITS" );
+  cpFiles << QStringLiteral( "DEFAULT_WIND" ) << QStringLiteral( "WIND" ) << QStringLiteral( "PROJ_INFO" ) << QStringLiteral( "PROJ_UNITS" ) << QStringLiteral( "PROJ_SRID" );
   QString templateMapsetPath = mGisdbase + "/" + mLocation + "/PERMANENT";
   Q_FOREACH ( const QString &cpFile, cpFiles )
   {
