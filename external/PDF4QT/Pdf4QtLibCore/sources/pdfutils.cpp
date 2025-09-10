@@ -51,13 +51,14 @@
 #pragma clang diagnostic ignored "-Wregister"
 #endif
 
-#pragma warning(push)
-#pragma warning(disable:5033)
+
+//#pragma warning(push)
+//#pragma warning(disable:5033)
 #ifndef CMS_NO_REGISTER_KEYWORD
 #define CMS_NO_REGISTER_KEYWORD
 #endif
 #include <lcms2.h>
-#pragma warning(pop)
+//#pragma warning(pop)
 
 #ifdef PDF4QT_COMPILER_CLANG
 #pragma clang diagnostic pop
