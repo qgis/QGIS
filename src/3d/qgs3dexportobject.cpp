@@ -107,7 +107,7 @@ void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
   }
 }
 
-void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
+void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ ) const
 {
   if ( mType != TriangularFaces )
     return;
@@ -123,7 +123,7 @@ void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, flo
   }
 }
 
-void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &center, int precision )
+void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &center, int precision ) const
 {
   // Set groups
   // turns out grouping doest work as expected in blender
@@ -210,7 +210,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   }
 }
 
-QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &folderPath )
+QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &folderPath ) const
 {
   QString materialName = mName + "_material";
   if ( mMaterialParameters.size() == 0 && ( mTexturesUV.size() == 0 || mTextureImage.isNull() ) )
