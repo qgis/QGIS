@@ -25,8 +25,14 @@
 
 #include "qgsabstractdatabaseproviderconnection.h"
 
+/**
+ * A dialog for selection of QGIS projects to import into PostgreSQL database.
+ * \since QGIS 4.0
+*/
 class QgsPostgresImportProjectDialog : public QDialog
 {
+    Q_OBJECT
+
   public:
     QgsPostgresImportProjectDialog( std::shared_ptr<QgsAbstractDatabaseProviderConnection> dbConn, const QString targetSchema, QWidget *parent = nullptr );
 
