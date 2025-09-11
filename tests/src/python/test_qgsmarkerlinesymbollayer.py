@@ -1501,6 +1501,220 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
             )
         )
 
+    def testBlankAreas(self):
+        """
+        Test with data defined blank areas
+        """
+
+        # rendering test
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+
+        sl = QgsMarkerLineSymbolLayer()
+        sl.setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.Interval))
+        sl.setDataDefinedProperty(
+            QgsSymbolLayer.Property.BlankAreas,
+            QgsProperty.fromExpression("'(((2.90402 7.36,11.8776 30.4499)))'"),
+        )
+
+        markerSl = sl.subSymbol().symbolLayers()[0]
+        self.assertTrue(markerSl)
+        markerSl.setShape(Qgis.MarkerShape.HalfSquare)
+        markerSl.setStrokeStyle(Qt.NoPen)
+        s.appendSymbolLayer(sl)
+
+        g = QgsGeometry.fromWkt(
+            """MultiPolygon(((0 0, 10 0, 10 3, 12 4, 8 5, 12 6, 8 7, 10 8, 10 10, 0 10, 0 0),(2 3, 6 3, 6 8, 2 8, 2 3)),
+                            ((13 0, 16 0, 16 10, 13 10, 13 0)))"""
+        )
+
+        # test with average angle disabled
+        sl.setAverageAngleLength(0)
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_blankareas_interval",
+                "markerline_blankareas_interval",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+        # Test with average angle enabled
+        sl.setAverageAngleLength(4)
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_blankareas_interval_averageangle",
+                "markerline_blankareas_interval_averageangle",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+        # Test blank area on other multi polygon part and ring
+        sl.setDataDefinedProperty(
+            QgsSymbolLayer.Property.BlankAreas,
+            QgsProperty.fromExpression(
+                "'(((2.90402 7.36,11.8776 30.4499),(6 9)),((2 7)))'"
+            ),
+        )
+
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_blankareas_multipoly_and_ring",
+                "markerline_blankareas_multipoly_and_ring",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+        # central point with no average angle
+        sl.setPlacements(
+            Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.CentralPoint)
+        )
+        sl.setAverageAngleLength(0)
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_blankareas_central",
+                "markerline_blankareas_central",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+        # central point with average angle
+        sl.setPlacements(
+            Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.CentralPoint)
+        )
+        sl.setAverageAngleLength(4)
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_blankareas_central_averageangle",
+                "markerline_blankareas_central_averageangle",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+        # vertex with no average angle (but average angle has no impact here, no need to test with,
+        # we would get the same result)
+        sl.setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.Vertex))
+        sl.setAverageAngleLength(0)
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_blankareas_vertex",
+                "markerline_blankareas_vertex",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+        # Test first and last vertex
+        sl.setPlacements(
+            Qgis.MarkerLinePlacements(
+                Qgis.MarkerLinePlacement.FirstVertex
+                | Qgis.MarkerLinePlacement.LastVertex
+            )
+        )
+        sl.setDataDefinedProperty(
+            QgsSymbolLayer.Property.BlankAreas,
+            QgsProperty.fromExpression(
+                "'(((0 2, 45 52)))'"
+            ),  # 2 distances to erase first and last
+        )
+
+        markerSl.setSize(5)
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_blankareas_firstlast",
+                "markerline_blankareas_firstlast",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+        # Test first and last vertex with offset along line
+        # Start vertex of first part must disappear because it's inside the set distances but
+        # not end vertex
+        sl.setOffsetAlongLine(1.5)
+        sl.setOffsetAlongLineUnit(Qgis.RenderUnit.MapUnits)
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_blankareas_firstlast_offset",
+                "markerline_blankareas_firstlast_offset",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+    def testBlankAreasOffsetAlongLine(self):
+        """
+        Test with data defined blank areas and an offset along line has been set
+        """
+
+        # rendering test
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        sl = QgsMarkerLineSymbolLayer()
+        sl.setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.Interval))
+        sl.setDataDefinedProperty(
+            QgsSymbolLayer.Property.BlankAreas,
+            QgsProperty.fromExpression("'(((1 2.9, 7.7 15)))'"),
+        )
+
+        sl.setOffsetAlongLineUnit(Qgis.RenderUnit.MapUnits)
+        sl.setOffsetAlongLine(3)
+
+        markerSl = sl.subSymbol().symbolLayers()[0]
+        self.assertTrue(markerSl)
+        markerSl.setShape(Qgis.MarkerShape.HalfSquare)
+        markerSl.setStrokeStyle(Qt.NoPen)
+        s.appendSymbolLayer(sl)
+
+        # Test offset along line
+        g = QgsGeometry.fromWkt("""LineString((0 0, 10 10))""")
+
+        sl.setAverageAngleLength(4)
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_blankareas_offsetalongline",
+                "markerline_blankareas_offsetalongline",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+        # We should have exactly the same rendering with average angle length because this is a straight line
+        sl.setAverageAngleLength(0)
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_blankareas_offsetalongline",
+                "markerline_blankareas_offsetalongline",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
         f.setGeometry(geom)
