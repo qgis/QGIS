@@ -127,18 +127,26 @@ QImage QgsPoint3DBillboardMaterial::renderSymbolToImage( const QgsMarkerSymbol *
   context2D.setScaleFactor( context.outputDpi() / 25.4 );
   context2D.setFlag( Qgis::RenderContextFlag::Antialiasing );
   context2D.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
-  const double pixelSize = context2D.convertToPainterUnits( markerSymbol->size( context2D ), markerSymbol->sizeUnit() );
 
-  // This number is an max estimation ratio between stroke width and symbol size.
-  const double strokeRatio = 0.5;
-  // Minimum extra width, just in case the size is small, but the stroke is quite big.
-  // 10 mm is quite big based on Raymond's experiece.
-  // 10 mm has around 37 pixel in 96 dpi, round up become 40.
-  const double minimumExtraSize = 40;
-  const double extraPixel = minimumExtraSize > pixelSize * strokeRatio ? minimumExtraSize : pixelSize * strokeRatio;
-  const int pixelWithExtra = std::ceil( pixelSize + extraPixel );
-  const QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( pixelWithExtra, pixelWithExtra ), 0, &context2D, selected );
-  return symbolPixmap.toImage();
+  std::unique_ptr< QgsMarkerSymbol > clonedSymbol( markerSymbol->clone() );
+  clonedSymbol->startRender( context2D );
+
+  constexpr int BUFFER_SIZE_PIXELS = 2;
+
+  const QRectF bounds = markerSymbol->bounds( QPointF( 0, 0 ), context2D );
+
+  QImage image( static_cast< int >( std::ceil( bounds.size().width() ) ) + 2 * BUFFER_SIZE_PIXELS, static_cast< int >( std::ceil( bounds.size().height() ) ) + 2 * BUFFER_SIZE_PIXELS, QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::transparent );
+
+  QPainter painter( &image );
+  context2D.setPainter( &painter );
+
+  clonedSymbol->renderPoint( QPointF( -bounds.left() + BUFFER_SIZE_PIXELS, -bounds.top() + BUFFER_SIZE_PIXELS ), nullptr, context2D, -1, selected );
+
+  painter.end();
+
+  clonedSymbol->stopRender( context2D );
+  return image;
 }
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( const QgsMarkerSymbol *markerSymbol, const Qgs3DRenderContext &context, bool selected )
