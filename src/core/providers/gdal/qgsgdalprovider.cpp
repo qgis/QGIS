@@ -1842,6 +1842,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
     {
       const char *name = CSLFetchNameValue( metadata, CPLSPrintf( "SUBDATASET_%d_NAME", i ) );
       const char *desc = CSLFetchNameValue( metadata, CPLSPrintf( "SUBDATASET_%d_DESC", i ) );
+      bool skippedContainerScan = false;
       if ( name && desc )
       {
         QString layerName = QString::fromUtf8( name );
@@ -1858,26 +1859,35 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         }
         else
         {
-
-          // Check if the layer has TIFFTAG_DOCUMENTNAME associated with it. If so, use that name.
-          GDALDatasetH datasetHandle = GDALOpen( name, GA_ReadOnly );
-
-          if ( datasetHandle )
+          if ( gdalDriverName == QLatin1String( "GTiff" ) )
           {
-
-            QString tagTIFFDocumentName = GDALGetMetadataItem( datasetHandle, "TIFFTAG_DOCUMENTNAME", nullptr );
-            if ( ! tagTIFFDocumentName.isEmpty() )
+            if ( flags.testFlag( Qgis::SublayerQueryFlag::OpenLayersToResolveDecriptions ) )
             {
-              layerName = tagTIFFDocumentName;
-            }
+              // Check if the layer has TIFFTAG_DOCUMENTNAME associated with it. If so, use that name.
+              GDALDatasetH datasetHandle = GDALOpen( name, GA_ReadOnly );
 
-            QString tagTIFFImageDescription = GDALGetMetadataItem( datasetHandle, "TIFFTAG_IMAGEDESCRIPTION", nullptr );
-            if ( ! tagTIFFImageDescription.isEmpty() )
+              if ( datasetHandle )
+              {
+
+                QString tagTIFFDocumentName = GDALGetMetadataItem( datasetHandle, "TIFFTAG_DOCUMENTNAME", nullptr );
+                if ( ! tagTIFFDocumentName.isEmpty() )
+                {
+                  layerName = tagTIFFDocumentName;
+                }
+
+                QString tagTIFFImageDescription = GDALGetMetadataItem( datasetHandle, "TIFFTAG_IMAGEDESCRIPTION", nullptr );
+                if ( ! tagTIFFImageDescription.isEmpty() )
+                {
+                  layerDesc = tagTIFFImageDescription;
+                }
+
+                GDALClose( datasetHandle );
+              }
+            }
+            else
             {
-              layerDesc = tagTIFFImageDescription;
+              skippedContainerScan = true;
             }
-
-            GDALClose( datasetHandle );
           }
 
           // try to extract layer name from a path like 'NETCDF:"/baseUri":cell_node'
@@ -1896,6 +1906,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         details.setDescription( layerDesc );
         details.setLayerNumber( i );
         details.setDriverName( gdalDriverName );
+        details.setSkippedContainerScan( skippedContainerScan );
 
         const QVariantMap layerUriParts = decodeGdalUri( uri );
         // update original uri parts with this layername and path -- this ensures that other uri components
