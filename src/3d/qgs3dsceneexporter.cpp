@@ -83,6 +83,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include "qgs3dutils.h"
 #include "qgsimagetexture.h"
 #include "qgstessellatedpolygongeometry.h"
+#include "qgsgeotransform.h"
 
 #include <numeric>
 
@@ -285,15 +286,15 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const QString 
   switch ( generator->type() )
   {
     case QgsTerrainGenerator::Dem:
-      terrainTile = getDemTerrainEntity( terrain, node );
+      terrainTile = getDemTerrainEntity( terrain, node, settings->origin() );
       parseDemTile( terrainTile, layerName + QStringLiteral( "_" ) );
       break;
     case QgsTerrainGenerator::Flat:
-      terrainTile = getFlatTerrainEntity( terrain, node );
+      terrainTile = getFlatTerrainEntity( terrain, node, settings->origin() );
       parseFlatTile( terrainTile, layerName + QStringLiteral( "_" ) );
       break;
     case QgsTerrainGenerator::Mesh:
-      terrainTile = getMeshTerrainEntity( terrain, node );
+      terrainTile = getMeshTerrainEntity( terrain, node, settings->origin() );
       parseMeshTile( terrainTile, layerName + QStringLiteral( "_" ) );
       break;
     // TODO: implement other terrain types
@@ -304,7 +305,7 @@ void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const QString 
   textureGenerator->setTextureSize( oldResolution );
 }
 
-QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
+QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin )
 {
   QgsFlatTerrainGenerator *generator = qgis::down_cast<QgsFlatTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
   FlatTerrainChunkLoader *flatTerrainLoader = qobject_cast<FlatTerrainChunkLoader *>( generator->createChunkLoader( node ) );
@@ -313,10 +314,17 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity
   // the entity we created will be deallocated once the scene exporter is deallocated
   Qt3DCore::QEntity *entity = flatTerrainLoader->createEntity( this );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
+
+  const QList<QgsGeoTransform *> transforms = entity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( mapOrigin );
+  }
+
   return tileEntity;
 }
 
-QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
+QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin )
 {
   // Just create a new tile (we don't need to export exact level of details as in the scene)
   // create the entity synchronously and then it will be deleted once our scene exporter instance is deallocated
@@ -327,16 +335,30 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
   if ( mExportTextures )
     terrain->textureGenerator()->waitForFinished();
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+
+  const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( mapOrigin );
+  }
+
   delete generator;
   return tileEntity;
 }
 
-QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node )
+QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin )
 {
   QgsMeshTerrainGenerator *generator = qgis::down_cast<QgsMeshTerrainGenerator *>( terrain->mapSettings()->terrainGenerator() );
   QgsMeshTerrainTileLoader *loader = qobject_cast<QgsMeshTerrainTileLoader *>( generator->createChunkLoader( node ) );
   // TODO: export textures
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+
+  const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( mapOrigin );
+  }
+
   return tileEntity;
 }
 
