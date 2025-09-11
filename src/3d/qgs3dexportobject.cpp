@@ -103,7 +103,7 @@ void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
   QMap<QString, QString> parameters = material->toExportParameters();
   for ( auto it = parameters.begin(); it != parameters.end(); ++it )
   {
-    setMaterialParameter( it.key(), it.value() );
+    mMaterialParameters[it.key()] = it.value();
   }
 }
 

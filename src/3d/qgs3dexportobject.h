@@ -82,7 +82,7 @@ class _3D_EXPORT Qgs3DExportObject
     void setupNormalCoordinates( const QVector<float> &normalsBuffer, const QMatrix4x4 &transform );
     //! Sets texture coordinates for each vertex
     void setupTextureCoordinates( const QVector<float> &texturesBuffer );
-    //! Sets the material parameters (diffuse color, shininess...) from phong material
+    //! Sets the material parameters (diffuse color, shininess...) to be exported in the .mtl file
     void setupMaterial( QgsAbstractMaterialSettings *material );
 
     //! Sets the texture image used by the object
@@ -96,9 +96,6 @@ class _3D_EXPORT Qgs3DExportObject
      * This expands the bounding box if the current object outside the bounds of the already established bounds
      */
     void objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ );
-
-    //! Sets a material parameter to be exported in the .mtl file
-    void setMaterialParameter( const QString &parameter, const QString &value ) { mMaterialParameters[parameter] = value; }
 
     //! Saves the current object to the output stream while scaling the object and centering it to be visible in exported scene
     void saveTo( QTextStream &out, float scale, const QVector3D &center, int precision = 6 );
