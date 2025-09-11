@@ -105,7 +105,7 @@ bool QgsApproximateMedialAxisAlgorithm::prepareAlgorithm( const QVariantMap &par
 #ifdef WITH_SFCGAL
   return true;
 #else
-  throw QgsProcessingException( QObject::tr( "This processing requires a QGIS installation with SFCGAL support enabled. Please use a version of QGIS that includes SFCGAL." ) );
+  throw QgsProcessingException( QObject::tr( "This processing algorithm requires a QGIS installation with SFCGAL support enabled. Please use a version of QGIS that includes SFCGAL." ) );
 #endif
 }
 
@@ -160,7 +160,7 @@ QgsFeatureList QgsApproximateMedialAxisAlgorithm::processFeature( const QgsFeatu
 #else
   Q_UNUSED( feature )
   Q_UNUSED( feedback )
-  throw QgsProcessingException( QObject::tr( "This processing requires a QGIS installation with SFCGAL support enabled. Please use a version of QGIS that includes SFCGAL." ) );
+  throw QgsProcessingException( QObject::tr( "This processing algorithm requires a QGIS installation with SFCGAL support enabled. Please use a version of QGIS that includes SFCGAL." ) );
 #endif
 }
 

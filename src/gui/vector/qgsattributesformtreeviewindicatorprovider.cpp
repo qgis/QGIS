@@ -212,45 +212,24 @@ QString QgsFieldConstraintIndicatorProvider::tooltipText( QgsAttributesFormItem 
   const QgsAttributesFormData::FieldConfig config = item->data( QgsAttributesFormModel::ItemFieldConfigRole ).value< QgsAttributesFormData::FieldConfig >();
   const QgsFieldConstraints constraints = config.mFieldConstraints;
 
-  auto addOriginAndStrengthText = [=]( QgsFieldConstraints::Constraint constraint ) {
-    QString text;
-    if ( constraints.constraintOrigin( constraint ) == QgsFieldConstraints::ConstraintOriginProvider )
-    {
-      text += tr( "provider, " );
-    }
-    else
-    {
-      text += tr( "layer, " );
-    }
-
-    if ( constraints.constraintStrength( constraint ) == QgsFieldConstraints::ConstraintStrengthHard )
-    {
-      text += tr( "enforced)" );
-    }
-    else
-    {
-      text += tr( "unenforced)" );
-    }
-    return text;
+  auto addOriginAndStrengthText = [=]( QString name, QgsFieldConstraints::Constraint constraint ) {
+    return QStringLiteral( "%1 (%2, %3)" ).arg( name, constraints.constraintOrigin( constraint ) == QgsFieldConstraints::ConstraintOriginProvider ? tr( "provider" ) : tr( "layer" ), constraints.constraintStrength( constraint ) == QgsFieldConstraints::ConstraintStrengthHard ? tr( "enforced" ) : tr( "unenforced" ) );
   };
 
   QString tooltipText;
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) != QgsFieldConstraints::ConstraintOriginNotSet )
   {
-    tooltipText += tr( "Not Null (" );
-    tooltipText += addOriginAndStrengthText( QgsFieldConstraints::ConstraintNotNull );
+    tooltipText += addOriginAndStrengthText( tr( "Not Null" ), QgsFieldConstraints::ConstraintNotNull );
   }
 
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) != QgsFieldConstraints::ConstraintOriginNotSet )
   {
-    tooltipText += tr( "\nUnique (" );
-    tooltipText += addOriginAndStrengthText( QgsFieldConstraints::ConstraintUnique );
+    tooltipText += "\n" + addOriginAndStrengthText( tr( "Unique" ), QgsFieldConstraints::ConstraintUnique );
   }
 
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) != QgsFieldConstraints::ConstraintOriginNotSet )
   {
-    tooltipText += tr( "\nExpression (" );
-    tooltipText += addOriginAndStrengthText( QgsFieldConstraints::ConstraintExpression );
+    tooltipText += "\n" + addOriginAndStrengthText( tr( "Expression" ), QgsFieldConstraints::ConstraintExpression );
     tooltipText += !constraints.constraintDescription().isEmpty() ? QStringLiteral( "\n   " ) + constraints.constraintDescription() : QString();
   }
 
@@ -296,7 +275,7 @@ QString QgsFieldDefaultValueIndicatorProvider::tooltipText( QgsAttributesFormIte
   if ( !config.mDefaultValueExpression.isEmpty() )
   {
     text += config.mDefaultValueExpression;
-    text += config.mApplyDefaultValueOnUpdate ? tr( "\n(Apply on update)" ) : tr( "\n(Do not apply on update)" );
+    text += QStringLiteral( "\n(%1)" ).arg( config.mApplyDefaultValueOnUpdate ? tr( "Apply on update" ) : tr( "Do not apply on update" ) );
   }
   return text;
 }
