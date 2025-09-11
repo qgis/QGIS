@@ -110,7 +110,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( const QImage &image )
   QgsImageTexture *textureImage = new QgsImageTexture( image );
   setTexture2DFromTextureImage( textureImage );
 
-  setSize( QSizeF( image.size().width() * 2, image.size().height() * 2 ) );
+  setSize( QSizeF( image.size().width(), image.size().height() ) );
 }
 
 void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DRenderContext &context, bool selected )
