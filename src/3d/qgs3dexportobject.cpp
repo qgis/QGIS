@@ -53,6 +53,7 @@ void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
 
 void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform )
 {
+  mVertexPosition.clear();
   for ( int i = 0; i < positionsBuffer.size(); i += 3 )
   {
     const QVector3D position( positionsBuffer[i], positionsBuffer[i + 1], positionsBuffer[i + 2] );
@@ -63,17 +64,21 @@ void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &position
 
 void Qgs3DExportObject::setupFaces( const QVector<uint> &facesIndexes )
 {
+  mIndexes.clear();
   insertIndexData<uint>( mIndexes, facesIndexes );
 }
 
 void Qgs3DExportObject::setupLine()
 {
+  mIndexes.clear();
   for ( int i = 0; i < mVertexPosition.size(); i += 3 )
     mIndexes << i / 3 + 1;
 }
 
 void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuffer, const QMatrix4x4 &transform )
 {
+  mNormals.clear();
+
   // Qt does not provide QMatrix3x3 * QVector3D multiplication so we use QMatrix4x4
   QMatrix3x3 normal3x3 = transform.normalMatrix();
   QMatrix4x4 normal4x4( normal3x3( 0, 0 ), normal3x3( 0, 1 ), normal3x3( 0, 2 ), 0, normal3x3( 1, 0 ), normal3x3( 1, 1 ), normal3x3( 1, 2 ), 0, normal3x3( 2, 0 ), normal3x3( 2, 1 ), normal3x3( 2, 2 ), 0, 0, 0, 0, 1 );
@@ -95,11 +100,13 @@ void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuf
 
 void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesBuffer )
 {
+  mTexturesUV.clear();
   mTexturesUV << texturesBuffer;
 }
 
 void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
 {
+  mMaterialParameters.clear();
   QMap<QString, QString> parameters = material->toExportParameters();
   for ( auto it = parameters.begin(); it != parameters.end(); ++it )
   {
