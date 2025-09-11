@@ -737,7 +737,9 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QVERIFY( rl->isValid() );
 
   // tiff with two raster layers and TIFF Tags describing sublayers
-  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_subdataset_tags.tif" );
+  // this REQUIRES the opt-in Qgis::SublayerQueryFlag::OpenLayersToResolveDecriptions flag, as it's slow.
+  // see https://github.com/qgis/QGIS/issues/63153
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_subdataset_tags.tif", Qgis::SublayerQueryFlag::OpenLayersToResolveDecriptions );
   QCOMPARE( res.count(), 2 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "Test Document Name 1" ) );
@@ -746,6 +748,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
+  QVERIFY( !res.at( 0 ).skippedContainerScan() );
   rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   QCOMPARE( res.at( 1 ).layerNumber(), 2 );
@@ -755,6 +758,31 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 1 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "GTiff" ) );
+  QVERIFY( !res.at( 1 ).skippedContainerScan() );
+  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 1 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+
+  // without flag, description should NOT be resolved
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_subdataset_tags.tif" );
+  QCOMPARE( res.count(), 2 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "GTIFF_DIR:1:%1" ).arg( QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_subdataset_tags.tif" ) );
+  QCOMPARE( res.at( 0 ).description(), QStringLiteral( "Page 1 (1P x 1L x 1B)" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "GTIFF_DIR:1:%1/raster/gtiff_subdataset_tags.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
+  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+  QCOMPARE( res.at( 1 ).layerNumber(), 2 );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "GTIFF_DIR:2:%1" ).arg( QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_subdataset_tags.tif" ) );
+  QCOMPARE( res.at( 1 ).description(), QStringLiteral( "Page 2 (1P x 1L x 1B)" ) );
+  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "GTIFF_DIR:2:%1/raster/gtiff_subdataset_tags.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 1 ).type(), Qgis::LayerType::Raster );
+  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "GTiff" ) );
+  QVERIFY( res.at( 1 ).skippedContainerScan() );
   rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 }
