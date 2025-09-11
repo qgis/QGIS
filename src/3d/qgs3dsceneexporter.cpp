@@ -236,7 +236,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
   return false;
 }
 
-void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3DExportObject *object )
+void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3DExportObject *object ) const
 {
   Qt3DExtras::QPhongMaterial *phongMaterial = findTypedComponent<Qt3DExtras::QPhongMaterial>( entity );
   if ( phongMaterial )
@@ -811,7 +811,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
   return obj;
 }
 
-bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision )
+bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision ) const
 {
   if ( mObjects.isEmpty() )
   {

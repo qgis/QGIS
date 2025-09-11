@@ -80,7 +80,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
      * Saves the scene to a .obj file
      * Returns FALSE if the operation failed
      */
-    bool save( const QString &sceneName, const QString &sceneFolderPath, int precision = 6 );
+    bool save( const QString &sceneName, const QString &sceneFolderPath, int precision = 6 ) const;
 
     //! Sets whether the triangles will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
@@ -119,7 +119,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     //! Constructs Qgs3DExportObject from geometry renderer
     Qgs3DExportObject *processGeometryRenderer( Qt3DRender::QGeometryRenderer *mesh, const QString &objectNamePrefix, const QMatrix4x4 &sceneTransform = QMatrix4x4() );
     //! Extracts material information from geometry renderer and inserts it into the export object
-    void processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3DExportObject *object );
+    void processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3DExportObject *object ) const;
     //! Constricts Qgs3DExportObject from line entity
     QVector<Qgs3DExportObject *> processLines( Qt3DCore::QEntity *entity, const QString &objectNamePrefix );
     //! Constricts Qgs3DExportObject from billboard point entity
