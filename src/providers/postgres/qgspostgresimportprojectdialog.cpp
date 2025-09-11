@@ -27,6 +27,7 @@
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgspostgresconn.h"
+#include "moc_qgspostgresimportprojectdialog.cpp"
 
 QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( std::shared_ptr<QgsAbstractDatabaseProviderConnection> dbConn, const QString targetSchema, QWidget *parent )
   : QDialog { parent }, mDbConnection( dbConn ), mSchemaToImportTo( targetSchema )
