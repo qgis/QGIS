@@ -2067,7 +2067,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
     if ( isTable && conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::SetTableComment ) )
     {
-      QAction *editComment = new QAction( tr( "Edit Comment…" ), menu );
+      QAction *editComment = new QAction( tr( "Set Comment…" ), menu );
 
       addToSubMenu( menu, editComment, tr( "Manage" ) );
 
