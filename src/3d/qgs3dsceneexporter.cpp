@@ -769,12 +769,11 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
       continue;
     }
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
-    const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
     Qgs3DExportObject *exportObject = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "line" ) ) );
     exportObject->setType( Qgs3DExportObject::LineStrip );
     exportObject->setupPositionCoordinates( positionData, QMatrix4x4() );
-    exportObject->setupLine( indexData );
+    exportObject->setupLine();
 
     objs.push_back( exportObject );
   }

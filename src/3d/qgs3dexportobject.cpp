@@ -66,9 +66,8 @@ void Qgs3DExportObject::setupFaces( const QVector<uint> &facesIndexes )
   insertIndexData<uint>( mIndexes, facesIndexes );
 }
 
-void Qgs3DExportObject::setupLine( const QVector<uint> &lineIndexes )
+void Qgs3DExportObject::setupLine()
 {
-  Q_UNUSED( lineIndexes );
   for ( int i = 0; i < mVertexPosition.size(); i += 3 )
     mIndexes << i / 3 + 1;
 }
