@@ -36,21 +36,6 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 #include "qgsabstractmaterialsettings.h"
 
 
-template<typename T>
-void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
-{
-  for ( int i = 0; i < faceIndex.size(); i += 3 )
-  {
-    if ( i + 2 >= faceIndex.size() )
-      continue;
-    // skip invalid triangles
-    if ( faceIndex[i] == faceIndex[i + 1] || faceIndex[i + 1] == faceIndex[i + 2] || faceIndex[i] == faceIndex[i + 2] )
-      continue;
-    for ( int j = 0; j < 3; ++j )
-      vertexIndex << faceIndex[i + j];
-  }
-}
-
 void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform )
 {
   mVertexPosition.clear();
@@ -69,7 +54,16 @@ void Qgs3DExportObject::setupTriangle( const QVector<float> &positionsBuffer, co
 
   // setup faces
   mIndexes.clear();
-  insertIndexData<uint>( mIndexes, facesIndexes );
+  for ( int i = 0; i < facesIndexes.size(); i += 3 )
+  {
+    if ( i + 2 >= facesIndexes.size() )
+      continue;
+    // skip invalid triangles
+    if ( facesIndexes[i] == facesIndexes[i + 1] || facesIndexes[i + 1] == facesIndexes[i + 2] || facesIndexes[i] == facesIndexes[i + 2] )
+      continue;
+    for ( int j = 0; j < 3; ++j )
+      mIndexes << facesIndexes[i + j];
+  }
 }
 
 void Qgs3DExportObject::setupLine( const QVector<float> &positionsBuffer )
