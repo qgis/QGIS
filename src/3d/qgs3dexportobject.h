@@ -76,7 +76,7 @@ class _3D_EXPORT Qgs3DExportObject
     //! Sets the faces in facesIndexes to the faces in the object
     void setupFaces( const QVector<uint> &facesIndexes );
     //! sets line vertex indexes
-    void setupLine( const QVector<uint> &facesIndexes );
+    void setupLine();
 
     //! Sets normal coordinates for each vertex
     void setupNormalCoordinates( const QVector<float> &normalsBuffer, const QMatrix4x4 &transform );
