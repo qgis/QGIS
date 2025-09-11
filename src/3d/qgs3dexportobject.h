@@ -22,6 +22,7 @@
 #include <QVector3D>
 #include <QImage>
 #include <QMap>
+#include <QMatrix4x4>
 
 #include "qgis_3d.h"
 
@@ -63,20 +64,20 @@ class _3D_EXPORT Qgs3DExportObject
 
     //! Returns the object type
     ObjectType type() const { return mType; }
-    //! Sets the object type
-    void setType( ObjectType type ) { mType = type; }
 
     //! Returns whether object edges will look smooth
     bool smoothEdges() const { return mSmoothEdges; }
     //! Sets whether triangles edges will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
 
-    //! Sets positions coordinates and does the translation, rotation and scaling
-    void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform );
-    //! Sets the faces in facesIndexes to the faces in the object
-    void setupFaces( const QVector<uint> &facesIndexes );
-    //! sets line vertex indexes
-    void setupLine();
+    //! sets line indexes and positions coordinates
+    void setupLine( const QVector<float> &positionsBuffer );
+
+    //! sets triangle indexes and positions coordinates
+    void setupTriangle( const QVector<float> &positionsBuffer, const QVector<uint> &facesIndexes, const QMatrix4x4 &transform );
+
+    //! sets point positions coordinates
+    void setupPoint( const QVector<float> &positionsBuffer );
 
     //! Sets normal coordinates for each vertex
     void setupNormalCoordinates( const QVector<float> &normalsBuffer, const QMatrix4x4 &transform );
@@ -113,6 +114,10 @@ class _3D_EXPORT Qgs3DExportObject
 
     //! Returns the vertex indexes
     QVector<unsigned int> indexes() const { return mIndexes; }
+
+  private:
+    //! Sets positions coordinates and does the translation, rotation and scaling
+    void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform = QMatrix4x4() );
 
   private:
     QString mName;

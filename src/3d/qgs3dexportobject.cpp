@@ -62,17 +62,31 @@ void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &position
   }
 }
 
-void Qgs3DExportObject::setupFaces( const QVector<uint> &facesIndexes )
+void Qgs3DExportObject::setupTriangle( const QVector<float> &positionsBuffer, const QVector<uint> &facesIndexes, const QMatrix4x4 &transform )
 {
+  mType = Qgs3DExportObject::TriangularFaces;
+  setupPositionCoordinates( positionsBuffer, transform );
+
+  // setup faces
   mIndexes.clear();
   insertIndexData<uint>( mIndexes, facesIndexes );
 }
 
-void Qgs3DExportObject::setupLine()
+void Qgs3DExportObject::setupLine( const QVector<float> &positionsBuffer )
 {
+  mType = Qgs3DExportObject::LineStrip;
+  setupPositionCoordinates( positionsBuffer );
+
+  // setup indexes
   mIndexes.clear();
   for ( int i = 0; i < mVertexPosition.size(); i += 3 )
     mIndexes << i / 3 + 1;
+}
+
+void Qgs3DExportObject::setupPoint( const QVector<float> &positionsBuffer )
+{
+  mType = Qgs3DExportObject::Points;
+  setupPositionCoordinates( positionsBuffer );
 }
 
 void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuffer, const QMatrix4x4 &transform )
