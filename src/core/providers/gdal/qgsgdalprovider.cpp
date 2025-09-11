@@ -1807,7 +1807,7 @@ Qgis::RasterProviderCapabilities QgsGdalProvider::providerCapabilities() const
          Qgis::RasterProviderCapability::BuildPyramids;
 }
 
-QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri )
+QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri, Qgis::SublayerQueryFlags flags )
 {
   if ( !dataset )
   {
@@ -2982,7 +2982,7 @@ bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QSt
   }
   else if ( GDALGetRasterCount( myDataset.get() ) == 0 )
   {
-    if ( QgsGdalProvider::sublayerDetails( myDataset.get(), fileName ).isEmpty() )
+    if ( QgsGdalProvider::sublayerDetails( myDataset.get(), fileName, Qgis::SublayerQueryFlags() ).isEmpty() )
     {
       retErrMsg = QObject::tr( "This raster file has no bands and is invalid as a raster layer." );
       return false;
@@ -3732,7 +3732,7 @@ void QgsGdalProvider::initBaseDataset()
   }
 
   // get sublayers
-  mSubLayers = QgsGdalProvider::sublayerDetails( mGdalDataset,  dataSourceUri() );
+  mSubLayers = QgsGdalProvider::sublayerDetails( mGdalDataset,  dataSourceUri(), Qgis::SublayerQueryFlags() );
 
   // check if this file has bands or subdatasets
   CPLErrorReset();
@@ -4475,7 +4475,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
 
   if ( dataset )
   {
-    const QList< QgsProviderSublayerDetails > res = QgsGdalProvider::sublayerDetails( dataset.get(), uri );
+    const QList< QgsProviderSublayerDetails > res = QgsGdalProvider::sublayerDetails( dataset.get(), uri, flags );
     if ( res.empty() )
     {
       // may not have multiple sublayers, but may still be a single-raster layer dataset
