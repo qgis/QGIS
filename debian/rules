@@ -92,7 +92,7 @@ $(error neither qt5 nor qt6)
 endif
 endif
 
-ifneq (,$(filter $(DISTRIBUTION),sid))
+ifneq (,$(filter $(DISTRIBUTION),trixie plucky sid))
 	CONTROL_EXPRESSIONS += sfcgal
 endif
 
