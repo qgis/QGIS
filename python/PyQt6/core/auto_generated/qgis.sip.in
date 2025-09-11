@@ -827,6 +827,7 @@ The development version
       ResolveGeometryType,
       CountFeatures,
       IncludeSystemTables,
+      OpenLayersToResolveDecriptions,
     };
     typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
 

@@ -1377,6 +1377,7 @@ class CORE_EXPORT Qgis
       ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
       CountFeatures = 1 << 2, //!< Count features in vector sublayers
       IncludeSystemTables = 1 << 3, //!< Include system or internal tables (these are not included by default)
+      OpenLayersToResolveDecriptions = 1 << 4, //!< Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \since QGIS 4.0
     };
     //! Sublayer query flags
     Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
