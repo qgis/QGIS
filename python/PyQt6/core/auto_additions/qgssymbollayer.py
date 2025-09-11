@@ -286,6 +286,9 @@ QgsSymbolLayer.SkipMultiples.__doc__ = "Skip multiples of \n.. versionadded:: 3.
 QgsSymbolLayer.ShowMarker = QgsSymbolLayer.Property.ShowMarker
 QgsSymbolLayer.ShowMarker.is_monkey_patched = True
 QgsSymbolLayer.ShowMarker.__doc__ = "Show markers \n.. versionadded:: 3.40"
+QgsSymbolLayer.BlankAreas = QgsSymbolLayer.Property.BlankAreas
+QgsSymbolLayer.BlankAreas.is_monkey_patched = True
+QgsSymbolLayer.BlankAreas.__doc__ = "String list of distance to define blank areas along line for line symbol layer. \n.. versionadded:: 4.0"
 QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 
 * ``Size``: Symbol size
@@ -605,6 +608,10 @@ QgsSymbolLayer.Property.__doc__ = """Data definable properties.
 * ``ShowMarker``: Show markers
 
   .. versionadded:: 3.40
+
+* ``BlankAreas``: String list of distance to define blank areas along line for line symbol layer.
+
+  .. versionadded:: 4.0
 
 
 """

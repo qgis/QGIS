@@ -950,6 +950,25 @@ direction is averaged when calculating individual symbol angles.
 .. seealso:: :py:func:`averageAngleUnit`
 %End
 
+
+    void setBlankAreasUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for blank areas start and end distances
+
+.. seealso:: :py:func:`blankAreasUnit`
+
+.. versionadded:: 4.0
+%End
+
+    Qgis::RenderUnit blankAreasUnit() const;
+%Docstring
+Returns the unit for for blank areas start and end distances
+
+.. seealso:: :py:func:`setBlankAreasUnit`
+
+.. versionadded:: 4.0
+%End
+
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context );
 
     virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) ${SIP_FINAL};
@@ -970,6 +989,9 @@ direction is averaged when calculating individual symbol angles.
     virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
     virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+
+
 
 
   protected:
@@ -1022,6 +1044,7 @@ layer.
 Sets all common symbol properties in the ``destLayer``, using the
 settings serialized in the ``properties`` map.
 %End
+
 
 };
 
@@ -1694,8 +1717,6 @@ round, etc).
   private:
     QgsFilledLineSymbolLayer( const QgsFilledLineSymbolLayer & );
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

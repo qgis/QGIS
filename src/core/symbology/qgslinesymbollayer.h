@@ -803,6 +803,23 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     */
     const QgsMapUnitScale &averageAngleMapUnitScale() const { return mAverageAngleLengthMapUnitScale; }
 
+
+    /**
+     * Sets the \a unit for blank areas start and end distances
+     *
+     * \see blankAreasUnit()
+     * \since QGIS 4.0
+    */
+    void setBlankAreasUnit( Qgis::RenderUnit unit ) { mBlankAreasUnit = unit; }
+
+    /**
+     * Returns the unit for for blank areas start and end distances
+     *
+     * \see setBlankAreasUnit()
+     * \since QGIS 4.0
+    */
+    Qgis::RenderUnit blankAreasUnit() const { return mBlankAreasUnit; }
+
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) FINAL;
     Qgis::RenderUnit outputUnit() const FINAL;
@@ -814,6 +831,18 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
 
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+
+    typedef QList<QPair<double, double>> BlankAreas SIP_SKIP;
+
+    /**
+     * Parse blank areas string representation \a strBlankArea for \a partNum part and \a ring.
+     * The blank area are expected to be expressed in \a unit and converted in pixels regarding render context \a rc
+     * Returns a list of start and end distance expressed in pixels
+     *
+     * \since QGIS 4.0
+     */
+    static BlankAreas parseBlankAreas( const QString &strBlankArea, const QgsRenderContext &rc, Qgis::RenderUnit unit, int partNum, int iRing ) SIP_SKIP;
+
 
   protected:
 
@@ -860,11 +889,12 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      */
     static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QVariantMap &properties );
 
+
   private:
 
-    void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver );
-    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement = Qgis::MarkerLinePlacement::Vertex );
-    void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver );
+    void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const BlankAreas &blankAreas );
+    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const BlankAreas &blankAreas );
+    void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const BlankAreas &blankAreas );
     double markerAngle( const QPolygonF &points, bool isRing, int vertex );
 
     /**
@@ -876,15 +906,18 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * along the line's vertices.
      * \param context render context
      * \param placement marker placement
+     * \param blankAreas areas where vertex should not be rendered
      * \see setoffsetAlongLine
      * \see setOffsetAlongLineUnit
      */
     void renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context,
-                                      Qgis::MarkerLinePlacement placement );
+                                      Qgis::MarkerLinePlacement placement, const QList<QPair<double, double>> &blankAreas );
 
 
     static void collectOffsetPoints( const QVector< QPointF> &points,
-                                     QVector< QPointF> &dest, double intervalPainterUnits, double initialOffset, double initialLag = 0,
+                                     QVector< QPointF> &dest, double intervalPainterUnits, double initialOffset,
+                                     QList<int> *pointIndices = nullptr,
+                                     double initialLag = 0,
                                      int numberPointsRequired = -1 );
 
     bool mRotateSymbols = true;
@@ -898,6 +931,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     double mAverageAngleLength = 4;
     Qgis::RenderUnit mAverageAngleLengthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mAverageAngleLengthMapUnitScale;
+    Qgis::RenderUnit mBlankAreasUnit = Qgis::RenderUnit::MapUnits;
     bool mPlaceOnEveryPart = true;
 
     bool mRenderingFeature = false;
@@ -905,6 +939,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     QPointF mFinalVertex;
     bool mCurrentFeatureIsSelected = false;
     double mFeatureSymbolOpacity = 1;
+    int mRingIndex = 0; // current ring index while rendering
 
     friend class TestQgsMarkerLineSymbol;
 
@@ -1463,5 +1498,3 @@ class CORE_EXPORT QgsFilledLineSymbolLayer : public QgsLineSymbolLayer
 };
 
 #endif
-
-

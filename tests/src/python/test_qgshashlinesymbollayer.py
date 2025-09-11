@@ -29,6 +29,7 @@ from qgis.core import (
     QgsFillSymbol,
     QgsGeometry,
     QgsHashedLineSymbolLayer,
+    Qgis,
     QgsLineSymbol,
     QgsLineSymbolLayer,
     QgsMapSettings,
@@ -565,6 +566,51 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         self.assertTrue(
             self.render_map_settings_check(
                 "hashline_ddopacity", "hashline_ddopacity", ms
+            )
+        )
+
+    def testBlankAreas(self):
+        """
+        Test with data defined blank areas
+
+        Blank areas are more intensively tested in marker line test because it relies on the same code
+        """
+
+        # rendering test
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+
+        sl = QgsHashedLineSymbolLayer()
+        sl.setAverageAngleLength(0)
+        sl.setPlacements(Qgis.MarkerLinePlacement.Interval)
+        sl.setDataDefinedProperty(
+            QgsSymbolLayer.Property.BlankAreas,
+            QgsProperty.fromExpression("'(((2.90402 7.36,11.8776 30.4499)))'"),
+        )
+
+        simple_line = QgsSimpleLineSymbolLayer()
+        simple_line.setColor(QColor(0, 255, 0))
+        simple_line.setWidth(1)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, simple_line)
+        sl.setSubSymbol(line_symbol)
+        sl.setHashLength(3)
+        sl.setAverageAngleLength(0)
+
+        s.appendSymbolLayer(sl)
+
+        g = QgsGeometry.fromWkt(
+            "Polygon((0 0, 10 0, 10 3, 12 4, 8 5, 12 6, 8 7, 10 8, 10 10, 0 10, 0 0))"
+        )
+
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "line_hash_blankareas",
+                "line_hash_blankareas",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
             )
         )
 
