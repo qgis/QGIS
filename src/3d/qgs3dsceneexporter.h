@@ -142,7 +142,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     QString getObjectName( const QString &name );
 
   private:
-    QMap<QString, int> usedObjectNamesCounter;
+    QMap<QString, int> mUsedObjectNamesCounter;
     QVector<Qgs3DExportObject *> mObjects;
 
     bool mSmoothEdges = false;

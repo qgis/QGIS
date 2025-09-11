@@ -877,12 +877,12 @@ bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
 QString Qgs3DSceneExporter::getObjectName( const QString &name )
 {
   QString ret = name;
-  if ( usedObjectNamesCounter.contains( name ) )
+  if ( mUsedObjectNamesCounter.contains( name ) )
   {
-    ret = QStringLiteral( "%1%2" ).arg( name ).arg( usedObjectNamesCounter[name] );
-    usedObjectNamesCounter[name]++;
+    ret = QStringLiteral( "%1%2" ).arg( name ).arg( mUsedObjectNamesCounter[name] );
+    mUsedObjectNamesCounter[name]++;
   }
   else
-    usedObjectNamesCounter[name] = 2;
+    mUsedObjectNamesCounter[name] = 2;
   return ret;
 }
