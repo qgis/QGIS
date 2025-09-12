@@ -51,7 +51,7 @@ from qgis.PyQt.QtWidgets import QVBoxLayout, QMessageBox
 from qgis.utils import iface
 from .console_sci import ShellScintilla
 from .console_output import ShellOutputScintilla
-from .console_editor import EditorTabWidget
+from .console_editor import EditorTabWidget, Editor
 from .console_settings import ConsoleOptionsFactory
 from qgis.core import Qgis, QgsApplication, QgsSettings, QgsFileUtils
 from qgis.gui import (
@@ -245,6 +245,7 @@ class PythonConsoleWidget(QWidget):
         self.openInEditorButton.setIconVisibleInMenu(True)
         self.openInEditorButton.setToolTip(openExtEditorBt)
         self.openInEditorButton.setText(openExtEditorBt)
+
         # Action for Save File
         saveFileBt = QCoreApplication.translate("PythonConsole", "Save")
         self.saveFileButton = QAction(self)
@@ -255,6 +256,7 @@ class PythonConsoleWidget(QWidget):
         self.saveFileButton.setIconVisibleInMenu(True)
         self.saveFileButton.setToolTip(saveFileBt)
         self.saveFileButton.setText(saveFileBt)
+
         # Action for Save File As
         saveAsFileBt = QCoreApplication.translate("PythonConsole", "Save As…")
         self.saveAsFileButton = QAction(self)
@@ -267,6 +269,7 @@ class PythonConsoleWidget(QWidget):
         self.saveAsFileButton.setIconVisibleInMenu(True)
         self.saveAsFileButton.setToolTip(saveAsFileBt)
         self.saveAsFileButton.setText(saveAsFileBt)
+
         # Action Cut
         cutEditorBt = QCoreApplication.translate("PythonConsole", "Cut")
         self.cutEditorButton = QAction(self)
@@ -277,6 +280,7 @@ class PythonConsoleWidget(QWidget):
         self.cutEditorButton.setIconVisibleInMenu(True)
         self.cutEditorButton.setToolTip(cutEditorBt)
         self.cutEditorButton.setText(cutEditorBt)
+
         # Action Copy
         copyEditorBt = QCoreApplication.translate("PythonConsole", "Copy")
         self.copyEditorButton = QAction(self)
@@ -289,6 +293,7 @@ class PythonConsoleWidget(QWidget):
         self.copyEditorButton.setIconVisibleInMenu(True)
         self.copyEditorButton.setToolTip(copyEditorBt)
         self.copyEditorButton.setText(copyEditorBt)
+
         # Action Paste
         pasteEditorBt = QCoreApplication.translate("PythonConsole", "Paste")
         self.pasteEditorButton = QAction(self)
@@ -301,6 +306,7 @@ class PythonConsoleWidget(QWidget):
         self.pasteEditorButton.setIconVisibleInMenu(True)
         self.pasteEditorButton.setToolTip(pasteEditorBt)
         self.pasteEditorButton.setText(pasteEditorBt)
+
         # Action Run Script (subprocess)
         runScriptEditorBt = QCoreApplication.translate("PythonConsole", "Run Script")
         self.runScriptEditorButton = QAction(self)
@@ -313,6 +319,19 @@ class PythonConsoleWidget(QWidget):
         self.runScriptEditorButton.setIconVisibleInMenu(True)
         self.runScriptEditorButton.setToolTip(runScriptEditorBt)
         self.runScriptEditorButton.setText(runScriptEditorBt)
+
+        # Action Run Selected
+        runSelectedEditorBt = QCoreApplication.translate("PythonConsole", "Run Selected")
+        self.runSelectedEditorButton = QAction(self)
+        self.runSelectedEditorButton.setCheckable(False)
+        self.runSelectedEditorButton.setEnabled(True)
+        self.runSelectedEditorButton.setIcon(
+            QgsApplication.getThemeIcon("mActionRunSelected.svg")
+        )
+        self.runSelectedEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
+        self.runSelectedEditorButton.setIconVisibleInMenu(True)
+        self.runSelectedEditorButton.setToolTip(runSelectedEditorBt + " <b>Ctrl+e</b>")
+        self.runSelectedEditorButton.setText(runSelectedEditorBt)
 
         # Action Toggle comment
         toggleText = QCoreApplication.translate("PythonConsole", "Toggle Comment")
@@ -393,6 +412,7 @@ class PythonConsoleWidget(QWidget):
         self.showEditorButton.setIconVisibleInMenu(True)
         self.showEditorButton.setToolTip(showEditor)
         self.showEditorButton.setText(showEditor)
+
         # Action for Clear button
         clearBt = QCoreApplication.translate("PythonConsole", "Clear Console")
         self.clearButton = QAction(self)
@@ -405,6 +425,7 @@ class PythonConsoleWidget(QWidget):
         self.clearButton.setIconVisibleInMenu(True)
         self.clearButton.setToolTip(clearBt)
         self.clearButton.setText(clearBt)
+
         # Action for settings
         optionsBt = QCoreApplication.translate("PythonConsole", "Options…")
         self.optionsButton = QAction(self)
@@ -417,6 +438,7 @@ class PythonConsoleWidget(QWidget):
         self.optionsButton.setIconVisibleInMenu(True)
         self.optionsButton.setToolTip(optionsBt)
         self.optionsButton.setText(optionsBt)
+
         # Action for Run script
         runBt = QCoreApplication.translate("PythonConsole", "Run Command")
         self.runButton = QAction(self)
@@ -493,6 +515,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.saveAsFileButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.runScriptEditorButton)
+        self.toolBarEditor.addAction(self.runSelectedEditorButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.cutEditorButton)
         self.toolBarEditor.addAction(self.copyEditorButton)
@@ -561,6 +584,7 @@ class PythonConsoleWidget(QWidget):
         self.toggleCommentEditorButton.triggered.connect(self.toggleComment)
         self.reformatCodeEditorButton.triggered.connect(self.reformatCode)
         self.runScriptEditorButton.triggered.connect(self.runScriptEditor)
+        self.runSelectedEditorButton.triggered.connect(self.runSelectedEditor)
         self.cutEditorButton.triggered.connect(self.cutEditor)
         self.copyEditorButton.triggered.connect(self.copyEditor)
         self.pasteEditorButton.triggered.connect(self.pasteEditor)
@@ -652,6 +676,9 @@ class PythonConsoleWidget(QWidget):
 
     def runScriptEditor(self):
         self.tabEditorWidget.currentWidget().runScriptCode()
+
+    def runSelectedEditor(self):
+        self.tabEditorWidget.currentWidget().runSelectedCode()
 
     def toggleComment(self):
         self.tabEditorWidget.currentWidget().toggleComment()
