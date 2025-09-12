@@ -199,15 +199,6 @@ void TestQgs3DExporter::test3DSceneExporter()
 
 void TestQgs3DExporter::test3DSceneExporterBig()
 {
-  // In Qt 6, this test does not work on CI
-  // because somewhere after 10K lines, one of the values is -0.304 instead of -0.305
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
-  if ( QgsTest::isCIRun() )
-  {
-    QSKIP( "fails on CI" );
-  }
-#endif
-
   // =============================================
   // =========== creating Qgs3DMapSettings
   QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
