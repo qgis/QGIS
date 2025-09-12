@@ -3943,17 +3943,17 @@ namespace QgsWms
     return scaledImage;
   }
 
-  void QgsRenderer::logRenderingErrors( const QgsMapRendererJob::Errors& errors ) const
+  void QgsRenderer::logRenderingErrors( const QgsMapRendererJob::Errors &errors ) const
   {
     QgsMapRendererJob::Errors::const_iterator it = errors.constBegin();
-    for(; it != errors.constEnd(); ++it )
+    for ( ; it != errors.constEnd(); ++it )
     {
-      QString msg = QString("Rendering error: %1").arg(it->message);
-      if(!it->layerID.isEmpty() )
+      QString msg = QString( "Rendering error: %1" ).arg( it->message );
+      if ( !it->layerID.isEmpty() )
       {
-        msg += QString(" in layer %1").arg( it->layerID );
+        msg += QString( " in layer %1" ).arg( it->layerID );
       }
-       QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Critical );
     }
   }
 
@@ -3974,7 +3974,7 @@ namespace QgsWms
       logRenderingErrors( ( *mapIt )->renderingErrors() );
     }
 
-    if( mContext.settings().ignoreRenderingErrors() )
+    if ( mContext.settings().ignoreRenderingErrors() )
     {
       return;
     }

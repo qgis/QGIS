@@ -334,7 +334,7 @@ namespace QgsWms
 
       void removeTemporaryLayers();
 
-      void logRenderingErrors( const QgsMapRendererJob::Errors& errors ) const;
+      void logRenderingErrors( const QgsMapRendererJob::Errors &errors ) const;
 
       void handlePrintErrors( const QgsLayout *layout ) const;
 
