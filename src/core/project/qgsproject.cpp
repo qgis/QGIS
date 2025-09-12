@@ -3274,7 +3274,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
     qgisNode.setAttribute( QStringLiteral( "saveUserFull" ), newSaveUserFull );
     mSaveUser = newSaveUser;
     mSaveUserFull = newSaveUserFull;
-    mMetadata.setAuthor( QgsApplication::userFullName() );
+    if ( mMetadata.author().isEmpty() )
+    {
+      mMetadata.setAuthor( QgsApplication::userFullName() );
+    }
     if ( !mMetadata.creationDateTime().isValid() )
     {
       mMetadata.setCreationDateTime( QDateTime( QDateTime::currentDateTime() ) );
