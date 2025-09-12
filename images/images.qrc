@@ -370,6 +370,7 @@
         <file>themes/default/mActionViewExtentInCanvas.svg</file>
         <file>themes/default/mActionViewScaleInCanvas.svg</file>
         <file>themes/default/mActionOffsetCurve.svg</file>
+        <file>themes/default/mActionChamferFillet.svg</file>
         <file>themes/default/mActionOpenTable.svg</file>
         <file>themes/default/mActionOpenTableEdited.svg</file>
         <file>themes/default/mActionOpenTableSelected.svg</file>

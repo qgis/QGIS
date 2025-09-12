@@ -43,6 +43,7 @@ set(TESTS
   testqgsmaptoolsplitparts.cpp
   testqgsmaptoolsplitfeatures.cpp
   testqgsmaptooloffsetcurve.cpp
+  testqgsmaptoolchamferfillet.cpp
   testqgsmeasuretool.cpp
   testqgsmeasurebearingtool.cpp
   testqgsvertexeditor.cpp
