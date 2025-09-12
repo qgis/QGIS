@@ -35,6 +35,29 @@
     </message>
 </context>
 <context>
+    <name>metadata</name>
+    <message>
+        <source>Metadata Title</source>
+        <translation>Metadatentitel</translation>
+    </message>
+    <message>
+        <source>Metadata Type</source>
+        <translation>Metadatentyp</translation>
+    </message>
+    <message>
+        <source>Metadata Abstract</source>
+        <translation>Metadaten-Zusammenfassung</translation>
+    </message>
+    <message>
+        <source>Metadata Rights</source>
+        <translation>Metadatenrechte</translation>
+    </message>
+    <message>
+        <source>Webmaster</source>
+        <translation>Webmasterin</translation>
+    </message>
+</context>
+<context>
     <name>project:layers:points_240d6bd6_9203_470a_994a_aae13cd9fa04</name>
     <message>
         <source>points</source>
