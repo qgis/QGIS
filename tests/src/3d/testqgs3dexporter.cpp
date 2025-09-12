@@ -21,9 +21,12 @@
 #include "qgs3d.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
 #include "qgs3dsceneexporter.h"
 #include "qgs3dutils.h"
 #include "qgsdemterrainsettings.h"
+#include "qgsflatterraingenerator.h"
+#include "qgsflatterrainsettings.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointlightsettings.h"
 #include "qgspolygon3dsymbol.h"
@@ -44,6 +47,7 @@ class TestQgs3DExporter : public QgsTest
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void test3DSceneExporter();
     void test3DSceneExporterBig();
+    void test3DSceneExporterFlatTerrain();
 
   private:
     void do3DSceneExport( const QString &testName, int zoomLevelsCount, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity = nullptr );
@@ -127,8 +131,8 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int zoomLevels
   file.open( QIODevice::ReadOnly | QIODevice::Text );
   QTextStream fileStream( &file );
 
-  if ( !terrainEntity ) // dump with terrain are too big to stay in GIT
-    QGSCOMPARELONGSTR( testName.toStdString().c_str(), QString( "%1.obj" ).arg( objFileName ), fileStream.readAll().toUtf8() );
+  // check the generated obj file
+  QGSCOMPARELONGSTR( testName.toStdString().c_str(), QString( "%1.obj" ).arg( objFileName ), fileStream.readAll().toUtf8() );
 }
 
 void TestQgs3DExporter::test3DSceneExporter()
@@ -259,6 +263,59 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   do3DSceneExport( "big_scene_export", 4, 32, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
   // =========== check with 25 tiles ==> 70 exported objects
   do3DSceneExport( "big_scene_export", 5, 70, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
+
+  delete scene;
+  mapSettings.setLayers( {} );
+}
+
+void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
+{
+  // =============================================
+  // =========== creating Qgs3DMapSettings
+  QgsRasterLayer *layerRgb = new QgsRasterLayer( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
+  QVERIFY( layerRgb->isValid() );
+
+  const QgsRectangle fullExtent = layerRgb->extent();
+
+  QgsProject project;
+  project.setCrs( layerRgb->crs() );
+  project.addMapLayer( layerRgb );
+
+  Qgs3DMapSettings mapSettings;
+  mapSettings.setCrs( project.crs() );
+  mapSettings.setExtent( fullExtent );
+  mapSettings.setLayers( { layerRgb, mLayerBuildings } );
+
+  mapSettings.setTransformContext( project.transformContext() );
+  mapSettings.setPathResolver( project.pathResolver() );
+  mapSettings.setMapThemeCollection( project.mapThemeCollection() );
+
+  QgsFlatTerrainSettings *flatTerrainSettings = new QgsFlatTerrainSettings;
+  mapSettings.setTerrainSettings( flatTerrainSettings );
+
+  std::unique_ptr<QgsTerrainGenerator> generator = flatTerrainSettings->createTerrainGenerator( Qgs3DRenderContext::fromMapSettings( &mapSettings ) );
+  QVERIFY( dynamic_cast<QgsFlatTerrainGenerator *>( generator.get() )->isValid() );
+  QCOMPARE( dynamic_cast<QgsFlatTerrainGenerator *>( generator.get() )->crs(), mapSettings.crs() );
+
+  QgsPointLightSettings defaultPointLight;
+  defaultPointLight.setPosition( QgsVector3D( 0, 400, 0 ) );
+  defaultPointLight.setConstantAttenuation( 0 );
+  mapSettings.setLightSources( { defaultPointLight.clone() } );
+  mapSettings.setOutputDpi( 92 );
+
+  // =========== creating Qgs3DMapScene
+  QPoint winSize = QPoint( 640, 480 ); // default window size
+
+  QgsOffscreen3DEngine engine;
+  engine.setSize( QSize( winSize.x(), winSize.y() ) );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  // =========== set camera position
+  scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
+
+  // =========== check the export with flat terrain
+  do3DSceneExport( "flat_terrain_scene_export", 5, 70, 401, 19875, scene, mLayerBuildings, &engine, scene->terrainEntity() );
 
   delete scene;
   mapSettings.setLayers( {} );
