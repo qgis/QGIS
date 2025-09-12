@@ -172,18 +172,18 @@ void QgsMssqlGeometryParser::DumpMemoryToLog( const char *pszMsg, unsigned char 
   file.open( QIODevice::Append );
   file.write( pszMsg, strlen( pszMsg ) );
   file.write( "\n" );
-  sprintf( buf + len, "%05d ", 0 );
+  snprintf( buf + len, sizeof( buf ) - len, "%05d ", 0 );
   len += 6;
   for ( int i = 0; i < nLen; i++ )
   {
-    sprintf( buf + len, "%02x ", pszInput[i] );
+    snprintf( buf + len, sizeof( buf ) - len, "%02x ", pszInput[i] );
     len += 3;
     if ( len == 54 )
     {
       file.write( buf, len );
       len = 0;
       file.write( "\n" );
-      sprintf( buf + len, "%05d ", i + 1 );
+      snprintf( buf + len, sizeof( buf ) - len, "%05d ", i + 1 );
       len = 6;
     }
   }

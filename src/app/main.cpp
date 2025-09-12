@@ -235,8 +235,9 @@ static void dumpBacktrace( unsigned int depth )
   // Maybe some problems could be resolved with dup2() and waitpid(), but it seems
   // that if the operations on descriptors are not serialized, things will get nasty.
   // That's why there's this lovely mutex here...
-  static QMutex sMutex;
-  QMutexLocker locker( &sMutex );
+  // Using Q_GLOBAL_STATIC for thread-safe initialization
+  Q_GLOBAL_STATIC( QMutex, sMutex )
+  QMutexLocker locker( sMutex );
 
   int stderr_fd = -1;
   if ( access( "/usr/bin/c++filt", X_OK ) < 0 )

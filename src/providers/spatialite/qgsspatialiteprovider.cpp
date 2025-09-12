@@ -4303,8 +4303,10 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           // some unexpected error occurred
           const char *err = sqlite3_errmsg( sqliteHandle() );
-          errMsg = ( char * ) sqlite3_malloc( ( int ) strlen( err ) + 1 );
-          strcpy( errMsg, err );
+          size_t errLen = strlen( err ) + 1;
+          errMsg = ( char * ) sqlite3_malloc( ( int ) errLen );
+          strncpy( errMsg, err, errLen );
+          errMsg[errLen - 1] = '\0';
           logWrapper.setError( errMsg );
           break;
         }
@@ -4647,8 +4649,10 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
           catch ( json::exception &ex )
           {
             const auto errM { tr( "Field type is JSON but the value cannot be converted to JSON array: %1" ).arg( ex.what() ) };
-            auto msgPtr { static_cast<char *>( sqlite3_malloc( errM.length() + 1 ) ) };
-            strcpy( static_cast<char *>( msgPtr ), errM.toStdString().c_str() );
+            auto errStr = errM.toStdString();
+            auto msgPtr { static_cast<char *>( sqlite3_malloc( errStr.length() + 1 ) ) };
+            strncpy( static_cast<char *>( msgPtr ), errStr.c_str(), errStr.length() + 1 );
+            msgPtr[errStr.length()] = '\0';
             errMsg = msgPtr;
             handleError( jRepr, errMsg, savepointId );
             return false;

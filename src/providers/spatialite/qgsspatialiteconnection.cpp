@@ -575,10 +575,11 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const ch
   if ( strcmp( table_raster + len - 9, "_metadata" ) != 0 )
     return false;
   // OK, possible candidate
-  strcpy( table_raster + len - 9, "_rasters" );
+  strncpy( table_raster + len - 9, "_rasters", 9 );
+  table_raster[len] = '\0';
 
   // checking if the related "_RASTERS table exists
-  sprintf( sql, "SELECT name FROM sqlite_master WHERE type = 'table' AND name = '%s'", table_raster );
+  snprintf( sql, sizeof( sql ), "SELECT name FROM sqlite_master WHERE type = 'table' AND name = '%s'", table_raster );
 
   ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
