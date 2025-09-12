@@ -27,6 +27,7 @@
 #include "qgsfeaturefilter.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgseditformconfig.h"
+#include "qgsmaprendererjob.h"
 #include <QDomDocument>
 #include <QMap>
 #include <QString>
@@ -332,6 +333,8 @@ namespace QgsWms
       bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, QgsLayoutAtlas *atlas );
 
       void removeTemporaryLayers();
+
+      void logRenderingErrors( const QgsMapRendererJob::Errors& errors ) const;
 
       void handlePrintErrors( const QgsLayout *layout ) const;
 

@@ -3483,7 +3483,9 @@ namespace QgsWms
     renderJob.render( mapSettings, image, mContext.socketFeedback() );
     painter = renderJob.takePainter();
 
-    if ( !renderJob.errors().isEmpty() )
+    logRenderingErrors( renderJob.errors() );
+
+    if ( !renderJob.errors().isEmpty() && !mContext.settings().ignoreRenderingErrors() )
     {
       const QgsMapRendererJob::Error e = renderJob.errors().at( 0 );
 
@@ -3941,16 +3943,43 @@ namespace QgsWms
     return scaledImage;
   }
 
+  void QgsRenderer::logRenderingErrors( const QgsMapRendererJob::Errors& errors ) const
+  {
+    QgsMapRendererJob::Errors::const_iterator it = errors.constBegin();
+    for(; it != errors.constEnd(); ++it )
+    {
+      QString msg = QString("Rendering error: %1").arg(it->message);
+      if(!it->layerID.isEmpty() )
+      {
+        msg += QString(" in layer %1").arg( it->layerID );
+      }
+       QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Critical );
+    }
+  }
+
   void QgsRenderer::handlePrintErrors( const QgsLayout *layout ) const
   {
     if ( !layout )
     {
       return;
     }
+
     QList<QgsLayoutItemMap *> mapList;
     layout->layoutItems( mapList );
 
+    //log rendering errors even if they are ignored
     QList<QgsLayoutItemMap *>::const_iterator mapIt = mapList.constBegin();
+    for ( ; mapIt != mapList.constEnd(); ++mapIt )
+    {
+      logRenderingErrors( ( *mapIt )->renderingErrors() );
+    }
+
+    if( mContext.settings().ignoreRenderingErrors() )
+    {
+      return;
+    }
+
+    mapIt = mapList.constBegin();
     for ( ; mapIt != mapList.constEnd(); ++mapIt )
     {
       if ( !( *mapIt )->renderingErrors().isEmpty() )
