@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAbstractMetadataBase
 {
 %Docstring(signature="appended")
@@ -436,7 +437,7 @@ Sets a date value for the specified date ``type``.
 .. versionadded:: 3.30
 %End
 
-    virtual bool readMetadataXml( const QDomElement &metadataElement );
+    virtual bool readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Sets state from DOM document.
 
@@ -449,7 +450,7 @@ Subclasses which override this method should take care to also call the
 base class method in order to read common metadata properties.
 %End
 
-    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 %Docstring
 Stores state in a DOM node.
 
@@ -472,6 +473,11 @@ Any existing values in this object will be overwritten by non-empty
 values from ``other``.
 
 .. versionadded:: 3.20
+%End
+
+    virtual void registerTranslations( QgsTranslationContext *translationContext ) const;
+%Docstring
+Registers metadata translation strings
 %End
 
   protected:

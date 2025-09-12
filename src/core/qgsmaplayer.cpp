@@ -687,7 +687,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
 
   // mMetadata.readFromLayer( this );
   const QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
-  mMetadata.readMetadataXml( metadataElem );
+  mMetadata.readMetadataXml( metadataElem, context );
 
   setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), QStringLiteral( "0" ) ).toInt() );
   if ( layerElement.hasAttribute( QStringLiteral( "autoRefreshMode" ) ) )

@@ -21,12 +21,15 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsreadwritecontext.h"
+
 #include <QMap>
 #include <QString>
 #include <QMetaType>
 
 class QDomElement;
 class QDomDocument;
+class QgsTranslationContext;
 
 /**
  * \ingroup core
@@ -529,7 +532,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * Subclasses which override this method should take care to also call the base
      * class method in order to read common metadata properties.
      */
-    virtual bool readMetadataXml( const QDomElement &metadataElement );
+    virtual bool readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     /**
      * Stores state in a DOM node.
@@ -542,7 +545,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * Subclasses which override this method should take care to also call the base
      * class method in order to write common metadata properties.
      */
-    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 
     /**
      * Combines the metadata from this object with the metadata from an \a other object.
@@ -552,6 +555,11 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * \since QGIS 3.20
      */
     virtual void combine( const QgsAbstractMetadataBase *other );
+
+    /**
+     * Registers metadata translation strings
+     */
+    virtual void registerTranslations( QgsTranslationContext *translationContext ) const;
 
   protected:
 
