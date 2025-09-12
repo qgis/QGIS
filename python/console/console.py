@@ -51,7 +51,7 @@ from qgis.PyQt.QtWidgets import QVBoxLayout, QMessageBox
 from qgis.utils import iface
 from .console_sci import ShellScintilla
 from .console_output import ShellOutputScintilla
-from .console_editor import EditorTabWidget, Editor
+from .console_editor import EditorTabWidget
 from .console_settings import ConsoleOptionsFactory
 from qgis.core import Qgis, QgsApplication, QgsSettings, QgsFileUtils
 from qgis.gui import (
