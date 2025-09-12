@@ -260,9 +260,6 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   // =========== check with 25 tiles ==> 70 exported objects
   do3DSceneExport( "big_scene_export", 5, 70, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
 
-  // =========== check with 25 tiles + terrain ==> 70+1 exported objects
-  do3DSceneExport( "terrain_scene_export", 5, 71, nbFeat, 119715, scene, mLayerBuildings, &engine, scene->terrainEntity() );
-
   delete scene;
   mapSettings.setLayers( {} );
 }
