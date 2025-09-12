@@ -161,4 +161,21 @@ class CORE_EXPORT QgsSfcgalException : public QgsException
 };
 #endif
 
+/**
+ * \class QgsInvalidArgumentException
+ * \ingroup core
+ * \brief Custom exception class when argument are invalid. Ie. algorithms or processing can not continue computation.
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsInvalidArgumentException : public QgsException
+{
+  public:
+
+    /**
+     * Constructor for QgsInvalidArgumentException, with the specified error \a message.
+     */
+    QgsInvalidArgumentException( const QString &message )
+      : QgsException( message ) {}
+};
+
 #endif
