@@ -22,6 +22,7 @@
 
 class QgsRasterLayer;
 class QgsDemHeightMapGenerator;
+class QgsDemTerrainTileLoader;
 
 #include "qgsmaplayerref.h"
 
@@ -76,12 +77,33 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     Type type() const override;
     QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
+
     float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
+    int qualityAt( double x, double y, const Qgs3DRenderContext &context ) const override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
+    //! Returns height map cache size
+    int cacheSize();
+
+    /**
+     * Checks if the tile is in the cache
+     * \param tileText text version of the tile
+     * \return true if the tile is in the cache
+     */
+    bool isTileInCache( const QString &tileText );
+
+  signals:
+    //! emitted when an hi-res DEM tile has been received
+    void maxResTileReceived( const QgsChunkNodeId &tileId, const QgsRectangle &extent );
+
+  private slots:
+    void onHeightMapReceived( int jobId, const QgsChunkNode *node, const QgsRectangle &extent, const QByteArray &heightMap );
+
   private:
     void updateGenerator();
+    void cleanupHeightMapCache( const QgsChunkNode *currentNode ) const;
+    void heightAndQualityAt( double x, double y, float &height, int &quality ) const;
 
     QgsDemHeightMapGenerator *mHeightMapGenerator = nullptr;
 
@@ -95,6 +117,12 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     int mResolution = 16;
     //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks
     float mSkirtHeight = 10.f;
+    //! root node used to search best height map data according to x/y
+    mutable QgsChunkNode *mRootNode = nullptr;
+    //! map used as height map data cache
+    mutable QMap<QString, QByteArray> mLoaderMap;
+    //! protect cache and mRootNode for concurrent updates
+    mutable QMutex mRootNodeMutex;
 };
 
 
