@@ -50,7 +50,7 @@ bool QgsProviderSublayerTask::run()
 {
   mFeedback = std::make_unique< QgsFeedback >();
 
-  Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlag::ResolveGeometryType | Qgis::SublayerQueryFlag::CountFeatures;
+  Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlag::ResolveGeometryType | Qgis::SublayerQueryFlag::CountFeatures | Qgis::SublayerQueryFlag::OpenLayersToResolveDecriptions;
   if ( mIncludeSystemTables )
     flags |= Qgis::SublayerQueryFlag::IncludeSystemTables;
 
