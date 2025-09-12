@@ -131,6 +131,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsAbstractProfileSource *profileSource() override {return this;}
+    QString profileSourceId() const override {return id();}
+    QString profileSourceName() const override {return name();}
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
     QgsPointCloudDataProvider *dataProvider() override;

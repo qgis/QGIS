@@ -23,6 +23,7 @@
 class QgsProfileRequest;
 class QgsAbstractProfileGenerator;
 
+#include <QUuid>
 
 /**
  * \brief Interface for classes which can generate elevation profiles.
@@ -46,6 +47,28 @@ class CORE_EXPORT QgsAbstractProfileSource
      * May return NULLPTR if the source cannot generate a profile at this time.
      */
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) = 0 SIP_FACTORY;
+
+    /**
+     * Returns a unique identifier for this profile source.
+     *
+     * For map layer sources, the source ID will match the layer's QgsMapLayer::id().
+     * Other (non-map-layer) sources will have a different unique ID with its own custom interpretation.
+     *
+     * \since QGIS 4.0.0
+     */
+    virtual QString profileSourceId() const { return mSourceId; }; // TODO QGIS 5.0: Make it pure virtual
+
+    /**
+     * Returns a name for displaying this profile source in the elevation profile layer tree.
+     *
+     * For map layer sources, the name displayed in the elevation profile tree will be taken from and synchronized to the layer's name.
+     *
+     * \since QGIS 4.0.0
+     */
+    virtual QString profileSourceName() const { return QString(); }; // TODO QGIS 5.0: Make it pure virtual
+
+  private:
+    QString mSourceId = QUuid::createUuid().toString(); // Support legacy sources with a uuid
 
 };
 

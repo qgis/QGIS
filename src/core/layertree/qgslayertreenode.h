@@ -72,6 +72,7 @@ class QgsMapLayer;
  * \see QgsLayerTree
  * \see QgsLayerTreeLayer
  * \see QgsLayerTreeGroup
+ * \see QgsLayerTreeCustomNode
  */
 class CORE_EXPORT QgsLayerTreeNode : public QObject
 {
@@ -89,6 +90,8 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
         sipType = sipType_QgsLayerTree;
       else if ( QgsLayerTree::isGroup( node ) )
         sipType = sipType_QgsLayerTreeGroup;
+      else if ( QgsLayerTree::isCustomNode( node ) )
+        sipType = sipType_QgsLayerTreeCustomNode;
     }
     else
       sipType = 0;
@@ -101,7 +104,8 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     enum NodeType
     {
       NodeGroup,   //!< Container of other groups and layers
-      NodeLayer    //!< Leaf node pointing to a layer
+      NodeLayer,    //!< Leaf node pointing to a layer
+      NodeCustom    //!< Leaf node pointing to a custom object
     };
 
     ~QgsLayerTreeNode() override;
