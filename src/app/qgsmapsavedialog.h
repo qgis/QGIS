@@ -82,8 +82,9 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
 
   private slots:
     void onAccepted();
-
     void updatePdfExportWarning();
+    void lockScaleChanged( bool locked );
+    void showHelp();
 
   private:
     void lockChanged( bool locked );
@@ -108,10 +109,6 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
     float mDevicePixelRatio;
 
     QString mInfoDetails;
-
-  private slots:
-
-    void showHelp();
 };
 
 #endif // QGSMAPSAVEDIALOG_H
