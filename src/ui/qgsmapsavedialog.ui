@@ -54,7 +54,31 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QgsScaleWidget" name="mScaleWidget" native="true"/>
+      <layout class="QHBoxLayout">
+       <item>
+        <widget class="QgsScaleWidget" name="mScaleWidget"/>
+       </item>
+       <item>
+        <widget class="QToolButton" name="mLockScale">
+         <property name="toolTip">
+          <string>Lock scale while setting the extent</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/lockedGray.svg</normaloff>:/images/themes/default/lockedGray.svg</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item row="0" column="0" colspan="2">
       <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
@@ -245,7 +269,7 @@ Rasterizing the map is recommended when such effects are used.</string>
          <property name="maximum">
           <number>99999</number>
          </property>
-         <property name="showClearButton" stdset="0">
+         <property name="showClearButton">
           <bool>false</bool>
          </property>
         </widget>
@@ -296,7 +320,7 @@ Rasterizing the map is recommended when such effects are used.</string>
          <property name="maximum">
           <number>99999</number>
          </property>
-         <property name="showClearButton" stdset="0">
+         <property name="showClearButton">
           <bool>false</bool>
          </property>
         </widget>
@@ -317,7 +341,7 @@ Rasterizing the map is recommended when such effects are used.</string>
        <property name="maximum">
         <number>3000</number>
        </property>
-       <property name="showClearButton" stdset="0">
+       <property name="showClearButton">
         <bool>false</bool>
        </property>
       </widget>
@@ -374,26 +398,26 @@ Rasterizing the map is recommended when such effects are used.</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsExtentGroupBox</class>
    <extends>QgsCollapsibleGroupBox</extends>
    <header>qgsextentgroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsRatioLockButton</class>
    <extends>QToolButton</extends>
    <header>qgsratiolockbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
@@ -410,6 +434,8 @@ Rasterizing the map is recommended when such effects are used.</string>
  </customwidgets>
  <tabstops>
   <tabstop>mExtentGroupBox</tabstop>
+  <tabstop>mScaleWidget</tabstop>
+  <tabstop>mLockScale</tabstop>
   <tabstop>mResolutionSpinBox</tabstop>
   <tabstop>mOutputWidthSpinBox</tabstop>
   <tabstop>mLockAspectRatio</tabstop>
