@@ -492,7 +492,9 @@ void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollecti
 
 void QgsAttributeTypeDialog::setComment( const QString &comment )
 {
-  laComment->setText( comment );
+  laCommentContent->setText( comment );
+  laComment->setVisible( !comment.isEmtpy() );
+  laCommentContent->setVisible( !comment.isEmtpy() );
 }
 
 void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
