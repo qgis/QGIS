@@ -181,9 +181,9 @@ leaves more horizontal space for the widget itself.
 
     bool reuseLastValue( int index ) const;
 %Docstring
-If this returns ``True``, the widget at the given ``index`` will
-remember the previously entered value from this QGIS session when
-creating new features.
+If this returns ``True``, the widget at the given ``index`` will reuse
+the last remembered value from this QGIS session when creating new
+features.
 
 .. seealso:: :py:func:`setReuseLastValue`
 
@@ -192,13 +192,33 @@ creating new features.
 
     void setReuseLastValue( int index, bool reuse );
 %Docstring
-Sets whether the widget at the given ``index`` will remember the
-previously entered value from this QGIS session when creating new
-features.
+Sets whether the widget at the given ``index`` will reuse the previously
+remembered value from this QGIS session when creating new features.
 
 .. seealso:: :py:func:`reuseLastValue`
 
 .. versionadded:: 3.20
+%End
+
+    bool rememberLastValueByDefault( int index ) const;
+%Docstring
+If this returns ``True``, the widget at the given ``index`` will
+remember entered values by default from this QGIS session when creating
+new features.
+
+.. seealso:: :py:func:`setReuseLastValue`
+
+.. versionadded:: 4.0
+%End
+
+    void setRememberLastValueByDefault( int index, bool reuse );
+%Docstring
+Sets whether the widget at the given ``index`` will remember entered
+values from this QGIS session when creating new features.
+
+.. seealso:: :py:func:`reuseLastValue`
+
+.. versionadded:: 4.0
 %End
 
 
