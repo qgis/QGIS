@@ -19,7 +19,7 @@ void main (void)
   vec4 P = gl_in[0].gl_Position;
   P /= P.w;
 
-  vec2 size = BB_SIZE / WIN_SCALE;
+  vec2 size = 2 * BB_SIZE / WIN_SCALE; // multiply by 2 to adjust for -1, 1 range for display coordinates
 
   gl_Position = P;
   gl_Position.xy += vec2(-0.5,-0.5) * size;
