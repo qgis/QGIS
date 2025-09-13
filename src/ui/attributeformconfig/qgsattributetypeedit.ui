@@ -64,13 +64,26 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
+      <item row="3" column="0" colspan="3">
        <widget class="QCheckBox" name="reuseLastValuesCheckBox">
         <property name="toolTip">
-         <string>If checked, then the most recent value entered for this field will be remembered and reused when creating a new feature.</string>
+         <string>If checked, a buton will be attached to the editor widget allowing the most recent value entered to be remembered and reused when creating a new feature.</string>
         </property>
         <property name="text">
-         <string>Reuse last entered value</string>
+         <string>Enable reuse of last remembered value</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QCheckBox" name="reuseLastValuesByDefaultCheckBox">
+        <property name="toolTip">
+         <string>If checked, entered values will be remembered by default.</string>
+        </property>
+        <property name="text">
+         <string>Remember by default</string>
         </property>
         <property name="checked">
          <bool>false</bool>
@@ -388,8 +401,10 @@
   <tabstop>mAlias</tabstop>
   <tabstop>mAliasExpressionButton</tabstop>
   <tabstop>isFieldEditableCheckBox</tabstop>
-  <tabstop>reuseLastValuesCheckBox</tabstop>
+  <tabstop>mEditableExpressionButton</tabstop>
   <tabstop>labelOnTopCheckBox</tabstop>
+  <tabstop>reuseLastValuesCheckBox</tabstop>
+  <tabstop>reuseLastValuesByDefaultCheckBox</tabstop>
   <tabstop>mWidgetTypeComboBox</tabstop>
   <tabstop>notNullCheckBox</tabstop>
   <tabstop>mCheckBoxEnforceNotNull</tabstop>

@@ -68,6 +68,10 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     mEditableExpressionButton->setEnabled( false );
   }
 
+  connect( reuseLastValuesCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
+    reuseLastValuesByDefaultCheckBox->setEnabled( checked );
+  } );
+
   mExpressionWidget->registerExpressionContextGenerator( this );
   mExpressionWidget->setLayer( mLayer );
 
@@ -247,12 +251,14 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type, bool forc
     isFieldEditableCheckBox->setEnabled( false );
     mEditableExpressionButton->setEnabled( false );
     reuseLastValuesCheckBox->setEnabled( false );
+    reuseLastValuesByDefaultCheckBox->setEnabled( false );
   }
   else
   {
     isFieldEditableCheckBox->setEnabled( true );
     mEditableExpressionButton->setEnabled( true );
     reuseLastValuesCheckBox->setEnabled( true );
+    reuseLastValuesByDefaultCheckBox->setEnabled( reuseLastValuesCheckBox->isChecked() );
   }
 
   //update default expression preview
@@ -299,11 +305,22 @@ bool QgsAttributeTypeDialog::labelOnTop() const
 void QgsAttributeTypeDialog::setReuseLastValues( bool reuse )
 {
   reuseLastValuesCheckBox->setChecked( reuse );
+  reuseLastValuesByDefaultCheckBox->setEnabled( reuse );
 }
 
 bool QgsAttributeTypeDialog::reuseLastValues() const
 {
   return reuseLastValuesCheckBox->isChecked();
+}
+
+void QgsAttributeTypeDialog::setRememberLastValuesByDefault( bool resume )
+{
+  reuseLastValuesByDefaultCheckBox->setChecked( resume );
+}
+
+bool QgsAttributeTypeDialog::rememberLastValuesByDefault() const
+{
+  return reuseLastValuesByDefaultCheckBox->isChecked();
 }
 
 void QgsAttributeTypeDialog::setConstraintExpressionDescription( const QString &desc )
@@ -493,8 +510,8 @@ void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollecti
 void QgsAttributeTypeDialog::setComment( const QString &comment )
 {
   laCommentContent->setText( comment );
-  laComment->setVisible( !comment.isEmtpy() );
-  laCommentContent->setVisible( !comment.isEmtpy() );
+  laComment->setVisible( !comment.isEmpty() );
+  laCommentContent->setVisible( !comment.isEmpty() );
 }
 
 void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )

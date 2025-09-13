@@ -70,6 +70,7 @@ class GUI_EXPORT QgsAttributesFormData
         bool mEditable = true;
         bool mLabelOnTop = false;
         bool mReuseLastValues = false;
+        bool mRememberLastValuesByDefault = true;
         bool mApplyDefaultValueOnUpdate = false;
         QgsFieldConstraints mFieldConstraints;
         QPushButton *mButton = nullptr;
