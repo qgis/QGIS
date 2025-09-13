@@ -526,6 +526,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * Sets state from DOM document.
      *
      * \param metadataElement The DOM element corresponding to ``resourceMetadata`` tag
+     * \param context The context object to handle project translation (since QGIS 4.0)
      *
      * \returns TRUE if successful
      *
@@ -539,6 +540,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      *
      * \param metadataElement is a DOM element corresponding to ``resourceMetadata`` tag
      * \param document is a the DOM document being written
+     * \param context The context object to handle project translation (since QGIS 4.0)
      *
      * \returns TRUE if successful
      *
@@ -557,7 +559,9 @@ class CORE_EXPORT QgsAbstractMetadataBase
     virtual void combine( const QgsAbstractMetadataBase *other );
 
     /**
-     * Registers metadata translation strings
+     * Registers metadata translation strings.
+     *
+     * \since QGIS 4.0
      */
     virtual void registerTranslations( QgsTranslationContext *translationContext ) const;
 
