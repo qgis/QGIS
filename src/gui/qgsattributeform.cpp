@@ -57,6 +57,8 @@
 #include "qgstexteditwrapper.h"
 #include "qgsfieldmodel.h"
 #include "qgscollapsiblegroupbox.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -72,6 +74,11 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QSvgWidget>
+
+typedef QHash<QgsVectorLayer *, QgsAttributeMap> CachedAttributesHash;
+typedef QHash<QgsVectorLayer *, QMap<int, bool>> RememberAttributesHash;
+Q_GLOBAL_STATIC( CachedAttributesHash, sLastUsedValues )
+Q_GLOBAL_STATIC( RememberAttributesHash, sRememberLastUsedValues )
 
 int QgsAttributeForm::sFormCounter = 0;
 
@@ -427,6 +434,25 @@ bool QgsAttributeForm::saveEdits( QString *error )
         {
           mFeature.setAttributes( updatedFeature.attributes() );
           mLayer->endEditCommand();
+
+          const QgsFields fields = mLayer->fields();
+          const QgsAttributes newValues = updatedFeature.attributes();
+          const QgsAttributeMap origValues = sLastUsedValues()->contains( mLayer ) ? ( *sLastUsedValues() )[mLayer] : QgsAttributeMap();
+          for ( int idx = 0; idx < fields.count(); ++idx )
+          {
+            if ( !sRememberLastUsedValues()->contains( mLayer ) || ( *sRememberLastUsedValues() )[mLayer].contains( idx ) )
+            {
+              ( *sRememberLastUsedValues() )[mLayer][idx] = mLayer->editFormConfig().rememberLastValueByDefault( idx );
+            }
+
+            const QVariant newValue = ( *sRememberLastUsedValues() )[mLayer][idx] ? newValues.at( idx ) : QVariant();
+            if ( !origValues.contains( idx ) || origValues[idx] != newValue )
+            {
+              QgsDebugMsgLevel( QStringLiteral( "Saving %1 for %2" ).arg( ( *sLastUsedValues() )[mLayer][idx].toString() ).arg( idx ), 2 );
+              ( *sLastUsedValues() )[mLayer][idx] = newValue;
+            }
+          }
+
           setMode( QgsAttributeEditorContext::SingleEditMode );
           changedLayer = true;
         }
@@ -3326,4 +3352,40 @@ void QgsAttributeForm::reloadIcon( const QString &file, const QString &tooltip, 
   sw->load( QgsApplication::iconPath( file ) );
   sw->setToolTip( tooltip );
   sw->show();
+}
+
+QgsFeature QgsAttributeForm::createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsAttributeMap &attributes, QgsExpressionContext *context )
+{
+  QgsExpressionContext *evalContext = context;
+  std::unique_ptr< QgsExpressionContext > tempContext;
+  if ( !evalContext )
+  {
+    // no context passed, so we create a default one
+    tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) ) );
+    evalContext = tempContext.get();
+  }
+
+  const bool reuseAllLastValues = QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->value();
+  QgsDebugMsgLevel( QStringLiteral( "reuseAllLastValues: %1" ).arg( reuseAllLastValues ), 2 );
+
+  const QgsFields fields = layer->fields();
+  QgsAttributeMap initialAttributeValues;
+  for ( int idx = 0; idx < fields.count(); ++idx )
+  {
+    if ( attributes.contains( idx ) )
+    {
+      initialAttributeValues.insert( idx, attributes.value( idx ) );
+    }
+    else if ( ( reuseAllLastValues || layer->editFormConfig().reuseLastValue( idx ) ) && sLastUsedValues()->contains( layer ) && ( *sLastUsedValues() )[layer].contains( idx ) )
+    {
+      // Only set initial attribute value if it's different from the default clause or we may trigger
+      // unique constraint checks for no reason, see https://github.com/qgis/QGIS/issues/42909
+      if ( layer->dataProvider() && layer->dataProvider()->defaultValueClause( idx ) != ( *sLastUsedValues() )[layer][idx] )
+      {
+        initialAttributeValues.insert( idx, ( *sLastUsedValues() )[layer][idx] );
+      }
+    }
+  }
+
+  return QgsVectorLayerUtils::createFeature( layer, geometry, initialAttributeValues, evalContext );
 }
