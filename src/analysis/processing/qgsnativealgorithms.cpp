@@ -131,6 +131,7 @@
 #include "qgsalgorithmextractzmvalues.h"
 #include "qgsalgorithmfieldcalculator.h"
 #include "qgsalgorithmfiledownloader.h"
+#include "qgsalgorithmfileuploader.h"
 #include "qgsalgorithmfillnodata.h"
 #include "qgsalgorithmfillsinkswangliu.h"
 #include "qgsalgorithmfilter.h"
@@ -456,6 +457,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractZValuesAlgorithm() );
   addAlgorithm( new QgsFieldCalculatorAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
+  addAlgorithm( new QgsFileUploaderAlgorithm() );
   addAlgorithm( new QgsFillNoDataAlgorithm() );
   addAlgorithm( new QgsFillSinksWangLiuAlgorithm() );
   addAlgorithm( new QgsFilterAlgorithm() );
