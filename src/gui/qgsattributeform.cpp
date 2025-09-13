@@ -440,7 +440,7 @@ bool QgsAttributeForm::saveEdits( QString *error )
           const QgsAttributeMap origValues = sLastUsedValues()->contains( mLayer ) ? ( *sLastUsedValues() )[mLayer] : QgsAttributeMap();
           for ( int idx = 0; idx < fields.count(); ++idx )
           {
-            if ( !sRememberLastUsedValues()->contains( mLayer ) || ( *sRememberLastUsedValues() )[mLayer].contains( idx ) )
+            if ( !sRememberLastUsedValues()->contains( mLayer ) || !( *sRememberLastUsedValues() )[mLayer].contains( idx ) )
             {
               ( *sRememberLastUsedValues() )[mLayer][idx] = mLayer->editFormConfig().rememberLastValueByDefault( idx );
             }
@@ -2096,6 +2096,17 @@ void QgsAttributeForm::init()
         w = formWidget;
         mFormEditorWidgets.insert( idx, formWidget );
         mFormWidgets.append( formWidget );
+
+        bool remember = mLayer->editFormConfig().rememberLastValueByDefault( idx );
+        if ( sRememberLastUsedValues()->contains( mLayer ) && ( *sRememberLastUsedValues() )[mLayer].contains( idx ) )
+        {
+          remember = ( *sRememberLastUsedValues() )[mLayer][idx];
+        }
+        formWidget->setRememberLastValue( remember );
+        connect( formWidget, &QgsAttributeFormEditorWidget::rememberLastValueChanged, this, [this]( int idx, bool remember ) {
+          ( *sRememberLastUsedValues() )[mLayer][idx] = remember;
+        } );
+
         formWidget->createSearchWidgetWrappers( mContext );
 
         label->setBuddy( eww->widget() );
@@ -2457,6 +2468,16 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         QgsAttributeFormEditorWidget *formWidget = new QgsAttributeFormEditorWidget( eww, widgetSetup.type(), this );
         mFormEditorWidgets.insert( fldIdx, formWidget );
         mFormWidgets.append( formWidget );
+
+        bool remember = mLayer->editFormConfig().rememberLastValueByDefault( fldIdx );
+        if ( sRememberLastUsedValues()->contains( mLayer ) && ( *sRememberLastUsedValues() )[mLayer].contains( fldIdx ) )
+        {
+          remember = ( *sRememberLastUsedValues() )[mLayer][fldIdx];
+        }
+        formWidget->setRememberLastValue( remember );
+        connect( formWidget, &QgsAttributeFormEditorWidget::rememberLastValueChanged, this, [this]( int idx, bool remember ) {
+          ( *sRememberLastUsedValues() )[mLayer][idx] = remember;
+        } );
 
         formWidget->createSearchWidgetWrappers( mContext );
 
