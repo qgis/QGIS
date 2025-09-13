@@ -30,6 +30,8 @@ class QgsAttributeEditorContext;
 class QLabel;
 class QgsAggregateToolButton;
 
+class QToolButton;
+
 /**
  * \ingroup gui
  * \class QgsAttributeFormEditorWidget
@@ -88,6 +90,13 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     void setConstraintResultVisible( bool editable );
 
     /**
+     * Sets whether the widget value will be remembered for potential reuse when
+     * creating new features
+     * \since QGIS 4.0
+     */
+    void setRememberLastValue( bool remember );
+
+    /**
      * Returns the editor widget wrapper
      * \since QGIS 3.10
      */
@@ -123,6 +132,8 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      */
     void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );
 
+    void rememberLastValueChanged( int index, bool remember );
+
   private slots:
 
     //! Triggered when editor widget's value changes
@@ -142,6 +153,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     QgsAttributeForm *mForm = nullptr;
     QLabel *mConstraintResultLabel = nullptr;
 
+    QToolButton *mRememberLastValueButton = nullptr;
     QgsMultiEditToolButton *mMultiEditButton = nullptr;
     QgsAggregateToolButton *mAggregateButton = nullptr;
     QVariant mPreviousValue;
@@ -151,6 +163,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     bool mIsChanged;
 
     void updateWidgets() final;
+    void updateRememberWidget();
 
     friend class TestQgsAttributeForm;
 };

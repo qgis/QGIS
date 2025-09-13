@@ -15,6 +15,7 @@
 
 #include "qgsattributeformeditorwidget.h"
 #include "moc_qgsattributeformeditorwidget.cpp"
+#include "qgsapplication.h"
 #include "qgsattributeform.h"
 #include "qgsmultiedittoolbutton.h"
 #include "qgseditorwidgetwrapper.h"
@@ -43,7 +44,20 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   mConstraintResultLabel->setObjectName( QStringLiteral( "ConstraintStatus" ) );
   mConstraintResultLabel->setSizePolicy( QSizePolicy::Fixed, mConstraintResultLabel->sizePolicy().verticalPolicy() );
 
-  mMultiEditButton->setField( mEditorWidget->field() );
+  mRememberLastValueButton = new QToolButton();
+  mRememberLastValueButton->setAutoRaise( true );
+  mRememberLastValueButton->setCheckable( true );
+  mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconRememberDisabled.svg" ) ) );
+  mRememberLastValueButton->setToolTip( tr( "When enabled, the entered value will be remembered and reused for the next feature additions" ) );
+
+  connect( mRememberLastValueButton, &QAbstractButton::toggled, this, [this]( bool checked ) {
+    mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( checked ? QStringLiteral( "/mIconRememberEnabled.svg" ) : QStringLiteral( "/mIconRememberDisabled.svg" ) ) );
+    emit rememberLastValueChanged( mEditorWidget->fieldIdx(), checked );
+  } );
+  connect( mForm, &QgsAttributeForm::modeChanged, this, [this]( QgsAttributeEditorContext::Mode ) {
+    updateRememberWidget();
+  } );
+
   mAggregateButton = new QgsAggregateToolButton();
   mAggregateButton->setType( mEditorWidget->field().type() );
   connect( mAggregateButton, &QgsAggregateToolButton::aggregateChanged, this, &QgsAttributeFormEditorWidget::onAggregateChanged );
@@ -55,18 +69,19 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
 
   connect( mEditorWidget, &QgsEditorWidgetWrapper::valuesChanged, this, &QgsAttributeFormEditorWidget::editorWidgetValuesChanged );
 
+  mMultiEditButton->setField( mEditorWidget->field() );
   connect( mMultiEditButton, &QgsMultiEditToolButton::resetFieldValueTriggered, this, &QgsAttributeFormEditorWidget::resetValue );
   connect( mMultiEditButton, &QgsMultiEditToolButton::setFieldValueTriggered, this, &QgsAttributeFormEditorWidget::setFieldTriggered );
 
-  mMultiEditButton->setField( mEditorWidget->field() );
-
   updateWidgets();
+  updateRememberWidget();
 }
 
 QgsAttributeFormEditorWidget::~QgsAttributeFormEditorWidget()
 {
   //there's a chance these widgets are not currently added to the layout, so have no parent set
   delete mMultiEditButton;
+  delete mRememberLastValueButton;
 }
 
 void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QgsAttributeEditorContext &context )
@@ -123,6 +138,12 @@ void QgsAttributeFormEditorWidget::setIsMixed( bool mixed )
     mEditorWidget->showIndeterminateState();
   mMultiEditButton->setIsMixed( mixed );
   mIsMixed = mixed;
+}
+
+void QgsAttributeFormEditorWidget::setRememberLastValue( bool remember )
+{
+  mRememberLastValueButton->setChecked( remember );
+  mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( remember ? QStringLiteral( "/mIconRememberEnabled.svg" ) : QStringLiteral( "/mIconRememberDisabled.svg" ) ) );
 }
 
 void QgsAttributeFormEditorWidget::changesCommitted()
@@ -218,6 +239,25 @@ void QgsAttributeFormEditorWidget::onAggregateChanged()
   const auto constWigets( searchWidgetWrappers() );
   for ( QgsSearchWidgetWrapper *searchWidget : constWigets )
     searchWidget->setAggregate( mAggregateButton->aggregate() );
+}
+
+void QgsAttributeFormEditorWidget::updateRememberWidget()
+{
+  const bool hasRememberButton = ( editPage()->layout()->indexOf( mRememberLastValueButton ) >= 0 );
+  const int idx = mEditorWidget->fieldIdx();
+  if ( !hasRememberButton && form() && form()->mode() == QgsAttributeEditorContext::AddFeatureMode )
+  {
+    if ( layer() && layer()->editFormConfig().reuseLastValue( idx ) )
+    {
+      editPage()->layout()->addWidget( mRememberLastValueButton );
+      mRememberLastValueButton->setVisible( layer() && layer()->editFormConfig().reuseLastValue( idx ) );
+    }
+  }
+  else if ( hasRememberButton )
+  {
+    editPage()->layout()->removeWidget( mRememberLastValueButton );
+    mRememberLastValueButton->setParent( nullptr );
+  }
 }
 
 void QgsAttributeFormEditorWidget::updateWidgets()

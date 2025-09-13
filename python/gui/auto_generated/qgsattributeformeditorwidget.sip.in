@@ -9,6 +9,7 @@
 
 
 
+
 class QgsAttributeFormEditorWidget : QgsAttributeFormWidget
 {
 %Docstring(signature="appended")
@@ -76,6 +77,14 @@ Set the constraint result label visible or invisible according to the
 layer editable status
 %End
 
+    void setRememberLastValue( bool remember );
+%Docstring
+Sets whether the widget value will be remembered for potential reuse
+when creating new features
+
+.. versionadded:: 4.0
+%End
+
     QgsEditorWidgetWrapper *editorWidget() const;
 %Docstring
 Returns the editor widget wrapper
@@ -119,6 +128,8 @@ Emitted when the widget's value changes
 
 .. versionadded:: 3.10
 %End
+
+    void rememberLastValueChanged( int index, bool remember );
 
 };
 
