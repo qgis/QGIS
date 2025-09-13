@@ -34,6 +34,7 @@
 #include "qgscolorutils.h"
 #include "qgsgeos.h"
 #include "qgspolygon.h"
+#include "qgsmultipolygon.h"
 #include "qgssldexportcontext.h"
 #include <algorithm>
 #include <QPainter>
@@ -1227,7 +1228,7 @@ class MyLine
     }
 
     // return difference for x,y when going along the line with specified interval
-    QPointF diffForInterval( double interval )
+    QPointF diffForInterval( double interval ) const
     {
       if ( mVertical )
         return ( mIncreasing ? QPointF( 0, interval ) : QPointF( 0, -interval ) );
@@ -1289,6 +1290,53 @@ void QgsTemplatedLineSymbolLayerBase::setPlacement( Qgis::MarkerLinePlacement pl
 }
 
 QgsTemplatedLineSymbolLayerBase::~QgsTemplatedLineSymbolLayerBase() = default;
+
+
+QgsTemplatedLineSymbolLayerBase::BlankAreas QgsTemplatedLineSymbolLayerBase::parseBlankAreas( const QString &strBlankArea, const QgsRenderContext &rc, Qgis::RenderUnit unit, int partNum, int iRing )
+{
+  BlankAreas blankAreas;
+
+  // We reuse Wkt MultiPolygon format to define distances tuple (start, end) for polygon/line with
+  // possible parts and rings
+  QgsMultiPolygon polygon;
+
+  if ( !polygon.fromWkt( "MultiPolygon" + strBlankArea ) )
+  {
+    QgsDebugError( QStringLiteral( "Wrong blank area format, expect '(((1 2, 3 4),(5 6)),(7 8))' similar to MultiPolygon WKT format where x/y stands for start/end blank area distances. Instead got: %1" ).arg( strBlankArea ) );
+    return BlankAreas();
+  }
+
+  const int iPart = partNum - 1; // partNum start at index 1
+  if ( iPart < 0 || iPart >= polygon.partCount()
+       || iRing < 0 || iRing >= polygon.ringCount( iPart ) )
+    return blankAreas;
+
+  double lastEnd = -1;
+  for ( int iVertex = 0; iVertex < polygon.vertexCount( iPart, iRing ); iVertex++ )
+  {
+    const QgsPoint p = polygon.vertexAt( QgsVertexId( iPart, iRing, iVertex ) );
+
+    const double start = rc.convertToPainterUnits( p.x(), unit );
+    const double end = rc.convertToPainterUnits( p.y(), unit );
+    if ( start > end )
+    {
+      QgsDebugError( QStringLiteral( "Wrong blank area distances, start (%1) > end (%2): %3" ).arg( start ).arg( end ).arg( strBlankArea ) );
+      return BlankAreas();
+    }
+
+    if ( start < lastEnd )
+    {
+      QgsDebugError( QStringLiteral( "Wrong blank area distances, start (%1) < previous end (%2): %3" ).arg( start ).arg( lastEnd ).arg( strBlankArea ) );
+      return BlankAreas();
+    }
+
+    lastEnd = end;
+
+    blankAreas << QPair<double, double>( start, end );
+  }
+
+  return blankAreas;
+}
 
 void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
@@ -1366,28 +1414,35 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
   }
   averageOver = context.renderContext().convertToPainterUnits( averageOver, mAverageAngleLengthUnit, mAverageAngleLengthMapUnitScale ) / 2.0;
 
+  QList<QPair<double, double>> blankAreas;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::BlankAreas ) )
+  {
+    const QString strBlankAreas = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::BlankAreas, context.renderContext().expressionContext() );
+    blankAreas = parseBlankAreas( strBlankAreas, context.renderContext(), blankAreasUnit(), context.geometryPartNum(), mRingIndex );
+  }
+
   if ( qgsDoubleNear( offset, 0.0 ) )
   {
     if ( placements & Qgis::MarkerLinePlacement::Interval )
-      renderPolylineInterval( points, context, averageOver );
+      renderPolylineInterval( points, context, averageOver, blankAreas );
     if ( placements & Qgis::MarkerLinePlacement::CentralPoint )
-      renderPolylineCentral( points, context, averageOver );
+      renderPolylineCentral( points, context, averageOver, blankAreas );
     if ( placements & Qgis::MarkerLinePlacement::Vertex )
-      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::Vertex );
+      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::Vertex, blankAreas );
     if ( placements & Qgis::MarkerLinePlacement::FirstVertex
          && ( mPlaceOnEveryPart || !mHasRenderedFirstPart ) )
     {
-      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::FirstVertex );
+      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::FirstVertex, blankAreas );
       mHasRenderedFirstPart = mRenderingFeature;
     }
     if ( placements & Qgis::MarkerLinePlacement::InnerVertices )
-      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::InnerVertices );
+      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::InnerVertices, blankAreas );
     if ( placements & Qgis::MarkerLinePlacement::CurvePoint )
-      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::CurvePoint );
+      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::CurvePoint, blankAreas );
     if ( placements & Qgis::MarkerLinePlacement::SegmentCenter )
-      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::SegmentCenter );
+      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::SegmentCenter, blankAreas );
     if ( placements & Qgis::MarkerLinePlacement::LastVertex )
-      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::LastVertex );
+      renderPolylineVertex( points, context, Qgis::MarkerLinePlacement::LastVertex, blankAreas );
   }
   else
   {
@@ -1399,25 +1454,25 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
       const QPolygonF &points2 = mline[ part ];
 
       if ( placements & Qgis::MarkerLinePlacement::Interval )
-        renderPolylineInterval( points2, context, averageOver );
+        renderPolylineInterval( points2, context, averageOver, blankAreas );
       if ( placements & Qgis::MarkerLinePlacement::CentralPoint )
-        renderPolylineCentral( points2, context, averageOver );
+        renderPolylineCentral( points2, context, averageOver, blankAreas );
       if ( placements & Qgis::MarkerLinePlacement::Vertex )
-        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::Vertex );
+        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::Vertex, blankAreas );
       if ( placements & Qgis::MarkerLinePlacement::InnerVertices )
-        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::InnerVertices );
+        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::InnerVertices, blankAreas );
       if ( placements & Qgis::MarkerLinePlacement::LastVertex )
-        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::LastVertex );
+        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::LastVertex, blankAreas );
       if ( placements & Qgis::MarkerLinePlacement::FirstVertex
            && ( mPlaceOnEveryPart || !mHasRenderedFirstPart ) )
       {
-        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::FirstVertex );
+        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::FirstVertex, blankAreas );
         mHasRenderedFirstPart = mRenderingFeature;
       }
       if ( placements & Qgis::MarkerLinePlacement::CurvePoint )
-        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::CurvePoint );
+        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::CurvePoint, blankAreas );
       if ( placements & Qgis::MarkerLinePlacement::SegmentCenter )
-        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::SegmentCenter );
+        renderPolylineVertex( points2, context, Qgis::MarkerLinePlacement::SegmentCenter, blankAreas );
     }
   }
 }
@@ -1464,6 +1519,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &poin
         mOffset = -mOffset; // invert the offset for rings!
         for ( int i = 0; i < rings->size(); ++i )
         {
+          mRingIndex = i + 1;
           if ( curvePolygon )
           {
             context.renderContext().setGeometry( curvePolygon->interiorRing( i ) );
@@ -1474,6 +1530,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &poin
           renderPolyline( rings->at( i ), context );
         }
         mOffset = -mOffset;
+        mRingIndex = 0;
       }
       break;
       case ExteriorRingOnly:
@@ -1535,6 +1592,7 @@ QVariantMap QgsTemplatedLineSymbolLayerBase::properties() const
   map[QStringLiteral( "average_angle_length" )] = QString::number( mAverageAngleLength );
   map[QStringLiteral( "average_angle_unit" )] = QgsUnitTypes::encodeUnit( mAverageAngleLengthUnit );
   map[QStringLiteral( "average_angle_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mAverageAngleLengthMapUnitScale );
+  map[QStringLiteral( "blank_areas_unit" )] = QgsUnitTypes::encodeUnit( mBlankAreasUnit );
 
   map[QStringLiteral( "placements" )] = qgsFlagValueToKeys( mPlacements );
 
@@ -1594,8 +1652,10 @@ void QgsTemplatedLineSymbolLayerBase::copyTemplateSymbolProperties( QgsTemplated
   destLayer->setAverageAngleLength( mAverageAngleLength );
   destLayer->setAverageAngleUnit( mAverageAngleLengthUnit );
   destLayer->setAverageAngleMapUnitScale( mAverageAngleLengthMapUnitScale );
+  destLayer->setBlankAreasUnit( mBlankAreasUnit );
   destLayer->setRingFilter( mRingFilter );
   destLayer->setPlaceOnEveryPart( mPlaceOnEveryPart );
+
   copyDataDefinedProperties( destLayer );
   copyPaintEffect( destLayer );
 }
@@ -1648,6 +1708,10 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
   {
     destLayer->setAverageAngleMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "average_angle_map_unit_scale" )].toString() ) );
   }
+  if ( properties.contains( QStringLiteral( "blank_areas_unit" ) ) )
+  {
+    destLayer->setBlankAreasUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "blank_areas_unit" )].toString() ) );
+  }
 
   if ( properties.contains( QStringLiteral( "placement" ) ) )
   {
@@ -1682,7 +1746,69 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
   destLayer->restoreOldDataDefinedProperties( properties );
 }
 
-void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageOver )
+/*!
+ * Helper class to go through BlankArea while rendering points.
+ * The class expects to be used while rendering points in the correct order
+ */
+class BlankAreaScanner
+{
+  public :
+
+    BlankAreaScanner( const QPolygonF &points, const QgsTemplatedLineSymbolLayerBase::BlankAreas &blankAreas )
+      : mBlankAreas( blankAreas )
+      , mPoints( points )
+      , mItBlankArea( blankAreas.cbegin() )
+    {
+      mDistances.reserve( mPoints.count() );
+      mDistances << 0; // first point is start, so distance is 0
+    }
+
+    bool insideBlankArea( double distance )
+    {
+      while ( mItBlankArea != mBlankAreas.cend() && distance > mItBlankArea->second )
+      {
+        mItBlankArea++;
+      }
+
+      return ( mItBlankArea != mBlankAreas.cend() && distance >= mItBlankArea->first );
+    }
+
+
+    // pointIndex : index of the point before point
+    bool insideBlankArea( const QPointF &point, int pointIndex )
+    {
+      if ( pointIndex < 0 || pointIndex >= mPoints.count() )
+        return false;
+
+      // compute distances and fill distances array
+      if ( pointIndex >= mDistances.count() )
+      {
+        for ( int i = mDistances.count(); i < pointIndex + 1; i++ )
+        {
+          const QPointF diff = mPoints.at( i ) - mPoints.at( i - 1 );
+          const double distance = std::sqrt( std::pow( diff.x(), 2 ) + std::pow( diff.y(), 2 ) );
+          const double totalDistance = distance + mDistances.last();
+          mDistances << totalDistance;
+        }
+      }
+
+      const QPointF diff = mPoints.at( pointIndex ) - point;
+      const double distance = std::sqrt( std::pow( diff.x(), 2 ) + std::pow( diff.y(), 2 ) );
+      const double currentDistance = mDistances.at( pointIndex ) + distance;
+
+      return insideBlankArea( currentDistance );
+    }
+
+  private:
+
+    const QgsTemplatedLineSymbolLayerBase::BlankAreas &mBlankAreas;
+    const QPolygonF &mPoints;
+    QList<double> mDistances;
+    QgsTemplatedLineSymbolLayerBase::BlankAreas::const_iterator mItBlankArea;
+};
+
+
+void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageOver, const BlankAreas &blankAreas )
 {
   if ( points.isEmpty() )
     return;
@@ -1785,7 +1911,9 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     // 3. the end point of a line averaging the angle over the desired distance (i.e. +averageOver distance from the points in array 2)
     // it gets quite tricky, because for closed rings we need to trace backwards from the initial point to calculate this
     // (or trace past the final point)
-    collectOffsetPoints( points, symbolPoints, painterUnitInterval, lengthLeft );
+
+    QList<int> pointIndices; // keep a track on original pointIndices so we can decide later whether or not symbol points belong to a blank area
+    collectOffsetPoints( points, symbolPoints, painterUnitInterval, lengthLeft, blankAreas.isEmpty() ? nullptr : &pointIndices );
 
     if ( symbolPoints.empty() )
     {
@@ -1803,23 +1931,28 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     angleStartPoints.reserve( symbolPoints.size() );
     if ( averageOver <= painterUnitOffsetAlongLine )
     {
-      collectOffsetPoints( points, angleStartPoints, painterUnitInterval, lengthLeft + averageOver, 0, symbolPoints.size() );
+      collectOffsetPoints( points, angleStartPoints, painterUnitInterval, lengthLeft + averageOver, nullptr, 0, symbolPoints.size() );
     }
     else
     {
-      collectOffsetPoints( points, angleStartPoints, painterUnitInterval, 0, averageOver - painterUnitOffsetAlongLine, symbolPoints.size() );
+      collectOffsetPoints( points, angleStartPoints, painterUnitInterval, 0, nullptr, averageOver - painterUnitOffsetAlongLine, symbolPoints.size() );
     }
-    collectOffsetPoints( points, angleEndPoints, painterUnitInterval, lengthLeft - averageOver, 0, symbolPoints.size() );
+    collectOffsetPoints( points, angleEndPoints, painterUnitInterval, lengthLeft - averageOver, nullptr, 0, symbolPoints.size() );
 
     int pointNum = 0;
+    BlankAreaScanner blankAreaScanner( points, blankAreas );
     for ( int i = 0; i < symbolPoints.size(); ++ i )
     {
       if ( context.renderContext().renderingStopped() )
         break;
 
       const QPointF pt = symbolPoints[i];
+      if ( i < pointIndices.count() && blankAreaScanner.insideBlankArea( pt, pointIndices.at( i ) ) )
+        continue;
+
       const QPointF startPt = angleStartPoints[i];
       const QPointF endPt = angleEndPoints[i];
+
 
       MyLine l( startPt, endPt );
       // rotate marker (if desired)
@@ -1834,9 +1967,11 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
   }
   else
   {
+
     // not averaging line angle -- always use exact section angle
     int pointNum = 0;
     QPointF lastPt = points[0];
+    BlankAreaScanner itBlankArea( points, blankAreas );
     for ( int i = 1; i < points.count(); ++i )
     {
       if ( context.renderContext().renderingStopped() )
@@ -1853,6 +1988,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
 
       // if there's some length left from previous line
       // use only the rest for the first point in new line segment
+      // "c" is 1 for regular point or in interval (0,1] for begin of line segment
       double c = 1 - lengthLeft / painterUnitInterval;
 
       lengthLeft += l.length();
@@ -1868,10 +2004,16 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
       {
         // "c" is 1 for regular point or in interval (0,1] for begin of line segment
         lastPt += c * diff;
-        lengthLeft -= painterUnitInterval;
-        scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
-        renderSymbol( lastPt, context.feature(), rc, -1, useSelectedColor );
         c = 1; // reset c (if wasn't 1 already)
+
+        // we draw
+        if ( !itBlankArea.insideBlankArea( lastPt, i - 1 ) )
+        {
+          scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
+          renderSymbol( lastPt, context.feature(), rc, -1, useSelectedColor );
+        }
+
+        lengthLeft -= painterUnitInterval;
       }
 
       lastPt = pt;
@@ -1890,7 +2032,7 @@ static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
   return std::atan2( unitY, unitX );
 }
 
-void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement )
+void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const BlankAreas &blankAreas )
 {
   if ( points.isEmpty() )
     return;
@@ -2052,7 +2194,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
   {
     double distance;
     distance = placement == Qgis::MarkerLinePlacement::FirstVertex ? offsetAlongLine : -offsetAlongLine;
-    renderOffsetVertexAlongLine( points, i, distance, context, placement );
+    renderOffsetVertexAlongLine( points, i, distance, context, placement, blankAreas );
 
     return;
   }
@@ -2062,6 +2204,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     prevPoint = points.at( 0 );
 
   QPointF symbolPoint;
+  BlankAreaScanner blankAreaScanner( points, blankAreas );
   for ( ; i < maxCount; ++i )
   {
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
@@ -2096,7 +2239,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     }
 
     mFinalVertex = symbolPoint;
-    if ( i != points.count() - 1 || placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature )
+    if ( ( i != points.count() - 1 || placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature )
+         && !blankAreaScanner.insideBlankArea( symbolPoint, i ) )
       renderSymbol( symbolPoint, context.feature(), rc, -1, useSelectedColor );
   }
 }
@@ -2176,7 +2320,7 @@ double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bo
   return angle;
 }
 
-void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement )
+void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const BlankAreas &blankAreas )
 {
   if ( points.isEmpty() )
     return;
@@ -2205,6 +2349,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
   int startPoint = distance > 0 ? std::min( vertex + 1, static_cast<int>( points.count() ) - 1 ) : std::max( vertex - 1, 0 );
   int endPoint = distance > 0 ? points.count() - 1 : 0;
   double distanceLeft = std::fabs( distance );
+  BlankAreaScanner blankAreaScanner( points, blankAreas );
 
   for ( int i = startPoint; pointIncrement > 0 ? i <= endPoint : i >= endPoint; i += pointIncrement )
   {
@@ -2226,7 +2371,8 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
         setSymbolLineAngle( l.angle() * 180 / M_PI );
       }
       mFinalVertex = markerPoint;
-      if ( placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature )
+      if ( ( placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature )
+           && !blankAreaScanner.insideBlankArea( markerPoint, i - 1 ) )
         renderSymbol( markerPoint, context.feature(), rc, -1, useSelectedColor );
       return;
     }
@@ -2238,7 +2384,9 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
   //didn't find point
 }
 
-void QgsTemplatedLineSymbolLayerBase::collectOffsetPoints( const QVector<QPointF> &p, QVector<QPointF> &dest, double intervalPainterUnits, double initialOffset, double initialLag, int numberPointsRequired )
+void QgsTemplatedLineSymbolLayerBase::collectOffsetPoints( const QVector<QPointF> &p, QVector<QPointF> &dest, double intervalPainterUnits, double initialOffset,
+    QList<int> *pointIndices,
+    double initialLag, int numberPointsRequired )
 {
   if ( p.empty() )
     return;
@@ -2322,7 +2470,10 @@ void QgsTemplatedLineSymbolLayerBase::collectOffsetPoints( const QVector<QPointF
       lastPt += c * diff;
       lengthLeft -= intervalPainterUnits;
       dest << lastPt;
+      if ( pointIndices )
+        *pointIndices << i - 1;
       c = 1; // reset c (if wasn't 1 already)
+
       if ( numberPointsRequired > 0 && dest.size() >= numberPointsRequired )
         break;
     }
@@ -2347,7 +2498,7 @@ void QgsTemplatedLineSymbolLayerBase::collectOffsetPoints( const QVector<QPointF
   }
 }
 
-void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver )
+void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const BlankAreas &blankAreas )
 {
   if ( !points.isEmpty() )
   {
@@ -2366,6 +2517,10 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
 
     const double midPoint = length / 2;
 
+    BlankAreaScanner blankAreaScanner( points, blankAreas );
+    if ( blankAreaScanner.insideBlankArea( midPoint ) )
+      return;
+
     QPointF pt;
     double thisSymbolAngle = 0;
 
@@ -2374,10 +2529,12 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
       QVector< QPointF > angleStartPoints;
       QVector< QPointF > symbolPoints;
       QVector< QPointF > angleEndPoints;
+
       // collectOffsetPoints will have the first point in the line as the first result -- we don't want this, we need the second
-      collectOffsetPoints( points, symbolPoints, midPoint, midPoint, 0.0, 2 );
-      collectOffsetPoints( points, angleStartPoints, midPoint, 0, averageAngleOver, 2 );
-      collectOffsetPoints( points, angleEndPoints, midPoint, midPoint - averageAngleOver, 0, 2 );
+      // already dealt with blank area before, no need to make them check again
+      collectOffsetPoints( points, symbolPoints, midPoint, midPoint, nullptr, 0.0, 2 );
+      collectOffsetPoints( points, angleStartPoints, midPoint, 0, nullptr, averageAngleOver, 2 );
+      collectOffsetPoints( points, angleEndPoints, midPoint, midPoint - averageAngleOver, nullptr, 0, 2 );
 
       pt = symbolPoints.at( 1 );
       MyLine l( angleStartPoints.at( 1 ), angleEndPoints.at( 1 ) );
@@ -2745,6 +2902,7 @@ bool QgsMarkerLineSymbolLayer::usesMapUnits() const
           || averageAngleUnit() == Qgis::RenderUnit::MapUnits || averageAngleUnit() == Qgis::RenderUnit::MetersInMapUnits
           || mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
           || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+          || blankAreasUnit() == Qgis::RenderUnit::MapUnits
           || ( mMarker && mMarker->usesMapUnits() );
 }
 
@@ -2948,6 +3106,7 @@ bool QgsHashedLineSymbolLayer::usesMapUnits() const
          || averageAngleUnit() == Qgis::RenderUnit::MapUnits || averageAngleUnit() == Qgis::RenderUnit::MetersInMapUnits
          || mWidthUnit == Qgis::RenderUnit::MapUnits || mWidthUnit == Qgis::RenderUnit::MetersInMapUnits
          || mOffsetUnit == Qgis::RenderUnit::MapUnits || mOffsetUnit == Qgis::RenderUnit::MetersInMapUnits
+         || blankAreasUnit() == Qgis::RenderUnit::MapUnits
          || ( mHashSymbol && mHashSymbol->usesMapUnits() );
 }
 

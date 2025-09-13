@@ -218,6 +218,7 @@ class CORE_EXPORT QgsSymbolLayer
       LineClipping SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineClipping ), //!< Line clipping mode \since QGIS 3.24
       SkipMultiples, //!< Skip multiples of \since QGIS 3.40
       ShowMarker, //!< Show markers \since QGIS 3.40
+      BlankAreas, //!< String list of distance to define blank areas along line for line symbol layer. \since QGIS 4.0
     };
     // *INDENT-ON*
 
