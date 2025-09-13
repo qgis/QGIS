@@ -185,6 +185,15 @@ Returns ``True`` if any of the form widgets need feature geometry
 .. versionadded:: 3.20
 %End
 
+    static QgsFeature createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsAttributeMap &attributes, QgsExpressionContext *context );
+%Docstring
+Creates a new feature for a given ``layer`` taking into account
+attribute form-specific context such as the remembrance and reuse of
+last attribute values.
+
+.. versionadded:: 4.0
+%End
+
   signals:
 
  void attributeChanged( const QString &attribute, const QVariant &value ) /Deprecated="Since 3.0. "/;
@@ -206,6 +215,16 @@ Notifies about changes of attributes
 :param value: The new value of the attribute.
 :param attributeChanged: If ``True``, it corresponds to an actual change
                          of the feature attribute
+%End
+
+    void rememberLastWidgetValueChanged( const QString &attribute, bool remember );
+%Docstring
+Notifies about changes to remembrance of attributes' last value
+
+:param attribute: The name of the attribute.
+:param remember: Whether the last value should be remembered or not.
+
+.. versionadded:: 4.0
 %End
 
 

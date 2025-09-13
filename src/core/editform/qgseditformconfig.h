@@ -203,8 +203,8 @@ class CORE_EXPORT QgsEditFormConfig
     void setLabelOnTop( int idx, bool onTop );
 
     /**
-     * If this returns TRUE, the widget at the given \a index will remember the previously
-     * entered value from this QGIS session when creating new features.
+     * If this returns TRUE, the widget at the given \a index will reuse the last remembered
+     * value from this QGIS session when creating new features.
      *
      * \see setReuseLastValue()
      * \since QGIS 3.20
@@ -212,13 +212,31 @@ class CORE_EXPORT QgsEditFormConfig
     bool reuseLastValue( int index ) const;
 
     /**
-     * Sets whether the widget at the given \a index will remember the previously
-     * entered value from this QGIS session when creating new features.
+     * Sets whether the widget at the given \a index will reuse the previously
+     * remembered value from this QGIS session when creating new features.
      *
      * \see reuseLastValue()
      * \since QGIS 3.20
      */
     void setReuseLastValue( int index, bool reuse );
+
+    /**
+     * If this returns TRUE, the widget at the given \a index will remember
+     * entered values by default from this QGIS session when creating new features.
+     *
+     * \see setReuseLastValue()
+     * \since QGIS 4.0
+     */
+    bool rememberLastValueByDefault( int index ) const;
+
+    /**
+     * Sets whether the widget at the given \a index will remember
+     * entered values from this QGIS session when creating new features.
+     *
+     * \see reuseLastValue()
+     * \since QGIS 4.0
+     */
+    void setRememberLastValueByDefault( int index, bool reuse );
 
     // Python form init function stuff
 

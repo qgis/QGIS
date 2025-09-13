@@ -290,6 +290,23 @@ void QgsEditFormConfig::setReuseLastValue( int index, bool reuse )
   }
 }
 
+bool QgsEditFormConfig::rememberLastValueByDefault( int index ) const
+{
+  if ( index >= 0 && index < d->mFields.count() )
+    return d->mRememberLastValueByDefault.value( d->mFields.at( index ).name(), true );
+  else
+    return true;
+}
+
+void QgsEditFormConfig::setRememberLastValueByDefault( int index, bool remember )
+{
+  if ( index >= 0 && index < d->mFields.count() )
+  {
+    d.detach();
+    d->mRememberLastValueByDefault[ d->mFields.at( index ).name()] = remember;
+  }
+}
+
 QString QgsEditFormConfig::initFunction() const
 {
   return d->mInitFunction;
@@ -468,6 +485,13 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
     const QDomElement reuseLastValueElement = reuseLastValueNodeList.at( i ).toElement();
     d->mReuseLastValue.insert( reuseLastValueElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( reuseLastValueElement.attribute( QStringLiteral( "reuseLastValue" ) ).toInt() ) );
   }
+  d->mRememberLastValueByDefault.clear();
+  const QDomNodeList rememberLastValueByDefaultNodeList = node.namedItem( QStringLiteral( "rememberLastValueByDefault" ) ).toElement().childNodes();
+  for ( int i = 0; i < rememberLastValueByDefaultNodeList.size(); ++i )
+  {
+    const QDomElement rememberLastValueByDefaultElement = rememberLastValueByDefaultNodeList.at( i ).toElement();
+    d->mRememberLastValueByDefault.insert( rememberLastValueByDefaultElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( rememberLastValueByDefaultElement.attribute( QStringLiteral( "rememberLastValueByDefault" ) ).toInt() ) );
+  }
 
   // Read data defined field properties
   const QDomNodeList fieldDDPropertiesNodeList = node.namedItem( QStringLiteral( "dataDefinedFieldProperties" ) ).toElement().childNodes();
@@ -639,6 +663,16 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
     reuseLastValueElem.appendChild( fieldElem );
   }
   node.appendChild( reuseLastValueElem );
+
+  QDomElement rememberLastValueByDefaultElem = doc.createElement( QStringLiteral( "rememberLastValueByDefault" ) );
+  for ( auto rememberLastValueByDefaultIt = d->mRememberLastValueByDefault.constBegin(); rememberLastValueByDefaultIt != d->mRememberLastValueByDefault.constEnd(); ++rememberLastValueByDefaultIt )
+  {
+    QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
+    fieldElem.setAttribute( QStringLiteral( "name" ), rememberLastValueByDefaultIt.key() );
+    fieldElem.setAttribute( QStringLiteral( "rememberLastValueByDefault" ), rememberLastValueByDefaultIt.value() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    rememberLastValueByDefaultElem.appendChild( fieldElem );
+  }
+  node.appendChild( rememberLastValueByDefaultElem );
 
   // Store data defined field properties
   QDomElement ddFieldPropsElement = doc.createElement( QStringLiteral( "dataDefinedFieldProperties" ) );

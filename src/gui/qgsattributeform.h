@@ -200,6 +200,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     bool needsGeometry() const;
 
+    /**
+     * Creates a new feature for a given \a layer taking into account attribute form-specific
+     * context such as the remembrance and reuse of last attribute values.
+     * \since QGIS 4.0
+     */
+    static QgsFeature createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsAttributeMap &attributes, QgsExpressionContext *context );
+
   signals:
 
     /**
@@ -220,6 +227,16 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \param attributeChanged If TRUE, it corresponds to an actual change of the feature attribute
      */
     void widgetValueChanged( const QString &attribute, const QVariant &value, bool attributeChanged );
+
+    /**
+     * Notifies about changes to remembrance of attributes' last value
+     * 
+     * \param attribute The name of the attribute.
+     * \param remember Whether the last value should be remembered or not.
+     * 
+     * \since QGIS 4.0
+     */
+    void rememberLastWidgetValueChanged( const QString &attribute, bool remember );
 
     /**
      * Will be emitted before the feature is saved. Use this signal to perform sanity checks.
