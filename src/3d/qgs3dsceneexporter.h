@@ -42,7 +42,7 @@ class QgsPolygon3DSymbol;
 class QgsLine3DSymbol;
 class QgsPoint3DSymbol;
 class QgsMeshEntity;
-class TestQgs3DRendering;
+class TestQgs3DExporter;
 
 #define SIP_NO_FILE
 
@@ -157,7 +157,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     friend QgsPolygon3DSymbol;
     friend QgsLine3DSymbol;
     friend QgsPoint3DSymbol;
-    friend TestQgs3DRendering;
+    friend TestQgs3DExporter;
 };
 
 #endif // QGS3DSCENEEXPORTER_H

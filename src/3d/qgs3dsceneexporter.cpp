@@ -83,6 +83,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include "qgs3dutils.h"
 #include "qgsimagetexture.h"
 #include "qgstessellatedpolygongeometry.h"
+#include "qgsgeotransform.h"
 
 #include <numeric>
 
@@ -314,6 +315,14 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getFlatTerrainEntity( QgsTerrainEntity
   // the entity we created will be deallocated once the scene exporter is deallocated
   Qt3DCore::QEntity *entity = flatTerrainLoader->createEntity( this );
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( entity );
+
+  Qgs3DMapSettings *settings = terrain->mapSettings();
+  const QList<QgsGeoTransform *> transforms = entity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( settings->origin() );
+  }
+
   return tileEntity;
 }
 
@@ -329,6 +338,14 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getDemTerrainEntity( QgsTerrainEntity 
   if ( mExportTextures )
     terrain->textureGenerator()->waitForFinished();
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+
+  Qgs3DMapSettings *settings = terrain->mapSettings();
+  const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( settings->origin() );
+  }
+
   delete generator;
   return tileEntity;
 }
@@ -340,6 +357,14 @@ QgsTerrainTileEntity *Qgs3DSceneExporter::getMeshTerrainEntity( QgsTerrainEntity
   loader->start();
   // TODO: export textures
   QgsTerrainTileEntity *tileEntity = qobject_cast<QgsTerrainTileEntity *>( loader->createEntity( this ) );
+
+  Qgs3DMapSettings *settings = terrain->mapSettings();
+  const QList<QgsGeoTransform *> transforms = tileEntity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( settings->origin() );
+  }
+
   return tileEntity;
 }
 
