@@ -31,14 +31,14 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="laComment">
         <property name="text">
          <string>Comment</string>
         </property>
        </widget>
       </item>
       <item row="1" column="2" colspan="3">
-       <widget class="QLabel" name="laComment">
+       <widget class="QLabel" name="laCommentContent">
         <property name="text">
          <string/>
         </property>
