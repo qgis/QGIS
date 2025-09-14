@@ -76,6 +76,8 @@ class TestQgsEditFormConfig(QgisTestCase):
         config.setLabelOnTop(1, True)
         config.setReuseLastValue(0, False)
         config.setReuseLastValue(1, True)
+        config.setRememberLastValueByDefault(0, False)
+        config.setRememberLastValueByDefault(1, True)
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("edit")
@@ -91,6 +93,8 @@ class TestQgsEditFormConfig(QgisTestCase):
         self.assertTrue(config2.labelOnTop(1))
         self.assertFalse(config2.reuseLastValue(0))
         self.assertTrue(config2.reuseLastValue(1))
+        self.assertFalse(config2.rememberLastValueByDefault(0))
+        self.assertTrue(config2.rememberLastValueByDefault(1))
 
     def testFormUi(self):
         layer = self.createLayer()
@@ -224,6 +228,25 @@ class TestQgsEditFormConfig(QgisTestCase):
         config.setReuseLastValue(1, False)
         self.assertFalse(config.reuseLastValue(0))
         self.assertFalse(config.reuseLastValue(1))
+
+    def testRememberLastValueByDefault(self):
+        layer = self.createLayer()
+        config = layer.editFormConfig()
+
+        # safety checks
+        config.setRememberLastValueByDefault(-1, True)
+        config.setRememberLastValueByDefault(100, True)
+
+        # real checks
+        config.setRememberLastValueByDefault(0, False)
+        config.setRememberLastValueByDefault(1, False)
+        self.assertFalse(config.rememberLastValueByDefault(0))
+        self.assertFalse(config.rememberLastValueByDefault(1))
+
+        config.setRememberLastValueByDefault(0, True)
+        config.setRememberLastValueByDefault(1, True)
+        self.assertTrue(config.rememberLastValueByDefault(0))
+        self.assertTrue(config.rememberLastValueByDefault(1))
 
     def test_backgroundColorSerialize(self):
         """Test backgroundColor serialization"""
