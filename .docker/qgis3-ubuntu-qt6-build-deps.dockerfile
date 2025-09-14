@@ -32,7 +32,7 @@ RUN  apt-get update \
     graphviz \
     'libaio1|libaio1t64' \
     'libdraco4|libdraco8' \
-    libexiv2-27 \
+    libexiv2-28 \
     'libfcgi0ldbl|libfcgi0t64' \
     libgsl28 \
     'libprotobuf-lite17|libprotobuf-lite23|libprotobuf-lite32t64' \
@@ -58,7 +58,7 @@ RUN  apt-get update \
     libqt6webenginecore6 \
     libqt6webenginecore6-bin \
     libqt6webenginewidgets6 \
-    libspatialindex7 \
+    libspatialindex8 \
     libsqlite3-mod-spatialite \
     'libzip4|libzip5|libzip4t64' \
     lighttpd \
