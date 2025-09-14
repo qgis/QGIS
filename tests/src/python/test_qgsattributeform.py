@@ -183,6 +183,54 @@ class TestQgsAttributeForm(QgisTestCase):
         form.changeAttribute("age", 7)
         self.assertEqual(form.currentFormFeature()["numbers"], [1, 7])
 
+    def test_reuse_last_remembered_value(self):
+        """Test that last remembered values reused when creating features"""
+
+        layer = QgsVectorLayer("Point?field=age:int&field=number:int", "vl", "memory")
+
+        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup("Range", {}))
+
+        config = layer.editFormConfig()
+        config.setReuseLastValue(0, True)
+        config.setRememberLastValueByDefault(0, True)
+        layer.setEditFormConfig(config)
+
+        layer.startEditing()
+
+        feature = QgsAttributeForm.createFeature(layer)
+
+        form = QgsAttributeForm(layer)
+        form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
+        form.setFeature(feature)
+
+        QGISAPP.processEvents()
+
+        form.changeAttribute("age", 12)
+        form.changeAttribute("number", 12)
+        self.assertEqual(form.save(), True)
+
+        feature = QgsAttributeForm.createFeature(layer)
+        self.assertEqual(feature.attribute(0), 12)
+        self.assertEqual(feature.attribute(1), None)
+
+        config = layer.editFormConfig()
+        config.setReuseLastValue(0, False)
+        layer.setEditFormConfig(config)
+
+        form = QgsAttributeForm(layer)
+        form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
+        form.setFeature(feature)
+
+        QGISAPP.processEvents()
+
+        form.changeAttribute("age", 10)
+        form.changeAttribute("number", 10)
+        self.assertEqual(form.save(), True)
+
+        feature = QgsAttributeForm.createFeature(layer)
+        self.assertEqual(feature.attribute(0), None)
+        self.assertEqual(feature.attribute(1), None)
+
     def test_default_value_always_updated(self):
         """Test that default values are not updated on every edit operation
         when containing an 'attribute' expression"""

@@ -185,7 +185,7 @@ Returns ``True`` if any of the form widgets need feature geometry
 .. versionadded:: 3.20
 %End
 
-    static QgsFeature createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsAttributeMap &attributes, QgsExpressionContext *context );
+    static QgsFeature createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap(), QgsExpressionContext *context = 0 );
 %Docstring
 Creates a new feature for a given ``layer`` taking into account
 attribute form-specific context such as the remembrance and reuse of

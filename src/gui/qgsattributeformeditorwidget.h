@@ -132,6 +132,12 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      */
     void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );
 
+    /**
+     * Emitted when the widget's remember last value toggle changes
+     * \param index the field index
+     * \param remember the value is TRUE when the last value should be remembered
+     * \since QGIS 4.0
+     */
     void rememberLastValueChanged( int index, bool remember );
 
   private slots:
