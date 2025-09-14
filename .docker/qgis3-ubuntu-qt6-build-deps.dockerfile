@@ -189,13 +189,11 @@ RUN curl -j -k -L -H "Cookie: eula_3_2_agreed=tools.hana.ondemand.com/developer-
 ENV PATH="/usr/sap/hdbclient:${PATH}"
 
 # MSSQL: client side
-RUN curl -sSL -O https://packages.microsoft.com/ubuntu/24.10/prod/pool/main/m/msodbcsql18/msodbcsql18_18.5.1.1-1_amd64.deb
-RUN curl -sSL -O https://packages.microsoft.com/ubuntu/24.10/prod/pool/main/m/mssql-tools18/mssql-tools18_18.4.1.1-1_amd64.deb
+RUN curl -sSL -O https://packages.microsoft.com/ubuntu/24.10/prod/pool/main/p/packages-microsoft-prod/packages-microsoft-prod_1.1-ubuntu24.10_all.deb
+RUN dpkg -i packages-microsoft-prod_1.1-ubuntu24.10_all.deb
+RUN rm packages-microsoft-prod_1.1-ubuntu24.10_all.deb
 RUN apt-get update
-RUN ACCEPT_EULA=Y dpkg -i msodbcsql18_18.5.1.1-1_amd64.deb
-RUN ACCEPT_EULA=Y dpkg -i mssql-tools18_18.4.1.1-1_amd64.deb
-RUN rm msodbcsql18_18.5.1.1-1_amd64.deb
-RUN rm mssql-tools18_18.4.1.1-1_amd64.deb
+RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql18 mssql-tools18
 ENV PATH="/opt/mssql-tools18/bin:${PATH}"
 
 FROM binary-only
