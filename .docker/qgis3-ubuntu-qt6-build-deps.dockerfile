@@ -219,7 +219,6 @@ RUN  apt-get update \
     libqt6opengl6-dev \
     libqscintilla2-qt6-dev \
     libqt6svg6-dev \
-    libqt6serialport6-dev \
     libspatialindex-dev \
     libspatialite-dev \
     libsqlite3-dev \
@@ -247,6 +246,7 @@ RUN  apt-get update \
     qt6-5compat-dev \
     qt6-webengine-dev \
     qt6-pdf-dev \
+    qt6-serialport-dev \
     opencl-headers \
     ocl-icd-opencl-dev \
   && apt-get clean
