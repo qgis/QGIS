@@ -161,6 +161,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     bool mBlockValueUpdate;
     bool mIsMixed;
     bool mIsChanged;
+    bool mIsConstraintResultVisible = false;
 
     void updateWidgets() final;
     void updateRememberWidget();

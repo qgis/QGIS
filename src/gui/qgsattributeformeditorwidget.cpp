@@ -40,15 +40,12 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   , mIsMixed( false )
   , mIsChanged( false )
 {
-  mConstraintResultLabel = new QLabel( this );
-  mConstraintResultLabel->setObjectName( QStringLiteral( "ConstraintStatus" ) );
-  mConstraintResultLabel->setSizePolicy( QSizePolicy::Fixed, mConstraintResultLabel->sizePolicy().verticalPolicy() );
-
   mRememberLastValueButton = new QToolButton();
   mRememberLastValueButton->setAutoRaise( true );
   mRememberLastValueButton->setCheckable( true );
   mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconRememberDisabled.svg" ) ) );
   mRememberLastValueButton->setToolTip( tr( "When enabled, the entered value will be remembered and reused for the next feature additions" ) );
+  updateRememberWidget();
 
   connect( mRememberLastValueButton, &QAbstractButton::toggled, this, [this]( bool checked ) {
     mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( checked ? QStringLiteral( "/mIconRememberEnabled.svg" ) : QStringLiteral( "/mIconRememberDisabled.svg" ) ) );
@@ -57,6 +54,12 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   connect( mForm, &QgsAttributeForm::modeChanged, this, [this]( QgsAttributeEditorContext::Mode ) {
     updateRememberWidget();
   } );
+
+  mConstraintResultLabel = new QLabel();
+  mConstraintResultLabel->setObjectName( QStringLiteral( "ConstraintStatus" ) );
+  mConstraintResultLabel->setSizePolicy( QSizePolicy::Fixed, mConstraintResultLabel->sizePolicy().verticalPolicy() );
+  mConstraintResultLabel->setAlignment( Qt::AlignCenter );
+  mConstraintResultLabel->setFixedWidth( 24 );
 
   mAggregateButton = new QgsAggregateToolButton();
   mAggregateButton->setType( mEditorWidget->field().type() );
@@ -74,7 +77,6 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   connect( mMultiEditButton, &QgsMultiEditToolButton::setFieldValueTriggered, this, &QgsAttributeFormEditorWidget::setFieldTriggered );
 
   updateWidgets();
-  updateRememberWidget();
 }
 
 QgsAttributeFormEditorWidget::~QgsAttributeFormEditorWidget()
@@ -82,6 +84,7 @@ QgsAttributeFormEditorWidget::~QgsAttributeFormEditorWidget()
   //there's a chance these widgets are not currently added to the layout, so have no parent set
   delete mMultiEditButton;
   delete mRememberLastValueButton;
+  delete mConstraintResultLabel;
 }
 
 void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QgsAttributeEditorContext &context )
@@ -124,7 +127,26 @@ void QgsAttributeFormEditorWidget::setConstraintStatus( const QString &constrain
 
 void QgsAttributeFormEditorWidget::setConstraintResultVisible( bool editable )
 {
-  mConstraintResultLabel->setHidden( !editable );
+  mIsConstraintResultVisible = editable;
+
+  if ( mode() != DefaultMode && mode() != MultiEditMode )
+  {
+    return;
+  }
+
+  if ( !layer() && QgsVectorLayerUtils::attributeHasConstraints( layer(), mEditorWidget->fieldIdx() ) )
+  {
+    const bool hasConstraintResultLabel = ( editPage()->layout()->indexOf( mConstraintResultLabel ) >= 0 );
+    if ( editable && !hasConstraintResultLabel )
+    {
+      editPage()->layout()->addWidget( mConstraintResultLabel );
+    }
+    else if ( !editable && hasConstraintResultLabel )
+    {
+      editPage()->layout()->removeWidget( mConstraintResultLabel );
+      mConstraintResultLabel->setParent( nullptr );
+    }
+  }
 }
 
 QgsEditorWidgetWrapper *QgsAttributeFormEditorWidget::editorWidget() const
@@ -327,7 +349,13 @@ void QgsAttributeFormEditorWidget::updateWidgets()
     case DefaultMode:
     case MultiEditMode:
     {
-      editPage()->layout()->addWidget( mConstraintResultLabel );
+      if ( mIsConstraintResultVisible && editPage()->layout()->indexOf( mConstraintResultLabel ) == -1 )
+      {
+        if ( !layer() || QgsVectorLayerUtils::attributeHasConstraints( layer(), mEditorWidget->fieldIdx() ) )
+        {
+          editPage()->layout()->addWidget( mConstraintResultLabel );
+        }
+      }
       break;
     }
 
