@@ -130,6 +130,15 @@ Emitted when the widget's value changes
 %End
 
     void rememberLastValueChanged( int index, bool remember );
+%Docstring
+Emitted when the widget's remember last value toggle changes
+
+:param index: the field index
+:param remember: the value is ``True`` when the last value should be
+                 remembered
+
+.. versionadded:: 4.0
+%End
 
 };
 
