@@ -639,9 +639,9 @@ if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
   target_link_libraries(qgis ${EXECINFO_LIBRARY})
 endif()
 
+target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 if (WITH_PDAL)
   target_link_libraries(qgis_app ${PDAL_LIBRARIES})
-  target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 endif()
 
 if(MSVC)

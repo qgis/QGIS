@@ -24,11 +24,7 @@
 #ifdef HAVE_3D
 #include "qgs3dalgorithms.h"
 #endif
-#ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 5 )
 #include "qgspdalalgorithms.h"
-#endif
-#endif
 #ifdef WITH_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>
 #endif
@@ -266,12 +262,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
 #ifdef HAVE_3D
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
-
-#ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 1 && PDAL_VERSION_MINOR_INT >= 5
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
-#endif
-#endif
 
 #ifdef WITH_BINDINGS
   if ( !( mFlags & Flag::SkipPython ) )
