@@ -1,5 +1,5 @@
 
-ARG DISTRO_VERSION=24.10
+ARG DISTRO_VERSION=25.04
 ARG PDAL_VERSION=2.8.4
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
