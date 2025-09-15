@@ -269,10 +269,9 @@ void QgsAttributeFormEditorWidget::updateRememberWidget()
   const int idx = mEditorWidget->fieldIdx();
   if ( !hasRememberButton && form() && form()->mode() == QgsAttributeEditorContext::AddFeatureMode )
   {
-    if ( layer() && layer()->editFormConfig().reuseLastValue( idx ) )
+    if ( layer() && layer()->editFormConfig().reuseLastValuePolicy( idx ) != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
     {
       editPage()->layout()->addWidget( mRememberLastValueButton );
-      mRememberLastValueButton->setVisible( layer() && layer()->editFormConfig().reuseLastValue( idx ) );
     }
   }
   else if ( hasRememberButton )

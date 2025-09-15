@@ -10756,6 +10756,21 @@ Qgis.AttributeFormPythonInitCodeSource.__doc__ = """The Python init code source 
 # --
 Qgis.AttributeFormPythonInitCodeSource.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.AttributeFormReuseLastValuePolicy.NotAllowed.__doc__ = "Reuse of last values not allowed"
+Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn.__doc__ = "Reuse of last values allowed and enabled by default"
+Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOff.__doc__ = "Reuse of last values allowed and disabled by default"
+Qgis.AttributeFormReuseLastValuePolicy.__doc__ = """Attribute form policy for reusing last entered values.
+
+.. versionadded:: 4.0
+
+* ``NotAllowed``: Reuse of last values not allowed
+* ``AllowedDefaultOn``: Reuse of last values allowed and enabled by default
+* ``AllowedDefaultOff``: Reuse of last values allowed and disabled by default
+
+"""
+# --
+Qgis.AttributeFormReuseLastValuePolicy.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.ExpressionType.Qgis.__doc__ = "Native QGIS expression"
 Qgis.ExpressionType.PointCloud.__doc__ = "Point cloud expression"
 Qgis.ExpressionType.RasterCalculator.__doc__ = "Raster calculator expression \n.. versionadded:: 3.34"

@@ -280,8 +280,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialogFromConfiguration( cons
   mAttributeTypeDialog->setComment( config.mComment );
   mAttributeTypeDialog->setFieldEditable( config.mEditable );
   mAttributeTypeDialog->setLabelOnTop( config.mLabelOnTop );
-  mAttributeTypeDialog->setReuseLastValues( config.mReuseLastValues );
-  mAttributeTypeDialog->setRememberLastValuesByDefault( config.mRememberLastValuesByDefault );
+  mAttributeTypeDialog->setReuseLastValuePolicy( config.mReuseLastValuePolicy );
   mAttributeTypeDialog->setNotNull( constraints.constraints() & QgsFieldConstraints::ConstraintNotNull );
   mAttributeTypeDialog->setNotNullEnforced( constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrengthHard );
   mAttributeTypeDialog->setUnique( constraints.constraints() & QgsFieldConstraints::ConstraintUnique );
@@ -324,8 +323,7 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mComment = mLayer->fields().at( mAttributeTypeDialog->fieldIdx() ).comment();
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
   cfg.mLabelOnTop = mAttributeTypeDialog->labelOnTop();
-  cfg.mReuseLastValues = mAttributeTypeDialog->reuseLastValues();
-  cfg.mRememberLastValuesByDefault = mAttributeTypeDialog->rememberLastValuesByDefault();
+  cfg.mReuseLastValuePolicy = mAttributeTypeDialog->reuseLastValuePolicy();
   cfg.mAlias = mAttributeTypeDialog->alias();
   cfg.mDataDefinedProperties = mAttributeTypeDialog->dataDefinedProperties();
 
@@ -816,8 +814,7 @@ void QgsAttributesFormProperties::apply()
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );
     editFormConfig.setLabelOnTop( idx, cfg.mLabelOnTop );
-    editFormConfig.setReuseLastValue( idx, cfg.mReuseLastValues );
-    editFormConfig.setRememberLastValueByDefault( idx, cfg.mRememberLastValuesByDefault );
+    editFormConfig.setReuseLastValuePolicy( idx, cfg.mReuseLastValuePolicy );
 
     if ( cfg.mDataDefinedProperties.count() > 0 )
     {
@@ -1070,8 +1067,7 @@ void QgsAttributesFormProperties::copyWidgetConfiguration()
     QDomElement widgetGeneralSettingsElem = doc.createElement( QStringLiteral( "widgetGeneralSettings" ) );
     widgetGeneralSettingsElem.setAttribute( QStringLiteral( "editable" ), mAttributeTypeDialog->fieldEditable() );
     widgetGeneralSettingsElem.setAttribute( QStringLiteral( "label_on_top" ), mAttributeTypeDialog->labelOnTop() );
-    widgetGeneralSettingsElem.setAttribute( QStringLiteral( "reuse_last_values" ), mAttributeTypeDialog->reuseLastValues() );
-    widgetGeneralSettingsElem.setAttribute( QStringLiteral( "remember_last_values_by_default" ), mAttributeTypeDialog->rememberLastValuesByDefault() );
+    widgetGeneralSettingsElem.setAttribute( QStringLiteral( "reuse_last_value_policy" ), qgsEnumValueToKey( mAttributeTypeDialog->reuseLastValuePolicy() ) );
     documentElement.appendChild( widgetGeneralSettingsElem );
   }
 
@@ -1272,13 +1268,19 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
     if ( !widgetGeneralSettingsElement.isNull() )
     {
       const int editable = widgetGeneralSettingsElement.attribute( QStringLiteral( "editable" ), QStringLiteral( "0" ) ).toInt();
-      const int reuse = widgetGeneralSettingsElement.attribute( QStringLiteral( "reuse_last_values" ), QStringLiteral( "0" ) ).toInt();
-      const int remember = widgetGeneralSettingsElement.attribute( QStringLiteral( "remember_last_values_by_default" ), QStringLiteral( "1" ) ).toInt();
+      Qgis::AttributeFormReuseLastValuePolicy reusePolicy = Qgis::AttributeFormReuseLastValuePolicy::NotAllowed;
+      if ( widgetGeneralSettingsElement.hasAttribute( QStringLiteral( "reuse_last_values" ) ) )
+      {
+        reusePolicy = widgetGeneralSettingsElement.attribute( QStringLiteral( "reuse_last_values" ), QStringLiteral( "0" ) ).toInt() == 1 ? Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn : Qgis::AttributeFormReuseLastValuePolicy::NotAllowed;
+      }
+      else
+      {
+        reusePolicy = qgsEnumKeyToValue( widgetGeneralSettingsElement.attribute( QStringLiteral( "reuse_last_values" ) ), Qgis::AttributeFormReuseLastValuePolicy::NotAllowed );
+      }
       const int labelOnTop = widgetGeneralSettingsElement.attribute( QStringLiteral( "label_on_top" ), QStringLiteral( "0" ) ).toInt();
 
       config.mEditable = editable;
-      config.mReuseLastValues = reuse;
-      config.mRememberLastValuesByDefault = remember;
+      config.mReuseLastValuePolicy = reusePolicy;
       config.mLabelOnTop = labelOnTop;
     }
 
