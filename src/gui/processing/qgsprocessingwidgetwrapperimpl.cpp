@@ -7280,9 +7280,8 @@ void QgsProcessingMultipleLayerPanelWidget::showDialog()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsProcessingMultipleInputPanelWidget *widget = new QgsProcessingMultipleInputPanelWidget( mParam, mValue, mModelSources, mModel );
+    QgsProcessingMultipleInputPanelWidget *widget = new QgsProcessingMultipleInputPanelWidget( mParam, mValue, mModelSources, mModel, mProject );
     widget->setPanelTitle( mParam->description() );
-    widget->setProject( mProject );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [this, widget]() {
       setValue( widget->selectedOptions() );
     } );
@@ -7291,8 +7290,7 @@ void QgsProcessingMultipleLayerPanelWidget::showDialog()
   }
   else
   {
-    QgsProcessingMultipleInputDialog dlg( mParam, mValue, mModelSources, mModel, this, Qt::WindowFlags() );
-    dlg.setProject( mProject );
+    QgsProcessingMultipleInputDialog dlg( mParam, mValue, mModelSources, mModel, mProject, this, Qt::WindowFlags() );
     if ( dlg.exec() )
     {
       setValue( dlg.selectedOptions() );

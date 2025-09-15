@@ -27,6 +27,8 @@
 #include "qgsannotationlayer.h"
 #include "qgsvectortilelayer.h"
 #include "qgsproject.h"
+#include "qgsprocessingcontext.h"
+#include "qgsiconutils.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -56,6 +58,10 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
   mSelectionList->setSelectionBehavior( QAbstractItemView::SelectRows );
   mSelectionList->setSelectionMode( QAbstractItemView::ExtendedSelection );
   mSelectionList->setDragDropMode( QAbstractItemView::InternalMove );
+  mSelectionList->setIconSize( QSize( 16, 16 ) );
+
+  mModel = new QStandardItemModel( this );
+  mSelectionList->setModel( mModel );
 
   mButtonSelectAll = new QPushButton( tr( "Select All" ) );
   mButtonBox->addButton( mButtonSelectAll, QDialogButtonBox::ActionRole );
@@ -175,8 +181,6 @@ QList<QStandardItem *> QgsProcessingMultipleSelectionPanelWidget::currentItems()
 
 void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList &availableOptions, const QVariantList &selectedOptions )
 {
-  mModel = new QStandardItemModel( this );
-
   QVariantList remainingOptions = availableOptions;
 
   // we add selected options first, keeping the existing order of options
@@ -194,8 +198,6 @@ void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList
   {
     addOption( option, mValueFormatter( option ), false );
   }
-
-  mSelectionList->setModel( mModel );
 }
 
 QList<int> QgsProcessingMultipleSelectionPanelWidget::existingMapLayerFromMimeData( const QMimeData *data ) const
@@ -256,7 +258,7 @@ void QgsProcessingMultipleSelectionPanelWidget::dropEvent( QDropEvent *event )
   }
 }
 
-void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle )
+void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle, QIcon optionalIconDecoration )
 {
   // don't add duplicate options
   for ( int i = 0; i < mModel->rowCount(); ++i )
@@ -274,6 +276,8 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
   item->setCheckState( selected ? Qt::Checked : Qt::Unchecked );
   item->setCheckable( true );
   item->setDropEnabled( false );
+  if ( !optionalIconDecoration.isNull() )
+    item->setData( optionalIconDecoration, Qt::DecorationRole );
   mModel->appendRow( item.release() );
 }
 
@@ -310,8 +314,8 @@ QVariantList QgsProcessingMultipleSelectionDialog::selectedOptions() const
 // QgsProcessingMultipleInputPanelWidget
 //
 
-QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model, QWidget *parent )
-  : QgsProcessingMultipleSelectionPanelWidget( QVariantList(), selectedOptions, parent )
+QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model, QgsProject *project, QWidget *parent )
+  : QgsProcessingMultipleSelectionPanelWidget( QVariantList(), QVariantList(), parent )
   , mParameter( parameter )
 {
   QPushButton *addFileButton = new QPushButton( tr( "Add File(s)…" ) );
@@ -322,14 +326,27 @@ QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( co
   connect( addDirButton, &QPushButton::clicked, this, &QgsProcessingMultipleInputPanelWidget::addDirectory );
   buttonBox()->addButton( addDirButton, QDialogButtonBox::ActionRole );
   setAcceptDrops( true );
+
+  // populate already selected layer values
+  QgsProcessingContext context;
+  context.setProject( project );
+  for ( const QVariant option : std::as_const( selectedOptions ) )
+  {
+    QIcon icon = QIcon();
+    QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( option.toString(), context, false );
+    if ( layer )
+      icon = QgsIconUtils::iconForLayer( layer );
+
+    addOption( option, mValueFormatter( option ), true, false, icon );
+  }
+
+  // Populate "layers" from model sources
   for ( const QgsProcessingModelChildParameterSource &source : modelSources )
   {
     addOption( QVariant::fromValue( source ), source.friendlyIdentifier( model ), false, true );
   }
-}
 
-void QgsProcessingMultipleInputPanelWidget::setProject( QgsProject *project )
-{
+  // Populate layers from project
   if ( mParameter->layerType() != Qgis::ProcessingSourceType::File )
     populateFromProject( project );
 }
@@ -626,6 +643,7 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
     else
       title = layer->name();
 
+    QIcon icon = QgsIconUtils::iconForLayer( layer );
 
     QString id = layer->id();
     if ( layer == project->mainAnnotationLayer() )
@@ -646,7 +664,7 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
       }
     }
 
-    addOption( id, title, false, true );
+    addOption( id, title, false, true, icon );
   };
 
   switch ( mParameter->layerType() )
@@ -785,12 +803,12 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
 // QgsProcessingMultipleInputDialog
 //
 
-QgsProcessingMultipleInputDialog::QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model, QWidget *parent, Qt::WindowFlags flags )
+QgsProcessingMultipleInputDialog::QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model, QgsProject *project, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   setWindowTitle( tr( "Multiple Selection" ) );
   QVBoxLayout *vLayout = new QVBoxLayout();
-  mWidget = new QgsProcessingMultipleInputPanelWidget( parameter, selectedOptions, modelSources, model );
+  mWidget = new QgsProcessingMultipleInputPanelWidget( parameter, selectedOptions, modelSources, model, project );
   vLayout->addWidget( mWidget );
   mWidget->buttonBox()->addButton( QDialogButtonBox::Cancel );
   connect( mWidget->buttonBox(), &QDialogButtonBox::accepted, this, &QDialog::accept );
@@ -803,11 +821,5 @@ QVariantList QgsProcessingMultipleInputDialog::selectedOptions() const
 {
   return mWidget->selectedOptions();
 }
-
-void QgsProcessingMultipleInputDialog::setProject( QgsProject *project )
-{
-  mWidget->setProject( project );
-}
-
 
 ///@endcond
