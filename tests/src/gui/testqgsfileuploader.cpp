@@ -140,13 +140,13 @@ void TestQgsFileUploader::cleanup()
 void TestQgsFileUploader::testInvalidHttpMethod()
 {
   QVERIFY( !mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( QStringLiteral( "http://www.qgis.org" ) ), mTempFile->fileName() );
+  makeCall( QUrl( QStringLiteral( "http://example.com" ) ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mProgress );
   QVERIFY( mError );
   QVERIFY( !mCanceled );
-  QCOMPARE( mErrorMessage.left( 62 ), QStringLiteral( "Server returned: <html>\r\n<head><title>405 Not Allowed</title><" ) );
+  QCOMPARE( mErrorMessage.left( 62 ), QStringLiteral( "Server returned: <HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</H" ) );
 }
 
 void TestQgsFileUploader::testBlankUrl()
