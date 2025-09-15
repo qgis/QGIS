@@ -101,6 +101,10 @@
               dev-help
             '';
           };
+
+        checks = {
+          inherit (config.packages) qgis docs;
+        };
       };
 
       flake = { };
