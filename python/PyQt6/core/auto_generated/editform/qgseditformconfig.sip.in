@@ -179,44 +179,48 @@ widget will receive its label on the left hand side. Labeling on top
 leaves more horizontal space for the widget itself.
 %End
 
-    bool reuseLastValue( int index ) const;
+ bool reuseLastValue( int index ) const;
 %Docstring
 If this returns ``True``, the widget at the given ``index`` will reuse
-the last remembered value from this QGIS session when creating new
-features.
+the last value within a QGIS session when creating new features.
 
 .. seealso:: :py:func:`setReuseLastValue`
 
 .. versionadded:: 3.20
+
+.. deprecated:: 4.0
+
+   Use reuseLastValuePolicy instead.
 %End
 
-    void setReuseLastValue( int index, bool reuse );
+ void setReuseLastValue( int index, bool reuse );
 %Docstring
-Sets whether the widget at the given ``index`` will reuse the previously
-remembered value from this QGIS session when creating new features.
+Sets whether the widget at the given ``index`` will reuse the last value
+within a QGIS session when creating new features.
 
 .. seealso:: :py:func:`reuseLastValue`
 
 .. versionadded:: 3.20
+
+.. deprecated:: 4.0
+
+   Use setReuseLastValuePolicy instead.
 %End
 
-    bool rememberLastValueByDefault( int index ) const;
+    Qgis::AttributeFormReuseLastValuePolicy reuseLastValuePolicy( int index ) const;
 %Docstring
-If this returns ``True``, the widget at the given ``index`` will
-remember entered values by default from this QGIS session when creating
-new features.
+Returns the reuse of last value policy for an attribute ``index``.
 
-.. seealso:: :py:func:`setReuseLastValue`
+.. seealso:: :py:func:`setReuseLastValuePolicy`
 
 .. versionadded:: 4.0
 %End
 
-    void setRememberLastValueByDefault( int index, bool reuse );
+    void setReuseLastValuePolicy( int index, Qgis::AttributeFormReuseLastValuePolicy policy );
 %Docstring
-Sets whether the widget at the given ``index`` will remember entered
-values from this QGIS session when creating new features.
+Sets the reuse of last value policy for an attribute ``index``.
 
-.. seealso:: :py:func:`reuseLastValue`
+.. seealso:: :py:func:`reuseLastValuePolicy`
 
 .. versionadded:: 4.0
 %End

@@ -276,7 +276,7 @@ void QgsEditFormConfig::setLabelOnTop( int idx, bool onTop )
 bool QgsEditFormConfig::reuseLastValue( int index ) const
 {
   if ( index >= 0 && index < d->mFields.count() )
-    return d->mReuseLastValue.value( d->mFields.at( index ).name(), false );
+    return d->mReuseLastValuePolicy.value( d->mFields.at( index ).name(), Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed;
   else
     return false;
 }
@@ -286,24 +286,24 @@ void QgsEditFormConfig::setReuseLastValue( int index, bool reuse )
   if ( index >= 0 && index < d->mFields.count() )
   {
     d.detach();
-    d->mReuseLastValue[ d->mFields.at( index ).name()] = reuse;
+    d->mReuseLastValuePolicy[ d->mFields.at( index ).name()] = reuse ? Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn : Qgis::AttributeFormReuseLastValuePolicy::NotAllowed;
   }
 }
 
-bool QgsEditFormConfig::rememberLastValueByDefault( int index ) const
+Qgis::AttributeFormReuseLastValuePolicy QgsEditFormConfig::reuseLastValuePolicy( int index ) const
 {
   if ( index >= 0 && index < d->mFields.count() )
-    return d->mRememberLastValueByDefault.value( d->mFields.at( index ).name(), true );
+    return d->mReuseLastValuePolicy.value( d->mFields.at( index ).name(), Qgis::AttributeFormReuseLastValuePolicy::NotAllowed );
   else
-    return true;
+    return Qgis::AttributeFormReuseLastValuePolicy::NotAllowed;
 }
 
-void QgsEditFormConfig::setRememberLastValueByDefault( int index, bool remember )
+void QgsEditFormConfig::setReuseLastValuePolicy( int index, Qgis::AttributeFormReuseLastValuePolicy policy )
 {
   if ( index >= 0 && index < d->mFields.count() )
   {
     d.detach();
-    d->mRememberLastValueByDefault[ d->mFields.at( index ).name()] = remember;
+    d->mReuseLastValuePolicy[ d->mFields.at( index ).name()] = policy;
   }
 }
 
@@ -478,19 +478,19 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
     d->mLabelOnTop.insert( labelOnTopElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( labelOnTopElement.attribute( QStringLiteral( "labelOnTop" ) ).toInt() ) );
   }
 
-  d->mReuseLastValue.clear();
+  d->mReuseLastValuePolicy.clear();
+  // Compatibility with QGIS projects saved prior to 4.0
   const QDomNodeList reuseLastValueNodeList = node.namedItem( QStringLiteral( "reuseLastValue" ) ).toElement().childNodes();
   for ( int i = 0; i < reuseLastValueNodeList.size(); ++i )
   {
     const QDomElement reuseLastValueElement = reuseLastValueNodeList.at( i ).toElement();
-    d->mReuseLastValue.insert( reuseLastValueElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( reuseLastValueElement.attribute( QStringLiteral( "reuseLastValue" ) ).toInt() ) );
+    d->mReuseLastValuePolicy.insert( reuseLastValueElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( reuseLastValueElement.attribute( QStringLiteral( "reuseLastValue" ) ).toInt() ) ? Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn : Qgis::AttributeFormReuseLastValuePolicy::NotAllowed );
   }
-  d->mRememberLastValueByDefault.clear();
-  const QDomNodeList rememberLastValueByDefaultNodeList = node.namedItem( QStringLiteral( "rememberLastValueByDefault" ) ).toElement().childNodes();
-  for ( int i = 0; i < rememberLastValueByDefaultNodeList.size(); ++i )
+  const QDomNodeList reuseLastValuePolicyNodeList = node.namedItem( QStringLiteral( "reuseLastValuePolicy" ) ).toElement().childNodes();
+  for ( int i = 0; i < reuseLastValuePolicyNodeList.size(); ++i )
   {
-    const QDomElement rememberLastValueByDefaultElement = rememberLastValueByDefaultNodeList.at( i ).toElement();
-    d->mRememberLastValueByDefault.insert( rememberLastValueByDefaultElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( rememberLastValueByDefaultElement.attribute( QStringLiteral( "rememberLastValueByDefault" ) ).toInt() ) );
+    const QDomElement reuseLastValuePolicyElement = reuseLastValuePolicyNodeList.at( i ).toElement();
+    d->mReuseLastValuePolicy.insert( reuseLastValuePolicyElement.attribute( QStringLiteral( "name" ) ), qgsEnumKeyToValue( reuseLastValuePolicyElement.attribute( QStringLiteral( "reuseLastValuePolicy" ) ), Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) );
   }
 
   // Read data defined field properties
@@ -654,25 +654,15 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   }
   node.appendChild( labelOnTopElem );
 
-  QDomElement reuseLastValueElem = doc.createElement( QStringLiteral( "reuseLastValue" ) );
-  for ( auto reuseLastValueIt = d->mReuseLastValue.constBegin(); reuseLastValueIt != d->mReuseLastValue.constEnd(); ++reuseLastValueIt )
+  QDomElement reuseLastValuePolicyElem = doc.createElement( QStringLiteral( "reuseLastValuePolicy" ) );
+  for ( auto reuseLastValuePolicyIt = d->mReuseLastValuePolicy.constBegin(); reuseLastValuePolicyIt != d->mReuseLastValuePolicy.constEnd(); ++reuseLastValuePolicyIt )
   {
     QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
-    fieldElem.setAttribute( QStringLiteral( "name" ), reuseLastValueIt.key() );
-    fieldElem.setAttribute( QStringLiteral( "reuseLastValue" ), reuseLastValueIt.value() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-    reuseLastValueElem.appendChild( fieldElem );
+    fieldElem.setAttribute( QStringLiteral( "name" ), reuseLastValuePolicyIt.key() );
+    fieldElem.setAttribute( QStringLiteral( "reuseLastValuePolicy" ), qgsEnumValueToKey( reuseLastValuePolicyIt.value() ) );
+    reuseLastValuePolicyElem.appendChild( fieldElem );
   }
-  node.appendChild( reuseLastValueElem );
-
-  QDomElement rememberLastValueByDefaultElem = doc.createElement( QStringLiteral( "rememberLastValueByDefault" ) );
-  for ( auto rememberLastValueByDefaultIt = d->mRememberLastValueByDefault.constBegin(); rememberLastValueByDefaultIt != d->mRememberLastValueByDefault.constEnd(); ++rememberLastValueByDefaultIt )
-  {
-    QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
-    fieldElem.setAttribute( QStringLiteral( "name" ), rememberLastValueByDefaultIt.key() );
-    fieldElem.setAttribute( QStringLiteral( "rememberLastValueByDefault" ), rememberLastValueByDefaultIt.value() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-    rememberLastValueByDefaultElem.appendChild( fieldElem );
-  }
-  node.appendChild( rememberLastValueByDefaultElem );
+  node.appendChild( reuseLastValuePolicyElem );
 
   // Store data defined field properties
   QDomElement ddFieldPropsElement = doc.createElement( QStringLiteral( "dataDefinedFieldProperties" ) );

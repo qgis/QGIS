@@ -3096,6 +3096,13 @@ The development version
       Environment
     };
 
+    enum class AttributeFormReuseLastValuePolicy /BaseType=IntEnum/
+    {
+      NotAllowed,
+      AllowedDefaultOn,
+      AllowedDefaultOff,
+    };
+
     enum class ExpressionType
     {
       Qgis,

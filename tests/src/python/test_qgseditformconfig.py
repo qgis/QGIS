@@ -18,6 +18,7 @@ import threading
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsAttributeEditorContainer,
     QgsAttributeEditorElement,
@@ -74,10 +75,12 @@ class TestQgsEditFormConfig(QgisTestCase):
         config.setReadOnly(1, False)
         config.setLabelOnTop(0, False)
         config.setLabelOnTop(1, True)
-        config.setReuseLastValue(0, False)
-        config.setReuseLastValue(1, True)
-        config.setRememberLastValueByDefault(0, False)
-        config.setRememberLastValueByDefault(1, True)
+        config.setReuseLastValuePolicy(
+            0, Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOff
+        )
+        config.setReuseLastValuePolicy(
+            1, Qgis.AttributeFormReuseLastValuePolicy.NotAllowed
+        )
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("edit")
@@ -91,10 +94,14 @@ class TestQgsEditFormConfig(QgisTestCase):
         self.assertFalse(config2.readOnly(1))
         self.assertFalse(config2.labelOnTop(0))
         self.assertTrue(config2.labelOnTop(1))
-        self.assertFalse(config2.reuseLastValue(0))
-        self.assertTrue(config2.reuseLastValue(1))
-        self.assertFalse(config2.rememberLastValueByDefault(0))
-        self.assertTrue(config2.rememberLastValueByDefault(1))
+        self.assertEqual(
+            config2.reuseLastValuePolicy(0),
+            Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOff,
+        )
+        self.assertEqual(
+            config2.reuseLastValuePolicy(1),
+            Qgis.AttributeFormReuseLastValuePolicy.NotAllowed,
+        )
 
     def testFormUi(self):
         layer = self.createLayer()
@@ -210,43 +217,46 @@ class TestQgsEditFormConfig(QgisTestCase):
         self.assertFalse(config.labelOnTop(0))
         self.assertFalse(config.labelOnTop(1))
 
-    def testReuseLastValue(self):
+    def testReuseLastValuePolicy(self):
         layer = self.createLayer()
         config = layer.editFormConfig()
 
         # safety checks
-        config.setReuseLastValue(-1, True)
-        config.setReuseLastValue(100, True)
+        config.setReuseLastValuePolicy(
+            -1, Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn
+        )
+        config.setReuseLastValuePolicy(
+            100, Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn
+        )
 
         # real checks
-        config.setReuseLastValue(0, True)
-        config.setReuseLastValue(1, True)
-        self.assertTrue(config.reuseLastValue(0))
-        self.assertTrue(config.reuseLastValue(1))
+        config.setReuseLastValuePolicy(
+            0, Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn
+        )
+        config.setReuseLastValuePolicy(
+            1, Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn
+        )
+        self.assertEqual(
+            config.reuseLastValue(0),
+            Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn,
+        )
+        self.assertEqual(
+            config.reuseLastValue(1),
+            Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn,
+        )
 
-        config.setReuseLastValue(0, False)
-        config.setReuseLastValue(1, False)
-        self.assertFalse(config.reuseLastValue(0))
-        self.assertFalse(config.reuseLastValue(1))
-
-    def testRememberLastValueByDefault(self):
-        layer = self.createLayer()
-        config = layer.editFormConfig()
-
-        # safety checks
-        config.setRememberLastValueByDefault(-1, True)
-        config.setRememberLastValueByDefault(100, True)
-
-        # real checks
-        config.setRememberLastValueByDefault(0, False)
-        config.setRememberLastValueByDefault(1, False)
-        self.assertFalse(config.rememberLastValueByDefault(0))
-        self.assertFalse(config.rememberLastValueByDefault(1))
-
-        config.setRememberLastValueByDefault(0, True)
-        config.setRememberLastValueByDefault(1, True)
-        self.assertTrue(config.rememberLastValueByDefault(0))
-        self.assertTrue(config.rememberLastValueByDefault(1))
+        config.setReuseLastValuePolicy(
+            0, Qgis.AttributeFormReuseLastValuePolicy.NotAllowed
+        )
+        config.setReuseLastValuePolicy(
+            1, Qgis.AttributeFormReuseLastValuePolicy.NotAllowed
+        )
+        self.assertEqual(
+            config.reuseLastValue(0), Qgis.AttributeFormReuseLastValuePolicy.NotAllowed
+        )
+        self.assertEqual(
+            config.reuseLastValue(1), Qgis.AttributeFormReuseLastValuePolicy.NotAllowed
+        )
 
     def test_backgroundColorSerialize(self):
         """Test backgroundColor serialization"""
