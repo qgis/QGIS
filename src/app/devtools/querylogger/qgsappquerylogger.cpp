@@ -141,7 +141,7 @@ void QgsAppQueryLogger::removeRequestRows( const QList<int> &rows )
 
   for ( int row : std::as_const( res ) )
   {
-    int popId = data( index( row, 0, QModelIndex() ), QgsDevToolsModelNode::RoleId ).toInt();
+    int popId = data( index( row, 0, QModelIndex() ), static_cast<int>( QgsDevToolsModelNode::Roles::RoleId ) ).toInt();
     mQueryGroups.remove( popId );
 
     beginRemoveRows( QModelIndex(), row, row );
@@ -217,11 +217,11 @@ QVariant QgsAppQueryLogger::data( const QModelIndex &index, int role ) const
       switch ( role )
       {
         case Qt::DisplayRole:
-        case QgsDevToolsModelNode::RoleElapsedTime:
-        case QgsDevToolsModelNode::RoleSort:
-          return node->data( QgsDevToolsModelNode::RoleElapsedTime );
+        case static_cast<int>( QgsDevToolsModelNode::Roles::RoleElapsedTime ):
+        case static_cast<int>( QgsDevToolsModelNode::Roles::RoleSort ):
+          return node->data( static_cast<int>( QgsDevToolsModelNode::Roles::RoleElapsedTime ) );
 
-        case QgsDevToolsModelNode::RoleMaximumTime:
+        case static_cast<int>( QgsDevToolsModelNode::Roles::RoleMaximumTime ):
           return mMaxCost;
 
         default:

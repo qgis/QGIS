@@ -15,8 +15,11 @@
 #ifndef QGSNETWORKLOGGERNODE_H
 #define QGSNETWORKLOGGERNODE_H
 
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "qgsnetworkaccessmanager.h"
-#include "devtools/qgsdevtoolsmodelnode.h"
+#include "qgsdevtoolsmodelnode.h"
 #include <QElapsedTimer>
 #include <QVariant>
 #include <QColor>
@@ -27,13 +30,13 @@
 class QAction;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerRootNode
  * \brief Root node for the network logger model.
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerRootNode final : public QgsDevToolsModelGroup
+class GUI_EXPORT QgsNetworkLoggerRootNode final : public QgsDevToolsModelGroup
 {
   public:
     QgsNetworkLoggerRootNode();
@@ -52,7 +55,7 @@ class QgsNetworkLoggerReplyGroup;
 class QgsNetworkLoggerSslErrorGroup;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerRequestGroup
  * \brief Parent group for all network requests, showing the request id, type, url,
  * and containing child groups with detailed request and response information.
@@ -77,7 +80,7 @@ class QgsNetworkLoggerSslErrorGroup;
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGroup
+class GUI_EXPORT QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGroup
 {
   public:
     //! Request statu
@@ -183,7 +186,7 @@ class QgsNetworkLoggerRequestHeadersGroup;
 class QgsNetworkLoggerPostContentGroup;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerRequestGroup
  * \brief Parent group for all network request details, showing the request parameters
  * and header information.
@@ -207,7 +210,7 @@ class QgsNetworkLoggerPostContentGroup;
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerRequestDetailsGroup final : public QgsDevToolsModelGroup
+class GUI_EXPORT QgsNetworkLoggerRequestDetailsGroup final : public QgsDevToolsModelGroup
 {
   public:
     /**
@@ -225,7 +228,7 @@ class QgsNetworkLoggerRequestDetailsGroup final : public QgsDevToolsModelGroup
 
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerRequestHeadersGroup
  * \brief Parent group for all network request header information.
  *
@@ -237,7 +240,7 @@ class QgsNetworkLoggerRequestDetailsGroup final : public QgsDevToolsModelGroup
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerRequestHeadersGroup final : public QgsDevToolsModelGroup
+class GUI_EXPORT QgsNetworkLoggerRequestHeadersGroup final : public QgsDevToolsModelGroup
 {
   public:
     /**
@@ -249,7 +252,7 @@ class QgsNetworkLoggerRequestHeadersGroup final : public QgsDevToolsModelGroup
 
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerRequestQueryGroup
  * \brief Parent group for all network request query information.
  *
@@ -261,7 +264,7 @@ class QgsNetworkLoggerRequestHeadersGroup final : public QgsDevToolsModelGroup
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerRequestQueryGroup final : public QgsDevToolsModelGroup
+class GUI_EXPORT QgsNetworkLoggerRequestQueryGroup final : public QgsDevToolsModelGroup
 {
   public:
     /**
@@ -272,7 +275,7 @@ class QgsNetworkLoggerRequestQueryGroup final : public QgsDevToolsModelGroup
 };
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerPostContentGroup
  * \brief Parent group for all request post data, showing POST data.
  *
@@ -283,7 +286,7 @@ class QgsNetworkLoggerRequestQueryGroup final : public QgsDevToolsModelGroup
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerPostContentGroup final : public QgsDevToolsModelGroup
+class GUI_EXPORT QgsNetworkLoggerPostContentGroup final : public QgsDevToolsModelGroup
 {
   public:
     /**
@@ -296,7 +299,7 @@ class QgsNetworkLoggerPostContentGroup final : public QgsDevToolsModelGroup
 class QgsNetworkLoggerReplyHeadersGroup;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerReplyGroup
  * \brief Parent group for all network replies, showing the reply details.
  *
@@ -311,7 +314,7 @@ class QgsNetworkLoggerReplyHeadersGroup;
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerReplyGroup final : public QgsDevToolsModelGroup
+class GUI_EXPORT QgsNetworkLoggerReplyGroup final : public QgsDevToolsModelGroup
 {
   public:
     /**
@@ -326,7 +329,7 @@ class QgsNetworkLoggerReplyGroup final : public QgsDevToolsModelGroup
 };
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerReplyHeadersGroup
  * \brief Parent group for network reply headers, showing the reply header details.
  *
@@ -339,7 +342,7 @@ class QgsNetworkLoggerReplyGroup final : public QgsDevToolsModelGroup
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerReplyHeadersGroup final : public QgsDevToolsModelGroup
+class GUI_EXPORT QgsNetworkLoggerReplyHeadersGroup final : public QgsDevToolsModelGroup
 {
   public:
     /**
@@ -350,7 +353,7 @@ class QgsNetworkLoggerReplyHeadersGroup final : public QgsDevToolsModelGroup
 };
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerSslErrorNode
  * \brief Parent group for SSQL errors, showing the error details.
  *
@@ -363,7 +366,7 @@ class QgsNetworkLoggerReplyHeadersGroup final : public QgsDevToolsModelGroup
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerSslErrorGroup final : public QgsDevToolsModelGroup
+class GUI_EXPORT QgsNetworkLoggerSslErrorGroup final : public QgsDevToolsModelGroup
 {
   public:
     /**

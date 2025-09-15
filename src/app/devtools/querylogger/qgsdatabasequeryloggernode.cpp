@@ -88,7 +88,7 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
     case Qt::DisplayRole:
       return QStringLiteral( "%1 %2" ).arg( QString::number( mQueryId ), mSql );
 
-    case QgsDevToolsModelNode::RoleSort:
+    case static_cast<int>( QgsDevToolsModelNode::Roles::RoleSort ):
       return mQueryId;
 
     case Qt::ToolTipRole:
@@ -118,13 +118,13 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
 #endif
     }
 
-    case RoleStatus:
+    case static_cast<int>( Roles::RoleStatus ):
       return static_cast<int>( mStatus );
 
-    case RoleId:
+    case static_cast<int>( Roles::RoleId ):
       return mQueryId;
 
-    case RoleElapsedTime:
+    case static_cast<int>( Roles::RoleElapsedTime ):
       return mElapsed;
 
     case Qt::ForegroundRole:

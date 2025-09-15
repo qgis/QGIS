@@ -15,6 +15,9 @@
 #ifndef QGSNETWORKLOGGERPANELWIDGET_H
 #define QGSNETWORKLOGGERPANELWIDGET_H
 
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "qgsdevtoolwidget.h"
 #include "ui_qgsnetworkloggerpanelbase.h"
 #include <QTreeView>
@@ -23,13 +26,13 @@ class QgsNetworkLogger;
 class QgsNetworkLoggerProxyModel;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerTreeView
  * \brief A custom QTreeView subclass for showing logged network requests.
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerTreeView : public QTreeView
+class GUI_EXPORT QgsNetworkLoggerTreeView : public QTreeView
 {
     Q_OBJECT
   public:
@@ -74,13 +77,13 @@ class QgsNetworkLoggerTreeView : public QTreeView
 
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerPanelWidget
  * \brief A panel widget showing logged network requests.
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerPanelWidget : public QgsDevToolWidget, private Ui::QgsNetworkLoggerPanelBase
+class GUI_EXPORT QgsNetworkLoggerPanelWidget : public QgsDevToolWidget, private Ui::QgsNetworkLoggerPanelBase
 {
     Q_OBJECT
 
