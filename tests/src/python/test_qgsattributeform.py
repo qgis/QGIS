@@ -16,6 +16,7 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
+    Qgis,
     QgsDefaultValue,
     QgsEditFormConfig,
     QgsEditorWidgetSetup,
@@ -190,15 +191,15 @@ class TestQgsAttributeForm(QgisTestCase):
 
         layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup("Range", {}))
 
-        config = layer.editFormConfig()
-        config.setReuseLastValue(0, True)
-        config.setRememberLastValueByDefault(0, True)
-        layer.setEditFormConfig(config)
-
         layer.startEditing()
 
-        feature = QgsAttributeForm.createFeature(layer)
+        config = layer.editFormConfig()
+        config.setReuseLastValuePolicy(
+            0, Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn
+        )
+        layer.setEditFormConfig(config)
 
+        feature = QgsAttributeForm.createFeature(layer)
         form = QgsAttributeForm(layer)
         form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
         form.setFeature(feature)
@@ -214,7 +215,9 @@ class TestQgsAttributeForm(QgisTestCase):
         self.assertEqual(feature.attribute(1), None)
 
         config = layer.editFormConfig()
-        config.setReuseLastValue(0, False)
+        config.setReuseLastValuePolicy(
+            0, Qgis.AttributeFormReuseLastValuePolicy.NotAllowed
+        )
         layer.setEditFormConfig(config)
 
         form = QgsAttributeForm(layer)
