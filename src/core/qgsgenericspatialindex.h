@@ -126,7 +126,25 @@ class QgsGenericSpatialIndex
       const SpatialIndex::Region r = QgsSpatialIndexUtils::rectangleToRegion( bounds );
 
       const QMutexLocker locker( &mMutex );
-      mRTree->intersectsWithQuery( r, visitor );
+      try
+      {
+        mRTree->intersectsWithQuery( r, visitor );
+      }
+      catch ( Tools::Exception &e )
+      {
+        Q_UNUSED( e )
+        QgsDebugError( QStringLiteral( "Tools::Exception caught in QgsGenericSpatialIndex::intersects: %1" ).arg( e.what().c_str() ) );
+      }
+      catch ( const std::exception &e )
+      {
+        Q_UNUSED( e )
+        QgsDebugError( QStringLiteral( "std::exception caught in QgsGenericSpatialIndex::intersects: %1" ).arg( e.what() ) );
+      }
+      catch ( ... )
+      {
+        QgsDebugError( QStringLiteral( "unknown spatial index exception caught in QgsGenericSpatialIndex::intersects" ) );
+      }
+
       return true;
     }
 
