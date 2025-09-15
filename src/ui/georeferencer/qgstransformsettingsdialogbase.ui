@@ -285,6 +285,12 @@
                 <property name="checkable">
                  <bool>true</bool>
                 </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+                <property name="collapsed" stdset="0">
+                 <bool>true</bool>
+                </property>
                 <layout class="QVBoxLayout" name="verticalLayout_2">
                  <item>
                   <widget class="QgsRasterFormatSaveOptionsWidget" name="mCreationOptionsWidget" native="true"/>
