@@ -70,7 +70,11 @@ RUN  apt-get update \
     python3-mock \
     python3-nose2 \
     python3-numpy \
+    python3-oauthlib \
+    python3-openssl \
     python3-owslib \
+    python3-pep8 \
+    python3-pexpect \
     python3-pip \
     python3-psycopg2 \
     python3-pyproj \
@@ -81,6 +85,10 @@ RUN  apt-get update \
     python3-pyqt6.qtmultimedia \
     python3-pyqt6.qtserialport \
     python3-pyqt6.qtwebengine \
+    python3-requests \
+    python3-shapely  \
+    python3-sphinx \
+    python3-six \
     python3-termcolor \
     python3-yaml \
     qpdf \
@@ -98,25 +106,12 @@ RUN  apt-get update \
     xfonts-base \
     xfonts-scalable \
     xvfb \
-    ocl-icd-libopencl1 \
-  && pip3 install --break-system-packages \
-    numpy \
-    nose2 \
-    pyyaml \
-    mock \
+    ocl-icd-libopencl1
+RUN  pip3 install --break-system-packages \
     future \
-    termcolor \
-    oauthlib \
-    pyopenssl \
-    pep8 \
-    pexpect \
     capturer \
-    sphinx \
-    requests \
-    six \
-    hdbcli \
-    shapely  \
-  && apt-get clean
+    hdbcli
+RUN  apt-get clean
 
 # Node.js and Yarn for server landingpage webapp
 RUN mkdir -p /etc/apt/keyrings
