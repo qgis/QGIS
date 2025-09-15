@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgswmsutils.h"
-#include "moc_qgswmsutils.cpp"
 #include "qgsproviderregistry.h"
 
 
