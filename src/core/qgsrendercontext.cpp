@@ -513,7 +513,7 @@ double QgsRenderContext::convertFromPainterUnits( double size, Qgis::RenderUnit 
     case Qgis::RenderUnit::MetersInMapUnits:
     {
       if ( mMapToPixel.isValid() )
-        size = 1 / convertMetersToMapUnits( size );
+        size = size / convertMetersToMapUnits( 1 );
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
       [[fallthrough]];
     }
