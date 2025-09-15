@@ -91,7 +91,8 @@ RUN dnf -y --refresh install \
     ninja-build \
     patch \
     dos2unix \
-    SFCGAL-devel
+    SFCGAL-devel \
+    blend2d-devel
 
 
 # Oracle : client side

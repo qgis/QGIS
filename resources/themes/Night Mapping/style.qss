@@ -1332,6 +1332,7 @@ QListWidget#mOptionsListWidget::item:hover
 
 QListWidget#mOptionsListWidget::item:selected:hover {
     background-color: @selection;
+    color: @textlight;
 }
 
 QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab,

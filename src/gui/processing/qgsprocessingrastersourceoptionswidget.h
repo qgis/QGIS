@@ -18,6 +18,7 @@
 #ifndef QGSPROCESSINGRASTERSOURCEOPTIONSWIDGET_H
 #define QGSPROCESSINGRASTERSOURCEOPTIONSWIDGET_H
 
+#include "qgis.h"
 #include "qgspanelwidget.h"
 #include "ui_qgsprocessingrastersourceoptionsbase.h"
 

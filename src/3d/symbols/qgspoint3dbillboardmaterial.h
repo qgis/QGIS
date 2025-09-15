@@ -55,13 +55,20 @@ class QgsPoint3DBillboardMaterial : public QgsMaterial
     //! Set default symbol for the texture with \a context and \a selected parameter for rendering.
     void useDefaultSymbol( const Qgs3DRenderContext &context, bool selected = false );
 
+    /**
+     * Renders a marker symbol to an image.
+     *
+     * \since QGIS 4.0
+     */
+    static QImage renderSymbolToImage( const QgsMarkerSymbol *markerSymbol, const Qgs3DRenderContext &context, bool selected = false );
+
     //! Set \a markerSymbol for the texture with \a context and \a selected parameter for rendering.
-    void setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, const Qgs3DRenderContext &context, bool selected = false );
+    void setTexture2DFromSymbol( const QgsMarkerSymbol *markerSymbol, const Qgs3DRenderContext &context, bool selected = false );
+
+    //! Set the texture2D of the billboard from an \a image.
+    void setTexture2DFromImage( const QImage &image );
 
   private:
-    //! Set the texture2D of the billboard from \a image with \a size.
-    void setTexture2DFromImage( QImage image, double size = 100 );
-
     //! Set texture2D from \a textureImage
     void setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage );
 

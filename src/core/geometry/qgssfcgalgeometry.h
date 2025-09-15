@@ -89,6 +89,11 @@ class CORE_EXPORT QgsSfcgalGeometry
     QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom ) SIP_THROW( QgsSfcgalException );
 
     /**
+     * Copy assignment operator
+    */
+    QgsSfcgalGeometry &operator=( const QgsSfcgalGeometry &other ) = default;
+
+    /**
      * Returns the underlying SFCGAL geometry
      * This operation is always fast, as the SFCGAL geometry representation is maintained for the lifetime of the QgsSfcgalGeometry object.
      */
