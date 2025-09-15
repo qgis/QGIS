@@ -20,6 +20,8 @@
 // rectpack2D library
 #include <finders_interface.h>
 
+///@cond PRIVATE
+
 class QgsTextureRect
 {
   public:
@@ -49,6 +51,8 @@ class QgsTextureRect
     int id = 0;
     QImage image;
 };
+
+///@endcond
 
 QgsTextureAtlasGenerator::QgsTextureAtlasGenerator() = default;
 QgsTextureAtlasGenerator::~QgsTextureAtlasGenerator() = default;

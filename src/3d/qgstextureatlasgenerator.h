@@ -21,7 +21,9 @@
 #include <QRect>
 #include <QImage>
 
+///@cond PRIVATE
 class QgsTextureRect;
+///@endcond
 
 /**
  * \ingroup qgis_3d
