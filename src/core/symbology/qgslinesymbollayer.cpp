@@ -1767,7 +1767,7 @@ class BlankAreaScanner
     {
       while ( mItBlankArea != mBlankAreas.cend() && distance > mItBlankArea->second )
       {
-        mItBlankArea++;
+        ++mItBlankArea;
       }
 
       return ( mItBlankArea != mBlankAreas.cend() && distance >= mItBlankArea->first );
