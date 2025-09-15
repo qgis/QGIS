@@ -164,6 +164,20 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual QString htmlMetadata() const;
 
     /**
+     * Returns provider specific metadata.
+     *
+     * This returned map contains metadata which is dependent on the provider type.
+     * The returned keys are considered to be stable API for the provider, and can safely
+     * be used to retrieve properties which make sense for a particular provider only
+     * (e.g. backend server-specific properties).
+     *
+     * \note Prior to QGIS 4.0 this method was available for QgsVectorDataProvider only.
+     * \note The default implementation returns an empty variant map.
+     * \since QGIS 4.0
+     */
+    virtual QVariantMap metadata() const { return QVariantMap(); }
+
+    /**
      * Set the data source specification.
      *
      */

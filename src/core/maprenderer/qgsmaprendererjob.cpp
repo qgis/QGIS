@@ -568,6 +568,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     if ( !ml->isValid() )
     {
       QgsDebugMsgLevel( QStringLiteral( "Invalid Layer skipped" ), 3 );
+      mErrors.append( Error( ml->id(), QString( "Layer %1 is invalid, skipped" ).arg( ml->name() ) ) );
       continue;
     }
 

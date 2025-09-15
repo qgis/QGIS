@@ -24,6 +24,9 @@ import os
 import shutil
 import tempfile
 
+from qgis.PyQt.QtCore import QFile, QIODevice
+from qgis.PyQt.QtXml import QDomDocument
+
 from qgis.core import (
     QgsProcessingContext,
     QgsProcessingFeedback,
@@ -34,10 +37,13 @@ from qgis.core import (
     QgsPointXY,
     QgsProject,
     QgsVectorLayer,
+    QgsRasterLayer,
     QgsRectangle,
-    QgsProjUtils,
     QgsProcessingException,
     QgsProcessingFeatureSourceDefinition,
+    QgsDistanceArea,
+    QgsCoordinateTransformContext,
+    QgsProviderRegistry,
 )
 
 from qgis.testing import QgisTestCase, start_app
@@ -45,6 +51,12 @@ from qgis.testing import QgisTestCase, start_app
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
+
+from processing.tests.TestData import (
+    wms_layer_1_1_1,
+    wms_layer_1_3_0,
+    wms_layer_1_3_0_frankfurt,
+)
 
 testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
@@ -407,6 +419,272 @@ class TestGdalAlgorithms(QgisTestCase):
             GdalUtils.escapeAndJoin([1, "-srcnodata", "--srcnodata", "-9999 9999"]),
             '1 -srcnodata --srcnodata "-9999 9999"',
         )
+
+    def testGdalWmsXmlDescriptionFile(self):
+        # Version 1.1.1
+        wms_layer = wms_layer_1_1_1("xml_desc", "EPSG:3857")
+        self.assertTrue(wms_layer.isValid())
+        with tempfile.TemporaryDirectory() as outdir:
+            version = "1.1.1"
+            extent = QgsRectangle(955435.75, 6465956.5, 960260.5625, 6469745.0)
+            width = 489
+            height = 384
+
+            out_path = os.path.join(outdir, "osm_xml_01.xml")
+            res, _ = GdalUtils.gdal_wms_xml_description_file(
+                wms_layer, extent, width, height, out_path
+            )
+            self.assertTrue(res)
+
+            # Compare obtained file with and expected data
+            out_file = QFile(out_path)
+            self.assertTrue(out_file.open(QIODevice.OpenModeFlag.ReadOnly))
+
+            doc = QDomDocument()
+            self.assertTrue(doc.setContent(out_file))
+            out_file.close()
+
+            root = doc.firstChildElement()
+            self.assertEqual(root.tagName(), "GDAL_WMS")
+            self.assertEqual(len(root.childNodes()), 2)
+
+            service = root.firstChildElement()
+            self.assertEqual(service.tagName(), "Service")
+            self.assertEqual(service.attribute("name"), "WMS")
+
+            version_element = service.firstChildElement("Version")
+            self.assertEqual(version_element.text(), version)
+
+            url_element = service.firstChildElement("ServerUrl")
+            self.assertEqual(
+                url_element.text(),
+                QgsProviderRegistry.instance()
+                .decodeUri("wms", wms_layer.publicSource())
+                .get("url"),
+            )
+
+            layers_element = service.firstChildElement("Layers")
+            self.assertEqual(layers_element.text(), "OSM-WMS")
+
+            crs_element = service.firstChildElement("SRS")
+            self.assertEqual(crs_element.text(), "EPSG:3857")
+
+            self.assertEqual(
+                service.elementsByTagName("BBoxOrder").length(), 0
+            )  # No inverted axis
+
+            data = root.lastChildElement()
+            self.assertEqual(data.tagName(), "DataWindow")
+
+            x_min_element = data.firstChildElement("UpperLeftX")
+            self.assertEqual(x_min_element.text(), str(extent.xMinimum()))
+            y_max_element = data.firstChildElement("UpperLeftY")
+            self.assertEqual(y_max_element.text(), str(extent.yMaximum()))
+            x_max_element = data.firstChildElement("LowerRightX")
+            self.assertEqual(x_max_element.text(), str(extent.xMaximum()))
+            y_min_element = data.firstChildElement("LowerRightY")
+            self.assertEqual(y_min_element.text(), str(extent.yMinimum()))
+
+            width_element = data.firstChildElement("SizeX")
+            self.assertEqual(width_element.text(), str(width))
+            height_element = data.firstChildElement("SizeY")
+            self.assertEqual(height_element.text(), str(height))
+
+        # Version 1.3.0, PCS, no axis inverted
+        wms_layer = wms_layer_1_3_0_frankfurt("xml_desc", "EPSG:25832")
+        self.assertTrue(wms_layer.isValid())
+        with tempfile.TemporaryDirectory() as outdir:
+            version = "1.3.0"
+            extent = QgsRectangle(
+                472036.22487, 5552340.41684, 472376.9869, 5552638.65929
+            )
+            width = 215
+            height = 188
+
+            out_path = os.path.join(outdir, "osm_xml_02.xml")
+            res, _ = GdalUtils.gdal_wms_xml_description_file(
+                wms_layer, extent, width, height, out_path
+            )
+            self.assertTrue(res)
+
+            # Compare obtained file with and expected data
+            out_file = QFile(out_path)
+            self.assertTrue(out_file.open(QIODevice.OpenModeFlag.ReadOnly))
+
+            doc = QDomDocument()
+            self.assertTrue(doc.setContent(out_file))
+            out_file.close()
+
+            root = doc.firstChildElement()
+            self.assertEqual(root.tagName(), "GDAL_WMS")
+            self.assertEqual(len(root.childNodes()), 2)
+
+            service = root.firstChildElement()
+            self.assertEqual(service.tagName(), "Service")
+            self.assertEqual(service.attribute("name"), "WMS")
+
+            version_element = service.firstChildElement("Version")
+            self.assertEqual(version_element.text(), version)
+
+            url_element = service.firstChildElement("ServerUrl")
+            self.assertEqual(
+                url_element.text(),
+                QgsProviderRegistry.instance()
+                .decodeUri("wms", wms_layer.publicSource())
+                .get("url"),
+            )
+
+            layers_element = service.firstChildElement("Layers")
+            self.assertEqual(layers_element.text(), "bplan_stadtkarte")
+
+            crs_element = service.firstChildElement("CRS")
+            self.assertEqual(crs_element.text(), "EPSG:25832")
+
+            self.assertEqual(
+                service.elementsByTagName("BBoxOrder").length(), 0
+            )  # No inverted axis
+
+            data = root.lastChildElement()
+            self.assertEqual(data.tagName(), "DataWindow")
+
+            x_min_element = data.firstChildElement("UpperLeftX")
+            self.assertEqual(x_min_element.text(), str(extent.xMinimum()))
+            y_max_element = data.firstChildElement("UpperLeftY")
+            self.assertEqual(y_max_element.text(), str(extent.yMaximum()))
+            x_max_element = data.firstChildElement("LowerRightX")
+            self.assertEqual(x_max_element.text(), str(extent.xMaximum()))
+            y_min_element = data.firstChildElement("LowerRightY")
+            self.assertEqual(y_min_element.text(), str(extent.yMinimum()))
+
+            width_element = data.firstChildElement("SizeX")
+            self.assertEqual(width_element.text(), str(width))
+            height_element = data.firstChildElement("SizeY")
+            self.assertEqual(height_element.text(), str(height))
+
+        # Version 1.3.0, GCS, axis inverted
+        wms_layer = wms_layer_1_3_0("xml_desc", "EPSG:4326")
+        self.assertTrue(wms_layer.isValid())
+        with tempfile.TemporaryDirectory() as outdir:
+            version = "1.3.0"
+            extent = QgsRectangle(9.877185822, 51.524547577, 9.956344604, 51.553283691)
+            width = 831
+            height = 302
+
+            out_path = os.path.join(outdir, "osm_xml_03.xml")
+            res, _ = GdalUtils.gdal_wms_xml_description_file(
+                wms_layer, extent, width, height, out_path
+            )
+            self.assertTrue(res)
+
+            # Compare obtained file with and expected data
+            out_file = QFile(out_path)
+            self.assertTrue(out_file.open(QIODevice.OpenModeFlag.ReadOnly))
+
+            doc = QDomDocument()
+            self.assertTrue(doc.setContent(out_file))
+            out_file.close()
+
+            root = doc.firstChildElement()
+            self.assertEqual(root.tagName(), "GDAL_WMS")
+            self.assertEqual(len(root.childNodes()), 2)
+
+            service = root.firstChildElement()
+            self.assertEqual(service.tagName(), "Service")
+            self.assertEqual(service.attribute("name"), "WMS")
+
+            version_element = service.firstChildElement("Version")
+            self.assertEqual(version_element.text(), version)
+
+            url_element = service.firstChildElement("ServerUrl")
+            self.assertEqual(
+                url_element.text(),
+                QgsProviderRegistry.instance()
+                .decodeUri("wms", wms_layer.publicSource())
+                .get("url"),
+            )
+
+            layers_element = service.firstChildElement("Layers")
+            self.assertEqual(layers_element.text(), "de_basemapde_web_raster_farbe")
+
+            crs_element = service.firstChildElement("CRS")
+            self.assertEqual(crs_element.text(), "EPSG:4326")
+
+            axis_element = service.firstChildElement("BBoxOrder")
+            self.assertEqual(axis_element.text(), "yxYX")
+
+            data = root.lastChildElement()
+            self.assertEqual(data.tagName(), "DataWindow")
+
+            x_min_element = data.firstChildElement("UpperLeftX")
+            self.assertEqual(x_min_element.text(), str(extent.xMinimum()))
+            y_max_element = data.firstChildElement("UpperLeftY")
+            self.assertEqual(y_max_element.text(), str(extent.yMaximum()))
+            x_max_element = data.firstChildElement("LowerRightX")
+            self.assertEqual(x_max_element.text(), str(extent.xMaximum()))
+            y_min_element = data.firstChildElement("LowerRightY")
+            self.assertEqual(y_min_element.text(), str(extent.yMinimum()))
+
+            width_element = data.firstChildElement("SizeX")
+            self.assertEqual(width_element.text(), str(width))
+            height_element = data.firstChildElement("SizeY")
+            self.assertEqual(height_element.text(), str(height))
+
+    def testWmsDimensionsForScale(self):
+        # Projected Coordinate System
+        bbox = QgsRectangle(472036.22487, 5552340.41684, 472376.9869, 5552638.65929)
+        crs = QgsCoordinateReferenceSystem("EPSG:25832")
+        scale = 5000
+        dpi = 96.0
+        distanceArea = None
+
+        width, height = GdalUtils._wms_dimensions_for_scale(
+            bbox, crs, scale, dpi, distanceArea
+        )
+        self.assertEqual(width, 258)
+        self.assertEqual(height, 226)
+
+        # Geographic Coordinate System
+        bbox = QgsRectangle(8.608813286, 50.122661591, 8.613558769, 50.125328064)
+        crs = QgsCoordinateReferenceSystem("EPSG:4326")
+        scale = 3500
+        dpi = 96.0
+        distanceArea = QgsDistanceArea()
+        distanceArea.setSourceCrs(crs, QgsCoordinateTransformContext())
+        distanceArea.setEllipsoid(crs.ellipsoidAcronym())
+
+        width, height = GdalUtils._wms_dimensions_for_scale(
+            bbox, crs, scale, dpi, distanceArea
+        )
+        self.assertEqual(width, 367)
+        self.assertEqual(height, 206)  # Height value preserving BBOX's aspect ratio
+
+        # Projected Coordinate System 2
+        bbox = QgsRectangle(3560914.20026, 5710368.96526, 3566446.25913, 5713634.88757)
+        crs = QgsCoordinateReferenceSystem("EPSG:31467")
+        scale = 25000
+        dpi = 96.0
+        distanceArea = None
+
+        width, height = GdalUtils._wms_dimensions_for_scale(
+            bbox, crs, scale, dpi, distanceArea
+        )
+        self.assertEqual(width, 837)
+        self.assertEqual(height, 494)
+
+        # Geographic Coordinate System 2
+        bbox = QgsRectangle(8.608813286, 50.122661591, 8.613558769, 50.125328064)
+        crs = QgsCoordinateReferenceSystem("EPSG:4326")
+        scale = 2000
+        dpi = 70.0
+        distanceArea = QgsDistanceArea()
+        distanceArea.setSourceCrs(crs, QgsCoordinateTransformContext())
+        distanceArea.setEllipsoid(crs.ellipsoidAcronym())
+
+        width, height = GdalUtils._wms_dimensions_for_scale(
+            bbox, crs, scale, dpi, distanceArea
+        )
+        self.assertEqual(width, 468)
+        self.assertEqual(height, 263)  # Height value preserving BBOX's aspect ratio
 
 
 if __name__ == "__main__":

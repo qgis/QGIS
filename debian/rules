@@ -47,7 +47,7 @@ else
 	DISTRIBUTION := $(DIST)
 endif
 
-ifeq (,$(filter $(DISTRIBUTION),bookworm trixie jammy kinetic lunar mantic noble oracular plucky))
+ifeq (,$(filter $(DISTRIBUTION),bookworm trixie noble plucky questing))
 	DISTRIBUTION := sid
 endif
 
@@ -71,17 +71,17 @@ CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
 
 shlibs :=
 
-ifneq (,$(filter $(DISTRIBUTION),bookworm trixie noble oracular plucky sid))
+ifneq (,$(filter $(DISTRIBUTION),bookworm trixie noble plucky questing sid))
 	CONTROL_EXPRESSIONS += qt5
 	shlibs += -Xqgis-plugin-grass -Xlibqgis-customwidgets
-ifneq (,$(filter $(DISTRIBUTION),bookworm        noble oracular))
+ifneq (,$(filter $(DISTRIBUTION),bookworm        noble))
 	CONTROL_EXPRESSIONS += webkit
 endif
 endif
 
 # bookworm: no qca for qt6
 # noble: sip errors
-ifneq (,$(filter $(DISTRIBUTION),trixie oracular plucky sid))
+ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
 	CONTROL_EXPRESSIONS += qt6
 	shlibs += -Xqgis-plugin-grass-qt6 -Xlibqgis-customwidgets-qt6
 endif
@@ -90,6 +90,10 @@ ifeq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
 ifeq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
 $(error neither qt5 nor qt6)
 endif
+endif
+
+ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
+	CONTROL_EXPRESSIONS += sfcgal
 endif
 
 ifneq (,$(filter oracle,$(DEB_BUILD_OPTIONS)))
@@ -113,6 +117,10 @@ ifneq (,$(filter pdal,$(DEB_BUILD_OPTIONS)))
 ifeq ($(shell pkg-config --exists pdal && dpkg --compare-versions $$(pkg-config --modversion pdal) ge 2.5 && echo 1 || echo 0),1)
 CONTROL_EXPRESSIONS += pdal_wrench
 endif
+endif
+
+ifneq (,$(filter sfcgal,$(DEB_BUILD_OPTIONS)))
+	CONTROL_EXPRESSIONS += sfcgal
 endif
 
 define gentemplate
@@ -190,18 +198,17 @@ CMAKE_OPTS := \
 	-DPUSH_TO_CDASH=TRUE
 
 QT5_CMAKE_OPTS = \
-	-D BUILD_WITH_QT6=FALSE \
+	-D BUILD_WITH_QT5=TRUE -D BUILD_WITH_QT6=FALSE -D WITH_QTWEBENGINE=OFF \
 	-D QGIS_INCLUDE_SUBDIR=include/qgis \
 	-D QT_PLUGINS_DIR=lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins \
 	-D QGIS_QML_SUBDIR=share/qgis/qml
 
-ifeq (,$(filter webkit,$(CONTROL_EXPRESSIONS)))
+ifneq (,$(filter webkit,$(CONTROL_EXPRESSIONS)))
 QT5_CMAKE_OPTS += \
-	-D WITH_QTWEBKIT=OFF
+	-D WITH_QTWEBKIT=ON
 endif
 
 QT6_CMAKE_OPTS = \
-	-D BUILD_WITH_QT6=TRUE -D WITH_QTWEBKIT=OFF -D WITH_QTWEBENGINE=ON \
 	-D QGIS_LIBEXEC_SUBDIR=lib/qgis-qt6 \
 	-D QGIS_PLUGIN_SUBDIR=lib/qgis-qt6/plugins \
 	-D QGIS_SERVER_MODULE_SUBDIR=lib/qgis-qt6/server \
@@ -222,7 +229,7 @@ ifneq (,$(filter $(GRASSVER),7 8))
 		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
 
-ifneq (,$(filter $(DISTRIBUTION),trixie sid kinetic lunar mantic noble oracular plucky))
+ifneq (,$(filter $(DISTRIBUTION),trixie sid noble plucky questing))
 	CMAKE_OPTS += \
 		-DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
 endif
@@ -254,6 +261,12 @@ ifneq (,$(filter pdal,$(CONTROL_EXPRESSIONS)))
 	CMAKE_OPTS += -DWITH_PDAL=TRUE
 else
 	CMAKE_OPTS += -DWITH_PDAL=FALSE
+endif
+
+ifneq (,$(filter sfcgal,$(CONTROL_EXPRESSIONS)))
+	CMAKE_OPTS += -DWITH_SFCGAL=TRUE
+else
+	CMAKE_OPTS += -DWITH_SFCGAL=FALSE
 endif
 
 ifneq (,$(filter oracle,$(DEB_BUILD_OPTIONS)))

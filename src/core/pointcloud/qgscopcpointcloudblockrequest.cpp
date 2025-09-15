@@ -22,7 +22,7 @@
 #include "qgstiledownloadmanager.h"
 #include "qgslazdecoder.h"
 #include "qgsapplication.h"
-#include "qgsnetworkaccessmanager.h"
+#include "qgsauthmanager.h"
 #include "qgssetrequestinitiator_p.h"
 
 //
@@ -34,7 +34,8 @@
 QgsCopcPointCloudBlockRequest::QgsCopcPointCloudBlockRequest( const QgsPointCloudNodeId &node, const QString &uri,
     const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
     const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect,
-    uint64_t blockOffset, int32_t blockSize, int pointCount, const QgsLazInfo &lazInfo )
+    uint64_t blockOffset, int32_t blockSize, int pointCount, const QgsLazInfo &lazInfo,
+    const QString &authcfg )
   : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterRect ),
     mBlockOffset( blockOffset ), mBlockSize( blockSize ), mPointCount( pointCount ), mLazInfo( lazInfo )
 {
@@ -49,6 +50,9 @@ QgsCopcPointCloudBlockRequest::QgsCopcPointCloudBlockRequest( const QgsPointClou
 
   QByteArray queryRange = QStringLiteral( "bytes=%1-%2" ).arg( mBlockOffset ).arg( ( int64_t ) mBlockOffset + mBlockSize - 1 ).toLocal8Bit();
   nr.setRawHeader( "Range", queryRange );
+
+  if ( !authcfg.isEmpty() )
+    QgsApplication::authManager()->updateNetworkRequest( nr, authcfg );
 
   mTileDownloadManagerReply.reset( QgsApplication::tileDownloadManager()->get( nr ) );
   connect( mTileDownloadManagerReply.get(), &QgsTileDownloadManagerReply::finished, this, &QgsCopcPointCloudBlockRequest::blockFinishedLoading );

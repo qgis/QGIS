@@ -510,6 +510,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     std::unique_ptr<Vertex> mRangeSelectionFirstVertex;
 
     VertexToolMode mMode = AllLayers;
+
+    friend class TestQgsVertexTool;
 };
 
 

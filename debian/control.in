@@ -69,6 +69,7 @@ Build-Depends:
 #qt6# python3-pyqt6, python3-pyqt6.qsci, python3-pyqt6.qtmultimedia, python3-pyqt6.qtpositioning, python3-pyqt6.qtserialport, python3-pyqt6.qtsvg, pyqt6-dev-tools, pyqt6-dev, pyqt6.qsci-dev, python3-pyqt6.sip,
 #oracle# oracle-instantclient-basiclite, oracle-instantclient-devel,
 #pdal# libpdal-dev, pdal,
+#sfcgal# libsfcgal-dev (>= 2.0.0),
  locales
 #apidoc#Build-Depends-indep:
 #apidoc# doxygen

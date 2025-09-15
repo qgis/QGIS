@@ -2090,6 +2090,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( JoinStyle )
 
     /**
+     * Join styles for 3D buffers.
+     *
+     * \since QGIS 4.0
+     */
+    enum class JoinStyle3D : int
+    {
+      Round = 1,           //!< Smooth, rounded buffer around the input geometry
+      Flat,                //!< Flat ends and constant width along the linestring
+      CylindersAndSpheres, //!< Cylinders along the linestring segments with spheres at the vertices
+    };
+    Q_ENUM( JoinStyle3D )
+
+    /**
      * Flags which control geos geometry creation behavior.
      *
      * \since QGIS 3.40
@@ -3266,6 +3279,19 @@ class CORE_EXPORT Qgis
       Categorical, //!< The axis represents categories
     };
     Q_ENUM( PlotAxisType )
+
+    /**
+     * Pie chart label types.
+     *
+     * \since QGIS 4.0
+     */
+    enum class PieChartLabelType : int
+    {
+      NoLabels,       //!< Labels are not drawn
+      Categories, //!< Category labels are drawn
+      Values,    //!< Value labels are drawn
+    };
+    Q_ENUM( PieChartLabelType )
 
     /**
      * DpiMode enum
@@ -6016,6 +6042,24 @@ class CORE_EXPORT Qgis
     Q_ENUM( StacObjectType )
 
     /**
+     * Capabilities of a raster layer processing parameter.
+     * \since QGIS 4.0
+     */
+    enum class RasterProcessingParameterCapability : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      WmsScale = 1 << 0, //!< The parameter supports a reference scale for WMS source layers
+      WmsDpi = 1 << 1,   //!< The parameter supports a server resolution for WMS source layers
+    };
+    Q_ENUM( RasterProcessingParameterCapability )
+
+    /**
+     * Raster layer processing parameter capabilities.
+     * \since QGIS 4.0
+     */
+    Q_DECLARE_FLAGS( RasterProcessingParameterCapabilities, RasterProcessingParameterCapability )
+    Q_FLAG( RasterProcessingParameterCapabilities )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -6141,6 +6185,13 @@ class CORE_EXPORT Qgis
     static QString geosVersion();
 
     /**
+     * Returns TRUE if the QGIS build contains QtWebkit.
+     *
+     * \since QGIS 4.0
+     */
+    static bool hasQtWebkit();
+
+    /**
      * Constant that holds the string representation for "No ellipse/No CRS".
      *
      * \since QGIS 3.44
@@ -6257,6 +6308,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::StringStatistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterBandStatistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterInterfaceCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterProviderCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterProcessingParameterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmDocumentationFlags )
@@ -6785,12 +6837,16 @@ CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
  *
  * Invalid < NULL < Values
  *
+ * Since QGIS 4.0 the \a strictTypeCheck argument can be used to specify that variants
+ * of different types should be compared using their userType ID only, and not attempt
+ * to check the actual variant value.
+ *
  * \see qgsVariantLessThan()
  * \see qgsVariantGreaterThan()
  *
  * \since QGIS 3.44
  */
-CORE_EXPORT int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
+CORE_EXPORT int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictTypeCheck = false );
 
 /**
  * Compares two QVariant values and returns whether the first is less than the second.
@@ -6798,7 +6854,7 @@ CORE_EXPORT int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
  * QVariant data types (such as strings, numeric values, dates and times)
  *
  * Invalid < NULL < Values
- *
+
  * \see qgsVariantGreaterThan()
  * \see qgsVariantCompare()
  */
@@ -6828,27 +6884,34 @@ CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs
 
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
- * Useful for sorting lists of variants, correctly handling sorting of the various
- * QVariant data types (such as strings, numeric values, dates and times)
+ *
+ * \note This method performs strict type checking, and considers variants of different
+ * types using their userType ID only. It is accordingly appropriate for use with QMap
+ * with QVariant keys. If loose type checking is required then the qgsVariantGreaterThan()
+ * function should be used.
+ *
  * \see qgsVariantLessThan()
+ * \see qgsVariantGreaterThan()
  */
 inline bool operator> ( const QVariant &v1, const QVariant &v2 )
 {
-  return qgsVariantGreaterThan( v1, v2 );
+  return qgsVariantCompare( v1, v2, true ) > 0;
 }
 
 /**
  * Compares two QVariant values and returns whether the first is less than the second.
- * Useful for sorting lists of variants, correctly handling sorting of the various
- * QVariant data types (such as strings, numeric values, dates and times)
  *
- * Invalid < NULL < Values
+ * \note This method performs strict type checking, and considers variants of different
+ * types using their userType ID only. It is accordingly appropriate for use with QMap
+ * with QVariant keys. If loose type checking is required then the qgsVariantLessThan()
+ * function should be used.
  *
+ * \see qgsVariantLessThan()
  * \see qgsVariantGreaterThan()
  */
 inline bool operator< ( const QVariant &v1, const QVariant &v2 )
 {
-  return qgsVariantLessThan( v1, v2 );
+  return qgsVariantCompare( v1, v2, true ) < 0;
 }
 #endif
 

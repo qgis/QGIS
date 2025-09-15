@@ -44,6 +44,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmangletonearest.cpp
   processing/qgsalgorithmannotations.cpp
   processing/qgsalgorithmapplylayerstyle.cpp
+  processing/qgsalgorithmapproximatemedialaxis.cpp
   processing/qgsalgorithmarraytranslatedfeatures.cpp
   processing/qgsalgorithmaspect.cpp
   processing/qgsalgorithmassignprojection.cpp
@@ -195,6 +196,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmultiringconstantbuffer.cpp
   processing/qgsalgorithmmultiunion.cpp
   processing/qgsalgorithmnearestneighbouranalysis.cpp
+  processing/qgsalgorithmnetworkanalysisbase.cpp
   processing/qgsalgorithmoffsetlines.cpp
   processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
@@ -310,12 +312,30 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsprojectstylealgorithms.cpp
   processing/qgsstylealgorithms.cpp
 
-  processing/qgsalgorithmnetworkanalysisbase.cpp
-
   processing/qgsnativealgorithms.cpp
   processing/qgsoverlayutils.cpp
   processing/qgsrasteranalysisutils.cpp
   processing/qgsreclassifyutils.cpp
+
+  processing/pdal/qgspdalalgorithms.cpp
+  processing/pdal/qgspdalalgorithmbase.cpp
+  processing/pdal/qgsalgorithmpdalassignprojection.cpp
+  processing/pdal/qgsalgorithmpdalboundary.cpp
+  processing/pdal/qgsalgorithmpdalbuildvpc.cpp
+  processing/pdal/qgsalgorithmpdalclip.cpp
+  processing/pdal/qgsalgorithmpdalconvertformat.cpp
+  processing/pdal/qgsalgorithmpdalcreatecopc.cpp
+  processing/pdal/qgsalgorithmpdaldensity.cpp
+  processing/pdal/qgsalgorithmpdalexportraster.cpp
+  processing/pdal/qgsalgorithmpdalexportrastertin.cpp
+  processing/pdal/qgsalgorithmpdalexportvector.cpp
+  processing/pdal/qgsalgorithmpdalfilter.cpp
+  processing/pdal/qgsalgorithmpdalinformation.cpp
+  processing/pdal/qgsalgorithmpdalmerge.cpp
+  processing/pdal/qgsalgorithmpdalreproject.cpp
+  processing/pdal/qgsalgorithmpdalthinbydecimate.cpp
+  processing/pdal/qgsalgorithmpdalthinbyradius.cpp
+  processing/pdal/qgsalgorithmpdaltile.cpp
 
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
@@ -430,6 +450,8 @@ set(QGIS_ANALYSIS_HDRS
   processing/qgsalgorithmurlopener.h
   processing/qgsalgorithmhttprequest.h
 
+  processing/pdal/qgspdalalgorithms.h
+
   raster/qgsalignraster.h
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h
@@ -485,37 +507,13 @@ set(QGIS_ANALYSIS_HDRS
   vector/qgszonalstatistics.h
 )
 
-if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
+if (WITH_PDAL)
   set(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
     ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
-
-    processing/pdal/qgspdalalgorithms.cpp
-
-    processing/pdal/qgspdalalgorithmbase.cpp
-
-    processing/pdal/qgsalgorithmpdalassignprojection.cpp
-    processing/pdal/qgsalgorithmpdalboundary.cpp
-    processing/pdal/qgsalgorithmpdalbuildvpc.cpp
-    processing/pdal/qgsalgorithmpdalclip.cpp
-    processing/pdal/qgsalgorithmpdalconvertformat.cpp
-    processing/pdal/qgsalgorithmpdalcreatecopc.cpp
-    processing/pdal/qgsalgorithmpdaldensity.cpp
-    processing/pdal/qgsalgorithmpdalexportraster.cpp
-    processing/pdal/qgsalgorithmpdalexportrastertin.cpp
-    processing/pdal/qgsalgorithmpdalexportvector.cpp
-    processing/pdal/qgsalgorithmpdalfilter.cpp
-    processing/pdal/qgsalgorithmpdalinformation.cpp
-    processing/pdal/qgsalgorithmpdalmerge.cpp
-    processing/pdal/qgsalgorithmpdalreproject.cpp
-    processing/pdal/qgsalgorithmpdalthinbydecimate.cpp
-    processing/pdal/qgsalgorithmpdalthinbyradius.cpp
-    processing/pdal/qgsalgorithmpdaltile.cpp
   )
 
   set(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS}
     ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.hpp
-
-    processing/pdal/qgspdalalgorithms.h
   )
 
   include_directories(
@@ -579,9 +577,6 @@ endif()
 
 set_target_properties(qgis_analysis PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
-# require c++17
-target_compile_features(qgis_analysis PRIVATE cxx_std_17)
-
 target_include_directories(qgis_analysis PUBLIC
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/georeferencing
@@ -633,6 +628,10 @@ endif()
 
 if (WITH_DRACO)
   target_link_libraries(qgis_analysis ${DRACO_LIBRARY})
+endif()
+
+if (WITH_SFCGAL)
+  target_link_libraries(qgis_analysis SFCGAL::SFCGAL)
 endif()
 
 target_compile_definitions(qgis_analysis PRIVATE "-DQT_NO_FOREACH")

@@ -35,6 +35,7 @@ from qgis.core import (
     QgsProjUtils,
     QgsPointXY,
     QgsCoordinateReferenceSystem,
+    QgsProcessingRasterLayerDefinition,
 )
 
 from qgis.testing import QgisTestCase, start_app, unittest
@@ -481,7 +482,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         source = os.path.join(testDataPath, "dem.tif")
         alg = ClipRasterByExtent()
         alg.initAlgorithm()
-        extent = QgsRectangle(1, 2, 3, 4)
+        extent = QgsRectangle(18.67, 45.78, 18.68, 45.79)
 
         with tempfile.TemporaryDirectory() as outdir:
             # with no NODATA value
@@ -489,20 +490,27 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "OUTPUT": outdir + "/check.jpg",
                     },
                     context,
                     feedback,
                 ),
-                ["gdal_translate", "-of JPEG " + source + " " + outdir + "/check.jpg"],
+                [
+                    "gdal_translate",
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
+                ],
             )
             # with NODATA value
             self.assertEqual(
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "NODATA": 9999,
                         "OUTPUT": outdir + "/check.jpg",
                     },
@@ -511,7 +519,11 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-a_nodata 9999.0 -of JPEG " + source + " " + outdir + "/check.jpg",
+                    "-projwin 18.67 45.79 18.68 45.78 -a_nodata 9999.0 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
                 ],
             )
             # with "0" NODATA value
@@ -519,7 +531,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "NODATA": 0,
                         "OUTPUT": outdir + "/check.jpg",
                     },
@@ -528,7 +540,11 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-a_nodata 0.0 -of JPEG " + source + " " + outdir + "/check.jpg",
+                    "-projwin 18.67 45.79 18.68 45.78 -a_nodata 0.0 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
                 ],
             )
             # with "0" NODATA value and custom data type
@@ -536,7 +552,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "NODATA": 0,
                         "DATA_TYPE": 6,
                         "OUTPUT": outdir + "/check.jpg",
@@ -546,7 +562,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-a_nodata 0.0 -ot Float32 -of JPEG "
+                    "-projwin 18.67 45.79 18.68 45.78 -a_nodata 0.0 -ot Float32 -of JPEG "
                     + source
                     + " "
                     + outdir
@@ -559,7 +575,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "CREATION_OPTIONS": "COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9",
                         "DATA_TYPE": 0,
                         "OUTPUT": outdir + "/check.jpg",
@@ -569,7 +585,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 "
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 "
                     + source
                     + " "
                     + outdir
@@ -581,7 +597,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "OPTIONS": "COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9",
                         "DATA_TYPE": 0,
                         "OUTPUT": outdir + "/check.jpg",
@@ -591,7 +607,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 "
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG -co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 "
                     + source
                     + " "
                     + outdir
@@ -604,7 +620,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "EXTRA": "-s_srs EPSG:4326 -tps -tr 0.1 0.1",
                         "DATA_TYPE": 0,
                         "OUTPUT": outdir + "/check.jpg",
@@ -614,7 +630,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-of JPEG -s_srs EPSG:4326 -tps -tr 0.1 0.1 "
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG -s_srs EPSG:4326 -tps -tr 0.1 0.1 "
                     + source
                     + " "
                     + outdir
@@ -627,7 +643,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source,
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "OVERCRS": True,
                         "OUTPUT": outdir + "/check.jpg",
                     },
@@ -636,7 +652,11 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-a_srs EPSG:4326 -of JPEG " + source + " " + outdir + "/check.jpg",
+                    "-projwin 18.67 45.79 18.68 45.78 -a_srs EPSG:4326 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
                 ],
             )
 
@@ -645,7 +665,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     {
                         "INPUT": source
                         + "|option:X_POSSIBLE_NAMES=geom_x|option:Y_POSSIBLE_NAMES=geom_y",
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "OUTPUT": outdir + "/check.jpg",
                     },
                     context,
@@ -653,7 +673,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-of JPEG "
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG "
                     + source
                     + " "
                     + outdir
@@ -665,7 +685,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 alg.getConsoleCommands(
                     {
                         "INPUT": source + "|credential:X=Y|credential:Z=A",
-                        "EXTENT": extent,
+                        "PROJWIN": extent,
                         "OUTPUT": outdir + "/check.jpg",
                     },
                     context,
@@ -673,13 +693,147 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                 ),
                 [
                     "gdal_translate",
-                    "-of JPEG "
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG "
                     + source
                     + " "
                     + outdir
                     + "/check.jpg --config X Y --config Z A",
                 ],
             )
+
+            # QgsProcessingRasterLayerDefinition
+
+            # TEST: No scale
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": QgsProcessingRasterLayerDefinition(source),
+                        "PROJWIN": extent,
+                        "OUTPUT": outdir + "/check.jpg",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdal_translate",
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
+                ],
+            )
+
+            # TEST: Valid scale but no WMS, therefore NO XML
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": QgsProcessingRasterLayerDefinition(source),
+                        "PROJWIN": extent,
+                        "OUTPUT": outdir + "/check.jpg",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdal_translate",
+                    "-projwin 18.67 45.79 18.68 45.78 -of JPEG "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
+                ],
+            )
+
+            # TEST: WMS layer and no scale, therefore NO XML
+            wms_source = "wms://contextualWMSLegend=0&crs=EPSG:25832&dpiMode=7&featureCount=10&format=image/png&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url=https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service"
+            command = alg.getConsoleCommands(
+                {
+                    "INPUT": QgsProcessingRasterLayerDefinition(wms_source),
+                    "PROJWIN": extent,
+                    "OUTPUT": outdir + "/check.jpg",
+                },
+                context,
+                feedback,
+            )
+            self.assertEqual(len(command), 2)
+            self.assertEqual(command[0], "gdal_translate")
+
+            parts = command[1].split(" ")
+            # ['-projwin',
+            #  '18.67',
+            #  '45.79',
+            #  '18.68',
+            #  '45.78',
+            #  '-of',
+            #  'JPEG',
+            #  '"contextualWMSLegend=0&crs=EPSG:25832&dpiMode=7&featureCount=10&format=image/png&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url=https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service"',
+            #  '/tmp/tmpd0s9gnal/check.jpg']
+            self.assertEqual(len(parts), 9)
+
+            # Skip raw wms source comparison
+            parts.pop(-2)
+            command = " ".join(parts)
+            expected = (
+                "-projwin 18.67 45.79 18.68 45.78 -of JPEG " + outdir + "/check.jpg"
+            )
+            self.assertEqual(command, expected)
+
+            # TEST: WMS layer and valid scale, therefore XML!
+            command = alg.getConsoleCommands(
+                {
+                    "INPUT": QgsProcessingRasterLayerDefinition(wms_source, 5000),
+                    "PROJWIN": extent,
+                    "OUTPUT": outdir + "/check.jpg",
+                },
+                context,
+                feedback,
+            )
+            self.assertEqual(len(command), 2)
+            self.assertEqual(command[0], "gdal_translate")
+
+            parts = command[1].split(" ")
+            # ['-of',
+            #  'JPEG',
+            #  '/tmp/processing_cktdwd/ce05dc60ae3b46ef90bbe02b9def033f/wms_description_file.xml',
+            #  '/tmp/tmpd0s9gnal/check.jpg']
+            self.assertEqual(len(parts), 4)
+
+            # Skip XML file path, since it varies
+            xml_file = parts.pop(-2)
+            command = " ".join(parts)
+            expected = "-of JPEG " + outdir + "/check.jpg"
+            self.assertEqual(command, expected)
+
+            self.assertTrue(xml_file.endswith("wms_description_file.xml"))
+
+            # TEST: WMS layer and valid scale (and DPI), therefore XML!
+            command = alg.getConsoleCommands(
+                {
+                    "INPUT": QgsProcessingRasterLayerDefinition(wms_source, 5000, 90),
+                    "PROJWIN": extent,
+                    "OUTPUT": outdir + "/check.jpg",
+                },
+                context,
+                feedback,
+            )
+            self.assertEqual(len(command), 2)
+            self.assertEqual(command[0], "gdal_translate")
+
+            parts = command[1].split(" ")
+            # ['-of',
+            #  'JPEG',
+            #  '/tmp/processing_cktdwd/ce05dc60ae3b46ef90bbe02b9def033f/wms_description_file.xml',
+            #  '/tmp/tmpd0s9gnal/check.jpg']
+            self.assertEqual(len(parts), 4)
+
+            # Skip XML file path, since it varies
+            xml_file = parts.pop(-2)
+            command = " ".join(parts)
+            expected = "-of JPEG " + outdir + "/check.jpg"
+            self.assertEqual(command, expected)
+
+            self.assertTrue(xml_file.endswith("wms_description_file.xml"))
 
     def testClipRasterByMask(self):
         context = QgsProcessingContext()
@@ -921,6 +1075,162 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     + "/check.jpg --config X Y --config Z A",
                 ],
             )
+
+            # QgsProcessingRasterLayerDefinition
+
+            # TEST: No scale
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": QgsProcessingRasterLayerDefinition(source),
+                        "MASK": mask,
+                        "OUTPUT": outdir + "/check.jpg",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdalwarp",
+                    "-overwrite -of JPEG -cutline "
+                    + mask
+                    + " -cl polys2 -crop_to_cutline "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
+                ],
+            )
+
+            # TEST: Valid scale but no WMS, therefore NO XML
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": QgsProcessingRasterLayerDefinition(source),
+                        "MASK": mask,
+                        "OUTPUT": outdir + "/check.jpg",
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdalwarp",
+                    "-overwrite -of JPEG -cutline "
+                    + mask
+                    + " -cl polys2 -crop_to_cutline "
+                    + source
+                    + " "
+                    + outdir
+                    + "/check.jpg",
+                ],
+            )
+
+            # TEST: WMS layer and no scale, therefore NO XML
+            wms_source = "wms://contextualWMSLegend=0&crs=EPSG:25832&dpiMode=7&featureCount=10&format=image/png&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url=https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service"
+            command = alg.getConsoleCommands(
+                {
+                    "INPUT": QgsProcessingRasterLayerDefinition(wms_source),
+                    "MASK": mask,
+                    "OUTPUT": outdir + "/check.jpg",
+                },
+                context,
+                feedback,
+            )
+            self.assertEqual(len(command), 2)
+            self.assertEqual(command[0], "gdalwarp")
+
+            parts = command[1].split(" ")
+            # ['gdalwarp',
+            #  '-overwrite -of JPEG -cutline '
+            #  '/docs/dev/QGIS-QT/QGIS/python/plugins/processing/tests/testdata/polys.gml '
+            #  '-cl polys2 -crop_to_cutline '
+            #  '"contextualWMSLegend=0&crs=EPSG:25832&dpiMode=7&featureCount=10&format=image/png&layers=bplan_stadtkarte&styles&tilePixelRatio=0&url=https://planas.frankfurt.de/mapproxy/bplan_stadtkarte/service" '
+            #  '/tmp/tmpu8tqyhux/check.jpg']
+
+            self.assertEqual(len(parts), 10)
+
+            # Skip raw wms source comparison
+            parts.pop(-2)
+            command = " ".join(parts)
+            expected = (
+                "-overwrite -of JPEG -cutline "
+                + mask
+                + " -cl polys2 -crop_to_cutline "
+                + outdir
+                + "/check.jpg"
+            )
+            self.assertEqual(command, expected)
+
+            # TEST: WMS layer and valid scale, therefore XML!
+            command = alg.getConsoleCommands(
+                {
+                    "INPUT": QgsProcessingRasterLayerDefinition(wms_source, 5000),
+                    "MASK": mask,
+                    "OUTPUT": outdir + "/check.jpg",
+                },
+                context,
+                feedback,
+            )
+            self.assertEqual(len(command), 2)
+            self.assertEqual(command[0], "gdalwarp")
+
+            parts = command[1].split(" ")
+            # ['gdalwarp',
+            #  '-overwrite -of JPEG -cutline '
+            #  '/docs/dev/QGIS-QT/QGIS/python/plugins/processing/tests/testdata/polys.gml '
+            #  '-cl polys2 -crop_to_cutline '
+            #  '/tmp/processing_OQLJot/1c18e34b4b0f408f9aa87995e34a1448/wms_description_file.xml '
+            #  '/tmp/tmppeib80si/check.jpg']
+            self.assertEqual(len(parts), 10)
+
+            # Skip XML file path, since it varies
+            xml_file = parts.pop(-2)
+            command = " ".join(parts)
+            expected = (
+                "-overwrite -of JPEG -cutline "
+                + mask
+                + " -cl polys2 -crop_to_cutline "
+                + outdir
+                + "/check.jpg"
+            )
+            self.assertEqual(command, expected)
+
+            self.assertTrue(xml_file.endswith("wms_description_file.xml"))
+
+            # TEST: WMS layer and valid scale (and DPI), therefore XML!
+            command = alg.getConsoleCommands(
+                {
+                    "INPUT": QgsProcessingRasterLayerDefinition(wms_source, 5000, 90),
+                    "MASK": mask,
+                    "OUTPUT": outdir + "/check.jpg",
+                },
+                context,
+                feedback,
+            )
+            self.assertEqual(len(command), 2)
+            self.assertEqual(command[0], "gdalwarp")
+
+            parts = command[1].split(" ")
+            # ['gdalwarp',
+            #  '-overwrite -of JPEG -cutline '
+            #  '/docs/dev/QGIS-QT/QGIS/python/plugins/processing/tests/testdata/polys.gml '
+            #  '-cl polys2 -crop_to_cutline '
+            #  '/tmp/processing_xaoCag/d93c173b5bbd491fbffa752fad210029/wms_description_file.xml '
+            #  '/tmp/tmpbvyzg949/check.jpg']
+            self.assertEqual(len(parts), 10)
+
+            # Skip XML file path, since it varies
+            xml_file = parts.pop(-2)
+            command = " ".join(parts)
+            expected = (
+                "-overwrite -of JPEG -cutline "
+                + mask
+                + " -cl polys2 -crop_to_cutline "
+                + outdir
+                + "/check.jpg"
+            )
+            self.assertEqual(command, expected)
+
+            self.assertTrue(xml_file.endswith("wms_description_file.xml"))
 
     def testContourPolygon(self):
         context = QgsProcessingContext()

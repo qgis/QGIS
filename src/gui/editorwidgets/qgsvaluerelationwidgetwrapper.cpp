@@ -474,7 +474,16 @@ void QgsValueRelationWidgetWrapper::updateValue( const QVariant &value, bool for
       // if value doesn't exist, we show it in '(...)' (just like value map widget)
       if ( QgsVariantUtils::isNull( value ) || !forceComboInsertion )
       {
-        mComboBox->setCurrentIndex( -1 );
+        // we might have an explicit item for null (e.g. "no selection"), if so, set to that
+        for ( int i = 0; i < mComboBox->count(); i++ )
+        {
+          if ( QgsVariantUtils::isNull( mComboBox->itemData( i ) ) )
+          {
+            idx = i;
+            break;
+          }
+        }
+        mComboBox->setCurrentIndex( idx );
       }
       else
       {
