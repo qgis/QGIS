@@ -427,6 +427,12 @@ void QgsProviderRegistry::rebuildFilterStrings()
     const QString fileVectorFilters = meta->filters( Qgis::FileFilterType::Vector );
     if ( !fileVectorFilters.isEmpty() )
     {
+      // Check if mVectorFileFilters ends with ";;"
+      if ( !mVectorFileFilters.isEmpty() && !mVectorFileFilters.endsWith( ";;" ) )
+      {
+        mVectorFileFilters += ";;";
+      }
+
       mVectorFileFilters += fileVectorFilters;
       QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( it->first ).arg( fileVectorFilters.split( ";;" ).count() ), 2 );
     }
@@ -436,6 +442,12 @@ void QgsProviderRegistry::rebuildFilterStrings()
     if ( !fileRasterFilters.isEmpty() )
     {
       QgsDebugMsgLevel( "raster filters: " + fileRasterFilters, 2 );
+      // Check if mRasterFileFilters ends with ";;"
+      if ( !mRasterFileFilters.isEmpty() && !mRasterFileFilters.endsWith( ";;" ) )
+      {
+        mRasterFileFilters += ";;";
+      }
+
       mRasterFileFilters += fileRasterFilters;
       QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( it->first ).arg( fileRasterFilters.split( ";;" ).count() ), 2 );
     }
@@ -444,6 +456,12 @@ void QgsProviderRegistry::rebuildFilterStrings()
     const QString fileMeshFilters = meta->filters( Qgis::FileFilterType::Mesh );
     if ( !fileMeshFilters.isEmpty() )
     {
+      // Check if mMeshFileFilters ends with ";;"
+      if ( !mMeshFileFilters.isEmpty() && !mMeshFileFilters.endsWith( ";;" ) )
+      {
+        mMeshFileFilters += ";;";
+      }
+
       mMeshFileFilters += fileMeshFilters;
       QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file mesh filters)" ).arg( it->first ).arg( mMeshFileFilters.split( ";;" ).count() ), 2 );
 
@@ -452,6 +470,12 @@ void QgsProviderRegistry::rebuildFilterStrings()
     const QString fileMeshDatasetFilters = meta->filters( Qgis::FileFilterType::MeshDataset );
     if ( !fileMeshDatasetFilters.isEmpty() )
     {
+      // Check if mMeshDatasetFileFilters ends with ";;"
+      if ( !mMeshDatasetFileFilters.isEmpty() && !mMeshDatasetFileFilters.endsWith( ";;" ) )
+      {
+        mMeshDatasetFileFilters += ";;";
+      }
+
       mMeshDatasetFileFilters += fileMeshDatasetFilters;
       QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file dataset filters)" ).arg( it->first ).arg( mMeshDatasetFileFilters.split( ";;" ).count() ), 2 );
     }
