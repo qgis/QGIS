@@ -68,9 +68,10 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     mEditableExpressionButton->setEnabled( false );
   }
 
-  connect( reuseLastValuesCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
-    reuseLastValuesByDefaultCheckBox->setEnabled( checked );
-  } );
+  mReuseLastValuePolicyComboBox->setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLengthWithIcon );
+  mReuseLastValuePolicyComboBox->addItem( tr( "Do not reuse last values" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) );
+  mReuseLastValuePolicyComboBox->addItem( tr( "Allow reuse of last values, enabled by default" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn ) );
+  mReuseLastValuePolicyComboBox->addItem( tr( "Allow reuse of last values, disabled by default" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOff ) );
 
   mExpressionWidget->registerExpressionContextGenerator( this );
   mExpressionWidget->setLayer( mLayer );
@@ -250,15 +251,13 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type, bool forc
   {
     isFieldEditableCheckBox->setEnabled( false );
     mEditableExpressionButton->setEnabled( false );
-    reuseLastValuesCheckBox->setEnabled( false );
-    reuseLastValuesByDefaultCheckBox->setEnabled( false );
+    mReuseLastValuePolicyComboBox->setEnabled( false );
   }
   else
   {
     isFieldEditableCheckBox->setEnabled( true );
     mEditableExpressionButton->setEnabled( true );
-    reuseLastValuesCheckBox->setEnabled( true );
-    reuseLastValuesByDefaultCheckBox->setEnabled( reuseLastValuesCheckBox->isChecked() );
+    mReuseLastValuePolicyComboBox->setEnabled( true );
   }
 
   //update default expression preview
@@ -302,25 +301,14 @@ bool QgsAttributeTypeDialog::labelOnTop() const
   return labelOnTopCheckBox->isChecked();
 }
 
-void QgsAttributeTypeDialog::setReuseLastValues( bool reuse )
+void QgsAttributeTypeDialog::setReuseLastValuePolicy( Qgis::AttributeFormReuseLastValuePolicy policy )
 {
-  reuseLastValuesCheckBox->setChecked( reuse );
-  reuseLastValuesByDefaultCheckBox->setEnabled( reuse );
+  mReuseLastValuePolicyComboBox->setCurrentIndex( mReuseLastValuePolicyComboBox->findData( QVariant::fromValue( policy ) ) );
 }
 
-bool QgsAttributeTypeDialog::reuseLastValues() const
+Qgis::AttributeFormReuseLastValuePolicy QgsAttributeTypeDialog::reuseLastValuePolicy() const
 {
-  return reuseLastValuesCheckBox->isChecked();
-}
-
-void QgsAttributeTypeDialog::setRememberLastValuesByDefault( bool resume )
-{
-  reuseLastValuesByDefaultCheckBox->setChecked( resume );
-}
-
-bool QgsAttributeTypeDialog::rememberLastValuesByDefault() const
-{
-  return reuseLastValuesByDefaultCheckBox->isChecked();
+  return mReuseLastValuePolicyComboBox->currentData().value<Qgis::AttributeFormReuseLastValuePolicy>();
 }
 
 void QgsAttributeTypeDialog::setConstraintExpressionDescription( const QString &desc )

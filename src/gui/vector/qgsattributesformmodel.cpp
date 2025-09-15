@@ -41,8 +41,7 @@ QgsAttributesFormData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx 
   mComment = layer->fields().at( idx ).comment();
   mEditable = !layer->editFormConfig().readOnly( idx );
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
-  mReuseLastValues = layer->editFormConfig().reuseLastValue( idx );
-  mRememberLastValuesByDefault = layer->editFormConfig().rememberLastValueByDefault( idx );
+  mReuseLastValuePolicy = layer->editFormConfig().reuseLastValuePolicy( idx );
   mFieldConstraints = layer->fields().at( idx ).constraints();
   const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( layer, layer->fields().field( idx ).name() );
   mEditorWidgetType = setup.type();
