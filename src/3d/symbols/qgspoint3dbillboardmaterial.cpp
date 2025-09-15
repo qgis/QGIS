@@ -29,8 +29,9 @@
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgs3drendercontext.h"
+#include "qgs3dutils.h"
 
-QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
+QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )
   , mViewportSize( new Qt3DRender::QParameter( "WIN_SCALE", QSizeF( 800, 600 ), this ) )
 {
@@ -51,9 +52,31 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
 
   // Shader program
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( this );
-  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/billboards.vert" ) ) ) );
+
+  const QUrl urlVert( QStringLiteral( "qrc:/shaders/billboards.vert" ) );
+  const QUrl urlGeom( QStringLiteral( "qrc:/shaders/billboards.geom" ) );
+
+  switch ( mode )
+  {
+    case Mode::SingleTexture:
+    {
+      shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( urlVert ) );
+      shaderProgram->setGeometryShaderCode( Qt3DRender::QShaderProgram::loadSource( urlGeom ) );
+      break;
+    }
+    case Mode::AtlasTexture:
+    {
+      const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( urlVert );
+      const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, QStringList( { "TEXTURE_ATLAS" } ) );
+      shaderProgram->setVertexShaderCode( finalVertexShaderCode );
+
+      const QByteArray geomShaderCode = Qt3DRender::QShaderProgram::loadSource( urlGeom );
+      const QByteArray finalGeomShaderCode = Qgs3DUtils::addDefinesToShaderCode( geomShaderCode, QStringList( { "TEXTURE_ATLAS" } ) );
+      shaderProgram->setGeometryShaderCode( finalGeomShaderCode );
+      break;
+    }
+  }
   shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/billboards.frag" ) ) ) );
-  shaderProgram->setGeometryShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/billboards.geom" ) ) ) );
 
   // Render Pass
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );

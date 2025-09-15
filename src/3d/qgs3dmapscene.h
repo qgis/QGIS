@@ -419,5 +419,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     QList<QVector4D> mClipPlanesEquations;
     int mMaxClipPlanes = 6;
+
+    friend class TestQgs3DRendering;
 };
 #endif // QGS3DMAPSCENE_H

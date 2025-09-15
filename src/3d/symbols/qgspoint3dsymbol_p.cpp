@@ -644,7 +644,7 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
 {
   // Billboard Geometry
   QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
-  billboardGeometry->setPoints( out.positions );
+  billboardGeometry->setPositions( out.positions );
 
   // Billboard Geometry Renderer
   Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
