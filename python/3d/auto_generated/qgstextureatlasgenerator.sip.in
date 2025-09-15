@@ -1,0 +1,127 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgstextureatlasgenerator.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsTextureAtlasGenerator
+{
+%Docstring(signature="appended")
+Generates texture atlases by efficient packing of multiple input
+rectangles/images.
+
+:py:class:`QgsTextureAtlasGenerator` can be used to packed either images
+or raw rectangles. The associated method (:py:func:`~appendRect` or
+:py:func:`~appendImage`) should be called multiple times, adding all the
+required objects to pack. The :py:func:`~generateAtlas` method should
+then be called to perform the packing, before the solution methods like
+:py:func:`~rect` or :py:func:`~atlasTexture` can be called.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgstextureatlasgenerator.h"
+%End
+  public:
+    QgsTextureAtlasGenerator();
+    ~QgsTextureAtlasGenerator();
+
+
+    int appendRect( const QRect &rect );
+%Docstring
+Appends a rectangle to the atlas.
+
+This method should be used when the generator is used to pack rectangle
+shapes only. No image will be associated with the rectangle, and the
+associated rectangle will be empty in the
+:py:func:`~QgsTextureAtlasGenerator.atlasTexture`.
+
+:return: a unique ID which can be used to retrieve the calculated packed
+         position of the rectangle after generating the atlas.
+
+.. seealso:: :py:func:`appendImage`
+%End
+
+    int appendImage( const QImage &image );
+%Docstring
+Appends an ``image`` to the atlas.
+
+:return: a unique ID which can be used to retrieve the calculated packed
+         position of the image after generating the atlas.
+
+.. seealso:: :py:func:`appendRect`
+%End
+
+    bool generateAtlas( int maxSide = 1000 );
+%Docstring
+Generates the packing solution for all stored rectangles and images.
+
+The ``maxSide`` argument specifies the maximum permitted side size for
+the atlas. The calculated solution can only be less than or equal to
+this size - if it cannot fit, then algorithm will gracefully fail and
+return ``False``.
+
+.. note::
+
+   This method must be called before retrieving :py:func:`~QgsTextureAtlasGenerator.rect`, :py:func:`~QgsTextureAtlasGenerator.atlasSize` or :py:func:`~QgsTextureAtlasGenerator.atlasTexture`.
+%End
+
+    QSize atlasSize() const;
+%Docstring
+Returns the total size required for the atlas, i.e. the calculated size
+for the packed images and rectangles.
+
+.. warning::
+
+   :py:func:`~QgsTextureAtlasGenerator.generateAtlas` must be called before this method can be used.
+%End
+
+    QRect rect( int id ) const;
+%Docstring
+Returns the calculated packed rectangle for the rectangle or image with
+the specified ``id``.
+
+.. warning::
+
+   :py:func:`~QgsTextureAtlasGenerator.generateAtlas` must be called before this method can be used.
+%End
+
+    QImage atlasTexture() const;
+%Docstring
+Renders the combined texture atlas, containing all images added via
+:py:func:`~QgsTextureAtlasGenerator.appendImage`.
+
+.. warning::
+
+   :py:func:`~QgsTextureAtlasGenerator.generateAtlas` must be called before this method can be used.
+%End
+
+    QImage debugTexture() const;
+%Docstring
+Renders a debug texture.
+
+The debug texture renders all packed rectangles with a unique color, and
+can be used to visualize the solution.
+
+.. warning::
+
+   :py:func:`~QgsTextureAtlasGenerator.generateAtlas` must be called before this method can be used.
+%End
+
+  private:
+    QgsTextureAtlasGenerator( const QgsTextureAtlasGenerator &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgstextureatlasgenerator.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

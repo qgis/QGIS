@@ -568,6 +568,7 @@ if (WITH_3D)
   ADD_PYTHON_TEST(PyQgs3DMaterials test_qgs3dmaterials.py)
   ADD_PYTHON_TEST(PyQgs3DTerrain test_qgs3dterrain.py)
   ADD_PYTHON_TEST(PyQgsMesh3DSymbol test_qgsmesh3dsymbol.py)
+  ADD_PYTHON_TEST(PyQgsTextureAtlasGenerator test_qgstextureatlasgenerator.py)
 endif()
 
 if (WITH_PDF4QT)

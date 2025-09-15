@@ -13,6 +13,7 @@
 %Include auto_generated/qgstiledscenelayer3drenderer.sip
 %Include auto_generated/qgsvectorlayer3drenderer.sip
 %Include auto_generated/qgspointcloudlayer3drenderer.sip
+%Include auto_generated/qgstextureatlasgenerator.sip
 %Include auto_generated/lights/qgsdirectionallightsettings.sip
 %Include auto_generated/lights/qgslightsource.sip
 %Include auto_generated/lights/qgspointlightsettings.sip
