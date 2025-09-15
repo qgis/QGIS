@@ -45,6 +45,7 @@ set(QGIS_3D_SRCS
   qgscolorramptexture.cpp
   qgsrubberband3d.cpp
   qgsambientocclusionsettings.cpp
+  qgstextureatlasgenerator.cpp
 
   qgspointcloudlayer3drenderer.cpp
   qgspointcloudlayerchunkloader_p.cpp
@@ -174,6 +175,7 @@ set(QGIS_3D_HDRS
   qgsshadowsettings.h
   qgspointcloudlayer3drenderer.h
   qgsambientocclusionsettings.h
+  qgstextureatlasgenerator.h
 
   lights/qgsdirectionallightsettings.h
   lights/qgslightsource.h
@@ -312,6 +314,7 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_BINARY_DIR}/src/3d
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/tinygltf
+  ${CMAKE_SOURCE_DIR}/external/rectpack2D
 )
 
 target_link_libraries(qgis_3d
