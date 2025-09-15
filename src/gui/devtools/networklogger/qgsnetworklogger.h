@@ -15,9 +15,13 @@
 #ifndef QGSNETWORKLOGGER_H
 #define QGSNETWORKLOGGER_H
 
+#define SIP_NO_FILE
+
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QElapsedTimer>
+
+#include "qgis_gui.h"
 #include "qgsnetworkaccessmanager.h"
 
 class QgsDevToolsModelNode;
@@ -26,14 +30,14 @@ class QgsNetworkLoggerRootNode;
 class QAction;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLogger
  * \brief Logs network requests from a QgsNetworkAccessManager, converting them
  * to a QAbstractItemModel representing the request and response details.
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLogger : public QAbstractItemModel
+class GUI_EXPORT QgsNetworkLogger : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -120,14 +124,14 @@ class QgsNetworkLogger : public QAbstractItemModel
 };
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsNetworkLoggerProxyModel
  * \brief A proxy model for filtering QgsNetworkLogger models by url string subsets
  * or request status.
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerProxyModel : public QSortFilterProxyModel
+class GUI_EXPORT QgsNetworkLoggerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:

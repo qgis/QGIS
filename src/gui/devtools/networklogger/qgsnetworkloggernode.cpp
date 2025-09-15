@@ -101,10 +101,10 @@ QVariant QgsNetworkLoggerRequestGroup::data( int role ) const
         .arg( mUrl.url(), statusToString( mStatus ), QString::number( mHttpStatus ), mContentType, bytes, mStatus == Status::Pending ? QString::number( mTimer.elapsed() / 1000 ) : QString::number( mTotalTime ), QString::number( mReplies ) );
     }
 
-    case RoleStatus:
+    case static_cast<int>( Roles::RoleStatus ):
       return static_cast<int>( mStatus );
 
-    case RoleId:
+    case static_cast<int>( Roles::RoleId ):
       return mRequestId;
 
     case Qt::ForegroundRole:

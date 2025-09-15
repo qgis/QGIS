@@ -215,7 +215,7 @@ void QgsNetworkLogger::removeRequestRows( const QList<int> &rows )
 
   for ( int row : std::as_const( res ) )
   {
-    int popId = data( index( row, 0, QModelIndex() ), QgsDevToolsModelNode::RoleId ).toInt();
+    int popId = data( index( row, 0, QModelIndex() ), static_cast<int>( QgsDevToolsModelNode::Roles::RoleId ) ).toInt();
     mRequestGroups.remove( popId );
 
     beginRemoveRows( QModelIndex(), row, row );
