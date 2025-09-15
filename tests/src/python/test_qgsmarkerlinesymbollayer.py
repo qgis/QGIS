@@ -1520,7 +1520,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         markerSl = sl.subSymbol().symbolLayers()[0]
         self.assertTrue(markerSl)
         markerSl.setShape(Qgis.MarkerShape.HalfSquare)
-        markerSl.setStrokeStyle(Qt.NoPen)
+        markerSl.setStrokeStyle(Qt.PenStyle.NoPen)
         s.appendSymbolLayer(sl)
 
         g = QgsGeometry.fromWkt(
@@ -1684,7 +1684,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         markerSl = sl.subSymbol().symbolLayers()[0]
         self.assertTrue(markerSl)
         markerSl.setShape(Qgis.MarkerShape.HalfSquare)
-        markerSl.setStrokeStyle(Qt.NoPen)
+        markerSl.setStrokeStyle(Qt.PenStyle.NoPen)
         s.appendSymbolLayer(sl)
 
         # Test offset along line
