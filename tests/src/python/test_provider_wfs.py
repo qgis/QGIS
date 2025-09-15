@@ -8635,6 +8635,7 @@ Can't recognize service requested.
             ),
             "wb",
         ) as f:
+            print(f"YYY {f.name} YYY")
             f.write(
                 b"""
 <wfs:FeatureCollection
