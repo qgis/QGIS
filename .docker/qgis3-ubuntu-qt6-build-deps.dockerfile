@@ -1,6 +1,5 @@
 
 ARG DISTRO_VERSION=25.04
-ARG PDAL_VERSION=2.8.4
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
@@ -8,8 +7,6 @@ FROM      ubuntu:${DISTRO_VERSION} AS binary-for-oracle
 LABEL org.opencontainers.image.authors="Denis Rouzaud <denis@opengis.ch>"
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
-
-ARG PDAL_VERSION
 
 # && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
@@ -141,24 +138,11 @@ RUN locale-gen
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
-# PDAL is not available in ubuntu 24.04
-# Install it from source
-# PDAL dependencies
 RUN  apt-get update \
      && DEBIAN_FRONTEND=noninteractive apt-get install -y \
      ninja-build \
      libgdal-dev \
      libproj-dev
-# download PDAL and compile it
-RUN curl -L https://github.com/PDAL/PDAL/releases/download/${PDAL_VERSION}/PDAL-${PDAL_VERSION}-src.tar.gz --output PDAL-${PDAL_VERSION}-src.tar.gz \
-    && mkdir pdal \
-    && tar zxf PDAL-${PDAL_VERSION}-src.tar.gz -C pdal --strip-components=1 \
-    && rm -f PDAL-${PDAL_VERSION}-src.tar.gz \
-    && mkdir -p pdal/build \
-    && cd pdal/build \
-    && cmake -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_TESTS=OFF .. \
-    && ninja \
-    && ninja install
 
 # download spatialindex and compile it
 RUN curl -L https://github.com/libspatialindex/libspatialindex/releases/download/2.0.0/spatialindex-src-2.0.0.tar.gz --output spatialindex-src-2.0.0.tar.gz \
