@@ -20,6 +20,14 @@ let
         ./.
         ../flake.nix
         ../flake.lock
+        ../.docker
+        ../.github
+        ../.ci
+        ../debian
+        ../editors
+        ../ms-windows
+        ../rpm
+        ../vcpkg
       ]);
 
   qgisSource = lib.fileset.toSource {
