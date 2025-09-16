@@ -96,7 +96,6 @@ RUN  apt-get update \
     qt6-3d-gltfsceneio-plugin \
     qt6-3d-scene2d-plugin \
     qt6-image-formats-plugins \
-    saga \
     libsfcgal2 \
     supervisor \
     unzip \
