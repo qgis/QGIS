@@ -58,7 +58,6 @@ RUN  apt-get update \
     libqt6webenginecore6 \
     libqt6webenginecore6-bin \
     libqt6webenginewidgets6 \
-    libspatialindex8 \
     libsqlite3-mod-spatialite \
     'libzip4|libzip5|libzip4t64' \
     lighttpd \
@@ -161,6 +160,18 @@ RUN curl -L https://github.com/PDAL/PDAL/releases/download/${PDAL_VERSION}/PDAL-
     && ninja \
     && ninja install
 
+# download spatialindex and compile it
+RUN curl -L https://github.com/libspatialindex/libspatialindex/releases/download/2.0.0/spatialindex-src-2.0.0.tar.gz --output spatialindex-src-2.0.0.tar.gz \
+    && mkdir spatialindex \
+    && tar zxf spatialindex-src-2.0.0.tar.gz -C spatialindex --strip-components=1 \
+    && rm -f spatialindex-src-2.0.0.tar.gz \
+    && mkdir -p spatialindex/build \
+    && cd spatialindex/build \
+    && cmake -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local .. \
+    && ninja \
+    && ninja install
+
+RUN 
 FROM binary-for-oracle AS binary-only
 
 RUN  apt-get update \
@@ -214,7 +225,6 @@ RUN  apt-get update \
     libqt6opengl6-dev \
     libqscintilla2-qt6-dev \
     libqt6svg6-dev \
-    libspatialindex-dev \
     libspatialite-dev \
     libsqlite3-dev \
     libsqlite3-mod-spatialite \
