@@ -860,7 +860,10 @@ class Plugins(QObject):
                 pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion
             ):
                 error = "incompatible"
-                errorDetails = f"{qgisMinimumVersion} - {qgisMaximumVersion}"
+                errorDetails = QCoreApplication.translate(
+                    "QgsPluginInstaller",
+                    f"Plugin designed for QGIS {qgisMinimumVersion} - {qgisMaximumVersion}",
+                )
         elif not os.path.exists(metadataFile):
             error = "broken"
             errorDetails = QCoreApplication.translate(
