@@ -120,10 +120,13 @@ void QgsVectorLayerChunkLoader::start()
 
 QgsVectorLayerChunkLoader::~QgsVectorLayerChunkLoader()
 {
-  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
+  if ( mFutureWatcher )
   {
     disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
-    mFutureWatcher->waitForFinished();
+    mCanceled = true;
+    mFutureWatcher->cancel();
+    if ( mFutureWatcher->isFinished() )
+      mFutureWatcher->waitForFinished();
   }
 }
 
@@ -215,6 +218,8 @@ QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( Qgs3DMapSettings *map,
 
   connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged );
 
+  mUpdateJobFactory.reset( new QgsChunkUpdaterFactory( mChunkLoaderFactory ) );
+
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
 }
 
@@ -223,6 +228,14 @@ QgsVectorLayerChunkedEntity::~QgsVectorLayerChunkedEntity()
   // cancel / wait for jobs
   cancelActiveJobs();
 }
+
+void QgsVectorLayerChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes )
+{
+  QgsChunkedEntity::updateNodes( nodes, mUpdateJobFactory.get() );
+
+  setNeedsUpdate( true );
+}
+
 
 // if the AltitudeClamping is `Absolute`, do not apply the offset
 bool QgsVectorLayerChunkedEntity::applyTerrainOffset() const
