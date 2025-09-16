@@ -67,7 +67,11 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
     void setPositions( const QVector<QVector3D> &vertices );
 
     /**
-     * @brief The BillboardAtlasData class
+     * \ingroup qgis_3d
+     * \brief Contains the billboard positions and texture information.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
      */
     struct BillboardAtlasData
     {
