@@ -476,6 +476,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
       mapLayerNode->id = destinationGroup.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( destinationGroup, component.mapLayerId );
       mapLayerNode->name = details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId, component.name );
       mapLayerNode->initiallyVisible = details.initialLayerVisibility.value( component.mapLayerId, true );
+      mapLayerNode->mapLayerId = component.mapLayerId;
 
       layerIdToTreeNode.insert( component.mapLayerId, mapLayerNode.get() );
     }
