@@ -97,6 +97,7 @@ RUN  apt-get update \
     qt6-3d-scene2d-plugin \
     qt6-image-formats-plugins \
     saga \
+    libsfcgal2 \
     supervisor \
     unzip \
     xauth \
@@ -237,6 +238,7 @@ RUN  apt-get update \
     python3-dev \
     python3-sipbuild \
     python3-pyqtbuild \
+    libsfcgal-dev \
     sip-tools \
     qmake6 \
     qt6-3d-dev \
