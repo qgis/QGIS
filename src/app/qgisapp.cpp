@@ -351,7 +351,6 @@
 #include "qgsnewmemorylayerdialog.h"
 #include "qgsnewmeshlayerdialog.h"
 #include "options/qgsoptions.h"
-#include "qgspdalalgorithms.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspluginmanager.h"
@@ -509,6 +508,9 @@
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/pdal.hpp>
+#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 5 )
+#include "qgspdalalgorithms.h"
+#endif
 #endif
 
 //
@@ -13158,7 +13160,11 @@ void QgisApp::initNativeProcessing()
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
 
+#ifdef HAVE_PDAL_QGIS
+#if PDAL_VERSION_MAJOR_INT > 1 && PDAL_VERSION_MINOR_INT >= 5
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
+#endif
+#endif
 }
 
 void QgisApp::initLayouts()

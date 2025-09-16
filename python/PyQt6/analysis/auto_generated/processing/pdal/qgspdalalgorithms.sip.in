@@ -10,6 +10,7 @@
 
 
 
+
 class QgsPdalAlgorithms : QgsProcessingProvider
 {
 %Docstring(signature="appended")
