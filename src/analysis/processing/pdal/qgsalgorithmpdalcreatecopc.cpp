@@ -22,7 +22,9 @@
 #include <QFileInfo>
 #include <QDir>
 
+#ifdef WITH_PDAL
 #include "QgisUntwine.hpp"
+#endif
 #include "qgsapplication.h"
 #include "qgspointcloudlayer.h"
 
@@ -70,8 +72,22 @@ void QgsPdalCreateCopcAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Output layers" ) ) );
 }
 
+bool QgsPdalCreateCopcAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  Q_UNUSED( parameters )
+  Q_UNUSED( context )
+  Q_UNUSED( feedback )
+
+#ifdef WITH_PDAL
+  return true;
+#else
+  throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with PDAL support enabled." ) );
+#endif
+}
+
 QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+#ifdef WITH_PDAL
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
@@ -181,6 +197,12 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT_LAYERS" ), outputLayers );
   return outputs;
+#else
+  Q_UNUSED( parameters )
+  Q_UNUSED( context )
+  Q_UNUSED( feedback )
+  throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with PDAL support enabled." ) );
+#endif
 }
 
 ///@endcond
