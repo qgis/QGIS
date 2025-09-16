@@ -30,6 +30,7 @@ class TestQObjectUniquePtr : public QObject
     void testSwap();
     void testOperatorArrow();
     void testDeleteLater();
+    void testVector();
 };
 
 void TestQObjectUniquePtr::testMemLeak()
@@ -122,6 +123,21 @@ void TestQObjectUniquePtr::testDeleteLater()
   QVERIFY( obj.isNull() );
   QVERIFY( obj2.isNull() );
 }
+
+void TestQObjectUniquePtr::testVector()
+{
+  std::vector<QObjectUniquePtr<QObject>> objects;
+
+  objects.emplace_back( new QObject )->setObjectName( "TESTA" );
+  objects.emplace_back( new QObject )->setObjectName( "TESTB" );
+
+  QVERIFY( !objects.at( 0 ).isNull() );
+  QVERIFY( !objects.at( 1 ).isNull() );
+
+  QCOMPARE( objects.at( 0 )->objectName(), "TESTA" );
+  QCOMPARE( objects.at( 1 )->objectName(), "TESTB" );
+}
+
 
 QGSTEST_MAIN( TestQObjectUniquePtr )
 #include "testqobjectuniqueptr.moc"
