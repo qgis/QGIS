@@ -35,14 +35,14 @@ sfcgal::ErrorHandler *sfcgal::errorHandler()
 }
 
 
-void sfcgal::Deleter::operator()( sfcgal::geometry *geom ) const
+void sfcgal::GeometryDeleter::operator()( sfcgal::geometry *geom ) const
 {
   sfcgal_geometry_delete( geom );
 }
 
 sfcgal::shared_geom sfcgal::make_shared_geom( sfcgal::geometry *geom )
 {
-  return sfcgal::shared_geom( geom, sfcgal::Deleter() );
+  return sfcgal::shared_geom( geom, sfcgal::GeometryDeleter() );
 }
 
 bool sfcgal::ErrorHandler::hasSucceedOrStack( QString *errorMsg, const std::source_location &location )

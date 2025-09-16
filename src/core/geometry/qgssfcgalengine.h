@@ -74,32 +74,29 @@ class QgsSfcgalGeometry;
  */
 namespace sfcgal
 {
+  // ==== SFCGAL geometry
   //! Shortcut to SFCGAL geometry
   using geometry = sfcgal_geometry_t;
 
-  /**
-   * Destroys the SFCGAL geometry \a geom, using the static QGIS
-   * SFCGAL context.
-   */
-  struct Deleter
+  //! Class used as SFCGAL geometry deleter.
+  struct GeometryDeleter
   {
-
-    /**
-    * Destroys the SFCGAL geometry \a geom, using the static QGIS
-    * SFCGAL context.
-    */
-    void CORE_EXPORT operator()( sfcgal::geometry *geom ) const;
+    //! Destroys the SFCGAL geometry \a geom, using the static QGIS SFCGAL context.
+    void CORE_EXPORT operator()( geometry *geom ) const;
   };
 
-  /**
-   * Scoped SFCGAL pointer.
-   */
-  using unique_geom = std::unique_ptr< geometry, Deleter >;
-  using shared_geom = std::shared_ptr< geometry >; // NO DELETER ==> added with function make_shared_ptr!!!!!
+  //! Unique SFCGAL geometry pointer.
+  using unique_geom = std::unique_ptr< geometry, GeometryDeleter >;
+  //! Shared SFCGAL geometry pointer.
+  using shared_geom = std::shared_ptr< geometry >; // NO DELETER ==> added with function make_shared_geom!!!!!
 
-  //! Creates a shared geometry pointer with sfcgal::Deleter
+  //! Creates a shared geometry pointer with sfcgal::GeometryDeleter
   shared_geom make_shared_geom( geometry *geom );
+} // namespace sfcgal
 
+namespace sfcgal
+{
+  // ==== SFCGAL errors
   //! Callback uses by SFCGAL lib to push error.
   int errorCallback( const char *, ... );
 
