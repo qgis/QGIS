@@ -1,0 +1,47 @@
+name: Test Nix packaging
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+      - queued_ltr_backports
+    paths:
+      - 'flake.*'
+      - 'nix/**'
+      - 'src/**'
+      - 'external/**'
+      - 'python/**'
+      - 'tests/**'
+      - 'CMakeLists.txt'
+      - '.github/workflows/test-nix.yml'
+  pull_request:
+    branches:
+      - master
+      - release-**
+      - queued_ltr_backports
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+
+      - name: Enable Magic Nix cache action
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Run tests
+        run: nix flake check --accept-flake-config
