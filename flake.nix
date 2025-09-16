@@ -19,6 +19,26 @@
       systems = [ "x86_64-linux" ];
 
       perSystem = { config, self', inputs', pkgs, system, ... }: {
+        _module.args.pkgs = import inputs.nixpkgs {
+          inherit system;
+          overlays = [
+            (final: prev: {
+              # Build with libspatialindex 2.0.0
+              # https://github.com/qgis/QGIS/pull/63196
+              libspatialindex = prev.libspatialindex.overrideAttrs (prev: rec {
+                version = "2.0.0";
+                src = final.fetchFromGitHub {
+                  owner = "libspatialindex";
+                  repo = "libspatialindex";
+                  rev = "refs/tags/${version}";
+                  hash = "sha256-hZyAXz1ddRStjZeqDf4lYkV/g0JLqLy7+GrSUh75k20=";
+                };
+              });  # end of libspatialindex
+            })
+          ];
+          config = { };
+        };
+
         packages =
           rec {
             qgis = pkgs.qt6Packages.callPackage ./nix/package.nix { };
