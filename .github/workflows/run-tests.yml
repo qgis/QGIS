@@ -52,6 +52,7 @@ jobs:
             with-grass7: OFF
             with-grass8: OFF
             with-pdf4qt: OFF
+            with-pdal: OFF
             with-sfcgal: ON
             with-compile-commands: ON
             with-model-test: ON
@@ -74,6 +75,7 @@ jobs:
             with-clazy: OFF
             with-grass7: OFF
             with-grass8: ON
+            with-pdal: ON
             with-pdf4qt: ON
             with-sfcgal: ON
             with-compile-commands: OFF
@@ -172,6 +174,7 @@ jobs:
                      --env WITH_GRASS7=${{ matrix.with-grass7 }} \
                      --env WITH_GRASS8=${{ matrix.with-grass8 }} \
                      --env WITH_PDF4QT=${{ matrix.with-pdf4qt }} \
+                     --env WITH_PDAL=${{ matrix.with-pdal }} \
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
                      --env WITH_CLAZY=${{ matrix.with-clazy }} \
                      --env WITH_SFCGAL=${{ matrix.with-sfcgal }} \
