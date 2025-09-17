@@ -92,6 +92,9 @@ etc.)
 :return: type of the geometry as a WKB type (point / linestring /
          polygon etc.)
 
+:raises QgsNotSupportedException: when working with primitive and SFCGAL
+                                  is less than 2.3.
+
 :raises QgsSfcgalException: if an error was encountered during the
                             operation
 %End
@@ -104,7 +107,8 @@ Returns type of the geometry as a OGC string in CamelCase
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+:raises QgsNotSupportedException: when working with primitive and SFCGAL
+                                  is less than 2.3.
 
 :raises QgsSfcgalException: if an error was encountered during the
                             operation
@@ -347,6 +351,8 @@ Computes the max length of ``geom``.
 :return: geometry length
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+\pre apply only on geometry
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 
@@ -652,6 +658,40 @@ null pointer is returned.
 
 :raises QgsSfcgalException: if an error was encountered during the
                             operation
+%End
+
+
+
+    static std::unique_ptr<QgsSfcgalGeometry> createCube( double size );
+%Docstring
+Create a cube primitive
+
+:param size: the cube size
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface()  const;
+%Docstring
+Converts the current primitive to geometry. Works only with primitives.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    QMatrix4x4 primitiveTransform() const;
+%Docstring
+Returns the primitive transform matrix.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
 %End
 
   protected:

@@ -29,6 +29,7 @@ SIP_IF_MODULE( HAVE_SFCGAL_SIP )
 #include "qgspoint.h"
 #include "qgslinestring.h"
 #include "qgssfcgalengine.h"
+#include <QtGui/qmatrix4x4.h>
 
 /**
  * Wraps SFCGAL geometry object.
@@ -45,7 +46,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     QgsSfcgalGeometry();
 
     /**
-     * Constructor with SFCGAL shared ptr.
+     * Constructor with SFCGAL shared ptr \a sfcgalGeom.
      *
      * Will copy the shared ptr.
      */
@@ -112,6 +113,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \return type of the geometry as a WKB type (point / linestring / polygon etc.)
      *
+     * \throws QgsNotSupportedException when working with primitive and SFCGAL is less than 2.3.
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
     Qgis::WkbType wkbType() const SIP_THROW( QgsSfcgalException );
@@ -122,7 +124,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsNotSupportedException when working with primitive and SFCGAL is less than 2.3.
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
     QString geometryType() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException ) SIP_HOLDGIL;
@@ -327,6 +329,8 @@ class CORE_EXPORT QgsSfcgalGeometry
      * \return geometry length
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \pre apply only on geometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      * \throws QgsSfcgalException if an error was encountered during the operation
@@ -581,6 +585,40 @@ class CORE_EXPORT QgsSfcgalGeometry
      */
     std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const SIP_THROW( QgsSfcgalException );
 
+    // ============= PRIMITIVE
+
+    /**
+     * Constructor with SFCGAL shared ptr \a sfcgalPrim.
+     *
+     * Will copy the shared ptr.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    SIP_SKIP QgsSfcgalGeometry( sfcgal::shared_prim sfcgalPrim, sfcgal::primitiveType type );
+
+    /**
+     * Create a cube primitive
+     * \param size the cube size
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    static std::unique_ptr<QgsSfcgalGeometry> createCube( double size ) SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Converts the current primitive to geometry. Works only with primitives.
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface() SIP_THROW( QgsSfcgalException ) const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Returns the primitive transform matrix.
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    QMatrix4x4 primitiveTransform() const SIP_THROW( QgsSfcgalException );
+
   protected:
 
     /**
@@ -589,7 +627,21 @@ class CORE_EXPORT QgsSfcgalGeometry
     void clearCache() const;
 
   private:
+    //! \return mSfcgalGeom or geometry obtains from transformed mSfcgalPrim
+    sfcgal::shared_geom workingGeom() const;
+
     sfcgal::shared_geom mSfcgalGeom;
+    bool mIsPrimitive = false;
+
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+    void setPrimitiveTranslate( const QgsVector3D &translation );
+    void setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center );
+    void setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center );
+
+    sfcgal::shared_prim mSfcgalPrim;
+    sfcgal::primitiveType mPrimType;
+    QMatrix4x4 mPrimTransform;
+#endif
 };
 
 

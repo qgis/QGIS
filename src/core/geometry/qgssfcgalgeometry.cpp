@@ -24,10 +24,12 @@
 #include <QByteArray>
 
 QgsSfcgalGeometry::QgsSfcgalGeometry()
+  : mIsPrimitive( false )
 {
 }
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry *qgsGeom )
+  : mIsPrimitive( false )
 {
   if ( qgsGeom )
   {
@@ -39,6 +41,7 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry *qgsGeom )
 }
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom )
+  : mIsPrimitive( false )
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
@@ -47,8 +50,18 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom )
 }
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_geom sfcgalGeom )
-  : mSfcgalGeom( sfcgalGeom )
+  : mSfcgalGeom( sfcgalGeom ), mIsPrimitive( false )
 {
+}
+
+QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_prim sfcgalPrim, sfcgal::primitiveType type )
+  : mIsPrimitive( true ), mPrimType( type )
+{
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  mSfcgalPrim = sfcgalPrim;
+#else
+  throw QgsNotSupportedException( QObject::tr( "This operator requires a QGIS build based on SFCGAL 2.3 or later" ) );
+#endif
 }
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsGeometry &qgsGeom )
@@ -63,7 +76,14 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom )
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  mSfcgalGeom = QgsSfcgalEngine::cloneGeometry( otherGeom.mSfcgalGeom.get(), &errorMsg );
+  mIsPrimitive = otherGeom.mIsPrimitive;
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  mPrimType = otherGeom.mPrimType;
+  if ( mIsPrimitive )
+    mSfcgalPrim = QgsSfcgalEngine::primitiveClone( otherGeom.mSfcgalPrim.get(), &errorMsg );
+  else
+#endif
+    mSfcgalGeom = QgsSfcgalEngine::cloneGeometry( otherGeom.mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 }
 
@@ -75,11 +95,35 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QString &wkt )
   THROW_ON_ERROR( &errorMsg );
 }
 
+sfcgal::shared_geom QgsSfcgalGeometry::workingGeom() const
+{
+  sfcgal::shared_geom geom;
+
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( mIsPrimitive )
+  {
+    QString errorMsg;
+    geom = QgsSfcgalEngine::primitiveAsPolyhedral( mSfcgalPrim.get(), mPrimTransform, &errorMsg );
+    THROW_ON_ERROR( &errorMsg );
+  }
+  else
+#endif
+    geom = mSfcgalGeom;
+
+  return geom;
+}
+
 
 Qgis::WkbType QgsSfcgalGeometry::wkbType() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
+
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( mIsPrimitive )
+    return Qgis::WkbType::PolyhedralSurfaceZ;
+#endif
+
   Qgis::WkbType out = QgsSfcgalEngine::wkbType( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return out;
@@ -89,8 +133,41 @@ QString QgsSfcgalGeometry::geometryType() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  QString out = QgsSfcgalEngine::geometryType( mSfcgalGeom.get(), &errorMsg );
-  THROW_ON_ERROR( &errorMsg );
+
+  QString out;
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( mIsPrimitive )
+  {
+    switch ( mPrimType )
+    {
+      case sfcgal::primitiveType::SFCGAL_TYPE_CYLINDER:
+        out = "cylinder";
+        break;
+      case sfcgal::primitiveType::SFCGAL_TYPE_SPHERE:
+        out = "sphere";
+        break;
+      case sfcgal::primitiveType::SFCGAL_TYPE_TORUS:
+        out = "torus";
+        break;
+      case sfcgal::primitiveType::SFCGAL_TYPE_BOX:
+        out = "box";
+        break;
+      case sfcgal::primitiveType::SFCGAL_TYPE_CUBE:
+        out = "cube";
+        break;
+      case sfcgal::primitiveType::SFCGAL_TYPE_CONE:
+        out = "cone";
+        break;
+      default:
+        sfcgal::errorHandler()->addText( QStringLiteral( "Type '%1' is unknown." ).arg( mPrimType ) );
+    }
+  }
+  else
+#endif
+  {
+    out = QgsSfcgalEngine::geometryType( mSfcgalGeom.get(), &errorMsg );
+    THROW_ON_ERROR( &errorMsg );
+  }
   return out;
 }
 
@@ -118,7 +195,9 @@ QByteArray QgsSfcgalGeometry::asWkb( QgsAbstractGeometry::WkbFlags ) const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  QByteArray wkbArray = QgsSfcgalEngine::toWkb( mSfcgalGeom.get(), &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  QByteArray wkbArray = QgsSfcgalEngine::toWkb( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   return wkbArray;
@@ -129,7 +208,8 @@ QString QgsSfcgalGeometry::asWkt( int precision ) const
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
 
-  QString out = QgsSfcgalEngine::toWkt( mSfcgalGeom.get(), precision, &errorMsg );
+  sfcgal::shared_geom geom = workingGeom();
+  QString out = QgsSfcgalEngine::toWkt( geom.get(), precision, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   return out;
@@ -139,7 +219,9 @@ std::unique_ptr<QgsAbstractGeometry> QgsSfcgalGeometry::asQgisGeometry() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  std::unique_ptr<QgsAbstractGeometry> out = QgsSfcgalEngine::toAbstractGeometry( mSfcgalGeom.get(), &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  std::unique_ptr<QgsAbstractGeometry> out = QgsSfcgalEngine::toAbstractGeometry( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return out;
 }
@@ -148,7 +230,9 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::boundary() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom boundary = QgsSfcgalEngine::boundary( mSfcgalGeom.get(), &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom boundary = QgsSfcgalEngine::boundary( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( boundary, &errorMsg );
@@ -163,8 +247,21 @@ bool QgsSfcgalGeometry::operator==( const QgsSfcgalGeometry &other ) const
   throw QgsNotSupportedException( QObject::tr( "This operator requires a QGIS build based on SFCGAL 2.1 or later" ) );
 #else
   QString errorMsg;
-  bool out = false;
-  out = QgsSfcgalEngine::isEqual( mSfcgalGeom.get(), other.mSfcgalGeom.get(), 0.0, &errorMsg );
+  bool out;
+
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( mIsPrimitive != other.mIsPrimitive )
+    return false;
+
+  if ( mIsPrimitive )
+  {
+    out = QgsSfcgalEngine::primitiveIsEqual( mSfcgalPrim.get(), other.mSfcgalPrim.get(), -1.0, &errorMsg );
+  }
+  else
+#endif
+  {
+    out = QgsSfcgalEngine::isEqual( mSfcgalGeom.get(), other.mSfcgalGeom.get(), -1.0, &errorMsg );
+  }
   THROW_ON_ERROR( &errorMsg );
   return out;
 #endif
@@ -179,10 +276,24 @@ bool QgsSfcgalGeometry::fuzzyEqual( const QgsSfcgalGeometry &other, double epsil
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  bool out = false;
-  out = QgsSfcgalEngine::isEqual( mSfcgalGeom.get(), other.mSfcgalGeom.get(), epsilon, &errorMsg );
-  THROW_ON_ERROR( &errorMsg );
 
+  bool out;
+
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( mIsPrimitive != other.mIsPrimitive )
+    return false;
+
+  if ( mIsPrimitive )
+  {
+    out = QgsSfcgalEngine::primitiveIsEqual( mSfcgalPrim.get(), other.mSfcgalPrim.get(), epsilon, &errorMsg );
+  }
+  else
+#endif
+  {
+    out = QgsSfcgalEngine::isEqual( mSfcgalGeom.get(), other.mSfcgalGeom.get(), epsilon, &errorMsg );
+  }
+
+  THROW_ON_ERROR( &errorMsg );
   return out;
 }
 
@@ -190,6 +301,10 @@ int QgsSfcgalGeometry::dimension() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
+
+  if ( mIsPrimitive )
+    return 3;
+
   int result = QgsSfcgalEngine::dimension( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
@@ -211,6 +326,9 @@ int QgsSfcgalGeometry::partCount() const
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
 
+  if ( mIsPrimitive )
+    return 1;
+
   int out = QgsSfcgalEngine::partCount( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
@@ -221,6 +339,10 @@ bool QgsSfcgalGeometry::addZValue( double zValue )
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
+
+  if ( mIsPrimitive )
+    throw QgsNotSupportedException( QObject::tr( "Operation 'addZValue' does not apply to primitive." ) );
+
   const bool added = QgsSfcgalEngine::addZValue( mSfcgalGeom.get(), zValue, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
@@ -233,6 +355,10 @@ bool QgsSfcgalGeometry::addMValue( double mValue )
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
+
+  if ( mIsPrimitive )
+    throw QgsNotSupportedException( QObject::tr( "Operation 'addMValue' does not apply to primitive." ) );
+
   const bool added = QgsSfcgalEngine::addMValue( mSfcgalGeom.get(), mValue, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
@@ -245,6 +371,10 @@ bool QgsSfcgalGeometry::dropZValue()
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
+
+  if ( mIsPrimitive )
+    throw QgsNotSupportedException( QObject::tr( "Operation 'dropZValue' does not apply to primitive." ) );
+
   const bool dropped = QgsSfcgalEngine::dropZValue( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
@@ -257,6 +387,10 @@ bool QgsSfcgalGeometry::dropMValue()
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
+
+  if ( mIsPrimitive )
+    throw QgsNotSupportedException( QObject::tr( "Operation 'dropMValue' does not apply to primitive." ) );
+
   const bool dropped = QgsSfcgalEngine::dropMValue( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
@@ -269,6 +403,10 @@ void QgsSfcgalGeometry::swapXy()
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
+
+  if ( mIsPrimitive )
+    throw QgsNotSupportedException( QObject::tr( "Operation 'swapXy' does not apply to primitive." ) );
+
   QgsSfcgalEngine::swapXy( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
@@ -279,6 +417,10 @@ bool QgsSfcgalGeometry::isValid() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
+
+  if ( mIsPrimitive )
+    return true;
+
   const bool valid = QgsSfcgalEngine::isValid( mSfcgalGeom.get(), &errorMsg, nullptr );
   THROW_ON_ERROR( &errorMsg );
   return valid;
@@ -292,6 +434,10 @@ bool QgsSfcgalGeometry::isSimple() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
+
+  if ( mIsPrimitive )
+    return true;
+
   bool result = QgsSfcgalEngine::isSimple( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return result;
@@ -301,13 +447,19 @@ QgsPoint QgsSfcgalGeometry::centroid() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  return QgsSfcgalEngine::centroid( mSfcgalGeom.get(), &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  return QgsSfcgalEngine::centroid( geom.get(), &errorMsg );
 }
 
 bool QgsSfcgalGeometry::isEmpty() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
+
+  if ( mIsPrimitive )
+    return false;
+
   bool result = QgsSfcgalEngine::isEmpty( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
@@ -318,10 +470,23 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::translate( const QgsVector
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::translate( mSfcgalGeom.get(), translation, &errorMsg );
-  THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom;
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( mIsPrimitive )
+  {
+    sfcgal::shared_prim prim = QgsSfcgalEngine::primitiveClone( mSfcgalPrim.get(), &errorMsg );
+    resultGeom = QgsSfcgalEngine::toSfcgalGeometry( prim, mPrimType, &errorMsg );
+    resultGeom->setPrimitiveTranslate( translation );
+  }
+  else
+#endif
+  {
+    sfcgal::shared_geom result = QgsSfcgalEngine::translate( mSfcgalGeom.get(), translation, &errorMsg );
+    THROW_ON_ERROR( &errorMsg );
+    resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  }
+
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -330,10 +495,23 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::scale( const QgsVector3D &
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::scale( mSfcgalGeom.get(), scaleFactor, center, &errorMsg );
-  THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom;
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( mIsPrimitive )
+  {
+    sfcgal::shared_prim prim = QgsSfcgalEngine::primitiveClone( mSfcgalPrim.get(), &errorMsg );
+    resultGeom = QgsSfcgalEngine::toSfcgalGeometry( prim, mPrimType, &errorMsg );
+    resultGeom->setPrimitiveScale( scaleFactor, center );
+  }
+  else
+#endif
+  {
+    sfcgal::shared_geom result = QgsSfcgalEngine::scale( mSfcgalGeom.get(), scaleFactor, center, &errorMsg );
+    THROW_ON_ERROR( &errorMsg );
+    resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  }
+
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -342,10 +520,24 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::rotate2D( double angle, co
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::rotate2D( mSfcgalGeom.get(), angle, center, &errorMsg );
-  THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom;
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( mIsPrimitive )
+  {
+    sfcgal::shared_prim prim = QgsSfcgalEngine::primitiveClone( mSfcgalPrim.get(), &errorMsg );
+    resultGeom = QgsSfcgalEngine::toSfcgalGeometry( prim, mPrimType, &errorMsg );
+    resultGeom->setPrimitiveRotation( angle, { 0.0, 0.0, 1.0 }, center );
+  }
+  else
+#endif
+  {
+    sfcgal::shared_geom result = QgsSfcgalEngine::rotate2D( mSfcgalGeom.get(), angle, center, &errorMsg );
+    THROW_ON_ERROR( &errorMsg );
+
+    resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  }
+
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -354,10 +546,24 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::rotate3D( double angle, co
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::rotate3D( mSfcgalGeom.get(), angle, axisVector, center, &errorMsg );
-  THROW_ON_ERROR( &errorMsg );
 
-  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  std::unique_ptr<QgsSfcgalGeometry> resultGeom;
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( mIsPrimitive )
+  {
+    sfcgal::shared_prim prim = QgsSfcgalEngine::primitiveClone( mSfcgalPrim.get(), &errorMsg );
+    resultGeom = QgsSfcgalEngine::toSfcgalGeometry( prim, mPrimType, &errorMsg );
+    resultGeom->setPrimitiveRotation( angle, axisVector, center );
+  }
+  else
+#endif
+  {
+    sfcgal::shared_geom result = QgsSfcgalEngine::rotate3D( mSfcgalGeom.get(), angle, axisVector, center, &errorMsg );
+    THROW_ON_ERROR( &errorMsg );
+
+    resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  }
+
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
@@ -366,9 +572,20 @@ double QgsSfcgalGeometry::area() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  double result = QgsSfcgalEngine::area( mSfcgalGeom.get(), &errorMsg );
-  THROW_ON_ERROR( &errorMsg );
 
+  double result;
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( mIsPrimitive )
+  {
+    throw QgsSfcgalException( "Not implemented." );
+  }
+  else
+#endif
+  {
+    result = QgsSfcgalEngine::area( mSfcgalGeom.get(), &errorMsg );
+  }
+
+  THROW_ON_ERROR( &errorMsg );
   return result;
 }
 
@@ -376,6 +593,10 @@ double QgsSfcgalGeometry::length() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
+
+  if ( mIsPrimitive )
+    throw QgsNotSupportedException( QObject::tr( "Operation 'length' does not apply to primitive." ) );
+
   double result = QgsSfcgalEngine::length( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
@@ -389,7 +610,8 @@ bool QgsSfcgalGeometry::intersects( const QgsAbstractGeometry *otherGeom ) const
   sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( otherGeom, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  bool out = QgsSfcgalEngine::intersects( mSfcgalGeom.get(), otherShared.get(), &errorMsg );
+  sfcgal::shared_geom geom = workingGeom();
+  bool out = QgsSfcgalEngine::intersects( geom.get(), otherShared.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return out;
 }
@@ -398,7 +620,9 @@ bool QgsSfcgalGeometry::intersects( const QgsSfcgalGeometry &otherGeom ) const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  bool out = QgsSfcgalEngine::intersects( mSfcgalGeom.get(), otherGeom.mSfcgalGeom.get(), &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  bool out = QgsSfcgalEngine::intersects( geom.get(), otherGeom.workingGeom().get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return out;
 }
@@ -410,7 +634,8 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsAbs
   sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( otherGeom, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  sfcgal::shared_geom result = QgsSfcgalEngine::intersection( mSfcgalGeom.get(), otherShared.get(), &errorMsg );
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::intersection( geom.get(), otherShared.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -422,7 +647,9 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::intersection( const QgsSfc
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::intersection( mSfcgalGeom.get(), otherGeom.mSfcgalGeom.get(), &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::intersection( geom.get(), otherGeom.workingGeom().get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -435,7 +662,9 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::combine( const QVector<Qgs
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
   QVector<sfcgal::shared_geom> sfcgalGeomList;
-  sfcgalGeomList.append( mSfcgalGeom );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgalGeomList.append( geom );
   for ( QVector<QgsAbstractGeometry *>::const_iterator ite = geomList.constBegin(); ite != geomList.constEnd(); ++ite )
   {
     sfcgal::shared_geom otherShared = QgsSfcgalEngine::fromAbstractGeometry( *ite, &errorMsg );
@@ -458,7 +687,8 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::difference( const QgsAbstr
   sfcgal::shared_geom otherSharedr = QgsSfcgalEngine::fromAbstractGeometry( otherGeom, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
-  sfcgal::shared_geom result = QgsSfcgalEngine::difference( mSfcgalGeom.get(), otherSharedr.get(), &errorMsg );
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::difference( geom.get(), otherSharedr.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -471,7 +701,8 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::difference( const QgsSfcga
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
 
-  sfcgal::shared_geom result = QgsSfcgalEngine::difference( mSfcgalGeom.get(), otherGeom.mSfcgalGeom.get(), &errorMsg );
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::difference( geom.get(), otherGeom.workingGeom().get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -483,7 +714,9 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::triangulate() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::triangulate( mSfcgalGeom.get(), &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::triangulate( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -495,7 +728,9 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::convexHull() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::convexHull( mSfcgalGeom.get(), &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::convexHull( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -507,7 +742,9 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::envelope() const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::envelope( mSfcgalGeom.get(), &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::envelope( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -519,7 +756,9 @@ bool QgsSfcgalGeometry::covers( const QgsSfcgalGeometry &otherGeom ) const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  bool out = QgsSfcgalEngine::covers( mSfcgalGeom.get(), otherGeom.mSfcgalGeom.get(), &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  bool out = QgsSfcgalEngine::covers( geom.get(), otherGeom.workingGeom().get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return out;
 }
@@ -529,7 +768,8 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::buffer3D( double radius, i
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
 
-  sfcgal::shared_geom result = QgsSfcgalEngine::buffer3D( mSfcgalGeom.get(), radius, segments, joinStyle3D, &errorMsg );
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::buffer3D( geom.get(), radius, segments, joinStyle3D, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -542,7 +782,8 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::buffer2D( double radius, i
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
 
-  sfcgal::shared_geom result = QgsSfcgalEngine::buffer2D( mSfcgalGeom.get(), radius, segments, joinStyle, &errorMsg );
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::buffer2D( geom.get(), radius, segments, joinStyle, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -554,7 +795,9 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::simplify( double tolerance
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::simplify( mSfcgalGeom.get(), tolerance, preserveTopology, &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::simplify( geom.get(), tolerance, preserveTopology, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -566,7 +809,9 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::extrude( const QgsVector3D
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::extrude( mSfcgalGeom.get(), extrusion, &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::extrude( geom.get(), extrusion, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
@@ -578,12 +823,88 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::approximateMedialAxis() co
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
-  sfcgal::shared_geom result = QgsSfcgalEngine::approximateMedialAxis( mSfcgalGeom.get(), &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+  sfcgal::shared_geom result = QgsSfcgalEngine::approximateMedialAxis( geom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 }
+
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::createCube( double size )
+{
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+  sfcgal::shared_prim result = QgsSfcgalEngine::createCube( size, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+
+  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, sfcgal::primitiveType::SFCGAL_TYPE_CUBE, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+  return resultGeom;
+#else
+  throw QgsNotSupportedException( QObject::tr( "This operator requires a QGIS build based on SFCGAL 2.3 or later" ) );
+#endif
+}
+
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::primitiveAsPolyhedralSurface() const
+{
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( !mIsPrimitive )
+    throw QgsSfcgalException( "Need primitive geometry to operate." );
+
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+  sfcgal::shared_prim result = QgsSfcgalEngine::primitiveAsPolyhedral( mSfcgalPrim.get(), mPrimTransform, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+
+  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+  return resultGeom;
+#else
+  throw QgsNotSupportedException( QObject::tr( "This operator requires a QGIS build based on SFCGAL 2.3 or later" ) );
+#endif
+}
+
+QMatrix4x4 QgsSfcgalGeometry::primitiveTransform() const
+{
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( !mIsPrimitive )
+    throw QgsSfcgalException( "Need primitive geometry to operate." );
+
+  return mPrimTransform;
+#else
+  throw QgsNotSupportedException( QObject::tr( "This operator requires a QGIS build based on SFCGAL 2.3 or later" ) );
+#endif
+}
+
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+void QgsSfcgalGeometry::setPrimitiveTranslate( const QgsVector3D &translation )
+{
+  mPrimTransform.translate( mPrimTransform.column( 3 ).toVector3D() + translation.toVector3D() );
+}
+
+void QgsSfcgalGeometry::setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center )
+{
+  QVector3D qCenter( center.x(), center.y(), center.z() );
+  QVector3D prevTrans = mPrimTransform.column( 3 ).toVector3D();
+  mPrimTransform.translate( prevTrans - qCenter );
+  mPrimTransform.scale( scaleFactor.toVector3D() );
+  mPrimTransform.translate( prevTrans + qCenter );
+}
+
+void QgsSfcgalGeometry::setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center )
+{
+  QVector3D qCenter( center.x(), center.y(), center.z() );
+  QVector3D prevTrans = mPrimTransform.column( 3 ).toVector3D();
+  mPrimTransform.translate( prevTrans - qCenter );
+  // TODO: need to merge previous rotation values with the new ones
+  mPrimTransform.rotate( QQuaternion::fromAxisAndAngle( axisVector.toVector3D(), angle ) );
+  mPrimTransform.translate( prevTrans + qCenter );
+}
+
+#endif
 
 #endif

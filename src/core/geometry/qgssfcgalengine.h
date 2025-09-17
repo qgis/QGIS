@@ -30,6 +30,7 @@
 #include "qgsgeometry.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
+#include <QtGui/qmatrix4x4.h>
 
 class QgsGeometry;
 class QgsSfcgalGeometry;
@@ -92,6 +93,37 @@ namespace sfcgal
 
   //! Creates a shared geometry pointer with sfcgal::GeometryDeleter
   shared_geom make_shared_geom( geometry *geom );
+} // namespace sfcgal
+
+namespace sfcgal
+{
+  // ==== SFCGAL primitive
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  //! Shortcut to SFCGAL primitive
+  using primitive = sfcgal_primitive_t;
+  //! Shortcut to SFCGAL primitive type
+  using primitiveType = sfcgal_primitive_type_t;
+#else
+  //! Shortcut to SFCGAL primitive
+  using primitive = int;
+  //! Shortcut to SFCGAL primitive type
+  using primitiveType = int;
+#endif
+
+  //! Class used as SFCGAL primitive deleter.
+  struct PrimitiveDeleter
+  {
+    //! Destroys the SFCGAL primitive \a prim, using the static QGIS SFCGAL context.
+    void CORE_EXPORT operator()( primitive *prim ) const;
+  };
+
+  //! Unique SFCGAL primitive pointer.
+  using unique_prim = std::unique_ptr< primitive, PrimitiveDeleter >;
+  //! Shared SFCGAL primitive pointer.
+  using shared_prim = std::shared_ptr< primitive >; // NO DELETER ==> added with function make_shared_prim!!!!!
+
+  //! Creates a shared primitive pointer with sfcgal::PrimitiveDeleter
+  shared_prim make_shared_prim( primitive *prim );
 } // namespace sfcgal
 
 namespace sfcgal
@@ -337,7 +369,7 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    static bool isEqual( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, double tolerance = 0.0, QString *errorMsg = nullptr );
+    static bool isEqual( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, double tolerance = -1.0, QString *errorMsg = nullptr );
 
     /**
      * Checks if \a geom is empty.
@@ -615,6 +647,53 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param errorMsg Error message returned by SFGCAL
      */
     static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
+
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+
+    /**
+     * Creates a SFGAL geometry from a shared SFCGAL primitive (from SFCGAL library).
+     *
+     * \param prim primitive to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static std::unique_ptr< QgsSfcgalGeometry > toSfcgalGeometry( sfcgal::shared_prim &prim, sfcgal::primitiveType type, QString *errorMsg = nullptr );
+
+    /**
+     * Create a cube primitive
+     * \param size the cube size
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_prim createCube( double size, QString *errorMsg = nullptr );
+
+    /**
+     * Clones \a prim.
+     *
+     * \param prim primitive to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_prim primitiveClone( const sfcgal::primitive *prim, QString *errorMsg = nullptr );
+
+    /**
+     * Convert \a prim to Polyhedral geometry
+     *
+     * \param prim primitive to perform the operation
+     * \param mat a transformation matrix
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom primitiveAsPolyhedral( const sfcgal::primitive *prim, const QMatrix4x4 &mat = QMatrix4x4(), QString *errorMsg = nullptr );
+
+    /**
+     * Checks if \a primA and \a primB are equal.
+     *
+     * \param primA first primitive to perform the operation
+     * \param primB second primitive to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
+     */
+    static bool primitiveIsEqual( const sfcgal::primitive *primA, const sfcgal::primitive *primB, double tolerance = 0.0, QString *errorMsg = nullptr );
+
+#endif
 };
 
 /// @cond PRIVATE
