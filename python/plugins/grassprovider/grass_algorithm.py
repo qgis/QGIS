@@ -285,7 +285,9 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
                 parameter = getParameterFromString(param_string, "GrassAlgorithm")
             except Exception as e:
                 QgsMessageLog.logMessage(
-                    self.tr("Could not open GRASS GIS algorithm: {0}").format(self._name),
+                    self.tr("Could not open GRASS GIS algorithm: {0}").format(
+                        self._name
+                    ),
                     self.tr("Processing"),
                     Qgis.MessageLevel.Critical,
                 )
