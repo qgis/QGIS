@@ -20,6 +20,7 @@
 
 #include <QList>
 #include "qgsnetworkreply.h"
+#include "qgis.h"
 #include "qgis_sip.h"
 #include <QStringList>
 #include <QNetworkAccessManager>
