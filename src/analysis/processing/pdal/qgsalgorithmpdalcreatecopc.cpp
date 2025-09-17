@@ -22,7 +22,7 @@
 #include <QFileInfo>
 #include <QDir>
 
-#ifdef WITH_PDAL
+#ifdef HAVE_PDAL_QGIS
 #include "QgisUntwine.hpp"
 #endif
 #include "qgsapplication.h"
@@ -78,7 +78,7 @@ bool QgsPdalCreateCopcAlgorithm::prepareAlgorithm( const QVariantMap &parameters
   Q_UNUSED( context )
   Q_UNUSED( feedback )
 
-#ifdef WITH_PDAL
+#ifdef HAVE_PDAL_QGIS
   return true;
 #else
   throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with PDAL support enabled." ) );
@@ -87,7 +87,7 @@ bool QgsPdalCreateCopcAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-#ifdef WITH_PDAL
+#ifdef HAVE_PDAL_QGIS
   const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
