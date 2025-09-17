@@ -4567,7 +4567,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    "gdal_merge",
                     "-ot Float32 -of GTiff "
                     + "-o "
                     + outdir
@@ -4586,7 +4586,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    "gdal_merge",
                     "-separate -ot Float32 -of GTiff "
                     + "-o "
                     + outdir
@@ -4610,7 +4610,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    "gdal_merge",
                     "-ot Float32 -of GTiff -tap -ps 0.1 0.1 "
                     + "-o "
                     + outdir
@@ -4634,7 +4634,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    "gdal_merge",
                     "-a_nodata -9999.0 -ot Float32 -of GTiff "
                     + "-o "
                     + outdir
