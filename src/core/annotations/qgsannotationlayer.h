@@ -241,6 +241,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QgsMapLayerRef mLinkedLayer;
 
     friend class QgsAnnotationLayerRenderer;
+    friend class QgsAnnotationLayerChunkLoader;
 
 };
 

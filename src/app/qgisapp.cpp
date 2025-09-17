@@ -156,6 +156,7 @@
 #include "qgsmeshlayer3drendererwidget.h"
 #include "qgspointcloudlayer3drendererwidget.h"
 #include "qgstiledscenelayer3drendererwidget.h"
+#include "qgsannotationlayer3drendererwidget.h"
 #include "qgs3dapputils.h"
 #include "qgs3doptions.h"
 #include "qgsmapviewsmanager.h"
@@ -1329,12 +1330,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   registerMapLayerPropertiesFactory( new QgsVectorLayerDigitizingPropertiesFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsPointCloudRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsTiledSceneRendererWidgetFactory( this ) );
-#ifdef HAVE_3D
-  registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
-  registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
-  registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
-  registerMapLayerPropertiesFactory( new QgsTiledSceneLayer3DRendererWidgetFactory( this ) );
-#endif
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsRasterElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsVectorElevationPropertiesWidgetFactory( this ) );
@@ -1342,6 +1337,13 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   registerMapLayerPropertiesFactory( new QgsMeshElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsLayerTreeGroupPropertiesWidgetFactory( this ) );
+#ifdef HAVE_3D
+  registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsTiledSceneLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsAnnotationLayer3DRendererWidgetFactory( this ) );
+#endif
 
   mMapStyleWidget = new QgsLayerStylingWidget( mMapCanvas, mInfoBar, mMapLayerPanelFactories );
   mMapStylingDock->setWidget( mMapStyleWidget );
@@ -6516,6 +6518,14 @@ bool QgisApp::addProject( const QString &projectFile )
       }
     }
 
+#ifdef HAVE_3D
+    // upgrade projects with no 3d renderer for main annotation layer
+    if ( !QgsProject::instance()->mainAnnotationLayer()->renderer3D() )
+    {
+      QgsAppLayerHandling::postProcessAddedLayers( { QgsProject::instance()->mainAnnotationLayer() } );
+    }
+#endif
+
     emit projectRead(); // let plug-ins know that we've read in a new
     // project so that they can check any project
     // specific plug-in state
@@ -7953,6 +7963,7 @@ void QgisApp::createAnnotationLayer()
   // layer should be created at top of layer tree
   QgsProject::instance()->addMapLayer( layer, false );
   QgsProject::instance()->layerTreeRoot()->insertLayer( 0, layer );
+  QgsAppLayerHandling::postProcessAddedLayers( { layer } );
 }
 
 void QgisApp::setCadDockVisible( bool visible )

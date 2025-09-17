@@ -31,6 +31,7 @@
 #ifdef HAVE_3D
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgstiledscenelayer3drenderer.h"
+#include "qgsannotationlayer3drenderer.h"
 #endif
 #include "canvas/qgscanvasrefreshblocker.h"
 #include "qgsproviderutils.h"
@@ -179,6 +180,15 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
     }
 
     case Qgis::LayerType::Annotation:
+#ifdef HAVE_3D
+      if ( !layer->renderer3D() )
+      {
+        auto renderer3D = std::make_unique<QgsAnnotationLayer3DRenderer>();
+        layer->setRenderer3D( renderer3D.release() );
+      }
+#endif
+      break;
+
     case Qgis::LayerType::Group:
       break;
 
@@ -327,11 +337,14 @@ void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> &la
         }
         break;
       }
+      case Qgis::LayerType::Annotation:
+        postProcessAddedLayer( layer );
+        break;
+
       case Qgis::LayerType::Raster:
       case Qgis::LayerType::Plugin:
       case Qgis::LayerType::Mesh:
       case Qgis::LayerType::VectorTile:
-      case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
       case Qgis::LayerType::TiledScene:

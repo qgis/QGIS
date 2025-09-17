@@ -56,7 +56,11 @@
 #include "qgspointlightsettings.h"
 #include "qgsphongtexturedmaterialsettings.h"
 #include "qgsdemterraingenerator.h"
-
+#include "qgsbillboardgeometry.h"
+#include "qgspoint3dbillboardmaterial.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationmarkeritem.h"
+#include "qgsannotationlayer3drenderer.h"
 #include <QFileInfo>
 #include <QDir>
 #include <QSignalSpy>
@@ -101,6 +105,7 @@ class TestQgs3DRendering : public QgsTest
     void testFilteredRuleBasedRenderer();
     void testAnimationExport();
     void testBillboardRendering();
+    void testTexturedBillboardRendering();
     void testInstancedRendering();
     void testInstancedRenderingClipping();
     void testFilteredFlatTerrain();
@@ -111,6 +116,7 @@ class TestQgs3DRendering : public QgsTest
     void testDebugMap();
     void test3DSceneExporter();
     void test3DSceneExporterBig();
+    void testAnnotationLayerBillboards();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -1914,6 +1920,104 @@ void TestQgs3DRendering::testBillboardRendering()
   QGSVERIFYIMAGECHECK( "billboard_rendering_2", "billboard_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
+void TestQgs3DRendering::testTexturedBillboardRendering()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( scene );
+
+  // create a texture atlas with three textures
+  QImage image( 1000, 1000, QImage::Format_ARGB32_Premultiplied );
+  image.fill( QColor( 255, 255, 255 ) );
+  QPainter p( &image );
+  p.setPen( Qt::NoPen );
+  p.setBrush( QBrush( QColor( 0, 255, 0 ) ) );
+  p.drawRect( QRect( 100, 200, 50, 75 ) );
+
+  p.setBrush( QBrush( QColor( 255, 100, 100 ) ) );
+  p.drawRect( QRect( 500, 700, 90, 135 ) );
+
+  p.setBrush( QBrush( QColor( 100, 100, 255 ) ) );
+  p.drawRect( QRect( 0, 900, 170, 45 ) );
+
+  p.end();
+
+  QVector< QgsBillboardGeometry::BillboardAtlasData > billboardPositions;
+
+  QgsBillboardGeometry::BillboardAtlasData vertex;
+  vertex.position = QVector3D( 0, 0, 500 );
+  vertex.textureAtlasOffset = QVector2D( 0.1, 0.725 );
+  vertex.textureAtlasSize = QVector2D( 0.05, 0.075 );
+  billboardPositions.append( vertex );
+
+  vertex.position = QVector3D( 600, 0, 300 );
+  vertex.textureAtlasOffset = QVector2D( 0.1, 0.725 );
+  vertex.textureAtlasSize = QVector2D( 0.05, 0.075 );
+  billboardPositions.append( vertex );
+
+  vertex.position = QVector3D( 0, 500, 500 );
+  vertex.textureAtlasOffset = QVector2D( 0.5, 0.165 );
+  vertex.textureAtlasSize = QVector2D( 0.09, 0.135 );
+  billboardPositions.append( vertex );
+
+  vertex.position = QVector3D( 0, -500, 400 );
+  vertex.textureAtlasOffset = QVector2D( 0, 0.055 );
+  vertex.textureAtlasSize = QVector2D( 0.17, 0.045 );
+  billboardPositions.append( vertex );
+
+  vertex.position = QVector3D( -500, -800, 500 );
+  vertex.textureAtlasOffset = QVector2D( 0, 0.055 );
+  vertex.textureAtlasSize = QVector2D( 0.17, 0.045 );
+  billboardPositions.append( vertex );
+
+  QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
+  billboardGeometry->setBillboardData( billboardPositions );
+
+  Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
+  billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
+  billboardGeometryRenderer->setGeometry( billboardGeometry );
+  billboardGeometryRenderer->setVertexCount( billboardGeometry->count() );
+
+  QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::Mode::AtlasTexture );
+  billboardMaterial->setTexture2DFromImage( image );
+
+  Qt3DCore::QEntity *billboardEntity = new Qt3DCore::QEntity;
+  billboardEntity->addComponent( billboardMaterial );
+  billboardEntity->addComponent( billboardGeometryRenderer );
+  billboardEntity->setParent( entity );
+
+  scene->finalizeNewEntity( entity );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "billboard_atlas_rendering_1", "billboard_atlas_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // more perspective look
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+
+  QGSVERIFYIMAGECHECK( "billboard_atlas_rendering_2", "billboard_atlas_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
 void TestQgs3DRendering::testEpsg4978LineRendering()
 {
   QgsProject p;
@@ -2575,6 +2679,86 @@ void TestQgs3DRendering::test3DSceneExporterBig()
 
   delete scene;
   mapSettings.setLayers( {} );
+}
+
+void TestQgs3DRendering::testAnnotationLayerBillboards()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto annotationLayer = std::make_unique<QgsAnnotationLayer>( "test", QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
+
+  auto marker1 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 1000, 1000 ) );
+  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  markerSymbol->setColor( QColor( 255, 0, 0 ) );
+  markerSymbol->setSize( 4 );
+  QgsSimpleMarkerSymbolLayer *sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
+  sl->setStrokeColor( QColor( 0, 0, 255 ) );
+  sl->setStrokeWidth( 2 );
+  marker1->setSymbol( markerSymbol );
+  annotationLayer->addItem( marker1.release() );
+
+  auto marker2 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 1000, 2000 ) );
+  markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  markerSymbol->setColor( QColor( 0, 255, 0 ) );
+  markerSymbol->setSize( 20 );
+  sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
+  sl->setStrokeColor( QColor( 255, 0, 255 ) );
+  sl->setStrokeWidth( 2 );
+  marker2->setSymbol( markerSymbol );
+  annotationLayer->addItem( marker2.release() );
+
+  auto marker3 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 2000, 2000 ) );
+  markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  markerSymbol->setColor( QColor( 0, 0, 255 ) );
+  markerSymbol->setSize( 30 );
+  sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
+  sl->setStrokeColor( QColor( 0, 255, 255 ) );
+  sl->setStrokeWidth( 2 );
+  marker3->setSymbol( markerSymbol );
+  annotationLayer->addItem( marker3.release() );
+
+  auto renderer = std::make_unique< QgsAnnotationLayer3DRenderer >();
+
+  annotationLayer->setRenderer3D( renderer->clone() );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << annotationLayer.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "annotation_billboard_rendering_1", "annotation_billboard_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // more perspective look, with z offset
+  renderer->setZOffset( 600 );
+  renderer->setShowCalloutLines( true );
+  renderer->setCalloutLineColor( QColor( 255, 255, 255 ) );
+  renderer->setCalloutLineWidth( 8 );
+  annotationLayer->setRenderer3D( renderer->clone() );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+
+  QGSVERIFYIMAGECHECK( "annotation_billboard_rendering_2", "annotation_billboard_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

@@ -19,6 +19,7 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
 
+#include "qgis_3d.h"
 #include "qgsmaterial.h"
 
 #define SIP_NO_FILE
@@ -30,16 +31,32 @@ class Qgs3DRenderContext;
  * \ingroup qgis_3d
  * \brief Material of the billboard rendering for points in 3D map view.
  *
+ * This material is designed for use with the QgsBillboardGeometry class providing the billboard geometry.
+ *
  * \note Not available in Python bindings
  *
  * \since QGIS 3.10
  */
-class QgsPoint3DBillboardMaterial : public QgsMaterial
+class _3D_EXPORT QgsPoint3DBillboardMaterial : public QgsMaterial
 {
     Q_OBJECT
 
   public:
-    QgsPoint3DBillboardMaterial();
+    /**
+     * Material modes.
+     *
+     * \since QGIS 4.0
+     */
+    enum class Mode
+    {
+      SingleTexture, //!< Use a single repeated texture for all billboards. Billboard positions should be set using QgsBillboardGeometry::setPositions().
+      AtlasTexture,  //!< Use a texture atlas, so each billboard has a different texture. Billboard positions and texture data should be set using QgsBillboardGeometry::setBillboardData().
+    };
+
+    /**
+     * Constructor for QgsPoint3DBillboardMaterial, using the specified \a mode.
+     */
+    QgsPoint3DBillboardMaterial( Mode mode = Mode::SingleTexture );
     ~QgsPoint3DBillboardMaterial() override;
 
     //! Set the billboard size.
