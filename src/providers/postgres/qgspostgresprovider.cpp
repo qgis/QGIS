@@ -1206,7 +1206,7 @@ bool QgsPostgresProvider::loadFields()
 
 void QgsPostgresProvider::setEditorWidgets()
 {
-  if ( !QgsPostgresUtils::tableExists( connectionRO(), EDITOR_WIDGET_STYLES_TABLE ) )
+  if ( !QgsPostgresUtils::tableExists( connectionRO(), QStringLiteral( "public" ), EDITOR_WIDGET_STYLES_TABLE ) )
   {
     return;
   }
@@ -5212,11 +5212,11 @@ bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString
     return false;
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) )
   {
     return false;
   }
-  else if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  else if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
   {
     return false;
   }
@@ -5229,7 +5229,7 @@ bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString
   const QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
 
   const QString checkQuery = QString( "SELECT styleName"
-                                      " FROM layer_styles"
+                                      " FROM public.layer_styles"
                                       " WHERE f_table_catalog=%1"
                                       " AND f_table_schema=%2"
                                       " AND f_table_name=%3"
@@ -5272,7 +5272,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
     return false;
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) )
   {
     if ( !QgsPostgresUtils::createStylesTable( conn, QStringLiteral( "QgsPostgresProviderMetadata" ) ) )
     {
@@ -5283,9 +5283,9 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   }
   else
   {
-    if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+    if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
     {
-      QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
+      QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), "ALTER TABLE public.layer_styles ADD COLUMN type varchar NULL" ) );
       if ( res.PQresultStatus() != PGRES_COMMAND_OK )
       {
         errCause = QObject::tr( "Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
@@ -5315,7 +5315,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   // replaced by the QString.arg function.  To ensure that the final SQL string is not corrupt these
   // two values are both replaced in the final .arg call of the string construction.
 
-  QString sql = QString( "INSERT INTO layer_styles("
+  QString sql = QString( "INSERT INTO public.layer_styles("
                          "f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner,type%12"
                          ") VALUES ("
                          "%1,%2,%3,%4,%5,XMLPARSE(DOCUMENT %16),XMLPARSE(DOCUMENT %17),%8,%9,%10,%11%13"
@@ -5335,7 +5335,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                   .arg( QgsPostgresConn::quotedValue( qmlStyle ), QgsPostgresConn::quotedValue( sldStyle ) );
 
   QString checkQuery = QString( "SELECT styleName"
-                                " FROM layer_styles"
+                                " FROM public.layer_styles"
                                 " WHERE f_table_catalog=%1"
                                 " AND f_table_schema=%2"
                                 " AND f_table_name=%3"
@@ -5352,7 +5352,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   QgsPostgresResult res( conn->LoggedPQexec( "QgsPostgresProviderMetadata", checkQuery ) );
   if ( res.PQntuples() > 0 )
   {
-    sql = QString( "UPDATE layer_styles"
+    sql = QString( "UPDATE public.layer_styles"
                    " SET useAsDefault=%1"
                    ",styleQML=XMLPARSE(DOCUMENT %12)"
                    ",styleSLD=XMLPARSE(DOCUMENT %13)"
@@ -5380,7 +5380,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
 
   if ( useAsDefault )
   {
-    QString removeDefaultSql = QString( "UPDATE layer_styles"
+    QString removeDefaultSql = QString( "UPDATE public.layer_styles"
                                         " SET useAsDefault=false"
                                         " WHERE f_table_catalog=%1"
                                         " AND f_table_schema=%2"
@@ -5431,7 +5431,7 @@ QString QgsPostgresProviderMetadata::loadStoredStyle( const QString &uri, QStrin
     dsUri.setDatabase( conn->currentDatabase() );
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) )
   {
     conn->unref();
     return QString();
@@ -5450,10 +5450,10 @@ QString QgsPostgresProviderMetadata::loadStoredStyle( const QString &uri, QStrin
   QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
 
   // support layer_styles without type column < 3.14
-  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
   {
     selectQmlQuery = QString( "SELECT styleName, styleQML"
-                              " FROM layer_styles"
+                              " FROM public.layer_styles"
                               " WHERE f_table_catalog=%1"
                               " AND f_table_schema=%2"
                               " AND f_table_name=%3"
@@ -5468,7 +5468,7 @@ QString QgsPostgresProviderMetadata::loadStoredStyle( const QString &uri, QStrin
   else
   {
     selectQmlQuery = QString( "SELECT styleName, styleQML"
-                              " FROM layer_styles"
+                              " FROM public.layer_styles"
                               " WHERE f_table_catalog=%1"
                               " AND f_table_schema=%2"
                               " AND f_table_name=%3"
@@ -5506,7 +5506,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
     return -1;
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) )
   {
     return -1;
   }
@@ -5519,7 +5519,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
   QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
 
   QString selectRelatedQuery = QString( "SELECT id,styleName,description"
-                                        " FROM layer_styles"
+                                        " FROM public.layer_styles"
                                         " WHERE f_table_catalog=%1"
                                         " AND f_table_schema=%2"
                                         " AND f_table_name=%3"
@@ -5550,7 +5550,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
   }
 
   QString selectOthersQuery = QString( "SELECT id,styleName,description"
-                                       " FROM layer_styles"
+                                       " FROM public.layer_styles"
                                        " WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column %4 AND type=%5)"
                                        " ORDER BY update_time DESC" )
                                 .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
@@ -5593,7 +5593,7 @@ bool QgsPostgresProviderMetadata::deleteStyleById( const QString &uri, const QSt
   }
   else
   {
-    QString deleteStyleQuery = QStringLiteral( "DELETE FROM layer_styles WHERE id=%1" ).arg( QgsPostgresConn::quotedValue( styleId ) );
+    QString deleteStyleQuery = QStringLiteral( "DELETE FROM public.layer_styles WHERE id=%1" ).arg( QgsPostgresConn::quotedValue( styleId ) );
     QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), deleteStyleQuery ) );
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
     {
@@ -5628,7 +5628,7 @@ QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, const QSt
   }
 
   QString style;
-  QString selectQmlQuery = QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsPostgresConn::quotedValue( styleId ) );
+  QString selectQmlQuery = QStringLiteral( "SELECT styleQml FROM public.layer_styles WHERE id=%1" ).arg( QgsPostgresConn::quotedValue( styleId ) );
   QgsPostgresResult result( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), selectQmlQuery ) );
   if ( result.PQresultStatus() == PGRES_TUPLES_OK )
   {
