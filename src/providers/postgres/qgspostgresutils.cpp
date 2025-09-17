@@ -498,7 +498,7 @@ bool QgsPostgresUtils::columnExists( QgsPostgresConn *conn, const QString &schem
 
 bool QgsPostgresUtils::createStylesTable( QgsPostgresConn *conn, QString loggedClass )
 {
-  QgsPostgresResult res( conn->LoggedPQexec( loggedClass, "CREATE TABLE layer_styles("
+  QgsPostgresResult res( conn->LoggedPQexec( loggedClass, "CREATE TABLE public.layer_styles("
                                                           "id SERIAL PRIMARY KEY"
                                                           ",f_table_catalog varchar"
                                                           ",f_table_schema varchar"
