@@ -94,6 +94,7 @@
 %Include auto_generated/qgslegendsettings.sip
 %Include auto_generated/qgslegendstyle.sip
 %Include auto_generated/qgslocaldefaultsettings.sip
+%Include auto_generated/qgslocaleutils.sip
 %Include auto_generated/qgslocalizeddatapathregistry.sip
 %Include auto_generated/qgslogger.sip
 %Include auto_generated/qgsmapclippingregion.sip

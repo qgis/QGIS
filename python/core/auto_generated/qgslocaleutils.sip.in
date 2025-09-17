@@ -1,0 +1,63 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslocaleutils.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsLocaleUtils
+{
+%Docstring(signature="appended")
+Contains locale related utility functions.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgslocaleutils.h"
+%End
+  public:
+
+    static QgsRectangle countryBounds( const QString &country );
+%Docstring
+Returns the approximate bounds of a ``country`` (in EPSG:4326).
+
+Returns an invalid rectangle if the country could not be matched.
+
+.. seealso:: :py:func:`territoryBounds`
+%End
+
+    static QgsRectangle territoryBounds( const QLocale &locale );
+%Docstring
+Returns the approximate bounds of a locale, by territory (in EPSG:4326).
+
+Returns an invalid rectangle if the territory could not be matched.
+
+.. seealso:: :py:func:`countryBounds`
+
+.. seealso:: :py:func:`systemLocaleGeographicBounds`
+%End
+
+    static QgsRectangle systemLocaleGeographicBounds();
+%Docstring
+Returns the approximate bounds of the current system locale (in
+EPSG:4326).
+
+This method retrieves the territory from the system locale, and attempts
+to retrieve the approximate bounds of the matching country.
+
+Returns an invalid rectangle if the system locale territory could not be
+matched.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslocaleutils.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
