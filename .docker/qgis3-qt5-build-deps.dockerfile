@@ -104,7 +104,7 @@ RUN  apt-get update \
     future \
     termcolor \
     oauthlib \
-    pyopenssl \
+    "pyopenssl<25.2.0" \
     pep8 \
     pexpect \
     capturer \
