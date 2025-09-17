@@ -263,8 +263,8 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   // Check null is selected
   QCOMPARE( w_municipality.mComboBox->count(), 3 );
   QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "(no selection)" ) );
-  QVERIFY( w_municipality.value().isNull() );
-  QCOMPARE( w_municipality.value().toString(), QString() );
+  QCOMPARE( w_municipality.mComboBox->currentIndex(), 0 );
+  QVERIFY( QgsVariantUtils::isNull( w_municipality.value() ) );
 
   // Check order by value false
   cfg_municipality[QStringLiteral( "AllowNull" )] = false;

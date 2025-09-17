@@ -88,8 +88,8 @@ Content-Type: text/xml; charset=utf-8
    <Name>testlayer</Name>
    <Title>A test wfs vector layer</Title>
    <Abstract>A test vector layer with unicode òà</Abstract>
-   <DefaultSRS>EPSG:4326</DefaultSRS>
-   <OtherSRS>EPSG:3857</OtherSRS>
+   <DefaultSRS>urn:ogc:def:crs:EPSG::4326</DefaultSRS>
+   <OtherSRS>urn:ogc:def:crs:EPSG::3857</OtherSRS>
    <Operations>
     <Operation>Query</Operation>
     <Operation>Insert</Operation>
@@ -104,8 +104,8 @@ Content-Type: text/xml; charset=utf-8
   <FeatureType>
    <Name>Testing_Layer_(copy)</Name>
    <Title>Testing Layer (copy)</Title>
-   <DefaultSRS>EPSG:4326</DefaultSRS>
-   <OtherSRS>EPSG:3857</OtherSRS>
+   <DefaultSRS>urn:ogc:def:crs:EPSG::4326</DefaultSRS>
+   <OtherSRS>urn:ogc:def:crs:EPSG::3857</OtherSRS>
    <Operations>
     <Operation>Query</Operation>
    </Operations>

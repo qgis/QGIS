@@ -60,7 +60,9 @@ class TestQgsVertexTool : public QObject
     TestQgsVertexTool();
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
+    void initTestCase(); // will be called before the first testfunction is executed.
+    void init();
+    void cleanup();
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testSelectVerticesByPolygon();
@@ -75,6 +77,8 @@ class TestQgsVertexTool : public QObject
     void testAddVertexAtEndpoint();
     void testAddVertexDoubleClick();
     void testAddVertexDoubleClickWithShift();
+    void testAddVertexZ();
+    void testAddVertexM();
     void testAvoidIntersections();
     void testDeleteVertex();
     void testConvertVertex();
@@ -151,22 +155,26 @@ class TestQgsVertexTool : public QObject
     }
 
   private:
+    QgsCoordinateReferenceSystem mFake27700;
     QgsMapCanvas *mCanvas = nullptr;
     QgisApp *mQgisApp = nullptr;
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsVertexTool *mVertexTool = nullptr;
-    QgsVectorLayer *mLayerLine = nullptr;
-    QgsVectorLayer *mLayerMultiLine = nullptr;
-    QgsVectorLayer *mLayerPolygon = nullptr;
-    QgsVectorLayer *mLayerMultiPolygon = nullptr;
-    QgsVectorLayer *mLayerPoint = nullptr;
-    QgsVectorLayer *mLayerPointZ = nullptr;
-    QgsVectorLayer *mLayerLineZ = nullptr;
-    QgsVectorLayer *mLayerCompoundCurve = nullptr;
-    QgsVectorLayer *mLayerLineReprojected = nullptr;
+    QPointer< QgsVectorLayer > mLayerLine;
+    QPointer< QgsVectorLayer > mLayerMultiLine;
+    QPointer< QgsVectorLayer > mLayerPolygon;
+    QPointer< QgsVectorLayer > mLayerMultiPolygon;
+    QPointer< QgsVectorLayer > mLayerPoint;
+    QPointer< QgsVectorLayer > mLayerPointZ;
+    QPointer< QgsVectorLayer > mLayerLineZ;
+    QPointer< QgsVectorLayer > mLayerLineM;
+    QPointer< QgsVectorLayer > mLayerCompoundCurve;
+    QPointer< QgsVectorLayer > mLayerLineReprojected;
     QgsFeatureId mFidLineZF1 = 0;
     QgsFeatureId mFidLineZF2 = 0;
     QgsFeatureId mFidLineZF3 = 0;
+    QgsFeatureId mFidLineMF1 = 0;
+    QgsFeatureId mFidLineMF2 = 0;
     QgsFeatureId mFidLineF1 = 0;
     QgsFeatureId mFidMultiLineF1 = 0;
     QgsFeatureId mFidLineF13857 = 0;
@@ -186,41 +194,61 @@ void TestQgsVertexTool::initTestCase()
 {
   qDebug() << "TestQgsVertexTool::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::init();
-  QgsApplication::initQgis();
-  mQgisApp = new QgisApp();
 
   // Set up the QSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
-  mCanvas = new QgsMapCanvas();
+  QgsApplication::init();
+  QgsApplication::initQgis();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  QgsSettings().clear();
 
-  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
+  // EPSG:27700 was a silly choice for these tests, as the transformations rely on the presence of a grid shift
+  // file which may or may not be present on some platforms :'(
 
+  // Fake a similar CRS which can't use grid based transforms ;)
+  mFake27700 = QgsCoordinateReferenceSystem::fromProj( "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=4000.0000001 +y_0=-100000 +ellps=airy +units=m +no_defs" );
+  QCOMPARE( mFake27700.authid(), QString() );
+
+  mQgisApp = new QgisApp();
+}
+
+void TestQgsVertexTool::init()
+{
   // make testing layers
-  mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString?" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerLine->setCrs( mFake27700 );
   QVERIFY( mLayerLine->isValid() );
-  mLayerMultiLine = new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=EPSG:27700" ), QStringLiteral( "layer multiline" ), QStringLiteral( "memory" ) );
+  mLayerMultiLine = new QgsVectorLayer( QStringLiteral( "MultiLineString?" ), QStringLiteral( "layer multiline" ), QStringLiteral( "memory" ) );
+  mLayerMultiLine->setCrs( mFake27700 );
   QVERIFY( mLayerMultiLine->isValid() );
-  mLayerLineReprojected = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3857" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerLineReprojected = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3857" ), QStringLiteral( "layer line reprojected" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLineReprojected->isValid() );
-  mLayerPolygon = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:27700" ), QStringLiteral( "layer polygon" ), QStringLiteral( "memory" ) );
+  mLayerPolygon = new QgsVectorLayer( QStringLiteral( "Polygon?" ), QStringLiteral( "layer polygon" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPolygon->isValid() );
-  mLayerMultiPolygon = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=EPSG:27700" ), QStringLiteral( "layer multipolygon" ), QStringLiteral( "memory" ) );
+  mLayerPolygon->setCrs( mFake27700 );
+  mLayerMultiPolygon = new QgsVectorLayer( QStringLiteral( "MultiPolygon?" ), QStringLiteral( "layer multipolygon" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerMultiPolygon->isValid() );
-  mLayerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:27700" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
+  mLayerMultiPolygon->setCrs( mFake27700 );
+  mLayerPoint = new QgsVectorLayer( QStringLiteral( "Point?" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPoint->isValid() );
-  mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:27700" ), QStringLiteral( "layer pointz" ), QStringLiteral( "memory" ) );
+  mLayerPoint->setCrs( mFake27700 );
+  mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?" ), QStringLiteral( "layer pointz" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPointZ->isValid() );
-  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerPointZ->setCrs( mFake27700 );
+  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?" ), QStringLiteral( "layer line z" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLineZ->isValid() );
-  mLayerCompoundCurve = new QgsVectorLayer( QStringLiteral( "CompoundCurve?crs=27700" ), QStringLiteral( "layer compound curve" ), QStringLiteral( "memory" ) );
+  mLayerLineZ->setCrs( mFake27700 );
+  mLayerLineM = new QgsVectorLayer( QStringLiteral( "LineStringM?" ), QStringLiteral( "layer line m" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLineM->isValid() );
+  mLayerLineM->setCrs( mFake27700 );
+  mLayerCompoundCurve = new QgsVectorLayer( QStringLiteral( "CompoundCurve?" ), QStringLiteral( "layer compound curve" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerCompoundCurve->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
+  mLayerCompoundCurve->setCrs( mFake27700 );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerCompoundCurve );
+
 
   QgsFeature lineF1;
   lineF1.setGeometry( QgsGeometry::fromWkt( "LineString (2 1, 1 1, 1 3)" ) );
@@ -251,6 +279,10 @@ void TestQgsVertexTool::initTestCase()
   linez2.setGeometry( QgsGeometry::fromWkt( "LineStringZ (5 7 5, 7 7 10)" ) );
   linez3.setGeometry( QgsGeometry::fromWkt( "LineStringZ (5 5.5 5, 7 5.5 10)" ) );
 
+  QgsFeature linem1, linem2;
+  linem1.setGeometry( QgsGeometry::fromWkt( "LineStringM (5 5 1, 6 6 1, 7 5 1)" ) );
+  linem2.setGeometry( QgsGeometry::fromWkt( "LineStringM (5 7 5, 7 7 10)" ) );
+
   QgsFeature curveF1;
   curveF1.setGeometry( QgsGeometry::fromWkt( "CompoundCurve (CircularString (14 14, 10 10, 17 10))" ) );
   QgsFeature curveF2;
@@ -268,7 +300,8 @@ void TestQgsVertexTool::initTestCase()
 
   mLayerLineReprojected->startEditing();
   mLayerLineReprojected->addFeature( lineF13857 );
-  mFidLineF13857 = lineF13857.id();
+  mLayerLineReprojected->commitChanges();
+  mFidLineF13857 = *( mLayerLineReprojected->allFeatureIds().begin() );
   QCOMPARE( mLayerLineReprojected->featureCount(), ( long ) 1 );
 
   mLayerPolygon->startEditing();
@@ -300,6 +333,17 @@ void TestQgsVertexTool::initTestCase()
   mFidLineZF3 = linez3.id();
   QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
 
+  mLayerLineM->dataProvider()->addFeature( linem1 );
+  mFidLineMF1 = linem1.id();
+  mLayerLineM->dataProvider()->addFeature( linem2 );
+  mFidLineMF2 = linem2.id();
+  QCOMPARE( mLayerLineM->featureCount(), ( long ) 2 );
+
+  mFidLineZF1 = linez1.id();
+  mFidLineZF2 = linez2.id();
+  mFidLineZF3 = linez3.id();
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
+
   mLayerCompoundCurve->startEditing();
   mLayerCompoundCurve->addFeature( curveF1 );
   mLayerCompoundCurve->addFeature( curveF2 );
@@ -318,6 +362,14 @@ void TestQgsVertexTool::initTestCase()
   QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 2 );
 
+  QgsProject::instance()->setTopologicalEditing( false );
+
+  mCanvas = new QgsMapCanvas();
+
+  mCanvas->setDestinationCrs( mFake27700 );
+
+  mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
+
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
   mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
@@ -326,7 +378,7 @@ void TestQgsVertexTool::initTestCase()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerCompoundCurve );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerCompoundCurve );
 
   QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
   mCanvas->setSnappingUtils( snappingUtils );
@@ -339,12 +391,32 @@ void TestQgsVertexTool::initTestCase()
   snappingUtils->locatorForLayer( mLayerPoint )->init();
   snappingUtils->locatorForLayer( mLayerPointZ )->init();
   snappingUtils->locatorForLayer( mLayerLineZ )->init();
+  snappingUtils->locatorForLayer( mLayerLineM )->init();
   snappingUtils->locatorForLayer( mLayerCompoundCurve )->init();
 
   // create vertex tool
   mVertexTool = new QgsVertexTool( mCanvas, mAdvancedDigitizingDockWidget );
 
   mCanvas->setMapTool( mVertexTool );
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+}
+
+void TestQgsVertexTool::cleanup()
+{
+  mLayerLine->rollBack();
+  mLayerMultiLine->rollBack();
+  mLayerLineReprojected->rollBack();
+  mLayerPolygon->rollBack();
+  mLayerMultiPolygon->rollBack();
+  mLayerPoint->rollBack();
+  mLayerPointZ->rollBack();
+  mLayerLineZ->rollBack();
+  mLayerCompoundCurve->rollBack();
+
+  QgsProject::instance()->clear();
 }
 
 //runs after all tests
@@ -361,7 +433,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexZ()
   QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
   QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
 
-  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( Qgis::SnappingMode::AllLayers );
@@ -376,7 +447,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexZ()
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineString Z (5 5 1, 5 7 5, 7 5 1)" ) );
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineString Z (5 7 5, 7 7 10)" ) );
 
-  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   mLayerLineZ->undoStack()->undo();
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
@@ -392,7 +462,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
 
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
-  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( Qgis::SnappingMode::AllLayers );
@@ -407,7 +476,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineString Z (5 5 1, 6 7 7.5, 7 5 1)" ) );
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineString Z (5 7 5, 6 7 7.5, 7 7 10)" ) );
 
-  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   // Two undo steps, one for the vertex move, one for the topological point
   mLayerLineZ->undoStack()->undo();
   mLayerLineZ->undoStack()->undo();
@@ -422,7 +490,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnIntersectionZ()
 {
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
 
-  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( Qgis::SnappingMode::AllLayers );
@@ -440,7 +507,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnIntersectionZ()
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineString Z (5 5 1, 5.5 5.5 5, 6 6 1, 7 5 1)" ) );
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF3 ).geometry().asWkt(), QString( "LineString Z (5.5 5.5 5, 7 5.5 10)" ) );
 
-  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   // Two undo steps, one for the vertex move, one for the topological point
   mLayerLineZ->undoStack()->undo();
   mLayerLineZ->undoStack()->undo();
@@ -462,7 +528,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVerticesOnSegmentZ()
   QCOMPARE( mLayerLineZ->featureCount(), ( long ) 4 );
 
   // Activates topological editing
-  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
 
   // And snapping
@@ -489,7 +554,6 @@ void TestQgsVertexTool::testTopologicalEditingMoveVerticesOnSegmentZ()
   // Undo changes
   mLayerLineZ->deleteFeature( linez.id() );
 
-  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   mLayerLineZ->undoStack()->undo();
   mLayerLineZ->undoStack()->undo();
   mLayerLineZ->undoStack()->undo();
@@ -509,10 +573,17 @@ void TestQgsVertexTool::testMoveVertex()
   // move vertex of linestring
 
   mouseClick( 2, 1, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::MovingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLine->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 0 );
   mouseClick( 2, 2, Qt::LeftButton );
 
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 0 ), "LineString (2 2, 1 1, 1 3)" );
+
+  QCOMPARE( mLayerLine->undoStack()->count(), 2 );
+
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 2, 1 1, 1 3)" ) );
 
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
@@ -682,6 +753,193 @@ void TestQgsVertexTool::testAddVertex()
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
 }
+
+
+void TestQgsVertexTool::testAddVertexZ()
+{
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
+
+  // add vertex in linestringZ
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+
+  // in middle of segment
+  mouseClick( 6.5, 5.5, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineZ->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineZF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 2 );
+  mouseClick( 7, 6, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 4 );
+  // when adding a vertex in the middle of an existing segment with z values, the z value should be linearly interpolated
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 5 1, 6 6 1, 7 6 1, 7 5 1)" ) );
+
+  mLayerLineZ->undoStack()->undo();
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 5 1, 6 6 1, 7 5 1)" ) );
+
+  mouseClick( 6, 7, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineZ->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineZF2 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 1 );
+  mouseClick( 5, 7.5, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 4 );
+  // when adding a vertex in the middle of an existing segment with z values, the z value should be linearly interpolated
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 7 5, 5 7.5 6, 7 7 10)" ) );
+
+  mLayerLineZ->undoStack()->undo();
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 7 5, 7 7 10)" ) );
+
+  // inserting vertex via double-click
+  mouseDoubleClick( 5.2, 5.2, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineZ->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineZF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 1 );
+  mouseClick( 5, 5.5, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 4 );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 5 1, 5 5.5 1, 6 6 1, 7 5 1)" ) );
+
+  mLayerLineZ->undoStack()->undo();
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 5 1, 6 6 1, 7 5 1)" ) );
+
+  mouseDoubleClick( 5.3, 7, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineZ->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineZF2 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 1 );
+  mouseClick( 5, 7.5, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 4 );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 7 5, 5 7.5 6, 7 7 10)" ) );
+
+  mLayerLineZ->undoStack()->undo();
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 7 5, 7 7 10)" ) );
+
+  // insert vertex at endpoint -- the default z value should be used
+
+  // offset of the endpoint marker - currently set as 15px away from the last vertex in direction of the line
+  const double offsetInMapUnits = 15 * mCanvas->mapSettings().mapUnitsPerPixel();
+  mouseMove( 5, 5 ); // first we need to move to the vertex
+  mouseClick( 5 - offsetInMapUnits / M_SQRT2, 5 - offsetInMapUnits / M_SQRT2, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingEndpoint );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineZ->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineZF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 0 );
+  mouseClick( 5, 4, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 4 );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 4 333, 5 5 1, 6 6 1, 7 5 1)" ) );
+
+  mLayerLineZ->undoStack()->undo();
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 5 1, 6 6 1, 7 5 1)" ) );
+}
+
+void TestQgsVertexTool::testAddVertexM()
+{
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 222 );
+
+  // add vertex in linestringM
+
+  // ensure changes are made to mLayerLineZ
+  mLayerLineM->startEditing();
+  mLayerLineZ->commitChanges();
+  QCOMPARE( mLayerLineM->undoStack()->index(), 0 );
+
+  // in middle of segment
+  mouseClick( 6.5, 5.5, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineM->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineMF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 2 );
+  mouseClick( 7, 6, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineM->undoStack()->index(), 1 );
+  // when adding a vertex in the middle of an existing segment with m values, the m value should be linearly interpolated
+  QCOMPARE( mLayerLineM->getFeature( mFidLineMF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString M (5 5 1, 6 6 1, 7 6 1, 7 5 1)" ) );
+
+  mLayerLineM->undoStack()->undo();
+  QCOMPARE( mLayerLineM->undoStack()->index(), 0 );
+
+  QCOMPARE( mLayerLineM->getFeature( mFidLineMF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString M (5 5 1, 6 6 1, 7 5 1)" ) );
+
+  mouseClick( 6, 7, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineM->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineMF2 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 1 );
+  mouseClick( 5, 7.5, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineM->undoStack()->index(), 1 );
+  // when adding a vertex in the middle of an existing segment with m values, the m value should be linearly interpolated
+  QCOMPARE( mLayerLineM->getFeature( mFidLineMF2 ).geometry().asWkt( 1 ), QStringLiteral( "LineString M (5 7 5, 5 7.5 6, 7 7 10)" ) );
+
+  mLayerLineM->undoStack()->undo();
+  QCOMPARE( mLayerLineM->undoStack()->index(), 0 );
+  QCOMPARE( mLayerLineM->getFeature( mFidLineMF2 ).geometry().asWkt( 1 ), QStringLiteral( "LineString M (5 7 5, 7 7 10)" ) );
+
+  // inserting vertex via double-click
+  mouseDoubleClick( 5.2, 5.2, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineM->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineMF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 1 );
+  mouseClick( 5, 5.5, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineM->undoStack()->index(), 1 );
+  QCOMPARE( mLayerLineM->getFeature( mFidLineMF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString M (5 5 1, 5 5.5 1, 6 6 1, 7 5 1)" ) );
+
+  mLayerLineM->undoStack()->undo();
+  QCOMPARE( mLayerLineM->undoStack()->index(), 0 );
+
+  QCOMPARE( mLayerLineM->getFeature( mFidLineMF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString M (5 5 1, 6 6 1, 7 5 1)" ) );
+
+  mouseDoubleClick( 5.3, 7, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineM->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineMF2 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 1 );
+  mouseClick( 5, 7.5, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineM->undoStack()->index(), 1 );
+  QCOMPARE( mLayerLineM->getFeature( mFidLineMF2 ).geometry().asWkt( 1 ), QStringLiteral( "LineString M (5 7 5, 5 7.5 6, 7 7 10)" ) );
+
+  mLayerLineM->undoStack()->undo();
+  QCOMPARE( mLayerLineM->undoStack()->index(), 0 );
+  QCOMPARE( mLayerLineM->getFeature( mFidLineMF2 ).geometry().asWkt( 1 ), QStringLiteral( "LineString M (5 7 5, 7 7 10)" ) );
+
+  // insert vertex at endpoint
+
+  // offset of the endpoint marker - currently set as 15px away from the last vertex in direction of the line
+  const double offsetInMapUnits = 15 * mCanvas->mapSettings().mapUnitsPerPixel();
+  mouseMove( 5, 5 ); // first we need to move to the vertex
+  mouseClick( 5 - offsetInMapUnits / M_SQRT2, 5 - offsetInMapUnits / M_SQRT2, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingEndpoint );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineM->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineMF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 0 );
+  mouseClick( 5, 4, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineM->undoStack()->index(), 1 );
+  QCOMPARE( mLayerLineM->getFeature( mFidLineMF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString M (5 4 222, 5 5 1, 6 6 1, 7 5 1)" ) );
+
+  mLayerLineM->undoStack()->undo();
+  QCOMPARE( mLayerLineM->undoStack()->index(), 0 );
+
+  QCOMPARE( mLayerLineM->getFeature( mFidLineMF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString M (5 5 1, 6 6 1, 7 5 1)" ) );
+}
+
 
 void TestQgsVertexTool::testAddVertexAtEndpoint()
 {
@@ -968,6 +1226,12 @@ void TestQgsVertexTool::testConvertVertex()
 
 void TestQgsVertexTool::testMoveMultipleVertices()
 {
+  mLayerLineReprojected->startEditing();
+  QCOMPARE( mLayerLineReprojected->undoStack()->index(), 0 );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (2 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-228837 6428900, -228838 6428900, -228838 6428903)" ) );
+
   // select two vertices
   mousePress( 0.5, 0.5, Qt::LeftButton );
   mouseMove( 1.5, 3.5 );
@@ -981,16 +1245,17 @@ void TestQgsVertexTool::testMoveMultipleVertices()
   mouseClick( 8, 8, Qt::LeftButton );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 0 0, 0 2)" ) );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (2 1, 0 0, 0 2)" ) );
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-228837 6428900, -228840 6428899, -228840 6428902)" ) );
 
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+  QCOMPARE( mLayerLineReprojected->undoStack()->index(), 1 );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (2 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-228837 6428900, -228840 6428899, -228840 6428902)" ) );
 
-  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
-
-  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-841256 6405990, -841259 6405988)" ) );
   mLayerLineReprojected->undoStack()->undo();
-  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-841256 6405990, -841258 6405990)" ) );
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-228837 6428900, -228838 6428900, -228838 6428903)" ) );
 }
 
 void TestQgsVertexTool::testMoveMultipleVertices2()
@@ -1037,8 +1302,6 @@ void TestQgsVertexTool::testMoveVertexTopo()
 
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 void TestQgsVertexTool::testDeleteVertexTopo()
@@ -1066,8 +1329,6 @@ void TestQgsVertexTool::testDeleteVertexTopo()
 
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 void TestQgsVertexTool::testAddVertexTopo()
@@ -1097,8 +1358,6 @@ void TestQgsVertexTool::testAddVertexTopo()
   mLayerPolygon->undoStack()->undo();
 
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 void TestQgsVertexTool::testMoveEdgeTopo()
@@ -1154,8 +1413,6 @@ void TestQgsVertexTool::testMoveEdgeTopo()
   mLayerPolygon->undoStack()->undo();
 
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 void TestQgsVertexTool::testAddVertexTopoFirstSegment()
@@ -1175,8 +1432,6 @@ void TestQgsVertexTool::testAddVertexTopoFirstSegment()
   mLayerPolygon->undoStack()->undo();
 
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 void TestQgsVertexTool::testAddVertexTopoMultipleLayers()
@@ -1190,7 +1445,6 @@ void TestQgsVertexTool::testAddVertexTopoMultipleLayers()
   QVERIFY( resAdd );
   const QgsFeatureId fTmpId = fTmp.id();
 
-  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( Qgis::SnappingMode::AllLayers );
@@ -1231,7 +1485,6 @@ void TestQgsVertexTool::testAddVertexTopoMultipleLayers()
 
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
 
-  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
 }
@@ -1383,7 +1636,6 @@ void TestQgsVertexTool::testAvoidIntersections()
 
   QCOMPARE( mLayerPolygon->featureCount(), ( long ) 1 );
 
-  QgsProject::instance()->setTopologicalEditing( false );
   QgsProject::instance()->setAvoidIntersectionsMode( mode );
 }
 
@@ -1434,7 +1686,8 @@ void TestQgsVertexTool::testActiveLayerPriority()
   // check that features from current layer get priority when picking points
 
   // create a temporary line layer that has a common vertex with existing line layer at (1, 1)
-  QgsVectorLayer *layerLine2 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line 2" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layerLine2 = new QgsVectorLayer( QStringLiteral( "LineString?" ), QStringLiteral( "layer line 2" ), QStringLiteral( "memory" ) );
+  layerLine2->setCrs( mFake27700 );
   QVERIFY( layerLine2->isValid() );
   QgsPolylineXY line1;
   line1 << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 0 );
@@ -1445,7 +1698,6 @@ void TestQgsVertexTool::testActiveLayerPriority()
   const QgsFeatureId fidLineF1 = lineF1.id();
   QCOMPARE( layerLine2->featureCount(), ( long ) 1 );
   QgsProject::instance()->addMapLayer( layerLine2 );
-  QList<QgsMapLayer *> oldMapLayers = mCanvas->layers();
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerCompoundCurve << layerLine2 );
 
   // make one layer active and check its vertex is used
@@ -1475,7 +1727,6 @@ void TestQgsVertexTool::testActiveLayerPriority()
   mCanvas->setCurrentLayer( nullptr );
 
   // get rid of the temporary layer
-  mCanvas->setLayers( oldMapLayers );
   QgsProject::instance()->removeMapLayer( layerLine2 );
 }
 
@@ -1643,18 +1894,19 @@ void TestQgsVertexTool::testSelectVerticesByPolygon()
 
 void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
 {
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 2 ), "LineString (2 1, 1 1, 1 3)" );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 2 ), "Polygon ((4 1, 7 1, 7 4, 4 4, 4 1))" );
+
   // test moving of vertices of two features at once
 
   QgsProject::instance()->setTopologicalEditing( true );
-  QgsCoordinateReferenceSystem prevCrs = QgsProject::instance()->crs();
-  QgsCoordinateReferenceSystem tmpCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) );
 
   // move linestring vertex to connect with polygon at point (7, 1)
   mouseClick( 2, 1, Qt::LeftButton );
   mouseClick( 7, 1, Qt::LeftButton );
 
   // change CRS so that the map canvas and the layers CRSs are different
-  mCanvas->setDestinationCrs( tmpCrs );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   mCanvas->snappingUtils()->locatorForLayer( mLayerLine )->init();
   mCanvas->snappingUtils()->locatorForLayer( mLayerPolygon )->init();
 
@@ -1667,8 +1919,8 @@ void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
   mouseClick( mapPointEnd.x(), mapPointEnd.y(), Qt::LeftButton );
 
   // polygon and line features have changed, within the CRS conversion precision
-  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 2 ), "LineString (3 3, 1 1, 1 3)" );
-  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 2 ), "Polygon ((4 1, 3 3, 7 4, 4 4, 4 1))" );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 1 ), "LineString (3 3, 1 1, 1 3)" );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 1 ), "Polygon ((4 1, 3 3, 7 4, 4 4, 4 1))" );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 3 ); // one more move of vertex from earlier
   QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
@@ -1679,8 +1931,6 @@ void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
   // back to the original state
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
-  mCanvas->setDestinationCrs( prevCrs );
-  QgsProject::instance()->setTopologicalEditing( false );
 }
 
 QGSTEST_MAIN( TestQgsVertexTool )

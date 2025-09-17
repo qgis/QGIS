@@ -72,7 +72,7 @@ bool QgsLegendFilterProxyModel::layerShown( QgsMapLayer *layer ) const
   if ( !layer )
     return true;
 
-  if ( QgsMapLayerLegend *layerLegend = layer->legend(); mIsDefaultLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+  if ( QgsMapLayerLegend *layerLegend = layer->legend(); mIsDefaultLegend && layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
   {
     return false;
   }

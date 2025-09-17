@@ -365,6 +365,8 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
       LayoutElevationProfile, //!< Elevation profile item \since QGIS 3.30
 
+      LayoutChart, //!< Chart item \since QGIS 4.0
+
       // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
       // values, and must be updated if any additional types are added
 

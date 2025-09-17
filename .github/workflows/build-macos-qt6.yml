@@ -30,10 +30,10 @@ jobs:
 
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@6b3e96a9bc9976b8b546346fdd102effedae0ca8 # latest
+        uses: lukka/get-cmake@2ecc21724e5215b0e567bc399a2602d2ecb48541 # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
@@ -89,8 +89,7 @@ jobs:
                 -B build \
                 -D QGIS_APP_NAME="QGIS-${{steps.workflow-artifact-ids.outputs.display-name}}" \
                 -D WITH_VCPKG=ON \
-                -D BUILD_WITH_QT6=ON \
-                -D WITH_QTWEBKIT=OFF \
+                -D WITH_QTWEBENGINE=OFF \
                 -D WITH_BINDINGS=ON \
                 -D WITH_ORACLE=ON \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
@@ -151,7 +150,7 @@ jobs:
     needs: build
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 🔨 Prepare build env
         run: |

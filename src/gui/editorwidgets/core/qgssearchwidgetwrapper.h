@@ -28,53 +28,8 @@ class QgsField;
 #include "qgswidgetwrapper.h"
 #include "qgis_gui.h"
 
-#ifdef SIP_RUN
-//%MappedType QList<QgsSearchWidgetWrapper::FilterFlag>
-{
-  //%TypeHeaderCode
-#include <QList>
-  //%End
-
-  //%ConvertFromTypeCode
-  // Create the list.
-  PyObject *l;
-
-  if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
-    return NULL;
-
-  // Set the list elements.
-  QList<QgsSearchWidgetWrapper::FilterFlag>::iterator it = sipCpp->begin();
-  for ( int i = 0; it != sipCpp->end(); ++it, ++i )
-  {
-    PyObject *tobj;
-
-    if ( ( tobj = sipConvertFromEnum( *it, sipType_QgsSearchWidgetWrapper_FilterFlag ) ) == NULL )
-    {
-      Py_DECREF( l );
-      return NULL;
-    }
-    PyList_SET_ITEM( l, i, tobj );
-  }
-
-  return l;
-  //%End
-
-  //%ConvertToTypeCode
-  // Check the type if that is all that is required.
-  if ( sipIsErr == NULL )
-    return PyList_Check( sipPy );
-
-  QList<QgsSearchWidgetWrapper::FilterFlag> *qlist = new QList<QgsSearchWidgetWrapper::FilterFlag>;
-
-  for ( int i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
-  {
-    *qlist << ( QgsSearchWidgetWrapper::FilterFlag ) SIPLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
-  }
-
-  *sipCppPtr = qlist;
-  return sipGetState( sipTransferObj );
-  //%End
-};
+#ifdef SIP_RUN // should not be required, but mingw workflow needs it..
+SIP_INSERT_QLIST_ENUM_CONVERSION_CODE( QgsSearchWidgetWrapper::FilterFlag );
 #endif
 
 /**

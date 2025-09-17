@@ -170,9 +170,14 @@ concurrent access to the index is memory safe.
     operator bool() const;
 
 
-    void load( const QString &fileName );
+    void load( const QString &url, const QString &authcfg = QString() );
 %Docstring
-Loads the index from the file
+Loads the index from a ``url``
+
+:param url: The URL to load the index from. Can be a local file or an
+            http(s) URL.
+:param authcfg: Optionally apply this authentication configuration for
+                network requests (since QGIS 4.0)
 
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.load`
 %End

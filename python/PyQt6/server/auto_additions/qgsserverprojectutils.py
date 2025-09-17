@@ -43,6 +43,7 @@ try:
     QgsServerProjectUtils.wmsRootName = staticmethod(QgsServerProjectUtils.wmsRootName)
     QgsServerProjectUtils.wmsRestrictedLayers = staticmethod(QgsServerProjectUtils.wmsRestrictedLayers)
     QgsServerProjectUtils.wmsOutputCrsList = staticmethod(QgsServerProjectUtils.wmsOutputCrsList)
+    QgsServerProjectUtils.wmsOutputCrsListAsOgcUrn = staticmethod(QgsServerProjectUtils.wmsOutputCrsListAsOgcUrn)
     QgsServerProjectUtils.wmsExtent = staticmethod(QgsServerProjectUtils.wmsExtent)
     QgsServerProjectUtils.wfsServiceUrl = staticmethod(QgsServerProjectUtils.wfsServiceUrl)
     QgsServerProjectUtils.wfsLayerIds = staticmethod(QgsServerProjectUtils.wfsLayerIds)

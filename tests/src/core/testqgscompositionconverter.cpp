@@ -37,6 +37,7 @@
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutitemattributetable.h"
 #include "qgslayoutrendercontext.h"
+#include "qgsfontutils.h"
 
 // Debug output for dom nodes
 QDebug operator<<( QDebug dbg, const QDomNode &node )
@@ -149,7 +150,7 @@ class TestQgsCompositionConverter : public QgsTest
 
 
   private:
-    void checkRenderedImage( QgsLayout *layout, const QString &testName, int pageNumber = 0 );
+    QSize renderedPageSize( QgsLayout *layout, int pageNumber = 0 );
 
     QDomElement loadComposer( const QString &name );
 };
@@ -159,6 +160,7 @@ void TestQgsCompositionConverter::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::settingsSearchPathsForSVG->setValue( QStringList() << QStringLiteral( TEST_DATA_DIR ) );
+  QgsFontUtils::loadStandardTestFonts( { QStringLiteral( "Bold" ), QStringLiteral( "Oblique" ), QStringLiteral( "Roman" ) } );
 }
 
 void TestQgsCompositionConverter::init()
@@ -198,7 +200,7 @@ void TestQgsCompositionConverter::importComposerTemplateLabel()
   QCOMPARE( label->frameStrokeWidth().length(), 0.2 );
   QCOMPARE( ( int ) label->rotation(), 4 );
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplateLabel_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 
   qDeleteAll( items );
 }
@@ -234,8 +236,7 @@ void TestQgsCompositionConverter::importComposerTemplateShape()
   QCOMPARE( shape->frameEnabled(), false );
   QCOMPARE( shape->hasBackground(), false );
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
-
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplateShape_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
   qDeleteAll( items );
 }
 
@@ -265,7 +266,7 @@ void TestQgsCompositionConverter::importComposerTemplatePicture()
   QCOMPARE( item->pos().y(), 12.6029 );
   QVERIFY( item->isVisible() );
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplatePicture_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 
   qDeleteAll( items );
 }
@@ -290,7 +291,7 @@ void TestQgsCompositionConverter::importComposerTemplatePolygon()
   QVERIFY( item->isVisible() );
   QCOMPARE( item->nodes().count(), 7 );
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplatePolygon_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 
   qDeleteAll( items );
 }
@@ -317,7 +318,7 @@ void TestQgsCompositionConverter::importComposerTemplatePolyline()
   QCOMPARE( item->startMarker(), QgsLayoutItemPolyline::MarkerMode::NoMarker );
   QCOMPARE( item->endMarker(), QgsLayoutItemPolyline::MarkerMode::NoMarker );
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplatePolyline_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 
   qDeleteAll( items );
 }
@@ -344,7 +345,7 @@ void TestQgsCompositionConverter::importComposerTemplateArrow()
   QCOMPARE( item->startMarker(), QgsLayoutItemPolyline::MarkerMode::NoMarker );
   QCOMPARE( item->endMarker(), QgsLayoutItemPolyline::MarkerMode::ArrowHead );
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplateArrow_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 
   qDeleteAll( items );
 }
@@ -412,8 +413,7 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
     QVERIFY( count > 0 );
   }
 
-
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplateMap_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 
   qDeleteAll( items );
 }
@@ -438,7 +438,7 @@ void TestQgsCompositionConverter::importComposerTemplateLegend()
   QVERIFY( item->isVisible() );
   QVERIFY( !item->autoUpdateModel() );
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplateLegend_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 
   qDeleteAll( items );
 }
@@ -463,11 +463,16 @@ void TestQgsCompositionConverter::importComposerTemplateAttributeTable()
   QVERIFY( table->sourceLayer() );
   QVERIFY( table->sourceLayer()->isValid() );
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplateAttributeTable_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 }
 
 void TestQgsCompositionConverter::importComposerTemplateHtml()
 {
+  if ( !Qgis::hasQtWebkit() )
+  {
+    QSKIP( "This test requires a build with QtWebkit", SkipSingle );
+  }
+
   QDomElement composerElem( loadComposer( QStringLiteral( "2x_template_html.qpt" ) ) );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
@@ -484,9 +489,9 @@ void TestQgsCompositionConverter::importComposerTemplateHtml()
   const QgsLayoutItemHtml *html = items.at( 0 );
   QVERIFY( html );
   QCOMPARE( html->contentMode(), QgsLayoutItemHtml::ContentMode::ManualHtml );
-  QCOMPARE( html->html(), QStringLiteral( "<div style=\"height:5000px; background-color:green; color:white;\">aaaaA</div>\t\n" ) );
+  QCOMPARE( html->html(), QStringLiteral( "<div style=\"height:5000px; font-family: QGIS Vera Sans; background-color:green; color:white;\">aaaaA</div>\t\n" ) );
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplateHtml_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 }
 
 void TestQgsCompositionConverter::importComposerTemplateScaleBar()
@@ -510,8 +515,7 @@ void TestQgsCompositionConverter::importComposerTemplateScaleBar()
 
   QVERIFY( !item->linkedMap() );
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
-
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplateScaleBar_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
   qDeleteAll( items );
 }
 
@@ -667,8 +671,15 @@ void TestQgsCompositionConverter::importComposerTemplate()
     QVERIFY( count > 0 );
   }
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 1 );
+  QGSVERIFYLAYOUTCHECK( "importComposerTemplate_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
+  if ( Qgis::hasQtWebkit() )
+  {
+    QGSVERIFYLAYOUTCHECK( "importComposerTemplate_1", layout.get(), 1, 0, renderedPageSize( layout.get(), 1 ), 0 );
+  }
+  else
+  {
+    QGSVERIFYLAYOUTCHECK( "importComposerTemplate_1_nowebkit", layout.get(), 1, 0, renderedPageSize( layout.get(), 1 ), 0 );
+  }
 }
 
 void TestQgsCompositionConverter::importComposerAtlas()
@@ -688,20 +699,12 @@ void TestQgsCompositionConverter::importComposerAtlas()
   QVERIFY( layout->atlas()->enabled() );
   QVERIFY( layout->atlas()->updateFeatures() > 0 );
 
-  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+  QGSVERIFYLAYOUTCHECK( "importComposerAtlas_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 }
 
-void TestQgsCompositionConverter::checkRenderedImage( QgsLayout *layout, const QString &testName, const int pageNumber )
+QSize TestQgsCompositionConverter::renderedPageSize( QgsLayout *layout, const int pageNumber )
 {
-  const QSize size( layout->pageCollection()->page( pageNumber )->sizeWithUnits().width() * 3.77, layout->pageCollection()->page( pageNumber )->sizeWithUnits().height() * 3.77 );
-
-  QVERIFY(
-    QGSLAYOUTCHECK(
-      testName + '_' + QString::number( pageNumber ),
-      layout,
-      pageNumber, 0, size, 0
-    )
-  );
+  return QSize( static_cast< int >( layout->pageCollection()->page( pageNumber )->sizeWithUnits().width() * 3.77 ), static_cast< int >( layout->pageCollection()->page( pageNumber )->sizeWithUnits().height() * 3.77 ) );
 }
 
 QDomElement TestQgsCompositionConverter::loadComposer( const QString &name )

@@ -16,7 +16,7 @@
    </layer>
   </symbol>
   <ComposerLabel valign="32" marginX="1" marginY="1" labelText="Atlas feature id [% @atlas_featureid %]" htmlState="0" halign="1">
-   <LabelFont description="QGIS Vera Sans,20,-1,5,50,0,0,0,0,0" style="Medium Italic"/>
+   <LabelFont description="QGIS Vera Sans,20,-1,5,50,0,0,0,0,0" style="Bold"/>
    <FontColor red="0" blue="0" green="0"/>
    <ComposerItem pagey="7.03957" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="20.1588" y="7.03957" visibility="1" zValue="3" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="171.19" outlineWidth="0.3" excludeFromExports="0" uuid="{d06c40d5-844d-4042-a77c-7796a0ad452a}" height="17.9189" itemRotation="0" frame="false" pagex="20.1588">
     <FrameColor alpha="255" red="0" blue="0" green="0"/>

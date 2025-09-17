@@ -197,6 +197,13 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      */
     bool isNull() const;
 
+    /**
+     * Returns TRUE if the widget adopts fixed size constraints.
+     * 
+     * \since QGIS 4.0
+     */
+    bool fixedSizeConstraints() const;
+
   public slots:
 
     /**
@@ -267,6 +274,13 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * \since QGIS 3.30
      */
     void setToDefaultSymbol();
+
+    /**
+     * Sets whether the widget adopts fixed size constraints.
+     * 
+     * \since QGIS 4.0
+     */
+    void setFixedSizeContraints( bool fixedSizeConstraints );
 
   signals:
 
@@ -341,6 +355,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     bool mPickingColor = false;
 
     bool mShowNull = false;
+
+    bool mFixedSizeContraints = true;
 
     std::unique_ptr<QgsSymbol> mDefaultSymbol;
 
