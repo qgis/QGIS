@@ -66,6 +66,7 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     static void moveProjectToSchema( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
     static void saveCurrentProject( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
     static void saveProjects( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
+    static void moveProjectsToSchema( const QList<QgsPGProjectItem *> &selection, QgsDataItemGuiContext context );
 };
 
 #endif // QGSPOSTGRESDATAITEMGUIPROVIDER_H
