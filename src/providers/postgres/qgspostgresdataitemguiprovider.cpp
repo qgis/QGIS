@@ -215,7 +215,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
             return qobject_cast<QgsPGProjectItem *>( parent );
           } );
 
-          QAction *moveProjectsAction = new QAction( tr( "Move Projects…" ), menu );
+          QAction *moveProjectsAction = new QAction( tr( "Move Projects to Schema…" ), menu );
           connect( moveProjectsAction, &QAction::triggered, this, [listOfProjects, context] { moveProjectsToSchema( listOfProjects, context ); } );
           menu->addAction( moveProjectsAction );
         }
