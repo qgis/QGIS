@@ -154,12 +154,6 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( QString authcfg ) const
   return uri;
 }
 
-
-QString QgsStacAsset::toHtml() const
-{
-  return toHtml( QString() );
-}
-
 QString QgsStacAsset::toHtml( const QString &assetId ) const
 {
   QString html = QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Asset" ) );
@@ -172,4 +166,21 @@ QString QgsStacAsset::toHtml( const QString &assetId ) const
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "roles" ), roles().join( ',' ) );
   html += QStringLiteral( "</table><br/>\n" );
   return html;
+}
+
+bool QgsStacAsset::isDownloadable() const
+{
+  /*
+   * Directory-based data types like Zarr should not offer downloads.
+   * Download attempts might
+   * - fail with 4xx,
+   * - succeed but download an HTML directory listing response, or
+   * - something else that does not meet the user's needs.
+   */
+  if ( formatName() == QLatin1String( "Zarr" ) )
+  {
+    return false;
+  }
+
+  return true;
 }
