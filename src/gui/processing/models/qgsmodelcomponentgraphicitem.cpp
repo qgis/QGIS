@@ -1271,7 +1271,6 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
         const QgsProcessingParameterDefinition *param = params.at( index );
         QString name = param->name();
         QString title = param->description();
-
         QgsProcessingModelChildParameterSources paramSources = child->parameterSources().value( name );
         QString parameterValueAsString;
 
