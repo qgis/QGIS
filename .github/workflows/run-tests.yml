@@ -52,7 +52,7 @@ jobs:
             with-grass7: OFF
             with-grass8: OFF
             with-pdf4qt: OFF
-            with-sfcgal: OFF
+            with-sfcgal: ON
             with-compile-commands: ON
             with-model-test: ON
             with-pg-test: ON
