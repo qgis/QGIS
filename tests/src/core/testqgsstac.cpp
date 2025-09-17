@@ -194,6 +194,7 @@ void TestQgsStac::testParseLocalItem()
   QCOMPARE( asset.href(), basePath + QStringLiteral( "20201211_223832_CS2_analytic.tif" ) );
   QVERIFY( asset.isCloudOptimized() );
   QCOMPARE( asset.formatName(), QStringLiteral( "COG" ) );
+  QVERIFY( asset.isDownloadable() );
 
   QgsMimeDataUtils::Uri uri = asset.uri();
   QCOMPARE( uri.uri, basePath + QStringLiteral( "20201211_223832_CS2_analytic.tif" ) );
@@ -207,6 +208,7 @@ void TestQgsStac::testParseLocalItem()
   QVERIFY( !uri.isValid() );
   QVERIFY( uri.uri.isEmpty() );
   QVERIFY( uri.name.isEmpty() );
+  QVERIFY( asset.isDownloadable() );
 
   // normal geotiff is not cloud optimized
   asset = item->assets().value( QStringLiteral( "udm" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
@@ -216,12 +218,14 @@ void TestQgsStac::testParseLocalItem()
   QVERIFY( !uri.isValid() );
   QVERIFY( uri.uri.isEmpty() );
   QVERIFY( uri.name.isEmpty() );
+  QVERIFY( asset.isDownloadable() );
 
   // Zarr recognised as cloud optimized
   asset = item->assets().value( QStringLiteral( "zarr-store" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
   QVERIFY( asset.isCloudOptimized() );
   QCOMPARE( asset.formatName(), QStringLiteral( "Zarr" ) );
   QCOMPARE( asset.uri().layerType, QStringLiteral( "raster" ) );
+  QVERIFY( !asset.isDownloadable() );
 }
 
 void TestQgsStac::testParseLocalItemCollection()

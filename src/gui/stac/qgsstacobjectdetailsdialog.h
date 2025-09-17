@@ -35,7 +35,7 @@ class QgsStacObjectDetailsDialog : public QDialog, private Ui::QgsStacObjectDeta
     void setAuthcfg( const QString &authcfg );
 
     void setContentFromStacObject( QgsStacObject *stacObject );
-    void setContentFromStacAsset( const QgsStacAsset *stacAsset );
+    void setContentFromStacAsset( const QString &assetId, const QgsStacAsset *stacAsset );
 
   private:
     QString mAuthcfg;
