@@ -282,7 +282,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     {
       QgsPostgresProjectUri projectUri( postUri );
       projectUri.projectName = projectName;
-      items.append( new QgsPGProjectItem( this, projectName, projectUri ) );
+      items.append( new QgsPGProjectItem( this, projectName, projectUri, mName, mConnectionName ) );
     }
   }
 
@@ -421,8 +421,8 @@ bool QgsPGSchemaItem::layerCollection() const
   return true;
 }
 
-QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri postgresProjectUri )
-  : QgsProjectItem( parent, name, QgsPostgresProjectStorage::encodeUri( postgresProjectUri ), QStringLiteral( "postgres" ) ), mProjectUri( postgresProjectUri )
+QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri postgresProjectUri, const QString &schema, const QString &connectionName )
+  : QgsProjectItem( parent, name, QgsPostgresProjectStorage::encodeUri( postgresProjectUri ), QStringLiteral( "postgres" ) ), mProjectUri( postgresProjectUri ), mConnectionName( connectionName ), mSchema( schema )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
 }
