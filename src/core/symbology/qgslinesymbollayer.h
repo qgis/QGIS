@@ -835,13 +835,14 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     typedef QList<QPair<double, double>> BlankSegments SIP_SKIP;
 
     /**
-     * Parse blank segments string representation \a strBlankSegments for \a partNum part and \a ring.
+     * Parse blank segments string representation \a strBlankSegments
      * The blank segments are expected to be expressed in \a unit and converted in pixels regarding render context \a renderContext
-     * Returns a list of start and end distance expressed in pixels
+     * \a error is populated with a descritive message if the string representation is not well formatted
+     * Returns a list of start and end distance expressed in pixels for each part and rings
      *
      * \since QGIS 4.0
      */
-    static BlankSegments parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, int partNum, int iRing ) SIP_SKIP;
+    static QList<QList<BlankSegments>> parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, QString &error ) SIP_SKIP;
 
 
   protected:
