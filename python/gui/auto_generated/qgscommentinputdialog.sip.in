@@ -13,10 +13,6 @@ class QgsCommentInputDialog : QDialog
 %Docstring(signature="appended")
 Dialog which displays comment for a specific item.
 
-.. warning::
-
-   The provider must support the connection API methods in its :py:class:`QgsProviderMetadata` implementation.
-
 .. versionadded:: 4.0
 %End
 

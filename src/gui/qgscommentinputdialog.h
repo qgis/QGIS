@@ -25,8 +25,6 @@
  * \ingroup gui
  * \brief Dialog which displays comment for a specific item.
  *
- * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation.
- *
  * \since QGIS 4.0
  */
 class GUI_EXPORT QgsCommentInputDialog : public QDialog
