@@ -331,6 +331,7 @@ class PythonConsoleWidget(QWidget):
         self.runSelectedEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.runSelectedEditorButton.setIconVisibleInMenu(True)
         self.runSelectedEditorButton.setToolTip(runSelectedEditorBt + " <b>Ctrl+e</b>")
+        self.runSelectedEditorButton.setShortcut("Ctrl+E")
         self.runSelectedEditorButton.setText(runSelectedEditorBt)
 
         # Action Toggle comment
