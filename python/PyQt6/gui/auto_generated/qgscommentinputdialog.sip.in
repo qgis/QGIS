@@ -8,6 +8,7 @@
 
 
 
+
 class QgsCommentInputDialog : QDialog
 {
 %Docstring(signature="appended")
