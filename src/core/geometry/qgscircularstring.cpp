@@ -588,7 +588,7 @@ double QgsCircularString::length() const
   double length = 0;
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
-    length += QgsGeometryUtilsBase::circleLength( mX[i], mY[i], mX[i + 1], mY[i + 1], mX[i + 2], mY[i + 2] );
+    length += QgsGeometryUtils::circleLength( mX[i], mY[i], mX[i + 1], mY[i + 1], mX[i + 2], mY[i + 2] );
   }
   return length;
 }
@@ -1590,7 +1590,7 @@ double QgsCircularString::segmentLength( QgsVertexId startVertex ) const
   double y2 = mY.at( startVertex.vertex + 1 );
   double x3 = mX.at( startVertex.vertex + 2 );
   double y3 = mY.at( startVertex.vertex + 2 );
-  return QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
+  return QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 );
 }
 
 double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const
@@ -1598,15 +1598,9 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
   // Convert QgsVertexId to simple vertex numbers for curves (single ring, single part)
   if ( fromVertex.part != 0 || fromVertex.ring != 0 || toVertex.part != 0 || toVertex.ring != 0 )
     return -1.0;
-    
-  int fromVertexNumber = fromVertex.vertex;
-  int toVertexNumber = toVertex.vertex;
-  
-  if ( fromVertexNumber < 0 || fromVertexNumber >= numPoints() || toVertexNumber < 0 || toVertexNumber >= numPoints() )
-    return -1.0;
 
-  if ( fromVertexNumber == toVertexNumber )
-    return 0.0;
+  const int fromVertexNumber = fromVertex.vertex;
+  const int toVertexNumber = toVertex.vertex;
 
   // Ensure fromVertex < toVertex for simplicity
   if ( fromVertexNumber > toVertexNumber )
@@ -1614,20 +1608,28 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
     return distanceBetweenVertices( QgsVertexId( 0, 0, toVertexNumber ), QgsVertexId( 0, 0, fromVertexNumber ) );
   }
 
+  const int nPoints = numPoints();
+  if ( fromVertexNumber < 0 || fromVertexNumber >= nPoints || toVertexNumber < 0 || toVertexNumber >= nPoints )
+    return -1.0;
+
+  if ( fromVertexNumber == toVertexNumber )
+    return 0.0;
+
+  const double *xData = mX.constData();
+  const double *yData = mY.constData();
   double totalDistance = 0.0;
-  int nPoints = numPoints();
 
   // Iterate through the arcs, accumulating distance between fromVertex and toVertex
   for ( int i = 0; i < nPoints - 2; i += 2 )
   {
     // Arc segment from i to i+2, with curve point at i+1
-    double x1 = mX.at( i );     // Start point
-    double y1 = mY.at( i );
-    double x2 = mX.at( i + 1 ); // Curve point  
-    double y2 = mY.at( i + 1 );
-    double x3 = mX.at( i + 2 ); // End point
-    double y3 = mY.at( i + 2 );
-    
+    double x1 = xData[i];     // Start point
+    double y1 = yData[i];
+    double x2 = xData[i + 1]; // Curve point
+    double y2 = yData[i + 1];
+    double x3 = xData[i + 2]; // End point
+    double y3 = yData[i + 2];
+
     // Check if both vertices are in this arc segment
     if ( fromVertexNumber >= i && toVertexNumber <= i + 2 )
     {
@@ -1642,7 +1644,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
         double centerX, centerY, radius;
         QgsGeometryUtils::circleCenterRadius( QgsPoint( x1, y1 ), QgsPoint( x2, y2 ), QgsPoint( x3, y3 ), radius, centerX, centerY );
         // Calculate arc length from vertex i to vertex i+1
-        int relativeFrom = fromVertexNumber - i;  // Should be 0 
+        int relativeFrom = fromVertexNumber - i;  // Should be 0
         int relativeTo = toVertexNumber - i;      // Should be 1
         return QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, relativeFrom, relativeTo );
       }
@@ -1653,7 +1655,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
         QgsGeometryUtils::circleCenterRadius( QgsPoint( x1, y1 ), QgsPoint( x2, y2 ), QgsPoint( x3, y3 ), radius, centerX, centerY );
         // Calculate arc length from vertex i+1 to vertex i+2
         int relativeFrom = fromVertexNumber - i;  // Should be 1
-        int relativeTo = toVertexNumber - i;      // Should be 2  
+        int relativeTo = toVertexNumber - i;      // Should be 2
         return QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, relativeFrom, relativeTo );
       }
       else if ( fromVertexNumber == i + 1 && toVertexNumber == i + 1 )
@@ -1661,12 +1663,12 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
         return 0.0; // Same point
       }
     }
-    
+
     // Handle cases where vertices span multiple segments
     bool startInThisSegment = ( fromVertexNumber >= i && fromVertexNumber <= i + 2 );
     bool endInThisSegment = ( toVertexNumber >= i && toVertexNumber <= i + 2 );
     bool segmentInRange = ( fromVertexNumber < i && toVertexNumber > i + 2 );
-    
+
     if ( startInThisSegment && !endInThisSegment )
     {
       // fromVertex is in this segment, toVertex is beyond
@@ -1771,7 +1773,7 @@ QgsPoint *QgsCircularString::interpolatePoint( const double distance ) const
     double z3 = z ? *z++ : 0.0;
     double m3 = m ? *m++ : 0.0;
 
-    const double segmentLength = QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
+    const double segmentLength = QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 );
     if ( distance < distanceTraversed + segmentLength || qgsDoubleNear( distance, distanceTraversed + segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
@@ -1845,7 +1847,7 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
     double m3 = m ? *m++ : 0.0;
 
     bool addedSegmentEnd = false;
-    const double segmentLength = QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
+    const double segmentLength = QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 );
     if ( distanceTraversed <= startDistance && startDistance < distanceTraversed + segmentLength )
     {
       // start point falls on this segment
