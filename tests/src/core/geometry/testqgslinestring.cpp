@@ -2313,21 +2313,21 @@ void TestQgsLineString::extend()
 
   QgsLineString lsStackedStart;
   lsStackedStart.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 4, 0 ) << QgsPoint( 5, 0 ) );
-  lsStackedStart.extend( 1, 0 );  
+  lsStackedStart.extend( 1, 0, false );  
   QCOMPARE( lsStackedStart.pointN( 0 ), QgsPoint( Qgis::WkbType::Point, 3, 0 ) );
   QCOMPARE( lsStackedStart.pointN( 1 ), QgsPoint( Qgis::WkbType::Point, 4, 0 ) );
   QCOMPARE( lsStackedStart.pointN( 2 ), QgsPoint( Qgis::WkbType::Point, 5, 0 ) );
 
   QgsLineString lsStackedEnd;
   lsStackedEnd.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 5, 0 ) << QgsPoint( 5, 0 ) );
-  lsStackedEnd.extend( 0, 1 );  
+  lsStackedEnd.extend( 0, 1, false );  
   QCOMPARE( lsStackedEnd.pointN( 0 ), QgsPoint( Qgis::WkbType::Point, 4, 0 ) );
   QCOMPARE( lsStackedEnd.pointN( 1 ), QgsPoint( Qgis::WkbType::Point, 5, 0 ) );
   QCOMPARE( lsStackedEnd.pointN( 2 ), QgsPoint( Qgis::WkbType::Point, 6, 0 ) );
 
   QgsLineString lsStackedBoth;
   lsStackedBoth.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 4, 0 ) << QgsPoint( 5, 0 ) << QgsPoint( 5, 0 ) );
-  lsStackedBoth.extend( 1, 1 );  
+  lsStackedBoth.extend( 1, 1, false );  
   QCOMPARE( lsStackedBoth.pointN( 0 ), QgsPoint( Qgis::WkbType::Point, 3, 0 ) );
   QCOMPARE( lsStackedBoth.pointN( 1 ), QgsPoint( Qgis::WkbType::Point, 4, 0 ) );
   QCOMPARE( lsStackedBoth.pointN( 2 ), QgsPoint( Qgis::WkbType::Point, 5, 0 ) );
@@ -2346,17 +2346,17 @@ void TestQgsLineString::extend()
   lsStackedBothStrict.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 4, 0 ) << QgsPoint( 5, 0 ) << QgsPoint( 5, 0 ) );
   QVERIFY_EXCEPTION_THROWN( lsStackedBothStrict.extend( 1, 1, true ), QgsException );
 
-  // Test partial stacked vertices in lenient mode (default)
+  // Test partial stacked vertices in lenient mode 
   QgsLineString lsPartialStacked;
   lsPartialStacked.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 5, 0 ) << QgsPoint( 5, 0 ) );
-  lsPartialStacked.extend( 1, 0 ); 
+  lsPartialStacked.extend( 1, 0, false ); 
   QCOMPARE( lsPartialStacked.pointN( 0 ), QgsPoint( Qgis::WkbType::Point, 3, 0 ) );
   QCOMPARE( lsPartialStacked.pointN( 1 ), QgsPoint( Qgis::WkbType::Point, 5, 0 ) );
   QCOMPARE( lsPartialStacked.pointN( 2 ), QgsPoint( Qgis::WkbType::Point, 5, 0 ) );
 
   QgsLineString lsAllStacked;
   lsAllStacked.setPoints( QgsPointSequence() << QgsPoint( 4, 0 ) << QgsPoint( 4, 0 ) << QgsPoint( 4, 0 ) );
-  lsAllStacked.extend( 1, 1 );
+  lsAllStacked.extend( 1, 1, false );
   QCOMPARE( lsAllStacked.pointN( 0 ), QgsPoint( Qgis::WkbType::Point, 4, 0 ) );
   QCOMPARE( lsAllStacked.pointN( 1 ), QgsPoint( Qgis::WkbType::Point, 4, 0 ) );
   QCOMPARE( lsAllStacked.pointN( 2 ), QgsPoint( Qgis::WkbType::Point, 4, 0 ) );
