@@ -386,6 +386,8 @@ static bool resampleSingleBandRasterStatic( GDALDatasetH hSrcDS, GDALDatasetH hD
   double noDataValue = GDALGetRasterNoDataValue( GDALGetRasterBand( hDstDS, 1 ), nullptr );
   psWarpOptions->padfDstNoDataReal = reinterpret_cast< double * >( CPLMalloc( sizeof( double ) * 1 ) );
   psWarpOptions->padfDstNoDataReal[0] = noDataValue;
+  psWarpOptions->padfSrcNoDataReal = reinterpret_cast< double * >( CPLMalloc( sizeof( double ) * 1 ) );
+  psWarpOptions->padfSrcNoDataReal[0] = noDataValue;
   psWarpOptions->eResampleAlg = resampleAlg;
 
   // Establish reprojection transformer.
