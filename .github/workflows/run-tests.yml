@@ -62,7 +62,7 @@ jobs:
             with-oracle-test: ON
             with-qspatialite: ON
             with-server-landingpage-webapp: ON
-            LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
+            #LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
             unity-builds: ON
 
