@@ -1532,7 +1532,7 @@ void QgsLineString::visitPointsByRegularDistance( const double distance, const s
   double pZ = std::numeric_limits<double>::quiet_NaN();
   double pM = std::numeric_limits<double>::quiet_NaN();
   double nextPointDistance = distance;
-  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon ();
+  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon();
   for ( int i = 1; i < totalPoints; ++i )
   {
     double thisX = *x++;
@@ -2823,15 +2823,9 @@ double QgsLineString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVertex
   // Convert QgsVertexId to simple vertex numbers for linestrings (single ring, single part)
   if ( fromVertex.part != 0 || fromVertex.ring != 0 || toVertex.part != 0 || toVertex.ring != 0 )
     return -1.0;
-    
-  int fromVertexNumber = fromVertex.vertex;
-  int toVertexNumber = toVertex.vertex;
-  
-  if ( fromVertexNumber < 0 || fromVertexNumber >= numPoints() || toVertexNumber < 0 || toVertexNumber >= numPoints() )
-    return -1.0;
 
-  if ( fromVertexNumber == toVertexNumber )
-    return 0.0;
+  const int fromVertexNumber = fromVertex.vertex;
+  const int toVertexNumber = toVertex.vertex;
 
   // Ensure fromVertex < toVertex for simplicity
   if ( fromVertexNumber > toVertexNumber )
@@ -2839,22 +2833,33 @@ double QgsLineString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVertex
     return distanceBetweenVertices( QgsVertexId( 0, 0, toVertexNumber ), QgsVertexId( 0, 0, fromVertexNumber ) );
   }
 
+  const int nPoints = numPoints();
+  if ( fromVertexNumber < 0 || fromVertexNumber >= nPoints || toVertexNumber < 0 || toVertexNumber >= nPoints )
+    return -1.0;
+
+  if ( fromVertexNumber == toVertexNumber )
+    return 0.0;
+
+  const bool is3DGeometry = is3D();
+  const double *xData = mX.constData();
+  const double *yData = mY.constData();
+  const double *zData = is3DGeometry ? mZ.constData() : nullptr;
   double totalDistance = 0.0;
-  
+
   // For linestring, just accumulate Euclidean distances between consecutive points
   for ( int i = fromVertexNumber; i < toVertexNumber; ++i )
   {
-    double dx = mX[i + 1] - mX[i];
-    double dy = mY[i + 1] - mY[i];
+    double dx = xData[i + 1] - xData[i];
+    double dy = yData[i + 1] - yData[i];
     double dz = 0.0;
-    
-    if ( is3D() && i + 1 < mZ.size() )
+
+    if ( is3DGeometry && i + 1 < mZ.size() )
     {
-      dz = mZ[i + 1] - mZ[i];
+      dz = zData[i + 1] - zData[i];
     }
-    
+
     totalDistance += std::sqrt( dx * dx + dy * dy + dz * dz );
   }
-  
+
   return totalDistance;
 }
