@@ -62,9 +62,9 @@ class TestQgsMarkerLineSymbol : public QgsTest
     void pointNumVertex();
     void collectPoints_data();
     void collectPoints();
-    void parseBlankArea_data();
-    void parseBlankArea();
-    void parseBlankAreaMapUnits();
+    void parseBlankSegments_data();
+    void parseBlankSegments();
+    void parseBlankSegmentsMapUnits();
 
   private:
     bool render( const QString &fileName );
@@ -421,47 +421,47 @@ void TestQgsMarkerLineSymbol::collectPoints()
   QCOMPARE( dest, expected );
 }
 
-void TestQgsMarkerLineSymbol::parseBlankArea_data()
+void TestQgsMarkerLineSymbol::parseBlankSegments_data()
 {
-  QTest::addColumn<QString>( "strBlankArea" );
+  QTest::addColumn<QString>( "strBlankSegments" );
   QTest::addColumn<int>( "partNum" );
   QTest::addColumn<int>( "iRing" );
-  QTest::addColumn<QgsTemplatedLineSymbolLayerBase::BlankAreas>( "expectedBlankAreas" );
+  QTest::addColumn<QgsTemplatedLineSymbolLayerBase::BlankSegments>( "expectedBlankSegments" );
 
-  QTest::newRow( "simple" ) << QStringLiteral( "(((1 2, 3 4)))" ) << 1 << 0 << QgsTemplatedLineSymbolLayerBase::BlankAreas { { 1, 2 }, { 3, 4 } };
-  QTest::newRow( "multipart and ring, part 1, ring 0" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 1 << 0 << QgsTemplatedLineSymbolLayerBase::BlankAreas { { 1, 2 }, { 3, 4 } };
-  QTest::newRow( "multipart and ring, part 2, ring 0" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 2 << 0 << QgsTemplatedLineSymbolLayerBase::BlankAreas { { 9, 10 }, { 11, 12 } };
-  QTest::newRow( "multipart and ring, part 1, ring 1" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 1 << 1 << QgsTemplatedLineSymbolLayerBase::BlankAreas { { 5, 6 }, { 7, 8 } };
-  QTest::newRow( "multipart and ring, part 2, ring 1" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 2 << 1 << QgsTemplatedLineSymbolLayerBase::BlankAreas { { 13, 14 }, { 15, 16 } };
-  QTest::newRow( "multipart and ring, invalid part" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 3 << 0 << QgsTemplatedLineSymbolLayerBase::BlankAreas {};
-  QTest::newRow( "multipart and ring, invalid ring" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 1 << 2 << QgsTemplatedLineSymbolLayerBase::BlankAreas {};
-  QTest::newRow( "malformed" ) << QStringLiteral( "(((test)))" ) << 1 << 0 << QgsTemplatedLineSymbolLayerBase::BlankAreas {};
-  QTest::newRow( "Distances not ordered" ) << QStringLiteral( "(((3 4,1 2)))" ) << 1 << 0 << QgsTemplatedLineSymbolLayerBase::BlankAreas {};
-  QTest::newRow( "start > end" ) << QStringLiteral( "(((2 1,3 4)))" ) << 1 << 0 << QgsTemplatedLineSymbolLayerBase::BlankAreas {};
+  QTest::newRow( "simple" ) << QStringLiteral( "(((1 2, 3 4)))" ) << 1 << 0 << QgsTemplatedLineSymbolLayerBase::BlankSegments { { 1, 2 }, { 3, 4 } };
+  QTest::newRow( "multipart and ring, part 1, ring 0" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 1 << 0 << QgsTemplatedLineSymbolLayerBase::BlankSegments { { 1, 2 }, { 3, 4 } };
+  QTest::newRow( "multipart and ring, part 2, ring 0" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 2 << 0 << QgsTemplatedLineSymbolLayerBase::BlankSegments { { 9, 10 }, { 11, 12 } };
+  QTest::newRow( "multipart and ring, part 1, ring 1" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 1 << 1 << QgsTemplatedLineSymbolLayerBase::BlankSegments { { 5, 6 }, { 7, 8 } };
+  QTest::newRow( "multipart and ring, part 2, ring 1" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 2 << 1 << QgsTemplatedLineSymbolLayerBase::BlankSegments { { 13, 14 }, { 15, 16 } };
+  QTest::newRow( "multipart and ring, invalid part" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 3 << 0 << QgsTemplatedLineSymbolLayerBase::BlankSegments {};
+  QTest::newRow( "multipart and ring, invalid ring" ) << QStringLiteral( "(((1 2, 3 4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" ) << 1 << 2 << QgsTemplatedLineSymbolLayerBase::BlankSegments {};
+  QTest::newRow( "malformed" ) << QStringLiteral( "(((test)))" ) << 1 << 0 << QgsTemplatedLineSymbolLayerBase::BlankSegments {};
+  QTest::newRow( "Distances not ordered" ) << QStringLiteral( "(((3 4,1 2)))" ) << 1 << 0 << QgsTemplatedLineSymbolLayerBase::BlankSegments {};
+  QTest::newRow( "start > end" ) << QStringLiteral( "(((2 1,3 4)))" ) << 1 << 0 << QgsTemplatedLineSymbolLayerBase::BlankSegments {};
 }
 
-void TestQgsMarkerLineSymbol::parseBlankArea()
+void TestQgsMarkerLineSymbol::parseBlankSegments()
 {
-  QFETCH( QString, strBlankArea );
+  QFETCH( QString, strBlankSegments );
   QFETCH( int, partNum );
   QFETCH( int, iRing );
-  QFETCH( QgsTemplatedLineSymbolLayerBase::BlankAreas, expectedBlankAreas );
+  QFETCH( QgsTemplatedLineSymbolLayerBase::BlankSegments, expectedBlankSegments );
 
   QgsRenderContext rc;
-  QgsTemplatedLineSymbolLayerBase::BlankAreas blankAreas = QgsTemplatedLineSymbolLayerBase::parseBlankAreas( strBlankArea, rc, Qgis::RenderUnit::Pixels, partNum, iRing );
+  QgsTemplatedLineSymbolLayerBase::BlankSegments blanksegments = QgsTemplatedLineSymbolLayerBase::parseBlankSegments( strBlankSegments, rc, Qgis::RenderUnit::Pixels, partNum, iRing );
 
-  QCOMPARE( blankAreas, expectedBlankAreas );
+  QCOMPARE( blanksegments, expectedBlankSegments );
 }
 
-void TestQgsMarkerLineSymbol::parseBlankAreaMapUnits()
+void TestQgsMarkerLineSymbol::parseBlankSegmentsMapUnits()
 {
   QgsRenderContext rc;
   QgsMapToPixel m2p( 2 );
   rc.setMapToPixel( m2p );
 
-  QgsTemplatedLineSymbolLayerBase::BlankAreas blankAreas = QgsTemplatedLineSymbolLayerBase::parseBlankAreas( QStringLiteral( "(((1 2, 3 4)))" ), rc, Qgis::RenderUnit::MapUnits, 1, 0 );
-  QgsTemplatedLineSymbolLayerBase::BlankAreas expectedBlankArea { { 0.5, 1 }, { 1.5, 2 } };
-  QCOMPARE( blankAreas, expectedBlankArea );
+  QgsTemplatedLineSymbolLayerBase::BlankSegments blanksegments = QgsTemplatedLineSymbolLayerBase::parseBlankSegments( QStringLiteral( "(((1 2, 3 4)))" ), rc, Qgis::RenderUnit::MapUnits, 1, 0 );
+  QgsTemplatedLineSymbolLayerBase::BlankSegments expectedBlankSegments { { 0.5, 1 }, { 1.5, 2 } };
+  QCOMPARE( blanksegments, expectedBlankSegments );
 }
 
 bool TestQgsMarkerLineSymbol::render( const QString &testType )

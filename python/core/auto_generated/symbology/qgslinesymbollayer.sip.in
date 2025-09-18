@@ -951,20 +951,20 @@ direction is averaged when calculating individual symbol angles.
 %End
 
 
-    void setBlankAreasUnit( Qgis::RenderUnit unit );
+    void setBlankSegmentsUnit( Qgis::RenderUnit unit );
 %Docstring
-Sets the ``unit`` for blank areas start and end distances
+Sets the ``unit`` for blank segments start and end distances
 
-.. seealso:: :py:func:`blankAreasUnit`
+.. seealso:: :py:func:`blankSegmentsUnit`
 
 .. versionadded:: 4.0
 %End
 
-    Qgis::RenderUnit blankAreasUnit() const;
+    Qgis::RenderUnit blankSegmentsUnit() const;
 %Docstring
-Returns the unit for for blank areas start and end distances
+Returns the unit for for blank segments start and end distances
 
-.. seealso:: :py:func:`setBlankAreasUnit`
+.. seealso:: :py:func:`setBlankSegmentsUnit`
 
 .. versionadded:: 4.0
 %End
