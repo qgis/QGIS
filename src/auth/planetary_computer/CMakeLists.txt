@@ -25,9 +25,6 @@ add_library(authmethod_planetary_computer_a STATIC ${AUTH_MSPC_SRCS} ${AUTH_MSPC
 
 target_include_directories(authmethod_planetary_computer_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/planetary_computer/core)
 
-# require c++17
-target_compile_features(authmethod_planetary_computer_a PRIVATE cxx_std_17)
-
 target_link_libraries(authmethod_planetary_computer_a qgis_core)
 
 if (WITH_GUI)
@@ -46,9 +43,6 @@ if (FORCE_STATIC_LIBS)
 else()
   # dynamically loaded module
   add_library(authmethod_planetary_computer MODULE ${AUTH_MSPC_SRCS} ${AUTH_MSPC_HDRS} ${AUTH_MSPC_UIS_H})
-
-  # require c++17
-  target_compile_features(authmethod_planetary_computer PRIVATE cxx_std_17)
 
   target_link_libraries(authmethod_planetary_computer qgis_core)
 

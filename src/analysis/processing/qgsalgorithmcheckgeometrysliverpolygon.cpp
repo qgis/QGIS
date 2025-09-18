@@ -94,7 +94,7 @@ void QgsGeometryCheckSliverPolygonAlgorithm::initAlgorithm( const QVariantMap &c
   ) );
 
   addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "MAX_THINNESS" ), QObject::tr( "Maximum thinness" ), Qgis::ProcessingNumberParameterType::Double, 20, false, 0.0
+    QStringLiteral( "MAX_THINNESS" ), QObject::tr( "Maximum thinness" ), Qgis::ProcessingNumberParameterType::Double, 20, false, 1.0
   ) );
   addParameter( new QgsProcessingParameterNumber(
     QStringLiteral( "MAX_AREA" ), QObject::tr( "Maximum area (map units squared)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0

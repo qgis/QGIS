@@ -52,8 +52,8 @@ QgsModelGraphicsView::QgsModelGraphicsView( QWidget *parent )
   mMidMouseButtonPanTool = new QgsModelViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsModelViewToolTemporaryKeyZoom( this );
 
-  connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, [=] { friendlySetSceneRect(); } );
-  connect( verticalScrollBar(), &QScrollBar::valueChanged, this, [=] { friendlySetSceneRect(); } );
+  connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
+  connect( verticalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
 
   mSnapper.setSnapToGrid( true );
 }
@@ -400,7 +400,7 @@ void QgsModelGraphicsView::setModelScene( QgsModelGraphicsScene *scene )
 {
   setScene( scene );
 
-  connect( scene, &QgsModelGraphicsScene::sceneRectChanged, this, [=] { friendlySetSceneRect(); } );
+  connect( scene, &QgsModelGraphicsScene::sceneRectChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
 
   // IMPORTANT!
   // previous snap markers, snap lines are owned by previous layout - so don't delete them here!

@@ -14,8 +14,6 @@ ADD_FLEX_BISON_DEPENDENCY(QgsMeshCalcLexer QgsMeshCalcParser)
 if (WITH_PDF4QT)
   SET(PDF4QT_BUILD_ONLY_CORE_LIBRARY TRUE)
   SET(PDF4QT_ENABLE_OPENGL FALSE)
-  set(CMAKE_CXX_STANDARD 20)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
   SUBDIRS(${CMAKE_SOURCE_DIR}/external/PDF4QT)
 endif()
 
@@ -2412,8 +2410,8 @@ else()
   target_link_libraries(qgis_core meshoptimizer::meshoptimizer)
 endif()
 
-# require c++17
-target_compile_features(qgis_core PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(qgis_core PUBLIC cxx_std_20)
 
 # Exiv still uses std::auto_ptr
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")

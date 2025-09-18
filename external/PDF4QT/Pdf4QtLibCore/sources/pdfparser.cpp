@@ -1,20 +1,24 @@
-//    Copyright (C) 2018-2023 Jakub Melka
+// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT.  If not, see <https://www.gnu.org/licenses/>.
-
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #include "pdfparser.h"
 #include "pdfconstants.h"
@@ -712,11 +716,7 @@ PDFObject PDFParser::getObject()
     {
         case PDFLexicalAnalyzer::TokenType::Boolean:
         {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::Bool);
-#else
-            Q_ASSERT(m_lookAhead1.data.type() == QVariant::Bool);
-#endif
             const bool value = m_lookAhead1.data.toBool();
             shift();
             return PDFObject::createBool(value);
@@ -724,11 +724,7 @@ PDFObject PDFParser::getObject()
 
         case PDFLexicalAnalyzer::TokenType::Integer:
         {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::LongLong);
-#else
-            Q_ASSERT(m_lookAhead1.data.type() == QVariant::LongLong);
-#endif
             const PDFInteger value = m_lookAhead1.data.toLongLong();
             shift();
 
@@ -738,11 +734,7 @@ PDFObject PDFParser::getObject()
                 m_lookAhead2.type == PDFLexicalAnalyzer::TokenType::Command &&
                 m_lookAhead2.data.toByteArray() == PDF_REFERENCE_COMMAND)
             {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                 Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::LongLong);
-#else
-                Q_ASSERT(m_lookAhead1.data.type() == QVariant::LongLong);
-#endif
                 const PDFInteger generation = m_lookAhead1.data.toLongLong();
                 shift();
                 shift();
@@ -757,11 +749,7 @@ PDFObject PDFParser::getObject()
 
         case PDFLexicalAnalyzer::TokenType::Real:
         {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::Double);
-#else
-            Q_ASSERT(m_lookAhead1.data.type() == QVariant::Double);
-#endif
             const PDFReal value = m_lookAhead1.data.toDouble();
             shift();
             return PDFObject::createReal(value);
@@ -769,11 +757,7 @@ PDFObject PDFParser::getObject()
 
         case PDFLexicalAnalyzer::TokenType::String:
         {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::QByteArray);
-#else
-            Q_ASSERT(m_lookAhead1.data.type() == QVariant::ByteArray);
-#endif
             QByteArray array = m_lookAhead1.data.toByteArray();
             array.shrink_to_fit();
             shift();
@@ -782,11 +766,7 @@ PDFObject PDFParser::getObject()
 
         case PDFLexicalAnalyzer::TokenType::Name:
         {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             Q_ASSERT(m_lookAhead1.data.typeId() == QMetaType::QByteArray);
-#else
-            Q_ASSERT(m_lookAhead1.data.type() == QVariant::ByteArray);
-#endif
             QByteArray array = m_lookAhead1.data.toByteArray();
             array.shrink_to_fit();
             shift();

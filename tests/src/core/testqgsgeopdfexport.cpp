@@ -54,6 +54,7 @@ class TestQgsGeospatialPdfExport : public QgsTest
     void testGroups();
     void testCustomGroups();
     void testGroupOrder();
+    void testLayerOrder();
     void compositionMode();
     void testMutuallyExclusiveGroupsLayers();
     void testMutuallyExclusiveGroupsCustom();
@@ -664,6 +665,83 @@ void TestQgsGeospatialPdfExport::testGroupOrder()
   QCOMPARE( layerTreeList.count(), 2 );
   QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group" ) );
   QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group2" ) );
+}
+
+void TestQgsGeospatialPdfExport::testLayerOrder()
+{
+  TestGeospatialPdfExporter geospatialPdfExporter;
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "a1" ), QMetaType::Type::Int ) );
+  fields.append( QgsField( QStringLiteral( "a2" ), QMetaType::Type::Int ) );
+  QgsFeature f( fields );
+
+  f.setAttributes( QgsAttributes() << 1 << 2 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
+  QgsGeometry renderedBounds( QgsGeometry::fromRect( QgsRectangle( 1, 10, 6, 20 ) ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
+  f.setAttributes( QgsAttributes() << 31 << 32 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 4, 5 ) ) );
+  renderedBounds = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 2 2)" ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
+
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+
+  // test creation of the composition xml
+  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers; // no extra layers for now
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
+  details.layerOrder = QStringList { "layer2", "layer1" };
+
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsgLevel( composition, 1 );
+  QDomDocument doc;
+  doc.setContent( composition );
+
+  QDomNodeList layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
+  QCOMPARE( layerTreeList.count(), 2 );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer1" ) );
+
+  details.layerOrder = QStringList { "layer1", "layer2" };
+  composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsgLevel( composition, 1 );
+  doc.setContent( composition );
+
+  layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
+  QCOMPARE( layerTreeList.count(), 2 );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer1" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
+
+  // layer without attributes
+  QgsAbstractGeospatialPdfExporter::ComponentLayerDetail detail;
+  detail.mapLayerId = QStringLiteral( "layer3" );
+  detail.name = QStringLiteral( "xxx layer 3" );
+  detail.opacity = 0.7;
+  detail.compositionMode = QPainter::CompositionMode_Screen;
+  detail.sourcePdfPath = QStringLiteral( "a pdf.pdf" );
+  renderedLayers << detail;
+
+  details.layerOrder = QStringList { "layer3", "layer1", "layer2" };
+  composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsgLevel( composition, 1 );
+  doc.setContent( composition );
+
+  layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
+  QCOMPARE( layerTreeList.count(), 3 );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "xxx layer 3" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer1" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
+
+  details.layerOrder = QStringList { "layer1", "layer2", "layer3" };
+  composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
+  QgsDebugMsgLevel( composition, 1 );
+  doc.setContent( composition );
+
+  layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
+  QCOMPARE( layerTreeList.count(), 3 );
+  QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer1" ) );
+  QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
+  QCOMPARE( layerTreeList.at( 2 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "xxx layer 3" ) );
 }
 
 void TestQgsGeospatialPdfExport::testMutuallyExclusiveGroupsLayers()

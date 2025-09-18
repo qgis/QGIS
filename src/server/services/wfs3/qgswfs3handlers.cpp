@@ -213,6 +213,17 @@ QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vL
   return publishedFields;
 }
 
+const QString QgsWfs3AbstractItemsHandler::templatePath( const QgsServerApiContext &context ) const
+{
+  // resources/server/api + /ogc/templates/ + operationId + .html
+  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
+  path += QLatin1String( "/ogc/templates/wfs3" );
+  path += '/';
+  path += QString::fromStdString( operationId() );
+  path += QLatin1String( ".html" );
+  return path;
+}
+
 QgsWfs3LandingPageHandler::QgsWfs3LandingPageHandler()
 {
 }
