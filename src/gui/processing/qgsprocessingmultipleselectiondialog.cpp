@@ -27,7 +27,6 @@
 #include "qgsannotationlayer.h"
 #include "qgsvectortilelayer.h"
 #include "qgsproject.h"
-#include "qgsprocessingcontext.h"
 #include "qgsiconutils.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include <QStandardItemModel>
@@ -314,8 +313,8 @@ QVariantList QgsProcessingMultipleSelectionDialog::selectedOptions() const
 // QgsProcessingMultipleInputPanelWidget
 //
 
-QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model, QgsProject *project, QWidget *parent )
-  : QgsProcessingMultipleSelectionPanelWidget( QVariantList(), QVariantList(), parent )
+QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model, QWidget *parent )
+  : QgsProcessingMultipleSelectionPanelWidget( QVariantList(), selectedOptions, parent )
   , mParameter( parameter )
 {
   QPushButton *addFileButton = new QPushButton( tr( "Add File(s)…" ) );
@@ -327,26 +326,15 @@ QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( co
   buttonBox()->addButton( addDirButton, QDialogButtonBox::ActionRole );
   setAcceptDrops( true );
 
-  // populate already selected layer values
-  QgsProcessingContext context;
-  context.setProject( project );
-  for ( const QVariant option : std::as_const( selectedOptions ) )
-  {
-    QIcon icon = QIcon();
-    QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( option.toString(), context, false );
-    if ( layer )
-      icon = QgsIconUtils::iconForLayer( layer );
-
-    addOption( option, mValueFormatter( option ), true, false, icon );
-  }
-
   // Populate "layers" from model sources
   for ( const QgsProcessingModelChildParameterSource &source : modelSources )
   {
     addOption( QVariant::fromValue( source ), source.friendlyIdentifier( model ), false, true );
   }
+}
 
-  // Populate layers from project
+void QgsProcessingMultipleInputPanelWidget::setProject( QgsProject *project )
+{
   if ( mParameter->layerType() != Qgis::ProcessingSourceType::File )
     populateFromProject( project );
 }
@@ -803,12 +791,12 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
 // QgsProcessingMultipleInputDialog
 //
 
-QgsProcessingMultipleInputDialog::QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model, QgsProject *project, QWidget *parent, Qt::WindowFlags flags )
+QgsProcessingMultipleInputDialog::QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   setWindowTitle( tr( "Multiple Selection" ) );
   QVBoxLayout *vLayout = new QVBoxLayout();
-  mWidget = new QgsProcessingMultipleInputPanelWidget( parameter, selectedOptions, modelSources, model, project );
+  mWidget = new QgsProcessingMultipleInputPanelWidget( parameter, selectedOptions, modelSources, model, nullptr );
   vLayout->addWidget( mWidget );
   mWidget->buttonBox()->addButton( QDialogButtonBox::Cancel );
   connect( mWidget->buttonBox(), &QDialogButtonBox::accepted, this, &QDialog::accept );
@@ -821,5 +809,11 @@ QVariantList QgsProcessingMultipleInputDialog::selectedOptions() const
 {
   return mWidget->selectedOptions();
 }
+
+void QgsProcessingMultipleInputDialog::setProject( QgsProject *project )
+{
+  mWidget->setProject( project );
+}
+
 
 ///@endcond

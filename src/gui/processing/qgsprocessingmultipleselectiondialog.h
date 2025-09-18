@@ -226,8 +226,12 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
     /**
      * Constructor for QgsProcessingMultipleInputPanelWidget.
      */
-    QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model = nullptr, QgsProject *project = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Sets the project associated with the widget.
+     */
+    void setProject( QgsProject *project );
 
     /**
      * Returns a list of layer URIs compatible with the \a parameter, from mime data.
@@ -278,13 +282,17 @@ class GUI_EXPORT QgsProcessingMultipleInputDialog : public QDialog
      * The \a selectedOptions list may contain extra options which are not present in \a availableOptions,
      * in which case they will be also added as existing options within the dialog.
      */
-    QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model = nullptr, QgsProject *project = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
     /**
      * Returns the ordered list of selected options.
      */
     QVariantList selectedOptions() const;
 
+    /**
+     * Sets the project associated with the dialog.
+     */
+    void setProject( QgsProject *project );
 
   private:
     QgsProcessingMultipleInputPanelWidget *mWidget = nullptr;
