@@ -262,6 +262,12 @@ bool QgsTriangle::deleteVertex( QgsVertexId position )
   return false;
 }
 
+bool QgsTriangle::deleteVertices( QList<QgsVertexId> positions )
+{
+  Q_UNUSED( positions )
+  return false;
+}
+
 bool QgsTriangle::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
   Q_UNUSED( position )

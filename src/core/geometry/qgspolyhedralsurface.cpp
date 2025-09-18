@@ -760,6 +760,41 @@ bool QgsPolyhedralSurface::deleteVertex( QgsVertexId vId )
   return success;
 }
 
+bool QgsPolyhedralSurface::deleteVertices( QList<QgsVertexId> positions )
+{
+  QMap<int, QList<QgsVertexId>> partVertices;
+  for ( QgsVertexId pos : positions )
+  {
+    partVertices[pos.part].append( pos );
+  }
+
+  QMapIterator<int, QList<QgsVertexId>> partVerticesIt( partVertices );
+  partVerticesIt.toBack();
+  while ( partVerticesIt.hasPrevious() )
+  {
+    partVerticesIt.previous();
+
+    int part = partVerticesIt.key();
+    QList<QgsVertexId> vertexMap = partVerticesIt.value();
+    if ( part < 0 || part >= partCount() )
+      continue; 
+
+    QgsPolygon *patch = mPatches.at( part );
+
+    if ( patch->deleteVertices( vertexMap ) )
+    {
+      // if the patch has lost its exterior ring, remove it
+      if ( !patch->exteriorRing() )
+      {
+        delete mPatches.takeAt( part );
+      }
+      clearCache();
+    }
+  }
+
+  return true;
+}
+
 bool QgsPolyhedralSurface::hasCurvedSegments() const
 {
   return false;
