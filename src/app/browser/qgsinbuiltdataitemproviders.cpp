@@ -2096,14 +2096,14 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         {
           const QString comment = conn2->table( schemaName, tableName ).comment();
 
-          QgsCommentInputDialog dlg = QgsCommentInputDialog( tr( "Table Comment" ), comment );
+          std::unique_ptr<QgsCommentInputDialog> dlg = std::make_unique<QgsCommentInputDialog>( tr( "Table Comment" ), comment );
 
-          if ( dlg.exec() == QDialog::Accepted )
+          if ( dlg->exec() == QDialog::Accepted )
           {
             try
             {
               QgsTemporaryCursorOverride override( Qt::WaitCursor );
-              conn2->setTableComment( schemaName, tableName, dlg.comment() );
+              conn2->setTableComment( schemaName, tableName, dlg->comment() );
             }
             catch ( QgsProviderConnectionException &ex )
             {
