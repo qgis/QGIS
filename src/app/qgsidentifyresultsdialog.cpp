@@ -604,6 +604,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
                                 ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
                                 : QString();
   layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( vlayer->name(), countSuffix ) );
+  
+  
+  updateTextDisplay();
 
 
   // table
@@ -826,6 +829,8 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       }
       else
       {
+        attrItem->setData( 1, REPRESENTED_VALUE_ROLE, representedValue );
+        
         // Check if "Show full text" is enabled
         const bool showFullText = QgsIdentifyResultsDialog::settingShowFullText->value();
         
@@ -2914,11 +2919,24 @@ void QgsIdentifyResultsDialog::updateTextDisplay()
 
 QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool wordWrap )
 {
-  QLabel *valueLabel = new QLabel( text );
+  QLabel *valueLabel = new QLabel();
   valueLabel->setAlignment( Qt::AlignTop | Qt::AlignLeft );
   valueLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
   valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; }" ) );
   valueLabel->setWordWrap( wordWrap );
+  
+  if ( wordWrap && ( text.contains( '\\' ) || text.contains( '/' ) ) )
+  {
+    QString htmlText = text.toHtmlEscaped();
+    htmlText.replace( "/", "/&shy;" );
+    htmlText.replace( "\\", "\\&shy;" );
+    valueLabel->setText( htmlText );
+  }
+  else
+  {
+    valueLabel->setText( text );
+  }
+  
   return valueLabel;
 }
 
