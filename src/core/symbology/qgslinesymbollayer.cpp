@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryutils.h"
 #include "qgslinesymbollayer.h"
 #include "qgscurvepolygon.h"
 #include "qgsdxfexport.h"
@@ -1291,53 +1292,6 @@ void QgsTemplatedLineSymbolLayerBase::setPlacement( Qgis::MarkerLinePlacement pl
 
 QgsTemplatedLineSymbolLayerBase::~QgsTemplatedLineSymbolLayerBase() = default;
 
-
-QgsTemplatedLineSymbolLayerBase::BlankSegments QgsTemplatedLineSymbolLayerBase::parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, int partNum, int iRing )
-{
-  BlankSegments blankSegments;
-
-  // We reuse Wkt MultiPolygon format to define distances tuple (start, end) for polygon/line with
-  // possible parts and rings
-  QgsMultiPolygon polygon;
-
-  if ( !polygon.fromWkt( "MultiPolygon" + strBlankSegments ) )
-  {
-    QgsDebugError( QStringLiteral( "Wrong blank segments format, expect '(((1 2, 3 4),(5 6)),(7 8))' similar to MultiPolygon WKT format where x/y stands for start/end blank segments distances. Instead got: %1" ).arg( strBlankSegments ) );
-    return BlankSegments();
-  }
-
-  const int iPart = partNum - 1; // partNum start at index 1
-  if ( iPart < 0 || iPart >= polygon.partCount()
-       || iRing < 0 || iRing >= polygon.ringCount( iPart ) )
-    return blankSegments;
-
-  double lastEnd = -1;
-  for ( int iVertex = 0; iVertex < polygon.vertexCount( iPart, iRing ); iVertex++ )
-  {
-    const QgsPoint p = polygon.vertexAt( QgsVertexId( iPart, iRing, iVertex ) );
-
-    const double start = renderContext.convertToPainterUnits( p.x(), unit );
-    const double end = renderContext.convertToPainterUnits( p.y(), unit );
-    if ( start > end )
-    {
-      QgsDebugError( QStringLiteral( "Wrong blank segments distances, start (%1) > end (%2): %3" ).arg( start ).arg( end ).arg( strBlankSegments ) );
-      return BlankSegments();
-    }
-
-    if ( start < lastEnd )
-    {
-      QgsDebugError( QStringLiteral( "Wrong blank segments distances, start (%1) < previous end (%2): %3" ).arg( start ).arg( lastEnd ).arg( strBlankSegments ) );
-      return BlankSegments();
-    }
-
-    lastEnd = end;
-
-    blankSegments << QPair<double, double>( start, end );
-  }
-
-  return blankSegments;
-}
-
 void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
@@ -1414,11 +1368,26 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
   }
   averageOver = context.renderContext().convertToPainterUnits( averageOver, mAverageAngleLengthUnit, mAverageAngleLengthMapUnitScale ) / 2.0;
 
-  QList<QPair<double, double>> blankSegments;
+  BlankSegments blankSegments;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::BlankSegments ) )
   {
     const QString strBlankSegments = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::BlankSegments, context.renderContext().expressionContext() );
-    blankSegments = parseBlankSegments( strBlankSegments, context.renderContext(), blankSegmentsUnit(), context.geometryPartNum(), mRingIndex );
+    QString error;
+    QList<QList<BlankSegments>> allBlankSegments = parseBlankSegments( strBlankSegments, context.renderContext(), blankSegmentsUnit(), error );
+
+    if ( !error.isEmpty() )
+    {
+      QgsDebugError( QStringLiteral( "Badly formatted blank segment '%1', skip it: %2" ).arg( strBlankSegments ).arg( error ) );
+    }
+    else
+    {
+      // keep only the part/ring we are currently rendering
+      const int iPart = context.geometryPartNum() - 1;
+      if ( iPart > 0 && mRingIndex > 0 && iPart < allBlankSegments.count() && mRingIndex < allBlankSegments.at( iPart ).count() )
+      {
+        blankSegments = allBlankSegments.at( iPart ).at( mRingIndex );
+      }
+    }
   }
 
   if ( qgsDoubleNear( offset, 0.0 ) )
@@ -2580,6 +2549,195 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
     const bool useSelectedColor = shouldRenderUsingSelectionColor( context );
     renderSymbol( pt, context.feature(), context.renderContext(), -1, useSelectedColor );
   }
+}
+
+QList<QList<QgsTemplatedLineSymbolLayerBase::BlankSegments>> QgsTemplatedLineSymbolLayerBase::parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, QString &error )
+{
+  QString currentNumber;
+  QList<QList<BlankSegments>> blankSegments;
+
+  constexpr QStringView internalError = u"Internal error while processing blank segments";
+
+  auto appendLevel = [&blankSegments, &internalError]( int level )-> QString
+  {
+    if ( level == 0 )
+    {
+      blankSegments.append( QList<QList<std::pair<double, double>>>() );
+    }
+    else if ( level == 1 )
+    {
+      if ( blankSegments.isEmpty() )
+        return QString( internalError ) ; // should not happen
+
+      blankSegments.back().append( QList<std::pair<double, double>>() );
+    }
+    else if ( level == 2 )
+    {
+      if ( blankSegments.isEmpty() || blankSegments.back().isEmpty() )
+        return QString( internalError ); // should not happen
+
+      blankSegments.back().back().append( std::pair<double, double>( -1, -1 ) );
+    }
+    else
+      return QString( internalError ); // should not happen
+
+    return QString();
+  };
+
+
+  auto addNumber = [&blankSegments, &internalError, &currentNumber]( const QChar & c ) -> QString
+
+  {
+    if ( blankSegments.isEmpty() || blankSegments.back().isEmpty() || blankSegments.back().back().isEmpty() )
+    {
+      return QString( internalError ); // should not happen
+    }
+    else if ( ( c == ')' || c == ',' ) && blankSegments.back().back().back().first == -1 )
+    {
+      return QStringLiteral( "Missing number" );
+    }
+    else if ( blankSegments.back().back().back().second != -1 )
+    {
+      return QStringLiteral( "Too many number" );
+    }
+    else
+    {
+      bool ok;
+      const double number = currentNumber.toDouble( &ok );
+      if ( !ok )
+      {
+        return QStringLiteral( "bad formatted number '%1'" ).arg( currentNumber );
+      }
+      else
+      {
+        BlankSegments &segments = blankSegments.back().back();
+        if ( segments.back().first == -1 )
+        {
+          if ( segments.count() > 1 && segments.at( segments.count() - 2 ).second > number )
+          {
+            return QStringLiteral( "Wrong blank segments distances, start (%1) < previous end (%2)" ).arg( number ).arg( segments.at( segments.count() - 2 ).second );
+          }
+          blankSegments.back().back().back().first = number;
+        }
+        else if ( blankSegments.back().back().back().first > number )
+        {
+          return QStringLiteral( "Wrong blank segments distances, start (%1) > end (%2)" ).arg( blankSegments.back().back().back().first ).arg( number );
+        }
+        else
+        {
+          blankSegments.back().back().back().second = number;
+        }
+        currentNumber.clear();
+      }
+    }
+
+    return QString();
+  };
+
+  int level = -1;
+  int iChar = 0;
+  for ( const QChar &c : strBlankSegments )
+  {
+    if ( !currentNumber.isEmpty() && ( c.isSpace() || c == ')' || c == "," ) )
+    {
+      if ( level < 2 )
+      {
+        error = QStringLiteral( "Missing '('" );
+      }
+      else
+      {
+        error = addNumber( c );
+      }
+    }
+
+    if ( !error.isEmpty() )
+    {
+      break;
+    }
+
+    if ( c == '(' )
+    {
+      if ( level >= 2 )
+      {
+        error = QStringLiteral( "Extraneous '('" );
+      }
+      else
+      {
+        error = appendLevel( ++level );
+      }
+    }
+    else if ( c == ')' )
+    {
+      if ( level < 0 )
+      {
+        error = QStringLiteral( "Extraneous ')'" );
+      }
+      else
+      {
+        if ( level == 2 && !blankSegments.isEmpty() && !blankSegments.back().isEmpty() && blankSegments.back().back().count() == 1
+             && blankSegments.back().back().back() == std::pair<double, double>( -1, -1 ) )
+        {
+          blankSegments.back().back().pop_back();
+        }
+        level--;
+      }
+    }
+    else if ( c == ',' )
+    {
+      if ( ( level == 0 && blankSegments.count() == 0 )
+           || ( level == 1 && !blankSegments.isEmpty() && blankSegments.back().count() == 0 )
+           || ( level == 2 && !blankSegments.isEmpty() && !blankSegments.back().isEmpty() &&  blankSegments.back().back().count() == 0 ) )
+      {
+        error = QStringLiteral( "No elements, Not expecting ','" );
+      }
+      else
+      {
+        error = appendLevel( level );
+      }
+    }
+    else if ( c.isNumber() || c == '.' )
+    {
+      currentNumber.append( c );
+    }
+    else if ( !c.isSpace() )
+    {
+      error = QStringLiteral( "Invalid character '%1'" ).arg( c );
+    }
+
+    if ( !error.isEmpty() )
+    {
+      break;
+    }
+
+    iChar++;
+  }
+
+
+  if ( error.isEmpty() && level != -1 )
+  {
+    error = "Missing ')'";
+  }
+
+  if ( !error.isEmpty() )
+  {
+    blankSegments.clear();
+    error += QStringLiteral( " (column: %1)" ).arg( iChar );
+  }
+
+  // convert in pixels
+  std::for_each( blankSegments.begin(), blankSegments.end(), [&renderContext, &unit]( QList<BlankSegments> &rings )
+  {
+    std::for_each( rings.begin(), rings.end(), [&renderContext, &unit]( BlankSegments & blankSegments )
+    {
+      std::for_each( blankSegments.begin(), blankSegments.end(), [&renderContext, &unit]( QPair<double, double> &blankSegment )
+      {
+        blankSegment.first = renderContext.convertToPainterUnits( blankSegment.first, unit );
+        blankSegment.second = renderContext.convertToPainterUnits( blankSegment.second, unit );
+      } );
+    } );
+  } );
+
+  return blankSegments;
 }
 
 QgsSymbol *QgsMarkerLineSymbolLayer::subSymbol()
