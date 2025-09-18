@@ -529,6 +529,14 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool deleteVertex( QgsVertexId position ) = 0;
 
     /**
+     * Deletes vertices within the geometry
+     * \param positions list of vertex ids for vertices to delete
+     * \returns TRUE if delete was successful
+     * \see deleteVertex
+     */
+    virtual bool deleteVertices( QList<QgsVertexId> positions ) = 0;
+
+    /**
      * Returns the planar, 2-dimensional length of the geometry.
      *
      * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the length

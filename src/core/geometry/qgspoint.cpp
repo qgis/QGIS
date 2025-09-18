@@ -467,6 +467,12 @@ bool QgsPoint::deleteVertex( QgsVertexId position )
   return false;
 }
 
+bool QgsPoint::deleteVertices( QList<QgsVertexId> positions )
+{
+  Q_UNUSED( positions )
+  return false;
+}
+
 double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   Q_UNUSED( pt )
