@@ -5128,93 +5128,73 @@ bool QgsPostgresProvider::hasMetadata() const
 
 QString QgsPostgresProvider::htmlMetadata() const
 {
-  const QString sqlTableOid = QStringLiteral( "SELECT oid FROM pg_class "
-                                              "WHERE relname = %1 AND relnamespace = %2::regnamespace;" )
-                                .arg( QgsPostgresConn::quotedValue( mTableName ), QgsPostgresConn::quotedValue( mSchemaName ) );
+  // construct multiple temporary tables to be used with PostgreSQL WITH statement
+  // that build one on another and are then used to create single SQL query to get the additional metadata
 
-  QgsPostgresResult resTableOid( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlTableOid ) );
+  const QString sqlWithTableInfo = QStringLiteral( "table_info AS ("
+                                                   "SELECT c.oid AS oid,  n.nspname AS schema_name, c.relname AS table_name, c.reltuples::bigint AS estimate "
+                                                   "FROM pg_class c "
+                                                   "JOIN pg_namespace n ON c.relnamespace = n.oid "
+                                                   "WHERE c.relname = %1 AND n.nspname = %2"
+                                                   ")" )
+                                     .arg( QgsPostgresConn::quotedValue( mTableName ), QgsPostgresConn::quotedValue( mSchemaName ) );
 
-  if ( resTableOid.PQntuples() != 1 )
-  {
-    return QString();
-  }
+  const QString sqlWithPrivilages = QStringLiteral( "privileges AS ("
+                                                    "SELECT table_info.oid as oid, "
+                                                    "COALESCE(NULLIF(CONCAT_WS(', ',"
+                                                    "CASE WHEN has_table_privilege(table_info.oid, 'SELECT') THEN 'SELECT' END,"
+                                                    "CASE WHEN has_table_privilege(table_info.oid, 'INSERT') THEN 'INSERT' END,"
+                                                    "CASE WHEN has_table_privilege(table_info.oid, 'UPDATE') THEN 'UPDATE' END,"
+                                                    "CASE WHEN has_table_privilege(table_info.oid, 'DELETE') THEN 'DELETE' END),"
+                                                    "''), '') as privileges "
+                                                    "FROM table_info"
+                                                    ")" );
 
-  qlonglong tableOid = resTableOid.PQgetvalue( 0, 0 ).toLongLong();
+  const QString sqlWithIndexes = QStringLiteral( "table_indexes AS("
+                                                 "SELECT pi.schemaname AS schema_name, pi.tablename AS table_name, pi.indexname AS index_name "
+                                                 "FROM pg_indexes pi "
+                                                 "JOIN table_info ti ON pi.schemaname = ti.schema_name AND pi.tablename = ti.table_name "
+                                                 "WHERE pi.indexdef LIKE '%USING gist%' "
+                                                 "),"
+                                                 "table_indexes_info AS("
+                                                 "SELECT schema_name, table_name, COALESCE(string_agg(index_name, ', ' ORDER BY index_name), '') as index_names "
+                                                 "FROM table_indexes "
+                                                 "GROUP BY schema_name, table_name"
+                                                 ")" );
 
-  const QString sqlPrivileges = QStringLiteral( "SELECT "
-                                                "has_table_privilege(%1, 'SELECT'), "
-                                                "has_table_privilege(%1, 'INSERT'), "
-                                                "has_table_privilege(%1, 'UPDATE'), "
-                                                "has_table_privilege(%1, 'DELETE')" )
-                                  .arg( QgsPostgresConn::quotedValue( tableOid ) );
+  const QString sqlMainQuery = QStringLiteral( "WITH %1, %2, %3"
+                                               "SELECT table_info.oid, table_info.table_name, table_info.schema_name, privileges.privileges, "
+                                               "table_info.estimate, table_indexes_info.index_names, pg_description.description "
+                                               "FROM table_info "
+                                               "LEFT JOIN privileges ON table_info.oid = privileges.oid "
+                                               "LEFT JOIN table_indexes_info ON table_indexes_info.table_name = table_info.table_name AND table_indexes_info.schema_name = table_info.schema_name "
+                                               "LEFT JOIN pg_description ON pg_description.objoid = table_info.oid" )
+                                 .arg( sqlWithTableInfo, sqlWithPrivilages, sqlWithIndexes );
 
-  QgsPostgresResult resPrivileges( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlPrivileges ) );
+  QgsPostgresResult resTable( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlMainQuery ) );
 
-  QStringList privileges;
-  if ( resPrivileges.PQntuples() > 0 )
-  {
-    if ( resPrivileges.PQgetvalue( 0, 0 ) == "t" )
-    {
-      privileges.append( "SELECT" );
-    }
-    if ( resPrivileges.PQgetvalue( 0, 1 ) == "t" )
-    {
-      privileges.append( "INSERT" );
-    }
-    if ( resPrivileges.PQgetvalue( 0, 2 ) == "t" )
-    {
-      privileges.append( "UPDATE" );
-    }
-    if ( resPrivileges.PQgetvalue( 0, 3 ) == "t" )
-    {
-      privileges.append( "DELETE" );
-    }
-  }
-
-  const QString sqlEstimatedRowCount = QStringLiteral( "SELECT "
-                                                       "reltuples::bigint AS estimate FROM pg_class "
-                                                       "WHERE oid = %1" )
-                                         .arg( QgsPostgresConn::quotedValue( tableOid ) );
-
-  QgsPostgresResult resRowCount( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlEstimatedRowCount ) );
-
-  long long estimateRowCount = -1;
-  if ( resRowCount.PQntuples() > 0 )
-  {
-    estimateRowCount = resRowCount.PQgetvalue( 0, 0 ).toLongLong();
-  }
-
-  const QString sqlSpatialIndex = QStringLiteral( "SELECT * FROM pg_indexes WHERE schemaname = %1 AND tablename = %2 AND indexdef LIKE 'USING %gist%'" )
-                                    .arg( QgsPostgresConn::quotedValue( mSchemaName ), QgsPostgresConn::quotedValue( mTableName ) );
-
-  QgsPostgresResult resSpatialIndexes( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlSpatialIndex ) );
-  QString spatialIndexText = tr( "No spatial index." );
-
-  if ( resSpatialIndexes.PQntuples() > 0 )
-  {
-    QStringList spatialIndexes;
-    for ( int i = 0; i < resSpatialIndexes.PQntuples(); ++i )
-    {
-      spatialIndexes.append( resSpatialIndexes.PQgetvalue( i, 2 ) );
-    }
-
-    spatialIndexText = tr( "Spatial index/indices exists (%1)." ).arg( spatialIndexes.join( ", " ) );
-  }
-
-  const QString sqlTableComment = QStringLiteral( "SELECT description FROM pg_description WHERE objoid = %1" )
-                                    .arg( QgsPostgresConn::quotedValue( tableOid ) );
-
-  QgsPostgresResult resTableComment( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlTableComment ) );
   QString tableComment;
+  QString privileges;
+  QString spatialIndexText = tr( "No spatial index." );
+  long long estimateRowCount = -1;
 
-  if ( resTableComment.PQntuples() > 0 )
+  if ( resTable.PQntuples() > 0 )
   {
-    tableComment = resTableComment.PQgetvalue( 0, 0 );
+    tableComment = resTable.PQgetvalue( 0, 6 );
     tableComment = tableComment.replace( QStringLiteral( "\n" ), QStringLiteral( "<br>" ) );
+
+    estimateRowCount = resTable.PQgetvalue( 0, 4 ).toLongLong();
+
+    privileges = resTable.PQgetvalue( 0, 3 );
+
+    if ( !resTable.PQgetvalue( 0, 5 ).isEmpty() )
+    {
+      spatialIndexText = tr( "Spatial index/indices exists (%1)." ).arg( resTable.PQgetvalue( 0, 5 ) );
+    }
   }
 
   const QVariantMap additionalInformation {
-    { tr( "Privileges" ), privileges.join( ", " ) },
+    { tr( "Privileges" ), privileges },
     { tr( "Rows (estimation)" ), estimateRowCount },
     { tr( "Spatial Index" ), spatialIndexText },
     { tr( "Table Comment" ), tableComment }
