@@ -640,15 +640,17 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
 
     for ( int i = 0; i < mModel->rowCount(); ++i )
     {
-      // try to match project layers to current layers
+      // try to match project layers to current layers, also assign its icon if found
       if ( mModel->item( i )->data( Qt::UserRole ) == layer->id() )
       {
         id = layer->id();
+        mModel->item( i )->setData( QgsIconUtils::iconForLayer( layer ), Qt::DecorationRole );
         break;
       }
       else if ( mModel->item( i )->data( Qt::UserRole ) == layer->source() )
       {
         id = layer->source();
+        mModel->item( i )->setData( QgsIconUtils::iconForLayer( layer ), Qt::DecorationRole );
         break;
       }
     }
