@@ -298,6 +298,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      * This method calculates the accumulated distance along the curve from one vertex to another.
      * For circular strings, this includes following the arc path precisely.
      *
+     * \note For 3D geometries, the distance calculation includes the Z coordinate component.
+     *
      * \param fromVertex the starting vertex ID
      * \param toVertex the ending vertex ID
      * \returns distance along the curve between the vertices, or -1 if either vertex is invalid
