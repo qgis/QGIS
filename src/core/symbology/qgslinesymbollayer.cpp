@@ -1746,6 +1746,8 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
   destLayer->restoreOldDataDefinedProperties( properties );
 }
 
+///@cond PRIVATE
+
 /*!
  * Helper class to go through BlankSegment while rendering points.
  * The class expects to be used while rendering points in the correct order
@@ -1783,7 +1785,7 @@ class BlankSegmentsScanner
       // compute distances and fill distances array
       if ( pointIndex >= mDistances.count() )
       {
-        for ( int i = mDistances.count(); i < pointIndex + 1; i++ )
+        for ( int i = static_cast<int>( mDistances.count() ); i < pointIndex + 1; i++ )
         {
           const QPointF diff = mPoints.at( i ) - mPoints.at( i - 1 );
           const double distance = std::sqrt( std::pow( diff.x(), 2 ) + std::pow( diff.y(), 2 ) );
@@ -1806,6 +1808,9 @@ class BlankSegmentsScanner
     QList<double> mDistances;
     QgsTemplatedLineSymbolLayerBase::BlankSegments::const_iterator mItBlankSegment;
 };
+
+
+///@endcond PRIVATE
 
 
 void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageOver, const BlankSegments &blankSegments )
