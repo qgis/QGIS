@@ -569,11 +569,11 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
             )
         )
 
-    def testBlankAreas(self):
+    def testBlankSegments(self):
         """
-        Test with data defined blank areas
+        Test with data defined blank segments
 
-        Blank areas are more intensively tested in marker line test because it relies on the same code
+        Blank segments are more intensively tested in marker line test because it relies on the same code
         """
 
         # rendering test
@@ -584,7 +584,7 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         sl.setAverageAngleLength(0)
         sl.setPlacements(Qgis.MarkerLinePlacement.Interval)
         sl.setDataDefinedProperty(
-            QgsSymbolLayer.Property.BlankAreas,
+            QgsSymbolLayer.Property.BlankSegments,
             QgsProperty.fromExpression("'(((2.90402 7.36,11.8776 30.4499)))'"),
         )
 
@@ -606,8 +606,8 @@ class TestQgsHashedLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
             self.image_check(
-                "line_hash_blankareas",
-                "line_hash_blankareas",
+                "line_hash_blanksegments",
+                "line_hash_blanksegments",
                 rendered_image,
                 color_tolerance=2,
                 allowed_mismatch=20,

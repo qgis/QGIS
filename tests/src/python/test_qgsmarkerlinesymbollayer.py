@@ -1501,9 +1501,9 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
             )
         )
 
-    def testBlankAreas(self):
+    def testBlankSegments(self):
         """
-        Test with data defined blank areas
+        Test with data defined blank segments
         """
 
         # rendering test
@@ -1513,7 +1513,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         sl = QgsMarkerLineSymbolLayer()
         sl.setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.Interval))
         sl.setDataDefinedProperty(
-            QgsSymbolLayer.Property.BlankAreas,
+            QgsSymbolLayer.Property.BlankSegments,
             QgsProperty.fromExpression("'(((2.90402 7.36,11.8776 30.4499)))'"),
         )
 
@@ -1533,8 +1533,8 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
             self.image_check(
-                "markerline_blankareas_interval",
-                "markerline_blankareas_interval",
+                "markerline_blanksegments_interval",
+                "markerline_blanksegments_interval",
                 rendered_image,
                 color_tolerance=2,
                 allowed_mismatch=20,
@@ -1546,17 +1546,17 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
             self.image_check(
-                "markerline_blankareas_interval_averageangle",
-                "markerline_blankareas_interval_averageangle",
+                "markerline_blanksegments_interval_averageangle",
+                "markerline_blanksegments_interval_averageangle",
                 rendered_image,
                 color_tolerance=2,
                 allowed_mismatch=20,
             )
         )
 
-        # Test blank area on other multi polygon part and ring
+        # Test blank segments on other multi polygon part and ring
         sl.setDataDefinedProperty(
-            QgsSymbolLayer.Property.BlankAreas,
+            QgsSymbolLayer.Property.BlankSegments,
             QgsProperty.fromExpression(
                 "'(((2.90402 7.36,11.8776 30.4499),(6 9)),((2 7)))'"
             ),
@@ -1565,8 +1565,8 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
             self.image_check(
-                "markerline_blankareas_multipoly_and_ring",
-                "markerline_blankareas_multipoly_and_ring",
+                "markerline_blanksegments_multipoly_and_ring",
+                "markerline_blanksegments_multipoly_and_ring",
                 rendered_image,
                 color_tolerance=2,
                 allowed_mismatch=20,
@@ -1581,8 +1581,8 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
             self.image_check(
-                "markerline_blankareas_central",
-                "markerline_blankareas_central",
+                "markerline_blanksegments_central",
+                "markerline_blanksegments_central",
                 rendered_image,
                 color_tolerance=2,
                 allowed_mismatch=20,
@@ -1597,8 +1597,8 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
             self.image_check(
-                "markerline_blankareas_central_averageangle",
-                "markerline_blankareas_central_averageangle",
+                "markerline_blanksegments_central_averageangle",
+                "markerline_blanksegments_central_averageangle",
                 rendered_image,
                 color_tolerance=2,
                 allowed_mismatch=20,
@@ -1612,8 +1612,8 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
             self.image_check(
-                "markerline_blankareas_vertex",
-                "markerline_blankareas_vertex",
+                "markerline_blanksegments_vertex",
+                "markerline_blanksegments_vertex",
                 rendered_image,
                 color_tolerance=2,
                 allowed_mismatch=20,
@@ -1628,7 +1628,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
             )
         )
         sl.setDataDefinedProperty(
-            QgsSymbolLayer.Property.BlankAreas,
+            QgsSymbolLayer.Property.BlankSegments,
             QgsProperty.fromExpression(
                 "'(((0 2, 45 52)))'"
             ),  # 2 distances to erase first and last
@@ -1638,8 +1638,8 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
             self.image_check(
-                "markerline_blankareas_firstlast",
-                "markerline_blankareas_firstlast",
+                "markerline_blanksegments_firstlast",
+                "markerline_blanksegments_firstlast",
                 rendered_image,
                 color_tolerance=2,
                 allowed_mismatch=20,
@@ -1654,17 +1654,17 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
             self.image_check(
-                "markerline_blankareas_firstlast_offset",
-                "markerline_blankareas_firstlast_offset",
+                "markerline_blanksegments_firstlast_offset",
+                "markerline_blanksegments_firstlast_offset",
                 rendered_image,
                 color_tolerance=2,
                 allowed_mismatch=20,
             )
         )
 
-    def testBlankAreasOffsetAlongLine(self):
+    def testBlankSegmentsOffsetAlongLine(self):
         """
-        Test with data defined blank areas and an offset along line has been set
+        Test with data defined blank segments and an offset along line has been set
         """
 
         # rendering test
@@ -1674,7 +1674,7 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         sl = QgsMarkerLineSymbolLayer()
         sl.setPlacements(Qgis.MarkerLinePlacements(Qgis.MarkerLinePlacement.Interval))
         sl.setDataDefinedProperty(
-            QgsSymbolLayer.Property.BlankAreas,
+            QgsSymbolLayer.Property.BlankSegments,
             QgsProperty.fromExpression("'(((1 2.9, 7.7 15)))'"),
         )
 
@@ -1694,8 +1694,8 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
             self.image_check(
-                "markerline_blankareas_offsetalongline",
-                "markerline_blankareas_offsetalongline",
+                "markerline_blanksegments_offsetalongline",
+                "markerline_blanksegments_offsetalongline",
                 rendered_image,
                 color_tolerance=2,
                 allowed_mismatch=20,
@@ -1707,8 +1707,8 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
             self.image_check(
-                "markerline_blankareas_offsetalongline",
-                "markerline_blankareas_offsetalongline",
+                "markerline_blanksegments_offsetalongline",
+                "markerline_blanksegments_offsetalongline",
                 rendered_image,
                 color_tolerance=2,
                 allowed_mismatch=20,
