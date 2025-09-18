@@ -95,6 +95,8 @@ Emitted when the selection changes in the widget.
     void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false, QIcon optionalIconDecoration = QIcon() );
 %Docstring
 Adds a new option to the widget.
+
+``icon`` added in QGIS 4.0
 %End
     QListView *listView() const;
 %Docstring

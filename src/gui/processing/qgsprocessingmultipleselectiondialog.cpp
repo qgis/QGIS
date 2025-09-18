@@ -28,6 +28,7 @@
 #include "qgsvectortilelayer.h"
 #include "qgsproject.h"
 #include "qgsiconutils.h"
+#include "qgsguiutils.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -57,7 +58,7 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
   mSelectionList->setSelectionBehavior( QAbstractItemView::SelectRows );
   mSelectionList->setSelectionMode( QAbstractItemView::ExtendedSelection );
   mSelectionList->setDragDropMode( QAbstractItemView::InternalMove );
-  mSelectionList->setIconSize( QSize( 16, 16 ) );
+  mSelectionList->setIconSize( QSize( QgsGuiUtils::scaleIconSize( 16 ), QgsGuiUtils::scaleIconSize( 16 ) ) );
 
   mModel = new QStandardItemModel( this );
   mSelectionList->setModel( mModel );
@@ -257,7 +258,7 @@ void QgsProcessingMultipleSelectionPanelWidget::dropEvent( QDropEvent *event )
   }
 }
 
-void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle, QIcon optionalIconDecoration )
+void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle, QIcon icon )
 {
   // don't add duplicate options
   for ( int i = 0; i < mModel->rowCount(); ++i )
@@ -275,8 +276,8 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
   item->setCheckState( selected ? Qt::Checked : Qt::Unchecked );
   item->setCheckable( true );
   item->setDropEnabled( false );
-  if ( !optionalIconDecoration.isNull() )
-    item->setData( optionalIconDecoration, Qt::DecorationRole );
+  if ( !icon.isNull() )
+    item->setData( icon, Qt::DecorationRole );
   mModel->appendRow( item.release() );
 }
 
