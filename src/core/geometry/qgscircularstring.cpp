@@ -1323,12 +1323,12 @@ bool QgsCircularString::deleteVertices( QList<QgsVertexId> positions )
   }
 
   int nVertices = this->numPoints();
-  
-  std::sort( positions.begin(), positions.end(), []( const QgsVertexId &a, const QgsVertexId &b ) 
-    {
-      return a.vertex < b.vertex;
-    }
-  );
+
+  std::sort( positions.begin(), positions.end(), []( const QgsVertexId & a, const QgsVertexId & b )
+  {
+    return a.vertex < b.vertex;
+  }
+           );
 
   // remove adjacent vertices as deleting one will also delete the other
   for ( size_t i = positions.size() - 1; i >= 1; i-- )
@@ -1346,10 +1346,10 @@ bool QgsCircularString::deleteVertices( QList<QgsVertexId> positions )
       {
         positions.removeAt( i - 1 );
       }
-      
+
       nVertices -= 2;
       i--;  // adjacent vertices handled, we can skip the next one as well
-      
+
       if ( i == 0 )
         break;
     }

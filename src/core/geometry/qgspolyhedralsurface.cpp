@@ -762,13 +762,13 @@ bool QgsPolyhedralSurface::deleteVertex( QgsVertexId vId )
 
 bool QgsPolyhedralSurface::deleteVertices( QList<QgsVertexId> positions )
 {
-  QMap<int, QList<QgsVertexId>> partVertices;
+  QMap<int, QList<QgsVertexId >> partVertices;
   for ( QgsVertexId pos : positions )
   {
     partVertices[pos.part].append( pos );
   }
 
-  QMapIterator<int, QList<QgsVertexId>> partVerticesIt( partVertices );
+  QMapIterator<int, QList<QgsVertexId >> partVerticesIt( partVertices );
   partVerticesIt.toBack();
   while ( partVerticesIt.hasPrevious() )
   {
@@ -777,7 +777,7 @@ bool QgsPolyhedralSurface::deleteVertices( QList<QgsVertexId> positions )
     int part = partVerticesIt.key();
     QList<QgsVertexId> vertexMap = partVerticesIt.value();
     if ( part < 0 || part >= partCount() )
-      continue; 
+      continue;
 
     QgsPolygon *patch = mPatches.at( part );
 

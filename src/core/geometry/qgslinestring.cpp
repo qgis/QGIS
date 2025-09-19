@@ -2101,11 +2101,11 @@ bool QgsLineString::deleteVertex( QgsVertexId position )
 
 bool QgsLineString::deleteVertices( QList<QgsVertexId> positions )
 {
-  std::sort( positions.begin(), positions.end(), []( const QgsVertexId &a, const QgsVertexId &b ) 
-    {
-      return a.vertex > b.vertex;
-    }
-  );
+  std::sort( positions.begin(), positions.end(), []( const QgsVertexId & a, const QgsVertexId & b )
+  {
+    return a.vertex > b.vertex;
+  }
+           );
 
   for ( QgsVertexId position : positions )
   {

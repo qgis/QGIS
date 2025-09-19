@@ -1295,7 +1295,7 @@ bool QgsCurvePolygon::deleteVertex( QgsVertexId vId )
 
 bool QgsCurvePolygon::deleteVertices( QList<QgsVertexId> positions )
 {
-  QMap<int, QList<QgsVertexId>> ringVertices;
+  QMap<int, QList<QgsVertexId >> ringVertices;
   for ( const QgsVertexId &pos : positions )
   {
     const int interiorRingId = pos.ring - 1;
@@ -1305,8 +1305,8 @@ bool QgsCurvePolygon::deleteVertices( QList<QgsVertexId> positions )
     }
     ringVertices[pos.ring].append( pos );
   }
-  
-  QMapIterator<int, QList<QgsVertexId>> ringVerticesIt( ringVertices );
+
+  QMapIterator<int, QList<QgsVertexId >> ringVerticesIt( ringVertices );
   ringVerticesIt.toBack();
   while( ringVerticesIt.hasPrevious() )
   {
@@ -1319,17 +1319,17 @@ bool QgsCurvePolygon::deleteVertices( QList<QgsVertexId> positions )
     int n = ring->numPoints();
 
     // sort so we can check for first/last vertex deletion
-    std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId &a, const QgsVertexId &b ) 
-      {
-        return a.vertex < b.vertex;
-      }
-    );
+    std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId & a, const QgsVertexId & b )
+    {
+      return a.vertex < b.vertex;
+    }
+             );
 
     QgsVertexId firstVertexId = vertices.first();
     QgsVertexId lastVertexId = vertices.last();
 
     // check if we are deleting the same point twice
-    if ( (firstVertexId.vertex == 0) && (lastVertexId.vertex == n - 1) )
+    if ( ( firstVertexId.vertex == 0 ) && ( lastVertexId.vertex == n - 1 ) )
     {
       vertices.removeFirst();
     }
@@ -1367,7 +1367,7 @@ bool QgsCurvePolygon::deleteVertices( QList<QgsVertexId> positions )
       ring->moveVertex( QgsVertexId( 0, 0, ring->numPoints() - 1 ), ring->vertexAt( QgsVertexId( 0, 0, 0 ) ) );
     }
   }
-  
+
   clearCache();
   return true;
 }
