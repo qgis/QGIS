@@ -129,7 +129,7 @@ class QgsPGProjectItem : public QgsProjectItem
 {
     Q_OBJECT
   public:
-    QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri postgresProjectUri, const QString &schema, const QString &connectionName );
+    QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri postgresProjectUri, const QString &connectionName );
 
     QString schemaName() const { return mProjectUri.schemaName; }
     QgsPostgresProjectUri postgresProjectUri() const { return mProjectUri; }
@@ -143,17 +143,10 @@ class QgsPGProjectItem : public QgsProjectItem
     */
     QString connectionName() const { return mConnectionName; }
 
-    /*
-    * Returns the name of the schema this project belongs to.
-    *
-    * \since QGIS 4.0
-    */
-    QString schema() const { return mSchema; }
 
   private:
     QgsPostgresProjectUri mProjectUri;
     QString mConnectionName;
-    QString mSchema;
 };
 
 #endif // QGSPOSTGRESDATAITEMS_H
