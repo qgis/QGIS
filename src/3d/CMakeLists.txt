@@ -29,6 +29,9 @@ set(QGIS_3D_SRCS
   qgslayoutitem3dmap.cpp
   qgsoffscreen3dengine.cpp
   qgsraycastingutils.cpp
+  qgsraycastcontext.cpp
+  qgsraycasthit.cpp
+  qgsraycastresult.cpp
   qgsrulebased3drenderer.cpp
   qgsrulebasedchunkloader_p.cpp
   qgstessellatedpolygongeometry.cpp
@@ -162,6 +165,9 @@ set(QGIS_3D_HDRS
   qgsmeshlayer3drenderer.h
   qgsoffscreen3dengine.h
   qgsraycastingutils.h
+  qgsraycastcontext.h
+  qgsraycasthit.h
+  qgsraycastresult.h
   qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstiledscenechunkloader_p.h

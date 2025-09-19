@@ -20,7 +20,9 @@
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
-#include "qgsraycastingutils_p.h"
+#include "qgsray3d.h"
+#include "qgsraycastcontext.h"
+#include "qgsraycastingutils.h"
 #include "qgsabstractvectorlayer3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgschunknode.h"
@@ -273,12 +275,12 @@ void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged()
   mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
 }
 
-QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+QVector<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   return QgsVectorLayerChunkedEntity::rayIntersection( activeNodes(), mTransform->matrix(), ray, context, mMapSettings->origin() );
 }
 
-QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context, const QgsVector3D &origin )
+QVector<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin )
 {
   Q_UNUSED( context )
   QgsDebugMsgLevel( QStringLiteral( "Ray cast on vector layer" ), 2 );
@@ -288,7 +290,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
   int hits = 0;
   int ignoredGeometries = 0;
 #endif
-  QVector<QgsRayCastingUtils::RayHit> result;
+  QVector<QgsRayCastHit> result;
 
   float minDist = -1;
   QVector3D intersectionPoint;
@@ -328,7 +330,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
         // this needs to be taken into account to get the whole transformation
         const QMatrix4x4 nodeTransformMatrix = node->entity()->findChild<QgsGeoTransform *>()->matrix();
         const QMatrix4x4 fullTransformMatrix = transformMatrix * nodeTransformMatrix;
-        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, fullTransformMatrix, nodeIntPoint, triangleIndex ) )
+        if ( QgsRayCastingUtils::rayMeshIntersection( rend, ray, context.maximumDistance(), fullTransformMatrix, nodeIntPoint, triangleIndex ) )
         {
 #ifdef QGISDEBUG
           hits++;
@@ -346,7 +348,10 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
   }
   if ( !FID_IS_NULL( nearestFid ) )
   {
-    QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint, nearestFid );
+    QgsRayCastHit hit;
+    hit.setDistance( minDist );
+    hit.setMapCoordinates( Qgs3DUtils::worldToMapCoordinates( intersectionPoint, origin ) );
+    hit.setFeatureId( nearestFid );
     result.append( hit );
   }
   QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3, incompatible geometries: %4" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ).arg( ignoredGeometries ), 2 );

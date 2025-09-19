@@ -34,6 +34,8 @@
 #include "qgsframegraph.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgsrubberband3d.h"
+#include "qgs3dutils.h"
+#include "qgsraycastcontext.h"
 
 #include "moc_qgs3dmapcanvas.cpp"
 
@@ -185,6 +187,15 @@ void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
 QgsCameraController *Qgs3DMapCanvas::cameraController()
 {
   return mScene ? mScene->cameraController() : nullptr;
+}
+
+QgsRayCastResult Qgs3DMapCanvas::castRay( const QPoint &screenPoint, QgsRayCastContext context )
+{
+  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPoint, size(), camera() );
+  if ( context.maximumDistance() < 0 )
+    context.setMaximumDistance( camera()->farPlane() );
+  const QgsRayCastResult res = Qgs3DUtils::castRay( mScene, ray, context );
+  return res;
 }
 
 void Qgs3DMapCanvas::resetView()

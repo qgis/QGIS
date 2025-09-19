@@ -21,15 +21,14 @@
 #include "qgschunknode.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgseventtracing.h"
-#include "qgsraycastingutils_p.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
-
 #include "qgscoordinatetransform.h"
+#include "qgsraycastingutils.h"
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometryRenderer>
@@ -93,10 +92,10 @@ QgsTerrainEntity::~QgsTerrainEntity()
   delete mTextureGenerator;
 }
 
-QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+QVector<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   Q_UNUSED( context )
-  QVector<QgsRayCastingUtils::RayHit> result;
+  QVector<QgsRayCastHit> result;
 
   float minDist = -1;
   QVector3D intersectionPoint;
@@ -131,7 +130,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
           Qt3DCore::QTransform *tr = node->entity()->findChild<Qt3DCore::QTransform *>();
           QVector3D nodeIntPoint;
           DemTerrainTileGeometry *demGeom = static_cast<DemTerrainTileGeometry *>( geom );
-          if ( demGeom->rayIntersection( ray, tr->matrix(), nodeIntPoint ) )
+          if ( demGeom->rayIntersection( ray, context, tr->matrix(), nodeIntPoint ) )
           {
             const float dist = ( ray.origin() - intersectionPoint ).length();
             if ( minDist < 0 || dist < minDist )
@@ -152,7 +151,9 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
   }
   if ( !intersectionPoint.isNull() )
   {
-    QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint );
+    QgsRayCastHit hit;
+    hit.setDistance( minDist );
+    hit.setMapCoordinates( intersectionPoint );
     result.append( hit );
   }
   return result;
