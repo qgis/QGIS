@@ -1314,7 +1314,8 @@ bool QgsCurvePolygon::deleteVertices( QList<QgsVertexId> positions )
     QList<QgsVertexId> vertices = ringVerticesIt.value();
     int ringId = ringVerticesIt.key();
 
-    QgsCurve *ring = ringId == 0 ? mExteriorRing.get() : mInteriorRings.at( ringId - 1 );
+    const int interiorRingId = ringId - 1;
+    QgsCurve *ring = ringId == 0 ? mExteriorRing.get() : mInteriorRings.at( interiorRingId );
 
     int n = ring->numPoints();
 
