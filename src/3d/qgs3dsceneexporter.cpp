@@ -878,7 +878,7 @@ bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
       continue;
 
     const QString materialName = obj->saveMaterial( mtlOut, sceneFolderPath );
-    obj->saveTo( out, scale / mScale, QVector3D( centerX, centerY, centerZ ), precision, materialName );
+    obj->saveTo( out, scale / mScale, QVector3D( centerX, centerY, centerZ ), Qgs3DTypes::ExportFormat::Obj, precision, materialName );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Scene exported to '%1'" ).arg( objFilePath ), 2 );
