@@ -54,8 +54,8 @@ class TestQgs3DExporter : public QgsTest
     void test3DSceneExporterFlatTerrain();
 
   private:
-    void doObjectExport( const Qgis::ExportFormat &exportFormat );
-    void do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity = nullptr );
+    void doObjectExport( const Qgis::Export3DSceneFormat &exportFormat );
+    void do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, const Qgis::Export3DSceneFormat &exportFormat, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity = nullptr );
 
     QgsVectorLayer *mLayerBuildings = nullptr;
 };
@@ -91,7 +91,7 @@ void TestQgs3DExporter::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgs3DExporter::doObjectExport( const Qgis::ExportFormat &exportFormat )
+void TestQgs3DExporter::doObjectExport( const Qgis::Export3DSceneFormat &exportFormat )
 {
   const QString exportExtension = exportFormat == Qgis::Export3DSceneFormat::Obj ? "obj" : "stl";
 
@@ -279,7 +279,7 @@ void TestQgs3DExporter::testExportObjectToStl()
   doObjectExport( Qgis::Export3DSceneFormat::StlAscii );
 }
 
-void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity )
+void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, const Qgis::Export3DSceneFormat &exportFormat, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity )
 {
   // 3d renderer must be replaced to have the tiling updated
   QgsVectorLayer3DRenderer *renderer3d = dynamic_cast<QgsVectorLayer3DRenderer *>( layerPoly->renderer3D() );
@@ -304,7 +304,7 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedOb
     exporter.parseTerrain( terrainEntity, "DEM_Tile" );
 
   const QString objFileName = testName;
-  const bool saved = exporter.save( objFileName, QDir::tempPath(), 3 );
+  const bool saved = exporter.save( objFileName, QDir::tempPath(), exportFormat, 3 );
   QVERIFY( saved );
 
   size_t sum = 0;
@@ -319,12 +319,13 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedOb
   QCOMPARE( exporter.mExportedFeatureIds.size(), expectedFeatureCount );
   QCOMPARE( exporter.mObjects.size(), expectedObjectCount );
 
-  QFile file( QString( "%1/%2.obj" ).arg( QDir::tempPath(), objFileName ) );
+  const QString exportExtension = exportFormat == Qgis::Export3DSceneFormat::Obj ? "obj" : "stl";
+  QFile file( QString( "%1/%2.%3" ).arg( QDir::tempPath(), objFileName, exportExtension ) );
   QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
   QTextStream fileStream( &file );
 
   // check the generated obj file
-  QGSCOMPARELONGSTR( testName.toStdString().c_str(), u"%1.obj"_s.arg( testName ), fileStream.readAll().toUtf8() );
+  QGSCOMPARELONGSTR( testName.toStdString().c_str(), u"%1.%2"_s.arg( objFileName, exportExtension ), fileStream.readAll().toUtf8() );
 }
 
 void TestQgs3DExporter::test3DSceneExporter()
@@ -369,7 +370,10 @@ void TestQgs3DExporter::test3DSceneExporter()
   const int nbFaces = 165;
   const int nbFeat = 3;
 
-  do3DSceneExport( u"scene_export"_s, 1, nbFeat, nbFaces, scene, layerPoly, &engine );
+  for ( const Qgis::Export3DSceneFormat &exportFormat : { Qgis::Export3DSceneFormat::Obj, Qgis::Export3DSceneFormat::StlAscii } )
+  {
+    do3DSceneExport( u"scene_export"_s, 1, nbFeat, nbFaces, exportFormat, scene, layerPoly, &engine );
+  }
 
   delete scene;
   mapSettings.setLayers( {} );
@@ -418,7 +422,10 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   const int nbFaces = 19869;
   const int nbFeat = 401;
 
-  do3DSceneExport( u"big_scene_export"_s, 1, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
+  for ( const Qgis::Export3DSceneFormat &exportFormat : { Qgis::Export3DSceneFormat::Obj, Qgis::Export3DSceneFormat::StlAscii } )
+  {
+    do3DSceneExport( u"big_scene_export"_s, 1, nbFeat, nbFaces, exportFormat, scene, mLayerBuildings, &engine );
+  }
 
   delete scene;
   mapSettings.setLayers( {} );
@@ -466,7 +473,7 @@ void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
 
-  do3DSceneExport( u"flat_terrain_scene_export"_s, 2, 401, 19875, scene, mLayerBuildings, &engine, scene->terrainEntity() );
+  do3DSceneExport( u"flat_terrain_scene_export"_s, 2, 401, 19875, Qgis::Export3DSceneFormat::Obj, scene, mLayerBuildings, &engine, scene->terrainEntity() );
 
   delete scene;
   mapSettings.setLayers( {} );
