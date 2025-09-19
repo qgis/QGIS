@@ -835,23 +835,9 @@ bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
     return false;
   }
 
-  float maxfloat = std::numeric_limits<float>::max(), minFloat = std::numeric_limits<float>::lowest();
-  float minX = maxfloat, minY = maxfloat, minZ = maxfloat, maxX = minFloat, maxY = minFloat, maxZ = minFloat;
-  for ( Qgs3DExportObject *obj : qAsConst( mObjects ) )
-  {
-    obj->objectBounds( minX, minY, minZ, maxX, maxY, maxZ );
-  }
-
-  float diffX = 1.0f, diffY = 1.0f, diffZ = 1.0f;
-  diffX = maxX - minX;
-  diffY = maxY - minY;
-  diffZ = maxZ - minZ;
-
-  const float centerX = ( minX + maxX ) / 2.0f;
-  const float centerY = ( minY + maxY ) / 2.0f;
-  const float centerZ = ( minZ + maxZ ) / 2.0f;
-
-  const float scale = std::max( diffX, std::max( diffY, diffZ ) );
+  QVector3D center;
+  float scale;
+  getSceneCenterAndScale( center, scale );
 
   QTextStream out( &file );
   // set material library name
@@ -865,11 +851,38 @@ bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
       continue;
 
     const QString materialName = obj->saveMaterial( mtlOut, sceneFolderPath );
-    obj->saveTo( out, scale / mScale, QVector3D( centerX, centerY, centerZ ), Qgs3DTypes::ExportFormat::Obj, precision, materialName );
+    obj->saveTo( out, scale, center, Qgis::Export3DSceneFormat::Obj, precision, materialName );
   }
 
   QgsDebugMsgLevel( u"Scene exported to '%1'"_s.arg( objFilePath ), 2 );
   return true;
+}
+
+void Qgs3DSceneExporter::getSceneCenterAndScale( QVector3D &center, float &scale ) const
+{
+  const float minFloat = std::numeric_limits<float>::lowest();
+  const float maxfloat = std::numeric_limits<float>::max();
+
+  float minX = maxfloat;
+  float minY = maxfloat;
+  float minZ = maxfloat;
+  float maxX = minFloat;
+  float maxY = minFloat;
+  float maxZ = minFloat;
+  for ( Qgs3DExportObject *obj : std::as_const( mObjects ) )
+  {
+    obj->objectBounds( minX, minY, minZ, maxX, maxY, maxZ );
+  }
+
+  const float diffX = maxX - minX;
+  const float diffY = maxY - minY;
+  const float diffZ = maxZ - minZ;
+
+  center.setX( ( minX + maxX ) / 2.0f );
+  center.setY( ( minY + maxY ) / 2.0f );
+  center.setZ( ( minZ + maxZ ) / 2.0f );
+
+  scale = std::max( diffX, std::max( diffY, diffZ ) ) / mScale;
 }
 
 QString Qgs3DSceneExporter::getObjectName( const QString &name )
