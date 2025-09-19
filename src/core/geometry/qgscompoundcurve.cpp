@@ -925,7 +925,7 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
 bool QgsCompoundCurve::deleteVertices( QList<QgsVertexId> positions )
 {
   // we create a list of vertices to delete for each curve
-  QMap<int, QList<QgsVertexId>> curveVertices;
+  QMap<int, QList<QgsVertexId >> curveVertices;
   for ( QgsVertexId position : positions )
   {
     const QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
@@ -945,7 +945,7 @@ bool QgsCompoundCurve::deleteVertices( QList<QgsVertexId> positions )
   }
 
   // loop through the curves in reverse order and delete vertices
-  QMapIterator<int, QList<QgsVertexId>> curveVerticesIt( curveVertices );
+  QMapIterator<int, QList<QgsVertexId >> curveVerticesIt( curveVertices );
   curveVerticesIt.toBack();
   while ( curveVerticesIt.hasPrevious() )
   {
@@ -961,7 +961,7 @@ bool QgsCompoundCurve::deleteVertices( QList<QgsVertexId> positions )
     {
       // we loop through the vertices to see if we need to handle special case
       // of a middle vertex (see deleteVertex)
-      std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId &a, const QgsVertexId &b ) { return a.vertex < b.vertex; } );
+      std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId & a, const QgsVertexId & b ) { return a.vertex < b.vertex; } );
       QList<QgsVertexId> circularVerticesToDelete;
 
       QListIterator<QgsVertexId> curveVerticesIt( vertices );
@@ -989,7 +989,7 @@ bool QgsCompoundCurve::deleteVertices( QList<QgsVertexId> positions )
             vertices.removeAt( i );
             continue;
           }
-     
+
           // we found an odd vertex that is not next to another vertex to delete
           oddVertex = true;
           break;
@@ -1046,13 +1046,13 @@ bool QgsCompoundCurve::deleteVertices( QList<QgsVertexId> positions )
     {
       continue;
     }
-  
+
     if ( !curve->deleteVertices( vertices ) )
       return false;
 
     if ( curve->numPoints() == 0 )
       removeCurve( curveId );
-  }  
+  }
 
   if ( mCurves.isEmpty() )
   {
