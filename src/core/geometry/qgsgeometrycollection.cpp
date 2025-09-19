@@ -680,13 +680,13 @@ bool QgsGeometryCollection::deleteVertex( QgsVertexId position )
 
 bool QgsGeometryCollection::deleteVertices( QList<QgsVertexId> positions )
 {
-  QMap<int, QList<QgsVertexId>> partVertices;
+  QMap<int, QList<QgsVertexId >> partVertices;
   for ( QgsVertexId pos : positions )
   {
     partVertices[pos.part].append( pos );
   }
 
-  QMapIterator<int, QList<QgsVertexId>> partVerticesIt( partVertices );
+  QMapIterator<int, QList<QgsVertexId >> partVerticesIt( partVertices );
   partVerticesIt.toBack();
   while ( partVerticesIt.hasPrevious() )
   {
@@ -703,7 +703,7 @@ bool QgsGeometryCollection::deleteVertices( QList<QgsVertexId> positions )
     if ( !geom->deleteVertices( partVertices ) )
     {
       return false;
-    }    
+    }
 
     // remove geometry if no vertices left
     if ( geom->isEmpty() )

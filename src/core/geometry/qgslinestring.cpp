@@ -1532,7 +1532,7 @@ void QgsLineString::visitPointsByRegularDistance( const double distance, const s
   double pZ = std::numeric_limits<double>::quiet_NaN();
   double pM = std::numeric_limits<double>::quiet_NaN();
   double nextPointDistance = distance;
-  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon ();
+  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon();
   for ( int i = 1; i < totalPoints; ++i )
   {
     double thisX = *x++;
@@ -2090,11 +2090,11 @@ bool QgsLineString::deleteVertex( QgsVertexId position )
 
 bool QgsLineString::deleteVertices( QList<QgsVertexId> positions )
 {
-  std::sort( positions.begin(), positions.end(), []( const QgsVertexId &a, const QgsVertexId &b ) 
-    {
-      return a.vertex > b.vertex;
-    }
-  );
+  std::sort( positions.begin(), positions.end(), []( const QgsVertexId & a, const QgsVertexId & b )
+  {
+    return a.vertex > b.vertex;
+  }
+           );
 
   for ( QgsVertexId position : positions )
   {
