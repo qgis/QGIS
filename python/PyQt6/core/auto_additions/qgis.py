@@ -7717,6 +7717,19 @@ Qgis.VerticalAxisInversion.__doc__ = """Vertical axis inversion options for 3D v
 # --
 Qgis.VerticalAxisInversion.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.Export3DSceneFormat.Obj.__doc__ = "Wavefront OBJ format."
+Qgis.Export3DSceneFormat.StlAscii.__doc__ = "STL ascii format."
+Qgis.Export3DSceneFormat.__doc__ = """The file format used when exporting a 3D scene.
+
+.. versionadded:: 4.0
+
+* ``Obj``: Wavefront OBJ format.
+* ``StlAscii``: STL ascii format.
+
+"""
+# --
+Qgis.Export3DSceneFormat.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.ProfileSurfaceSymbology.Line.__doc__ = "The elevation surface will be rendered using a line symbol"
 Qgis.ProfileSurfaceSymbology.FillBelow.__doc__ = "The elevation surface will be rendered using a fill symbol below the surface level"
 Qgis.ProfileSurfaceSymbology.FillAbove.__doc__ = "The elevation surface will be rendered using a fill symbol above the surface level \n.. versionadded:: 3.32"

@@ -4267,6 +4267,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( VerticalAxisInversion )
 
     /**
+     * The file format used when exporting a 3D scene.
+     *
+     * \since QGIS 4.0
+     */
+    enum class Export3DSceneFormat : int
+    {
+      Obj, //!< Wavefront OBJ format.
+      StlAscii  //!< STL ascii format.
+    };
+    Q_ENUM( Export3DSceneFormat )
+
+    /**
      * Surface symbology type for elevation profile plots.
      *
      * \since QGIS 3.26
