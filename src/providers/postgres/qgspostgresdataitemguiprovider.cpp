@@ -1020,9 +1020,9 @@ void QgsPostgresDataItemGuiProvider::moveProjectToSchema( QgsPGProjectItem *proj
       }
     }
 
-    if ( !QgsPostgresUtils::moveProjectToSchema( conn, projectItem->schema(), projectItem->name(), newSchemaName ) )
+    if ( !QgsPostgresUtils::moveProjectToSchema( conn, projectItem->schemaName(), projectItem->name(), newSchemaName ) )
     {
-      notify( tr( "Move Project to Another Schema" ), tr( "Unable to move project “%1” to scheme “%2” " ).arg( projectItem->schema(), newSchemaName ), context, Qgis::MessageLevel::Warning );
+      notify( tr( "Move Project to Another Schema" ), tr( "Unable to move project “%1” to scheme “%2” " ).arg( projectItem->name(), newSchemaName ), context, Qgis::MessageLevel::Warning );
       conn->unref();
       return;
     }
@@ -1208,9 +1208,9 @@ void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProj
     int movedProjectCount = 0;
     for ( QgsPGProjectItem *projectItem : selection )
     {
-      if ( !QgsPostgresUtils::moveProjectToSchema( conn2, projectItem->schema(), projectItem->name(), newSchemaName ) )
+      if ( !QgsPostgresUtils::moveProjectToSchema( conn2, projectItem->schemaName(), projectItem->name(), newSchemaName ) )
       {
-        notify( tr( "Move Projects to Another Schema" ), tr( "Unable to move project “%1” to scheme “%2” " ).arg( projectItem->schema(), newSchemaName ), context, Qgis::MessageLevel::Warning );
+        notify( tr( "Move Projects to Another Schema" ), tr( "Unable to move project “%1” to scheme “%2” " ).arg( projectItem->name(), newSchemaName ), context, Qgis::MessageLevel::Warning );
       }
       else
       {
