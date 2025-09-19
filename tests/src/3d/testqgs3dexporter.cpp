@@ -137,14 +137,11 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int zoomLevels
 
 void TestQgs3DExporter::test3DSceneExporter()
 {
-  // =============================================
-  // =========== creating Qgs3DMapSettings
   QgsVectorLayer *layerPoly = new QgsVectorLayer( testDataPath( "/3d/polygons.gpkg.gz" ), "polygons", "ogr" );
   QVERIFY( layerPoly->isValid() );
 
   const QgsRectangle fullExtent = layerPoly->extent();
 
-  // =========== create polygon 3D renderer
   QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol();
   symbol3d->setExtrusionHeight( 10.f );
   QgsPhongMaterialSettings materialSettings;
@@ -158,7 +155,6 @@ void TestQgs3DExporter::test3DSceneExporter()
   project.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 3857 ) );
   project.addMapLayer( layerPoly );
 
-  // =========== create scene 3D settings
   Qgs3DMapSettings mapSettings;
   mapSettings.setCrs( project.crs() );
   mapSettings.setExtent( fullExtent );
@@ -169,7 +165,6 @@ void TestQgs3DExporter::test3DSceneExporter()
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
   mapSettings.setOutputDpi( 92 );
 
-  // =========== creating Qgs3DMapScene
   QPoint winSize = QPoint( 640, 480 ); // default window size
 
   QgsOffscreen3DEngine engine;
@@ -199,8 +194,6 @@ void TestQgs3DExporter::test3DSceneExporter()
 
 void TestQgs3DExporter::test3DSceneExporterBig()
 {
-  // =============================================
-  // =========== creating Qgs3DMapSettings
   QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
   QVERIFY( layerDtm->isValid() );
 
@@ -230,7 +223,6 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   mapSettings.setLightSources( { defaultPointLight.clone() } );
   mapSettings.setOutputDpi( 92 );
 
-  // =========== creating Qgs3DMapScene
   QPoint winSize = QPoint( 640, 480 ); // default window size
 
   QgsOffscreen3DEngine engine;
@@ -238,7 +230,6 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
   engine.setRootEntity( scene );
 
-  // =========== set camera position
   scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
 
   const int nbFaces = 19869;
@@ -261,8 +252,6 @@ void TestQgs3DExporter::test3DSceneExporterBig()
 
 void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
 {
-  // =============================================
-  // =========== creating Qgs3DMapSettings
   QgsRasterLayer *layerRgb = new QgsRasterLayer( testDataPath( "/3d/rgb.tif" ), "rgb", "gdal" );
   QVERIFY( layerRgb->isValid() );
 
@@ -294,7 +283,6 @@ void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
   mapSettings.setLightSources( { defaultPointLight.clone() } );
   mapSettings.setOutputDpi( 92 );
 
-  // =========== creating Qgs3DMapScene
   QPoint winSize = QPoint( 640, 480 ); // default window size
 
   QgsOffscreen3DEngine engine;
@@ -302,10 +290,8 @@ void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
   Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
   engine.setRootEntity( scene );
 
-  // =========== set camera position
   scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
 
-  // =========== check the export with flat terrain
   do3DSceneExport( "flat_terrain_scene_export", 5, 70, 401, 19875, scene, mLayerBuildings, &engine, scene->terrainEntity() );
 
   delete scene;
