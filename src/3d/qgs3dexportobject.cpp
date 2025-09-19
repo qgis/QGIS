@@ -130,7 +130,22 @@ void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, flo
   }
 }
 
-void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &center, int precision, QString materialName ) const
+void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &center, const Qgis::Export3DSceneFormat &exportFormat, int precision, QString materialName ) const
+{
+  switch ( exportFormat )
+  {
+    case Qgis::Export3DSceneFormat::Obj:
+      saveToObj( out, scale, center, precision, materialName );
+      return;
+    case Qgis::Export3DSceneFormat::StlAscii:
+      saveToStl( out, scale, center, precision );
+      return;
+  }
+
+  BUILTIN_UNREACHABLE
+}
+
+void Qgs3DExportObject::saveToObj( QTextStream &out, float scale, const QVector3D &center, int precision, QString materialName ) const
 {
   // Set object name
   out << "o " << mName << "\n";
@@ -222,6 +237,56 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
       out << " " << getVertexIndex( i );
     out << "\n";
   }
+}
+
+void Qgs3DExportObject::saveToStl( QTextStream &out, float scale, const QVector3D &center, int precision ) const
+{
+  if ( mType == LineStrip || mType == Points )
+  {
+    QgsDebugMsgLevel( u"Cannot export object %s in %s type. Only triangular type is handled by STL export"_s.arg( mName ).arg( mType ), 3 );
+    return;
+  }
+
+  // Set object name
+  out << "solid " << mName << "\n";
+
+  out << qSetRealNumberPrecision( precision );
+
+  for ( int i = 0; i < mIndexes.size(); i += 3 )
+  {
+    // Vertices of the triangle
+    unsigned int i0 = mIndexes[i] * 3;
+    unsigned int i1 = mIndexes[i + 1] * 3;
+    unsigned int i2 = mIndexes[i + 2] * 3;
+
+    QVector3D v0(
+      ( mVertexPosition[i0] - center.x() ) / scale,
+      ( mVertexPosition[i0 + 1] - center.y() ) / scale,
+      ( mVertexPosition[i0 + 2] - center.z() ) / scale
+    );
+    QVector3D v1(
+      ( mVertexPosition[i1] - center.x() ) / scale,
+      ( mVertexPosition[i1 + 1] - center.y() ) / scale,
+      ( mVertexPosition[i1 + 2] - center.z() ) / scale
+    );
+    QVector3D v2(
+      ( mVertexPosition[i2] - center.x() ) / scale,
+      ( mVertexPosition[i2 + 1] - center.y() ) / scale,
+      ( mVertexPosition[i2 + 2] - center.z() ) / scale
+    );
+
+    QVector3D normal = QVector3D::crossProduct( v1 - v0, v2 - v0 ).normalized();
+
+    out << "  facet normal " << normal.x() << " " << normal.y() << " " << normal.z() << "\n";
+    out << "    outer loop\n";
+    out << "      vertex " << v0.x() << " " << v0.y() << " " << v0.z() << "\n";
+    out << "      vertex " << v1.x() << " " << v1.y() << " " << v1.z() << "\n";
+    out << "      vertex " << v2.x() << " " << v2.y() << " " << v2.z() << "\n";
+    out << "    endloop\n";
+    out << "  endfacet\n";
+  }
+
+  out << "endsolid " << mName << "\n";
 }
 
 QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &folderPath ) const

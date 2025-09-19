@@ -48,11 +48,13 @@ class TestQgs3DExporter : public QgsTest
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testExportObjectToObj();
+    void testExportObjectToStl();
     void test3DSceneExporter();
     void test3DSceneExporterBig();
     void test3DSceneExporterFlatTerrain();
 
   private:
+    void doObjectExport( const Qgis::ExportFormat &exportFormat );
     void do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity = nullptr );
 
     QgsVectorLayer *mLayerBuildings = nullptr;
@@ -89,8 +91,10 @@ void TestQgs3DExporter::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-void TestQgs3DExporter::testExportObjectToObj()
+void TestQgs3DExporter::doObjectExport( const Qgis::ExportFormat &exportFormat )
 {
+  const QString exportExtension = exportFormat == Qgis::Export3DSceneFormat::Obj ? "obj" : "stl";
+
   // all vertice positions
   QVector<float> positionData = {
     -0.456616, 0.00187836, -0.413774,
@@ -164,7 +168,9 @@ void TestQgs3DExporter::testExportObjectToObj()
 
   // case where all vertices are used
   {
-    Qgs3DExportObject object( "all_faces" );
+    const QString objectName = u"all_faces"_s;
+    const QString objectFilename = objectName + u"."_s + exportExtension;
+    Qgs3DExportObject object( objectName );
 
     // exported vertice indexes
     QVector<uint> indexData = {
@@ -208,18 +214,17 @@ void TestQgs3DExporter::testExportObjectToObj()
     object.setupNormalCoordinates( normalsData, QMatrix4x4() );
     QCOMPARE( object.normals().size(), normalsData.size() );
 
-
-    QFile file( tempDir.path() + "all_faces.obj" );
+    QFile file( tempDir.path() + objectFilename );
     QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
     QTextStream out( &file );
 
-    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
+    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), exportFormat, 3 );
 
     out.flush();
     out.seek( 0 );
 
     QString actual = out.readAll();
-    QGSCOMPARELONGSTR( "export_obj", "all_faces.obj", actual.toUtf8() );
+    QGSCOMPARELONGSTR( "export_object", objectFilename, actual.toUtf8() );
   }
 
   // case where only a subset of vertices are used
@@ -238,7 +243,10 @@ void TestQgs3DExporter::testExportObjectToObj()
       // 27, 28, 29,
     };
 
-    Qgs3DExportObject object( "sparse_faces" );
+    const QString objectName = u"sparse_faces"_s;
+    const QString objectFilename = objectName + u"."_s + exportExtension;
+
+    Qgs3DExportObject object( objectName );
     object.setupTriangle( positionData, indexData, QMatrix4x4() );
     QCOMPARE( object.vertexPosition().size(), positionData.size() );
 
@@ -247,17 +255,28 @@ void TestQgs3DExporter::testExportObjectToObj()
     object.setupNormalCoordinates( normalsData, QMatrix4x4() );
     QCOMPARE( object.normals().size(), normalsData.size() );
 
-    QFile file( tempDir.path() + "sparse_faces.obj" );
+    QFile file( tempDir.path() + objectFilename );
     QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
     QTextStream out( &file );
-    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
+
+    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), exportFormat, 3 );
 
     out.flush();
     out.seek( 0 );
 
     QString actual = out.readAll();
-    QGSCOMPARELONGSTR( "export_obj", "sparse_faces.obj", actual.toUtf8() );
+    QGSCOMPARELONGSTR( "export_object", objectFilename, actual.toUtf8() );
   }
+}
+
+void TestQgs3DExporter::testExportObjectToObj()
+{
+  doObjectExport( Qgis::Export3DSceneFormat::Obj );
+}
+
+void TestQgs3DExporter::testExportObjectToStl()
+{
+  doObjectExport( Qgis::Export3DSceneFormat::StlAscii );
 }
 
 void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity )

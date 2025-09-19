@@ -16,6 +16,7 @@
 #ifndef Qgs3DExportObject_H
 #define Qgs3DExportObject_H
 
+#include "qgis.h"
 #include "qgis_3d.h"
 
 #include <QImage>
@@ -99,7 +100,7 @@ class _3D_EXPORT Qgs3DExportObject
     void objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ ) const;
 
     /**
-     * \brief Exports the 3D object to an OBJ-compatible output stream
+     * \brief Exports the 3D object to an OBJ or STL compatible output stream
      *
      * This function writes the 3D object's geometry to the specified output stream,
      * applying a uniform scaling and translating it so that the model is centered
@@ -108,11 +109,13 @@ class _3D_EXPORT Qgs3DExportObject
      * \param out           The output text stream where the data will be written.
      * \param scale         The uniform scale factor applied to all vertices.
      * \param center        The target center position to which the object will be translated.
+     * \param exportFormat  The desired export format (OBJ or STL). Defaults to OBJ.
      * \param precision     The number of decimal digits used when writing floating-point values (default: 6).
-     * \param materialName  Optional name of the material to associate with the object (default: empty).
+     * \param materialName   Optional name of the material to associate with the object (default: empty).
+     *                       This parameter has no effect when exporting to STL, as this format does not support materials.
      *
      */
-    void saveTo( QTextStream &out, float scale, const QVector3D &center, int precision = 6, QString materialName = QString() ) const;
+    void saveTo( QTextStream &out, float scale, const QVector3D &center, const Qgis::Export3DSceneFormat &exportFormat = Qgis::Export3DSceneFormat::Obj, int precision = 6, QString materialName = QString() ) const;
 
     //! saves the texture of the object and material information
     QString saveMaterial( QTextStream &mtlOut, const QString &folder ) const;
@@ -132,6 +135,12 @@ class _3D_EXPORT Qgs3DExportObject
   private:
     //! Sets positions coordinates and does the translation, rotation and scaling
     void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform = QMatrix4x4() );
+
+    //! Saves the current object to the output stream in Obj format
+    void saveToObj( QTextStream &out, float scale, const QVector3D &center, int precision = 6, QString materialName = QString() ) const;
+
+    //! Saves the current object to the output stream in Stl format
+    void saveToStl( QTextStream &out, float scale, const QVector3D &center, int precision = 6 ) const;
 
   private:
     QString mName;
