@@ -406,6 +406,26 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             "test_project_values.qgz",
         )
 
+    def testMeshGetFeatureInfo(self):
+        """Test GetFeatureInfo for mesh layers"""
+        mypath = self.testdata_path + "test_project_mesh_getfeatureinfo.qgz"
+        self.wms_request_compare(
+            "GetFeatureInfo",
+            "&layers=CCMP_Wind_Analysis_wind_speed&styles=&"
+            + "VERSION=1.3.0&"
+            + "info_format=application%2Fjson&"
+            + "width=500&height=500"
+            + "&bbox=38.52590,-28.62490,38.52625,-28.62448"
+            + "&CRS=EPSG:4326"
+            + "&FEATURE_COUNT=10"
+            + "&WITH_GEOMETRY=True"
+            + "&QUERY_LAYERS=CCMP_Wind_Analysis_wind_speed"
+            + "&TIME=2025-03-25T00%3A00%3A00Z"
+            + "&I=0&J=499",
+            "wms_getfeatureinfo-mesh-json",
+            "test_project_mesh_getfeatureinfo.qgz",
+        )
+
     # TODO make GetFeatureInfo show what's in the display expression and
     # enable test
     @QgisTestCase.expectedFailure
