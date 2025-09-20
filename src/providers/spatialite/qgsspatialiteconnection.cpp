@@ -580,7 +580,7 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const ch
   )
                      .arg( tableRaster.replace( '\'', QLatin1String( "''" ) ) );
 
-  ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, nullptr );
+  ret = sqlite3_get_table( handle, sqlStr.toUtf8().constData(), &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
     return false;
 
