@@ -8183,20 +8183,23 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
       vl->removeCustomProperty( QStringLiteral( "OnConvertFormatRegeneratePrimaryKey" ) );
 
       mLayerTreeView->refreshLayerSymbology( vl->id() );
-      this->visibleMessageBar()->pushMessage( tr( "Layer Saved" ), tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ), Qgis::MessageLevel::Success, 0 );
+
+      QgsMessageBarItem *barItem = new QgsMessageBarItem( tr( "Layer Saved" ), tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ), Qgis::MessageLevel::Success, 0 );
 
       if ( ( !newLayerName.isEmpty() ) )
       {
         if ( newLayerName != vl->name() )
         {
-          QMessageBox question( QMessageBox::Question, tr( "Rename Layer" ), tr( "Would you also like to change the layer name to `%1` in the layers panel?" ).arg( newLayerName ), QMessageBox::Yes | QMessageBox::No, this );
-          int res = question.exec();
-          if ( res == QMessageBox::Yes )
-          {
+          QPushButton *button = new QPushButton( tr( "Rename layer in layers panel" ), this );
+          barItem->setWidget( button );
+          connect( button, &QPushButton::clicked, this, [button, vl, newLayerName]() {
             vl->setName( newLayerName );
-          }
+            button->setEnabled( false );
+          } );
         }
       }
+
+      this->visibleMessageBar()->pushItem( barItem );
     }
   };
 
