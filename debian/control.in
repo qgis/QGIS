@@ -21,7 +21,7 @@ Build-Depends:
  libpq-dev,
  libproj-dev,
  libdraco-dev,
- libspatialindex-dev,
+#bookworm noble# libspatialindex-dev,
  libspatialite-dev,
  libmeshoptimizer-dev,
  libsqlite3-dev,
@@ -74,6 +74,7 @@ Build-Depends:
 #apidoc#Build-Depends-indep:
 #apidoc# doxygen
 Build-Conflicts:
+ libspatialindex-dev (>= 2.1.0),
  libqgis-dev,
  libqgis-qt6-dev,
  qgis-dev
