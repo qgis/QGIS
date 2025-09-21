@@ -29,7 +29,6 @@ Build-Depends:
  libqt5svg5-dev,
  libqt5xmlpatterns5-dev,
  libqwt-qt5-dev,
- libspatialindex-dev,
  libspatialite-dev,
  libsqlite3-dev,
  libsqlite3-mod-spatialite,
