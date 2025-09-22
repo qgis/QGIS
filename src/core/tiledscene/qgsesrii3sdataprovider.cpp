@@ -68,6 +68,7 @@ class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
     bool fetchNodePage( int nodePage, QgsFeedback *feedback = nullptr );
     void parseNodePage( const QByteArray &nodePageContent );
     void parseMesh( QgsTiledSceneTile &t, const json &meshJson );
+    QVariantMap parseMaterialDefinition( const json &materialDefinitionJson );
 
     struct NodeDetails
     {
@@ -129,17 +130,25 @@ QgsEsriI3STiledSceneIndex::QgsEsriI3STiledSceneIndex(
   : mRootUrl( rootUrl )
   , mTransformContext( transformContext )
 {
-  mGlobalMode = layerJson["spatialReference"]["latestWkid"].get<int>() == 4326;
+  try
+  {
+    mGlobalMode = layerJson["spatialReference"]["latestWkid"].get<int>() == 4326;
+  }
+  catch ( json::exception &error )
+  {
+    // "spatialReference" is not required, yet the spec does not say what should
+    // be the default - assuming global mode is the best we can do...
+    mGlobalMode = true;
+  }
 
   if ( layerJson.contains( "textureSetDefinitions" ) )
   {
     for ( auto textureSetDefinitionJson : layerJson["textureSetDefinitions"] )
     {
       QString formatType;
-      for ( auto formatJson : textureSetDefinitionJson["formats"] )
+      for ( const json &formatJson : textureSetDefinitionJson["formats"] )
       {
-        QString formatName = QString::fromStdString( formatJson["name"].get<std::string>() );
-        if ( formatName == "0" )
+        if ( formatJson["name"].get<std::string>() == "0" )
         {
           formatType = QString::fromStdString( formatJson["format"].get<std::string>() );
           break;
@@ -151,50 +160,9 @@ QgsEsriI3STiledSceneIndex::QgsEsriI3STiledSceneIndex(
 
   if ( layerJson.contains( "materialDefinitions" ) )
   {
-    for ( auto materialDefinitionJson : layerJson["materialDefinitions"] )
+    for ( const json &materialDefinitionJson : layerJson["materialDefinitions"] )
     {
-      QVariantMap materialDef;
-      json pbrJson = materialDefinitionJson["pbrMetallicRoughness"];
-      if ( pbrJson.contains( "baseColorFactor" ) )
-      {
-        json pbrBaseColorFactorJson = pbrJson["baseColorFactor"];
-        materialDef["pbrBaseColorFactor"] = QVariantList
-        {
-          pbrBaseColorFactorJson[0].get<double>(),
-          pbrBaseColorFactorJson[1].get<double>(),
-          pbrBaseColorFactorJson[2].get<double>(),
-          pbrBaseColorFactorJson[3].get<double>()
-        };
-      }
-      else
-      {
-        materialDef["pbrBaseColorFactor"] = QVariantList{ 1.0, 1.0, 1.0, 1.0 };
-      }
-      if ( pbrJson.contains( "baseColorTexture" ) )
-      {
-        // but right now we only support png/jpg textures which have
-        // hardcoded name "0" by the spec, and we use texture set definitions
-        // only to figure out whether it is png or jpg
-        int textureSetDefinitionId = pbrJson["baseColorTexture"]["textureSetDefinitionId"].get<int>();
-        if ( textureSetDefinitionId < mTextureSetFormats.count() )
-        {
-          materialDef["pbrBaseColorTextureName"] = QString( "0" );
-          materialDef["pbrBaseColorTextureFormat"] = mTextureSetFormats[textureSetDefinitionId];
-        }
-        else
-        {
-          QgsDebugError( QString( "referencing textureSetDefinition that does not exist! %1 " ).arg( textureSetDefinitionId ) );
-        }
-      }
-      if ( pbrJson.contains( "doubleSided" ) )
-      {
-        materialDef["doubleSided"] = materialDefinitionJson["doubleSided"].get<bool>();
-      }
-
-      // there are various other properties that can be defined in a material,
-      // but we do not support them: normal texture, occlusion texture, emissive texture,
-      // emissive factor, alpha mode, alpha cutoff, cull face.
-
+      QVariantMap materialDef = parseMaterialDefinition( materialDefinitionJson );
       mMaterialDefinitions.append( materialDef );
     }
   }
@@ -207,12 +175,68 @@ QgsEsriI3STiledSceneIndex::QgsEsriI3STiledSceneIndex(
   fetchNodePage( rootNodePage );
 }
 
+QVariantMap QgsEsriI3STiledSceneIndex::parseMaterialDefinition( const json &materialDefinitionJson )
+{
+  QVariantMap materialDef;
+
+  if ( materialDefinitionJson.contains( "pbrMetallicRoughness" ) )
+  {
+    const json pbrJson = materialDefinitionJson["pbrMetallicRoughness"];
+    if ( pbrJson.contains( "baseColorFactor" ) )
+    {
+      const json pbrBaseColorFactorJson = pbrJson["baseColorFactor"];
+      materialDef[QStringLiteral( "pbrBaseColorFactor" )] = QVariantList
+      {
+        pbrBaseColorFactorJson[0].get<double>(),
+        pbrBaseColorFactorJson[1].get<double>(),
+        pbrBaseColorFactorJson[2].get<double>(),
+        pbrBaseColorFactorJson[3].get<double>()
+      };
+    }
+    else
+    {
+      materialDef[QStringLiteral( "pbrBaseColorFactor" )] = QVariantList{ 1.0, 1.0, 1.0, 1.0 };
+    }
+    if ( pbrJson.contains( "baseColorTexture" ) )
+    {
+      // but right now we only support png/jpg textures which have
+      // hardcoded name "0" by the spec, and we use texture set definitions
+      // only to figure out whether it is png or jpg
+      const int textureSetDefinitionId = pbrJson["baseColorTexture"]["textureSetDefinitionId"].get<int>();
+      if ( textureSetDefinitionId < mTextureSetFormats.count() )
+      {
+        materialDef[QStringLiteral( "pbrBaseColorTextureName" )] = QStringLiteral( "0" );
+        materialDef[QStringLiteral( "pbrBaseColorTextureFormat" )] = mTextureSetFormats[textureSetDefinitionId];
+      }
+      else
+      {
+        QgsDebugError( QString( "referencing textureSetDefinition that does not exist! %1 " ).arg( textureSetDefinitionId ) );
+      }
+    }
+  }
+  else
+  {
+    materialDef[QStringLiteral( "pbrBaseColorFactor" )] = QVariantList{ 1.0, 1.0, 1.0, 1.0 };
+  }
+
+  if ( materialDefinitionJson.contains( "doubleSided" ) )
+  {
+    materialDef[QStringLiteral( "doubleSided" )] = materialDefinitionJson["doubleSided"].get<bool>();
+  }
+
+  // there are various other properties that can be defined in a material,
+  // but we do not support them: normal texture, occlusion texture, emissive texture,
+  // emissive factor, alpha mode, alpha cutoff, cull face.
+
+  return materialDef;
+}
+
 QgsTiledSceneTile QgsEsriI3STiledSceneIndex::rootTile() const
 {
   QMutexLocker locker( &mLock );
   if ( !mNodeMap.contains( mRootNodeIndex ) )
   {
-    QgsDebugError( "Unable to access the root tile!" );
+    QgsDebugError( QStringLiteral( "Unable to access the root tile!" ) );
     return QgsTiledSceneTile();
   }
   return mNodeMap[mRootNodeIndex].tile;
@@ -370,7 +394,7 @@ QByteArray QgsEsriI3STiledSceneIndex::fetchContent( const QString &uri, QgsFeedb
   }
   else
   {
-    QNetworkRequest networkRequest = QNetworkRequest( QUrl( uri ) );
+    QNetworkRequest networkRequest = QNetworkRequest( url );
     QgsSetRequestInitiatorClass( networkRequest, QStringLiteral( "QgsEsriI3STiledSceneIndex" ) );
     networkRequest.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
     networkRequest.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
@@ -388,17 +412,17 @@ bool QgsEsriI3STiledSceneIndex::fetchNodePage( int nodePage, QgsFeedback *feedba
   QByteArray nodePageContent;
   if ( !mRootUrl.isLocalFile() )
   {
-    QString uri = mRootUrl.toString() + QString( "/layers/0/nodepages/%1" ).arg( nodePage );
+    const QString uri = QStringLiteral( "%1/layers/0/nodepages/%2" ).arg( mRootUrl.toString() ).arg( nodePage );
     nodePageContent = retrieveContent( uri, feedback );
   }
   else
   {
-    QString uri = mRootUrl.toString() + QString( "/nodepages/%1.json.gz" ).arg( nodePage );
-    QByteArray nodePageContentGzipped = retrieveContent( uri, feedback );
+    const QString uri = QStringLiteral( "%1/nodepages/%2.json.gz" ).arg( mRootUrl.toString() ).arg( nodePage );
+    const QByteArray nodePageContentGzipped = retrieveContent( uri, feedback );
 
     if ( !QgsZipUtils::decodeGzip( nodePageContentGzipped, nodePageContent ) )
     {
-      QgsDebugError( "Failed to decompress node page content: " + uri );
+      QgsDebugError( QStringLiteral( "Failed to decompress node page content: " ) + uri );
       return false;
     }
   }
@@ -451,9 +475,9 @@ void QgsEsriI3STiledSceneIndex::parseMesh( QgsTiledSceneTile &t, const json &mes
   int geometryResource = meshJson["geometry"]["resource"].get<int>();
   QString geometryUri;
   if ( mRootUrl.isLocalFile() )
-    geometryUri = mRootUrl.toString() + QString( "/nodes/%1/geometries/1.bin.gz" ).arg( geometryResource );
+    geometryUri = QStringLiteral( "%1/nodes/%2/geometries/1.bin.gz" ).arg( mRootUrl.toString() ).arg( geometryResource );
   else
-    geometryUri = mRootUrl.toString() + QString( "/layers/0/nodes/%1/geometries/1" ).arg( geometryResource );
+    geometryUri = QStringLiteral( "%1/layers/0/nodes/%1/geometries/1" ).arg( mRootUrl.toString() ).arg( geometryResource );
 
   // parse material and related textures
   const json materialJson = meshJson["material"];
@@ -462,20 +486,20 @@ void QgsEsriI3STiledSceneIndex::parseMesh( QgsTiledSceneTile &t, const json &mes
   if ( materialIndex >= 0 && materialIndex < mMaterialDefinitions.count() )
   {
     materialInfo = mMaterialDefinitions[materialIndex];
-    if ( materialInfo.contains( "pbrBaseColorTextureName" ) )
+    if ( materialInfo.contains( QStringLiteral( "pbrBaseColorTextureName" ) ) )
     {
-      QString textureName = materialInfo["pbrBaseColorTextureName"].toString();
-      QString textureFormat = materialInfo["pbrBaseColorTextureFormat"].toString();
-      materialInfo.remove( "pbrBaseColorTextureName" );
-      materialInfo.remove( "pbrBaseColorTextureFormat" );
+      const QString textureName = materialInfo[QStringLiteral( "pbrBaseColorTextureName" )].toString();
+      const QString textureFormat = materialInfo[QStringLiteral( "pbrBaseColorTextureFormat" )].toString();
+      materialInfo.remove( QStringLiteral( "pbrBaseColorTextureName" ) );
+      materialInfo.remove( QStringLiteral( "pbrBaseColorTextureFormat" ) );
 
-      int textureResource = materialJson["resource"].get<int>();
+      const int textureResource = materialJson["resource"].get<int>();
       QString textureUri;
       if ( mRootUrl.isLocalFile() )
-        textureUri = mRootUrl.toString() + QString( "/nodes/%1/textures/%2.%3" ).arg( textureResource ).arg( textureName, textureFormat );
+        textureUri = QStringLiteral( "%1/nodes/%2/textures/%3.%4" ).arg( mRootUrl.toString() ).arg( textureResource ).arg( textureName, textureFormat );
       else
-        textureUri = mRootUrl.toString() + QString( "/layers/0/nodes/%1/textures/%2" ).arg( textureResource ).arg( textureName );
-      materialInfo["pbrBaseColorTexture"] = textureUri;
+        textureUri = QStringLiteral( "%1/layers/0/nodes/%2/textures/%3" ).arg( mRootUrl.toString() ).arg( textureResource ).arg( textureName );
+      materialInfo[QStringLiteral( "pbrBaseColorTexture" )] = textureUri;
     }
   }
 
@@ -511,7 +535,9 @@ void QgsEsriI3STiledSceneIndex::parseNodePage( const QByteArray &nodePageContent
 
     if ( mGlobalMode )
     {
-      QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( "EPSG:4979" ), QgsCoordinateReferenceSystem( "EPSG:4978" ), mTransformContext );
+      QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ),
+                                 QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ),
+                                 mTransformContext );
       QgsVector3D obbCenterEcef = ct.transform( obb.center() );
       obb = QgsOrientedBox3D( { obbCenterEcef.x(), obbCenterEcef.y(), obbCenterEcef.z() }, obb.halfAxesList() );
     }
@@ -644,7 +670,7 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
   , mShared( std::make_shared< QgsEsriI3SDataProviderSharedData >() )
 {
   QUrl rootUrl;
-  if ( uri.startsWith( "http" ) || uri.startsWith( "file" ) )
+  if ( uri.startsWith( QLatin1String( "http" ) ) || uri.startsWith( QLatin1String( "file" ) ) )
   {
     rootUrl = uri;
   }
@@ -656,7 +682,7 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
 
   QString i3sVersion;
   json layerJson;
-  if ( uri.startsWith( "http" ) )
+  if ( uri.startsWith( QLatin1String( "http" ) ) )
   {
     if ( !loadFromRestService( uri, layerJson, i3sVersion ) )
       return;
@@ -680,7 +706,7 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
   }
 
   QString layerType = QString::fromStdString( layerJson["layerType"].get<std::string>() );
-  if ( layerType != "3DObject" && layerType != "IntegratedMesh" )
+  if ( layerType != QLatin1String( "3DObject" ) && layerType != QLatin1String( "IntegratedMesh" ) )
   {
     appendError( QgsErrorMessage( tr( "Unsupported layer type: " ) + layerType, QStringLiteral( "I3S" ) ) );
     return;
