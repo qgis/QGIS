@@ -32,12 +32,14 @@ Sample usage of the :py:class:`QgsFieldCalculator` class:
   public:
     QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = 0, int fieldIndex = -1 );
 %Docstring
-Constructor for QgsFieldCalculator, with the specified ``parent`` widget.
+Constructor for QgsFieldCalculator, with the specified ``parent``
+widget.
 
 The target layer must be specified using the ``vl`` argument.
 
-Since QGIS 4.0, the optional ``fieldIndex`` argument can be used to automatically
-select the existing field with the specified index in the dialog.
+Since QGIS 4.0, the optional ``fieldIndex`` argument can be used to
+automatically select the existing field with the specified index in the
+dialog.
 %End
 
     int changedAttributeId() const;
