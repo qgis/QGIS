@@ -95,6 +95,19 @@ class GUI_EXPORT QgsDevToolsModelNode
 class GUI_EXPORT QgsDevToolsModelGroup : public QgsDevToolsModelNode
 {
   public:
+    ~QgsDevToolsModelGroup() override;
+
+    /**
+     * Constructor for a QgsDevToolsModelGroup. Copy constructor is disabled
+     */
+    QgsDevToolsModelGroup( QgsDevToolsModelGroup &&other ) noexcept = default;
+
+    /**
+     * Assignement operator for QgsDevToolsModelGroup. Copy assignement is disabled
+     */
+    QgsDevToolsModelGroup &operator=( QgsDevToolsModelGroup &&other ) noexcept = default;
+
+  public:
     /**
      * Adds a \a child node to this node.
      *
@@ -138,6 +151,10 @@ class GUI_EXPORT QgsDevToolsModelGroup : public QgsDevToolsModelNode
     std::deque<std::unique_ptr<QgsDevToolsModelNode>> mChildren;
 
   private:
+    // Prevent copying
+    QgsDevToolsModelGroup( const QgsDevToolsModelGroup & ) = delete;
+    QgsDevToolsModelGroup &operator=( const QgsDevToolsModelGroup & ) = delete;
+
     QString mGroupTitle;
 };
 
