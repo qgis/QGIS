@@ -46,6 +46,17 @@ Qgs3DMapExportSettings::~Qgs3DMapExportSettings()
 
 QString Qgs3DMapExportSettings::exportFileUri() const
 {
-  const QString path = QDir( sceneFolderPath() ).filePath( sceneName() + QStringLiteral( ".obj" ) );
+  QString extension;
+  switch ( mExportFormat )
+  {
+    case Qgis::Export3DSceneFormat::Obj:
+      extension = QStringLiteral( "obj" );
+      break;
+    case Qgis::Export3DSceneFormat::StlAscii:
+      extension = QStringLiteral( "stl" );
+      break;
+  }
+
+  const QString path = QDir( sceneFolderPath() ).filePath( sceneName() + QStringLiteral( "." ) + extension );
   return QUrl::fromLocalFile( path ).toString();
 }
