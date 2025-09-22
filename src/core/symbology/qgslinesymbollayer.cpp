@@ -1383,7 +1383,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
     {
       // keep only the part/ring we are currently rendering
       const int iPart = context.geometryPartNum() - 1;
-      if ( iPart > 0 && mRingIndex > 0 && iPart < allBlankSegments.count() && mRingIndex < allBlankSegments.at( iPart ).count() )
+      if ( iPart >= 0 && mRingIndex >= 0 && iPart < allBlankSegments.count() && mRingIndex < allBlankSegments.at( iPart ).count() )
       {
         blankSegments = allBlankSegments.at( iPart ).at( mRingIndex );
       }
