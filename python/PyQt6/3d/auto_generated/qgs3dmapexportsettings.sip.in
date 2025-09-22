@@ -61,6 +61,12 @@ Returns the terrain texture resolution
 %Docstring
 Returns the scale of the exported model
 %End
+    Qgis::Export3DSceneFormat exportFormat() const;
+%Docstring
+Returns the export format for the 3D scene.
+
+.. versionadded:: 4.0
+%End
     QString exportFileUri() const;
 %Docstring
 Returns the full file uri where the 3D scene will be exported.
@@ -85,7 +91,7 @@ Sets the scene name
 %End
     void setSceneFolderPath( const QString &sceneFolderPath );
 %Docstring
-Sets the scene's .obj file folder path
+Sets the folder path where exported 3D scene files will be saved.
 %End
     void setTerrainResolution( int resolution );
 %Docstring
@@ -110,6 +116,12 @@ Sets the terrain texture resolution
     void setScale( float scale );
 %Docstring
 Sets the scale of exported model
+%End
+    void setExportFormat( Qgis::Export3DSceneFormat exportFormat );
+%Docstring
+Sets the export format for the 3D scene.
+
+.. versionadded:: 4.0
 %End
 
     void setTerrainExportEnabled( bool enabled );
