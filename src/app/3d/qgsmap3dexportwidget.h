@@ -38,6 +38,10 @@ class QgsMap3DExportWidget : public QWidget
     bool exportScene();
   private slots:
     void settingsChanged();
+    void exportFormatChanged();
+
+  private:
+    void updateTerrainResolutionWidget();
 
   private:
     Ui::Map3DExportWidget *ui;
