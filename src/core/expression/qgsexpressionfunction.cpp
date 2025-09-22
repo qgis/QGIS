@@ -1013,30 +1013,34 @@ static QVariant fcnAggregateGeneric( Qgis::Aggregate aggregate, const QVariantLi
 
   bool isStatic = true;
   const QSet<QString> refVars = filterExp.referencedVariables() + subExp.referencedVariables();
+  QString evalVars;
+  QVariant evaluatedVar;
   for ( const QString &varName : refVars )
   {
-    const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
-    if ( scope && !scope->isStatic( varName ) )
+    if ( isStatic )
     {
-      isStatic = false;
-      break;
+      const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
+      if ( scope && !scope->isStatic( varName ) )
+      {
+        isStatic = false;
+      }
     }
+    evaluatedVar = context->variable( varName );
+    if ( evaluatedVar.userType() == qMetaTypeId< QgsGeometry >() )
+      evalVars.append( evaluatedVar.value<QgsGeometry>().asWkt( 7 ) );
+    else
+      evalVars.append( evaluatedVar.toString() );
   }
 
   QString cacheKey;
   if ( !isStatic )
   {
-    bool ok = false;
-    const QString contextHash = context->uniqueHash( ok, refVars );
-    if ( ok )
-    {
-      cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5:%6" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
-                 orderBy, contextHash );
-    }
+    cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5%6:%7:%8" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
+               QString::number( context->feature().id() ), QString::number( qHash( context->feature() ) ), orderBy, evalVars );
   }
   else
   {
-    cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy );
+    cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5:%8" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy, evalVars );
   }
 
   if ( context->hasCachedValue( cacheKey ) )
