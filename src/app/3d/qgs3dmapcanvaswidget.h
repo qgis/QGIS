@@ -170,6 +170,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionSync2DNavTo3D = nullptr;
     QAction *mActionSync3DNavTo2D = nullptr;
     QAction *mShowFrustumPolygon = nullptr;
+    QAction *mActionShow2DMapOverlay = nullptr;
     QAction *mActionAnim = nullptr;
     QAction *mActionExport = nullptr;
     QAction *mActionMapThemes = nullptr;

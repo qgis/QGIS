@@ -42,8 +42,18 @@ class QgsDebugTextureEntity : public QgsRenderPassQuad
     //! Constructor
     QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
 
+    /**
+     * Sets the texture debugging parameters
+     * \param corner the texture's corner position within the window
+     * \param size the texture's size
+     * \param offset the offset between the corner of the window and the texture
+     *
+     * \since QGIS 4.0
+     */
+    void setPosition( Qt::Corner corner, QSizeF size, QSizeF offset = QSizeF(0., 0.) );
+
     //! Sets the texture debugging parameters
-    void setPosition( Qt::Corner corner, double size );
+    void setPosition( Qt::Corner corner, double size, double offset = 0. );
 
   private:
     //! Sets the view port of the quad
@@ -53,6 +63,8 @@ class QgsDebugTextureEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mTextureParameter = nullptr;
     Qt3DRender::QParameter *mCenterTextureCoords = nullptr;
     Qt3DRender::QParameter *mSizeTextureCoords = nullptr;
+    Qt3DRender::QParameter *mIsDepth = nullptr;
+    Qt3DRender::QParameter *mFlipTextureY = nullptr;
 };
 
 #endif // QGSDEBUGTEXTUREENTITY_H
