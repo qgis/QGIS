@@ -770,6 +770,35 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
 
         self.assertEqual(dom.toString(), expected)
 
+    def testFixedIntervalSingleClass(self):
+        """Test single class with fixed interval, issue GH #63277"""
+
+        # Create a renderer
+        renderer = QgsGraduatedSymbolRenderer()
+        renderer.setClassificationMethod(QgsClassificationFixedInterval())
+        symbol = createMarkerSymbol()
+        renderer.setSourceSymbol(symbol.clone())
+
+        # Test retrieving data values from a layer
+        ml = createMemoryLayer((0, 0))
+
+        renderer.setClassAttribute("value")
+        # Equal interval calculations
+        renderer.updateClasses(ml, 5)
+        self.assertEqual(
+            dumpRangeBreaks(renderer.ranges()),
+            "(0.0000-1.0000,)",
+            "Equal interval classification not correct",
+        )
+
+        ml = createMemoryLayer((1, 1))
+        renderer.updateClasses(ml, 5)
+        self.assertEqual(
+            dumpRangeBreaks(renderer.ranges()),
+            "(1.0000-2.0000,)",
+            "Equal interval classification not correct",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
