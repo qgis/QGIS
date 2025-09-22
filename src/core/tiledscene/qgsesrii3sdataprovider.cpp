@@ -477,7 +477,7 @@ void QgsEsriI3STiledSceneIndex::parseMesh( QgsTiledSceneTile &t, const json &mes
   if ( mRootUrl.isLocalFile() )
     geometryUri = QStringLiteral( "%1/nodes/%2/geometries/1.bin.gz" ).arg( mRootUrl.toString() ).arg( geometryResource );
   else
-    geometryUri = QStringLiteral( "%1/layers/0/nodes/%1/geometries/1" ).arg( mRootUrl.toString() ).arg( geometryResource );
+    geometryUri = QStringLiteral( "%1/layers/0/nodes/%2/geometries/1" ).arg( mRootUrl.toString() ).arg( geometryResource );
 
   // parse material and related textures
   const json materialJson = meshJson["material"];
