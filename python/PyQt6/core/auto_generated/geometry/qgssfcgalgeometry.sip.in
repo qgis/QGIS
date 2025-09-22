@@ -696,6 +696,44 @@ Create a cube primitive
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
 %End
 
+    QList<std::pair<QString, QString>> primitiveParameters() const;
+%Docstring
+Returns the list of available parameter description for this primitive.
+
+Parameter description is a pair of string: name and type. Type can be
+one of int, double, :py:class:`QgsPoint`, :py:class:`QgsVector3D`
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    QVariant primitiveParameter( const QString &name ) const;
+%Docstring
+Returns the parameter value according to its ``name``
+
+:param name: parameter name
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    void primitiveSetParameter( const QString &name, const QVariant &value );
+%Docstring
+Updates parameter value
+
+:param name: parameter name
+:param value: new parameter value
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
     std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface()  const;
 %Docstring
 Converts the current primitive to geometry. Works only with primitives.

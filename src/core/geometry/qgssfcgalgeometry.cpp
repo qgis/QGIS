@@ -898,6 +898,63 @@ QMatrix4x4 QgsSfcgalGeometry::primitiveTransform() const
 #endif
 }
 
+QList<std::pair<QString, QString>> QgsSfcgalGeometry::primitiveParameters() const
+{
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( !mIsPrimitive )
+    throw QgsSfcgalException( "Need primitive geometry to operate." );
+
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+  QVector<sfcgal::PrimitiveParameterDesc> result = QgsSfcgalEngine::primitiveParameters( mSfcgalPrim.get(), &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+
+  QList<QPair<QString, QString>> out;
+  for ( const auto &param : result )
+  {
+    out.append( std::pair<QString, QString>( QString::fromStdString( param.name ), QString::fromStdString( param.type ) ) );
+  }
+
+  return out;
+#else
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
+#endif
+}
+
+QVariant QgsSfcgalGeometry::primitiveParameter( const QString &name ) const
+{
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( !mIsPrimitive )
+    throw QgsSfcgalException( "Need primitive geometry to operate." );
+
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+  QVariant result = QgsSfcgalEngine::primitiveParameter( mSfcgalPrim.get(), name, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+
+  return result;
+#else
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
+#endif
+}
+
+void QgsSfcgalGeometry::primitiveSetParameter( const QString &name, const QVariant &value )
+{
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  if ( !mIsPrimitive )
+    throw QgsSfcgalException( "Need primitive geometry to operate." );
+
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+  QgsSfcgalEngine::primitiveSetParameter( mSfcgalPrim.get(), name, value, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+
+#else
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
+#endif
+}
+
+
 #if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
 void QgsSfcgalGeometry::setPrimitiveTranslate( const QgsVector3D &translation )
 {

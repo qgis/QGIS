@@ -22,6 +22,8 @@
 #include "qgsgeometry.h"
 #include "qgsgeometryfactory.h"
 #include "qgssfcgalgeometry.h"
+#include <nlohmann/json.hpp>
+
 
 // ===================================
 // sfcgal namespace
@@ -1095,6 +1097,167 @@ double QgsSfcgalEngine::primitiveVolume( const sfcgal::primitive *prim, bool wit
   CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
   return out;
 }
+
+void sfcgal::to_json( json &j, const sfcgal::PrimitiveParameterDesc &p )
+{
+  j["name"] = p.name;
+  j["type"] = p.type;
+
+  if ( std::holds_alternative<int>( p.value ) )
+  {
+    j["value"] = std::get<int>( p.value );
+  }
+  else if ( std::holds_alternative<double>( p.value ) )
+  {
+    j["value"] = std::get<double>( p.value );
+  }
+  else if ( std::holds_alternative<QgsPoint>( p.value ) )
+  {
+    QgsPoint point = std::get<QgsPoint>( p.value );
+    double z = std::numeric_limits<double>::quiet_NaN();
+    double m = std::numeric_limits<double>::quiet_NaN();
+    if ( point.is3D() )
+      z = point.z();
+    if ( point.isMeasure() )
+      m = point.m();
+    j["value"] = std::vector<double> { point.x(), point.y(), z, m };
+  }
+  else if ( std::holds_alternative<QgsVector3D>( p.value ) )
+  {
+    QgsVector3D vect = std::get<QgsVector3D>( p.value );
+    j["value"] = std::vector<double> { vect.x(), vect.y(), vect.z() };
+  }
+  else
+    throw json::type_error::create( 306, QStringLiteral( "Unknown type '%1'." ).arg( p.type.c_str() ).toStdString(), nullptr );
+}
+
+void sfcgal::from_json( const json &j, sfcgal::PrimitiveParameterDesc &p )
+{
+  j.at( "name" ).get_to( p.name );
+  j.at( "type" ).get_to( p.type );
+  if ( j.contains( "value" ) )
+  {
+    json value = j.at( "value" );
+    if ( p.type == "int" )
+    {
+      p.value = value.get<int>();
+    }
+    else if ( p.type == "double" )
+    {
+      p.value = value.get<double>();
+    }
+    else if ( p.type == "point3" )
+    {
+      std::vector<double> vect;
+      vect = value.get<std::vector<double>>();
+      QgsPoint point( vect[0], vect[1],                                                         //
+                      ( vect.size() > 2 ? vect[2] : std::numeric_limits<double>::quiet_NaN() ), //
+                      ( vect.size() > 3 ? vect[3] : std::numeric_limits<double>::quiet_NaN() ) );
+      p.value = point;
+    }
+    else if ( p.type == "vector3" )
+    {
+      std::vector<double> vect;
+      vect = value.get<std::vector<double>>();
+      QgsPoint point( vect[0], vect[1],                                                         //
+                      ( vect.size() > 2 ? vect[2] : std::numeric_limits<double>::quiet_NaN() ), //
+                      ( vect.size() > 3 ? vect[3] : std::numeric_limits<double>::quiet_NaN() ) );
+      p.value = point;
+    }
+    else
+      throw json::type_error::create( 306, QStringLiteral( "Unknown type '%1'." ).arg( p.type.c_str() ).toStdString(), nullptr );
+  }
+}
+
+QVector<sfcgal::PrimitiveParameterDesc> QgsSfcgalEngine::primitiveParameters( const sfcgal::primitive *prim, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, QVector<sfcgal::PrimitiveParameterDesc>() );
+
+  char *jsonChars = nullptr;
+  size_t len = 0;
+  sfcgal_primitive_parameters( prim, &jsonChars, &len );
+  CHECK_SUCCESS( errorMsg, QVector<sfcgal::PrimitiveParameterDesc>() );
+
+  std::string jsonString( jsonChars, len );
+  sfcgal_free_buffer( jsonChars );
+
+  QVector<sfcgal::PrimitiveParameterDesc> result;
+  try
+  {
+    const auto jParams = json::parse( jsonString );
+    for ( const auto &jParam : jParams )
+    {
+      result.append( jParam.get<sfcgal::PrimitiveParameterDesc>() );
+    }
+  }
+  catch ( json::exception &e )
+  {
+    sfcgal::errorHandler()->addText( QStringLiteral( "Caught json exception for json: %1. Error: %2" ).arg( jsonString.c_str() ).arg( e.what() ) );
+  }
+
+  return result;
+}
+
+QVariant QgsSfcgalEngine::primitiveParameter( const sfcgal::primitive *prim, const QString &name, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, QVariant() );
+
+  char *jsonChars = nullptr;
+  size_t len = 0;
+  sfcgal_primitive_parameter( prim, name.toStdString().c_str(), &jsonChars, &len );
+  CHECK_SUCCESS( errorMsg, QVariant() );
+
+  std::string jsonString( jsonChars, len );
+  sfcgal_free_buffer( jsonChars );
+
+  QVariant result;
+  try
+  {
+    const auto jParam = json::parse( jsonString );
+    sfcgal::PrimitiveParameterDesc param = jParam.get<sfcgal::PrimitiveParameterDesc>();
+    result = QVariant::fromStdVariant( param.value );
+  }
+  catch ( json::exception &e )
+  {
+    sfcgal::errorHandler()->addText( QStringLiteral( "Caught json exception for json: %1. Error: %2" ).arg( jsonString.c_str() ).arg( e.what() ) );
+  }
+
+  return result;
+}
+
+void QgsSfcgalEngine::primitiveSetParameter( sfcgal::primitive *prim, const QString &name, const QVariant &value, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, void() );
+
+  try
+  {
+    json jParam;
+    sfcgal::PrimitiveParameterDesc paramDesc;
+    paramDesc.name = name.toStdString();
+    paramDesc.type = value.typeName();
+    if ( paramDesc.type == "int" )
+      paramDesc.value = value.toInt();
+    else if ( paramDesc.type == "double" )
+      paramDesc.value = value.toDouble();
+    else if ( value.canConvert<QgsPoint>() )
+      paramDesc.value = value.value<QgsPoint>();
+    else if ( value.canConvert<QgsVector3D>() )
+      paramDesc.value = value.value<QgsVector3D>();
+
+    sfcgal::to_json( jParam, paramDesc );
+    std::string jsonStr = jParam.dump();
+    sfcgal_primitive_set_parameter( prim, name.toStdString().c_str(), jsonStr.c_str() );
+    CHECK_SUCCESS( errorMsg, void() );
+  }
+  catch ( ... )
+  {
+    sfcgal::errorHandler()->addText( QStringLiteral( "Caught json exception" ) );
+  }
+}
+
 #endif
 
 

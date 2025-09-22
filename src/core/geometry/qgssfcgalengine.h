@@ -124,6 +124,20 @@ namespace sfcgal
 
   //! Creates a shared primitive pointer with sfcgal::PrimitiveDeleter
   shared_prim make_shared_prim( primitive *prim );
+
+  //! Hold primitive parameter description
+  struct PrimitiveParameterDesc
+  {
+    std::string name;
+    std::string type;
+    std::variant<int, double, QgsPoint, QgsVector3D> value;
+  };
+
+  //! Used by json lib to convert to json
+  void to_json( json &j, const PrimitiveParameterDesc &p );
+
+  //! Used by json lib to convert from json
+  void from_json( const json &j, PrimitiveParameterDesc &p );
 } // namespace sfcgal
 
 namespace sfcgal
@@ -714,6 +728,35 @@ class CORE_EXPORT QgsSfcgalEngine
      * \param errorMsg Error message returned by SFGCAL
      */
     static double primitiveVolume( const sfcgal::primitive *prim, bool withDiscretization = false, QString *errorMsg = nullptr );
+
+    /**
+     * Returns the list of available parameter description for this primitive.
+     *
+     * Only the name and type fields will be filled.
+     *
+     * \param prim primitive to perform the operation
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static QVector<sfcgal::PrimitiveParameterDesc> primitiveParameters( const sfcgal::primitive *prim, QString *errorMsg = nullptr );
+
+    /**
+     * Returns the parameter value according to its \a name
+     *
+     * \param prim primitive to perform the operation
+     * \param name parameter name
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static QVariant primitiveParameter( const sfcgal::primitive *prim, const QString &name, QString *errorMsg = nullptr );
+
+    /**
+     * Updates parameter value
+     *
+     * \param prim primitive to perform the operation
+     * \param name parameter name
+     * \param value new parameter value
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static void primitiveSetParameter( sfcgal::primitive *prim, const QString &name, const QVariant &value, QString *errorMsg = nullptr );
 
 #endif
 };

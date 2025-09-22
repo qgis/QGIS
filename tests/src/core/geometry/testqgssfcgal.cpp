@@ -1123,6 +1123,19 @@ void TestQgsSfcgal::primitiveCube()
   // check area
   QCOMPARE( cube->area(), 150.0 );
 
+  // check parameters
+  QList<std::pair<QString, QString>> params = cube->primitiveParameters();
+  QCOMPARE( params.size(), 1 );
+  QCOMPARE( params.at( 0 ).first, "size" );
+  QCOMPARE( params.at( 0 ).second, "double" );
+
+  QVariant param = cube->primitiveParameter( "size" );
+  QCOMPARE( param.toDouble(), 5.0 );
+
+  cube->primitiveSetParameter( "size", 8.2 );
+  param = cube->primitiveParameter( "size" );
+  QCOMPARE( param.toDouble(), 8.2 );
+
 #endif
 }
 

@@ -620,6 +620,35 @@ class CORE_EXPORT QgsSfcgalGeometry
     static std::unique_ptr<QgsSfcgalGeometry> createCube( double size ) SIP_THROW( QgsSfcgalException );
 
     /**
+     * Returns the list of available parameter description for this primitive.
+     *
+     * Parameter description is a pair of string: name and type. Type can be one of int, double, QgsPoint, QgsVector3D
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    QList<std::pair<QString, QString>> primitiveParameters() const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Returns the parameter value according to its \a name
+     *
+     * \param name parameter name
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    QVariant primitiveParameter( const QString &name ) const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Updates parameter value
+     *
+     * \param name parameter name
+     * \param value new parameter value
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    void primitiveSetParameter( const QString &name, const QVariant &value ) SIP_THROW( QgsSfcgalException );
+
+    /**
      * Converts the current primitive to geometry. Works only with primitives.
      *
      * \throws QgsSfcgalException if an error was encountered during the operation
