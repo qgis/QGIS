@@ -26,6 +26,8 @@ from qgis.core import (
     QgsRendererRangeLabelFormat,
     QgsVectorLayer,
     QgsFillSymbol,
+    QgsClassificationFixedInterval,
+    QgsClassificationPrettyBreaks,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -776,6 +778,35 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         # Create a renderer
         renderer = QgsGraduatedSymbolRenderer()
         renderer.setClassificationMethod(QgsClassificationFixedInterval())
+        symbol = createMarkerSymbol()
+        renderer.setSourceSymbol(symbol.clone())
+
+        # Test retrieving data values from a layer
+        ml = createMemoryLayer((0, 0))
+
+        renderer.setClassAttribute("value")
+        # Equal interval calculations
+        renderer.updateClasses(ml, 5)
+        self.assertEqual(
+            dumpRangeBreaks(renderer.ranges()),
+            "(0.0000-1.0000,)",
+            "Equal interval classification not correct",
+        )
+
+        ml = createMemoryLayer((1, 1))
+        renderer.updateClasses(ml, 5)
+        self.assertEqual(
+            dumpRangeBreaks(renderer.ranges()),
+            "(1.0000-2.0000,)",
+            "Equal interval classification not correct",
+        )
+
+    def testPrettyBreakSingleClass(self):
+        """Test single class with pretty break, issue GH #63277"""
+
+        # Create a renderer
+        renderer = QgsGraduatedSymbolRenderer()
+        renderer.setClassificationMethod(QgsClassificationPrettyBreaks())
         symbol = createMarkerSymbol()
         renderer.setSourceSymbol(symbol.clone())
 
