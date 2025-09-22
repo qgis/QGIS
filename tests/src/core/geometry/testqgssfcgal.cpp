@@ -1118,6 +1118,8 @@ void TestQgsSfcgal::primitiveCube()
                                                      0.0, 0.0, 3.0, 6.0, //
                                                      0.0, 0.0, 0.0, 1.0 ) );
 
+  // check volume
+  QCOMPARE( cube->volume(), 125.0 );
   // check area
   QCOMPARE( cube->area(), 150.0 );
 

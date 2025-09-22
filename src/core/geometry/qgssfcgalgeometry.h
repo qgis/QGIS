@@ -318,11 +318,27 @@ class CORE_EXPORT QgsSfcgalGeometry
 
     /**
      * Computes the area of \a geom.
+     * \param withDiscretization If true, the area is computed
+     * using the real discretization with radial segments. If false, the area is
+     * computed for a perfect primitive. Defaults to false.
      * \return geometry area
      *
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    double area() const SIP_THROW( QgsSfcgalException );
+    double area( bool withDiscretization = false ) const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Computes the volume of the primitive \a prim.
+     * \param withDiscretization If true, the volume is computed
+     * using the real discretization with radial segments. If false, the volume is
+     * computed for a perfect primitive. Defaults to false.
+     * \return primitive volume
+     *
+     * \pre apply only on primitive
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     */
+    double volume( bool withDiscretization = false ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Computes the max length of \a geom.

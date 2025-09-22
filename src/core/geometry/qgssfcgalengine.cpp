@@ -1075,6 +1075,26 @@ sfcgal::shared_prim QgsSfcgalEngine::primitiveClone( const sfcgal::primitive *pr
 
   return sfcgal::make_shared_prim( result );
 }
+
+double QgsSfcgalEngine::primitiveArea( const sfcgal::primitive *prim, bool withDiscretization, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, std::numeric_limits<double>::quiet_NaN() );
+
+  double out = sfcgal_primitive_area( prim, withDiscretization );
+  CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
+  return out;
+}
+
+double QgsSfcgalEngine::primitiveVolume( const sfcgal::primitive *prim, bool withDiscretization, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, std::numeric_limits<double>::quiet_NaN() );
+
+  double out = sfcgal_primitive_volume( prim, withDiscretization );
+  CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
+  return out;
+}
 #endif
 
 

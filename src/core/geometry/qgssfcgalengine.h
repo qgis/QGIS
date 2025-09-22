@@ -691,7 +691,29 @@ class CORE_EXPORT QgsSfcgalEngine
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0 or earlier.
      */
-    static bool primitiveIsEqual( const sfcgal::primitive *primA, const sfcgal::primitive *primB, double tolerance = 0.0, QString *errorMsg = nullptr );
+    static bool primitiveIsEqual( const sfcgal::primitive *primA, const sfcgal::primitive *primB, double tolerance = -1.0, QString *errorMsg = nullptr );
+
+    /**
+     * Computes the area of \a prim.
+     *
+     * \param prim primitive to perform the operation
+     * \param withDiscretization If true, the area is computed
+     * using the real discretization with radial segments. If false, the area is
+     * computed for a perfect primitive. Defaults to false.
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static double primitiveArea( const sfcgal::primitive *prim, bool withDiscretization = false, QString *errorMsg = nullptr );
+
+    /**
+     * Computes the volume of \a prim.
+     *
+     * \param prim primitive to perform the operation
+     * \param withDiscretization If true, the volume is computed
+     * using the real discretization with radial segments. If false, the volume is
+     * computed for a perfect primitive. Defaults to false.
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static double primitiveVolume( const sfcgal::primitive *prim, bool withDiscretization = false, QString *errorMsg = nullptr );
 
 #endif
 };

@@ -60,7 +60,7 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_prim sfcgalPrim, sfcgal::pr
 #if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
   mSfcgalPrim = sfcgalPrim;
 #else
-  throw QgsNotSupportedException( QObject::tr( "This operator requires a QGIS build based on SFCGAL 2.3 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
 #endif
 }
 
@@ -244,7 +244,7 @@ bool QgsSfcgalGeometry::operator==( const QgsSfcgalGeometry &other ) const
 {
 #if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
   ( void )other;
-  throw QgsNotSupportedException( QObject::tr( "This operator requires a QGIS build based on SFCGAL 2.1 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.1 or later" ) );
 #else
   QString errorMsg;
   bool out;
@@ -568,7 +568,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::rotate3D( double angle, co
   return resultGeom;
 }
 
-double QgsSfcgalGeometry::area() const
+double QgsSfcgalGeometry::area( bool withDiscretization ) const
 {
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
@@ -577,11 +577,12 @@ double QgsSfcgalGeometry::area() const
 #if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
   if ( mIsPrimitive )
   {
-    throw QgsSfcgalException( "Not implemented." );
+    result = QgsSfcgalEngine::primitiveArea( mSfcgalPrim.get(), withDiscretization, &errorMsg );
   }
   else
 #endif
   {
+    ( void ) withDiscretization;
     result = QgsSfcgalEngine::area( mSfcgalGeom.get(), &errorMsg );
   }
 
@@ -600,6 +601,23 @@ double QgsSfcgalGeometry::length() const
   double result = QgsSfcgalEngine::length( mSfcgalGeom.get(), &errorMsg );
   THROW_ON_ERROR( &errorMsg );
 
+  return result;
+}
+
+double QgsSfcgalGeometry::volume( bool withDiscretization ) const
+{
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+
+  if ( !mIsPrimitive )
+    throw QgsNotSupportedException( QObject::tr( "Operation 'volume' does not apply to geometry." ) );
+
+  double result;
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+  result = QgsSfcgalEngine::primitiveVolume( mSfcgalPrim.get(), withDiscretization, &errorMsg );
+#endif
+
+  THROW_ON_ERROR( &errorMsg );
   return result;
 }
 
@@ -845,7 +863,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::createCube( double size )
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 #else
-  throw QgsNotSupportedException( QObject::tr( "This operator requires a QGIS build based on SFCGAL 2.3 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
 #endif
 }
 
@@ -864,7 +882,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::primitiveAsPolyhedralSurfa
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 #else
-  throw QgsNotSupportedException( QObject::tr( "This operator requires a QGIS build based on SFCGAL 2.3 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
 #endif
 }
 
@@ -876,7 +894,7 @@ QMatrix4x4 QgsSfcgalGeometry::primitiveTransform() const
 
   return mPrimTransform;
 #else
-  throw QgsNotSupportedException( QObject::tr( "This operator requires a QGIS build based on SFCGAL 2.3 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
 #endif
 }
 

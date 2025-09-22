@@ -334,11 +334,33 @@ Checks if ``geom`` is empty.
                             operation
 %End
 
-    double area() const;
+    double area( bool withDiscretization = false ) const;
 %Docstring
 Computes the area of ``geom``.
 
+:param withDiscretization: If true, the area is computed using the real
+                           discretization with radial segments. If
+                           false, the area is computed for a perfect
+                           primitive. Defaults to false.
+
 :return: geometry area
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    double volume( bool withDiscretization = false ) const;
+%Docstring
+Computes the volume of the primitive ``prim``.
+
+:param withDiscretization: If true, the volume is computed using the
+                           real discretization with radial segments. If
+                           false, the volume is computed for a perfect
+                           primitive. Defaults to false.
+
+:return: primitive volume
+
+\pre apply only on primitive
 
 :raises QgsSfcgalException: if an error was encountered during the
                             operation
