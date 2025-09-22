@@ -565,8 +565,6 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const ch
   bool exists = false;
 
   QString tableRaster = QString::fromUtf8( table );
-  if ( tableRaster.size() < 9 )
-    return false;
   if ( !tableRaster.endsWith( QLatin1String( "_metadata" ) ) )
     return false;
 
