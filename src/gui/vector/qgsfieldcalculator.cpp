@@ -513,7 +513,7 @@ void QgsFieldCalculator::mExistingFieldComboBox_currentIndexChanged( const int i
   setDialogButtonState();
 }
 
-void QgsFieldCalculator::populateFields( const int &fieldIndex )
+void QgsFieldCalculator::populateFields( int fieldIndex )
 {
   if ( !mVectorLayer )
     return;
