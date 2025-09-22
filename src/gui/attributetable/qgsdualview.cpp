@@ -978,15 +978,15 @@ void QgsDualView::showViewHeaderMenu( QPoint point )
   mConfig.update( mLayer->fields() );
   // get layer field index from column name
   const int fieldIndex = mLayer->fields().indexFromName( mConfig.columns().at( mConfig.mapVisibleColumnToIndex( col ) ).name );
-  const QgsFields::FieldOrigin fieldOrigin  = mLayer->fields().fieldOrigin( fieldIndex );
+  const Qgis::FieldOrigin fieldOrigin  = mLayer->fields().fieldOrigin( fieldIndex );
 
   mHorizontalHeaderMenu->addSeparator();
   bool fieldCalculatorEnabled = false;
 
-  if ( fieldOrigin == QgsFields::OriginProvider || fieldOrigin == QgsFields::OriginEdit )
+  if ( fieldOrigin == Qgis::FieldOrigin::Provider || fieldOrigin == Qgis::FieldOrigin::Edit )
     fieldCalculatorEnabled = true;
 
-  if ( fieldOrigin == QgsFields::OriginJoin )
+  if ( fieldOrigin == Qgis::FieldOrigin::Join )
   {
     int srcFieldIndex;
     const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
