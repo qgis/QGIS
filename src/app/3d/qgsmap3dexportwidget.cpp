@@ -36,6 +36,9 @@ QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExport
 
   ui->selectFolderWidget->setStorageMode( QgsFileWidget::StorageMode::GetDirectory );
 
+  ui->exportFormatComboxBox->addItem( tr( "OBJ" ), QVariant::fromValue( Qgis::Export3DSceneFormat::Obj ) );
+  ui->exportFormatComboxBox->addItem( tr( "STL" ), QVariant::fromValue( Qgis::Export3DSceneFormat::StlAscii ) );
+
   loadSettings();
 
   connect( ui->sceneNameLineEdit, &QLineEdit::textChanged, this, [this]( const QString & ) { settingsChanged(); } );
@@ -46,6 +49,7 @@ QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExport
   connect( ui->exportTexturesCheckBox, &QCheckBox::stateChanged, this, [this]( int ) { settingsChanged(); } );
   connect( ui->terrainTextureResolutionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int ) { settingsChanged(); } );
   connect( ui->scaleSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( int ) { settingsChanged(); } );
+  connect( ui->exportFormatComboxBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMap3DExportWidget::exportFormatChanged );
 
   // sets the export settings to whatever is on the scene
   settingsChanged();
@@ -66,6 +70,7 @@ void QgsMap3DExportWidget::loadSettings()
   ui->exportNormalsCheckBox->setChecked( mExportSettings->exportNormals() );
   ui->exportTexturesCheckBox->setChecked( mExportSettings->exportTextures() );
   ui->scaleSpinBox->setValue( mExportSettings->scale() );
+  ui->exportFormatComboxBox->setCurrentIndex( ui->exportFormatComboxBox->findData( QVariant::fromValue( mExportSettings->exportFormat() ) ) );
 }
 
 void QgsMap3DExportWidget::settingsChanged()
@@ -78,6 +83,20 @@ void QgsMap3DExportWidget::settingsChanged()
   mExportSettings->setExportTextures( ui->exportTexturesCheckBox->isChecked() );
   mExportSettings->setTerrainTextureResolution( ui->terrainTextureResolutionSpinBox->value() );
   mExportSettings->setScale( ui->scaleSpinBox->value() );
+  mExportSettings->setExportFormat( ui->exportFormatComboxBox->currentData().value< Qgis::Export3DSceneFormat >() );
+}
+
+void QgsMap3DExportWidget::exportFormatChanged()
+{
+  const Qgis::Export3DSceneFormat selectedType = ui->exportFormatComboxBox->currentData().value< Qgis::Export3DSceneFormat >();
+  const bool isObjFormat = ( selectedType == Qgis::Export3DSceneFormat::Obj );
+
+  ui->terrainTextureResolutionSpinBox->setEnabled( isObjFormat );
+  ui->smoothEdgesCheckBox->setEnabled( isObjFormat );
+  ui->exportTexturesCheckBox->setEnabled( isObjFormat );
+  ui->exportNormalsCheckBox->setEnabled( isObjFormat );
+
+  settingsChanged();
 }
 
 bool QgsMap3DExportWidget::exportScene()
