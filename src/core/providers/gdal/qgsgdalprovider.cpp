@@ -2018,6 +2018,11 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
     }
   }
 
+  const double myScale { bandScale( bandNo ) };
+  // Adjust bin count according to scale
+  // Fix issue GH #59461
+  myHistogram.binCount = static_cast<int>( myHistogram.binCount * myScale );
+
   if ( ( sourceHasNoDataValue( bandNo ) && !useSourceNoDataValue( bandNo ) ) ||
        !userNoDataValues( bandNo ).isEmpty() )
   {
@@ -2070,9 +2075,8 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   double myMinVal = myHistogram.minimum;
   double myMaxVal = myHistogram.maximum;
 
-  // unapply scale anf offset for min and max
-  double myScale = bandScale( bandNo );
-  double myOffset = bandOffset( bandNo );
+  // unapply scale and offset for min and max
+  const double myOffset = bandOffset( bandNo );
   if ( myScale != 1.0 || myOffset != 0. )
   {
     myMinVal = ( myHistogram.minimum - myOffset ) / myScale;
