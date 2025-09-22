@@ -608,6 +608,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
                   'contentFormat': 'draco',
                   'gltfUpAxis': int(Qgis.Axis.Z),
                   'material': {
+                    'doubleSided': True,
                     'pbrBaseColorFactor': [1.0, 1.0, 1.0, 1.0],
                     'pbrBaseColorTexture': 'file://' + temp_dir + '/nodes/16/textures/0.jpg'
                   }
