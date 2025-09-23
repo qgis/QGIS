@@ -1851,7 +1851,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         {
           if ( gdalDriverName == QLatin1String( "GTiff" ) )
           {
-            if ( flags.testFlag( Qgis::SublayerQueryFlag::OpenLayersToResolveDecriptions ) )
+            if ( flags.testFlag( Qgis::SublayerQueryFlag::OpenLayersToResolveDescriptions ) )
             {
               // Check if the layer has TIFFTAG_DOCUMENTNAME associated with it. If so, use that name.
               GDALDatasetH datasetHandle = GDALOpen( name, GA_ReadOnly );
