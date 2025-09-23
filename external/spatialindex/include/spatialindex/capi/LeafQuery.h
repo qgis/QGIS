@@ -40,7 +40,7 @@ private:
 public:
 
 	LeafQuery();
-	~LeafQuery() { }
+	~LeafQuery();
 	void getNextEntry(	const SpatialIndex::IEntry& entry, 
 						SpatialIndex::id_type& nextEntry, 
 						bool& hasNext);
