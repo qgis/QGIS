@@ -198,9 +198,6 @@ class _3D_EXPORT Qgs3DUtils
      */
     static void estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin, double &zMax );
 
-    //! Returns expression context for use in preparation of 3D data of a layer
-    static QgsExpressionContext globalProjectLayerExpressionContext( QgsVectorLayer *layer );
-
     //! Returns phong material settings object based on the Qt3D material
     static QgsPhongMaterialSettings phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material );
 

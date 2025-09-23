@@ -830,7 +830,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     QString errorMsg;
     if ( metadata->value( QStringLiteral( "error" ) ) == QLatin1String( "incompatible" ) )
     {
-      errorMsg = QStringLiteral( "<b>%1</b><br/>%2" ).arg( tr( "This plugin is incompatible with this version of QGIS" ), tr( "Plugin designed for QGIS %1", "compatible QGIS version(s)" ).arg( metadata->value( QStringLiteral( "error_details" ) ) ) );
+      errorMsg = QStringLiteral( "<b>%1</b><br/>%2" ).arg( tr( "This plugin is incompatible with this version of QGIS" ), metadata->value( QStringLiteral( "error_details" ) ) );
     }
     else if ( metadata->value( QStringLiteral( "error" ) ) == QLatin1String( "dependent" ) )
     {

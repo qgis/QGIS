@@ -221,10 +221,8 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
             | QgsProcessingAlgorithm.Flag.FlagDisplayNameIsLiteral
         )
 
-    def tr(self, string, context=""):
-        if context == "":
-            context = self.__class__.__name__
-        return QCoreApplication.translate(context, string)
+    def tr(self, string: str):
+        return QCoreApplication.translate(self.__class__.__name__, string)
 
     def helpUrl(self):
         helpPath = GrassUtils.grassHelpPath()
@@ -287,10 +285,10 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
                 parameter = getParameterFromString(param_string, "GrassAlgorithm")
             except Exception as e:
                 QgsMessageLog.logMessage(
-                    QCoreApplication.translate(
-                        "GrassAlgorithm", "Could not open GRASS GIS algorithm: {0}"
-                    ).format(self._name),
-                    QCoreApplication.translate("GrassAlgorithm", "Processing"),
+                    self.tr("Could not open GRASS GIS algorithm: {0}").format(
+                        self._name
+                    ),
+                    self.tr("Processing"),
                     Qgis.MessageLevel.Critical,
                 )
                 raise e

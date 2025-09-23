@@ -85,6 +85,7 @@ class TestQgsDxfExport : public QObject
     void testOutputLayerNamePrecedence();
     void testMinimumLineWidthExport();
     void testWritingCodepage();
+    void testExpressionContext();
 
   private:
     QgsVectorLayer *mPointLayer = nullptr;
@@ -100,6 +101,16 @@ class TestQgsDxfExport : public QObject
 
     bool fileContainsText( const QString &path, const QString &text, QString *debugInfo = nullptr ) const;
 };
+
+void TestQgsDxfExport::setDefaultLabelParams( QgsPalLayerSettings &settings )
+{
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+}
 
 void TestQgsDxfExport::initTestCase()
 {
@@ -1986,6 +1997,54 @@ void TestQgsDxfExport::testWritingCodepage()
   QCOMPARE( d.writeToFile( &dxfFile2, QStringLiteral( "cp1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile2.close();
   QVERIFY( fileContainsText( file2, QStringLiteral( "ANSI_1252" ) ) );
+}
+
+void TestQgsDxfExport::testExpressionContext()
+{
+  // This test is aimed at testing whether the right expression context is passed onto symbology and labeling while we are iterating through features.
+
+  auto vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=id:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << QStringLiteral( "1" ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (-112.5 44.9, -88.6 44.9)" ) ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+
+  vl->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "represent_value(\"Class\")" );
+  settings.isExpression = true;
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+  mPointLayerNoSymbols->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  mPointLayerNoSymbols->setLabelsEnabled( true );
+
+  QgsDxfExport d;
+  d.addLayers( QList<QgsDxfExport::DxfLayer>() << QgsDxfExport::DxfLayer( mPointLayerNoSymbols ) << QgsDxfExport::DxfLayer( vl.get() ) );
+
+  QgsMapSettings mapSettings;
+  const QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPointLayerNoSymbols->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerNoSymbols << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPointLayerNoSymbols->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setSymbologyExport( Qgis::FeatureSymbologyExport::PerFeature );
+
+  const QString file = getTempFileName( "context_dxf" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+  QString debugInfo;
+  QVERIFY2( fileContainsText( file, "REGEX Biplane", &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
 bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &text, QString *debugInfo ) const

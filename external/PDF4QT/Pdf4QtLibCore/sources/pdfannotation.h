@@ -1,19 +1,24 @@
-﻿//    Copyright (C) 2020-2021 Jakub Melka
+﻿// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT. If not, see <https://www.gnu.org/licenses/>.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #ifndef PDFANNOTATION_H
 #define PDFANNOTATION_H
@@ -84,7 +89,8 @@ enum class AnnotationType
     Redact,
     Projection,
     _3D,
-    RichMedia
+    RichMedia,
+    Unknown
 };
 
 enum class AnnotationLineEnding
@@ -1118,7 +1124,7 @@ public:
     void setStamp(const Stamp& stamp);
     void setIntent(const StampIntent& intent);
 
-    static QString getText(Stamp stamp);
+    static QString getText(Stamp stamp, bool isActionText);
 
 private:
     friend PDFAnnotationPtr PDFAnnotation::parse(const PDFObjectStorage* storage, PDFObjectReference reference);
@@ -1317,6 +1323,15 @@ public:
     virtual AnnotationType getType() const override { return AnnotationType::TrapNet; }
 };
 
+/// Unknown (not recognized) annotation.
+class PDFUnknownAnnotation : public PDFAnnotation
+{
+public:
+    inline explicit PDFUnknownAnnotation() = default;
+
+    virtual AnnotationType getType() const override { return AnnotationType::Unknown; }
+};
+
 /// Watermark annotation represents watermark displayed on the page,
 /// for example, if it is printed. Watermarks are displayed at fixed
 /// position and size on the page.
@@ -1464,6 +1479,7 @@ public:
                           const PDFPrecompiledPage* compiledPage,
                           PDFTextLayoutGetter& layoutGetter,
                           const QTransform& pagePointToDevicePointMatrix,
+                          const PDFColorConvertor& convertor,
                           QList<PDFRenderError>& errors) const;
 
     /// Set document

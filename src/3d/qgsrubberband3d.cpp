@@ -451,7 +451,7 @@ void QgsRubberBand3D::updateGeometry()
   if ( mHideLastMarker && !lineData.vertices.isEmpty() )
     lineData.vertices.pop_back();
 
-  mMarkerGeometry->setPoints( lineData.vertices );
+  mMarkerGeometry->setPositions( lineData.vertices );
   mMarkerGeometryRenderer->setVertexCount( lineData.vertices.count() );
   mMarkerTransform->setGeoTranslation( dataOrigin );
 

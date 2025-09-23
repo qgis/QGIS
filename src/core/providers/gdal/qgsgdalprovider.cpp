@@ -1817,7 +1817,7 @@ Qgis::RasterProviderCapabilities QgsGdalProvider::providerCapabilities() const
          Qgis::RasterProviderCapability::BuildPyramids;
 }
 
-QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri )
+QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri, Qgis::SublayerQueryFlags flags )
 {
   if ( !dataset )
   {
@@ -1842,6 +1842,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
     {
       const char *name = CSLFetchNameValue( metadata, CPLSPrintf( "SUBDATASET_%d_NAME", i ) );
       const char *desc = CSLFetchNameValue( metadata, CPLSPrintf( "SUBDATASET_%d_DESC", i ) );
+      bool skippedContainerScan = false;
       if ( name && desc )
       {
         QString layerName = QString::fromUtf8( name );
@@ -1858,26 +1859,35 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         }
         else
         {
-
-          // Check if the layer has TIFFTAG_DOCUMENTNAME associated with it. If so, use that name.
-          GDALDatasetH datasetHandle = GDALOpen( name, GA_ReadOnly );
-
-          if ( datasetHandle )
+          if ( gdalDriverName == QLatin1String( "GTiff" ) )
           {
-
-            QString tagTIFFDocumentName = GDALGetMetadataItem( datasetHandle, "TIFFTAG_DOCUMENTNAME", nullptr );
-            if ( ! tagTIFFDocumentName.isEmpty() )
+            if ( flags.testFlag( Qgis::SublayerQueryFlag::OpenLayersToResolveDecriptions ) )
             {
-              layerName = tagTIFFDocumentName;
-            }
+              // Check if the layer has TIFFTAG_DOCUMENTNAME associated with it. If so, use that name.
+              GDALDatasetH datasetHandle = GDALOpen( name, GA_ReadOnly );
 
-            QString tagTIFFImageDescription = GDALGetMetadataItem( datasetHandle, "TIFFTAG_IMAGEDESCRIPTION", nullptr );
-            if ( ! tagTIFFImageDescription.isEmpty() )
+              if ( datasetHandle )
+              {
+
+                QString tagTIFFDocumentName = GDALGetMetadataItem( datasetHandle, "TIFFTAG_DOCUMENTNAME", nullptr );
+                if ( ! tagTIFFDocumentName.isEmpty() )
+                {
+                  layerName = tagTIFFDocumentName;
+                }
+
+                QString tagTIFFImageDescription = GDALGetMetadataItem( datasetHandle, "TIFFTAG_IMAGEDESCRIPTION", nullptr );
+                if ( ! tagTIFFImageDescription.isEmpty() )
+                {
+                  layerDesc = tagTIFFImageDescription;
+                }
+
+                GDALClose( datasetHandle );
+              }
+            }
+            else
             {
-              layerDesc = tagTIFFImageDescription;
+              skippedContainerScan = true;
             }
-
-            GDALClose( datasetHandle );
           }
 
           // try to extract layer name from a path like 'NETCDF:"/baseUri":cell_node'
@@ -1896,6 +1906,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         details.setDescription( layerDesc );
         details.setLayerNumber( i );
         details.setDriverName( gdalDriverName );
+        details.setSkippedContainerScan( skippedContainerScan );
 
         const QVariantMap layerUriParts = decodeGdalUri( uri );
         // update original uri parts with this layername and path -- this ensures that other uri components
@@ -2029,6 +2040,11 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
     }
   }
 
+  const double myScale { bandScale( bandNo ) };
+  // Adjust bin count according to scale
+  // Fix issue GH #59461
+  myHistogram.binCount = static_cast<int>( myHistogram.binCount * myScale );
+
   if ( ( sourceHasNoDataValue( bandNo ) && !useSourceNoDataValue( bandNo ) ) ||
        !userNoDataValues( bandNo ).isEmpty() )
   {
@@ -2081,9 +2097,8 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   double myMinVal = myHistogram.minimum;
   double myMaxVal = myHistogram.maximum;
 
-  // unapply scale anf offset for min and max
-  double myScale = bandScale( bandNo );
-  double myOffset = bandOffset( bandNo );
+  // unapply scale and offset for min and max
+  const double myOffset = bandOffset( bandNo );
   if ( myScale != 1.0 || myOffset != 0. )
   {
     myMinVal = ( myHistogram.minimum - myOffset ) / myScale;
@@ -2994,7 +3009,7 @@ bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QSt
   }
   else if ( GDALGetRasterCount( myDataset.get() ) == 0 )
   {
-    if ( QgsGdalProvider::sublayerDetails( myDataset.get(), fileName ).isEmpty() )
+    if ( QgsGdalProvider::sublayerDetails( myDataset.get(), fileName, Qgis::SublayerQueryFlags() ).isEmpty() )
     {
       retErrMsg = QObject::tr( "This raster file has no bands and is invalid as a raster layer." );
       return false;
@@ -3744,7 +3759,7 @@ void QgsGdalProvider::initBaseDataset()
   }
 
   // get sublayers
-  mSubLayers = QgsGdalProvider::sublayerDetails( mGdalDataset,  dataSourceUri() );
+  mSubLayers = QgsGdalProvider::sublayerDetails( mGdalDataset,  dataSourceUri(), Qgis::SublayerQueryFlags() );
 
   // check if this file has bands or subdatasets
   CPLErrorReset();
@@ -4498,7 +4513,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
 
   if ( dataset )
   {
-    const QList< QgsProviderSublayerDetails > res = QgsGdalProvider::sublayerDetails( dataset.get(), uri );
+    const QList< QgsProviderSublayerDetails > res = QgsGdalProvider::sublayerDetails( dataset.get(), uri, flags );
     if ( res.empty() )
     {
       // may not have multiple sublayers, but may still be a single-raster layer dataset

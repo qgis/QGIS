@@ -251,7 +251,6 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     connect( o2, &QgsO2::linkingSucceeded, this, &QgsAuthOAuth2Method::onLinkingSucceeded, Qt::UniqueConnection );
     connect( o2, &QgsO2::getAuthCode, this, &QgsAuthOAuth2Method::onAuthCode, Qt::UniqueConnection );
     connect( this, &QgsAuthOAuth2Method::setAuthCode, o2, &QgsO2::onSetAuthCode, Qt::UniqueConnection );
-    //qRegisterMetaType<QNetworkReply::NetworkError>( QStringLiteral( "QNetworkReply::NetworkError" )) // for Qt::QueuedConnection, if needed;
     connect( o2, &QgsO2::refreshFinished, this, &QgsAuthOAuth2Method::onRefreshFinished, Qt::UniqueConnection );
 
 
@@ -392,10 +391,7 @@ bool QgsAuthOAuth2Method::updateNetworkReply( QNetworkReply *reply, const QStrin
   }
   reply->setProperty( "authcfg", authcfg );
 
-  // converting this to new-style Qt5 connection causes odd linking error with static o2 library
-  connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( onNetworkError( QNetworkReply::NetworkError ) ), Qt::QueuedConnection );
-  //connect( reply, static_cast<void ( QNetworkReply::* )( QNetworkReply::NetworkError )>( &QNetworkReply::error ),
-  //         this, &QgsAuthOAuth2Method::onNetworkError, Qt::QueuedConnection );
+  connect( reply, &QNetworkReply::errorOccurred, this, &QgsAuthOAuth2Method::onNetworkError, Qt::QueuedConnection );
 
 #ifdef QGISDEBUG
   const QString msg = QStringLiteral( "Updated reply with token refresh connection for authcfg: %1" ).arg( authcfg );
@@ -542,18 +538,18 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
   }
 }
 
+static QString networkErrorToString( QNetworkReply::NetworkError code )
+{
+  const int index = QNetworkReply::staticMetaObject.indexOfEnumerator( "NetworkError" );
+  const QMetaEnum metaEnum = QNetworkReply::staticMetaObject.enumerator( index );
+  return QString::fromLatin1( metaEnum.valueToKey( code ) );
+}
+
 void QgsAuthOAuth2Method::onRefreshFinished( QNetworkReply::NetworkError err )
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
-  if ( !reply )
-  {
-    const QString msg = tr( "Token refresh finished but no reply object accessible" );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
-    return;
-  }
   if ( err != QNetworkReply::NoError )
   {
-    QgsMessageLog::logMessage( tr( "Token refresh error: %1" ).arg( reply->errorString() ), AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage( tr( "Token refresh error: %1" ).arg( networkErrorToString( err ) ), AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
   }
 }
 

@@ -162,6 +162,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( MessageLevel )
 
     /**
+     * \brief Flags controlling behavior of network requests.
+     *
+     * \since QGIS 4.0
+     */
+    enum class NetworkRequestFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      DisableMessageLogging = 1 << 0, //!< If present, indicates that no message logging should be performed when network errors are encountered
+    };
+    Q_ENUM( NetworkRequestFlag )
+
+    /**
+     * \brief Flags controlling behavior of network requests.
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( NetworkRequestFlags, NetworkRequestFlag )
+    Q_FLAG( NetworkRequestFlags )
+
+    /**
      * Types of layers that can be added to a map
      *
      * \since QGIS 3.30. Prior to 3.30 this was available as QgsMapLayerType.
@@ -1358,6 +1377,7 @@ class CORE_EXPORT Qgis
       ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
       CountFeatures = 1 << 2, //!< Count features in vector sublayers
       IncludeSystemTables = 1 << 3, //!< Include system or internal tables (these are not included by default)
+      OpenLayersToResolveDecriptions = 1 << 4, //!< Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \since QGIS 4.0
     };
     //! Sublayer query flags
     Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
@@ -6236,6 +6256,7 @@ class CORE_EXPORT Qgis
 QHASH_FOR_CLASS_ENUM( Qgis::CaptureTechnique )
 QHASH_FOR_CLASS_ENUM( Qgis::RasterAttributeTableFieldUsage )
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::NetworkRequestFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AuthConfigurationStorageCapabilities )

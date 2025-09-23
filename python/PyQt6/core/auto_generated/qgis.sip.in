@@ -121,6 +121,14 @@ The development version
       NoLevel,
     };
 
+    enum class NetworkRequestFlag /BaseType=IntFlag/
+    {
+      DisableMessageLogging,
+    };
+
+    typedef QFlags<Qgis::NetworkRequestFlag> NetworkRequestFlags;
+
+
     enum class LayerType /BaseType=IntEnum/
       {
       Vector,
@@ -819,6 +827,7 @@ The development version
       ResolveGeometryType,
       CountFeatures,
       IncludeSystemTables,
+      OpenLayersToResolveDecriptions,
     };
     typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
 
@@ -3552,6 +3561,8 @@ PROJ4 string that represents a geographic coord system.
 
 };
 
+
+QFlags<Qgis::NetworkRequestFlag> operator|(Qgis::NetworkRequestFlag f1, QFlags<Qgis::NetworkRequestFlag> f2);
 
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
 

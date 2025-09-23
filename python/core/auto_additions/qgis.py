@@ -69,6 +69,19 @@ Qgis.AuthConfigurationStorageCapability.baseClass = Qgis
 Qgis.AuthConfigurationStorageCapabilities.baseClass = Qgis
 AuthConfigurationStorageCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 Qgis.MessageLevel.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.NetworkRequestFlag.DisableMessageLogging.__doc__ = "If present, indicates that no message logging should be performed when network errors are encountered"
+Qgis.NetworkRequestFlag.__doc__ = """Flags controlling behavior of network requests.
+
+.. versionadded:: 4.0
+
+* ``DisableMessageLogging``: If present, indicates that no message logging should be performed when network errors are encountered
+
+"""
+# --
+Qgis.NetworkRequestFlag.baseClass = Qgis
+Qgis.NetworkRequestFlags.baseClass = Qgis
+NetworkRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsMapLayer.LayerType = Qgis.LayerType
 # monkey patching scoped based enum
 QgsMapLayer.VectorLayer = Qgis.LayerType.Vector
@@ -2622,6 +2635,7 @@ Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
 Qgis.SublayerQueryFlag.CountFeatures.__doc__ = "Count features in vector sublayers"
 Qgis.SublayerQueryFlag.IncludeSystemTables.__doc__ = "Include system or internal tables (these are not included by default)"
+Qgis.SublayerQueryFlag.OpenLayersToResolveDecriptions.__doc__ = "Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \n.. versionadded:: 4.0"
 Qgis.SublayerQueryFlag.__doc__ = """Flags which control how data providers will scan for sublayers in a dataset.
 
 .. versionadded:: 3.22
@@ -2630,6 +2644,10 @@ Qgis.SublayerQueryFlag.__doc__ = """Flags which control how data providers will 
 * ``ResolveGeometryType``: Attempt to resolve the geometry type for vector sublayers
 * ``CountFeatures``: Count features in vector sublayers
 * ``IncludeSystemTables``: Include system or internal tables (these are not included by default)
+* ``OpenLayersToResolveDecriptions``: Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call.
+
+  .. versionadded:: 4.0
+
 
 """
 # --
