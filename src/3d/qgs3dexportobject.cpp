@@ -181,7 +181,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   {
     QgsDebugError( "Vertex normals count and vertex positions count are different" );
   }
-  const int verticesCount = mIndexes.size();
+  const unsigned int verticesCount = mIndexes.size();
 
   // we use negative indexes as this is the way to use relative values to reference vertex positions
   // Positive values are absolute vertex position from the beginning of the file.
