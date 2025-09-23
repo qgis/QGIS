@@ -48,20 +48,32 @@ namespace QgsRayCastingUtils
     // https://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
 
     const QVector3D dirInv = ray.directionInversed();
-    const float offset = 0.1f;
+
+    double boxXMax = nodeBbox.xMax;
+    double boxYMax = nodeBbox.yMax;
+    double boxZMax = nodeBbox.zMax;
+
+    // intersection() does not like yMin==yMax (excludes borders)
+    if ( boxXMax == nodeBbox.xMin )
+      boxXMax += 0.1;
+    if ( boxYMax == nodeBbox.yMin )
+      boxYMax += 0.1;
+    if ( boxZMax == nodeBbox.zMin )
+      boxZMax += 0.1;
+
 
     double t1 = ( nodeBbox.xMin - ray.origin().x() ) * dirInv.x();
-    double t2 = ( std::max( nodeBbox.xMax, nodeBbox.xMin + offset ) + 0 - ray.origin().x() ) * dirInv.x();
+    double t2 = ( boxXMax - ray.origin().x() ) * dirInv.x();
     double tmin = std::min( t1, t2 );
     double tmax = std::max( t1, t2 );
 
     t1 = ( nodeBbox.yMin - ray.origin().y() ) * dirInv.y();
-    t2 = ( std::max( nodeBbox.yMax, nodeBbox.yMin + offset ) - ray.origin().y() ) * dirInv.y();
+    t2 = ( boxYMax - ray.origin().y() ) * dirInv.y();
     tmin = std::max( tmin, std::min( std::min( t1, t2 ), tmax ) );
     tmax = std::min( tmax, std::max( std::max( t1, t2 ), tmin ) );
 
     t1 = ( nodeBbox.zMin - ray.origin().z() ) * dirInv.z();
-    t2 = ( std::max( nodeBbox.zMax, nodeBbox.zMin + offset ) - ray.origin().z() ) * dirInv.z();
+    t2 = ( boxZMax - ray.origin().z() ) * dirInv.z();
     tmin = std::max( tmin, std::min( std::min( t1, t2 ), tmax ) );
     tmax = std::min( tmax, std::max( std::max( t1, t2 ), tmin ) );
 
