@@ -130,8 +130,15 @@ void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, flo
   }
 }
 
-void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &center, int precision ) const
+void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &center, int precision, QString materialName ) const
 {
+  // Set object name
+  out << "o " << mName << "\n";
+
+  // Set material name
+  if ( !materialName.isEmpty() )
+    out << "usemtl " << materialName << "\n";
+
   // Set groups
   // turns out grouping doest work as expected in blender
   out << qSetRealNumberPrecision( precision );
