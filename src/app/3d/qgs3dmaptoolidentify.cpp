@@ -78,13 +78,13 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
 
   bool showTerrainResults = true;
 
-  const QVector<QgsMapLayer *> layers = results.layers();
+  const QList<QgsMapLayer *> layers = results.layers();
   for ( QgsMapLayer *layer : layers )
   {
     //  We can directly show vector layer results
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
-      const QVector<QgsRayCastHit> layerHits = results.layerHits( layer );
+      const QList<QgsRayCastHit> layerHits = results.layerHits( layer );
       const QgsRayCastHit hit = layerHits.constFirst();
       const QgsVector3D mapCoords = hit.mapCoordinates();
       QgsVector3D mapCoordsCanvas2D;
@@ -106,7 +106,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer ) )
     {
       QVector<QVariantMap> pointCloudResults;
-      const QVector<QgsRayCastHit> layerHits = results.layerHits( layer );
+      const QList<QgsRayCastHit> layerHits = results.layerHits( layer );
       for ( const QgsRayCastHit &hit : layerHits )
       {
         pointCloudResults.append( hit.attributes() );
@@ -117,7 +117,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     {
       Q_UNUSED( tslayer )
       // We are only handling a single hit for each layer
-      const QVector<QgsRayCastHit> layerHits = results.layerHits( layer );
+      const QList<QgsRayCastHit> layerHits = results.layerHits( layer );
       const QgsRayCastHit hit = layerHits.constFirst();
       const QgsVector3D mapCoords = hit.mapCoordinates();
 

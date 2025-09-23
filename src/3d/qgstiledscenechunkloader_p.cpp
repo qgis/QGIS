@@ -366,7 +366,7 @@ int QgsTiledSceneLayerChunkedEntity::pendingJobsCount() const
   return QgsChunkedEntity::pendingJobsCount() + static_cast<QgsTiledSceneChunkLoaderFactory *>( mChunkLoaderFactory )->mPendingHierarchyFetches.count();
 }
 
-QVector<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
+QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   Q_UNUSED( context );
   QgsDebugMsgLevel( QStringLiteral( "Ray cast on tiled scene layer" ), 2 );
@@ -376,7 +376,7 @@ QVector<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const Q
   int hits = 0;
 #endif
 
-  QVector<QgsRayCastHit> result;
+  QList<QgsRayCastHit> result;
   float minDist = -1;
   QVector3D intersectionPoint;
   QgsChunkNode *minNode = nullptr;

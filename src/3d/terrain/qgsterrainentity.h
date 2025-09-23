@@ -69,7 +69,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     //! Returns the terrain elevation offset (adjusts the terrain position up and down)
     float terrainElevationOffset() const;
 
-    QVector<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
+    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
   private slots:
     void onShowBoundingBoxesChanged();

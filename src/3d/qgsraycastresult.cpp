@@ -30,12 +30,12 @@ bool QgsRayCastResult::hasLayerHits() const
   return !mLayerResults.isEmpty();
 }
 
-QVector<QgsMapLayer *> QgsRayCastResult::layers() const
+QList<QgsMapLayer *> QgsRayCastResult::layers() const
 {
   return { mLayerResults.keyBegin(), mLayerResults.keyEnd() };
 }
 
-QVector<QgsRayCastHit> QgsRayCastResult::layerHits( QgsMapLayer *layer ) const
+QList<QgsRayCastHit> QgsRayCastResult::layerHits( QgsMapLayer *layer ) const
 {
   return mLayerResults.value( layer );
 }
@@ -45,14 +45,14 @@ bool QgsRayCastResult::hasTerrainHits() const
   return !mTerrainResults.isEmpty();
 }
 
-QVector<QgsRayCastHit> QgsRayCastResult::terrainHits() const
+QList<QgsRayCastHit> QgsRayCastResult::terrainHits() const
 {
   return mTerrainResults;
 }
 
-QVector<QgsRayCastHit> QgsRayCastResult::allHits() const
+QList<QgsRayCastHit> QgsRayCastResult::allHits() const
 {
-  QVector<QgsRayCastHit> result { mTerrainResults.constBegin(), mTerrainResults.constEnd() };
+  QList<QgsRayCastHit> result { mTerrainResults.constBegin(), mTerrainResults.constEnd() };
 
   for ( auto it = mLayerResults.constBegin(); it != mLayerResults.constEnd(); ++it )
   {
@@ -62,7 +62,7 @@ QVector<QgsRayCastHit> QgsRayCastResult::allHits() const
   return result;
 }
 
-void QgsRayCastResult::addLayerHits( QgsMapLayer *layer, const QVector<QgsRayCastHit> &hits )
+void QgsRayCastResult::addLayerHits( QgsMapLayer *layer, const QList<QgsRayCastHit> &hits )
 {
   if ( mLayerResults.contains( layer ) )
     mLayerResults[layer].append( hits );
@@ -70,7 +70,7 @@ void QgsRayCastResult::addLayerHits( QgsMapLayer *layer, const QVector<QgsRayCas
     mLayerResults[layer] = hits;
 }
 
-void QgsRayCastResult::addTerrainHits( const QVector<QgsRayCastHit> &hits )
+void QgsRayCastResult::addTerrainHits( const QList<QgsRayCastHit> &hits )
 {
   mTerrainResults.append( hits );
 }

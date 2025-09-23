@@ -38,13 +38,13 @@ Returns ``True`` is ray did not intersect any layer or terrain entity
 Returns ``True`` is ray hit at least one entity from a layer
 %End
 
-    QVector<QgsMapLayer *> layers() const;
+    QList<QgsMapLayer *> layers() const;
 %Docstring
 Returns pointers to the map layers of entities that were intersected by
 the ray
 %End
 
-    QVector<QgsRayCastHit> layerHits( QgsMapLayer *layer ) const;
+    QList<QgsRayCastHit> layerHits( QgsMapLayer *layer ) const;
 %Docstring
 Returns all hits from entities of the specific ``layer``
 %End
@@ -54,22 +54,22 @@ Returns all hits from entities of the specific ``layer``
 Returns ``True`` is the ray intersected the terrain
 %End
 
-    QVector<QgsRayCastHit> terrainHits() const;
+    QList<QgsRayCastHit> terrainHits() const;
 %Docstring
 Returns all terrain intersection hits
 %End
 
-    QVector<QgsRayCastHit> allHits() const;
+    QList<QgsRayCastHit> allHits() const;
 %Docstring
 Returns all the hits from both layer and terrain intersections
 %End
 
-    void addLayerHits( QgsMapLayer *layer, const QVector<QgsRayCastHit> &hits );
+    void addLayerHits( QgsMapLayer *layer, const QList<QgsRayCastHit> &hits );
 %Docstring
 Adds all ``hits`` from ``layer`` to the result
 %End
 
-    void addTerrainHits( const QVector<QgsRayCastHit> &hits );
+    void addTerrainHits( const QList<QgsRayCastHit> &hits );
 %Docstring
 Adds all terrain ``hits`` to the result
 %End

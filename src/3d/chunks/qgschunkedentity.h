@@ -96,7 +96,7 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
      * \note The ray uses World coordinates.
      * \since QGIS 3.32
      */
-    virtual QVector<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const;
+    virtual QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const;
 
   protected:
     //! Cancels the background job that is currently in progress

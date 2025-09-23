@@ -318,9 +318,9 @@ void QgsPointCloudLayerChunkedEntity::updateIndex()
   static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->index();
 }
 
-QVector<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
+QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
-  QVector<QgsRayCastHit> result;
+  QList<QgsRayCastHit> result;
   QgsPointCloudLayerChunkLoaderFactory *factory = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory );
 
   const QgsPointCloud3DSymbol *symbol = factory->mSymbol.get();

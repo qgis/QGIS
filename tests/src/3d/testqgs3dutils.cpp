@@ -654,9 +654,9 @@ void TestQgs3DUtils::test3DSceneRay3D()
   context.setMaximumDistance( camera->farPlane() );
   const QgsRayCastResult result1 = Qgs3DUtils::castRay( scene, ray1, context );
 
-  const QVector<QgsRayCastHit> terrainHits1 = result1.terrainHits();
-  const QVector<QgsRayCastHit> allHits1 = result1.allHits();
-  const QVector<QgsRayCastHit> buildingsHits1 = result1.layerHits( mLayerBuildings );
+  const QList< QgsRayCastHit > terrainHits1 = result1.terrainHits();
+  const QList< QgsRayCastHit > allHits1 = result1.allHits();
+  const QList< QgsRayCastHit > buildingsHits1 = result1.layerHits( mLayerBuildings );
 
   QVERIFY( result1.hasLayerHits() );
   QVERIFY( result1.hasTerrainHits() );
@@ -676,9 +676,9 @@ void TestQgs3DUtils::test3DSceneRay3D()
   const QgsRay3D ray2 = Qgs3DUtils::rayFromScreenPoint( clickedPoint2, winSize, camera );
   const QgsRayCastResult result2 = Qgs3DUtils::castRay( scene, ray2, context );
 
-  const QVector<QgsRayCastHit> terrainHits2 = result2.terrainHits();
-  const QVector<QgsRayCastHit> allHits2 = result2.allHits();
-  const QVector<QgsRayCastHit> buildingsHits2 = result2.layerHits( mLayerBuildings );
+  const QList< QgsRayCastHit > terrainHits2 = result2.terrainHits();
+  const QList< QgsRayCastHit > allHits2 = result2.allHits();
+  const QList< QgsRayCastHit > buildingsHits2 = result2.layerHits( mLayerBuildings );
 
   QVERIFY( !result2.hasLayerHits() );
   QVERIFY( result2.hasTerrainHits() );

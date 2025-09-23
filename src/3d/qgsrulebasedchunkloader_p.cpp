@@ -277,7 +277,7 @@ void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged()
   }
 }
 
-QVector<QgsRayCastHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
+QList<QgsRayCastHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   return QgsVectorLayerChunkedEntity::rayIntersection( activeNodes(), mTransform->matrix(), ray, context, mMapSettings->origin() );
 }

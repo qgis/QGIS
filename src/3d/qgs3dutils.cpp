@@ -859,7 +859,7 @@ QgsRayCastResult Qgs3DUtils::castRay( Qgs3DMapScene *scene, const QgsRay3D &ray,
 
     if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
     {
-      const QVector<QgsRayCastHit> hits = chunkedEntity->rayIntersection( ray, context );
+      const QList<QgsRayCastHit> hits = chunkedEntity->rayIntersection( ray, context );
 
       if ( !hits.isEmpty() )
         results.addLayerHits( layer, hits );
@@ -867,14 +867,14 @@ QgsRayCastResult Qgs3DUtils::castRay( Qgs3DMapScene *scene, const QgsRay3D &ray,
   }
   if ( QgsTerrainEntity *terrain = scene->terrainEntity() )
   {
-    const QVector<QgsRayCastHit> hits = terrain->rayIntersection( ray, context );
+    const QList<QgsRayCastHit> hits = terrain->rayIntersection( ray, context );
 
     if ( !hits.isEmpty() )
       results.addTerrainHits( hits );
   }
   if ( QgsGlobeEntity *globe = scene->globeEntity() )
   {
-    const QVector<QgsRayCastHit> hits = globe->rayIntersection( ray, context );
+    const QList<QgsRayCastHit> hits = globe->rayIntersection( ray, context );
 
     if ( !hits.isEmpty() )
       results.addTerrainHits( hits );

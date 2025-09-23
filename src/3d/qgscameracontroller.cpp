@@ -1450,7 +1450,7 @@ void QgsCameraController::rotateToRespectingTerrain( float pitch, float yaw )
     QgsRayCastContext context;
     context.setSingleResult( true );
     context.setMaximumDistance( mCamera->farPlane() );
-    const QVector<QgsRayCastHit> results = mScene->terrainEntity()->rayIntersection( ray, context );
+    const QList<QgsRayCastHit> results = mScene->terrainEntity()->rayIntersection( ray, context );
 
     if ( !results.isEmpty() )
     {

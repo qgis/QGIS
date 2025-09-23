@@ -83,7 +83,7 @@ void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
 
   QgsVector3D mapCoords;
   double minDist = -1;
-  const QVector<QgsRayCastHit> allHits = results.allHits();
+  const QList<QgsRayCastHit> allHits = results.allHits();
   for ( const QgsRayCastHit &hit : allHits )
   {
     const double resDist = hit.distance();

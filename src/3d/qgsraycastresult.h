@@ -20,7 +20,7 @@
 #include "qgsraycasthit.h"
 
 #include <QHash>
-#include <QVector>
+#include <QList>
 
 class QgsMapLayer;
 
@@ -45,29 +45,29 @@ class _3D_EXPORT QgsRayCastResult
     bool hasLayerHits() const;
 
     //! Returns pointers to the map layers of entities that were intersected by the ray
-    QVector<QgsMapLayer *> layers() const;
+    QList<QgsMapLayer *> layers() const;
 
     //! Returns all hits from entities of the specific \a layer
-    QVector<QgsRayCastHit> layerHits( QgsMapLayer *layer ) const;
+    QList<QgsRayCastHit> layerHits( QgsMapLayer *layer ) const;
 
     //! Returns TRUE is the ray intersected the terrain
     bool hasTerrainHits() const;
 
     //! Returns all terrain intersection hits
-    QVector<QgsRayCastHit> terrainHits() const;
+    QList<QgsRayCastHit> terrainHits() const;
 
     //! Returns all the hits from both layer and terrain intersections
-    QVector<QgsRayCastHit> allHits() const;
+    QList<QgsRayCastHit> allHits() const;
 
     //! Adds all \a hits from \a layer to the result
-    void addLayerHits( QgsMapLayer *layer, const QVector<QgsRayCastHit> &hits );
+    void addLayerHits( QgsMapLayer *layer, const QList<QgsRayCastHit> &hits );
 
     //! Adds all terrain \a hits to the result
-    void addTerrainHits( const QVector<QgsRayCastHit> &hits );
+    void addTerrainHits( const QList<QgsRayCastHit> &hits );
 
   private:
-    QHash<QgsMapLayer *, QVector<QgsRayCastHit>> mLayerResults;
-    QVector<QgsRayCastHit> mTerrainResults;
+    QHash<QgsMapLayer *, QList<QgsRayCastHit>> mLayerResults;
+    QList<QgsRayCastHit> mTerrainResults;
 };
 
 #endif // QGSRAYCASTRESULT_H

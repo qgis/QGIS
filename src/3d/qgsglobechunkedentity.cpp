@@ -490,7 +490,7 @@ QgsGlobeEntity::~QgsGlobeEntity()
   cancelActiveJobs();
 }
 
-QVector<QgsRayCastHit> QgsGlobeEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
+QList<QgsRayCastHit> QgsGlobeEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   float minDist = -1;
   QVector3D intersectionPoint;

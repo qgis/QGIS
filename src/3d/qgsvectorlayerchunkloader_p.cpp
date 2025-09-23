@@ -275,12 +275,12 @@ void QgsVectorLayerChunkedEntity::onTerrainElevationOffsetChanged()
   mTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
 }
 
-QVector<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
+QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   return QgsVectorLayerChunkedEntity::rayIntersection( activeNodes(), mTransform->matrix(), ray, context, mMapSettings->origin() );
 }
 
-QVector<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin )
+QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin )
 {
   Q_UNUSED( context )
   QgsDebugMsgLevel( QStringLiteral( "Ray cast on vector layer" ), 2 );
@@ -290,7 +290,7 @@ QVector<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList
   int hits = 0;
   int ignoredGeometries = 0;
 #endif
-  QVector<QgsRayCastHit> result;
+  QList<QgsRayCastHit> result;
 
   float minDist = -1;
   QVector3D intersectionPoint;

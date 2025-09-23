@@ -92,10 +92,10 @@ QgsTerrainEntity::~QgsTerrainEntity()
   delete mTextureGenerator;
 }
 
-QVector<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
+QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   Q_UNUSED( context )
-  QVector<QgsRayCastHit> result;
+  QList<QgsRayCastHit> result;
 
   float minDist = -1;
   QVector3D intersectionPoint;
