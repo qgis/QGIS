@@ -318,7 +318,7 @@ QStringList QgsSqliteUtils::systemTables()
          // Additional tables to be hidden
          << QStringLiteral( "all_buckets_objects" ) << QStringLiteral( "byfoot" ) << QStringLiteral( "byfoot_data" )
          << QStringLiteral( "data_licenses" ) << QStringLiteral( "iso_metadata" ) << QStringLiteral( "ISO_metadata_reference" )
-         << QStringLiteral( "ISO_metadata_view" ) << QStringLiteral( "KMN2" ) << QStringLiteral( "KNN" )
+         << QStringLiteral( "ISO_metadata_view" ) << QStringLiteral( "KNN2" ) << QStringLiteral( "KNN" )
          << QStringLiteral( "networks" ) << QStringLiteral( "raster_coverages" ) << QStringLiteral( "raster_coverages_keyword" )
          << QStringLiteral( "raster_coverages_ref_sys" ) << QStringLiteral( "raster_coverages_srid" )
          << QStringLiteral( "rl2map_configurations" ) << QStringLiteral( "rl2map_configurations_view" )
