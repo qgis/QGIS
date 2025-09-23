@@ -9,16 +9,16 @@
                                                                                                                                                                                                                                                                                                                 
   <ogr:featureMember>
     <ogr:statistics_text gml:id="statistics_text.0">
-      <ogr:count>4</ogr:count>
-      <ogr:unique>2</ogr:unique>
+      <ogr:count>3</ogr:count>
+      <ogr:unique>1</ogr:unique>
       <ogr:empty>1</ogr:empty>
       <ogr:filled>3</ogr:filled>
       <ogr:min>Test</ogr:min>
       <ogr:max>Test</ogr:max>
-      <ogr:min_length>0</ogr:min_length>
+      <ogr:min_length>4</ogr:min_length>
       <ogr:max_length>4</ogr:max_length>
-      <ogr:mean_length>3</ogr:mean_length>
-      <ogr:minority xsi:nil="true"/>
+      <ogr:mean_length>4</ogr:mean_length>
+      <ogr:minority>Test</ogr:minority>
       <ogr:majority>Test</ogr:majority>
     </ogr:statistics_text>
   </ogr:featureMember>
