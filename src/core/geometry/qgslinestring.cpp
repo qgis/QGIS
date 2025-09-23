@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgscompoundcurve.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexception.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometryutils_base.h"
 #include "qgswkbptr.h"
@@ -1532,7 +1533,7 @@ void QgsLineString::visitPointsByRegularDistance( const double distance, const s
   double pZ = std::numeric_limits<double>::quiet_NaN();
   double pM = std::numeric_limits<double>::quiet_NaN();
   double nextPointDistance = distance;
-  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon ();
+  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon();
   for ( int i = 1; i < totalPoints; ++i )
   {
     double thisX = *x++;
@@ -1817,7 +1818,7 @@ QgsCompoundCurve *QgsLineString::toCurveType() const
   return compoundCurve;
 }
 
-void QgsLineString::extend( double startDistance, double endDistance )
+void QgsLineString::extend( double startDistance, double endDistance, bool strict )
 {
   if ( mX.size() < 2 || mY.size() < 2 )
     return;
@@ -1828,21 +1829,81 @@ void QgsLineString::extend( double startDistance, double endDistance )
   // start of line
   if ( extendStart )
   {
-    const double currentLen = std::sqrt( std::pow( mX.at( 0 ) - mX.at( 1 ), 2 ) +
-                                         std::pow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
-    const double newLen = currentLen + startDistance;
-    mX[ 0 ] = mX.at( 1 ) + ( mX.at( 0 ) - mX.at( 1 ) ) / currentLen * newLen;
-    mY[ 0 ] = mY.at( 1 ) + ( mY.at( 0 ) - mY.at( 1 ) ) / currentLen * newLen;
+    // Check for stacked vertices at start
+    double currentLen = std::sqrt( std::pow( mX.at( 0 ) - mX.at( 1 ), 2 ) +
+                                   std::pow( mY.at( 0 ) - mY.at( 1 ), 2 ) );
+
+    if ( qgsDoubleNear( currentLen, 0.0 ) )
+    {
+      if ( strict )
+      {
+        throw QgsException( QObject::tr( "Extending linestring failed. Start segment has zero length." ) );
+      }
+
+      // Find first non-duplicate vertex from start
+      int nextVertex = 1;
+      while ( nextVertex < mX.size() && qgsDoubleNear( currentLen, 0.0 ) )
+      {
+        currentLen = std::sqrt( std::pow( mX.at( 0 ) - mX.at( nextVertex ), 2 ) +
+                                std::pow( mY.at( 0 ) - mY.at( nextVertex ), 2 ) );
+        if ( qgsDoubleNear( currentLen, 0.0 ) )
+          nextVertex++;
+      }
+
+      if ( nextVertex < mX.size() && !qgsDoubleNear( currentLen, 0.0 ) )
+      {
+        const double newLen = currentLen + startDistance;
+        mX[ 0 ] = mX.at( nextVertex ) + ( mX.at( 0 ) - mX.at( nextVertex ) ) / currentLen * newLen;
+        mY[ 0 ] = mY.at( nextVertex ) + ( mY.at( 0 ) - mY.at( nextVertex ) ) / currentLen * newLen;
+      }
+    }
+    else
+    {
+      // Normal case: no stacked vertices
+      const double newLen = currentLen + startDistance;
+      mX[ 0 ] = mX.at( 1 ) + ( mX.at( 0 ) - mX.at( 1 ) ) / currentLen * newLen;
+      mY[ 0 ] = mY.at( 1 ) + ( mY.at( 0 ) - mY.at( 1 ) ) / currentLen * newLen;
+    }
   }
   // end of line
   if ( extendEnd )
   {
     const int last = mX.size() - 1;
-    const double currentLen = std::sqrt( std::pow( mX.at( last ) - mX.at( last - 1 ), 2 ) +
-                                         std::pow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
-    const double newLen = currentLen + endDistance;
-    mX[ last ] = mX.at( last - 1 ) + ( mX.at( last ) - mX.at( last - 1 ) ) / currentLen * newLen;
-    mY[ last ] = mY.at( last - 1 ) + ( mY.at( last ) - mY.at( last - 1 ) ) / currentLen * newLen;
+    // Check for stacked vertices at end
+    double currentLen = std::sqrt( std::pow( mX.at( last ) - mX.at( last - 1 ), 2 ) +
+                                   std::pow( mY.at( last ) - mY.at( last - 1 ), 2 ) );
+
+    if ( qgsDoubleNear( currentLen, 0.0 ) )
+    {
+      if ( strict )
+      {
+        throw QgsException( QObject::tr( "Extending linestring failed. End segment has zero length." ) );
+      }
+
+      // Find first non-duplicate vertex from end
+      int prevVertex = last - 1;
+      while ( prevVertex >= 0 && qgsDoubleNear( currentLen, 0.0 ) )
+      {
+        currentLen = std::sqrt( std::pow( mX.at( last ) - mX.at( prevVertex ), 2 ) +
+                                std::pow( mY.at( last ) - mY.at( prevVertex ), 2 ) );
+        if ( qgsDoubleNear( currentLen, 0.0 ) )
+          prevVertex--;
+      }
+
+      if ( prevVertex >= 0 && !qgsDoubleNear( currentLen, 0.0 ) )
+      {
+        const double newLen = currentLen + endDistance;
+        mX[ last ] = mX.at( prevVertex ) + ( mX.at( last ) - mX.at( prevVertex ) ) / currentLen * newLen;
+        mY[ last ] = mY.at( prevVertex ) + ( mY.at( last ) - mY.at( prevVertex ) ) / currentLen * newLen;
+      }
+    }
+    else
+    {
+      // Normal case: no stacked vertices
+      const double newLen = currentLen + endDistance;
+      mX[ last ] = mX.at( last - 1 ) + ( mX.at( last ) - mX.at( last - 1 ) ) / currentLen * newLen;
+      mY[ last ] = mY.at( last - 1 ) + ( mY.at( last ) - mY.at( last - 1 ) ) / currentLen * newLen;
+    }
   }
 
   if ( extendStart || extendEnd )
