@@ -98,8 +98,22 @@ class _3D_EXPORT Qgs3DExportObject
      */
     void objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ ) const;
 
-    //! Saves the current object to the output stream while scaling the object and centering it to be visible in exported scene
-    void saveTo( QTextStream &out, float scale, const QVector3D &center, int precision = 6 ) const;
+    /**
+     * \brief Exports the 3D object to an OBJ-compatible output stream
+     *
+     * This function writes the 3D object's geometry to the specified output stream,
+     * applying a uniform scaling and translating it so that the model is centered
+     * and properly visible in the exported scene.
+     *
+     * \param out           The output text stream where the data will be written.
+     * \param scale         The uniform scale factor applied to all vertices.
+     * \param center        The target center position to which the object will be translated.
+     * \param precision     The number of decimal digits used when writing floating-point values (default: 6).
+     * \param materialName  Optional name of the material to associate with the object (default: empty).
+     *
+     */
+    void saveTo( QTextStream &out, float scale, const QVector3D &center, int precision = 6, QString materialName = QString() ) const;
+
     //! saves the texture of the object and material information
     QString saveMaterial( QTextStream &mtlOut, const QString &folder ) const;
 
