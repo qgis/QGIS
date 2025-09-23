@@ -52,6 +52,11 @@ class _3D_EXPORT Qgs3DMapExportSettings
     int terrainTextureResolution() const { return mTerrainTextureResolution; }
     //! Returns the scale of the exported model
     float scale() const { return mScale; }
+    /**
+     * Returns the full file uri where the 3D scene will be exported.
+     * \since QGIS 4.0
+     */
+    QString exportFileUri() const;
 
     /**
      * Returns whether terrain export is enabled.

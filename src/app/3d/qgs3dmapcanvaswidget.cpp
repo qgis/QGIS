@@ -909,14 +909,14 @@ void Qgs3DMapCanvasWidget::exportScene()
   if ( dlg.exec() )
   {
     const bool success = exportWidget.exportScene();
-    const QString exportFilePath = QDir( exportSettings.sceneFolderPath() ).filePath( exportSettings.sceneName() + u".obj"_s );
+    const QString exportFileUri = exportSettings.exportFileUri();
     if ( success )
     {
-      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Successfully exported scene to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( exportFilePath ).toString(), QDir::toNativeSeparators( exportFilePath ) ), Qgis::MessageLevel::Success, 0 );
+      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Successfully exported scene to <a href=\"%1\">%2</a>" ).arg( exportFileUri, QDir::toNativeSeparators( exportFileUri ) ), Qgis::MessageLevel::Success, 0 );
     }
     else
     {
-      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Unable to export scene to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( exportFilePath ).toString(), QDir::toNativeSeparators( exportFilePath ) ), Qgis::MessageLevel::Warning, 0 );
+      mMessageBar->pushMessage( tr( "Export 3D scene" ), tr( "Unable to export scene to <a href=\"%1\">%2</a>" ).arg( exportFileUri, QDir::toNativeSeparators( exportFileUri ) ), Qgis::MessageLevel::Warning, 0 );
     }
   }
 }
