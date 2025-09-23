@@ -2558,39 +2558,39 @@ QList<QList<QgsTemplatedLineSymbolLayerBase::BlankSegments>> QgsTemplatedLineSym
 
   constexpr QStringView internalError = u"Internal error while processing blank segments";
 
-  auto appendLevel = [&blankSegments, &internalError]( int level )-> QString
+  auto appendLevel = [&blankSegments, &internalError]( int level ) -> QString
   {
+
     if ( level == 0 )
     {
-      blankSegments.append( QList<QList<std::pair<double, double>>>() );
+      blankSegments.append( QList<QgsTemplatedLineSymbolLayerBase::BlankSegments>() );
     }
     else if ( level == 1 )
     {
       if ( blankSegments.isEmpty() )
-        return QString( internalError ) ; // should not happen
+        return internalError.toString() ; // should not happen
 
-      blankSegments.back().append( QList<std::pair<double, double>>() );
+      blankSegments.back().append( QgsTemplatedLineSymbolLayerBase::BlankSegments() );
     }
     else if ( level == 2 )
     {
       if ( blankSegments.isEmpty() || blankSegments.back().isEmpty() )
-        return QString( internalError ); // should not happen
+        return internalError.toString(); // should not happen
 
-      blankSegments.back().back().append( std::pair<double, double>( -1, -1 ) );
+      blankSegments.back().back().append( QPair<double, double>( -1, -1 ) );
     }
     else
-      return QString( internalError ); // should not happen
+      return internalError.toString(); // should not happen
 
     return QString();
   };
 
 
   auto addNumber = [&blankSegments, &internalError, &currentNumber]( const QChar & c ) -> QString
-
   {
     if ( blankSegments.isEmpty() || blankSegments.back().isEmpty() || blankSegments.back().back().isEmpty() )
     {
-      return QString( internalError ); // should not happen
+      return internalError.toString(); // should not happen
     }
     else if ( ( c == ')' || c == ',' ) && blankSegments.back().back().back().first == -1 )
     {
@@ -2675,7 +2675,7 @@ QList<QList<QgsTemplatedLineSymbolLayerBase::BlankSegments>> QgsTemplatedLineSym
       else
       {
         if ( level == 2 && !blankSegments.isEmpty() && !blankSegments.back().isEmpty() && blankSegments.back().back().count() == 1
-             && blankSegments.back().back().back() == std::pair<double, double>( -1, -1 ) )
+             && blankSegments.back().back().back() == QPair<double, double>( -1, -1 ) )
         {
           blankSegments.back().back().pop_back();
         }
