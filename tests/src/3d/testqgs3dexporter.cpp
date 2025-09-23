@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3d.h"
+#include "qgs3dexportobject.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3drendercontext.h"
@@ -46,6 +47,7 @@ class TestQgs3DExporter : public QgsTest
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void testExportObjectToObj();
     void test3DSceneExporter();
     void test3DSceneExporterBig();
     void test3DSceneExporterFlatTerrain();
@@ -85,6 +87,179 @@ void TestQgs3DExporter::initTestCase()
 void TestQgs3DExporter::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+void TestQgs3DExporter::testExportObjectToObj()
+{
+  // all vertice positions
+  QVector<float> positionData = {
+    -0.456616, 0.00187836, -0.413774,
+    -0.4718, 0.00187836, -0.0764642,
+    -0.25705, 0.00187836, -0.230477,
+    -0.25705, 0.00187836, -0.230477,
+    -0.4718, 0.00187836, -0.0764642,
+    0.0184382, 0.00187836, 0.177332,
+    -0.25705, 0.00187836, -0.230477,
+    0.0184382, 0.00187836, 0.177332,
+    -0.25705, -0.00187836, -0.230477,
+    -0.25705, -0.00187836, -0.230477,
+    0.0184382, 0.00187836, 0.177332,
+    0.0184382, -0.00187836, 0.177332,
+    0.0184382, 0.00187836, 0.177332,
+    -0.4718, 0.00187836, -0.0764642,
+    0.0184382, -0.00187836, 0.177332,
+    0.0184382, -0.00187836, 0.177332,
+    -0.4718, 0.00187836, -0.0764642,
+    -0.4718, -0.00187836, -0.0764642,
+    -0.4718, 0.00187836, -0.0764642,
+    -0.456616, 0.00187836, -0.413774,
+    -0.4718, -0.00187836, -0.0764642,
+    -0.4718, -0.00187836, -0.0764642,
+    -0.456616, 0.00187836, -0.413774,
+    -0.456616, -0.00187836, -0.413774,
+    -0.456616, 0.00187836, -0.413774,
+    -0.25705, 0.00187836, -0.230477,
+    -0.456616, -0.00187836, -0.413774,
+    -0.456616, -0.00187836, -0.413774,
+    -0.25705, 0.00187836, -0.230477,
+    -0.25705, -0.00187836, -0.230477
+  };
+
+  // all vertice normals
+  QVector<float> normalsData = {
+    0, 1, 0,
+    0, 1, 0,
+    0, 1, 0,
+    0, 1, 0,
+    0, 1, 0,
+    0, 1, 0,
+    0.828644, 0, -0.559776,
+    0.828644, 0, -0.559776,
+    0.828644, 0, -0.559776,
+    0.828644, 0, -0.559776,
+    0.828644, 0, -0.559776,
+    0.828644, 0, -0.559776,
+    -0.459744, 0, 0.888052,
+    -0.459744, 0, 0.888052,
+    -0.459744, 0, 0.888052,
+    -0.459744, 0, 0.888052,
+    -0.459744, 0, 0.888052,
+    -0.459744, 0, 0.888052,
+    -0.998988, 0, -0.0449705,
+    -0.998988, 0, -0.0449705,
+    -0.998988, 0, -0.0449705,
+    -0.998988, 0, -0.0449705,
+    -0.998988, 0, -0.0449705,
+    -0.998988, 0, -0.0449705,
+    0.676449, 0, -0.736489,
+    0.676449, 0, -0.736489,
+    0.676449, 0, -0.736489,
+    0.676449, 0, -0.736489,
+    0.676449, 0, -0.736489,
+    0.676449, 0, -0.736489
+  };
+
+  const QTemporaryDir tempDir;
+  QVERIFY( tempDir.isValid() );
+
+  // case where all vertices are used
+  {
+    Qgs3DExportObject object( "all_faces" );
+
+    // exported vertice indexes
+    QVector<uint> indexData = {
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+    };
+
+    object.setupTriangle( positionData, indexData, QMatrix4x4() );
+    QCOMPARE( object.vertexPosition().size(), positionData.size() );
+
+    QCOMPARE( object.indexes().size(), indexData.size() );
+
+    object.setupNormalCoordinates( normalsData, QMatrix4x4() );
+    QCOMPARE( object.normals().size(), normalsData.size() );
+
+
+    QFile file( tempDir.path() + "all_faces.obj" );
+    QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
+    QTextStream out( &file );
+
+    out << "o " << object.name() << "\n";
+    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
+
+    out.flush();
+    out.seek( 0 );
+
+    QString actual = out.readAll();
+    QGSCOMPARELONGSTR( "export_obj", "all_faces.obj", actual.toUtf8() );
+  }
+
+  // case where only a subset of vertices are used
+  {
+    // exported vertice indexes
+    QVector<uint> indexData = {
+      // 0, 1, 2,
+      // 3, 4, 5,
+      6, 7, 8,
+      9, 10, 11,
+      12, 13, 14,
+      15, 16, 17,
+      // 18, 19, 20,
+      21, 22, 23,
+      // 24, 25, 26,
+      // 27, 28, 29,
+    };
+
+    Qgs3DExportObject object( "sparse_faces" );
+    object.setupTriangle( positionData, indexData, QMatrix4x4() );
+    QCOMPARE( object.vertexPosition().size(), positionData.size() );
+
+    QCOMPARE( object.indexes().size(), indexData.size() );
+
+    object.setupNormalCoordinates( normalsData, QMatrix4x4() );
+    QCOMPARE( object.normals().size(), normalsData.size() );
+
+    QFile file( tempDir.path() + "sparse_faces.obj" );
+    QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
+    QTextStream out( &file );
+    out << "o " << object.name() << "\n";
+    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
+
+    out.flush();
+    out.seek( 0 );
+
+    QString actual = out.readAll();
+    QGSCOMPARELONGSTR( "export_obj", "sparse_faces.obj", actual.toUtf8() );
+  }
 }
 
 void TestQgs3DExporter::do3DSceneExport( const QString &testName, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity )
