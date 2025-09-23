@@ -33,6 +33,8 @@ LeafQuery::LeafQuery()
 
 }
 
+LeafQuery::~LeafQuery() = default;
+
 LeafQueryResult get_results(const SpatialIndex::INode* n)
 {
 	LeafQueryResult result (n->getIdentifier());
