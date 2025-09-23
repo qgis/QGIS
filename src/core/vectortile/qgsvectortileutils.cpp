@@ -112,34 +112,50 @@ QMap<QString, QString> QgsVectorTileUtils::parseStyleSourceUrl( const QString &s
           continue;
         }
         QVariantList tiles;
+        QString tilesFrom;
         if ( sourceData.contains( QStringLiteral( "tiles" ) ) )
         {
           tiles = sourceData["tiles"].toArray().toVariantList();
+          tilesFrom = styleUrl;
         }
         else if ( sourceData.contains( QStringLiteral( "url" ) ) )
         {
           tiles = parseStyleSourceContentUrl( sourceData.value( QStringLiteral( "url" ) ).toString(), headers, authCfg );
+          tilesFrom = sourceData.value( QStringLiteral( "url" ) ).toString();
         }
         else
         {
           QgsDebugError( QStringLiteral( "Could not read source %1" ).arg( sourceName ) );
         }
-        if ( tiles.count() == 0 )
-        {
-          QgsDebugError( QStringLiteral( "Could not read source %1, not tiles found" ).arg( sourceName ) );
-        }
-        else
+
+        if ( !tiles.isEmpty() )
         {
           // take a random one from the list
           // we might want to save the alternatives for a fallback later
-          QString tilesString = tiles[rand() % tiles.count()].toString();
-          QUrl tilesUrl( tilesString );
-          if ( tilesUrl.isRelative() )
+          QString tile = tiles[rand() % tiles.count()].toString();
+          QUrl tileUrl( tile );
+          if ( tileUrl.isRelative() )
           {
-            QUrl temporaryStyleUrl( styleUrl );
-            tilesString = QStringLiteral( "%1://%2%3" ).arg( temporaryStyleUrl.scheme(), temporaryStyleUrl.host(), tilesString );
+            QUrl tilesFromUrl( tilesFrom );
+            if ( tile.startsWith( "/" ) )
+            {
+              tile = QStringLiteral( "%1://%2%3" ).arg( tilesFromUrl.scheme(), tilesFromUrl.host(), tile );
+            }
+            else
+            {
+              const QString fileName = tilesFromUrl.fileName();
+              if ( !fileName.isEmpty() && fileName.indexOf( "." ) >= 0 )
+              {
+                tilesFrom = tilesFrom.mid( 0, tilesFrom.length() - fileName.length() );
+              }
+              tile = QStringLiteral( "%1/%2" ).arg( tilesFrom, tile );
+            }
           }
-          sources.insert( sourceName, tilesString );
+          sources.insert( sourceName, tile );
+        }
+        else
+        {
+          QgsDebugError( QStringLiteral( "Could not read source %1, not tiles found" ).arg( sourceName ) );
         }
       }
       return sources;
