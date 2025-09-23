@@ -563,38 +563,32 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const ch
   int rows;
   int columns;
   bool exists = false;
-  char table_raster[4192];
-  char sql[4258];
 
-  strncpy( table_raster, table, sizeof table_raster );
-  table_raster[sizeof table_raster - 1] = '\0';
-
-  const size_t len = strlen( table_raster );
-  if ( strlen( table_raster ) < 9 )
+  QString tableRaster = QString::fromUtf8( table );
+  if ( !tableRaster.endsWith( QLatin1String( "_metadata" ) ) )
     return false;
-  if ( strcmp( table_raster + len - 9, "_metadata" ) != 0 )
-    return false;
-  // OK, possible candidate
-  strcpy( table_raster + len - 9, "_rasters" );
 
-  // checking if the related "_RASTERS table exists
-  sprintf( sql, "SELECT name FROM sqlite_master WHERE type = 'table' AND name = '%s'", table_raster );
+  // OK, possible candidate → replace suffix
+  tableRaster.chop( 9 );
+  tableRaster += QLatin1String( "_rasters" );
 
-  ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, nullptr );
+  // checking if the related "_RASTERS" table exists
+  QString sqlStr = QStringLiteral(
+                     "SELECT name FROM sqlite_master WHERE type = 'table' AND name = '%1'"
+  )
+                     .arg( tableRaster.replace( '\'', QLatin1String( "''" ) ) );
+
+  ret = sqlite3_get_table( handle, sqlStr.toUtf8().constData(), &results, &rows, &columns, nullptr );
   if ( ret != SQLITE_OK )
     return false;
-  if ( rows < 1 )
-    ;
-  else
+
+  for ( i = 1; i <= rows; i++ )
   {
-    for ( i = 1; i <= rows; i++ )
+    const char *name = results[( i * columns ) + 0];
+    if ( name )
     {
-      if ( results[( i * columns ) + 0] )
-      {
-        const char *name = results[( i * columns ) + 0];
-        if ( name )
-          exists = true;
-      }
+      exists = true;
+      break;
     }
   }
   sqlite3_free_table( results );
