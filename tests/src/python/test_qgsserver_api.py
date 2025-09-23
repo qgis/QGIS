@@ -34,6 +34,7 @@ from qgis.core import (
     QgsApplication,
 )
 from qgis.PyQt import QtCore
+
 from qgis.server import (
     QgsBufferServerRequest,
     QgsBufferServerResponse,
@@ -381,6 +382,7 @@ class RestrictedLayerAccessControl(QgsAccessControlFilter):
         return rights
 
 
+@unittest.skipIf(QtCore.QT_VERSION >= 0x060000, "Crashes on QT6")
 class QgsServerAPITest(QgsServerAPITestBase):
     """QGIS API server tests"""
 
