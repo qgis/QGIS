@@ -737,9 +737,9 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QVERIFY( rl->isValid() );
 
   // tiff with two raster layers and TIFF Tags describing sublayers
-  // this REQUIRES the opt-in Qgis::SublayerQueryFlag::OpenLayersToResolveDecriptions flag, as it's slow.
+  // this REQUIRES the opt-in Qgis::SublayerQueryFlag::OpenLayersToResolveDescriptions flag, as it's slow.
   // see https://github.com/qgis/QGIS/issues/63153
-  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_subdataset_tags.tif", Qgis::SublayerQueryFlag::OpenLayersToResolveDecriptions );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_subdataset_tags.tif", Qgis::SublayerQueryFlag::OpenLayersToResolveDescriptions );
   QCOMPARE( res.count(), 2 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "Test Document Name 1" ) );
