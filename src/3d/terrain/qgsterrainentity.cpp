@@ -98,7 +98,7 @@ QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, con
   QList<QgsRayCastHit> result;
 
   float minDist = -1;
-  QVector3D intersectionPoint;
+  QgsVector3D intersectionPointMapCoords;
   switch ( mMapSettings->terrainGenerator()->type() )
   {
     case QgsTerrainGenerator::Flat:
@@ -112,13 +112,14 @@ QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, con
       if ( mMapSettings->extent().contains( mapCoords.x(), mapCoords.y() ) )
       {
         minDist = dist;
-        intersectionPoint = terrainPlanePoint;
+        intersectionPointMapCoords = mapCoords;
       }
       break;
     }
     case QgsTerrainGenerator::Dem:
     {
       const QList<QgsChunkNode *> activeNodes = this->activeNodes();
+      QVector3D nearestIntersectionPoint;
       for ( QgsChunkNode *node : activeNodes )
       {
         QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), mMapSettings->origin() );
@@ -132,15 +133,17 @@ QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, con
           DemTerrainTileGeometry *demGeom = static_cast<DemTerrainTileGeometry *>( geom );
           if ( demGeom->rayIntersection( ray, context, tr->matrix(), nodeIntPoint ) )
           {
-            const float dist = ( ray.origin() - intersectionPoint ).length();
+            const float dist = ( ray.origin() - nodeIntPoint ).length();
             if ( minDist < 0 || dist < minDist )
             {
               minDist = dist;
-              intersectionPoint = nodeIntPoint;
+              nearestIntersectionPoint = nodeIntPoint;
             }
           }
         }
       }
+      if ( minDist >= 0 )
+        intersectionPointMapCoords = Qgs3DUtils::worldToMapCoordinates( nearestIntersectionPoint, mMapSettings->origin() );
       break;
     }
     case QgsTerrainGenerator::Mesh:
@@ -149,11 +152,11 @@ QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, con
       // not supported
       break;
   }
-  if ( !intersectionPoint.isNull() )
+  if ( minDist >= 0 )
   {
     QgsRayCastHit hit;
     hit.setDistance( minDist );
-    hit.setMapCoordinates( intersectionPoint );
+    hit.setMapCoordinates( intersectionPointMapCoords );
     result.append( hit );
   }
   return result;
