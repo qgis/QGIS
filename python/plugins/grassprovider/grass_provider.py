@@ -167,17 +167,6 @@ class GrassProvider(QgsProcessingProvider):
         return algs
 
     def loadAlgorithms(self):
-        version = GrassUtils.installedVersion(True)
-        if version is None:
-            QgsMessageLog.logMessage(
-                self.tr(
-                    "Problem with GRASS installation: GRASS was not found or is not correctly installed"
-                ),
-                self.tr("Processing"),
-                Qgis.MessageLevel.Critical,
-            )
-            return
-
         for a in self.parse_algorithms():
             self.addAlgorithm(a)
 
