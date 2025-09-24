@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsmap3dexportwidget.h
+  qgs3dmapexportwidget.h
   --------------------------------------
   Date                 : July 2020
   Copyright            : (C) 2020 by Belgacem Nedjima
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAP3DEXPORTWIDGET_H
-#define QGSMAP3DEXPORTWIDGET_H
+#ifndef QGS3DMAPEXPORTWIDGET_H
+#define QGS3DMAPEXPORTWIDGET_H
 
 #include <QWidget>
 
@@ -26,13 +26,13 @@ namespace Ui
 class Qgs3DMapScene;
 class Qgs3DMapExportSettings;
 
-class QgsMap3DExportWidget : public QWidget
+class Qgs3DMapExportWidget : public QWidget
 {
     Q_OBJECT
 
   public:
-    explicit QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExportSettings *exportSettings, QWidget *parent = nullptr );
-    ~QgsMap3DExportWidget();
+    explicit Qgs3DMapExportWidget( Qgs3DMapScene *scene, Qgs3DMapExportSettings *exportSettings, QWidget *parent = nullptr );
+    ~Qgs3DMapExportWidget();
 
     void loadSettings();
     bool exportScene();
@@ -48,4 +48,4 @@ class QgsMap3DExportWidget : public QWidget
     Qgs3DMapExportSettings *mExportSettings = nullptr;
 };
 
-#endif // QGSMAP3DEXPORTWIDGET_H
+#endif // QGS3DMAPEXPORTWIDGET_H

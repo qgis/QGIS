@@ -50,7 +50,7 @@
 #include "qgs3ddebugwidget.h"
 #include "qgs3dutils.h"
 
-#include "qgsmap3dexportwidget.h"
+#include "qgs3dmapexportwidget.h"
 #include "qgs3dmapexportsettings.h"
 #include "qgs3dmaptoolpointcloudchangeattributepaintbrush.h"
 #include "qgs3dmaptoolpointcloudchangeattributepolygon.h"
@@ -827,7 +827,7 @@ void Qgs3DMapCanvasWidget::exportScene()
   QgsGui::enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapExportSettings exportSettings;
-  QgsMap3DExportWidget exportWidget( mCanvas->scene(), &exportSettings );
+  Qgs3DMapExportWidget exportWidget( mCanvas->scene(), &exportSettings );
 
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, &dlg );
 
