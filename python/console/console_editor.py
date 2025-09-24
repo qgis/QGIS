@@ -220,6 +220,7 @@ class Editor(QgsCodeEditorPython):
             menu,
         )
         find_action.triggered.connect(self.trigger_find)
+        find_action.setShortcut("Ctrl+F")
         menu.addAction(find_action)
 
         cutAction = QAction(
@@ -719,7 +720,7 @@ class EditorTabWidget(QTabWidget):
         # New Editor button
         self.newTabButton = QToolButton()
         txtToolTipNewTab = QCoreApplication.translate("PythonConsole", "New Editor")
-        self.newTabButton.setToolTip(txtToolTipNewTab)
+        self.newTabButton.setToolTip(txtToolTipNewTab + " <b>Ctrl+T</b>")
         self.newTabButton.setAutoRaise(True)
         self.newTabButton.setIcon(
             QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.svg")
