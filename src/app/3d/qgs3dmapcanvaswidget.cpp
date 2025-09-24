@@ -22,6 +22,7 @@
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
 #include "qgs3dmapexportsettings.h"
+#include "qgs3dmapexportwidget.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptoolidentify.h"
@@ -40,7 +41,6 @@
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsidentifyresultsdialog.h"
-#include "qgsmap3dexportwidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmaptoolclippingplanes.h"
@@ -895,7 +895,7 @@ void Qgs3DMapCanvasWidget::exportScene()
   QgsGui::enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapExportSettings exportSettings;
-  QgsMap3DExportWidget exportWidget( mCanvas->scene(), &exportSettings );
+  Qgs3DMapExportWidget exportWidget( mCanvas->scene(), &exportSettings );
 
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, &dlg );
 

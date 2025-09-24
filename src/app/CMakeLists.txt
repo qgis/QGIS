@@ -358,6 +358,7 @@ if (WITH_3D)
     3d/qgs3dapputils.cpp
     3d/qgs3dicongenerator.cpp
     3d/qgs3dmapconfigwidget.cpp
+    3d/qgs3dmapexportwidget.cpp
     3d/qgs3dmaptoolidentify.cpp
     3d/qgs3dmaptoolmeasureline.cpp
     3d/qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp
@@ -386,7 +387,6 @@ if (WITH_3D)
     3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
-    3d/qgsmap3dexportwidget.cpp
     layout/qgslayout3dmapwidget.cpp
     3d/qgsskyboxrenderingsettingswidget.cpp
     3d/qgsshadowrenderingsettingswidget.cpp
