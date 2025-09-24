@@ -192,7 +192,7 @@ class TestQgsAggregateCalculator(QgisTestCase):
         layer = QgsVectorLayer("Point?field=fldstring:string", "layer", "memory")
         pr = layer.dataProvider()
 
-        values = ["cc", "aaaa", "bbbbbbbb", "aaaa", "eeee", "", "eeee", "", "dddd"]
+        values = ["cc", "aaaa", "bbbbbbbb", "aaaa", "eeee", "", "eeee", None, "dddd"]
         features = []
         for v in values:
             f = QgsFeature()
@@ -202,9 +202,9 @@ class TestQgsAggregateCalculator(QgisTestCase):
         assert pr.addFeatures(features)
 
         tests = [
-            [QgsAggregateCalculator.Aggregate.Count, "fldstring", 9],
+            [QgsAggregateCalculator.Aggregate.Count, "fldstring", 8],
             [QgsAggregateCalculator.Aggregate.CountDistinct, "fldstring", 6],
-            [QgsAggregateCalculator.Aggregate.CountMissing, "fldstring", 2],
+            [QgsAggregateCalculator.Aggregate.CountMissing, "fldstring", 1],
             [QgsAggregateCalculator.Aggregate.Min, "fldstring", "aaaa"],
             [QgsAggregateCalculator.Aggregate.Max, "fldstring", "eeee"],
             [QgsAggregateCalculator.Aggregate.StringMinimumLength, "fldstring", 0],
@@ -225,12 +225,12 @@ class TestQgsAggregateCalculator(QgisTestCase):
             QgsAggregateCalculator.Aggregate.StringConcatenate, "fldstring"
         )
         self.assertTrue(ok)
-        self.assertEqual(val, "cc,aaaa,bbbbbbbb,aaaa,eeee,,eeee,,dddd")
+        self.assertEqual(val, "cc,aaaa,bbbbbbbb,aaaa,eeee,,eeee,0,dddd")
         val, ok = agg.calculate(
             QgsAggregateCalculator.Aggregate.StringConcatenateUnique, "fldstring"
         )
         self.assertTrue(ok)
-        self.assertEqual(val, "cc,aaaa,bbbbbbbb,eeee,,dddd")
+        self.assertEqual(val, "cc,aaaa,bbbbbbbb,eeee,,0,dddd")
 
         # bad tests - the following stats should not be calculatable for string fields
         for t in [
@@ -253,7 +253,7 @@ class TestQgsAggregateCalculator(QgisTestCase):
             QgsAggregateCalculator.Aggregate.ArrayAggregate, "fldstring"
         )
         self.assertEqual(
-            val, ["cc", "aaaa", "bbbbbbbb", "aaaa", "eeee", "", "eeee", "", "dddd"]
+            val, ["cc", "aaaa", "bbbbbbbb", "aaaa", "eeee", "", "eeee", None, "dddd"]
         )
         params = QgsAggregateCalculator.AggregateParameters()
         params.orderBy = QgsFeatureRequest.OrderBy(
@@ -264,16 +264,16 @@ class TestQgsAggregateCalculator(QgisTestCase):
             QgsAggregateCalculator.Aggregate.ArrayAggregate, "fldstring"
         )
         self.assertEqual(
-            val, ["", "", "aaaa", "aaaa", "bbbbbbbb", "cc", "dddd", "eeee", "eeee"]
+            val, ["", "aaaa", "aaaa", "bbbbbbbb", "cc", "dddd", "eeee", "eeee", None]
         )
         val, ok = agg.calculate(
             QgsAggregateCalculator.Aggregate.StringConcatenate, "fldstring"
         )
-        self.assertEqual(val, "aaaaaaaabbbbbbbbccddddeeeeeeee")
+        self.assertEqual(val, "aaaaaaaabbbbbbbbccddddeeeeeeee0")
         val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Minority, "fldstring")
-        self.assertEqual(val, "bbbbbbbb")
-        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Majority, "fldstring")
         self.assertEqual(val, "")
+        val, ok = agg.calculate(QgsAggregateCalculator.Aggregate.Majority, "fldstring")
+        self.assertEqual(val, "aaaa")
 
     def testDateTime(self):
         """Test calculation of aggregates on date/datetime fields"""
