@@ -274,41 +274,45 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
       }
 
       const QString tableName = QString::fromUtf8( lyr->TableName );
-      ignoreTableNames << tableName;
       const QString column = QString::fromUtf8( lyr->GeometryName );
       ignoreTableNames << QStringLiteral( "idx_%1_%2" ).arg( tableName, column )
                        << QStringLiteral( "idx_%1_%2_node" ).arg( tableName, column )
                        << QStringLiteral( "idx_%1_%2_parent" ).arg( tableName, column )
                        << QStringLiteral( "idx_%1_%2_rowid" ).arg( tableName, column );
-      QString type = tr( "UNKNOWN" );
-      switch ( lyr->GeometryType )
+
+      if ( !ignoreTableNames.contains( tableName, Qt::CaseInsensitive ) )
       {
-        case GAIA_VECTOR_GEOMETRY:
-          type = tr( "GEOMETRY" );
-          break;
-        case GAIA_VECTOR_POINT:
-          type = tr( "POINT" );
-          break;
-        case GAIA_VECTOR_LINESTRING:
-          type = tr( "LINESTRING" );
-          break;
-        case GAIA_VECTOR_POLYGON:
-          type = tr( "POLYGON" );
-          break;
-        case GAIA_VECTOR_MULTIPOINT:
-          type = tr( "MULTIPOINT" );
-          break;
-        case GAIA_VECTOR_MULTILINESTRING:
-          type = tr( "MULTILINESTRING" );
-          break;
-        case GAIA_VECTOR_MULTIPOLYGON:
-          type = tr( "MULTIPOLYGON" );
-          break;
-        case GAIA_VECTOR_GEOMETRYCOLLECTION:
-          type = tr( "GEOMETRYCOLLECTION" );
-          break;
+        QString type = tr( "UNKNOWN" );
+        switch ( lyr->GeometryType )
+        {
+          case GAIA_VECTOR_GEOMETRY:
+            type = tr( "GEOMETRY" );
+            break;
+          case GAIA_VECTOR_POINT:
+            type = tr( "POINT" );
+            break;
+          case GAIA_VECTOR_LINESTRING:
+            type = tr( "LINESTRING" );
+            break;
+          case GAIA_VECTOR_POLYGON:
+            type = tr( "POLYGON" );
+            break;
+          case GAIA_VECTOR_MULTIPOINT:
+            type = tr( "MULTIPOINT" );
+            break;
+          case GAIA_VECTOR_MULTILINESTRING:
+            type = tr( "MULTILINESTRING" );
+            break;
+          case GAIA_VECTOR_MULTIPOLYGON:
+            type = tr( "MULTIPOLYGON" );
+            break;
+          case GAIA_VECTOR_GEOMETRYCOLLECTION:
+            type = tr( "GEOMETRYCOLLECTION" );
+            break;
+        }
+        mTables.append( TableEntry( tableName, column, type ) );
+        ignoreTableNames << tableName;
       }
-      mTables.append( TableEntry( tableName, column, type ) );
 
       lyr = lyr->Next;
     }
