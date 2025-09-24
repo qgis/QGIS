@@ -132,7 +132,7 @@ QImage QgsTextureAtlasGenerator::atlasTexture() const
   if ( mAtlasSize.isEmpty() )
     return QImage();
 
-  QImage res( mAtlasSize, QImage::Format_ARGB32 );
+  QImage res( mAtlasSize, QImage::Format_ARGB32_Premultiplied );
   res.fill( Qt::transparent );
 
   QPainter painter( &res );
@@ -153,7 +153,7 @@ QImage QgsTextureAtlasGenerator::debugTexture() const
   if ( mAtlasSize.isEmpty() )
     return QImage();
 
-  QImage res( mAtlasSize, QImage::Format_ARGB32 );
+  QImage res( mAtlasSize, QImage::Format_ARGB32_Premultiplied );
   res.fill( Qt::transparent );
 
   QPainter painter( &res );
