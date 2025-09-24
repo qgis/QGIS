@@ -29,7 +29,7 @@ class QgsTextureRect;
  * \ingroup qgis_3d
  * \brief Generates texture atlases by efficient packing of multiple input rectangles/images.
  *
- * QgsTextureAtlasGenerator can be used to packed either images or raw rectangles. The associated
+ * QgsTextureAtlasGenerator can be used to pack either images or raw rectangles. The associated
  * method (appendRect() or appendImage()) should be called multiple times, adding all the
  * required objects to pack. The generateAtlas() method should then be called to perform
  * the packing, before the solution methods like rect() or atlasTexture() can be

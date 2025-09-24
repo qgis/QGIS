@@ -15,7 +15,7 @@ class QgsTextureAtlasGenerator
 Generates texture atlases by efficient packing of multiple input
 rectangles/images.
 
-:py:class:`QgsTextureAtlasGenerator` can be used to packed either images
+:py:class:`QgsTextureAtlasGenerator` can be used to pack either images
 or raw rectangles. The associated method (:py:func:`~appendRect` or
 :py:func:`~appendImage`) should be called multiple times, adding all the
 required objects to pack. The :py:func:`~generateAtlas` method should
