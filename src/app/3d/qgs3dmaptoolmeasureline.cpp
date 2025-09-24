@@ -76,6 +76,7 @@ void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
   QgsRayCastContext context;
   context.setSingleResult( false );
   context.setMaximumDistance( mCanvas->cameraController()->camera()->farPlane() );
+  context.setAngleThreshold( 0.5f );
   const QgsRayCastResult results = mCanvas->castRay( screenPos, context );
 
   if ( results.isEmpty() )
