@@ -1043,6 +1043,10 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
 void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
 {
+  mClassificationMethod->setLabelFormat( txtLegendFormat->text() );
+  mClassificationMethod->setLabelPrecision( spinPrecision->value() );
+  mClassificationMethod->setLabelTrimTrailingZeroes( cbxTrimTrailingZeroes->isChecked() );
+
   if ( mBlockUpdates || !mClassificationMethod )
     return;
 
