@@ -312,7 +312,18 @@ QStringList QgsSqliteUtils::systemTables()
          << QStringLiteral( "views_geometry_columns_statistics" ) << QStringLiteral( "virts_geometry_columns_auth" )
          << QStringLiteral( "virts_geometry_columns_field_infos" ) << QStringLiteral( "virts_geometry_columns_statistics" )
          << QStringLiteral( "virts_layer_statistics" ) << QStringLiteral( "views_layer_statistics" )
-         << QStringLiteral( "ElementaryGeometries" );
+         << QStringLiteral( "ElementaryGeometries" )
+         << QStringLiteral( "all_buckets_objects" ) << QStringLiteral( "data_licenses" ) << QStringLiteral( "iso_metadata" )
+         << QStringLiteral( "ISO_metadata_reference" ) << QStringLiteral( "ISO_metadata_view" ) << QStringLiteral( "KMN2" )
+         << QStringLiteral( "networks" ) << QStringLiteral( "raster_coverages" ) << QStringLiteral( "raster_coverages_keyword" )
+         << QStringLiteral( "raster_coverages_ref_sys" ) << QStringLiteral( "raster_coverages_srid" ) << QStringLiteral( "SE_external_graphics" )
+         << QStringLiteral( "SE_external_graphics_view" ) << QStringLiteral( "SE_fonts" ) << QStringLiteral( "SE_fonts_view" )
+         << QStringLiteral( "SE_raster_styled_layers" ) << QStringLiteral( "SE_raster_styled_layers_view" ) << QStringLiteral( "SE_raster_styles" )
+         << QStringLiteral( "SE_raster_styles_view" ) << QStringLiteral( "SE_vector_styled_layers" ) << QStringLiteral( "SE_vector_styled_layers_view" )
+         << QStringLiteral( "SE_vector_styles" ) << QStringLiteral( "SE_vector_styles_view" ) << QStringLiteral( "stored_procedures" )
+         << QStringLiteral( "stored_variables" ) << QStringLiteral( "topologies" ) << QStringLiteral( "vector_coverages" )
+         << QStringLiteral( "vector_coverages_keyword" ) << QStringLiteral( "vector_coverages_ref_sys" ) << QStringLiteral( "vector_coverages_srid" )
+         << QStringLiteral( "wms_getmap" ) << QStringLiteral( "wms_ref_sys" ) << QStringLiteral( "wms_settings" );
 }
 
 QString qgs_sqlite3_mprintf( const char *format, ... )
