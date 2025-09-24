@@ -325,7 +325,16 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
     if ( bandBlock )
     {
       const double value = bandBlock->value( 0 );
-      results.insert( bandNumber, value );
+      if ( ( sourceHasNoDataValue( bandNumber ) && useSourceNoDataValue( bandNumber ) &&
+             ( std::isnan( value ) || qgsDoubleNear( value, sourceNoDataValue( bandNumber ) ) ) ) ||
+           ( QgsRasterRange::contains( value, userNoDataValues( bandNumber ) ) ) )
+      {
+        results.insert( bandNumber, QVariant() ); // null QVariant represents no data
+      }
+      else
+      {
+        results.insert( bandNumber, value );
+      }
     }
     else
     {
