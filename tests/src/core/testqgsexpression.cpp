@@ -3059,11 +3059,11 @@ class TestQgsExpression : public QObject
       QTest::newRow( "minority" ) << "minority(\"col3\")" << false << QVariant( 1 );
       QTest::newRow( "majority" ) << "majority(\"col3\")" << false << QVariant( 2 );
       QTest::newRow( "minority string" ) << "minority(\"col2\")" << false << QVariant( "test" );
-      QTest::newRow( "majority string" ) << "majority(\"col2\")" << false << QVariant( "" );
+      QTest::newRow( "majority string" ) << "majority(\"col2\")" << false << QVariant( "test4" );
       QTest::newRow( "q1" ) << "q1(\"col1\")" << false << QVariant( 2.5 );
       QTest::newRow( "q3" ) << "q3(\"col1\")" << false << QVariant( 6.5 );
       QTest::newRow( "iqr" ) << "iqr(\"col1\")" << false << QVariant( 4 );
-      QTest::newRow( "min_length" ) << "min_length(\"col2\")" << false << QVariant( 0 );
+      QTest::newRow( "min_length" ) << "min_length(\"col2\")" << false << QVariant( 4 );
       QTest::newRow( "max_length" ) << "max_length(\"col2\")" << false << QVariant( 7 );
       QTest::newRow( "concatenate" ) << "concatenate(\"col2\",concatenator:=',')" << false << QVariant( "test,,test333,test4,,test4,test7" );
       QTest::newRow( "concatenate with order 1" ) << "concatenate(\"col2\",concatenator:=',', order_by:=col1)" << false << QVariant( ",test4,test333,test,,test4,test7" );
