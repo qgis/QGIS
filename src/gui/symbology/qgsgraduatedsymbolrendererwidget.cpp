@@ -1043,12 +1043,12 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
 void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
 {
+  if ( mBlockUpdates || !mClassificationMethod )
+    return;
+
   mClassificationMethod->setLabelFormat( txtLegendFormat->text() );
   mClassificationMethod->setLabelPrecision( spinPrecision->value() );
   mClassificationMethod->setLabelTrimTrailingZeroes( cbxTrimTrailingZeroes->isChecked() );
-
-  if ( mBlockUpdates || !mClassificationMethod )
-    return;
 
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
   QString attrName = mExpressionWidget->currentField();
