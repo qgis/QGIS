@@ -9,18 +9,17 @@
 
 
 
-class QgsTextureAtlasGenerator
+
+class QgsTextureAtlas
 {
 %Docstring(signature="appended")
-Generates texture atlases by efficient packing of multiple input
-rectangles/images.
+Encapsulates a texture atlas.
 
-:py:class:`QgsTextureAtlasGenerator` can be used to pack either images
-or raw rectangles. The associated method (:py:func:`~appendRect` or
-:py:func:`~appendImage`) should be called multiple times, adding all the
-required objects to pack. The :py:func:`~generateAtlas` method should
-then be called to perform the packing, before the solution methods like
-:py:func:`~rect` or :py:func:`~atlasTexture` can be called.
+:py:class:`QgsTextureAtlas` contains the packed regions for aggregated
+texture atlases, and optionally the packed texture map.
+
+See :py:class:`QgsTextureAtlasGenerator` for a class which automatically
+creates texture atlases.
 
 .. versionadded:: 4.0
 %End
@@ -29,93 +28,121 @@ then be called to perform the packing, before the solution methods like
 #include "qgstextureatlasgenerator.h"
 %End
   public:
-    QgsTextureAtlasGenerator();
-    ~QgsTextureAtlasGenerator();
+    QgsTextureAtlas();
+    ~QgsTextureAtlas();
 
+    QgsTextureAtlas( const QgsTextureAtlas &other );
 
-    int appendRect( const QRect &rect );
+    bool isValid() const;
 %Docstring
-Appends a rectangle to the atlas.
-
-This method should be used when the generator is used to pack rectangle
-shapes only. No image will be associated with the rectangle, and the
-associated rectangle will be empty in the
-:py:func:`~QgsTextureAtlasGenerator.atlasTexture`.
-
-:return: a unique ID which can be used to retrieve the calculated packed
-         position of the rectangle after generating the atlas.
-
-.. seealso:: :py:func:`appendImage`
-%End
-
-    int appendImage( const QImage &image );
-%Docstring
-Appends an ``image`` to the atlas.
-
-:return: a unique ID which can be used to retrieve the calculated packed
-         position of the image after generating the atlas.
-
-.. seealso:: :py:func:`appendRect`
-%End
-
-    bool generateAtlas( int maxSide = 1000 );
-%Docstring
-Generates the packing solution for all stored rectangles and images.
-
-The ``maxSide`` argument specifies the maximum permitted side size for
-the atlas. The calculated solution can only be less than or equal to
-this size - if it cannot fit, then algorithm will gracefully fail and
-return ``False``.
-
-.. note::
-
-   This method must be called before retrieving :py:func:`~QgsTextureAtlasGenerator.rect`, :py:func:`~QgsTextureAtlasGenerator.atlasSize` or :py:func:`~QgsTextureAtlasGenerator.atlasTexture`.
+Returns ``True`` if the atlas is valid.
 %End
 
     QSize atlasSize() const;
 %Docstring
-Returns the total size required for the atlas, i.e. the calculated size
-for the packed images and rectangles.
-
-.. warning::
-
-   :py:func:`~QgsTextureAtlasGenerator.generateAtlas` must be called before this method can be used.
+Returns the total size required for the atlas, i.e. the total size for
+the packed images and rectangles.
 %End
 
-    QRect rect( int id ) const;
+    QRect rect( int index ) const;
 %Docstring
-Returns the calculated packed rectangle for the rectangle or image with
-the specified ``id``.
+Returns the packed rectangle for the texture with the specified
+``index``.
 
-.. warning::
-
-   :py:func:`~QgsTextureAtlasGenerator.generateAtlas` must be called before this method can be used.
+:raises IndexError: if no texture with the specified index exists.
+%End
+%MethodCode
+    const int count = sipCpp->count();
+    if ( a0 < 0 || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromNewType( new QRect( sipCpp->rect( a0 ) ), sipType_QRect, Py_None );
+    }
 %End
 
-    QImage atlasTexture() const;
+    QImage renderAtlasTexture() const;
 %Docstring
-Renders the combined texture atlas, containing all images added via
-:py:func:`~QgsTextureAtlasGenerator.appendImage`.
+Renders the combined texture atlas, containing all source images.
 
-.. warning::
+.. note::
 
-   :py:func:`~QgsTextureAtlasGenerator.generateAtlas` must be called before this method can be used.
+   This may be a null image if the atlas was created with rectangles alone.
 %End
 
-    QImage debugTexture() const;
+    QImage renderDebugTexture() const;
 %Docstring
 Renders a debug texture.
 
 The debug texture renders all packed rectangles with a unique color, and
 can be used to visualize the solution.
-
-.. warning::
-
-   :py:func:`~QgsTextureAtlasGenerator.generateAtlas` must be called before this method can be used.
 %End
 
-  private:
-    QgsTextureAtlasGenerator( const QgsTextureAtlasGenerator &other );
+    int count() const;
+%Docstring
+Returns the number of textures in the atlas.
+%End
+
+    int __len__() const;
+%Docstring
+        Returns the number of textures in the atlas.
+%End
+%MethodCode
+        sipRes
+      = sipCpp->count();
+%End
+
+};
+
+class QgsTextureAtlasGenerator
+{
+%Docstring(signature="appended")
+Generates texture atlases by efficient packing of multiple input
+rectangles/images.
+
+:py:class:`QgsTextureAtlasGenerator` can be used to pack either images
+or raw rectangles. The static :py:func:`~createFromRects` or
+:py:func:`~createFromImages` methods should be called with the source
+images or rectangles, which will return a :py:class:`QgsTextureAtlas`
+containing the results.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgstextureatlasgenerator.h"
+%End
+  public:
+    static QgsTextureAtlas createFromRects( const QVector< QRect > &rectangles, int maxSide = 1000 );
+%Docstring
+Creates a texture atlas for a set of ``rectangles``.
+
+This method should be used when the generator is used to pack rectangle
+shapes only. No image will be associated with the rectangle.
+
+The ``maxSide`` argument specifies the maximum permitted side size for
+the atlas. The calculated solution can only be less than or equal to
+this size - if it cannot fit, then algorithm will gracefully fail and
+return an invalid :py:class:`QgsTextureAtlas`.
+
+.. seealso:: :py:func:`createFromImages`
+%End
+
+    static QgsTextureAtlas createFromImages( const QVector< QImage > &images, int maxSide = 1000 );
+%Docstring
+Creates a texture atlas for a set of ``images``.
+
+The ``maxSide`` argument specifies the maximum permitted side size for
+the atlas. The calculated solution can only be less than or equal to
+this size - if it cannot fit, then algorithm will gracefully fail and
+return an invalid :py:class:`QgsTextureAtlas`.
+
+.. seealso:: :py:func:`createFromRects`
+%End
+
 };
 
 /************************************************************************

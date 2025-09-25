@@ -54,80 +54,23 @@ class QgsTextureRect
 
 ///@endcond
 
-QgsTextureAtlasGenerator::QgsTextureAtlasGenerator() = default;
-QgsTextureAtlasGenerator::~QgsTextureAtlasGenerator() = default;
 
+QgsTextureAtlas::QgsTextureAtlas() = default;
+QgsTextureAtlas::~QgsTextureAtlas() = default;
+QgsTextureAtlas::QgsTextureAtlas( const QgsTextureAtlas &other ) = default;
+QgsTextureAtlas &QgsTextureAtlas::operator=( const QgsTextureAtlas &other ) = default;
 
-int QgsTextureAtlasGenerator::appendRect( const QRect &rect )
+int QgsTextureAtlas::count() const
 {
-  const int id = static_cast< int >( mRects.size() );
-  mRects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, rect.width(), rect.height() ), id ) );
-  return id;
+  return static_cast< int >( mRects.size() );
 }
 
-int QgsTextureAtlasGenerator::appendImage( const QImage &image )
+QRect QgsTextureAtlas::rect( int id ) const
 {
-  const int id = static_cast< int >( mRects.size() );
-  mRects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, image.width(), image.height() ), id, image ) );
-  return id;
+  return mRects[id].asQRect();
 }
 
-bool QgsTextureAtlasGenerator::generateAtlas( int maxSide )
-{
-  using spacesType = rectpack2D::empty_spaces<false, rectpack2D::default_empty_spaces>;
-
-  bool result = true;
-  auto reportSuccessful = []( rectpack2D::rect_xywh & ) {
-    return rectpack2D::callback_result::CONTINUE_PACKING;
-  };
-
-  auto reportUnsuccessful = [&result]( rectpack2D::rect_xywh & ) {
-    result = false;
-    return rectpack2D::callback_result::ABORT_PACKING;
-  };
-
-  const auto discardStep = -4;
-
-  auto byWidth = []( const rectpack2D::rect_xywh *a, const rectpack2D::rect_xywh *b ) {
-    return a->w > b->w;
-  };
-
-  const rectpack2D::rect_wh resultSize = rectpack2D::find_best_packing<spacesType>(
-    mRects,
-    rectpack2D::make_finder_input(
-      maxSide,
-      discardStep,
-      reportSuccessful,
-      reportUnsuccessful,
-      rectpack2D::flipping_option::DISABLED
-    ),
-    byWidth
-  );
-
-  if ( !result )
-    return false;
-
-  mIdToIndex.clear();
-  int index = 0;
-  for ( const QgsTextureRect &rect : mRects )
-  {
-    mIdToIndex.insert( rect.id, index );
-    index++;
-  }
-  mAtlasSize = QSize( resultSize.w, resultSize.h );
-  return true;
-}
-
-QRect QgsTextureAtlasGenerator::rect( int id ) const
-{
-  const auto it = mIdToIndex.constFind( id );
-  if ( it == mIdToIndex.constEnd() )
-    return QRect();
-
-  return mRects[*it].asQRect();
-}
-
-QImage QgsTextureAtlasGenerator::atlasTexture() const
+QImage QgsTextureAtlas::renderAtlasTexture() const
 {
   if ( mAtlasSize.isEmpty() )
     return QImage();
@@ -148,7 +91,7 @@ QImage QgsTextureAtlasGenerator::atlasTexture() const
   return res;
 }
 
-QImage QgsTextureAtlasGenerator::debugTexture() const
+QImage QgsTextureAtlas::renderDebugTexture() const
 {
   if ( mAtlasSize.isEmpty() )
     return QImage();
@@ -170,5 +113,81 @@ QImage QgsTextureAtlasGenerator::debugTexture() const
   }
   painter.end();
 
+  return res;
+}
+
+
+//
+// QgsTextureAtlasGenerator
+//
+
+QgsTextureAtlas QgsTextureAtlasGenerator::createFromRects( const QVector<QRect> &rectangles, int maxSide )
+{
+  std::vector< QgsTextureRect > rects;
+  rects.reserve( rectangles.size() );
+  int index = 0;
+  for ( const QRect &rect : rectangles )
+  {
+    rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, rect.width(), rect.height() ), index++ ) );
+  }
+  return generateAtlas( rects, maxSide );
+}
+
+QgsTextureAtlas QgsTextureAtlasGenerator::createFromImages( const QVector<QImage> &images, int maxSide )
+{
+  std::vector< QgsTextureRect > rects;
+  rects.reserve( images.size() );
+  int index = 0;
+  for ( const QImage &image : images )
+  {
+    rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, image.width(), image.height() ), index++, image ) );
+  }
+  return generateAtlas( rects, maxSide );
+}
+
+QgsTextureAtlas QgsTextureAtlasGenerator::generateAtlas( std::vector< QgsTextureRect > &rects, int maxSide )
+{
+  using spacesType = rectpack2D::empty_spaces<false, rectpack2D::default_empty_spaces>;
+
+  bool result = true;
+  auto reportSuccessful = []( rectpack2D::rect_xywh & ) {
+    return rectpack2D::callback_result::CONTINUE_PACKING;
+  };
+
+  auto reportUnsuccessful = [&result]( rectpack2D::rect_xywh & ) {
+    result = false;
+    return rectpack2D::callback_result::ABORT_PACKING;
+  };
+
+  const auto discardStep = -4;
+
+  auto byWidth = []( const rectpack2D::rect_xywh *a, const rectpack2D::rect_xywh *b ) {
+    return a->w > b->w;
+  };
+
+  const rectpack2D::rect_wh resultSize = rectpack2D::find_best_packing<spacesType>(
+    rects,
+    rectpack2D::make_finder_input(
+      maxSide,
+      discardStep,
+      reportSuccessful,
+      reportUnsuccessful,
+      rectpack2D::flipping_option::DISABLED
+    ),
+    byWidth
+  );
+
+  if ( !result )
+    return QgsTextureAtlas();
+
+  // rectpack2D::find_best_packing will have rearranged rects. Sort it back to the original order
+  // so that we can retreive the results by their original indices.
+  std::sort( rects.begin(), rects.end(), []( const QgsTextureRect &a, const QgsTextureRect &b ) {
+    return a.id < b.id;
+  } );
+
+  QgsTextureAtlas res;
+  res.mRects = std::move( rects );
+  res.mAtlasSize = QSize( resultSize.w, resultSize.h );
   return res;
 }
