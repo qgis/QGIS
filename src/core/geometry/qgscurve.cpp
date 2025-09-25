@@ -434,27 +434,3 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
 
   return outSize >= 4 || ( !isClosed() && outSize >= 2 );
 }
-
-double QgsCurve::distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const
-{
-  // Convert QgsVertexId to simple vertex numbers for curves (single ring, single part)
-  if ( fromVertex.part != 0 || fromVertex.ring != 0 || toVertex.part != 0 || toVertex.ring != 0 )
-    return -1.0;
-    
-  int fromVertexNumber = fromVertex.vertex;
-  int toVertexNumber = toVertex.vertex;
-  
-  if ( fromVertexNumber < 0 || fromVertexNumber >= numPoints() || 
-       toVertexNumber < 0 || toVertexNumber >= numPoints() )
-    return -1.0;
-
-  if ( fromVertexNumber == toVertexNumber )
-    return 0.0;
-
-  // Default implementation: calculate distance along segmentized curve
-  std::unique_ptr< QgsLineString > lineString( curveToLine() );
-  if ( !lineString )
-    return -1.0;
-
-  return lineString->distanceBetweenVertices( fromVertex, toVertex );
-}

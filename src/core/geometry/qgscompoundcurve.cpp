@@ -1424,18 +1424,18 @@ double QgsCompoundCurve::distanceBetweenVertices( QgsVertexId fromVertex, QgsVer
   const int fromVertexNumber = fromVertex.vertex;
   const int toVertexNumber = toVertex.vertex;
 
+  // Ensure fromVertex < toVertex for simplicity
+  if ( fromVertexNumber > toVertexNumber )
+  {
+    return distanceBetweenVertices( QgsVertexId( 0, 0, toVertexNumber ), QgsVertexId( 0, 0, fromVertexNumber ) );
+  }
+
   const int totalVertices = numPoints();
   if ( fromVertexNumber < 0 || fromVertexNumber >= totalVertices || toVertexNumber < 0 || toVertexNumber >= totalVertices )
     return -1.0;
 
   if ( fromVertexNumber == toVertexNumber )
     return 0.0;
-
-  // Ensure fromVertex < toVertex for simplicity
-  if ( fromVertexNumber > toVertexNumber )
-  {
-    return distanceBetweenVertices( QgsVertexId( 0, 0, toVertexNumber ), QgsVertexId( 0, 0, fromVertexNumber ) );
-  }
 
   double totalDistance = 0.0;
 
@@ -1461,6 +1461,7 @@ double QgsCompoundCurve::distanceBetweenVertices( QgsVertexId fromVertex, QgsVer
     {
       toCurve = j;
       toCurveVertex = toVertexNumber - currentVertexId;
+      break;
     }
 
     currentVertexId += ( nCurvePoints - 1 ); // Subtract 1 because curves share endpoints
