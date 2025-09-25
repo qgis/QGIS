@@ -25,104 +25,150 @@
 class QgsTextureRect;
 ///@endcond
 
+
 /**
  * \ingroup qgis_3d
- * \brief Generates texture atlases by efficient packing of multiple input rectangles/images.
+ * \brief Encapsulates a texture atlas.
  *
- * QgsTextureAtlasGenerator can be used to pack either images or raw rectangles. The associated
- * method (appendRect() or appendImage()) should be called multiple times, adding all the
- * required objects to pack. The generateAtlas() method should then be called to perform
- * the packing, before the solution methods like rect() or atlasTexture() can be
- * called.
+ * QgsTextureAtlas contains the packed regions for aggregated texture atlases, and optionally the packed
+ * texture map.
+ *
+ * See QgsTextureAtlasGenerator for a class which automatically creates texture atlases.
  *
  * \since QGIS 4.0
  */
-class _3D_EXPORT QgsTextureAtlasGenerator
+class _3D_EXPORT QgsTextureAtlas
 {
   public:
-    QgsTextureAtlasGenerator();
-    ~QgsTextureAtlasGenerator();
+    QgsTextureAtlas();
+    ~QgsTextureAtlas();
 
-#ifndef SIP_RUN
-    QgsTextureAtlasGenerator( const QgsTextureAtlasGenerator &other ) = delete;
-    QgsTextureAtlasGenerator &operator=( const QgsTextureAtlasGenerator &other ) = delete;
-#endif
+    QgsTextureAtlas( const QgsTextureAtlas &other );
+    QgsTextureAtlas &operator=( const QgsTextureAtlas &other );
 
     /**
-     * Appends a rectangle to the atlas.
-     *
-     * This method should be used when the generator is used to pack rectangle shapes only.
-     * No image will be associated with the rectangle, and the associated rectangle
-     * will be empty in the atlasTexture().
-     *
-     * \returns a unique ID which can be used to retrieve the calculated packed position
-     * of the rectangle after generating the atlas.
-     *
-     * \see appendImage()
+     * Returns TRUE if the atlas is valid.
      */
-    int appendRect( const QRect &rect );
+    bool isValid() const { return mAtlasSize.isValid(); }
 
     /**
-     * Appends an \a image to the atlas.
-     *
-     * \returns a unique ID which can be used to retrieve the calculated packed position
-     * of the image after generating the atlas.
-     *
-     * \see appendRect()
-     */
-    int appendImage( const QImage &image );
-
-    /**
-     * Generates the packing solution for all stored rectangles and images.
-     *
-     * The \a maxSide argument specifies the maximum permitted side size for the atlas.
-     * The calculated solution can only be less than or equal to this size - if it cannot fit,
-     * then algorithm will gracefully fail and return FALSE.
-     *
-     * \note This method must be called before retrieving rect(), atlasSize() or atlasTexture().
-     */
-    bool generateAtlas( int maxSide = 1000 );
-
-    /**
-     * Returns the total size required for the atlas, i.e. the calculated
+     * Returns the total size required for the atlas, i.e. the total
      * size for the packed images and rectangles.
-     *
-     * \warning generateAtlas() must be called before this method can be used.
      */
     QSize atlasSize() const { return mAtlasSize; }
 
+#ifndef SIP_RUN
     /**
-     * Returns the calculated packed rectangle for the rectangle or image with the specified \a id.
-     *
-     * \warning generateAtlas() must be called before this method can be used.
+     * Returns the packed rectangle for the texture with the specified \a index.
      */
-    QRect rect( int id ) const;
+    QRect rect( int index ) const;
+#else
+    /**
+     * Returns the packed rectangle for the texture with the specified \a index.
+     *
+     * \throws IndexError if no texture with the specified index exists.
+     */
+    QRect rect( int index ) const;
+    //%MethodCode
+    const int count = sipCpp->count();
+    if ( a0 < 0 || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromNewType( new QRect( sipCpp->rect( a0 ) ), sipType_QRect, Py_None );
+    }
+    //%End
+#endif
 
     /**
-     * Renders the combined texture atlas, containing all images added via appendImage().
+     * Renders the combined texture atlas, containing all source images.
      *
-     * \warning generateAtlas() must be called before this method can be used.
+     * \note This may be a null image if the atlas was created with rectangles alone.
      */
-    QImage atlasTexture() const;
+    QImage renderAtlasTexture() const;
 
     /**
      * Renders a debug texture.
      *
      * The debug texture renders all packed rectangles with a unique color, and can be used
      * to visualize the solution.
-     *
-     * \warning generateAtlas() must be called before this method can be used.
      */
-    QImage debugTexture() const;
+    QImage renderDebugTexture() const;
 
-  private:
+    /**
+     * Returns the number of textures in the atlas.
+     */
+    int count() const;
+
 #ifdef SIP_RUN
-    QgsTextureAtlasGenerator( const QgsTextureAtlasGenerator &other );
+    int __len__() const;
+    % Docstring
+        Returns the number of textures in the atlas.
+      % End
+        //%MethodCode
+        sipRes
+      = sipCpp->count();
+    //% End
 #endif
 
-    std::vector< QgsTextureRect > mRects;
-    QHash< int, int > mIdToIndex;
+  private:
+    std::vector< QgsTextureRect >
+      mRects;
     QSize mAtlasSize;
+
+    friend class QgsTextureAtlasGenerator;
+};
+
+/**
+ * \ingroup qgis_3d
+ * \brief Generates texture atlases by efficient packing of multiple input rectangles/images.
+ *
+ * QgsTextureAtlasGenerator can be used to pack either images or raw rectangles. The
+ * static createFromRects() or createFromImages() methods should be called with the
+ * source images or rectangles, which will return a QgsTextureAtlas containing the results.
+ *
+ * \since QGIS 4.0
+ */
+class _3D_EXPORT QgsTextureAtlasGenerator
+{
+  public:
+    /**
+     * Creates a texture atlas for a set of \a rectangles.
+     *
+     * This method should be used when the generator is used to pack rectangle shapes only.
+     * No image will be associated with the rectangle.
+     *
+     * The \a maxSide argument specifies the maximum permitted side size for the atlas.
+     * The calculated solution can only be less than or equal to this size - if it cannot fit,
+     * then algorithm will gracefully fail and return an invalid QgsTextureAtlas.
+     *
+     * \see createFromImages()
+     */
+    static QgsTextureAtlas createFromRects( const QVector< QRect > &rectangles, int maxSide = 1000 );
+
+    /**
+     * Creates a texture atlas for a set of \a images.
+     *
+     * The \a maxSide argument specifies the maximum permitted side size for the atlas.
+     * The calculated solution can only be less than or equal to this size - if it cannot fit,
+     * then algorithm will gracefully fail and return an invalid QgsTextureAtlas.
+     *
+     * \see createFromRects()
+     */
+    static QgsTextureAtlas createFromImages( const QVector< QImage > &images, int maxSide = 1000 );
+
+  private:
+    /**
+     * Generates the packing solution for a set of texture \a rects.
+     *
+     * The \a maxSide argument specifies the maximum permitted side size for the atlas.
+     * The calculated solution can only be less than or equal to this size - if it cannot fit,
+     * then algorithm will gracefully fail and return an invalid QgsTextureAtlas.
+     */
+    static QgsTextureAtlas generateAtlas( std::vector< QgsTextureRect > &rects, int maxSide );
 };
 
 #endif // QGSTEXTUREATLASGENERATOR_H
