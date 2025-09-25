@@ -41,7 +41,6 @@ from qgis.core import (
     QgsRectangle,
     QgsProcessingException,
     QgsProcessingFeatureSourceDefinition,
-    QgsDistanceArea,
     QgsCoordinateTransformContext,
     QgsProviderRegistry,
 )
@@ -567,8 +566,8 @@ class TestGdalAlgorithms(QgisTestCase):
         with tempfile.TemporaryDirectory() as outdir:
             version = "1.3.0"
             extent = QgsRectangle(9.877185822, 51.524547577, 9.956344604, 51.553283691)
-            width = 831
-            height = 302
+            width = 569
+            height = 207
 
             out_path = os.path.join(outdir, "osm_xml_03.xml")
             res, _ = GdalUtils.gdal_wms_xml_description_file(
@@ -635,11 +634,8 @@ class TestGdalAlgorithms(QgisTestCase):
         crs = QgsCoordinateReferenceSystem("EPSG:25832")
         scale = 5000
         dpi = 96.0
-        distanceArea = None
 
-        width, height = GdalUtils._wms_dimensions_for_scale(
-            bbox, crs, scale, dpi, distanceArea
-        )
+        width, height = GdalUtils._wms_dimensions_for_scale(bbox, crs, scale, dpi)
         self.assertEqual(width, 258)
         self.assertEqual(height, 226)
 
@@ -648,26 +644,18 @@ class TestGdalAlgorithms(QgisTestCase):
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
         scale = 3500
         dpi = 96.0
-        distanceArea = QgsDistanceArea()
-        distanceArea.setSourceCrs(crs, QgsCoordinateTransformContext())
-        distanceArea.setEllipsoid(crs.ellipsoidAcronym())
 
-        width, height = GdalUtils._wms_dimensions_for_scale(
-            bbox, crs, scale, dpi, distanceArea
-        )
-        self.assertEqual(width, 367)
-        self.assertEqual(height, 206)  # Height value preserving BBOX's aspect ratio
+        width, height = GdalUtils._wms_dimensions_for_scale(bbox, crs, scale, dpi)
+        self.assertEqual(width, 253)
+        self.assertEqual(height, 142)  # Height value preserving BBOX's aspect ratio
 
         # Projected Coordinate System 2
         bbox = QgsRectangle(3560914.20026, 5710368.96526, 3566446.25913, 5713634.88757)
         crs = QgsCoordinateReferenceSystem("EPSG:31467")
         scale = 25000
         dpi = 96.0
-        distanceArea = None
 
-        width, height = GdalUtils._wms_dimensions_for_scale(
-            bbox, crs, scale, dpi, distanceArea
-        )
+        width, height = GdalUtils._wms_dimensions_for_scale(bbox, crs, scale, dpi)
         self.assertEqual(width, 837)
         self.assertEqual(height, 494)
 
@@ -676,15 +664,10 @@ class TestGdalAlgorithms(QgisTestCase):
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
         scale = 2000
         dpi = 70.0
-        distanceArea = QgsDistanceArea()
-        distanceArea.setSourceCrs(crs, QgsCoordinateTransformContext())
-        distanceArea.setEllipsoid(crs.ellipsoidAcronym())
 
-        width, height = GdalUtils._wms_dimensions_for_scale(
-            bbox, crs, scale, dpi, distanceArea
-        )
-        self.assertEqual(width, 468)
-        self.assertEqual(height, 263)  # Height value preserving BBOX's aspect ratio
+        width, height = GdalUtils._wms_dimensions_for_scale(bbox, crs, scale, dpi)
+        self.assertEqual(width, 323)
+        self.assertEqual(height, 182)  # Height value preserving BBOX's aspect ratio
 
 
 if __name__ == "__main__":
