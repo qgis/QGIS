@@ -6107,7 +6107,7 @@ QgsProcessing.TypeVectorTile.is_monkey_patched = True
 QgsProcessing.TypeVectorTile.__doc__ = "Vector tile layers \n.. versionadded:: 3.32"
 QgsProcessing.TiledScene = Qgis.ProcessingSourceType.TiledScene
 QgsProcessing.TiledScene.is_monkey_patched = True
-QgsProcessing.TiledScene.__doc__ = "Tiled scene layers \n.. versionadded:: 3.46"
+QgsProcessing.TiledScene.__doc__ = "Tiled scene layers \n.. versionadded:: 4.0"
 Qgis.ProcessingSourceType.__doc__ = """Processing data source types.
 
 .. note::
@@ -6185,7 +6185,7 @@ Qgis.ProcessingSourceType.__doc__ = """Processing data source types.
 
 * ``TiledScene``: Tiled scene layers
 
-  .. versionadded:: 3.46
+  .. versionadded:: 4.0
 
 
 """
