@@ -184,7 +184,6 @@ void QgsBrowserWidget::itemDoubleClicked( const QModelIndex &index )
   // if no providers overrode the double-click handling for this item, we give the item itself a chance
   if ( !item->handleDoubleClick() )
   {
-    // double-click not handled by browser model, so use as default view expand behavior
     if ( mBrowserView->isExpanded( index ) )
       mBrowserView->collapse( index );
     else
@@ -584,68 +583,67 @@ void QgsBrowserWidget::navigateToPath()
   if ( path.isEmpty() )
     return;
 
-  // Validate path format first
+  
   if ( path.endsWith( ":" ) && path.length() == 2 )
   {
+    // Add trailing slash for drive roots (e.g., "C:" -> "C:/")
+    QString drivePath = path + "/";
+    if ( QDir( drivePath ).exists() )
+    {
+      mLeLocationBar->setText( drivePath );
+      navigateToPath(); 
+      return;
+    }
     if ( mMessageBar )
     {
-      mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Path does not exist: %1" ).arg( path ) );
+      mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Drive does not exist: %1" ).arg( path ) );
     }
     return;
   }
 
   QString normalizedPath = QDir::cleanPath( path );
-  const QString displayPath = QDir::toNativeSeparators( normalizedPath );
   
-  // Check if path exists with exact case sensitivity
-  QFileInfo pathInfo( normalizedPath );
-  if ( !pathInfo.exists() )
+  // Try case-insensitive path resolution
+  QString resolvedPath = resolveCaseInsensitivePath( normalizedPath );
+  if ( resolvedPath.isEmpty() )
   {
     if ( mMessageBar )
     {
-      mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Path does not exist: %1" ).arg( displayPath ) );
+      mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Path does not exist: %1" ).arg( QDir::toNativeSeparators( normalizedPath ) ) );
     }
     return;
   }
 
-  // Verify case sensitivity by comparing canonical paths
-  QString canonicalPath = pathInfo.canonicalFilePath();
-  if ( !canonicalPath.isEmpty() && QDir::toNativeSeparators( canonicalPath ) != displayPath )
+  // Resolve symbolic links and shortcuts
+  QFileInfo pathInfo( resolvedPath );
+  if ( pathInfo.isSymLink() )
   {
-    if ( mMessageBar )
+    QString linkTarget = pathInfo.symLinkTarget();
+    if ( !linkTarget.isEmpty() && QFileInfo( linkTarget ).exists() )
     {
-      mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Path does not exist: %1" ).arg( displayPath ) );
+      resolvedPath = QDir::cleanPath( linkTarget );
+      pathInfo.setFile( resolvedPath );
     }
-    return;
   }
 
-  // Make sure we have an absolute path
-  if ( pathInfo.isRelative() )
-  {
-    normalizedPath = pathInfo.absoluteFilePath();
-    normalizedPath = QDir::cleanPath( normalizedPath );
-  }
-
-  // Use the existing expandPath functionality to properly expand the browser tree
-  QString targetPath = normalizedPath;
+  // Determine target path for expansion
+  QString targetPath = resolvedPath;
   if ( pathInfo.isFile() )
   {
-    // For files, expand to the parent directory
     targetPath = pathInfo.absolutePath();
   }
 
-  try
+  // Navigate using simplified expansion
+  if ( navigateToTarget( targetPath, pathInfo.isFile() ? resolvedPath : QString() ) )
   {
-    mBrowserView->expandPath( targetPath, true );
-    
     // Clear the location bar on successful navigation
     mLeLocationBar->clear();
   }
-  catch ( ... )
+  else
   {
     if ( mMessageBar )
     {
-      mMessageBar->pushCritical( tr( "Navigate to Path" ), tr( "Failed to navigate to path: %1. The folder may contain problematic files." ).arg( displayPath ) );
+      mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Could not navigate to path: %1. The path exists but may not be accessible through the browser." ).arg( QDir::toNativeSeparators( resolvedPath ) ) );
     }
   }
 }
@@ -1069,6 +1067,96 @@ QStringList QgsBrowserWidget::generatePathVariants( const QString &path )
   }
   
   return pathVariants;
+}
+
+QString QgsBrowserWidget::resolveCaseInsensitivePath( const QString &inputPath )
+{
+  QFileInfo info( inputPath );
+  
+  // If path exists exactly as given, use it
+  if ( info.exists() )
+    return info.absoluteFilePath();
+
+  // Try case-insensitive resolution by walking the path components
+  QStringList pathComponents = inputPath.split( '/', Qt::SkipEmptyParts );
+  if ( pathComponents.isEmpty() )
+    return QString();
+
+  QString resolvedPath;
+  
+  // Handle drive letters on Windows
+#ifdef Q_OS_WIN
+  if ( pathComponents.first().endsWith( ':' ) )
+  {
+    resolvedPath = pathComponents.first() + "/";
+    pathComponents.removeFirst();
+  }
+  else
+  {
+    resolvedPath = "/";
+  }
+#else
+  resolvedPath = "/";
+#endif
+
+  // Walk through each path component and find case-insensitive matches
+  for ( const QString &component : pathComponents )
+  {
+    QDir currentDir( resolvedPath );
+    if ( !currentDir.exists() )
+      return QString();
+
+    // Get all entries and find case-insensitive match
+    const QStringList entries = currentDir.entryList( QDir::AllEntries | QDir::NoDotAndDotDot );
+    QString matchedEntry;
+    
+    for ( const QString &entry : entries )
+    {
+      if ( entry.compare( component, Qt::CaseInsensitive ) == 0 )
+      {
+        matchedEntry = entry;
+        break;
+      }
+    }
+    
+    if ( matchedEntry.isEmpty() )
+      return QString(); // Component not found
+    
+    resolvedPath = QDir::cleanPath( resolvedPath + "/" + matchedEntry );
+  }
+  
+  return resolvedPath;
+}
+
+bool QgsBrowserWidget::navigateToTarget( const QString &targetPath, const QString &selectFile )
+{
+  try
+  {
+    // Use expandPath for directory navigation
+    mBrowserView->expandPath( targetPath, true );
+    
+    // If we need to select a specific file within the directory
+    if ( !selectFile.isEmpty() )
+    {
+      // Find and select the specific file item
+      QModelIndex targetIndex = mModel->findPath( selectFile );
+      if ( targetIndex.isValid() )
+      {
+        QModelIndex proxyIndex = mProxyModel->mapFromSource( targetIndex );
+        if ( proxyIndex.isValid() )
+        {
+          mBrowserView->selectionModel()->setCurrentIndex( proxyIndex, QItemSelectionModel::ClearAndSelect );
+          mBrowserView->scrollTo( proxyIndex );
+        }
+      }
+    }
+    
+    return true;
+  }
+  catch ( ... )
+  {
+    return false;
+  }
 }
 
 void QgsBrowserWidget::updateLocationBar()

@@ -169,6 +169,10 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     bool ensurePathInModel( const QString &targetPath );
     //! Generate cross-platform path variants for browser model lookup
     QStringList generatePathVariants( const QString &path );
+    //! Resolve case-insensitive path for cross-platform compatibility
+    QString resolveCaseInsensitivePath( const QString &inputPath );
+    //! Navigate to target path with optional file selection
+    bool navigateToTarget( const QString &targetPath, const QString &selectFile = QString() );
 
   private:
     //! Selection has changed
