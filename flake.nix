@@ -16,18 +16,37 @@
 
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-
       systems = [ "x86_64-linux" ];
 
       perSystem = { config, self', inputs', pkgs, system, ... }: {
-
-        packages = rec {
-          qgis = pkgs.libsForQt5.callPackage ./nix/package.nix { };
-          docs = pkgs.libsForQt5.callPackage ./nix/documentation.nix {
-            qgisMinorVersion = "master";
-          };
-          default = qgis;
+        _module.args.pkgs = import inputs.nixpkgs {
+          inherit system;
+          overlays = [
+            (final: prev: {
+              # Build with libspatialindex 2.0.0
+              # https://github.com/qgis/QGIS/pull/63196
+              libspatialindex = prev.libspatialindex.overrideAttrs (prev: rec {
+                version = "2.0.0";
+                src = final.fetchFromGitHub {
+                  owner = "libspatialindex";
+                  repo = "libspatialindex";
+                  rev = "refs/tags/${version}";
+                  hash = "sha256-hZyAXz1ddRStjZeqDf4lYkV/g0JLqLy7+GrSUh75k20=";
+                };
+              });  # end of libspatialindex
+            })
+          ];
+          config = { };
         };
+
+        packages =
+          rec {
+            qgis = pkgs.qt6Packages.callPackage ./nix/package.nix { };
+            docs = pkgs.qt6Packages.callPackage ./nix/documentation.nix {
+              qgisMinorVersion = "master";
+            };
+            default = qgis;
+          };
 
         apps = {
           docs =
@@ -45,13 +64,13 @@
             {
               type = "app";
               program = "${wwwLauncher}/bin/website";
+              meta.description = "QGIS documentation";
             };
         };
 
         devShells.default =
           let
             nixPatches = pkgs.lib.concatStringsSep " " self'.packages.qgis.passthru.unwrapped.patches;
-
           in
           pkgs.mkShell {
             inputsFrom = [
@@ -67,17 +86,26 @@
                 patch --strip 1 < $p
               done
 
-              export QT_PLUGIN_PATH="${pkgs.libsForQt5.qt5.qtbase}/${pkgs.libsForQt5.qt5.qtbase.qtPluginPrefix}"
-              export QT_QPA_PLATFORM_PLUGIN_PATH="${pkgs.libsForQt5.qt5.qtbase}/${pkgs.libsForQt5.qt5.qtbase.qtPluginPrefix}/platforms"
+              export QT_PLUGIN_PATH="${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix}"
+              export QT_QPA_PLATFORM_PLUGIN_PATH="${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix}/platforms"
 
-
+              # TODO: take inspiration from
+              # https://github.com/qgis/QGIS/blob/798f63fc3c0d2616a5fbc8f47139fbeb5db7c052/.docker/docker-qgis-build.sh#L79
               function dev-help {
-
-                echo -e "\nWelcome to a QGIS development environment !"
+                echo -e "\nWelcome to the QGIS development environment !"
                 echo "Build QGIS using following commands:"
                 echo
                 echo " 1.  mkdir build && cd build"
-                echo " 2.  cmake -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=\$(pwd)/app -DWITH_QTWEBKIT=OFF -DQT_PLUGINS_DIR=${pkgs.libsForQt5.qt5.qtbase}/${pkgs.libsForQt5.qt5.qtbase.qtPluginPrefix} .."
+                echo " 2.  cmake \
+                  -G Ninja \
+                  -D CMAKE_BUILD_TYPE=Debug \
+                  -D BUILD_WITH_QT6=True \
+                  -D WITH_3D=True \
+                  -D WITH_PDAL=True \
+                  -D WITH_QTWEBENGINE=True \
+                  -D WITH_QTWEBKIT=False \
+                  -D CMAKE_INSTALL_PREFIX=\$(pwd)/app \
+                  -D QT_PLUGINS_DIR=${pkgs.qt6Packages.qtbase}/${pkgs.qt6Packages.qtbase.qtPluginPrefix} .."
                 echo " 3.  ninja"
                 echo " 4.  ninja install"
                 echo
@@ -85,7 +113,7 @@
                 echo
                 echo "1.  ninja test"
                 echo
-                echo "Note: run 'nix flake update' from time to time to update dependencies."
+                echo "Note: run 'nix flake update' to update dependencies."
                 echo
                 echo "Run 'dev-help' to see this message again."
               }
@@ -93,6 +121,10 @@
               dev-help
             '';
           };
+
+        checks = {
+          inherit (config.packages) qgis docs;
+        };
       };
 
       flake = { };
