@@ -723,7 +723,6 @@ bool QgsExtentWidget::snapToGridEnabled() const
 void QgsExtentWidget::snapToGridToggled( bool enabled )
 {
   mSnapToGridEnabled = enabled;
-  updateSnapToGridButtonStyle();
   emit snapToGridChanged( enabled );
   emit extentChanged( outputExtent() );
 }
