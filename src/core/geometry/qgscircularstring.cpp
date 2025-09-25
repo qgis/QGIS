@@ -588,7 +588,7 @@ double QgsCircularString::length() const
   double length = 0;
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
-    length += QgsGeometryUtils::circleLength( mX[i], mY[i], mX[i + 1], mY[i + 1], mX[i + 2], mY[i + 2] );
+    length += QgsGeometryUtilsBase::circleLength( mX[i], mY[i], mX[i + 1], mY[i + 1], mX[i + 2], mY[i + 2] );
   }
   return length;
 }
@@ -1590,7 +1590,7 @@ double QgsCircularString::segmentLength( QgsVertexId startVertex ) const
   double y2 = mY.at( startVertex.vertex + 1 );
   double x3 = mX.at( startVertex.vertex + 2 );
   double y3 = mY.at( startVertex.vertex + 2 );
-  return QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 );
+  return QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
 }
 
 double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const
@@ -1642,7 +1642,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
       {
         // Arc from start point to curve point - use precise calculation
         double centerX, centerY, radius;
-        QgsGeometryUtils::circleCenterRadius( QgsPoint( x1, y1 ), QgsPoint( x2, y2 ), QgsPoint( x3, y3 ), radius, centerX, centerY );
+        QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
         // Calculate arc length from vertex i to vertex i+1
         int relativeFrom = fromVertexNumber - i;  // Should be 0
         int relativeTo = toVertexNumber - i;      // Should be 1
@@ -1652,7 +1652,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
       {
         // Arc from curve point to end point - use precise calculation
         double centerX, centerY, radius;
-        QgsGeometryUtils::circleCenterRadius( QgsPoint( x1, y1 ), QgsPoint( x2, y2 ), QgsPoint( x3, y3 ), radius, centerX, centerY );
+        QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
         // Calculate arc length from vertex i+1 to vertex i+2
         int relativeFrom = fromVertexNumber - i;  // Should be 1
         int relativeTo = toVertexNumber - i;      // Should be 2
@@ -1678,7 +1678,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
       {
         // From curve point to end of segment - use precise calculation
         double centerX, centerY, radius;
-        QgsGeometryUtils::circleCenterRadius( QgsPoint( x1, y1 ), QgsPoint( x2, y2 ), QgsPoint( x3, y3 ), radius, centerX, centerY );
+        QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
         totalDistance += QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 1, 2 );
       }
     }
@@ -1689,7 +1689,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
       {
         // From start of segment to curve point - use precise calculation
         double centerX, centerY, radius;
-        QgsGeometryUtils::circleCenterRadius( QgsPoint( x1, y1 ), QgsPoint( x2, y2 ), QgsPoint( x3, y3 ), radius, centerX, centerY );
+        QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
         totalDistance += QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 0, 1 );
       }
       else if ( toVertexNumber == i + 2 )
@@ -1773,7 +1773,7 @@ QgsPoint *QgsCircularString::interpolatePoint( const double distance ) const
     double z3 = z ? *z++ : 0.0;
     double m3 = m ? *m++ : 0.0;
 
-    const double segmentLength = QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 );
+    const double segmentLength = QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
     if ( distance < distanceTraversed + segmentLength || qgsDoubleNear( distance, distanceTraversed + segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
@@ -1847,7 +1847,7 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
     double m3 = m ? *m++ : 0.0;
 
     bool addedSegmentEnd = false;
-    const double segmentLength = QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 );
+    const double segmentLength = QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
     if ( distanceTraversed <= startDistance && startDistance < distanceTraversed + segmentLength )
     {
       // start point falls on this segment
