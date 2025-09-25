@@ -64,6 +64,9 @@ class TestQgsLayerTree : public QObject
     void testLayerDeleted();
     void testFindGroups();
     void testFindNestedGroups();
+    void testCustomNodes();
+    void testCustomNodeOrderAndFinding();
+    void testCustomNodeDeleted();
     void testUtilsCollectMapLayers();
     void testUtilsCountMapLayers();
     void testSymbolText();
@@ -827,6 +830,154 @@ void TestQgsLayerTree::testFindNestedGroups()
   QVERIFY( all.contains( group1 ) );
   QVERIFY( all.contains( group2 ) );
   QVERIFY( all.contains( group3 ) );
+}
+
+void TestQgsLayerTree::testCustomNodes()
+{
+  std::unique_ptr< QgsLayerTreeCustomNode > custom = std::make_unique< QgsLayerTreeCustomNode >( QStringLiteral( "custom-id" ) );
+  QVERIFY( QgsLayerTree::isCustomNode( custom.get() ) );
+  QCOMPARE( custom->nodeId(), QStringLiteral( "custom-id" ) );
+  QCOMPARE( custom->name(), QStringLiteral( "custom-id" ) );
+  custom->setName( QStringLiteral( "Custom Name" ) );
+  QCOMPARE( custom->name(), QStringLiteral( "Custom Name" ) );
+
+  QgsLayerTreeCustomNode *custom2 = custom->clone();
+  QCOMPARE( custom2->nodeId(), QStringLiteral( "custom-id" ) );
+  QCOMPARE( custom2->name(), QStringLiteral( "Custom Name" ) );
+
+  QgsLayerTree root;
+  QgsLayerTreeCustomNode *custom3 = root.insertCustomNode( -1, QStringLiteral( "custom-id-3" ), QStringLiteral( "Custom Name 3" ) );
+  QVERIFY( custom3 );
+  QCOMPARE( custom3->nodeId(), QStringLiteral( "custom-id-3" ) );
+  QCOMPARE( custom3->name(), QStringLiteral( "Custom Name 3" ) );
+  QCOMPARE( root.children().count(), 1 );
+
+  int count = 0;
+  const QList< QgsLayerTreeNode * > nodes = root.children();
+  for ( QgsLayerTreeNode *node : nodes )
+  {
+    if ( QgsLayerTree::isCustomNode( node ) )
+    {
+      QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
+      QCOMPARE( customNode->nodeId(), QStringLiteral( "custom-id-3" ) );
+      QCOMPARE( customNode->name(), QStringLiteral( "Custom Name 3" ) );
+      count++;
+    }
+  }
+  QVERIFY( count );
+
+  // Avoid adding 2 custom nodes with the same id.
+  QgsLayerTreeCustomNode *custom4 = root.insertCustomNode( -1, QStringLiteral( "custom-id-3" ), QStringLiteral( "Custom Name 4" ) );
+  QVERIFY( !custom4 );
+  QCOMPARE( root.children().count(), 1 );
+
+  custom4 = root.addCustomNode( QStringLiteral( "custom-id-3" ), QStringLiteral( "Custom Name 4" ) );
+  QVERIFY( !custom4 );
+  QCOMPARE( root.children().count(), 1 );
+
+  // Avoid adding custom nodes with empty ids
+  custom4 = root.insertCustomNode( -1, QStringLiteral( " " ), QStringLiteral( "Custom Name 4" ) );
+  QVERIFY( !custom4 );
+  QCOMPARE( root.children().count(), 1 );
+
+  custom4 = root.addCustomNode( QString( "" ), QStringLiteral( "Custom Name 4" ) );
+  QVERIFY( !custom4 );
+  QCOMPARE( root.children().count(), 1 );
+}
+
+void TestQgsLayerTree::testCustomNodeOrderAndFinding()
+{
+  // c1
+  // g1
+  //  | vl
+  //  | g2
+  //     | c3
+  //     | vl2
+  //     | c2
+  QgsLayerTree root;
+  QVERIFY( !root.findCustomNode( QStringLiteral( "custom-id" ) ) );
+  QgsLayerTreeCustomNode *custom = root.insertCustomNode( -1, QStringLiteral( "custom-id" ), QStringLiteral( "Custom Name" ) );
+
+  QgsLayerTreeGroup *group = root.addGroup( QStringLiteral( "gr1" ) );
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QgsLayerTreeLayer *vlNode = group->addLayer( vl );
+
+  QgsLayerTreeGroup *group2 = group->addGroup( QStringLiteral( "gr2" ) );
+  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsLayerTreeLayer *vlNode2 = group2->addLayer( vl2 );
+  QgsLayerTreeCustomNode *custom2 = group2->insertCustomNode( 1, QStringLiteral( "custom-id-2" ), QStringLiteral( "Custom Name 2" ) );
+  QgsLayerTreeCustomNode *custom3 = group2->insertCustomNode( 0, QStringLiteral( "custom-id-3" ), QStringLiteral( "Custom Name 3" ) );
+
+  QCOMPARE( root.findCustomNode( QStringLiteral( "custom-id" ) ), custom );
+  QCOMPARE( root.findCustomNode( QStringLiteral( "custom-id-2" ) ), custom2 );
+  QCOMPARE( root.findCustomNode( QStringLiteral( "custom-id-3" ) ), custom3 );
+
+  // Check layer order
+  const QStringList expectedLayerOrder { QStringLiteral( "vl" ), QStringLiteral( "vl2" ) };
+  QList< QgsMapLayer * > layerOrder = root.layerOrder();
+  QStringList orderedLayers;
+  for ( auto orderedLayer : layerOrder )
+  {
+    orderedLayers << orderedLayer->name();
+  }
+  QCOMPARE( orderedLayers, expectedLayerOrder );
+
+  // Check layer and custom node order
+  QStringList expectedOrder { QStringLiteral( "Custom Name" ), QStringLiteral( "vl" ), QStringLiteral( "Custom Name 3" ), QStringLiteral( "vl2" ), QStringLiteral( "Custom Name 2" ) };
+  QList< QgsLayerTreeNode * > order = root.layerAndCustomNodeOrder();
+  QStringList orderedNodes;
+  for ( auto orderedNode : order )
+  {
+    orderedNodes << orderedNode->name();
+  }
+  QCOMPARE( orderedNodes, expectedOrder );
+
+  // Check reorder group 1 (does not reorder the group node, so no changes in node order)
+  QList< QgsLayerTreeNode * > newOrder = { group2, vlNode };
+  group->reorderGroupLayersAndCustomNodes( newOrder );
+  expectedOrder.clear();
+  expectedOrder << QStringLiteral( "Custom Name" ) << QStringLiteral( "vl" ) << QStringLiteral( "Custom Name 3" ) << QStringLiteral( "vl2" ) << QStringLiteral( "Custom Name 2" );
+  order = root.layerAndCustomNodeOrder();
+  orderedNodes.clear();
+  for ( const auto orderedNode : std::as_const( order ) )
+  {
+    orderedNodes << orderedNode->name();
+  }
+  QCOMPARE( orderedNodes, expectedOrder );
+
+  // Check reorder group 2
+  QList< QgsLayerTreeNode * > newOrder2 = { vlNode2, custom2, custom3 };
+  group2->reorderGroupLayersAndCustomNodes( newOrder2 );
+  expectedOrder.clear();
+  expectedOrder << QStringLiteral( "Custom Name" ) << QStringLiteral( "vl" ) << QStringLiteral( "vl2" ) << QStringLiteral( "Custom Name 2" ) << QStringLiteral( "Custom Name 3" );
+  order = root.layerAndCustomNodeOrder();
+  orderedNodes.clear();
+  for ( const auto orderedNode : std::as_const( order ) )
+  {
+    orderedNodes << orderedNode->name();
+  }
+  QCOMPARE( orderedNodes, expectedOrder );
+}
+
+void TestQgsLayerTree::testCustomNodeDeleted()
+{
+  QgsLayerTree root;
+  QVERIFY( !root.findCustomNode( QStringLiteral( "custom-id" ) ) );
+  root.insertCustomNode( -1, QStringLiteral( "custom-id" ), QStringLiteral( "Custom Name" ) );
+
+  QgsLayerTreeGroup *group = root.addGroup( "gr1" );
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  group->addLayer( vl );
+  group->insertCustomNode( -1, QStringLiteral( "custom-id-2" ), QStringLiteral( "Custom Name 2" ) );
+
+  QList< QgsLayerTreeNode * > order = root.layerAndCustomNodeOrder();
+  group->removeCustomNode( QStringLiteral( "non-existent" ) );
+  QCOMPARE( order, root.layerAndCustomNodeOrder() );
+
+  QVERIFY( group->findCustomNodeIds().contains( QStringLiteral( "custom-id-2" ) ) );
+  group->removeCustomNode( QStringLiteral( "custom-id-2" ) );
+  QVERIFY( order != root.layerAndCustomNodeOrder() );
+  QVERIFY( !group->findCustomNodeIds().contains( QStringLiteral( "custom-id-2" ) ) );
 }
 
 void TestQgsLayerTree::testUtilsCollectMapLayers()
