@@ -799,7 +799,7 @@ void QgsLineChartPlotWidget::mAddSymbolPushButton_clicked()
 
   // Marker
   symbolButton = new QgsSymbolButton( this );
-  symbolButton->setFixedSizeContraints( false );
+  symbolButton->setFixedSizeConstraints( false );
   symbolButton->setSymbolType( Qgis::SymbolType::Marker );
   symbolButton->setShowNull( true );
   symbolButton->setSymbol( QgsPlotDefaultSettings::lineChartMarkerSymbol() );
@@ -863,7 +863,7 @@ void QgsLineChartPlotWidget::setPlot( QgsPlot *plot )
 
     // Marker
     symbolButton = new QgsSymbolButton( this );
-    symbolButton->setFixedSizeContraints( false );
+    symbolButton->setFixedSizeConstraints( false );
     symbolButton->setSymbolType( Qgis::SymbolType::Marker );
     symbolButton->setShowNull( true );
     symbolButton->setSymbol( i < chartPlot->markerSymbolCount() ? chartPlot->markerSymbolAt( i )->clone() : nullptr );
