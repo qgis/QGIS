@@ -561,7 +561,7 @@ class PyQgsGdalProvider(QgisTestCase):
         rl = QgsRasterLayer(tmpfile, "test")
         self.assertTrue(rl.isValid())
         provider = rl.dataProvider()
-        # Data type is changed by QGIS becase of the scale
+        # Data type is changed by QGIS because of the scale
         self.assertEqual(provider.dataType(1), Qgis.DataType.Float32)
         self.assertEqual(provider.bandScale(1), 0.001)
 
