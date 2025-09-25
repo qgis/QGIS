@@ -738,6 +738,11 @@ void QgsProcessingAlgorithmDialogBase::runAlgorithm()
 {
 }
 
+void QgsProcessingAlgorithmDialogBase::onDirtySet()
+{
+}
+
+
 void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
 {
   // delay setting maximum progress value until we know algorithm reports progress
