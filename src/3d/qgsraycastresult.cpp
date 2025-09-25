@@ -32,7 +32,19 @@ bool QgsRayCastResult::hasLayerHits() const
 
 QList<QgsMapLayer *> QgsRayCastResult::layers() const
 {
-  return { mLayerResults.keyBegin(), mLayerResults.keyEnd() };
+  QList<QgsMapLayer *> layerList { mLayerResults.keyBegin(), mLayerResults.keyEnd() };
+
+  // Remove any deleted layers, or python won't be happy
+  layerList.erase(
+    std::remove_if(
+      layerList.begin(),
+      layerList.end(),
+      [this]( QgsMapLayer *l ) { return mLayerPointers[l].isNull(); }
+    ),
+    layerList.end()
+  );
+
+  return layerList;
 }
 
 QList<QgsRayCastHit> QgsRayCastResult::layerHits( QgsMapLayer *layer ) const
@@ -65,9 +77,14 @@ QList<QgsRayCastHit> QgsRayCastResult::allHits() const
 void QgsRayCastResult::addLayerHits( QgsMapLayer *layer, const QList<QgsRayCastHit> &hits )
 {
   if ( mLayerResults.contains( layer ) )
+  {
     mLayerResults[layer].append( hits );
+  }
   else
+  {
     mLayerResults[layer] = hits;
+    mLayerPointers[layer] = layer;
+  }
 }
 
 void QgsRayCastResult::addTerrainHits( const QList<QgsRayCastHit> &hits )

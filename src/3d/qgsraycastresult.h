@@ -21,6 +21,7 @@
 
 #include <QHash>
 #include <QList>
+#include <QPointer>
 
 class QgsMapLayer;
 
@@ -67,6 +68,7 @@ class _3D_EXPORT QgsRayCastResult
 
   private:
     QHash<QgsMapLayer *, QList<QgsRayCastHit>> mLayerResults;
+    QHash<QgsMapLayer *, QPointer<QgsMapLayer>> mLayerPointers;
     QList<QgsRayCastHit> mTerrainResults;
 };
 
