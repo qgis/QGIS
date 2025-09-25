@@ -99,7 +99,8 @@ class SpatiaLiteDBPlugin(DBPlugin):
         QApplication.restoreOverrideCursor()
         try:
             filename, selected_filter = QFileDialog.getOpenFileName(
-                parent, "Choose SQLite/SpatiaLite file"
+                parent, parent.tr("Choose SQLite/SpatiaLite file"), None,
+                parent.tr( "SpatiaLite DB" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db);;" + parent.tr( "All files" ) + " (*)"
             )
             if not filename:
                 return
