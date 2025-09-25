@@ -82,7 +82,7 @@ class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, priva
     void onItemsViewScroll( int value );
 
     //! Called when double clicking a result item
-    void onItemDoubleClicked( const QModelIndex &index );
+    void showItemDetails( const QModelIndex &index );
 
     //! Enables Add Layers button based on current item, updates rubber bands
     void onCurrentItemChanged( const QModelIndex &current, const QModelIndex &previous );

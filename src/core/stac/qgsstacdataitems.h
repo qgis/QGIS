@@ -62,7 +62,7 @@ class CORE_EXPORT QgsStacItemItem : public QgsDataItem
     QVariant sortKey() const override { return QStringLiteral( "2 %1" ).arg( mName ); }
 
     void updateToolTip();
-    QgsStacController *stacController();
+    QgsStacController *stacController() const;
 
     //! takes ownership
     void setStacItem( std::unique_ptr< QgsStacItem > item );

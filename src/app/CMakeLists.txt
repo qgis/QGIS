@@ -465,9 +465,6 @@ endif()
 #############
 if (ANDROID)
   add_library(qgis ${LIBRARY_TYPE} ${QGIS_APPMAIN_SRCS})
-
-  # require c++17
-  target_compile_features(qgis PRIVATE cxx_std_17)
 else()
   add_executable(qgis WIN32 ${QGIS_APPMAIN_SRCS})
 
@@ -475,8 +472,6 @@ else()
     qt_disable_unicode_defines(qgis)
   endif()
 
-  # require c++17
-  target_compile_features(qgis PRIVATE cxx_std_17)
   target_compile_definitions(qgis PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 endif()
 
@@ -499,9 +494,6 @@ if(QGISPOSTFIX)
      LIBRARY_OUTPUT_NAME ${QGIS_APP_NAME}${QGISPOSTFIX}
   )
 endif()
-
-# require c++17
-target_compile_features(qgis_app PRIVATE cxx_std_17)
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
 target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")
@@ -647,9 +639,9 @@ if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
   target_link_libraries(qgis ${EXECINFO_LIBRARY})
 endif()
 
+target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 if (WITH_PDAL)
   target_link_libraries(qgis_app ${PDAL_LIBRARIES})
-  target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 endif()
 
 if(MSVC)

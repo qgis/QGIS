@@ -14,8 +14,6 @@ ADD_FLEX_BISON_DEPENDENCY(QgsMeshCalcLexer QgsMeshCalcParser)
 if (WITH_PDF4QT)
   SET(PDF4QT_BUILD_ONLY_CORE_LIBRARY TRUE)
   SET(PDF4QT_ENABLE_OPENGL FALSE)
-  set(CMAKE_CXX_STANDARD 20)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
   SUBDIRS(${CMAKE_SOURCE_DIR}/external/PDF4QT)
 endif()
 
@@ -92,6 +90,7 @@ set(QGIS_CORE_SRCS
 
   plot/qgsbarchartplot.cpp
   plot/qgslinechartplot.cpp
+  plot/qgspiechartplot.cpp
   plot/qgsplotregistry.cpp
   plot/qgsplot.cpp
   plot/qgsvectorlayerplotdatagatherer.cpp
@@ -179,6 +178,7 @@ set(QGIS_CORE_SRCS
   layertree/qgscolorramplegendnode.cpp
   layertree/qgscolorramplegendnodesettings.cpp
   layertree/qgslayertreefiltersettings.cpp
+  layertree/qgslayertreecustomnode.cpp
   layertree/qgslayertreegroup.cpp
   layertree/qgslayertreelayer.cpp
   layertree/qgslayertreemodel.cpp
@@ -650,6 +650,7 @@ set(QGIS_CORE_SRCS
   qgsarchive.cpp
   qgstestutils.cpp
   qgsziputils.cpp
+  qgswmsutils.cpp
 
   browser/qgsbrowsermodel.cpp
   browser/qgsbrowserproxymodel.cpp
@@ -685,6 +686,7 @@ set(QGIS_CORE_SRCS
   layout/qgslayoutgeopdfexporter.cpp
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemattributetable.cpp
+  layout/qgslayoutitemchart.cpp
   layout/qgslayoutitemelevationprofile.cpp
   layout/qgslayoutitemgroup.cpp
   layout/qgslayoutitemgroupundocommand.cpp
@@ -1362,6 +1364,7 @@ set(QGIS_CORE_HDRS
   qgsvirtuallayertask.h
   qgswebpage.h
   qgswebview.h
+  qgswmsutils.h
   qgsxmlutils.h
   qgsziputils.h
   qobjectuniqueptr.h
@@ -1601,6 +1604,7 @@ set(QGIS_CORE_HDRS
   layertree/qgscolorramplegendnodesettings.h
   layertree/qgslayertree.h
   layertree/qgslayertreefiltersettings.h
+  layertree/qgslayertreecustomnode.h
   layertree/qgslayertreegroup.h
   layertree/qgslayertreelayer.h
   layertree/qgslayertreemodel.h
@@ -1625,6 +1629,7 @@ set(QGIS_CORE_HDRS
   layout/qgslayoutguidecollection.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemattributetable.h
+  layout/qgslayoutitemchart.h
   layout/qgslayoutitemelevationprofile.h
   layout/qgslayoutitemgroup.h
   layout/qgslayoutitemgroupundocommand.h
@@ -1745,6 +1750,7 @@ set(QGIS_CORE_HDRS
 
   plot/qgsbarchartplot.h
   plot/qgslinechartplot.h
+  plot/qgspiechartplot.h
   plot/qgsplotregistry.h
   plot/qgsplot.h
   plot/qgsvectorlayerplotdatagatherer.cpp
@@ -2211,6 +2217,18 @@ if (HAVE_WEBENGINE)
     )
 endif()
 
+if (WITH_SFCGAL)
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    geometry/qgssfcgalengine.cpp
+    geometry/qgssfcgalgeometry.cpp
+  )
+
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+    geometry/qgssfcgalengine.h
+    geometry/qgssfcgalgeometry.h
+  )
+endif()
+
 if(MSVC)
   set_source_files_properties(
       ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
@@ -2336,13 +2354,100 @@ if (WITH_EPT OR WITH_COPC)
   )
 endif()
 
+if(WITH_INTERNAL_SPATIALINDEX)
+  set(SIDX_SRCS
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/capi/BoundsQuery.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/capi/CountVisitor.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/capi/CustomStorage.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/capi/DataStream.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/capi/Error.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/capi/IdVisitor.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/capi/Index.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/capi/LeafQuery.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/capi/ObjVisitor.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/capi/Utility.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/capi/sidx_api.cc
+
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/mvrtree/Index.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/mvrtree/Leaf.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/mvrtree/MVRTree.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/mvrtree/Node.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/mvrtree/Statistics.cc
+
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/tprtree/Index.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/tprtree/Leaf.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/tprtree/Node.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/tprtree/Statistics.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/tprtree/TPRTree.cc
+
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/rtree/BulkLoader.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/rtree/Index.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/rtree/Leaf.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/rtree/Node.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/rtree/RTree.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/rtree/Statistics.cc
+
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/spatialindex/Ball.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/spatialindex/LineSegment.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/spatialindex/MovingPoint.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/spatialindex/MovingRegion.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/spatialindex/Point.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/spatialindex/Region.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/spatialindex/SpatialIndexImpl.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/spatialindex/TimePoint.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/spatialindex/TimeRegion.cc
+
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/storagemanager/Buffer.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/storagemanager/DiskStorageManager.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/storagemanager/MemoryStorageManager.cc
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/storagemanager/RandomEvictionsBuffer.cc
+
+    ${CMAKE_SOURCE_DIR}/external/spatialindex/src/tools/Tools.cc
+  )
+
+  check_function_exists(srand48 HAVE_SRAND48)
+  check_function_exists(gettimeofday HAVE_GETTIMEOFDAY)
+  check_function_exists(memset HAVE_MEMSET)
+  check_function_exists(memcpy HAVE_MEMCPY)
+  check_function_exists(bcopy HAVE_BCOPY)
+
+  if(HAVE_SRAND48)
+    set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_FLAGS -DHAVE_SRAND48=1)
+  else()
+    set(SIDX_SRCS ${SIDX_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/spatialindex/src/tools/rand48.cc
+    )
+  endif()
+
+  if(HAVE_GETTIMEOFDAY)
+    set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_FLAGS -DHAVE_GETTIMEOFDAY=1)
+  endif()
+
+  if(HAVE_BZERO)
+    set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_FLAGS -DDHAVE_BZERO=1)
+  endif()
+
+  if(HAVE_MEMSET)
+    set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_FLAGS -DHAVE_MEMSET=1)
+  endif()
+
+  if(HAVE_MEMCPY)
+    set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_FLAGS -DHAVE_MEMCPY=1)
+  endif()
+
+  if(HAVE_BCOPY)
+    set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_FLAGS -DHAVE_BCOPY=1)
+  endif()
+
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS} ${SIDX_SRCS})
+endif()
+
 if (APPLE)
   # Libtasn1 is for DER-encoded PKI ASN.1 parsing/extracting workarounds
   include_directories(SYSTEM
     ${LIBTASN1_INCLUDE_DIR}
   )
 endif()
-
 
 #for PAL classes
 if (WIN32)
@@ -2394,8 +2499,8 @@ else()
   target_link_libraries(qgis_core meshoptimizer::meshoptimizer)
 endif()
 
-# require c++17
-target_compile_features(qgis_core PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(qgis_core PUBLIC cxx_std_20)
 
 # Exiv still uses std::auto_ptr
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -2561,7 +2666,6 @@ target_link_libraries(qgis_core
   ${QCA_LIBRARY}
   GEOS::geos_c
   GDAL::GDAL
-  ${SPATIALINDEX_LIBRARY}
   EXPAT::EXPAT
   SQLite::SQLite3
   ${LIBZIP_LIBRARY}
@@ -2571,6 +2675,10 @@ target_link_libraries(qgis_core
   PROJ::proj
   nlohmann_json::nlohmann_json
 )
+
+if(NOT WITH_INTERNAL_SPATIALINDEX)
+  target_link_libraries(qgis_core ${SPATIALINDEX_LIBRARY})
+endif()
 
 if(BUILD_WITH_QT6)
   target_link_libraries(qgis_core
@@ -2613,6 +2721,12 @@ endif()
 if (WITH_PDAL)
   target_link_libraries(qgis_core
     ${PDAL_LIBRARIES}
+  )
+endif()
+
+if (WITH_SFCGAL)
+  target_link_libraries(qgis_core
+    SFCGAL::SFCGAL
   )
 endif()
 

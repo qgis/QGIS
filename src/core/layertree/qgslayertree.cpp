@@ -105,6 +105,11 @@ void QgsLayerTree::setHasCustomLayerOrder( bool hasCustomLayerOrder )
   emit layerOrderChanged();
 }
 
+QList< QgsLayerTreeNode * > QgsLayerTree::layerAndCustomNodeOrder() const
+{
+  return layerAndCustomNodeOrderRespectingGroupLayers();
+}
+
 QgsLayerTree *QgsLayerTree::readXml( QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   QgsLayerTree *tree = new QgsLayerTree();

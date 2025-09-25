@@ -3251,6 +3251,8 @@ Downgrades a point list from :py:class:`QgsPoint` to
 
     operator QVariant() const;
 
+
+
     QgsGeometry fillet( int vertexIndex, double radius, int segments = 8 ) const;
 %Docstring
 Creates a fillet (rounded corner) at the specified vertex.
@@ -3273,9 +3275,7 @@ circular arc. The behavior depends on the geometry type:
 .. versionadded:: 4.0
 %End
 
-    QgsGeometry fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-                        const QgsPoint &segment2Start, const QgsPoint &segment2End,
-                        double radius, int segments = 8 ) const;
+    static QgsGeometry fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double radius, int segments = 8 ) throw( QgsInvalidArgumentException );
 %Docstring
 Creates a fillet (rounded corner) between two line segments.
 
@@ -3291,6 +3291,11 @@ This method creates a smooth circular arc connecting two line segments.
 
 :return: new geometry with fillet applied, or invalid geometry on
          failure
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtils.createFilletGeometry
+
+.. seealso:: :py:func:`QgsGeometryUtils.createFilletGeometry`
 
 .. versionadded:: 4.0
 %End
@@ -3316,9 +3321,7 @@ segments.
 .. versionadded:: 4.0
 %End
 
-    QgsGeometry chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
-                         const QgsPoint &segment2Start, const QgsPoint &segment2End,
-                         double distance1, double distance2 = -1.0 ) const;
+    static QgsGeometry chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2 = -1.0 ) throw( QgsInvalidArgumentException );
 %Docstring
 Creates a chamfer (angled corner) between two line segments.
 
@@ -3335,6 +3338,11 @@ specified distances.
 
 :return: new geometry with chamfer applied, or invalid geometry on
          failure
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtils.createChamferGeometry
+
+.. seealso:: :py:func:`QgsGeometryUtils.createChamferGeometry`
 
 .. versionadded:: 4.0
 %End

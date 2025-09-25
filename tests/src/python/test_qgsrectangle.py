@@ -182,6 +182,34 @@ class TestQgsRectangle(QgisTestCase):
         self.assertEqual(rect.xMaximum(), 0.3)
         self.assertEqual(rect.yMaximum(), 0.2)
 
+    def testValid(self):
+        # a default rectangle is not valid
+        rect = QgsRectangle()
+        self.assertFalse(rect.isValid())
+
+        # all the values are valid, xMin < xMax, yMin, yMax
+        rect2 = QgsRectangle(10, 12, 15, 25)
+        self.assertTrue(rect2.isValid())
+
+        # xMax < xMin
+        # not valid
+        rect2.setXMaximum(9)
+        self.assertFalse(rect2.isValid())
+
+        # One of the coordinates is NaN
+        # not valid
+        rect3 = QgsRectangle(-3, 5, 2500, 4200)
+        self.assertTrue(rect3.isValid())
+        rect3.setYMinimum(float("nan"))
+        self.assertFalse(rect3.isValid())
+
+        # One of the coordinates is infinity
+        # not valid
+        rect4 = QgsRectangle(22, 15, 33, 55)
+        self.assertTrue(rect4.isValid())
+        rect4.setXMaximum(float("inf"))
+        self.assertFalse(rect4.isValid())
+
 
 if __name__ == "__main__":
     unittest.main()

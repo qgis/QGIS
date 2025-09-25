@@ -198,6 +198,7 @@
         <file>themes/default/lockedGray.svg</file>
         <file>themes/default/mAction.svg</file>
         <file>themes/default/mActionAdd.svg</file>
+        <file>themes/default/mActionAddChart.svg</file>
         <file>themes/default/mActionDataSourceManager.svg</file>
         <file>themes/default/mActionDistributeBottom.svg</file>
         <file>themes/default/mActionDistributeHCenter.svg</file>
@@ -571,6 +572,7 @@
         <file>themes/default/mItemBookmark.svg</file>
         <file>themes/default/mIndicatorFilter.svg</file>
         <file>themes/default/mLayoutItem.svg</file>
+        <file>themes/default/mLayoutItemChart.svg</file>
         <file>themes/default/mLayoutItemShapeEllipse.svg</file>
         <file>themes/default/mLayoutItemShapeRectangle.svg</file>
         <file>themes/default/mLayoutItemShapeTriangle.svg</file>
@@ -1024,6 +1026,10 @@
         <file>themes/default/mIconStoredQueries.svg</file>
         <file>themes/default/mIconQueryHistory.svg</file>
         <file>themes/default/mToggleAliases.svg</file>
+        <file>themes/default/field_indicators/mIndicatorConstraint.svg</file>
+        <file>themes/default/field_indicators/mIndicatorConstraintHard.svg</file>
+        <file>themes/default/field_indicators/mIndicatorDefaultValue.svg</file>
+        <file>themes/default/field_indicators/mIndicatorDefaultValueApplyOnUpdate.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

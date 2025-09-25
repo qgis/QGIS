@@ -2698,6 +2698,41 @@ static QVariant fcnRight( const QVariantList &values, const QgsExpressionContext
   return string.right( pos );
 }
 
+static QVariant fcnSubstrCount( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  if ( values.length() < 2 || values.length() > 3 )
+    return QVariant();
+
+  const QString input = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  const QString substring = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+
+  bool overlapping = false;
+  if ( values.length() == 3 )
+  {
+    overlapping = values.at( 2 ).toBool();
+  }
+
+  if ( substring.isEmpty() )
+    return QVariant( 0 );
+
+  int count = 0;
+  if ( overlapping )
+  {
+    count = input.count( substring );
+  }
+  else
+  {
+    int pos = 0;
+    while ( ( pos = input.indexOf( substring, pos ) ) != -1 )
+    {
+      count++;
+      pos += substring.length();
+    }
+  }
+
+  return QVariant( count );
+}
+
 static QVariant fcnLeft( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
@@ -8714,6 +8749,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "set_timezone" ), { QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "timezone" ) ) }, fcnSetTimeZone, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "convert_timezone" ), { QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "timezone" ) ) }, fcnConvertTimeZone, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lower" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnLower, QStringLiteral( "String" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "substr_count" ), QgsExpressionFunction::ParameterList()
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "substring" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "overlapping" ), true, false ),  // Optional parameter with default value of false
+                                            fcnSubstrCount,
+                                            QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "upper" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnUpper, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "title" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTitle, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "trim" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnTrim, QStringLiteral( "String" ) )

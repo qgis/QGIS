@@ -121,6 +121,14 @@ The development version
       NoLevel,
     };
 
+    enum class NetworkRequestFlag /BaseType=IntFlag/
+    {
+      DisableMessageLogging,
+    };
+
+    typedef QFlags<Qgis::NetworkRequestFlag> NetworkRequestFlags;
+
+
     enum class LayerType /BaseType=IntEnum/
       {
       Vector,
@@ -819,6 +827,7 @@ The development version
       ResolveGeometryType,
       CountFeatures,
       IncludeSystemTables,
+      OpenLayersToResolveDescriptions,
     };
     typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
 
@@ -1231,6 +1240,13 @@ The development version
       Round,
       Miter,
       Bevel,
+    };
+
+    enum class JoinStyle3D /BaseType=IntEnum/
+    {
+      Round,
+      Flat,
+      CylindersAndSpheres,
     };
 
     enum class GeosCreationFlag /BaseType=IntFlag/
@@ -1890,6 +1906,13 @@ The development version
     {
       Interval,
       Categorical,
+    };
+
+    enum class PieChartLabelType /BaseType=IntEnum/
+    {
+      NoLabels,
+      Categories,
+      Values,
     };
 
     enum class DpiMode
@@ -3413,6 +3436,15 @@ The development version
       Item,
     };
 
+    enum class RasterProcessingParameterCapability /BaseType=IntFlag/
+    {
+      WmsScale,
+      WmsDpi,
+    };
+
+    typedef QFlags<Qgis::RasterProcessingParameterCapability> RasterProcessingParameterCapabilities;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -3487,6 +3519,13 @@ GEOS string version linked
 .. versionadded:: 3.20
 %End
 
+    static bool hasQtWebkit();
+%Docstring
+Returns ``True`` if the QGIS build contains QtWebkit.
+
+.. versionadded:: 4.0
+%End
+
     static QString geoNone();
 %Docstring
 Constant that holds the string representation for "No ellipse/No CRS".
@@ -3522,6 +3561,8 @@ PROJ4 string that represents a geographic coord system.
 
 };
 
+
+QFlags<Qgis::NetworkRequestFlag> operator|(Qgis::NetworkRequestFlag f1, QFlags<Qgis::NetworkRequestFlag> f2);
 
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
 
@@ -3667,6 +3708,8 @@ QFlags<Qgis::RasterInterfaceCapability> operator|(Qgis::RasterInterfaceCapabilit
 
 QFlags<Qgis::RasterProviderCapability> operator|(Qgis::RasterProviderCapability f1, QFlags<Qgis::RasterProviderCapability> f2);
 
+QFlags<Qgis::RasterProcessingParameterCapability> operator|(Qgis::RasterProcessingParameterCapability f1, QFlags<Qgis::RasterProcessingParameterCapability> f2);
+
 QFlags<Qgis::ProcessingProviderFlag> operator|(Qgis::ProcessingProviderFlag f1, QFlags<Qgis::ProcessingProviderFlag> f2);
 
 QFlags<Qgis::ProcessingAlgorithmFlag> operator|(Qgis::ProcessingAlgorithmFlag f1, QFlags<Qgis::ProcessingAlgorithmFlag> f2);
@@ -3800,7 +3843,7 @@ for incorrect numbers of digits between thousand separators
 .. versionadded:: 3.4
 %End
 
-int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
+int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictTypeCheck = false );
 %Docstring
 Compares two QVariant values.
 
@@ -3811,6 +3854,10 @@ various QVariant data types (such as strings, numeric values, dates and
 times)
 
 Invalid < NULL < Values
+
+Since QGIS 4.0 the ``strictTypeCheck`` argument can be used to specify
+that variants of different types should be compared using their userType
+ID only, and not attempt to check the actual variant value.
 
 .. seealso:: :py:func:`qgsVariantLessThan`
 

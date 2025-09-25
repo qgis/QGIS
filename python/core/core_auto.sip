@@ -216,6 +216,7 @@
 %Include auto_generated/qgsvirtuallayerdefinition.sip
 %Include auto_generated/qgsvirtuallayerdefinitionutils.sip
 %Include auto_generated/qgsvirtuallayertask.sip
+%Include auto_generated/qgswmsutils.sip
 %Include auto_generated/qgsxmlutils.sip
 %Include auto_generated/qgsziputils.sip
 %Include auto_generated/./3d/qgs3drendererregistry.sip
@@ -414,6 +415,7 @@
 %Include auto_generated/layertree/qgscolorramplegendnodesettings.sip
 %Include auto_generated/layertree/qgslayertree.sip
 %Include auto_generated/layertree/qgslayertreefiltersettings.sip
+%Include auto_generated/layertree/qgslayertreecustomnode.sip
 %Include auto_generated/layertree/qgslayertreegroup.sip
 %Include auto_generated/layertree/qgslayertreelayer.sip
 %Include auto_generated/layertree/qgslayertreemodel.sip
@@ -435,6 +437,7 @@
 %Include auto_generated/layout/qgslayoutguidecollection.sip
 %Include auto_generated/layout/qgslayoutitem.sip
 %Include auto_generated/layout/qgslayoutitemattributetable.sip
+%Include auto_generated/layout/qgslayoutitemchart.sip
 %Include auto_generated/layout/qgslayoutitemelevationprofile.sip
 %Include auto_generated/layout/qgslayoutitemgroup.sip
 %Include auto_generated/layout/qgslayoutitemhtml.sip
@@ -520,6 +523,7 @@
 %Include auto_generated/pdf/qgspdfrenderer.sip
 %Include auto_generated/plot/qgsbarchartplot.sip
 %Include auto_generated/plot/qgslinechartplot.sip
+%Include auto_generated/plot/qgspiechartplot.sip
 %Include auto_generated/plot/qgsplotregistry.sip
 %Include auto_generated/plot/qgsplot.sip
 %Include auto_generated/plot/qgsvectorlayerplotdatagatherer.sip
@@ -839,4 +843,7 @@
 %Include auto_generated/vectortile/qgsvtpktiles.sip
 %If ( HAVE_WEBENGINE_SIP )
 %Include auto_generated/web/qgswebenginepage.sip
+%End
+%If ( HAVE_SFCGAL_SIP )
+%Include auto_generated/geometry/qgssfcgalgeometry.sip
 %End

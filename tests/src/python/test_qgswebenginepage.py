@@ -13,7 +13,7 @@ import unittest
 
 from qgis.PyQt.QtCore import Qt, QRectF, QUrl, QSize
 from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.core import QgsWebEnginePage
+from qgis.core import QgsWebEnginePage, QgsFontUtils
 from qgis.testing import start_app, QgisTestCase
 from qgis.PyQt.QtTest import QSignalSpy
 
@@ -29,6 +29,11 @@ class TestWebEnginePage(QgisTestCase):
     @classmethod
     def control_path_prefix(cls):
         return "html"
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        QgsFontUtils.loadStandardTestFonts(["Bold"])
 
     def test_contents_size(self):
         """

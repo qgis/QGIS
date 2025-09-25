@@ -20,6 +20,9 @@
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsplot.h"
+#include "qgsvectorlayerplotdatagatherer.h"
+
+class QgsPlotWidget SIP_EXTERNAL;
 
 /**
  * \ingroup core
@@ -73,6 +76,18 @@ class CORE_EXPORT QgsPlotAbstractMetadata
      */
     virtual QgsPlot *createPlot() = 0 SIP_TRANSFERBACK;
 
+    /**
+     * Creates a plot data gatherer of this class.
+     */
+    virtual QgsVectorLayerAbstractPlotDataGatherer *createPlotDataGatherer( QgsPlot *plot = nullptr ) = 0 SIP_TRANSFERBACK;
+
+    /**
+     * Creates a widget for configuring plot of this type. Can return NULLPTR if there's no GUI registered.
+     *
+     * Ownership of the widget is transferred to the caller.
+     */
+    virtual QgsPlotWidget *createPlotWidget( QWidget *parent = nullptr ) = 0 SIP_TRANSFERBACK;
+
   private:
 
     QString mType;
@@ -81,6 +96,8 @@ class CORE_EXPORT QgsPlotAbstractMetadata
 
 //! Plot creation function
 typedef std::function<QgsPlot *()> QgsPlotCreateFunc SIP_SKIP;
+typedef std::function<QgsVectorLayerAbstractPlotDataGatherer *( QgsPlot *plot )> QgsPlotDataGathererCreateFunc SIP_SKIP;
+typedef std::function<QgsPlotWidget *( QWidget *parent )> QgsPlotWidgetCreateFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
@@ -99,9 +116,13 @@ class CORE_EXPORT QgsPlotMetadata : public QgsPlotAbstractMetadata
      * Constructor for QgsPlotMetadata with the specified class \a type.
      */
     QgsPlotMetadata( const QString &type, const QString &visibleName,
-                     const QgsPlotCreateFunc &pfCreate )
+                     const QgsPlotCreateFunc &pfCreate,
+                     const QgsPlotDataGathererCreateFunc &pdgfCreate = nullptr,
+                     const QgsPlotWidgetCreateFunc &pwfCreate = nullptr )
       : QgsPlotAbstractMetadata( type, visibleName )
       , mCreateFunc( pfCreate )
+      , mDataGathererCreateFunc( pdgfCreate )
+      , mWidgetCreateFunc( pwfCreate )
     {}
 
     /**
@@ -109,10 +130,29 @@ class CORE_EXPORT QgsPlotMetadata : public QgsPlotAbstractMetadata
      */
     QgsPlotCreateFunc createFunction() const { return mCreateFunc; }
 
+    /**
+     * Returns the classes' plot data gatherer creation function.
+     */
+    QgsPlotDataGathererCreateFunc createPlotDataGathererFunction() const { return mDataGathererCreateFunc; }
+
+    /**
+     * Returns the classes' plot widget creation function.
+     */
+    QgsPlotWidgetCreateFunc widgetCreateFunction() const { return mWidgetCreateFunc; }
+
+    /**
+     * Sets the classes' plot widget creation function.
+     */
+    void setWidgetCreateFunction( QgsPlotWidgetCreateFunc function ) SIP_SKIP { mWidgetCreateFunc = function; }
+
     QgsPlot *createPlot() override { return mCreateFunc ? mCreateFunc() : nullptr; }
+    QgsVectorLayerAbstractPlotDataGatherer *createPlotDataGatherer( QgsPlot *plot = nullptr ) override { return mDataGathererCreateFunc ? mDataGathererCreateFunc( plot ) : nullptr; }
+    QgsPlotWidget *createPlotWidget( QWidget *parent = nullptr ) override { return mWidgetCreateFunc ? mWidgetCreateFunc( parent ) : nullptr; }
 
   protected:
     QgsPlotCreateFunc mCreateFunc = nullptr;
+    QgsPlotDataGathererCreateFunc mDataGathererCreateFunc = nullptr;
+    QgsPlotWidgetCreateFunc mWidgetCreateFunc = nullptr;
 
 };
 

@@ -172,6 +172,15 @@ Emitted when a column in the view has been resized.
    No longer used.
 %End
 
+    void rowHeaderDoubleClicked( QgsFeatureId fid );
+%Docstring
+Emitted when a row header is double-clicked.
+
+:param fid: the feature ID of the double-clicked row.
+
+.. versionadded:: 4.0
+%End
+
   public slots:
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();

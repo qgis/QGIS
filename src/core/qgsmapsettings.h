@@ -957,6 +957,9 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     //! list of layers to be rendered (stored as weak pointers)
     QgsWeakMapLayerPointerList mLayers;
+    QStringList mLayerIds;
+    bool mHasGroupLayers = false;
+
     QMap<QString, QString> mLayerStyleOverrides;
     QString mCustomRenderFlags;
     QVariantMap mCustomRenderingFlags;

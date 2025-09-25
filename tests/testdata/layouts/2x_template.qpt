@@ -440,7 +440,7 @@
    </ComposerItem>
   </ComposerShape>
   <ComposerScaleBar style="Double Box" numMapUnitsPerScaleBarUnit="2000" alignment="1" height="3" numSegments="6" boxContentSpace="4" segmentSizeMode="0" outlineWidth="0.4" segmentMillimeters="5.64513" lineCapStyle="square" numUnitsPerSegment="250000" mapId="0" lineJoinStyle="round" numSegmentsLeft="3" labelBarSpace="5" unitType="meters" unitLabel="hh" maxBarWidth="150" minBarWidth="50">
-   <scaleBarFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style=""/>
+   <scaleBarFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style="Bold"/>
    <fillColor red="227" green="26" alpha="255" blue="28"/>
    <fillColor2 red="253" green="191" alpha="255" blue="111"/>
    <strokeColor red="255" green="127" alpha="255" blue="0"/>
@@ -461,19 +461,19 @@
   <ComposerLegend rasterBorder="1" rasterBorderColor="0,0,0,255" columnSpace="1" wmsLegendWidth="50" equalColumnWidth="1" wrapChar=" " rasterBorderWidth="0" lineSpacing="1" boxSpace="5" fontColor="#f065ec" title="My Legend" columnCount="2" symbolWidth="12" titleAlignment="4" resizeToContents="1" wmsLegendHeight="25" splitLayer="1" map="0" legendFilterByAtlas="0" symbolHeight="9">
    <styles>
     <style name="title" marginBottom="6">
-     <styleFont description="QGIS Vera Sans,36,-1,5,50,0,0,0,0,0" style=""/>
+     <styleFont description="QGIS Vera Sans,36,-1,5,50,0,0,0,0,0" style="Bold"/>
     </style>
     <style name="group" marginTop="5">
-     <styleFont description="QGIS Vera Sans,14,-1,5,50,0,0,0,0,0" style=""/>
+     <styleFont description="QGIS Vera Sans,14,-1,5,50,0,0,0,0,0" style="Bold"/>
     </style>
     <style name="subgroup" marginTop="4">
-     <styleFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style=""/>
+     <styleFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style="Bold"/>
     </style>
     <style name="symbol" marginTop="3">
-     <styleFont description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style=""/>
+     <styleFont description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style="Bold"/>
     </style>
     <style marginLeft="4" name="symbolLabel" marginTop="3">
-     <styleFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style=""/>
+     <styleFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style="Bold"/>
     </style>
    </styles>
    <layer-tree-group>
@@ -516,7 +516,7 @@
    </ComposerItem>
   </ComposerLabel>
   <ComposerLabel marginY="1" htmlState="0" valign="32" labelText="my label [% format_date(  to_date( '2017-12-12'), 'yyyy-MM-dd')%]" halign="1" marginX="1">
-   <LabelFont description="QGIS Vera Sans,10,-1,5,50,0,0,0,0,0" style=""/>
+   <LabelFont description="QGIS Vera Sans,10,-1,5,50,0,0,0,0,0" style="Bold"/>
    <FontColor red="0" green="0" blue="0"/>
    <ComposerItem pagex="214.753" uuid="{2ad09482-99c4-4fc2-a7df-d48103d320fc}" background="false" height="16.6358" y="46.8828" page="1" x="214.753" itemRotation="0" frameJoinStyle="miter" outlineWidth="0.3" visibility="1" positionLock="false" id="" blendMode="0" opacity="1" positionMode="0" pagey="46.8828" excludeFromExports="0" zValue="4" width="59.9898" lastValidViewScaleFactor="-1" frame="false">
     <FrameColor red="0" green="0" alpha="255" blue="0"/>
@@ -659,7 +659,7 @@
       </layer>
      </symbol>
     </markerStyle>
-    <annotationFontProperties description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style=""/>
+    <annotationFontProperties description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style="Bold"/>
    </ComposerMapGrid>
    <AtlasMap atlasDriven="0" margin="0.10000000000000001" scalingMode="2"/>
    <ComposerItem pagex="24.1399" uuid="{5c70116e-a26b-4e05-ac30-466c4f893dbb}" background="true" height="198" y="6" page="1" x="24.1399" itemRotation="0" frameJoinStyle="round" outlineWidth="0.6" visibility="1" positionLock="false" id="my map" blendMode="0" opacity="0.78" positionMode="0" pagey="6" excludeFromExports="0" zValue="1" width="102" lastValidViewScaleFactor="2.87787" frame="true">
@@ -720,8 +720,8 @@
    <customproperties/>
   </ComposerHtml>
   <ComposerAttributeTableV2 vectorLayerProvider="ogr" showOnlyVisibleFeatures="1" wrapBehavior="0" composerMap="0" showUniqueRowsOnly="1" showGrid="1" resizeMode="0" source="0" vectorLayerSource="/home/ale/dev/QGIS/tests/testdata/points.shp" headerMode="1" emptyTableMessage="" vectorLayer="points20171212162310546" backgroundColor="240,33,33,255" headerHAlignment="2" cellMargin="1.2" relationId="" emptyTableMode="1" wrapString="" horizontalGrid="1" featureFilter="" filterToAtlasIntersection="0" headerFontColor="194,143,12,255" vectorLayerName="points" filterFeatures="false" showEmptyRows="0" contentFontColor="115,115,115,255" gridColor="245,57,220,255" verticalGrid="1" maxFeatures="30" gridStrokeWidth="0.7">
-   <headerFontProperties description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style=""/>
-   <contentFontProperties description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style=""/>
+   <headerFontProperties description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style="Bold"/>
+   <contentFontProperties description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style="Bold"/>
    <displayColumns>
     <column heading="Class" sortByRank="0" width="0" attribute="Class" hAlignment="1" sortOrder="0" vAlignment="128">
      <backgroundColor red="0" green="0" alpha="0" blue="0"/>

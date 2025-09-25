@@ -6,7 +6,7 @@ if (NATIVE_CRSSYNC_BIN)
 
 else ()
   add_executable(crssync main.cpp)
-  target_compile_features(crssync PRIVATE cxx_std_17)
+  target_compile_features(crssync PRIVATE cxx_std_20)
 
   target_link_libraries(crssync
     qgis_core

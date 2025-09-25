@@ -250,7 +250,7 @@ QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWid
 {
   setAdvancedDigitizingAllowed( false );
 
-  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+  mSnapIndicator = std::make_unique< QgsSnapIndicator >( canvas );
 
   mEdgeCenterMarker = new QgsVertexMarker( canvas );
   mEdgeCenterMarker->setIconType( QgsVertexMarker::ICON_CROSS );
@@ -487,7 +487,7 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
     // the user may have started dragging a rect to select vertices
     if ( !mDraggingVertex && !mDraggingEdge )
-      mSelectionRubberBandStartPos.reset( new QPoint( e->pos() ) );
+      mSelectionRubberBandStartPos = std::make_unique< QPoint >( e->pos() );
   }
 }
 
@@ -795,7 +795,7 @@ void QgsVertexTool::canvasDoubleClickEvent( QgsMapMouseEvent *e )
   if ( !m.hasEdge() )
     return;
 
-  mNewVertexFromDoubleClick.reset( new QgsPointLocator::Match( m ) );
+  mNewVertexFromDoubleClick = std::make_unique< QgsPointLocator::Match >( m );
 }
 
 void QgsVertexTool::removeTemporaryRubberBands()
@@ -932,7 +932,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
 
   snapUtils->setConfig( oldConfig );
 
-  mLastSnap.reset( new QgsPointLocator::Match( m ) );
+  mLastSnap = std::make_unique< QgsPointLocator::Match >( m );
 
   return m;
 }
@@ -985,7 +985,7 @@ QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e
   // if we don't have anything in the last snap, keep the area match
   if ( !mLastSnap && m.isValid() )
   {
-    mLastSnap.reset( new QgsPointLocator::Match( m ) );
+    mLastSnap = std::make_unique< QgsPointLocator::Match >( m );
   }
 
   return m;
@@ -1066,7 +1066,7 @@ void QgsVertexTool::tryToSelectFeature( QgsMapMouseEvent *e )
         m = snapToPolygonInterior( e );
       }
 
-      mLockedFeatureAlternatives.reset( new LockedFeatureAlternatives );
+      mLockedFeatureAlternatives = std::make_unique< LockedFeatureAlternatives >();
       mLockedFeatureAlternatives->screenPoint = e->pos();
       mLockedFeatureAlternatives->index = -1;
       if ( m.isValid() )
@@ -1203,8 +1203,8 @@ void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
     // so user can possibly add a new vertex at the end
     if ( isMatchAtEndpoint( m ) )
     {
-      mMouseAtEndpoint.reset( new Vertex( m.layer(), m.featureId(), m.vertexIndex() ) );
-      mEndpointMarkerCenter.reset( new QgsPointXY( positionForEndpointMarker( m ) ) );
+      mMouseAtEndpoint = std::make_unique< Vertex >( m.layer(), m.featureId(), m.vertexIndex() );
+      mEndpointMarkerCenter = std::make_unique< QgsPointXY >( positionForEndpointMarker( m ) );
       mEndpointMarker->setCenter( *mEndpointMarkerCenter );
       mEndpointMarker->setColor( Qt::gray );
       mEndpointMarker->setVisible( true );
@@ -1759,7 +1759,7 @@ void QgsVertexTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
   QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
 
   // start dragging of snapped point of current layer
-  mDraggingVertex.reset( new Vertex( m.layer(), m.featureId(), m.vertexIndex() ) );
+  mDraggingVertex = std::make_unique< Vertex >( m.layer(), m.featureId(), m.vertexIndex() );
   mDraggingVertexType = MovingVertex;
   mDraggingExtraVertices.clear();
   mDraggingExtraVerticesOffset.clear();
@@ -1919,7 +1919,7 @@ void QgsVertexTool::startDraggingAddVertex( const QgsPointLocator::Match &m )
   // activate advanced digitizing dock
   setAdvancedDigitizingAllowed( true );
 
-  mDraggingVertex.reset( new Vertex( m.layer(), m.featureId(), m.vertexIndex() + 1 ) );
+  mDraggingVertex = std::make_unique< Vertex >( m.layer(), m.featureId(), m.vertexIndex() + 1 );
   mDraggingVertexType = AddingVertex;
   mDraggingExtraVertices.clear();
   mDraggingExtraVerticesOffset.clear();
@@ -1973,7 +1973,7 @@ void QgsVertexTool::startDraggingAddVertexAtEndpoint( const QgsPointXY &mapPoint
   // activate advanced digitizing dock
   setAdvancedDigitizingAllowed( true );
 
-  mDraggingVertex.reset( new Vertex( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid, mMouseAtEndpoint->vertexId ) );
+  mDraggingVertex = std::make_unique< Vertex >( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid, mMouseAtEndpoint->vertexId );
   mDraggingVertexType = AddingEndpoint;
   mDraggingExtraVertices.clear();
   mDraggingExtraVerticesOffset.clear();
@@ -2135,7 +2135,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     return;
   }
 
-  QgsAbstractGeometry *geomTmp = geom.constGet()->clone();
+  std::unique_ptr< QgsAbstractGeometry > geomTmp( geom.constGet()->clone() );
 
   // If moving point is not 3D but destination yes, check if it can be promoted
   if ( layerPoint.is3D() && !geomTmp->is3D() && QgsWkbTypes::hasZ( dragLayer->wkbType() ) )
@@ -2165,10 +2165,46 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
     QgsPoint pt( layerPoint );
     if ( QgsWkbTypes::hasZ( dragLayer->wkbType() ) && !pt.is3D() )
+    {
       pt.addZValue( defaultZValue() );
+      if ( !addingAtEndpoint )
+      {
+        // try to linearly interpolate z from adjacent vertices
+        const QgsPoint pointBefore = geomTmp->vertexAt( QgsVertexId( vid.part, vid.ring, vid.vertex - 1 ) );
+        const QgsPoint pointAfter = geomTmp->vertexAt( vid );
+        // we can only do this if the adjacent vertices HAVE valid z values
+        if ( !std::isnan( pointBefore.z() ) && !std::isnan( pointAfter.z() ) )
+        {
+          const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
+          const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
+          if ( newDistanceBetweenOriginalAdjacentVertices )
+          {
+            pt.setZ( pointBefore.z() + ( pointAfter.z() - pointBefore.z() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
+          }
+        }
+      }
+    }
 
     if ( QgsWkbTypes::hasM( dragLayer->wkbType() ) && !pt.isMeasure() )
+    {
       pt.addMValue( defaultMValue() );
+      if ( !addingAtEndpoint )
+      {
+        // try to linearly interpolate m from adjacent vertices
+        const QgsPoint pointBefore = geomTmp->vertexAt( QgsVertexId( vid.part, vid.ring, vid.vertex - 1 ) );
+        const QgsPoint pointAfter = geomTmp->vertexAt( vid );
+        // we can only do this if the adjacent vertices HAVE valid m values
+        if ( !std::isnan( pointBefore.m() ) && !std::isnan( pointAfter.m() ) )
+        {
+          const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
+          const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
+          if ( newDistanceBetweenOriginalAdjacentVertices )
+          {
+            pt.setM( pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
+          }
+        }
+      }
+    }
 
     if ( !geomTmp->insertVertex( vid, pt ) )
     {
@@ -2185,10 +2221,10 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     }
   }
 
-  geom.set( geomTmp );
+  geom = QgsGeometry( std::move( geomTmp ) );
 
   VertexEdits edits; // dict { layer : { fid : geom } }
-  edits[dragLayer][dragFid] = VertexEdit( geom, geomTmp->vertexAt( vid ) );
+  edits[dragLayer][dragFid] = VertexEdit( geom, geom.get()->vertexAt( vid ) );
 
   addExtraVerticesToEdits( edits, mapPoint, dragLayer, layerPoint );
 
@@ -2276,7 +2312,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     if ( mMouseAtEndpoint->vertexId != 0 )
     {
       // If we were adding at the end of the feature, we need to update the index
-      mMouseAtEndpoint.reset( new Vertex( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid, mMouseAtEndpoint->vertexId + 1 ) );
+      mMouseAtEndpoint = std::make_unique< Vertex >( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid, mMouseAtEndpoint->vertexId + 1 );
     }
     // And then we just restart the drag
     startDraggingAddVertexAtEndpoint( mapPoint );
@@ -3079,7 +3115,7 @@ void QgsVertexTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )
       QgsPointLocator::Match m = snapToEditableLayer( e );
       if ( m.hasVertex() )
       {
-        mRangeSelectionFirstVertex.reset( new Vertex( m.layer(), m.featureId(), m.vertexIndex() ) );
+        mRangeSelectionFirstVertex = std::make_unique< Vertex >( m.layer(), m.featureId(), m.vertexIndex() );
         setHighlightedVertices( QList<Vertex>() << *mRangeSelectionFirstVertex );
       }
     }
