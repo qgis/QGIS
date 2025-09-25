@@ -223,8 +223,8 @@ double QgsGeometryUtilsBase::circleLength( double x1, double y1, double x2, doub
 }
 
 double QgsGeometryUtilsBase::calculateArcLength( double centerX, double centerY, double radius,
-                                                 double x1, double y1, double x2, double y2,
-                                                 double x3, double y3, int fromVertex, int toVertex )
+    double x1, double y1, double x2, double y2,
+    double x3, double y3, int fromVertex, int toVertex )
 {
   if ( fromVertex == toVertex )
     return 0.0;
@@ -233,23 +233,41 @@ double QgsGeometryUtilsBase::calculateArcLength( double centerX, double centerY,
     return 0.0;
 
   // Calculate angles for all three points (in degrees)
-  double angle1 = QgsGeometryUtilsBase::ccwAngle( y1 - centerY, x1 - centerX );
-  double angle2 = QgsGeometryUtilsBase::ccwAngle( y2 - centerY, x2 - centerX );
-  double angle3 = QgsGeometryUtilsBase::ccwAngle( y3 - centerY, x3 - centerX );
+  const double angle1 = QgsGeometryUtilsBase::ccwAngle( y1 - centerY, x1 - centerX );
+  const double angle2 = QgsGeometryUtilsBase::ccwAngle( y2 - centerY, x2 - centerX );
+  const double angle3 = QgsGeometryUtilsBase::ccwAngle( y3 - centerY, x3 - centerX );
 
   // Determine the direction of the arc using the sweep angle
-  double totalSweepAngle = QgsGeometryUtilsBase::sweepAngle( centerX, centerY, x1, y1, x2, y2, x3, y3 );
+  const double totalSweepAngle = QgsGeometryUtilsBase::sweepAngle( centerX, centerY, x1, y1, x2, y2, x3, y3 );
   bool clockwise = totalSweepAngle < 0;
 
   // Map vertex indices to angles
   double fromAngle, toAngle;
-  if ( fromVertex == 0 ) fromAngle = angle1;
-  else if ( fromVertex == 1 ) fromAngle = angle2;
-  else fromAngle = angle3;
+  if ( fromVertex == 0 )
+  {
+    fromAngle = angle1;
+  }
+  else if ( fromVertex == 1 )
+  {
+    fromAngle = angle2;
+  }
+  else
+  {
+    fromAngle = angle3;
+  }
 
-  if ( toVertex == 0 ) toAngle = angle1;
-  else if ( toVertex == 1 ) toAngle = angle2;
-  else toAngle = angle3;
+  if ( toVertex == 0 )
+  {
+    toAngle = angle1;
+  }
+  else if ( toVertex == 1 )
+  {
+    toAngle = angle2;
+  }
+  else
+  {
+    toAngle = angle3;
+  }
 
   // Calculate the arc angle between the two points following the arc direction (in degrees)
   double arcAngleDegrees;
@@ -257,26 +275,30 @@ double QgsGeometryUtilsBase::calculateArcLength( double centerX, double centerY,
   {
     arcAngleDegrees = fromAngle - toAngle;
     if ( arcAngleDegrees <= 0 )
+    {
       arcAngleDegrees += 360.0;
+    }
   }
   else
   {
     arcAngleDegrees = toAngle - fromAngle;
     if ( arcAngleDegrees <= 0 )
+    {
       arcAngleDegrees += 360.0;
+    }
   }
 
   // Make sure we follow the arc in the right direction
   // For a 3-point arc, we should never have an angle > the total arc
   double totalArcAngleDegrees = std::abs( totalSweepAngle );
-  if ( arcAngleDegrees > totalArcAngleDegrees && (fromVertex == 0 && toVertex == 2) == false )
+  if ( arcAngleDegrees > totalArcAngleDegrees && ( fromVertex == 0 && toVertex == 2 ) == false )
   {
     // We went the wrong way around the circle, take the shorter arc
     arcAngleDegrees = 360.0 - arcAngleDegrees;
   }
 
   // Convert to radians for arc length calculation
-  double arcAngleRadians = arcAngleDegrees * M_PI / 180.0;
+  const double arcAngleRadians = arcAngleDegrees * M_PI / 180.0;
   return radius * arcAngleRadians;
 }
 
