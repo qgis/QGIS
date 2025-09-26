@@ -809,17 +809,28 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   }
   else if ( bandCount == 2 )
   {
-    // handle singleband gray with alpha
+    // handle singleband gray and paletted with alpha
     auto colorInterpretationIsGrayOrUndefined = []( Qgis::RasterColorInterpretation interpretation )
     {
       return interpretation == Qgis::RasterColorInterpretation::GrayIndex
              || interpretation == Qgis::RasterColorInterpretation::Undefined;
     };
 
+    auto colorInterpretationIsPaletted = []( Qgis::RasterColorInterpretation interpretation )
+    {
+      return interpretation == Qgis::RasterColorInterpretation::PaletteIndex
+             || interpretation == Qgis::RasterColorInterpretation::ContinuousPalette;
+    };
+
     if ( ( colorInterpretationIsGrayOrUndefined( mDataProvider->colorInterpretation( 1 ) ) && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::AlphaBand )
          || ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::AlphaBand && colorInterpretationIsGrayOrUndefined( mDataProvider->colorInterpretation( 2 ) ) ) )
     {
       mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
+    }
+    else if ( ( colorInterpretationIsPaletted( mDataProvider->colorInterpretation( 1 ) ) && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::AlphaBand )
+              || ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::AlphaBand && colorInterpretationIsPaletted( mDataProvider->colorInterpretation( 2 ) ) ) )
+    {
+      mRasterType = Qgis::RasterLayerType::Palette;
     }
     else
     {

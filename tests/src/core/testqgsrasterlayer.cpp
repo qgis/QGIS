@@ -234,7 +234,6 @@ void TestQgsRasterLayer::pseudoColor()
 }
 
 void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader *colorRampShader, QgsColorRamp *colorRamp, int numberOfEntries )
-
 {
   // adapted from QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   // and TestQgsRasterLayer::pseudoColor()
