@@ -58,6 +58,20 @@ scene has not been initialized yet with
 :py:func:`~Qgs3DMapCanvas.setMapSettings`
 %End
 
+    QgsRayCastResult castRay( const QPoint &screenPoint, QgsRayCastContext context );
+%Docstring
+Casts a ray towards the 3d scene and returns information about the
+intersected 3d entities.
+
+:param screenPoint: The ray starts from the current camera center and
+                    goes through this point (in pixel coordinates,
+                    originating at top left corner).
+:param context: A context object defining parameters for the ray
+                casting.
+
+.. versionadded:: 4.0
+%End
+
 
   protected:
     virtual void showEvent( QShowEvent *e );

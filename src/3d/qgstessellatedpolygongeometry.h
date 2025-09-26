@@ -28,11 +28,6 @@ class Qgs3DSceneExporter;
 class QgsPolygon;
 class QgsPointXY;
 
-namespace QgsRayCastingUtils
-{
-  class Ray3D;
-}
-
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 namespace Qt3DRender
 {

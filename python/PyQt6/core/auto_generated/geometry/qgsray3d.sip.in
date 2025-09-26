@@ -45,6 +45,13 @@ Returns the origin of the ray
 Returns the direction of the ray see :py:func:`~QgsRay3D.setDirection`
 %End
 
+    QVector3D directionInversed() const;
+%Docstring
+Returns a vector with the direction components inversed ( 1/x, 1/y, 1/z)
+This can be used as an optimization when used in intersection logic. see
+:py:func:`~QgsRay3D.direction`
+%End
+
     void setOrigin( const QVector3D &origin );
 %Docstring
 Sets the origin of the ray
@@ -68,6 +75,12 @@ Sets the direction of the ray
 Returns the projection of the point on the ray (which is the closest
 point of the ray to ``point``)
 %End
+
+    float projectedDistance( const QVector3D &point ) const;
+%Docstring
+Returns the distance of the projection of a point to the ray
+%End
+
     bool isInFront( const QVector3D &point ) const;
 %Docstring
 Checks whether the point is in front of the ray
@@ -76,6 +89,12 @@ Checks whether the point is in front of the ray
 %Docstring
 Returns the angle between the ray and the vector from the ray's origin
 and the point ``point``
+%End
+
+    QVector3D point( float distance ) const;
+%Docstring
+Returns the point along the ray with the specified ``distance`` from the
+ray's origin
 %End
 
 };

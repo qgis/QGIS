@@ -16,54 +16,42 @@
 #ifndef QGSRAYCASTINGUTILS_H
 #define QGSRAYCASTINGUTILS_H
 
-#include "qgsfeatureid.h"
-#include <QVariantMap>
 #include <QVector3D>
-#include <QSize>
+#include <QMatrix4x4>
 
 #define SIP_NO_FILE
+
+class QgsAABB;
+class QgsRay3D;
+
+namespace Qt3DRender
+{
+  class QGeometryRenderer;
+} // namespace Qt3DRender
 
 namespace QgsRayCastingUtils
 {
 
   /**
-   * Helper struct to store ray casting results.
+   * Tests whether an axis aligned box is intersected by a ray.
+   * \since QGIS 4.0
    */
-  struct RayHit
-  {
-      //! Creates a new hit
-      RayHit( const float distance, const QVector3D pos, const QgsFeatureId fid = FID_NULL, const QVariantMap attributes = QVariantMap() )
-        : distance( distance )
-        , pos( pos )
-        , fid( fid )
-        , attributes( attributes )
-      {
-      }
-      float distance;         //!< Distance from ray's origin
-      QVector3D pos;          //!< Hit position in world coordinates
-      QgsFeatureId fid;       //!< Fid of feature hit closest to ray origin, FID_NULL if no features hit
-      QVariantMap attributes; //!< Point cloud point attributes, empty map if no point cloud points hit
-  };
+  bool rayBoxIntersection( const QgsRay3D &ray, const QgsAABB &nodeBbox );
 
   /**
-   * Helper struct to store ray casting parameters.
+   * Tests whether a triangle is intersected by a ray.
+   * \since QGIS 4.0
    */
-  struct RayCastContext
-  {
-      RayCastContext( bool singleResult = true, QSize screenSize = QSize(), float maxDistance = 0.f )
-        : singleResult( singleResult )
-        , screenSize( screenSize )
-        , maxDistance( maxDistance )
-      {}
-      bool singleResult; //!< If set to TRUE, only the closest point cloud hit will be returned (other entities always return only closest hit)
-      QSize screenSize;  //!< QSize of the 3d engine window
+  bool rayTriangleIntersection( const QgsRay3D &ray, float maxDist, const QVector3D &a, const QVector3D &b, const QVector3D &c, QVector3D &uvw, float &t );
 
-      /**
-     * The maximum distance from ray origin to look for hits when casting a ray.
-     * Should be normally set to far plane, to ignore data that will not get displayed in the 3D view
-     */
-      float maxDistance;
-  };
+  /**
+   * Tests whether a triangular mesh is intersected by a ray. Returns whether an intersection
+   * was found. If found, it outputs the point at which the intersection happened in world coordinates and
+   * the index of the intersecting triangle.
+   * \since QGIS 4.0
+   */
+  bool rayMeshIntersection( Qt3DRender::QGeometryRenderer *geometryRenderer, const QgsRay3D &r, float maxDist, const QMatrix4x4 &worldTransform, QVector3D &intPt, int &triangleIndex );
+
 } // namespace QgsRayCastingUtils
 
 #endif // QGSRAYCASTINGUTILS_H
