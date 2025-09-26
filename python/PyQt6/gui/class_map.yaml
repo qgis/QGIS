@@ -7355,7 +7355,7 @@ QgsSymbolButton.resizeEvent: src/gui/qgssymbolbutton.h#L297
 QgsSymbolButton.setColor: src/gui/qgssymbolbutton.h#L221
 QgsSymbolButton.setDefaultSymbol: src/gui/qgssymbolbutton.h#L172
 QgsSymbolButton.setDialogTitle: src/gui/qgssymbolbutton.h#L79
-QgsSymbolButton.setFixedSizeContraints: src/gui/qgssymbolbutton.h#L283
+QgsSymbolButton.setFixedSizeConstraints: src/gui/qgssymbolbutton.h#L283
 QgsSymbolButton.setLayer: src/gui/qgssymbolbutton.h#L156
 QgsSymbolButton.setMapCanvas: src/gui/qgssymbolbutton.h#L127
 QgsSymbolButton.setMessageBar: src/gui/qgssymbolbutton.h#L135
