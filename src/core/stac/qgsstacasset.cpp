@@ -60,7 +60,8 @@ bool QgsStacAsset::isCloudOptimized() const
   const QString format = formatName();
   return format == QLatin1String( "COG" ) ||
          format == QLatin1String( "COPC" ) ||
-         format == QLatin1String( "EPT" );
+         format == QLatin1String( "EPT" ) ||
+         format == QLatin1String( "Zarr" );
 }
 
 QString QgsStacAsset::formatName() const
@@ -72,6 +73,8 @@ QString QgsStacAsset::formatName() const
     return QStringLiteral( "COPC" );
   else if ( mHref.endsWith( QLatin1String( "/ept.json" ) ) )
     return QStringLiteral( "EPT" );
+  else if ( mMediaType == QLatin1String( "application/vnd+zarr" ) )
+    return QStringLiteral( "Zarr" );
   return QString();
 }
 
@@ -108,6 +111,24 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
     uri.layerType = QStringLiteral( "pointcloud" );
     uri.providerKey = QStringLiteral( "ept" );
     uri.uri = href();
+  }
+  else if ( formatName() == QLatin1String( "Zarr" ) )
+  {
+    uri.layerType = QStringLiteral( "raster" );
+    uri.providerKey = QStringLiteral( "gdal" );
+    if ( href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
+         href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
+    {
+      uri.uri = QStringLiteral( "ZARR:\"/vsicurl/%1\"" ).arg( href() );
+    }
+    else if ( href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
+    {
+      uri.uri = QStringLiteral( "ZARR:\"/vsis3/%1\"" ).arg( href().mid( 5 ) );
+    }
+    else
+    {
+      uri.uri = href();
+    }
   }
   else
   {
