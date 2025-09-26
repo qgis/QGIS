@@ -84,6 +84,16 @@ class CORE_EXPORT QgsStacAsset
      */
     QgsMimeDataUtils::Uri uri( QString authcfg ) const;
 
+    /**
+     * Returns an HTML representation of the STAC Asset without an ID
+     */
+    QString toHtml() const;
+
+    /**
+     * Returns an HTML representation of the STAC Asset including its ID within its container
+     */
+    QString toHtml( const QString &assetId ) const;
+
   private:
     QString mHref;
     QString mTitle;

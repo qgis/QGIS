@@ -45,8 +45,8 @@ class CORE_EXPORT QgsStacAssetItem : public QgsDataItem
     QgsMimeDataUtils::UriList mimeUris() const override;
     bool equal( const QgsDataItem *other ) override;
     QVariant sortKey() const override { return QStringLiteral( "4 %1" ).arg( mName ); }
-
     void updateToolTip();
+    const QgsStacAsset *stacAsset() { return mStacAsset; }
 
   private:
     const QgsStacAsset *mStacAsset;

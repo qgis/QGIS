@@ -69,7 +69,12 @@ bool QgsStacAssetItem::equal( const QgsDataItem * )
 
 void QgsStacAssetItem::updateToolTip()
 {
-  mToolTip = QStringLiteral( "STAC Asset:\n%1\n%2" ).arg( mName, mStacAsset->title() );
+  QString title = mStacAsset->title();
+  if ( title.isNull() || title.isEmpty() )
+  {
+    title = mName;
+  }
+  mToolTip = QStringLiteral( "STAC Asset:\n%1\n%2" ).arg( title, mStacAsset->href() );
 }
 
 //
