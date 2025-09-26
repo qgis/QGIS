@@ -1568,24 +1568,30 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
 
     if ( operation == QgsGeometry::ChamferFilletOperationType::Fillet )
     {
-      // Add fillet arc as line segments with proper segmentation
-      QgsCircularString tempArc;
-      tempArc.setPoints( { firstNewPoint, middlePoint, lastNewPoint } );
+      points.append( firstNewPoint );
 
-      // Calculate appropriate tolerance based on desired number of segments
-      const double angleTolerance = segments > 0 ? ( 2.0 * M_PI ) / ( 4.0 * segments ) : M_PI / 180.0; // Default to 1 degree
-
-      std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine( angleTolerance, QgsAbstractGeometry::MaximumAngle ) );
-
-      // Skip first and last points to avoid duplicates with adjacent segments
-      for ( int i = 1; i < segmentizedArc->numPoints() - 1; ++i )
+      if ( segments > 0 )
       {
-        points.append( segmentizedArc->vertexAt( QgsVertexId( 0, 0, i ) ) );
+        QgsCircularString tempArc;
+        tempArc.setPoints( { firstNewPoint, middlePoint, lastNewPoint } );
+
+        const double angleTolerance = ( 2.0 * M_PI ) / ( 4.0 * segments );
+        std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine( angleTolerance, QgsAbstractGeometry::MaximumAngle ) );
+
+        for ( int i = 1; i < segmentizedArc->numPoints() - 1; ++i )
+        {
+          points.append( segmentizedArc->vertexAt( QgsVertexId( 0, 0, i ) ) );
+        }
       }
+      else
+      {
+        points.append( middlePoint );
+      }
+
+      points.append( lastNewPoint );
     }
     else
     {
-      // Add chamfer points
       points.append( firstNewPoint );
       points.append( lastNewPoint );
     }
@@ -1594,7 +1600,6 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     if ( curve->isClosed() && vertexIndex == 0 )
       max = curve->numPoints() - 1;
 
-    // Add points after the operated vertex
     for ( int i = vertexIndex + 1; i < max; ++i )
     {
       points.append( curve->vertexAt( QgsVertexId( 0, 0, i ) ) );
@@ -1603,12 +1608,10 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     return std::make_unique<QgsLineString>( points );
   }
 
-  // Handle CompoundCurve geometries
   if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( curve ) )
   {
     auto newCompound = std::make_unique<QgsCompoundCurve>();
 
-    // Find which subcurve contains the vertex to operate
     int globalVertexIndex = 0;
     int targetCurveIndex = -1;
     int vertexInCurve = -1;
