@@ -66,9 +66,10 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   if ( !dataProvider )
     return;
 
+  const bool layerIsReadOnly { vl->readOnly() };
   const Qgis::VectorProviderCapabilities caps = dataProvider->capabilities();
-  mCanAddAttribute = caps & Qgis::VectorProviderCapability::AddAttributes;
-  mCanChangeAttributeValue = caps & Qgis::VectorProviderCapability::ChangeAttributeValues;
+  mCanAddAttribute = !layerIsReadOnly && ( caps & Qgis::VectorProviderCapability::AddAttributes );
+  mCanChangeAttributeValue = !layerIsReadOnly && ( caps & Qgis::VectorProviderCapability::ChangeAttributeValues );
 
   QgsExpressionContext expContext( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
 
@@ -218,6 +219,16 @@ void QgsFieldCalculator::calculate()
   }
   else
   {
+    // If the layer is read-only, show an error
+    // This should never happen because the read-only state is now checked at construction time
+    // and the GUI is updated accordingly, but I'm leaving the safeguard here as a remainder just
+    // in case the GUI will be redesigned in the future.
+    if ( mVectorLayer->readOnly() )
+    {
+      QMessageBox::critical( nullptr, tr( "Read-only layer" ), tr( "The layer was marked read-only in the project properties and cannot be edited." ) );
+      return;
+    }
+
     if ( !mVectorLayer->isEditable() )
       mVectorLayer->startEditing();
 

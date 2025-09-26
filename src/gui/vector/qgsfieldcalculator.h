@@ -69,7 +69,7 @@ class GUI_EXPORT QgsFieldCalculator : public QDialog, private Ui::QgsFieldCalcul
     void setPrecisionMinMax();
     void showHelp();
     void calculate();
-    //! show the given message in the Plugin Manager internal message bar
+    //! show the given message in the dialog internal message bar
     void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 );
 
   private:
