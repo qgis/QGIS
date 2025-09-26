@@ -678,6 +678,47 @@ bool QgsGeometry::deleteVertex( int atVertex )
   return d->geometry->deleteVertex( id );
 }
 
+bool QgsGeometry::deleteVertices( const QList<int> atVertices )
+{
+  if ( !d->geometry )
+  {
+    return false;
+  }
+
+  //if it is a point, set the geometry to nullptr
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point )
+  {
+    reset( nullptr );
+    return true;
+  }
+
+  QList<QgsVertexId> vertexIds;
+  for ( int vertex : atVertices )
+  {
+    QgsVertexId id;
+    if ( vertexIdFromVertexNr( vertex, id ) )
+    {
+      vertexIds.append( id );
+      continue;
+    }
+
+    return false;
+  }
+
+  // create a copy of the original geometry to restore it in case of failure
+  std::unique_ptr< QgsAbstractGeometry > originalGeometry( d->geometry->clone() );
+
+  detach();
+
+  if ( !d->geometry->deleteVertices( vertexIds ) )
+  {
+    reset( std::move( originalGeometry ) );
+    return false;
+  }
+
+  return true;
+}
+
 bool QgsGeometry::toggleCircularAtVertex( int atVertex )
 {
 
@@ -2548,7 +2589,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Qgis:
     QgsGeos geos( d->geometry.get() );
     mLastError.clear();
     std::unique_ptr< QgsAbstractGeometry > bufferGeom = geos.singleSidedBuffer( distance, segments, side,
-        joinStyle, miterLimit, &mLastError );
+      joinStyle, miterLimit, &mLastError );
     if ( !bufferGeom )
     {
       QgsGeometry result;
