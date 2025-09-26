@@ -5561,9 +5561,9 @@ QgsGeos.isEqual: src/core/geometry/qgsgeos.h#L382
 QgsGeos.isSimple: src/core/geometry/qgsgeos.h#L384
 QgsGeos.isValid: src/core/geometry/qgsgeos.h#L381
 QgsGeos.length: src/core/geometry/qgsgeos.h#L380
-QgsGeos.lineLocatePoint: src/core/geometry/qgsgeos.h#L649
-QgsGeos.lineLocatePoint: src/core/geometry/qgsgeos.h#L669
-QgsGeos.minimumClearance: src/core/geometry/qgsgeos.h#L524
+QgsGeos.lineLocatePoint: src/core/geometry/qgsgeos.h#L651
+QgsGeos.lineLocatePoint: src/core/geometry/qgsgeos.h#L671
+QgsGeos.minimumClearance: src/core/geometry/qgsgeos.h#L526
 QgsGeos.offsetCurve: src/core/geometry/qgsgeos.h#L400
 QgsGeos.overlaps: src/core/geometry/qgsgeos.h#L374
 QgsGeos.pointOnSurface: src/core/geometry/qgsgeos.h#L242
