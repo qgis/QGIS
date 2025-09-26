@@ -28,6 +28,51 @@ constexpr int MAX_DISPLAYED_ITEMS = 20;
 
 
 //
+// QgsStacAssetItem
+//
+
+QgsStacAssetItem::QgsStacAssetItem( QgsDataItem *parent, const QString &name, const QgsStacAsset *asset )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name, QString( "%1/%2" ).arg( parent->path(), name ), QStringLiteral( "special:Stac" ) ),
+    mStacAsset( asset ),
+    mName( name )
+{
+  mIconName = QStringLiteral( "mActionPropertiesWidget.svg" );
+  updateToolTip();
+  setState( Qgis::BrowserItemState::Populated );
+}
+
+bool QgsStacAssetItem::hasDragEnabled() const
+{
+  return mStacAsset->isCloudOptimized();
+}
+
+QgsMimeDataUtils::UriList QgsStacAssetItem::mimeUris() const
+{
+  QgsMimeDataUtils::Uri uri;
+  QUrl url( mStacAsset->href() );
+  if ( url.isLocalFile() )
+  {
+    uri.uri = mStacAsset->href();
+  }
+  else
+  {
+    uri = mStacAsset->uri();
+  }
+
+  return { uri };
+}
+
+bool QgsStacAssetItem::equal( const QgsDataItem * )
+{
+  return false;
+}
+
+void QgsStacAssetItem::updateToolTip()
+{
+  mToolTip = QStringLiteral( "STAC Asset:\n%1\n%2" ).arg( mName, mStacAsset->title() );
+}
+
+//
 // QgsStacFetchMoreItem
 //
 
@@ -53,7 +98,6 @@ bool QgsStacFetchMoreItem::handleDoubleClick()
   }
 }
 
-
 //
 // QgsStacItemItem
 //
@@ -74,7 +118,15 @@ QVector<QgsDataItem *> QgsStacItemItem::createChildren()
   if ( !mStacItem )
     return { new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) };
 
-  return {};
+  QVector<QgsDataItem *> contents;
+  contents.reserve( mStacItem->assets().size() );
+  const QMap<QString, QgsStacAsset> assets = mStacItem->assets();
+  for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
+  {
+    QgsStacAssetItem *assetItem = new QgsStacAssetItem( this, it.key(), &it.value() );
+    contents.append( assetItem );
+  }
+  return contents;
 }
 
 bool QgsStacItemItem::hasDragEnabled() const
@@ -176,7 +228,6 @@ void QgsStacItemItem::itemRequestFinished( int requestId, QString error )
     mIconName = QStringLiteral( "/mIconDelete.svg" );
     mName = error;
   }
-  setState( Qgis::BrowserItemState::Populated );
 }
 
 
@@ -464,6 +515,8 @@ QVector< QgsDataItem * > QgsStacCatalogItem::createItems( const QVector<QgsStacI
 
     QgsStacItemItem *i = new QgsStacItemItem( this, name, item->url() );
     i->setStacItem( std::move( object ) );
+    // create any assets beneath the item, so that they can be individually drag-dropped as layers if compatible
+    i->populate( true );
     i->setState( Qgis::BrowserItemState::Populated );
     contents.append( i );
   }
