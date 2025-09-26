@@ -86,11 +86,13 @@ class CORE_EXPORT QgsStacAsset
 
     /**
      * Returns an HTML representation of the STAC Asset including its ID within its container
+     * \since QGIS 4.0
      */
     QString toHtml( const QString &assetId ) const;
 
     /**
      * Returns whether the asset can be downloaded
+     * \since QGIS 4.0
      */
     bool isDownloadable() const;
 

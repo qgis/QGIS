@@ -93,11 +93,15 @@ COPC
 %Docstring
 Returns an HTML representation of the STAC Asset including its ID within
 its container
+
+.. versionadded:: 4.0
 %End
 
     bool isDownloadable() const;
 %Docstring
 Returns whether the asset can be downloaded
+
+.. versionadded:: 4.0
 %End
 
 };
