@@ -116,9 +116,6 @@ class Editor(QgsCodeEditorPython):
         self.redoScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.redoScut.activated.connect(self.redo)
         self.newShortcutCS.activated.connect(self.autoComplete)
-        self.runScut = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_E), self)
-        self.runScut.setContext(Qt.ShortcutContext.WidgetShortcut)
-        self.runScut.activated.connect(self.runSelectedCode)  # spellok
         self.runScriptScut = QShortcut(
             QKeySequence(Qt.Modifier.SHIFT | Qt.Modifier.CTRL | Qt.Key.Key_E), self
         )
@@ -163,7 +160,7 @@ class Editor(QgsCodeEditorPython):
         menu.addAction(syntaxCheckAction)
 
         runSelected = QAction(
-            QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),  # spellok
+            QgsApplication.getThemeIcon("mActionRunSelected.svg"),  # spellok
             QCoreApplication.translate("PythonConsole", "Run Selected"),
             menu,
         )
@@ -223,6 +220,7 @@ class Editor(QgsCodeEditorPython):
             menu,
         )
         find_action.triggered.connect(self.trigger_find)
+        find_action.setShortcut("Ctrl+F")
         menu.addAction(find_action)
 
         cutAction = QAction(
@@ -722,7 +720,7 @@ class EditorTabWidget(QTabWidget):
         # New Editor button
         self.newTabButton = QToolButton()
         txtToolTipNewTab = QCoreApplication.translate("PythonConsole", "New Editor")
-        self.newTabButton.setToolTip(txtToolTipNewTab)
+        self.newTabButton.setToolTip(txtToolTipNewTab + " <b>Ctrl+T</b>")
         self.newTabButton.setAutoRaise(True)
         self.newTabButton.setIcon(
             QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.svg")

@@ -229,7 +229,7 @@ class PythonConsoleWidget(QWidget):
         )
         self.openFileButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.openFileButton.setIconVisibleInMenu(True)
-        self.openFileButton.setToolTip(openFileBt)
+        self.openFileButton.setToolTip(openFileBt + " <b>Ctrl+O</b>")
         self.openFileButton.setText(openFileBt)
 
         openExtEditorBt = QCoreApplication.translate(
@@ -245,6 +245,7 @@ class PythonConsoleWidget(QWidget):
         self.openInEditorButton.setIconVisibleInMenu(True)
         self.openInEditorButton.setToolTip(openExtEditorBt)
         self.openInEditorButton.setText(openExtEditorBt)
+
         # Action for Save File
         saveFileBt = QCoreApplication.translate("PythonConsole", "Save")
         self.saveFileButton = QAction(self)
@@ -253,8 +254,9 @@ class PythonConsoleWidget(QWidget):
         self.saveFileButton.setIcon(QgsApplication.getThemeIcon("mActionFileSave.svg"))
         self.saveFileButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.saveFileButton.setIconVisibleInMenu(True)
-        self.saveFileButton.setToolTip(saveFileBt)
+        self.saveFileButton.setToolTip(saveFileBt  + " <b>Ctrl+S</b>")
         self.saveFileButton.setText(saveFileBt)
+
         # Action for Save File As
         saveAsFileBt = QCoreApplication.translate("PythonConsole", "Save As…")
         self.saveAsFileButton = QAction(self)
@@ -265,8 +267,9 @@ class PythonConsoleWidget(QWidget):
         )
         self.saveAsFileButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.saveAsFileButton.setIconVisibleInMenu(True)
-        self.saveAsFileButton.setToolTip(saveAsFileBt)
+        self.saveAsFileButton.setToolTip(saveAsFileBt + " <b>Ctrl+Shift+S</b>")
         self.saveAsFileButton.setText(saveAsFileBt)
+
         # Action Cut
         cutEditorBt = QCoreApplication.translate("PythonConsole", "Cut")
         self.cutEditorButton = QAction(self)
@@ -275,8 +278,9 @@ class PythonConsoleWidget(QWidget):
         self.cutEditorButton.setIcon(QgsApplication.getThemeIcon("mActionEditCut.svg"))
         self.cutEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.cutEditorButton.setIconVisibleInMenu(True)
-        self.cutEditorButton.setToolTip(cutEditorBt)
+        self.cutEditorButton.setToolTip(cutEditorBt + " <b>Ctrl+X</b>")
         self.cutEditorButton.setText(cutEditorBt)
+
         # Action Copy
         copyEditorBt = QCoreApplication.translate("PythonConsole", "Copy")
         self.copyEditorButton = QAction(self)
@@ -287,8 +291,9 @@ class PythonConsoleWidget(QWidget):
         )
         self.copyEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.copyEditorButton.setIconVisibleInMenu(True)
-        self.copyEditorButton.setToolTip(copyEditorBt)
+        self.copyEditorButton.setToolTip(copyEditorBt + " <b>Ctrl+C</b>")
         self.copyEditorButton.setText(copyEditorBt)
+
         # Action Paste
         pasteEditorBt = QCoreApplication.translate("PythonConsole", "Paste")
         self.pasteEditorButton = QAction(self)
@@ -299,8 +304,9 @@ class PythonConsoleWidget(QWidget):
         )
         self.pasteEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.pasteEditorButton.setIconVisibleInMenu(True)
-        self.pasteEditorButton.setToolTip(pasteEditorBt)
+        self.pasteEditorButton.setToolTip(pasteEditorBt + " <b>Ctrl+V</b>")
         self.pasteEditorButton.setText(pasteEditorBt)
+
         # Action Run Script (subprocess)
         runScriptEditorBt = QCoreApplication.translate("PythonConsole", "Run Script")
         self.runScriptEditorButton = QAction(self)
@@ -311,8 +317,22 @@ class PythonConsoleWidget(QWidget):
         )
         self.runScriptEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.runScriptEditorButton.setIconVisibleInMenu(True)
-        self.runScriptEditorButton.setToolTip(runScriptEditorBt)
+        self.runScriptEditorButton.setToolTip(runScriptEditorBt + " <b>Ctrl+Shift+E</b>")
         self.runScriptEditorButton.setText(runScriptEditorBt)
+
+        # Action Run Selected
+        runSelectedEditorBt = QCoreApplication.translate("PythonConsole", "Run Selected")
+        self.runSelectedEditorButton = QAction(self)
+        self.runSelectedEditorButton.setCheckable(False)
+        self.runSelectedEditorButton.setEnabled(True)
+        self.runSelectedEditorButton.setIcon(
+            QgsApplication.getThemeIcon("mActionRunSelected.svg")
+        )
+        self.runSelectedEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
+        self.runSelectedEditorButton.setIconVisibleInMenu(True)
+        self.runSelectedEditorButton.setToolTip(runSelectedEditorBt + " <b>Ctrl+E</b>")
+        self.runSelectedEditorButton.setShortcut("Ctrl+E")
+        self.runSelectedEditorButton.setText(runSelectedEditorBt)
 
         # Action Toggle comment
         toggleText = QCoreApplication.translate("PythonConsole", "Toggle Comment")
@@ -371,7 +391,7 @@ class PythonConsoleWidget(QWidget):
         )
         self.find_text_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.find_text_action.setIconVisibleInMenu(True)
-        self.find_text_action.setToolTip(findText)
+        self.find_text_action.setToolTip(findText + " <b>Ctrl+F</b>")
         self.find_text_action.setText(findText)
 
         self.tabEditorWidget.search_bar_toggled.connect(
@@ -393,6 +413,7 @@ class PythonConsoleWidget(QWidget):
         self.showEditorButton.setIconVisibleInMenu(True)
         self.showEditorButton.setToolTip(showEditor)
         self.showEditorButton.setText(showEditor)
+
         # Action for Clear button
         clearBt = QCoreApplication.translate("PythonConsole", "Clear Console")
         self.clearButton = QAction(self)
@@ -405,6 +426,7 @@ class PythonConsoleWidget(QWidget):
         self.clearButton.setIconVisibleInMenu(True)
         self.clearButton.setToolTip(clearBt)
         self.clearButton.setText(clearBt)
+
         # Action for settings
         optionsBt = QCoreApplication.translate("PythonConsole", "Options…")
         self.optionsButton = QAction(self)
@@ -417,6 +439,7 @@ class PythonConsoleWidget(QWidget):
         self.optionsButton.setIconVisibleInMenu(True)
         self.optionsButton.setToolTip(optionsBt)
         self.optionsButton.setText(optionsBt)
+
         # Action for Run script
         runBt = QCoreApplication.translate("PythonConsole", "Run Command")
         self.runButton = QAction(self)
@@ -493,6 +516,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.saveAsFileButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.runScriptEditorButton)
+        self.toolBarEditor.addAction(self.runSelectedEditorButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.cutEditorButton)
         self.toolBarEditor.addAction(self.copyEditorButton)
@@ -561,6 +585,7 @@ class PythonConsoleWidget(QWidget):
         self.toggleCommentEditorButton.triggered.connect(self.toggleComment)
         self.reformatCodeEditorButton.triggered.connect(self.reformatCode)
         self.runScriptEditorButton.triggered.connect(self.runScriptEditor)
+        self.runSelectedEditorButton.triggered.connect(self.runSelectedEditor)
         self.cutEditorButton.triggered.connect(self.cutEditor)
         self.copyEditorButton.triggered.connect(self.copyEditor)
         self.pasteEditorButton.triggered.connect(self.pasteEditor)
@@ -652,6 +677,9 @@ class PythonConsoleWidget(QWidget):
 
     def runScriptEditor(self):
         self.tabEditorWidget.currentWidget().runScriptCode()
+
+    def runSelectedEditor(self):
+        self.tabEditorWidget.currentWidget().runSelectedCode()
 
     def toggleComment(self):
         self.tabEditorWidget.currentWidget().toggleComment()
