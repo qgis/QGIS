@@ -360,13 +360,13 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \code{.py}
      *   p = QgsPoint( 4, 6 ) # 2D point
-     *   pr = midpoint ( p, QgsPoint( 2, 2 ) )
+     *   pr = QgsGeometryUtils.midpoint ( p, QgsPoint( 2, 2 ) )
      *   # pr is a 2D point: 'Point (3 4)'
-     *   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZ, 2, 2, 2 ) )
+     *   pr = QgsGeometryUtils.midpoint ( p, QgsPoint( QgsWkbTypes.PointZ, 2, 2, 2 ) )
      *   # pr is a 3D point: 'PointZ (3 4 1)'
-     *   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
+     *   pr = QgsGeometryUtils.midpoint ( p, QgsPoint( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
      *   # pr is a 3D point: 'PointM (3 4 1)'
-     *   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
+     *   pr = QgsGeometryUtils.midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
      *   # pr is a 3D point: 'PointZM (3 4 1 1)'
      * \endcode
      */
