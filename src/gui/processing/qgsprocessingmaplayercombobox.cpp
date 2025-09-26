@@ -180,6 +180,12 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
       filters |= Qgis::LayerFilter::MeshLayer;
     if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::PointCloud ) ) )
       filters |= Qgis::LayerFilter::PointCloudLayer;
+    if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::Annotation ) ) )
+      filters |= Qgis::LayerFilter::AnnotationLayer;
+    if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::VectorTile ) ) )
+      filters |= Qgis::LayerFilter::VectorTileLayer;
+    if ( dataTypes.contains( static_cast<int>( Qgis::ProcessingSourceType::TiledScene ) ) )
+      filters |= Qgis::LayerFilter::TiledSceneLayer;
     if ( !filters )
       filters = Qgis::LayerFilter::All;
   }

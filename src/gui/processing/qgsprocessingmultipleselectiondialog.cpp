@@ -25,6 +25,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
 #include "qgsvectortilelayer.h"
+#include "qgstiledscenelayer.h"
 #include "qgsproject.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include <QStandardItemModel>
@@ -711,6 +712,17 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
     {
       const QList<QgsVectorTileLayer *> options = QgsProcessingUtils::compatibleVectorTileLayers( project, false );
       for ( const QgsVectorTileLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
+    case Qgis::ProcessingSourceType::TiledScene:
+    {
+      const QList<QgsTiledSceneLayer *> options = QgsProcessingUtils::compatibleTiledSceneLayers( project, false );
+      for ( const QgsTiledSceneLayer *layer : options )
       {
         addLayer( layer );
       }

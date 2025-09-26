@@ -7759,6 +7759,12 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
       break;
     }
 
+    case Qgis::ProcessingSourceType::TiledScene:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterMultipleLayers::typeName(), QStringList() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName() );
+      break;
+    }
+
     case Qgis::ProcessingSourceType::Vector:
     {
       mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFeatureSource::typeName() << QgsProcessingParameterVectorLayer::typeName() << QgsProcessingParameterFile::typeName() << QgsProcessingParameterMultipleLayers::typeName(), QStringList() << QgsProcessingOutputFile::typeName() << QgsProcessingOutputVectorLayer::typeName() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName(), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) );
