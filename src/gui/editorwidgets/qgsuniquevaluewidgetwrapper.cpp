@@ -129,16 +129,5 @@ void QgsUniqueValuesWidgetWrapper::showIndeterminateState()
 
 void QgsUniqueValuesWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
-  if ( mComboBox )
-  {
-    mComboBox->setCurrentIndex( mComboBox->findData( value ) );
-  }
-
-  if ( mLineEdit )
-  {
-    if ( QgsVariantUtils::isNull( value ) )
-      mLineEdit->setText( QgsApplication::nullRepresentation() );
-    else
-      mLineEdit->setText( value.toString() );
-  }
+  updateComboBoxValues( value, mComboBox );
 }
