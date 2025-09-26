@@ -559,3 +559,39 @@ bool QgsPostgresUtils::projectsTableExists( QgsPostgresConn *conn, const QString
 
   return res.PQgetvalue( 0, 0 ).toInt() > 0;
 }
+
+bool QgsPostgresUtils::copyProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema )
+{
+  //copy from one schema to another
+  const QString sql = QStringLiteral( "INSERT INTO %1.qgis_projects SELECT * FROM %2.qgis_projects WHERE name=%3;" )
+                        .arg( QgsPostgresConn::quotedIdentifier( targetSchema ) )
+                        .arg( QgsPostgresConn::quotedIdentifier( originalSchema ) )
+                        .arg( QgsPostgresConn::quotedValue( projectName ) );
+
+  QgsPostgresResult result( conn->PQexec( sql ) );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+
+bool QgsPostgresUtils::moveProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema )
+{
+  conn->begin();
+
+  if ( !QgsPostgresUtils::copyProjectToSchema( conn, originalSchema, projectName, targetSchema ) )
+  {
+    return false;
+  }
+
+  if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectName, originalSchema ) )
+  {
+    return false;
+  }
+
+  conn->commit();
+  return true;
+}
