@@ -33,7 +33,7 @@ class QgsStacCollection;
 
 /**
  * \brief Item for STAC Asset within a collection or item.
- * \since QGIS 3.44
+ * \since QGIS 4.0
 */
 class CORE_EXPORT QgsStacAssetItem : public QgsDataItem
 {
