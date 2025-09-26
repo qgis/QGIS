@@ -76,9 +76,32 @@ Returns the format name for cloud optimized formats
     QgsMimeDataUtils::Uri uri() const;
 %Docstring
 Returns a uri for the asset if it is a cloud optimized file like COG or
+COPC, empty auth configuration
+
+.. versionadded:: 3.42
+%End
+
+    QgsMimeDataUtils::Uri uri( QString authcfg ) const;
+%Docstring
+Returns a uri for the asset if it is a cloud optimized file like COG or
 COPC
 
 .. versionadded:: 3.42
+%End
+
+    QString toHtml( const QString &assetId ) const;
+%Docstring
+Returns an HTML representation of the STAC Asset including its ID within
+its container
+
+.. versionadded:: 4.0
+%End
+
+    bool isDownloadable() const;
+%Docstring
+Returns whether the asset can be downloaded
+
+.. versionadded:: 4.0
 %End
 
 };
