@@ -31,6 +31,7 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   connect( mWidget, &QgsExtentWidget::extentChanged, this, &QgsExtentGroupBox::widgetExtentChanged );
   connect( mWidget, &QgsExtentWidget::validationChanged, this, &QgsExtentGroupBox::validationChanged );
   connect( mWidget, &QgsExtentWidget::extentLayerChanged, this, &QgsExtentGroupBox::extentLayerChanged );
+  connect( mWidget, &QgsExtentWidget::snapToGridChanged, this, &QgsExtentGroupBox::snapToGridChanged );
 
   connect( mWidget, &QgsExtentWidget::toggleDialogVisibility, this, [this]( bool visible ) {
     QWidget *w = window();
@@ -134,6 +135,32 @@ void QgsExtentGroupBox::setRatio( QSize ratio )
   mWidget->setRatio( ratio );
 }
 
+void QgsExtentGroupBox::setSnapToGrid( bool snapToGrid, double rasterXRes, double rasterYRes, double rasterMinX, double rasterMinY )
+{
+  // Store new snap-to-grid configuration
+  mSnapToGrid = snapToGrid;
+  mRasterXRes = rasterXRes;
+  mRasterYRes = rasterYRes;
+  mRasterMinX = rasterMinX;
+  mRasterMinY = rasterMinY;
+
+  mWidget->setSnapToGridAvailable( true, snapToGrid, rasterXRes, rasterYRes, rasterMinX, rasterMinY );
+
+  // Update the displayed extent fields so that the north/south/east/west values reflect
+  // the current snapping mode. We retrieve the (potentially) snapped extent using the
+  // updated configuration and then push this extent back to the underlying widget so
+  // that its line edits are refreshed accordingly. This ensures that toggling the
+  // snap-to-grid checkbox immediately updates the UI, and disabling it restores the
+  // original, unsnapped coordinates.
+  QgsRectangle newExtent = outputExtent();
+  if ( newExtent.isNull() )
+    return; // nothing to update
+
+  // Use the widget's user extent setter – this will update the line edits and emit
+  // extentChanged(). The CRS is already the widget's output CRS.
+  mWidget->setOutputExtentFromUser( newExtent, mWidget->outputCrs() );
+}
+
 void QgsExtentGroupBox::groupBoxClicked()
 {
   if ( !isCheckable() )
@@ -168,7 +195,23 @@ QgsRectangle QgsExtentGroupBox::outputExtent() const
   if ( isCheckable() && !isChecked() )
     return QgsRectangle();
 
-  return mWidget->outputExtent();
+  QgsRectangle extent = mWidget->outputExtent();
+  
+  // Apply snap to grid if enabled
+  if ( mSnapToGrid && mRasterXRes > 0 && mRasterYRes > 0 )
+  {
+    double xmin = mRasterMinX + std::floor( ( extent.xMinimum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
+    double ymin = mRasterMinY + std::floor( ( extent.yMinimum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
+    double xmax = mRasterMinX + std::ceil( ( extent.xMaximum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
+    double ymax = mRasterMinY + std::ceil( ( extent.yMaximum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
+    
+    extent.setXMinimum( xmin );
+    extent.setYMinimum( ymin );
+    extent.setXMaximum( xmax );
+    extent.setYMaximum( ymax );
+  }
+  
+  return extent;
 }
 
 QgsCoordinateReferenceSystem QgsExtentGroupBox::outputCrs() const
