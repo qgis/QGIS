@@ -29,7 +29,7 @@ QString QgsPdalReprojectAlgorithm::name() const
 
 QString QgsPdalReprojectAlgorithm::displayName() const
 {
-  return QObject::tr( "Reproject" );
+  return QObject::tr( "Reproject point cloud" );
 }
 
 QString QgsPdalReprojectAlgorithm::group() const
