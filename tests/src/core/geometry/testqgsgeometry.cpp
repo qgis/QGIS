@@ -3250,14 +3250,14 @@ void TestQgsGeometry::chamferFillet()
   QCOMPARE( g.lastError(), "" );
   g2 = g.fillet( 1, 2.0, 4 );
   QCOMPARE( g.lastError(), "" );
-  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 8.62 15.1, 9.18 15.38, 9.62 15.82, 9.9 16.38, 10 20, 5 20, 5 15))" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 8 15, 8.62 15.1, 9.18 15.38, 9.62 15.82, 9.9 16.38, 10 17, 10 20, 5 20, 5 15))" );
 
   // with Z coordinates
   g = QgsGeometry::fromWkt( QStringLiteral( "PolygonZ(( 5 15 0, 10 15 10, 10 20 -5, 5 20 -1 , 5 15 0))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.fillet( 1, 2.0, 4 );
   QCOMPARE( g.lastError(), "" );
-  QCOMPARE( g2.asWkt( 2 ), "Polygon Z ((5 15 0, 8.62 15.1 5.6, 9.18 15.38 5.2, 9.62 15.82 4.8, 9.9 16.38 4.4, 10 20 -5, 5 20 -1, 5 15 0))" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon Z ((5 15 0, 8 15 6, 8.62 15.1 5.6, 9.18 15.38 5.2, 9.62 15.82 4.8, 9.9 16.38 4.4, 10 17 4, 10 20 -5, 5 20 -1, 5 15 0))" );
 
   // Compound curve
   g = QgsGeometry::fromWkt( QStringLiteral( "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))" ) );
@@ -3296,7 +3296,7 @@ void TestQgsGeometry::chamferFillet()
   QCOMPARE( g.lastError(), "" );
   g2 = g.fillet( 6, 2.0, 4 );
   QCOMPARE( g.lastError(), "" );
-  QCOMPARE( g2.asWkt( 2 ), "MultiPolygon (((5 15, 10 15, 10 20, 5 20, 5 15)),((105 15, 108.77 15.15, 109.41 15.59, 109.85 16.23, 110 20, 105 20, 105 15)))" );
+  QCOMPARE( g2.asWkt( 2 ), "MultiPolygon (((5 15, 10 15, 10 20, 5 20, 5 15)),((105 15, 108 15, 108.77 15.15, 109.41 15.59, 109.85 16.23, 110 17, 110 20, 105 20, 105 15)))" );
 }
 
 QGSTEST_MAIN( TestQgsGeometry )

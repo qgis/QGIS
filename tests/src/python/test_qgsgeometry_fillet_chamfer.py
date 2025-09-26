@@ -712,7 +712,8 @@ class TestQgsGeometry(QgisTestCase):
         result = linestring.fillet(1, 1.0)
         self.assertFalse(result.isEmpty())
 
-        expected_wkt = "LineString (0 0, 0.02 0, 0.04 0.01, 0.06 0.02, 0.07 0.03, 0.08 0.04, 0.09 0.06, 0.1 0.08, 0.1 0.1)"
+        # After fix, the exact tangent points are now included
+        expected_wkt = "LineString (0 0, 0 0, 0.02 0, 0.04 0.01, 0.06 0.02, 0.07 0.03, 0.08 0.04, 0.09 0.06, 0.1 0.08, 0.1 0.1, 0.1 0.1)"
         self.assertEqual(result.asWkt(2), expected_wkt)
 
     # EDGE CASES AND ERROR HANDLING
@@ -817,7 +818,8 @@ class TestQgsGeometry(QgisTestCase):
         result = polygon.fillet(1, 0.1)
         self.assertFalse(result.isEmpty())
 
-        expected_wkt = "Polygon ((0 0, 0.92 0, 0.93 0.01, 0.95 0.01, 0.96 0.02, 0.98 0.04, 0.99 0.05, 0.99 0.07, 1 0.08, 1 1, 0 1, 0 0))"
+        # After fix, the exact tangent points are now included
+        expected_wkt = "Polygon ((0 0, 0.9 0, 0.92 0, 0.93 0.01, 0.95 0.01, 0.96 0.02, 0.98 0.04, 0.99 0.05, 0.99 0.07, 1 0.08, 1 0.1, 1 1, 0 1, 0 0))"
         self.assertEqual(result.asWkt(2), expected_wkt)
 
     def test_polygon_geometry_handling_fillet_first_vertex(self):
@@ -827,7 +829,8 @@ class TestQgsGeometry(QgisTestCase):
         result = polygon.fillet(0, 0.1)
         self.assertFalse(result.isEmpty())
 
-        expected_wkt = "Polygon ((0 0.08, 0.01 0.06, 0.02 0.04, 0.03 0.03, 0.04 0.02, 0.06 0.01, 0.08 0, 1 0, 1 1, 0 1, 0 0.08))"
+        # After fix, the exact tangent points are now included
+        expected_wkt = "Polygon ((0 0.1, 0 0.08, 0.01 0.06, 0.02 0.04, 0.03 0.03, 0.04 0.02, 0.06 0.01, 0.08 0, 0.1 0, 1 0, 1 1, 0 1, 0 0.1))"
         self.assertEqual(result.asWkt(2), expected_wkt)
 
     def test_polygon_geometry_handling_fillet_last_vertex(self):
@@ -837,7 +840,8 @@ class TestQgsGeometry(QgisTestCase):
         result = polygon.fillet(4, 0.1)
         self.assertFalse(result.isEmpty())
 
-        expected_wkt = "Polygon ((1 0, 1 1, 0 1, 0 0.08, 0.01 0.06, 0.02 0.04, 0.03 0.03, 0.04 0.02, 0.06 0.01, 0.08 0, 1 0))"
+        # After fix, the exact tangent points are now included
+        expected_wkt = "Polygon ((1 0, 1 1, 0 1, 0 0.1, 0 0.08, 0.01 0.06, 0.02 0.04, 0.03 0.03, 0.04 0.02, 0.06 0.01, 0.08 0, 0.1 0, 1 0))"
         self.assertEqual(result.asWkt(2), expected_wkt)
 
     # PRECISION AND PERFORMANCE TESTS
@@ -1191,8 +1195,8 @@ class TestQgsGeometry(QgisTestCase):
         max_radius = QgsGeometryUtils.maxFilletRadius(
             segment1_start, segment1_end, segment2_start, segment2_end
         )
-        # Should find intersection at (3, 0) and compute max radius
-        self.assertAlmostEqual(max_radius, 3.0, places=5)
+        # Intersection at (3, 0), distance to (3,1) is 1, so max radius is 1
+        self.assertAlmostEqual(max_radius, 1.0, places=5)
 
         # Test with very small segments
         segment1_start = QgsPoint(0.1, 0)
