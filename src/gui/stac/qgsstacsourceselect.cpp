@@ -142,7 +142,7 @@ void QgsStacSourceSelect::showItemDetails( const QModelIndex &index )
 {
   QgsStacObjectDetailsDialog details( this );
   details.setAuthcfg( mStac->authCfg() );
-  details.setStacObject( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
+  details.setContentFromStacObject( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
   details.exec();
 }
 

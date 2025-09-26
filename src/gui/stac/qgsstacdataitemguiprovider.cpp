@@ -98,6 +98,17 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       menu->addAction( actionDetails );
     }
   }
+
+  if ( QgsStacAssetItem *assetItem = qobject_cast<QgsStacAssetItem *>( item ) )
+  {
+    QAction *actionDownload = new QAction( tr( "Download Asset…" ), menu );
+    connect( actionDownload, &QAction::triggered, this, [assetItem, context] { downloadAssets( assetItem, context ); } );
+    menu->addAction( actionDownload );
+
+    QAction *actionDetails = new QAction( tr( "Details…" ), menu );
+    connect( actionDetails, &QAction::triggered, this, [assetItem] { showDetails( assetItem ); } );
+    menu->addAction( actionDetails );
+  }
 }
 
 void QgsStacDataItemGuiProvider::editConnection( QgsDataItem *item )
@@ -162,25 +173,35 @@ void QgsStacDataItemGuiProvider::loadConnections( QgsDataItem *item )
 
 void QgsStacDataItemGuiProvider::showDetails( QgsDataItem *item )
 {
-  QgsStacObject *obj = nullptr;
+  QgsStacObject *stacObj = nullptr;
   QString authcfg;
 
   if ( QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item ) )
   {
-    obj = itemItem->stacItem();
+    stacObj = itemItem->stacItem();
     authcfg = itemItem->stacController()->authCfg();
   }
   else if ( QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( item ) )
   {
-    obj = catalogItem->stacCatalog();
+    stacObj = catalogItem->stacCatalog();
   }
-
-  if ( obj )
+  if ( stacObj )
   {
     QgsStacObjectDetailsDialog d;
     d.setAuthcfg( authcfg );
-    d.setStacObject( obj );
+    d.setContentFromStacObject( stacObj );
     d.exec();
+    return;
+  }
+
+  if ( QgsStacAssetItem *assetItem = qobject_cast<QgsStacAssetItem *>( item ) )
+  {
+    QgsStacObjectDetailsDialog d;
+    QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( assetItem->parent() );
+    d.setAuthcfg( itemItem->stacController()->authCfg() );
+    d.setContentFromStacAsset( assetItem->stacAsset() );
+    d.exec();
+    return;
   }
 }
 
