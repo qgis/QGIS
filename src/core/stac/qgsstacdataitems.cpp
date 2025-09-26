@@ -48,6 +48,9 @@ bool QgsStacAssetItem::hasDragEnabled() const
 
 QgsMimeDataUtils::UriList QgsStacAssetItem::mimeUris() const
 {
+  QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( parent() );
+  const QString authcfg = itemItem->stacController()->authCfg();
+
   QgsMimeDataUtils::Uri uri;
   QUrl url( mStacAsset->href() );
   if ( url.isLocalFile() )
@@ -56,7 +59,7 @@ QgsMimeDataUtils::UriList QgsStacAssetItem::mimeUris() const
   }
   else
   {
-    uri = mStacAsset->uri();
+    uri = mStacAsset->uri( authcfg );
   }
 
   return { uri };
