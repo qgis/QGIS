@@ -109,44 +109,10 @@ QgsMimeDataUtils::UriList QgsStacItemItem::mimeUris() const
     {
       uri.uri = it->href();
     }
-    else if ( it->mediaType() == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) ||
-              it->mediaType() == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) )
+    else
     {
-      uri.layerType = QStringLiteral( "raster" );
-      uri.providerKey = QStringLiteral( "gdal" );
-      if ( it->href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
-           it->href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
-      {
-        uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( it->href() );
-        if ( !authcfg.isEmpty() )
-          uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
-      }
-      else if ( it->href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
-      {
-        uri.uri = QStringLiteral( "/vsis3/%1" ).arg( it->href().mid( 5 ) );
-      }
-      else
-      {
-        uri.uri = it->href();
-      }
+      uri = it->uri( authcfg );
     }
-    else if ( it->mediaType() == QLatin1String( "application/vnd.laszip+copc" ) )
-    {
-      uri.layerType = QStringLiteral( "pointcloud" );
-      uri.providerKey = QStringLiteral( "copc" );
-      uri.uri = it->href();
-      if ( !authcfg.isEmpty() )
-        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
-    }
-    else if ( it->href().endsWith( QLatin1String( "/ept.json" ) ) )
-    {
-      uri.layerType = QStringLiteral( "pointcloud" );
-      uri.providerKey = QStringLiteral( "ept" );
-      uri.uri = it->href();
-      if ( !authcfg.isEmpty() )
-        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
-    }
-    uri.name = it->title().isEmpty() ? url.fileName() : it->title();
     uris.append( uri );
   }
 

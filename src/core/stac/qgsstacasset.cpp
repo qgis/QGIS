@@ -80,6 +80,12 @@ QString QgsStacAsset::formatName() const
 
 QgsMimeDataUtils::Uri QgsStacAsset::uri() const
 {
+  return uri( QString() );
+}
+
+
+QgsMimeDataUtils::Uri QgsStacAsset::uri( QString authcfg ) const
+{
   QgsMimeDataUtils::Uri uri;
   QUrl url( href() );
   if ( formatName() == QLatin1String( "COG" ) )
@@ -90,6 +96,8 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
          href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
     {
       uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( href() );
+      if ( !authcfg.isEmpty() )
+        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
     }
     else if ( href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
     {
@@ -105,12 +113,16 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
     uri.layerType = QStringLiteral( "pointcloud" );
     uri.providerKey = QStringLiteral( "copc" );
     uri.uri = href();
+    if ( !authcfg.isEmpty() )
+      uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
   }
   else if ( formatName() == QLatin1String( "EPT" ) )
   {
     uri.layerType = QStringLiteral( "pointcloud" );
     uri.providerKey = QStringLiteral( "ept" );
     uri.uri = href();
+    if ( !authcfg.isEmpty() )
+      uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
   }
   else if ( formatName() == QLatin1String( "Zarr" ) )
   {
@@ -120,6 +132,8 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
          href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
     {
       uri.uri = QStringLiteral( "ZARR:\"/vsicurl/%1\"" ).arg( href() );
+      if ( !authcfg.isEmpty() )
+        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
     }
     else if ( href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
     {
