@@ -35,6 +35,8 @@
 #include "qgsmapmouseevent.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsgeometryutils.h"
+#include "qgsvector.h"
 
 QgsMapToolChamferFillet::QgsMapToolChamferFillet( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
@@ -211,6 +213,24 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
         }
         mModifiedFeature = fet.id();
         createUserInputWidget();
+
+        // Set maximum fillet radius based on geometry
+        if ( mUserInputWidget && mUserInputWidget->operation() == "fillet" && mVertexIndex >= 0 )
+        {
+          // Get the segments around the vertex
+          const QgsPoint vertexBefore = mManipulatedGeometry.vertexAt( mVertexIndex - 1 );
+          const QgsPoint vertex = mManipulatedGeometry.vertexAt( mVertexIndex );
+          const QgsPoint vertexAfter = mManipulatedGeometry.vertexAt( mVertexIndex + 1 );
+
+          if ( !vertexBefore.isEmpty() && !vertex.isEmpty() && !vertexAfter.isEmpty() )
+          {
+            const double maxRadius = QgsGeometryUtils::maxFilletRadius( vertexBefore, vertex, vertex, vertexAfter );
+            if ( maxRadius > 0 )
+            {
+              mUserInputWidget->setMaximumValue1( maxRadius );
+            }
+          }
+        }
 
         const bool hasZ = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
         const bool hasM = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
@@ -501,6 +521,11 @@ void QgsChamferFilletUserWidget::setValue1( double value )
 void QgsChamferFilletUserWidget::setValue2( double value )
 {
   mValue2SpinBox->setValue( value );
+}
+
+void QgsChamferFilletUserWidget::setMaximumValue1( double maximum )
+{
+  mValue1SpinBox->setMaximum( maximum );
 }
 
 double QgsChamferFilletUserWidget::value1() const

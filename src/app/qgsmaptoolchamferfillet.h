@@ -41,6 +41,7 @@ class APP_EXPORT QgsChamferFilletUserWidget : public QWidget, private Ui::QgsCha
     double value1() const;
     void setValue2( double value2 );
     double value2() const;
+    void setMaximumValue1( double maximum );
     QDoubleSpinBox *editor() const { return mValue1SpinBox; }
     QString operation() const;
 
