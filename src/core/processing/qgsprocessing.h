@@ -98,6 +98,8 @@ class CORE_EXPORT QgsProcessing
           return QStringLiteral( "TypeAnnotation" );
         case Qgis::ProcessingSourceType::VectorTile:
           return QStringLiteral( "TypeVectorTile" );
+        case Qgis::ProcessingSourceType::TiledScene:
+          return QStringLiteral( "TiledScene" );
       }
       return QString();
     }

@@ -3338,6 +3338,14 @@ QString QgsProcessingParameterMapLayer::asScriptCode() const
         code += QLatin1String( "annotation " );
         break;
 
+      case Qgis::ProcessingSourceType::VectorTile:
+        code += QLatin1String( "vectortile " );
+        break;
+
+      case Qgis::ProcessingSourceType::TiledScene:
+        code += QLatin1String( "tiledscene " );
+        break;
+
       default:
         break;
     }
@@ -3410,6 +3418,18 @@ QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( 
     else if ( def.startsWith( QLatin1String( "annotation" ), Qt::CaseInsensitive ) )
     {
       types << static_cast< int >( Qgis::ProcessingSourceType::Annotation );
+      def = def.mid( 11 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "vectortile" ), Qt::CaseInsensitive ) )
+    {
+      types << static_cast< int >( Qgis::ProcessingSourceType::VectorTile );
+      def = def.mid( 11 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "tiledscene" ), Qt::CaseInsensitive ) )
+    {
+      types << static_cast< int >( Qgis::ProcessingSourceType::TiledScene );
       def = def.mid( 11 );
       continue;
     }
@@ -4551,6 +4571,7 @@ QString QgsProcessingParameterMultipleLayers::createFileFilter() const
     case Qgis::ProcessingSourceType::Plugin:
     case Qgis::ProcessingSourceType::Annotation:
     case Qgis::ProcessingSourceType::VectorTile:
+    case Qgis::ProcessingSourceType::TiledScene:
       return createAllMapLayerFileFilter();
   }
   return QString();
@@ -6689,6 +6710,7 @@ bool QgsProcessingParameterFeatureSink::hasGeometry() const
     case Qgis::ProcessingSourceType::Plugin:
     case Qgis::ProcessingSourceType::PointCloud:
     case Qgis::ProcessingSourceType::Annotation:
+    case Qgis::ProcessingSourceType::TiledScene:
       return false;
   }
   return true;
@@ -7411,6 +7433,7 @@ bool QgsProcessingParameterVectorDestination::hasGeometry() const
     case Qgis::ProcessingSourceType::Plugin:
     case Qgis::ProcessingSourceType::PointCloud:
     case Qgis::ProcessingSourceType::Annotation:
+    case Qgis::ProcessingSourceType::TiledScene:
       return false;
   }
   return true;
