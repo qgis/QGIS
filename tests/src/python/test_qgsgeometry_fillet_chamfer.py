@@ -1141,6 +1141,71 @@ class TestQgsGeometry(QgisTestCase):
             self.assertIn("CircularString", wkt)
             self.assertIn("CompoundCurve", wkt)
 
+    def test_max_fillet_radius(self):
+        """Test maxFilletRadius utility function"""
+
+        # Test 90-degree angle (right angle)
+        segment1_start = QgsPoint(2, 0)
+        segment1_end = QgsPoint(0, 0)
+        segment2_start = QgsPoint(0, 0)
+        segment2_end = QgsPoint(0, 2)
+
+        max_radius = QgsGeometryUtils.maxFilletRadius(
+            segment1_start, segment1_end, segment2_start, segment2_end
+        )
+        # For a right angle with segments of length 2, max radius should be 2
+        self.assertAlmostEqual(max_radius, 2.0, places=5)
+
+        # Test 60-degree angle
+        import math
+
+        segment1_start = QgsPoint(2, 0)
+        segment1_end = QgsPoint(0, 0)
+        segment2_start = QgsPoint(0, 0)
+        segment2_end = QgsPoint(math.cos(math.pi / 3) * 2, math.sin(math.pi / 3) * 2)
+
+        max_radius = QgsGeometryUtils.maxFilletRadius(
+            segment1_start, segment1_end, segment2_start, segment2_end
+        )
+        # For 60-degree angle, tan(30°) = 0.577
+        expected = 2.0 * math.tan(math.pi / 6)
+        self.assertAlmostEqual(max_radius, expected, places=5)
+
+        # Test parallel segments (should return -1)
+        segment1_start = QgsPoint(0, 0)
+        segment1_end = QgsPoint(1, 0)
+        segment2_start = QgsPoint(0, 1)
+        segment2_end = QgsPoint(1, 1)
+
+        max_radius = QgsGeometryUtils.maxFilletRadius(
+            segment1_start, segment1_end, segment2_start, segment2_end
+        )
+        self.assertEqual(max_radius, -1.0)
+
+        # Test non-intersecting segments that converge when extended
+        segment1_start = QgsPoint(0, 0)
+        segment1_end = QgsPoint(1, 0)
+        segment2_start = QgsPoint(3, 0)
+        segment2_end = QgsPoint(3, 1)
+
+        max_radius = QgsGeometryUtils.maxFilletRadius(
+            segment1_start, segment1_end, segment2_start, segment2_end
+        )
+        # Should find intersection at (3, 0) and compute max radius
+        self.assertAlmostEqual(max_radius, 3.0, places=5)
+
+        # Test with very small segments
+        segment1_start = QgsPoint(0.1, 0)
+        segment1_end = QgsPoint(0, 0)
+        segment2_start = QgsPoint(0, 0)
+        segment2_end = QgsPoint(0, 0.1)
+
+        max_radius = QgsGeometryUtils.maxFilletRadius(
+            segment1_start, segment1_end, segment2_start, segment2_end
+        )
+        # For small segments, max radius should be 0.1
+        self.assertAlmostEqual(max_radius, 0.1, places=5)
+
 
 if __name__ == "__main__":
     unittest.main()

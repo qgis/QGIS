@@ -18,6 +18,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometrycollection.h"
+#include <limits>
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
 
@@ -1478,6 +1479,106 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
 
     return std::make_unique<QgsLineString>( points );
   }
+}
+
+double QgsGeometryUtils::maxFilletRadius( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+    const QgsPoint &segment2Start, const QgsPoint &segment2End,
+    double epsilon )
+{
+  double intersectionX, intersectionY;
+  bool isIntersection;
+  QgsGeometryUtilsBase::segmentIntersection(
+    segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(),
+    segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(),
+    intersectionX, intersectionY, isIntersection, epsilon, true );
+
+  if ( !isIntersection )
+  {
+    return -1.0;
+  }
+
+  const double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1Start.x(), segment1Start.y() );
+  const double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1End.x(), segment1End.y() );
+  const double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2Start.x(), segment2Start.y() );
+  const double dist2ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2End.x(), segment2End.y() );
+
+  double dir1X, dir1Y, dir2X, dir2Y;
+
+  if ( dist1ToStart > epsilon )
+  {
+    dir1X = segment1Start.x(); dir1Y = segment1Start.y();
+  }
+  else
+  {
+    dir1X = segment1End.x(); dir1Y = segment1End.y();
+  }
+
+  if ( dist2ToStart > epsilon )
+  {
+    dir2X = segment2Start.x(); dir2Y = segment2Start.y();
+  }
+  else
+  {
+    dir2X = segment2End.x(); dir2Y = segment2End.y();
+  }
+
+  const double angle = QgsGeometryUtilsBase::angleBetweenThreePoints(
+                         dir1X, dir1Y,
+                         intersectionX, intersectionY,
+                         dir2X, dir2Y
+                       );
+
+  if ( std::abs( angle ) < epsilon || std::abs( angle - M_PI ) < epsilon )
+  {
+    return -1.0;
+  }
+
+  double workingAngle = angle;
+  if ( workingAngle > M_PI )
+  {
+    workingAngle = 2 * M_PI - workingAngle;
+  }
+
+  const double halfAngle = workingAngle / 2.0;
+  if ( std::abs( std::sin( halfAngle ) ) < epsilon )
+  {
+    return -1.0;
+  }
+
+  const double maxDist1 = ( dist1ToStart > epsilon ) ? dist1ToStart : dist1ToEnd;
+  const double maxDist2 = ( dist2ToStart > epsilon ) ? dist2ToStart : dist2ToEnd;
+
+  const double seg1Length = QgsGeometryUtilsBase::distance2D( segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y() );
+  const double seg2Length = QgsGeometryUtilsBase::distance2D( segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y() );
+
+  const bool intersectionOnSeg1 = std::abs( ( dist1ToStart + dist1ToEnd ) - seg1Length ) < epsilon;
+  const bool intersectionOnSeg2 = std::abs( ( dist2ToStart + dist2ToEnd ) - seg2Length ) < epsilon;
+
+  double maxDistanceToTangent = std::numeric_limits<double>::max();
+
+  if ( intersectionOnSeg1 )
+  {
+    maxDistanceToTangent = std::min( maxDistanceToTangent, maxDist1 - epsilon );
+  }
+
+  if ( intersectionOnSeg2 )
+  {
+    maxDistanceToTangent = std::min( maxDistanceToTangent, maxDist2 - epsilon );
+  }
+
+  if ( maxDistanceToTangent == std::numeric_limits<double>::max() )
+  {
+    maxDistanceToTangent = std::min( maxDist1, maxDist2 ) - epsilon;
+  }
+
+  if ( maxDistanceToTangent <= 0 )
+  {
+    return -1.0;
+  }
+
+  const double maxRadius = maxDistanceToTangent * std::tan( halfAngle );
+
+  return maxRadius;
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
