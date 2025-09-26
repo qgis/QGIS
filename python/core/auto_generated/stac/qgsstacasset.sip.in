@@ -76,6 +76,14 @@ Returns the format name for cloud optimized formats
     QgsMimeDataUtils::Uri uri() const;
 %Docstring
 Returns a uri for the asset if it is a cloud optimized file like COG or
+COPC, empty auth configuration
+
+.. versionadded:: 3.42
+%End
+
+    QgsMimeDataUtils::Uri uri( QString authcfg ) const;
+%Docstring
+Returns a uri for the asset if it is a cloud optimized file like COG or
 COPC
 
 .. versionadded:: 3.42
