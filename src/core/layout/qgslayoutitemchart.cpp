@@ -66,7 +66,7 @@ void QgsLayoutItemChart::setPlot( QgsPlot *plot )
     return;
   }
 
-  // Logic to minimise plot data refresh to bare minimum
+  // Logic to minimize plot data refresh to bare minimum
   bool requireRefresh = !mPlot || !plot;
   if ( mPlot && plot )
   {
