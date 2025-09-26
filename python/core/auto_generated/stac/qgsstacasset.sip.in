@@ -89,6 +89,17 @@ COPC
 .. versionadded:: 3.42
 %End
 
+    QString toHtml() const;
+%Docstring
+Returns an HTML representation of the STAC Asset without an ID
+%End
+
+    QString toHtml( const QString &assetId ) const;
+%Docstring
+Returns an HTML representation of the STAC Asset including its ID within
+its container
+%End
+
 };
 
 /************************************************************************
