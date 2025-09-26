@@ -188,36 +188,36 @@ void QgsStacDataItemGuiProvider::loadConnections( QgsDataItem *item )
 
 void QgsStacDataItemGuiProvider::showDetails( QgsDataItem *item )
 {
-  QgsStacObject *stacObj = nullptr;
   QString authcfg;
 
-  if ( QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item ) )
+  QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item );
+  QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( item );
+  QgsStacAssetItem *assetItem = qobject_cast<QgsStacAssetItem *>( item );
+
+  if ( !( itemItem || catalogItem || assetItem ) )
   {
-    stacObj = itemItem->stacItem();
-    authcfg = itemItem->stacController()->authCfg();
-  }
-  else if ( QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( item ) )
-  {
-    stacObj = catalogItem->stacCatalog();
-  }
-  if ( stacObj )
-  {
-    QgsStacObjectDetailsDialog d;
-    d.setAuthcfg( authcfg );
-    d.setContentFromStacObject( stacObj );
-    d.exec();
     return;
   }
 
-  if ( QgsStacAssetItem *assetItem = qobject_cast<QgsStacAssetItem *>( item ) )
+  QgsStacObjectDetailsDialog d;
+  if ( itemItem )
   {
-    QgsStacObjectDetailsDialog d;
-    QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( assetItem->parent() );
-    d.setAuthcfg( itemItem->stacController()->authCfg() );
-    d.setContentFromStacAsset( assetItem->name(), assetItem->stacAsset() );
-    d.exec();
-    return;
+    authcfg = itemItem->stacController()->authCfg();
+    d.setContentFromStacObject( itemItem->stacItem() );
   }
+  else if ( catalogItem )
+  {
+    d.setContentFromStacObject( catalogItem->stacCatalog() );
+  }
+  else if ( assetItem )
+  {
+    QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( assetItem->parent() );
+    authcfg = itemItem->stacController()->authCfg();
+    d.setContentFromStacAsset( assetItem->name(), assetItem->stacAsset() );
+  }
+  d.setAuthcfg( authcfg );
+  d.exec();
+  return;
 }
 
 void QgsStacDataItemGuiProvider::downloadAssets( QgsDataItem *item, QgsDataItemGuiContext context )
