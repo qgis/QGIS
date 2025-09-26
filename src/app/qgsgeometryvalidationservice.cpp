@@ -14,6 +14,7 @@ email                : matthias@opengis.ch
  ***************************************************************************/
 
 
+#include "qgsfeatureid.h"
 #include "qgsgeometryvalidationservice.h"
 #include "moc_qgsgeometryvalidationservice.cpp"
 #include "qgsproject.h"
@@ -32,6 +33,10 @@ email                : matthias@opengis.ch
 
 #include <QtConcurrent>
 #include <QFutureWatcher>
+#include <qpair.h>
+#include <qstringliteral.h>
+
+constexpr const char* QGIS_IDENTIFIER = "qgis";
 
 QgsGeometryValidationService::QgsGeometryValidationService( QgsProject *project )
   : mProject( project )
@@ -142,7 +147,8 @@ void QgsGeometryValidationService::onFeatureDeleted( QgsVectorLayer *layer, QgsF
   }
   else
   {
-    layer->setAllowCommit( checkInformation.singleFeatureCheckErrors.empty() );
+    layer->setAllowCommit( QGIS_IDENTIFIER, checkInformation.singleFeatureCheckErrors.empty(), 
+    getFeatureCheckErrors(layer));
   }
 
   // There should be no geometry errors on a non-existent feature, right?
@@ -349,15 +355,25 @@ void QgsGeometryValidationService::clearTopologyChecks( QgsVectorLayer *layer )
 {
   QList<std::shared_ptr<QgsGeometryCheckError>> &allErrors = mLayerChecks[layer].topologyCheckErrors;
   allErrors.clear();
-  layer->setAllowCommit( mLayerChecks[layer].singleFeatureCheckErrors.empty() );
+  layer->setAllowCommit( QGIS_IDENTIFIER, mLayerChecks[layer].singleFeatureCheckErrors.empty());
 
   emit topologyChecksCleared( layer );
+}
+
+inline QStringList QgsGeometryValidationService::getFeatureCheckErrors(QgsVectorLayer *layer) const {
+  QStringList errors;
+  for(const auto& featureIdCheckErrorsPair : mLayerChecks[layer].singleFeatureCheckErrors.toStdMap()) {
+    for(const std::shared_ptr<QgsSingleGeometryCheckError>& geometryCheckError : featureIdCheckErrorsPair.second) {
+      errors << geometryCheckError->description();
+    }
+  }
+  return errors;
 }
 
 void QgsGeometryValidationService::invalidateTopologyChecks( QgsVectorLayer *layer )
 {
   cancelTopologyCheck( layer );
-  layer->setAllowCommit( false );
+  layer->setAllowCommit( QGIS_IDENTIFIER, false, {"Topology checks are invalid"});
 }
 
 void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFeatureId fid )
@@ -389,10 +405,11 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
   if ( !allErrors.empty() )
     mLayerChecks[layer].singleFeatureCheckErrors.insert( fid, allErrors );
 
-  if ( !mLayerChecks[layer].singleFeatureCheckErrors.empty() )
-    layer->setAllowCommit( false );
+  if ( !mLayerChecks[layer].singleFeatureCheckErrors.empty() ) {
+    layer->setAllowCommit( QGIS_IDENTIFIER, false, getFeatureCheckErrors(layer));
+  }
   else if ( mLayerChecks[layer].topologyChecks.empty() )
-    layer->setAllowCommit( true );
+    layer->setAllowCommit( QGIS_IDENTIFIER, true);
 
   emit geometryCheckCompleted( layer, fid, allErrors );
 }
@@ -406,7 +423,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
 {
   cancelTopologyCheck( layer );
   clearTopologyChecks( layer );
-  layer->setAllowCommit( false );
+  layer->setAllowCommit(QGIS_IDENTIFIER, false, {"The topology is being checked now"});
 
   QgsFeatureIds affectedFeatureIds;
   if ( layer->editBuffer() )
@@ -456,7 +473,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
   QFutureWatcher<void> *futureWatcher = new QFutureWatcher<void>();
   connect( futureWatcher, &QFutureWatcherBase::finished, this, [&allErrors, layer, feedbacks, futureWatcher, stopEditing, this]() {
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Read );
-    layer->setAllowCommit( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() );
+    layer->setAllowCommit(QGIS_IDENTIFIER, allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty(), {"Layer checks in progress"} );
     errorLocker.unlock();
     qDeleteAll( feedbacks );
     futureWatcher->deleteLater();
