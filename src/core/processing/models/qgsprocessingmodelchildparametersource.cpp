@@ -224,8 +224,21 @@ QString QgsProcessingModelChildParameterSource::friendlyIdentifier( QgsProcessin
   switch ( mSource )
   {
     case Qgis::ProcessingModelChildParameterSource::ModelParameter:
-      return model ? model->parameterDefinition( mParameterName )->description() : mParameterName;
+    {
 
+      if ( model )
+      {
+        const QgsProcessingParameterDefinition *paramDefinition = model->parameterDefinition( mParameterName );
+
+        // A model can be valid (non null) but we could be looking for a null parameter (if input if not set yet)
+        if ( paramDefinition )
+        {
+          return model->parameterDefinition( mParameterName )->description();
+        }
+      }
+
+      return mParameterName;
+    }
     case Qgis::ProcessingModelChildParameterSource::ChildOutput:
     {
       if ( model )
@@ -242,11 +255,11 @@ QString QgsProcessingModelChildParameterSource::friendlyIdentifier( QgsProcessin
             break;
           }
         }
-        return QObject::tr( "'%1' from algorithm '%2'" ).arg( outputName, alg.description() );
+        return QObject::tr( "<%1>" ).arg( alg.description() );
       }
       else
       {
-        return QObject::tr( "'%1' from algorithm '%2'" ).arg( mOutputName, mChildId );
+        return QObject::tr( "<%1>" ).arg( mChildId );
       }
     }
 

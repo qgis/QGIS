@@ -122,7 +122,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
    * whether the user dragged :
    *    - From an input socket to an output socket
    *    - From an output socket to an input socket
-   * 
+   *
    * In the code, we always come back to the first case
    */
   if ( !mToSocket->isInput() )
