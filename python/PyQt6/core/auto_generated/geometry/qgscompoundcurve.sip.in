@@ -183,6 +183,8 @@ Appends first point if not already closed.
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
+    virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const;
+
     virtual QgsCompoundCurve *reversed() const /Factory/;
 
     virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
