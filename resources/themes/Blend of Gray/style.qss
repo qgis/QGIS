@@ -988,6 +988,11 @@ QTreeView::item:selected, QTreeView::branch:selected {
     color: @text;
 }
 
+QTreeView::item:selected:disabled, QTreeView::branch:selected:disabled {
+    background-color: @itemalternativebackground;
+    color: @background;
+}
+
 QTreeView::branch:has-children:!has-siblings:closed,
 QTreeView::branch:closed:has-children:has-siblings {
     border-image: none;
