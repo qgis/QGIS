@@ -139,7 +139,6 @@ QgsFields QgsGeometryCheckGapAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;
@@ -170,6 +169,12 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
   int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
+
+  // ensure that unique ID field is indeed unique
+  if ( input->featureCount() != input->uniqueValues( uniqueIdFieldIdx ).count() )
+  {
+    throw QgsProcessingException( QObject::tr( "Field '%1' contains non-unique values and can not be used as unique ID." ).arg( uniqueIdFieldName ) );
+  }
 
   QgsFields neighborsFields = QgsFields();
   neighborsFields.append( QgsField( "gc_errorid", QMetaType::LongLong ) );
