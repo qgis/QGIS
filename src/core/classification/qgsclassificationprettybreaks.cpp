@@ -45,6 +45,13 @@ QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double &minimum, d
   if ( symmetricModeEnabled() )
     makeBreaksSymmetric( breaks, symmetryPoint(), symmetryAstride() );
 
+  // Special case for single class
+  if ( minimum == maximum && breaks.isEmpty() )
+  {
+    // 1 is totally arbitrary but we need something
+    breaks << maximum + 1.0;
+  }
+
   return breaks;
 }
 
