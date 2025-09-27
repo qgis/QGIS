@@ -45,6 +45,7 @@ namespace Tools
 			while (! m_pool.empty())
 			{
 				SpatialIndex::MVRTree::Node* x = m_pool.top(); m_pool.pop();
+				(void)x;
 			}
 		}
 

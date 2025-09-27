@@ -548,7 +548,7 @@ bool SpatialIndex::MVRTree::MVRTree::isIndexValid()
 
 	//std::cerr << "Total accessible nodes: " << visitedEntries.size() << std::endl;
 	//std::cerr << "Degenerate nodes: " << degenerateEntries << std::endl;
-
+	(void)degenerateEntries;
 	return ret;
 }
 

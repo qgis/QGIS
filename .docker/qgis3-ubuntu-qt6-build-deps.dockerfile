@@ -144,17 +144,6 @@ RUN  apt-get update \
      libgdal-dev \
      libproj-dev
 
-# download spatialindex and compile it
-RUN curl -L https://github.com/libspatialindex/libspatialindex/releases/download/2.0.0/spatialindex-src-2.0.0.tar.gz --output spatialindex-src-2.0.0.tar.gz \
-    && mkdir spatialindex \
-    && tar zxf spatialindex-src-2.0.0.tar.gz -C spatialindex --strip-components=1 \
-    && rm -f spatialindex-src-2.0.0.tar.gz \
-    && mkdir -p spatialindex/build \
-    && cd spatialindex/build \
-    && cmake -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local .. \
-    && ninja \
-    && ninja install
-
 RUN 
 FROM binary-for-oracle AS binary-only
 
