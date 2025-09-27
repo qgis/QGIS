@@ -15,6 +15,9 @@
 #ifndef QGSDEVTOOLSMODELNODE_H
 #define QGSDEVTOOLSMODELNODE_H
 
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include <QElapsedTimer>
 #include <QVariant>
 #include <QColor>
@@ -26,15 +29,16 @@ class QAction;
 class QgsDevToolsModelGroup;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsDevToolsModelNode
  * \brief Base class for nodes in a dev tools model.
+ * \since QGIS 4.0
  */
-class QgsDevToolsModelNode
+class GUI_EXPORT QgsDevToolsModelNode
 {
   public:
     //! Custom node data roles
-    enum Roles
+    enum class Roles
     {
       RoleStatus = Qt::UserRole + 1, //!< Request status role
       RoleId,                        //!< Request ID role
@@ -83,12 +87,26 @@ class QgsDevToolsModelNode
 };
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsDevToolsModelGroup
  * \brief Base class for dev tools model "group" nodes, which contain children of their own.
+ * \since QGIS 4.0
  */
-class QgsDevToolsModelGroup : public QgsDevToolsModelNode
+class GUI_EXPORT QgsDevToolsModelGroup : public QgsDevToolsModelNode
 {
+  public:
+    ~QgsDevToolsModelGroup() override;
+
+    /**
+     * Constructor for a QgsDevToolsModelGroup. Copy constructor is disabled
+     */
+    QgsDevToolsModelGroup( QgsDevToolsModelGroup &&other ) noexcept = default;
+
+    /**
+     * Assignement operator for QgsDevToolsModelGroup. Copy assignement is disabled
+     */
+    QgsDevToolsModelGroup &operator=( QgsDevToolsModelGroup &&other ) noexcept = default;
+
   public:
     /**
      * Adds a \a child node to this node.
@@ -133,15 +151,20 @@ class QgsDevToolsModelGroup : public QgsDevToolsModelNode
     std::deque<std::unique_ptr<QgsDevToolsModelNode>> mChildren;
 
   private:
+    // Prevent copying
+    QgsDevToolsModelGroup( const QgsDevToolsModelGroup & ) = delete;
+    QgsDevToolsModelGroup &operator=( const QgsDevToolsModelGroup & ) = delete;
+
     QString mGroupTitle;
 };
 
 /**
- * \ingroup app
+ * \ingroup gui
  * \class QgsDevToolsModelValueNode
  * \brief A "key: value" style node for a dev tools model.
+ * \since QGIS 4.0
  */
-class QgsDevToolsModelValueNode : public QgsDevToolsModelNode
+class GUI_EXPORT QgsDevToolsModelValueNode : public QgsDevToolsModelNode
 {
   public:
     /**

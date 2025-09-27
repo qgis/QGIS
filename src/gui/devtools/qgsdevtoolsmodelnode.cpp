@@ -52,6 +52,8 @@ QgsDevToolsModelGroup::QgsDevToolsModelGroup( const QString &title )
 {
 }
 
+QgsDevToolsModelGroup::~QgsDevToolsModelGroup() = default;
+
 QgsDevToolsModelNode *QgsDevToolsModelGroup::addChild( std::unique_ptr<QgsDevToolsModelNode> child )
 {
   if ( !child )

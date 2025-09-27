@@ -48,7 +48,7 @@ QgsDatabaseQueryLoggerTreeView::QgsDatabaseQueryLoggerTreeView( QgsAppQueryLogge
   setFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
 
   mProxyModel = new QgsDatabaseQueryLoggerProxyModel( mLogger, this );
-  mProxyModel->setSortRole( QgsDevToolsModelNode::RoleSort );
+  mProxyModel->setSortRole( static_cast<int>( QgsDevToolsModelNode::Roles::RoleSort ) );
   setModel( mProxyModel );
 
   connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, [this]( const QModelIndex &parent, int first, int last ) {
@@ -168,7 +168,7 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
   setupUi( this );
 
   mTreeView = new QgsDatabaseQueryLoggerTreeView( mLogger );
-  mTreeView->setItemDelegateForColumn( 1, new QueryCostDelegate( QgsDevToolsModelNode::RoleElapsedTime, QgsDevToolsModelNode::RoleMaximumTime, mTreeView ) );
+  mTreeView->setItemDelegateForColumn( 1, new QueryCostDelegate( static_cast<int>( QgsDevToolsModelNode::Roles::RoleElapsedTime ), static_cast<int>( QgsDevToolsModelNode::Roles::RoleMaximumTime ), mTreeView ) );
   mTreeView->setSortingEnabled( true );
   mTreeView->sortByColumn( 0, Qt::SortOrder::AscendingOrder );
 
