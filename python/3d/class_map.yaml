@@ -770,6 +770,17 @@ QgsSingleColorPointCloud3DSymbol.singleColor: src/3d/symbols/qgspointcloud3dsymb
 QgsSingleColorPointCloud3DSymbol.symbolType: src/3d/symbols/qgspointcloud3dsymbol.h#L202
 QgsSingleColorPointCloud3DSymbol.writeXml: src/3d/symbols/qgspointcloud3dsymbol.h#L205
 QgsSingleColorPointCloud3DSymbol: src/3d/symbols/qgspointcloud3dsymbol.h#L197
+QgsTextureAtlas.__len__: src/3d/qgstextureatlasgenerator.h#L107
+QgsTextureAtlas.atlasSize: src/3d/qgstextureatlasgenerator.h#L58
+QgsTextureAtlas.count: src/3d/qgstextureatlasgenerator.h#L104
+QgsTextureAtlas.isValid: src/3d/qgstextureatlasgenerator.h#L52
+QgsTextureAtlas.rect: src/3d/qgstextureatlasgenerator.h#L71
+QgsTextureAtlas.renderAtlasTexture: src/3d/qgstextureatlasgenerator.h#L91
+QgsTextureAtlas.renderDebugTexture: src/3d/qgstextureatlasgenerator.h#L99
+QgsTextureAtlas: src/3d/qgstextureatlasgenerator.h#L40
+QgsTextureAtlasGenerator.createFromImages: src/3d/qgstextureatlasgenerator.h#L161
+QgsTextureAtlasGenerator.createFromRects: src/3d/qgstextureatlasgenerator.h#L150
+QgsTextureAtlasGenerator: src/3d/qgstextureatlasgenerator.h#L135
 QgsTiledSceneLayer3DRenderer.clone: src/3d/qgstiledscenelayer3drenderer.h#L107
 QgsTiledSceneLayer3DRenderer.layer: src/3d/qgstiledscenelayer3drenderer.h#L72
 QgsTiledSceneLayer3DRenderer.maximumScreenError: src/3d/qgstiledscenelayer3drenderer.h#L81
