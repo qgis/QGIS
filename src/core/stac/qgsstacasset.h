@@ -80,7 +80,7 @@ class CORE_EXPORT QgsStacAsset
 
     /**
      * Returns a uri for the asset if it is a cloud optimized file like COG or COPC
-     * \since QGIS 3.42
+     * \since QGIS 4.0
      */
     QgsMimeDataUtils::Uri uri( const QString &authcfg ) const;
 
