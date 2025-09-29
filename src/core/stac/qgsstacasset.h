@@ -82,7 +82,7 @@ class CORE_EXPORT QgsStacAsset
      * Returns a uri for the asset if it is a cloud optimized file like COG or COPC
      * \since QGIS 3.42
      */
-    QgsMimeDataUtils::Uri uri( QString authcfg ) const;
+    QgsMimeDataUtils::Uri uri( const QString &authcfg ) const;
 
     /**
      * Returns an HTML representation of the STAC Asset including its ID within its container
