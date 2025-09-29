@@ -513,6 +513,19 @@ class TestQgsShortcutsManager(QgisTestCase):
             toggle_code_comment_action.toolTip(), "<b>Toggle comment</b> (Ctrl+/)"
         )
 
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeReformat
+            ).toString(),
+            "Ctrl+Alt+F",
+        )
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeToggleComment
+            ).toString(),
+            "Ctrl+/",
+        )
+
         # link an action to a common action
         my_reformat_action1 = QAction()
         s.initializeCommonAction(
@@ -552,6 +565,19 @@ class TestQgsShortcutsManager(QgisTestCase):
         self.assertEqual(my_reformat_action2.toolTip(), "<b>Reformat code</b> (B)")
         self.assertEqual(my_toggle_comment_action.shortcut().toString(), "Ctrl+/")
 
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeReformat
+            ).toString(),
+            "B",
+        )
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeToggleComment
+            ).toString(),
+            "Ctrl+/",
+        )
+
         s.setKeySequence(toggle_code_comment_action, "C")
         self.assertEqual(my_reformat_action1.shortcut().toString(), "B")
         self.assertEqual(my_reformat_action1.toolTip(), "<b>Reformat code</b> (B)")
@@ -560,6 +586,19 @@ class TestQgsShortcutsManager(QgisTestCase):
         self.assertEqual(my_toggle_comment_action.shortcut().toString(), "C")
         self.assertEqual(
             my_toggle_comment_action.toolTip(), "<b>Toggle comment</b> (C)"
+        )
+
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeReformat
+            ).toString(),
+            "B",
+        )
+        self.assertEqual(
+            s.sequenceForCommonAction(
+                QgsShortcutsManager.CommonAction.CodeToggleComment
+            ).toString(),
+            "C",
         )
 
         # delete local action

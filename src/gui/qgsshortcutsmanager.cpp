@@ -347,6 +347,15 @@ QShortcut *QgsShortcutsManager::shortcutForSequence( const QKeySequence &sequenc
   return nullptr;
 }
 
+QKeySequence QgsShortcutsManager::sequenceForCommonAction( CommonAction action ) const
+{
+  const auto it = mCommonActions.constFind( static_cast< int >( action ) );
+  if ( it == mCommonActions.constEnd() )
+    return QKeySequence();
+
+  return it.value()->shortcut();
+}
+
 QAction *QgsShortcutsManager::actionByName( const QString &name ) const
 {
   for ( ActionsHash::const_iterator it = mActions.constBegin(); it != mActions.constEnd(); ++it )

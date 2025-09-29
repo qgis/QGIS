@@ -252,6 +252,12 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     QShortcut *shortcutForSequence( const QKeySequence &sequence ) const;
 
     /**
+     * Returns the key sequence which is associated with a common \a action, or an empty sequence if no shortcut is assigned to that action.
+     * \since QGIS 4.0
+     */
+    QKeySequence sequenceForCommonAction( CommonAction action ) const;
+
+    /**
      * Returns an action by its name, or NULLPTR if nothing found.
      * \param name action name. Must match QAction's text.
      * \see shortcutByName()
