@@ -23,6 +23,12 @@ rather accessed through :py:func:`QgsGui.shortcutsManager()`.
 #include "qgsshortcutsmanager.h"
 %End
   public:
+    enum class CommonAction
+    {
+      CodeToggleComment,
+      CodeReformat,
+    };
+
     QgsShortcutsManager( QObject *parent /TransferThis/ = 0, const QString &settingsRoot = "/shortcuts/" );
 %Docstring
 Constructor for QgsShortcutsManager.
@@ -35,6 +41,8 @@ Constructor for QgsShortcutsManager.
                      register actions which conflict with the built in
                      QGIS actions.
 %End
+
+    ~QgsShortcutsManager();
 
     void registerAllChildren( QObject *object, bool recursive = false, const QString &section = QString() );
 %Docstring
@@ -105,6 +113,16 @@ in GUI.
 .. seealso:: :py:func:`unregisterAction`
 
 .. seealso:: :py:func:`registerAllChildActions`
+%End
+
+    void initializeCommonAction( QAction *action, CommonAction commonAction );
+%Docstring
+Initializes an ``action`` as a common action.
+
+This automatically configures the ``action`` to use the properties for
+the common action, such as setting the action's tooltip and shortcut.
+
+.. versionadded:: 4.0
 %End
 
     bool registerShortcut( QShortcut *shortcut, const QString &defaultSequence = QString(), const QString &section = QString() );

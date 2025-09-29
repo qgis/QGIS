@@ -39,6 +39,17 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
 
   public:
     /**
+     * Contains common actions which are used across a variety of classes.
+     * \since QGIS 4.0
+     */
+    enum class CommonAction
+    {
+      CodeToggleComment, //!< Toggle code comments
+      CodeReformat,      //!< Reformat code
+    };
+    Q_ENUM( CommonAction )
+
+    /**
      * Constructor for QgsShortcutsManager.
      * \param parent parent object
      * \param settingsRoot root QgsSettings path for storing settings, e.g., "/myplugin/shortcuts". Leave
@@ -46,6 +57,8 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * taken to not register actions which conflict with the built in QGIS actions.
      */
     QgsShortcutsManager( QObject *parent SIP_TRANSFERTHIS = nullptr, const QString &settingsRoot = "/shortcuts/" );
+
+    ~QgsShortcutsManager() override;
 
     /**
      * Automatically registers all QActions and QShortcuts which are children of the
@@ -92,6 +105,16 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * \see registerAllChildActions()
      */
     bool registerAction( QAction *action, const QString &defaultShortcut = QString(), const QString &section = QString() );
+
+    /**
+     * Initializes an \a action as a common action.
+     *
+     * This automatically configures the \a action to use the properties for the common action, such
+     * as setting the action's tooltip and shortcut.
+     *
+     * \since QGIS 4.0
+     */
+    void initializeCommonAction( QAction *action, CommonAction commonAction );
 
     /**
      * Registers a QShortcut with the manager so the shortcut can be configured in GUI.
@@ -273,6 +296,8 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     ActionsHash mActions;
     ShortcutsHash mShortcuts;
     QString mSettingsPath;
+    QHash< int, QAction * > mCommonActions;
+    QHash< QAction *, CommonAction > mLinkedCommonActions;
 
     static QString formatActionToolTip( const QString &toolTip );
 
