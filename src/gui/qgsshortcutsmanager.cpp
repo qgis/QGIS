@@ -105,15 +105,7 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
   action->setShortcut( sequence );
   if ( !action->toolTip().isEmpty() )
   {
-    const QStringList parts = action->toolTip().split( '\n' );
-    QString formatted = QStringLiteral( "<b>%1</b>" ).arg( parts.at( 0 ) );
-    if ( parts.count() > 1 )
-    {
-      for ( int i = 1; i < parts.count(); ++i )
-        formatted += QStringLiteral( "<p>%1</p>" ).arg( parts.at( i ) );
-    }
-
-    action->setToolTip( formatted );
+    action->setToolTip( formatActionToolTip( action->toolTip() ) );
     updateActionToolTip( action, sequence );
   }
 
@@ -364,6 +356,22 @@ QObject *QgsShortcutsManager::objectForSettingKey( const QString &settingKey ) c
 void QgsShortcutsManager::shortcutDestroyed( QShortcut *shortcut )
 {
   mShortcuts.remove( shortcut );
+}
+
+QString QgsShortcutsManager::formatActionToolTip( const QString &toolTip )
+{
+  if ( toolTip.isEmpty() )
+    return QString();
+
+  const QStringList parts = toolTip.split( '\n' );
+  QString formatted = QStringLiteral( "<b>%1</b>" ).arg( parts.at( 0 ) );
+  if ( parts.count() > 1 )
+  {
+    for ( int i = 1; i < parts.count(); ++i )
+      formatted += QStringLiteral( "<p>%1</p>" ).arg( parts.at( i ) );
+  }
+
+  return formatted;
 }
 
 void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString &sequence )
