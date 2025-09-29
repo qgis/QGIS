@@ -262,7 +262,7 @@ if (WITH_3D)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/3d/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/3d/project.py @ONLY)
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml.temp" "${toml}")
   execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml.temp ${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml)
-  SET(SIP_CONCAT_PARTS 10) # 3D doesn't have enough .sip files to fill 15+ .cpp files
+  SET(SIP_CONCAT_PARTS 8) # 3D doesn't have enough .sip files to fill 15+ .cpp files
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._3d_p 3d/3d.sip "${sip_files_3d}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._3d_p 3d/3d.sip ${cpp_files} "" qgis_core qgis_3d)
 endif()
