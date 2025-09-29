@@ -3247,7 +3247,7 @@ void QgisApp::showStyleManager()
 void QgisApp::initPythonConsoleOptions()
 {
   QgsPythonRunner::run( QStringLiteral( "import console" ) );
-  QgsPythonRunner::run( QStringLiteral( "console.init_options_widget()" ) );
+  QgsPythonRunner::run( QStringLiteral( "console.init_console()" ) );
 }
 
 void QgisApp::showPythonDialog()
