@@ -38,6 +38,7 @@
 #include "qgstextdocument.h"
 #include "qgslinevertexdata_p.h"
 #include "qgslinematerial_p.h"
+#include "qgsmarkersymbol.h"
 
 #include <QtConcurrent>
 #include <Qt3DCore/QTransform>
@@ -56,7 +57,8 @@ QgsAnnotationLayerChunkLoader::QgsAnnotationLayerChunkLoader( const QgsAnnotatio
 struct Billboard
 {
     QVector3D position;
-    int textureId;
+    int textureId = -1;
+    const QgsMarkerSymbol *markerSymbol = nullptr;
 };
 
 struct TextBillboard
@@ -235,8 +237,25 @@ void QgsAnnotationLayerChunkLoader::start()
 
             Billboard billboard;
             billboard.position = ( QgsVector3D( mapPoint.x(), mapPoint.y(), z ) - mChunkOrigin ).toVector3D();
-            billboard.textureId = textures.size();
-            textures.append( QgsPoint3DBillboardMaterial::renderSymbolToImage( marker->symbol(), mRenderContext ) );
+            billboard.textureId = -1;
+
+            for ( const Billboard &existingBillboard : billboards )
+            {
+              if ( existingBillboard.markerSymbol && marker->symbol()->rendersIdenticallyTo( existingBillboard.markerSymbol ) )
+              {
+                // marker symbol has been reused => reuse existing texture to minimize size of texture atlas
+                billboard.textureId = existingBillboard.textureId;
+                break;
+              }
+            }
+
+            if ( billboard.textureId < 0 )
+            {
+              // could not match to previously considered marker, have to render and add to texture atlas
+              billboard.markerSymbol = marker->symbol();
+              billboard.textureId = textures.size();
+              textures.append( QgsPoint3DBillboardMaterial::renderSymbolToImage( marker->symbol(), mRenderContext ) );
+            }
             billboards.emplace_back( std::move( billboard ) );
 
             if ( showCallouts )
