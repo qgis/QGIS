@@ -819,7 +819,7 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         self.assertEqual(
             dumpRangeBreaks(renderer.ranges()),
             "(0.0000-1.0000,)",
-            "Equal interval classification not correct",
+            "Pretty breaks classification not correct",
         )
 
         ml = createMemoryLayer((1, 1))
