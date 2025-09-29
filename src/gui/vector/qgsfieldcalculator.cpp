@@ -15,7 +15,6 @@
 
 #include <QMessageBox>
 
-
 #include "qgsfieldcalculator.h"
 #include "moc_qgsfieldcalculator.cpp"
 #include "qgsdistancearea.h"
@@ -174,6 +173,13 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   setDialogButtonState();
 }
 
+void QgsFieldCalculator::appendScope( QgsExpressionContextScope *scope )
+{
+  QgsExpressionContext context { builder->expressionContext() };
+  context.appendScope( scope );
+  builder->setExpressionContext( context );
+}
+
 void QgsFieldCalculator::accept()
 {
   calculate();
@@ -199,7 +205,15 @@ void QgsFieldCalculator::calculate()
   exp.setDistanceUnits( QgsProject::instance()->distanceUnits() );
   exp.setAreaUnits( QgsProject::instance()->areaUnits() );
 
-  QgsExpressionContext expContext( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
+  QgsExpressionContext expContext;
+  if ( builder->expressionContext().scopeCount() > 0 )
+  {
+    expContext = builder->expressionContext();
+  }
+  else
+  {
+    expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
+  }
 
   if ( !exp.prepare( &expContext ) )
   {

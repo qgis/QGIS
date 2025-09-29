@@ -224,6 +224,15 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     request.setFilterExpression( filterExpression );
   }
 
+  if ( mLayer && mLayer->isSpatial() )
+  {
+    QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
+    if ( mc )
+    {
+      request.expressionContext()->appendScope( QgsExpressionContextUtils::mapSettingsScope( mc->mapSettings() ) );
+    }
+  }
+
   // If sort expression requires geometry, we'll need to fetch it
   needsGeom |= mLayer && QgsExpression( mLayer->attributeTableConfig().sortExpression() ).needsGeometry();
   if ( !needsGeom )
@@ -656,6 +665,13 @@ void QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered()
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
   QgsFieldCalculator calc( mLayer, this );
+
+  // This may be required for virtual fields $length or $area
+  if ( const QgsMapCanvas *mapCanvas = QgisApp::instance()->mapCanvas() )
+  {
+    calc.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
+  }
+
   if ( calc.exec() == QDialog::Accepted )
   {
     int col = masterModel->fieldCol( calc.changedAttributeId() );

@@ -41,6 +41,12 @@ calculated.
          in case of geometry changes.
 %End
 
+    void appendScope( QgsExpressionContextScope *scope );
+%Docstring
+Appends an expression ``scope`` to the expression context of the field
+calculator, ownership is transferred to the field calculator.
+%End
+
   public slots:
     virtual void accept();
 

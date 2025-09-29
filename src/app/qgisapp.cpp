@@ -7969,6 +7969,8 @@ void QgisApp::fieldCalculator()
   }
 
   QgsFieldCalculator calc( myLayer, this );
+  calc.appendScope( QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() ) );
+
   if ( calc.exec() )
   {
     myLayer->triggerRepaint();
