@@ -90,6 +90,7 @@ class QObjectUniquePtr
 
     QObjectUniquePtr &operator=( QObjectUniquePtr &&other ) noexcept
     {
+      delete mPtr.data();
       mPtr = other.mPtr;
       other.clear();
       return *this;
