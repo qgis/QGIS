@@ -827,7 +827,7 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         self.assertEqual(
             dumpRangeBreaks(renderer.ranges()),
             "(1.0000-2.0000,)",
-            "Equal interval classification not correct",
+            "Pretty breaks classification not correct",
         )
 
 
