@@ -84,7 +84,7 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
 }
 
 
-QgsMimeDataUtils::Uri QgsStacAsset::uri( QString authcfg ) const
+QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
 {
   QgsMimeDataUtils::Uri uri;
   QUrl url( href() );

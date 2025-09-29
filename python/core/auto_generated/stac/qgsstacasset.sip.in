@@ -81,7 +81,7 @@ COPC, empty auth configuration
 .. versionadded:: 3.42
 %End
 
-    QgsMimeDataUtils::Uri uri( QString authcfg ) const;
+    QgsMimeDataUtils::Uri uri( const QString &authcfg ) const;
 %Docstring
 Returns a uri for the asset if it is a cloud optimized file like COG or
 COPC
