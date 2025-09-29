@@ -58,7 +58,7 @@ void QgsStacObjectDetailsDialog::setContentFromStacObject( QgsStacObject *stacOb
 
 void QgsStacObjectDetailsDialog::setContentFromStacAsset( const QString &assetId, const QgsStacAsset *stacAsset )
 {
-  QString thumbnailHtml = QString( "" );
+  QString thumbnailHtml;
   if ( isThumbnailAsset( stacAsset ) )
   {
     thumbnailHtml = thumbnailHtmlContent( stacAsset );
