@@ -371,7 +371,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
                                         } } }
             },
             { "links", {
-                         { { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) ) }, { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) }, { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) }, { "title", title + " as GeoJSON" } }, { { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) ) }, { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) }, { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) }, { "title", title + " as HTML" } } /* TODO: not sure what these "concepts" are about, neither if they are mandatory
+                         { { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) ) }, { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) }, { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) }, { "title", title + " as GeoJSON" } }, { { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) ) }, { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) }, { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) }, { "title", title + " as HTML" } } /* TODO: not sure what these "concepts" are about, neither if they are mandatory
             {
               { "href", href( api, context.request(), QStringLiteral( "/%1/concepts" ).arg( shortName ) )  },
               { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
@@ -444,7 +444,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
   json linksList = links( context );
   linksList.push_back(
-    { { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) ) },
+    { { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) ) },
       { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
       { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) },
       { "title", itemsTitle + " as " + QgsServerOgcApi::contentTypeToStdString( QgsServerOgcApi::ContentType::GEOJSON ) }
