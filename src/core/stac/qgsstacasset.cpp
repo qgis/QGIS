@@ -137,6 +137,7 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
     }
     else if ( href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
     {
+      // Remove the s3:// protocol prefix for compatibility with GDAL's /vsis3
       uri.uri = QStringLiteral( "ZARR:\"/vsis3/%1\"" ).arg( href().mid( 5 ) );
     }
     else

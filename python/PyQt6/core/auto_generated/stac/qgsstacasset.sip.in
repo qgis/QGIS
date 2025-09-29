@@ -86,7 +86,7 @@ COPC, empty auth configuration
 Returns a uri for the asset if it is a cloud optimized file like COG or
 COPC
 
-.. versionadded:: 3.42
+.. versionadded:: 4.0
 %End
 
     QString toHtml( const QString &assetId ) const;
