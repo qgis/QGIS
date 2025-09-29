@@ -1,8 +1,8 @@
 /***************************************************************************
-                         qgsalgorithmtransect.cpp
-                         -------------------------
-    begin                : October 2017
-    copyright            : (C) 2017 by Loïc Bartoletti
+                         qgsalgorithmtransectfixeddistance.cpp
+                         -------------------------------------
+    begin                : September 2024
+    copyright            : (C) 2024 by Loïc Bartoletti
     email                : lbartoletti at tuxfamily dot org
  ***************************************************************************/
 
@@ -15,39 +15,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmtransect.h"
-
-#include "qgslinestring.h"
+#include "qgsalgorithmtransectfixeddistance.h"
 #include "qgsmultilinestring.h"
+#include "qgslinestring.h"
 
 ///@cond PRIVATE
 
-QString QgsTransectAlgorithm::name() const
+QString QgsTransectFixedDistanceAlgorithm::name() const
 {
-  return QStringLiteral( "transect" );
+  return QStringLiteral( "transectfixeddistance" );
 }
 
-QString QgsTransectAlgorithm::displayName() const
+QString QgsTransectFixedDistanceAlgorithm::displayName() const
 {
-  return QObject::tr( "Transect" );
+  return QObject::tr( "Transect (fixed distance)" );
 }
 
-QStringList QgsTransectAlgorithm::tags() const
+QStringList QgsTransectFixedDistanceAlgorithm::tags() const
 {
-  return QObject::tr( "transect,station,lines,extend," ).split( ',' );
+  return QObject::tr( "transect,station,lines,extend,fixed,interval,distance" ).split( ',' );
 }
 
-QString QgsTransectAlgorithm::group() const
+QString QgsTransectFixedDistanceAlgorithm::group() const
 {
   return QObject::tr( "Vector geometry" );
 }
 
-QString QgsTransectAlgorithm::groupId() const
+QString QgsTransectFixedDistanceAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorgeometry" );
 }
 
-void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsTransectFixedDistanceAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
   auto length = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "LENGTH" ), QObject::tr( "Length of the transect" ), 5.0, QStringLiteral( "INPUT" ), false, 0 );
@@ -63,13 +62,16 @@ void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( angle.release() );
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SIDE" ), QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false ) );
+
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "INTERVAL" ), QObject::tr( "Fixed sampling interval" ), Qgis::ProcessingNumberParameterType::Double, 10.0, false, 0 ) );
+
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Transect" ), Qgis::ProcessingSourceType::VectorLine ) );
 }
 
-QString QgsTransectAlgorithm::shortHelpString() const
+QString QgsTransectFixedDistanceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates transects on vertices for (multi)linestrings.\n" )
-         + QObject::tr( "A transect is a line oriented from an angle (by default perpendicular) to the input polylines (at vertices)." )
+  return QObject::tr( "This algorithm creates transects at fixed distance intervals along (multi)linestrings.\n" )
+         + QObject::tr( "A transect is a line oriented from an angle (by default perpendicular) to the input polylines at regular intervals." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "Field(s) from feature(s) are returned in the transect with these new fields:\n" )
          + QObject::tr( "- TR_FID: ID of the original feature\n" )
@@ -80,24 +82,24 @@ QString QgsTransectAlgorithm::shortHelpString() const
          + QObject::tr( "- TR_ORIENT: Side of the transect (only on the left or right of the line, or both side)\n" );
 }
 
-QString QgsTransectAlgorithm::shortDescription() const
+QString QgsTransectFixedDistanceAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates transects on vertices for (multi)linestrings." );
+  return QObject::tr( "Creates transects at fixed distance intervals along (multi)linestrings." );
 }
 
-Qgis::ProcessingAlgorithmDocumentationFlags QgsTransectAlgorithm::documentationFlags() const
+Qgis::ProcessingAlgorithmDocumentationFlags QgsTransectFixedDistanceAlgorithm::documentationFlags() const
 {
   return Qgis::ProcessingAlgorithmDocumentationFlag::RegeneratesPrimaryKey;
 }
 
-QgsTransectAlgorithm *QgsTransectAlgorithm::createInstance() const
+QgsTransectFixedDistanceAlgorithm *QgsTransectFixedDistanceAlgorithm::createInstance() const
 {
-  return new QgsTransectAlgorithm();
+  return new QgsTransectFixedDistanceAlgorithm();
 }
 
-QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsTransectFixedDistanceAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const Side orientation = static_cast<QgsTransectAlgorithm::Side>( parameterAsInt( parameters, QStringLiteral( "SIDE" ), context ) );
+  const Side orientation = static_cast<QgsTransectFixedDistanceAlgorithm::Side>( parameterAsInt( parameters, QStringLiteral( "SIDE" ), context ) );
   const double angle = fabs( parameterAsDouble( parameters, QStringLiteral( "ANGLE" ), context ) );
   const bool dynamicAngle = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ANGLE" ) );
   QgsProperty angleProperty;
@@ -110,7 +112,9 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
   if ( dynamicLength )
     lengthProperty = parameters.value( QStringLiteral( "LENGTH" ) ).value<QgsProperty>();
 
-  if ( orientation == QgsTransectAlgorithm::Both )
+  const double interval = parameterAsDouble( parameters, QStringLiteral( "INTERVAL" ), context );
+
+  if ( orientation == QgsTransectFixedDistanceAlgorithm::Both )
     length /= 2.0;
 
   std::unique_ptr<QgsFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
@@ -146,7 +150,6 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
   const double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
   QgsFeature feat;
 
-
   while ( features.nextFeature( feat ) )
   {
     current++;
@@ -175,24 +178,45 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
 
     inputGeometry.convertToMultiType();
     const QgsMultiLineString *multiLine = static_cast<const QgsMultiLineString *>( inputGeometry.constGet() );
-    for ( int id = 0; id < multiLine->numGeometries(); ++id )
+
+    for ( int part = 0; part < multiLine->numGeometries(); ++part )
     {
-      const QgsLineString *line = multiLine->lineStringN( id );
-      QgsAbstractGeometry::vertex_iterator it = line->vertices_begin();
-      while ( it != line->vertices_end() )
+      const QgsLineString *lineString = multiLine->lineStringN( part );
+      if ( !lineString )
+        continue;
+
+      QgsLineString line = *lineString;
+      std::vector<QgsPoint> samplingPoints;
+
+      // Sample points at fixed intervals
+      double totalLength = line.length();
+      for ( double d = 0; d <= totalLength; d += interval )
       {
-        const QgsVertexId vertexId = it.vertexId();
-        const int i = vertexId.vertex;
+        QgsPoint *pt = line.interpolatePoint( d );
+        samplingPoints.push_back( *pt );
+      }
+
+      for ( int i = 0; i < static_cast<int>( samplingPoints.size() ); ++i )
+      {
+        const QgsPoint &pt = samplingPoints[i];
+        double azimuth = 0;
+
+        QgsPoint segPt;
+        QgsVertexId vid;
+        line.closestSegment( pt, segPt, vid, nullptr, Qgis::DEFAULT_SEGMENT_EPSILON );
+        QgsVertexId prev( vid.part, vid.ring, vid.vertex - 1 );
+        azimuth = line.vertexAt( prev ).azimuth( line.vertexAt( vid ) ) * M_PI / 180.0;
+
         QgsFeature outFeat;
         QgsAttributes attrs = feat.attributes();
-        attrs << current << number << i + 1 << evaluatedAngle << ( ( orientation == QgsTransectAlgorithm::Both ) ? evaluatedLength * 2 : evaluatedLength ) << orientation;
+        attrs << current << number << i + 1 << evaluatedAngle
+              << ( ( orientation == QgsTransectFixedDistanceAlgorithm::Both ) ? evaluatedLength * 2 : evaluatedLength )
+              << static_cast<int>( orientation );
         outFeat.setAttributes( attrs );
-        const double angleAtVertex = line->vertexAngle( vertexId );
-        outFeat.setGeometry( calcTransect( *it, angleAtVertex, evaluatedLength, orientation, evaluatedAngle ) );
+        outFeat.setGeometry( calcTransect( pt, azimuth, evaluatedLength, orientation, evaluatedAngle ) );
         if ( !sink->addFeature( outFeat, QgsFeatureSink::FastInsert ) )
           throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
         number++;
-        it++;
       }
     }
   }
@@ -204,25 +228,24 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
   return outputs;
 }
 
-
-QgsGeometry QgsTransectAlgorithm::calcTransect( const QgsPoint &point, const double angleAtVertex, const double length, const QgsTransectAlgorithm::Side orientation, const double angle )
+QgsGeometry QgsTransectFixedDistanceAlgorithm::calcTransect( const QgsPoint &point, const double angleAtVertex, const double length, const QgsTransectFixedDistanceAlgorithm::Side orientation, const double angle )
 {
   QgsPoint pLeft;  // left point of the line
   QgsPoint pRight; // right point of the line
 
   QgsPolyline line;
 
-  if ( ( orientation == QgsTransectAlgorithm::Right ) || ( orientation == QgsTransectAlgorithm::Both ) )
+  if ( ( orientation == QgsTransectFixedDistanceAlgorithm::Right ) || ( orientation == QgsTransectFixedDistanceAlgorithm::Both ) )
   {
     pLeft = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
-    if ( orientation != QgsTransectAlgorithm::Both )
+    if ( orientation != QgsTransectFixedDistanceAlgorithm::Both )
       pRight = point;
   }
 
-  if ( ( orientation == QgsTransectAlgorithm::Left ) || ( orientation == QgsTransectAlgorithm::Both ) )
+  if ( ( orientation == QgsTransectFixedDistanceAlgorithm::Left ) || ( orientation == QgsTransectFixedDistanceAlgorithm::Both ) )
   {
     pRight = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
-    if ( orientation != QgsTransectAlgorithm::Both )
+    if ( orientation != QgsTransectFixedDistanceAlgorithm::Both )
       pLeft = point;
   }
 
