@@ -109,6 +109,8 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
     float mDevicePixelRatio;
 
     QString mInfoDetails;
+
+    friend class TestQgsMapSaveDialog;
 };
 
 #endif // QGSMAPSAVEDIALOG_H
