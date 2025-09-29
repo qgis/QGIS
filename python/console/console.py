@@ -106,8 +106,11 @@ def console_displayhook(obj):
     _console_output = obj
 
 
-def init_options_widget():
-    """called from QGIS to add the console options widget"""
+def init_console():
+    """
+    Called from QGIS to initialize the console related options and shortcuts,
+    before the dock is shown
+    """
     global _options_factory
     _options_factory.setTitle(QCoreApplication.translate("PythonConsole", "Python"))
     iface.registerOptionsWidgetFactory(_options_factory)
