@@ -310,6 +310,14 @@ if no shortcut is associated.
 .. seealso:: :py:func:`actionForSequence`
 %End
 
+    QKeySequence sequenceForCommonAction( CommonAction action ) const;
+%Docstring
+Returns the key sequence which is associated with a common ``action``,
+or an empty sequence if no shortcut is assigned to that action.
+
+.. versionadded:: 4.0
+%End
+
     QAction *actionByName( const QString &name ) const;
 %Docstring
 Returns an action by its name, or ``None`` if nothing found.
