@@ -274,6 +274,8 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     ShortcutsHash mShortcuts;
     QString mSettingsPath;
 
+    static QString formatActionToolTip( const QString &toolTip );
+
     /**
      * Updates the action to include the shortcut keys. Shortcut keys are
      * included between () at the end of the action tooltop.
