@@ -254,7 +254,7 @@ class PythonConsoleWidget(QWidget):
         self.saveFileButton.setIcon(QgsApplication.getThemeIcon("mActionFileSave.svg"))
         self.saveFileButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.saveFileButton.setIconVisibleInMenu(True)
-        self.saveFileButton.setToolTip(saveFileBt  + " <b>Ctrl+S</b>")
+        self.saveFileButton.setToolTip(saveFileBt + " <b>Ctrl+S</b>")
         self.saveFileButton.setText(saveFileBt)
 
         # Action for Save File As
@@ -317,11 +317,15 @@ class PythonConsoleWidget(QWidget):
         )
         self.runScriptEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.runScriptEditorButton.setIconVisibleInMenu(True)
-        self.runScriptEditorButton.setToolTip(runScriptEditorBt + " <b>Ctrl+Shift+E</b>")
+        self.runScriptEditorButton.setToolTip(
+            runScriptEditorBt + " <b>Ctrl+Shift+E</b>"
+        )
         self.runScriptEditorButton.setText(runScriptEditorBt)
 
         # Action Run Selected
-        runSelectedEditorBt = QCoreApplication.translate("PythonConsole", "Run Selected")
+        runSelectedEditorBt = QCoreApplication.translate(
+            "PythonConsole", "Run Selected"
+        )
         self.runSelectedEditorButton = QAction(self)
         self.runSelectedEditorButton.setCheckable(False)
         self.runSelectedEditorButton.setEnabled(True)
