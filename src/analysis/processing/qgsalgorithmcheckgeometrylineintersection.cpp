@@ -118,7 +118,6 @@ QgsFields QgsGeometryCheckLineIntersectionAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;

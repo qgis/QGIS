@@ -119,7 +119,6 @@ QgsFields QgsGeometryCheckSelfContactAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckSelfContactAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;

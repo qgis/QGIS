@@ -68,7 +68,6 @@ void QgsFixGeometryAreaAlgorithm::initAlgorithm( const QVariantMap &configuratio
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
@@ -76,7 +75,6 @@ void QgsFixGeometryAreaAlgorithm::initAlgorithm( const QVariantMap &configuratio
     QStringLiteral( "ERRORS" ), QObject::tr( "Error layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
   ) );
 
-  // Specific inputs for this check
   QStringList methods;
   {
     QList<QgsGeometryCheckResolutionMethod> checkMethods = QgsGeometryAreaCheck( nullptr, QVariantMap() ).availableResolutionMethods();
@@ -112,7 +110,6 @@ void QgsFixGeometryAreaAlgorithm::initAlgorithm( const QVariantMap &configuratio
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "Small polygons merged layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
@@ -159,11 +156,11 @@ QVariantMap QgsFixGeometryAreaAlgorithm::processAlgorithm( const QVariantMap &pa
     throw QgsProcessingException( QObject::tr( "Field %1 does not exist in the error layer." ).arg( ringIdxFieldName ) );
   if ( errors->fields().indexFromName( vertexIdxFieldName ) == -1 )
     throw QgsProcessingException( QObject::tr( "Field %1 does not exist in the error layer." ).arg( vertexIdxFieldName ) );
-  int inputIdFieldIndex = input->fields().indexFromName( featIdFieldName );
+  const int inputIdFieldIndex = input->fields().indexFromName( featIdFieldName );
   if ( inputIdFieldIndex == -1 )
     throw QgsProcessingException( QObject::tr( "Field %1 does not exist in input layer." ).arg( featIdFieldName ) );
 
-  QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
+  const QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
   if ( inputFeatIdField.type() != errors->fields().at( errors->fields().indexFromName( featIdFieldName ) ).type() )
     throw QgsProcessingException( QObject::tr( "Field %1 does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 

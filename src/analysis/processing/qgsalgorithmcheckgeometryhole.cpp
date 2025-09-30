@@ -75,7 +75,6 @@ void QgsGeometryCheckHoleAlgorithm::initAlgorithm( const QVariantMap &configurat
 {
   Q_UNUSED( configuration )
 
-  // inputs
   addParameter(
     new QgsProcessingParameterFeatureSource(
       QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
@@ -86,7 +85,6 @@ void QgsGeometryCheckHoleAlgorithm::initAlgorithm( const QVariantMap &configurat
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
 
-  // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "ERRORS" ), QObject::tr( "Holes errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
@@ -132,8 +130,8 @@ QVariantMap QgsGeometryCheckHoleAlgorithm::processAlgorithm( const QVariantMap &
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
-  int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
+  const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
+  const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
 
@@ -154,7 +152,7 @@ QVariantMap QgsGeometryCheckHoleAlgorithm::processAlgorithm( const QVariantMap &
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
-  QgsProject *project = QgsProject::instance();
+  const QgsProject *project = QgsProject::instance();
 
   QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project, uniqueIdFieldIdx );
 

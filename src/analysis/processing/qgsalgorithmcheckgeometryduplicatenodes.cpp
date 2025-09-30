@@ -119,7 +119,6 @@ QgsFields QgsGeometryCheckDuplicateNodesAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckDuplicateNodesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;

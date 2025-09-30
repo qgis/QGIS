@@ -72,7 +72,6 @@ void QgsFixGeometryAngleAlgorithm::initAlgorithm( const QVariantMap &configurati
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
   ) );
@@ -99,7 +98,6 @@ void QgsFixGeometryAngleAlgorithm::initAlgorithm( const QVariantMap &configurati
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "Small angle fixed layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
   ) );
@@ -146,7 +144,7 @@ QVariantMap QgsFixGeometryAngleAlgorithm::processAlgorithm( const QVariantMap &p
   if ( inputIdFieldIndex == -1 )
     throw QgsProcessingException( QObject::tr( "Field %1 does not exist in input layer." ).arg( featIdFieldName ) );
 
-  QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
+  const QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
   if ( inputFeatIdField.type() != errors->fields().at( errors->fields().indexFromName( featIdFieldName ) ).type() )
     throw QgsProcessingException( QObject::tr( "Field %1 does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
