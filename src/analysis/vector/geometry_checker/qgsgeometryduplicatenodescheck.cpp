@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryduplicatenodescheck.h"
 #include "qgsgeometryutils.h"
@@ -27,9 +28,13 @@ QgsGeometryCheck::Result QgsGeometryDuplicateNodesCheck::collectErrors( const QM
   const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   const double sqrTolerance = mContext->tolerance * mContext->tolerance;
-
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     if ( context()->uniqueIdFieldIndex != -1 )
     {
       QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );

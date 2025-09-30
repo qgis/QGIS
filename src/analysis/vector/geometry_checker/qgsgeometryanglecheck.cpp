@@ -34,6 +34,11 @@ QgsGeometryCheck::Result QgsGeometryAngleCheck::collectErrors( const QMap<QStrin
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, context() );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     if ( context()->uniqueIdFieldIndex != -1 )
     {
       QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );

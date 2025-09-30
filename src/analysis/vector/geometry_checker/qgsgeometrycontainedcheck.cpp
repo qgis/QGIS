@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometrycontainedcheck.h"
@@ -27,6 +28,11 @@ QgsGeometryCheck::Result QgsGeometryContainedCheck::collectErrors( const QMap<QS
   const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     if ( context()->uniqueIdFieldIndex != -1 )
     {
       QgsGeometryCheck::Result result = checkUniqueId( layerFeatureA, uniqueIds );
@@ -46,6 +52,11 @@ QgsGeometryCheck::Result QgsGeometryContainedCheck::collectErrors( const QMap<QS
     const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, featureIds.keys(), bboxA, compatibleGeometryTypes(), mContext );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
+      if ( feedback && feedback->isCanceled() )
+      {
+        return QgsGeometryCheck::Result::Canceled;
+      }
+
       if ( layerFeatureA == layerFeatureB )
       {
         continue;

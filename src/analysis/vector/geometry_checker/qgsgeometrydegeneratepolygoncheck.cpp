@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrydegeneratepolygoncheck.h"
 #include "qgsfeaturepool.h"
@@ -28,6 +29,11 @@ QgsGeometryCheck::Result QgsGeometryDegeneratePolygonCheck::collectErrors( const
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     if ( context()->uniqueIdFieldIndex != -1 )
     {
       QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );

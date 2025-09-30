@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrylineintersectioncheck.h"
 #include "qgslinestring.h"
@@ -29,6 +30,11 @@ QgsGeometryCheck::Result QgsGeometryLineIntersectionCheck::collectErrors( const 
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     if ( context()->uniqueIdFieldIndex != -1 )
     {
       QgsGeometryCheck::Result result = checkUniqueId( layerFeatureA, uniqueIds );
@@ -55,7 +61,12 @@ QgsGeometryCheck::Result QgsGeometryLineIntersectionCheck::collectErrors( const 
       const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, line->boundingBox(), { Qgis::GeometryType::Line }, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
       {
-        // > : only report intersections within same layer once
+        if ( feedback && feedback->isCanceled() )
+        {
+          return QgsGeometryCheck::Result::Canceled;
+        }
+
+        // only report intersections within same layer once
         if ( layerFeatureA.layer()->id() == layerFeatureB.layer()->id() && layerFeatureB.feature().id() > layerFeatureA.feature().id() )
         {
           continue;

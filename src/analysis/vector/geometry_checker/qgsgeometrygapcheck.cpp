@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometrygapcheck.h"
@@ -70,6 +71,11 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString,
 
     while ( iterator.nextFeature( feature ) )
     {
+      if ( feedback && feedback->isCanceled() )
+      {
+        return QgsGeometryCheck::Result::Canceled;
+      }
+
       const QgsGeometry geom = feature.geometry();
       const QgsGeometry gg = geom.buffer( mAllowedGapsBuffer, 20 );
       allowedGaps.append( gg );
@@ -90,6 +96,11 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString,
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     if ( context()->uniqueIdFieldIndex != -1 )
     {
       QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );
@@ -100,11 +111,6 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString,
     }
 
     geomList.append( layerFeature.geometry() );
-
-    if ( feedback && feedback->isCanceled() )
-    {
-      return QgsGeometryCheck::Result::Canceled;
-    }
   }
 
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( nullptr, mContext->tolerance ) );
@@ -148,6 +154,11 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString,
   QgsGeometryPartIterator parts = diffGeom->parts();
   while ( parts.hasNext() )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     const QgsAbstractGeometry *gapGeom = parts.next();
     // Skip the gap between features and boundingbox
     const double spacing = context()->tolerance;
@@ -171,6 +182,11 @@ QgsGeometryCheck::Result QgsGeometryGapCheck::collectErrors( const QMap<QString,
     gapGeomEngine->prepareGeometry();
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
+      if ( feedback && feedback->isCanceled() )
+      {
+        return QgsGeometryCheck::Result::Canceled;
+      }
+
       const QgsGeometry geom = layerFeature.geometry();
       if ( gapGeomEngine->distance( geom.constGet() ) < mContext->tolerance )
       {

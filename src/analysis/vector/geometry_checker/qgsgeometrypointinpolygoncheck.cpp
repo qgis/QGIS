@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrypointinpolygoncheck.h"
 #include "qgsgeometryengine.h"
@@ -25,6 +26,11 @@ QgsGeometryCheck::Result QgsGeometryPointInPolygonCheck::collectErrors( const QM
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     if ( context()->uniqueIdFieldIndex != -1 )
     {
       QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );
@@ -50,6 +56,11 @@ QgsGeometryCheck::Result QgsGeometryPointInPolygonCheck::collectErrors( const QM
       const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, { Qgis::GeometryType::Polygon }, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
+        if ( feedback && feedback->isCanceled() )
+        {
+          return QgsGeometryCheck::Result::Canceled;
+        }
+
         ++nTested;
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
         std::unique_ptr<QgsGeometryEngine> testGeomEngine( QgsGeometry::createGeometryEngine( testGeom, mContext->reducedTolerance ) );
