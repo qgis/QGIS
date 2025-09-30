@@ -24,6 +24,7 @@ set(QGIS_3D_SRCS
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
+  qgsfonttextureatlasgenerator.cpp
   qgsgeotransform.cpp
   qgsglobechunkedentity.cpp
   qgsgltf3dutils.cpp
@@ -160,6 +161,7 @@ set(QGIS_3D_HDRS
   qgsannotationlayerchunkloader_p.h
   qgscameracontroller.h
   qgscamerapose.h
+  qgsfonttextureatlasgenerator.h
   qgsgeotransform.h
   qgsglobechunkedentity.h
   qgsgltf3dutils.h
