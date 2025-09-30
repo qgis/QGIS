@@ -27,6 +27,8 @@ rather accessed through :py:func:`QgsGui.shortcutsManager()`.
     {
       CodeToggleComment,
       CodeReformat,
+      CodeRunScript,
+      CodeRunSelection,
     };
 
     QgsShortcutsManager( QObject *parent /TransferThis/ = 0, const QString &settingsRoot = "/shortcuts/" );

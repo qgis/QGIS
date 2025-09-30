@@ -297,27 +297,24 @@ class PythonConsoleWidget(QWidget):
         self.paste_action.setText(pasteEditorBt)
 
         # Action Run Script (subprocess)
-        runScriptEditorBt = QCoreApplication.translate("PythonConsole", "Run Script")
         self.run_script_action = QAction(self)
         self.run_script_action.setIcon(QgsApplication.getThemeIcon("mActionStart.svg"))
         self.run_script_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.run_script_action.setIconVisibleInMenu(True)
-        self.run_script_action.setToolTip(runScriptEditorBt + " <b>Ctrl+Shift+E</b>")
-        self.run_script_action.setText(runScriptEditorBt)
+        QgsGui.shortcutsManager().initializeCommonAction(
+            self.run_script_action, QgsShortcutsManager.CommonAction.CodeRunScript
+        )
 
         # Action Run Selected
-        runSelectedEditorBt = QCoreApplication.translate(
-            "PythonConsole", "Run Selected"
-        )
         self.run_selection_action = QAction(self)
         self.run_selection_action.setIcon(
             QgsApplication.getThemeIcon("mActionRunSelected.svg")
         )
         self.run_selection_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.run_selection_action.setIconVisibleInMenu(True)
-        self.run_selection_action.setToolTip(runSelectedEditorBt + " <b>Ctrl+E</b>")
-        self.run_selection_action.setShortcut("Ctrl+E")
-        self.run_selection_action.setText(runSelectedEditorBt)
+        QgsGui.shortcutsManager().initializeCommonAction(
+            self.run_selection_action, QgsShortcutsManager.CommonAction.CodeRunSelection
+        )
 
         # Action Toggle comment
         self.toggle_comment_action = QAction(self)
