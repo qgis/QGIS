@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrydanglecheck.h"
 #include "qgslinestring.h"
@@ -28,6 +29,11 @@ QgsGeometryCheck::Result QgsGeometryDangleCheck::collectErrors( const QMap<QStri
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     if ( context()->uniqueIdFieldIndex != -1 )
     {
       QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );
@@ -64,6 +70,11 @@ QgsGeometryCheck::Result QgsGeometryDangleCheck::collectErrors( const QMap<QStri
       const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, QList<QString>() << layerFeature.layer()->id(), line->boundingBox(), { Qgis::GeometryType::Line }, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
+        if ( feedback && feedback->isCanceled() )
+        {
+          return QgsGeometryCheck::Result::Canceled;
+        }
+
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
         for ( int jPart = 0, mParts = testGeom->partCount(); jPart < mParts; ++jPart )
         {

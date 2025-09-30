@@ -13,6 +13,7 @@ email                : matthias@opengis.ch
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeedback.h"
 #include "qgssinglegeometrycheck.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgspoint.h"
@@ -26,6 +27,11 @@ QgsGeometryCheck::Result QgsSingleGeometryCheck::collectErrors( const QMap<QStri
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     if ( context()->uniqueIdFieldIndex != -1 )
     {
       QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );

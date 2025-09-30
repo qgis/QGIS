@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryfollowboundariescheck.h"
 #include "qgsgeometryengine.h"
@@ -51,6 +52,11 @@ QgsGeometryCheck::Result QgsGeometryFollowBoundariesCheck::collectErrors( const 
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     if ( context()->uniqueIdFieldIndex != -1 )
     {
       QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );
@@ -88,6 +94,11 @@ QgsGeometryCheck::Result QgsGeometryFollowBoundariesCheck::collectErrors( const 
       QgsFeature refFeature;
       while ( refFeatureIt.nextFeature( refFeature ) )
       {
+        if ( feedback && feedback->isCanceled() )
+        {
+          return QgsGeometryCheck::Result::Canceled;
+        }
+
         const QgsAbstractGeometry *refGeom = refFeature.geometry().constGet();
         std::unique_ptr<QgsGeometryEngine> refgeomEngine( QgsGeometry::createGeometryEngine( refGeom, mContext->tolerance ) );
         const QgsGeometry reducedRefGeom( refgeomEngine->buffer( -mContext->tolerance, 0 ) );

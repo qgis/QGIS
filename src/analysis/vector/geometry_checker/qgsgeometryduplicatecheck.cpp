@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometryduplicatecheck.h"
@@ -47,6 +48,11 @@ QgsGeometryCheck::Result QgsGeometryDuplicateCheck::collectErrors( const QMap<QS
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
     if ( context()->uniqueIdFieldIndex != -1 )
     {
       QgsGeometryCheck::Result result = checkUniqueId( layerFeatureA, uniqueIds );
@@ -73,6 +79,11 @@ QgsGeometryCheck::Result QgsGeometryDuplicateCheck::collectErrors( const QMap<QS
     const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, bboxA, { geomType }, mContext );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
+      if ( feedback && feedback->isCanceled() )
+      {
+        return QgsGeometryCheck::Result::Canceled;
+      }
+
       // only report overlaps within same layer once
       if ( layerFeatureA.layer()->id() == layerFeatureB.layer()->id() && layerFeatureB.feature().id() >= layerFeatureA.feature().id() )
       {
