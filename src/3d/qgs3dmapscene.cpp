@@ -887,6 +887,14 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
         }
       }
     }
+    else if ( QgsPoint3DBillboardMaterial *billboardMaterial = qobject_cast<QgsPoint3DBillboardMaterial *>( material ) )
+    {
+      Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( billboardMaterial->parent() );
+      if ( entity && !entity->components().contains( transparentLayer ) )
+      {
+        entity->addComponent( transparentLayer );
+      }
+    }
     else
     {
       // This handles the phong material with data defined properties, the textured case and point (instanced) symbols.
