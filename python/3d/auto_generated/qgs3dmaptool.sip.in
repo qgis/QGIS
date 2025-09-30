@@ -1,0 +1,95 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dmaptool.h                                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class Qgs3DMapTool : QObject
+{
+%Docstring(signature="appended")
+Base class for map tools operating on 3D map canvas.
+
+.. note::
+
+   Not available in Python bindings
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgs3dmaptool.h"
+%End
+  public:
+    Qgs3DMapTool( Qgs3DMapCanvas *canvas );
+%Docstring
+Base constructor for a Qgs3DMapTool for the specified ``canvas``
+%End
+
+    virtual void mousePressEvent( QMouseEvent *event );
+%Docstring
+Reimplement to handle mouse ``event`` forwarded by the parent
+Qgs3DMapCanvas
+%End
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+%Docstring
+Reimplement to handle mouse release ``event`` forwarded by the parent
+Qgs3DMapCanvas
+%End
+    virtual void mouseMoveEvent( QMouseEvent *event );
+%Docstring
+Reimplement to handle mouse move ``event`` forwarded by the parent
+Qgs3DMapCanvas
+%End
+    virtual void keyPressEvent( QKeyEvent *event );
+%Docstring
+Reimplement to handle key press ``event`` forwarded by the parent
+Qgs3DMapCanvas
+%End
+    virtual void keyReleaseEvent( QKeyEvent *event );
+%Docstring
+Reimplement to handle key release ``event`` forwarded by the parent
+Qgs3DMapCanvas
+%End
+    virtual void mouseWheelEvent( QWheelEvent *event );
+%Docstring
+Reimplement to handle mouse wheel ``event`` forwarded by the parent
+Qgs3DMapCanvas
+%End
+
+    virtual void activate();
+%Docstring
+Called when set as currently active map tool
+%End
+
+    virtual void deactivate();
+%Docstring
+Called when map tool is being deactivated
+%End
+
+    virtual QCursor cursor() const;
+%Docstring
+Mouse cursor to be used when the tool is active
+%End
+
+    Qgs3DMapCanvas *canvas();
+%Docstring
+Returns the parent Qgs3DMapCanvas
+%End
+
+  protected:
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dmaptool.h                                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

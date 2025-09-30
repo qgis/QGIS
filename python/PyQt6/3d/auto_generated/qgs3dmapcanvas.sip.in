@@ -58,6 +58,23 @@ scene has not been initialized yet with
 :py:func:`~Qgs3DMapCanvas.setMapSettings`
 %End
 
+    void setMapTool( Qgs3DMapTool *tool );
+%Docstring
+Sets the active map ``tool`` that will receive events from the 3D
+canvas. Does not transfer ownership. If the tool is ``None``, events
+will be used for camera manipulation.
+
+.. versionadded:: 4.0
+%End
+
+    Qgs3DMapTool *mapTool() const;
+%Docstring
+Returns the active map tool that will receive events from the 3D canvas.
+If the tool is ``None``, events will be used for camera manipulation.
+
+.. versionadded:: 4.0
+%End
+
 
   protected:
     virtual void showEvent( QShowEvent *e );

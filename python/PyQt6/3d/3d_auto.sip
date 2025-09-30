@@ -3,6 +3,7 @@
 %Include auto_generated/qgs3d.sip
 %Include auto_generated/qgs3dmapscene.sip
 %Include auto_generated/qgs3dmapsettings.sip
+%Include auto_generated/qgs3dmaptool.sip
 %Include auto_generated/qgs3dtypes.sip
 %Include auto_generated/qgs3dmapcanvas.sip
 %Include auto_generated/qgsabstractvectorlayer3drenderer.sip
