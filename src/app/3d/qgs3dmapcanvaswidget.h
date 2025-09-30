@@ -96,7 +96,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
-    void enableClippingPlanes( const QList<QVector4D> &clippingPlanes, const QgsCameraPose &cameraPose );
+    void crossSectionToolFinished();
 
   private slots:
     void resetView();
@@ -120,7 +120,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setSceneExtentOn2DCanvas();
     void setSceneExtent( const QgsRectangle &extent );
     void setClippingPlanesOn2DCanvas();
-    void disableClippingPlanes() const;
+    void disableCrossSection() const;
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
