@@ -165,15 +165,6 @@ class Editor(QgsCodeEditorPython):
         syntaxCheckAction.setShortcut("Ctrl+4")
         menu.addAction(syntaxCheckAction)
 
-        runSelected = QAction(
-            QgsApplication.getThemeIcon("mActionRunSelected.svg"),  # spellok
-            QCoreApplication.translate("PythonConsole", "Run Selected"),
-            menu,
-        )
-        runSelected.triggered.connect(self.runSelectedCode)  # spellok
-        runSelected.setShortcut("Ctrl+E")  # spellok
-        menu.addAction(runSelected)  # spellok
-
         word = self.selectedText() or self.wordAtPoint(e.pos())
         if word:
             context_help_action = QAction(
@@ -191,13 +182,24 @@ class Editor(QgsCodeEditorPython):
             context_help_action.setShortcut(QKeySequence.StandardKey.HelpContents)
             menu.addAction(context_help_action)
 
-        start_action = QAction(
-            QgsApplication.getThemeIcon("mActionStart.svg"),
-            QCoreApplication.translate("PythonConsole", "Run Script"),
-            menu,
+        run_selection_action = QAction(menu)
+        run_selection_action.setIcon(
+            QgsApplication.getThemeIcon("mActionRunSelected.svg"),
         )
+        run_selection_action.triggered.connect(self.runSelectedCode)
+        QgsGui.shortcutsManager().initializeCommonAction(
+            run_selection_action,
+            QgsShortcutsManager.CommonAction.CodeRunSelection,
+        )
+        menu.addAction(run_selection_action)
+
+        start_action = QAction(self)
+        start_action.setIcon(QgsApplication.getThemeIcon("mActionStart.svg"))
         start_action.triggered.connect(self.runScriptCode)
-        start_action.setShortcut("Ctrl+Shift+E")
+        QgsGui.shortcutsManager().initializeCommonAction(
+            start_action,
+            QgsShortcutsManager.CommonAction.CodeRunScript,
+        )
         menu.addAction(start_action)
 
         menu.addSeparator()
@@ -318,14 +320,14 @@ class Editor(QgsCodeEditorPython):
         syntaxCheckAction.setEnabled(False)
         pasteAction.setEnabled(False)
         cutAction.setEnabled(False)
-        runSelected.setEnabled(False)  # spellok
+        run_selection_action.setEnabled(False)
         copyAction.setEnabled(False)
         selectAllAction.setEnabled(False)
         undoAction.setEnabled(False)
         redoAction.setEnabled(False)
         showCodeInspection.setEnabled(False)
         if self.hasSelectedText():
-            runSelected.setEnabled(True)  # spellok
+            run_selection_action.setEnabled(True)
             copyAction.setEnabled(True)
             cutAction.setEnabled(True)
         if not self.text() == "":

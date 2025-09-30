@@ -41,6 +41,8 @@ QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settin
   };
   registerCommonAction( CommonAction::CodeToggleComment, QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ), QgsApplication::palette().color( QPalette::ColorRole::WindowText ) ), tr( "Toggle Comment" ), tr( "Toggle comment" ), QStringLiteral( "Ctrl+/" ), QStringLiteral( "mEditorToggleComment" ), QStringLiteral( "Editor" ) );
   registerCommonAction( CommonAction::CodeReformat, QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ), tr( "Reformat Code" ), tr( "Reformat code" ), QStringLiteral( "Ctrl+Alt+F" ), QStringLiteral( "mEditorReformatCode" ), QStringLiteral( "Editor" ) );
+  registerCommonAction( CommonAction::CodeRunScript, QgsApplication::getThemeIcon( QStringLiteral( "mActionStart.svg" ) ), tr( "Run Script" ), tr( "Run entire script" ), QStringLiteral( "Ctrl+Shift+E" ), QStringLiteral( "mEditorRunScript" ), QStringLiteral( "Editor" ) );
+  registerCommonAction( CommonAction::CodeRunSelection, QgsApplication::getThemeIcon( QStringLiteral( "mActionRunSelected.svg" ) ), tr( "Run Selection" ), tr( "Run selected part of script" ), QStringLiteral( "Ctrl+E" ), QStringLiteral( "mEditorRunSelection" ), QStringLiteral( "Editor" ) );
 }
 
 QgsShortcutsManager::~QgsShortcutsManager()

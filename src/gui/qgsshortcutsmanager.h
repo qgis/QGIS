@@ -46,6 +46,8 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     {
       CodeToggleComment, //!< Toggle code comments
       CodeReformat,      //!< Reformat code
+      CodeRunScript,     //!< Run script
+      CodeRunSelection,  //!< Run selection from script
     };
     Q_ENUM( CommonAction )
 
