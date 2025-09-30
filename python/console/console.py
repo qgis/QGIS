@@ -61,6 +61,7 @@ from qgis.gui import (
     QgsGui,
     QgsApplicationExitBlockerInterface,
     QgsCodeEditorDockWidget,
+    QgsShortcutsManager,
 )
 from functools import partial
 
@@ -342,36 +343,30 @@ class PythonConsoleWidget(QWidget):
         self.runSelectedEditorButton.setText(runSelectedEditorBt)
 
         # Action Toggle comment
-        toggleText = QCoreApplication.translate("PythonConsole", "Toggle Comment")
-        self.toggleCommentEditorButton = QAction(self)
-        self.toggleCommentEditorButton.setCheckable(False)
-        self.toggleCommentEditorButton.setEnabled(True)
-        self.toggleCommentEditorButton.setIcon(
+        self.toggle_comment_action = QAction(self)
+        self.toggle_comment_action.setIcon(
             QgsApplication.getThemeIcon(
                 "console/iconCommentEditorConsole.svg",
                 self.palette().color(QPalette.ColorRole.WindowText),
             ),
         )
-        self.toggleCommentEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
-        self.toggleCommentEditorButton.setIconVisibleInMenu(True)
-        self.toggleCommentEditorButton.setToolTip(toggleText + " <b>Ctrl+:</b>")
-        self.toggleCommentEditorButton.setText(toggleText)
+        self.toggle_comment_action.setMenuRole(QAction.MenuRole.PreferencesRole)
+        self.toggle_comment_action.setIconVisibleInMenu(True)
+        QgsGui.shortcutsManager().initializeCommonAction(
+            self.toggle_comment_action,
+            QgsShortcutsManager.CommonAction.CodeToggleComment,
+        )
 
         # Action Format code
-        reformatCodeText = QCoreApplication.translate("PythonConsole", "Reformat Code")
-        self.reformatCodeEditorButton = QAction(self)
-        self.reformatCodeEditorButton.setCheckable(False)
-        self.reformatCodeEditorButton.setEnabled(True)
-        self.reformatCodeEditorButton.setIcon(
+        self.reformat_code_action = QAction(self)
+        self.reformat_code_action.setIcon(
             QgsApplication.getThemeIcon("console/iconFormatCode.svg")
         )
-        self.reformatCodeEditorButton.setMenuRole(QAction.MenuRole.PreferencesRole)
-        self.reformatCodeEditorButton.setIconVisibleInMenu(True)
-        self.reformatCodeEditorButton.setToolTip(
-            reformatCodeText + " <b>Ctrl+Alt+F</b>"
+        self.reformat_code_action.setMenuRole(QAction.MenuRole.PreferencesRole)
+        self.reformat_code_action.setIconVisibleInMenu(True)
+        QgsGui.shortcutsManager().initializeCommonAction(
+            self.reformat_code_action, QgsShortcutsManager.CommonAction.CodeReformat
         )
-        self.reformatCodeEditorButton.setShortcut("Ctrl+Alt+F")
-        self.reformatCodeEditorButton.setText(reformatCodeText)
 
         # Action for Object browser
         objList = QCoreApplication.translate("PythonConsole", "Object Inspector…")
@@ -531,8 +526,8 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.find_text_action)
         self.toolBarEditor.addSeparator()
-        self.toolBarEditor.addAction(self.toggleCommentEditorButton)
-        self.toolBarEditor.addAction(self.reformatCodeEditorButton)
+        self.toolBarEditor.addAction(self.toggle_comment_action)
+        self.toolBarEditor.addAction(self.reformat_code_action)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.objectListButton)
 
@@ -589,8 +584,8 @@ class PythonConsoleWidget(QWidget):
         # ------------ Signal -------------------------------
 
         self.objectListButton.toggled.connect(self.toggleObjectListWidget)
-        self.toggleCommentEditorButton.triggered.connect(self.toggleComment)
-        self.reformatCodeEditorButton.triggered.connect(self.reformatCode)
+        self.toggle_comment_action.triggered.connect(self.toggleComment)
+        self.reformat_code_action.triggered.connect(self.reformatCode)
         self.runScriptEditorButton.triggered.connect(self.runScriptEditor)
         self.runSelectedEditorButton.triggered.connect(self.runSelectedEditor)
         self.cutEditorButton.triggered.connect(self.cutEditor)
