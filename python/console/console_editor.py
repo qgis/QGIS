@@ -33,7 +33,13 @@ from operator import itemgetter
 from pathlib import Path
 
 from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsSettings
-from qgis.gui import QgsCodeEditorPython, QgsCodeEditorWidget, QgsMessageBar
+from qgis.gui import (
+    QgsCodeEditorPython,
+    QgsCodeEditorWidget,
+    QgsGui,
+    QgsMessageBar,
+    QgsShortcutsManager,
+)
 
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import (
@@ -258,17 +264,30 @@ class Editor(QgsCodeEditorPython):
         menu.addAction(selectAllAction)
 
         menu.addSeparator()
-        toggle_comment_action = QAction(
+        toggle_comment_action = QAction(menu)
+        toggle_comment_action.setIcon(
             QgsApplication.getThemeIcon(
                 "console/iconCommentEditorConsole.svg",
                 self.palette().color(QPalette.ColorRole.WindowText),
-            ),
-            QCoreApplication.translate("PythonConsole", "Toggle Comment"),
-            menu,
+            )
         )
         toggle_comment_action.triggered.connect(self.toggleComment)
-        toggle_comment_action.setShortcut("Ctrl+:")
+        QgsGui.shortcutsManager().initializeCommonAction(
+            toggle_comment_action,
+            QgsShortcutsManager.CommonAction.CodeToggleComment,
+        )
         menu.addAction(toggle_comment_action)
+
+        reformat_code_action = QAction(menu)
+        reformat_code_action.setIcon(
+            QgsApplication.getThemeIcon("console/iconFormatCode.svg")
+        )
+        reformat_code_action.triggered.connect(self.reformatCode)
+        QgsGui.shortcutsManager().initializeCommonAction(
+            reformat_code_action,
+            QgsShortcutsManager.CommonAction.CodeReformat,
+        )
+        menu.addAction(reformat_code_action)
 
         menu.addSeparator()
         gist_menu = QMenu(self)
