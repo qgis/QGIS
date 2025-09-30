@@ -557,6 +557,7 @@ set(QGIS_CORE_SRCS
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
   qgsmultirenderchecker.cpp
+  qgslocaleutils.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
@@ -1227,6 +1228,7 @@ set(QGIS_CORE_HDRS
   qgslegendstyle.h
   qgslocaldefaultsettings.h
   qgslocalec.h
+  qgslocaleutils.h
   qgslocalizeddatapathregistry.h
   qgslogger.h
   qgsmapclippingregion.h

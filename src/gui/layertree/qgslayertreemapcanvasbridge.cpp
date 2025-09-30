@@ -25,6 +25,8 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgslocaleutils.h"
+#include "qgsreferencedgeometry.h"
 
 QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent )
   : QObject( parent )
@@ -74,13 +76,20 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
   const QList<QgsLayerTreeLayer *> layerNodes = mRoot->findLayers();
   int currentSpatialLayerCount = 0;
   int currentValidSpatialLayerCount = 0;
+  bool allAddedLayersAreBasemaps = true;
   for ( QgsLayerTreeLayer *layerNode : layerNodes )
   {
     if ( layerNode->layer() && layerNode->layer()->isSpatial() )
     {
       currentSpatialLayerCount++;
       if ( layerNode->layer()->isValid() )
+      {
         currentValidSpatialLayerCount++;
+        if ( !layerNode->layer()->properties().testFlag( Qgis::MapLayerProperty::IsBasemapLayer ) )
+        {
+          allAddedLayersAreBasemaps = false;
+        }
+      }
     }
   }
 
@@ -93,8 +102,23 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
   if ( firstValidLayers )
   {
-    // if we are moving from zero to non-zero layers, let's zoom to those data (only consider valid layers here!)
-    mCanvas->zoomToProjectExtent();
+    if ( allAddedLayersAreBasemaps )
+    {
+      const QgsRectangle localeRect = QgsLocaleUtils::systemLocaleGeographicBounds();
+      if ( !localeRect.isNull() )
+      {
+        mCanvas->setReferencedExtent( QgsReferencedRectangle( localeRect, QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
+      }
+      else
+      {
+        mCanvas->zoomToProjectExtent();
+      }
+    }
+    else
+    {
+      // if we are moving from zero to non-zero layers, let's zoom to those data (only consider valid layers here!)
+      mCanvas->zoomToProjectExtent();
+    }
   }
 
   if ( !mFirstCRS.isValid() )
