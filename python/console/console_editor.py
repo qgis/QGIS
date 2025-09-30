@@ -741,7 +741,7 @@ class EditorTabWidget(QTabWidget):
         # New Editor button
         self.newTabButton = QToolButton()
         txtToolTipNewTab = QCoreApplication.translate("PythonConsole", "New Editor")
-        self.newTabButton.setToolTip(txtToolTipNewTab + " <b>Ctrl+T</b>")
+        self.newTabButton.setToolTip(f"<b>{txtToolTipNewTab}</b> (Ctrl+T)")
         self.newTabButton.setAutoRaise(True)
         self.newTabButton.setIcon(
             QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.svg")
