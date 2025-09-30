@@ -4556,6 +4556,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg = merge()
         alg.initAlgorithm()
 
+        merge_command = alg.commandName() + alg.command_ext()
+
         with tempfile.TemporaryDirectory() as outdir:
             # this algorithm creates temporary text file with input layers
             # so we strip its path, leaving only filename
@@ -4567,7 +4569,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    merge_command,
                     "-ot Float32 -of GTiff "
                     + "-o "
                     + outdir
@@ -4586,7 +4588,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    merge_command,
                     "-separate -ot Float32 -of GTiff "
                     + "-o "
                     + outdir
@@ -4610,7 +4612,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    merge_command,
                     "-ot Float32 -of GTiff -tap -ps 0.1 0.1 "
                     + "-o "
                     + outdir
@@ -4634,7 +4636,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    merge_command,
                     "-a_nodata -9999.0 -ot Float32 -of GTiff "
                     + "-o "
                     + outdir
