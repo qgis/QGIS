@@ -11645,6 +11645,25 @@ Qgis.RasterProcessingParameterCapability.__doc__ = """Capabilities of a raster l
 Qgis.RasterProcessingParameterCapability.baseClass = Qgis
 Qgis.RasterProcessingParameterCapabilities.baseClass = Qgis
 RasterProcessingParameterCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.DevToolsNodeRole.Status.__doc__ = "Request status role"
+Qgis.DevToolsNodeRole.Id.__doc__ = "Request ID role"
+Qgis.DevToolsNodeRole.ElapsedTime.__doc__ = "Elapsed time"
+Qgis.DevToolsNodeRole.MaximumTime.__doc__ = "Maximum encountered elapsed time"
+Qgis.DevToolsNodeRole.Sort.__doc__ = "Sort order role"
+Qgis.DevToolsNodeRole.__doc__ = """Dev tools node custom data roles.
+
+.. versionadded:: 4.0
+
+* ``Status``: Request status role
+* ``Id``: Request ID role
+* ``ElapsedTime``: Elapsed time
+* ``MaximumTime``: Maximum encountered elapsed time
+* ``Sort``: Sort order role
+
+"""
+# --
+Qgis.DevToolsNodeRole.baseClass = Qgis
 from enum import Enum
 
 

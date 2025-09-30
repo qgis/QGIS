@@ -37,16 +37,6 @@ class QgsDevToolsModelGroup;
 class GUI_EXPORT QgsDevToolsModelNode
 {
   public:
-    //! Custom node data roles
-    enum class Roles
-    {
-      RoleStatus = Qt::UserRole + 1, //!< Request status role
-      RoleId,                        //!< Request ID role
-      RoleElapsedTime,               //!< Elapsed time
-      RoleMaximumTime,               //!< Maximum encountered elapsed time
-      RoleSort,                      //!< Sort order role
-    };
-
     virtual ~QgsDevToolsModelNode();
 
     /**
@@ -103,7 +93,7 @@ class GUI_EXPORT QgsDevToolsModelGroup : public QgsDevToolsModelNode
     QgsDevToolsModelGroup( QgsDevToolsModelGroup &&other ) noexcept = default;
 
     /**
-     * Assignement operator for QgsDevToolsModelGroup. Copy assignement is disabled
+     * Assignment operator for QgsDevToolsModelGroup. Copy assignment is disabled
      */
     QgsDevToolsModelGroup &operator=( QgsDevToolsModelGroup &&other ) noexcept = default;
 
