@@ -34,7 +34,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckContext
     /**
      * Creates a new QgsGeometryCheckContext.
      */
-    QgsGeometryCheckContext( int precision, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &transformContext, const QgsProject *mProject );
+    QgsGeometryCheckContext( int precision, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &transformContext, const QgsProject *mProject = nullptr, const int uniqueIdFieldIndex = -1 );
 
     /**
      * The tolerance to allow for in geometry checks.
@@ -60,6 +60,13 @@ class ANALYSIS_EXPORT QgsGeometryCheckContext
      * The coordinate transform context with which transformations will be done.
      */
     const QgsCoordinateTransformContext transformContext;
+
+    /**
+     * The index of the unique ID field used to identify features.
+     *
+     * \since QGIS 4.0
+     */
+    const int uniqueIdFieldIndex;
 
     /**
      * The project can be used to resolve additional layers.
