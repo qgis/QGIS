@@ -231,7 +231,7 @@ class PythonConsoleWidget(QWidget):
         )
         self.open_file_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.open_file_action.setIconVisibleInMenu(True)
-        self.open_file_action.setToolTip(openFileBt + " <b>Ctrl+O</b>")
+        self.open_file_action.setToolTip(f"<b>{openFileBt}</b> (Ctrl+O)")
         self.open_file_action.setText(openFileBt)
 
         openExtEditorBt = QCoreApplication.translate(
@@ -255,7 +255,7 @@ class PythonConsoleWidget(QWidget):
         )
         self.save_file_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.save_file_action.setIconVisibleInMenu(True)
-        self.save_file_action.setToolTip(saveFileBt + " <b>Ctrl+S</b>")
+        self.save_file_action.setToolTip(f"<b>{saveFileBt}</b> (Ctrl+S)")
         self.save_file_action.setText(saveFileBt)
 
         # Action for Save File As
@@ -266,7 +266,7 @@ class PythonConsoleWidget(QWidget):
         )
         self.save_as_file_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.save_as_file_action.setIconVisibleInMenu(True)
-        self.save_as_file_action.setToolTip(saveAsFileBt + " <b>Ctrl+Shift+S</b>")
+        self.save_as_file_action.setToolTip(f"<b>{saveAsFileBt}</b> (Ctrl+Shift+S)")
         self.save_as_file_action.setText(saveAsFileBt)
 
         # Action Cut
@@ -275,7 +275,7 @@ class PythonConsoleWidget(QWidget):
         self.cut_action.setIcon(QgsApplication.getThemeIcon("mActionEditCut.svg"))
         self.cut_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.cut_action.setIconVisibleInMenu(True)
-        self.cut_action.setToolTip(cutEditorBt + " <b>Ctrl+X</b>")
+        self.cut_action.setToolTip(f"<b>{cutEditorBt}</b> (Ctrl+X)")
         self.cut_action.setText(cutEditorBt)
 
         # Action Copy
@@ -284,7 +284,7 @@ class PythonConsoleWidget(QWidget):
         self.copy_action.setIcon(QgsApplication.getThemeIcon("mActionEditCopy.svg"))
         self.copy_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.copy_action.setIconVisibleInMenu(True)
-        self.copy_action.setToolTip(copyEditorBt + " <b>Ctrl+C</b>")
+        self.copy_action.setToolTip(f"<b>{copyEditorBt}</b> (Ctrl+C)")
         self.copy_action.setText(copyEditorBt)
 
         # Action Paste
@@ -293,7 +293,7 @@ class PythonConsoleWidget(QWidget):
         self.paste_action.setIcon(QgsApplication.getThemeIcon("mActionEditPaste.svg"))
         self.paste_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.paste_action.setIconVisibleInMenu(True)
-        self.paste_action.setToolTip(pasteEditorBt + " <b>Ctrl+V</b>")
+        self.paste_action.setToolTip(f"<b>{pasteEditorBt}</b> (Ctrl+V)")
         self.paste_action.setText(pasteEditorBt)
 
         # Action Run Script (subprocess)
@@ -367,7 +367,7 @@ class PythonConsoleWidget(QWidget):
         )
         self.find_text_action.setMenuRole(QAction.MenuRole.PreferencesRole)
         self.find_text_action.setIconVisibleInMenu(True)
-        self.find_text_action.setToolTip(findText + " <b>Ctrl+F</b>")
+        self.find_text_action.setToolTip(f"<b>{findText}</b> (Ctrl+F)")
         self.find_text_action.setText(findText)
 
         self.tabEditorWidget.search_bar_toggled.connect(
