@@ -326,17 +326,17 @@ class Editor(QgsCodeEditorPython):
         listObj = self.console_widget.listClassMethod
         if listObj.isVisible():
             listObj.hide()
-            self.console_widget.objectListButton.setChecked(False)
+            self.console_widget.object_inspector_action.setChecked(False)
         else:
             listObj.show()
-            self.console_widget.objectListButton.setChecked(True)
+            self.console_widget.object_inspector_action.setChecked(True)
 
     def shareOnGist(self, is_public):
         self.code_editor_widget.shareOnGist(is_public)
 
     def hideEditor(self):
         self.console_widget.splitterObj.hide()
-        self.console_widget.showEditorButton.setChecked(False)
+        self.console_widget.show_editor_action.setChecked(False)
 
     def createTempFile(self):
         name = tempfile.NamedTemporaryFile(delete=False).name
@@ -475,7 +475,7 @@ class Editor(QgsCodeEditorPython):
         )
         self.tab_widget.setTabToolTip(index, self.code_editor_widget.filePath())
         self.setModified(False)
-        self.console_widget.saveFileButton.setEnabled(False)
+        self.console_widget.save_file_action.setEnabled(False)
         self.console_widget.updateTabListScript(
             self.code_editor_widget.filePath(), action="append"
         )
@@ -810,7 +810,7 @@ class EditorTabWidget(QTabWidget):
     def enableSaveIfModified(self, tab):
         tabWidget = self.widget(tab)
         if tabWidget:
-            self.console_widget.saveFileButton.setEnabled(tabWidget.isModified())
+            self.console_widget.save_file_action.setEnabled(tabWidget.isModified())
 
     def enableToolBarEditor(self, enable):
         if self.topFrame.isVisible():
@@ -864,7 +864,7 @@ class EditorTabWidget(QTabWidget):
         index = self.indexOf(tab)
         s = self.tabText(index)
         self.setTabTitle(index, f"*{s}" if modified else re.sub(r"^(\*)", "", s))
-        self.console_widget.saveFileButton.setEnabled(modified)
+        self.console_widget.save_file_action.setEnabled(modified)
 
     def setTabTitle(self, tab, title):
         self.setTabText(tab, title)
@@ -1071,10 +1071,9 @@ class EditorTabWidget(QTabWidget):
         objInspectorEnabled = QgsSettings().value(
             "pythonConsole/enableObjectInsp", False, type=bool
         )
-        listObj = self.console_widget.objectListButton
         if self.console_widget.listClassMethod.isVisible():
-            listObj.setChecked(objInspectorEnabled)
-        listObj.setEnabled(objInspectorEnabled)
+            self.console_widget.object_inspector_action.setChecked(objInspectorEnabled)
+        self.console_widget.object_inspector_action.setEnabled(objInspectorEnabled)
         if objInspectorEnabled:
             cW = self.currentWidget()
             if cW and not self.console_widget.listClassMethod.isVisible():
