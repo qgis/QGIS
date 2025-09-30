@@ -10,6 +10,7 @@
 %Include auto_generated/qgsannotationlayer3drenderer.sip
 %Include auto_generated/qgscameracontroller.sip
 %Include auto_generated/qgscamerapose.sip
+%Include auto_generated/qgsfonttextureatlasgenerator.sip
 %Include auto_generated/qgslayoutitem3dmap.sip
 %Include auto_generated/qgsraycastcontext.sip
 %Include auto_generated/qgsraycasthit.sip
