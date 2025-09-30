@@ -381,7 +381,7 @@ bool Node::insertEntry(uint32_t dataLength, uint8_t* pData, MovingRegion& mbr, i
 
 void Node::deleteEntry(uint32_t index)
 {
-	assert(index >= 0 && index < m_children);
+	assert(index < m_children);
 
 	// cache it, since I might need it for "touches" later.
 	MovingRegionPtr ptrR = m_ptrMBR[index];
