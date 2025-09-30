@@ -123,7 +123,6 @@ QgsFields QgsGeometryCheckSegmentLengthAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckSegmentLengthAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;

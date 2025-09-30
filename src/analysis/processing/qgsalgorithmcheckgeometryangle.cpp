@@ -75,7 +75,6 @@ void QgsGeometryCheckAngleAlgorithm::initAlgorithm( const QVariantMap &configura
 {
   Q_UNUSED( configuration )
 
-  // inputs
   addParameter(
     new QgsProcessingParameterFeatureSource(
       QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
@@ -89,7 +88,6 @@ void QgsGeometryCheckAngleAlgorithm::initAlgorithm( const QVariantMap &configura
     QStringLiteral( "MIN_ANGLE" ), QObject::tr( "Minimum angle (in degrees)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0, 180.0
   ) );
 
-  // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "ERRORS" ), QObject::tr( "Small angle errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
@@ -131,8 +129,8 @@ QVariantMap QgsGeometryCheckAngleAlgorithm::processAlgorithm( const QVariantMap 
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
-  int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
+  const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
+  const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
 

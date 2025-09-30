@@ -69,7 +69,6 @@ void QgsFixGeometryOverlapAlgorithm::initAlgorithm( const QVariantMap &configura
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
@@ -91,7 +90,6 @@ void QgsFixGeometryOverlapAlgorithm::initAlgorithm( const QVariantMap &configura
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "No-overlap layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );

@@ -68,7 +68,6 @@ void QgsFixGeometryGapAlgorithm::initAlgorithm( const QVariantMap &configuration
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
@@ -79,7 +78,6 @@ void QgsFixGeometryGapAlgorithm::initAlgorithm( const QVariantMap &configuration
     QStringLiteral( "GAPS" ), QObject::tr( "Gaps layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
 
-  // Specific inputs for this check
   QStringList methods;
   {
     QList<QgsGeometryCheckResolutionMethod> checkMethods = QgsGeometryGapCheck( nullptr, QVariantMap() ).availableResolutionMethods();
@@ -100,7 +98,6 @@ void QgsFixGeometryGapAlgorithm::initAlgorithm( const QVariantMap &configuration
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "Gaps-filled layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
@@ -158,7 +155,7 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not exist in the gaps layer." ).arg( errorIdFieldName ) );
   if ( neighbors->fields().indexFromName( featIdFieldName ) == -1 )
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not exist in the neighbors layer." ).arg( featIdFieldName ) );
-  int inputIdFieldIndex = input->fields().indexFromName( featIdFieldName );
+  const int inputIdFieldIndex = input->fields().indexFromName( featIdFieldName );
   if ( inputIdFieldIndex == -1 )
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not exist in input layer." ).arg( featIdFieldName ) );
 

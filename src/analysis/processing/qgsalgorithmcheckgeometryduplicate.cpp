@@ -124,7 +124,6 @@ QgsFields QgsGeometryCheckDuplicateAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckDuplicateAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;
@@ -140,7 +139,6 @@ QVariantMap QgsGeometryCheckDuplicateAlgorithm::processAlgorithm( const QVariant
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
 
   const QgsField uniqueIdField = input->fields().at( uniqueIdFieldIdx );
-
   QgsFields fields = outputFields();
   fields.append( uniqueIdField );
 

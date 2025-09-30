@@ -76,7 +76,6 @@ void QgsGeometryCheckContainedAlgorithm::initAlgorithm( const QVariantMap &confi
 {
   Q_UNUSED( configuration )
 
-  // inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
     QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
@@ -90,7 +89,6 @@ void QgsGeometryCheckContainedAlgorithm::initAlgorithm( const QVariantMap &confi
     QStringLiteral( "POLYGONS" ), QObject::tr( "Polygon layers" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
 
-  // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "Errors from contained features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
@@ -138,7 +136,6 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
   QList<QgsMapLayer *> polygonLayers = parameterAsLayerList( parameters, QStringLiteral( "POLYGONS" ), context );
   if ( polygonLayers.isEmpty() )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "POLYGONS" ) ) );
-
 
   const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
   const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );

@@ -130,7 +130,6 @@ QgsFields QgsGeometryCheckSliverPolygonAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckSliverPolygonAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;

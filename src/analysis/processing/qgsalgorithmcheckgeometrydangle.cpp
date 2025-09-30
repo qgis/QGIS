@@ -118,7 +118,6 @@ QgsFields QgsGeometryCheckDangleAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckDangleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;

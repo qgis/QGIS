@@ -123,7 +123,6 @@ QgsFields QgsGeometryCheckSelfIntersectionAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckSelfIntersectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;

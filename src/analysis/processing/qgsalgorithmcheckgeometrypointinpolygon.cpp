@@ -118,7 +118,6 @@ QgsFields QgsGeometryCheckPointInPolygonAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckPointInPolygonAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_errors;

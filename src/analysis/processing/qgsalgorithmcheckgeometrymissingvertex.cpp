@@ -76,7 +76,6 @@ void QgsGeometryCheckMissingVertexAlgorithm::initAlgorithm( const QVariantMap &c
 {
   Q_UNUSED( configuration )
 
-  // inputs
   addParameter(
     new QgsProcessingParameterFeatureSource(
       QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
@@ -87,7 +86,6 @@ void QgsGeometryCheckMissingVertexAlgorithm::initAlgorithm( const QVariantMap &c
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
 
-  // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "ERRORS" ), QObject::tr( "Missing vertices errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
@@ -133,8 +131,8 @@ QVariantMap QgsGeometryCheckMissingVertexAlgorithm::processAlgorithm( const QVar
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
-  int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
+  const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
+  const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
 
@@ -151,7 +149,7 @@ QVariantMap QgsGeometryCheckMissingVertexAlgorithm::processAlgorithm( const QVar
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
-  QgsProject *project = QgsProject::instance();
+  const QgsProject *project = QgsProject::instance();
 
   QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project, uniqueIdFieldIdx );
 
