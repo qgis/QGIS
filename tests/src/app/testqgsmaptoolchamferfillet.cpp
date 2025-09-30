@@ -134,7 +134,7 @@ void TestQgsMapToolChamferFillet::testChamferFilletDefault()
 {
   TestQgsMapToolUtils utils( mChamferFilletTool );
 
-  // asymetric
+  // asymmetric
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseMove( 0.85, 0.75 );
   utils.mouseClick( 0.85, 0.75, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -144,7 +144,7 @@ void TestQgsMapToolChamferFillet::testChamferFilletDefault()
 
   mLayerBase->undoStack()->undo();
 
-  // symetric
+  // symmetric
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseMove( 0.85, 0.75 );
   utils.mouseClick( 0.85, 0.75, Qt::LeftButton, Qt::ShiftModifier, true );
@@ -161,7 +161,7 @@ void TestQgsMapToolChamferFillet::testChamfer()
 
   QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( "chamfer" );
 
-  // asymetric
+  // asymmetric
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseMove( 0.85, 0.75 );
   utils.mouseClick( 0.85, 0.75, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -171,7 +171,7 @@ void TestQgsMapToolChamferFillet::testChamfer()
 
   mLayerBase->undoStack()->undo();
 
-  // symetric
+  // symmetric
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseMove( 0.85, 0.75 );
   utils.mouseClick( 0.85, 0.75, Qt::LeftButton, Qt::ShiftModifier, true );
