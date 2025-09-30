@@ -81,7 +81,7 @@ void QgsMapToolClippingPlanes::canvasMoveEvent( QgsMapMouseEvent *e )
   const QgsPointXY point = toMapCoordinates( e->pos() );
   if ( mRubberBandPoints->numberOfVertices() == 2 )
   {
-    // Let's do the cartesian math in 3d map coordinates which are guaranteed to be projected
+    // Let's do the Cartesian math in 3d map coordinates which are guaranteed to be projected
     try
     {
       const QgsPointXY startPointMap3d = mCt->transform( *mRubberBandPoints->getPoint( 0, 0 ) );
