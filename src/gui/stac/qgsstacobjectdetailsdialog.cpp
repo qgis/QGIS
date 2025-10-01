@@ -50,8 +50,8 @@ void QgsStacObjectDetailsDialog::setContentFromStacObject( QgsStacObject *stacOb
     }
   }
 
-  QString thumbnailHtml = thumbnails.join( QString() );
-  QString bodyHtml = stacObject->toHtml();
+  const QString thumbnailHtml = thumbnails.join( QString() );
+  const QString bodyHtml = stacObject->toHtml();
   setContent( bodyHtml, thumbnailHtml );
 }
 
