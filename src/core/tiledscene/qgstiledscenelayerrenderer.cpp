@@ -34,7 +34,6 @@
 #include "qgstextrenderer.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
-#include "qgsziputils.h"
 
 #include <QMatrix4x4>
 #include <qglobal.h>
@@ -442,34 +441,11 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
   }
   else if ( format == QLatin1String( "draco" ) )
   {
-    // SLPK and Extracted SLPK have the files gzipped
-    QByteArray tileContentExtracted;
-    if ( tileContent.startsWith( QByteArray( "\x1f\x8b", 2 ) ) )
-    {
-      if ( !QgsZipUtils::decodeGzip( tileContent, tileContentExtracted ) )
-      {
-        QgsDebugError( QStringLiteral( "Unable to decode gzipped data: %1" ).arg( contentUri ) );
-        return false;
-      }
-    }
-    else
-    {
-      tileContentExtracted = tileContent;
-    }
-
-    const QVariantMap tileMetadata = tile.metadata();
-
     QgsGltfUtils::I3SNodeContext i3sContext;
-    i3sContext.materialInfo = tileMetadata["material"].toMap();
-    i3sContext.isGlobalMode = mSceneCrs.type() == Qgis::CrsType::Geocentric;
-    if ( i3sContext.isGlobalMode )
-    {
-      i3sContext.nodeCenterEcef = tile.boundingVolume().box().center();
-      i3sContext.datasetToSceneTransform = QgsCoordinateTransform( mLayerCrs, mSceneCrs, context.renderContext().transformContext() );
-    }
+    i3sContext.initFromTile( tile, mLayerCrs, mSceneCrs, context.renderContext().transformContext() );
 
     QString errors;
-    if ( !QgsGltfUtils::loadDracoModel( tileContentExtracted, i3sContext, model, &errors ) )
+    if ( !QgsGltfUtils::loadDracoModel( tileContent, i3sContext, model, &errors ) )
     {
       if ( !mErrors.contains( errors ) )
         mErrors.append( errors );

@@ -28,7 +28,6 @@
 #include "qgsraycastingutils_p.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
-#include "qgsziputils.h"
 
 #include <QtConcurrentRun>
 
@@ -126,7 +125,7 @@ void QgsTiledSceneChunkLoader::start()
         errors.append( QStringLiteral( "Failed to parse tile from '%1'" ).arg( uri ) );
       }
     }
-    else if ( format == "cesiumtiles" )
+    else if ( format == QLatin1String( "cesiumtiles" ) )
     {
       const QgsCesiumUtils::TileContents tileContent = QgsCesiumUtils::extractGltfFromTileContent( content );
       if ( tileContent.gltf.isEmpty() )
@@ -134,35 +133,14 @@ void QgsTiledSceneChunkLoader::start()
       entityTransform.tileTransform.translate( tileContent.rtcCenter );
       mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
     }
-    else if ( format == "draco" )
+    else if ( format == QLatin1String( "draco" ) )
     {
-      // SLPK and Extracted SLPK have the files gzipped
-      QByteArray contentExtracted;
-      if ( content.startsWith( QByteArray( "\x1f\x8b", 2 ) ) )
-      {
-        if ( !QgsZipUtils::decodeGzip( content, contentExtracted ) )
-          return;
-      }
-      else
-      {
-        contentExtracted = content;
-      }
-
-      const QVariantMap tileMetadata = tile.metadata();
-      QgsCoordinateReferenceSystem sceneCrs = mFactory.mBoundsTransform.sourceCrs();
-
       QgsGltfUtils::I3SNodeContext i3sContext;
-      i3sContext.materialInfo = tileMetadata["material"].toMap();
-      i3sContext.isGlobalMode = sceneCrs.type() == Qgis::CrsType::Geocentric;
-      if ( i3sContext.isGlobalMode )
-      {
-        i3sContext.nodeCenterEcef = tile.boundingVolume().box().center();
-        i3sContext.datasetToSceneTransform = QgsCoordinateTransform( mFactory.mLayerCrs, sceneCrs, mFactory.mRenderContext.transformContext() );
-      }
+      i3sContext.initFromTile( tile, mFactory.mLayerCrs, mFactory.mBoundsTransform.sourceCrs(), mFactory.mRenderContext.transformContext() );
 
       QString dracoLoadError;
       tinygltf::Model model;
-      if ( !QgsGltfUtils::loadDracoModel( contentExtracted, i3sContext, model, &dracoLoadError ) )
+      if ( !QgsGltfUtils::loadDracoModel( content, i3sContext, model, &dracoLoadError ) )
       {
         errors.append( dracoLoadError );
         return;
