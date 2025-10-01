@@ -165,8 +165,7 @@ QVariantMap QgsFixGeometryAngleAlgorithm::processAlgorithm( const QVariantMap &p
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
-  const QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
   QStringList messages;
   QVariantMap configurationCheck;
 

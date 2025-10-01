@@ -153,9 +153,7 @@ QVariantMap QgsGeometryCheckSelfIntersectionAlgorithm::processAlgorithm( const Q
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
-  const QgsProject *project = QgsProject::instance();
-
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project, uniqueIdFieldIdx );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project(), uniqueIdFieldIdx );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
