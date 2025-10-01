@@ -63,7 +63,7 @@ QString QgsGeometryCheckOverlapAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckOverlapAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckOverlapAlgorithm *QgsGeometryCheckOverlapAlgorithm::createInstance() const

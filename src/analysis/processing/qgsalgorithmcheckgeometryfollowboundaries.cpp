@@ -63,7 +63,7 @@ QString QgsGeometryCheckFollowBoundariesAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckFollowBoundariesAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckFollowBoundariesAlgorithm *QgsGeometryCheckFollowBoundariesAlgorithm::createInstance() const

@@ -268,7 +268,7 @@ bool QgsFixGeometryHoleAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryHoleAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

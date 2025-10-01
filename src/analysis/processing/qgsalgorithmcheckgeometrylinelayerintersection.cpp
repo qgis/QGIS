@@ -63,7 +63,7 @@ QString QgsGeometryCheckLineLayerIntersectionAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckLineLayerIntersectionAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckLineLayerIntersectionAlgorithm *QgsGeometryCheckLineLayerIntersectionAlgorithm::createInstance() const

@@ -63,7 +63,7 @@ QString QgsGeometryCheckMultipartAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckMultipartAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckMultipartAlgorithm *QgsGeometryCheckMultipartAlgorithm::createInstance() const
@@ -121,7 +121,6 @@ QgsFields QgsGeometryCheckMultipartAlgorithm::outputFields()
   fields.append( QgsField( QStringLiteral( "gc_error" ), QMetaType::QString ) );
   return fields;
 }
-
 
 QVariantMap QgsGeometryCheckMultipartAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {

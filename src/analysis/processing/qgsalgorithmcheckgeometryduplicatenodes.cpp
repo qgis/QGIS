@@ -63,7 +63,7 @@ QString QgsGeometryCheckDuplicateNodesAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckDuplicateNodesAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckDuplicateNodesAlgorithm *QgsGeometryCheckDuplicateNodesAlgorithm::createInstance() const

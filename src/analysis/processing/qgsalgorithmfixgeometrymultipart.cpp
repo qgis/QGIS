@@ -241,7 +241,7 @@ bool QgsFixGeometryMultipartAlgorithm::prepareAlgorithm( const QVariantMap &para
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryMultipartAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond
