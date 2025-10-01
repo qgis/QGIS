@@ -5817,7 +5817,7 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
             )
 
     def test_write_symbology_categories(self):
-        """Test that copy paste styles respect categories: issue GH #"""
+        """Test that copy paste styles respect categories: issue GH #63167"""
 
         layer1 = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
         layer2 = QgsVectorLayer("Point?field=fldtxt:string", "layer2", "memory")
