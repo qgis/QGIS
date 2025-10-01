@@ -169,6 +169,16 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
     const QString title = tr( "Sockets cannot be connected" );
     const QString message = tr( "Either the sockets are incompatible or there is a circular dependency" );
     scene()->showWarning( message, title, message );
+
+    // If the output was previously connected to an input, let's restore it.
+    if ( mPreviousInputSocketNumber != -1 )
+    {
+      QgsProcessingModelChildAlgorithm previousChildAlgorithm = scene()->model()->childAlgorithm( mPreviousInputChildId );
+      const QgsProcessingParameterDefinition *previousInputParam = previousChildAlgorithm.algorithm()->parameterDefinitions().at( mPreviousInputSocketNumber );
+      previousChildAlgorithm.addParameterSources( previousInputParam->name(), { newInputParamSource } );
+      scene()->model()->setChildAlgorithm( previousChildAlgorithm );
+      scene()->requestRebuildRequired();
+    }
     return;
   }
 
