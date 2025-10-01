@@ -73,7 +73,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void endUndoCommand();
 
     /**
-     * Aborts pending undo command, tunring last call to beginUndoCommand obsolete
+     * Aborts pending undo command, turning last call to beginUndoCommand obsolete
      */
     void abortUndoCommand();
 
