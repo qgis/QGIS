@@ -41,6 +41,7 @@ class TestQgsMapToolChamferFillet : public QObject
     void testChamferFilletDefault();
     void testChamfer();
     void testFillet();
+    void testInvalidGeom();
 
   private:
     bool compareGeom( const QgsGeometry &geom, const QString &wkt, double tolerance );
@@ -99,7 +100,7 @@ void TestQgsMapToolChamferFillet::initTestCase()
   const QString wkt1 = QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))" );
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
-  const QString wkt2 = QStringLiteral( "Polygon ((2 0, 2 5, 3 5, 3 0, 2 0))" );
+  const QString wkt2 = QStringLiteral( "Polygon ((2 0, 2 5, 3 5, 3 0, 2 5, 3 5, 2 0))" );
   QgsFeature f2;
   f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
 
@@ -166,6 +167,19 @@ void TestQgsMapToolChamferFillet::testChamferFilletDefault()
   QVERIFY( compareGeom( mLayerBase->getFeature( 1 ).geometry(), wkt2, 0.05 ) );
 
   mLayerBase->undoStack()->undo();
+}
+
+void TestQgsMapToolChamferFillet::testInvalidGeom()
+{
+  TestQgsMapToolUtils utils( mChamferFilletTool );
+
+  QString message;
+  connect( mChamferFilletTool, &QgsMapTool::messageEmitted, this, [&message]( const QString &msg, Qgis::MessageLevel ) { message = msg; } );
+
+  QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( QgsGeometry::Chamfer ) );
+
+  utils.mouseClick( 2, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  QCOMPARE( message, "Chamfer/fillet: input geometry is invalid!" );
 }
 
 void TestQgsMapToolChamferFillet::testChamfer()

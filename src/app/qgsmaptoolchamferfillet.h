@@ -115,7 +115,7 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
     void createUserInputWidget();
     void deleteUserInputWidget();
 
-    void prepareGeometry( const QgsPointLocator::Match &match, QgsFeature &snappedFeature );
+    bool prepareGeometry( const QgsPointLocator::Match &match, QgsFeature &snappedFeature );
 
     void deleteRubberBandAndGeometry();
 

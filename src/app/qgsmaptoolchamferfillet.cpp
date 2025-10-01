@@ -197,8 +197,12 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeature fet;
       if ( lLayer->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
       {
+        if ( !prepareGeometry( match, fet ) )
+        {
+          cancel();
+          return;
+        }
         mSourceFeature = fet;
-        prepareGeometry( match, fet );
         mRubberBand = createRubberBand();
         if ( mRubberBand )
         {
@@ -332,12 +336,12 @@ void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
   updateGeometryAndRubberBand( value1, value2 );
 }
 
-void QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
+bool QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
 {
   const QgsVectorLayer *vl = match.layer();
   if ( !vl )
   {
-    return;
+    return false;
   }
 
   mOriginalGeometryInSourceLayerCrs = QgsGeometry();
@@ -347,21 +351,29 @@ void QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &mat
   const QgsGeometry geom = snappedFeature.geometry();
   if ( geom.isNull() )
   {
-    return;
+    return false;
   }
-  mOriginalGeometryInSourceLayerCrs = geom;
+
+  if ( !geom.isGeosValid() )
+  {
+    emit messageEmitted( tr( "Chamfer/fillet: input geometry is invalid!" ), Qgis::MessageLevel::Critical );
+    return false;
+  }
 
   const Qgis::WkbType geomType = geom.wkbType();
   if ( QgsWkbTypes::geometryType( geomType ) != Qgis::GeometryType::Line && QgsWkbTypes::geometryType( geomType ) != Qgis::GeometryType::Polygon )
-    return;
+    return false;
 
   if ( !match.hasEdge() && !match.hasVertex() )
-    return;
+    return false;
 
+  mOriginalGeometryInSourceLayerCrs = geom;
   mManipulatedGeometryInSourceLayerCrs = QgsGeometry( geom.constGet()->clone() );
 
   mVertexIndex = match.vertexIndex();
   mVertexPointInSourceLayerCrs = geom.vertexAt( mVertexIndex );
+
+  return true;
 }
 
 void QgsMapToolChamferFillet::createUserInputWidget()
