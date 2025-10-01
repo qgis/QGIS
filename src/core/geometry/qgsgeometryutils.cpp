@@ -1557,7 +1557,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
     createChamfer( pPrev, p, p, pNext, value1, value2, firstNewPoint, lastNewPoint );
   }
   else
-    throw QgsInvalidArgumentException( QStringLiteral( "Operation '%1' is unknown." ).arg( QgsGeometry::chamferFilletOperationToString( operation ) ) );
+    throw QgsInvalidArgumentException( QStringLiteral( "Operation '%1' is unknown." ).arg( qgsEnumValueToKey( operation ) ) );
 
   // Handle LineString geometries
   if ( qgsgeometry_cast<const QgsLineString *>( curve ) )

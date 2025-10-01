@@ -19,7 +19,6 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgssettingsregistrycore.h"
-#include "qgssettingsentryenumflag.h"
 #include "qgsmaptoolchamferfillet.h"
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
@@ -124,12 +123,12 @@ void TestQgsMapToolChamferFillet::initTestCase()
   // set default offset settings to ensure consistency
 
   QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( 8 );
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( "chamfer" );
+  QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( QgsGeometry::Chamfer ) );
   QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock1->setValue( false );
   QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2->setValue( true );
 
   QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->value(), 8 );
-  QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value(), "chamfer" );
+  QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value(), qgsEnumValueToKey( QgsGeometry::Chamfer ) );
   QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock1->value(), false );
   QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2->value(), true );
 
@@ -173,7 +172,7 @@ void TestQgsMapToolChamferFillet::testChamfer()
 {
   TestQgsMapToolUtils utils( mChamferFilletTool );
 
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( "chamfer" );
+  QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( QgsGeometry::Chamfer ) );
 
   // asymmetric
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -210,7 +209,7 @@ void TestQgsMapToolChamferFillet::testFillet()
 {
   TestQgsMapToolUtils utils( mChamferFilletTool );
 
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( "fillet" );
+  QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( QgsGeometry::Fillet ) );
 
   // coarse fillet - click one side
   QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( 3 );

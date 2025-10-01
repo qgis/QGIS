@@ -208,7 +208,7 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
         createUserInputWidget();
 
         // Set maximum fillet radius based on geometry
-        if ( mUserInputWidget && mUserInputWidget->operation() == "fillet" && mVertexIndex >= 0 )
+        if ( mUserInputWidget && mUserInputWidget->operation() == QgsGeometry::Fillet && mVertexIndex >= 0 )
         {
           // Get the segments around the vertex
           const QgsPoint vertexBefore = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex - 1 );
@@ -248,8 +248,8 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
     // second click - apply changes
     double value1, value2;
     calculateDistances( e->mapPoint(), value1, value2 );
-    const QString op = QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value();
-    if ( op == "chamfer" )
+    QgsGeometry::ChamferFilletOperationType op = qgsEnumKeyToValue( QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value(), QgsGeometry::Chamfer );
+    if ( op == QgsGeometry::Chamfer )
     {
       if ( e->modifiers() & Qt::ShiftModifier )
       {
@@ -289,8 +289,8 @@ void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
   double value1, value2;
   calculateDistances( mapPoint, value1, value2 );
 
-  const QString op = QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value();
-  if ( op == "chamfer" )
+  QgsGeometry::ChamferFilletOperationType op = qgsEnumKeyToValue( QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value(), QgsGeometry::Chamfer );
+  if ( op == QgsGeometry::Chamfer )
   {
     if ( e->modifiers() & Qt::ShiftModifier )
     {
@@ -314,7 +314,7 @@ void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
   if ( mUserInputWidget )
   {
     mUserInputWidget->blockSignals( true );
-    if ( op == "chamfer" )
+    if ( op == QgsGeometry::Chamfer )
     {
       mUserInputWidget->setValue1( value1 );
       mUserInputWidget->setValue2( value2 );
@@ -417,10 +417,10 @@ void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double value1, double
   }
 
   QgsGeometry newGeom;
-  const QString op = QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value();
+  const QgsGeometry::ChamferFilletOperationType op = qgsEnumKeyToValue( QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value(), QgsGeometry::Chamfer );
   const int segments = QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->value();
 
-  if ( op == "chamfer" )
+  if ( op == QgsGeometry::Chamfer )
   {
     QgsDebugMsgLevel( QStringLiteral( "will chamfer %1 / %2" ).arg( value1 ).arg( value2 ), 3 );
     newGeom = mManipulatedGeometryInSourceLayerCrs.chamfer( mVertexIndex, value1, value2 );
@@ -458,11 +458,12 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
   setupUi( this );
 
   // fill comboboxes
-  mOperationComboBox->addItem( tr( "Chamfer" ), "chamfer" );
-  mOperationComboBox->addItem( tr( "Fillet" ), "fillet" );
+  mOperationComboBox->addItem( tr( "Chamfer" ), QgsGeometry::Chamfer );
+  mOperationComboBox->addItem( tr( "Fillet" ), QgsGeometry::Fillet );
 
-  QString op = QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value();
-  if ( op != "chamfer" && op != "fillet" )
+  bool ok;
+  QgsGeometry::ChamferFilletOperationType op = qgsEnumKeyToValue( QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value(), QgsGeometry::Chamfer, true, &ok );
+  if ( !ok )
   {
     op = QgsGeometry::Chamfer;
     QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( op ) );
@@ -470,8 +471,8 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
 
   mOperationComboBox->setCurrentIndex( mOperationComboBox->findData( op ) );
 
-  auto updateLabels = [this]( const QString &op ) {
-    if ( op == "chamfer" )
+  auto updateLabels = [this]( const QgsGeometry::ChamferFilletOperationType &op ) {
+    if ( op == QgsGeometry::Chamfer )
     {
       mVal1Label->setText( tr( "Distance 1" ) );
       mValue1SpinBox->setDecimals( 6 );
@@ -515,8 +516,8 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
 
   connect( mOperationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, //
            [this, updateLabels] {
-             QString op = operation();
-             QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( op );
+             QgsGeometry::ChamferFilletOperationType op = operation();
+             QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( op ) );
              updateLabels( op );
 
              emit distanceConfigChanged();
@@ -530,7 +531,7 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
 
   connect( mValue2SpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, //
            [this]( const double value ) {
-             if ( operation() == "fillet" )
+             if ( operation() == QgsGeometry::Fillet )
                QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( static_cast<int>( value ) );
              else
                QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue2->setValue( value );
@@ -577,9 +578,9 @@ double QgsChamferFilletUserWidget::value2() const
   return mValue2SpinBox->value();
 }
 
-QString QgsChamferFilletUserWidget::operation() const
+QgsGeometry::ChamferFilletOperationType QgsChamferFilletUserWidget::operation() const
 {
-  return mOperationComboBox->currentData().toString();
+  return mOperationComboBox->currentData().value<QgsGeometry::ChamferFilletOperationType>();
 }
 
 bool QgsChamferFilletUserWidget::eventFilter( QObject *obj, QEvent *ev )

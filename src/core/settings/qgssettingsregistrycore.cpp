@@ -93,7 +93,7 @@ const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingOffset
 
 const QgsSettingsEntryDouble *QgsSettingsRegistryCore::settingsDigitizingOffsetMiterLimit = new QgsSettingsEntryDouble( QStringLiteral( "offset-miter-limit" ), QgsSettingsTree::sTreeDigitizing, 5.0 );
 
-const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation = new QgsSettingsEntryString( QStringLiteral( "chamferfillet-operation" ), QgsSettingsTree::sTreeDigitizing, "chamfer" );
+const QgsSettingsEntryString *QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation = new QgsSettingsEntryString( QStringLiteral( "chamferfillet-operation" ), QgsSettingsTree::sTreeDigitizing, qgsEnumValueToKey( QgsGeometry::Chamfer ) );
 
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment = new QgsSettingsEntryInteger( QStringLiteral( "chamferfillet-fillet-segment" ), QgsSettingsTree::sTreeDigitizing, 8, QStringLiteral( "For fillet operation, number of segment used to create the arc." ), Qgis::SettingsOption(), 1, 64 );
 
