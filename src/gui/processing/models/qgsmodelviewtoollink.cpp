@@ -165,7 +165,7 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   const QList<QgsProcessingModelChildParameterSource> compatibleInputParamSources = scene()->model()->availableSourcesForChild( inputChildAlgorithm->childId(), inputParam );
   if ( !compatibleInputParamSources.contains( newInputParamSource ) )
   {
-    //Type are incomatible
+    // Types are incompatible
     const QString title = tr( "Sockets cannot be connected" );
     const QString message = tr( "Either the sockets are incompatible or there is a circular dependency" );
     scene()->showWarning( message, title, message );
