@@ -54,7 +54,7 @@ jobs:
           echo $(brew --prefix flex)/bin >> $GITHUB_PATH
           echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
