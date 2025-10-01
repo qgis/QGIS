@@ -62,7 +62,7 @@ QString QgsGeometryCheckDegeneratePolygonAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckDegeneratePolygonAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckDegeneratePolygonAlgorithm *QgsGeometryCheckDegeneratePolygonAlgorithm::createInstance() const

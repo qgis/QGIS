@@ -63,7 +63,7 @@ QString QgsGeometryCheckPointCoveredByLineAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckPointCoveredByLineAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckPointCoveredByLineAlgorithm *QgsGeometryCheckPointCoveredByLineAlgorithm::createInstance() const

@@ -279,7 +279,7 @@ bool QgsFixGeometryAngleAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryAngleAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

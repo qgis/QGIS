@@ -306,7 +306,7 @@ bool QgsFixGeometryGapAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryGapAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

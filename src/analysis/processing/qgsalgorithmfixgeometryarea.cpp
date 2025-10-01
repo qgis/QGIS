@@ -305,7 +305,7 @@ bool QgsFixGeometryAreaAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryAreaAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

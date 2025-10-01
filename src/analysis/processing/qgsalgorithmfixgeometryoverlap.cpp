@@ -279,7 +279,7 @@ bool QgsFixGeometryOverlapAlgorithm::prepareAlgorithm( const QVariantMap &parame
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryOverlapAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

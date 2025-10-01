@@ -63,7 +63,7 @@ QString QgsGeometryCheckSelfIntersectionAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckSelfIntersectionAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckSelfIntersectionAlgorithm *QgsGeometryCheckSelfIntersectionAlgorithm::createInstance() const

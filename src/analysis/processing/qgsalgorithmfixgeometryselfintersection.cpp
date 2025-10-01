@@ -354,7 +354,7 @@ bool QgsFixGeometrySelfIntersectionAlgorithm::prepareAlgorithm( const QVariantMa
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometrySelfIntersectionAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

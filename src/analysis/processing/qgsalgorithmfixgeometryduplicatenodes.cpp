@@ -268,7 +268,7 @@ bool QgsFixGeometryDuplicateNodesAlgorithm::prepareAlgorithm( const QVariantMap 
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryDuplicateNodesAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond
