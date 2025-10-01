@@ -5816,6 +5816,52 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
                 vl2.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault
             )
 
+    def test_write_symbology_categories(self):
+        """Test that copy paste styles respect categories: issue GH #"""
+
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string", "layer2", "memory")
+        self.assertTrue(layer1.isValid())
+        self.assertTrue(layer2.isValid())
+        color1 = layer1.renderer().symbol().color()
+        color2 = layer2.renderer().symbol().color()
+        self.assertNotEqual(color1.name(), color2.name())
+
+        # Set a form property on layer1 and layer2
+        edit_form_config = layer1.editFormConfig()
+        edit_form_config.setLayout(Qgis.AttributeFormLayout.UiFile)
+        layer1.setEditFormConfig(edit_form_config)
+
+        edit_form_config2 = layer2.editFormConfig()
+        # Default but better to be explicit
+        edit_form_config2.setLayout(Qgis.AttributeFormLayout.DragAndDrop)
+        layer2.setEditFormConfig(edit_form_config2)
+
+        # Now write the symbology to XML but omit the form category
+        doc = QDomDocument("qgis")
+        ctx = QgsReadWriteContext()
+        layer1.exportNamedStyle(doc, ctx, QgsMapLayer.StyleCategory.Symbology)
+
+        # Read the symbology into layer2 specifying all categories but only the symbology is actually in the input XML
+        layer2.importNamedStyle(doc, QgsMapLayer.StyleCategory.AllStyleCategories)
+        # Check that the symbol color has been copied
+        self.assertEqual(layer2.renderer().symbol().color().name(), color1.name())
+        # Check that the form config has not been changed
+        self.assertEqual(
+            layer2.editFormConfig().layout(), Qgis.AttributeFormLayout.DragAndDrop
+        )
+
+        # Now copy the form category only
+        doc = QDomDocument("qgis")
+        layer1.exportNamedStyle(doc, ctx, QgsMapLayer.StyleCategory.Forms)
+        layer2.renderer().symbol().setColor(color2)
+        layer2.importNamedStyle(doc, QgsMapLayer.StyleCategory.AllStyleCategories)
+        # Check that only the form properties have been copied
+        self.assertEqual(
+            layer2.editFormConfig().layout(), Qgis.AttributeFormLayout.UiFile
+        )
+        self.assertEqual(layer2.renderer().symbol().color().name(), color2.name())
+
 
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect
