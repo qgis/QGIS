@@ -174,7 +174,7 @@ class CORE_EXPORT QgsGltfUtils
      * geometry of a I3S node.
      * \since QGIS 4.0
      */
-    struct I3SNodeContext
+    struct CORE_EXPORT I3SNodeContext
     {
       //! Initialize the node content from tile's info
       void initFromTile( const QgsTiledSceneTile &tile,
