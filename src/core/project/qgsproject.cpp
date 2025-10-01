@@ -663,11 +663,11 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
 
         translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), fieldName );
 
-        if ( field.editorWidgetSetup().type() == QStringLiteral( "ValueRelation" ) )
+        if ( field.editorWidgetSetup().type() == QLatin1String( "ValueRelation" ) )
         {
           translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString() );
         }
-        if ( field.editorWidgetSetup().type() == QStringLiteral( "ValueMap" ) )
+        if ( field.editorWidgetSetup().type() == QLatin1String( "ValueMap" ) )
         {
           if ( field.editorWidgetSetup().config().value( QStringLiteral( "map" ) ).canConvert<QList<QVariant>>() )
           {
@@ -4003,11 +4003,11 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     if ( e.isNull() )
     {
       e = propertiesElem.firstChildElement( QStringLiteral( "properties" ) );
-      while ( !e.isNull() && e.attribute( QStringLiteral( "name" ) ) != QStringLiteral( "Paths" ) )
+      while ( !e.isNull() && e.attribute( QStringLiteral( "name" ) ) != QLatin1String( "Paths" ) )
         e = e.nextSiblingElement( QStringLiteral( "properties" ) );
 
       e = e.firstChildElement( QStringLiteral( "properties" ) );
-      while ( !e.isNull() && e.attribute( QStringLiteral( "name" ) ) != QStringLiteral( "Absolute" ) )
+      while ( !e.isNull() && e.attribute( QStringLiteral( "name" ) ) != QLatin1String( "Absolute" ) )
         e = e.nextSiblingElement( QStringLiteral( "properties" ) );
     }
     else

@@ -4627,7 +4627,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
   // insert \a result geometry (obtain by the chamfer/fillet operation) back into original \a inputPoly polygon
   auto updatePolygon = []( const QgsPolygon * inputPoly, QgsAbstractGeometry * result, int modifiedRing ) -> std::unique_ptr<QgsPolygon>
   {
-    std::unique_ptr<QgsPolygon> newPoly = std::make_unique<QgsPolygon>();
+    auto newPoly = std::make_unique<QgsPolygon>();
     for ( int ringIndex = 0; ringIndex < inputPoly->numInteriorRings() + 1; ++ringIndex )
     {
       if ( ringIndex == modifiedRing )
@@ -4656,7 +4656,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
   {
     if ( modifiedPart >= 0 )
     {
-      std::unique_ptr<QgsMultiLineString> newMultiLine = std::make_unique<QgsMultiLineString>();
+      auto newMultiLine = std::make_unique<QgsMultiLineString>();
       int partIndex = 0;
       for ( QgsMultiLineString::part_iterator partIte = inputMultiLine->parts_begin(); partIte != inputMultiLine->parts_end(); ++partIte )
       {
@@ -4686,7 +4686,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
     // geomType == Qgis::GeometryType::Polygon
     if ( modifiedPart >= 0 )
     {
-      std::unique_ptr<QgsMultiPolygon> newMultiPoly = std::make_unique<QgsMultiPolygon>();
+      auto newMultiPoly = std::make_unique<QgsMultiPolygon>();
       int partIndex = 0;
       for ( QgsAbstractGeometry::part_iterator partIte = inputMultiPoly->parts_begin(); partIte != inputMultiPoly->parts_end(); ++partIte )
       {

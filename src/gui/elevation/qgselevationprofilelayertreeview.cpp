@@ -491,7 +491,7 @@ void QgsElevationProfileLayerTreeView::populateInitialSources( QgsProject *proje
 
 void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName )
 {
-  std::unique_ptr< QgsLayerTreeCustomNode > customNode = std::make_unique< QgsLayerTreeCustomNode >( sourceId, sourceName.isEmpty() ? sourceId : sourceName );
+  auto customNode = std::make_unique< QgsLayerTreeCustomNode >( sourceId, sourceName.isEmpty() ? sourceId : sourceName );
   customNode->setItemVisibilityChecked( true );
   // Mark the node so that we know which custom nodes correspond to elevation profile sources
   customNode->setCustomProperty( QStringLiteral( "source" ), QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE );

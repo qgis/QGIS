@@ -344,7 +344,7 @@ void QgsVectorTileUtils::loadSprites( const QVariantMap &styleDefinition, QgsMap
       {
         return sprite;
       }
-      else if ( sprite.startsWith( QLatin1String( "/" ) ) )
+      else if ( sprite.startsWith( QLatin1Char( '/' ) ) )
       {
         const QUrl url( styleUrl );
         return QStringLiteral( "%1://%2%3" ).arg( url.scheme(), url.host(), sprite );
