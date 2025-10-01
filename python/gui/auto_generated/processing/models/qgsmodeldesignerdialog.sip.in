@@ -48,7 +48,7 @@ made to the model.
 
     void abortUndoCommand();
 %Docstring
-Aborts pending undo command, tunring last call to beginUndoCommand
+Aborts pending undo command, turning last call to beginUndoCommand
 obsolete
 %End
 
