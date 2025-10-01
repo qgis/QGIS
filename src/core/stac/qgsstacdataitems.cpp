@@ -36,7 +36,7 @@ QgsStacAssetItem::QgsStacAssetItem( QgsDataItem *parent, const QString &name, co
     mStacAsset( asset ),
     mName( name )
 {
-  mIconName = QStringLiteral( "mActionPropertiesWidget.svg" );
+  mIconName = mStacAsset->isCloudOptimized() ? QStringLiteral( "mActionAddLayer.svg" ) : QStringLiteral( "downloading_svg.svg" );
   updateToolTip();
   setState( Qgis::BrowserItemState::Populated );
 }
