@@ -198,6 +198,11 @@ QVariantMap QgsGeometryCheckOverlapAlgorithm::processAlgorithm( const QVariantMa
 
   for ( const QgsGeometryCheckError *error : checkErrors )
   {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
     const QgsGeometryOverlapCheckError *overlapError = dynamic_cast<const QgsGeometryOverlapCheckError *>( error );
     if ( !overlapError )
       break;
