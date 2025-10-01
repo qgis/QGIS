@@ -181,10 +181,8 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
-  QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext(
-    mTolerance, input->sourceCrs(), project->transformContext(), project
-  );
+  //QgsProject *project = QgsProject::instance();
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
   QStringList messages;
 
   const QgsGeometryGapCheck check( &checkContext, QVariantMap() );
@@ -199,7 +197,7 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   // To add features into the layer, the geometry checker looks for the layer in the project
   if ( method == QgsGeometryGapCheck::ResolutionMethod::CreateNewFeature )
   {
-    project->addMapLayer( fixedLayer.get(), false, false );
+    context.project()->addMapLayer( fixedLayer.get(), false, false );
     fixedLayer->startEditing();
   }
 
@@ -269,7 +267,7 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   {
     if ( !fixedLayer->commitChanges() )
       throw QgsProcessingException( QObject::tr( "Unable to add gap features" ) );
-    project->removeMapLayer( fixedLayer.get() );
+    context.project()->removeMapLayer( fixedLayer.get() );
   }
 
   progression = 0;
