@@ -227,8 +227,8 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
     for ( const QgsProcessingModelChildParameterSource &source : currentSources )
     {
       // Was not connected, nothing to do
-      if ( source.outputChildId().isEmpty() )
-        break;
+      if ( ( source.source() == Qgis::ProcessingModelChildParameterSource::ChildOutput && source.outputChildId().isEmpty() ) || ( source.source() == Qgis::ProcessingModelChildParameterSource::ModelParameter && source.parameterName().isEmpty() ) )
+        continue;
 
       switch ( source.source() )
       {
