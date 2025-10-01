@@ -1950,7 +1950,7 @@ void QgsPostgresProviderConnection::moveTableToSchema( const QString &sourceSche
 
   const QString sqlMoveTable = sqlMoveToSchema.arg( QgsPostgresConn::quotedIdentifier( sourceSchema ), QgsPostgresConn::quotedIdentifier( tableName ), QgsPostgresConn::quotedIdentifier( targetSchema ) );
 
-  std::shared_ptr<QgsPoolPostgresConn> conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
+  auto conn = std::make_shared<QgsPoolPostgresConn>( QgsPostgresConn::connectionInfo( QgsDataSourceUri( uri() ), false ) );
   QgsPostgresLayerProperty property;
   // need property from target schema, it is already moved
   bool ok = conn->get()->supportedLayer( property, sourceSchema, tableName );

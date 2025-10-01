@@ -834,7 +834,7 @@ void TestQgsLayerTree::testFindNestedGroups()
 
 void TestQgsLayerTree::testCustomNodes()
 {
-  std::unique_ptr< QgsLayerTreeCustomNode > custom = std::make_unique< QgsLayerTreeCustomNode >( QStringLiteral( "custom-id" ) );
+  auto custom = std::make_unique< QgsLayerTreeCustomNode >( QStringLiteral( "custom-id" ) );
   QVERIFY( QgsLayerTree::isCustomNode( custom.get() ) );
   QCOMPARE( custom->nodeId(), QStringLiteral( "custom-id" ) );
   QCOMPARE( custom->name(), QStringLiteral( "custom-id" ) );

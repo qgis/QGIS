@@ -44,7 +44,7 @@ bool QgsVectorLayerXyPlotDataGatherer::run()
   gatheredSeries.reserve( mSeriesDetails.size() );
   for ( int i = 0; i < mSeriesDetails.size(); i++ )
   {
-    std::unique_ptr<QgsXyPlotSeries> series = std::make_unique<QgsXyPlotSeries>();
+    auto series = std::make_unique<QgsXyPlotSeries>();
     gatheredSeries.emplace_back( std::move( series ) );
     gatheredSeriesCategoriesSum << QMap<QString, double>();
   }

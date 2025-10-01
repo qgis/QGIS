@@ -972,7 +972,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
     QDomElement sourceElement = sourcesElement.firstChildElement();
     while ( !sourceElement.isNull() )
     {
-      if ( sourceElement.tagName() == QStringLiteral( "profileCustomSource" ) )
+      if ( sourceElement.tagName() == QLatin1String( "profileCustomSource" ) )
       {
         const QString sourceId = sourceElement.attribute( QStringLiteral( "id" ) );
         if ( QgsAbstractProfileSource *profileSource = QgsApplication::profileSourceRegistry()->findSourceById( sourceId ) )
@@ -980,7 +980,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
           mSources.append( profileSource );
         }
       }
-      else if ( sourceElement.tagName() == QStringLiteral( "profileLayerSource" ) )
+      else if ( sourceElement.tagName() == QLatin1String( "profileLayerSource" ) )
       {
         QgsMapLayerRef ref;
         ref.readXml( sourceElement, context );

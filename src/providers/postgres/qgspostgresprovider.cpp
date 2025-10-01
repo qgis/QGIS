@@ -5191,7 +5191,7 @@ QString QgsPostgresProvider::htmlMetadata() const
                                                    ")" )
                                      .arg( QgsPostgresConn::quotedValue( mTableName ), QgsPostgresConn::quotedValue( mSchemaName ) );
 
-  const QString sqlWithPrivilages = QStringLiteral( "privileges AS ("
+  const QString sqlWithPrivileges = QStringLiteral( "privileges AS ("
                                                     "SELECT table_info.oid as oid, "
                                                     "COALESCE(NULLIF(CONCAT_WS(', ',"
                                                     "CASE WHEN has_table_privilege(table_info.oid, 'SELECT') THEN 'SELECT' END,"
@@ -5221,7 +5221,7 @@ QString QgsPostgresProvider::htmlMetadata() const
                                                "LEFT JOIN privileges ON table_info.oid = privileges.oid "
                                                "LEFT JOIN table_indexes_info ON table_indexes_info.table_name = table_info.table_name AND table_indexes_info.schema_name = table_info.schema_name "
                                                "LEFT JOIN pg_description ON pg_description.objoid = table_info.oid" )
-                                 .arg( sqlWithTableInfo, sqlWithPrivilages, sqlWithIndexes );
+                                 .arg( sqlWithTableInfo, sqlWithPrivileges, sqlWithIndexes );
 
   QgsPostgresResult resTable( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlMainQuery ) );
 
@@ -5233,7 +5233,7 @@ QString QgsPostgresProvider::htmlMetadata() const
   if ( resTable.PQntuples() > 0 )
   {
     tableComment = resTable.PQgetvalue( 0, 6 );
-    tableComment = tableComment.replace( QStringLiteral( "\n" ), QStringLiteral( "<br>" ) );
+    tableComment = tableComment.replace( QLatin1String( "\n" ), QLatin1String( "<br>" ) );
 
     estimateRowCount = resTable.PQgetvalue( 0, 4 ).toLongLong();
 

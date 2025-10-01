@@ -44,12 +44,12 @@ QgsExpressionContext QgsPlotWidget::createExpressionContext() const
     context.appendScope( QgsExpressionContextUtils::globalScope() );
   }
 
-  std::unique_ptr<QgsExpressionContextScope> plotScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "plot" ) );
+  auto plotScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "plot" ) );
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QString(), true ) );
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), 0.0, true ) );
   context.appendScope( plotScope.release() );
 
-  std::unique_ptr<QgsExpressionContextScope> chartScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "chart" ) );
+  auto chartScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "chart" ) );
   chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), QString(), true ) );
   chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_value" ), 0.0, true ) );
   context.appendScope( chartScope.release() );
