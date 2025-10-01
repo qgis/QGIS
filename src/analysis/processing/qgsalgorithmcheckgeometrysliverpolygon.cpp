@@ -170,8 +170,8 @@ QVariantMap QgsGeometryCheckSliverPolygonAlgorithm::processAlgorithm( const QVar
   QVariantMap configurationCheck;
   configurationCheck.insert( "maxArea", maxArea );
   configurationCheck.insert( "threshold", maxThinness );
-  const QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project, uniqueIdFieldIdx );
+
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project(), uniqueIdFieldIdx );
   const QgsGeometrySliverPolygonCheck check( &checkContext, configurationCheck );
 
   multiStepFeedback.setCurrentStep( 1 );
