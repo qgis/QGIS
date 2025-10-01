@@ -89,16 +89,17 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     {
       menu->addSeparator();
 
-      int downloadableAssets = 0;
+      bool hasDownloadableAssets = false;
       const QMap<QString, QgsStacAsset> assets = itemItem->stacItem()->assets();
       for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
       {
         if ( it.value().isDownloadable() )
         {
-          downloadableAssets += 1;
+          hasDownloadableAssets = true;
+          break;
         }
       }
-      if ( downloadableAssets > 0 )
+      if ( hasDownloadableAssets )
       {
         QAction *actionDownload = new QAction( tr( "Download Assets…" ), menu );
         connect( actionDownload, &QAction::triggered, this, [itemItem, context] { downloadAssets( itemItem, context ); } );
