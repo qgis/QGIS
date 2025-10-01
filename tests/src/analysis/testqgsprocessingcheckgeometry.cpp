@@ -669,6 +669,7 @@ void TestQgsProcessingCheckGeometry::gapAlg()
     bool ok = false;
     QgsProcessingFeedback feedback;
     auto context = std::make_unique< QgsProcessingContext >();
+    context->setProject( QgsProject::instance() );
 
     QVariantMap results;
     results = alg->run( parameters, *context, &feedback, &ok );
@@ -709,6 +710,7 @@ void TestQgsProcessingCheckGeometry::gapAlg()
     bool ok = false;
     QgsProcessingFeedback feedback;
     auto context = std::make_unique< QgsProcessingContext >();
+    context->setProject( QgsProject::instance() );
 
     QVariantMap results;
     results = alg->run( parameters, *context, &feedback, &ok );
