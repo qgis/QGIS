@@ -179,7 +179,16 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
   //We need to pass the update child algorithm to the model
   scene()->model()->setChildAlgorithm( *inputChildAlgorithm );
 
-  view()->endCommand();
+  if ( inputChildAlgorithm->childId() == mPreviousInputChildId && mToSocket->index() == mPreviousInputSocketNumber )
+  {
+    // This is the input socket that was originally connected, let's keep the undo buffer clean since practically nothing changed.
+    view()->abortCommand();
+  }
+  else
+  {
+    view()->endCommand();
+  }
+
   // Redraw
   scene()->requestRebuildRequired();
 }
@@ -213,16 +222,20 @@ void QgsModelViewToolLink::deactivate()
 void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *socket )
 {
   mFromSocket = socket;
+  mPreviousInputChildId.clear();
+  mPreviousInputSocketNumber = -1;
 
   // If it's an input socket and it's already connected, we want 'From' to be the output at the other end of the connection
   if ( mFromSocket->isInput() )
   {
+    mPreviousInputSocketNumber = mFromSocket->index();
     QgsProcessingModelChildAlgorithm *childFrom = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mFromSocket->component() );
     if ( !childFrom )
       return;
 
-    const QgsProcessingParameterDefinition *param = childFrom->algorithm()->parameterDefinitions().at( mFromSocket->index() );
+    const QgsProcessingParameterDefinition *param = childFrom->algorithm()->parameterDefinitions().at( mPreviousInputSocketNumber );
     const QList<QgsProcessingModelChildParameterSource> currentSources = childFrom->parameterSources().value( param->name() );
+    mPreviousInputChildId = childFrom->childId();
 
     for ( const QgsProcessingModelChildParameterSource &source : currentSources )
     {
