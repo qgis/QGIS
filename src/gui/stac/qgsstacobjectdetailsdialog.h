@@ -19,11 +19,12 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include "qgsstacasset.h"
-#include "qgsstacobject.h"
 #include "ui_qgsstacobjectdetailsdialog.h"
 
 #include <QDialog>
+
+class QgsStacAsset;
+class QgsStacObject;
 
 class QgsStacObjectDetailsDialog : public QDialog, private Ui::QgsStacObjectDetailsDialog
 {
