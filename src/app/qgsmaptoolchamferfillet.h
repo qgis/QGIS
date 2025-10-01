@@ -76,6 +76,9 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
 
     void cancel();
 
+    //! Only to wrap call to updateGeometryAndRubberBand
+    void configChanged();
+
   private:
     //! Rubberband that shows the position of the chamfer curve
     QgsRubberBand *mRubberBand = nullptr;
@@ -83,18 +86,18 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     //! The layer being manipulated
-    QgsVectorLayer *mSourceLayer = nullptr;
+    QPointer<QgsVectorLayer> mSourceLayer = nullptr;
 
     //! Geometry to manipulate
-    QgsGeometry mOriginalGeometry;
+    QgsGeometry mOriginalGeometryInSourceLayerCrs;
     //! Geometry being manipulated
-    QgsGeometry mManipulatedGeometry;
+    QgsGeometry mManipulatedGeometryInSourceLayerCrs;
     //! Geometry after manipulation
     QgsGeometry mModifiedGeometry;
     //! ID of manipulated feature
     QgsFeatureId mModifiedFeature = -1;
     int mVertexIndex = -1;
-    QgsPoint mVertexPoint;
+    QgsPoint mVertexPointInSourceLayerCrs;
 
     //! Internal flag to distinguish move from click
     bool mGeometryModified = false;
@@ -105,7 +108,7 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
     QgsFeature mSourceFeature;
 
     //! limits number of call to updateGeometryAndRubberBand
-    long mLastMouseMove = 0;
+    QElapsedTimer mLastMouseMove;
 
     void calculateDistances( const QgsPointXY &mapPoint, double &value1, double &value2 );
 

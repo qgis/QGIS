@@ -76,7 +76,7 @@ class APP_EXPORT QgsMapToolOffsetCurve : public QgsMapToolEdit
     void cancel();
 
   private:
-    //! Rubberband that shows the position of the offset  curve
+    //! Rubberband that shows the position of the offset curve
     QgsRubberBand *mRubberBand = nullptr;
     //! Snapping indicators
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;

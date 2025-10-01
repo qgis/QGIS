@@ -30,12 +30,10 @@
 #include "qgsvectorlayer.h"
 #include "qgssnapindicator.h"
 #include "qgssettingsregistrycore.h"
-#include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgisapp.h"
 #include "qgsmapmouseevent.h"
 #include "qgslogger.h"
-#include "qgsvectorlayerutils.h"
 #include "qgsgeometryutils.h"
 #include "qgsvector.h"
 
@@ -43,7 +41,7 @@ QgsMapToolChamferFillet::QgsMapToolChamferFillet( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
   , mSnapIndicator( std::make_unique<QgsSnapIndicator>( canvas ) )
 {
-  mToolName = tr( "Map tool to chamfer" );
+  mToolName = tr( "Chamfer or fillet" );
 }
 
 QgsMapToolChamferFillet::~QgsMapToolChamferFillet()
@@ -54,7 +52,7 @@ QgsMapToolChamferFillet::~QgsMapToolChamferFillet()
 
 void QgsMapToolChamferFillet::applyOperationFromWidget( Qt::KeyboardModifiers modifiers )
 {
-  if ( mSourceLayer && !mOriginalGeometry.isNull() )
+  if ( mSourceLayer && !mOriginalGeometryInSourceLayerCrs.isNull() )
   {
     double value1 = mUserInputWidget->value1();
     double value2 = mUserInputWidget->value2();
@@ -92,7 +90,7 @@ void QgsMapToolChamferFillet::applyOperation( double value1, double value2, Qt::
     {
       if ( !( *ite )->isValid( lastError ) )
       {
-        message += QStringLiteral( "Invalid part %1: '%2' (WKT: %3)" ).arg( i ).arg( lastError ).arg( ( *ite )->asWkt( 2 ) );
+        message += QStringLiteral( "Invalid part %1: '%2'" ).arg( i ).arg( lastError );
         break;
       }
       i++;
@@ -103,11 +101,11 @@ void QgsMapToolChamferFillet::applyOperation( double value1, double value2, Qt::
     return;
   }
 
-  QgsVectorLayer *destLayer = qobject_cast<QgsVectorLayer *>( canvas()->currentLayer() );
+  QgsVectorLayer *destLayer = currentVectorLayer();
   if ( !destLayer )
     return;
 
-  destLayer->beginEditCommand( tr( "Chamfer curve" ) );
+  destLayer->beginEditCommand( tr( "Chamfer/fillet" ) );
 
   bool editOk = true;
   editOk = destLayer->changeGeometry( mModifiedFeature, mModifiedGeometry );
@@ -119,7 +117,7 @@ void QgsMapToolChamferFillet::applyOperation( double value1, double value2, Qt::
   else
   {
     destLayer->destroyEditCommand();
-    emit messageEmitted( QStringLiteral( "Could not apply chamfer" ), Qgis::MessageLevel::Critical );
+    emit messageEmitted( QStringLiteral( "Could not apply chamfer/fillet" ), Qgis::MessageLevel::Critical );
   }
 
   deleteRubberBandAndGeometry();
@@ -144,22 +142,22 @@ void QgsMapToolChamferFillet::calculateDistances( const QgsPointXY &mapPoint, do
     //get distance from current position rectangular to feature
     const QgsPointXY layerCoords = toLayerCoordinates( mSourceLayer, mapPoint );
 
-    QgsVector vect = layerCoords - mVertexPoint;
-    QgsVector perpVect = vect.perpVector();
+    const QgsVector vect = layerCoords - mVertexPointInSourceLayerCrs;
+    const QgsVector perpVect = vect.perpVector();
 
     int beforeVIdx, afterVIdx;
-    mManipulatedGeometry.adjacentVertices( mVertexIndex, beforeVIdx, afterVIdx );
-    QgsPoint beforeVert = mManipulatedGeometry.vertexAt( beforeVIdx );
-    QgsPoint afterVert = mManipulatedGeometry.vertexAt( afterVIdx );
+    mManipulatedGeometryInSourceLayerCrs.adjacentVertices( mVertexIndex, beforeVIdx, afterVIdx );
+    const QgsPoint beforeVert = mManipulatedGeometryInSourceLayerCrs.vertexAt( beforeVIdx );
+    const QgsPoint afterVert = mManipulatedGeometryInSourceLayerCrs.vertexAt( afterVIdx );
 
     QgsPoint beforeInter;
-    QgsGeometryUtils::lineIntersection( QgsPoint( layerCoords.x(), layerCoords.y() ), perpVect, beforeVert, beforeVert - mVertexPoint, beforeInter );
+    QgsGeometryUtils::lineIntersection( QgsPoint( layerCoords.x(), layerCoords.y() ), perpVect, beforeVert, beforeVert - mVertexPointInSourceLayerCrs, beforeInter );
 
     QgsPoint afterInter;
-    QgsGeometryUtils::lineIntersection( QgsPoint( layerCoords.x(), layerCoords.y() ), perpVect, afterVert, afterVert - mVertexPoint, afterInter );
+    QgsGeometryUtils::lineIntersection( QgsPoint( layerCoords.x(), layerCoords.y() ), perpVect, afterVert, afterVert - mVertexPointInSourceLayerCrs, afterInter );
 
-    value1 = beforeInter.distance( mVertexPoint );
-    value2 = afterInter.distance( mVertexPoint );
+    value1 = beforeInter.distance( mVertexPointInSourceLayerCrs );
+    value2 = afterInter.distance( mVertexPointInSourceLayerCrs );
   }
 }
 
@@ -183,7 +181,7 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  if ( mOriginalGeometry.isNull() )
+  if ( mOriginalGeometryInSourceLayerCrs.isNull() )
   {
     // first click, get feature to modify
     deleteRubberBandAndGeometry();
@@ -193,7 +191,7 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Vertex ) );
 
-    if ( auto *lLayer = match.layer() )
+    if ( QgsVectorLayer *lLayer = match.layer() )
     {
       mSourceLayer = lLayer;
       QgsFeature fet;
@@ -204,7 +202,7 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
         mRubberBand = createRubberBand();
         if ( mRubberBand )
         {
-          mRubberBand->setToGeometry( mManipulatedGeometry, lLayer );
+          mRubberBand->setToGeometry( mManipulatedGeometryInSourceLayerCrs, lLayer );
         }
         mModifiedFeature = fet.id();
         createUserInputWidget();
@@ -213,9 +211,9 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
         if ( mUserInputWidget && mUserInputWidget->operation() == "fillet" && mVertexIndex >= 0 )
         {
           // Get the segments around the vertex
-          const QgsPoint vertexBefore = mManipulatedGeometry.vertexAt( mVertexIndex - 1 );
-          const QgsPoint vertex = mManipulatedGeometry.vertexAt( mVertexIndex );
-          const QgsPoint vertexAfter = mManipulatedGeometry.vertexAt( mVertexIndex + 1 );
+          const QgsPoint vertexBefore = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex - 1 );
+          const QgsPoint vertex = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex );
+          const QgsPoint vertexAfter = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex + 1 );
 
           if ( !vertexBefore.isEmpty() && !vertex.isEmpty() && !vertexAfter.isEmpty() )
           {
@@ -236,7 +234,7 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
     }
 
-    if ( mOriginalGeometry.isNull() )
+    if ( mOriginalGeometryInSourceLayerCrs.isNull() )
     {
       emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
       cancel();
@@ -270,7 +268,7 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( mOriginalGeometry.isNull() || !mRubberBand )
+  if ( mOriginalGeometryInSourceLayerCrs.isNull() || !mRubberBand )
   {
     QgsPointLocator::Match match;
     match = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Types( QgsPointLocator::Vertex ) );
@@ -279,10 +277,9 @@ void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
   }
 
   // reduce the number of call to max 1 per 100ms
-  long currTime = QDateTime::currentMSecsSinceEpoch();
-  if ( currTime - mLastMouseMove < 100 )
+  if ( mLastMouseMove.isValid() && mLastMouseMove.elapsed() < 100 )
     return;
-  mLastMouseMove = currTime;
+  mLastMouseMove.restart();
 
   mGeometryModified = true;
 
@@ -337,14 +334,14 @@ void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
 {
-  QgsVectorLayer *vl = match.layer();
+  const QgsVectorLayer *vl = match.layer();
   if ( !vl )
   {
     return;
   }
 
-  mOriginalGeometry = QgsGeometry();
-  mManipulatedGeometry = QgsGeometry();
+  mOriginalGeometryInSourceLayerCrs = QgsGeometry();
+  mManipulatedGeometryInSourceLayerCrs = QgsGeometry();
 
   //assign feature part by vertex number (snap to vertex) or by before vertex number (snap to segment)
   const QgsGeometry geom = snappedFeature.geometry();
@@ -352,7 +349,7 @@ void QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &mat
   {
     return;
   }
-  mOriginalGeometry = geom;
+  mOriginalGeometryInSourceLayerCrs = geom;
 
   const Qgis::WkbType geomType = geom.wkbType();
   if ( QgsWkbTypes::geometryType( geomType ) != Qgis::GeometryType::Line && QgsWkbTypes::geometryType( geomType ) != Qgis::GeometryType::Polygon )
@@ -361,10 +358,10 @@ void QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &mat
   if ( !match.hasEdge() && !match.hasVertex() )
     return;
 
-  mManipulatedGeometry = QgsGeometry( geom.constGet()->clone() );
+  mManipulatedGeometryInSourceLayerCrs = QgsGeometry( geom.constGet()->clone() );
 
   mVertexIndex = match.vertexIndex();
-  mVertexPoint = geom.vertexAt( mVertexIndex );
+  mVertexPointInSourceLayerCrs = geom.vertexAt( mVertexIndex );
 }
 
 void QgsMapToolChamferFillet::createUserInputWidget()
@@ -377,8 +374,7 @@ void QgsMapToolChamferFillet::createUserInputWidget()
 
   connect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceEditingFinished, this, &QgsMapToolChamferFillet::applyOperationFromWidget );
   connect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceEditingCanceled, this, &QgsMapToolChamferFillet::cancel );
-  connect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceConfigChanged, this, //
-           [this] { updateGeometryAndRubberBand( mUserInputWidget->value1(), mUserInputWidget->value2() ); } );
+  connect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceConfigChanged, this, &QgsMapToolChamferFillet::configChanged );
 }
 
 void QgsMapToolChamferFillet::deleteUserInputWidget()
@@ -387,6 +383,7 @@ void QgsMapToolChamferFillet::deleteUserInputWidget()
   {
     disconnect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceEditingFinished, this, &QgsMapToolChamferFillet::applyOperationFromWidget );
     disconnect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceEditingCanceled, this, &QgsMapToolChamferFillet::cancel );
+    disconnect( mUserInputWidget, &QgsChamferFilletUserWidget::distanceConfigChanged, this, &QgsMapToolChamferFillet::configChanged );
     mUserInputWidget->releaseKeyboard();
     mUserInputWidget->deleteLater();
   }
@@ -395,15 +392,21 @@ void QgsMapToolChamferFillet::deleteUserInputWidget()
 
 void QgsMapToolChamferFillet::deleteRubberBandAndGeometry()
 {
-  mOriginalGeometry.set( nullptr );
-  mManipulatedGeometry.set( nullptr );
+  mOriginalGeometryInSourceLayerCrs.set( nullptr );
+  mManipulatedGeometryInSourceLayerCrs.set( nullptr );
   delete mRubberBand;
   mRubberBand = nullptr;
 }
 
+void QgsMapToolChamferFillet::configChanged()
+{
+  if ( mUserInputWidget )
+    updateGeometryAndRubberBand( mUserInputWidget->value1(), mUserInputWidget->value2() );
+}
+
 void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double value1, double value2 )
 {
-  if ( !mRubberBand || mOriginalGeometry.isNull() )
+  if ( !mRubberBand || mOriginalGeometryInSourceLayerCrs.isNull() )
   {
     return;
   }
@@ -420,12 +423,12 @@ void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double value1, double
   if ( op == "chamfer" )
   {
     QgsDebugMsgLevel( QStringLiteral( "will chamfer %1 / %2" ).arg( value1 ).arg( value2 ), 3 );
-    newGeom = mManipulatedGeometry.chamfer( mVertexIndex, value1, value2 );
+    newGeom = mManipulatedGeometryInSourceLayerCrs.chamfer( mVertexIndex, value1, value2 );
   }
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "will fillet %1 / %2" ).arg( value1 ).arg( segments ), 3 );
-    newGeom = mManipulatedGeometry.fillet( mVertexIndex, value1, segments );
+    newGeom = mManipulatedGeometryInSourceLayerCrs.fillet( mVertexIndex, value1, segments );
   }
 
   if ( newGeom.isNull() )
@@ -435,7 +438,7 @@ void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double value1, double
     mSourceLayer = nullptr;
     mGeometryModified = false;
     emit messageDiscarded();
-    emit messageEmitted( tr( "Creating chamfer/fillet geometry failed: %1" ).arg( mManipulatedGeometry.lastError() ), Qgis::MessageLevel::Critical );
+    emit messageEmitted( tr( "Creating chamfer/fillet geometry failed: %1" ).arg( mManipulatedGeometryInSourceLayerCrs.lastError() ), Qgis::MessageLevel::Critical );
   }
   else
   {
@@ -461,9 +464,8 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
   QString op = QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value();
   if ( op != "chamfer" && op != "fillet" )
   {
-    op = "chamfer";
-    QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( op );
-    qWarning() << "No op defined!! Default: chamfer";
+    op = QgsGeometry::Chamfer;
+    QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( op ) );
   }
 
   mOperationComboBox->setCurrentIndex( mOperationComboBox->findData( op ) );
@@ -511,7 +513,6 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
 
   updateLabels( op );
 
-  // connect signals
   connect( mOperationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, //
            [this, updateLabels] {
              QString op = operation();
