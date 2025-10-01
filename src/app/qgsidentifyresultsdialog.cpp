@@ -111,6 +111,8 @@ const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues = ne
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowRelations = new QgsSettingsEntryBool( QStringLiteral( "show-relations" ), QgsSettingsTree::sTreeMap, true, QStringLiteral( "Whether to show relations in the identify feature result" ) );
 
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowFullText = new QgsSettingsEntryBool( QStringLiteral( "show-full-text" ), QgsSettingsTree::sTreeMap, false, QStringLiteral( "Whether to show full text instead of truncating with ellipsis in the identify feature result" ) );
+
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
   : QgsWebView( parent )
@@ -370,6 +372,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mActionHideDerivedAttributes, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled );
   connect( mActionHideNullValues, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideNullValues_toggled );
   connect( mActionShowRelations, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionShowRelations_toggled );
+  connect( mActionShowFullText, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionShowFullText_toggled );
 
   mOpenFormAction->setDisabled( true );
 
@@ -481,6 +484,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mActionHideNullValues->setChecked( QgsIdentifyResultsDialog::settingHideNullValues->value() );
   settingsMenu->addAction( mActionShowRelations );
   mActionShowRelations->setChecked( QgsIdentifyResultsDialog::settingShowRelations->value() );
+  settingsMenu->addAction( mActionShowFullText );
+  mActionShowFullText->setChecked( QgsIdentifyResultsDialog::settingShowFullText->value() );
 }
 
 QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
@@ -598,6 +603,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
                                 ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
                                 : QString();
   layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( vlayer->name(), countSuffix ) );
+  
+  
+  updateTextDisplay();
 
 
   // table
@@ -820,9 +828,17 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       }
       else
       {
+        attrItem->setData( 1, REPRESENTED_VALUE_ROLE, representedValue );
+        
+        // Check if "Show full text" is enabled
+        const bool showFullText = QgsIdentifyResultsDialog::settingShowFullText->value();
+        
+        // Always create a label widget for consistent styling and text selection
+        QLabel *valueLabel = createStyledLabel( representedValue, showFullText );
+        attrItem->setText( 1, representedValue ); 
         attrItem->setData( 1, Qt::DisplayRole, representedValue );
         QTreeWidget *tw = attrItem->treeWidget();
-        tw->setItemWidget( attrItem, 1, nullptr );
+        tw->setItemWidget( attrItem, 1, valueLabel );
       }
     }
 
@@ -2834,4 +2850,88 @@ void QgsIdentifyResultsDialog::setExpressionContextScope( const QgsExpressionCon
 QgsExpressionContextScope QgsIdentifyResultsDialog::expressionContextScope() const
 {
   return mExpressionContextScope;
+}
+
+void QgsIdentifyResultsDialog::mActionShowFullText_toggled( bool checked )
+{
+  QgsIdentifyResultsDialog::settingShowFullText->setValue( checked );
+  
+  
+  if ( lstResults->topLevelItemCount() > 0 )
+  {
+    
+    QTreeWidgetItem *currentItem = lstResults->currentItem();
+    
+    
+    updateTextDisplay();
+    
+    if ( currentItem )
+    {
+      lstResults->setCurrentItem( currentItem );
+    }
+  }
+}
+
+void QgsIdentifyResultsDialog::updateTextDisplay()
+{
+  const bool showFullText = QgsIdentifyResultsDialog::settingShowFullText->value();
+  
+  
+  for ( int i = 0; i < lstResults->topLevelItemCount(); ++i )
+  {
+    QTreeWidgetItem *layerItem = lstResults->topLevelItem( i );
+    updateTextDisplayForItem( layerItem, showFullText );
+  }
+}
+
+QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool wordWrap )
+{
+  QLabel *valueLabel = new QLabel();
+  valueLabel->setAlignment( Qt::AlignTop | Qt::AlignLeft );
+  valueLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
+  valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; }" ) );
+  valueLabel->setWordWrap( wordWrap );
+  
+  if ( wordWrap && ( text.contains( '\\' ) || text.contains( '/' ) ) )
+  {
+    QString htmlText = text.toHtmlEscaped();
+    htmlText.replace( "/", "/&shy;" );
+    htmlText.replace( "\\", "\\&shy;" );
+    valueLabel->setText( htmlText );
+  }
+  else
+  {
+    valueLabel->setText( text );
+  }
+  
+  return valueLabel;
+}
+
+void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, bool showFullText )
+{
+  if ( !item )
+    return;
+    
+  
+  if ( item->data( 1, REPRESENTED_VALUE_ROLE ).isValid() )
+  {
+    const QString fullText = item->data( 1, REPRESENTED_VALUE_ROLE ).toString();
+    
+    // Always create a label widget for consistent styling and text selection
+    QLabel *valueLabel = createStyledLabel( fullText, showFullText );
+    item->setText( 1, fullText ); 
+    item->setData( 1, Qt::DisplayRole, fullText );
+    
+    // Set the widget for this item
+    QTreeWidget *treeWidget = item->treeWidget();
+    if ( treeWidget )
+    {
+      treeWidget->setItemWidget( item, 1, valueLabel );
+    }
+  }
+
+  for ( int i = 0; i < item->childCount(); ++i )
+  {
+    updateTextDisplayForItem( item->child( i ), showFullText );
+  }
 }
