@@ -5,7 +5,7 @@
  * Copyright (c) 2002, Marios Hadjieleftheriou
  *
  * All rights reserved.
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -321,7 +321,7 @@ void Node::insertEntry(uint32_t dataLength, uint8_t* pData, TimeRegion& mbr, id_
 
 bool Node::deleteEntry(uint32_t index)
 {
-	assert(index >= 0 && index < m_children);
+	assert(index < m_children);
 
 	// cache it, since I might need it for "touches" later.
 	TimeRegionPtr ptrR = m_ptrMBR[index];
