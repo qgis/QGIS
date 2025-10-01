@@ -1,19 +1,24 @@
-﻿//    Copyright (C) 2019-2022 Jakub Melka
+﻿// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT.  If not, see <https://www.gnu.org/licenses/>.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #include "pdfcolorspaces.h"
 #include "pdfobject.h"
@@ -322,11 +327,7 @@ QImage PDFAbstractColorSpace::getImage(const PDFImageData& imageData,
                 const unsigned int imageHeight = imageData.getHeight();
 
                 QImage alphaMask = createAlphaMask(softMask);
-                if (alphaMask.size() != image.size())
-                {
-                    // Scale the alpha mask, if it is masked
-                    alphaMask = alphaMask.scaled(image.size());
-                }
+                QSize targetSize = getLargerSizeByArea(alphaMask.size(), image.size());
 
                 QMutex exceptionMutex;
                 std::optional<PDFException> exception;
@@ -347,7 +348,6 @@ QImage PDFAbstractColorSpace::getImage(const PDFImageData& imageData,
                         const double max = reader.max();
                         const double coefficient = 1.0 / max;
                         unsigned char* outputLine = image.scanLine(i);
-                        unsigned char* alphaLine = alphaMask.scanLine(i);
 
                         std::vector<float> inputColors(imageWidth * componentCount, 0.0f);
                         std::vector<unsigned char> outputColors(imageWidth * 3, 0);
@@ -379,7 +379,7 @@ QImage PDFAbstractColorSpace::getImage(const PDFImageData& imageData,
                             *outputLine++ = *transformedLine++;
                             *outputLine++ = *transformedLine++;
                             *outputLine++ = *transformedLine++;
-                            *outputLine++ = *alphaLine++;
+                            *outputLine++ = 255;
                         }
                     }
                     catch (const PDFException &lineException)
@@ -399,6 +399,18 @@ QImage PDFAbstractColorSpace::getImage(const PDFImageData& imageData,
                 {
                     throw *exception;
                 }
+
+                if (image.size() != targetSize)
+                {
+                    image = image.scaled(targetSize);
+                }
+
+                if (alphaMask.size() != targetSize)
+                {
+                    alphaMask = alphaMask.scaled(targetSize);
+                }
+
+                image.setAlphaChannel(alphaMask);
 
                 return image;
             }
@@ -1030,6 +1042,21 @@ bool PDFAbstractColorSpace::transform(const PDFAbstractColorSpace* source,
     }
 
     return true;
+}
+
+QSize PDFAbstractColorSpace::getLargerSizeByArea(QSize s1, QSize s2)
+{
+    int area1 = s1.width() * s1.height();
+    int area2 = s2.width() * s2.height();
+
+    if (area1 > area2)
+    {
+        return s1;
+    }
+    else
+    {
+        return s2;
+    }
 }
 
 PDFColorSpacePointer PDFAbstractColorSpace::createColorSpaceImpl(const PDFDictionary* colorSpaceDictionary,
@@ -1947,11 +1974,7 @@ QImage PDFIndexedColorSpace::getImage(const PDFImageData& imageData,
                 color.resize(1);
 
                 QImage alphaMask = createAlphaMask(softMask);
-                if (alphaMask.size() != image.size())
-                {
-                    // Scale the alpha mask, if it is masked
-                    alphaMask = alphaMask.scaled(image.size());
-                }
+                QSize targetSize = getLargerSizeByArea(alphaMask.size(), image.size());
 
                 for (unsigned int i = 0, rowCount = imageData.getHeight(); i < rowCount; ++i)
                 {
@@ -1963,7 +1986,6 @@ QImage PDFIndexedColorSpace::getImage(const PDFImageData& imageData,
 
                     reader.seek(i * imageData.getStride());
                     unsigned char* outputLine = image.scanLine(i);
-                    unsigned char* alphaLine = alphaMask.scanLine(i);
 
                     for (unsigned int j = 0; j < imageData.getWidth(); ++j)
                     {
@@ -1976,9 +1998,21 @@ QImage PDFIndexedColorSpace::getImage(const PDFImageData& imageData,
                         *outputLine++ = qRed(rgb);
                         *outputLine++ = qGreen(rgb);
                         *outputLine++ = qBlue(rgb);
-                        *outputLine++ = *alphaLine++;
+                        *outputLine++ = 255;
                     }
                 }
+
+                if (image.size() != targetSize)
+                {
+                    image = image.scaled(targetSize);
+                }
+
+                if (alphaMask.size() != targetSize)
+                {
+                    alphaMask = alphaMask.scaled(targetSize);
+                }
+
+                image.setAlphaChannel(alphaMask);
 
                 return image;
             }

@@ -218,8 +218,8 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
     explicit QgsAbstractPointCloudIndex();
     virtual ~QgsAbstractPointCloudIndex();
 
-    //! Loads the index from the file
-    virtual void load( const QString &fileName ) = 0;
+    //! Loads the index from the \a uri, using an optional \a authcfg for network requests
+    virtual void load( const QString &uri, const QString &authcfg = QString() ) = 0;
 
     //! Returns whether index is loaded and valid
     virtual bool isValid() const = 0;
@@ -389,6 +389,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
 
     QString mError;
     QString mUri;
+    QString mAuthCfg;
     static QMutex sBlockCacheMutex;
     static QCache<QgsPointCloudCacheKey, QgsPointCloudBlock> sBlockCache;
 };
@@ -419,11 +420,13 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     QgsAbstractPointCloudIndex *get() SIP_SKIP { return mIndex.get(); }
 
     /**
-    * Loads the index from the file
+    * Loads the index from a \a url
     *
+    * \param url The URL to load the index from. Can be a local file or an http(s) URL.
+    * \param authcfg Optionally apply this authentication configuration for network requests (since QGIS 4.0)
     * \see QgsAbstractPointCloudIndex::load
     */
-    void load( const QString &fileName );
+    void load( const QString &url, const QString &authcfg = QString() );
 
     /**
     * Returns whether index is loaded and valid

@@ -110,7 +110,7 @@
       </layer>
      </symbol>
     </markerStyle>
-    <annotationFontProperties style="" description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0"/>
+    <annotationFontProperties style="Bold" description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0"/>
    </ComposerMapGrid>
    <AtlasMap atlasDriven="0" margin="0.10000000000000001" scalingMode="2"/>
    <ComposerItem itemRotation="0" background="true" y="6" width="102" positionLock="false" x="24.1399" uuid="{5c70116e-a26b-4e05-ac30-466c4f893dbb}" zValue="1" height="198" blendMode="0" opacity="0.78" excludeFromExports="0" positionMode="0" lastValidViewScaleFactor="2.47574" page="1" id="my map" pagey="6" visibility="1" pagex="24.1399" frameJoinStyle="round" frame="true" outlineWidth="0.6">

@@ -575,7 +575,14 @@ void QgsLayoutElevationProfileWidget::setMasterLayout( QgsMasterLayoutInterface 
 
 QgsExpressionContext QgsLayoutElevationProfileWidget::createExpressionContext() const
 {
-  return mProfile->createExpressionContext();
+  QgsExpressionContext context = mProfile->createExpressionContext();
+
+  std::unique_ptr<QgsExpressionContextScope> plotScope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "plot" ) );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QString(), true ) );
+  plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), 0.0, true ) );
+  context.appendScope( plotScope.release() );
+
+  return context;
 }
 
 void QgsLayoutElevationProfileWidget::setDesignerInterface( QgsLayoutDesignerInterface *iface )

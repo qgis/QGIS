@@ -32,6 +32,7 @@
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgsabstractterrainsettings.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QtConcurrent>
 #include <Qt3DCore/QTransform>
@@ -73,7 +74,8 @@ void QgsVectorLayerChunkLoader::start()
   // picked so that the coordinates are relatively small to avoid numerical precision issues
   QgsVector3D chunkOrigin( rect.center().x(), rect.center().y(), 0 );
 
-  QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( layer ) );
+  QgsExpressionContext exprContext;
+  exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   exprContext.setFields( layer->fields() );
   mRenderContext.setExpressionContext( exprContext );
 

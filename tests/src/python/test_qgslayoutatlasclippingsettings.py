@@ -67,6 +67,13 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
         settings.setForceLabelsInsideFeature(True)
         self.assertEqual(len(spy), 3)
 
+        self.assertFalse(settings.clipItemShape())
+        settings.setClipItemShape(True)
+        self.assertTrue(settings.clipItemShape())
+        self.assertEqual(len(spy), 4)
+        settings.setClipItemShape(True)
+        self.assertEqual(len(spy), 4)
+
         l1 = QgsVectorLayer(
             "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
         )
@@ -77,18 +84,18 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
         self.assertFalse(settings.layersToClip())
         settings.setLayersToClip([l1, l2])
         self.assertCountEqual(settings.layersToClip(), [l1, l2])
-        self.assertEqual(len(spy), 4)
+        self.assertEqual(len(spy), 5)
 
         p.removeMapLayer(l1.id())
         self.assertCountEqual(settings.layersToClip(), [l2])
 
         settings.setRestrictToLayers(False)
         self.assertFalse(settings.restrictToLayers())
-        self.assertEqual(len(spy), 4)
+        self.assertEqual(len(spy), 5)
 
         settings.setRestrictToLayers(True)
         self.assertTrue(settings.restrictToLayers())
-        self.assertEqual(len(spy), 5)
+        self.assertEqual(len(spy), 6)
 
     def testSaveRestore(self):
         p = QgsProject()
@@ -109,6 +116,7 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
             QgsMapClippingRegion.FeatureClippingType.NoClipping
         )
         settings.setForceLabelsInsideFeature(True)
+        settings.setClipItemShape(True)
         settings.setRestrictToLayers(True)
         settings.setLayersToClip([l2])
 
@@ -132,6 +140,7 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
             QgsMapClippingRegion.FeatureClippingType.NoClipping,
         )
         self.assertTrue(map2.atlasClippingSettings().forceLabelsInsideFeature())
+        self.assertTrue(map2.atlasClippingSettings().clipItemShape())
         self.assertEqual(map2.atlasClippingSettings().layersToClip(), [l2])
         self.assertTrue(map2.atlasClippingSettings().restrictToLayers())
 

@@ -23,7 +23,7 @@
    </layer>
   </symbol>
   <ComposerScaleBar numUnitsPerSegment="250000" labelBarSpace="5" boxContentSpace="4" mapId="0" maxBarWidth="150" numSegments="6" segmentSizeMode="0" numSegmentsLeft="3" unitType="meters" lineJoinStyle="round" style="Double Box" alignment="1" numMapUnitsPerScaleBarUnit="2000" outlineWidth="0.4" minBarWidth="50" unitLabel="hh" lineCapStyle="square" height="3" segmentMillimeters="5.64513">
-   <scaleBarFont description="MS Shell Dlg 2,12,-1,5,50,0,0,0,0,0" style=""/>
+   <scaleBarFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style="Bold"/>
    <fillColor blue="28" green="26" red="227" alpha="255"/>
    <fillColor2 blue="111" green="191" red="253" alpha="255"/>
    <strokeColor blue="0" green="127" red="255" alpha="255"/>

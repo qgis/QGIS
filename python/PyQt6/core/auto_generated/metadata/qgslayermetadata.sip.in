@@ -282,11 +282,13 @@ Reads the metadata state from a ``layer``'s custom properties (see
 .. seealso:: :py:func:`saveToLayer`
 %End
 
-    virtual bool readMetadataXml( const QDomElement &metadataElement );
+    virtual bool readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
-    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+    virtual bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
 
     virtual void combine( const QgsAbstractMetadataBase *other );
+
+    virtual void registerTranslations( QgsTranslationContext *translationContext ) const;
 
 
     bool operator==( const QgsLayerMetadata &metadataOther ) const;

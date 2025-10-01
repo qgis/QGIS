@@ -276,13 +276,10 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
   auto constructionToolBar = qobject_cast<QToolButton *>( mToolbar->widgetForAction( mConstructionAction ) );
   constructionToolBar->setPopupMode( QToolButton::InstantPopup );
-  constructionToolBar->setMenu( constructionMenu );
+  mConstructionAction->setMenu( constructionMenu );
   constructionToolBar->setObjectName( QStringLiteral( "ConstructionButton" ) );
-
-  mConstructionAction->setMenu( mCommonAngleActionsMenu );
   mConstructionAction->setCheckable( true );
   mConstructionAction->setToolTip( tr( "Construction Tools" ) );
-  //  connect( constructionMenu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::settingsButtonTriggered );
 
   // set tooltips
   mConstructionModeAction->setToolTip( "<b>" + tr( "Construction mode" ) + "</b><br>(" + tr( "press c to toggle on/off" ) + ")" );

@@ -82,6 +82,7 @@ Base class for graphical items within a :py:class:`QgsLayout`.
 #include "qgslayoutitempage.h"
 #include "qgslayoutitemmarker.h"
 #include "qgslayoutitemelevationprofile.h"
+#include "qgslayoutitemchart.h"
 %End
 %ConvertToSubClassCode
 
@@ -146,6 +147,10 @@ Base class for graphical items within a :py:class:`QgsLayout`.
       case QGraphicsItem::UserType + 118:
         sipType = sipType_QgsLayoutItemElevationProfile;
         *sipCppRet = static_cast<QgsLayoutItemElevationProfile *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 119:
+        sipType = sipType_QgsLayoutItemChart;
+        *sipCppRet = static_cast<QgsLayoutItemChart *>( sipCpp );
         break;
 
       // did you read that comment above? NO? Go read it now. You're about to break stuff.

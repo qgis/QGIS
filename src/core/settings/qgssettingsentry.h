@@ -37,7 +37,7 @@ static const inline QMetaEnum sSettingsTypeMetaEnum = QMetaEnum::fromType<Qgis::
  *
  * \brief Represents a settings entry and provides methods for reading and writing settings values.
  *
- * Different subclasses are provided for different settings types with metainformations
+ * Different subclasses are provided for different settings types with metainformation
  * to validate set values and provide more accurate settings description for the gui.
  *
  * \since QGIS 3.20

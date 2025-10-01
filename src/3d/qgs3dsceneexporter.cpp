@@ -236,7 +236,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
   return false;
 }
 
-void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3DExportObject *object )
+void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3DExportObject *object ) const
 {
   Qt3DExtras::QPhongMaterial *phongMaterial = findTypedComponent<Qt3DExtras::QPhongMaterial>( entity );
   if ( phongMaterial )
@@ -394,8 +394,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, transform->matrix() );
-  object->setupFaces( indexesBuffer );
+  object->setupTriangle( positionBuffer, indexesBuffer, transform->matrix() );
 
   if ( mExportNormals )
   {
@@ -444,8 +443,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, transform->matrix() );
-  object->setupFaces( indexBuffer );
+  object->setupTriangle( positionBuffer, indexBuffer, transform->matrix() );
 
   Qt3DQAttribute *normalsAttributes = tileGeometry->normalAttribute();
   if ( mExportNormals && normalsAttributes )
@@ -529,8 +527,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       objects.push_back( object );
       QMatrix4x4 instanceTransform;
       instanceTransform.translate( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] );
-      object->setupPositionCoordinates( positionData, instanceTransform );
-      object->setupFaces( indexData );
+      object->setupTriangle( positionData, indexData, instanceTransform );
 
       object->setSmoothEdges( mSmoothEdges );
 
@@ -722,8 +719,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
 
   // === Create Qgs3DExportObject
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "mesh_geometry" ) ) );
-  object->setupPositionCoordinates( positionData, transformMatrix );
-  object->setupFaces( indexData );
+  object->setupTriangle( positionData, indexData, transformMatrix );
 
   Qt3DQAttribute *normalsAttribute = findAttribute( geometry, Qt3DQAttribute::defaultNormalAttributeName(), Qt3DQAttribute::VertexAttribute );
   if ( mExportNormals && normalsAttribute )
@@ -769,12 +765,9 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
       continue;
     }
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
-    const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
     Qgs3DExportObject *exportObject = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "line" ) ) );
-    exportObject->setType( Qgs3DExportObject::LineStrip );
-    exportObject->setupPositionCoordinates( positionData, QMatrix4x4() );
-    exportObject->setupLine( indexData );
+    exportObject->setupLine( positionData );
 
     objs.push_back( exportObject );
   }
@@ -806,12 +799,11 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
     points << positions;
   }
   Qgs3DExportObject *obj = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "points" ) ) );
-  obj->setType( Qgs3DExportObject::Points );
-  obj->setupPositionCoordinates( points, QMatrix4x4() );
+  obj->setupPoint( points );
   return obj;
 }
 
-bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision )
+bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision ) const
 {
   if ( mObjects.isEmpty() )
   {
@@ -877,12 +869,12 @@ bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
 QString Qgs3DSceneExporter::getObjectName( const QString &name )
 {
   QString ret = name;
-  if ( usedObjectNamesCounter.contains( name ) )
+  if ( mUsedObjectNamesCounter.contains( name ) )
   {
-    ret = QStringLiteral( "%1%2" ).arg( name ).arg( usedObjectNamesCounter[name] );
-    usedObjectNamesCounter[name]++;
+    ret = QStringLiteral( "%1%2" ).arg( name ).arg( mUsedObjectNamesCounter[name] );
+    mUsedObjectNamesCounter[name]++;
   }
   else
-    usedObjectNamesCounter[name] = 2;
+    mUsedObjectNamesCounter[name] = 2;
   return ret;
 }

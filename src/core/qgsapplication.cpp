@@ -292,6 +292,7 @@ void registerMetaTypes()
   qRegisterMetaType<QMap<QNetworkRequest::Attribute, QVariant>>( "QMap<QNetworkRequest::Attribute,QVariant>" );
   qRegisterMetaType<QMap<QNetworkRequest::KnownHeaders, QVariant>>( "QMap<QNetworkRequest::KnownHeaders,QVariant>" );
   qRegisterMetaType<QList<QNetworkReply::RawHeaderPair>>( "QList<QNetworkReply::RawHeaderPair>" );
+  qRegisterMetaType<QNetworkReply::NetworkError>( "QNetworkReply::NetworkError" );
   qRegisterMetaType< QAuthenticator * >( "QAuthenticator*" );
   qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
   qRegisterMetaType< QgsSensorThingsExpansionDefinition >( "QgsSensorThingsExpansionDefinition" );

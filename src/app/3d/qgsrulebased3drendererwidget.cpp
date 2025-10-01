@@ -24,6 +24,7 @@
 #include "qgssymbol3dwidget.h"
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QAction>
 #include <QClipboard>
@@ -605,7 +606,8 @@ void Qgs3DRendererRulePropsWidget::testFilter()
     return;
   }
 
-  QgsExpressionContext context( Qgs3DUtils::globalProjectLayerExpressionContext( mLayer ) );
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   if ( !filter.prepare( &context ) )
   {
@@ -638,7 +640,8 @@ void Qgs3DRendererRulePropsWidget::testFilter()
 
 void Qgs3DRendererRulePropsWidget::buildExpression()
 {
-  const QgsExpressionContext context( Qgs3DUtils::globalProjectLayerExpressionContext( mLayer ) );
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
 

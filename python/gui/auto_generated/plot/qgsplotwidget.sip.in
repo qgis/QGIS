@@ -1,0 +1,169 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotwidget.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsPlotWidget : QgsPanelWidget, QgsExpressionContextGenerator
+{
+%Docstring(signature="appended")
+Base class for widgets which allow control over the properties of plots.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplotwidget.h"
+%End
+  public:
+    QgsPlotWidget( QWidget *parent = 0 );
+%Docstring
+Constructor for QgsPlotWidget.
+
+:param parent: parent widget
+%End
+
+    virtual void setPlot( QgsPlot *plot ) = 0;
+%Docstring
+Sets the widget to match the settings of the ``plot``. Ownership is not
+transferred.
+
+.. seealso:: :py:func:`createPlot`
+%End
+
+    virtual QgsPlot *createPlot() = 0 /Factory/;
+%Docstring
+Creates a plot defined by the current settings in the widget.
+
+.. seealso:: :py:func:`setPlot`
+%End
+
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context generator class that will be used to
+retrieve an expression context for configuration widgets when required.
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
+  protected:
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsPlot::DataDefinedProperty key );
+%Docstring
+Initiate a data-defined property button tied to a plot widget.
+%End
+
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+%Docstring
+Initiate a data-defined property button tied to a plot widget.
+%End
+
+
+};
+
+
+
+
+class QgsBarChartPlotWidget : QgsPlotWidget
+{
+%Docstring(signature="appended")
+Widget class to control the properties of bar chart plots.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplotwidget.h"
+%End
+  public:
+    QgsBarChartPlotWidget( QWidget *parent = 0 );
+%Docstring
+Constructor for QgsBarChartPlotWidget.
+
+:param parent: parent widget
+%End
+
+    virtual void setPlot( QgsPlot *plot );
+    virtual QgsPlot *createPlot() /Factory/;
+
+    static QgsPlotWidget *create( QWidget *parent ) /Factory/;
+%Docstring
+Creates a new bar chart plot configuration widget.
+%End
+
+};
+
+
+
+
+class QgsLineChartPlotWidget : QgsPlotWidget
+{
+%Docstring(signature="appended")
+Widget class to control the properties of line chart plots.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplotwidget.h"
+%End
+  public:
+    QgsLineChartPlotWidget( QWidget *parent = 0 );
+%Docstring
+Constructor for QgsLineChartPlotWidget.
+
+:param parent: parent widget
+%End
+
+    virtual void setPlot( QgsPlot *plot );
+    virtual QgsPlot *createPlot() /Factory/;
+
+    static QgsPlotWidget *create( QWidget *parent ) /Factory/;
+%Docstring
+Creates a new line chart plot configuration widget.
+%End
+
+};
+
+
+
+class QgsPieChartPlotWidget : QgsPlotWidget
+{
+%Docstring(signature="appended")
+Widget class to control the properties of pie chart plots.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplotwidget.h"
+%End
+  public:
+    QgsPieChartPlotWidget( QWidget *parent = 0 );
+%Docstring
+Constructor for :py:class:`QgsLineChartPlotWidget`.
+
+:param parent: parent widget
+%End
+
+    virtual void setPlot( QgsPlot *plot );
+    virtual QgsPlot *createPlot() /Factory/;
+
+    static QgsPlotWidget *create( QWidget *parent ) /Factory/;
+%Docstring
+Creates a new line chart plot configuration widget.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplotwidget.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

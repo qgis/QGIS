@@ -25,9 +25,6 @@ add_library(authmethod_awss3_a STATIC ${AUTH_AWSS3_SRCS} ${AUTH_AWSS3_HDRS} ${AU
 
 target_include_directories(authmethod_awss3_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/awss3/core)
 
-# require c++17
-target_compile_features(authmethod_awss3_a PRIVATE cxx_std_17)
-
 target_link_libraries(authmethod_awss3_a qgis_core)
 
 if (WITH_GUI)
@@ -49,9 +46,6 @@ if (FORCE_STATIC_LIBS)
 else()
   # dynamically loaded module
   add_library(authmethod_awss3 MODULE ${AUTH_AWSS3_SRCS} ${AUTH_AWSS3_HDRS} ${AUTH_AWSS3_UIS_H})
-
-  # require c++17
-  target_compile_features(authmethod_awss3 PRIVATE cxx_std_17)
 
   target_link_libraries(authmethod_awss3 qgis_core)
 

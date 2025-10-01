@@ -164,6 +164,11 @@
 #include "qgsdirectionallightsettings.h"
 #endif
 
+#ifdef WITH_SFCGAL
+#include <SFCGAL/capi/sfcgal_c.h>
+#include <SFCGAL/version.h>
+#endif
+
 #ifdef HAVE_GEOREFERENCER
 #include "georeferencer/qgsgeorefmainwindow.h"
 #endif
@@ -346,6 +351,7 @@
 #include "qgsnewmemorylayerdialog.h"
 #include "qgsnewmeshlayerdialog.h"
 #include "options/qgsoptions.h"
+#include "qgspdalalgorithms.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspluginmanager.h"
@@ -503,9 +509,6 @@
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/pdal.hpp>
-#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 5 )
-#include "qgspdalalgorithms.h"
-#endif
 #endif
 
 //
@@ -5557,6 +5560,20 @@ QString QgisApp::getVersionString()
   {
     versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, geosVersionRunning, runLabel );
   }
+  versionString += QLatin1String( "</td></tr><tr>" );
+
+  // SFCGAL version
+#ifdef WITH_SFCGAL
+  const QString sfcgalVersionCompiled { SFCGAL_VERSION };
+  const QString sfcgalVersionRunning { sfcgal_version() };
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "SFCGAL version" ), sfcgalVersionCompiled );
+  if ( sfcgalVersionCompiled != sfcgalVersionRunning )
+  {
+    versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, sfcgalVersionRunning, runLabel );
+  }
+#else
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "SFCGAL version" ), tr( "No support" ) );
+#endif
   versionString += QLatin1String( "</td></tr><tr>" );
 
   // SQLite version
@@ -13141,11 +13158,7 @@ void QgisApp::initNativeProcessing()
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
 
-#ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 1 && PDAL_VERSION_MINOR_INT >= 5
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
-#endif
-#endif
 }
 
 void QgisApp::initLayouts()

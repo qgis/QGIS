@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLineChartPlot : Qgs2DXyPlot
 {
 %Docstring(signature="appended")
@@ -39,29 +40,44 @@ A simple line chart class.
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
-    QgsMarkerSymbol *markerSymbol( int index ) const;
+    QgsMarkerSymbol *markerSymbolAt( int index ) const;
 %Docstring
 Returns the marker symbol for the series with matching ``index``.
 %End
 
-    void setMarkerSymbol( int index, QgsMarkerSymbol *symbol /Transfer/ );
+    void setMarkerSymbolAt( int index, QgsMarkerSymbol *symbol /Transfer/ );
 %Docstring
 Sets the fill ``symbol`` to use for the series with matching ``index``.
 %End
 
-    QgsLineSymbol *lineSymbol( int index ) const;
+    int markerSymbolCount() const;
+%Docstring
+Returns the line symbols list count.
+%End
+
+    QgsLineSymbol *lineSymbolAt( int index ) const;
 %Docstring
 Returns the line symbol for the series with matching ``index``.
 %End
 
-    void setLineSymbol( int index, QgsLineSymbol *symbol /Transfer/ );
+    void setLineSymbolAt( int index, QgsLineSymbol *symbol /Transfer/ );
 %Docstring
 Sets the line ``symbol`` to use for the series with matching ``index``.
+%End
+
+    int lineSymbolCount() const;
+%Docstring
+Returns the line symbols list count.
 %End
 
     static QgsLineChartPlot *create() /Factory/;
 %Docstring
 Returns a new line chart.
+%End
+
+    static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) /TransferBack/;
+%Docstring
+Returns a new data gatherer for a given line chart ``plot``.
 %End
 
 };

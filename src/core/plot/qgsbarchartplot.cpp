@@ -20,11 +20,12 @@
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvectorlayerplotdatagatherer.h"
 
 
 QgsBarChartPlot::QgsBarChartPlot()
 {
-  setFillSymbol( 0, QgsPlotDefaultSettings::barChartFillSymbol() );
+  setFillSymbolAt( 0, QgsPlotDefaultSettings::barChartFillSymbol() );
 }
 
 void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData &plotData )
@@ -60,16 +61,28 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   context.painter()->save();
   context.painter()->setClipRect( plotArea );
 
-  const double xScale = plotArea.width() / ( xMaximum() - xMinimum() );
-  const double yScale = plotArea.height() / ( yMaximum() - yMinimum() );
+  double minX = xMinimum();
+  double maxX = xMaximum();
+  double minY = yMinimum();
+  double maxY = yMaximum();
+  double majorIntervalX = xAxis().gridIntervalMajor();
+  double minorIntervalX = xAxis().gridIntervalMinor();
+  double labelIntervalX = xAxis().labelInterval();
+  double majorIntervalY = yAxis().gridIntervalMajor();
+  double minorIntervalY = yAxis().gridIntervalMinor();
+  double labelIntervalY = yAxis().labelInterval();
+  Qgs2DXyPlot::applyDataDefinedProperties( context, minX, maxX, minY, maxY, majorIntervalX, minorIntervalX, labelIntervalX, majorIntervalY, minorIntervalY, labelIntervalY );
+
+  const double xScale = plotArea.width() / ( maxX - minX );
+  const double yScale = plotArea.height() / ( maxY - minY );
   const double categoriesWidth = plotArea.width() / categories.size();
-  const double valuesWidth = plotArea.width() * ( xAxis().gridIntervalMinor() / ( xMaximum() - xMinimum() ) );
+  const double valuesWidth = plotArea.width() * ( minorIntervalX / ( maxX - minX ) );
   const double barsWidth = xAxis().type() == Qgis::PlotAxisType::Categorical ? categoriesWidth / 2 : valuesWidth / 2;
   const double barWidth = barsWidth / seriesList.size();
   int seriesIndex = 0;
   for ( const QgsAbstractPlotSeries *series : seriesList )
   {
-    QgsFillSymbol *symbol = fillSymbol( seriesIndex % mFillSymbols.size() );
+    QgsFillSymbol *symbol = fillSymbolAt( seriesIndex % mFillSymbols.size() );
     if ( !symbol )
     {
       continue;
@@ -91,16 +104,17 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
               continue;
             }
             x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustement;
+            chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
             break;
 
           case Qgis::PlotAxisType::Interval:
-            x = ( pair.first - xMinimum() ) * xScale + barStartAdjustement;
+            x = ( pair.first - minX ) * xScale + barStartAdjustement;
             break;
         }
 
-        double y = ( pair.second - yMinimum() ) * yScale;
+        double y = ( pair.second - minY ) * yScale;
 
-        const double zero = ( 0.0 - yMinimum() ) * yScale;
+        const double zero = ( 0.0 - minY ) * yScale;
         const QPoint topLeft( plotArea.left() + x,
                               plotArea.y() + plotArea.height() - y );
         const QPoint bottomRight( plotArea.left() + x + barWidth,
@@ -118,7 +132,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
   context.painter()->restore();
 }
 
-QgsFillSymbol *QgsBarChartPlot::fillSymbol( int index ) const
+QgsFillSymbol *QgsBarChartPlot::fillSymbolAt( int index ) const
 {
   if ( index < 0 || index >= static_cast<int>( mFillSymbols.size() ) )
   {
@@ -128,7 +142,7 @@ QgsFillSymbol *QgsBarChartPlot::fillSymbol( int index ) const
   return mFillSymbols[index].get();
 }
 
-void QgsBarChartPlot::setFillSymbol( int index, QgsFillSymbol *symbol )
+void QgsBarChartPlot::setFillSymbolAt( int index, QgsFillSymbol *symbol )
 {
   if ( index < 0 )
   {
@@ -177,11 +191,11 @@ bool QgsBarChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
       if ( fillSymbolElement.hasChildNodes() )
       {
         const QDomElement symbolElement = fillSymbolElement.firstChildElement( QStringLiteral( "symbol" ) );
-        setFillSymbol( index, QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ).release() );
+        setFillSymbolAt( index, QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ).release() );
       }
       else
       {
-        setFillSymbol( index, nullptr );
+        setFillSymbolAt( index, nullptr );
       }
     }
   }
@@ -192,4 +206,15 @@ bool QgsBarChartPlot::readXml( const QDomElement &element, const QgsReadWriteCon
 QgsBarChartPlot *QgsBarChartPlot::create()
 {
   return new QgsBarChartPlot();
+}
+
+QgsVectorLayerAbstractPlotDataGatherer *QgsBarChartPlot::createDataGatherer( QgsPlot *plot )
+{
+  QgsBarChartPlot *chart = dynamic_cast<QgsBarChartPlot *>( plot );
+  if ( !chart )
+  {
+    return nullptr;
+  }
+
+  return new QgsVectorLayerXyPlotDataGatherer( chart->xAxis().type() );
 }

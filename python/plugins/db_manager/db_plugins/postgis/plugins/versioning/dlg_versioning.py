@@ -28,7 +28,7 @@ from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox, QApplica
 from .....dlg_db_error import DlgDbError
 from ....plugin import BaseError, Table
 
-Ui_DlgVersioning, _ = uic.loadUiType(Path(__file__).parent / "DlgVersioining.ui")
+Ui_DlgVersioning, _ = uic.loadUiType(Path(__file__).parent / "DlgVersioning.ui")
 
 
 class DlgVersioning(QDialog, Ui_DlgVersioning):

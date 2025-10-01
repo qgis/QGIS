@@ -180,6 +180,13 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
      */
     Q_DECL_DEPRECATED void finished() SIP_DEPRECATED;
 
+    /**
+     * Emitted when a row header is double-clicked.
+     * \param fid the feature ID of the double-clicked row.
+     * \since QGIS 4.0
+     */
+    void rowHeaderDoubleClicked( QgsFeatureId fid );
+
   public slots:
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();

@@ -223,6 +223,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void formFilterSet( const QString &filter, QgsAttributeForm::FilterType type );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
     void updateLayerModifiedActions();
+    void zoomToFeature( QgsFeatureId fid );
 
   private:
     QMenu *mMenuActions = nullptr;

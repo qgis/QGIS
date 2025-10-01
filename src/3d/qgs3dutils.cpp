@@ -23,7 +23,6 @@
 #include "qgsfeature.h"
 #include "qgsabstractgeometry.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
 #include "qgsglobechunkedentity.h"
 #include "qgsoffscreen3dengine.h"
@@ -724,15 +723,6 @@ void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin,
     zMin = 0;
     zMax = 0;
   }
-}
-
-QgsExpressionContext Qgs3DUtils::globalProjectLayerExpressionContext( QgsVectorLayer *layer )
-{
-  QgsExpressionContext exprContext;
-  exprContext << QgsExpressionContextUtils::globalScope()
-              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-              << QgsExpressionContextUtils::layerScope( layer );
-  return exprContext;
 }
 
 QgsPhongMaterialSettings Qgs3DUtils::phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material )

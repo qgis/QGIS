@@ -14,9 +14,6 @@ add_library(qgis_test ${LIBRARY_TYPE}
   ${QGIS_TEST_HDRS}
 )
 
-# require c++17
-target_compile_features(qgis_test PRIVATE cxx_std_17)
-
 target_include_directories(qgis_test PUBLIC
   ${CMAKE_SOURCE_DIR}/src/test
 

@@ -23,6 +23,8 @@
 #include "qgsmarkersymbol.h"
 #include "qgsplot.h"
 
+class QgsVectorLayerAbstractPlotDataGatherer;
+
 
 /**
  * \brief A simple line chart class.
@@ -49,25 +51,38 @@ class CORE_EXPORT QgsLineChartPlot : public Qgs2DXyPlot
     /**
      * Returns the marker symbol for the series with matching \a index.
      */
-    QgsMarkerSymbol *markerSymbol( int index ) const;
+    QgsMarkerSymbol *markerSymbolAt( int index ) const;
 
     /**
      * Sets the fill \a symbol to use for the series with matching \a index.
      */
-    void setMarkerSymbol( int index, QgsMarkerSymbol *symbol SIP_TRANSFER );
+    void setMarkerSymbolAt( int index, QgsMarkerSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbols list count.
+     */
+    int markerSymbolCount() const { return mMarkerSymbols.size(); }
 
     /**
      * Returns the line symbol for the series with matching \a index.
      */
-    QgsLineSymbol *lineSymbol( int index ) const;
+    QgsLineSymbol *lineSymbolAt( int index ) const;
 
     /**
      * Sets the line \a symbol to use for the series with matching \a index.
      */
-    void setLineSymbol( int index, QgsLineSymbol *symbol SIP_TRANSFER );
+    void setLineSymbolAt( int index, QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbols list count.
+     */
+    int lineSymbolCount() const { return mLineSymbols.size(); }
 
     //! Returns a new line chart.
     static QgsLineChartPlot *create() SIP_FACTORY;
+
+    //! Returns a new data gatherer for a given line chart \a plot.
+    static QgsVectorLayerAbstractPlotDataGatherer *createDataGatherer( QgsPlot *plot ) SIP_TRANSFERBACK;
 
   private:
 

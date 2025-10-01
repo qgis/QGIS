@@ -20,13 +20,19 @@
 #include "qgsexpression.h"
 
 
-QgsVectorLayerXyPlotDataGatherer::QgsVectorLayerXyPlotDataGatherer( QgsFeatureIterator &iterator, const QgsExpressionContext &expressionContext, const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails, Qgis::PlotAxisType xAxisType, const QStringList &predefinedCategories )
-  : mIterator( iterator )
-  , mExpressionContext( expressionContext )
-  , mXAxisType( xAxisType )
-  , mSeriesDetails( seriesDetails )
-  , mPredefinedCategories( predefinedCategories )
+QgsVectorLayerXyPlotDataGatherer::QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAxisType xAxisType )
+  : mXAxisType( xAxisType )
 {
+}
+
+void QgsVectorLayerXyPlotDataGatherer::setSeriesDetails( const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &seriesDetails )
+{
+  mSeriesDetails = seriesDetails;
+}
+
+void QgsVectorLayerXyPlotDataGatherer::setPredefinedCategories( const QStringList &predefinedCategories )
+{
+  mPredefinedCategories = predefinedCategories;
 }
 
 bool QgsVectorLayerXyPlotDataGatherer::run()

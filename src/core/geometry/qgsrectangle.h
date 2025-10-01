@@ -55,6 +55,7 @@ class CORE_EXPORT QgsRectangle
     Q_PROPERTY( QgsPointXY center READ center )
     Q_PROPERTY( bool isEmpty READ isEmpty )
     Q_PROPERTY( bool isNull READ isNull )
+    Q_PROPERTY( bool isValid READ isValid )
 
   public:
 
@@ -517,7 +518,9 @@ class CORE_EXPORT QgsRectangle
     /**
      * Test if the rectangle is null (holding no spatial information).
      *
-     * A null rectangle is also an empty rectangle.
+     * A rectangle is considered null if all its coordinates are NaN,
+     * if it has not been defined yet, or if it has been explicitly initialized as null.
+     * A null rectangle is also an empty rectangle and an invalid rectangle.
      *
      * \see setNull()
      *
@@ -529,6 +532,24 @@ class CORE_EXPORT QgsRectangle
       return ( std::isnan( mXmin )  && std::isnan( mXmax ) && std::isnan( mYmin ) && std::isnan( mYmax ) ) ||
              ( qgsDoubleNear( mXmin, std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmin, std::numeric_limits<double>::max() ) &&
                qgsDoubleNear( mXmax, -std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmax, -std::numeric_limits<double>::max() ) );
+    }
+
+    /**
+     * Test if the rectangle is valid
+     *
+     * A rectangle is considered invalid if at least one of its coordinates is NaN or infinite,
+     * or if a maximum coordinate is less than or equal to the corresponding minimum coordinate.
+     *
+     * \see isNull()
+     * \since QGIS 4.0
+     */
+    bool isValid() const
+    {
+      if ( ( !isFinite() ) || ( mXmax <= mXmin ) || ( mYmax <= mYmin ) )
+      {
+        return false;
+      }
+      return true;
     }
 
     /**

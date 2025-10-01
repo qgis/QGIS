@@ -28,6 +28,10 @@
 #include <pdal/pdal.hpp>
 #endif
 
+#ifdef WITH_SFCGAL
+#include <SFCGAL/capi/sfcgal_c.h>
+#endif
+
 QgsProcessingFeedback::QgsProcessingFeedback( bool logFeedback )
   : mLogFeedback( logFeedback )
 {
@@ -144,6 +148,12 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
 #else
   pushDebugInfo( tr( "PDAL version: %1" ).arg( QString::fromStdString( pdal::GetFullVersionString() ) ) );
 #endif
+#endif
+
+#ifdef WITH_SFCGAL
+  pushDebugInfo( tr( "SFCGAL version: %1" ).arg( sfcgal_version() ) );
+#else
+  pushDebugInfo( tr( "No support for SFCGAL" ) );
 #endif
 
   if ( provider && !provider->versionInfo().isEmpty() )

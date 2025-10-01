@@ -346,8 +346,6 @@ void TestQgs3DUtils::testExportToObj()
   // case where all vertices are used
   {
     Qgs3DExportObject object( "all_faces" );
-    object.setupPositionCoordinates( positionData, QMatrix4x4() );
-    QCOMPARE( object.vertexPosition().size(), positionData.size() );
 
     // exported vertice indexes
     QVector<uint> indexData = {
@@ -383,7 +381,9 @@ void TestQgs3DUtils::testExportToObj()
       29,
     };
 
-    object.setupFaces( indexData );
+    object.setupTriangle( positionData, indexData, QMatrix4x4() );
+    QCOMPARE( object.vertexPosition().size(), positionData.size() );
+
     QCOMPARE( object.indexes().size(), indexData.size() );
 
     object.setupNormalCoordinates( normalsData, QMatrix4x4() );
@@ -421,10 +421,9 @@ void TestQgs3DUtils::testExportToObj()
     };
 
     Qgs3DExportObject object( "sparse_faces" );
-    object.setupPositionCoordinates( positionData, QMatrix4x4() );
+    object.setupTriangle( positionData, indexData, QMatrix4x4() );
     QCOMPARE( object.vertexPosition().size(), positionData.size() );
 
-    object.setupFaces( indexData );
     QCOMPARE( object.indexes().size(), indexData.size() );
 
     object.setupNormalCoordinates( normalsData, QMatrix4x4() );

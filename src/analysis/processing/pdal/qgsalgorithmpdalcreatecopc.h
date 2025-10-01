@@ -42,6 +42,7 @@ class QgsPdalCreateCopcAlgorithm : public QgsProcessingAlgorithm
     QgsPdalCreateCopcAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     friend class TestQgsProcessingPdalAlgs;

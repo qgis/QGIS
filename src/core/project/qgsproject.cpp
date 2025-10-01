@@ -685,6 +685,9 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
       registerTranslatableContainers( translationContext, vlayer->editFormConfig().invisibleRootContainer(), vlayer->id() );
 
     }
+
+    //register metadata
+    mapLayer->metadata().registerTranslations( translationContext );
   }
 
   //register layergroups
@@ -700,6 +703,9 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
   {
     translationContext->registerTranslation( QStringLiteral( "project:relations" ), relation.name() );
   }
+
+  //register metadata
+  mMetadata.registerTranslations( translationContext );
 }
 
 void QgsProject::setDataDefinedServerProperties( const QgsPropertyCollection &properties )
@@ -2306,7 +2312,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
 
   if ( !element.isNull() )
   {
-    mMetadata.readMetadataXml( element );
+    mMetadata.readMetadataXml( element, context );
   }
   else
   {
@@ -2670,7 +2676,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
 
     if ( write() )
     {
-      setTitle( localeFileName );
       QgsMessageLog::logMessage( tr( "Translated project saved with locale prefix %1" ).arg( newFileName ), QObject::tr( "Project translation" ), Qgis::MessageLevel::Success );
     }
     else
@@ -3269,7 +3274,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
     qgisNode.setAttribute( QStringLiteral( "saveUserFull" ), newSaveUserFull );
     mSaveUser = newSaveUser;
     mSaveUserFull = newSaveUserFull;
-    mMetadata.setAuthor( QgsApplication::userFullName() );
+    if ( mMetadata.author().isEmpty() )
+    {
+      mMetadata.setAuthor( QgsApplication::userFullName() );
+    }
     if ( !mMetadata.creationDateTime().isValid() )
     {
       mMetadata.setCreationDateTime( QDateTime( QDateTime::currentDateTime() ) );

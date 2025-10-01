@@ -12,6 +12,8 @@ __copyright__ = "Copyright 2025, The QGIS Project"
 
 from qgis.core import (
     Qgis,
+    QgsInvalidArgumentException,
+    QgsGeometryUtils,
     QgsCircularString,
     QgsCompoundCurve,
     QgsGeometry,
@@ -226,11 +228,13 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 1.0)
         segment2_end = QgsPoint(1.0, 1.0)
 
-        result = QgsGeometry().chamfer(
-            segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0.1
-        )
-
-        self.assertTrue(result.isEmpty())
+        try:
+            QgsGeometry.chamfer(
+                segment1_start, segment1_end, segment2_start, segment2_end, 0.1, 0.1
+            )
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Segments do not intersect.")
 
     def test_chamfer_segments_negative_distances(self):
         """Test that negative distances return empty geometry"""
@@ -243,11 +247,13 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 1.0)
         segment2_end = QgsPoint(0.0, 0.0)
 
-        result = QgsGeometry().chamfer(
-            segment1_start, segment1_end, segment2_start, segment2_end, -0.1, 0.1
-        )
-
-        self.assertTrue(result.isEmpty())
+        try:
+            QgsGeometry.chamfer(
+                segment1_start, segment1_end, segment2_start, segment2_end, -0.1, 0.1
+            )
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Negative distances.")
 
     # CHAMFER TESTS - VERTEX-BASED OVERLOAD
 
@@ -283,8 +289,11 @@ class TestQgsGeometry(QgisTestCase):
         linestring = QgsGeometry.fromWkt("LineString (0 0, 1 0, 1 1)")
 
         result = linestring.chamfer(0, 0.1, 0.1)
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(
+            linestring.lastError(),
+            "Vertex index out of range. 0 must be in (0, 2). Requested vertex: 0 was resolved as: [part: -1, ring: -1, vertex: 0]",
+        )
 
     def test_chamfer_vertex_invalid_index_last(self):
         """Test chamfer with invalid vertex index (last vertex)"""
@@ -293,6 +302,10 @@ class TestQgsGeometry(QgisTestCase):
         result = linestring.chamfer(2, 0.1, 0.1)
 
         self.assertTrue(result.isEmpty())
+        self.assertEqual(
+            linestring.lastError(),
+            "Vertex index out of range. 2 must be in (0, 2). Requested vertex: 2 was resolved as: [part: -1, ring: -1, vertex: 2]",
+        )
 
     def test_chamfer_vertex_acute_angle(self):
         """Test chamfer at vertex with acute angle"""
@@ -308,6 +321,15 @@ class TestQgsGeometry(QgisTestCase):
         linestring = QgsGeometry.fromWkt("LineString (0 0, 2 0, 4 0, 4 2, 4 4)")
 
         result = linestring.chamfer(2, 0.3)
+
+        expected_wkt = "LineString (0 0, 2 0, 3.7 0, 4 0.3, 4 2, 4 4)"
+        self.assertEqual(result.asWkt(2), expected_wkt)
+
+    def test_geometryutils_chamfer_vertex_complex_linestring(self):
+        """Test chamfer on complex linestring with multiple vertices from QgsGeometryUtils."""
+        linestring = QgsGeometry.fromWkt("LineString (0 0, 2 0, 4 0, 4 2, 4 4)")
+
+        result = QgsGeometryUtils.chamferVertex(linestring.get(), 2, 0.3, 0.3)
 
         expected_wkt = "LineString (0 0, 2 0, 3.7 0, 4 0.3, 4 2, 4 4)"
         self.assertEqual(result.asWkt(2), expected_wkt)
@@ -571,11 +593,13 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 0.1)
         segment2_end = QgsPoint(0.0, 0.0)
 
-        result = QgsGeometry().fillet(
-            segment1_start, segment1_end, segment2_start, segment2_end, 1.0
-        )
-
-        self.assertTrue(result.isEmpty())
+        try:
+            QgsGeometry.fillet(
+                segment1_start, segment1_end, segment2_start, segment2_end, 1.0
+            )
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Intersection 1 on segment but too far.")
 
     def test_fillet_segments_zero_radius_failure(self):
         """Test that zero radius returns empty geometry"""
@@ -588,11 +612,13 @@ class TestQgsGeometry(QgisTestCase):
         segment2_start = QgsPoint(0.0, 1.0)
         segment2_end = QgsPoint(0.0, 0.0)
 
-        result = QgsGeometry().fillet(
-            segment1_start, segment1_end, segment2_start, segment2_end, 0.0
-        )
-
-        self.assertTrue(result.isEmpty())
+        try:
+            QgsGeometry.fillet(
+                segment1_start, segment1_end, segment2_start, segment2_end, 0.0
+            )
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Radius must be greater than 0.")
 
     def test_fillet_segments_acute_angle(self):
         """Test fillet creation with acute angle"""
@@ -662,24 +688,32 @@ class TestQgsGeometry(QgisTestCase):
         linestring = QgsGeometry.fromWkt("LineString (0 0, 1 0, 1 1)")
 
         result = linestring.fillet(0, 0.1)
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(
+            linestring.lastError(),
+            "Vertex index out of range. 0 must be in (0, 2). Requested vertex: 0 was resolved as: [part: -1, ring: -1, vertex: 0]",
+        )
 
     def test_fillet_vertex_invalid_index_last(self):
         """Test fillet with invalid vertex index (last vertex)"""
         linestring = QgsGeometry.fromWkt("LineString (0 0, 1 0, 1 1)")
 
         result = linestring.fillet(2, 0.1)
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(
+            linestring.lastError(),
+            "Vertex index out of range. 2 must be in (0, 2). Requested vertex: 2 was resolved as: [part: -1, ring: -1, vertex: 2]",
+        )
 
     def test_fillet_vertex_large_radius_failure(self):
         """Test fillet with radius too large for available geometry"""
         linestring = QgsGeometry.fromWkt("LineString (0 0, 0.1 0, 0.1 0.1)")
 
         result = linestring.fillet(1, 1.0)
+        self.assertFalse(result.isEmpty())
 
-        self.assertTrue(result.isEmpty())
+        expected_wkt = "LineString (0 0, 0.02 0, 0.04 0.01, 0.06 0.02, 0.07 0.03, 0.08 0.04, 0.09 0.06, 0.1 0.08, 0.1 0.1)"
+        self.assertEqual(result.asWkt(2), expected_wkt)
 
     # EDGE CASES AND ERROR HANDLING
 
@@ -712,7 +746,6 @@ class TestQgsGeometry(QgisTestCase):
         point = QgsGeometry.fromWkt("Point (0 0)")
 
         result = point.fillet(0, 0.1)
-
         self.assertTrue(result.isEmpty())
 
     def test_two_point_linestring_chamfer(self):
@@ -720,32 +753,92 @@ class TestQgsGeometry(QgisTestCase):
         linestring = QgsGeometry.fromWkt("LineString (0 0, 1 1)")
 
         result = linestring.chamfer(1, 0.1, 0.1)
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(
+            linestring.lastError(),
+            "Opened curve must have at least 3 points. Requested vertex: 1 was resolved as: [part: -1, ring: -1, vertex: 1]",
+        )
 
     def test_two_point_linestring_fillet(self):
         """Test fillet behavior with minimum linestring"""
         linestring = QgsGeometry.fromWkt("LineString (0 0, 1 1)")
 
         result = linestring.fillet(1, 0.1)
-
         self.assertTrue(result.isEmpty())
+        self.assertEqual(
+            linestring.lastError(),
+            "Opened curve must have at least 3 points. Requested vertex: 1 was resolved as: [part: -1, ring: -1, vertex: 1]",
+        )
+
+    def test_geometryutils_two_point_linestring_fillet(self):
+        """Test fillet behavior with minimum linestring from QgsGeometryUtils. Should throw exception"""
+        linestring = QgsGeometry.fromWkt("LineString (0 0, 1 1)")
+
+        try:
+            result = QgsGeometryUtils.filletVertex(linestring.get(), 1, 0.1, 8)
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Opened curve must have at least 3 points.")
+
+    def test_geometryutils_two_point_linestring_chamfer(self):
+        """Test chamfer behavior with minimum linestring from QgsGeometryUtils. Should throw exception"""
+        linestring = QgsGeometry.fromWkt("LineString (0 0, 1 1)")
+
+        try:
+            result = QgsGeometryUtils.chamferVertex(linestring.get(), 1, 0.1, 0.1)
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Opened curve must have at least 3 points.")
+
+    def test_geometryutils_bad_distance_linestring_chamfer(self):
+        """Test chamfer behavior with minimum linestring from QgsGeometryUtils. Should throw exception"""
+        linestring = QgsGeometry.fromWkt("LineString (0 0, 1 1, 1 2, 2 3)")
+
+        try:
+            result = QgsGeometryUtils.chamferVertex(linestring.get(), 1, -0.1, -0.1)
+            self.fail("Should have failed!")
+        except QgsInvalidArgumentException as e:
+            self.assertEqual(e.__str__(), "Negative distances.")
 
     def test_polygon_geometry_handling_chamfer(self):
-        """Test chamfer behavior with polygon geometries (should fail gracefully)"""
+        """Test chamfer behavior with polygon geometries"""
         polygon = QgsGeometry.fromWkt("Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))")
 
         result = polygon.chamfer(1, 0.1)
+        self.assertFalse(result.isEmpty())
 
-        self.assertTrue(result.isEmpty())
+        expected_wkt = "Polygon ((0 0, 0.9 0, 1 0.1, 1 1, 0 1, 0 0))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
 
     def test_polygon_geometry_handling_fillet(self):
-        """Test fillet behavior with polygon geometries (should fail gracefully)"""
+        """Test fillet behavior with polygon geometries"""
         polygon = QgsGeometry.fromWkt("Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))")
 
         result = polygon.fillet(1, 0.1)
+        self.assertFalse(result.isEmpty())
 
-        self.assertTrue(result.isEmpty())
+        expected_wkt = "Polygon ((0 0, 0.92 0, 0.93 0.01, 0.95 0.01, 0.96 0.02, 0.98 0.04, 0.99 0.05, 0.99 0.07, 1 0.08, 1 1, 0 1, 0 0))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
+
+    def test_polygon_geometry_handling_fillet_first_vertex(self):
+        """Test fillet behavior with polygon geometries"""
+        polygon = QgsGeometry.fromWkt("Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))")
+
+        result = polygon.fillet(0, 0.1)
+        self.assertFalse(result.isEmpty())
+
+        expected_wkt = "Polygon ((0 0.08, 0.01 0.06, 0.02 0.04, 0.03 0.03, 0.04 0.02, 0.06 0.01, 0.08 0, 1 0, 1 1, 0 1, 0 0.08))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
+
+    def test_polygon_geometry_handling_fillet_last_vertex(self):
+        """Test fillet behavior with polygon geometries"""
+        polygon = QgsGeometry.fromWkt("Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))")
+
+        result = polygon.fillet(4, 0.1)
+        self.assertFalse(result.isEmpty())
+
+        expected_wkt = "Polygon ((1 0, 1 1, 0 1, 0 0.08, 0.01 0.06, 0.02 0.04, 0.03 0.03, 0.04 0.02, 0.06 0.01, 0.08 0, 1 0))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
 
     # PRECISION AND PERFORMANCE TESTS
 
@@ -876,11 +969,60 @@ class TestQgsGeometry(QgisTestCase):
             "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))"
         )
 
-        # Apply fillet at vertex index 4 (transition from CircularString to LineString)
+        # Apply fillet at vertex index 4 in last LineString
         result = compound.fillet(4, 1, -1)
+        self.assertEqual(compound.lastError(), "")
 
-        expected_wkt = "CompoundCurve ((0 0, 10 0),CircularString (10 0, 11.41421356237309581 0.58578643762690485, 12 2),(12 2, 12 3),CircularString (12 3, 11.70710678118654791 3.70710678118654746, 11 4),(11 4, 10 4))"
-        self.assertEqual(result.asWkt(), expected_wkt)
+        expected_wkt = "CompoundCurve ((0 0, 10 0),CircularString (10 0, 11.41 0.59, 12 2),(12 2, 12 3),CircularString (12 3, 11.71 3.71, 11 4),(11 4, 10 4))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
+
+        # Verify the result is still a CompoundCurve
+        self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)
+
+        # Verify it contains both linear and circular segments
+        compound_result = result.constGet()
+        if compound_result:
+            wkt = result.asWkt()
+            self.assertIn("CircularString", wkt)
+            self.assertIn("CompoundCurve", wkt)
+
+    def test_fillet_vertex_compound_curve_preserve_circular_closed_first_vertex(self):
+        """Test fillet on CompoundCurve vertex preserving CircularString nature"""
+        # CompoundCurve with linear segment, circular arc, and linear segment
+        compound = QgsGeometry.fromWkt(
+            "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 0 0))"
+        )
+
+        # Apply fillet at vertex index 4 in last LineString
+        result = compound.fillet(0, 1, -1)
+        self.assertEqual(compound.lastError(), "")
+
+        expected_wkt = "CompoundCurve (CircularString (5.85 1.95, 5.18 0.84, 6.16 0),(6.16 0, 10 0),CircularString (10 0, 10.74 0.22, 11.41 0.59),(12 2, 12 4, 5.85 1.95))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
+
+        # Verify the result is still a CompoundCurve
+        self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)
+
+        # Verify it contains both linear and circular segments
+        compound_result = result.constGet()
+        if compound_result:
+            wkt = result.asWkt()
+            self.assertIn("CircularString", wkt)
+            self.assertIn("CompoundCurve", wkt)
+
+    def test_fillet_vertex_compound_curve_preserve_circular_closed_last_vertex(self):
+        """Test fillet on CompoundCurve vertex preserving CircularString nature"""
+        # CompoundCurve with linear segment, circular arc, and linear segment
+        compound = QgsGeometry.fromWkt(
+            "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 0 0))"
+        )
+
+        # Apply fillet at vertex index 4 in last LineString
+        result = compound.fillet(5, 1, -1)
+        self.assertEqual(compound.lastError(), "")
+
+        expected_wkt = "CompoundCurve ((6.16 0, 10 0),CircularString (8.85 -0.23, 11.41 0.59, 12 2),(12 2, 12 4, 5.85 1.95),CircularString (5.85 1.95, 5.18 0.84, 6.16 0))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
 
         # Verify the result is still a CompoundCurve
         self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)
@@ -899,11 +1041,95 @@ class TestQgsGeometry(QgisTestCase):
             "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))"
         )
 
-        # Apply chamfer at vertex index 4 (transition from CircularString to LineString)
+        # Apply chamfer at vertex index 4 in last LineString
         result = compound.chamfer(4, 1)
+        self.assertEqual(compound.lastError(), "")
 
-        expected_wkt = "CompoundCurve ((0 0, 10 0),CircularString (10 0, 11.41421356237309581 0.58578643762690485, 12 2),(12 2, 12 3),(12 3, 11 4),(11 4, 10 4))"
-        self.assertEqual(result.asWkt(), expected_wkt)
+        expected_wkt = "CompoundCurve ((0 0, 10 0),CircularString (10 0, 11.41 0.59, 12 2),(12 2, 12 3),(12 3, 11 4),(11 4, 10 4))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
+
+        # Verify the result is still a CompoundCurve
+        self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)
+
+        # Verify it contains the original circular segment
+        compound_result = result.constGet()
+        if compound_result:
+            wkt = result.asWkt()
+            self.assertIn("CircularString", wkt)
+            self.assertIn("CompoundCurve", wkt)
+
+    def test_chamfer_vertex_compound_curve_break_circular(self):
+        """Test chamfer on CompoundCurve vertex breaking CircularString nature"""
+        # CompoundCurve with linear segment, circular arc, and linear segment
+        compound = QgsGeometry.fromWkt(
+            "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))"
+        )
+
+        # Apply chamfer at vertex index 3 within CircularString
+        result = compound.chamfer(3, 1)
+        self.assertEqual(compound.lastError(), "")
+
+        expected_wkt = "CompoundCurve ((0 0, 10 0),(10 0, 11.41 0.59, 11.62 1.08),(11.62 1.08, 12 3),(12 2, 12 4, 10 4))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
+
+        # Verify the result is still a CompoundCurve
+        self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)
+
+        # Verify it does not contain the original circular segment
+        compound_result = result.constGet()
+        if compound_result:
+            wkt = result.asWkt()
+            self.assertIn("CompoundCurve", wkt)
+
+    def test_chamfer_vertex_compound_curve_preserve_circular_opened_first_vertex(self):
+        """Test chamfer on CompoundCurve vertex preserving CircularString nature"""
+        # CompoundCurve with linear segment, circular arc, and linear segment
+        compound = QgsGeometry.fromWkt(
+            "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))"
+        )
+
+        # Apply chamfer at vertex index 0 ==> out of range
+        result = compound.chamfer(0, 1)
+        self.assertEqual(
+            compound.lastError(),
+            "Vertex index out of range. 0 must be in (0, 5). Requested vertex: 0 was resolved as: [part: -1, ring: -1, vertex: 0]",
+        )
+
+    def test_chamfer_vertex_compound_curve_preserve_circular_closed_first_vertex(self):
+        """Test chamfer on CompoundCurve vertex preserving CircularString nature"""
+        # CompoundCurve with linear segment, circular arc, and linear segment
+        compound = QgsGeometry.fromWkt(
+            "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 0 0))"
+        )
+
+        # Apply chamfer at vertex index 0
+        result = compound.chamfer(0, 1)
+        self.assertEqual(compound.lastError(), "")
+        expected_wkt = "CompoundCurve ((0.95 0.32, 1 0),(1 0, 10 0),CircularString (10 0, 10.72 0.27, 11.41 0.59),(12 2, 12 4, 0.95 0.32))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
+
+        # Verify the result is still a CompoundCurve
+        self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)
+
+        # Verify it contains the original circular segment
+        compound_result = result.constGet()
+        if compound_result:
+            wkt = result.asWkt()
+            self.assertIn("CircularString", wkt)
+            self.assertIn("CompoundCurve", wkt)
+
+    def test_chamfer_vertex_compound_curve_preserve_circular_closed_last_vertex(self):
+        """Test chamfer on CompoundCurve vertex preserving CircularString nature"""
+        # CompoundCurve with linear segment, circular arc, and linear segment
+        compound = QgsGeometry.fromWkt(
+            "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 0 0))"
+        )
+
+        # Apply chamfer at vertex index 0
+        result = compound.chamfer(5, 1)
+        self.assertEqual(compound.lastError(), "")
+        expected_wkt = "CompoundCurve ((1 0, 10 0),CircularString (6.27 -0.74, 11.41 0.59, 12 2),(12 2, 12 4, 0.95 0.32),(0.95 0.32, 1 0))"
+        self.assertEqual(result.asWkt(2), expected_wkt)
 
         # Verify the result is still a CompoundCurve
         self.assertEqual(result.wkbType(), QgsWkbTypes.CompoundCurve)

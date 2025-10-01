@@ -52,9 +52,7 @@ if [[ "${WITH_CLAZY}" = "ON" ]]; then
   export CLAZY_IGNORE_DIRS="(.*/external/.*)|(.*sip_.*part.*)"
 fi
 
-if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
-  CLANG_WARNINGS="-Wrange-loop-construct"
-fi
+CLANG_WARNINGS="-Wrange-loop-construct"
 
 CMAKE_EXTRA_ARGS=()
 
@@ -70,11 +68,9 @@ if [[ ${WITH_GRASS7} == "ON" || ${WITH_GRASS8} == "ON" ]]; then
   )
 fi
 
-if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
-  CMAKE_EXTRA_ARGS+=(
-    "-DUSE_ALTERNATE_LINKER=mold"
-  )
-fi
+CMAKE_EXTRA_ARGS+=(
+  "-DUSE_ALTERNATE_LINKER=mold"
+)
 
 cmake \
  -GNinja \
@@ -82,7 +78,6 @@ cmake \
  -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} \
  -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} \
  -DUSE_CCACHE=ON \
- -DBUILD_WITH_QT6=${BUILD_WITH_QT6} \
  -DWITH_DESKTOP=ON \
  -DWITH_ANALYSIS=ON \
  -DWITH_GUI=ON \
@@ -110,11 +105,10 @@ cmake \
  -DWITH_SERVER=ON \
  -DWITH_SERVER_LANDINGPAGE_WEBAPP=${WITH_SERVER_LANDINGPAGE_WEBAPP} \
  -DWITH_ORACLE=ON \
- -DWITH_PDAL=ON \
+ -DWITH_PDAL=${WITH_PDAL} \
  -DWITH_QTSERIALPORT=ON \
- -DWITH_QTWEBKIT=${WITH_QT5} \
- -DWITH_QTWEBENGINE=${WITH_QTWEBENGINE} \
  -DWITH_PDF4QT=${WITH_PDF4QT} \
+ -DWITH_SFCGAL=${WITH_SFCGAL} \
  -DORACLE_INCLUDEDIR=/instantclient_21_16/sdk/include/ \
  -DORACLE_LIBDIR=/instantclient_21_16/ \
  -DDISABLE_DEPRECATED=ON \

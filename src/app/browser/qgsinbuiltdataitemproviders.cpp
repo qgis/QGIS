@@ -1956,6 +1956,113 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         }
       } );
     }
+
+    if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteSpatialIndex ) )
+    {
+      QAction *createSpatialIndexAction = new QAction( tr( "Create Spatial Index" ), menu );
+      QAction *deleteSpatialIndexAction = new QAction( tr( "Delete Spatial Index…" ), menu );
+
+      QgsAbstractDatabaseProviderConnection::TableProperty tableProperty = conn->table( item->parent()->name(), item->name() );
+
+      const bool indexExist = conn->spatialIndexExists( tableProperty.schema(), tableProperty.tableName(), tableProperty.geometryColumn() );
+
+      // this action should sit in the Manage menu. If one does not exist, create it now
+      bool foundExistingManageMenu = false;
+      QList<QAction *> actions = menu->actions();
+      for ( QAction *action : std::as_const( actions ) )
+      {
+        if ( action->text() == tr( "Manage" ) )
+        {
+          if ( indexExist )
+          {
+            action->menu()->addAction( deleteSpatialIndexAction );
+          }
+          else
+          {
+            action->menu()->addAction( createSpatialIndexAction );
+          }
+          foundExistingManageMenu = true;
+          break;
+        }
+      }
+      if ( !foundExistingManageMenu )
+      {
+        QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
+        if ( indexExist )
+        {
+          manageLayerMenu->addAction( deleteSpatialIndexAction );
+        }
+        else
+        {
+          manageLayerMenu->addAction( createSpatialIndexAction );
+        }
+        menu->addMenu( manageLayerMenu );
+      }
+
+      const QString connectionUri = conn->uri();
+      const QString providerKey = conn->providerKey();
+
+      connect( createSpatialIndexAction, &QAction::triggered, createSpatialIndexAction, [providerKey, connectionUri, tableProperty, context] {
+        QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+        if ( !md )
+          return;
+
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+
+        QString errCause;
+        try
+        {
+          QgsTemporaryCursorOverride override( Qt::WaitCursor );
+          conn2->createSpatialIndex( tableProperty.schema(), tableProperty.tableName() );
+        }
+        catch ( QgsProviderConnectionException &ex )
+        {
+          errCause = ex.what();
+        }
+
+        if ( !errCause.isEmpty() )
+        {
+          notify( tr( "Cannot create spatial index on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), errCause, context, Qgis::MessageLevel::Critical );
+          return;
+        }
+        else if ( context.messageBar() )
+        {
+          context.messageBar()->pushMessage( tr( "Spatial index created on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), Qgis::MessageLevel::Success );
+        }
+      } );
+
+      connect( deleteSpatialIndexAction, &QAction::triggered, deleteSpatialIndexAction, [providerKey, connectionUri, tableProperty, context] {
+        if ( QMessageBox::question( nullptr, tr( "Delete Spatial Index" ), tr( "Are you sure that you want to delete spatial index from %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+        {
+          QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+          if ( !md )
+            return;
+
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+
+          QString errCause;
+          try
+          {
+            QgsTemporaryCursorOverride override( Qt::WaitCursor );
+            conn2->deleteSpatialIndex( tableProperty.schema(), tableProperty.tableName(), tableProperty.geometryColumn() );
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            errCause = ex.what();
+          }
+
+          if ( !errCause.isEmpty() )
+          {
+            notify( tr( "Cannot delete spatial index on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), errCause, context, Qgis::MessageLevel::Critical );
+            return;
+          }
+          else if ( context.messageBar() )
+          {
+            context.messageBar()->pushMessage( tr( "Spatial index deleted on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), Qgis::MessageLevel::Success );
+          }
+        }
+      } );
+    }
   }
 }
 

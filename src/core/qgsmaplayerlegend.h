@@ -18,6 +18,8 @@
 
 #include <memory>
 #include <QObject>
+
+#include "qgis.h"
 #include "qgis_sip.h"
 
 class QDomDocument;

@@ -44,6 +44,7 @@ class TestQgsGdalUtils : public QObject
     void testPathIsCheapToOpen();
     void testVrtMatchesLayerType();
     void testMultilayerExtensions();
+    void testResampleSingleBandRasterNoData();
 
   private:
     double identify( GDALDatasetH dataset, int band, int px, int py );
@@ -321,6 +322,33 @@ double TestQgsGdalUtils::identify( GDALDatasetH dataset, int band, int px, int p
 
   return value;
 }
+
+void TestQgsGdalUtils::testResampleSingleBandRasterNoData()
+{
+  // Create 2x2 integer raster with values 1, 65535, 65535, 65535 and nodata=65535
+  QTemporaryDir tempDir;
+  const QString tempPath = tempDir.path();
+  const QString inputFilename = tempPath + "/input.tif";
+
+  gdal::dataset_unique_ptr ds1 = QgsGdalUtils::createSingleBandTiffDataset( inputFilename, GDT_UInt16, QgsRectangle( 1, 1, 3, 3 ), 2, 2, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QVERIFY( ds1 );
+
+  GDALRasterBandH band = GDALGetRasterBand( ds1.get(), 1 );
+  GDALSetRasterNoDataValue( band, 65535 );
+  GUInt16 buffer[4] = { 1, 65535, 65535, 65535 };
+  const CPLErr err = GDALRasterIO( band, GF_Write, 0, 0, 2, 2, buffer, 2, 2, GDT_UInt16, 0, 0 );
+  QCOMPARE( err, CE_None );
+
+  // Create destination GDAL DS
+  std::unique_ptr<QgsRasterBlock> dstBlock = std::make_unique<QgsRasterBlock>( Qgis::DataType::UInt16, 4, 4 );
+  dstBlock->setNoDataValue( 65535.0 );
+  gdal::dataset_unique_ptr gdalDsOutput = QgsGdalUtils::blockToSingleBandMemoryDataset( QgsRectangle( 1, 1, 3, 3 ), dstBlock.get() );
+
+  QVERIFY( QgsGdalUtils::resampleSingleBandRaster( ds1.get(), gdalDsOutput.get(), GRA_NearestNeighbour, nullptr ) );
+  QCOMPARE( identify( gdalDsOutput.get(), 1, 0, 0 ), 1.0 );
+  QCOMPARE( identify( gdalDsOutput.get(), 1, 2, 2 ), 65535.0 );
+}
+
 
 QGSTEST_MAIN( TestQgsGdalUtils )
 #include "testqgsgdalutils.moc"

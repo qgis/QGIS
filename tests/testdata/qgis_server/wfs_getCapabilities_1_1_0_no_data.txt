@@ -80,8 +80,8 @@ Content-Type: text/xml; charset=utf-8
   <FeatureType>
    <Name>test_wfs_no_data</Name>
    <Title>test_wfs_no_data</Title>
-   <DefaultSRS>EPSG:4326</DefaultSRS>
-   <OtherSRS>EPSG:3857</OtherSRS>
+   <DefaultSRS>urn:ogc:def:crs:EPSG::4326</DefaultSRS>
+   <OtherSRS>urn:ogc:def:crs:EPSG::3857</OtherSRS>
    <Operations>
     <Operation>Query</Operation>
    </Operations>

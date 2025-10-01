@@ -73,7 +73,7 @@ QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mItemsView->setContextMenuPolicy( Qt::CustomContextMenu );
 
   connect( mItemsView, &QListView::customContextMenuRequested, this, &QgsStacSourceSelect::showItemsContextMenu );
-  connect( mItemsView, &QListView::doubleClicked, this, &QgsStacSourceSelect::onItemDoubleClicked );
+  connect( mItemsView, &QListView::doubleClicked, this, &QgsStacSourceSelect::showItemDetails );
   connect( mItemsView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsStacSourceSelect::onCurrentItemChanged );
   connect( mItemsView->verticalScrollBar(), &QScrollBar::valueChanged, this, &QgsStacSourceSelect::onItemsViewScroll );
 
@@ -138,9 +138,10 @@ void QgsStacSourceSelect::onItemsViewScroll( int value )
   }
 }
 
-void QgsStacSourceSelect::onItemDoubleClicked( const QModelIndex &index )
+void QgsStacSourceSelect::showItemDetails( const QModelIndex &index )
 {
   QgsStacObjectDetailsDialog details( this );
+  details.setAuthcfg( mStac->authCfg() );
   details.setStacObject( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
   details.exec();
 }
@@ -372,7 +373,7 @@ void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QStrin
   mNextPageUrl = col->nextUrl();
 
   const QVector<QgsStacItem *> items = col->takeItems();
-  mItemsModel->addItems( items );
+  mItemsModel->addItems( items, mStac->authCfg() );
 
   for ( QgsStacItem *i : items )
   {
@@ -565,9 +566,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
 
   QAction *detailsAction = new QAction( tr( "Details…" ), menu );
   connect( detailsAction, &QAction::triggered, this, [this, index] {
-    QgsStacObjectDetailsDialog details( this );
-    details.setStacObject( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
-    details.exec();
+    showItemDetails( index );
   } );
 
 
@@ -623,19 +622,26 @@ void QgsStacSourceSelect::showFootprints( bool enable )
 
 void QgsStacSourceSelect::loadUri( const QgsMimeDataUtils::Uri &uri )
 {
+  QString layerUri = uri.uri;
+  const QString authcfg = mStac->authCfg();
+  if ( !authcfg.isEmpty() )
+  {
+    layerUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
+  }
+
   if ( uri.layerType == QLatin1String( "raster" ) )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addRasterLayer( uri.uri, uri.name, uri.providerKey );
+    emit addRasterLayer( layerUri, uri.name, uri.providerKey );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Raster, uri.uri, uri.name, uri.providerKey );
+    emit addLayer( Qgis::LayerType::Raster, layerUri, uri.name, uri.providerKey );
   }
   else if ( uri.layerType == QLatin1String( "pointcloud" ) )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addPointCloudLayer( uri.uri, uri.name, uri.providerKey );
+    emit addPointCloudLayer( layerUri, uri.name, uri.providerKey );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::PointCloud, uri.uri, uri.name, uri.providerKey );
+    emit addLayer( Qgis::LayerType::PointCloud, layerUri, uri.name, uri.providerKey );
   }
 }
 ///@endcond

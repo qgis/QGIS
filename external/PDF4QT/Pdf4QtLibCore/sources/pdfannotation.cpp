@@ -1,19 +1,24 @@
-//    Copyright (C) 2020-2022 Jakub Melka
+// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT. If not, see <https://www.gnu.org/licenses/>.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #include "pdfannotation.h"
 #include "pdfdocument.h"
@@ -24,7 +29,6 @@
 #include "pdfparser.h"
 #include "pdfform.h"
 #include "pdfpainterutils.h"
-#include "pdfdocumentbuilder.h"
 
 #include <QtMath>
 #include <QIcon>
@@ -924,6 +928,11 @@ PDFAnnotationPtr PDFAnnotation::parse(const PDFObjectStorage* storage, PDFObject
         annotation->m_content = PDFRichMediaContent::parse(storage, dictionary->get("RichMediaContent"));
         annotation->m_settings = PDFRichMediaSettings::parse(storage, dictionary->get("RichMediaSettings"));
     }
+    else
+    {
+        // Fill unknown annotation
+        result.reset(new PDFUnknownAnnotation());
+    }
 
     if (!result)
     {
@@ -1422,10 +1431,12 @@ void PDFAnnotationManager::drawPage(QPainter* painter,
                                     const PDFPrecompiledPage* compiledPage,
                                     PDFTextLayoutGetter& layoutGetter,
                                     const QTransform& pagePointToDevicePointMatrix,
+                                    const PDFColorConvertor& convertor,
                                     QList<PDFRenderError>& errors) const
 {
     Q_UNUSED(compiledPage);
     Q_UNUSED(layoutGetter);
+    Q_UNUSED(convertor);
 
     const PDFPage* page = m_document->getCatalog()->getPage(pageIndex);
     Q_ASSERT(page);
@@ -1448,7 +1459,6 @@ void PDFAnnotationManager::drawPage(QPainter* painter,
         const PDFCMSPointer cms = m_cmsManager->getCurrentCMS();
         m_fontCache->setCacheShrinkEnabled(&fontCacheLock, false);
 
-        const PageAnnotation* annotationDrawnByEditor = nullptr;
         for (const PageAnnotation& annotation : annotations.annotations)
         {
             // If annotation draw is not enabled, then skip it
@@ -1457,19 +1467,7 @@ void PDFAnnotationManager::drawPage(QPainter* painter,
                 continue;
             }
 
-            if (isAnnotationDrawnByEditor(annotation))
-            {
-                Q_ASSERT(!annotationDrawnByEditor);
-                annotationDrawnByEditor = &annotation;
-                continue;
-            }
-
-            drawAnnotation(annotation, pagePointToDevicePointMatrix, page, cms.data(), false, errors, painter);
-        }
-
-        if (annotationDrawnByEditor)
-        {
-            drawAnnotation(*annotationDrawnByEditor, pagePointToDevicePointMatrix, page, cms.data(), true, errors, painter);
+            drawAnnotation(annotation, pagePointToDevicePointMatrix, page, cms.data(), isAnnotationDrawnByEditor(annotation), errors, painter);
         }
 
         m_fontCache->setCacheShrinkEnabled(&fontCacheLock, true);
@@ -2916,7 +2914,7 @@ void PDFStampAnnotation::draw(AnnotationDrawParameters& parameters) const
     QPainter& painter = *parameters.painter;
     painter.setCompositionMode(getCompositionMode());
 
-    QString text = getText(m_stamp);
+    QString text = getText(m_stamp, false);
     QColor color(Qt::red);
 
     switch (m_stamp)
@@ -3004,66 +3002,80 @@ void PDFStampAnnotation::draw(AnnotationDrawParameters& parameters) const
     parameters.boundingRectangle.adjust(-penWidth, -penWidth, penWidth, penWidth);
 }
 
-QString PDFStampAnnotation::getText(Stamp stamp)
+QString PDFStampAnnotation::getText(Stamp stamp, bool isActionText)
 {
     QString text;
 
     switch (stamp)
     {
         case Stamp::Approved:
-            text = PDFTranslationContext::tr("APPROVED");
+            text = isActionText ? PDFTranslationContext::tr("&Approved")
+                                : PDFTranslationContext::tr("APPROVED");
             break;
 
         case Stamp::AsIs:
-            text = PDFTranslationContext::tr("AS IS");
+            text = isActionText ? PDFTranslationContext::tr("As &Is")
+                                : PDFTranslationContext::tr("AS IS");
             break;
 
         case Stamp::Confidential:
-            text = PDFTranslationContext::tr("CONFIDENTIAL");
+            text = isActionText ? PDFTranslationContext::tr("&Confidential")
+                                : PDFTranslationContext::tr("CONFIDENTIAL");
             break;
 
         case Stamp::Departmental:
-            text = PDFTranslationContext::tr("DEPARTMENTAL");
+            text = isActionText ? PDFTranslationContext::tr("&Departmental")
+                                : PDFTranslationContext::tr("DEPARTMENTAL");
             break;
 
         case Stamp::Draft:
-            text = PDFTranslationContext::tr("DRAFT");
+            text = isActionText ? PDFTranslationContext::tr("Dra&ft")
+                                : PDFTranslationContext::tr("DRAFT");
             break;
 
         case Stamp::Experimental:
-            text = PDFTranslationContext::tr("EXPERIMENTAL");
+            text = isActionText ? PDFTranslationContext::tr("&Experimental")
+                                : PDFTranslationContext::tr("EXPERIMENTAL");
             break;
 
         case Stamp::Expired:
-            text = PDFTranslationContext::tr("EXPIRED");
+            text = isActionText ? PDFTranslationContext::tr("E&xpired")
+                                : PDFTranslationContext::tr("EXPIRED");
             break;
 
         case Stamp::Final:
-            text = PDFTranslationContext::tr("FINAL");
+            text = isActionText ? PDFTranslationContext::tr("Fina&l")
+                                : PDFTranslationContext::tr("FINAL");
             break;
 
         case Stamp::ForComment:
-            text = PDFTranslationContext::tr("FOR COMMENT");
+            text = isActionText ? PDFTranslationContext::tr("For Co&mment")
+                                : PDFTranslationContext::tr("FOR COMMENT");
             break;
 
         case Stamp::ForPublicRelease:
-            text = PDFTranslationContext::tr("FOR PUBLIC RELEASE");
+            text = isActionText ? PDFTranslationContext::tr("For P&ublic Release")
+                                : PDFTranslationContext::tr("FOR PUBLIC RELEASE");
             break;
 
         case Stamp::NotApproved:
-            text = PDFTranslationContext::tr("NOT APPROVED");
+            text = isActionText ? PDFTranslationContext::tr("Not A&pproved")
+                                : PDFTranslationContext::tr("NOT APPROVED");
             break;
 
         case Stamp::NotForPublicRelease:
-            text = PDFTranslationContext::tr("NOT FOR PUBLIC RELEASE");
+            text = isActionText ? PDFTranslationContext::tr("N&ot For Public Release")
+                                : PDFTranslationContext::tr("NOT FOR PUBLIC RELEASE");
             break;
 
         case Stamp::Sold:
-            text = PDFTranslationContext::tr("SOLD");
+            text = isActionText ? PDFTranslationContext::tr("&Sold")
+                                : PDFTranslationContext::tr("SOLD");
             break;
 
         case Stamp::TopSecret:
-            text = PDFTranslationContext::tr("TOP SECRET");
+            text = isActionText ? PDFTranslationContext::tr("&Top Secret")
+                                : PDFTranslationContext::tr("TOP SECRET");
             break;
 
         default:

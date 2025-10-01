@@ -36,6 +36,7 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DSIP_FACTORY= \
          -DSIP_PYNAME= \
          -DSIP_THROW= \
+         -DSIP_INSERT_QLIST_ENUM_CONVERSION_CODE= \
          -DFINAL="final" \
          -DCMAKE_SOURCE_DIR="/foo/bar" \
          -DQ_NOWARN_DEPRECATED_PUSH= \

@@ -24,7 +24,7 @@ jobs:
         if: ${{ github.event_name == 'issue_comment' }}
         id: comment-branch
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: run sipify
         run: ./scripts/sipify_all.sh -m
