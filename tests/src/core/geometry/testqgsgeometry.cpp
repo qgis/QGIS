@@ -3212,11 +3212,19 @@ void TestQgsGeometry::chamferFillet()
   QCOMPARE( g.lastError(), "" );
   QCOMPARE( g2.asWkt( 2 ), "LineString (0 1, 0.65 1.65, 1.45 1.78, 3 1)" );
 
+  // chamfer square
   g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );
   QCOMPARE( g.lastError(), "" );
   g2 = g.chamfer( 1, 3.0, 2.5 );
   QCOMPARE( g.lastError(), "" );
   QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 7 15, 10 17.5, 10 20, 5 20, 5 15))" );
+
+  // chamfer square with big values will lost a point and become a triangle
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 1, 30.0, 25.0 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 10 20, 5 20, 5 15))" );
 
   // chamfer first vertex
   g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );

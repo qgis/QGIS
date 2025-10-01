@@ -1576,7 +1576,8 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
 
     if ( operation == QgsGeometry::ChamferFilletOperationType::Fillet )
     {
-      points.append( firstNewPoint );
+      if ( firstNewPoint != pPrev )
+        points.append( firstNewPoint );
 
       if ( segments > 0 )
       {
@@ -1596,12 +1597,15 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
         points.append( middlePoint );
       }
 
-      points.append( lastNewPoint );
+      if ( lastNewPoint != pNext )
+        points.append( lastNewPoint );
     }
     else
     {
-      points.append( firstNewPoint );
-      points.append( lastNewPoint );
+      if ( firstNewPoint != pPrev )
+        points.append( firstNewPoint );
+      if ( lastNewPoint != pNext )
+        points.append( lastNewPoint );
     }
 
     int max = curve->numPoints();
