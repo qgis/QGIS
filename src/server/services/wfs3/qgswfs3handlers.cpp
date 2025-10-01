@@ -460,7 +460,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   );
 
   linksList.push_back(
-    { { "href", parentLink( context.request()->url(), 3 ).toStdString() + "?request=DescribeFeatureType&typenames=" + QUrlQuery( shortName ).toString( QUrl::EncodeSpaces ).toStdString() + "&service=WFS&version=2.0"
+    { { "href", parentLink( context.request()->url(), 3 ).toStdString() + "?request=DescribeFeatureType&typename=" + QUrlQuery( shortName ).toString( QUrl::EncodeSpaces ).toStdString() + "&service=WFS&version=2.0"
       },
       { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::describedBy ) },
       { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::XML ) },
