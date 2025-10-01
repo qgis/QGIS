@@ -58,12 +58,8 @@ void QgsStacObjectDetailsDialog::setContentFromStacObject( QgsStacObject *stacOb
 
 void QgsStacObjectDetailsDialog::setContentFromStacAsset( const QString &assetId, const QgsStacAsset *stacAsset )
 {
-  QString thumbnailHtml;
-  if ( isThumbnailAsset( stacAsset ) )
-  {
-    thumbnailHtml = thumbnailHtmlContent( stacAsset );
-  }
-  QString bodyHtml = stacAsset->toHtml( assetId );
+  const QString thumbnailHtml = isThumbnailAsset( stacAsset ) ? thumbnailHtmlContent( stacAsset ) : QString();
+  const QString bodyHtml = stacAsset->toHtml( assetId );
   setContent( bodyHtml, thumbnailHtml );
 }
 
