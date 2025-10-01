@@ -22,6 +22,7 @@
 #include <QShortcut>
 #include <QRegularExpression>
 #include <QWidgetAction>
+#include <QPalette>
 
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settingsRoot )
   : QObject( parent )
