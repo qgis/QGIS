@@ -114,6 +114,7 @@ QgsStacItemItem::QgsStacItemItem( QgsDataItem *parent, const QString &name, cons
   : QgsDataItem( Qgis::BrowserItemType::Custom, parent, name.isEmpty() ? path : name, path, QStringLiteral( "special:Stac" ) )
 {
   mIconName = QStringLiteral( "mActionPropertiesWidget.svg" );
+  mCapabilities |= Qgis::BrowserItemCapability::Fast;
   updateToolTip();
 }
 
@@ -126,6 +127,7 @@ QVector<QgsDataItem *> QgsStacItemItem::createChildren()
   if ( !mStacItem )
     return { new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) };
 
+  setState( Qgis::BrowserItemState::Populating );
   QVector<QgsDataItem *> contents;
   contents.reserve( mStacItem->assets().size() );
   const QMap<QString, QgsStacAsset> assets = mStacItem->assets();
@@ -318,7 +320,6 @@ void QgsStacCatalogItem::childrenCreated()
       if ( item->state() != Qgis::BrowserItemState::NotPopulated )
         continue;
 
-      item->setIconName( QStringLiteral( "mActionIdentify.svg" ) );
       const int requestId = stacController()->fetchStacObjectAsync( item->path() );
       item->setProperty( "requestId", requestId );
     }
@@ -523,9 +524,7 @@ QVector< QgsDataItem * > QgsStacCatalogItem::createItems( const QVector<QgsStacI
 
     QgsStacItemItem *i = new QgsStacItemItem( this, name, item->url() );
     i->setStacItem( std::move( object ) );
-    // create any assets beneath the item, so that they can be individually drag-dropped as layers if compatible
-    i->populate( true );
-    i->setState( Qgis::BrowserItemState::Populated );
+    i->setState( Qgis::BrowserItemState::NotPopulated );
     contents.append( i );
   }
   return contents;
