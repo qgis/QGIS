@@ -74,5 +74,8 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
 
     /* Used to return to select tool */
     QPointer<QgsModelViewTool> mPreviousViewTool;
+
+    QString mPreviousInputChildId;
+    int mPreviousInputSocketNumber = -1;
 };
 #endif // QGSMODELVIEWTOOLLINK_H
