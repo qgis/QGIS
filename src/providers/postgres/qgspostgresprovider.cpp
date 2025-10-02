@@ -1206,7 +1206,7 @@ bool QgsPostgresProvider::loadFields()
 
 void QgsPostgresProvider::setEditorWidgets()
 {
-  if ( !QgsPostgresUtils::tableExists( connectionRO(), QStringLiteral( "public" ), EDITOR_WIDGET_STYLES_TABLE ) )
+  if ( !QgsPostgresUtils::tableExists( connectionRO(), QString(), EDITOR_WIDGET_STYLES_TABLE ) )
   {
     return;
   }
