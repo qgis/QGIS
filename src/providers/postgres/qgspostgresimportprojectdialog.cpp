@@ -107,7 +107,13 @@ QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( std::shared_ptr<
   mButtonAdd->setMenu( menu );
 
   connect( mButtonRemove, &QToolButton::clicked, this, [this]() {
-    mFilesTableWidget->removeRow( mFilesTableWidget->currentRow() );
+    QList<QTableWidgetItem *> items = mFilesTableWidget->selectedItems();
+
+    while ( !items.empty() )
+    {
+      QTableWidgetItem *item = items.takeLast();
+      mFilesTableWidget->removeRow( item->row() );
+    }
   } );
 
   mFilesTableWidget = new QTableWidget( 0, 2, this );
