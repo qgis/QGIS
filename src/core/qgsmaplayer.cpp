@@ -1763,8 +1763,9 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
     }
   }
 
+  // Pass the intersection between the desired categories and those that are really in the document
   QgsReadWriteContext context = QgsReadWriteContext();
-  return readSymbology( myRoot, myErrorMessage, context, categories ); // TODO: support relative paths in QML?
+  return readSymbology( myRoot, myErrorMessage, context, categories & sourceCategories ); // TODO: support relative paths in QML?
 }
 
 void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const
