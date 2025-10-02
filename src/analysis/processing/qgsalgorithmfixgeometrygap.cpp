@@ -181,7 +181,6 @@ QVariantMap QgsFixGeometryGapAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
-  //QgsProject *project = QgsProject::instance();
   QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
 
   const QgsGeometryGapCheck check( &checkContext, QVariantMap() );
