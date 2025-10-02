@@ -980,11 +980,11 @@ void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProj
     return;
   }
 
-  QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( conn.release() );
+  QgsDatabaseSchemaSelectionDialog dlg = QgsDatabaseSchemaSelectionDialog( conn.release() );
 
-  if ( dlg->exec() == QDialog::Accepted )
+  if ( dlg.exec() == QDialog::Accepted )
   {
-    const QString newSchemaName = dlg->selectedSchema();
+    const QString newSchemaName = dlg.selectedSchema();
 
     QgsPostgresConn *conn2 = QgsPostgresConn::connectDb( mainItem->postgresProjectUri().connInfo, false );
 
