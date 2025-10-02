@@ -4533,10 +4533,10 @@ bool QgsGeometry::Error::hasWhere() const
 
 QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int vertexIndex, double distance1, double distance2, int segments ) const
 {
-  QgsDebugMsgLevel( QStringLiteral( "%1 starts: %2" ).arg( QgsGeometry::chamferFilletOperationToString( op ) ).arg( asWkt( 2 ) ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "%1 starts: %2" ).arg( qgsEnumValueToKey( op ) ).arg( asWkt( 2 ) ), 3 );
   if ( isNull() )
   {
-    mLastError = QStringLiteral( "Operation '%1' needs non-null geometry." ).arg( QgsGeometry::chamferFilletOperationToString( op ) );
+    mLastError = QStringLiteral( "Operation '%1' needs non-null geometry." ).arg( qgsEnumValueToKey( op ) );
     return QgsGeometry();
   }
 
@@ -4592,7 +4592,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
 
   if ( !curve )
   {
-    mLastError = QStringLiteral( "Operation '%1' needs curve geometry." ).arg( QgsGeometry::chamferFilletOperationToString( op ) );
+    mLastError = QStringLiteral( "Operation '%1' needs curve geometry." ).arg( qgsEnumValueToKey( op ) );
     return QgsGeometry();
   }
 
@@ -4617,7 +4617,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
 
   if ( !result )
   {
-    mLastError = QStringLiteral( "Operation '%1' generates a null geometry." ).arg( op );
+    mLastError = QStringLiteral( "Operation '%1' generates a null geometry." ).arg( qgsEnumValueToKey( op ) );
     return QgsGeometry();
   }
 
@@ -4717,24 +4717,6 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
   return finalResult;
 }
 
-
-QString QgsGeometry::chamferFilletOperationToString( ChamferFilletOperationType op )
-{
-  QString out;
-  switch ( op )
-  {
-    case ChamferFilletOperationType::Chamfer:
-      out = "Chamfer";
-      break;
-    case ChamferFilletOperationType::Fillet:
-      out = "Fillet";
-      break;
-    default:
-      out = "unknown";
-      break;
-  }
-  return out;
-}
 
 QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double distance2 ) const
 {

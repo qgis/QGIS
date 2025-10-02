@@ -16,6 +16,8 @@
 #include "qgstest.h"
 #include <QObject>
 #include "qgsgeometryutils_base.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 
 class TestQgsGeometryUtilsBase : public QObject
 {

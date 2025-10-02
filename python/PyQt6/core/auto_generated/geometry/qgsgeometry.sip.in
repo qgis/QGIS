@@ -3252,7 +3252,6 @@ Downgrades a point list from :py:class:`QgsPoint` to
     operator QVariant() const;
 
 
-
     QgsGeometry fillet( int vertexIndex, double radius, int segments = 8 ) const;
 %Docstring
 Creates a fillet (rounded corner) at the specified vertex.

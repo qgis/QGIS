@@ -3201,18 +3201,14 @@ class CORE_EXPORT QgsGeometry
      * Privatly used in chamfer/fillet functions
      * \note not available in Python bindings
      */
-    enum ChamferFilletOperationType : int SIP_SKIP
+    enum class ChamferFilletOperationType : int SIP_SKIP
     {
       Chamfer = 1,
       Fillet,
     };
-
-    /**
-     * Returns string version for the enum \a op else returns 'unknown'.
-     * \param op the enum to translate to string
-     * \since QGIS 4.0
-     */
-    static QString chamferFilletOperationToString( ChamferFilletOperationType op ) SIP_SKIP;
+#ifndef SIP_RUN
+    Q_ENUM( ChamferFilletOperationType )
+#endif
 
     /**
      * Creates a fillet (rounded corner) at the specified vertex.

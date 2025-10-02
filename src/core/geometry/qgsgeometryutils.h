@@ -1384,6 +1384,22 @@ class CORE_EXPORT QgsGeometryUtils
     ) SIP_THROW( QgsInvalidArgumentException );
 
     /**
+     * Calculates the maximum allowed fillet radius for the given segment configuration.
+     *
+     * \param segment1Start start point of the first segment
+     * \param segment1End end point of the first segment
+     * \param segment2Start start point of the second segment
+     * \param segment2End end point of the second segment
+     * \param epsilon tolerance for intersection and angle calculations
+     * \returns Maximum fillet radius that can be applied, or -1.0 if no fillet is possible
+     *
+     * \since QGIS 4.0
+     */
+    static double maxFilletRadius( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                   const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                                   double epsilon = 1e-8 ) SIP_HOLDGIL;
+
+    /**
      * Applies chamfer to a vertex in a curve geometry.
      * \param curve input curve geometry
      * \param vertexIndex index of vertex to chamfer

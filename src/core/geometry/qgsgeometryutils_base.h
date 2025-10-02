@@ -558,6 +558,26 @@ class CORE_EXPORT QgsGeometryUtilsBase
     }
 
     /**
+     * Calculates the maximum allowed fillet radius for the given segment configuration.
+     *
+     * \param segment1StartX x-coordinate of first segment start point
+     * \param segment1StartY y-coordinate of first segment start point
+     * \param segment1EndX x-coordinate of first segment end point
+     * \param segment1EndY y-coordinate of first segment end point
+     * \param segment2StartX x-coordinate of second segment start point
+     * \param segment2StartY y-coordinate of second segment start point
+     * \param segment2EndX x-coordinate of second segment end point
+     * \param segment2EndY y-coordinate of second segment end point
+     * \param epsilon tolerance for intersection and angle calculations
+     * \returns Maximum fillet radius that can be applied, or -1.0 if no fillet is possible
+     *
+     * \since QGIS 4.0
+     */
+    static double maxFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+                                   const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
+                                   double epsilon = 1e-8 ) SIP_HOLDGIL;
+
+    /**
      * Creates a chamfer (angled corner) between two line segments.
      *
      * This method generates a straight-line chamfer connecting two line segments at their
