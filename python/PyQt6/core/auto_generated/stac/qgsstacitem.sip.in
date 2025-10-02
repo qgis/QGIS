@@ -82,14 +82,12 @@ Sets the item's additional metadata to ``properties``
 
     QMap< QString, QgsStacAsset > assets() const;
 %Docstring
-Returns a dictionary of asset objects that can be downloaded, each with
-a unique key.
+Returns a dictionary of asset objects, each with a unique key.
 %End
 
     void setAssets( const QMap< QString, QgsStacAsset > &assets );
 %Docstring
-Sets the ``asset`` objects that can be downloaded, each with a unique
-key.
+Sets the ``asset`` objects, each with a unique key.
 %End
 
     QString collection() const;
