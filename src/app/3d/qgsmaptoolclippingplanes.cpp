@@ -32,7 +32,7 @@
 
 
 QgsMapToolClippingPlanes::QgsMapToolClippingPlanes( QgsMapCanvas *canvas, Qgs3DMapCanvasWidget *mapCanvas )
-  : QgsMapTool( canvas ), m3DCanvas( mapCanvas )
+  : QgsMapTool( canvas ), m3DCanvasWidget( mapCanvas )
 {
   mRubberBandPolygon.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ) );
   mRubberBandLines.reset( new QgsRubberBand( canvas, Qgis::GeometryType::Line ) );
@@ -54,7 +54,7 @@ void QgsMapToolClippingPlanes::activate()
   mRubberBandPolygon->show();
   mCt = std::make_unique<QgsCoordinateTransform>(
     mCanvas->mapSettings().destinationCrs(),
-    m3DCanvas->mapCanvas3D()->mapSettings()->crs(),
+    m3DCanvasWidget->mapCanvas3D()->mapSettings()->crs(),
     mCanvas->mapSettings().transformContext()
   );
 }
@@ -142,7 +142,7 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
         QgsDebugError( QStringLiteral( "Could not reproject cross-section extent to 3d map canvas crs." ) );
       }
 
-      if ( !crossSectionPolygon.intersects( m3DCanvas->mapCanvas3D()->scene()->sceneExtent() ) )
+      if ( !crossSectionPolygon.intersects( m3DCanvasWidget->mapCanvas3D()->scene()->sceneExtent() ) )
       {
         clear();
         QgsMessageBar *msgBar = QgisApp::instance()->messageBar();
@@ -166,19 +166,19 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
           msgBar->pushWarning( QString(), tr( "Could not reproject the cross-section extent to 3D map coordinates." ) );
         }
 
-        m3DCanvas->mapCanvas3D()->enableCrossSection(
+        m3DCanvasWidget->mapCanvas3D()->enableCrossSection(
           pt0,
           pt1,
           mRectangleWidth,
           true
         );
 
-        m3DCanvas->crossSectionToolFinished();
-
         const QgsSettings settings;
         QColor highlightColor = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
         highlightColor.setAlphaF( 0.5 );
         mRubberBandPolygon->setColor( highlightColor );
+
+        emit finishedSuccessfully();
       }
     }
     else

@@ -52,6 +52,9 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     //! Returns the Geometry of clipped area
     QgsGeometry clippedPolygon() const;
 
+  signals:
+    void finishedSuccessfully();
+
   private:
     void clearRubberBand() const;
 
@@ -59,7 +62,7 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     QObjectUniquePtr<QgsRubberBand> mRubberBandLines;
     QObjectUniquePtr<QgsRubberBand> mRubberBandPoints;
     std::unique_ptr<QgsCoordinateTransform> mCt;
-    Qgs3DMapCanvasWidget *m3DCanvas = nullptr;
+    Qgs3DMapCanvasWidget *m3DCanvasWidget = nullptr;
     double mRectangleWidth = 0;
 };
 

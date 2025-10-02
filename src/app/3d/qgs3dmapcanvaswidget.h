@@ -96,8 +96,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
-    void crossSectionToolFinished();
-
   private slots:
     void resetView();
     void configure();
@@ -138,7 +136,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void onGpuMemoryLimitReached();
 
     void onPointCloudChangeAttributeSettingsChanged();
-    // void onPointCloudChangeAttributePointFilterChanged();
+
+    void onCrossSectionToolFinished();
 
   private:
     void updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const;
