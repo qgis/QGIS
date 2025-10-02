@@ -863,7 +863,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \note Ownership of \a blocker is not transferred, and the blocker must
      *       be unregistered when plugin is unloaded.
      *
-     * \see unregisterLayerCommitChangesBlocker()
+     * \see unregisterLayerChangesCommitBlocker()
      */
     void registerLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker );
 
@@ -875,7 +875,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Unregister a previously registered commit layer changes \a blocker.
-     * \see registerLayerCommitChangesBlocker()
+     * \see registerLayerChangesCommitBlocker()
     */
     void unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker );
 
