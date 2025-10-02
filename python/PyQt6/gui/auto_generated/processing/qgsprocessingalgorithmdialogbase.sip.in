@@ -385,15 +385,6 @@ Emitted whenever an algorithm has finished executing in the dialog.
 .. versionadded:: 3.14
 %End
 
-  public slots:
-    virtual void onDirtySet();
-%Docstring
-In the context of the model designer Called when underlying model have
-been set dirty. Must be overridden by subclasses.
-
-.. versionadded:: 4.0
-%End
-
   protected slots:
 
     virtual void finished( bool successful, const QVariantMap &result, QgsProcessingContext &context, QgsProcessingFeedback *feedback );

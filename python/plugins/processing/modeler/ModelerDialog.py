@@ -126,6 +126,8 @@ class ModelerDialog(QgsModelDesignerDialog):
 
     def createExecutionDialog(self):
         dlg = ModelerAlgorithmDialog(self.model().create(), parent=self)
+        self.dirtySet.connect(dlg.onDirtySet)
+
         return dlg
 
     def saveInProject(self):

@@ -1062,10 +1062,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     mAlgorithmDialog->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
     mAlgorithmDialog->setParameters( mModel->designerParameterValues() );
 
-    connect( this, &QgsModelDesignerDialog::dirtySet, mAlgorithmDialog, &QgsProcessingAlgorithmDialogBase::onDirtySet );
-
     connect( mAlgorithmDialog, &QgsProcessingAlgorithmDialogBase::algorithmAboutToRun, this, [=]( QgsProcessingContext *context ) {
-      qDebug() << "childAlgorithmSubset? ";
       if ( !childAlgorithmSubset.empty() )
       {
         // start from previous state

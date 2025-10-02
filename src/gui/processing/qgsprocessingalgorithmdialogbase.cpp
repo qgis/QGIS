@@ -738,10 +738,6 @@ void QgsProcessingAlgorithmDialogBase::runAlgorithm()
 {
 }
 
-void QgsProcessingAlgorithmDialogBase::onDirtySet()
-{
-}
-
 
 void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
 {
