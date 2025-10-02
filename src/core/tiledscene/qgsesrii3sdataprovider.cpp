@@ -42,6 +42,11 @@
 
 ///@cond PRIVATE
 
+/**
+ * \ingroup core
+ * Tiled scene index implementation for I3S
+ * \since QGIS 4.0
+ */
 class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
 {
   public:
@@ -93,6 +98,13 @@ class QgsEsriI3STiledSceneIndex final : public QgsAbstractTiledSceneIndex
 
 
 
+/**
+ * \ingroup core
+ * Data to be shared between multiple copies of the I3S data provider.
+ * As the class may be used from multiple threads, members should be
+ * accessed only while the read/write lock is locked.
+ * \since QGIS 4.0
+ */
 class QgsEsriI3SDataProviderSharedData
 {
   public:

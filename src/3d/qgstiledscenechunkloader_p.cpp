@@ -200,9 +200,9 @@ QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory(
   , mIndex( index )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
+  , mLayerCrs( layerCrs )
 {
   mBoundsTransform = QgsCoordinateTransform( tileCrs, context.crs(), context.transformContext() );
-  mLayerCrs = layerCrs;
 }
 
 QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
