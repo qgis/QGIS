@@ -81,6 +81,8 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
 
   setAcceptDrops( true );
   leText->setAcceptDrops( false );
+
+  textChanged( leText->text() );
 }
 
 bool QgsProcessingLayerOutputDestinationWidget::outputIsSkipped() const
