@@ -1644,6 +1644,27 @@ Unregister a previously registered application exit ``blocker``.
 .. versionadded:: 3.16
 %End
 
+    virtual void registerLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) = 0;
+%Docstring
+Register a new application commit layer changes blocker, which can be
+used to prevent the QGIS application from committing changes to a
+specified layer
+
+.. note::
+
+   Ownership of ``blocker`` is not transferred, and the blocker must
+   be unregistered when plugin is unloaded.
+
+.. seealso:: :py:func:`unregisterLayerCommitChangesBlocker`
+%End
+
+    virtual void unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) = 0;
+%Docstring
+Unregister a previously registered commit layer changes ``blocker``.
+
+.. seealso:: :py:func:`registerLayerCommitChangesBlocker`
+%End
+
     virtual void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
 %Docstring
 Register a new application map tool ``handler``, which can be used to

@@ -108,6 +108,7 @@
 %Include auto_generated/qgshttpheaderwidget.sip
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
+%Include auto_generated/qgslayerchangescommitblockerinterface.sip
 %Include auto_generated/qgslayermetadatasearchwidget.sip
 %Include auto_generated/qgslayermetadataresultsmodel.sip
 %Include auto_generated/qgslayermetadataresultsproxymodel.sip
