@@ -854,6 +854,25 @@ Returns whether the debug side panel is shown
 .. versionadded:: 3.42
 %End
 
+    bool isMapOverlayEnabled() const;
+%Docstring
+Returns whether map overlay is enabled
+
+.. seealso:: :py:func:`setIsMapOverlayEnabled`
+
+.. versionadded:: 4.0
+%End
+
+    void setIsMapOverlayEnabled( bool enabled );
+%Docstring
+Sets whether map overlay is enabled
+
+.. seealso:: :py:func:`isMapOverlayEnabled`
+
+.. versionadded:: 4.0
+%End
+
+
   signals:
 
     void settingsChanged();
@@ -1176,6 +1195,15 @@ Emitted when the world's origin point has been shifted
 .. seealso:: :py:func:`setOrigin`
 
 .. versionadded:: 3.42
+%End
+
+    void showMapOverlayChanged();
+%Docstring
+Emitted when the map overlay is enabled or disabled
+
+.. seealso:: :py:func:`setIsMapOverlayEnabled`
+
+.. versionadded:: 4.0
 %End
 
   private:

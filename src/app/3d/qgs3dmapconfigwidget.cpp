@@ -227,6 +227,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   groupBox->setVisible( map->sceneMode() == Qgis::SceneMode::Local );
 
   // ==================
+  // 2D MapOverlay
+  mShowMapOverlayCheckBox->setChecked( map->isMapOverlayEnabled() );
+
+  // ==================
   // Page: Advanced
 
   // EyeDomeLight
@@ -270,6 +274,7 @@ void Qgs3DMapConfigWidget::apply()
   {
     mMap->setExtent( groupExtent->outputExtent() );
     mMap->setShowExtentIn2DView( mShowExtentIn2DViewCheckbox->isChecked() );
+    mMap->setIsMapOverlayEnabled( mShowExtentIn2DViewCheckbox->isChecked() );
   }
 
   const QgsTerrainGenerator::Type terrainType = static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() );
@@ -368,6 +373,8 @@ void Qgs3DMapConfigWidget::apply()
   viewSyncMode.setFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D, mSync3DTo2DCheckbox->isChecked() );
   mMap->setViewSyncMode( viewSyncMode );
   mMap->setViewFrustumVisualizationEnabled( mVisualizeExtentCheckBox->isChecked() );
+
+  mMap->setIsMapOverlayEnabled( mShowMapOverlayCheckBox->isChecked() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()

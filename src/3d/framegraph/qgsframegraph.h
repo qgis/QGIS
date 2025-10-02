@@ -49,6 +49,7 @@ class QgsShadowRenderView;
 class QgsDepthRenderView;
 class QgsShadowSettings;
 class QgsDebugTextureEntity;
+class QgsDebugTextureRenderView;
 class QgsAmbientOcclusionRenderView;
 class QgsAmbientOcclusionSettings;
 
@@ -190,6 +191,12 @@ class QgsFrameGraph : public Qt3DCore::QEntity
      * \since QGIS 3.44
      */
     QgsAmbientOcclusionRenderView &ambientOcclusionRenderView();
+
+    /**
+     * Returns debug texture renderview
+     * \since QGIS 4.0
+     */
+    QgsDebugTextureRenderView &debugTextureRenderView();
 
     /**
      * Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources

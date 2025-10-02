@@ -787,6 +787,23 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     bool showDebugPanel() const;
 
+    /**
+     * Returns whether map overlay is enabled
+     *
+     * \see setIsMapOverlayEnabled()
+     * \since QGIS 4.0
+     */
+    bool isMapOverlayEnabled() const;
+
+    /**
+     * Sets whether map overlay is enabled
+     *
+     * \see isMapOverlayEnabled()
+     * \since QGIS 4.0
+     */
+    void setIsMapOverlayEnabled( bool enabled );
+
+
   signals:
 
     /**
@@ -1045,6 +1062,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void originChanged();
 
+    /**
+     * Emitted when the map overlay is enabled or disabled
+     * \see setIsMapOverlayEnabled()
+     * \since QGIS 4.0
+     */
+    void showMapOverlayChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -1117,6 +1141,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsRectangle mExtent; //!< 2d extent used to limit the 3d view
 
     bool mShowExtentIn2DView = false;
+
+    bool mShowMapOverlay = false;
 };
 
 

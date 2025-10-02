@@ -255,6 +255,13 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
   mCameraMenu->addAction( mShowFrustumPolygon );
 
+  mActionShow2DMapOverlay = new QAction( tr( "Show 2D map overlay" ), this );
+  mActionShow2DMapOverlay->setCheckable( true );
+  connect( mActionShow2DMapOverlay, &QAction::triggered, this, [this]( bool enabled ) {
+    mCanvas->mapSettings()->setIsMapOverlayEnabled( enabled );
+  } );
+  mCameraMenu->addAction( mActionShow2DMapOverlay );
+
   mActionSetSceneExtent = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ), tr( "Set 3D Scene Extent on 2D Map View" ), this, &Qgs3DMapCanvasWidget::setSceneExtentOn2DCanvas );
   mActionSetSceneExtent->setCheckable( true );
   auto createShortcuts = [this]( const QString &objectName, void ( Qgs3DMapCanvasWidget::*slot )() ) {
@@ -1237,6 +1244,7 @@ void Qgs3DMapCanvasWidget::updateCheckedActionsFromMapSettings( const Qgs3DMapSe
   whileBlocking( mActionSync2DNavTo3D )->setChecked( mapSettings->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   whileBlocking( mActionSync3DNavTo2D )->setChecked( mapSettings->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   whileBlocking( mShowFrustumPolygon )->setChecked( mapSettings->viewFrustumVisualizationEnabled() );
+  whileBlocking( mActionShow2DMapOverlay )->setChecked( mapSettings->isMapOverlayEnabled() );
 }
 
 ClassValidator::ClassValidator( QWidget *parent )
