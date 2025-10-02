@@ -25,7 +25,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.13'
       - name: Install requirements
@@ -162,7 +162,7 @@ jobs:
               silversearcher-ag
 
       - name: Retrieve changed files
-        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c #v46
+        uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62 #v46
         id: changed_files
         with:
           separator: " "
@@ -170,14 +170,14 @@ jobs:
       - name: Spell Test
         if: steps.changed_files.outputs.any_changed == 'true'
         env:
-          ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.changed_files }}
+          ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
         run: ./scripts/spell_check/check_spelling.sh
 
   sip_check:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.13'
       - name: Install Requirements
@@ -212,7 +212,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.13'
       - name: Run Check

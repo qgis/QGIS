@@ -278,7 +278,7 @@ Sets symbol to the button's default symbol, if set.
 .. versionadded:: 3.30
 %End
 
-    void setFixedSizeContraints( bool fixedSizeConstraints );
+    void setFixedSizeConstraints( bool fixedSizeConstraints );
 %Docstring
 Sets whether the widget adopts fixed size constraints.
 

@@ -41,7 +41,7 @@ class QgsWfs3Module : public QgsServiceModule
       {
         rootPath = serverIface->serverSettings()->apiWfs3RootPath();
       }
-      std::unique_ptr<QgsServerOgcApi> wfs3Api = std::make_unique<QgsServerOgcApi>( serverIface, rootPath, QStringLiteral( "OAPIF" ), QStringLiteral( "1.0.0" ) );
+      auto wfs3Api = std::make_unique<QgsServerOgcApi>( serverIface, rootPath, QStringLiteral( "OAPIF" ), QStringLiteral( "1.0.0" ) );
       // Register handlers
       wfs3Api->registerHandler<QgsWfs3CollectionsItemsHandler>();
       wfs3Api->registerHandler<QgsWfs3CollectionsFeatureHandler>();

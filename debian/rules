@@ -197,6 +197,10 @@ CMAKE_OPTS := \
 	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS" \
 	-DPUSH_TO_CDASH=TRUE
 
+ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
+CMAKE_OPTS += -DWITH_INTERNAL_SPATIALINDEX=TRUE
+endif
+
 QT5_CMAKE_OPTS = \
 	-D BUILD_WITH_QT5=TRUE -D BUILD_WITH_QT6=FALSE -D WITH_QTWEBENGINE=OFF \
 	-D QGIS_INCLUDE_SUBDIR=include/qgis \

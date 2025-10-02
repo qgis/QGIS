@@ -121,6 +121,14 @@ The development version
       NoLevel,
     };
 
+    enum class NetworkRequestFlag /BaseType=IntFlag/
+    {
+      DisableMessageLogging,
+    };
+
+    typedef QFlags<Qgis::NetworkRequestFlag> NetworkRequestFlags;
+
+
     enum class LayerType /BaseType=IntEnum/
       {
       Vector,
@@ -819,6 +827,7 @@ The development version
       ResolveGeometryType,
       CountFeatures,
       IncludeSystemTables,
+      OpenLayersToResolveDescriptions,
     };
     typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
 
@@ -2013,7 +2022,8 @@ The development version
       Plugin,
       PointCloud,
       Annotation,
-      VectorTile
+      VectorTile,
+      TiledScene
     };
 
 
@@ -3436,6 +3446,15 @@ The development version
     typedef QFlags<Qgis::RasterProcessingParameterCapability> RasterProcessingParameterCapabilities;
 
 
+    enum class DevToolsNodeRole
+    {
+      Status,
+      Id,
+      ElapsedTime,
+      MaximumTime,
+      Sort,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -3552,6 +3571,8 @@ PROJ4 string that represents a geographic coord system.
 
 };
 
+
+QFlags<Qgis::NetworkRequestFlag> operator|(Qgis::NetworkRequestFlag f1, QFlags<Qgis::NetworkRequestFlag> f2);
 
 QFlags<Qgis::AnnotationItemFlag> operator|(Qgis::AnnotationItemFlag f1, QFlags<Qgis::AnnotationItemFlag> f2);
 

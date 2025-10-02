@@ -90,7 +90,7 @@ Qgis::ProcessingFeatureSourceFlags QgsRemovePartsByLengthAlgorithm::sourceFlags(
 
 void QgsRemovePartsByLengthAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterDistance > minLength = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with lengths less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto minLength = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with lengths less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   minLength->setIsDynamic( true );
   minLength->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with length less than" ), QgsPropertyDefinition::DoublePositive ) );
   minLength->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

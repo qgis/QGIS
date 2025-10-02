@@ -295,7 +295,7 @@ void TestQgsProcessingCheckGeometry::containedAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -324,7 +324,7 @@ void TestQgsProcessingCheckGeometry::degeneratePolygonAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -365,7 +365,7 @@ void TestQgsProcessingCheckGeometry::segmentLengthAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -404,7 +404,7 @@ void TestQgsProcessingCheckGeometry::selfIntersectionAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -433,7 +433,7 @@ void TestQgsProcessingCheckGeometry::dangleAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -473,7 +473,7 @@ void TestQgsProcessingCheckGeometry::duplicateNodesAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -507,7 +507,7 @@ void TestQgsProcessingCheckGeometry::followBoundariesAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -537,7 +537,7 @@ void TestQgsProcessingCheckGeometry::overlapAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -577,7 +577,7 @@ void TestQgsProcessingCheckGeometry::selfContactAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -608,7 +608,7 @@ void TestQgsProcessingCheckGeometry::sliverPolygonAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -632,7 +632,7 @@ void TestQgsProcessingCheckGeometry::gapAlg()
   const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
   QgsVectorLayer *gapLayer = new QgsVectorLayer( testDataDir.absoluteFilePath( "gap_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
 
-  std::unique_ptr<QgsVectorLayer> allowedGapsLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
+  auto allowedGapsLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "allowedGaps" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( allowedGapsLayer.get() );
   QgsFeature allowedGap;
 
@@ -648,7 +648,7 @@ void TestQgsProcessingCheckGeometry::gapAlg()
 
     bool ok = false;
     QgsProcessingFeedback feedback;
-    std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+    auto context = std::make_unique< QgsProcessingContext >();
 
     QVariantMap results;
     results = alg->run( parameters, *context, &feedback, &ok );
@@ -688,7 +688,7 @@ void TestQgsProcessingCheckGeometry::gapAlg()
 
     bool ok = false;
     QgsProcessingFeedback feedback;
-    std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+    auto context = std::make_unique< QgsProcessingContext >();
 
     QVariantMap results;
     results = alg->run( parameters, *context, &feedback, &ok );
@@ -721,7 +721,7 @@ void TestQgsProcessingCheckGeometry::pointInPolygonAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -747,7 +747,7 @@ void TestQgsProcessingCheckGeometry::pointCoveredByLineAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -774,7 +774,7 @@ void TestQgsProcessingCheckGeometry::lineLayerIntersectionAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -803,7 +803,7 @@ void TestQgsProcessingCheckGeometry::lineIntersectionAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -843,7 +843,7 @@ void TestQgsProcessingCheckGeometry::multipartAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  auto context = std::make_unique< QgsProcessingContext >();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );

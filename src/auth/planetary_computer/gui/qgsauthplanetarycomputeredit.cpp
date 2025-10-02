@@ -157,7 +157,7 @@ void QgsAuthPlanetaryComputerEdit::updateServerType( int indx )
   lblTenantId->setVisible( isPro );
   leTenantId->setVisible( isPro );
 
-  const QString openHelp = tr( "Use this server type for %1 - the data are publicly accessible and do not require an account." ).arg( QStringLiteral( "<a href=\"https://planetarycomputer.microsoft.com/\">https://planetarycomputer.microsoft.com/</a>" ) );
+  const QString openHelp = tr( "Use this server type for %1 - the data are publicly accessible and do not require an account." ).arg( QLatin1String( "<a href=\"https://planetarycomputer.microsoft.com/\">https://planetarycomputer.microsoft.com/</a>" ) );
   const QString proHelp = tr(
     "Use this server type for <a href=\"https://learn.microsoft.com/en-us/azure/planetary-computer/get-started-planetary-computer\">Planetary Computer Pro</a> instances.<br/>"
     "The Directory (tenant) and Application (client) IDs can be found in your organization's Microsoft Entra ID main and application page respectively.<br/>"

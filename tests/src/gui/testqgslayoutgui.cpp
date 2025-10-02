@@ -44,6 +44,7 @@ class TestQgsLayoutGui : public QObject
 
     void itemTypeComboBox();
     void testProxyCrash();
+    void testElevationProfileWidgetLegacy();
     void testElevationProfileWidget();
 
   private:
@@ -241,7 +242,7 @@ void TestQgsLayoutGui::testProxyCrash()
   delete layout;
 }
 
-void TestQgsLayoutGui::testElevationProfileWidget()
+void TestQgsLayoutGui::testElevationProfileWidgetLegacy()
 {
   QgsProject project;
   QgsLayout layout( &project );
@@ -293,6 +294,57 @@ void TestQgsLayoutGui::testElevationProfileWidget()
   QCOMPARE( profile.layers().at( 2 )->name(), QStringLiteral( "vl1" ) );
 }
 
+void TestQgsLayoutGui::testElevationProfileWidget()
+{
+  QgsProject project;
+  QgsLayout layout( &project );
+  QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  qobject_cast< QgsVectorLayerElevationProperties * >( vl1->elevationProperties() )->setZOffset( 5 );
+  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  qobject_cast< QgsVectorLayerElevationProperties * >( vl2->elevationProperties() )->setZOffset( 5 );
+  QgsVectorLayer *vl3 = new QgsVectorLayer( QStringLiteral( "Point?field=intarray:int[]&field=strarray:string[]&field=intf:int" ), QStringLiteral( "vl3" ), QStringLiteral( "memory" ) );
+  qobject_cast< QgsVectorLayerElevationProperties * >( vl3->elevationProperties() )->setZOffset( 5 );
+  project.addMapLayers( { vl1, vl2, vl3 } );
+
+  QgsLayoutItemElevationProfile profile( &layout );
+  // sources will be rendered from vl3->vl1 from bottom to top
+  profile.setSources( { vl1, vl2, vl3 } );
+  QgsLayoutElevationProfileWidget widget( &profile );
+
+  QCOMPARE( widget.mLayerTree->children().size(), 3 );
+  // in widget's layer tree the sources should be in the same order v1->vl3 than the layout item profile
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 0 ) )->layer()->name(), QStringLiteral( "vl1" ) );
+  QVERIFY( widget.mLayerTree->children().at( 0 )->isItemVisibilityCheckedRecursive() );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 1 ) )->layer()->name(), QStringLiteral( "vl2" ) );
+  QVERIFY( widget.mLayerTree->children().at( 1 )->isItemVisibilityCheckedRecursive() );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 2 ) )->layer()->name(), QStringLiteral( "vl3" ) );
+  QVERIFY( widget.mLayerTree->children().at( 2 )->isItemVisibilityCheckedRecursive() );
+
+  // uncheck a layer
+  widget.mLayerTree->children().at( 1 )->setItemVisibilityChecked( false );
+  QCOMPARE( profile.sources().size(), 2 );
+  // sources should be in opposite order of rendering, ie vl1 before vl3 as vl1 is rendered on top
+  QCOMPARE( profile.sources().at( 0 )->profileSourceName(), QStringLiteral( "vl1" ) );
+  QCOMPARE( profile.sources().at( 1 )->profileSourceName(), QStringLiteral( "vl3" ) );
+
+  QgsElevationProfileCanvas canvas;
+  // sources will be rendered from vl3->vl1 from bottom to top
+  canvas.setSources( { vl1, vl2, vl3 } );
+
+  widget.copySettingsFromProfileCanvas( &canvas );
+  QCOMPARE( profile.sources().size(), 3 );
+  // sources should be in opposite order of rendering, ie vl1 before vl3 as vl1 is rendered on top
+  QCOMPARE( profile.sources().at( 0 )->profileSourceName(), QStringLiteral( "vl1" ) );
+  QCOMPARE( profile.sources().at( 1 )->profileSourceName(), QStringLiteral( "vl2" ) );
+  QCOMPARE( profile.sources().at( 2 )->profileSourceName(), QStringLiteral( "vl3" ) );
+
+  canvas.setSources( { vl3, vl2, vl1 } );
+  widget.copySettingsFromProfileCanvas( &canvas );
+  QCOMPARE( profile.sources().size(), 3 );
+  QCOMPARE( profile.sources().at( 0 )->profileSourceName(), QStringLiteral( "vl3" ) );
+  QCOMPARE( profile.sources().at( 1 )->profileSourceName(), QStringLiteral( "vl2" ) );
+  QCOMPARE( profile.sources().at( 2 )->profileSourceName(), QStringLiteral( "vl1" ) );
+}
 
 QTEST_MAIN( TestQgsLayoutGui )
 #include "testqgslayoutgui.moc"

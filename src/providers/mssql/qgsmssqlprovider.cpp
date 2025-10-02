@@ -1284,7 +1284,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
 
     attributeClauses.append( QStringLiteral( "[%1] %2" ).arg( it->name(), type ) );
   }
-  statement += attributeClauses.join( QStringLiteral( ", " ) );
+  statement += attributeClauses.join( QLatin1String( ", " ) );
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );

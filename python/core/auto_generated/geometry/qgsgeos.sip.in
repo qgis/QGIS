@@ -367,7 +367,9 @@ This method requires a QGIS build based on GEOS 3.9 or later.
 
 :param tolerance: tolerance to determine when iteration should end
 
-:return: - maximum inscribed circle geometry
+:return: - A two-point linestring geometry, with the first point at the
+           center of the inscribed circle and the second on the boundary
+           of the inscribed circle.
          - errorMsg: descriptive error string if the operation fails
 
 :raises QgsNotSupportedException: on QGIS builds based on GEOS 3.8 or
@@ -399,7 +401,9 @@ This method requires a QGIS build based on GEOS 3.9 or later.
 :param tolerance: tolerance to determine when iteration should end
 :param boundary: optional set of boundary obstacles
 
-:return: - largest empty circle geometry
+:return: - A two-point linestring geometry, with first point at the
+           center of the inscribed circle and the second on the boundary
+           of the inscribed circle.
          - errorMsg: descriptive error string if the operation fails
 
 .. warning::

@@ -1279,7 +1279,7 @@ void TestQgsAttributeForm::testFieldConstraintDuplicateField()
 
 void TestQgsAttributeForm::testCaseInsensitiveFieldConstraint()
 {
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=f1:integer&field=f2:integer&field=f3:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=f1:integer&field=f2:integer&field=f3:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
 
   layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
   layer->setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );

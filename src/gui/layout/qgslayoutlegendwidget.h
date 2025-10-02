@@ -51,7 +51,7 @@ class GUI_EXPORT QgsLegendLayerTreeProxyModel : public QgsLayerTreeProxyModel
 
     /**
      * Sets whether the legend is showing the default legend for a project (as opposed
-     * to a customised legend).
+     * to a customized legend).
      */
     void setIsDefaultLegend( bool isDefault );
 

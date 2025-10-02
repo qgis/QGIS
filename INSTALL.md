@@ -24,6 +24,7 @@ Building QGIS from source - step by step
       + [3.11.3. Additional tools for QGIS development](#3113-additional-tools-for-qgis-development)
       + [3.11.4. QT6 experimental builds with Fedora Rawhide](#3114-qt6-experimental-builds-with-fedora-rawhide)
    * [3.12. Building on Linux with vcpkg](#312-building-on-linux-with-vcpkg)
+   * [3.13. Building and running with Nix](#313-building-and-running-with-nix)
 - [4. Building on Windows](#4-building-on-windows)
    * [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
       + [4.1.1. Visual Studio 2022 Community Edition](#411-visual-studio-2022-community-edition)
@@ -611,6 +612,38 @@ Build:
 
 ```sh
 cmake --build ./build-x64-linux
+```
+
+## 3.13. Building and running with Nix
+
+With [Nix](https://nixos.org/) and [Nixpkgs](https://github.com/NixOS/nixpkgs)
+you can build and run any QGIS version directly from Git using a single command.
+
+First, install Nix
+[(learn more about this installer)](https://zero-to-nix.com/start/install)
+
+```bash
+  curl --proto '=https' --tlsv1.2 -sSf \
+    -L https://install.determinate.systems/nix \
+    | sh -s -- install
+```
+
+Then, run one of the following commands to automatically build and run QGIS.
+
+Run QGIS from Git:
+
+```sh
+nix run github:qgis/QGIS#qgis             # run latest version from master
+
+nix run github:qgis/QGIS/<BRANCH>#qgis    # run latest version from specific branch
+
+nix run github:qgis/QGIS/<CHECKOUT>#qgis  # run latest version from specific checkout
+```
+
+Run QGIS from PR:
+
+```sh
+nix run github:qgis/QGIS/pull/<PR-NUMBER>/merge#qgis
 ```
 
 # 4. Building on Windows

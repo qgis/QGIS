@@ -127,6 +127,13 @@ class QgsPostgresUtils
     * \since QGIS 3.44
     */
     static bool deleteProjectFromSchema( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName );
+
+    /*
+    * Turns variant map into HTML code.
+    *
+    * \since QGIS 4.0
+    */
+    static QString variantMapToHtml( const QVariantMap &variantMap, const QString &title = QString() );
 };
 
 #endif
