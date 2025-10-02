@@ -27,6 +27,11 @@ class QgsEsriI3SDataProviderSharedData;
 
 ///@cond PRIVATE
 
+/**
+ * \ingroup core
+ * Data provider implementation for Esri I3S
+ * \since QGIS 4.0
+ */
 class CORE_EXPORT QgsEsriI3SDataProvider final: public QgsTiledSceneDataProvider
 {
     Q_OBJECT
@@ -66,6 +71,11 @@ class CORE_EXPORT QgsEsriI3SDataProvider final: public QgsTiledSceneDataProvider
 
 };
 
+/**
+ * \ingroup core
+ * Data provider metadata implementation for Esri I3S
+ * \since QGIS 4.0
+ */
 class QgsEsriI3SProviderMetadata : public QgsProviderMetadata
 {
     Q_OBJECT
