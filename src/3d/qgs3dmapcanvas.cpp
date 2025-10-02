@@ -190,6 +190,9 @@ QgsCameraController *Qgs3DMapCanvas::cameraController()
 
 void Qgs3DMapCanvas::enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double width, bool setSideView )
 {
+  if ( !mScene )
+    return;
+
   const QgsVector3D startVec { startPoint.x(), startPoint.y(), 0 };
   const QgsVector3D endVec { endPoint.x(), endPoint.y(), 0 };
   const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes(
@@ -225,8 +228,16 @@ void Qgs3DMapCanvas::enableCrossSection( const QgsPointXY &startPoint, const Qgs
 
 void Qgs3DMapCanvas::disableCrossSection()
 {
+  if ( !mScene )
+    return;
+
   mScene->disableClipping();
   emit crossSectionEnabledChanged( false );
+}
+
+bool Qgs3DMapCanvas::crossSectionEnabled() const
+{
+  return mScene ? !mScene->clipPlaneEquations().isEmpty() : false;
 }
 
 void Qgs3DMapCanvas::resetView()
