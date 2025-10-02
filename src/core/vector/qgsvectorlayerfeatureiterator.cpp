@@ -1341,6 +1341,12 @@ void QgsVectorLayerFeatureIterator::createExpressionContext()
   mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
   mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
   mExpressionContext->setFeedback( mRequest.feedback() );
+  // We need to keep the map settings scope if set in the original context
+  const int settingsScopeIndex = mRequest.expressionContext()->indexOfScope( QStringLiteral( "Map Settings" ) );
+  if ( settingsScopeIndex != -1 )
+  {
+    mExpressionContext->appendScope( new QgsExpressionContextScope( *( mRequest.expressionContext()->scope( settingsScopeIndex ) ) ) );
+  }
 }
 
 bool QgsVectorLayerFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys )

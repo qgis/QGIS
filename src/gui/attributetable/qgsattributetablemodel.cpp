@@ -26,6 +26,7 @@
 #include "qgsfieldformatter.h"
 #include "qgslogger.h"
 #include "qgsmaplayeraction.h"
+#include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfieldformatterregistry.h"

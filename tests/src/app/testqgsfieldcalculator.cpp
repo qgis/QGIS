@@ -15,6 +15,7 @@
 #include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
@@ -118,6 +119,24 @@ void TestQgsFieldCalculator::testLengthCalculations()
   QVERIFY( fit.nextFeature( f ) );
   expected = 88360.0918635;
   QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
+
+  // Change distance units to "unknown", set the canvas units to degrees and check
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Unknown );
+  mQgisApp->mapCanvas()->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  tempLayer->startEditing();
+  auto calc3 = std::make_unique<QgsFieldCalculator>( tempLayer.get() );
+  calc3->mUpdateExistingGroupBox->setChecked( true );
+  calc3->mExistingFieldComboBox->setCurrentIndex( 1 );
+  calc3->builder->setExpressionText( QStringLiteral( "$length" ) );
+  calc3->appendScope( QgsExpressionContextUtils::mapSettingsScope( mQgisApp->mapCanvas()->mapSettings() ) );
+  calc3->accept();
+  tempLayer->commitChanges();
+  // check result
+  fit = tempLayer->dataProvider()->getFeatures();
+  QVERIFY( fit.nextFeature( f ) );
+  // Degrees
+  expected = 0.24194;
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 }
 
 void TestQgsFieldCalculator::testAreaCalculations()
@@ -168,6 +187,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::SquareMiles );
   tempLayer->startEditing();
   auto calc2 = std::make_unique<QgsFieldCalculator>( tempLayer.get() );
+  mQgisApp->mapCanvas()->mapSettings().setDestinationCrs( srs );
   calc2->mUpdateExistingGroupBox->setChecked( true );
   calc2->mExistingFieldComboBox->setCurrentIndex( 1 );
   calc2->builder->setExpressionText( QStringLiteral( "$area" ) );
