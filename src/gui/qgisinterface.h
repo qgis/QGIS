@@ -1343,13 +1343,13 @@ class GUI_EXPORT QgisInterface : public QObject
      * \note Ownership of \a blocker is not transferred, and the blocker must
      *       be unregistered when plugin is unloaded.
      *
-     * \see unregisterLayerCommitChangesBlocker()
+     * \see unregisterLayerChangesCommitBlocker()
      */
     virtual void registerLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) = 0;
 
     /**
      * Unregister a previously registered commit layer changes \a blocker.
-     * \see registerLayerCommitChangesBlocker()
+     * \see registerLayerChangesCommitBlocker()
     */
     virtual void unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) = 0;
 
