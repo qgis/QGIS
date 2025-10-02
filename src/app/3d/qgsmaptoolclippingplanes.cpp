@@ -23,7 +23,6 @@
 #include "qgspolygon.h"
 #include "qgs3dmapcanvaswidget.h"
 #include "qgs3dmapscene.h"
-#include "qgsmessagebar.h"
 #include "qgisapp.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrubberband.h"
@@ -145,11 +144,10 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
       if ( !crossSectionPolygon.intersects( m3DCanvasWidget->mapCanvas3D()->scene()->sceneExtent() ) )
       {
         clear();
-        QgsMessageBar *msgBar = QgisApp::instance()->messageBar();
         if ( crossSectionPolygon.isNull() )
-          msgBar->pushWarning( QString(), tr( "Could not reproject the cross-section extent to 3D map coordinates." ) );
+          emit messageEmitted( tr( "Could not reproject the cross-section extent to 3D map coordinates." ), Qgis::MessageLevel::Warning );
         else
-          msgBar->pushInfo( QString(), tr( "The cross section is outside of the scene extent, please select a new one!" ) );
+          emit messageEmitted( tr( "The cross section is outside of the scene extent, please select a new one!" ), Qgis::MessageLevel::Info );
       }
       else
       {
@@ -162,8 +160,7 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
         }
         catch ( const QgsCsException & )
         {
-          QgsMessageBar *msgBar = QgisApp::instance()->messageBar();
-          msgBar->pushWarning( QString(), tr( "Could not reproject the cross-section extent to 3D map coordinates." ) );
+          emit messageEmitted( tr( "Could not reproject the cross-section extent to 3D map coordinates." ), Qgis::MessageLevel::Warning );
         }
 
         m3DCanvasWidget->mapCanvas3D()->enableCrossSection(
