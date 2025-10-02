@@ -42,11 +42,13 @@ class _3D_EXPORT QgsRayCastHit
     //! Returns the hit position in 3d map coordinates
     QgsVector3D mapCoordinates() const;
 
-    //! Returns the fid of the feature hit closest to the ray origin, FID_NULL if no features were hit
-    QgsFeatureId featureId() const;
-
-    //! Returns the point cloud point attributes, empty map if hit was not on a point cloud point
-    QVariantMap attributes() const;
+    /**
+     * Returns a map with the properties of the intersected entity.
+     * For vector layer hits, the FID value is stored in key "fid".
+     * For point cloud layer hits, it contains the point attributes keys/values.
+     * For tiled scene layer hits, it contains the intersecting node details.
+     */
+    QVariantMap properties() const;
 
     //! Sets the hit's \a distance from the ray's origin
     void setDistance( double distance );
@@ -54,17 +56,13 @@ class _3D_EXPORT QgsRayCastHit
     //! Sets the hit \a point position in 3d map coordinates
     void setMapCoordinates( const QgsVector3D &point );
 
-    //! Sets the \a fid of the feature hit closest to the ray origin, FID_NULL if no features were hit
-    void setFeatureId( QgsFeatureId fid );
-
     //! Sets the point cloud point \a attributes, empty map if hit was not on a point cloud point
-    void setAttributes( const QVariantMap &attributes );
+    void setProperties( const QVariantMap &attributes );
 
   private:
-    double mDistance = -1.;       //!< Distance from ray's origin
-    QgsVector3D mPos;             //!< Hit position in 3d map coordinates
-    QgsFeatureId mFid = FID_NULL; //!< Fid of feature hit closest to ray origin, FID_NULL if no features hit
-    QVariantMap mAttributes;      //!< Point cloud point attributes, empty map if no point cloud points hit
+    double mDistance = -1.;  //!< Distance from ray's origin
+    QgsVector3D mPos;        //!< Hit position in 3d map coordinates
+    QVariantMap mAttributes; //!< Point cloud point attributes, empty map if no point cloud points hit
 };
 
 #endif // QGSRAYCASTHIT_H

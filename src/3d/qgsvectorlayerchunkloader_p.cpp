@@ -353,7 +353,7 @@ QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<Q
     QgsRayCastHit hit;
     hit.setDistance( minDist );
     hit.setMapCoordinates( Qgs3DUtils::worldToMapCoordinates( intersectionPoint, origin ) );
-    hit.setFeatureId( nearestFid );
+    hit.setProperties( { { QStringLiteral( "fid" ), nearestFid } } );
     result.append( hit );
   }
   QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3, incompatible geometries: %4" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ).arg( ignoredGeometries ), 2 );

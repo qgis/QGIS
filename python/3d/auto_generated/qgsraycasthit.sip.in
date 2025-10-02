@@ -35,16 +35,12 @@ Returns the hit's distance from the ray's origin
 Returns the hit position in 3d map coordinates
 %End
 
-    QgsFeatureId featureId() const;
+    QVariantMap properties() const;
 %Docstring
-Returns the fid of the feature hit closest to the ray origin, FID_NULL
-if no features were hit
-%End
-
-    QVariantMap attributes() const;
-%Docstring
-Returns the point cloud point attributes, empty map if hit was not on a
-point cloud point
+Returns a map with the properties of the intersected entity. For vector
+layer hits, the FID value is stored in key "fid". For point cloud layer
+hits, it contains the point attributes keys/values. For tiled scene
+layer hits, it contains the intersecting node details.
 %End
 
     void setDistance( double distance );
@@ -57,13 +53,7 @@ Sets the hit's ``distance`` from the ray's origin
 Sets the hit ``point`` position in 3d map coordinates
 %End
 
-    void setFeatureId( QgsFeatureId fid );
-%Docstring
-Sets the ``fid`` of the feature hit closest to the ray origin, FID_NULL
-if no features were hit
-%End
-
-    void setAttributes( const QVariantMap &attributes );
+    void setProperties( const QVariantMap &attributes );
 %Docstring
 Sets the point cloud point ``attributes``, empty map if hit was not on a
 point cloud point

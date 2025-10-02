@@ -26,12 +26,7 @@ QgsVector3D QgsRayCastHit::mapCoordinates() const
   return mPos;
 }
 
-QgsFeatureId QgsRayCastHit::featureId() const
-{
-  return mFid;
-}
-
-QVariantMap QgsRayCastHit::attributes() const
+QVariantMap QgsRayCastHit::properties() const
 {
   return mAttributes;
 }
@@ -46,12 +41,7 @@ void QgsRayCastHit::setMapCoordinates( const QgsVector3D &point )
   mPos = point;
 }
 
-void QgsRayCastHit::setFeatureId( QgsFeatureId fid )
-{
-  mFid = fid;
-}
-
-void QgsRayCastHit::setAttributes( const QVariantMap &attributes )
+void QgsRayCastHit::setProperties( const QVariantMap &attributes )
 {
   mAttributes = attributes;
 }

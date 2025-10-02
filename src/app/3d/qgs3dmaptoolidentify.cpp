@@ -99,7 +99,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       }
 
       const QgsPoint pt( mapCoordsCanvas2D.x(), mapCoordsCanvas2D.y(), mapCoordsCanvas2D.z() );
-      identifyTool2D->showResultsForFeature( vlayer, hit.featureId(), pt );
+      identifyTool2D->showResultsForFeature( vlayer, hit.properties().value( QStringLiteral( "fid" ), FID_NULL ).toLongLong(), pt );
       showTerrainResults = false;
     }
     // We need to restructure point cloud layer results to display them later. We may have multiple hits for each layer.
@@ -109,7 +109,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       const QList<QgsRayCastHit> layerHits = results.layerHits( layer );
       for ( const QgsRayCastHit &hit : layerHits )
       {
-        pointCloudResults.append( hit.attributes() );
+        pointCloudResults.append( hit.properties() );
       }
       identifyTool2D->fromPointCloudIdentificationToIdentifyResults( pclayer, pointCloudResults, pointCloudIdentifyResults );
     }
@@ -135,7 +135,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       derivedAttributes.insert( tr( "(clicked coordinate Y)" ), y );
       derivedAttributes.insert( tr( "(clicked coordinate Z)" ), QLocale().toString( mapCoords.z(), 'f' ) );
 
-      const QVariantMap hitAttributes = hit.attributes();
+      const QVariantMap hitAttributes = hit.properties();
       const QList<QString> keys = hitAttributes.keys();
       for ( const QString &key : keys )
       {

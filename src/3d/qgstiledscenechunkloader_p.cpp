@@ -435,7 +435,7 @@ QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const Qgs
     QgsRayCastHit hit;
     hit.setDistance( minDist );
     hit.setMapCoordinates( mMapSettings->worldToMapCoordinates( intersectionPoint ) );
-    hit.setAttributes( vm );
+    hit.setProperties( vm );
     result.append( hit );
   }
 

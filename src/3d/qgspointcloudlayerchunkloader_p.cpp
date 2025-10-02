@@ -422,7 +422,7 @@ QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const Qgs
       QgsRayCastHit hit;
       hit.setDistance( dist );
       hit.setMapCoordinates( point );
-      hit.setAttributes( pointAttr );
+      hit.setProperties( pointAttr );
       if ( context.singleResult() )
         result.clear();
       result.append( hit );
