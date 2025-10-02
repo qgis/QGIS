@@ -18,11 +18,12 @@
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettingsregistrycore.h"
 #include "qgsmaptoolchamferfillet.h"
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsentryenumflag.h"
 
 /**
  * \ingroup UnitTests
@@ -123,17 +124,17 @@ void TestQgsMapToolChamferFillet::initTestCase()
 
   // set default offset settings to ensure consistency
 
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( 8 );
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( QgsGeometry::Chamfer ) );
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock1->setValue( false );
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2->setValue( true );
+  QgsMapToolChamferFillet::settingsFilletSegment->setValue( 8 );
+  QgsMapToolChamferFillet::settingsOperation->setValue( QgsGeometry::ChamferFilletOperationType::Chamfer );
+  QgsMapToolChamferFillet::settingsLock1->setValue( false );
+  QgsMapToolChamferFillet::settingsLock2->setValue( true );
 
-  QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->value(), 8 );
-  QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->value(), qgsEnumValueToKey( QgsGeometry::Chamfer ) );
-  QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock1->value(), false );
-  QCOMPARE( QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2->value(), true );
+  QCOMPARE( QgsMapToolChamferFillet::settingsFilletSegment->value(), 8 );
+  QCOMPARE( QgsMapToolChamferFillet::settingsOperation->value(), QgsGeometry::ChamferFilletOperationType::Chamfer );
+  QCOMPARE( QgsMapToolChamferFillet::settingsLock1->value(), false );
+  QCOMPARE( QgsMapToolChamferFillet::settingsLock2->value(), true );
 
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock2->setValue( false );
+  QgsMapToolChamferFillet::settingsLock2->setValue( false );
 }
 
 //runs after all tests
@@ -176,7 +177,7 @@ void TestQgsMapToolChamferFillet::testInvalidGeom()
   QString message;
   connect( mChamferFilletTool, &QgsMapTool::messageEmitted, this, [&message]( const QString &msg, Qgis::MessageLevel ) { message = msg; } );
 
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( QgsGeometry::Chamfer ) );
+  QgsMapToolChamferFillet::settingsOperation->setValue( QgsGeometry::ChamferFilletOperationType::Chamfer );
 
   utils.mouseClick( 2, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   QCOMPARE( message, "Chamfer/fillet: input geometry is invalid!" );
@@ -186,7 +187,7 @@ void TestQgsMapToolChamferFillet::testChamfer()
 {
   TestQgsMapToolUtils utils( mChamferFilletTool );
 
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( QgsGeometry::Chamfer ) );
+  QgsMapToolChamferFillet::settingsOperation->setValue( QgsGeometry::ChamferFilletOperationType::Chamfer );
 
   // asymmetric
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -223,10 +224,10 @@ void TestQgsMapToolChamferFillet::testFillet()
 {
   TestQgsMapToolUtils utils( mChamferFilletTool );
 
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( QgsGeometry::Fillet ) );
+  QgsMapToolChamferFillet::settingsOperation->setValue( QgsGeometry::ChamferFilletOperationType::Fillet );
 
   // coarse fillet - click one side
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( 3 );
+  QgsMapToolChamferFillet::settingsFilletSegment->setValue( 3 );
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseMove( 0.25, 0.5 );
   utils.mouseClick( 0.25, 0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -255,7 +256,7 @@ void TestQgsMapToolChamferFillet::testFillet()
   mLayerBase->undoStack()->undo();
 
   // fine fillet
-  QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( 16 );
+  QgsMapToolChamferFillet::settingsFilletSegment->setValue( 16 );
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseMove( 0.25, 0.5 );
   utils.mouseClick( 0.25, 0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );

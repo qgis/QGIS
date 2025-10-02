@@ -30,6 +30,11 @@ class QgsDoubleSpinBox;
 class QGraphicsProxyWidget;
 class QgsFeature;
 
+class QgsSettingsEntryBool;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryInteger;
+template<class T> class QgsSettingsEntryEnumFlag;
+
 class APP_EXPORT QgsChamferFilletUserWidget : public QWidget, private Ui::QgsChamferFilletUserInputBase
 {
     Q_OBJECT
@@ -64,6 +69,24 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
     void keyPressEvent( QKeyEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+
+    //! Settings entry digitizing chamfer/fillet: operation name
+    static const QgsSettingsEntryEnumFlag<QgsGeometry::ChamferFilletOperationType> *settingsOperation;
+
+    //! Settings entry digitizing chamfer/fillet: nb fillet segment
+    static const QgsSettingsEntryInteger *settingsFilletSegment;
+
+    //! Settings entry digitizing chamfer/fillet: value1
+    static const QgsSettingsEntryDouble *settingsValue1;
+
+    //! Settings entry digitizing chamfer/fillet: value2
+    static const QgsSettingsEntryDouble *settingsValue2;
+
+    //! Settings entry digitizing chamfer/fillet: state for locker 1
+    static const QgsSettingsEntryBool *settingsLock1;
+
+    //! Settings entry digitizing chamfer/fillet: state for locker 2
+    static const QgsSettingsEntryBool *settingsLock2;
 
   private slots:
     //! Places curve chamfer from the mouse position or from the value entered in the spin box

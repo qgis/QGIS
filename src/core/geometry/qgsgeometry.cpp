@@ -4617,7 +4617,7 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
 
   if ( !result )
   {
-    mLastError = QStringLiteral( "Operation '%1' generates a null geometry." ).arg( op );
+    mLastError = QStringLiteral( "Operation '%1' generates a null geometry." ).arg( qgsEnumValueToKey( op ) );
     return QgsGeometry();
   }
 

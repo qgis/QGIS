@@ -131,24 +131,6 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry digitizing offset miter limit
     static const QgsSettingsEntryDouble *settingsDigitizingOffsetMiterLimit;
 
-    //! Settings entry digitizing chamfer/fillet: operation name
-    static const QgsSettingsEntryString *settingsDigitizingChamferFilletOperation;
-
-    //! Settings entry digitizing chamfer/fillet: nb fillet segment
-    static const QgsSettingsEntryInteger *settingsDigitizingChamferFilletSegment;
-
-    //! Settings entry digitizing chamfer/fillet: value1
-    static const QgsSettingsEntryDouble *settingsDigitizingChamferFilletValue1;
-
-    //! Settings entry digitizing chamfer/fillet: value2
-    static const QgsSettingsEntryDouble *settingsDigitizingChamferFilletValue2;
-
-    //! Settings entry digitizing chamfer/fillet: state for locker 1
-    static const QgsSettingsEntryBool *settingsDigitizingChamferFilletLock1;
-
-    //! Settings entry digitizing chamfer/fillet: state for locker 2
-    static const QgsSettingsEntryBool *settingsDigitizingChamferFilletLock2;
-
     //! Settings entry digitizing convert to curve
     static const QgsSettingsEntryBool *settingsDigitizingConvertToCurve;
 

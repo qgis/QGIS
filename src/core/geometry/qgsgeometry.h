@@ -3201,7 +3201,7 @@ class CORE_EXPORT QgsGeometry
      * Privatly used in chamfer/fillet functions
      * \note not available in Python bindings
      */
-    enum ChamferFilletOperationType : int SIP_SKIP
+    enum class ChamferFilletOperationType : int SIP_SKIP
     {
       Chamfer = 1,
       Fillet,
