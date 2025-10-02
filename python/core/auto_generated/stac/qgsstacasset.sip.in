@@ -73,18 +73,15 @@ Returns the format name for cloud optimized formats
 .. versionadded:: 3.42
 %End
 
-    QgsMimeDataUtils::Uri uri() const;
+    QgsMimeDataUtils::Uri uri( const QString &authcfg = QString() ) const;
 %Docstring
 Returns a uri for the asset if it is a cloud optimized file like COG or
-COPC, empty auth configuration
+COPC.
 
-.. versionadded:: 3.42
-%End
+:param authcfg: Optional authentication configuration ID.
 
-    QgsMimeDataUtils::Uri uri( const QString &authcfg ) const;
-%Docstring
-Returns a uri for the asset if it is a cloud optimized file like COG or
-COPC
+If the optional @authcfg parameter is set the authentication
+configuration ID will be encoded in the returned URI.
 
 .. versionadded:: 4.0
 %End
