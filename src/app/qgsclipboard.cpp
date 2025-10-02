@@ -45,6 +45,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgsmessagebar.h"
+#include "querylogger/qgsappquerylogger.h"
 
 #include <nlohmann/json.hpp>
 
@@ -672,7 +673,9 @@ std::unique_ptr<QgsVectorLayer> QgsClipboard::pasteToNewMemoryVector( QgsMessage
     }
   }
 
-  if ( !layer->addFeatures( convertedFeatures ) || !layer->commitChanges() )
+  if ( !layer->addFeatures( convertedFeatures ) 
+  || !QgisApp::instance()->isLayerChangesCommittingAllowed(layer.get())
+  || !layer->commitChanges() )
   {
     QgsDebugError( QStringLiteral( "Cannot add features or commit changes" ) );
     return nullptr;
