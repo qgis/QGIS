@@ -90,6 +90,24 @@ scene's clipping planes
 .. versionadded:: 4.0
 %End
 
+    bool crossSectionEnabled() const;
+%Docstring
+Returns ``True`` if the cross section mode is enabled or the 3d scene
+has other clipping planes applied
+
+.. seealso:: :py:func:`enableCrossSection`
+
+.. versionadded:: 4.0
+%End
+
+    void crossSectionEnabledChanged( bool enabled );
+%Docstring
+Emitted when the cross section mode is enabled or disabled
+
+.. seealso:: :py:func:`enableCrossSection`
+
+.. versionadded:: 4.0
+%End
 
   protected:
     virtual void showEvent( QShowEvent *e );
