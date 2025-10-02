@@ -28,12 +28,14 @@ from qgis.testing import start_app, unittest
 start_app()
 
 
-def _make_tmp_eslpk_dataset(temp_dir, layer_json_str, nodepage_json_str, i3s_version="1.8"):
-    """ Creates files needed for a basic "Extracted SLPK" dataset """
+def _make_tmp_eslpk_dataset(
+    temp_dir, layer_json_str, nodepage_json_str, i3s_version="1.8"
+):
+    """Creates files needed for a basic "Extracted SLPK" dataset"""
 
     metadata_file = os.path.join(temp_dir, "metadata.json")
     with open(metadata_file, "w", encoding="utf-8") as f:
-      f.write('{ "I3SVersion": "' + i3s_version + '" }')
+        f.write('{ "I3SVersion": "' + i3s_version + '" }')
 
     layer_file = os.path.join(temp_dir, "3dSceneLayer.json.gz")
     with gzip.open(layer_file, "wt", encoding="utf-8") as f:
@@ -64,7 +66,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             self.assertFalse(layer.dataProvider().isValid())
             self.assertEqual(
                 layer.error().summary(),
-                'Invalid I3S source: missing layer type.',
+                "Invalid I3S source: missing layer type.",
             )
 
     def test_old_i3s_version(self):
@@ -75,11 +77,11 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             self.assertFalse(layer.dataProvider().isValid())
             self.assertEqual(
                 layer.error().summary(),
-                'Unsupported I3S version: 1.6',
+                "Unsupported I3S version: 1.6",
             )
 
     def test_valid_global(self):
-        """ Test using a "global" dataset - i.e. using EPSG:4326 """
+        """Test using a "global" dataset - i.e. using EPSG:4326"""
 
         with tempfile.TemporaryDirectory(delete=False) as temp_dir:
             layer_json = """
@@ -149,7 +151,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             self.assertIn("394.495 - 428.693", layer.dataProvider().htmlMetadata())
 
     def test_valid_local(self):
-        """ Test using a "local" dataset - with projected CRS """
+        """Test using a "local" dataset - with projected CRS"""
 
         with tempfile.TemporaryDirectory(delete=False) as temp_dir:
             layer_json = """
@@ -225,9 +227,11 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
 
             # check that version, tileset version, and z range are in html metadata
             self.assertIn("1.8", layer.dataProvider().htmlMetadata())
-            self.assertIn("9FC7A46A-C550-4E1D-9001-DDCF825B5501", layer.dataProvider().htmlMetadata())
+            self.assertIn(
+                "9FC7A46A-C550-4E1D-9001-DDCF825B5501",
+                layer.dataProvider().htmlMetadata(),
+            )
             self.assertIn("197.438 - 475.336", layer.dataProvider().htmlMetadata())
-
 
     def compare_boxes(self, box1: QgsOrientedBox3D, box2: QgsOrientedBox3D) -> bool:
         """
@@ -251,25 +255,27 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
         self.assertAlmostEqual(box1.halfAxes()[7], box2.halfAxes()[7], 4, fail_message)
         self.assertAlmostEqual(box1.halfAxes()[8], box2.halfAxes()[8], 4, fail_message)
 
-    def compare_transforms(self, transform1: QgsMatrix4x4, transform2: QgsMatrix4x4) -> bool:
-      """
-      Compares two QgsMatrix4x4 objects within 4 decimal places
-      """
-      data1 = transform1.data()
-      data2 = transform2.data()
-      fail_message = (
-          f"QgsMatrix4x4({data1[0]:.4f}, {data1[4]:.4f}, {data1[8]:.4f}, {data1[12]:.4f}, "
-                       f"{data1[1]:.4f}, {data1[5]:.4f}, {data1[9]:.4f}, {data1[13]:.4f}, "
-                       f"{data1[2]:.4f}, {data1[6]:.4f}, {data1[10]:.4f}, {data1[14]:.4f}, "
-                       f"{data1[3]:.4f}, {data1[7]:.4f}, {data1[11]:.4f}, {data1[15]:.4f})"
-          "!="
-          f"QgsMatrix4x4({data2[0]:.4f}, {data2[4]:.4f}, {data2[8]:.4f}, {data2[12]:.4f}, "
-                       f"{data2[1]:.4f}, {data2[5]:.4f}, {data2[9]:.4f}, {data2[13]:.4f}, "
-                       f"{data2[2]:.4f}, {data2[6]:.4f}, {data2[10]:.4f}, {data2[14]:.4f}, "
-                       f"{data2[3]:.4f}, {data2[7]:.4f}, {data2[11]:.4f}, {data2[15]:.4f})"
-      )
-      for i in range(16):
-        self.assertAlmostEqual(data1[i], data2[i], 4, fail_message)
+    def compare_transforms(
+        self, transform1: QgsMatrix4x4, transform2: QgsMatrix4x4
+    ) -> bool:
+        """
+        Compares two QgsMatrix4x4 objects within 4 decimal places
+        """
+        data1 = transform1.data()
+        data2 = transform2.data()
+        fail_message = (
+            f"QgsMatrix4x4({data1[0]:.4f}, {data1[4]:.4f}, {data1[8]:.4f}, {data1[12]:.4f}, "
+            f"{data1[1]:.4f}, {data1[5]:.4f}, {data1[9]:.4f}, {data1[13]:.4f}, "
+            f"{data1[2]:.4f}, {data1[6]:.4f}, {data1[10]:.4f}, {data1[14]:.4f}, "
+            f"{data1[3]:.4f}, {data1[7]:.4f}, {data1[11]:.4f}, {data1[15]:.4f})"
+            "!="
+            f"QgsMatrix4x4({data2[0]:.4f}, {data2[4]:.4f}, {data2[8]:.4f}, {data2[12]:.4f}, "
+            f"{data2[1]:.4f}, {data2[5]:.4f}, {data2[9]:.4f}, {data2[13]:.4f}, "
+            f"{data2[2]:.4f}, {data2[6]:.4f}, {data2[10]:.4f}, {data2[14]:.4f}, "
+            f"{data2[3]:.4f}, {data2[7]:.4f}, {data2[11]:.4f}, {data2[15]:.4f})"
+        )
+        for i in range(16):
+            self.assertAlmostEqual(data1[i], data2[i], 4, fail_message)
 
     def test_index(self):
         # TODO: use Rancho
@@ -563,7 +569,9 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
 
             root_tile = index.rootTile()
             self.assertEqual(root_tile.id(), 0)
-            self.assertEqual(root_tile.refinementProcess(), Qgis.TileRefinementProcess.Replacement)
+            self.assertEqual(
+                root_tile.refinementProcess(), Qgis.TileRefinementProcess.Replacement
+            )
             self.assertAlmostEqual(root_tile.geometricError(), 5.51488, 3)
             self.assertEqual(root_tile.metadata(), {})
             self.assertEqual(root_tile.resources(), {})
@@ -571,22 +579,41 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             self.compare_boxes(
                 root_tile.boundingVolume().box(),
                 QgsOrientedBox3D(
-                  [-2443825.3629, -4687033.2800, 3558089.6949],
-                  [
-                    -60.2956, 31.2621,-0.4944,
-                    20.9402,41.5349,72.5372,
-                    5.7728,11.0081,-7.9698
-                  ]
-                )
+                    [-2443825.3629, -4687033.2800, 3558089.6949],
+                    [
+                        -60.2956,
+                        31.2621,
+                        -0.4944,
+                        20.9402,
+                        41.5349,
+                        72.5372,
+                        5.7728,
+                        11.0081,
+                        -7.9698,
+                    ],
+                ),
             )
 
             self.compare_transforms(
                 root_tile.transform(),
                 QgsMatrix4x4(
-                    1.0, 0.0, 0.0, -2443825.3629,
-                    0.0, 1.0, 0.0, -4687033.2800,
-                    0.0, 0.0, 1.0, 3558089.6949,
-                    0.0, 0.0, 0.0, 1.0)
+                    1.0,
+                    0.0,
+                    0.0,
+                    -2443825.3629,
+                    0.0,
+                    1.0,
+                    0.0,
+                    -4687033.2800,
+                    0.0,
+                    0.0,
+                    1.0,
+                    3558089.6949,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                ),
             )
 
             self.assertEqual(index.parentTileId(root_tile.id()), -1)
@@ -605,13 +632,15 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             self.assertEqual(
                 child_tile0.metadata(),
                 {
-                  'contentFormat': 'draco',
-                  'gltfUpAxis': int(Qgis.Axis.Z),
-                  'material': {
-                    'doubleSided': True,
-                    'pbrBaseColorFactor': [1.0, 1.0, 1.0, 1.0],
-                    'pbrBaseColorTexture': 'file://' + temp_dir + '/nodes/16/textures/0.jpg'
-                  }
+                    "contentFormat": "draco",
+                    "gltfUpAxis": int(Qgis.Axis.Z),
+                    "material": {
+                        "doubleSided": True,
+                        "pbrBaseColorFactor": [1.0, 1.0, 1.0, 1.0],
+                        "pbrBaseColorTexture": "file://"
+                        + temp_dir
+                        + "/nodes/16/textures/0.jpg",
+                    },
                 },
             )
             self.assertAlmostEqual(child_tile0.geometricError(), 1.40184, 3)
@@ -623,11 +652,17 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
                 QgsOrientedBox3D(
                     [-2443863.7165, -4687038.3195, 3558054.9531],
                     [
-                        -29.3571, 18.2818,-2.3026,
-                        -9.1461,-19.4921,-38.1511,
-                        -4.3726,-6.4730,4.3554
-                    ]
-                )
+                        -29.3571,
+                        18.2818,
+                        -2.3026,
+                        -9.1461,
+                        -19.4921,
+                        -38.1511,
+                        -4.3726,
+                        -6.4730,
+                        4.3554,
+                    ],
+                ),
             )
 
             self.assertEqual(index.childTileIds(child_tile0.id()), [5, 6, 7, 8])
@@ -650,11 +685,17 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
                 QgsOrientedBox3D(
                     [-2443883.6980, -4687038.8068, 3558040.7461],
                     [
-                        -14.9473, 6.9404,0.4183,
-                        4.2895,8.4097,13.7480,
-                        0.5987,1.3505,-1.0129
-                    ]
-                )
+                        -14.9473,
+                        6.9404,
+                        0.4183,
+                        4.2895,
+                        8.4097,
+                        13.7480,
+                        0.5987,
+                        1.3505,
+                        -1.0129,
+                    ],
+                ),
             )
             self.assertEqual(index.childTileIds(5), [])
 
@@ -672,11 +713,17 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
                 QgsOrientedBox3D(
                     [-2443807.1775, -4687067.4496, 3558054.9984],
                     [
-                        3.2641, 7.4238,-4.4032,
-                        31.0303,-14.3168,-1.1352,
-                        -9.9768,-18.5566,-38.6821
-                    ]
-                )
+                        3.2641,
+                        7.4238,
+                        -4.4032,
+                        31.0303,
+                        -14.3168,
+                        -1.1352,
+                        -9.9768,
+                        -18.5566,
+                        -38.6821,
+                    ],
+                ),
             )
 
             self.assertEqual(index.childTileIds(2), [])
@@ -685,7 +732,9 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
 
             # request to get tiles at max. resolution
             # (nodes 0 and 1 are not present as they are replaced by children)
-            self.assertEqual(index.getTiles(QgsTiledSceneRequest()), [5, 6, 7, 8, 2, 3, 4])
+            self.assertEqual(
+                index.getTiles(QgsTiledSceneRequest()), [5, 6, 7, 8, 2, 3, 4]
+            )
 
             # request with coarse geometric error set
             request = QgsTiledSceneRequest()

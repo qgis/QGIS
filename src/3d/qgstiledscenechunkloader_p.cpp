@@ -190,12 +190,13 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
 ///
 
 QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory(
-      const Qgs3DRenderContext &context,
-      const QgsTiledSceneIndex &index,
-      QgsCoordinateReferenceSystem tileCrs,
-      QgsCoordinateReferenceSystem layerCrs,
-      double zValueScale,
-      double zValueOffset )
+  const Qgs3DRenderContext &context,
+  const QgsTiledSceneIndex &index,
+  QgsCoordinateReferenceSystem tileCrs,
+  QgsCoordinateReferenceSystem layerCrs,
+  double zValueScale,
+  double zValueOffset
+)
   : mRenderContext( context )
   , mIndex( index )
   , mZValueScale( zValueScale )
@@ -370,14 +371,15 @@ void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
 ///
 
 QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity(
-      Qgs3DMapSettings *map,
-      const QgsTiledSceneIndex &index,
-      QgsCoordinateReferenceSystem tileCrs,
-      QgsCoordinateReferenceSystem layerCrs,
-      double maximumScreenError,
-      bool showBoundingBoxes,
-      double zValueScale,
-      double zValueOffset )
+  Qgs3DMapSettings *map,
+  const QgsTiledSceneIndex &index,
+  QgsCoordinateReferenceSystem tileCrs,
+  QgsCoordinateReferenceSystem layerCrs,
+  double maximumScreenError,
+  bool showBoundingBoxes,
+  double zValueScale,
+  double zValueOffset
+)
   : QgsChunkedEntity( map, maximumScreenError, new QgsTiledSceneChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), index, tileCrs, layerCrs, zValueScale, zValueOffset ), true )
   , mIndex( index )
 {
