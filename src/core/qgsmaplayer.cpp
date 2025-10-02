@@ -2513,8 +2513,8 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
     }
     if ( layerElement.hasAttribute( QStringLiteral( "autoRefreshMode" ) ) )
     {
-      setAutoRefreshMode( qgsEnumKeyToValue( layerElement.attribute( QStringLiteral( "autoRefreshMode" ) ), Qgis::AutoRefreshMode::Disabled ) );
       setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ) ).toInt() );
+      setAutoRefreshMode( qgsEnumKeyToValue( layerElement.attribute( QStringLiteral( "autoRefreshMode" ) ), Qgis::AutoRefreshMode::Disabled ) );
     }
   }
 

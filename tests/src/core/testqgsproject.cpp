@@ -16,6 +16,7 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QTimer>
 
 #include "qgsapplication.h"
 #include "qgsmarkersymbollayer.h"
@@ -73,6 +74,8 @@ class TestQgsProject : public QObject
     void testSymlinks5ProjectFile();
     void testSymlinks6ProjectFolder();
     void regression60100();
+    //! Test issue GH #63007 (autorefresh timer not started after loading the project file)
+    void testAutorefreshModeRestore();
 };
 
 void TestQgsProject::init()
@@ -1614,6 +1617,23 @@ void TestQgsProject::regression60100()
     QCOMPARE( layerSource, QStringLiteral( "./points.geojson" ) );
     layerElem = layerElem.nextSiblingElement();
   }
+}
+
+void TestQgsProject::testAutorefreshModeRestore()
+{
+  QgsVectorLayer vl( QStringLiteral( "Point?field=fldtxt:string" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer vl2( QStringLiteral( "Point?field=fldtxt:string" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  QDomDocument doc( QStringLiteral( "testdoc" ) );
+  QDomElement elem = doc.createElement( QStringLiteral( "maplayer" ) );
+  vl.setAutoRefreshInterval( 123 );
+  vl.setAutoRefreshMode( Qgis::AutoRefreshMode::RedrawOnly );
+  QgsReadWriteContext ctx;
+  vl.writeLayerXml( elem, doc, ctx );
+
+  vl2.readLayerXml( elem, ctx );
+  QCOMPARE( vl2.autoRefreshInterval(), 123 );
+  QCOMPARE( vl2.autoRefreshMode(), Qgis::AutoRefreshMode::RedrawOnly );
+  QVERIFY( vl2.mRefreshTimer->isActive() );
 }
 
 QGSTEST_MAIN( TestQgsProject )
