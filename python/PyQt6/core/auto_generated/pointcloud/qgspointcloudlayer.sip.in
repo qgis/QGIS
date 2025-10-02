@@ -80,6 +80,8 @@ Constructor - creates a point cloud layer
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
     virtual QgsAbstractProfileSource *profileSource();
+    virtual QString profileSourceId() const;
+    virtual QString profileSourceName() const;
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
 

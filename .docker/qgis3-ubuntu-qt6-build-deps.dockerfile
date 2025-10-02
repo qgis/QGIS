@@ -1,6 +1,5 @@
 
-ARG DISTRO_VERSION=24.10
-ARG PDAL_VERSION=2.8.4
+ARG DISTRO_VERSION=25.04
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
@@ -8,8 +7,6 @@ FROM      ubuntu:${DISTRO_VERSION} AS binary-for-oracle
 LABEL org.opencontainers.image.authors="Denis Rouzaud <denis@opengis.ch>"
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
-
-ARG PDAL_VERSION
 
 # && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
@@ -32,7 +29,7 @@ RUN  apt-get update \
     graphviz \
     'libaio1|libaio1t64' \
     'libdraco4|libdraco8' \
-    libexiv2-27 \
+    libexiv2-28 \
     'libfcgi0ldbl|libfcgi0t64' \
     libgsl28 \
     'libprotobuf-lite17|libprotobuf-lite23|libprotobuf-lite32t64' \
@@ -58,7 +55,6 @@ RUN  apt-get update \
     libqt6webenginecore6 \
     libqt6webenginecore6-bin \
     libqt6webenginewidgets6 \
-    libspatialindex7 \
     libsqlite3-mod-spatialite \
     'libzip4|libzip5|libzip4t64' \
     lighttpd \
@@ -70,7 +66,11 @@ RUN  apt-get update \
     python3-mock \
     python3-nose2 \
     python3-numpy \
+    python3-oauthlib \
+    python3-openssl \
     python3-owslib \
+    python3-pep8 \
+    python3-pexpect \
     python3-pip \
     python3-psycopg2 \
     python3-pyproj \
@@ -81,6 +81,10 @@ RUN  apt-get update \
     python3-pyqt6.qtmultimedia \
     python3-pyqt6.qtserialport \
     python3-pyqt6.qtwebengine \
+    python3-requests \
+    python3-shapely  \
+    python3-sphinx \
+    python3-six \
     python3-termcolor \
     python3-yaml \
     qpdf \
@@ -89,7 +93,7 @@ RUN  apt-get update \
     qt6-3d-gltfsceneio-plugin \
     qt6-3d-scene2d-plugin \
     qt6-image-formats-plugins \
-    saga \
+    libsfcgal2 \
     supervisor \
     unzip \
     xauth \
@@ -98,25 +102,12 @@ RUN  apt-get update \
     xfonts-base \
     xfonts-scalable \
     xvfb \
-    ocl-icd-libopencl1 \
-  && pip3 install --break-system-packages \
-    numpy \
-    nose2 \
-    pyyaml \
-    mock \
+    ocl-icd-libopencl1
+RUN  pip3 install --break-system-packages \
     future \
-    termcolor \
-    oauthlib \
-    pyopenssl \
-    pep8 \
-    pexpect \
     capturer \
-    sphinx \
-    requests \
-    six \
-    hdbcli \
-    shapely  \
-  && apt-get clean
+    hdbcli
+RUN  apt-get clean
 
 # Node.js and Yarn for server landingpage webapp
 RUN mkdir -p /etc/apt/keyrings
@@ -147,25 +138,13 @@ RUN locale-gen
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
-# PDAL is not available in ubuntu 24.04
-# Install it from source
-# PDAL dependencies
 RUN  apt-get update \
      && DEBIAN_FRONTEND=noninteractive apt-get install -y \
      ninja-build \
      libgdal-dev \
      libproj-dev
-# download PDAL and compile it
-RUN curl -L https://github.com/PDAL/PDAL/releases/download/${PDAL_VERSION}/PDAL-${PDAL_VERSION}-src.tar.gz --output PDAL-${PDAL_VERSION}-src.tar.gz \
-    && mkdir pdal \
-    && tar zxf PDAL-${PDAL_VERSION}-src.tar.gz -C pdal --strip-components=1 \
-    && rm -f PDAL-${PDAL_VERSION}-src.tar.gz \
-    && mkdir -p pdal/build \
-    && cd pdal/build \
-    && cmake -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_TESTS=OFF .. \
-    && ninja \
-    && ninja install
 
+RUN 
 FROM binary-for-oracle AS binary-only
 
 RUN  apt-get update \
@@ -189,9 +168,9 @@ RUN curl -j -k -L -H "Cookie: eula_3_2_agreed=tools.hana.ondemand.com/developer-
 ENV PATH="/usr/sap/hdbclient:${PATH}"
 
 # MSSQL: client side
-RUN curl -sSL -O https://packages.microsoft.com/config/ubuntu/$(grep VERSION_ID /etc/os-release | cut -d '"' -f 2)/packages-microsoft-prod.deb
-RUN dpkg -i packages-microsoft-prod.deb
-RUN rm packages-microsoft-prod.deb
+RUN curl -sSL -O https://packages.microsoft.com/ubuntu/24.10/prod/pool/main/p/packages-microsoft-prod/packages-microsoft-prod_1.1-ubuntu24.10_all.deb
+RUN dpkg -i packages-microsoft-prod_1.1-ubuntu24.10_all.deb
+RUN rm packages-microsoft-prod_1.1-ubuntu24.10_all.deb
 RUN apt-get update
 RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql18 mssql-tools18
 ENV PATH="/opt/mssql-tools18/bin:${PATH}"
@@ -219,8 +198,6 @@ RUN  apt-get update \
     libqt6opengl6-dev \
     libqscintilla2-qt6-dev \
     libqt6svg6-dev \
-    libqt6serialport6-dev \
-    libspatialindex-dev \
     libspatialite-dev \
     libsqlite3-dev \
     libsqlite3-mod-spatialite \
@@ -233,6 +210,7 @@ RUN  apt-get update \
     python3-dev \
     python3-sipbuild \
     python3-pyqtbuild \
+    libsfcgal-dev \
     sip-tools \
     qmake6 \
     qt6-3d-dev \
@@ -247,6 +225,7 @@ RUN  apt-get update \
     qt6-5compat-dev \
     qt6-webengine-dev \
     qt6-pdf-dev \
+    qt6-serialport-dev \
     opencl-headers \
     ocl-icd-opencl-dev \
   && apt-get clean

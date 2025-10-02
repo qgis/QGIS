@@ -280,7 +280,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * 
      * \since QGIS 4.0
      */
-    void setFixedSizeContraints( bool fixedSizeConstraints );
+    void setFixedSizeConstraints( bool fixedSizeConstraints );
 
   signals:
 
@@ -356,7 +356,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     bool mShowNull = false;
 
-    bool mFixedSizeContraints = true;
+    bool mFixedSizeConstraints = true;
 
     std::unique_ptr<QgsSymbol> mDefaultSymbol;
 

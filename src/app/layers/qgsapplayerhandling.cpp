@@ -327,11 +327,14 @@ void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> &la
         }
         break;
       }
+      case Qgis::LayerType::Annotation:
+        postProcessAddedLayer( layer );
+        break;
+
       case Qgis::LayerType::Raster:
       case Qgis::LayerType::Plugin:
       case Qgis::LayerType::Mesh:
       case Qgis::LayerType::VectorTile:
-      case Qgis::LayerType::Annotation:
       case Qgis::LayerType::PointCloud:
       case Qgis::LayerType::Group:
       case Qgis::LayerType::TiledScene:

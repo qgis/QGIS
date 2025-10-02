@@ -45,6 +45,7 @@
 #include "qgsapplication.h"
 #include "qgsaabb.h"
 #include "qgsabstract3dengine.h"
+#include "qgsannotationlayer.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
@@ -66,6 +67,7 @@
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
+#include "qgsannotationlayer3drenderer.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
@@ -745,6 +747,11 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     {
       QgsTiledSceneLayer3DRenderer *tiledSceneRenderer = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
       tiledSceneRenderer->setLayer( static_cast<QgsTiledSceneLayer *>( layer ) );
+    }
+    else if ( layer->type() == Qgis::LayerType::Annotation && renderer->type() == QLatin1String( "annotation" ) )
+    {
+      auto annotationLayerRenderer = qgis::down_cast<QgsAnnotationLayer3DRenderer *>( renderer );
+      annotationLayerRenderer->setLayer( qobject_cast<QgsAnnotationLayer *>( layer ) );
     }
 
     Qt3DCore::QEntity *newEntity = renderer->createEntity( &mMap );

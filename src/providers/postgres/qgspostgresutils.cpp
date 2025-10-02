@@ -17,6 +17,7 @@
 
 #include "qgslogger.h"
 #include "qgspostgresutils.h"
+#include "qgsstringutils.h"
 
 // ----------
 
@@ -577,7 +578,6 @@ bool QgsPostgresUtils::copyProjectToSchema( QgsPostgresConn *conn, const QString
   return true;
 }
 
-
 bool QgsPostgresUtils::moveProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema )
 {
   conn->begin();
@@ -594,4 +594,44 @@ bool QgsPostgresUtils::moveProjectToSchema( QgsPostgresConn *conn, const QString
 
   conn->commit();
   return true;
+}
+
+QString QgsPostgresUtils::variantMapToHtml( const QVariantMap &variantMap, const QString &title )
+{
+  QString result;
+  if ( !title.isEmpty() )
+  {
+    result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td></td></tr>" ).arg( title );
+  }
+  for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
+  {
+    const QVariantMap childMap = it.value().toMap();
+    const QVariantList childList = it.value().toList();
+    if ( !childList.isEmpty() )
+    {
+      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><ul>" ).arg( it.key() );
+      for ( const QVariant &v : childList )
+      {
+        const QVariantMap grandChildMap = v.toMap();
+        if ( !grandChildMap.isEmpty() )
+        {
+          result += QStringLiteral( "<li><table>%1</table></li>" ).arg( variantMapToHtml( grandChildMap ) );
+        }
+        else
+        {
+          result += QStringLiteral( "<li>%1</li>" ).arg( QgsStringUtils::insertLinks( v.toString() ) );
+        }
+      }
+      result += QLatin1String( "</ul></td></tr>" );
+    }
+    else if ( !childMap.isEmpty() )
+    {
+      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>" ).arg( it.key(), variantMapToHtml( childMap ) );
+    }
+    else
+    {
+      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( it.key(), QgsStringUtils::insertLinks( it.value().toString() ) );
+    }
+  }
+  return result;
 }

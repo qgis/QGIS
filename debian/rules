@@ -47,7 +47,7 @@ else
 	DISTRIBUTION := $(DIST)
 endif
 
-ifeq (,$(filter $(DISTRIBUTION),bookworm trixie jammy kinetic lunar mantic noble oracular plucky))
+ifeq (,$(filter $(DISTRIBUTION),bookworm trixie noble plucky questing))
 	DISTRIBUTION := sid
 endif
 
@@ -71,17 +71,17 @@ CONTROL_EXPRESSIONS = $(DISTRIBUTION) grass$(GRASSVER)
 
 shlibs :=
 
-ifneq (,$(filter $(DISTRIBUTION),bookworm trixie noble oracular plucky sid))
+ifneq (,$(filter $(DISTRIBUTION),bookworm trixie noble plucky questing sid))
 	CONTROL_EXPRESSIONS += qt5
 	shlibs += -Xqgis-plugin-grass -Xlibqgis-customwidgets
-ifneq (,$(filter $(DISTRIBUTION),bookworm        noble oracular))
+ifneq (,$(filter $(DISTRIBUTION),bookworm        noble))
 	CONTROL_EXPRESSIONS += webkit
 endif
 endif
 
 # bookworm: no qca for qt6
 # noble: sip errors
-ifneq (,$(filter $(DISTRIBUTION),trixie oracular plucky sid))
+ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
 	CONTROL_EXPRESSIONS += qt6
 	shlibs += -Xqgis-plugin-grass-qt6 -Xlibqgis-customwidgets-qt6
 endif
@@ -92,7 +92,7 @@ $(error neither qt5 nor qt6)
 endif
 endif
 
-ifneq (,$(filter $(DISTRIBUTION),sid))
+ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
 	CONTROL_EXPRESSIONS += sfcgal
 endif
 
@@ -197,6 +197,10 @@ CMAKE_OPTS := \
 	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS" \
 	-DPUSH_TO_CDASH=TRUE
 
+ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
+CMAKE_OPTS += -DWITH_INTERNAL_SPATIALINDEX=TRUE
+endif
+
 QT5_CMAKE_OPTS = \
 	-D BUILD_WITH_QT5=TRUE -D BUILD_WITH_QT6=FALSE -D WITH_QTWEBENGINE=OFF \
 	-D QGIS_INCLUDE_SUBDIR=include/qgis \
@@ -229,7 +233,7 @@ ifneq (,$(filter $(GRASSVER),7 8))
 		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
 
-ifneq (,$(filter $(DISTRIBUTION),trixie sid kinetic lunar mantic noble oracular plucky))
+ifneq (,$(filter $(DISTRIBUTION),trixie sid noble plucky questing))
 	CMAKE_OPTS += \
 		-DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
 endif

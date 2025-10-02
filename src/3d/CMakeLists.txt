@@ -8,6 +8,8 @@ set(QGIS_3D_SRCS
   qgsaabb.cpp
   qgsabstract3dengine.cpp
   qgsabstractvectorlayer3drenderer.cpp
+  qgsannotationlayer3drenderer.cpp
+  qgsannotationlayerchunkloader_p.cpp
   qgs3danimationsettings.cpp
   qgs3dexportobject.cpp
   qgs3dmapexportsettings.cpp
@@ -45,6 +47,7 @@ set(QGIS_3D_SRCS
   qgscolorramptexture.cpp
   qgsrubberband3d.cpp
   qgsambientocclusionsettings.cpp
+  qgstextureatlasgenerator.cpp
 
   qgspointcloudlayer3drenderer.cpp
   qgspointcloudlayerchunkloader_p.cpp
@@ -153,6 +156,8 @@ set(QGIS_3D_HDRS
   qgsaabb.h
   qgsabstract3dengine.h
   qgsabstractvectorlayer3drenderer.h
+  qgsannotationlayer3drenderer.h
+  qgsannotationlayerchunkloader_p.h
   qgscameracontroller.h
   qgscamerapose.h
   qgsgeotransform.h
@@ -174,6 +179,7 @@ set(QGIS_3D_HDRS
   qgsshadowsettings.h
   qgspointcloudlayer3drenderer.h
   qgsambientocclusionsettings.h
+  qgstextureatlasgenerator.h
 
   lights/qgsdirectionallightsettings.h
   lights/qgslightsource.h
@@ -312,6 +318,7 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_BINARY_DIR}/src/3d
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/tinygltf
+  ${CMAKE_SOURCE_DIR}/external/rectpack2D
 )
 
 target_link_libraries(qgis_3d

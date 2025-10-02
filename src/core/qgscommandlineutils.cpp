@@ -129,7 +129,7 @@ QString QgsCommandLineUtils::allVersions( )
     versionString += QStringLiteral( "SFCGAL version %1\n" ).arg( sfcgalVersionCompiled );
   }
 #else
-  versionString += QStringLiteral( "No support for SFCGAL\n" );
+  versionString += QLatin1String( "No support for SFCGAL\n" );
 #endif
 
   // SQLite version

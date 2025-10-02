@@ -365,7 +365,7 @@ bool QgsProjectPropertyKey::readXml( const QDomNode &keyNode )
     const QDomNode subkey = subkeys.item( i );
     QString name;
 
-    if ( subkey.nodeName() == QStringLiteral( "properties" ) &&
+    if ( subkey.nodeName() == QLatin1String( "properties" ) &&
          subkey.hasAttributes() && // if we have attributes
          subkey.isElement() && // and we're an element
          subkey.toElement().hasAttribute( QStringLiteral( "name" ) ) ) // and we have a "name" attribute

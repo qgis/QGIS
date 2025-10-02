@@ -531,6 +531,11 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
     const QVector<QgsPointCloudNodeId> nodes = traverseTree( pc, pc.root(), maximumErrorPixels, rootErrorPixels, context.elevationRange() );
 
+    if ( nodes.empty() )
+    {
+      return false;
+    }
+
     const double rootErrorInLayerCoordinates = rootNodeExtentLayerCoords.width() / pc.span();
     const double maxErrorInMapCoordinates = maximumErrorPixels * mapUnitsPerPixel;
 
@@ -656,6 +661,9 @@ int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<QgsPointCl
 
 int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
 {
+  if ( nodes.isEmpty() )
+    return 0;
+
   int nodesDrawn = 0;
 
   // see notes about this logic in QgsPointCloudLayerRenderer::renderNodesAsync
@@ -701,7 +709,8 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<QgsPointC
   }
 
   // Wait for all point cloud nodes to finish loading
-  loop.exec();
+  if ( !blockRequests.isEmpty() )
+    loop.exec();
 
   // Generation may have got canceled and the event loop exited before finished()
   // was called for all blocks, so let's clean up anything that is left

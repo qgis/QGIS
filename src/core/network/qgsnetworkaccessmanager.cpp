@@ -801,17 +801,17 @@ void QgsNetworkAccessManager::setTimeout( const int time )
   settingsNetworkTimeout->setValue( time );
 }
 
-QgsNetworkReplyContent QgsNetworkAccessManager::blockingGet( QNetworkRequest &request, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback )
+QgsNetworkReplyContent QgsNetworkAccessManager::blockingGet( QNetworkRequest &request, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback, Qgis::NetworkRequestFlags flags )
 {
-  QgsBlockingNetworkRequest br;
+  QgsBlockingNetworkRequest br( flags );
   br.setAuthCfg( authCfg );
   br.get( request, forceRefresh, feedback );
   return br.reply();
 }
 
-QgsNetworkReplyContent QgsNetworkAccessManager::blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback )
+QgsNetworkReplyContent QgsNetworkAccessManager::blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg, bool forceRefresh, QgsFeedback *feedback, Qgis::NetworkRequestFlags flags )
 {
-  QgsBlockingNetworkRequest br;
+  QgsBlockingNetworkRequest br( flags );
   br.setAuthCfg( authCfg );
   br.post( request, data, forceRefresh, feedback );
   return br.reply();

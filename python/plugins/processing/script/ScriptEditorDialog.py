@@ -30,7 +30,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QPalette
 from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog, QVBoxLayout
 
-from qgis.gui import QgsGui, QgsErrorDialog, QgsCodeEditorWidget
+from qgis.gui import QgsGui, QgsErrorDialog, QgsCodeEditorWidget, QgsShortcutsManager
 from qgis.core import (
     QgsApplication,
     QgsFileUtils,
@@ -121,6 +121,9 @@ class ScriptEditorDialog(BASE, WIDGET):
                 "console/iconCommentEditorConsole.svg",
                 self.palette().color(QPalette.ColorRole.WindowText),
             )
+        )
+        QgsGui.shortcutsManager().initializeCommonAction(
+            self.actionToggleComment, QgsShortcutsManager.CommonAction.CodeToggleComment
         )
 
         # Connect signals and slots

@@ -168,11 +168,6 @@ set(QGIS_APP_SRCS
   browser/qgsinbuiltdataitemproviders.cpp
 
   devtools/qgsappdevtoolutils.cpp
-  devtools/qgsdevtoolsmodelnode.cpp
-  devtools/networklogger/qgsnetworklogger.cpp
-  devtools/networklogger/qgsnetworkloggernode.cpp
-  devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
-  devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
   devtools/documentation/qgsdocumentationpanelwidget.cpp
@@ -358,6 +353,7 @@ if (WITH_3D)
     3d/qgs3dmodelsourcelineedit.cpp
     3d/qgs3dnavigationwidget.cpp
     3d/qgs3doptions.cpp
+    3d/qgsannotationlayer3drendererwidget.cpp
     3d/qgsgoochmaterialwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
@@ -507,7 +503,6 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/devtools
-  ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
   ${CMAKE_SOURCE_DIR}/src/app/georeferencer
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout
@@ -639,9 +634,9 @@ if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
   target_link_libraries(qgis ${EXECINFO_LIBRARY})
 endif()
 
+target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 if (WITH_PDAL)
   target_link_libraries(qgis_app ${PDAL_LIBRARIES})
-  target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 endif()
 
 if(MSVC)

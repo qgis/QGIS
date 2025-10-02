@@ -34,11 +34,9 @@ if (UNIX AND NOT ANDROID)
   )
 endif()
 
-if (WITH_PDAL)
-  target_include_directories(qgis_process PRIVATE
-    ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
-  )
-endif()
+target_include_directories(qgis_process PRIVATE
+  ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal
+)
 
 if (WITH_3D)
   include_directories(SYSTEM

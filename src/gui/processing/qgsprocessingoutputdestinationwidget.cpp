@@ -25,6 +25,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsfieldmappingwidget.h"
+#include "qgsapplication.h"
 #include <QMenu>
 #include <QFileDialog>
 #include <QInputDialog>
@@ -175,7 +176,7 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
     if ( folder == '.' )
     {
       // output name does not include a folder - use default
-      QString defaultFolder = settings.value( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ) ).toString();
+      QString defaultFolder = settings.value( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), QStringLiteral( "%1/processing" ).arg( QDir::homePath() ) ).toString();
       key = QDir( defaultFolder ).filePath( key );
     }
   }

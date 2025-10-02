@@ -156,6 +156,7 @@
 #include "qgsmeshlayer3drendererwidget.h"
 #include "qgspointcloudlayer3drendererwidget.h"
 #include "qgstiledscenelayer3drendererwidget.h"
+#include "qgsannotationlayer3drendererwidget.h"
 #include "qgs3dapputils.h"
 #include "qgs3doptions.h"
 #include "qgsmapviewsmanager.h"
@@ -351,6 +352,7 @@
 #include "qgsnewmemorylayerdialog.h"
 #include "qgsnewmeshlayerdialog.h"
 #include "options/qgsoptions.h"
+#include "qgspdalalgorithms.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspluginmanager.h"
@@ -449,10 +451,10 @@
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgstemporalcontrollerdockwidget.h"
-#include "qgsnetworklogger.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
-#include "qgsnetworkloggerwidgetfactory.h"
+#include "devtools/networklogger/qgsnetworklogger.h"
+#include "devtools/networklogger/qgsnetworkloggerwidgetfactory.h"
 #include "devtools/querylogger/qgsappquerylogger.h"
 #include "devtools/querylogger/qgsqueryloggerwidgetfactory.h"
 #include "devtools/profiler/qgsprofilerwidgetfactory.h"
@@ -508,9 +510,6 @@
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/pdal.hpp>
-#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 5 )
-#include "qgspdalalgorithms.h"
-#endif
 #endif
 
 //
@@ -1331,12 +1330,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   registerMapLayerPropertiesFactory( new QgsVectorLayerDigitizingPropertiesFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsPointCloudRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsTiledSceneRendererWidgetFactory( this ) );
-#ifdef HAVE_3D
-  registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
-  registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
-  registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
-  registerMapLayerPropertiesFactory( new QgsTiledSceneLayer3DRendererWidgetFactory( this ) );
-#endif
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsRasterElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsVectorElevationPropertiesWidgetFactory( this ) );
@@ -1344,6 +1337,13 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   registerMapLayerPropertiesFactory( new QgsMeshElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsLayerTreeGroupPropertiesWidgetFactory( this ) );
+#ifdef HAVE_3D
+  registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsTiledSceneLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsAnnotationLayer3DRendererWidgetFactory( this ) );
+#endif
 
   mMapStyleWidget = new QgsLayerStylingWidget( mMapCanvas, mInfoBar, mMapLayerPanelFactories );
   mMapStylingDock->setWidget( mMapStyleWidget );
@@ -3249,7 +3249,7 @@ void QgisApp::showStyleManager()
 void QgisApp::initPythonConsoleOptions()
 {
   QgsPythonRunner::run( QStringLiteral( "import console" ) );
-  QgsPythonRunner::run( QStringLiteral( "console.init_options_widget()" ) );
+  QgsPythonRunner::run( QStringLiteral( "console.init_console()" ) );
 }
 
 void QgisApp::showPythonDialog()
@@ -7955,6 +7955,7 @@ void QgisApp::createAnnotationLayer()
   // layer should be created at top of layer tree
   QgsProject::instance()->addMapLayer( layer, false );
   QgsProject::instance()->layerTreeRoot()->insertLayer( 0, layer );
+  QgsAppLayerHandling::postProcessAddedLayers( { layer } );
 }
 
 void QgisApp::setCadDockVisible( bool visible )
@@ -13160,11 +13161,7 @@ void QgisApp::initNativeProcessing()
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
 
-#ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 1 && PDAL_VERSION_MINOR_INT >= 5
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
-#endif
-#endif
 }
 
 void QgisApp::initLayouts()

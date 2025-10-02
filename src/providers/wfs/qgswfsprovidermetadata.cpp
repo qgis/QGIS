@@ -248,7 +248,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
   // If set: always issue a GetFeature because the guessed type can't be trusted,
   // for example when dealing with Z geometries identified as 2D.
   const bool forceInitialGetFeature = dsUri.hasParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE )
-                                      && dsUri.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == QStringLiteral( "TRUE" );
+                                      && dsUri.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == QLatin1String( "TRUE" );
 
   if ( wfsUri.hasGeometryTypeFilter() || !caps.supportsGeometryTypeFilters() )
   {
