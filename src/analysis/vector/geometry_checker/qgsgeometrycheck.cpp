@@ -196,17 +196,17 @@ QgsGeometryCheck::Result QgsGeometryCheck::checkUniqueId( const QgsGeometryCheck
     return QgsGeometryCheck::Result::Success;
   }
 
-  if ( !uniqueIds.contains( layerFeature.layerId() ) )
+  auto uniqueIdIt = uniqueIds.find( layerFeature.layerId() );
+  if ( uniqueIdIt == uniqueIds.end() )
   {
-    uniqueIds.insert( layerFeature.layerId(), QSet<QVariant>() );
+    uniqueIdIt = uniqueIds.insert( layerFeature.layerId(), QSet<QVariant>() );
   }
-
   const QVariant uniqueIdValue = layerFeature.feature().attribute( uniqueIdFieldIndex );
-  if ( uniqueIds[layerFeature.layerId()].contains( uniqueIdValue ) )
+  if ( uniqueIdIt.value().contains( uniqueIdValue ) )
   {
     return QgsGeometryCheck::Result::DuplicatedUniqueId;
   }
-  uniqueIds[layerFeature.layerId()].insert( uniqueIdValue );
+  uniqueIdIt.value().insert( uniqueIdValue );
 
   return QgsGeometryCheck::Result::Success;
 }
