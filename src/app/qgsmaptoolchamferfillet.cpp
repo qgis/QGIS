@@ -368,7 +368,7 @@ bool QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &mat
     return false;
 
   mOriginalGeometryInSourceLayerCrs = geom;
-  mManipulatedGeometryInSourceLayerCrs = QgsGeometry( geom.constGet()->clone() );
+  mManipulatedGeometryInSourceLayerCrs = geom;
 
   mVertexIndex = match.vertexIndex();
   mVertexPointInSourceLayerCrs = geom.vertexAt( mVertexIndex );
@@ -526,29 +526,26 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
 
   updateLabels( op );
 
-  connect( mOperationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, //
-           [this, updateLabels] {
-             QgsGeometry::ChamferFilletOperationType op = operation();
-             QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( op ) );
-             updateLabels( op );
+  connect( mOperationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this, updateLabels] {
+    QgsGeometry::ChamferFilletOperationType op = operation();
+    QgsSettingsRegistryCore::settingsDigitizingChamferFilletOperation->setValue( qgsEnumValueToKey( op ) );
+    updateLabels( op );
 
-             emit distanceConfigChanged();
-           } );
+    emit distanceConfigChanged();
+  } );
 
-  connect( mValue1SpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, //
-           [this]( const double value ) {
-             QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue1->setValue( value );
-             emit distanceConfigChanged();
-           } );
+  connect( mValue1SpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
+    QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue1->setValue( value );
+    emit distanceConfigChanged();
+  } );
 
-  connect( mValue2SpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, //
-           [this]( const double value ) {
-             if ( operation() == QgsGeometry::Fillet )
-               QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( static_cast<int>( value ) );
-             else
-               QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue2->setValue( value );
-             emit distanceConfigChanged();
-           } );
+  connect( mValue2SpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this]( const double value ) {
+    if ( operation() == QgsGeometry::Fillet )
+      QgsSettingsRegistryCore::settingsDigitizingChamferFilletSegment->setValue( static_cast<int>( value ) );
+    else
+      QgsSettingsRegistryCore::settingsDigitizingChamferFilletValue2->setValue( value );
+    emit distanceConfigChanged();
+  } );
 
   connect( mVal1Locker, &QPushButton::clicked, this, [this]( bool checked ) {
     QgsSettingsRegistryCore::settingsDigitizingChamferFilletLock1->setValue( checked );
