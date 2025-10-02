@@ -177,7 +177,7 @@ QString QgsPostgresImportProjectDialog::createUniqueProjectName( const QString &
       if ( match.hasMatch() )
       {
         const int number = match.capturedTexts().constLast().toInt();
-        lastAddedProjectName = lastAddedProjectName.left( lastAddedProjectName.length() - match.capturedLength() + 1 ) + QString::number( number + 1 );
+        lastAddedProjectName = QStringLiteral( "%1_%2" ).arg( lastAddedProjectName.left( lastAddedProjectName.length() - match.capturedLength() ).arg( number + 1, match.capturedLength() );
       }
       else
       {
