@@ -1100,7 +1100,7 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
     int projectsNotSaved = 0;
     QStringList unsavedProjects;
 
-    for ( QPair<QString, QString> projectWithName : std::as_const( projectsWithNames ) )
+    for ( const QPair<QString, QString> &projectWithName : projectsWithNames )
     {
       QgsPostgresProjectUri pgProjectUri;
       pgProjectUri.connInfo = QgsDataSourceUri( dbConn->uri() );
