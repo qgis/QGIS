@@ -173,7 +173,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       menu->addAction( duplicateProjectAction );
 
       QAction *moveProjectToSchemaAction = new QAction( tr( "Move Project to Schema…" ), menu );
-      connect( moveProjectToSchemaAction, &QAction::triggered, this, [projectItem, context] { moveProjectToSchema( projectItem, context ); } );
+      connect( moveProjectToSchemaAction, &QAction::triggered, this, [projectItem, context] { moveProjectsToSchema( { projectItem }, context ); } );
       menu->addAction( moveProjectToSchemaAction );
     }
     else
