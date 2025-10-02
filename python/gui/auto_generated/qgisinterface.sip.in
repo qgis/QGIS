@@ -1655,14 +1655,14 @@ specified layer
    Ownership of ``blocker`` is not transferred, and the blocker must
    be unregistered when plugin is unloaded.
 
-.. seealso:: :py:func:`unregisterLayerCommitChangesBlocker`
+.. seealso:: :py:func:`unregisterLayerChangesCommitBlocker`
 %End
 
     virtual void unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) = 0;
 %Docstring
 Unregister a previously registered commit layer changes ``blocker``.
 
-.. seealso:: :py:func:`registerLayerCommitChangesBlocker`
+.. seealso:: :py:func:`registerLayerChangesCommitBlocker`
 %End
 
     virtual void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
