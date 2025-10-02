@@ -116,7 +116,6 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
     if ( value.toString() == QLatin1String( "memory:" ) || value.toString() == QgsProcessing::TEMPORARY_OUTPUT )
     {
       saveToTemporary();
-      leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
     }
     else if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
     {
@@ -363,7 +362,6 @@ void QgsProcessingLayerOutputDestinationWidget::saveToTemporary()
     leText->setPlaceholderText( tr( "[Save to temporary file]" ) );
   }
   leText->clear();
-  leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
 
   if ( mUseTemporary )
     return;
@@ -386,7 +384,6 @@ void QgsProcessingLayerOutputDestinationWidget::selectDirectory()
   if ( !dirName.isEmpty() )
   {
     leText->setText( QDir::toNativeSeparators( dirName ) );
-    leText->removeAction( mActionTemporaryOutputIcon );
     settings.setValue( QStringLiteral( "/Processing/LastOutputPath" ), dirName );
     mUseTemporary = false;
     mUseRemapping = false;
@@ -455,7 +452,6 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
     settings.setValue( QStringLiteral( "/Processing/LastOutputPath" ), QFileInfo( filename ).path() );
     if ( !lastExtPath.isEmpty() )
       settings.setValue( lastExtPath, QFileInfo( filename ).suffix().toLower() );
-    leText->removeAction( mActionTemporaryOutputIcon );
 
     emit skipOutputChanged( false );
     emit destinationChanged();
@@ -504,7 +500,6 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
   uri.setGeometryColumn( geomColumn );
 
   leText->setText( QStringLiteral( "ogr:%1" ).arg( uri.uri() ) );
-  leText->removeAction( mActionTemporaryOutputIcon );
 
   emit skipOutputChanged( false );
   emit destinationChanged();
@@ -545,7 +540,6 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
         uri.setGeometryColumn( geomColumn );
         leText->setText( QgsProcessingUtils::encodeProviderKeyAndUri( widget->dataProviderKey(), uri.uri() ) );
       }
-      leText->removeAction( mActionTemporaryOutputIcon );
 
       emit skipOutputChanged( false );
       emit destinationChanged();
