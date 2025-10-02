@@ -100,7 +100,7 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
     else
       saveToTemporary();
   }
-  else if ( value.userType() == QMetaType::Type::QString && isTemporaryLayer( value.toString() ) )
+  else if ( value.userType() == QMetaType::Type::QString && isTemporaryLayerName( value.toString() ) )
   {
     if ( mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
       skipOutput();
@@ -645,7 +645,7 @@ void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text
   mUseTemporary = text.isEmpty();
   mUseRemapping = false;
 
-  if ( isTemporaryLayer( text ) || text.isEmpty() )
+  if ( isTemporaryLayerName( text ) || text.isEmpty() )
   {
     leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
     mUseTemporary = true;
@@ -772,7 +772,7 @@ void QgsProcessingLayerOutputDestinationWidget::dropEvent( QDropEvent *event )
   leText->setHighlighted( false );
 }
 
-bool QgsProcessingLayerOutputDestinationWidget::isTemporaryLayer( const QString &value )
+bool QgsProcessingLayerOutputDestinationWidget::isTemporaryLayerName( const QString &value )
 {
   if ( value == QgsProcessing::TEMPORARY_OUTPUT || value.isEmpty() || mParameter->type() != QgsProcessingParameterFeatureSink::typeName() || !mParameter->supportsNonFileBasedOutput() )
     return false;
