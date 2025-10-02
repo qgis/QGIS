@@ -67,7 +67,7 @@ QString QgsGeometryCheckGapAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckGapAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckGapAlgorithm *QgsGeometryCheckGapAlgorithm::createInstance() const
@@ -139,7 +139,6 @@ QgsFields QgsGeometryCheckGapAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;
@@ -166,8 +165,8 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
   if ( !sink_errors )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "ERRORS" ) ) );
 
-  QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
-  int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
+  const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
+  const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
 
@@ -182,9 +181,7 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
-  const QgsProject *project = QgsProject::instance();
-
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project(), uniqueIdFieldIdx );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -211,7 +208,23 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
 
   multiStepFeedback.setCurrentStep( 2 );
   feedback->setProgressText( QObject::tr( "Collecting errors…" ) );
-  check.collectErrors( checkerFeaturePools, checkErrors, messages, feedback );
+  QgsGeometryCheck::Result res = check.collectErrors( checkerFeaturePools, checkErrors, messages, feedback );
+  if ( res == QgsGeometryCheck::Result::Success )
+  {
+    feedback->pushInfo( QObject::tr( "Errors collected successfully." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::Canceled )
+  {
+    throw QgsProcessingException( QObject::tr( "Operation was canceled." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::DuplicatedUniqueId )
+  {
+    throw QgsProcessingException( QObject::tr( "Field '%1' contains non-unique values and can not be used as unique ID." ).arg( uniqueIdFieldName ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::GeometryOverlayError )
+  {
+    throw QgsProcessingException( QObject::tr( "Failed to perform geometry overlay operation." ) );
+  }
 
   multiStepFeedback.setCurrentStep( 3 );
   feedback->setProgressText( QObject::tr( "Exporting errors…" ) );

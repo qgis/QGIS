@@ -69,7 +69,6 @@ void QgsFixGeometryOverlapAlgorithm::initAlgorithm( const QVariantMap &configura
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon )
   ) );
@@ -91,7 +90,6 @@ void QgsFixGeometryOverlapAlgorithm::initAlgorithm( const QVariantMap &configura
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "No-overlap layer" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
@@ -163,8 +161,7 @@ QVariantMap QgsFixGeometryOverlapAlgorithm::processAlgorithm( const QVariantMap 
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
-  const QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
 
   const QgsGeometryOverlapCheck check( &checkContext, QVariantMap() );
 
@@ -280,7 +277,7 @@ bool QgsFixGeometryOverlapAlgorithm::prepareAlgorithm( const QVariantMap &parame
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryOverlapAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

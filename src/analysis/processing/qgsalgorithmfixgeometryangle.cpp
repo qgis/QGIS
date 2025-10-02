@@ -72,7 +72,6 @@ void QgsFixGeometryAngleAlgorithm::initAlgorithm( const QVariantMap &configurati
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
   ) );
@@ -99,7 +98,6 @@ void QgsFixGeometryAngleAlgorithm::initAlgorithm( const QVariantMap &configurati
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "Small angle fixed layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
   ) );
@@ -146,7 +144,7 @@ QVariantMap QgsFixGeometryAngleAlgorithm::processAlgorithm( const QVariantMap &p
   if ( inputIdFieldIndex == -1 )
     throw QgsProcessingException( QObject::tr( "Field %1 does not exist in input layer." ).arg( featIdFieldName ) );
 
-  QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
+  const QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
   if ( inputFeatIdField.type() != errors->fields().at( errors->fields().indexFromName( featIdFieldName ) ).type() )
     throw QgsProcessingException( QObject::tr( "Field %1 does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
@@ -167,8 +165,7 @@ QVariantMap QgsFixGeometryAngleAlgorithm::processAlgorithm( const QVariantMap &p
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
-  const QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
   QVariantMap configurationCheck;
 
   // maximum limit, we know that every feature to process is an error (otherwise it is not treated and marked as obsolete)
@@ -280,7 +277,7 @@ bool QgsFixGeometryAngleAlgorithm::prepareAlgorithm( const QVariantMap &paramete
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryAngleAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

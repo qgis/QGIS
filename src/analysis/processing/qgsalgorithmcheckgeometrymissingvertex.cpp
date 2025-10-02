@@ -64,7 +64,7 @@ QString QgsGeometryCheckMissingVertexAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckMissingVertexAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckMissingVertexAlgorithm *QgsGeometryCheckMissingVertexAlgorithm::createInstance() const
@@ -76,7 +76,6 @@ void QgsGeometryCheckMissingVertexAlgorithm::initAlgorithm( const QVariantMap &c
 {
   Q_UNUSED( configuration )
 
-  // inputs
   addParameter(
     new QgsProcessingParameterFeatureSource(
       QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
@@ -87,7 +86,6 @@ void QgsGeometryCheckMissingVertexAlgorithm::initAlgorithm( const QVariantMap &c
     QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
   ) );
 
-  // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "ERRORS" ), QObject::tr( "Missing vertices errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
@@ -133,8 +131,8 @@ QVariantMap QgsGeometryCheckMissingVertexAlgorithm::processAlgorithm( const QVar
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
-  int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
+  const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
+  const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
 
@@ -151,9 +149,7 @@ QVariantMap QgsGeometryCheckMissingVertexAlgorithm::processAlgorithm( const QVar
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
-  QgsProject *project = QgsProject::instance();
-
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project(), uniqueIdFieldIdx );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -170,7 +166,19 @@ QVariantMap QgsGeometryCheckMissingVertexAlgorithm::processAlgorithm( const QVar
 
   multiStepFeedback.setCurrentStep( 2 );
   feedback->setProgressText( QObject::tr( "Collecting errors…" ) );
-  check.collectErrors( featurePools, checkErrors, messages, feedback );
+  QgsGeometryCheck::Result res = check.collectErrors( featurePools, checkErrors, messages, feedback );
+  if ( res == QgsGeometryCheck::Result::Success )
+  {
+    feedback->pushInfo( QObject::tr( "Errors collected successfully." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::Canceled )
+  {
+    throw QgsProcessingException( QObject::tr( "Operation was canceled." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::DuplicatedUniqueId )
+  {
+    throw QgsProcessingException( QObject::tr( "Field '%1' contains non-unique values and can not be used as unique ID." ).arg( uniqueIdFieldName ) );
+  }
 
   multiStepFeedback.setCurrentStep( 3 );
   feedback->setProgressText( QObject::tr( "Exporting errors…" ) );
