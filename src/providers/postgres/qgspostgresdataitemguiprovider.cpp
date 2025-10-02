@@ -1029,6 +1029,7 @@ void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProj
           if ( schemaItem->name() == newSchemaName )
           {
             schemaItem->refresh();
+            break;
           }
         }
       }
