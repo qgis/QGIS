@@ -480,17 +480,34 @@ bool QgsPostgresUtils::deleteSchema( const QString &schema, const QgsDataSourceU
 
 bool QgsPostgresUtils::tableExists( QgsPostgresConn *conn, const QString &schema, const QString &table )
 {
-  const QString sql = QStringLiteral( "SELECT EXISTS ( SELECT 1 FROM information_schema.tables WHERE table_name = %1 AND table_schema = %2)" )
-                        .arg( QgsPostgresConn::quotedValue( table ), QgsPostgresConn::quotedValue( schema ) );
+  QString sql;
+
+  if ( schema.isEmpty() )
+  {
+    sql = QStringLiteral( "SELECT EXISTS ( SELECT oid FROM pg_catalog.pg_class WHERE relname= %1)" ).arg( QgsPostgresConn::quotedValue( table ) );
+  }
+  else
+  {
+    sql = QStringLiteral( "SELECT EXISTS ( SELECT 1 FROM information_schema.tables WHERE table_name = %1 AND table_schema = %2)" )
+            .arg( QgsPostgresConn::quotedValue( table ), QgsPostgresConn::quotedValue( schema ) );
+  }
+
   QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "tableExists" ), sql ) );
   return res.PQgetvalue( 0, 0 ).startsWith( QStringLiteral( "t" ) );
 }
 
 bool QgsPostgresUtils::columnExists( QgsPostgresConn *conn, const QString &schema, const QString &table, const QString &column )
 {
+  QString sqlWhereClause = QStringLiteral( "table_name = %1 AND column_name = %3" ).arg( QgsPostgresConn::quotedValue( table ), QgsPostgresConn::quotedValue( column ) );
+
+  if ( !schema.isEmpty() )
+  {
+    sqlWhereClause.append( QStringLiteral( " AND table_schema = %1" ).arg( QgsPostgresConn::quotedValue( schema ) ) );
+  }
+
   const QString sql = QStringLiteral( "SELECT EXISTS( SELECT 1 FROM information_schema.columns "
-                                      "WHERE table_name = %1 AND table_schema = %2 AND column_name = %3)" )
-                        .arg( QgsPostgresConn::quotedValue( table ), QgsPostgresConn::quotedValue( schema ), QgsPostgresConn::quotedValue( column ) );
+                                      "WHERE %1)" )
+                        .arg( sqlWhereClause );
 
   QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "columnExists" ), sql ) );
   return res.PQgetvalue( 0, 0 ).startsWith( QStringLiteral( "t" ) );
