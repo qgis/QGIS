@@ -29,7 +29,7 @@ QString QgsPdalInformationAlgorithm::name() const
 
 QString QgsPdalInformationAlgorithm::displayName() const
 {
-  return QObject::tr( "Information" );
+  return QObject::tr( "Point cloud information" );
 }
 
 QString QgsPdalInformationAlgorithm::group() const
@@ -50,6 +50,11 @@ QStringList QgsPdalInformationAlgorithm::tags() const
 QString QgsPdalInformationAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm outputs basic metadata from the point cloud file." );
+}
+
+QString QgsPdalInformationAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Outputs basic metadata from the point cloud file." );
 }
 
 QgsPdalInformationAlgorithm *QgsPdalInformationAlgorithm::createInstance() const
