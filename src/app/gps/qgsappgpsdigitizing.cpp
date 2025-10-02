@@ -336,6 +336,7 @@ void QgsAppGpsDigitizing::createFeature()
             if (!QgisApp::instance()->isLayerChangesCommittingAllowed(vlayer))
             {
               QgisApp::instance()->displayWarningForLockedLayer(vlayer);
+              break;
             }
 
             // should canvas->isDrawing() be checked?
