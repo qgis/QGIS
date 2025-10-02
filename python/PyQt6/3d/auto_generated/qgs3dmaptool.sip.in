@@ -16,10 +16,6 @@ class Qgs3DMapTool : QObject
 %Docstring(signature="appended")
 Base class for map tools operating on 3D map canvas.
 
-.. note::
-
-   Not available in Python bindings
-
 .. versionadded:: 4.0
 %End
 
