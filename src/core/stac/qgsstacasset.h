@@ -73,16 +73,15 @@ class CORE_EXPORT QgsStacAsset
     QString formatName() const;
 
     /**
-     * Returns a uri for the asset if it is a cloud optimized file like COG or COPC, empty auth configuration
-     * \since QGIS 3.42
-     */
-    QgsMimeDataUtils::Uri uri() const;
-
-    /**
-     * Returns a uri for the asset if it is a cloud optimized file like COG or COPC
+     * Returns a uri for the asset if it is a cloud optimized file like COG or COPC.
+     *
+     * \param authcfg Optional authentication configuration ID.
+     *
+     * If the optional @authcfg parameter is set the authentication configuration ID will be encoded in the returned URI.
+     *
      * \since QGIS 4.0
      */
-    QgsMimeDataUtils::Uri uri( const QString &authcfg ) const;
+    QgsMimeDataUtils::Uri uri( const QString &authcfg = QString() ) const;
 
     /**
      * Returns an HTML representation of the STAC Asset including its ID within its container

@@ -78,11 +78,6 @@ QString QgsStacAsset::formatName() const
   return QString();
 }
 
-QgsMimeDataUtils::Uri QgsStacAsset::uri() const
-{
-  return uri( QString() );
-}
-
 
 QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
 {
