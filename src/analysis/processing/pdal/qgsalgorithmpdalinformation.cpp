@@ -52,7 +52,7 @@ QString QgsPdalInformationAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm outputs basic metadata from the point cloud file." );
 }
 
-QString QgsPdalInformationAlgorithm::shortHelpString() const
+QString QgsPdalInformationAlgorithm::shortDescription() const
 {
   return QObject::tr( "Outputs basic metadata from the point cloud file." );
 }
