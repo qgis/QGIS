@@ -324,25 +324,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void closeAdditionalMapCanvases();
 
     /**
-     * Displays a warning about layer `layer` being blocked from the process of
-     * committing changes using the messagebar.
-     *
-    **/
-    inline void displayWarningForLockedLayer( QgsMapLayer* layer )
-    {
-        messageBar()->pushWarning(
-            tr("Committing changes to the layer is blocked"), 
-            tr("The ability to commit changes to the '%1' layer has been blocked by a plugin or script")
-        .arg(layer->name()).toUtf8().constData());
-    };
-
-    /**
      * Freezes all map canvases (or thaws them if the \a frozen argument is FALSE).
      */
     void freezeCanvases( bool frozen = true );
 
     //! Returns the messageBar object which allows displaying unobtrusive messages to the user.
     QgsMessageBar *messageBar();
+
+    /**
+     * Displays a warning about layer `layer` being blocked from the process of
+     * committing changes using the messagebar.
+     *
+    **/
+    void displayWarningForLockedLayer( QgsMapLayer* layer );
+    ;
 
     /**
      * Opens the message log dock widget, and optionally activates a specific tab by name.
