@@ -52,6 +52,11 @@ QString QgsPdalBuildVpcAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm creates a virtual point cloud from input data." );
 }
 
+QString QgsPdalBuildVpcAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a virtual point cloud from input data." );
+}
+
 QgsPdalBuildVpcAlgorithm *QgsPdalBuildVpcAlgorithm::createInstance() const
 {
   return new QgsPdalBuildVpcAlgorithm();
