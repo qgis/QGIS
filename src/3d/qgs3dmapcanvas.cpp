@@ -34,6 +34,7 @@
 #include "qgsframegraph.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgsrubberband3d.h"
+#include "qgs3dutils.h"
 
 #include "moc_qgs3dmapcanvas.cpp"
 
@@ -185,6 +186,58 @@ void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
 QgsCameraController *Qgs3DMapCanvas::cameraController()
 {
   return mScene ? mScene->cameraController() : nullptr;
+}
+
+void Qgs3DMapCanvas::enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double width, bool setSideView )
+{
+  if ( !mScene )
+    return;
+
+  const QgsVector3D startVec { startPoint.x(), startPoint.y(), 0 };
+  const QgsVector3D endVec { endPoint.x(), endPoint.y(), 0 };
+  const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes(
+    startVec,
+    endVec,
+    width,
+    mMapSettings->origin()
+  );
+
+  if ( setSideView )
+  {
+    // calculate the middle of the front side defined by clipping planes
+    QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
+    linePerpVec = -linePerpVec.normalized().perpVector();
+    const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
+    const QgsVector3D frontStartPoint( startVec + linePerpVec3D * width );
+    const QgsVector3D frontEndPoint( endVec + linePerpVec3D * width );
+
+    const QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose(
+      frontStartPoint,
+      frontEndPoint,
+      mScene->elevationRange( true ),
+      mScene->cameraController()->camera()->fieldOfView(),
+      mMapSettings->origin()
+    );
+
+    mScene->cameraController()->setCameraPose( camPose );
+  }
+
+  mScene->enableClipping( clippingPlanes );
+  emit crossSectionEnabledChanged( true );
+}
+
+void Qgs3DMapCanvas::disableCrossSection()
+{
+  if ( !mScene )
+    return;
+
+  mScene->disableClipping();
+  emit crossSectionEnabledChanged( false );
+}
+
+bool Qgs3DMapCanvas::crossSectionEnabled() const
+{
+  return mScene ? !mScene->clipPlaneEquations().isEmpty() : false;
 }
 
 void Qgs3DMapCanvas::resetView()
