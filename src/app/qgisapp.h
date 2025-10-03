@@ -328,7 +328,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * committing changes using the messagebar.
      *
     **/
-    inline void displayWarningForLockedLayer( QgsMapLayer* layer );
+    inline void displayWarningForLockedLayer( QgsMapLayer* layer )
+    {
+        messageBar()->pushWarning(
+            tr("Committing changes to the layer is blocked"), 
+            tr("The ability to commit changes to the '%1' layer has been blocked by a plugin or script")
+        .arg(layer->name()).toUtf8().constData());
+    };
 
     /**
      * Freezes all map canvases (or thaws them if the \a frozen argument is FALSE).

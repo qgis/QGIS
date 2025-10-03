@@ -13057,14 +13057,6 @@ bool QgisApp::isLayerChangesCommittingAllowed( QgsMapLayer* layer )
   return true;
 }
 
-inline void QgisApp::displayWarningForLockedLayer( QgsMapLayer* layer )
-{
-  messageBar()->pushWarning(
-    tr("Committing changes to the layer is blocked"), 
-    tr("The ability to commit changes to the '%1' layer has been blocked by a plugin or script")
-      .arg(layer->name()).toUtf8().constData());
-}
-
 void QgisApp::registerMapToolHandler( QgsAbstractMapToolHandler *handler )
 {
   if ( !handler->action() || !handler->mapTool() )
