@@ -47,7 +47,7 @@ from qgis.core import (
     QgsProcessingContext,
     QgsRectangle,
     QgsPointXY,
-    QgsDistanceArea,
+    QgsScaleCalculator,
     QgsRasterLayer,
     QgsWmsUtils,
     QgsProcessingRasterLayerDefinition,
@@ -541,16 +541,8 @@ class GdalUtils:
                     dpi = parameter_value.dpi
 
                 if scale > 0:
-                    distanceArea = None
-                    if layer.crs().isGeographic():
-                        distanceArea = QgsDistanceArea()
-                        distanceArea.setSourceCrs(
-                            layer.crs(), context.transformContext()
-                        )
-                        distanceArea.setEllipsoid(layer.crs().ellipsoidAcronym())
-
                     width, height = GdalUtils._wms_dimensions_for_scale(
-                        extent, layer.crs(), scale, dpi, distanceArea
+                        extent, layer.crs(), scale, dpi
                     )
                     wms_description_file_path = QgsProcessingUtils.generateTempFilename(
                         "wms_description_file.xml", context
@@ -769,31 +761,29 @@ class GdalUtils:
         crs: QgsCoordinateReferenceSystem,
         scale: int,
         dpi: float = 96.0,
-        distanceArea: Optional[QgsDistanceArea] = None,
     ) -> tuple[int, int]:
         """
         Returns a tuple with WIDTH and HEIGHT in pixels that would match
         a bounding box (in a given crs) for a particular map scale and DPI.
-
-        An optional QgsDistanceArea object can be used to get ellipsoidal
-        distances on GCSs, based on which dimensions will be calculated.
         """
         if bbox.isNull() or bbox.isEmpty():
             return -1, -1
 
         meters_per_inch = 0.0254
 
-        if crs.isGeographic() and distanceArea:
-            # Use ellipsoidal distances to get the projected extent
-            x, X, y, Y = (
+        bbox_width = bbox.xMaximum() - bbox.xMinimum()
+        bbox_height = bbox.yMaximum() - bbox.yMinimum()
+        bbox_ratio = bbox_height / bbox_width
+
+        if crs.isGeographic():
+            # Override distance with the calculator that QGIS uses for the map canvas
+            x, X, Y = (
                 bbox.xMinimum(),
                 bbox.xMaximum(),
-                bbox.yMinimum(),
                 bbox.yMaximum(),
             )
-            bbox_width = distanceArea.measureLine(QgsPointXY(x, Y), QgsPointXY(X, Y))
-            bbox_height = distanceArea.measureLine(QgsPointXY(x, Y), QgsPointXY(x, y))
-            bbox_ratio = bbox.height() / bbox.width()
+            calculator = QgsScaleCalculator()
+            bbox_width = calculator.calculateGeographicDistanceAtLatitude(Y, x, X)
         else:
             bbox_width = bbox.xMaximum() - bbox.xMinimum()
             bbox_height = bbox.yMaximum() - bbox.yMinimum()
