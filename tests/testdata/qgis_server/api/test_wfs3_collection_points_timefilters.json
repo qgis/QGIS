@@ -43,7 +43,7 @@ Content-Type: application/json
       "type": "text/html"
     },
     {
-      "href": "http://server.qgis.org/wfs3/collections/points/items.json",
+      "href": "http://server.qgis.org/wfs3/collections/points/items.geojson",
       "rel": "items",
       "title": "points items as GEOJSON",
       "type": "application/geo+json"
@@ -55,7 +55,7 @@ Content-Type: application/json
       "type": "text/html"
     },
     {
-      "href": "http://server.qgis.org/?request=DescribeFeatureType&typenames=points&service=WFS&version=2.0",
+      "href": "http://server.qgis.org/?request=DescribeFeatureType&typename=points&service=WFS&version=2.0",
       "rel": "describedBy",
       "title": "Schema for points",
       "type": "application/xml"
