@@ -16,7 +16,7 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import QgsField, QgsOgcUtils, QgsVectorLayer
+from qgis.core import QgsExpression, QgsField, QgsOgcUtils, QgsVectorLayer
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -612,6 +612,46 @@ class TestQgsOgcUtils(QgisTestCase):
 
         e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
         self.assertEqual(e.expression(), "time > '11:01:02' AND time < '12:03:04'")
+
+    def test_expressionToOgcExpression(self):
+        expression = QgsExpression("\"field\" = 'value'")
+
+        expressionDoc = QDomDocument()
+        expressionElem = QgsOgcUtils.expressionToOgcExpression(
+            expression, expressionDoc, None
+        )
+        expressionDoc.appendChild(expressionElem)
+
+        self.assertEqual(
+            expressionDoc.toString(),
+            """<ogc:PropertyIsEqualTo>
+ <ogc:PropertyName>field</ogc:PropertyName>
+ <ogc:Literal>value</ogc:Literal>
+</ogc:PropertyIsEqualTo>
+""",
+        )
+        expression = QgsExpression("\"field\" in ('value_a', 'value_b')")
+
+        expressionDoc = QDomDocument()
+        expressionElem = QgsOgcUtils.expressionToOgcExpression(
+            expression, expressionDoc, None
+        )
+        expressionDoc.appendChild(expressionElem)
+
+        self.assertEqual(
+            expressionDoc.toString(),
+            """<ogc:Or>
+ <ogc:PropertyIsEqualTo>
+  <ogc:PropertyName>field</ogc:PropertyName>
+  <ogc:Literal>value_a</ogc:Literal>
+ </ogc:PropertyIsEqualTo>
+ <ogc:PropertyIsEqualTo>
+  <ogc:PropertyName>field</ogc:PropertyName>
+  <ogc:Literal>value_b</ogc:Literal>
+ </ogc:PropertyIsEqualTo>
+</ogc:Or>
+""",
+        )
 
 
 if __name__ == "__main__":
