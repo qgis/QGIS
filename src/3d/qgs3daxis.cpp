@@ -35,7 +35,6 @@
 #include "qgsterrainentity.h"
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgswindow3dengine.h"
-#include "qgsraycastingutils_p.h"
 #include "qgs3dwiredmesh_p.h"
 #include "qgsframegraph.h"
 #include "qgsabstractterrainsettings.h"

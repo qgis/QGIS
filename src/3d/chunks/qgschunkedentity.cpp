@@ -777,12 +777,11 @@ void QgsChunkedEntity::cancelActiveJobs()
   }
 }
 
-
-QVector<QgsRayCastingUtils::RayHit> QgsChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+QList<QgsRayCastHit> QgsChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   Q_UNUSED( ray )
   Q_UNUSED( context )
-  return QVector<QgsRayCastingUtils::RayHit>();
+  return {};
 }
 
 /// @endcond

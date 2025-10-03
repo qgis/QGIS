@@ -132,7 +132,7 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
 
     ~QgsTiledSceneLayerChunkedEntity();
 
-    QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
+    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
     int pendingJobsCount() const override;
 
