@@ -19,6 +19,8 @@
 
 #include "qgisapp.h"
 #include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstore.h"
 
 /**
@@ -44,6 +46,8 @@ class TestQgisApp : public QObject
     void addVectorLayerInvalid();
     void addEmbeddedGroup();
     void pasteFeature();
+    //! Test for issue GH #63346
+    void pasteRasterStyleCategory();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -183,6 +187,41 @@ void TestQgisApp::pasteFeature()
 
   f = vl->getFeature( 2 );
   QCOMPARE( f.geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 0 10, 5 10, 5 0, 0 0))" ) );
+}
+
+void TestQgisApp::pasteRasterStyleCategory()
+{
+  // Create a 2x2 int rasters using gdal
+  QTemporaryDir tempDir;
+  const QString tempDirPath = tempDir.path();
+  const QString rasterPath1 = tempDirPath + QStringLiteral( "/raster1.tif" );
+  const QString rasterPath2 = tempDirPath + QStringLiteral( "/raster2.tif" );
+
+  GDALDriverH hDriver = GDALGetDriverByName( "GTiff" );
+  QVERIFY( hDriver );
+  GDALDatasetH hDS = GDALCreate( hDriver, rasterPath1.toUtf8().constData(), 2, 2, 1, GDT_Int32, nullptr );
+  QVERIFY( hDS );
+  GDALClose( hDS );
+  hDS = GDALCreate( hDriver, rasterPath2.toUtf8().constData(), 2, 2, 1, GDT_Int32, nullptr );
+  QVERIFY( hDS );
+  GDALClose( hDS );
+  QgsRasterLayer rl1( rasterPath1, QStringLiteral( "raster1" ) );
+  QgsRasterLayer rl2( rasterPath2, QStringLiteral( "raster2" ) );
+  QVERIFY( rl1.isValid() );
+  QVERIFY( rl2.isValid() );
+
+  // Set legend flag for raster 1
+  rl1.legend()->setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault );
+
+  QVERIFY( rl1.legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
+  QVERIFY( !rl2.legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
+
+  // Copy style from raster 1
+  mQgisApp->copyStyle( &rl1, QgsMapLayer::StyleCategory::Legend );
+  // Paste style to raster 2
+  mQgisApp->pasteStyle( &rl2, QgsMapLayer::StyleCategory::Legend );
+
+  QVERIFY( rl2.legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
 }
 
 
