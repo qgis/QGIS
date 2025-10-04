@@ -1,0 +1,17 @@
+Marios Hadjieleftheriou -- Main author
+mhadji@gmail.com
+
+Howard Butler -- minor packaging, C API, and some Windows work
+hobu.inc@gmail.com
+
+Leonard Norrgård - CountVisitor in C API
+leonard.norrgard@refactor.fi
+
+Matthias (nitro) - CustomStorage in C API
+nitro@dr-code.org
+
+Norman Barker - flush(), index paging, C API improvements
+norman.barker@gmail.com
+
+Morteza NourelahiAlamdari
+m@0t1.me
