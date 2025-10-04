@@ -1043,7 +1043,7 @@ void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProj
     }
     else
     {
-      notify( tr( "Move Projects to Another Schema" ), tr( "Move of %1 projects to schema “%2” succesful." ).arg( movedProjectCount ).arg( newSchemaName ), context, Qgis::MessageLevel::Success );
+      notify( tr( "Move Projects to Another Schema" ), tr( "Move of %1 projects to schema “%2” successful." ).arg( movedProjectCount ).arg( newSchemaName ), context, Qgis::MessageLevel::Success );
     }
   }
 }
