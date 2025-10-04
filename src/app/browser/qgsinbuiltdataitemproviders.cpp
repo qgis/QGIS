@@ -1070,24 +1070,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
       deleteLayers( selectedDeletableItemPaths, context );
     } );
 
-    // this action should sit in the Manage menu. If one does not exist, create it now
-    bool foundExistingManageMenu = false;
-    QList<QAction *> actions = menu->actions();
-    for ( QAction *action : std::as_const( actions ) )
-    {
-      if ( action->text() == tr( "Manage" ) )
-      {
-        action->menu()->addAction( deleteAction );
-        foundExistingManageMenu = true;
-        break;
-      }
-    }
-    if ( !foundExistingManageMenu )
-    {
-      QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
-      manageLayerMenu->addAction( deleteAction );
-      menu->addMenu( manageLayerMenu );
-    }
+    QgsDataItemGuiProviderUtils::addToSubMenu( menu, deleteAction, tr( "Manage" ) );
   }
 
   if ( !menu->isEmpty() )
@@ -1867,24 +1850,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     {
       QAction *moveToSchemaAction = new QAction( tr( "Move to Another Schema…" ), menu );
 
-      // this action should sit in the Manage menu. If one does not exist, create it now
-      bool foundExistingManageMenu = false;
-      QList<QAction *> actions = menu->actions();
-      for ( QAction *action : std::as_const( actions ) )
-      {
-        if ( action->text() == tr( "Manage" ) )
-        {
-          action->menu()->addAction( moveToSchemaAction );
-          foundExistingManageMenu = true;
-          break;
-        }
-      }
-      if ( !foundExistingManageMenu )
-      {
-        QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
-        manageLayerMenu->addAction( moveToSchemaAction );
-        menu->addMenu( manageLayerMenu );
-      }
+      QgsDataItemGuiProviderUtils::addToSubMenu( menu, moveToSchemaAction, tr( "Manage" ) );
 
       const QString connectionUri = conn->uri();
       const QString providerKey = conn->providerKey();
@@ -1967,37 +1933,13 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
       const bool indexExist = conn->spatialIndexExists( tableProperty.schema(), tableProperty.tableName(), tableProperty.geometryColumn() );
 
-      // this action should sit in the Manage menu. If one does not exist, create it now
-      bool foundExistingManageMenu = false;
-      QList<QAction *> actions = menu->actions();
-      for ( QAction *action : std::as_const( actions ) )
+      if ( indexExist )
       {
-        if ( action->text() == tr( "Manage" ) )
-        {
-          if ( indexExist )
-          {
-            action->menu()->addAction( deleteSpatialIndexAction );
-          }
-          else
-          {
-            action->menu()->addAction( createSpatialIndexAction );
-          }
-          foundExistingManageMenu = true;
-          break;
-        }
+        QgsDataItemGuiProviderUtils::addToSubMenu( menu, deleteSpatialIndexAction, tr( "Manage" ) );
       }
-      if ( !foundExistingManageMenu )
+      else
       {
-        QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
-        if ( indexExist )
-        {
-          manageLayerMenu->addAction( deleteSpatialIndexAction );
-        }
-        else
-        {
-          manageLayerMenu->addAction( createSpatialIndexAction );
-        }
-        menu->addMenu( manageLayerMenu );
+        QgsDataItemGuiProviderUtils::addToSubMenu( menu, createSpatialIndexAction, tr( "Manage" ) );
       }
 
       const QString connectionUri = conn->uri();
@@ -2069,7 +2011,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     {
       QAction *editComment = new QAction( tr( "Set Comment…" ), menu );
 
-      addToSubMenu( menu, editComment, tr( "Manage" ) );
+      QgsDataItemGuiProviderUtils::addToSubMenu( menu, editComment, tr( "Manage" ) );
 
       const QString connectionUri = conn->uri();
       const QString providerKey = conn->providerKey();
