@@ -2432,7 +2432,7 @@ bool QgsPostgresRasterProviderMetadata::styleExists( const QString &uri, const Q
     return false;
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) || !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) || !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) || !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) || !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
   {
     return false;
   }
@@ -2487,7 +2487,7 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
     return false;
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) )
   {
     if ( !QgsPostgresUtils::createStylesTable( conn, QStringLiteral( "QgsPostgresRasterProviderMetadata" ) ) )
     {
@@ -2498,7 +2498,7 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
   }
   else
   {
-    if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+    if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
     {
       QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
       if ( res.PQresultStatus() != PGRES_COMMAND_OK )
@@ -2510,7 +2510,7 @@ bool QgsPostgresRasterProviderMetadata::saveStyle( const QString &uri, const QSt
     }
   }
 
-  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
+  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
   {
     QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), "ALTER TABLE layer_styles ADD COLUMN r_raster_column varchar NULL" ) );
     if ( res.PQresultStatus() != PGRES_COMMAND_OK )
@@ -2660,18 +2660,18 @@ QString QgsPostgresRasterProviderMetadata::loadStoredStyle( const QString &uri, 
     dsUri.setDatabase( conn->currentDatabase() );
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) )
   {
     conn->unref();
     return QString();
   }
-  else if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
+  else if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
   {
     return QString();
   }
 
   // support layer_styles without type column < 3.14
-  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
   {
     selectQmlQuery = QString( "SELECT styleName, styleQML"
                               " FROM layer_styles"
@@ -2729,12 +2729,12 @@ int QgsPostgresRasterProviderMetadata::listStyles( const QString &uri, QStringLi
     return -1;
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) )
   {
     return -1;
   }
 
-  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
+  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "r_raster_column" ) ) )
   {
     return false;
   }
