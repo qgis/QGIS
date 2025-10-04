@@ -225,3 +225,25 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::uni
 
   QgsApplication::taskManager()->addTask( exportTask.release() );
 }
+
+void QgsDataItemGuiProviderUtils::addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, const QString &subMenuName )
+{
+  // this action should sit in the Manage menu. If one does not exist, create it now
+  bool foundExistingManageMenu = false;
+  QList<QAction *> actions = mainMenu->actions();
+  for ( QAction *action : std::as_const( actions ) )
+  {
+    if ( action->text() == subMenuName )
+    {
+      action->menu()->addAction( actionToAdd );
+      foundExistingManageMenu = true;
+      break;
+    }
+  }
+  if ( !foundExistingManageMenu )
+  {
+    QMenu *addSubMenu = new QMenu( subMenuName, mainMenu );
+    addSubMenu->addAction( actionToAdd );
+    mainMenu->addMenu( addSubMenu );
+  }
+}
