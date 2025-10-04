@@ -83,6 +83,7 @@ RUN  apt-get update \
     python3-pyqt6.qtwebengine \
     python3-requests \
     python3-shapely  \
+    python3-geopandas \
     python3-sphinx \
     python3-six \
     python3-termcolor \
