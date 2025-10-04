@@ -588,7 +588,6 @@ set(QGIS_GUI_SRCS
   qgscolorswatchgrid.cpp
   qgscolorwidgets.cpp
   qgscompoundcolorwidget.cpp
-  qgscommentinputdialog.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
@@ -858,7 +857,6 @@ set(QGIS_GUI_HDRS
   qgscolorswatchgrid.h
   qgscolorwidgets.h
   qgscompoundcolorwidget.h
-  qgscommentinputdialog.h
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
   qgscurveeditorwidget.h

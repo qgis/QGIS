@@ -68,7 +68,6 @@
 #include "qgshistoryproviderregistry.h"
 #include "qgsdataitemguiproviderutils.h"
 #include "qgsdatabaseschemaselectiondialog.h"
-#include "qgscommentinputdialog.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1507,7 +1506,7 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           connect( setCommentAction, &QAction::triggered, fieldsItem, [md, fieldsItem, itemName, comment, context] {
             bool ok = false;
 
-            const QString newComment = QInputDialog::getText( QgisApp::instance(), tr( "Set Comment For %1" ).arg( itemName ), tr( "Comment" ), QLineEdit::Normal, comment, &ok );
+            const QString newComment = QInputDialog::getMultiLineText( QgisApp::instance(), tr( "Set Comment For %1" ).arg( itemName ), tr( "Comment" ), comment, &ok );
             if ( ok && comment != newComment )
             {
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
@@ -2038,14 +2037,15 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         {
           const QString comment = conn2->table( schemaName, tableName ).comment();
 
-          std::unique_ptr<QgsCommentInputDialog> dlg = std::make_unique<QgsCommentInputDialog>( tr( "Table Comment" ), comment );
+          bool ok = false;
+          const QString newComment = QInputDialog::getMultiLineText( QgisApp::instance(), tr( "Table Comment" ), tr( "Comment" ), comment, &ok );
 
-          if ( dlg->exec() == QDialog::Accepted )
+          if ( ok && comment != newComment )
           {
             try
             {
               QgsTemporaryCursorOverride override( Qt::WaitCursor );
-              conn2->setTableComment( schemaName, tableName, dlg->comment() );
+              conn2->setTableComment( schemaName, tableName, newComment );
             }
             catch ( QgsProviderConnectionException &ex )
             {
