@@ -116,6 +116,7 @@ RUN dnf -y install \
     python3-nose2 \
     python3-psycopg2 \
     python3-pyyaml \
-    python3-shapely
+    python3-shapely \
+    python3-geopandas
 
 FROM binary-only
