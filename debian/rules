@@ -104,6 +104,10 @@ CMAKE_OPTS := \
 	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS" \
 	-DPUSH_TO_CDASH=TRUE
 
+ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
+CMAKE_OPTS += -DWITH_INTERNAL_SPATIALINDEX=TRUE
+endif
+
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
 endif
