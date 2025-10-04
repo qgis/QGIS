@@ -230,8 +230,8 @@ void QgsDataItemGuiProviderUtils::addToSubMenu( QMenu *mainMenu, QAction *action
 {
   // this action should sit in the Manage menu. If one does not exist, create it now
   bool foundExistingManageMenu = false;
-  QList<QAction *> actions = mainMenu->actions();
-  for ( QAction *action : std::as_const( actions ) )
+  const QList<QAction *> actions = mainMenu->actions();
+  for ( QAction *action : actions )
   {
     if ( action->text() == subMenuName )
     {
