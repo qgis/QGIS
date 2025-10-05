@@ -70,7 +70,7 @@ QString QgsStacAsset::formatName() const
     return QStringLiteral( "COPC" );
   else if ( mHref.endsWith( QLatin1String( "/ept.json" ) ) )
     return QStringLiteral( "EPT" );
-  else if ( mMediaType.contains( QLatin1String( "cloud-optimized" ), Qt::CaseInsensitive ) )
+  else if ( mMediaType.contains( QLatin1String( "cloud-optimized=true" ), Qt::CaseInsensitive ) )
   {
     // could use GDAL identify, but PDAL does not have the equivalent so split string
     const QStringList parts = mMediaType.split( QRegExp( "[/;]+" ), Qt::SkipEmptyParts );
@@ -88,7 +88,7 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
   if ( isCloudOptimized() )
   {
     if ( href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
-          href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
+         href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
     {
       uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( href() );
     }
@@ -96,11 +96,11 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
     {
       uri.uri = QStringLiteral( "/vsis3/%1" ).arg( href().mid( 5 ) );
     }
-    else if ( href().startsWith( QLatin1String( "azure://"), Qt::CaseInsensitive ) )
+    else if ( href().startsWith( QLatin1String( "azure://" ), Qt::CaseInsensitive ) )
     {
       uri.uri = QStringLiteral( "/vsiaz/%1" ).arg( href().mid( 8 ) );
     }
-    else if ( href().startsWith( QLatin1String( "gcp://"), Qt::CaseInsensitive ) )
+    else if ( href().startsWith( QLatin1String( "gcp://" ), Qt::CaseInsensitive ) )
     {
       uri.uri = QStringLiteral( "/vsigs/%1" ).arg( href().mid( 6 ) );
     }
@@ -111,13 +111,13 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
   }
   else
   {
-      return {};
+    return {};
   }
 
   QString errMsg;
 
   if ( ( formatName() == QLatin1String( "COG" ) ) ||
-    QgsGdalProvider::isValidRasterFileName( uri.uri, errMsg ) )
+       QgsGdalProvider::isValidRasterFileName( uri.uri, errMsg ) )
   {
     uri.layerType = QStringLiteral( "raster" );
     uri.providerKey = QStringLiteral( "gdal" );
