@@ -2443,6 +2443,7 @@ The development version
       GPServer,
       GeocodeServer,
       Unknown,
+      SceneServer,
     };
 
     enum class RelationshipType
