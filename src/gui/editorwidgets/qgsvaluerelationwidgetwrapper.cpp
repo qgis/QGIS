@@ -560,6 +560,11 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
 
 void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
 {
+  // No need to proceed further because the status of the object doesn't need to be updated.
+  if ( !formFeature().isValid() && !feature.isValid() && !mCache.isEmpty() )
+  {
+    return;
+  }
   setFormFeature( feature );
   whileBlocking( this )->populate();
   whileBlocking( this )->setValue( feature.attribute( fieldIdx() ) );
