@@ -28,8 +28,11 @@
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenerequest.h"
 #include "qgstiledscenetile.h"
+#include "qgsproviderutils.h"
+#include "qgsprovidersublayerdetails.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QIcon>
 #include <QQuaternion>
 
@@ -681,27 +684,30 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
   : QgsTiledSceneDataProvider( uri, providerOptions, flags )
   , mShared( std::make_shared< QgsEsriI3SDataProviderSharedData >() )
 {
+  QgsDataSourceUri dataSource( dataSourceUri() );
+  const QString sourcePath = dataSource.param( QStringLiteral( "url" ) );
+
   QUrl rootUrl;
-  if ( uri.startsWith( QLatin1String( "http" ) ) || uri.startsWith( QLatin1String( "file" ) ) )
+  if ( sourcePath.startsWith( QLatin1String( "http" ) ) || sourcePath.startsWith( QLatin1String( "file" ) ) )
   {
-    rootUrl = uri;
+    rootUrl = sourcePath;
   }
   else
   {
     // when saved in project as relative path, we then get just the path... (TODO?)
-    rootUrl = QUrl::fromLocalFile( uri );
+    rootUrl = QUrl::fromLocalFile( sourcePath );
   }
 
   QString i3sVersion;
   json layerJson;
-  if ( uri.startsWith( QLatin1String( "http" ) ) )
+  if ( sourcePath.startsWith( QLatin1String( "http" ) ) )
   {
-    if ( !loadFromRestService( uri, layerJson, i3sVersion ) )
+    if ( !loadFromRestService( sourcePath, layerJson, i3sVersion ) )
       return;
   }
   else
   {
-    if ( !loadFromSlpk( uri, layerJson, i3sVersion ) )
+    if ( !loadFromSlpk( sourcePath, layerJson, i3sVersion ) )
       return;
   }
 
@@ -1046,6 +1052,56 @@ QIcon QgsEsriI3SProviderMetadata::icon() const
 QgsEsriI3SDataProvider *QgsEsriI3SProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsEsriI3SDataProvider( uri, options, flags );
+}
+
+QList<QgsProviderSublayerDetails> QgsEsriI3SProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
+{
+  QString fileName;
+  const QFileInfo fi( uri );
+  if ( fi.isFile() )
+  {
+    fileName = uri;
+  }
+  else
+  {
+    const QVariantMap parts = decodeUri( uri );
+    fileName = parts.value( QStringLiteral( "path" ) ).toString();
+  }
+
+  if ( fileName.isEmpty() )
+    return {};
+
+  if ( QFileInfo( fileName ).suffix().compare( QLatin1String( "slpk" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QVariantMap parts;
+    parts.insert( QStringLiteral( "path" ), fileName );
+
+    QgsProviderSublayerDetails details;
+    details.setUri( encodeUri( parts ) );
+    details.setProviderKey( key() );
+    details.setType( Qgis::LayerType::TiledScene );
+    details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
+    return {details};
+  }
+  return {};
+}
+
+QVariantMap QgsEsriI3SProviderMetadata::decodeUri( const QString &uri ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  QVariantMap uriComponents;
+  uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
+
+  return uriComponents;
+}
+
+QString QgsEsriI3SProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
+  return dsUri.encodedUri();
 }
 
 QString QgsEsriI3SProviderMetadata::filters( Qgis::FileFilterType type )
