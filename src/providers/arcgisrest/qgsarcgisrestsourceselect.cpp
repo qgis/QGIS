@@ -181,7 +181,7 @@ void QgsArcGisRestSourceSelect::showEvent( QShowEvent * )
   mBrowserView->expand( mProxyModel->index( 0, 0 ) );
   mBrowserView->setHeaderHidden( true );
 
-  mProxyModel->setShownDataItemProviderKeyFilter( QStringList() << QStringLiteral( "AFS" ) << QStringLiteral( "arcgisfeatureserver" ) << QStringLiteral( "AMS" ) << QStringLiteral( "arcgismapserver" ) );
+  mProxyModel->setShownDataItemProviderKeyFilter( QStringList() << QStringLiteral( "AFS" ) << QStringLiteral( "arcgisfeatureserver" ) << QStringLiteral( "AMS" ) << QStringLiteral( "arcgismapserver" ) << QStringLiteral( "I3S" ) << QStringLiteral( "esrii3s" ) );
 
   const QModelIndex afsSourceIndex = mBrowserModel->findPath( QStringLiteral( "arcgisfeatureserver:" ) );
   mBrowserView->setRootIndex( mProxyModel->mapFromSource( afsSourceIndex ) );
@@ -346,6 +346,10 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
         emit addRasterLayer( uri, layerName, QStringLiteral( "arcgismapserver" ) );
         Q_NOWARN_DEPRECATED_POP
         emit addLayer( Qgis::LayerType::Raster, uri, layerName, QStringLiteral( "arcgismapserver" ) );
+        break;
+
+      case Qgis::ArcGisRestServiceType::SceneServer:
+        emit addLayer( Qgis::LayerType::TiledScene, uri, layerName, QStringLiteral( "esrii3s" ) );
         break;
 
       case Qgis::ArcGisRestServiceType::ImageServer:
@@ -579,6 +583,10 @@ QString QgsArcGisRestSourceSelect::indexToUri( const QModelIndex &proxyIndex, QS
       uri.removeParam( QStringLiteral( "format" ) );
       uri.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
       serviceType = Qgis::ArcGisRestServiceType::MapServer;
+    }
+    else if ( qobject_cast<QgsArcGisSceneServiceLayerItem *>( layerItem ) )
+    {
+      serviceType = Qgis::ArcGisRestServiceType::SceneServer;
     }
     return uri.uri( false );
   }
