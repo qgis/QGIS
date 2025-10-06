@@ -7755,6 +7755,9 @@ QgsArcGisPortalUtils.GeocodeServer.__doc__ = "GeocodeServer"
 QgsArcGisPortalUtils.Unknown = Qgis.ArcGisRestServiceType.Unknown
 QgsArcGisPortalUtils.Unknown.is_monkey_patched = True
 QgsArcGisPortalUtils.Unknown.__doc__ = "Other unknown/unsupported type"
+QgsArcGisPortalUtils.SceneServer = Qgis.ArcGisRestServiceType.SceneServer
+QgsArcGisPortalUtils.SceneServer.is_monkey_patched = True
+QgsArcGisPortalUtils.SceneServer.__doc__ = "SceneServer"
 Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 
 .. note::
@@ -7779,6 +7782,7 @@ Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 * ``GPServer``: GPServer
 * ``GeocodeServer``: GeocodeServer
 * ``Unknown``: Other unknown/unsupported type
+* ``SceneServer``: SceneServer
 
 """
 # --
