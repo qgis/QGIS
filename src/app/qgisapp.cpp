@@ -2949,6 +2949,7 @@ void QgisApp::createActions()
   connect( mActionOffsetPointSymbol, &QAction::triggered, this, &QgisApp::offsetPointSymbol );
   connect( mActionSnappingOptions, &QAction::triggered, this, &QgisApp::snappingOptions );
   connect( mActionOffsetCurve, &QAction::triggered, this, &QgisApp::offsetCurve );
+  connect( mActionChamferFillet, &QAction::triggered, this, &QgisApp::chamferFillet );
   connect( mActionReverseLine, &QAction::triggered, this, &QgisApp::reverseLine );
   connect( mActionTrimExtendFeature, &QAction::triggered, this, [this] { mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::TrimExtendFeature ) ); } );
 
@@ -3308,6 +3309,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionRotateFeature );
   mMapToolGroup->addAction( mActionScaleFeature );
   mMapToolGroup->addAction( mActionOffsetCurve );
+  mMapToolGroup->addAction( mActionChamferFillet );
   mMapToolGroup->addAction( mActionReshapeFeatures );
   mMapToolGroup->addAction( mActionSplitFeatures );
   mMapToolGroup->addAction( mActionSplitParts );
@@ -4269,6 +4271,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionDeletePart->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeletePart.svg" ) ) );
   mActionMergeFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMergeFeatures.svg" ) ) );
   mActionOffsetCurve->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOffsetCurve.svg" ) ) );
+  mActionChamferFillet->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionChamferFillet.svg" ) ) );
   mActionMergeFeatureAttributes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMergeFeatureAttributes.svg" ) ) );
   mActionRotatePointSymbols->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRotatePointSymbols.svg" ) ) );
   mActionOffsetPointSymbol->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOffsetPointSymbols.svg" ) ) );
@@ -4520,6 +4523,7 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::RotateFeature )->setAction( mActionRotateFeature );
   mMapTools->mapTool( QgsAppMapTools::ScaleFeature )->setAction( mActionScaleFeature );
   mMapTools->mapTool( QgsAppMapTools::OffsetCurve )->setAction( mActionOffsetCurve );
+  mMapTools->mapTool( QgsAppMapTools::ChamferFillet )->setAction( mActionChamferFillet );
   mMapTools->mapTool( QgsAppMapTools::ReshapeFeatures )->setAction( mActionReshapeFeatures );
   mMapTools->mapTool( QgsAppMapTools::ReverseLine )->setAction( mActionReverseLine );
   mMapTools->mapTool( QgsAppMapTools::SplitFeatures )->setAction( mActionSplitFeatures );
@@ -8772,6 +8776,11 @@ void QgisApp::moveFeatureCopy()
 void QgisApp::offsetCurve()
 {
   mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::OffsetCurve ) );
+}
+
+void QgisApp::chamferFillet()
+{
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::ChamferFillet ) );
 }
 
 void QgisApp::simplifyFeature()
@@ -15075,6 +15084,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionRotateFeature->setEnabled( false );
     mActionScaleFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
+    mActionChamferFillet->setEnabled( false );
     mActionVertexTool->setEnabled( false );
     mActionVertexToolActiveLayer->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
@@ -15295,6 +15305,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           mActionRotatePointSymbols->setEnabled( false );
           mActionOffsetPointSymbol->setEnabled( false );
           mActionOffsetCurve->setEnabled( false );
+          mActionChamferFillet->setEnabled( false );
 
           if ( isEditable && canChangeAttributes )
           {
@@ -15320,6 +15331,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           mActionSplitParts->setEnabled( isEditable && canChangeGeometry && isMultiPart );
           mActionSimplifyFeature->setEnabled( isEditable && canChangeGeometry );
           mActionOffsetCurve->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
+          mActionChamferFillet->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
           mActionReverseLine->setEnabled( isEditable && canChangeGeometry );
           mActionTrimExtendFeature->setEnabled( isEditable && canChangeGeometry );
 
@@ -15342,6 +15354,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           mActionSimplifyFeature->setEnabled( isEditable && canChangeGeometry );
           mActionDeleteRing->setEnabled( isEditable && canChangeGeometry );
           mActionOffsetCurve->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
+          mActionChamferFillet->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
           mActionTrimExtendFeature->setEnabled( isEditable && canChangeGeometry );
         }
         else if ( vlayer->geometryType() == Qgis::GeometryType::Null )
@@ -15357,6 +15370,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           mActionSimplifyFeature->setEnabled( false );
           mActionDeleteRing->setEnabled( false );
           mActionOffsetCurve->setEnabled( false );
+          mActionChamferFillet->setEnabled( false );
         }
 
         mActionOpenFieldCalc->setEnabled( true );
@@ -15456,6 +15470,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );
@@ -15546,6 +15561,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );
@@ -15629,6 +15645,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( layerHasSelection );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );
@@ -15705,6 +15722,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );
@@ -15775,6 +15793,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );
@@ -15845,6 +15864,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );

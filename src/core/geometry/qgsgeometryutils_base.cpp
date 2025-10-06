@@ -739,6 +739,90 @@ bool QgsGeometryUtilsBase::bisector( double aX, double aY, double bX, double bY,
   return intersection;
 }
 
+
+double QgsGeometryUtilsBase::maxFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+    const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
+    double epsilon )
+{
+  double intersectionX, intersectionY;
+  bool isIntersection;
+  QgsGeometryUtilsBase::segmentIntersection(
+    segment1StartX, segment1StartY, segment1EndX, segment1EndY,
+    segment2StartX, segment2StartY, segment2EndX, segment2EndY,
+    intersectionX, intersectionY, isIntersection, epsilon, true );
+
+  if ( !isIntersection )
+  {
+    return -1.0;
+  }
+
+  const double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1StartX, segment1StartY );
+  const double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1EndX, segment1EndY );
+  const double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2StartX, segment2StartY );
+  const double dist2ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2EndX, segment2EndY );
+
+  const double dir1X = dist1ToStart > epsilon ? segment1StartX : segment1EndX;
+  const double dir1Y = dist1ToStart > epsilon ? segment1StartY : segment1EndY;
+  const double dir2X = dist2ToStart > epsilon ? segment2StartX : segment2EndX;
+  const double dir2Y = dist2ToStart > epsilon ? segment2StartY : segment2EndY;
+
+  const double angle = QgsGeometryUtilsBase::angleBetweenThreePoints(
+                         dir1X, dir1Y,
+                         intersectionX, intersectionY,
+                         dir2X, dir2Y
+                       );
+
+  if ( std::abs( angle ) < epsilon || std::abs( angle - M_PI ) < epsilon )
+  {
+    return -1.0;
+  }
+
+  double workingAngle = angle;
+  if ( workingAngle > M_PI )
+  {
+    workingAngle = 2 * M_PI - workingAngle;
+  }
+
+  const double halfAngle = workingAngle / 2.0;
+  if ( std::abs( std::sin( halfAngle ) ) < epsilon )
+  {
+    return -1.0;
+  }
+
+  const double maxDist1 = ( dist1ToStart > epsilon ) ? dist1ToStart : dist1ToEnd;
+  const double maxDist2 = ( dist2ToStart > epsilon ) ? dist2ToStart : dist2ToEnd;
+
+  const double seg1Length = QgsGeometryUtilsBase::distance2D( segment1StartX, segment1StartY, segment1EndX, segment1EndY );
+  const double seg2Length = QgsGeometryUtilsBase::distance2D( segment2StartX, segment2StartY, segment2EndX, segment2EndY );
+
+  const bool intersectionOnSeg1 = std::abs( ( dist1ToStart + dist1ToEnd ) - seg1Length ) < epsilon;
+  const bool intersectionOnSeg2 = std::abs( ( dist2ToStart + dist2ToEnd ) - seg2Length ) < epsilon;
+
+  double maxDistanceToTangent = std::numeric_limits<double>::max();
+
+  if ( intersectionOnSeg1 )
+  {
+    maxDistanceToTangent = std::min( maxDistanceToTangent, maxDist1 - epsilon );
+  }
+
+  if ( intersectionOnSeg2 )
+  {
+    maxDistanceToTangent = std::min( maxDistanceToTangent, maxDist2 - epsilon );
+  }
+
+  if ( maxDistanceToTangent == std::numeric_limits<double>::max() )
+  {
+    maxDistanceToTangent = std::min( maxDist1, maxDist2 ) - epsilon;
+  }
+
+  if ( maxDistanceToTangent <= 0 )
+  {
+    return -1.0;
+  }
+
+  return maxDistanceToTangent * std::tan( halfAngle );
+}
+
 bool QgsGeometryUtilsBase::createFillet(
   const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
   const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
@@ -774,25 +858,10 @@ bool QgsGeometryUtilsBase::createFillet(
 
   // Determine directional points for angle calculation
   // These points define the rays extending from the intersection
-  double dir1X, dir1Y, dir2X, dir2Y;
-
-  if ( dist1ToStart > epsilon )
-  {
-    dir1X = segment1StartX; dir1Y = segment1StartY;
-  }
-  else
-  {
-    dir1X = segment1EndX; dir1Y = segment1EndY;
-  }
-
-  if ( dist2ToStart > epsilon )
-  {
-    dir2X = segment2StartX; dir2Y = segment2StartY;
-  }
-  else
-  {
-    dir2X = segment2EndX; dir2Y = segment2EndY;
-  }
+  const double dir1X = dist1ToStart > epsilon ? segment1StartX : segment1EndX;
+  const double dir1Y = dist1ToStart > epsilon ? segment1StartY : segment1EndY;
+  const double dir2X = dist2ToStart > epsilon ? segment2StartX : segment2EndX;
+  const double dir2Y = dist2ToStart > epsilon ? segment2StartY : segment2EndY;
 
   // Calculate the angle between the two rays
   const double angle = QgsGeometryUtilsBase::angleBetweenThreePoints(
