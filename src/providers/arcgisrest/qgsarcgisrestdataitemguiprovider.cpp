@@ -153,7 +153,6 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     menu->addAction( viewInfo );
     menu->addSeparator();
   }
-
   else if ( QgsArcGisSceneServiceLayerItem *layerItem = qobject_cast<QgsArcGisSceneServiceLayerItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );

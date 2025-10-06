@@ -419,9 +419,7 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
 
     if ( filter == ServiceTypeFilter::Scene )
     {
-      {
-        visitor( parentLayerId, ServiceTypeFilter::Scene, Qgis::GeometryType::Unknown, id, name, description, parentUrl, false, crs, format );
-      }
+      visitor( parentLayerId, ServiceTypeFilter::Scene, Qgis::GeometryType::Unknown, id, name, description, parentUrl, false, crs, format );
       continue;
     }
 

@@ -1100,7 +1100,8 @@ QVariantMap QgsEsriI3SProviderMetadata::decodeUri( const QString &uri ) const
 QString QgsEsriI3SProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
-  dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
+  const QString partsKey = parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" );
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( partsKey ).toString() );
   return dsUri.encodedUri();
 }
 
