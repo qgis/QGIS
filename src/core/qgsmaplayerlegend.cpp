@@ -42,17 +42,14 @@ QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
 void QgsMapLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
   mFlags = Qgis::MapLayerLegendFlags();
-  mFlags.setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, elem.attribute( QStringLiteral( "excludeByDefault" ), QStringLiteral( "0" ) ).toInt() );
+  mFlags.setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, elem.attribute( QStringLiteral( "excludeByDefault" ), QStringLiteral( "0" ) ).toInt() == 1 );
 }
 
 QDomElement QgsMapLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "legend" ) );
-
-  if ( mFlags.testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
-    elem.setAttribute( QStringLiteral( "excludeByDefault" ), QStringLiteral( "1" ) );
-
-  return elem.attributes().isEmpty() ? QDomElement() : elem;
+  elem.setAttribute( QStringLiteral( "excludeByDefault" ), mFlags.testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  return elem;
 }
 
 QgsMapLayerLegend *QgsMapLayerLegend::defaultVectorLegend( QgsVectorLayer *vl )

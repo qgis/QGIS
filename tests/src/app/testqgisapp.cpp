@@ -39,15 +39,16 @@ class TestQgisApp : public QObject
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void init();            // will be called before each testfunction is executed.
     void cleanup();         // will be called after every testfunction.
+    //! Test for issue GH #63346
+    void pasteRasterStyleCategory();
 
+  public slots:
     void addVectorLayerShp();
     void addVectorLayerGeopackageSingleLayer();
     void addVectorLayerGeopackageSingleLayerAlreadyLayername();
     void addVectorLayerInvalid();
     void addEmbeddedGroup();
     void pasteFeature();
-    //! Test for issue GH #63346
-    void pasteRasterStyleCategory();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -222,6 +223,18 @@ void TestQgisApp::pasteRasterStyleCategory()
   mQgisApp->pasteStyle( &rl2, QgsMapLayer::StyleCategory::Legend );
 
   QVERIFY( rl2.legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
+
+  // Check the other way round
+  rl1.legend()->setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, false );
+  rl2.legend()->setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, true );
+  QVERIFY( !rl1.legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
+  QVERIFY( rl2.legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
+
+  // Copy style from raster 1
+  mQgisApp->copyStyle( &rl1, QgsMapLayer::StyleCategory::Legend );
+  // Paste style to raster 2
+  mQgisApp->pasteStyle( &rl2, QgsMapLayer::StyleCategory::Legend );
+  QVERIFY( !rl2.legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
 }
 
 
