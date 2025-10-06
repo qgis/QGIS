@@ -5076,8 +5076,8 @@ QgsGeometry.boundingBoxIntersects: src/core/geometry/qgsgeometry.h#L1475
 QgsGeometry.buffer: src/core/geometry/qgsgeometry.h#L1562
 QgsGeometry.buffer: src/core/geometry/qgsgeometry.h#L1575
 QgsGeometry.centroid: src/core/geometry/qgsgeometry.h#L1704
-QgsGeometry.chamfer: src/core/geometry/qgsgeometry.h#L3268
-QgsGeometry.chamfer: src/core/geometry/qgsgeometry.h#L3288
+QgsGeometry.chamfer: src/core/geometry/qgsgeometry.h#L3264
+QgsGeometry.chamfer: src/core/geometry/qgsgeometry.h#L3284
 QgsGeometry.clipped: src/core/geometry/qgsgeometry.h#L2040
 QgsGeometry.closestSegmentWithContext: src/core/geometry/qgsgeometry.h#L925
 QgsGeometry.closestVertex: src/core/geometry/qgsgeometry.h#L765
@@ -5122,8 +5122,8 @@ QgsGeometry.draw: src/core/geometry/qgsgeometry.h#L2884
 QgsGeometry.equals: src/core/geometry/qgsgeometry.h#L432
 QgsGeometry.extendLine: src/core/geometry/qgsgeometry.h#L1644
 QgsGeometry.extrude: src/core/geometry/qgsgeometry.h#L2097
-QgsGeometry.fillet: src/core/geometry/qgsgeometry.h#L3233
-QgsGeometry.fillet: src/core/geometry/qgsgeometry.h#L3253
+QgsGeometry.fillet: src/core/geometry/qgsgeometry.h#L3229
+QgsGeometry.fillet: src/core/geometry/qgsgeometry.h#L3249
 QgsGeometry.forcePolygonClockwise: src/core/geometry/qgsgeometry.h#L2751
 QgsGeometry.forcePolygonCounterClockwise: src/core/geometry/qgsgeometry.h#L2763
 QgsGeometry.forceRHR: src/core/geometry/qgsgeometry.h#L2739
@@ -5432,7 +5432,7 @@ QgsGeometryUtils.closestVertex: src/core/geometry/qgsgeometryutils.h#L51
 QgsGeometryUtils.coefficients: src/core/geometry/qgsgeometryutils.h#L435
 QgsGeometryUtils.createChamfer: src/core/geometry/qgsgeometryutils.h#L1315
 QgsGeometryUtils.createFillet: src/core/geometry/qgsgeometryutils.h#L1340
-QgsGeometryUtils.createFilletArray: src/core/geometry/qgsgeometryutils.h#L1431
+QgsGeometryUtils.createFilletArray: src/core/geometry/qgsgeometryutils.h#L1447
 QgsGeometryUtils.createPointWithMatchingDimensions: src/core/geometry/qgsgeometryutils.h#L1285
 QgsGeometryUtils.distToInfiniteLine: src/core/geometry/qgsgeometryutils.h#L91
 QgsGeometryUtils.distance2D: src/core/geometry/qgsgeometryutils.h#L688
@@ -5453,6 +5453,7 @@ QgsGeometryUtils.lineCircleIntersection: src/core/geometry/qgsgeometryutils.h#L1
 QgsGeometryUtils.lineIntersection: src/core/geometry/qgsgeometryutils.h#L1230
 QgsGeometryUtils.linePerpendicularAngle: src/core/geometry/qgsgeometryutils.h#L919
 QgsGeometryUtils.linesIntersection3D: src/core/geometry/qgsgeometryutils.h#L1081
+QgsGeometryUtils.maxFilletRadius: src/core/geometry/qgsgeometryutils.h#L1398
 QgsGeometryUtils.midpoint: src/core/geometry/qgsgeometryutils.h#L373
 QgsGeometryUtils.normalizedAngle: src/core/geometry/qgsgeometryutils.h#L870
 QgsGeometryUtils.perpendicularCenterSegment: src/core/geometry/qgsgeometryutils.h#L997
