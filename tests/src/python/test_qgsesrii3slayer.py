@@ -50,7 +50,7 @@ def _make_tmp_eslpk_dataset(
 
 class TestQgsEsriI3sLayer(unittest.TestCase):
     def test_invalid_source(self):
-        layer = QgsTiledSceneLayer("file:///nope", "my layer", "esrii3s")
+        layer = QgsTiledSceneLayer("url=file:///nope", "my layer", "esrii3s")
         self.assertFalse(layer.dataProvider().isValid())
 
     def test_invalid_json(self):
@@ -62,7 +62,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             """
             _make_tmp_eslpk_dataset(temp_dir, layer_json, "")
 
-            layer = QgsTiledSceneLayer("file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
             self.assertFalse(layer.dataProvider().isValid())
             self.assertEqual(
                 layer.error().summary(),
@@ -73,7 +73,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             _make_tmp_eslpk_dataset(temp_dir, "", "", "1.6")
 
-            layer = QgsTiledSceneLayer("file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
             self.assertFalse(layer.dataProvider().isValid())
             self.assertEqual(
                 layer.error().summary(),
@@ -118,7 +118,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             """
             _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
 
-            layer = QgsTiledSceneLayer("file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
             self.assertTrue(layer.dataProvider().isValid())
 
             self.assertEqual(layer.crs(), QgsCoordinateReferenceSystem("EPSG:4979"))
@@ -198,7 +198,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             """
             _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
 
-            layer = QgsTiledSceneLayer("file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
             self.assertTrue(layer.dataProvider().isValid())
 
             self.assertEqual(layer.crs(), QgsCoordinateReferenceSystem("EPSG:5514"))
@@ -561,7 +561,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             """
             _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
 
-            layer = QgsTiledSceneLayer("file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
             self.assertTrue(layer.dataProvider().isValid())
 
             index = layer.dataProvider().index()
