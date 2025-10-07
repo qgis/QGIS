@@ -61,7 +61,11 @@ if(NOT "${NUGET_TOKEN}" STREQUAL "" AND (CMAKE_HOST_WIN32 OR EXISTS "${_VCPKG_MO
 endif()
 
 set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
-set(VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}/vcpkg")
+if(BUILD_WITH_QT6)
+  set(VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}/vcpkg")
+else()
+  set(VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}/vcpkg/.qt5")
+endif()
 # Copies DLLs built by vcpkg when an install() command is run.
 # Only works on Windows and even there not reliably ...
 # set(X_VCPKG_APPLOCAL_DEPS_INSTALL ON CACHE BOOL "Copy dependency DLLs on install")

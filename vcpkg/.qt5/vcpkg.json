@@ -2,13 +2,26 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "a9eee3b18df395dbb8be71a31bd78ea441056e42",
+      "baseline": "a62ce77d56ee07513b4b67de1ec2daeaebfae51a",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "461f91ec1125bb2c20aaa28d7456dfd83dbc3eec",
+        "baseline": "6ede4a1108756899e55fe4d308aaa25410e8e12f",
+        "repository": "https://github.com/open-vcpkg/qt5-registry",
+        "packages": [
+          "py-pyqt5",
+          "py-pyqt5-sip",
+          "py-qscintilla-qt5",
+          "qscintilla-qt5",
+          "qt5-webkit",
+          "vcpkg-qmake-qt5"
+        ]
+      },
+      {
+        "kind": "git",
+        "baseline": "1e4af3021fb7522619abe65507ec3716c39cd79a",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -22,10 +35,10 @@
       }
     ],
     "overlay-ports": [
-      "ports"
+      "../ports"
     ],
     "overlay-triplets": [
-      "triplets"
+      "../triplets"
     ]
   },
   "name": "qgis",
@@ -33,6 +46,8 @@
   "description": "QGIS is a free, open source, cross platform (lin/win/mac) geographical information system (GIS)",
   "homepage": "https://qgis.org",
   "dependencies": [
+    "duckdb",
+    "draco",
     {
       "name": "exiv2",
       "features": [
@@ -40,12 +55,17 @@
       ]
     },
     "expat",
+    "py-psycopg2",
+    "python3",
     {
       "name": "gdal",
       "features": [
+        "arrow-adbc",
         "freexl",
         "kea",
-        "poppler"
+        "parquet",
+        "poppler",
+        "tools"
       ]
     },
     "geos",
@@ -62,29 +82,39 @@
     "libzip",
     "meshoptimizer",
     "nlohmann-json",
-    "o2",
+    "o2-qt5",
+    "opencl",
     "pdal",
     "proj",
     "protobuf",
     {
-      "name": "qca",
+      "name": "qca-qt5",
       "default-features": false,
       "features": [
         "ossl"
       ]
     },
-    "qtbase",
-    "qtkeychain-qt6",
-    "qtlocation",
-    "qtsvg",
-    "qttools",
+    "qt5-base",
+    "qt5-location",
+    {
+      "name": "qt5-macextras",
+      "platform": "osx"
+    },
+    "qt5-multimedia",
+    "qt5-svg",
+    "qt5-tools",
+    {
+      "name": "qt5-winextras",
+      "platform": "windows"
+    },
+    "qtkeychain",
     "zlib"
   ],
   "features": {
     "3d": {
       "description": "Determines whether QGIS 3D library should be built",
       "dependencies": [
-        "qt3d"
+        "qt5-3d"
       ]
     },
     "bindings": {
@@ -98,6 +128,7 @@
         },
         "py-autopep8",
         "py-dateutil",
+        "py-duckdb",
         "py-isort",
         "py-jinja2",
         "py-lxml",
@@ -105,11 +136,18 @@
         "py-numpy",
         "py-owslib",
         "py-pip",
+        "py-psycopg",
         "py-psycopg2",
-        "py-pyqt6",
+        "py-pydantic",
+        {
+          "name": "py-pyqt5",
+          "features": [
+            "3d"
+          ]
+        },
+        "py-qscintilla-qt5",
         "py-pytz",
         "py-pyyaml",
-        "py-qscintilla",
         "py-requests",
         "py-six",
         "python3"
@@ -118,9 +156,8 @@
     "gui": {
       "description": "Determines whether the QGIS gui should be built",
       "dependencies": [
-        "qscintilla",
-        "qtmultimedia",
-        "qwt"
+        "qscintilla-qt5",
+        "qwt-qt5"
       ]
     },
     "opencl": {
@@ -129,11 +166,10 @@
         "opencl"
       ]
     },
-    "quick": {
-      "description": "Build the QGIS quick components for mobile interfaces",
+    "oracle": {
+      "description": "Build with oracle support",
       "dependencies": [
-        "qtdeclarative",
-        "qtquickcontrols2"
+        "oracle-instantclient"
       ]
     },
     "server": {

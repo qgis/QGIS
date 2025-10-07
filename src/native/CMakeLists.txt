@@ -140,6 +140,10 @@ else()
   target_link_libraries(qgis_native ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} "${NATIVE_LINK_LIBS}")
 endif()
 
+if(APPLE)
+  target_link_libraries(qgis_native "-framework AppKit")
+endif()
+
 if (UNIX AND NOT APPLE AND NOT ANDROID)
   target_link_libraries(qgis_native ${QT_VERSION_BASE}::DBus)
 endif()

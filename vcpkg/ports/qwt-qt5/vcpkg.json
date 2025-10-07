@@ -1,0 +1,20 @@
+{
+  "name": "qwt-qt5",
+  "version-date": "2023-05-12",
+  "description": "Widgets library for technical applications",
+  "homepage": "https://sourceforge.net/projects/qwt",
+  "license": null,
+  "dependencies": [
+    {
+      "name": "qt5-base",
+      "default-features": false
+    },
+    "qt5-svg",
+    {
+      "name": "vcpkg-qmake",
+      "host": true,
+      "default-features": false,
+      "features": ["qt5"]
+    }
+  ]
+}
