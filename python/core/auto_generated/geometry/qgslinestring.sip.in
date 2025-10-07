@@ -763,6 +763,8 @@ issue 49578)
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
+    virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const;
+
     virtual bool addZValue( double zValue = 0 );
 
     virtual bool addMValue( double mValue = 0 );

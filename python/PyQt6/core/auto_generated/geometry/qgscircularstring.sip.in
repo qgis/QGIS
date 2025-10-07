@@ -188,6 +188,8 @@ circular string.
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
+    virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const;
+
     virtual QgsCircularString *reversed() const  /Factory/;
 
     virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
