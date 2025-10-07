@@ -442,7 +442,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
   const std::string itemsTitle { title + " items" };
   const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
-  const QString typeName = QString( shortName ).replace( ' ', '_' ).replace( ':', '-' ).replace( QChar( 0x2014 ) /* em-dash */, '-' );
+  const QString typeName { mapLayer->serverProperties()->wfsTypeName() };
   json linksList = links( context );
   linksList.push_back(
     { { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) ) },

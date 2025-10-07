@@ -72,7 +72,7 @@ QJsonObject QgsWfsDescribeFeatureTypeJson::createDescribeFeatureTypeDocument( Qg
       continue;
     }
 
-    const QString name = layerTypeName( layer );
+    const QString name = layer->serverProperties()->wfsTypeName();
 
     if ( !typeNameList.isEmpty() && !typeNameList.contains( name ) )
     {
@@ -107,7 +107,7 @@ QJsonObject QgsWfsDescribeFeatureTypeJson::createDescribeFeatureTypeDocument( Qg
 
 QJsonObject QgsWfsDescribeFeatureTypeJson::schemaLayerToJson( const QgsVectorLayer *layer ) const
 {
-  const QString typeName = layerTypeName( layer );
+  const QString typeName = layer->serverProperties()->wfsTypeName();
 
   QJsonObject json;
   QJsonArray properties;
