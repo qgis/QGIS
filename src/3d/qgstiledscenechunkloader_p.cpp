@@ -25,7 +25,9 @@
 #include "qgsgltfutils.h"
 #include "qgsgltf3dutils.h"
 #include "qgsquantizedmeshtiles.h"
-#include "qgsraycastingutils_p.h"
+#include "qgsray3d.h"
+#include "qgsraycastcontext.h"
+#include "qgsraycastingutils.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
 
@@ -397,7 +399,7 @@ int QgsTiledSceneLayerChunkedEntity::pendingJobsCount() const
   return QgsChunkedEntity::pendingJobsCount() + static_cast<QgsTiledSceneChunkLoaderFactory *>( mChunkLoaderFactory )->mPendingHierarchyFetches.count();
 }
 
-QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   Q_UNUSED( context );
   QgsDebugMsgLevel( QStringLiteral( "Ray cast on tiled scene layer" ), 2 );
@@ -407,7 +409,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
   int hits = 0;
 #endif
 
-  QVector<QgsRayCastingUtils::RayHit> result;
+  QList<QgsRayCastHit> result;
   float minDist = -1;
   QVector3D intersectionPoint;
   QgsChunkNode *minNode = nullptr;
@@ -434,7 +436,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
         int triangleIndex = -1;
         QgsGeoTransform *nodeGeoTransform = node->entity()->findChild<QgsGeoTransform *>();
         Q_ASSERT( nodeGeoTransform );
-        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, nodeGeoTransform->matrix(), nodeIntPoint, triangleIndex );
+        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, context.maximumDistance(), nodeGeoTransform->matrix(), nodeIntPoint, triangleIndex );
         if ( success )
         {
 #ifdef QGISDEBUG
@@ -462,7 +464,11 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
     vm[QStringLiteral( "node_error" )] = tile.geometricError();
     vm[QStringLiteral( "node_content" )] = tile.resources().value( QStringLiteral( "content" ) );
     vm[QStringLiteral( "triangle_index" )] = minTriangleIndex;
-    QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint, FID_NULL, vm );
+
+    QgsRayCastHit hit;
+    hit.setDistance( minDist );
+    hit.setMapCoordinates( mMapSettings->worldToMapCoordinates( intersectionPoint ) );
+    hit.setProperties( vm );
     result.append( hit );
   }
 
