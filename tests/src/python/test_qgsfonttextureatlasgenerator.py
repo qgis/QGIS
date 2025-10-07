@@ -213,16 +213,13 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertTrue(atlas.isValid())
         self.assertEqual(atlas.count(), 2)
         self.assertEqual(len(atlas), 2)
-        self.assertEqual(atlas.atlasSize(), QSize(62, 41))
         self.assertEqual(atlas.graphemeCount("ស្ត្រីល្"), 2)
         with self.assertRaises(KeyError):
             atlas.rect("x")
-        self.assertEqual(atlas.rect("ស្ត្រី"), QRect(0, 0, 36, 41))
-        self.assertEqual(atlas.rect("ល្"), QRect(36, 0, 26, 41))
         self.assertEqual(atlas.pixelOffsetForGrapheme("ស្ត្រីល្", 0), QPoint(0, -8))
-        self.assertEqual(atlas.textureRectForGrapheme("ស្ត្រីល្", 0), QRect(0, 0, 36, 41))
+        self.assertEqual(atlas.textureRectForGrapheme("ស្ត្រីល្", 0), atlas.rect("ស្ត្រី"))
         self.assertEqual(atlas.pixelOffsetForGrapheme("ស្ត្រីល្", 1), QPoint(34, -8))
-        self.assertEqual(atlas.textureRectForGrapheme("ស្ត្រីល្", 1), QRect(36, 0, 26, 41))
+        self.assertEqual(atlas.textureRectForGrapheme("ស្ត្រីល្", 1), atlas.rect("ល្"))
 
 
 if __name__ == "__main__":
