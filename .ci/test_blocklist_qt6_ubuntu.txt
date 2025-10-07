@@ -21,3 +21,4 @@ test_core_layerdefinition
 PyQgsServerApi
 PyQgsServerWMS
 PyQgsServerConfigCache
+test_server__server_wms_dxf
