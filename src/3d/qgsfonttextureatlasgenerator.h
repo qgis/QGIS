@@ -60,21 +60,21 @@ class _3D_EXPORT QgsFontTextureAtlas
 
 #ifndef SIP_RUN
     /**
-     * Returns the packed rectangle for the texture for the specified \a character.
+     * Returns the packed rectangle for the texture for the specified \a grapheme.
      */
-    QRect rect( const QChar &character ) const;
+    QRect rect( const QString &grapheme ) const;
 #else
     /**
-     * Returns the packed rectangle for the texture for the specified \a character.
+     * Returns the packed rectangle for the texture for the specified \a grapheme.
      *
-     * \throws KeyError if no texture for the specified character exists.
+     * \throws KeyError if no texture for the specified grapheme exists.
      */
-    QRect rect( const QChar &character ) const;
+    QRect rect( const QString &grapheme ) const;
     //%MethodCode
     const QRect res = sipCpp->rect( *a0 );
     if ( res.isNull() )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No rectangle for character %1 exists." ).arg( QString( *a0 ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No rectangle for character %1 exists." ).arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -85,12 +85,28 @@ class _3D_EXPORT QgsFontTextureAtlas
 #endif
 
     /**
-     * Returns the pixel offset at which the texture for the matching character should be placed.
+     * Returns the number of graphemes to render for a given \a string.
      *
      * The \a string must match one of the strings passed to QgsFontTextureAtlasGenerator when
      * creating the texture atlas.
      */
-    QPoint pixelOffsetForCharacter( const QString &string, int characterIndex ) const;
+    int graphemeCount( const QString &string ) const;
+
+    /**
+     * Returns the pixel offset at which the texture for the matching grapheme should be placed.
+     *
+     * The \a string must match one of the strings passed to QgsFontTextureAtlasGenerator when
+     * creating the texture atlas.
+     */
+    QPoint pixelOffsetForGrapheme( const QString &string, int graphemeIndex ) const;
+
+    /**
+     * Returns the packed rectangle for the texture for the matching grapheme.
+     *
+     * The \a string must match one of the strings passed to QgsFontTextureAtlasGenerator when
+     * creating the texture atlas.
+     */
+    QRect textureRectForGrapheme( const QString &string, int graphemeIndex ) const;
 
     /**
      * Renders the combined texture atlas, containing all required characters.
@@ -122,11 +138,22 @@ class _3D_EXPORT QgsFontTextureAtlas
 #endif
 
   private:
+    struct GraphemeMetric
+    {
+        GraphemeMetric( int horizontalAdvance = 0, const QString &grapheme = QString() )
+          : horizontalAdvance( horizontalAdvance )
+          , grapheme( grapheme )
+        {}
+
+        int horizontalAdvance = 0;
+        QString grapheme;
+    };
+
     QgsTextFormat mFormat;
     std::vector< QgsCharTextureRect > mRects;
     QSize mAtlasSize;
-    QHash< QChar, int > mCharIndices;
-    QMap< QString, QVector< int > > mHorizontalAdvancesForStrings;
+    QHash< QString, int > mGraphemeIndices;
+    QMap< QString, QVector< GraphemeMetric > > mGraphemeMetrics;
 
     friend class QgsFontTextureAtlasGenerator;
 };
