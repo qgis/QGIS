@@ -96,6 +96,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mIsDebugOverlayEnabled( other.mIsDebugOverlayEnabled )
   , mExtent( other.mExtent )
   , mShowExtentIn2DView( other.mShowExtentIn2DView )
+  , mShowMapOverlay( other.mShowMapOverlay )
 {
   setTerrainSettings( other.mTerrainSettings ? other.mTerrainSettings->clone() : new QgsFlatTerrainSettings() );
 
@@ -294,6 +295,9 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   QDomElement elem3dAxis = elem.firstChildElement( QStringLiteral( "axis3d" ) );
   m3dAxisSettings.readXml( elem3dAxis, context );
+
+  QDomElement elemMapOverlay = elem.firstChildElement( QStringLiteral( "map-overlay" ) );
+  mShowMapOverlay = elemMapOverlay.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
 }
 
 QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -429,6 +433,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elem3dAxis = doc.createElement( QStringLiteral( "axis3d" ) );
   m3dAxisSettings.writeXml( elem3dAxis, context );
   elem.appendChild( elem3dAxis );
+
+  QDomElement elemMapOverlay = doc.createElement( QStringLiteral( "map-overlay" ) );
+  elemMapOverlay.setAttribute( QStringLiteral( "enabled" ), mShowMapOverlay ? 1 : 0 );
+  elem.appendChild( elemMapOverlay );
 
   return elem;
 }
@@ -1535,4 +1543,22 @@ void Qgs3DMapSettings::setShowExtentIn2DView( bool show )
 
   mShowExtentIn2DView = show;
   emit showExtentIn2DViewChanged();
+}
+
+bool Qgs3DMapSettings::isMapOverlayEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShowMapOverlay;
+}
+
+void Qgs3DMapSettings::setIsMapOverlayEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mShowMapOverlay == enabled )
+    return;
+
+  mShowMapOverlay = enabled;
+  emit showMapOverlayChanged();
 }
