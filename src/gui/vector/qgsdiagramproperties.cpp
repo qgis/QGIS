@@ -406,6 +406,27 @@ void QgsDiagramProperties::insertDefaults()
   mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
 }
 
+void QgsDiagramProperties::updateDataDefinedButtons()
+{
+  const auto propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
+  for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
+  {
+    updateDataDefinedButton( button );
+  }
+}
+
+void QgsDiagramProperties::updateDataDefinedButton( QgsPropertyOverrideButton *button )
+{
+  if ( !button )
+    return;
+
+  if ( button->propertyKey() < 0 )
+    return;
+
+  const QgsWidgetWrapper::Property key = static_cast<QgsWidgetWrapper::Property>( button->propertyKey() );
+  whileBlocking( button )->setToProperty( mDataDefinedProperties.property( key ) );
+}
+
 void QgsDiagramProperties::syncToLayer()
 {
   const QgsDiagramRenderer *renderer = mLayer->diagramRenderer();
@@ -620,6 +641,7 @@ void QgsDiagramProperties::syncToSettings( const QgsDiagramLayerSettings *dls )
     mShowAllCheckBox->setChecked( dls->showAllDiagrams() );
 
     mDataDefinedProperties = dls->dataDefinedProperties();
+    updateDataDefinedButtons();
   }
 }
 
