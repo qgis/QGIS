@@ -885,6 +885,23 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
         }
       }
     }
+#if 0
+    /*
+     * Adds transparency layer to QgsPoint3DBillboardMaterial entities,
+     * so that they get rendered in the transparent pipeline instead
+     * of the opaque pipeline. Permits semi-opaque pixel rendering.
+     *
+     * Pros: nicely smoothed billboard symbol rendering, without harsh
+     * aliased edges. Billboard symbols can use semi-transparent colors.
+     *
+     * Cons: Introduces ordering issues for billboards, where billboards
+     * which should be shown behind others will appear in front from
+     * some angles (i.e. the same issue as we get for 3d polygon objects
+     * with transparency)
+     *
+     * Consider enabling if/when we have some workaround for the stacking issue,
+     * eg CPU based sorting on camera movement...
+     */
     else if ( QgsPoint3DBillboardMaterial *billboardMaterial = qobject_cast<QgsPoint3DBillboardMaterial *>( material ) )
     {
       Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( billboardMaterial->parent() );
@@ -893,6 +910,7 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
         entity->addComponent( transparentLayer );
       }
     }
+#endif
     else
     {
       // This handles the phong material with data defined properties, the textured case and point (instanced) symbols.

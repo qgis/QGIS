@@ -9,6 +9,6 @@ void main(void)
 {
   fragColor = texture(tex0, vec2(UV.x, 1.0f - UV.y));
 
-  if (fragColor.a < 0.01)
+  if (fragColor.a < 0.5)
       discard;
 }
