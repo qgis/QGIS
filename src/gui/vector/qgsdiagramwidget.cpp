@@ -132,9 +132,6 @@ void QgsDiagramWidget::syncToOwnLayer()
         // Play safe and set to histogram by default if the diagram name is unknown
         mDiagramTypeComboBox->setCurrentIndex( ModeHistogram );
       }
-
-      // Delegate to single diagram's syncToLayer
-      static_cast<QgsDiagramProperties *>( mWidget )->syncToLayer();
     }
   }
   else // No Diagram
