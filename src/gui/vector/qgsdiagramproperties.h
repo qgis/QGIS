@@ -240,6 +240,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
 
     friend class QgsStackedDiagramProperties;
     friend class QgsStackedDiagramPropertiesDialog;
+    friend class TestQgsDiagramProperties;
 };
 
 
