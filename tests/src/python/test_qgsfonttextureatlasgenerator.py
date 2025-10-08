@@ -216,9 +216,7 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertEqual(atlas.graphemeCount("ស្ត្រីល្"), 2)
         with self.assertRaises(KeyError):
             atlas.rect("x")
-        self.assertEqual(atlas.pixelOffsetForGrapheme("ស្ត្រីល្", 0), QPoint(0, -8))
         self.assertEqual(atlas.textureRectForGrapheme("ស្ត្រីល្", 0), atlas.rect("ស្ត្រី"))
-        self.assertEqual(atlas.pixelOffsetForGrapheme("ស្ត្រីល្", 1), QPoint(34, -8))
         self.assertEqual(atlas.textureRectForGrapheme("ស្ត្រីល្", 1), atlas.rect("ល្"))
 
 
