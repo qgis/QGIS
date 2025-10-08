@@ -367,17 +367,41 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   // Make our own projection matrix so that frustum culling done by the
   // entities isn't dependent on the current near/far planes, which would then
   // require multiple steps to stabilize.
-  // The matrix is constructed just like in QMatrix4x4::perspective(), but for
-  // all elements involving the near and far plane, the limit of the expression
-  // with the far plane going to infinity is taken.
-  float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
-  float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
-  QMatrix4x4 projMatrix(
-    fovCotan / camera->aspectRatio(), 0, 0, 0,
-    0, fovCotan, 0, 0,
-    0, 0, -1, -2,
-    0, 0, -1, 0
-  );
+  // The matrix is constructed just like in QMatrix4x4::perspective() /
+  // ortho(), but for all elements involving the near and far plane, the limit
+  // of the expression with the far plane going to infinity is taken.
+  QMatrix4x4 projMatrix;
+  switch ( mMap.projectionType() )
+  {
+    case Qt3DRender::QCameraLens::PerspectiveProjection:
+    {
+      float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
+      float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
+      projMatrix = {
+        fovCotan / camera->aspectRatio(), 0, 0, 0,
+        0, fovCotan, 0, 0,
+        0, 0, -1, -2,
+        0, 0, -1, 0
+      };
+      break;
+    }
+    case Qt3DRender::QCameraLens::OrthographicProjection:
+    {
+      Qt3DRender::QCameraLens *lens = camera->lens();
+      projMatrix = {
+        2.0f / (lens->right() - lens->left()), 0, 0, 0,
+        0, 2.0f / (lens->top() - lens->bottom()), 0, 0,
+        0, 0, 1, 0,
+        -(lens->left() + lens->right()) / (lens->right() - lens->left()),
+        -(lens->top() + lens->bottom()) / (lens->top() - lens->bottom()),
+        -1.0f, 1.0f,
+      };
+      break;
+    }
+    default:
+      QgsDebugError("Unhandled 3D projection type");
+      projMatrix = camera->projectionMatrix(); // Give up and use the current matrix
+  }
   sceneContext.viewProjectionMatrix = projMatrix * camera->viewMatrix();
 
 
