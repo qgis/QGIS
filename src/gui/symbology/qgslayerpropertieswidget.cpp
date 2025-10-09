@@ -30,6 +30,7 @@
 #include "qgslogger.h"
 
 #include "qgssymbollayerwidget.h"
+#include "qgssymbollayerwidgets.h"
 #include "qgsarrowsymbollayerwidget.h"
 #include "qgsellipsesymbollayerwidget.h"
 #include "qgsinterpolatedlinesymbollayerwidget.h"
