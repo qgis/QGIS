@@ -134,6 +134,7 @@
 #include "layers/qgsapplayerhandling.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgselevationprofilemanager.h"
+#include "qgselevationprofile.h"
 
 #include "canvas/qgsappcanvasfiltering.h"
 #include "canvas/qgscanvasrefreshblocker.h"
@@ -13267,11 +13268,19 @@ QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
 {
   const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
 
-  const QString title = QgsProject::instance()->elevationProfileManager()->generateUniqueTitle();
+  QgsElevationProfile *profile = new QgsElevationProfile( QgsProject::instance() );
 
-  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( title );
-  widget->setMainCanvas( mMapCanvas );
-  return widget;
+  profile->setLockAxisScales( QgsElevationProfileWidget::settingLockAxis->value() );
+  // TODO other defaults
+
+  profile->setName( QgsProject::instance()->elevationProfileManager()->generateUniqueTitle() );
+  if ( QgsProject::instance()->elevationProfileManager()->addProfile( profile ) )
+  {
+    QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( profile );
+    widget->setMainCanvas( mMapCanvas );
+    return widget;
+  }
+  return nullptr;
 }
 
 void QgisApp::new3DMapCanvas()

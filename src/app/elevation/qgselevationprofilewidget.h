@@ -28,7 +28,9 @@
 #include <QWidgetAction>
 #include <QElapsedTimer>
 #include <QTimer>
+#include <QPointer>
 
+class QgsElevationProfile;
 class QgsDockableWidgetHelper;
 class QgsMapCanvas;
 class QProgressBar;
@@ -99,13 +101,13 @@ class QgsElevationProfileWidget : public QWidget
     static const QgsSettingsEntryBool *settingShowSubsections;
     static const QgsSettingsEntryBool *settingShowScaleRatioInToolbar;
 
-    QgsElevationProfileWidget( const QString &name );
+    QgsElevationProfileWidget( QgsElevationProfile *profile );
     ~QgsElevationProfileWidget();
 
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
 
     void setCanvasName( const QString &name );
-    QString canvasName() const { return mCanvasName; }
+    QString canvasName() const;
 
     void setMainCanvas( QgsMapCanvas *canvas );
 
@@ -143,8 +145,8 @@ class QgsElevationProfileWidget : public QWidget
 
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;
+    QPointer< QgsElevationProfile > mProfile;
 
-    QString mCanvasName;
     QgsMapCanvas *mMainCanvas = nullptr;
 
     QProgressBar *mProgressPendingJobs = nullptr;
