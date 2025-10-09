@@ -40,11 +40,49 @@
 #include "qgslayoutreportcontext.h"
 #include "qgslayertreefiltersettings.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsmaplayerlegend.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
 #include "qgsexpressioncontext.h"
+
+//
+// QgsLegendFilterProxyModel
+//
+
+QgsLegendFilterProxyModel::QgsLegendFilterProxyModel( QObject *parent )
+  : QgsLayerTreeFilterProxyModel( parent )
+{
+  setIsDefaultLegend( true );
+}
+
+void QgsLegendFilterProxyModel::setIsDefaultLegend( bool isDefault )
+{
+  mIsDefaultLegend = isDefault;
+
+  // only show private layers when not in default mode
+  setShowPrivateLayers( !mIsDefaultLegend );
+
+  invalidateFilter();
+}
+
+bool QgsLegendFilterProxyModel::layerShown( QgsMapLayer *layer ) const
+{
+  if ( !layer )
+    return true;
+
+  if ( QgsMapLayerLegend *layerLegend = layer->legend(); mIsDefaultLegend && layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+//
+// QgsLayoutItemLegend
+//
 
 QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -124,9 +162,9 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   {
     Q_NOWARN_DEPRECATED_PUSH
     // no longer required, but left set for api stability
-    mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
+    mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::UseAdvancedEffects );
     mSettings.setDpi( dpi );
-    mSettings.setSynchronousLegendRequests( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagSynchronousLegendGraphics );
+    mSettings.setSynchronousLegendRequests( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::SynchronousLegendGraphics );
     Q_NOWARN_DEPRECATED_POP
   }
   if ( mMap && mLayout )
@@ -330,8 +368,9 @@ QgsLegendRenderer QgsLayoutItemLegend::createRenderer() const
 {
   QgsLegendRenderer res( mLegendModel.get(), mSettings );
 
-  // only show private layers when not in auto update mode
-  res.proxyModel()->setShowPrivateLayers( static_cast< bool >( mCustomLayerTree ) );
+  QgsLegendFilterProxyModel *proxy = new QgsLegendFilterProxyModel();
+  proxy->setIsDefaultLegend( !static_cast< bool >( mCustomLayerTree ) );
+  res.setProxyModel( proxy );
 
   return res;
 }
@@ -353,7 +392,51 @@ void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
   if ( autoUpdate == autoUpdateModel() )
     return;
 
-  setCustomLayerTree( autoUpdate ? nullptr : mLayout->project()->layerTreeRoot()->clone() );
+  if ( autoUpdate )
+  {
+    setCustomLayerTree( nullptr );
+  }
+  else
+  {
+    std::unique_ptr< QgsLayerTree > customTree( mLayout->project()->layerTreeRoot()->clone() );
+
+    // filter out excluded by default items
+    std::function< void( QgsLayerTreeGroup * )> filterNodeChildren;
+    filterNodeChildren = [&filterNodeChildren]( QgsLayerTreeGroup * group )
+    {
+      if ( !group )
+        return;
+
+      const QList<QgsLayerTreeNode *> children = group->children();
+      for ( QgsLayerTreeNode *child : children )
+      {
+        if ( !child )
+        {
+          group->removeChildNode( child );
+          continue;
+        }
+        else if ( QgsLayerTree::isGroup( child ) )
+        {
+          filterNodeChildren( QgsLayerTree::toGroup( child ) );
+        }
+        else if ( QgsLayerTree::isLayer( child ) )
+        {
+          QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( child );
+          if ( QgsMapLayer *mapLayer = layer->layer() )
+          {
+            if ( QgsMapLayerLegend *layerLegend = mapLayer->legend(); layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+            {
+              group->removeChildNode( child );
+            }
+          }
+        }
+      }
+    };
+    filterNodeChildren( customTree.get() );
+
+    setCustomLayerTree( customTree.release() );
+  }
+
   adjustBoxSize();
   updateFilterByMap( false );
 }
@@ -1216,18 +1299,20 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     QgsLayerTreeFilterSettings filterSettings( mapSettings );
 
     QList<QgsMapLayer *> layersToClip;
-    if ( !atlasGeometry.isNull() && mMap->atlasClippingSettings()->enabled() )
+    if ( mMap )
     {
-      layersToClip = mMap->atlasClippingSettings()->layersToClip();
-      for ( QgsMapLayer *layer : std::as_const( layersToClip ) )
+      if ( !atlasGeometry.isNull() && mMap->atlasClippingSettings()->enabled() )
       {
-        QList<QgsMapLayer *> mapLayers { filterSettings.mapSettings().layers( true ) };
-        mapLayers.removeAll( layer );
-        filterSettings.mapSettings().setLayers( mapLayers );
-        filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( atlasGeometry, mapSettings.destinationCrs() ) );
+        layersToClip = mMap->atlasClippingSettings()->layersToClip();
+        for ( QgsMapLayer *layer : std::as_const( layersToClip ) )
+        {
+          QList<QgsMapLayer *> mapLayers { filterSettings.mapSettings().layers( true ) };
+          mapLayers.removeAll( layer );
+          filterSettings.mapSettings().setLayers( mapLayers );
+          filterSettings.addVisibleExtentForLayer( layer, QgsReferencedGeometry( atlasGeometry, mapSettings.destinationCrs() ) );
+        }
       }
     }
-
 
     if ( !linkedFilterMaps.empty() )
     {

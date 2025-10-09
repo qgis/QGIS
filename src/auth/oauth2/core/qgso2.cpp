@@ -42,7 +42,7 @@ QgsO2::QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config, QObject
   , mOAuth2Config( oauth2config )
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [=]() {
+  std::call_once( initialized, []() {
     setLoggingFunction( []( const QString &message, LogLevel level ) {
 #ifdef QGISDEBUG
       switch ( level )
@@ -56,8 +56,8 @@ QgsO2::QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config, QObject
           break;
       }
 #else
-                                         ( void ) message;
-                                         ( void ) level;
+                                        ( void ) message;
+                                        ( void ) level;
 #endif
     } );
   } );

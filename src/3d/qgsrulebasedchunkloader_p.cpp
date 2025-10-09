@@ -31,6 +31,7 @@
 #include "qgsrulebased3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgsabstractterrainsettings.h"
+#include "qgsexpressioncontextutils.h"
 
 #include <QtConcurrent>
 #include <Qt3DCore/QTransform>
@@ -44,6 +45,11 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   , mContext( factory->mRenderContext )
   , mSource( new QgsVectorLayerFeatureSource( factory->mLayer ) )
 {
+}
+
+void QgsRuleBasedChunkLoader::start()
+{
+  QgsChunkNode *node = chunk();
   if ( node->level() < mFactory->mLeafLevel )
   {
     QTimer::singleShot( 0, this, &QgsRuleBasedChunkLoader::finished );
@@ -58,7 +64,8 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   // picked so that the coordinates are relatively small to avoid numerical precision issues
   QgsVector3D chunkOrigin( rect.center().x(), rect.center().y(), 0 );
 
-  QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( layer ) );
+  QgsExpressionContext exprContext;
+  exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   exprContext.setFields( layer->fields() );
   mContext.setExpressionContext( exprContext );
 

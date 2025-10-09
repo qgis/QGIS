@@ -354,7 +354,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     void loadStyleAtPath( const QString &path );
     void clearStyles();
 
-    //! propagate dirtyness to project
+    //! propagate dirtiness to project
     void makeDirty();
 
     friend class TestQgsProjectProperties;

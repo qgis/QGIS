@@ -121,6 +121,15 @@ Gets the human readable name for a widget type
 :return: A human readable name
 %End
 
+    bool isReadOnly( const QString &widgetId );
+%Docstring
+Gets the widget's read-only flag
+
+:param widgetId: The widget type to get the read-only flag for
+
+.. versionadded:: 3.44
+%End
+
     QMap<QString, QgsEditorWidgetFactory *> factories();
 %Docstring
 Gets access to all registered factories

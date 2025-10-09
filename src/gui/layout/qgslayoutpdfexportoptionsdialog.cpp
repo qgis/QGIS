@@ -97,7 +97,7 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   mGeospatialPdfStructureTree->setDefaultDropAction( Qt::MoveAction );
 
   mGeospatialPdfStructureTree->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mGeospatialPdfStructureTree, &QTreeView::customContextMenuRequested, this, [=]( const QPoint &point ) {
+  connect( mGeospatialPdfStructureTree, &QTreeView::customContextMenuRequested, this, [this]( const QPoint &point ) {
     const QModelIndex index = mGeospatialPdfStructureTree->indexAt( point );
     if ( index.isValid() )
       showContextMenuForGeospatialPdfStructure( point, mGeospatialPdfStructureProxyModel->mapToSource( index ) );
@@ -281,12 +281,12 @@ void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeospatialPdfStructure( 
     {
       QAction *selectAll = new QAction( tr( "Select All" ), mGeospatialPdfStructureTreeMenu );
       mGeospatialPdfStructureTreeMenu->addAction( selectAll );
-      connect( selectAll, &QAction::triggered, this, [=] {
+      connect( selectAll, &QAction::triggered, this, [this, index] {
         mGeospatialPdfStructureModel->checkAll( true, QModelIndex(), index.column() );
       } );
       QAction *deselectAll = new QAction( tr( "Deselect All" ), mGeospatialPdfStructureTreeMenu );
       mGeospatialPdfStructureTreeMenu->addAction( deselectAll );
-      connect( deselectAll, &QAction::triggered, this, [=] {
+      connect( deselectAll, &QAction::triggered, this, [this, index] {
         mGeospatialPdfStructureModel->checkAll( false, QModelIndex(), index.column() );
       } );
       break;

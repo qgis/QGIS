@@ -554,7 +554,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
       vl->setLabelsEnabled( true );
 
       QString errorMessage;
-      vl->saveStyleToDatabase( QString(), QString(), true, QString(), errorMessage );
+      vl->saveStyleToDatabaseV2( QString(), QString(), true, QString(), errorMessage );
     }
   }
 

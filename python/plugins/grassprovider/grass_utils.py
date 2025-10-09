@@ -628,11 +628,9 @@ class GrassUtils:
                     "Please install it or configure your PATH environment variable."
                 )
 
-    @staticmethod
-    def tr(string, context=""):
-        if context == "":
-            context = "Grass7Utils"
-        return QCoreApplication.translate(context, string)
+    @classmethod
+    def tr(cls, string: str):
+        return QCoreApplication.translate(cls.__name__, string)
 
     @staticmethod
     def writeCommand(output, command):

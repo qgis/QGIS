@@ -4165,7 +4165,7 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
     fetcher->setProperty( "legendScale", QVariant::fromValue( scale ) );
     fetcher->setProperty( "legendExtent", QVariant::fromValue( mapExtent.toRectF() ) );
     connect( fetcher, &QgsImageFetcher::finish, this, &QgsWmsProvider::getLegendGraphicReplyFinished );
-    connect( fetcher, &QgsImageFetcher::error, this, [=]( const QString & ) {
+    connect( fetcher, &QgsImageFetcher::error, this, [this]( const QString & ) {
       mLegendGraphicFetchErrored = true;
     } );
     return fetcher;
@@ -4225,6 +4225,13 @@ bool QgsWmsProvider::isUrlForWMTS( const QString &url )
 {
   // Do comparison in case insensitive way to match OGC KVP requirements
   return url.contains( QLatin1String( "SERVICE=WMTS" ), Qt::CaseInsensitive ) || url.contains( QLatin1String( "/WMTSCapabilities.xml" ), Qt::CaseInsensitive );
+}
+
+QVariantMap QgsWmsProvider::metadata() const
+{
+  QVariantMap metadata;
+  metadata.insert( QStringLiteral( "WmsVersion" ), mCaps.mCapabilities.version );
+  return metadata;
 }
 
 

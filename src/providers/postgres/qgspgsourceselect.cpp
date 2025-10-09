@@ -20,6 +20,7 @@ email                : sherman at mrcc.com
 #include "moc_qgspgsourceselect.cpp"
 
 #include "qgslogger.h"
+#include "qgssettings.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsapplication.h"
 #include "qgspostgresprovider.h"
@@ -193,6 +194,8 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   }
 }
 
+static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "PgSourceSelect" );
+
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
 {
@@ -229,11 +232,15 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   QgsSettings settings;
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), false ).toBool() );
+
+  mHoldDialogOpen->setChecked( settingHoldDialogOpen->value( { SETTINGS_WINDOWS_PATH } ) );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    if ( settingColumnWidths->value( { SETTINGS_WINDOWS_PATH, QString::number( i ) } ) > 0 )
+    {
+      mTablesTreeView->setColumnWidth( i, settingColumnWidths->value( { SETTINGS_WINDOWS_PATH, QString::number( i ) } ) );
+    }
   }
 }
 
@@ -328,13 +335,13 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
     finishList();
   }
 
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
-
+  settingHoldDialogOpen->setValue( mHoldDialogOpen->isChecked(), { SETTINGS_WINDOWS_PATH } );
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settingColumnWidths->setValue( mTablesTreeView->columnWidth( i ), { SETTINGS_WINDOWS_PATH, QString::number( i ) } );
   }
+  //store general settings in base class
+  storeSettings();
 }
 
 void QgsPgSourceSelect::populateConnectionList()
@@ -444,7 +451,7 @@ void QgsPgSourceSelect::btnConnect_clicked()
 
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::setLayerType, this, &QgsPgSourceSelect::setLayerType );
   connect( mColumnTypeThread, &QThread::finished, this, &QgsPgSourceSelect::columnThreadFinished );
-  connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progress, mColumnTypeTask, [=]( int i, int n ) {
+  connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progress, mColumnTypeTask, [this]( int i, int n ) {
     mColumnTypeTask->setProxyProgress( 100.0 * static_cast<double>( i ) / n );
   } );
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progressMessage, this, &QgsPgSourceSelect::progressMessage );
@@ -490,6 +497,11 @@ QString QgsPgSourceSelect::connectionInfo( bool expandAuthCfg )
 QgsDataSourceUri QgsPgSourceSelect::dataSourceUri()
 {
   return mDataSrcUri;
+}
+
+QString QgsPgSourceSelect::settingPath() const
+{
+  return SETTINGS_WINDOWS_PATH;
 }
 
 void QgsPgSourceSelect::refresh()

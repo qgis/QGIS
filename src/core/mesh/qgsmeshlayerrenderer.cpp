@@ -452,7 +452,17 @@ bool QgsMeshLayerRenderer::render()
 
 bool QgsMeshLayerRenderer::forceRasterRender() const
 {
-  return renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
+  switch ( renderContext()->rasterizedRenderingPolicy() )
+  {
+    case Qgis::RasterizedRenderingPolicy::Default:
+    case Qgis::RasterizedRenderingPolicy::PreferVector:
+      break;
+
+    case Qgis::RasterizedRenderingPolicy::ForceVector:
+      return false;
+  }
+
+  return !qgsDoubleNear( mLayerOpacity, 1.0 );
 }
 
 void QgsMeshLayerRenderer::renderMesh()

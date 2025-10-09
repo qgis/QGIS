@@ -43,14 +43,14 @@ StandardCoordinateReferenceSystemsModel::StandardCoordinateReferenceSystemsModel
   const QgsSettings settings;
   mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), Qgis::geographicCrsAuthId(), QgsSettings::App ).toString() );
 
-  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [=] {
+  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [this] {
     mCurrentCrs.updateDefinition();
     mLayerCrs.updateDefinition();
     mProjectCrs.updateDefinition();
     mDefaultCrs.updateDefinition();
   } );
 
-  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [=] {
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [this] {
     mProjectCrs = QgsProject::instance()->crs();
   } );
 }

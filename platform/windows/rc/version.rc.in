@@ -1,0 +1,28 @@
+#include <windows.h>
+
+#define VERSION          @CPACK_PACKAGE_VERSION_MAJOR@,@CPACK_PACKAGE_VERSION_MINOR@,@CPACK_PACKAGE_VERSION_PATCH@,0
+#define VERSION_STR "@COMPLETE_VERSION@"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     VERSION
+PRODUCTVERSION  VERSION
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName",    "@WIN32_VI_COMPANY@"
+            VALUE "FileDescription",  "@WIN32_VI_DESC@"
+            VALUE "FileVersion",      VERSION_STR
+            VALUE "InternalName",     "@WIN32_VI_FILENAME@"
+            VALUE "OriginalFilename", "@WIN32_VI_FILENAME@"
+            VALUE "ProductName",      "@WIN32_VI_PRODUCT@"
+            VALUE "ProductVersion",   VERSION_STR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409,1200
+    END
+END

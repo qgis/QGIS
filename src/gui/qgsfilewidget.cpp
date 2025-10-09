@@ -82,17 +82,46 @@ QString QgsFileWidget::filePath()
 
 QStringList QgsFileWidget::splitFilePaths( const QString &path )
 {
-  QStringList paths;
-  const thread_local QRegularExpression partsRegex = QRegularExpression( QStringLiteral( "\"\\s+\"" ) );
-  const QStringList pathParts = path.split( partsRegex, Qt::SkipEmptyParts );
+  QStringList pathParts;
+  // Iterate over regular expression matches in the path instead of splitting the path on an expression.
+  // Splitting on an expression discards the string parts matching the expression.
+  // We want to split on spaces between double quotes without discarding double quotes around spaces.
+  // The decision whether to discard double quotes is made later, based on each isolated split path.
+  const thread_local QRegularExpression partSeparatorsRegex = QRegularExpression( QStringLiteral( "(?:\")(\\s+)(?:\")" ) );
+  QRegularExpressionMatchIterator partSeparatorMatches = partSeparatorsRegex.globalMatch( path );
+  int substringStart = 0;
+  while ( partSeparatorMatches.hasNext() )
+  {
+    QRegularExpressionMatch match = partSeparatorMatches.next();
+    int substringEnd = match.capturedStart() + 1;
+    int substringLength = substringEnd - substringStart;
+    pathParts.append( path.mid( substringStart, substringLength ) );
+    substringStart = match.capturedEnd() - 1;
+    if ( !partSeparatorMatches.hasNext() )
+    {
+      pathParts.append( path.mid( substringStart ) );
+    }
+  }
+  if ( pathParts.length() == 0 )
+  {
+    pathParts.append( path );
+  }
 
-  const thread_local QRegularExpression cleanRe( QStringLiteral( "(^\\s*\")|(\"\\s*)" ) );
-  paths.reserve( pathParts.size() );
+  QStringList paths;
+  const thread_local QRegularExpression doubleQuoteWrappedRegex( QStringLiteral( "(?:^\\s*\")(.+)(?:\"\\s*$)" ) );
   for ( const QString &pathsPart : pathParts )
   {
-    QString cleaned = pathsPart;
-    cleaned.remove( cleanRe );
-    paths.append( cleaned );
+    QRegularExpressionMatch match = doubleQuoteWrappedRegex.match( pathsPart );
+    QString finalPath;
+    if ( match.hasMatch() )
+    {
+      finalPath = match.captured( 1 );
+    }
+    else
+    {
+      finalPath = pathsPart;
+    }
+    paths.append( finalPath );
   }
   return paths;
 }

@@ -280,12 +280,62 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   QString actionSettingKey;
 
   QDomElement child = root.firstChildElement();
+  ActionOnExisting actionOnExisting = ActionOnExisting::Ask;
   while ( !child.isNull() )
   {
     actionShortcut = child.attribute( QStringLiteral( "shortcut" ) );
+    QKeySequence actionShortcutSequence( actionShortcut );
+    QString previousText;
+
     if ( version < QgsProjectVersion( QStringLiteral( "1.1" ) ) )
     {
       actionName = child.attribute( QStringLiteral( "name" ) );
+      QShortcut *previousShortcut = mManager->shortcutForSequence( actionShortcutSequence );
+      QAction *previousAction = mManager->actionForSequence( actionShortcutSequence );
+      if ( previousShortcut && previousShortcut->objectName() != actionName )
+      {
+        previousText = previousShortcut->whatsThis();
+      }
+      else if ( previousAction && previousAction->objectName() != actionName )
+      {
+        previousText = previousAction->text().remove( '&' );
+      }
+      if ( !previousText.isEmpty() )
+      {
+        QString text;
+        if ( QAction *action = mManager->actionByName( actionName ) )
+        {
+          text = action->text().remove( '&' );
+        }
+        else if ( QShortcut *shortcut = mManager->shortcutByName( actionName ) )
+        {
+          text = shortcut->whatsThis();
+        }
+
+        if ( actionOnExisting == ActionOnExisting::Ask )
+        {
+          const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
+          if ( res == QMessageBox::No || res == QMessageBox::NoToAll )
+          {
+            if ( res == QMessageBox::NoToAll )
+            {
+              actionOnExisting = ActionOnExisting::SkipAll;
+            }
+            child = child.nextSiblingElement();
+            continue;
+          }
+          if ( res == QMessageBox::YesToAll )
+          {
+            actionOnExisting = ActionOnExisting::ReassignAll;
+          }
+        }
+        else if ( actionOnExisting == ActionOnExisting::SkipAll )
+        {
+          child = child.nextSiblingElement();
+          continue;
+        }
+        mManager->setObjectKeySequence( previousAction ? qobject_cast<QObject *>( previousAction ) : qobject_cast<QObject *>( previousShortcut ), QString() );
+      }
       mManager->setKeySequence( actionName, actionShortcut );
     }
     else
@@ -293,7 +343,58 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
       actionSettingKey = child.attribute( QStringLiteral( "setting" ) );
       QObject *obj = mManager->objectForSettingKey( actionSettingKey );
       if ( obj )
+      {
+        QObject *previousObj = mManager->objectForSequence( actionShortcutSequence );
+        if ( previousObj && previousObj != obj )
+        {
+          if ( QAction *previousAction = qobject_cast<QAction *>( previousObj ) )
+          {
+            previousText = previousAction->text().remove( '&' );
+          }
+          else if ( QShortcut *previousShortcut = qobject_cast<QShortcut *>( previousObj ) )
+          {
+            previousText = previousShortcut->whatsThis();
+          }
+        }
+
+        if ( !previousText.isEmpty() )
+        {
+          QString text;
+          if ( QAction *action = qobject_cast<QAction *>( obj ) )
+          {
+            text = action->text().remove( '&' );
+          }
+          else if ( QShortcut *shortcut = qobject_cast<QShortcut *>( obj ) )
+          {
+            text = shortcut->whatsThis();
+          }
+
+          if ( actionOnExisting == ActionOnExisting::Ask )
+          {
+            const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
+            if ( res == QMessageBox::No || res == QMessageBox::NoToAll )
+            {
+              if ( res == QMessageBox::NoToAll )
+              {
+                actionOnExisting = ActionOnExisting::SkipAll;
+              }
+              child = child.nextSiblingElement();
+              continue;
+            }
+            if ( res == QMessageBox::YesToAll )
+            {
+              actionOnExisting = ActionOnExisting::ReassignAll;
+            }
+          }
+          else if ( actionOnExisting == ActionOnExisting::SkipAll )
+          {
+            child = child.nextSiblingElement();
+            continue;
+          }
+          mManager->setObjectKeySequence( previousObj, QString() );
+        }
         mManager->setObjectKeySequence( obj, actionShortcut );
+      }
     }
 
     child = child.nextSiblingElement();

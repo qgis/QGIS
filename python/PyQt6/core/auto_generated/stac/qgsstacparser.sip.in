@@ -1,0 +1,82 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacparser.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsStacParser
+{
+%Docstring(signature="appended")
+SpatioTemporal Asset Catalog JSON parser.
+
+This class parses json data and creates the appropriate STAC Catalog,
+Collection, Item or ItemCollection.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstacparser.h"
+%End
+  public:
+    QgsStacParser();
+%Docstring
+Default constructor
+%End
+
+    void setData( const QByteArray &data );
+%Docstring
+Sets the JSON \data to be parsed
+%End
+
+    void setBaseUrl( const QUrl &url );
+%Docstring
+Sets the base ``url`` that will be used to resolve relative links. If
+not called, relative links will not be resolved to absolute links.
+%End
+
+    std::unique_ptr< QgsStacCatalog > catalog();
+%Docstring
+Returns the parsed STAC Catalog If parsing failed, ``None`` is returned
+The caller takes ownership of the returned catalog
+%End
+
+
+
+
+
+    QgsStacCollectionList *collections();
+%Docstring
+Returns the parsed STAC API Collections If parsing failed, ``None`` is
+returned The caller takes ownership of the returned collections
+%End
+
+    Qgis::StacObjectType type() const;
+%Docstring
+Returns the type of the parsed object
+%End
+
+    QString error() const;
+%Docstring
+Returns the last parsing error
+%End
+
+  private:
+    QgsStacParser( const QgsStacParser &rh );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstacparser.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

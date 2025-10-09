@@ -380,10 +380,6 @@ Returns whether child type names are omitted from Wkt representations of
 the collection
 %End
 
-    bool fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
-%Docstring
-Reads a collection from a WKT string.
-%End
 
     virtual QgsBox3D calculateBoundingBox3D() const;
 

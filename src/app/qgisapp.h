@@ -326,8 +326,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the messageBar object which allows displaying unobtrusive messages to the user.
     QgsMessageBar *messageBar();
 
-    //! Open the message log dock widget
-    void openMessageLog();
+    /**
+     * Opens the message log dock widget, and optionally activates a specific tab by name.
+     *
+     * \param tabName Name of the tab to be activated.
+     */
+    void openMessageLog( const QString &tabName = QString() );
 
     //! Adds a widget to the user input tool bar
     void addUserInputWidget( QWidget *widget );
@@ -567,6 +571,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionVertexToolActiveLayer() { return mActionVertexToolActiveLayer; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
+    QAction *actionChamferFillet() { return mActionChamferFillet; }
     QAction *actionPan() { return mActionPan; }
     QAction *actionPanToSelected() { return mActionPanToSelected; }
     QAction *actionZoomIn() { return mActionZoomIn; }
@@ -1347,6 +1352,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void show3DMapViewsManager();
 
+    /**
+     * Shows the elevation profile manager dialog.
+     */
+    void showElevationProfileManager();
+
     //! shows the snapping Options
     void snappingOptions();
 
@@ -1834,6 +1844,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void moveFeatureCopy();
     //! activates the offset curve tool
     void offsetCurve();
+    //! activates the chamfer fillet tool
+    void chamferFillet();
     //! activates the reshape features tool
     void reshapeFeatures();
     //! activates the split features tool

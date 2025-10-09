@@ -20,6 +20,7 @@ file(GLOB ANNOTATION_UIS "${CMAKE_CURRENT_SOURCE_DIR}/annotations/*.ui")
 file(GLOB SENSOR_UIS "${CMAKE_CURRENT_SOURCE_DIR}/sensor/*.ui")
 file(GLOB TILED_SCENE_UIS "${CMAKE_CURRENT_SOURCE_DIR}/tiledscene/*.ui")
 file(GLOB STAC_UIS "${CMAKE_CURRENT_SOURCE_DIR}/stac/*.ui")
+file(GLOB PLOT_UIS "${CMAKE_CURRENT_SOURCE_DIR}/plot/*.ui")
 
 qt_wrap_ui(QGIS_UIS_H
   ${QGIS_UIS}
@@ -43,6 +44,7 @@ qt_wrap_ui(QGIS_UIS_H
   ${SENSOR_UIS}
   ${TILED_SCENE_UIS}
   ${STAC_UIS}
+  ${PLOT_UIS}
 )
 
 set(QGIS_GUI_UI_HDRS ${QGIS_UIS_H} PARENT_SCOPE)

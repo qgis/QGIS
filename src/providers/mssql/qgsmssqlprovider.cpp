@@ -71,42 +71,35 @@ int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
+  , mUri( uri )
   , mShared( new QgsMssqlSharedData )
 {
-  const QgsDataSourceUri anUri = QgsDataSourceUri( uri );
-
-  if ( !anUri.srid().isEmpty() )
-    mSRId = anUri.srid().toInt();
+  if ( !mUri.srid().isEmpty() )
+    mSRId = mUri.srid().toInt();
   else
     mSRId = -1;
 
-  mWkbType = anUri.wkbType();
+  mWkbType = mUri.wkbType();
 
   mValid = true;
 
-  mUserName = anUri.username();
-  mPassword = anUri.password();
-  mService = anUri.service();
-  mDatabaseName = anUri.database();
-  mHost = anUri.host();
-
-  mUseEstimatedMetadata = anUri.useEstimatedMetadata();
+  mUseEstimatedMetadata = mUri.useEstimatedMetadata();
   if ( mReadFlags & Qgis::DataProviderReadFlag::TrustDataSource )
   {
     mUseEstimatedMetadata = true;
   }
 
-  mDisableInvalidGeometryHandling = anUri.hasParam( QStringLiteral( "disableInvalidGeometryHandling" ) )
-                                      ? anUri.param( QStringLiteral( "disableInvalidGeometryHandling" ) ).toInt()
+  mDisableInvalidGeometryHandling = mUri.hasParam( QStringLiteral( "disableInvalidGeometryHandling" ) )
+                                      ? mUri.param( QStringLiteral( "disableInvalidGeometryHandling" ) ).toInt()
                                       : false;
 
-  mUseGeometryColumnsTableForExtent = anUri.hasParam( QStringLiteral( "extentInGeometryColumns" ) )
-                                        ? anUri.param( QStringLiteral( "extentInGeometryColumns" ) ).toInt()
+  mUseGeometryColumnsTableForExtent = mUri.hasParam( QStringLiteral( "extentInGeometryColumns" ) )
+                                        ? mUri.param( QStringLiteral( "extentInGeometryColumns" ) ).toInt()
                                         : false;
 
-  mSqlWhereClause = anUri.sql();
+  mSqlWhereClause = mUri.sql();
 
-  mConn = QgsMssqlDatabase::connectDb( mService, mHost, mDatabaseName, mUserName, mPassword, false );
+  mConn = QgsMssqlDatabase::connectDb( mUri, false );
   if ( !mConn )
   {
     mValid = false;
@@ -124,23 +117,23 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
 
   // Database successfully opened; we can now issue SQL commands.
 
-  if ( mSchemaName.isEmpty() && anUri.table().startsWith( '(' ) && anUri.table().endsWith( ')' ) )
+  if ( mSchemaName.isEmpty() && mUri.table().startsWith( '(' ) && mUri.table().endsWith( ')' ) )
   {
     mIsQuery = true;
-    mQuery = anUri.table();
+    mQuery = mUri.table();
   }
   else
   {
     mIsQuery = false;
-    if ( !anUri.schema().isEmpty() )
-      mSchemaName = anUri.schema();
+    if ( !mUri.schema().isEmpty() )
+      mSchemaName = mUri.schema();
     else
       mSchemaName = QStringLiteral( "dbo" );
 
-    if ( !anUri.table().isEmpty() )
+    if ( !mUri.table().isEmpty() )
     {
       // the layer name has been specified
-      mTableName = anUri.table();
+      mTableName = mUri.table();
       QStringList sl = mTableName.split( '.' );
       if ( sl.length() == 2 )
       {
@@ -162,8 +155,8 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
 
   if ( mValid )
   {
-    if ( !anUri.geometryColumn().isEmpty() )
-      mGeometryColName = anUri.geometryColumn();
+    if ( !mUri.geometryColumn().isEmpty() )
+      mGeometryColName = mUri.geometryColumn();
 
     if ( !mIsQuery )
     {
@@ -181,8 +174,8 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
     UpdateStatistics( mUseEstimatedMetadata );
 
     //only for views, defined in layer data when loading layer for first time
-    bool primaryKeyFromGeometryColumnsTable = anUri.hasParam( QStringLiteral( "primaryKeyInGeometryColumns" ) )
-                                                ? anUri.param( QStringLiteral( "primaryKeyInGeometryColumns" ) ).toInt()
+    bool primaryKeyFromGeometryColumnsTable = mUri.hasParam( QStringLiteral( "primaryKeyInGeometryColumns" ) )
+                                                ? mUri.param( QStringLiteral( "primaryKeyInGeometryColumns" ) ).toInt()
                                                 : false;
 
     QStringList cols;
@@ -192,12 +185,12 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
       mPrimaryKeyAttrs.clear();
       primaryKeyFromGeometryColumnsTable = getPrimaryKeyFromGeometryColumns( cols );
       if ( !primaryKeyFromGeometryColumnsTable )
-        QgsMessageLog::logMessage( tr( "Invalid primary key from geometry_columns table for layer '%1', get primary key from the layer." ).arg( anUri.table() ), tr( "MS SQL Server" ) );
+        QgsMessageLog::logMessage( tr( "Invalid primary key from geometry_columns table for layer '%1', get primary key from the layer." ).arg( mUri.table() ), tr( "MS SQL Server" ) );
     }
 
     if ( !primaryKeyFromGeometryColumnsTable )
     {
-      const QString primaryKey = anUri.keyColumn();
+      const QString primaryKey = mUri.keyColumn();
       if ( !primaryKey.isEmpty() )
       {
         mPrimaryKeyAttrs.clear();
@@ -441,6 +434,20 @@ QVariant QgsMssqlProvider::defaultValue( int fieldId ) const
 
   const QVariant res = query.value( 0 );
   return QgsVariantUtils::isNull( res ) ? QVariant() : res;
+}
+
+bool QgsMssqlProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint, const QVariant &value ) const
+{
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() )
+  {
+    return !mDefaultValues.value( fieldIndex ).isEmpty();
+  }
+  else
+  {
+    // stricter check - if we are evaluating default values only on commit then we can only bypass the check
+    // if the attribute values matches the original default clause
+    return mDefaultValues.contains( fieldIndex ) && !mDefaultValues.value( fieldIndex ).isEmpty() && ( mDefaultValues.value( fieldIndex ) == value.toString() || QgsVariantUtils::isUnsetAttributeValue( value ) ) && !QgsVariantUtils::isNull( value );
+  }
 }
 
 QString QgsMssqlProvider::storageType() const
@@ -1014,7 +1021,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( attrs.at( i ).userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+      if ( QgsVariantUtils::isUnsetAttributeValue( attrs.at( i ) ) )
         continue;
 
       if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
@@ -1115,7 +1122,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( attrs.at( i ).userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+      if ( QgsVariantUtils::isUnsetAttributeValue( attrs.at( i ) ) )
         continue;
 
       if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
@@ -1277,7 +1284,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
 
     attributeClauses.append( QStringLiteral( "[%1] %2" ).arg( it->name(), type ) );
   }
-  statement += attributeClauses.join( QStringLiteral( ", " ) );
+  statement += attributeClauses.join( QLatin1String( ", " ) );
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
@@ -1377,7 +1384,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( it2.value().userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+      if ( QgsVariantUtils::isUnsetAttributeValue( it2.value() ) )
         continue;
 
       if ( mComputedColumns.contains( fld.name() ) )
@@ -2343,7 +2350,7 @@ bool QgsMssqlProviderMetadata::styleExists( const QString &uri, const QString &s
   errorCause.clear();
   const QgsDataSourceUri dsUri( uri );
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
 
   if ( !db->isValid() )
   {
@@ -2402,7 +2409,7 @@ bool QgsMssqlProviderMetadata::saveStyle( const QString &uri, const QString &qml
 {
   const QgsDataSourceUri dsUri( uri );
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
 
   if ( !db->isValid() )
   {
@@ -2566,7 +2573,7 @@ QString QgsMssqlProviderMetadata::loadStoredStyle( const QString &uri, QString &
   errCause.clear();
   const QgsDataSourceUri dsUri( uri );
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
 
   if ( !db->isValid() )
   {
@@ -2631,7 +2638,7 @@ int QgsMssqlProviderMetadata::listStyles( const QString &uri, QStringList &ids, 
 {
   const QgsDataSourceUri dsUri( uri );
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
 
   if ( !db->isValid() )
   {
@@ -2728,7 +2735,7 @@ QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, const QStrin
 {
   const QgsDataSourceUri dsUri( uri );
   // connect to database
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( dsUri );
 
   if ( !db->isValid() )
   {

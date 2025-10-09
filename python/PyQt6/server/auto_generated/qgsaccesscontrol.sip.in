@@ -35,6 +35,15 @@ Constructor
     ~QgsAccessControl();
 
 
+    virtual bool isFilterThreadSafe() const;
+
+    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+
+    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+
+    virtual QgsAccessControl *clone() const /Factory/;
+
+
     void resolveFilterFeatures( const QList<QgsMapLayer *> &layers );
 %Docstring
 Resolve features' filter of layers The method fetch filter's expressions
@@ -49,23 +58,6 @@ for efficiency; between each requests, the cache must be cleared using
     void unresolveFilterFeatures();
 %Docstring
 Clear expression's cache computed from `resolveFilterFeatures`
-%End
-
-    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
-
-%Docstring
-Filter the features of the layer
-
-:param layer: the layer to control
-:param filterFeatures: the request to fill
-%End
-
-    virtual QgsFeatureFilterProvider *clone() const /Factory/;
-
-%Docstring
-Returns a clone of the object
-
-:return: A clone
 %End
 
     QString extraSubsetString( const QgsVectorLayer *layer ) const;
@@ -111,17 +103,6 @@ Returns the layer delete right
 :param layer: the layer to control
 
 :return: ``True`` if we can do a delete
-%End
-
-    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
-
-%Docstring
-Returns the authorized layer attributes
-
-:param layer: the layer to control
-:param attributes: the list of attribute
-
-:return: the list of visible attributes
 %End
 
     bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;

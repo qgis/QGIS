@@ -77,6 +77,9 @@ bool QgsMapToolShapeRegularPolygonCenterPoint::cadCanvasReleaseEvent( QgsMapMous
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( mRegularPolygon.isEmpty() )
+      return false;
+
     mPoints.append( point );
     addRegularPolygonToParentTool();
     return true;
@@ -91,7 +94,7 @@ void QgsMapToolShapeRegularPolygonCenterPoint::cadCanvasMoveEvent( QgsMapMouseEv
 
   const QgsPoint point = mParentTool->mapPoint( *e );
 
-  if ( mTempRubberBand )
+  if ( mTempRubberBand && !mPoints.isEmpty() )
   {
     const QgsRegularPolygon::ConstructionOption option = QgsRegularPolygon::CircumscribedCircle;
     mRegularPolygon = QgsRegularPolygon( mPoints.at( 0 ), point, mNumberSidesSpinBox->value(), option );

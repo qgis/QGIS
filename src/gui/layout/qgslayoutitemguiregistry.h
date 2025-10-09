@@ -409,9 +409,25 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     int metadataIdForItemType( int type ) const;
 
     /**
-     * Registers the gui metadata for a new layout item type. Takes ownership of the metadata instance.
+     * Registers the GUI metadata for a new layout item type. Takes ownership of the metadata instance.
      */
     bool addLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata SIP_TRANSFER );
+
+    /**
+     * Unregisters the GUI metadata for a layout item type.
+     *
+     * \since QGIS 4.0
+     */
+    bool removeLayoutItemGuiMetadata( int type );
+
+    /**
+     * Unregisters the GUI metadata for a layout item type.
+     *
+     * The \a metadata object will be deleted and should not be used after this call.
+     *
+     * \since QGIS 4.0
+     */
+    bool removeLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata );
 
     /**
      * Registers a new item group with the registry. This must be done before calling
@@ -423,6 +439,16 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      * \see itemGroup()
      */
     bool addItemGroup( const QgsLayoutItemGuiGroup &group );
+
+    /**
+     * Unregisters an item group from the registry.
+     *
+     * This must be done after calling
+     * removeLayoutItemGuiMetadata() for every item types associated with the group.
+     *
+     * \since QGIS 4.0
+     */
+    bool removeItemGroup( const QString &id );
 
     /**
      * Returns a reference to the item group with matching \a id.
@@ -508,6 +534,21 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      * \a metadataId.
      */
     void typeAdded( int metadataId );
+
+    /**
+     * Emitted whenever an item type is removed from the registry, with the specified
+     * \a metadataId.
+     * 
+     * \since QGIS 4.0
+     */
+    void typeRemoved( int metadataId );
+
+    /**
+     * Emitted whenever an item group is removed from the registry.
+     *
+     * \since QGIS 4.0
+     */
+    void groupRemoved( QString groupId );
 
   private:
 #ifdef SIP_RUN

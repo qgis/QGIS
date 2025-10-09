@@ -45,6 +45,7 @@
 #include "qgsapplication.h"
 #include "qgsaabb.h"
 #include "qgsabstract3dengine.h"
+#include "qgsannotationlayer.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
@@ -66,6 +67,7 @@
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
+#include "qgsannotationlayer3drenderer.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
@@ -159,7 +161,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
   connect( &map, &Qgs3DMapSettings::originChanged, this, &Qgs3DMapScene::onOriginChanged );
 
-  connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [=]( const QString &url ) {
+  connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [this]( const QString &url ) {
     const QList<QgsMapLayer *> modelVectorLayers = mModelVectorLayers;
     for ( QgsMapLayer *layer : modelVectorLayers )
     {
@@ -235,24 +237,29 @@ void Qgs3DMapScene::viewZoomFull()
 void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
 {
   QgsPointXY center = extent.center();
-  QgsVector3D centerWorld = mMap.mapToWorldCoordinates( QVector3D( center.x(), center.y(), 0 ) );
-  QgsVector3D p1 = mMap.mapToWorldCoordinates( QVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
-  QgsVector3D p2 = mMap.mapToWorldCoordinates( QVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
+  const QgsVector3D origin = mMap.origin();
 
-  float xSide = std::abs( p1.x() - p2.x() );
-  float ySide = std::abs( p1.z() - p2.z() );
-  if ( xSide < ySide )
-  {
-    float fov = 2 * std::atan( std::tan( qDegreesToRadians( cameraController()->camera()->fieldOfView() ) / 2 ) * cameraController()->camera()->aspectRatio() );
-    float r = xSide / 2.0f / std::tan( fov / 2.0f );
-    mCameraController->setViewFromTop( centerWorld.x(), centerWorld.z(), r );
-  }
-  else
-  {
-    float fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
-    float r = ySide / 2.0f / std::tan( fov / 2.0f );
-    mCameraController->setViewFromTop( centerWorld.x(), centerWorld.z(), r );
-  }
+  const QgsVector3D p1 = mMap.mapToWorldCoordinates( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
+  const QgsVector3D p2 = mMap.mapToWorldCoordinates( QgsVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
+
+  const double xSide = std::abs( p1.x() - p2.x() );
+  const double ySide = std::abs( p1.y() - p2.y() );
+  const double side = std::max( xSide, ySide );
+
+  const double fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
+  double distance = side / 2.0f / std::tan( fov / 2.0f );
+
+  // adjust by elevation
+  const QgsDoubleRange zRange = elevationRange();
+  if ( !zRange.isInfinite() )
+    distance += zRange.upper();
+
+  // subtract map origin so coordinates are relative to it
+  mCameraController->setViewFromTop(
+    static_cast<float>( center.x() - origin.x() ),
+    static_cast<float>( center.y() - origin.y() ),
+    static_cast<float>( distance )
+  );
 }
 
 QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
@@ -740,6 +747,11 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     {
       QgsTiledSceneLayer3DRenderer *tiledSceneRenderer = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
       tiledSceneRenderer->setLayer( static_cast<QgsTiledSceneLayer *>( layer ) );
+    }
+    else if ( layer->type() == Qgis::LayerType::Annotation && renderer->type() == QLatin1String( "annotation" ) )
+    {
+      auto annotationLayerRenderer = qgis::down_cast<QgsAnnotationLayer3DRenderer *>( renderer );
+      annotationLayerRenderer->setLayer( qobject_cast<QgsAnnotationLayer *>( layer ) );
     }
 
     Qt3DCore::QEntity *newEntity = renderer->createEntity( &mMap );

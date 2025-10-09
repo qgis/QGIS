@@ -35,11 +35,9 @@ from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
 from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
-from .ImportIntoSpatialite import ImportIntoSpatialite
 from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
 from .MeanAndStdDevPlot import MeanAndStdDevPlot
-from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .PointDistance import PointDistance
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
@@ -64,7 +62,6 @@ from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
-from .UniqueValues import UniqueValues
 from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorLayerHistogram import VectorLayerHistogram
 from .VectorLayerScatterplot import VectorLayerScatterplot
@@ -94,11 +91,9 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             HubDistancePoints(),
             HypsometricCurves(),
             IdwInterpolation(),
-            ImportIntoSpatialite(),
             KNearestConcaveHull(),
             LinesToPolygons(),
             MeanAndStdDevPlot(),
-            MinimumBoundingGeometry(),
             PointDistance(),
             PointsDisplacement(),
             PointsFromLines(),
@@ -123,7 +118,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             TextToFloat(),
             TinInterpolation(),
             TopoColor(),
-            UniqueValues(),
             VariableDistanceBuffer(),
             VectorLayerHistogram(),
             VectorLayerScatterplot(),

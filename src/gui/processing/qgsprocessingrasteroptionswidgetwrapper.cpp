@@ -49,7 +49,7 @@ QWidget *QgsProcessingRasterOptionsWidgetWrapper::createWidget()
     {
       mOptionsWidget = new QgsRasterFormatSaveOptionsWidget();
       mOptionsWidget->setToolTip( parameterDefinition()->toolTip() );
-      connect( mOptionsWidget, &QgsRasterFormatSaveOptionsWidget::optionsChanged, this, [=] {
+      connect( mOptionsWidget, &QgsRasterFormatSaveOptionsWidget::optionsChanged, this, [this] {
         emit widgetValueHasChanged( this );
       } );
       return mOptionsWidget;
@@ -59,7 +59,7 @@ QWidget *QgsProcessingRasterOptionsWidgetWrapper::createWidget()
     {
       mLineEdit = new QLineEdit();
       mLineEdit->setToolTip( parameterDefinition()->toolTip() );
-      connect( mLineEdit, &QLineEdit::textChanged, this, [=] {
+      connect( mLineEdit, &QLineEdit::textChanged, this, [this] {
         emit widgetValueHasChanged( this );
       } );
       return mLineEdit;

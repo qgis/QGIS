@@ -195,7 +195,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mForceRasterRender = true;
   }
 
-  if ( context.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) &&
+  const bool allowFlattening = context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector;
+  if ( allowFlattening &&
        ( ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
          || ( layer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
          || ( !qgsDoubleNear( layer->opacity(), 1.0 ) ) ) )
@@ -316,7 +317,8 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   }
 
   // Per feature blending mode
-  if ( context.useAdvancedEffects() && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )
+  if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector
+       && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )
   {
     // set the painter to the feature blend mode, so that features drawn
     // on this layer will interact and blend with each other
@@ -367,7 +369,16 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   const QgsFeatureFilterProvider *featureFilterProvider = context.featureFilterProvider();
   if ( featureFilterProvider )
   {
-    featureFilterProvider->filterFeatures( mLayer, featureRequest );
+    Q_NOWARN_DEPRECATED_PUSH
+    if ( featureFilterProvider->isFilterThreadSafe() )
+    {
+      featureFilterProvider->filterFeatures( layerId(), featureRequest );
+    }
+    else
+    {
+      featureFilterProvider->filterFeatures( mLayer, featureRequest );
+    }
+    Q_NOWARN_DEPRECATED_POP
   }
   if ( !rendererFilter.isEmpty() && rendererFilter != QLatin1String( "TRUE" ) )
   {

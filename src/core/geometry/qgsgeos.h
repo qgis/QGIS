@@ -437,7 +437,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param tolerance tolerance to determine when iteration should end
      * \param errorMsg will be set to descriptive error string if the operation fails
      *
-     * \returns maximum inscribed circle geometry
+     * \returns A two-point linestring geometry, with the first point at the center of the inscribed circle and the second
+     * on the boundary of the inscribed circle.
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.8 or earlier.
      *
@@ -466,7 +467,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param boundary optional set of boundary obstacles
      * \param errorMsg will be set to descriptive error string if the operation fails
      *
-     * \returns largest empty circle geometry
+     * \returns A two-point linestring geometry, with first point at the center of the inscribed circle and the second
+     * on the boundary of the inscribed circle.
      *
      * \warning the \a tolerance value must be a value greater than 0, or the algorithm may never converge on a solution
      *
@@ -594,8 +596,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * LineString/MultiLineString geometry.
+     * \param parameters can be used to specify parameters which control the mergeLines results (since QGIS 3.44)
      */
-    std::unique_ptr< QgsAbstractGeometry > mergeLines( QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > mergeLines( QString *errorMsg SIP_OUT = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Returns the closest point on the geometry to the other geometry.
@@ -944,10 +947,10 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
 #ifndef SIP_RUN
 
-class GEOSException : public std::runtime_error
+class QgsGeosException : public std::runtime_error
 {
   public:
-    explicit GEOSException( const QString &message )
+    explicit QgsGeosException( const QString &message )
       : std::runtime_error( message.toUtf8().constData() )
     {
     }

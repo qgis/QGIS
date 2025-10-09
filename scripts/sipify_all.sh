@@ -37,7 +37,7 @@ if [[ "$OSTYPE" == *bsd* ]] || [[ "$OSTYPE" =~ darwin* ]]; then
   GP=g
 fi
 
-pushd ${DIR} > /dev/null
+pushd "${DIR}" > /dev/null
 
 count=0
 

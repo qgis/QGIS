@@ -28,7 +28,6 @@
 #include "qgssettings.h"
 #include "qgsguiutils.h"
 
-bool QgisAppStyleSheet::sIsFirstRun = true;
 
 QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
   : QObject( parent )
@@ -56,51 +55,6 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
 {
   const QgsSettings settings;
   QString ss;
-
-  // QgisApp-wide font
-  {
-    bool overriddenFontSize = false;
-    double currentFontSize = fontSize();
-    const QFont appFont = QApplication::font();
-    if ( opts.contains( QStringLiteral( "fontPointSize" ) ) )
-    {
-      const double fontSizeFromOpts = opts.value( QStringLiteral( "fontPointSize" ) ).toDouble();
-      currentFontSize = fontSizeFromOpts;
-    }
-    QgsDebugMsgLevel( QStringLiteral( "fontPointSize: %1" ).arg( currentFontSize ), 2 );
-    if ( currentFontSize != appFont.pointSizeF() )
-    {
-      overriddenFontSize = true;
-    }
-
-    bool overriddenFontFamily = false;
-    QString currentFontFamily = fontFamily();
-    if ( opts.contains( QStringLiteral( "fontFamily" ) ) )
-    {
-      currentFontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
-    }
-    QgsDebugMsgLevel( QStringLiteral( "fontFamily: %1" ).arg( currentFontFamily ), 2 );
-    if ( !currentFontFamily.isEmpty() && currentFontFamily != appFont.family() )
-    {
-      overriddenFontFamily = true;
-    }
-
-    if ( overriddenFontFamily || overriddenFontSize )
-    {
-      // this seems only safe to do at startup, at least on Windows.
-      // see https://github.com/qgis/QGIS/issues/54402, https://github.com/qgis/QGIS/issues/54295
-      // Let's play it safe and require a restart to change the font.
-      if ( sIsFirstRun )
-      {
-        QFont font = QApplication::font();
-        if ( overriddenFontFamily )
-          font.setFamily( currentFontFamily );
-        if ( overriddenFontSize )
-          font.setPointSizeF( currentFontSize );
-        QApplication::setFont( font );
-      }
-    }
-  }
 
   if ( mMacStyle )
   {
@@ -176,8 +130,6 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Stylesheet built: %1" ).arg( ss ), 2 );
-
-  sIsFirstRun = false;
 
   emit appStyleSheetChanged( ss );
 }

@@ -75,6 +75,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testSetFilterExpressionWithParentValue();
     void testComboLimit();
     void testAllowNullDefault();
+    void testSorting();
 
   private:
     QgsVectorLayer *mLayer1 = nullptr;
@@ -106,7 +107,7 @@ void TestQgsRelationReferenceWidget::init()
   mLayer1 = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( mLayer1 );
 
-  mLayer2 = new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  mLayer2 = new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string&field=multiplicator:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
   mLayer2->setDisplayExpression( QStringLiteral( "pk" ) );
   QgsProject::instance()->addMapLayer( mLayer2 );
 
@@ -140,6 +141,7 @@ void TestQgsRelationReferenceWidget::init()
   ft2.setAttribute( QStringLiteral( "material" ), "iron" );
   ft2.setAttribute( QStringLiteral( "diameter" ), 120 );
   ft2.setAttribute( QStringLiteral( "raccord" ), "brides" );
+  ft2.setAttribute( QStringLiteral( "multiplicator" ), 10 );
   mLayer2->startEditing();
   mLayer2->addFeature( ft2 );
   mLayer2->commitChanges();
@@ -149,6 +151,7 @@ void TestQgsRelationReferenceWidget::init()
   ft3.setAttribute( QStringLiteral( "material" ), "iron" );
   ft3.setAttribute( QStringLiteral( "diameter" ), 120 );
   ft3.setAttribute( QStringLiteral( "raccord" ), "sleeve" );
+  ft3.setAttribute( QStringLiteral( "multiplicator" ), 1 );
   mLayer2->startEditing();
   mLayer2->addFeature( ft3 );
   mLayer2->commitChanges();
@@ -158,6 +161,7 @@ void TestQgsRelationReferenceWidget::init()
   ft4.setAttribute( QStringLiteral( "material" ), "steel" );
   ft4.setAttribute( QStringLiteral( "diameter" ), 120 );
   ft4.setAttribute( QStringLiteral( "raccord" ), "collar" );
+  ft4.setAttribute( QStringLiteral( "multiplicator" ), 5 );
   mLayer2->startEditing();
   mLayer2->addFeature( ft4 );
   mLayer2->commitChanges();
@@ -992,6 +996,95 @@ void TestQgsRelationReferenceWidget::testAllowNullDefault()
 
   QCOMPARE( dlg->mAllowNullWasSetByConfig, true );
   QCOMPARE( dlg->mCbxAllowNull->isChecked(), false );
+}
+
+void TestQgsRelationReferenceWidget::testSorting()
+{
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+  w.init();
+
+  // check fetch limit of combobox directly
+  QSignalSpy spy( w.mComboBox, &QgsFeatureListComboBox::modelUpdated );
+
+  // no sort setting - orders according display expression what is the pk
+  w.setRelation( *mRelation, false );
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 3 );
+  QCOMPARE( w.mComboBox->itemData( 0, Qt::DisplayRole ).toString(), "10" );
+  QCOMPARE( w.mComboBox->itemData( 1, Qt::DisplayRole ).toString(), "11" );
+  QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "12" );
+
+  // ... and order descent
+  w.setSortOrder( Qt::DescendingOrder );
+  w.setRelation( *mRelation, false );
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 3 );
+  QCOMPARE( w.mComboBox->itemData( 0, Qt::DisplayRole ).toString(), "12" );
+  QCOMPARE( w.mComboBox->itemData( 1, Qt::DisplayRole ).toString(), "11" );
+  QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "10" );
+
+  // no sort setting - orders according display expression what is set to "'l2 '||raccord"
+  w.mComboBox->setDisplayExpression( QStringLiteral( "'l2 '||raccord" ) );
+  w.setSortOrder( Qt::AscendingOrder );
+  w.setRelation( *mRelation, false );
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 3 );
+  QCOMPARE( w.mComboBox->itemData( 0, Qt::DisplayRole ).toString(), "l2 brides" );
+  QCOMPARE( w.mComboBox->itemData( 1, Qt::DisplayRole ).toString(), "l2 collar" );
+  QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "l2 sleeve" );
+
+  // ... and order descent
+  w.setSortOrder( Qt::DescendingOrder );
+  w.setRelation( *mRelation, false );
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 3 );
+  QCOMPARE( w.mComboBox->itemData( 0, Qt::DisplayRole ).toString(), "l2 sleeve" );
+  QCOMPARE( w.mComboBox->itemData( 1, Qt::DisplayRole ).toString(), "l2 collar" );
+  QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "l2 brides" );
+
+  //sorting setting - orders according orderby expression what is set to "'test '||(diameter * multiplicator)"
+  //results in "test 1200" (l2 brides), "test 120" (l2 sleeve), "test 600" (l2 collar)
+  //where this order is not numerical and has the 1200 before 600
+  w.setOrderExpression( QStringLiteral( "'test '||(diameter * multiplicator)" ) );
+  w.setSortOrder( Qt::AscendingOrder );
+  w.setRelation( *mRelation, false );
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 3 );
+  QCOMPARE( w.mComboBox->itemData( 0, Qt::DisplayRole ).toString(), "l2 sleeve" ); //test 120
+  QCOMPARE( w.mComboBox->itemData( 1, Qt::DisplayRole ).toString(), "l2 brides" ); //test 1200
+  QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "l2 collar" ); //test 600
+
+  // ... and order descent
+  w.setSortOrder( Qt::DescendingOrder );
+  w.setRelation( *mRelation, false );
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 3 );
+  QCOMPARE( w.mComboBox->itemData( 0, Qt::DisplayRole ).toString(), "l2 collar" ); //test 600
+  QCOMPARE( w.mComboBox->itemData( 1, Qt::DisplayRole ).toString(), "l2 brides" ); //test 1200
+  QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "l2 sleeve" ); //test 120
+
+
+  //numeric sorting setting - orders according orderby expression what is set to "multiplicator"
+  //results in "1" (l2 sleeve), "5" (l2 collar), "10" (l2 brides)
+  //where this order should be made numerical and have 5 before 10
+  w.setOrderExpression( QStringLiteral( "multiplicator" ) );
+  w.setSortOrder( Qt::AscendingOrder );
+  w.setRelation( *mRelation, false );
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 3 );
+  QCOMPARE( w.mComboBox->itemData( 0, Qt::DisplayRole ).toString(), "l2 sleeve" ); // 1
+  QCOMPARE( w.mComboBox->itemData( 1, Qt::DisplayRole ).toString(), "l2 collar" ); // 5
+  QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "l2 brides" ); //10
+
+  // ... and order descent
+  w.setSortOrder( Qt::DescendingOrder );
+  w.setRelation( *mRelation, false );
+  spy.wait();
+  QCOMPARE( w.mComboBox->count(), 3 );
+  QCOMPARE( w.mComboBox->itemData( 0, Qt::DisplayRole ).toString(), "l2 brides" ); //10
+  QCOMPARE( w.mComboBox->itemData( 1, Qt::DisplayRole ).toString(), "l2 collar" ); // 5
+  QCOMPARE( w.mComboBox->itemData( 2, Qt::DisplayRole ).toString(), "l2 sleeve" ); // 1
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

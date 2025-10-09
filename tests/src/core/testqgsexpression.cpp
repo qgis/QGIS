@@ -792,21 +792,101 @@ class TestQgsExpression : public QObject
       QTest::newRow( "int division by zero with floats" ) << "1.0//0.0" << false << QVariant();
 
       // comparison
+
+      // equal
+
       QTest::newRow( "eq int" ) << "1+1 = 2" << false << QVariant( 1 );
       QTest::newRow( "eq double" ) << "3.2 = 2.2+1" << false << QVariant( 1 );
       QTest::newRow( "eq string" ) << "'a' = 'b'" << false << QVariant( 0 );
       QTest::newRow( "eq null" ) << "2 = null" << false << QVariant();
       QTest::newRow( "eq mixed" ) << "'a' = 1" << false << QVariant( 0 );
+
+      // equal, boolean values
+
+      QTest::newRow( "eq bool both true/true" ) << "TRUE = TRUE" << false << QVariant( 1 );
+      QTest::newRow( "eq bool both true/false" ) << "TRUE = FALSE" << false << QVariant( 0 );
+      QTest::newRow( "eq bool both false/true" ) << "FALSE = TRUE" << false << QVariant( 0 );
+      QTest::newRow( "eq bool both false/false" ) << "FALSE = FALSE" << false << QVariant( 1 );
+      QTest::newRow( "eq bool first int second true true/true" ) << "TRUE = 1" << false << QVariant( 1 );
+      QTest::newRow( "eq bool first int second false true/false" ) << "TRUE = 0" << false << QVariant( 0 );
+      QTest::newRow( "eq bool first int second true false/true" ) << "FALSE = 1" << false << QVariant( 0 );
+      QTest::newRow( "eq bool first int second false false/false" ) << "FALSE = 0" << false << QVariant( 1 );
+      QTest::newRow( "eq int first bool second true true/true" ) << "1 = TRUE" << false << QVariant( 1 );
+      QTest::newRow( "eq int first bool second false true/false" ) << "1 = FALSE" << false << QVariant( 0 );
+      QTest::newRow( "eq int first bool second true false/true" ) << "0 = TRUE" << false << QVariant( 0 );
+      QTest::newRow( "eq int first bool second false false/false" ) << "0 = FALSE" << false << QVariant( 1 );
+      QTest::newRow( "eq bool first string int second true true/true" ) << "TRUE = '1'" << false << QVariant( 1 );
+      QTest::newRow( "eq bool first string int second false true/false" ) << "TRUE = '0'" << false << QVariant( 0 );
+      QTest::newRow( "eq bool first string int second true false/true" ) << "FALSE = '1'" << false << QVariant( 0 );
+      QTest::newRow( "eq bool first string int second false false/false" ) << "FALSE = '0'" << false << QVariant( 1 );
+      QTest::newRow( "eq string int first bool second true true/true" ) << "'1' = TRUE" << false << QVariant( 1 );
+      QTest::newRow( "eq string int first bool second false true/false" ) << "'1' = FALSE" << false << QVariant( 0 );
+      QTest::newRow( "eq string int first bool second true false/true" ) << "'0' = TRUE" << false << QVariant( 0 );
+      QTest::newRow( "eq string int first bool second false false/false" ) << "'0' = FALSE" << false << QVariant( 1 );
+      QTest::newRow( "eq bool first string bool second true true/true" ) << "TRUE = 'true'" << false << QVariant( 1 );
+      QTest::newRow( "eq bool first string bool second false true/false" ) << "TRUE = 'false'" << false << QVariant( 0 );
+      QTest::newRow( "eq bool first string bool second true false/true" ) << "FALSE = 'true'" << false << QVariant( 0 );
+      QTest::newRow( "eq bool first string bool second false false/false" ) << "FALSE = 'false'" << false << QVariant( 1 );
+      QTest::newRow( "eq string bool first bool second true true/true" ) << "'true' = TRUE" << false << QVariant( 1 );
+      QTest::newRow( "eq string bool first bool second false true/false" ) << "'true' = FALSE" << false << QVariant( 0 );
+      QTest::newRow( "eq string bool first bool second true false/true" ) << "'false' = TRUE" << false << QVariant( 0 );
+      QTest::newRow( "eq string bool first bool second false false/false" ) << "'false' = FALSE" << false << QVariant( 1 );
+
+      // not equal
       QTest::newRow( "ne int 1" ) << "3 != 4" << false << QVariant( 1 );
       QTest::newRow( "ne int 2" ) << "3 != 3" << false << QVariant( 0 );
+
+      // not equal, boolean values
+
+      QTest::newRow( "ne bool both true/true" ) << "TRUE != TRUE" << false << QVariant( 0 );
+      QTest::newRow( "ne bool both true/false" ) << "TRUE != FALSE" << false << QVariant( 1 );
+      QTest::newRow( "ne bool both false/true" ) << "FALSE != TRUE" << false << QVariant( 1 );
+      QTest::newRow( "ne bool both false/false" ) << "FALSE != FALSE" << false << QVariant( 0 );
+      QTest::newRow( "ne bool first int second true true/true" ) << "TRUE != 1" << false << QVariant( 0 );
+      QTest::newRow( "ne bool first int second false true/false" ) << "TRUE != 0" << false << QVariant( 1 );
+      QTest::newRow( "ne bool first int second true false/true" ) << "FALSE != 1" << false << QVariant( 1 );
+      QTest::newRow( "ne bool first int second false false/false" ) << "FALSE != 0" << false << QVariant( 0 );
+      QTest::newRow( "ne int first bool second true true/true" ) << "1 != TRUE" << false << QVariant( 0 );
+      QTest::newRow( "ne int first bool second false true/false" ) << "1 != FALSE" << false << QVariant( 1 );
+      QTest::newRow( "ne int first bool second true false/true" ) << "0 != TRUE" << false << QVariant( 1 );
+      QTest::newRow( "ne int first bool second false false/false" ) << "0 != FALSE" << false << QVariant( 0 );
+      QTest::newRow( "ne bool first string int second true true/true" ) << "TRUE != '1'" << false << QVariant( 0 );
+      QTest::newRow( "ne bool first string int second false true/false" ) << "TRUE != '0'" << false << QVariant( 1 );
+      QTest::newRow( "ne bool first string int second true false/true" ) << "FALSE != '1'" << false << QVariant( 1 );
+      QTest::newRow( "ne bool first string int second false false/false" ) << "FALSE != '0'" << false << QVariant( 0 );
+      QTest::newRow( "ne string int first bool second true true/true" ) << "'1' != TRUE" << false << QVariant( 0 );
+      QTest::newRow( "ne string int first bool second false true/false" ) << "'1' != FALSE" << false << QVariant( 1 );
+      QTest::newRow( "ne string int first bool second true false/true" ) << "'0' != TRUE" << false << QVariant( 1 );
+      QTest::newRow( "ne string int first bool second false false/false" ) << "'0' != FALSE" << false << QVariant( 0 );
+      QTest::newRow( "ne bool first string bool second true true/true" ) << "TRUE != 'true'" << false << QVariant( 0 );
+      QTest::newRow( "ne bool first string bool second false true/false" ) << "TRUE != 'false'" << false << QVariant( 1 );
+      QTest::newRow( "ne bool first string bool second true false/true" ) << "FALSE != 'true'" << false << QVariant( 1 );
+      QTest::newRow( "ne bool first string bool second false false/false" ) << "FALSE != 'false'" << false << QVariant( 0 );
+      QTest::newRow( "ne string bool first bool second true true/true" ) << "'true' != TRUE" << false << QVariant( 0 );
+      QTest::newRow( "ne string bool first bool second false true/false" ) << "'true' != FALSE" << false << QVariant( 1 );
+      QTest::newRow( "ne string bool first bool second true false/true" ) << "'false' != TRUE" << false << QVariant( 1 );
+      QTest::newRow( "ne string bool first bool second false false/false" ) << "'false' != FALSE" << false << QVariant( 0 );
+
+      // less than
+
       QTest::newRow( "lt int 1" ) << "3 < 4" << false << QVariant( 1 );
       QTest::newRow( "lt int 2" ) << "3 < 3" << false << QVariant( 0 );
+
+      // greater than
+
       QTest::newRow( "gt int 1" ) << "3 > 4" << false << QVariant( 0 );
       QTest::newRow( "gt int 2" ) << "3 > 3" << false << QVariant( 0 );
+
+      // less than or equal to
+
       QTest::newRow( "le int 1" ) << "3 <= 4" << false << QVariant( 1 );
       QTest::newRow( "le int 2" ) << "3 <= 3" << false << QVariant( 1 );
+
+      // greater than or equal to
+
       QTest::newRow( "ge int 1" ) << "3 >= 4" << false << QVariant( 0 );
       QTest::newRow( "ge int 2" ) << "3 >= 3" << false << QVariant( 1 );
+
       QTest::newRow( "lt text 1" ) << "'bar' < 'foo'" << false << QVariant( 1 );
       QTest::newRow( "lt text 2" ) << "'foo' < 'bar'" << false << QVariant( 0 );
       QTest::newRow( "'nan'='nan'" ) << "'nan'='nan'" << false << QVariant( 1 );
@@ -870,6 +950,68 @@ class TestQgsExpression : public QObject
       QTest::newRow( "'1.1' is '1.10000'" ) << "'1.1' is '1.10000'" << false << QVariant( 0 );
       QTest::newRow( "1.1 is '1.10'" ) << "1.1 is '1.10'" << false << QVariant( 1 );
       QTest::newRow( "'1.10' is 1.1" ) << "'1.10' is 1.1" << false << QVariant( 1 );
+
+      // is, boolean values
+
+      QTest::newRow( "is bool both true/true" ) << "TRUE IS TRUE" << false << QVariant( 1 );
+      QTest::newRow( "is bool both true/false" ) << "TRUE IS FALSE" << false << QVariant( 0 );
+      QTest::newRow( "is bool both false/true" ) << "FALSE IS TRUE" << false << QVariant( 0 );
+      QTest::newRow( "is bool both false/false" ) << "FALSE IS FALSE" << false << QVariant( 1 );
+      QTest::newRow( "is bool first int second true true/true" ) << "TRUE IS 1" << false << QVariant( 1 );
+      QTest::newRow( "is bool first int second false true/false" ) << "TRUE IS 0" << false << QVariant( 0 );
+      QTest::newRow( "is bool first int second true false/true" ) << "FALSE IS 1" << false << QVariant( 0 );
+      QTest::newRow( "is bool first int second false false/false" ) << "FALSE IS 0" << false << QVariant( 1 );
+      QTest::newRow( "is int first bool second true true/true" ) << "1 IS TRUE" << false << QVariant( 1 );
+      QTest::newRow( "is int first bool second false true/false" ) << "1 IS FALSE" << false << QVariant( 0 );
+      QTest::newRow( "is int first bool second true false/true" ) << "0 IS TRUE" << false << QVariant( 0 );
+      QTest::newRow( "is int first bool second false false/false" ) << "0 IS FALSE" << false << QVariant( 1 );
+      QTest::newRow( "is bool first string int second true true/true" ) << "TRUE IS '1'" << false << QVariant( 1 );
+      QTest::newRow( "is bool first string int second false true/false" ) << "TRUE IS '0'" << false << QVariant( 0 );
+      QTest::newRow( "is bool first string int second true false/true" ) << "FALSE IS '1'" << false << QVariant( 0 );
+      QTest::newRow( "is bool first string int second false false/false" ) << "FALSE IS '0'" << false << QVariant( 1 );
+      QTest::newRow( "is string int first bool second true true/true" ) << "'1' IS TRUE" << false << QVariant( 1 );
+      QTest::newRow( "is string int first bool second false true/false" ) << "'1' IS FALSE" << false << QVariant( 0 );
+      QTest::newRow( "is string int first bool second true false/true" ) << "'0' IS TRUE" << false << QVariant( 0 );
+      QTest::newRow( "is string int first bool second false false/false" ) << "'0' IS FALSE" << false << QVariant( 1 );
+      QTest::newRow( "is bool first string bool second true true/true" ) << "TRUE IS 'true'" << false << QVariant( 1 );
+      QTest::newRow( "is bool first string bool second false true/false" ) << "TRUE IS 'false'" << false << QVariant( 0 );
+      QTest::newRow( "is bool first string bool second true false/true" ) << "FALSE IS 'true'" << false << QVariant( 0 );
+      QTest::newRow( "is bool first string bool second false false/false" ) << "FALSE IS 'false'" << false << QVariant( 1 );
+      QTest::newRow( "is string bool first bool second true true/true" ) << "'true' IS TRUE" << false << QVariant( 1 );
+      QTest::newRow( "is string bool first bool second false true/false" ) << "'true' IS FALSE" << false << QVariant( 0 );
+      QTest::newRow( "is string bool first bool second true false/true" ) << "'false' IS TRUE" << false << QVariant( 0 );
+      QTest::newRow( "is string bool first bool second false false/false" ) << "'false' IS FALSE" << false << QVariant( 1 );
+
+      // is not, boolean values
+
+      QTest::newRow( "is not bool both true/true" ) << "TRUE IS NOT TRUE" << false << QVariant( 0 );
+      QTest::newRow( "is not bool both true/false" ) << "TRUE IS NOT FALSE" << false << QVariant( 1 );
+      QTest::newRow( "is not bool both false/true" ) << "FALSE IS NOT TRUE" << false << QVariant( 1 );
+      QTest::newRow( "is not bool both false/false" ) << "FALSE IS NOT FALSE" << false << QVariant( 0 );
+      QTest::newRow( "is not bool first int second true true/true" ) << "TRUE IS NOT 1" << false << QVariant( 0 );
+      QTest::newRow( "is not bool first int second false true/false" ) << "TRUE IS NOT 0" << false << QVariant( 1 );
+      QTest::newRow( "is not bool first int second true false/true" ) << "FALSE IS NOT 1" << false << QVariant( 1 );
+      QTest::newRow( "is not bool first int second false false/false" ) << "FALSE IS NOT 0" << false << QVariant( 0 );
+      QTest::newRow( "is not int first bool second true true/true" ) << "1 IS NOT TRUE" << false << QVariant( 0 );
+      QTest::newRow( "is not int first bool second false true/false" ) << "1 IS NOT FALSE" << false << QVariant( 1 );
+      QTest::newRow( "is not int first bool second true false/true" ) << "0 IS NOT TRUE" << false << QVariant( 1 );
+      QTest::newRow( "is not int first bool second false false/false" ) << "0 IS NOT FALSE" << false << QVariant( 0 );
+      QTest::newRow( "is not bool first string int second true true/true" ) << "TRUE IS NOT '1'" << false << QVariant( 0 );
+      QTest::newRow( "is not bool first string int second false true/false" ) << "TRUE IS NOT '0'" << false << QVariant( 1 );
+      QTest::newRow( "is not bool first string int second true false/true" ) << "FALSE IS NOT '1'" << false << QVariant( 1 );
+      QTest::newRow( "is not bool first string int second false false/false" ) << "FALSE IS NOT '0'" << false << QVariant( 0 );
+      QTest::newRow( "is not string int first bool second true true/true" ) << "'1' IS NOT TRUE" << false << QVariant( 0 );
+      QTest::newRow( "is not string int first bool second false true/false" ) << "'1' IS NOT FALSE" << false << QVariant( 1 );
+      QTest::newRow( "is not string int first bool second true false/true" ) << "'0' IS NOT TRUE" << false << QVariant( 1 );
+      QTest::newRow( "is not string int first bool second false false/false" ) << "'0' IS NOT FALSE" << false << QVariant( 0 );
+      QTest::newRow( "is not bool first string bool second true true/true" ) << "TRUE IS NOT 'true'" << false << QVariant( 0 );
+      QTest::newRow( "is not bool first string bool second false true/false" ) << "TRUE IS NOT 'false'" << false << QVariant( 1 );
+      QTest::newRow( "is not bool first string bool second true false/true" ) << "FALSE IS NOT 'true'" << false << QVariant( 1 );
+      QTest::newRow( "is not bool first string bool second false false/false" ) << "FALSE IS NOT 'false'" << false << QVariant( 0 );
+      QTest::newRow( "is not string bool first bool second true true/true" ) << "'true' IS NOT TRUE" << false << QVariant( 0 );
+      QTest::newRow( "is not string bool first bool second false true/false" ) << "'true' IS NOT FALSE" << false << QVariant( 1 );
+      QTest::newRow( "is not string bool first bool second true false/true" ) << "'false' IS NOT TRUE" << false << QVariant( 1 );
+      QTest::newRow( "is not string bool first bool second false false/false" ) << "'false' IS NOT FALSE" << false << QVariant( 0 );
 
       //  logical
       QTest::newRow( "T or F" ) << "1=1 or 2=3" << false << QVariant( 1 );
@@ -1613,7 +1755,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "main angle polygon" ) << "round(main_angle( geom_from_wkt('POLYGON((0 0,2 9,9 2,0 0))')))" << false << QVariant( 77 );
       QTest::newRow( "main angle polygon edge case" ) << "round(main_angle( geom_from_wkt('POLYGON((353542.63843526 378974.92373469, 353544.95808017 378975.73690545, 353545.27173175 378974.84218528, 353542.95208684 378974.02901451, 353542.63843526 378974.92373469))')))" << false << QVariant( 71 );
       QTest::newRow( "main angle multi polygon" ) << "round(main_angle( geom_from_wkt('MULTIPOLYGON(((0 0,3 10,1 10,1 6,0 0)))')))" << false << QVariant( 17 );
-      QTest::newRow( "main angle point" ) << "main_angle( geom_from_wkt('POINT (1.5 0.5)') )" << true << QVariant();
+      QTest::newRow( "main angle point" ) << "main_angle( geom_from_wkt('POINT (1.5 0.5)') )" << false << QVariant( 0.0 );
       QTest::newRow( "main angle line" ) << "round(main_angle( geom_from_wkt('LINESTRING (-1 2, 9 12)') ))" << false << QVariant( 45 );
       QTest::newRow( "main angle not geom" ) << "main_angle('g')" << true << QVariant();
       QTest::newRow( "main angle null" ) << "main_angle(NULL)" << false << QVariant();
@@ -1699,6 +1841,12 @@ class TestQgsExpression : public QObject
       QTest::newRow( "regexp_replace non greedy" ) << "regexp_replace('HeLLo','(?<=H).*?L', '-')" << false << QVariant( "H-Lo" );
       QTest::newRow( "regexp_replace cap group" ) << "regexp_replace('HeLLo','(eL)', 'x\\\\1x')" << false << QVariant( "HxeLxLo" );
       QTest::newRow( "regexp_replace invalid" ) << "regexp_replace('HeLLo','[[[', '-')" << true << QVariant();
+      QTest::newRow( "substr_count basic" ) << "substr_count('banana', 'an')" << false << QVariant( 2 );
+      QTest::newRow( "substr_count basic funny" ) << "substr_count('Funniness', 'n')" << false << QVariant( 3 );
+      QTest::newRow( "substr_count non-overlapping counted" ) << "substr_count('aaaaa', 'aa')" << false << QVariant( 2 );
+      QTest::newRow( "substr_count overlapping counted" ) << "substr_count('aaaaa', 'aa', true)" << false << QVariant( 4 );
+      QTest::newRow( "substr_count empty needle" ) << "substr_count('abc', '')" << false << QVariant( 0 );
+      QTest::newRow( "substr_count case sensitivity" ) << "substr_count('BANANA', 'an')" << false << QVariant( 0 );
       QTest::newRow( "reverse string" ) << "reverse('HeLLo')" << false << QVariant( "oLLeH" );
       QTest::newRow( "reverse empty string" ) << "reverse('')" << false << QVariant( "" );
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
@@ -1909,6 +2057,28 @@ class TestQgsExpression : public QObject
       QTest::newRow( "formatted string from date" ) << "format_date('2019-06-29','MMMM d, yyyy')" << false << QVariant( QString( "June 29, 2019" ) );
       QTest::newRow( "formatted string from date with language" ) << "format_date('2019-06-29','d MMMM yyyy','fr')" << false << QVariant( QString( "29 juin 2019" ) );
       QTest::newRow( "formatted string with Z" ) << "format_date(to_datetime('2019-06-29T13:34:56+01:00'),'yyyy-MM-ddTHH:mm:ssZ')" << false << QVariant( QString( "2019-06-29T12:34:56Z" ) );
+
+      // time zone functions
+      QTest::newRow( "timezone_from_id NULL" ) << "timezone_from_id(NULL)" << false << QVariant();
+      QTest::newRow( "timezone_from_id not string" ) << "timezone_from_id(123)" << true << QVariant();
+      QTest::newRow( "timezone_from_id invalid id" ) << "timezone_from_id('xxxx')" << true << QVariant();
+      QTest::newRow( "timezone_id NULL" ) << "timezone_id(NULL)" << false << QVariant();
+      QTest::newRow( "timezone_id not timezone" ) << "timezone_id(123)" << true << QVariant();
+      QTest::newRow( "timezone_id valid timezone" ) << "timezone_id(timezone_from_id('Australia/Brisbane'))" << false << QVariant( QString( "Australia/Brisbane" ) );
+      QTest::newRow( "timezone_id UTC+10:30" ) << "timezone_id(timezone_from_id('UTC+10:30'))" << false << QVariant( QString( "UTC+10:30" ) );
+
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
+      QTest::newRow( "timezone_id UTC-3" ) << "timezone_id(timezone_from_id('UTC-3'))" << false << QVariant( QString( "UTC-03:00" ) );
+      QTest::newRow( "convert timezone, fixed datetime" ) << "format_date(convert_timezone(to_datetime('2012-05-04 12:50:00+3'), timezone_from_id('UTC+10')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 19:50:00 UTC+10:00" ) );
+      QTest::newRow( "set timezone, fixed datetime" ) << "format_date(set_timezone(to_datetime('2012-05-04 12:50:00+3'), timezone_from_id('UTC+10')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 12:50:00 UTC+10:00" ) );
+      QTest::newRow( "get timezone, fixed datetime" ) << "timezone_id(get_timezone(to_datetime('2012-05-04 12:50:00+3')))" << false << QVariant( QString( "UTC+03:00" ) );
+#else
+      QTest::newRow( "timezone_id UTC-3" ) << "timezone_id(timezone_from_id('UTC-3'))" << false << QVariant( QString( "UTC-03" ) );
+      QTest::newRow( "convert timezone, fixed datetime" ) << "format_date(convert_timezone(to_datetime('2012-05-04 12:50:00+3'), timezone_from_id('UTC+10')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 19:50:00 UTC+10" ) );
+      QTest::newRow( "set timezone, fixed datetime" ) << "format_date(set_timezone(to_datetime('2012-05-04 12:50:00+3'), timezone_from_id('UTC+10')), 'yyyy-MM-dd HH:mm:ss t')" << false << QVariant( QString( "2012-05-04 12:50:00 UTC+10" ) );
+      QTest::newRow( "get timezone, fixed datetime" ) << "timezone_id(get_timezone(to_datetime('2012-05-04 12:50:00+3')))" << false << QVariant( QString( "UTC+03" ) );
+#endif
+
 
       // Color functions
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "253,190,116,255" );
@@ -4200,6 +4370,8 @@ class TestQgsExpression : public QObject
 
       geom = QgsGeometry::fromPolygonXY( polygon );
       QTest::newRow( "oriented_bbox" ) << "oriented_bbox( $geometry )" << geom << false << true << geom.orientedMinimumBoundingBox();
+      geom = QgsGeometry::fromPointXY( point1 );
+      QTest::newRow( "oriented_bbox_point" ) << "oriented_bbox( $geometry )" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "Polygon ((10 20, 10 20, 10 20, 10 20, 10 20))" ) );
       geom = QgsGeometry::fromPolygonXY( polygon );
       QTest::newRow( "minimal_circle" ) << "minimal_circle( $geometry )" << geom << false << true << geom.minimalEnclosingCircle();
 
@@ -4696,6 +4868,35 @@ class TestQgsExpression : public QObject
       QCOMPARE( QgsExpression( "\"foo bar\"" ).isField(), true );
       QCOMPARE( QgsExpression( "sqrt(foo)" ).isField(), false );
       QCOMPARE( QgsExpression( "foo + bar" ).isField(), false );
+    }
+
+    void testTimeZoneFunctions()
+    {
+      QgsExpressionContext context;
+      QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+      scope->setVariable( QStringLiteral( "dt_with_timezone" ), QDateTime( QDate( 2020, 1, 1 ), QTime( 1, 2, 3 ), QTimeZone( "Australia/Brisbane" ) ) );
+      context.appendScope( scope );
+
+      // get_timezone
+      QCOMPARE( QgsExpression( QString( "timezone_id(get_timezone(@dt_with_timezone))" ) ).evaluate( &context ).toString(), QStringLiteral( "Australia/Brisbane" ) );
+      QCOMPARE( QgsExpression( QString( "get_timezone(NULL)" ) ).evaluate( &context ), QVariant() );
+      QgsExpression invalid( QString( "get_timezone(123)" ) );
+      QCOMPARE( invalid.evaluate( &context ), QVariant() );
+      QCOMPARE( invalid.evalErrorString(), QStringLiteral( "Cannot convert '123' to DateTime" ) );
+
+      // set_timezone
+      QCOMPARE( QgsExpression( QString( "set_timezone(@dt_with_timezone, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ).toDateTime(), QDateTime( QDate( 2020, 1, 1 ), QTime( 1, 2, 3 ), QTimeZone( "Australia/Darwin" ) ) );
+      QCOMPARE( QgsExpression( QString( "set_timezone(NULL, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ), QVariant() );
+      invalid = QgsExpression( QString( "set_timezone(123, timezone_from_id('Australia/Darwin'))" ) );
+      QCOMPARE( invalid.evaluate( &context ), QVariant() );
+      QCOMPARE( invalid.evalErrorString(), QStringLiteral( "Cannot convert '123' to DateTime" ) );
+
+      // convert_timezone
+      QCOMPARE( QgsExpression( QString( "convert_timezone(@dt_with_timezone, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ).toDateTime(), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 32, 3 ), QTimeZone( "Australia/Darwin" ) ) );
+      QCOMPARE( QgsExpression( QString( "convert_timezone(NULL, timezone_from_id('Australia/Darwin'))" ) ).evaluate( &context ), QVariant() );
+      invalid = QgsExpression( QString( "convert_timezone(123, timezone_from_id('Australia/Darwin'))" ) );
+      QCOMPARE( invalid.evaluate( &context ), QVariant() );
+      QCOMPARE( invalid.evalErrorString(), QStringLiteral( "Cannot convert '123' to DateTime" ) );
     }
 
     void test_expressionToLayerFieldIndex()
@@ -5224,6 +5425,29 @@ class TestQgsExpression : public QObject
       QVERIFY( !exp.hasEvalError() );
     }
 
+    void testGetTimeZoneValue()
+    {
+      QgsExpression exp;
+      QgsExpressionContext context;
+      // NULL value
+      QTimeZone tz = QgsExpressionUtils::getTimeZoneValue( QVariant(), &exp );
+      QVERIFY( !tz.isValid() );
+      QVERIFY( !exp.hasEvalError() );
+
+      // value which CANNOT be a time zone
+      tz = QgsExpressionUtils::getTimeZoneValue( QVariant::fromValue( QgsGeometry() ), &exp );
+      QVERIFY( !tz.isValid() );
+      QVERIFY( exp.hasEvalError() );
+      QCOMPARE( exp.evalErrorString(), QStringLiteral( "Cannot convert '' to a time zone" ) );
+
+      // good value
+      exp = QgsExpression();
+      tz = QgsExpressionUtils::getTimeZoneValue( QVariant::fromValue( QTimeZone( "Australia/Brisbane" ) ), &exp );
+      QVERIFY( tz.isValid() );
+      QCOMPARE( tz.id(), QStringLiteral( "Australia/Brisbane" ) );
+      QVERIFY( !exp.hasEvalError() );
+    }
+
     void test_env()
     {
       QgsExpressionContext context;
@@ -5300,6 +5524,12 @@ class TestQgsExpression : public QObject
 
       QgsCoordinateReferenceSystem crs( "EPSG:4326" );
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( crs ) ), QStringLiteral( "<i>&lt;crs: EPSG:4326 - WGS 84&gt;</i>" ) );
+
+      QTimeZone tz( "Australia/Brisbane" );
+      QString res = QgsExpression::formatPreviewString( QVariant::fromValue( tz ) );
+      QVERIFY2( res == QString( "<i>&lt;time zone: AEST&gt;</i>" ) || res == QString( "<i>&lt;time zone: GMT+10&gt;</i>" ), QString( "got %1, expected <i>&lt;time zone: AEST&gt;</i> or <i>&lt;time zone: GMT+10&gt;</i>" ).arg( res ).toLocal8Bit().constData() );
+
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant::fromValue( QTimeZone() ) ), QStringLiteral( "<i>&lt;time zone: invalid&gt;</i>" ) );
     }
 
     void test_formatPreviewStringWithLocale()

@@ -174,6 +174,8 @@ class TestQgsGeometry : public QgsTest
 
     void wktParser();
 
+    void chamferFillet();
+
   private:
     //! Must be called before each render test
     void initPainterTest();
@@ -2292,6 +2294,57 @@ void TestQgsGeometry::orientedMinimumBoundingBox()
   result = geomTest.orientedMinimumBoundingBox();
   resultTestWKT = QStringLiteral( "Polygon ((-57 -30, -55.5 -30, -55.5 -29, -57 -29, -57 -30))" );
   QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+
+  // Issue https://github.com/qgis/QGIS/issues/62126
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "Point (10 10)" ) );
+  result = geomTest.orientedMinimumBoundingBox();
+  resultTestWKT = QStringLiteral( "Polygon ((10 10, 10 10, 10 10, 10 10, 10 10))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "Point (10 20)" ) );
+  double area, angle, width, height;
+  result = geomTest.orientedMinimumBoundingBox( area, angle, width, height );
+  resultTestWKT = QStringLiteral( "Polygon ((10 20, 10 20, 10 20, 10 20, 10 20))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+  QCOMPARE( area, 0.0 );
+  QCOMPARE( angle, 0.0 );
+  QCOMPARE( width, 0.0 );
+  QCOMPARE( height, 0.0 );
+
+  // Multipoint with multipart geometry
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 0 -5, 0 0 )" ) );
+  result = geomTest.orientedMinimumBoundingBox();
+  resultTestWKT = QStringLiteral( "Polygon ((0 -5, 0 -5, 0 5, 0 5, 0 -5))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 0 -5, 0 0 )" ) );
+  result = geomTest.orientedMinimumBoundingBox( area, angle, width, height );
+  resultTestWKT = QStringLiteral( "Polygon ((0 -5, 0 -5, 0 5, 0 5, 0 -5))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+  QCOMPARE( area, 0.0 );
+  QCOMPARE( angle, 0.0 );
+  QCOMPARE( width, 0.0 );
+  QCOMPARE( height, 10 );
+
+  // Multipoint with singlepart geometry
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5 )" ) );
+  result = geomTest.orientedMinimumBoundingBox();
+  resultTestWKT = QStringLiteral( "Polygon ((0 5, 0 5, 0 5, 0 5, 0 5))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5 )" ) );
+  result = geomTest.orientedMinimumBoundingBox( area, angle, width, height );
+  resultTestWKT = QStringLiteral( "Polygon ((0 5, 0 5, 0 5, 0 5, 0 5))" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
+  QCOMPARE( area, 0.0 );
+  QCOMPARE( angle, 0.0 );
+  QCOMPARE( width, 0.0 );
+  QCOMPARE( height, 0.0 );
+
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "Point EMPTY" ) );
+  result = geomTest.orientedMinimumBoundingBox();
+  resultTestWKT = QLatin1String( "" );
+  QCOMPARE( result.asWkt( 2 ), resultTestWKT );
 }
 
 void TestQgsGeometry::boundingBox()
@@ -3133,5 +3186,126 @@ void TestQgsGeometry::wktParser()
   QVERIFY( mline.fromWkt( "MultiLineString EMPTY" ) );
   QCOMPARE( mline.asWkt(), QStringLiteral( "MultiLineString EMPTY" ) );
 }
+
+void TestQgsGeometry::chamferFillet()
+{
+  QgsGeometry g, g2;
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "Point( 4 5 )" ) );
+  QCOMPARE( g.lastError(), "" );
+  g.chamfer( 1, 0.5, 0.5 );
+  QCOMPARE( g.lastError(), "Operation 'Chamfer' needs curve geometry." );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 1, 0.5, 0.5 );
+  QCOMPARE( g.lastError(), "Opened curve must have at least 3 points. Requested vertex: 1 was resolved as: [part: -1, ring: -1, vertex: 1]" );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 5, 0.5, 0.5 );
+  QCOMPARE( g.lastError(), "Vertex index out of range. -1 must be in (0, 2). Requested vertex: 5 was resolved as: [part: -1, ring: -1, vertex: -1]" );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 1, 1 2, 3 1))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 1, 0.5, 0.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "LineString (0 1, 0.65 1.65, 1.45 1.78, 3 1)" );
+
+  // chamfer square
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 1, 3.0, 2.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 7 15, 10 17.5, 10 20, 5 20, 5 15))" );
+
+  // chamfer square with big values will lost a point and become a triangle
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 1, 30.0, 25.0 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 10 20, 5 20, 5 15))" );
+
+  // chamfer first vertex
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 0, 3.0, 2.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 18, 7.5 15, 10 15, 10 20, 5 20, 5 18))" );
+
+  // chamfer last vertex
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 4, 3.0, 2.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((10 15, 10 20, 5 20, 5 18, 7.5 15, 10 15))" );
+
+  // chamfer outer ring preserve hole
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15),(6 16, 8 16, 8 18, 6 16))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 1, 3.0, 2.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 7 15, 10 17.5, 10 20, 5 20, 5 15),(6 16, 8 16, 8 18, 6 16))" );
+
+  // chamfer hole, preserve outer ring
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15),(6 16, 8 16, 8 18, 6 16))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 6, 1.0, 1.5 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 10 15, 10 20, 5 20, 5 15),(6 16, 7 16, 8 17.5, 8 18, 6 16))" );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 5 15, 10 15, 10 20, 5 20, 5 15 ))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.fillet( 1, 2.0, 4 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon ((5 15, 8 15, 8.62 15.1, 9.18 15.38, 9.62 15.82, 9.9 16.38, 10 17, 10 20, 5 20, 5 15))" );
+
+  // with Z coordinates
+  g = QgsGeometry::fromWkt( QStringLiteral( "PolygonZ(( 5 15 0, 10 15 10, 10 20 -5, 5 20 -1 , 5 15 0))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.fillet( 1, 2.0, 4 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "Polygon Z ((5 15 0, 8 15 6, 8.62 15.1 5.6, 9.18 15.38 5.2, 9.62 15.82 4.8, 9.9 16.38 4.4, 10 17 4, 10 20 -5, 5 20 -1, 5 15 0))" );
+
+  // Compound curve
+  g = QgsGeometry::fromWkt( QStringLiteral( "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 0, 1.0 );
+  QCOMPARE( g.lastError(), "Vertex index out of range. 0 must be in (0, 5). Requested vertex: 0 was resolved as: [part: -1, ring: -1, vertex: 0]" );
+
+  // Compound curve chamfer CircurlarString
+  g = QgsGeometry::fromWkt( QStringLiteral( "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 10 4))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 3, 1.0 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "CompoundCurve ((0 0, 10 0),(10 0, 11.41 0.59, 11.62 1.08),(11.62 1.08, 12 3),(12 2, 12 4, 10 4))" );
+
+  // Compound curve chamfer last vertex
+  g = QgsGeometry::fromWkt( QStringLiteral( "CompoundCurve((0 0, 10 0), CircularString(10 0, 11.414213562373096 0.5857864376269049, 12 2), (12 2, 12 4, 0 0))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 5, 1.0 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "CompoundCurve ((1 0, 10 0),CircularString (6.27 -0.74, 11.41 0.59, 12 2),(12 2, 12 4, 0.95 0.32),(0.95 0.32, 1 0))" );
+
+  // check for multistring
+  g = QgsGeometry::fromWkt( QStringLiteral( "MultiLineString((0 0, 10 0), (10 0.5, 11.41 0.59, 12 2), (12 2.5, 12 4, 0 0))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 5, 1.0 );
+  QCOMPARE( g.lastError(), "Vertex index out of range. 0 must be in (0, 2). Requested vertex: 5 was resolved as: [part: 2, ring: -1, vertex: 0]" );
+
+  g = QgsGeometry::fromWkt( QStringLiteral( "MultiLineString((0 0, 10 0), (10 0.5, 11.41 0.59, 12 2), (12 2.5, 12 4, 0 0))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.chamfer( 6, 1.0 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "MultiLineString ((0 0, 10 0),(10 0.5, 11.41 0.59, 12 2),(12 2.5, 12 3, 11.05 3.68, 0 0))" );
+
+  // check for multipolygon
+  g = QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon((( 5 15, 10 15, 10 20, 5 20, 5 15 )),(( 105 15, 110 15, 110 20, 105 20, 105 15 )))" ) );
+  QCOMPARE( g.lastError(), "" );
+  g2 = g.fillet( 6, 2.0, 4 );
+  QCOMPARE( g.lastError(), "" );
+  QCOMPARE( g2.asWkt( 2 ), "MultiPolygon (((5 15, 10 15, 10 20, 5 20, 5 15)),((105 15, 108 15, 108.77 15.15, 109.41 15.59, 109.85 16.23, 110 17, 110 20, 105 20, 105 15)))" );
+}
+
 QGSTEST_MAIN( TestQgsGeometry )
 #include "testqgsgeometry.moc"

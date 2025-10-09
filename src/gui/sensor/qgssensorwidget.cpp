@@ -164,17 +164,17 @@ QgsSerialPortSensorWidget::QgsSerialPortSensorWidget( QWidget *parent )
 
   updateSerialPortDetails();
 
-  connect( mSerialPortComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentTextChanged ), this, [=]() {
+  connect( mSerialPortComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentTextChanged ), this, [this]() {
     updateSerialPortDetails();
     emit changed();
   } );
 
-  connect( mBaudRateComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]() {
+  connect( mBaudRateComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]() {
     updateSerialPortDetails();
     emit changed();
   } );
 
-  connect( mDataFrameDelimiterComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int index ) {
+  connect( mDataFrameDelimiterComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int index ) {
     if ( index == mDataFrameDelimiterComboBox->count() - 1 )
     {
       mDataFrameDelimiterLineEdit->setEnabled( true );
@@ -187,7 +187,7 @@ QgsSerialPortSensorWidget::QgsSerialPortSensorWidget( QWidget *parent )
     emit changed();
   } );
 
-  connect( mDataFrameDelimiterLineEdit, &QLineEdit::textEdited, this, [=]() {
+  connect( mDataFrameDelimiterLineEdit, &QLineEdit::textEdited, this, [this]() {
     emit changed();
   } );
 }

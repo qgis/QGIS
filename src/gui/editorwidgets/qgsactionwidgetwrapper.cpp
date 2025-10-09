@@ -23,7 +23,7 @@
 QgsActionWidgetWrapper::QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
 {
-  connect( this, &QgsWidgetWrapper::contextChanged, [=] {
+  connect( this, &QgsWidgetWrapper::contextChanged, [this] {
     const bool actionIsVisible {
       ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::SingleEditMode ) || ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::AddFeatureMode )
     };

@@ -68,6 +68,28 @@ bool QgsProcessingFeatureSourceDefinition::loadVariant( const QVariantMap &map )
 
 
 //
+// QgsProcessingRasterLayerDefinition
+//
+
+QVariant QgsProcessingRasterLayerDefinition::toVariant() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "source" ), source.toVariant() );
+  map.insert( QStringLiteral( "reference_scale" ), referenceScale );
+  map.insert( QStringLiteral( "dpi" ), dpi );
+  return map;
+}
+
+bool QgsProcessingRasterLayerDefinition::loadVariant( const QVariantMap &map )
+{
+  source.loadVariant( map.value( QStringLiteral( "source" ) ) );
+  referenceScale = map.value( QStringLiteral( "reference_scale" ), 0 ).toDouble();
+  dpi = map.value( QStringLiteral( "dpi" ), 0 ).toInt();
+  return true;
+}
+
+
+//
 // QgsProcessingOutputLayerDefinition
 //
 
@@ -874,6 +896,12 @@ QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParam
     return layer;
   }
 
+  if ( val.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+  {
+    const QgsProcessingRasterLayerDefinition fromVar = qvariant_cast<QgsProcessingRasterLayerDefinition>( val );
+    val = fromVar.source;
+  }
+
   if ( val.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
   {
     // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
@@ -1283,6 +1311,10 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
           {
             QgsMessageLog::logMessage( QObject::tr( "Error transforming extent geometry" ) );
           }
+          return g;
+        }
+        else
+        {
           return g;
         }
       }
@@ -2659,6 +2691,13 @@ QVariant QgsProcessingParameterDefinition::valueAsJsonObjectPrivate( const QVari
       // TODO -- we could consider also serializating the additional properties like invalid feature handling, limits, etc
       return valueAsJsonObject( fromVar.source, context );
     }
+    else if ( value.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+    {
+      const QgsProcessingRasterLayerDefinition fromVar = qvariant_cast<QgsProcessingRasterLayerDefinition>( value );
+
+      // TODO -- we could consider also serializating the additional properties like reference scale, dpi, etc
+      return valueAsJsonObject( fromVar.source, context );
+    }
     else if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
     {
       const QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
@@ -2835,6 +2874,11 @@ QString QgsProcessingParameterDefinition::valueAsStringPrivate( const QVariant &
   else if ( value.userType() == qMetaTypeId<QgsProcessingFeatureSourceDefinition>() )
   {
     const QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+    return valueAsString( fromVar.source, context, ok );
+  }
+  else if ( value.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+  {
+    const QgsProcessingRasterLayerDefinition fromVar = qvariant_cast<QgsProcessingRasterLayerDefinition>( value );
     return valueAsString( fromVar.source, context, ok );
   }
   else if ( value.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
@@ -3334,6 +3378,14 @@ QString QgsProcessingParameterMapLayer::asScriptCode() const
         code += QLatin1String( "annotation " );
         break;
 
+      case Qgis::ProcessingSourceType::VectorTile:
+        code += QLatin1String( "vectortile " );
+        break;
+
+      case Qgis::ProcessingSourceType::TiledScene:
+        code += QLatin1String( "tiledscene " );
+        break;
+
       default:
         break;
     }
@@ -3406,6 +3458,18 @@ QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( 
     else if ( def.startsWith( QLatin1String( "annotation" ), Qt::CaseInsensitive ) )
     {
       types << static_cast< int >( Qgis::ProcessingSourceType::Annotation );
+      def = def.mid( 11 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "vectortile" ), Qt::CaseInsensitive ) )
+    {
+      types << static_cast< int >( Qgis::ProcessingSourceType::VectorTile );
+      def = def.mid( 11 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "tiledscene" ), Qt::CaseInsensitive ) )
+    {
+      types << static_cast< int >( Qgis::ProcessingSourceType::TiledScene );
       def = def.mid( 11 );
       continue;
     }
@@ -4547,6 +4611,7 @@ QString QgsProcessingParameterMultipleLayers::createFileFilter() const
     case Qgis::ProcessingSourceType::Plugin:
     case Qgis::ProcessingSourceType::Annotation:
     case Qgis::ProcessingSourceType::VectorTile:
+    case Qgis::ProcessingSourceType::TiledScene:
       return createAllMapLayerFileFilter();
   }
   return QString();
@@ -4909,9 +4974,23 @@ bool QgsProcessingParameterRasterLayer::checkValueIsAcceptable( const QVariant &
     input = defaultValue();
   }
 
+  if ( input.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+  {
+    const QgsProcessingRasterLayerDefinition fromVar = qvariant_cast<QgsProcessingRasterLayerDefinition>( input );
+    input = fromVar.source;
+  }
+
   if ( input.userType() == qMetaTypeId<QgsProperty>() )
   {
-    return true;
+    const QgsProperty p = input.value< QgsProperty >();
+    if ( p.propertyType() == Qgis::PropertyType::Static )
+    {
+      input = p.staticValue();
+    }
+    else
+    {
+      return true;
+    }
   }
 
   if ( qobject_cast< QgsRasterLayer * >( qvariant_cast<QObject *>( input ) ) )
@@ -4941,6 +5020,45 @@ QString QgsProcessingParameterRasterLayer::valueAsPythonString( const QVariant &
   if ( val.userType() == qMetaTypeId<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( val.value< QgsProperty >().asExpression() );
 
+  if ( val.userType() == qMetaTypeId<QgsProcessingRasterLayerDefinition>() )
+  {
+    const QgsProcessingRasterLayerDefinition fromVar = qvariant_cast<QgsProcessingRasterLayerDefinition>( val );
+
+    if ( fromVar.source.propertyType() == Qgis::PropertyType::Static )
+    {
+      QString layerString = fromVar.source.staticValue().toString();
+      // prefer to use layer source instead of id if possible (since it's persistent)
+      if ( QgsRasterLayer *layer = qobject_cast< QgsRasterLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Raster ) ) )
+        layerString = layer->source();
+
+      if ( fromVar.referenceScale > 0 )
+      {
+        return QStringLiteral( "QgsProcessingRasterLayerDefinition(%1, referenceScale=%2, dpi=%3)" )
+               .arg( QgsProcessingUtils::stringToPythonLiteral( layerString ),
+                     QString::number( fromVar.referenceScale ),
+                     QString::number( fromVar.dpi ) );
+      }
+      else
+      {
+        return QgsProcessingUtils::stringToPythonLiteral( layerString );
+      }
+    }
+    else
+    {
+      if ( fromVar.referenceScale > 0 )
+      {
+        return QStringLiteral( "QgsProcessingRasterLayerDefinition(QgsProperty.fromExpression(%1), referenceScale=%2, dpi=%3)" )
+               .arg( QgsProcessingUtils::stringToPythonLiteral( fromVar.source.asExpression() ),
+                     QString::number( fromVar.referenceScale ),
+                     QString::number( fromVar.dpi ) );
+      }
+      else
+      {
+        return QStringLiteral( "QgsProperty.fromExpression(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( fromVar.source.asExpression() ) );
+      }
+    }
+  }
+
   QVariantMap p;
   p.insert( name(), val );
   QgsRasterLayer *layer = QgsProcessingParameters::parameterAsRasterLayer( this, p, context );
@@ -4966,6 +5084,16 @@ QString QgsProcessingParameterRasterLayer::createFileFilter() const
 QgsProcessingParameterRasterLayer *QgsProcessingParameterRasterLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterRasterLayer( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
+}
+
+void QgsProcessingParameterRasterLayer::setParameterCapabilities( Qgis::RasterProcessingParameterCapabilities capabilities )
+{
+  mCapabilities = capabilities;
+}
+
+Qgis::RasterProcessingParameterCapabilities QgsProcessingParameterRasterLayer::parameterCapabilities() const
+{
+  return mCapabilities;
 }
 
 QgsProcessingParameterEnum::QgsProcessingParameterEnum( const QString &name, const QString &description, const QStringList &options, bool allowMultiple, const QVariant &defaultValue, bool optional, bool usesStaticStrings )
@@ -6685,6 +6813,7 @@ bool QgsProcessingParameterFeatureSink::hasGeometry() const
     case Qgis::ProcessingSourceType::Plugin:
     case Qgis::ProcessingSourceType::PointCloud:
     case Qgis::ProcessingSourceType::Annotation:
+    case Qgis::ProcessingSourceType::TiledScene:
       return false;
   }
   return true;
@@ -7407,6 +7536,7 @@ bool QgsProcessingParameterVectorDestination::hasGeometry() const
     case Qgis::ProcessingSourceType::Plugin:
     case Qgis::ProcessingSourceType::PointCloud:
     case Qgis::ProcessingSourceType::Annotation:
+    case Qgis::ProcessingSourceType::TiledScene:
       return false;
   }
   return true;

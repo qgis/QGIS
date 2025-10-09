@@ -809,17 +809,28 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   }
   else if ( bandCount == 2 )
   {
-    // handle singleband gray with alpha
+    // handle singleband gray and paletted with alpha
     auto colorInterpretationIsGrayOrUndefined = []( Qgis::RasterColorInterpretation interpretation )
     {
       return interpretation == Qgis::RasterColorInterpretation::GrayIndex
              || interpretation == Qgis::RasterColorInterpretation::Undefined;
     };
 
+    auto colorInterpretationIsPaletted = []( Qgis::RasterColorInterpretation interpretation )
+    {
+      return interpretation == Qgis::RasterColorInterpretation::PaletteIndex
+             || interpretation == Qgis::RasterColorInterpretation::ContinuousPalette;
+    };
+
     if ( ( colorInterpretationIsGrayOrUndefined( mDataProvider->colorInterpretation( 1 ) ) && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::AlphaBand )
          || ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::AlphaBand && colorInterpretationIsGrayOrUndefined( mDataProvider->colorInterpretation( 2 ) ) ) )
     {
       mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
+    }
+    else if ( ( colorInterpretationIsPaletted( mDataProvider->colorInterpretation( 1 ) ) && mDataProvider->colorInterpretation( 2 ) == Qgis::RasterColorInterpretation::AlphaBand )
+              || ( mDataProvider->colorInterpretation( 1 ) == Qgis::RasterColorInterpretation::AlphaBand && colorInterpretationIsPaletted( mDataProvider->colorInterpretation( 2 ) ) ) )
+    {
+      mRasterType = Qgis::RasterLayerType::Palette;
     }
     else
     {
@@ -2268,6 +2279,17 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     readRasterAttributeTableExternalPaths( layer_node, context );
   }
 
+  if ( categories.testFlag( Legend ) )
+  {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
+
+    const QDomElement legendElem = layer_node.firstChildElement( QStringLiteral( "legend" ) );
+    if ( QgsMapLayerLegend *l = legend(); !legendElem.isNull() )
+    {
+      l->readXml( legendElem, context );
+    }
+  }
+
   emit rendererChanged();
   emitStyleChanged();
 
@@ -2526,6 +2548,13 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
     const QDomText blendModeText = document.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElement.appendChild( blendModeText );
     layer_node.appendChild( blendModeElement );
+  }
+
+  if ( categories.testFlag( Legend ) && legend() )
+  {
+    QDomElement legendElement = legend()->writeXml( document, context );
+    if ( !legendElement.isNull() )
+      layer_node.appendChild( legendElement );
   }
 
   return true;

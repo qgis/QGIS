@@ -395,7 +395,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   mGroupsTreeView->setHeaderHidden( true );
   populateList();
 
-  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [=]( const QString &filterText ) {
+  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [this]( const QString &filterText ) {
     if ( !mImagesListView->selectionModel()->selectedIndexes().isEmpty() )
     {
       disconnect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
@@ -421,7 +421,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
   connect( mGroupsTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::populateIcons );
   connect( mAddParameterButton, &QToolButton::clicked, mParametersModel, &QgsSvgParametersModel::addParameter );
-  connect( mRemoveParameterButton, &QToolButton::clicked, this, [=]() {
+  connect( mRemoveParameterButton, &QToolButton::clicked, this, [this]() {
     const QModelIndexList selectedRows = mParametersTreeView->selectionModel()->selectedRows();
     if ( selectedRows.count() > 0 )
       mParametersModel->removeParameters( selectedRows );
@@ -575,9 +575,9 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
 QgsSvgParametersModel::QgsSvgParametersModel( QObject *parent )
   : QAbstractTableModel( parent )
 {
-  connect( this, &QAbstractTableModel::rowsInserted, this, [=]() { emit parametersChanged( parameters() ); } );
-  connect( this, &QAbstractTableModel::rowsRemoved, this, [=]() { emit parametersChanged( parameters() ); } );
-  connect( this, &QAbstractTableModel::dataChanged, this, [=]() { emit parametersChanged( parameters() ); } );
+  connect( this, &QAbstractTableModel::rowsInserted, this, [this]() { emit parametersChanged( parameters() ); } );
+  connect( this, &QAbstractTableModel::rowsRemoved, this, [this]() { emit parametersChanged( parameters() ); } );
+  connect( this, &QAbstractTableModel::dataChanged, this, [this]() { emit parametersChanged( parameters() ); } );
 }
 
 void QgsSvgParametersModel::setParameters( const QMap<QString, QgsProperty> &parameters )

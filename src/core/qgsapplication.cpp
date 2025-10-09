@@ -53,6 +53,7 @@
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgscalloutsregistry.h"
+#include "qgsplotregistry.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsclassificationmethodregistry.h"
 #include "qgsmessagelog.h"
@@ -121,6 +122,9 @@
 #include <QScreen>
 #include <QAuthenticator>
 #include <QRecursiveMutex>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QImageReader>
+#endif
 
 const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( QStringLiteral( "userLocale" ), QgsSettingsTree::sTreeLocale, QString() );
 
@@ -163,6 +167,64 @@ const QgsSettingsEntryInteger *QgsApplication::settingsConnectionPoolMaximumConc
 #endif
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
+
+struct QgsApplication::ApplicationMembers
+{
+  std::unique_ptr<QgsSettingsRegistryCore > mSettingsRegistryCore;
+  std::unique_ptr<QgsCoordinateReferenceSystemRegistry > mCrsRegistry;
+  std::unique_ptr<Qgs3DRendererRegistry > m3DRendererRegistry;
+  std::unique_ptr<Qgs3DSymbolRegistry > m3DSymbolRegistry;
+  std::unique_ptr<QgsActionScopeRegistry > mActionScopeRegistry;
+  std::unique_ptr<QgsAnnotationRegistry > mAnnotationRegistry;
+  std::unique_ptr<QgsColorSchemeRegistry > mColorSchemeRegistry;
+  std::unique_ptr<QgsLocalizedDataPathRegistry > mLocalizedDataPathRegistry;
+  std::unique_ptr<QgsNumericFormatRegistry > mNumericFormatRegistry;
+  std::unique_ptr<QgsFieldFormatterRegistry > mFieldFormatterRegistry;
+  std::unique_ptr<QgsGpsConnectionRegistry > mGpsConnectionRegistry;
+  std::unique_ptr<QgsBabelFormatRegistry > mGpsBabelFormatRegistry;
+  std::unique_ptr<QgsNetworkContentFetcherRegistry > mNetworkContentFetcherRegistry;
+  std::unique_ptr<QgsScaleBarRendererRegistry > mScaleBarRendererRegistry;
+  std::unique_ptr<QgsLabelingEngineRuleRegistry > mLabelingEngineRuleRegistry;
+  std::unique_ptr<QgsValidityCheckRegistry > mValidityCheckRegistry;
+  std::unique_ptr<QgsMessageLog > mMessageLog;
+  std::unique_ptr<QgsPaintEffectRegistry > mPaintEffectRegistry;
+  std::unique_ptr<QgsPluginLayerRegistry > mPluginLayerRegistry;
+  std::unique_ptr<QgsClassificationMethodRegistry > mClassificationMethodRegistry;
+  std::unique_ptr<QgsProcessingRegistry > mProcessingRegistry;
+  std::unique_ptr<QgsConnectionRegistry > mConnectionRegistry;
+  std::unique_ptr<QgsProjectStorageRegistry > mProjectStorageRegistry;
+  std::unique_ptr<QgsLayerMetadataProviderRegistry > mLayerMetadataProviderRegistry;
+  std::unique_ptr<QgsExternalStorageRegistry > mExternalStorageRegistry;
+  std::unique_ptr<QgsProfileSourceRegistry > mProfileSourceRegistry;
+  std::unique_ptr<QgsPageSizeRegistry > mPageSizeRegistry;
+  std::unique_ptr<QgsRasterRendererRegistry > mRasterRendererRegistry;
+  std::unique_ptr<QgsRendererRegistry > mRendererRegistry;
+  std::unique_ptr<QgsPointCloudRendererRegistry > mPointCloudRendererRegistry;
+  std::unique_ptr<QgsTiledSceneRendererRegistry > mTiledSceneRendererRegistry;
+  std::unique_ptr<QgsSvgCache > mSvgCache;
+  std::unique_ptr<QgsImageCache > mImageCache;
+  std::unique_ptr<QgsSourceCache > mSourceCache;
+  std::unique_ptr<QgsSymbolLayerRegistry > mSymbolLayerRegistry;
+  std::unique_ptr<QgsCalloutRegistry > mCalloutRegistry;
+  std::unique_ptr<QgsTaskManager > mTaskManager;
+  std::unique_ptr<QgsLayoutItemRegistry > mLayoutItemRegistry;
+  std::unique_ptr<QgsAnnotationItemRegistry > mAnnotationItemRegistry;
+  std::unique_ptr<QgsSensorRegistry > mSensorRegistry;
+  std::unique_ptr<QgsPlotRegistry > mPlotRegistry;
+  std::unique_ptr<QgsBookmarkManager > mBookmarkManager;
+  std::unique_ptr<QgsTileDownloadManager > mTileDownloadManager;
+  std::unique_ptr<QgsStyleModel > mStyleModel;
+  std::unique_ptr<QgsRecentStyleHandler > mRecentStyleHandler;
+  std::unique_ptr<QgsDatabaseQueryLog > mQueryLogger;
+  std::unique_ptr<QgsFontManager > mFontManager;
+  QString mNullRepresentation;
+  QStringList mSvgPathCache;
+  bool mSvgPathCacheValid = false;
+
+  ApplicationMembers();
+  ~ApplicationMembers();
+};
+
 
 QObject *ABISYM( QgsApplication::mFileOpenEventReceiver ) = nullptr;
 bool ABISYM( QgsApplication::mInitialized ) = false;
@@ -216,7 +278,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   // Delay application members initialization in desktop app (In desktop app, profile folder is not known at this point)
   if ( platformName != QLatin1String( "desktop" ) )
   {
-    mApplicationMembers = new ApplicationMembers();
+    mApplicationMembers = std::make_unique<ApplicationMembers>();
     mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
   }
   else
@@ -245,7 +307,7 @@ void registerMetaTypes()
   qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
   qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
   qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
-  qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
+  qRegisterMetaType<Qgis::LayoutRenderFlags>( "Qgis::LayoutRenderFlags" );
   qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
   qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
   qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
@@ -288,9 +350,11 @@ void registerMetaTypes()
   qRegisterMetaType<QMap<QNetworkRequest::Attribute, QVariant>>( "QMap<QNetworkRequest::Attribute,QVariant>" );
   qRegisterMetaType<QMap<QNetworkRequest::KnownHeaders, QVariant>>( "QMap<QNetworkRequest::KnownHeaders,QVariant>" );
   qRegisterMetaType<QList<QNetworkReply::RawHeaderPair>>( "QList<QNetworkReply::RawHeaderPair>" );
+  qRegisterMetaType<QNetworkReply::NetworkError>( "QNetworkReply::NetworkError" );
   qRegisterMetaType< QAuthenticator * >( "QAuthenticator*" );
   qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
   qRegisterMetaType< QgsSensorThingsExpansionDefinition >( "QgsSensorThingsExpansionDefinition" );
+  qRegisterMetaType< QTimeZone >( "QTimeZone" );
 };
 
 void QgsApplication::init( QString profileFolder )
@@ -298,7 +362,7 @@ void QgsApplication::init( QString profileFolder )
   // Initialize application members in desktop app (at this point, profile folder is known)
   if ( platform() == QLatin1String( "desktop" ) )
   {
-    instance()->mApplicationMembers = new ApplicationMembers();
+    instance()->mApplicationMembers = std::make_unique<ApplicationMembers>();
     instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
   }
 
@@ -355,8 +419,11 @@ void QgsApplication::init( QString profileFolder )
     {
       if ( sPrefixPath()->isNull() )
       {
-#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS) && !defined(QGIS_MAC_BUNDLE)
         setPrefixPath( applicationDirPath(), true );
+#elif defined(QGIS_MAC_BUNDLE)
+        QDir myDir( applicationDirPath() + QLatin1String( "/../.." ) );
+        setPrefixPath( myDir.absolutePath(), true );
 #elif defined(ANDROID)
         // this is "/data/data/org.qgis.qgis" in android
         QDir myDir( QDir::homePath() );
@@ -456,6 +523,11 @@ void QgsApplication::init( QString profileFolder )
 
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  // the default of 256 is not enough for QGIS
+  QImageReader::setAllocationLimit( 512 );
+#endif
 
   {
     QgsScopedRuntimeProfile profile( tr( "Load user fonts" ) );
@@ -559,9 +631,6 @@ QgsApplication::~QgsApplication()
 {
   if ( mApplicationMembers )
     mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
-
-  delete mDataItemProviderRegistry;
-  delete mApplicationMembers;
 
   // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
   // and there's just a *chance* that someone hasn't properly called exitQgis prior to
@@ -806,7 +875,7 @@ QIcon QgsApplication::getThemeIcon( const QString &name, const QColor &fillColor
   QIcon icon;
   const bool colorBased = fillColor.isValid() || strokeColor.isValid();
 
-  auto iconFromColoredSvg = [ = ]( const QString & path ) -> QIcon
+  auto iconFromColoredSvg = [fillColor, strokeColor, cacheKey]( const QString & path ) -> QIcon
   {
     // sizes are unused here!
     const QByteArray svgContent = QgsApplication::svgCache()->svgContent( path, 16, fillColor, strokeColor, 1, 1 );
@@ -2459,9 +2528,9 @@ QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
   {
     if ( !instance()->mDataItemProviderRegistry )
     {
-      lInstance->mDataItemProviderRegistry = new QgsDataItemProviderRegistry();
+      lInstance->mDataItemProviderRegistry = std::make_unique<QgsDataItemProviderRegistry>();
     }
-    return lInstance->mDataItemProviderRegistry;
+    return lInstance->mDataItemProviderRegistry.get();
   }
   else
   {
@@ -2526,6 +2595,11 @@ QgsAnnotationItemRegistry *QgsApplication::annotationItemRegistry()
 QgsSensorRegistry *QgsApplication::sensorRegistry()
 {
   return members()->mSensorRegistry.get();
+}
+
+QgsPlotRegistry *QgsApplication::plotRegistry()
+{
+  return members()->mPlotRegistry.get();
 }
 
 QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
@@ -2827,6 +2901,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup plot registry" ) );
+    mPlotRegistry = std::make_unique<QgsPlotRegistry>();
+    mPlotRegistry->populate();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup 3D symbol registry" ) );
     m3DSymbolRegistry = std::make_unique<Qgs3DSymbolRegistry>();
     profiler->end();
@@ -2900,6 +2980,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   mPageSizeRegistry.reset();
   mAnnotationItemRegistry.reset();
   mSensorRegistry.reset();
+  mPlotRegistry.reset();
   mLayoutItemRegistry.reset();
   mPointCloudRendererRegistry.reset();
   mTiledSceneRendererRegistry.reset();
@@ -2932,7 +3013,7 @@ QgsApplication::ApplicationMembers *QgsApplication::members()
 {
   if ( auto *lInstance = instance() )
   {
-    return lInstance->mApplicationMembers;
+    return lInstance->mApplicationMembers.get();
   }
   else
   {

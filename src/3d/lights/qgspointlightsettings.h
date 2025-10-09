@@ -79,7 +79,7 @@ class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
     void setQuadraticAttenuation( float value ) { mQuadraticAttenuation = value; }
 
     // TODO c++20 - replace with = default
-    bool operator==( const QgsPointLightSettings &other );
+    bool operator==( const QgsPointLightSettings &other ) const;
 
   private:
     QgsVector3D mPosition { 0, 0, 1000 };

@@ -42,7 +42,7 @@ QgsDevToolsPanelWidget::QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFact
   for ( QgsDevToolWidgetFactory *factory : factories )
     addToolFactory( factory );
 
-  connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, [=]( int row ) {
+  connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, [this]( int row ) {
     setCurrentTool( row );
     settingLastActiveTab->setValue( mOptionsListWidget->currentItem()->data( Qt::UserRole ).toString() );
   } );

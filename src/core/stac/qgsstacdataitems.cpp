@@ -21,7 +21,7 @@
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
 #include "qgsstaccollection.h"
-#include "qgsstaccollections.h"
+#include "qgsstaccollectionlist.h"
 
 
 constexpr int MAX_DISPLAYED_ITEMS = 20;
@@ -98,6 +98,8 @@ QgsMimeDataUtils::UriList QgsStacItemItem::mimeUris() const
   if ( !mStacItem )
     return uris;
 
+  const QString authcfg = stacController()->authCfg();
+
   const QMap<QString, QgsStacAsset> assets = mStacItem->assets();
   for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
   {
@@ -116,6 +118,8 @@ QgsMimeDataUtils::UriList QgsStacItemItem::mimeUris() const
            it->href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
       {
         uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( it->href() );
+        if ( !authcfg.isEmpty() )
+          uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
       }
       else if ( it->href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
       {
@@ -131,12 +135,16 @@ QgsMimeDataUtils::UriList QgsStacItemItem::mimeUris() const
       uri.layerType = QStringLiteral( "pointcloud" );
       uri.providerKey = QStringLiteral( "copc" );
       uri.uri = it->href();
+      if ( !authcfg.isEmpty() )
+        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
     }
     else if ( it->href().endsWith( QLatin1String( "/ept.json" ) ) )
     {
       uri.layerType = QStringLiteral( "pointcloud" );
       uri.providerKey = QStringLiteral( "ept" );
       uri.uri = it->href();
+      if ( !authcfg.isEmpty() )
+        uri.uri.append( QStringLiteral( " authcfg='%1'" ).arg( authcfg ) );
     }
     uri.name = it->title().isEmpty() ? url.fileName() : it->title();
     uris.append( uri );
@@ -160,12 +168,12 @@ void QgsStacItemItem::updateToolTip()
   mToolTip = QStringLiteral( "STAC Item:\n%1\n%2" ).arg( name, mPath );
 }
 
-QgsStacController *QgsStacItemItem::stacController()
+QgsStacController *QgsStacItemItem::stacController() const
 {
-  QgsDataItem *item = this;
+  const QgsDataItem *item = this;
   while ( item )
   {
-    if ( QgsStacConnectionItem *ci = qobject_cast<QgsStacConnectionItem *>( item ) )
+    if ( const QgsStacConnectionItem *ci = qobject_cast<const QgsStacConnectionItem *>( item ) )
       return ci->controller();
     item = item->parent();
   }
@@ -371,7 +379,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
     {
       // use /collections api
       QString error;
-      std::unique_ptr< QgsStacCollections > cols( controller->fetchCollections( link.href(), &error ) );
+      std::unique_ptr< QgsStacCollectionList > cols( controller->fetchCollections( link.href(), &error ) );
       if ( cols )
       {
         contents.append( createCollections( cols->takeCollections() ) );
@@ -461,7 +469,7 @@ void QgsStacCatalogItem::setStacCatalog( std::unique_ptr<QgsStacCatalog> catalog
     if ( mName.isEmpty() && !mStacCatalog->title().isEmpty() )
       setName( mStacCatalog->title() );
 
-    if ( mStacCatalog->type() == QgsStacObject::Collection )
+    if ( mStacCatalog->type() == Qgis::StacObjectType::Collection )
     {
       mIsCollection = true;
       mIconName = QStringLiteral( "mIconFolderOpen.svg" );

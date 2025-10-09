@@ -70,7 +70,6 @@ class QObjectUniquePtr
      */
     inline QObjectUniquePtr( T *p ) : mPtr( p )
     { }
-    // compiler-generated copy/move ctor/assignment operators are fine!
 
     /**
      * Will delete the contained QObject if it still exists.
@@ -79,6 +78,23 @@ class QObjectUniquePtr
     {
       // Will be a nullptr if the QObject has been deleted from somewhere else (e.g. through parent ownership)
       delete mPtr.data();
+    }
+
+    // This is a unique ptr, so copy is forbidden and we need to implement the move constructor/operator
+    QObjectUniquePtr( const QObjectUniquePtr &other ) = delete;
+    QObjectUniquePtr &operator=( const QObjectUniquePtr &other ) = delete;
+
+    QObjectUniquePtr( QObjectUniquePtr &&other )
+    {
+      *this = std::move( other );
+    }
+
+    QObjectUniquePtr &operator=( QObjectUniquePtr &&other ) noexcept
+    {
+      delete mPtr.data();
+      mPtr = other.mPtr;
+      other.clear();
+      return *this;
     }
 
     /**
@@ -324,7 +340,7 @@ class QObjectParentUniquePtr
       {
         QObject::disconnect( mParentDestroyedConnection );
       }
-      mParentDestroyedConnection = QObject::connect( parent, &QObject::destroyed, parent, [ = ]()
+      mParentDestroyedConnection = QObject::connect( parent, &QObject::destroyed, parent, [this]()
       {
         mParent = nullptr;
         // parent is being deleted BEFORE child, so it is responsible for deleting the child -- we don't need to delete it here!

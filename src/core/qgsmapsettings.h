@@ -925,6 +925,22 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      */
     void setElevationShadingRenderer( const QgsElevationShadingRenderer &renderer );
 
+    /**
+     * Returns the policy controlling when rasterisation of content during renders is permitted.
+     *
+     * \see setRasterizedRenderingPolicy()
+     * \since QGIS 3.44
+     */
+    Qgis::RasterizedRenderingPolicy rasterizedRenderingPolicy() const;
+
+    /**
+     * Sets the \a policy controlling when rasterisation of content during renders is permitted.
+     *
+     * \see rasterizedRenderingPolicy()
+     * \since QGIS 3.44
+     */
+    void setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy );
+
   protected:
 
     double mDpi = 96.0;
@@ -941,6 +957,9 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     //! list of layers to be rendered (stored as weak pointers)
     QgsWeakMapLayerPointerList mLayers;
+    QStringList mLayerIds;
+    bool mHasGroupLayers = false;
+
     QMap<QString, QString> mLayerStyleOverrides;
     QString mCustomRenderFlags;
     QVariantMap mCustomRenderingFlags;
@@ -954,7 +973,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QColor mSelectionColor;
 
     Qgis::MapSettingsFlags mFlags;
-
+    Qgis::RasterizedRenderingPolicy mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::Default;
     QImage::Format mImageFormat = QImage::Format_ARGB32_Premultiplied;
 
     double mSegmentationTolerance;
@@ -1000,6 +1019,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     void updateDerived();
 
   private:
+    void matchRasterizedRenderingPolicyToFlags();
 
     QList< QgsLabelBlockingRegion > mLabelBlockingRegions;
     QList< QgsMapClippingRegion > mClippingRegions;

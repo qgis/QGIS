@@ -163,10 +163,12 @@ void QgsStacDataItemGuiProvider::loadConnections( QgsDataItem *item )
 void QgsStacDataItemGuiProvider::showDetails( QgsDataItem *item )
 {
   QgsStacObject *obj = nullptr;
+  QString authcfg;
 
   if ( QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item ) )
   {
     obj = itemItem->stacItem();
+    authcfg = itemItem->stacController()->authCfg();
   }
   else if ( QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( item ) )
   {
@@ -176,6 +178,7 @@ void QgsStacDataItemGuiProvider::showDetails( QgsDataItem *item )
   if ( obj )
   {
     QgsStacObjectDetailsDialog d;
+    d.setAuthcfg( authcfg );
     d.setStacObject( obj );
     d.exec();
   }

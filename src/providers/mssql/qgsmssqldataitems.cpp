@@ -133,7 +133,13 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
 
   readConnectionSettings();
 
-  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( mService, mHost, mDatabase, mUsername, mPassword );
+  QgsDataSourceUri uri;
+  uri.setService( mService );
+  uri.setHost( mHost );
+  uri.setDatabase( mDatabase );
+  uri.setUsername( mUsername );
+  uri.setPassword( mPassword );
+  std::shared_ptr<QgsMssqlDatabase> db = QgsMssqlDatabase::connectDb( uri );
 
   if ( !db->isValid() )
   {
@@ -143,7 +149,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
   }
 
   // build sql statement
-  QString query = QgsMssqlConnection::buildQueryForTables( mName );
+  const QString query = QgsMssqlConnection::buildQueryForTables( mName );
 
   const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( mName );
 
@@ -471,19 +477,16 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::displayString( wkbType ), layerProperty.srid );
 
   Qgis::BrowserLayerType layerType;
-  Qgis::WkbType flatType = QgsWkbTypes::flatType( wkbType );
-  switch ( flatType )
+  const Qgis::GeometryType geomType = QgsWkbTypes::geometryType( wkbType );
+  switch ( geomType )
   {
-    case Qgis::WkbType::Point:
-    case Qgis::WkbType::MultiPoint:
+    case Qgis::GeometryType::Point:
       layerType = Qgis::BrowserLayerType::Point;
       break;
-    case Qgis::WkbType::LineString:
-    case Qgis::WkbType::MultiLineString:
+    case Qgis::GeometryType::Line:
       layerType = Qgis::BrowserLayerType::Line;
       break;
-    case Qgis::WkbType::Polygon:
-    case Qgis::WkbType::MultiPolygon:
+    case Qgis::GeometryType::Polygon:
       layerType = Qgis::BrowserLayerType::Polygon;
       break;
     default:

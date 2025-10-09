@@ -13,6 +13,7 @@ __date__ = "10/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
 
 import math
+from qgis.PyQt.QtGui import QQuaternion, QVector3D
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
@@ -97,6 +98,27 @@ class TestQgsOrientedBox3D(QgisTestCase):
                 0.7071067811865476,
             ],
         )
+
+        # constructor with rotation quaternion (45 degree y axis rotation)
+        box = QgsOrientedBox3D(
+            QgsVector3D(4, 5, 6),
+            QgsVector3D(1, 1, 1),
+            QQuaternion.fromAxisAndAngle(QVector3D(0, 1, 0), -45),
+        )
+        self.assertEqual(box.centerX(), 4)
+        self.assertEqual(box.centerY(), 5)
+        self.assertEqual(box.centerZ(), 6)
+        boxHalfAxes = box.halfAxes()
+        # "almost equal" by default rounds to 7 decimal places
+        self.assertAlmostEqual(boxHalfAxes[0], 0.7071067)
+        self.assertAlmostEqual(boxHalfAxes[1], 0.0)
+        self.assertAlmostEqual(boxHalfAxes[2], 0.7071068)
+        self.assertAlmostEqual(boxHalfAxes[3], 0.0)
+        self.assertAlmostEqual(boxHalfAxes[4], 0.9999999)
+        self.assertAlmostEqual(boxHalfAxes[5], 0.0000001)
+        self.assertAlmostEqual(boxHalfAxes[6], -0.7071068)
+        self.assertAlmostEqual(boxHalfAxes[7], 0.0)
+        self.assertAlmostEqual(boxHalfAxes[8], 0.7071068)
 
     def test_repr(self):
         box = QgsOrientedBox3D([1, 2, 3], [10, 11, 12, 21, 20, 22, 31, 32, 30])
@@ -276,6 +298,16 @@ class TestQgsOrientedBox3D(QgisTestCase):
 
         box = QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
         self.assertEqual(box.size(), QgsVector3D(20, 40, 60))
+
+    def test_longestSide(self):
+        box = QgsOrientedBox3D([1, 2, 3], [1, 0, 0, 0, 1, 0, 0, 0, 1])
+        self.assertEqual(box.longestSide(), 2)
+
+        box = QgsOrientedBox3D([10, 10, 10], [1, 0, 0, 0, 2, 0, 0, 0, 3])
+        self.assertEqual(box.longestSide(), 6)
+
+        box = QgsOrientedBox3D([1, 2, 3], [10, 0, 0, 0, 20, 0, 0, 0, 30])
+        self.assertEqual(box.longestSide(), 60)
 
     def test_reprojectedExtent(self):
         box = QgsOrientedBox3D(

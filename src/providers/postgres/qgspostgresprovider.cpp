@@ -1186,7 +1186,11 @@ bool QgsPostgresProvider::loadFields()
       constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     newField.setConstraints( constraints );
 
-    mIdentityFields.insert( mAttributeFields.size(), identityMap[tableoid][attnum][0].toLatin1() );
+    const QString identity = identityMap[tableoid][attnum];
+    if ( !identity.isEmpty() )
+    {
+      mIdentityFields.insert( mAttributeFields.size(), identity[0].toLatin1() );
+    }
     mAttributeFields.append( newField );
 
     // if we know for sure that this field is not enumerated type or a domain type, let's
@@ -2103,7 +2107,7 @@ bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstrain
   {
     // stricter check - if we are evaluating default values only on commit then we can only bypass the check
     // if the attribute values matches the original default clause
-    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !QgsVariantUtils::isNull( value );
+    return mDefaultValues.contains( fieldIndex ) && !mDefaultValues.value( fieldIndex ).isEmpty() && ( mDefaultValues.value( fieldIndex ) == value.toString() || QgsVariantUtils::isUnsetAttributeValue( value ) ) && !QgsVariantUtils::isNull( value );
   }
 }
 
@@ -2147,11 +2151,57 @@ bool QgsPostgresProvider::getTopoLayerInfo()
   {
     throw PGException( result ); // we should probably not do this
   }
-  if ( result.PQntuples() < 1 )
+
+  if ( !result.PQntuples() )
   {
-    QgsMessageLog::logMessage( tr( "Could not find topology of layer %1.%2.%3" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( mGeometryColumn ) ), tr( "PostGIS" ) );
-    return false;
+    QgsMessageLog::logMessage( tr( "TopoGeometry column %1.%2.%3 is not registered in topology.layer" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( mGeometryColumn ) ), tr( "PostGIS" ) );
+
+    QString dataQuery;
+    if ( mIsQuery )
+    {
+      dataQuery = QStringLiteral( "SELECT DISTINCT topology_id(%1), layer_id(%1) FROM %2 WHERE %1 IS NOT NULL" )
+                    .arg( quotedIdentifier( mGeometryColumn ), mQuery );
+    }
+    else
+    {
+      dataQuery = QStringLiteral( "SELECT DISTINCT topology_id(%1), layer_id(%1) FROM %2.%3 WHERE %1 IS NOT NULL" )
+                    .arg( quotedIdentifier( mGeometryColumn ), quotedIdentifier( mSchemaName ), quotedIdentifier( mTableName ) );
+    }
+
+    sql = QStringLiteral( R"SQL(
+      SELECT t.name, l.layer_id, l.level, l.feature_type
+      FROM
+        topology.topology t,
+        topology.layer l,
+        (
+          %1
+        ) d
+      WHERE d.topology_id = t.id
+      AND l.topology_id = t.id
+      AND l.layer_id = d.layer_id
+    )SQL" )
+            .arg( dataQuery );
+
+    result = connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql );
+    if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+    {
+      throw PGException( result ); // we should probably not do this
+    }
+    if ( result.PQntuples() < 1 )
+    {
+      QgsMessageLog::logMessage( tr( "Cannot find topology and layer information from data in %1.%2.%3" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( mGeometryColumn ) ), tr( "PostGIS" ) );
+
+      return false;
+    }
+
+    if ( result.PQntuples() > 1 )
+    {
+      QgsMessageLog::logMessage( tr( "TopoGeometry columns with data referencing different topology layers are not supported (%1.%2.%3)" ).arg( quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( mGeometryColumn ) ), tr( "PostGIS" ) );
+
+      return false;
+    }
   }
+
   mTopoLayerInfo.topologyName = result.PQgetvalue( 0, 0 );
   mTopoLayerInfo.layerId = result.PQgetvalue( 0, 1 ).toLong();
   mTopoLayerInfo.layerLevel = result.PQgetvalue( 0, 2 ).toInt();
@@ -2287,7 +2337,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           QVariant v2 = attrs2.value( idx, QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) );
           // a PK field with a sequence val is auto populate by QGIS with this default
           // we are only interested in non default values
-          if ( !QgsVariantUtils::isNull( v2 ) && v2.toString() != defaultValue && v2.userType() != qMetaTypeId< QgsUnsetAttributeValue >() )
+          if ( !QgsVariantUtils::isNull( v2 ) && v2.toString() != defaultValue && !QgsVariantUtils::isUnsetAttributeValue( v2 ) )
           {
             foundNonEmptyPK = true;
             break;
@@ -2300,7 +2350,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       {
         for ( int idx : std::as_const( mPrimaryKeyAttrs ) )
         {
-          if ( mIdentityFields[idx] == 'a' )
+          auto identityIt = mIdentityFields.constFind( idx );
+          if ( identityIt != mIdentityFields.constEnd() && *identityIt == 'a' )
             overrideIdentity = true;
           insert += delim + quotedIdentifier( field( idx ).name() );
           values += delim + QStringLiteral( "$%1" ).arg( defaultValues.size() + offset );
@@ -2317,7 +2368,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     // e.g. for defaults
     for ( int idx = 0; idx < attributevec.count(); ++idx )
     {
-      QVariant v = attributevec.value( idx, QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ); // default to NULL for missing attributes
+      const QVariant attributeValue = attributevec.value( idx, QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ); // default to NULL for missing attributes
       if ( skipSinglePKField && idx == mPrimaryKeyAttrs[0] )
         continue;
       if ( fieldId.contains( idx ) )
@@ -2326,18 +2377,18 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( idx >= mAttributeFields.count() )
         continue;
 
-      QString fieldname = mAttributeFields.at( idx ).name();
+      const QString fieldName = mAttributeFields.at( idx ).name();
       if ( !mGeneratedValues.value( idx, QString() ).isEmpty() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Skipping field %1 (idx %2) which is GENERATED." ).arg( fieldname, QString::number( idx ) ), 2 );
+        QgsDebugMsgLevel( QStringLiteral( "Skipping field %1 (idx %2) which is GENERATED." ).arg( fieldName, QString::number( idx ) ), 2 );
         continue;
       }
 
       QString fieldTypeName = mAttributeFields.at( idx ).typeName();
 
-      QgsDebugMsgLevel( "Checking field against: " + fieldname, 2 );
+      QgsDebugMsgLevel( "Checking field against: " + fieldName, 2 );
 
-      if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
+      if ( fieldName.isEmpty() || fieldName == mGeometryColumn )
         continue;
 
       int i;
@@ -2346,20 +2397,21 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         QgsAttributes attrs2 = flist[i].attributes();
         QVariant v2 = attrs2.value( idx, QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) ); // default to NULL for missing attributes
 
-        if ( v2 != v )
+        if ( v2 != attributeValue )
           break;
       }
 
-      insert += delim + quotedIdentifier( fieldname );
+      insert += delim + quotedIdentifier( fieldName );
 
-      if ( mIdentityFields[idx] == 'a' )
+      auto identityIt = mIdentityFields.constFind( idx );
+      if ( identityIt != mIdentityFields.constEnd() && *identityIt == 'a' )
         overrideIdentity = true;
 
       QString defVal = defaultValueClause( idx );
 
       if ( i == flist.size() )
       {
-        if ( qgsVariantEqual( v, defVal ) )
+        if ( qgsVariantEqual( attributeValue, defVal ) || QgsVariantUtils::isUnsetAttributeValue( attributeValue ) )
         {
           if ( defVal.isNull() )
           {
@@ -2372,31 +2424,31 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         }
         else if ( fieldTypeName == QLatin1String( "geometry" ) )
         {
-          QString val = geomAttrToString( v, connectionRO() );
+          QString val = geomAttrToString( attributeValue, connectionRO() );
           values += QStringLiteral( "%1%2(%3)" )
                       .arg( delim, connectionRO()->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt", quotedValue( val ) );
         }
         else if ( fieldTypeName == QLatin1String( "geography" ) )
         {
           values += QStringLiteral( "%1st_geographyfromtext(%2)" )
-                      .arg( delim, quotedValue( v.toString() ) );
+                      .arg( delim, quotedValue( attributeValue.toString() ) );
         }
         else if ( fieldTypeName == QLatin1String( "jsonb" ) )
         {
-          values += delim + quotedJsonValue( v ) + QStringLiteral( "::jsonb" );
+          values += delim + quotedJsonValue( attributeValue ) + QStringLiteral( "::jsonb" );
         }
         else if ( fieldTypeName == QLatin1String( "json" ) )
         {
-          values += delim + quotedJsonValue( v ) + QStringLiteral( "::json" );
+          values += delim + quotedJsonValue( attributeValue ) + QStringLiteral( "::json" );
         }
         else if ( fieldTypeName == QLatin1String( "bytea" ) )
         {
-          values += delim + quotedByteaValue( v );
+          values += delim + quotedByteaValue( attributeValue );
         }
         //TODO: convert arrays and hstore to native types
         else
         {
-          values += delim + quotedValue( v );
+          values += delim + quotedValue( attributeValue );
         }
       }
       else
@@ -2451,14 +2503,14 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     if ( stmt.PQresultStatus() != PGRES_COMMAND_OK )
       throw PGException( stmt );
 
-    for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
+    for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
     {
-      QgsAttributes attrs = features->attributes();
+      QgsAttributes attrs = feature->attributes();
 
       QStringList params;
       if ( !mGeometryColumn.isNull() )
       {
-        appendGeomParam( features->geometry(), params );
+        appendGeomParam( feature->geometry(), params );
       }
 
       params.reserve( fieldId.size() );
@@ -2468,11 +2520,11 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QgsVariantUtils::createNullVariant( QMetaType::Type::Int );
 
         QString v;
-        if ( QgsVariantUtils::isNull( value ) || value.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+        if ( QgsVariantUtils::isNull( value ) || QgsVariantUtils::isUnsetAttributeValue( value ) )
         {
           QgsField fld = field( attrIdx );
           v = paramValue( defaultValues[i], defaultValues[i] );
-          features->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
+          feature->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
         }
         else
         {
@@ -2499,7 +2551,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           if ( v != value.toString() )
           {
             QgsField fld = field( attrIdx );
-            features->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
+            feature->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
           }
         }
 
@@ -2514,7 +2566,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           const int idx = mPrimaryKeyAttrs.at( i );
           const QgsField fld = mAttributeFields.at( idx );
-          features->setAttribute( idx, convertValue( fld.type(), fld.subType(), result.PQgetvalue( 0, i ), fld.typeName() ) );
+          feature->setAttribute( idx, convertValue( fld.type(), fld.subType(), result.PQgetvalue( 0, i ), fld.typeName() ) );
         }
       }
       else if ( result.PQresultStatus() != PGRES_COMMAND_OK )
@@ -2522,8 +2574,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( !( flags & QgsFeatureSink::FastInsert ) && mPrimaryKeyType == PktOid )
       {
-        features->setId( result.PQoidValue() );
-        QgsDebugMsgLevel( QStringLiteral( "new fid=%1" ).arg( features->id() ), 4 );
+        feature->setId( result.PQoidValue() );
+        QgsDebugMsgLevel( QStringLiteral( "new fid=%1" ).arg( feature->id() ), 4 );
       }
     }
 
@@ -2949,7 +3001,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
         try
         {
           const QVariant attributeValue = siter.value();
-          if ( attributeValue.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+          if ( QgsVariantUtils::isUnsetAttributeValue( attributeValue ) )
             continue;
 
           QgsField fld = field( siter.key() );
@@ -3332,7 +3384,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
           }
 
           const QVariant value = siter.value();
-          if ( value.userType() == qMetaTypeId< QgsUnsetAttributeValue >() )
+          if ( QgsVariantUtils::isUnsetAttributeValue( value ) )
           {
             continue;
           }
@@ -5124,6 +5176,83 @@ bool QgsPostgresProvider::hasMetadata() const
   }
 
   return hasMetadata;
+}
+
+QString QgsPostgresProvider::htmlMetadata() const
+{
+  // construct multiple temporary tables to be used with PostgreSQL WITH statement
+  // that build one on another and are then used to create single SQL query to get the additional metadata
+
+  const QString sqlWithTableInfo = QStringLiteral( "table_info AS ("
+                                                   "SELECT c.oid AS oid,  n.nspname AS schema_name, c.relname AS table_name, c.reltuples::bigint AS estimate "
+                                                   "FROM pg_class c "
+                                                   "JOIN pg_namespace n ON c.relnamespace = n.oid "
+                                                   "WHERE c.relname = %1 AND n.nspname = %2"
+                                                   ")" )
+                                     .arg( QgsPostgresConn::quotedValue( mTableName ), QgsPostgresConn::quotedValue( mSchemaName ) );
+
+  const QString sqlWithPrivileges = QStringLiteral( "privileges AS ("
+                                                    "SELECT table_info.oid as oid, "
+                                                    "COALESCE(NULLIF(CONCAT_WS(', ',"
+                                                    "CASE WHEN has_table_privilege(table_info.oid, 'SELECT') THEN 'SELECT' END,"
+                                                    "CASE WHEN has_table_privilege(table_info.oid, 'INSERT') THEN 'INSERT' END,"
+                                                    "CASE WHEN has_table_privilege(table_info.oid, 'UPDATE') THEN 'UPDATE' END,"
+                                                    "CASE WHEN has_table_privilege(table_info.oid, 'DELETE') THEN 'DELETE' END),"
+                                                    "''), '') as privileges "
+                                                    "FROM table_info"
+                                                    ")" );
+
+  const QString sqlWithIndexes = QStringLiteral( "table_indexes AS("
+                                                 "SELECT pi.schemaname AS schema_name, pi.tablename AS table_name, pi.indexname AS index_name "
+                                                 "FROM pg_indexes pi "
+                                                 "JOIN table_info ti ON pi.schemaname = ti.schema_name AND pi.tablename = ti.table_name "
+                                                 "WHERE pi.indexdef LIKE '%USING gist%' "
+                                                 "),"
+                                                 "table_indexes_info AS("
+                                                 "SELECT schema_name, table_name, COALESCE(string_agg(index_name, ', ' ORDER BY index_name), '') as index_names "
+                                                 "FROM table_indexes "
+                                                 "GROUP BY schema_name, table_name"
+                                                 ")" );
+
+  const QString sqlMainQuery = QStringLiteral( "WITH %1, %2, %3"
+                                               "SELECT table_info.oid, table_info.table_name, table_info.schema_name, privileges.privileges, "
+                                               "table_info.estimate, table_indexes_info.index_names, pg_description.description "
+                                               "FROM table_info "
+                                               "LEFT JOIN privileges ON table_info.oid = privileges.oid "
+                                               "LEFT JOIN table_indexes_info ON table_indexes_info.table_name = table_info.table_name AND table_indexes_info.schema_name = table_info.schema_name "
+                                               "LEFT JOIN pg_description ON pg_description.objoid = table_info.oid" )
+                                 .arg( sqlWithTableInfo, sqlWithPrivileges, sqlWithIndexes );
+
+  QgsPostgresResult resTable( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sqlMainQuery ) );
+
+  QString tableComment;
+  QString privileges;
+  QString spatialIndexText = tr( "No spatial index." );
+  long long estimateRowCount = -1;
+
+  if ( resTable.PQntuples() > 0 )
+  {
+    tableComment = resTable.PQgetvalue( 0, 6 );
+    tableComment = tableComment.replace( QLatin1String( "\n" ), QLatin1String( "<br>" ) );
+
+    estimateRowCount = resTable.PQgetvalue( 0, 4 ).toLongLong();
+
+    privileges = resTable.PQgetvalue( 0, 3 );
+
+    if ( !resTable.PQgetvalue( 0, 5 ).isEmpty() )
+    {
+      spatialIndexText = tr( "Spatial index/indices exists (%1)." ).arg( resTable.PQgetvalue( 0, 5 ) );
+    }
+  }
+
+  const QVariantMap additionalInformation {
+    { tr( "Privileges" ), privileges },
+    { tr( "Rows (estimation)" ), estimateRowCount },
+    { tr( "Spatial Index" ), spatialIndexText },
+    { tr( "Table Comment" ), tableComment }
+  };
+
+  return QgsPostgresUtils::variantMapToHtml( additionalInformation, tr( "Additional information" ) );
 }
 
 QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )

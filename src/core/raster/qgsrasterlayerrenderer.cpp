@@ -540,13 +540,26 @@ bool QgsRasterLayerRenderer::render()
   //
 
   const QgsScopedQPainterState painterSate( renderContext()->painter() );
+
+  // important -- disable SmoothPixmapTransform and Antialiasing for raster layer renders. We want individual pixels to be clearly defined!
+  renderContext()->painter()->setRenderHint( QPainter::SmoothPixmapTransform, false );
+  bool antialiasEnabled = false;
   if ( !mClippingRegions.empty() )
   {
     bool needsPainterClipPath = false;
     const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), Qgis::LayerType::Raster, needsPainterClipPath );
     if ( needsPainterClipPath )
+    {
       renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+      // this is an exception to the earlier flag disabling antialiasing!
+      // If we are rendering with clip paths, we WANT the boundaries of the raster to be
+      // rendered using antialiasing along the clip path, or things are very ugly! And since we can't
+      // selectively antialias JUST the clip path boundary, we fallback to antialiasing the
+      // whole raster render
+      antialiasEnabled = true;
+    }
   }
+  renderContext()->painter()->setRenderHint( QPainter::Antialiasing, antialiasEnabled );
 
   QgsRasterProjector *projector = mPipe->projector();
   bool restoreOldResamplingStage = false;
@@ -566,9 +579,6 @@ bool QgsRasterLayerRenderer::render()
     }
     projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS, mRasterViewPort->mTransformContext );
   }
-
-  // important -- disable SmoothPixmapTransform for raster layer renders. We want individual pixels to be clearly defined!
-  renderContext()->painter()->setRenderHint( QPainter::SmoothPixmapTransform, false );
 
   preparingProfile.reset();
   std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
@@ -641,9 +651,21 @@ bool QgsRasterLayerRenderer::forceRasterRender() const
 
   if ( QgsRasterRenderer *renderer = mPipe->renderer() )
   {
-    if ( !( renderer->flags() & Qgis::RasterRendererFlag::InternalLayerOpacityHandling )
-         && renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) ) )
-      return true;
+    if ( !( renderer->flags() & Qgis::RasterRendererFlag::InternalLayerOpacityHandling ) )
+    {
+      switch ( renderContext()->rasterizedRenderingPolicy() )
+      {
+        case Qgis::RasterizedRenderingPolicy::Default:
+        case Qgis::RasterizedRenderingPolicy::PreferVector:
+          break;
+
+        case Qgis::RasterizedRenderingPolicy::ForceVector:
+          return false;
+      }
+
+      if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
+        return true;
+    }
   }
 
   return false;

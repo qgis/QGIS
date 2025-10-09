@@ -60,7 +60,10 @@ class GUI_EXPORT QgsProcessingFieldMapPanelWidget : public QgsPanelWidget, priva
     QgsFieldMappingModel *mModel = nullptr;
 
     QgsVectorLayer *mLayer = nullptr;
+    bool mSkipConfirmDialog = false;
+
     bool mBlockChangedSignal = false;
+    friend class TestProcessingGui;
 };
 
 

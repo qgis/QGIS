@@ -116,7 +116,7 @@ void QgsReportOrganizerWidget::removeSection()
     return;
 
   std::function<void( QgsAbstractReportSection * section )> cleanup;
-  cleanup = [=, &cleanup]( QgsAbstractReportSection *section ) {
+  cleanup = [this, &cleanup]( QgsAbstractReportSection *section ) {
     if ( mDesigner->currentLayout() == section->header() || mDesigner->currentLayout() == section->footer() )
       mDesigner->setCurrentLayout( nullptr );
     if ( section->type() == QLatin1String( "SectionFieldGroup" ) )

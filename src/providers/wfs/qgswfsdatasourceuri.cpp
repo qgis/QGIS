@@ -191,6 +191,7 @@ QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
     QgsWFSConstants::URI_PARAM_PAGE_SIZE,
     QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES,
     QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE,
+    QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE,
     QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER,
     QgsWFSConstants::URI_PARAM_SQL,
     QgsWFSConstants::URI_PARAM_HTTPMETHOD,
@@ -409,6 +410,12 @@ void QgsWFSDataSourceURI::setFilter( const QString &filter )
   }
 }
 
+bool QgsWFSDataSourceURI::forceInitialGetFeature() const
+{
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE )
+         && mURI.param( QgsWFSConstants::URI_PARAM_FORCE_INITIAL_GET_FEATURE ).toUpper() == QLatin1String( "TRUE" );
+}
+
 bool QgsWFSDataSourceURI::hasGeometryTypeFilter() const
 {
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER );
@@ -460,7 +467,7 @@ bool QgsWFSDataSourceURI::isRestrictedToRequestBBOX() const
     return true;
 
   // accept previously used version with typo
-  if ( mURI.hasParam( QStringLiteral( "retrictToRequestBBOX" ) ) && mURI.param( QStringLiteral( "retrictToRequestBBOX" ) ).toInt() == 1 )
+  if ( mURI.hasParam( QStringLiteral( "retrictToRequestBBOX" ) ) && mURI.param( QStringLiteral( "retrictToRequestBBOX" ) ).toInt() == 1 ) // spellok
     return true;
 
   return false;

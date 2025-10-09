@@ -354,6 +354,25 @@ tests:
           geometry:
             precision: 2
 
+  - algorithm: native:voronoipolygons
+    name: Voronoi polygons, ensure filtering output to only polygon parts
+    params:
+      BUFFER: 0.0
+      COPY_ATTRIBUTES: true
+      INPUT:
+        name: custom/voronoi_points_extent_clip.json
+        type: vector
+      TOLERANCE: 0.0
+    results:
+      OUTPUT:
+        name: expected/voronoi_polygons_extent_clip.gml
+        type: vector
+        compare:
+          fields:
+            gml_id: skip
+          geometry:
+            precision: 2
+
   - algorithm: native:explodelines
     name: Explode lines
     params:
@@ -1354,7 +1373,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (hull, no field)
     params:
       INPUT:
@@ -1372,7 +1391,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (hull, field)
     params:
       FIELD: name
@@ -1392,7 +1411,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (circle, field)
     params:
       FIELD: name
@@ -1412,7 +1431,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (circle, no field)
     params:
       INPUT:
@@ -1430,7 +1449,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (oriented rect, no field)
     params:
       INPUT:
@@ -1448,7 +1467,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (oriented rect, field)
     params:
       FIELD: name
@@ -1468,7 +1487,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (envelope, field)
     params:
       FIELD: name
@@ -1488,7 +1507,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (envelope, no field)
     params:
       INPUT:

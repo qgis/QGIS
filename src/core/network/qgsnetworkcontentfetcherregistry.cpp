@@ -178,7 +178,7 @@ void QgsFetchedContent::taskCompleted()
       if ( extension.isEmpty() && !contentType.isEmpty() )
       {
         const QList<QMimeType> mimeTypes = QMimeDatabase().allMimeTypes();
-        auto it = std::find_if( mimeTypes.constBegin(), mimeTypes.constEnd(), [ = ]( QMimeType mimeType )
+        auto it = std::find_if( mimeTypes.constBegin(), mimeTypes.constEnd(), [contentType]( QMimeType mimeType )
         {
           return mimeType.name() == contentType;
         } );

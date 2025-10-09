@@ -572,13 +572,22 @@ void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::Select
     defaultContext.emplace( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
     context = &defaultContext.value();
   }
+  else
+  {
+    context->appendScope( QgsExpressionContextUtils::layerScope( this ) );
+  }
+
+  QgsExpression exp( expression );
+  exp.prepare( context );
 
   if ( behavior == Qgis::SelectBehavior::SetSelection || behavior == Qgis::SelectBehavior::AddToSelection )
   {
     QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( expression )
-                                .setExpressionContext( *context )
-                                .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
-                                .setNoAttributes();
+                                .setExpressionContext( *context );
+    request.setSubsetOfAttributes( exp.referencedColumns(), fields() );
+
+    if ( !exp.needsGeometry() )
+      request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
 
     QgsFeatureIterator features = getFeatures( request );
 
@@ -595,8 +604,6 @@ void QgsVectorLayer::selectByExpression( const QString &expression, Qgis::Select
   }
   else if ( behavior == Qgis::SelectBehavior::IntersectSelection || behavior == Qgis::SelectBehavior::RemoveFromSelection )
   {
-    QgsExpression exp( expression );
-    exp.prepare( context );
 
     QgsFeatureIds oldSelection = selectedFeatureIds();
     QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( oldSelection );
@@ -1033,6 +1040,10 @@ QgsRectangle QgsVectorLayer::extent() const
 
   if ( !isSpatial() )
     return rect;
+
+  // Don't do lazy extent if the layer is currently in edit mode
+  if ( mLazyExtent2D && isEditable() )
+    mLazyExtent2D = false;
 
   if ( mDataProvider && mDataProvider->isValid() && ( mDataProvider->flags() & Qgis::DataProviderFlag::FastExtent2D ) )
   {
@@ -2697,11 +2708,11 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QDomElement optionsElem = cfgElem.childNodes().at( 0 ).toElement();
         QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
         // translate widget configuration strings
-        if ( widgetType == QStringLiteral( "ValueRelation" ) )
+        if ( widgetType == QLatin1String( "ValueRelation" ) )
         {
           optionsMap[ QStringLiteral( "Value" ) ] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), optionsMap[ QStringLiteral( "Value" ) ].toString() );
         }
-        if ( widgetType == QStringLiteral( "ValueMap" ) )
+        if ( widgetType == QLatin1String( "ValueMap" ) )
         {
           if ( optionsMap[ QStringLiteral( "map" ) ].canConvert<QList<QVariant>>() )
           {
@@ -3061,7 +3072,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
       // Store referencing layers: relations where "this" is the parent layer (the referenced part, that holds the FK)
       QDomElement referencingLayersElement = doc.createElement( QStringLiteral( "referencingLayers" ) );
-      node.appendChild( referencedLayersElement );
+      node.appendChild( referencingLayersElement );
 
       const QList<QgsRelation> referencedRelations { p->relationManager()->referencedRelations( this ) };
       for ( const QgsRelation &rel : referencedRelations )
@@ -5920,7 +5931,13 @@ QString QgsVectorLayer::htmlMetadata() const
     {
       QString typeString( QStringLiteral( "%1 (%2)" ).arg( QgsWkbTypes::geometryDisplayString( geometryType() ),
                           QgsWkbTypes::displayString( wkbType() ) ) );
-      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry" ) + QStringLiteral( "</td><td>" ) + typeString + QStringLiteral( "</td></tr>\n" );
+      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry type" ) + QStringLiteral( "</td><td>" ) + typeString + QStringLiteral( "</td></tr>\n" );
+    }
+
+    // geom column name
+    if ( const QgsVectorDataProvider *provider = dataProvider(); !provider->geometryColumnName().isEmpty() )
+    {
+      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry column" ) + QStringLiteral( "</td><td>" ) + provider->geometryColumnName() + QStringLiteral( "</td></tr>\n" );
     }
 
     // Extent

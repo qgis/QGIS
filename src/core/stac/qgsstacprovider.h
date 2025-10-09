@@ -16,20 +16,20 @@
 #ifndef QGSSTACPROVIDER_H
 #define QGSSTACPROVIDER_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include <QString>
 #include <QStringList>
 
 /**
- * \brief Class for storing a STAC collection's provider data
+ * \brief Class for storing a STAC collection's provider data.
+ *
  * The object provides information about a provider. A provider is any of the organizations that captures or
  * processes the content of the Collection and therefore influences the data offered by this Collection. May
  * also include information about the final storage provider hosting the data.
- * \note Not available in python bindings
+ *
  * \since QGIS 3.40
  */
-class QgsStacProvider
+class CORE_EXPORT QgsStacProvider
 {
   public:
 

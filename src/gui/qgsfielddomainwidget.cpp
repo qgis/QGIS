@@ -130,10 +130,10 @@ QgsCodedFieldDomainWidget::QgsCodedFieldDomainWidget( QWidget *parent )
   mModel = new QgsCodedValueTableModel( this );
   mValuesTable->setModel( mModel );
 
-  connect( mButtonAddRow, &QToolButton::clicked, this, [=] {
+  connect( mButtonAddRow, &QToolButton::clicked, this, [this] {
     mModel->insertRow( mModel->rowCount() );
   } );
-  connect( mButtonRemoveRow, &QToolButton::clicked, this, [=] {
+  connect( mButtonRemoveRow, &QToolButton::clicked, this, [this] {
     QItemSelectionModel *selectionModel = mValuesTable->selectionModel();
     const QModelIndexList selectedRows = selectionModel->selectedIndexes();
     if ( !selectedRows.empty() )
@@ -383,11 +383,11 @@ QgsFieldDomainWidget::QgsFieldDomainWidget( Qgis::FieldDomainType type, QWidget 
   mStackedWidget->addWidget( mDomainWidget );
   mStackedWidget->setCurrentWidget( mDomainWidget );
 
-  connect( mNameEdit, &QLineEdit::textChanged, this, [=] {
+  connect( mNameEdit, &QLineEdit::textChanged, this, [this] {
     emit validityChanged( isValid() );
   } );
 
-  connect( mDomainWidget, &QgsAbstractFieldDomainWidget::changed, this, [=] {
+  connect( mDomainWidget, &QgsAbstractFieldDomainWidget::changed, this, [this] {
     emit validityChanged( isValid() );
   } );
 }

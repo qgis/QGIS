@@ -164,20 +164,20 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
     {
       if ( QgsDatabaseQueryHistoryWidget *queryHistoryWidget = qobject_cast< QgsDatabaseQueryHistoryWidget * >( context.historyWidget() ) )
       {
-        QAction *executeAction = new QAction(
-          QObject::tr( "Execute SQL Command…" ), menu
+        QAction *loadAction = new QAction(
+          QObject::tr( "Load SQL Command…" ), menu
         );
-        QObject::connect( executeAction, &QAction::triggered, menu, [=] {
+        QObject::connect( loadAction, &QAction::triggered, menu, [this, queryHistoryWidget] {
           queryHistoryWidget->emitSqlTriggered( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(), mEntry.entry.value( QStringLiteral( "provider" ) ).toString(), mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
         } );
-        menu->addAction( executeAction );
+        menu->addAction( loadAction );
       }
 
       QAction *copyAction = new QAction(
         QObject::tr( "Copy SQL Command" ), menu
       );
       copyAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCopy.svg" ) ) );
-      QObject::connect( copyAction, &QAction::triggered, menu, [=] {
+      QObject::connect( copyAction, &QAction::triggered, menu, [this] {
         QMimeData *m = new QMimeData();
         m->setText( mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
         QApplication::clipboard()->setMimeData( m );

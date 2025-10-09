@@ -91,7 +91,7 @@ void QgsFixGeometryMultipartAlgorithm::initAlgorithm( const QVariantMap &configu
     QStringLiteral( "REPORT" ), QObject::tr( "Report layer from fixing multiparts" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -144,7 +144,6 @@ QVariantMap QgsFixGeometryMultipartAlgorithm::processAlgorithm( const QVariantMa
 
   const QgsProject *project = QgsProject::instance();
   QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
-  QStringList messages;
 
   const QgsGeometryMultipartCheck check( &checkContext, QVariantMap() );
 
@@ -180,7 +179,7 @@ QVariantMap QgsFixGeometryMultipartAlgorithm::processAlgorithm( const QVariantMa
       reportFeature.setAttributes( errorFeature.attributes() << QObject::tr( "Source feature not found or invalid" ) << false );
 
     else if ( it.nextFeature( testDuplicateIdFeature ) )
-      throw QgsProcessingException( QObject::tr( "More than one feature found in input layer with value \"%1\" in unique field \"%2\"" ).arg( idValue ).arg( featIdFieldName ) );
+      throw QgsProcessingException( QObject::tr( "More than one feature found in input layer with value \"%1\" in unique field \"%2\"" ).arg( idValue, featIdFieldName ) );
 
     else if ( inputFeature.geometry().isNull() )
       reportFeature.setAttributes( errorFeature.attributes() << QObject::tr( "Feature geometry is null" ) << false );
@@ -193,7 +192,7 @@ QVariantMap QgsFixGeometryMultipartAlgorithm::processAlgorithm( const QVariantMa
         errorFeature.geometry().asPoint(),
         QgsVertexId()
       );
-      for ( QgsGeometryCheck::Changes changes : changesList )
+      for ( const QgsGeometryCheck::Changes &changes : std::as_const( changesList ) )
         checkError.handleChanges( changes );
 
       QgsGeometryCheck::Changes changes;

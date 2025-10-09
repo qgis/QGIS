@@ -48,6 +48,8 @@ QgsAttributesFormData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx 
   mSplitPolicy = layer->fields().at( idx ).splitPolicy();
   mDuplicatePolicy = layer->fields().at( idx ).duplicatePolicy();
   mMergePolicy = layer->fields().at( idx ).mergePolicy();
+  mDefaultValueExpression = layer->fields().at( idx ).defaultValueDefinition().expression();
+  mApplyDefaultValueOnUpdate = layer->fields().at( idx ).defaultValueDefinition().applyOnUpdate();
 }
 
 QgsAttributesFormData::FieldConfig::operator QVariant()
@@ -262,7 +264,12 @@ void QgsAttributesFormItem::addChild( std::unique_ptr< QgsAttributesFormItem > &
   if ( !item->mParent )
     item->mParent = this;
 
+  // forward the signal towards the root
+  connect( item.get(), &QgsAttributesFormItem::addedChildren, this, &QgsAttributesFormItem::addedChildren );
+
   mChildren.push_back( std::move( item ) );
+
+  emit addedChildren( this, mChildren.size() - 1, mChildren.size() - 1 );
 }
 
 void QgsAttributesFormItem::insertChild( int position, std::unique_ptr< QgsAttributesFormItem > &&item )
@@ -273,7 +280,12 @@ void QgsAttributesFormItem::insertChild( int position, std::unique_ptr< QgsAttri
   if ( !item->mParent )
     item->mParent = this;
 
+  // forward the signal towards the root
+  connect( item.get(), &QgsAttributesFormItem::addedChildren, this, &QgsAttributesFormItem::addedChildren );
+
   mChildren.insert( mChildren.begin() + position, std::move( item ) );
+
+  emit addedChildren( this, position, position );
 }
 
 void QgsAttributesFormItem::deleteChildAtIndex( int index )
@@ -285,6 +297,11 @@ void QgsAttributesFormItem::deleteChildAtIndex( int index )
 void QgsAttributesFormItem::deleteChildren()
 {
   mChildren.clear();
+}
+
+bool QgsAttributesFormItem::isGroup( QgsAttributesFormItem *item )
+{
+  return item->type() == QgsAttributesFormData::WidgetType || item->type() == QgsAttributesFormData::Container;
 }
 
 QVariant QgsAttributesFormItem::data( int role ) const
@@ -368,6 +385,12 @@ QgsAttributesFormItem *QgsAttributesFormModel::itemForIndex( const QModelIndex &
   return mRootItem.get();
 }
 
+QgsAttributesFormItem *QgsAttributesFormModel::rootItem() const
+{
+  return mRootItem.get();
+}
+
+
 int QgsAttributesFormModel::rowCount( const QModelIndex &parent ) const
 {
   if ( parent.isValid() && parent.column() > 0 )
@@ -449,6 +472,27 @@ QModelIndex QgsAttributesFormModel::firstRecursiveMatchingModelIndex( const QgsA
   return item ? createIndex( item->row(), 0, item ) : QModelIndex();
 }
 
+bool QgsAttributesFormModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !index.isValid() )
+    return false;
+
+  QgsAttributesFormItem *item = itemForIndex( index );
+  bool result = item->setData( role, value );
+
+  if ( result )
+  {
+    emit dataChanged( index, index, { role } );
+
+    if ( role == QgsAttributesFormModel::ItemFieldConfigRole )
+    {
+      emit fieldConfigDataChanged( item );
+    }
+  }
+
+  return result;
+}
+
 bool QgsAttributesFormModel::showAliases() const
 {
   return mShowAliases;
@@ -457,7 +501,21 @@ bool QgsAttributesFormModel::showAliases() const
 void QgsAttributesFormModel::setShowAliases( bool show )
 {
   mShowAliases = show;
-  emit dataChanged( QModelIndex(), QModelIndex(), QVector<int>() << Qt::DisplayRole << Qt::ForegroundRole << Qt::FontRole );
+
+  emitDataChangedRecursively( QModelIndex(), QVector<int>() << Qt::DisplayRole << Qt::ForegroundRole << Qt::FontRole );
+}
+
+void QgsAttributesFormModel::emitDataChangedRecursively( const QModelIndex &parent, const QVector<int> &roles )
+{
+  emit dataChanged( index( 0, 0, parent ), index( rowCount( parent ) - 1, 0, parent ), roles );
+  for ( int i = 0; i < rowCount( parent ); i++ )
+  {
+    const QModelIndex childIndex = index( i, 0, parent );
+    if ( hasChildren( childIndex ) )
+    {
+      emitDataChangedRecursively( childIndex, roles );
+    }
+  }
 }
 
 
@@ -607,9 +665,12 @@ void QgsAttributesAvailableWidgetsModel::populateLayerActions( const QList< QgsA
     }
   }
 
-  beginInsertRows( actionsIndex, 0, count );
-  populateActionItems( actions );
-  endInsertRows();
+  if ( count > 0 )
+  {
+    beginInsertRows( actionsIndex, 0, count - 1 );
+    populateActionItems( actions );
+    endInsertRows();
+  }
 }
 
 void QgsAttributesAvailableWidgetsModel::populateActionItems( const QList<QgsAction> actions )
@@ -740,20 +801,6 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
     default:
       return QVariant();
   }
-}
-
-bool QgsAttributesAvailableWidgetsModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-  if ( !index.isValid() )
-    return false;
-
-  QgsAttributesFormItem *item = itemForIndex( index );
-  bool result = item->setData( role, value );
-
-  if ( result )
-    emit dataChanged( index, index, { role } );
-
-  return result;
 }
 
 Qt::DropActions QgsAttributesAvailableWidgetsModel::supportedDragActions() const
@@ -922,6 +969,9 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       if ( fieldIndex != -1 )
       {
         editorItem->setData( ItemDisplayRole, mLayer->fields().field( fieldIndex ).alias() );
+
+        QgsAttributesFormData::FieldConfig config( mLayer, fieldIndex );
+        editorItem->setData( ItemFieldConfigRole, config );
       }
 
       break;
@@ -1242,23 +1292,6 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
   }
 }
 
-bool QgsAttributesFormLayoutModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-  if ( !index.isValid() )
-    return false;
-
-  if ( role == ItemFieldConfigRole ) // This model doesn't store data for that role
-    return false;
-
-  QgsAttributesFormItem *item = itemForIndex( index );
-  bool result = item->setData( role, value );
-
-  if ( result )
-    emit dataChanged( index, index, { role } );
-
-  return result;
-}
-
 bool QgsAttributesFormLayoutModel::removeRows( int row, int count, const QModelIndex &parent )
 {
   if ( row < 0 )
@@ -1465,6 +1498,29 @@ bool QgsAttributesFormLayoutModel::dropMimeData( const QMimeData *data, Qt::Drop
   return isDropSuccessful;
 }
 
+void QgsAttributesFormLayoutModel::updateFieldConfigForFieldItemsRecursive( QgsAttributesFormItem *parent, const QString &fieldName, const QgsAttributesFormData::FieldConfig &config )
+{
+  for ( int i = 0; i < parent->childCount(); i++ )
+  {
+    QgsAttributesFormItem *child = parent->child( i );
+    if ( child->name() == fieldName && child->type() == QgsAttributesFormData::Field )
+    {
+      child->setData( ItemFieldConfigRole, QVariant::fromValue( config ) );
+      emit fieldConfigDataChanged( child ); // Item's field config has changed, let views know about it
+    }
+
+    if ( child->childCount() > 0 )
+    {
+      updateFieldConfigForFieldItemsRecursive( child, fieldName, config );
+    }
+  }
+}
+
+void QgsAttributesFormLayoutModel::updateFieldConfigForFieldItems( const QString &fieldName, const QgsAttributesFormData::FieldConfig &config )
+{
+  updateFieldConfigForFieldItemsRecursive( mRootItem.get(), fieldName, config );
+}
+
 void QgsAttributesFormLayoutModel::updateAliasForFieldItemsRecursive( QgsAttributesFormItem *parent, const QString &fieldName, const QString &fieldAlias )
 {
   for ( int i = 0; i < parent->childCount(); i++ )
@@ -1474,7 +1530,7 @@ void QgsAttributesFormLayoutModel::updateAliasForFieldItemsRecursive( QgsAttribu
     {
       child->setData( ItemDisplayRole, fieldAlias );
       const QModelIndex index = createIndex( child->row(), 0, child );
-      emit dataChanged( index, index );
+      emit dataChanged( index, index ); // Item's alias has changed, let views know about it
     }
 
     if ( child->childCount() > 0 )
@@ -1638,7 +1694,7 @@ void QgsAttributesFormLayoutModel::addContainer( QModelIndex &parent, const QStr
 
   QgsAttributesFormItem *parentItem = itemForIndex( parent );
 
-  std::unique_ptr< QgsAttributesFormItem > containerItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Container, name, QString(), parentItem );
+  auto containerItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Container, name, QString(), parentItem );
 
   QgsAttributesFormData::AttributeFormItemData itemData;
   itemData.setColumnCount( columnCount );
@@ -1657,7 +1713,7 @@ void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int r
     return;
 
   beginInsertRows( parent, row, row );
-  std::unique_ptr< QgsAttributesFormItem > item = std::make_unique< QgsAttributesFormItem >();
+  auto item = std::make_unique< QgsAttributesFormItem >();
 
   item->setData( QgsAttributesFormModel::ItemIdRole, itemId );
   item->setData( QgsAttributesFormModel::ItemTypeRole, itemType );
@@ -1665,4 +1721,62 @@ void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int r
 
   itemForIndex( parent )->insertChild( row, std::move( item ) );
   endInsertRows();
+}
+
+
+QgsAttributesFormProxyModel::QgsAttributesFormProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+}
+
+void QgsAttributesFormProxyModel::setAttributesFormSourceModel( QgsAttributesFormModel *model )
+{
+  mModel = model;
+  QSortFilterProxyModel::setSourceModel( mModel );
+}
+
+QgsAttributesFormModel *QgsAttributesFormProxyModel::sourceAttributesFormModel() const
+{
+  return mModel;
+}
+
+const QString QgsAttributesFormProxyModel::filterText() const
+{
+  return mFilterText;
+}
+
+void QgsAttributesFormProxyModel::setFilterText( const QString &filterText )
+{
+  // Since we want to allow refreshing the filter when, e.g.,
+  // users switch to aliases, then we allow this method to be
+  // executed even if previous and new filters are equal
+
+  mFilterText = filterText.trimmed();
+  invalidate();
+}
+
+bool QgsAttributesFormProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  if ( mFilterText.isEmpty() )
+    return true;
+
+  QModelIndex sourceIndex = sourceModel()->index( sourceRow, 0, sourceParent );
+  if ( !sourceIndex.isValid() )
+    return false;
+
+  // If name or alias match, accept it before any other checks
+  if ( sourceIndex.data( QgsAttributesFormModel::ItemNameRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) || sourceIndex.data( QgsAttributesFormModel::ItemDisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
+    return true;
+
+  // Child is accepted if any of its parents is accepted
+  QModelIndex parent = sourceIndex.parent();
+  while ( parent.isValid() )
+  {
+    if ( parent.data( QgsAttributesFormModel::ItemNameRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) || parent.data( QgsAttributesFormModel::ItemDisplayRole ).toString().contains( mFilterText, Qt::CaseInsensitive ) )
+      return true;
+
+    parent = parent.parent();
+  }
+
+  return false;
 }

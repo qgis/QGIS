@@ -74,6 +74,7 @@ try:
     QgsSymbolLayerUtils.hasWellKnownMark = staticmethod(QgsSymbolLayerUtils.hasWellKnownMark)
     QgsSymbolLayerUtils.needFontMarker = staticmethod(QgsSymbolLayerUtils.needFontMarker)
     QgsSymbolLayerUtils.needSvgMarker = staticmethod(QgsSymbolLayerUtils.needSvgMarker)
+    QgsSymbolLayerUtils.needRasterMarker = staticmethod(QgsSymbolLayerUtils.needRasterMarker)
     QgsSymbolLayerUtils.needEllipseMarker = staticmethod(QgsSymbolLayerUtils.needEllipseMarker)
     QgsSymbolLayerUtils.needMarkerLine = staticmethod(QgsSymbolLayerUtils.needMarkerLine)
     QgsSymbolLayerUtils.needLinePatternFill = staticmethod(QgsSymbolLayerUtils.needLinePatternFill)

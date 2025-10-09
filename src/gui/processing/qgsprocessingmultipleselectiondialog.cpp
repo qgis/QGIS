@@ -26,6 +26,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
 #include "qgsvectortilelayer.h"
+#include "qgstiledscenelayer.h"
 #include "qgsproject.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include <QStandardItemModel>
@@ -66,8 +67,8 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
   mButtonToggleSelection = new QPushButton( tr( "Toggle Selection" ) );
   mButtonBox->addButton( mButtonToggleSelection, QDialogButtonBox::ActionRole );
 
-  connect( mButtonSelectAll, &QPushButton::clicked, this, [=] { selectAll( true ); } );
-  connect( mButtonClearSelection, &QPushButton::clicked, this, [=] { selectAll( false ); } );
+  connect( mButtonSelectAll, &QPushButton::clicked, this, [this] { selectAll( true ); } );
+  connect( mButtonClearSelection, &QPushButton::clicked, this, [this] { selectAll( false ); } );
   connect( mButtonToggleSelection, &QPushButton::clicked, this, &QgsProcessingMultipleSelectionPanelWidget::toggleSelection );
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked );
@@ -712,6 +713,17 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
     {
       const QList<QgsVectorTileLayer *> options = QgsProcessingUtils::compatibleVectorTileLayers( project, false );
       for ( const QgsVectorTileLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
+    case Qgis::ProcessingSourceType::TiledScene:
+    {
+      const QList<QgsTiledSceneLayer *> options = QgsProcessingUtils::compatibleTiledSceneLayers( project, false );
+      for ( const QgsTiledSceneLayer *layer : options )
       {
         addLayer( layer );
       }

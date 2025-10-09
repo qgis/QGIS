@@ -76,7 +76,7 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   connect( mFileToolButton, &QToolButton::clicked, this, &QgsAbstractFileContentSourceLineEdit::selectFile );
 
   connect( mFileLineEdit, &QLineEdit::textEdited, this, &QgsAbstractFileContentSourceLineEdit::mFileLineEdit_textEdited );
-  connect( mFileLineEdit, &QgsFilterLineEdit::cleared, this, [=] {
+  connect( mFileLineEdit, &QgsFilterLineEdit::cleared, this, [this] {
     mMode = ModeFile;
     mFileLineEdit->setPlaceholderText( QString() );
     mBase64.clear();

@@ -490,7 +490,7 @@ Checks if ``element`` contains an ExternalGraphic element with format
          found .
 %End
 
-    static bool hasExternalGraphicV2( QDomElement &element, const QString format = QString() );
+    static bool hasExternalGraphicV2( const QDomElement &element, const QString format = QString() );
 %Docstring
 Checks if ``element`` contains an ExternalGraphic element, if the
 optional ``format`` is specified it will also be checked.
@@ -504,7 +504,28 @@ optional ``format`` is specified it will also be checked.
     static bool hasWellKnownMark( QDomElement &element );
 
     static bool needFontMarker( QDomElement &element );
-    static bool needSvgMarker( QDomElement &element );
+
+    static bool needSvgMarker( const QDomElement &element );
+%Docstring
+Checks if ``element`` contains an ExternalGraphic element that should
+translate to an SVG marker.
+
+:return: ``True`` if the ExternalGraphic element is found and is of type
+         SVG.
+%End
+
+    static bool needRasterMarker( const QDomElement &element );
+%Docstring
+Checks if ``element`` contains an ExternalGraphic element that should
+translate to a raster marker.
+
+This is the case for any type of ExternalGraphic that is not an SVG.
+
+:return: ``True`` if the ExternalGraphic element is found and is not of
+         type SVG.
+
+.. versionadded:: 3.44
+%End
     static bool needEllipseMarker( QDomElement &element );
     static bool needMarkerLine( QDomElement &element );
     static bool needLinePatternFill( QDomElement &element );

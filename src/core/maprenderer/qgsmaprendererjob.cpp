@@ -568,6 +568,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     if ( !ml->isValid() )
     {
       QgsDebugMsgLevel( QStringLiteral( "Invalid Layer skipped" ), 3 );
+      mErrors.append( Error( ml->id(), QString( "Layer %1 is invalid, skipped" ).arg( ml->name() ) ) );
       continue;
     }
 
@@ -640,7 +641,9 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.context()->setFlag( Qgis::RenderContextFlag::ApplyClipAfterReprojection, true );
 
     if ( mFeatureFilterProvider )
+    {
       job.context()->setFeatureFilterProvider( mFeatureFilterProvider );
+    }
 
     QgsMapLayerStyleOverride styleOverride( ml );
     if ( mSettings.layerStyleOverrides().contains( ml->id() ) )
@@ -669,7 +672,8 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
     const QgsElevationShadingRenderer shadingRenderer = mSettings.elevationShadingRenderer();
 
     // if we can use the cache, let's do it and avoid rendering!
-    const bool canUseCache = !mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) && mCache;
+    const bool canUseCache = mSettings.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::Default
+                             && mCache;
     if ( canUseCache && mCache->hasCacheImage( ml->id() ) )
     {
       job.cached = true;
@@ -1146,7 +1150,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
   job.context.setCoordinateTransform( ct );
 
   // no cache, no image allocation
-  if ( mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) )
+  if ( mSettings.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default )
     return job;
 
   // if we can use the cache, let's do it and avoid rendering!

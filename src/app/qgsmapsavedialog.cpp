@@ -88,11 +88,12 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   }
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
-  connect( mResolutionSpinBox, &QSpinBox::editingFinished, this, [=] { updateDpi( mResolutionSpinBox->value() ); } );
-  connect( mOutputWidthSpinBox, &QSpinBox::editingFinished, this, [=] { updateOutputWidth( mOutputWidthSpinBox->value() ); } );
-  connect( mOutputHeightSpinBox, &QSpinBox::editingFinished, this, [=] { updateOutputHeight( mOutputHeightSpinBox->value() ); } );
+  connect( mResolutionSpinBox, &QSpinBox::editingFinished, this, [this] { updateDpi( mResolutionSpinBox->value() ); } );
+  connect( mOutputWidthSpinBox, &QSpinBox::editingFinished, this, [this] { updateOutputWidth( mOutputWidthSpinBox->value() ); } );
+  connect( mOutputHeightSpinBox, &QSpinBox::editingFinished, this, [this] { updateOutputHeight( mOutputHeightSpinBox->value() ); } );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsMapSaveDialog::updateExtent );
   connect( mScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsMapSaveDialog::updateScale );
+  connect( mLockScale, &QToolButton::toggled, this, &QgsMapSaveDialog::lockScaleChanged );
   connect( mLockAspectRatio, &QgsRatioLockButton::lockChanged, this, &QgsMapSaveDialog::lockChanged );
 
   updateOutputSize();
@@ -150,7 +151,6 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
     }
   }
 
-  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::onAccepted );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMapSaveDialog::showHelp );
 }
 
@@ -223,23 +223,38 @@ void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
 {
   int currentDpi = 0;
 
-  // reset scale to properly sync output width and height when extent set using
-  // current map view, layer extent, or drawn on canvas buttons
+  // If extent set using current map view, layer extent, or drawn on canvas buttons
   if ( mExtentGroupBox->extentState() != QgsExtentGroupBox::UserExtent )
   {
-    currentDpi = mDpi;
-
-    QgsMapSettings ms = mMapCanvas->mapSettings();
-    ms.setRotation( 0 );
-    mDpi = static_cast<int>( std::round( ms.outputDpi() ) );
-    mSize.setWidth( ms.outputSize().width() * extent.width() / ms.visibleExtent().width() );
-    mSize.setHeight( ms.outputSize().height() * extent.height() / ms.visibleExtent().height() );
-
-    whileBlocking( mScaleWidget )->setScale( ms.scale() );
-
-    if ( currentDpi != mDpi )
+    // reset scale to properly sync output width and height
+    if ( !mLockScale->isChecked() )
     {
-      updateDpi( currentDpi );
+      currentDpi = mDpi;
+
+      QgsMapSettings ms = mMapCanvas->mapSettings();
+      ms.setRotation( 0 );
+      mDpi = static_cast<int>( std::round( ms.outputDpi() ) );
+
+      mSize.setWidth( ms.outputSize().width() * extent.width() / ms.visibleExtent().width() );
+      mSize.setHeight( ms.outputSize().height() * extent.height() / ms.visibleExtent().height() );
+
+      whileBlocking( mScaleWidget )->setScale( ms.scale() );
+
+      if ( currentDpi != mDpi )
+      {
+        updateDpi( currentDpi );
+      }
+    }
+    else // Update size, leave scale untouched
+    {
+      QgsScaleCalculator calculator;
+      calculator.setMapUnits( mExtentGroupBox->currentCrs().mapUnits() );
+      calculator.setDpi( mDpi );
+      calculator.setMethod( QgsProject::instance()->scaleMethod() );
+
+      QSizeF newSize = calculator.calculateImageSize( extent, mScaleWidget->scale() );
+      mSize.setWidth( static_cast<int>( newSize.width() ) );
+      mSize.setHeight( static_cast<int>( newSize.height() ) );
     }
   }
   else
@@ -247,6 +262,7 @@ void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
     mSize.setWidth( mSize.width() * extent.width() / mExtent.width() );
     mSize.setHeight( mSize.height() * extent.height() / mExtent.height() );
   }
+
   updateOutputSize();
   checkOutputSize();
 
@@ -342,7 +358,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
       break;
   }
 
-  mapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
+  mapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector ); // prefer vector output (no caching of marker images etc.)
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawEditingInfo, false );
   mapSettings.setFlag( Qgis::MapSettingsFlag::DrawSelection, true );
   mapSettings.setSelectionColor( mMapCanvas->mapSettings().selectionColor() );
@@ -392,6 +408,11 @@ void QgsMapSaveDialog::lockChanged( const bool locked )
   }
 }
 
+void QgsMapSaveDialog::lockScaleChanged( bool locked )
+{
+  mScaleWidget->setEnabled( !locked );
+}
+
 void QgsMapSaveDialog::copyToClipboard()
 {
   QgsMapSettings ms = QgsMapSettings();
@@ -425,7 +446,7 @@ void QgsMapSaveDialog::copyToClipboard()
     mapRendererTask->addDecorations( mDecorations );
   }
 
-  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [=] {
+  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [this, img, p] {
     QApplication::clipboard()->setImage( *img, QClipboard::Clipboard );
     QApplication::restoreOverrideCursor();
     QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully copied map to clipboard" ) );
@@ -434,7 +455,7 @@ void QgsMapSaveDialog::copyToClipboard()
     delete img;
     setEnabled( true );
   } );
-  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [=]( int ) {
+  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [this, p, img]( int ) {
     QApplication::restoreOverrideCursor();
     QgisApp::instance()->messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not copy the map to clipboard" ) );
 
@@ -449,13 +470,20 @@ void QgsMapSaveDialog::copyToClipboard()
   QgsApplication::taskManager()->addTask( mapRendererTask );
 }
 
+void QgsMapSaveDialog::accept()
+{
+  // prevent the dialog from closing before saving the image/pdf
+  QgsMapSaveDialog::onAccepted();
+  QDialog::accept();
+}
+
 void QgsMapSaveDialog::onAccepted()
 {
   switch ( mDialogType )
   {
     case Image:
     {
-      const QPair<QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( QgisApp::instance(), tr( "Choose a file name to save the map image as" ) );
+      const QPair<QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
       if ( !fileNameAndFilter.first.isEmpty() )
       {
         QgsMapSettings ms = QgsMapSettings();
@@ -475,10 +503,10 @@ void QgsMapSaveDialog::onAccepted()
 
         mapRendererTask->setSaveWorldFile( saveWorldFile() );
 
-        connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [=] {
+        connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [fileNameAndFilter] {
           QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileNameAndFilter.first ).toString(), QDir::toNativeSeparators( fileNameAndFilter.first ) ) );
         } );
-        connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [=]( int error ) {
+        connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, []( int error ) {
           switch ( error )
           {
             case QgsMapRendererTask::ImageAllocationFail:
@@ -503,7 +531,7 @@ void QgsMapSaveDialog::onAccepted()
     {
       QgsSettings settings;
       const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
-      QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Save Map As" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+      QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Map As" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
       // return dialog focus on Mac
       activateWindow();
       raise();
@@ -567,10 +595,10 @@ void QgsMapSaveDialog::onAccepted()
           mapRendererTask->setExportMetadata( exportMetadata() );
         }
 
-        connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [=] {
+        connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [fileName] {
           QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
         } );
-        connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [=]( int ) {
+        connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, []( int ) {
           QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not save the map to PDF" ) );
         } );
 

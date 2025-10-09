@@ -150,9 +150,8 @@ QgsCallout::DrawOrder QgsCallout::drawOrder() const
 void QgsCallout::render( QgsRenderContext &context, const QRectF &rect, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext )
 {
   QPainter *painter = context.painter();
-  if ( context.useAdvancedEffects() )
+  if ( context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::ForceVector )
   {
-
     const QPainter::CompositionMode blendMode = mBlendMode;
     if ( dataDefinedProperties().isActive( QgsCallout::Property::BlendMode ) )
     {

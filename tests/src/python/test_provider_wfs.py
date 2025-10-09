@@ -4642,7 +4642,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             sanitize(
                 endpoint,
-                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&NAMESPACES=xmlns(my,http://my)&TYPENAME=my:typename&NAMESPACE=xmlns(my,http://my)",
+                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&NAMESPACES=xmlns(my,http://my)&TYPENAME=my:typename",
             ),
             "wb",
         ) as f:
@@ -4677,7 +4677,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             sanitize(
                 endpoint,
-                "?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)",
+                "?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&NAMESPACES=xmlns(my,http://my)",
             ),
             "wb",
         ) as f:
@@ -4731,7 +4731,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             sanitize(
                 endpoint,
-                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&NAMESPACES=xmlns(my,http://my)&TYPENAME=my:typename&NAMESPACE=xmlns(my,http://my)",
+                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&NAMESPACES=xmlns(my,http://my)&TYPENAME=my:typename",
             ),
             "wb",
         ) as f:
@@ -4766,7 +4766,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             sanitize(
                 endpoint,
-                "?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)",
+                "?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&NAMESPACES=xmlns(my,http://my)",
             ),
             "wb",
         ) as f:
@@ -4820,7 +4820,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
         with open(
             sanitize(
                 endpoint,
-                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&NAMESPACES=xmlns(my,http://my)&TYPENAME=my:typename&NAMESPACE=xmlns(my,http://my)",
+                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&NAMESPACES=xmlns(my,http://my)&TYPENAME=my:typename",
             ),
             "wb",
         ) as f:
@@ -4863,7 +4863,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
   <fes:Literal>1</fes:Literal>
  </fes:PropertyIsEqualTo>
 </fes:Filter>
-&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)""",
+&NAMESPACES=xmlns(my,http://my)""",
             ),
             "wb",
         ) as f:
@@ -4919,7 +4919,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
   </fes:PropertyIsGreaterThan>
  </fes:And>
 </fes:Filter>
-&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)""",
+&NAMESPACES=xmlns(my,http://my)""",
             ),
             "wb",
         ) as f:
@@ -4970,7 +4970,7 @@ class TestPyQgsWFSProvider(QgisTestCase, ProviderTestCase):
   </fes:PropertyIsEqualTo>
  </fes:And>
 </fes:Filter>
-&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)""",
+&NAMESPACES=xmlns(my,http://my)""",
             ),
             "wb",
         ) as f:

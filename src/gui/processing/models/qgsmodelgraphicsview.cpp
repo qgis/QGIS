@@ -52,6 +52,9 @@ QgsModelGraphicsView::QgsModelGraphicsView( QWidget *parent )
   mMidMouseButtonPanTool = new QgsModelViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsModelViewToolTemporaryKeyZoom( this );
 
+  connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
+  connect( verticalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
+
   mSnapper.setSnapToGrid( true );
 }
 
@@ -245,7 +248,7 @@ void QgsModelGraphicsView::mousePressEvent( QMouseEvent *event )
 
   if ( !mTool || !event->isAccepted() )
   {
-    if ( event->button() == Qt::MiddleButton )
+    if ( event->button() == Qt::MiddleButton && mTool != mSpacePanTool && mTool != mSpaceZoomTool )
     {
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
@@ -343,7 +346,7 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
   if ( mTool && event->isAccepted() )
     return;
 
-  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
+  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() && mTool != mMidMouseButtonPanTool )
   {
     if ( !( event->modifiers() & Qt::ControlModifier ) )
     {
@@ -396,6 +399,8 @@ void QgsModelGraphicsView::keyReleaseEvent( QKeyEvent *event )
 void QgsModelGraphicsView::setModelScene( QgsModelGraphicsScene *scene )
 {
   setScene( scene );
+
+  connect( scene, &QgsModelGraphicsScene::sceneRectChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
 
   // IMPORTANT!
   // previous snap markers, snap lines are owned by previous layout - so don't delete them here!
@@ -468,7 +473,6 @@ void QgsModelGraphicsView::endCommand()
   emit commandEnded();
 }
 
-
 void QgsModelGraphicsView::snapSelected()
 {
   QgsModelGraphicsScene *s = modelScene();
@@ -490,6 +494,26 @@ void QgsModelGraphicsView::snapSelected()
     mSnapper.setSnapToGrid( prevSetting );
   }
   endMacroCommand();
+}
+
+void QgsModelGraphicsView::friendlySetSceneRect()
+{
+  if ( mBlockScrollbarSignals )
+    return;
+
+  QRectF modelSceneRect = modelScene()->sceneRect();
+  QRectF viewSceneRect = sceneRect();
+
+  QRectF visibleRect = mapToScene( viewport()->rect() ).boundingRect();
+
+  viewSceneRect.setLeft( std::min( modelSceneRect.left(), visibleRect.left() ) );
+  viewSceneRect.setRight( std::max( modelSceneRect.right(), visibleRect.right() ) );
+  viewSceneRect.setTop( std::min( modelSceneRect.top(), visibleRect.top() ) );
+  viewSceneRect.setBottom( std::max( modelSceneRect.bottom(), visibleRect.bottom() ) );
+
+  mBlockScrollbarSignals++;
+  setSceneRect( viewSceneRect );
+  mBlockScrollbarSignals--;
 }
 
 void QgsModelGraphicsView::copySelectedItems( QgsModelGraphicsView::ClipboardOperation operation )

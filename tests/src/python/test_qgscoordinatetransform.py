@@ -395,6 +395,91 @@ class TestQgsCoordinateTransform(QgisTestCase):
         self.assertAlmostEqual(transformedExtent.xMaximum(), 20037508.343, delta=1e-3)
         self.assertAlmostEqual(transformedExtent.yMaximum(), 44927335.427, delta=1e-3)
 
+        round_trip_extent = transform.transformBoundingBox(
+            transformedExtent, Qgis.TransformDirection.Reverse
+        )
+        self.assertAlmostEqual(round_trip_extent.xMinimum(), -180, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.yMinimum(), -89.9, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.xMaximum(), 180, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.yMaximum(), 89.9, delta=1e-3)
+
+        # test opposite transform
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:3857"),
+            QgsCoordinateReferenceSystem("EPSG:4326"),
+            QgsProject.instance(),
+        )
+
+        transformedExtent = transform.transformBoundingBox(
+            extent, Qgis.TransformDirection.Reverse
+        )
+        self.assertAlmostEqual(transformedExtent.xMinimum(), -20037508.343, delta=1e-3)
+        self.assertAlmostEqual(
+            transformedExtent.yMinimum(), -242528680.9437, delta=1e-3
+        )
+        self.assertAlmostEqual(transformedExtent.xMaximum(), 20037508.343, delta=1e-3)
+        self.assertAlmostEqual(transformedExtent.yMaximum(), 242528680.9437, delta=1e-3)
+
+        round_trip_extent = transform.transformBoundingBox(
+            transformedExtent, Qgis.TransformDirection.Forward
+        )
+        self.assertAlmostEqual(round_trip_extent.xMinimum(), -180, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.yMinimum(), -90.0, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.xMaximum(), 180, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.yMaximum(), 90.0, delta=1e-3)
+
+    def testTransformBoundingBoxFullWorldToWebMercator7844(self):
+        extent = QgsRectangle(-180, -90, 180, 90)
+        context = QgsCoordinateTransformContext()
+        context.addCoordinateOperation(
+            QgsCoordinateReferenceSystem("EPSG:3857"),
+            QgsCoordinateReferenceSystem("EPSG:7844"),
+            "+proj=pipeline +step +inv +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +step +proj=unitconvert +xy_in=rad +xy_out=deg",
+        )
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:7844"),
+            QgsCoordinateReferenceSystem("EPSG:3857"),
+            context,
+        )
+        transformedExtent = transform.transformBoundingBox(extent)
+        self.assertAlmostEqual(transformedExtent.xMinimum(), -20037508.343, delta=1e-3)
+        self.assertAlmostEqual(transformedExtent.yMinimum(), -44927335.427, delta=1e-3)
+        self.assertAlmostEqual(transformedExtent.xMaximum(), 20037508.343, delta=1e-3)
+        self.assertAlmostEqual(transformedExtent.yMaximum(), 44927335.427, delta=1e-3)
+
+        round_trip_extent = transform.transformBoundingBox(
+            transformedExtent, Qgis.TransformDirection.Reverse
+        )
+        self.assertAlmostEqual(round_trip_extent.xMinimum(), -180, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.yMinimum(), -89.9, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.xMaximum(), 180, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.yMaximum(), 89.9, delta=1e-3)
+
+        # test opposite transform
+        transform = QgsCoordinateTransform(
+            QgsCoordinateReferenceSystem("EPSG:3857"),
+            QgsCoordinateReferenceSystem("EPSG:7844"),
+            QgsProject.instance(),
+        )
+
+        transformedExtent = transform.transformBoundingBox(
+            extent, Qgis.TransformDirection.Reverse
+        )
+        self.assertAlmostEqual(transformedExtent.xMinimum(), -20037508.343, delta=1e-3)
+        self.assertAlmostEqual(
+            transformedExtent.yMinimum(), -242528680.9437, delta=1e-3
+        )
+        self.assertAlmostEqual(transformedExtent.xMaximum(), 20037508.343, delta=1e-3)
+        self.assertAlmostEqual(transformedExtent.yMaximum(), 242528680.9437, delta=1e-3)
+
+        round_trip_extent = transform.transformBoundingBox(
+            transformedExtent, Qgis.TransformDirection.Forward
+        )
+        self.assertAlmostEqual(round_trip_extent.xMinimum(), -180, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.yMinimum(), -90.0, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.xMaximum(), 180, delta=1e-3)
+        self.assertAlmostEqual(round_trip_extent.yMaximum(), 90.0, delta=1e-3)
+
     def test_has_vertical_component(self):
         transform = QgsCoordinateTransform()
         self.assertFalse(transform.hasVerticalComponent())

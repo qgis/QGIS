@@ -78,10 +78,13 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
     //! configure a map settings object
     void applyMapSettings( QgsMapSettings &mapSettings );
 
+    void accept() override;
+
   private slots:
     void onAccepted();
-
     void updatePdfExportWarning();
+    void lockScaleChanged( bool locked );
+    void showHelp();
 
   private:
     void lockChanged( bool locked );
@@ -107,9 +110,7 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
 
     QString mInfoDetails;
 
-  private slots:
-
-    void showHelp();
+    friend class TestQgsMapSaveDialog;
 };
 
 #endif // QGSMAPSAVEDIALOG_H

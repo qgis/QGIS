@@ -202,6 +202,180 @@ QString QgsExpressionNodeUnaryOperator::text() const
 
 //
 
+template<class T>
+bool compareOp( T diff, QgsExpressionNodeBinaryOperator::BinaryOperator op )
+{
+  switch ( op )
+  {
+    case QgsExpressionNodeBinaryOperator::boEQ:
+      return diff == 0;
+    case QgsExpressionNodeBinaryOperator::boNE:
+      return diff != 0;
+    case QgsExpressionNodeBinaryOperator::boLT:
+      return diff < 0;
+    case QgsExpressionNodeBinaryOperator::boGT:
+      return diff > 0;
+    case QgsExpressionNodeBinaryOperator::boLE:
+      return diff <= 0;
+    case QgsExpressionNodeBinaryOperator::boGE:
+      return diff >= 0;
+    default:
+      Q_ASSERT( false );
+      return false;
+  }
+}
+
+template<>
+bool compareOp( double diff, QgsExpressionNodeBinaryOperator::BinaryOperator op )
+{
+  switch ( op )
+  {
+    case QgsExpressionNodeBinaryOperator::boEQ:
+      return qgsDoubleNear( diff, 0.0 );
+    case QgsExpressionNodeBinaryOperator::boNE:
+      return !qgsDoubleNear( diff, 0.0 );
+    case QgsExpressionNodeBinaryOperator::boLT:
+      return diff < 0;
+    case QgsExpressionNodeBinaryOperator::boGT:
+      return diff > 0;
+    case QgsExpressionNodeBinaryOperator::boLE:
+      return diff <= 0;
+    case QgsExpressionNodeBinaryOperator::boGE:
+      return diff >= 0;
+    default:
+      Q_ASSERT( false );
+      return false;
+  }
+}
+
+QVariant QgsExpressionNodeBinaryOperator::compareNonNullValues( QgsExpression *parent, const QgsExpressionContext *, const QVariant &vL, const QVariant &vR, BinaryOperator op )
+{
+  if ( ( vL.userType() == QMetaType::Type::QDateTime && vR.userType() == QMetaType::Type::QDateTime ) )
+  {
+    QDateTime dL = QgsExpressionUtils::getDateTimeValue( vL, parent );
+    ENSURE_NO_EVAL_ERROR
+    QDateTime dR = QgsExpressionUtils::getDateTimeValue( vR, parent );
+    ENSURE_NO_EVAL_ERROR
+
+    // while QDateTime has innate handling of timezones, we don't expose these ANYWHERE
+    // in QGIS. So to avoid confusion where seemingly equal datetime values give unexpected
+    // results (due to different hidden timezones), we force all datetime comparisons to treat
+    // all datetime values as having the same time zone
+    dL.setTimeSpec( Qt::UTC );
+    dR.setTimeSpec( Qt::UTC );
+
+    return compareOp<qint64>( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
+  }
+  else if ( ( vL.userType() == QMetaType::Type::QDate && vR.userType() == QMetaType::Type::QDate ) )
+  {
+    const QDate dL = QgsExpressionUtils::getDateValue( vL, parent );
+    ENSURE_NO_EVAL_ERROR
+    const QDate dR = QgsExpressionUtils::getDateValue( vR, parent );
+    ENSURE_NO_EVAL_ERROR
+    return compareOp<qint64>( dR.daysTo( dL ), op ) ? TVL_True : TVL_False;
+  }
+  else if ( ( vL.userType() == QMetaType::Type::QTime && vR.userType() == QMetaType::Type::QTime ) )
+  {
+    const QTime dL = QgsExpressionUtils::getTimeValue( vL, parent );
+    ENSURE_NO_EVAL_ERROR
+    const QTime dR = QgsExpressionUtils::getTimeValue( vR, parent );
+    ENSURE_NO_EVAL_ERROR
+    return compareOp<int>( dR.msecsTo( dL ), op ) ? TVL_True : TVL_False;
+  }
+  else if ( ( vL.userType() != QMetaType::Type::QString || vR.userType() != QMetaType::Type::QString ) &&
+            QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) )
+  {
+    // do numeric comparison if both operators can be converted to numbers,
+    // and they aren't both string
+    double fL = QgsExpressionUtils::getDoubleValue( vL, parent );
+    ENSURE_NO_EVAL_ERROR
+    double fR = QgsExpressionUtils::getDoubleValue( vR, parent );
+    ENSURE_NO_EVAL_ERROR
+    return compareOp< double >( fL - fR, op ) ? TVL_True : TVL_False;
+  }
+
+  else if ( vL.userType() == QMetaType::Type::Bool || vR.userType() == QMetaType::Type::Bool )
+  {
+    // Documented behavior of QVariant::toBool() for each userType:
+    //
+    // For variant with userType():
+    //
+    //   QMetaType::Bool:
+    //     true if value is true
+    //     false otherwise
+    //
+    //   QMetaType::QChar, QMetaType::Double, QMetaType::Int,
+    //   QMetaType::LongLong, QMetaType::UInt, and QMetaType::ULongLong:
+    //     true if the value is non-zero
+    //     false otherwise
+    //
+    //   QMetaType::QString and QMetaType::QByteArray:
+    //     false if its lower-case content is empty, "0" or "false"
+    //     true otherwise
+    //
+    // All other variants always return false.
+
+    // Note: Boolean logical operators behave the same in C++ and SQL.
+    const bool vLBool = vL.toBool();
+    const bool vRBool = vR.toBool();
+    switch ( op )
+    {
+      case boEQ:
+        return vLBool == vRBool ? TVL_True : TVL_False;
+      case boNE:
+        return vLBool != vRBool ? TVL_True : TVL_False;
+      case boLT:
+        return vLBool <  vRBool ? TVL_True : TVL_False;
+      case boLE:
+        return vLBool <= vRBool ? TVL_True : TVL_False;
+      case boGT:
+        return vLBool > vRBool ? TVL_True : TVL_False;
+      case boGE:
+        return vLBool >= vRBool ? TVL_True : TVL_False;
+      case boOr:
+      case boAnd:
+      case boRegexp:
+      case boLike:
+      case boNotLike:
+      case boILike:
+      case boNotILike:
+      case boIs:
+      case boIsNot:
+      case boPlus:
+      case boMinus:
+      case boMul:
+      case boDiv:
+      case boIntDiv:
+      case boMod:
+      case boPow:
+      case boConcat:
+        // should not happen
+        break;
+    }
+    return TVL_Unknown;
+  }
+
+  // warning - QgsExpression::isIntervalSafe is VERY expensive and should not be used here
+  else if ( vL.userType() == qMetaTypeId< QgsInterval>() && vR.userType() == qMetaTypeId< QgsInterval>() )
+  {
+    double fL = QgsExpressionUtils::getInterval( vL, parent ).seconds();
+    ENSURE_NO_EVAL_ERROR
+    double fR = QgsExpressionUtils::getInterval( vR, parent ).seconds();
+    ENSURE_NO_EVAL_ERROR
+    return compareOp< double >( fL - fR, op ) ? TVL_True : TVL_False;
+  }
+  else
+  {
+    // do string comparison otherwise
+    QString sL = QgsExpressionUtils::getStringValue( vL, parent );
+    ENSURE_NO_EVAL_ERROR
+    QString sR = QgsExpressionUtils::getStringValue( vR, parent );
+    ENSURE_NO_EVAL_ERROR
+    int diff = QString::compare( sL, sR );
+    return compareOp<int>( diff, op ) ? TVL_True : TVL_False;
+  }
+}
+
 QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   QVariant vL = mOpLeft->eval( parent, context );
@@ -428,112 +602,25 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
             return TVL_Unknown;
         }
       }
-      else if ( ( vL.userType() == QMetaType::Type::QDateTime && vR.userType() == QMetaType::Type::QDateTime ) )
-      {
-        QDateTime dL = QgsExpressionUtils::getDateTimeValue( vL, parent );
-        ENSURE_NO_EVAL_ERROR
-        QDateTime dR = QgsExpressionUtils::getDateTimeValue( vR, parent );
-        ENSURE_NO_EVAL_ERROR
-
-        // while QDateTime has innate handling of timezones, we don't expose these ANYWHERE
-        // in QGIS. So to avoid confusion where seemingly equal datetime values give unexpected
-        // results (due to different hidden timezones), we force all datetime comparisons to treat
-        // all datetime values as having the same time zone
-        dL.setTimeSpec( Qt::UTC );
-        dR.setTimeSpec( Qt::UTC );
-
-        return compare( dR.msecsTo( dL ) ) ? TVL_True : TVL_False;
-      }
-      else if ( ( vL.userType() == QMetaType::Type::QDate && vR.userType() == QMetaType::Type::QDate ) )
-      {
-        const QDate dL = QgsExpressionUtils::getDateValue( vL, parent );
-        ENSURE_NO_EVAL_ERROR
-        const QDate dR = QgsExpressionUtils::getDateValue( vR, parent );
-        ENSURE_NO_EVAL_ERROR
-        return compare( dR.daysTo( dL ) ) ? TVL_True : TVL_False;
-      }
-      else if ( ( vL.userType() == QMetaType::Type::QTime && vR.userType() == QMetaType::Type::QTime ) )
-      {
-        const QTime dL = QgsExpressionUtils::getTimeValue( vL, parent );
-        ENSURE_NO_EVAL_ERROR
-        const QTime dR = QgsExpressionUtils::getTimeValue( vR, parent );
-        ENSURE_NO_EVAL_ERROR
-        return compare( dR.msecsTo( dL ) ) ? TVL_True : TVL_False;
-      }
-      else if ( ( vL.userType() != QMetaType::Type::QString || vR.userType() != QMetaType::Type::QString ) &&
-                QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) )
-      {
-        // do numeric comparison if both operators can be converted to numbers,
-        // and they aren't both string
-        double fL = QgsExpressionUtils::getDoubleValue( vL, parent );
-        ENSURE_NO_EVAL_ERROR
-        double fR = QgsExpressionUtils::getDoubleValue( vR, parent );
-        ENSURE_NO_EVAL_ERROR
-        return compare( fL - fR ) ? TVL_True : TVL_False;
-      }
-
-      else if ( vL.userType() == QMetaType::Type::Bool || vR.userType() == QMetaType::Type::Bool )
-      {
-        // if one of value is boolean, then the other must also be boolean,
-        // in order to avoid confusion between different expression evaluations
-        // amongst providers and QVariant, that can consider or not the string
-        // 'false' as boolean or text
-        if ( vL.userType() == QMetaType::Type::Bool && vR.userType() == QMetaType::Type::Bool )
-          return vL.toBool() == vR.toBool() ? TVL_True : TVL_False;
-        return TVL_False;
-      }
-
-      // warning - QgsExpression::isIntervalSafe is VERY expensive and should not be used here
-      else if ( vL.userType() == qMetaTypeId< QgsInterval>() && vR.userType() == qMetaTypeId< QgsInterval>() )
-      {
-        double fL = QgsExpressionUtils::getInterval( vL, parent ).seconds();
-        ENSURE_NO_EVAL_ERROR
-        double fR = QgsExpressionUtils::getInterval( vR, parent ).seconds();
-        ENSURE_NO_EVAL_ERROR
-        return compare( fL - fR ) ? TVL_True : TVL_False;
-      }
       else
       {
-        // do string comparison otherwise
-        QString sL = QgsExpressionUtils::getStringValue( vL, parent );
-        ENSURE_NO_EVAL_ERROR
-        QString sR = QgsExpressionUtils::getStringValue( vR, parent );
-        ENSURE_NO_EVAL_ERROR
-        int diff = QString::compare( sL, sR );
-        return compare( diff ) ? TVL_True : TVL_False;
+        return compareNonNullValues( parent, context, vL, vR, mOp );
       }
 
     case boIs:
     case boIsNot:
-      if ( QgsExpressionUtils::isNull( vL ) && QgsExpressionUtils::isNull( vR ) ) // both operators null
+    {
+      const bool vLNull = QgsExpressionUtils::isNull( vL );
+      const bool vRNull = QgsExpressionUtils::isNull( vR );
+      if ( vLNull && vRNull ) // both operators null
         return ( mOp == boIs ? TVL_True : TVL_False );
-      else if ( QgsExpressionUtils::isNull( vL ) || QgsExpressionUtils::isNull( vR ) ) // one operator null
+      else if ( vLNull || vRNull ) // one operator null
         return ( mOp == boIs ? TVL_False : TVL_True );
       else // both operators non-null
       {
-        bool equal = false;
-        if ( QgsExpressionUtils::isDoubleSafe( vL ) && QgsExpressionUtils::isDoubleSafe( vR ) &&
-             ( vL.userType() != QMetaType::Type::QString || vR.userType() != QMetaType::Type::QString ) )
-        {
-          double fL = QgsExpressionUtils::getDoubleValue( vL, parent );
-          ENSURE_NO_EVAL_ERROR
-          double fR = QgsExpressionUtils::getDoubleValue( vR, parent );
-          ENSURE_NO_EVAL_ERROR
-          equal = qgsDoubleNear( fL, fR );
-        }
-        else
-        {
-          QString sL = QgsExpressionUtils::getStringValue( vL, parent );
-          ENSURE_NO_EVAL_ERROR
-          QString sR = QgsExpressionUtils::getStringValue( vR, parent );
-          ENSURE_NO_EVAL_ERROR
-          equal = QString::compare( sL, sR ) == 0;
-        }
-        if ( equal )
-          return mOp == boIs ? TVL_True : TVL_False;
-        else
-          return mOp == boIs ? TVL_False : TVL_True;
+        return compareNonNullValues( parent, context, vL, vR, mOp == boIs ? boEQ : boNE );
       }
+    }
 
     case boRegexp:
     case boLike:
@@ -609,28 +696,6 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
   }
   Q_ASSERT( false );
   return QVariant();
-}
-
-bool QgsExpressionNodeBinaryOperator::compare( double diff )
-{
-  switch ( mOp )
-  {
-    case boEQ:
-      return qgsDoubleNear( diff, 0.0 );
-    case boNE:
-      return !qgsDoubleNear( diff, 0.0 );
-    case boLT:
-      return diff < 0;
-    case boGT:
-      return diff > 0;
-    case boLE:
-      return diff <= 0;
-    case boGE:
-      return diff >= 0;
-    default:
-      Q_ASSERT( false );
-      return false;
-  }
 }
 
 qlonglong QgsExpressionNodeBinaryOperator::computeInt( qlonglong x, qlonglong y )

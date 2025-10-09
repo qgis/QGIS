@@ -9,6 +9,12 @@
             "tiles": [
                 "https://data.geopf.fr/tms/1.0.0/PLAN.IGN/{z}/{x}/{y}.pbf"
             ]
+        },
+        "plan_ign_relative": {
+            "type": "vector",
+            "tiles": [
+                "/tms/1.0.0/PLAN.IGN/{z}/{x}/{y}.pbf"
+            ]
         }
     },
 	"transition": {

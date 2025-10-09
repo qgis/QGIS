@@ -139,12 +139,14 @@ void initCanvas3D( Qgs3DMapCanvas *canvas, bool isGlobe, QString viewIdxStr )
     map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
     map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
 
+    QgsVector3D savedOrigin = map->origin();
+
     canvas->setMapSettings( map );
 
     QDomElement elemCamera = viewXml.firstChildElement( QStringLiteral( "camera" ) );
     if ( !elemCamera.isNull() )
     {
-      canvas->cameraController()->readXml( elemCamera );
+      canvas->cameraController()->readXml( elemCamera, savedOrigin );
     }
   }
 
@@ -167,7 +169,7 @@ QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, nullptr, canvas, configDialog );
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Apply | QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, configDialog );
 
-  auto applyConfig = [=] {
+  auto applyConfig = [map, canvas, w] {
     const QgsVector3D oldOrigin = map->origin();
     const QgsCoordinateReferenceSystem oldCrs = map->crs();
     const QgsCameraPose oldCameraPose = canvas->cameraController()->cameraPose();
@@ -192,7 +194,7 @@ QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
   };
 
   QObject::connect( buttons, &QDialogButtonBox::rejected, configDialog, &QDialog::reject );
-  QObject::connect( buttons, &QDialogButtonBox::clicked, configDialog, [=]( const QAbstractButton *button ) {
+  QObject::connect( buttons, &QDialogButtonBox::clicked, configDialog, [buttons, applyConfig, configDialog]( const QAbstractButton *button ) {
     if ( button == buttons->button( QDialogButtonBox::Apply ) || button == buttons->button( QDialogButtonBox::Ok ) )
       applyConfig();
     if ( button == buttons->button( QDialogButtonBox::Ok ) )
@@ -200,7 +202,7 @@ QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
   } );
   QObject::connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#scene-configuration" ) ); } );
 
-  QObject::connect( w, &Qgs3DMapConfigWidget::isValidChanged, configDialog, [=]( const bool valid ) {
+  QObject::connect( w, &Qgs3DMapConfigWidget::isValidChanged, configDialog, [buttons]( const bool valid ) {
     buttons->button( QDialogButtonBox::Apply )->setEnabled( valid );
     buttons->button( QDialogButtonBox::Ok )->setEnabled( valid );
   } );
@@ -279,7 +281,7 @@ int main( int argc, char *argv[] )
   Qgs3DDebugWidget *debugWidget = new Qgs3DDebugWidget( canvas );
   debugWidget->setMapSettings( canvas->mapSettings() );
   debugWidget->setVisible( false );
-  QObject::connect( canvas->mapSettings(), &Qgs3DMapSettings::showDebugPanelChanged, windowWidget, [=]( const bool enabled ) {
+  QObject::connect( canvas->mapSettings(), &Qgs3DMapSettings::showDebugPanelChanged, windowWidget, [debugWidget]( const bool enabled ) {
     debugWidget->setVisible( enabled );
   } );
 
@@ -287,7 +289,7 @@ int main( int argc, char *argv[] )
   QObject::connect( canvas->cameraController(), &QgsCameraController::cameraChanged, debugWidget, &Qgs3DDebugWidget::updateFromCamera );
   QObject::connect( canvas->cameraController()->camera(), &Qt3DRender::QCamera::nearPlaneChanged, debugWidget, &Qgs3DDebugWidget::updateFromCamera );
   QObject::connect( canvas->cameraController()->camera(), &Qt3DRender::QCamera::farPlaneChanged, debugWidget, &Qgs3DDebugWidget::updateFromCamera );
-  QObject::connect( toggleDebugPanel, &QAction::toggled, windowWidget, [=]( const bool enabled ) {
+  QObject::connect( toggleDebugPanel, &QAction::toggled, windowWidget, [debugWidget]( const bool enabled ) {
     debugWidget->setVisible( enabled );
   } );
 

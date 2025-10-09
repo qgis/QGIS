@@ -2,7 +2,7 @@ set(CPACK_GENERATOR)
 set(CPACK_OUTPUT_CONFIG_FILE "${CMAKE_BINARY_DIR}/BundleConfig.cmake")
 
 add_custom_target(bundle
-                  COMMAND ${CMAKE_CPACK_COMMAND} "--config" "${CMAKE_BINARY_DIR}/BundleConfig.cmake"
+                  COMMAND ${CMAKE_CPACK_COMMAND} "--config" "${CMAKE_BINARY_DIR}/BundleConfig.cmake" "--verbose"
                   COMMENT "Running CPACK. Please wait..."
                   DEPENDS qgis)
 
@@ -22,7 +22,6 @@ endif()
 
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "QGIS")
 set(CPACK_PACKAGE_VENDOR "Open Source Geospatial Foundation")
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "QGIS ${COMPLETE_VERSION}")
 set(CPACK_PACKAGE_EXECUTABLES "qgis" "QGIS")
@@ -42,6 +41,24 @@ endif()
 
 if(CREATE_ZIP)
   list(APPEND CPACK_GENERATOR "ZIP")
+endif()
+
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND QGIS_MAC_BUNDLE)
+  set(CREATE_DMG FALSE CACHE BOOL "Create a dmg bundle")
+  set(PYMACDEPLOYQT_EXECUTABLE "${CMAKE_SOURCE_DIR}/platform/macos/pymacdeployqt.py")
+
+  configure_file("${CMAKE_SOURCE_DIR}/platform/macos/Info.plist.in" "${CMAKE_BINARY_DIR}/platform//macos/Info.plist" @ONLY)
+  install(FILES "${CMAKE_BINARY_DIR}/platform/macos/Info.plist" DESTINATION "${APP_CONTENTS_DIR}")
+
+  set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}")
+  set(CPACK_DMG_FORMAT "UDBZ")
+  list(APPEND CPACK_GENERATOR "External")
+  message(STATUS "   + macdeployqt/DMG                      YES ")
+  configure_file(${CMAKE_SOURCE_DIR}/platform/macos/CPackMacDeployQt.cmake.in "${CMAKE_BINARY_DIR}/CPackExternal.cmake" @ONLY)
+  set(CPACK_EXTERNAL_PACKAGE_SCRIPT "${CMAKE_BINARY_DIR}/CPackExternal.cmake")
+  set(CPACK_EXTERNAL_ENABLE_STAGING ON)
+  set(CPACK_PACKAGING_INSTALL_PREFIX "/${QGIS_APP_NAME}.app")
 endif()
 
 include(CPack)

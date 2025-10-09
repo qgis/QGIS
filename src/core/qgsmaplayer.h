@@ -43,6 +43,7 @@
 #include "qgslogger.h"
 
 class QgsAbstract3DRenderer;
+class QgsAbstractProfileSource;
 class QgsDataProvider;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
@@ -186,6 +187,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Legend             = 1 << 15, //!< Legend settings \since QGIS 3.16
       Elevation          = 1 << 16, //!< Elevation settings \since QGIS 3.18
       Notes              = 1 << 17, //!< Layer user notes \since QGIS 3.20
+      AllVisualStyleCategories = Symbology | Symbology3D | Labeling | Diagrams, //!< All categories dealing with map canvas rendering
+      AllAttributeCategories = Fields | Forms | AttributeTable, //!< All categories dealing with attributes and attribute form
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
                            MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation | Notes,
     };
@@ -758,7 +761,29 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
 
     /**
-     * Saves named and sld style of the layer to the style table in the db.
+     * Results of saving styles to database.
+     *
+     * \since QGIS 4.0
+     */
+    enum class SaveStyleResult SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Success = 0, //!< Both QML and SLD formats were successfully written to the database.
+      QmlGenerationFailed = 1 << 0, //!< Generation of the QML failed, and was not written to the database.
+      SldGenerationFailed = 1 << 1,  //!< Generation of the SLD failed, and was not written to the database.
+      DatabaseWriteFailed = 1 << 2, //!< An error occurred when attempting to write to the database.
+    };
+    Q_ENUM( SaveStyleResult )
+
+    /**
+     * Results of saving styles to database.
+     *
+     * \since QGIS 4.0
+     */
+    Q_DECLARE_FLAGS( SaveStyleResults, SaveStyleResult )
+    Q_FLAG( SaveStyleResults )
+
+    /**
+     * Saves QML and SLD representations of the layer's style to a table in the database.
      * \param name Style name
      * \param description A description of the style
      * \param useAsDefault Set to TRUE if style should be used as the default style for the layer
@@ -766,18 +791,36 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param msgError will be set to a descriptive error message if any occurs
      * \param categories the style categories to be saved.
      *
-     *
      * \note Prior to QGIS 3.24, this method would show a message box warning when a
      * style with the same \a styleName already existed to confirm replacing the style with the user.
      * Since 3.24, calling this method will ALWAYS overwrite any existing style with the same name.
      * Use QgsProviderRegistry::styleExists() to test in advance if a style already exists and handle this appropriately
      * in your client code.
+     *
+     * \deprecated QGIS 4.0. Use saveStyleToDatabaseV2() instead.
      */
-    virtual void saveStyleToDatabase( const QString &name, const QString &description,
-                                      bool useAsDefault, const QString &uiFileContent,
-                                      QString &msgError SIP_OUT,
-                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+    Q_DECL_DEPRECATED virtual void saveStyleToDatabase( const QString &name, const QString &description,
+        bool useAsDefault, const QString &uiFileContent,
+        QString &msgError SIP_OUT,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) SIP_DEPRECATED;
 
+    /**
+     * Saves QML and SLD representations of the layer's style to a table in the database.
+     * \param name Style name
+     * \param description A description of the style
+     * \param useAsDefault Set to TRUE if style should be used as the default style for the layer
+     * \param uiFileContent
+     * \param msgError will be set to a descriptive error message if any occurs
+     * \param categories the style categories to be saved.
+     *
+     * \returns flags representing whether QML or SLD storing was successful
+     *
+     * \since QGIS 4.0
+     */
+    QgsMapLayer::SaveStyleResults saveStyleToDatabaseV2( const QString &name, const QString &description,
+        bool useAsDefault, const QString &uiFileContent,
+        QString &msgError SIP_OUT,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
     // TODO QGIS 4.0 -- fix this. We incorrectly have a single boolean flag which in which false is used inconsistently for "a style WAS found but an error occurred loading it" vs "no style was found".
     // The first (style found, error occurred loading it) should trigger a user-facing warning, whereas the second (no style found) isn't reflective of an error at all.
@@ -1762,6 +1805,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QgsMapLayerElevationProperties *elevationProperties() { return nullptr; }
 
+
+    /**
+     * Returns the layer's profile source if it has profile capabilities. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.44
+     */
+    virtual QgsAbstractProfileSource *profileSource() { return nullptr; }
+
     /**
      * Returns path to the placeholder image or an empty string if a generated legend is shown
      * \return placeholder image path
@@ -2456,7 +2507,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsObjectCustomProperties mCustomProperties;
 
     //! Controller of legend items of this layer
-    QgsMapLayerLegend *mLegend = nullptr;
+    std::unique_ptr<QgsMapLayerLegend> mLegend;
 
     //! Manager of multiple styles available for a layer (may be NULLPTR)
     std::unique_ptr<QgsMapLayerStyleManager> mStyleManager;
@@ -2469,7 +2520,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsLayerMetadata mMetadata;
 
     //! Renderer for 3D views
-    QgsAbstract3DRenderer *m3DRenderer = nullptr;
+    std::unique_ptr<QgsAbstract3DRenderer> m3DRenderer;
 
     //! 3D Extent of the layer
     mutable QgsBox3D mExtent3D;

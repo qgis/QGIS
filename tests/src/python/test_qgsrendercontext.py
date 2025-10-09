@@ -941,6 +941,21 @@ class TestQgsRenderContext(QgisTestCase):
         size = r.convertFromPainterUnits(2, QgsUnitTypes.RenderUnit.RenderPixels)
         self.assertAlmostEqual(size, 2.0, places=5)
 
+    def testConvertFromPainterUnitsToMetersInMapUnits(self):
+
+        ms = QgsMapSettings()
+        ms.setExtent(QgsRectangle(0, 0, 0.05242, 0.05242))
+        ms.setOutputSize(QSize(1108, 1108))
+        ms.setOutputDpi(300)
+        ms.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        r = QgsRenderContext.fromMapSettings(ms)
+
+        meters = r.convertFromPainterUnits(100, Qgis.RenderUnit.MetersInMapUnits)
+        self.assertAlmostEqual(meters, 526.6576805877552, places=5)
+
+        pixels = r.convertToPainterUnits(meters, Qgis.RenderUnit.MetersInMapUnits)
+        self.assertAlmostEqual(pixels, 100, places=5)
+
     def testPixelSizeScaleFactor(self):
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
@@ -994,7 +1009,7 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertAlmostEqual(sf, 1.0, places=5)
 
     def testMapUnitScaleFactor(self):
-        # test QgsSymbolLayerUtils::mapUnitScaleFactor() using QgsMapUnitScale
+        # test QgsSymbolLayerUtils.mapUnitScaleFactor() using QgsMapUnitScale
 
         ms = QgsMapSettings()
         ms.setExtent(QgsRectangle(0, 0, 100, 100))
@@ -1206,6 +1221,41 @@ class TestQgsRenderContext(QgisTestCase):
                 "Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))",
                 "Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))",
             ],
+        )
+
+    def test_deprecated_flags_rasterize_policy(self):
+        context = QgsRenderContext()
+
+        # test translation of rasterize policies to flags
+        context.setRasterizedRenderingPolicy(Qgis.RasterizedRenderingPolicy.ForceVector)
+        self.assertTrue(context.testFlag(Qgis.RenderContextFlag.ForceVectorOutput))
+        self.assertFalse(context.testFlag(Qgis.RenderContextFlag.UseAdvancedEffects))
+
+        context.setRasterizedRenderingPolicy(
+            Qgis.RasterizedRenderingPolicy.PreferVector
+        )
+        self.assertTrue(context.testFlag(Qgis.RenderContextFlag.ForceVectorOutput))
+        self.assertTrue(context.testFlag(Qgis.RenderContextFlag.UseAdvancedEffects))
+
+        context.setRasterizedRenderingPolicy(Qgis.RasterizedRenderingPolicy.Default)
+        self.assertFalse(context.testFlag(Qgis.RenderContextFlag.ForceVectorOutput))
+        self.assertTrue(context.testFlag(Qgis.RenderContextFlag.UseAdvancedEffects))
+
+        context.setFlag(Qgis.RenderContextFlag.ForceVectorOutput, True)
+        self.assertEqual(
+            context.rasterizedRenderingPolicy(),
+            Qgis.RasterizedRenderingPolicy.PreferVector,
+        )
+        context.setFlag(Qgis.RenderContextFlag.ForceVectorOutput, False)
+        self.assertEqual(
+            context.rasterizedRenderingPolicy(), Qgis.RasterizedRenderingPolicy.Default
+        )
+
+        context.setFlag(Qgis.RenderContextFlag.ForceVectorOutput, True)
+        context.setFlag(Qgis.RenderContextFlag.UseAdvancedEffects, False)
+        self.assertEqual(
+            context.rasterizedRenderingPolicy(),
+            Qgis.RasterizedRenderingPolicy.ForceVector,
         )
 
 

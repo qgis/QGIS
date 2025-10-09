@@ -14,7 +14,7 @@ import csv
 import math
 import os
 
-from qgis.PyQt.QtCore import QDir, QPointF
+from qgis.PyQt.QtCore import QPointF
 from qgis.PyQt.QtGui import (
     QBrush,
     QColor,
@@ -4365,7 +4365,8 @@ class TestQgsGeometry(QgisTestCase):
         # no overlap
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)")
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(4, 2), QgsPoint(7, 2)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(4, 2), QgsPoint(7, 2)])),
+            QgsGeometry.OperationResult.NothingHappened,
         )
         expWkt = "LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)"
         wkt = g.asWkt()
@@ -4419,7 +4420,8 @@ class TestQgsGeometry(QgisTestCase):
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1)")
         # extend start
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(-1, 0)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(-1, 0)])),
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1)"
         wkt = g.asWkt()
@@ -4431,7 +4433,7 @@ class TestQgsGeometry(QgisTestCase):
             g.reshapeGeometry(
                 QgsLineString([QgsPoint(5, 1), QgsPoint(10, 1), QgsPoint(10, 2)])
             ),
-            0,
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)"
         wkt = g.asWkt()
@@ -4442,7 +4444,8 @@ class TestQgsGeometry(QgisTestCase):
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1)")
         # extend start
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(-1, 0), QgsPoint(0, 0)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(-1, 0), QgsPoint(0, 0)])),
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1)"
         wkt = g.asWkt()
@@ -4454,7 +4457,7 @@ class TestQgsGeometry(QgisTestCase):
             g.reshapeGeometry(
                 QgsLineString([QgsPoint(10, 2), QgsPoint(10, 1), QgsPoint(5, 1)])
             ),
-            0,
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)"
         wkt = g.asWkt()
@@ -4465,7 +4468,8 @@ class TestQgsGeometry(QgisTestCase):
         # reshape where reshape line exactly overlaps some portions of geometry
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)")
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(2, 0), QgsPoint(6, 0)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(2, 0), QgsPoint(6, 0)])),
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (0 0, 2 0, 5 0, 6 0, 7 0)"
         wkt = g.asWkt()
@@ -4476,7 +4480,8 @@ class TestQgsGeometry(QgisTestCase):
 
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)")
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(5, 0), QgsPoint(7, 0)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(5, 0), QgsPoint(7, 0)])),
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (0 0, 5 0, 6 0, 7 0)"
         wkt = g.asWkt()
@@ -4488,7 +4493,8 @@ class TestQgsGeometry(QgisTestCase):
         # reshape line overlaps at both start and end
         g = QgsGeometry.fromWkt("LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)")
         self.assertEqual(
-            g.reshapeGeometry(QgsLineString([QgsPoint(4, 0), QgsPoint(7, 0)])), 0
+            g.reshapeGeometry(QgsLineString([QgsPoint(4, 0), QgsPoint(7, 0)])),
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (0 0, 4 0, 5 0, 6 0, 7 0)"
         wkt = g.asWkt()
@@ -4512,10 +4518,25 @@ class TestQgsGeometry(QgisTestCase):
                     ]
                 )
             ),
-            0,
+            QgsGeometry.OperationResult.Success,
         )
         expWkt = "LineString (152.96371 -25.60916, 152.96371 -25.60913, 152.96401 -25.60859, 152.96423 -25.60858, 152.96423 -25.60858, 152.96428 -25.60858, 152.96538 -25.60854, 152.96576 -25.6088)"
         wkt = g.asWkt(5)
+        self.assertTrue(
+            compareWkt(expWkt, wkt),
+            f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n",
+        )
+
+        # test should not raise exception
+        expWkt = "Polygon ((0 0, 5 0, 5 2, 0 2, 0 0))"
+        g = QgsGeometry.fromWkt(expWkt)
+        self.assertEqual(
+            g.reshapeGeometry(
+                QgsLineString([QgsPoint(0, 0), QgsPoint(5, 0), QgsPoint(5, 2)])
+            ),
+            QgsGeometry.OperationResult.NothingHappened,
+        )
+        wkt = g.asWkt()
         self.assertTrue(
             compareWkt(expWkt, wkt),
             f"testReshape failed: mismatch Expected:\n{expWkt}\nGot:\n{wkt}\n",
@@ -10235,10 +10256,20 @@ class TestQgsGeometry(QgisTestCase):
         bbox, area, angle, width, height = empty.orientedMinimumBoundingBox()
         self.assertFalse(bbox)
 
-        # not a useful geometry
+        # Special case: singlepart point geometry
         point = QgsGeometry.fromWkt("Point(1 2)")
         bbox, area, angle, width, height = point.orientedMinimumBoundingBox()
-        self.assertFalse(bbox)
+        exp = "Polygon ((1 2, 1 2, 1 2, 1 2, 1 2))"
+        result = bbox.asWkt(2)
+
+        self.assertTrue(
+            compareWkt(result, exp),
+            f"Oriented MBBR: mismatch Expected:\n{exp}\nGot:\n{result}\n",
+        )
+        self.assertEqual(area, 0)
+        self.assertEqual(angle, 0)
+        self.assertEqual(width, 0)
+        self.assertEqual(height, 0)
 
         # polygon
         polygon = QgsGeometry.fromWkt(
@@ -13737,6 +13768,15 @@ class TestQgsGeometry(QgisTestCase):
             subdivideExpected.asWkt(),
             "MultiPolygon (((0 10, 7 10, 7 0, 0 0, 0 10)),((10 0, 7 0, 7 5, 10 5, 10 0)),((10 10, 10 6, 10 5, 7 5, 7 10, 10 10)),((14 6, 14 5, 10 5, 10 6, 14 6)),((28 6, 28 5, 14 5, 14 6, 28 6)),((55 6, 55 5, 28 5, 28 6, 55 6)),((100 5, 55 5, 55 6, 100 5)),((100 10, 110 10, 110 0, 100 0, 100 5, 100 10)))",
         )
+
+        # mergeLines, gridSize = 1
+        geom_params = QgsGeometryParameters()
+        geom_params.setGridSize(1)
+        a = QgsGeometry.fromWkt(
+            "MULTILINESTRING((0 1.8, 11.4 10.7),((11.2 11.1, 19 60))"
+        )
+        mergeLinesExpected = a.mergeLines(geom_params)
+        self.assertEqual(mergeLinesExpected.asWkt(), "LineString (0 2, 11 11, 19 60)")
 
     def testIntersectsMultiPolygonEmptyRect(self):
         """Test intersection between a polygon and an empty rectangle. Fix for GH #51492."""

@@ -33,7 +33,13 @@ from operator import itemgetter
 from pathlib import Path
 
 from qgis.core import Qgis, QgsApplication, QgsBlockingNetworkRequest, QgsSettings
-from qgis.gui import QgsCodeEditorPython, QgsCodeEditorWidget, QgsMessageBar
+from qgis.gui import (
+    QgsCodeEditorPython,
+    QgsCodeEditorWidget,
+    QgsGui,
+    QgsMessageBar,
+    QgsShortcutsManager,
+)
 
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.PyQt.QtCore import (
@@ -116,9 +122,6 @@ class Editor(QgsCodeEditorPython):
         self.redoScut.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.redoScut.activated.connect(self.redo)
         self.newShortcutCS.activated.connect(self.autoComplete)
-        self.runScut = QShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_E), self)
-        self.runScut.setContext(Qt.ShortcutContext.WidgetShortcut)
-        self.runScut.activated.connect(self.runSelectedCode)  # spellok
         self.runScriptScut = QShortcut(
             QKeySequence(Qt.Modifier.SHIFT | Qt.Modifier.CTRL | Qt.Key.Key_E), self
         )
@@ -162,15 +165,6 @@ class Editor(QgsCodeEditorPython):
         syntaxCheckAction.setShortcut("Ctrl+4")
         menu.addAction(syntaxCheckAction)
 
-        runSelected = QAction(
-            QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),  # spellok
-            QCoreApplication.translate("PythonConsole", "Run Selected"),
-            menu,
-        )
-        runSelected.triggered.connect(self.runSelectedCode)  # spellok
-        runSelected.setShortcut("Ctrl+E")  # spellok
-        menu.addAction(runSelected)  # spellok
-
         word = self.selectedText() or self.wordAtPoint(e.pos())
         if word:
             context_help_action = QAction(
@@ -185,16 +179,27 @@ class Editor(QgsCodeEditorPython):
                     force_search=True,
                 )
             )
-            context_help_action.setShortcut("F1")
+            context_help_action.setShortcut(QKeySequence.StandardKey.HelpContents)
             menu.addAction(context_help_action)
 
-        start_action = QAction(
-            QgsApplication.getThemeIcon("mActionStart.svg"),
-            QCoreApplication.translate("PythonConsole", "Run Script"),
-            menu,
+        run_selection_action = QAction(menu)
+        run_selection_action.setIcon(
+            QgsApplication.getThemeIcon("mActionRunSelected.svg"),
         )
+        run_selection_action.triggered.connect(self.runSelectedCode)
+        QgsGui.shortcutsManager().initializeCommonAction(
+            run_selection_action,
+            QgsShortcutsManager.CommonAction.CodeRunSelection,
+        )
+        menu.addAction(run_selection_action)
+
+        start_action = QAction(self)
+        start_action.setIcon(QgsApplication.getThemeIcon("mActionStart.svg"))
         start_action.triggered.connect(self.runScriptCode)
-        start_action.setShortcut("Ctrl+Shift+E")
+        QgsGui.shortcutsManager().initializeCommonAction(
+            start_action,
+            QgsShortcutsManager.CommonAction.CodeRunScript,
+        )
         menu.addAction(start_action)
 
         menu.addSeparator()
@@ -223,6 +228,7 @@ class Editor(QgsCodeEditorPython):
             menu,
         )
         find_action.triggered.connect(self.trigger_find)
+        find_action.setShortcut("Ctrl+F")
         menu.addAction(find_action)
 
         cutAction = QAction(
@@ -260,17 +266,30 @@ class Editor(QgsCodeEditorPython):
         menu.addAction(selectAllAction)
 
         menu.addSeparator()
-        toggle_comment_action = QAction(
+        toggle_comment_action = QAction(menu)
+        toggle_comment_action.setIcon(
             QgsApplication.getThemeIcon(
                 "console/iconCommentEditorConsole.svg",
                 self.palette().color(QPalette.ColorRole.WindowText),
-            ),
-            QCoreApplication.translate("PythonConsole", "Toggle Comment"),
-            menu,
+            )
         )
         toggle_comment_action.triggered.connect(self.toggleComment)
-        toggle_comment_action.setShortcut("Ctrl+:")
+        QgsGui.shortcutsManager().initializeCommonAction(
+            toggle_comment_action,
+            QgsShortcutsManager.CommonAction.CodeToggleComment,
+        )
         menu.addAction(toggle_comment_action)
+
+        reformat_code_action = QAction(menu)
+        reformat_code_action.setIcon(
+            QgsApplication.getThemeIcon("console/iconFormatCode.svg")
+        )
+        reformat_code_action.triggered.connect(self.reformatCode)
+        QgsGui.shortcutsManager().initializeCommonAction(
+            reformat_code_action,
+            QgsShortcutsManager.CommonAction.CodeReformat,
+        )
+        menu.addAction(reformat_code_action)
 
         menu.addSeparator()
         gist_menu = QMenu(self)
@@ -301,14 +320,14 @@ class Editor(QgsCodeEditorPython):
         syntaxCheckAction.setEnabled(False)
         pasteAction.setEnabled(False)
         cutAction.setEnabled(False)
-        runSelected.setEnabled(False)  # spellok
+        run_selection_action.setEnabled(False)
         copyAction.setEnabled(False)
         selectAllAction.setEnabled(False)
         undoAction.setEnabled(False)
         redoAction.setEnabled(False)
         showCodeInspection.setEnabled(False)
         if self.hasSelectedText():
-            runSelected.setEnabled(True)  # spellok
+            run_selection_action.setEnabled(True)
             copyAction.setEnabled(True)
             cutAction.setEnabled(True)
         if not self.text() == "":
@@ -328,17 +347,17 @@ class Editor(QgsCodeEditorPython):
         listObj = self.console_widget.listClassMethod
         if listObj.isVisible():
             listObj.hide()
-            self.console_widget.objectListButton.setChecked(False)
+            self.console_widget.object_inspector_action.setChecked(False)
         else:
             listObj.show()
-            self.console_widget.objectListButton.setChecked(True)
+            self.console_widget.object_inspector_action.setChecked(True)
 
     def shareOnGist(self, is_public):
         self.code_editor_widget.shareOnGist(is_public)
 
     def hideEditor(self):
         self.console_widget.splitterObj.hide()
-        self.console_widget.showEditorButton.setChecked(False)
+        self.console_widget.show_editor_action.setChecked(False)
 
     def createTempFile(self):
         name = tempfile.NamedTemporaryFile(delete=False).name
@@ -477,7 +496,7 @@ class Editor(QgsCodeEditorPython):
         )
         self.tab_widget.setTabToolTip(index, self.code_editor_widget.filePath())
         self.setModified(False)
-        self.console_widget.saveFileButton.setEnabled(False)
+        self.console_widget.save_file_action.setEnabled(False)
         self.console_widget.updateTabListScript(
             self.code_editor_widget.filePath(), action="append"
         )
@@ -722,7 +741,7 @@ class EditorTabWidget(QTabWidget):
         # New Editor button
         self.newTabButton = QToolButton()
         txtToolTipNewTab = QCoreApplication.translate("PythonConsole", "New Editor")
-        self.newTabButton.setToolTip(txtToolTipNewTab)
+        self.newTabButton.setToolTip(f"<b>{txtToolTipNewTab}</b> (Ctrl+T)")
         self.newTabButton.setAutoRaise(True)
         self.newTabButton.setIcon(
             QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.svg")
@@ -812,7 +831,7 @@ class EditorTabWidget(QTabWidget):
     def enableSaveIfModified(self, tab):
         tabWidget = self.widget(tab)
         if tabWidget:
-            self.console_widget.saveFileButton.setEnabled(tabWidget.isModified())
+            self.console_widget.save_file_action.setEnabled(tabWidget.isModified())
 
     def enableToolBarEditor(self, enable):
         if self.topFrame.isVisible():
@@ -866,7 +885,7 @@ class EditorTabWidget(QTabWidget):
         index = self.indexOf(tab)
         s = self.tabText(index)
         self.setTabTitle(index, f"*{s}" if modified else re.sub(r"^(\*)", "", s))
-        self.console_widget.saveFileButton.setEnabled(modified)
+        self.console_widget.save_file_action.setEnabled(modified)
 
     def setTabTitle(self, tab, title):
         self.setTabText(tab, title)
@@ -1073,10 +1092,9 @@ class EditorTabWidget(QTabWidget):
         objInspectorEnabled = QgsSettings().value(
             "pythonConsole/enableObjectInsp", False, type=bool
         )
-        listObj = self.console_widget.objectListButton
         if self.console_widget.listClassMethod.isVisible():
-            listObj.setChecked(objInspectorEnabled)
-        listObj.setEnabled(objInspectorEnabled)
+            self.console_widget.object_inspector_action.setChecked(objInspectorEnabled)
+        self.console_widget.object_inspector_action.setEnabled(objInspectorEnabled)
         if objInspectorEnabled:
             cW = self.currentWidget()
             if cW and not self.console_widget.listClassMethod.isVisible():

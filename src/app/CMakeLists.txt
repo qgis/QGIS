@@ -79,6 +79,7 @@ set(QGIS_APP_SRCS
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
+  qgsmaptoolchamferfillet.cpp
   qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
   qgsmaptooldeletering.cpp
@@ -168,11 +169,6 @@ set(QGIS_APP_SRCS
   browser/qgsinbuiltdataitemproviders.cpp
 
   devtools/qgsappdevtoolutils.cpp
-  devtools/qgsdevtoolsmodelnode.cpp
-  devtools/networklogger/qgsnetworklogger.cpp
-  devtools/networklogger/qgsnetworkloggernode.cpp
-  devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
-  devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
   devtools/documentation/qgsdocumentationpanelwidget.cpp
@@ -187,6 +183,7 @@ set(QGIS_APP_SRCS
   elevation/qgselevationprofileexportsettingswidget.cpp
   elevation/qgselevationprofileimageexportdialog.cpp
   elevation/qgselevationprofilepdfexportdialog.cpp
+  elevation/qgselevationprofilemanagerdialog.cpp
   elevation/qgselevationprofiletoolidentify.cpp
   elevation/qgselevationprofiletoolmeasure.cpp
   elevation/qgselevationprofilewidget.cpp
@@ -357,6 +354,7 @@ if (WITH_3D)
     3d/qgs3dmodelsourcelineedit.cpp
     3d/qgs3dnavigationwidget.cpp
     3d/qgs3doptions.cpp
+    3d/qgsannotationlayer3drendererwidget.cpp
     3d/qgsgoochmaterialwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
@@ -391,56 +389,6 @@ endif()
 
 find_package(${QT_VERSION_BASE} COMPONENTS UiTools REQUIRED)
 
-set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar is available or whether functionality requiring QwtPolar should be disabled.")
-# Once we bump the minimum QWT VERSION to 6.2 or newer, we should get rid of WITH_QWTPOLAR
-if(QWT_VERSION_STR VERSION_GREATER_EQUAL 6.2 OR WITH_QWTPOLAR)
-  add_definitions(-DWITH_QWTPOLAR)
-
-  if(QWT_VERSION_STR VERSION_LESS 6.2)
-    find_package(QwtPolar REQUIRED)
-  else()
-    set(FOUND_QwtPolar TRUE)
-    set(QWTPOLAR_LIBRARY ${QWT_LIBRARY})
-    set(QWTPOLAR_INCLUDE_DIR ${QWT_INCLUDE_DIR})
-    add_definitions(-DQWT_POLAR_VERSION=0x060200)
-  endif()
-  # If not found on the system, offer the possibility to build QwtPolar
-  # internally
-  if(NOT FOUND_QwtPolar)
-    set(DEFAULT_WITH_INTERNAL_QWTPOLAR TRUE)
-  else()
-    set(DEFAULT_WITH_INTERNAL_QWTPOLAR FALSE)
-  endif()
-  set (WITH_INTERNAL_QWTPOLAR ${DEFAULT_WITH_INTERNAL_QWTPOLAR} CACHE BOOL "Use internal build of QwtPolar")
-
-  if(WITH_INTERNAL_QWTPOLAR)
-    set(QGIS_APP_SRCS
-      ${QGIS_APP_SRCS}
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_canvas.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_curve.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_fitter.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_grid.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_item.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_itemdict.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_layout.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_magnifier.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_marker.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_panner.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_picker.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_plot.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_renderer.cpp
-      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_spectrogram.cpp
-    )
-
-    set(QWTPOLAR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1)
-
-    set(QWTPOLAR_LIBRARY "")
-  endif()
-else()
-  set(QWTPOLAR_LIBRARY "")
-  set(QWTPOLAR_INCLUDE_DIR "")
-endif()
-
 # Test data dir for QgsAppScreenShots
 add_definitions(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
@@ -456,7 +404,9 @@ if (WIN32)
     set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> -O coff -i <SOURCE> -o <OBJECT>")
     set(QGIS_RC_LIBS -mwindows)
   endif()
-  set (QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
+
+  win32_icon(QGIS_APPMAIN_SRCS)
+  win32_version_info("QGIS Desktop" ${QGIS_APP_NAME} QGIS_APPMAIN_SRCS)
 else()
   set (QGIS_APPMAIN_SRCS main.cpp ${TEST_RCCS})
 endif()
@@ -497,10 +447,6 @@ elseif(MINGW)
   )
 endif()
 
-if(HAVE_OPENCL)
-  include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
-endif()
-
 if(ENABLE_MODELTEST)
   include_directories(../../tests/qt_modeltest)
 endif()
@@ -515,36 +461,39 @@ endif()
 
 #############
 if (ANDROID)
-  add_library(${QGIS_APP_NAME} ${LIBRARY_TYPE} ${QGIS_APPMAIN_SRCS})
-
-  # require c++17
-  target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
+  add_library(qgis ${LIBRARY_TYPE} ${QGIS_APPMAIN_SRCS})
 else()
-  if(APPLE)
-    set (CREATE_MACOSX_BUNDLE TRUE CACHE BOOL "Create macosx bundle during build. Disable for development to avoid copying libraries and ease debugging.")
-    if(CREATE_MACOSX_BUNDLE)
-      set(MACOSX_BUNDLE "MACOSX_BUNDLE")
-    endif()
-  endif()
-  add_executable(${QGIS_APP_NAME} ${MACOSX_BUNDLE} WIN32 ${QGIS_APPMAIN_SRCS})
+  add_executable(qgis WIN32 ${QGIS_APPMAIN_SRCS})
 
   if(WIN32 AND BUILD_WITH_QT6)
-    qt_disable_unicode_defines(${QGIS_APP_NAME})
+    qt_disable_unicode_defines(qgis)
   endif()
 
-  # require c++17
-  target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
-  target_compile_definitions(${QGIS_APP_NAME} PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
+  target_compile_definitions(qgis PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
+endif()
+
+set_target_properties(qgis PROPERTIES OUTPUT_NAME "${QGIS_APP_NAME}")
+
+if(NOT LIBRARY_TYPE EQUAL STATIC)
+  win32_version_info("QGIS App Library" "qgis_app" QGIS_APP_SRCS)
 endif()
 
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
 # loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
 add_library(qgis_app ${LIBRARY_TYPE} ${QGIS_APP_SRCS})
-
-# require c++17
-target_compile_features(qgis_app PRIVATE cxx_std_17)
+if(QGISPOSTFIX)
+  set_target_properties(qgis_app PROPERTIES
+     RUNTIME_OUTPUT_NAME qgis_app${QGISPOSTFIX}
+     LIBRARY_OUTPUT_NAME qgis_app${QGISPOSTFIX}
+  )
+  set_target_properties(${QGIS_APP_NAME} PROPERTIES
+     RUNTIME_OUTPUT_NAME ${QGIS_APP_NAME}${QGISPOSTFIX}
+     LIBRARY_OUTPUT_NAME ${QGIS_APP_NAME}${QGISPOSTFIX}
+  )
+endif()
 
 target_compile_definitions(qgis_app PRIVATE "QT_PLUGINS_DIR=\"${QT_PLUGINS_DIR}\"")
+target_compile_definitions(qgis_app PRIVATE "QGISPOSTFIX=\"${QGISPOSTFIX}\"")
 if (POSTGRES_FOUND)
   target_compile_definitions(qgis_app PRIVATE -DPOSTGRESQL_VERSION=\"${PostgreSQL_VERSION_STRING}\")
 endif()
@@ -555,7 +504,6 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/devtools
-  ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
   ${CMAKE_SOURCE_DIR}/src/app/georeferencer
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout
@@ -589,8 +537,7 @@ if (WITH_3D)
   )
 endif()
 
-target_include_directories(qgis_app SYSTEM PUBLIC
-  ${QWTPOLAR_INCLUDE_DIR}
+target_include_directories(qgis_app SYSTEM BEFORE PUBLIC
   ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
 )
 
@@ -598,7 +545,6 @@ add_dependencies(qgis_gui ui)
 
 target_link_libraries(qgis_app
   ${QWT_LIBRARY}
-  ${QWTPOLAR_LIBRARY}
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::UiTools
   ${OPTIONAL_QTWEBKIT}
@@ -664,61 +610,50 @@ if(CLANG_TIDY_EXE)
 endif()
 
 if(NOT WIN32)
-  target_link_libraries(${QGIS_APP_NAME} qgis_app)
+  target_link_libraries(qgis qgis_app)
 endif()
 
 if (ANDROID)
-  target_link_libraries(${QGIS_APP_NAME} log)
+  target_link_libraries(qgis log)
 endif()
 
 if(WIN32)
   add_definitions(-DQWT_DLL)
   add_definitions(-DQSCINTILLA_DLL)
-  target_link_libraries(${QGIS_APP_NAME} dbghelp)
+  target_link_libraries(qgis dbghelp)
   target_link_libraries(qgis_app dbghelp)
 endif()
 
-target_link_libraries(${QGIS_APP_NAME} qgis_native)
+target_link_libraries(qgis qgis_native)
 
 if (NOT WIN32)
-target_link_libraries(${QGIS_APP_NAME} QTSignal)
-endif()
-
-if (APPLE)
-  set_target_properties(${QGIS_APP_NAME} PROPERTIES
-    INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
-    INSTALL_RPATH_USE_LINK_PATH true
-    MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/app.info.plist.in")
+target_link_libraries(qgis QTSignal)
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
   find_library(EXECINFO_LIBRARY NAMES execinfo)
-  target_link_libraries(${QGIS_APP_NAME} ${EXECINFO_LIBRARY})
+  target_link_libraries(qgis ${EXECINFO_LIBRARY})
 endif()
 
+target_include_directories(qgis_app PRIVATE ${CMAKE_SOURCE_DIR}/src/analysis/processing/pdal)
 if (WITH_PDAL)
   target_link_libraries(qgis_app ${PDAL_LIBRARIES})
 endif()
 
 if(MSVC)
-  install(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION icons)
+  file (GLOB ICONS ${PROJECT_SOURCE_DIR}/platform/windows/rc/*.ico)
+  install(FILES ${ICONS} DESTINATION icons)
 endif()
 
 install(TARGETS qgis_app
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
   ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
   PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
 
-install(TARGETS ${QGIS_APP_NAME}
+install(TARGETS qgis
   BUNDLE DESTINATION ${QGIS_INSTALL_PREFIX}
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
   ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
   PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
-
-if (APPLE)
-  install(CODE "execute_process(COMMAND /bin/echo -n \"APPLQGIS\" OUTPUT_FILE \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/../PkgInfo\")")
-endif()

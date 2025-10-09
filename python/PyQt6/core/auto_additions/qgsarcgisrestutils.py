@@ -2,12 +2,17 @@
 # monkey patching scoped based enum
 QgsArcGisRestUtils.FeatureToJsonFlag.IncludeGeometry.__doc__ = "Whether to include the geometry definition"
 QgsArcGisRestUtils.FeatureToJsonFlag.IncludeNonObjectIdAttributes.__doc__ = "Whether to include any non-objectId attributes"
+QgsArcGisRestUtils.FeatureToJsonFlag.SkipUnsetAttributes.__doc__ = "Skip unset attributes. \n.. versionadded:: 3.44"
 QgsArcGisRestUtils.FeatureToJsonFlag.__doc__ = """Flags which control the behavior of converting features to JSON.
 
 .. versionadded:: 3.28
 
 * ``IncludeGeometry``: Whether to include the geometry definition
 * ``IncludeNonObjectIdAttributes``: Whether to include any non-objectId attributes
+* ``SkipUnsetAttributes``: Skip unset attributes.
+
+  .. versionadded:: 3.44
+
 
 """
 # --

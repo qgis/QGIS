@@ -311,13 +311,13 @@ Example
 .. code-block:: python
 
        p = QgsPoint( 4, 6 ) # 2D point
-       pr = midpoint ( p, QgsPoint( 2, 2 ) )
+       pr = QgsGeometryUtils.midpoint ( p, QgsPoint( 2, 2 ) )
        # pr is a 2D point: 'Point (3 4)'
-       pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZ, 2, 2, 2 ) )
+       pr = QgsGeometryUtils.midpoint ( p, QgsPoint( QgsWkbTypes.PointZ, 2, 2, 2 ) )
        # pr is a 3D point: 'PointZ (3 4 1)'
-       pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
+       pr = QgsGeometryUtils.midpoint ( p, QgsPoint( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
        # pr is a 3D point: 'PointM (3 4 1)'
-       pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
+       pr = QgsGeometryUtils.midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
        # pr is a 3D point: 'PointZM (3 4 1 1)'
 %End
 
@@ -1153,6 +1153,222 @@ Example
        ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ), QgsPoint( 2, 0 ), QgsPoint( -1, 0 ) )
        ret[0], ret[1].asWkt(), ret[2]
        # (True, 'Point (0 0)', True)
+%End
+
+    static QgsPoint createPointWithMatchingDimensions( double x, double y, const QgsPoint &reference ) /HoldGIL/;
+%Docstring
+Creates a :py:class:`QgsPoint` with dimensions matching a reference
+point.
+
+:param x: x-coordinate for the new point
+:param y: y-coordinate for the new point
+:param reference: reference point providing dimension information (Z, M)
+
+:return: :py:class:`QgsPoint` with matching dimensions, Z and M values
+         set to 0.0
+
+.. versionadded:: 4.0
+%End
+
+    static QgsPoint interpolatePointOnSegment( double x, double y,
+        const QgsPoint &segmentStart, const QgsPoint &segmentEnd ) /HoldGIL/;
+%Docstring
+Interpolates a point on a segment with proper Z and M value
+interpolation.
+
+:param x: x-coordinate of the point to interpolate
+:param y: y-coordinate of the point to interpolate
+:param segmentStart: start point of the segment
+:param segmentEnd: end point of the segment
+
+:return: :py:class:`QgsPoint` with proper Z and M interpolation
+
+.. versionadded:: 4.0
+%End
+
+    static bool createChamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                               const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                               double distance1, double distance2,
+                               QgsPoint &chamferStart /Out/, QgsPoint &chamferEnd /Out/,
+                               double epsilon = 1e-8 )  /HoldGIL/;
+%Docstring
+Creates a chamfer between two line segments using :py:class:`QgsPoint`.
+
+:param segment1Start: start point of first segment
+:param segment1End: end point of first segment
+:param segment2Start: start point of second segment
+:param segment2End: end point of second segment
+:param distance1: chamfer distance along first segment
+:param distance2: chamfer distance along second segment (if negative,
+                  uses distance1)
+:param epsilon: tolerance for geometric calculations
+
+:return: - true if chamfer was successfully created
+         - chamferStart: calculated start point of the chamfer
+         - chamferEnd: calculated end point of the chamfer
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createChamfer
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createChamfer`
+
+.. versionadded:: 4.0
+%End
+
+    static bool createFillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                              const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                              double radius,
+                              QgsPoint &filletPoint1 /Out/,
+                              QgsPoint &filletMidPoint /Out/,
+                              QgsPoint &filletPoint2 /Out/,
+                              double epsilon = 1e-8 )  /HoldGIL/;
+%Docstring
+Creates a fillet (rounded corner) between two line segments using
+:py:class:`QgsPoint`. Returns the three fillet arc points
+(``filletPoint1``, ``filletMidPoint``, ``filletPoint2``) via output
+parameters to define a CircularString.
+
+:param segment1Start: start point of first segment
+:param segment1End: end point of first segment
+:param segment2Start: start point of second segment
+:param segment2End: end point of second segment
+:param radius: fillet radius
+:param epsilon: tolerance for geometric calculations
+
+:return: - true if fillet was successfully created
+         - filletPoint1: first tangent point of the fillet arc
+         - filletMidPoint: midpoint of the fillet arc
+         - filletPoint2: second tangent point of the fillet arc
+
+:raises QgsInvalidArgumentException: 
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createFillet
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createFillet`
+
+.. versionadded:: 4.0
+%End
+
+    static std::unique_ptr< QgsLineString > createChamferGeometry(
+      const QgsPoint &segment1Start, const QgsPoint &segment1End,
+      const QgsPoint &segment2Start, const QgsPoint &segment2End,
+      double distance1, double distance2
+    );
+%Docstring
+Creates a complete chamfer geometry connecting two segments.
+
+:param segment1Start: start point of first segment
+:param segment1End: end point of first segment
+:param segment2Start: start point of second segment
+:param segment2End: end point of second segment
+:param distance1: chamfer distance along first segment
+:param distance2: chamfer distance along second segment (if negative,
+                  uses distance1)
+
+:return: :py:class:`QgsLineString` geometry connecting the segments
+         through the chamfer
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createChamfer
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createChamfer`
+
+.. versionadded:: 4.0
+%End
+
+    static std::unique_ptr< QgsAbstractGeometry > createFilletGeometry(
+      const QgsPoint &segment1Start, const QgsPoint &segment1End,
+      const QgsPoint &segment2Start, const QgsPoint &segment2End,
+      double radius, int segments
+    );
+%Docstring
+Creates a complete fillet geometry connecting two segments.
+
+:param segment1Start: start point of first segment
+:param segment1End: end point of first segment
+:param segment2Start: start point of second segment
+:param segment2End: end point of second segment
+:param radius: fillet radius
+:param segments: number of segments for arc discretization (≤0 for
+                 circular arc)
+
+:return: geometry connecting the segments through the fillet
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createFillet
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createFillet`
+
+.. versionadded:: 4.0
+%End
+
+    static double maxFilletRadius( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                   const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                                   double epsilon = 1e-8 ) /HoldGIL/;
+%Docstring
+Calculates the maximum allowed fillet radius for the given segment
+configuration.
+
+:param segment1Start: start point of the first segment
+:param segment1End: end point of the first segment
+:param segment2Start: start point of the second segment
+:param segment2End: end point of the second segment
+:param epsilon: tolerance for intersection and angle calculations
+
+:return: Maximum fillet radius that can be applied, or -1.0 if no fillet
+         is possible
+
+.. versionadded:: 4.0
+%End
+
+    static std::unique_ptr< QgsAbstractGeometry > chamferVertex(
+      const QgsCurve *curve, int vertexIndex,
+      double distance1, double distance2
+    );
+%Docstring
+Applies chamfer to a vertex in a curve geometry.
+
+:param curve: input curve geometry
+:param vertexIndex: index of vertex to chamfer
+:param distance1: chamfer distance along first segment
+:param distance2: chamfer distance along second segment
+
+:return: new geometry with chamfer applied, or None on failure
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createChamfer
+                                     and when curve is null when curve
+                                     has not enough points
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createChamfer`
+
+.. versionadded:: 4.0
+%End
+
+    static std::unique_ptr< QgsAbstractGeometry > filletVertex(
+      const QgsCurve *curve, int vertexIndex,
+      double radius, int segments
+    );
+%Docstring
+Applies fillet to a vertex in a curve geometry.
+
+:param curve: input curve geometry
+:param vertexIndex: index of vertex to fillet
+:param radius: fillet radius
+:param segments: number of segments for arc discretization (≤0 for
+                 circular arc)
+
+:return: new geometry with fillet applied, or None on failure
+
+:raises QgsInvalidArgumentException: same as
+                                     QgsGeometryUtilsBase.createFillet
+                                     and when curve is null when curve
+                                     has not enough points
+
+.. seealso:: :py:func:`QgsGeometryUtilsBase.createFillet`
+
+.. versionadded:: 4.0
 %End
 
 

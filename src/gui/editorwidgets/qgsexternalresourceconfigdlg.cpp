@@ -97,7 +97,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   connect( mStorageModeCbx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mStoragePathCbx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mDocumentViewerGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
-  connect( mDocumentViewerContentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mDocumentViewerContentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     const QgsExternalResourceWidget::DocumentViewerContent content = static_cast<QgsExternalResourceWidget::DocumentViewerContent>( mDocumentViewerContentComboBox->currentData().toInt() );
     const bool hasSizeSettings = ( content != QgsExternalResourceWidget::NoContent && content != QgsExternalResourceWidget::Audio );
     mDocumentViewerContentSettingsWidget->setEnabled( hasSizeSettings );

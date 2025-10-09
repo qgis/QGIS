@@ -114,8 +114,6 @@ class APP_EXPORT QgisAppStyleSheet : public QObject
     // platforms, specific
     bool mWinOS = false;
     bool mAndroidOS = false;
-
-    static bool sIsFirstRun;
 };
 
 #endif //QGISAPPSTYLESHEET_H

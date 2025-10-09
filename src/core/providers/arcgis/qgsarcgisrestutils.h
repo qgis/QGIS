@@ -229,6 +229,7 @@ class CORE_EXPORT QgsArcGisRestUtils
     {
       IncludeGeometry = 1 << 0, //!< Whether to include the geometry definition
       IncludeNonObjectIdAttributes = 1 << 1, //!< Whether to include any non-objectId attributes
+      SkipUnsetAttributes = 1 << 2, //!< Skip unset attributes. \since QGIS 3.44
     };
     Q_ENUM( FeatureToJsonFlag );
 

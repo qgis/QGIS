@@ -74,7 +74,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
     actionGroup->addAction( it.value() );
   }
   QgisApp::instance()->mActionStreamDigitize->setShortcut( tr( "R", "Keyboard shortcut: toggle stream digitizing" ) );
-  connect( digitizeMenu, &QMenu::triggered, this, [=]( QAction *action ) {
+  connect( digitizeMenu, &QMenu::triggered, this, [this]( QAction *action ) {
     Qgis::CaptureTechnique technique = mTechniqueActions.key( action, Qgis::CaptureTechnique::StraightSegments );
     if ( mDigitizeModeToolButton->defaultAction() != action )
     {
@@ -109,7 +109,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
       shapeButton->setMenu( new QMenu() );
 
       QgisApp::instance()->mShapeDigitizeToolBar->addWidget( shapeButton );
-      QObject::connect( shapeButton, &QToolButton::triggered, this, [=]( QAction *action ) { setShapeTool( action->data().toString() ); } );
+      QObject::connect( shapeButton, &QToolButton::triggered, this, [this]( QAction *action ) { setShapeTool( action->data().toString() ); } );
 
       mShapeCategoryButtons.insert( metadata->category(), shapeButton );
     }
@@ -245,7 +245,7 @@ void QgsMapToolsDigitizingTechniqueManager::setupTool( QgsMapToolCapture *tool )
   }
 
   mInitializedTools.insert( tool );
-  connect( tool, &QObject::destroyed, this, [=] {
+  connect( tool, &QObject::destroyed, this, [this, tool] {
     mInitializedTools.remove( tool );
   } );
 }
@@ -361,7 +361,7 @@ QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *p
   QLabel *label = new QLabel( tr( "Streaming Tolerance" ) );
   gLayout->addWidget( label, 1, 0 );
   gLayout->addWidget( mStreamToleranceSpinBox, 1, 1 );
-  connect( mStreamToleranceSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, [=]( int value ) {
+  connect( mStreamToleranceSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, []( int value ) {
     QgsSettingsRegistryCore::settingsDigitizingStreamTolerance->setValue( value );
   } );
 

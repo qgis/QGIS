@@ -54,6 +54,7 @@ class QgsDoubleSpinBox;
 //! Helper validator for classification classes
 class ClassValidator : public QValidator
 {
+    Q_OBJECT
   public:
     ClassValidator( QWidget *parent );
     QValidator::State validate( QString &input, int &pos ) const override;
@@ -140,6 +141,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     // void onPointCloudChangeAttributePointFilterChanged();
 
   private:
+    void updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const;
+
     QString mCanvasName;
     Qgs3DMapCanvas *mCanvas = nullptr;
     Qgs3DAnimationWidget *mAnimationWidget = nullptr;

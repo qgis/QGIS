@@ -49,7 +49,7 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
   mStackedWidget->setCurrentWidget( mPageDatabase );
   mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Predefined ) ) );
 
-  connect( mComboCrsType, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mComboCrsType, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( !mComboCrsType->currentData().isValid() )
       mStackedWidget->setCurrentWidget( mPageNoCrs );
     else
@@ -72,11 +72,11 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
     }
   } );
 
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, [=] {
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, [this] {
     emit crsDoubleClicked( projectionSelector->crs() );
   } );
 
-  connect( mCrsDefinitionWidget, &QgsCrsDefinitionWidget::crsChanged, this, [=]() {
+  connect( mCrsDefinitionWidget, &QgsCrsDefinitionWidget::crsChanged, this, [this]() {
     if ( !mBlockSignals )
     {
       emit crsChanged();
@@ -84,7 +84,7 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
     }
   } );
 
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [=]() {
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [this]() {
     if ( !mBlockSignals )
     {
       mDeferredInvalidCrsSet = false;
@@ -93,7 +93,7 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateRefe
     }
   } );
 
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::hasValidSelectionChanged, this, [=]() {
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::hasValidSelectionChanged, this, [this]() {
     if ( !mBlockSignals )
     {
       emit crsChanged();
@@ -306,7 +306,7 @@ void QgsProjectionSelectionDialog::setRequireValidSelection()
   mRequireValidSelection = true;
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( hasValidSelection() );
 
-  connect( mCrsWidget, &QgsCrsSelectionWidget::hasValidSelectionChanged, this, [=]( bool isValid ) {
+  connect( mCrsWidget, &QgsCrsSelectionWidget::hasValidSelectionChanged, this, [this]( bool isValid ) {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
   } );
 }

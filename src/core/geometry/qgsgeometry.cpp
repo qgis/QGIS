@@ -1241,7 +1241,17 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
     return Qgis::GeometryOperationResult::InvalidBaseGeometry;
   }
 
-  QgsGeos geos( d->geometry.get() );
+  // We're trying adding the reshape line's vertices to the geometry so that
+  // snap to segment always produces a valid reshape
+  QgsPointSequence reshapePoints;
+  reshapeLineString.points( reshapePoints );
+  QgsGeometry tmpGeom( *this );
+  for ( const QgsPoint &v : std::as_const( reshapePoints ) )
+  {
+    tmpGeom.addTopologicalPoint( v );
+  }
+
+  QgsGeos geos( tmpGeom.get() );
   QgsGeometryEngine::EngineOperationResult errorCode = QgsGeometryEngine::Success;
   mLastError.clear();
   std::unique_ptr< QgsAbstractGeometry > geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
@@ -1336,6 +1346,19 @@ QgsBox3D QgsGeometry::boundingBox3D() const
 QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const
 {
   mLastError.clear();
+
+  if ( isNull() )
+    return QgsGeometry();
+
+  if ( type() == Qgis::GeometryType::Point && d->geometry->partCount() == 1 )
+  {
+    area = 0;
+    angle = 0;
+    width = 0;
+    height = 0;
+    return QgsGeometry::fromRect( d->geometry->boundingBox() );
+  }
+
   QgsInternalGeometryEngine engine( *this );
   const QgsGeometry res = engine.orientedMinimumBoundingBox( area, angle, width, height );
   if ( res.isNull() )
@@ -3086,7 +3109,7 @@ QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometry
   return QgsGeometry( std::move( resultGeom ) );
 }
 
-QgsGeometry QgsGeometry::mergeLines() const
+QgsGeometry QgsGeometry::mergeLines( const QgsGeometryParameters &parameters ) const
 {
   if ( !d->geometry )
   {
@@ -3101,7 +3124,7 @@ QgsGeometry QgsGeometry::mergeLines() const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result( geos.mergeLines( &mLastError ) );
+  QgsGeometry result( geos.mergeLines( &mLastError, parameters ) );
   result.mLastError = mLastError;
   return result;
 }
@@ -4003,13 +4026,13 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
 
     case Qgis::WkbType::MultiLineString:
     {
-      const QgsMultiLineString *multiLine = qgsgeometry_cast< const QgsMultiLineString * >( geom.constGet() );
+      const QgsMultiLineString *inputMultiLine = qgsgeometry_cast< const QgsMultiLineString * >( geom.constGet() );
 
       auto resultMultiline = std::make_unique< QgsMultiLineString> ();
-      resultMultiline->reserve( multiLine->numGeometries() );
-      for ( int i = 0; i < multiLine->numGeometries(); ++i )
+      resultMultiline->reserve( inputMultiLine->numGeometries() );
+      for ( int i = 0; i < inputMultiLine->numGeometries(); ++i )
       {
-        resultMultiline->addGeometry( smoothLine( *( multiLine->lineStringN( i ) ), iterations, offset, minimumDistance, maxAngle ).release() );
+        resultMultiline->addGeometry( smoothLine( *( inputMultiLine->lineStringN( i ) ), iterations, offset, minimumDistance, maxAngle ).release() );
       }
       return QgsGeometry( std::move( resultMultiline ) );
     }
@@ -4022,13 +4045,13 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
 
     case Qgis::WkbType::MultiPolygon:
     {
-      const QgsMultiPolygon *multiPoly = qgsgeometry_cast< const QgsMultiPolygon * >( geom.constGet() );
+      const QgsMultiPolygon *inputMultiPoly = qgsgeometry_cast< const QgsMultiPolygon * >( geom.constGet() );
 
       auto resultMultiPoly = std::make_unique< QgsMultiPolygon >();
-      resultMultiPoly->reserve( multiPoly->numGeometries() );
-      for ( int i = 0; i < multiPoly->numGeometries(); ++i )
+      resultMultiPoly->reserve( inputMultiPoly->numGeometries() );
+      for ( int i = 0; i < inputMultiPoly->numGeometries(); ++i )
       {
-        resultMultiPoly->addGeometry( smoothPolygon( *( multiPoly->polygonN( i ) ), iterations, offset, minimumDistance, maxAngle ).release() );
+        resultMultiPoly->addGeometry( smoothPolygon( *( inputMultiPoly->polygonN( i ) ), iterations, offset, minimumDistance, maxAngle ).release() );
       }
       return QgsGeometry( std::move( resultMultiPoly ) );
     }
@@ -4189,9 +4212,9 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       // input geometry is multipart
       if ( isMultipart() )
       {
-        const QgsMultiPolylineXY multiLine = asMultiPolyline();
+        const QgsMultiPolylineXY inputMultiLine = asMultiPolyline();
         QgsMultiPointXY multiPoint;
-        for ( const QgsPolylineXY &l : multiLine )
+        for ( const QgsPolylineXY &l : inputMultiLine )
           for ( const QgsPointXY &p : l )
             multiPoint << p;
         return fromMultiPointXY( multiPoint );
@@ -4279,9 +4302,9 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
       else
       {
         // destination is singlepart => make a single part if possible
-        QgsMultiPolylineXY multiLine = asMultiPolyline();
-        if ( multiLine.count() == 1 )
-          return fromPolylineXY( multiLine[0] );
+        QgsMultiPolylineXY inputMultiLine = asMultiPolyline();
+        if ( inputMultiLine.count() == 1 )
+          return fromPolylineXY( inputMultiLine[0] );
       }
       return QgsGeometry();
     }
@@ -4292,20 +4315,20 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
       if ( isMultipart() )
       {
         const QgsMultiPolygonXY multiPolygon = asMultiPolygon();
-        QgsMultiPolylineXY multiLine;
+        QgsMultiPolylineXY inputMultiLine;
         for ( const QgsPolygonXY &poly : multiPolygon )
           for ( const QgsPolylineXY &line : poly )
-            multiLine << line;
+            inputMultiLine << line;
 
         if ( destMultipart )
         {
           // destination is multipart
-          return fromMultiPolylineXY( multiLine );
+          return fromMultiPolylineXY( inputMultiLine );
         }
-        else if ( multiLine.count() == 1 )
+        else if ( inputMultiLine.count() == 1 )
         {
           // destination is singlepart => make a single part if possible
-          return fromPolylineXY( multiLine[0] );
+          return fromPolylineXY( inputMultiLine[0] );
         }
       }
       // input geometry is single polygon
@@ -4320,11 +4343,11 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
           if ( destMultipart )
           {
             const QgsPolygonXY polygon = asPolygon();
-            QgsMultiPolylineXY multiLine;
-            multiLine.reserve( polygon.count() );
+            QgsMultiPolylineXY inputMultiLine;
+            inputMultiLine.reserve( polygon.count() );
             for ( const QgsPolylineXY &line : polygon )
-              multiLine << line;
-            return fromMultiPolylineXY( multiLine );
+              inputMultiLine << line;
+            return fromMultiPolylineXY( inputMultiLine );
           }
         }
         // no rings
@@ -4376,9 +4399,9 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
       // input geometry is multiline
       if ( isMultipart() )
       {
-        QgsMultiPolylineXY multiLine = asMultiPolyline();
+        QgsMultiPolylineXY inputMultiLine = asMultiPolyline();
         QgsMultiPolygonXY multiPolygon;
-        for ( QgsMultiPolylineXY::iterator multiLineIt = multiLine.begin(); multiLineIt != multiLine.end(); ++multiLineIt )
+        for ( QgsMultiPolylineXY::iterator multiLineIt = inputMultiLine.begin(); multiLineIt != inputMultiLine.end(); ++multiLineIt )
         {
           // do not create polygon for a 1 segment line
           if ( ( *multiLineIt ).count() < 3 )
@@ -4506,4 +4529,229 @@ QgsPointXY QgsGeometry::Error::where() const
 bool QgsGeometry::Error::hasWhere() const
 {
   return mHasLocation;
+}
+
+QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int vertexIndex, double distance1, double distance2, int segments ) const
+{
+  QgsDebugMsgLevel( QStringLiteral( "%1 starts: %2" ).arg( qgsEnumValueToKey( op ) ).arg( asWkt( 2 ) ), 3 );
+  if ( isNull() )
+  {
+    mLastError = QStringLiteral( "Operation '%1' needs non-null geometry." ).arg( qgsEnumValueToKey( op ) );
+    return QgsGeometry();
+  }
+
+  QgsCurve *curve = nullptr;
+
+  int modifiedPart = -1;
+  int modifiedRing = -1;
+  QgsVertexId vertexId;
+  vertexIdFromVertexNr( vertexIndex, vertexId );
+  int resolvedVertexIndex = vertexId.vertex;
+  QgsMultiLineString *inputMultiLine = nullptr;
+  QgsMultiPolygon *inputMultiPoly = nullptr;
+  const Qgis::GeometryType geomType = QgsWkbTypes::geometryType( wkbType() );
+
+  if ( geomType == Qgis::GeometryType::Line )
+  {
+    if ( isMultipart() )
+    {
+      modifiedPart = vertexId.part;
+
+      inputMultiLine = qgsgeometry_cast<QgsMultiLineString *>( d->geometry.get() );
+      curve = dynamic_cast<QgsCurve *>( inputMultiLine->lineStringN( modifiedPart ) );
+    }
+    else
+    {
+      curve = dynamic_cast<QgsCurve *>( d->geometry.get() );
+    }
+  }
+  else if ( geomType == Qgis::GeometryType::Polygon )
+  {
+    QgsPolygon *poly = nullptr;
+    if ( isMultipart() )
+    {
+      modifiedPart = vertexId.part;
+      // get part, get ring
+      inputMultiPoly = qgsgeometry_cast<QgsMultiPolygon *>( d->geometry.get() );
+      poly = inputMultiPoly->polygonN( modifiedPart );
+    }
+    else
+    {
+      poly = dynamic_cast<QgsPolygon *>( d->geometry.get() );
+    }
+
+    // if has rings
+    modifiedRing = vertexId.ring;
+    if ( modifiedRing == 0 )
+      curve = dynamic_cast<QgsCurve *>( poly->exteriorRing() );
+    else
+      curve = dynamic_cast<QgsCurve *>( poly->interiorRing( modifiedRing - 1 ) );
+  }
+  else
+    curve = nullptr;
+
+  if ( !curve )
+  {
+    mLastError = QStringLiteral( "Operation '%1' needs curve geometry." ).arg( qgsEnumValueToKey( op ) );
+    return QgsGeometry();
+  }
+
+  std::unique_ptr<QgsAbstractGeometry> result;
+  try
+  {
+    if ( op == ChamferFilletOperationType::Chamfer )
+      result = QgsGeometryUtils::chamferVertex( curve, resolvedVertexIndex, distance1, distance2 );
+    else
+      result = QgsGeometryUtils::filletVertex( curve, resolvedVertexIndex, distance1, segments );
+  }
+  catch ( QgsInvalidArgumentException &e )
+  {
+    mLastError = QStringLiteral( "%1 Requested vertex: %2 was resolved as: [part: %3, ring: %4, vertex: %5]" ) //
+                 .arg( e.what() )
+                 .arg( vertexIndex )
+                 .arg( modifiedPart )
+                 .arg( modifiedRing )
+                 .arg( resolvedVertexIndex );
+    return QgsGeometry();
+  }
+
+  if ( !result )
+  {
+    mLastError = QStringLiteral( "Operation '%1' generates a null geometry." ).arg( qgsEnumValueToKey( op ) );
+    return QgsGeometry();
+  }
+
+  if ( result->isEmpty() )
+    return QgsGeometry( std::move( result ) );
+
+  // insert \a result geometry (obtain by the chamfer/fillet operation) back into original \a inputPoly polygon
+  auto updatePolygon = []( const QgsPolygon * inputPoly, QgsAbstractGeometry * result, int modifiedRing ) -> std::unique_ptr<QgsPolygon>
+  {
+    auto newPoly = std::make_unique<QgsPolygon>();
+    for ( int ringIndex = 0; ringIndex < inputPoly->numInteriorRings() + 1; ++ringIndex )
+    {
+      if ( ringIndex == modifiedRing )
+      {
+        for ( QgsAbstractGeometry::part_iterator resPartIte = result->parts_begin(); resPartIte != result->parts_end(); ++resPartIte )
+        {
+          if ( ringIndex == 0 && resPartIte == result->parts_begin() )
+            newPoly->setExteriorRing( qgsgeometry_cast<QgsCurve *>( ( *resPartIte )->clone() ) );
+          else
+            newPoly->addInteriorRing( qgsgeometry_cast<QgsCurve *>( ( *resPartIte )->clone() ) );
+        }
+      }
+      else
+      {
+        if ( ringIndex == 0 )
+          newPoly->setExteriorRing( qgsgeometry_cast<QgsCurve *>( inputPoly->exteriorRing()->clone() ) );
+        else
+          newPoly->addInteriorRing( qgsgeometry_cast<QgsCurve *>( inputPoly->interiorRing( ringIndex - 1 )->clone() ) );
+      }
+    }
+    return newPoly;
+  };
+
+  std::unique_ptr<QgsAbstractGeometry> finalGeom;
+  if ( geomType == Qgis::GeometryType::Line )
+  {
+    if ( modifiedPart >= 0 )
+    {
+      auto newMultiLine = std::make_unique<QgsMultiLineString>();
+      int partIndex = 0;
+      for ( QgsMultiLineString::part_iterator partIte = inputMultiLine->parts_begin(); partIte != inputMultiLine->parts_end(); ++partIte )
+      {
+        if ( partIndex == modifiedPart )
+        {
+          for ( QgsAbstractGeometry::part_iterator resPartIte = result->parts_begin(); resPartIte != result->parts_end(); ++resPartIte )
+          {
+            newMultiLine->addGeometry( ( *resPartIte )->clone() );
+          }
+        }
+        else
+        {
+          newMultiLine->addGeometry( ( *partIte )->clone() );
+        }
+        partIndex++;
+      }
+      finalGeom = std::move( newMultiLine );
+    }
+    else
+    {
+      // resultGeom is already the correct result!
+      finalGeom = std::move( result );
+    }
+  }
+  else
+  {
+    // geomType == Qgis::GeometryType::Polygon
+    if ( modifiedPart >= 0 )
+    {
+      auto newMultiPoly = std::make_unique<QgsMultiPolygon>();
+      int partIndex = 0;
+      for ( QgsAbstractGeometry::part_iterator partIte = inputMultiPoly->parts_begin(); partIte != inputMultiPoly->parts_end(); ++partIte )
+      {
+        if ( partIndex == modifiedPart )
+        {
+          std::unique_ptr<QgsPolygon> newPoly = updatePolygon( qgsgeometry_cast<const QgsPolygon *>( *partIte ), result.get(), modifiedRing );
+          newMultiPoly->addGeometry( newPoly.release() );
+        }
+        else
+        {
+          newMultiPoly->addGeometry( ( *partIte )->clone() );
+        }
+        partIndex++;
+      }
+      finalGeom.reset( dynamic_cast<QgsAbstractGeometry *>( newMultiPoly.release() ) );
+    }
+    else
+    {
+      std::unique_ptr<QgsPolygon> newPoly = updatePolygon( qgsgeometry_cast<const QgsPolygon *>( d->geometry.get() ), result.get(), modifiedRing );
+      finalGeom = std::move( newPoly );
+    }
+  }
+
+  QgsGeometry finalResult( std::move( finalGeom ) );
+
+  QgsDebugMsgLevel( QStringLiteral( "Final result Wkt: %1" ).arg( finalResult.asWkt( 2 ) ), 3 );
+
+  return finalResult;
+}
+
+
+QgsGeometry QgsGeometry::chamfer( int vertexIndex, double distance1, double distance2 ) const
+{
+  return doChamferFillet( ChamferFilletOperationType::Chamfer, vertexIndex, distance1, distance2, 0 );
+}
+
+QgsGeometry QgsGeometry::fillet( int vertexIndex, double radius, int segments ) const
+{
+  return doChamferFillet( ChamferFilletOperationType::Fillet, vertexIndex, radius, 0.0, segments );
+}
+
+QgsGeometry QgsGeometry::chamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double distance1, double distance2 )
+{
+  std::unique_ptr<QgsLineString> result( QgsGeometryUtils::createChamferGeometry(
+      segment1Start, segment1End, segment2Start, segment2End, distance1, distance2
+                                         ) );
+
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( std::move( result ) );
+}
+
+QgsGeometry QgsGeometry::fillet( const QgsPoint &segment1Start, const QgsPoint &segment1End, const QgsPoint &segment2Start, const QgsPoint &segment2End, double radius, int segments )
+{
+  std::unique_ptr<QgsAbstractGeometry> result( QgsGeometryUtils::createFilletGeometry(
+        segment1Start, segment1End, segment2Start, segment2End, radius, segments
+      ) );
+
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+
+  return QgsGeometry( std::move( result ) );
 }

@@ -17,6 +17,7 @@
 
 #include "qgslogger.h"
 #include "qgspostgresutils.h"
+#include "qgsstringutils.h"
 
 // ----------
 
@@ -229,7 +230,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
 
 QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsPostgresConn *conn, QgsPostgresPrimaryKeyType pkType, const QList<int> &pkAttrs, const std::shared_ptr<QgsPostgresSharedData> &sharedData )
 {
-  auto lookupKeyWhereClause = [=] {
+  auto lookupKeyWhereClause = [featureIds, fields, sharedData, pkAttrs] {
     if ( featureIds.isEmpty() )
       return QString();
 
@@ -558,4 +559,44 @@ bool QgsPostgresUtils::projectsTableExists( QgsPostgresConn *conn, const QString
   }
 
   return res.PQgetvalue( 0, 0 ).toInt() > 0;
+}
+
+QString QgsPostgresUtils::variantMapToHtml( const QVariantMap &variantMap, const QString &title )
+{
+  QString result;
+  if ( !title.isEmpty() )
+  {
+    result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td></td></tr>" ).arg( title );
+  }
+  for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
+  {
+    const QVariantMap childMap = it.value().toMap();
+    const QVariantList childList = it.value().toList();
+    if ( !childList.isEmpty() )
+    {
+      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><ul>" ).arg( it.key() );
+      for ( const QVariant &v : childList )
+      {
+        const QVariantMap grandChildMap = v.toMap();
+        if ( !grandChildMap.isEmpty() )
+        {
+          result += QStringLiteral( "<li><table>%1</table></li>" ).arg( variantMapToHtml( grandChildMap ) );
+        }
+        else
+        {
+          result += QStringLiteral( "<li>%1</li>" ).arg( QgsStringUtils::insertLinks( v.toString() ) );
+        }
+      }
+      result += QLatin1String( "</ul></td></tr>" );
+    }
+    else if ( !childMap.isEmpty() )
+    {
+      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>" ).arg( it.key(), variantMapToHtml( childMap ) );
+    }
+    else
+    {
+      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( it.key(), QgsStringUtils::insertLinks( it.value().toString() ) );
+    }
+  }
+  return result;
 }

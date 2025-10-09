@@ -37,6 +37,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     QgsShadowEffect();
 
+    Qgis::PaintEffectFlags flags() const override;
     QVariantMap properties() const override;
     void readProperties( const QVariantMap &props ) override;
 

@@ -186,33 +186,34 @@ static Qt3DQAttribute *reprojectPositions( tinygltf::Model &model, int accessorI
   return attribute;
 }
 
-
-// QAbstractFunctor marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
-Q_NOWARN_DEPRECATED_PUSH
-
 class TinyGltfTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerator
 {
   public:
     TinyGltfTextureImageDataGenerator( Qt3DRender::QTextureImageDataPtr imagePtr )
       : mImagePtr( imagePtr ) {}
 
-    QT3D_FUNCTOR( TinyGltfTextureImageDataGenerator )
-
     Qt3DRender::QTextureImageDataPtr operator()() override
     {
       return mImagePtr;
     }
 
+    qintptr id() const override
+    {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+      return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<TinyGltfTextureImageDataGenerator>::id );
+#else
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<TinyGltfTextureImageDataGenerator>::id );
+#endif
+    }
+
     bool operator==( const QTextureImageDataGenerator &other ) const override
     {
-      const TinyGltfTextureImageDataGenerator *otherFunctor = functor_cast<TinyGltfTextureImageDataGenerator>( &other );
-      return mImagePtr.get() == otherFunctor->mImagePtr.get();
+      const TinyGltfTextureImageDataGenerator *otherFunctor = dynamic_cast<const TinyGltfTextureImageDataGenerator *>( &other );
+      return otherFunctor && mImagePtr.get() == otherFunctor->mImagePtr.get();
     }
 
     Qt3DRender::QTextureImageDataPtr mImagePtr;
 };
-
-Q_NOWARN_DEPRECATED_POP
 
 class TinyGltfTextureImage : public Qt3DRender::QAbstractTextureImage
 {

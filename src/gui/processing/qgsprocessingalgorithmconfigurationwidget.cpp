@@ -45,5 +45,5 @@ void QgsProcessingAlgorithmConfigurationWidget::registerProcessingContextGenerat
 
 QgsExpressionContext QgsProcessingAlgorithmConfigurationWidget::createExpressionContext() const
 {
-  return QgsProcessingGuiUtils::createExpressionContext( mContextGenerator, mWidgetContext, mAlgorithm, nullptr );
+  return QgsProcessingWidgetWrapperUtils::createExpressionContext( mContextGenerator, mWidgetContext, mAlgorithm, nullptr );
 }

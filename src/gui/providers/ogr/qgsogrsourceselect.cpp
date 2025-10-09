@@ -119,22 +119,22 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
 
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
     mVectorPath = path;
     if ( radioSrcFile->isChecked() || radioSrcDirectory->isChecked() || radioSrcOgcApi->isChecked() )
       emit enableButtons( !mVectorPath.isEmpty() );
     fillOpenOptions();
   } );
 
-  connect( protocolURI, &QLineEdit::textChanged, this, [=]( const QString &text ) {
+  connect( protocolURI, &QLineEdit::textChanged, this, [this]( const QString &text ) {
     if ( radioSrcProtocol->isChecked() )
       emit enableButtons( !text.isEmpty() );
   } );
-  connect( mBucket, &QLineEdit::textChanged, this, [=]( const QString &text ) {
+  connect( mBucket, &QLineEdit::textChanged, this, [this]( const QString &text ) {
     if ( radioSrcProtocol->isChecked() )
       emit enableButtons( !text.isEmpty() && !mKey->text().isEmpty() );
   } );
-  connect( mKey, &QLineEdit::textChanged, this, [=]( const QString &text ) {
+  connect( mKey, &QLineEdit::textChanged, this, [this]( const QString &text ) {
     if ( radioSrcProtocol->isChecked() )
       emit enableButtons( !text.isEmpty() && !mBucket->text().isEmpty() );
   } );
@@ -654,7 +654,7 @@ bool QgsOgrSourceSelect::configureFromUri( const QString &uri )
   {
     for ( auto opt = openOptions.constBegin(); opt != openOptions.constEnd(); ++opt )
     {
-      const auto widget { std::find_if( mOpenOptionsWidgets.cbegin(), mOpenOptionsWidgets.cend(), [=]( QWidget *widget ) {
+      const auto widget { std::find_if( mOpenOptionsWidgets.cbegin(), mOpenOptionsWidgets.cend(), [opt]( QWidget *widget ) {
         return widget->objectName() == opt.key();
       } ) };
 

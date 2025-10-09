@@ -33,25 +33,54 @@ class TestTool(QgsPlotTool):
         self.events = []
 
     def plotMoveEvent(self, event):
-        self.events.append(event)
+        self.events.append(QgsPlotMouseEvent(self.canvas(), event))
 
     def plotDoubleClickEvent(self, event):
-        self.events.append(event)
+        self.events.append(QgsPlotMouseEvent(self.canvas(), event))
 
     def plotPressEvent(self, event):
-        self.events.append(event)
+        self.events.append(QgsPlotMouseEvent(self.canvas(), event))
 
     def plotReleaseEvent(self, event):
-        self.events.append(event)
+        self.events.append(QgsPlotMouseEvent(self.canvas(), event))
 
     def wheelEvent(self, event):
-        self.events.append(event)
+        self.events.append(
+            QWheelEvent(
+                event.position(),
+                event.globalPosition(),
+                event.pixelDelta(),
+                event.angleDelta(),
+                event.buttons(),
+                event.modifiers(),
+                event.phase(),
+                event.inverted(),
+            )
+        )
 
     def keyPressEvent(self, event):
-        self.events.append(event)
+        self.events.append(
+            QKeyEvent(
+                event.type(),
+                event.key(),
+                event.modifiers(),
+                event.text(),
+                event.isAutoRepeat(),
+                event.count(),
+            )
+        )
 
     def keyReleaseEvent(self, event):
-        self.events.append(event)
+        self.events.append(
+            QKeyEvent(
+                event.type(),
+                event.key(),
+                event.modifiers(),
+                event.text(),
+                event.isAutoRepeat(),
+                event.count(),
+            )
+        )
 
 
 class TestQgsElevationProfileCanvas(QgisTestCase):
@@ -144,17 +173,20 @@ class TestQgsElevationProfileCanvas(QgisTestCase):
         canvas.setTool(tool)
         self.assertEqual(canvas.tool(), tool)
 
+        self.assertFalse(tool.events)
         key_press_event = QKeyEvent(
             QEvent.Type.KeyPress, 54, Qt.KeyboardModifier.ShiftModifier
         )
         canvas.keyPressEvent(key_press_event)
-        self.assertEqual(tool.events[-1].type(), QEvent.Type.KeyPress)
+        self.assertEqual(len(tool.events), 1)
+        self.assertEqual(tool.events[0].type(), QEvent.Type.KeyPress)
 
         key_release_event = QKeyEvent(
             QEvent.Type.KeyRelease, 54, Qt.KeyboardModifier.ShiftModifier
         )
         canvas.keyReleaseEvent(key_release_event)
-        self.assertEqual(tool.events[-1].type(), QEvent.Type.KeyRelease)
+        self.assertEqual(len(tool.events), 2)
+        self.assertEqual(tool.events[1].type(), QEvent.Type.KeyRelease)
 
         mouse_dbl_click_event = QMouseEvent(
             QEvent.Type.MouseButtonDblClick,
@@ -163,8 +195,10 @@ class TestQgsElevationProfileCanvas(QgisTestCase):
             Qt.MouseButtons(),
             Qt.KeyboardModifier.ShiftModifier,
         )
+        self.assertEqual(mouse_dbl_click_event.type(), QEvent.Type.MouseButtonDblClick)
         canvas.mouseDoubleClickEvent(mouse_dbl_click_event)
-        self.assertEqual(tool.events[-1].type(), QEvent.Type.MouseButtonDblClick)
+        self.assertEqual(len(tool.events), 3)
+        self.assertEqual(tool.events[2].type(), QEvent.Type.MouseButtonDblClick)
         self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
         self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.92, delta=0.6)
         self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
@@ -178,11 +212,12 @@ class TestQgsElevationProfileCanvas(QgisTestCase):
             Qt.KeyboardModifier.ShiftModifier,
         )
         canvas.mouseMoveEvent(mouse_move_event)
-        self.assertEqual(tool.events[-1].type(), QEvent.Type.MouseMove)
-        self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.92, delta=10)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, delta=5)
+        self.assertEqual(len(tool.events), 4)
+        self.assertEqual(tool.events[3].type(), QEvent.Type.MouseMove)
+        self.assertIsInstance(tool.events[3], QgsPlotMouseEvent)
+        self.assertAlmostEqual(tool.events[3].mapPoint().x(), 5.92, delta=10)
+        self.assertAlmostEqual(tool.events[3].mapPoint().y(), 2, 4)
+        self.assertAlmostEqual(tool.events[3].mapPoint().z(), 49.165, delta=5)
 
         mouse_press_event = QMouseEvent(
             QEvent.Type.MouseButtonPress,
@@ -192,11 +227,12 @@ class TestQgsElevationProfileCanvas(QgisTestCase):
             Qt.KeyboardModifier.ShiftModifier,
         )
         canvas.mousePressEvent(mouse_press_event)
-        self.assertEqual(tool.events[-1].type(), QEvent.Type.MouseButtonPress)
-        self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.927, delta=1)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, delta=5)
+        self.assertEqual(len(tool.events), 5)
+        self.assertEqual(tool.events[4].type(), QEvent.Type.MouseButtonPress)
+        self.assertIsInstance(tool.events[4], QgsPlotMouseEvent)
+        self.assertAlmostEqual(tool.events[4].mapPoint().x(), 5.927, delta=1)
+        self.assertAlmostEqual(tool.events[4].mapPoint().y(), 2, 4)
+        self.assertAlmostEqual(tool.events[4].mapPoint().z(), 49.165, delta=5)
 
         mouse_release_event = QMouseEvent(
             QEvent.Type.MouseButtonRelease,
@@ -206,11 +242,12 @@ class TestQgsElevationProfileCanvas(QgisTestCase):
             Qt.KeyboardModifier.ShiftModifier,
         )
         canvas.mouseReleaseEvent(mouse_release_event)
-        self.assertEqual(tool.events[-1].type(), QEvent.Type.MouseButtonRelease)
-        self.assertIsInstance(tool.events[-1], QgsPlotMouseEvent)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().x(), 5.927, delta=1)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().y(), 2, 4)
-        self.assertAlmostEqual(tool.events[-1].mapPoint().z(), 49.165, delta=5)
+        self.assertEqual(len(tool.events), 6)
+        self.assertEqual(tool.events[5].type(), QEvent.Type.MouseButtonRelease)
+        self.assertIsInstance(tool.events[5], QgsPlotMouseEvent)
+        self.assertAlmostEqual(tool.events[5].mapPoint().x(), 5.927, delta=1)
+        self.assertAlmostEqual(tool.events[5].mapPoint().y(), 2, 4)
+        self.assertAlmostEqual(tool.events[5].mapPoint().z(), 49.165, delta=5)
 
         wheel_event = QWheelEvent(
             QPointF(300, 200),
@@ -223,7 +260,58 @@ class TestQgsElevationProfileCanvas(QgisTestCase):
             False,
         )
         canvas.wheelEvent(wheel_event)
-        self.assertEqual(tool.events[-1].type(), QEvent.Type.Wheel)
+        self.assertEqual(len(tool.events), 7)
+        self.assertEqual(tool.events[6].type(), QEvent.Type.Wheel)
+
+    def test_ratio(self):
+        """
+        Test axis scale ratio logic
+        """
+        canvas = QgsElevationProfileCanvas()
+        canvas.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        canvas.setFrameStyle(0)
+        # make a 2:1 canvas, to make the maths easier!
+        canvas.resize(800, 400)
+        canvas.setProject(QgsProject.instance())
+        canvas.show()
+        self.assertEqual(canvas.width(), 800)
+        self.assertEqual(canvas.height(), 400)
+
+        canvas.setVisiblePlotRange(100, 200, 50, 150)
+        # showing 100m distance, 100m elevation
+        # distance:elevation ratio is 1:2, as canvas is twice as wide as high
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 0.5, 1)
+
+        canvas.setVisiblePlotRange(100, 300, 50, 150)
+        # showing 200m distance, 100m elevation
+        # distance:elevation ratio is 1:1, as canvas is twice as wide as high
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 1.0, 1)
+
+        canvas.setVisiblePlotRange(100, 500, 50, 150)
+        # showing 400m distance, 100m elevation
+        # distance:elevation ratio is 2:1, as canvas is twice as wide as high
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 2.0, delta=0.1)
+
+        canvas.setAxisScaleRatio(0.5)
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 0.5, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, delta=1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 50.0, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 150.0, delta=1)
+
+        canvas.setAxisScaleRatio(1.0)
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 1.0, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, delta=1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 75.0, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 125.0, delta=1)
+
+        canvas.setAxisScaleRatio(2.0)
+        self.assertAlmostEqual(canvas.axisScaleRatio(), 2.0, 1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().lower(), 248.024, delta=1)
+        self.assertAlmostEqual(canvas.visibleDistanceRange().upper(), 351.976, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().lower(), 87.5, delta=1)
+        self.assertAlmostEqual(canvas.visibleElevationRange().upper(), 112.5, delta=1)
 
 
 if __name__ == "__main__":

@@ -615,8 +615,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   double yMin = rect.yMinimum();
   double yMax = rect.yMaximum();
   if ( d->mGeographicToWebMercator &&
-       ( ( direction == Qgis::TransformDirection::Forward && !d->mIsReversed ) ||
-         ( direction == Qgis::TransformDirection::Reverse && d->mIsReversed ) ) )
+       ( direction == Qgis::TransformDirection::Forward ) )
   {
     // Latitudes close to 90 degree project to infinite northing in theory.
     // We limit to 90 - 1e-1 which reproject to northing of ~ 44e6 m (about twice

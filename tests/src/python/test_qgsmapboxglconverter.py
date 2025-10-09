@@ -742,7 +742,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             QgsMapBoxGlStyleConverter.parseExpression(
                 ["all", ["==", "_symbol", 8], ["!in", "Viz", 3]], conversion_context
             ),
-            """("_symbol" IS 8) AND (("Viz" IS NULL OR "Viz" NOT IN (3)))""",
+            """("_symbol" IS 8) AND (("Viz" IS NULL OR "Viz" IS NOT 3))""",
         )
 
         self.assertEqual(
@@ -2734,6 +2734,55 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             sprite_size_property,
             'CASE WHEN "lake_depth" IS NOT NULL THEN 24  WHEN length(to_string("ele")) IS 3 THEN 18 ELSE 24 END',
         )
+
+    def testRetrieveSpriteWithCategory(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        sprite_image_file = (
+            f"{TEST_DATA_DIR}/vector_tile/sprites/swisstopo-sprite@2x.png"
+        )
+        with open(sprite_image_file, "rb") as f:
+            sprite_image = QImage()
+            sprite_image.loadFromData(f.read())
+        sprite_definition_file = (
+            f"{TEST_DATA_DIR}/vector_tile/sprites/swisstopo-sprite@2x.json"
+        )
+        with open(sprite_definition_file) as f:
+            sprite_definition = json.load(f)
+        context.setSprites(sprite_image, sprite_definition, "basics")
+        self.assertEqual(context.spriteCategories(), ["basics"])
+
+        # swisstopo - lightbasemap - sinkhole
+        icon_image = [
+            "match",
+            ["get", "class"],
+            "sinkhole",
+            "basics:arrow_brown",
+            ["sinkhole_rock", "sinkhole_scree"],
+            "basics:arrow_grey",
+            ["sinkhole_ice", "sinkhole_water"],
+            "basics:arrow_blue",
+            "",
+        ]
+        sprite, size, sprite_property, sprite_size_property = (
+            QgsMapBoxGlStyleConverter.retrieveSpriteAsBase64WithProperties(
+                icon_image, context
+            )
+        )
+
+        def strip_base64(s):
+            pos = 0
+            while True:
+                pos = s.find("'base64:", pos)
+                if pos < 0:
+                    break
+                end_pos = s.find("'", pos + 1)
+                assert end_pos > pos
+                s = s[0:pos] + "'base64:[snip]'" + s[end_pos + 1 :]
+                pos += len("'base64:")
+            return s
+
+        expected = "CASE WHEN \"class\" IN ('sinkhole') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_rock','sinkhole_scree') THEN 'base64:[snip]' WHEN \"class\" IN ('sinkhole_ice','sinkhole_water') THEN 'base64:[snip]' ELSE '' END"
+        self.assertEqual(strip_base64(sprite_property), expected)
 
 
 if __name__ == "__main__":

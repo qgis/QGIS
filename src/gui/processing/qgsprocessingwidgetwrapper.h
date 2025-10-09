@@ -239,7 +239,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
-class GUI_EXPORT QgsProcessingGuiUtils
+class GUI_EXPORT QgsProcessingWidgetWrapperUtils
 {
   public:
     static QgsExpressionContext createExpressionContext( QgsProcessingContextGenerator *processingContextGenerator = nullptr, const QgsProcessingParameterWidgetContext &widgetContext = QgsProcessingParameterWidgetContext(), const QgsProcessingAlgorithm *algorithm = nullptr, const QgsVectorLayer *linkedLayer = nullptr );

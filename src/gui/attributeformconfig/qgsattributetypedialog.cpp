@@ -65,6 +65,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   if ( vl->fields().fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Join || vl->fields().fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Expression || vl->fields().field( fieldIdx ).isReadOnly() )
   {
     isFieldEditableCheckBox->setEnabled( false );
+    mEditableExpressionButton->setEnabled( false );
   }
 
   mExpressionWidget->registerExpressionContextGenerator( this );
@@ -73,23 +74,23 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   mEditableExpressionButton->registerExpressionContextGenerator( this );
   mEditableExpressionButton->init( static_cast<int>( QgsEditFormConfig::DataDefinedProperty::Editable ), mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Editable ), vl->editFormConfig().propertyDefinitions(), vl );
   mEditableExpressionButton->registerLinkedWidget( isFieldEditableCheckBox );
-  connect( mEditableExpressionButton, &QgsPropertyOverrideButton::changed, this, [=] {
+  connect( mEditableExpressionButton, &QgsPropertyOverrideButton::changed, this, [this] {
     mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Editable, mEditableExpressionButton->toProperty() );
   } );
 
   mAliasExpressionButton->registerExpressionContextGenerator( this );
   mAliasExpressionButton->init( static_cast<int>( QgsEditFormConfig::DataDefinedProperty::Alias ), mDataDefinedProperties.property( QgsEditFormConfig::DataDefinedProperty::Alias ), vl->editFormConfig().propertyDefinitions(), vl );
-  connect( mAliasExpressionButton, &QgsPropertyOverrideButton::changed, this, [=] {
+  connect( mAliasExpressionButton, &QgsPropertyOverrideButton::changed, this, [this] {
     mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Alias, mAliasExpressionButton->toProperty() );
   } );
 
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
-  connect( mUniqueCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mUniqueCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mCheckBoxEnforceUnique->setEnabled( checked );
     if ( !checked )
       mCheckBoxEnforceUnique->setChecked( false );
   } );
-  connect( notNullCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( notNullCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mCheckBoxEnforceNotNull->setEnabled( checked );
     if ( !checked )
       mCheckBoxEnforceNotNull->setChecked( false );
@@ -236,6 +237,21 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type, bool forc
     }
   }
 
+  // "Editable" and "Reuse last entered value" checkboxes should be disabled for read-only widgets like JsonEdit
+  // see https://github.com/qgis/QGIS/issues/47755
+  if ( QgsGui::editorWidgetRegistry()->isReadOnly( type ) )
+  {
+    isFieldEditableCheckBox->setEnabled( false );
+    mEditableExpressionButton->setEnabled( false );
+    reuseLastValuesCheckBox->setEnabled( false );
+  }
+  else
+  {
+    isFieldEditableCheckBox->setEnabled( true );
+    mEditableExpressionButton->setEnabled( true );
+    reuseLastValuesCheckBox->setEnabled( true );
+  }
+
   //update default expression preview
   defaultExpressionChanged();
 }
@@ -371,7 +387,6 @@ int QgsAttributeTypeDialog::fieldIdx() const
 {
   return mFieldIdx;
 }
-
 
 QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
 {

@@ -790,7 +790,7 @@ bool Pal::candidatesAreConflicting( const LabelPosition *lp1, const LabelPositio
       QgsMessageLog::logMessage( QStringLiteral( "label margin distance requires GEOS 3.10+" ) );
 #endif
     }
-    catch ( GEOSException &e )
+    catch ( QgsGeosException &e )
     {
       QgsDebugError( QStringLiteral( "GEOS exception: %1" ).arg( e.what() ) );
     }

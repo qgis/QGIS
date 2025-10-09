@@ -69,6 +69,7 @@ class QgsOgrDbSourceSelect : public QgsAbstractDbSourceSelect
     //! Open file selector to add new connection
     static bool newConnection( QWidget *parent );
 
+    QString settingPath() const override;
 
   public slots:
 

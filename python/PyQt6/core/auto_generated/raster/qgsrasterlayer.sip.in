@@ -106,6 +106,10 @@ for the same data source and renderer is cloned too.
 :return: a new layer instance
 %End
 
+    virtual QgsAbstractProfileSource *profileSource();
+    virtual QString profileSourceId() const;
+    virtual QString profileSourceName() const;
+
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
 

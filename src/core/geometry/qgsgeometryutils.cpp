@@ -18,8 +18,18 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometrycollection.h"
+#include <limits>
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
+
+#include "qgspoint.h"
+#include "qgslinestring.h"
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
+#include "qgscurve.h"
+#include "qgsabstractgeometry.h"
+#include "qgsvertexid.h"
+#include "qgslogger.h"
 
 #include <memory>
 #include <QStringList>
@@ -1256,4 +1266,478 @@ bool QgsGeometryUtils::transferFirstZValueToPoint( const QgsPointSequence &point
   }
 
   return rc;
+}
+
+QgsPoint QgsGeometryUtils::createPointWithMatchingDimensions( double x, double y, const QgsPoint &reference )
+{
+  if ( reference.is3D() && reference.isMeasure() )
+    return QgsPoint( Qgis::WkbType::PointZM, x, y, 0.0, 0.0 );
+  else if ( reference.is3D() )
+    return QgsPoint( Qgis::WkbType::PointZ, x, y, 0.0 );
+  else if ( reference.isMeasure() )
+    return QgsPoint( Qgis::WkbType::PointM, x, y, 0.0, 0.0 );
+  else
+    return QgsPoint( x, y );
+}
+
+QgsPoint QgsGeometryUtils::interpolatePointOnSegment( double x, double y,
+    const QgsPoint &segmentStart, const QgsPoint &segmentEnd )
+{
+  QgsPoint result = createPointWithMatchingDimensions( x, y, segmentStart );
+  const double distanceFromStart = QgsGeometryUtilsBase::distance2D( segmentStart.x(), segmentStart.y(), x, y );
+
+  if ( segmentStart.is3D() && segmentEnd.is3D() )
+  {
+    double z1 = segmentStart.z();
+    double z2 = segmentEnd.z();
+    double interpolatedZ;
+    double tempX, tempY;
+    QgsGeometryUtilsBase::pointOnLineWithDistance(
+      segmentStart.x(), segmentStart.y(), segmentEnd.x(), segmentEnd.y(),
+      distanceFromStart, tempX, tempY, &z1, &z2, &interpolatedZ );
+    result.setZ( interpolatedZ );
+  }
+
+  if ( segmentStart.isMeasure() && segmentEnd.isMeasure() )
+  {
+    double m1 = segmentStart.m();
+    double m2 = segmentEnd.m();
+    double interpolatedM;
+    double tempX, tempY;
+    QgsGeometryUtilsBase::pointOnLineWithDistance(
+      segmentStart.x(), segmentStart.y(), segmentEnd.x(), segmentEnd.y(),
+      distanceFromStart, tempX, tempY, nullptr, nullptr, nullptr, &m1, &m2, &interpolatedM );
+    result.setM( interpolatedM );
+  }
+
+  return result;
+}
+
+bool QgsGeometryUtils::createChamfer( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                      const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                                      double distance1, double distance2,
+                                      QgsPoint &chamferStart, QgsPoint &chamferEnd,
+                                      double epsilon )
+{
+  // Create chamfer points using the utility function
+  double chamferStartX, chamferStartY, chamferEndX, chamferEndY;
+
+  QgsGeometryUtilsBase::createChamfer(
+    segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(),
+    segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(),
+    distance1, distance2,
+    chamferStartX, chamferStartY,
+    chamferEndX, chamferEndY,
+    nullptr, nullptr, nullptr, nullptr,
+    nullptr, nullptr, nullptr, nullptr,
+    epsilon
+  );
+
+  chamferStart = interpolatePointOnSegment( chamferStartX, chamferStartY, segment1Start, segment1End );
+  chamferEnd = interpolatePointOnSegment( chamferEndX, chamferEndY, segment2Start, segment2End );
+
+  return true;
+}
+
+bool QgsGeometryUtils::createFillet( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                     const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                                     double radius,
+                                     QgsPoint &filletPoint1,
+                                     QgsPoint &filletMidPoint,
+                                     QgsPoint &filletPoint2,
+                                     double epsilon )
+{
+  // Create fillet arc using the utility function
+  double filletPointsX[3], filletPointsY[3];
+
+  QgsGeometryUtilsBase::createFillet(
+    segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(),
+    segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(),
+    radius,
+    filletPointsX, filletPointsY,
+    nullptr, nullptr, nullptr, nullptr,
+    nullptr, nullptr, nullptr, nullptr,
+    epsilon
+  );
+
+  filletPoint1 = interpolatePointOnSegment( filletPointsX[0], filletPointsY[0], segment1Start, segment1End );
+  filletMidPoint = createPointWithMatchingDimensions( filletPointsX[1], filletPointsY[1], segment1Start );
+  filletPoint2 = interpolatePointOnSegment( filletPointsX[2], filletPointsY[2], segment2Start, segment2End );
+
+  // Interpolate Z and M for midpoint
+  if ( segment1Start.is3D() && segment1End.is3D() && segment2Start.is3D() && segment2End.is3D() )
+  {
+    filletMidPoint.setZ( ( filletPoint1.z() + filletPoint2.z() ) / 2.0 );
+  }
+  if ( segment1Start.isMeasure() && segment1End.isMeasure() && segment2Start.isMeasure() && segment2End.isMeasure() )
+  {
+    filletMidPoint.setM( ( filletPoint1.m() + filletPoint2.m() ) / 2.0 );
+  }
+
+  return true;
+}
+
+bool QgsGeometryUtils::createFilletArray( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+    const QgsPoint &segment2Start, const QgsPoint &segment2End,
+    double radius,
+    QgsPoint filletPoints[3],
+    double epsilon )
+{
+  QgsPoint p1, p2, p3;
+  createFillet( segment1Start, segment1End, segment2Start, segment2End, radius, p1, p2, p3, epsilon );
+  filletPoints[0] = p1;
+  filletPoints[1] = p2;
+  filletPoints[2] = p3;
+  return true;
+}
+
+std::unique_ptr<QgsLineString> QgsGeometryUtils::createChamferGeometry(
+  const QgsPoint &segment1Start, const QgsPoint &segment1End,
+  const QgsPoint &segment2Start, const QgsPoint &segment2End,
+  double distance1, double distance2 )
+{
+  QgsPoint chamferStart, chamferEnd;
+  createChamfer( segment1Start, segment1End, segment2Start, segment2End, distance1, distance2, chamferStart, chamferEnd );
+
+  return std::make_unique<QgsLineString>(
+           QVector<QgsPoint> { segment1Start, chamferStart, chamferEnd, segment2Start } );
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
+  const QgsPoint &segment1Start, const QgsPoint &segment1End,
+  const QgsPoint &segment2Start, const QgsPoint &segment2End,
+  double radius, int segments )
+{
+  QgsPoint filletPoints[3];
+  createFilletArray( segment1Start, segment1End, segment2Start, segment2End, radius, filletPoints );
+
+  // Calculate far endpoints for complete geometry
+  double intersectionX, intersectionY;
+  bool isIntersection;
+  QgsGeometryUtilsBase::segmentIntersection(
+    segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(),
+    segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(),
+    intersectionX, intersectionY, isIntersection, 1e-8, true );
+
+  if ( !isIntersection )
+  {
+    throw QgsInvalidArgumentException( "Segments do not intersect." );
+  }
+
+  const double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1Start.x(), segment1Start.y() );
+  const double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1End.x(), segment1End.y() );
+  const double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2Start.x(), segment2Start.y() );
+  const double dist2ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2End.x(), segment2End.y() );
+
+  const QgsPoint segment1FarEnd = ( dist1ToStart < dist1ToEnd ) ? segment1End : segment1Start;
+  const QgsPoint segment2FarEnd = ( dist2ToStart < dist2ToEnd ) ? segment2End : segment2Start;
+
+  if ( segments <= 0 )
+  {
+    // Return CompoundCurve with circular arc
+    auto completeCurve = std::make_unique<QgsCompoundCurve>();
+
+    // First linear segment
+    auto firstSegment = std::make_unique<QgsLineString>(
+                          QVector<QgsPoint> { segment1FarEnd, filletPoints[0] } );
+    completeCurve->addCurve( firstSegment.release() );
+
+    // Circular arc segment
+    auto circularString = std::make_unique<QgsCircularString>();
+    circularString->setPoints( {filletPoints[0], filletPoints[1], filletPoints[2]} );
+    completeCurve->addCurve( circularString.release() );
+
+    // Last linear segment
+    auto lastSegment = std::make_unique<QgsLineString>(
+                         QVector<QgsPoint> { filletPoints[2], segment2FarEnd } );
+    completeCurve->addCurve( lastSegment.release() );
+
+    return completeCurve;
+  }
+  else
+  {
+    // Return segmented LineString
+    QVector<QgsPoint> points;
+    points.append( segment1FarEnd );
+
+    // Convert circular arc to line segments with specified number of segments
+    QgsCircularString tempArc;
+    tempArc.setPoints( {filletPoints[0], filletPoints[1], filletPoints[2]} );
+
+    // Calculate appropriate tolerance based on desired number of segments
+    // For segments > 0: use angle tolerance = 2*PI / (4 * segments) to get approximately 'segments' segments for a quarter circle
+    const double angleTolerance = segments > 0 ? ( 2.0 * M_PI ) / ( 4.0 * segments ) : M_PI / 180.0; // Default to 1 degree
+
+    std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine( angleTolerance, QgsAbstractGeometry::MaximumAngle ) );
+
+    for ( int i = 0; i < segmentizedArc->numPoints(); ++i )
+    {
+      points.append( segmentizedArc->vertexAt( QgsVertexId( 0, 0, i ) ) );
+    }
+
+    points.append( segment2FarEnd );
+
+    return std::make_unique<QgsLineString>( points );
+  }
+}
+
+double QgsGeometryUtils::maxFilletRadius( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+    const QgsPoint &segment2Start, const QgsPoint &segment2End,
+    double epsilon )
+{
+  return QgsGeometryUtilsBase::maxFilletRadius( segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(), segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(), epsilon );
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
+  const QgsCurve *curve, int vertexIndex,
+  double distance1, double distance2 )
+{
+  return doChamferFilletOnVertex( QgsGeometry::ChamferFilletOperationType::Chamfer, curve, vertexIndex, distance1, distance2, 0 );
+}
+
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::filletVertex(
+  const QgsCurve *curve, int vertexIndex,
+  double radius, int segments )
+{
+  return doChamferFilletOnVertex( QgsGeometry::ChamferFilletOperationType::Fillet, curve, vertexIndex, radius, 0.0, segments );
+}
+
+std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex(
+  QgsGeometry::ChamferFilletOperationType operation, const QgsCurve *curve, int vertexIndex,
+  double value1, double value2, int segments
+)
+{
+  if ( !curve )
+    throw QgsInvalidArgumentException( "Curve is null." );
+  if ( curve->isClosed() )
+  {
+    if ( curve->numPoints() < 4 )
+      throw QgsInvalidArgumentException( "Closed curve must have at least 4 vertex." );
+    if ( vertexIndex < 0 || vertexIndex > curve->numPoints() - 1 )
+      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in [0, %2]." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
+  }
+  else
+  {
+    if ( curve->numPoints() < 3 )
+      throw QgsInvalidArgumentException( "Opened curve must have at least 3 points." );
+    if ( vertexIndex <= 0 || vertexIndex >= curve->numPoints() - 1 )
+      throw QgsInvalidArgumentException( QStringLiteral( "Vertex index out of range. %1 must be in (0, %2)." ).arg( vertexIndex ).arg( curve->numPoints() - 1 ) );
+  }
+
+  // Extract the three consecutive vertices
+  QgsPoint pPrev = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex - 1 ) );
+  const QgsPoint p = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex ) );
+  QgsPoint pNext = curve->vertexAt( QgsVertexId( 0, 0, vertexIndex + 1 ) );
+  if ( curve->isClosed() )
+  {
+    if ( vertexIndex - 1 < 0 )
+      pPrev = curve->vertexAt( QgsVertexId( 0, 0, curve->numPoints() - 2 ) );
+    if ( vertexIndex + 1 >= curve->numPoints() )
+      pNext = curve->vertexAt( QgsVertexId( 0, 0, 1 ) );
+  }
+
+  QgsPoint firstNewPoint, middlePoint, lastNewPoint;
+
+  if ( operation == QgsGeometry::ChamferFilletOperationType::Fillet )
+  {
+    double rad = std::min( value1, pPrev.distance( p ) * 0.95 );
+    rad = std::min( rad, pNext.distance( p ) * 0.95 );
+
+    // Create fillet
+    QgsPoint filletPoints[3];
+    createFilletArray( pPrev, p, p, pNext, rad, filletPoints );
+
+    firstNewPoint = filletPoints[0];
+    middlePoint = filletPoints[1];
+    lastNewPoint = filletPoints[2];
+  }
+  else if ( operation == QgsGeometry::ChamferFilletOperationType::Chamfer )
+  {
+    // Create chamfer
+    createChamfer( pPrev, p, p, pNext, value1, value2, firstNewPoint, lastNewPoint );
+  }
+  else
+    throw QgsInvalidArgumentException( QStringLiteral( "Operation '%1' is unknown." ).arg( qgsEnumValueToKey( operation ) ) );
+
+  // Handle LineString geometries
+  if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
+  {
+    QVector<QgsPoint> points;
+
+    int min = 0;
+    if ( curve->isClosed() && vertexIndex == curve->numPoints() - 1 )
+      min = 1;
+
+    // Add points before the operated vertex
+    for ( int i = min; i < vertexIndex; ++i )
+    {
+      points.append( curve->vertexAt( QgsVertexId( 0, 0, i ) ) );
+    }
+
+    if ( operation == QgsGeometry::ChamferFilletOperationType::Fillet )
+    {
+      if ( firstNewPoint != pPrev )
+        points.append( firstNewPoint );
+
+      if ( segments > 0 )
+      {
+        QgsCircularString tempArc;
+        tempArc.setPoints( { firstNewPoint, middlePoint, lastNewPoint } );
+
+        const double angleTolerance = ( 2.0 * M_PI ) / ( 4.0 * segments );
+        std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine( angleTolerance, QgsAbstractGeometry::MaximumAngle ) );
+
+        for ( int i = 1; i < segmentizedArc->numPoints() - 1; ++i )
+        {
+          points.append( segmentizedArc->vertexAt( QgsVertexId( 0, 0, i ) ) );
+        }
+      }
+      else
+      {
+        points.append( middlePoint );
+      }
+
+      if ( lastNewPoint != pNext )
+        points.append( lastNewPoint );
+    }
+    else
+    {
+      if ( firstNewPoint != pPrev )
+        points.append( firstNewPoint );
+      if ( lastNewPoint != pNext )
+        points.append( lastNewPoint );
+    }
+
+    int max = curve->numPoints();
+    if ( curve->isClosed() && vertexIndex == 0 )
+      max = curve->numPoints() - 1;
+
+    for ( int i = vertexIndex + 1; i < max; ++i )
+    {
+      points.append( curve->vertexAt( QgsVertexId( 0, 0, i ) ) );
+    }
+
+    return std::make_unique<QgsLineString>( points );
+  }
+
+  if ( const QgsCompoundCurve *compound = qgsgeometry_cast<const QgsCompoundCurve *>( curve ) )
+  {
+    auto newCompound = std::make_unique<QgsCompoundCurve>();
+
+    int globalVertexIndex = 0;
+    int targetCurveIndex = -1;
+    int vertexInCurve = -1;
+
+    for ( int curveIdx = 0; curveIdx < compound->nCurves(); ++curveIdx )
+    {
+      const QgsCurve *subcurve = compound->curveAt( curveIdx );
+      const int subcurvePoints = subcurve->numPoints();
+
+      if ( globalVertexIndex + subcurvePoints > vertexIndex )
+      {
+        targetCurveIndex = curveIdx;
+        vertexInCurve = vertexIndex - globalVertexIndex;
+        break;
+      }
+      globalVertexIndex += subcurvePoints - 1;
+    }
+
+    if ( targetCurveIndex == -1 )
+    {
+      throw QgsInvalidArgumentException( "While generating output: unable to find curve within compound." );
+    }
+
+    const QgsCurve *targetCurve = compound->curveAt( targetCurveIndex );
+
+    // Add curves before the target curve
+    for ( int i = 0; i < targetCurveIndex; ++i )
+    {
+      std::unique_ptr<QgsCurve> tmpCurv( compound->curveAt( i )->clone() );
+      if ( curve->isClosed() && vertexIndex == curve->numPoints() - 1 )
+      {
+        tmpCurv->insertVertex( QgsVertexId( 0, 0, 1 ), lastNewPoint );
+        tmpCurv->deleteVertex( QgsVertexId( 0, 0, 0 ) );
+      }
+      newCompound->addCurve( tmpCurv.release() );
+    }
+
+    // Handle the curve containing the vertex
+    if ( vertexInCurve > 0 )
+    {
+      QVector<QgsPoint> beforePoints;
+      for ( int j = 0; j < vertexInCurve; ++j )
+      {
+        beforePoints.append( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
+      }
+      beforePoints.append( firstNewPoint );
+
+      if ( beforePoints.size() > 1 )
+      {
+        auto beforeVertex = std::make_unique<QgsLineString>( beforePoints );
+        newCompound->addCurve( beforeVertex.release() );
+      }
+    }
+
+    if ( operation == QgsGeometry::ChamferFilletOperationType::Fillet )
+    {
+      // Add the fillet arc - for CompoundCurve, preserve circular nature unless segments > 0
+      if ( segments <= 0 )
+      {
+        // Preserve circular arc
+        auto filletArc = std::make_unique<QgsCircularString>();
+        filletArc->setPoints( { firstNewPoint, middlePoint, lastNewPoint } );
+        newCompound->addCurve( filletArc.release() );
+      }
+      else
+      {
+        // Segmentize the arc
+        QgsCircularString tempArc;
+        tempArc.setPoints( { firstNewPoint, middlePoint, lastNewPoint } );
+
+        const double angleTolerance = ( 2.0 * M_PI ) / ( 4.0 * segments );
+        std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine( angleTolerance, QgsAbstractGeometry::MaximumAngle ) );
+
+        newCompound->addCurve( segmentizedArc.release() );
+      }
+    }
+    else
+    {
+      auto chamferLine = std::make_unique<QgsLineString>(
+                           QVector<QgsPoint> { firstNewPoint, lastNewPoint }
+                         );
+      newCompound->addCurve( chamferLine.release() );
+    }
+
+    if ( vertexInCurve < targetCurve->numPoints() - 1 )
+    {
+      QVector<QgsPoint> afterPoints;
+      afterPoints.append( lastNewPoint );
+      for ( int j = vertexInCurve + 1; j < targetCurve->numPoints(); ++j )
+      {
+        afterPoints.append( targetCurve->vertexAt( QgsVertexId( 0, 0, j ) ) );
+      }
+
+      if ( afterPoints.size() > 1 )
+      {
+        auto afterVertex = std::make_unique<QgsLineString>( afterPoints );
+        newCompound->addCurve( afterVertex.release() );
+      }
+    }
+
+    // Add curves after the target curve
+    for ( int i = targetCurveIndex + 1; i < compound->nCurves(); ++i )
+    {
+      std::unique_ptr<QgsCurve> tmpCurv( compound->curveAt( i )->clone() );
+      if ( curve->isClosed() && vertexIndex == 0 )
+      {
+        tmpCurv->insertVertex( QgsVertexId( 0, 0, tmpCurv->numPoints() - 1 ), firstNewPoint );
+        tmpCurv->deleteVertex( QgsVertexId( 0, 0, tmpCurv->numPoints() - 1 ) );
+      }
+      newCompound->addCurve( tmpCurv.release() );
+    }
+
+    return newCompound;
+  }
+
+  throw QgsInvalidArgumentException( "While generating output: curse is not a QgsLineString nor a QgsCompoundCurve." );
 }

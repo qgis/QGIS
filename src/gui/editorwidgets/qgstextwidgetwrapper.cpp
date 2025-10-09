@@ -39,7 +39,7 @@ QWidget *QgsTextWidgetWrapper::createWidget( QWidget *parent )
   if ( form )
   {
     mFormFeature = form->feature();
-    connect( form, &QgsAttributeForm::widgetValueChanged, this, [=]( const QString &attribute, const QVariant &newValue, bool attributeChanged ) {
+    connect( form, &QgsAttributeForm::widgetValueChanged, this, [this]( const QString &attribute, const QVariant &newValue, bool attributeChanged ) {
       if ( attributeChanged )
       {
         if ( mRequiresFormScope )

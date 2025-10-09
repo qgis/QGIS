@@ -160,7 +160,9 @@ QgsFeatureRequest QgsWfs3AbstractItemsHandler::filteredRequest( const QgsVectorL
   QgsAccessControl *accessControl = context.serverInterface()->accessControls();
   if ( accessControl )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     accessControl->filterFeatures( vLayer, featureRequest );
+    Q_NOWARN_DEPRECATED_POP
   }
 #endif
 
@@ -209,6 +211,17 @@ QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vL
     }
   }
   return publishedFields;
+}
+
+const QString QgsWfs3AbstractItemsHandler::templatePath( const QgsServerApiContext &context ) const
+{
+  // resources/server/api + /ogc/templates/ + operationId + .html
+  QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
+  path += QLatin1String( "/ogc/templates/wfs3" );
+  path += '/';
+  path += QString::fromStdString( operationId() );
+  path += QLatin1String( ".html" );
+  return path;
 }
 
 QgsWfs3LandingPageHandler::QgsWfs3LandingPageHandler()
@@ -523,7 +536,7 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
   // Limit
   const qlonglong maxLimit { context.serverInterface()->serverSettings()->apiWfs3MaxLimit() };
   QgsServerQueryStringParameter limit { QStringLiteral( "limit" ), false, QgsServerQueryStringParameter::Type::Integer, QStringLiteral( "Number of features to retrieve [0-%1]" ).arg( maxLimit ), 10 };
-  limit.setCustomValidator( [=]( const QgsServerApiContext &, QVariant &value ) -> bool {
+  limit.setCustomValidator( [maxLimit]( const QgsServerApiContext &, QVariant &value ) -> bool {
     bool ok = false;
     const qlonglong longVal { value.toLongLong( &ok ) };
     return ok && longVal >= 0 && longVal <= maxLimit;
@@ -544,7 +557,7 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
     const QgsVectorLayer *mapLayer { layerFromContext( context ) };
     if ( mapLayer )
     {
-      offset.setCustomValidator( [=]( const QgsServerApiContext &, QVariant &value ) -> bool {
+      offset.setCustomValidator( [mapLayer]( const QgsServerApiContext &, QVariant &value ) -> bool {
         bool ok = false;
         const qlonglong longVal { value.toLongLong( &ok ) };
         return ok && longVal >= 0 && longVal <= mapLayer->featureCount();
@@ -573,7 +586,7 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
       // Properties (CSV list of properties to return)
       QgsServerQueryStringParameter properties { QStringLiteral( "properties" ), false, QgsServerQueryStringParameter::Type::List, QStringLiteral( "Comma separated list of feature property names to be added to the result. Valid values: %1" ).arg( publishedFieldDisplayNames.join( QLatin1String( "', '" ) ).append( '\'' ).prepend( '\'' ) ) };
 
-      auto propertiesValidator = [=]( const QgsServerApiContext &, QVariant &value ) -> bool {
+      auto propertiesValidator = [publishedFieldNames, publishedFieldDisplayNames]( const QgsServerApiContext &, QVariant &value ) -> bool {
         const QStringList properties { value.toStringList() };
         for ( const auto &p : properties )
         {
@@ -646,7 +659,7 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
   const QgsServerQueryStringParameter bbox { QStringLiteral( "bbox" ), false, QgsServerQueryStringParameter::Type::String, QStringLiteral( "BBOX filter for the features to retrieve" ) };
   params.push_back( bbox );
 
-  auto crsValidator = [=]( const QgsServerApiContext &, QVariant &value ) -> bool {
+  auto crsValidator = [context]( const QgsServerApiContext &, QVariant &value ) -> bool {
     return QgsServerApiUtils::publishedCrsList( context.project() ).contains( value.toString() );
   };
 

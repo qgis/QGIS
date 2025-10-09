@@ -137,7 +137,7 @@ QgsFeatureList QgsDrapeAlgorithmBase::processFeature( const QgsFeature &feature,
     // a pointless iteration over all vertices
     if ( !mRasterExtent.isNull() && geometry.boundingBoxIntersects( mRasterExtent ) )
     {
-      geometry.transformVertices( [=]( const QgsPoint &p ) -> QgsPoint {
+      geometry.transformVertices( [this, nodata, scale, offset, feedback, &f]( const QgsPoint &p ) -> QgsPoint {
         QgsPointXY t;
         double val = nodata;
         try

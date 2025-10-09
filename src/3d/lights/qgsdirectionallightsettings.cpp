@@ -64,7 +64,7 @@ void QgsDirectionalLightSettings::readXml( const QDomElement &elem, const QgsRea
   mIntensity = elem.attribute( QStringLiteral( "intensity" ) ).toFloat();
 }
 
-bool QgsDirectionalLightSettings::operator==( const QgsDirectionalLightSettings &other )
+bool QgsDirectionalLightSettings::operator==( const QgsDirectionalLightSettings &other ) const
 {
   return mDirection == other.mDirection && mColor == other.mColor && mIntensity == other.mIntensity;
 }

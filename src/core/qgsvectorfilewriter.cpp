@@ -284,12 +284,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     if ( metadataFound )
     {
-      QStringList allExts = metadata.ext.split( ' ', Qt::SkipEmptyParts );
+      QStringList allExts = metadata.glob.split( ' ', Qt::SkipEmptyParts );
       bool found = false;
       const auto constAllExts = allExts;
       for ( const QString &ext : constAllExts )
       {
-        if ( vectorFileName.endsWith( '.' + ext, Qt::CaseInsensitive ) )
+        // Remove the wildcard (*) at the beginning of the extension
+        if ( vectorFileName.endsWith( ext.mid( 1 ), Qt::CaseInsensitive ) )
         {
           found = true;
           break;
@@ -298,6 +299,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
       if ( !found )
       {
+        allExts = metadata.ext.split( ' ', Qt::SkipEmptyParts );
         vectorFileName += '.' + allExts[0];
       }
     }
@@ -1177,6 +1179,11 @@ class QgsVectorFileWriterMetadataContainer
                              true // Allow None
                            ) );
 
+      layerOptions.insert( QStringLiteral( "GEOMETRY_NAME" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Name of geometry column. Only used if GEOMETRY=AS_WKT. Defaults to 'WKT'." ),
+                             QStringLiteral( "WKT" )  // Default value
+                           ) );
+
       layerOptions.insert( QStringLiteral( "CREATE_CSVT" ), new QgsVectorFileWriter::BoolOption(
                              QObject::tr( "Create the associated .csvt file to describe the type of each "
                                           "column of the layer and its optional width and precision. "
@@ -1189,8 +1196,12 @@ class QgsVectorFileWriterMetadataContainer
                              QStringList()
                              << QStringLiteral( "COMMA" )
                              << QStringLiteral( "SEMICOLON" )
-                             << QStringLiteral( "TAB" ),
-                             QStringLiteral( "COMMA" ) // Default value
+                             << QStringLiteral( "TAB" )
+                             << QStringLiteral( "SPACE" )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,12,0)
+                             << QStringLiteral( "PIPE" )
+#endif
+                             , QStringLiteral( "COMMA" ) // Default value
                            ) );
 
       layerOptions.insert( QStringLiteral( "STRING_QUOTING" ), new QgsVectorFileWriter::SetOption(
@@ -1206,6 +1217,13 @@ class QgsVectorFileWriterMetadataContainer
                              QObject::tr( "Write a UTF-8 Byte Order Mark (BOM) at the start of the file." ),
                              false  // Default value
                            ) );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,12,0)
+      layerOptions.insert( QStringLiteral( "HEADER" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to write a header line with the field names." ),
+                             true  // Default value
+                           ) );
+#endif
 
       driverMetadata.insert( QStringLiteral( "CSV" ),
                              QgsVectorFileWriter::MetaData(
@@ -2144,6 +2162,33 @@ class QgsVectorFileWriterMetadataContainer
                                QString()  // Default value
                              ) );
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,11,0)
+      datasetOptions.insert( QStringLiteral( "INSUNITS" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "Drawing units for the model space ($INSUNITS system variable)." ),
+                               QStringList()
+                               << QStringLiteral( "AUTO" )
+                               << QStringLiteral( "HEADER_VALUE" )
+                               << QStringLiteral( "UNITLESS" )
+                               << QStringLiteral( "INCHES" )
+                               << QStringLiteral( "FEET" )
+                               << QStringLiteral( "MILLIMETERS" )
+                               << QStringLiteral( "CENTIMETERS" )
+                               << QStringLiteral( "METERS" )
+                               << QStringLiteral( "US_SURVEY_FEET" ),
+                               QStringLiteral( "AUTO" ) // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "MEASUREMENT" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "Whether the current drawing uses imperial or metric hatch "
+                                            "pattern and linetype ($MEASUREMENT system variable)." ),
+                               QStringList()
+                               << QStringLiteral( "HEADER_VALUE" )
+                               << QStringLiteral( "IMPERIAL" )
+                               << QStringLiteral( "METRIC" ),
+                               QStringLiteral( "HEADER_VALUE" ) // Default value
+                             ) );
+#endif
+
       driverMetadata.insert( QStringLiteral( "DXF" ),
                              QgsVectorFileWriter::MetaData(
                                QStringLiteral( "AutoCAD DXF" ),
@@ -2397,14 +2442,55 @@ class QgsVectorFileWriterMetadataContainer
       datasetOptions.clear();
       layerOptions.clear();
 
+      QStringList compressionMethods;
+      const QStringList searchCompressions =
+      {
+        QStringLiteral( "NONE" ),
+        QStringLiteral( "SNAPPY" ),
+        QStringLiteral( "BROTLI" ),
+        QStringLiteral( "ZSTD" )
+      };
+
+      if ( GDALDriverH hParquetDrv = GDALGetDriverByName( "PARQUET" ) )
+      {
+        if ( const char *xml = GDALGetMetadataItem( hParquetDrv, GDAL_DS_LAYER_CREATIONOPTIONLIST, nullptr ) )
+        {
+          for ( const QString &comp : searchCompressions )
+          {
+            QRegularExpression re( "<Value[^>]*>\\s*" + comp + "\\s*</Value>" );
+            if ( re.match( QString::fromUtf8( xml ) ).hasMatch() )
+            {
+              compressionMethods << comp;
+            }
+          }
+        }
+      }
+
       layerOptions.insert( QStringLiteral( "COMPRESSION" ), new QgsVectorFileWriter::SetOption(
                              QObject::tr( "Compression method." ),
-                             QStringList()
-                             << QStringLiteral( "UNCOMPRESSED" )
-                             << QStringLiteral( "SNAPPY" ),
+                             compressionMethods,
                              QStringLiteral( "SNAPPY" ), // Default value
                              false // Allow None
                            ) );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,12,0)
+      layerOptions.insert( QStringLiteral( "COMPRESSION_LEVEL" ), new QgsVectorFileWriter::IntOption(
+                             QObject::tr( "Compression level." ),
+                             -1 // Default value
+                           ) );
+#endif
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,9,0)
+      layerOptions.insert( QStringLiteral( "SORT_BY_BBOX" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to sort by spatial location. Enables faster spatial filtering on reading." ),
+                             false // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "WRITE_COVERING_BBOX" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Whether to write the bounding box of geometries into columns." ),
+                             true // Default value
+                           ) );
+#endif
 
       layerOptions.insert( QStringLiteral( "GEOMETRY_ENCODING" ), new QgsVectorFileWriter::SetOption(
                              QObject::tr( "Geometry encoding." ),

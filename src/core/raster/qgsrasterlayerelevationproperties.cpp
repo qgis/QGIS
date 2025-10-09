@@ -721,6 +721,7 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
       QStringLiteral( "height" ),
       QStringLiteral( "elev" ),
       QStringLiteral( "srtm" ),
+      QStringLiteral( "dted" ),
       // French hints
       QStringLiteral( "mne" ),
       QStringLiteral( "mnt" ),

@@ -361,3 +361,63 @@ tests:
         hash: 38169bd8e8ff1400109936c8de70e429ab319926a053ab5142791010
         type: rasterhash
 
+  - algorithm: native:concavehullbyfeature
+    name: Concave hull by feature
+    params:
+      ALPHA: 0.3
+      HOLES: true
+      INPUT:
+        name: custom/concave_hull_points.gml|layername=concave_hull_points
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/concave_hull_by_feature.gml
+        type: vector
+
+  - algorithm: native:removepartsbylength
+    name: Remove line parts by length
+    params:
+      INPUT:
+        name: custom/line_3857.gml|layername=line_3857
+        type: vector
+      MIN_LENGTH: 550000.0
+    results:
+      OUTPUT:
+        name: expected/remove_line_parts_by_length.gml
+        type: vector
+
+  - algorithm: native:removepartsbylength
+    name: Remove multiline parts by length
+    params:
+      INPUT:
+        name: multilines.gml|layername=multilines
+        type: vector
+      MIN_LENGTH: 3.0
+    results:
+      OUTPUT:
+        name: expected/remove_multiline_parts_by_length.gml
+        type: vector
+
+  - algorithm: native:removepartsbyarea
+    name: Remove polygon parts by area
+    params:
+      INPUT:
+        name: custom/polys_epsg31256.shp
+        type: vector
+      MIN_AREA: 9999000000.0
+    results:
+      OUTPUT:
+        name: expected/remove_polygon_parts_by_area.gml
+        type: vector
+
+  - algorithm: native:removepartsbyarea
+    name: Remove multipolygon parts by area
+    params:
+      INPUT:
+        name: multipolys.gml|layername=multipolys
+        type: vector
+      MIN_AREA: 4.0
+    results:
+      OUTPUT:
+        name: expected/remove_multipolygon_parts_by_area.gml
+        type: vector

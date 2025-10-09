@@ -258,6 +258,38 @@ Set the limit of fetched features (0 means all features)
 .. versionadded:: 3.32
 %End
 
+    QString orderExpression() const;
+%Docstring
+Returns the string of the order expression The order expression will be
+used for sort values in the combobox.
+
+.. versionadded:: 4.0
+%End
+
+    void setOrderExpression( const QString &orderExpression );
+%Docstring
+Set the string of the order expression The order expression will be used
+for sort values in the combobox.
+
+.. versionadded:: 4.0
+%End
+
+    Qt::SortOrder sortOrder() const;
+%Docstring
+Returns the order direction The order direction will be used for sort
+values in the combobox. Ascending or descending
+
+.. versionadded:: 4.0
+%End
+
+    void setSortOrder( const Qt::SortOrder sortOrder );
+%Docstring
+Set the order direction The order direction will be used for sort values
+in the combobox. Ascending or descending
+
+.. versionadded:: 4.0
+%End
+
   public slots:
     void openForm();
 %Docstring

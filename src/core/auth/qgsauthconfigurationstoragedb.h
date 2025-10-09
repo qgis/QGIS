@@ -191,7 +191,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageDb : public QgsAuthConfigurationSto
   protected:
 
     /**
-     * Opens the connction to the database.
+     * Opens the connection to the database.
      * \returns TRUE if the connection was opened successfully, FALSE otherwise.
      */
     bool authDbOpen() const;

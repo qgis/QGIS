@@ -141,6 +141,9 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
 
+  // Connect double-click zoom functionality
+  connect( mMainView->tableView(), &QgsAttributeTableView::rowHeaderDoubleClicked, this, &QgsAttributeTableDialog::zoomToFeature );
+
   mActionSelectAll->setShortcuts( QKeySequence::SelectAll );
   mActionSelectAll->setShortcutContext( Qt::WidgetWithChildrenShortcut );
   mMainView->addAction( mActionSelectAll );
@@ -282,17 +285,17 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mMainView, &QgsDualView::formModeChanged, this, &QgsAttributeTableDialog::viewModeChanged );
 
   // info from table to application
-  connect( this, &QgsAttributeTableDialog::saveEdits, this, [=] { QgisApp::instance()->saveEdits(); } );
+  connect( this, &QgsAttributeTableDialog::saveEdits, this, [] { QgisApp::instance()->saveEdits(); } );
 
   QgsDockableWidgetHelper::OpeningMode openingMode = QgsDockableWidgetHelper::OpeningMode::RespectSetting;
   if ( initiallyDocked )
     openingMode = *initiallyDocked ? QgsDockableWidgetHelper::OpeningMode::ForceDocked : QgsDockableWidgetHelper::OpeningMode::ForceDialog;
   mDockableWidgetHelper = new QgsDockableWidgetHelper( windowTitle(), this, QgisApp::instance(), QStringLiteral( "attribute-table" ), QStringList(), openingMode, true, Qt::BottomDockWidgetArea );
   toggleShortcuts( !mDockableWidgetHelper->isDocked() );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [=]() {
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [this]() {
     close();
   } );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::dockModeToggled, this, [=]( bool docked ) {
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::dockModeToggled, this, [this]( bool docked ) {
     if ( docked )
     {
       toggleShortcuts( mDockableWidgetHelper->dockWidget()->isFloating() );
@@ -823,6 +826,11 @@ void QgsAttributeTableDialog::mActionPasteFeatures_triggered()
 void QgsAttributeTableDialog::mActionZoomMapToSelectedRows_triggered()
 {
   QgisApp::instance()->mapCanvas()->zoomToSelected( mLayer );
+}
+
+void QgsAttributeTableDialog::zoomToFeature( QgsFeatureId fid )
+{
+  QgisApp::instance()->mapCanvas()->zoomToFeatureIds( mLayer, { fid } );
 }
 
 void QgsAttributeTableDialog::mActionPanMapToSelectedRows_triggered()

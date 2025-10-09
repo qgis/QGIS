@@ -18,6 +18,7 @@
 
 #include "qgsattributesformmodel.h"
 #include "qgsattributesformproperties.h"
+#include "qgsattributesformview.h"
 #include "qgsattributetypedialog.h"
 #include "qgsvectorlayer.h"
 
@@ -73,17 +74,17 @@ void TestQgsAttributesFormProperties::testConfigStored()
   QCOMPARE( availableWidgetsModel->rowCount( fieldContainer ), 2 );
 
   // Insure that the configuration was stored when switching from one available widgets tree item to another
-  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( availableWidgetsModel->index( 0, 0, fieldContainer ) );
+  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 0, 0, fieldContainer ) ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
   attributeFormProperties.mAttributeTypeDialog->setAlias( QStringLiteral( "alias0" ) );
-  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( availableWidgetsModel->index( 1, 0, fieldContainer ) );
+  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 1, 0, fieldContainer ) ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
   attributeFormProperties.mAttributeTypeDialog->setAlias( QStringLiteral( "alias1" ) );
 
-  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( availableWidgetsModel->index( 0, 0, fieldContainer ) );
+  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 0, 0, fieldContainer ) ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
   QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), QStringLiteral( "alias0" ) );
-  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( availableWidgetsModel->index( 1, 0, fieldContainer ) );
+  attributeFormProperties.mAvailableWidgetsView->setCurrentIndex( attributeFormProperties.mAvailableWidgetsProxyModel->mapFromSource( availableWidgetsModel->index( 1, 0, fieldContainer ) ) );
   QVERIFY( attributeFormProperties.mAttributeTypeDialog );
   QCOMPARE( attributeFormProperties.mAttributeTypeDialog->alias(), QStringLiteral( "alias1" ) );
 }

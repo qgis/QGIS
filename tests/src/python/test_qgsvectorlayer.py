@@ -811,6 +811,14 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         checkAfter()
         self.assertEqual(layer.dataProvider().featureCount(), 1)
 
+        # now start from an empty layer and check extent after adding the first feature
+        layer = createEmptyLayerWithFields()
+        feat = QgsFeature(layer.fields())
+        feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
+        layer.startEditing()
+        self.assertTrue(layer.addFeature(feat))
+        checkAfter()
+
     # ADD FEATURES
 
     def test_AddFeatures(self):
@@ -4163,7 +4171,7 @@ class TestQgsVectorLayer(QgisTestCase, FeatureSourceTestCase):
         self.assertEqual(layer.displayExpression(), '"NAME"')
         self.assertEqual(layer.displayField(), "NAME")
         layer = QgsVectorLayer(
-            "Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=BETTER_NAME:string&field=NAME:string",
+            "Polygon?crs=epsg:2056&field=pk:int&field=DESCRIPTION:string&field=fid:int&field=BETTER_NAME:string&field=ALT_NAME:string",
             "vl",
             "memory",
         )
@@ -5778,6 +5786,81 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
             constraints[QgsFieldConstraints.Constraint.ConstraintUnique],
             QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet,
         )
+
+    def test_legend_settings(self):
+        vl = QgsVectorLayer(
+            "Point?crs=epsg:3111&field=field_default:integer&field=field_dupe:integer&field=field_unset:integer&field=field_ratio:integer",
+            "test",
+            "memory",
+        )
+        self.assertTrue(vl.isValid())
+
+        self.assertFalse(vl.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault)
+        vl.legend().setFlag(Qgis.MapLayerLegendFlag.ExcludeByDefault)
+        self.assertTrue(vl.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault)
+
+        p = QgsProject()
+        p.addMapLayer(vl)
+
+        # test saving and restoring
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertTrue(p.write(temp + "/test.qgs"))
+
+            p2 = QgsProject()
+            self.assertTrue(p2.read(temp + "/test.qgs"))
+
+            vl2 = list(p2.mapLayers().values())[0]
+            self.assertEqual(vl2.name(), vl.name())
+
+            self.assertTrue(
+                vl2.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault
+            )
+
+    def test_write_symbology_categories(self):
+        """Test that copy paste styles respect categories: issue GH #63167"""
+
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string", "layer2", "memory")
+        self.assertTrue(layer1.isValid())
+        self.assertTrue(layer2.isValid())
+        color1 = layer1.renderer().symbol().color()
+        color2 = layer2.renderer().symbol().color()
+        self.assertNotEqual(color1.name(), color2.name())
+
+        # Set a form property on layer1 and layer2
+        edit_form_config = layer1.editFormConfig()
+        edit_form_config.setLayout(Qgis.AttributeFormLayout.UiFile)
+        layer1.setEditFormConfig(edit_form_config)
+
+        edit_form_config2 = layer2.editFormConfig()
+        # Default but better to be explicit
+        edit_form_config2.setLayout(Qgis.AttributeFormLayout.DragAndDrop)
+        layer2.setEditFormConfig(edit_form_config2)
+
+        # Now write the symbology to XML but omit the form category
+        doc = QDomDocument("qgis")
+        ctx = QgsReadWriteContext()
+        layer1.exportNamedStyle(doc, ctx, QgsMapLayer.StyleCategory.Symbology)
+
+        # Read the symbology into layer2 specifying all categories but only the symbology is actually in the input XML
+        layer2.importNamedStyle(doc, QgsMapLayer.StyleCategory.AllStyleCategories)
+        # Check that the symbol color has been copied
+        self.assertEqual(layer2.renderer().symbol().color().name(), color1.name())
+        # Check that the form config has not been changed
+        self.assertEqual(
+            layer2.editFormConfig().layout(), Qgis.AttributeFormLayout.DragAndDrop
+        )
+
+        # Now copy the form category only
+        doc = QDomDocument("qgis")
+        layer1.exportNamedStyle(doc, ctx, QgsMapLayer.StyleCategory.Forms)
+        layer2.renderer().symbol().setColor(color2)
+        layer2.importNamedStyle(doc, QgsMapLayer.StyleCategory.AllStyleCategories)
+        # Check that only the form properties have been copied
+        self.assertEqual(
+            layer2.editFormConfig().layout(), Qgis.AttributeFormLayout.UiFile
+        )
+        self.assertEqual(layer2.renderer().symbol().color().name(), color2.name())
 
 
 # TODO:

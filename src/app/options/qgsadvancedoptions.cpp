@@ -46,7 +46,7 @@ QgsAdvancedSettingsWidget::QgsAdvancedSettingsWidget( QWidget *parent )
   {
     createSettingsTreeWidget( true, true, true );
 
-    connect( mAdvancedSettingsEnableButton, &QPushButton::clicked, this, [=] {
+    connect( mAdvancedSettingsEnableButton, &QPushButton::clicked, this, [this] {
       settingsUseNewTreeWidget->setValue( mUseNewSettingsTree->isChecked() );
       mAdvancedSettingsWarning->hide();
       if ( settingsUseNewTreeWidget->value() )

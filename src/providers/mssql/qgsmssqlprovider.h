@@ -131,6 +131,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
+    bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
 
     //! Convert time value
     static QVariant convertTimeValue( const QVariant &value );
@@ -212,18 +213,11 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
     mutable Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
 
+    QgsDataSourceUri mUri;
+
     // current layer name
     QString mSchemaName;
     QString mTableName;
-
-    // login
-    QString mUserName;
-    QString mPassword;
-
-    // server access
-    QString mService;
-    QString mDatabaseName;
-    QString mHost;
 
     // available tables
     QStringList mTables;

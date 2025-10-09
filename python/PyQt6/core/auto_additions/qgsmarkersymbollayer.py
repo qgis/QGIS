@@ -32,8 +32,9 @@ except (NameError, AttributeError):
     pass
 try:
     QgsRasterMarkerSymbolLayer.create = staticmethod(QgsRasterMarkerSymbolLayer.create)
+    QgsRasterMarkerSymbolLayer.createFromSld = staticmethod(QgsRasterMarkerSymbolLayer.createFromSld)
     QgsRasterMarkerSymbolLayer.resolvePaths = staticmethod(QgsRasterMarkerSymbolLayer.resolvePaths)
-    QgsRasterMarkerSymbolLayer.__overridden_methods__ = ['layerType', 'flags', 'renderPoint', 'properties', 'clone', 'usesMapUnits', 'color', 'setMapUnitScale', 'mapUnitScale', 'bounds']
+    QgsRasterMarkerSymbolLayer.__overridden_methods__ = ['layerType', 'flags', 'renderPoint', 'properties', 'clone', 'usesMapUnits', 'color', 'writeSldMarker', 'setMapUnitScale', 'mapUnitScale', 'bounds']
     QgsRasterMarkerSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

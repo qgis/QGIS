@@ -48,6 +48,8 @@ class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;
 class QgsAttributeWidgetEdit;
 class QgsAttributesFormBaseView;
+class QgsFieldConstraintIndicatorProvider;
+class QgsFieldDefaultValueIndicatorProvider;
 
 /**
  * \brief Creates panels to configure attributes forms.
@@ -139,6 +141,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void updatedFields();
 
+    void updateFilteredItems( const QString &filterText );
+
   private:
     //! this will clean the right panel
     void clearAttributeTypeFrame();
@@ -170,8 +174,13 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void copyWidgetConfiguration();
     void pasteWidgetConfiguration();
 
+    void setAvailableWidgetsIndicatorProvidersEnabled( bool enabled );
+    void setFormLayoutIndicatorProvidersEnabled( bool enabled );
+
     QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel;
     QgsAttributesFormLayoutModel *mFormLayoutModel;
+    QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel;
+    QgsAttributesFormProxyModel *mFormLayoutProxyModel;
 
     QgsMessageBar *mMessageBar = nullptr;
 
@@ -186,113 +195,13 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QAction *mActionCopyWidgetConfiguration = nullptr;
     QAction *mActionPasteWidgetConfiguration = nullptr;
 
+    //! Indicator providers for both views
+    QgsFieldConstraintIndicatorProvider *mConstraintIndicatorProviderAvailableWidgets = nullptr;
+    QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderAvailableWidgets = nullptr;
+    QgsFieldConstraintIndicatorProvider *mConstraintIndicatorProviderFormLayout = nullptr;
+    QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderFormLayout = nullptr;
+
     friend class TestQgsAttributesFormProperties;
-};
-
-
-/**
- * \brief Graphical representation for the attribute drag and drop editor.
- *
- * \warning Not part of stable API and may change in future QGIS releases.
- * \ingroup gui
- * \since QGIS 3.44
- */
-class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpressionContextGenerator
-{
-    Q_OBJECT
-
-  public:
-    /**
-     * Constructor for QgsAttributesFormBaseView, with the given \a parent.
-     *
-     * The given \a layer is used to build an expression context with the layer scope.
-     */
-    explicit QgsAttributesFormBaseView( QgsVectorLayer *layer, QWidget *parent = nullptr );
-
-    // QgsExpressionContextGenerator interface
-    QgsExpressionContext createExpressionContext() const override;
-
-  public slots:
-    /**
-     * Selects the first item that matches a \a itemType and a \a itemId.
-     *
-     * Helps to keep in sync selection from both Attribute Widget view and Form Layout view.
-     */
-    void selectFirstMatchingItem( const QgsAttributesFormData::AttributesFormItemType &itemType, const QString &itemId );
-
-  protected:
-    QgsVectorLayer *mLayer = nullptr;
-};
-
-
-/**
- * \brief Graphical representation for the available widgets while configuring attributes forms.
- *
- * \warning Not part of stable API and may change in future QGIS releases.
- * \ingroup gui
- * \since QGIS 3.44
- */
-class GUI_EXPORT QgsAttributesAvailableWidgetsView : public QgsAttributesFormBaseView
-{
-    Q_OBJECT
-
-  public:
-    /**
-     * Constructor for QgsAttributesAvailableWidgetsView, with the given \a parent.
-     *
-     * The given \a layer is used to build an expression context with the layer scope.
-     */
-    explicit QgsAttributesAvailableWidgetsView( QgsVectorLayer *layer, QWidget *parent = nullptr );
-
-    //! Overridden setModel() from base class. Only QgsAttributesAvailableWidgetsModel is an acceptable model.
-    void setModel( QAbstractItemModel *model ) override;
-
-    //! Access the underlying QgsAttributesAvailableWidgetsModel model
-    QgsAttributesAvailableWidgetsModel *availableWidgetsModel() const;
-
-  private:
-    QgsAttributesAvailableWidgetsModel *mModel = nullptr;
-};
-
-
-/**
- * \brief Graphical representation for the form layout while configuring attributes forms.
- *
- * \warning Not part of stable API and may change in future QGIS releases.
- * \ingroup gui
- * \since QGIS 3.44
- */
-class GUI_EXPORT QgsAttributesFormLayoutView : public QgsAttributesFormBaseView
-{
-    Q_OBJECT
-
-  public:
-    /**
-     * Constructor for QgsAttributesFormLayoutView, with the given \a parent.
-     *
-     * The given \a layer is used to build an expression context with the layer scope.
-     */
-    explicit QgsAttributesFormLayoutView( QgsVectorLayer *layer, QWidget *parent = nullptr );
-
-    //! Overridden setModel() from base class. Only QgsAttributesFormLayoutModel is an acceptable model.
-    void setModel( QAbstractItemModel *model ) override;
-
-    //! Access the underlying QgsAttributesFormLayoutModel model
-    QgsAttributesFormLayoutModel *formLayoutModel() const;
-
-  protected:
-    // Drag and drop support (to handle internal moves)
-    void dragEnterEvent( QDragEnterEvent *event ) override;
-    void dragMoveEvent( QDragMoveEvent *event ) override;
-    void dropEvent( QDropEvent *event ) override;
-
-  private slots:
-    void onItemDoubleClicked( const QModelIndex &index );
-    void handleExternalDroppedItem( QModelIndex &index );
-    void handleInternalDroppedItem( QModelIndex &index );
-
-  private:
-    QgsAttributesFormLayoutModel *mModel = nullptr;
 };
 
 #endif // QGSATTRIBUTESFORMPROPERTIES_H

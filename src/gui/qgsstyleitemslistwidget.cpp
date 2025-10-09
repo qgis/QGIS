@@ -191,7 +191,7 @@ QgsStyleItemsListWidget::QgsStyleItemsListWidget( QWidget *parent )
 
   lblSymbolName->clear();
 
-  connect( mButtonIconView, &QToolButton::toggled, this, [=]( bool active ) {
+  connect( mButtonIconView, &QToolButton::toggled, this, [this]( bool active ) {
     if ( active )
     {
       mSymbolViewStackedWidget->setCurrentIndex( 0 );
@@ -199,7 +199,7 @@ QgsStyleItemsListWidget::QgsStyleItemsListWidget( QWidget *parent )
       QgsSettings().setValue( QStringLiteral( "UI/symbolsList/lastIconView" ), 0, QgsSettings::Gui );
     }
   } );
-  connect( mButtonListView, &QToolButton::toggled, this, [=]( bool active ) {
+  connect( mButtonListView, &QToolButton::toggled, this, [this]( bool active ) {
     if ( active )
     {
       QgsSettings().setValue( QStringLiteral( "UI/symbolsList/lastIconView" ), 1, QgsSettings::Gui );

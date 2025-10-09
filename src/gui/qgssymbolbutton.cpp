@@ -65,17 +65,25 @@ void QgsSymbolButton::updateSizeHint()
   switch ( mType )
   {
     case Qgis::SymbolType::Marker:
-      if ( mSymbol )
+      if ( mFixedSizeConstraints )
       {
-        mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight * 3 ) );
-        setMaximumWidth( mSizeHint.height() * 1.5 );
-        setMinimumWidth( maximumWidth() );
+        if ( mSymbol )
+        {
+          mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight * 3 ) );
+          setMaximumWidth( mSizeHint.height() * 1.5 );
+          setMinimumWidth( maximumWidth() );
+        }
+        else
+        {
+          mSizeHint = QSize( size.width(), fontHeight );
+          setMaximumWidth( 999999 );
+          mSizeHint.setWidth( QToolButton::sizeHint().width() );
+        }
       }
       else
       {
-        mSizeHint = QSize( size.width(), fontHeight );
         setMaximumWidth( 999999 );
-        mSizeHint.setWidth( QToolButton::sizeHint().width() );
+        mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
       }
       break;
 
@@ -174,7 +182,7 @@ void QgsSymbolButton::showSettingsDialog()
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( newSymbol ), QgsStyle::defaultStyle(), mLayer, panel );
     widget->setPanelTitle( mDialogTitle );
     widget->setContext( symbolContext );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=] { updateSymbolFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget] { updateSymbolFromWidget( widget ); } );
     panel->openPanel( widget );
   }
   else
@@ -535,7 +543,7 @@ void QgsSymbolButton::prepareMenu()
     alphaRamp->setColor( alphaColor );
     QgsColorWidgetAction *alphaAction = new QgsColorWidgetAction( alphaRamp, mMenu, mMenu );
     alphaAction->setDismissOnColorSelection( false );
-    connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [=]( const QColor &color ) {
+    connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [this]( const QColor &color ) {
       const double opacity = color.alphaF();
       mSymbol->setOpacity( opacity );
       updatePreview();
@@ -775,7 +783,7 @@ void QgsSymbolButton::showColorDialog()
       colorWidget->setPreviousColor( currentColor );
     }
 
-    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [=]( const QColor &newColor ) {
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [this]( const QColor &newColor ) {
       if ( newColor.isValid() )
       {
         setColor( newColor );
@@ -821,6 +829,18 @@ void QgsSymbolButton::setShowNull( bool showNull )
 bool QgsSymbolButton::showNull() const
 {
   return mShowNull;
+}
+
+void QgsSymbolButton::setFixedSizeConstraints( bool fixedSizeConstraints )
+{
+  mFixedSizeConstraints = fixedSizeConstraints;
+
+  updateSizeHint();
+}
+
+bool QgsSymbolButton::fixedSizeConstraints() const
+{
+  return mFixedSizeConstraints;
 }
 
 bool QgsSymbolButton::isNull() const

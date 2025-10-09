@@ -115,6 +115,22 @@ QgsMapLayerElevationProperties *QgsTiledSceneLayer::elevationProperties()
   return mElevationProperties;
 }
 
+Qgis::MapLayerProperties QgsTiledSceneLayer::properties() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  Qgis::MapLayerProperties res;
+  if ( mDataProvider && ( mDataProvider->flags() & Qgis::DataProviderFlag::IsBasemapSource ) )
+  {
+    res |= Qgis::MapLayerProperty::IsBasemapLayer;
+  }
+  if ( mDataProvider && ( mDataProvider->flags() & Qgis::DataProviderFlag::Is3DBasemapSource ) )
+  {
+    res |= Qgis::MapLayerProperty::Is3DBasemapLayer;
+  }
+  return res;
+}
+
 QgsMapLayerRenderer *QgsTiledSceneLayer::createMapRenderer( QgsRenderContext &context )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

@@ -28,10 +28,11 @@
 #include "qgsprofilerequest.h"
 #include "qgsterrainprovider.h"
 #include "qgscurve.h"
+#include "qgsfontutils.h"
 
 ///@cond PRIVATE
 
-class QgsAlgorithmElevationProfilePlotItem : public Qgs2DPlot
+class QgsAlgorithmElevationProfilePlotItem : public Qgs2DXyPlot
 {
   public:
     explicit QgsAlgorithmElevationProfilePlotItem( int width, int height, int dpi )
@@ -58,12 +59,13 @@ class QgsAlgorithmElevationProfilePlotItem : public Qgs2DPlot
       QgsRenderContext context;
       context.setScaleFactor( mDpi / 25.4 );
 
-      calculateOptimisedIntervals( context );
-      mPlotArea = interiorPlotArea( context );
+      QgsPlotRenderContext plotContext;
+      calculateOptimisedIntervals( context, plotContext );
+      mPlotArea = interiorPlotArea( context, plotContext );
       return mPlotArea;
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData & ) override
     {
       mPlotArea = plotArea;
 
@@ -109,6 +111,19 @@ void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
   auto textColorParam = std::make_unique<QgsProcessingParameterColor>( QStringLiteral( "TEXT_COLOR" ), QObject::tr( "Chart text color" ), QColor( 0, 0, 0 ), true, true );
   textColorParam->setFlags( textColorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( textColorParam.release() );
+
+  auto textFontFamilyParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "TEXT_FONT_FAMILY" ), QObject::tr( "Chart text font family" ), QVariant(), false, true );
+  textFontFamilyParam->setFlags( textFontFamilyParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
+  addParameter( textFontFamilyParam.release() );
+
+  auto textFontStyleParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "TEXT_FONT_STYLE" ), QObject::tr( "Chart text font style" ), QVariant(), false, true );
+  textFontStyleParam->setFlags( textFontStyleParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
+  addParameter( textFontStyleParam.release() );
+
+  auto textFontSizeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TEXT_FONT_SIZE" ), QObject::tr( "Chart text font size" ), Qgis::ProcessingNumberParameterType::Double, 0, true );
+  textFontSizeParam->setFlags( textFontSizeParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
+  addParameter( textFontSizeParam.release() );
+
   auto backgroundColorParam = std::make_unique<QgsProcessingParameterColor>( QStringLiteral( "BACKGROUND_COLOR" ), QObject::tr( "Chart background color" ), QColor( 255, 255, 255 ), true, true );
   backgroundColorParam->setFlags( backgroundColorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( backgroundColorParam.release() );
@@ -180,7 +195,7 @@ bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &
   QList<QgsAbstractProfileSource *> sources;
   for ( QgsMapLayer *layer : layers )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
       sources.append( source );
   }
 
@@ -236,6 +251,33 @@ QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVaria
   const QColor borderColor = parameterAsColor( parameters, QStringLiteral( "BORDER_COLOR" ), context );
 
   QgsAlgorithmElevationProfilePlotItem plotItem( width, height, dpi );
+
+  const QString textFontFamily = parameterAsString( parameters, QStringLiteral( "TEXT_FONT_FAMILY" ), context );
+  const QString textFontStyle = parameterAsString( parameters, QStringLiteral( "TEXT_FONT_STYLE" ), context );
+  const double textFontSize = parameterAsDouble( parameters, QStringLiteral( "TEXT_FONT_SIZE" ), context );
+
+  if ( !textFontFamily.isEmpty() || !textFontStyle.isEmpty() || textFontSize > 0 )
+  {
+    QgsTextFormat textFormat = plotItem.xAxis().textFormat();
+    QFont font = textFormat.font();
+    if ( !textFontFamily.isEmpty() )
+    {
+      QgsFontUtils::setFontFamily( font, textFontFamily );
+    }
+    if ( !textFontStyle.isEmpty() )
+    {
+      QgsFontUtils::updateFontViaStyle( font, textFontStyle );
+    }
+    textFormat.setFont( font );
+    if ( textFontSize > 0 )
+    {
+      textFormat.setSize( textFontSize );
+      textFormat.setSizeUnit( Qgis::RenderUnit::Points );
+    }
+
+    plotItem.xAxis().setTextFormat( textFormat );
+    plotItem.yAxis().setTextFormat( textFormat );
+  }
 
   if ( textColor.isValid() )
   {
@@ -312,8 +354,9 @@ QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVaria
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   renderContext.setScaleFactor( dpi / 25.4 );
   renderContext.setExpressionContext( context.expressionContext() );
-  plotItem.calculateOptimisedIntervals( renderContext );
-  plotItem.render( renderContext );
+  QgsPlotRenderContext plotContext;
+  plotItem.calculateOptimisedIntervals( renderContext, plotContext );
+  plotItem.render( renderContext, plotContext );
   painter.end();
   image.save( outputImage );
 

@@ -74,6 +74,16 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Creates a deep copy of this shared data
     QgsWFSSharedData *clone() const;
 
+    /** Returns TRUE if the initial GetFeature request was issued
+     * \note This does not mean that the request actually returned any feature, only that it was completed successfully.
+     */
+    bool initialGetFeatureIssued() const;
+
+    /** Sets whether the initial GetFeature request was \a issued
+     * \note This does not mean that the request actually returned any feature, only that it was completed successfully.
+     */
+    void setInitialGetFeatureIssued( bool issued );
+
   signals:
 
     //! Raise error
@@ -131,9 +141,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
      */
     bool mServerPrefersCoordinatesForTransactions_1_1 = false;
 
-    //! Geometry type of the features in this layer
-    Qgis::WkbType mWKBType = Qgis::WkbType::Unknown;
-
     //! Geometry type filter to ensure geometries returned by the layer are of type mWKBType.
     QString mWFSGeometryTypeFilter;
 
@@ -170,6 +177,8 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     long long getFeatureCountFromServer() const override;
 
     void getVersionValues( QgsOgcUtils::GMLVersion &gmlVersion, QgsOgcUtils::FilterVersion &filterVersion, bool &honourAxisOrientation ) const;
+
+    bool mInitialGetFeatureIssued = false;
 };
 
 //! Utility class to issue a GetFeature resultType=hits request

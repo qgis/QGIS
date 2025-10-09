@@ -73,7 +73,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
 
   mColormapTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
   mColormapTreeWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
-  connect( mColormapTreeWidget, &QTreeView::customContextMenuRequested, this, [=]( QPoint ) { contextMenu->exec( QCursor::pos() ); } );
+  connect( mColormapTreeWidget, &QTreeView::customContextMenuRequested, this, [this]( QPoint ) { contextMenu->exec( QCursor::pos() ); } );
 
   QString defaultPalette = settings.value( QStringLiteral( "Raster/defaultPalette" ), "" ).toString();
   btnColorRamp->setColorRampFromName( defaultPalette );
@@ -100,7 +100,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsColorRampShaderWidget::classify );
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
-  connect( mLabelPrecisionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [=]( int ) {
+  connect( mLabelPrecisionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int ) {
     autoLabel();
 
     if ( !mBlockChanges )
@@ -743,7 +743,7 @@ void QgsColorRampShaderWidget::resetClassifyButton()
 
 QString QgsColorRampShaderWidget::createLabel( QTreeWidgetItem *currentItem, int row, const QString unit )
 {
-  auto applyPrecision = [=]( const QString &value ) {
+  auto applyPrecision = [this]( const QString &value ) {
     double val { value.toDouble() };
     Qgis::DataType dataType { mRasterDataProvider ? mRasterDataProvider->dataType( mBand ) : Qgis::DataType::Float64 };
     switch ( dataType )
@@ -832,7 +832,7 @@ void QgsColorRampShaderWidget::changeColor()
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( tr( "Select Color" ) );
     colorWidget->setAllowOpacity( true );
-    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [=]( const QColor &newColor ) {
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [this, itemList]( const QColor &newColor ) {
       for ( QTreeWidgetItem *item : std::as_const( itemList ) )
       {
         item->setData( ColorColumn, Qt::ItemDataRole::EditRole, newColor );
@@ -897,7 +897,7 @@ void QgsColorRampShaderWidget::showLegendSettings()
     QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget();
     legendPanel->setPanelTitle( tr( "Legend Settings" ) );
     legendPanel->setSettings( mLegendSettings );
-    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [=] {
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [this, legendPanel] {
       mLegendSettings = legendPanel->settings();
       emit widgetChanged();
     } );

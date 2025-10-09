@@ -585,7 +585,7 @@ namespace QgsWms
       // Set scales
       exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get() );
       // Draw selections
-      exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
+      exportSettings.flags |= Qgis::LayoutRenderFlag::DrawSelection;
       if ( atlas )
       {
         //export first page of atlas
@@ -620,7 +620,7 @@ namespace QgsWms
       // Set scales
       exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get() );
       // Draw selections
-      exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
+      exportSettings.flags |= Qgis::LayoutRenderFlag::DrawSelection;
       // Destination image size in px
       QgsLayoutSize layoutSize( layout->pageCollection()->page( 0 )->sizeWithUnits() );
 
@@ -687,7 +687,7 @@ namespace QgsWms
           exportSettings.dpi = dpi;
       }
       // Draw selections
-      exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
+      exportSettings.flags |= Qgis::LayoutRenderFlag::DrawSelection;
       // Print as raster
       exportSettings.rasterizeWholeImage = layout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
       // Set scales. 1. Prio: request, 2. Prio: predefined mapscales in layout
@@ -714,11 +714,11 @@ namespace QgsWms
       exportSettings.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
       if ( mWmsParameters.pdfLosslessImageCompression() )
       {
-        exportSettings.flags |= QgsLayoutRenderContext::FlagLosslessImageRendering;
+        exportSettings.flags |= Qgis::LayoutRenderFlag::LosslessImageRendering;
       }
       if ( mWmsParameters.pdfDisableTiledRasterRendering() )
       {
-        exportSettings.flags |= QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+        exportSettings.flags |= Qgis::LayoutRenderFlag::DisableTiledRasterLayerRenders;
       }
 
       // Export all pages
@@ -1880,10 +1880,14 @@ namespace QgsWms
       fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( layerFilterGeom->asWkt() ) );
     }
 
+    Q_NOWARN_DEPRECATED_PUSH
     mFeatureFilter.filterFeatures( layer, fReq );
+    Q_NOWARN_DEPRECATED_POP
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
+    Q_NOWARN_DEPRECATED_PUSH
     mContext.accessControl()->filterFeatures( layer, fReq );
+    Q_NOWARN_DEPRECATED_POP
 
     QStringList attributes;
     for ( const QgsField &field : fields )
@@ -2005,7 +2009,7 @@ namespace QgsWms
 
         //add maptip attribute based on html/expression (in case there is no maptip attribute)
         QString mapTip = layer->mapTipTemplate();
-        if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
+        if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() || QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( *mProject ) ) )
         {
           QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
@@ -2321,7 +2325,7 @@ namespace QgsWms
       }
       //add maptip attribute based on html/expression
       QString mapTip = layer->mapTipTemplate();
-      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
+      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() || QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( *mProject ) ) )
       {
         QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
         maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
@@ -2582,7 +2586,7 @@ namespace QgsWms
 
   QByteArray QgsRenderer::convertFeatureInfoToHtml( const QDomDocument &doc ) const
   {
-    const bool onlyMapTip = mWmsParameters.htmlInfoOnlyMapTip();
+    const bool onlyMapTip = mWmsParameters.htmlInfoOnlyMapTip() || QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( *mProject );
     QString featureInfoString = QStringLiteral( "    <!DOCTYPE html>" );
     if ( !onlyMapTip )
     {
@@ -3199,7 +3203,7 @@ namespace QgsWms
     {
       QString mapTip = layer->mapTipTemplate();
 
-      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() ) )
+      if ( !mapTip.isEmpty() && ( mWmsParameters.withMapTip() || mWmsParameters.htmlInfoOnlyMapTip() || QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( *mProject ) ) )
       {
         QString fieldTextString = QgsExpression::replaceExpressionText( mapTip, &expressionContext );
         QDomElement fieldElem = doc.createElement( QStringLiteral( "qgs:maptip" ) );
@@ -3479,7 +3483,9 @@ namespace QgsWms
     renderJob.render( mapSettings, image, mContext.socketFeedback() );
     painter = renderJob.takePainter();
 
-    if ( !renderJob.errors().isEmpty() )
+    logRenderingErrors( renderJob.errors() );
+
+    if ( !renderJob.errors().isEmpty() && !mContext.settings().ignoreRenderingErrors() )
     {
       const QgsMapRendererJob::Error e = renderJob.errors().at( 0 );
 
@@ -3558,9 +3564,9 @@ namespace QgsWms
         {
           // OGC filter
           QDomDocument filterXml;
-          QString errorMsg;
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 5, 0 )
+          QString errorMsg;
           if ( !filterXml.setContent( filter.mFilter, true, &errorMsg ) )
           {
             throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, QStringLiteral( "Filter string rejected. Error message: %1. The XML string was: %2" ).arg( errorMsg, filter.mFilter ) );
@@ -3632,7 +3638,9 @@ namespace QgsWms
         auto expression = std::make_unique<QgsExpression>( exp );
         if ( expression )
         {
+          Q_NOWARN_DEPRECATED_PUSH
           mFeatureFilter.setFilter( filteredLayer, *expression );
+          Q_NOWARN_DEPRECATED_POP
         }
       }
     }
@@ -3935,16 +3943,43 @@ namespace QgsWms
     return scaledImage;
   }
 
+  void QgsRenderer::logRenderingErrors( const QgsMapRendererJob::Errors &errors ) const
+  {
+    QgsMapRendererJob::Errors::const_iterator it = errors.constBegin();
+    for ( ; it != errors.constEnd(); ++it )
+    {
+      QString msg = QString( "Rendering error: %1" ).arg( it->message );
+      if ( !it->layerID.isEmpty() )
+      {
+        msg += QString( " in layer %1" ).arg( it->layerID );
+      }
+      QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Critical );
+    }
+  }
+
   void QgsRenderer::handlePrintErrors( const QgsLayout *layout ) const
   {
     if ( !layout )
     {
       return;
     }
+
     QList<QgsLayoutItemMap *> mapList;
     layout->layoutItems( mapList );
 
+    //log rendering errors even if they are ignored
     QList<QgsLayoutItemMap *>::const_iterator mapIt = mapList.constBegin();
+    for ( ; mapIt != mapList.constEnd(); ++mapIt )
+    {
+      logRenderingErrors( ( *mapIt )->renderingErrors() );
+    }
+
+    if ( mContext.settings().ignoreRenderingErrors() )
+    {
+      return;
+    }
+
+    mapIt = mapList.constBegin();
     for ( ; mapIt != mapList.constEnd(); ++mapIt )
     {
       if ( !( *mapIt )->renderingErrors().isEmpty() )

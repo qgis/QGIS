@@ -58,7 +58,7 @@ bool QgsExpression::checkExpression( const QString &text, const QgsExpressionCon
 void QgsExpression::setExpression( const QString &expression )
 {
   detach();
-  d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserErrors );
+  d->mRootNode.reset( ::parseExpression( expression, d->mParserErrorString, d->mParserErrors ) );
   d->mEvalErrorString = QString();
   d->mExp = expression;
   d->mIsPrepared = false;
@@ -176,7 +176,7 @@ int QgsExpression::functionCount()
 QgsExpression::QgsExpression( const QString &expr )
   : d( new QgsExpressionPrivate )
 {
-  d->mRootNode = ::parseExpression( expr, d->mParserErrorString, d->mParserErrors );
+  d->mRootNode.reset( ::parseExpression( expr, d->mParserErrorString, d->mParserErrors ) );
   d->mExp = expr;
   Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
 }
@@ -226,7 +226,7 @@ bool QgsExpression::operator==( const QgsExpression &other ) const
 
 bool QgsExpression::isValid() const
 {
-  return d->mRootNode;
+  return d->mRootNode.get();
 }
 
 bool QgsExpression::hasParserError() const
@@ -367,7 +367,7 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
     //re-parse expression. Creation of QgsExpressionContexts may have added extra
     //known functions since this expression was created, so we have another try
     //at re-parsing it now that the context must have been created
-    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString, d->mParserErrors );
+    d->mRootNode.reset( ::parseExpression( d->mExp, d->mParserErrorString, d->mParserErrors ) );
   }
 
   if ( !d->mRootNode )
@@ -860,7 +860,7 @@ void QgsExpression::buildVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "zoom_level" ), QCoreApplication::translate( "variable_help", "Vector tile zoom level of the map that is being rendered (derived from the current map scale). Normally in interval [0, 20]." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "vector_tile_zoom" ), QCoreApplication::translate( "variable_help", "Exact vector tile zoom level of the map that is being rendered (derived from the current map scale). Normally in interval [0, 20]. Unlike @zoom_level, this variable is a floating point value which can be used to interpolate values between two integer zoom levels." ) );
 
-  sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) + QStringLiteral( "\n\n" ) + QCoreApplication::translate( "variable_help", "When used for calculations within the attribute table the row number will respect the original order of features from the underlying data source." ) + QStringLiteral( "\n\n" ) + QCoreApplication::translate( "variable_help", "When used from the field calculator the row numbering starts at 1, otherwise (e.g. from Processing tools) the row numbering starts from 0." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "column_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current column." ) );
@@ -953,9 +953,11 @@ void QgsExpression::buildVariableHelp()
   //form variable
   sVariableHelpTexts()->insert( QStringLiteral( "form_mode" ), QCoreApplication::translate( "form_mode", "What the form is used for, like AddFeatureMode, SingleEditMode, MultiEditMode, SearchMode, AggregateSearchMode or IdentifyMode as string." ) );
 
-  // plots
+  // plots and charts
   sVariableHelpTexts()->insert( QStringLiteral( "plot_axis" ), QCoreApplication::translate( "plot_axis", "The associated plot axis, e.g. 'x' or 'y'." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "plot_axis_value" ), QCoreApplication::translate( "plot_axis_value", "The current value for the plot axis." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "plot_axis_value" ), QCoreApplication::translate( "plot_axis_value", "The current value for the plot axis grid line." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "chart_category" ), QCoreApplication::translate( "plot_axis", "The chart item category, e.g. 'fruit' or 'june'." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "chart_value" ), QCoreApplication::translate( "plot_axis_value", "The chart item value." ) );
 }
 
 bool QgsExpression::addVariableHelpText( const QString name, const QString &description )
@@ -1060,6 +1062,11 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   {
     const QgsCoordinateReferenceSystem crs = value.value<QgsCoordinateReferenceSystem>();
     return startToken + tr( "crs: %1" ).arg( crs.userFriendlyIdentifier() ) + endToken;
+  }
+  else if ( value.userType() == qMetaTypeId< QTimeZone>() )
+  {
+    const QTimeZone tz = value.value<QTimeZone>();
+    return startToken + tr( "time zone: %1" ).arg( tz.isValid() ? tz.displayName( QTimeZone::GenericTime, QTimeZone::ShortName ) : tr( "invalid" ) ) + endToken;
   }
   else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {
@@ -1455,12 +1462,12 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
 
 const QgsExpressionNode *QgsExpression::rootNode() const
 {
-  return d->mRootNode;
+  return d->mRootNode.get();
 }
 
 bool QgsExpression::isField() const
 {
-  return d->mRootNode && d->mRootNode->nodeType() == QgsExpressionNode::ntColumnRef;
+  return d->mRootNode && d->mRootNode.get()->nodeType() == QgsExpressionNode::ntColumnRef;
 }
 
 int QgsExpression::expressionToLayerFieldIndex( const QString &expression, const QgsVectorLayer *layer )

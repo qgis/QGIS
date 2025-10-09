@@ -1314,7 +1314,7 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
     }
   }
 
-  context.setUseAdvancedEffects( true );
+  context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context.setPainter( &painter );
   context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );

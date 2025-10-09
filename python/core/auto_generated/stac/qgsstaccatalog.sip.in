@@ -1,0 +1,92 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstaccatalog.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsStacCatalog : QgsStacObject
+{
+%Docstring(signature="appended")
+Class for storing a STAC Catalog's data.
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgsstaccatalog.h"
+%End
+  public:
+
+    QgsStacCatalog( const QString &id,
+                    const QString &version,
+                    const QString &description,
+                    const QVector< QgsStacLink > &links );
+%Docstring
+Constructs a valid QgsStacCatalog
+
+:param id: A unique identifier for the catalog
+:param version: The STAC version the Catalog implements.
+:param description: Detailed multi-line description to fully explain the
+                    Catalog. CommonMark 0.29 syntax may be used for rich
+                    text representation.
+:param links: A list of references to other documents.
+%End
+
+    virtual Qgis::StacObjectType type() const;
+
+    virtual QString toHtml() const;
+
+
+    QString title() const;
+%Docstring
+Returns a short descriptive one-line title for the Catalog.
+%End
+
+    void setTitle( const QString &title );
+%Docstring
+Sets a short descriptive one-line ``title`` for the Catalog.
+%End
+
+    QString description() const;
+%Docstring
+Returns a Detailed multi-line description to fully explain the Catalog.
+CommonMark 0.29 syntax may be used for rich text representation.
+%End
+
+    void setDescription( const QString &description );
+%Docstring
+Sets a detailed multi-line ``description`` to fully explain the Catalog.
+CommonMark 0.29 syntax may be used for rich text representation.
+%End
+
+    void setConformanceClasses( const QStringList &conformanceClasses );
+%Docstring
+Sets the list of ``conformanceClasses`` this catalog conforms to.
+%End
+
+    void addConformanceClass( const QString &conformanceClass );
+%Docstring
+Adds ``conformanceClass`` to the list of catalog's conformance classes
+%End
+
+    bool conformsTo( const QString &conformanceClass ) const;
+%Docstring
+Checks if the catalog is a STAC API conforming to the specified
+``conformanceClass``
+%End
+
+  protected:
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/stac/qgsstaccatalog.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -63,7 +63,7 @@ QString QgsGeometryCheckSliverPolygonAlgorithm::shortHelpString() const
                       "The thinness value is between 1 and +infinity.\n"
                       "If a polygon has an area higher than the maximum area, it is skipped (a maximum area value of 0 means no area check).\n\n"
                       "Polygons having a thinness higher than the maximum thinness are errors.\n\n"
-                      "To fix sliver polygons, use the \"Fix geometry (Area)\" processing." );
+                      "To fix sliver polygons, use the \"Fix small polygons\" algorithm." );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckSliverPolygonAlgorithm::flags() const
@@ -94,13 +94,13 @@ void QgsGeometryCheckSliverPolygonAlgorithm::initAlgorithm( const QVariantMap &c
   ) );
 
   addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "MAX_THINNESS" ), QObject::tr( "Maximum thinness" ), Qgis::ProcessingNumberParameterType::Double, 20, false, 0.0
+    QStringLiteral( "MAX_THINNESS" ), QObject::tr( "Maximum thinness" ), Qgis::ProcessingNumberParameterType::Double, 20, false, 1.0
   ) );
   addParameter( new QgsProcessingParameterNumber(
     QStringLiteral( "MAX_AREA" ), QObject::tr( "Maximum area (map units squared)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );

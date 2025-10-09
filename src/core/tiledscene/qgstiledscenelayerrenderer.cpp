@@ -59,6 +59,7 @@ QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *laye
   mRenderer.reset( layer->renderer()->clone() );
 
   mSceneCrs = layer->dataProvider()->sceneCrs();
+  mLayerCrs = layer->dataProvider()->crs();
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
   mLayerBoundingVolume = layer->dataProvider()->boundingVolume();
@@ -151,15 +152,17 @@ QgsTiledSceneRequest QgsTiledSceneLayerRenderer::createBaseRequest()
 
   // calculate maximum screen error in METERS
   const double maximumErrorPixels = context->convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );
-  // calculate width in meters across the middle of the map
+  // calculate width in meters across one pixel in the middle of the map
   const double mapYCenter = 0.5 * ( mapExtent.yMinimum() + mapExtent.yMaximum() );
-  double mapWidthMeters = 0;
+  const double mapXCenter = 0.5 * ( mapExtent.xMinimum() + mapExtent.xMaximum() );
+  const double onePixelDistanceX = ( mapExtent.xMaximum() - mapExtent.xMinimum() ) / context->outputSize().width();
+  double mapMetersPerPixel = 0;
   try
   {
-    mapWidthMeters = context->distanceArea().measureLine(
-                       QgsPointXY( mapExtent.xMinimum(), mapYCenter ),
-                       QgsPointXY( mapExtent.xMaximum(), mapYCenter )
-                     );
+    mapMetersPerPixel = context->distanceArea().measureLine(
+                          QgsPointXY( mapXCenter, mapYCenter ),
+                          QgsPointXY( mapXCenter + onePixelDistanceX, mapYCenter )
+                        );
   }
   catch ( QgsCsException & )
   {
@@ -167,7 +170,6 @@ QgsTiledSceneRequest QgsTiledSceneLayerRenderer::createBaseRequest()
     QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
   }
 
-  const double mapMetersPerPixel = mapWidthMeters / context->outputSize().width();
   const double maximumErrorInMeters = maximumErrorPixels * mapMetersPerPixel;
 
   QgsTiledSceneRequest request;
@@ -436,6 +438,21 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
                      .arg( contentUri, gltfWarnings ) );
     }
     if ( !res ) return false;
+  }
+  else if ( format == QLatin1String( "draco" ) )
+  {
+    QgsGltfUtils::I3SNodeContext i3sContext;
+    i3sContext.initFromTile( tile, mLayerCrs, mSceneCrs, context.renderContext().transformContext() );
+
+    QString errors;
+    if ( !QgsGltfUtils::loadDracoModel( tileContent, i3sContext, model, &errors ) )
+    {
+      if ( !mErrors.contains( errors ) )
+        mErrors.append( errors );
+      QgsDebugError( QStringLiteral( "Error raised reading %1: %2" )
+                     .arg( contentUri, errors ) );
+      return false;
+    }
   }
   else
     return false;

@@ -15,12 +15,20 @@
 
 #include "qgsabstractdbtablemodel.h"
 #include "qgsabstractdbsourceselect.h"
+#include "qgssettings.h"
+#include "qgssettingstree.h"
 #include "moc_qgsabstractdbsourceselect.cpp"
 
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QItemDelegate>
 #include <QActionGroup>
+
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchColumnAll = new QgsSettingsEntryBool( QStringLiteral( "%1/searchColumnAll" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingSearchColumn = new QgsSettingsEntryInteger( QStringLiteral( "%1/searchColumn" ), QgsSettingsTree::sTreeWindowState, -1 );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingSearchRegex = new QgsSettingsEntryBool( QStringLiteral( "%1/searchRegex" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryBool *QgsAbstractDbSourceSelect::settingHoldDialogOpen = new QgsSettingsEntryBool( QStringLiteral( "%1/holdDialogOpen" ), QgsSettingsTree::sTreeWindowState );
+const QgsSettingsEntryInteger *QgsAbstractDbSourceSelect::settingColumnWidths = new QgsSettingsEntryInteger( QStringLiteral( "%1/columnWidths/%2" ), QgsSettingsTree::sTreeWindowState );
 
 QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
@@ -47,14 +55,14 @@ QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::Windo
   mBuildQueryButton->setDisabled( true );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
 
-  connect( mTablesTreeView, &QTreeView::clicked, this, [=]( const QModelIndex &index ) {
+  connect( mTablesTreeView, &QTreeView::clicked, this, [this]( const QModelIndex &index ) {
     treeviewClicked( mProxyModel->mapToSource( index ) );
   } );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, [=]( const QModelIndex &index ) {
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, [this]( const QModelIndex &index ) {
     treeviewDoubleClicked( mProxyModel->mapToSource( index ) );
   } );
 
-  connect( mBuildQueryButton, &QAbstractButton::clicked, this, [=]() { setSql( mProxyModel->mapToSource( mTablesTreeView->currentIndex() ) ); } );
+  connect( mBuildQueryButton, &QAbstractButton::clicked, this, [this]() { setSql( mProxyModel->mapToSource( mTablesTreeView->currentIndex() ) ); } );
 }
 
 void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDelegate *delegate )
@@ -75,7 +83,18 @@ void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDeleg
   mSearchColumnAllAction->setCheckable( true );
   mSearchSettingsMenu->addAction( mSearchColumnAllAction );
   columnActionGroup->addAction( mSearchColumnAllAction );
-  bool hasDefaultSearchColumn = false;
+  bool searchColumnAll = settingSearchColumnAll->value( { settingPath() } );
+  int storedSearchColumn = -1;
+  //Avoid having a usable presetColumn when all is selected
+  if ( !searchColumnAll )
+  {
+    storedSearchColumn = settingSearchColumn->value( { settingPath() } );
+    if ( storedSearchColumn < 0 )
+    {
+      storedSearchColumn = model->defaultSearchColumn();
+    }
+  }
+  bool hasPresetColumn = false;
   const QStringList columns = model->columns();
   for ( int i = 0; i < columns.count(); i++ )
   {
@@ -83,35 +102,54 @@ void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDeleg
       continue;
     QAction *action = new QAction( columns.at( i ), mSearchSettingsMenu );
     action->setCheckable( true );
-    if ( model->defaultSearchColumn() == i )
+    if ( storedSearchColumn == i )
     {
       action->setChecked( true );
-      hasDefaultSearchColumn = true;
+      hasPresetColumn = true;
     }
     mSearchSettingsMenu->addAction( action );
     columnActionGroup->addAction( action );
     mSearchColumnActions << action;
   }
-  mSearchColumnAllAction->setChecked( !hasDefaultSearchColumn );
+  mSearchColumnAllAction->setChecked( !hasPresetColumn );
   mSearchSettingsMenu->addSeparator();
   QActionGroup *modeActionGroup = new QActionGroup( this );
   // mode: wildcard
   QAction *wildcardAction = new QAction( tr( "Wildcard" ), mSearchSettingsMenu );
   wildcardAction->setCheckable( true );
-  wildcardAction->setChecked( true );
+  //wildcard is active when regex is disabled
+  bool regexActionSetting = settingSearchRegex->value( { settingPath() } );
+  wildcardAction->setChecked( !regexActionSetting );
   mSearchSettingsMenu->addAction( wildcardAction );
   modeActionGroup->addAction( wildcardAction );
   // mode: regexp
   mSearchModeRegexAction = new QAction( tr( "Regular Expression" ), mSearchSettingsMenu );
   mSearchModeRegexAction->setCheckable( true );
-  mSearchModeRegexAction->setChecked( false );
+  mSearchModeRegexAction->setChecked( regexActionSetting );
   mSearchSettingsMenu->addAction( mSearchModeRegexAction );
   modeActionGroup->addAction( mSearchModeRegexAction );
 
   mSearchSettingsButton->setMenu( mSearchSettingsMenu );
 
-  connect( mSearchSettingsMenu, &QMenu::triggered, this, [=]() { filterResults(); } );
-  connect( mSearchTableEdit, &QLineEdit::textChanged, this, [=]() { filterResults(); } );
+  connect( mSearchSettingsMenu, &QMenu::triggered, this, [this]() { filterResults(); } );
+  connect( mSearchTableEdit, &QLineEdit::textChanged, this, [this]() { filterResults(); } );
+}
+
+void QgsAbstractDbSourceSelect::storeSettings()
+{
+  if ( !mSearchColumnAllAction->isChecked() )
+  {
+    for ( int i = 0; i < mSearchColumnActions.count(); i++ )
+    {
+      if ( mSearchColumnActions.at( i )->isChecked() )
+      {
+        settingSearchColumn->setValue( i, { settingPath() } );
+        break;
+      }
+    }
+  }
+  settingSearchColumnAll->setValue( mSearchColumnAllAction->isChecked(), { settingPath() } );
+  settingSearchRegex->setValue( mSearchModeRegexAction->isChecked(), { settingPath() } );
 }
 
 void QgsAbstractDbSourceSelect::treeviewClicked( const QModelIndex &index )

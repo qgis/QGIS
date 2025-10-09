@@ -88,7 +88,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   mQueryEdit->setLineNumbersVisible( true );
 
   connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::browseCRS );
-  connect( mAddLayerBtn, &QAbstractButton::clicked, this, [=] { addLayerPrivate( true ); } );
+  connect( mAddLayerBtn, &QAbstractButton::clicked, this, [this] { addLayerPrivate( true ); } );
   connect( mRemoveLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::removeLayer );
   connect( mImportLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::importLayer );
   connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::tableRowChanged );
@@ -160,7 +160,7 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
 
   if ( !def.uid().isEmpty() )
   {
-    mUIDColumnNameChck->setChecked( true );
+    mUIDColumnNameCheck->setChecked( true );
     mUIDField->setText( def.uid() );
   }
 
@@ -219,7 +219,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   {
     def.setQuery( mQueryEdit->text() );
   }
-  if ( mUIDColumnNameChck->isChecked() && !mUIDField->text().isEmpty() )
+  if ( mUIDColumnNameCheck->isChecked() && !mUIDField->text().isEmpty() )
   {
     def.setUid( mUIDField->text() );
   }
@@ -261,11 +261,11 @@ bool QgsVirtualLayerSourceSelect::preFlight()
     if ( vl->isValid() )
     {
       const QStringList fieldNames = vl->fields().names();
-      if ( mUIDColumnNameChck->isChecked() && mUIDField->text().isEmpty() )
+      if ( mUIDColumnNameCheck->isChecked() && mUIDField->text().isEmpty() )
       {
         QMessageBox::warning( nullptr, tr( "Test Virtual Layer " ), tr( "Checkbox 'Unique identifier column' is checked, but no field given" ) );
       }
-      else if ( mUIDColumnNameChck->isChecked() && !mUIDField->text().isEmpty() && !vl->fields().names().contains( mUIDField->text() ) )
+      else if ( mUIDColumnNameCheck->isChecked() && !mUIDField->text().isEmpty() && !vl->fields().names().contains( mUIDField->text() ) )
       {
         QStringList bulletedFieldNames;
         for ( const QString &fieldName : fieldNames )

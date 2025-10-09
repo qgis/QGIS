@@ -14,7 +14,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayerMetadata.__overridden_methods__ = ['clone', 'readMetadataXml', 'writeMetadataXml', 'combine']
+    QgsLayerMetadata.__overridden_methods__ = ['clone', 'readMetadataXml', 'writeMetadataXml', 'combine', 'registerTranslations']
     QgsLayerMetadata.__group__ = ['metadata']
 except (NameError, AttributeError):
     pass

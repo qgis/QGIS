@@ -60,7 +60,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
 
   verticalHeader()->viewport()->installEventFilter( this );
 
-  connect( verticalHeader(), &QHeaderView::sectionPressed, this, [=]( int row ) { selectRow( row, true ); } );
+  connect( verticalHeader(), &QHeaderView::sectionPressed, this, [this]( int row ) { selectRow( row, true ); } );
   connect( verticalHeader(), &QHeaderView::sectionEntered, this, &QgsAttributeTableView::_q_selectRow );
   connect( horizontalHeader(), &QHeaderView::sectionResized, this, &QgsAttributeTableView::columnSizeChanged );
   connect( horizontalHeader(), &QHeaderView::sortIndicatorChanged, this, &QgsAttributeTableView::showHorizontalSortIndicator );
@@ -80,6 +80,25 @@ bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
       case QEvent::MouseButtonRelease:
         mFeatureSelectionModel->enableSync( true );
         break;
+
+      case QEvent::MouseButtonDblClick:
+      {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+        if ( mouseEvent->button() == Qt::LeftButton )
+        {
+          const int row = verticalHeader()->logicalIndexAt( mouseEvent->pos() );
+          if ( row >= 0 && mFilterModel )
+          {
+            const QModelIndex index = mFilterModel->index( row, 0 );
+            if ( index.isValid() )
+            {
+              const QgsFeatureId fid = mFilterModel->rowToId( index );
+              emit rowHeaderDoubleClicked( fid );
+            }
+          }
+        }
+        break;
+      }
 
       default:
         break;

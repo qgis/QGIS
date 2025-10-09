@@ -36,6 +36,7 @@
 #include <QScreen>
 #include <QWidget>
 #include <QTextBoundaryFinder>
+#include <QMimeData>
 
 #include "qgsfontutils.h"
 #include "qgsexpression.h"
@@ -1494,7 +1495,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
     }
   }
 
-  context.setUseAdvancedEffects( true );
+  context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   context.setPainter( &painter );
 
   // slightly inset text to account for buffer/background
@@ -4966,4 +4967,48 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
     format.setShadow( shadow );
     tmpLyr.setFormat( format );
   }
+}
+
+QMimeData *QgsPalLayerSettings::toMimeData() const
+{
+  //set both the mime color data, and the text (format settings).
+
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setColorData( QVariant( format().color() ) );
+
+  QgsReadWriteContext rwContext;
+  QDomDocument textDoc;
+  QDomElement textElem = writeXml( textDoc, rwContext );
+  textDoc.appendChild( textElem );
+  mimeData->setData( QLatin1String( "application/qgis.labelsettings" ), textDoc.toString().toUtf8() );
+
+  return mimeData;
+}
+
+QgsPalLayerSettings QgsPalLayerSettings::fromMimeData( const QMimeData *data, bool *ok )
+{
+  if ( ok )
+    *ok = false;
+  QgsPalLayerSettings settings;
+  if ( !data || !data->hasFormat( QLatin1String( "application/qgis.labelsettings" ) ) )
+    return settings;
+
+  QString text = QString::fromUtf8( data->data( QLatin1String( "application/qgis.labelsettings" ) ) );
+  if ( !text.isEmpty() )
+  {
+    QDomDocument doc;
+    QDomElement elem;
+    QgsReadWriteContext rwContext;
+
+    if ( doc.setContent( text ) )
+    {
+      elem = doc.documentElement();
+
+      settings.readXml( elem, rwContext );
+      if ( ok )
+        *ok = true;
+      return settings;
+    }
+  }
+  return settings;
 }

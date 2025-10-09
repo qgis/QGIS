@@ -173,7 +173,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   QString ellipsoid = e;
   // ensure ellipsoid database is populated when first called
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, []
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Initialize ellipsoids" ) );
     ( void )definitions();
@@ -214,6 +214,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
       params.semiMinor = semiMinor;
       params.inverseFlattening = semiMajor / ( semiMajor - semiMinor );
       params.useCustomParameters = true;
+      params.crs.createFromProj( QStringLiteral( "+proj=longlat +a=%1 +b=%2 +no_defs +type=crs" ).arg( params.semiMajor, 0, 'g', 17 ).arg( params.semiMinor, 0, 'g', 17 ) );
     }
     else
     {

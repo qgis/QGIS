@@ -169,6 +169,11 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   const QStringList processArgs = createArgumentLists( parameters, context, feedback );
   const QString wrenchPath = wrenchExecutableBinary();
 
+  if ( !QFileInfo::exists( wrenchPath ) )
+  {
+    throw QgsProcessingException( QObject::tr( "wrench executable is not found. Either use QGIS build with PDAL support or provide correct path via QGIS_WRENCH_EXECUTABLE environment variable." ) );
+  }
+
   QStringList logArgs;
   const thread_local QRegularExpression re( "[\\s\\\"\\'\\(\\)\\&;]" );
   for ( const QString &arg : processArgs )
@@ -189,10 +194,10 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   QString buffer;
 
   QgsBlockingProcess wrenchProcess( wrenchPath, processArgs );
-  wrenchProcess.setStdErrHandler( [=]( const QByteArray &ba ) {
+  wrenchProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
     feedback->reportError( ba.trimmed() );
   } );
-  wrenchProcess.setStdOutHandler( [=, &progress, &buffer]( const QByteArray &ba ) {
+  wrenchProcess.setStdOutHandler( [feedback, &progress, &buffer]( const QByteArray &ba ) {
     QString data( ba );
 
     QRegularExpression re( "\\.*(\\d+)?\\.*$" );
@@ -291,7 +296,7 @@ QgsPointCloudLayer *QgsPdalAlgorithmBase::parameterAsPointCloudLayer( const QVar
     return nullptr;
 
   // if COPC provider, return as it is
-  if ( layer->dataProvider()->name() == QStringLiteral( "copc" ) )
+  if ( layer->dataProvider()->name() == QLatin1String( "copc" ) )
   {
     return layer;
   }

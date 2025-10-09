@@ -134,7 +134,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   mLblFilePath->setVisible( !filePath.isEmpty() );
   mLblFilePath->setWordWrap( true );
   mLblFilePath->setTextInteractionFlags( Qt::TextBrowserInteraction );
-  connect( mLblFilePath, &QLabel::linkActivated, this, [=]( const QString &link ) {
+  connect( mLblFilePath, &QLabel::linkActivated, this, []( const QString &link ) {
     const QUrl url( link );
     const QFileInfo file( url.toLocalFile() );
     if ( file.exists() && !file.isDir() )
@@ -173,7 +173,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   {
     // initial details are incomplete, so fire up a task in the background to fully populate the model...
     mTask = new QgsProviderSublayerTask( uri, providerKey, true );
-    connect( mTask.data(), &QgsProviderSublayerTask::taskCompleted, this, [=] {
+    connect( mTask.data(), &QgsProviderSublayerTask::taskCompleted, this, [this, acceptableTypes] {
       QList<QgsProviderSublayerDetails> res = mTask->results();
       res.erase( std::remove_if( res.begin(), res.end(), [acceptableTypes]( const QgsProviderSublayerDetails &sublayer ) {
                    return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() );
@@ -190,12 +190,12 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   }
 
   connect( mBtnSelectAll, &QAbstractButton::pressed, this, &QgsProviderSublayersDialog::selectAll );
-  connect( mBtnDeselectAll, &QAbstractButton::pressed, this, [=] { mLayersTree->selectionModel()->clear(); } );
+  connect( mBtnDeselectAll, &QAbstractButton::pressed, this, [this] { mLayersTree->selectionModel()->clear(); } );
   connect( mLayersTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProviderSublayersDialog::treeSelectionChanged );
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsProviderSublayerProxyModel::setFilterString );
   connect( mCheckShowSystem, &QCheckBox::toggled, mProxyModel, &QgsProviderSublayerProxyModel::setIncludeSystemTables );
   connect( mCheckShowEmpty, &QCheckBox::toggled, mProxyModel, &QgsProviderSublayerProxyModel::setIncludeEmptyLayers );
-  connect( mLayersTree, &QTreeView::doubleClicked, this, [=]( const QModelIndex &index ) {
+  connect( mLayersTree, &QTreeView::doubleClicked, this, [this]( const QModelIndex &index ) {
     const QModelIndex left = mLayersTree->model()->index( index.row(), 0, index.parent() );
     if ( !( left.flags() & Qt::ItemIsSelectable ) )
       return;
@@ -205,7 +205,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
     accept();
   } );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, [this] {
     emit layersAdded( selectedLayers() );
     accept();
   } );

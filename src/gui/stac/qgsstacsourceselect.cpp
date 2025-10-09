@@ -21,7 +21,7 @@
 #include "qgsstaccontroller.h"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
-#include "qgsstaccollections.h"
+#include "qgsstaccollectionlist.h"
 #include "qgsstacconnection.h"
 #include "qgsstacconnectiondialog.h"
 #include "qgsmanageconnectionsdialog.h"
@@ -73,7 +73,7 @@ QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mItemsView->setContextMenuPolicy( Qt::CustomContextMenu );
 
   connect( mItemsView, &QListView::customContextMenuRequested, this, &QgsStacSourceSelect::showItemsContextMenu );
-  connect( mItemsView, &QListView::doubleClicked, this, &QgsStacSourceSelect::onItemDoubleClicked );
+  connect( mItemsView, &QListView::doubleClicked, this, &QgsStacSourceSelect::showItemDetails );
   connect( mItemsView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsStacSourceSelect::onCurrentItemChanged );
   connect( mItemsView->verticalScrollBar(), &QScrollBar::valueChanged, this, &QgsStacSourceSelect::onItemsViewScroll );
 
@@ -138,9 +138,10 @@ void QgsStacSourceSelect::onItemsViewScroll( int value )
   }
 }
 
-void QgsStacSourceSelect::onItemDoubleClicked( const QModelIndex &index )
+void QgsStacSourceSelect::showItemDetails( const QModelIndex &index )
 {
   QgsStacObjectDetailsDialog details( this );
+  details.setAuthcfg( mStac->authCfg() );
   details.setStacObject( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
   details.exec();
 }
@@ -297,10 +298,16 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
     for ( auto &l : cat->links() )
     {
       // collections endpoint should have a "data" relation according to spec but some servers don't
-      // so let's be less strict and only check the href
-      if ( l.href().endsWith( "/collections" ) )
+      // so let's be less strict and only check the href and optionally the media type
+      if ( QUrl( l.href() ).path().endsWith( "/collections" ) &&     // allow query parameters in the url
+           ( l.mediaType().isEmpty() ||                              // media type is optional
+             l.mediaType() == QLatin1String( "application/json" ) || // but if it's there it should be json or geojson
+             l.mediaType() == QLatin1String( "application/geo+json" ) ) )
         collectionsUrl = l.href();
-      else if ( l.relation() == "search" )
+      else if ( l.relation() == "search" &&                               // relation needs to be "search" according to spec
+                ( l.mediaType().isEmpty() ||                              // media type is optional
+                  l.mediaType() == QLatin1String( "application/json" ) || // but if it's there it should be json or geojson
+                  l.mediaType() == QLatin1String( "application/geo+json" ) ) )
         mSearchUrl = l.href();
 
       if ( !collectionsUrl.isEmpty() && !mSearchUrl.isEmpty() )
@@ -323,7 +330,7 @@ void QgsStacSourceSelect::onStacObjectRequestFinished( int requestId, QString er
 void QgsStacSourceSelect::onCollectionsRequestFinished( int requestId, QString error )
 {
   QgsDebugMsgLevel( QStringLiteral( "Finished collections request %1" ).arg( requestId ), 2 );
-  std::unique_ptr<QgsStacCollections> cols( mStac->takeCollections( requestId ) );
+  std::unique_ptr<QgsStacCollectionList> cols( mStac->takeCollections( requestId ) );
 
   if ( !cols )
   {
@@ -366,7 +373,7 @@ void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QStrin
   mNextPageUrl = col->nextUrl();
 
   const QVector<QgsStacItem *> items = col->takeItems();
-  mItemsModel->addItems( items );
+  mItemsModel->addItems( items, mStac->authCfg() );
 
   for ( QgsStacItem *i : items )
   {
@@ -385,7 +392,7 @@ void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QStrin
     // Suppress warning: Potential leak of memory in qtimer.h [clang-analyzer-cplusplus.NewDeleteLeaks]
 #ifndef __clang_analyzer__
     // Let the results appear, then fetch more if there's no scrollbar
-    QTimer::singleShot( 100, this, [=] {
+    QTimer::singleShot( 100, this, [this] {
       if ( isVisible() && !mItemsView->verticalScrollBar()->isVisible() )
       {
         fetchNextResultPage();
@@ -559,9 +566,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
 
   QAction *detailsAction = new QAction( tr( "Details…" ), menu );
   connect( detailsAction, &QAction::triggered, this, [this, index] {
-    QgsStacObjectDetailsDialog details( this );
-    details.setStacObject( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
-    details.exec();
+    showItemDetails( index );
   } );
 
 
@@ -617,19 +622,26 @@ void QgsStacSourceSelect::showFootprints( bool enable )
 
 void QgsStacSourceSelect::loadUri( const QgsMimeDataUtils::Uri &uri )
 {
+  QString layerUri = uri.uri;
+  const QString authcfg = mStac->authCfg();
+  if ( !authcfg.isEmpty() )
+  {
+    layerUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
+  }
+
   if ( uri.layerType == QLatin1String( "raster" ) )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addRasterLayer( uri.uri, uri.name, uri.providerKey );
+    emit addRasterLayer( layerUri, uri.name, uri.providerKey );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Raster, uri.uri, uri.name, uri.providerKey );
+    emit addLayer( Qgis::LayerType::Raster, layerUri, uri.name, uri.providerKey );
   }
   else if ( uri.layerType == QLatin1String( "pointcloud" ) )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addPointCloudLayer( uri.uri, uri.name, uri.providerKey );
+    emit addPointCloudLayer( layerUri, uri.name, uri.providerKey );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::PointCloud, uri.uri, uri.name, uri.providerKey );
+    emit addLayer( Qgis::LayerType::PointCloud, layerUri, uri.name, uri.providerKey );
   }
 }
 ///@endcond

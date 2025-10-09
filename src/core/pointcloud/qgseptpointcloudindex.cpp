@@ -42,6 +42,7 @@
 #include "qgspointcloudexpression.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgspointcloudstatistics.h"
+#include "qgsauthmanager.h"
 
 ///@cond PRIVATE
 
@@ -55,7 +56,7 @@ QgsEptPointCloudIndex::QgsEptPointCloudIndex()
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
 
-void QgsEptPointCloudIndex::load( const QString &urlString )
+void QgsEptPointCloudIndex::load( const QString &urlString, const QString &authcfg )
 {
   QUrl url = urlString;
   // Treat non-URLs as local files
@@ -72,10 +73,12 @@ void QgsEptPointCloudIndex::load( const QString &urlString )
   QByteArray content;
   if ( mAccessType == Qgis::PointCloudAccessType::Remote )
   {
+    mAuthCfg = authcfg;
     QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
     QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsEptPointCloudIndex" ) );
 
     QgsBlockingNetworkRequest req;
+    req.setAuthCfg( mAuthCfg );
     if ( req.get( nr ) != QgsBlockingNetworkRequest::NoError )
     {
       QgsDebugError( QStringLiteral( "Request failed: " ) + mUri );
@@ -110,6 +113,7 @@ void QgsEptPointCloudIndex::load( const QString &urlString )
       QNetworkRequest nr = QNetworkRequest( QUrl( manifestUrl ) );
       QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsEptPointCloudIndex" ) );
       QgsBlockingNetworkRequest req;
+      req.setAuthCfg( mAuthCfg );
       if ( req.get( nr ) == QgsBlockingNetworkRequest::NoError )
         manifestJson = req.reply().content();
     }
@@ -157,6 +161,7 @@ void QgsEptPointCloudIndex::loadManifest( const QByteArray &manifestJson )
     QNetworkRequest nr = QNetworkRequest( QUrl( metadataUrl ) );
     QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsEptPointCloudIndex" ) );
     QgsBlockingNetworkRequest req;
+    req.setAuthCfg( mAuthCfg );
     if ( req.get( nr ) != QgsBlockingNetworkRequest::NoError )
       return;
     metadataJson = req.reply().content();
@@ -454,7 +459,7 @@ QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const QgsPointC
   QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
-  return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect() );
+  return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect(), mAuthCfg );
 }
 
 bool QgsEptPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
@@ -542,6 +547,12 @@ bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const QgsPointCloudNodeId &
     QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsEptPointCloudIndex" ) );
     nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+    if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( nr, mAuthCfg ) )
+    {
+      QgsDebugError( QStringLiteral( "Network request update failed for authcfg: %1" ).arg( mAuthCfg ) );
+      return false;
+    }
 
     std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( nr ) );
 

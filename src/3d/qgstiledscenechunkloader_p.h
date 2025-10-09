@@ -56,13 +56,16 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
     Q_OBJECT
   public:
     QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset );
+    void start() override;
 
     ~QgsTiledSceneChunkLoader();
 
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
+    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     const QgsTiledSceneChunkLoaderFactory &mFactory;
+    double mZValueScale;
+    double mZValueOffset;
     QgsTiledSceneIndex mIndex;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
     Qt3DCore::QEntity *mEntity = nullptr;
@@ -81,8 +84,12 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     Q_OBJECT
   public:
     QgsTiledSceneChunkLoaderFactory(
-      const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs,
-      double zValueScale, double zValueOffset
+      const Qgs3DRenderContext &context,
+      const QgsTiledSceneIndex &index,
+      QgsCoordinateReferenceSystem tileCrs,
+      QgsCoordinateReferenceSystem layerCrs,
+      double zValueScale,
+      double zValueOffset
     );
 
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
@@ -101,6 +108,7 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     double mZValueScale = 1.0;
     double mZValueOffset = 0;
     QgsCoordinateTransform mBoundsTransform;
+    QgsCoordinateReferenceSystem mLayerCrs;
     QSet<long long> mPendingHierarchyFetches;
     QSet<long long> mFutureHierarchyFetches;
 };
@@ -120,7 +128,7 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset );
+    explicit QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset );
 
     ~QgsTiledSceneLayerChunkedEntity();
 

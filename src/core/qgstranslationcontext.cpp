@@ -47,7 +47,10 @@ void QgsTranslationContext::registerTranslation( const QString &context, const Q
   TranslatableObject translatableObject;
   translatableObject.context = context;
   translatableObject.source = source;
-  mTranslatableObjects.append( translatableObject );
+  if ( !mTranslatableObjects.contains( translatableObject ) )
+  {
+    mTranslatableObjects.append( translatableObject );
+  }
 }
 
 void QgsTranslationContext::writeTsFile( const QString &locale ) const

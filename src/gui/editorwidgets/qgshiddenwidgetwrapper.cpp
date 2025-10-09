@@ -23,7 +23,6 @@ QgsHiddenWidgetWrapper::QgsHiddenWidgetWrapper( QgsVectorLayer *layer, int field
 {
 }
 
-
 QVariant QgsHiddenWidgetWrapper::value() const
 {
   return mValue;

@@ -36,7 +36,7 @@ QgsPostgresRasterTemporalSettingsWidget::QgsPostgresRasterTemporalSettingsWidget
 
   mPostgresRasterTemporalFieldComboBox->setFilters( QgsFieldProxyModel::Filter::Date | QgsFieldProxyModel::Filter::DateTime | QgsFieldProxyModel::Filter::String );
   mPostgresRasterTemporalFieldComboBox->setAllowEmptyFieldName( true );
-  connect( mPostgresRasterTemporalFieldComboBox, &QgsFieldComboBox::fieldChanged, this, [=]( const QString &fieldName ) {
+  connect( mPostgresRasterTemporalFieldComboBox, &QgsFieldComboBox::fieldChanged, this, [this]( const QString &fieldName ) {
     mPostgresRasterDefaultTime->setEnabled( !fieldName.isEmpty() );
   } );
   mPostgresRasterDefaultTime->setAllowNull( true );

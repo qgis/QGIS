@@ -10,7 +10,7 @@
 
 
 
-class QgsRichTextEditor : QWidget, protected Ui::QgsRichTextEditorBase
+class QgsRichTextEditor : QWidget
 {
 %Docstring(signature="appended")
 A widget for editing rich text documents, with support for user
