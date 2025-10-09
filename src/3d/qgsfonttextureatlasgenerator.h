@@ -168,6 +168,7 @@ class _3D_EXPORT QgsFontTextureAtlas
     QSize mAtlasSize;
     QHash< QString, int > mGraphemeIndices;
     QMap< QString, StringMetrics > mStringMetrics;
+    int mTexturePaddingPixels = 0;
 
     friend class QgsFontTextureAtlasGenerator;
 };
