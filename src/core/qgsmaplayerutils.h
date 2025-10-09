@@ -104,6 +104,13 @@ class CORE_EXPORT QgsMapLayerUtils
      */
     static bool isOpenStreetMapLayer( QgsMapLayer *layer );
 
+    /**
+     * Returns the translated name of the type for a given layer type.
+     *
+     * \since QGIS 4.0
+     */
+    static QString translateLayerType( const Qgis::LayerType &type );
+
 };
 
 #endif // QGSMAPLAYERUTILS_H

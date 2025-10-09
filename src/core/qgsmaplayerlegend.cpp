@@ -48,7 +48,10 @@ void QgsMapLayerLegend::readXml( const QDomElement &elem, const QgsReadWriteCont
 QDomElement QgsMapLayerLegend::writeXml( QDomDocument &doc, const QgsReadWriteContext & ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "legend" ) );
-  elem.setAttribute( QStringLiteral( "excludeByDefault" ), mFlags.testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  if ( mFlags.testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+  {
+    elem.setAttribute( QStringLiteral( "excludeByDefault" ),  QStringLiteral( "1" ) );
+  }
   return elem;
 }
 
