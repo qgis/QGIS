@@ -90,34 +90,43 @@ QRect QgsFontTextureAtlas::rect( const QString &grapheme ) const
 
 int QgsFontTextureAtlas::graphemeCount( const QString &string ) const
 {
-  auto it = mGraphemeMetrics.constFind( string );
-  if ( it == mGraphemeMetrics.constEnd() )
+  auto it = mStringMetrics.constFind( string );
+  if ( it == mStringMetrics.constEnd() )
     return 0;
 
-  return it->count();
+  return it->graphemeMetrics.count();
+}
+
+int QgsFontTextureAtlas::totalWidth( const QString &string ) const
+{
+  auto it = mStringMetrics.constFind( string );
+  if ( it == mStringMetrics.constEnd() )
+    return 0;
+
+  return it->totalWidth;
 }
 
 QPoint QgsFontTextureAtlas::pixelOffsetForGrapheme( const QString &string, int graphemeIndex ) const
 {
-  auto it = mGraphemeMetrics.constFind( string );
-  if ( it == mGraphemeMetrics.constEnd() )
+  auto it = mStringMetrics.constFind( string );
+  if ( it == mStringMetrics.constEnd() )
     return QPoint();
 
-  const GraphemeMetric &graphemeMetrics = it.value()[graphemeIndex];
+  const GraphemeMetric &graphemeMetrics = it.value().graphemeMetrics[graphemeIndex];
   auto charIt = mGraphemeIndices.constFind( graphemeMetrics.grapheme );
   if ( charIt == mGraphemeIndices.constEnd() )
     return QPoint();
 
-  return QPoint( it.value().value( graphemeIndex ).horizontalAdvance, -( mRects[charIt.value()].boundingRectSize.height() + mRects[charIt.value()].characterOffsetFromOrigin.y() ) );
+  return QPoint( graphemeMetrics.horizontalAdvance, -( mRects[charIt.value()].boundingRectSize.height() + mRects[charIt.value()].characterOffsetFromOrigin.y() ) );
 }
 
 QRect QgsFontTextureAtlas::textureRectForGrapheme( const QString &string, int graphemeIndex ) const
 {
-  auto it = mGraphemeMetrics.constFind( string );
-  if ( it == mGraphemeMetrics.constEnd() )
+  auto it = mStringMetrics.constFind( string );
+  if ( it == mStringMetrics.constEnd() )
     return QRect();
 
-  const GraphemeMetric &graphemeMetrics = it.value().value( graphemeIndex );
+  const GraphemeMetric &graphemeMetrics = it.value().graphemeMetrics.value( graphemeIndex );
   auto charIt = mGraphemeIndices.constFind( graphemeMetrics.grapheme );
   if ( charIt == mGraphemeIndices.constEnd() )
     return QRect();
@@ -182,20 +191,22 @@ QgsFontTextureAtlas QgsFontTextureAtlasGenerator::create( const QgsTextFormat &f
 
   // collect unique graphemes from all strings
   QSet<QString> uniqueGraphemes;
-  QMap< QString, QVector< QgsFontTextureAtlas::GraphemeMetric > > graphemeMetrics;
+  QMap< QString, QgsFontTextureAtlas::StringMetrics > stringMetrics;
   for ( const QString &string : strings )
   {
     const QStringList graphemes = QgsPalLabeling::splitToGraphemes( string );
-    QVector< QgsFontTextureAtlas::GraphemeMetric > thisStringMetrics;
-    thisStringMetrics.reserve( graphemes.size() );
+
+    QgsFontTextureAtlas::StringMetrics thisStringMetrics;
+    thisStringMetrics.totalWidth = fontMetrics.boundingRect( string ).width();
+    thisStringMetrics.graphemeMetrics.reserve( graphemes.size() );
     QString currentString;
     for ( const QString &grapheme : graphemes )
     {
       uniqueGraphemes.insert( grapheme );
-      thisStringMetrics << QgsFontTextureAtlas::GraphemeMetric( static_cast< int >( std::round( fontMetrics.horizontalAdvance( currentString ) ) ), grapheme );
+      thisStringMetrics.graphemeMetrics << QgsFontTextureAtlas::GraphemeMetric( static_cast< int >( std::round( fontMetrics.horizontalAdvance( currentString ) ) ), grapheme );
       currentString += grapheme;
     }
-    graphemeMetrics.insert( string, thisStringMetrics );
+    stringMetrics.insert( string, thisStringMetrics );
   }
 
   if ( uniqueGraphemes.isEmpty() )
@@ -254,7 +265,7 @@ QgsFontTextureAtlas QgsFontTextureAtlasGenerator::create( const QgsTextFormat &f
   res.mFormat = format;
   res.mRects = std::move( charRects );
   res.mAtlasSize = QSize( resultSize.w, resultSize.h );
-  res.mGraphemeMetrics = std::move( graphemeMetrics );
+  res.mStringMetrics = std::move( stringMetrics );
 
   int index = 0;
   for ( const QgsCharTextureRect &r : res.mRects )

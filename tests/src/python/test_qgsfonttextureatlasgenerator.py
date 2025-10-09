@@ -47,6 +47,7 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertEqual(len(atlas), 1)
         self.assertEqual(atlas.atlasSize(), QSize(23, 24))
         self.assertEqual(atlas.graphemeCount("H"), 1)
+        self.assertEqual(atlas.totalWidth("H"), 19)
         with self.assertRaises(KeyError):
             atlas.rect("x")
         self.assertEqual(atlas.rect("H"), QRect(0, 0, 23, 24))
@@ -67,6 +68,7 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertEqual(len(atlas), 2)
         self.assertEqual(atlas.atlasSize(), QSize(25, 48))
         self.assertEqual(atlas.graphemeCount("HY"), 2)
+        self.assertEqual(atlas.totalWidth("HY"), 41)
         with self.assertRaises(KeyError):
             atlas.rect("x")
         self.assertEqual(atlas.rect("Y"), QRect(0, 0, 25, 24))
@@ -90,7 +92,9 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertEqual(len(atlas), 2)
         self.assertEqual(atlas.atlasSize(), QSize(25, 48))
         self.assertEqual(atlas.graphemeCount("HY"), 2)
+        self.assertEqual(atlas.totalWidth("HY"), 41)
         self.assertEqual(atlas.graphemeCount("YH"), 2)
+        self.assertEqual(atlas.totalWidth("YH"), 42)
         with self.assertRaises(KeyError):
             atlas.rect("x")
         self.assertEqual(atlas.rect("Y"), QRect(0, 0, 25, 24))
@@ -118,7 +122,9 @@ class TestQgsFontTextureAtlasGenerator(QgisTestCase):
         self.assertEqual(len(atlas), 3)
         self.assertEqual(atlas.atlasSize(), QSize(32, 48))
         self.assertEqual(atlas.graphemeCount("HY"), 2)
+        self.assertEqual(atlas.totalWidth("HY"), 41)
         self.assertEqual(atlas.graphemeCount("Hi"), 2)
+        self.assertEqual(atlas.totalWidth("Hi"), 28)
         with self.assertRaises(KeyError):
             atlas.rect("x")
         self.assertEqual(atlas.rect("Y"), QRect(0, 0, 25, 24))
