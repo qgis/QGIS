@@ -78,6 +78,7 @@ class QgsDxfExport;
 class QgsVectorLayerDiagramProvider;
 class QgsExpressionContext;
 class QgsCallout;
+class QMimeData;
 
 /**
  * \ingroup core
@@ -894,6 +895,24 @@ class CORE_EXPORT QgsPalLayerSettings
      * \since QGIS 3.20
      */
     void setUnplacedVisibility( Qgis::UnplacedLabelVisibility visibility );
+
+    /**
+     * Returns new mime data representing the labeling settings.
+     * Caller takes responsibility for deleting the returned object.
+     * \see fromMimeData()
+     *
+     * \since QGIS 4.0
+     */
+    QMimeData *toMimeData() const SIP_FACTORY;
+
+    /**
+     * Attempts to parse the provided mime \a data as a QgsPalLayerSettings.
+     * If data can be parsed as a labeling settings, \a ok will be set to TRUE.
+     * \see toMimeData()
+     *
+     * \since QGIS 4.0
+     */
+    static QgsPalLayerSettings fromMimeData( const QMimeData *data, bool *ok SIP_OUT = nullptr );
 
     // temporary stuff: set when layer gets prepared or labeled
     const QgsFeature *mCurFeat = nullptr;
