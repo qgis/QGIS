@@ -86,7 +86,7 @@ class CSW202Search(SearchBase):
         self.constraints = []
 
         log_message(f"Connecting to CSW: {self.url}", Qgis.MessageLevel.Info)
-        self.conn = CatalogueServiceWeb(
+        self.conn = CatalogueServiceWeb(  # spellok
             self.url,  # spellok
             timeout=self.timeout,
             username=self.username,
