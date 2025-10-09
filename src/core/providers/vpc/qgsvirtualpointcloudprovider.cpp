@@ -34,6 +34,7 @@
 #include "qgsgeometry.h"
 #include "qgsmultipolygon.h"
 #include "qgscoordinatetransform.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QIcon>
 
@@ -152,21 +153,47 @@ void QgsVirtualPointCloudProvider::generateIndex()
 
 void QgsVirtualPointCloudProvider::parseFile()
 {
-  QFile file( dataSourceUri() );
-  const QFileInfo fInfo( file );
-
+  const QUrl url( dataSourceUri() );
   nlohmann::json data;
-  if ( file.open( QFile::ReadOnly ) )
+  QByteArray jsonData;
+
+  if ( url.scheme().startsWith( "http" ) )
   {
-    try
+    QNetworkRequest request( url );
+    const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( request );
+    if ( reply.error() == QNetworkReply::NoError )
     {
-      data = json::parse( file.readAll().toStdString() );
+      jsonData = reply.content();
     }
-    catch ( std::exception &e )
+    else
     {
-      appendError( QgsErrorMessage( QStringLiteral( "JSON parsing error: %1" ).arg( QString::fromStdString( e.what() ) ), QString() ) );
+      appendError( QgsErrorMessage( tr( "Could not download file: %1" ).arg( reply.errorString() ) ) );
       return;
     }
+  }
+  else
+  {
+    QFile file( dataSourceUri() );
+    if ( file.open( QFile::ReadOnly ) )
+    {
+      jsonData = file.readAll();
+    }
+  }
+
+  if ( jsonData.isEmpty() )
+  {
+    appendError( QgsErrorMessage( tr( "Could not read file: %1" ).arg( dataSourceUri() ) ) );
+    return;
+  }
+
+  try
+  {
+    data = json::parse( jsonData.toStdString() );
+  }
+  catch ( const json::parse_error &e )
+  {
+    appendError( QgsErrorMessage( QStringLiteral( "JSON parsing error: %1" ).arg( QString::fromStdString( e.what() ) ), QString() ) );
+    return;
   }
 
   if ( data["type"] != "FeatureCollection" ||
@@ -214,20 +241,16 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( !mOverview && f["assets"].contains( "overview" ) && f["assets"]["overview"].contains( "href" ) )
     {
       mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
-      mOverview.load( fInfo.absoluteDir().absoluteFilePath( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
+      const QUrl overviewUrl = url.resolved( QUrl( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
+      mOverview.load( overviewUrl.toString() );
     }
     // if it doesn't exist look for overview file in the directory
     else if ( !mOverview )
     {
-      QDir vpcDir = fInfo.absoluteDir();
-      QStringList nameFilter = { QString( fInfo.baseName() + "-overview.copc.laz" ) };
-      vpcDir.setNameFilters( nameFilter );
-      vpcDir.setFilter( QDir::Files );
-      if ( !vpcDir.entryList().empty() )
-      {
-        mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );;
-        mOverview.load( vpcDir.absoluteFilePath( vpcDir.entryList().first() ) );
-      }
+      const QString baseName = QFileInfo( url.fileName() ).baseName();
+      const QUrl overviewUrl = url.resolved( QUrl( baseName + QStringLiteral( "-overview.copc.laz" ) ) );
+      mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
+      mOverview.load( overviewUrl.toString() );
     }
 
     // Only COPC and EPT formats are currently supported. Other files will only have their bounds rendered
@@ -359,7 +382,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( uri.startsWith( QLatin1String( "./" ) ) )
     {
       // resolve relative path
-      uri = QDir::cleanPath( fInfo.absoluteDir().absoluteFilePath( uri ) );
+      uri = url.resolved( QUrl( uri ) ).toString();
     }
 
     if ( f["properties"].contains( "pc:schemas" ) )
