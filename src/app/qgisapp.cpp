@@ -13266,9 +13266,7 @@ QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
   const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
 
   QgsElevationProfile *profile = new QgsElevationProfile( QgsProject::instance() );
-
-  profile->setLockAxisScales( QgsElevationProfileWidget::settingLockAxis->value() );
-  // TODO other defaults
+  QgsElevationProfileWidget::applyDefaultSettingsToProfile( profile );
 
   profile->setName( QgsProject::instance()->elevationProfileManager()->generateUniqueTitle() );
   if ( QgsProject::instance()->elevationProfileManager()->addProfile( profile ) )
