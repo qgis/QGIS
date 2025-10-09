@@ -524,7 +524,8 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
   // Do nothing if the value has not changed except for multi edit mode
   // In multi edit mode feature is not updated (so attributeChanged is false) until user validate it but we need to update the
   // value relation which could have an expression depending on another modified field
-  if ( attributeChanged || context().attributeFormMode() == QgsAttributeEditorContext::Mode::MultiEditMode )
+  const bool isMultieditMode { context().attributeFormMode() == QgsAttributeEditorContext::Mode::MultiEditMode };
+  if ( attributeChanged || isMultieditMode )
   {
     QVariant oldValue( value() );
     setFormFeatureAttribute( attribute, newValue );
@@ -534,7 +535,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
     {
       populate();
       // Restore value
-      updateValue( oldValue, false );
+      updateValue( isMultieditMode ? oldValue : value(), false );
       // If the value has changed as a result of another widget's value change,
       // we need to emit the signal to make sure other dependent widgets are
       // updated.
