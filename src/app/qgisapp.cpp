@@ -8190,7 +8190,7 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
       {
         if ( newLayerName != vl->name() )
         {
-          QPushButton *button = new QPushButton( tr( "Rename layer in layers panel" ), this );
+          QPushButton *button = new QPushButton( tr( "Also rename layer in layers panel" ), this );
           barItem->setWidget( button );
           connect( button, &QPushButton::clicked, this, [button, vl, newLayerName]() {
             vl->setName( newLayerName );
