@@ -116,7 +116,7 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
   Q_UNUSED( e )
 
   // get clicked part from rubberband in case CTRL clicking (creating new feature out of part)
-  QgsGeometry newGeom = mRubberBand ? mRubberBand->asGeometry() : QgsGeometry();
+  const QgsGeometry newGeom = mRubberBand ? mRubberBand->asGeometry() : QgsGeometry();
 
   delete mRubberBand;
   mRubberBand = nullptr;
@@ -143,15 +143,9 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
       QgsExpressionContext context = vlayer->createExpressionContext();
       const QgsFeature ft1 = QgsVectorLayerUtils::createFeature( vlayer, newGeom, f.attributes().toMap(), &context );
 
-      // make feature compatible with layer
       QgsFeature ft { QgsVectorLayerUtils::makeFeatureCompatible( ft1, vlayer ).at( 0 ) };
 
-      bool res = false;
-
-      //show the dialog to enter attribute values
-      //only show if enabled in settings
       bool isDisabledAttributeValuesDlg = QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->value();
-      // override application-wide setting with any layer setting
       switch ( vlayer->editFormConfig().suppress() )
       {
         case Qgis::AttributeFormSuppression::On:
@@ -166,23 +160,27 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( isDisabledAttributeValuesDlg )
       {
-        res = vlayer->addFeature( ft );
+        if ( !vlayer->addFeature( ft ) )
+        {
+          emit messageEmitted( tr( "New feature could not be added." ), Qgis::MessageLevel::Critical );
+          vlayer->destroyEditCommand();
+          return;
+        }
       }
       else
       {
         QgsAttributeEditorContext context;
         // don't set cadDockwidget in context because we don't want to be able to create geometries from this dialog
-        // there is one modified and one created feature, so it's a mess of we start to digitize a relation feature geometry
+        // there is one modified and one created feature, so it's a mess if we start to digitize a related feature's geometry
         context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
-        QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, &ft, false, nullptr, true, context );
-        dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
-        res = dialog->exec(); // will also add the feature
-      }
+        QgsAttributeDialog dialog = QgsAttributeDialog( vlayer, &ft, false, nullptr, true, context );
+        dialog.setMode( QgsAttributeEditorContext::AddFeatureMode );
 
-      if ( !res )
-      {
-        vlayer->destroyEditCommand();
-        return;
+        if ( !dialog.exec() )
+        {
+          vlayer->destroyEditCommand();
+          return;
+        }
       }
     }
 

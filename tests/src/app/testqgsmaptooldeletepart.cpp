@@ -248,7 +248,7 @@ void TestQgsMapToolDeletePart::testDeletePartAddAsNewFeature()
 
   mUtils->mouseClick( 5.5, 0.5, Qt::LeftButton, Qt::ControlModifier );
 
-  QgsFeatureId newFid = mUtils->newFeatureId( oldFids );
+  const QgsFeatureId newFid = mUtils->newFeatureId( oldFids );
 
   QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 4 );
   QCOMPARE( mLayerMultiPolygon->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((0 4, 0 7, 7 7, 7 4, 0 4),(1 6, 1 5, 2 5, 2 6, 1 6),(5 6, 5 5, 6 5, 6 6, 5 6)))" ) );
