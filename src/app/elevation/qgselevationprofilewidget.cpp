@@ -62,6 +62,7 @@
 #include "qgsnewnamedialog.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsstyle.h"
+#include "qgselevationprofile.h"
 
 #include <QToolBar>
 #include <QProgressBar>
@@ -144,13 +145,14 @@ void QgsElevationProfileLayersDialog::filterVisible( bool enabled )
 }
 
 
-QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
+QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profile )
   : QWidget( nullptr )
-  , mCanvasName( name )
   , mLayerTree( new QgsLayerTree() )
   , mLayerTreeBridge( new QgsLayerTreeRegistryBridge( mLayerTree.get(), QgsProject::instance(), this ) )
 {
   setObjectName( QStringLiteral( "ElevationProfile" ) );
+
+  mProfile = profile;
 
   setAttribute( Qt::WA_DeleteOnClose );
   const QgsSettings setting;
@@ -491,7 +493,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   } );
   setLayout( layout );
 
-  mDockableWidgetHelper = new QgsDockableWidgetHelper( mCanvasName, this, QgisApp::instance(), mCanvasName, QStringList(), QgsDockableWidgetHelper::OpeningMode::RespectSetting, true, Qt::DockWidgetArea::BottomDockWidgetArea, QgsDockableWidgetHelper::Option::RaiseTab );
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( mProfile->name(), this, QgisApp::instance(), mProfile->name(), QStringList(), QgsDockableWidgetHelper::OpeningMode::RespectSetting, true, Qt::DockWidgetArea::BottomDockWidgetArea, QgsDockableWidgetHelper::Option::RaiseTab );
 
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock Elevation Profile View" ) );
@@ -552,8 +554,13 @@ QgsElevationProfileWidget::~QgsElevationProfileWidget()
 
 void QgsElevationProfileWidget::setCanvasName( const QString &name )
 {
-  mCanvasName = name;
+  mProfile->setName( name );
   mDockableWidgetHelper->setWindowTitle( name );
+}
+
+QString QgsElevationProfileWidget::canvasName() const
+{
+  return mProfile->name();
 }
 
 void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
