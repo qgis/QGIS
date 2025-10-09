@@ -37,16 +37,6 @@
      <widget class="QWidget" name="mPageNoRenderer"/>
      <widget class="QWidget" name="mPageBillboards">
       <layout class="QGridLayout" name="gridLayout" columnstretch="1,2">
-       <item row="1" column="0" colspan="2">
-        <widget class="QLabel" name="mLabelClampingExplanation">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="1">
         <widget class="QgsDoubleSpinBox" name="mOffsetZSpinBox">
          <property name="decimals">
@@ -60,7 +50,14 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="2" column="0">
+        <widget class="QLabel" name="mOffsetLabel">
+         <property name="text">
+          <string>Offset</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -73,23 +70,46 @@
          </property>
         </spacer>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="mOffsetLabel">
+       <item row="1" column="0" colspan="2">
+        <widget class="QLabel" name="mLabelClampingExplanation">
          <property name="text">
-          <string>Offset</string>
+          <string/>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QComboBox" name="mComboClamping"/>
-       </item>
-       <item row="3" column="0" colspan="2">
+       <item row="4" column="0" colspan="2">
         <widget class="QCheckBox" name="mCheckShowCallouts">
          <property name="toolTip">
           <string>If checked, vertical lines will be drawn from the terrain to the billboard symbol</string>
          </property>
          <property name="text">
           <string>Show callout lines</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QComboBox" name="mComboClamping"/>
+       </item>
+       <item row="3" column="1">
+        <widget class="QgsFontButton" name="mFontButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Font</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="mOffsetLabel_2">
+         <property name="text">
+          <string>Font</string>
          </property>
         </widget>
        </item>
@@ -118,7 +138,19 @@
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mComboRendererType</tabstop>
+  <tabstop>mComboClamping</tabstop>
+  <tabstop>mOffsetZSpinBox</tabstop>
+  <tabstop>mFontButton</tabstop>
+  <tabstop>mCheckShowCallouts</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
