@@ -104,6 +104,11 @@ class QgsElevationProfileWidget : public QWidget
     QgsElevationProfileWidget( QgsElevationProfile *profile );
     ~QgsElevationProfileWidget();
 
+    /**
+     * Modifies an elevation \a profile to apply default QGIS app settings to it.
+     */
+    static void applyDefaultSettingsToProfile( QgsElevationProfile *profile );
+
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
 
     void setCanvasName( const QString &name );

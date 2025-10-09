@@ -552,6 +552,12 @@ QgsElevationProfileWidget::~QgsElevationProfileWidget()
   delete mDockableWidgetHelper;
 }
 
+void QgsElevationProfileWidget::applyDefaultSettingsToProfile( QgsElevationProfile *profile )
+{
+  profile->setLockAxisScales( QgsElevationProfileWidget::settingLockAxis->value() );
+  profile->setTolerance( QgsElevationProfileWidget::settingTolerance->value() );
+}
+
 void QgsElevationProfileWidget::setCanvasName( const QString &name )
 {
   mProfile->setName( name );
