@@ -167,7 +167,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     }
     else
     {
-      appendError( QgsErrorMessage( tr( "Could not download file: %1" ).arg( reply.errorString() ) ) );
+      appendError( QgsErrorMessage( QStringLiteral( "Could not download file: %1" ).arg( reply.errorString() ) ) );
       return;
     }
   }
@@ -182,7 +182,7 @@ void QgsVirtualPointCloudProvider::parseFile()
 
   if ( jsonData.isEmpty() )
   {
-    appendError( QgsErrorMessage( tr( "Could not read file: %1" ).arg( dataSourceUri() ) ) );
+    appendError( QgsErrorMessage( QStringLiteral( "Could not read file: %1" ).arg( dataSourceUri() ) ) );
     return;
   }
 
