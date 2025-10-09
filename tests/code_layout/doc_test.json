@@ -1965,6 +1965,9 @@
       "QgsTransformWidget(QWidget *parent=nullptr)",
       "create()"
     ],
+    "QgsClassificationConfigDlg": [
+      "QgsClassificationConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent=nullptr)"
+    ],
     "QgsUniqueValuesConfigDlg": [
       "QgsUniqueValuesConfigDlg(QgsVectorLayer *vl, int fieldIdx, QWidget *parent=nullptr)"
     ],
@@ -2300,6 +2303,7 @@
     "QgsCheckboxWidgetWrapper",
     "QgsCircle",
     "QgsCircularString",
+    "QgsClassificationConfigDlg",
     "QgsClassificationWidgetWrapper",
     "QgsClassificationWidgetWrapperFactory",
     "QgsClipToMinMaxEnhancement",
