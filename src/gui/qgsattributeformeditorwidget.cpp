@@ -134,7 +134,7 @@ void QgsAttributeFormEditorWidget::setConstraintResultVisible( bool editable )
     return;
   }
 
-  if ( !layer() && QgsVectorLayerUtils::attributeHasConstraints( layer(), mEditorWidget->fieldIdx() ) )
+  if ( !layer() || QgsVectorLayerUtils::attributeHasConstraints( layer(), mEditorWidget->fieldIdx() ) )
   {
     const bool hasConstraintResultLabel = ( editPage()->layout()->indexOf( mConstraintResultLabel ) >= 0 );
     if ( editable && !hasConstraintResultLabel )
