@@ -1532,7 +1532,7 @@ void QgsLineString::visitPointsByRegularDistance( const double distance, const s
   double pZ = std::numeric_limits<double>::quiet_NaN();
   double pM = std::numeric_limits<double>::quiet_NaN();
   double nextPointDistance = distance;
-  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon ();
+  const double eps = 4 * nextPointDistance * std::numeric_limits<double>::epsilon();
   for ( int i = 1; i < totalPoints; ++i )
   {
     double thisX = *x++;
@@ -2082,6 +2082,43 @@ bool QgsLineString::deleteVertex( QgsVertexId position )
   if ( numPoints() == 1 )
   {
     clear();
+  }
+
+  clearCache(); //set bounding box invalid
+  return true;
+}
+
+bool QgsLineString::deleteVertices( QList<QgsVertexId> positions )
+{
+  std::sort( positions.begin(), positions.end(), []( const QgsVertexId & a, const QgsVertexId & b )
+  {
+    return a.vertex > b.vertex;
+  }
+           );
+
+  for ( QgsVertexId position : positions )
+  {
+    if ( position.vertex >= mX.size() || position.vertex < 0 )
+    {
+      return false;
+    }
+
+    mX.remove( position.vertex );
+    mY.remove( position.vertex );
+    if ( is3D() )
+    {
+      mZ.remove( position.vertex );
+    }
+    if ( isMeasure() )
+    {
+      mM.remove( position.vertex );
+    }
+
+    if ( numPoints() == 1 )
+    {
+      clear();
+      return true;
+    }
   }
 
   clearCache(); //set bounding box invalid

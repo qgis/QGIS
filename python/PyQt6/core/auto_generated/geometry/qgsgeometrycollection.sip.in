@@ -223,6 +223,8 @@ ownership to the caller.
 
     virtual bool deleteVertex( QgsVertexId position );
 
+    virtual bool deleteVertices( QList<QgsVertexId> positions );
+
 
     virtual double length() const /HoldGIL/;
 
