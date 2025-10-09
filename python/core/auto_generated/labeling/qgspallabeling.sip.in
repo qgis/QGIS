@@ -630,6 +630,27 @@ Sets the layer's unplaced label ``visibility``.
 .. versionadded:: 3.20
 %End
 
+    QMimeData *toMimeData() const /Factory/;
+%Docstring
+Returns new mime data representing the labeling settings. Caller takes
+responsibility for deleting the returned object.
+
+.. seealso:: :py:func:`fromMimeData`
+
+.. versionadded:: 4.0
+%End
+
+    static QgsPalLayerSettings fromMimeData( const QMimeData *data, bool *ok /Out/ = 0 );
+%Docstring
+Attempts to parse the provided mime ``data`` as a QgsPalLayerSettings.
+If data can be parsed as a labeling settings, ``ok`` will be set to
+``True``.
+
+.. seealso:: :py:func:`toMimeData`
+
+.. versionadded:: 4.0
+%End
+
     const QgsFeature *mCurFeat;
     QgsFields mCurFields;
     int fieldIndex;
