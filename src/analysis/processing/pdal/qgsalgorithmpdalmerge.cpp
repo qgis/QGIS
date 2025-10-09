@@ -29,7 +29,7 @@ QString QgsPdalMergeAlgorithm::name() const
 
 QString QgsPdalMergeAlgorithm::displayName() const
 {
-  return QObject::tr( "Merge" );
+  return QObject::tr( "Merge point cloud" );
 }
 
 QString QgsPdalMergeAlgorithm::group() const
@@ -50,6 +50,11 @@ QStringList QgsPdalMergeAlgorithm::tags() const
 QString QgsPdalMergeAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm merges multiple point cloud files to a single one." );
+}
+
+QString QgsPdalMergeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Merges multiple point cloud files to a single one." );
 }
 
 QgsPdalMergeAlgorithm *QgsPdalMergeAlgorithm::createInstance() const

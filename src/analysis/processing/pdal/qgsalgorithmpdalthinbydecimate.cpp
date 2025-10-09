@@ -52,6 +52,11 @@ QString QgsPdalThinByDecimateAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm creates a thinned version of the point cloud by keeping only every N-th point." );
 }
 
+QString QgsPdalThinByDecimateAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a thinned version of the point cloud by keeping only every N-th point." );
+}
+
 QgsPdalThinByDecimateAlgorithm *QgsPdalThinByDecimateAlgorithm::createInstance() const
 {
   return new QgsPdalThinByDecimateAlgorithm();
