@@ -86,6 +86,7 @@ set(QGIS_GUI_SRCS
   symbology/qgssymbolanimationsettingswidget.cpp
   symbology/qgssymbolbuffersettingswidget.cpp
   symbology/qgssymbollayerwidget.cpp
+  symbology/qgssymbollayerwidgets.cpp
   symbology/qgssymbollevelsdialog.cpp
   symbology/qgsextentbufferdialog.cpp
   symbology/qgssymbolslistwidget.cpp
@@ -1609,11 +1610,13 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbolanimationsettingswidget.h
   symbology/qgssymbolbuffersettingswidget.h
   symbology/qgssymbollayerwidget.h
+  symbology/qgssymbollayerwidgets.h
   symbology/qgssymbollevelsdialog.h
   symbology/qgsextentbufferdialog.h
   symbology/qgssymbolselectordialog.h
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
+  symbology/qgstemplatedlinesymbollayerwidget_p.h
   symbology/qgsvectorfieldsymbollayerwidget.h
 
   sensor/qgssensorguiregistry.h
