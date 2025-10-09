@@ -15,6 +15,10 @@ in vec2 gsAtlasOffset[];
 in vec2 gsAtlasSize[];
 #endif
 
+#ifdef TEXTURE_ATLAS_PIXEL_OFFSETS
+in ivec2 gsPixelOffset[];
+#endif
+
 out vec2 UV;
 // glsl
 
@@ -25,6 +29,11 @@ void main (void)
   P /= P.w;
 
   vec2 spritePixelSize = 2 * BB_SIZE / WIN_SCALE; // multiply by 2 to adjust for -1, 1 range for display coordinates
+
+#ifdef TEXTURE_ATLAS_PIXEL_OFFSETS
+  // convert the pixel offset to display coordinates, multiplying by 2 to adjust for -1, 1 range for display coordinates
+  P.xy += 2.0 * gsPixelOffset[0] / WIN_SCALE;
+#endif
 
 #ifdef TEXTURE_ATLAS
   vec2 textureOffset = gsAtlasOffset[0];

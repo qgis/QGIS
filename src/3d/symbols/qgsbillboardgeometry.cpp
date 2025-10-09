@@ -50,6 +50,9 @@ void QgsBillboardGeometry::setMode( Mode mode )
     case Mode::PositionAndTextureData:
       stride = ( 3 + 2 + 2 ) * sizeof( float );
       break;
+    case Mode::PositionAndTextureDataWithPixelOffsets:
+      stride = ( 3 + 2 + 2 ) * sizeof( float ) + 2 * sizeof( int );
+      break;
   }
 
   if ( mPositionAttribute && mPositionAttribute->byteStride() == stride )
@@ -90,10 +93,47 @@ void QgsBillboardGeometry::setMode( Mode mode )
         delete mAtlasSizeAttribute;
         mAtlasSizeAttribute = nullptr;
       }
+      if ( mAtlasPixelOffsetAttribute )
+      {
+        removeAttribute( mAtlasPixelOffsetAttribute );
+        delete mAtlasPixelOffsetAttribute;
+        mAtlasPixelOffsetAttribute = nullptr;
+      }
       break;
     }
 
     case Mode::PositionAndTextureData:
+    {
+      if ( mAtlasPixelOffsetAttribute )
+      {
+        removeAttribute( mAtlasPixelOffsetAttribute );
+        delete mAtlasPixelOffsetAttribute;
+        mAtlasPixelOffsetAttribute = nullptr;
+      }
+
+      mAtlasOffsetAttribute = new Qt3DQAttribute( this );
+      mAtlasOffsetAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+      mAtlasOffsetAttribute->setBuffer( mVertexBuffer );
+      mAtlasOffsetAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+      mAtlasOffsetAttribute->setVertexSize( 2 );
+      mAtlasOffsetAttribute->setByteOffset( 3 * sizeof( float ) );
+      mAtlasOffsetAttribute->setByteStride( stride );
+      mAtlasOffsetAttribute->setName( QStringLiteral( "atlasOffset" ) );
+      addAttribute( mAtlasOffsetAttribute );
+
+      mAtlasSizeAttribute = new Qt3DQAttribute( this );
+      mAtlasSizeAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+      mAtlasSizeAttribute->setBuffer( mVertexBuffer );
+      mAtlasSizeAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+      mAtlasSizeAttribute->setVertexSize( 2 );
+      mAtlasSizeAttribute->setByteOffset( ( 3 + 2 ) * sizeof( float ) );
+      mAtlasSizeAttribute->setByteStride( stride );
+      mAtlasSizeAttribute->setName( QStringLiteral( "atlasSize" ) );
+      addAttribute( mAtlasSizeAttribute );
+      break;
+    }
+
+    case Mode::PositionAndTextureDataWithPixelOffsets:
     {
       mAtlasOffsetAttribute = new Qt3DQAttribute( this );
       mAtlasOffsetAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
@@ -114,6 +154,16 @@ void QgsBillboardGeometry::setMode( Mode mode )
       mAtlasSizeAttribute->setByteStride( stride );
       mAtlasSizeAttribute->setName( QStringLiteral( "atlasSize" ) );
       addAttribute( mAtlasSizeAttribute );
+
+      mAtlasPixelOffsetAttribute = new Qt3DQAttribute( this );
+      mAtlasPixelOffsetAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+      mAtlasPixelOffsetAttribute->setBuffer( mVertexBuffer );
+      mAtlasPixelOffsetAttribute->setVertexBaseType( Qt3DQAttribute::Int );
+      mAtlasPixelOffsetAttribute->setVertexSize( 2 );
+      mAtlasPixelOffsetAttribute->setByteOffset( ( 3 + 2 + 2 ) * sizeof( float ) );
+      mAtlasPixelOffsetAttribute->setByteStride( stride );
+      mAtlasPixelOffsetAttribute->setName( QStringLiteral( "pixelOffset" ) );
+      addAttribute( mAtlasPixelOffsetAttribute );
       break;
     }
   }
@@ -140,25 +190,69 @@ void QgsBillboardGeometry::setPositions( const QVector<QVector3D> &vertices )
   emit countChanged( mVertexCount );
 }
 
-void QgsBillboardGeometry::setBillboardData( const QVector<BillboardAtlasData> &billboards )
+///@cond PRIVATE
+#pragma pack( push, 1 )
+struct BillboardVertex
 {
-  setMode( Mode::PositionAndTextureData );
+    float position[3];
+    float textureAtlasOffset[2];
+    float textureAtlasSize[2];
+};
+
+struct BillboardVertexWithPixelOffset : BillboardVertex
+{
+    int pixelOffset[2];
+};
+#pragma pack( pop )
+
+template<typename VertexType>
+QByteArray createVertexBuffer( const QVector<QgsBillboardGeometry::BillboardAtlasData> &billboards )
+{
+  QByteArray buffer;
+  buffer.resize( billboards.size() * sizeof( VertexType ) );
+  auto *vertexData = reinterpret_cast<VertexType *>( buffer.data() );
+
+  int idx = 0;
+  for ( const QgsBillboardGeometry::BillboardAtlasData &billboard : billboards )
+  {
+    VertexType &vertex = vertexData[idx++];
+
+    vertex.position[0] = billboard.position.x();
+    vertex.position[1] = billboard.position.y();
+    vertex.position[2] = billboard.position.z();
+
+    vertex.textureAtlasOffset[0] = billboard.textureAtlasOffset.x();
+    vertex.textureAtlasOffset[1] = billboard.textureAtlasOffset.y();
+
+    vertex.textureAtlasSize[0] = billboard.textureAtlasSize.x();
+    vertex.textureAtlasSize[1] = billboard.textureAtlasSize.y();
+
+    if constexpr ( std::is_same_v<VertexType, BillboardVertexWithPixelOffset> )
+    {
+      vertex.pixelOffset[0] = billboard.pixelOffset.x();
+      vertex.pixelOffset[1] = billboard.pixelOffset.y();
+    }
+  }
+  return buffer;
+}
+///@endcond
+
+void QgsBillboardGeometry::setBillboardData( const QVector<BillboardAtlasData> &billboards, bool includePixelOffsets )
+{
+  if ( includePixelOffsets )
+    setMode( Mode::PositionAndTextureDataWithPixelOffsets );
+  else
+    setMode( Mode::PositionAndTextureData );
+
 
   QByteArray vertexBufferData;
-  vertexBufferData.resize( billboards.size() * ( 3 + 2 + 2 ) * sizeof( float ) );
-  float *rawVertexArray = reinterpret_cast<float *>( vertexBufferData.data() );
-  int idx = 0;
-  for ( const auto &billboard : billboards )
+  if ( includePixelOffsets )
   {
-    rawVertexArray[idx++] = billboard.position.x();
-    rawVertexArray[idx++] = billboard.position.y();
-    rawVertexArray[idx++] = billboard.position.z();
-
-    rawVertexArray[idx++] = billboard.textureAtlasOffset.x();
-    rawVertexArray[idx++] = billboard.textureAtlasOffset.y();
-
-    rawVertexArray[idx++] = billboard.textureAtlasSize.x();
-    rawVertexArray[idx++] = billboard.textureAtlasSize.y();
+    vertexBufferData = createVertexBuffer<BillboardVertexWithPixelOffset>( billboards );
+  }
+  else
+  {
+    vertexBufferData = createVertexBuffer<BillboardVertex>( billboards );
   }
 
   mVertexCount = billboards.count();
