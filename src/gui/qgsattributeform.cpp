@@ -2113,9 +2113,9 @@ void QgsAttributeForm::init()
           connect( formWidget, &QgsAttributeFormEditorWidget::rememberLastValueChanged, this, [this]( int idx, bool remember ) {
             ( *sRememberLastUsedValues() )[mLayer][idx] = remember;
           } );
-
-          formWidget->createSearchWidgetWrappers( mContext );
         }
+
+        formWidget->createSearchWidgetWrappers( mContext );
 
         label->setBuddy( eww->widget() );
 
