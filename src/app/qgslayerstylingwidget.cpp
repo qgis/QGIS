@@ -371,12 +371,14 @@ void QgsLayerStylingWidget::apply()
   {
     widget->apply();
     styleWasChanged = true;
+    triggerRepaint = true;
     undoName = QStringLiteral( "Label Change" );
   }
   else if ( QgsDiagramWidget *widget = qobject_cast<QgsDiagramWidget *>( current ) )
   {
     widget->apply();
     styleWasChanged = true;
+    triggerRepaint = true;
     undoName = QStringLiteral( "Diagram Change" );
   }
   else if ( QgsMapLayerConfigWidget *widget = qobject_cast<QgsMapLayerConfigWidget *>( current ) )
