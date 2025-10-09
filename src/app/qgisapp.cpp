@@ -133,6 +133,7 @@
 
 #include "layers/qgsapplayerhandling.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgselevationprofilemanager.h"
 
 #include "canvas/qgsappcanvasfiltering.h"
 #include "canvas/qgscanvasrefreshblocker.h"
@@ -13266,35 +13267,7 @@ QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
 {
   const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
 
-  // find first available unused title
-  QString title;
-  int counter = 1;
-  while ( true )
-  {
-    if ( counter == 1 )
-    {
-      title = tr( "Elevation Profile" );
-    }
-    else
-    {
-      title = tr( "Elevation Profile (%1)" ).arg( counter );
-    }
-
-    bool canvasExists = false;
-    for ( QgsElevationProfileWidget *existingWidget : elevationProfileWidgets )
-    {
-      if ( existingWidget->canvasName() == title )
-      {
-        canvasExists = true;
-        break;
-      }
-    }
-
-    if ( !canvasExists )
-      break;
-
-    counter++;
-  }
+  const QString title = QgsProject::instance()->elevationProfileManager()->generateUniqueTitle();
 
   QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( title );
   widget->setMainCanvas( mMapCanvas );
