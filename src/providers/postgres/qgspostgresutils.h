@@ -97,9 +97,9 @@ class QgsPostgresUtils
 
     static bool createStylesTable( QgsPostgresConn *conn, QString loggedClass );
 
-    static bool columnExists( QgsPostgresConn *conn, const QString &table, const QString &column );
+    static bool columnExists( QgsPostgresConn *conn, const QString &schema, const QString &table, const QString &column );
 
-    static bool tableExists( QgsPostgresConn *conn, const QString &name );
+    static bool tableExists( QgsPostgresConn *conn, const QString &schema, const QString &table );
 
     /*
     * Check if projects table exists in the specified schema
