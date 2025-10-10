@@ -101,7 +101,7 @@ class QgsElevationProfileWidget : public QWidget
     static const QgsSettingsEntryBool *settingShowSubsections;
     static const QgsSettingsEntryBool *settingShowScaleRatioInToolbar;
 
-    QgsElevationProfileWidget( QgsElevationProfile *profile );
+    QgsElevationProfileWidget( QgsElevationProfile *profile, QgsMapCanvas *canvas );
     ~QgsElevationProfileWidget();
 
     /**
@@ -112,8 +112,6 @@ class QgsElevationProfileWidget : public QWidget
     QgsElevationProfile *profile();
 
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
-
-    void setMainCanvas( QgsMapCanvas *canvas );
 
     QgsElevationProfileCanvas *profileCanvas() { return mCanvas; }
 
@@ -130,7 +128,7 @@ class QgsElevationProfileWidget : public QWidget
     void addLayersInternal( const QList<QgsMapLayer *> &layers );
     void updateCanvasSources();
     void onTotalPendingJobsCountChanged( int count );
-    void setProfileCurve( const QgsGeometry &curve, bool resetView );
+    void setProfileCurve( const QgsGeometry &curve, bool resetView, bool storeCurve = true );
     void onCanvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
     void updatePlot();
     void scheduleUpdate();
@@ -148,6 +146,8 @@ class QgsElevationProfileWidget : public QWidget
     void editSubsectionsSymbology();
 
   private:
+    void setMainCanvas( QgsMapCanvas *canvas );
+
     QgsElevationProfileCanvas *mCanvas = nullptr;
     QPointer< QgsElevationProfile > mProfile;
 

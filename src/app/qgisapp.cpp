@@ -13334,8 +13334,7 @@ QgsElevationProfileWidget *QgisApp::openElevationProfile( QgsElevationProfile *p
     }
   }
 
-  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( profile );
-  widget->setMainCanvas( mMapCanvas );
+  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( profile, mMapCanvas );
 
   connect( widget, &QgsElevationProfileWidget::destroyed, this, [this, widget] {
     mElevationProfileWidgets.remove( widget );

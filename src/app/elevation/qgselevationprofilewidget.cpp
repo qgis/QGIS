@@ -146,7 +146,7 @@ void QgsElevationProfileLayersDialog::filterVisible( bool enabled )
 }
 
 
-QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profile )
+QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profile, QgsMapCanvas *canvas )
   : QWidget( nullptr )
   , mLayerTree( new QgsLayerTree() )
   , mLayerTreeBridge( new QgsLayerTreeRegistryBridge( mLayerTree.get(), QgsProject::instance(), this ) )
@@ -545,6 +545,12 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   } );
 
   updateCanvasSources();
+  setMainCanvas( canvas );
+
+  if ( const QgsCurve *existingCurve = mProfile->profileCurve() )
+  {
+    setProfileCurve( QgsGeometry( existingCurve->clone() ), true, false );
+  }
 }
 
 QgsElevationProfileWidget::~QgsElevationProfileWidget()
@@ -745,7 +751,7 @@ void QgsElevationProfileWidget::onTotalPendingJobsCountChanged( int count )
   }
 }
 
-void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve, bool resetView )
+void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve, bool resetView, bool storeCurve )
 {
   mNudgeLeftAction->setEnabled( !curve.isEmpty() );
   mNudgeRightAction->setEnabled( !curve.isEmpty() );
@@ -762,6 +768,14 @@ void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve, bool 
     }
   }
   scheduleUpdate();
+  if ( storeCurve && mProfile )
+  {
+    if ( const QgsCurve *profileCurve = qgsgeometry_cast< const QgsCurve * >( curve.constGet() ) )
+    {
+      mProfile->setProfileCurve( profileCurve->clone() );
+      QgsProject::instance()->setDirty();
+    }
+  }
 }
 
 void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &, const QgsProfilePoint &profilePoint )
