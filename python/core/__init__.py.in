@@ -790,8 +790,8 @@ try:
        geometries = [feat.geometry().as_shapely() if not feat.geometry().isEmpty() else None for feat in features]
        
        field_names = [field.name() for field in self.fields()]
-       data = {field_name: [feat[field_name] for feat in features] for field_name in field_names}
-       
+       data = {field_name: [feat[field_index] for feat in features] for field_index, field_name in enumerate(field_names)}       
+    
        return _gpd.GeoDataFrame(data, geometry=geometries, crs=self.crs().authid())
 
    QgsVectorLayer.as_geopandas = _vector_layer_as_geopandas
