@@ -176,7 +176,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   connect( mCanvas, &QgsElevationProfileCanvas::activeJobCountChanged, this, &QgsElevationProfileWidget::onTotalPendingJobsCountChanged );
   connect( mCanvas, &QgsElevationProfileCanvas::canvasPointHovered, this, &QgsElevationProfileWidget::onCanvasPointHovered );
 
-  mCanvas->setLockAxisScales( settingLockAxis->value() );
+  mCanvas->setLockAxisScales( mProfile->lockAxisScales() );
 
   mCanvas->setBackgroundColor( settingBackgroundColor->value() );
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [this] {
@@ -366,7 +366,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   mLockRatioAction = new QAction( tr( "Lock Distance/Elevation Scales" ), this );
   mLockRatioAction->setCheckable( true );
-  mLockRatioAction->setChecked( settingLockAxis->value() );
+  mLockRatioAction->setChecked( mProfile->lockAxisScales() );
   connect( mLockRatioAction, &QAction::toggled, this, &QgsElevationProfileWidget::axisScaleLockToggled );
   mOptionsMenu->addAction( mLockRatioAction );
 
@@ -382,8 +382,13 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   mToleranceSettingsAction = new QgsElevationProfileToleranceWidgetSettingsAction( mOptionsMenu );
 
-  mToleranceSettingsAction->toleranceSpinBox()->setValue( settingTolerance->value() );
+  mToleranceSettingsAction->toleranceSpinBox()->setValue( mProfile->tolerance() );
   connect( mToleranceSettingsAction->toleranceSpinBox(), qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
+    if ( mProfile )
+    {
+      mProfile->setTolerance( value );
+      QgsProject::instance()->setDirty();
+    }
     settingTolerance->setValue( value );
     createOrUpdateRubberBands();
     scheduleUpdate();
