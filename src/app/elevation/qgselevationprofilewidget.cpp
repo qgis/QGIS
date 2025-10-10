@@ -558,6 +558,11 @@ void QgsElevationProfileWidget::applyDefaultSettingsToProfile( QgsElevationProfi
   profile->setTolerance( QgsElevationProfileWidget::settingTolerance->value() );
 }
 
+QgsElevationProfile *QgsElevationProfileWidget::profile()
+{
+  return mProfile;
+}
+
 void QgsElevationProfileWidget::setCanvasName( const QString &name )
 {
   mProfile->setName( name );

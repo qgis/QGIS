@@ -109,6 +109,8 @@ class QgsElevationProfileWidget : public QWidget
      */
     static void applyDefaultSettingsToProfile( QgsElevationProfile *profile );
 
+    QgsElevationProfile *profile();
+
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
 
     void setCanvasName( const QString &name );
