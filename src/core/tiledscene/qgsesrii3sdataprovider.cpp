@@ -399,12 +399,18 @@ bool QgsEsriI3STiledSceneIndex::fetchHierarchy( long long id, QgsFeedback *feedb
 QByteArray QgsEsriI3STiledSceneIndex::fetchContent( const QString &uri, QgsFeedback *feedback )
 {
   QUrl url( uri );
-  if ( url.isLocalFile() && QFile::exists( url.toLocalFile() ) )
+  if ( url.isLocalFile() )
   {
-    QFile file( url.toLocalFile() );
-    if ( file.open( QIODevice::ReadOnly ) )
-    {
-      return file.readAll();
+    const QString slpkPath = mRootUrl.toLocalFile();
+    if ( QFileInfo( slpkPath ).suffix().compare( QLatin1String( "slpk" ), Qt::CaseInsensitive ) == 0 )
+  {
+    const QString fileInSlpk = uri.mid( mRootUrl.toString().length() + 1 );
+
+      QByteArray data;
+    if ( QgsZipUtils::getFileFromZip( slpkPath, fileInSlpk, data ) )
+          return data;
+
+      return QByteArray();
     }
   }
   else
