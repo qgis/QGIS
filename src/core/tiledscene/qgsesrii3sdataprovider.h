@@ -93,7 +93,7 @@ class QgsEsriI3SProviderMetadata : public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) const override;
     QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const override;
     int priorityForUri( const QString &uri ) const override;
-  };
+};
 
 ///@endcond
 

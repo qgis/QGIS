@@ -146,9 +146,9 @@ QgsEsriI3STiledSceneIndex::QgsEsriI3STiledSceneIndex(
   , mTransformContext( transformContext )
 {
   // "spatialReference" is not required, yet the spec does not say what should
-    // be the default - assuming global mode is the best we can do...
+  // be the default - assuming global mode is the best we can do...
   mGlobalMode = true;
-  if ( layerJson.contains( "spatialReference") && layerJson["spatialReference"].is_object() )
+  if ( layerJson.contains( "spatialReference" ) && layerJson["spatialReference"].is_object() )
   {
     const json spatialReferenceJson = layerJson["spatialReference"];
     if ( spatialReferenceJson.contains( "latestWkid" ) && spatialReferenceJson["latestWkid"].is_number() )
@@ -1111,7 +1111,6 @@ QList< Qgis::LayerType > QgsEsriI3SProviderMetadata::validLayerTypesForUri( cons
 {
   const QVariantMap parts = decodeUri( uri );
   QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
-  const QFileInfo fi( filePath );
 
   if ( filePath.endsWith( QStringLiteral( ".slpk" ), Qt::CaseSensitivity::CaseInsensitive ) )
     return { Qgis::LayerType::TiledScene };
@@ -1164,7 +1163,6 @@ int QgsEsriI3SProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
   QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
-  const QFileInfo fi( filePath );
 
   if ( filePath.endsWith( QStringLiteral( ".slpk" ), Qt::CaseSensitivity::CaseInsensitive ) )
     return 100;
