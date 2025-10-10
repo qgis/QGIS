@@ -1229,9 +1229,6 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
     if ( !child->algorithm() )
       return QString();
 
-    const QVariantMap inputs = mResults.inputs();
-    const QVariantMap outputs = mResults.outputs();
-
     switch ( edge )
     {
       case Qt::BottomEdge:
