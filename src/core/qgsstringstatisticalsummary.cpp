@@ -68,7 +68,11 @@ void QgsStringStatisticalSummary::addString( const QString &string )
 
 void QgsStringStatisticalSummary::addValue( const QVariant &value )
 {
-  if ( QgsVariantUtils::isNull( value ) || value.userType() == QMetaType::Type::QString )
+  if ( QgsVariantUtils::isNull( value ) )
+  {
+    testString( QString() );
+  }
+  else if ( value.userType() == QMetaType::Type::QString )
   {
     testString( value.toString() );
   }
@@ -100,7 +104,11 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &val
   const auto constValues = values;
   for ( const QVariant &variant : constValues )
   {
-    if ( QgsVariantUtils::isNull( variant ) || variant.userType() == QMetaType::Type::QString )
+    if ( QgsVariantUtils::isNull( variant ) )
+    {
+      testString( QString() );
+    }
+    else if ( variant.userType() == QMetaType::Type::QString )
     {
       testString( variant.toString() );
     }
@@ -111,10 +119,13 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &val
 
 void QgsStringStatisticalSummary::testString( const QString &string )
 {
-  mCount++;
-
-  if ( string.isEmpty() )
+  if ( string.isNull() )
+  {
     mCountMissing++;
+    return;
+  }
+
+  mCount++;
 
   if ( mStatistics & Qgis::StringStatistic::CountDistinct || mStatistics & Qgis::StringStatistic::Majority || mStatistics & Qgis::StringStatistic::Minority )
   {
