@@ -225,6 +225,7 @@ void QgsElevationProfileManagerDialog::removeClicked()
   {
     QgsProject::instance()->elevationProfileManager()->removeProfile( l );
   }
+  QgsProject::instance()->setDirty();
 }
 
 void QgsElevationProfileManagerDialog::showClicked()
@@ -257,6 +258,8 @@ void QgsElevationProfileManagerDialog::renameClicked()
     return;
   }
   currentProfile->setName( newTitle );
+
+  QgsProject::instance()->setDirty();
 }
 
 void QgsElevationProfileManagerDialog::itemDoubleClicked( const QModelIndex &index )
