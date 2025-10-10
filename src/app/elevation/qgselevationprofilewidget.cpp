@@ -168,9 +168,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   QToolBar *toolBar = new QToolBar( this );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
 
-  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
-  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
-
   mCanvas = new QgsElevationProfileCanvas( this );
   mCanvas->setProject( QgsProject::instance() );
   connect( mCanvas, &QgsElevationProfileCanvas::activeJobCountChanged, this, &QgsElevationProfileWidget::onTotalPendingJobsCountChanged );
@@ -533,6 +530,27 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   // initially populate layer tree with project layers and registered sources
   mLayerTreeView->populateInitialSources( QgsProject::instance() );
+  if ( !mProfile->layers().isEmpty() )
+  {
+    const QList< QgsMapLayer * > selectedLayers = mProfile->layers();
+    const QList<QgsLayerTreeNode *> constChildren = mLayerTree->children();
+    // clear current selection, then restore selected layers
+    for ( QgsLayerTreeNode *node : constChildren )
+    {
+      node->setItemVisibilityCheckedRecursive( false );
+    }
+    for ( QgsMapLayer *layer : selectedLayers )
+    {
+      if ( QgsLayerTreeLayer *node = mLayerTree->findLayer( layer ) )
+      {
+        node->setItemVisibilityChecked( true );
+      }
+    }
+    mLayerTree->reorderGroupLayers( selectedLayers );
+  }
+
+  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
+  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
 
   connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::changed, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
   connect( QgsProject::instance(), &QgsProject::crs3DChanged, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
@@ -744,6 +762,12 @@ void QgsElevationProfileWidget::updateCanvasSources()
         }
       }
     }
+  }
+
+  if ( mProfile )
+  {
+    // store layer configuration
+    mProfile->setLayers( layers );
   }
 
   // Legacy: layer tree layers are in opposite direction to what canvas layers requires
