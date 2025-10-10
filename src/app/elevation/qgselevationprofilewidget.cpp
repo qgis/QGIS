@@ -450,7 +450,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   // show Subsections Indicator Action
   // create a default simple symbology
-  mSubsectionsSymbol = QgsProfilePlotRenderer::defaultSubSectionsSymbol();
+  mSubsectionsSymbol = mProfile->subsectionsSymbol() ? std::unique_ptr<QgsLineSymbol>( mProfile->subsectionsSymbol()->clone() ) : QgsProfilePlotRenderer::defaultSubSectionsSymbol();
   mShowSubsectionsAction = new QAction( tr( "Show Subsections Indicator" ), this );
   mShowSubsectionsAction->setCheckable( true );
   mShowSubsectionsAction->setChecked( settingShowSubsections->value() );
@@ -1169,6 +1169,10 @@ void QgsElevationProfileWidget::editSubsectionsSymbology()
   symbolDialog.setWindowTitle( tr( "Subsections Symbol Selector" ) );
   if ( symbolDialog.exec() )
   {
+    if ( mProfile && mSubsectionsSymbol )
+    {
+      mProfile->setSubsectionsSymbol( mSubsectionsSymbol->clone() );
+    }
     showSubsectionsTriggered();
   }
 }
