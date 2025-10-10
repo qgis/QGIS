@@ -186,3 +186,30 @@ bool QgsMapLayerUtils::isOpenStreetMapLayer( QgsMapLayer *layer )
   }
   return false;
 }
+
+QString QgsMapLayerUtils::translateLayerType( const Qgis::LayerType &type )
+{
+  switch ( type )
+  {
+    case Qgis::LayerType::Vector:
+      return QObject::tr( "Vector" );
+    case Qgis::LayerType::Raster:
+      return QObject::tr( "Raster" );
+    case Qgis::LayerType::Mesh:
+      return QObject::tr( "Mesh" );
+    case Qgis::LayerType::PointCloud:
+      return QObject::tr( "Point Cloud" );
+    case Qgis::LayerType::Annotation:
+      return QObject::tr( "Annotation" );
+    case Qgis::LayerType::VectorTile:
+      return QObject::tr( "Vector Tile" );
+    case Qgis::LayerType::Plugin:
+      return QObject::tr( "Plugin" );
+    case Qgis::LayerType::Group:
+      return QObject::tr( "Group" );
+    case Qgis::LayerType::TiledScene:
+      return QObject::tr( "Tiled Scene" );
+  }
+  Q_ASSERT( false );
+  return QString();
+}

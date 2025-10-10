@@ -7,5 +7,6 @@ try:
     QgsMapLayerUtils.sortLayersByType = staticmethod(QgsMapLayerUtils.sortLayersByType)
     QgsMapLayerUtils.launderLayerName = staticmethod(QgsMapLayerUtils.launderLayerName)
     QgsMapLayerUtils.isOpenStreetMapLayer = staticmethod(QgsMapLayerUtils.isOpenStreetMapLayer)
+    QgsMapLayerUtils.translateLayerType = staticmethod(QgsMapLayerUtils.translateLayerType)
 except (NameError, AttributeError):
     pass
