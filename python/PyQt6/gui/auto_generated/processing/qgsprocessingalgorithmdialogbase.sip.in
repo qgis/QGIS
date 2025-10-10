@@ -76,6 +76,13 @@ algorithm parameters.
 .. seealso:: :py:func:`setMainWidget`
 %End
 
+    void showDialog();
+%Docstring
+Shows and raises the dialog
+
+.. versionadded:: 4.0
+%End
+
     void showLog();
 %Docstring
 Switches the dialog to the log page.
