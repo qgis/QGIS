@@ -1094,13 +1094,29 @@ QList<QgsProviderSublayerDetails> QgsEsriI3SProviderMetadata::querySublayers( co
 
 QVariantMap QgsEsriI3SProviderMetadata::decodeUri( const QString &uri ) const
 {
-  QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( uri );
+  QgsDataSourceUri dsUri( uri );
 
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
+QString path = dsUri.param( QStringLiteral( "url" ) );
+  if ( path.isEmpty() && !uri.isEmpty() )
+  {
+    path = uri;
+  }
+  uriComponents.insert( QStringLiteral( "path" ), path );
 
   return uriComponents;
+}
+
+QList< Qgis::LayerType > QgsEsriI3SProviderMetadata::validLayerTypesForUri( const QString &uri ) const
+{
+  const QVariantMap parts = decodeUri( uri );
+  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo fi( filePath );
+
+  if ( filePath.endsWith( QStringLiteral( ".slpk" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    return { Qgis::LayerType::TiledScene };
+
+  return {};
 }
 
 QString QgsEsriI3SProviderMetadata::encodeUri( const QVariantMap &parts ) const
@@ -1141,7 +1157,19 @@ QList<Qgis::LayerType> QgsEsriI3SProviderMetadata::supportedLayerTypes() const
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsEsriI3SProviderMetadata::capabilities() const
 {
-  return QgsProviderMetadata::ProviderMetadataCapabilities();
+  return ProviderMetadataCapability::PriorityForUri;
+}
+
+int QgsEsriI3SProviderMetadata::priorityForUri( const QString &uri ) const
+{
+  const QVariantMap parts = decodeUri( uri );
+  QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
+  const QFileInfo fi( filePath );
+
+  if ( filePath.endsWith( QStringLiteral( ".slpk" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    return 100;
+
+  return 0;
 }
 
 ///@endcond
