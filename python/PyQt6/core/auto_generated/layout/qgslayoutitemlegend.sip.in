@@ -59,7 +59,6 @@ Emitted to refresh the legend.
 };
 
 
-
 class QgsLayoutItemLegend : QgsLayoutItem
 {
 %Docstring(signature="appended")

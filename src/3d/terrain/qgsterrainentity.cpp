@@ -230,9 +230,15 @@ TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGen
   : QgsChunkQueueJob( node )
   , mTextureGenerator( textureGenerator )
 {
+}
+
+void TerrainMapUpdateJob::start()
+{
+  QgsChunkNode *node = chunk();
+
   QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity() );
-  connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
-  mJobId = textureGenerator->render( entity->textureImage()->imageExtent(), node->tileId(), entity->textureImage()->imageDebugText() );
+  connect( mTextureGenerator, &QgsTerrainTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
+  mJobId = mTextureGenerator->render( entity->textureImage()->imageExtent(), node->tileId(), entity->textureImage()->imageDebugText() );
 }
 
 void TerrainMapUpdateJob::cancel()

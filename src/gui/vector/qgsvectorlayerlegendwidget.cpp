@@ -35,6 +35,8 @@
 QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   : QWidget( parent )
 {
+  mIncludeByDefaultInLayoutLegendsCheck = new QCheckBox( tr( "Include automatically in print layout legend items" ) );
+
   mLegendTreeView = new QTreeView;
   mLegendTreeView->setRootIsDecorated( false );
 
@@ -79,13 +81,19 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
     mImageSourceLineEdit->setSource( mLayer->legendPlaceholderImage() );
   }
 
-  QHBoxLayout *placeholderLayout = new QHBoxLayout;
-  placeholderLayout->addWidget( mPlaceholderImageLabel );
-  placeholderLayout->addWidget( mImageSourceLineEdit );
+  QGroupBox *generalGroupBox = new QGroupBox( tr( "General Settings" ) );
+
+  QGridLayout *generalLayout = new QGridLayout;
+  generalLayout->addWidget( mIncludeByDefaultInLayoutLegendsCheck, 0, 0, 1, 2 );
+  generalLayout->addWidget( mPlaceholderImageLabel, 1, 0 );
+  generalLayout->addWidget( mImageSourceLineEdit, 1, 1 );
+  generalLayout->setColumnStretch( 0, 1 );
+  generalLayout->setColumnStretch( 1, 2 );
+  generalGroupBox->setLayout( generalLayout );
 
   QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->addLayout( placeholderLayout );
+  layout->addWidget( generalGroupBox );
   layout->addWidget( mLabelLegendGroupBox );
   layout->addWidget( mTextOnSymbolGroupBox );
 
@@ -119,6 +127,7 @@ void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
   if ( !legend )
     return;
 
+  mIncludeByDefaultInLayoutLegendsCheck->setChecked( !legend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
   mLabelLegendGroupBox->setChecked( legend->showLabelLegend() );
   populateLabelLegendTreeWidget();
   mTextOnSymbolGroupBox->setChecked( legend->textOnSymbolEnabled() );
@@ -225,6 +234,8 @@ void QgsVectorLayerLegendWidget::applyToLayer()
   {
     applyLabelLegend();
   }
+
+  legend->setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, !mIncludeByDefaultInLayoutLegendsCheck->isChecked() );
 
   mLayer->setLegendPlaceholderImage( mImageSourceLineEdit->source() );
 

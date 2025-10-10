@@ -188,7 +188,7 @@ class MyProfileGenerator(QgsAbstractProfileGenerator):
         return self.__results
 
 
-class MyProfileSource(QgsAbstractProfileSource):
+class MyProfileSourceLegacy(QgsAbstractProfileSource):
     def __init__(self):
         QgsAbstractProfileSource.__init__(self)
 
@@ -196,13 +196,29 @@ class MyProfileSource(QgsAbstractProfileSource):
         return MyProfileGenerator(request)
 
 
+class MyProfileSource(QgsAbstractProfileSource):
+    def __init__(self):
+        QgsAbstractProfileSource.__init__(self)
+
+    def createProfileGenerator(self, request):
+        return MyProfileGenerator(request)
+
+    def profileSourceName(self):
+        return "My Profile"
+
+    def profileSourceId(self):
+        return "my-profile"
+
+
 class TestQgsProfileSourceRegistry(QgisTestCase):
 
-    def test_register_unregister_source(self):
+    def test_register_unregister_legacy_source(self):
         initial_sources = QgsApplication.profileSourceRegistry().profileSources()
 
-        source = MyProfileSource()
-        QgsApplication.profileSourceRegistry().registerProfileSource(source)
+        # Test registering a legacy source
+        source = MyProfileSourceLegacy()
+        res = QgsApplication.profileSourceRegistry().registerProfileSource(source)
+        self.assertTrue(res)
         self.assertEqual(
             len(QgsApplication.profileSourceRegistry().profileSources()),
             len(initial_sources) + 1,
@@ -210,7 +226,55 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
         self.assertEqual(
             QgsApplication.profileSourceRegistry().profileSources()[-1], source
         )
+
+        # Test unregistering a legacy source
+        # TODO: QGIS 5.0 Remove (deprecated method)
         QgsApplication.profileSourceRegistry().unregisterProfileSource(source)
+        self.assertEqual(
+            QgsApplication.profileSourceRegistry().profileSources(), initial_sources
+        )
+
+    def test_register_unregister_source(self):
+        initial_sources = QgsApplication.profileSourceRegistry().profileSources()
+
+        # Test registering a source
+        source = MyProfileSource()
+        res = QgsApplication.profileSourceRegistry().registerProfileSource(source)
+        self.assertTrue(res)
+        self.assertEqual(
+            len(QgsApplication.profileSourceRegistry().profileSources()),
+            len(initial_sources) + 1,
+        )
+        self.assertEqual(
+            QgsApplication.profileSourceRegistry().profileSources()[-1], source
+        )
+
+        # Test that a second source cannot be registered with the same id
+        source2 = MyProfileSource()
+        res = QgsApplication.profileSourceRegistry().registerProfileSource(source2)
+        self.assertFalse(res)
+        self.assertEqual(
+            len(QgsApplication.profileSourceRegistry().profileSources()),
+            len(initial_sources) + 1,
+        )
+        self.assertEqual(
+            QgsApplication.profileSourceRegistry().profileSources()[-1], source
+        )
+
+        # Test unregistering a source by id
+        res = QgsApplication.profileSourceRegistry().unregisterProfileSource(
+            "non-existent"
+        )
+        self.assertFalse(res)
+        self.assertEqual(
+            len(QgsApplication.profileSourceRegistry().profileSources()),
+            len(initial_sources) + 1,
+        )
+
+        res = QgsApplication.profileSourceRegistry().unregisterProfileSource(
+            "my-profile"
+        )
+        self.assertTrue(res)
         self.assertEqual(
             QgsApplication.profileSourceRegistry().profileSources(), initial_sources
         )
@@ -357,6 +421,7 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
 
         source = MyProfileSource()
         QgsApplication.profileSourceRegistry().registerProfileSource(source)
+
         canvas.refresh()
         spy.wait()
 
@@ -379,12 +444,13 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
             elevation_range.contains(1282.7),
             f"Elevation 1282.7 (max) not included in range ({elevation_range})",
         )
-        QgsApplication.profileSourceRegistry().unregisterProfileSource(source)
+        QgsApplication.profileSourceRegistry().unregisterProfileSource("my-profile")
 
     def test_layout_item_profile_custom_source(self):
         """
         Test getting a custom profile in a layout item
         """
+        # We'll test that out profile_item picks sources registered before item creation
         source = MyProfileSource()
         QgsApplication.profileSourceRegistry().registerProfileSource(source)
 
@@ -443,21 +509,22 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
         )
 
         self.assertTrue(self.render_layout_check("custom_profile", layout))
-        QgsApplication.profileSourceRegistry().unregisterProfileSource(source)
+        QgsApplication.profileSourceRegistry().unregisterProfileSource("my-profile")
 
     def test_layout_item_profile_custom_source_with_subsections(self):
         """
         Test getting a custom profile in a layout item
         """
         source = MyProfileSource()
-        QgsApplication.profileSourceRegistry().registerProfileSource(source)
-
         layout = QgsLayout(QgsProject.instance())
         layout.initializeDefaults()
 
         profile_item = QgsLayoutItemElevationProfile(layout)
         layout.addLayoutItem(profile_item)
         profile_item.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        # We'll test that out profile_item picks newly registered sources
+        QgsApplication.profileSourceRegistry().registerProfileSource(source)
 
         curve = QgsLineString()
         curve.fromWkt(
@@ -511,7 +578,7 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
         )
 
         self.assertTrue(self.render_layout_check("custom_profile_subsections", layout))
-        QgsApplication.profileSourceRegistry().unregisterProfileSource(source)
+        QgsApplication.profileSourceRegistry().unregisterProfileSource("my-profile")
 
 
 if __name__ == "__main__":

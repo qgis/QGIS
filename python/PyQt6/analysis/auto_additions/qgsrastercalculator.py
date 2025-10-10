@@ -1,13 +1,29 @@
 # The following has been generated automatically from src/analysis/raster/qgsrastercalculator.h
 # monkey patching scoped based enum
-QgsRasterCalculator.Result.Success.__doc__ = "Calculation successful"
-QgsRasterCalculator.Result.CreateOutputError.__doc__ = "Error creating output data file"
-QgsRasterCalculator.Result.InputLayerError.__doc__ = "Error reading input layer"
-QgsRasterCalculator.Result.Canceled.__doc__ = "User canceled calculation"
-QgsRasterCalculator.Result.ParserError.__doc__ = "Error parsing formula"
-QgsRasterCalculator.Result.MemoryError.__doc__ = "Error allocating memory for result"
-QgsRasterCalculator.Result.BandError.__doc__ = "Invalid band number for input"
-QgsRasterCalculator.Result.CalculationError.__doc__ = "Error occurred while performing calculation"
+QgsRasterCalculator.Success = QgsRasterCalculator.Result.Success
+QgsRasterCalculator.Success.is_monkey_patched = True
+QgsRasterCalculator.Success.__doc__ = "Calculation successful"
+QgsRasterCalculator.CreateOutputError = QgsRasterCalculator.Result.CreateOutputError
+QgsRasterCalculator.CreateOutputError.is_monkey_patched = True
+QgsRasterCalculator.CreateOutputError.__doc__ = "Error creating output data file"
+QgsRasterCalculator.InputLayerError = QgsRasterCalculator.Result.InputLayerError
+QgsRasterCalculator.InputLayerError.is_monkey_patched = True
+QgsRasterCalculator.InputLayerError.__doc__ = "Error reading input layer"
+QgsRasterCalculator.Canceled = QgsRasterCalculator.Result.Canceled
+QgsRasterCalculator.Canceled.is_monkey_patched = True
+QgsRasterCalculator.Canceled.__doc__ = "User canceled calculation"
+QgsRasterCalculator.ParserError = QgsRasterCalculator.Result.ParserError
+QgsRasterCalculator.ParserError.is_monkey_patched = True
+QgsRasterCalculator.ParserError.__doc__ = "Error parsing formula"
+QgsRasterCalculator.MemoryError = QgsRasterCalculator.Result.MemoryError
+QgsRasterCalculator.MemoryError.is_monkey_patched = True
+QgsRasterCalculator.MemoryError.__doc__ = "Error allocating memory for result"
+QgsRasterCalculator.BandError = QgsRasterCalculator.Result.BandError
+QgsRasterCalculator.BandError.is_monkey_patched = True
+QgsRasterCalculator.BandError.__doc__ = "Invalid band number for input"
+QgsRasterCalculator.CalculationError = QgsRasterCalculator.Result.CalculationError
+QgsRasterCalculator.CalculationError.is_monkey_patched = True
+QgsRasterCalculator.CalculationError.__doc__ = "Error occurred while performing calculation"
 QgsRasterCalculator.Result.__doc__ = """Result of the calculation
 
 * ``Success``: Calculation successful

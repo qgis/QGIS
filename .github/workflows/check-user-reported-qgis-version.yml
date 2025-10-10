@@ -12,13 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Get version details
         run: |
           python ./scripts/get_latest_qgis_versions.py --release="stable" --github_token=${{ secrets.GITHUB_TOKEN }} >> $GITHUB_ENV
       - name: Write comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const {ISSUE_BODY, QGIS_VERSION_LTR_PATCH, QGIS_VERSION_STABLE_PATCH} = process.env // Latest released version identified using get_latest_qgis_versions

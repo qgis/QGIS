@@ -209,6 +209,26 @@ void TestQgsFileWidget::testSplitFilePaths()
   QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%1\" " ).arg( path ) ), QStringList() << path << path );
   QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\" " ).arg( path ) ), QStringList() << path << path );
   QCOMPARE( QgsFileWidget::splitFilePaths( path ), QStringList() << path );
+
+  const QString pathPrefixed = QString( TEST_DATA_DIR + QStringLiteral( "ZARR:\"/path/to/store.zarr\"" ) );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\" \"%1\"" ).arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\"" ).arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%1\"" ).arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%1\" " ).arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\" " ).arg( pathPrefixed ) ), QStringList() << pathPrefixed << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( pathPrefixed ), QStringList() << pathPrefixed );
+
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\" \"%2\"" ).arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%2\"" ).arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%2\"" ).arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%2\" " ).arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%2\" " ).arg( path, pathPrefixed ) ), QStringList() << path << pathPrefixed );
+
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\" \"%2\"" ).arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%2\"" ).arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%2\"" ).arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%2\" " ).arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%2\" " ).arg( pathPrefixed, path ) ), QStringList() << pathPrefixed << path );
 }
 
 QGSTEST_MAIN( TestQgsFileWidget )

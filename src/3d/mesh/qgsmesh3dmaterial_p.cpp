@@ -42,12 +42,22 @@
 
 #include "qgscolorramptexture.h"
 
+
 class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
 {
   public:
     ArrowsTextureGenerator( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength )
       : mVectors( vectors ), mSize( size ), mFixedSize( fixedSize ), mMaxVectorLength( maxVectorLength )
     {}
+
+    qintptr id() const override
+    {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+      return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<ArrowsTextureGenerator>::id );
+#else
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<ArrowsTextureGenerator>::id );
+#endif
+    }
 
     Qt3DRender::QTextureImageDataPtr operator()() override
     {
@@ -87,7 +97,7 @@ class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
 
     bool operator==( const Qt3DRender::QTextureImageDataGenerator &other ) const override
     {
-      const ArrowsTextureGenerator *otherFunctor = functor_cast<ArrowsTextureGenerator>( &other );
+      const ArrowsTextureGenerator *otherFunctor = dynamic_cast<const ArrowsTextureGenerator *>( &other );
       if ( !otherFunctor )
         return false;
 
@@ -99,13 +109,7 @@ class ArrowsTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
     const QSize mSize;
     const bool mFixedSize;
     const double mMaxVectorLength;
-
-    // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
-    Q_NOWARN_DEPRECATED_PUSH
-    QT3D_FUNCTOR( ArrowsTextureGenerator )
-    Q_NOWARN_DEPRECATED_POP
 };
-
 
 QgsMesh3DMaterial::QgsMesh3DMaterial( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange, const QgsVector3D &origin, const QgsMesh3DSymbol *symbol, MagnitudeType magnitudeType )
   : mSymbol( symbol->clone() )

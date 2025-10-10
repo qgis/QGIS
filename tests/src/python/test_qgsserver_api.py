@@ -24,12 +24,14 @@ os.environ["QT_HASH_SEED"] = "1"
 from urllib import parse
 
 from qgis.core import (
+    Qgis,
     QgsFeature,
     QgsFeatureRequest,
     QgsGeometry,
     QgsProject,
     QgsVectorLayer,
     QgsVectorLayerServerProperties,
+    QgsApplication,
 )
 from qgis.PyQt import QtCore
 from qgis.server import (
@@ -49,6 +51,7 @@ from qgis.server import (
 from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
+from contextlib import contextmanager
 
 
 class QgsServerAPIUtilsTest(QgsServerTestBase):
@@ -283,7 +286,9 @@ class QgsServerAPITestBase(QgsServerTestBase):
         )
         return headers_content + "\n" + json_content
 
-    def compareApi(self, request, project, reference_file, subdir="api"):
+    def compareApi(
+        self, request, project, reference_file, subdir="api", replace_map=None
+    ):
         response = QgsBufferServerResponse()
         # Add json to accept it reference_file is JSON
         if reference_file.endswith(".json"):
@@ -294,6 +299,11 @@ class QgsServerAPITestBase(QgsServerTestBase):
             if reference_file.endswith("html")
             else self.dump(response)
         )
+
+        if replace_map:
+            for k, v in replace_map.items():
+                result = result.replace(k, v)
+
         path = os.path.join(self.temporary_path, "qgis_server", subdir, reference_file)
         if self.regeregenerate_api_reference:
             # Try to change timestamp
@@ -373,6 +383,39 @@ class RestrictedLayerAccessControl(QgsAccessControlFilter):
 
 class QgsServerAPITest(QgsServerAPITestBase):
     """QGIS API server tests"""
+
+    def setUp(self):
+        super().setUp()
+        # TODO: Remove when QGIS 4 is released
+        # Default url will change when QGIS 4 is released, set it to /wfs3 for now
+        if Qgis.versionInt() >= 40000:
+            os.environ.update({"QGIS_SERVER_API_WFS3_ROOT_PATH": "/wfs3"})
+            iface = self.server.serverInterface()
+            iface.reloadSettings()
+            iface.serviceRegistry().cleanUp()
+            iface.serviceRegistry().init(QgsApplication.libexecPath() + "server", iface)
+
+    # Set env context manager
+    @contextmanager
+    def set_env(self, **environ):
+        """Context manager to set/unset environment variables"""
+
+        old_environ = dict(os.environ)
+        os.environ.update(environ)
+
+        iface = self.server.serverInterface()
+        iface.reloadSettings()
+        iface.serviceRegistry().cleanUp()
+        iface.serviceRegistry().init(QgsApplication.libexecPath() + "server", iface)
+
+        try:
+            yield
+        finally:
+            os.environ.clear()
+            os.environ.update(old_environ)
+            iface.reloadSettings()
+            iface.serviceRegistry().cleanUp()
+            iface.serviceRegistry().init(QgsApplication.libexecPath() + "server", iface)
 
     def test_api(self):
         """Test API registering"""
@@ -521,6 +564,13 @@ class QgsServerAPITest(QgsServerAPITestBase):
             os.path.join(self.temporary_path, "qgis_server", "test_project_api.qgs")
         )
         self.compareApi(request, project, "test_wfs3_api_project.json")
+
+        with self.set_env(QGIS_SERVER_API_WFS3_ROOT_PATH="/custom_rootpath"):
+            iface = self.server.serverInterface()
+            registry = iface.serviceRegistry()
+            api = registry.getApi("OAPIF")
+            self.assertIsNotNone(api)
+            self.assertEqual(api.rootPath(), "/custom_rootpath")
 
     def test_wfs3_api_permissions(self):
         """Test the API with different permissions on a layer"""

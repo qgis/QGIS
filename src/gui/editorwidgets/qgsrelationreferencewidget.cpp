@@ -189,6 +189,8 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
       mComboBox->setIdentifierFields( mReferencedFields );
       mComboBox->setFilterExpression( mFilterExpression );
       mComboBox->setFetchLimit( mFetchLimit );
+      mComboBox->setOrderExpression( mOrderExpression );
+      mComboBox->setSortOrder( mSortOrder );
     }
     mAttributeEditorFrame->setObjectName( QStringLiteral( "referencing/" ) + relation.name() );
 
@@ -486,6 +488,8 @@ void QgsRelationReferenceWidget::init()
     mComboBox->setAllowNull( mAllowNull );
     mComboBox->setIdentifierFields( mReferencedFields );
     mComboBox->setFetchLimit( mFetchLimit );
+    mComboBox->setOrderExpression( mOrderExpression );
+    mComboBox->setSortOrder( mSortOrder );
 
     if ( !mFilterExpression.isEmpty() )
       mComboBox->setFilterExpression( mFilterExpression );

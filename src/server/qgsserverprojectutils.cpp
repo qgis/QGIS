@@ -180,6 +180,12 @@ bool QgsServerProjectUtils::wmsFeatureInfoUseAttributeFormSettings( const QgsPro
          || useFormSettings.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 }
 
+bool QgsServerProjectUtils::wmsHTMLFeatureInfoUseOnlyMaptip( const QgsProject &project )
+{
+  const QString useFormSettings = project.readEntry( QStringLiteral( "WMSHTMLFeatureInfoUseOnlyMaptip" ), QStringLiteral( "/" ), "" );
+  return useFormSettings.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+}
+
 bool QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project )
 {
   const QString segmGeom = project.readEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), "" );
@@ -288,9 +294,8 @@ QStringList QgsServerProjectUtils::wmsOutputCrsList( const QgsProject &project )
   const QStringList wmsCrsList = project.readListEntry( QStringLiteral( "WMSCrsList" ), QStringLiteral( "/" ), QStringList() );
   if ( !wmsCrsList.isEmpty() )
   {
-    for ( int i = 0; i < wmsCrsList.size(); ++i )
+    for ( const auto &crs : std::as_const( wmsCrsList ) )
     {
-      const QString crs = wmsCrsList.at( i );
       if ( !crs.isEmpty() )
       {
         crsList.append( crs );
@@ -301,9 +306,9 @@ QStringList QgsServerProjectUtils::wmsOutputCrsList( const QgsProject &project )
   {
     const QStringList valueList = project.readListEntry( QStringLiteral( "WMSEpsgList" ), QStringLiteral( "/" ), QStringList() );
     bool conversionOk;
-    for ( int i = 0; i < valueList.size(); ++i )
+    for ( const auto &espgStr : valueList )
     {
-      const int epsgNr = valueList.at( i ).toInt( &conversionOk );
+      const int epsgNr = espgStr.toInt( &conversionOk );
       if ( conversionOk )
       {
         crsList.append( QStringLiteral( "EPSG:%1" ).arg( epsgNr ) );
@@ -325,6 +330,18 @@ QStringList QgsServerProjectUtils::wmsOutputCrsList( const QgsProject &project )
     }
   }
   return crsList;
+}
+
+QStringList QgsServerProjectUtils::wmsOutputCrsListAsOgcUrn( const QgsProject &project )
+{
+  const QStringList crsList = wmsOutputCrsList( project );
+  QStringList crsListAsOgcUrn;
+  for ( const QString &crsString : crsList )
+  {
+    crsListAsOgcUrn.append( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsString ).toOgcUrn() );
+  }
+
+  return crsListAsOgcUrn;
 }
 
 QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServerRequest &request, const QgsServerSettings &settings )

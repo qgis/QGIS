@@ -7,12 +7,13 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayerTreeViewMenuProvider.__abstract_methods__ = ['createContextMenu']
-    QgsLayerTreeViewMenuProvider.__group__ = ['layertree']
+    QgsLayerTreeProxyModel.__virtual_methods__ = ['nodeShown']
+    QgsLayerTreeProxyModel.__overridden_methods__ = ['filterAcceptsRow']
+    QgsLayerTreeProxyModel.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
 try:
-    QgsLayerTreeProxyModel.__overridden_methods__ = ['filterAcceptsRow']
-    QgsLayerTreeProxyModel.__group__ = ['layertree']
+    QgsLayerTreeViewMenuProvider.__abstract_methods__ = ['createContextMenu']
+    QgsLayerTreeViewMenuProvider.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass

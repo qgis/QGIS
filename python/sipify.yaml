@@ -1,9 +1,0 @@
-
-
-class_headerfile:
-  QgsAbstractFeatureIteratorFromSource: qgsfeatureiterator.h
-  QgsSettingsEntryBaseTemplate: qgssettingsentry.h
-
-
-no_export_macro:
-

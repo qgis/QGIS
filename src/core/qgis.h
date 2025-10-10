@@ -20,6 +20,7 @@
 
 
 #include <QMetaEnum>
+#include <QTimeZone>
 #include <cfloat>
 #include <memory>
 #include <cmath>
@@ -159,6 +160,25 @@ class CORE_EXPORT Qgis
       NoLevel = 4, //!< No level
     };
     Q_ENUM( MessageLevel )
+
+    /**
+     * \brief Flags controlling behavior of network requests.
+     *
+     * \since QGIS 4.0
+     */
+    enum class NetworkRequestFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      DisableMessageLogging = 1 << 0, //!< If present, indicates that no message logging should be performed when network errors are encountered
+    };
+    Q_ENUM( NetworkRequestFlag )
+
+    /**
+     * \brief Flags controlling behavior of network requests.
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( NetworkRequestFlags, NetworkRequestFlag )
+    Q_FLAG( NetworkRequestFlags )
 
     /**
      * Types of layers that can be added to a map
@@ -1357,6 +1377,7 @@ class CORE_EXPORT Qgis
       ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
       CountFeatures = 1 << 2, //!< Count features in vector sublayers
       IncludeSystemTables = 1 << 3, //!< Include system or internal tables (these are not included by default)
+      OpenLayersToResolveDescriptions = 1 << 4, //!< Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \since QGIS 4.0
     };
     //! Sublayer query flags
     Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
@@ -2087,6 +2108,19 @@ class CORE_EXPORT Qgis
       Bevel SIP_MONKEYPATCH_COMPAT_NAME( JoinStyleBevel ), //!< Use beveled joins
     };
     Q_ENUM( JoinStyle )
+
+    /**
+     * Join styles for 3D buffers.
+     *
+     * \since QGIS 4.0
+     */
+    enum class JoinStyle3D : int
+    {
+      Round = 1,           //!< Smooth, rounded buffer around the input geometry
+      Flat,                //!< Flat ends and constant width along the linestring
+      CylindersAndSpheres, //!< Cylinders along the linestring segments with spheres at the vertices
+    };
+    Q_ENUM( JoinStyle3D )
 
     /**
      * Flags which control geos geometry creation behavior.
@@ -3253,6 +3287,32 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( PlotAxisSuffixPlacement )
 
+
+    /**
+     * Plots axis types.
+     *
+     * \since QGIS 4.0
+     */
+    enum class PlotAxisType
+    {
+      Interval, //!< The axis represents a range of values
+      Categorical, //!< The axis represents categories
+    };
+    Q_ENUM( PlotAxisType )
+
+    /**
+     * Pie chart label types.
+     *
+     * \since QGIS 4.0
+     */
+    enum class PieChartLabelType : int
+    {
+      NoLabels,       //!< Labels are not drawn
+      Categories, //!< Category labels are drawn
+      Values,    //!< Value labels are drawn
+    };
+    Q_ENUM( PieChartLabelType )
+
     /**
      * DpiMode enum
      * \since QGIS 3.26
@@ -3444,7 +3504,8 @@ class CORE_EXPORT Qgis
       Plugin SIP_MONKEYPATCH_COMPAT_NAME( TypePlugin ) = 7, //!< Plugin layers \since QGIS 3.22
       PointCloud SIP_MONKEYPATCH_COMPAT_NAME( TypePointCloud ) = 8, //!< Point cloud layers \since QGIS 3.22
       Annotation SIP_MONKEYPATCH_COMPAT_NAME( TypeAnnotation ) = 9, //!< Annotation layers \since QGIS 3.22
-      VectorTile SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorTile ) = 10 //!< Vector tile layers \since QGIS 3.32
+      VectorTile SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorTile ) = 10, //!< Vector tile layers \since QGIS 3.32
+      TiledScene = 11 //!< Tiled scene layers \since QGIS 4.0
     };
     Q_ENUM( ProcessingSourceType )
 
@@ -3520,6 +3581,7 @@ class CORE_EXPORT Qgis
     {
       RegeneratesPrimaryKey = 1 << 0, //!< Algorithm always drops any existing primary keys or FID values and regenerates them in outputs
       RegeneratesPrimaryKeyInSomeScenarios = 1 << 1, //!< Algorithm may drop the existing primary keys or FID values in some scenarios, depending on algorithm inputs and parameters
+      RespectsEllipsoid = 1 << 2, //!< Algorithm respects the context's ellipsoid settings, and uses ellipsoidal based measurements. \since QGIS 4.0
     };
     Q_ENUM( ProcessingAlgorithmDocumentationFlag )
 
@@ -4277,6 +4339,7 @@ class CORE_EXPORT Qgis
       GPServer, //!< GPServer
       GeocodeServer, //!< GeocodeServer
       Unknown, //!< Other unknown/unsupported type
+      SceneServer, //!< SceneServer
     };
     Q_ENUM( ArcGisRestServiceType )
 
@@ -4444,6 +4507,25 @@ class CORE_EXPORT Qgis
      */
     Q_DECLARE_FLAGS( LayerTreeFilterFlags, LayerTreeFilterFlag )
     Q_FLAG( LayerTreeFilterFlags )
+
+    /**
+     * Map layer legend flags.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapLayerLegendFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ExcludeByDefault = 1 << 0, //!< If set, the layer should not be included in legends by default, and must be manually added by a user
+    };
+    Q_ENUM( MapLayerLegendFlag )
+
+    /**
+     * Map layer legend flags.
+     *
+     * \since QGIS 4.0
+     */
+    Q_DECLARE_FLAGS( MapLayerLegendFlags, MapLayerLegendFlag )
+    Q_FLAG( MapLayerLegendFlags )
 
     /**
      * Component of legends which can be styled.
@@ -5982,6 +6064,38 @@ class CORE_EXPORT Qgis
     Q_ENUM( StacObjectType )
 
     /**
+     * Capabilities of a raster layer processing parameter.
+     * \since QGIS 4.0
+     */
+    enum class RasterProcessingParameterCapability : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      WmsScale = 1 << 0, //!< The parameter supports a reference scale for WMS source layers
+      WmsDpi = 1 << 1,   //!< The parameter supports a server resolution for WMS source layers
+    };
+    Q_ENUM( RasterProcessingParameterCapability )
+
+    /**
+     * Raster layer processing parameter capabilities.
+     * \since QGIS 4.0
+     */
+    Q_DECLARE_FLAGS( RasterProcessingParameterCapabilities, RasterProcessingParameterCapability )
+    Q_FLAG( RasterProcessingParameterCapabilities )
+
+    /**
+     * Dev tools node custom data roles.
+     * \since QGIS 4.0
+     */
+    enum class DevToolsNodeRole
+    {
+      Status = Qt::UserRole + 1, //!< Request status role
+      Id,                        //!< Request ID role
+      ElapsedTime,               //!< Elapsed time
+      MaximumTime,               //!< Maximum encountered elapsed time
+      Sort,                      //!< Sort order role
+    };
+    Q_ENUM( DevToolsNodeRole )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -6107,6 +6221,13 @@ class CORE_EXPORT Qgis
     static QString geosVersion();
 
     /**
+     * Returns TRUE if the QGIS build contains QtWebkit.
+     *
+     * \since QGIS 4.0
+     */
+    static bool hasQtWebkit();
+
+    /**
      * Constant that holds the string representation for "No ellipse/No CRS".
      *
      * \since QGIS 3.44
@@ -6151,6 +6272,7 @@ class CORE_EXPORT Qgis
 QHASH_FOR_CLASS_ENUM( Qgis::CaptureTechnique )
 QHASH_FOR_CLASS_ENUM( Qgis::RasterAttributeTableFieldUsage )
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::NetworkRequestFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AuthConfigurationStorageCapabilities )
@@ -6223,6 +6345,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::StringStatistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterBandStatistics )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterInterfaceCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterProviderCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterProcessingParameterCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProcessingAlgorithmDocumentationFlags )
@@ -6235,7 +6358,9 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderReadFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapCanvasFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayoutRenderFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerLegendFlags )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
+Q_DECLARE_METATYPE( QTimeZone )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.
@@ -6749,12 +6874,16 @@ CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
  *
  * Invalid < NULL < Values
  *
+ * Since QGIS 4.0 the \a strictTypeCheck argument can be used to specify that variants
+ * of different types should be compared using their userType ID only, and not attempt
+ * to check the actual variant value.
+ *
  * \see qgsVariantLessThan()
  * \see qgsVariantGreaterThan()
  *
  * \since QGIS 3.44
  */
-CORE_EXPORT int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
+CORE_EXPORT int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs, bool strictTypeCheck = false );
 
 /**
  * Compares two QVariant values and returns whether the first is less than the second.
@@ -6762,7 +6891,7 @@ CORE_EXPORT int qgsVariantCompare( const QVariant &lhs, const QVariant &rhs );
  * QVariant data types (such as strings, numeric values, dates and times)
  *
  * Invalid < NULL < Values
- *
+
  * \see qgsVariantGreaterThan()
  * \see qgsVariantCompare()
  */
@@ -6792,27 +6921,34 @@ CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs
 
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
- * Useful for sorting lists of variants, correctly handling sorting of the various
- * QVariant data types (such as strings, numeric values, dates and times)
+ *
+ * \note This method performs strict type checking, and considers variants of different
+ * types using their userType ID only. It is accordingly appropriate for use with QMap
+ * with QVariant keys. If loose type checking is required then the qgsVariantGreaterThan()
+ * function should be used.
+ *
  * \see qgsVariantLessThan()
+ * \see qgsVariantGreaterThan()
  */
 inline bool operator> ( const QVariant &v1, const QVariant &v2 )
 {
-  return qgsVariantGreaterThan( v1, v2 );
+  return qgsVariantCompare( v1, v2, true ) > 0;
 }
 
 /**
  * Compares two QVariant values and returns whether the first is less than the second.
- * Useful for sorting lists of variants, correctly handling sorting of the various
- * QVariant data types (such as strings, numeric values, dates and times)
  *
- * Invalid < NULL < Values
+ * \note This method performs strict type checking, and considers variants of different
+ * types using their userType ID only. It is accordingly appropriate for use with QMap
+ * with QVariant keys. If loose type checking is required then the qgsVariantLessThan()
+ * function should be used.
  *
+ * \see qgsVariantLessThan()
  * \see qgsVariantGreaterThan()
  */
 inline bool operator< ( const QVariant &v1, const QVariant &v2 )
 {
-  return qgsVariantLessThan( v1, v2 );
+  return qgsVariantCompare( v1, v2, true ) < 0;
 }
 #endif
 
@@ -6938,7 +7074,6 @@ typedef unsigned long long qgssize;
   __pragma(warning(disable:4702))
 #define Q_NOWARN_UNREACHABLE_POP \
   __pragma(warning(pop))
-
 #else
 
 #define Q_NOWARN_DEPRECATED_PUSH

@@ -75,7 +75,9 @@ bool QgsLayoutAtlas::writeXml( QDomElement &parentElement, QDomDocument &documen
     atlasElem.setAttribute( QStringLiteral( "coverageLayer" ), QString() );
   }
 
-  atlasElem.setAttribute( QStringLiteral( "limitCoverageLayerRenderToCurrentFeature" ), mLimitCoverageLayerRenderToCurrentFeature ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  if ( mLimitCoverageLayerRenderToCurrentFeature )
+    atlasElem.setAttribute( QStringLiteral( "limitCoverageLayerRenderToCurrentFeature" ), QStringLiteral( "1" ) );
+
   atlasElem.setAttribute( QStringLiteral( "hideCoverage" ), mHideCoverage ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   atlasElem.setAttribute( QStringLiteral( "filenamePattern" ), mFilenameExpressionString );
   atlasElem.setAttribute( QStringLiteral( "pageNameExpression" ), mPageNameExpression );

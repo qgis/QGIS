@@ -91,6 +91,15 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   if ( !treeModel )
     return;
 
+  auto proxyModel = new QgsLayerTreeProxyModel( treeModel, this );
+  proxyModel->setShowPrivateLayers( mShowPrivateLayers );
+  proxyModel->setHideValidLayers( mHideValidLayers );
+
+  setModel( treeModel, proxyModel );
+}
+
+void QgsLayerTreeView::setModel( QgsLayerTreeModel *treeModel, QgsLayerTreeProxyModel *proxyModel )
+{
   if ( mMessageBar )
     connect( treeModel, &QgsLayerTreeModel::messageEmitted, this, [this]( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) {
       Q_UNUSED( duration )
@@ -99,8 +108,7 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
 
   treeModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );
 
-  mProxyModel = new QgsLayerTreeProxyModel( treeModel, this );
-
+  mProxyModel = proxyModel;
   connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
   connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
 
@@ -108,8 +116,6 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   new ModelTest( mProxyModel, this );
 #endif
 
-  mProxyModel->setShowPrivateLayers( mShowPrivateLayers );
-  mProxyModel->setHideValidLayers( mHideValidLayers );
   QTreeView::setModel( mProxyModel );
 
   connect( treeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );

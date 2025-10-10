@@ -93,6 +93,8 @@ bool runAlg(std::vector<std::string> args, Alg &alg);
 
 void removeFiles(const std::vector<std::string> &tileOutputFiles, bool removeParentDirIfEmpty = true);
 
+fs::path fileStem(const std::string &filename);
+
 //////////////
 
 

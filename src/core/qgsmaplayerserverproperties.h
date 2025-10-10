@@ -345,6 +345,12 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
     QString shortName() const { return mShortName; }
 
     /**
+     * Returns WFS typename for the layer
+     * \since QGIS 4.0.0
+     */
+    QString wfsTypeName() const;
+
+    /**
      * Sets the \a title of the layer used by QGIS Server in GetCapabilities request.
      *
      * \see title()

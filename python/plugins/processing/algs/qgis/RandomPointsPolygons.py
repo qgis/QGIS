@@ -153,7 +153,10 @@ class RandomPointsPolygons(QgisAlgorithm):
         return self.tr("Random points inside polygons")
 
     def documentationFlags(self):
-        return Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey
+        return Qgis.ProcessingAlgorithmDocumentationFlags(
+            Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey
+            | Qgis.ProcessingAlgorithmDocumentationFlag.RespectsEllipsoid
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)

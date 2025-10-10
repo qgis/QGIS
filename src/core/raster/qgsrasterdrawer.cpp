@@ -142,7 +142,7 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
   const QPoint tlPoint = QPoint( std::floor( viewPort->mTopLeftPoint.x() + topLeftCol / mDpiScaleFactor / mDevicePixelRatio ),
                                  std::floor( viewPort->mTopLeftPoint.y() + topLeftRow / mDpiScaleFactor / mDevicePixelRatio ) );
   const QgsScopedQPainterState painterState( p );
-  p->setRenderHint( QPainter::Antialiasing, false );
+
   // Improve rendering of rasters on high DPI screens with Qt's auto scaling enabled
   if ( !qgsDoubleNear( mDevicePixelRatio, 1.0 ) || !qgsDoubleNear( mDpiScaleFactor, 1.0 ) )
   {

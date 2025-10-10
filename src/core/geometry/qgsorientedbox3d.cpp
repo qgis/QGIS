@@ -22,6 +22,8 @@
 #include "qgsmatrix4x4.h"
 #include "qgsvector3d.h"
 
+#include <QQuaternion>
+
 QgsOrientedBox3D::QgsOrientedBox3D() = default;
 
 QgsOrientedBox3D::QgsOrientedBox3D( const QList<double> &center, const QList<double> &halfAxes )
@@ -55,6 +57,26 @@ QgsOrientedBox3D::QgsOrientedBox3D( const QgsVector3D &center, const QList<QgsVe
       mHalfAxes[static_cast< int >( i * 3 + 2 )] = halfAxes.at( i ).z();
     }
   }
+}
+
+QgsOrientedBox3D::QgsOrientedBox3D( const QgsVector3D &center, const QgsVector3D &halfSizes, const QQuaternion &quaternion )
+{
+  mCenter[0] = center.x();
+  mCenter[1] = center.y();
+  mCenter[2] = center.z();
+
+  QgsVector3D v1 = QgsVector3D( quaternion.rotatedVector( QVector3D( 1, 0, 0 ) ) ) * halfSizes.x();
+  QgsVector3D v2 = QgsVector3D( quaternion.rotatedVector( QVector3D( 0, 1, 0 ) ) ) * halfSizes.y();
+  QgsVector3D v3 = QgsVector3D( quaternion.rotatedVector( QVector3D( 0, 0, 1 ) ) ) * halfSizes.z();
+  mHalfAxes[0] = v1.x();
+  mHalfAxes[1] = v1.y();
+  mHalfAxes[2] = v1.z();
+  mHalfAxes[3] = v2.x();
+  mHalfAxes[4] = v2.y();
+  mHalfAxes[5] = v2.z();
+  mHalfAxes[6] = v3.x();
+  mHalfAxes[7] = v3.y();
+  mHalfAxes[8] = v3.z();
 }
 
 QgsOrientedBox3D QgsOrientedBox3D::fromBox3D( const QgsBox3D &box )
@@ -128,6 +150,14 @@ QgsVector3D QgsOrientedBox3D::size() const
   QgsVector3D axis2( mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] );
   QgsVector3D axis3( mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] );
   return QgsVector3D( 2 * axis1.length(), 2 * axis2.length(), 2 * axis3.length() );
+}
+
+double QgsOrientedBox3D::longestSide() const
+{
+  QgsVector3D axis1( mHalfAxes[0], mHalfAxes[1], mHalfAxes[2] );
+  QgsVector3D axis2( mHalfAxes[3], mHalfAxes[4], mHalfAxes[5] );
+  QgsVector3D axis3( mHalfAxes[6], mHalfAxes[7], mHalfAxes[8] );
+  return 2 * std::max( std::max( axis1.length(), axis2.length() ), axis3.length() );
 }
 
 QgsBox3D QgsOrientedBox3D::reprojectedExtent( const QgsCoordinateTransform &ct ) const

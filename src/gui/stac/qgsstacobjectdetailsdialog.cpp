@@ -18,6 +18,8 @@
 #include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsstacitem.h"
+#include "qgsauthmanager.h"
+
 #include <QDesktopServices>
 
 ///@cond PRIVATE
@@ -42,7 +44,16 @@ void QgsStacObjectDetailsDialog::setStacObject( QgsStacObject *stacObject )
     {
       if ( it->roles().contains( QLatin1String( "thumbnail" ) ) )
       {
-        thumbnails.append( QStringLiteral( "<img src=\"%1\" border=1><br>" ).arg( it->href() ) );
+        QString uri = it->href();
+        if ( !mAuthcfg.isEmpty() )
+        {
+          QStringList connectionItems;
+          connectionItems << uri;
+          QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, mAuthcfg );
+          uri = connectionItems.first();
+        }
+
+        thumbnails.append( QStringLiteral( "<img src=\"%1\" border=1><br>" ).arg( uri ) );
       }
     }
   }
@@ -58,6 +69,11 @@ void QgsStacObjectDetailsDialog::setStacObject( QgsStacObject *stacObject )
     QDesktopServices::openUrl( url );
   } );
   mWebView->setHtml( html );
+}
+
+void QgsStacObjectDetailsDialog::setAuthcfg( const QString &authcfg )
+{
+  mAuthcfg = authcfg;
 }
 
 ///@endcond

@@ -1,0 +1,227 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectstoredobjectmanagermodel.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsProjectStoredObjectManagerModelBase : QAbstractListModel
+{
+%Docstring(signature="appended")
+Base class for list models representing the objects available in a
+:py:class:`QgsAbstractProjectStoredObjectManager`.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstoredobjectmanagermodel.h"
+%End
+  public:
+
+
+    enum class CustomRole /BaseType=IntEnum/
+    {
+      Object,
+    };
+
+    QgsProjectStoredObjectManagerModelBase( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStoredObjectManagerModelBase, with the
+specified ``parent`` object.
+%End
+
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+  protected slots:
+
+
+  protected:
+
+};
+
+template<T>
+class QgsProjectStoredObjectManagerModel : QgsProjectStoredObjectManagerModelBase
+{
+%Docstring(signature="appended")
+Template class for models representing the objects available in a
+:py:class:`QgsAbstractProjectStoredObjectManager`.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstoredobjectmanagermodel.h"
+%End
+  public:
+
+    explicit QgsProjectStoredObjectManagerModel( QgsAbstractProjectStoredObjectManager<T> *manager, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStoredObjectManagerModel, showing the objects
+from the specified ``manager``.
+%End
+
+    T *objectFromIndex( const QModelIndex &index ) const;
+%Docstring
+Returns the object at the corresponding ``index``.
+
+.. seealso:: :py:func:`indexFromObject`
+%End
+
+    QModelIndex indexFromObject( T *object ) const;
+%Docstring
+Returns the model index corresponding to an ``object``.
+
+.. seealso:: :py:func:`objectFromIndex`
+%End
+
+    void setAllowEmptyObject( bool allowEmpty );
+%Docstring
+Sets whether an optional empty object ("not set") option is present in
+the model.
+
+.. seealso:: :py:func:`allowEmptyObject`
+%End
+
+    bool allowEmptyObject() const;
+%Docstring
+Returns ``True`` if the model allows the empty object ("not set")
+choice.
+
+.. seealso:: :py:func:`setAllowEmptyObject`
+%End
+
+  protected:
+
+    virtual int rowCountInternal( const QModelIndex &parent ) const;
+
+    virtual QVariant dataInternal( const QModelIndex &index, int role ) const;
+
+    virtual bool setDataInternal( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
+    virtual Qt::ItemFlags flagsInternal( const QModelIndex &index ) const;
+
+
+    virtual void objectAboutToBeAddedInternal( const QString &name );
+
+    virtual void objectAboutToBeRemovedInternal( const QString &name );
+
+    virtual void objectAddedInternal( const QString &name );
+
+    virtual void objectRemovedInternal( const QString &name );
+
+    void objectRenamedInternal( T *object, const QString &newName );
+    QVariant objectToVariant( T *object ) const;
+
+
+};
+
+
+
+
+class QgsProjectStoredObjectManagerProxyModelBase : QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+Base class QSortFilterProxyModel subclass for
+:py:class:`QgsProjectStoredObjectManagerModel`.
+
+Supports sorting by object name and text based filtering against the
+object name.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstoredobjectmanagermodel.h"
+%End
+  public:
+
+    explicit QgsProjectStoredObjectManagerProxyModelBase( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStoredObjectManagerProxyModelBase.
+%End
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+    QString filterString() const;
+%Docstring
+Returns the current filter string, if set.
+
+.. seealso:: :py:func:`setFilterString`
+%End
+
+  public slots:
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, such that only layouts with names containing
+the specified string will be shown.
+
+.. seealso:: :py:func:`filterString`
+%End
+
+  protected:
+
+    virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
+%Docstring
+Returns ``True`` if the proxy accepts the matching source row.
+
+Handles filtering based on object name.
+
+Subclasses should override this method instead of
+:py:func:`~QgsProjectStoredObjectManagerProxyModelBase.filterAcceptsRow`.
+%End
+
+};
+
+
+template<T>
+class QgsProjectStoredObjectManagerProxyModel : QgsProjectStoredObjectManagerProxyModelBase
+{
+%Docstring(signature="appended")
+Template class QSortFilterProxyModel subclass for
+:py:class:`QgsProjectStoredObjectManagerModel`.
+
+Supports sorting by object name and text based filtering against the
+object name.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstoredobjectmanagermodel.h"
+%End
+  public:
+
+    explicit QgsProjectStoredObjectManagerProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStoredObjectManagerProxyModel.
+%End
+
+  protected:
+
+    virtual bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/project/qgsprojectstoredobjectmanagermodel.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

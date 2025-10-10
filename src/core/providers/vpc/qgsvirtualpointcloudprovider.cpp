@@ -417,13 +417,12 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
     sl.setIndex( QgsPointCloudIndex( new QgsCopcPointCloudIndex() ) );
   else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
     sl.setIndex( QgsPointCloudIndex( new QgsEptPointCloudIndex() ) );
-
-  // check if the index is created and also check if the file actually exists too
-  const QFile file( sl.uri() );
-  if ( !sl.index() || !file.exists() )
+  else
     return;
 
   sl.index().load( sl.uri() );
+  if ( !sl.index().isValid() )
+    return;
 
   // if expression is broken or index is missing a required field, set to "false" so it returns no points
   if ( !mSubsetString.isEmpty() && !sl.index().setSubsetString( mSubsetString ) )

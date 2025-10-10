@@ -14,7 +14,6 @@
  ***************************************************************************/
 #include "qgisapp.h"
 #include "qgsappgpstools.h"
-#include "moc_qgsappgpstools.cpp"
 #include "qgsappgpsdigitizing.h"
 
 QgsAppGpsTools::QgsAppGpsTools()

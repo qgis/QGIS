@@ -1373,7 +1373,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (hull, no field)
     params:
       INPUT:
@@ -1391,7 +1391,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (hull, field)
     params:
       FIELD: name
@@ -1411,7 +1411,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (circle, field)
     params:
       FIELD: name
@@ -1431,7 +1431,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (circle, no field)
     params:
       INPUT:
@@ -1449,7 +1449,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (oriented rect, no field)
     params:
       INPUT:
@@ -1467,7 +1467,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (oriented rect, field)
     params:
       FIELD: name
@@ -1487,7 +1487,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (envelope, field)
     params:
       FIELD: name
@@ -1507,7 +1507,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (envelope, no field)
     params:
       INPUT:

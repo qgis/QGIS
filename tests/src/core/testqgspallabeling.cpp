@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QMimeData>
 
 #include "qgspallabeling.h"
 #include "qgsfontutils.h"
@@ -24,7 +25,6 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsmapsettings.h"
 #include "qgsmaprenderersequentialjob.h"
-#include "qgsrenderchecker.h"
 
 class TestQgsPalLabeling : public QgsTest
 {
@@ -32,17 +32,17 @@ class TestQgsPalLabeling : public QgsTest
 
   public:
     TestQgsPalLabeling()
-      : QgsTest( QStringLiteral( "PAL labeling Tests" ) ) {}
+      : QgsTest( QStringLiteral( "PAL labeling Tests" ), QStringLiteral( "pallabeling" ) ) {}
 
   private slots:
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void wrapChar();        //test wrapping text lines
     void graphemes();       //test splitting strings to graphemes
-    bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
     void testGeometryGenerator();
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     void testPolygonWithEmptyRing();
 #endif
+    void testLabelSettingsToFromMime();
 };
 
 void TestQgsPalLabeling::cleanupTestCase()
@@ -167,28 +167,6 @@ void TestQgsPalLabeling::graphemes()
   QCOMPARE( QgsPalLabeling::splitToGraphemes( str2 ), QStringList() << expected2Pt1 << expected2Pt2 << expected2Pt3 << expected2Pt4 << expected2Pt5 << expected2Pt6 << expected2Pt7 << expected2Pt8 << expected2Pt9 << expected2Pt10 << expected2Pt11 );
 }
 
-bool TestQgsPalLabeling::imageCheck( const QString &testName, QImage &image, int mismatchCount )
-{
-  //draw background
-  QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
-  QgsRenderChecker::drawBackground( &imageWithBackground );
-  QPainter painter( &imageWithBackground );
-  painter.drawImage( 0, 0, image );
-  painter.end();
-
-  const QString tempDir = QDir::tempPath() + '/';
-  const QString fileName = tempDir + testName + ".png";
-  imageWithBackground.save( fileName, "PNG" );
-  QgsRenderChecker checker;
-  checker.setControlPathPrefix( QStringLiteral( "pallabeling" ) );
-  checker.setControlName( "expected_" + testName );
-  checker.setRenderedImage( fileName );
-  checker.setColorTolerance( 2 );
-  const bool resultFlag = checker.compareImages( testName, mismatchCount );
-  mReport += checker.report();
-  return resultFlag;
-}
-
 void TestQgsPalLabeling::testGeometryGenerator()
 {
   // test that no labels are drawn outside of the specified label boundary
@@ -249,7 +227,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "geometry_generator_translated" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "geometry_generator_translated", "expected_geometry_generator_translated", img, "expected_geometry_generator_translated", 20, QSize(), 2 );
 
   // with rotation
   mapSettings.setRotation( 45 );
@@ -258,7 +236,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "rotated_geometry_generator_translated" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "rotated_geometry_generator_translated", "expected_rotated_geometry_generator_translated", img, "expected_rotated_geometry_generator_translated", 20, QSize(), 2 );
 }
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
@@ -314,6 +292,26 @@ void TestQgsPalLabeling::testPolygonWithEmptyRing()
   job.waitForFinished();
 }
 #endif
+
+void TestQgsPalLabeling::testLabelSettingsToFromMime()
+{
+  QgsPalLayerSettings settings;
+
+  settings.fieldName = QStringLiteral( "'X'" );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
+
+  const QMimeData *md = settings.toMimeData();
+
+  bool ok = false;
+  QgsPalLayerSettings from_mime = QgsPalLayerSettings::fromMimeData( nullptr, &ok );
+  QVERIFY( !ok );
+  from_mime = QgsPalLayerSettings::fromMimeData( md, &ok );
+  QVERIFY( ok );
+  QCOMPARE( from_mime.fieldName, settings.fieldName );
+  QCOMPARE( from_mime.isExpression, settings.isExpression );
+  QCOMPARE( from_mime.placement, settings.placement );
+}
 
 QGSTEST_MAIN( TestQgsPalLabeling )
 #include "testqgspallabeling.moc"

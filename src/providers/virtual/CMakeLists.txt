@@ -42,9 +42,6 @@ target_link_libraries(provider_virtuallayer_a
   qgis_core
 )
 
-# require c++17
-target_compile_features(provider_virtuallayer_a PRIVATE cxx_std_17)
-
 target_compile_definitions(provider_virtuallayer_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
@@ -58,9 +55,6 @@ if (WITH_GUI)
   target_link_libraries(provider_virtuallayer_gui_a
     qgis_gui
   )
-
-  # require c++17
-  target_compile_features(provider_virtuallayer_gui_a PRIVATE cxx_std_17)
 
   target_compile_definitions(provider_virtuallayer_gui_a PRIVATE "-DQT_NO_FOREACH")
 
@@ -81,9 +75,6 @@ if (FORCE_STATIC_LIBS)
   endif()
 else()
   add_library(provider_virtuallayer MODULE ${VLAYER_PROVIDER_SRCS} ${VLAYER_PROVIDER_HDRS} ${VLAYER_PROVIDER_GUI_SRCS} ${VLAYER_PROVIDER_GUI_HDRS} ${VLAYER_PROVIDER_UIS_H} ${VLAYER_SQL_FUNCTIONS_RCCS})
-
-  # require c++17
-  target_compile_features(provider_virtuallayer PRIVATE cxx_std_17)
 
   target_compile_definitions(provider_virtuallayer PRIVATE "-DQT_NO_FOREACH")
   

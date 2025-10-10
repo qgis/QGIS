@@ -62,7 +62,7 @@ QString QgsGeometryCheckGapAlgorithm::shortHelpString() const
                       "If an allowed gaps layer is given, the gaps contained in polygons from this layer will be ignored.\n"
                       "An optional buffer can be applied to the allowed gaps.\n\n"
                       "The neighbors output layer is needed for the fix geometry (gaps) algorithm. It is a 1-N "
-                      "relational table for correspondance between a gap and the unique id of its neighbor features." );
+                      "relational table for correspondence between a gap and the unique id of its neighbor features." );
 }
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckGapAlgorithm::flags() const
@@ -108,7 +108,7 @@ void QgsGeometryCheckGapAlgorithm::initAlgorithm( const QVariantMap &configurati
     QStringLiteral( "OUTPUT" ), QObject::tr( "Gap features" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );

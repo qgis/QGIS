@@ -69,6 +69,15 @@ class QgsPgTableModel : public QgsAbstractDbTableModel
 
     void setConnectionName( const QString &connName ) { mConnName = connName; }
 
+    /**
+     * Sets flags, tool tips and decorators to the schema, table and geometry column items.
+     *
+     * \param item                Item to be modified.
+     * \param tip                 Tool tip to be applied to the item.
+     * \param column              Column where the item is located in the current row.
+     */
+    void setItemStatus( QStandardItem *item, const QString &tip, int column );
+
   private:
     //! Number of tables in the model
     int mTableCount = 0;

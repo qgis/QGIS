@@ -52,6 +52,11 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   , mFactory( factory )
   , mContext( factory->mRenderContext, coordinateTransform, std::move( symbol ), zValueScale, zValueOffset )
 {
+}
+
+void QgsPointCloudLayerChunkLoader::start()
+{
+  QgsChunkNode *node = chunk();
   QgsPointCloudIndex pc = mFactory->mPointCloudIndex;
   mContext.setAttributes( pc.attributes() );
 

@@ -429,6 +429,7 @@
 %Include auto_generated/plot/qgsplottoolpan.sip
 %Include auto_generated/plot/qgsplottoolzoom.sip
 %Include auto_generated/plot/qgsplottransienttools.sip
+%Include auto_generated/plot/qgsplotwidget.sip
 %Include auto_generated/pointcloud/qgspointcloudclassifiedrendererwidget.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererwidget.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererpropertieswidget.sip

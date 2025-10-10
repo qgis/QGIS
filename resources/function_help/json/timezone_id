@@ -1,0 +1,15 @@
+{
+  "name": "timezone_id",
+  "type": "function",
+  "groups": ["Conversions", "Date and Time"],
+  "description": "Returns the ID string for a timezone object, using IDs from the IANA timezone database.",
+  "arguments": [{
+    "arg": "timezone",
+    "description": "a valid timezone object"
+  }],
+  "examples": [{
+    "expression": "timezone_id(timezone_from_id('Australia/Brisbane'))",
+    "returns": "'Australia/Brisbane'"
+  }],
+  "tags": ["time", "zone", "date", "datetime", "offset", "utc"]
+}

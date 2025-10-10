@@ -183,6 +183,7 @@ void TestQgsVectorTileLayer::test_labeling()
   labelSettings.drawLabels = true;
   labelSettings.fieldName = "name:en";
   labelSettings.placement = Qgis::LabelPlacement::OverPoint;
+  labelSettings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::Show, QgsProperty::fromExpression( "\"name:en\" IN ('Canada', 'Mexico', 'Argentina', 'Russia', 'Italy', 'China', 'Australia')" ) );
   labelSettings.setFormat( format );
 
   QgsVectorTileBasicLabelingStyle st;

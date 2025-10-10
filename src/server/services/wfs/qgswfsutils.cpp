@@ -63,17 +63,6 @@ namespace QgsWfs
     return href.toString();
   }
 
-  QString layerTypeName( const QgsMapLayer *layer )
-  {
-    QString name = layer->name();
-    if ( !layer->serverProperties()->shortName().isEmpty() )
-      name = layer->serverProperties()->shortName();
-
-    name.replace( ' ', '_' ).replace( ':', '-' ).replace( QChar( 0x2014 ) /* em-dash */, '-' );
-
-    return name.toLocal8Bit();
-  }
-
   QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName )
   {
     QStringList layerIds = QgsServerProjectUtils::wfsLayerIds( *project );
@@ -89,7 +78,7 @@ namespace QgsWfs
         continue;
       }
 
-      if ( layerTypeName( layer ) == typeName )
+      if ( layer->serverProperties()->wfsTypeName() == typeName )
       {
         return qobject_cast<QgsVectorLayer *>( layer );
       }

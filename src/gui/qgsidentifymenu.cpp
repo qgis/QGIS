@@ -428,6 +428,11 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     if ( featureTitle.isEmpty() )
       featureTitle = QString::number( result.mFeature.id() );
 
+    // if results are from the same layer we still add layer name to the feature
+    // title to be consistent with other cases, see https://github.com/qgis/QGIS/issues/50049
+    if ( layerMenu == this )
+      featureTitle = QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle );
+
     if ( customFeatureActions.isEmpty() && ( !featureActionMenu || featureActionMenu->actions().isEmpty() ) )
     {
       featureAction = new QAction( featureTitle, layerMenu );

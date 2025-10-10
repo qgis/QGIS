@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>662</width>
-    <height>471</height>
+    <height>485</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,7 +43,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="mainLayout">
+    <layout class="QVBoxLayout" name="mainLayout" stretch="1,0">
      <property name="leftMargin">
       <number>6</number>
      </property>
@@ -140,14 +140,32 @@
             </item>
            </layout>
           </widget>
-          <widget class="QTableView" name="mQueryResultsTableView"/>
+          <widget class="QWidget" name="mResultsContainer" native="true">
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QgsCodeEditorSQL" name="mSqlErrorText" native="true"/>
+            </item>
+            <item>
+             <widget class="QTableView" name="mQueryResultsTableView"/>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
       </widget>
-     </item>
-     <item>
-      <widget class="QgsCodeEditorSQL" name="mSqlErrorText" native="true"/>
      </item>
      <item>
       <widget class="QgsCollapsibleGroupBox" name="mLoadAsNewLayerGroupBox">

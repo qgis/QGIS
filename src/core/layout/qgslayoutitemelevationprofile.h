@@ -22,7 +22,7 @@
 #include "qgsmaplayerref.h"
 
 class QgsLayoutItemElevationProfilePlot;
-class Qgs2DPlot;
+class Qgs2DXyPlot;
 class QgsProfileRequest;
 class QgsProfilePlotRenderer;
 class QgsLineSymbol;
@@ -63,13 +63,13 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
      * Returns a reference to the elevation plot object, which can be used to
      * set plot appearance and properties.
      */
-    Qgs2DPlot *plot();
+    Qgs2DXyPlot *plot();
 
     /**
      * Returns a reference to the elevation plot object, which can be used to
      * set plot appearance and properties.
      */
-    const Qgs2DPlot *plot() const SIP_SKIP;
+    const Qgs2DXyPlot *plot() const SIP_SKIP;
 
     /**
      * Returns the list of map layers participating in the elevation profile.
@@ -84,6 +84,22 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
      * \see layers()
      */
     void setLayers( const QList< QgsMapLayer * > &layers );
+
+    /**
+     * Returns the list of sources participating in the elevation profile.
+     *
+     * It includes both layer profile sources and custom sources from the profile source registry.
+     *
+     * \see setSources()
+     */
+    QList<QgsAbstractProfileSource *> sources() const;
+
+    /**
+     * Sets the list of \a sources participating in the elevation profile.
+     *
+     * \see sources()
+     */
+    void setSources( const QList<QgsAbstractProfileSource *> &sources );
 
     /**
      * Sets the cross section profile \a curve, which represents the line along which the profile should be generated.
@@ -229,11 +245,14 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
 
     void recreateCachedImageInBackground();
     void profileGenerationFinished();
+    void setSourcesPrivate();
+
   private:
 
     std::unique_ptr< QgsLayoutItemElevationProfilePlot > mPlot;
 
     QList< QgsMapLayerRef > mLayers;
+    QList< QgsAbstractProfileSource * > mSources;
 
     QgsCoordinateReferenceSystem mCrs;
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;

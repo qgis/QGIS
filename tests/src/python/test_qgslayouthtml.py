@@ -14,6 +14,7 @@ import os
 
 from qgis.PyQt.QtCore import QRectF, QUrl
 from qgis.core import (
+    Qgis,
     QgsLayout,
     QgsLayoutFrame,
     QgsLayoutItemHtml,
@@ -49,6 +50,7 @@ class TestQgsLayoutHtml(QgisTestCase):
         myUrl = QUrl("file:///" + myPath)
         return myUrl
 
+    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
     def testTable(self):
         """Test we can render a html table in a single frame."""
         layout_html = QgsLayoutItemHtml(self.layout)
@@ -63,6 +65,7 @@ class TestQgsLayoutHtml(QgisTestCase):
         self.layout.removeMultiFrame(layout_html)
         self.assertTrue(result)
 
+    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
     def testTableMultiFrame(self):
         """Test we can render to multiframes."""
         layout_html = QgsLayoutItemHtml(self.layout)
@@ -85,6 +88,7 @@ class TestQgsLayoutHtml(QgisTestCase):
         self.layout.removeMultiFrame(layout_html)
         layout_html = None
 
+    @unittest.skipIf(not Qgis.hasQtWebkit(), "QtWebkit not available")
     def testHtmlSmartBreaks(self):
         """Test rendering to multiframes with smart breaks."""
         layout_html = QgsLayoutItemHtml(self.layout)

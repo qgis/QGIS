@@ -53,6 +53,7 @@ class QgsPackageAlgorithm : public QgsProcessingAlgorithm
 
     std::vector<std::unique_ptr<QgsMapLayer>> mLayers;
     QMap<QString, QString> mClonedLayerIds;
+    QgsCoordinateReferenceSystem mDestinationCrs;
 };
 
 ///@endcond PRIVATE

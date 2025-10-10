@@ -342,21 +342,6 @@ tests:
             fid: skip
 
   - algorithm: qgis:knearestconcavehull
-    name: K-nearest Neighbor Concave Hull - Lines (k=3)
-    params:
-      INPUT:
-        name: lines.gml
-        type: vector
-      KNEIGHBORS: 3
-    results:
-      OUTPUT:
-        name: expected/knearest_concave_hull_lines.gml
-        type: vector
-        compare:
-          fields:
-            fid: skip
-
-  - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbor Concave Hull - Polys (k=3)
     params:
       INPUT:

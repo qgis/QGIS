@@ -71,10 +71,21 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     Q_DECLARE_FLAGS( RequestFlags, RequestFlag )
     Q_FLAG( RequestFlags )
 
-    //! Constructor for QgsBlockingNetworkRequest
-    explicit QgsBlockingNetworkRequest();
+    /**
+     * Constructor for QgsBlockingNetworkRequest.
+     *
+     * The \a flags argument was added in QGIS 4.0
+     */
+    explicit QgsBlockingNetworkRequest( Qgis::NetworkRequestFlags flags = Qgis::NetworkRequestFlags() );
 
     ~QgsBlockingNetworkRequest() override;
+
+    /**
+     * Returns the network request flags.
+     *
+     * \since QGIS 4.0
+     */
+    Qgis::NetworkRequestFlags flags() const { return mFlags; }
 
     /**
      * Performs a "get" operation on the specified \a request.
@@ -257,6 +268,8 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     void requestTimedOut( QNetworkReply *reply );
 
   private :
+
+    Qgis::NetworkRequestFlags mFlags;
 
     //! The reply to the request
     QNetworkReply *mReply = nullptr;

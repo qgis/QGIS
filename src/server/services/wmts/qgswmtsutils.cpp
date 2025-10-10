@@ -717,7 +717,7 @@ namespace QgsWmts
       format = params.infoFormatAsString();
     }
 
-    // but we are good and savy and also accept FORMAT for getfeatureinfo requests
+    // but we are good and savvy and also accept FORMAT for getfeatureinfo requests
     if ( format.isEmpty() )
     {
       format = params.formatAsString();

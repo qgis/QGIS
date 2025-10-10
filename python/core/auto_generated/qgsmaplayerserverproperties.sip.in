@@ -282,6 +282,13 @@ layer.
 .. versionadded:: 3.38
 %End
 
+    QString wfsTypeName() const;
+%Docstring
+Returns WFS typename for the layer
+
+.. versionadded:: 4.0.0
+%End
+
     void setTitle( const QString &title );
 %Docstring
 Sets the ``title`` of the layer used by QGIS Server in GetCapabilities

@@ -953,9 +953,11 @@ void QgsExpression::buildVariableHelp()
   //form variable
   sVariableHelpTexts()->insert( QStringLiteral( "form_mode" ), QCoreApplication::translate( "form_mode", "What the form is used for, like AddFeatureMode, SingleEditMode, MultiEditMode, SearchMode, AggregateSearchMode or IdentifyMode as string." ) );
 
-  // plots
+  // plots and charts
   sVariableHelpTexts()->insert( QStringLiteral( "plot_axis" ), QCoreApplication::translate( "plot_axis", "The associated plot axis, e.g. 'x' or 'y'." ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "plot_axis_value" ), QCoreApplication::translate( "plot_axis_value", "The current value for the plot axis." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "plot_axis_value" ), QCoreApplication::translate( "plot_axis_value", "The current value for the plot axis grid line." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "chart_category" ), QCoreApplication::translate( "plot_axis", "The chart item category, e.g. 'fruit' or 'june'." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "chart_value" ), QCoreApplication::translate( "plot_axis_value", "The chart item value." ) );
 }
 
 bool QgsExpression::addVariableHelpText( const QString name, const QString &description )
@@ -1060,6 +1062,11 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   {
     const QgsCoordinateReferenceSystem crs = value.value<QgsCoordinateReferenceSystem>();
     return startToken + tr( "crs: %1" ).arg( crs.userFriendlyIdentifier() ) + endToken;
+  }
+  else if ( value.userType() == qMetaTypeId< QTimeZone>() )
+  {
+    const QTimeZone tz = value.value<QTimeZone>();
+    return startToken + tr( "time zone: %1" ).arg( tz.isValid() ? tz.displayName( QTimeZone::GenericTime, QTimeZone::ShortName ) : tr( "invalid" ) ) + endToken;
   }
   else if ( value.userType() == qMetaTypeId< QgsInterval>() )
   {

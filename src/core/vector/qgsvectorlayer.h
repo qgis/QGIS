@@ -669,6 +669,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsMapLayerTemporalProperties *temporalProperties() override;
     QgsMapLayerElevationProperties *elevationProperties() override;
     QgsAbstractProfileSource *profileSource() override {return this;}
+    QString profileSourceId() const override {return id();}
+    QString profileSourceName() const override {return name();}
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
     /**

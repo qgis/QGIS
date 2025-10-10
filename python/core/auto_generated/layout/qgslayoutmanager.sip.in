@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutManager : QObject
+class QgsLayoutManager : QgsProjectStoredObjectManagerBase
 {
 %Docstring(signature="appended")
 Manages storage of a set of layouts.
@@ -153,145 +153,12 @@ Emitted when a layout is about to be removed from the manager
 Emitted when a layout is renamed
 %End
 
-};
+  protected:
 
+    virtual void setupObjectConnections( QgsMasterLayoutInterface *layout );
 
-class QgsLayoutManagerModel : QAbstractListModel
-{
-%Docstring(signature="appended")
-List model representing the print layouts and reports available in a
-layout manager.
-
-.. versionadded:: 3.8
-%End
-
-%TypeHeaderCode
-#include "qgslayoutmanager.h"
-%End
-  public:
-
-
-    enum class CustomRole
-    {
-      Layout,
-    };
-
-    explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent /TransferThis/ = 0 );
-%Docstring
-Constructor for QgsLayoutManagerModel, showing the layouts from the
-specified ``manager``.
-%End
-
-    virtual int rowCount( const QModelIndex &parent ) const;
-
-    virtual QVariant data( const QModelIndex &index, int role ) const;
-
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
-
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-
-
-    QgsMasterLayoutInterface *layoutFromIndex( const QModelIndex &index ) const;
-%Docstring
-Returns the layout at the corresponding ``index``.
-
-.. seealso:: :py:func:`indexFromLayout`
-%End
-
-    QModelIndex indexFromLayout( QgsMasterLayoutInterface *layout ) const;
-%Docstring
-Returns the model index corresponding to a ``layout``.
-
-.. seealso:: :py:func:`layoutFromIndex`
-%End
-
-    void setAllowEmptyLayout( bool allowEmpty );
-%Docstring
-Sets whether an optional empty layout ("not set") option is present in
-the model.
-
-.. seealso:: :py:func:`allowEmptyLayout`
-%End
-
-    bool allowEmptyLayout() const;
-%Docstring
-Returns ``True`` if the model allows the empty layout ("not set")
-choice.
-
-.. seealso:: :py:func:`setAllowEmptyLayout`
-%End
 
 };
-
-
-class QgsLayoutManagerProxyModel : QSortFilterProxyModel
-{
-%Docstring(signature="appended")
-QSortFilterProxyModel subclass for :py:class:`QgsLayoutManagerModel`.
-
-.. versionadded:: 3.8
-%End
-
-%TypeHeaderCode
-#include "qgslayoutmanager.h"
-%End
-  public:
-
-    enum Filter
-    {
-      FilterPrintLayouts,
-      FilterReports,
-    };
-    typedef QFlags<QgsLayoutManagerProxyModel::Filter> Filters;
-
-
-    explicit QgsLayoutManagerProxyModel( QObject *parent /TransferThis/ = 0 );
-%Docstring
-Constructor for QgsLayoutManagerProxyModel.
-%End
-    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
-
-    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
-
-
-    QgsLayoutManagerProxyModel::Filters filters() const;
-%Docstring
-Returns the current filters used for filtering available layouts.
-
-.. seealso:: :py:func:`setFilters`
-%End
-
-    void setFilters( QgsLayoutManagerProxyModel::Filters filters );
-%Docstring
-Sets the current ``filters`` used for filtering available layouts.
-
-.. seealso:: :py:func:`filters`
-%End
-
-    QString filterString() const;
-%Docstring
-Returns the current filter string, if set.
-
-.. seealso:: :py:func:`setFilterString`
-
-.. versionadded:: 3.12
-%End
-
-  public slots:
-
-    void setFilterString( const QString &filter );
-%Docstring
-Sets a ``filter`` string, such that only layouts with names containing
-the specified string will be shown.
-
-.. seealso:: :py:func:`filterString`
-
-.. versionadded:: 3.12
-%End
-
-};
-
-QFlags<QgsLayoutManagerProxyModel::Filter> operator|(QgsLayoutManagerProxyModel::Filter f1, QFlags<QgsLayoutManagerProxyModel::Filter> f2);
 
 
 /************************************************************************

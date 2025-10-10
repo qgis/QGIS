@@ -45,6 +45,7 @@ class QgsAppMapTools
       MoveFeature,
       MoveFeatureCopy,
       OffsetCurve,
+      ChamferFillet,
       ReshapeFeatures,
       SplitFeatures,
       SplitParts,

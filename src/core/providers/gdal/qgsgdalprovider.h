@@ -165,7 +165,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QString bandDescription( int bandNumber ) override;
     QStringList subLayers() const override;
 
-    static QList< QgsProviderSublayerDetails > sublayerDetails( GDALDatasetH dataset, const QString &baseUri );
+    static QList< QgsProviderSublayerDetails > sublayerDetails( GDALDatasetH dataset, const QString &baseUri, Qgis::SublayerQueryFlags flags );
 
     bool hasStatistics( int bandNo,
                         Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,

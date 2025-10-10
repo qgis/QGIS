@@ -148,17 +148,20 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
       mTileScheme = QString::fromStdString( jsonGet<std::string>( replyJson, "schema" ) );
     else throw MissingFieldException( "scheme/schema" );
 
-    for ( auto &aabbs : replyJson.at( "available" ) )
+    if ( replyJson.find( "available" ) != replyJson.end() )
     {
-      QVector<QgsTileRange> tileRanges;
-      for ( auto &aabb : aabbs )
+      for ( auto &aabbs : replyJson.at( "available" ) )
       {
-        tileRanges.push_back(
-          QgsTileRange(
-            jsonGet<int>( aabb, "startX" ), jsonGet<int>( aabb, "endX" ),
-            jsonGet<int>( aabb, "startY" ), jsonGet<int>( aabb, "endY" ) ) );
+        QVector<QgsTileRange> tileRanges;
+        for ( auto &aabb : aabbs )
+        {
+          tileRanges.push_back(
+            QgsTileRange(
+              jsonGet<int>( aabb, "startX" ), jsonGet<int>( aabb, "endX" ),
+              jsonGet<int>( aabb, "startY" ), jsonGet<int>( aabb, "endY" ) ) );
+        }
+        mAvailableTiles.push_back( tileRanges );
       }
-      mAvailableTiles.push_back( tileRanges );
     }
 
     try
@@ -169,7 +172,15 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
     catch ( MissingFieldException & )
     {
       mMinZoom = 0;
-      mMaxZoom = mAvailableTiles.size() - 1;
+      if ( mAvailableTiles.isEmpty() )
+      {
+        mMaxZoom = 10;
+        error.append( QObject::tr( "Missing max zoom or tile availability info" ) );
+      }
+      else
+      {
+        mMaxZoom = mAvailableTiles.size() - 1;
+      }
     }
 
     QString versionStr =
@@ -220,8 +231,11 @@ static QgsTileXYZ tileToTms( QgsTileXYZ &xyzTile )
 
 bool QgsQuantizedMeshMetadata::containsTile( QgsTileXYZ tile ) const
 {
-  if ( tile.zoomLevel() < mMinZoom || tile.zoomLevel() > mMaxZoom ||
-       tile.zoomLevel() >= mAvailableTiles.size() )
+  if ( tile.zoomLevel() < mMinZoom || tile.zoomLevel() > mMaxZoom )
+    return false;
+  if ( mAvailableTiles.isEmpty() )
+    return true;  // we have no information about tile availability - let's hope the tile is there!
+  if ( tile.zoomLevel() >= mAvailableTiles.size() )
     return false;
   // We operate with XYZ-style tile coordinates, but the availability array may
   // be given in TMS-style

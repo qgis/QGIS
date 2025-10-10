@@ -35,6 +35,8 @@ class FlatTerrainChunkLoader : public QgsTerrainTileLoader
     //! Construct the loader for a node
     FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
 
+    void start() override;
+
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:

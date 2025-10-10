@@ -64,6 +64,12 @@ void QgsPackageAlgorithm::initAlgorithm( const QVariantMap & )
   auto extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ), QVariant(), true );
   extentParam->setHelp( QObject::tr( "Limit exported features to those with geometries intersecting the provided extent" ) );
   addParameter( extentParam.release() );
+
+  auto crsParam = std::make_unique< QgsProcessingParameterCrs >( QStringLiteral( "CRS" ), QObject::tr( "Destination CRS" ), QVariant(), true );
+  crsParam->setFlags( crsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  crsParam->setHelp( QObject::tr( "If set, all layers will be transformed to the destination CRS during packaging." ) );
+  addParameter( std::move( crsParam ) );
+
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Layers within new package" ) ) );
 }
 
@@ -97,6 +103,8 @@ bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPr
   {
     feedback->reportError( QObject::tr( "No layers selected, geopackage will be empty" ), false );
   }
+
+  mDestinationCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
 
   return true;
 }
@@ -354,7 +362,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
             feedback->pushWarning( QObject::tr( "No spatial index exists for layer %1, performance will be severely degraded" ).arg( vectorLayer->name() ) );
           }
 
-          extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, layer->crs() );
+          extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mDestinationCrs.isValid() ? mDestinationCrs : layer->crs() );
         }
 
         if ( !packageVectorLayer( vectorLayer, packagePath, context, &multiStepFeedback, saveStyles, saveMetadata, selectedFeaturesOnly, extent ) )
@@ -438,6 +446,11 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   {
     options.layerMetadata = layer->metadata();
     options.saveMetadata = true;
+  }
+
+  if ( mDestinationCrs.isValid() )
+  {
+    options.ct = QgsCoordinateTransform( layer->crs(), mDestinationCrs, context.transformContext() );
   }
 
   // Check FID compatibility with GPKG and remove any existing FID field if not compatible,

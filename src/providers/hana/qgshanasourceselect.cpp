@@ -58,16 +58,17 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
   {
     QComboBox *cb = new QComboBox( parent );
     for ( const Qgis::WkbType type :
-          QList<Qgis::WkbType>()
-            << Qgis::WkbType::Point
-            << Qgis::WkbType::LineString
-            << Qgis::WkbType::Polygon
-            << Qgis::WkbType::MultiPoint
-            << Qgis::WkbType::MultiLineString
-            << Qgis::WkbType::MultiPolygon
-            << Qgis::WkbType::CircularString
-            << Qgis::WkbType::GeometryCollection
-            << Qgis::WkbType::NoGeometry )
+          {
+            Qgis::WkbType::Point,
+            Qgis::WkbType::LineString,
+            Qgis::WkbType::Polygon,
+            Qgis::WkbType::MultiPoint,
+            Qgis::WkbType::MultiLineString,
+            Qgis::WkbType::MultiPolygon,
+            Qgis::WkbType::CircularString,
+            Qgis::WkbType::GeometryCollection,
+            Qgis::WkbType::NoGeometry
+          } )
     {
       cb->addItem( QgsHanaTableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), static_cast<quint32>( type ) );
     }

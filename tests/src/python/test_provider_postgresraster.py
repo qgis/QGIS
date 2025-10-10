@@ -80,6 +80,11 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         if "QGIS_PGTEST_DB" in os.environ:
             cls.dbconn = os.environ["QGIS_PGTEST_DB"]
 
+        # Clean all styles
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(cls.dbconn + " sslmode=disable ", {})
+        conn.executeSql("DROP TABLE IF EXISTS layer_styles")
+
         cls._load_test_table("public", "raster_tiled_3035")
         cls._load_test_table("public", "raster_3035_no_constraints")
         cls._load_test_table("public", "raster_3035_tiled_no_overviews")
@@ -170,7 +175,8 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         identify = rl.dataProvider().identify(
             QgsPointXY(4080320, 2430854), QgsRaster.IdentifyFormat.IdentifyFormatValue
         )
-        self.assertEqual(identify.results()[1], -9999)
+
+        self.assertEqual(identify.results()[1], None)
 
         postgis_warning_logs = list(
             filter(
@@ -944,11 +950,21 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
         self.assertTrue(rl.isValid())
 
         dp = rl.dataProvider()
+        self.assertEqual(dp.sourceNoDataValue(1), -9999.0)
 
         r = dp.identify(
             QgsPointXY(4080317.72, 2430635.68), Qgis.RasterIdentifyFormat.Value
         ).results()
-        self.assertEqual(r[1], -9999.0)
+
+        # Nodata value
+        self.assertEqual(r[1], None)
+
+        r = dp.identify(
+            QgsPointXY(4080106.29, 2430678.29), Qgis.RasterIdentifyFormat.Value
+        ).results()
+
+        # Valid value
+        self.assertAlmostEqual(r[1], 184.16825, 4)
 
         # tile request returned no tiles, check nodata
         ext = QgsRectangle.fromCenterAndSize(QgsPointXY(4080317.72, 2430635.68), 1, 1)

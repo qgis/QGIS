@@ -22,6 +22,7 @@
 #include "qgscesiumutils.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeotransform.h"
+#include "qgsgltfutils.h"
 #include "qgsgltf3dutils.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsraycastingutils_p.h"
@@ -56,17 +57,25 @@ static bool hasLargeBounds( const QgsTiledSceneTile &t, const QgsCoordinateTrans
 QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset )
   : QgsChunkLoader( node )
   , mFactory( factory )
+  , mZValueScale( zValueScale )
+  , mZValueOffset( zValueOffset )
   , mIndex( index )
 {
+}
+
+void QgsTiledSceneChunkLoader::start()
+{
+  QgsChunkNode *node = chunk();
+
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QgsCoordinateTransform &boundsTransform = factory.mBoundsTransform;
+  const QgsCoordinateTransform &boundsTransform = mFactory.mBoundsTransform;
 
   const QgsChunkNodeId tileId = node->tileId();
   const QgsVector3D chunkOrigin = node->box3D().center();
-  const bool isGlobe = factory.mRenderContext.crs().type() == Qgis::CrsType::Geocentric;
-  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset, boundsTransform, chunkOrigin, isGlobe] {
+  const bool isGlobe = mFactory.mRenderContext.crs().type() == Qgis::CrsType::Geocentric;
+  const QFuture<void> future = QtConcurrent::run( [this, tileId, boundsTransform, chunkOrigin, isGlobe] {
     const QgsTiledSceneTile tile = mIndex.getTile( tileId.uniqueId );
 
     // we do not load tiles that are too big when not in globe scene mode...
@@ -96,8 +105,8 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
     entityTransform.chunkOriginTargetCrs = chunkOrigin;
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
-    entityTransform.zValueScale = zValueScale;
-    entityTransform.zValueOffset = zValueOffset;
+    entityTransform.zValueScale = mZValueScale;
+    entityTransform.zValueOffset = mZValueOffset;
     entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
     const QString &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
@@ -116,13 +125,28 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
         errors.append( QStringLiteral( "Failed to parse tile from '%1'" ).arg( uri ) );
       }
     }
-    else if ( format == "cesiumtiles" )
+    else if ( format == QLatin1String( "cesiumtiles" ) )
     {
       const QgsCesiumUtils::TileContents tileContent = QgsCesiumUtils::extractGltfFromTileContent( content );
       if ( tileContent.gltf.isEmpty() )
         return;
       entityTransform.tileTransform.translate( tileContent.rtcCenter );
       mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
+    }
+    else if ( format == QLatin1String( "draco" ) )
+    {
+      QgsGltfUtils::I3SNodeContext i3sContext;
+      i3sContext.initFromTile( tile, mFactory.mLayerCrs, mFactory.mBoundsTransform.sourceCrs(), mFactory.mRenderContext.transformContext() );
+
+      QString dracoLoadError;
+      tinygltf::Model model;
+      if ( !QgsGltfUtils::loadDracoModel( content, i3sContext, model, &dracoLoadError ) )
+      {
+        errors.append( dracoLoadError );
+        return;
+      }
+
+      mEntity = QgsGltf3DUtils::parsedGltfToEntity( model, entityTransform, QString(), &errors );
     }
     else
       return; // unsupported tile content type
@@ -165,11 +189,19 @@ Qt3DCore::QEntity *QgsTiledSceneChunkLoader::createEntity( Qt3DCore::QEntity *pa
 
 ///
 
-QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory( const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, double zValueScale, double zValueOffset )
+QgsTiledSceneChunkLoaderFactory::QgsTiledSceneChunkLoaderFactory(
+  const Qgs3DRenderContext &context,
+  const QgsTiledSceneIndex &index,
+  QgsCoordinateReferenceSystem tileCrs,
+  QgsCoordinateReferenceSystem layerCrs,
+  double zValueScale,
+  double zValueOffset
+)
   : mRenderContext( context )
   , mIndex( index )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
+  , mLayerCrs( layerCrs )
 {
   mBoundsTransform = QgsCoordinateTransform( tileCrs, context.crs(), context.transformContext() );
 }
@@ -338,8 +370,17 @@ void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
 
 ///
 
-QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset )
-  : QgsChunkedEntity( map, maximumScreenError, new QgsTiledSceneChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), index, tileCrs, zValueScale, zValueOffset ), true )
+QgsTiledSceneLayerChunkedEntity::QgsTiledSceneLayerChunkedEntity(
+  Qgs3DMapSettings *map,
+  const QgsTiledSceneIndex &index,
+  QgsCoordinateReferenceSystem tileCrs,
+  QgsCoordinateReferenceSystem layerCrs,
+  double maximumScreenError,
+  bool showBoundingBoxes,
+  double zValueScale,
+  double zValueOffset
+)
+  : QgsChunkedEntity( map, maximumScreenError, new QgsTiledSceneChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), index, tileCrs, layerCrs, zValueScale, zValueOffset ), true )
   , mIndex( index )
 {
   setShowBoundingBoxes( showBoundingBoxes );

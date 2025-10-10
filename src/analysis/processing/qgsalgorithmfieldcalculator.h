@@ -42,6 +42,7 @@ class QgsFieldCalculatorAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsFieldCalculatorAlgorithm *createInstance() const override SIP_FACTORY;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 

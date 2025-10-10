@@ -572,7 +572,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
     {
       case QMetaType::Type::QString:
       {
-        if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+        if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
         {
           if ( encoding )
             value = QVariant( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
@@ -641,7 +641,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
       case QMetaType::Type::QStringList:
       {
-        if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+        if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
         {
           QStringList list;
           char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
@@ -668,7 +668,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         {
           case QMetaType::Type::QString:
           {
-            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+            if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
             {
               QStringList list;
               char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
@@ -691,7 +691,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
           case QMetaType::Type::Int:
           {
-            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+            if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
             {
               QVariantList list;
               int count = 0;
@@ -711,7 +711,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
           case QMetaType::Type::Double:
           {
-            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+            if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
             {
               QVariantList list;
               int count = 0;
@@ -731,7 +731,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
           case QMetaType::Type::LongLong:
           {
-            if ( field.typeName() != QStringLiteral( "JSON" ) || ! getJsonValue() )
+            if ( field.typeName() != QLatin1String( "JSON" ) || ! getJsonValue() )
             {
               QVariantList list;
               int count = 0;

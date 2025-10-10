@@ -98,7 +98,10 @@ void QgsFontButton::showSettingsDialog()
         mActivePanel->setPanelTitle( mDialogTitle );
         mActivePanel->setContext( symbolContext );
 
-        connect( mActivePanel, &QgsTextFormatPanelWidget::widgetChanged, this, [this] { setTextFormat( mActivePanel->format() ); } );
+        connect( mActivePanel, &QgsTextFormatPanelWidget::widgetChanged, this, [this] {
+          setTextFormat( mActivePanel->format() );
+          QgsFontUtils::addRecentFontFamily( mActivePanel->format().font().family() );
+        } );
         panel->openPanel( mActivePanel );
         return;
       }

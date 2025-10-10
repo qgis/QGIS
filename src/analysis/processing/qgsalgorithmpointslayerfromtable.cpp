@@ -90,18 +90,33 @@ QVariantMap QgsPointsLayerFromTableAlgorithm::processAlgorithm( const QVariantMa
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   const QgsFields fields = featureSource->fields();
-  const int xFieldIndex = fields.lookupField( parameterAsString( parameters, QStringLiteral( "XFIELD" ), context ) );
-  const int yFieldIndex = fields.lookupField( parameterAsString( parameters, QStringLiteral( "YFIELD" ), context ) );
+  const QString xFieldName = parameterAsString( parameters, QStringLiteral( "XFIELD" ), context );
+  const int xFieldIndex = fields.lookupField( xFieldName );
+  if ( xFieldIndex < 0 )
+    throw QgsProcessingException( QObject::tr( "X field “%1” does not exist" ).arg( xFieldName ) );
+
+  const QString yFieldName = parameterAsString( parameters, QStringLiteral( "YFIELD" ), context );
+  const int yFieldIndex = fields.lookupField( yFieldName );
+  if ( yFieldIndex < 0 )
+    throw QgsProcessingException( QObject::tr( "Y field “%1” does not exist" ).arg( yFieldName ) );
 
   QString fieldName = parameterAsString( parameters, QStringLiteral( "ZFIELD" ), context );
   int zFieldIndex = -1;
   if ( !fieldName.isEmpty() )
+  {
     zFieldIndex = fields.lookupField( fieldName );
+    if ( zFieldIndex < 0 )
+      throw QgsProcessingException( QObject::tr( "Z field “%1” does not exist" ).arg( fieldName ) );
+  }
 
   fieldName = parameterAsString( parameters, QStringLiteral( "MFIELD" ), context );
   int mFieldIndex = -1;
   if ( !fieldName.isEmpty() )
+  {
     mFieldIndex = fields.lookupField( fieldName );
+    if ( mFieldIndex < 0 )
+      throw QgsProcessingException( QObject::tr( "M field “%1” does not exist" ).arg( fieldName ) );
+  }
 
   Qgis::WkbType outputWkbType = Qgis::WkbType::Point;
   if ( zFieldIndex >= 0 )

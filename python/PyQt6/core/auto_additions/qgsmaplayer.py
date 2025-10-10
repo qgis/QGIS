@@ -27,6 +27,8 @@ QgsMapLayer.Temporal = QgsMapLayer.StyleCategory.Temporal
 QgsMapLayer.Legend = QgsMapLayer.StyleCategory.Legend
 QgsMapLayer.Elevation = QgsMapLayer.StyleCategory.Elevation
 QgsMapLayer.Notes = QgsMapLayer.StyleCategory.Notes
+QgsMapLayer.AllVisualStyleCategories = QgsMapLayer.StyleCategory.AllVisualStyleCategories
+QgsMapLayer.AllAttributeCategories = QgsMapLayer.StyleCategory.AllAttributeCategories
 QgsMapLayer.AllStyleCategories = QgsMapLayer.StyleCategory.AllStyleCategories
 QgsMapLayer.StyleCategory.baseClass = QgsMapLayer
 QgsMapLayer.StyleCategories = lambda flags=0: QgsMapLayer.StyleCategory(flags)

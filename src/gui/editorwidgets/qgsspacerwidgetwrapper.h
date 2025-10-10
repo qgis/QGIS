@@ -16,7 +16,7 @@
 #ifndef QGSSPACERWIDGETWRAPPER_H
 #define QGSSPACERWIDGETWRAPPER_H
 
-#include <qgswidgetwrapper.h>
+#include "qgswidgetwrapper.h"
 #include "qgis_gui.h"
 
 /**

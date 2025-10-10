@@ -228,6 +228,13 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "Some Place By The River" ) );
   QCOMPARE( w_municipality.value().toString(), QStringLiteral( "1" ) );
 
+  // Test that drill down works when the parent attribute changes
+  // Test regression GH #63448
+  w_municipality.widgetValueChanged( QStringLiteral( "fk_province" ), 245, true );
+  QCOMPARE( w_municipality.mComboBox->count(), 1 );
+  QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "Dreamland By The Clouds" ) );
+  QCOMPARE( w_municipality.value().toString(), QStringLiteral( "2" ) );
+
   // Filter by geometry
   cfg_municipality[QStringLiteral( "FilterExpression" )] = QStringLiteral( "contains(buffer(@current_geometry, 1 ), $geometry)" );
   w_municipality.setConfig( cfg_municipality );
@@ -263,8 +270,8 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   // Check null is selected
   QCOMPARE( w_municipality.mComboBox->count(), 3 );
   QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "(no selection)" ) );
-  QVERIFY( w_municipality.value().isNull() );
-  QCOMPARE( w_municipality.value().toString(), QString() );
+  QCOMPARE( w_municipality.mComboBox->currentIndex(), 0 );
+  QVERIFY( QgsVariantUtils::isNull( w_municipality.value() ) );
 
   // Check order by value false
   cfg_municipality[QStringLiteral( "AllowNull" )] = false;

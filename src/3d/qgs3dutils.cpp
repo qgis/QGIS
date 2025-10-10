@@ -23,7 +23,6 @@
 #include "qgsfeature.h"
 #include "qgsabstractgeometry.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
 #include "qgsglobechunkedentity.h"
 #include "qgsoffscreen3dengine.h"
@@ -726,15 +725,6 @@ void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin,
   }
 }
 
-QgsExpressionContext Qgs3DUtils::globalProjectLayerExpressionContext( QgsVectorLayer *layer )
-{
-  QgsExpressionContext exprContext;
-  exprContext << QgsExpressionContextUtils::globalScope()
-              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-              << QgsExpressionContextUtils::layerScope( layer );
-  return exprContext;
-}
-
 QgsPhongMaterialSettings Qgs3DUtils::phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material )
 {
   QgsPhongMaterialSettings settings;
@@ -1171,7 +1161,7 @@ QgsCameraPose Qgs3DUtils::lineSegmentToCameraPose( const QgsVector3D &startPoint
 
 std::unique_ptr<Qt3DRender::QCamera> Qgs3DUtils::copyCamera( Qt3DRender::QCamera *cam )
 {
-  std::unique_ptr<Qt3DRender::QCamera> copy = std::make_unique<Qt3DRender::QCamera>();
+  auto copy = std::make_unique<Qt3DRender::QCamera>();
   copy->setPosition( cam->position() );
   copy->setViewCenter( cam->viewCenter() );
   copy->setUpVector( cam->upVector() );

@@ -107,8 +107,12 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
   }
   else
   {
-    // The 3.77 adjustment value was found through trial and error, the author has however no clue as to where it comes from
-    const double adjustmentFactor = 3.77;
+    // The adjustment value was found through trial and error, the author has however no clue as to where it comes from
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 7, 0 )
+    constexpr double adjustmentFactor = 4.18;
+#else
+    constexpr double adjustmentFactor = 3.77;
+#endif
     const double rectScale = context.renderContext().scaleFactor() * adjustmentFactor;
     // The left/right margin is handled by the stylesheet while the top/bottom margin is ignored by QTextDocument
     painterRect = QRectF( 0, 0,

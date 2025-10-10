@@ -94,7 +94,7 @@ void QgsGeometryCheckLineLayerIntersectionAlgorithm::initAlgorithm( const QVaria
     QStringLiteral( "OUTPUT" ), QObject::tr( "Line intersecting other layer features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );

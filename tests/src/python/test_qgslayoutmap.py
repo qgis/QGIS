@@ -44,6 +44,7 @@ from qgis.core import (
     QgsPoint,
     QgsProject,
     QgsProperty,
+    QgsPrintLayout,
     QgsRasterLayer,
     QgsReadWriteContext,
     QgsRectangle,
@@ -666,6 +667,60 @@ class TestQgsLayoutMap(QgisTestCase, LayoutItemTestCase):
         map.refresh()
         self.assertEqual(len(spy), 6)
         self.assertEqual(spy[-1][0], "theme6")
+
+    def testAtlasFrameClipping(self):
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
+
+        props = {
+            "color": "127,255,127",
+            "outline_style": "solid",
+            "outline_width": "1",
+            "outline_color": "0,0,255",
+        }
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        vl.setRenderer(renderer)
+
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(0, 15, 3):
+            for y in range(0, 15, 3):
+                f.setGeometry(QgsGeometry(QgsPoint(x, y)).buffer(1, 3))
+                vl.dataProvider().addFeature(f)
+
+        p = QgsProject()
+
+        p.addMapLayer(vl)
+        layout = QgsPrintLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(False)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        map.setFrameEnabled(True)
+        map.setFrameStrokeWidth(
+            QgsLayoutMeasurement(5, QgsUnitTypes.LayoutUnit.LayoutMillimeters)
+        )
+        map.setAtlasDriven(True)
+        map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        map.setAtlasMargin(0.1)
+        map.atlasClippingSettings().setEnabled(True)
+        map.atlasClippingSettings().setClipItemShape(True)
+
+        layout.addLayoutItem(map)
+
+        atlas = layout.atlas()
+        atlas.setEnabled(True)
+        atlas.setCoverageLayer(vl)
+
+        atlas.beginRender()
+        atlas.first()
+
+        self.assertTrue(
+            self.render_layout_check("composermap_atlasclip_clip_frame", layout)
+        )
 
     def testClipping(self):
         format = QgsTextFormat()

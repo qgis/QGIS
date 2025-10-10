@@ -45,7 +45,8 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     {
       AllTypes, //!< All types
       Vector,   //!< Vector type
-      Raster   //!< Raster type
+      Raster,   //!< Raster type
+      Scene    //!< Scene
     };
 
     /**

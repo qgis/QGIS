@@ -59,7 +59,7 @@ QMenuBar::item:pressed
 }
 
 /* ==================================================================================== */
-/* SPIN BOX                                                                            */
+/* SPIN BOX                                                                             */
 /* ==================================================================================== */
 
 QAbstractSpinBox {
@@ -144,7 +144,7 @@ QAbstractSpinBox::drop-down:disabled {
 }
 
 /* ==================================================================================== */
-/* CALENDAR
+/* CALENDAR                                                                             */
 /* ==================================================================================== */
 
 /* header row */
@@ -224,7 +224,7 @@ QMenu::indicator
     width: 0em;
 }
 
-QWidget:disabled, QWidget:editable:disabled
+QWidget:disabled, QWidget:editable:disabled, QWidget:read-only:disabled
 {
     color: @itemalternativebackground;
     background-color: @background;
@@ -813,7 +813,7 @@ QCheckBox:disabled {
 }
 
 /* ==================================================================================== */
-/* SLIDER                                                                                */
+/* SLIDER                                                                               */
 /* ==================================================================================== */
 
 QSlider::groove:horizontal {
@@ -823,18 +823,38 @@ QSlider::groove:horizontal {
     background-color: @itemdarkbackground;
     margin: 0.15em 1px;
 }
+
+QSlider::groove:horizontal:disabled {
+    border-color: @itemdarkbackground;
+    background-color: @background;
+}
+
 QSlider::groove:horizontal[invertedAppearance="true"] {
     background-color: @itembackground;
 }
-QSlider::groove:vertical  {
+
+QSlider::groove:horizontal[invertedAppearance="true"]:disabled {
+    background-color: @itemalternativebackground;
+}
+
+QSlider::groove:vertical {
     border: 1px solid @itemdarkbackground;
     border-radius: 0.15em;
     width: 0.4em; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
     background-color: @itembackground;
     margin: 1px 0.15em;
 }
+
+QSlider::groove:vertical:disabled {
+    background-color: @itemalternativebackground;
+}
+
 QSlider::groove:vertical[invertedAppearance="true"] {
     background-color: @itemdarkbackground;
+}
+
+QSlider::groove:vertical[invertedAppearance="true"]:disabled {
+    background-color: @background;
 }
 
 QSlider::handle:horizontal {
@@ -844,12 +864,23 @@ QSlider::handle:horizontal {
     margin: -0.15em -1px; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
     border-radius: 0.15em;
 }
+
+QSlider::handle:horizontal:disabled {
+    background: @lightgradient;
+    border-color: @itemdarkbackground;
+}
+
 QSlider::handle:vertical {
     background: @gradient;
     border: 1px solid @itemdarkbackground;
     height: 1.3em;
     margin: -1px -0.15em; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
     border-radius: 0.15em;
+}
+
+QSlider::handle:vertical:disabled {
+    background: @lightgradient;
+    border-color: @itemdarkbackground;
 }
 
 QSlider::sub-page:horizontal {
@@ -859,9 +890,20 @@ QSlider::sub-page:horizontal {
     background-color: @itembackground;
     margin: 0.15em 1px;
 }
+
+QSlider::sub-page:horizontal:disabled {
+    background-color: @itemalternativebackground;
+}
+
 QSlider::sub-page:horizontal[invertedAppearance="true"] {
     background-color: @itemdarkbackground;
 }
+
+QSlider::sub-page:horizontal[invertedAppearance="true"]:disabled {
+    border-color: @itemdarkbackground;
+    background-color: @background;
+}
+
 QSlider::sub-page:vertical {
     border: 1px solid @itemdarkbackground;
     border-radius: 0.15em;
@@ -869,8 +911,17 @@ QSlider::sub-page:vertical {
     background-color: @itemdarkbackground;
     margin: 1px 0.15em;
 }
+
+QSlider::sub-page:vertical:disabled {
+    background-color: @background;
+}
+
 QSlider::sub-page:vertical[invertedAppearance="true"] {
     background-color: @itembackground;
+}
+
+QSlider::sub-page:vertical[invertedAppearance="true"]:disabled {
+    background-color: @itemalternativebackground;
 }
 
 /* ==================================================================================== */
@@ -935,6 +986,11 @@ QTreeView::item:disabled {
 QTreeView::item:selected, QTreeView::branch:selected {
     background-color: @selection;
     color: @text;
+}
+
+QTreeView::item:selected:disabled, QTreeView::branch:selected:disabled {
+    background-color: @itemalternativebackground;
+    color: @background;
 }
 
 QTreeView::branch:has-children:!has-siblings:closed,
@@ -1188,6 +1244,17 @@ QListWidget#mOptionsListWidget {
 
 QListWidget#mOptionsListWidget::item {
     padding: 0.1em;
+}
+
+QListWidget#mOptionsListWidget::item:hover
+{
+    background-color: @hover;
+    color: @itemdarkbackground;
+}
+
+QListWidget#mOptionsListWidget::item:selected:hover {
+    background-color: @selection;
+    color: @text;
 }
 
 QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab,

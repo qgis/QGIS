@@ -86,7 +86,7 @@ void TestQgsLayoutPicture::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  QgsFontUtils::loadStandardTestFonts( { QStringLiteral( "Roman" ), QStringLiteral( "Bold" ) } );
+  QgsFontUtils::loadStandardTestFonts( { QStringLiteral( "Roman" ), QStringLiteral( "Bold" ), QStringLiteral( "Oblique" ), QStringLiteral( "Bold Oblique" ) } );
 
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";

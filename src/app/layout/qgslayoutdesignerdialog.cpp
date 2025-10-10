@@ -443,8 +443,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   {
     itemTypeAdded( id );
   }
-  //..and listen out for new item types
+  //..and listen out for new item types...
   connect( QgsGui::layoutItemGuiRegistry(), &QgsLayoutItemGuiRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
+  // ...while also listening for item types being removed, so we can update the menu
+  connect( QgsGui::layoutItemGuiRegistry(), &QgsLayoutItemGuiRegistry::typeRemoved, this, &QgsLayoutDesignerDialog::itemTypeRemoved );
+  connect( QgsGui::layoutItemGuiRegistry(), &QgsLayoutItemGuiRegistry::groupRemoved, this, &QgsLayoutDesignerDialog::itemGroupRemoved );
 
   mDynamicTextMenu = new QMenu( tr( "Add Dynamic Text" ), this );
 
@@ -1752,6 +1755,33 @@ void QgsLayoutDesignerDialog::itemTypeAdded( int id )
   connect( action, &QAction::triggered, this, [this, id, nodeBased]() {
     activateNewItemCreationTool( id, nodeBased );
   } );
+}
+
+void QgsLayoutDesignerDialog::itemTypeRemoved( int id )
+{
+  // Find any action linked to the metadata id (and delete them)
+  for ( QAction *action : actions() )
+  {
+    if ( action->data().isValid() && action->data().toInt() == id )
+    {
+      action->deleteLater();
+    }
+  }
+}
+
+void QgsLayoutDesignerDialog::itemGroupRemoved( const QString &groupId )
+{
+  // Find and remove group submenu and toolbutton
+  if ( mItemGroupToolButtons.contains( groupId ) )
+  {
+    mItemGroupToolButtons.value( groupId )->deleteLater();
+    mItemGroupToolButtons.remove( groupId );
+  }
+  if ( mItemGroupSubmenus.contains( groupId ) )
+  {
+    mItemGroupSubmenus.value( groupId )->deleteLater();
+    mItemGroupSubmenus.remove( groupId );
+  }
 }
 
 void QgsLayoutDesignerDialog::statusZoomCombo_currentIndexChanged( int index )

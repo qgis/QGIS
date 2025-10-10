@@ -192,6 +192,100 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
 Q_DECLARE_METATYPE( QgsProcessingFeatureSourceDefinition )
 
 /**
+ * \class QgsProcessingRasterLayerDefinition
+ * \ingroup core
+ *
+ * \brief Encapsulates settings relating to a raster layer input to a processing algorithm.
+ * \since QGIS 4.0
+ */
+
+class CORE_EXPORT QgsProcessingRasterLayerDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingRasterLayerDefinition, accepting a static string \a source.
+     *
+     * The optional \a referenceScale can be set to a value > 0 to indicate the reference scale
+     * at which a raster layer should be requested or rendered. For instance, a WMS image.
+     *
+     * The optional \a dpi argument can be used to specify the resolution a raster provider
+     * (e.g., a WMS server) is using to generate the raster.
+     */
+    QgsProcessingRasterLayerDefinition( const QString &source = QString(), const double referenceScale = 0, const int dpi = 96 )
+      : source( QgsProperty::fromValue( source ) )
+      , referenceScale( referenceScale )
+      , dpi( dpi )
+    {}
+
+    /**
+     * Constructor for QgsProcessingRasterLayerDefinition, accepting a QgsProperty source.
+     *
+     * The optional \a referenceScale can be set to a value > 0 to indicate the reference scale
+     * at which a raster layer should be requested or rendered. For instance, a WMS image.
+     *
+     * The optional \a dpi argument can be used to specify the resolution a raster provider
+     * (e.g., a WMS server) is using to generate the raster.
+     */
+    QgsProcessingRasterLayerDefinition( const QgsProperty &source, const double referenceScale = 0, const int dpi = 96 )
+      : source( source )
+      , referenceScale( referenceScale )
+      , dpi( dpi )
+    {}
+
+    /**
+     * Source definition. Usually a static property set to a source layer's ID or file name.
+     */
+    QgsProperty source;
+
+    /**
+     * If set to a value > 0, sets a scale at which a raster (e.g., a WMS) should be requested or rendered.
+     */
+    double referenceScale = 0;
+
+    /**
+     * Indicates the resolution of the raster source (e.g., a WMS server). By default 96 DPI.
+     */
+    int dpi = 96;
+
+    /**
+     * Saves this raster layer definition to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     * \see loadVariant()
+     */
+    QVariant toVariant() const;
+
+    /**
+     * Loads this raster layer definition from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::readVariant to load it from an XML document.
+     * \see toVariant()
+     */
+    bool loadVariant( const QVariantMap &map );
+
+    // TODO c++20 - replace with = default
+    bool operator==( const QgsProcessingRasterLayerDefinition &other ) const
+    {
+      return source == other.source
+             && referenceScale == other.referenceScale
+             && dpi == other.dpi;
+    }
+
+    bool operator!=( const QgsProcessingRasterLayerDefinition &other ) const
+    {
+      return !( *this == other );
+    }
+
+    //! Allows direct construction of QVariants.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
+};
+
+Q_DECLARE_METATYPE( QgsProcessingRasterLayerDefinition )
+
+/**
  * \class QgsProcessingOutputLayerDefinition
  * \ingroup core
  *
@@ -2747,6 +2841,22 @@ class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParame
      */
     static QgsProcessingParameterRasterLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
+    /**
+     * Sets the supported \a capabilities of the raster layer parameter.
+     *
+     * \param capabilities Capabilities to be set to the raster layer parameter.
+     * \since QGIS 4.0
+     */
+    void setParameterCapabilities( Qgis::RasterProcessingParameterCapabilities capabilities );
+
+    /**
+     * Returns flags containing the supported capabilities of the raster layer parameter.
+     * \since QGIS 4.0
+     */
+    Qgis::RasterProcessingParameterCapabilities parameterCapabilities() const;
+
+  private:
+    Qgis::RasterProcessingParameterCapabilities mCapabilities;
 };
 
 /**

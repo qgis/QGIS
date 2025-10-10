@@ -32,6 +32,11 @@ class QgsStacObjectDetailsDialog : public QDialog, private Ui::QgsStacObjectDeta
     explicit QgsStacObjectDetailsDialog( QWidget *parent = nullptr );
 
     void setStacObject( QgsStacObject *stacObject );
+
+    void setAuthcfg( const QString &authcfg );
+
+  private:
+    QString mAuthcfg;
 };
 
 ///@endcond

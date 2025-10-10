@@ -62,10 +62,16 @@ endif()
 # qgis_native library
 
 add_library(qgis_native ${LIBRARY_TYPE} ${QGIS_NATIVE_SRCS} ${QGIS_NATIVE_HDRS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_native PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_native${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_native${QGISPOSTFIX}
+  )
+endif()
 set_property(TARGET qgis_native PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# require c++17
-target_compile_features(qgis_native PRIVATE cxx_std_17)
+# require c++20
+target_compile_features(qgis_native PRIVATE cxx_std_20)
 
 target_include_directories(qgis_native PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}

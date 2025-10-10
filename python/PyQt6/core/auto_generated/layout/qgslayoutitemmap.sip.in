@@ -77,6 +77,26 @@ geometry.
 .. seealso:: :py:func:`forceLabelsInsideFeature`
 %End
 
+    bool clipItemShape() const;
+%Docstring
+Returns ``True`` if the map item shape will be clipped to the atlas
+feature geometry.
+
+.. seealso:: :py:func:`setClipItemShape`
+
+.. versionadded:: 4.0
+%End
+
+    void setClipItemShape( bool clipItemShape );
+%Docstring
+Sets whether the map item shape will be clipped to the atlas feature
+geometry.
+
+.. seealso:: :py:func:`clipItemShape`
+
+.. versionadded:: 4.0
+%End
+
     bool restrictToLayers() const;
 %Docstring
 Returns ``True`` if clipping should be restricted to a subset of layers.
@@ -313,6 +333,7 @@ Layout graphical items for displaying a map.
 #include "qgslayoutitemmap.h"
 %End
   public:
+
 
     enum AtlasScalingMode /BaseType=IntEnum/
     {
@@ -872,11 +893,14 @@ calculations only) then ``includeLayerSettings`` should be ``False``.
     virtual void finalizeRestoreFromXml();
 
 
-    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = 0 ) const;
+    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = 0, bool includeInvalidLayers = false ) const;
 %Docstring
 Returns a list of the layers which will be rendered within this map
 item, considering any locked layers, linked map theme, and data defined
 settings.
+
+:param context: the expression context
+:param includeInvalidLayers: include invalid layers in the maplayer list
 %End
 
     void addLabelBlockingItem( QgsLayoutItem *item );

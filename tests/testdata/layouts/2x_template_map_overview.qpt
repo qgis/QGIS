@@ -128,7 +128,7 @@
       </layer>
      </symbol>
     </markerStyle>
-    <annotationFontProperties style="" description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0"/>
+    <annotationFontProperties style="Bold" description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0"/>
    </ComposerMapGrid>
    <ComposerMapOverview show="1" name="Overview 1" centered="0" inverted="0" frameMap="1" blendMode="0" uuid="{088d7dd9-056d-4895-a3b1-230df2115416}">
     <symbol name="" alpha="0.3" type="fill" clip_to_extent="1">

@@ -60,6 +60,9 @@ class GUI_EXPORT QgsProcessingAggregatePanelWidget : public QgsPanelWidget, priv
 
     QgsVectorLayer *mLayer = nullptr;
     bool mBlockChangedSignal = false;
+
+    bool mSkipConfirmDialog = false;
+    friend class TestProcessingGui;
 };
 
 

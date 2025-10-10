@@ -50,6 +50,11 @@ QString QgsPointsToPathsAlgorithm::shortDescription() const
   return QObject::tr( "Takes a point layer and connects its features to create a new line layer." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsPointsToPathsAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 QStringList QgsPointsToPathsAlgorithm::tags() const
 {
   return QObject::tr( "create,lines,points,connect,convert,join,path" ).split( ',' );

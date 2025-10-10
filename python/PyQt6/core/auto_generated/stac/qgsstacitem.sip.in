@@ -105,9 +105,11 @@ Sets the id of the STAC Collection this Item references to
     QDateTime dateTime() const;
 %Docstring
 Returns the single nominal date/time for the item, stored in the item's
-``properties``(). If a temporal interval is more appropriate for this
-item then a null QDateTime is returned and the interval may be retrieved
-with :py:func:`~QgsStacItem.dateTimeRange`
+:py:func:`~QgsStacItem.properties`.
+
+If a temporal interval is more appropriate for this item then a null
+QDateTime is returned and the interval may be retrieved with
+:py:func:`~QgsStacItem.dateTimeRange`.
 
 .. seealso:: :py:func:`hasDateTimeRange`
 
@@ -126,7 +128,8 @@ Returns ``True`` if a temporal interval is available for this item,
 
     QgsDateTimeRange dateTimeRange() const;
 %Docstring
-Returns the temporal interval stored in the item's ``properties``()
+Returns the temporal interval stored in the item's
+:py:func:`~QgsStacItem.properties`.
 
 .. seealso:: :py:func:`hasDateTimeRange`
 

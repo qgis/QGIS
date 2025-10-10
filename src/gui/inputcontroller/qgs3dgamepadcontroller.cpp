@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgs3dgamepadcontroller.h"
-#include "moc_qgs3dgamepadcontroller.cpp"
 
 #ifdef HAVE_QTGAMEPAD
+#include "moc_qgs3dgamepadcontroller.cpp"
 
 #include <QtGamepad/QGamepad>
 

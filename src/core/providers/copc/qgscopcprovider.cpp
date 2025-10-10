@@ -21,6 +21,7 @@
 #include "qgscopcpointcloudindex.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
+#include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgsthreadingutils.h"
@@ -120,7 +121,12 @@ void QgsCopcProvider::loadIndex( )
   // Index already loaded -> no need to load
   if ( mIndex.isValid() )
     return;
-  mIndex.load( dataSourceUri() );
+
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( PROVIDER_KEY );
+  const QVariantMap decodedUri = metadata->decodeUri( dataSourceUri() );
+  const QString authcfg = decodedUri.value( QStringLiteral( "authcfg" ) ).toString();
+  const QString path = decodedUri.value( QStringLiteral( "path" ) ).toString();
+  mIndex.load( path, authcfg );
 }
 
 QVariantMap QgsCopcProvider::originalMetadata() const
@@ -195,12 +201,34 @@ QList<Qgis::LayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QSt
   return QList< Qgis::LayerType>();
 }
 
+QString QgsCopcProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  QString uri = parts.value( QStringLiteral( "path" ) ).toString();
+
+  const QString authcfg = parts.value( QStringLiteral( "authcfg" ) ).toString();
+  if ( !authcfg.isEmpty() )
+    uri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
+
+  return uri;
+}
+
 QVariantMap QgsCopcProviderMetadata::decodeUri( const QString &uri ) const
 {
   QVariantMap uriComponents;
-  QUrl url = QUrl::fromUserInput( uri );
+
+  const thread_local QRegularExpression rx( QStringLiteral( " authcfg='([^']*)'" ) );
+  const QRegularExpressionMatch match = rx.match( uri );
+  if ( match.hasMatch() )
+    uriComponents.insert( QStringLiteral( "authcfg" ), match.captured( 1 ) );
+
+  QString path = uri;
+  path.remove( rx );
+  path = path.trimmed();
+  const QUrl url = QUrl::fromUserInput( path );
+
+  uriComponents.insert( QStringLiteral( "path" ), path );
   uriComponents.insert( QStringLiteral( "file-name" ), url.fileName() );
-  uriComponents.insert( QStringLiteral( "path" ), uri );
+
   return uriComponents;
 }
 
@@ -230,12 +258,6 @@ QgsProviderMetadata::ProviderCapabilities QgsCopcProviderMetadata::providerCapab
 QList<Qgis::LayerType> QgsCopcProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::PointCloud };
-}
-
-QString QgsCopcProviderMetadata::encodeUri( const QVariantMap &parts ) const
-{
-  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  return path;
 }
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsCopcProviderMetadata::capabilities() const

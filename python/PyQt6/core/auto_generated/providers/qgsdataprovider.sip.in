@@ -119,6 +119,27 @@ data provider.
 .. versionadded:: 3.36
 %End
 
+    virtual QVariantMap metadata() const;
+%Docstring
+Returns provider specific metadata.
+
+This returned map contains metadata which is dependent on the provider
+type. The returned keys are considered to be stable API for the
+provider, and can safely be used to retrieve properties which make sense
+for a particular provider only (e.g. backend server-specific
+properties).
+
+.. note::
+
+   Prior to QGIS 4.0 this method was available for :py:class:`QgsVectorDataProvider` only.
+
+.. note::
+
+   The default implementation returns an empty variant map.
+
+.. versionadded:: 4.0
+%End
+
     void setUri( const QgsDataSourceUri &uri );
 %Docstring
 Set the data source specification.

@@ -227,6 +227,38 @@ The index of the currently selected item.
     virtual void keyPressEvent( QKeyEvent *event );
 
 
+    QString orderExpression() const;
+%Docstring
+The order expression of the model. It is used to evaluate sort values of
+the combobox.
+
+.. versionadded:: 4.0
+%End
+
+    void setOrderExpression( const QString &orderExpression );
+%Docstring
+The order expression of the model. It is used to evaluate sort values of
+the combobox.
+
+.. versionadded:: 4.0
+%End
+
+    Qt::SortOrder sortOrder() const;
+%Docstring
+The order direction of the model. It defines the direction on sorting
+the combobox as ascending or descending.
+
+.. versionadded:: 4.0
+%End
+
+    void setSortOrder( const Qt::SortOrder sortOrder );
+%Docstring
+The order direction of the model. It defines the direction on sorting
+the combobox as ascending or descending.
+
+.. versionadded:: 4.0
+%End
+
   signals:
 
     void modelUpdated();

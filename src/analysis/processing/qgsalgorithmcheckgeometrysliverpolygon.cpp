@@ -94,13 +94,13 @@ void QgsGeometryCheckSliverPolygonAlgorithm::initAlgorithm( const QVariantMap &c
   ) );
 
   addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "MAX_THINNESS" ), QObject::tr( "Maximum thinness" ), Qgis::ProcessingNumberParameterType::Double, 20, false, 0.0
+    QStringLiteral( "MAX_THINNESS" ), QObject::tr( "Maximum thinness" ), Qgis::ProcessingNumberParameterType::Double, 20, false, 1.0
   ) );
   addParameter( new QgsProcessingParameterNumber(
     QStringLiteral( "MAX_AREA" ), QObject::tr( "Maximum area (map units squared)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );

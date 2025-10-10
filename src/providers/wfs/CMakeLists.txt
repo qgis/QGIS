@@ -70,10 +70,6 @@ target_link_libraries(provider_wfs_a
   GDAL::GDAL
 )
 
-# require c++17
-target_compile_features(provider_wfs_a PRIVATE cxx_std_17)
-
-
 # We use private headers from core that need this
 target_compile_definitions(provider_wfs_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 target_compile_definitions(provider_wfs_a PRIVATE "-DQT_NO_FOREACH")
@@ -97,9 +93,6 @@ if (WITH_GUI)
     qgis_gui
   )
 
-  # require c++17
-  target_compile_features(provider_wfs_gui_a PRIVATE cxx_std_17)
-
   target_compile_definitions(provider_wfs_gui_a PRIVATE "-DQT_NO_FOREACH")
 
   add_dependencies(provider_wfs_gui_a ui)
@@ -120,9 +113,6 @@ else()
   add_library(provider_wfs MODULE ${WFS_SRCS} ${WFS_GUI_SRCS})
 
   set_target_properties(provider_wfs PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
-
-  # require c++17
-  target_compile_features(provider_wfs PRIVATE cxx_std_17)
 
   # We use private headers from core that need this
   target_compile_definitions(provider_wfs PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")

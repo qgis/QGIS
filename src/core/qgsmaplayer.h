@@ -187,6 +187,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Legend             = 1 << 15, //!< Legend settings \since QGIS 3.16
       Elevation          = 1 << 16, //!< Elevation settings \since QGIS 3.18
       Notes              = 1 << 17, //!< Layer user notes \since QGIS 3.20
+      AllVisualStyleCategories = Symbology | Symbology3D | Labeling | Diagrams, //!< All categories dealing with map canvas rendering
+      AllAttributeCategories = Fields | Forms | AttributeTable, //!< All categories dealing with attributes and attribute form
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
                            MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend | Elevation | Notes,
     };

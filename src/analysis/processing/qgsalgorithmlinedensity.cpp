@@ -79,6 +79,11 @@ QString QgsLineDensityAlgorithm::shortHelpString() const
   );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsLineDensityAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 QString QgsLineDensityAlgorithm::shortDescription() const
 {
   return QObject::tr( "Calculates a density measure of linear features "

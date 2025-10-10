@@ -27,6 +27,11 @@
 #include <proj.h>
 #include <QSysInfo>
 
+#ifdef WITH_SFCGAL
+#include <SFCGAL/capi/sfcgal_c.h>
+#include <SFCGAL/version.h>
+#endif
+
 QString QgsCommandLineUtils::allVersions( )
 {
 
@@ -109,6 +114,23 @@ QString QgsCommandLineUtils::allVersions( )
   {
     versionString += QStringLiteral( "GEOS version %1\n" ).arg( geosVersionCompiled );
   }
+
+  // SFCGAL version
+#ifdef WITH_SFCGAL
+  const QString sfcgalVersionCompiled { SFCGAL_VERSION };
+  const QString sfcgalVersionRunning { sfcgal_version() };
+  if ( sfcgalVersionCompiled != sfcgalVersionRunning )
+  {
+    versionString += QStringLiteral( "Compiled against SFCGAL %1\n" ).arg( sfcgalVersionCompiled );
+    versionString += QStringLiteral( "Running against SFCGAL %1\n" ).arg( sfcgalVersionRunning );
+  }
+  else
+  {
+    versionString += QStringLiteral( "SFCGAL version %1\n" ).arg( sfcgalVersionCompiled );
+  }
+#else
+  versionString += QLatin1String( "No support for SFCGAL\n" );
+#endif
 
   // SQLite version
   const QString sqliteVersionCompiled { SQLITE_VERSION };

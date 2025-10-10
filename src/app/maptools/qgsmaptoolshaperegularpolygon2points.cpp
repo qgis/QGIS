@@ -78,6 +78,9 @@ bool QgsMapToolShapeRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEve
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( mRegularPolygon.isEmpty() )
+      return false;
+
     mPoints.append( point );
     addRegularPolygonToParentTool();
     return true;

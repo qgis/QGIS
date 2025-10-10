@@ -40,6 +40,7 @@ class QgsPointsToPathsAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsPointsToPathsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

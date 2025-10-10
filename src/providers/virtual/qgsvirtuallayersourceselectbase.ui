@@ -191,7 +191,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
-          <widget class="QCheckBox" name="mUIDColumnNameChck">
+          <widget class="QCheckBox" name="mUIDColumnNameCheck">
            <property name="text">
             <string>Unique identifier column</string>
            </property>
@@ -352,7 +352,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
   <tabstop>mAddLayerBtn</tabstop>
   <tabstop>mImportLayerBtn</tabstop>
   <tabstop>mRemoveLayerBtn</tabstop>
-  <tabstop>mUIDColumnNameChck</tabstop>
+  <tabstop>mUIDColumnNameCheck</tabstop>
   <tabstop>mUIDField</tabstop>
   <tabstop>mNoGeometryRadio</tabstop>
   <tabstop>mAutodetectGeometryRadio</tabstop>
@@ -397,7 +397,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
    </hints>
   </connection>
   <connection>
-   <sender>mUIDColumnNameChck</sender>
+   <sender>mUIDColumnNameCheck</sender>
    <signal>toggled(bool)</signal>
    <receiver>mUIDField</receiver>
    <slot>setEnabled(bool)</slot>

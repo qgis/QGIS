@@ -17,15 +17,44 @@
 #include "moc_qgsshortcutsmanager.cpp"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsapplication.h"
 
 #include <QShortcut>
 #include <QRegularExpression>
 #include <QWidgetAction>
+#include <QPalette>
 
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settingsRoot )
   : QObject( parent )
   , mSettingsPath( settingsRoot )
 {
+  // Register common actions
+  auto registerCommonAction = [this]( CommonAction commonAction, const QIcon &icon, const QString &text, const QString &toolTip, const QString &sequence, const QString &objectName, const QString &section ) {
+    QAction *action = new QAction( icon, text, this );
+    action->setToolTip( toolTip );
+    setObjectName( objectName );
+    // We do not want these actions to be enabled, they are just there to be able to change
+    // the shortcuts in the Shortcuts Manager.
+    action->setEnabled( false );
+    action->setProperty( "commonAction", static_cast< int >( commonAction ) );
+    registerAction( action, sequence, section );
+    mCommonActions.insert( static_cast< int >( commonAction ), action );
+  };
+  registerCommonAction( CommonAction::CodeToggleComment, QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ), QgsApplication::palette().color( QPalette::ColorRole::WindowText ) ), tr( "Toggle Comment" ), tr( "Toggle comment" ), QStringLiteral( "Ctrl+/" ), QStringLiteral( "mEditorToggleComment" ), QStringLiteral( "Editor" ) );
+  registerCommonAction( CommonAction::CodeReformat, QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ), tr( "Reformat Code" ), tr( "Reformat code" ), QStringLiteral( "Ctrl+Alt+F" ), QStringLiteral( "mEditorReformatCode" ), QStringLiteral( "Editor" ) );
+  registerCommonAction( CommonAction::CodeRunScript, QgsApplication::getThemeIcon( QStringLiteral( "mActionStart.svg" ) ), tr( "Run Script" ), tr( "Run entire script" ), QStringLiteral( "Ctrl+Shift+E" ), QStringLiteral( "mEditorRunScript" ), QStringLiteral( "Editor" ) );
+  registerCommonAction( CommonAction::CodeRunSelection, QgsApplication::getThemeIcon( QStringLiteral( "mActionRunSelected.svg" ) ), tr( "Run Selection" ), tr( "Run selected part of script" ), QStringLiteral( "Ctrl+E" ), QStringLiteral( "mEditorRunSelection" ), QStringLiteral( "Editor" ) );
+}
+
+QgsShortcutsManager::~QgsShortcutsManager()
+{
+  // delete all common actions BEFORE this object is destroyed -- they have a lambda connection which
+  // we do NOT want to be triggered during the qt child object cleanup which will occur after this destructor
+  const QHash< int, QAction * > commonActionsToCleanup = std::move( mCommonActions );
+  for ( auto it = commonActionsToCleanup.constBegin(); it != commonActionsToCleanup.constEnd(); ++it )
+  {
+    delete it.value();
+  }
 }
 
 void QgsShortcutsManager::registerAllChildren( QObject *object, bool recursive, const QString &section )
@@ -93,7 +122,7 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
     QgsLogger::warning( QStringLiteral( "Duplicate shortcut registered: %1" ).arg( key ) );
 #endif
 
-  const QString settingKey = mSettingsPath + section + key;
+  const QString settingKey = mSettingsPath + ( section.isEmpty() || section.endsWith( QLatin1Char( '/' ) ) ? section : section + QStringLiteral( "/" ) ) + key;
 
   mActions.insert( action, { defaultSequence, settingKey } );
   connect( action, &QObject::destroyed, this, [action, this]() { actionDestroyed( action ); } );
@@ -105,19 +134,26 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
   action->setShortcut( sequence );
   if ( !action->toolTip().isEmpty() )
   {
-    const QStringList parts = action->toolTip().split( '\n' );
-    QString formatted = QStringLiteral( "<b>%1</b>" ).arg( parts.at( 0 ) );
-    if ( parts.count() > 1 )
-    {
-      for ( int i = 1; i < parts.count(); ++i )
-        formatted += QStringLiteral( "<p>%1</p>" ).arg( parts.at( i ) );
-    }
-
-    action->setToolTip( formatted );
+    action->setToolTip( formatActionToolTip( action->toolTip() ) );
     updateActionToolTip( action, sequence );
   }
 
   return true;
+}
+
+void QgsShortcutsManager::initializeCommonAction( QAction *action, CommonAction commonAction )
+{
+  const auto it = mCommonActions.constFind( static_cast< int >( commonAction ) );
+  if ( it == mCommonActions.constEnd() )
+    return;
+
+  // copy properties from common action
+  action->setText( it.value()->text() );
+  action->setToolTip( it.value()->toolTip() );
+  action->setShortcut( it.value()->shortcut() );
+
+  mLinkedCommonActions.insert( action, commonAction );
+  connect( action, &QObject::destroyed, this, [action, this]() { actionDestroyed( action ); } );
 }
 
 bool QgsShortcutsManager::registerShortcut( QShortcut *shortcut, const QString &defaultSequence, const QString &section )
@@ -130,7 +166,7 @@ bool QgsShortcutsManager::registerShortcut( QShortcut *shortcut, const QString &
     QgsLogger::warning( QStringLiteral( "Duplicate shortcut registered: %1" ).arg( shortcut->objectName() ) );
 #endif
 
-  const QString settingKey = mSettingsPath + section + shortcut->objectName();
+  const QString settingKey = mSettingsPath + ( section.isEmpty() || section.endsWith( QLatin1Char( '/' ) ) ? section : section + QStringLiteral( "/" ) ) + shortcut->objectName();
 
   mShortcuts.insert( shortcut, { defaultSequence, settingKey } );
   connect( shortcut, &QObject::destroyed, this, [shortcut, this]() { shortcutDestroyed( shortcut ); } );
@@ -237,6 +273,21 @@ bool QgsShortcutsManager::setKeySequence( QAction *action, const QString &sequen
   action->setShortcut( sequence );
   this->updateActionToolTip( action, sequence );
 
+  if ( action->property( "commonAction" ).isValid() )
+  {
+    // if the key sequence for a common action is changed, update all QActions currently linked
+    // to that common action
+    const CommonAction commonAction = static_cast< CommonAction >( action->property( "commonAction" ).toInt() );
+    for ( auto it = mLinkedCommonActions.constBegin(); it != mLinkedCommonActions.constEnd(); ++it )
+    {
+      if ( it.value() == commonAction )
+      {
+        it.key()->setShortcut( action->shortcut() );
+        it.key()->setToolTip( action->toolTip() );
+      }
+    }
+  }
+
   const QString settingKey = mActions[action].second;
 
   // save to settings
@@ -299,6 +350,15 @@ QShortcut *QgsShortcutsManager::shortcutForSequence( const QKeySequence &sequenc
   return nullptr;
 }
 
+QKeySequence QgsShortcutsManager::sequenceForCommonAction( CommonAction action ) const
+{
+  const auto it = mCommonActions.constFind( static_cast< int >( action ) );
+  if ( it == mCommonActions.constEnd() )
+    return QKeySequence();
+
+  return it.value()->shortcut();
+}
+
 QAction *QgsShortcutsManager::actionByName( const QString &name ) const
 {
   for ( ActionsHash::const_iterator it = mActions.constBegin(); it != mActions.constEnd(); ++it )
@@ -331,6 +391,7 @@ QShortcut *QgsShortcutsManager::shortcutByName( const QString &name ) const
 void QgsShortcutsManager::actionDestroyed( QAction *action )
 {
   mActions.remove( action );
+  mLinkedCommonActions.remove( action );
 }
 
 QString QgsShortcutsManager::objectSettingKey( QObject *object ) const
@@ -366,10 +427,26 @@ void QgsShortcutsManager::shortcutDestroyed( QShortcut *shortcut )
   mShortcuts.remove( shortcut );
 }
 
+QString QgsShortcutsManager::formatActionToolTip( const QString &toolTip )
+{
+  if ( toolTip.isEmpty() )
+    return QString();
+
+  const QStringList parts = toolTip.split( '\n' );
+  QString formatted = QStringLiteral( "<b>%1</b>" ).arg( parts.at( 0 ) );
+  if ( parts.count() > 1 )
+  {
+    for ( int i = 1; i < parts.count(); ++i )
+      formatted += QStringLiteral( "<p>%1</p>" ).arg( parts.at( i ) );
+  }
+
+  return formatted;
+}
+
 void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString &sequence )
 {
   QString current = action->toolTip();
-  const thread_local QRegularExpression rx( QStringLiteral( "\\((.*)\\)" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "\\s*\\((.*)\\)" ) );
   // Look for the last occurrence of text inside parentheses
   QRegularExpressionMatch match;
   if ( current.lastIndexOf( rx, -1, &match ) != -1 )

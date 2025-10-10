@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include "qgsgroupwmsdatadialog.h"
+#include "qgsgui.h"
 #include "moc_qgsgroupwmsdatadialog.cpp"
 #include "qgsmaplayerserverproperties.h"
 
@@ -29,6 +30,7 @@ QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( const QgsMapLayerServerProperties 
   , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   serverProperties.copyTo( mServerProperties.get() );
 

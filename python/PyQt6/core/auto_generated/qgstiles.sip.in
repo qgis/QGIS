@@ -62,6 +62,7 @@ Returns tile coordinates in a formatted string
 
 
 
+
 class QgsTileRange
 {
 %Docstring(signature="appended")

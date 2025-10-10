@@ -15,7 +15,7 @@
     <prop k="style" v="solid"/>
    </layer>
   </symbol>
-  <ComposerHtml maxBreakDistance="10" contentMode="1" resizeMode="1" url="" useSmartBreaks="true" evaluateExpressions="true" html="&lt;div style=&quot;height:5000px; background-color:green; color:white;&quot;>aaaaA&lt;/div>&#x9;&#xa;" stylesheetEnabled="false" stylesheet="">
+  <ComposerHtml maxBreakDistance="10" contentMode="1" resizeMode="1" url="" useSmartBreaks="true" evaluateExpressions="true" html="&lt;div style=&quot;height:5000px; font-family: QGIS Vera Sans; background-color:green; color:white;&quot;>aaaaA&lt;/div>&#x9;&#xa;" stylesheetEnabled="false" stylesheet="">
    <ComposerFrame sectionWidth="105.864" sectionHeight="47.6852" hideBackgroundIfEmpty="0" hidePageIfEmpty="0" sectionX="0" sectionY="0">
     <ComposerItem pagey="18.0783" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="20.0112" y="18.0783" visibility="1" zValue="16" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="105.864" outlineWidth="0.3" excludeFromExports="0" uuid="{5da38571-9fb3-49fb-a353-88ee823eccca}" height="47.891" itemRotation="0" frame="false" pagex="20.0112">
      <FrameColor alpha="255" red="0" blue="0" green="0"/>

@@ -20,6 +20,11 @@ include_directories(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
 )
 
+if (WITH_INTERNAL_LAZPERF)
+  include_directories(
+    ${CMAKE_SOURCE_DIR}/external/lazperf
+  )
+endif()
 
 #############################################################
 # Tests:
@@ -84,7 +89,6 @@ if(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
   )
 
   add_executable(test_provider_wcs ${WCSTEST_SRCS} )
-  target_compile_features(test_provider_wcs PRIVATE cxx_std_17)
   target_compile_definitions(test_provider_wcs PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}

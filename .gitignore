@@ -4,6 +4,7 @@
 *.aux
 *.bak
 *.diff
+!vcpkg/**/*.diff
 *.gpkg-shm
 *.gpkg-wal
 *.log*
@@ -41,8 +42,6 @@ Testing/*
 Thumb.db
 api_doc
 compile_commands.json
-debian/*.debhelper
-debian/*.substvars
 debian/qgis.sh
 desktop.ini
 doc/INSTALL.tex

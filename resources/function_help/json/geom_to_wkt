@@ -13,6 +13,9 @@
     "default": "8"
   }],
   "examples": [{
+    "expression": "geom_to_wkt(@geometry)",
+    "returns": "well-known text representation of the current feature's geometry"
+  },{
     "expression": "geom_to_wkt( make_point(6, 50) )",
     "returns": "'POINT(6 50)'"
   }, {

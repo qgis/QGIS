@@ -45,9 +45,12 @@ add_library(qgis_quick ${LIBRARY_TYPE}
     ${QGIS_QUICK_GUI_MOC_HDRS}
     ${QGIS_QUICK_GUI_MOC_SRCS}
     ${QGIS_QUICK_GUI_HDRS})
-
-# require c++17
-target_compile_features(qgis_quick PRIVATE cxx_std_17)
+if(QGISPOSTFIX)
+  set_target_properties(qgis_quick PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_quick${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_quick${QGISPOSTFIX}
+  )
+endif()
 
 target_link_libraries(qgis_quick
     ${QT_VERSION_BASE}::Quick

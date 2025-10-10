@@ -48,11 +48,10 @@ bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, con
       else
       {
         query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
-      }
-
-      if ( !namespaceValue.isEmpty() )
-      {
-        query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+        if ( !namespaceValue.isEmpty() )
+        {
+          query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
+        }
       }
 
       if ( !filter.isEmpty() )

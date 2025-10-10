@@ -46,6 +46,15 @@ QgsLegendRenderer::QgsLegendRenderer( QgsLegendRenderer &&other )
   mProxyModel->setLayerTreeModel( mLegendModel );
 }
 
+void QgsLegendRenderer::setProxyModel( QgsLayerTreeFilterProxyModel *model )
+{
+  if ( mProxyModel.get() == model )
+    return;
+
+  mProxyModel.reset( model );
+  mProxyModel->setLayerTreeModel( mLegendModel );
+}
+
 QgsLegendRenderer::~QgsLegendRenderer() = default;
 
 QSizeF QgsLegendRenderer::minimumSize( QgsRenderContext *renderContext )

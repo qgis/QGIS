@@ -89,6 +89,23 @@ bool QgsLayoutItemGuiRegistry::addLayoutItemGuiMetadata( QgsLayoutItemAbstractGu
   return true;
 }
 
+bool QgsLayoutItemGuiRegistry::removeLayoutItemGuiMetadata( int typeId )
+{
+  int metadataId = metadataIdForItemType( typeId );
+  if ( !mMetadata.contains( metadataId ) )
+    return false;
+  mMetadata.remove( metadataId );
+  emit typeRemoved( metadataId );
+  return true;
+}
+
+bool QgsLayoutItemGuiRegistry::removeLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata )
+{
+  if ( !metadata )
+    return false;
+  return removeLayoutItemGuiMetadata( metadata->type() );
+}
+
 bool QgsLayoutItemGuiRegistry::addItemGroup( const QgsLayoutItemGuiGroup &group )
 {
   if ( mItemGroups.contains( group.id ) )
@@ -101,6 +118,16 @@ bool QgsLayoutItemGuiRegistry::addItemGroup( const QgsLayoutItemGuiGroup &group 
 const QgsLayoutItemGuiGroup &QgsLayoutItemGuiRegistry::itemGroup( const QString &id )
 {
   return mItemGroups[id];
+}
+
+bool QgsLayoutItemGuiRegistry::removeItemGroup( const QString &id )
+{
+  if ( !mItemGroups.contains( id ) )
+    return false;
+
+  mItemGroups.remove( id );
+  emit groupRemoved( id );
+  return true;
 }
 
 QgsLayoutItem *QgsLayoutItemGuiRegistry::createItem( int metadataId, QgsLayout *layout ) const

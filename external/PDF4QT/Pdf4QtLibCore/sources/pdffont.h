@@ -1,19 +1,24 @@
-//    Copyright (C) 2019-2021 Jakub Melka
+// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT.  If not, see <https://www.gnu.org/licenses/>.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #ifndef PDFFONT_H
 #define PDFFONT_H
@@ -70,9 +75,9 @@ public:
 struct TextSequenceItem
 {
     inline explicit TextSequenceItem() = default;
-    inline explicit TextSequenceItem(const QPainterPath* glyph, QChar character, PDFReal advance) : glyph(glyph), character(character), advance(advance) { }
+    inline explicit TextSequenceItem(const QPainterPath* glyph, QChar character, PDFReal advance, CID cid) : glyph(glyph), character(character), advance(advance), cid(cid) { }
     inline explicit TextSequenceItem(PDFReal advance) : character(), advance(advance) { }
-    inline explicit TextSequenceItem(const QByteArray* characterContentStream, QChar character, PDFReal advance) : characterContentStream(characterContentStream), character(character), advance(advance) { }
+    inline explicit TextSequenceItem(const QByteArray* characterContentStream, QChar character, PDFReal advance, uint cid) : characterContentStream(characterContentStream), character(character), advance(advance), cid(cid) { }
 
     inline bool isContentStream() const { return characterContentStream; }
     inline bool isCharacter() const { return glyph; }
@@ -83,6 +88,7 @@ struct TextSequenceItem
     const QByteArray* characterContentStream = nullptr;
     QChar character;
     PDFReal advance = 0;
+    CID cid = 0;
 };
 
 struct TextSequence
@@ -290,11 +296,18 @@ private:
     IRealizedFontImpl* m_impl;
 };
 
+struct PDFEncodedText
+{
+    QByteArray encodedText;
+    QString errorString;
+    bool isValid = false;
+};
+
 /// Base  class representing font in the PDF file
 class PDF4QTLIBCORESHARED_EXPORT PDFFont
 {
 public:
-    explicit PDFFont(CIDSystemInfo CIDSystemInfo, FontDescriptor fontDescriptor);
+    explicit PDFFont(CIDSystemInfo CIDSystemInfo, QByteArray fontId, FontDescriptor fontDescriptor);
     virtual ~PDFFont() = default;
 
     /// Returns the font type
@@ -317,8 +330,9 @@ public:
 
     /// Creates font from the object. If font can't be created, exception is thrown.
     /// \param object Font dictionary
+    /// \param fontId Font ID
     /// \param document Document
-    static PDFFontPointer createFont(const PDFObject& object, const PDFDocument* document);
+    static PDFFontPointer createFont(const PDFObject& object, QByteArray fontId, const PDFDocument* document);
 
     /// Tries to read font descriptor from the object
     /// \param fontDescriptorObject Font descriptor dictionary
@@ -330,9 +344,16 @@ public:
     /// \param document Document
     static CIDSystemInfo readCIDSystemInfo(const PDFObject& cidSystemInfoObject, const PDFDocument* document);
 
+    /// Returns font id from the font dictionary
+    QByteArray getFontId() const;
+
+    /// Encodes text into font encoding
+    virtual PDFEncodedText encodeText(const QString& text) const;
+
 protected:
     CIDSystemInfo m_CIDSystemInfo;
     FontDescriptor m_fontDescriptor;
+    QByteArray m_fontId;
 };
 
 /// Simple font, see PDF reference 1.7, chapter 5.5. Simple fonts have encoding table,
@@ -343,6 +364,7 @@ class PDFSimpleFont : public PDFFont
 
 public:
     explicit PDFSimpleFont(CIDSystemInfo cidSystemInfo,
+                           QByteArray fontId,
                            FontDescriptor fontDescriptor,
                            QByteArray name,
                            QByteArray baseFont,
@@ -360,6 +382,8 @@ public:
 
     /// Returns the glyph advance (or zero, if glyph advance is invalid)
     PDFInteger getGlyphAdvance(size_t index) const;
+
+    virtual PDFEncodedText encodeText(const QString& text) const override;
 
     virtual void dumpFontToTreeItem(ITreeFactory* treeFactory) const override;
 
@@ -380,6 +404,7 @@ class PDFType1Font : public PDFSimpleFont
 
 public:
     explicit PDFType1Font(FontType fontType,
+                          QByteArray fontId,
                           CIDSystemInfo cidSystemInfo,
                           FontDescriptor fontDescriptor,
                           QByteArray name,
@@ -433,7 +458,8 @@ public:
     /// Retrieves font from the cache. If font can't be accessed or created,
     /// then exception is thrown.
     /// \param fontObject Font object
-    PDFFontPointer getFont(const PDFObject& fontObject) const;
+    /// \param fontId Font identification in resource dictionary
+    PDFFontPointer getFont(const PDFObject& fontObject, const QByteArray& fontId) const;
 
     /// Retrieves realized font from the cache. If realized font can't be accessed or created,
     /// then exception is thrown.
@@ -547,8 +573,14 @@ public:
     /// Converts byte array to array of CIDs
     std::vector<CID> interpret(const QByteArray& byteArray) const;
 
+    /// Encodes character to byte array
+    QByteArray encode(CID cid) const;
+
     /// Converts CID to QChar, use only on ToUnicode CMaps
     QChar getToUnicode(CID cid) const;
+
+    /// Converts QChar to CID, use only on ToUnicode CMaps
+    CID getFromUnicode(QChar character) const;
 
 private:
 
@@ -599,6 +631,7 @@ class PDFType3Font : public PDFFont
 {
 public:
     explicit PDFType3Font(FontDescriptor fontDescriptor,
+                          QByteArray fontId,
                           int firstCharacterIndex,
                           int lastCharacterIndex,
                           QTransform fontMatrix,
@@ -640,8 +673,15 @@ private:
 class PDFType0Font : public PDFFont
 {
 public:
-    explicit inline PDFType0Font(CIDSystemInfo cidSystemInfo, FontDescriptor fontDescriptor, PDFFontCMap cmap, PDFFontCMap toUnicode, PDFCIDtoGIDMapper mapper, PDFReal defaultAdvance, std::unordered_map<CID, PDFReal> advances) :
-        PDFFont(qMove(cidSystemInfo), qMove(fontDescriptor)),
+    explicit inline PDFType0Font(CIDSystemInfo cidSystemInfo,
+                                 QByteArray fontId,
+                                 FontDescriptor fontDescriptor,
+                                 PDFFontCMap cmap,
+                                 PDFFontCMap toUnicode,
+                                 PDFCIDtoGIDMapper mapper,
+                                 PDFReal defaultAdvance,
+                                 std::unordered_map<CID, PDFReal> advances) :
+        PDFFont(qMove(cidSystemInfo), qMove(fontId), qMove(fontDescriptor)),
         m_cmap(qMove(cmap)),
         m_toUnicode(qMove(toUnicode)),
         m_mapper(qMove(mapper)),
@@ -696,6 +736,12 @@ private:
 
     /// Storage for predefined cmaps
     std::map<QByteArray, QByteArray> m_cmaps;
+};
+
+class PDF4QTLIBCORESHARED_EXPORT PDFSystemFont
+{
+public:
+    static QByteArray getFontData(const QByteArray& fontName);
 };
 
 }   // namespace pdf

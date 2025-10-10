@@ -59,6 +59,7 @@ QgsTiledSceneLayerRenderer::QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *laye
   mRenderer.reset( layer->renderer()->clone() );
 
   mSceneCrs = layer->dataProvider()->sceneCrs();
+  mLayerCrs = layer->dataProvider()->crs();
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
   mLayerBoundingVolume = layer->dataProvider()->boundingVolume();
@@ -437,6 +438,21 @@ bool QgsTiledSceneLayerRenderer::renderTileContent( const QgsTiledSceneTile &til
                      .arg( contentUri, gltfWarnings ) );
     }
     if ( !res ) return false;
+  }
+  else if ( format == QLatin1String( "draco" ) )
+  {
+    QgsGltfUtils::I3SNodeContext i3sContext;
+    i3sContext.initFromTile( tile, mLayerCrs, mSceneCrs, context.renderContext().transformContext() );
+
+    QString errors;
+    if ( !QgsGltfUtils::loadDracoModel( tileContent, i3sContext, model, &errors ) )
+    {
+      if ( !mErrors.contains( errors ) )
+        mErrors.append( errors );
+      QgsDebugError( QStringLiteral( "Error raised reading %1: %2" )
+                     .arg( contentUri, errors ) );
+      return false;
+    }
   }
   else
     return false;

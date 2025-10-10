@@ -257,6 +257,9 @@ Untick save if you don't wish to be the case.</string>
          </property>
          <item>
           <widget class="QCheckBox" name="checkBoxExtentFromGeometryColumns">
+           <property name="toolTip">
+            <string>If checked, QGIS will skip extent calculation when loading layers and thus speeds up loading time. This requires manually setting the extent in dedicated columns (qgis_xmin, qgis_xmax, qgis_ymin, qgis_ymax) in the geometry_columns metadata table.</string>
+           </property>
            <property name="text">
             <string>Use layer extent from geometry_columns table</string>
            </property>
@@ -267,6 +270,9 @@ Untick save if you don't wish to be the case.</string>
       </item>
       <item row="3" column="0" colspan="2">
        <widget class="QCheckBox" name="checkBoxPKFromGeometryColumns">
+        <property name="toolTip">
+         <string>If checked, QGIS will skip primary key calculation when loading views and thus speeds up loading time. This requires manually setting the primary key(s) name in a dedicated qgis_pkey column in the geometry_columns metadata table.</string>
+        </property>
         <property name="text">
          <string>Use primary key from geometry_columns table</string>
         </property>

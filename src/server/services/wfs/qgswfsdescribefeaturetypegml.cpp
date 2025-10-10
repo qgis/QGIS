@@ -112,7 +112,7 @@ QDomDocument QgsWfsDescribeFeatureTypeGml::createDescribeFeatureTypeDocument( Qg
       continue;
     }
 
-    const QString name = layerTypeName( layer );
+    const QString name = layer->serverProperties()->wfsTypeName();
 
     if ( !typeNameList.isEmpty() && !typeNameList.contains( name ) )
     {
@@ -150,7 +150,7 @@ void QgsWfsDescribeFeatureTypeGml::setSchemaLayer( QDomElement &parentElement, Q
     return;
   }
 
-  const QString typeName = layerTypeName( layer );
+  const QString typeName = layer->serverProperties()->wfsTypeName();
 
   //xsd:element
   QDomElement elementElem = doc.createElement( QStringLiteral( "element" ) /*xsd:element*/ );

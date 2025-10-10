@@ -320,7 +320,7 @@ bool QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   textSymbolizerElement.appendChild( labelElement );
   if ( settings.isExpression )
   {
-    context.pushError( QObject::tr( "Cannot export label expression %1 to SLD" ).arg( settings.getLabelExpression()->dump() ) );
+    context.pushError( QObject::tr( "Labels containing expressions cannot be exported to SLD. Skipping label '%1'" ).arg( settings.getLabelExpression()->dump() ) );
     labelElement.appendChild( doc.createTextNode( "Placeholder" ) );
   }
   else

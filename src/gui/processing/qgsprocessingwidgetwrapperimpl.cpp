@@ -3188,7 +3188,7 @@ void QgsProcessingEnumCheckboxPanelWidget::setValue( const QVariant &value )
     if ( v.userType() == QMetaType::Type::QVariantList )
       v = v.toList().value( 0 );
 
-    v = mParam->usesStaticStrings() ? mParam->options().indexOf( v.toString() ) : v;
+    v = mParam->usesStaticStrings() ? static_cast< int >( mParam->options().indexOf( v.toString() ) ) : v;
     if ( mButtons.contains( v ) )
       mButtons.value( v )->setChecked( true );
   }
@@ -7230,6 +7230,12 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
     }
 
     case Qgis::ProcessingSourceType::VectorTile:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterMultipleLayers::typeName(), QStringList() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName() );
+      break;
+    }
+
+    case Qgis::ProcessingSourceType::TiledScene:
     {
       mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterMultipleLayers::typeName(), QStringList() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName() );
       break;

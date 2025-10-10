@@ -63,6 +63,7 @@ class QgsNetworkContentFetcherRegistry;
 class QgsValidityCheckRegistry;
 class QTranslator;
 class QgsCalloutRegistry;
+class QgsPlotRegistry;
 class QgsBookmarkManager;
 class QgsStyleModel;
 class QgsNumericFormatRegistry;
@@ -872,6 +873,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsSensorRegistry *sensorRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the application's plot registry, used for plot types.
+     * \since QGIS 4.0
+     */
+    static QgsPlotRegistry *plotRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's message log.
      */
     static QgsMessageLog *messageLog();
@@ -1162,61 +1169,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     std::unique_ptr<QgsDataItemProviderRegistry> mDataItemProviderRegistry;
     QgsAuthManager *mAuthManager = nullptr;
 
-    struct ApplicationMembers
-    {
-      std::unique_ptr<QgsSettingsRegistryCore > mSettingsRegistryCore;
-      std::unique_ptr<QgsCoordinateReferenceSystemRegistry > mCrsRegistry;
-      std::unique_ptr<Qgs3DRendererRegistry > m3DRendererRegistry;
-      std::unique_ptr<Qgs3DSymbolRegistry > m3DSymbolRegistry;
-      std::unique_ptr<QgsActionScopeRegistry > mActionScopeRegistry;
-      std::unique_ptr<QgsAnnotationRegistry > mAnnotationRegistry;
-      std::unique_ptr<QgsColorSchemeRegistry > mColorSchemeRegistry;
-      std::unique_ptr<QgsLocalizedDataPathRegistry > mLocalizedDataPathRegistry;
-      std::unique_ptr<QgsNumericFormatRegistry > mNumericFormatRegistry;
-      std::unique_ptr<QgsFieldFormatterRegistry > mFieldFormatterRegistry;
-      std::unique_ptr<QgsGpsConnectionRegistry > mGpsConnectionRegistry;
-      std::unique_ptr<QgsBabelFormatRegistry > mGpsBabelFormatRegistry;
-      std::unique_ptr<QgsNetworkContentFetcherRegistry > mNetworkContentFetcherRegistry;
-      std::unique_ptr<QgsScaleBarRendererRegistry > mScaleBarRendererRegistry;
-      std::unique_ptr<QgsLabelingEngineRuleRegistry > mLabelingEngineRuleRegistry;
-      std::unique_ptr<QgsValidityCheckRegistry > mValidityCheckRegistry;
-      std::unique_ptr<QgsMessageLog > mMessageLog;
-      std::unique_ptr<QgsPaintEffectRegistry > mPaintEffectRegistry;
-      std::unique_ptr<QgsPluginLayerRegistry > mPluginLayerRegistry;
-      std::unique_ptr<QgsClassificationMethodRegistry > mClassificationMethodRegistry;
-      std::unique_ptr<QgsProcessingRegistry > mProcessingRegistry;
-      std::unique_ptr<QgsConnectionRegistry > mConnectionRegistry;
-      std::unique_ptr<QgsProjectStorageRegistry > mProjectStorageRegistry;
-      std::unique_ptr<QgsLayerMetadataProviderRegistry > mLayerMetadataProviderRegistry;
-      std::unique_ptr<QgsExternalStorageRegistry > mExternalStorageRegistry;
-      std::unique_ptr<QgsProfileSourceRegistry > mProfileSourceRegistry;
-      std::unique_ptr<QgsPageSizeRegistry > mPageSizeRegistry;
-      std::unique_ptr<QgsRasterRendererRegistry > mRasterRendererRegistry;
-      std::unique_ptr<QgsRendererRegistry > mRendererRegistry;
-      std::unique_ptr<QgsPointCloudRendererRegistry > mPointCloudRendererRegistry;
-      std::unique_ptr<QgsTiledSceneRendererRegistry > mTiledSceneRendererRegistry;
-      std::unique_ptr<QgsSvgCache > mSvgCache;
-      std::unique_ptr<QgsImageCache > mImageCache;
-      std::unique_ptr<QgsSourceCache > mSourceCache;
-      std::unique_ptr<QgsSymbolLayerRegistry > mSymbolLayerRegistry;
-      std::unique_ptr<QgsCalloutRegistry > mCalloutRegistry;
-      std::unique_ptr<QgsTaskManager > mTaskManager;
-      std::unique_ptr<QgsLayoutItemRegistry > mLayoutItemRegistry;
-      std::unique_ptr<QgsAnnotationItemRegistry > mAnnotationItemRegistry;
-      std::unique_ptr<QgsSensorRegistry > mSensorRegistry;
-      std::unique_ptr<QgsBookmarkManager > mBookmarkManager;
-      std::unique_ptr<QgsTileDownloadManager > mTileDownloadManager;
-      std::unique_ptr<QgsStyleModel > mStyleModel;
-      std::unique_ptr<QgsRecentStyleHandler > mRecentStyleHandler;
-      std::unique_ptr<QgsDatabaseQueryLog > mQueryLogger;
-      std::unique_ptr<QgsFontManager > mFontManager;
-      QString mNullRepresentation;
-      QStringList mSvgPathCache;
-      bool mSvgPathCacheValid = false;
-
-      ApplicationMembers();
-      ~ApplicationMembers();
-    };
+    struct ApplicationMembers;
 
     // Applications members which belong to an instance of QgsApplication
     std::unique_ptr<ApplicationMembers> mApplicationMembers;

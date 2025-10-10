@@ -556,6 +556,116 @@ class CORE_EXPORT QgsGeometryUtilsBase
 
       return sum < squaredEpsilon;
     }
-#endif
 
+    /**
+     * Calculates the maximum allowed fillet radius for the given segment configuration.
+     *
+     * \param segment1StartX x-coordinate of first segment start point
+     * \param segment1StartY y-coordinate of first segment start point
+     * \param segment1EndX x-coordinate of first segment end point
+     * \param segment1EndY y-coordinate of first segment end point
+     * \param segment2StartX x-coordinate of second segment start point
+     * \param segment2StartY y-coordinate of second segment start point
+     * \param segment2EndX x-coordinate of second segment end point
+     * \param segment2EndY y-coordinate of second segment end point
+     * \param epsilon tolerance for intersection and angle calculations
+     * \returns Maximum fillet radius that can be applied, or -1.0 if no fillet is possible
+     *
+     * \since QGIS 4.0
+     */
+    static double maxFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+                                   const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
+                                   double epsilon = 1e-8 ) SIP_HOLDGIL;
+
+    /**
+     * Creates a chamfer (angled corner) between two line segments.
+     *
+     * This method generates a straight-line chamfer connecting two line segments at their
+     * intersection point. The chamfer distances can be specified independently for each
+     * segment, allowing for both symmetric and asymmetric chamfers.
+     *
+     * \param segment1StartX x-coordinate of first segment start point
+     * \param segment1StartY y-coordinate of first segment start point
+     * \param segment1EndX x-coordinate of first segment end point
+     * \param segment1EndY y-coordinate of first segment end point
+     * \param segment2StartX x-coordinate of second segment start point
+     * \param segment2StartY y-coordinate of second segment start point
+     * \param segment2EndX x-coordinate of second segment end point
+     * \param segment2EndY y-coordinate of second segment end point
+     * \param distance1 chamfer distance along first segment
+     * \param distance2 chamfer distance along second segment (if < 0, uses distance1)
+     * \param chamferStartX output x-coordinate of chamfer start point
+     * \param chamferStartY output y-coordinate of chamfer start point
+     * \param chamferEndX output x-coordinate of chamfer end point
+     * \param chamferEndY output y-coordinate of chamfer end point
+     * \param trim1StartX optional output x-coordinate of trimmed first segment start
+     * \param trim1StartY optional output y-coordinate of trimmed first segment start
+     * \param trim1EndX optional output x-coordinate of trimmed first segment end
+     * \param trim1EndY optional output y-coordinate of trimmed first segment end
+     * \param trim2StartX optional output x-coordinate of trimmed second segment start
+     * \param trim2StartY optional output y-coordinate of trimmed second segment start
+     * \param trim2EndX optional output x-coordinate of trimmed second segment end
+     * \param trim2EndY optional output y-coordinate of trimmed second segment end
+     * \param epsilon tolerance for numerical comparisons and intersection detection
+     * \returns TRUE if chamfer was successfully created
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static bool createChamfer( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+                               const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
+                               const double distance1, const double distance2,
+                               double &chamferStartX, double &chamferStartY,
+                               double &chamferEndX, double &chamferEndY,
+                               double *trim1StartX = nullptr, double *trim1StartY = nullptr,
+                               double *trim1EndX = nullptr, double *trim1EndY = nullptr,
+                               double *trim2StartX = nullptr, double *trim2StartY = nullptr,
+                               double *trim2EndX = nullptr, double *trim2EndY = nullptr,
+                               const double epsilon = 1e-8 );
+
+    /**
+     * Creates a fillet (rounded corner) between two line segments.
+     *
+     * This method generates a circular arc connecting two line segments at their
+     * intersection point. The fillet returns exactly 3 points defining a CircularString:
+     * start point, middle point, and end point of the arc.
+     *
+     * \param segment1StartX x-coordinate of first segment start point
+     * \param segment1StartY y-coordinate of first segment start point
+     * \param segment1EndX x-coordinate of first segment end point
+     * \param segment1EndY y-coordinate of first segment end point
+     * \param segment2StartX x-coordinate of second segment start point
+     * \param segment2StartY y-coordinate of second segment start point
+     * \param segment2EndX x-coordinate of second segment end point
+     * \param segment2EndY y-coordinate of second segment end point
+     * \param radius radius of the fillet arc
+     * \param filletPointsX output array of x-coordinates for 3 fillet points (start, middle, end)
+     * \param filletPointsY output array of y-coordinates for 3 fillet points (start, middle, end)
+     * \param trim1StartX optional output x-coordinate of trimmed first segment start
+     * \param trim1StartY optional output y-coordinate of trimmed first segment start
+     * \param trim1EndX optional output x-coordinate of trimmed first segment end
+     * \param trim1EndY optional output y-coordinate of trimmed first segment end
+     * \param trim2StartX optional output x-coordinate of trimmed second segment start
+     * \param trim2StartY optional output y-coordinate of trimmed second segment start
+     * \param trim2EndX optional output x-coordinate of trimmed second segment end
+     * \param trim2EndY optional output y-coordinate of trimmed second segment end
+     * \param epsilon tolerance for numerical comparisons and intersection detection
+     * \returns TRUE if fillet was successfully created
+     *
+     * \note The caller must ensure that filletPointsX and filletPointsY arrays are
+     *       large enough to hold exactly 3 points defining the CircularString arc.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static bool createFillet( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+                              const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
+                              const double radius,
+                              double *filletPointsX, double *filletPointsY,
+                              double *trim1StartX = nullptr, double *trim1StartY = nullptr,
+                              double *trim1EndX = nullptr, double *trim1EndY = nullptr,
+                              double *trim2StartX = nullptr, double *trim2StartY = nullptr,
+                              double *trim2EndX = nullptr, double *trim2EndY = nullptr,
+                              const double epsilon = 1e-8 );
+#endif
 };

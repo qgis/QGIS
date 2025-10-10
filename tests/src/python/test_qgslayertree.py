@@ -19,6 +19,7 @@ from qgis.core import (
     QgsCoordinateTransformContext,
     QgsGroupLayer,
     QgsLayerTree,
+    QgsLayerTreeCustomNode,
     QgsLayerTreeGroup,
     QgsLayerTreeLayer,
     QgsProject,
@@ -132,6 +133,34 @@ class TestQgsLayerTree(QgisTestCase):
 
         # already removed, should be no extra signal
         layer1_node.removeCustomProperty("test")
+        self.assertEqual(len(spy), 3)
+
+    def testCustomNodeCustomProperties(self):
+        custom1_node = QgsLayerTreeCustomNode("custom-id", "Custom Name")
+        spy = QSignalSpy(custom1_node.customPropertyChanged)
+
+        self.assertFalse(custom1_node.customProperty("test"))
+        self.assertNotIn("test", custom1_node.customProperties())
+
+        custom1_node.setCustomProperty("test", "value")
+        self.assertEqual(len(spy), 1)
+        # set to same value, should be no extra signal
+        custom1_node.setCustomProperty("test", "value")
+        self.assertEqual(len(spy), 1)
+        self.assertIn("test", custom1_node.customProperties())
+        self.assertEqual(custom1_node.customProperty("test"), "value")
+        custom1_node.setCustomProperty("test", "value2")
+        self.assertEqual(len(spy), 2)
+        self.assertIn("test", custom1_node.customProperties())
+        self.assertEqual(custom1_node.customProperty("test"), "value2")
+
+        custom1_node.removeCustomProperty("test")
+        self.assertEqual(len(spy), 3)
+        self.assertFalse(custom1_node.customProperty("test"))
+        self.assertNotIn("test", custom1_node.customProperties())
+
+        # already removed, should be no extra signal
+        custom1_node.removeCustomProperty("test")
         self.assertEqual(len(spy), 3)
 
     def test_layer_tree_group_layer(self):

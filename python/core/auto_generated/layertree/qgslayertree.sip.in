@@ -33,6 +33,14 @@ Check whether the node is a valid group node
 Check whether the node is a valid layer node
 %End
 
+    static bool isCustomNode( const QgsLayerTreeNode *node );
+%Docstring
+Check whether the node is a valid custom node
+
+.. versionadded:: 4.0
+%End
+
+
 
 
 
@@ -98,6 +106,8 @@ customLayerOrder or the layer order derived from the tree. This property
 is read only.
 
 .. seealso:: :py:func:`customLayerOrder`
+
+.. seealso:: :py:func:`layerAndCustomNodeOrder`
 %End
 
     bool hasCustomLayerOrder() const;
@@ -114,6 +124,25 @@ Determines if the layer order should be derived from the layer tree or
 if a custom override order shall be used instead.
 
 .. seealso:: :py:func:`setCustomLayerOrder`
+%End
+
+    QList<QgsLayerTreeNode *> layerAndCustomNodeOrder() const;
+%Docstring
+The order in which layers and custom nodes will be rendered on the
+canvas.
+
+Since custom nodes don't support custom layer order, this returns the
+node order derived from the tree.
+
+Depending on the use case, not all custom nodes are to be rendered on
+the canvas, so callers of this method will probably need another layer
+of logic to use the returned order in a meaningful way.
+
+This property is read only.
+
+.. seealso:: :py:func:`layerOrder`
+
+.. versionadded:: 4.0
 %End
 
     static QgsLayerTree *readXml( QDomElement &element, const QgsReadWriteContext &context );

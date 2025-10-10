@@ -422,6 +422,7 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
       // Only seems to happen on windows
       if ( !msg.startsWith( QLatin1String( "QColor::setNamedColor: Unknown color name 'param" ), Qt::CaseInsensitive )
            && !msg.startsWith( QLatin1String( "Trying to create a QVariant instance of QMetaType::Void type, an invalid QVariant will be constructed instead" ), Qt::CaseInsensitive )
+           && !msg.startsWith( QLatin1String( "QBuffer::seek: Invalid pos" ), Qt::CaseInsensitive ) // raised internally by QImageReader when reading some malformed images -- this causes a deadlock if we try to show in messagebar, as showing in messagebar requires another QImageReader and is internally locked by Qt
            && !msg.startsWith( QLatin1String( "Logged warning" ), Qt::CaseInsensitive ) )
       {
         // TODO: Verify this code in action.

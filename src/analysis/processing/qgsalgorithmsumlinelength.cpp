@@ -76,6 +76,11 @@ QString QgsSumLineLengthAlgorithm::shortDescription() const
                       "them that cross each polygon." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsSumLineLengthAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 QgsSumLineLengthAlgorithm *QgsSumLineLengthAlgorithm::createInstance() const
 {
   return new QgsSumLineLengthAlgorithm();

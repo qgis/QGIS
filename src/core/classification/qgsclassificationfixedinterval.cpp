@@ -62,7 +62,15 @@ QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, 
     return breaks;
   }
 
+  // Single class
+  if ( minimum == maximum )
+  {
+    breaks << maximum + interval;
+    return breaks;
+  }
+
   double value = minimum;
+
   while ( value < maximum )
   {
     value += interval;

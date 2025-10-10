@@ -8,6 +8,8 @@ set(QGIS_3D_SRCS
   qgsaabb.cpp
   qgsabstract3dengine.cpp
   qgsabstractvectorlayer3drenderer.cpp
+  qgsannotationlayer3drenderer.cpp
+  qgsannotationlayerchunkloader_p.cpp
   qgs3danimationsettings.cpp
   qgs3dexportobject.cpp
   qgs3dmapexportsettings.cpp
@@ -45,6 +47,7 @@ set(QGIS_3D_SRCS
   qgscolorramptexture.cpp
   qgsrubberband3d.cpp
   qgsambientocclusionsettings.cpp
+  qgstextureatlasgenerator.cpp
 
   qgspointcloudlayer3drenderer.cpp
   qgspointcloudlayerchunkloader_p.cpp
@@ -153,6 +156,8 @@ set(QGIS_3D_HDRS
   qgsaabb.h
   qgsabstract3dengine.h
   qgsabstractvectorlayer3drenderer.h
+  qgsannotationlayer3drenderer.h
+  qgsannotationlayerchunkloader_p.h
   qgscameracontroller.h
   qgscamerapose.h
   qgsgeotransform.h
@@ -174,6 +179,7 @@ set(QGIS_3D_HDRS
   qgsshadowsettings.h
   qgspointcloudlayer3drenderer.h
   qgsambientocclusionsettings.h
+  qgstextureatlasgenerator.h
 
   lights/qgsdirectionallightsettings.h
   lights/qgslightsource.h
@@ -274,15 +280,18 @@ set (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
 
 
 add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_3d PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_3d${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_3d${QGISPOSTFIX}
+  )
+endif()
 
 if (USE_PRECOMPILED_HEADERS)
   target_precompile_headers(qgis_3d PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
 endif()
 
 set_target_properties(qgis_3d PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
-
-# require c++17
-target_compile_features(qgis_3d PRIVATE cxx_std_17)
 
 if (BUILD_WITH_QT6)
   target_include_directories(qgis_3d SYSTEM PUBLIC
@@ -309,6 +318,7 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_BINARY_DIR}/src/3d
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/tinygltf
+  ${CMAKE_SOURCE_DIR}/external/rectpack2D
 )
 
 target_link_libraries(qgis_3d

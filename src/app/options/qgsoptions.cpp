@@ -191,6 +191,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
         return;
       }
     }
+    saveOptions();
     accept();
   } );
 
@@ -200,7 +201,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( cmbIconSize, qOverload<int>( &QComboBox::highlighted ), this, &QgsOptions::iconSizeChanged );
   connect( cmbIconSize, &QComboBox::editTextChanged, this, &QgsOptions::iconSizeChanged );
 
-  connect( this, &QDialog::accepted, this, &QgsOptions::saveOptions );
   connect( this, &QDialog::rejected, this, &QgsOptions::rejectOptions );
 
   QStringList styles = QStyleFactory::keys();
@@ -1466,15 +1466,6 @@ void QgsOptions::selectProjectOnLaunch()
 
 void QgsOptions::saveOptions()
 {
-  for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalOptionWidgets ) )
-  {
-    if ( !widget->isValid() )
-    {
-      setCurrentPage( widget->objectName() );
-      return;
-    }
-  }
-
   QgsSettings settings;
 
   mSettings->setValue( QStringLiteral( "UI/UITheme" ), cmbUITheme->currentText() );
