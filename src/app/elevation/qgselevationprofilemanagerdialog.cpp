@@ -38,6 +38,7 @@ QgsElevationProfileManagerDialog::QgsElevationProfileManagerDialog( QWidget *par
 {
   setupUi( this );
 
+  setObjectName( "QgsElevationProfileManagerDialog" );
   QgsGui::enableAutoGeometryRestore( this );
 
   mModel = new QgsElevationProfileManagerModel( QgsProject::instance()->elevationProfileManager(), this );
