@@ -603,9 +603,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
                                 ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
                                 : QString();
   layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( vlayer->name(), countSuffix ) );
-  
-  
-  updateTextDisplay();
 
 
   // table
@@ -836,7 +833,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
         // Always create a label widget for consistent styling and text selection
         QLabel *valueLabel = createStyledLabel( representedValue, showFullText );
         attrItem->setText( 1, representedValue ); 
-        attrItem->setData( 1, Qt::DisplayRole, representedValue );
+        attrItem->setData( 1, Qt::DisplayRole, QString() );
         QTreeWidget *tw = attrItem->treeWidget();
         tw->setItemWidget( attrItem, 1, valueLabel );
       }
@@ -1864,6 +1861,9 @@ void QgsIdentifyResultsDialog::updateViewModes()
   cmbViewMode->setEnabled( rasterCount > 0 );
   if ( rasterCount == 0 )
     cmbViewMode->setCurrentIndex( 0 );
+  
+  // Update text display after all features have been added
+  updateTextDisplay();
 }
 
 void QgsIdentifyResultsDialog::clearHighlights()
@@ -2920,7 +2920,7 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
     // Always create a label widget for consistent styling and text selection
     QLabel *valueLabel = createStyledLabel( fullText, showFullText );
     item->setText( 1, fullText ); 
-    item->setData( 1, Qt::DisplayRole, fullText );
+    item->setData( 1, Qt::DisplayRole, QString() );
     
     // Set the widget for this item
     QTreeWidget *treeWidget = item->treeWidget();
