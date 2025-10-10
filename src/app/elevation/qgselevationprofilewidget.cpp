@@ -1094,6 +1094,7 @@ void QgsElevationProfileWidget::renameProfileTriggered()
 
   mProfile->setName( newTitle );
   mDockableWidgetHelper->setWindowTitle( newTitle );
+  QgsProject::instance()->setDirty();
 }
 
 void QgsElevationProfileWidget::showSubsectionsTriggered()
