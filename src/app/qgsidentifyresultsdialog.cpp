@@ -111,6 +111,8 @@ const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues = ne
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowRelations = new QgsSettingsEntryBool( QStringLiteral( "show-relations" ), QgsSettingsTree::sTreeMap, true, QStringLiteral( "Whether to show relations in the identify feature result" ) );
 
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowFullText = new QgsSettingsEntryBool( QStringLiteral( "show-full-text" ), QgsSettingsTree::sTreeMap, false, QStringLiteral( "Whether to show full text instead of truncating with ellipsis in the identify feature result" ) );
+
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
   : QgsWebView( parent )
@@ -370,6 +372,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mActionHideDerivedAttributes, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled );
   connect( mActionHideNullValues, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideNullValues_toggled );
   connect( mActionShowRelations, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionShowRelations_toggled );
+  connect( mActionShowFullText, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionShowFullText_toggled );
 
   mOpenFormAction->setDisabled( true );
 
@@ -481,6 +484,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mActionHideNullValues->setChecked( QgsIdentifyResultsDialog::settingHideNullValues->value() );
   settingsMenu->addAction( mActionShowRelations );
   mActionShowRelations->setChecked( QgsIdentifyResultsDialog::settingShowRelations->value() );
+  settingsMenu->addAction( mActionShowFullText );
+  mActionShowFullText->setChecked( QgsIdentifyResultsDialog::settingShowFullText->value() );
 }
 
 QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
@@ -820,9 +825,17 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       }
       else
       {
-        attrItem->setData( 1, Qt::DisplayRole, representedValue );
+        attrItem->setData( 1, REPRESENTED_VALUE_ROLE, representedValue );
+        
+        // Check if "Show full text" is enabled
+        const bool showFullText = QgsIdentifyResultsDialog::settingShowFullText->value();
+        
+        // Always create a label widget for consistent styling and text selection
+        QLabel *valueLabel = createStyledLabel( representedValue, showFullText );
+        attrItem->setText( 1, representedValue ); 
+        attrItem->setData( 1, Qt::DisplayRole, QString() );
         QTreeWidget *tw = attrItem->treeWidget();
-        tw->setItemWidget( attrItem, 1, nullptr );
+        tw->setItemWidget( attrItem, 1, valueLabel );
       }
     }
 
@@ -1848,6 +1861,9 @@ void QgsIdentifyResultsDialog::updateViewModes()
   cmbViewMode->setEnabled( rasterCount > 0 );
   if ( rasterCount == 0 )
     cmbViewMode->setCurrentIndex( 0 );
+  
+  // Update text display after all features have been added
+  updateTextDisplay();
 }
 
 void QgsIdentifyResultsDialog::clearHighlights()
@@ -2834,4 +2850,111 @@ void QgsIdentifyResultsDialog::setExpressionContextScope( const QgsExpressionCon
 QgsExpressionContextScope QgsIdentifyResultsDialog::expressionContextScope() const
 {
   return mExpressionContextScope;
+}
+
+void QgsIdentifyResultsDialog::mActionShowFullText_toggled( bool checked )
+{
+  QgsIdentifyResultsDialog::settingShowFullText->setValue( checked );
+  
+  
+  if ( lstResults->topLevelItemCount() > 0 )
+  {
+    
+    QTreeWidgetItem *currentItem = lstResults->currentItem();
+    
+    
+    updateTextDisplay();
+    
+    if ( currentItem )
+    {
+      lstResults->setCurrentItem( currentItem );
+    }
+  }
+}
+
+void QgsIdentifyResultsDialog::updateTextDisplay()
+{
+  const bool showFullText = QgsIdentifyResultsDialog::settingShowFullText->value();
+  
+  
+  for ( int i = 0; i < lstResults->topLevelItemCount(); ++i )
+  {
+    QTreeWidgetItem *layerItem = lstResults->topLevelItem( i );
+    updateTextDisplayForItem( layerItem, showFullText );
+  }
+}
+
+QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool wordWrap )
+{
+  QLabel *valueLabel = new QLabel();
+  valueLabel->setAlignment( Qt::AlignTop | Qt::AlignLeft );
+  valueLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
+  valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; }" ) );
+  valueLabel->setWordWrap( wordWrap );
+  valueLabel->setContentsMargins( 0, 0, 0, 0 );
+  valueLabel->setMargin( 0 );
+  valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+  if ( wordWrap )
+  {
+    valueLabel->setTextInteractionFlags( Qt::NoTextInteraction );
+    valueLabel->setAttribute( Qt::WA_TransparentForMouseEvents, true );
+    valueLabel->setContextMenuPolicy( Qt::NoContextMenu );
+  }
+  
+  if ( wordWrap && ( text.contains( '\\' ) || text.contains( '/' ) ) )
+  {
+    QString wrapped = text;
+    wrapped.replace( "/", QStringLiteral("/\u00AD") );
+    wrapped.replace( "\\", QStringLiteral("\\\u00AD") );
+    valueLabel->setText( wrapped );
+  }
+  else
+  {
+    valueLabel->setText( text );
+  }
+  
+  return valueLabel;
+}
+
+void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, bool showFullText )
+{
+  if ( !item )
+    return;
+
+  // Determine the text to display. Some items store their represented value in a custom role.
+  const bool hasRepresented = item->data( 1, REPRESENTED_VALUE_ROLE ).isValid();
+  const QString fullText = hasRepresented ? item->data( 1, REPRESENTED_VALUE_ROLE ).toString()
+                                          : item->text( 1 );
+
+  QTreeWidget *treeWidget = item->treeWidget();
+  if ( showFullText )
+  {
+    // Only switch to a wrapping QLabel when it is actually beneficial
+    const bool needsWrap = fullText.contains( QLatin1Char( '/' ) ) || fullText.contains( QLatin1Char( '\\' ) );
+    if ( needsWrap )
+    {
+      QLabel *valueLabel = createStyledLabel( fullText, true );
+      if ( treeWidget )
+        treeWidget->setItemWidget( item, 1, valueLabel );
+      
+      item->setText( 1, fullText );
+    }
+    else
+    {
+      if ( treeWidget && treeWidget->itemWidget( item, 1 ) )
+        treeWidget->setItemWidget( item, 1, nullptr );
+      item->setText( 1, fullText );
+    }
+  }
+  else
+  {
+    if ( treeWidget && treeWidget->itemWidget( item, 1 ) )
+      treeWidget->setItemWidget( item, 1, nullptr );
+    item->setText( 1, fullText );
+  }
+
+  for ( int i = 0; i < item->childCount(); ++i )
+  {
+    updateTextDisplayForItem( item->child( i ), showFullText );
+  }
 }
