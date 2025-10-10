@@ -31,6 +31,8 @@ QgsAnnotationLayer3DRendererWidget::QgsAnnotationLayer3DRendererWidget( QgsAnnot
 
   setupUi( this );
 
+  mFontButton->setMode( QgsFontButton::ModeTextRenderer );
+
   mComboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererNullSymbol.svg" ) ), tr( "No Symbols" ), QVariant::fromValue( RendererType::None ) );
   mComboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "3D Billboards" ), QVariant::fromValue( RendererType::Billboards ) );
   mComboRendererType->setCurrentIndex( mComboRendererType->findData( QVariant::fromValue( RendererType::None ) ) );
@@ -55,6 +57,11 @@ QgsAnnotationLayer3DRendererWidget::QgsAnnotationLayer3DRendererWidget( QgsAnnot
       emit widgetChanged();
   } );
 
+  connect( mFontButton, &QgsFontButton::changed, this, [this] {
+    if ( !mBlockChanges )
+      emit widgetChanged();
+  } );
+
   syncToLayer( layer );
 }
 
@@ -68,6 +75,7 @@ void QgsAnnotationLayer3DRendererWidget::setRenderer( const QgsAnnotationLayer3D
     mComboClamping->setCurrentIndex( mComboClamping->findData( QVariant::fromValue( renderer->altitudeClamping() ) ) );
     mOffsetZSpinBox->setValue( renderer->zOffset() );
     mCheckShowCallouts->setChecked( renderer->showCalloutLines() );
+    mFontButton->setTextFormat( renderer->textFormat() );
   }
   else
   {
@@ -90,6 +98,7 @@ std::unique_ptr< QgsAnnotationLayer3DRenderer > QgsAnnotationLayer3DRendererWidg
       renderer->setAltitudeClamping( mComboClamping->currentData().value< Qgis::AltitudeClamping >() );
       renderer->setZOffset( mOffsetZSpinBox->value() );
       renderer->setShowCalloutLines( mCheckShowCallouts->isChecked() );
+      renderer->setTextFormat( mFontButton->textFormat() );
       return renderer;
     }
   }
