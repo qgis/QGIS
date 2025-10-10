@@ -113,9 +113,6 @@ class QgsElevationProfileWidget : public QWidget
 
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
 
-    void setCanvasName( const QString &name );
-    QString canvasName() const;
-
     void setMainCanvas( QgsMapCanvas *canvas );
 
     QgsElevationProfileCanvas *profileCanvas() { return mCanvas; }

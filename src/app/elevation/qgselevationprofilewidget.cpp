@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgselevationprofilecanvas.h"
 #include "qgsdockablewidgethelper.h"
+#include "qgselevationprofilemanager.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsmaplayermodel.h"
@@ -156,6 +157,9 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   if ( mProfile )
   {
     connect( mProfile, &QObject::destroyed, this, &QgsElevationProfileWidget::close );
+    connect( mProfile, &QgsElevationProfile::nameChanged, this, [this]( const QString &newName ) {
+      mDockableWidgetHelper->setWindowTitle( newName );
+    } );
   }
 
   setAttribute( Qt::WA_DeleteOnClose );
@@ -565,17 +569,6 @@ void QgsElevationProfileWidget::applyDefaultSettingsToProfile( QgsElevationProfi
 QgsElevationProfile *QgsElevationProfileWidget::profile()
 {
   return mProfile;
-}
-
-void QgsElevationProfileWidget::setCanvasName( const QString &name )
-{
-  mProfile->setName( name );
-  mDockableWidgetHelper->setWindowTitle( name );
-}
-
-QString QgsElevationProfileWidget::canvasName() const
-{
-  return mProfile->name();
 }
 
 void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -1047,20 +1040,60 @@ void QgsElevationProfileWidget::nudgeCurve( Qgis::BufferSide side )
 
 void QgsElevationProfileWidget::axisScaleLockToggled( bool active )
 {
+  if ( mProfile )
+  {
+    mProfile->setLockAxisScales( active );
+    QgsProject::instance()->setDirty();
+  }
   settingLockAxis->setValue( active );
   mCanvas->setLockAxisScales( active );
 }
 
 void QgsElevationProfileWidget::renameProfileTriggered()
 {
-  QgsNewNameDialog dlg( tr( "elevation profile" ), canvasName(), {}, {}, Qt::CaseSensitive, this );
-  dlg.setWindowTitle( tr( "Rename Elevation Profile" ) );
-  dlg.setHintString( tr( "Enter a new elevation profile title" ) );
-  dlg.setAllowEmptyName( false );
-  if ( dlg.exec() == QDialog::Accepted )
+  bool titleValid = false;
+  QString newTitle = mProfile->name();
+
+  QString chooseMsg = tr( "Enter a unique elevation profile title" );
+  QString titleMsg = chooseMsg;
+
+  QStringList profileNames;
+  const QList<QgsElevationProfile *> profiles = QgsProject::instance()->elevationProfileManager()->profiles();
+  profileNames.reserve( profiles.size() + 1 );
+  for ( QgsElevationProfile *l : profiles )
   {
-    setCanvasName( dlg.name() );
+    profileNames << l->name();
   }
+
+  const QString windowTitle = tr( "Rename Elevation Profile" );
+
+  while ( !titleValid )
+  {
+    QgsNewNameDialog dlg( tr( "elevation profile" ), newTitle, QStringList(), profileNames, Qt::CaseSensitive, this );
+    dlg.setWindowTitle( windowTitle );
+    dlg.setHintString( titleMsg );
+    dlg.setOverwriteEnabled( false );
+    dlg.setAllowEmptyName( true );
+    dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
+
+    if ( dlg.exec() != QDialog::Accepted )
+    {
+      return;
+    }
+
+    newTitle = dlg.name();
+    if ( newTitle.isEmpty() )
+    {
+      titleMsg = chooseMsg + "\n\n" + tr( "Title can not be empty!" );
+    }
+    else
+    {
+      titleValid = true;
+    }
+  }
+
+  mProfile->setName( newTitle );
+  mDockableWidgetHelper->setWindowTitle( newTitle );
 }
 
 void QgsElevationProfileWidget::showSubsectionsTriggered()

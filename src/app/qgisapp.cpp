@@ -13269,7 +13269,7 @@ void QgisApp::initLayouts()
     {
       for ( QgsElevationProfileWidget *widget : mElevationProfileWidgets )
       {
-        QAction *action = new QAction( tr( "Copy From %1" ).arg( widget->canvasName() ), menu );
+        QAction *action = new QAction( tr( "Copy From %1" ).arg( widget->profile()->name() ), menu );
         connect( action, &QAction::triggered, widget, [layoutWidget, widget] {
           layoutWidget->copySettingsFromProfileCanvas( widget->profileCanvas() );
         } );
