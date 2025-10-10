@@ -434,16 +434,16 @@ bool QgsEsriI3STiledSceneIndex::fetchNodePage( int nodePage, QgsFeedback *feedba
   if ( !mRootUrl.isLocalFile() )
   {
     const QString uri = QStringLiteral( "%1/layers/0/nodepages/%2" ).arg( mRootUrl.toString() ).arg( nodePage );
-    nodePageContent = retrieveContent( uri, feedback );
+    nodePageContent = fetchContent( uri, feedback );
   }
   else
   {
     const QString uri = QStringLiteral( "%1/nodepages/%2.json.gz" ).arg( mRootUrl.toString() ).arg( nodePage );
-    const QByteArray nodePageContentGzipped = retrieveContent( uri, feedback );
+    nodePageContent = fetchContent( uri, feedback );
 
-    if ( !QgsZipUtils::decodeGzip( nodePageContentGzipped, nodePageContent ) )
+    if ( nodePageContent.isEmpty() )
     {
-      QgsDebugError( QStringLiteral( "Failed to decompress node page content: " ) + uri );
+      QgsDebugError( QStringLiteral( "Failed to read node page content: " ) + uri );
       return false;
     }
   }
