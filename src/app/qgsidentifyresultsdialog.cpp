@@ -2970,13 +2970,22 @@ QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool w
   valueLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
   valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; }" ) );
   valueLabel->setWordWrap( wordWrap );
+  valueLabel->setContentsMargins( 0, 0, 0, 0 );
+  valueLabel->setMargin( 0 );
+  valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+  if ( wordWrap )
+  {
+    valueLabel->setTextInteractionFlags( Qt::NoTextInteraction );
+    valueLabel->setAttribute( Qt::WA_TransparentForMouseEvents, true );
+    valueLabel->setContextMenuPolicy( Qt::NoContextMenu );
+  }
   
   if ( wordWrap && ( text.contains( '\\' ) || text.contains( '/' ) ) )
   {
-    QString htmlText = text.toHtmlEscaped();
-    htmlText.replace( "/", "/&shy;" );
-    htmlText.replace( "\\", "\\&shy;" );
-    valueLabel->setText( htmlText );
+    QString wrapped = text;
+    wrapped.replace( "/", QStringLiteral("/\u00AD") );
+    wrapped.replace( "\\", QStringLiteral("\\\u00AD") );
+    valueLabel->setText( wrapped );
   }
   else
   {
@@ -2990,23 +2999,37 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
 {
   if ( !item )
     return;
-    
-  
-  if ( item->data( 1, REPRESENTED_VALUE_ROLE ).isValid() )
+
+  // Determine the text to display. Some items store their represented value in a custom role.
+  const bool hasRepresented = item->data( 1, REPRESENTED_VALUE_ROLE ).isValid();
+  const QString fullText = hasRepresented ? item->data( 1, REPRESENTED_VALUE_ROLE ).toString()
+                                          : item->text( 1 );
+
+  QTreeWidget *treeWidget = item->treeWidget();
+  if ( showFullText )
   {
-    const QString fullText = item->data( 1, REPRESENTED_VALUE_ROLE ).toString();
-    
-    // Always create a label widget for consistent styling and text selection
-    QLabel *valueLabel = createStyledLabel( fullText, showFullText );
-    item->setText( 1, fullText ); 
-    item->setData( 1, Qt::DisplayRole, QString() );
-    
-    // Set the widget for this item
-    QTreeWidget *treeWidget = item->treeWidget();
-    if ( treeWidget )
+    // Only switch to a wrapping QLabel when it is actually beneficial
+    const bool needsWrap = fullText.contains( QLatin1Char( '/' ) ) || fullText.contains( QLatin1Char( '\\' ) );
+    if ( needsWrap )
     {
-      treeWidget->setItemWidget( item, 1, valueLabel );
+      QLabel *valueLabel = createStyledLabel( fullText, true );
+      if ( treeWidget )
+        treeWidget->setItemWidget( item, 1, valueLabel );
+      
+      item->setText( 1, fullText );
     }
+    else
+    {
+      if ( treeWidget && treeWidget->itemWidget( item, 1 ) )
+        treeWidget->setItemWidget( item, 1, nullptr );
+      item->setText( 1, fullText );
+    }
+  }
+  else
+  {
+    if ( treeWidget && treeWidget->itemWidget( item, 1 ) )
+      treeWidget->setItemWidget( item, 1, nullptr );
+    item->setText( 1, fullText );
   }
 
   for ( int i = 0; i < item->childCount(); ++i )
