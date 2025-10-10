@@ -213,8 +213,15 @@ class TestQgsServerWFS(QgsServerTestBase):
         tests.append(("hits", "GetFeature&TYPENAME=testlayer&RESULTTYPE=hits"))
 
         # SORTBY is apply even if a bbox or filter is provided
-        tests.append(("sortby", "GetFeature&TYPENAME=testlayer&EXP_FILTER=True&SORTBY=id D"))
-        tests.append(("sortby_bbox", "GetFeature&TYPENAME=testlayer&BBOX=8.203127,44.9012765,8.204138,44.901632&SORTBY=id D"))
+        tests.append(
+            ("sortby", "GetFeature&TYPENAME=testlayer&EXP_FILTER=True&SORTBY=id D")
+        )
+        tests.append(
+            (
+                "sortby_bbox",
+                "GetFeature&TYPENAME=testlayer&BBOX=8.203127,44.9012765,8.204138,44.901632&SORTBY=id D",
+            )
+        )
 
         for id, req in tests:
             self.wfs_getfeature_compare(id, req)
