@@ -447,7 +447,7 @@ namespace QgsWfs
 
       //create Name
       QDomElement nameElem = doc.createElement( QStringLiteral( "Name" ) );
-      const QDomText nameText = doc.createTextNode( layerTypeName( layer ) );
+      const QDomText nameText = doc.createTextNode( layer->serverProperties()->wfsTypeName() );
       nameElem.appendChild( nameText );
       layerElem.appendChild( nameElem );
 
