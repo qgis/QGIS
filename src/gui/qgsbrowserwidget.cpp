@@ -619,7 +619,7 @@ void QgsBrowserWidget::navigateToPath()
   if ( pathInfo.isSymLink() )
   {
     QString linkTarget = pathInfo.symLinkTarget();
-    if ( !linkTarget.isEmpty() && QFileInfo( linkTarget ).exists() )
+    if ( !linkTarget.isEmpty() && QFileInfo::exists( linkTarget ) )
     {
       resolvedPath = QDir::cleanPath( linkTarget );
       pathInfo.setFile( resolvedPath );
