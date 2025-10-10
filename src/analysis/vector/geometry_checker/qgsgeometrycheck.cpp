@@ -46,6 +46,18 @@ QgsGeometryCheck::Flags QgsGeometryCheck::flags() const
   return QgsGeometryCheck::Flags();
 }
 
+QgsGeometryCheck::Result QgsGeometryCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+{
+  Q_UNUSED( featurePools )
+  Q_UNUSED( errors )
+  Q_UNUSED( messages )
+  Q_UNUSED( feedback )
+  Q_UNUSED( ids )
+
+  return QgsGeometryCheck::Result::Success;
+}
+
+
 void QgsGeometryCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, QgsGeometryCheck::Changes &changes ) const
 {
   Q_UNUSED( featurePools )
@@ -174,4 +186,27 @@ double QgsGeometryCheck::scaleFactor( const QPointer<QgsVectorLayer> &layer ) co
     scaleFactor = ct.scaleFactor( lyr->extent() );
   }
   return scaleFactor;
+}
+
+QgsGeometryCheck::Result QgsGeometryCheck::checkUniqueId( const QgsGeometryCheckerUtils::LayerFeature layerFeature, QMap< QString, QSet<QVariant> > &uniqueIds ) const
+{
+  const int uniqueIdFieldIndex = mContext->uniqueIdFieldIndex;
+  if ( uniqueIdFieldIndex == -1 )
+  {
+    return QgsGeometryCheck::Result::Success;
+  }
+
+  auto uniqueIdIt = uniqueIds.find( layerFeature.layerId() );
+  if ( uniqueIdIt == uniqueIds.end() )
+  {
+    uniqueIdIt = uniqueIds.insert( layerFeature.layerId(), QSet<QVariant>() );
+  }
+  const QVariant uniqueIdValue = layerFeature.feature().attribute( uniqueIdFieldIndex );
+  if ( uniqueIdIt.value().contains( uniqueIdValue ) )
+  {
+    return QgsGeometryCheck::Result::DuplicatedUniqueId;
+  }
+  uniqueIdIt.value().insert( uniqueIdValue );
+
+  return QgsGeometryCheck::Result::Success;
 }

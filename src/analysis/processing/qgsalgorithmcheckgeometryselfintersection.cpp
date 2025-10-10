@@ -63,7 +63,7 @@ QString QgsGeometryCheckSelfIntersectionAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckSelfIntersectionAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckSelfIntersectionAlgorithm *QgsGeometryCheckSelfIntersectionAlgorithm::createInstance() const
@@ -123,7 +123,6 @@ QgsFields QgsGeometryCheckSelfIntersectionAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckSelfIntersectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;
@@ -154,9 +153,7 @@ QVariantMap QgsGeometryCheckSelfIntersectionAlgorithm::processAlgorithm( const Q
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
-  const QgsProject *project = QgsProject::instance();
-
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project(), uniqueIdFieldIdx );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -174,7 +171,19 @@ QVariantMap QgsGeometryCheckSelfIntersectionAlgorithm::processAlgorithm( const Q
 
   multiStepFeedback.setCurrentStep( 2 );
   feedback->setProgressText( QObject::tr( "Collecting errors…" ) );
-  check.collectErrors( featurePools, checkErrors, messages, feedback );
+  QgsGeometryCheck::Result res = check.collectErrors( featurePools, checkErrors, messages, feedback );
+  if ( res == QgsGeometryCheck::Result::Success )
+  {
+    feedback->pushInfo( QObject::tr( "Errors collected successfully." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::Canceled )
+  {
+    throw QgsProcessingException( QObject::tr( "Operation was canceled." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::DuplicatedUniqueId )
+  {
+    throw QgsProcessingException( QObject::tr( "Field '%1' contains non-unique values and can not be used as unique ID." ).arg( uniqueIdFieldName ) );
+  }
 
   multiStepFeedback.setCurrentStep( 3 );
   feedback->setProgressText( QObject::tr( "Exporting errors…" ) );
@@ -184,6 +193,11 @@ QVariantMap QgsGeometryCheckSelfIntersectionAlgorithm::processAlgorithm( const Q
 
   for ( const QgsGeometryCheckError *error : checkErrors )
   {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
     const QgsGeometryCheckErrorSingle *singleError = dynamic_cast<const QgsGeometryCheckErrorSingle *>( error );
     if ( !singleError )
       break;
