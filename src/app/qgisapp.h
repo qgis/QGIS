@@ -2612,6 +2612,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Currently open layout designer dialogs
     QSet<QgsLayoutDesignerDialog *> mLayoutDesignerDialogs;
 
+    QSet<QgsElevationProfileWidget * > mElevationProfileWidgets;
+
     //! QGIS-internal vector feature clipboard
     QgsClipboard *mInternalClipboard = nullptr;
 
