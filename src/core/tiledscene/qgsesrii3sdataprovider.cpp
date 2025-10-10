@@ -691,7 +691,12 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
   , mShared( std::make_shared< QgsEsriI3SDataProviderSharedData >() )
 {
   QgsDataSourceUri dataSource( dataSourceUri() );
-  const QString sourcePath = dataSource.param( QStringLiteral( "url" ) );
+  QString sourcePath = dataSource.param( QStringLiteral( "url" ) );
+
+  if ( sourcePath.isEmpty() )
+  {
+    sourcePath = uri;
+  }
 
   QUrl rootUrl;
   if ( sourcePath.startsWith( QLatin1String( "http" ) ) || sourcePath.startsWith( QLatin1String( "file" ) ) )
