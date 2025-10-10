@@ -428,6 +428,11 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
     connect( action, &QAction::toggled, this, [this, unit]( bool active ) {
       if ( active )
       {
+        if ( mProfile )
+        {
+          mProfile->setDistanceUnit( unit );
+          QgsProject::instance()->setDirty();
+        }
         mCanvas->setDistanceUnit( unit );
       }
     } );
@@ -552,6 +557,10 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   updateCanvasSources();
   setMainCanvas( canvas );
 
+  if ( mProfile->distanceUnit() != Qgis::DistanceUnit::Unknown )
+  {
+    mCanvas->setDistanceUnit( mProfile->distanceUnit() );
+  }
   if ( const QgsCurve *existingCurve = mProfile->profileCurve() )
   {
     setProfileCurve( QgsGeometry( existingCurve->clone() ), true, false );
@@ -575,6 +584,7 @@ void QgsElevationProfileWidget::applyDefaultSettingsToProfile( QgsElevationProfi
 {
   profile->setLockAxisScales( QgsElevationProfileWidget::settingLockAxis->value() );
   profile->setTolerance( QgsElevationProfileWidget::settingTolerance->value() );
+  profile->setDistanceUnit( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().mapUnits() );
 }
 
 QgsElevationProfile *QgsElevationProfileWidget::profile()
@@ -622,7 +632,12 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
   mMapPointRubberBand->hide();
 
   mCanvas->setDistanceUnit( mMainCanvas->mapSettings().destinationCrs().mapUnits() );
+
   connect( mMainCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] {
+    if ( mProfile )
+    {
+      mProfile->setDistanceUnit( mMainCanvas->mapSettings().destinationCrs().mapUnits() );
+    }
     mCanvas->setDistanceUnit( mMainCanvas->mapSettings().destinationCrs().mapUnits() );
   } );
 }
