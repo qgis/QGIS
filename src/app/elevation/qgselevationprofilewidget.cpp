@@ -536,6 +536,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::changed, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
   connect( QgsProject::instance(), &QgsProject::crs3DChanged, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
+  mCanvas->setCrs( QgsProject::instance()->crs3D() );
 
   connect( mCanvas, &QgsElevationProfileCanvas::scaleChanged, this, [this] {
     mBlockScaleRatioChanges++;
@@ -563,7 +564,20 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   }
   if ( const QgsCurve *existingCurve = mProfile->profileCurve() )
   {
-    setProfileCurve( QgsGeometry( existingCurve->clone() ), true, false );
+    // restore profile curve from stored version
+    const QgsCoordinateTransform storedCrsToProjectCrsTransform( mProfile->crs(), QgsProject::instance()->crs3D(), QgsProject::instance()->transformContext() );
+    QgsGeometry storedCurveGeometry( existingCurve->clone() );
+    try
+    {
+      storedCurveGeometry.transform( storedCrsToProjectCrsTransform );
+    }
+    catch ( QgsCsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Could not transform stored elevation profile curve: %1" ).arg( e.what() ) );
+    }
+
+    mCanvas->setCrs( QgsProject::instance()->crs3D() );
+    setProfileCurve( storedCurveGeometry, true, false );
   }
 }
 
@@ -793,6 +807,7 @@ void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve, bool 
     if ( const QgsCurve *profileCurve = qgsgeometry_cast< const QgsCurve * >( curve.constGet() ) )
     {
       mProfile->setProfileCurve( profileCurve->clone() );
+      mProfile->setCrs( QgsProject::instance()->crs3D() );
       QgsProject::instance()->setDirty();
     }
   }
