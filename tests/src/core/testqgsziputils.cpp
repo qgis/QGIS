@@ -36,6 +36,13 @@ class TestQgsZipUtils : public QObject
     void specialChars();
     void testZip();
 
+    void getFileFromZip_nonExistentZip();
+    void getFileFromZip_emptyZipPath();
+    void getFileFromZip_emptyFilePathInZip();
+    void getFileFromZip_fileNotInZip();
+    void getFileFromZip_rootSuccess();
+    void getFileFromZip_gzipInSubFolderSuccess();
+
   private:
     void genericTest( QString zipName, int expectedEntries, bool includeFolders, const QStringList &testFileNames );
 };
@@ -63,7 +70,7 @@ void TestQgsZipUtils::unzipWithSubdirs()
 {
   QStringList testFileNames;
   testFileNames << "/folder/folder2/landsat_b2.tif" << "/folder/points.geojson" << "/points.qml";
-  genericTest( QString( "testzip" ), 9, true, testFileNames );
+  genericTest( QString( "testzip" ), 10, true, testFileNames );
 }
 
 /**
@@ -174,6 +181,66 @@ void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool in
   // Delete unzipped data
   const bool testDataRemoved = dir.removeRecursively();
   QVERIFY( testDataRemoved );
+}
+
+void TestQgsZipUtils::getFileFromZip_nonExistentZip()
+{
+  QByteArray data;
+  QVERIFY( !QgsZipUtils::getFileFromZip( "/path/to/nothing", "none.txt", data ) );
+  QVERIFY( data.isEmpty() );
+}
+
+void TestQgsZipUtils::getFileFromZip_emptyZipPath()
+{
+  QByteArray content;
+  QVERIFY( !QgsZipUtils::getFileFromZip( QString(), "none.txt", content ) );
+  QVERIFY( content.isEmpty() );
+}
+
+void TestQgsZipUtils::getFileFromZip_emptyFilePathInZip()
+{
+  const QString zipPath = QString( TEST_DATA_DIR ) + "/zip/testzip.zip";
+  QVERIFY( QFile::exists( zipPath ) );
+  QByteArray content;
+  QVERIFY( !QgsZipUtils::getFileFromZip( zipPath, QString(), content ) );
+  QVERIFY( content.isEmpty() );
+}
+
+void TestQgsZipUtils::getFileFromZip_fileNotInZip()
+{
+  const QString zipPath = QString( TEST_DATA_DIR ) + "/zip/testzip.zip";
+  QVERIFY( QFile::exists( zipPath ) );
+  QByteArray content;
+  QVERIFY( !QgsZipUtils::getFileFromZip( zipPath, "move_along.txt", content ) );
+  QVERIFY( content.isEmpty() );
+}
+
+void TestQgsZipUtils::getFileFromZip_rootSuccess()
+{
+  const QString zipPath = QString( TEST_DATA_DIR ) + "/zip/testzip.zip";
+  QVERIFY( QFile::exists( zipPath ) );
+
+  const QByteArray expectedContent = R"(GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]])";
+
+  QByteArray extractedContent;
+  QVERIFY( QgsZipUtils::getFileFromZip( zipPath, "points.prj", extractedContent ) );
+  QCOMPARE( extractedContent, expectedContent );
+}
+
+void TestQgsZipUtils::getFileFromZip_gzipInSubFolderSuccess()
+{
+  const QString zipPath = QString( TEST_DATA_DIR ) + "/zip/testzip.zip";
+  QVERIFY( QFile::exists( zipPath ) );
+
+  const QByteArray expectedContent = R"({
+"featureData" : [],
+"geometryData" : []
+}
+)";
+
+  QByteArray extractedContent;
+  QVERIFY( QgsZipUtils::getFileFromZip( zipPath, "folder/0.json.gz", extractedContent ) );
+  QCOMPARE( extractedContent, expectedContent );
 }
 
 QGSTEST_MAIN( TestQgsZipUtils )
