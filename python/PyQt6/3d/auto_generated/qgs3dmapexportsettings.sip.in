@@ -61,6 +61,7 @@ Returns the terrain texture resolution
 %Docstring
 Returns the scale of the exported model
 %End
+    Qgs3DTypes::ExportFormat exportFormat() const;
 
     void setSceneName( const QString &sceneName );
 %Docstring
@@ -94,6 +95,10 @@ Sets the terrain texture resolution
 %Docstring
 Sets the scale of exported model
 %End
+
+    void setExportFormat( const Qgs3DTypes::ExportFormat &exportFormat );
+
+    QString exportFilePath() const;
 
 };
 

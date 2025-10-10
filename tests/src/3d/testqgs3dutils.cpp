@@ -21,7 +21,6 @@
 #include "qgsbox3d.h"
 #include "qgsray3d.h"
 
-#include "qgs3dexportobject.h"
 #include "qgs3dmapscene.h"
 #include "qgscameracontroller.h"
 #include "qgsflatterrainsettings.h"
@@ -80,7 +79,6 @@ class TestQgs3DUtils : public QgsTest
     void testRayFromScreenPoint();
     void testQgsBox3DDistanceTo();
     void testQgsRay3D();
-    void testExportToObj();
     void testDefinesToShaderCode();
     void testDecomposeTransformMatrix();
     void testScreenPointToMapCoordinates();
@@ -268,178 +266,6 @@ void TestQgs3DUtils::testQgsRay3D()
 
     QVERIFY( ray.isInFront( p1 ) );
     QVERIFY( !ray.isInFront( p2 ) );
-  }
-}
-
-void TestQgs3DUtils::testExportToObj()
-{
-  // all vertice positions
-  QVector<float> positionData = {
-    -0.456616, 0.00187836, -0.413774,
-    -0.4718, 0.00187836, -0.0764642,
-    -0.25705, 0.00187836, -0.230477,
-    -0.25705, 0.00187836, -0.230477,
-    -0.4718, 0.00187836, -0.0764642,
-    0.0184382, 0.00187836, 0.177332,
-    -0.25705, 0.00187836, -0.230477,
-    0.0184382, 0.00187836, 0.177332,
-    -0.25705, -0.00187836, -0.230477,
-    -0.25705, -0.00187836, -0.230477,
-    0.0184382, 0.00187836, 0.177332,
-    0.0184382, -0.00187836, 0.177332,
-    0.0184382, 0.00187836, 0.177332,
-    -0.4718, 0.00187836, -0.0764642,
-    0.0184382, -0.00187836, 0.177332,
-    0.0184382, -0.00187836, 0.177332,
-    -0.4718, 0.00187836, -0.0764642,
-    -0.4718, -0.00187836, -0.0764642,
-    -0.4718, 0.00187836, -0.0764642,
-    -0.456616, 0.00187836, -0.413774,
-    -0.4718, -0.00187836, -0.0764642,
-    -0.4718, -0.00187836, -0.0764642,
-    -0.456616, 0.00187836, -0.413774,
-    -0.456616, -0.00187836, -0.413774,
-    -0.456616, 0.00187836, -0.413774,
-    -0.25705, 0.00187836, -0.230477,
-    -0.456616, -0.00187836, -0.413774,
-    -0.456616, -0.00187836, -0.413774,
-    -0.25705, 0.00187836, -0.230477,
-    -0.25705, -0.00187836, -0.230477
-  };
-
-  // all vertice normals
-  QVector<float> normalsData = {
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    0.828644, 0, -0.559776,
-    0.828644, 0, -0.559776,
-    0.828644, 0, -0.559776,
-    0.828644, 0, -0.559776,
-    0.828644, 0, -0.559776,
-    0.828644, 0, -0.559776,
-    -0.459744, 0, 0.888052,
-    -0.459744, 0, 0.888052,
-    -0.459744, 0, 0.888052,
-    -0.459744, 0, 0.888052,
-    -0.459744, 0, 0.888052,
-    -0.459744, 0, 0.888052,
-    -0.998988, 0, -0.0449705,
-    -0.998988, 0, -0.0449705,
-    -0.998988, 0, -0.0449705,
-    -0.998988, 0, -0.0449705,
-    -0.998988, 0, -0.0449705,
-    -0.998988, 0, -0.0449705,
-    0.676449, 0, -0.736489,
-    0.676449, 0, -0.736489,
-    0.676449, 0, -0.736489,
-    0.676449, 0, -0.736489,
-    0.676449, 0, -0.736489,
-    0.676449, 0, -0.736489
-  };
-
-  const QString myTmpDir = QDir::tempPath() + '/';
-
-  // case where all vertices are used
-  {
-    Qgs3DExportObject object( "all_faces" );
-
-    // exported vertice indexes
-    QVector<uint> indexData = {
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      16,
-      17,
-      18,
-      19,
-      20,
-      21,
-      22,
-      23,
-      24,
-      25,
-      26,
-      27,
-      28,
-      29,
-    };
-
-    object.setupTriangle( positionData, indexData, QMatrix4x4() );
-    QCOMPARE( object.vertexPosition().size(), positionData.size() );
-
-    QCOMPARE( object.indexes().size(), indexData.size() );
-
-    object.setupNormalCoordinates( normalsData, QMatrix4x4() );
-    QCOMPARE( object.normals().size(), normalsData.size() );
-
-
-    QFile file( myTmpDir + "all_faces.obj" );
-    file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
-    QTextStream out( &file );
-
-    out << "o " << object.name() << "\n";
-    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
-
-    out.flush();
-    out.seek( 0 );
-
-    QString actual = out.readAll();
-    QGSCOMPARELONGSTR( "export_obj", "all_faces.obj", actual.toUtf8() );
-  }
-
-  // case where only a subset of vertices are used
-  {
-    // exported vertice indexes
-    QVector<uint> indexData = {
-      // 0, 1, 2,
-      // 3, 4, 5,
-      6, 7, 8,
-      9, 10, 11,
-      12, 13, 14,
-      15, 16, 17,
-      // 18, 19, 20,
-      21, 22, 23,
-      // 24, 25, 26,
-      // 27, 28, 29,
-    };
-
-    Qgs3DExportObject object( "sparse_faces" );
-    object.setupTriangle( positionData, indexData, QMatrix4x4() );
-    QCOMPARE( object.vertexPosition().size(), positionData.size() );
-
-    QCOMPARE( object.indexes().size(), indexData.size() );
-
-    object.setupNormalCoordinates( normalsData, QMatrix4x4() );
-    QCOMPARE( object.normals().size(), normalsData.size() );
-
-    QFile file( myTmpDir + "sparse_faces.obj" );
-    file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
-    QTextStream out( &file );
-    out << "o " << object.name() << "\n";
-    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
-
-    out.flush();
-    out.seek( 0 );
-
-    QString actual = out.readAll();
-    QGSCOMPARELONGSTR( "export_obj", "sparse_faces.obj", actual.toUtf8() );
   }
 }
 

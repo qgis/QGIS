@@ -17,6 +17,7 @@
 #define QGS3DMAPEXPORTSETTINGS_H
 
 #include "qgis_3d.h"
+#include "qgs3dtypes.h"
 
 #include <QString>
 #include <QObject>
@@ -52,6 +53,7 @@ class _3D_EXPORT Qgs3DMapExportSettings
     int terrainTextureResolution() const { return mTerrainTextureResolution; }
     //! Returns the scale of the exported model
     float scale() const { return mScale; }
+    Qgs3DTypes::ExportFormat exportFormat() const { return mExportFormat; }
 
     //! Sets the scene name
     void setSceneName( const QString &sceneName ) { mSceneName = sceneName; }
@@ -70,6 +72,10 @@ class _3D_EXPORT Qgs3DMapExportSettings
     //! Sets the scale of exported model
     void setScale( float scale ) { mScale = scale; }
 
+    void setExportFormat( const Qgs3DTypes::ExportFormat &exportFormat ) { mExportFormat = exportFormat; }
+
+    QString exportFilePath() const;
+
   private:
     QString mSceneName = QString( "Scene" );
     QString mSceneFolderPath = QDir::homePath();
@@ -79,6 +85,7 @@ class _3D_EXPORT Qgs3DMapExportSettings
     bool mExportTextures = false;
     int mTerrainTextureResolution = 512;
     float mScale = 1.0f;
+    Qgs3DTypes::ExportFormat mExportFormat = Qgs3DTypes::ExportFormat::Obj;
 };
 
 #endif // QGS3DMAPEXPORTSETTINGS_H
