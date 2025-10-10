@@ -195,23 +195,8 @@ QgsRectangle QgsExtentGroupBox::outputExtent() const
   if ( isCheckable() && !isChecked() )
     return QgsRectangle();
 
-  QgsRectangle extent = mWidget->outputExtent();
-  
-  // Apply snap to grid if enabled
-  if ( mSnapToGrid && mRasterXRes > 0 && mRasterYRes > 0 )
-  {
-    double xmin = mRasterMinX + std::floor( ( extent.xMinimum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
-    double ymin = mRasterMinY + std::floor( ( extent.yMinimum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
-    double xmax = mRasterMinX + std::ceil( ( extent.xMaximum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
-    double ymax = mRasterMinY + std::ceil( ( extent.yMaximum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
-    
-    extent.setXMinimum( xmin );
-    extent.setYMinimum( ymin );
-    extent.setXMaximum( xmax );
-    extent.setYMaximum( ymax );
-  }
-  
-  return extent;
+  // The snap-to-grid logic is handled by QgsExtentWidget::outputExtent()
+  return mWidget->outputExtent();
 }
 
 QgsCoordinateReferenceSystem QgsExtentGroupBox::outputCrs() const
