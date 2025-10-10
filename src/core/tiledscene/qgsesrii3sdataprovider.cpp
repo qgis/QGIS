@@ -145,15 +145,22 @@ QgsEsriI3STiledSceneIndex::QgsEsriI3STiledSceneIndex(
   : mRootUrl( rootUrl )
   , mTransformContext( transformContext )
 {
-  try
-  {
-    mGlobalMode = layerJson["spatialReference"]["latestWkid"].get<int>() == 4326;
-  }
-  catch ( json::exception &error )
-  {
-    // "spatialReference" is not required, yet the spec does not say what should
+  // "spatialReference" is not required, yet the spec does not say what should
     // be the default - assuming global mode is the best we can do...
-    mGlobalMode = true;
+  mGlobalMode = true;
+  if ( layerJson.contains( "spatialReference") && layerJson["spatialReference"].is_object() )
+  {
+    const json spatialReferenceJson = layerJson["spatialReference"];
+    if ( spatialReferenceJson.contains( "latestWkid" ) && spatialReferenceJson["latestWkid"].is_number() )
+    {
+      int epsgCode = spatialReferenceJson["latestWkid"].get<int>();
+      mGlobalMode = epsgCode == 4326;
+    }
+    else if ( spatialReferenceJson.contains( "wkid" ) && spatialReferenceJson["wkid"].is_number() )
+    {
+      int epsgCode = spatialReferenceJson["wkid"].get<int>();
+      mGlobalMode = epsgCode == 4326;
+    }
   }
 
   if ( layerJson.contains( "textureSetDefinitions" ) )
@@ -403,12 +410,12 @@ QByteArray QgsEsriI3STiledSceneIndex::fetchContent( const QString &uri, QgsFeedb
   {
     const QString slpkPath = mRootUrl.toLocalFile();
     if ( QFileInfo( slpkPath ).suffix().compare( QLatin1String( "slpk" ), Qt::CaseInsensitive ) == 0 )
-  {
-    const QString fileInSlpk = uri.mid( mRootUrl.toString().length() + 1 );
+    {
+      const QString fileInSlpk = uri.mid( mRootUrl.toString().length() + 1 );
 
       QByteArray data;
-    if ( QgsZipUtils::getFileFromZip( slpkPath, fileInSlpk, data ) )
-          return data;
+      if ( QgsZipUtils::getFileFromZip( slpkPath, fileInSlpk, data ) )
+        return data;
 
       return QByteArray();
     }
@@ -619,19 +626,21 @@ void QgsEsriI3SDataProviderSharedData::initialize(
   mLayerJson = layerJson;
 
   int epsgCode = 0;
-  try
+
+  // ESRI spatialReference https://developers.arcgis.com/web-map-specification/objects/spatialReference/
+  // defines latestWkid as optional, wkid as mandatory
+  // so we first check for latestWkid and use wkid as fallback
+  if ( layerJson.contains( "spatialReference" ) && layerJson["spatialReference"].is_object() )
   {
-    // "spatialReference" is not required in the spec, but it is unclear
-    // what would be the default value. Given that it is crucial to distinguish
-    // between "global" and "local" mode, we require its presence (haven't seen
-    // a dataset without spatial reference yet)
     const json spatialReferenceJson = layerJson["spatialReference"];
-    epsgCode = spatialReferenceJson["latestWkid"].get<int>();
-  }
-  catch ( const json::exception & )
-  {
-    mError = QObject::tr( "Missing 'spatialReference' attribute in metadata!" );
-    return;
+    if ( spatialReferenceJson.contains( "latestWkid" ) && spatialReferenceJson["latestWkid"].is_number() )
+    {
+      epsgCode = spatialReferenceJson["latestWkid"].get<int>();
+    }
+    else if ( spatialReferenceJson.contains( "wkid" ) && spatialReferenceJson["wkid"].is_number() )
+    {
+      epsgCode = spatialReferenceJson["wkid"].get<int>();
+    }
   }
 
   if ( epsgCode == 4326 )
@@ -807,7 +816,7 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
     appendError( QgsErrorMessage( tr( "Failed to read layer metadata: " ) + uri, QStringLiteral( "I3S" ) ) );
     return false;
   }
-  
+
   json metadataJson;
   try
   {
@@ -828,8 +837,8 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
   if ( !checkI3SVersion( i3sVersion ) )
     return false;
 
-    QByteArray sceneLayerContent;
-const QString sceneLayerContentPath = QStringLiteral( "3dSceneLayer.json.gz" );
+  QByteArray sceneLayerContent;
+  const QString sceneLayerContentPath = QStringLiteral( "3dSceneLayer.json.gz" );
   if ( !QgsZipUtils::getFileFromZip( uri, sceneLayerContentPath, sceneLayerContent ) )
   {
     appendError( QgsErrorMessage( tr( "Failed to decode layer metadata: " ) + uri, QStringLiteral( "I3S" ) ) );
@@ -1088,7 +1097,7 @@ QVariantMap QgsEsriI3SProviderMetadata::decodeUri( const QString &uri ) const
   QgsDataSourceUri dsUri( uri );
 
   QVariantMap uriComponents;
-QString path = dsUri.param( QStringLiteral( "url" ) );
+  QString path = dsUri.param( QStringLiteral( "url" ) );
   if ( path.isEmpty() && !uri.isEmpty() )
   {
     path = uri;
