@@ -1,4 +1,4 @@
-""""Base test for layer metadata models
+""" "Base test for layer metadata models
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
