@@ -231,9 +231,9 @@ void QgsElevationProfileManagerDialog::showClicked()
   const QModelIndexList profileItems = mProfileListView->selectionModel()->selectedRows();
   for ( const QModelIndex &index : profileItems )
   {
-    if ( QgsElevationProfile *l = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
+    if ( QgsElevationProfile *profile = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
     {
-      Q_UNUSED( l );
+      QgisApp::instance()->openElevationProfile( profile );
     }
   }
 }
@@ -260,8 +260,8 @@ void QgsElevationProfileManagerDialog::renameClicked()
 
 void QgsElevationProfileManagerDialog::itemDoubleClicked( const QModelIndex &index )
 {
-  if ( QgsElevationProfile *l = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
+  if ( QgsElevationProfile *profile = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
   {
-    Q_UNUSED( l );
+    QgisApp::instance()->openElevationProfile( profile );
   }
 }

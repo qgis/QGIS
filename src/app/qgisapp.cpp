@@ -4486,6 +4486,7 @@ void QgisApp::setupConnections()
   connect( mUndoWidget, &QgsUndoWidget::undoStackChanged, this, &QgisApp::updateUndoActions );
 
   connect( mLayoutsMenu, &QMenu::aboutToShow, this, &QgisApp::layoutsMenuAboutToShow );
+  connect( mMenuElevationProfiles, &QMenu::aboutToShow, this, &QgisApp::elevationProfilesMenuAboutToShow );
 
   connect( m3DMapViewsMenu, &QMenu::aboutToShow, this, &QgisApp::views3DMenuAboutToShow );
 }
@@ -9306,6 +9307,49 @@ void QgisApp::populateLayoutsMenu( QMenu *menu )
   menu->addActions( acts );
 }
 
+void QgisApp::elevationProfilesMenuAboutToShow()
+{
+  populateElevationProfilesMenu( mMenuElevationProfiles );
+}
+
+void QgisApp::populateElevationProfilesMenu( QMenu *menu )
+{
+  for ( QAction *action : menu->actions() )
+  {
+    if ( action->property( "profile_name" ).isValid() )
+    {
+      delete action;
+    }
+  }
+
+  QList<QAction *> actions;
+  const QList<QgsElevationProfile *> objects = QgsProject::instance()->elevationProfileManager()->objects();
+  actions.reserve( objects.size() );
+  for ( QgsElevationProfile *object : objects )
+  {
+    QAction *a = new QAction( object->name(), menu );
+    a->setProperty( "profile_name", object->name() );
+    QPointer< QgsElevationProfile > profilePointer( object );
+    connect( a, &QAction::triggered, this, [this, profilePointer] {
+      if ( profilePointer )
+        openElevationProfile( profilePointer.data() );
+    } );
+    actions << a;
+  }
+  if ( actions.size() > 1 )
+  {
+    // sort actions by text
+    std::sort( actions.begin(), actions.end(), cmpByText_ );
+  }
+  if ( !actions.isEmpty() )
+  {
+    QAction *separator = new QAction();
+    separator->setSeparator( true );
+    actions.append( separator );
+    menu->insertActions( menu->actions().value( 0 ), actions );
+  }
+}
+
 void QgisApp::populate3DMapviewsMenu( QMenu *menu )
 {
 #ifdef HAVE_3D
@@ -13266,8 +13310,6 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
 
 QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
 {
-  const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
-
   QgsElevationProfile *profile = new QgsElevationProfile( QgsProject::instance() );
   QgsElevationProfileWidget::applyDefaultSettingsToProfile( profile );
 
@@ -13279,6 +13321,26 @@ QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
     return widget;
   }
   return nullptr;
+}
+
+QgsElevationProfileWidget *QgisApp::openElevationProfile( QgsElevationProfile *profile )
+{
+  if ( !profile )
+    return nullptr;
+
+  const QList< QgsElevationProfileWidget * > existingProfileWidgets = findChildren< QgsElevationProfileWidget * >();
+  for ( QgsElevationProfileWidget *existingWidget : existingProfileWidgets )
+  {
+    if ( existingWidget->profile() == profile )
+    {
+      existingWidget->dockableWidgetHelper()->setUserVisible( true );
+      return existingWidget;
+    }
+  }
+
+  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( profile );
+  widget->setMainCanvas( mMapCanvas );
+  return widget;
 }
 
 void QgisApp::new3DMapCanvas()
