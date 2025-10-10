@@ -1,0 +1,150 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsfonttextureatlasgenerator.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsFontTextureAtlas
+{
+%Docstring(signature="appended")
+Encapsulates a font texture atlas.
+
+:py:class:`QgsFontTextureAtlas` contains the packed texture atlas for a
+font, along with the associated text metrics for rendering.
+
+See :py:class:`QgsFontTextureAtlasGenerator` for a class which
+automatically creates texture atlases.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsfonttextureatlasgenerator.h"
+%End
+  public:
+    QgsFontTextureAtlas();
+    ~QgsFontTextureAtlas();
+
+    QgsFontTextureAtlas( const QgsFontTextureAtlas &other );
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the atlas is valid.
+%End
+
+    QSize atlasSize() const;
+%Docstring
+Returns the total size required for the atlas, i.e. the total size for
+the texture.
+%End
+
+    QRect rect( const QString &grapheme ) const;
+%Docstring
+Returns the packed rectangle for the texture for the specified
+``grapheme``.
+
+:raises KeyError: if no texture for the specified grapheme exists.
+%End
+%MethodCode
+    const QRect res = sipCpp->rect( *a0 );
+    if ( res.isNull() )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No rectangle for character %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromNewType( new QRect( res ), sipType_QRect, Py_None );
+    }
+%End
+
+    int graphemeCount( const QString &string ) const;
+%Docstring
+Returns the number of graphemes to render for a given ``string``.
+
+The ``string`` must match one of the strings passed to
+:py:class:`QgsFontTextureAtlasGenerator` when creating the texture
+atlas.
+%End
+
+    QPoint pixelOffsetForGrapheme( const QString &string, int graphemeIndex ) const;
+%Docstring
+Returns the pixel offset at which the texture for the matching grapheme
+should be placed.
+
+The ``string`` must match one of the strings passed to
+:py:class:`QgsFontTextureAtlasGenerator` when creating the texture
+atlas.
+%End
+
+    QRect textureRectForGrapheme( const QString &string, int graphemeIndex ) const;
+%Docstring
+Returns the packed rectangle for the texture for the matching grapheme.
+
+The ``string`` must match one of the strings passed to
+:py:class:`QgsFontTextureAtlasGenerator` when creating the texture
+atlas.
+%End
+
+    QImage renderAtlasTexture() const;
+%Docstring
+Renders the combined texture atlas, containing all required characters.
+%End
+
+    QImage renderDebugTexture() const;
+%Docstring
+Renders a debug texture.
+
+The debug texture renders all packed character rectangles with a unique
+color, and can be used to visualize the solution.
+%End
+
+    int count() const;
+%Docstring
+Returns the number of textures in the atlas.
+%End
+
+    int __len__() const;
+%Docstring
+        Returns the number of textures in the atlas.
+%End
+%MethodCode
+        sipRes
+      = sipCpp->count();
+%End
+
+};
+
+class QgsFontTextureAtlasGenerator
+{
+%Docstring(signature="appended")
+Generates texture atlases for a font by efficiently packing the
+characters required for a set of strings.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsfonttextureatlasgenerator.h"
+%End
+  public:
+    static QgsFontTextureAtlas create( const QgsTextFormat &format, const QStringList &strings );
+%Docstring
+Creates the texture atlas for a set of ``strings``, using the specified
+text ``format``.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsfonttextureatlasgenerator.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
