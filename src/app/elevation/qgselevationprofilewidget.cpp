@@ -153,6 +153,10 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   setObjectName( QStringLiteral( "ElevationProfile" ) );
 
   mProfile = profile;
+  if ( mProfile )
+  {
+    connect( mProfile, &QObject::destroyed, this, &QgsElevationProfileWidget::close );
+  }
 
   setAttribute( Qt::WA_DeleteOnClose );
   const QgsSettings setting;
