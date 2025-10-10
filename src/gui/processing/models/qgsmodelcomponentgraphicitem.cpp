@@ -1218,7 +1218,6 @@ QColor QgsModelComponentGraphicItem::linkColor( Qt::Edge edge, int index ) const
   return fallbackColor();
 }
 
-
 QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int index ) const
 {
   if ( index < 0 )
