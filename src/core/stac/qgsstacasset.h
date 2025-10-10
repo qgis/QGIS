@@ -75,11 +75,11 @@ class CORE_EXPORT QgsStacAsset
     /**
      * Returns a uri for the asset if it is a cloud optimized file like COG or COPC.
      *
-     * \param authcfg Optional authentication configuration ID.
+     * \param authcfg Optional authentication configuration ID (since QGIS 4.0).
      *
      * If the optional @authcfg parameter is set the authentication configuration ID will be encoded in the returned URI.
      *
-     * \since QGIS 4.0
+     * \since QGIS 3.42
      */
     QgsMimeDataUtils::Uri uri( const QString &authcfg = QString() ) const;
 
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsStacAsset
     QString toHtml( const QString &assetId ) const;
 
     /**
-     * Returns whether the asset can be downloaded
+     * Returns whether the asset can be downloaded.
      * \since QGIS 4.0
      */
     bool isDownloadable() const;
