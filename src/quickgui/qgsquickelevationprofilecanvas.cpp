@@ -268,7 +268,7 @@ void QgsQuickElevationProfileCanvas::refresh()
   sources.reserve( layersToGenerate.size() );
   for ( QgsMapLayer *layer : layersToGenerate )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
       sources.append( source );
   }
 
@@ -347,7 +347,7 @@ void QgsQuickElevationProfileCanvas::onLayerProfileGenerationPropertyChanged()
 
   if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
     {
       if ( mCurrentJob->invalidateResults( source ) )
         scheduleDeferredRegeneration();
@@ -367,7 +367,7 @@ void QgsQuickElevationProfileCanvas::onLayerProfileRendererPropertyChanged()
 
   if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
     {
       mCurrentJob->replaceSource( source );
     }
@@ -383,7 +383,7 @@ void QgsQuickElevationProfileCanvas::regenerateResultsForLayer()
 
   if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
     {
       if ( mCurrentJob->invalidateResults( source ) )
         scheduleDeferredRegeneration();

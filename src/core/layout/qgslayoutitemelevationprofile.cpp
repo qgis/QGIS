@@ -685,7 +685,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         sources << QgsApplication::profileSourceRegistry()->profileSources();
         for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
         {
-          if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
+          if ( QgsAbstractProfileSource *source = layer->profileSource() )
             sources.append( source );
         }
 
@@ -740,7 +740,7 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         sources << QgsApplication::profileSourceRegistry()->profileSources();
         for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
         {
-          if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
+          if ( QgsAbstractProfileSource *source = layer->profileSource() )
             sources.append( source );
         }
 
@@ -997,7 +997,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   sources << QgsApplication::profileSourceRegistry()->profileSources();
   for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
       sources.append( source );
   }
 
