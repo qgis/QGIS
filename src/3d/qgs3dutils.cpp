@@ -763,15 +763,16 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
 
 QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
 {
-  double dNear = camera->nearPlane();
-  double dFar = camera->farPlane();
-  double distance = ( 2.0 * dNear * dFar ) / ( dFar + dNear - ( depth * 2 - 1 ) * ( dFar - dNear ) );
+  // Transform pixel coordinates and [0.0, 1.0]-range sampled depth to [-1.0, 1.0]
+  // normalised device coordinates used by projection matrix.
+  QVector3D screenPointNdc {
+    (screenPoint.x() / (screenSize.width() / 2.0f) - 1.0f),
+    -(screenPoint.y() / (screenSize.height() / 2.0f) - 1.0f),
+    static_cast<float>(depth * 2 - 1),
+  };
 
-  QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPoint, screenSize, camera );
-  double dot = QVector3D::dotProduct( ray.direction(), camera->viewVector().normalized() );
-  distance /= dot;
-
-  return ray.origin() + distance * ray.direction();
+  // Apply inverse of projection matrix, then view matrix, to get from NDC to world coords.
+  return camera->viewMatrix().inverted() * camera->projectionMatrix().inverted() * screenPointNdc;
 }
 
 void Qgs3DUtils::pitchAndYawFromViewVector( QVector3D vect, double &pitch, double &yaw )
