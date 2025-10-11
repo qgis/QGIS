@@ -24,6 +24,7 @@
 
 #include <QImage>
 #include <QMatrix4x4>
+#include <QQuaternion>
 #include <QRegularExpression>
 
 #define TINYGLTF_IMPLEMENTATION       // should be defined just in one CPP file
