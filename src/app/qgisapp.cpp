@@ -132,6 +132,8 @@
 
 #include "layers/qgsapplayerhandling.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgselevationprofilemanager.h"
+#include "qgselevationprofile.h"
 
 #include "canvas/qgsappcanvasfiltering.h"
 #include "canvas/qgscanvasrefreshblocker.h"
@@ -2173,8 +2175,9 @@ QgisApp::~QgisApp()
   qDeleteAll( mCustomDropHandlers );
   qDeleteAll( mCustomLayoutDropHandlers );
 
-  const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
-  for ( QgsElevationProfileWidget *widget : elevationProfileWidgets )
+  // don't iterate over mElevationProfileWidgets -- it will get modified during the cleanup!
+  const QSet<QgsElevationProfileWidget * > profileWidgets = mElevationProfileWidgets;
+  for ( QgsElevationProfileWidget *widget : profileWidgets )
   {
     widget->cancelJobs();
     delete widget;
@@ -4498,6 +4501,7 @@ void QgisApp::setupConnections()
   connect( mUndoWidget, &QgsUndoWidget::undoStackChanged, this, &QgisApp::updateUndoActions );
 
   connect( mLayoutsMenu, &QMenu::aboutToShow, this, &QgisApp::layoutsMenuAboutToShow );
+  connect( mMenuElevationProfiles, &QMenu::aboutToShow, this, &QgisApp::elevationProfilesMenuAboutToShow );
 
   connect( m3DMapViewsMenu, &QMenu::aboutToShow, this, &QgisApp::views3DMenuAboutToShow );
 }
@@ -9300,6 +9304,49 @@ void QgisApp::populateLayoutsMenu( QMenu *menu )
   menu->addActions( acts );
 }
 
+void QgisApp::elevationProfilesMenuAboutToShow()
+{
+  populateElevationProfilesMenu( mMenuElevationProfiles );
+}
+
+void QgisApp::populateElevationProfilesMenu( QMenu *menu )
+{
+  for ( QAction *action : menu->actions() )
+  {
+    if ( action->property( "profile_name" ).isValid() )
+    {
+      delete action;
+    }
+  }
+
+  QList<QAction *> actions;
+  const QList<QgsElevationProfile *> objects = QgsProject::instance()->elevationProfileManager()->objects();
+  actions.reserve( objects.size() );
+  for ( QgsElevationProfile *object : objects )
+  {
+    QAction *a = new QAction( object->name(), menu );
+    a->setProperty( "profile_name", object->name() );
+    QPointer< QgsElevationProfile > profilePointer( object );
+    connect( a, &QAction::triggered, this, [this, profilePointer] {
+      if ( profilePointer )
+        openElevationProfile( profilePointer.data() );
+    } );
+    actions << a;
+  }
+  if ( actions.size() > 1 )
+  {
+    // sort actions by text
+    std::sort( actions.begin(), actions.end(), cmpByText_ );
+  }
+  if ( !actions.isEmpty() )
+  {
+    QAction *separator = new QAction();
+    separator->setSeparator( true );
+    actions.append( separator );
+    menu->insertActions( menu->actions().value( 0 ), actions );
+  }
+}
+
 void QgisApp::populate3DMapviewsMenu( QMenu *menu )
 {
 #ifdef HAVE_3D
@@ -13203,9 +13250,7 @@ void QgisApp::initLayouts()
 
   QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = [this]( QgsLayoutElevationProfileWidget *layoutWidget, QMenu *menu ) {
     menu->clear();
-    const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
-
-    if ( elevationProfileWidgets.empty() )
+    if ( mElevationProfileWidgets.empty() )
     {
       QAction *action = new QAction( tr( "No Elevation Profiles Found" ), menu );
       action->setEnabled( false );
@@ -13213,9 +13258,9 @@ void QgisApp::initLayouts()
     }
     else
     {
-      for ( QgsElevationProfileWidget *widget : elevationProfileWidgets )
+      for ( QgsElevationProfileWidget *widget : mElevationProfileWidgets )
       {
-        QAction *action = new QAction( tr( "Copy From %1" ).arg( widget->canvasName() ), menu );
+        QAction *action = new QAction( tr( "Copy From %1" ).arg( widget->profile()->name() ), menu );
         connect( action, &QAction::triggered, widget, [layoutWidget, widget] {
           layoutWidget->copySettingsFromProfileCanvas( widget->profileCanvas() );
         } );
@@ -13255,40 +13300,39 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
 
 QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
 {
-  const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
+  QgsElevationProfile *profile = new QgsElevationProfile( QgsProject::instance() );
+  QgsElevationProfileWidget::applyDefaultSettingsToProfile( profile );
 
-  // find first available unused title
-  QString title;
-  int counter = 1;
-  while ( true )
+  profile->setName( QgsProject::instance()->elevationProfileManager()->generateUniqueTitle() );
+  if ( QgsProject::instance()->elevationProfileManager()->addProfile( profile ) )
   {
-    if ( counter == 1 )
-    {
-      title = tr( "Elevation Profile" );
-    }
-    else
-    {
-      title = tr( "Elevation Profile (%1)" ).arg( counter );
-    }
+    return openElevationProfile( profile );
+  }
+  return nullptr;
+}
 
-    bool canvasExists = false;
-    for ( QgsElevationProfileWidget *existingWidget : elevationProfileWidgets )
+QgsElevationProfileWidget *QgisApp::openElevationProfile( QgsElevationProfile *profile )
+{
+  if ( !profile )
+    return nullptr;
+
+  for ( QgsElevationProfileWidget *existingWidget : mElevationProfileWidgets )
+  {
+    if ( existingWidget->profile() == profile )
     {
-      if ( existingWidget->canvasName() == title )
-      {
-        canvasExists = true;
-        break;
-      }
+      existingWidget->dockableWidgetHelper()->setUserVisible( true );
+      return existingWidget;
     }
-
-    if ( !canvasExists )
-      break;
-
-    counter++;
   }
 
-  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( title );
-  widget->setMainCanvas( mMapCanvas );
+  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( profile, mMapCanvas );
+
+  connect( widget, &QgsElevationProfileWidget::destroyed, this, [this, widget] {
+    mElevationProfileWidgets.remove( widget );
+  } );
+
+  mElevationProfileWidgets.insert( widget );
+
   return widget;
 }
 
@@ -13776,8 +13820,9 @@ void QgisApp::closeProject()
   mLegendExpressionFilterButton->setChecked( false );
   mFilterLegendByMapContentAction->setChecked( false );
 
-  const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
-  for ( QgsElevationProfileWidget *widget : elevationProfileWidgets )
+  // don't iterate over mElevationProfileWidgets -- it will get modified during the cleanup!
+  const QSet<QgsElevationProfileWidget * > profileWidgets = mElevationProfileWidgets;
+  for ( QgsElevationProfileWidget *widget : profileWidgets )
   {
     delete widget;
   }

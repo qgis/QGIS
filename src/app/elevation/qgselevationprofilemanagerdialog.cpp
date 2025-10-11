@@ -38,6 +38,7 @@ QgsElevationProfileManagerDialog::QgsElevationProfileManagerDialog( QWidget *par
 {
   setupUi( this );
 
+  setObjectName( "QgsElevationProfileManagerDialog" );
   QgsGui::enableAutoGeometryRestore( this );
 
   mModel = new QgsElevationProfileManagerModel( QgsProject::instance()->elevationProfileManager(), this );
@@ -224,6 +225,7 @@ void QgsElevationProfileManagerDialog::removeClicked()
   {
     QgsProject::instance()->elevationProfileManager()->removeProfile( l );
   }
+  QgsProject::instance()->setDirty();
 }
 
 void QgsElevationProfileManagerDialog::showClicked()
@@ -231,9 +233,9 @@ void QgsElevationProfileManagerDialog::showClicked()
   const QModelIndexList profileItems = mProfileListView->selectionModel()->selectedRows();
   for ( const QModelIndex &index : profileItems )
   {
-    if ( QgsElevationProfile *l = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
+    if ( QgsElevationProfile *profile = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
     {
-      Q_UNUSED( l );
+      QgisApp::instance()->openElevationProfile( profile );
     }
   }
 }
@@ -256,12 +258,14 @@ void QgsElevationProfileManagerDialog::renameClicked()
     return;
   }
   currentProfile->setName( newTitle );
+
+  QgsProject::instance()->setDirty();
 }
 
 void QgsElevationProfileManagerDialog::itemDoubleClicked( const QModelIndex &index )
 {
-  if ( QgsElevationProfile *l = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
+  if ( QgsElevationProfile *profile = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
   {
-    Q_UNUSED( l );
+    QgisApp::instance()->openElevationProfile( profile );
   }
 }
