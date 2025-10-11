@@ -5482,6 +5482,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( AttributeFormPythonInitCodeSource )
 
     /**
+     * Attribute form policy for reusing last entered values.
+     *
+     * \since QGIS 4.0
+     */
+    enum class AttributeFormReuseLastValuePolicy : int
+    {
+      NotAllowed = 0,       //!< Reuse of last values not allowed
+      AllowedDefaultOn = 1, //!< Reuse of last values allowed and enabled by default
+      AllowedDefaultOff = 2, //!< Reuse of last values allowed and disabled by default
+    };
+    Q_ENUM( AttributeFormReuseLastValuePolicy )
+
+    /**
      * Expression types
      *
      * \since QGIS 3.32

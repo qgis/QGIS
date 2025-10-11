@@ -69,7 +69,7 @@ class GUI_EXPORT QgsAttributesFormData
 
         bool mEditable = true;
         bool mLabelOnTop = false;
-        bool mReuseLastValues = false;
+        Qgis::AttributeFormReuseLastValuePolicy mReuseLastValuePolicy = Qgis::AttributeFormReuseLastValuePolicy::NotAllowed;
         bool mApplyDefaultValueOnUpdate = false;
         QgsFieldConstraints mFieldConstraints;
         QPushButton *mButton = nullptr;
