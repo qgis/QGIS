@@ -397,7 +397,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Size", max_size_diff=QSize(1, 1))
 
-    def test_wms_getprint_grid(self):
+    def test_wms_getprint_grid_without_params(self):
         qs = "?" + "&".join(
             [
                 "%s=%s" % i
@@ -407,7 +407,32 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
                         "SERVICE": "WMS",
                         "VERSION": "1.1.1",
                         "REQUEST": "GetPrint",
-                        "TEMPLATE": "layoutA4",
+                        "TEMPLATE": "layoutA4grid",
+                        "FORMAT": "png",
+                        "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+                        "map0:LAYERS": "Country,Hello",
+                        "map0:GRID_INTERVAL_X": "1000000",
+                        "map0:GRID_INTERVAL_Y": "2000000",
+                        "CRS": "EPSG:3857",
+                    }.items()
+                )
+            ]
+        )
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Layout_Grid")
+
+    def test_wms_getprint_grid_with_params(self):
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "MAP": urllib.parse.quote(self.projectPath),
+                        "SERVICE": "WMS",
+                        "VERSION": "1.1.1",
+                        "REQUEST": "GetPrint",
+                        "TEMPLATE": "layoutA4grid",
                         "FORMAT": "png",
                         "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
                         "map0:LAYERS": "Country,Hello",
@@ -421,6 +446,31 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Grid")
+
+    def test_wms_getprint_grid_with_params_0(self):
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "MAP": urllib.parse.quote(self.projectPath),
+                        "SERVICE": "WMS",
+                        "VERSION": "1.1.1",
+                        "REQUEST": "GetPrint",
+                        "TEMPLATE": "layoutA4grid",
+                        "FORMAT": "png",
+                        "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+                        "map0:LAYERS": "Country,Hello",
+                        "map0:GRID_INTERVAL_X": "0",
+                        "map0:GRID_INTERVAL_Y": "0",
+                        "CRS": "EPSG:3857",
+                    }.items()
+                )
+            ]
+        )
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_No_Grid")
 
     def test_wms_getprint_rotation(self):
         qs = "?" + "&".join(
