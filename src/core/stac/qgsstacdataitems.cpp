@@ -174,17 +174,11 @@ QgsMimeDataUtils::UriList QgsStacItemItem::mimeUris() const
   const QMap<QString, QgsStacAsset> assets = mStacItem->assets();
   for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
   {
-    QgsMimeDataUtils::Uri uri;
-    QUrl url( it->href() );
-    if ( url.isLocalFile() )
+    QgsMimeDataUtils::Uri uri = it->uri( authcfg );
+    if ( uri.isValid() )
     {
-      uri.uri = it->href();
+      uris.append( uri );
     }
-    else
-    {
-      uri = it->uri( authcfg );
-    }
-    uris.append( uri );
   }
 
   return uris;
