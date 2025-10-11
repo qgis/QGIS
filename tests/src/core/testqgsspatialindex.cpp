@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+#include <QElapsedTimer>
 #include <QObject>
 #include <QString>
 

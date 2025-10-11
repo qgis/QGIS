@@ -15,6 +15,7 @@
 #include "qgsfilebaseddataitemprovider.h"
 #include "qgstest.h"
 
+#include <QElapsedTimer>
 #include <QObject>
 #include <QString>
 #include <QApplication>
