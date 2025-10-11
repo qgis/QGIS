@@ -2466,6 +2466,21 @@ tests:
         name: expected/transect_multi_both_2_30.gml
         type: vector
 
+  - algorithm: native:transectfixeddistance
+    name: Test (native:transectfixeddistance)
+    params:
+      ANGLE: 90.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      INTERVAL: 0.20
+      LENGTH: 1.0
+      SIDE: 2
+    results:
+      OUTPUT:
+        name: expected/transect_fixed_single_both.gml
+        type: vector
+
   - algorithm: qgis:distancematrix
     name: Linear (N*k x 3) distance matrix
     params:
