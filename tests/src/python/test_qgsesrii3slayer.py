@@ -13,6 +13,7 @@ __copyright__ = "Copyright 2025, The QGIS Project"
 import os
 import tempfile
 import gzip
+import zipfile
 
 from qgis.PyQt.QtCore import QUrl
 from qgis.core import (
@@ -31,26 +32,24 @@ start_app()
 def _make_tmp_eslpk_dataset(
     temp_dir, layer_json_str, nodepage_json_str, i3s_version="1.8"
 ):
-    """Creates files needed for a basic "Extracted SLPK" dataset"""
+    """Creates files needed for a basic SLPK dataset"""
 
-    metadata_file = os.path.join(temp_dir, "metadata.json")
-    with open(metadata_file, "w", encoding="utf-8") as f:
-        f.write('{ "I3SVersion": "' + i3s_version + '" }')
+    slpk_file = os.path.join(temp_dir, "test.slpk")
+    with zipfile.ZipFile(slpk_file, "w", zipfile.ZIP_STORED) as zf:
+        zf.writestr("metadata.json", '{ "I3SVersion": "' + i3s_version + '" }')
 
-    layer_file = os.path.join(temp_dir, "3dSceneLayer.json.gz")
-    with gzip.open(layer_file, "wt", encoding="utf-8") as f:
-        f.write(layer_json_str)
+        layer_gz_bytes = gzip.compress(layer_json_str.encode("utf-8"))
+        zf.writestr("3dSceneLayer.json.gz", layer_gz_bytes)
 
-    nodepages_dir = os.path.join(temp_dir, "nodepages")
-    os.mkdir(nodepages_dir)
-    nodepage_0_file = os.path.join(nodepages_dir, "0.json.gz")
-    with gzip.open(nodepage_0_file, "wt", encoding="utf-8") as f:
-        f.write(nodepage_json_str)
+        nodepage_gz_bytes = gzip.compress(nodepage_json_str.encode("utf-8"))
+        zf.writestr("nodepages/0.json.gz", nodepage_gz_bytes)
+
+    return slpk_file
 
 
 class TestQgsEsriI3sLayer(unittest.TestCase):
     def test_invalid_source(self):
-        layer = QgsTiledSceneLayer("url=file:///nope", "my layer", "esrii3s")
+        layer = QgsTiledSceneLayer("file:///nope", "my layer", "esrii3s")
         self.assertFalse(layer.dataProvider().isValid())
 
     def test_invalid_json(self):
@@ -60,9 +59,14 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
               "featurecollection": {}
             }
             """
-            _make_tmp_eslpk_dataset(temp_dir, layer_json, "")
+            nodepage_json = """
+            {
+              "nodes": []
+            }
+            """
+            slpk_file = _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
 
-            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer(slpk_file, "my layer", "esrii3s")
             self.assertFalse(layer.dataProvider().isValid())
             self.assertEqual(
                 layer.error().summary(),
@@ -71,9 +75,9 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
 
     def test_old_i3s_version(self):
         with tempfile.TemporaryDirectory() as temp_dir:
-            _make_tmp_eslpk_dataset(temp_dir, "", "", "1.6")
+            slpk_file = _make_tmp_eslpk_dataset(temp_dir, "", "", "1.6")
 
-            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer(slpk_file, "my layer", "esrii3s")
             self.assertFalse(layer.dataProvider().isValid())
             self.assertEqual(
                 layer.error().summary(),
@@ -116,9 +120,9 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
               ]
             }
             """
-            _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
+            slpk_file = _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
 
-            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer(slpk_file, "my layer", "esrii3s")
             self.assertTrue(layer.dataProvider().isValid())
 
             self.assertEqual(layer.crs(), QgsCoordinateReferenceSystem("EPSG:4979"))
@@ -196,9 +200,9 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
               ]
             }
             """
-            _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
+            slpk_file = _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
 
-            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer(slpk_file, "my layer", "esrii3s")
             self.assertTrue(layer.dataProvider().isValid())
 
             self.assertEqual(layer.crs(), QgsCoordinateReferenceSystem("EPSG:5514"))
@@ -559,9 +563,9 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
               }
             ]}
             """
-            _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
+            slpk_file = _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
 
-            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer(slpk_file, "my layer", "esrii3s")
             self.assertTrue(layer.dataProvider().isValid())
 
             index = layer.dataProvider().index()
@@ -627,7 +631,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             child_tile0 = index.getTile(1)
             self.assertEqual(
                 child_tile0.resources(),
-                {"content": "file://" + temp_dir + "/nodes/16/geometries/1.bin.gz"},
+                {"content": "file://" + slpk_file + "/nodes/16/geometries/1.bin.gz"},
             )
             self.assertEqual(
                 child_tile0.metadata(),
@@ -638,7 +642,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
                         "doubleSided": True,
                         "pbrBaseColorFactor": [1.0, 1.0, 1.0, 1.0],
                         "pbrBaseColorTexture": "file://"
-                        + temp_dir
+                        + slpk_file
                         + "/nodes/16/textures/0.jpg",
                     },
                 },
@@ -674,7 +678,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             child_tile00 = index.getTile(5)
             self.assertEqual(
                 child_tile00.resources(),
-                {"content": "file://" + temp_dir + "/nodes/0/geometries/1.bin.gz"},
+                {"content": "file://" + slpk_file + "/nodes/0/geometries/1.bin.gz"},
             )
             self.assertAlmostEqual(child_tile00.geometricError(), 0.35578, 3)
             self.assertEqual(
@@ -702,7 +706,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             child_tile1 = index.getTile(2)
             self.assertEqual(
                 child_tile1.resources(),
-                {"content": "file://" + temp_dir + "/nodes/37/geometries/1.bin.gz"},
+                {"content": "file://" + slpk_file + "/nodes/37/geometries/1.bin.gz"},
             )
             self.assertAlmostEqual(child_tile1.geometricError(), 1.40952, 3)
             self.assertEqual(
