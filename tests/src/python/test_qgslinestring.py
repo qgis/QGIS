@@ -15,7 +15,7 @@ import math
 
 from qgis.core import Qgis, QgsLineString, QgsPoint
 from qgis.testing import start_app, QgisTestCase
-
+from qgis.core import QgsGeometry, QgsException
 start_app()
 
 
@@ -593,6 +593,34 @@ class TestQgsLineString(QgisTestCase):
         self.assertEqual(geom.asWkt(), "LineString (1 1, 2 1, 2 2, 1 2, 1 1)")
         self.assertEqual(geom.sumUpArea(), 1.0)
         self.assertEqual(geom.orientation(), Qgis.AngularDirection.CounterClockwise)
+
+    def test_extend_stacked_vertices(self):
+        """
+        Test extend method with stacked vertices - should raise exception instead of producing NaN.
+        Addresses issue #62473
+        """
+        
+        
+        linestring = QgsLineString([4, 4, 5, 5], [0, 0, 0, 0])
+        with self.assertRaises(Exception):
+            linestring.extend(1, 1)
+        
+        geom = QgsGeometry.fromWkt('LineString (4 0, 4 0, 5 0, 5 0)')
+        extended_geom = geom.extendLine(1, 1)
+        self.assertTrue(extended_geom.isNull())
+        
+        linestring_start = QgsLineString([4, 4, 5], [0, 0, 0])
+        with self.assertRaises(Exception):
+            linestring_start.extend(1, 0)
+        
+        linestring_end = QgsLineString([4, 5, 5], [0, 0, 0])
+        with self.assertRaises(Exception):
+            linestring_end.extend(0, 1)
+        
+        linestring_normal = QgsLineString([0, 1, 1], [0, 0, 1])
+        linestring_normal.extend(1, 2)
+        self.assertEqual(linestring_normal.pointN(0), QgsPoint(-1, 0))
+        self.assertEqual(linestring_normal.pointN(2), QgsPoint(1, 3))
 
 
 if __name__ == "__main__":
