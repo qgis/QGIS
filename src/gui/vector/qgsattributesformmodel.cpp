@@ -760,7 +760,7 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
     case Qt::BackgroundRole:
     {
       if ( item->type() == QgsAttributesFormData::AttributesFormItemType::WidgetType )
-        return QBrush( Qt::lightGray );
+        return QBrush( QColor( 140, 140, 140, 50 ) );
 
       return QVariant();
     }
@@ -1235,7 +1235,7 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
     case Qt::BackgroundRole:
     {
       if ( item->type() == QgsAttributesFormData::Container )
-        return QBrush( Qt::lightGray );
+        return QBrush( QColor( 140, 140, 140, 50 ) );
 
       return QVariant();
     }
