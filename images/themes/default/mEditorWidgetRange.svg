@@ -3,11 +3,10 @@
  <g fill="#555">
   <path d="m1 8 4-6 4 6z"/>
   <path d="m15 2-4 6-4-6z"/>
-  <g stroke="#555" stroke-linejoin="round">
-   <path d="m1 12.5 14-2e-6"/>
-   <rect x="5.5" y="11.5" width="2" height="2" rx="1" ry="1" stroke-linecap="round"/>
-   <path d="m1.5 11.5v2" stroke-linecap="square"/>
-   <path d="m14.5 11.5v2" stroke-linecap="square"/>
-  </g>
+  <path d="m1 12.5 14-2e-6" stroke="#555" stroke-linejoin="round"/>
+  <path d="m1.5 11.5v2" stroke="#555" stroke-linecap="square" stroke-linejoin="round"/>
  </g>
+ <rect x="2" y="11" width="12" height="3" fill="#d2d2d2" fill-opacity=".49804"/>
+ <path d="m14.5 11.5v2" fill="#555" stroke="#555" stroke-linecap="square" stroke-linejoin="round"/>
+ <rect x="3.5" y="10.5" width="4" height="4" rx="2" ry="2" fill="#9a9a9a" stroke="#555" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
