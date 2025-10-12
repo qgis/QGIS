@@ -22,8 +22,8 @@
 #include "qgsrelationreferencesearchwidgetwrapper.h"
 #include "qgsrelationreferencewidget.h"
 
-QgsRelationReferenceFactory::QgsRelationReferenceFactory( const QString &name, QgsMapCanvas *canvas, QgsMessageBar *messageBar )
-  : QgsEditorWidgetFactory( name )
+QgsRelationReferenceFactory::QgsRelationReferenceFactory( const QString &name, QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
   , mCanvas( canvas )
   , mMessageBar( messageBar )
 {

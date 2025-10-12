@@ -19,8 +19,8 @@
 #include "qgsvectorlayer.h"
 #include <QDial>
 
-QgsRangeWidgetFactory::QgsRangeWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsRangeWidgetFactory::QgsRangeWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 

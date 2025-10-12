@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgsactionmanager.h"
 #include "qgsattributesformmodel.h"
 #include "moc_qgsattributesformmodel.cpp"
@@ -607,6 +608,7 @@ void QgsAttributesAvailableWidgetsModel::populate()
     itemRelation->setData( ItemNameRole, name );
     itemRelation->setData( ItemIdRole, relation.id() );
     itemRelation->setData( ItemDataRole, itemData );
+    itemRelation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetRelationEditor.svg" ) ) );
     itemRelations->addChild( std::move( itemRelation ) );
   }
 
@@ -972,6 +974,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
 
         QgsAttributesFormData::FieldConfig config( mLayer, fieldIndex );
         editorItem->setData( ItemFieldConfigRole, config );
+        editorItem->setIcon( QgsGui::instance()->editorWidgetRegistry()->icon( config.mEditorWidgetType ) );
       }
 
       break;
@@ -1025,6 +1028,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( ItemDisplayRole, relationEditorConfig.label );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::Relation );
       editorItem->setData( ItemDataRole, itemData );
+      editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetRelationEditor.svg" ) ) );
 
       break;
     }
@@ -1506,6 +1510,7 @@ void QgsAttributesFormLayoutModel::updateFieldConfigForFieldItemsRecursive( QgsA
     if ( child->name() == fieldName && child->type() == QgsAttributesFormData::Field )
     {
       child->setData( ItemFieldConfigRole, QVariant::fromValue( config ) );
+      child->setIcon( QgsGui::instance()->editorWidgetRegistry()->icon( config.mEditorWidgetType ) );
       emit fieldConfigDataChanged( child ); // Item's field config has changed, let views know about it
     }
 

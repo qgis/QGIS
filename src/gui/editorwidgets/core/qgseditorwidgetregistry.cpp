@@ -52,24 +52,24 @@ QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
 
 void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBar *messageBar )
 {
-  registerWidget( QStringLiteral( "TextEdit" ), new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
+  registerWidget( QStringLiteral( "TextEdit" ), new QgsTextEditWidgetFactory( tr( "Text Edit" ), QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetTextEdit.svg" ) ) ) );
   registerWidget( QStringLiteral( "Classification" ), new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
-  registerWidget( QStringLiteral( "Range" ), new QgsRangeWidgetFactory( tr( "Range" ) ) );
+  registerWidget( QStringLiteral( "Range" ), new QgsRangeWidgetFactory( tr( "Range" ), QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetRange.svg" ) ) ) );
   registerWidget( QStringLiteral( "UniqueValues" ), new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
-  registerWidget( QStringLiteral( "ValueMap" ), new QgsValueMapWidgetFactory( tr( "Value Map" ) ) );
+  registerWidget( QStringLiteral( "ValueMap" ), new QgsValueMapWidgetFactory( tr( "Value Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetValueMap.svg" ) ) ) );
   registerWidget( QStringLiteral( "Enumeration" ), new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
   registerWidget( QStringLiteral( "Hidden" ), new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
-  registerWidget( QStringLiteral( "CheckBox" ), new QgsCheckboxWidgetFactory( tr( "Checkbox" ) ) );
-  registerWidget( QStringLiteral( "ValueRelation" ), new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
+  registerWidget( QStringLiteral( "CheckBox" ), new QgsCheckboxWidgetFactory( tr( "Checkbox" ), QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetCheckbox.svg" ) ) ) );
+  registerWidget( QStringLiteral( "ValueRelation" ), new QgsValueRelationWidgetFactory( tr( "Value Relation" ), QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetValueRelation.svg" ) ) ) );
   registerWidget( QStringLiteral( "UuidGenerator" ), new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
-  registerWidget( QStringLiteral( "Color" ), new QgsColorWidgetFactory( tr( "Color" ) ) );
+  registerWidget( QStringLiteral( "Color" ), new QgsColorWidgetFactory( tr( "Color" ), QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetColor.svg" ) ) ) );
   registerWidget( QStringLiteral( "RelationReference" ), new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
-  registerWidget( QStringLiteral( "DateTime" ), new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
-  registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ), messageBar ) );
+  registerWidget( QStringLiteral( "DateTime" ), new QgsDateTimeEditFactory( tr( "Date/Time" ), QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetDateTime.svg" ) ) ) );
+  registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ), messageBar, QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetAttachment.svg" ) ) ) );
   registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
   registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
-  registerWidget( QStringLiteral( "Binary" ), new QgsBinaryWidgetFactory( tr( "Binary (BLOB)" ), messageBar ) );
-  registerWidget( QStringLiteral( "JsonEdit" ), new QgsJsonEditWidgetFactory( tr( "Json View" ) ) );
+  registerWidget( QStringLiteral( "Binary" ), new QgsBinaryWidgetFactory( tr( "Binary (BLOB)" ), messageBar, QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetBinary.svg" ) ) ) );
+  registerWidget( QStringLiteral( "JsonEdit" ), new QgsJsonEditWidgetFactory( tr( "Json View" ), QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetJsonView.svg" ) ) ) );
   registerWidget( QStringLiteral( "Geometry" ), new QgsGeometryWidgetFactory( tr( "Geometry" ), messageBar ) );
 }
 
@@ -167,6 +167,16 @@ QString QgsEditorWidgetRegistry::name( const QString &widgetId )
   }
 
   return QString();
+}
+
+QIcon QgsEditorWidgetRegistry::icon( const QString &widgetId )
+{
+  if ( mWidgetFactories.contains( widgetId ) )
+  {
+    return mWidgetFactories[widgetId]->icon();
+  }
+
+  return QIcon();
 }
 
 bool QgsEditorWidgetRegistry::isReadOnly( const QString &widgetId )
