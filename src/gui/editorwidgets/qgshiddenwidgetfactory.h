@@ -34,7 +34,7 @@ class GUI_EXPORT QgsHiddenWidgetFactory : public QgsEditorWidgetFactory
      * Constructor for QgsHiddenWidgetFactory, where \a name is a human-readable
      * name for the factory.
      */
-    QgsHiddenWidgetFactory( const QString &name );
+    QgsHiddenWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:

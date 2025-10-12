@@ -18,8 +18,8 @@
 #include "qgsuuidwidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
 
-QgsUuidWidgetFactory::QgsUuidWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsUuidWidgetFactory::QgsUuidWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 

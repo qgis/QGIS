@@ -33,7 +33,7 @@ class GUI_EXPORT QgsKeyValueWidgetFactory : public QgsEditorWidgetFactory
      * Constructor for QgsKeyValueWidgetFactory, where \a name is a human-readable
      * name for the factory.
      */
-    QgsKeyValueWidgetFactory( const QString &name );
+    QgsKeyValueWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:

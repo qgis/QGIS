@@ -34,7 +34,7 @@ class GUI_EXPORT QgsClassificationWidgetWrapperFactory : public QgsEditorWidgetF
      * Constructor for QgsClassificationWidgetWrapperFactory, where \a name is a human-readable
      * name for the factory.
      */
-    explicit QgsClassificationWidgetWrapperFactory( const QString &name );
+    explicit QgsClassificationWidgetWrapperFactory( const QString &name, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:
