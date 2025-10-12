@@ -32,7 +32,7 @@ class GUI_EXPORT QgsEnumerationWidgetFactory : public QgsEditorWidgetFactory
   public:
     /**
      * Constructor for QgsEnumerationWidgetFactory, where \a name is a human-readable
-     * name for the factory.
+     * name for the factory and \a icon provides a visual representation of the widget.
      */
     explicit QgsEnumerationWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
