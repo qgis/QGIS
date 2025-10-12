@@ -48,6 +48,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * Constructor
      *
      * \param name A human readable name for this widget type
+     * \param icon An ion for this widget type (since QGIS 4.0)
      */
     QgsEditorWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 

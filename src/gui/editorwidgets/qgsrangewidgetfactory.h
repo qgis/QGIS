@@ -32,7 +32,7 @@ class GUI_EXPORT QgsRangeWidgetFactory : public QgsEditorWidgetFactory
   public:
     /**
      * Constructor for QgsRangeWidgetFactory, where \a name is a human-readable
-     * name for the factory.
+     * name for the factory and \a icon provides a visual representation of the widget.
      */
     QgsRangeWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 

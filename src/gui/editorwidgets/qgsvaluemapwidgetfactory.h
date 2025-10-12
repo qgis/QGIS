@@ -32,7 +32,7 @@ class GUI_EXPORT QgsValueMapWidgetFactory : public QgsEditorWidgetFactory
   public:
     /**
      * Constructor for QgsValueMapWidgetFactory, where \a name is a human-readable
-     * name for the factory.
+     * name for the factory and \a icon provides a visual representation of the widget.
      */
     QgsValueMapWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
