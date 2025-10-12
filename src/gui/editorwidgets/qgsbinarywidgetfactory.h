@@ -41,7 +41,7 @@ class GUI_EXPORT QgsBinaryWidgetFactory : public QgsEditorWidgetFactory
      * The \a messageBar argument can be used to link the widget to a QgsMessageBar
      * for providing user feedback.
      */
-    explicit QgsBinaryWidgetFactory( const QString &name, QgsMessageBar *messageBar );
+    explicit QgsBinaryWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:

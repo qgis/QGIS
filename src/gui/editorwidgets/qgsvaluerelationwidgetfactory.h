@@ -36,7 +36,7 @@ class GUI_EXPORT QgsValueRelationWidgetFactory : public QgsEditorWidgetFactory
      * Constructor for QgsValueRelationWidgetFactory, where \a name is a human-readable
      * name for the factory.
      */
-    explicit QgsValueRelationWidgetFactory( const QString &name );
+    explicit QgsValueRelationWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:

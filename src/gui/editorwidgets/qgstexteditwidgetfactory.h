@@ -34,7 +34,7 @@ class GUI_EXPORT QgsTextEditWidgetFactory : public QgsEditorWidgetFactory
      * Constructor for QgsTextEditWidgetFactory, where \a name is a human-readable
      * name for the factory.
      */
-    QgsTextEditWidgetFactory( const QString &name );
+    QgsTextEditWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
     QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;

@@ -19,8 +19,8 @@
 #include "qgsexternalresourcewidgetwrapper.h"
 #include "qgsexternalresourceconfigdlg.h"
 
-QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString &name, QgsMessageBar *messageBar )
-  : QgsEditorWidgetFactory( name )
+QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
   , mMessageBar( messageBar )
 {
 }

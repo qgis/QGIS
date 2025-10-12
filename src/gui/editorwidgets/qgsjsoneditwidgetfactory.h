@@ -36,7 +36,7 @@ class GUI_EXPORT QgsJsonEditWidgetFactory : public QgsEditorWidgetFactory
      * Constructor for QgsJsonEditWidgetFactory, where \a name is a human-readable
      * name for the factory.
      */
-    QgsJsonEditWidgetFactory( const QString &name );
+    QgsJsonEditWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
 

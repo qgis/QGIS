@@ -34,7 +34,7 @@ class GUI_EXPORT QgsDateTimeEditFactory : public QgsEditorWidgetFactory
      * Constructor for QgsDateTimeEditFactory, where \a name is a human-readable
      * name for the factory.
      */
-    QgsDateTimeEditFactory( const QString &name );
+    QgsDateTimeEditFactory( const QString &name, const QIcon &icon = QIcon() );
 
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
     QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;

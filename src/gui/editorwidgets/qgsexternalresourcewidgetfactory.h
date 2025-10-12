@@ -37,7 +37,7 @@ class GUI_EXPORT QgsExternalResourceWidgetFactory : public QgsEditorWidgetFactor
      * Constructor for QgsExternalResourceWidgetFactory, where \a name is a human-readable
      * name for the factory and \a messageBar the message bar used to report messages.
      */
-    QgsExternalResourceWidgetFactory( const QString &name, QgsMessageBar *messageBar );
+    QgsExternalResourceWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:

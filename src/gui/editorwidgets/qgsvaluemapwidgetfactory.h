@@ -34,7 +34,7 @@ class GUI_EXPORT QgsValueMapWidgetFactory : public QgsEditorWidgetFactory
      * Constructor for QgsValueMapWidgetFactory, where \a name is a human-readable
      * name for the factory.
      */
-    QgsValueMapWidgetFactory( const QString &name );
+    QgsValueMapWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
     QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;

@@ -34,7 +34,7 @@ class QgsMessageBar;
 class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRelationReferenceFactory( const QString &name, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
+    QgsRelationReferenceFactory( const QString &name, QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QIcon &icon = QIcon() );
 
     /**
      * Override this in your implementation.

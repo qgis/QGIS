@@ -22,8 +22,8 @@
 
 #include <QSettings>
 
-QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 

@@ -35,7 +35,7 @@ class GUI_EXPORT QgsCheckboxWidgetFactory : public QgsEditorWidgetFactory
      * Constructor for QgsCheckboxWidgetFactory, where \a name is a human-readable
      * name for the factory.
      */
-    explicit QgsCheckboxWidgetFactory( const QString &name );
+    explicit QgsCheckboxWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:
