@@ -145,7 +145,7 @@ class QgsPostgresUtils
     * \since QGIS 4.0
     */
     static bool moveProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema );
-    
+
     /*
     * Turns variant map into HTML code.
     *
