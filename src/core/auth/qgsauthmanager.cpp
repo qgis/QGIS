@@ -1733,7 +1733,7 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
       }
 
       //fix for Postgres connections, where user param is replaced by auth method
-      if ( dataprovider == QLatin1String( "postgres" ) && authmethod->key() != QLatin1String( "basic" ) )
+      if ( authmethod->key() != QLatin1String( "basic" ) )
       {
         if ( userIndex != -1 )
         {
