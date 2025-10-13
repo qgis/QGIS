@@ -129,6 +129,24 @@ class QgsPostgresUtils
     static bool deleteProjectFromSchema( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName );
 
     /*
+    * Copies project from project's table in the original schema to target schema
+    *
+    * \returns true on success
+    *
+    * \since QGIS 4.0
+    */
+    static bool copyProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema );
+
+    /*
+    * Moves project from project's table in the original schema to target schema
+    *
+    * \returns true on success
+    *
+    * \since QGIS 4.0
+    */
+    static bool moveProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema );
+    
+    /*
     * Turns variant map into HTML code.
     *
     * \since QGIS 4.0

@@ -154,25 +154,60 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   if ( QgsPGProjectItem *projectItem = qobject_cast<QgsPGProjectItem *>( item ) )
   {
-    QAction *exportProjectToFileAction = new QAction( tr( "Export Project to File…" ), menu );
-    connect( exportProjectToFileAction, &QAction::triggered, this, [projectItem, context] { exportProjectToFile( projectItem, context ); } );
-    menu->addAction( exportProjectToFileAction );
+    if ( selection.count() == 1 )
+    {
+      QAction *exportProjectToFileAction = new QAction( tr( "Export Project to File…" ), menu );
+      connect( exportProjectToFileAction, &QAction::triggered, this, [projectItem, context] { exportProjectToFile( projectItem, context ); } );
+      menu->addAction( exportProjectToFileAction );
 
-    QAction *renameProjectAction = new QAction( tr( "Rename Project…" ), menu );
-    connect( renameProjectAction, &QAction::triggered, this, [projectItem, context] { renameProject( projectItem, context ); } );
-    menu->addAction( renameProjectAction );
+      QAction *renameProjectAction = new QAction( tr( "Rename Project…" ), menu );
+      connect( renameProjectAction, &QAction::triggered, this, [projectItem, context] { renameProject( projectItem, context ); } );
+      menu->addAction( renameProjectAction );
 
-    QAction *deleteProjectAction = new QAction( tr( "Delete Project…" ), menu );
-    connect( deleteProjectAction, &QAction::triggered, this, [projectItem, context] { deleteProject( projectItem, context ); } );
-    menu->addAction( deleteProjectAction );
+      QAction *deleteProjectAction = new QAction( tr( "Delete Project…" ), menu );
+      connect( deleteProjectAction, &QAction::triggered, this, [projectItem, context] { deleteProject( projectItem, context ); } );
+      menu->addAction( deleteProjectAction );
 
-    QAction *duplicateProjectAction = new QAction( tr( "Duplicate Project…" ), menu );
-    connect( duplicateProjectAction, &QAction::triggered, this, [projectItem, context] { duplicateProject( projectItem, context ); } );
-    menu->addAction( duplicateProjectAction );
+      QAction *duplicateProjectAction = new QAction( tr( "Duplicate Project…" ), menu );
+      connect( duplicateProjectAction, &QAction::triggered, this, [projectItem, context] { duplicateProject( projectItem, context ); } );
+      menu->addAction( duplicateProjectAction );
 
-    QAction *moveProjectToSchemaAction = new QAction( tr( "Move Project to Schema…" ), menu );
-    connect( moveProjectToSchemaAction, &QAction::triggered, this, [projectItem, context] { moveProjectToSchema( projectItem, context ); } );
-    menu->addAction( moveProjectToSchemaAction );
+      QAction *moveProjectToSchemaAction = new QAction( tr( "Move Project to Schema…" ), menu );
+      connect( moveProjectToSchemaAction, &QAction::triggered, this, [projectItem, context] { moveProjectsToSchema( { projectItem }, context ); } );
+      menu->addAction( moveProjectToSchemaAction );
+    }
+    else
+    {
+      bool allCanBeCast = std::all_of( selection.begin(), selection.end(), []( QgsDataItem *item ) {
+        return qobject_cast<QgsPGProjectItem *>( item ) != nullptr;
+      } );
+
+      if ( allCanBeCast )
+      {
+        const QString connectionName = projectItem->connectionName();
+
+        bool allSameConnection = std::all_of( selection.begin() + 1, selection.end(), [&connectionName]( QgsDataItem *item ) {
+          if ( QgsPGProjectItem *projItem = qobject_cast<QgsPGProjectItem *>( item ) )
+          {
+            return projItem->connectionName() == connectionName;
+          }
+          return false;
+        } );
+
+        if ( allSameConnection )
+        {
+          QList<QgsPGProjectItem *> listOfProjects;
+
+          std::transform( selection.begin(), selection.end(), std::back_inserter( listOfProjects ), []( QgsDataItem *parent ) -> QgsPGProjectItem * {
+            return qobject_cast<QgsPGProjectItem *>( parent );
+          } );
+
+          QAction *moveProjectsAction = new QAction( tr( "Move Projects to Schema…" ), menu );
+          connect( moveProjectsAction, &QAction::triggered, this, [listOfProjects, context] { moveProjectsToSchema( listOfProjects, context ); } );
+          menu->addAction( moveProjectsAction );
+        }
+      }
+    }
   }
 }
 
@@ -927,85 +962,88 @@ void QgsPostgresDataItemGuiProvider::duplicateProject( QgsPGProjectItem *project
   projectItem->parent()->refresh();
 }
 
-void QgsPostgresDataItemGuiProvider::moveProjectToSchema( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
+void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProjectItem *> &selection, QgsDataItemGuiContext context )
 {
-  QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( projectItem->parent() );
+  QgsPGProjectItem *mainItem = selection.first();
+
+  QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( mainItem->parent() );
   if ( !schemaItem )
   {
+    notify( tr( "Move Projects to Another Schema" ), tr( "Unable to move projects to another schema." ), context, Qgis::MessageLevel::Warning );
     return;
   }
 
-  std::unique_ptr<QgsAbstractDatabaseProviderConnection> dbConnection( schemaItem->databaseConnection() );
-  if ( !dbConnection )
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( schemaItem->databaseConnection() );
+  if ( !conn )
   {
+    notify( tr( "Move Projects to Another Schema" ), tr( "Unable to move projects to another schema." ), context, Qgis::MessageLevel::Warning );
     return;
   }
 
-  QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( dbConnection.release() );
+  QgsDatabaseSchemaSelectionDialog dlg = QgsDatabaseSchemaSelectionDialog( conn.release() );
 
-  if ( dlg->exec() == QDialog::Accepted )
+  if ( dlg.exec() == QDialog::Accepted )
   {
-    QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
-    if ( !conn )
+    const QString newSchemaName = dlg.selectedSchema();
+
+    QgsPostgresConn *conn2 = QgsPostgresConn::connectDb( mainItem->postgresProjectUri().connInfo, false );
+
+    if ( !conn2 )
     {
-      notify( tr( "Move Project to Another Schema" ), tr( "Unable to move project to another schema." ), context, Qgis::MessageLevel::Warning );
+      notify( tr( "Move Projects to Another Schema" ), tr( "Unable to move projects to another schema." ), context, Qgis::MessageLevel::Warning );
       return;
     }
 
-    const QString newSchemaName = dlg->selectedSchema();
-    if ( newSchemaName == projectItem->schemaName() )
+    if ( !QgsPostgresUtils::projectsTableExists( conn2, newSchemaName ) )
     {
-      notify( tr( "Move Project to Another Schema" ), tr( "Cannot copy to the schema where the project already is." ), context, Qgis::MessageLevel::Warning );
-      conn->unref();
-      return;
-    }
-
-    if ( !QgsPostgresUtils::projectsTableExists( conn, newSchemaName ) )
-    {
-      if ( !QgsPostgresUtils::createProjectsTable( conn, newSchemaName ) )
+      if ( !QgsPostgresUtils::createProjectsTable( conn2, newSchemaName ) )
       {
-        const QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( projectItem->postgresProjectUri().connInfo.username() );
+        const QString errCause = tr( "Unable to move projects. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( mainItem->postgresProjectUri().connInfo.username() );
 
-        notify( tr( "Move Project to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
-        conn->unref();
+        notify( tr( "Move Projects to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
+        conn2->unref();
         return;
       }
     }
 
-    const QString sql = QStringLiteral( "INSERT INTO %1.qgis_projects SELECT * FROM %2.qgis_projects WHERE name=%3;" )
-                          .arg( QgsPostgresConn::quotedIdentifier( newSchemaName ) )
-                          .arg( QgsPostgresConn::quotedIdentifier( projectItem->schemaName() ) )
-                          .arg( QgsPostgresConn::quotedValue( projectItem->name() ) );
-
-    QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
-    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    int movedProjectCount = 0;
+    for ( QgsPGProjectItem *projectItem : selection )
     {
-      notify( tr( "Move Project to Another Schema" ), tr( "Unable to move project “%1” to scheme “%2” " ).arg( projectItem->name(), newSchemaName ), context, Qgis::MessageLevel::Warning );
-      conn->unref();
-      return;
-    }
-
-    if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectItem->name(), projectItem->schemaName() ) )
-    {
-      notify( tr( "Move Project to Another Schema" ), tr( "Unable to move project “%1” to scheme “%2” " ).arg( projectItem->name(), newSchemaName ), context, Qgis::MessageLevel::Warning );
-      conn->unref();
-      return;
-    }
-
-    // refresh
-    projectItem->parent()->refresh();
-
-    for ( QgsDataItem *item : projectItem->parent()->parent()->children() )
-    {
-      if ( QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( item ) )
+      if ( !QgsPostgresUtils::moveProjectToSchema( conn2, projectItem->schemaName(), projectItem->name(), newSchemaName ) )
       {
-        if ( schemaItem->name() == newSchemaName )
+        notify( tr( "Move Projects to Another Schema" ), tr( "Unable to move project “%1” to scheme “%2” " ).arg( projectItem->name(), newSchemaName ), context, Qgis::MessageLevel::Warning );
+      }
+      else
+      {
+        movedProjectCount++;
+      }
+
+      // refresh
+      projectItem->parent()->refresh();
+
+      const QVector<QgsDataItem *> children = projectItem->parent()->parent()->children();
+      for ( QgsDataItem *item : children )
+      {
+        if ( QgsPGSchemaItem *schemaItem = qobject_cast<QgsPGSchemaItem *>( item ) )
         {
-          schemaItem->refresh();
+          if ( schemaItem->name() == newSchemaName )
+          {
+            schemaItem->refresh();
+            break;
+          }
         }
       }
     }
 
-    conn->unref();
+    conn2->unref();
+
+    if ( selection.length() == 1 )
+    {
+      notify( tr( "Move Project to Another Schema" ), tr( "Project “%1” moved to schema “%2” successful." ).arg( mainItem->name(), newSchemaName ), context, Qgis::MessageLevel::Success );
+    }
+    else
+    {
+      notify( tr( "Move Projects to Another Schema" ), tr( "Move of %1 projects to schema “%2” successful." ).arg( movedProjectCount ).arg( newSchemaName ), context, Qgis::MessageLevel::Success );
+    }
   }
 }
