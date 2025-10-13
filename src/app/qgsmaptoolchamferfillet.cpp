@@ -13,16 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QGraphicsProxyWidget>
-#include <QGridLayout>
-#include <QLabel>
-#include <QDateTime>
+#include "qgsmaptoolchamferfillet.h"
+#include "moc_qgsmaptoolchamferfillet.cpp"
 
 #include "qgsavoidintersectionsoperation.h"
 #include "qgsdoublespinbox.h"
 #include "qgsfeatureiterator.h"
-#include "qgsmaptoolchamferfillet.h"
-#include "moc_qgsmaptoolchamferfillet.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
@@ -38,6 +34,12 @@
 #include "qgssettingstree.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsentryenumflag.h"
+
+#include <QGraphicsProxyWidget>
+#include <QGridLayout>
+#include <QLabel>
+#include <QDateTime>
+
 
 const QgsSettingsEntryEnumFlag<QgsGeometry::ChamferFilletOperationType> *QgsMapToolChamferFillet::settingsOperation = new QgsSettingsEntryEnumFlag<QgsGeometry::ChamferFilletOperationType>( QStringLiteral( "chamferfillet-operation" ), QgsSettingsTree::sTreeDigitizing, QgsGeometry::ChamferFilletOperationType::Chamfer );
 const QgsSettingsEntryInteger *QgsMapToolChamferFillet::settingsFilletSegment = new QgsSettingsEntryInteger( QStringLiteral( "chamferfillet-fillet-segment" ), QgsSettingsTree::sTreeDigitizing, 8, QStringLiteral( "For fillet operation, number of segment used to create the arc." ), Qgis::SettingsOption(), 1, 64 );
@@ -105,7 +107,8 @@ void QgsMapToolChamferFillet::applyOperation( double value1, double value2, Qt::
       i++;
     }
 
-    emit messageEmitted( tr( "Generated geometry is not valid: '%1'. " ).arg( mModifiedGeometry.lastError() ) + message, Qgis::MessageLevel::Critical );
+    emit messageEmitted( tr( "Generated geometry is not valid: '%1'. " ).arg( mModifiedGeometry.lastError() ), Qgis::MessageLevel::Critical );
+    QgsLogger::warning( tr( "Generated geometry is not valid: '%1'. " ).arg( mModifiedGeometry.lastError() ) + message );
     // no cancel, continue editing.
     return;
   }
@@ -347,8 +350,7 @@ void QgsMapToolChamferFillet::canvasMoveEvent( QgsMapMouseEvent *e )
 
 bool QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
 {
-  const QgsVectorLayer *vl = match.layer();
-  if ( !vl )
+  if ( !match.layer() )
   {
     return false;
   }
@@ -427,12 +429,7 @@ void QgsMapToolChamferFillet::configChanged()
 
 void QgsMapToolChamferFillet::updateGeometryAndRubberBand( double value1, double value2 )
 {
-  if ( !mRubberBand || mOriginalGeometryInSourceLayerCrs.isNull() )
-  {
-    return;
-  }
-
-  if ( !mSourceLayer )
+  if ( !mRubberBand || mOriginalGeometryInSourceLayerCrs.isNull() || !mSourceLayer )
   {
     return;
   }
@@ -489,14 +486,14 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
     if ( op == QgsGeometry::ChamferFilletOperationType::Chamfer )
     {
       mVal1Label->setText( tr( "Distance 1" ) );
-      mValue1SpinBox->setDecimals( 6 );
-      mValue1SpinBox->setClearValue( 0.001 );
+      mValue1SpinBox->setDecimals( 3 );
+      mValue1SpinBox->setClearValue( 0.0 );
       const double value1 = QgsMapToolChamferFillet::settingsValue1->value();
       mValue1SpinBox->setValue( value1 );
 
       mVal2Label->setText( tr( "Distance 2" ) );
-      mValue2SpinBox->setDecimals( 6 );
-      mValue2SpinBox->setClearValue( 0.001 );
+      mValue2SpinBox->setDecimals( 3 );
+      mValue2SpinBox->setClearValue( 0.0 );
       const double value2 = QgsMapToolChamferFillet::settingsValue2->value();
       mValue2SpinBox->setValue( value2 );
 
@@ -505,8 +502,8 @@ QgsChamferFilletUserWidget::QgsChamferFilletUserWidget( QWidget *parent )
     else
     {
       mVal1Label->setText( tr( "Radius" ) );
-      mValue1SpinBox->setDecimals( 6 );
-      mValue1SpinBox->setClearValue( 0.001 );
+      mValue1SpinBox->setDecimals( 3 );
+      mValue1SpinBox->setClearValue( 0.0 );
       const double value1 = QgsMapToolChamferFillet::settingsValue1->value();
       mValue1SpinBox->setValue( value1 );
 

@@ -1,9 +1,9 @@
 /***************************************************************************
      testqgsmaptoolchamferfillet.cpp
      --------------------------------
-    Date                 : March 2024
-    Copyright            : (C) 2024 by Juho Ervasti
-    Email                : juho dot ervasti at gispo dot fi
+    begin                : September 2025
+    copyright            : (C) 2025 by Oslandia
+    email                : benoit dot de dot mezzo at oslandia dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
