@@ -455,7 +455,7 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
       QWidget *w = qobject_cast<QWidget *>( child );
       // ignore already hidden widgets, so they won't become visible on expand
       // see https://github.com/qgis/QGIS/issues/55443
-      if ( w && w != mCollapseButton && w->isVisible() )
+      if ( w && w != mCollapseButton && !w->isHidden() )
       {
         w->setProperty( hideKey, true );
         w->hide();
