@@ -52,7 +52,7 @@ from qgis.core import (
     QgsSettings,
     QgsProject,
     QgsRectangle,
-    QgsSettingsTree
+    QgsSettingsTree,
 )
 from qgis.gui import QgsRubberBand, QgsGui
 from qgis.utils import OverrideCursor
@@ -77,7 +77,7 @@ from MetaSearch.util import (
     open_url,
     render_template,
     serialize_string,
-    StaticContext
+    StaticContext,
 )
 
 BASE_CLASS = get_ui_class("maindialog.ui")
@@ -331,7 +331,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 "en",
                 self.context,
                 self.catalog.conn,
-                self.catalog.service_info_template
+                self.catalog.service_info_template,
             )
             style = QgsApplication.reportStyleSheet()
             self.textMetadata.clear()
@@ -389,7 +389,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.tr("Delete Service"),
             msg,
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
+            QMessageBox.StandardButton.No,
         )
         if result == QMessageBox.StandardButton.Yes:  # remove service from list
             self.settings.remove(key)
@@ -428,7 +428,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                     self,
                     self.tr("Loading connections"),
                     msg,
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 )
                 if res != QMessageBox.StandardButton.Yes:
                     continue
@@ -437,8 +437,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             key = "/MetaSearch/%s" % name
             self.settings.setValue("%s/url" % key, server.attrib.get("url"))
             self.settings.setValue(
-                "%s/catalog-type" % key,
-                server.attrib.get("type", "OGC CSW 2.0.2")
+                "%s/catalog-type" % key, server.attrib.get("type", "OGC CSW 2.0.2")
             )
 
         self.populate_connection_list()
@@ -633,7 +632,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 float(bx["minx"]),
                 float(bx["miny"]),
                 float(bx["maxx"]),
-                float(bx["maxy"])
+                float(bx["maxy"]),
             )
             geom = QgsGeometry.fromRect(rt)
 
@@ -954,7 +953,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                     timeout=self.timeout,
                     username=self.catalog_username or None,
                     password=self.catalog_password or None,
-                    auth=auth
+                    auth=auth,
                 )
                 record = cat.get_record(identifier)
                 if cat.type == "OGC API - Records":
@@ -973,7 +972,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             QMessageBox.warning(
                 self,
                 self.tr("Record parsing error"),
-                self.tr("Unable to locate record identifier: {0}").format(err)
+                self.tr("Unable to locate record identifier: {0}").format(err),
             )
             return
 
@@ -1047,7 +1046,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                     timeout=self.timeout,
                     username=self.catalog_username or None,
                     password=self.catalog_password or None,
-                    auth=auth
+                    auth=auth,
                 )
                 return True
             except Exception as err:
