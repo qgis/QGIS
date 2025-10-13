@@ -1206,7 +1206,7 @@ bool QgsPostgresProvider::loadFields()
 
 void QgsPostgresProvider::setEditorWidgets()
 {
-  if ( !QgsPostgresUtils::tableExists( connectionRO(), EDITOR_WIDGET_STYLES_TABLE ) )
+  if ( !QgsPostgresUtils::tableExists( connectionRO(), QString(), EDITOR_WIDGET_STYLES_TABLE ) )
   {
     return;
   }
@@ -5212,11 +5212,11 @@ bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString
     return false;
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) )
   {
     return false;
   }
-  else if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  else if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
   {
     return false;
   }
@@ -5272,7 +5272,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
     return false;
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) )
   {
     if ( !QgsPostgresUtils::createStylesTable( conn, QStringLiteral( "QgsPostgresProviderMetadata" ) ) )
     {
@@ -5283,7 +5283,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   }
   else
   {
-    if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+    if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
     {
       QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
       if ( res.PQresultStatus() != PGRES_COMMAND_OK )
@@ -5431,7 +5431,7 @@ QString QgsPostgresProviderMetadata::loadStoredStyle( const QString &uri, QStrin
     dsUri.setDatabase( conn->currentDatabase() );
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) )
   {
     conn->unref();
     return QString();
@@ -5450,7 +5450,7 @@ QString QgsPostgresProviderMetadata::loadStoredStyle( const QString &uri, QStrin
   QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
 
   // support layer_styles without type column < 3.14
-  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
   {
     selectQmlQuery = QString( "SELECT styleName, styleQML"
                               " FROM layer_styles"
@@ -5506,7 +5506,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
     return -1;
   }
 
-  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "public" ), QStringLiteral( "layer_styles" ) ) )
   {
     return -1;
   }
