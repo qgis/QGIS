@@ -18,7 +18,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometrycollection.h"
-#include <limits>
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
 
@@ -31,6 +30,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsvertexid.h"
 #include "qgslogger.h"
 
+#include <limits>
 #include <memory>
 #include <QStringList>
 #include <QVector>
@@ -1485,7 +1485,7 @@ double QgsGeometryUtils::maxFilletRadius( const QgsPoint &segment1Start, const Q
     const QgsPoint &segment2Start, const QgsPoint &segment2End,
     double epsilon )
 {
-  return QgsGeometryUtilsBase::maxFilletRadius( segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(), segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(), epsilon );
+  return QgsGeometryUtilsBase::maximumFilletRadius( segment1Start.x(), segment1Start.y(), segment1End.x(), segment1End.y(), segment2Start.x(), segment2Start.y(), segment2End.x(), segment2End.y(), epsilon );
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::chamferVertex(
@@ -1576,6 +1576,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryUtils::doChamferFilletOnVertex
 
     if ( operation == QgsGeometry::ChamferFilletOperationType::Fillet )
     {
+      // Add fillet arc as line segments with proper segmentation
       if ( firstNewPoint != pPrev )
         points.append( firstNewPoint );
 
