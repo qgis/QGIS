@@ -286,7 +286,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! Rotate to diagonal view. \since QGIS 3.44
     void rotateCameraToHome() { rotateToRespectingTerrain( 45.0f, 45.0f ); }
     //! Rotate to top-down view. \since QGIS 3.44
-    void rotateCameraToTop() { rotateToRespectingTerrain( 0.0f, 90.0f ); }
+    void rotateCameraToTop() { rotateToRespectingTerrain( 0.0f, 0.0f ); }
     //! Rotate to view from the north. \since QGIS 3.44
     void rotateCameraToNorth() { rotateToRespectingTerrain( 90.0f, 180.0f ); }
     //! Rotate to view from the east. \since QGIS 3.44
