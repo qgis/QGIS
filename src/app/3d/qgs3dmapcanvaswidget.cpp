@@ -81,7 +81,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionCameraControl->setCheckable( true );
 
   QAction *zoomFullAction = toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ), tr( "Zoom Full" ), this, &Qgs3DMapCanvasWidget::resetView );
-  zoomFullAction->setShortcuts( { QKeySequence( tr( "Ctrl+0" ) ), QKeySequence( tr( "Esc" ) ) } );
+  zoomFullAction->setShortcut( QKeySequence( tr( "Ctrl+0" ) ) );
 
   // Editing toolbar
   mEditingToolBar = new QToolBar( this );
