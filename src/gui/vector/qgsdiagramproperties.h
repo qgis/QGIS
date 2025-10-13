@@ -26,6 +26,7 @@
 #include "qgis_gui.h"
 #include "qgsdiagramrenderer.h"
 #include "qgscolorschemelist.h"
+#include "qgswidgetwrapper.h"
 
 #include <QDialog>
 #include <QStyledItemDelegate>
@@ -207,6 +208,16 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     void insertDefaults();
 
     /**
+     * Updates all property override buttons to reflect the widgets's current properties.
+     */
+    void updateDataDefinedButtons();
+
+    /**
+     * Updates a specific property override \a button to reflect the widgets's current properties.
+     */
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+
+    /**
      * Sets widgets to reflect the \a enabled status of the diagram.
      * \param enabled Whether the diagram is enabled or not.
      *
@@ -228,6 +239,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
 
     friend class QgsStackedDiagramProperties;
     friend class QgsStackedDiagramPropertiesDialog;
+    friend class TestQgsDiagramProperties;
 };
 
 

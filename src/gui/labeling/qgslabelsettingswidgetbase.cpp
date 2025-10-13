@@ -129,7 +129,7 @@ void QgsLabelSettingsWidgetBase::setDataDefinedProperties( const QgsPropertyColl
 {
   mDataDefinedProperties = dataDefinedProperties;
 
-  const auto overrideButtons = findChildren<QgsPropertyOverrideButton *>();
+  const QList<QgsPropertyOverrideButton *> overrideButtons = findChildren<QgsPropertyOverrideButton *>();
   for ( QgsPropertyOverrideButton *button : overrideButtons )
   {
     const QgsPalLayerSettings::Property key = static_cast<QgsPalLayerSettings::Property>( button->propertyKey() );
