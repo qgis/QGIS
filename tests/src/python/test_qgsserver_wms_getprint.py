@@ -403,7 +403,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
                 "%s=%s" % i
                 for i in list(
                     {
-                        "MAP": urllib.parse.quote(self.projectPath),
+                        "MAP": urllib.parse.quote(self.projectLayoutGridPath),
                         "SERVICE": "WMS",
                         "VERSION": "1.1.1",
                         "REQUEST": "GetPrint",
@@ -411,8 +411,6 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
                         "FORMAT": "png",
                         "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
                         "map0:LAYERS": "Country,Hello",
-                        "map0:GRID_INTERVAL_X": "1000000",
-                        "map0:GRID_INTERVAL_Y": "2000000",
                         "CRS": "EPSG:3857",
                     }.items()
                 )
@@ -428,7 +426,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
                 "%s=%s" % i
                 for i in list(
                     {
-                        "MAP": urllib.parse.quote(self.projectPath),
+                        "MAP": urllib.parse.quote(self.projectLayoutGridPath),
                         "SERVICE": "WMS",
                         "VERSION": "1.1.1",
                         "REQUEST": "GetPrint",
@@ -453,7 +451,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
                 "%s=%s" % i
                 for i in list(
                     {
-                        "MAP": urllib.parse.quote(self.projectPath),
+                        "MAP": urllib.parse.quote(self.projectLayoutGridPath),
                         "SERVICE": "WMS",
                         "VERSION": "1.1.1",
                         "REQUEST": "GetPrint",
