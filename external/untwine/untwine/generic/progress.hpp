@@ -17,7 +17,7 @@ inline bool writeMessage(int fd, int32_t msgId, uint32_t percent, const std::str
     err |= (::write(fd, message.data(), ssize) == -1);
     if (err)
         ::close(fd);
-    return err;
+    return !err;
 }
 
 inline bool writeErrorMessage(int fd, int32_t msgId, const std::string& message)
@@ -29,7 +29,7 @@ inline bool writeErrorMessage(int fd, int32_t msgId, const std::string& message)
     err |= (::write(fd, message.data(), ssize) == -1);
     if (err)
         ::close(fd);
-    return err;
+    return !err;
 }
 
 } // namespace os
