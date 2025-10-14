@@ -562,10 +562,8 @@ void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetIte
     loadCodeFromProjectFunctions();
     txtPython->blockSignals( false );
 
-    btnRun->setText( tr( "Run and Load Functions" ) );
-    btnRun->setToolTip( tr( "Run the current editor text in QGIS.\n"
-                            "\n"
-                            "Use this when testing your functions.\n"
+    btnRun->setText( tr( "Load or update functions" ) );
+    btnRun->setToolTip( tr( "Loads or updates functions from current script file in QGIS.\n"
                             "\n"
                             "Note the functions will only be stored when saving the project." ) );
   }
@@ -573,12 +571,20 @@ void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetIte
   {
     QString path = mFunctionsPath + QDir::separator() + item->text();
     loadCodeFromFile( path );
-    btnRun->setText( tr( "Save and Load Functions" ) );
-    btnRun->setToolTip( tr( "Run the current editor text in QGIS (also saves current script).\n"
-                            "\n"
-                            "Use this when testing your functions.\n"
-                            "\n"
-                            "Saved scripts are auto loaded on QGIS startup." ) );
+    if ( mAutoSave )
+    {
+      btnRun->setText( tr( "Load or update functions" ) );
+      btnRun->setToolTip( tr( "Loads or updates functions from current script file in QGIS.\n"
+                              "\n"
+                              "Saved scripts are auto loaded on QGIS startup." ) );
+    }
+    else
+    {
+      btnRun->setText( tr( "Save and Load Functions" ) );
+      btnRun->setToolTip( tr( "Saves current script file and loads or updates its functions in QGIS.\n"
+                              "\n"
+                              "Saved scripts are auto loaded on QGIS startup." ) );
+    }
   }
 }
 
@@ -1093,7 +1099,7 @@ void QgsExpressionBuilderWidget::autosave()
   {
     QString file = item->text();
     saveFunctionFile( file );
-    displayTemporaryLabel( tr( "Saved" ) );
+    displayTemporaryLabel( tr( "Function file saved" ) );
   }
 }
 

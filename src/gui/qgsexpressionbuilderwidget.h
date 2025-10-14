@@ -369,14 +369,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /**
      * Auto save the current Python function code.
-     * Note: Auto save does not apply to Project Functions.
+     * \note Auto save does not apply to Project Functions.
      */
     void autosave();
 
     /**
      * Enabled or disable auto saving. When enabled Python scripts will be auto saved
      * when text changes.
-     * Note: Auto save does not apply to Project Functions.
+     * \note Auto save does not apply to Project Functions.
      * \param enabled TRUE to enable auto saving.
      */
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
