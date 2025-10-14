@@ -1224,7 +1224,7 @@ QgsQueryResultDialog::QgsQueryResultDialog( QgsAbstractDatabaseProviderConnectio
 
   QDialogButtonBox *mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::close );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#execute-sql" ) );
   } );
   l->addWidget( mWidget );
