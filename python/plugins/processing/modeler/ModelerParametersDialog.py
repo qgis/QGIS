@@ -195,24 +195,8 @@ class ModelerParametersDialog(QDialog):
         return self.widget.createAlgorithm()
 
     def okPressed(self):
-        alg = self.createAlgorithm()
-        if alg is None:
-            return
-
-        try:
-            modelAlg = self.model.childAlgorithms()[alg.childId()]
-        except KeyError:
-            # Algorithm is being added to the model, just accept it
+        if self.createAlgorithm() is not None:
             self.accept()
-            return
-        else:
-            # Algorithm is being modified, match the non-definition properties and then check for changes
-            alg.copyNonDefinitionProperties(modelAlg)
-            if modelAlg.toVariant() != alg.toVariant():
-                self.accept()
-                return
-        # No changes were made to the algorithm, treat as 'Cancel' to prevent unnecessary undo steps
-        self.reject()
 
     def openHelp(self):
         algHelp = self.widget.algorithm().helpUrl()
