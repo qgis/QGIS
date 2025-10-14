@@ -259,7 +259,6 @@ namespace libply
     std::string name;
     Type type;
     bool isList;
-    size_t listCount;
   };
 
   typedef std::size_t ElementSize;
