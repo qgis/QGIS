@@ -216,6 +216,7 @@ class QgsServerTestBase(QgisTestCase):
         d = os.path.join(self.temporary_path, "qgis_server_accesscontrol")
 
         self.projectPath = os.path.join(d, "project.qgs")
+        self.projectLayoutGridPath = os.path.join(d, "project_layout_with_grids.qgs")
         self.projectAnnotationPath = os.path.join(d, "project_with_annotations.qgs")
         self.projectStatePath = os.path.join(d, "project_state.qgs")
         self.projectUseLayerIdsPath = os.path.join(d, "project_use_layerids.qgs")
