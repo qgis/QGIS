@@ -218,7 +218,7 @@ void TestQgs3DExporter::test3DSceneExporterBig()
   mapSettings.setTerrainSettings( demTerrainSettings );
 
   QgsPointLightSettings defaultPointLight;
-  defaultPointLight.setPosition( QgsVector3D( 0, 400, 0 ) );
+  defaultPointLight.setPosition( mapSettings.origin() + QgsVector3D( 0, 400, 0 ) );
   defaultPointLight.setConstantAttenuation( 0 );
   mapSettings.setLightSources( { defaultPointLight.clone() } );
   mapSettings.setOutputDpi( 92 );
@@ -278,7 +278,7 @@ void TestQgs3DExporter::test3DSceneExporterFlatTerrain()
   QCOMPARE( dynamic_cast<QgsFlatTerrainGenerator *>( generator.get() )->crs(), mapSettings.crs() );
 
   QgsPointLightSettings defaultPointLight;
-  defaultPointLight.setPosition( QgsVector3D( 0, 400, 0 ) );
+  defaultPointLight.setPosition( mapSettings.origin() + QgsVector3D( 0, 400, 0 ) );
   defaultPointLight.setConstantAttenuation( 0 );
   mapSettings.setLightSources( { defaultPointLight.clone() } );
   mapSettings.setOutputDpi( 92 );

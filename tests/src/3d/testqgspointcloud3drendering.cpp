@@ -255,7 +255,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColor()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -290,7 +290,7 @@ void TestQgsPointCloud3DRendering::testPointCloudSingleColorClipping()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -358,7 +358,7 @@ void TestQgsPointCloud3DRendering::testPointCloudAttributeByRamp()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -397,7 +397,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassification()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -434,7 +434,7 @@ void TestQgsPointCloud3DRendering::testPointCloudClassificationOverridePointSize
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -474,7 +474,7 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredClassification()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -514,7 +514,7 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredSceneExtent()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -551,7 +551,7 @@ void TestQgsPointCloud3DRendering::testPointCloud3DExtents()
   map->setLayers( QList<QgsMapLayer *>() << mVpcLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -585,7 +585,7 @@ void TestQgsPointCloud3DRendering::testPointCloud3DOverview()
   map->setLayers( QList<QgsMapLayer *>() << mVpcLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
