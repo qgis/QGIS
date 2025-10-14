@@ -170,8 +170,8 @@ void QgsO2::setVerificationResponseContent()
   if ( verhtml.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
     setReplyContent( QString::fromUtf8( verhtml.readAll() )
-                       .replace( QLatin1String( "{{ H2_TITLE }}" ), tr( "QGIS OAuth2 verification has finished" ) )
-                       .replace( QLatin1String( "{{ H3_TITLE }}" ), tr( "If you have not been returned to QGIS, bring the application to the forefront." ) )
+                       .replace( QLatin1String( "{{ H2_TITLE }}" ), tr( "QGIS OAuth2 verification has finished." ) )
+                       .replace( QLatin1String( "{{ H3_TITLE }}" ), tr( "You can close this window and bring QGIS to the forefront." ) )
                        .toUtf8()
     );
   }
