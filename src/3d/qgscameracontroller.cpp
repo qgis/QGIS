@@ -655,8 +655,8 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
       }
     }
 
-    float oldDist = ( mCameraBefore->position() - mDragPoint ).length();
-    float newDist = oldDist;
+    const double oldDist = ( QgsVector3D( mCameraBefore->position() ) - QgsVector3D( mDragPoint ) ).length();
+    double newDist = oldDist;
 
     int yOffset = 0;
     int screenHeight = mScene->engine()->size().height();
@@ -683,7 +683,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
       newDist = newDist + 2 * newDist * f;
     }
 
-    double zoomFactor = newDist / oldDist;
+    const double zoomFactor = newDist / oldDist;
     zoomCameraAroundPivot( mCameraBefore->position(), mCameraBefore->viewCenter().distanceToPoint( mCameraBefore->position() ), zoomFactor, mDragPoint );
   }
 
