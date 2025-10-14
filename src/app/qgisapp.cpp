@@ -9314,21 +9314,13 @@ void QgisApp::elevationProfilesMenuAboutToShow()
 
 void QgisApp::populateElevationProfilesMenu( QMenu *menu )
 {
-  for ( QAction *action : menu->actions() )
-  {
-    if ( action->property( "profile_name" ).isValid() )
-    {
-      delete action;
-    }
-  }
-
+  menu->clear();
   QList<QAction *> actions;
   const QList<QgsElevationProfile *> objects = QgsProject::instance()->elevationProfileManager()->objects();
   actions.reserve( objects.size() );
   for ( QgsElevationProfile *object : objects )
   {
     QAction *a = new QAction( object->name(), menu );
-    a->setProperty( "profile_name", object->name() );
     QPointer< QgsElevationProfile > profilePointer( object );
     connect( a, &QAction::triggered, this, [this, profilePointer] {
       if ( profilePointer )
@@ -9343,11 +9335,11 @@ void QgisApp::populateElevationProfilesMenu( QMenu *menu )
   }
   if ( !actions.isEmpty() )
   {
-    QAction *separator = new QAction();
-    separator->setSeparator( true );
-    actions.append( separator );
-    menu->insertActions( menu->actions().value( 0 ), actions );
+    menu->addActions( actions );
+    menu->addSeparator();
   }
+  menu->addAction( mActionElevationProfile );
+  menu->addAction( mActionManageElevationProfiles );
 }
 
 void QgisApp::populate3DMapviewsMenu( QMenu *menu )

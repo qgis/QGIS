@@ -164,8 +164,6 @@
      <property name="title">
       <string>Elevation Profiles</string>
      </property>
-     <addaction name="mActionElevationProfile"/>
-     <addaction name="mActionManageElevationProfiles"/>
     </widget>
     <addaction name="mActionNewMapCanvas"/>
     <addaction name="m3DMapViewsMenu"/>
