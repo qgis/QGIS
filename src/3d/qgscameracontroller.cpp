@@ -187,6 +187,22 @@ void QgsCameraController::zoomCameraAroundPivot( const QVector3D &oldCameraPosit
   updateCameraFromPose();
 }
 
+void QgsCameraController::zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double oldDistanceFromCenterPoint, double zoomFactor, const QVector3D &pivotPoint )
+{
+  // step 1: move camera along the line connecting reference camera position and our pivot point
+  QVector3D newCamPosition = pivotPoint + ( oldCameraPosition - pivotPoint ) * zoomFactor;
+  const double newDistance = oldDistanceFromCenterPoint * zoomFactor;
+
+  // step 2: using the new camera position and distance from center, calculate new view center
+  QQuaternion q = Qgs3DUtils::rotationFromPitchHeadingAngles( mCameraPose.pitchAngle(), mCameraPose.headingAngle() );
+  QVector3D cameraToCenter = q * QVector3D( 0, 0, -newDistance );
+  QVector3D newViewCenter = newCamPosition + cameraToCenter;
+
+  mCameraPose.setDistanceFromCenterPoint( newDistance );
+  mCameraPose.setCenterPoint( newViewCenter );
+  updateCameraFromPose();
+}
+
 void QgsCameraController::frameTriggered( float dt )
 {
   Q_UNUSED( dt )
@@ -668,7 +684,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     }
 
     double zoomFactor = newDist / oldDist;
-    zoomCameraAroundPivot( mCameraBefore->position(), zoomFactor, mDragPoint );
+    zoomCameraAroundPivot( mCameraBefore->position(), mCameraBefore->viewCenter().distanceToPoint( mCameraBefore->position() ), zoomFactor, mDragPoint );
   }
 
   mMousePos = QPoint( mouse->x(), mouse->y() );
@@ -800,7 +816,7 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
   // Don't change the distance too suddenly to hopefully prevent numerical instability
   zoomFactor = std::clamp( zoomFactor, 0.01, 100.0 );
 
-  zoomCameraAroundPivot( mCameraBefore->position(), zoomFactor, mZoomPoint );
+  zoomCameraAroundPivot( mCameraBefore->position(), mCameraBefore->viewCenter().distanceToPoint( mCameraBefore->position() ), zoomFactor, mZoomPoint );
 
   mCumulatedWheelY = 0;
   setMouseParameters( MouseOperation::None );
