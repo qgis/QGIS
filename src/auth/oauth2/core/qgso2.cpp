@@ -171,7 +171,7 @@ void QgsO2::setVerificationResponseContent()
   {
     setReplyContent( QString::fromUtf8( verhtml.readAll() )
                        .replace( QLatin1String( "{{ H2_TITLE }}" ), tr( "QGIS OAuth2 verification has finished." ) )
-                       .replace( QLatin1String( "{{ H3_TITLE }}" ), tr( "You can close this window and bring QGIS to the forefront." ) )
+                       .replace( QLatin1String( "{{ H3_TITLE }}" ), tr( "You can close this window and return to QGIS." ) )
                        .toUtf8()
     );
   }
