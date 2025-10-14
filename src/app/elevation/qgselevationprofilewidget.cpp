@@ -549,8 +549,14 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
     mLayerTree->reorderGroupLayers( selectedLayers );
   }
 
-  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
-  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, &QgsElevationProfileWidget::updateCanvasSources );
+  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, [this] {
+    QgsProject::instance()->setDirty();
+    updateCanvasSources();
+  } );
+  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, [this] {
+    QgsProject::instance()->setDirty();
+    updateCanvasSources();
+  } );
 
   connect( QgsProject::instance()->elevationProperties(), &QgsProjectElevationProperties::changed, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
   connect( QgsProject::instance(), &QgsProject::crs3DChanged, this, &QgsElevationProfileWidget::onProjectElevationPropertiesChanged );
