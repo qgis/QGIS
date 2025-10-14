@@ -1294,6 +1294,7 @@ void QgsProject::clear()
 
   setDirty( false );
   emit homePathChanged();
+  emit fileNameChanged();
   if ( !mBlockChangeSignalsDuringClear )
   {
     emit verticalCrsChanged();
@@ -2020,6 +2021,7 @@ bool QgsProject::read( Qgis::ProjectReadFlags flags )
       mTranslator.reset( nullptr );
     }
   }
+  emit fileNameChanged();
   emit homePathChanged();
   return returnValue;
 }
@@ -3146,6 +3148,7 @@ bool QgsProject::write( const QString &filename )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   mFile.setFileName( filename );
+  emit fileNameChanged();
   mCachedHomePath.clear();
   return write();
 }
