@@ -1130,6 +1130,7 @@ void MDAL_G_setMetadata( MDAL_DatasetGroupH group, const char *key, const char *
   if ( !group )
   {
     MDAL::Log::error( MDAL_Status::Err_IncompatibleDataset, "Dataset Group is not valid (null)" );
+    return;
   }
 
   if ( !key )

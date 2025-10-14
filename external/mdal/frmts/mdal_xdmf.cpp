@@ -137,7 +137,7 @@ void MDAL::XdmfFunctionDataset::addReferenceDataset(
         hdfDataset,
         time
       );
-  mReferenceDatasets.push_back( xdmfDataset );
+  mReferenceDatasets.emplace_back( std::move( xdmfDataset ) );
 }
 
 void MDAL::XdmfFunctionDataset::swap()
@@ -482,6 +482,10 @@ MDAL::DatasetGroups MDAL::DriverXdmf::parseXdmfXml( )
           type = XdmfFunctionDataset::Join;
           isScalar = false;
         }
+        else
+        {
+          throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Function is unknown" );
+        }
 
         std::shared_ptr<MDAL::DatasetGroup> group = findGroup( groups, groupName, isScalar );
         std::shared_ptr<MDAL::XdmfFunctionDataset> xdmfFunctionDataset = std::make_shared<MDAL::XdmfFunctionDataset>(
@@ -556,7 +560,7 @@ MDAL::DatasetGroups MDAL::DriverXdmf::parseXdmfXml( )
     grp->setStatistics( stats );
     // verify the integrity of the dataset
     if ( !std::isnan( stats.minimum ) )
-      ret.push_back( grp );
+      ret.emplace_back( std::move( grp ) );
   }
 
   return ret;
@@ -619,7 +623,7 @@ bool MDAL::DriverXdmf::canReadDatasets( const std::string &uri )
   {
     return false;
   }
-  catch ( MDAL::Error )
+  catch ( MDAL::Error & )
   {
     return false;
   }
@@ -656,7 +660,7 @@ void MDAL::DriverXdmf::load( const std::string &datFile,
   {
     MDAL::Log::error( err, "Error occurred while loading file " + mDatFile );
   }
-  catch ( MDAL::Error err )
+  catch ( MDAL::Error &err )
   {
     MDAL::Log::error( err, name() );
   }
