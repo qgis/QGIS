@@ -498,6 +498,7 @@ void QgsProject::setTitle( const QString &title )
   mMetadata.setTitle( title );
   mProjectScope.reset();
   emit metadataChanged();
+  emit titleChanged();
 
   setDirty( true );
 }
@@ -2331,6 +2332,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     mMetadata.setTitle( oldTitle );
   }
   emit metadataChanged();
+  emit titleChanged();
 
   // Transaction mode
   element = doc->documentElement().firstChildElement( QStringLiteral( "transaction" ) );
@@ -5122,6 +5124,7 @@ void QgsProject::setMetadata( const QgsProjectMetadata &metadata )
   mProjectScope.reset();
 
   emit metadataChanged();
+  emit titleChanged();
 
   setDirty( true );
 }
