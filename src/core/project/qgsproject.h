@@ -1923,7 +1923,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     Q_DECL_DEPRECATED void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
-    //! Emitted when the title of the project changes
+    /**
+     * Emitted when the title of the project changes.
+     * \since QGIS 4.0
+     */
     void titleChanged();
 
     //! Emitted when the file name of the project changes
