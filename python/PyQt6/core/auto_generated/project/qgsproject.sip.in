@@ -1918,7 +1918,9 @@ identification changes
 
     void titleChanged();
 %Docstring
-Emitted when the title of the project changes
+Emitted when the title of the project changes.
+
+.. versionadded:: 4.0
 %End
 
     void fileNameChanged();
