@@ -1939,6 +1939,7 @@ QgsDataItemGuiProviderRegistry.addProvider: src/gui/qgsdataitemguiproviderregist
 QgsDataItemGuiProviderRegistry.initializeFromProviderGuiRegistry: src/gui/qgsdataitemguiproviderregistry.h#L68
 QgsDataItemGuiProviderRegistry.removeProvider: src/gui/qgsdataitemguiproviderregistry.h#L61
 QgsDataItemGuiProviderRegistry: src/gui/qgsdataitemguiproviderregistry.h#L37
+QgsDataItemGuiProviderUtils.addToSubMenu: src/gui/qgsdataitemguiproviderutils.h#L120
 QgsDataItemGuiProviderUtils: src/gui/qgsdataitemguiproviderutils.h#L37
 QgsDataSourceSelectDialog.expandPath: src/gui/qgsdatasourceselectdialog.h#L199
 QgsDataSourceSelectDialog.setCaseSensitive: src/gui/qgsdatasourceselectdialog.h#L211
