@@ -44,7 +44,7 @@ static const int CF_FLAG_INT_SIZE = 4;
 
 static void exit_with_error( MDAL_Status error, const std::string msg )
 {
-  MDAL::Log::error( error, "BINARY_DAT", msg );
+  MDAL::Log::error( error, "BINARY_DAT", std::move( msg ) );
 }
 
 static bool read( std::ifstream &in, char *s, int n )
@@ -146,11 +146,8 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh )
   int numdata;
   int numcells;
   char groupName[40];
-  double referenceTime;
-  int timeUnit = 0;
   std::string timeUnitStr;
   char istat;
-  float time;
 
   if ( read( in, reinterpret_cast< char * >( &version ), 4 ) ) return exit_with_error( MDAL_Status::Err_UnknownFormat, "Unable to read version" );
 
@@ -241,19 +238,23 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh )
         break;
 
       case CT_RT_JULIAN:
+      {
         // Reference time
         if ( readIStat( in, sflg, &istat ) )
           return exit_with_error( MDAL_Status::Err_UnknownFormat, "unable to read reference time" );
 
-        if ( read( in, reinterpret_cast< char * >( &time ), 8 ) )
+        double referenceTime = 0;
+        if ( read( in, reinterpret_cast< char * >( &referenceTime ), 8 ) )
           return exit_with_error( MDAL_Status::Err_UnknownFormat, "unable to read reference time" );
 
-        referenceTime = static_cast<double>( time );
         group->setReferenceTime( DateTime( referenceTime, DateTime::JulianDay ) );
         break;
+      }
 
       case CT_TIMEUNITS:
+      {
         // Time unit
+        int timeUnit = 0;
         if ( read( in, reinterpret_cast< char * >( &timeUnit ), 4 ) )
           return exit_with_error( MDAL_Status::Err_UnknownFormat, "Unable to read time units" );
 
@@ -277,16 +278,18 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh )
         }
         group->setMetadata( "TIMEUNITS", timeUnitStr );
         break;
+      }
 
       case CT_TS:
         // Time step!
         if ( readIStat( in, sflg, &istat ) )
           return exit_with_error( MDAL_Status::Err_UnknownFormat, "Invalid time step" );
 
-        if ( read( in, reinterpret_cast< char * >( &time ), 4 ) )
+        float timeStep;
+        if ( read( in, reinterpret_cast< char * >( &timeStep ), 4 ) )
           return exit_with_error( MDAL_Status::Err_UnknownFormat, "Invalid time step" );
 
-        double rawTime = static_cast<double>( time );
+        double rawTime = static_cast<double>( timeStep );
         MDAL::RelativeTimestamp t( rawTime, MDAL::parseDurationTimeUnit( timeUnitStr ) );
 
         if ( readVertexTimestep( mesh, group, groupMax, t, istat, sflg, in ) )
@@ -296,16 +299,16 @@ void MDAL::DriverBinaryDat::load( const std::string &datFile, MDAL::Mesh *mesh )
     }
   }
 
-  if ( !group || group->datasets.size() == 0 )
+  if ( group->datasets.size() == 0 )
     return exit_with_error( MDAL_Status::Err_UnknownFormat, "No datasets" );
 
   group->setStatistics( MDAL::calculateStatistics( group ) );
-  mesh->datasetGroups.push_back( group );
+  mesh->datasetGroups.emplace_back( std::move( group ) );
 
-  if ( groupMax && groupMax->datasets.size() > 0 )
+  if ( groupMax->datasets.size() > 0 )
   {
     groupMax->setStatistics( MDAL::calculateStatistics( groupMax ) );
-    mesh->datasetGroups.push_back( groupMax );
+    mesh->datasetGroups.emplace_back( std::move( groupMax ) );
   }
 }
 
