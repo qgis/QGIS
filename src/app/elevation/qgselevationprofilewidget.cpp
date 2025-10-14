@@ -1133,7 +1133,7 @@ void QgsElevationProfileWidget::renameProfileTriggered()
   bool titleValid = false;
   QString newTitle = mProfile->name();
 
-  QString chooseMsg = tr( "Enter a unique elevation profile title" );
+  const QString chooseMsg = tr( "Enter a unique elevation profile title" );
   QString titleMsg = chooseMsg;
 
   QStringList profileNames;
