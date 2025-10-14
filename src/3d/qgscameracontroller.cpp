@@ -648,7 +648,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     if ( win )
     {
       yOffset = win->mapToGlobal( QPoint( 0, 0 ) ).y();
-      screenHeight = win->screen()->size().height();
+      screenHeight = win->screen()->virtualSize().height();
     }
 
     // Applies smoothing
