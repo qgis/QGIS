@@ -132,8 +132,8 @@ int QgsLightsWidget::lightSourceCount() const
 
 void QgsLightsWidget::setPointLightCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  labelPointLightCrs->setText( tr( "Coordinates in 3D map CRS" ) + ( crs.authid().isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( crs.authid() ) ) );
-  labelPointLightCrs->setToolTip( crs.toWkt( Qgis::CrsWktVariant::Preferred ) );
+  labelPointLightCrs->setText( tr( "Coordinates in 3D map CRS" ) + QStringLiteral( " (%1)" ).arg( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) ) );
+  labelPointLightCrs->setToolTip( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) );
 }
 
 void QgsLightsWidget::selectedLightChanged( const QItemSelection &selected, const QItemSelection & )
