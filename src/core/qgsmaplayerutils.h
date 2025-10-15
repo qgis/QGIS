@@ -109,7 +109,7 @@ class CORE_EXPORT QgsMapLayerUtils
      *
      * \since QGIS 4.0
      */
-    static QString translateLayerType( const Qgis::LayerType &type );
+    static QString translateLayerType( Qgis::LayerType type );
 
 };
 
