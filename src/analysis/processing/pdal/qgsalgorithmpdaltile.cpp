@@ -50,12 +50,12 @@ QStringList QgsPdalTileAlgorithm::tags() const
 
 QString QgsPdalTileAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates tiles from an input point cloud data." );
+  return QObject::tr( "This algorithm creates tiles from an input point cloud." );
 }
 
 QString QgsPdalTileAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates tiles from an input point cloud data." );
+  return QObject::tr( "Creates tiles from a point cloud." );
 }
 
 QgsPdalTileAlgorithm *QgsPdalTileAlgorithm::createInstance() const

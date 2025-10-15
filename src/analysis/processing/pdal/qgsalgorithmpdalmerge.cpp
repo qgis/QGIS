@@ -54,7 +54,7 @@ QString QgsPdalMergeAlgorithm::shortHelpString() const
 
 QString QgsPdalMergeAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Merges multiple point cloud files to a single one." );
+  return QObject::tr( "Merges multiple point clouds to a single one." );
 }
 
 QgsPdalMergeAlgorithm *QgsPdalMergeAlgorithm::createInstance() const

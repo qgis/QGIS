@@ -55,7 +55,7 @@ QString QgsPdalFilterAlgorithm::shortHelpString() const
 
 QString QgsPdalFilterAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Extracts points from the input point cloud which match specific condition." );
+  return QObject::tr( "Extracts points from the input point cloud which match specific conditions." );
 }
 
 QgsPdalFilterAlgorithm *QgsPdalFilterAlgorithm::createInstance() const
