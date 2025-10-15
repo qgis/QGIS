@@ -39,6 +39,7 @@ class QgsPdalCreateCopcAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsPdalCreateCopcAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

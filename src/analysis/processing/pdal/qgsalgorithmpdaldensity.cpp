@@ -29,7 +29,7 @@ QString QgsPdalDensityAlgorithm::name() const
 
 QString QgsPdalDensityAlgorithm::displayName() const
 {
-  return QObject::tr( "Density" );
+  return QObject::tr( "Point cloud density" );
 }
 
 QString QgsPdalDensityAlgorithm::group() const
@@ -50,6 +50,11 @@ QStringList QgsPdalDensityAlgorithm::tags() const
 QString QgsPdalDensityAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm exports a raster file where each cell contains number of points that are in that cell's area." );
+}
+
+QString QgsPdalDensityAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Exports a raster file with number of points in each cell's area." );
 }
 
 QgsPdalDensityAlgorithm *QgsPdalDensityAlgorithm::createInstance() const
