@@ -187,7 +187,7 @@ bool QgsMapLayerUtils::isOpenStreetMapLayer( QgsMapLayer *layer )
   return false;
 }
 
-QString QgsMapLayerUtils::translateLayerType( const Qgis::LayerType &type )
+QString QgsMapLayerUtils::translateLayerType( Qgis::LayerType type )
 {
   switch ( type )
   {
