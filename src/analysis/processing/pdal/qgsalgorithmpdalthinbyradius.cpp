@@ -54,7 +54,7 @@ QString QgsPdalThinByRadiusAlgorithm::shortHelpString() const
 
 QString QgsPdalThinByRadiusAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a thinned version of the point cloud by performing sampling by distance point." );
+  return QObject::tr( "Creates a thinned version of a point cloud by performing sampling by distance point." );
 }
 
 QgsPdalThinByRadiusAlgorithm *QgsPdalThinByRadiusAlgorithm::createInstance() const

@@ -54,7 +54,7 @@ QString QgsPdalReprojectAlgorithm::shortHelpString() const
 
 QString QgsPdalReprojectAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Reprojects point cloud to a different coordinate reference system." );
+  return QObject::tr( "Reprojects a point cloud to a different coordinate reference system." );
 }
 
 QgsPdalReprojectAlgorithm *QgsPdalReprojectAlgorithm::createInstance() const

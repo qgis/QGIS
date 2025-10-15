@@ -62,7 +62,7 @@ QString QgsPdalCreateCopcAlgorithm::shortHelpString() const
 
 QString QgsPdalCreateCopcAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates a COPC file for each input point cloud file." );
+  return QObject::tr( "Creates a COPC file for each input point cloud." );
 }
 
 QgsPdalCreateCopcAlgorithm *QgsPdalCreateCopcAlgorithm::createInstance() const
