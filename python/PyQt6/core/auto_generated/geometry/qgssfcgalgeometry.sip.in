@@ -470,6 +470,22 @@ Scale this geometry by vector ``scaleFactor``.
                             operation
 %End
 
+    std::unique_ptr<QgsSfcgalGeometry> transform( const QMatrix4x4 &mat ) const;
+%Docstring
+Apply 3D matrix transform ``mat`` to geometry ``geom``
+
+:param mat: 4x4 transformation matrix (translation is defined of the 4th
+            column)
+:param errorMsg: Error message returned by SFGCAL
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
     bool intersects( const QgsAbstractGeometry *otherGeom ) const;
 %Docstring
 Checks if ``otherGeom`` intersects this.

@@ -1020,6 +1020,18 @@ sfcgal::shared_geom QgsSfcgalEngine::approximateMedialAxis( const sfcgal::geomet
 
 
 #if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
+sfcgal::shared_geom QgsSfcgalEngine::transform( const sfcgal::geometry *geom, const QMatrix4x4 &mat, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal::geometry *result;
+  result = sfcgal_geometry_transform( geom, mat.constData() );
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return sfcgal::make_shared_geom( result );
+}
+
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalEngine::toSfcgalGeometry( sfcgal::shared_prim &prim, sfcgal::primitiveType type, QString *errorMsg )
 {
   sfcgal::errorHandler()->clearText( errorMsg );
@@ -1044,11 +1056,16 @@ sfcgal::shared_geom QgsSfcgalEngine::primitiveAsPolyhedral( const sfcgal::primit
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( prim, nullptr );
 
-  if ( !mat.isIdentity() )
-    throw QgsSfcgalException( "Not implemented" );
-
   sfcgal::geometry *result = sfcgal_primitive_as_polyhedral_surface( prim );
   CHECK_SUCCESS( errorMsg, nullptr );
+
+  if ( !mat.isIdentity() )
+  {
+    sfcgal::geometry *result2 = sfcgal_geometry_transform( result, mat.constData() );
+    sfcgal_geometry_delete( result );
+    result = result2;
+    CHECK_SUCCESS( errorMsg, nullptr );
+  }
 
   return sfcgal::make_shared_geom( result );
 }

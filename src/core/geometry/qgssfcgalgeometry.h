@@ -427,6 +427,18 @@ class CORE_EXPORT QgsSfcgalGeometry
     std::unique_ptr<QgsSfcgalGeometry> rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint() ) const SIP_THROW( QgsSfcgalException );
 
     /**
+     * Apply 3D matrix transform \a mat to geometry \a geom
+     *
+     * \param mat 4x4 transformation matrix (translation is defined of the 4th column)
+     * \param errorMsg Error message returned by SFGCAL
+     * \return new geometry
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    std::unique_ptr<QgsSfcgalGeometry> transform( const QMatrix4x4 &mat ) const SIP_THROW( QgsSfcgalException );
+
+    /**
      * Checks if \a otherGeom intersects this.
      *
      * \param otherGeom geometry to perform the operation

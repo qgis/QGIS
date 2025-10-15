@@ -665,6 +665,15 @@ class CORE_EXPORT QgsSfcgalEngine
 #if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
 
     /**
+     * Apply 3D matrix transform \a mat to geometry \a geom
+     *
+     * \param geom geometry to perform the operation
+     * \param mat 4x4 transformation matrix
+     * \param errorMsg Error message returned by SFGCAL
+     */
+    static sfcgal::shared_geom transform( const sfcgal::geometry *geom, const QMatrix4x4 &mat, QString *errorMsg = nullptr );
+
+    /**
      * Creates a SFGAL geometry from a shared SFCGAL primitive (from SFCGAL library).
      *
      * \param prim primitive to perform the operation

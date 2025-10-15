@@ -542,6 +542,21 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::rotate2D( double angle, co
   return resultGeom;
 }
 
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::transform( const QMatrix4x4 &mat ) const
+{
+  QString errorMsg;
+  sfcgal::errorHandler()->clearText( &errorMsg );
+
+  sfcgal::shared_geom geom = workingGeom();
+
+  sfcgal::shared_geom result = QgsSfcgalEngine::transform( geom.get(), mat );
+  THROW_ON_ERROR( &errorMsg );
+
+  auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
+  THROW_ON_ERROR( &errorMsg );
+  return resultGeom;
+}
+
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center ) const
 {
   QString errorMsg;

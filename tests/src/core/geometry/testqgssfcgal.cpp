@@ -1092,8 +1092,12 @@ void TestQgsSfcgal::primitiveCube()
                                                      0.0, 1.0, 0.0, 2.0, //
                                                      0.0, 0.0, 1.0, 3.0, //
                                                      0.0, 0.0, 0.0, 1.0 ) );
-
-  QVERIFY_THROWS_EXCEPTION( QgsSfcgalException, cubeT->primitiveAsPolyhedralSurface() );
+  QCOMPARE( cubeT->asWkt( 0 ), "POLYHEDRALSURFACE Z (((1 2 3,1 3 3,2 3 3,2 2 3,1 2 3)),"
+                               "((1 2 4,2 2 4,2 3 4,1 3 4,1 2 4)),"
+                               "((1 2 3,2 2 3,2 2 4,1 2 4,1 2 3)),"
+                               "((1 3 3,1 3 4,2 3 4,2 3 3,1 3 3)),"
+                               "((2 2 3,2 3 3,2 3 4,2 2 4,2 2 3)),"
+                               "((1 2 3,1 2 4,1 3 4,1 3 3,1 2 3)))" );
 
   // check rotate
   std::unique_ptr<QgsSfcgalGeometry> cubeR = cube->rotate3D( 90, { 0.0, 0.0, 1.0 }, { 0.0, 0.0, 0.0 } );
@@ -1106,6 +1110,13 @@ void TestQgsSfcgal::primitiveCube()
                                                                     1.0, -1.0e-07, 0.0, -1.0,  //
                                                                     0.0, 0.0, 1.0, 0.0,        //
                                                                     0.0, 0.0, 0.0, 1.0 ) ) );
+  QCOMPARE( cubeR->asWkt( 0 ), "POLYHEDRALSURFACE Z (((-3 -1 0,-4 -1 0,-4 0 0,-3 0 0,-3 -1 0)),"
+                               "((-3 -1 1,-3 0 1,-4 0 1,-4 -1 1,-3 -1 1)),"
+                               "((-3 -1 0,-3 0 0,-3 0 1,-3 -1 1,-3 -1 0)),"
+                               "((-4 -1 0,-4 -1 1,-4 0 1,-4 0 0,-4 -1 0)),"
+                               "((-3 0 0,-4 0 0,-4 0 1,-3 0 1,-3 0 0)),"
+                               "((-3 -1 0,-3 -1 1,-4 -1 1,-4 -1 0,-3 -1 0)))" );
+
   // check scale
   std::unique_ptr<QgsSfcgalGeometry> cubeS = cube->scale( { 1.0, 2.0, 3.0 }, { 0.0, 0.0, 0.0 } );
   QCOMPARE( cubeS->primitiveTransform(), QMatrix4x4( 1.0, 0.0, 0.0, 0.0, //
@@ -1117,6 +1128,12 @@ void TestQgsSfcgal::primitiveCube()
                                                      0.0, 2.0, 0.0, 2.0, //
                                                      0.0, 0.0, 3.0, 6.0, //
                                                      0.0, 0.0, 0.0, 1.0 ) );
+  QCOMPARE( cubeS->asWkt( 0 ), "POLYHEDRALSURFACE Z (((0 2 6,0 4 6,1 4 6,1 2 6,0 2 6)),"
+                               "((0 2 9,1 2 9,1 4 9,0 4 9,0 2 9)),"
+                               "((0 2 6,1 2 6,1 2 9,0 2 9,0 2 6)),"
+                               "((0 4 6,0 4 9,1 4 9,1 4 6,0 4 6)),"
+                               "((1 2 6,1 4 6,1 4 9,1 2 9,1 2 6)),"
+                               "((0 2 6,0 2 9,0 4 9,0 4 6,0 2 6)))" );
 
   // check volume
   QCOMPARE( cube->volume(), 125.0 );
