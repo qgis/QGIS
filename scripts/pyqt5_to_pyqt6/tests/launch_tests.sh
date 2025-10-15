@@ -24,4 +24,6 @@ do
   fi
 done
 
+rm -Rf $TEST_ROOT_DIR
+
 exit $RES
