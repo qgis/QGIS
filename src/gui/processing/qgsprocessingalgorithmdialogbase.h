@@ -144,6 +144,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     QgsPanelWidget *mainWidget();
 
     /**
+     * Shows and raises the dialog 
+     * 
+     * \since QGIS 4.0  
+     */
+    void showDialog();
+
+    /**
      * Switches the dialog to the log page.
      */
     void showLog();

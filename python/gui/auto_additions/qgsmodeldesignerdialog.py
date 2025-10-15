@@ -12,6 +12,7 @@ QgsModelDesignerDialog.SaveAction.__doc__ = """Save action.
 """
 # --
 try:
+    QgsModelDesignerDialog.__attribute_docs__ = {'dirtySet': 'Emitted when the model dirty is set to True.\n\n.. versionadded:: 4.0\n'}
     QgsModelDesignerDialog.__abstract_methods__ = ['repaintModel', 'addAlgorithm', 'addInput', 'exportAsScriptAlgorithm', 'saveModel', 'createExecutionDialog']
     QgsModelDesignerDialog.__overridden_methods__ = ['closeEvent']
     QgsModelDesignerDialog.__group__ = ['processing', 'models']
