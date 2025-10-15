@@ -70,7 +70,7 @@ Returns the list of files within a ``zip`` file
 .. versionadded:: 3.30
 %End
 
-    static bool getFileFromZip( const QString &zipFilename, const QString &filenameInZip, QByteArray &bytesOut );
+    static bool extractFileFromZip( const QString &zipFilename, const QString &filenameInZip, QByteArray &bytesOut /Out/ );
 %Docstring
 Gets a file from a zip archive, returns ``True`` on success. If the file
 is a gzip file, it is decompressed before returning.

@@ -83,7 +83,7 @@ class TestQgsZip(unittest.TestCase):
         rc, files = QgsZipUtils.unzip(zip, outDir.path())
 
         self.assertTrue(rc)
-        self.assertEqual(len(files), 10)
+        self.assertEqual(len(files), 9)
 
     def test_unzip_file_not_exist(self):
         outDir = QTemporaryDir()
@@ -138,15 +138,13 @@ class TestQgsZip(unittest.TestCase):
         self.assertEqual(files, ["multipoint.shp", "lines.shp", "joins.qgs"])
 
     def test_get_file_from_zip_not_exist(self):
-        data = QByteArray()
-        success = QgsZipUtils.getFileFromZip("/path/to/nothing", "none.txt", data)
+        success, data = QgsZipUtils.extractFileFromZip("/path/to/nothing", "none.txt")
 
         self.assertFalse(success)
         self.assertEqual(data, b"")
 
     def test_get_file_from_zip_empty_zip_path(self):
-        data = QByteArray()
-        success = QgsZipUtils.getFileFromZip("", "none.txt", data)
+        success, data = QgsZipUtils.extractFileFromZip("", "none.txt")
 
         self.assertFalse(success)
         self.assertEqual(data, b"")
@@ -155,8 +153,7 @@ class TestQgsZip(unittest.TestCase):
         zipPath = os.path.join(self.zipDir, "testzip.zip")
         self.assertTrue(os.path.exists(zipPath))
 
-        data = QByteArray()
-        success = QgsZipUtils.getFileFromZip(zipPath, "", data)
+        success, data = QgsZipUtils.extractFileFromZip(zipPath, "")
 
         self.assertFalse(success)
         self.assertEqual(data, b"")
@@ -165,8 +162,7 @@ class TestQgsZip(unittest.TestCase):
         zipPath = os.path.join(self.zipDir, "testzip.zip")
         self.assertTrue(os.path.exists(zipPath))
 
-        data = QByteArray()
-        success = QgsZipUtils.getFileFromZip(zipPath, "move_along.txt", data)
+        success, data = QgsZipUtils.extractFileFromZip(zipPath, "move_along.txt")
 
         self.assertFalse(success)
         self.assertEqual(data, b"")
@@ -178,22 +174,11 @@ class TestQgsZip(unittest.TestCase):
         expectedData = b'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]'
 
         data = QByteArray()
-        success = QgsZipUtils.getFileFromZip(zipPath, "points.prj", data)
+        success, data = QgsZipUtils.extractFileFromZip(zipPath, "points.prj")
 
         self.assertTrue(success)
         self.assertEqual(data, expectedData)
 
-    def test_get_file_from_zip_gzip_in_sub_folder_success(self):
-        zipPath = os.path.join(self.zipDir, "testzip.zip")
-        self.assertTrue(os.path.exists(zipPath))
-        
-        expectedData = b'{\n"featureData" : [],\n"geometryData" : []\n}\n'
-
-        data = QByteArray()
-        success = QgsZipUtils.getFileFromZip(zipPath, "folder/0.json.gz", data)
-        
-        self.assertTrue(success)
-        self.assertEqual(data, expectedData)
 
 if __name__ == "__main__":
     unittest.main()

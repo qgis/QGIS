@@ -95,7 +95,7 @@ class CORE_EXPORT QgsZipUtils
      *
      * \since QGIS 4.0
      */
-    static bool getFileFromZip( const QString &zipFilename, const QString &filenameInZip, QByteArray &bytesOut );
+    static bool extractFileFromZip( const QString &zipFilename, const QString &filenameInZip, QByteArray &bytesOut SIP_OUT );
 
 };
 

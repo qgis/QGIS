@@ -3,6 +3,6 @@ try:
     QgsZipUtils.isZipFile = staticmethod(QgsZipUtils.isZipFile)
     QgsZipUtils.unzip = staticmethod(QgsZipUtils.unzip)
     QgsZipUtils.zip = staticmethod(QgsZipUtils.zip)
-    QgsZipUtils.getFileFromZip = staticmethod(QgsZipUtils.getFileFromZip)
+    QgsZipUtils.extractFileFromZip = staticmethod(QgsZipUtils.extractFileFromZip)
 except (NameError, AttributeError):
     pass

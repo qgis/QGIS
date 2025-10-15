@@ -343,18 +343,14 @@ const QStringList QgsZipUtils::files( const QString &zip )
   return files;
 }
 
-bool QgsZipUtils::getFileFromZip( const QString &zipFilename, const QString &filenameInZip, QByteArray &bytesOut )
+bool QgsZipUtils::extractFileFromZip( const QString &zipFilename, const QString &filenameInZip, QByteArray &bytesOut )
 {
   if ( !QFileInfo::exists( zipFilename ) )
   {
     QgsMessageLog::logMessage( QObject::tr( "Error zip file does not exist: '%1'" ).arg( zipFilename ) );
     return false;
   }
-  else if ( zipFilename.isEmpty() )
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Error zip filename is empty" ) );
-    return false;
-  }
+
   if ( filenameInZip.isEmpty() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Error file name in zip is empty" ) );
@@ -402,17 +398,6 @@ bool QgsZipUtils::getFileFromZip( const QString &zipFilename, const QString &fil
   {
     QgsMessageLog::logMessage( QObject::tr( "Error reading file '%1' from zip archive '%2'." ).arg( filenameInZip, zipFilename ) );
     return false;
-  }
-
-  if ( filenameInZip.endsWith( QLatin1String( ".gz" ) ) )
-  {
-    QByteArray decompressedBytes;
-    if ( !decodeGzip( bytesOut, decompressedBytes ) )
-    {
-      QgsMessageLog::logMessage( QObject::tr( "Failed to decompress Gzip file '%1' from zip archive '%2'." ).arg( filenameInZip, zipFilename ) );
-      return false;
-    }
-    bytesOut = decompressedBytes;
   }
 
   return true;

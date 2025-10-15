@@ -32,6 +32,7 @@
 #include "qgsprovidersublayerdetails.h"
 
 #include <QFile>
+#include <QDir>
 #include <QFileInfo>
 #include <QIcon>
 #include <QQuaternion>
@@ -414,10 +415,18 @@ QByteArray QgsEsriI3STiledSceneIndex::fetchContent( const QString &uri, QgsFeedb
       const QString fileInSlpk = uri.mid( mRootUrl.toString().length() + 1 );
 
       QByteArray data;
-      if ( QgsZipUtils::getFileFromZip( slpkPath, fileInSlpk, data ) )
+      if ( QgsZipUtils::extractFileFromZip( slpkPath, fileInSlpk, data ) )
         return data;
 
       return QByteArray();
+    }
+    else
+    {
+      QFile file( url.toLocalFile() );
+      if ( file.open( QIODevice::ReadOnly ) )
+      {
+        return file.readAll();
+      }
     }
   }
   else
@@ -441,12 +450,18 @@ bool QgsEsriI3STiledSceneIndex::fetchNodePage( int nodePage, QgsFeedback *feedba
   if ( !mRootUrl.isLocalFile() )
   {
     const QString uri = QStringLiteral( "%1/layers/0/nodepages/%2" ).arg( mRootUrl.toString() ).arg( nodePage );
-    nodePageContent = fetchContent( uri, feedback );
+    nodePageContent = retrieveContent( uri, feedback );
   }
   else
   {
     const QString uri = QStringLiteral( "%1/nodepages/%2.json.gz" ).arg( mRootUrl.toString() ).arg( nodePage );
-    nodePageContent = fetchContent( uri, feedback );
+    const QByteArray nodePageContentGzipped = retrieveContent( uri, feedback );
+
+    if ( !QgsZipUtils::decodeGzip( nodePageContentGzipped, nodePageContent ) )
+    {
+      QgsDebugError( QStringLiteral( "Failed to decompress node page content: " ) + uri );
+      return false;
+    }
 
     if ( nodePageContent.isEmpty() )
     {
@@ -722,12 +737,12 @@ QgsEsriI3SDataProvider::QgsEsriI3SDataProvider( const QString &uri,
   json layerJson;
   if ( sourcePath.startsWith( QLatin1String( "http" ) ) )
   {
-    if ( !loadFromRestService( sourcePath, layerJson, i3sVersion ) )
+    if ( !loadFromRestService( rootUrl.toString(), layerJson, i3sVersion ) )
       return;
   }
   else
   {
-    if ( !loadFromSlpk( sourcePath, layerJson, i3sVersion ) )
+    if ( !loadFromSlpk( rootUrl.toLocalFile(), layerJson, i3sVersion ) )
       return;
   }
 
@@ -810,11 +825,25 @@ bool QgsEsriI3SDataProvider::loadFromRestService( const QString &uri, json &laye
 bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, QString &i3sVersion )
 {
   QByteArray metadataContent;
-  QString metadataPath = QStringLiteral( "metadata.json" );
-  if ( !QgsZipUtils::getFileFromZip( uri, metadataPath, metadataContent ) )
+  QString metadataFileName = QStringLiteral( "metadata.json" );
+  if ( QFileInfo( uri ).isDir() )  // if a directory, read directly as Extracted SLPK
   {
-    appendError( QgsErrorMessage( tr( "Failed to read layer metadata: " ) + uri, QStringLiteral( "I3S" ) ) );
-    return false;
+    const QString metadataDirPath = QDir( uri ).filePath( metadataFileName );
+    QFile fMetadata( metadataDirPath );
+    if ( !fMetadata.open( QIODevice::ReadOnly ) )
+    {
+      appendError( QgsErrorMessage( tr( "Failed to read layer metadata: " ) + metadataDirPath, QStringLiteral( "I3S" ) ) );
+      return false;
+    }
+    metadataContent = fMetadata.readAll();
+  }
+  else  // SLPK
+  {
+    if ( !QgsZipUtils::extractFileFromZip( uri, metadataFileName, metadataContent ) )
+    {
+      appendError( QgsErrorMessage( tr( "Failed to read layer metadata: " ) + metadataFileName, QStringLiteral( "I3S" ) ) );
+      return false;
+    }
   }
 
   json metadataJson;
@@ -824,24 +853,45 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
   }
   catch ( const json::parse_error & )
   {
-    appendError( QgsErrorMessage( tr( "Unable to parse metadata JSON: " ) + uri, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Unable to parse metadata JSON: " ) + metadataFileName, QStringLiteral( "I3S" ) ) );
     return false;
   }
 
   if ( !metadataJson.contains( "I3SVersion" ) )
   {
-    appendError( QgsErrorMessage( tr( "Missing I3S version: " ) + uri, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Missing I3S version: " ) + metadataFileName, QStringLiteral( "I3S" ) ) );
     return false;
   }
   i3sVersion = QString::fromStdString( metadataJson["I3SVersion"].get<std::string>() );
   if ( !checkI3SVersion( i3sVersion ) )
     return false;
 
-  QByteArray sceneLayerContent;
-  const QString sceneLayerContentPath = QStringLiteral( "3dSceneLayer.json.gz" );
-  if ( !QgsZipUtils::getFileFromZip( uri, sceneLayerContentPath, sceneLayerContent ) )
+  QByteArray sceneLayerContentGzipped;
+  const QString sceneLayerContentFileName = QStringLiteral( "3dSceneLayer.json.gz" );
+  if ( QFileInfo( uri ).isDir() )  // if a directory, read directly as Extracted SLPK
   {
-    appendError( QgsErrorMessage( tr( "Failed to decode layer metadata: " ) + uri, QStringLiteral( "I3S" ) ) );
+    const QString sceneLayerContentDirPath = QDir( uri ).filePath( sceneLayerContentFileName );
+    QFile fSceneLayerContent( sceneLayerContentDirPath );
+    if ( !fSceneLayerContent.open( QIODevice::ReadOnly ) )
+    {
+      appendError( QgsErrorMessage( tr( "Failed to read layer metadata: " ) + sceneLayerContentDirPath, QStringLiteral( "I3S" ) ) );
+      return false;
+    }
+    sceneLayerContentGzipped = fSceneLayerContent.readAll();
+  }
+  else  // SLPK
+  {
+    if ( !QgsZipUtils::extractFileFromZip( uri, sceneLayerContentFileName, sceneLayerContentGzipped ) )
+    {
+      appendError( QgsErrorMessage( tr( "Failed to read layer metadata in file: " ) + sceneLayerContentFileName, QStringLiteral( "I3S" ) ) );
+      return false;
+    }
+  }
+
+  QByteArray sceneLayerContent;
+  if ( !QgsZipUtils::decodeGzip( sceneLayerContentGzipped, sceneLayerContent ) )
+  {
+    appendError( QgsErrorMessage( tr( "Failed to decompress layer metadata: " ) + sceneLayerContentFileName, QStringLiteral( "I3S" ) ) );
     return false;
   }
 
@@ -851,7 +901,7 @@ bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, 
   }
   catch ( const json::parse_error & )
   {
-    appendError( QgsErrorMessage( tr( "Unable to parse JSON: " ) + uri, QStringLiteral( "I3S" ) ) );
+    appendError( QgsErrorMessage( tr( "Unable to parse JSON: " ) + sceneLayerContentFileName, QStringLiteral( "I3S" ) ) );
     return false;
   }
 
