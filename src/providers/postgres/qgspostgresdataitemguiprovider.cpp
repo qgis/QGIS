@@ -175,6 +175,11 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       QAction *moveProjectToSchemaAction = new QAction( tr( "Move Project to Schema…" ), menu );
       connect( moveProjectToSchemaAction, &QAction::triggered, this, [projectItem, context] { moveProjectsToSchema( { projectItem }, context ); } );
       menu->addAction( moveProjectToSchemaAction );
+
+      // Set project comment
+      QAction *setProjectCommentAction = new QAction( tr( "Set Comment…" ), menu );
+      connect( setProjectCommentAction, &QAction::triggered, this, [projectItem, context] { setProjectComment( projectItem, context ); } );
+      menu->addAction( setProjectCommentAction );
     }
     else
     {
@@ -1046,4 +1051,47 @@ void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProj
       notify( tr( "Move Projects to Another Schema" ), tr( "Move of %1 projects to schema “%2” successful." ).arg( movedProjectCount ).arg( newSchemaName ), context, Qgis::MessageLevel::Success );
     }
   }
+}
+
+void QgsPostgresDataItemGuiProvider::setProjectComment( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
+{
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
+
+  const QString comment = QgsPostgresUtils::projectComment( conn, projectItem->schemaName(), projectItem->name() );
+  bool ok = false;
+
+  const QString newComment = QInputDialog::getMultiLineText( nullptr, tr( "Set Comment For Project %1" ).arg( projectItem->name() ), tr( "Comment" ), comment, &ok );
+  if ( ok && newComment != comment )
+  {
+    if ( !conn )
+    {
+      notify( tr( "Set Project Comment" ), tr( "Unable to connect to database." ), context, Qgis::MessageLevel::Warning );
+      conn->unref();
+      return;
+    }
+
+    if ( !QgsPostgresUtils::columnExists( conn, projectItem->schemaName(), QStringLiteral( "qgis_projects" ), QStringLiteral( "comment" ) ) )
+    {
+      if ( !QgsPostgresUtils::addCommentColumnToProjectsTable( conn, projectItem->schemaName() ) )
+      {
+        notify( tr( "Set Project Comment" ), tr( "Unable to add 'comment' column to 'qgis_projects' table." ), context, Qgis::MessageLevel::Warning );
+        conn->unref();
+        return;
+      }
+    }
+
+    const bool res = QgsPostgresUtils::setProjectComment( conn, projectItem->name(), projectItem->schemaName(), newComment );
+
+    if ( !res )
+    {
+      notify( tr( "Set Project Comment" ), tr( "Failed to set project comment for '%1'" ).arg( projectItem->name() ), context, Qgis::MessageLevel::Warning );
+    }
+    else
+    {
+      notify( tr( "Set Project Comment" ), tr( "Comment updated for project '%1'" ).arg( projectItem->name() ), context, Qgis::MessageLevel::Success );
+      projectItem->parent()->refresh();
+    }
+  }
+
+  conn->unref();
 }
