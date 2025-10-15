@@ -1925,6 +1925,13 @@ identification changes
 .. deprecated:: 3.4
 %End
 
+    void titleChanged();
+%Docstring
+Emitted when the title of the project changes.
+
+.. versionadded:: 4.0
+%End
+
     void fileNameChanged();
 %Docstring
 Emitted when the file name of the project changes

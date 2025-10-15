@@ -2635,7 +2635,7 @@ Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
 Qgis.SublayerQueryFlag.CountFeatures.__doc__ = "Count features in vector sublayers"
 Qgis.SublayerQueryFlag.IncludeSystemTables.__doc__ = "Include system or internal tables (these are not included by default)"
-Qgis.SublayerQueryFlag.OpenLayersToResolveDecriptions.__doc__ = "Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \n.. versionadded:: 4.0"
+Qgis.SublayerQueryFlag.OpenLayersToResolveDescriptions.__doc__ = "Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \n.. versionadded:: 4.0"
 Qgis.SublayerQueryFlag.__doc__ = """Flags which control how data providers will scan for sublayers in a dataset.
 
 .. versionadded:: 3.22
@@ -2644,7 +2644,7 @@ Qgis.SublayerQueryFlag.__doc__ = """Flags which control how data providers will 
 * ``ResolveGeometryType``: Attempt to resolve the geometry type for vector sublayers
 * ``CountFeatures``: Count features in vector sublayers
 * ``IncludeSystemTables``: Include system or internal tables (these are not included by default)
-* ``OpenLayersToResolveDecriptions``: Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call.
+* ``OpenLayersToResolveDescriptions``: Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call.
 
   .. versionadded:: 4.0
 
@@ -6402,6 +6402,9 @@ QgsProcessing.TypeVectorTile = Qgis.ProcessingSourceType.VectorTile
 QgsProcessing.SourceType.TypeVectorTile = Qgis.ProcessingSourceType.VectorTile
 QgsProcessing.TypeVectorTile.is_monkey_patched = True
 QgsProcessing.TypeVectorTile.__doc__ = "Vector tile layers \n.. versionadded:: 3.32"
+QgsProcessing.TiledScene = Qgis.ProcessingSourceType.TiledScene
+QgsProcessing.TiledScene.is_monkey_patched = True
+QgsProcessing.TiledScene.__doc__ = "Tiled scene layers \n.. versionadded:: 4.0"
 Qgis.ProcessingSourceType.__doc__ = """Processing data source types.
 
 .. note::
@@ -6476,6 +6479,10 @@ Qgis.ProcessingSourceType.__doc__ = """Processing data source types.
 
 
   Available as ``QgsProcessing.TypeVectorTile`` in older QGIS releases.
+
+* ``TiledScene``: Tiled scene layers
+
+  .. versionadded:: 4.0
 
 
 """
@@ -7748,6 +7755,9 @@ QgsArcGisPortalUtils.GeocodeServer.__doc__ = "GeocodeServer"
 QgsArcGisPortalUtils.Unknown = Qgis.ArcGisRestServiceType.Unknown
 QgsArcGisPortalUtils.Unknown.is_monkey_patched = True
 QgsArcGisPortalUtils.Unknown.__doc__ = "Other unknown/unsupported type"
+QgsArcGisPortalUtils.SceneServer = Qgis.ArcGisRestServiceType.SceneServer
+QgsArcGisPortalUtils.SceneServer.is_monkey_patched = True
+QgsArcGisPortalUtils.SceneServer.__doc__ = "SceneServer"
 Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 
 .. note::
@@ -7772,6 +7782,7 @@ Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 * ``GPServer``: GPServer
 * ``GeocodeServer``: GeocodeServer
 * ``Unknown``: Other unknown/unsupported type
+* ``SceneServer``: SceneServer
 
 """
 # --
@@ -11638,6 +11649,25 @@ Qgis.RasterProcessingParameterCapability.__doc__ = """Capabilities of a raster l
 Qgis.RasterProcessingParameterCapability.baseClass = Qgis
 Qgis.RasterProcessingParameterCapabilities.baseClass = Qgis
 RasterProcessingParameterCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.DevToolsNodeRole.Status.__doc__ = "Request status role"
+Qgis.DevToolsNodeRole.Id.__doc__ = "Request ID role"
+Qgis.DevToolsNodeRole.ElapsedTime.__doc__ = "Elapsed time"
+Qgis.DevToolsNodeRole.MaximumTime.__doc__ = "Maximum encountered elapsed time"
+Qgis.DevToolsNodeRole.Sort.__doc__ = "Sort order role"
+Qgis.DevToolsNodeRole.__doc__ = """Dev tools node custom data roles.
+
+.. versionadded:: 4.0
+
+* ``Status``: Request status role
+* ``Id``: Request ID role
+* ``ElapsedTime``: Elapsed time
+* ``MaximumTime``: Maximum encountered elapsed time
+* ``Sort``: Sort order role
+
+"""
+# --
+Qgis.DevToolsNodeRole.baseClass = Qgis
 from enum import Enum
 
 

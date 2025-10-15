@@ -3,9 +3,11 @@
 %Include auto_generated/qgs3d.sip
 %Include auto_generated/qgs3dmapscene.sip
 %Include auto_generated/qgs3dmapsettings.sip
+%Include auto_generated/qgs3dmaptool.sip
 %Include auto_generated/qgs3dtypes.sip
 %Include auto_generated/qgs3dmapcanvas.sip
 %Include auto_generated/qgsabstractvectorlayer3drenderer.sip
+%Include auto_generated/qgsannotationlayer3drenderer.sip
 %Include auto_generated/qgscameracontroller.sip
 %Include auto_generated/qgscamerapose.sip
 %Include auto_generated/qgslayoutitem3dmap.sip
@@ -16,6 +18,7 @@
 %Include auto_generated/qgstiledscenelayer3drenderer.sip
 %Include auto_generated/qgsvectorlayer3drenderer.sip
 %Include auto_generated/qgspointcloudlayer3drenderer.sip
+%Include auto_generated/qgstextureatlasgenerator.sip
 %Include auto_generated/lights/qgsdirectionallightsettings.sip
 %Include auto_generated/lights/qgslightsource.sip
 %Include auto_generated/lights/qgspointlightsettings.sip

@@ -1,5 +1,5 @@
 
-ARG DISTRO_VERSION=25.04
+ARG DISTRO_VERSION=25.10
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
@@ -83,6 +83,7 @@ RUN  apt-get update \
     python3-pyqt6.qtwebengine \
     python3-requests \
     python3-shapely  \
+    python3-geopandas \
     python3-sphinx \
     python3-six \
     python3-termcolor \
@@ -143,17 +144,6 @@ RUN  apt-get update \
      ninja-build \
      libgdal-dev \
      libproj-dev
-
-# download spatialindex and compile it
-RUN curl -L https://github.com/libspatialindex/libspatialindex/releases/download/2.0.0/spatialindex-src-2.0.0.tar.gz --output spatialindex-src-2.0.0.tar.gz \
-    && mkdir spatialindex \
-    && tar zxf spatialindex-src-2.0.0.tar.gz -C spatialindex --strip-components=1 \
-    && rm -f spatialindex-src-2.0.0.tar.gz \
-    && mkdir -p spatialindex/build \
-    && cd spatialindex/build \
-    && cmake -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local .. \
-    && ninja \
-    && ninja install
 
 RUN 
 FROM binary-for-oracle AS binary-only

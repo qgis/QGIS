@@ -2177,7 +2177,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
         {
           const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
           const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
-          if ( newDistanceBetweenOriginalAdjacentVertices )
+          if ( !qgsDoubleNear( newDistanceBetweenOriginalAdjacentVertices, 0 ) )
           {
             pt.setZ( pointBefore.z() + ( pointAfter.z() - pointBefore.z() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
           }
@@ -2198,7 +2198,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
         {
           const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
           const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
-          if ( newDistanceBetweenOriginalAdjacentVertices )
+          if ( !qgsDoubleNear( newDistanceBetweenOriginalAdjacentVertices, 0 ) )
           {
             pt.setM( pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
           }

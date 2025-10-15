@@ -316,7 +316,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \code{.py}
      *   # Create a polygon geometry with a single exterior ring (a triangle)
-     *   polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 2)]]))
+     *   polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 2)]])
      *
      *   # Create a donut shaped polygon geometry with an interior ring
      *   polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 10), QgsPointXY(1, 2)],
@@ -623,7 +623,7 @@ class CORE_EXPORT QgsGeometry
      *   # parts can be modified during the iteration
      *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
      *   for part in geometry.parts():
-     *       part.transform(ct)
+     *       part.transform(ct=QgsCoordinateTransform()) # Dummy transform
      *
      *   # part iteration can also be combined with vertex iteration
      *   geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
@@ -3201,18 +3201,14 @@ class CORE_EXPORT QgsGeometry
      * Privatly used in chamfer/fillet functions
      * \note not available in Python bindings
      */
-    enum ChamferFilletOperationType : int SIP_SKIP
+    enum class ChamferFilletOperationType : int SIP_SKIP
     {
       Chamfer = 1,
       Fillet,
     };
-
-    /**
-     * Returns string version for the enum \a op else returns 'unknown'.
-     * \param op the enum to translate to string
-     * \since QGIS 4.0
-     */
-    static QString chamferFilletOperationToString( ChamferFilletOperationType op ) SIP_SKIP;
+#ifndef SIP_RUN
+    Q_ENUM( ChamferFilletOperationType )
+#endif
 
     /**
      * Creates a fillet (rounded corner) at the specified vertex.

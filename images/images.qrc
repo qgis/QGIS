@@ -370,6 +370,7 @@
         <file>themes/default/mActionViewExtentInCanvas.svg</file>
         <file>themes/default/mActionViewScaleInCanvas.svg</file>
         <file>themes/default/mActionOffsetCurve.svg</file>
+        <file>themes/default/mActionChamferFillet.svg</file>
         <file>themes/default/mActionOpenTable.svg</file>
         <file>themes/default/mActionOpenTableEdited.svg</file>
         <file>themes/default/mActionOpenTableSelected.svg</file>
@@ -726,6 +727,7 @@
         <file>themes/default/styleicons/singlebandpseudocolor.svg</file>
         <file>themes/default/mIconAfs.svg</file>
         <file>themes/default/mIconAms.svg</file>
+        <file>themes/default/mIconEsriI3s.svg</file>
         <file>themes/default/mActionAddAmsLayer.svg</file>
         <file>themes/default/mActionAddAfsLayer.svg</file>
         <file>themes/default/mIconFormSelect.svg</file>

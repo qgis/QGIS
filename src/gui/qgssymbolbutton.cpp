@@ -65,7 +65,7 @@ void QgsSymbolButton::updateSizeHint()
   switch ( mType )
   {
     case Qgis::SymbolType::Marker:
-      if ( mFixedSizeContraints )
+      if ( mFixedSizeConstraints )
       {
         if ( mSymbol )
         {
@@ -831,16 +831,16 @@ bool QgsSymbolButton::showNull() const
   return mShowNull;
 }
 
-void QgsSymbolButton::setFixedSizeContraints( bool fixedSizeConstraints )
+void QgsSymbolButton::setFixedSizeConstraints( bool fixedSizeConstraints )
 {
-  mFixedSizeContraints = fixedSizeConstraints;
+  mFixedSizeConstraints = fixedSizeConstraints;
 
   updateSizeHint();
 }
 
 bool QgsSymbolButton::fixedSizeConstraints() const
 {
-  return mFixedSizeContraints;
+  return mFixedSizeConstraints;
 }
 
 bool QgsSymbolButton::isNull() const

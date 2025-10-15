@@ -737,7 +737,7 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
   const double rayDistMap = ( -quadB - sqrt( disc ) ) / ( 2 * quadA );
   if ( rayDistMap < 0 )
   {
-    QgsDebugError( QStringLiteral( "Sphere intersection result negative, cancelling move" ) );
+    QgsDebugError( QStringLiteral( "Sphere intersection result negative, canceling move" ) );
     return;
   }
   const QgsVector3D newPosMap = rayOriginMap + QgsVector3D( ray.direction() ) * rayDistMap;

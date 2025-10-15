@@ -827,7 +827,7 @@ The development version
       ResolveGeometryType,
       CountFeatures,
       IncludeSystemTables,
-      OpenLayersToResolveDecriptions,
+      OpenLayersToResolveDescriptions,
     };
     typedef QFlags<Qgis::SublayerQueryFlag> SublayerQueryFlags;
 
@@ -2022,7 +2022,8 @@ The development version
       Plugin,
       PointCloud,
       Annotation,
-      VectorTile
+      VectorTile,
+      TiledScene
     };
 
 
@@ -2442,6 +2443,7 @@ The development version
       GPServer,
       GeocodeServer,
       Unknown,
+      SceneServer,
     };
 
     enum class RelationshipType /BaseType=IntEnum/
@@ -3444,6 +3446,15 @@ The development version
 
     typedef QFlags<Qgis::RasterProcessingParameterCapability> RasterProcessingParameterCapabilities;
 
+
+    enum class DevToolsNodeRole
+    {
+      Status,
+      Id,
+      ElapsedTime,
+      MaximumTime,
+      Sort,
+    };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
 

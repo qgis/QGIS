@@ -135,7 +135,10 @@ class TestQgsCodeEditor(QgisTestCase):
         else:
             font_db = QFontDatabase()
 
-        self.assertTrue(font_db.isFixedPitch(font.family(), font_db.styleString(font)))
+        self.assertTrue(
+            font_db.isFixedPitch(font.family(), font_db.styleString(font)),
+            f"Font {font.family()} ({font_db.styleString(font)}) is not fixed pitch",
+        )
 
         QgsSettings().setValue(
             "codeEditor/fontfamily", getTestFont().family(), QgsSettings.Section.Gui

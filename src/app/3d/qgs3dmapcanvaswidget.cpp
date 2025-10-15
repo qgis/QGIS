@@ -81,7 +81,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionCameraControl->setCheckable( true );
 
   QAction *zoomFullAction = toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ), tr( "Zoom Full" ), this, &Qgs3DMapCanvasWidget::resetView );
-  zoomFullAction->setShortcuts( { QKeySequence( tr( "Ctrl+0" ) ), QKeySequence( tr( "Esc" ) ) } );
+  zoomFullAction->setShortcut( QKeySequence( tr( "Ctrl+0" ) ) );
 
   // Editing toolbar
   mEditingToolBar = new QToolBar( this );
@@ -265,7 +265,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mActionSetClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCut.svg" ) ), tr( "Cross Section Tool" ), this, &Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas );
   mActionSetClippingPlanes->setCheckable( true );
-  mActionDisableClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCutDisabled.svg" ) ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableClippingPlanes );
+  mActionDisableClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCutDisabled.svg" ) ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableCrossSection );
   mActionDisableClippingPlanes->setDisabled( true );
 
   // Effects Menu
@@ -318,6 +318,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( mCanvas, &Qgs3DMapCanvas::fpsCounterEnabledChanged, this, &Qgs3DMapCanvasWidget::toggleFpsCounter );
   connect( mCanvas, &Qgs3DMapCanvas::cameraNavigationSpeedChanged, this, &Qgs3DMapCanvasWidget::cameraNavigationSpeedChanged );
   connect( mCanvas, &Qgs3DMapCanvas::viewed2DExtentFrom3DChanged, this, &Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged );
+  connect( mCanvas, &Qgs3DMapCanvas::crossSectionEnabledChanged, mActionDisableClippingPlanes, &QAction::setEnabled );
 
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
   QgsIdentifyResultsDialog *resultDialog = identifyTool2D->resultsDialog();
@@ -707,6 +708,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 
   mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( mMainCanvas, this );
   mMapToolClippingPlanes->setAction( mActionSetClippingPlanes );
+  connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::finishedSuccessfully, this, &Qgs3DMapCanvasWidget::onCrossSectionToolFinished );
 
   // none of the actions in the Camera menu are supported by globe yet, so just hide it completely
   mActionCamera->setVisible( map->sceneMode() == Qgis::SceneMode::Local );
@@ -1184,7 +1186,7 @@ void Qgs3DMapCanvasWidget::setSceneExtent( const QgsRectangle &extent )
   {
     if ( !mMapToolClippingPlanes->clippedPolygon().intersects( extent ) )
     {
-      disableClippingPlanes();
+      disableCrossSection();
       mMessageBar->pushInfo( QString(), tr( "Cross-section has been disabled, because it is outside the current extent" ) );
     }
   }
@@ -1206,27 +1208,22 @@ void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
   mMessageBar->pushInfo( QString(), tr( "Select a rectangle using 3 points on the main 2D map view to define the cross-section of this 3D scene" ) );
 }
 
-void Qgs3DMapCanvasWidget::enableClippingPlanes( const QList<QVector4D> &clippingPlanes, const QgsCameraPose &cameraPose )
+void Qgs3DMapCanvasWidget::onCrossSectionToolFinished()
 {
   this->activateWindow();
   this->raise();
   mMessageBar->clearWidgets();
 
-  mCanvas->scene()->enableClipping( clippingPlanes );
-  mCanvas->scene()->cameraController()->setCameraPose( cameraPose );
-
-  mActionDisableClippingPlanes->setDisabled( false );
   if ( mMapToolPrevious )
     mMainCanvas->setMapTool( mMapToolPrevious );
   else
     mMainCanvas->unsetMapTool( mMapToolClippingPlanes.get() );
 }
 
-void Qgs3DMapCanvasWidget::disableClippingPlanes() const
+void Qgs3DMapCanvasWidget::disableCrossSection() const
 {
-  mCanvas->scene()->disableClipping();
+  mCanvas->disableCrossSection();
   mMapToolClippingPlanes->clearHighLightedArea();
-  mActionDisableClippingPlanes->setDisabled( true );
 }
 
 void Qgs3DMapCanvasWidget::updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const

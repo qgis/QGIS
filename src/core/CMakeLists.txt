@@ -178,6 +178,7 @@ set(QGIS_CORE_SRCS
   layertree/qgscolorramplegendnode.cpp
   layertree/qgscolorramplegendnodesettings.cpp
   layertree/qgslayertreefiltersettings.cpp
+  layertree/qgslayertreecustomnode.cpp
   layertree/qgslayertreegroup.cpp
   layertree/qgslayertreelayer.cpp
   layertree/qgslayertreemodel.cpp
@@ -400,6 +401,7 @@ set(QGIS_CORE_SRCS
 
   tiledscene/qgscesiumtilesdataprovider.cpp
   tiledscene/qgscesiumutils.cpp
+  tiledscene/qgsesrii3sdataprovider.cpp
   tiledscene/qgsgltfutils.cpp
   tiledscene/qgsquantizedmeshdataprovider.cpp
   tiledscene/qgsquantizedmeshtiles.cpp
@@ -1603,6 +1605,7 @@ set(QGIS_CORE_HDRS
   layertree/qgscolorramplegendnodesettings.h
   layertree/qgslayertree.h
   layertree/qgslayertreefiltersettings.h
+  layertree/qgslayertreecustomnode.h
   layertree/qgslayertreegroup.h
   layertree/qgslayertreelayer.h
   layertree/qgslayertreemodel.h
@@ -2077,6 +2080,7 @@ set(QGIS_CORE_HDRS
 
   tiledscene/qgscesiumtilesdataprovider.h
   tiledscene/qgscesiumutils.h
+  tiledscene/qgsesrii3sdataprovider.h
   tiledscene/qgsgltfutils.h
   tiledscene/qgsquantizedmeshdataprovider.h
   tiledscene/qgsquantizedmeshtiles.h

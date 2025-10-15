@@ -3563,7 +3563,7 @@ bool QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
   QMimeType mimeType;
 
   QString base64data;
-  if ( mPath.startsWith( QStringLiteral( "base64:" ) ) )
+  if ( mPath.startsWith( QLatin1String( "base64:" ) ) )
   {
     base64data = mPath.mid( 7 );
   }
@@ -3601,7 +3601,7 @@ bool QgsRasterMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement 
     extGraphElem.appendChild( onlineResElem );
 
     // determine mime type
-    if ( mPath.startsWith( QStringLiteral( "http://" ) ) || mPath.startsWith( QStringLiteral( "https://" ) ) )
+    if ( mPath.startsWith( QLatin1String( "http://" ) ) || mPath.startsWith( QLatin1String( "https://" ) ) )
     {
       // Qt can't guess mime type for remote URLs, and it seems geoserver can handle wrong image mime types
       // but not generic ones, so let's hardcode to png.

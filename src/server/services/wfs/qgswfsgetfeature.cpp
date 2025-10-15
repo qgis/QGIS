@@ -160,7 +160,7 @@ namespace QgsWfs
         continue;
       }
 
-      QString name = layerTypeName( layer );
+      QString name = layer->serverProperties()->wfsTypeName();
 
       if ( typeNameList.contains( name ) )
       {
@@ -838,7 +838,6 @@ namespace QgsWfs
         getFeatureQuery &query = *qIt;
         query.featureRequest.setFilterRect( extent ).setFlags( query.featureRequest.flags() | Qgis::FeatureRequestFlag::ExactIntersect );
       }
-      return request;
     }
     else if ( paramContainsFilters )
     {
@@ -875,7 +874,6 @@ namespace QgsWfs
           ++filterIt;
         }
       }
-      return request;
     }
 
     QStringList sortByList = mWfsParameters.sortBy();

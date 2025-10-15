@@ -1694,7 +1694,7 @@ void QgsAttributesFormLayoutModel::addContainer( QModelIndex &parent, const QStr
 
   QgsAttributesFormItem *parentItem = itemForIndex( parent );
 
-  std::unique_ptr< QgsAttributesFormItem > containerItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Container, name, QString(), parentItem );
+  auto containerItem = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::Container, name, QString(), parentItem );
 
   QgsAttributesFormData::AttributeFormItemData itemData;
   itemData.setColumnCount( columnCount );
@@ -1713,7 +1713,7 @@ void QgsAttributesFormLayoutModel::insertChild( const QModelIndex &parent, int r
     return;
 
   beginInsertRows( parent, row, row );
-  std::unique_ptr< QgsAttributesFormItem > item = std::make_unique< QgsAttributesFormItem >();
+  auto item = std::make_unique< QgsAttributesFormItem >();
 
   item->setData( QgsAttributesFormModel::ItemIdRole, itemId );
   item->setData( QgsAttributesFormModel::ItemTypeRole, itemType );

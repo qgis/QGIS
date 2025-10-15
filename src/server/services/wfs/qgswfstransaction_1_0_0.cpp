@@ -249,7 +249,7 @@ namespace QgsWfs
           continue;
         }
 
-        QString name = layerTypeName( layer );
+        QString name = layer->serverProperties()->wfsTypeName();
 
         if ( !typeNameList.contains( name ) )
         {

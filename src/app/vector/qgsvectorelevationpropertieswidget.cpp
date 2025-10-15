@@ -427,7 +427,7 @@ void QgsVectorElevationPropertiesWidget::initializeDataDefinedButton( QgsPropert
 
 void QgsVectorElevationPropertiesWidget::updateDataDefinedButtons()
 {
-  const auto propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
+  const QList<QgsPropertyOverrideButton *> propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
   for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
   {
     updateDataDefinedButton( button );

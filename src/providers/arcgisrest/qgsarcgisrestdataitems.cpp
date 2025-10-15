@@ -105,6 +105,13 @@ void addServiceItems( QVector<QgsDataItem *> &items, const QVariantMap &serviceD
           break;
         }
 
+        case Qgis::ArcGisRestServiceType::SceneServer:
+        {
+          auto serviceItem = std::make_unique<QgsArcGisSceneServiceItem>( parent, name, url, url, authcfg, headers, urlPrefix );
+          items.append( serviceItem.release() );
+          break;
+        }
+
         case Qgis::ArcGisRestServiceType::GlobeServer:
         case Qgis::ArcGisRestServiceType::GPServer:
         case Qgis::ArcGisRestServiceType::GeocodeServer:
@@ -150,6 +157,10 @@ void addLayerItems( QVector<QgsDataItem *> &items, const QVariantMap &serviceDat
         case QgsArcGisRestQueryUtils::ServiceTypeFilter::Raster:
           layerItem = std::make_unique<QgsArcGisMapServiceLayerItem>( parent, url, id, name, crs, format, authcfg, headers, urlPrefix );
           static_cast<QgsArcGisMapServiceLayerItem *>( layerItem.get() )->setSupportedFormats( supportedFormats );
+          break;
+
+        case QgsArcGisRestQueryUtils::ServiceTypeFilter::Scene:
+          layerItem = std::make_unique<QgsArcGisSceneServiceLayerItem>( parent, url, name, crs, authcfg, headers, urlPrefix );
           break;
 
         case QgsArcGisRestQueryUtils::ServiceTypeFilter::AllTypes:
@@ -337,6 +348,10 @@ QVector<QgsDataItem *> QgsArcGisPortalGroupItem::createChildren()
     if ( itemData.value( QStringLiteral( "type" ) ).toString().compare( QStringLiteral( "Feature Service" ), Qt::CaseInsensitive ) == 0 )
     {
       items << new QgsArcGisFeatureServiceItem( this, itemData.value( QStringLiteral( "title" ) ).toString(), itemData.value( QStringLiteral( "url" ) ).toString(), itemData.value( QStringLiteral( "url" ) ).toString(), mAuthCfg, mHeaders, mUrlPrefix );
+    }
+    else if ( itemData.value( QStringLiteral( "type" ) ).toString().compare( QStringLiteral( "Scene Service" ), Qt::CaseInsensitive ) == 0 )
+    {
+      items << new QgsArcGisSceneServiceItem( this, itemData.value( QStringLiteral( "title" ) ).toString(), itemData.value( QStringLiteral( "url" ) ).toString(), itemData.value( QStringLiteral( "url" ) ).toString(), mAuthCfg, mHeaders, mUrlPrefix );
     }
     else
     {
@@ -555,6 +570,53 @@ bool QgsArcGisMapServiceItem::equal( const QgsDataItem *other )
 }
 
 //
+// QgsArcGisSceneServiceItem
+//
+
+QgsArcGisSceneServiceItem::QgsArcGisSceneServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "I3S" ) )
+  , mBaseUrl( baseUrl )
+  , mAuthCfg( authcfg )
+  , mHeaders( headers )
+  , mUrlPrefix( urlPrefix )
+{
+  mIconName = QStringLiteral( "mIconEsriI3s.svg" );
+  mCapabilities |= Qgis::BrowserItemCapability::Collapse;
+  setToolTip( path );
+}
+
+QVector<QgsDataItem *> QgsArcGisSceneServiceItem::createChildren()
+{
+  const QString url = mPath;
+
+  QVector<QgsDataItem *> items;
+  QString errorTitle, errorMessage;
+  const QVariantMap serviceData = QgsArcGisRestQueryUtils::getServiceInfo( url, mAuthCfg, errorTitle, errorMessage, mHeaders, mUrlPrefix );
+  if ( serviceData.isEmpty() )
+  {
+    if ( !errorMessage.isEmpty() )
+    {
+      auto error = std::make_unique<QgsErrorItem>( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
+      error->setToolTip( errorMessage );
+      items.append( error.release() );
+      QgsDebugError( "Connection failed - " + errorMessage );
+    }
+    return items;
+  }
+
+  addFolderItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, mUrlPrefix, this, mSupportedFormats );
+  addServiceItems( items, serviceData, mBaseUrl, mAuthCfg, mHeaders, mUrlPrefix, this, mSupportedFormats );
+  addLayerItems( items, serviceData, mPath, mAuthCfg, mHeaders, mUrlPrefix, this, QgsArcGisRestQueryUtils::ServiceTypeFilter::Scene, mSupportedFormats );
+  return items;
+}
+
+bool QgsArcGisSceneServiceItem::equal( const QgsDataItem *other )
+{
+  const QgsArcGisSceneServiceItem *o = qobject_cast<const QgsArcGisSceneServiceItem *>( other );
+  return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
+}
+
+//
 // QgsArcGisRestLayerItem
 //
 
@@ -609,6 +671,26 @@ QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem( QgsDataItem *parent,
 
   setState( Qgis::BrowserItemState::Populated );
   setToolTip( mPath );
+}
+
+//
+// QgsArcGisSceneServiceLayerItem
+//
+
+QgsArcGisSceneServiceLayerItem::QgsArcGisSceneServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix )
+  : QgsArcGisRestLayerItem( parent, url, title, crs, Qgis::BrowserLayerType::TiledScene, QStringLiteral( "esrii3s" ) )
+{
+  mUri = QStringLiteral( "url='%1'" ).arg( url );
+  if ( !authcfg.isEmpty() )
+    mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
+
+  if ( !urlPrefix.isEmpty() )
+    mUri += QStringLiteral( " urlprefix='%1'" ).arg( urlPrefix );
+
+  mUri += headers.toSpacedString();
+
+  setState( Qgis::BrowserItemState::Populated );
+  setToolTip( url );
 }
 
 //

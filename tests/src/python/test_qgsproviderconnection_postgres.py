@@ -974,7 +974,7 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
             id SERIAL PRIMARY KEY,
             geom geometry(Geometry,4326)
         );
-        CREATE SCHEMA schema_test;
+        CREATE SCHEMA IF NOT EXISTS qgis_schema_test;
         """
 
         conn.executeSql(sql)
@@ -1003,12 +1003,116 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         conn.moveTableToSchema(
             "qgis_test",
             "table_to_move",
-            "schema_test",
+            "qgis_schema_test",
         )
 
         # test moved table exist in the schema
-        table = conn.table("schema_test", "table_to_move")
+        table = conn.table("qgis_schema_test", "table_to_move")
         self.assertEqual(table.tableName(), "table_to_move")
+
+    def test_move_raster_with_overviews_to_schema(self):
+        """Test that raster with overviews can be moved to another schema."""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.uri, {})
+
+        # create raster table
+        sql = """
+        CREATE SCHEMA IF NOT EXISTS qgis_schema_test;
+        CREATE TABLE qgis_test.raster_for_move (
+            id serial PRIMARY KEY,
+            rast raster
+        );
+        INSERT INTO qgis_test.raster_for_move (rast) 
+        SELECT ST_SetSRID(ST_AsRaster(ST_Buffer(ST_Point(0,0),10),150, 150), 3857);
+        SELECT AddRasterConstraints('qgis_test'::name, 'raster_for_move'::name, 'rast'::name);
+        """
+
+        conn.executeSql(sql)
+
+        # test table exist
+        table = conn.table("qgis_test", "raster_for_move")
+        self.assertEqual(table.tableName(), "raster_for_move")
+
+        # create overviews
+        sql = """
+        SELECT ST_CreateOverview('qgis_test.raster_for_move'::regclass, 'rast'::name, 2);
+        SELECT ST_CreateOverview('qgis_test.raster_for_move'::regclass, 'rast'::name, 4);
+        """
+
+        conn.executeSql(sql)
+
+        # check that overviews were created
+        sqlOverviews = """
+        SELECT o_table_schema, o_table_name FROM public.raster_overviews 
+        WHERE r_table_schema = 'qgis_test' AND r_table_name = 'raster_for_move' ORDER BY r_table_name;
+        """
+        overviews = conn.executeSql(sqlOverviews)
+
+        self.assertEqual(
+            [
+                ["qgis_test", "o_2_raster_for_move"],
+                ["qgis_test", "o_4_raster_for_move"],
+            ],
+            overviews,
+        )
+
+        # move table to another schema - overviews should be moved too
+        conn.moveTableToSchema(
+            "qgis_test",
+            "raster_for_move",
+            "qgis_schema_test",
+        )
+
+        # test moved table exist in the schema
+        table = conn.table("qgis_schema_test", "raster_for_move")
+        self.assertEqual(table.tableName(), "raster_for_move")
+
+        # look at overviews after move
+        sqlOverviews = """
+        SELECT o_table_schema, o_table_name FROM public.raster_overviews 
+        WHERE r_table_schema = 'qgis_schema_test' AND r_table_name = 'raster_for_move' ORDER BY r_table_name;
+        """
+
+        overviews = conn.executeSql(sqlOverviews)
+
+        self.assertEqual(
+            [
+                ["qgis_schema_test", "o_2_raster_for_move"],
+                ["qgis_schema_test", "o_4_raster_for_move"],
+            ],
+            overviews,
+        )
+
+        # look for original overviews after move - should be empty
+        sqlTables = """
+        SELECT tablename FROM pg_catalog.pg_tables 
+        WHERE schemaname = 'qgis_test' 
+        AND tablename LIKE '%raster_for_move'
+        ORDER BY tablename;
+        """
+
+        tables = conn.executeSql(sqlTables)
+
+        self.assertEqual(
+            [],
+            tables,
+        )
+
+        # look for overviews after move in the new schema - should be present
+        sqlTables = """
+        SELECT tablename FROM pg_catalog.pg_tables 
+        WHERE schemaname = 'qgis_schema_test' 
+        AND tablename LIKE '%raster_for_move'
+        ORDER BY tablename;
+        """
+
+        tables = conn.executeSql(sqlTables)
+
+        self.assertEqual(
+            [["o_2_raster_for_move"], ["o_4_raster_for_move"], ["raster_for_move"]],
+            tables,
+        )
 
 
 if __name__ == "__main__":

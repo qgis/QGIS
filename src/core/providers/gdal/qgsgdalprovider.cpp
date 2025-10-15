@@ -1861,7 +1861,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         {
           if ( gdalDriverName == QLatin1String( "GTiff" ) )
           {
-            if ( flags.testFlag( Qgis::SublayerQueryFlag::OpenLayersToResolveDecriptions ) )
+            if ( flags.testFlag( Qgis::SublayerQueryFlag::OpenLayersToResolveDescriptions ) )
             {
               // Check if the layer has TIFFTAG_DOCUMENTNAME associated with it. If so, use that name.
               GDALDatasetH datasetHandle = GDALOpen( name, GA_ReadOnly );
@@ -4205,7 +4205,7 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList &creationOpt
   {
     QString value = optionsMap.value( QStringLiteral( "PREDICTOR" ) );
     GDALDataType nDataType = ( !mGdalDataType.isEmpty() ) ? ( GDALDataType ) mGdalDataType.at( 0 ) : GDT_Unknown;
-    int nBitsPerSample = nDataType != GDT_Unknown ? GDALGetDataTypeSize( nDataType ) : 0;
+    const int nBitsPerSample = nDataType != GDT_Unknown ? GDALGetDataTypeSizeBits( nDataType ) : 0;
     QgsDebugMsgLevel( QStringLiteral( "PREDICTOR: %1 nbits: %2 type: %3" ).arg( value ).arg( nBitsPerSample ).arg( ( GDALDataType ) mGdalDataType.at( 0 ) ), 2 );
     // PREDICTOR=2 only valid for 8/16/32 bits per sample
     // TODO check for NBITS option (see geotiff.cpp)

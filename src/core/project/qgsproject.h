@@ -108,6 +108,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
+    Q_PROPERTY( QString title READ title WRITE setTitle  NOTIFY titleChanged )
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath WRITE setPresetHomePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
@@ -1921,6 +1922,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \deprecated QGIS 3.4
      */
     Q_DECL_DEPRECATED void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+
+    /**
+     * Emitted when the title of the project changes.
+     * \since QGIS 4.0
+     */
+    void titleChanged();
 
     //! Emitted when the file name of the project changes
     void fileNameChanged();

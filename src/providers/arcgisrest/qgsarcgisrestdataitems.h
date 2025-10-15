@@ -211,6 +211,30 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
 };
 
 /**
+ * Represents a ArcGIS REST "Scene Service"
+ *
+ * Usually has no child items, but sometimes services are nested and will contain other QgsArcGisSceneServiceItem children
+ * or QgsArcGisRestFolderItem children.
+ */
+class QgsArcGisSceneServiceItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsArcGisSceneServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
+    void setSupportedFormats( const QString &formats );
+    QVector<QgsDataItem *> createChildren() override;
+    bool equal( const QgsDataItem *other ) override;
+
+  private:
+    QString mFolder;
+    QString mBaseUrl;
+    QString mAuthCfg;
+    QgsHttpHeaders mHeaders;
+    QString mUrlPrefix;
+    QString mSupportedFormats;
+};
+
+/**
  * Represents a "parent layer" containing one or more QgsArcGisFeatureServiceItem or QgsArcGisMapServiceItem children.
  */
 class QgsArcGisRestParentLayerItem : public QgsDataItem
@@ -274,6 +298,16 @@ class QgsArcGisMapServiceLayerItem : public QgsArcGisRestLayerItem
     QString mSupportedFormats;
 };
 
+/**
+ * Represents a ArcGIS REST "Scene Service" layer item.
+ */
+class QgsArcGisSceneServiceLayerItem : public QgsArcGisRestLayerItem
+{
+    Q_OBJECT
+
+  public:
+    QgsArcGisSceneServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &authcfg, const QgsHttpHeaders &headers, const QString urlPrefix );
+};
 
 //! Provider for ArcGIS REST root data item
 class QgsArcGisRestDataItemProvider : public QgsDataItemProvider

@@ -340,7 +340,7 @@ void TestQgsGdalUtils::testResampleSingleBandRasterNoData()
   QCOMPARE( err, CE_None );
 
   // Create destination GDAL DS
-  std::unique_ptr<QgsRasterBlock> dstBlock = std::make_unique<QgsRasterBlock>( Qgis::DataType::UInt16, 4, 4 );
+  auto dstBlock = std::make_unique<QgsRasterBlock>( Qgis::DataType::UInt16, 4, 4 );
   dstBlock->setNoDataValue( 65535.0 );
   gdal::dataset_unique_ptr gdalDsOutput = QgsGdalUtils::blockToSingleBandMemoryDataset( QgsRectangle( 1, 1, 3, 3 ), dstBlock.get() );
 

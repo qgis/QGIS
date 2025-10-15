@@ -98,7 +98,7 @@ void QgsGeometryCheckContainedAlgorithm::initAlgorithm( const QVariantMap &confi
     QStringLiteral( "OUTPUT" ), QObject::tr( "Contained features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
 
