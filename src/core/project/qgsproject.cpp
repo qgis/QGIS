@@ -2719,7 +2719,7 @@ bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, Qgis::ProjectReadF
         // make sure to convert the path from relative to absolute
         const QString projectPath = readPath( childGroup->customProperty( QStringLiteral( "embedded_project" ) ).toString() );
         childGroup->setCustomProperty( QStringLiteral( "embedded_project" ), projectPath );
-        QgsLayerTreeGroup *newGroup = createEmbeddedGroup( childGroup->name(), projectPath, childGroup->customProperty( QStringLiteral( "embedded-invisible-layers" ) ).toStringList(), flags );
+        std::unique_ptr< QgsLayerTreeGroup > newGroup = createEmbeddedGroup( childGroup->name(), projectPath, childGroup->customProperty( QStringLiteral( "embedded-invisible-layers" ) ).toStringList(), flags );
         if ( newGroup )
         {
           QList<QgsLayerTreeNode *> clonedChildren;
@@ -2727,7 +2727,6 @@ bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, Qgis::ProjectReadF
           clonedChildren.reserve( constChildren.size() );
           for ( QgsLayerTreeNode *newGroupChild : constChildren )
             clonedChildren << newGroupChild->clone();
-          delete newGroup;
 
           childGroup->insertChildNodes( 0, clonedChildren );
         }
@@ -4069,7 +4068,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
   return false;
 }
 
-QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, Qgis::ProjectReadFlags flags )
+std::unique_ptr<QgsLayerTreeGroup> QgsProject::createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, Qgis::ProjectReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -4099,7 +4098,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   context.setProjectTranslator( this );
   context.setTransformContext( transformContext() );
 
-  QgsLayerTreeGroup *root = new QgsLayerTreeGroup;
+  auto root = std::make_unique< QgsLayerTreeGroup >();
 
   QDomElement layerTreeElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
@@ -4108,32 +4107,30 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   }
   else
   {
-    QgsLayerTreeUtils::readOldLegend( root, projectDocument.documentElement().firstChildElement( QStringLiteral( "legend" ) ) );
+    QgsLayerTreeUtils::readOldLegend( root.get(), projectDocument.documentElement().firstChildElement( QStringLiteral( "legend" ) ) );
   }
 
   QgsLayerTreeGroup *group = root->findGroup( groupName );
   if ( !group || group->customProperty( QStringLiteral( "embedded" ) ).toBool() )
   {
     // embedded groups cannot be embedded again
-    delete root;
     return nullptr;
   }
 
   // clone the group sub-tree (it is used already in a tree, we cannot just tear it off)
-  QgsLayerTreeGroup *newGroup = QgsLayerTree::toGroup( group->clone() );
-  delete root;
-  root = nullptr;
+  std::unique_ptr< QgsLayerTreeGroup > newGroup( QgsLayerTree::toGroup( group->clone() ) );
+  root.reset();
 
   newGroup->setCustomProperty( QStringLiteral( "embedded" ), 1 );
   newGroup->setCustomProperty( QStringLiteral( "embedded_project" ), projectFilePath );
 
   // set "embedded" to all children + load embedded layers
   mLayerTreeRegistryBridge->setEnabled( false );
-  initializeEmbeddedSubtree( projectFilePath, newGroup, flags );
+  initializeEmbeddedSubtree( projectFilePath, newGroup.get(), flags );
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // consider the layers might be identify disabled in its project
-  const auto constFindLayerIds = newGroup->findLayerIds();
+  const QStringList constFindLayerIds = newGroup->findLayerIds();
   for ( const QString &layerId : constFindLayerIds )
   {
     QgsLayerTreeLayer *layer = newGroup->findLayer( layerId );

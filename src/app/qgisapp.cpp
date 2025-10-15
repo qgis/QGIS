@@ -13080,10 +13080,10 @@ void QgisApp::addEmbeddedItems( const QString &projectFile, const QStringList &g
   QStringList::const_iterator groupIt = groups.constBegin();
   for ( ; groupIt != groups.constEnd(); ++groupIt )
   {
-    QgsLayerTreeGroup *newGroup = QgsProject::instance()->createEmbeddedGroup( *groupIt, projectFile, QStringList() );
+    std::unique_ptr< QgsLayerTreeGroup > newGroup = QgsProject::instance()->createEmbeddedGroup( *groupIt, projectFile, QStringList() );
 
     if ( newGroup )
-      QgsProject::instance()->layerTreeRoot()->addChildNode( newGroup );
+      QgsProject::instance()->layerTreeRoot()->addChildNode( newGroup.release() );
   }
 
   //layer ids
