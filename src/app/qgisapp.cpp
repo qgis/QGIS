@@ -10425,7 +10425,7 @@ void QgisApp::pasteStyle( QgsMapLayer *destinationLayer, QgsMapLayer::StyleCateg
       const Qgis::LayerType styleOriginType { qgsEnumKeyToValue( rootElement.attribute( QStringLiteral( "layerType" ) ), Qgis::LayerType::Vector ) };
       if ( selectionLayer->type() != styleOriginType )
       {
-        visibleMessageBar()->pushMessage( tr( "Cannot paste style to layer '%1' because the type doesn't match (%2 → %3)" ).arg( selectionLayer->name(), qgsEnumValueToKey( styleOriginType ), qgsEnumValueToKey( selectionLayer->type() ) ), errorMsg, Qgis::MessageLevel::Warning );
+        visibleMessageBar()->pushMessage( tr( "Cannot paste style to layer '%1' because the type doesn't match (%2 → %3)" ).arg( selectionLayer->name(), QgsMapLayerUtils::translateLayerType( styleOriginType ), QgsMapLayerUtils::translateLayerType( selectionLayer->type() ) ), errorMsg, Qgis::MessageLevel::Warning );
         return;
       }
 
