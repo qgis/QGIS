@@ -153,12 +153,17 @@ void QgsVirtualPointCloudProvider::generateIndex()
 
 void QgsVirtualPointCloudProvider::parseFile()
 {
-  const QUrl url( dataSourceUri() );
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( PROVIDER_KEY );
+  const QVariantMap decodedUri = metadata->decodeUri( dataSourceUri() );
+  const QString authcfg = decodedUri.value( QStringLiteral( "authcfg" ) ).toString();
+  const QString path = decodedUri.value( QStringLiteral( "path" ) ).toString();
+
+  QUrl url;
   nlohmann::json data;
   QByteArray jsonData;
-
-  if ( url.scheme().startsWith( "http" ) )
+  if ( path.startsWith( QLatin1String( "http" ) ) )
   {
+    url.setUrl( path );
     QNetworkRequest request( url );
     const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( request );
     if ( reply.error() == QNetworkReply::NoError )
@@ -173,7 +178,8 @@ void QgsVirtualPointCloudProvider::parseFile()
   }
   else
   {
-    QFile file( dataSourceUri() );
+    url = QUrl::fromLocalFile( path );
+    QFile file( url.toLocalFile() );
     if ( file.open( QFile::ReadOnly ) )
     {
       jsonData = file.readAll();
@@ -242,7 +248,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     {
       mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
       const QUrl overviewUrl = url.resolved( QUrl( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
-      mOverview.load( overviewUrl.toString() );
+      mOverview.load( overviewUrl.isLocalFile() ? overviewUrl.toLocalFile() : overviewUrl.toString(), authcfg );
     }
     // if it doesn't exist look for overview file in the directory
     else if ( !mOverview )
@@ -250,7 +256,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       const QString baseName = QFileInfo( url.fileName() ).baseName();
       const QUrl overviewUrl = url.resolved( QUrl( baseName + QStringLiteral( "-overview.copc.laz" ) ) );
       mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
-      mOverview.load( overviewUrl.toString() );
+      mOverview.load( overviewUrl.isLocalFile() ? overviewUrl.toLocalFile() : overviewUrl.toString(), authcfg );
     }
 
     // Only COPC and EPT formats are currently supported. Other files will only have their bounds rendered
@@ -382,7 +388,8 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( uri.startsWith( QLatin1String( "./" ) ) )
     {
       // resolve relative path
-      uri = url.resolved( QUrl( uri ) ).toString();
+      const QUrl resolvedUrl = url.resolved( QUrl( uri ) );
+      uri = resolvedUrl.isLocalFile() ? resolvedUrl.toLocalFile() : resolvedUrl.toString();
     }
 
     if ( f["properties"].contains( "pc:schemas" ) )
@@ -621,9 +628,20 @@ QList<Qgis::LayerType> QgsVirtualPointCloudProviderMetadata::validLayerTypesForU
 QVariantMap QgsVirtualPointCloudProviderMetadata::decodeUri( const QString &uri ) const
 {
   QVariantMap uriComponents;
-  QUrl url = QUrl::fromUserInput( uri );
+
+  const thread_local QRegularExpression rx( QStringLiteral( " authcfg='([^']*)'" ) );
+  const QRegularExpressionMatch match = rx.match( uri );
+  if ( match.hasMatch() )
+    uriComponents.insert( QStringLiteral( "authcfg" ), match.captured( 1 ) );
+
+  QString path = uri;
+  path.remove( rx );
+  path = path.trimmed();
+  const QUrl url = QUrl::fromUserInput( path );
+
+  uriComponents.insert( QStringLiteral( "path" ), path );
   uriComponents.insert( QStringLiteral( "file-name" ), url.fileName() );
-  uriComponents.insert( QStringLiteral( "path" ), uri );
+
   return uriComponents;
 }
 
@@ -657,8 +675,13 @@ QList<Qgis::LayerType> QgsVirtualPointCloudProviderMetadata::supportedLayerTypes
 
 QString QgsVirtualPointCloudProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  return path;
+  QString uri = parts.value( QStringLiteral( "path" ) ).toString();
+
+  const QString authcfg = parts.value( QStringLiteral( "authcfg" ) ).toString();
+  if ( !authcfg.isEmpty() )
+    uri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
+
+  return uri;
 }
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsVirtualPointCloudProviderMetadata::capabilities() const
