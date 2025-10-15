@@ -1238,7 +1238,7 @@ void QgsProject::clear()
   emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
 
-  mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
+  mMapThemeCollection = std::make_unique< QgsMapThemeCollection >( this );
   emit mapThemeCollectionChanged();
 
   mLabelingEngineSettings->clear();
@@ -1247,8 +1247,8 @@ void QgsProject::clear()
   // exists within the archive. Otherwise the archive can't be removed.
   releaseHandlesToProjectArchive();
 
-  mAuxiliaryStorage.reset( new QgsAuxiliaryStorage() );
-  mArchive.reset( new QgsArchive() );
+  mAuxiliaryStorage = std::make_unique< QgsAuxiliaryStorage >();
+  mArchive = std::make_unique< QgsArchive >();
 
   // must happen AFTER archive reset, as it will populate a new style database within the new archive
   mStyleSettings->reset();
@@ -1993,7 +1993,7 @@ bool QgsProject::read( Qgis::ProjectReadFlags flags )
     }
     else
     {
-      mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( *this ) );
+      mAuxiliaryStorage = std::make_unique< QgsAuxiliaryStorage >( *this );
       const QFileInfo finfo( mFile.fileName() );
       const QString attachmentsZip = finfo.absoluteDir().absoluteFilePath( QStringLiteral( "%1_attachments.zip" ).arg( finfo.completeBaseName() ) );
       if ( QFile( attachmentsZip ).exists() )
@@ -2043,7 +2043,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
 
   if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( mFile ).absolutePath(), localeFileName ) ).exists() )
   {
-    mTranslator.reset( new QTranslator() );
+    mTranslator = std::make_unique< QTranslator >();
     ( void )mTranslator->load( localeFileName, QFileInfo( mFile ).absolutePath() );
   }
 
@@ -2518,7 +2518,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   mRootGroup->removeCustomProperty( QStringLiteral( "loading" ) );
 
   profile.switchTask( tr( "Loading map themes" ) );
-  mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
+  mMapThemeCollection = std::make_unique< QgsMapThemeCollection >( this );
   emit mapThemeCollectionChanged();
   mMapThemeCollection->readXml( *doc );
 
@@ -3336,12 +3336,12 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.appendChild( elevationShadingNode );
 
   // write layer tree - make sure it is without embedded subgroups
-  QgsLayerTreeNode *clonedRoot = mRootGroup->clone();
-  QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
-  QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ), this ); // convert absolute paths to relative paths if required
+  std::unique_ptr< QgsLayerTreeNode > clonedRoot( mRootGroup->clone() );
+  QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot.get() ) );
+  QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot.get() ), this ); // convert absolute paths to relative paths if required
 
   clonedRoot->writeXml( qgisNode, context );
-  delete clonedRoot;
+  clonedRoot.reset();
 
   mSnappingConfig.writeProject( *doc );
   writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsMode" ), static_cast<int>( mAvoidIntersectionsMode ) );
@@ -4694,11 +4694,11 @@ bool QgsProject::unzip( const QString &filename, Qgis::ProjectReadFlags flags )
   {
     // database file is already a copy as it's been unzipped. So we don't open
     // auxiliary storage in copy mode in this case
-    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( static_cast<QgsProjectArchive *>( mArchive.get() )->auxiliaryStorageFile(), false ) );
+    mAuxiliaryStorage = std::make_unique< QgsAuxiliaryStorage >( static_cast<QgsProjectArchive *>( mArchive.get() )->auxiliaryStorageFile(), false );
   }
   else
   {
-    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( *this ) );
+    mAuxiliaryStorage = std::make_unique< QgsAuxiliaryStorage >( *this );
   }
 
   // read the project file
@@ -4756,7 +4756,7 @@ bool QgsProject::zip( const QString &filename )
     if ( !mArchive->exists() )
     {
       releaseHandlesToProjectArchive();
-      mArchive.reset( new QgsProjectArchive() );
+      mArchive = std::make_unique< QgsProjectArchive >();
       mArchive->unzip( mFile.fileName() );
       static_cast<QgsProjectArchive *>( mArchive.get() )->clearProjectFile();
 
@@ -4764,7 +4764,7 @@ bool QgsProject::zip( const QString &filename )
       if ( ! auxiliaryStorageFile.isEmpty() )
       {
         archive->addFile( auxiliaryStorageFile );
-        mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( auxiliaryStorageFile, false ) );
+        mAuxiliaryStorage = std::make_unique< QgsAuxiliaryStorage >( auxiliaryStorageFile, false );
       }
     }
   }
