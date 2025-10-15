@@ -540,7 +540,7 @@ bool QgsPostgresUtils::createStylesTable( QgsPostgresConn *conn, QString loggedC
 bool QgsPostgresUtils::createProjectsTable( QgsPostgresConn *conn, const QString &schemaName )
 {
   // try to create projects table
-  const QString sql = QStringLiteral( "CREATE TABLE %1.qgis_projects(name TEXT PRIMARY KEY, metadata JSONB, content BYTEA)" )
+  const QString sql = QStringLiteral( "CREATE TABLE %1.qgis_projects(name TEXT PRIMARY KEY, metadata JSONB, content BYTEA, comment TEXT DEFAULT '')" )
                         .arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
 
   QgsPostgresResult res( conn->PQexec( sql ) );
