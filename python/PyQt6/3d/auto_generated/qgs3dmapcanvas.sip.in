@@ -89,7 +89,7 @@ intersected 3d entities.
 .. versionadded:: 4.0
 %End
 
-void enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double tolerance, bool setSideView = true );
+    void enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double tolerance, bool setSideView = true );
 %Docstring
 Enables cross section mode for the 3D map canvas. The 3D scene will be
 clipped by four clipping planes, defined by a cross section line segment
