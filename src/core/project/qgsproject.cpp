@@ -412,6 +412,8 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   [this]( const QList< QgsMapLayer * > &layers ) { mProjectScope.reset(); emit layersAdded( layers ); } );
   connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this,
   [this]( QgsMapLayer * layer ) { mProjectScope.reset(); emit layerWasAdded( layer ); } );
+  connect( mBookmarkManager, &QgsBookmarkManager::bookmarksChanged, this, 
+    [this]{ mProjectScope.reset(); emit customVariablesChanged(); } );
 
   if ( QgsApplication::instance() )
   {
@@ -2960,6 +2962,30 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
 
   mProjectScope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( this ) );
   mProjectScope->addFunction( QStringLiteral( "project_color_object" ), new GetNamedProjectColorObject( this ) );
+
+  // bookmarks
+  QVariantList bookmarksList;
+  const auto bookmarks = mBookmarkManager->bookmarks();
+  for (const QgsBookmark &bm : bookmarks)
+  {
+    QVariantMap bmMap;
+    bmMap["name"] = bm.name();
+    bmMap["id"] = bm.id();
+    // Example extent serialization
+    const QgsRectangle ext = bm.extent();
+    bmMap["extent"] = QVariantMap{
+        {"xmin", ext.xMinimum()},
+        {"ymin", ext.yMinimum()},
+        {"xmax", ext.xMaximum()},
+        {"ymax", ext.yMaximum()}
+    };
+    bmMap["width"] = ext.width();
+    bmMap["height"] = ext.height();
+    bmMap["crs"] = bm.crs().authid();
+    bmMap["rotation"] = bm.rotation();
+    bookmarksList << bmMap;
+  }
+  mProjectScope->addVariable(QgsExpressionContextScope::StaticVariable(QStringLiteral("project_bookmarks"), bookmarksList, true, true));
 
   return createExpressionContextScope();
 }
