@@ -22,7 +22,7 @@ import os
 import time
 import unittest
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QSize
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
     QgsApplication,
@@ -40,7 +40,6 @@ from qgis.core import QgsProject
 from qgis.gui import QgsMapCanvas, QgsLayerTreeMapCanvasBridge
 from qgis.testing import start_app, QgisTestCase
 
-from qgis.testing.mocked import get_iface
 from utilities import compareWkt, unitTestDataPath
 
 QGISAPP = start_app()
@@ -75,7 +74,6 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         super().setUpClass()
-        cls.iface = get_iface()
         cls.dbconn = "service=qgis_test"
         if "QGIS_PGTEST_DB" in os.environ:
             cls.dbconn = os.environ["QGIS_PGTEST_DB"]
@@ -887,7 +885,8 @@ class TestPyQgsPostgresRasterProvider(QgisTestCase):
     def testSparseRaster(self):
         """Test issue GH #55753"""
         project: QgsProject = QgsProject.instance()
-        canvas: QgsMapCanvas = self.iface.mapCanvas()
+        canvas: QgsMapCanvas = QgsMapCanvas()
+        canvas.resize(QSize(400, 400))
         project.setCrs(QgsCoordinateReferenceSystem("EPSG:3035"))
         canvas.setExtent(QgsRectangle(4080050, 2430625, 4080200, 2430750))
 
