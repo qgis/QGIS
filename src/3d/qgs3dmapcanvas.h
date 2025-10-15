@@ -97,6 +97,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     //! Returns access to the view's camera controller. Returns NULLPTR if the scene has not been initialized yet with setMapSettings()
     QgsCameraController *cameraController();
 
+    /**
      * Sets the active map \a tool that will receive events from the 3D canvas. Does not transfer ownership.
      * If the tool is NULLPTR, events will be used for camera manipulation.
      * \since QGIS 4.0
