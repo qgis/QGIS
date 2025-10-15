@@ -258,6 +258,8 @@ void QgsVirtualPointCloudProvider::parseFile()
       mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
       mOverview.load( overviewUrl.isLocalFile() ? overviewUrl.toLocalFile() : overviewUrl.toString(), authcfg );
     }
+    if ( !mOverview.isValid() )
+      mOverview = QgsPointCloudIndex();
 
     // Only COPC and EPT formats are currently supported. Other files will only have their bounds rendered
     if ( !uri.endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) &&
