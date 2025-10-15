@@ -52,6 +52,7 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   );
 
   leText->setClearButtonEnabled( false );
+  leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
 
   connect( leText, &QLineEdit::textChanged, this, &QgsProcessingLayerOutputDestinationWidget::textChanged );
 
@@ -81,8 +82,6 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
 
   setAcceptDrops( true );
   leText->setAcceptDrops( false );
-
-  textChanged( leText->text() );
 }
 
 bool QgsProcessingLayerOutputDestinationWidget::outputIsSkipped() const
