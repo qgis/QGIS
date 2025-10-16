@@ -13610,7 +13610,6 @@ QgsProject.cleared: src/core/project/qgsproject.h#L1833
 QgsProject.commitChanges: src/core/project/qgsproject.h#L2365
 QgsProject.count: src/core/project/qgsproject.h#L1209
 QgsProject.createAttachedFile: src/core/project/qgsproject.h#L1603
-QgsProject.createEmbeddedGroup: src/core/project/qgsproject.h#L760
 QgsProject.createEmbeddedLayer: src/core/project/qgsproject.h#L751
 QgsProject.createExpressionContext: src/core/project/qgsproject.h#L1134
 QgsProject.createExpressionContextScope: src/core/project/qgsproject.h#L1135
