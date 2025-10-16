@@ -1847,104 +1847,158 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     const bool isTable = qobject_cast<QgsLayerItem *>( item );
     if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::MoveTableToSchema ) )
     {
+      const QString connectionUri = conn->uri();
+      const QString providerKey = conn->providerKey();
+
+      bool allMovableLayers = false;
+      bool allSameDatabase = false;
+
+      if ( selectedItems.count() > 1 )
+      {
+        allMovableLayers = std::all_of( selectedItems.begin(), selectedItems.end(), []( QgsDataItem *item ) {
+          QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+          if ( layerItem == nullptr )
+          {
+            return false;
+          }
+          return layerItem->mapLayerType() == Qgis::LayerType::Vector || layerItem->mapLayerType() == Qgis::LayerType::Raster;
+        } );
+
+        allSameDatabase = std::all_of( selectedItems.begin(), selectedItems.end(), [connectionUri]( QgsDataItem *item ) {
+          QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+          if ( layerItem == nullptr )
+          {
+            return false;
+          }
+          QgsDataSourceUri layerUri( layerItem->uri() );
+          QgsDataSourceUri mainUri( connectionUri );
+
+          return layerUri.host() == mainUri.host() && layerUri.database() == mainUri.database();
+        } );
+      }
+
       QAction *moveToSchemaAction = new QAction( tr( "Move to Another Schema…" ), menu );
 
       QgsDataItemGuiProviderUtils::addToSubMenu( menu, moveToSchemaAction, tr( "Manage" ) );
 
-      const QString connectionUri = conn->uri();
-      const QString providerKey = conn->providerKey();
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+      if ( !md )
+        return;
 
-      connect( moveToSchemaAction, &QAction::triggered, moveToSchemaAction, [item, context, connectionUri, providerKey] {
-        QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
-        if ( !md )
-          return;
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
 
-        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+      QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( conn2.get() );
 
-        QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( conn2.get() );
-
-        if ( dlg->exec() == QDialog::Accepted )
+      if ( dlg->exec() == QDialog::Accepted )
+      {
+        if ( selectedItems.count() == 1 )
         {
-          const QString originalSchemaName = item->parent()->name();
-          const QString tableName = item->name();
-
           std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-
-          QString errCause;
-          if ( conn3 )
-          {
-            try
-            {
-              QgsTemporaryCursorOverride override( Qt::WaitCursor );
-              conn3->moveTableToSchema( originalSchemaName, tableName, dlg->selectedSchema() );
-            }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              errCause = ex.what();
-            }
-          }
-          else
-          {
-            errCause = QObject::tr( "There was an error retrieving the connection to %1" ).arg( connectionUri );
-          }
-
-          if ( !errCause.isEmpty() )
-          {
-            notify( tr( "Cannot move %1 to schema %2" ).arg( tableName, dlg->selectedSchema() ), errCause, context, Qgis::MessageLevel::Critical );
-            return;
-          }
-          else if ( context.messageBar() )
-          {
-            context.messageBar()->pushMessage( tr( "Moved %1 to schema %2" ).arg( tableName, dlg->selectedSchema() ), Qgis::MessageLevel::Success );
-          }
-
-          // refresh parent item (schema) and also the schema that table was moved to if it was populated
-          if ( !item->parent() )
+          bool success = moveTableToSchema( std::move( conn3 ), item->parent()->name(), item->name(), dlg->selectedSchema(), context, true );
+          if ( !success )
             return;
 
-          item->parent()->refresh();
+          // refresh parent item (schema)
+          if ( qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
+            item->parent()->refresh();
 
-          if ( !item->parent()->parent() )
+          if ( !qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() ) )
             return;
 
-          const QVector<QgsDataItem *> constChildren { item->parent()->parent()->children() };
-          for ( QgsDataItem *c : constChildren )
-          {
-            if ( c->name() == dlg->selectedSchema() )
-            {
-              if ( c->state() != Qgis::BrowserItemState::NotPopulated )
-              {
-                c->refresh();
-              }
-              break;
-            }
-          }
+          QgsDataItemGuiProviderUtils::refreshChildWithName( item->parent()->parent(), dlg->selectedSchema() );
         }
-      } );
+        else
+        {
+          int numberImported = 0;
+          QSet<QString> schemasToRefresh;
+          for ( const QgsDataItem *selectedItem : selectedItems )
+          {
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+            bool success = moveTableToSchema( std::move( conn3 ), selectedItem->parent()->name(), selectedItem->name(), dlg->selectedSchema(), context, false );
+
+            if ( success )
+            {
+              numberImported++;
+
+              if ( selectedItem->parent() && qobject_cast<QgsDatabaseSchemaItem *>( selectedItem->parent() ) )
+                schemasToRefresh.insert( selectedItem->parent()->name() );
+            }
+          }
+
+          if ( !qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
+            return;
+
+          QgsDataCollectionItem *dbItem = qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() );
+          if ( !dbItem )
+            return;
+
+          // add target schema to schemas to refresh
+          schemasToRefresh.insert( dlg->selectedSchema() );
+
+          for ( const QString &schema : schemasToRefresh )
+          {
+            QgsDataItemGuiProviderUtils::refreshChildWithName( dbItem, schema );
+          }
+
+          notify( tr( "Move Tables" ), tr( "%1 tables moved to schema %2" ).arg( numberImported ).arg( dlg->selectedSchema() ), context, Qgis::MessageLevel::Success );
+        }
+      }
+    } );
+  }
+
+  if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteSpatialIndex ) )
+  {
+    QAction *createSpatialIndexAction = new QAction( tr( "Create Spatial Index" ), menu );
+    QAction *deleteSpatialIndexAction = new QAction( tr( "Delete Spatial Index…" ), menu );
+
+    QgsAbstractDatabaseProviderConnection::TableProperty tableProperty = conn->table( item->parent()->name(), item->name() );
+
+    const bool indexExist = conn->spatialIndexExists( tableProperty.schema(), tableProperty.tableName(), tableProperty.geometryColumn() );
+
+    if ( indexExist )
+    {
+      QgsDataItemGuiProviderUtils::addToSubMenu( menu, deleteSpatialIndexAction, tr( "Manage" ) );
+    }
+    else
+    {
+      QgsDataItemGuiProviderUtils::addToSubMenu( menu, createSpatialIndexAction, tr( "Manage" ) );
     }
 
-    if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteSpatialIndex ) )
-    {
-      QAction *createSpatialIndexAction = new QAction( tr( "Create Spatial Index" ), menu );
-      QAction *deleteSpatialIndexAction = new QAction( tr( "Delete Spatial Index…" ), menu );
+    const QString connectionUri = conn->uri();
+    const QString providerKey = conn->providerKey();
 
-      QgsAbstractDatabaseProviderConnection::TableProperty tableProperty = conn->table( item->parent()->name(), item->name() );
+    connect( createSpatialIndexAction, &QAction::triggered, createSpatialIndexAction, [providerKey, connectionUri, tableProperty, context] {
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+      if ( !md )
+        return;
 
-      const bool indexExist = conn->spatialIndexExists( tableProperty.schema(), tableProperty.tableName(), tableProperty.geometryColumn() );
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
 
-      if ( indexExist )
+      QString errCause;
+      try
       {
-        QgsDataItemGuiProviderUtils::addToSubMenu( menu, deleteSpatialIndexAction, tr( "Manage" ) );
+        QgsTemporaryCursorOverride override( Qt::WaitCursor );
+        conn2->createSpatialIndex( tableProperty.schema(), tableProperty.tableName() );
       }
-      else
+      catch ( QgsProviderConnectionException &ex )
       {
-        QgsDataItemGuiProviderUtils::addToSubMenu( menu, createSpatialIndexAction, tr( "Manage" ) );
+        errCause = ex.what();
       }
 
-      const QString connectionUri = conn->uri();
-      const QString providerKey = conn->providerKey();
+      if ( !errCause.isEmpty() )
+      {
+        notify( tr( "Cannot create spatial index on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), errCause, context, Qgis::MessageLevel::Critical );
+        return;
+      }
+      else if ( context.messageBar() )
+      {
+        context.messageBar()->pushMessage( tr( "Spatial index created on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), Qgis::MessageLevel::Success );
+      }
+    } );
 
-      connect( createSpatialIndexAction, &QAction::triggered, createSpatialIndexAction, [providerKey, connectionUri, tableProperty, context] {
+    connect( deleteSpatialIndexAction, &QAction::triggered, deleteSpatialIndexAction, [providerKey, connectionUri, tableProperty, context] {
+      if ( QMessageBox::question( nullptr, tr( "Delete Spatial Index" ), tr( "Are you sure that you want to delete spatial index from %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+      {
         QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
         if ( !md )
           return;
@@ -1955,7 +2009,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         try
         {
           QgsTemporaryCursorOverride override( Qt::WaitCursor );
-          conn2->createSpatialIndex( tableProperty.schema(), tableProperty.tableName() );
+          conn2->deleteSpatialIndex( tableProperty.schema(), tableProperty.tableName(), tableProperty.geometryColumn() );
         }
         catch ( QgsProviderConnectionException &ex )
         {
@@ -1964,112 +2018,117 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
         if ( !errCause.isEmpty() )
         {
-          notify( tr( "Cannot create spatial index on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), errCause, context, Qgis::MessageLevel::Critical );
+          notify( tr( "Cannot delete spatial index on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), errCause, context, Qgis::MessageLevel::Critical );
           return;
         }
         else if ( context.messageBar() )
         {
-          context.messageBar()->pushMessage( tr( "Spatial index created on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), Qgis::MessageLevel::Success );
+          context.messageBar()->pushMessage( tr( "Spatial index deleted on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), Qgis::MessageLevel::Success );
         }
-      } );
+      }
+    } );
+  }
 
-      connect( deleteSpatialIndexAction, &QAction::triggered, deleteSpatialIndexAction, [providerKey, connectionUri, tableProperty, context] {
-        if ( QMessageBox::question( nullptr, tr( "Delete Spatial Index" ), tr( "Are you sure that you want to delete spatial index from %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+  if ( isTable && conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::SetTableComment ) )
+  {
+    QAction *editComment = new QAction( tr( "Set Comment…" ), menu );
+
+    QgsDataItemGuiProviderUtils::addToSubMenu( menu, editComment, tr( "Manage" ) );
+
+    const QString connectionUri = conn->uri();
+    const QString providerKey = conn->providerKey();
+
+    connect( editComment, &QAction::triggered, editComment, [connectionUri, providerKey, item, context] {
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+      if ( !md )
+        return;
+
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+
+      QString errCause;
+
+      const QString schemaName = item->parent()->name();
+      const QString tableName = item->name();
+
+      QString fullName;
+      if ( schemaName.isEmpty() )
+        fullName = tableName;
+      else
+        fullName = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
+
+      if ( conn2 )
+      {
+        const QString comment = conn2->table( schemaName, tableName ).comment();
+
+        bool ok = false;
+        const QString newComment = QInputDialog::getMultiLineText( QgisApp::instance(), tr( "Table Comment" ), tr( "Comment" ), comment, &ok );
+
+        if ( ok && comment != newComment )
         {
-          QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
-          if ( !md )
-            return;
-
-          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-
-          QString errCause;
           try
           {
             QgsTemporaryCursorOverride override( Qt::WaitCursor );
-            conn2->deleteSpatialIndex( tableProperty.schema(), tableProperty.tableName(), tableProperty.geometryColumn() );
+            conn2->setTableComment( schemaName, tableName, newComment );
           }
           catch ( QgsProviderConnectionException &ex )
           {
             errCause = ex.what();
           }
-
-          if ( !errCause.isEmpty() )
-          {
-            notify( tr( "Cannot delete spatial index on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), errCause, context, Qgis::MessageLevel::Critical );
-            return;
-          }
-          else if ( context.messageBar() )
-          {
-            context.messageBar()->pushMessage( tr( "Spatial index deleted on %1.%2" ).arg( tableProperty.schema(), tableProperty.tableName() ), Qgis::MessageLevel::Success );
-          }
         }
-      } );
-    }
+      }
+      else
+      {
+        errCause = QObject::tr( "There was an error retrieving the connection to %1" ).arg( connectionUri );
+      }
 
-    if ( isTable && conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::SetTableComment ) )
+      if ( !errCause.isEmpty() )
+      {
+        notify( tr( "Cannot edit comment on %1" ).arg( fullName ), errCause, context, Qgis::MessageLevel::Critical );
+        return;
+      }
+      else if ( context.messageBar() )
+      {
+        context.messageBar()->pushMessage( tr( "Edited comment on %1" ).arg( fullName ), Qgis::MessageLevel::Success );
+      }
+    } );
+  }
+}
+}
+
+bool QgsDatabaseItemGuiProvider::moveTableToSchema( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notify )
+{
+  QString errCause;
+  if ( conn )
+  {
+    try
     {
-      QAction *editComment = new QAction( tr( "Set Comment…" ), menu );
-
-      QgsDataItemGuiProviderUtils::addToSubMenu( menu, editComment, tr( "Manage" ) );
-
-      const QString connectionUri = conn->uri();
-      const QString providerKey = conn->providerKey();
-
-      connect( editComment, &QAction::triggered, editComment, [connectionUri, providerKey, item, context] {
-        QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
-        if ( !md )
-          return;
-
-        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-
-        QString errCause;
-
-        const QString schemaName = item->parent()->name();
-        const QString tableName = item->name();
-
-        QString fullName;
-        if ( schemaName.isEmpty() )
-          fullName = tableName;
-        else
-          fullName = QStringLiteral( "%1.%2" ).arg( schemaName, tableName );
-
-        if ( conn2 )
-        {
-          const QString comment = conn2->table( schemaName, tableName ).comment();
-
-          bool ok = false;
-          const QString newComment = QInputDialog::getMultiLineText( QgisApp::instance(), tr( "Table Comment" ), tr( "Comment" ), comment, &ok );
-
-          if ( ok && comment != newComment )
-          {
-            try
-            {
-              QgsTemporaryCursorOverride override( Qt::WaitCursor );
-              conn2->setTableComment( schemaName, tableName, newComment );
-            }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              errCause = ex.what();
-            }
-          }
-        }
-        else
-        {
-          errCause = QObject::tr( "There was an error retrieving the connection to %1" ).arg( connectionUri );
-        }
-
-        if ( !errCause.isEmpty() )
-        {
-          notify( tr( "Cannot edit comment on %1" ).arg( fullName ), errCause, context, Qgis::MessageLevel::Critical );
-          return;
-        }
-        else if ( context.messageBar() )
-        {
-          context.messageBar()->pushMessage( tr( "Edited comment on %1" ).arg( fullName ), Qgis::MessageLevel::Success );
-        }
-      } );
+      QgsTemporaryCursorOverride override( Qt::WaitCursor );
+      conn->moveTableToSchema( originalSchema, table, targetSchema );
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      errCause = ex.what();
     }
   }
+  else
+  {
+    errCause = tr( "There was an error retrieving the connection to %1" ).arg( conn->uri() );
+  }
+
+  if ( !errCause.isEmpty() )
+  {
+    if ( notify )
+    {
+      notify( tr( "Cannot move %1 to schema %2" ).arg( table, targetSchema ), errCause, context, Qgis::MessageLevel::Critical );
+    }
+    return false;
+  }
+  else if ( context.messageBar() && notify )
+  {
+    context.messageBar()->pushMessage( tr( "Moved %1 to schema %2" ).arg( table, targetSchema ), Qgis::MessageLevel::Success );
+  }
+
+  return true;
 }
 
 bool QgsDatabaseItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiContext )
