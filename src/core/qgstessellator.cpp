@@ -489,11 +489,12 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   float zMaxExtruded = -std::numeric_limits<float>::max();
 
   const float scale = mBounds.isNull() ? 1.0 : std::max( 10000.0 / mBounds.width(), 10000.0 / mBounds.height() );
+  const bool addFloor = ( mTessellatedFacade == 4 ) && ( extrusionHeight != 0 )
 
   std::unique_ptr<QMatrix4x4> toNewBase, toOldBase;
   QgsPoint ptStart, pt0;
   std::unique_ptr<QgsPolygon> polygonNew;
-  QgsLineString *triangle = nullptr;
+
   auto rotatePolygonToXYPlane = [&]()
   {
     if ( !mNoZ && pNormal != QVector3D( 0, 0, 1 ) )
@@ -525,7 +526,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     polygonNew.reset( _transform_polygon_to_new_base( polygon, pt0, toNewBase.get(), scale ) );
   };
 
-  auto addTriangleVertices = [&]( bool reverse, float extrusion )
+  auto addTriangleVertices = [&]( QgsLineString *triangle, bool reverse, float extrusion )
   {
     const QVector3D normal = reverse ? -pNormal : pNormal;
     for ( int i = 0; i < 3; i++ )
@@ -565,7 +566,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           mData << normal.x() << normal.z() << -normal.y();
       }
 
-      if ( mAddTextureCoords )
+      if ( triangle )
       {
         std::pair<float, float> p( triangle->xAt( index ), triangle->yAt( index ) );
         if ( pNormal != QVector3D( 0, 0, 1 ) )
@@ -611,6 +612,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
   if ( pCount == 4 && polygon.numInteriorRings() == 0 && tessellate )
   {
+    QgsLineString *triangle = nullptr;
     if ( mAddTextureCoords )
     {
       rotatePolygonToXYPlane();
@@ -619,18 +621,22 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     }
 
     // polygon is a triangle - write vertices to the output data array without triangulation
-    addTriangleVertices( false, extrusionHeight );  // roof
+    addTriangleVertices( triangle, false, extrusionHeight );
+    
+    if ( addFloor )  // floor
+    {
+      addTriangleVertices( triangle, true, 0 );
+    }
 
     if ( mAddBackFaces )
     {
-      addTriangleVertices( true, extrusionHeight );  
+      addTriangleVertices( triangle, true, extrusionHeight );
+
+      if ( addFloor )
+      {
+        addTriangleVertices( triangle, false, 0 );
+      }
     }
-    
-    if ( ( mTessellatedFacade == 4 ) && ( extrusionHeight != 0 ) )  // floor
-    {
-      addTriangleVertices( true, 0 );
-    }
-    
   }
   else if ( tessellate )
   {
@@ -692,20 +698,22 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
       std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
 
-      mData.reserve( mData.size() + 3 * triangles.size() * ( stride() / sizeof( float ) ) );
-      for ( size_t i = 0; i < triangles.size(); ++i )
+      mData.reserve( mData.size() + 3 * triangles.size() * ( stride() / sizeof( float ) ) );  // TODO: move to before triangulation?
+
+      auto addTriangulatedVertices = [&]( p2t::Triangle *t, bool reverse, float extrusion )
       {
-        p2t::Triangle *t = triangles[i];
-        for ( int j = 0; j < 3; ++j )
+        const QVector3D normal = reverse ? -pNormal : pNormal;
+        for ( int i = 0; i < 3; ++i )
         {
-          p2t::Point *p = t->GetPoint( j );
+          const int index = reverse ? 2 - i : i;
+          p2t::Point *p = t->GetPoint( index );
           QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
           if ( toOldBase )
             pt = *toOldBase * pt;
           const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
           const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
           const double baseHeight = mNoZ ? 0 : ( pt.z() + pt0.z() );
-          const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
+          const double fz = mNoZ ? 0 : ( pt.z() + extrusion + pt0.z() );
           if ( baseHeight < zMin )
             zMin = baseHeight;
           if ( baseHeight > zMaxBase )
@@ -717,13 +725,13 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           {
             mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
             if ( mAddNormals )
-              mData << pNormal.x() << pNormal.y() << pNormal.z();
+              mData << normal.x() << normal.y() << normal.z();
           }
           else
           {
             mData << static_cast<float>( fx ) << static_cast<float>( fz ) << static_cast<float>( -fy );
             if ( mAddNormals )
-              mData << pNormal.x() << pNormal.z() << - pNormal.y();
+              mData << normal.x() << normal.z() << - normal.y();
           }
 
           if ( mAddTextureCoords )
@@ -732,75 +740,25 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
             mData << pr.first << pr.second;
           }
         }
+      };
+
+      for ( size_t i = 0; i < triangles.size(); ++i )
+      {
+        p2t::Triangle *t = triangles[i];
+        addTriangulatedVertices( t, false, extrusionHeight );
+
+        if ( addFloor )
+        {
+          addTriangulatedVertices( t, true, 0 );
+        }
 
         if ( mAddBackFaces )
         {
-          // the same triangle with reversed order of coordinates and inverted normal
-          for ( int j = 2; j >= 0; --j )
+          addTriangulatedVertices( t, true, extrusionHeight );
+
+          if ( addFloor )
           {
-            p2t::Point *p = t->GetPoint( j );
-            QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
-            if ( toOldBase )
-              pt = *toOldBase * pt;
-            const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
-            const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
-            const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
-
-            if ( mOutputZUp )
-            {
-              mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
-              if ( mAddNormals )
-                mData << -pNormal.x() << -pNormal.y() << -pNormal.z();
-            }
-            else
-            {
-              mData << static_cast<float>( fx ) << static_cast<float>( fz ) << static_cast<float>( -fy );
-              if ( mAddNormals )
-                mData << -pNormal.x() << -pNormal.z() << pNormal.y();
-            }
-
-            if ( mAddTextureCoords )
-            {
-              const std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
-              mData << pr.first << pr.second;
-            }
-          }
-        }
-        if ( ( mTessellatedFacade == 4 ) && ( extrusionHeight != 0 ) )
-        {
-          for ( size_t i = 0; i < triangles.size(); ++i )
-          {
-            p2t::Triangle *t = triangles[i];
-
-            for ( int j = 2; j >= 0; --j )
-            {
-              p2t::Point *p = t->GetPoint( j );
-              QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
-              if ( toOldBase )
-                pt = *toOldBase * pt;
-              const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
-              const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
-              const double baseHeight = mNoZ ? 0 : ( pt.z() + pt0.z() );
-
-              if ( mOutputZUp )
-              {
-                mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( baseHeight );
-                if ( mAddNormals )
-                  mData << -pNormal.x() << -pNormal.y() << -pNormal.z();
-              }
-              else
-              {
-                mData << static_cast<float>( fx ) << static_cast<float>( baseHeight ) << static_cast<float>( -fy );
-                if ( mAddNormals )
-                  mData << -pNormal.x() << -pNormal.z() << pNormal.y();
-              }
-
-              if ( mAddTextureCoords )
-              {
-                const std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
-                mData << pr.first << pr.second;
-              }
-            }
+            addTriangulatedVertices( t, false, 0 );
           }
         }
       }
