@@ -216,7 +216,14 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
 
     for ( int i = 0; i < hits.length() && mHitsFound == -1; ++i )
     {
-      if ( hits.at( i ).distance() < 500.0f && hits.at( i ).entity() && ( hits.at( i ).entity() == mCubeRoot || hits.at( i ).entity() == mAxisRoot || hits.at( i ).entity()->parent() == mCubeRoot || hits.at( i ).entity()->parent() == mAxisRoot ) )
+      Qt3DCore::QEntity *hitEntity = hits.at( i ).entity();
+      // In Qt6, a Qt3DExtras::Text2DEntity contains a private entity: Qt3DExtras::DistanceFieldTextRenderer
+      // The Text2DEntity needs to be retrieved to handle proper picking
+      if ( hitEntity && qobject_cast<Qt3DExtras::QText2DEntity *>( hitEntity->parentEntity() ) )
+      {
+        hitEntity = hitEntity->parentEntity();
+      }
+      if ( hits.at( i ).distance() < 500.0f && hitEntity && ( hitEntity == mCubeRoot || hitEntity == mAxisRoot || hitEntity->parent() == mCubeRoot || hitEntity->parent() == mAxisRoot ) )
       {
         mHitsFound = i;
       }
@@ -252,7 +259,12 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
 
     if ( mHitsFound != -1 )
     {
-      if ( hits.at( mHitsFound ).entity() == mCubeRoot || hits.at( mHitsFound ).entity()->parent() == mCubeRoot )
+      Qt3DCore::QEntity *hitEntity = hits.at( mHitsFound ).entity();
+      if ( hitEntity && qobject_cast<Qt3DExtras::QText2DEntity *>( hitEntity->parentEntity() ) )
+      {
+        hitEntity = hitEntity->parentEntity();
+      }
+      if ( hitEntity == mCubeRoot || hitEntity->parent() == mCubeRoot )
       {
         switch ( hits.at( mHitsFound ).primitiveIndex() / 2 )
         {
