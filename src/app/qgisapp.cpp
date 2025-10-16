@@ -74,6 +74,7 @@
 #include <QWindow>
 #include <QActionGroup>
 
+#include "qgsmaplayerutils.cpp"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsnetworkaccessmanager.h"
@@ -10430,9 +10431,11 @@ void QgisApp::pasteStyle( QgsMapLayer *destinationLayer, QgsMapLayer::StyleCateg
         return;
       }
 
-      bool isVectorStyle = doc.elementsByTagName( QStringLiteral( "pipe" ) ).isEmpty();
-      if ( ( selectionLayer->type() == Qgis::LayerType::Raster && isVectorStyle ) || ( selectionLayer->type() == Qgis::LayerType::Vector && !isVectorStyle ) )
+      const QDomElement rootElement { doc.firstChildElement( QStringLiteral( "qgis" ) ) };
+      const Qgis::LayerType styleOriginType { qgsEnumKeyToValue( rootElement.attribute( QStringLiteral( "layerType" ) ), Qgis::LayerType::Vector ) };
+      if ( selectionLayer->type() != styleOriginType )
       {
+        visibleMessageBar()->pushMessage( tr( "Cannot paste style to layer '%1' because the type doesn't match (%2 → %3)" ).arg( selectionLayer->name(), QgsMapLayerUtils::translateLayerType( styleOriginType ), QgsMapLayerUtils::translateLayerType( selectionLayer->type() ) ), errorMsg, Qgis::MessageLevel::Warning );
         return;
       }
 
