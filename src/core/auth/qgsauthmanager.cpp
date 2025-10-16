@@ -1703,11 +1703,52 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
       return true;
     }
 
+    // remember initial user param, so we can restore it later if needed
+    QString initialUser;
+    for ( const QString &item : std::as_const( connectionItems ) )
+    {
+      if ( item.startsWith( QStringLiteral( "user=" ) ) )
+      {
+        initialUser = item;
+        break;
+      }
+    }
+
     if ( !authmethod->updateDataSourceUriItems( connectionItems, authcfg, dataprovider.toLower() ) )
     {
       authmethod->clearCachedConfig( authcfg );
       return false;
     }
+
+    if ( !initialUser.isEmpty() )
+    {
+      int userIndex = -1;
+      for ( int i = 0; i < connectionItems.size(); ++i )
+      {
+        if ( connectionItems.at( i ).startsWith( QStringLiteral( "user=" ) ) )
+        {
+          userIndex = i;
+          break;
+        }
+      }
+
+      //fix for Postgres connections, where user param is replaced by auth method
+      if ( authmethod->key() != QLatin1String( "basic" ) )
+      {
+        if ( userIndex != -1 )
+        {
+          // user param exists, so we'll force it back to the initial value
+          // in case the auth method has incorrectly modified it
+          connectionItems[ userIndex ] = initialUser;
+        }
+        else
+        {
+          // user param was removed by auth method, so we'll add it back
+          connectionItems << initialUser;
+        }
+      }
+    }
+
     return true;
   }
 
