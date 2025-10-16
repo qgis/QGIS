@@ -23,7 +23,7 @@
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
 #include "qgsray3d.h"
-#include "qgsraycastingutils.h"
+#include "qgsraycastresult.h"
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCullFace>
@@ -49,6 +49,7 @@ namespace Qt3DExtras
 
 class QSurface;
 class Qgs3DRenderContext;
+class QgsRayCastContext;
 
 /**
  * \ingroup qgis_3d
@@ -251,12 +252,10 @@ class _3D_EXPORT Qgs3DUtils
 
     /**
      * Casts a \a ray through the \a scene and returns information about the intersecting entities (ray uses World coordinates).
-     * The resulting hits are grouped by layer in a QHash.
-     * \note Hits on the terrain have nullptr as their key in the returning QHash.
      *
      * \since QGIS 3.32
      */
-    static QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastingUtils::RayCastContext &context );
+    static QgsRayCastResult castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastContext &context );
 
     /**
      * Reprojects \a extent from \a crs1 to \a crs2 coordinate reference system with context \a context.

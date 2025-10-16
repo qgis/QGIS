@@ -16,13 +16,15 @@
 #include "qgscameracontroller.h"
 #include "moc_qgscameracontroller.cpp"
 #include "qgseventtracing.h"
-#include "qgsraycastingutils_p.h"
 #include "qgsvector3d.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapscene.h"
 #include "qgsterrainentity.h"
 #include "qgis.h"
 #include "qgs3dutils.h"
+#include "qgsray3d.h"
+#include "qgsraycastcontext.h"
+#include "qgsraycasthit.h"
 
 #include <QDomDocument>
 #include <Qt3DRender/QCamera>
@@ -1460,11 +1462,15 @@ void QgsCameraController::rotateToRespectingTerrain( float pitch, float yaw )
   {
     QgsDebugMsgLevel( "Checking elevation from terrain...", 2 );
     QVector3D camPos = mCamera->position();
-    QgsRayCastingUtils::Ray3D ray( camPos, pos.toVector3D() - camPos, mCamera->farPlane() );
-    const QVector<QgsRayCastingUtils::RayHit> hits = mScene->terrainEntity()->rayIntersection( ray, QgsRayCastingUtils::RayCastContext() );
-    if ( !hits.isEmpty() )
+    const QgsRay3D ray( camPos, pos.toVector3D() - camPos );
+    QgsRayCastContext context;
+    context.setSingleResult( true );
+    context.setMaximumDistance( mCamera->farPlane() );
+    const QList<QgsRayCastHit> results = mScene->terrainEntity()->rayIntersection( ray, context );
+
+    if ( !results.isEmpty() )
     {
-      elevation = hits.at( 0 ).pos.z();
+      elevation = results.constFirst().mapCoordinates().z() - mOrigin.z();
       QgsDebugMsgLevel( QString( "Computed elevation from terrain: %1" ).arg( elevation ), 2 );
     }
     else

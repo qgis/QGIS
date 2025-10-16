@@ -30,6 +30,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
+#include "qgsraycastcontext.h"
 
 #include <QSize>
 #include <QtMath>
@@ -648,14 +649,22 @@ void TestQgs3DUtils::test3DSceneRay3D()
   Qt3DRender::QCamera *camera = scene->cameraController()->camera();
   const QPoint clickedPoint1( 115, 374 );
   const QgsRay3D ray1 = Qgs3DUtils::rayFromScreenPoint( clickedPoint1, winSize, camera );
-  const QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits1 = Qgs3DUtils::castRay( scene, ray1, QgsRayCastingUtils::RayCastContext( true, winSize, camera->farPlane() ) );
+  QgsRayCastContext context;
+  context.setMaximumDistance( camera->farPlane() );
+  const QgsRayCastResult result1 = Qgs3DUtils::castRay( scene, ray1, context );
+
+  const QList< QgsRayCastHit > terrainHits1 = result1.terrainHits();
+  const QList< QgsRayCastHit > allHits1 = result1.allHits();
+  const QList< QgsRayCastHit > buildingsHits1 = result1.layerHits( mLayerBuildings );
+
+  QVERIFY( result1.hasLayerHits() );
+  QVERIFY( result1.hasTerrainHits() );
   QCOMPARE( allHits1.size(), 2 );
-  QVERIFY( allHits1.contains( mLayerBuildings ) );
-  QVERIFY( allHits1.contains( nullptr ) );
-  QCOMPARE( allHits1[mLayerBuildings].size(), 1 );
-  QCOMPARE( allHits1[nullptr].size(), 1 );
-  const float buildingDistance1 = allHits1[mLayerBuildings][0].distance;
-  const float terrainDistance1 = allHits1[nullptr][0].distance;
+  QCOMPARE( terrainHits1.size(), 1 );
+  QCOMPARE( buildingsHits1.size(), 1 );
+
+  const double buildingDistance1 = buildingsHits1.constFirst().distance();
+  const double terrainDistance1 = terrainHits1.constFirst().distance();
   QGSCOMPARENEAR( buildingDistance1, 33.59, 1.0 );
   QGSCOMPARENEAR( terrainDistance1, 45.46, 1.0 );
 
@@ -664,12 +673,19 @@ void TestQgs3DUtils::test3DSceneRay3D()
   // the building layer should not be hit
   const QPoint clickedPoint2( 419, 326 );
   const QgsRay3D ray2 = Qgs3DUtils::rayFromScreenPoint( clickedPoint2, winSize, camera );
-  const QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits2 = Qgs3DUtils::castRay( scene, ray2, QgsRayCastingUtils::RayCastContext( true, winSize, camera->farPlane() ) );
+  const QgsRayCastResult result2 = Qgs3DUtils::castRay( scene, ray2, context );
+
+  const QList< QgsRayCastHit > terrainHits2 = result2.terrainHits();
+  const QList< QgsRayCastHit > allHits2 = result2.allHits();
+  const QList< QgsRayCastHit > buildingsHits2 = result2.layerHits( mLayerBuildings );
+
+  QVERIFY( !result2.hasLayerHits() );
+  QVERIFY( result2.hasTerrainHits() );
   QCOMPARE( allHits2.size(), 1 );
-  QVERIFY( !allHits2.contains( mLayerBuildings ) );
-  QVERIFY( allHits2.contains( nullptr ) );
-  QCOMPARE( allHits2[nullptr].size(), 1 );
-  const float terrainDistance2 = allHits2[nullptr][0].distance;
+  QCOMPARE( terrainHits2.size(), 1 );
+  QCOMPARE( buildingsHits2.size(), 0 );
+
+  const double terrainDistance2 = terrainHits2.constFirst().distance();
   QGSCOMPARENEAR( terrainDistance2, 45.59, 1.0 );
 
   delete scene;
