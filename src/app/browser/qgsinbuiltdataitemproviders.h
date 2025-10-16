@@ -269,7 +269,7 @@ class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider
      *
      * \since QGIS 4.0
     */
-    bool moveTableToSchema( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notify = true );
+    bool moveTableToSchema( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notifyUser = true );
 };
 
 

@@ -2095,7 +2095,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 }
 }
 
-bool QgsDatabaseItemGuiProvider::moveTableToSchema( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notify )
+bool QgsDatabaseItemGuiProvider::moveTableToSchema( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notifyUser )
 {
   QString errCause;
   if ( conn )
@@ -2117,13 +2117,13 @@ bool QgsDatabaseItemGuiProvider::moveTableToSchema( std::unique_ptr<QgsAbstractD
 
   if ( !errCause.isEmpty() )
   {
-    if ( notify )
+    if ( notifyUser )
     {
       notify( tr( "Cannot move %1 to schema %2" ).arg( table, targetSchema ), errCause, context, Qgis::MessageLevel::Critical );
     }
     return false;
   }
-  else if ( context.messageBar() && notify )
+  else if ( context.messageBar() && notifyUser )
   {
     context.messageBar()->pushMessage( tr( "Moved %1 to schema %2" ).arg( table, targetSchema ), Qgis::MessageLevel::Success );
   }
