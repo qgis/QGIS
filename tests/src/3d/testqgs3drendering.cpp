@@ -59,7 +59,11 @@
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
+#include "qgsannotationpointtextitem.h"
+#include "qgsannotationlinetextitem.h"
+#include "qgsannotationrectangletextitem.h"
 #include "qgsannotationlayer3drenderer.h"
+#include "qgsfontutils.h"
 #include <QFileInfo>
 #include <QDir>
 #include <QSignalSpy>
@@ -114,6 +118,7 @@ class TestQgs3DRendering : public QgsTest
     void testAmbientOcclusion();
     void testDebugMap();
     void testAnnotationLayerBillboards();
+    void testAnnotationLayerText();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
@@ -2571,6 +2576,73 @@ void TestQgs3DRendering::testAnnotationLayerBillboards()
   delete map;
 
   QGSVERIFYIMAGECHECK( "annotation_billboard_rendering_2", "annotation_billboard_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgs3DRendering::testAnnotationLayerText()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  auto annotationLayer = std::make_unique<QgsAnnotationLayer>( "test", QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
+
+  auto text1 = std::make_unique< QgsAnnotationPointTextItem >( QStringLiteral( "POINT" ), QgsPoint( 1000, 1000 ) );
+  annotationLayer->addItem( text1.release() );
+
+  const QgsGeometry curve = QgsGeometry::fromWkt( QStringLiteral( "Linestring( 1000 2000, 1500 2000 )" ) );
+  auto text2 = std::make_unique< QgsAnnotationLineTextItem >( QStringLiteral( "LINE" ), qgsgeometry_cast< const QgsLineString * >( curve.constGet() )->clone() );
+  annotationLayer->addItem( text2.release() );
+
+  auto text3 = std::make_unique< QgsAnnotationRectangleTextItem >( QStringLiteral( "RECT" ), QgsRectangle::fromCenterAndSize( QgsPointXY( 2000, 2000 ), 400, 200 ) );
+  annotationLayer->addItem( text3.release() );
+
+  auto renderer = std::make_unique< QgsAnnotationLayer3DRenderer >();
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 48 );
+  format.setSizeUnit( Qgis::RenderUnit::Points );
+  format.setColor( QColor( 0, 0, 255 ) );
+  renderer->setTextFormat( format );
+
+  annotationLayer->setRenderer3D( renderer->clone() );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << annotationLayer.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "annotation_text_rendering_1", "annotation_text_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // more perspective look, with z offset
+  renderer->setZOffset( 300 );
+  renderer->setShowCalloutLines( true );
+  renderer->setCalloutLineColor( QColor( 255, 255, 255 ) );
+  renderer->setCalloutLineWidth( 8 );
+  annotationLayer->setRenderer3D( renderer->clone() );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+
+  QGSVERIFYIMAGECHECK( "annotation_text_rendering_2", "annotation_text_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )
