@@ -77,13 +77,9 @@ QList<QgsRayCastHit> QgsRayCastResult::allHits() const
 
 void QgsRayCastResult::addLayerHits( QgsMapLayer *layer, const QList<QgsRayCastHit> &hits )
 {
-  if ( mLayerResults.contains( layer ) )
+  mLayerResults[layer].append( hits );
+  if ( !mLayerPointers.contains( layer ) )
   {
-    mLayerResults[layer].append( hits );
-  }
-  else
-  {
-    mLayerResults[layer] = hits;
     mLayerPointers[layer] = layer;
   }
 }
