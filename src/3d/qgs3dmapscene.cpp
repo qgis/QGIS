@@ -45,6 +45,7 @@
 #include "qgsapplication.h"
 #include "qgsaabb.h"
 #include "qgsabstract3dengine.h"
+#include "qgsannotationlayer.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
@@ -66,6 +67,7 @@
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
+#include "qgsannotationlayer3drenderer.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
@@ -746,6 +748,11 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       QgsTiledSceneLayer3DRenderer *tiledSceneRenderer = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
       tiledSceneRenderer->setLayer( static_cast<QgsTiledSceneLayer *>( layer ) );
     }
+    else if ( layer->type() == Qgis::LayerType::Annotation && renderer->type() == QLatin1String( "annotation" ) )
+    {
+      auto annotationLayerRenderer = qgis::down_cast<QgsAnnotationLayer3DRenderer *>( renderer );
+      annotationLayerRenderer->setLayer( qobject_cast<QgsAnnotationLayer *>( layer ) );
+    }
 
     Qt3DCore::QEntity *newEntity = renderer->createEntity( &mMap );
     if ( newEntity )
@@ -772,6 +779,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( vlayer, &QgsVectorLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+    connect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 
   if ( layer->type() == Qgis::LayerType::Mesh )
@@ -809,6 +817,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     disconnect( vlayer, &QgsVectorLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+    disconnect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     mModelVectorLayers.removeAll( layer );
   }
 
@@ -878,6 +887,32 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
         }
       }
     }
+#if 0
+    /*
+     * Adds transparency layer to QgsPoint3DBillboardMaterial entities,
+     * so that they get rendered in the transparent pipeline instead
+     * of the opaque pipeline. Permits semi-opaque pixel rendering.
+     *
+     * Pros: nicely smoothed billboard symbol rendering, without harsh
+     * aliased edges. Billboard symbols can use semi-transparent colors.
+     *
+     * Cons: Introduces ordering issues for billboards, where billboards
+     * which should be shown behind others will appear in front from
+     * some angles (i.e. the same issue as we get for 3d polygon objects
+     * with transparency)
+     *
+     * Consider enabling if/when we have some workaround for the stacking issue,
+     * eg CPU based sorting on camera movement...
+     */
+    else if ( QgsPoint3DBillboardMaterial *billboardMaterial = qobject_cast<QgsPoint3DBillboardMaterial *>( material ) )
+    {
+      Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( billboardMaterial->parent() );
+      if ( entity && !entity->components().contains( transparentLayer ) )
+      {
+        entity->addComponent( transparentLayer );
+      }
+    }
+#endif
     else
     {
       // This handles the phong material with data defined properties, the textured case and point (instanced) symbols.

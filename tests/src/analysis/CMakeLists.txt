@@ -39,7 +39,7 @@ if(HAVE_GSL)
   set(TESTS ${TESTS} testqgsgcptransformer.cpp)
 endif()
 
-if (WITH_PDAL AND PDAL_2_5_OR_HIGHER)
+if (WITH_PDAL)
   set(TESTS ${TESTS} testqgsprocessingpdalalgs.cpp)
 endif()
 

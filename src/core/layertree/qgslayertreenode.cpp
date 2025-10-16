@@ -18,10 +18,10 @@
 
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
+#include "qgslayertreecustomnode.h"
 
 #include <QDomElement>
 #include <QStringList>
-
 
 QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t, bool checked )
   : mNodeType( t )
@@ -73,6 +73,8 @@ QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element, const QgsRead
     node = QgsLayerTreeGroup::readXml( element, context );
   else if ( element.tagName() == QLatin1String( "layer-tree-layer" ) )
     node = QgsLayerTreeLayer::readXml( element, context );
+  else if ( element.tagName() == QLatin1String( "layer-tree-custom-node" ) )
+    node = QgsLayerTreeCustomNode::readXml( element, context );
 
   return node;
 }
@@ -87,7 +89,7 @@ QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element, const QgsProj
   context.setProjectTranslator( const_cast<QgsProject *>( project ) );
 
   QgsLayerTreeNode *node = readXml( element, context );
-  if ( node )
+  if ( node && node->nodeType() != NodeCustom )
     node->resolveReferences( project );
   return node;
 }

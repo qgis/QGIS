@@ -143,7 +143,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
     QgsPlot *plot() { return mPlot.get(); }
 
     /**
-     * Sets the source vector \a layer from which the plot data wil be gathered from.
+     * Sets the source vector \a layer from which the plot data will be gathered from.
      *
      * \see sourceLayer()
      */
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     /**
      * Sets whether features should be \a sorted when iterating through the vector layer from
-     * which the plot data wil be gathered from.
+     * which the plot data will be gathered from.
      *
      * \see setSortAscending()
      * \see setSortExpression()
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     /**
      * Returns TRUE if features should be sorted when iterating through the vector layer from
-     * which the plot data wil be gathered from.
+     * which the plot data will be gathered from.
      *
      * \see sortAscending()
      * \see sortExpression()
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     /**
      * Sets whether features should be sorted in an \a ascending order when iterating through the vector layer from
-     * which the plot data wil be gathered from.
+     * which the plot data will be gathered from.
      *
      * This property has no effect is sortFeatures() is FALSE.
      *
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     /**
      * Returns TRUE if features should be sorted in an ascending order when iterating through the vector layer from
-     * which the plot data wil be gathered from.
+     * which the plot data will be gathered from.
      *
      * This property has no effect is sortFeatures() is FALSE.
      *
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     /**
      * Sets the \a expression used to sort features when iterating through the vector layer from
-     * which the plot data wil be gathered from.
+     * which the plot data will be gathered from.
      *
      * \see setSortFeatures()
      * \see setSortAscending()
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
 
     /**
      * Returns the expression used to sort features when iterating through the vector layer from
-     * which the plot data wil be gathered from.
+     * which the plot data will be gathered from.
      *
      * \see sortFeatures()
      * \see sortAscending()

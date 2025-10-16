@@ -25,12 +25,13 @@
 
 #include "qgspoint3dbillboardmaterial.h"
 #include "moc_qgspoint3dbillboardmaterial.cpp"
-#include "qgsterraintextureimage_p.h"
+#include "qgsimagetexture.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgs3drendercontext.h"
+#include "qgs3dutils.h"
 
-QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
+QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )
   , mViewportSize( new Qt3DRender::QParameter( "WIN_SCALE", QSizeF( 800, 600 ), this ) )
 {
@@ -51,9 +52,31 @@ QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial()
 
   // Shader program
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram( this );
-  shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/billboards.vert" ) ) ) );
+
+  const QUrl urlVert( QStringLiteral( "qrc:/shaders/billboards.vert" ) );
+  const QUrl urlGeom( QStringLiteral( "qrc:/shaders/billboards.geom" ) );
+
+  switch ( mode )
+  {
+    case Mode::SingleTexture:
+    {
+      shaderProgram->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( urlVert ) );
+      shaderProgram->setGeometryShaderCode( Qt3DRender::QShaderProgram::loadSource( urlGeom ) );
+      break;
+    }
+    case Mode::AtlasTexture:
+    {
+      const QByteArray vertexShaderCode = Qt3DRender::QShaderProgram::loadSource( urlVert );
+      const QByteArray finalVertexShaderCode = Qgs3DUtils::addDefinesToShaderCode( vertexShaderCode, QStringList( { "TEXTURE_ATLAS" } ) );
+      shaderProgram->setVertexShaderCode( finalVertexShaderCode );
+
+      const QByteArray geomShaderCode = Qt3DRender::QShaderProgram::loadSource( urlGeom );
+      const QByteArray finalGeomShaderCode = Qgs3DUtils::addDefinesToShaderCode( geomShaderCode, QStringList( { "TEXTURE_ATLAS" } ) );
+      shaderProgram->setGeometryShaderCode( finalGeomShaderCode );
+      break;
+    }
+  }
   shaderProgram->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/billboards.frag" ) ) ) );
-  shaderProgram->setGeometryShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/billboards.geom" ) ) ) );
 
   // Render Pass
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
@@ -104,14 +127,13 @@ QSizeF QgsPoint3DBillboardMaterial::windowSize() const
   return mViewportSize->value().value<QSizeF>();
 }
 
-void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double size )
+void QgsPoint3DBillboardMaterial::setTexture2DFromImage( const QImage &image )
 {
   // Create texture image
-  const QgsRectangle randomExtent = QgsRectangle( rand(), rand(), rand(), rand() );
-  QgsTerrainTextureImage *billboardTextureImage = new QgsTerrainTextureImage( image, randomExtent, QStringLiteral( "billboard material." ) );
+  QgsImageTexture *textureImage = new QgsImageTexture( image );
+  setTexture2DFromTextureImage( textureImage );
 
-  setTexture2DFromTextureImage( billboardTextureImage );
-  setSize( QSizeF( size + size, size + size ) );
+  setSize( QSizeF( image.size().width(), image.size().height() ) );
 }
 
 void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DRenderContext &context, bool selected )
@@ -121,27 +143,39 @@ void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DRenderContext &co
   setTexture2DFromSymbol( defaultSymbol.get(), context, selected );
 }
 
-void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *markerSymbol, const Qgs3DRenderContext &context, bool selected )
+QImage QgsPoint3DBillboardMaterial::renderSymbolToImage( const QgsMarkerSymbol *markerSymbol, const Qgs3DRenderContext &context, bool selected )
 {
   QgsRenderContext context2D;
   context2D.setSelectionColor( context.selectionColor() );
   context2D.setScaleFactor( context.outputDpi() / 25.4 );
   context2D.setFlag( Qgis::RenderContextFlag::Antialiasing );
   context2D.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
-  const double pixelSize = context2D.convertToPainterUnits( markerSymbol->size( context2D ), markerSymbol->sizeUnit() );
 
-  // This number is an max estimation ratio between stroke width and symbol size.
-  const double strokeRatio = 0.5;
-  // Minimum extra width, just in case the size is small, but the stroke is quite big.
-  // 10 mm is quite big based on Raymond's experiece.
-  // 10 mm has around 37 pixel in 96 dpi, round up become 40.
-  const double minimumExtraSize = 40;
-  const double extraPixel = minimumExtraSize > pixelSize * strokeRatio ? minimumExtraSize : pixelSize * strokeRatio;
-  const int pixelWithExtra = std::ceil( pixelSize + extraPixel );
-  const QPixmap symbolPixmap = QgsSymbolLayerUtils::symbolPreviewPixmap( markerSymbol, QSize( pixelWithExtra, pixelWithExtra ), 0, &context2D, selected );
-  const QImage symbolImage = symbolPixmap.toImage();
-  const QImage flippedSymbolImage = symbolImage.mirrored();
-  setTexture2DFromImage( flippedSymbolImage, pixelWithExtra );
+  std::unique_ptr< QgsMarkerSymbol > clonedSymbol( markerSymbol->clone() );
+  clonedSymbol->startRender( context2D );
+
+  constexpr int BUFFER_SIZE_PIXELS = 2;
+
+  const QRectF bounds = markerSymbol->bounds( QPointF( 0, 0 ), context2D );
+
+  QImage image( static_cast< int >( std::ceil( bounds.size().width() ) ) + 2 * BUFFER_SIZE_PIXELS, static_cast< int >( std::ceil( bounds.size().height() ) ) + 2 * BUFFER_SIZE_PIXELS, QImage::Format_ARGB32_Premultiplied );
+  image.fill( Qt::transparent );
+
+  QPainter painter( &image );
+  context2D.setPainter( &painter );
+
+  clonedSymbol->renderPoint( QPointF( -bounds.left() + BUFFER_SIZE_PIXELS, -bounds.top() + BUFFER_SIZE_PIXELS ), nullptr, context2D, -1, selected );
+
+  painter.end();
+
+  clonedSymbol->stopRender( context2D );
+  return image;
+}
+
+void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( const QgsMarkerSymbol *markerSymbol, const Qgs3DRenderContext &context, bool selected )
+{
+  const QImage symbolImage = renderSymbolToImage( markerSymbol, context, selected );
+  setTexture2DFromImage( symbolImage );
 }
 
 void QgsPoint3DBillboardMaterial::setTexture2DFromTextureImage( Qt3DRender::QAbstractTextureImage *textureImage )

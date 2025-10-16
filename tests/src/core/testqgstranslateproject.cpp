@@ -166,6 +166,13 @@ void TestQgsTranslateProject::createTsFile()
   QVERIFY( tsFileContent.contains( "<source>Highway road</source>" ) );
   QVERIFY( tsFileContent.contains( "<source>nothing</source>" ) );
 
+  //METADATA
+  QVERIFY( tsFileContent.contains( "<source>Metadata Title</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Metadata Type</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Metadata Abstract</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Metadata Rights</source>" ) );
+  QVERIFY( tsFileContent.contains( "<source>Webmaster</source>" ) );
+
   tsFile.close();
 }
 
@@ -255,6 +262,17 @@ void TestQgsTranslateProject::translateProject()
   {
     stringValueList.append( valueList[i].toMap().constBegin().key() );
   }
+
+  //METADATA
+  QCOMPARE( QgsProject::instance()->metadata().title(), QStringLiteral( "Metadatentitel" ) );
+  QCOMPARE( QgsProject::instance()->metadata().type(), QStringLiteral( "Metadatentyp" ) );
+  QCOMPARE( QgsProject::instance()->metadata().abstract(), QStringLiteral( "Metadaten-Zusammenfassung" ) );
+  QCOMPARE( QgsProject::instance()->metadata().author(), QStringLiteral( "Webmasterin" ) );
+
+  QCOMPARE( lines_layer->metadata().title(), QStringLiteral( "Metadatentitel" ) );
+  QCOMPARE( lines_layer->metadata().type(), QStringLiteral( "Metadatentyp" ) );
+  QCOMPARE( lines_layer->metadata().abstract(), QStringLiteral( "Metadaten-Zusammenfassung" ) );
+  QCOMPARE( lines_layer->metadata().rights(), QStringList() << QStringLiteral( "Metadatenrechte" ) );
 
   QCOMPARE( stringValueList, expectedStringValueList );
 

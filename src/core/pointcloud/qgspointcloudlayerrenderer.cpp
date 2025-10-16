@@ -428,6 +428,9 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<QgsPointCloudNode
 
 int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
 {
+  if ( nodes.isEmpty() )
+    return 0;
+
   if ( context.feedback() && context.feedback()->isCanceled() )
     return 0;
 
@@ -504,7 +507,8 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<QgsPointCloudNod
   }
 
   // Wait for all point cloud nodes to finish loading
-  loop.exec();
+  if ( !blockRequests.isEmpty() )
+    loop.exec();
 
   // Rendering may have got canceled and the event loop exited before finished()
   // was called for all blocks, so let's clean up anything that is left

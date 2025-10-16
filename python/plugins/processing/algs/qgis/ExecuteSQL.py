@@ -102,6 +102,7 @@ class ExecuteSQL(QgisAlgorithm):
                 description=self.tr(
                     "Input data sources (called input1, .., inputN in the query)"
                 ),
+                layerType=Qgis.ProcessingSourceType.Vector,
                 optional=True,
             )
         )

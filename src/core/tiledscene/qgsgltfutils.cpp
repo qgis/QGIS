@@ -19,9 +19,12 @@
 #include "qgsmatrix4x4.h"
 #include "qgsconfig.h"
 #include "qgslogger.h"
+#include "qgstiledscenetile.h"
+#include "qgsziputils.h"
 
 #include <QImage>
 #include <QMatrix4x4>
+#include <QQuaternion>
 #include <QRegularExpression>
 
 #define TINYGLTF_IMPLEMENTATION       // should be defined just in one CPP file
@@ -431,12 +434,31 @@ void dumpDracoModelInfo( draco::Mesh *dracoMesh )
 bool QgsGltfUtils::loadDracoModel( const QByteArray &data, const I3SNodeContext &context, tinygltf::Model &model, QString *errors )
 {
   //
+  // SLPK and Extracted SLPK have the files gzipped
+  //
+
+  QByteArray dataExtracted;
+  if ( data.startsWith( QByteArray( "\x1f\x8b", 2 ) ) )
+  {
+    if ( !QgsZipUtils::decodeGzip( data, dataExtracted ) )
+    {
+      if ( errors )
+        *errors = "Failed to decode gzipped model";
+      return false;
+    }
+  }
+  else
+  {
+    dataExtracted = data;
+  }
+
+  //
   // load the model in decoder and do basic sanity checks
   //
 
   draco::Decoder decoder;
   draco::DecoderBuffer decoderBuffer;
-  decoderBuffer.Init( data.constData(), data.size() );
+  decoderBuffer.Init( dataExtracted.constData(), dataExtracted.size() );
 
   draco::StatusOr<draco::EncodedGeometryType> geometryTypeStatus = decoder.GetEncodedGeometryType( &decoderBuffer );
   if ( !geometryTypeStatus.ok() )
@@ -788,6 +810,19 @@ bool QgsGltfUtils::writeGltfModel( const tinygltf::Model &model, const QString &
                                         false,    // prettyPrint
                                         true );   // writeBinary
   return res;
+}
+
+void QgsGltfUtils::I3SNodeContext::initFromTile( const QgsTiledSceneTile &tile, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &sceneCrs, const QgsCoordinateTransformContext &transformContext )
+{
+  const QVariantMap tileMetadata = tile.metadata();
+
+  materialInfo = tileMetadata[QStringLiteral( "material" )].toMap();
+  isGlobalMode = sceneCrs.type() == Qgis::CrsType::Geocentric;
+  if ( isGlobalMode )
+  {
+    nodeCenterEcef = tile.boundingVolume().box().center();
+    datasetToSceneTransform = QgsCoordinateTransform( layerCrs, sceneCrs, transformContext );
+  }
 }
 
 ///@endcond

@@ -337,7 +337,11 @@ class DoxygenParser:
                 }
             )
 
-        if not brief_description[0].isupper() and not brief_description[0].isnumeric():
+        if (
+            brief_description
+            and not brief_description[0].isupper()
+            and not brief_description[0].isnumeric()
+        ):
             noncompliant_members.append(
                 {
                     "Brief description": f"Brief '{brief_description}' is not sentence case, starting with a capital letter. Ensure briefs are a full sentence."

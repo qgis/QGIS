@@ -17,6 +17,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgscolorutils.h"
 #include "qgs3dmapsettings.h"
+#include "qgsgeotransform.h"
 
 #include <QDomDocument>
 
@@ -38,8 +39,9 @@ QgsPointLightSettings *QgsPointLightSettings::clone() const
 Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const
 {
   Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity();
-  Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
-  lightTransform->setTranslation( position().toVector3D() );
+  QgsGeoTransform *lightTransform = new QgsGeoTransform;
+  lightTransform->setOrigin( map.origin() );
+  lightTransform->setGeoTranslation( position().toVector3D() );
 
   Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
   light->setColor( color() );
@@ -61,9 +63,10 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
   {
     Qt3DCore::QEntity *originEntity = new Qt3DCore::QEntity();
 
-    Qt3DCore::QTransform *trLightOriginCenter = new Qt3DCore::QTransform;
-    trLightOriginCenter->setTranslation( lightTransform->translation() );
-    originEntity->addComponent( trLightOriginCenter );
+    QgsGeoTransform *originTransform = new QgsGeoTransform;
+    originTransform->setOrigin( map.origin() );
+    originTransform->setGeoTranslation( position().toVector3D() );
+    originEntity->addComponent( originTransform );
 
     Qt3DExtras::QPhongMaterial *materialLightOriginCenter = new Qt3DExtras::QPhongMaterial;
     materialLightOriginCenter->setAmbient( color() );

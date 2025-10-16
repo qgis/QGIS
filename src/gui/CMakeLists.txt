@@ -165,8 +165,13 @@ set(QGIS_GUI_SRCS
   codeeditors/qgscodeeditorexpression.cpp
   codeeditors/qgscodeeditorwidget.cpp
 
+  devtools/qgsdevtoolsmodelnode.cpp
   devtools/qgsdevtoolwidget.cpp
   devtools/qgsdevtoolwidgetfactory.cpp
+  devtools/networklogger/qgsnetworklogger.cpp
+  devtools/networklogger/qgsnetworkloggernode.cpp
+  devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
+  devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
 
   editorwidgets/core/qgseditorconfigwidget.cpp
   editorwidgets/core/qgseditorwidgetautoconf.cpp
@@ -1164,8 +1169,13 @@ set(QGIS_GUI_HDRS
   codeeditors/qgscodeeditorsql.h
   codeeditors/qgscodeeditorwidget.h
 
+  devtools/qgsdevtoolsmodelnode.h
   devtools/qgsdevtoolwidget.h
   devtools/qgsdevtoolwidgetfactory.h
+  devtools/networklogger/qgsnetworklogger.h
+  devtools/networklogger/qgsnetworkloggernode.h
+  devtools/networklogger/qgsnetworkloggerpanelwidget.h
+  devtools/networklogger/qgsnetworkloggerwidgetfactory.h
 
   editorwidgets/core/qgseditorconfigwidget.h
   editorwidgets/core/qgseditorwidgetautoconf.h
@@ -1889,6 +1899,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/callouts
   ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
   ${CMAKE_SOURCE_DIR}/src/gui/devtools
+  ${CMAKE_SOURCE_DIR}/src/gui/devtools/networklogger
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/effects

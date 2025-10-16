@@ -169,7 +169,7 @@ bool QgsPdalIndexingTask::prepareOutputPath()
     return false;
   }
 
-  // this check is last so we only create the marker file if no error occured
+  // this check is last so we only create the marker file if no error occurred
   if ( !marker.open( QIODevice::WriteOnly ) )
   {
     mErrorMessage = tr( "Directory is not writable: %1" ).arg( fi.canonicalPath() );

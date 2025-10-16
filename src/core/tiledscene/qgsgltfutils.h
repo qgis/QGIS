@@ -41,6 +41,7 @@ class QMatrix4x4;
 class QImage;
 
 class QgsMatrix4x4;
+class QgsTiledSceneTile;
 class QgsVector3D;
 
 namespace tinygltf
@@ -173,8 +174,13 @@ class CORE_EXPORT QgsGltfUtils
      * geometry of a I3S node.
      * \since QGIS 4.0
      */
-    struct I3SNodeContext
+    struct CORE_EXPORT I3SNodeContext
     {
+      //! Initialize the node content from tile's info
+      void initFromTile( const QgsTiledSceneTile &tile,
+                         const QgsCoordinateReferenceSystem &layerCrs,
+                         const QgsCoordinateReferenceSystem &sceneCrs,
+                         const QgsCoordinateTransformContext &transformContext );
 
       /**
        * Material parsed from I3S material definition of the node. See

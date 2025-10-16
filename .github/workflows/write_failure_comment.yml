@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: 'Download artifact'
         id: download_artifact
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
@@ -58,7 +58,7 @@ jobs:
 
       - name: 'Post test report markdown summary as comment on PR'
         if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

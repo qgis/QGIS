@@ -16,6 +16,8 @@
 #include "qgstest.h"
 #include <QObject>
 #include "qgsgeometryutils_base.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 
 class TestQgsGeometryUtilsBase : public QObject
 {
@@ -172,14 +174,26 @@ void TestQgsGeometryUtilsBase::testCreateChamferBase()
   double trim1StartX, trim1StartY, trim1EndX, trim1EndY;
   double trim2StartX, trim2StartY, trim2EndX, trim2EndY;
 
-  bool result = QgsGeometryUtilsBase::createChamfer(
-    segment1StartX, segment1StartY, segment1EndX, segment1EndY,
-    segment2StartX, segment2StartY, segment2EndX, segment2EndY,
-    distance1, distance2,
-    chamferStartX, chamferStartY, chamferEndX, chamferEndY,
-    &trim1StartX, &trim1StartY, &trim1EndX, &trim1EndY,
-    &trim2StartX, &trim2StartY, &trim2EndX, &trim2EndY
-  );
+  bool result;
+  try
+  {
+    result = QgsGeometryUtilsBase::createChamfer(
+      segment1StartX, segment1StartY, segment1EndX, segment1EndY,
+      segment2StartX, segment2StartY, segment2EndX, segment2EndY,
+      distance1, distance2,
+      chamferStartX, chamferStartY, chamferEndX, chamferEndY,
+      &trim1StartX, &trim1StartY, &trim1EndX, &trim1EndY,
+      &trim2StartX, &trim2StartY, &trim2EndX, &trim2EndY
+    );
+  }
+  catch ( QgsInvalidArgumentException &e )
+  {
+    result = false;
+  }
+  catch ( ... )
+  {
+    QVERIFY2( false, "Caught unhandled exception" );
+  }
 
   QCOMPARE( result, expectedSuccess );
 
@@ -315,14 +329,26 @@ void TestQgsGeometryUtilsBase::testCreateFilletBase()
   double trim1StartX, trim1StartY, trim1EndX, trim1EndY;
   double trim2StartX, trim2StartY, trim2EndX, trim2EndY;
 
-  bool result = QgsGeometryUtilsBase::createFillet(
-    segment1StartX, segment1StartY, segment1EndX, segment1EndY,
-    segment2StartX, segment2StartY, segment2EndX, segment2EndY,
-    radius,
-    filletPointsX, filletPointsY,
-    &trim1StartX, &trim1StartY, &trim1EndX, &trim1EndY,
-    &trim2StartX, &trim2StartY, &trim2EndX, &trim2EndY
-  );
+  bool result;
+  try
+  {
+    result = QgsGeometryUtilsBase::createFillet(
+      segment1StartX, segment1StartY, segment1EndX, segment1EndY,
+      segment2StartX, segment2StartY, segment2EndX, segment2EndY,
+      radius,
+      filletPointsX, filletPointsY,
+      &trim1StartX, &trim1StartY, &trim1EndX, &trim1EndY,
+      &trim2StartX, &trim2StartY, &trim2EndX, &trim2EndY
+    );
+  }
+  catch ( QgsInvalidArgumentException &e )
+  {
+    result = false;
+  }
+  catch ( ... )
+  {
+    QVERIFY2( false, "Caught unhandled exception" );
+  }
 
   QCOMPARE( result, expectedSuccess );
 

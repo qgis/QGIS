@@ -50,13 +50,16 @@
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsgoochmaterialsettings.h"
-#include "qgs3dsceneexporter.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsmetalroughmaterialsettings.h"
 #include "qgspointlightsettings.h"
 #include "qgsphongtexturedmaterialsettings.h"
 #include "qgsdemterraingenerator.h"
-
+#include "qgsbillboardgeometry.h"
+#include "qgspoint3dbillboardmaterial.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationmarkeritem.h"
+#include "qgsannotationlayer3drenderer.h"
 #include <QFileInfo>
 #include <QDir>
 #include <QSignalSpy>
@@ -101,6 +104,7 @@ class TestQgs3DRendering : public QgsTest
     void testFilteredRuleBasedRenderer();
     void testAnimationExport();
     void testBillboardRendering();
+    void testTexturedBillboardRendering();
     void testInstancedRendering();
     void testInstancedRenderingClipping();
     void testFilteredFlatTerrain();
@@ -109,13 +113,10 @@ class TestQgs3DRendering : public QgsTest
     void testDepthBuffer();
     void testAmbientOcclusion();
     void testDebugMap();
-    void test3DSceneExporter();
-    void test3DSceneExporterBig();
+    void testAnnotationLayerBillboards();
 
   private:
     QImage convertDepthImageToGrayscaleImage( const QImage &depthImage );
-
-    void do3DSceneExport( const QString &testName, int zoomLevelsCount, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity = nullptr );
 
     std::unique_ptr<QgsProject> mProject;
     QgsRasterLayer *mLayerDtm = nullptr;
@@ -384,7 +385,7 @@ void TestQgs3DRendering::testTerrainShading()
   map->setTerrainShadingEnabled( true );
 
   QgsPointLightSettings defaultLight;
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   defaultLight.setIntensity( 0.5 );
   map->setLightSources( { defaultLight.clone() } );
 
@@ -416,7 +417,7 @@ void TestQgs3DRendering::testExtrudedPolygons()
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -463,7 +464,7 @@ void TestQgs3DRendering::testExtrudedPolygonsClipping()
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsPhongMaterialSettings materialSettings;
@@ -554,7 +555,7 @@ void TestQgs3DRendering::testPhongShading()
   map->setLayers( QList<QgsMapLayer *>() << buildings.get() );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -606,7 +607,7 @@ void TestQgs3DRendering::testExtrudedPolygonsTexturedPhong()
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 1.0 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -660,7 +661,7 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhong()
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -714,7 +715,7 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedPhongClipping()
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -800,7 +801,7 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGooch()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( mapSettings->origin() + QgsVector3D( 0, 0, 1000 ) );
   mapSettings->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -856,7 +857,7 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefinedGoochClipping()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( mapSettings->origin() + QgsVector3D( 0, 0, 1000 ) );
   mapSettings->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -917,12 +918,14 @@ void TestQgs3DRendering::testExtrudedPolygonsGoochShading()
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );
-  QgsPointLightSettings defaultLight;
-  defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
-  map->setLightSources( { defaultLight.clone() } );
+
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
+
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs(), map->transformContext() );
@@ -981,7 +984,7 @@ void TestQgs3DRendering::testExtrudedPolygonsMetalRoughShading()
   map->setLayers( QList<QgsMapLayer *>() << buildings.get() );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.9 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -1033,7 +1036,7 @@ void TestQgs3DRendering::testPolygonsEdges()
   map->setLayers( QList<QgsMapLayer *>() << layer.get() );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -1328,7 +1331,7 @@ void TestQgs3DRendering::testBufferedLineRendering()
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -1375,7 +1378,7 @@ void TestQgs3DRendering::testBufferedLineRenderingClipping()
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -1453,7 +1456,7 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -1544,7 +1547,7 @@ void TestQgs3DRendering::testRuleBasedRenderer()
 
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -1603,7 +1606,7 @@ void TestQgs3DRendering::testFilteredRuleBasedRenderer()
 
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -1914,6 +1917,104 @@ void TestQgs3DRendering::testBillboardRendering()
   QGSVERIFYIMAGECHECK( "billboard_rendering_2", "billboard_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
+void TestQgs3DRendering::testTexturedBillboardRendering()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( scene );
+
+  // create a texture atlas with three textures
+  QImage image( 1000, 1000, QImage::Format_ARGB32_Premultiplied );
+  image.fill( QColor( 255, 255, 255 ) );
+  QPainter p( &image );
+  p.setPen( Qt::NoPen );
+  p.setBrush( QBrush( QColor( 0, 255, 0 ) ) );
+  p.drawRect( QRect( 100, 200, 50, 75 ) );
+
+  p.setBrush( QBrush( QColor( 255, 100, 100 ) ) );
+  p.drawRect( QRect( 500, 700, 90, 135 ) );
+
+  p.setBrush( QBrush( QColor( 100, 100, 255 ) ) );
+  p.drawRect( QRect( 0, 900, 170, 45 ) );
+
+  p.end();
+
+  QVector< QgsBillboardGeometry::BillboardAtlasData > billboardPositions;
+
+  QgsBillboardGeometry::BillboardAtlasData vertex;
+  vertex.position = QVector3D( 0, 0, 500 );
+  vertex.textureAtlasOffset = QVector2D( 0.1, 0.725 );
+  vertex.textureAtlasSize = QVector2D( 0.05, 0.075 );
+  billboardPositions.append( vertex );
+
+  vertex.position = QVector3D( 600, 0, 300 );
+  vertex.textureAtlasOffset = QVector2D( 0.1, 0.725 );
+  vertex.textureAtlasSize = QVector2D( 0.05, 0.075 );
+  billboardPositions.append( vertex );
+
+  vertex.position = QVector3D( 0, 500, 500 );
+  vertex.textureAtlasOffset = QVector2D( 0.5, 0.165 );
+  vertex.textureAtlasSize = QVector2D( 0.09, 0.135 );
+  billboardPositions.append( vertex );
+
+  vertex.position = QVector3D( 0, -500, 400 );
+  vertex.textureAtlasOffset = QVector2D( 0, 0.055 );
+  vertex.textureAtlasSize = QVector2D( 0.17, 0.045 );
+  billboardPositions.append( vertex );
+
+  vertex.position = QVector3D( -500, -800, 500 );
+  vertex.textureAtlasOffset = QVector2D( 0, 0.055 );
+  vertex.textureAtlasSize = QVector2D( 0.17, 0.045 );
+  billboardPositions.append( vertex );
+
+  QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
+  billboardGeometry->setBillboardData( billboardPositions );
+
+  Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
+  billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
+  billboardGeometryRenderer->setGeometry( billboardGeometry );
+  billboardGeometryRenderer->setVertexCount( billboardGeometry->count() );
+
+  QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::Mode::AtlasTexture );
+  billboardMaterial->setTexture2DFromImage( image );
+
+  Qt3DCore::QEntity *billboardEntity = new Qt3DCore::QEntity;
+  billboardEntity->addComponent( billboardMaterial );
+  billboardEntity->addComponent( billboardGeometryRenderer );
+  billboardEntity->setParent( entity );
+
+  scene->finalizeNewEntity( entity );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "billboard_atlas_rendering_1", "billboard_atlas_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // more perspective look
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+
+  QGSVERIFYIMAGECHECK( "billboard_atlas_rendering_2", "billboard_atlas_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
 void TestQgs3DRendering::testEpsg4978LineRendering()
 {
   QgsProject p;
@@ -2071,7 +2172,7 @@ void TestQgs3DRendering::testFilteredExtrudedPolygons()
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings << mLayerRgb );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -2132,7 +2233,7 @@ void TestQgs3DRendering::testAmbientOcclusion()
   mapSettings.setTerrainSettings( demTerrainSettings );
 
   QgsPointLightSettings defaultPointLight;
-  defaultPointLight.setPosition( QgsVector3D( 0, 0, 400 ) );
+  defaultPointLight.setPosition( mapSettings.origin() + QgsVector3D( 0, 0, 400 ) );
   defaultPointLight.setConstantAttenuation( 0 );
   mapSettings.setLightSources( { defaultPointLight.clone() } );
   mapSettings.setOutputDpi( 92 );
@@ -2208,7 +2309,7 @@ void TestQgs3DRendering::testDepthBuffer()
   mapSettings.setTerrainSettings( demTerrainSettings );
 
   QgsPointLightSettings defaultPointLight;
-  defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultPointLight.setPosition( mapSettings.origin() + QgsVector3D( 0, 1000, 0 ) );
   defaultPointLight.setConstantAttenuation( 0 );
   mapSettings.setLightSources( { defaultPointLight.clone() } );
   mapSettings.setOutputDpi( 92 );
@@ -2392,189 +2493,84 @@ void TestQgs3DRendering::testDebugMap()
   mapSettings.setLayers( {} );
 }
 
-void TestQgs3DRendering::do3DSceneExport( const QString &testName, int zoomLevelsCount, int expectedObjectCount, int expectedFeatureCount, int maxFaceCount, Qgs3DMapScene *scene, QgsVectorLayer *layerPoly, QgsOffscreen3DEngine *engine, QgsTerrainEntity *terrainEntity )
+void TestQgs3DRendering::testAnnotationLayerBillboards()
 {
-  // 3d renderer must be replaced to have the tiling updated
-  QgsVectorLayer3DRenderer *renderer3d = dynamic_cast<QgsVectorLayer3DRenderer *>( layerPoly->renderer3D() );
-  QgsVectorLayer3DRenderer *newRenderer3d = new QgsVectorLayer3DRenderer( renderer3d->symbol()->clone() );
-  QgsVectorLayer3DTilingSettings tilingSettings;
-  tilingSettings.setZoomLevelsCount( zoomLevelsCount );
-  tilingSettings.setShowBoundingBoxes( true );
-  newRenderer3d->setTilingSettings( tilingSettings );
-  layerPoly->setRenderer3D( newRenderer3d );
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
-  Qgs3DUtils::captureSceneImage( *engine, scene );
+  auto annotationLayer = std::make_unique<QgsAnnotationLayer>( "test", QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
 
-  Qgs3DSceneExporter exporter;
-  exporter.setTerrainResolution( 128 );
-  exporter.setSmoothEdges( false );
-  exporter.setExportNormals( true );
-  exporter.setExportTextures( false );
-  exporter.setTerrainTextureResolution( 512 );
-  exporter.setScale( 1.0 );
+  auto marker1 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 1000, 1000 ) );
+  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  markerSymbol->setColor( QColor( 255, 0, 0 ) );
+  markerSymbol->setSize( 4 );
+  QgsSimpleMarkerSymbolLayer *sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
+  sl->setStrokeColor( QColor( 0, 0, 255 ) );
+  sl->setStrokeWidth( 2 );
+  marker1->setSymbol( markerSymbol );
+  annotationLayer->addItem( marker1.release() );
 
-  QVERIFY( exporter.parseVectorLayerEntity( scene->layerEntity( layerPoly ), layerPoly ) );
-  if ( terrainEntity )
-    exporter.parseTerrain( terrainEntity, "DEM_Tile" );
+  auto marker2 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 1000, 2000 ) );
+  markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  markerSymbol->setColor( QColor( 0, 255, 0 ) );
+  markerSymbol->setSize( 20 );
+  sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
+  sl->setStrokeColor( QColor( 255, 0, 255 ) );
+  sl->setStrokeWidth( 2 );
+  marker2->setSymbol( markerSymbol );
+  annotationLayer->addItem( marker2.release() );
 
-  QString objFileName = QString( "%1-%2" ).arg( testName ).arg( zoomLevelsCount );
-  const bool saved = exporter.save( objFileName, QDir::tempPath(), 3 );
-  QVERIFY( saved );
+  auto marker3 = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( 2000, 2000 ) );
+  markerSymbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  markerSymbol->setColor( QColor( 0, 0, 255 ) );
+  markerSymbol->setSize( 30 );
+  sl = static_cast<QgsSimpleMarkerSymbolLayer *>( markerSymbol->symbolLayer( 0 ) );
+  sl->setStrokeColor( QColor( 0, 255, 255 ) );
+  sl->setStrokeWidth( 2 );
+  marker3->setSymbol( markerSymbol );
+  annotationLayer->addItem( marker3.release() );
 
-  int sum = 0;
-  for ( auto o : qAsConst( exporter.mObjects ) )
-  {
-    if ( !terrainEntity ) // not comptabible with terrain entity
-      QVERIFY( o->indexes().size() * 3 <= o->vertexPosition().size() );
-    sum += o->indexes().size();
-  }
+  auto renderer = std::make_unique< QgsAnnotationLayer3DRenderer >();
 
-  QCOMPARE( sum, maxFaceCount );
-  QCOMPARE( exporter.mExportedFeatureIds.size(), expectedFeatureCount );
-  QCOMPARE( exporter.mObjects.size(), expectedObjectCount );
+  annotationLayer->setRenderer3D( renderer->clone() );
 
-  QFile file( QString( "%1/%2.obj" ).arg( QDir::tempPath(), objFileName ) );
-  file.open( QIODevice::ReadOnly | QIODevice::Text );
-  QTextStream fileStream( &file );
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( fullExtent );
+  map->setLayers( QList<QgsMapLayer *>() << annotationLayer.get() );
 
-  if ( !terrainEntity ) // dump with terrain are too big to stay in GIT
-    QGSCOMPARELONGSTR( testName.toStdString().c_str(), QString( "%1.obj" ).arg( objFileName ), fileStream.readAll().toUtf8() );
-}
-
-void TestQgs3DRendering::test3DSceneExporter()
-{
-  // =============================================
-  // =========== creating Qgs3DMapSettings
-  QgsVectorLayer *layerPoly = new QgsVectorLayer( testDataPath( "/3d/polygons.gpkg.gz" ), "polygons", "ogr" );
-  QVERIFY( layerPoly->isValid() );
-
-  const QgsRectangle fullExtent = layerPoly->extent();
-
-  // =========== create polygon 3D renderer
-  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol();
-  symbol3d->setExtrusionHeight( 10.f );
-  QgsPhongMaterialSettings materialSettings;
-  materialSettings.setAmbient( Qt::lightGray );
-  symbol3d->setMaterialSettings( materialSettings.clone() );
-
-  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
-  layerPoly->setRenderer3D( renderer3d );
-
-  QgsProject project;
-  project.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 3857 ) );
-  project.addMapLayer( layerPoly );
-
-  // =========== create scene 3D settings
-  Qgs3DMapSettings mapSettings;
-  mapSettings.setCrs( project.crs() );
-  mapSettings.setExtent( fullExtent );
-  mapSettings.setLayers( { layerPoly } );
-
-  mapSettings.setTransformContext( project.transformContext() );
-  mapSettings.setPathResolver( project.pathResolver() );
-  mapSettings.setMapThemeCollection( project.mapThemeCollection() );
-  mapSettings.setOutputDpi( 92 );
-
-  // =========== creating Qgs3DMapScene
-  QPoint winSize = QPoint( 640, 480 ); // default window size
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;
-  engine.setSize( QSize( winSize.x(), winSize.y() ) );
-  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
-
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 7000, 20.0, -10.0 );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
   engine.setRootEntity( scene );
 
-  const int nbFaces = 165;
-  const int nbFeat = 3;
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
 
-  // =========== check with 1 big tile ==> 1 exported object
-  do3DSceneExport( "scene_export", 1, 1, nbFeat, nbFaces, scene, layerPoly, &engine );
-  // =========== check with 4 tiles ==> 1 exported objects
-  do3DSceneExport( "scene_export", 2, 1, nbFeat, nbFaces, scene, layerPoly, &engine );
-  // =========== check with 9 tiles ==> 3 exported objects
-  do3DSceneExport( "scene_export", 3, 3, nbFeat, nbFaces, scene, layerPoly, &engine );
-  // =========== check with 16 tiles ==> 3 exported objects
-  do3DSceneExport( "scene_export", 4, 3, nbFeat, nbFaces, scene, layerPoly, &engine );
-  // =========== check with 25 tiles ==> 3 exported objects
-  do3DSceneExport( "scene_export", 5, 3, nbFeat, nbFaces, scene, layerPoly, &engine );
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
 
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "annotation_billboard_rendering_1", "annotation_billboard_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  // more perspective look, with z offset
+  renderer->setZOffset( 600 );
+  renderer->setShowCalloutLines( true );
+  renderer->setCalloutLineColor( QColor( 255, 255, 255 ) );
+  renderer->setCalloutLineWidth( 8 );
+  annotationLayer->setRenderer3D( renderer->clone() );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
   delete scene;
-  mapSettings.setLayers( {} );
-}
+  delete map;
 
-void TestQgs3DRendering::test3DSceneExporterBig()
-{
-  // In Qt 6, this test does not work on CI
-  // because somewhere after 10K lines, one of the values is -0.304 instead of -0.305
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
-  if ( QgsTest::isCIRun() )
-  {
-    QSKIP( "fails on CI" );
-  }
-#endif
-
-  // =============================================
-  // =========== creating Qgs3DMapSettings
-  QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
-  QVERIFY( layerDtm->isValid() );
-
-  const QgsRectangle fullExtent = layerDtm->extent();
-
-  QgsProject project;
-  project.setCrs( layerDtm->crs() );
-  project.addMapLayer( layerDtm );
-
-  Qgs3DMapSettings mapSettings;
-  mapSettings.setCrs( project.crs() );
-  mapSettings.setExtent( fullExtent );
-  mapSettings.setLayers( { layerDtm, mLayerBuildings } );
-
-  mapSettings.setTransformContext( project.transformContext() );
-  mapSettings.setPathResolver( project.pathResolver() );
-  mapSettings.setMapThemeCollection( project.mapThemeCollection() );
-
-  QgsDemTerrainSettings *demTerrainSettings = new QgsDemTerrainSettings;
-  demTerrainSettings->setLayer( layerDtm );
-  demTerrainSettings->setVerticalScale( 3 );
-  mapSettings.setTerrainSettings( demTerrainSettings );
-
-  QgsPointLightSettings defaultPointLight;
-  defaultPointLight.setPosition( QgsVector3D( 0, 400, 0 ) );
-  defaultPointLight.setConstantAttenuation( 0 );
-  mapSettings.setLightSources( { defaultPointLight.clone() } );
-  mapSettings.setOutputDpi( 92 );
-
-  // =========== creating Qgs3DMapScene
-  QPoint winSize = QPoint( 640, 480 ); // default window size
-
-  QgsOffscreen3DEngine engine;
-  engine.setSize( QSize( winSize.x(), winSize.y() ) );
-  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
-  engine.setRootEntity( scene );
-
-  // =========== set camera position
-  scene->cameraController()->setLookingAtPoint( QVector3D( 0, 0, 0 ), 1500, 40.0, -10.0 );
-
-  const int nbFaces = 19869;
-  const int nbFeat = 401;
-
-  // =========== check with 1 big tile ==> 1 exported object
-  do3DSceneExport( "big_scene_export", 1, 1, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
-  // =========== check with 4 tiles ==> 4 exported objects
-  do3DSceneExport( "big_scene_export", 2, 4, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
-  // =========== check with 9 tiles ==> 14 exported objects
-  do3DSceneExport( "big_scene_export", 3, 14, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
-  // =========== check with 16 tiles ==> 32 exported objects
-  do3DSceneExport( "big_scene_export", 4, 32, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
-  // =========== check with 25 tiles ==> 70 exported objects
-  do3DSceneExport( "big_scene_export", 5, 70, nbFeat, nbFaces, scene, mLayerBuildings, &engine );
-
-  // =========== check with 25 tiles + terrain ==> 70+1 exported objects
-  do3DSceneExport( "terrain_scene_export", 5, 71, nbFeat, 119715, scene, mLayerBuildings, &engine, scene->terrainEntity() );
-
-  delete scene;
-  mapSettings.setLayers( {} );
+  QGSVERIFYIMAGECHECK( "annotation_billboard_rendering_2", "annotation_billboard_rendering_2", img2, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

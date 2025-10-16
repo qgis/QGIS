@@ -93,6 +93,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   connect( mOutputHeightSpinBox, &QSpinBox::editingFinished, this, [this] { updateOutputHeight( mOutputHeightSpinBox->value() ); } );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsMapSaveDialog::updateExtent );
   connect( mScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsMapSaveDialog::updateScale );
+  connect( mLockScale, &QToolButton::toggled, this, &QgsMapSaveDialog::lockScaleChanged );
   connect( mLockAspectRatio, &QgsRatioLockButton::lockChanged, this, &QgsMapSaveDialog::lockChanged );
 
   updateOutputSize();
@@ -222,23 +223,38 @@ void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
 {
   int currentDpi = 0;
 
-  // reset scale to properly sync output width and height when extent set using
-  // current map view, layer extent, or drawn on canvas buttons
+  // If extent set using current map view, layer extent, or drawn on canvas buttons
   if ( mExtentGroupBox->extentState() != QgsExtentGroupBox::UserExtent )
   {
-    currentDpi = mDpi;
-
-    QgsMapSettings ms = mMapCanvas->mapSettings();
-    ms.setRotation( 0 );
-    mDpi = static_cast<int>( std::round( ms.outputDpi() ) );
-    mSize.setWidth( ms.outputSize().width() * extent.width() / ms.visibleExtent().width() );
-    mSize.setHeight( ms.outputSize().height() * extent.height() / ms.visibleExtent().height() );
-
-    whileBlocking( mScaleWidget )->setScale( ms.scale() );
-
-    if ( currentDpi != mDpi )
+    // reset scale to properly sync output width and height
+    if ( !mLockScale->isChecked() )
     {
-      updateDpi( currentDpi );
+      currentDpi = mDpi;
+
+      QgsMapSettings ms = mMapCanvas->mapSettings();
+      ms.setRotation( 0 );
+      mDpi = static_cast<int>( std::round( ms.outputDpi() ) );
+
+      mSize.setWidth( ms.outputSize().width() * extent.width() / ms.visibleExtent().width() );
+      mSize.setHeight( ms.outputSize().height() * extent.height() / ms.visibleExtent().height() );
+
+      whileBlocking( mScaleWidget )->setScale( ms.scale() );
+
+      if ( currentDpi != mDpi )
+      {
+        updateDpi( currentDpi );
+      }
+    }
+    else // Update size, leave scale untouched
+    {
+      QgsScaleCalculator calculator;
+      calculator.setMapUnits( mExtentGroupBox->currentCrs().mapUnits() );
+      calculator.setDpi( mDpi );
+      calculator.setMethod( QgsProject::instance()->scaleMethod() );
+
+      QSizeF newSize = calculator.calculateImageSize( extent, mScaleWidget->scale() );
+      mSize.setWidth( static_cast<int>( newSize.width() ) );
+      mSize.setHeight( static_cast<int>( newSize.height() ) );
     }
   }
   else
@@ -246,6 +262,7 @@ void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
     mSize.setWidth( mSize.width() * extent.width() / mExtent.width() );
     mSize.setHeight( mSize.height() * extent.height() / mExtent.height() );
   }
+
   updateOutputSize();
   checkOutputSize();
 
@@ -389,6 +406,11 @@ void QgsMapSaveDialog::lockChanged( const bool locked )
   {
     mExtentGroupBox->setRatio( QSize( 0, 0 ) );
   }
+}
+
+void QgsMapSaveDialog::lockScaleChanged( bool locked )
+{
+  mScaleWidget->setEnabled( !locked );
 }
 
 void QgsMapSaveDialog::copyToClipboard()

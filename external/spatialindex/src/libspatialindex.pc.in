@@ -1,0 +1,12 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/@LIB_INSTALL_DIR@
+includedir=${prefix}/@INCLUDE_INSTALL_DIR@
+
+Name: libspatialindex 
+Description: Generic C/C++ library for spatial indexing
+Requires: 
+Version: @SIDX_VERSION_STRING@
+Libs: -L${libdir} -lspatialindex
+Cflags: -I${includedir}
+

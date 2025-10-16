@@ -77,6 +77,9 @@ void QgsServerSettings::initSettings()
   const Setting sIgnoreBadLayers = { QgsServerSettingsEnv::QGIS_SERVER_IGNORE_BAD_LAYERS, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Ignore bad layers" ), QString(), QMetaType::Type::Bool, QVariant( false ), QVariant() };
   mSettings[sIgnoreBadLayers.envVar] = sIgnoreBadLayers;
 
+  const Setting sIgnoreRenderingErrors = { QgsServerSettingsEnv::QGIS_SERVER_IGNORE_RENDERING_ERRORS, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Ignore rendering errors" ), QString(), QMetaType::Type::Bool, QVariant( false ), QVariant() };
+  mSettings[sIgnoreRenderingErrors.envVar] = sIgnoreRenderingErrors;
+
   // retry bad layers
   const Setting sRetryBadLayers = { QgsServerSettingsEnv::QGIS_SERVER_RETRY_BAD_LAYERS, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Retry bad layers" ), QString(), QMetaType::Type::Bool, QVariant( false ), QVariant() };
   mSettings[sRetryBadLayers.envVar] = sRetryBadLayers;
@@ -115,6 +118,16 @@ void QgsServerSettings::initSettings()
   const Setting sApiWfs3MaxLimit = { QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_MAX_LIMIT, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Maximum value for \"limit\" in a features request, defaults to 10000" ), QStringLiteral( "/qgis/server_api_wfs3_max_limit" ), QMetaType::Type::LongLong, QVariant( 10000 ), QVariant() };
 
   mSettings[sApiWfs3MaxLimit.envVar] = sApiWfs3MaxLimit;
+
+  // API WFS3 root path
+  // TODO: remove when QGIS 4 is released
+#if _QGIS_VERSION_INT > 40000
+  const Setting sApiWfs3RootPath = { QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_ROOT_PATH, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Root path for the OAPIF (WFS3) API" ), QStringLiteral( "/qgis/server_api_wfs3_root_path" ), QMetaType::Type::QString, QVariant( "/ogcapi" ), QVariant() };
+#else
+  const Setting sApiWfs3RootPath = { QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_ROOT_PATH, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Root path for the OAPIF (WFS3) API" ), QStringLiteral( "/qgis/server_api_wfs3_root_path" ), QMetaType::Type::QString, QVariant( "/wfs3" ), QVariant() };
+#endif
+
+  mSettings[sApiWfs3RootPath.envVar] = sApiWfs3RootPath;
 
   // projects directory for landing page service
   const Setting sProjectsDirectories = { QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES, QgsServerSettingsEnv::DEFAULT_VALUE, QStringLiteral( "Directories used by the landing page service to find .qgs and .qgz projects" ), QStringLiteral( "/qgis/server_projects_directories" ), QMetaType::Type::QString, QVariant( "" ), QVariant() };
@@ -411,9 +424,19 @@ qlonglong QgsServerSettings::apiWfs3MaxLimit() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_MAX_LIMIT ).toLongLong();
 }
 
+QString QgsServerSettings::apiWfs3RootPath() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_API_WFS3_ROOT_PATH ).toString();
+}
+
 bool QgsServerSettings::ignoreBadLayers() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_IGNORE_BAD_LAYERS ).toBool();
+}
+
+bool QgsServerSettings::ignoreRenderingErrors() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_IGNORE_RENDERING_ERRORS ).toBool();
 }
 
 bool QgsServerSettings::retryBadLayers() const

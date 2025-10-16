@@ -771,47 +771,6 @@ Qgis::RasterProviderCapabilities QgsPostgresRasterProvider::providerCapabilities
   return Qgis::RasterProviderCapability::ReadLayerMetadata;
 }
 
-
-static inline QString dumpVariantMap( const QVariantMap &variantMap, const QString &title = QString() )
-{
-  QString result;
-  if ( !title.isEmpty() )
-  {
-    result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td></td></tr>" ).arg( title );
-  }
-  for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
-  {
-    const QVariantMap childMap = it.value().toMap();
-    const QVariantList childList = it.value().toList();
-    if ( !childList.isEmpty() )
-    {
-      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><ul>" ).arg( it.key() );
-      for ( const QVariant &v : childList )
-      {
-        const QVariantMap grandChildMap = v.toMap();
-        if ( !grandChildMap.isEmpty() )
-        {
-          result += QStringLiteral( "<li><table>%1</table></li>" ).arg( dumpVariantMap( grandChildMap ) );
-        }
-        else
-        {
-          result += QStringLiteral( "<li>%1</li>" ).arg( QgsStringUtils::insertLinks( v.toString() ) );
-        }
-      }
-      result += QLatin1String( "</ul></td></tr>" );
-    }
-    else if ( !childMap.isEmpty() )
-    {
-      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><table>%2</table></td></tr>" ).arg( it.key(), dumpVariantMap( childMap ) );
-    }
-    else
-    {
-      result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>" ).arg( it.key(), QgsStringUtils::insertLinks( it.value().toString() ) );
-    }
-  }
-  return result;
-}
-
 QString QgsPostgresRasterProvider::htmlMetadata() const
 {
   // This must return the content of a HTML table starting by tr and ending by tr
@@ -829,7 +788,7 @@ QString QgsPostgresRasterProvider::htmlMetadata() const
     { tr( "Primary Keys SQL" ), pkSql() },
     { tr( "Temporal Column" ), mTemporalFieldIndex >= 0 && mAttributeFields.exists( mTemporalFieldIndex ) ? mAttributeFields.field( mTemporalFieldIndex ).name() : QString() },
   };
-  return dumpVariantMap( additionalInformation, tr( "Additional information" ) );
+  return QgsPostgresUtils::variantMapToHtml( additionalInformation, tr( "Additional information" ) );
 }
 
 QString QgsPostgresRasterProvider::lastErrorTitle()

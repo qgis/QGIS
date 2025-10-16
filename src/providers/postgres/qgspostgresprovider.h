@@ -171,6 +171,7 @@ class QgsPostgresProvider final : public QgsVectorDataProvider
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map ) override;
+    QString htmlMetadata() const override;
 
     //! Gets the postgres connection
     PGconn *pgConnection();
