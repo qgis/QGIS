@@ -1,0 +1,78 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayerchangescommitblockerinterface.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayerChangesCommitBlockerInterface
+{
+%Docstring(signature="appended")
+An interface that may be implemented to allow plugins or scripts to
+temporarily block block the ability to commit changes to a layer.
+
+This interface allows plugins to implement custom logic to determine
+whether it is safe for the application to commit those changes.
+
+:py:class:`QgsLayerChangesCommitBlockerInterface` are registered via the
+iface object:
+
+Example
+-------------------------------------
+
+.. code-block:: python
+
+       class MyPluginCommitBlocker(QgsLayerChangesCommitBlockerInterface):
+
+          def allowCommit(self, layer):
+              if layer.something_is_wrong()
+                  # show a warning prompt
+                  # ...
+                  # prevent QGIS application from saving
+                  return False
+
+              # allow QGIS application to commit changes
+              return True
+
+       my_blocker = MyPluginCommitBlocker()
+       iface.registerApplicationExitBlocker(my_blocker)
+
+.. versionadded:: 3.44
+%End
+
+%TypeHeaderCode
+#include "qgslayerchangescommitblockerinterface.h"
+%End
+  public:
+    virtual ~QgsLayerChangesCommitBlockerInterface();
+
+    virtual bool allowCommit( QgsMapLayer* layer ) = 0;
+%Docstring
+Called whenever the QGIS application has been asked to commit changes to
+a layer.
+
+The subclass can use this method to implement custom logic handling
+whether it is safe for the application to save changes.
+
+The implementation should return ``True`` if it is safe for QGIS to
+commit, or ``False`` if it wishes to prevent the application from doing
+so.
+
+.. note::
+
+   It is safe to use GUI widgets in implementations of this function, including message
+   boxes or custom dialogs with event loops.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayerchangescommitblockerinterface.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
