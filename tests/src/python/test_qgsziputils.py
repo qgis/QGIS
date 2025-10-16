@@ -170,7 +170,7 @@ class TestQgsZip(unittest.TestCase):
     def test_get_file_from_zip_success(self):
         zipPath = os.path.join(self.zipDir, "testzip.zip")
         self.assertTrue(os.path.exists(zipPath))
-        
+
         expectedData = b'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]'
 
         data = QByteArray()
