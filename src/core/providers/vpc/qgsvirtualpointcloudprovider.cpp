@@ -165,7 +165,7 @@ void QgsVirtualPointCloudProvider::parseFile()
   {
     url.setUrl( path );
     QNetworkRequest request( url );
-    const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( request );
+    const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( request, authcfg );
     if ( reply.error() == QNetworkReply::NoError )
     {
       jsonData = reply.content();
@@ -188,7 +188,7 @@ void QgsVirtualPointCloudProvider::parseFile()
 
   if ( jsonData.isEmpty() )
   {
-    appendError( QgsErrorMessage( QStringLiteral( "Could not read file: %1" ).arg( dataSourceUri() ) ) );
+    appendError( QgsErrorMessage( QStringLiteral( "Could not read file: %1" ).arg( path ) ) );
     return;
   }
 
