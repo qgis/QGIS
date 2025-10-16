@@ -285,7 +285,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void updateFunctionFileList( const QString &path );
 
     /**
-     * Saves the current function editor text to a project entry.
+     * Writes the current function editor text to a project entry.
+     * The project becomes dirty.
      *
      * \since QGIS 3.40
      */
@@ -368,12 +369,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /**
      * Auto save the current Python function code.
+     * \note Auto save does not apply to Project Functions.
      */
     void autosave();
 
     /**
      * Enabled or disable auto saving. When enabled Python scripts will be auto saved
      * when text changes.
+     * \note Auto save does not apply to Project Functions.
      * \param enabled TRUE to enable auto saving.
      */
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
@@ -484,6 +487,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void clearFunctionMarkers();
     void clearErrors();
     void runPythonCode( const QString &code );
+    void displayTemporaryLabel( const QString &text );
     QgsVectorLayer *contextLayer( const QgsExpressionItem *item ) const;
     void fillFieldValues( const QString &fieldName, QgsVectorLayer *layer, int countLimit, bool forceUsedValues = false );
     QString getFunctionHelp( QgsExpressionFunction *function );
