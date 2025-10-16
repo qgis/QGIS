@@ -314,7 +314,7 @@ void Qgs3DAxis::constructLabelsScene( Qt3DCore::QEntity *parent3DScene )
   mTwoDLabelSceneEntity->setEnabled( true );
 
   mTwoDLabelCamera = mRenderView->labelCamera();
-  mTwoDLabelCamera->setUpVector( QVector3D( 0.0f, 0.0f, 1.0f ) );
+  mTwoDLabelCamera->setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );
   mTwoDLabelCamera->setViewCenter( QVector3D( 0.0f, 0.0f, 0.0f ) );
   mTwoDLabelCamera->setPosition( QVector3D( 0.0f, 0.0f, 100.0f ) );
 }
