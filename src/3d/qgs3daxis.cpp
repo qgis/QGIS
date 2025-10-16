@@ -196,7 +196,7 @@ bool Qgs3DAxis::handleEvent( QEvent *event )
 
 void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits )
 {
-  int mHitsFound = -1;
+  int hitFoundIdx = -1;
   if ( !hits.empty() )
   {
     if ( 2 <= QgsLogger::debugLevel() )
@@ -214,7 +214,7 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
       QgsDebugMsgLevel( os.str().c_str(), 2 );
     }
 
-    for ( int i = 0; i < hits.length() && mHitsFound == -1; ++i )
+    for ( int i = 0; i < hits.length() && hitFoundIdx == -1; ++i )
     {
       Qt3DCore::QEntity *hitEntity = hits.at( i ).entity();
       // In Qt6, a Qt3DExtras::Text2DEntity contains a private entity: Qt3DExtras::DistanceFieldTextRenderer
@@ -225,14 +225,14 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
       }
       if ( hits.at( i ).distance() < 500.0f && hitEntity && ( hitEntity == mCubeRoot || hitEntity == mAxisRoot || hitEntity->parent() == mCubeRoot || hitEntity->parent() == mAxisRoot ) )
       {
-        mHitsFound = i;
+        hitFoundIdx = i;
       }
     }
   }
 
   if ( mLastClickedButton == Qt::NoButton ) // hover
   {
-    if ( mHitsFound != -1 )
+    if ( hitFoundIdx != -1 )
     {
       if ( mCanvas->cursor() != Qt::ArrowCursor )
       {
@@ -249,7 +249,7 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
       }
     }
   }
-  else if ( mLastClickedButton == Qt::MouseButton::RightButton && mHitsFound != -1 ) // show menu
+  else if ( mLastClickedButton == Qt::MouseButton::RightButton && hitFoundIdx != -1 ) // show menu
   {
     displayMenuAt( mLastClickedPos );
   }
@@ -257,16 +257,16 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
   {
     hideMenu();
 
-    if ( mHitsFound != -1 )
+    if ( hitFoundIdx != -1 )
     {
-      Qt3DCore::QEntity *hitEntity = hits.at( mHitsFound ).entity();
+      Qt3DCore::QEntity *hitEntity = hits.at( hitFoundIdx ).entity();
       if ( hitEntity && qobject_cast<Qt3DExtras::QText2DEntity *>( hitEntity->parentEntity() ) )
       {
         hitEntity = hitEntity->parentEntity();
       }
       if ( hitEntity == mCubeRoot || hitEntity->parent() == mCubeRoot )
       {
-        switch ( hits.at( mHitsFound ).primitiveIndex() / 2 )
+        switch ( hits.at( hitFoundIdx ).primitiveIndex() / 2 )
         {
           case 0: // "East face";
             QgsDebugMsgLevel( "Qgs3DAxis: East face clicked", 2 );
