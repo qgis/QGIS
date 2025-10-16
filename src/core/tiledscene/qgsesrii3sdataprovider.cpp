@@ -825,7 +825,7 @@ bool QgsEsriI3SDataProvider::loadFromRestService( const QString &uri, json &laye
 bool QgsEsriI3SDataProvider::loadFromSlpk( const QString &uri, json &layerJson, QString &i3sVersion )
 {
   bool isExtracted;
-  if ( QFileInfo( uri ).suffix().compare( QLatin1String( "slpk" ), Qt::CaseInsensitive ) == 0  )
+  if ( QFileInfo( uri ).suffix().compare( QLatin1String( "slpk" ), Qt::CaseInsensitive ) == 0 )
   {
     isExtracted = false;
   }
