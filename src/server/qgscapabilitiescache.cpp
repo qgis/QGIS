@@ -20,6 +20,7 @@
 
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QDir>
 
 #if defined( Q_OS_LINUX )
 #include <sys/vfs.h>
@@ -54,8 +55,9 @@ const QDomDocument *QgsCapabilitiesCache::searchCapabilitiesDocument( const QStr
   }
 }
 
-void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString &configFilePath, const QString &key, const QDomDocument *doc )
+void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString &configFilePathIn, const QString &key, const QDomDocument *doc )
 {
+  QString configFilePath = QDir::cleanPath(configFilePathIn);
   if ( mCachedCapabilities.size() > mCacheSize )
   {
     //remove another cache entry to avoid memory problems
@@ -85,15 +87,17 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString &configFile
 #endif
 }
 
-void QgsCapabilitiesCache::removeCapabilitiesDocument( const QString &path )
+void QgsCapabilitiesCache::removeCapabilitiesDocument( const QString &pathIn )
 {
+  QString path = QDir::cleanPath(pathIn);
   mCachedCapabilities.remove( path );
   mCachedCapabilitiesTimestamps.remove( path );
   mFileSystemWatcher.removePath( path );
 }
 
-void QgsCapabilitiesCache::removeChangedEntry( const QString &path )
+void QgsCapabilitiesCache::removeChangedEntry( const QString &pathIn )
 {
+  QString path = QDir::cleanPath(pathIn);
   QgsDebugMsgLevel( QStringLiteral( "Remove capabilities cache entry because file changed" ), 2 );
   removeCapabilitiesDocument( path );
 }
