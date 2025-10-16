@@ -106,8 +106,6 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
       QObject *connectionContext
     );
 
-#endif
-
     /**
      * Add an \a actionToAdd to the sub menu with \a subMenuName in \a mainMenu. If the sub menu with given name does not exist it will be created.
      *
@@ -118,6 +116,14 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
      * \since QGIS 4.0
      */
     static void addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, const QString &subMenuName );
+
+    /**
+     * Refresh child of \a item that has give name
+     *
+     * \since QGIS 4.0
+     */
+    static void refreshChildWithName( QgsDataItem *item, const QString &name );
+#endif
 
   private:
     static void deleteConnectionsPrivate( const QStringList &connectionNames, const std::function<void( const QString & )> &deleteConnection, QPointer<QgsDataItem> firstParent );
