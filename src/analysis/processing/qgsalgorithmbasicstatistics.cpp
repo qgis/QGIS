@@ -362,7 +362,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( const int fi
   outputs.insert( QStringLiteral( "COUNT" ), stat.count() );
   outputs.insert( QStringLiteral( "UNIQUE" ), stat.countDistinct() );
   outputs.insert( QStringLiteral( "EMPTY" ), stat.countMissing() );
-  outputs.insert( QStringLiteral( "FILLED" ), stat.count() - stat.countMissing() );
+  outputs.insert( QStringLiteral( "FILLED" ), count - stat.countMissing() );
   outputs.insert( QStringLiteral( "MIN" ), stat.min() );
   outputs.insert( QStringLiteral( "MAX" ), stat.max() );
   outputs.insert( QStringLiteral( "MIN_LENGTH" ), stat.minLength() );
