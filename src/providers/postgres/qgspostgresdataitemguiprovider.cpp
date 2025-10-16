@@ -36,11 +36,13 @@
 #include "qgsdbimportvectorlayerdialog.h"
 #include "qgsproject.h"
 #include "qgsdatabaseschemaselectiondialog.h"
+#include "qgspostgresimportprojectdialog.h"
+#include "qgsmessagelog.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
-
+#include <QPair>
 
 void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
@@ -123,6 +125,20 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     maintainMenu->addAction( actionDelete );
 
     menu->addMenu( maintainMenu );
+
+    if ( QgsPostgresConn::allowProjectsInDatabase( schemaItem->connectionName() ) )
+    {
+      QMenu *projectMenu = new QMenu( tr( "Project" ), menu );
+      menu->addMenu( projectMenu );
+
+      QAction *actionSaveProject = new QAction( tr( "Save Current Project" ), projectMenu );
+      connect( actionSaveProject, &QAction::triggered, this, [schemaItem, context] { saveCurrentProject( schemaItem, context ); } );
+      projectMenu->addAction( actionSaveProject );
+
+      QAction *actionImportProject = new QAction( tr( "Import Projects…" ), projectMenu );
+      projectMenu->addAction( actionImportProject );
+      connect( actionImportProject, &QAction::triggered, this, [schemaItem, context] { saveProjects( schemaItem, context ); } );
+    }
   }
 
   if ( QgsPGLayerItem *layerItem = qobject_cast<QgsPGLayerItem *>( item ) )
@@ -1046,4 +1062,136 @@ void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProj
       notify( tr( "Move Projects to Another Schema" ), tr( "Move of %1 projects to schema “%2” successful." ).arg( movedProjectCount ).arg( newSchemaName ), context, Qgis::MessageLevel::Success );
     }
   }
+}
+
+void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context )
+{
+  const QgsDataSourceUri uri = QgsPostgresConn::connUri( schemaItem->connectionName() );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
+
+  if ( !QgsPostgresUtils::projectsTableExists( conn, schemaItem->name() ) )
+  {
+    if ( !QgsPostgresUtils::createProjectsTable( conn, schemaItem->name() ) )
+    {
+      notify( tr( "Save Project" ), tr( "Unable to create table qgis_projects in schema %1." ).arg( schemaItem->name() ), context, Qgis::MessageLevel::Warning );
+      conn->unref();
+      return;
+    }
+  }
+
+  QgsProject *project = QgsProject::instance();
+
+  if ( !conn || !project )
+  {
+    notify( tr( "Save Project" ), tr( "Unable to save project to database." ), context, Qgis::MessageLevel::Warning );
+    if ( conn )
+      conn->unref();
+    return;
+  }
+
+  QgsPostgresProjectUri pgProjectUri;
+  pgProjectUri.connInfo = conn->uri();
+  pgProjectUri.schemaName = schemaItem->name();
+  pgProjectUri.projectName = project->title().isEmpty() ? project->baseName() : project->title();
+
+  QString projectUri = QgsPostgresProjectStorage::encodeUri( pgProjectUri );
+  const QString sqlProjectExist = QStringLiteral( "SELECT EXISTS( SELECT 1 FROM %1.qgis_projects WHERE name = %2);" )
+                                    .arg( QgsPostgresConn::quotedIdentifier( schemaItem->name() ), QgsPostgresConn::quotedValue( pgProjectUri.projectName ) );
+  QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sqlProjectExist ) );
+
+  if ( !( result.PQresultStatus() == PGRES_COMMAND_OK || result.PQresultStatus() == PGRES_TUPLES_OK ) )
+  {
+    notify( tr( "Save Project" ), tr( "Unable to save project to database." ), context, Qgis::MessageLevel::Warning );
+    conn->unref();
+    return;
+  }
+
+  if ( result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
+  {
+    notify( tr( "Save Project" ), tr( "Project “%1” exist in the database. Overwriting it." ).arg( pgProjectUri.projectName ), context, Qgis::MessageLevel::Info );
+  }
+
+  // read the project, set title and new filename
+  QgsProject savedProject;
+  savedProject.read( project->fileName() );
+  savedProject.setFileName( projectUri );
+
+  // write project to the database
+  const bool success = savedProject.write();
+  if ( !success )
+  {
+    notify( tr( "Save Project" ), tr( "Unable to save project “%1” to “%2”." ).arg( savedProject.title(), schemaItem->name() ), context, Qgis::MessageLevel::Warning );
+    conn->unref();
+    return;
+  }
+
+  notify( tr( "Save Project" ), tr( "Project “%1” saved to schema “%2”." ).arg( savedProject.title(), schemaItem->name() ), context, Qgis::MessageLevel::Info );
+
+  // refresh
+  schemaItem->refresh();
+  conn->unref();
+}
+
+void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context )
+{
+  const QgsDataSourceUri uri = QgsPostgresConn::connUri( schemaItem->connectionName() );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
+
+  if ( !QgsPostgresUtils::projectsTableExists( conn, schemaItem->name() ) )
+  {
+    if ( !QgsPostgresUtils::createProjectsTable( conn, schemaItem->name() ) )
+    {
+      notify( tr( "Save Project" ), tr( "Unable to create table qgis_projects in schema %1." ).arg( schemaItem->name() ), context, Qgis::MessageLevel::Warning );
+      conn->unref();
+    }
+  }
+
+  QgsPostgresImportProjectDialog dlg( schemaItem->connectionName(), schemaItem->name() );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    QList<QPair<QString, QString>> projectsWithNames = dlg.projectsToSave();
+
+    int projectsSaved = 0;
+    int projectsNotSaved = 0;
+    QStringList unsavedProjects;
+
+    for ( const QPair<QString, QString> &projectWithName : projectsWithNames )
+    {
+      QgsPostgresProjectUri pgProjectUri;
+      pgProjectUri.connInfo = QgsDataSourceUri( conn->uri() );
+      pgProjectUri.schemaName = schemaItem->name();
+      pgProjectUri.projectName = projectWithName.second;
+      QString projectUri = QgsPostgresProjectStorage::encodeUri( pgProjectUri );
+
+      // read the project and set new filename
+      QgsProject savedProject;
+      savedProject.read( projectWithName.first );
+      savedProject.setFileName( projectUri );
+
+      // write project to the database
+      const bool success = savedProject.write();
+      if ( success )
+      {
+        projectsSaved++;
+      }
+      else
+      {
+        projectsNotSaved++;
+        unsavedProjects << projectWithName.second;
+      }
+    }
+
+    notify( tr( "Save Projects" ), tr( "Number of projects saved “%1”." ).arg( projectsSaved ), context, Qgis::MessageLevel::Info );
+
+    if ( projectsNotSaved > 0 )
+    {
+      notify( tr( "Save Projects" ), tr( "Number of projects that could not be saved “%1”." ).arg( projectsNotSaved ), context, Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( tr( "Project that could not be imported: %1" ).arg( unsavedProjects.join( ", " ) ), QString(), Qgis::MessageLevel::Critical );
+    }
+
+    // refresh
+    schemaItem->refresh();
+  }
+
+  conn->unref();
 }
