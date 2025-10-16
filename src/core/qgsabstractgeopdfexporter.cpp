@@ -430,14 +430,15 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
     for ( const VectorComponentDetail &component : std::as_const( mVectorComponents ) )
     {
       const QString destinationGroup = details.customLayerTreeGroups.value( component.mapLayerId, component.group );
+      const QString id = destinationGroup.isEmpty() ? component.mapLayerId : u"%1_%2"_s.arg( destinationGroup, component.mapLayerId );
 
       auto layer = std::make_unique< TreeNode >();
-      layer->id = destinationGroup.isEmpty() ? component.mapLayerId : u"%1_%2"_s.arg( destinationGroup, component.mapLayerId );
+      layer->id = id;
       layer->name = details.layerIdToPdfLayerTreeNameMap.contains( component.mapLayerId ) ? details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId ) : component.name;
       layer->initiallyVisible = details.initialLayerVisibility.value( component.mapLayerId, true );
       layer->mapLayerId = component.mapLayerId;
 
-      layerIdToTreeNode.insert( component.mapLayerId, layer.get() );
+      layerIdToTreeNode.insert( layer->id, layer.get() );
       if ( !destinationGroup.isEmpty() )
       {
         if ( TreeNode *groupNode = groupNameMap.value( destinationGroup ) )
@@ -457,7 +458,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
         rootLayers.emplace_back( std::move( layer ) );
       }
 
-      createdLayerIds.insert( component.mapLayerId );
+      createdLayerIds.insert( id );
     }
   }
 
@@ -467,10 +468,12 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   // - legends and other map content
   for ( const ComponentLayerDetail &component : components )
   {
-    if ( !component.mapLayerId.isEmpty() && createdLayerIds.contains( component.mapLayerId ) )
+    const QString destinationGroup = details.customLayerTreeGroups.value( component.mapLayerId, component.group );
+    const QString id = destinationGroup.isEmpty() ? component.mapLayerId : u"%1_%2"_s.arg( destinationGroup, component.mapLayerId );
+
+    if ( !component.mapLayerId.isEmpty() && createdLayerIds.contains( id ) )
       continue;
 
-    const QString destinationGroup = details.customLayerTreeGroups.value( component.mapLayerId, component.group );
     if ( destinationGroup.isEmpty() && component.mapLayerId.isEmpty() )
       continue;
 
@@ -478,12 +481,12 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
     if ( !component.mapLayerId.isEmpty() )
     {
       mapLayerNode = std::make_unique< TreeNode >();
-      mapLayerNode->id = destinationGroup.isEmpty() ? component.mapLayerId : u"%1_%2"_s.arg( destinationGroup, component.mapLayerId );
+      mapLayerNode->id = id;
       mapLayerNode->name = details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId, component.name );
       mapLayerNode->initiallyVisible = details.initialLayerVisibility.value( component.mapLayerId, true );
       mapLayerNode->mapLayerId = component.mapLayerId;
 
-      layerIdToTreeNode.insert( component.mapLayerId, mapLayerNode.get() );
+      layerIdToTreeNode.insert( mapLayerNode->id, mapLayerNode.get() );
     }
 
     if ( !destinationGroup.isEmpty() )
@@ -628,7 +631,9 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
     }
     else if ( !component.mapLayerId.isEmpty() )
     {
-      if ( TreeNode *treeNode = layerIdToTreeNode.value( component.mapLayerId ) )
+      const QString destinationGroup = details.customLayerTreeGroups.value( component.mapLayerId, component.group );
+      const QString id = destinationGroup.isEmpty() ? component.mapLayerId : u"%1_%2"_s.arg( destinationGroup, component.mapLayerId );
+      if ( TreeNode *treeNode = layerIdToTreeNode.value( id ) )
       {
         QDomElement ifLayerOnElement = treeNode->createNestedIfLayerOnElements( doc, content );
         ifLayerOnElement.appendChild( createPdfDatasetElement( component ) );
@@ -646,7 +651,9 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   {
     for ( const VectorComponentDetail &component : std::as_const( mVectorComponents ) )
     {
-      if ( TreeNode *treeNode = layerIdToTreeNode.value( component.mapLayerId ) )
+      const QString destinationGroup = details.customLayerTreeGroups.value( component.mapLayerId, component.group );
+      const QString id = destinationGroup.isEmpty() ? component.mapLayerId : u"%1_%2"_s.arg( destinationGroup, component.mapLayerId );
+      if ( TreeNode *treeNode = layerIdToTreeNode.value( id ) )
       {
         QDomElement ifLayerOnElement = treeNode->createNestedIfLayerOnElements( doc, content );
 
@@ -777,4 +784,3 @@ QString QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::Com
   QgsDebugError( u"Unsupported PDF blend mode %1"_s.arg( mode ) );
   return u"Normal"_s;
 }
-
