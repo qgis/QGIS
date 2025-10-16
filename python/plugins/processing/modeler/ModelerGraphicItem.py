@@ -190,6 +190,10 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
             alg = dlg.createAlgorithm()
             alg.setChildId(self.component().childId())
             alg.copyNonDefinitionPropertiesFromModel(self.model())
+            if alg.toVariant() == self.component().toVariant():
+                # nothing changed, treat as cancel was pressed
+                return
+
             self.aboutToChange.emit(self.tr("Edit {}").format(alg.description()))
             self.model().setChildAlgorithm(alg)
             self.requestModelRepaint.emit()
