@@ -422,6 +422,67 @@ first available.
 .. versionadded:: 3.18
 %End
 
+
+
+    static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
+%Docstring
+Converts field values from an iterator to an array of data.
+
+:param fields: layer fields
+:param fieldName: field name to source values from
+:param it: feature iterator for features to include
+:param nullValue: value to use when original field value is a null. Must
+                  be of the same data type as the source field.
+
+.. warning::
+
+   Only numeric field types are supported.
+
+:raises KeyError: if the field name is not found
+
+:raises TypeError: if the field is of a non-supported type
+
+.. versionadded:: 4.0
+%End
+%MethodCode
+
+    const int fieldIndex = a0->lookupField( *a1 );
+    if ( fieldIndex == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, QStringLiteral( "Field %1 does not exist." ).arg( *a1 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      const QgsField field = a0->at( fieldIndex );
+      switch ( field.type() )
+      {
+        case QMetaType::Type::Int:
+        case QMetaType::Type::UInt:
+        case QMetaType::Type::Long:
+        case QMetaType::Type::LongLong:
+        case QMetaType::Type::ULong:
+        case QMetaType::Type::ULongLong:
+        case QMetaType::Type::Float:
+        case QMetaType::Type::Double:
+        case QMetaType::Type::Short:
+        case QMetaType::Type::UShort:
+        {
+          Py_BEGIN_ALLOW_THREADS
+          sipRes = new QByteArray( QgsVectorLayerUtils::fieldToDataArray( *a0, *a1, *a2, *a3 ) );
+          Py_END_ALLOW_THREADS
+          break;
+        }
+
+        default:
+        {
+          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Field type (%1) cannot be converted to a data array." ).arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
+          sipIsErr = 1;
+        }
+      }
+    }
+%End
+
 };
 
 
