@@ -318,8 +318,16 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
   if ( context && distanceUnits() == Qgis::DistanceUnit::Unknown )
   {
     QString distanceUnitsStr = context->variable( QStringLiteral( "project_distance_units" ) ).toString();
+
     if ( ! distanceUnitsStr.isEmpty() )
       setDistanceUnits( QgsUnitTypes::stringToDistanceUnit( distanceUnitsStr ) );
+
+    if ( distanceUnits() == Qgis::DistanceUnit::Unknown )
+    {
+      distanceUnitsStr = context->variable( QStringLiteral( "map_units" ) ).toString();
+      if ( ! distanceUnitsStr.isEmpty() )
+        setDistanceUnits( QgsUnitTypes::stringToDistanceUnit( distanceUnitsStr ) );
+    }
   }
 
   // Set the area units from the context if it has not been set by setAreaUnits()

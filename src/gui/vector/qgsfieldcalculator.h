@@ -20,6 +20,8 @@
 #include "qgshelp.h"
 #include "qgsfields.h"
 #include "qgis_gui.h"
+#include "qgsmapcanvas.h"
+#include "qgsexpressioncontext.h"
 
 class QgsVectorLayer;
 class QgsMessageBar;
@@ -52,6 +54,12 @@ class GUI_EXPORT QgsFieldCalculator : public QDialog, private Ui::QgsFieldCalcul
      * \returns The field index if attribute values were calculated or -1, e.g. in case of geometry changes.
      */
     int changedAttributeId() const { return mAttributeId; }
+
+    /**
+     * Appends an expression \a scope to the expression context of the field calculator, ownership is transferred to the
+     * field calculator.
+     */
+    void appendScope( QgsExpressionContextScope *scope );
 
   public slots:
     void accept() override;
