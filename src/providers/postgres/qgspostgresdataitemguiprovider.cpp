@@ -1031,6 +1031,16 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
   const QgsDataSourceUri uri = QgsPostgresConn::connUri( schemaItem->connectionName() );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
 
+  if ( !QgsPostgresUtils::projectsTableExists( conn, schemaItem->name() ) )
+  {
+    if ( !QgsPostgresUtils::createProjectsTable( conn, schemaItem->name() ) )
+    {
+      notify( tr( "Save Project" ), tr( "Unable to create table qgis_projects in schema %1." ).arg( schemaItem->name() ), context, Qgis::MessageLevel::Warning );
+      conn->unref();
+      return;
+    }
+  }
+
   QgsProject *project = QgsProject::instance();
 
   if ( !conn || !project )
