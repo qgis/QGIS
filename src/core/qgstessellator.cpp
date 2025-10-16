@@ -489,7 +489,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   float zMaxExtruded = -std::numeric_limits<float>::max();
 
   const float scale = mBounds.isNull() ? 1.0 : std::max( 10000.0 / mBounds.width(), 10000.0 / mBounds.height() );
-  const bool addFloor = ( mTessellatedFacade == 4 ) && ( extrusionHeight != 0 )
+  const bool addFloor = ( mTessellatedFacade == 4 ) && ( extrusionHeight != 0 );
 
   std::unique_ptr<QMatrix4x4> toNewBase, toOldBase;
   QgsPoint ptStart, pt0;
