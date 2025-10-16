@@ -126,16 +126,19 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
     menu->addMenu( maintainMenu );
 
-    QMenu *projectMenu = new QMenu( tr( "Project" ), menu );
-    menu->addMenu( projectMenu );
+    if ( QgsPostgresConn::allowProjectsInDatabase( schemaItem->connectionName() ) )
+    {
+      QMenu *projectMenu = new QMenu( tr( "Project" ), menu );
+      menu->addMenu( projectMenu );
 
-    QAction *actionSaveProject = new QAction( tr( "Save Current Project" ), projectMenu );
-    connect( actionSaveProject, &QAction::triggered, this, [schemaItem, context] { saveCurrentProject( schemaItem, context ); } );
-    projectMenu->addAction( actionSaveProject );
+      QAction *actionSaveProject = new QAction( tr( "Save Current Project" ), projectMenu );
+      connect( actionSaveProject, &QAction::triggered, this, [schemaItem, context] { saveCurrentProject( schemaItem, context ); } );
+      projectMenu->addAction( actionSaveProject );
 
-    QAction *actionImportProject = new QAction( tr( "Import Projects…" ), projectMenu );
-    projectMenu->addAction( actionImportProject );
-    connect( actionImportProject, &QAction::triggered, this, [schemaItem, context] { saveProjects( schemaItem, context ); } );
+      QAction *actionImportProject = new QAction( tr( "Import Projects…" ), projectMenu );
+      projectMenu->addAction( actionImportProject );
+      connect( actionImportProject, &QAction::triggered, this, [schemaItem, context] { saveProjects( schemaItem, context ); } );
+    }
   }
 
   if ( QgsPGLayerItem *layerItem = qobject_cast<QgsPGLayerItem *>( item ) )
