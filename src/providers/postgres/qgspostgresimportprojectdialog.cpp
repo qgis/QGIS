@@ -27,13 +27,17 @@
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgspostgresconn.h"
+#include "qgspostgresutils.h"
 #include "moc_qgspostgresimportprojectdialog.cpp"
 
-QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( std::shared_ptr<QgsAbstractDatabaseProviderConnection> dbConn, const QString targetSchema, QWidget *parent )
-  : QDialog { parent }, mDbConnection( dbConn ), mSchemaToImportTo( targetSchema )
+QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( const QString connectionName, const QString targetSchema, QWidget *parent )
+  : QDialog { parent }, mSchemaToImportTo( targetSchema )
 {
   setWindowTitle( tr( "Import Projects to Schema “%1”" ).arg( targetSchema ) );
   setMinimumWidth( 600 );
+
+  const QgsDataSourceUri uri = QgsPostgresConn::connUri( connectionName );
+  mDbConnection = QgsPostgresConn::connectDb( uri, false );
 
   QVBoxLayout *mainLayout = new QVBoxLayout();
   setLayout( mainLayout );
@@ -137,19 +141,23 @@ QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( std::shared_ptr<
   mExistingProjectNames = projectNamesInSchema();
 }
 
+QgsPostgresImportProjectDialog::~QgsPostgresImportProjectDialog()
+{
+  mDbConnection->unref();
+}
+
 QSet<QString> QgsPostgresImportProjectDialog::projectNamesInSchema()
 {
   QSet<QString> existingProjects;
 
-  if ( mDbConnection->tableExists( mSchemaToImportTo, "qgis_projects" ) )
+  if ( QgsPostgresUtils::projectsTableExists( mDbConnection, mSchemaToImportTo ) )
   {
     QString existingProjectsSql = QStringLiteral( "SELECT name FROM %1.qgis_projects;" ).arg( QgsPostgresConn::quotedIdentifier( mSchemaToImportTo ) );
-    QgsAbstractDatabaseProviderConnection::QueryResult res = mDbConnection->execSql( existingProjectsSql );
+    QgsPostgresResult res( mDbConnection->PQexec( existingProjectsSql ) );
 
-    while ( res.hasNextRow() )
+    for ( int i = 0; i < res.PQntuples(); i++ )
     {
-      QList<QVariant> row = res.nextRow();
-      existingProjects << row.first().toString();
+      existingProjects << res.PQgetvalue( i, 0 );
     }
   }
 

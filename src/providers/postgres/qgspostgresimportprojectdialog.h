@@ -23,7 +23,7 @@
 #include <QDialogButtonBox>
 #include <QToolButton>
 
-#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgspostgresconn.h"
 
 /**
  * A dialog for selection of QGIS projects to import into PostgreSQL database.
@@ -34,8 +34,9 @@ class QgsPostgresImportProjectDialog : public QDialog
     Q_OBJECT
 
   public:
-    QgsPostgresImportProjectDialog( std::shared_ptr<QgsAbstractDatabaseProviderConnection> dbConn, const QString targetSchema, QWidget *parent = nullptr );
+    QgsPostgresImportProjectDialog( const QString connectionName, const QString targetSchema, QWidget *parent = nullptr );
 
+    ~QgsPostgresImportProjectDialog();
     /**
      * Returns pairs of project path and name under which it should be saved.
      */
@@ -48,7 +49,7 @@ class QgsPostgresImportProjectDialog : public QDialog
     QString createUniqueProjectName( const QString &projectName );
     QSet<QString> projectNamesInSchema();
 
-    std::shared_ptr<QgsAbstractDatabaseProviderConnection> mDbConnection = nullptr;
+    QgsPostgresConn *mDbConnection = nullptr;
     QString mSchemaToImportTo;
     QTableWidget *mFilesTableWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
