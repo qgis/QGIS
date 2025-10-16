@@ -449,8 +449,9 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 has_unfixed_errors = True
 
         if _node.module == "qgis.PyQt.Qt":
-            extra_imports["qgis.PyQt.QtCore"].update({"Qt"})
-            removed_imports["qgis.PyQt.Qt"].update({"Qt"})
+            for node_name in _node.names:
+                extra_imports["qgis.PyQt.QtCore"].update({node_name.name})
+                removed_imports["qgis.PyQt.Qt"].update({node_name.name})
 
     tree = ast.parse(contents, filename=filename)
     for parent in ast.walk(tree):
@@ -688,7 +689,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
                 imports_to_add = extra_imports.get(module, set()) - current_imports
                 if imports_to_add:
-                    additional_import_string = ", ".join(imports_to_add)
+                    additional_import_string = ", ".join(sorted(imports_to_add))
                     if tokens[token_index - 1].src == ")":
                         token_index -= 1
                         while tokens[token_index].src.strip() in ("", ",", ")"):
