@@ -1096,15 +1096,19 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
 
 void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context )
 {
-  std::shared_ptr<QgsAbstractDatabaseProviderConnection> dbConn( schemaItem->databaseConnection() );
+  const QgsDataSourceUri uri = QgsPostgresConn::connUri( schemaItem->connectionName() );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
 
-  if ( !dbConn )
+  if ( !QgsPostgresUtils::projectsTableExists( conn, schemaItem->name() ) )
   {
-    notify( tr( "Save Projects" ), tr( "Unable to save projects to database." ), context, Qgis::MessageLevel::Critical );
-    return;
+    if ( !QgsPostgresUtils::createProjectsTable( conn, schemaItem->name() ) )
+    {
+      notify( tr( "Save Project" ), tr( "Unable to create table qgis_projects in schema %1." ).arg( schemaItem->name() ), context, Qgis::MessageLevel::Warning );
+      conn->unref();
+    }
   }
 
-  QgsPostgresImportProjectDialog dlg( dbConn, schemaItem->name() );
+  QgsPostgresImportProjectDialog dlg( schemaItem->connectionName(), schemaItem->name() );
   if ( dlg.exec() == QDialog::Accepted )
   {
     QList<QPair<QString, QString>> projectsWithNames = dlg.projectsToSave();
@@ -1116,7 +1120,7 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
     for ( const QPair<QString, QString> &projectWithName : projectsWithNames )
     {
       QgsPostgresProjectUri pgProjectUri;
-      pgProjectUri.connInfo = QgsDataSourceUri( dbConn->uri() );
+      pgProjectUri.connInfo = QgsDataSourceUri( conn->uri() );
       pgProjectUri.schemaName = schemaItem->name();
       pgProjectUri.projectName = projectWithName.second;
       QString projectUri = QgsPostgresProjectStorage::encodeUri( pgProjectUri );
@@ -1150,4 +1154,6 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
     // refresh
     schemaItem->refresh();
   }
+
+  conn->unref();
 }
