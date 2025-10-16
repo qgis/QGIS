@@ -49,6 +49,7 @@ class APP_EXPORT QgsChamferFilletUserWidget : public QWidget,
     void setValue2( double value2 );
     double value2() const;
     void setMaximumValue1( double maximum );
+    void setMaximumValue2( double maximum );
     QDoubleSpinBox *editor() const { return mValue1SpinBox; }
     QgsGeometry::ChamferFilletOperationType operation() const;
 
@@ -135,7 +136,12 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
     //! limits number of call to updateGeometryAndRubberBand
     QElapsedTimer mLastMouseMove;
 
+    double mMaxValue1 = 0.0;
+    double mMaxValue2 = 0.0;
+
     void calculateDistances( const QgsPointXY &mapPoint, double &value1, double &value2 );
+    void computeValuesFromMousePos( const QgsPointXY &mapPoint, bool isShiftKeyPressed, double &value1, double &value2 );
+    void computeMaxValues( bool isShiftKeyPressed );
 
     void createUserInputWidget();
     void deleteUserInputWidget();
