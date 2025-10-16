@@ -489,10 +489,12 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   float zMaxExtruded = -std::numeric_limits<float>::max();
 
   const float scale = mBounds.isNull() ? 1.0 : std::max( 10000.0 / mBounds.width(), 10000.0 / mBounds.height() );
+  const bool addFloor = ( mTessellatedFacade == 4 ) && ( extrusionHeight != 0 );
 
   std::unique_ptr<QMatrix4x4> toNewBase, toOldBase;
   QgsPoint ptStart, pt0;
   std::unique_ptr<QgsPolygon> polygonNew;
+
   auto rotatePolygonToXYPlane = [&]()
   {
     if ( !mNoZ && pNormal != QVector3D( 0, 0, 1 ) )
@@ -524,6 +526,58 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     polygonNew.reset( _transform_polygon_to_new_base( polygon, pt0, toNewBase.get(), scale ) );
   };
 
+  auto addTriangleVertices = [&]( QgsLineString *triangle, bool reverse, float extrusion )
+  {
+    const QVector3D normal = reverse ? -pNormal : pNormal;
+    for ( int i = 0; i < 3; i++ )
+    {
+      // if reverse is true, we want vertices in opposite order
+      const int index = reverse ? 2 - i : i;
+      const float baseHeight = ( !mNoZ && exterior->is3D() ) ? static_cast<float>( exterior->zAt( index ) ) : 0.0f;
+      const float z = mNoZ ? 0.0f : ( baseHeight + extrusion );
+      if ( baseHeight < zMin )
+        zMin = baseHeight;
+      if ( baseHeight > zMaxBase )
+        zMaxBase = baseHeight;
+      if ( z > zMaxExtruded )
+        zMaxExtruded = z;
+
+      float x = static_cast<float>( exterior->xAt( index ) - mOriginX );
+      float y = static_cast<float>( exterior->yAt( index ) - mOriginY );
+      if ( toOldBase )
+      {
+        // need to transform coordinates back to original base
+        QVector4D v( x * scale, y * scale, baseHeight * scale, 0 );
+        v = toOldBase->map( v );
+        x = v.x() / scale;
+        y = v.y() / scale;
+      }
+
+      if ( mOutputZUp )
+      {
+        mData << x << y << z;
+        if ( mAddNormals )
+          mData << normal.x() << normal.y() << normal.z();
+      }
+      else  // Y axis is the up direction
+      {
+        mData << x << z << -y;
+        if ( mAddNormals )
+          mData << normal.x() << normal.z() << -normal.y();
+      }
+
+      if ( triangle )
+      {
+        std::pair<float, float> p( triangle->xAt( index ), triangle->yAt( index ) );
+        if ( pNormal != QVector3D( 0, 0, 1 ) )
+        {
+          p = rotateCoords( p.first, p.second, ptStart.x(), ptStart.y(), mTextureRotation );
+        }
+        mData << p.first << p.second;
+      }
+    }
+  };
+
   if ( !mNoZ && !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
     return;  // this should not happen - pNormal should be normalized to unit length
 
@@ -538,7 +592,25 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     facade = 1;
   else facade = 2;
 
-  if ( pCount == 4 && polygon.numInteriorRings() == 0 && ( mTessellatedFacade & facade ) )
+  bool tessellate = false;
+  switch ( mTessellatedFacade )
+  {
+    case 0: // No Facades
+      tessellate = false;
+      break;
+    case 1: // Walls
+      tessellate = ( facade == 1 );
+      break;
+    case 2: // Roofs
+      tessellate = ( facade == 2 );
+      break;
+    case 3: // Walls and Roofs
+    case 4: // Walls, Roofs and Floors
+      tessellate = ( facade == 1 || facade == 2 );
+      break;
+  }
+
+  if ( pCount == 4 && polygon.numInteriorRings() == 0 && tessellate )
   {
     QgsLineString *triangle = nullptr;
     if ( mAddTextureCoords )
@@ -549,91 +621,24 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     }
 
     // polygon is a triangle - write vertices to the output data array without triangulation
-    const double *xData = exterior->xData();
-    const double *yData = exterior->yData();
-    const double *zData = !mNoZ ? exterior->zData() : nullptr;
-    for ( int i = 0; i < 3; i++ )
+    addTriangleVertices( triangle, false, extrusionHeight );
+    
+    if ( addFloor )  // floor
     {
-      const float baseHeight = !zData || mNoZ ? 0.0f : static_cast<float>( * zData );
-      const float z = mNoZ ? 0.0f : ( baseHeight + extrusionHeight );
-      if ( baseHeight < zMin )
-        zMin = baseHeight;
-      if ( baseHeight > zMaxBase )
-        zMaxBase = baseHeight;
-      if ( z > zMaxExtruded )
-        zMaxExtruded = z;
-
-      if ( mOutputZUp )
-      {
-        mData << static_cast<float>( *xData - mOriginX ) << static_cast<float>( *yData - mOriginY ) << z;
-        if ( mAddNormals )
-          mData << pNormal.x() << pNormal.y() << pNormal.z();
-      }
-      else  // Y axis is the up direction
-      {
-        mData << static_cast<float>( *xData - mOriginX ) << z << static_cast<float>( - *yData + mOriginY );
-        if ( mAddNormals )
-          mData << pNormal.x() << pNormal.z() << - pNormal.y();
-      }
-
-      if ( mAddTextureCoords )
-      {
-        std::pair<float, float> p( triangle->xAt( i ), triangle->yAt( i ) );
-        if ( facade & 1 )
-        {
-          p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mTextureRotation );
-        }
-        else if ( facade & 2 )
-        {
-          p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mTextureRotation );
-        }
-        mData << p.first << p.second;
-      }
-      xData++; yData++;
-      // zData can be nullptr if mNoZ or triangle is 2D
-      if ( zData )
-        zData++;
+      addTriangleVertices( triangle, true, 0 );
     }
 
     if ( mAddBackFaces )
     {
-      // the same triangle with reversed order of coordinates and inverted normal
-      for ( int i = 2; i >= 0; i-- )
-      {
-        if ( mOutputZUp )
-        {
-          mData << static_cast<float>( exterior->xAt( i ) - mOriginX )
-                << static_cast<float>( exterior->yAt( i ) - mOriginY )
-                << static_cast<float>( mNoZ ? 0 : exterior->zAt( i ) );
-          if ( mAddNormals )
-            mData << -pNormal.x() << -pNormal.y() << -pNormal.z();
-        }
-        else // Y axis is the up direction
-        {
-          mData << static_cast<float>( exterior->xAt( i ) - mOriginX )
-                << static_cast<float>( mNoZ ? 0 : exterior->zAt( i ) )
-                << static_cast<float>( - exterior->yAt( i ) + mOriginY );
-          if ( mAddNormals )
-            mData << -pNormal.x() << -pNormal.z() << pNormal.y();
-        }
+      addTriangleVertices( triangle, true, extrusionHeight );
 
-        if ( mAddTextureCoords )
-        {
-          std::pair<float, float> p( triangle->xAt( i ), triangle->yAt( i ) );
-          if ( facade & 1 )
-          {
-            p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mTextureRotation );
-          }
-          else if ( facade & 2 )
-          {
-            p = rotateCoords( p.first, p.second, 0.0f, 0.0f, mTextureRotation );
-          }
-          mData << p.first << p.second;
-        }
+      if ( addFloor )
+      {
+        addTriangleVertices( triangle, false, 0 );
       }
     }
   }
-  else if ( mTessellatedFacade & facade )
+  else if ( tessellate )
   {
 
     rotatePolygonToXYPlane();
@@ -693,20 +698,22 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
       std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
 
-      mData.reserve( mData.size() + 3 * triangles.size() * ( stride() / sizeof( float ) ) );
-      for ( size_t i = 0; i < triangles.size(); ++i )
+      mData.reserve( mData.size() + 3 * triangles.size() * ( stride() / sizeof( float ) ) );  // TODO: move to before triangulation?
+
+      auto addTriangulatedVertices = [&]( p2t::Triangle *t, bool reverse, float extrusion )
       {
-        p2t::Triangle *t = triangles[i];
-        for ( int j = 0; j < 3; ++j )
+        const QVector3D normal = reverse ? -pNormal : pNormal;
+        for ( int i = 0; i < 3; ++i )
         {
-          p2t::Point *p = t->GetPoint( j );
+          const int index = reverse ? 2 - i : i;
+          p2t::Point *p = t->GetPoint( index );
           QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
           if ( toOldBase )
             pt = *toOldBase * pt;
           const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
           const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
           const double baseHeight = mNoZ ? 0 : ( pt.z() + pt0.z() );
-          const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
+          const double fz = mNoZ ? 0 : ( pt.z() + extrusion + pt0.z() );
           if ( baseHeight < zMin )
             zMin = baseHeight;
           if ( baseHeight > zMaxBase )
@@ -718,13 +725,13 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           {
             mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
             if ( mAddNormals )
-              mData << pNormal.x() << pNormal.y() << pNormal.z();
+              mData << normal.x() << normal.y() << normal.z();
           }
           else
           {
             mData << static_cast<float>( fx ) << static_cast<float>( fz ) << static_cast<float>( -fy );
             if ( mAddNormals )
-              mData << pNormal.x() << pNormal.z() << - pNormal.y();
+              mData << normal.x() << normal.z() << - normal.y();
           }
 
           if ( mAddTextureCoords )
@@ -733,38 +740,25 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
             mData << pr.first << pr.second;
           }
         }
+      };
+
+      for ( size_t i = 0; i < triangles.size(); ++i )
+      {
+        p2t::Triangle *t = triangles[i];
+        addTriangulatedVertices( t, false, extrusionHeight );
+
+        if ( addFloor )
+        {
+          addTriangulatedVertices( t, true, 0 );
+        }
 
         if ( mAddBackFaces )
         {
-          // the same triangle with reversed order of coordinates and inverted normal
-          for ( int j = 2; j >= 0; --j )
+          addTriangulatedVertices( t, true, extrusionHeight );
+
+          if ( addFloor )
           {
-            p2t::Point *p = t->GetPoint( j );
-            QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
-            if ( toOldBase )
-              pt = *toOldBase * pt;
-            const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
-            const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
-            const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
-
-            if ( mOutputZUp )
-            {
-              mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
-              if ( mAddNormals )
-                mData << -pNormal.x() << -pNormal.y() << -pNormal.z();
-            }
-            else
-            {
-              mData << static_cast<float>( fx ) << static_cast<float>( fz ) << static_cast<float>( -fy );
-              if ( mAddNormals )
-                mData << -pNormal.x() << -pNormal.z() << pNormal.y();
-            }
-
-            if ( mAddTextureCoords )
-            {
-              const std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
-              mData << pr.first << pr.second;
-            }
+            addTriangulatedVertices( t, false, 0 );
           }
         }
       }
@@ -783,7 +777,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   }
 
   // add walls if extrusion is enabled
-  if ( extrusionHeight != 0 && ( mTessellatedFacade & 1 ) )
+  if ( extrusionHeight != 0 && ( mTessellatedFacade == 1 || mTessellatedFacade == 3 || mTessellatedFacade == 4 ) )
   {
     _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mTextureRotation, mOutputZUp );
 
