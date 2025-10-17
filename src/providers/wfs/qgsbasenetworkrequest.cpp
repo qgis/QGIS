@@ -109,6 +109,10 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   // Specific code for testing
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
+    qDebug() << "xxx";
+    qDebug() << url;
+    qDebug() << QUrlQuery( url ).queryItems( QUrl::FullyDecoded );
+    qDebug() << "---";
     // Just for testing with local files instead of http:// resources
     QString modifiedUrlString;
 
