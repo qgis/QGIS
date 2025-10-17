@@ -106,7 +106,7 @@ QgsBrowserWidget::QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *p
   connect( mActionCollapse, &QAction::triggered, mBrowserView, &QgsDockBrowserTreeView::collapseAll );
   connect( mActionShowFilter, &QAction::triggered, this, &QgsBrowserWidget::showFilterWidget );
   connect( mActionPropertiesWidget, &QAction::triggered, this, &QgsBrowserWidget::propertiesWidgetToggled );
-  
+
   // Location bar connections
   connect( mBtnNavigateToPath, &QToolButton::clicked, this, &QgsBrowserWidget::navigateToPath );
   connect( mBtnCopyPath, &QToolButton::clicked, this, &QgsBrowserWidget::copySelectedPath );
@@ -553,7 +553,6 @@ void QgsBrowserWidget::propertiesWidgetToggled( bool enabled )
 
 void QgsBrowserWidget::setActiveIndex( const QModelIndex &index )
 {
-  
   if ( !mProxyModel || !mBrowserView )
     return;
 
@@ -583,7 +582,7 @@ void QgsBrowserWidget::navigateToPath()
   if ( path.isEmpty() )
     return;
 
-  
+
   if ( path.endsWith( ":" ) && path.length() == 2 )
   {
     // Add trailing slash for drive roots (e.g., "C:" -> "C:/")
@@ -591,7 +590,7 @@ void QgsBrowserWidget::navigateToPath()
     if ( QDir( drivePath ).exists() )
     {
       mLeLocationBar->setText( drivePath );
-      navigateToPath(); 
+      navigateToPath();
       return;
     }
     if ( mMessageBar )
@@ -602,7 +601,7 @@ void QgsBrowserWidget::navigateToPath()
   }
 
   QString normalizedPath = QDir::cleanPath( path );
-  
+
   // Try case-insensitive path resolution
   QString resolvedPath = resolveCaseInsensitivePath( normalizedPath );
   if ( resolvedPath.isEmpty() )
@@ -672,7 +671,7 @@ void QgsBrowserWidget::copySelectedPath()
     return;
 
   QString path;
-  
+
   if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
   {
     path = dirItem->dirPath();
@@ -687,12 +686,11 @@ void QgsBrowserWidget::copySelectedPath()
     }
     else
     {
-      path = uri; 
+      path = uri;
     }
   }
   else
   {
-
     path = item->path();
   }
 
@@ -701,9 +699,9 @@ void QgsBrowserWidget::copySelectedPath()
     // Convert to native separators for clipboard (backslashes on Windows)
     QString nativePath = QDir::toNativeSeparators( path );
     QApplication::clipboard()->setText( nativePath );
-    
+
     mLeLocationBar->setText( nativePath );
-    
+
     if ( mMessageBar )
     {
       mMessageBar->pushSuccess( tr( "Copy Path" ), tr( "Path copied to clipboard: %1" ).arg( nativePath ) );
@@ -725,7 +723,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
 
   QString normalizedPath = QDir::cleanPath( targetPath );
   QFileInfo pathInfo( normalizedPath );
-  
+
   // Make sure we have an absolute path
   if ( pathInfo.isRelative() )
   {
@@ -743,14 +741,14 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
 
   QStringList pathHierarchy;
   QString currentPath = normalizedPath;
-  
+
   // Build the hierarchy from target to root
   while ( !currentPath.isEmpty() )
   {
     pathHierarchy.prepend( currentPath );
-    
+
     QDir dir( currentPath );
-    
+
     // Check if we've reached a root
 #ifdef Q_OS_WIN
     // Windows drive root check (e.g., "C:", "C:\")
@@ -768,14 +766,14 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
     if ( currentPath == "/" )
       break;
 #endif
-    
+
     if ( !dir.cdUp() || dir.absolutePath() == currentPath )
       break;
-      
+
     currentPath = dir.absolutePath();
   }
 
-  
+
 #ifdef Q_OS_WIN
   if ( pathHierarchy.size() > 0 )
   {
@@ -784,7 +782,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
     {
       mModel->refreshDrives();
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
-      
+
       QModelIndex driveIndex;
       const auto driveItems = mModel->driveItems();
       for ( auto it = driveItems.constBegin(); it != driveItems.constEnd(); ++it )
@@ -794,17 +792,16 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
         {
           QString drivePath = driveItem->path();
           QString driveDir = driveItem->dirPath();
-          
-          
-          if ( drivePath.startsWith( driveRoot.left( 2 ), Qt::CaseInsensitive ) ||
-               driveDir.startsWith( driveRoot.left( 2 ), Qt::CaseInsensitive ) )
+
+
+          if ( drivePath.startsWith( driveRoot.left( 2 ), Qt::CaseInsensitive ) || driveDir.startsWith( driveRoot.left( 2 ), Qt::CaseInsensitive ) )
           {
             driveIndex = mModel->findItem( driveItem );
             break;
           }
         }
       }
-      
+
       if ( !driveIndex.isValid() )
       {
         // Try to find the drive using findPath
@@ -816,7 +813,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
             break;
         }
       }
-      
+
       if ( driveIndex.isValid() )
       {
         QgsDataItem *driveItem = mModel->dataItem( driveIndex );
@@ -834,19 +831,19 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
               return false;
             }
           }
-          
+
           QModelIndex proxyIndex = mProxyModel->mapFromSource( driveIndex );
           if ( proxyIndex.isValid() && !mBrowserView->isExpanded( proxyIndex ) )
           {
             mBrowserView->expand( proxyIndex );
             QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
           }
-          
+
           QModelIndex currentParent = driveIndex;
           for ( int i = 1; i < pathHierarchy.size(); ++i )
           {
             const QString &targetComponent = pathHierarchy[i];
-            
+
             // Ensure parent is populated and refreshed
             QgsDataItem *parentItem = mModel->dataItem( currentParent );
             if ( parentItem )
@@ -856,7 +853,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
                 parentItem->populate();
                 QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
               }
-              
+
               QModelIndex parentProxy = mProxyModel->mapFromSource( currentParent );
               if ( parentProxy.isValid() )
               {
@@ -864,11 +861,11 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
                 QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 300 );
               }
             }
-            
+
             // Try to find the child
             QStringList variants = generatePathVariants( targetComponent );
             bool found = false;
-            
+
             for ( const QString &variant : variants )
             {
               QModelIndex childIndex = mModel->findPath( variant );
@@ -879,7 +876,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
                 break;
               }
             }
-            
+
             if ( !found && parentItem )
             {
               try
@@ -889,7 +886,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
                 {
                   parentItem->refresh();
                   QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
-                  
+
                   for ( const QString &variant : variants )
                   {
                     QModelIndex childIndex = mModel->findPath( variant );
@@ -907,7 +904,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
                 break;
               }
             }
-            
+
             if ( !found && i == pathHierarchy.size() - 1 )
             {
               return true;
@@ -917,7 +914,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
               return false;
             }
           }
-          
+
           return true;
         }
       }
@@ -927,12 +924,12 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
 
   QModelIndex deepestParent;
   int startIndex = 0;
-  
+
   for ( int i = 0; i < pathHierarchy.size(); ++i )
   {
     const QString &pathComponent = pathHierarchy[i];
     QStringList variants = generatePathVariants( pathComponent );
-    
+
     bool found = false;
     for ( const QString &variant : variants )
     {
@@ -945,7 +942,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
         break;
       }
     }
-    
+
     if ( !found )
       break;
   }
@@ -980,11 +977,11 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
         }
       }
     }
-    
+
     // Try to find the next level
     const QString &targetComponent = pathHierarchy[i];
     QStringList variants = generatePathVariants( targetComponent );
-    
+
     bool found = false;
     for ( const QString &variant : variants )
     {
@@ -996,7 +993,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
         break;
       }
     }
-    
+
     if ( !found && deepestParent.isValid() )
     {
       QgsDataItem *parentItem = mModel->dataItem( deepestParent );
@@ -1008,7 +1005,7 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
           {
             parentItem->refresh();
             QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 200 );
-            
+
             for ( const QString &variant : variants )
             {
               QModelIndex index = mModel->findPath( variant );
@@ -1027,14 +1024,14 @@ bool QgsBrowserWidget::ensurePathInModel( const QString &targetPath )
         }
       }
     }
-    
+
     if ( !found && i == pathHierarchy.size() - 1 )
     {
       //if  Last component? might be a file
       return deepestParent.isValid();
     }
   }
-  
+
   return deepestParent.isValid();
 }
 
@@ -1049,15 +1046,15 @@ QStringList QgsBrowserWidget::generatePathVariants( const QString &path )
   if ( path.contains( '\\' ) )
     pathVariants << QString( path ).replace( '\\', '/' );
 #else
-  
+
   if ( path.contains( '\\' ) )
     pathVariants << QString( path ).replace( '\\', '/' );
 #endif
-  
+
   QString nativePath = QDir::toNativeSeparators( path );
   if ( !pathVariants.contains( nativePath ) )
     pathVariants << nativePath;
-  
+
   QFileInfo fileInfo( path );
   if ( fileInfo.exists() )
   {
@@ -1065,7 +1062,7 @@ QStringList QgsBrowserWidget::generatePathVariants( const QString &path )
     if ( !canonicalPath.isEmpty() && !pathVariants.contains( canonicalPath ) )
       pathVariants << canonicalPath;
   }
-  
+
   return pathVariants;
 }
 
@@ -1108,7 +1105,7 @@ bool QgsBrowserWidget::navigateToTarget( const QString &targetPath, const QStrin
   {
     // Use expandPath for directory navigation
     mBrowserView->expandPath( targetPath, true );
-    
+
     // If we need to select a specific file within the directory
     if ( !selectFile.isEmpty() )
     {
@@ -1124,7 +1121,7 @@ bool QgsBrowserWidget::navigateToTarget( const QString &targetPath, const QStrin
         }
       }
     }
-    
+
     return true;
   }
   catch ( ... )
@@ -1160,7 +1157,7 @@ void QgsBrowserWidget::updateLocationBar()
   }
 
   QString path;
-  
+
   if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
   {
     path = dirItem->dirPath();
