@@ -1850,8 +1850,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       const QString connectionUri = conn->uri();
       const QString providerKey = conn->providerKey();
 
-      bool allMovableLayers;
-      bool allSameDatabase;
+      bool allMovableLayers = true;
+      bool allSameDatabase = true;
 
       if ( selectedItems.count() > 1 )
       {
@@ -1878,8 +1878,6 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       }
 
       QAction *moveToSchemaAction = new QAction( tr( "Move to Another Schema…" ), menu );
-
-      QgsDataItemGuiProviderUtils::addToSubMenu( menu, moveToSchemaAction, tr( "Manage" ) );
 
       connect( moveToSchemaAction, &QAction::triggered, this, [this, item, selectedItems, context, connectionUri, providerKey] {
         QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
@@ -1945,6 +1943,11 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           }
         }
       } );
+
+      if ( allMovableLayers && allSameDatabase )
+      {
+        QgsDataItemGuiProviderUtils::addToSubMenu( menu, moveToSchemaAction, tr( "Manage" ) );
+      }
     }
 
     if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteSpatialIndex ) )
