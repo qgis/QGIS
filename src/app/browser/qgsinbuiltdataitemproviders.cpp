@@ -1850,8 +1850,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       const QString connectionUri = conn->uri();
       const QString providerKey = conn->providerKey();
 
-      bool allMovableLayers = false;
-      bool allSameDatabase = false;
+      bool allMovableLayers;
+      bool allSameDatabase;
 
       if ( selectedItems.count() > 1 )
       {
