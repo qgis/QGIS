@@ -661,16 +661,8 @@ QString QgsPostgresUtils::variantMapToHtml( const QVariantMap &variantMap, const
 
 bool QgsPostgresUtils::setProjectComment( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName, const QString &comment )
 {
-  if ( !projectsTableExists( conn, schemaName ) )
-    return false;
-
-  if ( !columnExists( conn, schemaName, QStringLiteral( "qgis_projects" ), QStringLiteral( "comment" ) ) )
-  {
-    if ( !addCommentColumnToProjectsTable( conn, schemaName ) )
-      return false;
-  }
-
-  const QString sql = QStringLiteral( "UPDATE %1.qgis_projects SET comment = %3 WHERE name = %2" )
+  const QString sql = QStringLiteral( "ALTER TABLE %1.qgis_projects ADD COLUMN IF NOT EXISTS comment TEXT DEFAULT '';"
+                                      "UPDATE %1.qgis_projects SET comment = %3 WHERE name = %2" )
                         .arg( QgsPostgresConn::quotedIdentifier( schemaName ), QgsPostgresConn::quotedValue( projectName ), QgsPostgresConn::quotedValue( comment ) );
 
   QgsPostgresResult res( conn->PQexec( sql ) );
