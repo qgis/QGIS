@@ -152,6 +152,33 @@ class QgsPostgresUtils
     * \since QGIS 4.0
     */
     static QString variantMapToHtml( const QVariantMap &variantMap, const QString &title = QString() );
+
+    /*
+    * Set comment for a project 
+    *
+    * \returns true on success
+    *
+    * \since QGIS 4.0
+    */
+    static bool setProjectComment( QgsPostgresConn *conn, const QString &schemaName, const QString &projectName, const QString &comment );
+
+    /*
+    * Comment for a project from the specified schema
+    *
+    * \returns project comment or empty string if not found
+    *
+    * \since QGIS 4.0
+    */
+    static QString projectComment( QgsPostgresConn *conn, const QString &schemaName, const QString &projectName );
+
+    /*
+    * Adds a comment column to the projects table in the specified schema
+    *
+    * \returns true on success
+    *
+    * \since QGIS 4.0
+    */
+    static bool addCommentColumnToProjectsTable( QgsPostgresConn *conn, const QString &schemaName );
 };
 
 #endif
