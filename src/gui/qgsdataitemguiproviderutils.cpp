@@ -247,3 +247,19 @@ void QgsDataItemGuiProviderUtils::addToSubMenu( QMenu *mainMenu, QAction *action
     mainMenu->addMenu( addSubMenu );
   }
 }
+
+void QgsDataItemGuiProviderUtils::refreshChildWithName( QgsDataItem *item, const QString &name )
+{
+  const QVector<QgsDataItem *> constChildren { item->children() };
+  for ( QgsDataItem *c : constChildren )
+  {
+    if ( c->name() == name )
+    {
+      if ( c->state() != Qgis::BrowserItemState::NotPopulated )
+      {
+        c->refresh();
+      }
+      break;
+    }
+  }
+}
