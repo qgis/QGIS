@@ -98,9 +98,9 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
 
   connect( mCurrentExtentButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromCurrent );
   connect( mOriginalExtentButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromOriginal );
-  
-  // Initialize snap-to-grid button
-  mSnapToGridButton->setVisible( false ); // Hidden by default, shown when snap-to-grid is available
+
+  // Snap-to-grid button is hidden by default, shown when snap-to-grid is available
+  mSnapToGridButton->setVisible( false );
   connect( mSnapToGridButton, &QAbstractButton::toggled, this, &QgsExtentWidget::snapToGridToggled );
 
   switch ( style )
@@ -708,11 +708,9 @@ void QgsExtentWidget::setSnapToGridAvailable( bool available, bool enabled, doub
   mRasterYRes = rasterYRes;
   mRasterMinX = rasterMinX;
   mRasterMinY = rasterMinY;
-  
+
   mSnapToGridButton->setVisible( available );
   mSnapToGridButton->setChecked( enabled );
-  
-  updateSnapToGridButtonStyle();
 }
 
 bool QgsExtentWidget::snapToGridEnabled() const
@@ -725,21 +723,4 @@ void QgsExtentWidget::snapToGridToggled( bool enabled )
   mSnapToGridEnabled = enabled;
   emit snapToGridChanged( enabled );
   emit extentChanged( outputExtent() );
-}
-
-void QgsExtentWidget::updateSnapToGridButtonStyle()
-{
-  if ( !mSnapToGridButton )
-    return;
-    
-  mSnapToGridButton->setStyleSheet( QString() );
-  
-  if ( mSnapToGridEnabled )
-  {
-    mSnapToGridButton->setToolTip( tr( "Snap extent to raster grid (enabled)" ) );
-  }
-  else
-  {
-    mSnapToGridButton->setToolTip( tr( "Snap extent to raster grid (disabled)" ) );
-  }
 }

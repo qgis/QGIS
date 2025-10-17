@@ -233,7 +233,7 @@
               <string>Snap to Grid</string>
              </property>
              <property name="toolTip">
-              <string>Snap extent to raster grid (disabled)</string>
+              <string>Snap extent to raster grid</string>
              </property>
              <property name="checkable">
               <bool>true</bool>

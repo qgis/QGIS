@@ -335,8 +335,6 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     double mRasterMinY = 0.0;
 
     void setValid( bool valid );
-    void updateSnapToGridButtonStyle();
-
     void setExtentToLayerExtent( const QString &layerId );
 
     QgsMapLayer *mapLayerFromMimeData( const QMimeData *data ) const;
