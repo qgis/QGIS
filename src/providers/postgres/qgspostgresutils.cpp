@@ -679,9 +679,6 @@ bool QgsPostgresUtils::setProjectComment( QgsPostgresConn *conn, const QString &
 
 QString QgsPostgresUtils::projectComment( QgsPostgresConn *conn, const QString &schemaName, const QString &projectName )
 {
-  if ( !projectsTableExists( conn, schemaName ) || !columnExists( conn, schemaName, QStringLiteral( "qgis_projects" ), QStringLiteral( "comment" ) ) )
-    return QString();
-
   const QString sql = QStringLiteral( "SELECT comment FROM %1.qgis_projects WHERE name = %2" )
                         .arg( QgsPostgresConn::quotedIdentifier( schemaName ), QgsPostgresConn::quotedValue( projectName ) );
 
@@ -696,12 +693,6 @@ QString QgsPostgresUtils::projectComment( QgsPostgresConn *conn, const QString &
 
 bool QgsPostgresUtils::addCommentColumnToProjectsTable( QgsPostgresConn *conn, const QString &schemaName )
 {
-  if ( !conn )
-    return false;
-
-  if ( !projectsTableExists( conn, schemaName ) )
-    return false;
-
   const QString sqlAddColumn = QStringLiteral( "ALTER TABLE %1.qgis_projects ADD COLUMN comment TEXT DEFAULT ''" )
                                  .arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
 
