@@ -328,7 +328,6 @@ void QgsMapToolChamferFillet::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( mOriginalGeometryInSourceLayerCrs.isNull() )
     {
-      emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
       cancel();
     }
 
