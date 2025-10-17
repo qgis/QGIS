@@ -2111,7 +2111,7 @@ server.
    Use :py:func:`~QgsVectorLayer.setFieldConfigurationFlag` instead.
 %End
 
-    virtual bool deleteAttribute( int attr );
+     virtual bool deleteAttribute( int attr );
 %Docstring
 Deletes an attribute field (but does not commit it).
 

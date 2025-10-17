@@ -9,6 +9,7 @@ on:
 
 jobs:
   sipify:
+    if: github.repository == 'qgis/QGIS'
     runs-on: [ubuntu-latest]
     steps:
 

@@ -13,6 +13,7 @@ __copyright__ = "Copyright 2025, The QGIS Project"
 import os
 import tempfile
 import gzip
+import zipfile
 
 from qgis.PyQt.QtCore import QUrl
 from qgis.core import (
@@ -24,8 +25,10 @@ from qgis.core import (
     QgsTiledSceneRequest,
 )
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 
 start_app()
+TEST_DATA_DIR = unitTestDataPath()
 
 
 def _make_tmp_eslpk_dataset(
@@ -50,7 +53,7 @@ def _make_tmp_eslpk_dataset(
 
 class TestQgsEsriI3sLayer(unittest.TestCase):
     def test_invalid_source(self):
-        layer = QgsTiledSceneLayer("url=file:///nope", "my layer", "esrii3s")
+        layer = QgsTiledSceneLayer("file:///nope", "my layer", "esrii3s")
         self.assertFalse(layer.dataProvider().isValid())
 
     def test_invalid_json(self):
@@ -62,7 +65,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             """
             _make_tmp_eslpk_dataset(temp_dir, layer_json, "")
 
-            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer(temp_dir, "my layer", "esrii3s")
             self.assertFalse(layer.dataProvider().isValid())
             self.assertEqual(
                 layer.error().summary(),
@@ -73,7 +76,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             _make_tmp_eslpk_dataset(temp_dir, "", "", "1.6")
 
-            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer(temp_dir, "my layer", "esrii3s")
             self.assertFalse(layer.dataProvider().isValid())
             self.assertEqual(
                 layer.error().summary(),
@@ -118,7 +121,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             """
             _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
 
-            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer(temp_dir, "my layer", "esrii3s")
             self.assertTrue(layer.dataProvider().isValid())
 
             self.assertEqual(layer.crs(), QgsCoordinateReferenceSystem("EPSG:4979"))
@@ -198,7 +201,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             """
             _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
 
-            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer(temp_dir, "my layer", "esrii3s")
             self.assertTrue(layer.dataProvider().isValid())
 
             self.assertEqual(layer.crs(), QgsCoordinateReferenceSystem("EPSG:5514"))
@@ -561,7 +564,7 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             """
             _make_tmp_eslpk_dataset(temp_dir, layer_json, nodepage_json)
 
-            layer = QgsTiledSceneLayer("url=file://" + temp_dir, "my layer", "esrii3s")
+            layer = QgsTiledSceneLayer(temp_dir, "my layer", "esrii3s")
             self.assertTrue(layer.dataProvider().isValid())
 
             index = layer.dataProvider().index()
@@ -750,6 +753,44 @@ class TestQgsEsriI3sLayer(unittest.TestCase):
             request = QgsTiledSceneRequest()
             request.setParentTileId(1)
             self.assertEqual(index.getTiles(request), [5, 6, 7, 8])
+
+    def test_slpk_single_node(self):
+        """Test loading from a single node SLPK file"""
+        slpk_path = os.path.join(TEST_DATA_DIR, "i3s/single_node.slpk")
+        layer = QgsTiledSceneLayer(slpk_path, "my layer", "esrii3s")
+        self.assertTrue(layer.dataProvider().isValid())
+
+        self.assertEqual(layer.crs(), QgsCoordinateReferenceSystem("EPSG:5514"))
+        self.assertEqual(layer.dataProvider().sceneCrs().authid(), "EPSG:5514")
+
+        self.assertAlmostEqual(layer.extent().xMinimum(), -503064.424195, 3)
+        self.assertAlmostEqual(layer.extent().xMaximum(), -490815.722128, 3)
+        self.assertAlmostEqual(layer.extent().yMinimum(), -1209277.752400, 3)
+        self.assertAlmostEqual(layer.extent().yMaximum(), -1199847.185454, 3)
+
+        self.assertAlmostEqual(
+            layer.dataProvider().boundingVolume().box().centerX(),
+            -497670.685237,
+            3,
+        )
+        self.assertAlmostEqual(
+            layer.dataProvider().boundingVolume().box().centerY(),
+            -1204678.588447,
+            3,
+        )
+        self.assertAlmostEqual(
+            layer.dataProvider().boundingVolume().box().centerZ(), 295.703777, 3
+        )
+        self.assertAlmostEqual(layer.dataProvider().zRange().lower(), 197.438445, 3)
+        self.assertAlmostEqual(layer.dataProvider().zRange().upper(), 475.336097, 3)
+
+        # check that version, tileset version, and z range are in html metadata
+        self.assertIn("1.8", layer.dataProvider().htmlMetadata())
+        self.assertIn(
+            "9FC7A46A-C550-4E1D-9001-DDCF825B5501",
+            layer.dataProvider().htmlMetadata(),
+        )
+        self.assertIn("197.438 - 475.336", layer.dataProvider().htmlMetadata())
 
 
 if __name__ == "__main__":

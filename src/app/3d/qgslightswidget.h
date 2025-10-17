@@ -79,6 +79,8 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     int directionalLightCount() const;
     int lightSourceCount() const;
 
+    void setPointLightCrs( const QgsCoordinateReferenceSystem &crs );
+
   signals:
     void directionalLightsCountChanged( int count );
     void lightsRemoved();
@@ -101,7 +103,7 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
 
   private:
     double mDirectionX = 0;
-    double mDirectionY = -1;
+    double mDirectionY = 0;
     double mDirectionZ = 0;
     QgsLightsModel *mLightsModel = nullptr;
 };

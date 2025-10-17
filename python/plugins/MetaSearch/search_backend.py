@@ -91,7 +91,7 @@ class CSW202Search(SearchBase):
             timeout=self.timeout,
             username=self.username,
             password=self.password,
-            auth=self.auth
+            auth=self.auth,
         )
 
         self.request = self.conn.request
@@ -127,7 +127,7 @@ class CSW202Search(SearchBase):
             constraints=self.constraints,
             maxrecords=limit,
             startposition=offset,
-            esn="full"
+            esn="full",
         )
 
         self.matches = self.conn.results["matches"]
@@ -243,7 +243,7 @@ class OARecSearch(SearchBase):
                 "type": rec["properties"].get("type"),
                 "bbox": None,
                 "title": rec["properties"].get("title"),
-                "links": rec.get("links", [])
+                "links": rec.get("links", []),
             }
             try:
                 if rec.get("geometry") is not None:
@@ -252,7 +252,7 @@ class OARecSearch(SearchBase):
                             rec["geometry"]["coordinates"][0][0][0],
                             rec["geometry"]["coordinates"][0][0][1],
                             rec["geometry"]["coordinates"][0][2][0],
-                            rec["geometry"]["coordinates"][0][2][1]
+                            rec["geometry"]["coordinates"][0][2][1],
                         ]
                     )
             except KeyError:
@@ -300,6 +300,6 @@ def bbox_list_to_dict(bbox):
             "minx": bbox.minx,
             "maxx": bbox.maxx,
             "miny": bbox.miny,
-            "maxy": bbox.maxy
+            "maxy": bbox.maxy,
         }
     return dict_

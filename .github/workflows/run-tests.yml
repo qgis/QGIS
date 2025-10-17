@@ -43,7 +43,7 @@ jobs:
       matrix:
         include:
           - distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             qt-version: 6
             run-tests: true
             with-3d: ON
@@ -268,7 +268,7 @@ jobs:
         include:
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             docker-target: binary-only
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             test-batch: ALL_BUT_PROVIDERS
@@ -282,28 +282,28 @@ jobs:
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             test-batch: POSTGRES
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             test-batch: HANA
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             test-batch: SQLSERVER
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             test-batch: ORACLE
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-for-oracle
@@ -436,7 +436,7 @@ jobs:
       matrix:
         include:
           - distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             qt-version: 6
 
     steps:

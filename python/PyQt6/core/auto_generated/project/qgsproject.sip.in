@@ -787,7 +787,7 @@ Returns an empty string if the matching layer is not embedded.
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
+    std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 
@@ -1923,6 +1923,13 @@ Emitted when the list of layer which are excluded from map
 identification changes
 
 .. deprecated:: 3.4
+%End
+
+    void titleChanged();
+%Docstring
+Emitted when the title of the project changes.
+
+.. versionadded:: 4.0
 %End
 
     void fileNameChanged();

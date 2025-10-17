@@ -1426,6 +1426,27 @@ class TestQgsProject(QgisTestCase):
             self.assertIn('source="./points.shp"', content)
             self.assertIn('source="./landsat_4326.tif"', content)
 
+    def testTitle(self):
+        p = QgsProject()
+        title_changed_spy = QSignalSpy(p.titleChanged)
+        self.assertFalse(p.title())
+
+        p.setTitle("QGIS rocks!")
+        self.assertEqual(len(title_changed_spy), 1)
+        self.assertEqual(p.title(), "QGIS rocks!")
+
+        p.setTitle("QGIS rocks!")
+        self.assertEqual(len(title_changed_spy), 1)
+
+        project_metadata = p.metadata()
+        project_metadata.setTitle("QGIS rules!")
+        p.setMetadata(project_metadata)
+        self.assertEqual(len(title_changed_spy), 2)
+        self.assertEqual(p.title(), "QGIS rules!")
+
+        p.setMetadata(project_metadata)
+        self.assertEqual(len(title_changed_spy), 2)
+
     def testHomePath(self):
         p = QgsProject()
         path_changed_spy = QSignalSpy(p.homePathChanged)

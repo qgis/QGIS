@@ -300,17 +300,17 @@ int Qgs3DMapScene::totalPendingJobsCount() const
   return count;
 }
 
-float Qgs3DMapScene::worldSpaceError( float epsilon, float distance ) const
+double Qgs3DMapScene::worldSpaceError( double epsilon, double distance ) const
 {
   Qt3DRender::QCamera *camera = mCameraController->camera();
-  float fov = camera->fieldOfView();
+  const double fov = camera->fieldOfView();
   const QSize size = mEngine->size();
-  float screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
+  const int screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
 
   // see Qgs3DUtils::screenSpaceError() for the inverse calculation (world space error to screen space error)
   // with explanation of the math.
-  float frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
-  float err = frustumWidthAtDistance * epsilon / screenSizePx;
+  const double frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
+  const double err = frustumWidthAtDistance * epsilon / screenSizePx;
   return err;
 }
 

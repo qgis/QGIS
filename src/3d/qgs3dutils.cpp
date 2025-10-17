@@ -32,7 +32,6 @@
 #include "qgscameracontroller.h"
 #include "qgschunkedentity.h"
 #include "qgsterrainentity.h"
-#include "qgsraycastingutils_p.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloud3dsymbol.h"
@@ -40,6 +39,8 @@
 #include "qgspointcloudrgbrenderer.h"
 #include "qgspointcloudattributebyramprenderer.h"
 #include "qgspointcloudclassifiedrenderer.h"
+#include "qgsraycastresult.h"
+#include "qgsraycastcontext.h"
 
 #include <QtMath>
 #include <Qt3DExtras/QPhongMaterial>
@@ -838,10 +839,9 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
   return nullptr;
 }
 
-QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastingUtils::RayCastContext &context )
+QgsRayCastResult Qgs3DUtils::castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastContext &context )
 {
-  QgsRayCastingUtils::Ray3D r( ray.origin(), ray.direction(), context.maxDistance );
-  QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> results;
+  QgsRayCastResult results;
   const QList<QgsMapLayer *> keys = scene->layers();
   for ( QgsMapLayer *layer : keys )
   {
@@ -849,22 +849,25 @@ QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Q
 
     if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
     {
-      const QVector<QgsRayCastingUtils::RayHit> result = chunkedEntity->rayIntersection( r, context );
-      if ( !result.isEmpty() )
-        results[layer] = result;
+      const QList<QgsRayCastHit> hits = chunkedEntity->rayIntersection( ray, context );
+
+      if ( !hits.isEmpty() )
+        results.addLayerHits( layer, hits );
     }
   }
   if ( QgsTerrainEntity *terrain = scene->terrainEntity() )
   {
-    const QVector<QgsRayCastingUtils::RayHit> result = terrain->rayIntersection( r, context );
-    if ( !result.isEmpty() )
-      results[nullptr] = result; // Terrain hits are not tied to a layer so we use nullptr as their key here
+    const QList<QgsRayCastHit> hits = terrain->rayIntersection( ray, context );
+
+    if ( !hits.isEmpty() )
+      results.addTerrainHits( hits );
   }
   if ( QgsGlobeEntity *globe = scene->globeEntity() )
   {
-    const QVector<QgsRayCastingUtils::RayHit> result = globe->rayIntersection( r, context );
-    if ( !result.isEmpty() )
-      results[nullptr] = result; // Terrain hits are not tied to a layer so we use nullptr as their key here
+    const QList<QgsRayCastHit> hits = globe->rayIntersection( ray, context );
+
+    if ( !hits.isEmpty() )
+      results.addTerrainHits( hits );
   }
   return results;
 }

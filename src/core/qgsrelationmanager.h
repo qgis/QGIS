@@ -70,14 +70,14 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * \param relation The relation to add.
      */
-    void addRelation( const QgsRelation &relation );
+    Q_INVOKABLE void addRelation( const QgsRelation &relation );
 
     /**
      * Remove a relation.
      *
      * \param id The id of the relation to remove.
      */
-    void removeRelation( const QString &id );
+    Q_INVOKABLE void removeRelation( const QString &id );
 
     /**
      * Remove a relation.
