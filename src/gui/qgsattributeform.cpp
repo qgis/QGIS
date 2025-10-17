@@ -75,10 +75,6 @@
 #include <QMenu>
 #include <QSvgWidget>
 
-typedef QHash<QgsVectorLayer *, QgsAttributeMap> CachedAttributesHash;
-typedef QHash<QgsVectorLayer *, QMap<int, bool>> RememberAttributesHash;
-Q_GLOBAL_STATIC( CachedAttributesHash, sLastUsedValues )
-Q_GLOBAL_STATIC( RememberAttributesHash, sRememberLastUsedValues )
 
 int QgsAttributeForm::sFormCounter = 0;
 
@@ -437,25 +433,31 @@ bool QgsAttributeForm::saveEdits( QString *error )
 
           const QgsFields fields = mLayer->fields();
           const QgsAttributes newValues = updatedFeature.attributes();
-          const QgsAttributeMap origValues = sLastUsedValues()->contains( mLayer ) ? ( *sLastUsedValues() )[mLayer] : QgsAttributeMap();
+          const QVariant lastUsedValuesVariant = mLayer->property( "AttributeFormLastUsedValues" );
+          QgsAttributeMap lastUsedValues = lastUsedValuesVariant.isValid() ? lastUsedValuesVariant.value<QgsAttributeMap>() : QgsAttributeMap();
           for ( int idx = 0; idx < fields.count(); ++idx )
           {
             const Qgis::AttributeFormReuseLastValuePolicy reusePolicy = mLayer->editFormConfig().reuseLastValuePolicy( idx );
             if ( reusePolicy != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
             {
-              if ( !sRememberLastUsedValues()->contains( mLayer ) || !( *sRememberLastUsedValues() )[mLayer].contains( idx ) )
+              const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+              QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+              if ( !rememberLastUsedValues.contains( idx ) )
               {
-                ( *sRememberLastUsedValues() )[mLayer][idx] = reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
+                const bool remember = reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
+                rememberLastUsedValues[idx] = remember;
+                mLayer->setProperty( "AttributeFormRememberLastUsedValues", QVariant::fromValue<QMap<int, bool>>( rememberLastUsedValues ) );
               }
 
-              const QVariant newValue = ( *sRememberLastUsedValues() )[mLayer][idx] ? newValues.at( idx ) : QVariant();
-              if ( !origValues.contains( idx ) || origValues[idx] != newValue )
+              const QVariant newValue = rememberLastUsedValues[idx] ? newValues.at( idx ) : QVariant();
+              if ( !lastUsedValues.contains( idx ) || lastUsedValues[idx] != newValue )
               {
-                QgsDebugMsgLevel( QStringLiteral( "Saving %1 for %2" ).arg( ( *sLastUsedValues() )[mLayer][idx].toString() ).arg( idx ), 2 );
-                ( *sLastUsedValues() )[mLayer][idx] = newValue;
+                lastUsedValues[idx] = newValue;
+                QgsDebugMsgLevel( QStringLiteral( "Saving %1 for %2" ).arg( ( newValue.toString() ).arg( idx ) ), 2 );
               }
             }
           }
+          mLayer->setProperty( "AttributeFormLastUsedValues", QVariant::fromValue<QgsAttributeMap>( lastUsedValues ) );
 
           setMode( QgsAttributeEditorContext::SingleEditMode );
           changedLayer = true;
@@ -2105,13 +2107,19 @@ void QgsAttributeForm::init()
         if ( reusePolicy != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
         {
           bool remember = reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
-          if ( sRememberLastUsedValues()->contains( mLayer ) && ( *sRememberLastUsedValues() )[mLayer].contains( idx ) )
+          const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+          QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+          if ( rememberLastUsedValues.contains( idx ) )
           {
-            remember = ( *sRememberLastUsedValues() )[mLayer][idx];
+            remember = rememberLastUsedValues[idx];
           }
+
           formWidget->setRememberLastValue( remember );
           connect( formWidget, &QgsAttributeFormEditorWidget::rememberLastValueChanged, this, [this]( int idx, bool remember ) {
-            ( *sRememberLastUsedValues() )[mLayer][idx] = remember;
+            const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+            QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+            rememberLastUsedValues[idx] = remember;
+            mLayer->setProperty( "AttributeFormRememberLastUsedValues", QVariant::fromValue<QMap<int, bool>>( rememberLastUsedValues ) );
           } );
         }
 
@@ -2481,13 +2489,18 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         if ( reusePolicy != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
         {
           bool remember = reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
-          if ( sRememberLastUsedValues()->contains( mLayer ) && ( *sRememberLastUsedValues() )[mLayer].contains( fldIdx ) )
+          const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+          QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+          if ( rememberLastUsedValues.contains( fldIdx ) )
           {
-            remember = ( *sRememberLastUsedValues() )[mLayer][fldIdx];
+            remember = rememberLastUsedValues[fldIdx];
           }
           formWidget->setRememberLastValue( remember );
           connect( formWidget, &QgsAttributeFormEditorWidget::rememberLastValueChanged, this, [this]( int idx, bool remember ) {
-            ( *sRememberLastUsedValues() )[mLayer][idx] = remember;
+            const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+            QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+            rememberLastUsedValues[idx] = remember;
+            mLayer->setProperty( "AttributeFormRememberLastUsedValues", QVariant::fromValue<QMap<int, bool>>( rememberLastUsedValues ) );
           } );
         }
 
@@ -3409,13 +3422,13 @@ QgsFeature QgsAttributeForm::createFeature( QgsVectorLayer *layer, const QgsGeom
     {
       initialAttributeValues.insert( idx, attributes.value( idx ) );
     }
-    else if ( ( reuseAllLastValues || layer->editFormConfig().reuseLastValuePolicy( idx ) != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) && sLastUsedValues()->contains( layer ) && ( *sLastUsedValues() )[layer].contains( idx ) )
+    else if ( ( reuseAllLastValues || layer->editFormConfig().reuseLastValuePolicy( idx ) != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) )
     {
-      // Only set initial attribute value if it's different from the default clause or we may trigger
-      // unique constraint checks for no reason, see https://github.com/qgis/QGIS/issues/42909
-      if ( layer->dataProvider() && layer->dataProvider()->defaultValueClause( idx ) != ( *sLastUsedValues() )[layer][idx] )
+      const QVariant lastUsedValuesVariant = layer->property( "AttributeFormLastUsedValues" );
+      const QgsAttributeMap lastUsedValues = lastUsedValuesVariant.isValid() ? lastUsedValuesVariant.value<QgsAttributeMap>() : QgsAttributeMap();
+      if ( lastUsedValues.contains( idx ) && layer->dataProvider() && layer->dataProvider()->defaultValueClause( idx ) != lastUsedValues[idx] )
       {
-        initialAttributeValues.insert( idx, ( *sLastUsedValues() )[layer][idx] );
+        initialAttributeValues.insert( idx, lastUsedValues[idx] );
       }
     }
   }

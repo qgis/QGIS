@@ -69,9 +69,9 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   }
 
   mReuseLastValuePolicyComboBox->setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLengthWithIcon );
-  mReuseLastValuePolicyComboBox->addItem( tr( "Do not reuse last values" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) );
-  mReuseLastValuePolicyComboBox->addItem( tr( "Allow reuse of last values, enabled by default" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn ) );
-  mReuseLastValuePolicyComboBox->addItem( tr( "Allow reuse of last values, disabled by default" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOff ) );
+  mReuseLastValuePolicyComboBox->addItem( tr( "Do Not Reuse Last Values" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) );
+  mReuseLastValuePolicyComboBox->addItem( tr( "Allow Reuse of Last Values, Enabled by Default" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn ) );
+  mReuseLastValuePolicyComboBox->addItem( tr( "Allow Reuse of Last Values, Disabled by Default" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOff ) );
 
   mExpressionWidget->registerExpressionContextGenerator( this );
   mExpressionWidget->setLayer( mLayer );

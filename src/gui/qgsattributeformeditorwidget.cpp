@@ -129,9 +129,14 @@ void QgsAttributeFormEditorWidget::setConstraintResultVisible( bool editable )
 {
   mIsConstraintResultVisible = editable;
 
-  if ( mode() != DefaultMode && mode() != MultiEditMode )
+  switch ( mode() )
   {
-    return;
+    case SearchMode:
+    case AggregateSearchMode:
+      return;
+    case DefaultMode:
+    case MultiEditMode:
+      break;
   }
 
   if ( !layer() || QgsVectorLayerUtils::attributeHasConstraints( layer(), mEditorWidget->fieldIdx() ) )

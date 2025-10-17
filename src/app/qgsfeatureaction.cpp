@@ -246,6 +246,8 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttrib
     if ( highlight )
       dialog->setHighlight( highlight.release() );
 
+    connect( dialog->attributeForm(), &QgsAttributeForm::featureSaved, this, &QgsFeatureAction::onFeatureSaved );
+
     if ( !showModal )
     {
       setParent( dialog ); // keep dialog until the dialog is closed and destructed
