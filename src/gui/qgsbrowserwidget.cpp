@@ -1068,8 +1068,9 @@ QStringList QgsBrowserWidget::generatePathVariants( const QString &path )
 
 QString QgsBrowserWidget::resolveCaseInsensitivePath( const QString &inputPath )
 {
-  // Cross-platform case-fixing implementation
-  // Based on: https://stackoverflow.com/questions/3635019/how-to-get-the-true-case-of-a-file-or-directory-name-on-windows
+  // Cross-platform case-fixing implementation using Qt
+  // Based on QDir::entryList() approach for case-insensitive matching
+  // Reference: https://stackoverflow.com/a/77954785
   QString cleanedPath = QDir::cleanPath( inputPath );
   QStringList caseFixedPathComponents;
 
