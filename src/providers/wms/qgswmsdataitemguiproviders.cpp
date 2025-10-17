@@ -19,7 +19,6 @@
 #include "qgswmsdataitems.h"
 
 #include "qgsapplication.h"
-#include "qgsnewhttpconnection.h"
 #include "qgswmsconnection.h"
 #include "qgsxyzconnectiondialog.h"
 #include "qgsxyzconnection.h"
@@ -27,6 +26,7 @@
 #include "qgswmssourceselect.h"
 #include "qgsdataitemguiproviderutils.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgswmsnewconnection.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -96,7 +96,7 @@ QWidget *QgsWmsDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDat
 
 void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsWmsNewConnection nc( nullptr, item->name() );
 
   if ( nc.exec() )
   {
@@ -119,6 +119,7 @@ void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
   QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsInvertAxisOrientation->setValue( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsDefaultImageFormat->setValue( QgsOwsConnection::settingsDefaultImageFormat->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsWfsForceInitialGetFeature->setValue( QgsOwsConnection::settingsWfsForceInitialGetFeature->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsReportedLayerExtents->setValue( QgsOwsConnection::settingsReportedLayerExtents->value( detailsParameters ), newDetailsParameters );
@@ -141,7 +142,7 @@ void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
 void QgsWmsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( QgsApplication::instance()->activeWindow(), QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsWmsNewConnection nc( QgsApplication::instance()->activeWindow(), QString() );
 
   if ( nc.exec() )
   {

@@ -31,6 +31,7 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsconnection.h"
+#include "qgswmsnewconnection.h"
 #include "qgswmssourceselect.h"
 #include "moc_qgswmssourceselect.cpp"
 #include "qgswmtsdimensions.h"
@@ -89,31 +90,32 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mFeatureCount->setValidator( new QIntValidator( 0, 9999, this ) );
 
   mImageFormatGroup = new QButtonGroup( this );
+  mImageFormatGroup->setObjectName( QStringLiteral( "mImageFormatGroup" ) );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
     QHBoxLayout *layout = new QHBoxLayout;
 
-    mFormats = QgsWmsProvider::supportedFormats();
+    // Initialize by adding all supported formats, hiding them by default
+    // when a getcapabilities is done, only the supported ones will be shown
+    const QVector<QgsWmsSupportedFormat> supportedFormats = QgsWmsProvider::supportedFormats();
 
+    int btnIndex { 0 };
     // add buttons for available encodings
-    for ( int i = 0; i < mFormats.size(); i++ )
+    for ( const QgsWmsSupportedFormat &fmt : std::as_const( supportedFormats ) )
     {
-      mMimeMap.insert( mFormats[i].format, i );
-
-      QRadioButton *btn = new QRadioButton( mFormats.at( i ).label );
-      btn->setToolTip( mFormats[i].format );
+      QRadioButton *btn = new QRadioButton( fmt.label );
+      btn->setToolTip( fmt.format );
+      // In case the tooltip is eventually updated, store mime type as a property
+      btn->setProperty( "mime-type", fmt.format );
       btn->setHidden( true );
-      mImageFormatGroup->addButton( btn, i );
+      mImageFormatGroup->addButton( btn, btnIndex++ );
       layout->addWidget( btn );
     }
 
-    // default to first encoding
-    mImageFormatGroup->button( 0 )->setChecked( true );
-    btnGrpImageEncoding->setDisabled( true );
-
     layout->addStretch();
     btnGrpImageEncoding->setLayout( layout );
+
     setTabOrder( lstLayers, mImageFormatGroup->button( 0 ) );
 
     //set the current project CRS if available
@@ -153,6 +155,30 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   populateConnectionList();
 }
 
+void QgsWMSSourceSelect::updateFormatButtons( const QStringList &availableFormats, const QString &preferredFormat )
+{
+  QSet<QString> labelsAdded; // deduplication
+  int preferredIndex { -1 };
+
+  const QList<QAbstractButton *> constButtons = mImageFormatGroup->buttons();
+  for ( QAbstractButton *button : std::as_const( constButtons ) )
+  {
+    const QString mimeType { button->property( "mime-type" ).toString() };
+    if ( !labelsAdded.contains( button->text() ) && ( availableFormats.isEmpty() || availableFormats.contains( mimeType ) ) )
+    {
+      button->setHidden( false );
+      preferredIndex = preferredIndex == -1 || mimeType == preferredFormat ? mImageFormatGroup->id( button ) : preferredIndex;
+      labelsAdded.insert( button->text() );
+    }
+    else
+    {
+      button->setHidden( true );
+    }
+  }
+
+  mImageFormatGroup->button( preferredIndex )->setChecked( true );
+  btnGrpImageEncoding->setDisabled( true );
+}
 
 void QgsWMSSourceSelect::refresh()
 {
@@ -178,29 +204,26 @@ void QgsWMSSourceSelect::populateConnectionList()
 
 void QgsWMSSourceSelect::btnNew_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+  auto nc = new QgsWmsNewConnection( this );
+  nc->setAttribute( Qt::WA_DeleteOnClose );
 
+  // For testability, do not use exec()
+  if ( !property( "hideDialogs" ).toBool() )
+    nc->open();
 
-  if ( nc->exec() )
-  {
-    populateConnectionList();
-    emit connectionsChanged();
-  }
-
-  delete nc;
+  connect( nc, &QDialog::accepted, this, &QgsWMSSourceSelect::populateConnectionList );
+  connect( nc, &QDialog::accepted, this, &QgsWMSSourceSelect::connectionsChanged );
 }
 
 void QgsWMSSourceSelect::btnEdit_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), cmbConnections->currentText(), QgsNewHttpConnection::FlagShowHttpSettings );
+  std::unique_ptr<QgsWmsNewConnection> nc = std::make_unique<QgsWmsNewConnection>( this, cmbConnections->currentText() );
 
   if ( nc->exec() )
   {
     populateConnectionList();
     emit connectionsChanged();
   }
-
-  delete nc;
 }
 
 void QgsWMSSourceSelect::btnDelete_clicked()
@@ -296,39 +319,17 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
   const QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
   mLayerProperties = layers;
 
-  QString defaultEncoding = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), "image/png" ).toString();
-
-  bool first = true;
-  bool found = false;
-  QSet<QString> alreadyAddedLabels;
-  const auto supportedImageEncodings = capabilities.supportedImageEncodings();
-  for ( const QString &encoding : supportedImageEncodings )
+  // The default encoding set in the connections has the priority as a default value
+  QString defaultEncoding { QgsOwsConnection::settingsDefaultImageFormat->value( { QStringLiteral( "wms" ), mConnName } ) };
+  if ( defaultEncoding.isEmpty() )
   {
-    int id = mMimeMap.value( encoding, -1 );
-    if ( id < 0 )
-    {
-      QgsDebugError( QStringLiteral( "encoding %1 not supported." ).arg( encoding ) );
-      continue;
-    }
-    // Different mime-types can map to the same label. Just add the first
-    // match to avoid duplicates in the UI
-    if ( alreadyAddedLabels.contains( mFormats[id].label ) )
-    {
-      continue;
-    }
-    alreadyAddedLabels.insert( mFormats[id].label );
-
-    mImageFormatGroup->button( id )->setVisible( true );
-    if ( first || encoding == defaultEncoding )
-    {
-      if ( !found )
-      {
-        mImageFormatGroup->button( id )->setChecked( true );
-        found = true;
-      }
-      first = false;
-    }
+    defaultEncoding = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), "image/png" ).toString();
   }
+
+  updateFormatButtons( capabilities.supportedImageEncodings(), defaultEncoding );
+
+  // Update the connection list of available formats
+  QgsOwsConnection::settingsAvailableImageFormats->setValue( capabilities.supportedImageEncodings(), { QStringLiteral( "wms" ), mConnName } );
 
   btnGrpImageEncoding->setEnabled( true );
 
@@ -390,6 +391,13 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
     lstTilesets->setRowCount( rows );
     lstTilesets->setSortingEnabled( false );
 
+    const QVector<QgsWmsSupportedFormat> providerSupportedFormats = QgsWmsProvider::supportedFormats();
+    QSet<QString> supportedMimeTypes;
+    for ( const QgsWmsSupportedFormat &format : std::as_const( providerSupportedFormats ) )
+    {
+      supportedMimeTypes.insert( format.format );
+    }
+
     int row = 0;
     for ( const QgsWmtsTileLayer &l : std::as_const( mTileLayers ) )
     {
@@ -424,7 +432,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
             lstTilesets->setItem( row, 4, new QTableWidgetItem( setLink.tileMatrixSet ) );
             lstTilesets->setItem( row, 5, new QTableWidgetItem( tileMatrixSets[setLink.tileMatrixSet].crs ) );
 
-            if ( !mMimeMap.contains( format ) )
+            if ( !supportedMimeTypes.contains( format ) )
             {
               for ( int i = 0; i < lstTilesets->columnCount(); i++ )
               {
@@ -459,7 +467,6 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
 
   return true;
 }
-
 
 void QgsWMSSourceSelect::btnConnect_clicked()
 {
@@ -504,20 +511,34 @@ void QgsWMSSourceSelect::btnConnect_clicked()
 
   if ( !res )
   {
-    QMessageBox::warning(
-      this,
-      tr( "WMS Provider" ),
-      capDownload.lastError()
-    );
+    if ( !property( "hideDialogs" ).toBool() )
+    {
+      QMessageBox::warning(
+        this,
+        tr( "WMS Provider" ),
+        capDownload.lastError()
+      );
+    }
+    else // just log for testing
+    {
+      QgsDebugMsgLevel( QStringLiteral( "WMS capabilities download failed: %1" ).arg( capDownload.lastError() ), 2 );
+    }
     return;
   }
 
   QgsWmsCapabilities caps { QgsProject::instance()->transformContext() };
   if ( !caps.parseResponse( capDownload.response(), wmsSettings.parserSettings() ) )
   {
-    QMessageBox msgBox( QMessageBox::Warning, tr( "WMS Provider" ), tr( "The server you are trying to connect to does not seem to be a WMS server. Please check the URL." ), QMessageBox::Ok, this );
-    msgBox.setDetailedText( tr( "Instead of the capabilities string that was expected, the following response has been received:\n\n%1" ).arg( caps.lastError() ) );
-    msgBox.exec();
+    if ( !property( "hideDialogs" ).toBool() )
+    {
+      QMessageBox msgBox( QMessageBox::Warning, tr( "WMS Provider" ), tr( "The server you are trying to connect to does not seem to be a WMS server. Please check the URL." ), QMessageBox::Ok, this );
+      msgBox.setDetailedText( tr( "Instead of the capabilities string that was expected, the following response has been received:\n\n%1" ).arg( caps.lastError() ) );
+      msgBox.exec();
+    }
+    else // just log for testing
+    {
+      QgsDebugMsgLevel( QStringLiteral( "WMS capabilities parsing failed: %1" ).arg( caps.lastError() ), 2 );
+    }
     return;
   }
 
@@ -552,8 +573,7 @@ void QgsWMSSourceSelect::addButtonClicked()
   {
     collectSelectedLayers( layers, styles, titles );
     crs = mCRS;
-    format = mFormats[mImageFormatGroup->checkedId()].format;
-
+    format = mImageFormatGroup->checkedButton()->property( "mime-type" ).toString();
     collectDimensions( layers, uri );
   }
   else
@@ -1106,7 +1126,7 @@ QString QgsWMSSourceSelect::selectedImageEncoding()
   }
   else
   {
-    return QUrl::toPercentEncoding( mFormats.at( id ).format );
+    return QUrl::toPercentEncoding( mImageFormatGroup->checkedButton()->property( "mime-type" ).toString() );
   }
 }
 

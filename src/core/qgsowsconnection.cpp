@@ -72,6 +72,8 @@ const QgsSettingsEntryString *QgsOwsConnection::settingsPagingEnabled = new QgsS
 const QgsSettingsEntryString *QgsOwsConnection::settingsWfsFeatureMode = new QgsSettingsEntryString( QStringLiteral( "feature-mode" ), sTreeOwsConnections, QString( "default" ) ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsPreferCoordinatesForWfsT11 = new QgsSettingsEntryBool( QStringLiteral( "prefer-coordinates-for-wfs-T11" ), sTreeOwsConnections, false ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsWfsForceInitialGetFeature = new QgsSettingsEntryBool( QStringLiteral( "force-initial-get-feature" ), sTreeOwsConnections, false ) ;
+const QgsSettingsEntryString *QgsOwsConnection::settingsDefaultImageFormat = new QgsSettingsEntryString( QStringLiteral( "default-image-format" ), sTreeOwsConnections, QString( ) ) ;
+const QgsSettingsEntryStringList *QgsOwsConnection::settingsAvailableImageFormats = new QgsSettingsEntryStringList( QStringLiteral( "available-image-formats" ), sTreeOwsConnections, {} ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsIgnoreAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "ignore-axis-orientation" ), sTreeOwsConnections, false ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsInvertAxisOrientation = new QgsSettingsEntryBool( QStringLiteral( "invert-axis-orientation" ), sTreeOwsConnections, false ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeOwsConnections ) ;
@@ -221,7 +223,7 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
   {
     uri.setParam( QStringLiteral( "featureCount" ), QString::number( settingsFeatureCount->value( {service.toLower(), connName} ) ) );
   }
-
+  // Note: settingsDefaultImageFormat is not part of the connection URI because it's an individual layer setting
   return uri;
 }
 
