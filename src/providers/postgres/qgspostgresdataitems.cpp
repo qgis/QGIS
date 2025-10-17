@@ -447,9 +447,9 @@ QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, con
 
       if ( res.PQntuples() == 1 )
       {
-        const QString tooltip = QStringLiteral( "Last modified time: %1\n"
-                                                "Last modified user: %2\n"
-                                                "Comment: %3" )
+        const QString tooltip = tr( "Last modified time: %1\n"
+                                    "Last modified user: %2\n"
+                                    "Comment: %3" )
                                   .arg( res.PQgetvalue( 0, 0 ), res.PQgetvalue( 0, 1 ), commentColumn.isEmpty() ? QString() : res.PQgetvalue( 0, 2 ) );
         setToolTip( tooltip );
       }
