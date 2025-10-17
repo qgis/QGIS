@@ -2099,21 +2099,15 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 bool QgsDatabaseItemGuiProvider::moveTableToSchema( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notifyUser )
 {
   QString errCause;
-  if ( conn )
+
+  try
   {
-    try
-    {
-      QgsTemporaryCursorOverride override( Qt::WaitCursor );
-      conn->moveTableToSchema( originalSchema, table, targetSchema );
-    }
-    catch ( QgsProviderConnectionException &ex )
-    {
-      errCause = ex.what();
-    }
+    QgsTemporaryCursorOverride override( Qt::WaitCursor );
+    conn->moveTableToSchema( originalSchema, table, targetSchema );
   }
-  else
+  catch ( QgsProviderConnectionException &ex )
   {
-    errCause = tr( "There was an error retrieving the connection to %1" ).arg( conn->uri() );
+    errCause = ex.what();
   }
 
   if ( !errCause.isEmpty() )
