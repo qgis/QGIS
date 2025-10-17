@@ -124,7 +124,7 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
     {
       // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate events
       // to multiple items
-      QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
+      const QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
       for ( QGraphicsItem *item : items )
       {
         if ( QgsModelDesignerSocketGraphicItem *socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
