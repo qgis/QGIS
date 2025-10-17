@@ -98,7 +98,7 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
     void applyOperationFromWidget( Qt::KeyboardModifiers modifiers );
 
     //! Apply the chamfer either from the spin box or from the mouse event
-    void applyOperation( double value1, double value2, Qt::KeyboardModifiers modifiers );
+    void applyOperation( double value1, double value2 );
 
     void cancel();
 
@@ -136,12 +136,14 @@ class APP_EXPORT QgsMapToolChamferFillet : public QgsMapToolEdit
     //! limits number of call to updateGeometryAndRubberBand
     QElapsedTimer mLastMouseMove;
 
-    double mMaxValue1 = 0.0;
-    double mMaxValue2 = 0.0;
+    double mMaxValue1 = -1.0;
+    double mMaxValue2 = -1.0;
 
     void calculateDistances( const QgsPointXY &mapPoint, double &value1, double &value2 );
     void computeValuesFromMousePos( const QgsPointXY &mapPoint, bool isShiftKeyPressed, double &value1, double &value2 );
-    void computeMaxValues( bool isShiftKeyPressed );
+    void computeMaxValues();
+    void handleModifier( bool isShiftKeyPressed, double &value1, double &value2 );
+    void handleMaxAndLock( double &value1, double &value2 );
 
     void createUserInputWidget();
     void deleteUserInputWidget();
