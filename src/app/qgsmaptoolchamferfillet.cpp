@@ -403,6 +403,10 @@ bool QgsMapToolChamferFillet::prepareGeometry( const QgsPointLocator::Match &mat
   if ( !match.hasEdge() && !match.hasVertex() )
     return false;
 
+  // maptool will not work with first or last point on a linestring
+  if ( QgsWkbTypes::geometryType( geomType ) == Qgis::GeometryType::Line && ( match.vertexIndex() == 0 || match.vertexIndex() == geom.constGet()->vertexCount( 0 ) - 1 ) )
+    return false;
+
   mOriginalGeometryInSourceLayerCrs = geom;
   mManipulatedGeometryInSourceLayerCrs = geom;
 
