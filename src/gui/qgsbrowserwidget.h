@@ -158,7 +158,7 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     void showProperties();
     //! Hide current item
     void hideItem();
-    
+
     //! Navigate to the path entered in the location bar
     void navigateToPath();
     //! Copy the selected item's path to clipboard

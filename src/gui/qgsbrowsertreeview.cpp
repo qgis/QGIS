@@ -285,7 +285,7 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
       {
         currentDirectoryItem->populate();
       }
-      
+
       QgsDirectoryItem *newDir = new QgsDirectoryItem( nullptr, currentFolderName, thisPath );
       pathItems << newDir;
       currentDirectoryItem->addChildItem( newDir, true );
@@ -303,13 +303,13 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
     {
       i->populate();
     }
-    
+
     QModelIndex index = mBrowserModel->findItem( i );
     if ( QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>( model() ) )
     {
       index = proxyModel->mapFromSource( index );
     }
-    
+
     if ( index.isValid() )
     {
       expand( index );
