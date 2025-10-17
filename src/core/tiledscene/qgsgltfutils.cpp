@@ -779,14 +779,14 @@ int QgsGltfUtils::loadMaterialFromMetadata( const QVariantMap &materialInfo, tin
     QString baseColorTextureUri = materialInfo["pbrBaseColorTexture"].toString();
 
     tinygltf::Image img;
-    if ( baseColorTextureUri.contains(".slpk/") )  // image within SLPK archive
+    if ( baseColorTextureUri.contains( ".slpk/" ) )  // image within SLPK archive
     {
       const QStringList parts = baseColorTextureUri.split( QStringLiteral( ".slpk/" ) );
       if ( parts.size() == 2 )
       {
         QString slpkPath = QUrl( parts[0] + ".slpk" ).toLocalFile();
         QString imagePath = parts[1];
-        
+
         QByteArray imageData;
         if ( QgsZipUtils::extractFileFromZip( slpkPath, imagePath, imageData ) )
         {
