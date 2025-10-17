@@ -93,7 +93,6 @@ namespace Tools
 		uint32_t getCapacity() const { return m_capacity; }
 		void setCapacity(uint32_t c)
 		{
-			assert (c >= 0);
 			m_capacity = c;
 		}
 
