@@ -22,7 +22,7 @@
 class QgsAbstractProfileSource;
 
 #include <QList>
-
+#include <QObject>
 
 /**
  * \ingroup core
