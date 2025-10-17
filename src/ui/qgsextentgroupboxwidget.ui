@@ -222,7 +222,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="mButtonDrawOnCanvas">
+            <widget class="QPushButton" name="mSnapToGridButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                <horstretch>0</horstretch>
@@ -230,7 +230,16 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Draw on Canvas</string>
+              <string>Snap to Grid</string>
+             </property>
+             <property name="toolTip">
+              <string>Snap extent to raster grid</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -300,7 +309,7 @@
   <tabstop>mOriginalExtentButton</tabstop>
   <tabstop>mButtonCalcFromLayer</tabstop>
   <tabstop>mCurrentExtentButton</tabstop>
-  <tabstop>mButtonDrawOnCanvas</tabstop>
+  <tabstop>mSnapToGridButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>
