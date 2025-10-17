@@ -230,7 +230,7 @@ void TestQgsMapToolChamferFillet::testFillet()
   utils.mouseMove( 0.25, 0.5 );
   utils.mouseClick( 0.25, 0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  const QString wkt1 = "Polygon ((0 0, 0 1, 0.05 1, 0.41 0.93, 0.72 0.72, 0.93 0.41, 1 0.05, 1 0, 0 0))";
+  const QString wkt1 = "Polygon ((0 0, 0 1, 0.05 1, 0.52 0.87, 0.87 0.53, 1 0.05, 1 0, 0 0))";
   QVERIFY( compareGeom( mLayerBase->getFeature( 1 ).geometry(), wkt1, 0.05 ) );
 
   mLayerBase->undoStack()->undo();
@@ -259,8 +259,9 @@ void TestQgsMapToolChamferFillet::testFillet()
   utils.mouseMove( 0.25, 0.5 );
   utils.mouseClick( 0.25, 0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  const QString wkt2 = QString( "Polygon ((0 0, 0 1, 0.05 1, 0.14 1, 0.22 0.98, 0.31 0.96, 0.39 0.94, 0.47 0.9, 0.55 0.86, 0.62 0.81, "
-                                "0.69 0.75, 0.75 0.69, 0.81 0.62, 0.86 0.55, 0.9 0.47, 0.94 0.39, 0.96 0.31, 0.98 0.22, 1 0.14, 1 0.05, 1 0, 0 0))" );
+  const QString wkt2 = QString( "Polygon ((0 0, 0 1, 0.05 1, 0.14 1, 0.24 0.98, 0.33 0.96, 0.41 0.93, 0.5 0.89, "
+                                "0.58 0.84, 0.65 0.78, 0.72 0.72, 0.78 0.65, 0.84 0.58, 0.89 0.5, 0.93 0.41, "
+                                "0.96 0.33, 0.98 0.24, 1 0.14, 1 0.05, 1 0, 0 0))" );
   QVERIFY( compareGeom( mLayerBase->getFeature( 1 ).geometry(), wkt2, 0.05 ) );
 
   mLayerBase->undoStack()->undo();
