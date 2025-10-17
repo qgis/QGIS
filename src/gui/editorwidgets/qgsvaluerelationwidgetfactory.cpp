@@ -24,8 +24,8 @@
 
 #include <QSettings>
 
-QgsValueRelationWidgetFactory::QgsValueRelationWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsValueRelationWidgetFactory::QgsValueRelationWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 

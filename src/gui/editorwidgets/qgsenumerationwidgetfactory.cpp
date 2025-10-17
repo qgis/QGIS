@@ -20,8 +20,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsEnumerationWidgetFactory::QgsEnumerationWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsEnumerationWidgetFactory::QgsEnumerationWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 

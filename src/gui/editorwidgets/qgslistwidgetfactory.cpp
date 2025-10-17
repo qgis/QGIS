@@ -23,8 +23,8 @@
 #include <QVariant>
 #include <QSettings>
 
-QgsListWidgetFactory::QgsListWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsListWidgetFactory::QgsListWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 

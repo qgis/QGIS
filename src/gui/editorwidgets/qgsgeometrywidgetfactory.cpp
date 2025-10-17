@@ -19,8 +19,8 @@
 #include "qgsdummyconfigdlg.h"
 #include "qgsvectorlayer.h"
 
-QgsGeometryWidgetFactory::QgsGeometryWidgetFactory( const QString &name, QgsMessageBar *messageBar )
-  : QgsEditorWidgetFactory( name )
+QgsGeometryWidgetFactory::QgsGeometryWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
   , mMessageBar( messageBar )
 {
 }
