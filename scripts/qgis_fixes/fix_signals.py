@@ -1,5 +1,4 @@
-"""Migrate signals from old style to new style
-"""
+"""Migrate signals from old style to new style"""
 
 # Author: Juergen E. Fischer
 
