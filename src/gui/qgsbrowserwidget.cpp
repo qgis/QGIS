@@ -1071,61 +1071,35 @@ QStringList QgsBrowserWidget::generatePathVariants( const QString &path )
 
 QString QgsBrowserWidget::resolveCaseInsensitivePath( const QString &inputPath )
 {
-  QFileInfo info( inputPath );
-  
-  // If path exists exactly as given, use it
-  if ( info.exists() )
-    return info.absoluteFilePath();
+  // Cross-platform case-fixing implementation
+  // Based on: https://stackoverflow.com/questions/3635019/how-to-get-the-true-case-of-a-file-or-directory-name-on-windows
+  QString cleanedPath = QDir::cleanPath( inputPath );
+  QStringList caseFixedPathComponents;
 
-  // Try case-insensitive resolution by walking the path components
-  QStringList pathComponents = inputPath.split( '/', Qt::SkipEmptyParts );
-  if ( pathComponents.isEmpty() )
+  // Keep moving to the next parent level of the path until it no longer contains any named segments
+  while ( !QFileInfo( cleanedPath ).isRoot() && !QString( cleanedPath ).remove( '/' ).remove( '.' ).isEmpty() )
+  {
+    QString itemName = QFileInfo( cleanedPath ).fileName();
+    QString parentPath = QDir::cleanPath( cleanedPath + "/.." );
+
+    // Try to obtain the correctly cased item from the entry list of the parent directory
+    // entryList with a single pattern is case-insensitive on all platforms
+    QString caseFixedItemName = QDir( parentPath ).entryList( { itemName } ).value( 0 );
+    caseFixedItemName = caseFixedItemName.isEmpty() ? itemName : caseFixedItemName;
+
+    // Combine the case fixed items into a case fixed path
+    caseFixedPathComponents.prepend( caseFixedItemName );
+    cleanedPath = parentPath;
+  }
+
+  caseFixedPathComponents.prepend( cleanedPath );
+  QString result = QDir::cleanPath( caseFixedPathComponents.join( "/" ) );
+
+  // Verify the final path exists
+  if ( !QFileInfo::exists( result ) )
     return QString();
 
-  QString resolvedPath;
-  
-  // Handle drive letters on Windows
-#ifdef Q_OS_WIN
-  if ( pathComponents.first().endsWith( ':' ) )
-  {
-    resolvedPath = pathComponents.first() + "/";
-    pathComponents.removeFirst();
-  }
-  else
-  {
-    resolvedPath = "/";
-  }
-#else
-  resolvedPath = "/";
-#endif
-
-  // Walk through each path component and find case-insensitive matches
-  for ( const QString &component : pathComponents )
-  {
-    QDir currentDir( resolvedPath );
-    if ( !currentDir.exists() )
-      return QString();
-
-    // Get all entries and find case-insensitive match
-    const QStringList entries = currentDir.entryList( QDir::AllEntries | QDir::NoDotAndDotDot );
-    QString matchedEntry;
-    
-    for ( const QString &entry : entries )
-    {
-      if ( entry.compare( component, Qt::CaseInsensitive ) == 0 )
-      {
-        matchedEntry = entry;
-        break;
-      }
-    }
-    
-    if ( matchedEntry.isEmpty() )
-      return QString(); // Component not found
-    
-    resolvedPath = QDir::cleanPath( resolvedPath + "/" + matchedEntry );
-  }
-  
-  return resolvedPath;
+  return result;
 }
 
 bool QgsBrowserWidget::navigateToTarget( const QString &targetPath, const QString &selectFile )
