@@ -13,16 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsattributeeditorcontext.h"
 #include "qgsmaptooldeletepart.h"
 #include "moc_qgsmaptooldeletepart.cpp"
 
+#include "qgisapp.h"
+#include "qgsattributedialog.h"
 #include "qgsfeatureiterator.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
-#include "qgsrubberband.h"
-#include "qgssnappingutils.h"
+#include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmultipolygon.h"
+#include "qgsrubberband.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssnappingutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 
 
 /**
@@ -108,6 +115,9 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e )
 
+  // get clicked part from rubberband in case CTRL clicking (creating new feature out of part)
+  const QgsGeometry newGeom = mRubberBand ? mRubberBand->asGeometry() : QgsGeometry();
+
   delete mRubberBand;
   mRubberBand = nullptr;
 
@@ -127,6 +137,53 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     vlayer->beginEditCommand( tr( "Part of multipart feature deleted" ) );
     vlayer->changeGeometry( f.id(), g );
+
+    if ( e->modifiers() & Qt::ControlModifier && !newGeom.isEmpty() ) // add deleted part as a new feature
+    {
+      QgsExpressionContext context = vlayer->createExpressionContext();
+      const QgsFeature ft1 = QgsVectorLayerUtils::createFeature( vlayer, newGeom, f.attributes().toMap(), &context );
+
+      QgsFeature ft { QgsVectorLayerUtils::makeFeatureCompatible( ft1, vlayer ).at( 0 ) };
+
+      bool isDisabledAttributeValuesDlg = QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->value();
+      switch ( vlayer->editFormConfig().suppress() )
+      {
+        case Qgis::AttributeFormSuppression::On:
+          isDisabledAttributeValuesDlg = true;
+          break;
+        case Qgis::AttributeFormSuppression::Off:
+          isDisabledAttributeValuesDlg = false;
+          break;
+        case Qgis::AttributeFormSuppression::Default:
+          break;
+      }
+
+      if ( isDisabledAttributeValuesDlg )
+      {
+        if ( !vlayer->addFeature( ft ) )
+        {
+          emit messageEmitted( tr( "New feature could not be added." ), Qgis::MessageLevel::Critical );
+          vlayer->destroyEditCommand();
+          return;
+        }
+      }
+      else
+      {
+        QgsAttributeEditorContext context;
+        // don't set cadDockwidget in context because we don't want to be able to create geometries from this dialog
+        // there is one modified and one created feature, so it's a mess if we start to digitize a related feature's geometry
+        context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
+        QgsAttributeDialog dialog = QgsAttributeDialog( vlayer, &ft, false, nullptr, true, context );
+        dialog.setMode( QgsAttributeEditorContext::AddFeatureMode );
+
+        if ( !dialog.exec() )
+        {
+          vlayer->destroyEditCommand();
+          return;
+        }
+      }
+    }
+
     vlayer->endEditCommand();
     vlayer->triggerRepaint();
   }
