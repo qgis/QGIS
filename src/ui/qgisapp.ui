@@ -160,12 +160,10 @@
      <addaction name="mActionTemporalController"/>
      <addaction name="mActionElevationController"/>
     </widget>
-    <widget class="QMenu" name="menuElevation_Profiles">
+    <widget class="QMenu" name="mMenuElevationProfiles">
      <property name="title">
       <string>Elevation Profiles</string>
      </property>
-     <addaction name="mActionElevationProfile"/>
-     <addaction name="mActionManageElevationProfiles"/>
     </widget>
     <addaction name="mActionNewMapCanvas"/>
     <addaction name="m3DMapViewsMenu"/>
@@ -178,7 +176,7 @@
     <addaction name="mActionIdentify"/>
     <addaction name="mMenuMeasure"/>
     <addaction name="mActionStatisticalSummary"/>
-    <addaction name="menuElevation_Profiles"/>
+    <addaction name="mMenuElevationProfiles"/>
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
     <addaction name="mActionZoomToSelected"/>
