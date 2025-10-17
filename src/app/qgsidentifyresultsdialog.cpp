@@ -840,16 +840,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       else
       {
         attrItem->setData( 1, REPRESENTED_VALUE_ROLE, representedValue );
-        
-        // Check if "Show full text" is enabled
-        const bool showFullText = QgsIdentifyResultsDialog::settingShowFullText->value();
-        
-        // Always create a label widget for consistent styling and text selection
-        QLabel *valueLabel = createStyledLabel( representedValue, showFullText );
         attrItem->setText( 1, representedValue ); 
-        attrItem->setData( 1, Qt::DisplayRole, QString() );
-        QTreeWidget *tw = attrItem->treeWidget();
-        tw->setItemWidget( attrItem, 1, valueLabel );
       }
     }
 
@@ -2967,31 +2958,37 @@ QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool w
 {
   QLabel *valueLabel = new QLabel();
   valueLabel->setAlignment( Qt::AlignTop | Qt::AlignLeft );
-  valueLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
   valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; }" ) );
-  valueLabel->setWordWrap( wordWrap );
   valueLabel->setContentsMargins( 0, 0, 0, 0 );
   valueLabel->setMargin( 0 );
   valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+
   if ( wordWrap )
   {
+    valueLabel->setWordWrap( true );
     valueLabel->setTextInteractionFlags( Qt::NoTextInteraction );
     valueLabel->setAttribute( Qt::WA_TransparentForMouseEvents, true );
     valueLabel->setContextMenuPolicy( Qt::NoContextMenu );
-  }
-  
-  if ( wordWrap && ( text.contains( '\\' ) || text.contains( '/' ) ) )
-  {
-    QString wrapped = text;
-    wrapped.replace( "/", QStringLiteral("/\u00AD") );
-    wrapped.replace( "\\", QStringLiteral("\\\u00AD") );
-    valueLabel->setText( wrapped );
+
+    if ( text.contains( '\\' ) || text.contains( '/' ) )
+    {
+      QString wrapped = text;
+      wrapped.replace( QStringLiteral( "/" ), QStringLiteral( "/\u00AD" ) );
+      wrapped.replace( QStringLiteral( "\\" ), QStringLiteral( "\\\u00AD" ) );
+      valueLabel->setText( wrapped );
+    }
+    else
+    {
+      valueLabel->setText( text );
+    }
   }
   else
   {
+    valueLabel->setWordWrap( false );
+    valueLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
     valueLabel->setText( text );
   }
-  
+
   return valueLabel;
 }
 
@@ -3006,29 +3003,26 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
                                           : item->text( 1 );
 
   QTreeWidget *treeWidget = item->treeWidget();
-  if ( showFullText )
+  
+  // Check if this item should use a wrapping widget
+  const bool needsWrap = showFullText && 
+                         ( fullText.contains( QLatin1Char( '/' ) ) || fullText.contains( QLatin1Char( '\\' ) ) );
+
+  if ( needsWrap )
   {
-    // Only switch to a wrapping QLabel when it is actually beneficial
-    const bool needsWrap = fullText.contains( QLatin1Char( '/' ) ) || fullText.contains( QLatin1Char( '\\' ) );
-    if ( needsWrap )
-    {
-      QLabel *valueLabel = createStyledLabel( fullText, true );
-      if ( treeWidget )
-        treeWidget->setItemWidget( item, 1, valueLabel );
-      
-      item->setText( 1, fullText );
-    }
-    else
-    {
-      if ( treeWidget && treeWidget->itemWidget( item, 1 ) )
-        treeWidget->setItemWidget( item, 1, nullptr );
-      item->setText( 1, fullText );
-    }
+    QLabel *valueLabel = createStyledLabel( fullText, true );
+    if ( treeWidget )
+      treeWidget->setItemWidget( item, 1, valueLabel );
+    item->setText( 1, fullText );
+    item->setData( 1, Qt::DisplayRole, QString() );
   }
   else
   {
     if ( treeWidget && treeWidget->itemWidget( item, 1 ) )
+    {
       treeWidget->setItemWidget( item, 1, nullptr );
+      treeWidget->scheduleDelayedItemsLayout();
+    }
     item->setText( 1, fullText );
   }
 
