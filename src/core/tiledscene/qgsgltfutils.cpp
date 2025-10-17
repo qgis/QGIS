@@ -779,7 +779,43 @@ int QgsGltfUtils::loadMaterialFromMetadata( const QVariantMap &materialInfo, tin
     QString baseColorTextureUri = materialInfo["pbrBaseColorTexture"].toString();
 
     tinygltf::Image img;
-    img.uri = baseColorTextureUri.toStdString();   // file:/// or http:// ... will be fetched by QGIS
+    if ( baseColorTextureUri.contains(".slpk/") )  // image within SLPK archive
+    {
+      const QStringList parts = baseColorTextureUri.split( QStringLiteral( ".slpk/" ) );
+      if ( parts.size() == 2 )
+      {
+        QString slpkPath = QUrl( parts[0] + ".slpk" ).toLocalFile();
+        QString imagePath = parts[1];
+        
+        QByteArray imageData;
+        if ( QgsZipUtils::extractFileFromZip( slpkPath, imagePath, imageData ) )
+        {
+          QImage tempImage;
+          if ( tempImage.loadFromData( imageData ) )
+          {
+            // I3S standard specifies RGBA format for image textures
+            if ( tempImage.format() != QImage::Format_RGBA8888 )
+            {
+              tempImage = tempImage.convertToFormat( QImage::Format_RGBA8888 );
+            }
+
+            img.width = tempImage.width();
+            img.height = tempImage.height();
+            img.component = 4;
+            img.bits = 8;
+            img.pixel_type = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE;
+            size_t imgSize = static_cast<size_t>( tempImage.width() * tempImage.height() * 4 );
+            img.image.resize( imgSize );
+            std::copy( tempImage.constBits(), tempImage.constBits() + imgSize, img.image.begin() );
+          }
+        }
+      }
+    }
+    else
+    {
+      img.uri = baseColorTextureUri.toStdString();   // file:/// or http:// ... will be fetched by QGIS
+    }
+
     model.images.push_back( img );
 
     tinygltf::Texture tex;
