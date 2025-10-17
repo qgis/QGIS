@@ -105,7 +105,7 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole),
-            "destination_field2 (my alias)",
+            "destination_field2",
         )
         self.assertEqual(
             model.data(model.index(1, 6), Qt.ItemDataRole.DisplayRole), "my alias"
@@ -216,7 +216,7 @@ class TestPyQgsFieldMappingModel(QgisTestCase):
         )
         self.assertEqual(
             model.data(model.index(1, 1), Qt.ItemDataRole.DisplayRole),
-            "destination_field2 (my alias)",
+            "destination_field2",
         )
         self.assertEqual(
             model.data(model.index(2, 0), Qt.ItemDataRole.DisplayRole),
