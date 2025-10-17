@@ -40,6 +40,7 @@
 #include <QScreen>
 #include <QFont>
 #include <QActionGroup>
+#include <QTimer>
 #include <QToolButton>
 
 #if defined( HAVE_QTPRINTER )
@@ -840,7 +841,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       else
       {
         attrItem->setData( 1, REPRESENTED_VALUE_ROLE, representedValue );
-        attrItem->setText( 1, representedValue ); 
+        attrItem->setText( 1, representedValue );
       }
     }
 
@@ -1900,7 +1901,7 @@ void QgsIdentifyResultsDialog::updateViewModes()
   cmbViewMode->setEnabled( rasterCount > 0 );
   if ( rasterCount == 0 )
     cmbViewMode->setCurrentIndex( 0 );
-  
+
   // Update text display after all features have been added
   updateTextDisplay();
 }
@@ -2925,16 +2926,15 @@ QgsExpressionContextScope QgsIdentifyResultsDialog::expressionContextScope() con
 void QgsIdentifyResultsDialog::mActionShowFullText_toggled( bool checked )
 {
   QgsIdentifyResultsDialog::settingShowFullText->setValue( checked );
-  
-  
+
+
   if ( lstResults->topLevelItemCount() > 0 )
   {
-    
     QTreeWidgetItem *currentItem = lstResults->currentItem();
-    
-    
+
+
     updateTextDisplay();
-    
+
     if ( currentItem )
     {
       lstResults->setCurrentItem( currentItem );
@@ -2945,8 +2945,8 @@ void QgsIdentifyResultsDialog::mActionShowFullText_toggled( bool checked )
 void QgsIdentifyResultsDialog::updateTextDisplay()
 {
   const bool showFullText = QgsIdentifyResultsDialog::settingShowFullText->value();
-  
-  
+
+
   for ( int i = 0; i < lstResults->topLevelItemCount(); ++i )
   {
     QTreeWidgetItem *layerItem = lstResults->topLevelItem( i );
@@ -3003,10 +3003,9 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
                                           : item->text( 1 );
 
   QTreeWidget *treeWidget = item->treeWidget();
-  
+
   // Check if this item should use a wrapping widget
-  const bool needsWrap = showFullText && 
-                         ( fullText.contains( QLatin1Char( '/' ) ) || fullText.contains( QLatin1Char( '\\' ) ) );
+  const bool needsWrap = showFullText && ( fullText.contains( QLatin1Char( '/' ) ) || fullText.contains( QLatin1Char( '\\' ) ) );
 
   if ( needsWrap )
   {
@@ -3021,7 +3020,7 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
     if ( treeWidget && treeWidget->itemWidget( item, 1 ) )
     {
       treeWidget->setItemWidget( item, 1, nullptr );
-      treeWidget->scheduleDelayedItemsLayout();
+      QTimer::singleShot( 0, treeWidget, &QTreeWidget::doItemsLayout );
     }
     item->setText( 1, fullText );
   }
