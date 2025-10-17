@@ -25,6 +25,7 @@
 #include <QMatrix4x4>
 
 #include "qgis_3d.h"
+#include "qgs3dtypes.h"
 
 #define SIP_NO_FILE
 
@@ -99,7 +100,7 @@ class _3D_EXPORT Qgs3DExportObject
     void objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ ) const;
 
     //! Saves the current object to the output stream while scaling the object and centering it to be visible in exported scene
-    void saveTo( QTextStream &out, float scale, const QVector3D &center, int precision = 6 ) const;
+    void saveTo( QTextStream &out, float scale, const QVector3D &center, const Qgs3DTypes::ExportFormat &exportFormat = Qgs3DTypes::ExportFormat::Obj, int precision = 6, const QString &materialName = QString() ) const;
     //! saves the texture of the object and material information
     QString saveMaterial( QTextStream &mtlOut, const QString &folder ) const;
 
@@ -118,6 +119,12 @@ class _3D_EXPORT Qgs3DExportObject
   private:
     //! Sets positions coordinates and does the translation, rotation and scaling
     void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform = QMatrix4x4() );
+
+    //! Saves the current object to the output stream in Obj format
+    void saveToObj( QTextStream &out, float scale, const QVector3D &center, int precision = 6, const QString &materialName = QString() ) const;
+
+    //! Saves the current object to the output stream in Stl format
+    void saveToStl( QTextStream &out, float scale, const QVector3D &center, int precision = 6 ) const;
 
   private:
     QString mName;

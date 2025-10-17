@@ -26,6 +26,7 @@
 #include <QMatrix4x4>
 
 #include "qgs3dexportobject.h"
+#include "qgs3dtypes.h"
 #include "qgsfeatureid.h"
 
 class QgsTessellatedPolygonGeometry;
@@ -78,10 +79,10 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     void parseTerrain( QgsTerrainEntity *terrain, const QString &layer );
 
     /**
-     * Saves the scene to a .obj file
+     * Saves the scene to a file
      * Returns FALSE if the operation failed
      */
-    bool save( const QString &sceneName, const QString &sceneFolderPath, int precision = 6 ) const;
+    bool save( const QString &sceneName, const QString &sceneFolderPath, const Qgs3DTypes::ExportFormat &exportFormat = Qgs3DTypes::ExportFormat::Obj, int precision = 6 ) const;
 
     //! Sets whether the triangles will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
@@ -141,6 +142,12 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     void parseMeshTile( QgsTerrainTileEntity *meshEntity, const QString &layerName );
 
     QString getObjectName( const QString &name );
+
+    void getSceneCenterAndScale( QVector3D &center, float &scale ) const;
+
+    bool saveObj( const QString &sceneName, const QString &sceneFolderPath, int precision ) const;
+
+    bool saveStl( const QString &sceneName, const QString &sceneFolderPath, int precision ) const;
 
   private:
     QMap<QString, int> mUsedObjectNamesCounter;

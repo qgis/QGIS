@@ -29,6 +29,8 @@
  */
 class _3D_EXPORT Qgs3DTypes
 {
+    Q_GADGET
+
   public:
     //! Triangle culling mode
     enum CullingMode
@@ -48,6 +50,18 @@ class _3D_EXPORT Qgs3DTypes
       Main3DRenderer = 0, //!< Renderer for normal entities
       Selected3DRenderer, //!< Renderer for selected entities
     };
+
+    /**
+     * Scene export format
+     *
+     * \since QGIS 4.0
+     */
+    enum class ExportFormat
+    {
+      Obj = 0,
+      Stl
+    };
+    Q_ENUM( ExportFormat )
 };
 
 #endif // QGS3DTYPES_H
