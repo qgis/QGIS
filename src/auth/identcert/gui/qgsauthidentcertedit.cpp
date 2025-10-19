@@ -47,6 +47,7 @@ QgsStringMap QgsAuthIdentCertEdit::configMap() const
 {
   QgsStringMap config;
   config.insert( QStringLiteral( "certid" ), cmbIdentityCert->currentData().toString() );
+  config.insert( QStringLiteral( "cnisuser" ), cbCnUsername->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 
   return config;
 }
@@ -58,6 +59,7 @@ void QgsAuthIdentCertEdit::loadConfig( const QgsStringMap &configmap )
   mConfigMap = configmap;
   const int indx = cmbIdentityCert->findData( configmap.value( QStringLiteral( "certid" ) ) );
   cmbIdentityCert->setCurrentIndex( indx == -1 ? 0 : indx );
+  cbCnUsername->setChecked( configmap.value( QStringLiteral( "cnisuser" ), QStringLiteral( "true" ) ) == QLatin1String( "true" ) );
 
   validateConfig();
 }
@@ -70,6 +72,7 @@ void QgsAuthIdentCertEdit::resetConfig()
 void QgsAuthIdentCertEdit::clearConfig()
 {
   cmbIdentityCert->setCurrentIndex( 0 );
+  cbCnUsername->setChecked( true );
 }
 
 void QgsAuthIdentCertEdit::populateIdentityComboBox()

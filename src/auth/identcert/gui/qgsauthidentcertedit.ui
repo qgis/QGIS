@@ -40,6 +40,16 @@
     <widget class="QComboBox" name="cmbIdentityCert"/>
    </item>
    <item row="1" column="1">
+    <widget class="QCheckBox" name="cbCnUsername">
+     <property name="toolTip">
+      <string>Allow certificate's Common Name to override username</string>
+     </property>
+     <property name="text">
+      <string>CN is username</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
     <spacer name="verticalSpacer_5">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
