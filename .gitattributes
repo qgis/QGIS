@@ -1,3 +1,6 @@
+*.sh    text eol=lf
+*.bat   text eol=crlf
+
 *.sip export-subst
 *.py export-subst
 tests/testdata/auth_system/certs_keys/donald_key_DSA_crlf.pem text eol=crlf
