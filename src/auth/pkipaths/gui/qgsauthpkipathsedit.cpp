@@ -94,6 +94,7 @@ QgsStringMap QgsAuthPkiPathsEdit::configMap() const
   config.insert( QStringLiteral( "keypass" ), lePkiPathsKeyPass->text() );
   config.insert( QStringLiteral( "addcas" ), cbAddCas->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   config.insert( QStringLiteral( "addrootca" ), cbAddRootCa->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  config.insert( QStringLiteral( "cnisuser" ), cbCnUsername->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 
   return config;
 }
@@ -108,6 +109,7 @@ void QgsAuthPkiPathsEdit::loadConfig( const QgsStringMap &configmap )
   lePkiPathsKeyPass->setText( configmap.value( QStringLiteral( "keypass" ) ) );
   cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
   cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
+  cbCnUsername->setChecked( configmap.value( QStringLiteral( "cnisuser" ), QStringLiteral( "true" ) ) == QLatin1String( "true" ) );
 
   validateConfig();
 }
@@ -122,6 +124,8 @@ void QgsAuthPkiPathsEdit::clearConfig()
   clearPkiPathsCertPath();
   clearPkiPathsKeyPath();
   clearPkiPathsKeyPass();
+  cbCnUsername->setChecked( true );
+
 
   clearPkiMessage( lePkiPathsMsg );
   validateConfig();
