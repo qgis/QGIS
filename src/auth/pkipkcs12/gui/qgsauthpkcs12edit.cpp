@@ -127,6 +127,7 @@ QgsStringMap QgsAuthPkcs12Edit::configMap() const
   config.insert( QStringLiteral( "bundlepass" ), lePkcs12KeyPass->text() );
   config.insert( QStringLiteral( "addcas" ), cbAddCas->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   config.insert( QStringLiteral( "addrootca" ), cbAddRootCa->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  config.insert( QStringLiteral( "cnisuser" ), cbCnUsername->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 
   return config;
 }
@@ -140,6 +141,7 @@ void QgsAuthPkcs12Edit::loadConfig( const QgsStringMap &configmap )
   lePkcs12KeyPass->setText( configmap.value( QStringLiteral( "bundlepass" ) ) );
   cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
   cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
+  cbCnUsername->setChecked( configmap.value( QStringLiteral( "cnisuser" ), QStringLiteral( "true" ) ) == QLatin1String( "true" ) );
 
   validateConfig();
 }
@@ -153,6 +155,7 @@ void QgsAuthPkcs12Edit::clearConfig()
 {
   clearPkcs12BundlePath();
   clearPkcs12BundlePass();
+  cbCnUsername->setChecked( true );
 
   clearPkiMessage( lePkcs12Msg );
   validateConfig();

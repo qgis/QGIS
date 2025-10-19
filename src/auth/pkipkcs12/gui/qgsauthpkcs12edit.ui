@@ -144,6 +144,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="cbCnUsername">
+       <property name="toolTip">
+        <string>Allow certificate's Common Name to override username</string>
+       </property>
+       <property name="text">
+        <string>CN is username</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="verticalSpacer_2">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -173,6 +183,7 @@
   <tabstop>twCas</tabstop>
   <tabstop>cbAddCas</tabstop>
   <tabstop>cbAddRootCa</tabstop>
+  <tabstop>cbCnUsername</tabstop>
   <tabstop>lePkcs12KeyPass</tabstop>
   <tabstop>lePkcs12Msg</tabstop>
  </tabstops>
