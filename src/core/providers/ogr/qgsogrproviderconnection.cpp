@@ -308,7 +308,10 @@ QgsVectorLayer *QgsOgrProviderConnection::createSqlVectorLayer( const QgsAbstrac
   {
     if ( ! where.isEmpty() )
     {
-      decoded[ QStringLiteral( "subset" ) ] = QStringLiteral( R"sql(%1 AND ( %2 ))sql" ).arg( sanitizeSqlForQueryLayer( options.sql ), options.filter );
+      QString sql {  sanitizeSqlForQueryLayer( options.sql ) };
+      const thread_local QRegularExpression whereRegExp( R"sql(\s+WHERE\s+.+$)sql", QRegularExpression::CaseInsensitiveOption );
+      sql.remove( whereRegExp );
+      decoded[ QStringLiteral( "subset" ) ] = QStringLiteral( R"sql(%1 WHERE ( %2 ) AND ( %3 ))sql" ).arg( sql, where, options.filter );
     }
     else
     {
