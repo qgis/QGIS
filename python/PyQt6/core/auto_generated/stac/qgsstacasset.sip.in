@@ -78,12 +78,13 @@ Returns the format name for cloud optimized formats
 Returns a uri for the asset if it is a cloud optimized file like COG or
 COPC.
 
-:param authcfg: Optional authentication configuration ID.
+:param authcfg: Optional authentication configuration ID (since QGIS
+                4.0).
 
 If the optional @authcfg parameter is set the authentication
 configuration ID will be encoded in the returned URI.
 
-.. versionadded:: 4.0
+.. versionadded:: 3.42
 %End
 
     QString toHtml( const QString &assetId ) const;
@@ -96,7 +97,7 @@ its container
 
     bool isDownloadable() const;
 %Docstring
-Returns whether the asset can be downloaded
+Returns whether the asset can be downloaded.
 
 .. versionadded:: 4.0
 %End
