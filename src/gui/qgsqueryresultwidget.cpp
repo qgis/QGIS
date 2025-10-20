@@ -702,9 +702,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   connect( mActionShowHistory, &QAction::toggled, this, &QgsQueryResultWidget::showHistoryPanel );
 
   connect( mActionClear, &QAction::triggered, this, [this] {
-    mQueryWidget->sqlEditor()->setText( QString() );
-    mActionUndo->setEnabled( false );
-    mActionRedo->setEnabled( false );
+    mQueryWidget->sqlEditor()->SendScintilla( QsciScintilla::SCI_SETTEXT, "" );
   } );
 
   connect( mQueryWidget->sqlEditor(), &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultWidget::updateButtons );
