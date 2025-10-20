@@ -2964,46 +2964,46 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   // bookmarks
   QVariantMap bookmarksMap;
   const auto bookmarks = mBookmarkManager->bookmarks();
-  for (const QgsBookmark &bm : bookmarks)
+  for ( const QgsBookmark &bm : bookmarks )
   {
-      QVariantMap bmMap;
-      bmMap["name"] = bm.name();
-      bmMap["id"] = bm.id();
-      QVariantMap extentMap;
-      extentMap["x_min"] = bm.extent().xMinimum();
-      extentMap["y_min"] = bm.extent().yMinimum();
-      extentMap["x_max"] = bm.extent().xMaximum();
-      extentMap["y_max"] = bm.extent().yMaximum();
-      bmMap["extent"] = extentMap;
-      bmMap["width"] = bm.extent().width();
-      bmMap["height"] = bm.extent().height();
-      bmMap["crs"] = bm.extent().crs().authid();
-      bmMap["rotation"] = bm.rotation();
-      bookmarksMap[bm.name()] = bmMap;
+    QVariantMap bmMap;
+    bmMap["name"] = bm.name();
+    bmMap["id"] = bm.id();
+    QVariantMap extentMap;
+    extentMap["x_min"] = bm.extent().xMinimum();
+    extentMap["y_min"] = bm.extent().yMinimum();
+    extentMap["x_max"] = bm.extent().xMaximum();
+    extentMap["y_max"] = bm.extent().yMaximum();
+    bmMap["extent"] = extentMap;
+    bmMap["width"] = bm.extent().width();
+    bmMap["height"] = bm.extent().height();
+    bmMap["crs"] = bm.extent().crs().authid();
+    bmMap["rotation"] = bm.rotation();
+    bookmarksMap[bm.name()] = bmMap;
   }
-  mProjectScope->addVariable(QgsExpressionContextScope::StaticVariable(QStringLiteral("project_bookmarks"), bookmarksMap, true, true));
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_bookmarks" ), bookmarksMap, true, true ) );
 
   // Profile bookmarks
   QVariantMap userBookmarksMap;
   const auto profileBookmarks = QgsApplication::bookmarkManager()->bookmarks();
-  for (const QgsBookmark &bm : profileBookmarks)
+  for ( const QgsBookmark &bm : profileBookmarks )
   {
-      QVariantMap bmMap;
-      bmMap["name"] = bm.name();
-      bmMap["id"] = bm.id();
-      QVariantMap extentMap;
-      extentMap["x_min"] = bm.extent().xMinimum();
-      extentMap["y_min"] = bm.extent().yMinimum();
-      extentMap["x_max"] = bm.extent().xMaximum();
-      extentMap["y_max"] = bm.extent().yMaximum();
-      bmMap["extent"] = extentMap;
-      bmMap["width"] = bm.extent().width();
-      bmMap["height"] = bm.extent().height();
-      bmMap["crs"] = bm.extent().crs().authid();
-      bmMap["rotation"] = bm.rotation();
-      userBookmarksMap[bm.name()] = bmMap;
+    QVariantMap bmMap;
+    bmMap["name"] = bm.name();
+    bmMap["id"] = bm.id();
+    QVariantMap extentMap;
+    extentMap["x_min"] = bm.extent().xMinimum();
+    extentMap["y_min"] = bm.extent().yMinimum();
+    extentMap["x_max"] = bm.extent().xMaximum();
+    extentMap["y_max"] = bm.extent().yMaximum();
+    bmMap["extent"] = extentMap;
+    bmMap["width"] = bm.extent().width();
+    bmMap["height"] = bm.extent().height();
+    bmMap["crs"] = bm.extent().crs().authid();
+    bmMap["rotation"] = bm.rotation();
+    userBookmarksMap[bm.name()] = bmMap;
   }
-  mProjectScope->addVariable(QgsExpressionContextScope::StaticVariable(QStringLiteral("user_bookmarks"), userBookmarksMap, true, true));
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "user_bookmarks" ), userBookmarksMap, true, true ) );
 
   return createExpressionContextScope();
 }
