@@ -526,7 +526,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     polygonNew.reset( _transform_polygon_to_new_base( polygon, pt0, toNewBase.get(), scale ) );
   };
 
-  auto addTriangleVertices = [&]( QgsLineString *triangle, bool reverse, float extrusion )
+  auto addTriangleVertices = [&]( QgsLineString * triangle, bool reverse, float extrusion )
   {
     const QVector3D normal = reverse ? -pNormal : pNormal;
     for ( int i = 0; i < 3; i++ )
@@ -608,6 +608,8 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     case 4: // Walls, Roofs and Floors
       tessellate = ( facade == 1 || facade == 2 );
       break;
+    default:
+      break;
   }
 
   if ( pCount == 4 && polygon.numInteriorRings() == 0 && tessellate )
@@ -622,7 +624,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
     // polygon is a triangle - write vertices to the output data array without triangulation
     addTriangleVertices( triangle, false, extrusionHeight );
-    
+
     if ( addFloor )  // floor
     {
       addTriangleVertices( triangle, true, 0 );
@@ -700,7 +702,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
       mData.reserve( mData.size() + 3 * triangles.size() * ( stride() / sizeof( float ) ) );  // TODO: move to before triangulation?
 
-      auto addTriangulatedVertices = [&]( p2t::Triangle *t, bool reverse, float extrusion )
+      auto addTriangulatedVertices = [&]( p2t::Triangle * t, bool reverse, float extrusion )
       {
         const QVector3D normal = reverse ? -pNormal : pNormal;
         for ( int i = 0; i < 3; ++i )
