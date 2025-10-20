@@ -159,12 +159,12 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
   const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink(
     parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs()
   ) );
+  if ( !sink_output )
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink(
     parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs()
   ) );
-  if ( !sink_errors )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "ERRORS" ) ) );
 
   QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
   int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
@@ -255,11 +255,11 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
     f.setAttributes( attrs );
 
     f.setGeometry( error->geometry() );
-    if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
+    if ( !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
-    if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
+    if ( sink_errors && !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, QStringLiteral( "ERRORS" ) ) );
 
     i++;
@@ -269,8 +269,8 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
   // Place the point layer above the polygon layer
   if ( context.willLoadLayerOnCompletion( dest_output ) && context.willLoadLayerOnCompletion( dest_errors ) )
   {
-    context.layerToLoadOnCompletionDetails( dest_errors ).layerSortKey = 0;
-    context.layerToLoadOnCompletionDetails( dest_output ).layerSortKey = 1;
+    context.layerToLoadOnCompletionDetails( dest_errors ).layerSortKey = 1;
+    context.layerToLoadOnCompletionDetails( dest_output ).layerSortKey = 0;
   }
 
   // cleanup memory of the pointed data
@@ -281,9 +281,9 @@ QVariantMap QgsGeometryCheckGapAlgorithm::processAlgorithm( const QVariantMap &p
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "NEIGHBORS" ), dest_neighbors );
-  if ( sink_output )
-    outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
-  outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
+  if ( sink_errors )
+    outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
 
   return outputs;
 }
