@@ -2518,7 +2518,6 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${QCA_INCLUDE_DIR}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
-  ${EXIV2_INCLUDE_DIR}
 )
 
 target_include_directories(qgis_core PUBLIC
