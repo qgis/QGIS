@@ -2673,7 +2673,7 @@ target_link_libraries(qgis_core
   ${LIBZIP_LIBRARY}
   $<TARGET_NAME_IF_EXISTS:protobuf::libprotobuf-lite>
   ${ZLIB_LIBRARIES}
-  ${EXIV2_LIBRARY}
+  Exiv2::exiv2lib
   PROJ::proj
   nlohmann_json::nlohmann_json
 )
