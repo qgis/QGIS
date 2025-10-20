@@ -85,8 +85,8 @@ void QgsOWSSourceWidget::setSourceUri( const QString &uri )
     extent = inverted ? QgsRectangle(
                           coords.at( 1 ).toDouble(),
                           coords.at( 0 ).toDouble(),
-                          coords.at( 2 ).toDouble(),
-                          coords.at( 3 ).toDouble()
+                          coords.at( 3 ).toDouble(),
+                          coords.at( 2 ).toDouble()
                         )
                       : QgsRectangle(
                           coords.at( 0 ).toDouble(),
