@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgstexturematerial.h"
+#include "qgsziputils.h"
 
 #include <Qt3DCore/QEntity>
 
