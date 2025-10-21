@@ -673,7 +673,7 @@ try:
 
    QgsRasterLayer.as_numpy = _raster_layer_as_numpy
 
-   def _field_to_numpy(self, field_name: str, null_value: object, request: _typing.Optional[QgsFeatureRequest] = None) -> _numpy.ma.MaskedArray:
+   def _field_as_numpy(self, field_name: str, null_value: object, request: _typing.Optional[QgsFeatureRequest] = None) -> _numpy.ma.MaskedArray:
       field_index = self.fields().lookupField(field_name)
       if field_index < 0:
          raise KeyError(f"Field '{field_name}' does not exist.")
@@ -691,7 +691,7 @@ try:
       numpy_array = _numpy.frombuffer(src_array.data(), dtype=numpy_dtype)
       return _numpy.ma.masked_equal(numpy_array, null_value)
 
-   QgsVectorLayer.field_to_numpy = _field_to_numpy
+   QgsVectorLayer.field_as_numpy = _field_as_numpy
 
    def _qgsgeometry_as_numpy(self) -> _typing.Union[_numpy.ndarray, _typing.List[_numpy.ndarray]]:
        wkb_type = self.wkbType()
@@ -766,10 +766,10 @@ except ModuleNotFoundError:
 
    QgsGeometry.as_numpy = _geometry_as_numpy
 
-   def _field_to_numpy(self, field_name: str, null_value, request: _typing.Optional[QgsFeatureRequest] = None):
-      raise QgsNotSupportedException('QgsVectorLayer.field_to_numpy is not available, numpy is not installed on the system')
+   def _field_as_numpy(self, field_name: str, null_value, request: _typing.Optional[QgsFeatureRequest] = None):
+      raise QgsNotSupportedException('QgsVectorLayer.field_as_numpy is not available, numpy is not installed on the system')
 
-   QgsVectorLayer.field_to_numpy = _field_to_numpy
+   QgsVectorLayer.field_as_numpy = _field_as_numpy
 try:
    import shapely as _shapely
    import shapely.geometry as _sg
@@ -889,7 +889,7 @@ original layer.
 .. versionadded:: 4.0
 """
 
-QgsVectorLayer.field_to_numpy.__doc__ = """
+QgsVectorLayer.field_as_numpy.__doc__ = """
 Returns the values from a field as a numpy masked array.
 
 :param field_name: field name to source values from
