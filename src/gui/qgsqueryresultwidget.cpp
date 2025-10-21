@@ -702,6 +702,7 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   connect( mActionShowHistory, &QAction::toggled, this, &QgsQueryResultWidget::showHistoryPanel );
 
   connect( mActionClear, &QAction::triggered, this, [this] {
+    // Cannot use setText() because it resets the undo/redo buffer.
     mQueryWidget->sqlEditor()->SendScintilla( QsciScintilla::SCI_SETTEXT, "" );
   } );
 
