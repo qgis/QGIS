@@ -5805,6 +5805,19 @@ bool QgsRandomMarkerFillSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() con
   return true;
 }
 
+bool QgsRandomMarkerFillSymbolLayer::rendersIdenticallyTo( const QgsSymbolLayer *other ) const
+{
+  if ( !QgsFillSymbolLayer::rendersIdenticallyTo( other ) )
+    return false;
+
+  // special case -- two QgsRandomMarkerFillSymbolLayer will render differently if they have
+  // no seed value set.
+  if ( mSeed == 0 )
+    return false;
+
+  return true;
+}
+
 QgsSymbol *QgsRandomMarkerFillSymbolLayer::subSymbol()
 {
   return mMarker.get();
