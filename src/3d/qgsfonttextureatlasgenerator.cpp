@@ -189,7 +189,7 @@ QgsFontTextureAtlas QgsFontTextureAtlasGenerator::create( const QgsTextFormat &f
   int texturePaddingPixels = 2;
   if ( format.buffer().enabled() )
   {
-    texturePaddingPixels += context.convertToPainterUnits( format.buffer().size(), format.buffer().sizeUnit() );
+    texturePaddingPixels += static_cast< int >( std::ceil( context.convertToPainterUnits( format.buffer().size(), format.buffer().sizeUnit() ) ) );
   }
 
   // collect unique graphemes from all strings
