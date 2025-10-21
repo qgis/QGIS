@@ -29,7 +29,7 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   setupUi( this );
 
   spinPositionX->setClearValue( 0.0 );
-  spinPositionY->setClearValue( 1000.0 );
+  spinPositionY->setClearValue( 0.0 );
   spinPositionZ->setClearValue( 0.0 );
   spinIntensity->setClearValue( 1.0 );
   spinA0->setClearValue( 0.0 );
@@ -128,6 +128,12 @@ int QgsLightsWidget::directionalLightCount() const
 int QgsLightsWidget::lightSourceCount() const
 {
   return mLightsModel->rowCount( QModelIndex() );
+}
+
+void QgsLightsWidget::setPointLightCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  labelPointLightCrs->setText( tr( "Coordinates in 3D map CRS" ) + QStringLiteral( " (%1)" ).arg( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) ) );
+  labelPointLightCrs->setToolTip( crs.userFriendlyIdentifier( Qgis::CrsIdentifierType::MediumString ) );
 }
 
 void QgsLightsWidget::selectedLightChanged( const QItemSelection &selected, const QItemSelection & )

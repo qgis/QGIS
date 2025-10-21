@@ -135,7 +135,7 @@ void TestQgsScaleComboBox::basic()
 
 void TestQgsScaleComboBox::flexible()
 {
-  std::unique_ptr< QgsScaleComboBox > combo = std::make_unique< QgsScaleComboBox >();
+  auto combo = std::make_unique< QgsScaleComboBox >();
   combo->setRatioMode( QgsScaleComboBox::RatioMode::Flexible );
 
   const QStringList scales = QgsSettingsRegistryCore::settingsMapScales->value();

@@ -7,7 +7,7 @@
   "description": "Counts the number of occurrences of a substring within a string. By default, the function counts non-overlapping occurrences (like in Python). If the third argument is set to true, the function counts overlapping occurrences (like in QT).",
   "arguments": [
     {
-      "arg": "input",
+      "arg": "string",
       "description": "The input string to search in."
     },
     {
@@ -16,34 +16,36 @@
     },
     {
       "arg": "overlapping",
-      "description": "Optional flag to control whether overlapping occurrences should be counted. Defaults to false (non-overlapping counting). Set to true to count overlapping occurrences."
+      "optional": true,
+      "default": false,
+      "description": "Optional flag to control whether overlapping occurrences should be counted. Defaults to FALSE (non-overlapping counting). Set to TRUE to count overlapping occurrences."
     }
   ],
   "examples": [
     {
       "expression": "substr_count('banana', 'an')",
       "returns": "2",
-      "description": "Counts non-overlapping occurrences of 'an' in 'banana'."
+      "note": "Counts non-overlapping occurrences of 'an' in 'banana'."
     },
     {
       "expression": "substr_count('Funniness', 'n')",
       "returns": "3",
-      "description": "Counts non-overlapping occurrences of 'n' in 'Funniness'."
+      "note": "Counts non-overlapping occurrences of 'n' in 'Funniness'."
     },
     {
       "expression": "substr_count('aaaaa', 'aa')",
       "returns": "2",
-      "description": "Counts non-overlapping occurrences of 'aa' in 'aaaaa'."
+      "note": "Counts non-overlapping occurrences of 'aa' in 'aaaaa'."
     },
     {
       "expression": "substr_count('aaaaa', 'aa', true)",
       "returns": "4",
-      "description": "Counts overlapping occurrences of 'aa' in 'aaaaa'. The substring 'aa' appears four times in an overlapping fashion."
+      "note": "Counts overlapping occurrences of 'aa' in 'aaaaa'. The substring 'aa' appears four times in an overlapping fashion."
     },
     {
       "expression": "substr_count('BANANA', 'an')",
       "returns": "0",
-      "description": "Counts non-overlapping occurrences of 'an' in 'BANANA'. Case-sensitive, so no match."
+      "note": "Counts non-overlapping occurrences of 'an' in 'BANANA'. Case-sensitive, so no match."
     }
   ],
   "tags": [

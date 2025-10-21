@@ -37,12 +37,13 @@ class QgsDemTerrainGenerator;
 class QgsChunkNode;
 class Qgs3DExportObject;
 class QgsTerrainTextureGenerator;
+class QgsVector3D;
 class QgsVectorLayer;
 class QgsPolygon3DSymbol;
 class QgsLine3DSymbol;
 class QgsPoint3DSymbol;
 class QgsMeshEntity;
-class TestQgs3DRendering;
+class TestQgs3DExporter;
 
 #define SIP_NO_FILE
 
@@ -126,11 +127,11 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     Qgs3DExportObject *processPoints( Qt3DCore::QEntity *entity, const QString &objectNamePrefix );
 
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
-    QgsTerrainTileEntity *getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
+    QgsTerrainTileEntity *getFlatTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin );
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
-    QgsTerrainTileEntity *getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
+    QgsTerrainTileEntity *getDemTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin );
     //! Returns a tile entity that contains the geometry to be exported and necessary scaling parameters
-    QgsTerrainTileEntity *getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node );
+    QgsTerrainTileEntity *getMeshTerrainEntity( QgsTerrainEntity *terrain, QgsChunkNode *node, const QgsVector3D &mapOrigin );
 
     //! Constructs a Qgs3DExportObject from the DEM tile entity
     void parseDemTile( QgsTerrainTileEntity *tileEntity, const QString &layerName );
@@ -157,7 +158,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     friend QgsPolygon3DSymbol;
     friend QgsLine3DSymbol;
     friend QgsPoint3DSymbol;
-    friend TestQgs3DRendering;
+    friend TestQgs3DExporter;
 };
 
 #endif // QGS3DSCENEEXPORTER_H

@@ -79,6 +79,7 @@ set(QGIS_APP_SRCS
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
+  qgsmaptoolchamferfillet.cpp
   qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
   qgsmaptooldeletering.cpp
@@ -168,11 +169,6 @@ set(QGIS_APP_SRCS
   browser/qgsinbuiltdataitemproviders.cpp
 
   devtools/qgsappdevtoolutils.cpp
-  devtools/qgsdevtoolsmodelnode.cpp
-  devtools/networklogger/qgsnetworklogger.cpp
-  devtools/networklogger/qgsnetworkloggernode.cpp
-  devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
-  devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
   devtools/documentation/qgsdocumentationpanelwidget.cpp
@@ -358,6 +354,7 @@ if (WITH_3D)
     3d/qgs3dmodelsourcelineedit.cpp
     3d/qgs3dnavigationwidget.cpp
     3d/qgs3doptions.cpp
+    3d/qgsannotationlayer3drendererwidget.cpp
     3d/qgsgoochmaterialwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
@@ -507,7 +504,6 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/devtools
-  ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
   ${CMAKE_SOURCE_DIR}/src/app/georeferencer
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout

@@ -8750,7 +8750,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "convert_timezone" ), { QgsExpressionFunction::Parameter( QStringLiteral( "datetime" ) ), QgsExpressionFunction::Parameter( QStringLiteral( "timezone" ) ) }, fcnConvertTimeZone, QStringLiteral( "Date and Time" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "lower" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ), fcnLower, QStringLiteral( "String" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "substr_count" ), QgsExpressionFunction::ParameterList()
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "input" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "substring" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "overlapping" ), true, false ),  // Optional parameter with default value of false
                                             fcnSubstrCount,

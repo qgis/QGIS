@@ -360,13 +360,13 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \code{.py}
      *   p = QgsPoint( 4, 6 ) # 2D point
-     *   pr = midpoint ( p, QgsPoint( 2, 2 ) )
+     *   pr = QgsGeometryUtils.midpoint ( p, QgsPoint( 2, 2 ) )
      *   # pr is a 2D point: 'Point (3 4)'
-     *   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZ, 2, 2, 2 ) )
+     *   pr = QgsGeometryUtils.midpoint ( p, QgsPoint( QgsWkbTypes.PointZ, 2, 2, 2 ) )
      *   # pr is a 3D point: 'PointZ (3 4 1)'
-     *   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
+     *   pr = QgsGeometryUtils.midpoint ( p, QgsPoint( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
      *   # pr is a 3D point: 'PointM (3 4 1)'
-     *   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
+     *   pr = QgsGeometryUtils.midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
      *   # pr is a 3D point: 'PointZM (3 4 1 1)'
      * \endcode
      */
@@ -1382,6 +1382,22 @@ class CORE_EXPORT QgsGeometryUtils
       const QgsPoint &segment2Start, const QgsPoint &segment2End,
       double radius, int segments
     ) SIP_THROW( QgsInvalidArgumentException );
+
+    /**
+     * Calculates the maximum allowed fillet radius for the given segment configuration.
+     *
+     * \param segment1Start start point of the first segment
+     * \param segment1End end point of the first segment
+     * \param segment2Start start point of the second segment
+     * \param segment2End end point of the second segment
+     * \param epsilon tolerance for intersection and angle calculations
+     * \returns Maximum fillet radius that can be applied, or -1.0 if no fillet is possible
+     *
+     * \since QGIS 4.0
+     */
+    static double maxFilletRadius( const QgsPoint &segment1Start, const QgsPoint &segment1End,
+                                   const QgsPoint &segment2Start, const QgsPoint &segment2End,
+                                   double epsilon = 1e-8 ) SIP_HOLDGIL;
 
     /**
      * Applies chamfer to a vertex in a curve geometry.

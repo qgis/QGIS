@@ -296,7 +296,7 @@ QgsPointCloudLayer *QgsPdalAlgorithmBase::parameterAsPointCloudLayer( const QVar
     return nullptr;
 
   // if COPC provider, return as it is
-  if ( layer->dataProvider()->name() == QStringLiteral( "copc" ) )
+  if ( layer->dataProvider()->name() == QLatin1String( "copc" ) )
   {
     return layer;
   }

@@ -102,6 +102,7 @@
 #include "qgspluginlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
+#include "qgstiledscenelayer.h"
 #include "qgsprocessingparameteralignrasterlayers.h"
 #include "qgsprocessingalignrasterlayerswidgetwrapper.h"
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
@@ -6713,6 +6714,9 @@ void TestProcessingGui::mapLayerComboBox()
   QgsPointCloudLayer *pointCloud = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/sunshine-coast/ept.json", QStringLiteral( "Point cloud" ), QStringLiteral( "ept" ) );
   QVERIFY( pointCloud->isValid() );
   QgsProject::instance()->addMapLayer( pointCloud );
+  QgsTiledSceneLayer *tiledScene = new QgsTiledSceneLayer( "tiled_scene_source", QStringLiteral( "tiled scene" ), QStringLiteral( "test_tiled_scene_provider" ) );
+  QVERIFY( tiledScene->isValid() );
+  QgsProject::instance()->addMapLayer( tiledScene );
 
   // map layer param, all types are acceptable
   param = std::make_unique<QgsProcessingParameterMapLayer>( QStringLiteral( "param" ), QString() );
@@ -6731,6 +6735,8 @@ void TestProcessingGui::mapLayerComboBox()
   QCOMPARE( combo->currentLayer(), raster );
   combo->setLayer( pointCloud );
   QCOMPARE( combo->currentLayer(), pointCloud );
+  combo->setLayer( tiledScene );
+  QCOMPARE( combo->currentLayer(), tiledScene );
   combo.reset();
   param.reset();
 
@@ -6751,6 +6757,30 @@ void TestProcessingGui::mapLayerComboBox()
   QCOMPARE( combo->currentLayer(), raster );
   combo->setLayer( pointCloud );
   QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
+  QVERIFY( !combo->currentLayer() );
+  combo.reset();
+  param.reset();
+
+  // map layer param, only tiled scene layers are acceptable
+  param = std::make_unique<QgsProcessingParameterMapLayer>( QStringLiteral( "param" ), QString(), QVariant(), false, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::TiledScene ) );
+  combo = std::make_unique<QgsProcessingMapLayerComboBox>( param.get() );
+  combo->setLayer( point );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( line );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( polygon );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
+  QCOMPARE( combo->currentLayer(), tiledScene );
   combo.reset();
   param.reset();
 
@@ -6770,6 +6800,8 @@ void TestProcessingGui::mapLayerComboBox()
   combo->setLayer( raster );
   QCOMPARE( combo->currentLayer(), raster );
   combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
   QVERIFY( !combo->currentLayer() );
   combo.reset();
   param.reset();
@@ -6791,6 +6823,8 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo->setLayer( pointCloud );
   QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
+  QVERIFY( !combo->currentLayer() );
   combo.reset();
   param.reset();
 
@@ -6811,6 +6845,8 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo->setLayer( pointCloud );
   QCOMPARE( combo->currentLayer(), pointCloud );
+  combo->setLayer( tiledScene );
+  QVERIFY( !combo->currentLayer() );
   combo.reset();
   param.reset();
 

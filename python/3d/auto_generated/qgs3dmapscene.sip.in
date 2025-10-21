@@ -71,7 +71,7 @@ Returns number of pending jobs for all chunked entities
 Returns the current state of the scene
 %End
 
-    float worldSpaceError( float epsilon, float distance ) const;
+    double worldSpaceError( double epsilon, double distance ) const;
 %Docstring
 Given screen error (in pixels) and distance from camera (in 3D world
 coordinates), this function estimates the error in world space. Takes

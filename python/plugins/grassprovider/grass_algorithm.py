@@ -502,6 +502,14 @@ class GrassAlgorithm(QgsProcessingAlgorithm):
                     )
                 )
 
+        version = GrassUtils.installedVersion(True)
+        if version is None:
+            raise QgsProcessingException(
+                self.tr(
+                    "Problem with GRASS installation: GRASS was not found or is not correctly installed"
+                )
+            )
+
         # make a copy of the original parameters dictionary - it gets modified by grass algorithms
         parameters = {k: v for k, v in original_parameters.items()}
 

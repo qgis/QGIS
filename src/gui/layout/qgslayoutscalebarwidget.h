@@ -103,6 +103,8 @@ class GUI_EXPORT QgsLayoutScaleBarWidget : public QgsLayoutItemBaseWidget, publi
     void connectUpdateSignal();
     void disconnectUpdateSignal();
     void populateDataDefinedButtons();
+
+    static QString linkedMapUnitsString( QgsLayoutItemScaleBar *scalebar );
 };
 
 #endif //QGSLAYOUTSCALEBARWIDGET_H

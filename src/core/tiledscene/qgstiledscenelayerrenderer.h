@@ -117,6 +117,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
     QList< QgsMapClippingRegion > mClippingRegions;
 
     QgsCoordinateReferenceSystem mSceneCrs;
+    QgsCoordinateReferenceSystem mLayerCrs;
     QgsTiledSceneBoundingVolume mLayerBoundingVolume;
     QgsTiledSceneIndex mIndex;
 

@@ -363,10 +363,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
   teMetadataViewer->clear();
   teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
-  teMetadataViewer->setHtml( htmlMetadata() );
   teMetadataViewer->setOpenLinks( false );
   connect( teMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsVectorLayerProperties::openUrl );
-  mMetadataFilled = true;
 
   QgsSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often

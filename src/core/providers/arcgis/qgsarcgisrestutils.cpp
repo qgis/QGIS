@@ -1955,6 +1955,8 @@ Qgis::ArcGisRestServiceType QgsArcGisRestUtils::serviceTypeFromString( const QSt
     return Qgis::ArcGisRestServiceType::GPServer;
   else if ( type.compare( QLatin1String( "GeocodeServer" ), Qt::CaseInsensitive ) == 0 )
     return Qgis::ArcGisRestServiceType::GeocodeServer;
+  else if ( type.compare( QLatin1String( "SceneServer" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::ArcGisRestServiceType::SceneServer;
 
   return Qgis::ArcGisRestServiceType::Unknown;
 }

@@ -51,7 +51,7 @@ class TestProviderTiledSceneMetadata(QgsProviderMetadata):
 
     def filters(self, _type: Qgis.FileFilterType):
         if _type == Qgis.FileFilterType.TiledScene:
-            return "Scene Layer Packages (*.slpk *.SLPK)"
+            return "Test Tiled Scene Filter (*.ttsf)"
 
 
 class TestQgsProviderRegistry(QgisTestCase):
@@ -299,18 +299,20 @@ class TestQgsProviderRegistry(QgisTestCase):
         registry = QgsProviderRegistry.instance()
         self.assertEqual(
             registry.fileTiledSceneFilters(),
-            "All Supported Files (tileset.json TILESET.JSON);;"
+            "All Supported Files (tileset.json TILESET.JSON *.slpk *.SLPK);;"
             "All Files (*.*);;"
-            "Cesium 3D Tiles (tileset.json TILESET.JSON)",
+            "Cesium 3D Tiles (tileset.json TILESET.JSON);;"
+            "ESRI Scene layer package (*.slpk *.SLPK)",
         )
 
         registry.registerProvider(TestProviderTiledSceneMetadata("slpk"))
         self.assertEqual(
             registry.fileTiledSceneFilters(),
-            "All Supported Files (tileset.json TILESET.JSON *.slpk *.SLPK);;"
+            "All Supported Files (tileset.json TILESET.JSON *.slpk *.SLPK *.ttsf);;"
             "All Files (*.*);;"
             "Cesium 3D Tiles (tileset.json TILESET.JSON);;"
-            "Scene Layer Packages (*.slpk *.SLPK)",
+            "ESRI Scene layer package (*.slpk *.SLPK);;"
+            "Test Tiled Scene Filter (*.ttsf)",
         )
 
 

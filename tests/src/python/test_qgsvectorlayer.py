@@ -89,6 +89,10 @@ from qgis.testing import start_app, QgisTestCase
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
 
+import geopandas as gpd
+import pandas as pd
+import shapely
+
 TEST_DATA_DIR = unitTestDataPath()
 
 start_app()
@@ -5815,6 +5819,321 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
             self.assertTrue(
                 vl2.legend().flags() & Qgis.MapLayerLegendFlag.ExcludeByDefault
             )
+
+    def test_write_symbology_categories(self):
+        """Test that copy paste styles respect categories: issue GH #63167"""
+
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string", "layer2", "memory")
+        self.assertTrue(layer1.isValid())
+        self.assertTrue(layer2.isValid())
+        color1 = layer1.renderer().symbol().color()
+        color2 = layer2.renderer().symbol().color()
+        self.assertNotEqual(color1.name(), color2.name())
+
+        # Set a form property on layer1 and layer2
+        edit_form_config = layer1.editFormConfig()
+        edit_form_config.setLayout(Qgis.AttributeFormLayout.UiFile)
+        layer1.setEditFormConfig(edit_form_config)
+
+        edit_form_config2 = layer2.editFormConfig()
+        # Default but better to be explicit
+        edit_form_config2.setLayout(Qgis.AttributeFormLayout.DragAndDrop)
+        layer2.setEditFormConfig(edit_form_config2)
+
+        # Now write the symbology to XML but omit the form category
+        doc = QDomDocument("qgis")
+        ctx = QgsReadWriteContext()
+        layer1.exportNamedStyle(doc, ctx, QgsMapLayer.StyleCategory.Symbology)
+
+        # Read the symbology into layer2 specifying all categories but only the symbology is actually in the input XML
+        layer2.importNamedStyle(doc, QgsMapLayer.StyleCategory.AllStyleCategories)
+        # Check that the symbol color has been copied
+        self.assertEqual(layer2.renderer().symbol().color().name(), color1.name())
+        # Check that the form config has not been changed
+        self.assertEqual(
+            layer2.editFormConfig().layout(), Qgis.AttributeFormLayout.DragAndDrop
+        )
+
+        # Now copy the form category only
+        doc = QDomDocument("qgis")
+        layer1.exportNamedStyle(doc, ctx, QgsMapLayer.StyleCategory.Forms)
+        layer2.renderer().symbol().setColor(color2)
+        layer2.importNamedStyle(doc, QgsMapLayer.StyleCategory.AllStyleCategories)
+        # Check that only the form properties have been copied
+        self.assertEqual(
+            layer2.editFormConfig().layout(), Qgis.AttributeFormLayout.UiFile
+        )
+        self.assertEqual(layer2.renderer().symbol().color().name(), color2.name())
+
+    def test_as_geopandas(self):
+        """Test converting QgsVectorLayer to GeoPandas GeoDataFrame"""
+        # Create a test layer with various geometries and attributes
+        layer = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=name:string&field=value:integer&field=date:date",
+            "test",
+            "memory",
+        )
+        self.assertTrue(layer.isValid())
+
+        # Add features with different attribute types
+        features = []
+
+        # Feature 1: Point with all attributes
+        f1 = QgsFeature(layer.fields())
+        f1.setAttributes(["Point A", 100, QDate(2023, 1, 15)])
+        f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10.0, 20.0)))
+        features.append(f1)
+
+        # Feature 2: Point with null geometry
+        f2 = QgsFeature(layer.fields())
+        f2.setAttributes(["Point B", 200, QDate(2023, 2, 20)])
+        # No geometry set - should be empty
+        features.append(f2)
+
+        # Feature 3: Point with some null attributes (use NULL from qgis.core)
+        f3 = QgsFeature(layer.fields())
+        f3.setAttributes(["Point C", NULL, NULL])  # Use QGIS NULL instead of None
+        f3.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(30.0, 40.0)))
+        features.append(f3)
+
+        # Add features to layer
+        layer.dataProvider().addFeatures(features)
+        self.assertEqual(layer.featureCount(), 3)
+
+        # Convert to GeoDataFrame
+        gdf = layer.as_geopandas()
+
+        # Test basic properties
+        self.assertIsInstance(gdf, gpd.GeoDataFrame)
+        self.assertEqual(len(gdf), 3)
+        self.assertEqual(list(gdf.columns), ["name", "value", "date", "geometry"])
+
+        # Test CRS preservation
+        self.assertEqual(gdf.crs, "EPSG:4326")
+
+        # Test attribute values
+        self.assertEqual(gdf.iloc[0]["name"], "Point A")
+        self.assertEqual(gdf.iloc[0]["value"], 100)
+        self.assertEqual(gdf.iloc[1]["name"], "Point B")
+        self.assertEqual(gdf.iloc[1]["value"], 200)
+        self.assertEqual(gdf.iloc[2]["name"], "Point C")
+
+        # More robust null checking - handles various null representations
+        actual_value = gdf.iloc[2]["value"]
+        self.assertTrue(
+            actual_value is None
+            or pd.isna(actual_value)
+            or actual_value == NULL
+            or str(actual_value).lower() in ["none", "null", "nan"]
+        )
+
+        # Test geometries
+        self.assertIsInstance(gdf.iloc[0]["geometry"], shapely.Point)
+        self.assertEqual(gdf.iloc[0]["geometry"].x, 10.0)
+        self.assertEqual(gdf.iloc[0]["geometry"].y, 20.0)
+
+        # Test empty geometry handling
+        self.assertTrue(
+            gdf.iloc[1]["geometry"] is None or gdf.iloc[1]["geometry"].is_empty
+        )
+
+        # Test third geometry
+        self.assertIsInstance(gdf.iloc[2]["geometry"], shapely.Point)
+        self.assertEqual(gdf.iloc[2]["geometry"].x, 30.0)
+        self.assertEqual(gdf.iloc[2]["geometry"].y, 40.0)
+
+        # Test with different geometry types
+        line_layer = QgsVectorLayer(
+            "LineString?crs=epsg:3857&field=road_name:string", "roads", "memory"
+        )
+
+        line_feature = QgsFeature(line_layer.fields())
+        line_feature.setAttributes(["Main Street"])
+        line_geom = QgsGeometry.fromPolylineXY([QgsPointXY(0, 0), QgsPointXY(100, 100)])
+        line_feature.setGeometry(line_geom)
+        line_layer.dataProvider().addFeatures([line_feature])
+
+        line_gdf = line_layer.as_geopandas()
+        self.assertIsInstance(line_gdf, gpd.GeoDataFrame)
+        self.assertEqual(len(line_gdf), 1)
+        self.assertEqual(line_gdf.crs, "EPSG:3857")
+        self.assertIsInstance(line_gdf.iloc[0]["geometry"], shapely.LineString)
+
+        # Test empty layer
+        empty_layer = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=name:string", "empty", "memory"
+        )
+        empty_gdf = empty_layer.as_geopandas()
+        self.assertIsInstance(empty_gdf, gpd.GeoDataFrame)
+        self.assertEqual(len(empty_gdf), 0)
+        self.assertEqual(list(empty_gdf.columns), ["name", "geometry"])
+        self.assertEqual(empty_gdf.crs, "EPSG:4326")
+
+        # Test Polygon geometry
+        polygon_layer = QgsVectorLayer(
+            "Polygon?crs=epsg:4326&field=area_name:string", "areas", "memory"
+        )
+
+        polygon_feature = QgsFeature(polygon_layer.fields())
+        polygon_feature.setAttributes(["Test Area"])
+        polygon_geom = QgsGeometry.fromPolygonXY(
+            [
+                [
+                    QgsPointXY(0, 0),
+                    QgsPointXY(10, 0),
+                    QgsPointXY(10, 10),
+                    QgsPointXY(0, 10),
+                    QgsPointXY(0, 0),
+                ]
+            ]
+        )
+        polygon_feature.setGeometry(polygon_geom)
+        polygon_layer.dataProvider().addFeatures([polygon_feature])
+
+        polygon_gdf = polygon_layer.as_geopandas()
+        self.assertIsInstance(polygon_gdf, gpd.GeoDataFrame)
+        self.assertEqual(len(polygon_gdf), 1)
+        self.assertEqual(polygon_gdf.crs, "EPSG:4326")
+        self.assertIsInstance(polygon_gdf.iloc[0]["geometry"], shapely.Polygon)
+        self.assertAlmostEqual(polygon_gdf.iloc[0]["geometry"].area, 100.0, places=1)
+
+        # Test MultiPoint geometry
+        multipoint_layer = QgsVectorLayer(
+            "MultiPoint?crs=epsg:4326&field=cluster_name:string", "clusters", "memory"
+        )
+
+        multipoint_feature = QgsFeature(multipoint_layer.fields())
+        multipoint_feature.setAttributes(["Point Cluster"])
+        multipoint_geom = QgsGeometry.fromMultiPointXY(
+            [QgsPointXY(1, 1), QgsPointXY(2, 2), QgsPointXY(3, 3)]
+        )
+        multipoint_feature.setGeometry(multipoint_geom)
+        multipoint_layer.dataProvider().addFeatures([multipoint_feature])
+
+        multipoint_gdf = multipoint_layer.as_geopandas()
+        self.assertIsInstance(multipoint_gdf, gpd.GeoDataFrame)
+        self.assertEqual(len(multipoint_gdf), 1)
+        self.assertEqual(multipoint_gdf.crs, "EPSG:4326")
+        self.assertIsInstance(multipoint_gdf.iloc[0]["geometry"], shapely.MultiPoint)
+        self.assertEqual(len(multipoint_gdf.iloc[0]["geometry"].geoms), 3)
+
+        # Test MultiLineString geometry
+        multiline_layer = QgsVectorLayer(
+            "MultiLineString?crs=epsg:4326&field=network_name:string",
+            "networks",
+            "memory",
+        )
+
+        multiline_feature = QgsFeature(multiline_layer.fields())
+        multiline_feature.setAttributes(["Road Network"])
+        multiline_geom = QgsGeometry.fromMultiPolylineXY(
+            [
+                [QgsPointXY(0, 0), QgsPointXY(10, 10)],
+                [QgsPointXY(20, 20), QgsPointXY(30, 30)],
+            ]
+        )
+        multiline_feature.setGeometry(multiline_geom)
+        multiline_layer.dataProvider().addFeatures([multiline_feature])
+
+        multiline_gdf = multiline_layer.as_geopandas()
+        self.assertIsInstance(multiline_gdf, gpd.GeoDataFrame)
+        self.assertEqual(len(multiline_gdf), 1)
+        self.assertEqual(multiline_gdf.crs, "EPSG:4326")
+        self.assertIsInstance(
+            multiline_gdf.iloc[0]["geometry"], shapely.MultiLineString
+        )
+        self.assertEqual(len(multiline_gdf.iloc[0]["geometry"].geoms), 2)
+
+        # Test MultiPolygon geometry
+        multipolygon_layer = QgsVectorLayer(
+            "MultiPolygon?crs=epsg:4326&field=region_name:string", "regions", "memory"
+        )
+
+        multipolygon_feature = QgsFeature(multipolygon_layer.fields())
+        multipolygon_feature.setAttributes(["Multi Region"])
+        multipolygon_geom = QgsGeometry.fromMultiPolygonXY(
+            [
+                [
+                    [
+                        QgsPointXY(0, 0),
+                        QgsPointXY(5, 0),
+                        QgsPointXY(5, 5),
+                        QgsPointXY(0, 5),
+                        QgsPointXY(0, 0),
+                    ]
+                ],
+                [
+                    [
+                        QgsPointXY(10, 10),
+                        QgsPointXY(15, 10),
+                        QgsPointXY(15, 15),
+                        QgsPointXY(10, 15),
+                        QgsPointXY(10, 10),
+                    ]
+                ],
+            ]
+        )
+        multipolygon_feature.setGeometry(multipolygon_geom)
+        multipolygon_layer.dataProvider().addFeatures([multipolygon_feature])
+
+        multipolygon_gdf = multipolygon_layer.as_geopandas()
+        self.assertIsInstance(multipolygon_gdf, gpd.GeoDataFrame)
+        self.assertEqual(len(multipolygon_gdf), 1)
+        self.assertEqual(multipolygon_gdf.crs, "EPSG:4326")
+        self.assertIsInstance(
+            multipolygon_gdf.iloc[0]["geometry"], shapely.MultiPolygon
+        )
+        self.assertEqual(len(multipolygon_gdf.iloc[0]["geometry"].geoms), 2)
+
+    def test_as_geopandas_editing_mode(self):
+        """Test as_geopandas works with layers in editing mode"""
+        layer = createLayerWithOnePoint()
+
+        # Test with editing mode
+        layer.startEditing()
+
+        # Add a feature in editing mode
+        new_feature = QgsFeature(layer.fields())
+        new_feature.setAttributes(["new_point", 999])
+        new_feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(50.0, 60.0)))
+        layer.addFeature(new_feature)
+
+        # Convert to GeoDataFrame
+        gdf = layer.as_geopandas()
+
+        # Should include both original and new features
+        self.assertEqual(len(gdf), 2)
+
+        # Check that new feature is included
+        names = gdf["fldtxt"].tolist()
+        self.assertIn("new_point", names)
+        self.assertIn("test", names)
+
+        layer.rollBack()
+
+    def test_as_geopandas_no_geometry_layer(self):
+        """Test as_geopandas with non-spatial layer"""
+        # Create non-spatial layer
+        layer = QgsVectorLayer(
+            "None?field=id:integer&field=name:string", "nonspatial", "memory"
+        )
+        self.assertTrue(layer.isValid())
+        self.assertFalse(layer.isSpatial())
+
+        # Add a feature
+        feature = QgsFeature(layer.fields())
+        feature.setAttributes([1, "test"])
+        layer.dataProvider().addFeatures([feature])
+
+        # Convert to GeoDataFrame
+        gdf = layer.as_geopandas()
+
+        # Should still work but with None geometries
+        self.assertIsInstance(gdf, gpd.GeoDataFrame)
+        self.assertEqual(len(gdf), 1)
+        self.assertEqual(list(gdf.columns), ["id", "name", "geometry"])
+        self.assertTrue(gdf.iloc[0]["geometry"] is None)
 
 
 # TODO:

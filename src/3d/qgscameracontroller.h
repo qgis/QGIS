@@ -213,8 +213,17 @@ class _3D_EXPORT QgsCameraController : public QObject
      * while keeping the pivot point (given in world coordinates) at the
      * same screen coordinates after the zoom.
      * \since QGIS 3.42
+     * \deprecated QGIS 3.44.4. Use version with oldDistanceFromCenterPoint argument instead.
      */
-    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint );
+    Q_DECL_DEPRECATED void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint ) SIP_DEPRECATED;
+
+    /**
+     * Zooms camera by given zoom factor (>1 one means zoom in)
+     * while keeping the pivot point (given in world coordinates) at the
+     * same screen coordinates after the zoom.
+     * \since QGIS 3.44.4
+     */
+    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double oldDistanceFromCenterPoint, double zoomFactor, const QVector3D &pivotPoint );
 
     /**
      * If the event is relevant, handles the event and returns TRUE, otherwise FALSE.
@@ -286,7 +295,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     //! Rotate to diagonal view. \since QGIS 3.44
     void rotateCameraToHome() { rotateToRespectingTerrain( 45.0f, 45.0f ); }
     //! Rotate to top-down view. \since QGIS 3.44
-    void rotateCameraToTop() { rotateToRespectingTerrain( 0.0f, 90.0f ); }
+    void rotateCameraToTop() { rotateToRespectingTerrain( 0.0f, 0.0f ); }
     //! Rotate to view from the north. \since QGIS 3.44
     void rotateCameraToNorth() { rotateToRespectingTerrain( 90.0f, 180.0f ); }
     //! Rotate to view from the east. \since QGIS 3.44

@@ -1377,7 +1377,7 @@ class CORE_EXPORT Qgis
       ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
       CountFeatures = 1 << 2, //!< Count features in vector sublayers
       IncludeSystemTables = 1 << 3, //!< Include system or internal tables (these are not included by default)
-      OpenLayersToResolveDecriptions = 1 << 4, //!< Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \since QGIS 4.0
+      OpenLayersToResolveDescriptions = 1 << 4, //!< Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \since QGIS 4.0
     };
     //! Sublayer query flags
     Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
@@ -3504,7 +3504,8 @@ class CORE_EXPORT Qgis
       Plugin SIP_MONKEYPATCH_COMPAT_NAME( TypePlugin ) = 7, //!< Plugin layers \since QGIS 3.22
       PointCloud SIP_MONKEYPATCH_COMPAT_NAME( TypePointCloud ) = 8, //!< Point cloud layers \since QGIS 3.22
       Annotation SIP_MONKEYPATCH_COMPAT_NAME( TypeAnnotation ) = 9, //!< Annotation layers \since QGIS 3.22
-      VectorTile SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorTile ) = 10 //!< Vector tile layers \since QGIS 3.32
+      VectorTile SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorTile ) = 10, //!< Vector tile layers \since QGIS 3.32
+      TiledScene = 11 //!< Tiled scene layers \since QGIS 4.0
     };
     Q_ENUM( ProcessingSourceType )
 
@@ -4338,6 +4339,7 @@ class CORE_EXPORT Qgis
       GPServer, //!< GPServer
       GeocodeServer, //!< GeocodeServer
       Unknown, //!< Other unknown/unsupported type
+      SceneServer, //!< SceneServer
     };
     Q_ENUM( ArcGisRestServiceType )
 
@@ -6078,6 +6080,20 @@ class CORE_EXPORT Qgis
      */
     Q_DECLARE_FLAGS( RasterProcessingParameterCapabilities, RasterProcessingParameterCapability )
     Q_FLAG( RasterProcessingParameterCapabilities )
+
+    /**
+     * Dev tools node custom data roles.
+     * \since QGIS 4.0
+     */
+    enum class DevToolsNodeRole
+    {
+      Status = Qt::UserRole + 1, //!< Request status role
+      Id,                        //!< Request ID role
+      ElapsedTime,               //!< Elapsed time
+      MaximumTime,               //!< Maximum encountered elapsed time
+      Sort,                      //!< Sort order role
+    };
+    Q_ENUM( DevToolsNodeRole )
 
     /**
      * Identify search radius in mm
