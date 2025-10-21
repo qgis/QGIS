@@ -68,6 +68,10 @@ void QgsPdalExportRasterTinAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "RESOLUTION" ), QObject::tr( "Resolution of the density raster" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 1e-6 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_SIZE" ), QObject::tr( "Tile size for parallel runs" ), Qgis::ProcessingNumberParameterType::Integer, 1000, false, 1 ) );
 
+#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 6 )
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_EDGE_LENGTH" ), QObject::tr( "Maximum triangle edge length" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0, 1e8 ) );
+#endif
+
   createCommonParameters();
 
   auto paramOriginX = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ORIGIN_X" ), QObject::tr( "X origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
@@ -111,6 +115,13 @@ QStringList QgsPdalExportRasterTinAlgorithm::createArgumentLists( const QVariant
     args << QStringLiteral( "--tile-origin-x=%1" ).arg( parameterAsInt( parameters, QStringLiteral( "ORIGIN_X" ), context ) );
     args << QStringLiteral( "--tile-origin-y=%1" ).arg( parameterAsInt( parameters, QStringLiteral( "ORIGIN_Y" ), context ) );
   }
+
+#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 6 )
+  if ( parameters.value( QStringLiteral( "MAX_EDGE_LENGTH" ) ).isValid() )
+  {
+    args << QStringLiteral( "--max_triangle_edge_length=%1" ).arg( parameterAsDouble( parameters, QStringLiteral( "MAX_EDGE_LENGTH" ), context ) );
+  }
+#endif
 
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
