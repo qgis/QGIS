@@ -6136,7 +6136,7 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         self.assertEqual(list(gdf.columns), ["id", "name", "geometry"])
         self.assertTrue(gdf.iloc[0]["geometry"] is None)
 
-    def test_field_to_numpy(self):
+    def test_field_as_numpy(self):
         layer = QgsVectorLayer(
             "Point?field=fldtxt:string&field=fldint:integer&field=fldlong:int8&field=flddouble:double",
             "addfeat",
@@ -6156,38 +6156,38 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
             self.assertTrue(pr.addFeatures([f]))
 
         with self.assertRaises(KeyError):
-            array = layer.field_to_numpy("not_here", 0)
+            array = layer.field_as_numpy("not_here", 0)
         with self.assertRaises(TypeError):
-            array = layer.field_to_numpy("fldtxt", 0)
+            array = layer.field_as_numpy("fldtxt", 0)
 
-        array = layer.field_to_numpy("fldint", -99)
+        array = layer.field_as_numpy("fldint", -99)
         self.assertTrue((array == np.array([30, 31, -99])).all())
         self.assertEqual(array.dtype, np.int32)
-        array = layer.field_to_numpy("fldint", -999)
+        array = layer.field_as_numpy("fldint", -999)
         self.assertTrue((array == np.array([30, 31, -999])).all())
         self.assertEqual(array.dtype, np.int32)
 
-        array = layer.field_to_numpy("fldlong", -99)
+        array = layer.field_as_numpy("fldlong", -99)
         self.assertTrue(
             (array == np.array([123123123123123, -456456456456456, -99])).all()
         )
         self.assertEqual(array.dtype, np.int64)
-        array = layer.field_to_numpy("fldlong", -999)
+        array = layer.field_as_numpy("fldlong", -999)
         self.assertTrue(
             (array == np.array([123123123123123, -456456456456456, -999])).all()
         )
         self.assertEqual(array.dtype, np.int64)
 
-        array = layer.field_to_numpy("flddouble", -99)
+        array = layer.field_as_numpy("flddouble", -99)
         self.assertTrue((array == np.array([15.6, 0.4, -99])).all())
         self.assertEqual(array.dtype, np.float64)
 
-        array = layer.field_to_numpy("flddouble", -999)
+        array = layer.field_as_numpy("flddouble", -999)
         self.assertTrue((array == np.array([15.6, 0.4, -999])).all())
         self.assertEqual(array.dtype, np.float64)
 
         # with custom request
-        array = layer.field_to_numpy(
+        array = layer.field_as_numpy(
             "flddouble", -999, QgsFeatureRequest().setFilterFid(0)
         )
         self.assertTrue((array == np.array([15.6])).all())
