@@ -288,7 +288,7 @@ void TestQgsGeometryChecks::testContainedCheck()
 
   QList<QgsGeometryCheckError *> errs1;
 
-  QCOMPARE( checkErrors.size(), 4 );
+  QCOMPARE( checkErrors.size(), 5 );
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 4, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:5" ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 5, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 3, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ).size() == 1 );
@@ -924,8 +924,9 @@ void TestQgsGeometryChecks::testPointInPolygonCheck()
 
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"] ).isEmpty() );
   QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"] ).isEmpty() );
-  // Check that the point which is properly inside a polygon is not listed as error
+  // Check that the points which are properly inside a polygon are not listed as errors
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 5 ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"], 7 ).isEmpty() );
   QVERIFY( messages.contains( "Point in polygon check failed for (polygon_layer.shp:1): the geometry is invalid" ) );
 
   cleanupTestContext( testContext );

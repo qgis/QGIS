@@ -49,6 +49,12 @@ void QgsGeometryPointInPolygonCheck::collectErrors( const QMap<QString, QgsFeatu
           messages.append( tr( "Point in polygon check failed for (%1): the geometry is invalid" ).arg( checkFeature.id() ) );
           continue;
         }
+        if ( !testGeomEngine->intersects( point ) )
+        {
+          // don't test if there is no intersection
+          --nTested;
+          continue;
+        }
         if ( testGeomEngine->contains( point ) && !testGeomEngine->touches( point ) )
         {
           ++nInside;
