@@ -254,6 +254,34 @@ QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
 {
 }
 
+bool QgsSymbolLayer::rendersIdenticallyTo( const QgsSymbolLayer *other ) const
+{
+  if ( !other )
+    return false;
+
+  if ( layerType() != other->layerType() )
+    return false;
+
+  // TODO -- we could consider each property individually
+  if ( hasDataDefinedProperties() || other->hasDataDefinedProperties() )
+    return false;
+
+  // shortcut now that we know there's no randomness/changing overrides involved
+  if ( other == this )
+    return true;
+
+  if ( mEnabled != other->mEnabled
+       || mColor != other->mColor
+       || mRenderingPass != other->mRenderingPass
+
+       // TODO -- we could consider the actual settings of the paint effect
+       || ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
+       || ( other->mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( other->mPaintEffect.get() ) ) )
+    return false;
+
+  return properties() == other->properties();
+}
+
 Qgis::SymbolLayerFlags QgsSymbolLayer::flags() const
 {
   return Qgis::SymbolLayerFlags();
