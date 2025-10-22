@@ -113,6 +113,145 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 
 /**
  * \ingroup gui
+ * \brief Base class for QTreeView widgets which display a layer tree.
+ *
+ * The view updates expanded state of layer tree nodes and also listens to changes
+ * to expanded states in the layer tree.
+ *
+ * \warning Subclasses must take care to call both setLayerTreeModel() and QTreeView::setModel()
+ * in order to have a fully functional tree view. This is by design, as it permits use of
+ * a custom proxy model in the view.
+ *
+ * \see QgsLayerTreeView
+ * \since QGIS 4.0
+ */
+class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
+{
+    Q_OBJECT
+
+  public:
+    //! Constructor for QgsLayerTreeViewBase
+    explicit QgsLayerTreeViewBase( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsLayerTreeViewBase() override;
+
+    /**
+     * Associates a layer tree model with the view.
+     *
+     * \warning This does NOT explicitly set the view's model, and a subsequent call
+     * to QTreeView::setModel() must be made. This is by design, as it permits use of
+     * a custom proxy model in the view.
+     *
+     * \see layerTreeModel()
+     */
+    void setLayerTreeModel( QgsLayerTreeModel *model );
+
+    /**
+     * Returns the associated layer tree model.
+     * \see setLayerTreeModel()
+     */
+    QgsLayerTreeModel *layerTreeModel() const;
+
+    /**
+     * Returns the layer tree node for given view \a index.
+     *
+     * Returns root node for an invalid index.
+     *
+     * Returns NULLPTR if index does not refer to a layer tree node (e.g. it is a legend node).
+     *
+     * Unlike QgsLayerTreeViewBase::index2Node(), calling this method correctly accounts
+     * for mapping the view indexes through the view's proxy model to the source model.
+     *
+     * \see node2index()
+     * \since QGIS 3.18
+     */
+    QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
+
+    /**
+     * Returns the view model index for a given \a node.
+     *
+     * If the \a node does not belong to the layer tree, the result is undefined.
+     *
+     * Unlike QgsLayerTreeModel::node2index(), calling this method correctly accounts
+     * for mapping the view indexes through the view's proxy model to the source model.
+     *
+     * \see index2node()
+     * \since QGIS 3.18
+     */
+    QModelIndex node2index( QgsLayerTreeNode *node ) const;
+
+    /**
+     * Returns the layer tree source model index for a given \a node.
+     *
+     * If the \a node does not belong to the layer tree, the result is undefined.
+     *
+     * \warning The returned index belongs the underlying layer tree model, and care should be taken
+     * to correctly map to a proxy index if a proxy model is in use.
+     *
+     * \see node2index()
+     * \since QGIS 3.18
+     */
+    QModelIndex node2sourceIndex( QgsLayerTreeNode *node ) const;
+
+    /**
+     * Returns legend node for given view \a index.
+     *
+     * Returns NULLPTR for invalid index.
+     *
+     * Unlike QgsLayerTreeModel::index2legendNode(), calling this method correctly accounts
+     * for mapping the view indexes through the view's proxy model to the source model.
+     *
+     * \since QGIS 3.18
+     */
+    QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
+
+  protected:
+    /**
+     * Updates the expanded state from a \a node.
+     */
+    void updateExpandedStateFromNode( QgsLayerTreeNode *node );
+
+    /**
+     * Returns the view index corresponding with a layer tree model \a index.
+     *
+     * This method correctly accounts for proxy models set on the tree view.
+     *
+     * \see layerTreeModelIndexToViewIndex()
+     */
+    QModelIndex viewIndexToLayerTreeModelIndex( const QModelIndex &index ) const;
+
+    /**
+     * Returns the layer tree model index corresponding with a view \a index.
+     *
+     * This method correctly accounts for proxy models set on the tree view.
+     *
+     * \see viewIndexToLayerTreeModelIndex()
+     */
+    QModelIndex layerTreeModelIndexToViewIndex( const QModelIndex &index ) const;
+
+  protected slots:
+
+    /**
+     * Stores the expanded state to a node with matching \a index.
+     */
+    void updateExpandedStateToNode( const QModelIndex &index );
+
+    /**
+     * Called when the expanded state changes for a node.
+     */
+    void onExpandedChanged( QgsLayerTreeNode *node, bool expanded );
+
+    /**
+     * Called when the model is reset.
+     */
+    void onModelReset();
+
+  private:
+    QgsLayerTreeModel *mLayerTreeModel = nullptr;
+};
+
+
+/**
+ * \ingroup gui
  * \brief Extends QTreeView and provides additional functionality when working with a layer tree.
  *
  * The view updates expanded state of layer tree nodes and also listens to changes
@@ -125,7 +264,7 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
  *
  * \see QgsLayerTreeModel
  */
-class GUI_EXPORT QgsLayerTreeView : public QTreeView
+class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
 {
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -159,9 +298,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     void setModel( QgsLayerTreeModel *model, QgsLayerTreeProxyModel *proxyModel );
 
-    //! Gets access to the model casted to QgsLayerTreeModel
-    QgsLayerTreeModel *layerTreeModel() const;
-
     /**
      * Returns the proxy model used by the view.
      *
@@ -170,46 +306,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * \since QGIS 3.18
      */
     QgsLayerTreeProxyModel *proxyModel() const;
-
-    /**
-     * Returns layer tree node for given proxy model tree \a index. Returns root node for invalid index.
-     * Returns NULLPTR if index does not refer to a layer tree node (e.g. it is a legend node)
-     *
-     * Unlike QgsLayerTreeModel::index2Node(), calling this method correctly accounts
-     * for mapping the view indexes through the view's proxy model to the source model.
-     *
-     * \since QGIS 3.18
-     */
-    QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
-
-    /**
-     * Returns proxy model index for a given node. If the node does not belong to the layer tree, the result is undefined
-     *
-     * Unlike QgsLayerTreeModel::node2index(), calling this method correctly accounts
-     * for mapping the view indexes through the view's proxy model to the source model.
-     *
-     * \since QGIS 3.18
-     */
-    QModelIndex node2index( QgsLayerTreeNode *node ) const;
-
-
-    /**
-     * Returns source model index for a given node. If the node does not belong to the layer tree, the result is undefined
-     *
-     * \since QGIS 3.18
-     */
-    QModelIndex node2sourceIndex( QgsLayerTreeNode *node ) const;
-
-
-    /**
-     * Returns legend node for given proxy model tree \a index. Returns NULLPTR for invalid index
-     *
-     * Unlike QgsLayerTreeModel::index2legendNode(), calling this method correctly accounts
-     * for mapping the view indexes through the view's proxy model to the source model.
-     *
-     * \since QGIS 3.18
-     */
-    QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
 
     /**
      * Returns proxy model index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
@@ -453,8 +549,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
   protected:
     void contextMenuEvent( QContextMenuEvent *event ) override;
 
-    void updateExpandedStateFromNode( QgsLayerTreeNode *node );
-
     QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
 
     void mouseDoubleClickEvent( QMouseEvent *event ) override;
@@ -472,11 +566,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void modelRowsInserted( const QModelIndex &index, int start, int end );
     void modelRowsRemoved();
 
-    void updateExpandedStateToNode( const QModelIndex &index );
-
     void onCurrentChanged();
-    void onExpandedChanged( QgsLayerTreeNode *node, bool expanded );
-    void onModelReset();
 
   private slots:
     void onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
