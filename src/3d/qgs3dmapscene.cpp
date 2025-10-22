@@ -347,12 +347,12 @@ void Qgs3DMapScene::onCameraChanged()
   }
 }
 
-void Qgs3DMapScene::updateScene( bool forceUpdate )
+bool Qgs3DMapScene::updateScene( bool forceUpdate )
 {
   if ( !mSceneUpdatesEnabled )
   {
     QgsDebugMsgLevel( "Scene update skipped", 2 );
-    return;
+    return false;
   }
 
   QgsEventTracing::ScopedEvent traceEvent( QStringLiteral( "3D" ), forceUpdate ? QStringLiteral( "Force update scene" ) : QStringLiteral( "Update scene" ) );
@@ -405,10 +405,12 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   sceneContext.viewProjectionMatrix = projMatrix * camera->viewMatrix();
 
 
+  bool anyUpdated = false;
   for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
   {
     if ( forceUpdate || ( entity->isEnabled() && entity->needsUpdate() ) )
     {
+      anyUpdated = true;
       entity->handleSceneUpdate( sceneContext );
       if ( entity->hasReachedGpuMemoryLimit() )
         emit gpuMemoryLimitReached();
@@ -416,6 +418,8 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   }
 
   updateSceneState();
+
+  return anyUpdated;
 }
 
 bool Qgs3DMapScene::updateCameraNearFarPlanes()
@@ -484,7 +488,8 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 
   mCameraController->frameTriggered( dt );
 
-  updateScene();
+  if( updateScene() )
+    updateCameraNearFarPlanes();
 
   // lock changing the FPS counter to 5 fps
   static int frameCount = 0;
