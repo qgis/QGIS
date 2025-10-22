@@ -433,6 +433,12 @@ void QgsLayerTreeViewBase::collapseAllNodes()
   collapseAll();
 }
 
+QgsLayerTreeViewDefaultActions *QgsLayerTreeViewBase::defaultActions()
+{
+  if ( !mDefaultActions )
+    mDefaultActions = new QgsLayerTreeViewDefaultActions( this );
+  return mDefaultActions;
+}
 
 //
 // QgsLayerTreeView
@@ -500,13 +506,6 @@ void QgsLayerTreeView::setModel( QgsLayerTreeModel *treeModel, QgsLayerTreeProxy
   connect( treeModel, &QAbstractItemModel::dataChanged, this, &QgsLayerTreeView::onDataChanged );
 
   //checkModel();
-}
-
-QgsLayerTreeViewDefaultActions *QgsLayerTreeView::defaultActions()
-{
-  if ( !mDefaultActions )
-    mDefaultActions = new QgsLayerTreeViewDefaultActions( this );
-  return mDefaultActions;
 }
 
 void QgsLayerTreeView::setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider )
