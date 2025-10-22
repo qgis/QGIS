@@ -91,6 +91,7 @@
     "qtquickcontrols2",
     "qtsvg",
     "qttools",
+    "qtwebengine",
     "zlib"
   ],
   "features": {
