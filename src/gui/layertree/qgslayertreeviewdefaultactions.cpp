@@ -26,7 +26,7 @@
 
 #include <QAction>
 
-QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeView *view )
+QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view )
   : QObject( view )
   , mView( view )
 {

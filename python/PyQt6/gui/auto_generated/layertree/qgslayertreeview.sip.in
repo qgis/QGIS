@@ -354,6 +354,11 @@ returns an empty list.
 .. versionadded:: 3.4
 %End
 
+    QgsLayerTreeViewDefaultActions *defaultActions();
+%Docstring
+Gets access to the default actions that may be used with the tree view
+%End
+
   public slots:
 
     void expandAllNodes();
@@ -391,6 +396,7 @@ This method correctly accounts for proxy models set on the tree view.
 
 .. seealso:: :py:func:`viewIndexToLayerTreeModelIndex`
 %End
+
 
   protected slots:
 
@@ -475,11 +481,6 @@ This can be used to set filters controlling which layers are shown in
 the view.
 
 .. versionadded:: 3.18
-%End
-
-    QgsLayerTreeViewDefaultActions *defaultActions();
-%Docstring
-Gets access to the default actions that may be used with the tree view
 %End
 
     void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider /Transfer/ );

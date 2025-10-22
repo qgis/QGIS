@@ -337,6 +337,9 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      */
     QList<QgsMapLayer *> selectedLayersRecursive() const;
 
+    //! Gets access to the default actions that may be used with the tree view
+    QgsLayerTreeViewDefaultActions *defaultActions();
+
   public slots:
 
     /**
@@ -372,6 +375,9 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      * \see viewIndexToLayerTreeModelIndex()
      */
     QModelIndex layerTreeModelIndexToViewIndex( const QModelIndex &index ) const;
+
+    //! helper class with default actions. Lazily initialized.
+    QgsLayerTreeViewDefaultActions *mDefaultActions = nullptr;
 
   protected slots:
 
@@ -451,9 +457,6 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
      * \since QGIS 3.18
      */
     QgsLayerTreeProxyModel *proxyModel() const;
-
-    //! Gets access to the default actions that may be used with the tree view
-    QgsLayerTreeViewDefaultActions *defaultActions();
 
     //! Sets provider for context menu. Takes ownership of the instance
     void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider SIP_TRANSFER );
@@ -607,8 +610,6 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles );
 
   protected:
-    //! helper class with default actions. Lazily initialized.
-    QgsLayerTreeViewDefaultActions *mDefaultActions = nullptr;
     //! Context menu provider. Owned by the view.
     QgsLayerTreeViewMenuProvider *mMenuProvider = nullptr;
     //! Keeps track of current layer ID (to check when to emit signal about change of current layer)
