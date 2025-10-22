@@ -427,18 +427,6 @@ QgsElevationProfileLayerTreeView::QgsElevationProfileLayerTreeView( QgsLayerTree
   setLayerTreeModel( mModel );
 }
 
-QgsMapLayer *QgsElevationProfileLayerTreeView::indexToLayer( const QModelIndex &index )
-{
-  if ( QgsLayerTreeNode *node = index2node( index ) )
-  {
-    if ( QgsLayerTreeLayer *layerTreeLayerNode = mLayerTree->toLayer( node ) )
-    {
-      return layerTreeLayerNode->layer();
-    }
-  }
-  return nullptr;
-}
-
 void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *project )
 {
   const QList<QgsMapLayer *> layers = project->layers<QgsMapLayer *>().toList();

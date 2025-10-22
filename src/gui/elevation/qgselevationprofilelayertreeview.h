@@ -123,11 +123,6 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
     explicit QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent = nullptr );
 
     /**
-     * Converts a view \a index to a map layer.
-     */
-    QgsMapLayer *indexToLayer( const QModelIndex &index );
-
-    /**
      * Initially populates the tree view using layers from a \a project, as well as sources from the source registry.
      */
     void populateInitialSources( QgsProject *project );
