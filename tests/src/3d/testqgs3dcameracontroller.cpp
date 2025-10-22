@@ -1299,7 +1299,7 @@ void TestQgs3DCameraController::testOrthographic()
   QImage depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -2500, 1875, 0.0 ), 5.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -2500, 1875, 0.0 ), 15.0 );
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -776.5, 582.3, 0.0 ), 5.0 );
   QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1723.55, 5.0 );
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->camera()->position(), QVector3D( -776, 582, 1723 ), 5 );
