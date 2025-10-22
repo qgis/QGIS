@@ -194,7 +194,6 @@ class QgsElevationProfileWidget : public QWidget
     int mBlockScaleRatioChanges = 0;
     QgsElevationProfileScaleRatioWidgetSettingsAction *mScaleRatioSettingsAction = nullptr;
 
-    std::unique_ptr<QgsLayerTree> mLayerTree;
     QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
     QgsElevationProfileLayerTreeView *mLayerTreeView = nullptr;
 

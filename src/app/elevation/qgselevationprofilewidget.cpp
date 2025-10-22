@@ -148,8 +148,7 @@ void QgsElevationProfileLayersDialog::filterVisible( bool enabled )
 
 QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profile, QgsMapCanvas *canvas )
   : QWidget( nullptr )
-  , mLayerTree( new QgsLayerTree() )
-  , mLayerTreeBridge( new QgsLayerTreeRegistryBridge( mLayerTree.get(), QgsProject::instance(), this ) )
+  , mLayerTreeBridge( new QgsLayerTreeRegistryBridge( profile->layerTree(), QgsProject::instance(), this ) )
 {
   setObjectName( QStringLiteral( "ElevationProfile" ) );
 
@@ -182,7 +181,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   mPanTool = new QgsPlotToolPan( mCanvas );
 
-  mLayerTreeView = new QgsAppElevationProfileLayerTreeView( mLayerTree.get() );
+  mLayerTreeView = new QgsAppElevationProfileLayerTreeView( mProfile->layerTree() );
   connect( mLayerTreeView, &QgsAppElevationProfileLayerTreeView::addLayers, this, &QgsElevationProfileWidget::addLayersInternal );
 
   connect( mLayerTreeView, &QAbstractItemView::doubleClicked, this, [this]( const QModelIndex &index ) {
@@ -530,30 +529,12 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   // initially populate layer tree with project layers and registered sources
   mLayerTreeView->populateInitialSources( QgsProject::instance() );
-  if ( !mProfile->layers().isEmpty() )
-  {
-    const QList< QgsMapLayer * > selectedLayers = mProfile->layers();
-    const QList<QgsLayerTreeNode *> constChildren = mLayerTree->children();
-    // clear current selection, then restore selected layers
-    for ( QgsLayerTreeNode *node : constChildren )
-    {
-      node->setItemVisibilityCheckedRecursive( false );
-    }
-    for ( QgsMapLayer *layer : selectedLayers )
-    {
-      if ( QgsLayerTreeLayer *node = mLayerTree->findLayer( layer ) )
-      {
-        node->setItemVisibilityChecked( true );
-      }
-    }
-    mLayerTree->reorderGroupLayers( selectedLayers );
-  }
 
-  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, [this] {
+  connect( mProfile->layerTree(), &QgsLayerTree::layerOrderChanged, this, [this] {
     QgsProject::instance()->setDirty();
     updateCanvasSources();
   } );
-  connect( mLayerTree.get(), &QgsLayerTreeGroup::visibilityChanged, this, [this] {
+  connect( mProfile->layerTree(), &QgsLayerTreeGroup::visibilityChanged, this, [this] {
     QgsProject::instance()->setDirty();
     updateCanvasSources();
   } );
@@ -713,6 +694,9 @@ void QgsElevationProfileWidget::addLayers()
 
 void QgsElevationProfileWidget::addLayersInternal( const QList<QgsMapLayer *> &layers )
 {
+  if ( !mProfile )
+    return;
+
   QList<QgsMapLayer *> updatedLayers;
   if ( !layers.empty() )
   {
@@ -725,7 +709,7 @@ void QgsElevationProfileWidget::addLayersInternal( const QList<QgsMapLayer *> &l
     mLayerTreeView->proxyModel()->invalidate();
     for ( QgsMapLayer *layer : std::as_const( updatedLayers ) )
     {
-      if ( QgsLayerTreeLayer *node = mLayerTree->findLayer( layer ) )
+      if ( QgsLayerTreeLayer *node = mProfile->layerTree()->findLayer( layer ) )
       {
         node->setItemVisibilityChecked( true );
       }
@@ -738,9 +722,12 @@ void QgsElevationProfileWidget::addLayersInternal( const QList<QgsMapLayer *> &l
 
 void QgsElevationProfileWidget::updateCanvasSources()
 {
+  if ( !mProfile )
+    return;
+
   QList<QgsMapLayer *> layers;
   QList<QgsAbstractProfileSource *> sources;
-  const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mLayerTree->layerAndCustomNodeOrder();
+  const QList<QgsLayerTreeNode *> layerAndCustomNodeOrder = mProfile->layerTree()->layerAndCustomNodeOrder();
 
   for ( QgsLayerTreeNode *node : layerAndCustomNodeOrder )
   {
@@ -751,7 +738,7 @@ void QgsElevationProfileWidget::updateCanvasSources()
       if ( !layer->elevationProperties() || !layer->elevationProperties()->hasElevation() )
         continue;
 
-      if ( mLayerTree->findLayer( layer )->isVisible() )
+      if ( mProfile->layerTree()->findLayer( layer )->isVisible() )
       {
         layers << layer;
         sources << layer->profileSource();
@@ -760,7 +747,7 @@ void QgsElevationProfileWidget::updateCanvasSources()
     else if ( QgsLayerTree::isCustomNode( node ) && node->customProperty( QStringLiteral( "source" ) ) == QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE )
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
-      if ( mLayerTree->findCustomNode( customNode->nodeId() )->isVisible() )
+      if ( mProfile->layerTree()->findCustomNode( customNode->nodeId() )->isVisible() )
       {
         if ( QgsAbstractProfileSource *customSource = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() ) )
         {
@@ -768,12 +755,6 @@ void QgsElevationProfileWidget::updateCanvasSources()
         }
       }
     }
-  }
-
-  if ( mProfile )
-  {
-    // store layer configuration
-    mProfile->setLayers( layers );
   }
 
   // Legacy: layer tree layers are in opposite direction to what canvas layers requires
