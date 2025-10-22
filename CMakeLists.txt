@@ -478,7 +478,7 @@ if(WITH_CORE)
   find_package(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
   message(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
-  find_package(exiv2 REQUIRED)
+  find_package(EXIV2 REQUIRED)
 
   # optional
   if (WITH_SFCGAL)
