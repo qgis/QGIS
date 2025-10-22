@@ -204,6 +204,151 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      */
     QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
 
+    /**
+     * Returns the current node.
+     *
+     * May be NULLPTR.
+     */
+    QgsLayerTreeNode *currentNode() const;
+
+    /**
+     * Returns the list of selected layer tree nodes.
+     *
+     * \param skipInternal If TRUE, will ignore nodes which have an ancestor in the selection
+     *
+     * \see selectedLayerNodes()
+     * \see selectedLegendNodes()
+     * \see selectedLayers()
+     */
+    QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
+
+    /**
+     * Returns the currently selected layer, or NULLPTR if no layers is selected.
+     *
+     * \see setCurrentLayer()
+     */
+    QgsMapLayer *currentLayer() const;
+
+    /**
+     * Returns the map layer corresponding to a view \a index.
+     *
+     * This method correctly accounts for proxy models set on the tree view.
+     *
+     * Returns NULLPTR if the index does not correspond to a map layer.
+     */
+    QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
+
+    /**
+     * Returns the current group node.
+     *
+     * If a layer is the current node, the function will return the layer's parent group.
+     *
+     * May be NULLPTR.
+     */
+    QgsLayerTreeGroup *currentGroupNode() const;
+
+    /**
+     * Returns the list of selected nodes filtered to just layer nodes (QgsLayerTreeLayer).
+     *
+     * \see selectedNodes()
+     * \see selectedLayers()
+     * \see selectedLegendNodes()
+     */
+    QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
+
+    /**
+     * Returns the list of selected layers.
+     *
+     * \see selectedNodes()
+     * \see selectedLayerNodes()
+     * \see selectedLegendNodes()
+     */
+    QList<QgsMapLayer *> selectedLayers() const;
+
+    /**
+     * Returns the view index for a given legend node.
+     *
+     * If the legend node does not belong to the layer tree, the result is undefined.
+     *
+     * If the legend node belongs to the tree but it is filtered out, an invalid model index is returned.
+     *
+     * Unlike QgsLayerTreeModel::legendNode2index(), calling this method correctly accounts
+     * for mapping the view indexes through the view's proxy model to the source model.
+     *
+     * \since QGIS 3.18
+     */
+    QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
+
+    /**
+     * Returns the layer tree source model index for a given legend node.
+     *
+     * If the legend node does not belong to the layer tree, the result is undefined.
+     *
+     * If the legend node belongs to the tree but it is filtered out, an invalid model index is returned.
+     *
+     * \warning The returned index belongs the underlying layer tree model, and care should be taken
+     * to correctly map to a proxy index if a proxy model is in use.
+     *
+     * \see legendNode2index()
+     *
+     * \since QGIS 3.18
+     */
+    QModelIndex legendNode2sourceIndex( QgsLayerTreeModelLegendNode *legendNode );
+
+    /**
+     * Sets the currently selected \a node.
+     *
+     * If \a node is NULLPTR then all nodes will be deselected.
+     *
+     * \see currentNode()
+     * \since QGIS 3.40
+     */
+    void setCurrentNode( QgsLayerTreeNode *node );
+
+    /**
+     * Sets the currently selected \a layer.
+     *
+     * If \a layer is NULLPTR then all layers will be deselected.
+     *
+     * \see currentLayer()
+     */
+    void setCurrentLayer( QgsMapLayer *layer );
+
+    /**
+     * Gets current legend node. May be NULLPTR if current node is not a legend node.
+     */
+    QgsLayerTreeModelLegendNode *currentLegendNode() const;
+
+    /**
+     * Returns the list of selected legend nodes.
+     *
+     * \see selectedNodes()
+     * \see selectedLayerNodes()
+     *
+     * \since QGIS 3.32
+     */
+    QList<QgsLayerTreeModelLegendNode *> selectedLegendNodes() const;
+
+    /**
+     * Gets list of selected layers, including those that are not directly selected, but their
+     * ancestor groups is selected. If we have a group with two layers L1, L2 and just the group
+     * node is selected, this method returns L1 and L2, while selectedLayers() returns an empty list.
+     * \since QGIS 3.4
+     */
+    QList<QgsMapLayer *> selectedLayersRecursive() const;
+
+  public slots:
+
+    /**
+     * Enhancement of QTreeView::expandAll() that also records expanded state in layer tree nodes
+     */
+    void expandAllNodes();
+
+    /**
+     * Enhancement of QTreeView::collapseAll() that also records expanded state in layer tree nodes
+     */
+    void collapseAllNodes();
+
   protected:
     /**
      * Updates the expanded state from a \a node.
@@ -307,25 +452,6 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
      */
     QgsLayerTreeProxyModel *proxyModel() const;
 
-    /**
-     * Returns proxy model index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
-     * If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
-     *
-     * Unlike QgsLayerTreeModel::legendNode2index(), calling this method correctly accounts
-     * for mapping the view indexes through the view's proxy model to the source model.
-     *
-     * \since QGIS 3.18
-     */
-    QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
-
-    /**
-     * Returns index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
-     * If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
-     *
-     * \since QGIS 3.18
-     */
-    QModelIndex legendNode2sourceIndex( QgsLayerTreeModelLegendNode *legendNode );
-
     //! Gets access to the default actions that may be used with the tree view
     QgsLayerTreeViewDefaultActions *defaultActions();
 
@@ -335,95 +461,12 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
     /**
-     * Returns the currently selected layer, or NULLPTR if no layers is selected.
-     *
-     * \see setCurrentLayer()
-     */
-    QgsMapLayer *currentLayer() const;
-
-    /**
      * Convenience methods which sets the visible state of the specified map \a layer.
      *
      * \see QgsLayerTreeNode::setItemVisibilityChecked()
      * \since QGIS 3.10
      */
     void setLayerVisible( QgsMapLayer *layer, bool visible );
-
-    /**
-     * Sets the currently selected \a node.
-     *
-     * If \a node is NULLPTR then all nodes will be deselected.
-     *
-     * \see currentNode()
-     * \since QGIS 3.40
-     */
-    void setCurrentNode( QgsLayerTreeNode *node );
-
-    /**
-     * Sets the currently selected \a layer.
-     *
-     * If \a layer is NULLPTR then all layers will be deselected.
-     *
-     * \see currentLayer()
-     */
-    void setCurrentLayer( QgsMapLayer *layer );
-
-    //! Gets current node. May be NULLPTR
-    QgsLayerTreeNode *currentNode() const;
-    //! Gets current group node. If a layer is current node, the function will return parent group. May be NULLPTR.
-    QgsLayerTreeGroup *currentGroupNode() const;
-
-    /**
-     * Gets current legend node. May be NULLPTR if current node is not a legend node.
-     */
-    QgsLayerTreeModelLegendNode *currentLegendNode() const;
-
-    /**
-     * Returns the list of selected layer tree nodes.
-     *
-     * \param skipInternal If TRUE, will ignore nodes which have an ancestor in the selection
-     *
-     * \see selectedLayerNodes()
-     * \see selectedLegendNodes()
-     * \see selectedLayers()
-     */
-    QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
-
-    /**
-     * Returns the list of selected nodes filtered to just layer nodes (QgsLayerTreeLayer).
-     *
-     * \see selectedNodes()
-     * \see selectedLayers()
-     * \see selectedLegendNodes()
-     */
-    QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
-
-    /**
-     * Returns the list of selected layers.
-     *
-     * \see selectedNodes()
-     * \see selectedLayerNodes()
-     * \see selectedLegendNodes()
-     */
-    QList<QgsMapLayer *> selectedLayers() const;
-
-    /**
-     * Returns the list of selected legend nodes.
-     *
-     * \see selectedNodes()
-     * \see selectedLayerNodes()
-     *
-     * \since QGIS 3.32
-     */
-    QList<QgsLayerTreeModelLegendNode *> selectedLegendNodes() const;
-
-    /**
-     * Gets list of selected layers, including those that are not directly selected, but their
-     * ancestor groups is selected. If we have a group with two layers L1, L2 and just the group
-     * node is selected, this method returns L1 and L2, while selectedLayers() returns an empty list.
-     * \since QGIS 3.4
-     */
-    QList<QgsMapLayer *> selectedLayersRecursive() const;
 
     /**
      * Adds an indicator to the given layer tree node. Indicators are icons shown next to layer/group names
@@ -494,16 +537,6 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
     void refreshLayerSymbology( const QString &layerId );
 
     /**
-     * Enhancement of QTreeView::expandAll() that also records expanded state in layer tree nodes
-     */
-    void expandAllNodes();
-
-    /**
-     * Enhancement of QTreeView::collapseAll() that also records expanded state in layer tree nodes
-     */
-    void collapseAllNodes();
-
-    /**
      * Set width of contextual menu mark, at right of layer node items.
      * \see layerMarkWidth
      * \since QGIS 3.8
@@ -548,8 +581,6 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
 
   protected:
     void contextMenuEvent( QContextMenuEvent *event ) override;
-
-    QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
 
     void mouseDoubleClickEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
