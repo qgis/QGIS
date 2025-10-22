@@ -445,6 +445,10 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
   std::reverse( sortedLayers.begin(), sortedLayers.end() );
   for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )
   {
+    // don't re-add existing layers
+    if ( mLayerTree->findLayer( layer ) )
+      continue;
+
     QgsLayerTreeLayer *node = mLayerTree->addLayer( layer );
 
     if ( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).isValid() )
@@ -461,7 +465,7 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
 void QgsElevationProfileLayerTreeView::populateInitialSources( QgsProject *project )
 {
   const QList< QgsAbstractProfileSource * > sources = QgsApplication::profileSourceRegistry()->profileSources();
-  for ( auto *source : sources )
+  for ( QgsAbstractProfileSource *source : sources )
   {
     addNodeForRegisteredSource( source->profileSourceId(), source->profileSourceName() );
   }
