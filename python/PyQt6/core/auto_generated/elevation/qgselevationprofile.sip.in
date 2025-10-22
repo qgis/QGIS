@@ -69,18 +69,9 @@ After reading settings from XML, resolves references to any layers in a
 Returns the icon to use for the elevation profile.
 %End
 
-    void setLayers( const QList<QgsMapLayer *> &layers );
+    QgsLayerTree *layerTree();
 %Docstring
-Sets the list of ``layers`` to include in the profile.
-
-.. seealso:: :py:func:`layers`
-%End
-
-    QList<QgsMapLayer *> layers() const;
-%Docstring
-Returns the list of layers included in the profile.
-
-.. seealso:: :py:func:`setLayers`
+Returns the layer tree used by the profile.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
