@@ -85,7 +85,164 @@ Returns ``True`` if the specified ``node`` should be shown.
 };
 
 
-class QgsLayerTreeView : QTreeView
+class QgsLayerTreeViewBase : QTreeView
+{
+%Docstring(signature="appended")
+Base class for QTreeView widgets which display a layer tree.
+
+The view updates expanded state of layer tree nodes and also listens to
+changes to expanded states in the layer tree.
+
+.. warning::
+
+   Subclasses must take care to call both :py:func:`~setLayerTreeModel` and QTreeView.setModel()
+   in order to have a fully functional tree view. This is by design, as it permits use of
+   a custom proxy model in the view.
+
+.. seealso:: :py:class:`QgsLayerTreeView`
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgslayertreeview.h"
+%End
+  public:
+    explicit QgsLayerTreeViewBase( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayerTreeViewBase
+%End
+    ~QgsLayerTreeViewBase();
+
+    void setLayerTreeModel( QgsLayerTreeModel *model );
+%Docstring
+Associates a layer tree model with the view.
+
+.. warning::
+
+   This does NOT explicitly set the view's model, and a subsequent call
+   to QTreeView.setModel() must be made. This is by design, as it permits use of
+   a custom proxy model in the view.
+
+.. seealso:: :py:func:`layerTreeModel`
+%End
+
+    QgsLayerTreeModel *layerTreeModel() const;
+%Docstring
+Returns the associated layer tree model.
+
+.. seealso:: :py:func:`setLayerTreeModel`
+%End
+
+    QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
+%Docstring
+Returns the layer tree node for given view ``index``.
+
+Returns root node for an invalid index.
+
+Returns ``None`` if index does not refer to a layer tree node (e.g. it
+is a legend node).
+
+Unlike :py:func:`QgsLayerTreeViewBase.index2Node()`, calling this method
+correctly accounts for mapping the view indexes through the view's proxy
+model to the source model.
+
+.. seealso:: :py:func:`node2index`
+
+.. versionadded:: 3.18
+%End
+
+    QModelIndex node2index( QgsLayerTreeNode *node ) const;
+%Docstring
+Returns the view model index for a given ``node``.
+
+If the ``node`` does not belong to the layer tree, the result is
+undefined.
+
+Unlike :py:func:`QgsLayerTreeModel.node2index()`, calling this method
+correctly accounts for mapping the view indexes through the view's proxy
+model to the source model.
+
+.. seealso:: :py:func:`index2node`
+
+.. versionadded:: 3.18
+%End
+
+    QModelIndex node2sourceIndex( QgsLayerTreeNode *node ) const;
+%Docstring
+Returns the layer tree source model index for a given ``node``.
+
+If the ``node`` does not belong to the layer tree, the result is
+undefined.
+
+.. warning::
+
+   The returned index belongs the underlying layer tree model, and care should be taken
+   to correctly map to a proxy index if a proxy model is in use.
+
+.. seealso:: :py:func:`node2index`
+
+.. versionadded:: 3.18
+%End
+
+    QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
+%Docstring
+Returns legend node for given view ``index``.
+
+Returns ``None`` for invalid index.
+
+Unlike :py:func:`QgsLayerTreeModel.index2legendNode()`, calling this
+method correctly accounts for mapping the view indexes through the
+view's proxy model to the source model.
+
+.. versionadded:: 3.18
+%End
+
+  protected:
+    void updateExpandedStateFromNode( QgsLayerTreeNode *node );
+%Docstring
+Updates the expanded state from a ``node``.
+%End
+
+    QModelIndex viewIndexToLayerTreeModelIndex( const QModelIndex &index ) const;
+%Docstring
+Returns the view index corresponding with a layer tree model ``index``.
+
+This method correctly accounts for proxy models set on the tree view.
+
+.. seealso:: :py:func:`layerTreeModelIndexToViewIndex`
+%End
+
+    QModelIndex layerTreeModelIndexToViewIndex( const QModelIndex &index ) const;
+%Docstring
+Returns the layer tree model index corresponding with a view ``index``.
+
+This method correctly accounts for proxy models set on the tree view.
+
+.. seealso:: :py:func:`viewIndexToLayerTreeModelIndex`
+%End
+
+  protected slots:
+
+    void updateExpandedStateToNode( const QModelIndex &index );
+%Docstring
+Stores the expanded state to a node with matching ``index``.
+%End
+
+    void onExpandedChanged( QgsLayerTreeNode *node, bool expanded );
+%Docstring
+Called when the expanded state changes for a node.
+%End
+
+    void onModelReset();
+%Docstring
+Called when the model is reset.
+%End
+
+};
+
+
+class QgsLayerTreeView : QgsLayerTreeViewBase
 {
 %Docstring(signature="appended")
 Extends QTreeView and provides additional functionality when working
@@ -140,64 +297,12 @@ Use this method when a custom proxy model is required.
 .. versionadded:: 4.0
 %End
 
-    QgsLayerTreeModel *layerTreeModel() const;
-%Docstring
-Gets access to the model casted to :py:class:`QgsLayerTreeModel`
-%End
-
     QgsLayerTreeProxyModel *proxyModel() const;
 %Docstring
 Returns the proxy model used by the view.
 
 This can be used to set filters controlling which layers are shown in
 the view.
-
-.. versionadded:: 3.18
-%End
-
-    QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
-%Docstring
-Returns layer tree node for given proxy model tree ``index``. Returns
-root node for invalid index. Returns ``None`` if index does not refer to
-a layer tree node (e.g. it is a legend node)
-
-Unlike :py:func:`QgsLayerTreeModel.index2Node()`, calling this method
-correctly accounts for mapping the view indexes through the view's proxy
-model to the source model.
-
-.. versionadded:: 3.18
-%End
-
-    QModelIndex node2index( QgsLayerTreeNode *node ) const;
-%Docstring
-Returns proxy model index for a given node. If the node does not belong
-to the layer tree, the result is undefined
-
-Unlike :py:func:`QgsLayerTreeModel.node2index()`, calling this method
-correctly accounts for mapping the view indexes through the view's proxy
-model to the source model.
-
-.. versionadded:: 3.18
-%End
-
-
-    QModelIndex node2sourceIndex( QgsLayerTreeNode *node ) const;
-%Docstring
-Returns source model index for a given node. If the node does not belong
-to the layer tree, the result is undefined
-
-.. versionadded:: 3.18
-%End
-
-
-    QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
-%Docstring
-Returns legend node for given proxy model tree ``index``. Returns
-``None`` for invalid index
-
-Unlike :py:func:`QgsLayerTreeModel.index2legendNode()`, calling this
-method correctly accounts for mapping the view indexes through the
-view's proxy model to the source model.
 
 .. versionadded:: 3.18
 %End
@@ -498,8 +603,6 @@ Allows customization of the menu.
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
 
-    void updateExpandedStateFromNode( QgsLayerTreeNode *node );
-
     QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
 
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
@@ -524,11 +627,7 @@ Allows customization of the menu.
     void modelRowsInserted( const QModelIndex &index, int start, int end );
     void modelRowsRemoved();
 
-    void updateExpandedStateToNode( const QModelIndex &index );
-
     void onCurrentChanged();
-    void onExpandedChanged( QgsLayerTreeNode *node, bool expanded );
-    void onModelReset();
 
   protected:
 
