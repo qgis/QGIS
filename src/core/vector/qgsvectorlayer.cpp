@@ -5679,30 +5679,49 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       QDomElement anchorPointElem = pointPlacementElem.firstChildElement( QStringLiteral( "AnchorPoint" ) );
       if ( !anchorPointElem.isNull() )
       {
+        bool okX = false;
+        bool okY = false;
+        double anchorX = 0.5;
+        double anchorY = 0.5;
+
         QDomElement anchorPointXElem = anchorPointElem.firstChildElement( QStringLiteral( "AnchorPointX" ) );
         if ( !anchorPointXElem.isNull() )
-        {
-          bool ok;
-          double xOffset = anchorPointXElem.text().toDouble( &ok );
-          if ( ok )
-          {
-            settings.xOffset = xOffset;
-            settings.offsetUnits = sldUnitSize;
-          }
-        }
+          anchorX = anchorPointXElem.text().toDouble( &okX );
+
         QDomElement anchorPointYElem = anchorPointElem.firstChildElement( QStringLiteral( "AnchorPointY" ) );
         if ( !anchorPointYElem.isNull() )
+          anchorY = anchorPointYElem.text().toDouble( &okY );
+
+        if ( okX || okY )
         {
-          bool ok;
-          double yOffset = anchorPointYElem.text().toDouble( &ok );
-          if ( ok )
-          {
-            settings.yOffset = yOffset;
-            settings.offsetUnits = sldUnitSize;
-          }
+          // Map SE AnchorPoint coordinates back to QGIS quadrant positions.
+          // This mirrors quadOffsetToSldAnchor() used when writing SLDs.
+          auto approx = []( double a, double b ) { return std::fabs( a - b ) < 1e-6; };
+
+          Qgis::LabelQuadrantPosition quad = Qgis::LabelQuadrantPosition::Over;
+
+          if ( approx( anchorX, 1.0 ) && approx( anchorY, 0.0 ) )
+            quad = Qgis::LabelQuadrantPosition::AboveLeft;
+          else if ( approx( anchorX, 0.5 ) && approx( anchorY, 0.0 ) )
+            quad = Qgis::LabelQuadrantPosition::Above;
+          else if ( approx( anchorX, 0.0 ) && approx( anchorY, 0.0 ) )
+            quad = Qgis::LabelQuadrantPosition::AboveRight;
+          else if ( approx( anchorX, 1.0 ) && approx( anchorY, 0.5 ) )
+            quad = Qgis::LabelQuadrantPosition::Left;
+          else if ( approx( anchorX, 0.0 ) && approx( anchorY, 0.5 ) )
+            quad = Qgis::LabelQuadrantPosition::Right;
+          else if ( approx( anchorX, 1.0 ) && approx( anchorY, 1.0 ) )
+            quad = Qgis::LabelQuadrantPosition::BelowLeft;
+          else if ( approx( anchorX, 0.5 ) && approx( anchorY, 1.0 ) )
+            quad = Qgis::LabelQuadrantPosition::Below;
+          else if ( approx( anchorX, 0.0 ) && approx( anchorY, 1.0 ) )
+            quad = Qgis::LabelQuadrantPosition::BelowRight;
+          else
+            quad = Qgis::LabelQuadrantPosition::Over;
+
+          settings.pointSettings().setQuadrant( quad );
         }
       }
-
       QDomElement rotationElem = pointPlacementElem.firstChildElement( QStringLiteral( "Rotation" ) );
       if ( !rotationElem.isNull() )
       {
