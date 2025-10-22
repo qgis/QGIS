@@ -20,6 +20,7 @@
 
 #include "qgsconfig.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreeview.h"
 #include "qgis_gui.h"
 
 #include <QSortFilterProxyModel>
@@ -108,7 +109,7 @@ class GUI_EXPORT QgsElevationProfileLayerTreeProxyModel : public QSortFilterProx
  *
  * \since QGIS 3.30
  */
-class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
+class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
 {
     Q_OBJECT
 
