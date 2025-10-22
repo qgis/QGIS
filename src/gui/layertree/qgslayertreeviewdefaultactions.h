@@ -38,6 +38,11 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 {
     Q_OBJECT
   public:
+    /**
+     * Constructor for QgsLayerTreeViewDefaultActions, creating actions for a \a view.
+     *
+     * The object will be parented to the specified \a view.
+     */
     QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view );
 
     QAction *actionAddGroup( QObject *parent = nullptr ) SIP_FACTORY;
