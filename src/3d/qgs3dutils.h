@@ -73,6 +73,12 @@ class _3D_EXPORT Qgs3DUtils
     static void waitForFrame( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
     /**
+     * Waits for all entities in the scene to be loaded.
+     * \since QGIS 4.0
+     */
+    static void waitForEntitiesLoaded( Qgs3DMapScene *scene );
+
+    /**
      * Captures the depth buffer of the current 3D scene of a 3D engine. The function waits
      * until the scene is not fully loaded/updated before capturing the image.
      *

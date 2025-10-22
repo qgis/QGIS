@@ -16,6 +16,7 @@
 #include "qgs3dutils.h"
 
 #include "qgs3dmapcanvas.h"
+#include "qgsapplication.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgsfeaturerequest.h"
@@ -80,6 +81,14 @@ void Qgs3DUtils::waitForFrame( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene
   frameAction->deleteLater();
 
   engine.renderSettings()->setRenderPolicy( oldPolicy );
+}
+
+void Qgs3DUtils::waitForEntitiesLoaded( Qgs3DMapScene *scene )
+{
+  while ( scene->totalPendingJobsCount() > 0 )
+  {
+    QgsApplication::processEvents();
+  }
 }
 
 QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
