@@ -64,7 +64,7 @@
 #include "qgssymbolselectordialog.h"
 #include "qgsstyle.h"
 #include "qgselevationprofile.h"
-
+#include "qgslayertreeviewdefaultactions.h"
 #include <QToolBar>
 #include <QProgressBar>
 #include <QTimer>
@@ -206,6 +206,8 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   addLayerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionAddLayer.svg" ) ) );
   connect( addLayerAction, &QAction::triggered, this, &QgsElevationProfileWidget::addLayers );
   toolBar->addAction( addLayerAction );
+
+  toolBar->addAction( mLayerTreeView->defaultActions()->actionAddGroup( this ) );
 
   QAction *showLayerTree = new QAction( tr( "Show Layer Tree" ), this );
   showLayerTree->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconLayerTree.svg" ) ) );
@@ -1367,17 +1369,29 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
   if ( !index.isValid() )
     setCurrentIndex( QModelIndex() );
 
+  QMenu *menu = new QMenu();
   if ( QgsMapLayer *layer = layerForIndex( index ) )
   {
-    QMenu *menu = new QMenu();
-
     QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
     connect( propertiesAction, &QAction::triggered, this, [layer] {
       QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Elevation" ) );
     } );
     menu->addAction( propertiesAction );
-
-    menu->exec( mapToGlobal( event->pos() ) );
-    delete menu;
   }
+  else if ( QgsLayerTreeNode *node = index2node( index ) )
+  {
+    if ( QgsLayerTree::isGroup( node ) )
+    {
+      menu->addAction( defaultActions()->actionRenameGroupOrLayer( menu ) );
+    }
+  }
+
+  if ( selectedNodes( true ).count() >= 2 )
+    menu->addAction( defaultActions()->actionGroupSelected( menu ) );
+
+  if ( !menu->isEmpty() )
+  {
+    menu->exec( mapToGlobal( event->pos() ) );
+  }
+  delete menu;
 }
