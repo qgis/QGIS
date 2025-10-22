@@ -47,6 +47,7 @@ QgsElevationProfileLayerTreeModel::QgsElevationProfileLayerTreeModel( QgsLayerTr
   setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
   setFlag( QgsLayerTreeModel::ShowLegendAsTree );
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
+  setFlag( QgsLayerTreeModel::AllowNodeRename );
 }
 
 QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int role ) const
@@ -262,6 +263,20 @@ bool QgsElevationProfileLayerTreeModel::setData( const QModelIndex &index, const
   }
 
   return QgsLayerTreeModel::setData( index, value, role );
+}
+
+Qt::ItemFlags QgsElevationProfileLayerTreeModel::flags( const QModelIndex &index ) const
+{
+  Qt::ItemFlags f = QgsLayerTreeModel::flags( index );
+
+  // the elevation tree model only supports group renames, not layer renames (otherwise
+  // we'd be renaming the actual layer, which is likely NOT what users expect)
+  QgsLayerTreeNode *node = index2node( index );
+  if ( !QgsLayerTree::isGroup( node ) )
+  {
+    f.setFlag( Qt::ItemFlag::ItemIsEditable, false );
+  }
+  return f;
 }
 
 bool QgsElevationProfileLayerTreeModel::canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const
