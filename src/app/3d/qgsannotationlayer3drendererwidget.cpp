@@ -33,7 +33,7 @@ QgsAnnotationLayer3DRendererWidget::QgsAnnotationLayer3DRendererWidget( QgsAnnot
 
   mFontButton->setMode( QgsFontButton::ModeTextRenderer );
 
-  mComboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererNullSymbol.svg" ) ), tr( "No Symbols" ), QVariant::fromValue( RendererType::None ) );
+  mComboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconRenderOnTerrain.svg" ) ), tr( "Render on Terrain Surface" ), QVariant::fromValue( RendererType::None ) );
   mComboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "3D Billboards" ), QVariant::fromValue( RendererType::Billboards ) );
   mComboRendererType->setCurrentIndex( mComboRendererType->findData( QVariant::fromValue( RendererType::None ) ) );
   mStackedWidget->setCurrentWidget( mPageNoRenderer );
