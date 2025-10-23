@@ -74,7 +74,7 @@
 #include <QWindow>
 #include <QActionGroup>
 
-#include "qgsmaplayerutils.cpp"
+#include "qgsmaplayerutils.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsnetworkaccessmanager.h"
