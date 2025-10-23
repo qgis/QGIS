@@ -103,7 +103,17 @@ bool QgsPostgresProjectStorage::readProject( const QString &uri, QIODevice *devi
   }
 
   bool ok = false;
-  QString sql( QStringLiteral( "SELECT content FROM %1.qgis_projects WHERE name = %2" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) ) );
+  QString sql;
+
+  if ( projectUri.isVersion )
+  {
+    sql = QStringLiteral( "SELECT content FROM %1.qgis_projects_versions WHERE name = %2 AND date_saved = %3" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ), QgsPostgresConn::quotedValue( projectUri.dateSaved ) );
+  }
+  else
+  {
+    sql = QStringLiteral( "SELECT content FROM %1.qgis_projects WHERE name = %2" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ) );
+  }
+
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() == PGRES_TUPLES_OK )
   {
