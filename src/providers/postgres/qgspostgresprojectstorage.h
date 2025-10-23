@@ -30,7 +30,8 @@ typedef struct
 
     QString schemaName;
     QString projectName;
-
+    bool isVersion = false;
+    QString dateSaved;
 } QgsPostgresProjectUri;
 
 
