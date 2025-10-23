@@ -94,7 +94,7 @@ Returns ``True`` if the layer is served by OpenStreetMap server.
 .. versionadded:: 3.40
 %End
 
-    static QString translateLayerType( const Qgis::LayerType &type );
+    static QString translateLayerType( Qgis::LayerType type );
 %Docstring
 Returns the translated name of the type for a given layer type.
 
