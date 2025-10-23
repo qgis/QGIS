@@ -108,8 +108,6 @@ QgsBrowserWidget::QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *p
   connect( mActionPropertiesWidget, &QAction::triggered, this, &QgsBrowserWidget::propertiesWidgetToggled );
 
   // Location bar connections
-  connect( mBtnNavigateToPath, &QToolButton::clicked, this, &QgsBrowserWidget::navigateToPath );
-  connect( mBtnCopyPath, &QToolButton::clicked, this, &QgsBrowserWidget::copySelectedPath );
   connect( mLeLocationBar, &QLineEdit::returnPressed, this, &QgsBrowserWidget::navigateToPath );
   connect( mLeFilter, &QgsFilterLineEdit::returnPressed, this, &QgsBrowserWidget::setFilter );
   connect( mLeFilter, &QgsFilterLineEdit::cleared, this, &QgsBrowserWidget::setFilter );
@@ -582,23 +580,32 @@ void QgsBrowserWidget::navigateToPath()
   if ( path.isEmpty() )
     return;
 
-
-  if ( path.endsWith( ":" ) && path.length() == 2 )
+#ifdef Q_OS_WIN
+  // On Windows, check for drive letter paths (e.g., "C:", "C:\", "C:/")
+  QString driveLetter;
+  if ( path.length() >= 2 && path[1] == ':' )
   {
-    // Add trailing slash for drive roots (e.g., "C:" -> "C:/")
-    QString drivePath = path + "/";
-    if ( QDir( drivePath ).exists() )
+    driveLetter = path.left( 2 );
+    // Check if the drive exists before proceeding
+    QString drivePath = driveLetter + "/";
+    if ( !QDir( drivePath ).exists() )
+    {
+      if ( mMessageBar )
+      {
+        mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Drive does not exist: %1" ).arg( driveLetter ) );
+      }
+      return;
+    }
+
+    // If user entered just the drive letter, add trailing slash
+    if ( path.length() == 2 || ( path.length() == 3 && ( path[2] == '/' || path[2] == '\\' ) ) )
     {
       mLeLocationBar->setText( drivePath );
       navigateToPath();
       return;
     }
-    if ( mMessageBar )
-    {
-      mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Drive does not exist: %1" ).arg( path ) );
-    }
-    return;
   }
+#endif
 
   QString normalizedPath = QDir::cleanPath( path );
 
@@ -1072,6 +1079,19 @@ QString QgsBrowserWidget::resolveCaseInsensitivePath( const QString &inputPath )
   // Based on QDir::entryList() approach for case-insensitive matching
   // Reference: https://stackoverflow.com/a/77954785
   QString cleanedPath = QDir::cleanPath( inputPath );
+
+#ifdef Q_OS_WIN
+  // On Windows, validate that the drive exists before processing
+  if ( cleanedPath.length() >= 2 && cleanedPath[1] == ':' )
+  {
+    QString drivePath = cleanedPath.left( 2 ) + "/";
+    if ( !QDir( drivePath ).exists() )
+    {
+      return QString(); // Drive doesn't exist, return empty string
+    }
+  }
+#endif
+
   QStringList caseFixedPathComponents;
 
   // Keep moving to the next parent level of the path until it no longer contains any named segments
