@@ -261,6 +261,12 @@ QString QgsPostgresProjectStorage::encodeUri( const QgsPostgresProjectUri &postU
   if ( !postUri.projectName.isEmpty() )
     urlQuery.addQueryItem( "project", postUri.projectName );
 
+  if ( postUri.isVersion )
+  {
+    urlQuery.addQueryItem( "isVersion", "true" );
+    urlQuery.addQueryItem( "dateSaved", QVariant( postUri.dateSaved ).toString() );
+  }
+
   u.setQuery( urlQuery );
 
   return QString::fromUtf8( u.toEncoded() );
@@ -290,5 +296,12 @@ QgsPostgresProjectUri QgsPostgresProjectStorage::decodeUri( const QString &uri )
 
   postUri.schemaName = urlQuery.queryItemValue( "schema" );
   postUri.projectName = urlQuery.queryItemValue( "project" );
+
+  if ( urlQuery.hasQueryItem( "isVersion" ) )
+    postUri.isVersion = QVariant( urlQuery.queryItemValue( "isVersion" ) ).toBool();
+
+  if ( urlQuery.hasQueryItem( "dateSaved" ) )
+    postUri.dateSaved = urlQuery.queryItemValue( "dateSaved" );
+
   return postUri;
 }
