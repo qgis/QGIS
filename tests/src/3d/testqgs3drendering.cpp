@@ -2563,7 +2563,7 @@ void TestQgs3DRendering::testAnnotationLayerBillboards()
   QGSVERIFYIMAGECHECK( "annotation_billboard_rendering_1", "annotation_billboard_rendering_1", img, QString(), 40, QSize( 0, 0 ), 2 );
 
   // more perspective look, with z offset
-  renderer->setZOffset( 600 );
+  renderer->setZOffset( 200 );
   renderer->setShowCalloutLines( true );
   renderer->setCalloutLineColor( QColor( 255, 255, 255 ) );
   renderer->setCalloutLineWidth( 8 );
