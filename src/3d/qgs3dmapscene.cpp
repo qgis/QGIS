@@ -489,6 +489,8 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
   mCameraController->frameTriggered( dt );
 
   if( updateScene() )
+    // If the scene was changed, node bboxes might have changed, so we need to
+    // update near/far planes.
     updateCameraNearFarPlanes();
 
   // lock changing the FPS counter to 5 fps
