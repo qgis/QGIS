@@ -422,10 +422,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Show Full Text</string>
+    <string>Display Multi-Line</string>
    </property>
    <property name="toolTip">
-    <string>Show full text instead of truncating with ...</string>
+    <string>Display attribute values on multiple lines instead of truncating with ...</string>
    </property>
   </action>
  </widget>
