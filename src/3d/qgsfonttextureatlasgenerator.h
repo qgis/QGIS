@@ -93,6 +93,14 @@ class _3D_EXPORT QgsFontTextureAtlas
     int graphemeCount( const QString &string ) const;
 
     /**
+     * Returns the total width (in pixels) required for a given \a string.
+     *
+     * The \a string must match one of the strings passed to QgsFontTextureAtlasGenerator when
+     * creating the texture atlas.
+     */
+    int totalWidth( const QString &string ) const;
+
+    /**
      * Returns the pixel offset at which the texture for the matching grapheme should be placed.
      *
      * The \a string must match one of the strings passed to QgsFontTextureAtlasGenerator when
@@ -149,11 +157,18 @@ class _3D_EXPORT QgsFontTextureAtlas
         QString grapheme;
     };
 
+    struct StringMetrics
+    {
+        int totalWidth = 0;
+        QVector< GraphemeMetric > graphemeMetrics;
+    };
+
     QgsTextFormat mFormat;
     std::vector< QgsCharTextureRect > mRects;
     QSize mAtlasSize;
     QHash< QString, int > mGraphemeIndices;
-    QMap< QString, QVector< GraphemeMetric > > mGraphemeMetrics;
+    QMap< QString, StringMetrics > mStringMetrics;
+    int mTexturePaddingPixels = 0;
 
     friend class QgsFontTextureAtlasGenerator;
 };

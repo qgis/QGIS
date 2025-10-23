@@ -21,6 +21,7 @@
 
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
+#include "qgstextformat.h"
 #include "qgsmaplayerref.h"
 
 class QgsAnnotationLayer;
@@ -167,6 +168,20 @@ class _3D_EXPORT QgsAnnotationLayer3DRenderer : public QgsAbstract3DRenderer
      */
     SIP_SKIP double calloutLineWidth() const;
 
+    /**
+     * Returns the text format to use for rendering text annotations in 3D.
+     *
+     * \see setTextFormat()
+     */
+    QgsTextFormat textFormat() const;
+
+    /**
+     * Sets the text \a format to use for rendering text annotations in 3D.
+     *
+     * \see textFormat()
+     */
+    void setTextFormat( const QgsTextFormat &format );
+
   private:
 #ifdef SIP_RUN
     QgsAnnotationLayer3DRenderer( const QgsAnnotationLayer3DRenderer & );
@@ -180,6 +195,7 @@ class _3D_EXPORT QgsAnnotationLayer3DRenderer : public QgsAbstract3DRenderer
     bool mShowCalloutLines = true;
     QColor mCalloutLineColor { 0, 0, 0 };
     double mCalloutLineWidth = 2;
+    QgsTextFormat mTextFormat;
 };
 
 #endif // QGSANNOTATIONLAYER3DRENDERER_H

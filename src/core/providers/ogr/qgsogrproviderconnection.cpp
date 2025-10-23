@@ -24,6 +24,7 @@
 #include "qgsogrutils.h"
 #include "qgsfielddomain.h"
 #include "qgsogrproviderutils.h"
+#include "qgssqlstatement.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
 #include "qgsprovidersublayerdetails.h"
@@ -292,7 +293,36 @@ QgsVectorLayer *QgsOgrProviderConnection::createSqlVectorLayer( const QgsAbstrac
   QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   Q_ASSERT( providerMetadata );
   QMap<QString, QVariant> decoded = providerMetadata->decodeUri( uri() );
-  decoded[ QStringLiteral( "subset" ) ] = sanitizeSqlForQueryLayer( options.sql ) ;
+
+  QString where;
+  QStringList columns;
+  QStringList tables;
+
+  QgsAbstractDatabaseProviderConnection::splitSimpleQuery( options.sql, columns, tables, where );
+
+  // We have two options here: if the original SQL is a plain SELECT * FROM table [WHERE ...] statement,
+  // we could turn this into a normal layer with a subset filter but this would be a bit inconsistent from a UX
+  // perspective because the SQL update menu would not be available, let's keep it a SQL layer always.
+
+  if ( !options.filter.isEmpty() )
+  {
+    if ( ! where.isEmpty() )
+    {
+      QString sql {  sanitizeSqlForQueryLayer( options.sql ) };
+      const thread_local QRegularExpression whereRegExp( R"sql(\s+WHERE\s+.+$)sql", QRegularExpression::CaseInsensitiveOption );
+      sql.remove( whereRegExp );
+      decoded[ QStringLiteral( "subset" ) ] = QStringLiteral( R"sql(%1 WHERE ( %2 ) AND ( %3 ))sql" ).arg( sql, where, options.filter );
+    }
+    else
+    {
+      decoded[ QStringLiteral( "subset" ) ] = QStringLiteral( R"sql(%1 WHERE ( %2 ))sql" ).arg( sanitizeSqlForQueryLayer( options.sql ), options.filter );
+    }
+  }
+  else
+  {
+    decoded[ QStringLiteral( "subset" ) ] = sanitizeSqlForQueryLayer( options.sql );
+  }
+
   return new QgsVectorLayer( providerMetadata->encodeUri( decoded ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
 }
 
@@ -1133,13 +1163,26 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOgrProviderConne
   QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   Q_ASSERT( providerMetadata );
   QMap<QString, QVariant> decoded = providerMetadata->decodeUri( layerSource );
-  if ( decoded.contains( QStringLiteral( "subset" ) ) )
+
+  const QString subset { decoded.value( QStringLiteral( "subset" ), QString() ).toString() };
+  const QString layerName { decoded.value( QStringLiteral( "layerName" ), QString() ).toString() };
+
+  if ( !subset.isEmpty() && subset.contains( QLatin1String( "SELECT" ), Qt::CaseSensitivity::CaseInsensitive ) )
   {
-    options.sql = decoded[ QStringLiteral( "subset" ) ].toString();
+    options.sql = subset;
   }
-  else if ( decoded.contains( QStringLiteral( "layerName" ) ) )
+  else
   {
-    options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( decoded[ QStringLiteral( "layerName" ) ].toString() ) );
+    if ( !layerName.isEmpty() )
+    {
+      options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( layerName ) );
+    }
+    else if ( mSingleTableDataset && !decoded.value( QStringLiteral( "path" ), QString() ).toString().isEmpty() )
+    {
+      const QFileInfo fileInfo( decoded[ QStringLiteral( "path" ) ].toString() );
+      options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( fileInfo.baseName() ) );
+    }
+    options.filter = subset;
   }
   return options;
 }

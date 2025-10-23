@@ -2708,6 +2708,8 @@ Caller takes ownership of the returned symbol layer.
 
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
+    virtual bool rendersIdenticallyTo( const QgsSymbolLayer *other ) const;
+
 
     virtual void setColor( const QColor &color );
 

@@ -28,18 +28,15 @@
 
 ///@cond PRIVATE
 
-
-static constexpr int FONT_ATLAS_TEXTURE_PADDING_PIXELS = 2;
-
 class QgsCharTextureRect
 {
   public:
-    QgsCharTextureRect( const QString &grapheme, const QSize &boundingRectSize, const QPoint &characterOffsetFromOrigin )
+    QgsCharTextureRect( const QString &grapheme, const QSize &boundingRectSize, const QPoint &characterOffsetFromOrigin, int texturePaddingPixels )
       : grapheme( grapheme )
       , boundingRectSize( boundingRectSize )
       , characterOffsetFromOrigin( characterOffsetFromOrigin )
     {
-      paddedRect = rectpack2D::rect_xywh( 0, 0, boundingRectSize.width() + 2 * FONT_ATLAS_TEXTURE_PADDING_PIXELS, boundingRectSize.height() + 2 * FONT_ATLAS_TEXTURE_PADDING_PIXELS );
+      paddedRect = rectpack2D::rect_xywh( 0, 0, boundingRectSize.width() + 2 * texturePaddingPixels, boundingRectSize.height() + 2 * texturePaddingPixels );
     }
 
     // get_rect must be implemented for rectpack2D compatibility:
@@ -90,34 +87,43 @@ QRect QgsFontTextureAtlas::rect( const QString &grapheme ) const
 
 int QgsFontTextureAtlas::graphemeCount( const QString &string ) const
 {
-  auto it = mGraphemeMetrics.constFind( string );
-  if ( it == mGraphemeMetrics.constEnd() )
+  auto it = mStringMetrics.constFind( string );
+  if ( it == mStringMetrics.constEnd() )
     return 0;
 
-  return it->count();
+  return it->graphemeMetrics.count();
+}
+
+int QgsFontTextureAtlas::totalWidth( const QString &string ) const
+{
+  auto it = mStringMetrics.constFind( string );
+  if ( it == mStringMetrics.constEnd() )
+    return 0;
+
+  return it->totalWidth;
 }
 
 QPoint QgsFontTextureAtlas::pixelOffsetForGrapheme( const QString &string, int graphemeIndex ) const
 {
-  auto it = mGraphemeMetrics.constFind( string );
-  if ( it == mGraphemeMetrics.constEnd() )
+  auto it = mStringMetrics.constFind( string );
+  if ( it == mStringMetrics.constEnd() )
     return QPoint();
 
-  const GraphemeMetric &graphemeMetrics = it.value()[graphemeIndex];
+  const GraphemeMetric &graphemeMetrics = it.value().graphemeMetrics[graphemeIndex];
   auto charIt = mGraphemeIndices.constFind( graphemeMetrics.grapheme );
   if ( charIt == mGraphemeIndices.constEnd() )
     return QPoint();
 
-  return QPoint( it.value().value( graphemeIndex ).horizontalAdvance, -( mRects[charIt.value()].boundingRectSize.height() + mRects[charIt.value()].characterOffsetFromOrigin.y() ) );
+  return QPoint( graphemeMetrics.horizontalAdvance, -( mRects[charIt.value()].boundingRectSize.height() + mRects[charIt.value()].characterOffsetFromOrigin.y() ) );
 }
 
 QRect QgsFontTextureAtlas::textureRectForGrapheme( const QString &string, int graphemeIndex ) const
 {
-  auto it = mGraphemeMetrics.constFind( string );
-  if ( it == mGraphemeMetrics.constEnd() )
+  auto it = mStringMetrics.constFind( string );
+  if ( it == mStringMetrics.constEnd() )
     return QRect();
 
-  const GraphemeMetric &graphemeMetrics = it.value().value( graphemeIndex );
+  const GraphemeMetric &graphemeMetrics = it.value().graphemeMetrics.value( graphemeIndex );
   auto charIt = mGraphemeIndices.constFind( graphemeMetrics.grapheme );
   if ( charIt == mGraphemeIndices.constEnd() )
     return QRect();
@@ -137,7 +143,7 @@ QImage QgsFontTextureAtlas::renderAtlasTexture() const
   QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
   for ( const QgsCharTextureRect &rect : mRects )
   {
-    QgsTextRenderer::drawText( QPointF( -rect.characterOffsetFromOrigin.x() + rect.paddedRect.x + FONT_ATLAS_TEXTURE_PADDING_PIXELS, -rect.characterOffsetFromOrigin.y() + rect.paddedRect.y + FONT_ATLAS_TEXTURE_PADDING_PIXELS ), 0, Qgis::TextHorizontalAlignment::Left, { rect.grapheme }, context, mFormat );
+    QgsTextRenderer::drawText( QPointF( -rect.characterOffsetFromOrigin.x() + rect.paddedRect.x + mTexturePaddingPixels, -rect.characterOffsetFromOrigin.y() + rect.paddedRect.y + mTexturePaddingPixels ), 0, Qgis::TextHorizontalAlignment::Left, { rect.grapheme }, context, mFormat );
   }
   painter.end();
 
@@ -180,22 +186,30 @@ QgsFontTextureAtlas QgsFontTextureAtlasGenerator::create( const QgsTextFormat &f
   context.setScaleFactor( 96.0 / 25.4 );
   const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, format );
 
+  int texturePaddingPixels = 2;
+  if ( format.buffer().enabled() )
+  {
+    texturePaddingPixels += static_cast< int >( std::ceil( context.convertToPainterUnits( format.buffer().size(), format.buffer().sizeUnit() ) ) );
+  }
+
   // collect unique graphemes from all strings
   QSet<QString> uniqueGraphemes;
-  QMap< QString, QVector< QgsFontTextureAtlas::GraphemeMetric > > graphemeMetrics;
+  QMap< QString, QgsFontTextureAtlas::StringMetrics > stringMetrics;
   for ( const QString &string : strings )
   {
     const QStringList graphemes = QgsPalLabeling::splitToGraphemes( string );
-    QVector< QgsFontTextureAtlas::GraphemeMetric > thisStringMetrics;
-    thisStringMetrics.reserve( graphemes.size() );
+
+    QgsFontTextureAtlas::StringMetrics thisStringMetrics;
+    thisStringMetrics.totalWidth = fontMetrics.boundingRect( string ).width();
+    thisStringMetrics.graphemeMetrics.reserve( graphemes.size() );
     QString currentString;
     for ( const QString &grapheme : graphemes )
     {
       uniqueGraphemes.insert( grapheme );
-      thisStringMetrics << QgsFontTextureAtlas::GraphemeMetric( static_cast< int >( std::round( fontMetrics.horizontalAdvance( currentString ) ) ), grapheme );
+      thisStringMetrics.graphemeMetrics << QgsFontTextureAtlas::GraphemeMetric( static_cast< int >( std::round( fontMetrics.horizontalAdvance( currentString ) ) ), grapheme );
       currentString += grapheme;
     }
-    graphemeMetrics.insert( string, thisStringMetrics );
+    stringMetrics.insert( string, thisStringMetrics );
   }
 
   if ( uniqueGraphemes.isEmpty() )
@@ -213,7 +227,7 @@ QgsFontTextureAtlas QgsFontTextureAtlasGenerator::create( const QgsTextFormat &f
       continue;
 
     const QRect boundingRect = c.size() == 1 ? fontMetrics.boundingRect( c.at( 0 ) ).toRect() : fontMetrics.boundingRect( c ).toRect();
-    charRects.emplace_back( QgsCharTextureRect( c, boundingRect.size(), boundingRect.topLeft() ) );
+    charRects.emplace_back( QgsCharTextureRect( c, boundingRect.size(), boundingRect.topLeft(), texturePaddingPixels ) );
   }
 
   // pack character rects into an atlas
@@ -254,7 +268,8 @@ QgsFontTextureAtlas QgsFontTextureAtlasGenerator::create( const QgsTextFormat &f
   res.mFormat = format;
   res.mRects = std::move( charRects );
   res.mAtlasSize = QSize( resultSize.w, resultSize.h );
-  res.mGraphemeMetrics = std::move( graphemeMetrics );
+  res.mStringMetrics = std::move( stringMetrics );
+  res.mTexturePaddingPixels = texturePaddingPixels;
 
   int index = 0;
   for ( const QgsCharTextureRect &r : res.mRects )
