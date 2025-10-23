@@ -114,7 +114,7 @@ const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues = ne
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowRelations = new QgsSettingsEntryBool( QStringLiteral( "show-relations" ), QgsSettingsTree::sTreeMap, true, QStringLiteral( "Whether to show relations in the identify feature result" ) );
 
-const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowFullText = new QgsSettingsEntryBool( QStringLiteral( "show-full-text" ), QgsSettingsTree::sTreeMap, false, QStringLiteral( "Whether to show full text instead of truncating with ellipsis in the identify feature result" ) );
+const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingShowFullText = new QgsSettingsEntryBool( QStringLiteral( "show-full-text" ), QgsSettingsTree::sTreeMap, false, QStringLiteral( "Whether to display attribute values on multiple lines instead of truncating with ellipsis in the identify feature result" ) );
 
 
 QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent )
@@ -2957,11 +2957,10 @@ void QgsIdentifyResultsDialog::updateTextDisplay()
 QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool wordWrap )
 {
   QLabel *valueLabel = new QLabel();
-  valueLabel->setAlignment( Qt::AlignTop | Qt::AlignLeft );
-  valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; }" ) );
+  valueLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+  valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; padding-left: 2px; }" ) );
   valueLabel->setContentsMargins( 0, 0, 0, 0 );
   valueLabel->setMargin( 0 );
-  valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
   if ( wordWrap )
   {
@@ -2969,23 +2968,46 @@ QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool w
     valueLabel->setTextInteractionFlags( Qt::NoTextInteraction );
     valueLabel->setAttribute( Qt::WA_TransparentForMouseEvents, true );
     valueLabel->setContextMenuPolicy( Qt::NoContextMenu );
+    valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 
-    if ( text.contains( '\\' ) || text.contains( '/' ) )
+
+    QString wrapped = text;
+    wrapped.replace( QStringLiteral( "/" ), QStringLiteral( "/\u00AD" ) );
+    wrapped.replace( QStringLiteral( "\\" ), QStringLiteral( "\\\u00AD" ) );
+
+    // Create a QTextDocument to measure text and apply max lines + ellipsis
+    QTextDocument doc;
+    doc.setDefaultFont( valueLabel->font() );
+    doc.setPlainText( wrapped );
+    doc.setTextWidth( valueLabel->width() > 0 ? valueLabel->width() : 300 );
+
+    const int maxLines = 20;
+    QTextBlock block = doc.begin();
+    int lineCount = 0;
+    QString truncatedText;
+
+    while ( block.isValid() && lineCount < maxLines )
     {
-      QString wrapped = text;
-      wrapped.replace( QStringLiteral( "/" ), QStringLiteral( "/\u00AD" ) );
-      wrapped.replace( QStringLiteral( "\\" ), QStringLiteral( "\\\u00AD" ) );
-      valueLabel->setText( wrapped );
+      if ( !truncatedText.isEmpty() )
+        truncatedText += "\n";
+      truncatedText += block.text();
+      block = block.next();
+      lineCount++;
     }
-    else
+
+    if ( block.isValid() )
     {
-      valueLabel->setText( text );
+      // Text was truncated, add ellipsis
+      truncatedText += QStringLiteral( "…" );
     }
+
+    valueLabel->setText( truncatedText );
   }
   else
   {
     valueLabel->setWordWrap( false );
     valueLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
+    valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     valueLabel->setText( text );
   }
 
@@ -3004,10 +3026,8 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
 
   QTreeWidget *treeWidget = item->treeWidget();
 
-  // Check if this item should use a wrapping widget
-  const bool needsWrap = showFullText && ( fullText.contains( QLatin1Char( '/' ) ) || fullText.contains( QLatin1Char( '\\' ) ) );
-
-  if ( needsWrap )
+  // Use wrapping widget when showFullText is enabled
+  if ( showFullText && !fullText.isEmpty() )
   {
     QLabel *valueLabel = createStyledLabel( fullText, true );
     if ( treeWidget )
