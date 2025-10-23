@@ -775,9 +775,9 @@ QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double d
   // Transform pixel coordinates and [0.0, 1.0]-range sampled depth to [-1.0, 1.0]
   // normalised device coordinates used by projection matrix.
   QVector3D screenPointNdc {
-    (screenPoint.x() / (screenSize.width() / 2.0f) - 1.0f),
-    -(screenPoint.y() / (screenSize.height() / 2.0f) - 1.0f),
-    static_cast<float>(depth * 2 - 1),
+    ( static_cast<float>( screenPoint.x() ) / ( static_cast<float>( screenSize.width() ) / 2.0f ) - 1.0f ),
+    -( static_cast<float>( screenPoint.y() ) / ( static_cast<float>( screenSize.height() ) / 2.0f ) - 1.0f ),
+    static_cast<float>( depth * 2 - 1 ),
   };
 
   // Apply inverse of projection matrix, then view matrix, to get from NDC to world coords.

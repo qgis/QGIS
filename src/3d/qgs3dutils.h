@@ -66,13 +66,15 @@ class _3D_EXPORT Qgs3DUtils
     static QImage captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
     /**
-     * Waits for a frame to be rendered. Useful to trigger once-per-frame updates
+     * Waits for a frame to be rendered. Useful to trigger once-per-frame updates.
+     * \warning Not to be used outside of tests!
      * \since QGIS 3.42
      */
     static void waitForFrame( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
     /**
      * Waits for all entities in the scene to be loaded.
+     * \warning Not to be used outside of tests!
      * \since QGIS 4.0
      */
     static void waitForEntitiesLoaded( Qgs3DMapScene *scene );
