@@ -1015,16 +1015,22 @@ void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProj
       return;
     }
 
-    if ( !QgsPostgresUtils::projectsTableExists( conn2, newSchemaName ) )
+    if ( !QgsPostgresUtils::createProjectsTable( conn2, newSchemaName ) )
     {
-      if ( !QgsPostgresUtils::createProjectsTable( conn2, newSchemaName ) )
-      {
-        const QString errCause = tr( "Unable to move projects. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( mainItem->postgresProjectUri().connInfo.username() );
+      const QString errCause = tr( "Unable to move projects. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( mainItem->postgresProjectUri().connInfo.username() );
 
-        notify( tr( "Move Projects to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
-        conn2->unref();
-        return;
-      }
+      notify( tr( "Move Projects to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
+      conn2->unref();
+      return;
+    }
+
+    if ( !QgsPostgresUtils::addCommentColumnToProjectsTable( conn2, newSchemaName ) )
+    {
+      const QString errCause = tr( "Unable to move projects. It's not possible to add the comment column to the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( mainItem->postgresProjectUri().connInfo.username() );
+
+      notify( tr( "Move Projects to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
+      conn2->unref();
+      return;
     }
 
     int movedProjectCount = 0;
