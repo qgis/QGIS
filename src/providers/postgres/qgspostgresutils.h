@@ -152,6 +152,27 @@ class QgsPostgresUtils
     * \since QGIS 4.0
     */
     static QString variantMapToHtml( const QVariantMap &variantMap, const QString &title = QString() );
+
+    /*
+    * Sets up the necessary database structures for QGIS project versioning in \a schema.
+    * 
+    * \since QGIS 4.0
+    */
+    static bool setupQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema );
+
+    /*
+    * Disables QGIS project versioning for the specified \a schema.
+    *
+    * \since QGIS 4.0
+    */
+    static bool disableQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema );
+
+    /*
+    * Check if QGIS project versioning is active for the specified \a schema.
+    *
+    * \since QGIS 4.0
+    */
+    static bool qgisProjectVersioningActive( QgsPostgresConn *conn, const QString &schema );
 };
 
 #endif
