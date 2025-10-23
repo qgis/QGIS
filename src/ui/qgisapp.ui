@@ -382,6 +382,7 @@
      </property>
      <addaction name="mActionMoveFeature"/>
      <addaction name="mActionMoveFeatureCopy"/>
+     <addaction name="mActionDistributeFeature"/>
      <addaction name="mActionRotateFeature"/>
      <addaction name="mActionScaleFeature"/>
      <addaction name="mActionSimplifyFeature"/>
@@ -3445,6 +3446,17 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Manage Elevation Profiles</string>
+   </property>
+  </action>
+  <action name="mActionDistributeFeature">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Copy and Distribute Feature</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy a Feature and Distribute Copies Along a Reference Line</string>
    </property>
   </action>
  </widget>

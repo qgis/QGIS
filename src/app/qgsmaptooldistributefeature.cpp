@@ -1,0 +1,346 @@
+/***************************************************************************
+ qgsmaptooldistributefeature.cpp  -  map tool for copying and distributing features by mouse drag
+ ---------------------
+ begin                : November 2025
+ copyright            : (C) 2025 by Jacky Volpes
+ email                : jacky dot volpes at oslandia dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+
+#include "qgisapp.h"
+#include "qgscoordinatetransform.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptooldistributefeature.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+
+#include "qgssettingstree.h"
+
+const QgsSettingsEntryEnumFlag<QgsDistributeFeatureUserWidget::DistributeMode> *QgsMapToolDistributeFeature::settingsMode = new QgsSettingsEntryEnumFlag<QgsDistributeFeatureUserWidget::DistributeMode>( QStringLiteral( "distributefeature-mode" ), QgsSettingsTree::sTreeDigitizing, QgsDistributeFeatureUserWidget::DistributeMode::FeatureCount );
+const QgsSettingsEntryInteger *QgsMapToolDistributeFeature::settingsFeatureCount = new QgsSettingsEntryInteger( QStringLiteral( "distributefeature-feature-count" ), QgsSettingsTree::sTreeDigitizing );
+const QgsSettingsEntryDouble *QgsMapToolDistributeFeature::settingsFeatureSpacing = new QgsSettingsEntryDouble( QStringLiteral( "distributefeature-feature-spacing" ), QgsSettingsTree::sTreeDigitizing );
+
+QgsMapToolDistributeFeature::QgsMapToolDistributeFeature( QgsMapCanvas *canvas )
+  : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
+{
+  mToolName = tr( "Copy and distribute feature" );
+  setUseSnappingIndicator( true );
+}
+
+void QgsMapToolDistributeFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
+{
+  if ( mRubberBand )
+  {
+    mEndPointMapCoords = e->mapPoint();
+    updateRubberband();
+  }
+}
+
+void QgsMapToolDistributeFeature::keyPressEvent( QKeyEvent *e )
+{
+  if ( e && e->isAutoRepeat() )
+  {
+    return;
+  }
+
+  if ( e->key() == Qt::Key_Escape )
+  {
+    deleteRubberbands();
+    return;
+  }
+}
+
+void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
+{
+  if ( e->button() == Qt::RightButton )
+  {
+    deleteRubberbands();
+    return;
+  }
+
+  QgsVectorLayer *vlayer = currentVectorLayer();
+  if ( !vlayer || !vlayer->isEditable() )
+  {
+    deleteRubberbands();
+    cadDockWidget()->clear();
+    notifyNotEditableLayer();
+    return;
+  }
+
+  const QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
+  const double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
+  const QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius, layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
+
+  if ( !mRubberBand )
+  {
+    // No rubberband means no copy is in progress, find the closest feature to begin a new copy
+    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setNoAttributes() );
+    const QgsGeometry pointGeometry = QgsGeometry::fromPointXY( layerCoords );
+    if ( pointGeometry.isNull() )
+    {
+      cadDockWidget()->clear();
+      return;
+    }
+
+    QgsFeature cf, f;
+    double minDistance = std::numeric_limits<double>::max();
+    while ( fit.nextFeature( f ) )
+    {
+      if ( f.hasGeometry() )
+      {
+        const double currentDistance = pointGeometry.distance( f.geometry() );
+        if ( currentDistance < minDistance )
+        {
+          minDistance = currentDistance;
+          cf = f;
+        }
+      }
+    }
+
+    // No feature found
+    if ( minDistance == std::numeric_limits<double>::max() )
+    {
+      cadDockWidget()->clear();
+      return;
+    }
+
+    // Feature found: store internal informations and create rubberband
+    mFeatureId = cf.id();
+    mFeatureGeom = cf.geometry();
+    mStartPointMapCoords = e->mapPoint();
+    mFeatureLayer = vlayer;
+    updateRubberband();
+  }
+  else
+  {
+    // A rubberband exists: end the process and create the new features
+    const int count = featureCount();
+    if ( count >= 0 )
+    {
+      // Save features
+      QString errorMsg;
+      QString childrenInfoMsg;
+      const QgsPointXY startPointLayerCoords = toLayerCoordinates( mFeatureLayer, mStartPointMapCoords );
+      const QgsPointXY firstFeatureLayerPoint = toLayerCoordinates( mFeatureLayer, firstFeatureMapPoint() );
+      const double dx = firstFeatureLayerPoint.x() - startPointLayerCoords.x();
+      const double dy = firstFeatureLayerPoint.y() - startPointLayerCoords.y();
+      vlayer->beginEditCommand( tr( "Features distributed and copied" ) );
+      for ( int i = 1; i < count + 1; ++i )
+      {
+        QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( { mFeatureId } );
+        if ( !QgisApp::instance()->vectorLayerTools()->copyMoveFeatures(
+               vlayer, request, dx * i, dy * i, &errorMsg, QgsProject::instance()->topologicalEditing(), nullptr, &childrenInfoMsg
+             ) )
+        {
+          emit messageEmitted( errorMsg, Qgis::MessageLevel::Critical );
+          deleteRubberbands();
+          vlayer->deleteFeatures( request.filterFids() );
+          vlayer->destroyEditCommand();
+          return;
+        }
+        if ( !childrenInfoMsg.isEmpty() )
+        {
+          emit messageEmitted( childrenInfoMsg, Qgis::MessageLevel::Info );
+        }
+      }
+      vlayer->endEditCommand();
+      vlayer->triggerRepaint();
+    }
+    deleteRubberbands();
+  }
+}
+
+QgsPointXY QgsMapToolDistributeFeature::firstFeatureMapPoint() const
+{
+  if ( mStartPointMapCoords.isEmpty() || mEndPointMapCoords.isEmpty() )
+    return QgsPointXY();
+
+  return QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( mStartPointMapCoords ), QgsPoint( mEndPointMapCoords ), featureSpacing() );
+}
+
+void QgsMapToolDistributeFeature::activate()
+{
+  QgsMapToolAdvancedDigitizing::activate();
+  mUserInputWidget = std::make_unique<QgsDistributeFeatureUserWidget>();
+  QgisApp::instance()->addUserInputWidget( mUserInputWidget.get() );
+}
+
+void QgsMapToolDistributeFeature::deactivate()
+{
+  deleteRubberbands();
+  mUserInputWidget.reset();
+  QgsMapToolAdvancedDigitizing::deactivate();
+}
+
+void QgsMapToolDistributeFeature::deleteRubberbands()
+{
+  mRubberBand.reset();
+  mStartPointMapCoords = QgsPointXY();
+  mEndPointMapCoords = QgsPointXY();
+}
+
+void QgsMapToolDistributeFeature::updateRubberband()
+{
+  if ( mFeatureGeom.isNull() || mStartPointMapCoords.isEmpty() )
+    return;
+
+  mRubberBand.reset( createRubberBand( mFeatureGeom.type() ) );
+
+  const int count = featureCount();
+  if ( count == 0 )
+    return;
+
+  QgsGeometry geom = mFeatureGeom;
+
+  // The rubberband is in map coordinates, so we transform the feature geometry if needed
+  if ( mFeatureLayer->crs() != canvas()->mapSettings().destinationCrs() )
+  {
+    if ( geom.transform(
+           QgsCoordinateTransform( mFeatureLayer->crs(), canvas()->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() )
+         )
+         != Qgis::GeometryOperationResult::Success )
+    {
+      emit messageEmitted( tr( "Unable to transform coordinates between layer and map CRS" ), Qgis::MessageLevel::Warning );
+      return;
+    }
+  }
+
+  if ( mEndPointMapCoords.isEmpty() )
+  {
+    // No end point: the mouse has not moved yet
+    mRubberBand->addGeometry( geom );
+  }
+  else
+  {
+    // We have a start and an end point: create all the features along the start-end line
+    const QgsPointXY firstFeaturePoint = firstFeatureMapPoint();
+    const double dx = firstFeaturePoint.x() - mStartPointMapCoords.x();
+    const double dy = firstFeaturePoint.y() - mStartPointMapCoords.y();
+    for ( int i = 0; i < count; ++i )
+    {
+      Qgis::GeometryOperationResult translateResult = geom.translate( dx, dy );
+      if ( translateResult != Qgis::GeometryOperationResult::Success )
+      {
+        emit messageEmitted( tr( "Unable to copy and translate feature preview" ), Qgis::MessageLevel::Warning );
+        return;
+      }
+      mRubberBand->addGeometry( geom );
+    }
+  }
+
+  mRubberBand->show();
+}
+
+double QgsMapToolDistributeFeature::featureSpacing() const
+{
+  if ( !mUserInputWidget )
+    return 0;
+
+  switch ( mUserInputWidget->mode() )
+  {
+    case QgsDistributeFeatureUserWidget::DistributeMode::FeatureSpacing:
+    case QgsDistributeFeatureUserWidget::DistributeMode::FeatureNumberAndSpacing:
+    {
+      return mUserInputWidget->featureSpacing();
+    }
+    case QgsDistributeFeatureUserWidget::DistributeMode::FeatureCount:
+    {
+      if ( mEndPointMapCoords.isEmpty() )
+        return 0;
+      const QgsLineString currentLine( { mStartPointMapCoords, mEndPointMapCoords } );
+      return currentLine.length() / mUserInputWidget->featureCount();
+    }
+  }
+}
+
+int QgsMapToolDistributeFeature::featureCount() const
+{
+  if ( !mUserInputWidget )
+    return 0;
+
+  switch ( mUserInputWidget->mode() )
+  {
+    case QgsDistributeFeatureUserWidget::DistributeMode::FeatureCount:
+    case QgsDistributeFeatureUserWidget::DistributeMode::FeatureNumberAndSpacing:
+    {
+      return mUserInputWidget->featureCount();
+    }
+    case QgsDistributeFeatureUserWidget::DistributeMode::FeatureSpacing:
+    {
+      if ( mEndPointMapCoords.isEmpty() )
+        return 0;
+      const QgsLineString currentLine( { mStartPointMapCoords, mEndPointMapCoords } );
+      return std::floor( currentLine.length() / mUserInputWidget->featureSpacing() );
+    }
+  }
+}
+
+QgsDistributeFeatureUserWidget::QgsDistributeFeatureUserWidget( QWidget *parent )
+  : QWidget( parent )
+{
+  setupUi( this );
+
+  mModeComboBox->addItem( tr( "Feature count" ), QVariant::fromValue( DistributeMode::FeatureCount ) );
+  mModeComboBox->addItem( tr( "Spacing" ), QVariant::fromValue( DistributeMode::FeatureSpacing ) );
+  mModeComboBox->addItem( tr( "Spacing and feature count" ), QVariant::fromValue( DistributeMode::FeatureNumberAndSpacing ) );
+
+  setMode( QgsMapToolDistributeFeature::settingsMode->value() );
+  setFeatureCount( QgsMapToolDistributeFeature::settingsFeatureCount->value() );
+  setFeatureSpacing( QgsMapToolDistributeFeature::settingsFeatureSpacing->value() );
+  updateUi();
+
+  connect( mModeComboBox, &QComboBox::currentIndexChanged, this, [this] { updateUi(); } );
+}
+
+QgsDistributeFeatureUserWidget::~QgsDistributeFeatureUserWidget()
+{
+  QgsMapToolDistributeFeature::settingsMode->setValue( mode() );
+  QgsMapToolDistributeFeature::settingsFeatureCount->setValue( featureCount() );
+  QgsMapToolDistributeFeature::settingsFeatureSpacing->setValue( featureSpacing() );
+}
+
+void QgsDistributeFeatureUserWidget::setMode( QgsDistributeFeatureUserWidget::DistributeMode mode )
+{
+  mModeComboBox->setCurrentIndex( mModeComboBox->findData( QVariant::fromValue( mode ) ) );
+}
+
+void QgsDistributeFeatureUserWidget::updateUi()
+{
+  const DistributeMode currentMode = mode();
+  mFeatureCountLabel->setVisible( currentMode == DistributeMode::FeatureCount || currentMode == DistributeMode::FeatureNumberAndSpacing );
+  mFeatureCountSpinBox->setVisible( currentMode == DistributeMode::FeatureCount || currentMode == DistributeMode::FeatureNumberAndSpacing );
+
+  mFeatureSpacingLabel->setVisible( currentMode == DistributeMode::FeatureSpacing || currentMode == DistributeMode::FeatureNumberAndSpacing );
+  mFeatureSpacingSpinBox->setVisible( currentMode == DistributeMode::FeatureSpacing || currentMode == DistributeMode::FeatureNumberAndSpacing );
+}
+
+QgsDistributeFeatureUserWidget::DistributeMode QgsDistributeFeatureUserWidget::mode() const
+{
+  return mModeComboBox->currentData().value<DistributeMode>();
+}
+
+void QgsDistributeFeatureUserWidget::setFeatureCount( int featureCount )
+{
+  mFeatureCountSpinBox->setValue( featureCount );
+}
+
+int QgsDistributeFeatureUserWidget::featureCount() const
+{
+  return mFeatureCountSpinBox->value();
+}
+
+void QgsDistributeFeatureUserWidget::setFeatureSpacing( double featureSpacing )
+{
+  mFeatureSpacingSpinBox->setValue( featureSpacing );
+}
+
+double QgsDistributeFeatureUserWidget::featureSpacing() const
+{
+  return mFeatureSpacingSpinBox->value();
+}
