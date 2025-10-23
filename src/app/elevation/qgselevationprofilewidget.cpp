@@ -606,6 +606,43 @@ void QgsElevationProfileWidget::applyDefaultSettingsToProfile( QgsElevationProfi
   profile->setLockAxisScales( QgsElevationProfileWidget::settingLockAxis->value() );
   profile->setTolerance( QgsElevationProfileWidget::settingTolerance->value() );
   profile->setDistanceUnit( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().mapUnits() );
+
+  // new elevation profiles should start with same layer tree structure as project, i.e.
+  // respecting the initial set of groups
+
+  QgsLayerTree *tree = profile->layerTree();
+
+  std::function< void( const QgsLayerTreeGroup *sourceGroup, QgsLayerTreeGroup *destinationGroup ) > addGroup;
+  addGroup = [&addGroup]( const QgsLayerTreeGroup *sourceGroup, QgsLayerTreeGroup *destinationGroup ) {
+    const QList< QgsLayerTreeNode * > sourceGroupChildren = sourceGroup->children();
+    for ( const QgsLayerTreeNode *sourceChild : sourceGroupChildren )
+    {
+      if ( const QgsLayerTreeGroup *sourceChildGroup = qobject_cast< const QgsLayerTreeGroup * >( sourceChild ) )
+      {
+        QgsLayerTreeGroup *newGroupNode = destinationGroup->addGroup( sourceChildGroup->name() );
+        newGroupNode->setExpanded( sourceChildGroup->isExpanded() );
+        addGroup( sourceChildGroup, newGroupNode );
+      }
+      else if ( const QgsLayerTreeLayer *sourceChildLayer = qobject_cast< const QgsLayerTreeLayer * >( sourceChild ) )
+      {
+        if ( QgsMapLayer *layer = sourceChildLayer->layer() )
+        {
+          QgsLayerTreeLayer *newLayerNode = destinationGroup->addLayer( layer );
+
+          if ( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).isValid() )
+          {
+            newLayerNode->setItemVisibilityChecked( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).toBool() );
+          }
+          else
+          {
+            newLayerNode->setItemVisibilityChecked( layer->elevationProperties() && layer->elevationProperties()->showByDefaultInElevationProfilePlots() );
+          }
+        }
+      }
+    }
+  };
+
+  addGroup( QgsProject::instance()->layerTreeRoot(), tree );
 }
 
 QgsElevationProfile *QgsElevationProfileWidget::profile()
