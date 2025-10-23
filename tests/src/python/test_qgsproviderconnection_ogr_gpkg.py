@@ -539,6 +539,102 @@ class TestPyQgsProviderConnectionGpkg(
         self.assertEqual(options, {"layerName": "new_layer"})
         self.assertEqual(res, self.uri)
 
+    def test_ogr_CreateSqlVectorLayer_complex_queries(self):
+        """
+        Test createSqlVectorLayer with complex queries (bug #42132)
+        """
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+
+        # Test selecting all columns
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT * FROM cdb_lines"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 6)
+        self.assertTrue(vl.isSpatial())
+
+        # Test a query plus a filter
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT * FROM cdb_lines"
+        options.filter = "name = 'Sülfeld'"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 6)
+        self.assertTrue(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["name"], "Sülfeld")
+
+        # Test a query with a where
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT * FROM cdb_lines WHERE name LIKE 'Sülfeld'"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 6)
+        self.assertTrue(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["name"], "Sülfeld")
+
+        # Test a query with a where without the name field
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = (
+            "SELECT id, ortsrat, geom FROM cdb_lines WHERE name LIKE 'Sülfeld'"
+        )
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 2)
+        self.assertTrue(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["ortsrat"], "Fallersleben/Sülfeld")
+
+        # Test a query with a where without the name field and the geom
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT id, ortsrat FROM cdb_lines WHERE name LIKE 'Sülfeld'"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 2)
+        self.assertFalse(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["ortsrat"], "Fallersleben/Sülfeld")
+
+        # Test a query with with a where without the name field and and additional filter
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT id, ortsrat, geom FROM cdb_lines WHERE name LIKE 'S%'"
+        options.filter = "ortsrat = 'Fallersleben/Sülfeld'"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 2)
+        self.assertTrue(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["ortsrat"], "Fallersleben/Sülfeld")
+
+        # Check that the filter and sql have been merged
+        uris_parts = md.decodeUri(vl.publicSource())
+        self.assertEqual(
+            uris_parts["subset"],
+            "SELECT id, ortsrat, geom FROM cdb_lines WHERE ( name LIKE 'S%' ) AND ( ortsrat = 'Fallersleben/Sülfeld' )",
+        )
+        self.assertIsNone(uris_parts["layerName"])
+        self.assertIsNone(uris_parts["layerId"])
+
+        # Test a query with OR and an additional filter
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT id, name, geom FROM cdb_lines WHERE ortsrat = 'Mitte-West' OR ortsrat = 'Fallersleben/Sülfeld'"
+        options.filter = "name LIKE 'Sülfeld'"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 2)
+        self.assertTrue(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["name"], "Sülfeld")
+
 
 if __name__ == "__main__":
     unittest.main()

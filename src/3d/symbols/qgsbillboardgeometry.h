@@ -81,6 +81,8 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
         QVector2D textureAtlasOffset;
         //! Texture atlas size for associated billboard texture
         QVector2D textureAtlasSize;
+        //! Optional pixel offset for billboard
+        QPoint pixelOffset;
     };
 
     /**
@@ -89,9 +91,11 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
      * Use this method when rendering billboards with the different textures, and texture
      * atlas handling is required.
      *
+     * Set \a includePixelOffsets to TRUE if the billboard data includes the optional pixel offsets for each billboard
+     *
      * \see setPositions()
      */
-    void setBillboardData( const QVector<QgsBillboardGeometry::BillboardAtlasData> &billboards );
+    void setBillboardData( const QVector<QgsBillboardGeometry::BillboardAtlasData> &billboards, bool includePixelOffsets = false );
 
     //! Returns the number of points.
     int count() const;
@@ -104,7 +108,8 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
     enum class Mode
     {
       PositionOnly,
-      PositionAndTextureData
+      PositionAndTextureData,
+      PositionAndTextureDataWithPixelOffsets,
     };
     void setMode( Mode mode );
 
@@ -112,11 +117,13 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mAtlasOffsetAttribute = nullptr;
     Qt3DRender::QAttribute *mAtlasSizeAttribute = nullptr;
+    Qt3DRender::QAttribute *mAtlasPixelOffsetAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
 #else
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QAttribute *mAtlasOffsetAttribute = nullptr;
     Qt3DCore::QAttribute *mAtlasSizeAttribute = nullptr;
+    Qt3DCore::QAttribute *mAtlasPixelOffsetAttribute = nullptr;
     Qt3DCore::QBuffer *mVertexBuffer = nullptr;
 #endif
     int mVertexCount = 0;

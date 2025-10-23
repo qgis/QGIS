@@ -51,7 +51,7 @@ except (NameError, AttributeError):
 try:
     QgsRandomMarkerFillSymbolLayer.create = staticmethod(QgsRandomMarkerFillSymbolLayer.create)
     QgsRandomMarkerFillSymbolLayer.__virtual_methods__ = ['setSubSymbol']
-    QgsRandomMarkerFillSymbolLayer.__overridden_methods__ = ['layerType', 'startRender', 'stopRender', 'renderPolygon', 'properties', 'clone', 'canCauseArtifactsBetweenAdjacentTiles', 'setColor', 'color', 'subSymbol', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'hasDataDefinedProperties', 'startFeatureRender', 'stopFeatureRender']
+    QgsRandomMarkerFillSymbolLayer.__overridden_methods__ = ['layerType', 'startRender', 'stopRender', 'renderPolygon', 'properties', 'clone', 'canCauseArtifactsBetweenAdjacentTiles', 'rendersIdenticallyTo', 'setColor', 'color', 'subSymbol', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'hasDataDefinedProperties', 'startFeatureRender', 'stopFeatureRender']
     QgsRandomMarkerFillSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass

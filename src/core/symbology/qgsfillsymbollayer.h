@@ -2325,6 +2325,7 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
     QVariantMap properties() const override;
     QgsRandomMarkerFillSymbolLayer *clone() const override SIP_FACTORY;
     bool canCauseArtifactsBetweenAdjacentTiles() const override;
+    bool rendersIdenticallyTo( const QgsSymbolLayer *other ) const override;
 
     void setColor( const QColor &color ) override;
     QColor color() const override;

@@ -566,6 +566,21 @@ class CORE_EXPORT QgsSymbol
     QString dump() const;
 
     /**
+     * Returns TRUE if this symbol will always render identically
+     * to an \a other symbol.
+     *
+     * \note This method is pessimistic, in that it will return FALSE in circumstances
+     * where it is not possible to guarantee that in 100% of cases the symbol will
+     * render pixel-identically to the other symbol. For instance, calling
+     * rendersIdenticallyTo() with the same symbol as \a other may
+     * return FALSE if the symbol contains data-defined overrides, such
+     * as those using feature attributes or expression variables.
+     *
+     * \since QGIS 4.0
+     */
+    bool rendersIdenticallyTo( const QgsSymbol *other ) const;
+
+    /**
      * Returns a deep copy of this symbol.
      *
      * Ownership is transferred to the caller.
