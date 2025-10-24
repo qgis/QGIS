@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsProjectTrustDialog</class>
+ <widget class="QDialog" name="QgsProjectTrustDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>484</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Security Prompt</string>
+  </property>
+  <layout class="QVBoxLayout" name="mMainLayout">
+   <item>
+    <widget class="QLabel" name="mTitleLabel">
+     <property name="text">
+      <string>Do you trust the author(s) of this project?</string>
+     </property>
+     <property name="font">
+      <font>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="mDescriptionLabel">
+     <property name="text">
+      <string>QGIS offers features to execute python code in projects. If you don’t trust the author(s) of this project, we recommend continuing in restricted mode to avoid potentially malicious code.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="mProjectDetailsLabel">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="mTrustProjectFolderCheckBox">
+     <property name="text">
+      <string>Apply decision to all projects in folder</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mCodePreviewGroupBox">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>View code</string>
+     </property>
+     <property name="collapsed">
+      <bool>false</bool>
+     </property>
+     <property name="saveCollapsedState">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="mCodePreviewLayout">
+      <item>
+       <widget class="QgsCodeEditorPython" name="mCodePreviewEditor" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::No|QDialogButtonBox::NoToAll|QDialogButtonBox::Yes|QDialogButtonBox::YesToAll|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+</ui>
