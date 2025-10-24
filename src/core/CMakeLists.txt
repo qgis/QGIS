@@ -2518,7 +2518,6 @@ target_include_directories(qgis_core SYSTEM PUBLIC
   ${QCA_INCLUDE_DIR}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
-  ${EXIV2_INCLUDE_DIR}
 )
 
 target_include_directories(qgis_core PUBLIC
@@ -2673,7 +2672,7 @@ target_link_libraries(qgis_core
   ${LIBZIP_LIBRARY}
   $<TARGET_NAME_IF_EXISTS:protobuf::libprotobuf-lite>
   ${ZLIB_LIBRARIES}
-  ${EXIV2_LIBRARY}
+  Exiv2::exiv2lib
   PROJ::proj
   nlohmann_json::nlohmann_json
 )
