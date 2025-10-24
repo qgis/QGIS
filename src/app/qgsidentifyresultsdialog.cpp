@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QComboBox>
 #include <QTextDocument>
+#include <QTextBlock>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QFileDialog>
