@@ -294,6 +294,7 @@ The development version
       SessionOnly,
       Always,
       NotForThisSession,
+      NeverAsk,
     };
 
     enum class PythonEmbeddedType

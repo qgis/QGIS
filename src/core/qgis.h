@@ -421,11 +421,12 @@ class CORE_EXPORT Qgis
      */
     enum class PythonEmbeddedMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
       {
-      Never = 0, //!< Python embedded never run
-      Ask = 1, //!< User is prompt before running
-      SessionOnly = 2, //!< Only during this session
-      Always = 3, //!< Python embedded is always run
-      NotForThisSession, //!< Python embedded will not be run for this session
+      Never = 0,              //!< Python embedded never run
+      Ask = 1,                //!< User is prompt before running
+      SessionOnly = 2,        //!< Only during this session (only used prior to QGIS 4.0)
+      Always = 3,             //!< Python embedded is always run
+      NotForThisSession = 4,  //!< Python embedded will not be run for this session (only used prior to QGIS 4.0)
+      NeverAsk = 5,           //!< User never prompted, python embedded is only run on trusted projects and folders \since QGIS 4.0
     };
     Q_ENUM( PythonEmbeddedMode )
 

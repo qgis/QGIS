@@ -2863,20 +2863,9 @@ void QgisApp::readSettings()
   // Read legacy settings
   readRecentProjects();
 
-  // this is a new session, reset enable macros value  when they are set for session
-  Qgis::PythonEmbeddedMode pythonEmbeddedMode = settings.enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
-  switch ( pythonEmbeddedMode )
-  {
-    case Qgis::PythonEmbeddedMode::NotForThisSession:
-    case Qgis::PythonEmbeddedMode::SessionOnly:
-      settings.setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
-      break;
-
-    case Qgis::PythonEmbeddedMode::Always:
-    case Qgis::PythonEmbeddedMode::Never:
-    case Qgis::PythonEmbeddedMode::Ask:
-      break;
-  }
+  // this is a new session, reset temporary project trust approval and denial
+  QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->setValue( QStringList() );
+  QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->setValue( QStringList() );
 }
 
 

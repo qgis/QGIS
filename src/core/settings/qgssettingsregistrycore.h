@@ -175,6 +175,21 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry autosize columns by default when opening attribute table
     static const QgsSettingsEntryBool *settingsAutosizeAttributeTable;
 
+    //! Settings entry digitizing default snapping tolerance unit
+    static const QgsSettingsEntryEnumFlag<Qgis::PythonEmbeddedMode> *settingsCodeExecutionBehaviorUndeterminedProjects;
+
+    //! Settings entry for projects and folders that are allowed execution of embedded Python code across sessions
+    static const QgsSettingsEntryStringList *settingsCodeExecutionTrustedProjectsFolders;
+
+    //! Settings entry for projects and folders that are allowed execution of embedded Python code temporarily for one session
+    static const QgsSettingsEntryStringList *settingsCodeExecutionTemporarilyTrustedProjectsFolders;
+
+    //! Settings entry for projects and folders that are denied execution of embedded Python code across sessions
+    static const QgsSettingsEntryStringList *settingsCodeExecutionDeniedProjectsFolders;
+
+    //! Settings entry for projects and folders that are denied execution of embedded Python code temporarily for one session
+    static const QgsSettingsEntryStringList *settingsCodeExecutionTemporarilyDeniedProjectsFolders;
+
   private:
     friend class QgsApplication;
 

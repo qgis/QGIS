@@ -121,6 +121,16 @@ const QgsSettingsEntryInteger64 *QgsSettingsRegistryCore::settingsNetworkCacheSi
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( QStringLiteral( "autosize-attribute-table" ), QgsSettingsTree::sTreeAttributeTable, false );
 
+const QgsSettingsEntryEnumFlag<Qgis::PythonEmbeddedMode> *QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects = new QgsSettingsEntryEnumFlag<Qgis::PythonEmbeddedMode>( QStringLiteral( "code-execution-behavior-undetermined-projects" ), QgsSettingsTree::sTreeCore, Qgis::PythonEmbeddedMode::Ask, QStringLiteral( "Behavior for untrusted project's embedded Python code" ) );
+
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders = new QgsSettingsEntryStringList( QStringLiteral( "code-execution-trusted-projects-folders" ), QgsSettingsTree::sTreeCore, QStringList(), QStringLiteral( "Projects and folders that are allowed execution of embedded Python code" ) );
+
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders = new QgsSettingsEntryStringList( QStringLiteral( "code-execution-temporarily-trusted-projects-folders" ), QgsSettingsTree::sTreeCore, QStringList(), QStringLiteral( "Projects and folders that are temporarily allowed execution of embedded Python code for a session" ) );
+
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders = new QgsSettingsEntryStringList( QStringLiteral( "code-execution-denied-projects-folders" ), QgsSettingsTree::sTreeCore, QStringList(), QStringLiteral( "Projects and folders that are denied execution of embedded Python code" ) );
+
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders = new QgsSettingsEntryStringList( QStringLiteral( "code-execution-temporarily-denied-projects-folders" ), QgsSettingsTree::sTreeCore, QStringList(), QStringLiteral( "Projects and folders that are temporarily denied execution of embedded Python code for a session" ) );
+
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
 {
@@ -392,6 +402,10 @@ void QgsSettingsRegistryCore::migrateOldSettings()
       }
     }
   }
+
+  Qgis::PythonEmbeddedMode pyEmbeddedMode = settings->enumValue( QStringLiteral( "/qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
+  settingsCodeExecutionBehaviorUndeterminedProjects->setValue( pyEmbeddedMode );
+
   QgsSettings::releaseFlush();
 }
 
