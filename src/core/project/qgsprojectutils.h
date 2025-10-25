@@ -58,6 +58,13 @@ class CORE_EXPORT QgsProjectUtils
      */
     static bool layerIsContainedInGroupLayer( QgsProject *project, QgsMapLayer *layer );
 
+    /**
+     * Returns TRUE if the specified \a project has been \a granted trust by the user. If
+     * the user has not yet taken a decision, the optional undetermined parameter will be set to TRUE.
+     *
+     * \since QGIS 4.0
+     */
+    static bool checkUserTrust( QgsProject *project, bool *undetermined SIP_OUT = nullptr );
 
 };
 

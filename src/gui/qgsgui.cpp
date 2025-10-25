@@ -53,6 +53,7 @@
 #include "qgssettings.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsproviderguiregistry.h"
+#include "qgsproject.h"
 #include "qgsprojectstorageguiregistry.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
@@ -70,10 +71,13 @@
 #include "qgshistoryentry.h"
 #include "qgsstacsourceselectprovider.h"
 #include "qgsstoredquerymanager.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingseditorwidgetregistry.h"
 #include "qgsplotregistry.h"
 #include "qgsplotwidget.h"
 
+#include <QFileInfo>
 #include <QPushButton>
 #include <QToolButton>
 
@@ -381,122 +385,40 @@ QgsGui::QgsGui()
   qRegisterMetaType<QgsHistoryEntry>( "QgsHistoryEntry" );
 }
 
-bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *messageBar, Qgis::PythonEmbeddedType embeddedType )
+bool QgsGui::pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar *messageBar )
 {
-  const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettings().enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
-
-  switch ( pythonEmbeddedMode )
+  const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
+  bool undetermined = false;
+  bool trusted = checkUserTrust( project, undetermined );
+  if ( !undetermined && pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Ask )
   {
-    case Qgis::PythonEmbeddedMode::SessionOnly:
-    case Qgis::PythonEmbeddedMode::Always:
-      if ( embeddedType == Qgis::PythonEmbeddedType::Macro )
-      {
-        if ( lambda )
-          lambda();
-      }
-      // If this is the case, expression functions
-      // are loaded directly by the QGIS project.
-      return true;
-    case Qgis::PythonEmbeddedMode::Never:
-    case Qgis::PythonEmbeddedMode::NotForThisSession:
-      if ( messageBar )
-      {
-        switch ( embeddedType )
-        {
-          case Qgis::PythonEmbeddedType::Macro:
-            messageBar->pushMessage( tr( "Python Macros" ), tr( "Python macros are currently disabled and will not be run" ), Qgis::MessageLevel::Warning );
-            break;
-          case Qgis::PythonEmbeddedType::ExpressionFunction:
-            messageBar->pushMessage( tr( "Python Expressions" ), tr( "Python expressions from project are currently disabled and will not be loaded" ), Qgis::MessageLevel::Warning );
-            break;
-        }
-      }
-      return false;
-    case Qgis::PythonEmbeddedMode::Ask:
-      if ( embeddedType == Qgis::PythonEmbeddedType::Macro )
-      {
-        if ( !lambda )
-        {
-          QMessageBox msgBox( QMessageBox::Information, tr( "Python Macros" ), tr( "Python macros are currently disabled. Do you allow this macro to run?" ) );
-          QAbstractButton *stopSessionButton = msgBox.addButton( tr( "Disable for this Session" ), QMessageBox::DestructiveRole );
-          msgBox.addButton( tr( "No" ), QMessageBox::NoRole );
-          QAbstractButton *yesButton = msgBox.addButton( tr( "Yes" ), QMessageBox::YesRole );
-          msgBox.exec();
+    QgsProjectTrustDialog dialog( project, this );
+    dialog.exec();
 
-          QAbstractButton *clicked = msgBox.clickedButton();
-          if ( clicked == stopSessionButton )
-          {
-            QgsSettings().setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::NotForThisSession );
-          }
-          return clicked == yesButton;
-        }
-        else
-        {
-          // create the notification widget for macros
-          Q_ASSERT( messageBar );
-          if ( messageBar )
-          {
-            QToolButton *btnEnableMacros = new QToolButton();
-            btnEnableMacros->setText( tr( "Enable Macros" ) );
-            btnEnableMacros->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
-            btnEnableMacros->setCursor( Qt::PointingHandCursor );
-            btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-
-            QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
-              tr( "Security warning" ),
-              tr( "Python macros cannot currently be run." ),
-              btnEnableMacros,
-              Qgis::MessageLevel::Warning,
-              0,
-              messageBar
-            );
-
-            connect( btnEnableMacros, &QToolButton::clicked, messageBar, [lambda, messageBar, macroMsg]() {
-              lambda();
-              messageBar->popWidget( macroMsg );
-            } );
-
-            // display the macros notification widget
-            messageBar->pushItem( macroMsg );
-          }
-
-          return false;
-        }
-      }
-      else if ( embeddedType == Qgis::PythonEmbeddedType::ExpressionFunction )
-      {
-        // create the notification widget for expressions from project
-        Q_ASSERT( messageBar );
-        if ( messageBar )
-        {
-          QToolButton *btnEnableExpressionsFromProject = new QToolButton();
-          btnEnableExpressionsFromProject->setText( tr( "Enable python expressions from project" ) );
-          btnEnableExpressionsFromProject->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
-          btnEnableExpressionsFromProject->setCursor( Qt::PointingHandCursor );
-          btnEnableExpressionsFromProject->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-
-          QgsMessageBarItem *expressionFromProjectMsg = new QgsMessageBarItem(
-            tr( "Security warning" ),
-            tr( "Python expressions from project cannot currently be loaded." ),
-            btnEnableExpressionsFromProject,
-            Qgis::MessageLevel::Warning,
-            0,
-            messageBar
-          );
-
-          connect( btnEnableExpressionsFromProject, &QToolButton::clicked, messageBar, [messageBar, expressionFromProjectMsg]() {
-            QgsProject::instance()->loadFunctionsFromProject( true );
-            messageBar->popWidget( expressionFromProjectMsg );
-          } );
-
-          // display the notification widget
-          messageBar->pushItem( expressionFromProjectMsg );
-        }
-
-        return false;
-      }
+    trusted = checkUserTrust( project, undetermined );
   }
-  return false;
+
+  if ( messageBar )
+  {
+    if ( trusted )
+    {
+      messageBar->pushMessage(
+        tr( "Security warning" ),
+        tr( "The loaded project contains embedded Python code which has been allowed execution." ),
+        pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Always ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
+      );
+    }
+    else
+    {
+      messageBar->pushMessage(
+        tr( "Security warning" ),
+        tr( "The loaded project contains embedded Python code which has been denied execution." ),
+        pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Never ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
+      );
+    }
+  }
+
+  return trusted;
 }
 
 void QgsGui::initCalloutWidgets()

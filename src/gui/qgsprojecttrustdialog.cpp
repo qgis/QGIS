@@ -21,6 +21,8 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsproject.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QFileInfo>
 #include <QPushButton>
@@ -46,6 +48,10 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
   {
     QFileInfo fi( project->fileName() );
     mProjectDetailsLabel->setText( tr( "Project filename: %1" ).arg( fi.absoluteFilePath() ) );
+
+    QFileInfo projectFileInfo( project->absoluteFilePath() );
+    mProjectAbsoluteFilePath = projectFileInfo.absoluteFilePath();
+    mProjectAbsolutePath = projectFileInfo.absolutePath();
   }
 }
 
@@ -56,9 +62,47 @@ bool QgsProjectTrustDialog::applyTrustToProjectFolder() const
 
 void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
 {
-  if ( mButtonBox->buttonRole( button ) != QDialogButtonBox::ButtonRole::HelpRole )
+  const QString path = applyTrustToProjectFolder() ? mProjectAbsolutePath : mProjectAbsoluteFilePath;
+
+  if ( mButtonBox->buttonRole( button ) != QDialogButtonBox::ButtonRole::YesToAll )
   {
-    done( mButtonBox->buttonRole( button ) );
+    QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value();
+    if ( !path.isEmpty() && !trustedProjectsFolders.contains( path ) )
+    {
+      trustedProjectsFolders << path;
+    }
+    QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->setValue( trustedProjectsFolders )
+      accept();
+  }
+  else if ( mButtonBox->buttonRole( button ) != QDialogButtonBox::ButtonRole::Yes )
+  {
+    QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->value();
+    if ( !path.isEmpty() && !trustedProjectsFolders.contains( path ) )
+    {
+      trustedProjectsFolders << path;
+    }
+    QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->setValue( trustedProjectsFolders )
+      accept();
+  }
+  else if ( mButtonBox->buttonRole( button ) != QDialogButtonBox::ButtonRole::NoToAll )
+  {
+    QStringList deniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->value();
+    if ( !path.isEmpty() && !deniedProjectsFolders.contains( path ) )
+    {
+      deniedProjectsFolders << path;
+    }
+    QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->setValue( deniedProjectsFolders )
+      reject();
+  }
+  else if ( mButtonBox->buttonRole( button ) != QDialogButtonBox::ButtonRole::No )
+  {
+    QStringList deniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->value();
+    if ( !path.isEmpty() && !deniedProjectsFolders.contains( path ) )
+    {
+      deniedProjectsFolders << path;
+    }
+    QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->setValue( deniedProjectsFolders )
+      reject();
   }
 }
 

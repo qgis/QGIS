@@ -20,6 +20,10 @@
 #include "qgsproject.h"
 #include "qgsgrouplayer.h"
 #include "qgslayertree.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+
 
 QList<QgsMapLayer *> QgsProjectUtils::layersMatchingPath( const QgsProject *project, const QString &path )
 {
@@ -88,4 +92,62 @@ bool QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject *project, QgsMapL
     return false;
   };
   return traverseTree( project->layerTreeRoot() );
+}
+
+bool QgsProjectUtils::checkUserTrust( QgsProject *project, bool *undetermined )
+{
+  const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
+  if ( pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Always )
+  {
+    // A user having changed the behavior to always allow is considered as determined
+    if ( undetermined )
+    {
+      *undetermined = false;
+    }
+    return true;
+  }
+  else if ( pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Never )
+  {
+    // A user having changed the behavior to always deny is considered as determined
+    if ( undetermined )
+    {
+      *undetermined = false;
+    }
+    return false;
+  }
+
+  QFileInfo fileInfo( project->absoluteFilePath() );
+  const QString absoluteFilePath = fileInfo.absoluteFilePath();
+
+  const QStringList deniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->value() + QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->value();
+  for ( const QString &path : deniedProjectsFolders )
+  {
+    if ( absoluteFilePath == path || absoluteFilePath.startsWith( path ) )
+    {
+      if ( undetermined )
+      {
+        *undetermined = false;
+      }
+      return false;
+    }
+  }
+
+  const QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value() + QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->value();
+  for ( const QString &path : trustedProjectsFolders )
+  {
+    if ( absoluteFilePath == path || absoluteFilePath.startsWith( path ) )
+    {
+      if ( undetermined )
+      {
+        *undetermined = false;
+      }
+      return true;
+    }
+  }
+
+  if ( undetermined )
+  {
+    *undetermined = true;
+  }
+  return false;
 }

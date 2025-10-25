@@ -65,7 +65,7 @@
       </size>
      </property>
      <property name="title">
-      <string>View code</string>
+      <string>Preview code</string>
      </property>
      <property name="collapsed">
       <bool>false</bool>

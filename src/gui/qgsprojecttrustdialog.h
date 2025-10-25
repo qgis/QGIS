@@ -42,6 +42,8 @@ class GUI_EXPORT QgsProjectTrustDialog : public QDialog, private Ui::QgsProjectT
     void showHelp();
 
   private:
+    QString mProjectAbsoluteFilePath;
+    QString mProjectAbsolutePath;
 };
 
 #endif
