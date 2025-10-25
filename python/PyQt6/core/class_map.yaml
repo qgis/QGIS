@@ -6536,7 +6536,6 @@ QgsLayerTree.isGroup: src/core/layertree/qgslayertree.h#L45
 QgsLayerTree.isLayer: src/core/layertree/qgslayertree.h#L54
 QgsLayerTree.layerOrderChanged: src/core/layertree/qgslayertree.h#L241
 QgsLayerTree.readLayerOrderFromXml: src/core/layertree/qgslayertree.h#L217
-QgsLayerTree.readXml: src/core/layertree/qgslayertree.h#L210
 QgsLayerTree.setCustomLayerOrder: src/core/layertree/qgslayertree.h#L143
 QgsLayerTree.setCustomLayerOrder: src/core/layertree/qgslayertree.h#L155
 QgsLayerTree.setHasCustomLayerOrder: src/core/layertree/qgslayertree.h#L184
