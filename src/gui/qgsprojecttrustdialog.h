@@ -35,13 +35,12 @@ class GUI_EXPORT QgsProjectTrustDialog : public QDialog, private Ui::QgsProjectT
   public:
     QgsProjectTrustDialog( QgsProject *project, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    bool applyTrustToProjectFolder() const;
-
   private slots:
     void buttonBoxClicked( QAbstractButton *button );
     void showHelp();
 
   private:
+    bool mProjectIsFile = true;
     QString mProjectAbsoluteFilePath;
     QString mProjectAbsolutePath;
 };

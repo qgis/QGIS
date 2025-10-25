@@ -83,12 +83,12 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
         QFileInfo projectFileInfo( storage->filePath( project->fileName() ) );
         mProjectAbsoluteFilePath = projectFileInfo.absoluteFilePath();
         mProjectAbsolutePath = projectFileInfo.absolutePath();
+        mProjectIsFile = true;
       }
       else
       {
-        // Match non-file based URIs too
-        mProjectAbsoluteFilePath = project->fileName();
         mProjectAbsolutePath = project->fileName();
+        mProjectIsFile = false;
       }
     }
     else
@@ -96,15 +96,19 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
       QFileInfo projectFileInfo( project->fileName() );
       mProjectAbsoluteFilePath = projectFileInfo.absoluteFilePath();
       mProjectAbsolutePath = projectFileInfo.absolutePath();
+      mProjectIsFile = true;
     }
 
-    mProjectDetailsLabel->setText( tr( "Project filename: %1" ).arg( mProjectAbsoluteFilePath ) );
+    if ( mProjectIsFile )
+    {
+      mProjectDetailsLabel->setText( tr( "The current project file path is %1." ).arg( mProjectAbsoluteFilePath ) );
+    }
+    else
+    {
+      mProjectDetailsLabel->setText( tr( "The current project URI is %1." ).arg( mProjectAbsoluteFilePath ) );
+      mTrustProjectFolderCheckBox->setVisible( false );
+    }
   }
-}
-
-bool QgsProjectTrustDialog::applyTrustToProjectFolder() const
-{
-  return mTrustProjectFolderCheckBox->isChecked();
 }
 
 void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
@@ -117,7 +121,7 @@ void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
   }
 
   bool accepted = false;
-  const QString path = applyTrustToProjectFolder() ? mProjectAbsolutePath : mProjectAbsoluteFilePath;
+  QString path = !mProjectIsFile || mTrustProjectFolderCheckBox->isChecked() ? mProjectAbsolutePath : mProjectAbsoluteFilePath;
   if ( !path.isEmpty() )
   {
     QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value();

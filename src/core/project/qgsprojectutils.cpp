@@ -132,7 +132,7 @@ bool QgsProjectUtils::checkUserTrust( QgsProject *project, bool *undetermined )
     else
     {
       // Match non-file based URIs too
-      absoluteFilePath = project->fileName();
+      absolutePath = project->fileName();
     }
   }
   else
