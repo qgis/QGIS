@@ -5402,9 +5402,7 @@ bool QgsProject::loadFunctionsFromProject( bool force )
 {
   if ( QgsPythonRunner::isValid() )
   {
-    const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettings().enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
-
-    if ( force || pythonEmbeddedMode == Qgis::PythonEmbeddedMode::SessionOnly || pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Always )
+    if ( force || QgsProjectUtils::checkUserTrust( this ) )
     {
       const QString projectFunctions = readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
       if ( !projectFunctions.isEmpty() )
