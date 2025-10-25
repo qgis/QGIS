@@ -17,10 +17,13 @@
 
 #include "qgsprojecttrustdialog.h"
 #include "moc_qgsprojecttrustdialog.cpp"
-#include "qgshelp.h"
-#include "qgssettings.h"
+#include "qgsapplication.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsproject.h"
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 
@@ -72,12 +75,30 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
 
   if ( project )
   {
-    QFileInfo fi( project->fileName() );
-    mProjectDetailsLabel->setText( tr( "Project filename: %1" ).arg( fi.absoluteFilePath() ) );
+    QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( project->fileName() );
+    if ( storage )
+    {
+      if ( !storage->filePath( project->fileName() ).isEmpty() )
+      {
+        QFileInfo projectFileInfo( storage->filePath( project->fileName() ) );
+        mProjectAbsoluteFilePath = projectFileInfo.absoluteFilePath();
+        mProjectAbsolutePath = projectFileInfo.absolutePath();
+      }
+      else
+      {
+        // Match non-file based URIs too
+        mProjectAbsoluteFilePath = project->fileName();
+        mProjectAbsolutePath = project->fileName();
+      }
+    }
+    else
+    {
+      QFileInfo projectFileInfo( project->fileName() );
+      mProjectAbsoluteFilePath = projectFileInfo.absoluteFilePath();
+      mProjectAbsolutePath = projectFileInfo.absolutePath();
+    }
 
-    QFileInfo projectFileInfo( project->absoluteFilePath() );
-    mProjectAbsoluteFilePath = projectFileInfo.absoluteFilePath();
-    mProjectAbsolutePath = projectFileInfo.absolutePath();
+    mProjectDetailsLabel->setText( tr( "Project filename: %1" ).arg( mProjectAbsoluteFilePath ) );
   }
 }
 

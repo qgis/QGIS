@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 #include "qgsprojectutils.h"
+#include "qgsapplication.h"
 #include "qgsmaplayerutils.h"
 #include "qgsproject.h"
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsgrouplayer.h"
 #include "qgslayertree.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
-
 
 QList<QgsMapLayer *> QgsProjectUtils::layersMatchingPath( const QgsProject *project, const QString &path )
 {
@@ -116,9 +118,29 @@ bool QgsProjectUtils::checkUserTrust( QgsProject *project, bool *undetermined )
     return false;
   }
 
-  QFileInfo fileInfo( project->absoluteFilePath() );
-  const QString absoluteFilePath = fileInfo.absoluteFilePath();
-  const QString absolutePath = fileInfo.absolutePath();
+  QString absoluteFilePath;
+  QString absolutePath;
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( project->fileName() );
+  if ( storage )
+  {
+    if ( !storage->filePath( project->fileName() ).isEmpty() )
+    {
+      QFileInfo fileInfo( storage->filePath( project->fileName() ) );
+      absoluteFilePath = fileInfo.absoluteFilePath();
+      absolutePath = fileInfo.absolutePath();
+    }
+    else
+    {
+      // Match non-file based URIs too
+      absoluteFilePath = project->fileName();
+    }
+  }
+  else
+  {
+    QFileInfo fileInfo( project->fileName() );
+    absoluteFilePath = fileInfo.absoluteFilePath();
+    absolutePath = fileInfo.absolutePath();
+  }
 
   const QStringList deniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->value() + QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->value();
   for ( const QString &path : deniedProjectsFolders )
