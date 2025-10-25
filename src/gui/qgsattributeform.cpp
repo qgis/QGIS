@@ -31,6 +31,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsgui.h"
 #include "qgsproject.h"
+#include "qgsprojectutils.h"
 #include "qgspythonrunner.h"
 #include "qgsrelationwidgetwrapper.h"
 #include "qgstextwidgetwrapper.h"
@@ -2336,10 +2337,14 @@ void QgsAttributeForm::initPython()
     // If we have a function code, run it
     if ( !initCode.isEmpty() )
     {
-      if ( QgsGui::pythonEmbeddedInProjectAllowed( nullptr, nullptr, Qgis::PythonEmbeddedType::Macro ) )
+      if ( QgsProjectUtils::checkUserTrust( QgsProject::instance() ) )
+      {
         QgsPythonRunner::run( initCode );
+      }
       else
+      {
         mMessageBar->pushMessage( QString(), tr( "Python macro could not be run due to missing permissions." ), Qgis::MessageLevel::Warning );
+      }
     }
 
     QgsPythonRunner::run( QStringLiteral( "import inspect" ) );

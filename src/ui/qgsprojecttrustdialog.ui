@@ -57,30 +57,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QgsCollapsibleGroupBox" name="mCodePreviewGroupBox">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="title">
-      <string>Preview code</string>
-     </property>
-     <property name="collapsed">
-      <bool>false</bool>
-     </property>
-     <property name="saveCollapsedState">
-      <bool>true</bool>
-     </property>
-     <layout class="QVBoxLayout" name="mCodePreviewLayout">
-      <item>
-       <widget class="QgsCodeEditorPython" name="mCodePreviewEditor" native="true"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>

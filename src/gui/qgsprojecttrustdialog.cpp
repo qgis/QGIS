@@ -34,8 +34,6 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  mCodePreviewEditor->setReadOnly( true );
-
   mButtonBox->button( QDialogButtonBox::StandardButton::YesToAll )->setText( tr( "Always Trust" ) );
   mButtonBox->button( QDialogButtonBox::StandardButton::Yes )->setText( tr( "Trust" ) );
   mButtonBox->button( QDialogButtonBox::StandardButton::No )->setText( tr( "Deny" ) );
@@ -62,48 +60,53 @@ bool QgsProjectTrustDialog::applyTrustToProjectFolder() const
 
 void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
 {
+  bool accepted = false;
   const QString path = applyTrustToProjectFolder() ? mProjectAbsolutePath : mProjectAbsoluteFilePath;
-
-  if ( mButtonBox->buttonRole( button ) != QDialogButtonBox::ButtonRole::YesToAll )
+  if ( !path.isEmpty() )
   {
     QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value();
-    if ( !path.isEmpty() && !trustedProjectsFolders.contains( path ) )
-    {
-      trustedProjectsFolders << path;
-    }
-    QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->setValue( trustedProjectsFolders )
-      accept();
-  }
-  else if ( mButtonBox->buttonRole( button ) != QDialogButtonBox::ButtonRole::Yes )
-  {
-    QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->value();
-    if ( !path.isEmpty() && !trustedProjectsFolders.contains( path ) )
-    {
-      trustedProjectsFolders << path;
-    }
-    QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->setValue( trustedProjectsFolders )
-      accept();
-  }
-  else if ( mButtonBox->buttonRole( button ) != QDialogButtonBox::ButtonRole::NoToAll )
-  {
+    trustedProjectsFolders.removeAll( path );
+    QStringList temporarilyTrustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->value();
+    temporarilyTrustedProjectsFolders.removeAll( path );
     QStringList deniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->value();
-    if ( !path.isEmpty() && !deniedProjectsFolders.contains( path ) )
+    deniedProjectsFolders.removeAll( path );
+    QStringList temporarilyDeniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->value();
+    temporarilyDeniedProjectsFolders.removeAll( path );
+
+    QDialogButtonBox::StandardButton buttonType = mButtonBox->standardButton( button );
+    if ( buttonType == QDialogButtonBox::StandardButton::YesToAll )
+    {
+      trustedProjectsFolders << path;
+      accepted = true;
+    }
+    else if ( buttonType == QDialogButtonBox::StandardButton::Yes )
+    {
+      temporarilyTrustedProjectsFolders << path;
+      accepted = true;
+    }
+    else if ( buttonType == QDialogButtonBox::StandardButton::NoToAll )
     {
       deniedProjectsFolders << path;
+      accepted = false;
     }
-    QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->setValue( deniedProjectsFolders )
-      reject();
-  }
-  else if ( mButtonBox->buttonRole( button ) != QDialogButtonBox::ButtonRole::No )
-  {
-    QStringList deniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->value();
-    if ( !path.isEmpty() && !deniedProjectsFolders.contains( path ) )
+    else if ( buttonType == QDialogButtonBox::StandardButton::No )
     {
-      deniedProjectsFolders << path;
+      temporarilyDeniedProjectsFolders << path;
+      accepted = false;
     }
-    QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->setValue( deniedProjectsFolders )
-      reject();
+
+    trustedProjectsFolders.sort();
+    temporarilyTrustedProjectsFolders.sort();
+    deniedProjectsFolders.sort();
+    temporarilyDeniedProjectsFolders.sort();
+
+    QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->setValue( trustedProjectsFolders );
+    QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->setValue( temporarilyTrustedProjectsFolders );
+    QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->setValue( deniedProjectsFolders );
+    QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->setValue( temporarilyDeniedProjectsFolders );
   }
+
+  done( accepted ? QDialog::Accepted : QDialog::Rejected );
 }
 
 void QgsProjectTrustDialog::showHelp()

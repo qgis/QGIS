@@ -6481,18 +6481,15 @@ bool QgisApp::addProject( const QString &projectFile )
 #ifdef WITH_BINDINGS
     if ( mPythonUtils && mPythonUtils->isEnabled() )
     {
-      // does the project have any macros?
-      if ( !QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty() )
+      const bool projectContainsMacros = !QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty();
+      const bool projectContainsExpressionFunctions = !QgsProject::instance()->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty();
+      if ( projectContainsMacros || projectContainsExpressionFunctions )
       {
-        auto lambda = []() { QgisApp::instance()->enableProjectMacros(); };
-        QgsGui::pythonEmbeddedInProjectAllowed( lambda, mInfoBar, Qgis::PythonEmbeddedType::Macro );
-      }
-
-      // does the project have expression functions?
-      const QString projectFunctions = QgsProject::instance()->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
-      if ( !projectFunctions.isEmpty() )
-      {
-        QgsGui::pythonEmbeddedInProjectAllowed( nullptr, mInfoBar, Qgis::PythonEmbeddedType::ExpressionFunction );
+        const bool projectTrusted = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance(), mInfoBar );
+        if ( projectTrusted && projectContainsMacros )
+        {
+          QgisApp::instance()->enableProjectMacros();
+        }
       }
     }
 #endif

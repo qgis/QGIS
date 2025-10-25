@@ -55,6 +55,8 @@
 #include "qgsproviderguiregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectstorageguiregistry.h"
+#include "qgsprojecttrustdialog.h"
+#include "qgsprojectutils.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsnumericformatguiregistry.h"
@@ -74,6 +76,7 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingseditorwidgetregistry.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsplotregistry.h"
 #include "qgsplotwidget.h"
 
@@ -389,13 +392,12 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar 
 {
   const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
   bool undetermined = false;
-  bool trusted = checkUserTrust( project, undetermined );
-  if ( !undetermined && pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Ask )
+  bool trusted = QgsProjectUtils::checkUserTrust( project, &undetermined );
+  if ( undetermined && pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Ask )
   {
-    QgsProjectTrustDialog dialog( project, this );
+    QgsProjectTrustDialog dialog( project );
     dialog.exec();
-
-    trusted = checkUserTrust( project, undetermined );
+    trusted = QgsProjectUtils::checkUserTrust( project );
   }
 
   if ( messageBar )
