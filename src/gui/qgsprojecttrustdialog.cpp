@@ -26,6 +26,7 @@
 
 #include <QFileInfo>
 #include <QPushButton>
+#include <QSvgRenderer>
 
 
 QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *parent, Qt::WindowFlags fl )
@@ -40,7 +41,34 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
   mButtonBox->button( QDialogButtonBox::StandardButton::NoToAll )->setText( tr( "Always Deny" ) );
 
   connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsProjectTrustDialog::buttonBoxClicked );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectTrustDialog::showHelp );
+
+  QSvgRenderer svg( QStringLiteral( ":/images/themes/default/mIconPythonFile.svg" ) );
+  if ( svg.isValid() )
+  {
+    const double maxLength = 64.0;
+    QSize size( maxLength, maxLength );
+    const QRectF viewBox = svg.viewBoxF();
+    if ( viewBox.height() > viewBox.width() )
+    {
+      size.setWidth( maxLength * viewBox.width() / viewBox.height() );
+    }
+    else
+    {
+      size.setHeight( maxLength * viewBox.height() / viewBox.width() );
+    }
+
+    QPixmap pixmap( maxLength, maxLength );
+    pixmap.fill( Qt::transparent );
+
+    QPainter painter;
+    painter.begin( &pixmap );
+    painter.setRenderHint( QPainter::SmoothPixmapTransform );
+    painter.translate( ( maxLength - size.width() ) / 2, ( maxLength - size.height() ) / 2 );
+    svg.render( &painter, QRectF( 0, 0, size.width(), size.height() ) );
+    painter.end();
+
+    mIconLabel->setPixmap( pixmap );
+  }
 
   if ( project )
   {
@@ -60,6 +88,13 @@ bool QgsProjectTrustDialog::applyTrustToProjectFolder() const
 
 void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
 {
+  QDialogButtonBox::StandardButton buttonType = mButtonBox->standardButton( button );
+  if ( buttonType == QDialogButtonBox::StandardButton::Help )
+  {
+    showHelp();
+    return;
+  }
+
   bool accepted = false;
   const QString path = applyTrustToProjectFolder() ? mProjectAbsolutePath : mProjectAbsoluteFilePath;
   if ( !path.isEmpty() )
@@ -73,7 +108,6 @@ void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
     QStringList temporarilyDeniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->value();
     temporarilyDeniedProjectsFolders.removeAll( path );
 
-    QDialogButtonBox::StandardButton buttonType = mButtonBox->standardButton( button );
     if ( buttonType == QDialogButtonBox::StandardButton::YesToAll )
     {
       trustedProjectsFolders << path;
@@ -111,5 +145,5 @@ void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
 
 void QgsProjectTrustDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "about/preamble.html" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/getting_started.html" ) );
 }

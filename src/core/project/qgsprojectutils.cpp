@@ -118,11 +118,12 @@ bool QgsProjectUtils::checkUserTrust( QgsProject *project, bool *undetermined )
 
   QFileInfo fileInfo( project->absoluteFilePath() );
   const QString absoluteFilePath = fileInfo.absoluteFilePath();
+  const QString absolutePath = fileInfo.absolutePath();
 
   const QStringList deniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->value() + QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->value();
   for ( const QString &path : deniedProjectsFolders )
   {
-    if ( absoluteFilePath == path || absoluteFilePath.startsWith( path ) )
+    if ( absoluteFilePath == path || absolutePath == path )
     {
       if ( undetermined )
       {
@@ -135,7 +136,7 @@ bool QgsProjectUtils::checkUserTrust( QgsProject *project, bool *undetermined )
   const QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value() + QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->value();
   for ( const QString &path : trustedProjectsFolders )
   {
-    if ( absoluteFilePath == path || absoluteFilePath.startsWith( path ) )
+    if ( absoluteFilePath == path || absolutePath == path )
     {
       if ( undetermined )
       {

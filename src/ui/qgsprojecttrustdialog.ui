@@ -13,9 +13,51 @@
   <property name="windowTitle">
    <string>Security Prompt</string>
   </property>
-  <layout class="QVBoxLayout" name="mMainLayout">
-   <item>
+  <layout class="QGridLayout" name="mMainLayout">
+   <item row="0" column="1" rowspan="4">
+    <layout class="QVBoxLayout" name="mIconLayout">
+     <item>
+      <widget class="QLabel" name="mIconLabel">
+       <property name="minimumSize">
+        <size>
+         <width>64</width>
+         <height>64</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer1">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0">
     <widget class="QLabel" name="mTitleLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Do you trust the author(s) of this project?</string>
      </property>
@@ -29,8 +71,14 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QLabel" name="mDescriptionLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>QGIS offers features to execute python code in projects. If you don’t trust the author(s) of this project, we recommend continuing in restricted mode to avoid potentially malicious code.</string>
      </property>
@@ -39,8 +87,14 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="2" column="0">
     <widget class="QLabel" name="mProjectDetailsLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -49,15 +103,15 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="3" column="0">
     <widget class="QCheckBox" name="mTrustProjectFolderCheckBox">
      <property name="text">
       <string>Apply decision to all projects in folder</string>
      </property>
     </widget>
    </item>
-   <item>
-    <spacer name="verticalSpacer">
+   <item row="4" column="0" colspan="2">
+    <spacer name="verticalSpacer2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -69,7 +123,7 @@
      </property>
     </spacer>
    </item>
-   <item>
+   <item row="5" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
