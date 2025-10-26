@@ -39,7 +39,7 @@ struct StatsProcessor
     static QMutex sStatsProcessorFeedbackMutex;
 
     StatsProcessor( QgsPointCloudIndex index, QgsPointCloudRequest request, QgsFeedback *feedback, double progressValue )
-      : mIndex( index ), mRequest( request ), mFeedback( feedback ), mProgressValue( progressValue )
+      : mIndex( std::move( index ) ), mRequest( request ), mFeedback( feedback ), mProgressValue( progressValue )
     {
     }
 
@@ -199,7 +199,7 @@ struct StatsProcessor
 QMutex StatsProcessor::sStatsProcessorFeedbackMutex;
 
 QgsPointCloudStatsCalculator::QgsPointCloudStatsCalculator( QgsPointCloudIndex index )
-  : mIndex( index )
+  : mIndex( std::move( index ) )
 {
 
 }
