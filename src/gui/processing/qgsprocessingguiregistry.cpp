@@ -164,7 +164,11 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createPar
   if ( !mParameterWidgetFactories.contains( parameterType ) )
     return nullptr;
 
-  return mParameterWidgetFactories.value( parameterType )->createWidgetWrapper( parameter, type );
+  if ( QgsProcessingParameterWidgetFactoryInterface *factory = mParameterWidgetFactories.value( parameterType ) )
+  {
+    return factory->createWidgetWrapper( parameter, type );
+  }
+  return nullptr;
 }
 
 QgsProcessingModelerParameterWidget *QgsProcessingGuiRegistry::createModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context )
