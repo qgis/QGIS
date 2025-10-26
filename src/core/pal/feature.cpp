@@ -929,7 +929,7 @@ std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::u
     line->getPointByDistance( segmentLengths.data(), distanceToSegment.data(), currentDistanceAlongLine, &candidateCenterX, &candidateCenterY );
 
     // penalize positions which are further from the line's anchor point
-    double cost = std::fabs( lineAnchorPoint - currentDistanceAlongLine ) / totalLineLength; // <0, 0.5>
+    double cost = totalLineLength > 0 ? std::fabs( lineAnchorPoint - currentDistanceAlongLine ) / totalLineLength : 0; // <0, 0.5>
     cost /= 1000;  // < 0, 0.0005 >
 
     double labelX = 0;
@@ -1348,7 +1348,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
         // not possible here
         break;
     }
-    double costCenter = std::fabs( lineAnchorPoint - textAnchorPoint ) / totalLineLength; // <0, 0.5>
+    double costCenter = totalLineLength > 0 ? std::fabs( lineAnchorPoint - textAnchorPoint ) / totalLineLength : 0; // <0, 0.5>
     cost += costCenter / 1000;  // < 0, 0.0005 >
     cost += initialCost;
 
