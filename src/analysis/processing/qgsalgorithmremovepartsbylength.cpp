@@ -122,6 +122,11 @@ QgsFeatureList QgsRemovePartsByLengthAlgorithm::processFeature( const QgsFeature
     {
       std::unique_ptr< QgsAbstractGeometry> filteredGeometry( geometry.constGet()->createEmptyWithSameType() );
       QgsGeometryCollection *collection = qgsgeometry_cast< QgsGeometryCollection * >( filteredGeometry.get() );
+      if ( !collection )
+      {
+        // should never happen
+        return {};
+      }
       const int size = inputCollection->numGeometries();
       collection->reserve( size );
       for ( int i = 0; i < size; ++i )
