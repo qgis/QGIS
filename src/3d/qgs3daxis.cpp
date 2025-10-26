@@ -264,7 +264,7 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
       {
         hitEntity = hitEntity->parentEntity();
       }
-      if ( hitEntity == mCubeRoot || hitEntity->parent() == mCubeRoot )
+      if ( hitEntity && ( hitEntity == mCubeRoot || hitEntity->parent() == mCubeRoot ) )
       {
         switch ( hits.at( hitFoundIdx ).primitiveIndex() / 2 )
         {
