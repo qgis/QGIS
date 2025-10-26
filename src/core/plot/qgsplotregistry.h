@@ -143,7 +143,7 @@ class CORE_EXPORT QgsPlotMetadata : public QgsPlotAbstractMetadata
     /**
      * Sets the classes' plot widget creation function.
      */
-    void setWidgetCreateFunction( QgsPlotWidgetCreateFunc function ) SIP_SKIP { mWidgetCreateFunc = function; }
+    void setWidgetCreateFunction( QgsPlotWidgetCreateFunc function ) SIP_SKIP { mWidgetCreateFunc = std::move( function ); }
 
     QgsPlot *createPlot() override { return mCreateFunc ? mCreateFunc() : nullptr; }
     QgsVectorLayerAbstractPlotDataGatherer *createPlotDataGatherer( QgsPlot *plot = nullptr ) override { return mDataGathererCreateFunc ? mDataGathererCreateFunc( plot ) : nullptr; }
