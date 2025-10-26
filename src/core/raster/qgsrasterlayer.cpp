@@ -755,7 +755,14 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   mDataProvider->setParent( this );
 
   // Set data provider into pipe even if not valid so that it is deleted with pipe (with layer)
-  mPipe->set( mDataProvider );
+  if ( !mPipe->set( mDataProvider ) )
+  {
+    // data provider has been deleted by the pipe
+    mDataProvider = nullptr;
+    appendError( ERR( tr( "Could not insert provider into layer pipe (provider: %1, URI: %2" ).arg( mProviderKey, mDataSource ) ) );
+    return;
+  }
+
   if ( !mDataProvider->isValid() )
   {
     setError( mDataProvider->error() );
