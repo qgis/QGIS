@@ -4577,15 +4577,20 @@ QgsGeometry QgsGeometry::doChamferFillet( ChamferFilletOperationType op, int ver
     }
     else
     {
-      poly = dynamic_cast<QgsPolygon *>( d->geometry.get() );
+      poly = qgsgeometry_cast<QgsPolygon *>( d->geometry.get() );
+    }
+    if ( !poly )
+    {
+      mLastError = QStringLiteral( "Could not get polygon geometry." );
+      return QgsGeometry();
     }
 
     // if has rings
     modifiedRing = vertexId.ring;
     if ( modifiedRing == 0 )
-      curve = dynamic_cast<QgsCurve *>( poly->exteriorRing() );
+      curve = qgsgeometry_cast<QgsCurve *>( poly->exteriorRing() );
     else
-      curve = dynamic_cast<QgsCurve *>( poly->interiorRing( modifiedRing - 1 ) );
+      curve = qgsgeometry_cast<QgsCurve *>( poly->interiorRing( modifiedRing - 1 ) );
   }
   else
     curve = nullptr;
