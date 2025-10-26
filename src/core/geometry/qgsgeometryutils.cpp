@@ -1466,7 +1466,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryUtils::createFilletGeometry(
 
     // Calculate appropriate tolerance based on desired number of segments
     // For segments > 0: use angle tolerance = 2*PI / (4 * segments) to get approximately 'segments' segments for a quarter circle
-    const double angleTolerance = segments > 0 ? ( 2.0 * M_PI ) / ( 4.0 * segments ) : M_PI / 180.0; // Default to 1 degree
+    const double angleTolerance = ( 2.0 * M_PI ) / ( 4.0 * segments );
 
     std::unique_ptr<QgsLineString> segmentizedArc( tempArc.curveToLine( angleTolerance, QgsAbstractGeometry::MaximumAngle ) );
 
