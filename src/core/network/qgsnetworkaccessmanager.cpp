@@ -813,7 +813,7 @@ QgsNetworkReplyContent QgsNetworkAccessManager::blockingPost( QNetworkRequest &r
 {
   QgsBlockingNetworkRequest br( flags );
   br.setAuthCfg( authCfg );
-  br.post( request, data, forceRefresh, feedback );
+  ( void )br.post( request, data, forceRefresh, feedback );
   return br.reply();
 }
 
