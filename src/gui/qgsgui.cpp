@@ -548,7 +548,7 @@ void QgsGui::initPlotWidgets()
       }
       else
       {
-        metadata->setWidgetCreateFunction( f );
+        metadata->setWidgetCreateFunction( std::move( f ) );
       }
     };
 
