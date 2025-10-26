@@ -438,7 +438,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     normalBufferView.buffer = model.buffers.size() - 1;
     normalBufferView.byteLength = normalBuffer.data.size();
     normalBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
-    model.bufferViews.push_back( normalBufferView );
+    model.bufferViews.emplace_back( std::move( normalBufferView ) );
 
     std::vector<double> normalMinimums = {1, 1, 1};
     std::vector<double> normalMaximums = {-1, -1, -1};
@@ -526,7 +526,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     //textureCoordBufferView.byteLength = vertexBuffer.data.size();
     //textureCoordBufferView.byteStride = sizeof(float) * 3;
     textureCoordBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
-    model.bufferViews.push_back( textureCoordBufferView );
+    model.bufferViews.emplace_back( std::move( textureCoordBufferView ) );
 
     tinygltf::Accessor textureCoordAccessor;
     textureCoordAccessor.bufferView = model.bufferViews.size() - 1;
@@ -535,21 +535,21 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     textureCoordAccessor.type = TINYGLTF_TYPE_VEC2;
     textureCoordAccessor.minValues = { texCoordMinimums[0], texCoordMinimums[1] };
     textureCoordAccessor.maxValues = { texCoordMaximums[0], texCoordMaximums[1] };
-    model.accessors.push_back( textureCoordAccessor );
+    model.accessors.emplace_back( std::move( textureCoordAccessor ) );
 
     primitive.attributes["TEXCOORD_0"] = model.accessors.size() - 1;
   }
 
-  mesh.primitives.push_back( primitive );
-  model.meshes.push_back( mesh );
+  mesh.primitives.emplace_back( std::move( primitive ) );
+  model.meshes.emplace_back( std::move( mesh ) );
 
   tinygltf::Node node;
   node.mesh = 0;
-  model.nodes.push_back( node );
+  model.nodes.emplace_back( std::move( node ) );
 
   tinygltf::Scene scene;
   scene.nodes.push_back( 0 );
-  model.scenes.push_back( scene );
+  model.scenes.emplace_back( std::move( scene ) );
   model.defaultScene = 0;
 
   return model;
