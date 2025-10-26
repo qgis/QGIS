@@ -394,6 +394,9 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
 void QgsFrameGraph::updateDebugShadowMapSettings( const Qgs3DMapSettings &settings )
 {
   QgsDebugTextureRenderView *debugRenderView = dynamic_cast<QgsDebugTextureRenderView *>( mRenderViewMap[DEBUG_RENDERVIEW].get() );
+  if ( !debugRenderView )
+    return;
+
   if ( !mShadowTextureDebugging && settings.debugShadowMapEnabled() )
   {
     Qt3DRender::QTexture2D *shadowDepthTexture = shadowRenderView().mapTexture();

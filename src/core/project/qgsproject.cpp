@@ -647,48 +647,63 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
   {
     translationContext->registerTranslation( QStringLiteral( "project:layers:%1" ).arg( layer->layerId() ), layer->name() );
 
-    QgsMapLayer *mapLayer = layer->layer();
-    if ( mapLayer && mapLayer->type() == Qgis::LayerType::Vector )
+    if ( QgsMapLayer *mapLayer = layer->layer() )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
-
-      //register aliases and widget settings
-      const QgsFields fields = vlayer->fields();
-      for ( const QgsField &field : fields )
+      switch ( mapLayer->type() )
       {
-        QString fieldName;
-        if ( field.alias().isEmpty() )
-          fieldName = field.name();
-        else
-          fieldName = field.alias();
-
-        translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), fieldName );
-
-        if ( field.editorWidgetSetup().type() == QLatin1String( "ValueRelation" ) )
+        case Qgis::LayerType::Vector:
         {
-          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString() );
-        }
-        if ( field.editorWidgetSetup().type() == QLatin1String( "ValueMap" ) )
-        {
-          if ( field.editorWidgetSetup().config().value( QStringLiteral( "map" ) ).canConvert<QList<QVariant>>() )
+          QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
+
+          //register aliases and widget settings
+          const QgsFields fields = vlayer->fields();
+          for ( const QgsField &field : fields )
           {
-            const QList<QVariant> valueList = field.editorWidgetSetup().config().value( QStringLiteral( "map" ) ).toList();
+            QString fieldName;
+            if ( field.alias().isEmpty() )
+              fieldName = field.name();
+            else
+              fieldName = field.alias();
 
-            for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+            translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), fieldName );
+
+            if ( field.editorWidgetSetup().type() == QLatin1String( "ValueRelation" ) )
             {
-              translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuemapdescriptions" ).arg( vlayer->id(), field.name() ), valueList[i].toMap().constBegin().key() );
+              translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString() );
+            }
+            if ( field.editorWidgetSetup().type() == QLatin1String( "ValueMap" ) )
+            {
+              if ( field.editorWidgetSetup().config().value( QStringLiteral( "map" ) ).canConvert<QList<QVariant>>() )
+              {
+                const QList<QVariant> valueList = field.editorWidgetSetup().config().value( QStringLiteral( "map" ) ).toList();
+
+                for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+                {
+                  translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuemapdescriptions" ).arg( vlayer->id(), field.name() ), valueList[i].toMap().constBegin().key() );
+                }
+              }
             }
           }
+
+          //register formcontainers
+          registerTranslatableContainers( translationContext, vlayer->editFormConfig().invisibleRootContainer(), vlayer->id() );
+          break;
         }
+
+        case Qgis::LayerType::Raster:
+        case Qgis::LayerType::Plugin:
+        case Qgis::LayerType::Mesh:
+        case Qgis::LayerType::VectorTile:
+        case Qgis::LayerType::Annotation:
+        case Qgis::LayerType::PointCloud:
+        case Qgis::LayerType::Group:
+        case Qgis::LayerType::TiledScene:
+          break;
       }
 
-      //register formcontainers
-      registerTranslatableContainers( translationContext, vlayer->editFormConfig().invisibleRootContainer(), vlayer->id() );
-
+      //register metadata
+      mapLayer->metadata().registerTranslations( translationContext );
     }
-
-    //register metadata
-    mapLayer->metadata().registerTranslations( translationContext );
   }
 
   //register layergroups
