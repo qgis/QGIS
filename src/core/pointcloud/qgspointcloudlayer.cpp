@@ -824,11 +824,11 @@ bool QgsPointCloudLayer::convertRenderer3DFromRenderer2D()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   bool result = false;
-  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
-  if ( r )
+  if ( QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() ) )
   {
-    result = r->convertFrom2DRenderer( renderer() );
-    setRenderer3D( r );
+    std::unique_ptr< QgsAbstractPointCloud3DRenderer > newRenderer( static_cast< QgsAbstractPointCloud3DRenderer * >( r->clone() ) );
+    result = newRenderer->convertFrom2DRenderer( renderer() );
+    setRenderer3D( newRenderer.release() );
     trigger3DUpdate();
   }
   return result;
