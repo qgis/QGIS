@@ -652,6 +652,21 @@ try:
        }
       return qmetatype_to_numpy_dtype_dict.get(dataType)
 
+   
+   def _numpy_dtype_to_qmetatype(dtype: _numpy.dtype) -> _typing.Optional[int]:
+      numpy_dtype_to_qmetatype_dict = {
+        _numpy.int32: 2,  # QMetaType::Int
+        _numpy.uint32: 3,  # QMetaType::UInt
+        _numpy.int64: 4,  # QMetaType::LongLong
+        _numpy.uint64: 5,  # QMetaType::ULongLong
+        _numpy.int16: 33,  # QMetaType::Short
+        _numpy.uint16: 34,  # QMetaType::UShort
+        _numpy.float32: 38,  # QMetaType::Float
+        _numpy.float64: 6,  # QMetaType::Double
+      }
+    
+      return numpy_dtype_to_qmetatype_dict.get(dtype)
+
    def _raster_block_as_numpy(self, use_masking:bool = True) -> _typing.Union[_numpy.ndarray, _numpy.ma.MaskedArray]:
       raster_dtype = _qgis_data_type_to_numeric_data_type(self.dataType())
       if raster_dtype is None:
@@ -763,6 +778,30 @@ try:
 
    QgsGeometry.as_numpy = _qgsgeometry_as_numpy
 
+   def _fields_as_numpy(self, field_names: _typing.List[str], null_value: _typing.Optional[object], request: _typing.Optional[QgsFeatureRequest] = None, target_type: _typing.Optional[_numpy.dtype] = _numpy.int32) -> _numpy.ma.MaskedArray:
+      qmeta_type = _numpy_dtype_to_qmetatype(target_type)
+    
+      field_indices = [self.fields().lookupField(name) for name in field_names]
+      for field_index in field_indices:
+          if field_index < 0:
+            raise KeyError(f"Field '{field_names[field_index]}' does not exist.")
+
+      if request is None:
+         request = QgsFeatureRequest().setFlags(Qgis.FeatureRequestFlag.NoGeometry).setSubsetOfAttributes(field_indices)
+
+      if request.limit == -1:
+         n_features = self.featureCount()
+      else:
+         n_features = request.limit()
+
+      src_array = QgsVectorLayerUtils.fieldsToDataArray(self.fields(), field_names, self.getFeatures(request), null_value, qmeta_type)
+      numpy_array = _numpy.frombuffer(src_array.data(), dtype=target_type)
+      numpy_array = numpy_array.reshape(n_features, len(field_indices))
+
+      return _numpy.ma.masked_equal(numpy_array, null_value)
+
+   QgsVectorLayer.fields_as_numpy = _fields_as_numpy
+
 except ModuleNotFoundError:
    def _raster_block_as_numpy(self, use_masking:bool = True):
        raise QgsNotSupportedException('QgsRasterBlock.as_numpy is not available, numpy is not installed on the system')
@@ -783,6 +822,11 @@ except ModuleNotFoundError:
       raise QgsNotSupportedException('QgsVectorLayer.field_as_numpy is not available, numpy is not installed on the system')
 
    QgsVectorLayer.field_as_numpy = _field_as_numpy
+
+   def _fields_as_numpy(self, field_names: str, null_value: object, request: _typing.Optional[QgsFeatureRequest] = None, target_type: _typing.Optional[_numpy.dtype] = None) -> _numpy.ma.MaskedArray:
+      raise QgsNotSupportedException('QgsVectorLayer.fields_as_numpy is not available, numpy is not installed on the system')
+
+   QgsVectorLayer.fields_as_numpy = _fields_as_numpy
 
 try:
    import shapely as _shapely
@@ -923,6 +967,24 @@ Returns the values from a field as a numpy masked array.
 
 :raises TypeError: if the field is of a non-supported type
 
+:raises QgsNotSupportedException: if numpy is not available on the system
+
+.. versionadded:: 4.0
+"""
+
+QgsVectorLayer.fields_as_numpy.__doc__ = """
+Returns field values as a numpy masked array.
+
+Converts the specified field values from features in the layer to a numpy masked array.
+NULL values are masked using the provided null_value.
+
+:param field_names: List of field names to include in the array
+:param null_value: Value to use for NULL/missing values in the underlying data
+:param request: Optional feature request to filter features (if None, all features are used)
+:param target_type: Numpy dtype for the output array (e.g., np.int32, np.float64)
+
+:raises KeyError: if any field name does not exist in the layer
+:raises TypeError: if field type cannot be converted to target_type
 :raises QgsNotSupportedException: if numpy is not available on the system
 
 .. versionadded:: 4.0

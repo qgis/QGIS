@@ -14,7 +14,7 @@ import shutil
 import tempfile
 import os
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QMetaType
 from qgis.core import (
     NULL,
     Qgis,
@@ -1211,6 +1211,79 @@ class TestQgsVectorLayerUtils(QgisTestCase):
             array.data(),
             b"333333/@\x9a\x99\x99\x99\x99\x99\xd9?\x00\x00\x00\x00\x008\x8f\xc0",
         )
+
+
+def test_fields_to_data_array(self):
+    """Test the fieldsToDataArray function for converting fields to binary arrays"""
+    layer = QgsVectorLayer(
+        "Point?field=fldtxt:string&field=fldint:integer&field=fldlong:int8&field=flddouble:double",
+        "addfeat",
+        "memory",
+    )
+    self.assertTrue(layer.isValid())
+
+    pr = layer.dataProvider()
+    attributes = [
+        ["my string", 30, 123123123123123, 15.6],
+        ["another string", 31, -456456456456456, 0.4],
+        [NULL, NULL, NULL, NULL],
+    ]
+    for a in attributes:
+        f = QgsFeature()
+        f.setAttributes(a)
+        self.assertTrue(pr.addFeatures([f]))
+
+    # Non-existent field should raise KeyError
+    it = layer.getFeatures()
+    with self.assertRaises(KeyError):
+        array = QgsVectorLayerUtils.fieldsToDataArray(
+            layer.fields(), ["not_here"], it, 0, QMetaType.Type.Int
+        )
+
+    # String field with integer target type should raise TypeError
+    it = layer.getFeatures()
+    with self.assertRaises(TypeError):
+        array = QgsVectorLayerUtils.fieldsToDataArray(
+            layer.fields(), ["fldtxt"], it, 0, QMetaType.Type.Int
+        )
+
+    # Valid integer field conversion
+    it = layer.getFeatures()
+    array = QgsVectorLayerUtils.fieldsToDataArray(
+        layer.fields(), ["fldint"], it, -99, QMetaType.Type.Int
+    )
+    # Expected: 30, 31, -99 (NULL replaced with -99)
+    self.assertEqual(array.data(), b"\x1e\x00\x00\x00\x1f\x00\x00\x00\x9d\xff\xff\xff")
+
+    # Long long field conversion
+    it = layer.getFeatures()
+    array = QgsVectorLayerUtils.fieldsToDataArray(
+        layer.fields(), ["fldlong"], it, -1, QMetaType.Type.LongLong
+    )
+    # 8 bytes per value, 3 features
+    self.assertEqual(len(array.data()), 24)
+
+    # Double field conversion
+    it = layer.getFeatures()
+    array = QgsVectorLayerUtils.fieldsToDataArray(
+        layer.fields(), ["flddouble"], it, -99.0, QMetaType.Type.Double
+    )
+    self.assertEqual(len(array.data()), 24)  # 8 bytes * 3 features
+
+    # Multiple fields
+    it = layer.getFeatures()
+    array = QgsVectorLayerUtils.fieldsToDataArray(
+        layer.fields(), ["fldint", "fldint"], it, -99, QMetaType.Type.Int
+    )
+    # 2 fields * 3 features * 4 bytes = 24 bytes
+    self.assertEqual(len(array.data()), 24)
+
+    # Empty field list
+    it = layer.getFeatures()
+    array = QgsVectorLayerUtils.fieldsToDataArray(
+        layer.fields(), [], it, 0, QMetaType.Type.Int
+    )
+    self.assertEqual(len(array.data()), 0)
 
 
 if __name__ == "__main__":

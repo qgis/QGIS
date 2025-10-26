@@ -423,7 +423,6 @@ first available.
 %End
 
 
-
     static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
 %Docstring
 Converts field values from an iterator to an array of data.
@@ -480,6 +479,52 @@ Converts field values from an iterator to an array of data.
           sipIsErr = 1;
         }
       }
+    }
+%End
+
+    static QByteArray fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue, QMetaType::Type targetType );
+%Docstring
+Converts field values from an iterator to an array of data.
+
+:param fields: layer fields
+:param fieldName: field name to source values from
+:param it: feature iterator for features to include
+:param nullValue: value to use when original field value is a null. Must
+                  be of the same data type as the source field.
+:param targetType: the desired data type for the output array elements
+
+.. warning::
+
+   Only numeric field types are supported.
+
+.. versionadded:: 4.0
+%End
+%MethodCode
+    // Validate that all field names exist and are numeric
+    for ( const QString &fieldName : *a1 )
+    {
+      int fieldIdx = a0->lookupField( fieldName );
+      if ( fieldIdx == -1 )
+      {
+        PyErr_SetString( PyExc_KeyError, QStringLiteral( "Field %1 does not exist." ).arg( fieldName ).toUtf8().constData() );
+        sipIsErr = 1;
+        break;
+      }
+
+      QgsField field = a0->at( fieldIdx );
+      if ( !field.isNumeric() )
+      {
+        PyErr_SetString( PyExc_TypeError, QStringLiteral( "Field type (%1) cannot be converted to a data array." ).arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
+        sipIsErr = 1;
+        break;
+      }
+    }
+
+    if ( sipIsErr == 0 )
+    {
+      Py_BEGIN_ALLOW_THREADS
+      sipRes = new QByteArray( QgsVectorLayerUtils::fieldsToDataArray( *a0, *a1, *a2, *a3, a4 ) );
+      Py_END_ALLOW_THREADS
     }
 %End
 

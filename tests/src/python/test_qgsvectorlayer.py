@@ -26,6 +26,7 @@ from qgis.PyQt.QtCore import (
     QTime,
     QTimer,
     QVariant,
+    QMetaType,
 )
 from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
@@ -92,6 +93,7 @@ from utilities import unitTestDataPath
 import geopandas as gpd
 import pandas as pd
 import shapely
+import numpy as np
 import numpy as np
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -6135,6 +6137,143 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         self.assertEqual(len(gdf), 1)
         self.assertEqual(list(gdf.columns), ["id", "name", "geometry"])
         self.assertTrue(gdf.iloc[0]["geometry"] is None)
+
+    def test_fields_as_numpy(self):
+        """Test converting field values to numpy arrays"""
+        layer = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer&field=fldlong:int8&field=flddouble:double",
+            "test",
+            "memory",
+        )
+        self.assertTrue(layer.isValid())
+
+        pr = layer.dataProvider()
+        attributes = [
+            ["my string", 30, 123123123123123, 15.6],
+            ["another string", 31, -456456456456456, 0.4],
+            ["null", NULL, NULL, NULL, NULL],
+        ]
+        for a in attributes:
+            f = QgsFeature()
+            f.setAttributes(a)
+            self.assertTrue(pr.addFeatures([f]))
+
+        # Non-existent field should raise KeyError
+        with self.assertRaises(KeyError):
+            array = layer.fields_as_numpy(["not_here"], -99)
+
+        # String field with integer target type should raise TypeError
+        with self.assertRaises(TypeError):
+            array = layer.fields_as_numpy(["fldtxt"], 0, target_type=np.int32)
+
+        # Valid integer field conversion
+        array = layer.fields_as_numpy(["fldint"], -99, target_type=np.int32)
+        # Expected: 30, 31, -99 (NULL replaced with -99)
+        self.assertEqual(array.shape, (3, 1))
+        self.assertEqual(array[0, 0], 30)
+        self.assertEqual(array[1, 0], 31)
+        self.assertTrue(np.ma.is_masked(array[2, 0]))
+        self.assertEqual(array.data[2, 0], -99)
+
+        # Long long field conversion
+        array = layer.fields_as_numpy(["fldlong"], -1, target_type=np.int64)
+        self.assertEqual(array.shape, (3, 1))
+        self.assertEqual(array[0, 0], 123123123123123)
+        self.assertEqual(array[1, 0], -456456456456456)
+        self.assertTrue(np.ma.is_masked(array[2, 0]))
+        self.assertEqual(array.data[2, 0], -1)
+
+        # Double field conversion
+        array = layer.fields_as_numpy(["flddouble"], -99.0, target_type=np.float64)
+        self.assertEqual(array.shape, (3, 1))
+        self.assertAlmostEqual(array[0, 0], 15.6, places=5)
+        self.assertAlmostEqual(array[1, 0], 0.4, places=5)
+        self.assertTrue(np.ma.is_masked(array[2, 0]))
+        self.assertEqual(array.data[2, 0], -99)
+
+        # Multiple fields
+        array = layer.fields_as_numpy(
+            ["fldint", "flddouble"], -99, target_type=np.float64
+        )
+        self.assertEqual(array.shape, (3, 2))
+        self.assertAlmostEqual(array[0, 0], 30.0, places=5)
+        self.assertAlmostEqual(array[0, 1], 15.6, places=5)
+        self.assertAlmostEqual(array[1, 0], 31.0, places=5)
+        self.assertAlmostEqual(array[1, 1], 0.4, places=5)
+        self.assertTrue(np.ma.is_masked(array[2, 0]))
+        self.assertEqual(array.data[2, 0], -99)
+        self.assertTrue(np.ma.is_masked(array[2, 1]))
+        self.assertEqual(array.data[2, 1], -99)
+
+        #  Empty field list should work but return empty array
+        with self.assertRaises(Exception):
+            array = layer.fields_as_numpy([], 0)
+
+    def test_fields_as_numpy_with_subset(self):
+        """Test converting field values to numpy arrays with subset string"""
+        layer = QgsVectorLayer(
+            "Point?field=id:integer&field=value:double",
+            "test",
+            "memory",
+        )
+        self.assertTrue(layer.isValid())
+
+        pr = layer.dataProvider()
+        for i in range(10):
+            f = QgsFeature()
+            f.setAttributes([i, i * 10.5])
+            self.assertTrue(pr.addFeatures([f]))
+
+        # Set subset
+        layer.setSubsetString("id > 5")
+        self.assertEqual(layer.featureCount(), 4)
+
+        # Convert to numpy
+        array = layer.fields_as_numpy(["value"], -1.0, target_type=np.float64)
+        self.assertEqual(array.shape, (4, 1))
+        self.assertAlmostEqual(array[0, 0], 63.0, places=5)  # 6 * 10.5
+
+    def test_fields_as_numpy_with_custom_request(self):
+        """Test converting field values with custom feature request"""
+        layer = createLayerWithFivePoints()
+
+        # Custom request to get only first 3 features
+        request = (
+            QgsFeatureRequest().setLimit(3).setFlags(Qgis.FeatureRequestFlag.NoGeometry)
+        )
+        array = layer.fields_as_numpy(
+            ["fldint"], -1, request=request, target_type=np.int32
+        )
+
+        self.assertEqual(array.shape, (3, 1))
+
+    def test_fields_as_numpy_different_types(self):
+        """Test converting fields with different target types"""
+        layer = QgsVectorLayer(
+            "Point?field=val:integer",
+            "test",
+            "memory",
+        )
+        self.assertTrue(layer.isValid())
+
+        pr = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes([100])
+        self.assertTrue(pr.addFeatures([f]))
+
+        # Test different target types
+        test_cases = [
+            (np.int32, np.int32),
+            (np.uint32, np.uint32),
+            (np.int64, np.int64),
+            (np.float32, np.float32),
+            (np.float64, np.float64),
+        ]
+
+        for target_type, expected_dtype in test_cases:
+            array = layer.fields_as_numpy(["val"], 0, target_type=target_type)
+            self.assertEqual(array.dtype, expected_dtype)
+            self.assertEqual(array.shape, (1, 1))
 
     def test_field_as_numpy(self):
         layer = QgsVectorLayer(
