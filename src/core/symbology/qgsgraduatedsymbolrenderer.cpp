@@ -924,11 +924,22 @@ void QgsGraduatedSymbolRenderer::setSymbolSizes( double minSize, double maxSize 
     const double size = mRanges.count() > 1
                         ? minSize + i * ( maxSize - minSize ) / ( mRanges.count() - 1 )
                         : .5 * ( maxSize + minSize );
-    if ( symbol->type() == Qgis::SymbolType::Marker )
-      static_cast< QgsMarkerSymbol * >( symbol.get() )->setSize( size );
-    if ( symbol->type() == Qgis::SymbolType::Line )
-      static_cast< QgsLineSymbol * >( symbol.get() )->setWidth( size );
-    updateRangeSymbol( i, symbol.release() );
+    if ( symbol )
+    {
+      switch ( symbol->type() )
+      {
+        case Qgis::SymbolType::Marker:
+          static_cast< QgsMarkerSymbol * >( symbol.get() )->setSize( size );
+          break;
+        case Qgis::SymbolType::Line:
+          static_cast< QgsLineSymbol * >( symbol.get() )->setWidth( size );
+          break;
+        case Qgis::SymbolType::Fill:
+        case Qgis::SymbolType::Hybrid:
+          break;
+      }
+      updateRangeSymbol( i, symbol.release() );
+    }
   }
 }
 
