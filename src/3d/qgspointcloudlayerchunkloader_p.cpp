@@ -87,7 +87,7 @@ void QgsPointCloudLayerChunkLoader::start()
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QgsBox3D box3D = node->box3D();
-  const QFuture<void> future = QtConcurrent::run( [pc, pcNode, box3D, this] {
+  const QFuture<void> future = QtConcurrent::run( [pc = std::move( pc ), pcNode, box3D, this] {
     const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
 
     if ( mContext.isCanceled() )
