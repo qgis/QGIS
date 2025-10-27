@@ -530,10 +530,13 @@ QString QgsProcessingParameters::parameterAsEnumString( const QgsProcessingParam
     return QString();
 
   QString enumText = parameterAsString( definition, value, context );
-  if ( const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition ) )
+  if ( const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
+       enumDef && (
+         enumText.isEmpty() || !enumDef->options().contains( enumText )
+       )
+     )
   {
-    if ( enumText.isEmpty() || !enumDef->options().contains( enumText ) )
-      enumText = definition->defaultValue().toString();
+    enumText = definition->defaultValue().toString();
   }
 
   return enumText;
