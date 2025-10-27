@@ -2288,6 +2288,17 @@ void QgsAttributeForm::initPython()
   if ( !mLayer->editFormConfig().initFunction().isEmpty()
        && mLayer->editFormConfig().initCodeSource() != Qgis::AttributeFormPythonInitCodeSource::NoSource )
   {
+    const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+    if ( !allowed )
+    {
+      mMessageBar->pushMessage(
+        tr( "Security warning" ),
+        tr( "The attribute form contains embedded Python code which has been denied execution." ),
+        Qgis::MessageLevel::Warning
+      );
+      return;
+    }
+
     QString initFunction = mLayer->editFormConfig().initFunction();
     QString initFilePath = mLayer->editFormConfig().initFilePath();
     QString initCode;
@@ -2409,7 +2420,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       if ( !elementDef )
         break;
 
-      QgsActionWidgetWrapper *actionWrapper = new QgsActionWidgetWrapper( mLayer, nullptr, this );
+      QgsActionWidgetWrapper *actionWrapper = new QgsActionWidgetWrapper( mLayer, nullptr, this, mMessageBar );
       actionWrapper->setAction( elementDef->action( vl ) );
       context.setAttributeFormMode( mMode );
       actionWrapper->setContext( context );

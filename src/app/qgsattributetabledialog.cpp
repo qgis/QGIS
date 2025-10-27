@@ -56,7 +56,7 @@
 #include "qgsactionmenu.h"
 #include "qgsdockwidget.h"
 #include "qgssettingsregistrycore.h"
-
+#include "qgsgui.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -630,6 +630,20 @@ void QgsAttributeTableDialog::layerActionTriggered()
   Q_ASSERT( qAction );
 
   QgsAction action = qAction->data().value<QgsAction>();
+
+  if ( action.type() == Qgis::AttributeActionType::GenericPython )
+  {
+    const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+    if ( !allowed )
+    {
+      QgisApp::instance()->messageBar()->pushMessage(
+        tr( "Security warning" ),
+        tr( "The attribute form contains embedded Python code which has been denied execution." ),
+        Qgis::MessageLevel::Warning
+      );
+      return;
+    }
+  }
 
   QgsExpressionContext context = mLayer->createExpressionContext();
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();

@@ -18,10 +18,9 @@
 #define QGSPROJECTTRUSTDIALOG_H
 
 #include "ui_qgsprojecttrustdialog.h"
-#include "qgsguiutils.h"
 #include "qgis_gui.h"
-
-class QgsProject;
+#include "qgsguiutils.h"
+#include "qgsproject.h"
 
 
 /**
@@ -33,7 +32,7 @@ class GUI_EXPORT QgsProjectTrustDialog : public QDialog, private Ui::QgsProjectT
 {
     Q_OBJECT
   public:
-    QgsProjectTrustDialog( QgsProject *project, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsProjectTrustDialog( QgsProject *project, const QList<QgsProject::EmbeddedCode> &embeddedCode, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
   private slots:
     void buttonBoxClicked( QAbstractButton *button );
@@ -43,6 +42,8 @@ class GUI_EXPORT QgsProjectTrustDialog : public QDialog, private Ui::QgsProjectT
     bool mProjectIsFile = true;
     QString mProjectAbsoluteFilePath;
     QString mProjectAbsolutePath;
+
+    QList<QgsProject::EmbeddedCode> mEmbeddedCode;
 };
 
 #endif

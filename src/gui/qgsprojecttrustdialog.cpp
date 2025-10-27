@@ -20,7 +20,6 @@
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsproject.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgssettings.h"
@@ -32,8 +31,9 @@
 #include <QSvgRenderer>
 
 
-QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *parent, Qt::WindowFlags fl )
+QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, const QList<QgsProject::EmbeddedCode> &embeddedCode, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
+  , mEmbeddedCode( embeddedCode )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -44,6 +44,22 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
   mButtonBox->button( QDialogButtonBox::StandardButton::NoToAll )->setText( tr( "Always Deny" ) );
 
   connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsProjectTrustDialog::buttonBoxClicked );
+
+  connect( mCodePreviewList, &QListWidget::itemDoubleClicked, this, [this]( QListWidgetItem *item ) {
+    const int row = mCodePreviewList->row( item );
+    if ( row >= 0 && row < mEmbeddedCode.size() )
+    {
+      mCodePreviewEditor->setText( mEmbeddedCode[row].code );
+      mCodePreviewStackedWidget->setCurrentIndex( 1 );
+    }
+  } );
+
+  connect( mCodePreviewBackButton, &QAbstractButton::clicked, this, [this] {
+    mCodePreviewStackedWidget->setCurrentIndex( 0 );
+  } );
+
+  mCodePreviewEditor->setReadOnly( true );
+  mCodePreviewEditor->setLineNumbersVisible( false );
 
   QSvgRenderer svg( QStringLiteral( ":/images/themes/default/mIconPythonFile.svg" ) );
   if ( svg.isValid() )
@@ -101,13 +117,41 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
 
     if ( mProjectIsFile )
     {
-      mProjectDetailsLabel->setText( tr( "The current project file path is %1." ).arg( mProjectAbsoluteFilePath ) );
+      mProjectDetailsLabel->setText( tr( "The current project file path is ’%1’." ).arg( QStringLiteral( "<b>%1</b>" ).arg( mProjectAbsoluteFilePath ) ) );
+      QDir dir( mProjectAbsolutePath );
+      mTrustProjectFolderCheckBox->setText( tr( "Apply decision to all projects in folder ’%1’" ).arg( QStringLiteral( "%1" ).arg( dir.dirName() ) ) );
     }
     else
     {
-      mProjectDetailsLabel->setText( tr( "The current project URI is %1." ).arg( mProjectAbsoluteFilePath ) );
+      mProjectDetailsLabel->setText( tr( "The current project URI is ’%1’." ).arg( QStringLiteral( "<b>%1</b>" ).arg( mProjectAbsoluteFilePath ) ) );
       mTrustProjectFolderCheckBox->setVisible( false );
     }
+  }
+
+  for ( const QgsProject::EmbeddedCode &codeDetails : embeddedCode )
+  {
+    QListWidgetItem *newItem = new QListWidgetItem( mCodePreviewList );
+    switch ( codeDetails.type )
+    {
+      case Qgis::PythonEmbeddedType::Macro:
+        newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPythonFile.svg" ) ) );
+        break;
+
+      case Qgis::PythonEmbeddedType::ExpressionFunction:
+        newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+        break;
+
+      case Qgis::PythonEmbeddedType::Action:
+        newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
+        break;
+
+      case Qgis::PythonEmbeddedType::FormInitCode:
+        newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) ) );
+        break;
+    }
+    newItem->setText( codeDetails.name );
+    newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mCodePreviewList->addItem( newItem );
   }
 }
 

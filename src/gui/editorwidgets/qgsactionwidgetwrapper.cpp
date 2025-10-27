@@ -15,13 +15,16 @@
  ***************************************************************************/
 #include "qgsactionwidgetwrapper.h"
 #include "moc_qgsactionwidgetwrapper.cpp"
-#include "qgsexpressioncontextutils.h"
 #include "qgsattributeform.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
+#include "qgsmessagebar.h"
 
 #include <QLayout>
 
-QgsActionWidgetWrapper::QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
+QgsActionWidgetWrapper::QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsWidgetWrapper( layer, editor, parent )
+  , mMessageBar( messageBar )
 {
   connect( this, &QgsWidgetWrapper::contextChanged, [this] {
     const bool actionIsVisible {
@@ -105,6 +108,20 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
       {
         if ( QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent() ) )
         {
+          const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+          if ( !allowed )
+          {
+            if ( mMessageBar )
+            {
+              mMessageBar->pushMessage(
+                tr( "Security warning" ),
+                tr( "The attribute form contains embedded Python code which has been denied execution." ),
+                Qgis::MessageLevel::Warning
+              );
+            }
+            return;
+          }
+
           const QString formCode = QStringLiteral( "locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n" )
                                      .arg( ( quint64 ) form );
           QgsAction action { mAction };

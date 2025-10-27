@@ -213,7 +213,7 @@ QList<QgsProject::EmbeddedCode> QgsProjectUtils::embeddedCode( QgsProject *proje
       {
         QgsProject::EmbeddedCode details;
         details.type = Qgis::PythonEmbeddedType::Action;
-        details.name = QObject::tr( "%1: Action" ).arg( layer->name() );
+        details.name = QObject::tr( "%1: Action ’%2’" ).arg( layer->name(), action.name() );
         details.code = action.command();
         code << details;
       }
@@ -225,7 +225,7 @@ QList<QgsProject::EmbeddedCode> QgsProjectUtils::embeddedCode( QgsProject *proje
     {
       case Qgis::AttributeFormPythonInitCodeSource::Dialog:
       {
-        initCode = formConfig.initCode();
+        initCode = QStringLiteral( "# Calling function ’%1’\n\n%2" ).arg( formConfig.initFunction(), formConfig.initCode() );
         break;
       }
 
@@ -241,11 +241,16 @@ QList<QgsProject::EmbeddedCode> QgsProjectUtils::embeddedCode( QgsProject *proje
 #endif
           initCode = inf.readAll();
           inputFile->close();
+          initCode = QStringLiteral( "# Calling function ’%1’\n# From file %2\n\n" ).arg( formConfig.initFunction(), formConfig.initFilePath() ) + initCode;
         }
         break;
       }
 
       case Qgis::AttributeFormPythonInitCodeSource::Environment:
+      {
+        initCode = QStringLiteral( "# Calling function ’%1’\n# From environment\n\n" ).arg( formConfig.initFunction() );
+      }
+
       case Qgis::AttributeFormPythonInitCodeSource::NoSource:
       {
         break;

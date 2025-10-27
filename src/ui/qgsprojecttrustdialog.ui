@@ -80,7 +80,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>QGIS offers features to execute python code in projects. If you don’t trust the author(s) of this project, we recommend continuing in restricted mode to avoid potentially malicious code.</string>
+      <string>This project contains executable python code which you should only allow if you trust the authors of this project. If you don't trust or you are unsure, we recommend denying.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -106,22 +106,158 @@
    <item row="3" column="0">
     <widget class="QCheckBox" name="mTrustProjectFolderCheckBox">
      <property name="text">
-      <string>Apply decision to all projects in folder</string>
+      <string/>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
-    <spacer name="verticalSpacer2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="4" colspan="2">
+    <widget class="QStackedWidget" name="mCodePreviewStackedWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>0</height>
-      </size>
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-    </spacer>
+     <widget class="QWidget" name="mCodePreviewListPage">
+      <layout class="QVBoxLayout" name="mCodePreviewListLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="mCodePreviewListLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Embedded Code List</string>
+         </property>
+         <property name="font">
+          <font>
+           <bold>true</bold>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="mCodePreviewList">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>90</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="mCodePreviewListTipLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Double-click on a list item to preview the code.</string>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+          </font>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mCodePreviewPage">
+      <layout class="QVBoxLayout" name="mCodePreviewLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QHBoxLayout" name="mCodePreviewHeaderLayout">
+         <item>
+          <widget class="QToolButton" name="mCodePreviewBackButton">
+           <property name="toolTip">
+            <string>Return to list</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/mActionArrowLeft.svg</normaloff>:/images/themes/default/mActionArrowLeft.svg</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="mCodePreviewLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Code Preview</string>
+           </property>
+           <property name="font">
+            <font>
+             <bold>true</bold>
+            </font>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QgsCodeEditorPython" name="mCodePreviewEditor" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>90</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
    <item row="5" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="mButtonBox">

@@ -395,7 +395,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar 
   bool trusted = QgsProjectUtils::checkUserTrust( project, &undetermined );
   if ( undetermined && pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Ask )
   {
-    QgsProjectTrustDialog dialog( project );
+    QgsProjectTrustDialog dialog( project, QgsProjectUtils::embeddedCode( project ) );
     dialog.exec();
     trusted = QgsProjectUtils::checkUserTrust( project );
   }
