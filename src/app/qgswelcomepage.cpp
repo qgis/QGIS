@@ -440,7 +440,7 @@ bool QgsWelcomePage::eventFilter( QObject *obj, QEvent *event )
 {
   if ( obj == mNewsFeedListView->viewport() && event->type() == QEvent::MouseButtonRelease )
   {
-    QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>( event );
+    QMouseEvent *mouseEvent = qgis::down_cast<QMouseEvent *>( event );
     if ( mouseEvent->button() == Qt::LeftButton )
     {
       const QModelIndex index = mNewsFeedListView->indexAt( mouseEvent->pos() );

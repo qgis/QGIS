@@ -226,11 +226,11 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     rendererStyles.prepend( rendererBackgroundStyle );
 
   mRenderer = std::make_unique< QgsVectorTileBasicRenderer >();
-  QgsVectorTileBasicRenderer *renderer = dynamic_cast< QgsVectorTileBasicRenderer *>( mRenderer.get() );
+  QgsVectorTileBasicRenderer *renderer = static_cast< QgsVectorTileBasicRenderer *>( mRenderer.get() );
   renderer->setStyles( rendererStyles );
 
   mLabeling = std::make_unique< QgsVectorTileBasicLabeling >();
-  QgsVectorTileBasicLabeling *labeling = dynamic_cast< QgsVectorTileBasicLabeling * >( mLabeling.get() );
+  QgsVectorTileBasicLabeling *labeling = static_cast< QgsVectorTileBasicLabeling * >( mLabeling.get() );
   labeling->setStyles( labelingStyles );
 }
 

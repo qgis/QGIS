@@ -1207,15 +1207,15 @@ void QgsDxfExport::appendCurve( const QgsCurve &c, QVector<QgsPoint> &points, QV
   switch ( QgsWkbTypes::flatType( c.wkbType() ) )
   {
     case Qgis::WkbType::LineString:
-      appendLineString( *dynamic_cast<const QgsLineString *>( &c ), points, bulges );
+      appendLineString( *qgis::down_cast<const QgsLineString *>( &c ), points, bulges );
       break;
 
     case Qgis::WkbType::CircularString:
-      appendCircularString( *dynamic_cast<const QgsCircularString *>( &c ), points, bulges );
+      appendCircularString( *qgis::down_cast<const QgsCircularString *>( &c ), points, bulges );
       break;
 
     case Qgis::WkbType::CompoundCurve:
-      appendCompoundCurve( *dynamic_cast<const QgsCompoundCurve *>( &c ), points, bulges );
+      appendCompoundCurve( *qgis::down_cast<const QgsCompoundCurve *>( &c ), points, bulges );
       break;
 
     default:
