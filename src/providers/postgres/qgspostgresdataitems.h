@@ -77,10 +77,25 @@ class QgsPGSchemaItem : public QgsDatabaseSchemaItem
 
     QString connectionName() const { return mConnectionName; }
 
+    /*
+     * Set if versioning of QGIS projects is active for this schema.
+     *
+     * \since QGIS 4.0
+     */
+    void setProjectVersioning( const bool active ) { mProjectVersioningActive = active; }
+
+    /*
+     * Returns if versioning of QGIS projects is active for this schema.
+     *
+     * \since QGIS 4.0
+     */
+    bool projectVersioning() const { return mProjectVersioningActive; }
+
   private:
     QgsPGLayerItem *createLayer( QgsPostgresLayerProperty layerProperty );
 
     QString mConnectionName;
+    bool mProjectVersioningActive = false;
 
     // QgsDataItem interface
   public:

@@ -29,6 +29,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsproject.h"
+#include "qgspostgresutils.h"
 
 
 // ---------------------------------------------------------------------------
@@ -267,6 +268,8 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
       }
     }
   }
+
+  mProjectVersioningActive = QgsPostgresUtils::qgisProjectVersioningActive( conn, mName );
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
 
