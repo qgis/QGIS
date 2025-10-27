@@ -47,7 +47,7 @@ qt_wrap_ui(QGIS_UIS_H
   ${PLOT_UIS}
 )
 
-set(QGIS_GUI_UI_HDRS ${QGIS_UIS_H} PARENT_SCOPE)
+install(FILES ${QGIS_UIS_H} DESTINATION ${QGIS_INCLUDE_DIR})
 
 add_custom_target(ui ALL DEPENDS ${QGIS_UIS_H})
 
