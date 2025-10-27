@@ -5,8 +5,8 @@ QgsPointCloud3DSymbol.ColorRamp = QgsPointCloud3DSymbol.RenderingStyle.ColorRamp
 QgsPointCloud3DSymbol.RgbRendering = QgsPointCloud3DSymbol.RenderingStyle.RgbRendering
 QgsPointCloud3DSymbol.Classification = QgsPointCloud3DSymbol.RenderingStyle.Classification
 try:
-    QgsPointCloud3DSymbol.__abstract_methods__ = ['symbolType', 'byteStride']
-    QgsPointCloud3DSymbol.__overridden_methods__ = ['type', 'copyBaseSettings']
+    QgsPointCloud3DSymbol.__abstract_methods__ = ['clone', 'symbolType', 'byteStride']
+    QgsPointCloud3DSymbol.__overridden_methods__ = ['type', 'clone', 'copyBaseSettings']
     QgsPointCloud3DSymbol.__group__ = ['symbols']
 except (NameError, AttributeError):
     pass
