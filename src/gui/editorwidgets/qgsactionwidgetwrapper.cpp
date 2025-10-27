@@ -115,7 +115,7 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
             {
               mMessageBar->pushMessage(
                 tr( "Security warning" ),
-                tr( "The attribute form contains embedded Python code which has been denied execution." ),
+                tr( "The action contains embedded Python code which has been denied execution." ),
                 Qgis::MessageLevel::Warning
               );
             }

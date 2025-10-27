@@ -100,6 +100,7 @@
 #include "qgsmaplayeraction.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgsmessagebar.h"
 
 #include <nlohmann/json.hpp>
 
@@ -1908,6 +1909,21 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, const QUuid &act
         idx = fldIdx;
         break;
       }
+    }
+  }
+
+  const QgsAction act = layer->actions()->action( action );
+  if ( act.type() == Qgis::AttributeActionType::GenericPython )
+  {
+    const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+    if ( !allowed )
+    {
+      QgisApp::instance()->messageBar()->pushMessage(
+        tr( "Security warning" ),
+        tr( "The action contains embedded Python code which has been denied execution." ),
+        Qgis::MessageLevel::Warning
+      );
+      return;
     }
   }
 

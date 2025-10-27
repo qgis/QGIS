@@ -113,6 +113,17 @@ void QgsActionMenu::triggerAction()
     }
     case Qgis::ActionType::AttributeAction:
     {
+      const QgsAction act = data.actionData.value<QgsAction>();
+      if ( act.type() == Qgis::AttributeActionType::GenericPython )
+      {
+        const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+        if ( !allowed )
+        {
+          emit messageEmitted( tr( "The action contains embedded Python code which has been denied execution." ), Qgis::MessageLevel::Warning );
+          return;
+        }
+      }
+
       // define custom substitutions: layer id and clicked coords
       QgsExpressionContext context = mLayer->createExpressionContext();
       context.setFeature( mFeature );
@@ -120,7 +131,6 @@ void QgsActionMenu::triggerAction()
       QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
       actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
       context << actionScope;
-      const QgsAction act = data.actionData.value<QgsAction>();
       act.run( context );
       break;
     }

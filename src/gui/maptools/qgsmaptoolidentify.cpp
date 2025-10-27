@@ -69,6 +69,9 @@ QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas *canvas )
   , mLastMapUnitsPerPixel( -1.0 )
   , mCoordinatePrecision( 6 )
 {
+  connect( mIdentifyMenu, &QgsIdentifyMenu::messageEmitted, this, &QgsMapTool::messageEmitted );
+  connect( mIdentifyMenu, &QgsIdentifyMenu::messageDiscarded, this, &QgsMapTool::messageDiscarded );
+
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
 }
 
