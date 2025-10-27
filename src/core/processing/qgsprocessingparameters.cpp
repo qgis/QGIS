@@ -530,9 +530,11 @@ QString QgsProcessingParameters::parameterAsEnumString( const QgsProcessingParam
     return QString();
 
   QString enumText = parameterAsString( definition, value, context );
-  const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
-  if ( enumText.isEmpty() || !enumDef->options().contains( enumText ) )
-    enumText = definition->defaultValue().toString();
+  if ( const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition ) )
+  {
+    if ( enumText.isEmpty() || !enumDef->options().contains( enumText ) )
+      enumText = definition->defaultValue().toString();
+  }
 
   return enumText;
 }
@@ -587,18 +589,20 @@ QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessing
 
   processVariant( val );
 
-  const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
-  // check that values are valid enum values. The resulting set will be empty
-  // if all values are present in the enumDef->options(), otherwise it will contain
-  // values which are invalid
-  const QStringList options = enumDef->options();
-  const QSet<QString> subtraction = QSet<QString>( enumValues.begin(), enumValues.end() ).subtract( QSet<QString>( options.begin(), options.end() ) );
-
-  if ( enumValues.isEmpty() || !subtraction.isEmpty() )
+  if ( const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition ) )
   {
-    enumValues.clear();
-    // cppcheck-suppress invalidContainer
-    processVariant( definition->defaultValue() );
+    // check that values are valid enum values. The resulting set will be empty
+    // if all values are present in the enumDef->options(), otherwise it will contain
+    // values which are invalid
+    const QStringList options = enumDef->options();
+    const QSet<QString> subtraction = QSet<QString>( enumValues.begin(), enumValues.end() ).subtract( QSet<QString>( options.begin(), options.end() ) );
+
+    if ( enumValues.isEmpty() || !subtraction.isEmpty() )
+    {
+      enumValues.clear();
+      // cppcheck-suppress invalidContainer
+      processVariant( definition->defaultValue() );
+    }
   }
 
   return enumValues;
