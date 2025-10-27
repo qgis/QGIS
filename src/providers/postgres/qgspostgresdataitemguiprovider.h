@@ -65,7 +65,8 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     static void duplicateProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
     static void moveProjectsToSchema( const QList<QgsPGProjectItem *> &selection, QgsDataItemGuiContext context );
     static void saveCurrentProject( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
-    static void saveProjects( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );    
+    static void saveProjects( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
+    static void allowProjectsVersioning( const QString connectionName, const QString schemaName, QgsDataItemGuiContext context );
 };
 
 #endif // QGSPOSTGRESDATAITEMGUIPROVIDER_H
