@@ -825,7 +825,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   // this updates the mouse position
-  QPoint movement2(1, 1);
+  QPoint movement2( 1, 1 );
   QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 5 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent4 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 );
@@ -1284,7 +1284,7 @@ void TestQgs3DCameraController::testOrthographic()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
   engine.setRootEntity( scene );
 
-  mapSettings->setProjectionType(Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection);
+  mapSettings->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
 
   // look from the top
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );

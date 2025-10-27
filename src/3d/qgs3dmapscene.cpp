@@ -389,17 +389,27 @@ bool Qgs3DMapScene::updateScene( bool forceUpdate )
     {
       Qt3DRender::QCameraLens *lens = camera->lens();
       projMatrix = {
-        2.0f / (lens->right() - lens->left()), 0, 0, 0,
-        0, 2.0f / (lens->top() - lens->bottom()), 0, 0,
-        0, 0, 1, 0,
-        -(lens->left() + lens->right()) / (lens->right() - lens->left()),
-        -(lens->top() + lens->bottom()) / (lens->top() - lens->bottom()),
-        -1.0f, 1.0f,
+        2.0f / ( lens->right() - lens->left() ),
+        0,
+        0,
+        0,
+        0,
+        2.0f / ( lens->top() - lens->bottom() ),
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        -( lens->left() + lens->right() ) / ( lens->right() - lens->left() ),
+        -( lens->top() + lens->bottom() ) / ( lens->top() - lens->bottom() ),
+        -1.0f,
+        1.0f,
       };
       break;
     }
     default:
-      QgsDebugError("Unhandled 3D projection type");
+      QgsDebugError( "Unhandled 3D projection type" );
       projMatrix = camera->projectionMatrix(); // Give up and use the current matrix
   }
   sceneContext.viewProjectionMatrix = projMatrix * camera->viewMatrix();
@@ -488,7 +498,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 
   mCameraController->frameTriggered( dt );
 
-  if( updateScene() )
+  if ( updateScene() )
     // If the scene was changed, node bboxes might have changed, so we need to
     // update near/far planes.
     updateCameraNearFarPlanes();
