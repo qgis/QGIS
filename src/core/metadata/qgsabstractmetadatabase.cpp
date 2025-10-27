@@ -213,12 +213,9 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
   mnl = metadataElement.namedItem( QStringLiteral( "abstract" ) );
   mAbstract = mnl.toElement().text();
 
-  if ( context.projectTranslator() )
-  {
-    mType = context.projectTranslator()->translate( "metadata", mType );
-    mTitle = context.projectTranslator()->translate( "metadata", mTitle );
-    mAbstract = context.projectTranslator()->translate( "metadata", mAbstract );
-  }
+  mType = context.projectTranslator()->translate( "metadata", mType );
+  mTitle = context.projectTranslator()->translate( "metadata", mTitle );
+  mAbstract = context.projectTranslator()->translate( "metadata", mAbstract );
 
   // set keywords
   const QDomNodeList keywords = metadataElement.elementsByTagName( QStringLiteral( "keywords" ) );
