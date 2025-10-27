@@ -63,10 +63,9 @@ class TestQgsElevationProfile(QgisTestCase):
         profile.setSubsectionsSymbol(line_symbol)
         self.assertEqual(profile.subsectionsSymbol().color().name(), "#ff0000")
 
-        profile.setLayers([layer1, layer2])
-        self.assertEqual(profile.layers(), [layer1, layer2])
-
-        # TODO LAYERS
+        profile.layerTree().addLayer(layer1)
+        group = profile.layerTree().addGroup("my group")
+        group.addLayer(layer2)
 
         # save to xml
         context = QgsReadWriteContext()
@@ -86,9 +85,22 @@ class TestQgsElevationProfile(QgisTestCase):
         self.assertEqual(profile2.subsectionsSymbol().color().name(), "#ff0000")
 
         # restoration of layers requires resolving references
-        self.assertFalse(profile2.layers())
+        self.assertEqual(
+            [l.name() for l in profile2.layerTree().findLayers()], ["l1", "l2"]
+        )
+        self.assertEqual(
+            [l.layer() for l in profile2.layerTree().findLayers()], [None, None]
+        )
         profile2.resolveReferences(project)
-        self.assertEqual(profile2.layers(), [layer1, layer2])
+        self.assertEqual(
+            [l.layer() for l in profile2.layerTree().findLayers()], [layer1, layer2]
+        )
+        # make sure group structure was restored
+        self.assertEqual(
+            [n.name() for n in profile2.layerTree().children()], ["l1", "my group"]
+        )
+        group = profile2.layerTree().findGroup("my group")
+        self.assertEqual([l.name() for l in group.children()], ["l2"])
 
 
 if __name__ == "__main__":

@@ -144,7 +144,7 @@ class QgsPGProjectItem : public QgsProjectItem
 {
     Q_OBJECT
   public:
-    QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri postgresProjectUri, const QString &connectionName );
+    QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri &postgresProjectUri, const QString &connectionName );
 
     QString schemaName() const { return mProjectUri.schemaName; }
     QgsPostgresProjectUri postgresProjectUri() const { return mProjectUri; }

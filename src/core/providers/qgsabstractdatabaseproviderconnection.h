@@ -232,6 +232,19 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     };
 
     /**
+     * Splits a simple query in the form "SELECT column(s) FROM table(s) [WHERE ...]" into its components
+     * \param sql the SQL query
+     * \param columns output list of columns
+     * \param tables output list of tables
+     * \param where output where clause (without the "WHERE" keyword)
+     * \return TRUE in case of success
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static bool splitSimpleQuery( const QString &sql, QStringList &columns, QStringList &tables, QString &where ) SIP_SKIP;
+
+
+    /**
      * \brief The SqlVectorLayerOptions stores all information required to create a SQL (query) layer.
      * \see createSqlVectorLayer()
      *

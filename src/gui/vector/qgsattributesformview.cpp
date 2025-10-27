@@ -627,7 +627,7 @@ void QgsAttributesFormLayoutView::onItemDoubleClicked( const QModelIndex &index 
 
       QgsTextWidgetWrapper *textWrapper = new QgsTextWidgetWrapper( mLayer, nullptr, this );
       QgsFeature previewFeature;
-      mLayer->getFeatures().nextFeature( previewFeature );
+      ( void ) mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( previewFeature );
 
       //update preview on text change
       connect( text, &QgsCodeEditorExpression::textChanged, this, [textWrapper, previewFeature, text] {

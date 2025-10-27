@@ -31,6 +31,7 @@ class QDomElement;
 class QgsMapLayer;
 class QgsCurve;
 class QgsLineSymbol;
+class QgsLayerTree;
 
 /**
  * \ingroup core
@@ -89,18 +90,9 @@ class CORE_EXPORT QgsElevationProfile : public QObject
     QIcon icon() const;
 
     /**
-     * Sets the list of \a layers to include in the profile.
-     *
-     * \see layers()
+     * Returns the layer tree used by the profile.
      */
-    void setLayers( const QList<QgsMapLayer *> &layers );
-
-    /**
-     * Returns the list of layers included in the profile.
-     *
-     * \see setLayers()
-     */
-    QList<QgsMapLayer *> layers() const;
+    QgsLayerTree *layerTree();
 
     /**
      * Returns the crs associated with the profile's map coordinates.
@@ -230,7 +222,7 @@ class CORE_EXPORT QgsElevationProfile : public QObject
     QgsCoordinateReferenceSystem mCrs;
     bool mLockAxisScales = false;
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
-    QList< QgsMapLayerRef > mLayers;
+    std::unique_ptr<QgsLayerTree> mLayerTree;
     std::unique_ptr<QgsCurve> mProfileCurve;
     double mTolerance = 0;
     std::unique_ptr<QgsLineSymbol> mSubsectionsSymbol;

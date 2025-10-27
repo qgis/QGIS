@@ -507,6 +507,10 @@ void TestQgsProcessingFixGeometry::fixGapAlg()
   QVERIFY( gapsLayer.isValid() );
   QVERIFY( neighborsLayer.isValid() );
 
+  QgsProject::instance()->addMapLayer( &sourceLayer );
+  QgsProject::instance()->addMapLayer( &gapsLayer );
+  QgsProject::instance()->addMapLayer( &neighborsLayer );
+
   QFETCH( QStringList, reportList );
   QFETCH( int, method );
   QFETCH( int, featureCount );
@@ -528,6 +532,7 @@ void TestQgsProcessingFixGeometry::fixGapAlg()
   bool ok = false;
   QgsProcessingFeedback feedback;
   auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );

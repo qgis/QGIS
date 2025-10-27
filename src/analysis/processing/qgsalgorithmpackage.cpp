@@ -498,7 +498,7 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
     if ( saveStyles )
     {
       auto res = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( newFilename, newLayer ) );
-      if ( res )
+      if ( res->isValid() )
       {
         QString errorMsg;
         QDomDocument doc( QStringLiteral( "qgis" ) );

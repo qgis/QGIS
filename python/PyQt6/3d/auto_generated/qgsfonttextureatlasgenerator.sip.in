@@ -73,6 +73,15 @@ The ``string`` must match one of the strings passed to
 atlas.
 %End
 
+    int totalWidth( const QString &string ) const;
+%Docstring
+Returns the total width (in pixels) required for a given ``string``.
+
+The ``string`` must match one of the strings passed to
+:py:class:`QgsFontTextureAtlasGenerator` when creating the texture
+atlas.
+%End
+
     QPoint pixelOffsetForGrapheme( const QString &string, int graphemeIndex ) const;
 %Docstring
 Returns the pixel offset at which the texture for the matching grapheme

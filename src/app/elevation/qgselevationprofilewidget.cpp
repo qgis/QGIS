@@ -179,7 +179,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( const QString &name )
   connect( mLayerTreeView, &QgsAppElevationProfileLayerTreeView::addLayers, this, &QgsElevationProfileWidget::addLayersInternal );
 
   connect( mLayerTreeView, &QAbstractItemView::doubleClicked, this, [this]( const QModelIndex &index ) {
-    if ( QgsMapLayer *layer = mLayerTreeView->indexToLayer( index ) )
+    if ( QgsMapLayer *layer = mLayerTreeView->layerForIndex( index ) )
     {
       QgisApp::instance()->showLayerProperties( layer, QStringLiteral( "mOptsPage_Elevation" ) );
     }
@@ -1247,7 +1247,7 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
   if ( !index.isValid() )
     setCurrentIndex( QModelIndex() );
 
-  if ( QgsMapLayer *layer = indexToLayer( index ) )
+  if ( QgsMapLayer *layer = layerForIndex( index ) )
   {
     QMenu *menu = new QMenu();
 

@@ -1367,6 +1367,43 @@ QString QgsSymbol::dump() const
   return s;
 }
 
+bool QgsSymbol::rendersIdenticallyTo( const QgsSymbol *other ) const
+{
+  if ( !other )
+    return false;
+
+  if ( mType != other->mType
+       || !qgsDoubleNear( mExtentBuffer, other->mExtentBuffer )
+       || mExtentBufferSizeUnit != other->mExtentBufferSizeUnit
+       || !qgsDoubleNear( mOpacity, other->mOpacity )
+       || mRenderHints != other->mRenderHints
+       || mSymbolFlags != other->mSymbolFlags
+       || mClipFeaturesToExtent != other->mClipFeaturesToExtent
+       || mForceRHR != other->mForceRHR
+
+       // TODO: consider actual buffer settings
+       || mBufferSettings
+       || other->mBufferSettings
+
+       // TODO: consider actual animation settings
+       || mAnimationSettings.isAnimated()
+       || other->mAnimationSettings.isAnimated() )
+    return false;
+
+  // TODO -- we could slacken this check if we ignore disabled layers
+  if ( mLayers.count() != other->mLayers.count() )
+  {
+    return false;
+  }
+
+  for ( int i = 0; i < mLayers.count(); ++i )
+  {
+    if ( !mLayers.at( i )->rendersIdenticallyTo( other->mLayers.at( i ) ) )
+      return false;
+  }
+  return true;
+}
+
 void QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const
 {
   QgsSldExportContext context;

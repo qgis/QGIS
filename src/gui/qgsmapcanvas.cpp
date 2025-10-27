@@ -774,6 +774,13 @@ QList<QgsMapLayer *> filterLayersForRender( const QList<QgsMapLayer *> &layers )
     }
     filteredLayers.append( layer );
   }
+
+  // remove any invalid layers
+  filteredLayers.erase( std::remove_if( filteredLayers.begin(), filteredLayers.end(), []( QgsMapLayer *layer ) {
+                          return !layer || !layer->isValid();
+                        } ),
+                        filteredLayers.end() );
+
   return filteredLayers;
 }
 

@@ -5180,6 +5180,9 @@ bool QgsPostgresProvider::hasMetadata() const
 
 QString QgsPostgresProvider::htmlMetadata() const
 {
+  if ( !mValid )
+    return QString();
+
   // construct multiple temporary tables to be used with PostgreSQL WITH statement
   // that build one on another and are then used to create single SQL query to get the additional metadata
 

@@ -42,6 +42,7 @@ class ANALYSIS_EXPORT QgsRelief
     {
         ReliefColor( const QColor &c, double min, double max )
           : color( c ), minElevation( min ), maxElevation( max ) {}
+
         QColor color;
         double minElevation;
         double maxElevation;

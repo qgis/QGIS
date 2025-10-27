@@ -110,9 +110,9 @@ QList< QgsLayerTreeNode * > QgsLayerTree::layerAndCustomNodeOrder() const
   return layerAndCustomNodeOrderRespectingGroupLayers();
 }
 
-QgsLayerTree *QgsLayerTree::readXml( QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
+std::unique_ptr< QgsLayerTree > QgsLayerTree::readXml( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
-  QgsLayerTree *tree = new QgsLayerTree();
+  auto tree = std::make_unique< QgsLayerTree >();
 
   tree->readCommonXml( element );
 

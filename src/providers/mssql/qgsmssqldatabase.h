@@ -141,7 +141,7 @@ class QgsMssqlQuery : public QSqlQuery
   public:
     explicit QgsMssqlQuery( std::shared_ptr<QgsMssqlDatabase> db )
       : QSqlQuery( db->db() )
-      , mDb( db )
+      , mDb( std::move( db ) )
     {
       if ( mDb->hasTransaction() )
         mDb->mTransactionMutex->lock();
