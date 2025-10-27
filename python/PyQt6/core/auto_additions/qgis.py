@@ -781,12 +781,16 @@ Qgis.PythonEmbeddedMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.PythonEmbeddedType.Macro.__doc__ = ""
 Qgis.PythonEmbeddedType.ExpressionFunction.__doc__ = ""
+Qgis.PythonEmbeddedType.Action.__doc__ = ""
+Qgis.PythonEmbeddedType.FormInitCode.__doc__ = ""
 Qgis.PythonEmbeddedType.__doc__ = """Type of Python Embedded in projects
 
 .. versionadded:: 3.40
 
 * ``Macro``: 
 * ``ExpressionFunction``: 
+* ``Action``: 
+* ``FormInitCode``: 
 
 """
 # --

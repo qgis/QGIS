@@ -149,6 +149,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     };
     // *INDENT-ON*
 
+    struct EmbeddedCode
+    {
+      Qgis::PythonEmbeddedType type;
+      QString name;
+      QString code;
+    };
+
     //! Returns the QgsProject singleton instance
     static QgsProject *instance();
 
@@ -1810,7 +1817,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       * \since QGIS 3.40
       */
     void cleanFunctionsFromProject() SIP_SKIP;
-
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

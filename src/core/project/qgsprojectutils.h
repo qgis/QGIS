@@ -20,10 +20,10 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsproject.h"
 
 #include <QList>
 
-class QgsProject;
 class QgsMapLayer;
 
 /**
@@ -66,6 +66,12 @@ class CORE_EXPORT QgsProjectUtils
      */
     static bool checkUserTrust( QgsProject *project, bool *undetermined SIP_OUT = nullptr );
 
+    /**
+     * Traverses settings to return all embedded code found within the \a project.
+     *
+     * \since QGIS 4.0
+     */
+    static QList<QgsProject::EmbeddedCode> embeddedCode( QgsProject *project );
 };
 
 #endif // QGSPROJECTUTILS_H

@@ -57,6 +57,13 @@ undetermined parameter will be set to ``True``.
 .. versionadded:: 4.0
 %End
 
+    static QList<QgsProject::EmbeddedCode> embeddedCode( QgsProject *project );
+%Docstring
+Traverses settings to return all embedded code found within the
+``project``.
+
+.. versionadded:: 4.0
+%End
 };
 
 

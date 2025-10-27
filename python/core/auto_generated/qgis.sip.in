@@ -301,6 +301,8 @@ The development version
     {
       Macro,
       ExpressionFunction,
+      Action,
+      FormInitCode,
     };
 
     enum class DataProviderReadFlag

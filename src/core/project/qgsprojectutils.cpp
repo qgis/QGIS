@@ -16,16 +16,20 @@
  ***************************************************************************/
 
 #include "qgsprojectutils.h"
+#include "qgsaction.h"
+#include "qgsactionmanager.h"
 #include "qgsapplication.h"
+#include "qgsgrouplayer.h"
+#include "qgslayertree.h"
 #include "qgsmaplayerutils.h"
+#include "qgsnetworkcontentfetcherregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
-#include "qgsgrouplayer.h"
-#include "qgslayertree.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
 
 QList<QgsMapLayer *> QgsProjectUtils::layersMatchingPath( const QgsProject *project, const QString &path )
 {
@@ -173,4 +177,90 @@ bool QgsProjectUtils::checkUserTrust( QgsProject *project, bool *undetermined )
     *undetermined = true;
   }
   return false;
+}
+
+QList<QgsProject::EmbeddedCode> QgsProjectUtils::embeddedCode( QgsProject *project )
+{
+  QList<QgsProject::EmbeddedCode> code;
+
+  const QString macros = project->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() );
+  if ( !macros.isEmpty() )
+  {
+    QgsProject::EmbeddedCode details;
+    details.type = Qgis::PythonEmbeddedType::Macro;
+    details.name = QObject::tr( "Macros" );
+    details.code = macros;
+    code << details;
+  }
+
+  const QString expressionFunctions = project->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ) );
+  if ( !expressionFunctions.isEmpty() )
+  {
+    QgsProject::EmbeddedCode details;
+    details.type = Qgis::PythonEmbeddedType::ExpressionFunction;
+    details.name = QObject::tr( "Expression functions" );
+    details.code = expressionFunctions;
+    code << details;
+  }
+
+  const QVector<QgsVectorLayer *> layers = project->layers<QgsVectorLayer *>();
+  for ( QgsVectorLayer *layer : layers )
+  {
+    const QList<QgsAction> actions = layer->actions()->actions();
+    for ( const QgsAction &action : actions )
+    {
+      if ( action.type() == Qgis::AttributeActionType::GenericPython && !action.command().isEmpty() )
+      {
+        QgsProject::EmbeddedCode details;
+        details.type = Qgis::PythonEmbeddedType::Action;
+        details.name = QObject::tr( "%1: Action" ).arg( layer->name() );
+        details.code = action.command();
+        code << details;
+      }
+    }
+
+    const QgsEditFormConfig formConfig = layer->editFormConfig();
+    QString initCode;
+    switch ( formConfig.initCodeSource() )
+    {
+      case Qgis::AttributeFormPythonInitCodeSource::Dialog:
+      {
+        initCode = formConfig.initCode();
+        break;
+      }
+
+      case Qgis::AttributeFormPythonInitCodeSource::File:
+      {
+        QFile *inputFile = QgsApplication::networkContentFetcherRegistry()->localFile( formConfig.initFilePath() );
+        if ( inputFile && inputFile->open( QFile::ReadOnly ) )
+        {
+          // Read it into a string
+          QTextStream inf( inputFile );
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+          inf.setCodec( "UTF-8" );
+#endif
+          initCode = inf.readAll();
+          inputFile->close();
+        }
+        break;
+      }
+
+      case Qgis::AttributeFormPythonInitCodeSource::Environment:
+      case Qgis::AttributeFormPythonInitCodeSource::NoSource:
+      {
+        break;
+      }
+    }
+
+    if ( !initCode.isEmpty() )
+    {
+      QgsProject::EmbeddedCode details;
+      details.type = Qgis::PythonEmbeddedType::FormInitCode;
+      details.name = QObject::tr( "%1: Attribute form init code" ).arg( layer->name() );
+      details.code = initCode;
+      code << details;
+    }
+  }
+
+  return code;
 }

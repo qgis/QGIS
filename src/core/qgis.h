@@ -436,8 +436,10 @@ class CORE_EXPORT Qgis
      */
     enum class PythonEmbeddedType : int
     {
-      Macro = 0,
-      ExpressionFunction = 1,
+      Macro = 0,              //! Project macros
+      ExpressionFunction = 1, //! Expression functions
+      Action = 2,             //! Map layers' action (since QGIS 4.0)
+      FormInitCode = 3,       //! Attribute forms' initiation code (since QGIS 4.0)
     };
     Q_ENUM( PythonEmbeddedType )
 

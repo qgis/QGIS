@@ -45,6 +45,13 @@ reference open within the main QGIS application.
       WMSOnlineResource,
     };
 
+    struct EmbeddedCode
+    {
+      Qgis::PythonEmbeddedType type;
+      QString name;
+      QString code;
+    };
+
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -1797,7 +1804,6 @@ Sets the elevation shading renderer used for global map shading
 
 .. versionadded:: 3.30
 %End
-
 
 
 
