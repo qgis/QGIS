@@ -63,7 +63,7 @@ QString QgsGeometryCheckMultipartAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckMultipartAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckMultipartAlgorithm *QgsGeometryCheckMultipartAlgorithm::createInstance() const
@@ -122,7 +122,6 @@ QgsFields QgsGeometryCheckMultipartAlgorithm::outputFields()
   return fields;
 }
 
-
 QVariantMap QgsGeometryCheckMultipartAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;
@@ -153,8 +152,7 @@ QVariantMap QgsGeometryCheckMultipartAlgorithm::processAlgorithm( const QVariant
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
-  const QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project(), uniqueIdFieldIdx );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -172,7 +170,19 @@ QVariantMap QgsGeometryCheckMultipartAlgorithm::processAlgorithm( const QVariant
 
   multiStepFeedback.setCurrentStep( 2 );
   feedback->setProgressText( QObject::tr( "Collecting errors…" ) );
-  check.collectErrors( featurePools, checkErrors, messages, feedback );
+  QgsGeometryCheck::Result res = check.collectErrors( featurePools, checkErrors, messages, feedback );
+  if ( res == QgsGeometryCheck::Result::Success )
+  {
+    feedback->pushInfo( QObject::tr( "Errors collected successfully." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::Canceled )
+  {
+    throw QgsProcessingException( QObject::tr( "Operation was canceled." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::DuplicatedUniqueId )
+  {
+    throw QgsProcessingException( QObject::tr( "Field '%1' contains non-unique values and can not be used as unique ID." ).arg( uniqueIdFieldName ) );
+  }
 
   multiStepFeedback.setCurrentStep( 3 );
   feedback->setProgressText( QObject::tr( "Exporting errors…" ) );
