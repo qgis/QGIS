@@ -148,18 +148,15 @@ void QgsElevationProfileLayersDialog::filterVisible( bool enabled )
 
 QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profile, QgsMapCanvas *canvas )
   : QWidget( nullptr )
-  , mLayerTreeBridge( new QgsLayerTreeRegistryBridge( profile->layerTree(), QgsProject::instance(), this ) )
+  , mProfile( profile )
+  , mLayerTreeBridge( new QgsLayerTreeRegistryBridge( mProfile->layerTree(), QgsProject::instance(), this ) )
 {
   setObjectName( QStringLiteral( "ElevationProfile" ) );
 
-  mProfile = profile;
-  if ( mProfile )
-  {
-    connect( mProfile, &QObject::destroyed, this, &QgsElevationProfileWidget::close );
-    connect( mProfile, &QgsElevationProfile::nameChanged, this, [this]( const QString &newName ) {
-      mDockableWidgetHelper->setWindowTitle( newName );
-    } );
-  }
+  connect( mProfile, &QObject::destroyed, this, &QgsElevationProfileWidget::close );
+  connect( mProfile, &QgsElevationProfile::nameChanged, this, [this]( const QString &newName ) {
+    mDockableWidgetHelper->setWindowTitle( newName );
+  } );
 
   setAttribute( Qt::WA_DeleteOnClose );
   const QgsSettings setting;
