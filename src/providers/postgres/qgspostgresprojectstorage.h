@@ -22,7 +22,7 @@
 
 
 //! Stores information parsed from postgres project URI
-typedef struct
+struct QgsPostgresProjectUri
 {
     bool valid;
 
@@ -32,7 +32,7 @@ typedef struct
     QString projectName;
     bool isVersion = false;
     QString dateSaved;
-} QgsPostgresProjectUri;
+};
 
 
 //! Implements storage of QGIS projects inside a PostgreSQL table
