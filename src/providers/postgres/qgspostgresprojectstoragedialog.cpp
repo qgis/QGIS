@@ -19,6 +19,8 @@
 #include "qgspostgresconnpool.h"
 #include "qgspostgresprojectstorage.h"
 #include "qgspostgresutils.h"
+#include "qgspostgresprojectversionsdialog.h"
+
 
 #include "qgsapplication.h"
 #include "qgsprojectstorage.h"
@@ -44,6 +46,17 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
   btnManageProjects->setMenu( menuManageProjects );
   buttonBox->addButton( btnManageProjects, QDialogButtonBox::ActionRole );
 
+  mVersionsTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mVersionsTableView->setSelectionMode( QAbstractItemView::SingleSelection );
+
+  mVersionsModel = new QgsPostgresProjectVersionsModel( QString(), this );
+  mVersionsTableView->setModel( mVersionsModel );
+
+  connect( mVersionsModel, &QAbstractTableModel::modelReset, this, [this] {
+    mVersionsTableView->resizeColumnsToContents();
+    mVersionsTableView->selectRow( 0 );
+  } );
+
   if ( saving )
   {
     setWindowTitle( tr( "Save project to PostgreSQL" ) );
@@ -57,12 +70,6 @@ QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, Q
     mEnableProjectVersions->setVisible( false );
 
     mGroupBoxVersions->setCollapsed( true );
-
-    mVersionsWidget->setColumnCount( 3 );
-    mVersionsWidget->setHorizontalHeaderLabels( QStringList() << tr( "Modified Time" ) << tr( "Modified User" ) << tr( "Comment" ) );
-    mVersionsWidget->setSelectionBehavior( QAbstractItemView::SelectRows );
-    mVersionsWidget->setSelectionMode( QAbstractItemView::SingleSelection );
-    mVersionsWidget->horizontalHeader()->setStretchLastSection( true );
   }
 
   connect( mCboConnection, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPostgresProjectStorageDialog::populateSchemas );
@@ -106,6 +113,8 @@ void QgsPostgresProjectStorageDialog::populateSchemas()
 {
   mCboSchema->clear();
   mCboProject->clear();
+
+  mVersionsModel->setConnection( mCboConnection->currentText() );
 
   QString name = mCboConnection->currentText();
   QgsDataSourceUri uri = QgsPostgresConn::connUri( name );
@@ -195,27 +204,7 @@ void QgsPostgresProjectStorageDialog::projectChanged()
       return;
     }
 
-    bool versioningActive = QgsPostgresUtils::qgisProjectVersioningActive( conn, mCboSchema->currentText() );
-
-    if ( versioningActive )
-    {
-      const QString sqlVersions = QStringLiteral( "SELECT date_saved, (metadata->>'last_modified_user'), comment "
-                                                  "FROM %1.qgis_projects_versions WHERE name = %2 ORDER BY (metadata->>'last_modified_time')::TIMESTAMP DESC" )
-                                    .arg( QgsPostgresConn::quotedIdentifier( mCboSchema->currentText() ), QgsPostgresConn::quotedValue( mCboProject->currentText() ) );
-      QgsPostgresResult resultVersions( conn->PQexec( sqlVersions ) );
-
-      mVersionsWidget->clearContents();
-      mVersionsWidget->setRowCount( resultVersions.PQntuples() );
-
-      for ( int i = 0; i < resultVersions.PQntuples(); ++i )
-      {
-        mVersionsWidget->setItem( i, 0, new QTableWidgetItem( resultVersions.PQgetvalue( i, 0 ) ) );
-        mVersionsWidget->setItem( i, 1, new QTableWidgetItem( resultVersions.PQgetvalue( i, 1 ) ) );
-        mVersionsWidget->setItem( i, 2, new QTableWidgetItem( resultVersions.PQgetvalue( i, 2 ) ) );
-      }
-
-      mVersionsWidget->resizeColumnsToContents();
-    }
+    mVersionsModel->populateVersions( mCboSchema->currentText(), mCboProject->currentText() );
   }
 }
 
@@ -234,16 +223,18 @@ void QgsPostgresProjectStorageDialog::removeProject()
 QString QgsPostgresProjectStorageDialog::currentProjectUri( bool schemaOnly )
 {
   QgsPostgresProjectUri postUri;
-  postUri.connInfo = QgsPostgresConn::connUri( mCboConnection->currentText() );
-  postUri.schemaName = mCboSchema->currentText();
-  if ( !schemaOnly )
-    postUri.projectName = mCboProject->currentText();
 
-  if ( !mVersionsWidget->selectedItems().isEmpty() )
+  // either project is empty (schema uri is requested) or nothig from versions is selected - return simple uri
+  if ( mCboProject->currentText().isEmpty() || mVersionsModel->rowCount() == 0 )
   {
-    postUri.isVersion = true;
-    int selectedRow = mVersionsWidget->selectedItems().first()->row();
-    postUri.dateSaved = mVersionsWidget->item( selectedRow, 0 )->data( Qt::DisplayRole ).toString();
+    postUri.connInfo = QgsPostgresConn::connUri( mCboConnection->currentText() );
+    postUri.schemaName = mCboSchema->currentText();
+    if ( !schemaOnly )
+      postUri.projectName = mCboProject->currentText();
+  }
+  else
+  {
+    postUri = mVersionsModel->projectUriForRow( mVersionsTableView->currentIndex().row() );
   }
 
   return QgsPostgresProjectStorage::encodeUri( postUri );
