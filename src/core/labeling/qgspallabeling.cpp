@@ -1787,7 +1787,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       double widthHorizontal = 0.0;
       for ( const QString &line : std::as_const( multiLineSplit ) )
       {
-        widthHorizontal = std::max( w, fm->horizontalAdvance( line ) );
+        widthHorizontal = std::max( widthHorizontal, fm->horizontalAdvance( line ) );
       }
 
       double widthVertical = 0.0;
