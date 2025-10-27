@@ -58,7 +58,7 @@ int QgsPostgresProjectVersionsModel::rowCount( const QModelIndex &parent ) const
   if ( parent.isValid() )
     return 0;
 
-  return mVersions.size();
+  return static_cast<int>( mVersions.size() );
 }
 
 int QgsPostgresProjectVersionsModel::columnCount( const QModelIndex &parent ) const
