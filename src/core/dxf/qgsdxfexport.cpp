@@ -2415,6 +2415,8 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
     return;
 
   QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+  if ( !lf )
+    return;
 
   // Copy to temp, editable layer settings
   // these settings will be changed by any data defined values, then used for rendering label components
