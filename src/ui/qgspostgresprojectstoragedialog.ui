@@ -126,9 +126,6 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item>
-           <widget class="QTableWidget" name="mVersionsWidget"/>
-          </item>
          </layout>
         </widget>
        </item>
