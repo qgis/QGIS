@@ -1888,8 +1888,7 @@ QgsPointLocator::MatchList QgsVertexTool::layerVerticesSnappedToPoint( QgsVector
 {
   MatchCollectingFilter myfilter( this );
   QgsPointLocator *loc = canvas()->snappingUtils()->locatorForLayer( layer );
-  double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
-  return loc->verticesInRect( mapPoint, tol, &myfilter, true );
+  return loc->verticesInRect( mapPoint, 1e-8, &myfilter, true );
 }
 
 QgsPointLocator::MatchList QgsVertexTool::layerSegmentsSnappedToSegment( QgsVectorLayer *layer, const QgsPointXY &mapPoint1, const QgsPointXY &mapPoint2 )
