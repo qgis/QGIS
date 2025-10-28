@@ -227,10 +227,10 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     virtual bool hasTiles() const;
 #endif
 
-    virtual QString getMapUrl() const;
-    virtual QString getFeatureInfoUrl() const;
-    virtual QString getTileUrl() const;
-    virtual QString getLegendGraphicUrl() const;
+    QString getMapUrl() const;
+    QString getFeatureInfoUrl() const;
+    QString getTileUrl() const;
+    QString getLegendGraphicUrl() const;
 
     //! Gets WMS version string
     QString wmsVersion();
