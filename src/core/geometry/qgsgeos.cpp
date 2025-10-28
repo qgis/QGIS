@@ -1220,6 +1220,9 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
     }
   }
 
+  if ( !splitPoints )
+    return nullptr;
+
   QgsMultiCurve lines;
 
   //For each part
