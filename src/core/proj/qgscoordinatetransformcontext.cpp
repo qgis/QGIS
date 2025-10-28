@@ -46,9 +46,20 @@ QgsCoordinateTransformContext::QgsCoordinateTransformContext( const QgsCoordinat
   : d( rhs.d )
 {}
 
+QgsCoordinateTransformContext::QgsCoordinateTransformContext( QgsCoordinateTransformContext &&rhs )  //NOLINT
+  : d( std::move( rhs.d ) )
+{}
+
+
 QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( const QgsCoordinateTransformContext &rhs )  //NOLINT
 {
   d = rhs.d;
+  return *this;
+}
+
+QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( QgsCoordinateTransformContext &&rhs )  //NOLINT
+{
+  d = std::move( rhs.d );
   return *this;
 }
 
