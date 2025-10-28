@@ -120,21 +120,20 @@ QgsFeatureList QgsRemovePartsByAreaAlgorithm::processFeature( const QgsFeature &
     QgsGeometry outputGeometry;
     if ( const QgsGeometryCollection *inputCollection = qgsgeometry_cast< const QgsGeometryCollection * >( geometry.constGet() ) )
     {
-      std::unique_ptr< QgsAbstractGeometry> filteredGeometry( geometry.constGet()->createEmptyWithSameType() );
-      QgsGeometryCollection *collection = qgsgeometry_cast< QgsGeometryCollection * >( filteredGeometry.get() );
+      std::unique_ptr< QgsGeometryCollection> filteredGeometry( inputCollection->createEmptyWithSameType() );
       const int size = inputCollection->numGeometries();
-      collection->reserve( size );
+      filteredGeometry->reserve( size );
       for ( int i = 0; i < size; ++i )
       {
         if ( const QgsSurface *surface = qgsgeometry_cast< const QgsSurface * >( inputCollection->geometryN( i ) ) )
         {
           if ( surface->area() >= minArea )
           {
-            collection->addGeometry( surface->clone() );
+            filteredGeometry->addGeometry( surface->clone() );
           }
         }
       }
-      if ( collection->numGeometries() == 0 )
+      if ( filteredGeometry->numGeometries() == 0 )
       {
         // skip empty features
         return {};
