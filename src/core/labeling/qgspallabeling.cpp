@@ -1728,7 +1728,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
     case Qgis::TextOrientation::Vertical:
     {
-      double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
+      double letterSpacing = mFormat.scaledFont( *rc ).letterSpacing();
       double labelWidth = fm->maxWidth();
       w = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
 
@@ -1750,7 +1750,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       }
 
       double widthVertical = 0.0;
-      double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
+      double letterSpacing = mFormat.scaledFont( *rc ).letterSpacing();
       double labelWidth = fm->maxWidth();
       widthVertical = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
 
