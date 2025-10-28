@@ -994,6 +994,9 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
 
 void QgsAttributeTableModel::prefetchSortData( const QString &expressionString, unsigned long cacheIndex )
 {
+  if ( !mLayer )
+    return;
+
   if ( cacheIndex >= mSortCaches.size() )
   {
     mSortCaches.resize( cacheIndex + 1 );

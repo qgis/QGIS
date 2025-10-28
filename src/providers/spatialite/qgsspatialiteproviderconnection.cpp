@@ -160,8 +160,7 @@ void QgsSpatiaLiteProviderConnection::dropVectorTable( const QString &schema, co
   {
     errCause = QObject::tr( "Connection to database failed" );
   }
-
-  if ( errCause.isEmpty() )
+  else
   {
     sqlite3 *sqlite_handle = hndl->handle();
     int ret;

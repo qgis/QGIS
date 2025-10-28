@@ -150,15 +150,18 @@ void QgsRendererMeshPropertiesWidget::syncToLayer( QgsMapLayer *mapLayer )
 
 void QgsRendererMeshPropertiesWidget::syncToLayerPrivate()
 {
+  if ( !mMeshLayer )
+    return;
+
   mMeshRendererActiveDatasetWidget->syncToLayer();
   mNativeMeshSettingsWidget->syncToLayer();
   mTriangularMeshSettingsWidget->syncToLayer();
   mEdgeMeshSettingsWidget->syncToLayer();
   m3dAveragingSettingsWidget->syncToLayer();
 
-  mNativeMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().nativeMeshSettings().isEnabled() : false );
-  mTriangularMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().triangularMeshSettings().isEnabled() : false );
-  mEdgeMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().edgeMeshSettings().isEnabled() : false );
+  mNativeMeshGroup->setChecked( mMeshLayer->rendererSettings().nativeMeshSettings().isEnabled() );
+  mTriangularMeshGroup->setChecked( mMeshLayer->rendererSettings().triangularMeshSettings().isEnabled() );
+  mEdgeMeshGroup->setChecked( mMeshLayer->rendererSettings().edgeMeshSettings().isEnabled() );
 
   onActiveScalarGroupChanged( mMeshLayer->rendererSettings().activeScalarDatasetGroup() );
   onActiveVectorGroupChanged( mMeshLayer->rendererSettings().activeVectorDatasetGroup() );

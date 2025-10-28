@@ -609,8 +609,14 @@ QgsFeatureIds QgsRelationEditorWidget::selectedChildFeatureIds() const
     }
     return featureIds;
   }
-  else
+  else if ( mFeatureSelectionMgr )
+  {
     return mFeatureSelectionMgr->selectedFeatureIds();
+  }
+  else
+  {
+    return {};
+  }
 }
 
 void QgsRelationEditorWidget::updateUiSingleEdit()
