@@ -93,7 +93,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgsforwardrenderview.h"
 #include "qgsambientocclusionrenderview.h"
-#include "qgsdebugtexturerenderview.h"
+#include "qgsoverlaytexturerenderview.h"
 #include "qgspostprocessingentity.h"
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
@@ -538,7 +538,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints )
 {
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
-  QgsDebugTextureRenderView &debugRenderView = frameGraph->debugTextureRenderView();
+  QgsOverlayTextureRenderView &overlayRenderView = frameGraph->overlayTextureRenderView();
 
   if ( !mMap.is2DMapOverlayEnabled() )
   {
@@ -548,16 +548,16 @@ void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoi
       mMapOverlayEntity->deleteLater();
       mMapOverlayEntity = nullptr;
     }
-    debugRenderView.setEnabled( mMap.debugShadowMapEnabled() || mMap.debugDepthMapEnabled() );
+    overlayRenderView.setEnabled( mMap.debugShadowMapEnabled() || mMap.debugDepthMapEnabled() );
     return;
   }
 
   if ( !mMapOverlayEntity )
   {
     QgsWindow3DEngine *engine = qobject_cast<QgsWindow3DEngine *>( mEngine );
-    mMapOverlayEntity = new QgsMapOverlayEntity( engine, &debugRenderView, &mMap, this );
+    mMapOverlayEntity = new QgsMapOverlayEntity( engine, &overlayRenderView, &mMap, this );
     mMapOverlayEntity->setEnabled( true );
-    debugRenderView.setEnabled( true );
+    overlayRenderView.setEnabled( true );
   }
 
 

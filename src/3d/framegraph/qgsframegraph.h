@@ -49,7 +49,7 @@ class QgsShadowRenderView;
 class QgsDepthRenderView;
 class QgsShadowSettings;
 class QgsOverlayTextureEntity;
-class QgsDebugTextureRenderView;
+class QgsOverlayTextureRenderView;
 class QgsAmbientOcclusionRenderView;
 class QgsAmbientOcclusionSettings;
 
@@ -193,10 +193,10 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     QgsAmbientOcclusionRenderView &ambientOcclusionRenderView();
 
     /**
-     * Returns debug texture renderview
+     * Returns overlay texture renderview
      * \since QGIS 4.0
      */
-    QgsDebugTextureRenderView &debugTextureRenderView();
+    QgsOverlayTextureRenderView &overlayTextureRenderView();
 
     /**
      * Updates shadow bias, light and texture size according to \a shadowSettings and \a lightSources
@@ -232,7 +232,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     static const QString SHADOW_RENDERVIEW;
     static const QString AXIS3D_RENDERVIEW;
     static const QString DEPTH_RENDERVIEW;
-    static const QString DEBUG_RENDERVIEW;
+    static const QString OVERLAY_RENDERVIEW;
     //! Ambient occlusion render view name
     static const QString AMBIENT_OCCLUSION_RENDERVIEW;
 
@@ -274,7 +274,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
 
     void constructShadowRenderPass();
     void constructForwardRenderPass();
-    void constructDebugTexturePass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
+    void constructOverlayTexturePass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
     void constructDepthRenderPass();
     void constructAmbientOcclusionRenderPass();

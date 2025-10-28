@@ -35,7 +35,7 @@
 
 
 class Qgs3DMapSettings;
-class QgsDebugTextureRenderView;
+class QgsOverlayTextureRenderView;
 class QgsMapLayer;
 class QgsMapOverlayTextureGenerator;
 class QgsWindow3DEngine;
@@ -53,7 +53,7 @@ class QgsMapOverlayEntity : public QgsOverlayTextureEntity
     Q_OBJECT
 
   public:
-    explicit QgsMapOverlayEntity( QgsWindow3DEngine *engine, QgsDebugTextureRenderView *debugTextureRenderView, Qgs3DMapSettings *mapSettings, Qt3DCore::QNode *parent = nullptr );
+    explicit QgsMapOverlayEntity( QgsWindow3DEngine *engine, QgsOverlayTextureRenderView *debugTextureRenderView, Qgs3DMapSettings *mapSettings, Qt3DCore::QNode *parent = nullptr );
 
     ~QgsMapOverlayEntity();
 
