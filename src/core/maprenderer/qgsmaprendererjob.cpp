@@ -657,7 +657,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.context()->setElevationMap( job.elevationMap );
     }
 
-    if ( ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputs ) && ( mSettings.flags() & Qgis::MapSettingsFlag::RenderPartialOutput ) )
+    if ( job.renderer && ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputs ) && ( mSettings.flags() & Qgis::MapSettingsFlag::RenderPartialOutput ) )
     {
       if ( canUseCache && ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputOverPreviousCachedImage ) && mCache->hasAnyCacheImage( job.layerId + QStringLiteral( "_preview" ) ) )
       {

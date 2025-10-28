@@ -3217,7 +3217,10 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
     return;
   }
 
-  if ( !mFillLineSymbolRenderStarted && mFillLineSymbol )
+  if ( !mFillLineSymbol )
+    return;
+
+  if ( !mFillLineSymbolRenderStarted )
   {
     mFillLineSymbol->setRenderHints( mFillLineSymbol->renderHints() | Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
     mFillLineSymbol->startRender( context.renderContext(), context.fields() );
