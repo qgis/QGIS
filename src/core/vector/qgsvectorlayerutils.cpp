@@ -1334,7 +1334,7 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
 }
 
 template <typename T, typename ConverterFunc>
-void populateDataArray( const QVector<QVariant> &values, const QVariant &nullValue, QByteArray &res, ConverterFunc converter )
+void populateFieldDataArray( const QVector<QVariant> &values, const QVariant &nullValue, QByteArray &res, ConverterFunc converter )
 {
   res.resize( values.size() * sizeof( T ) );
   T *data = reinterpret_cast<T *>( res.data() );
@@ -1370,61 +1370,61 @@ QByteArray QgsVectorLayerUtils::fieldToDataArray( const QgsFields &fields, const
   {
     case QMetaType::Int:
     {
-      populateDataArray<int>( values, nullValue, res, []( const QVariant & v ) { return v.toInt(); } );
+      populateFieldDataArray<int>( values, nullValue, res, []( const QVariant & v ) { return v.toInt(); } );
       break;
     }
 
     case QMetaType::UInt:
     {
-      populateDataArray<unsigned int>( values, nullValue, res, []( const QVariant & v ) { return v.toUInt(); } );
+      populateFieldDataArray<unsigned int>( values, nullValue, res, []( const QVariant & v ) { return v.toUInt(); } );
       break;
     }
 
     case QMetaType::LongLong:
     {
-      populateDataArray<long long>( values, nullValue, res, []( const QVariant & v ) { return v.toLongLong(); } );
+      populateFieldDataArray<long long>( values, nullValue, res, []( const QVariant & v ) { return v.toLongLong(); } );
       break;
     }
 
     case QMetaType::ULongLong:
     {
-      populateDataArray<unsigned long long>( values, nullValue, res, []( const QVariant & v ) { return v.toULongLong(); } );
+      populateFieldDataArray<unsigned long long>( values, nullValue, res, []( const QVariant & v ) { return v.toULongLong(); } );
       break;
     }
 
     case QMetaType::Double:
     {
-      populateDataArray<double>( values, nullValue, res, []( const QVariant & v ) { return v.toDouble(); } );
+      populateFieldDataArray<double>( values, nullValue, res, []( const QVariant & v ) { return v.toDouble(); } );
       break;
     }
 
     case QMetaType::Long:
     {
-      populateDataArray<long>( values, nullValue, res, []( const QVariant & v ) { return v.toLongLong(); } );
+      populateFieldDataArray<long>( values, nullValue, res, []( const QVariant & v ) { return v.toLongLong(); } );
       break;
     }
 
     case QMetaType::Short:
     {
-      populateDataArray<short>( values, nullValue, res, []( const QVariant & v ) { return v.toInt(); } );
+      populateFieldDataArray<short>( values, nullValue, res, []( const QVariant & v ) { return v.toInt(); } );
       break;
     }
 
     case QMetaType::ULong:
     {
-      populateDataArray<unsigned long>( values, nullValue, res, []( const QVariant & v ) { return v.toULongLong(); } );
+      populateFieldDataArray<unsigned long>( values, nullValue, res, []( const QVariant & v ) { return v.toULongLong(); } );
       break;
     }
 
     case QMetaType::UShort:
     {
-      populateDataArray<unsigned short>( values, nullValue, res, []( const QVariant & v ) { return v.toUInt(); } );
+      populateFieldDataArray<unsigned short>( values, nullValue, res, []( const QVariant & v ) { return v.toUInt(); } );
       break;
     }
 
     case QMetaType::Float:
     {
-      populateDataArray<float>( values, nullValue, res, []( const QVariant & v ) { return v.toFloat(); } );
+      populateFieldDataArray<float>( values, nullValue, res, []( const QVariant & v ) { return v.toFloat(); } );
       break;
     }
 
