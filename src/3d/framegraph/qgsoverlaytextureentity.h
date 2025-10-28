@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdebugtextureentity.h
+  qgsoverlaytextureentity.h
   --------------------------------------
   Date                 : June 2024
   Copyright            : (C) 2024 by Benoit De Mezzo
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSDEBUGTEXTUREENTITY_H
-#define QGSDEBUGTEXTUREENTITY_H
+#ifndef QGSOVERLAYTEXTUREENTITY_H
+#define QGSOVERLAYTEXTUREENTITY_H
 
 #include "qgsrenderpassquad.h"
 
@@ -28,19 +28,19 @@ namespace Qt3DRender
 
 /**
  * \ingroup qgis_3d
- * \brief An entity that is responsible for debugging texture.
+ * \brief An entity responsible for rendering an overlay texture in 3D view.
  *
  * \note Not available in Python bindings
  *
  * \since QGIS 3.44
  */
-class QgsDebugTextureEntity : public QgsRenderPassQuad
+class QgsOverlayTextureEntity : public QgsRenderPassQuad
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
+    QgsOverlayTextureEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
 
     /**
      * Sets the texture debugging parameters
@@ -50,7 +50,7 @@ class QgsDebugTextureEntity : public QgsRenderPassQuad
      *
      * \since QGIS 4.0
      */
-    void setPosition( Qt::Corner corner, QSizeF size, QSizeF offset = QSizeF(0., 0.) );
+    void setPosition( Qt::Corner corner, QSizeF size, QSizeF offset = QSizeF( 0., 0. ) );
 
     //! Sets the texture debugging parameters
     void setPosition( Qt::Corner corner, double size, double offset = 0. );
@@ -67,4 +67,4 @@ class QgsDebugTextureEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mFlipTextureY = nullptr;
 };
 
-#endif // QGSDEBUGTEXTUREENTITY_H
+#endif // QGSOVERLAYTEXTUREENTITY_H

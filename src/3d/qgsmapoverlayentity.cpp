@@ -16,9 +16,9 @@
 #include "qgsmapoverlayentity.h"
 
 #include "qgs3dmapsettings.h"
-#include "qgsdebugtextureentity.h"
 #include "qgsdebugtexturerenderview.h"
 #include "qgsmapoverlaytexturegenerator_p.h"
+#include "qgsoverlaytextureentity.h"
 #include "qgswindow3dengine.h"
 
 #include <QOpenGLTexture>
@@ -31,7 +31,7 @@
 ///@cond PRIVATE
 
 QgsMapOverlayEntity::QgsMapOverlayEntity( QgsWindow3DEngine *engine, QgsDebugTextureRenderView *debugTextureRenderView, Qgs3DMapSettings *mapSettings, Qt3DCore::QNode *parent )
-  : QgsDebugTextureEntity( new Qt3DRender::QTexture2D(), debugTextureRenderView->debugLayer(), parent )
+  : QgsOverlayTextureEntity( new Qt3DRender::QTexture2D(), debugTextureRenderView->debugLayer(), parent )
   , mEngine( engine )
   , mMapSettings( mapSettings )
   , mTextureGenerator( new QgsMapOverlayTextureGenerator( *mapSettings, SIZE() ) )
