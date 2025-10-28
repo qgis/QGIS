@@ -196,7 +196,10 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   else if ( !cboRenderers->currentData().toString().isEmpty() )
   {
     QDomElement elem;
-    mLayer->setRenderer( QgsApplication::pointCloudRendererRegistry()->rendererMetadata( cboRenderers->currentData().toString() )->createRenderer( elem, QgsReadWriteContext() ) );
+    if ( QgsPointCloudRendererAbstractMetadata *metadata = QgsApplication::pointCloudRendererRegistry()->rendererMetadata( cboRenderers->currentData().toString() ) )
+    {
+      mLayer->setRenderer( metadata->createRenderer( elem, QgsReadWriteContext() ) );
+    }
   }
 
   mLayer->renderer()->setPointSize( mPointSizeSpinBox->value() );

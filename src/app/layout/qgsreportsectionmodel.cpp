@@ -241,7 +241,7 @@ bool QgsReportSectionModel::removeRows( int row, int count, const QModelIndex &p
 {
   QgsAbstractReportSection *parentSection = sectionForIndex( parent );
 
-  if ( row < 0 || row >= parentSection->childCount() )
+  if ( !parentSection || row < 0 || row >= parentSection->childCount() )
     return false;
 
   beginRemoveRows( parent, row, row + count - 1 );
