@@ -40,6 +40,9 @@ QgsVectorTileBasicRendererStyle::QgsVectorTileBasicRendererStyle( const QgsVecto
 
 QgsVectorTileBasicRendererStyle &QgsVectorTileBasicRendererStyle::operator=( const QgsVectorTileBasicRendererStyle &other )
 {
+  if ( &other == this )
+    return *this;
+
   mStyleName = other.mStyleName;
   mLayerName = other.mLayerName;
   mGeometryType = other.mGeometryType;

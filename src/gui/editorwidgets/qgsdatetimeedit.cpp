@@ -363,7 +363,15 @@ void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
     mBlockChangedSignal++;
     // We need to set the time spec of the set datetime to the widget, otherwise
     // the dateTime() getter would loose edit, and return local time.
+    // QDateTimeEdit::setTimeZone has been introduced in Qt 6.7 to properly handle
+    // timezone instead of QDateTimeEdit::setTimeSpec
+    // QDateTimeEdit::setTimeSpec has been deprecated since Qt 6.10
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 7, 0 )
+    QDateTimeEdit::setTimeZone( dateTime.timeZone() );
+#else
     QDateTimeEdit::setTimeSpec( dateTime.timeSpec() );
+#endif
+
     QDateTimeEdit::setDateTime( dateTime );
     mBlockChangedSignal--;
     changed( dateTime );

@@ -116,6 +116,38 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     QString str = QStringLiteral( "<QgsLayerTreeNode: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
+
+    /**
+     * Returns the number of children contained in the node.
+     *
+     * \since QGIS 4.0
+     */
+    int __len__() const;
+    % MethodCode
+    sipRes = sipCpp->children().count();
+    % End
+
+    /**
+     * Returns the child node at the specified ``index``.
+     *
+     * \throws IndexError if no child with the specified ``index`` exists.
+     * \since QGIS 4.0
+     */
+    SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsLayerTreeNode );
+    % MethodCode
+    const QList< QgsLayerTreeNode * > children = sipCpp->children();
+    const int count = children.count();
+    if ( a0 < 0 || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      QgsLayerTreeNode *child = children.at( a0 );
+      sipRes = sipConvertFromType( child, sipType_QgsLayerTreeNode, NULL );
+    }
+    % End
 #endif
 
     //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that

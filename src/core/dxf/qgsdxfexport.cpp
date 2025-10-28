@@ -270,7 +270,9 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
       const QgsRectangle extentRect = mMapSettings.mapToLayerCoordinates( vl, mExtent );
       request.setFilterRect( extentRect );
     }
-    QgsFeatureIterator featureIt = ( mFlags & FlagOnlySelectedFeatures ) ? vl->getSelectedFeatures( request ) : vl->getFeatures( request );
+    // cppcheck-suppress accessMoved
+    QgsFeatureIterator featureIt = ( mFlags & FlagOnlySelectedFeatures ) ? vl->getSelectedFeatures( std::move( request ) ) : vl->getFeatures( std::move( request ) );
+    // cppcheck-suppress accessMoved
     QgsFeature feature;
     if ( featureIt.nextFeature( feature ) )
     {
@@ -2648,7 +2650,16 @@ void QgsDxfExport::createDDBlockInfo()
         QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setExpressionContext( job->renderContext.expressionContext() );
         QgsCoordinateTransform extentTransform = ct;
         extentTransform.setBallparkTransformsAreAppropriate( true );
-        request.setFilterRect( extentTransform.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse ) );
+        try
+        {
+          request.setFilterRect( extentTransform.transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse ) );
+        }
+        catch ( QgsCsException &e )
+        {
+          QgsDebugError( QStringLiteral( "Could not transform extent to layer extent: %1" ).arg( e.what() ) );
+          continue;
+        }
+
         QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
 
         QHash <uint, QPair<int, DataDefinedBlockInfo> > blockSymbolMap; //symbolHash/occurrences/block Text

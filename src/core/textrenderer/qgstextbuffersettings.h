@@ -45,8 +45,10 @@ class CORE_EXPORT QgsTextBufferSettings
     QgsTextBufferSettings();
 
     QgsTextBufferSettings( const QgsTextBufferSettings &other );
+    SIP_SKIP QgsTextBufferSettings( QgsTextBufferSettings &&other );
 
     QgsTextBufferSettings &operator=( const QgsTextBufferSettings &other );
+    QgsTextBufferSettings &operator=( QgsTextBufferSettings &&other );
 
     ~QgsTextBufferSettings();
 

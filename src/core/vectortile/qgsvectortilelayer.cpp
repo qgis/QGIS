@@ -106,7 +106,7 @@ bool QgsVectorTileLayer::loadDataSource()
   }
 
   mDataProvider.reset( qobject_cast<QgsVectorTileDataProvider *>( QgsProviderRegistry::instance()->createProvider( providerKey, mDataSource, providerOptions, flags ) ) );
-  mProviderKey = mDataProvider->name();
+  mProviderKey = mDataProvider ? mDataProvider->name() : providerKey;
 
   if ( mDataProvider )
   {

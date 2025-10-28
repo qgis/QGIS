@@ -150,7 +150,7 @@ void QgsGrassImport::setError( const QString &error )
   mError = error;
 }
 
-QString QgsGrassImport::error()
+QString QgsGrassImport::error() const
 {
   return mError;
 }

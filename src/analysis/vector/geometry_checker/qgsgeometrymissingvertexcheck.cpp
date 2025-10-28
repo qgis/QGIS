@@ -39,6 +39,11 @@ QgsGeometryCheck::Result QgsGeometryMissingVertexCheck::collectErrors( const QMa
   QMap<QString, QSet<QVariant>> uniqueIds;
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   QgsFeaturePool *featurePool = featurePools.value( featureIds.firstKey() );
+  if ( !featurePool )
+  {
+    QgsDebugError( QStringLiteral( "Could not retrieve feature pool for %1" ).arg( featureIds.firstKey() ) );
+    return QgsGeometryCheck::Result::Canceled;
+  }
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {

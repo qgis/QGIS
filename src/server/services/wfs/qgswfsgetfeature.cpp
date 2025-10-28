@@ -665,9 +665,7 @@ namespace QgsWfs
         }
 
         query.serverFids = fidsMapIt.value();
-        QgsFeatureRequest featureRequest;
-
-        query.featureRequest = featureRequest;
+        query.featureRequest = QgsFeatureRequest();
         request.queries.append( query );
         ++fidsMapIt;
       }
@@ -1039,7 +1037,7 @@ namespace QgsWfs
     getFeatureQuery query;
     query.typeName = typeName;
     query.srsName = srsName;
-    query.featureRequest = featureRequest;
+    query.featureRequest = std::move( featureRequest );
     query.serverFids = serverFids;
     query.propertyList = propertyList;
     return query;

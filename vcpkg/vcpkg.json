@@ -2,21 +2,21 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "9e7bfb1bcd1fa2e6e0755c4076441360b9c9ded7",
+      "baseline": "edffab1bcd2cb5b8c17d6ba34d5651ea0bf82979",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "b7adf319e27723718179b451efde85606a2c42ae",
+        "baseline": "4e73518faee954f3469342cd8c28389ea9a97de3",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
           "py-*",
           "gdal",
-          "swig",
           "vcpkg-python-scripts",
           "vcpkg-tool-mercurial",
+          "vcpkg-tool-rust",
           "pybind11"
         ]
       }
@@ -109,19 +109,27 @@
             "python"
           ]
         },
+        "py-attrs",
         "py-autopep8",
+        "py-beautifulsoup4",
         "py-dateutil",
         "py-duckdb",
         "py-isort",
         "py-jinja2",
+        {
+          "name": "py-jsonschema",
+          "platform": "!windows"
+        },
         "py-lxml",
         "py-markupsafe",
+        "py-networkx",
         "py-numpy",
         "py-owslib",
         "py-pip",
         "py-psycopg",
         "py-psycopg2",
         "py-pydantic",
+        "py-pyproj",
         {
           "name": "py-pyqt6",
           "features": [
@@ -131,11 +139,15 @@
             "qtdeclarative"
           ]
         },
+        "py-pysal",
         "py-pytz",
         "py-pyyaml",
         "py-qscintilla",
+        "py-rasterio",
         "py-requests",
+        "py-shapely",
         "py-six",
+        "py-urllib3",
         "python3"
       ]
     },
@@ -163,6 +175,12 @@
       "description": "Determines whether QGIS server should be built",
       "dependencies": [
         "fastcgi"
+      ]
+    },
+    "sfcgal": {
+      "description": "Build with SFCGAL support",
+      "dependencies": [
+        "sfcgal"
       ]
     }
   }

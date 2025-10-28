@@ -53,7 +53,10 @@ class CORE_EXPORT QgsLabelingEngineSettings
     ~QgsLabelingEngineSettings();
 
     QgsLabelingEngineSettings( const QgsLabelingEngineSettings &other );
+    SIP_SKIP QgsLabelingEngineSettings( QgsLabelingEngineSettings &&other );
+
     QgsLabelingEngineSettings &operator=( const QgsLabelingEngineSettings &other );
+    QgsLabelingEngineSettings &operator=( QgsLabelingEngineSettings &&other );
 
     //! Returns the configuration to the defaults
     void clear();

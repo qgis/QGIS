@@ -28,7 +28,7 @@ class APP_EXPORT QgsMapToolMoveLabel : public QgsMapToolLabel
 
   public:
     QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
-    ~QgsMapToolMoveLabel();
+    ~QgsMapToolMoveLabel() override;
 
     void deleteRubberBands() override;
 

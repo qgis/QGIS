@@ -171,7 +171,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
         if ( renderer->type() == QLatin1String( "vector" ) )
         {
           const QgsPoint3DSymbol *pointSymbol = static_cast<const QgsPoint3DSymbol *>( static_cast<QgsVectorLayer3DRenderer *>( renderer )->symbol() );
-          if ( pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
+          if ( pointSymbol && pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
           {
             removeLayerEntity( layer );
             addLayerEntity( layer );
@@ -180,10 +180,10 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
         else if ( renderer->type() == QLatin1String( "rulebased" ) )
         {
           const QgsRuleBased3DRenderer::RuleList rules = static_cast<QgsRuleBased3DRenderer *>( renderer )->rootRule()->descendants();
-          for ( auto rule : rules )
+          for ( const QgsRuleBased3DRenderer::Rule *rule : rules )
           {
             const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( rule->symbol() );
-            if ( pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
+            if ( pointSymbol && pointSymbol->shapeProperty( QStringLiteral( "model" ) ).toString() == url )
             {
               removeLayerEntity( layer );
               addLayerEntity( layer );

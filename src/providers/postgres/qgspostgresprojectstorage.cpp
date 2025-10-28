@@ -161,7 +161,8 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   QString metadataExpr = QStringLiteral( "(%1 || (now() at time zone 'utc')::text || %2 || current_user || %3)::jsonb" ).arg( QgsPostgresConn::quotedValue( "{ \"last_modified_time\": \"" ), QgsPostgresConn::quotedValue( "\", \"last_modified_user\": \"" ), QgsPostgresConn::quotedValue( "\" }" ) );
 
   // TODO: would be useful to have QByteArray version of PQexec() to avoid bytearray -> string -> bytearray conversion
-  QString sql( "INSERT INTO %1.qgis_projects VALUES (%2, %3, E'\\\\x" );
+  // insert explicitly into name, metadata, content so adding a 'comment' column doesn't break older INSERTs
+  QString sql( "INSERT INTO %1.qgis_projects(name, metadata, content) VALUES (%2, %3, E'\\\\x" );
   sql = sql.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ),
                  metadataExpr // no need to quote: already quoted
   );

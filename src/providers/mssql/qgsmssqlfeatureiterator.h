@@ -71,7 +71,7 @@ class QgsMssqlFeatureSource final : public QgsAbstractFeatureSource
     std::shared_ptr<QgsMssqlDatabase> mTransactionConn;
 
     // Return True if this feature source has spatial attributes.
-    bool isSpatial() { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
+    bool isSpatial() const { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
 
     // Uri information for query logger
     QString mConnInfo;

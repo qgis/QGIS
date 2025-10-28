@@ -62,6 +62,9 @@ QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
 
 QList<QgsMapLayerServerProperties::WmsDimensionInfo> QgsServerApiUtils::temporalDimensions( const QgsVectorLayer *layer )
 {
+  if ( !layer )
+    return {};
+
   const QgsMapLayerServerProperties *serverProperties = layer->serverProperties();
   QList<QgsMapLayerServerProperties::WmsDimensionInfo> dimensions { serverProperties->wmsDimensions() };
   // Filter only date and time

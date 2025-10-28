@@ -159,7 +159,9 @@ class CORE_EXPORT QgsTiledSceneIndex
     ~QgsTiledSceneIndex();
 
     QgsTiledSceneIndex( const QgsTiledSceneIndex &other );
+    SIP_SKIP QgsTiledSceneIndex( QgsTiledSceneIndex &&other );
     QgsTiledSceneIndex &operator=( const QgsTiledSceneIndex &other );
+    QgsTiledSceneIndex &operator=( QgsTiledSceneIndex &&other );
 
     /**
      * Returns TRUE if the index is valid.

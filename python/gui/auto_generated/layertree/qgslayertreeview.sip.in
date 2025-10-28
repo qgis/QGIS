@@ -114,6 +114,9 @@ Constructor for QgsLayerTreeViewBase
 %End
     ~QgsLayerTreeViewBase();
 
+    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+
+
     void setLayerTreeModel( QgsLayerTreeModel *model );
 %Docstring
 Associates a layer tree model with the view.
@@ -634,8 +637,6 @@ Allows customization of the menu.
   protected:
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
-
-    virtual void mouseDoubleClickEvent( QMouseEvent *event );
 
     virtual void mouseReleaseEvent( QMouseEvent *event );
 

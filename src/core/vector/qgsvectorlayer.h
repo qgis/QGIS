@@ -83,6 +83,8 @@ class QgsVectorLayerSelectionProperties;
 class QgsVectorLayerTemporalProperties;
 class QgsFeatureRendererGenerator;
 class QgsVectorLayerElevationProperties;
+class QgsObjectEntityVisitorInterface;
+class QgsObjectVisitorContext;
 
 #ifndef SIP_RUN
 template<class T>
@@ -1214,7 +1216,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see changeGeometry()
      * \see changeAttributeValue()
     */
-    bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
+    Q_INVOKABLE bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 
     /**
      * Inserts a new vertex before the given vertex number,
@@ -2588,6 +2590,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+
+    bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const override;
 
   signals:
 

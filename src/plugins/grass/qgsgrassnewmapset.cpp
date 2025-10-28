@@ -86,7 +86,6 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface, QgsGrassPlugin *plug
 
   connect( mCreateLocationRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mCreateLocationRadioButton_clicked );
   connect( mSelectLocationRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mSelectLocationRadioButton_clicked );
-  connect( mLocationComboBox, &QComboBox::editTextChanged, this, &QgsGrassNewMapset::mLocationComboBox_textChanged );
   connect( mLocationLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mLocationLineEdit_returnPressed );
   connect( mLocationLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mLocationLineEdit_textChanged );
   connect( mNoProjRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mNoProjRadioButton_clicked );
@@ -332,11 +331,6 @@ void QgsGrassNewMapset::checkLocation()
       }
     }
   }
-}
-
-void QgsGrassNewMapset::existingLocationChanged( const QString &text )
-{
-  Q_UNUSED( text )
 }
 
 void QgsGrassNewMapset::newLocationChanged()

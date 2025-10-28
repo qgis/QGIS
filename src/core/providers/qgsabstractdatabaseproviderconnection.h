@@ -469,7 +469,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         //! Name of the geometry column
         QString                       mGeometryColumn;
         //! The number of geometry columns in the table
-        int                           mGeometryColumnCount;
+        int                           mGeometryColumnCount = 0;
         //! PK columns
         QStringList                   mPkColumns;
         TableFlags                    mFlags;

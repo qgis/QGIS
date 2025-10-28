@@ -27,8 +27,8 @@ QgsGpsdConnection::QgsGpsdConnection( const QString &host, qint16 port, const QS
 {
   QTcpSocket *socket = qobject_cast< QTcpSocket * >( mSource.get() );
 
-  QObject::connect( socket, SIGNAL( connected() ), this, SLOT( connected() ) );
-  QObject::connect( socket, SIGNAL( error( QAbstractSocket::SocketError ) ), this, SLOT( error( QAbstractSocket::SocketError ) ) );
+  QObject::connect( socket, &QTcpSocket::connected, this, &QgsGpsdConnection::connected );
+  QObject::connect( socket, &QTcpSocket::errorOccurred, this, &QgsGpsdConnection::errorOccurred );
   socket->connectToHost( host, port );
 }
 
@@ -39,7 +39,7 @@ void QgsGpsdConnection::connected()
   socket->write( QStringLiteral( "?WATCH={\"enable\":true,\"nmea\":true,\"raw\":true%1};" ).arg( mDevice.isEmpty() ? mDevice : QStringLiteral( ",\"device\":%1" ).arg( mDevice ) ).toUtf8() );
 }
 
-void QgsGpsdConnection::error( QAbstractSocket::SocketError socketError )
+void QgsGpsdConnection::errorOccurred( QAbstractSocket::SocketError socketError )
 {
 #ifdef QGISDEBUG
   QTcpSocket *socket = qobject_cast< QTcpSocket * >( mSource.get() );

@@ -54,7 +54,9 @@ class CORE_EXPORT QgsTextMaskSettings
     QgsTextMaskSettings();
 
     QgsTextMaskSettings( const QgsTextMaskSettings &other );
+    SIP_SKIP QgsTextMaskSettings( QgsTextMaskSettings &&other );
     QgsTextMaskSettings &operator=( const QgsTextMaskSettings &other );
+    QgsTextMaskSettings &operator=( QgsTextMaskSettings &&other );
 
     ~QgsTextMaskSettings();
 

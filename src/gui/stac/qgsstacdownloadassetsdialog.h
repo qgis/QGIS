@@ -38,6 +38,7 @@ class QgsStacDownloadAssetsDialog : public QDialog, private Ui::QgsStacDownloadA
     void setAuthCfg( const QString &authCfg );
     void setMessageBar( QgsMessageBar *bar );
     void setStacItem( QgsStacItem *stacItem );
+    void addStacAsset( const QString &assetId, const QgsStacAsset *stacAsset );
     QString selectedFolder();
     QStringList selectedUrls();
 

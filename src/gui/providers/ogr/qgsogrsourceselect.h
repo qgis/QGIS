@@ -57,11 +57,11 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     //! Opens a dialog to select a directory datasource
     QString openDirectory();
     //! Returns a list of selected datasources
-    QStringList dataSources();
+    QStringList dataSources() const;
     //! Returns the encoding selected for user
-    QString encoding();
+    QString encoding() const;
     //! Returns the connection type
-    QString dataSourceType();
+    QString dataSourceType() const;
 
   private:
     //! Stores the file vector filters

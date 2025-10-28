@@ -69,7 +69,7 @@ QgsPointCloudRenderer::QgsPointCloudRenderer()
   settings.setEnabled( true );
   settings.setSize( 1 );
   textFormat.setBuffer( settings );
-  mLabelTextFormat = textFormat;
+  mLabelTextFormat = std::move( textFormat );
 }
 
 QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )

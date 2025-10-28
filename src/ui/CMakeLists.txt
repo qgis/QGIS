@@ -47,7 +47,10 @@ qt_wrap_ui(QGIS_UIS_H
   ${PLOT_UIS}
 )
 
-install(FILES ${QGIS_UIS_H} DESTINATION ${QGIS_INCLUDE_DIR})
+# install
+if(NOT QGIS_MAC_BUNDLE)
+  install(FILES ${QGIS_UIS_H} DESTINATION ${QGIS_INCLUDE_DIR})
+endif()
 
 add_custom_target(ui ALL DEPENDS ${QGIS_UIS_H})
 

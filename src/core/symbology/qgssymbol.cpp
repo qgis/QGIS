@@ -87,6 +87,9 @@ QgsSymbolBufferSettings::QgsSymbolBufferSettings( const QgsSymbolBufferSettings 
 
 QgsSymbolBufferSettings &QgsSymbolBufferSettings::operator=( const QgsSymbolBufferSettings &other )
 {
+  if ( &other == this )
+    return *this;
+
   mEnabled = other.mEnabled;
   mSize = other.mSize;
   mSizeUnit = other.mSizeUnit;
@@ -1827,7 +1830,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case Qgis::WkbType::MultiLineString:
       case Qgis::WkbType::GeometryCollection:
       {
-        const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( processedGeometry );
+        const QgsGeometryCollection *geomCollection = qgis::down_cast<const QgsGeometryCollection *>( processedGeometry );
 
         const unsigned int num = geomCollection->numGeometries();
         for ( unsigned int i = 0; i < num; ++i )
@@ -2264,7 +2267,14 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         z = 0.0;
         if ( ct.isValid() )
         {
-          ct.transformInPlace( x, y, z );
+          try
+          {
+            ct.transformInPlace( x, y, z );
+          }
+          catch ( QgsCsException & )
+          {
+            continue;
+          }
         }
         mapPoint.setX( x );
         mapPoint.setY( y );

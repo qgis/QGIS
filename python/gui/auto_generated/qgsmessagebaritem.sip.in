@@ -178,7 +178,7 @@ instead must be manually dismissed by the user.
 .. seealso:: :py:func:`setDuration`
 %End
 
-    QString getStyleSheet();
+    QString getStyleSheet() const;
 %Docstring
 Returns the styleSheet which should be used to style a
 :py:class:`QgsMessageBar` object when this item is displayed.

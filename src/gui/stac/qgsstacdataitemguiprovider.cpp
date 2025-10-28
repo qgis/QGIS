@@ -89,14 +89,41 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     {
       menu->addSeparator();
 
-      QAction *actionDownload = new QAction( tr( "Download Assets…" ), menu );
-      connect( actionDownload, &QAction::triggered, this, [itemItem, context] { downloadAssets( itemItem, context ); } );
-      menu->addAction( actionDownload );
+      bool hasDownloadableAssets = false;
+      const QMap<QString, QgsStacAsset> assets = itemItem->stacItem()->assets();
+      for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
+      {
+        if ( it.value().isDownloadable() )
+        {
+          hasDownloadableAssets = true;
+          break;
+        }
+      }
+      if ( hasDownloadableAssets )
+      {
+        QAction *actionDownload = new QAction( tr( "Download Assets…" ), menu );
+        connect( actionDownload, &QAction::triggered, this, [itemItem, context] { downloadAssets( itemItem, context ); } );
+        menu->addAction( actionDownload );
+      }
 
       QAction *actionDetails = new QAction( tr( "Details…" ), menu );
       connect( actionDetails, &QAction::triggered, this, [itemItem] { showDetails( itemItem ); } );
       menu->addAction( actionDetails );
     }
+  }
+
+  if ( QgsStacAssetItem *assetItem = qobject_cast<QgsStacAssetItem *>( item ) )
+  {
+    if ( assetItem->stacAsset()->isDownloadable() )
+    {
+      QAction *actionDownload = new QAction( tr( "Download Asset…" ), menu );
+      connect( actionDownload, &QAction::triggered, this, [assetItem, context] { downloadAssets( assetItem, context ); } );
+      menu->addAction( actionDownload );
+    }
+
+    QAction *actionDetails = new QAction( tr( "Details…" ), menu );
+    connect( actionDetails, &QAction::triggered, this, [assetItem] { showDetails( assetItem ); } );
+    menu->addAction( actionDetails );
   }
 }
 
@@ -162,37 +189,56 @@ void QgsStacDataItemGuiProvider::loadConnections( QgsDataItem *item )
 
 void QgsStacDataItemGuiProvider::showDetails( QgsDataItem *item )
 {
-  QgsStacObject *obj = nullptr;
   QString authcfg;
 
-  if ( QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item ) )
+  QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item );
+  QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( item );
+  QgsStacAssetItem *assetItem = qobject_cast<QgsStacAssetItem *>( item );
+
+  if ( !( itemItem || catalogItem || assetItem ) )
   {
-    obj = itemItem->stacItem();
-    authcfg = itemItem->stacController()->authCfg();
-  }
-  else if ( QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( item ) )
-  {
-    obj = catalogItem->stacCatalog();
+    return;
   }
 
-  if ( obj )
+  QgsStacObjectDetailsDialog d;
+  if ( itemItem )
   {
-    QgsStacObjectDetailsDialog d;
-    d.setAuthcfg( authcfg );
-    d.setStacObject( obj );
-    d.exec();
+    authcfg = itemItem->stacController()->authCfg();
+    d.setContentFromStacObject( itemItem->stacItem() );
   }
+  else if ( catalogItem )
+  {
+    d.setContentFromStacObject( catalogItem->stacCatalog() );
+  }
+  else if ( assetItem )
+  {
+    QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( assetItem->parent() );
+    authcfg = itemItem->stacController()->authCfg();
+    d.setContentFromStacAsset( assetItem->name(), assetItem->stacAsset() );
+  }
+  d.setAuthcfg( authcfg );
+  d.exec();
+  return;
 }
 
 void QgsStacDataItemGuiProvider::downloadAssets( QgsDataItem *item, QgsDataItemGuiContext context )
 {
   QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item );
+  QgsStacAssetItem *assetItem = qobject_cast<QgsStacAssetItem *>( item );
 
-  if ( !itemItem )
+  if ( !( itemItem || assetItem ) )
     return;
 
   QgsStacDownloadAssetsDialog dialog;
-  dialog.setStacItem( itemItem->stacItem() );
+  if ( itemItem )
+  {
+    dialog.setStacItem( itemItem->stacItem() );
+  }
+  else if ( assetItem )
+  {
+    itemItem = qobject_cast<QgsStacItemItem *>( assetItem->parent() );
+    dialog.addStacAsset( assetItem->name(), assetItem->stacAsset() );
+  }
   dialog.setMessageBar( context.messageBar() );
   dialog.setAuthCfg( itemItem->stacController()->authCfg() );
   dialog.exec();

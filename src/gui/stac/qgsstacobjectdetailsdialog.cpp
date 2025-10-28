@@ -31,7 +31,8 @@ QgsStacObjectDetailsDialog::QgsStacObjectDetailsDialog( QWidget *parent )
   QgsGui::enableAutoGeometryRestore( this );
 }
 
-void QgsStacObjectDetailsDialog::setStacObject( QgsStacObject *stacObject )
+
+void QgsStacObjectDetailsDialog::setContentFromStacObject( QgsStacObject *stacObject )
 {
   if ( !stacObject )
     return;
@@ -42,30 +43,36 @@ void QgsStacObjectDetailsDialog::setStacObject( QgsStacObject *stacObject )
     const QMap<QString, QgsStacAsset> assets = item->assets();
     for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
     {
-      if ( it->roles().contains( QLatin1String( "thumbnail" ) ) )
+      if ( isThumbnailAsset( &it.value() ) )
       {
-        QString uri = it->href();
-        if ( !mAuthcfg.isEmpty() )
-        {
-          QStringList connectionItems;
-          connectionItems << uri;
-          if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, mAuthcfg ) )
-          {
-            uri = connectionItems.first();
-          }
-        }
-
-        thumbnails.append( QStringLiteral( "<img src=\"%1\" border=1><br>" ).arg( uri ) );
+        thumbnails.append( thumbnailHtmlContent( &it.value() ) );
       }
     }
   }
 
-  const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
-  // inject thumbnails
-  QString html = stacObject->toHtml().replace( QLatin1String( "<head>" ), QStringLiteral( "<head>\n%1" ).arg( thumbnails.join( QString() ) ) );
-  // inject stylesheet
-  html = html.replace( QLatin1String( "<head>" ), QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle );
+  const QString thumbnailHtml = thumbnails.join( QString() );
+  const QString bodyHtml = stacObject->toHtml();
+  setContent( bodyHtml, thumbnailHtml );
+}
 
+
+void QgsStacObjectDetailsDialog::setContentFromStacAsset( const QString &assetId, const QgsStacAsset *stacAsset )
+{
+  const QString thumbnailHtml = isThumbnailAsset( stacAsset ) ? thumbnailHtmlContent( stacAsset ) : QString();
+  const QString bodyHtml = stacAsset->toHtml( assetId );
+  setContent( bodyHtml, thumbnailHtml );
+}
+
+
+void QgsStacObjectDetailsDialog::setContent( QString bodyHtml, QString thumbnailHtml )
+{
+  const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
+  QString html = QStringLiteral( "<html>\n<head>\n" );
+  html += QStringLiteral( "<style type=\"text/css\">%1</style>\n" ).arg( myStyle );
+  html += QStringLiteral( "%1\n" ).arg( thumbnailHtml );
+  html += QStringLiteral( "</head>\n<body>\n" );
+  html += QStringLiteral( "%1\n" ).arg( bodyHtml );
+  html += QLatin1String( "</body>\n</html>\n" );
   mWebView->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
   connect( mWebView, &QgsWebView::linkClicked, this, []( const QUrl &url ) {
     QDesktopServices::openUrl( url );
@@ -76,6 +83,26 @@ void QgsStacObjectDetailsDialog::setStacObject( QgsStacObject *stacObject )
 void QgsStacObjectDetailsDialog::setAuthcfg( const QString &authcfg )
 {
   mAuthcfg = authcfg;
+}
+
+bool QgsStacObjectDetailsDialog::isThumbnailAsset( const QgsStacAsset *stacAsset )
+{
+  return stacAsset->roles().contains( QLatin1String( "thumbnail" ) );
+}
+
+QString QgsStacObjectDetailsDialog::thumbnailHtmlContent( const QgsStacAsset *stacAsset )
+{
+  QString uri = stacAsset->href();
+  if ( !mAuthcfg.isEmpty() )
+  {
+    QStringList connectionItems;
+    connectionItems << uri;
+    if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, mAuthcfg ) )
+    {
+      uri = connectionItems.first();
+    }
+  }
+  return QStringLiteral( "<img src=\"%1\" border=1><br>" ).arg( uri );
 }
 
 ///@endcond

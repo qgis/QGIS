@@ -2057,7 +2057,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       {
         g.gtype = SDO_GTYPE( dim, GtPolygon );
         int nPolygons = 1;
-        const QgsMultiPolygon *multipoly = ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::MultiPolygon ) ? dynamic_cast<const QgsMultiPolygon *>( geom.constGet() ) : nullptr;
+        const QgsMultiPolygon *multipoly = qgsgeometry_cast< const QgsMultiPolygon * >( geom.constGet() );
         if ( multipoly )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
@@ -2069,7 +2069,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 
         for ( int iPolygon = 0; iPolygon < nPolygons; iPolygon++ )
         {
-          const QgsPolygon *poly = multipoly ? dynamic_cast<const QgsPolygon *>( multipoly->geometryN( iPolygon ) ) : dynamic_cast<const QgsPolygon *>( geom.constGet() );
+          const QgsPolygon *poly = multipoly ? qgis::down_cast<const QgsPolygon *>( multipoly->geometryN( iPolygon ) ) : qgis::down_cast<const QgsPolygon *>( geom.constGet() );
           for ( int iRing = 0, nRings = *ptr.iPtr++; iRing < nRings; iRing++ )
           {
             g.eleminfo << iOrdinate << ( iRing == 0 ? 1003 : 2003 ) << 1;
@@ -2224,7 +2224,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       {
         g.gtype = SDO_GTYPE( dim, GtPolygon );
         int nSurfaces = 1;
-        const QgsMultiSurface *multisurface = ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::MultiSurface ) ? dynamic_cast<const QgsMultiSurface *>( geom.constGet() ) : nullptr;
+        const QgsMultiSurface *multisurface = qgsgeometry_cast<const QgsMultiSurface *>( geom.constGet() );
         if ( multisurface )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
@@ -2233,7 +2233,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 
         for ( int iSurface = 0; iSurface < nSurfaces; iSurface++ )
         {
-          const QgsCurvePolygon *curvepoly = multisurface ? dynamic_cast<const QgsCurvePolygon *>( multisurface->geometryN( iSurface ) ) : dynamic_cast<const QgsCurvePolygon *>( geom.constGet() );
+          const QgsCurvePolygon *curvepoly = multisurface ? qgis::down_cast<const QgsCurvePolygon *>( multisurface->geometryN( iSurface ) ) : qgis::down_cast<const QgsCurvePolygon *>( geom.constGet() );
 
           const int nRings = ( curvepoly->exteriorRing() ? 1 : 0 ) + curvepoly->numInteriorRings();
 

@@ -279,6 +279,7 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
 
   lazperf::evlr_header statsEvlrHeader;
   statsEvlrHeader.user_id = "qgis";
+  statsEvlrHeader.reserved = 0;
   statsEvlrHeader.record_id = 0;
   statsEvlrHeader.description = "Contains calculated statistics";
   QByteArray statsJson = stats.toStatisticsJson();

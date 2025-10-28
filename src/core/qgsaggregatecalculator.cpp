@@ -117,11 +117,10 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate,
   if ( context )
     request.setExpressionContext( *context );
 
-  request.setFeedback( feedback ? feedback : ( context ? context->feedback() : nullptr ) );
+  request.setFeedback( feedback ? feedback : context->feedback() );
 
   //determine result type
   QMetaType::Type resultType = QMetaType::Type::Double;
-  int userType = 0;
   if ( attrNum == -1 )
   {
     if ( aggregate == Qgis::Aggregate::GeometryCollect )
@@ -142,7 +141,6 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate,
       }
 
       resultType = std::get<0>( returnType );
-      userType = std::get<1>( returnType );
       if ( resultType == QMetaType::Type::UnknownType )
       {
         QVariant v;
@@ -188,7 +186,6 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate,
             break;
         }
         resultType = static_cast<QMetaType::Type>( v.userType() );
-        userType = v.userType();
       }
     }
   }
@@ -196,7 +193,7 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate,
     resultType = mLayer->fields().at( attrNum ).type();
 
   QgsFeatureIterator fit = mLayer->getFeatures( request );
-  return calculate( aggregate, fit, resultType, userType, attrNum, expression.get(), mDelimiter, context, ok, &mLastError );
+  return calculate( aggregate, fit, resultType, attrNum, expression.get(), mDelimiter, context, ok, &mLastError );
 }
 
 Qgis::Aggregate QgsAggregateCalculator::stringToAggregate( const QString &string, bool *ok )
@@ -539,7 +536,7 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
   return aggregates;
 }
 
-QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatureIterator &fit, QMetaType::Type resultType, int userType,
+QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatureIterator &fit, QMetaType::Type resultType,
     int attr, QgsExpression *expression, const QString &delimiter, QgsExpressionContext *context, bool *ok, QString *error )
 {
   if ( ok )
@@ -632,8 +629,6 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatur
         QString typeString;
         if ( resultType == QMetaType::Type::UnknownType )
           typeString = QObject::tr( "null" );
-        else if ( resultType == QMetaType::Type::User )
-          typeString = QMetaType::typeName( userType );
         else
           typeString = resultType == QMetaType::Type::QString ? QObject::tr( "string" ) : QVariant::typeToName( resultType );
 

@@ -113,6 +113,32 @@ void QgsActionMenu::triggerAction()
     }
     case Qgis::ActionType::AttributeAction:
     {
+      const QgsAction act = data.actionData.value<QgsAction>();
+      switch ( act.type() )
+      {
+        case Qgis::AttributeActionType::GenericPython:
+        case Qgis::AttributeActionType::Mac:
+        case Qgis::AttributeActionType::Windows:
+        case Qgis::AttributeActionType::Unix:
+        {
+          const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
+          if ( !allowed )
+          {
+            emit messageEmitted( tr( "The action contains embedded scripts which have been denied execution." ), Qgis::MessageLevel::Warning );
+            return;
+          }
+          break;
+        }
+
+        case Qgis::AttributeActionType::Generic:
+        case Qgis::AttributeActionType::OpenUrl:
+        case Qgis::AttributeActionType::SubmitUrlEncoded:
+        case Qgis::AttributeActionType::SubmitUrlMultipart:
+        {
+          break;
+        }
+      }
+
       // define custom substitutions: layer id and clicked coords
       QgsExpressionContext context = mLayer->createExpressionContext();
       context.setFeature( mFeature );
@@ -120,7 +146,6 @@ void QgsActionMenu::triggerAction()
       QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
       actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
       context << actionScope;
-      const QgsAction act = data.actionData.value<QgsAction>();
       act.run( context );
       break;
     }
@@ -230,7 +255,7 @@ QgsExpressionContextScope QgsActionMenu::expressionContextScope() const
   return mExpressionContextScope;
 }
 
-QList<QgsAction> QgsActionMenu::menuActions()
+QList<QgsAction> QgsActionMenu::menuActions() const
 {
   return mActions;
 }

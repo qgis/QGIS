@@ -30,6 +30,9 @@ QgsAmbientOcclusionSettings::QgsAmbientOcclusionSettings( const QgsAmbientOcclus
 
 QgsAmbientOcclusionSettings &QgsAmbientOcclusionSettings::operator=( QgsAmbientOcclusionSettings const &rhs )
 {
+  if ( &rhs == this )
+    return *this;
+
   mEnabled = rhs.mEnabled;
   mIntensity = rhs.mIntensity;
   mRadius = rhs.mRadius;

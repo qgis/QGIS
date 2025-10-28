@@ -34,6 +34,7 @@ Stores global configuration for labeling engine.
 
     QgsLabelingEngineSettings( const QgsLabelingEngineSettings &other );
 
+
     void clear();
 %Docstring
 Returns the configuration to the defaults

@@ -22,8 +22,8 @@
 #include <QVariant>
 #include <QSettings>
 
-QgsKeyValueWidgetFactory::QgsKeyValueWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsKeyValueWidgetFactory::QgsKeyValueWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 

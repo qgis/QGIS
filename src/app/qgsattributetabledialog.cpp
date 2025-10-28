@@ -56,7 +56,7 @@
 #include "qgsactionmenu.h"
 #include "qgsdockwidget.h"
 #include "qgssettingsregistrycore.h"
-
+#include "qgsgui.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -401,8 +401,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
     connect( mRunFieldCalc, &QAbstractButton::clicked, this, &QgsAttributeTableDialog::updateFieldFromExpression );
     connect( mRunFieldCalcSelected, &QAbstractButton::clicked, this, &QgsAttributeTableDialog::updateFieldFromExpressionSelected );
-    // NW TODO Fix in 2.6 - Doesn't work with field model for some reason.
-    //  connect( mUpdateExpressionText, SIGNAL( returnPressed() ), this, SLOT( updateFieldFromExpression() ) );
     connect( mUpdateExpressionText, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsAttributeTableDialog::updateButtonStatus );
     mUpdateExpressionText->setLayer( mLayer );
     mUpdateExpressionText->setLeftHandButtonStyle( true );
@@ -630,6 +628,35 @@ void QgsAttributeTableDialog::layerActionTriggered()
   Q_ASSERT( qAction );
 
   QgsAction action = qAction->data().value<QgsAction>();
+
+  switch ( action.type() )
+  {
+    case Qgis::AttributeActionType::GenericPython:
+    case Qgis::AttributeActionType::Mac:
+    case Qgis::AttributeActionType::Windows:
+    case Qgis::AttributeActionType::Unix:
+    {
+      const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
+      if ( !allowed )
+      {
+        QgisApp::instance()->messageBar()->pushMessage(
+          tr( "Security warning" ),
+          tr( "The action contains an embedded script which has been denied execution." ),
+          Qgis::MessageLevel::Warning
+        );
+        return;
+      }
+      break;
+    }
+
+    case Qgis::AttributeActionType::Generic:
+    case Qgis::AttributeActionType::OpenUrl:
+    case Qgis::AttributeActionType::SubmitUrlEncoded:
+    case Qgis::AttributeActionType::SubmitUrlMultipart:
+    {
+      break;
+    }
+  }
 
   QgsExpressionContext context = mLayer->createExpressionContext();
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();

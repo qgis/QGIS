@@ -842,7 +842,8 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
     QStringLiteral( "vrt" ),
     QStringLiteral( "nc" ),
     QStringLiteral( "dxf" ),
-    QStringLiteral( "shp.zip" ) };
+    QStringLiteral( "shp.zip" ),
+    QStringLiteral( "gdb.zip" ) };
   return SUPPORTED_DB_LAYERS_EXTENSIONS;
 #endif
 }
@@ -856,9 +857,10 @@ QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
   if ( vsiMatch.hasMatch() )
     return vsiMatch.captured( 1 );
 
-  if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) )
+  if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) ||
+       path.endsWith( QLatin1String( ".gdb.zip" ), Qt::CaseInsensitive ) )
   {
-    // GDAL 3.1 Shapefile driver directly handles .shp.zip files
+    // GDAL 3.1 Shapefile/OpenFileGDB drivers directly handle .shp.zip and .gdb.zip files
     if ( GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
       return QString();
     return QStringLiteral( "/vsizip/" );
