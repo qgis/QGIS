@@ -48,22 +48,13 @@ Returns ``True`` if the specified ``layer`` is a child layer from any
 .. versionadded:: 3.24
 %End
 
-    static Qgis::ProjectTrustStatus checkUserTrust( QgsProject *project, bool *undetermined /Out/ = 0 );
+    static Qgis::ProjectTrustStatus checkUserTrust( QgsProject *project );
 %Docstring
-Returns ``True`` if the specified ``project`` has been ``granted`` trust
-by the user. If the user has not yet taken a decision, the optional
-undetermined parameter will be set to ``True``.
+Returns the current trust status of the specified ``project``.
 
 .. versionadded:: 4.0
 %End
 
-    static QList<QgsProject::EmbeddedCode> embeddedCode( QgsProject *project );
-%Docstring
-Traverses settings to return all embedded code found within the
-``project``.
-
-.. versionadded:: 4.0
-%End
 };
 
 

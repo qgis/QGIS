@@ -90,6 +90,7 @@ class QgsMapViewsManager;
 class QgsProjectElevationProperties;
 class QgsProjectGpsSettings;
 class QgsSensorManager;
+class QgsObjectEntityVisitorInterface;
 
 /**
  * \ingroup core
@@ -1766,17 +1767,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void generateTsFile( const QString &locale );
 
     QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 ) const override;
-
-    /**
-     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
-     * with the project.
-     *
-     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
-     * should be canceled.
-     *
-     * \since QGIS 3.10
-     */
-    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
     /**
      * Accepts the specified style entity \a visitor, causing it to visit all style entities associated

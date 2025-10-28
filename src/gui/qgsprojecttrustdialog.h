@@ -21,18 +21,19 @@
 #include "qgis_gui.h"
 #include "qgsguiutils.h"
 #include "qgsproject.h"
-
+#include "qgsobjectvisitor.h"
 
 /**
  * \ingroup gui
- * \brief A dialog to handle granting of trust to projects containing python code.
+ * \brief A dialog to handle granting of trust to projects containing embedded script.
  * \since QGIS 4.0
  */
 class GUI_EXPORT QgsProjectTrustDialog : public QDialog, private Ui::QgsProjectTrustDialog
 {
     Q_OBJECT
   public:
-    QgsProjectTrustDialog( QgsProject *project, const QList<QgsProject::EmbeddedCode> &embeddedCode, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    //! Constructor for QgsProjectTrustDialog using the specified \a project instance.
+    QgsProjectTrustDialog( QgsProject *project, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
   private slots:
     void buttonBoxClicked( QAbstractButton *button );
@@ -43,7 +44,7 @@ class GUI_EXPORT QgsProjectTrustDialog : public QDialog, private Ui::QgsProjectT
     QString mProjectAbsoluteFilePath;
     QString mProjectAbsolutePath;
 
-    QList<QgsProject::EmbeddedCode> mEmbeddedCode;
+    QgsEmbeddedScriptVisitor mEmbeddedScriptsVisitor;
 };
 
 #endif

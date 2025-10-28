@@ -121,7 +121,7 @@ const QgsSettingsEntryInteger64 *QgsSettingsRegistryCore::settingsNetworkCacheSi
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( QStringLiteral( "autosize-attribute-table" ), QgsSettingsTree::sTreeAttributeTable, false );
 
-const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects = new QgsSettingsEntryEnumFlag<Qgis::PythonEmbeddedMode>( QStringLiteral( "code-execution-behavior-undetermined-projects" ), QgsSettingsTree::sTreeCore, Qgis::EmbeddedScriptMode::Ask, QStringLiteral( "Behavior for embedded script within projects of undetermined trust" ) );
+const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects = new QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode>( QStringLiteral( "code-execution-behavior-undetermined-projects" ), QgsSettingsTree::sTreeCore, Qgis::EmbeddedScriptMode::Ask, QStringLiteral( "Behavior for embedded script within projects of undetermined trust" ) );
 
 const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders = new QgsSettingsEntryStringList( QStringLiteral( "code-execution-trusted-projects-folders" ), QgsSettingsTree::sTreeCore, QStringList(), QStringLiteral( "Projects and folders that are trusted and allowed execution of embedded script" ) );
 

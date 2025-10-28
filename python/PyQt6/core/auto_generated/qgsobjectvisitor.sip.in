@@ -1,0 +1,123 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsobjectvisitor.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsEmbeddedScriptEntity
+{
+%Docstring(signature="appended")
+A embedded script entity for
+:py:class:`QgsObjectEntityVisitorInterface`.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsobjectvisitor.h"
+%End
+  public:
+
+    QgsEmbeddedScriptEntity( Qgis::EmbeddedScriptType type, const QString &name, const QString &script );
+%Docstring
+Constructor for QgsEmbeddedScriptEntity.
+%End
+
+    Qgis::EmbeddedScriptType type() const;
+%Docstring
+Returns the entity's embedded script type.
+%End
+
+    QString name() const;
+%Docstring
+Returns the entity's name.
+%End
+
+    QString script() const;
+%Docstring
+Returns the entity's script
+%End
+
+};
+
+
+class QgsObjectVisitorContext
+{
+%Docstring(signature="appended")
+A :py:class:`QgsObjectEntityVisitorInterface` context object.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsobjectvisitor.h"
+%End
+  public:
+
+    QgsObjectVisitorContext();
+};
+
+
+class QgsObjectEntityVisitorInterface
+{
+%Docstring(signature="appended")
+An interface for classes which can visit various object entity (e.g.
+embedded script) nodes using the visitor pattern.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsobjectvisitor.h"
+%End
+  public:
+
+    virtual ~QgsObjectEntityVisitorInterface();
+
+    virtual bool visitEmbeddedScript( const QgsEmbeddedScriptEntity &entity, const QgsObjectVisitorContext &context = QgsObjectVisitorContext() );
+%Docstring
+Called when the visitor will visit an embedded script ``entity``.
+
+Subclasses should return ``False`` to abort further visitations, or
+``True`` to continue visiting after processing this entity.
+%End
+
+};
+
+
+class QgsEmbeddedScriptVisitor : QgsObjectEntityVisitorInterface
+{
+%Docstring(signature="appended")
+An object entity visitor to collect embedded scripts wthin a project and
+its layers.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsobjectvisitor.h"
+%End
+  public:
+
+    virtual bool visitEmbeddedScript( const QgsEmbeddedScriptEntity &entity, const QgsObjectVisitorContext & );
+
+    const QList<QgsEmbeddedScriptEntity> &embeddedScripts() const;
+%Docstring
+Returns the collected embedded scripts.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsobjectvisitor.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

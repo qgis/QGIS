@@ -176,7 +176,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     static const QgsSettingsEntryBool *settingsAutosizeAttributeTable;
 
     //! Settings entry for behavior handling embedded script within projects
-    static const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptedMode> *settingsCodeExecutionBehaviorUndeterminedProjects;
+    static const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *settingsCodeExecutionBehaviorUndeterminedProjects;
 
     //! Settings entry for projects and folders that are allowed execution of embedded script across sessions
     static const QgsSettingsEntryStringList *settingsCodeExecutionTrustedProjectsFolders;

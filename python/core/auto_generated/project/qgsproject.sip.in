@@ -1784,17 +1784,6 @@ or ``False`` if visiting should be canceled.
 .. versionadded:: 3.10
 %End
 
-    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
-%Docstring
-Accepts the specified style entity ``visitor``, causing it to visit all
-style entities associated with the project.
-
-Returns ``True`` if the visitor should continue visiting other objects,
-or ``False`` if visiting should be canceled.
-
-.. versionadded:: 3.10
-%End
-
     bool accept( QgsObjectEntityVisitorInterface *visitor ) const;
 %Docstring
 Accepts the specified object entity ``visitor``, causing it to visit all

@@ -78,6 +78,7 @@
 #include "qgssettingsregistrycore.h"
 #include "qgspluginlayer.h"
 #include "qgspythonrunner.h"
+#include "qgsobjectvisitor.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -5366,19 +5367,34 @@ bool QgsProject::accept( QgsObjectEntityVisitorInterface *visitor ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  const QString macros = readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() );
+  if ( !macros.isEmpty() )
+  {
+    QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::Macro, tr( "Macros" ), macros );
+    if ( !visitor->visitEmbeddedScript( entity ) )
+    {
+      return false;
+    }
+  }
+
+  const QString expressionFunctions = readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ) );
+  if ( !expressionFunctions.isEmpty() )
+  {
+    QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::ExpressionFunction, tr( "Expression functions" ), expressionFunctions );
+    if ( !visitor->visitEmbeddedScript( entity ) )
+    {
+      return false;
+    }
+  }
+
   const QMap<QString, QgsMapLayer *> layers = mapLayers( false );
   if ( !layers.empty() )
   {
     for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
     {
-      // NOTE: if visitEnter returns false it means "don't visit this layer", not "abort all further visitations"
-      if ( visitor->visitEnter( QgsObjectEntityVisitorInterface::Node( QgsObjectEntityVisitorInterface::NodeType::Layer, ( *it )->id(), ( *it )->name() ) ) )
+      if ( !( ( *it )->accept( visitor ) ) )
       {
-        if ( !( ( *it )->accept( visitor ) ) )
-          return false;
-
-        if ( !visitor->visitExit( QgsObjectEntityVisitorInterface::Node( QgsObjectEntityVisitorInterface::NodeType::Layer, ( *it )->id(), ( *it )->name() ) ) )
-          return false;
+        return false;
       }
     }
   }

@@ -54,6 +54,7 @@ class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
 class QgsMapLayerElevationProperties;
 class QgsMapLayerSelectionProperties;
+class QgsObjectEntityVisitorInterface;
 class QgsSldExportContext;
 
 class QDomDocument;

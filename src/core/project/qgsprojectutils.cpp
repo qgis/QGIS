@@ -22,14 +22,12 @@
 #include "qgsgrouplayer.h"
 #include "qgslayertree.h"
 #include "qgsmaplayerutils.h"
-#include "qgsnetworkcontentfetcherregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
-#include "qgsvectorlayer.h"
 
 QList<QgsMapLayer *> QgsProjectUtils::layersMatchingPath( const QgsProject *project, const QString &path )
 {
@@ -100,7 +98,7 @@ bool QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject *project, QgsMapL
   return traverseTree( project->layerTreeRoot() );
 }
 
-Qgis::ProjectTrustStatus QgsProjectUtils::checkUserTrust( QgsProject *project, bool *undetermined )
+Qgis::ProjectTrustStatus QgsProjectUtils::checkUserTrust( QgsProject *project )
 {
   const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
   switch ( embeddedScriptMode )
@@ -169,115 +167,4 @@ Qgis::ProjectTrustStatus QgsProjectUtils::checkUserTrust( QgsProject *project, b
   }
 
   return Qgis::ProjectTrustStatus::Undetermined;
-}
-
-QList<QgsProject::EmbeddedCode> QgsProjectUtils::embeddedCode( QgsProject *project )
-{
-  QList<QgsProject::EmbeddedCode> code;
-
-  const QString macros = project->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() );
-  if ( !macros.isEmpty() )
-  {
-    QgsProject::EmbeddedCode details;
-    details.type = Qgis::EmbeddedScriptType::Macro;
-    details.name = QObject::tr( "Macros" );
-    details.code = macros;
-    code << details;
-  }
-
-  const QString expressionFunctions = project->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ) );
-  if ( !expressionFunctions.isEmpty() )
-  {
-    QgsProject::EmbeddedCode details;
-    details.type = Qgis::EmbeddedScriptType::ExpressionFunction;
-    details.name = QObject::tr( "Expression functions" );
-    details.code = expressionFunctions;
-    code << details;
-  }
-
-  const QVector<QgsVectorLayer *> layers = project->layers<QgsVectorLayer *>();
-  for ( QgsVectorLayer *layer : layers )
-  {
-    const QList<QgsAction> actions = layer->actions()->actions();
-    for ( const QgsAction &action : actions )
-    {
-      if ( action.command().isEmpty() )
-      {
-        continue;
-      }
-
-      switch ( action.type() )
-      {
-        case Qgis::AttributeActionType::GenericPython:
-        case Qgis::AttributeActionType::Mac:
-        case Qgis::AttributeActionType::Windows:
-        case Qgis::AttributeActionType::Unix:
-        {
-          QgsProject::EmbeddedCode details;
-          details.type = Qgis::EmbeddedScriptType::Action;
-          details.name = QObject::tr( "%1: Action ’%2’" ).arg( layer->name(), action.name() );
-          details.code = action.command();
-          code << details;
-          break;
-        }
-
-        case Qgis::AttributeActionType::Generic:
-        case Qgis::AttributeActionType::OpenUrl:
-        case Qgis::AttributeActionType::SubmitUrlEncoded:
-        case Qgis::AttributeActionType::SubmitUrlMultipart:
-        {
-          break;
-        }
-      }
-    }
-
-    const QgsEditFormConfig formConfig = layer->editFormConfig();
-    QString initCode;
-    switch ( formConfig.initCodeSource() )
-    {
-      case Qgis::AttributeFormPythonInitCodeSource::Dialog:
-      {
-        initCode = QStringLiteral( "# Calling function ’%1’\n\n%2" ).arg( formConfig.initFunction(), formConfig.initCode() );
-        break;
-      }
-
-      case Qgis::AttributeFormPythonInitCodeSource::File:
-      {
-        QFile *inputFile = QgsApplication::networkContentFetcherRegistry()->localFile( formConfig.initFilePath() );
-        if ( inputFile && inputFile->open( QFile::ReadOnly ) )
-        {
-          // Read it into a string
-          QTextStream inf( inputFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-          inf.setCodec( "UTF-8" );
-#endif
-          initCode = inf.readAll();
-          inputFile->close();
-          initCode = QStringLiteral( "# Calling function ’%1’\n# From file %2\n\n" ).arg( formConfig.initFunction(), formConfig.initFilePath() ) + initCode;
-        }
-        break;
-      }
-
-      case Qgis::AttributeFormPythonInitCodeSource::Environment:
-      {
-        initCode = QStringLiteral( "# Calling function ’%1’\n# From environment\n\n" ).arg( formConfig.initFunction() );
-      }
-
-      case Qgis::AttributeFormPythonInitCodeSource::NoSource:
-      {
-        break;
-      }
-    }
-
-    if ( !initCode.isEmpty() )
-    {
-      QgsProject::EmbeddedCode details;
-      details.type = Qgis::EmbeddedScriptType::FormInitCode;
-      details.name = QObject::tr( "%1: Attribute form init code" ).arg( layer->name() );
-      details.code = initCode;
-      code << details;
-    }
-  }
-
-  return code;
 }

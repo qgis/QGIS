@@ -228,10 +228,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // non-default themes are best rendered using the Fusion style, therefore changing themes must require a restart to
   lblUITheme->setText( QStringLiteral( "%1 <i>(%2)</i>" ).arg( lblUITheme->text(), tr( "QGIS restart required" ) ) );
 
-  mProjectTrustBehaviorComboBox->addItem( tr( "Never Execute" ), QVariant::fromValue( Qgis::EmbeddedScriptedMode::Never ) );
-  mProjectTrustBehaviorComboBox->addItem( tr( "Never Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptedMode::NeverAsk ) );
-  mProjectTrustBehaviorComboBox->addItem( tr( "Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptedMode::Ask ) );
-  mProjectTrustBehaviorComboBox->addItem( tr( "Always Execute (Not Recommended)" ), QVariant::fromValue( Qgis::EmbeddedScriptedMode::Always ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Never Execute" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::Never ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Never Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::NeverAsk ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::Ask ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Always Execute (Not Recommended)" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::Always ) );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify Highlight Color" ) );
   mIdentifyHighlightColorButton->setAllowOpacity( true );
@@ -824,7 +824,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mLayerDeleteConfirmationChkBx->setChecked( mSettings->value( QStringLiteral( "qgis/askToDeleteLayers" ), true ).toBool() );
   chbWarnOldProjectVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() );
 
-  Qgis::EmbeddedScriptedMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
+  Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
   mProjectTrustBehaviorComboBox->setCurrentIndex( mProjectTrustBehaviorComboBox->findData( QVariant::fromValue( embeddedScriptMode ) ) );
 
   const QStringList trustedProjectsFoldersList = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value();

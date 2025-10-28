@@ -80,7 +80,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>This project contains executable python code which you should only allow if you trust the authors of this project. If you don't trust or you are unsure, we recommend denying.</string>
+      <string>This project contains executable script which you should only allow if you trust the authors of this project. If you don't trust or you are unsure, we recommend denying.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -111,7 +111,7 @@
     </widget>
    </item>
    <item row="4" colspan="2">
-    <widget class="QStackedWidget" name="mCodePreviewStackedWidget">
+    <widget class="QStackedWidget" name="mScriptPreviewStackedWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -121,8 +121,8 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="mCodePreviewListPage">
-      <layout class="QVBoxLayout" name="mCodePreviewListLayout">
+     <widget class="QWidget" name="mScriptPreviewListPage">
+      <layout class="QVBoxLayout" name="mScriptPreviewListLayout">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -136,7 +136,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QLabel" name="mCodePreviewListLabel">
+        <widget class="QLabel" name="mScriptPreviewListLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -144,7 +144,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Embedded Code List</string>
+          <string>Embedded Script List</string>
          </property>
          <property name="font">
           <font>
@@ -154,7 +154,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="mCodePreviewList">
+        <widget class="QListWidget" name="mScriptPreviewList">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -170,7 +170,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="mCodePreviewListTipLabel">
+        <widget class="QLabel" name="mScriptPreviewListTipLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -178,7 +178,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Double-click on a list item to preview the code.</string>
+          <string>Double-click on a list item to preview the script.</string>
          </property>
          <property name="font">
           <font>
@@ -189,8 +189,8 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="mCodePreviewPage">
-      <layout class="QVBoxLayout" name="mCodePreviewLayout">
+     <widget class="QWidget" name="mScriptPreviewPage">
+      <layout class="QVBoxLayout" name="mScriptPreviewLayout">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -204,9 +204,9 @@
         <number>0</number>
        </property>
        <item>
-        <layout class="QHBoxLayout" name="mCodePreviewHeaderLayout">
+        <layout class="QHBoxLayout" name="mScriptPreviewHeaderLayout">
          <item>
-          <widget class="QToolButton" name="mCodePreviewBackButton">
+          <widget class="QToolButton" name="mScriptPreviewBackButton">
            <property name="toolTip">
             <string>Return to list</string>
            </property>
@@ -220,7 +220,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="mCodePreviewLabel">
+          <widget class="QLabel" name="mScriptPreviewLabel">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
              <horstretch>0</horstretch>
@@ -228,7 +228,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Code Preview</string>
+            <string>Script Preview</string>
            </property>
            <property name="font">
             <font>
@@ -240,7 +240,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QgsCodeEditorPython" name="mCodePreviewEditor" native="true">
+        <widget class="QgsCodeEditorPython" name="mScriptPreviewEditor" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>

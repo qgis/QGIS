@@ -59,19 +59,12 @@ class CORE_EXPORT QgsProjectUtils
     static bool layerIsContainedInGroupLayer( QgsProject *project, QgsMapLayer *layer );
 
     /**
-     * Returns TRUE if the specified \a project has been \a granted trust by the user. If
-     * the user has not yet taken a decision, the optional undetermined parameter will be set to TRUE.
+     * Returns the current trust status of the specified \a project.
      *
      * \since QGIS 4.0
      */
-    static Qgis::ProjectTrustStatus checkUserTrust( QgsProject *project, bool *undetermined SIP_OUT = nullptr );
+    static Qgis::ProjectTrustStatus checkUserTrust( QgsProject *project );
 
-    /**
-     * Traverses settings to return all embedded code found within the \a project.
-     *
-     * \since QGIS 4.0
-     */
-    static QList<QgsProject::EmbeddedCode> embeddedCode( QgsProject *project );
 };
 
 #endif // QGSPROJECTUTILS_H

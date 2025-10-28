@@ -83,6 +83,7 @@ class QgsVectorLayerSelectionProperties;
 class QgsVectorLayerTemporalProperties;
 class QgsFeatureRendererGenerator;
 class QgsVectorLayerElevationProperties;
+class QgsObjectEntityVisitorInterface;
 
 #ifndef SIP_RUN
 template<class T>
@@ -2588,6 +2589,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+
+    bool accept( QgsObjectEntityVisitorInterface *visitor ) const override;
 
   signals:
 

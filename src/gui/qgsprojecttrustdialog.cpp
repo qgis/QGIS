@@ -31,9 +31,8 @@
 #include <QSvgRenderer>
 
 
-QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, const QList<QgsProject::EmbeddedCode> &embeddedCode, QWidget *parent, Qt::WindowFlags fl )
+QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mEmbeddedCode( embeddedCode )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -45,21 +44,21 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, const QList<Q
 
   connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsProjectTrustDialog::buttonBoxClicked );
 
-  connect( mCodePreviewList, &QListWidget::itemDoubleClicked, this, [this]( QListWidgetItem *item ) {
-    const int row = mCodePreviewList->row( item );
-    if ( row >= 0 && row < mEmbeddedCode.size() )
+  connect( mScriptPreviewList, &QListWidget::itemDoubleClicked, this, [this]( QListWidgetItem *item ) {
+    const int row = mScriptPreviewList->row( item );
+    if ( row >= 0 && row < mEmbeddedScriptsVisitor.embeddedScripts().size() )
     {
-      mCodePreviewEditor->setText( mEmbeddedCode[row].code );
-      mCodePreviewStackedWidget->setCurrentIndex( 1 );
+      mScriptPreviewEditor->setText( mEmbeddedScriptsVisitor.embeddedScripts()[row].script() );
+      mScriptPreviewStackedWidget->setCurrentIndex( 1 );
     }
   } );
 
-  connect( mCodePreviewBackButton, &QAbstractButton::clicked, this, [this] {
-    mCodePreviewStackedWidget->setCurrentIndex( 0 );
+  connect( mScriptPreviewBackButton, &QAbstractButton::clicked, this, [this] {
+    mScriptPreviewStackedWidget->setCurrentIndex( 0 );
   } );
 
-  mCodePreviewEditor->setReadOnly( true );
-  mCodePreviewEditor->setLineNumbersVisible( false );
+  mScriptPreviewEditor->setReadOnly( true );
+  mScriptPreviewEditor->setLineNumbersVisible( false );
 
   QSvgRenderer svg( QStringLiteral( ":/images/themes/default/mIconPythonFile.svg" ) );
   if ( svg.isValid() )
@@ -126,12 +125,14 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, const QList<Q
       mProjectDetailsLabel->setText( tr( "The current project URI is ’%1’." ).arg( QStringLiteral( "<b>%1</b>" ).arg( mProjectAbsoluteFilePath ) ) );
       mTrustProjectFolderCheckBox->setVisible( false );
     }
+
+    project->accept( &mEmbeddedScriptsVisitor );
   }
 
-  for ( const QgsProject::EmbeddedCode &codeDetails : embeddedCode )
+  for ( const QgsEmbeddedScriptEntity &scriptDetails : mEmbeddedScriptsVisitor.embeddedScripts() )
   {
-    QListWidgetItem *newItem = new QListWidgetItem( mCodePreviewList );
-    switch ( codeDetails.type )
+    QListWidgetItem *newItem = new QListWidgetItem( mScriptPreviewList );
+    switch ( scriptDetails.type() )
     {
       case Qgis::EmbeddedScriptType::Macro:
         newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPythonFile.svg" ) ) );
@@ -149,9 +150,9 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, const QList<Q
         newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) ) );
         break;
     }
-    newItem->setText( codeDetails.name );
+    newItem->setText( scriptDetails.name() );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mCodePreviewList->addItem( newItem );
+    mScriptPreviewList->addItem( newItem );
   }
 }
 

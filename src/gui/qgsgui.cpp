@@ -391,18 +391,17 @@ QgsGui::QgsGui()
 bool QgsGui::pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar *messageBar )
 {
   const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
-  bool undetermined = false;
-  Qgis::ProjectTrustStatus trustStatus = QgsProjectUtils::checkUserTrust( project, &undetermined );
+  Qgis::ProjectTrustStatus trustStatus = QgsProjectUtils::checkUserTrust( project );
   if ( trustStatus == Qgis::ProjectTrustStatus::Undetermined && embeddedScriptMode == Qgis::EmbeddedScriptMode::Ask )
   {
-    QgsProjectTrustDialog dialog( project, QgsProjectUtils::embeddedCode( project ) );
+    QgsProjectTrustDialog dialog( project );
     dialog.exec();
     trustStatus = QgsProjectUtils::checkUserTrust( project );
   }
 
   if ( messageBar )
   {
-    if ( trusted )
+    if ( trustStatus == Qgis::ProjectTrustStatus::Trusted )
     {
       messageBar->pushMessage(
         tr( "Security warning" ),
@@ -420,7 +419,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar 
     }
   }
 
-  return trusted;
+  return trustStatus == Qgis::ProjectTrustStatus::Trusted;
 }
 
 void QgsGui::initCalloutWidgets()
