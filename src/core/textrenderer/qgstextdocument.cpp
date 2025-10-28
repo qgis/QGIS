@@ -28,6 +28,30 @@ QgsTextDocument::~QgsTextDocument() = default;
 
 QgsTextDocument::QgsTextDocument() = default;
 
+QgsTextDocument::QgsTextDocument( const QgsTextDocument &other )
+  : mBlocks( other.mBlocks )
+{
+
+}
+
+QgsTextDocument::QgsTextDocument( QgsTextDocument &&other )
+  : mBlocks( std::move( other.mBlocks ) )
+{
+
+}
+
+QgsTextDocument &QgsTextDocument::operator=( const QgsTextDocument &other )
+{
+  mBlocks = other.mBlocks;
+  return *this;
+}
+
+QgsTextDocument &QgsTextDocument::operator=( QgsTextDocument &&other )
+{
+  mBlocks = std::move( other.mBlocks );
+  return *this;
+}
+
 QgsTextDocument::QgsTextDocument( const QgsTextBlock &block )
 {
   mBlocks.append( block );
