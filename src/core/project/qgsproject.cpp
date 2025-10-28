@@ -5362,6 +5362,30 @@ bool QgsProject::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
+bool QgsProject::accept( QgsObjectEntityVisitorInterface *visitor ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  const QMap<QString, QgsMapLayer *> layers = mapLayers( false );
+  if ( !layers.empty() )
+  {
+    for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
+    {
+      // NOTE: if visitEnter returns false it means "don't visit this layer", not "abort all further visitations"
+      if ( visitor->visitEnter( QgsObjectEntityVisitorInterface::Node( QgsObjectEntityVisitorInterface::NodeType::Layer, ( *it )->id(), ( *it )->name() ) ) )
+      {
+        if ( !( ( *it )->accept( visitor ) ) )
+          return false;
+
+        if ( !visitor->visitExit( QgsObjectEntityVisitorInterface::Node( QgsObjectEntityVisitorInterface::NodeType::Layer, ( *it )->id(), ( *it )->name() ) ) )
+          return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 QgsElevationShadingRenderer QgsProject::elevationShadingRenderer() const
 {
   return mElevationShadingRenderer;

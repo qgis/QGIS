@@ -32,10 +32,6 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsProject.EmbeddedCode.__group__ = ['project']
-except (NameError, AttributeError):
-    pass
-try:
     QgsProjectDirtyBlocker.__group__ = ['project']
 except (NameError, AttributeError):
     pass

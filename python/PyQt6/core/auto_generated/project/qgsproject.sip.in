@@ -45,13 +45,6 @@ reference open within the main QGIS application.
       WMSOnlineResource,
     };
 
-    struct EmbeddedCode
-    {
-      Qgis::EmbeddedScriptType type;
-      QString name;
-      QString code;
-    };
-
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -1789,6 +1782,28 @@ Returns ``True`` if the visitor should continue visiting other objects,
 or ``False`` if visiting should be canceled.
 
 .. versionadded:: 3.10
+%End
+
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified style entity ``visitor``, causing it to visit all
+style entities associated with the project.
+
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
+
+.. versionadded:: 3.10
+%End
+
+    bool accept( QgsObjectEntityVisitorInterface *visitor ) const;
+%Docstring
+Accepts the specified object entity ``visitor``, causing it to visit all
+object entities associated with the project.
+
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
+
+.. versionadded:: 4.0
 %End
 
     QgsElevationShadingRenderer elevationShadingRenderer() const;

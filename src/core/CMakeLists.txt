@@ -1267,6 +1267,7 @@ set(QGIS_CORE_HDRS
   qgsmimedatautils.h
   qgsmultirenderchecker.h
   qgsobjectcustomproperties.h
+  qgsobjectvisitor.h
   qgsofflineediting.h
   qgsogcutils.h
   qgsogrproxytextcodec.h

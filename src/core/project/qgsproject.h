@@ -149,13 +149,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     };
     // *INDENT-ON*
 
-    struct EmbeddedCode
-    {
-      Qgis::EmbeddedScriptType type;
-      QString name;
-      QString code;
-    };
-
     //! Returns the QgsProject singleton instance
     static QgsProject *instance();
 
@@ -1784,6 +1777,28 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.10
      */
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    /**
+     * Accepts the specified style entity \a visitor, causing it to visit all style entities associated
+     * with the project.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 3.10
+     */
+    bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    /**
+     * Accepts the specified object entity \a visitor, causing it to visit all object entities associated
+     * with the project.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 4.0
+     */
+    bool accept( QgsObjectEntityVisitorInterface *visitor ) const;
 
     /**
      * Returns the elevation shading renderer used for map shading
