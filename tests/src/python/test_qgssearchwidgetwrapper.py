@@ -63,7 +63,7 @@ class PyQgsDefaultSearchWidgetWrapper(QgisTestCase):
     def testCreateExpression(self):
         """Test creating an expression using the widget"""
         layer = QgsVectorLayer(
-            "Point?field=fldtxt:string&field=fldint:integer&field=flddate:datetime",
+            "Point?field=fldtxt:string&field=fldint:integer&field=flddate:datetime&field=flddouble:double",
             "test",
             "memory",
         )
@@ -169,6 +169,42 @@ class PyQgsDefaultSearchWidgetWrapper(QgisTestCase):
         self.assertEqual(
             w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThanOrEqualTo),
             '"fldint"<=5.5',
+        )
+
+        # remove locale specific formattings
+        line_edit.setText("5,000")
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThan),
+            '"fldint"<5000',
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.GreaterThanOrEqualTo),
+            '"fldint">=5000',
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThanOrEqualTo),
+            '"fldint"<=5000',
+        )
+
+        # numeric field (double)
+        parent = QWidget()
+        w = QgsDefaultSearchWidgetWrapper(layer, 3)
+        w.initWidget(parent)
+
+        # remove locale specific formattings
+        line_edit = w.lineEdit()
+        line_edit.setText("5,000.5")
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThan),
+            '"flddouble"<5000.5',
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.GreaterThanOrEqualTo),
+            '"flddouble">=5000.5',
+        )
+        self.assertEqual(
+            w.createExpression(QgsSearchWidgetWrapper.FilterFlag.LessThanOrEqualTo),
+            '"flddouble"<=5000.5',
         )
 
         # date/time/datetime
