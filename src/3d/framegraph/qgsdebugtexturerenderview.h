@@ -28,8 +28,8 @@ namespace Qt3DRender
 /**
  * \ingroup qgis_3d
  * \brief Simple renderview to preview/debug textures
- * 
- * \see QgsDebugTextureEntity
+ *
+ * \see QgsOverlayTextureEntity
  *
  * \note Not available in Python bindings
  *

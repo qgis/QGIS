@@ -31,7 +31,7 @@
 
 #include "qgsmapsettings.h"
 #include "qgsrectangle.h"
-#include "qgsdebugtextureentity.h"
+#include "qgsoverlaytextureentity.h"
 
 
 class Qgs3DMapSettings;
@@ -48,7 +48,7 @@ class QgsWindow3DEngine;
  *
  * \since QGIS 4.0
  */
-class QgsMapOverlayEntity : public QgsDebugTextureEntity
+class QgsMapOverlayEntity : public QgsOverlayTextureEntity
 {
     Q_OBJECT
 
