@@ -42,6 +42,7 @@ class TestQgsExpressionContext : public QObject
     void contextStack();
     void scopeByName();
     void contextCopy();
+    void contextMove();
     void contextStackFunctions();
     void evaluate();
     void setFeature();
@@ -372,6 +373,29 @@ void TestQgsExpressionContext::contextCopy()
   QVERIFY( copy.hasVariable( "test" ) );
   QCOMPARE( copy.variable( "test" ).toInt(), 1 );
   QCOMPARE( copy.variableNames().length(), 1 );
+}
+
+void TestQgsExpressionContext::contextMove()
+{
+  QgsExpressionContext context;
+  context << new QgsExpressionContextScope();
+  context.scope( 0 )->setVariable( QStringLiteral( "test" ), 1 );
+
+  //move constructor
+  QgsExpressionContext newContext( std::move( context ) );
+  QCOMPARE( newContext.scopeCount(), 1 );
+  QCOMPARE( context.scopeCount(), 0 );
+  QVERIFY( newContext.hasVariable( "test" ) );
+  QCOMPARE( newContext.variable( "test" ).toInt(), 1 );
+  QCOMPARE( newContext.variableNames().length(), 1 );
+
+  QgsExpressionContext newContext2;
+  newContext2 = std::move( newContext );
+  QCOMPARE( newContext2.scopeCount(), 1 );
+  QCOMPARE( newContext.scopeCount(), 0 );
+  QVERIFY( newContext2.hasVariable( "test" ) );
+  QCOMPARE( newContext2.variable( "test" ).toInt(), 1 );
+  QCOMPARE( newContext2.variableNames().length(), 1 );
 }
 
 void TestQgsExpressionContext::contextStackFunctions()

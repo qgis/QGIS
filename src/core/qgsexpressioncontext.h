@@ -161,8 +161,10 @@ class CORE_EXPORT QgsExpressionContextScope
     QgsExpressionContextScope( const QString &name = QString() );
 
     QgsExpressionContextScope( const QgsExpressionContextScope &other );
+    SIP_SKIP QgsExpressionContextScope( QgsExpressionContextScope &&other );
 
     QgsExpressionContextScope &operator=( const QgsExpressionContextScope &other );
+    QgsExpressionContextScope &operator=( QgsExpressionContextScope &&other );
 
     ~QgsExpressionContextScope();
 
@@ -481,6 +483,7 @@ class CORE_EXPORT QgsExpressionContext
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
 
     QgsExpressionContext( const QgsExpressionContext &other );
+    SIP_SKIP QgsExpressionContext( QgsExpressionContext &&other );
 
     QgsExpressionContext &operator=( const QgsExpressionContext &other ) SIP_SKIP;
 

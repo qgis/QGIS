@@ -42,6 +42,7 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QString &name )
 }
 
 QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContextScope &other )
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mName( other.mName )
   , mVariables( other.mVariables )
   , mHasFeature( other.mHasFeature )
@@ -50,6 +51,7 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContext
   , mGeometry( other.mGeometry )
   , mHiddenVariables( other.mHiddenVariables )
   , mLayerStores( other.mLayerStores )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
   QHash<QString, QgsScopedExpressionFunction * >::const_iterator it = other.mFunctions.constBegin();
   for ( ; it != other.mFunctions.constEnd(); ++it )
@@ -58,8 +60,22 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContext
   }
 }
 
+QgsExpressionContextScope::QgsExpressionContextScope( QgsExpressionContextScope &&other )
+  : mName( std::move( other.mName ) )
+  , mVariables( std::move( other.mVariables ) )
+  , mFunctions( std::move( other.mFunctions ) )
+  , mHasFeature( other.mHasFeature )
+  , mFeature( std::move( other.mFeature ) )
+  , mHasGeometry( other.mHasGeometry )
+  , mGeometry( std::move( other.mGeometry ) )
+  , mHiddenVariables( std::move( other.mHiddenVariables ) )
+  , mLayerStores( std::move( other.mLayerStores ) )
+{
+}
+
 QgsExpressionContextScope &QgsExpressionContextScope::operator=( const QgsExpressionContextScope &other )
 {
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mName = other.mName;
   mVariables = other.mVariables;
   mHasFeature = other.mHasFeature;
@@ -76,7 +92,21 @@ QgsExpressionContextScope &QgsExpressionContextScope::operator=( const QgsExpres
   {
     mFunctions.insert( it.key(), it.value()->clone() );
   }
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+  return *this;
+}
 
+QgsExpressionContextScope &QgsExpressionContextScope::operator=( QgsExpressionContextScope &&other )
+{
+  mName = std::move( other.mName );
+  mVariables = std::move( other.mVariables );
+  mHasFeature = other.mHasFeature;
+  mFeature = std::move( other.mFeature );
+  mHasGeometry = other.mHasGeometry;
+  mGeometry = std::move( other.mGeometry );
+  mHiddenVariables = std::move( other.mHiddenVariables );
+  mLayerStores = std::move( other.mLayerStores );
+  mFunctions = std::move( other.mFunctions );
   return *this;
 }
 
@@ -311,8 +341,10 @@ QgsExpressionContext::QgsExpressionContext( const QList<QgsExpressionContextScop
   mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
 }
 
-QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other ) : mStack{}
+QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other )
+  : mStack{}
 {
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   for ( const QgsExpressionContextScope *scope : std::as_const( other.mStack ) )
   {
     mStack << new QgsExpressionContextScope( *scope );
@@ -323,23 +355,34 @@ QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other ) 
   mFeedback = other.mFeedback;
   mDestinationStore = other.mDestinationStore;
   mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
+  //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 }
 
-// cppcheck-suppress operatorEqVarError
+QgsExpressionContext::QgsExpressionContext( QgsExpressionContext &&other )
+  : mStack( std::move( other.mStack ) )
+  , mHighlightedVariables( std::move( other.mHighlightedVariables ) )
+  , mHighlightedFunctions( std::move( other.mHighlightedFunctions ) )
+  , mFeedback( other.mFeedback )
+  , mLoadLayerFunction( std::move( other.mLoadLayerFunction ) )
+  , mDestinationStore( std::move( other.mDestinationStore ) )
+  , mCachedValues( std::move( other.mCachedValues ) )
+{
+}
+
 QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&other ) noexcept
 {
   if ( this != &other )
   {
     qDeleteAll( mStack );
     // move the stack over
-    mStack = other.mStack;
-    other.mStack.clear();
+    mStack = std::move( other.mStack );
 
-    mHighlightedVariables = other.mHighlightedVariables;
-    mHighlightedFunctions = other.mHighlightedFunctions;
-    mCachedValues = other.mCachedValues;
+    mHighlightedVariables = std::move( other.mHighlightedVariables );
+    mHighlightedFunctions = std::move( other.mHighlightedFunctions );
+    mLoadLayerFunction = std::move( other.mLoadLayerFunction );
+    mCachedValues = std::move( other.mCachedValues );
     mFeedback = other.mFeedback;
-    mDestinationStore = other.mDestinationStore;
+    mDestinationStore = std::move( other.mDestinationStore );
   }
   return *this;
 }
@@ -350,6 +393,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( const QgsExpressionContex
   if ( &other == this )
     return *this;
 
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   qDeleteAll( mStack );
   mStack.clear();
   for ( const QgsExpressionContextScope *scope : std::as_const( other.mStack ) )
@@ -361,6 +405,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( const QgsExpressionContex
   mCachedValues = other.mCachedValues;
   mFeedback = other.mFeedback;
   mDestinationStore = other.mDestinationStore;
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   return *this;
 }
 
