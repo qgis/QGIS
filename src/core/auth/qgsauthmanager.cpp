@@ -494,7 +494,7 @@ bool QgsAuthManager::verifyMasterPassword( const QString &compare )
     return false;
 
   int rows = 0;
-  if ( !masterPasswordRowsInDb( &rows ) )
+  if ( !masterPasswordRowsInDb( rows ) )
   {
     const char *err = QT_TR_NOOP( "Master password: FAILED to access database" );
     QgsDebugError( err );
@@ -3463,14 +3463,14 @@ bool QgsAuthManager::masterPasswordInput()
   return false;
 }
 
-bool QgsAuthManager::masterPasswordRowsInDb( int *rows ) const
+bool QgsAuthManager::masterPasswordRowsInDb( int &rows ) const
 {
   ensureInitialized();
 
   if ( isDisabled() )
     return false;
 
-  *rows = 0;
+  rows = 0;
 
   QMutexLocker locker( mMutex.get() );
 
@@ -3481,7 +3481,7 @@ bool QgsAuthManager::masterPasswordRowsInDb( int *rows ) const
   {
     try
     {
-      *rows += storage->masterPasswords( ).count();
+      rows += storage->masterPasswords( ).count();
     }
     catch ( const QgsNotSupportedException &e )
     {
@@ -3496,7 +3496,6 @@ bool QgsAuthManager::masterPasswordRowsInDb( int *rows ) const
   }
 
   return rows != 0;
-
 }
 
 bool QgsAuthManager::masterPasswordHashInDatabase() const
@@ -3507,7 +3506,7 @@ bool QgsAuthManager::masterPasswordHashInDatabase() const
     return false;
 
   int rows = 0;
-  if ( !masterPasswordRowsInDb( &rows ) )
+  if ( !masterPasswordRowsInDb( rows ) )
   {
     const char *err = QT_TR_NOOP( "Master password: FAILED to access database" );
     QgsDebugError( err );
