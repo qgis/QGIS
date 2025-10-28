@@ -159,6 +159,65 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   return *this;
 }
 
+QgsRenderContext &QgsRenderContext::operator=( QgsRenderContext &&rh )
+{
+  mFlags = rh.mFlags;
+  mRasterizedRenderingPolicy = rh.mRasterizedRenderingPolicy;
+  mPainter = rh.mPainter;
+  mPreviewRenderPainter = rh.mPreviewRenderPainter;
+  mMaskPainter = std::move( rh.mMaskPainter );
+  mMaskIdProvider = rh.mMaskIdProvider;
+  mCurrentMaskId = rh.mCurrentMaskId;
+  mIsGuiPreview = rh.mIsGuiPreview;
+  mCoordTransform = std::move( rh.mCoordTransform );
+  mExtent = std::move( rh.mExtent );
+  mOriginalMapExtent = std::move( rh.mOriginalMapExtent );
+  mMapToPixel = std::move( rh.mMapToPixel );
+  mRenderingStopped = rh.mRenderingStopped;
+  mFeedback = rh.mFeedback;
+  mScaleFactor = rh.mScaleFactor;
+  mDpiTarget = rh.mDpiTarget;
+  mRendererScale = rh.mRendererScale;
+  mSymbologyReferenceScale = rh.mSymbologyReferenceScale;
+  mLabelingEngine = rh.mLabelingEngine;
+  mLabelSink = rh.mLabelSink;
+  mSelectionColor = rh.mSelectionColor;
+  mVectorSimplifyMethod = std::move( rh.mVectorSimplifyMethod );
+  mExpressionContext = std::move( rh.mExpressionContext );
+  mGeometry = rh.mGeometry;
+  mFeatureFilterProvider = std::move( rh.mFeatureFilterProvider );
+  mSegmentationTolerance = rh.mSegmentationTolerance;
+  mSegmentationToleranceType = rh.mSegmentationToleranceType;
+  mDistanceArea = std::move( rh.mDistanceArea );
+  mTransformContext = std::move( rh.mTransformContext );
+  mPathResolver = std::move( rh.mPathResolver );
+  mTextRenderFormat = rh.mTextRenderFormat;
+  mRenderedFeatureHandlers = std::move( rh.mRenderedFeatureHandlers );
+  mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
+  mCustomProperties = std::move( rh.mCustomProperties );
+  mClippingRegions = std::move( rh.mClippingRegions );
+  mFeatureClipGeometry = std::move( rh.mFeatureClipGeometry );
+  mTextureOrigin = std::move( rh.mTextureOrigin );
+  mZRange = std::move( rh.mZRange );
+  mSize = std::move( rh.mSize );
+  mDevicePixelRatio = rh.mDevicePixelRatio;
+  mImageFormat = rh.mImageFormat;
+  setIsTemporal( rh.isTemporal() );
+  mRendererUsage = rh.mRendererUsage;
+  mFrameRate = rh.mFrameRate;
+  mCurrentFrame = rh.mCurrentFrame;
+  mSymbolLayerClippingGeometries = std::move( rh.mSymbolLayerClippingGeometries );
+  mMaskRenderSettings = std::move( rh.mMaskRenderSettings );
+  if ( isTemporal() )
+    setTemporalRange( rh.temporalRange() );
+#ifdef QGISDEBUG
+  mHasTransformContext = rh.mHasTransformContext;
+#endif
+  mElevationMap = rh.mElevationMap;
+
+  return *this;
+}
+
 QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
 {
   QgsRenderContext context;
