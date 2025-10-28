@@ -135,7 +135,7 @@ QString QgsSingleColorPointCloud3DSymbol::symbolType() const
   return QStringLiteral( "single-color" );
 }
 
-QgsAbstract3DSymbol *QgsSingleColorPointCloud3DSymbol::clone() const
+QgsSingleColorPointCloud3DSymbol *QgsSingleColorPointCloud3DSymbol::clone() const
 {
   QgsSingleColorPointCloud3DSymbol *result = new QgsSingleColorPointCloud3DSymbol;
   result->mSingleColor = mSingleColor;
@@ -181,7 +181,7 @@ QgsColorRampPointCloud3DSymbol::QgsColorRampPointCloud3DSymbol()
 {
 }
 
-QgsAbstract3DSymbol *QgsColorRampPointCloud3DSymbol::clone() const
+QgsColorRampPointCloud3DSymbol *QgsColorRampPointCloud3DSymbol::clone() const
 {
   QgsColorRampPointCloud3DSymbol *result = new QgsColorRampPointCloud3DSymbol;
   result->mRenderingParameter = mRenderingParameter;
@@ -285,7 +285,7 @@ QString QgsRgbPointCloud3DSymbol::symbolType() const
   return QStringLiteral( "rgb" );
 }
 
-QgsAbstract3DSymbol *QgsRgbPointCloud3DSymbol::clone() const
+QgsRgbPointCloud3DSymbol *QgsRgbPointCloud3DSymbol::clone() const
 {
   QgsRgbPointCloud3DSymbol *result = new QgsRgbPointCloud3DSymbol;
   result->mRedAttribute = mRedAttribute;
@@ -457,7 +457,7 @@ QgsClassificationPointCloud3DSymbol::QgsClassificationPointCloud3DSymbol()
 {
 }
 
-QgsAbstract3DSymbol *QgsClassificationPointCloud3DSymbol::clone() const
+QgsClassificationPointCloud3DSymbol *QgsClassificationPointCloud3DSymbol::clone() const
 {
   QgsClassificationPointCloud3DSymbol *result = new QgsClassificationPointCloud3DSymbol;
   result->mRenderingParameter = mRenderingParameter;

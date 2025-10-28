@@ -626,7 +626,7 @@ void QgsProject::registerTranslatableContainers( QgsTranslationContext *translat
   {
     if ( element->type() == Qgis::AttributeEditorType::Container )
     {
-      QgsAttributeEditorContainer *container = dynamic_cast<QgsAttributeEditorContainer *>( element );
+      QgsAttributeEditorContainer *container = qgis::down_cast<QgsAttributeEditorContainer *>( element );
 
       translationContext->registerTranslation( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ), container->name() );
 

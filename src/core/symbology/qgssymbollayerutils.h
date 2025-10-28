@@ -1081,7 +1081,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * restricted size symbol. New symbol if size was out of min/max range.
      * Caller takes ownership
      */
-    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok = nullptr );
+    static std::unique_ptr< QgsSymbol > restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok = nullptr );
 
     /**
      * Evaluates a map of properties using the given \a context and returns a variant map with evaluated expressions from the properties.
