@@ -49,6 +49,8 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsColorRampTransformer,
     QgsGradientColorRamp,
+    QgsUnsetAttributeValue,
+    QgsVectorLayerUtils,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1158,6 +1160,20 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
                 0, QgsFieldConstraints.Constraint.ConstraintUnique, "Autogenerate"
             )
         )
+        self.assertTrue(
+            self.vl.dataProvider().skipConstraintCheck(
+                0,
+                QgsFieldConstraints.Constraint.ConstraintUnique,
+                QgsUnsetAttributeValue(),
+            )
+        )
+        self.assertTrue(
+            self.vl.dataProvider().skipConstraintCheck(
+                0,
+                QgsFieldConstraints.Constraint.ConstraintNotNull,
+                QgsUnsetAttributeValue(),
+            )
+        )
         self.assertFalse(
             self.vl.dataProvider().skipConstraintCheck(
                 0, QgsFieldConstraints.Constraint.ConstraintUnique, "aa"
@@ -1168,6 +1184,35 @@ class TestPyQgsAFSProvider(QgisTestCase, ProviderTestCase):
                 1, QgsFieldConstraints.Constraint.ConstraintUnique, "aa"
             )
         )
+
+    def testUnsetAttributeValue(self):
+        """Test that QgsUnsetAttributeValue is handled correctly by the provider."""
+        feature = QgsFeature(self.vl.fields())
+        feature.setAttribute("name", QgsUnsetAttributeValue())
+        feature.setAttribute("cnt", 17)
+
+        self.assertFalse(
+            QgsVectorLayerUtils.valueExists(self.vl, 1, QgsUnsetAttributeValue())
+        )
+        self.assertTrue(QgsVectorLayerUtils.valueExists(self.vl, 1, 5))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(self.vl, 1, 55))
+        self.assertTrue(QgsVectorLayerUtils.valueExists(self.vl, 2, 300))
+        self.assertFalse(QgsVectorLayerUtils.valueExists(self.vl, 2, 16))
+
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(self.vl, feature, 1)[0])
+        feature["cnt"] = QgsUnsetAttributeValue()
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(self.vl, feature, 2)[0])
+
+        # objectid can be unset, but not null
+        feature["OBJECTID"] = QgsUnsetAttributeValue()
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(self.vl, feature, 0)[0])
+        feature["OBJECTID"] = NULL
+        self.assertFalse(QgsVectorLayerUtils.validateAttribute(self.vl, feature, 0)[0])
+        # can be concrete value, but must be unique
+        feature["OBJECTID"] = 333
+        self.assertTrue(QgsVectorLayerUtils.validateAttribute(self.vl, feature, 0)[0])
+        feature["OBJECTID"] = 3
+        self.assertFalse(QgsVectorLayerUtils.validateAttribute(self.vl, feature, 0)[0])
 
     def testObjectIdDifferentName(self):
         """Test that object id fields not named OBJECTID work correctly"""
