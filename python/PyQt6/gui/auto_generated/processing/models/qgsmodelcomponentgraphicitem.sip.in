@@ -114,6 +114,12 @@ Sets a new scene ``rect`` for the item.
 %End
 
     virtual QString linkedParameterDataType( Qt::Edge edge, int index ) const;
+%Docstring
+Returns the data type of the linked parameter at the specified ``index``
+on the specified ``edge``.
+
+.. versionadded:: 4.0
+%End
 
     virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
 
@@ -372,7 +378,7 @@ Ownership of ``parameter`` is transferred to the item.
     virtual bool canDeleteComponent();
 
 
-    virtual QString linkedParameterDataType( Qt::Edge /* unused in this implementation because parameters only have a bottom edge */, int index ) const;
+    virtual QString linkedParameterDataType( Qt::Edge, int index ) const;
 
 
     virtual QColor linkColor( Qt::Edge edge, int index ) const;
