@@ -188,8 +188,7 @@ void QgsCodeEditorPython::initializeLexer()
     }
     apis->prepare();
   }
-  if ( apis )
-    pyLexer->setAPIs( apis.release() );
+  pyLexer->setAPIs( apis.release() );
 
   setLexer( pyLexer );
 
