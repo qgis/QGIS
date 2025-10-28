@@ -68,11 +68,13 @@ class CORE_EXPORT QgsMeshSpatialIndex
     explicit QgsMeshSpatialIndex( const QgsMesh &mesh, QgsFeedback *feedback = nullptr, QgsMesh::ElementType elementType = QgsMesh::ElementType::Face );
 
     QgsMeshSpatialIndex( const QgsMeshSpatialIndex &other );
+    SIP_SKIP QgsMeshSpatialIndex( QgsMeshSpatialIndex &&other );
 
     //! Destructor finalizes work with spatial index
     ~QgsMeshSpatialIndex();
 
     QgsMeshSpatialIndex &operator=( const QgsMeshSpatialIndex &other );
+    QgsMeshSpatialIndex &operator=( QgsMeshSpatialIndex &&other );
 
     /**
      * Returns a list of face ids with a bounding box which intersects the specified \a rectangle.
