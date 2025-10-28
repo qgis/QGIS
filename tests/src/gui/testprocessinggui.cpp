@@ -102,6 +102,7 @@
 #include "qgspluginlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsannotationlayer.h"
+#include "qgstiledscenelayer.h"
 #include "qgsprocessingparameteralignrasterlayers.h"
 #include "qgsprocessingalignrasterlayerswidgetwrapper.h"
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
@@ -6692,6 +6693,9 @@ void TestProcessingGui::mapLayerComboBox()
   QgsPointCloudLayer *pointCloud = new QgsPointCloudLayer( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/ept/sunshine-coast/ept.json", QStringLiteral( "Point cloud" ), QStringLiteral( "ept" ) );
   QVERIFY( pointCloud->isValid() );
   QgsProject::instance()->addMapLayer( pointCloud );
+  QgsTiledSceneLayer *tiledScene = new QgsTiledSceneLayer( "tiled_scene_source", QStringLiteral( "tiled scene" ), QStringLiteral( "test_tiled_scene_provider" ) );
+  QVERIFY( tiledScene->isValid() );
+  QgsProject::instance()->addMapLayer( tiledScene );
 
   // map layer param, all types are acceptable
   param = std::make_unique<QgsProcessingParameterMapLayer>( QStringLiteral( "param" ), QString() );
@@ -6710,6 +6714,8 @@ void TestProcessingGui::mapLayerComboBox()
   QCOMPARE( combo->currentLayer(), raster );
   combo->setLayer( pointCloud );
   QCOMPARE( combo->currentLayer(), pointCloud );
+  combo->setLayer( tiledScene );
+  QCOMPARE( combo->currentLayer(), tiledScene );
   combo.reset();
   param.reset();
 
@@ -6730,6 +6736,30 @@ void TestProcessingGui::mapLayerComboBox()
   QCOMPARE( combo->currentLayer(), raster );
   combo->setLayer( pointCloud );
   QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
+  QVERIFY( !combo->currentLayer() );
+  combo.reset();
+  param.reset();
+
+  // map layer param, only tiled scene layers are acceptable
+  param = std::make_unique<QgsProcessingParameterMapLayer>( QStringLiteral( "param" ), QString(), QVariant(), false, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::TiledScene ) );
+  combo = std::make_unique<QgsProcessingMapLayerComboBox>( param.get() );
+  combo->setLayer( point );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( line );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( polygon );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( noGeom );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( mesh );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( raster );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
+  QCOMPARE( combo->currentLayer(), tiledScene );
   combo.reset();
   param.reset();
 
@@ -6749,6 +6779,8 @@ void TestProcessingGui::mapLayerComboBox()
   combo->setLayer( raster );
   QCOMPARE( combo->currentLayer(), raster );
   combo->setLayer( pointCloud );
+  QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
   QVERIFY( !combo->currentLayer() );
   combo.reset();
   param.reset();
@@ -6770,6 +6802,8 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo->setLayer( pointCloud );
   QVERIFY( !combo->currentLayer() );
+  combo->setLayer( tiledScene );
+  QVERIFY( !combo->currentLayer() );
   combo.reset();
   param.reset();
 
@@ -6790,6 +6824,8 @@ void TestProcessingGui::mapLayerComboBox()
   QVERIFY( !combo->currentLayer() );
   combo->setLayer( pointCloud );
   QCOMPARE( combo->currentLayer(), pointCloud );
+  combo->setLayer( tiledScene );
+  QVERIFY( !combo->currentLayer() );
   combo.reset();
   param.reset();
 
@@ -8791,6 +8827,7 @@ void TestProcessingGui::testDatabaseTableWrapper()
 void TestProcessingGui::testFieldMapWidget()
 {
   QgsProcessingFieldMapPanelWidget widget;
+  widget.mSkipConfirmDialog = true;
 
   QVariantMap map;
   map.insert( QStringLiteral( "name" ), QStringLiteral( "n" ) );
@@ -8862,6 +8899,7 @@ void TestProcessingGui::testFieldMapWrapper()
 
     QgsProcessingContext context;
     QWidget *w = wrapper.createWrappedWidget( context );
+    qobject_cast<QgsProcessingFieldMapPanelWidget *>( w )->mSkipConfirmDialog = true;
 
     QVariantMap map;
     map.insert( QStringLiteral( "name" ), QStringLiteral( "n" ) );
@@ -8920,6 +8958,7 @@ void TestProcessingGui::testFieldMapWrapper()
     param.setParentLayerParameterName( QStringLiteral( "other" ) );
     QgsProcessingFieldMapWidgetWrapper wrapper2( &param, type );
     w = wrapper2.createWrappedWidget( context );
+    qobject_cast<QgsProcessingFieldMapPanelWidget *>( w )->mSkipConfirmDialog = true;
 
     QSignalSpy spy2( &wrapper2, &QgsProcessingFieldMapWidgetWrapper::widgetValueHasChanged );
     wrapper2.setWidgetValue( QVariantList() << map, context );
@@ -9062,6 +9101,7 @@ void TestProcessingGui::testAggregateWrapper()
 
     QgsProcessingContext context;
     QWidget *w = wrapper.createWrappedWidget( context );
+    qobject_cast<QgsProcessingAggregatePanelWidget *>( w )->mSkipConfirmDialog = true;
 
     QVariantMap map;
     map.insert( QStringLiteral( "name" ), QStringLiteral( "n" ) );
@@ -9122,6 +9162,7 @@ void TestProcessingGui::testAggregateWrapper()
     param.setParentLayerParameterName( QStringLiteral( "other" ) );
     QgsProcessingAggregateWidgetWrapper wrapper2( &param, type );
     w = wrapper2.createWrappedWidget( context );
+    qobject_cast<QgsProcessingAggregatePanelWidget *>( w )->mSkipConfirmDialog = true;
 
     QSignalSpy spy2( &wrapper2, &QgsProcessingAggregateWidgetWrapper::widgetValueHasChanged );
     wrapper2.setWidgetValue( QVariantList() << map, context );
@@ -11455,6 +11496,41 @@ void TestProcessingGui::testModelGraphicsView()
   // should not exist
   QVERIFY( !layerCommentItem );
 
+  //check model bounds
+  scene2.updateBounds();
+  QRectF modelRect = scene2.sceneRect();
+  QGSCOMPARENEAR( modelRect.height(), 624.4, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelRect.width(), 655.00, 0.01 );
+  QGSCOMPARENEAR( modelRect.left(), -252.0, 0.01 );
+  QGSCOMPARENEAR( modelRect.top(), -232.0, 0.01 );
+
+
+  // test model large modelRect
+  QgsProcessingModelAlgorithm model2;
+
+  QgsProcessingModelChildAlgorithm algc2;
+  algc2.setChildId( "buffer" );
+  algc2.setAlgorithmId( "native:buffer" );
+  algc2.setPosition( QPointF( 4250, 4250 ) );
+  QgsProcessingModelParameter param1;
+  param1.setParameterName( QStringLiteral( "LAYER" ) );
+  param1.setSize( QSizeF( 500, 400 ) );
+  param1.setPosition( QPointF( -250, -250 ) );
+  model2.addModelParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "LAYER" ) ), param );
+  algc2.addParameterSources( QStringLiteral( "INPUT" ), QList<QgsProcessingModelChildParameterSource>() << QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "LAYER" ) ) );
+
+  model2.addChildAlgorithm( algc2 );
+
+  QgsModelGraphicsScene scene3;
+  scene3.setModel( &model2 );
+  scene3.createItems( &model2, context );
+
+  scene3.updateBounds();
+  QRectF modelRect2 = scene3.sceneRect();
+  QGSCOMPARENEAR( modelRect2.height(), 4505.4, 5 ); // Slightly higher threeshold because of various font size can marginally change the bounding rect
+  QGSCOMPARENEAR( modelRect2.width(), 4603.0, 0.01 );
+  QGSCOMPARENEAR( modelRect2.left(), -201.0, 0.01 );
+  QGSCOMPARENEAR( modelRect2.top(), -150.0, 0.01 );
 
   QgsModelGraphicsScene scene;
   QVERIFY( !scene.model() );

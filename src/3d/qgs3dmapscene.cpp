@@ -45,6 +45,7 @@
 #include "qgsapplication.h"
 #include "qgsaabb.h"
 #include "qgsabstract3dengine.h"
+#include "qgsannotationlayer.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
@@ -66,6 +67,7 @@
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
+#include "qgsannotationlayer3drenderer.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
@@ -235,24 +237,29 @@ void Qgs3DMapScene::viewZoomFull()
 void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
 {
   QgsPointXY center = extent.center();
-  QgsVector3D centerWorld = mMap.mapToWorldCoordinates( QVector3D( center.x(), center.y(), 0 ) );
-  QgsVector3D p1 = mMap.mapToWorldCoordinates( QVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
-  QgsVector3D p2 = mMap.mapToWorldCoordinates( QVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
+  const QgsVector3D origin = mMap.origin();
 
-  float xSide = std::abs( p1.x() - p2.x() );
-  float ySide = std::abs( p1.z() - p2.z() );
-  if ( xSide < ySide )
-  {
-    float fov = 2 * std::atan( std::tan( qDegreesToRadians( cameraController()->camera()->fieldOfView() ) / 2 ) * cameraController()->camera()->aspectRatio() );
-    float r = xSide / 2.0f / std::tan( fov / 2.0f );
-    mCameraController->setViewFromTop( centerWorld.x(), centerWorld.z(), r );
-  }
-  else
-  {
-    float fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
-    float r = ySide / 2.0f / std::tan( fov / 2.0f );
-    mCameraController->setViewFromTop( centerWorld.x(), centerWorld.z(), r );
-  }
+  const QgsVector3D p1 = mMap.mapToWorldCoordinates( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
+  const QgsVector3D p2 = mMap.mapToWorldCoordinates( QgsVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
+
+  const double xSide = std::abs( p1.x() - p2.x() );
+  const double ySide = std::abs( p1.y() - p2.y() );
+  const double side = std::max( xSide, ySide );
+
+  const double fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
+  double distance = side / 2.0f / std::tan( fov / 2.0f );
+
+  // adjust by elevation
+  const QgsDoubleRange zRange = elevationRange();
+  if ( !zRange.isInfinite() )
+    distance += zRange.upper();
+
+  // subtract map origin so coordinates are relative to it
+  mCameraController->setViewFromTop(
+    static_cast<float>( center.x() - origin.x() ),
+    static_cast<float>( center.y() - origin.y() ),
+    static_cast<float>( distance )
+  );
 }
 
 QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
@@ -293,17 +300,17 @@ int Qgs3DMapScene::totalPendingJobsCount() const
   return count;
 }
 
-float Qgs3DMapScene::worldSpaceError( float epsilon, float distance ) const
+double Qgs3DMapScene::worldSpaceError( double epsilon, double distance ) const
 {
   Qt3DRender::QCamera *camera = mCameraController->camera();
-  float fov = camera->fieldOfView();
+  const double fov = camera->fieldOfView();
   const QSize size = mEngine->size();
-  float screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
+  const int screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
 
   // see Qgs3DUtils::screenSpaceError() for the inverse calculation (world space error to screen space error)
   // with explanation of the math.
-  float frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
-  float err = frustumWidthAtDistance * epsilon / screenSizePx;
+  const double frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
+  const double err = frustumWidthAtDistance * epsilon / screenSizePx;
   return err;
 }
 
@@ -340,12 +347,12 @@ void Qgs3DMapScene::onCameraChanged()
   }
 }
 
-void Qgs3DMapScene::updateScene( bool forceUpdate )
+bool Qgs3DMapScene::updateScene( bool forceUpdate )
 {
   if ( !mSceneUpdatesEnabled )
   {
     QgsDebugMsgLevel( "Scene update skipped", 2 );
-    return;
+    return false;
   }
 
   QgsEventTracing::ScopedEvent traceEvent( QStringLiteral( "3D" ), forceUpdate ? QStringLiteral( "Force update scene" ) : QStringLiteral( "Update scene" ) );
@@ -360,24 +367,60 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   // Make our own projection matrix so that frustum culling done by the
   // entities isn't dependent on the current near/far planes, which would then
   // require multiple steps to stabilize.
-  // The matrix is constructed just like in QMatrix4x4::perspective(), but for
-  // all elements involving the near and far plane, the limit of the expression
-  // with the far plane going to infinity is taken.
-  float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
-  float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
-  QMatrix4x4 projMatrix(
-    fovCotan / camera->aspectRatio(), 0, 0, 0,
-    0, fovCotan, 0, 0,
-    0, 0, -1, -2,
-    0, 0, -1, 0
-  );
+  // The matrix is constructed just like in QMatrix4x4::perspective() /
+  // ortho(), but for all elements involving the near and far plane, the limit
+  // of the expression with the far plane going to infinity is taken.
+  QMatrix4x4 projMatrix;
+  switch ( mMap.projectionType() )
+  {
+    case Qt3DRender::QCameraLens::PerspectiveProjection:
+    {
+      float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
+      float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
+      projMatrix = {
+        fovCotan / camera->aspectRatio(), 0, 0, 0,
+        0, fovCotan, 0, 0,
+        0, 0, -1, -2,
+        0, 0, -1, 0
+      };
+      break;
+    }
+    case Qt3DRender::QCameraLens::OrthographicProjection:
+    {
+      Qt3DRender::QCameraLens *lens = camera->lens();
+      projMatrix = {
+        2.0f / ( lens->right() - lens->left() ),
+        0,
+        0,
+        0,
+        0,
+        2.0f / ( lens->top() - lens->bottom() ),
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        -( lens->left() + lens->right() ) / ( lens->right() - lens->left() ),
+        -( lens->top() + lens->bottom() ) / ( lens->top() - lens->bottom() ),
+        -1.0f,
+        1.0f,
+      };
+      break;
+    }
+    default:
+      QgsDebugError( "Unhandled 3D projection type" );
+      projMatrix = camera->projectionMatrix(); // Give up and use the current matrix
+  }
   sceneContext.viewProjectionMatrix = projMatrix * camera->viewMatrix();
 
 
+  bool anyUpdated = false;
   for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
   {
     if ( forceUpdate || ( entity->isEnabled() && entity->needsUpdate() ) )
     {
+      anyUpdated = true;
       entity->handleSceneUpdate( sceneContext );
       if ( entity->hasReachedGpuMemoryLimit() )
         emit gpuMemoryLimitReached();
@@ -385,6 +428,8 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   }
 
   updateSceneState();
+
+  return anyUpdated;
 }
 
 bool Qgs3DMapScene::updateCameraNearFarPlanes()
@@ -453,7 +498,10 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 
   mCameraController->frameTriggered( dt );
 
-  updateScene();
+  if ( updateScene() )
+    // If the scene was changed, node bboxes might have changed, so we need to
+    // update near/far planes.
+    updateCameraNearFarPlanes();
 
   // lock changing the FPS counter to 5 fps
   static int frameCount = 0;
@@ -741,6 +789,11 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       QgsTiledSceneLayer3DRenderer *tiledSceneRenderer = static_cast<QgsTiledSceneLayer3DRenderer *>( renderer );
       tiledSceneRenderer->setLayer( static_cast<QgsTiledSceneLayer *>( layer ) );
     }
+    else if ( layer->type() == Qgis::LayerType::Annotation && renderer->type() == QLatin1String( "annotation" ) )
+    {
+      auto annotationLayerRenderer = qgis::down_cast<QgsAnnotationLayer3DRenderer *>( renderer );
+      annotationLayerRenderer->setLayer( qobject_cast<QgsAnnotationLayer *>( layer ) );
+    }
 
     Qt3DCore::QEntity *newEntity = renderer->createEntity( &mMap );
     if ( newEntity )
@@ -767,6 +820,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( vlayer, &QgsVectorLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+    connect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 
   if ( layer->type() == Qgis::LayerType::Mesh )
@@ -804,6 +858,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     disconnect( vlayer, &QgsVectorLayer::layerModified, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+    disconnect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     mModelVectorLayers.removeAll( layer );
   }
 
@@ -873,6 +928,32 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
         }
       }
     }
+#if 0
+    /*
+     * Adds transparency layer to QgsPoint3DBillboardMaterial entities,
+     * so that they get rendered in the transparent pipeline instead
+     * of the opaque pipeline. Permits semi-opaque pixel rendering.
+     *
+     * Pros: nicely smoothed billboard symbol rendering, without harsh
+     * aliased edges. Billboard symbols can use semi-transparent colors.
+     *
+     * Cons: Introduces ordering issues for billboards, where billboards
+     * which should be shown behind others will appear in front from
+     * some angles (i.e. the same issue as we get for 3d polygon objects
+     * with transparency)
+     *
+     * Consider enabling if/when we have some workaround for the stacking issue,
+     * eg CPU based sorting on camera movement...
+     */
+    else if ( QgsPoint3DBillboardMaterial *billboardMaterial = qobject_cast<QgsPoint3DBillboardMaterial *>( material ) )
+    {
+      Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( billboardMaterial->parent() );
+      if ( entity && !entity->components().contains( transparentLayer ) )
+      {
+        entity->addComponent( transparentLayer );
+      }
+    }
+#endif
     else
     {
       // This handles the phong material with data defined properties, the textured case and point (instanced) symbols.

@@ -71,7 +71,8 @@
 #include "qgsstacsourceselectprovider.h"
 #include "qgsstoredquerymanager.h"
 #include "qgssettingseditorwidgetregistry.h"
-
+#include "qgsplotregistry.h"
+#include "qgsplotwidget.h"
 
 #include <QPushButton>
 #include <QToolButton>
@@ -525,6 +526,35 @@ void QgsGui::initCalloutWidgets()
     _initCalloutWidgetFunction( QStringLiteral( "manhattan" ), QgsManhattanLineCalloutWidget::create );
     _initCalloutWidgetFunction( QStringLiteral( "curved" ), QgsCurvedLineCalloutWidget::create );
     _initCalloutWidgetFunction( QStringLiteral( "balloon" ), QgsBalloonCalloutWidget::create );
+  } );
+}
+
+void QgsGui::initPlotWidgets()
+{
+  static std::once_flag initialized;
+  std::call_once( initialized, []() {
+    auto _initPlotWidgetFunction = []( const QString &name, QgsPlotWidgetCreateFunc f ) {
+      QgsPlotRegistry *registry = QgsApplication::plotRegistry();
+
+      QgsPlotAbstractMetadata *abstractMetadata = registry->plotMetadata( name );
+      if ( !abstractMetadata )
+      {
+        QgsDebugError( QStringLiteral( "Failed to find plot entry in registry: %1" ).arg( name ) );
+      }
+      QgsPlotMetadata *metadata = dynamic_cast<QgsPlotMetadata *>( abstractMetadata );
+      if ( !metadata )
+      {
+        QgsDebugError( QStringLiteral( "Failed to cast plot's metadata: " ).arg( name ) );
+      }
+      else
+      {
+        metadata->setWidgetCreateFunction( std::move( f ) );
+      }
+    };
+
+    _initPlotWidgetFunction( QStringLiteral( "bar" ), QgsBarChartPlotWidget::create );
+    _initPlotWidgetFunction( QStringLiteral( "line" ), QgsLineChartPlotWidget::create );
+    _initPlotWidgetFunction( QStringLiteral( "pie" ), QgsPieChartPlotWidget::create );
   } );
 }
 

@@ -87,6 +87,8 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     return children;
   }
 
+  int layerIndex { 0 };
+
   // Attention: supportedLayers() gives tree leafs, not top level
   QVector<QgsWmsLayerProperty> layerProperties = caps.supportedLayers();
   if ( !layerProperties.isEmpty() )
@@ -102,9 +104,20 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
       QgsDataItem *layer = nullptr;
 
       if ( layerProperty.name.isEmpty() || !layerProperty.layer.isEmpty() )
+      {
         layer = new QgsWMSLayerCollectionItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
+      }
       else
+      {
         layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
+      }
+
+      layer->setSortKey( layerIndex++ );
+
+      if ( !layerProperty.abstract.isEmpty() )
+      {
+        layer->setToolTip( layerProperty.abstract );
+      }
 
       children.append( layer );
     }
@@ -318,6 +331,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
 
                 QgsDataItem *tileLayerItem = new QgsWMTSLayerItem( linkItem, name, linkItem->path() + '/' + name, uri, l.identifier, dimensionId, dimensionValue, format, style.identifier, setLink.tileMatrixSet, tileMatrixSets[setLink.tileMatrixSet].crs, title );
                 tileLayerItem->setToolTip( name );
+                tileLayerItem->setSortKey( ++layerIndex );
 
 
                 if ( hasTimeDimension )
@@ -503,6 +517,8 @@ QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QStri
   // For collection items we want the default style (empty) so let's strip it
   mUri = createUri( /* withStyle */ false );
 
+  int layerIndex { 0 };
+
   // Populate everything, it costs nothing, all info about layers is collected
   for ( const QgsWmsLayerProperty &layerProperty : std::as_const( mLayerProperty.layer ) )
   {
@@ -517,6 +533,12 @@ QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QStri
     else
       layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
 
+    if ( !layerProperty.abstract.isEmpty() )
+    {
+      layer->setToolTip( layerProperty.abstract );
+    }
+
+    layer->setSortKey( layerIndex++ );
     addChildItem( layer );
   }
 

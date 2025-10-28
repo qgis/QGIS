@@ -232,6 +232,17 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
   if ( categories.testFlag( CustomProperties ) )
     readCustomProperties( node, QStringLiteral( "variable" ) );
 
+  if ( categories.testFlag( Legend ) )
+  {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
+
+    const QDomElement legendElem = node.firstChildElement( QStringLiteral( "legend" ) );
+    if ( QgsMapLayerLegend *l = legend(); !legendElem.isNull() )
+    {
+      l->readXml( legendElem, context );
+    }
+  }
+
   return true;
 }
 
@@ -320,6 +331,13 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   writeCommonStyle( elem, doc, context, categories );
 
   ( void )writeStyle( node, doc, errorMessage, context, categories );
+
+  if ( categories.testFlag( Legend ) && legend() )
+  {
+    QDomElement legendElement = legend()->writeXml( doc, context );
+    if ( !legendElement.isNull() )
+      node.appendChild( legendElement );
+  }
 
   return true;
 }
@@ -821,11 +839,11 @@ bool QgsPointCloudLayer::convertRenderer3DFromRenderer2D()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   bool result = false;
-  QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() );
-  if ( r )
+  if ( QgsAbstractPointCloud3DRenderer *r = static_cast<QgsAbstractPointCloud3DRenderer *>( renderer3D() ) )
   {
-    result = r->convertFrom2DRenderer( renderer() );
-    setRenderer3D( r );
+    std::unique_ptr< QgsAbstractPointCloud3DRenderer > newRenderer( static_cast< QgsAbstractPointCloud3DRenderer * >( r->clone() ) );
+    result = newRenderer->convertFrom2DRenderer( renderer() );
+    setRenderer3D( newRenderer.release() );
     trigger3DUpdate();
   }
   return result;

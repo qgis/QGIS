@@ -350,3 +350,23 @@ void QgsFeatureListComboBox::setParentFormFeature( const QgsFeature &feature )
 {
   mModel->setParentFormFeature( feature );
 }
+
+QString QgsFeatureListComboBox::orderExpression() const
+{
+  return mModel->orderExpression();
+}
+
+void QgsFeatureListComboBox::setOrderExpression( const QString &orderExpression )
+{
+  mModel->setOrderExpression( orderExpression );
+}
+
+Qt::SortOrder QgsFeatureListComboBox::sortOrder() const
+{
+  return mModel->sortOrder();
+}
+
+void QgsFeatureListComboBox::setSortOrder( const Qt::SortOrder sortOrder )
+{
+  mModel->setSortOrder( sortOrder );
+}

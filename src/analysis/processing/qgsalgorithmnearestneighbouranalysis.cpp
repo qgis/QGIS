@@ -70,6 +70,11 @@ QIcon QgsNearestNeighbourAnalysisAlgorithm::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNearestNeighbour.svg" ) );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsNearestNeighbourAnalysisAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 QgsNearestNeighbourAnalysisAlgorithm *QgsNearestNeighbourAnalysisAlgorithm::createInstance() const
 {
   return new QgsNearestNeighbourAnalysisAlgorithm();

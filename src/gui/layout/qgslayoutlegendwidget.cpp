@@ -217,7 +217,9 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
 
   mItemTreeView->setHeaderHidden( true );
 
-  mItemTreeView->setModel( legend->model() );
+  mLegendProxyModel = new QgsLegendLayerTreeProxyModel( legend, this );
+
+  mItemTreeView->setModel( legend->model(), mLegendProxyModel );
   mItemTreeView->setMenuProvider( new QgsLayoutLegendMenuProvider( mItemTreeView, this ) );
   setLegendMapViewData();
   connect( legend, &QgsLayoutObject::changed, this, &QgsLayoutLegendWidget::setGuiElements );
@@ -872,6 +874,8 @@ void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool us
     mLegend->endCommand();
   }
 
+  mLegendProxyModel->setIsDefaultLegend( state == Qt::Checked );
+
   // do not allow editing of model if auto update is on - we would modify project's layer tree
   QList<QWidget *> widgets;
   widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
@@ -1325,7 +1329,10 @@ bool QgsLayoutLegendWidget::setNewItem( QgsLayoutItem *item )
 
   if ( mLegend )
   {
-    mItemTreeView->setModel( mLegend->model() );
+    mLegendProxyModel = new QgsLegendLayerTreeProxyModel( mLegend, this );
+
+    mItemTreeView->setModel( mLegend->model(), mLegendProxyModel );
+
     connect( mLegend, &QgsLayoutObject::changed, this, &QgsLayoutLegendWidget::setGuiElements );
   }
 
@@ -2139,6 +2146,45 @@ bool QgsLayoutLegendMapFilteringModel::filterAcceptsRow( int source_row, const Q
   if ( !item || item->type() != QgsLayoutItemRegistry::ItemType::LayoutMap )
   {
     return false;
+  }
+
+  return true;
+}
+
+//
+// QgsLegendLayerTreeProxyModel
+//
+
+QgsLegendLayerTreeProxyModel::QgsLegendLayerTreeProxyModel( QgsLayoutItemLegend *legend, QObject *parent )
+  : QgsLayerTreeProxyModel( legend->model(), parent )
+{
+  setIsDefaultLegend( legend->autoUpdateModel() );
+}
+
+void QgsLegendLayerTreeProxyModel::setIsDefaultLegend( bool isDefault )
+{
+  mIsDefaultLegend = isDefault;
+
+  // only show private layers when not in default mode
+  setShowPrivateLayers( !mIsDefaultLegend );
+
+  invalidateFilter();
+}
+
+bool QgsLegendLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
+{
+  if ( !QgsLayerTreeProxyModel::nodeShown( node ) )
+    return false;
+
+  if ( node && node->nodeType() == QgsLayerTreeNode::NodeLayer )
+  {
+    if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
+    {
+      if ( QgsMapLayerLegend *layerLegend = layer->legend(); mIsDefaultLegend && layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+      {
+        return false;
+      }
+    }
   }
 
   return true;

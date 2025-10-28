@@ -44,6 +44,7 @@ from qgis.core import (
     QgsSettings,
     QgsUnitTypes,
     QgsVectorLayer,
+    QgsElevationProfile,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -426,6 +427,34 @@ class TestQgsProject(QgisTestCase):
                 p2.scaleMethod(), Qgis.ScaleCalculationMethod.HorizontalTop
             )
 
+    def test_elevation_profile_manager(self):
+        p = QgsProject()
+        self.assertFalse(p.elevationProfileManager().profiles())
+        profile = QgsElevationProfile(p)
+        profile.setName("p1")
+        p.elevationProfileManager().addProfile(profile)
+        profile = QgsElevationProfile(p)
+        profile.setName("p2")
+        p.elevationProfileManager().addProfile(profile)
+        self.assertCountEqual(
+            [profile.name() for profile in p.elevationProfileManager().profiles()],
+            ["p1", "p2"],
+        )
+
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, "elevation_profiles.qgs")
+            self.assertTrue(p.write(path))
+            # Verify
+            p2 = QgsProject()
+            self.assertTrue(p2.read(path))
+            self.assertCountEqual(
+                [profile.name() for profile in p2.elevationProfileManager().profiles()],
+                ["p1", "p2"],
+            )
+
+        p.clear()
+        self.assertFalse(p.elevationProfileManager().profiles())
+
     def testReadEntry(self):
         prj = QgsProject.instance()
         prj.read(os.path.join(TEST_DATA_DIR, "labeling/test-labeling.qgs"))
@@ -511,6 +540,27 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(QgsProject.instance().count(), 2)
 
         QgsProject.instance().removeAllMapLayers()
+
+    def test_mapLayer(self):
+        """test retrieving map layers by ID"""
+        p = QgsProject()
+        self.assertIsNone(p.mapLayer("nope"))
+
+        l1 = createLayer("test")
+        self.assertIsNone(p.mapLayer(l1.id()))
+        p.addMapLayer(l1)
+        self.assertEqual(p.mapLayer(l1.id()), l1)
+
+        l2 = createLayer("test2")
+        self.assertIsNone(p.mapLayer(l2.id()))
+        p.addMapLayer(l2)
+        self.assertEqual(p.mapLayer(l1.id()), l1)
+        self.assertEqual(p.mapLayer(l2.id()), l2)
+
+        # ensure main annotation layer can be retrieved by id
+        self.assertEqual(
+            p.mapLayer(p.mainAnnotationLayer().id()), p.mainAnnotationLayer()
+        )
 
     def test_addMapLayerAlreadyAdded(self):
         """test that already added layers can't be readded to registry"""
@@ -1375,6 +1425,27 @@ class TestQgsProject(QgisTestCase):
             self.assertIn('source="./lines.shp"', content)
             self.assertIn('source="./points.shp"', content)
             self.assertIn('source="./landsat_4326.tif"', content)
+
+    def testTitle(self):
+        p = QgsProject()
+        title_changed_spy = QSignalSpy(p.titleChanged)
+        self.assertFalse(p.title())
+
+        p.setTitle("QGIS rocks!")
+        self.assertEqual(len(title_changed_spy), 1)
+        self.assertEqual(p.title(), "QGIS rocks!")
+
+        p.setTitle("QGIS rocks!")
+        self.assertEqual(len(title_changed_spy), 1)
+
+        project_metadata = p.metadata()
+        project_metadata.setTitle("QGIS rules!")
+        p.setMetadata(project_metadata)
+        self.assertEqual(len(title_changed_spy), 2)
+        self.assertEqual(p.title(), "QGIS rules!")
+
+        p.setMetadata(project_metadata)
+        self.assertEqual(len(title_changed_spy), 2)
 
     def testHomePath(self):
         p = QgsProject()

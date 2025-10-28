@@ -670,7 +670,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           {
             QMenu *menuExportRaster = new QMenu( tr( "E&xport" ), menu );
             menuExportRaster->setObjectName( QStringLiteral( "exportMenu" ) );
-            if ( mView->selectedLayerNodes().count() == 1 )
+            if ( mView->selectedLayerNodes().count() == 1 && ( ( pcLayer && pcLayer->isValid() && pcLayer->dataProvider()->hasValidIndex() ) || ( rlayer && rlayer->isValid() ) ) )
             {
               QAction *actionSaveAs = new QAction( tr( "Save &As…" ), menuExportRaster );
               connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [] { QgisApp::instance()->saveAsFile(); } );
@@ -719,6 +719,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           copyStyleMenu->setToolTipsVisible( true );
           QgsMapLayerStyleCategoriesModel *model = new QgsMapLayerStyleCategoriesModel( layer->type(), copyStyleMenu );
           model->setShowAllCategories( true );
+          bool hasGroupedCategory = false;
+          bool groupedCategorySeparatorAdded = false;
           for ( int row = 0; row < model->rowCount(); ++row )
           {
             const QModelIndex index = model->index( row, 0 );
@@ -726,12 +728,25 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             const QString name = model->data( index, static_cast<int>( QgsMapLayerStyleCategoriesModel::Role::NameRole ) ).toString();
             const QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
             const QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
+
+            if ( !groupedCategorySeparatorAdded )
+            {
+              if ( category == QgsMapLayer::AllStyleCategories || category == QgsMapLayer::AllVisualStyleCategories || category == QgsMapLayer::AllAttributeCategories )
+              {
+                hasGroupedCategory = true;
+              }
+              else if ( hasGroupedCategory )
+              {
+                // Grouped categories over, add separator
+                copyStyleMenu->addSeparator()->setObjectName( QLatin1String( "CopyStyleSeparator" ) );
+                groupedCategorySeparatorAdded = true;
+              }
+            }
+
             QAction *copyAction = new QAction( icon, name, copyStyleMenu );
             copyAction->setToolTip( tooltip );
             connect( copyAction, &QAction::triggered, this, [app, layer, category]() { app->copyStyle( layer, category ); } );
             copyStyleMenu->addAction( copyAction );
-            if ( category == QgsMapLayer::AllStyleCategories )
-              copyStyleMenu->addSeparator()->setObjectName( QLatin1String( "CopyStyleSeparator" ) );
           }
         }
         else
@@ -758,6 +773,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
                 QgsMapLayerStyleCategoriesModel *model = new QgsMapLayerStyleCategoriesModel( layer->type(), pasteStyleMenu );
                 model->setShowAllCategories( true );
+                bool hasGroupedCategory = false;
+                bool groupedCategorySeparatorAdded = false;
                 for ( int row = 0; row < model->rowCount(); ++row )
                 {
                   const QModelIndex index = model->index( row, 0 );
@@ -765,14 +782,29 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                   const QString name = model->data( index, static_cast<int>( QgsMapLayerStyleCategoriesModel::Role::NameRole ) ).toString();
                   const QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
                   const QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
+
+                  if ( !groupedCategorySeparatorAdded )
+                  {
+                    if ( category == QgsMapLayer::AllStyleCategories || category == QgsMapLayer::AllVisualStyleCategories || category == QgsMapLayer::AllAttributeCategories )
+                    {
+                      hasGroupedCategory = true;
+                    }
+                    else if ( hasGroupedCategory )
+                    {
+                      // Grouped categories over, add separator
+                      pasteStyleMenu->addSeparator()->setObjectName( QLatin1String( "PasteStyleSeparator" ) );
+                      groupedCategorySeparatorAdded = true;
+                    }
+                  }
+
                   QAction *pasteAction = new QAction( icon, name, pasteStyleMenu );
                   pasteAction->setToolTip( tooltip );
                   connect( pasteAction, &QAction::triggered, this, [app, layer, category]() { app->pasteStyle( layer, category ); } );
                   pasteStyleMenu->addAction( pasteAction );
-                  if ( category == QgsMapLayer::AllStyleCategories )
-                    pasteStyleMenu->addSeparator()->setObjectName( QLatin1String( "PasteStyleSeparator" ) );
-                  else
+                  if ( category != QgsMapLayer::AllStyleCategories && category != QgsMapLayer::AllVisualStyleCategories && category != QgsMapLayer::AllAttributeCategories )
+                  {
                     pasteAction->setEnabled( sourceCategories.testFlag( category ) );
+                  }
                 }
               }
             }

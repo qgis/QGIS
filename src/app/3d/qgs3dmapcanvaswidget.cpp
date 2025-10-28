@@ -63,6 +63,8 @@
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloudquerybuilder.h"
 
+#include "qgsannotationlayer.h"
+
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
   , mCanvasName( name )
@@ -79,7 +81,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   actionCameraControl->setCheckable( true );
 
   QAction *zoomFullAction = toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ), tr( "Zoom Full" ), this, &Qgs3DMapCanvasWidget::resetView );
-  zoomFullAction->setShortcuts( { QKeySequence( tr( "Ctrl+0" ) ), QKeySequence( tr( "Esc" ) ) } );
+  zoomFullAction->setShortcut( QKeySequence( tr( "Ctrl+0" ) ) );
 
   // Editing toolbar
   mEditingToolBar = new QToolBar( this );
@@ -263,7 +265,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   mActionSetClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCut.svg" ) ), tr( "Cross Section Tool" ), this, &Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas );
   mActionSetClippingPlanes->setCheckable( true );
-  mActionDisableClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCutDisabled.svg" ) ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableClippingPlanes );
+  mActionDisableClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCutDisabled.svg" ) ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableCrossSection );
   mActionDisableClippingPlanes->setDisabled( true );
 
   // Effects Menu
@@ -316,6 +318,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( mCanvas, &Qgs3DMapCanvas::fpsCounterEnabledChanged, this, &Qgs3DMapCanvasWidget::toggleFpsCounter );
   connect( mCanvas, &Qgs3DMapCanvas::cameraNavigationSpeedChanged, this, &Qgs3DMapCanvasWidget::cameraNavigationSpeedChanged );
   connect( mCanvas, &Qgs3DMapCanvas::viewed2DExtentFrom3DChanged, this, &Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged );
+  connect( mCanvas, &Qgs3DMapCanvas::crossSectionEnabledChanged, mActionDisableClippingPlanes, &QAction::setEnabled );
 
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
   QgsIdentifyResultsDialog *resultDialog = identifyTool2D->resultsDialog();
@@ -680,12 +683,7 @@ void Qgs3DMapCanvasWidget::toggleDebugWidget() const
 
 void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 {
-  whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
-  whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
-  whileBlocking( mActionEnableAmbientOcclusion )->setChecked( map->ambientOcclusionSettings().isEnabled() );
-  whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
-  whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
-  whileBlocking( mShowFrustumPolygon )->setChecked( map->viewFrustumVisualizationEnabled() );
+  updateCheckedActionsFromMapSettings( map );
 
   mCanvas->setMapSettings( map );
   connect( map, &Qgs3DMapSettings::showDebugPanelChanged, this, qOverload<bool>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
@@ -710,6 +708,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 
   mMapToolClippingPlanes = std::make_unique<QgsMapToolClippingPlanes>( mMainCanvas, this );
   mMapToolClippingPlanes->setAction( mActionSetClippingPlanes );
+  connect( mMapToolClippingPlanes.get(), &QgsMapToolClippingPlanes::finishedSuccessfully, this, &Qgs3DMapCanvasWidget::onCrossSectionToolFinished );
 
   // none of the actions in the Camera menu are supported by globe yet, so just hide it completely
   mActionCamera->setVisible( map->sceneMode() == Qgis::SceneMode::Local );
@@ -797,11 +796,14 @@ void Qgs3DMapCanvasWidget::configure()
   };
 
   connect( buttons, &QDialogButtonBox::rejected, mConfigureDialog, &QDialog::reject );
-  connect( buttons, &QDialogButtonBox::clicked, mConfigureDialog, [this, buttons, applyConfig]( QAbstractButton *button ) {
+  connect( buttons, &QDialogButtonBox::clicked, mConfigureDialog, [this, buttons, applyConfig, map]( QAbstractButton *button ) {
     if ( button == buttons->button( QDialogButtonBox::Apply ) || button == buttons->button( QDialogButtonBox::Ok ) )
       applyConfig();
     if ( button == buttons->button( QDialogButtonBox::Ok ) )
+    {
       mConfigureDialog->accept();
+      updateCheckedActionsFromMapSettings( map );
+    }
   } );
   connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#scene-configuration" ) ); } );
 
@@ -815,13 +817,6 @@ void Qgs3DMapCanvasWidget::configure()
   layout->addWidget( buttons );
 
   mConfigureDialog->show();
-
-  whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
-  whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
-  whileBlocking( mActionEnableAmbientOcclusion )->setChecked( map->ambientOcclusionSettings().isEnabled() );
-  whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
-  whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
-  whileBlocking( mShowFrustumPolygon )->setChecked( map->viewFrustumVisualizationEnabled() );
 }
 
 void Qgs3DMapCanvasWidget::exportScene()
@@ -860,7 +855,10 @@ void Qgs3DMapCanvasWidget::exportScene()
 
 void Qgs3DMapCanvasWidget::onMainCanvasLayersChanged()
 {
-  mCanvas->mapSettings()->setLayers( mMainCanvas->layers( true ) );
+  QList<QgsMapLayer *> layers = mMainCanvas->layers( true );
+  layers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
+
+  mCanvas->mapSettings()->setLayers( layers );
 }
 
 void Qgs3DMapCanvasWidget::onMainCanvasColorChanged()
@@ -1188,7 +1186,7 @@ void Qgs3DMapCanvasWidget::setSceneExtent( const QgsRectangle &extent )
   {
     if ( !mMapToolClippingPlanes->clippedPolygon().intersects( extent ) )
     {
-      disableClippingPlanes();
+      disableCrossSection();
       mMessageBar->pushInfo( QString(), tr( "Cross-section has been disabled, because it is outside the current extent" ) );
     }
   }
@@ -1210,27 +1208,32 @@ void Qgs3DMapCanvasWidget::setClippingPlanesOn2DCanvas()
   mMessageBar->pushInfo( QString(), tr( "Select a rectangle using 3 points on the main 2D map view to define the cross-section of this 3D scene" ) );
 }
 
-void Qgs3DMapCanvasWidget::enableClippingPlanes( const QList<QVector4D> &clippingPlanes, const QgsCameraPose &cameraPose )
+void Qgs3DMapCanvasWidget::onCrossSectionToolFinished()
 {
   this->activateWindow();
   this->raise();
   mMessageBar->clearWidgets();
 
-  mCanvas->scene()->enableClipping( clippingPlanes );
-  mCanvas->scene()->cameraController()->setCameraPose( cameraPose );
-
-  mActionDisableClippingPlanes->setDisabled( false );
   if ( mMapToolPrevious )
     mMainCanvas->setMapTool( mMapToolPrevious );
   else
     mMainCanvas->unsetMapTool( mMapToolClippingPlanes.get() );
 }
 
-void Qgs3DMapCanvasWidget::disableClippingPlanes() const
+void Qgs3DMapCanvasWidget::disableCrossSection() const
 {
-  mCanvas->scene()->disableClipping();
+  mCanvas->disableCrossSection();
   mMapToolClippingPlanes->clearHighLightedArea();
-  mActionDisableClippingPlanes->setDisabled( true );
+}
+
+void Qgs3DMapCanvasWidget::updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const
+{
+  whileBlocking( mActionEnableShadows )->setChecked( mapSettings->shadowSettings().renderShadows() );
+  whileBlocking( mActionEnableEyeDome )->setChecked( mapSettings->eyeDomeLightingEnabled() );
+  whileBlocking( mActionEnableAmbientOcclusion )->setChecked( mapSettings->ambientOcclusionSettings().isEnabled() );
+  whileBlocking( mActionSync2DNavTo3D )->setChecked( mapSettings->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
+  whileBlocking( mActionSync3DNavTo2D )->setChecked( mapSettings->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
+  whileBlocking( mShowFrustumPolygon )->setChecked( mapSettings->viewFrustumVisualizationEnabled() );
 }
 
 ClassValidator::ClassValidator( QWidget *parent )

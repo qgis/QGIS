@@ -42,7 +42,8 @@ class QgsPlotToolPan;
 class QgsPlotToolZoom;
 class QgsPlotToolXAxisZoom;
 class QgsDoubleSpinBox;
-class QgsElevationProfileWidgetSettingsAction;
+class QgsElevationProfileToleranceWidgetSettingsAction;
+class QgsElevationProfileScaleRatioWidgetSettingsAction;
 class QgsLayerTree;
 class QgsLayerTreeRegistryBridge;
 class QgsElevationProfileToolIdentify;
@@ -55,6 +56,7 @@ class QgsSettingsEntryString;
 class QgsSettingsEntryColor;
 class QgsMapLayerProxyModel;
 class QgsLineSymbol;
+class QgsScaleComboBox;
 
 class QgsAppElevationProfileLayerTreeView : public QgsElevationProfileLayerTreeView
 {
@@ -95,6 +97,7 @@ class QgsElevationProfileWidget : public QWidget
     static const QgsSettingsEntryString *settingLastExportDir;
     static const QgsSettingsEntryColor *settingBackgroundColor;
     static const QgsSettingsEntryBool *settingShowSubsections;
+    static const QgsSettingsEntryBool *settingShowScaleRatioInToolbar;
 
     QgsElevationProfileWidget( const QString &name );
     ~QgsElevationProfileWidget();
@@ -119,7 +122,7 @@ class QgsElevationProfileWidget : public QWidget
   private slots:
     void addLayers();
     void addLayersInternal( const QList<QgsMapLayer *> &layers );
-    void updateCanvasLayers();
+    void updateCanvasSources();
     void onTotalPendingJobsCountChanged( int count );
     void setProfileCurve( const QgsGeometry &curve, bool resetView );
     void onCanvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
@@ -181,7 +184,9 @@ class QgsElevationProfileWidget : public QWidget
     QgsPlotToolZoom *mZoomTool = nullptr;
     QgsElevationProfileToolIdentify *mIdentifyTool = nullptr;
 
-    QgsElevationProfileWidgetSettingsAction *mSettingsAction = nullptr;
+    QgsElevationProfileToleranceWidgetSettingsAction *mToleranceSettingsAction = nullptr;
+    int mBlockScaleRatioChanges = 0;
+    QgsElevationProfileScaleRatioWidgetSettingsAction *mScaleRatioSettingsAction = nullptr;
 
     std::unique_ptr<QgsLayerTree> mLayerTree;
     QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
@@ -191,17 +196,32 @@ class QgsElevationProfileWidget : public QWidget
 };
 
 
-class QgsElevationProfileWidgetSettingsAction : public QWidgetAction
+class QgsElevationProfileToleranceWidgetSettingsAction : public QWidgetAction
 {
     Q_OBJECT
 
   public:
-    QgsElevationProfileWidgetSettingsAction( QWidget *parent = nullptr );
+    QgsElevationProfileToleranceWidgetSettingsAction( QWidget *parent = nullptr );
 
     QgsDoubleSpinBox *toleranceSpinBox() { return mToleranceWidget; }
 
   private:
     QgsDoubleSpinBox *mToleranceWidget = nullptr;
 };
+
+class QgsElevationProfileScaleRatioWidgetSettingsAction : public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+    QgsElevationProfileScaleRatioWidgetSettingsAction( QWidget *parent = nullptr );
+    QWidget *newWidget();
+
+    QgsScaleComboBox *scaleRatioWidget() { return mScaleRatioWidget; }
+
+  private:
+    QgsScaleComboBox *mScaleRatioWidget = nullptr;
+};
+
 
 #endif // QGSELEVATIONPROFILEWIDGET_H

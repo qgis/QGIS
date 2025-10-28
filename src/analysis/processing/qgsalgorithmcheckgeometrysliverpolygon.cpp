@@ -68,7 +68,7 @@ QString QgsGeometryCheckSliverPolygonAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckSliverPolygonAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckSliverPolygonAlgorithm *QgsGeometryCheckSliverPolygonAlgorithm::createInstance() const
@@ -94,13 +94,13 @@ void QgsGeometryCheckSliverPolygonAlgorithm::initAlgorithm( const QVariantMap &c
   ) );
 
   addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "MAX_THINNESS" ), QObject::tr( "Maximum thinness" ), Qgis::ProcessingNumberParameterType::Double, 20, false, 0.0
+    QStringLiteral( "MAX_THINNESS" ), QObject::tr( "Maximum thinness" ), Qgis::ProcessingNumberParameterType::Double, 20, false, 1.0
   ) );
   addParameter( new QgsProcessingParameterNumber(
     QStringLiteral( "MAX_AREA" ), QObject::tr( "Maximum area (map units squared)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
     QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
@@ -129,7 +129,6 @@ QgsFields QgsGeometryCheckSliverPolygonAlgorithm::outputFields()
   fields.append( QgsField( QStringLiteral( "gc_error" ), QMetaType::QString ) );
   return fields;
 }
-
 
 QVariantMap QgsGeometryCheckSliverPolygonAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
@@ -171,8 +170,8 @@ QVariantMap QgsGeometryCheckSliverPolygonAlgorithm::processAlgorithm( const QVar
   QVariantMap configurationCheck;
   configurationCheck.insert( "maxArea", maxArea );
   configurationCheck.insert( "threshold", maxThinness );
-  const QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project(), uniqueIdFieldIdx );
   const QgsGeometrySliverPolygonCheck check( &checkContext, configurationCheck );
 
   multiStepFeedback.setCurrentStep( 1 );
@@ -185,7 +184,19 @@ QVariantMap QgsGeometryCheckSliverPolygonAlgorithm::processAlgorithm( const QVar
 
   multiStepFeedback.setCurrentStep( 2 );
   feedback->setProgressText( QObject::tr( "Collecting errors…" ) );
-  check.collectErrors( checkerFeaturePools, checkErrors, messages, feedback );
+  QgsGeometryCheck::Result res = check.collectErrors( checkerFeaturePools, checkErrors, messages, feedback );
+  if ( res == QgsGeometryCheck::Result::Success )
+  {
+    feedback->pushInfo( QObject::tr( "Errors collected successfully." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::Canceled )
+  {
+    throw QgsProcessingException( QObject::tr( "Operation was canceled." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::DuplicatedUniqueId )
+  {
+    throw QgsProcessingException( QObject::tr( "Field '%1' contains non-unique values and can not be used as unique ID." ).arg( uniqueIdFieldName ) );
+  }
 
   multiStepFeedback.setCurrentStep( 3 );
   feedback->setProgressText( QObject::tr( "Exporting errors…" ) );

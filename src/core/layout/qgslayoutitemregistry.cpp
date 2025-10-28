@@ -33,6 +33,7 @@
 #include "qgslayoutframe.h"
 #include "qgslayoutitemmarker.h"
 #include "qgslayoutitemelevationprofile.h"
+#include "qgslayoutitemchart.h"
 
 #include <QPainter>
 
@@ -81,6 +82,7 @@ bool QgsLayoutItemRegistry::populate()
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolyline, QObject::tr( "Polyline" ), QObject::tr( "Polylines" ), QgsLayoutItemPolyline::create ) );
 
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutElevationProfile, QObject::tr( "Elevation Profile" ), QObject::tr( "Elevation Profiles" ), QgsLayoutItemElevationProfile::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutChart, QObject::tr( "Chart" ), QObject::tr( "Charts" ), QgsLayoutItemChart::create ) );
 
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutHtml, QObject::tr( "HTML" ), QgsLayoutItemHtml::create ) );
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutAttributeTable, QObject::tr( "Attribute Table" ), QgsLayoutItemAttributeTable::create ) );
@@ -110,6 +112,20 @@ bool QgsLayoutItemRegistry::addLayoutItemType( QgsLayoutItemAbstractMetadata *me
   return true;
 }
 
+bool QgsLayoutItemRegistry::removeLayoutItemType( int typeId )
+{
+  if ( !mMetadata.contains( typeId ) )
+    return false;
+  mMetadata.remove( typeId );
+  emit typeRemoved( typeId );
+  return true;
+}
+
+bool QgsLayoutItemRegistry::removeLayoutItemType( QgsLayoutItemAbstractMetadata *metadata )
+{
+  return removeLayoutItemType( metadata->type() );
+}
+
 bool QgsLayoutItemRegistry::addLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata )
 {
   if ( !metadata || mMultiFrameMetadata.contains( metadata->type() ) )
@@ -118,6 +134,20 @@ bool QgsLayoutItemRegistry::addLayoutMultiFrameType( QgsLayoutMultiFrameAbstract
   mMultiFrameMetadata[metadata->type()] = metadata;
   emit multiFrameTypeAdded( metadata->type(), metadata->visibleName() );
   return true;
+}
+
+bool QgsLayoutItemRegistry::removeLayoutMultiFrameType( int typeId )
+{
+  if ( !mMultiFrameMetadata.contains( typeId ) )
+    return false;
+  mMultiFrameMetadata.remove( typeId );
+  emit multiFrameTypeRemoved( typeId );
+  return true;
+}
+
+bool QgsLayoutItemRegistry::removeLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata )
+{
+  return removeLayoutMultiFrameType( metadata->type() );
 }
 
 QgsLayoutItem *QgsLayoutItemRegistry::createItem( int type, QgsLayout *layout ) const

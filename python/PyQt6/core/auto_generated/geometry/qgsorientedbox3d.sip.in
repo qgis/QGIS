@@ -45,6 +45,14 @@ Constructor for a oriented box, with a specified center and half axes
 matrix.
 %End
 
+    QgsOrientedBox3D( const QgsVector3D &center, const QgsVector3D &halfSizes, const QQuaternion &quaternion );
+%Docstring
+Constructor for a oriented box, with a specified center, half sizes in
+each dimension and rotation.
+
+.. versionadded:: 4.0
+%End
+
     static QgsOrientedBox3D fromBox3D( const QgsBox3D &box );
 %Docstring
 Constructs an oriented box from an axis-aligned bounding box.
@@ -110,6 +118,13 @@ Returns an array of all corners as 3D vectors.
     QgsVector3D size() const /HoldGIL/;
 %Docstring
 Returns size of sides of the box.
+%End
+
+    double longestSide() const /HoldGIL/;
+%Docstring
+Returns size of the longest side of the box.
+
+.. versionadded:: 4.0
 %End
 
     QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const  /HoldGIL/;

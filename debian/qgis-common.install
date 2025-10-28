@@ -22,3 +22,5 @@ usr/share/qgis/resources/palettes/*
 usr/share/qgis/resources/qgis_global_settings.ini
 usr/share/qgis/resources/spatialite.db
 usr/share/qgis/resources/themes/*
+usr/share/mime/packages/qgis.xml
+usr/share/icons/hicolor/

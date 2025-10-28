@@ -93,6 +93,8 @@ bool runAlg(std::vector<std::string> args, Alg &alg);
 
 void removeFiles(const std::vector<std::string> &tileOutputFiles, bool removeParentDirIfEmpty = true);
 
+fs::path fileStem(const std::string &filename);
+
 //////////////
 
 
@@ -287,6 +289,7 @@ struct ToRasterTin : public Alg
     // parameters from the user
     std::string outputFile;
     double resolution = 0;
+    double maxTriangleEdgeLength = 0;
     double collarSize = 0;
 
     // tiling setup for parallel runs
@@ -295,6 +298,7 @@ struct ToRasterTin : public Alg
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
     pdal::Arg* argRes = nullptr;
+    pdal::Arg* argMaxTriangleEdgeLength = nullptr;
     pdal::Arg* argTileSize = nullptr;
     pdal::Arg* argTileOriginX = nullptr;
     pdal::Arg* argTileOriginY = nullptr;

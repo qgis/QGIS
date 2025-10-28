@@ -95,9 +95,9 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     QUrl url = QUrl::fromUserInput( mPath );
     QString fileName = url.fileName();
 
-    if ( fileName.compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) != 0 && !fileName.endsWith( QLatin1String( ".copc.laz" ), Qt::CaseInsensitive ) )
+    if ( fileName.compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) != 0 && !fileName.endsWith( QLatin1String( ".copc.laz" ), Qt::CaseInsensitive ) && !fileName.endsWith( QLatin1String( ".vpc" ), Qt::CaseInsensitive ) )
     {
-      QMessageBox::information( this, tr( "Add Point Cloud Layers" ), tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json or .copc.laz" ).arg( mPath ) );
+      QMessageBox::information( this, tr( "Add Point Cloud Layers" ), tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json or .copc.laz or .vpc" ).arg( mPath ) );
       return;
     }
 
@@ -117,10 +117,29 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       {
         baseName = QFileInfo( mPath ).baseName();
       }
+
+      QVariantMap parts;
+      if ( mAuthSettingsProtocol->configurationTabIsSelected() )
+      {
+        const QString authcfg = mAuthSettingsProtocol->configId();
+        if ( !authcfg.isEmpty() )
+          parts.insert( QStringLiteral( "authcfg" ), authcfg );
+      }
+      else
+      {
+        const QString username = mAuthSettingsProtocol->username();
+        const QString password = mAuthSettingsProtocol->password();
+        if ( !username.isEmpty() && !password.isEmpty() )
+          mPath.replace( QLatin1String( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
+      }
+
+      parts.insert( QStringLiteral( "path" ), mPath );
+      const QString dsUri = preferredProviders.at( 0 ).metadata()->encodeUri( parts );
+
       Q_NOWARN_DEPRECATED_PUSH
-      emit addPointCloudLayer( mPath, baseName, preferredProviders.at( 0 ).metadata()->key() );
+      emit addPointCloudLayer( dsUri, baseName, preferredProviders.at( 0 ).metadata()->key() );
       Q_NOWARN_DEPRECATED_POP
-      emit addLayer( Qgis::LayerType::PointCloud, mPath, baseName, preferredProviders.at( 0 ).metadata()->key() );
+      emit addLayer( Qgis::LayerType::PointCloud, dsUri, baseName, preferredProviders.at( 0 ).metadata()->key() );
     }
   }
 }

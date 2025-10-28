@@ -50,6 +50,7 @@ class TestQgsRectangle : public QObject
     void snappedToGrid();
     void distanceToPoint();
     void center();
+    void isValid();
 };
 
 void TestQgsRectangle::isEmpty()
@@ -649,6 +650,42 @@ void TestQgsRectangle::center()
   rect = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
   QCOMPARE( rect.center().x(), 0.0 );
   QCOMPARE( rect.center().y(), 0.0 );
+}
+
+void TestQgsRectangle::isValid()
+{
+  // a default rectangle is not valid
+  QgsRectangle rect;
+  QVERIFY( !rect.isValid() );
+  QVERIFY( rect.isNull() );
+
+  // all the values are valid, xMin < xMax, yMin, yMax
+  QgsRectangle rect2( 10, 12, 15, 25 );
+  QVERIFY( rect2.isValid() );
+  QVERIFY( !rect2.isNull() );
+
+  // xMax < xMin
+  // not valid
+  rect2.setXMaximum( 9 );
+  QVERIFY( !rect2.isValid() );
+  QVERIFY( !rect2.isNull() );
+
+  // One of the coordinates is NaN
+  // not valid
+  QgsRectangle rect3( -3, 5, 2500, 4200 );
+  QVERIFY( rect3.isValid() );
+  rect3.setYMinimum( std::numeric_limits<double>::quiet_NaN() );
+  QVERIFY( !rect3.isValid() );
+  QVERIFY( !rect3.isNull() );
+
+  // One of the coordinates is infinity
+  // not valid
+  QgsRectangle rect4( 22, 15, 33, 55 );
+  QVERIFY( rect4.isValid() );
+  QVERIFY( !rect4.isNull() );
+  rect4.setXMaximum( std::numeric_limits<double>::infinity() );
+  QVERIFY( !rect4.isValid() );
+  QVERIFY( !rect4.isNull() );
 }
 
 QGSTEST_MAIN( TestQgsRectangle )

@@ -440,7 +440,7 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
 
   mGroupEdit->setText( mModel->group() );
   mNameEdit->setText( mModel->displayName() );
-  repaintModel();
+  repaintModel( true );
   updateVariablesGui();
 
   mView->centerOn( 0, 0 );
@@ -480,7 +480,6 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   mScene->setModel( mModel.get() );
   mScene->setMessageBar( mMessageBar );
 
-  const QPointF center = mView->mapToScene( mView->viewport()->rect().center() );
   mView->setModelScene( mScene );
 
   mSelectTool->resetCache();
@@ -498,8 +497,6 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   connect( mScene, &QgsModelGraphicsScene::runSelected, this, &QgsModelDesignerDialog::runSelectedSteps );
   connect( mScene, &QgsModelGraphicsScene::showChildAlgorithmOutputs, this, &QgsModelDesignerDialog::showChildAlgorithmOutputs );
   connect( mScene, &QgsModelGraphicsScene::showChildAlgorithmLog, this, &QgsModelDesignerDialog::showChildAlgorithmLog );
-
-  mView->centerOn( center );
 
   if ( oldScene )
     oldScene->deleteLater();

@@ -2,7 +2,7 @@
   "name": "round",
   "type": "function",
   "groups": ["Math"],
-  "description": "Rounds a number to number of decimal places.",
+  "description": "Rounds a number to number of decimal places. The rounding is done to the nearest number. The ceil or floor functions can be used if rounding up or down is required.",
   "arguments": [{
     "arg": "value",
     "description": "decimal number to be rounded"
@@ -10,7 +10,7 @@
     "arg": "places",
     "optional": true,
     "default": "0",
-    "description": "Optional integer representing number of places to round decimals to. Can be negative."
+    "description": "Optional integer representing number of places to round decimals to. For negative integers the rounding is done to the left of the decimal point."
   }],
   "examples": [{
     "expression": "round(1234.567, 2)",
@@ -21,6 +21,10 @@
   }, {
     "expression": "round(1234.567, -1)",
     "returns": "1230"
+  }, {
+    "expression": "round(1234.567, -2)",
+    "returns": "1200"
   }],
+
   "tags": ["rounds", "places", "decimal", "number"]
 }

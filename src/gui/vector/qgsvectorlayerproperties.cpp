@@ -363,10 +363,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
   teMetadataViewer->clear();
   teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
-  teMetadataViewer->setHtml( htmlMetadata() );
   teMetadataViewer->setOpenLinks( false );
   connect( teMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsVectorLayerProperties::openUrl );
-  mMetadataFilled = true;
 
   QgsSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
@@ -646,7 +644,7 @@ void QgsVectorLayerProperties::syncToLayer()
 
   mRefreshLayerNotificationCheckBox->setChecked( mLayer->isRefreshOnNotifyEnabled() );
   mNotificationMessageCheckBox->setChecked( !mLayer->refreshOnNotifyMessage().isEmpty() );
-  mNotifyMessagValueLineEdit->setText( mLayer->refreshOnNotifyMessage() );
+  mNotifyMessageValueLineEdit->setText( mLayer->refreshOnNotifyMessage() );
 
 
   // load appropriate symbology page (V1 or V2)
@@ -811,7 +809,7 @@ void QgsVectorLayerProperties::apply()
   mRefreshSettingsWidget->saveToLayer();
 
   mLayer->setRefreshOnNotifyEnabled( mRefreshLayerNotificationCheckBox->isChecked() );
-  mLayer->setRefreshOnNofifyMessage( mNotificationMessageCheckBox->isChecked() ? mNotifyMessagValueLineEdit->text() : QString() );
+  mLayer->setRefreshOnNofifyMessage( mNotificationMessageCheckBox->isChecked() ? mNotifyMessageValueLineEdit->text() : QString() );
 
   mOldJoins = mLayer->vectorJoins();
 

@@ -58,7 +58,7 @@ def initMenusAndToolbars():
             "qgis:distancematrix": analysisToolsMenu,
             "native:sumlinelengths": analysisToolsMenu,
             "native:countpointsinpolygon": analysisToolsMenu,
-            "qgis:listuniquevalues": analysisToolsMenu,
+            "native:listuniquevalues": analysisToolsMenu,
             "native:basicstatisticsforfields": analysisToolsMenu,
             "native:nearestneighbouranalysis": analysisToolsMenu,
             "native:meancoordinates": analysisToolsMenu,
@@ -335,7 +335,7 @@ def _executeAlgorithm(alg_id):
         dlg.setTitle(Processing.tr("Missing Dependency"))
         dlg.setMessage(
             Processing.tr(
-                "<h3>Missing dependency. This algorithm cannot " "be run :-( </h3>\n{0}"
+                "<h3>Missing dependency. This algorithm cannot " "be run </h3>\n{0}"
             ).format(message)
         )
         dlg.exec()

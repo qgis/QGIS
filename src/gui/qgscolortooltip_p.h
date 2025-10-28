@@ -29,7 +29,7 @@
 class QgsColorTooltip
 {
   public:
-    //! Returns an HTML desciption given a \a color with a preview image of the color
+    //! Returns an HTML description given a \a color with a preview image of the color
     template<typename T>
     static QString htmlDescription( QColor color, T *widget )
     {

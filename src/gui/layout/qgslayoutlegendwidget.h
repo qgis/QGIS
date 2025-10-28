@@ -33,6 +33,36 @@ class QgsLayoutLegendMapFilteringWidget;
 
 ///@cond PRIVATE
 
+#ifndef SIP_RUN
+/**
+ * \ingroup core
+ * \brief A layout item subclass for map legend filtering.
+ * \note Not available in Python bindings
+ * \since QGIS 4.0
+ */
+class GUI_EXPORT QgsLegendLayerTreeProxyModel : public QgsLayerTreeProxyModel
+{
+    Q_OBJECT
+  public:
+    /**
+     * Constructor for QgsLegendLayerTreeProxyModel, with the specified \a parent object.
+     */
+    QgsLegendLayerTreeProxyModel( QgsLayoutItemLegend *legend, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets whether the legend is showing the default legend for a project (as opposed
+     * to a customized legend).
+     */
+    void setIsDefaultLegend( bool isDefault );
+
+  protected:
+    bool nodeShown( QgsLayerTreeNode *node ) const override;
+
+  private:
+    bool mIsDefaultLegend = true;
+};
+#endif
+
 /**
  * \ingroup gui
  * \brief A widget for setting properties relating to a layout legend.
@@ -156,6 +186,8 @@ class GUI_EXPORT QgsLayoutLegendWidget : public QgsLayoutItemBaseWidget, public 
     QPointer<QgsLayoutItemLegend> mLegend;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
+
+    QgsLegendLayerTreeProxyModel *mLegendProxyModel = nullptr;
 
     QPointer<QgsLayoutLegendMapFilteringWidget> mMapFilteringWidget;
 };

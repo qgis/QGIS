@@ -89,6 +89,13 @@ class CORE_EXPORT QgsZipUtils
      */
     static const QStringList files( const QString &zip );
 
+    /**
+     * Extracts a file from a zip archive, returns TRUE on success.
+     *
+     * \since QGIS 4.0
+     */
+    static bool extractFileFromZip( const QString &zipFilename, const QString &filenameInZip, QByteArray &bytesOut SIP_OUT );
+
 };
 
 #endif //QGSZIPUTILS_H

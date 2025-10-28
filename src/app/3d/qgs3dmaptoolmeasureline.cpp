@@ -27,6 +27,7 @@
 #include "qgswindow3dengine.h"
 #include "qgsframegraph.h"
 #include "qgsabstractterrainsettings.h"
+#include "qgsraycastcontext.h"
 
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
@@ -72,25 +73,27 @@ void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
     restart();
   }
 
-  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPos, mCanvas->size(), mCanvas->cameraController()->camera() );
-  const QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, QgsRayCastingUtils::RayCastContext( true, mCanvas->size(), mCanvas->cameraController()->camera()->farPlane() ) );
+  QgsRayCastContext context;
+  context.setSingleResult( false );
+  context.setMaximumDistance( mCanvas->cameraController()->camera()->farPlane() );
+  context.setAngleThreshold( 0.5f );
+  const QgsRayCastResult results = mCanvas->castRay( screenPos, context );
 
-  if ( allHits.isEmpty() )
+  if ( results.isEmpty() )
     return;
 
-  QgsVector3D worldIntersection;
-  float minDist = -1;
-  for ( const QVector<QgsRayCastingUtils::RayHit> &results : allHits )
+  QgsVector3D mapCoords;
+  double minDist = -1;
+  const QList<QgsRayCastHit> allHits = results.allHits();
+  for ( const QgsRayCastHit &hit : allHits )
   {
-    const QgsRayCastingUtils::RayHit &result = results.first();
-    const float resDist = result.distance;
+    const double resDist = hit.distance();
     if ( minDist < 0 || resDist < minDist )
     {
       minDist = resDist;
-      worldIntersection = QgsVector3D( result.pos.x(), result.pos.y(), result.pos.z() );
+      mapCoords = hit.mapCoordinates();
     }
   }
-  const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( worldIntersection, mCanvas->mapSettings()->origin() );
   addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() ) );
   mDialog->show();
 }

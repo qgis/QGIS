@@ -114,9 +114,6 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
   QList<QgsProcessingModelChildParameterSource> sources;
 
-  QgsProcessingModelComponent *componentFrom = nullptr;
-  QgsProcessingModelChildAlgorithm *childTo = nullptr;
-
   /**
    * Reorder input and output socket
    * whether the user dragged :
@@ -130,9 +127,10 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
     std::swap( mFromSocket, mToSocket );
   }
 
-  componentFrom = mFromSocket->component();
-  childTo = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mToSocket->component() );
-
+  QgsProcessingModelComponent *componentFrom = mFromSocket->component();
+  QgsProcessingModelChildAlgorithm *childTo = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mToSocket->component() );
+  if ( !childTo )
+    return;
 
   const QgsProcessingParameterDefinition *toParam = childTo->algorithm()->parameterDefinitions().at( mToSocket->index() );
 
@@ -160,7 +158,6 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
 
   sources << source;
   childTo->addParameterSources( toParam->name(), sources );
-
 
   //We need to pass the update child algorithm to the model
   scene()->model()->setChildAlgorithm( *childTo );
@@ -203,9 +200,12 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
   if ( mFromSocket->isInput() )
   {
     QgsProcessingModelChildAlgorithm *childFrom = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mFromSocket->component() );
+    if ( !childFrom )
+      return;
+
     const QgsProcessingParameterDefinition *param = childFrom->algorithm()->parameterDefinitions().at( mFromSocket->index() );
 
-    auto currentSources = childFrom->parameterSources().value( param->name() );
+    const QList< QgsProcessingModelChildParameterSource > currentSources = childFrom->parameterSources().value( param->name() );
 
     QgsProcessingModelChildParameterSource oldSource;
     for ( const QgsProcessingModelChildParameterSource &source : std::as_const( currentSources ) )

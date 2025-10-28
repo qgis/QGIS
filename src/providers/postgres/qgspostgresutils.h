@@ -97,9 +97,9 @@ class QgsPostgresUtils
 
     static bool createStylesTable( QgsPostgresConn *conn, QString loggedClass );
 
-    static bool columnExists( QgsPostgresConn *conn, const QString &table, const QString &column );
+    static bool columnExists( QgsPostgresConn *conn, const QString &schema, const QString &table, const QString &column );
 
-    static bool tableExists( QgsPostgresConn *conn, const QString &name );
+    static bool tableExists( QgsPostgresConn *conn, const QString &schema, const QString &table );
 
     /*
     * Check if projects table exists in the specified schema
@@ -127,6 +127,31 @@ class QgsPostgresUtils
     * \since QGIS 3.44
     */
     static bool deleteProjectFromSchema( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName );
+
+    /*
+    * Copies project from project's table in the original schema to target schema
+    *
+    * \returns true on success
+    *
+    * \since QGIS 4.0
+    */
+    static bool copyProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema );
+
+    /*
+    * Moves project from project's table in the original schema to target schema
+    *
+    * \returns true on success
+    *
+    * \since QGIS 4.0
+    */
+    static bool moveProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema );
+
+    /*
+    * Turns variant map into HTML code.
+    *
+    * \since QGIS 4.0
+    */
+    static QString variantMapToHtml( const QVariantMap &variantMap, const QString &title = QString() );
 };
 
 #endif

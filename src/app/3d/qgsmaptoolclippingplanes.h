@@ -16,14 +16,14 @@
 #ifndef QGSMAPTOOLCLIPPINGPLANES_H
 #define QGSMAPTOOLCLIPPINGPLANES_H
 
+#include "qgsgeometry.h"
 #include "qgsmaptool.h"
-#include "qgspointxy.h"
-#include "qgsrubberband.h"
 #include "qobjectuniqueptr.h"
-
 
 class Qgs3DMapCanvasWidget;
 class QgsMapCanvas;
+class QgsRubberBand;
+class QgsCoordinateTransform;
 
 
 /**
@@ -52,14 +52,17 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     //! Returns the Geometry of clipped area
     QgsGeometry clippedPolygon() const;
 
+  signals:
+    void finishedSuccessfully();
+
   private:
     void clearRubberBand() const;
 
     QObjectUniquePtr<QgsRubberBand> mRubberBandPolygon;
     QObjectUniquePtr<QgsRubberBand> mRubberBandLines;
     QObjectUniquePtr<QgsRubberBand> mRubberBandPoints;
-    Qgs3DMapCanvasWidget *m3DCanvas = nullptr;
-    bool mClicked = false;
+    std::unique_ptr<QgsCoordinateTransform> mCt;
+    Qgs3DMapCanvasWidget *m3DCanvasWidget = nullptr;
     double mRectangleWidth = 0;
 };
 

@@ -158,12 +158,10 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     void pasteItems( PasteMode mode );
 
   public slots:
-
     /**
      * Snaps the selected items to the grid.
      */
     void snapSelected();
-
   signals:
 
     /**
@@ -235,6 +233,18 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      */
     QPointF deltaForKeyEvent( QKeyEvent *event );
 
+    /**
+     * Sets the scene rect used for scrollbar without disturbing the user
+     * i.e:
+     *  - We grow the scene rect as the model grows
+     *  - We shrink only if the model scene rect is outside the current viewed viewport
+     * 
+     * Called each time the view viewport moved or the model scene changed
+     * 
+     * \since QGIS 4.0
+     */
+    void friendlySetSceneRect();
+
     QPointer<QgsModelViewTool> mTool;
 
     QgsModelViewToolTemporaryKeyPan *mSpacePanTool = nullptr;
@@ -242,6 +252,8 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     QgsModelViewToolTemporaryKeyZoom *mSpaceZoomTool = nullptr;
 
     QPoint mMouseCurrentXY;
+
+    int mBlockScrollbarSignals = 0;
 
     QgsModelSnapper mSnapper;
     QgsModelViewSnapMarker *mSnapMarker = nullptr;

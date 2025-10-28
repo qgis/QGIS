@@ -106,6 +106,8 @@ point cloud, annotations, etc).
       Legend,
       Elevation,
       Notes,
+      AllVisualStyleCategories,
+      AllAttributeCategories,
       AllStyleCategories
     };
     typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;

@@ -335,8 +335,13 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
   if ( !namespaces.isEmpty() )
   {
     if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+    {
       query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaces );
-    query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaces );
+    }
+    else
+    {
+      query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaces );
+    }
   }
 
   getFeatureUrl.setQuery( query );

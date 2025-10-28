@@ -25,19 +25,19 @@
   <ComposerLegend rasterBorderWidth="0" rasterBorder="1" title="My Legend" resizeToContents="1" symbolWidth="12" map="0" columnSpace="1" wmsLegendHeight="25" splitLayer="1" rasterBorderColor="0,0,0,255" columnCount="2" titleAlignment="4" fontColor="#f065ec" wmsLegendWidth="50" symbolHeight="9" boxSpace="5" wrapChar=" " legendFilterByAtlas="0" lineSpacing="1" equalColumnWidth="1">
    <styles>
     <style name="title" marginBottom="6">
-     <styleFont description="MS Shell Dlg 2,36,-1,5,50,0,0,0,0,0" style=""/>
+     <styleFont description="QGIS Vera Sans,36,-1,5,50,0,0,0,0,0" style="Bold"/>
     </style>
     <style name="group" marginTop="5">
-     <styleFont description="MS Shell Dlg 2,14,-1,5,50,0,0,0,0,0" style=""/>
+     <styleFont description="QGIS Vera Sans,14,-1,5,50,0,0,0,0,0" style="Bold"/>
     </style>
     <style name="subgroup" marginTop="4">
-     <styleFont description="MS Shell Dlg 2,12,-1,5,50,0,0,0,0,0" style=""/>
+     <styleFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style="Bold"/>
     </style>
     <style name="symbol" marginTop="3">
-     <styleFont description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+     <styleFont description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style="Bold"/>
     </style>
     <style marginLeft="4" name="symbolLabel" marginTop="3">
-     <styleFont description="MS Shell Dlg 2,12,-1,5,50,0,0,0,0,0" style=""/>
+     <styleFont description="QGIS Vera Sans,12,-1,5,50,0,0,0,0,0" style="Bold"/>
     </style>
    </styles>
    <layer-tree-group>

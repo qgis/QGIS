@@ -92,7 +92,7 @@ void TestQgsRubberBand3DRendering::testRubberBandPoint()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -125,7 +125,7 @@ void TestQgsRubberBand3DRendering::testRubberBandLine()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -155,7 +155,7 @@ void TestQgsRubberBand3DRendering::testRubberBandPolygon()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -185,7 +185,7 @@ void TestQgsRubberBand3DRendering::testRubberBandHiddenMarker()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -218,7 +218,7 @@ void TestQgsRubberBand3DRendering::testRubberBandHiddenLastMarker()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -249,7 +249,7 @@ void TestQgsRubberBand3DRendering::testRubberBandHiddenEdges()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
@@ -282,7 +282,7 @@ void TestQgsRubberBand3DRendering::testRubberBandHiddenPolygonFill()
   map->setLayers( QList<QgsMapLayer *>() << mLayer );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 1000, 0 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;

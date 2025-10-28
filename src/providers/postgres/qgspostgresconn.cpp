@@ -2217,55 +2217,90 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
 
       QString sql = QStringLiteral( "SELECT %1, " ).arg( i - 1 );
 
-      bool castToGeometry = layerProperty.geometryColType == SctGeography || layerProperty.geometryColType == SctPcPatch;
-
-      sql += QLatin1String( "array_agg(DISTINCT " );
-
-      int srid = layerProperty.srids.value( 0, std::numeric_limits<int>::min() );
-      if ( srid == std::numeric_limits<int>::min() )
+      if ( layerProperty.geometryColType == SctTopoGeometry )
       {
-        sql += QStringLiteral( "%1(%2%3)::text" )
-                 .arg( majorVersion() < 2 ? "srid" : "st_srid", quotedIdentifier( layerProperty.geometryColName ), castToGeometry ? "::geometry" : "" );
-      }
-      else
-      {
-        sql += QStringLiteral( "%1::text" )
-                 .arg( QString::number( srid ) );
-      }
-
-      sql += " || ':' || ";
-
-      Qgis::WkbType type = layerProperty.types.value( 0, Qgis::WkbType::Unknown );
-      if ( type == Qgis::WkbType::Unknown )
-      {
-        // Note that we would like to apply a "LIMIT GEOM_TYPE_SELECT_LIMIT"
-        // here, so that the previous "array_agg(DISTINCT" does not scan the
-        // full table. However SQL does not allow that.
-        // So we have to do a subselect on the table to add the LIMIT,
-        // see comment in the following code.
-        sql += QStringLiteral( "UPPER(geometrytype(%1%2))  || ':' || ST_Zmflag(%1%2)" )
-                 .arg( quotedIdentifier( layerProperty.geometryColName ), castToGeometry ? "::geometry" : "" );
-      }
-      else
-      {
-        sql += QStringLiteral( "%1::text  || ':-1'" )
-                 .arg( quotedValue( QgsPostgresConn::postgisWkbTypeName( type ) ) );
-      }
-
-
-      sql += QLatin1String( ") " );
-
-      if ( type == Qgis::WkbType::Unknown )
-      {
-        // Subselect to limit the "array_agg(DISTINCT", see previous comment.
-        sql += QStringLiteral( " FROM (SELECT %1 FROM %2%3) AS _unused" )
+        sql += QLatin1String( R"SQL(
+          array_agg( DISTINCT
+            t.srid::text
+            || ':' ||
+            CASE
+              WHEN l.feature_type = 1 THEN 'MULTIPOINT'
+              WHEN l.feature_type = 2 THEN 'MULTILINESTRING'
+              WHEN l.feature_type = 3 THEN 'MULTIPOLYGON'
+              ELSE 'GEOMETRYCOLLECTION'
+            END
+            || ':' ||
+            CASE
+              WHEN t.hasz THEN '2'
+              ELSE '0'
+            END
+          )
+          FROM
+            (
+              SELECT DISTINCT topology_id(%1), layer_id(%1)
+              FROM (
+                  SELECT %1 FROM %2%3
+              ) qry
+            ) lyr
+            JOIN topology.topology t ON ( t.id = lyr.topology_id )
+            JOIN topology.layer l ON ( lyr.layer_id = l.layer_id AND l.topology_id = lyr.topology_id )
+        )SQL" )
                  .arg( quotedIdentifier( layerProperty.geometryColName ) )
                  .arg( table )
                  .arg( tableScanLimit );
       }
       else
       {
-        sql += " FROM " + table;
+        bool castToGeometry = layerProperty.geometryColType == SctGeography || layerProperty.geometryColType == SctPcPatch;
+
+        sql += QLatin1String( "array_agg(DISTINCT " );
+
+        int srid = layerProperty.srids.value( 0, std::numeric_limits<int>::min() );
+        if ( srid == std::numeric_limits<int>::min() )
+        {
+          sql += QStringLiteral( "%1(%2%3)::text" )
+                   .arg( majorVersion() < 2 ? "srid" : "st_srid", quotedIdentifier( layerProperty.geometryColName ), castToGeometry ? "::geometry" : "" );
+        }
+        else
+        {
+          sql += QStringLiteral( "%1::text" )
+                   .arg( QString::number( srid ) );
+        }
+
+        sql += " || ':' || ";
+
+        Qgis::WkbType type = layerProperty.types.value( 0, Qgis::WkbType::Unknown );
+        if ( type == Qgis::WkbType::Unknown )
+        {
+          // Note that we would like to apply a "LIMIT GEOM_TYPE_SELECT_LIMIT"
+          // here, so that the previous "array_agg(DISTINCT" does not scan the
+          // full table. However SQL does not allow that.
+          // So we have to do a subselect on the table to add the LIMIT,
+          // see comment in the following code.
+          sql += QStringLiteral( "UPPER(geometrytype(%1%2))  || ':' || ST_Zmflag(%1%2)" )
+                   .arg( quotedIdentifier( layerProperty.geometryColName ), castToGeometry ? "::geometry" : "" );
+        }
+        else
+        {
+          sql += QStringLiteral( "%1::text  || ':-1'" )
+                   .arg( quotedValue( QgsPostgresConn::postgisWkbTypeName( type ) ) );
+        }
+
+
+        sql += QLatin1String( ") " );
+
+        if ( type == Qgis::WkbType::Unknown )
+        {
+          // Subselect to limit the "array_agg(DISTINCT", see previous comment.
+          sql += QStringLiteral( " FROM (SELECT %1 FROM %2%3) AS _unused" )
+                   .arg( quotedIdentifier( layerProperty.geometryColName ) )
+                   .arg( table )
+                   .arg( tableScanLimit );
+        }
+        else
+        {
+          sql += " FROM " + table;
+        }
       }
 
       QgsDebugMsgLevel( "Geometry types,srids and dims query: " + sql, 2 );

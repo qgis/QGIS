@@ -156,12 +156,18 @@
 #include "qgsmeshlayer3drendererwidget.h"
 #include "qgspointcloudlayer3drendererwidget.h"
 #include "qgstiledscenelayer3drendererwidget.h"
+#include "qgsannotationlayer3drendererwidget.h"
 #include "qgs3dapputils.h"
 #include "qgs3doptions.h"
 #include "qgsmapviewsmanager.h"
 #include "qgs3dmapcanvaswidget.h"
 #include "qgs3dmapscene.h"
 #include "qgsdirectionallightsettings.h"
+#endif
+
+#ifdef WITH_SFCGAL
+#include <SFCGAL/capi/sfcgal_c.h>
+#include <SFCGAL/version.h>
 #endif
 
 #ifdef HAVE_GEOREFERENCER
@@ -346,6 +352,7 @@
 #include "qgsnewmemorylayerdialog.h"
 #include "qgsnewmeshlayerdialog.h"
 #include "options/qgsoptions.h"
+#include "qgspdalalgorithms.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspluginmanager.h"
@@ -444,10 +451,10 @@
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgstemporalcontrollerdockwidget.h"
-#include "qgsnetworklogger.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
-#include "qgsnetworkloggerwidgetfactory.h"
+#include "devtools/networklogger/qgsnetworklogger.h"
+#include "devtools/networklogger/qgsnetworkloggerwidgetfactory.h"
 #include "devtools/querylogger/qgsappquerylogger.h"
 #include "devtools/querylogger/qgsqueryloggerwidgetfactory.h"
 #include "devtools/profiler/qgsprofilerwidgetfactory.h"
@@ -503,9 +510,6 @@
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/pdal.hpp>
-#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 5 )
-#include "qgspdalalgorithms.h"
-#endif
 #endif
 
 //
@@ -540,9 +544,6 @@
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
 
-//
-// Conditional Includes
-//
 #include <sqlite3.h>
 
 #ifdef HAVE_SPATIALITE
@@ -1329,12 +1330,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   registerMapLayerPropertiesFactory( new QgsVectorLayerDigitizingPropertiesFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsPointCloudRendererWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsTiledSceneRendererWidgetFactory( this ) );
-#ifdef HAVE_3D
-  registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
-  registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
-  registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
-  registerMapLayerPropertiesFactory( new QgsTiledSceneLayer3DRendererWidgetFactory( this ) );
-#endif
   registerMapLayerPropertiesFactory( new QgsPointCloudElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsRasterElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsVectorElevationPropertiesWidgetFactory( this ) );
@@ -1342,6 +1337,13 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   registerMapLayerPropertiesFactory( new QgsMeshElevationPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsAnnotationItemPropertiesWidgetFactory( this ) );
   registerMapLayerPropertiesFactory( new QgsLayerTreeGroupPropertiesWidgetFactory( this ) );
+#ifdef HAVE_3D
+  registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsPointCloudLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsTiledSceneLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsAnnotationLayer3DRendererWidgetFactory( this ) );
+#endif
 
   mMapStyleWidget = new QgsLayerStylingWidget( mMapCanvas, mInfoBar, mMapLayerPanelFactories );
   mMapStylingDock->setWidget( mMapStyleWidget );
@@ -2947,6 +2949,7 @@ void QgisApp::createActions()
   connect( mActionOffsetPointSymbol, &QAction::triggered, this, &QgisApp::offsetPointSymbol );
   connect( mActionSnappingOptions, &QAction::triggered, this, &QgisApp::snappingOptions );
   connect( mActionOffsetCurve, &QAction::triggered, this, &QgisApp::offsetCurve );
+  connect( mActionChamferFillet, &QAction::triggered, this, &QgisApp::chamferFillet );
   connect( mActionReverseLine, &QAction::triggered, this, &QgisApp::reverseLine );
   connect( mActionTrimExtendFeature, &QAction::triggered, this, [this] { mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::TrimExtendFeature ) ); } );
 
@@ -3001,6 +3004,7 @@ void QgisApp::createActions()
   mStatisticalSummaryDockWidget->setToggleVisibilityAction( mActionStatisticalSummary );
   connect( mActionManage3DMapViews, &QAction::triggered, this, &QgisApp::show3DMapViewsManager );
   connect( mActionElevationProfile, &QAction::triggered, this, &QgisApp::createNewElevationProfile );
+  connect( mActionManageElevationProfiles, &QAction::triggered, this, &QgisApp::showElevationProfileManager );
 
   // Layer Menu Items
 
@@ -3246,7 +3250,7 @@ void QgisApp::showStyleManager()
 void QgisApp::initPythonConsoleOptions()
 {
   QgsPythonRunner::run( QStringLiteral( "import console" ) );
-  QgsPythonRunner::run( QStringLiteral( "console.init_options_widget()" ) );
+  QgsPythonRunner::run( QStringLiteral( "console.init_console()" ) );
 }
 
 void QgisApp::showPythonDialog()
@@ -3305,6 +3309,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionRotateFeature );
   mMapToolGroup->addAction( mActionScaleFeature );
   mMapToolGroup->addAction( mActionOffsetCurve );
+  mMapToolGroup->addAction( mActionChamferFillet );
   mMapToolGroup->addAction( mActionReshapeFeatures );
   mMapToolGroup->addAction( mActionSplitFeatures );
   mMapToolGroup->addAction( mActionSplitParts );
@@ -4266,6 +4271,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionDeletePart->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeletePart.svg" ) ) );
   mActionMergeFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMergeFeatures.svg" ) ) );
   mActionOffsetCurve->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOffsetCurve.svg" ) ) );
+  mActionChamferFillet->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionChamferFillet.svg" ) ) );
   mActionMergeFeatureAttributes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMergeFeatureAttributes.svg" ) ) );
   mActionRotatePointSymbols->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRotatePointSymbols.svg" ) ) );
   mActionOffsetPointSymbol->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOffsetPointSymbols.svg" ) ) );
@@ -4517,6 +4523,7 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::RotateFeature )->setAction( mActionRotateFeature );
   mMapTools->mapTool( QgsAppMapTools::ScaleFeature )->setAction( mActionScaleFeature );
   mMapTools->mapTool( QgsAppMapTools::OffsetCurve )->setAction( mActionOffsetCurve );
+  mMapTools->mapTool( QgsAppMapTools::ChamferFillet )->setAction( mActionChamferFillet );
   mMapTools->mapTool( QgsAppMapTools::ReshapeFeatures )->setAction( mActionReshapeFeatures );
   mMapTools->mapTool( QgsAppMapTools::ReverseLine )->setAction( mActionReverseLine );
   mMapTools->mapTool( QgsAppMapTools::SplitFeatures )->setAction( mActionSplitFeatures );
@@ -5559,6 +5566,20 @@ QString QgisApp::getVersionString()
   {
     versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, geosVersionRunning, runLabel );
   }
+  versionString += QLatin1String( "</td></tr><tr>" );
+
+  // SFCGAL version
+#ifdef WITH_SFCGAL
+  const QString sfcgalVersionCompiled { SFCGAL_VERSION };
+  const QString sfcgalVersionRunning { sfcgal_version() };
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "SFCGAL version" ), sfcgalVersionCompiled );
+  if ( sfcgalVersionCompiled != sfcgalVersionRunning )
+  {
+    versionString += QStringLiteral( " (%1)<br/>%2 (%3)" ).arg( compLabel, sfcgalVersionRunning, runLabel );
+  }
+#else
+  versionString += QStringLiteral( "<td>%1</td><td>%2" ).arg( tr( "SFCGAL version" ), tr( "No support" ) );
+#endif
   versionString += QLatin1String( "</td></tr><tr>" );
 
   // SQLite version
@@ -7938,6 +7959,7 @@ void QgisApp::createAnnotationLayer()
   // layer should be created at top of layer tree
   QgsProject::instance()->addMapLayer( layer, false );
   QgsProject::instance()->layerTreeRoot()->insertLayer( 0, layer );
+  QgsAppLayerHandling::postProcessAddedLayers( { layer } );
 }
 
 void QgisApp::setCadDockVisible( bool visible )
@@ -8183,7 +8205,28 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
       vl->removeCustomProperty( QStringLiteral( "OnConvertFormatRegeneratePrimaryKey" ) );
 
       mLayerTreeView->refreshLayerSymbology( vl->id() );
-      this->visibleMessageBar()->pushMessage( tr( "Layer Saved" ), tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ), Qgis::MessageLevel::Success, 0 );
+
+      QgsMessageBarItem *barItem = new QgsMessageBarItem( tr( "Layer Saved" ), tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ), Qgis::MessageLevel::Success, 0 );
+
+      if ( ( !newLayerName.isEmpty() ) )
+      {
+        if ( newLayerName != vl->name() )
+        {
+          QPushButton *button = new QPushButton( tr( "Also rename layer in layers panel" ), this );
+          barItem->setWidget( button );
+
+          connect( vl, &QgsVectorLayer::willBeDeleted, this, [button]() {
+            button->setEnabled( false );
+          } );
+
+          connect( button, &QPushButton::clicked, this, [button, vl, newLayerName]() {
+            vl->setName( newLayerName );
+            button->setEnabled( false );
+          } );
+        }
+      }
+
+      this->visibleMessageBar()->pushItem( barItem );
     }
   };
 
@@ -8754,6 +8797,11 @@ void QgisApp::moveFeatureCopy()
 void QgisApp::offsetCurve()
 {
   mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::OffsetCurve ) );
+}
+
+void QgisApp::chamferFillet()
+{
+  mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::ChamferFillet ) );
 }
 
 void QgisApp::simplifyFeature()
@@ -12269,7 +12317,7 @@ void QgisApp::loadPythonSupport()
 {
   QgsScopedRuntimeProfile profile( tr( "Loading Python support" ) );
 
-  QString pythonlibName( QStringLiteral( "qgispython" ) );
+  QString pythonlibName( QStringLiteral( "qgispython" QGISPOSTFIX ) );
 #if defined( Q_OS_UNIX )
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
@@ -13014,13 +13062,18 @@ void QgisApp::reloadConnections()
 
 void QgisApp::showLayoutManager()
 {
-  static_cast<QgsAppWindowManager *>( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::DialogLayoutManager );
+  static_cast<QgsAppWindowManager *>( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::ApplicationDialog::LayoutManager );
+}
+
+void QgisApp::showElevationProfileManager()
+{
+  static_cast<QgsAppWindowManager *>( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::ApplicationDialog::ElevationProfileManager );
 }
 
 void QgisApp::show3DMapViewsManager()
 {
 #ifdef HAVE_3D
-  static_cast<QgsAppWindowManager *>( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::Dialog3DMapViewsManager );
+  static_cast<QgsAppWindowManager *>( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::ApplicationDialog::Dialog3DMapViewsManager );
 #endif
 }
 
@@ -13048,10 +13101,10 @@ void QgisApp::addEmbeddedItems( const QString &projectFile, const QStringList &g
   QStringList::const_iterator groupIt = groups.constBegin();
   for ( ; groupIt != groups.constEnd(); ++groupIt )
   {
-    QgsLayerTreeGroup *newGroup = QgsProject::instance()->createEmbeddedGroup( *groupIt, projectFile, QStringList() );
+    std::unique_ptr< QgsLayerTreeGroup > newGroup = QgsProject::instance()->createEmbeddedGroup( *groupIt, projectFile, QStringList() );
 
     if ( newGroup )
-      QgsProject::instance()->layerTreeRoot()->addChildNode( newGroup );
+      QgsProject::instance()->layerTreeRoot()->addChildNode( newGroup.release() );
   }
 
   //layer ids
@@ -13138,11 +13191,7 @@ void QgisApp::initNativeProcessing()
   QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
 #endif
 
-#ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 1 && PDAL_VERSION_MINOR_INT >= 5
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
-#endif
-#endif
 }
 
 void QgisApp::initLayouts()
@@ -13317,10 +13366,12 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
 
-    const QList<QgsMapLayer *> layers = mMapCanvas->layers( true );
+    QList<QgsMapLayer *> layers = mMapCanvas->layers( true );
     const bool has3DBasemap = std::any_of( layers.begin(), layers.end(), []( QgsMapLayer *layer ) {
       return layer->properties().testFlag( Qgis::MapLayerProperty::Is3DBasemapLayer );
     } );
+
+    layers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
 
     map->setLayers( layers );
     map->setTemporalRange( mMapCanvas->temporalRange() );
@@ -15054,6 +15105,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionRotateFeature->setEnabled( false );
     mActionScaleFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
+    mActionChamferFillet->setEnabled( false );
     mActionVertexTool->setEnabled( false );
     mActionVertexToolActiveLayer->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
@@ -15274,6 +15326,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           mActionRotatePointSymbols->setEnabled( false );
           mActionOffsetPointSymbol->setEnabled( false );
           mActionOffsetCurve->setEnabled( false );
+          mActionChamferFillet->setEnabled( false );
 
           if ( isEditable && canChangeAttributes )
           {
@@ -15299,6 +15352,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           mActionSplitParts->setEnabled( isEditable && canChangeGeometry && isMultiPart );
           mActionSimplifyFeature->setEnabled( isEditable && canChangeGeometry );
           mActionOffsetCurve->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
+          mActionChamferFillet->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
           mActionReverseLine->setEnabled( isEditable && canChangeGeometry );
           mActionTrimExtendFeature->setEnabled( isEditable && canChangeGeometry );
 
@@ -15321,6 +15375,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           mActionSimplifyFeature->setEnabled( isEditable && canChangeGeometry );
           mActionDeleteRing->setEnabled( isEditable && canChangeGeometry );
           mActionOffsetCurve->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
+          mActionChamferFillet->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
           mActionTrimExtendFeature->setEnabled( isEditable && canChangeGeometry );
         }
         else if ( vlayer->geometryType() == Qgis::GeometryType::Null )
@@ -15336,6 +15391,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
           mActionSimplifyFeature->setEnabled( false );
           mActionDeleteRing->setEnabled( false );
           mActionOffsetCurve->setEnabled( false );
+          mActionChamferFillet->setEnabled( false );
         }
 
         mActionOpenFieldCalc->setEnabled( true );
@@ -15435,6 +15491,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );
@@ -15525,6 +15582,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );
@@ -15608,6 +15666,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( layerHasSelection );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );
@@ -15684,6 +15743,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );
@@ -15754,6 +15814,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );
@@ -15824,6 +15885,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
+      mActionChamferFillet->setEnabled( false );
       mActionCopyFeatures->setEnabled( false );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );

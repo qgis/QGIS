@@ -295,7 +295,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
             context_help_action.triggered.connect(
                 partial(self.shell_editor.showApiDocumentation, word, force_search=True)
             )
-            context_help_action.setShortcut("F1")
+            context_help_action.setShortcut(QKeySequence.StandardKey.HelpContents)
             menu.addAction(context_help_action)
 
         menu.addSeparator()
@@ -348,7 +348,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         Ed = self.console_widget.splitterObj
         if not Ed.isVisible():
             Ed.show()
-            self.console_widget.showEditorButton.setChecked(True)
+            self.console_widget.show_editor_action.setChecked(True)
         self.shell_editor.setFocus()
 
     def copy(self):

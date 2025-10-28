@@ -41,6 +41,7 @@ class TestQgsMapToolCircularString : public QObject
     void testAddCircularStringCurvePoint();
     void testAddCircularStringRadius();
     void testAddCircularStringRadiusWithDeletedVertex();
+    void testAddCircularStringRadiusNotEnoughPoints();
     void testAddCircularStringAfterClassicDigitizing();
 
   private:
@@ -173,6 +174,34 @@ void TestQgsMapToolCircularString::testAddCircularStringRadiusWithDeletedVertex(
 
   mLayer->rollBack();
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
+}
+
+void TestQgsMapToolCircularString::testAddCircularStringRadiusNotEnoughPoints()
+{
+  const long long count = mLayer->featureCount();
+  mLayer->startEditing();
+
+  QgsMapToolShapeCircularStringRadiusMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseMove( 2, 2 );
+  utils.mouseClick( 2, 2, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 2, 2, Qt::LeftButton );
+  utils.mouseMove( 1, 2 );
+  utils.mouseClick( 1, 2, Qt::RightButton );
+  QCOMPARE( mLayer->featureCount(), count );
+
+  mLayer->rollBack();
 }
 
 void TestQgsMapToolCircularString::testAddCircularStringAfterClassicDigitizing()

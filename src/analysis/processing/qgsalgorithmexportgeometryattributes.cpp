@@ -61,6 +61,11 @@ QString QgsExportGeometryAttributesAlgorithm::shortDescription() const
   return QObject::tr( "Computes geometric properties of the features in a vector layer." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsExportGeometryAttributesAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 QgsExportGeometryAttributesAlgorithm *QgsExportGeometryAttributesAlgorithm::createInstance() const
 {
   return new QgsExportGeometryAttributesAlgorithm();
@@ -252,9 +257,13 @@ QgsAttributes QgsExportGeometryAttributesAlgorithm::pointAttributes( const QgsGe
       attrs.append( point->m() );
     }
   }
+  else if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() ) )
+  {
+    attrs.append( collection->numGeometries() );
+  }
   else
   {
-    attrs.append( qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() )->numGeometries() );
+    attrs.append( 0 );
   }
   return attrs;
 }

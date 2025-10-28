@@ -100,6 +100,9 @@ bool QgsMapToolShapeCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEven
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( mPoints.size() < 4 || mCircle.isEmpty() )
+      return false;
+
     addCircleToParentTool();
     return true;
   }

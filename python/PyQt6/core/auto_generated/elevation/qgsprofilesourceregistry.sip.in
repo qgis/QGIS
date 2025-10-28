@@ -11,7 +11,7 @@
 
 
 
-class QgsProfileSourceRegistry
+class QgsProfileSourceRegistry : QObject
 {
 %Docstring(signature="appended")
 Registry of profile sources used by :py:class:`QgsProfilePlotRenderer`.
@@ -37,17 +37,69 @@ Constructor - creates a registry of profile sources
 
     QList< QgsAbstractProfileSource * > profileSources() const;
 %Docstring
-Returns a list of registered profile sources
+Returns a list of registered profile sources.
 %End
 
-    void registerProfileSource( QgsAbstractProfileSource *source /Transfer/ );
+    bool registerProfileSource( QgsAbstractProfileSource *source /Transfer/ );
 %Docstring
-Registers a profile ``source`` and takes ownership of it
+Registers a profile ``source`` and takes ownership of it.
+
+Returns ``True`` if the profile ``source`` could be registered and
+``False`` otherwise.
 %End
 
-    void unregisterProfileSource( QgsAbstractProfileSource *source );
+ bool unregisterProfileSource( QgsAbstractProfileSource *source ) /Deprecated="Since 4.0. Unregister the profile source by ID instead."/;
 %Docstring
-Unregisters a profile ``source`` and destroys its instance
+Unregisters a profile ``source`` and destroys its instance.
+
+.. deprecated:: 4.0
+
+   Unregister the profile source by ID instead.
+%End
+
+    bool unregisterProfileSource( const QString &sourceId );
+%Docstring
+Unregisters a profile source by a given ID and destroys its instance.
+
+Returns ``True`` if the source id was found in the registry and
+``False`` otherwise.
+
+:param sourceId: Profile source ID to be unregistered.
+
+.. versionadded:: 4.0
+%End
+
+    QgsAbstractProfileSource *findSourceById( const QString &sourceId ) const;
+%Docstring
+Finds a registered profile source by id. Returns ``None`` if the source
+is not found in the registry.
+
+:param sourceId: Id of the source to be found in the registry.
+
+.. versionadded:: 4.0
+%End
+
+  signals:
+
+    void profileSourceRegistered( const QString &sourceId, const QString &sourceName );
+%Docstring
+Signal emitted once a profile source is registered.
+
+:param sourceId: Unique identifier of the profile source that has been
+                 registered.
+:param sourceName: Name of the profile source that has been registered.
+
+.. versionadded:: 4.0
+%End
+
+    void profileSourceUnregistered( const QString &sourceId );
+%Docstring
+Signal emitted once a profile source is unregistered.
+
+:param sourceId: Unique identifier of the profile source that has been
+                 unregistered.
+
+.. versionadded:: 4.0
 %End
 
 };

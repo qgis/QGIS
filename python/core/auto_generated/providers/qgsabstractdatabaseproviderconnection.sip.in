@@ -141,6 +141,8 @@ Sets the query execution time to ``queryExecutionTime`` milliseconds.
 
     };
 
+
+
     struct SqlVectorLayerOptions
     {
       QString sql;

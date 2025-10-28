@@ -235,7 +235,7 @@ ready for the insertion into a SQL query.
 
     bool authDbOpen() const;
 %Docstring
-Opens the connction to the database.
+Opens the connection to the database.
 
 :return: ``True`` if the connection was opened successfully, ``False``
          otherwise.

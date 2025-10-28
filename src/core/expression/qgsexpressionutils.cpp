@@ -175,6 +175,28 @@ QgsCoordinateReferenceSystem QgsExpressionUtils::getCrsValue( const QVariant &va
   return crs;
 }
 
+QTimeZone QgsExpressionUtils::getTimeZoneValue( const QVariant &value, QgsExpression *parent )
+{
+  if ( QgsVariantUtils::isNull( value ) )
+  {
+    return QTimeZone();
+  }
+
+  QTimeZone tz;
+  bool isTz = false;
+  if ( value.userType() == qMetaTypeId< QTimeZone>() )
+  {
+    isTz = true;
+    tz = value.value<QTimeZone>();
+  }
+
+  if ( !tz.isValid() )
+  {
+    parent->setEvalErrorString( isTz ? QObject::tr( "Input time zone is invalid" )
+                                : QObject::tr( "Cannot convert '%1' to a time zone" ).arg( value.toString() ) );
+  }
+  return tz;
+}
 
 void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<void ( QgsMapLayer * )> &function, bool &foundLayer )
 {

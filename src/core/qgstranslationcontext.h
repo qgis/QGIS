@@ -42,6 +42,8 @@ class CORE_EXPORT QgsTranslationContext
     {
       QString context; //!< In what context the object is used
       QString source; //!< The original text of the object
+
+      bool operator==( const TranslatableObject &other ) const { return context == other.context && source == other.source; }
     };
 
   public:

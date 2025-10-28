@@ -34,9 +34,68 @@
 
 #include "qgschunkedentity.h"
 
+#include "qgschunkloader.h"
+#include "qgscoordinatetransform.h"
+#include "qgsdistancearea.h"
+#include <QImage>
+
 class QgsMapLayer;
 class QgsGlobeMapUpdateJobFactory;
+class QgsTerrainTextureGenerator;
 
+class QgsGlobeChunkLoader : public QgsChunkLoader
+{
+    Q_OBJECT
+  public:
+    QgsGlobeChunkLoader( QgsChunkNode *node, QgsTerrainTextureGenerator *textureGenerator, const QgsCoordinateTransform &globeCrsToLatLon );
+    void start() override;
+
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+
+  private:
+    QgsTerrainTextureGenerator *mTextureGenerator;
+    QgsCoordinateTransform mGlobeCrsToLatLon;
+    int mJobId = -1;
+    QImage mTexture;
+};
+
+
+//! Handles asynchronous updates of globe's map images when layers change
+class QgsGlobeMapUpdateJob : public QgsChunkQueueJob
+{
+    Q_OBJECT
+  public:
+    QgsGlobeMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node );
+    void start() override;
+
+    void cancel() override;
+
+  private:
+    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
+    int mJobId = -1;
+};
+
+class QgsGlobeChunkLoaderFactory : public QgsChunkLoaderFactory
+{
+    Q_OBJECT
+  public:
+    QgsGlobeChunkLoaderFactory( Qgs3DMapSettings *mapSettings );
+
+    ~QgsGlobeChunkLoaderFactory();
+
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+
+    QgsChunkNode *createRootNode() const override;
+
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+
+  private:
+    Qgs3DMapSettings *mMapSettings = nullptr;
+    QgsTerrainTextureGenerator *mTextureGenerator = nullptr; // owned by the factory
+    QgsDistanceArea mDistanceArea;
+    QgsCoordinateTransform mGlobeCrsToLatLon;
+    double mRadiusX, mRadiusY, mRadiusZ;
+};
 
 /**
  * 3D chunked entity implementation to generate globe mesh with constant elevation
@@ -45,11 +104,13 @@ class QgsGlobeMapUpdateJobFactory;
  */
 class _3D_EXPORT QgsGlobeEntity : public QgsChunkedEntity
 {
+    Q_OBJECT
+
   public:
     QgsGlobeEntity( Qgs3DMapSettings *mapSettings );
     ~QgsGlobeEntity();
 
-    QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
+    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
   private slots:
     void invalidateMapImages();

@@ -64,6 +64,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     Qgis::RenderUnit outputUnit() const override;
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     QgsMapUnitScale mapUnitScale() const override;
+    bool rendersIdenticallyTo( const QgsSymbolLayer *other ) const override;
 
     QgsSymbolLayer *clone() const override SIP_FACTORY;
 

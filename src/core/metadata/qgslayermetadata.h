@@ -313,9 +313,10 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      */
     void readFromLayer( const QgsMapLayer *layer );
 
-    bool readMetadataXml( const QDomElement &metadataElement ) override;
-    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const override;
+    bool readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context = QgsReadWriteContext() ) override;
+    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document, const QgsReadWriteContext &context = QgsReadWriteContext() ) const override;
     void combine( const QgsAbstractMetadataBase *other ) override;
+    void registerTranslations( QgsTranslationContext *translationContext ) const override;
 
     bool operator==( const QgsLayerMetadata &metadataOther ) const;
 

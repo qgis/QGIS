@@ -68,6 +68,9 @@ bool QgsMapToolShapeRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e,
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( !mRectangle.isValid() )
+      return false;
+
     mPoints.append( point );
     addRectangleToParentTool();
     return true;

@@ -840,6 +840,7 @@ void QgsRasterLayerProperties::sync()
   mLegendPlaceholderWidget->setLastPathSettingsKey( QStringLiteral( "lastLegendPlaceholderDir" ) );
   mLegendPlaceholderWidget->setSource( mRasterLayer->legendPlaceholderImage() );
   mLegendConfigEmbeddedWidget->setLayer( mRasterLayer );
+  mIncludeByDefaultInLayoutLegendsCheck->setChecked( mRasterLayer->legend() && !mRasterLayer->legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
 
   mTemporalWidget->syncToLayer();
 
@@ -981,6 +982,10 @@ void QgsRasterLayerProperties::apply()
 
   // Force a redraw of the legend
   mRasterLayer->setLegend( QgsMapLayerLegend::defaultRasterLegend( mRasterLayer ) );
+  if ( QgsMapLayerLegend *legend = mRasterLayer->legend() )
+  {
+    legend->setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, !mIncludeByDefaultInLayoutLegendsCheck->isChecked() );
+  }
 
   //make sure the layer is redrawn
   mRasterLayer->triggerRepaint();
@@ -1163,7 +1168,7 @@ void QgsRasterLayerProperties::initializeDataDefinedButton( QgsPropertyOverrideB
 
 void QgsRasterLayerProperties::updateDataDefinedButtons()
 {
-  const auto propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
+  const QList<QgsPropertyOverrideButton *> propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
   for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
   {
     updateDataDefinedButton( button );

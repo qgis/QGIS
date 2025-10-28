@@ -755,7 +755,7 @@ void QgsDxfExport::writeEntities()
   // iterate through the maplayers
   for ( DxfLayerJob *job : std::as_const( mJobs ) )
   {
-    QgsSymbolRenderContext sctx( mRenderContext, Qgis::RenderUnit::Millimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
+    QgsSymbolRenderContext sctx( job->renderContext, Qgis::RenderUnit::Millimeters, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
 
     if ( mSymbologyExport == Qgis::FeatureSymbologyExport::PerSymbolLayer &&
          ( job->renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) &&
@@ -782,12 +782,12 @@ void QgsDxfExport::writeEntities()
     QgsFeature fet;
     while ( featureIt.nextFeature( fet ) )
     {
-      mRenderContext.expressionContext().setFeature( fet );
+      job->renderContext.expressionContext().setFeature( fet );
       QString lName( dxfLayerName( job->splitLayerAttribute.isNull() ? job->layerDerivedName : fet.attribute( job->splitLayerAttribute ).toString() ) );
 
       sctx.setFeature( &fet );
 
-      if ( !job->renderer->willRenderFeature( fet, mRenderContext ) )
+      if ( !job->renderer->willRenderFeature( fet, job->renderContext ) )
         continue;
 
       if ( mSymbologyExport == Qgis::FeatureSymbologyExport::NoSymbology )
@@ -796,7 +796,7 @@ void QgsDxfExport::writeEntities()
       }
       else
       {
-        const QgsSymbolList symbolList = job->renderer->symbolsForFeature( fet, mRenderContext );
+        const QgsSymbolList symbolList = job->renderer->symbolsForFeature( fet, job->renderContext );
         bool hasSymbology = symbolList.size() > 0;
 
         if ( hasSymbology && mSymbologyExport == Qgis::FeatureSymbologyExport::PerSymbolLayer ) // symbol layer symbology, but layer does not use symbol levels
@@ -842,14 +842,14 @@ void QgsDxfExport::writeEntities()
 
         if ( job->labelProvider )
         {
-          job->labelProvider->registerFeature( fet, mRenderContext );
+          job->labelProvider->registerFeature( fet, job->renderContext );
           Q_NOWARN_DEPRECATED_PUSH
           registerDxfLayer( job->featureSource.id(), fet.id(), lName );
           Q_NOWARN_DEPRECATED_POP
         }
         else if ( job->ruleBasedLabelProvider )
         {
-          job->ruleBasedLabelProvider->registerFeature( fet, mRenderContext );
+          job->ruleBasedLabelProvider->registerFeature( fet, job->renderContext );
           Q_NOWARN_DEPRECATED_PUSH
           registerDxfLayer( job->featureSource.id(), fet.id(), lName );
           Q_NOWARN_DEPRECATED_POP
@@ -1207,15 +1207,15 @@ void QgsDxfExport::appendCurve( const QgsCurve &c, QVector<QgsPoint> &points, QV
   switch ( QgsWkbTypes::flatType( c.wkbType() ) )
   {
     case Qgis::WkbType::LineString:
-      appendLineString( *dynamic_cast<const QgsLineString *>( &c ), points, bulges );
+      appendLineString( *qgis::down_cast<const QgsLineString *>( &c ), points, bulges );
       break;
 
     case Qgis::WkbType::CircularString:
-      appendCircularString( *dynamic_cast<const QgsCircularString *>( &c ), points, bulges );
+      appendCircularString( *qgis::down_cast<const QgsCircularString *>( &c ), points, bulges );
       break;
 
     case Qgis::WkbType::CompoundCurve:
-      appendCompoundCurve( *dynamic_cast<const QgsCompoundCurve *>( &c ), points, bulges );
+      appendCompoundCurve( *qgis::down_cast<const QgsCompoundCurve *>( &c ), points, bulges );
       break;
 
     default:
@@ -2409,12 +2409,12 @@ QString QgsDxfExport::layerName( QgsVectorLayer *vl ) const
 
 void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings )
 {
-  Q_UNUSED( context )
-
   if ( !settings.drawLabels )
     return;
 
   QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+  if ( !lf )
+    return;
 
   // Copy to temp, editable layer settings
   // these settings will be changed by any data defined values, then used for rendering label components

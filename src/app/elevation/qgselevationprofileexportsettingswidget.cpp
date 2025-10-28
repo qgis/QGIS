@@ -25,7 +25,7 @@ QgsElevationProfileExportSettingsWidget::QgsElevationProfileExportSettingsWidget
   setupUi( this );
 }
 
-void QgsElevationProfileExportSettingsWidget::setPlotSettings( const Qgs2DPlot &plot )
+void QgsElevationProfileExportSettingsWidget::setPlotSettings( const Qgs2DXyPlot &plot )
 {
   mSpinMinDistance->setValue( plot.xMinimum() );
   mSpinMinDistance->setClearValue( plot.xMinimum() );
@@ -69,7 +69,7 @@ void QgsElevationProfileExportSettingsWidget::setPlotSettings( const Qgs2DPlot &
   mSpinMajorIntervalY->setShowClearButton( true );
 }
 
-void QgsElevationProfileExportSettingsWidget::updatePlotSettings( Qgs2DPlot &plot )
+void QgsElevationProfileExportSettingsWidget::updatePlotSettings( Qgs2DXyPlot &plot )
 {
   plot.setXMinimum( mSpinMinDistance->value() );
   plot.setXMaximum( mSpinMaxDistance->value() );

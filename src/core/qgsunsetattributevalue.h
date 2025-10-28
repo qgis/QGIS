@@ -19,6 +19,7 @@
 #define QGSUNSETATTRIBUTEVALUE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QString>
 #include <QVariant>
 
@@ -80,11 +81,28 @@ class CORE_EXPORT QgsUnsetAttributeValue
 
 Q_DECLARE_METATYPE( QgsUnsetAttributeValue )
 
+#ifndef SIP_RUN
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
+#elif defined(_MSC_VER)
+__pragma( warning( push ) )
+__pragma( warning( disable: 4273 ) )
+#endif
+#endif
 
 inline bool CORE_EXPORT operator==( const QgsUnsetAttributeValue &value, const QString &other )
 {
   return other == value.defaultValueClause();
 }
+
+#ifndef SIP_RUN
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+__pragma( warning( pop ) )
+#endif
+#endif
 
 inline bool operator!=( const QgsUnsetAttributeValue &value, const QString &other )
 {

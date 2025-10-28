@@ -1152,7 +1152,7 @@ void TestQgsRasterCalculator::testCreationOptions()
   QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
-  QString worldFileName = tmpName.replace( QStringLiteral( ".tif" ), QStringLiteral( ".tfw" ) );
+  QString worldFileName = tmpName.replace( QLatin1String( ".tif" ), QLatin1String( ".tfw" ) );
   QFile worldFile( worldFileName );
   QVERIFY( !worldFile.exists() );
 

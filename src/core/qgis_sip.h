@@ -29,7 +29,7 @@
 
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-Transfer
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#function-annotation-Transfer
  *
  * Example QgsVectorLayer::setDiagramRenderer
  */
@@ -37,86 +37,94 @@
 
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-GetWrapper
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#argument-annotation-GetWrapper
  *
  */
 #define SIP_GETWRAPPER
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-TransferBack
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#function-annotation-TransferBack
  */
 #define SIP_TRANSFERBACK
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-TransferThis
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#function-annotation-TransferThis
  */
 #define SIP_TRANSFERTHIS
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-Out
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#argument-annotation-Out
  */
 #define SIP_OUT
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-In
+ * Alternative to SIP_OUT for methods with manual SIP MethodCode, where only the docstring needs to be
+ * considered for the output argument.
+ *
+ * No /Out/ annotation will be added to the SIP bindings.
+ */
+#define SIP_DOCSTRING_OUT
+
+/*
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#argument-annotation-In
  */
 #define SIP_IN
 
 /*
  * Combination of
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-In
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#argument-annotation-In
  * and
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-Out
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#argument-annotation-Out
  */
 #define SIP_INOUT
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#function-annotation-Factory
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#function-annotation-Factory
  */
 #define SIP_FACTORY
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#class-annotation-PyName
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#class-annotation-PyName
  */
 #define SIP_PYNAME(name)
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-KeepReference
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#argument-annotation-KeepReference
  */
 #define SIP_KEEPREFERENCE
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-Array
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#argument-annotation-Array
  */
 #define SIP_ARRAY
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#argument-annotation-ArraySize
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#argument-annotation-ArraySize
  */
 #define SIP_ARRAYSIZE
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html#class-annotation-NoDefaultCtors
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#class-annotation-NoDefaultCtors
  */
 #define SIP_NODEFAULTCTORS
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=deprecated#function-annotation-Deprecated
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#function-annotation-Deprecated
  */
 #define SIP_DEPRECATED
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=constrained#argument-annotation-Constrained
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#argument-annotation-Constrained
  */
 #define SIP_CONSTRAINED
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=external#class-annotation-External
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#class-annotation-External
  */
 #define SIP_EXTERNAL
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=allownone
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#argument-annotation-AllowNone
  */
 #define SIP_ALLOWNONE
 
@@ -161,12 +169,12 @@
 #define SIP_PYARGRENAME(pyname)
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#function-annotation-ReleaseGIL
  */
 #define SIP_RELEASEGIL
 
 /*
- * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-HoldGIL
+ * https://python-sip.readthedocs.io/en/stable/annotations.html#function-annotation-HoldGIL
  */
 #define SIP_HOLDGIL
 
@@ -291,5 +299,12 @@
  * Adds an include in the type header code
  */
 #define SIP_TYPEHEADER_INCLUDE(file)
+
+/*
+ * Inserts sip conversion code for QList<class_name::enum_name>, where class_name::enum_name is a c++ enum.
+ *
+ * Extra arguments can contain extra headers to include in the conversion code.
+ */
+#define SIP_INSERT_QLIST_ENUM_CONVERSION_CODE(class_name, ...)
 
 #endif // QGIS_SIP_H

@@ -328,6 +328,27 @@ void TestQgsLayoutView::guiRegistry()
   QCOMPARE( item->type(), QgsLayoutItemRegistry::LayoutItem + 101 );
   QCOMPARE( static_cast<TestItem *>( item )->mFlag, 2 );
   delete item;
+
+  // test removing item metadata
+  QCOMPARE( registry.itemMetadataIds().count(), 3 );
+  const QSignalSpy spyTypeRemoved( &registry, &QgsLayoutItemGuiRegistry::typeRemoved );
+  QVERIFY( registry.removeLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101 ) );
+  QCOMPARE( registry.itemMetadataIds().count(), 2 );
+  QVERIFY( registry.removeLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101 ) );
+  QCOMPARE( registry.itemMetadataIds().count(), 1 );
+  QVERIFY( registry.removeLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101 ) );
+  QCOMPARE( registry.itemMetadataIds().count(), 0 );
+  QCOMPARE( registry.removeLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101 ), false );
+  QCOMPARE( spyTypeRemoved.count(), 3 );
+  QCOMPARE( registry.itemMetadataIds().count(), 0 );
+
+  // test removing item group
+  const QSignalSpy spyGroupRemoved( &registry, &QgsLayoutItemGuiRegistry::groupRemoved );
+  QVERIFY( registry.removeItemGroup( QStringLiteral( "g1" ) ) );
+  QCOMPARE( spyGroupRemoved.count(), 1 );
+  QCOMPARE( spyGroupRemoved.at( 0 ).at( 0 ).toString(), QStringLiteral( "g1" ) );
+  // can't remove group again
+  QVERIFY( !registry.removeItemGroup( QStringLiteral( "g1" ) ) );
 }
 
 void TestQgsLayoutView::rubberBand()

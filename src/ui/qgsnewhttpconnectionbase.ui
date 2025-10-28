@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>880</width>
-    <height>600</height>
+    <height>857</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
    <item>
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::Shape::NoFrame</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -32,9 +32,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-74</y>
-        <width>855</width>
-        <height>659</height>
+        <y>0</y>
+        <width>868</width>
+        <height>805</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -153,12 +153,12 @@
           <item row="9" column="0" colspan="2">
            <spacer name="verticalSpacer">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>40</height>
+              <height>0</height>
              </size>
             </property>
            </spacer>
@@ -295,12 +295,12 @@
             <item row="14" column="0" colspan="2">
              <spacer name="verticalSpacer_2">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Orientation::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>40</height>
+                <height>0</height>
                </size>
               </property>
              </spacer>
@@ -383,7 +383,11 @@
              </widget>
             </item>
             <item row="5" column="1" colspan="2">
-             <widget class="QComboBox" name="mComboWfsFeatureMode"/>
+             <widget class="QComboBox" name="mComboWfsFeatureMode">
+              <property name="toolTip">
+               <string>Determines whether to return data as simple features or as complex features where nested data structures are exposed by QGIS as JSON</string>
+              </property>
+             </widget>
             </item>
             <item row="6" column="0" colspan="3">
              <widget class="QCheckBox" name="cbxWfsIgnoreAxisOrientation">
@@ -435,12 +439,12 @@
             <item row="10" column="0" colspan="3">
              <spacer name="verticalSpacer_3">
               <property name="orientation">
-               <enum>Qt::Vertical</enum>
+               <enum>Qt::Orientation::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>40</height>
+                <height>0</height>
                </size>
               </property>
              </spacer>
@@ -490,7 +494,7 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>
@@ -518,15 +522,10 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>cmbVersion</tabstop>
-  <tabstop>mWfsVersionDetectButton</tabstop>
-  <tabstop>mComboHttpMethod</tabstop>
-  <tabstop>txtMaxNumFeatures</tabstop>
-  <tabstop>cmbFeaturePaging</tabstop>
-  <tabstop>txtPageSize</tabstop>
-  <tabstop>mComboWfsFeatureMode</tabstop>
-  <tabstop>cbxWfsIgnoreAxisOrientation</tabstop>
-  <tabstop>cbxWfsInvertAxisOrientation</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>txtName</tabstop>
+  <tabstop>txtUrl</tabstop>
+  <tabstop>mTestConnectionButton</tabstop>
   <tabstop>cmbDpiMode</tabstop>
   <tabstop>cmbTilePixelRatio</tabstop>
   <tabstop>sbFeatureCount</tabstop>
@@ -536,7 +535,17 @@
   <tabstop>cbxWmsIgnoreAxisOrientation</tabstop>
   <tabstop>cbxWmsInvertAxisOrientation</tabstop>
   <tabstop>cbxSmoothPixmapTransform</tabstop>
-  <tabstop>mTestConnectionButton</tabstop>
+  <tabstop>cmbVersion</tabstop>
+  <tabstop>mWfsVersionDetectButton</tabstop>
+  <tabstop>mComboHttpMethod</tabstop>
+  <tabstop>txtMaxNumFeatures</tabstop>
+  <tabstop>cmbFeaturePaging</tabstop>
+  <tabstop>txtPageSize</tabstop>
+  <tabstop>mComboWfsFeatureMode</tabstop>
+  <tabstop>cbxWfsIgnoreAxisOrientation</tabstop>
+  <tabstop>cbxWfsInvertAxisOrientation</tabstop>
+  <tabstop>cbxWfsUseGml2EncodingForTransactions</tabstop>
+  <tabstop>cbxWfsForceInitialGetFeature</tabstop>
  </tabstops>
  <resources/>
  <connections>

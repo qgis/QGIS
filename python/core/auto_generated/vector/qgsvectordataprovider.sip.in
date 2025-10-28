@@ -628,14 +628,6 @@ Discover the available relations with the given layers.
 :return: the list of N-1 relations from this provider.
 %End
 
-    virtual QVariantMap metadata() const;
-%Docstring
-Gets metadata, dependent on the provider type, that will be display in
-the metadata tab of the layer properties.
-
-:return: The provider metadata
-%End
-
     virtual QString translateMetadataKey( const QString &mdKey ) const;
 %Docstring
 Gets the translated metadata key.

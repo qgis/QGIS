@@ -16,8 +16,8 @@
    </layer>
   </symbol>
   <ComposerAttributeTableV2 vectorLayerName="points" source="0" showGrid="1" maxFeatures="30" resizeMode="0" filterFeatures="false" featureFilter="" emptyTableMode="1" wrapString="" wrapBehaviour="0" headerMode="1" backgroundColor="240,33,33,255" showEmptyRows="0" emptyTableMessage="" showOnlyVisibleFeatures="1" vectorLayer="points20171212162310546" vectorLayerSource="../points.shp" composerMap="0" headerHAlignment="2" contentFontColor="115,115,115,255" headerFontColor="194,143,12,255" cellMargin="1.2" filterToAtlasIntersection="0" relationId="" gridStrokeWidth="0.7" gridColor="245,57,220,255" showUniqueRowsOnly="1" vectorLayerProvider="ogr">
-   <headerFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
-   <contentFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+   <headerFontProperties description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style="Bold"/>
+   <contentFontProperties description="QGIS Vera Sans,8.25,-1,5,50,0,0,0,0,0" style="Bold"/>
    <displayColumns>
     <column width="0" vAlignment="128" attribute="Class" sortByRank="0" hAlignment="1" heading="Class" sortOrder="0">
      <backgroundColor alpha="0" red="0" blue="0" green="0"/>

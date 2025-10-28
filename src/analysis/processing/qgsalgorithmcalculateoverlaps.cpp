@@ -83,6 +83,11 @@ QString QgsCalculateVectorOverlapsAlgorithm::shortDescription() const
                       "are overlapped by features from a selection of overlay layers." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsCalculateVectorOverlapsAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 QgsCalculateVectorOverlapsAlgorithm *QgsCalculateVectorOverlapsAlgorithm::createInstance() const
 {
   return new QgsCalculateVectorOverlapsAlgorithm();

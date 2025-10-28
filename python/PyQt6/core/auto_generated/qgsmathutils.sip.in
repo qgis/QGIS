@@ -1,0 +1,51 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmathutils.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsMathUtils
+{
+%Docstring(signature="appended")
+Contains utility functions for mathematical operations.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsmathutils.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    static void doubleToRational( double value, qlonglong &numerator /Out/, qlonglong &denominator /Out/, double tolerance = 1.0e-9, int maxIterations = 100 );
+%Docstring
+Converts a double ``value`` to a rational fraction.
+
+:param value: value to convert
+:param tolerance: desired precision. The returned fraction will be at
+                  within this tolerance of the original value.
+:param maxIterations: maximum number of iterations. Higher values result
+                      in better approximations, but at the cost of
+                      additional computation.
+
+:return: - numerator: calculated numerator
+         - denominator: calculated denominator
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmathutils.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

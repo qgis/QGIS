@@ -22,8 +22,6 @@
 #include "qgis_sip.h"
 #include "qgsprocessingprovider.h"
 
-SIP_IF_MODULE( HAVE_PDAL_PROVIDER )
-
 /**
  * \ingroup analysis
  * \class QgsPdalAlgorithms

@@ -38,7 +38,7 @@ Creates a feature from the current GPS track.
 The geometry type of the feature is determined by the layer set via
 :py:func:`QgsProjectGpsSettings.destinationLayer()`.
 
-The created geometry will be automatically commited depending on the
+The created geometry will be automatically committed depending on the
 status of
 :py:func:`QgsProjectGpsSettings.automaticallyCommitFeatures()`.
 %End

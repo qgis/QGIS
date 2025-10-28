@@ -77,6 +77,8 @@ namespace QgsWfs
    */
   void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response );
 
+  QString getSrsNameFromVersion( const QgsCoordinateReferenceSystem &crs );
+
 } // namespace QgsWfs
 
 #endif

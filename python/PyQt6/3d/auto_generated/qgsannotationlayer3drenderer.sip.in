@@ -1,0 +1,168 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsannotationlayer3drenderer.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+// this is needed for the "convert to subclass" code below to compile
+%ModuleHeaderCode
+#include "qgsannotationlayer3drenderer.h"
+%End
+
+  class QgsAnnotationLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
+{
+%Docstring(signature="appended")
+Metadata for annotation layer 3D renderer to allow creation of its
+instances from XML.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsannotationlayer3drenderer.h"
+%End
+  public:
+    QgsAnnotationLayer3DRendererMetadata();
+
+    virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
+
+%Docstring
+Creates an instance of a 3D renderer based on a DOM element with
+renderer configuration
+%End
+};
+
+class QgsAnnotationLayer3DRenderer : QgsAbstract3DRenderer
+{
+%Docstring(signature="appended")
+3D renderers for annotation layers.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsannotationlayer3drenderer.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsAnnotationLayer3DRenderer *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsAnnotationLayer3DRenderer;
+    else
+      sipType = nullptr;
+%End
+  public:
+    QgsAnnotationLayer3DRenderer();
+
+    void setLayer( QgsAnnotationLayer *layer );
+%Docstring
+Sets the annotation layer associated with the renderer.
+
+.. seealso:: :py:func:`layer`
+%End
+
+    QgsAnnotationLayer *layer() const;
+%Docstring
+Returns the annotation layer associated with the renderer.
+
+.. seealso:: :py:func:`setLayer`
+%End
+
+    virtual QString type() const;
+
+    virtual QgsAnnotationLayer3DRenderer *clone() const /Factory/;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void resolveReferences( const QgsProject &project );
+
+
+    Qgis::AltitudeClamping altitudeClamping() const;
+%Docstring
+Returns the altitude clamping method, which determines the vertical
+position of annotations.
+
+.. seealso:: :py:func:`setAltitudeClamping`
+%End
+
+    void setAltitudeClamping( Qgis::AltitudeClamping clamping );
+%Docstring
+Sets the altitude ``clamping`` method, which determines the vertical
+position of annotations.
+
+.. seealso:: :py:func:`altitudeClamping`
+%End
+
+    double zOffset() const;
+%Docstring
+Returns the z offset, which is a fixed offset amount which should be
+added to z values for the annotations.
+
+.. seealso:: :py:func:`setZOffset`
+%End
+
+    void setZOffset( double offset );
+%Docstring
+Sets the z ``offset``, which is a fixed offset amount which will be
+added to z values for the annotations.
+
+.. seealso:: :py:func:`zOffset`
+%End
+
+    bool showCalloutLines() const;
+%Docstring
+Returns ``True`` if callout lines are shown, vertically joining the
+annotations to the terrain.
+
+.. seealso:: :py:func:`setShowCalloutLines`
+%End
+
+    void setShowCalloutLines( bool show );
+%Docstring
+Sets whether callout lines are shown, vertically joining the annotations
+to the terrain.
+
+.. seealso:: :py:func:`showCalloutLines`
+%End
+
+
+
+
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format to use for rendering text annotations in 3D.
+
+.. seealso:: :py:func:`setTextFormat`
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` to use for rendering text annotations in 3D.
+
+.. seealso:: :py:func:`textFormat`
+%End
+
+  private:
+    QgsAnnotationLayer3DRenderer( const QgsAnnotationLayer3DRenderer & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsannotationlayer3drenderer.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

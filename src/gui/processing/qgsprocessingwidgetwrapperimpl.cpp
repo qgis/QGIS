@@ -2664,6 +2664,9 @@ QgsProcessingExpressionWidgetWrapper::QgsProcessingExpressionWidgetWrapper( cons
 QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( parameterDefinition() );
+  if ( !expParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -2793,6 +2796,9 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   QVariant val = parentWrapper->parameterValue();
 
   const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( parameterDefinition() );
+  if ( !expParam )
+    return;
+
   switch ( expParam->expressionType() )
   {
     case Qgis::ExpressionType::Qgis:
@@ -3188,7 +3194,7 @@ void QgsProcessingEnumCheckboxPanelWidget::setValue( const QVariant &value )
     if ( v.userType() == QMetaType::Type::QVariantList )
       v = v.toList().value( 0 );
 
-    v = mParam->usesStaticStrings() ? mParam->options().indexOf( v.toString() ) : v;
+    v = mParam->usesStaticStrings() ? static_cast< int >( mParam->options().indexOf( v.toString() ) ) : v;
     if ( mButtons.contains( v ) )
       mButtons.value( v )->setChecked( true );
   }
@@ -3264,6 +3270,9 @@ QgsProcessingEnumWidgetWrapper::QgsProcessingEnumWidgetWrapper( const QgsProcess
 QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterEnum *expParam = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() );
+  if ( !expParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -3416,6 +3425,9 @@ QgsProcessingLayoutWidgetWrapper::QgsProcessingLayoutWidgetWrapper( const QgsPro
 QWidget *QgsProcessingLayoutWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterLayout *layoutParam = dynamic_cast<const QgsProcessingParameterLayout *>( parameterDefinition() );
+  if ( !layoutParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -3577,6 +3589,9 @@ QgsProcessingLayoutItemWidgetWrapper::QgsProcessingLayoutItemWidgetWrapper( cons
 QWidget *QgsProcessingLayoutItemWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterLayoutItem *layoutParam = dynamic_cast<const QgsProcessingParameterLayoutItem *>( parameterDefinition() );
+  if ( !layoutParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -3993,6 +4008,9 @@ QgsProcessingPointWidgetWrapper::QgsProcessingPointWidgetWrapper( const QgsProce
 QWidget *QgsProcessingPointWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterPoint *pointParam = dynamic_cast<const QgsProcessingParameterPoint *>( parameterDefinition() );
+  if ( !pointParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -4272,6 +4290,9 @@ QgsProcessingColorWidgetWrapper::QgsProcessingColorWidgetWrapper( const QgsProce
 QWidget *QgsProcessingColorWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterColor *colorParam = dynamic_cast<const QgsProcessingParameterColor *>( parameterDefinition() );
+  if ( !colorParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -4453,6 +4474,9 @@ QgsProcessingCoordinateOperationWidgetWrapper::QgsProcessingCoordinateOperationW
 QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterCoordinateOperation *coordParam = dynamic_cast<const QgsProcessingParameterCoordinateOperation *>( parameterDefinition() );
+  if ( !coordParam )
+    return nullptr;
+
   QgsProcessingContext c;
   mSourceCrs = QgsProcessingUtils::variantToCrs( coordParam->sourceCrs(), c );
   mDestCrs = QgsProcessingUtils::variantToCrs( coordParam->destinationCrs(), c );
@@ -4897,6 +4921,9 @@ QgsProcessingFieldWidgetWrapper::QgsProcessingFieldWidgetWrapper( const QgsProce
 QWidget *QgsProcessingFieldWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( parameterDefinition() );
+  if ( !fieldParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -5419,6 +5446,8 @@ QgsProcessingDateTimeWidgetWrapper::QgsProcessingDateTimeWidgetWrapper( const Qg
 QWidget *QgsProcessingDateTimeWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDateTime *dateTimeParam = dynamic_cast<const QgsProcessingParameterDateTime *>( parameterDefinition() );
+  if ( !dateTimeParam )
+    return nullptr;
 
   QgsDateTimeEdit *widget = nullptr;
   switch ( dateTimeParam->dataType() )
@@ -5590,6 +5619,8 @@ QgsProcessingProviderConnectionWidgetWrapper::QgsProcessingProviderConnectionWid
 QWidget *QgsProcessingProviderConnectionWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterProviderConnection *connectionParam = dynamic_cast<const QgsProcessingParameterProviderConnection *>( parameterDefinition() );
+  if ( !connectionParam )
+    return nullptr;
 
   mProviderComboBox = new QgsProviderConnectionComboBox( connectionParam->providerId() );
   if ( connectionParam->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -5991,6 +6022,8 @@ QgsProcessingDatabaseTableWidgetWrapper::QgsProcessingDatabaseTableWidgetWrapper
 QWidget *QgsProcessingDatabaseTableWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDatabaseTable *tableParam = dynamic_cast<const QgsProcessingParameterDatabaseTable *>( parameterDefinition() );
+  if ( !tableParam )
+    return nullptr;
 
   mTableComboBox = new QgsDatabaseTableComboBox( QString(), QString() );
   if ( tableParam->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -6842,6 +6875,9 @@ QgsProcessingBandWidgetWrapper::QgsProcessingBandWidgetWrapper( const QgsProcess
 QWidget *QgsProcessingBandWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterBand *bandParam = dynamic_cast<const QgsProcessingParameterBand *>( parameterDefinition() );
+  if ( !bandParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -7230,6 +7266,12 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
     }
 
     case Qgis::ProcessingSourceType::VectorTile:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterMultipleLayers::typeName(), QStringList() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName() );
+      break;
+    }
+
+    case Qgis::ProcessingSourceType::TiledScene:
     {
       mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterMapLayer::typeName() << QgsProcessingParameterMultipleLayers::typeName(), QStringList() << QgsProcessingOutputMapLayer::typeName() << QgsProcessingOutputMultipleLayers::typeName() );
       break;
@@ -7793,6 +7835,9 @@ QgsProcessingPointCloudAttributeWidgetWrapper::QgsProcessingPointCloudAttributeW
 QWidget *QgsProcessingPointCloudAttributeWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterPointCloudAttribute *attrParam = dynamic_cast<const QgsProcessingParameterPointCloudAttribute *>( parameterDefinition() );
+  if ( !attrParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:

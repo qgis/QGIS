@@ -3198,11 +3198,7 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
     def testFilterOnCustomBbox(self):
         extent = QgsRectangle(-68, 70, -67, 80)
         request = QgsFeatureRequest().setFilterRect(extent)
-        dbconn = "service=qgis_test"
-        uri = (
-            '%s srid=4326 key="pk" sslmode=disable table="qgis_test"."some_poly_data_shift_bbox" (geom)'
-            % (dbconn)
-        )
+        uri = f'{self.dbconn} srid=4326 key="pk" sslmode=disable table="qgis_test"."some_poly_data_shift_bbox" (geom)'
 
         def _test(vl, ids):
             values = {feat["pk"]: "x" for feat in vl.getFeatures(request)}

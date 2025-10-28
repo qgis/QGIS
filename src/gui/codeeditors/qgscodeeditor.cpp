@@ -25,6 +25,7 @@
 #include "qgsstringutils.h"
 #include "qgsfontutils.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsshortcutsmanager.h"
 
 #include <QLabel>
 #include <QWidget>
@@ -204,7 +205,7 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     return;
   }
 
-  if ( event->key() == Qt::Key_F1 )
+  if ( event->matches( QKeySequence::StandardKey::HelpContents ) )
   {
     // Check if some text is selected
     QString text = selectedText();
@@ -252,25 +253,30 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     }
   }
 
-  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
-  const bool altModifier = event->modifiers() & Qt::AltModifier;
-
-  // Ctrl+Alt+F: reformat code
+  // check for reformat code sequence
   const bool canReformat = languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat;
-  if ( !isReadOnly() && canReformat && ctrlModifier && altModifier && event->key() == Qt::Key_F )
+  if ( !isReadOnly() && canReformat )
   {
-    event->accept();
-    reformatCode();
-    return;
+    const QKeySequence reformatCodeSequence = QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeReformat );
+    if ( !reformatCodeSequence.isEmpty() && reformatCodeSequence.matches( event->key() | event->modifiers() ) )
+    {
+      event->accept();
+      reformatCode();
+      return;
+    }
   }
 
-  // Toggle comment when user presses  Ctrl+:
+  // Check for toggle comment sequence
   const bool canToggle = languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment;
-  if ( !isReadOnly() && canToggle && ctrlModifier && event->key() == Qt::Key_Colon )
+  if ( !isReadOnly() && canToggle )
   {
-    event->accept();
-    toggleComment();
-    return;
+    const QKeySequence toggleCommentCodeSequence = QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeToggleComment );
+    if ( !toggleCommentCodeSequence.isEmpty() && toggleCommentCodeSequence.matches( event->key() | event->modifiers() ) )
+    {
+      event->accept();
+      toggleComment();
+      return;
+    }
   }
 
   QsciScintilla::keyPressEvent( event );
@@ -299,7 +305,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
       {
         QAction *reformatAction = new QAction( tr( "Reformat Code" ), menu );
-        reformatAction->setShortcut( QStringLiteral( "Ctrl+Alt+F" ) );
+        reformatAction->setShortcut( QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeReformat ) );
         reformatAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ) );
         reformatAction->setEnabled( !isReadOnly() );
         connect( reformatAction, &QAction::triggered, this, &QgsCodeEditor::reformatCode );
@@ -317,7 +323,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment )
       {
         QAction *toggleCommentAction = new QAction( tr( "Toggle Comment" ), menu );
-        toggleCommentAction->setShortcut( QStringLiteral( "Ctrl+:" ) );
+        toggleCommentAction->setShortcut( QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeToggleComment ) );
         toggleCommentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ), palette().color( QPalette::ColorRole::WindowText ) ) );
         toggleCommentAction->setEnabled( !isReadOnly() );
         connect( toggleCommentAction, &QAction::triggered, this, &QgsCodeEditor::toggleComment );
@@ -359,6 +365,23 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
   }
 }
 
+bool QgsCodeEditor::event( QEvent *event )
+{
+  if ( event->type() == QEvent::ShortcutOverride )
+  {
+    if ( QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>( event ) )
+    {
+      if ( keyEvent->matches( QKeySequence::StandardKey::HelpContents ) )
+      {
+        // If the user pressed F1, we want to prevent the main help dialog to show
+        // and handle the event in QgsCodeEditor::keyPressEvent
+        keyEvent->accept();
+        return true;
+      }
+    }
+  }
+  return QsciScintilla::event( event );
+}
 
 bool QgsCodeEditor::eventFilter( QObject *watched, QEvent *event )
 {

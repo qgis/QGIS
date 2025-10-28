@@ -117,6 +117,7 @@ bool QgsRasterPipe::insert( int idx, QgsRasterInterface *interface )
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "Error inserting pipe %1" ).arg( idx ), 4 );
+    delete interface;
   }
 
   // Connect or reconnect (after the test) interfaces

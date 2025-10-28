@@ -40,5 +40,5 @@ void QgsPointCloudRequest::setAttributes( const QgsPointCloudAttributeCollection
 
 uint qHash( const QgsPointCloudRequest &request )
 {
-  return qHash( request.filterRect() ) ^ qHash( request.attributes().pointRecordSize() ) ^ request.ignoreIndexFilterEnabled();
+  return qHash( request.filterRect() ) ^ qHash( request.attributes().pointRecordSize() ) ^ ( request.ignoreIndexFilterEnabled() ? 0 : 1 );
 }

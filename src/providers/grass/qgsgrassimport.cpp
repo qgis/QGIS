@@ -191,9 +191,9 @@ void QgsGrassImport::cancel()
 }
 
 //------------------------------ QgsGrassRasterImport ------------------------------------
-QgsGrassRasterImport::QgsGrassRasterImport( QgsRasterPipe *pipe, const QgsGrassObject &grassObject, const QgsRectangle &extent, int xSize, int ySize )
+QgsGrassRasterImport::QgsGrassRasterImport( std::unique_ptr<QgsRasterPipe> pipe, const QgsGrassObject &grassObject, const QgsRectangle &extent, int xSize, int ySize )
   : QgsGrassImport( grassObject )
-  , mPipe( pipe )
+  , mPipe( std::move( pipe ) )
   , mExtent( extent )
   , mXSize( xSize )
   , mYSize( ySize )
@@ -207,7 +207,6 @@ QgsGrassRasterImport::~QgsGrassRasterImport()
     QgsDebugMsgLevel( "mFutureWatcher not finished -> waitForFinished()", 3 );
     mFutureWatcher->waitForFinished();
   }
-  delete mPipe;
 }
 
 bool QgsGrassRasterImport::import()
@@ -349,21 +348,21 @@ bool QgsGrassRasterImport::import()
     int iterTop = 0;
     int iterCols = 0;
     int iterRows = 0;
-    QgsRasterBlock *block = nullptr;
+    std::unique_ptr< QgsRasterBlock > block;
     mProcess->setReadChannel( QProcess::StandardOutput );
     mProgress->setRange( 0, mYSize - 1 );
-    while ( iter.readNextRasterPart( band, iterCols, iterRows, &block, iterLeft, iterTop ) )
+    while ( iter.readNextRasterPart( band, iterCols, iterRows, block, iterLeft, iterTop ) )
     {
+      if ( !block->convert( qgis_out_type ) )
+      {
+        setError( tr( "Cannot convert block (%1) to data type %2" ).arg( block->toString() ).arg( qgsEnumValueToKey<Qgis::DataType>( qgis_out_type ) ) );
+        return false;
+      }
+
       for ( int row = 0; row < iterRows; row++ )
       {
         mProgress->setValue( iterTop + row );
 
-        if ( !block->convert( qgis_out_type ) )
-        {
-          setError( tr( "Cannot convert block (%1) to data type %2" ).arg( block->toString() ).arg( qgsEnumValueToKey<Qgis::DataType>( qgis_out_type ) ) );
-          delete block;
-          return false;
-        }
         // prepare null values
         double noDataValue;
         if ( block->hasNoDataValue() )
@@ -395,7 +394,7 @@ bool QgsGrassRasterImport::import()
           }
         }
 
-        char *data = block->bits( row, 0 );
+        const char *data = block->constBits( static_cast< qgssize >( row ) * iterCols );
         int size = iterCols * block->dataTypeSize();
         QByteArray byteArray = QByteArray::fromRawData( data, size ); // does not copy data and does not take ownership
         if ( isCanceled() )
@@ -418,7 +417,6 @@ bool QgsGrassRasterImport::import()
         outStream >> result;
 #endif
       }
-      delete block;
       if ( isCanceled() )
       {
         outStream << true; // cancel module

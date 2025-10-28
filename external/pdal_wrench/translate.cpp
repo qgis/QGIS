@@ -169,12 +169,12 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
 
             // for input file /x/y/z.las that goes to /tmp/hello.vpc,
             // individual output file will be called /tmp/hello/z.las
-            fs::path inputBasename = fs::path(f.filename).stem();
+            fs::path inputBasename = fileStem(f.filename);
 
             if (!ends_with(outputFile, ".vpc"))
                 tile.outputFilename = (outputSubdir / inputBasename).string() + ".las";
             else
-                tile.outputFilename = (outputSubdir / inputBasename).string() + outputFormat;
+                tile.outputFilename = (outputSubdir / inputBasename).string() + "." + outputFormat;
 
             tileOutputFiles.push_back(tile.outputFilename);
 

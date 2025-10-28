@@ -74,6 +74,7 @@ class QgsTransactionGroup;
 class QgsVectorLayer;
 class QgsAnnotationManager;
 class QgsLayoutManager;
+class QgsElevationProfileManager;
 class QgsLayerTree;
 class QgsLabelingEngineSettings;
 class QgsAuxiliaryStorage;
@@ -107,6 +108,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
+    Q_PROPERTY( QString title READ title WRITE setTitle  NOTIFY titleChanged )
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath WRITE setPresetHomePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
@@ -755,7 +757,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The optional \a flags argument can be used to control layer reading behavior.
      *
      */
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
+    std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 
     //! Convenience function to set topological editing
     void setTopologicalEditing( bool enabled );
@@ -850,6 +852,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * the project.
      */
     QgsLayoutManager *layoutManager();
+
+    /**
+     * Returns the project's elevation profile manager, which manages elevation profiles within
+     * the project.
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    const QgsElevationProfileManager *elevationProfileManager() const SIP_SKIP;
+
+    /**
+     * Returns the project's elevation profile manager, which manages elevation profiles within
+     * the project.
+     * \since QGIS 4.0
+     */
+    QgsElevationProfileManager *elevationProfileManager();
 
     /**
      * Returns the project's views manager, which manages map views (including 3d maps)
@@ -1776,7 +1793,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setElevationShadingRenderer( const QgsElevationShadingRenderer &elevationShadingRenderer );
 
     /**
-     * Loads python expression functions stored in the currrent project
+     * Loads python expression functions stored in the current project
      * \param force Whether to check enablePythonEmbedded setting (default) or not.
      * \returns Whether the project functions were loaded or not.
      *
@@ -1905,6 +1922,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \deprecated QGIS 3.4
      */
     Q_DECL_DEPRECATED void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+
+    /**
+     * Emitted when the title of the project changes.
+     * \since QGIS 4.0
+     */
+    void titleChanged();
 
     //! Emitted when the file name of the project changes
     void fileNameChanged();
@@ -2483,6 +2506,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
     std::unique_ptr<QgsLayoutManager> mLayoutManager;
+    std::unique_ptr<QgsElevationProfileManager> mElevationProfileManager;
     std::unique_ptr<QgsMapViewsManager> m3DViewsManager;
 
     QgsBookmarkManager *mBookmarkManager = nullptr;

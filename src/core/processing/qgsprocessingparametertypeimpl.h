@@ -69,6 +69,7 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
       return QStringList() << QObject::tr( "str: layer ID" )
              << QObject::tr( "str: layer name" )
              << QObject::tr( "str: layer source" )
+             << QStringLiteral( "QgsProcessingRasterLayerDefinition" )
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsRasterLayer" );
     }
