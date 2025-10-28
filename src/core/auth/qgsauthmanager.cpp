@@ -3465,10 +3465,11 @@ bool QgsAuthManager::masterPasswordInput()
 
 bool QgsAuthManager::masterPasswordRowsInDb( int &rows ) const
 {
+  bool res = false;
   ensureInitialized();
 
   if ( isDisabled() )
-    return false;
+    return res;
 
   rows = 0;
 
@@ -3477,25 +3478,29 @@ bool QgsAuthManager::masterPasswordRowsInDb( int &rows ) const
   // Loop through all storages with capability ReadMasterPassword and count the number of master passwords
   const QList<QgsAuthConfigurationStorage *> storages { authConfigurationStorageRegistry()->readyStoragesWithCapability( Qgis::AuthConfigurationStorageCapability::ReadMasterPassword ) };
 
-  for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
-  {
-    try
-    {
-      rows += storage->masterPasswords( ).count();
-    }
-    catch ( const QgsNotSupportedException &e )
-    {
-      // It should not happen because we are checking the capability in advance
-      emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
-    }
-  }
-
   if ( storages.empty() )
   {
     emit messageLog( tr( "Could not connect to any authentication configuration storage." ), authManTag(), Qgis::MessageLevel::Critical );
   }
+  else
+  {
+    for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
+    {
+      try
+      {
+        rows += storage->masterPasswords( ).count();
+        // if we successfully queuried at least one storage, the result from this function must be true
+        res = true;
+      }
+      catch ( const QgsNotSupportedException &e )
+      {
+        // It should not happen because we are checking the capability in advance
+        emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
+      }
+    }
+  }
 
-  return rows != 0;
+  return res;
 }
 
 bool QgsAuthManager::masterPasswordHashInDatabase() const
