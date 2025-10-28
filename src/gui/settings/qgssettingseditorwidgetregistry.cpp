@@ -101,9 +101,10 @@ QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetRegistry::createWrapper( 
 
 QWidget *QgsSettingsEditorWidgetRegistry::createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent ) const
 {
-  if ( mSpecificWrappers.contains( setting ) )
+  auto it = mSpecificWrappers.constFind( setting );
+  if ( it != mSpecificWrappers.constEnd() )
   {
-    return mSpecificWrappers.value( setting )->createEditor( setting, dynamicKeyPartList, parent );
+    return it.value()->createEditor( setting, dynamicKeyPartList, parent );
   }
   QgsSettingsEditorWidgetWrapper *eww = createWrapper( setting->typeId(), parent );
   if ( eww )
