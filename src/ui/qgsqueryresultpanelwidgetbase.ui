@@ -234,7 +234,7 @@
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QLineEdit" name="mLayerNameLineEdit">
-            <property name="text">
+            <property name="placeholderText">
              <string>QueryLayer</string>
             </property>
            </widget>
