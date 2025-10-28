@@ -900,7 +900,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     bool masterPasswordInput();
 
-    bool masterPasswordRowsInDb( int *rows ) const;
+    bool masterPasswordRowsInDb( int &rows ) const;
 
     bool masterPasswordCheckAgainstDb( const QString &compare = QString() ) const;
 
