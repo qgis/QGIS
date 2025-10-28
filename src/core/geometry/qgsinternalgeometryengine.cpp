@@ -768,6 +768,12 @@ QgsLineString *doDensify( const QgsLineString *ring, int extraNodesPerSegment = 
 
 QgsAbstractGeometry *densifyGeometry( const QgsAbstractGeometry *geom, int extraNodesPerSegment = 1, double distance = 1 )
 {
+  if ( extraNodesPerSegment < 0 && qgsDoubleNear( distance, 0 ) )
+  {
+    // no change
+    return geom->clone();
+  }
+
   std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
   if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
   {
