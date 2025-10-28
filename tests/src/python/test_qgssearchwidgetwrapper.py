@@ -204,6 +204,57 @@ class PyQgsDefaultSearchWidgetWrapper(QgisTestCase):
             "\"flddate\"<='2015-06-03'",
         )
 
+    def testSetExpression(self):
+        """Test creating an expression using the widget"""
+        layer = QgsVectorLayer(
+            "Point?field=fldint:integer&field=flddouble:double",
+            "test",
+            "memory",
+        )
+        # numeric field
+        parent = QWidget()
+        w = QgsDefaultSearchWidgetWrapper(layer, 0)
+        w.initWidget(parent)
+
+        line_edit = w.lineEdit()
+
+        line_edit.setText("10000")
+        self.assertEqual(
+            w.expression(),
+            "\"fldint\" = '10000'",
+        )
+        line_edit.setText("10,000")
+        self.assertEqual(
+            w.expression(),
+            "\"fldint\" = '10000'",
+        )
+
+        w = QgsDefaultSearchWidgetWrapper(layer, 1)
+        w.initWidget(parent)
+
+        line_edit = w.lineEdit()
+
+        line_edit.setText("10000")
+        self.assertEqual(
+            w.expression(),
+            "\"flddouble\" = '10000'",
+        )
+        line_edit.setText("10,000")
+        self.assertEqual(
+            w.expression(),
+            "\"flddouble\" = '10000'",
+        )
+        line_edit.setText("10000.5")
+        self.assertEqual(
+            w.expression(),
+            "\"flddouble\" = '10000.5'",
+        )
+        line_edit.setText("10,000.5")
+        self.assertEqual(
+            w.expression(),
+            "\"flddouble\" = '10000.5'",
+        )
+
 
 class PyQgsValueMapSearchWidgetWrapper(QgisTestCase):
 
