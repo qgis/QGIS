@@ -121,11 +121,11 @@ const QgsSettingsEntryInteger64 *QgsSettingsRegistryCore::settingsNetworkCacheSi
 
 const QgsSettingsEntryBool *QgsSettingsRegistryCore::settingsAutosizeAttributeTable = new QgsSettingsEntryBool( QStringLiteral( "autosize-attribute-table" ), QgsSettingsTree::sTreeAttributeTable, false );
 
-const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects = new QgsSettingsEntryEnumFlag<Qgis::PythonEmbeddedMode>( QStringLiteral( "code-execution-behavior-undetermined-projects" ), QgsSettingsTree::sTreeCore, Qgis::EmbeddedScriptMode::Ask, QStringLiteral( "Behavior for untrusted project's embedded Python code" ) );
+const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects = new QgsSettingsEntryEnumFlag<Qgis::PythonEmbeddedMode>( QStringLiteral( "code-execution-behavior-undetermined-projects" ), QgsSettingsTree::sTreeCore, Qgis::EmbeddedScriptMode::Ask, QStringLiteral( "Behavior for embedded script within projects of undetermined trust" ) );
 
-const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders = new QgsSettingsEntryStringList( QStringLiteral( "code-execution-trusted-projects-folders" ), QgsSettingsTree::sTreeCore, QStringList(), QStringLiteral( "Projects and folders that are allowed execution of embedded Python code" ) );
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders = new QgsSettingsEntryStringList( QStringLiteral( "code-execution-trusted-projects-folders" ), QgsSettingsTree::sTreeCore, QStringList(), QStringLiteral( "Projects and folders that are trusted and allowed execution of embedded script" ) );
 
-const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders = new QgsSettingsEntryStringList( QStringLiteral( "code-execution-denied-projects-folders" ), QgsSettingsTree::sTreeCore, QStringList(), QStringLiteral( "Projects and folders that are denied execution of embedded Python code" ) );
+const QgsSettingsEntryStringList *QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders = new QgsSettingsEntryStringList( QStringLiteral( "code-execution-denied-projects-folders" ), QgsSettingsTree::sTreeCore, QStringList(), QStringLiteral( "Projects and folders that are untrusted and denied execution of embedded script" ) );
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()

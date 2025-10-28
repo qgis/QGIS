@@ -2293,7 +2293,7 @@ void QgsAttributeForm::initPython()
     {
       mMessageBar->pushMessage(
         tr( "Security warning" ),
-        tr( "The attribute form contains embedded Python code which has been denied execution." ),
+        tr( "The attribute form contains embedded script which has been denied execution." ),
         Qgis::MessageLevel::Warning
       );
       return;

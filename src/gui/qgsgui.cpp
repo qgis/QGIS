@@ -406,7 +406,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar 
     {
       messageBar->pushMessage(
         tr( "Security warning" ),
-        tr( "The loaded project contains embedded Python code which has been allowed execution." ),
+        tr( "The loaded project contains embedded script which has been allowed execution." ),
         embeddedScriptMode == Qgis::EmbeddedScriptMode::Always ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
       );
     }
@@ -414,7 +414,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar 
     {
       messageBar->pushMessage(
         tr( "Security warning" ),
-        tr( "The loaded project contains embedded Python code which has been denied execution." ),
+        tr( "The loaded project contains embedded script which has been denied execution." ),
         embeddedScriptMode == Qgis::EmbeddedScriptMode::Never ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
       );
     }

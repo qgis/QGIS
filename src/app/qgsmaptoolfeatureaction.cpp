@@ -178,7 +178,7 @@ void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const Q
       {
         QgisApp::instance()->messageBar()->pushMessage(
           tr( "Security warning" ),
-          tr( "The action contains embedded Python code which has been denied execution." ),
+          tr( "The action contains embedded script which has been denied execution." ),
           Qgis::MessageLevel::Warning
         );
         return;

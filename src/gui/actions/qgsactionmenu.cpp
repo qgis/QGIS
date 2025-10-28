@@ -119,7 +119,7 @@ void QgsActionMenu::triggerAction()
         const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
         if ( !allowed )
         {
-          emit messageEmitted( tr( "The action contains embedded Python code which has been denied execution." ), Qgis::MessageLevel::Warning );
+          emit messageEmitted( tr( "The action contains embedded script which has been denied execution." ), Qgis::MessageLevel::Warning );
           return;
         }
       }

@@ -899,7 +899,7 @@
                     <item>
                      <widget class="QLabel" name="label_33">
                       <property name="text">
-                       <string>Behavior for untrusted project's embedded Python code</string>
+                       <string>Behavior for embedded script within projects of undetermined trust</string>
                       </property>
                       <property name="wordWrap">
                        <bool>true</bool>
