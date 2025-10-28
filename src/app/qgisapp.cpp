@@ -2862,10 +2862,6 @@ void QgisApp::readSettings()
 
   // Read legacy settings
   readRecentProjects();
-
-  // this is a new session, reset temporary project trust approval and denial
-  QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->setValue( QStringList() );
-  QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->setValue( QStringList() );
 }
 
 

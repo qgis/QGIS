@@ -419,7 +419,7 @@ class CORE_EXPORT Qgis
      * Authorisation to run Python Embedded in projects
      * \since QGIS 3.40
      */
-    enum class PythonEmbeddedMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
+    enum class EmbeddedScriptMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
       {
       Never = 0,              //!< Python embedded never run
       Ask = 1,                //!< User is prompt before running
@@ -428,20 +428,32 @@ class CORE_EXPORT Qgis
       NotForThisSession = 4,  //!< Python embedded will not be run for this session (only used prior to QGIS 4.0)
       NeverAsk = 5,           //!< User never prompted, python embedded is only run on trusted projects and folders \since QGIS 4.0
     };
-    Q_ENUM( PythonEmbeddedMode )
+    Q_ENUM( EmbeddedScriptMode )
 
     /**
      * Type of Python Embedded in projects
      * \since QGIS 3.40
      */
-    enum class PythonEmbeddedType : int
+    enum class EmbeddedScriptType : int
     {
       Macro = 0,              //! Project macros
       ExpressionFunction = 1, //! Expression functions
-      Action = 2,             //! Map layers' action (since QGIS 4.0)
-      FormInitCode = 3,       //! Attribute forms' initiation code (since QGIS 4.0)
+      Action = 2,             //! Map layers' action \since QGIS 4.0
+      FormInitCode = 3,       //! Attribute forms' initiation code \since QGIS 4.0
     };
-    Q_ENUM( PythonEmbeddedType )
+    Q_ENUM( EmbeddedScriptType )
+
+    /**
+     * Project trust status
+     * \since QGIS 4.0
+     */
+    enum class ProjectTrustStatus : int
+    {
+      Undetermined = 0, //! The project trust has not yet been determined by the user
+      Trusted = 1,      //! The project has been determined by the user as trusted
+      Untrusted = 2,    //! The project has been determined by the user as untrusted
+    };
+    Q_ENUM( ProjectTrustStatus )
 
     /**
      * Flags which control data provider construction.

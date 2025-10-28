@@ -5403,7 +5403,7 @@ bool QgsProject::loadFunctionsFromProject( bool force )
 {
   if ( QgsPythonRunner::isValid() )
   {
-    if ( force || QgsProjectUtils::checkUserTrust( this ) )
+    if ( force || QgsProjectUtils::checkUserTrust( this ) == Qgis::ProjectTrustStatus::Trusted )
     {
       const QString projectFunctions = readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
       if ( !projectFunctions.isEmpty() )

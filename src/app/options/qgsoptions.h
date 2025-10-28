@@ -253,8 +253,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void alwaysUseDecimalPointChanged( bool checked );
     void addTrustedProject();
     void removeTrustedProject();
-    void addDeniedProject();
-    void removeDeniedProject();
+    void addUntrustedProject();
+    void removeUntrustedProject();
 
   private:
     QgsSettings *mSettings = nullptr;

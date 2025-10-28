@@ -921,7 +921,7 @@
                   <item row="1" column="0">
                    <widget class="QLabel" name="mTrustedProjectsFoldersLabel">
                     <property name="text">
-                     <string>Trusted projects and folders allowed Python code execution</string>
+                     <string>Trusted projects and folders allowed embedded code execution</string>
                     </property>
                    </widget>
                   </item>
@@ -977,9 +977,9 @@
                    </widget>
                   </item>
                   <item row="3" column="0">
-                   <widget class="QLabel" name="mDeniedProjectsFoldersLabel">
+                   <widget class="QLabel" name="mUntrustedProjectsFoldersLabel">
                     <property name="text">
-                     <string>Denied projects and folders denied Python code execution</string>
+                     <string>Untrusted projects and folders denied embedded code execution</string>
                     </property>
                    </widget>
                   </item>
@@ -997,7 +997,7 @@
                    </spacer>
                   </item>
                   <item row="3" column="2">
-                   <widget class="QToolButton" name="mBtnAddDeniedProject">
+                   <widget class="QToolButton" name="mBtnAddUntrustedProject">
                     <property name="toolTip">
                      <string>Add new project denial</string>
                     </property>
@@ -1011,7 +1011,7 @@
                    </widget>
                   </item>
                   <item row="3" column="3">
-                   <widget class="QToolButton" name="mBtnRemoveDeniedProject">
+                   <widget class="QToolButton" name="mBtnRemoveUntrustedProject">
                     <property name="toolTip">
                      <string>Remove dnied project or folder</string>
                     </property>
@@ -1025,7 +1025,7 @@
                    </widget>
                   </item>
                   <item row="4" column="0" colspan="4">
-                   <widget class="QListWidget" name="mDeniedProjectsFoldersList">
+                   <widget class="QListWidget" name="mUntrustedProjectsFoldersList">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>

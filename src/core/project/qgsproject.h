@@ -151,7 +151,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     struct EmbeddedCode
     {
-      Qgis::PythonEmbeddedType type;
+      Qgis::EmbeddedScriptType type;
       QString name;
       QString code;
     };

@@ -228,10 +228,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // non-default themes are best rendered using the Fusion style, therefore changing themes must require a restart to
   lblUITheme->setText( QStringLiteral( "%1 <i>(%2)</i>" ).arg( lblUITheme->text(), tr( "QGIS restart required" ) ) );
 
-  mProjectTrustBehaviorComboBox->addItem( tr( "Never Execute" ), QVariant::fromValue( Qgis::PythonEmbeddedMode::Never ) );
-  mProjectTrustBehaviorComboBox->addItem( tr( "Never Ask for Trust" ), QVariant::fromValue( Qgis::PythonEmbeddedMode::NeverAsk ) );
-  mProjectTrustBehaviorComboBox->addItem( tr( "Ask for Trust" ), QVariant::fromValue( Qgis::PythonEmbeddedMode::Ask ) );
-  mProjectTrustBehaviorComboBox->addItem( tr( "Always Execute (Not Recommended)" ), QVariant::fromValue( Qgis::PythonEmbeddedMode::Always ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Never Execute" ), QVariant::fromValue( Qgis::EmbeddedScriptedMode::Never ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Never Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptedMode::NeverAsk ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptedMode::Ask ) );
+  mProjectTrustBehaviorComboBox->addItem( tr( "Always Execute (Not Recommended)" ), QVariant::fromValue( Qgis::EmbeddedScriptedMode::Always ) );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify Highlight Color" ) );
   mIdentifyHighlightColorButton->setAllowOpacity( true );
@@ -824,8 +824,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mLayerDeleteConfirmationChkBx->setChecked( mSettings->value( QStringLiteral( "qgis/askToDeleteLayers" ), true ).toBool() );
   chbWarnOldProjectVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/warnOldProjectVersion" ), QVariant( true ) ).toBool() );
 
-  Qgis::PythonEmbeddedMode pyEmbeddedMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
-  mProjectTrustBehaviorComboBox->setCurrentIndex( mProjectTrustBehaviorComboBox->findData( QVariant::fromValue( pyEmbeddedMode ) ) );
+  Qgis::EmbeddedScriptedMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
+  mProjectTrustBehaviorComboBox->setCurrentIndex( mProjectTrustBehaviorComboBox->findData( QVariant::fromValue( embeddedScriptMode ) ) );
 
   const QStringList trustedProjectsFoldersList = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value();
   for ( const QString &path : trustedProjectsFoldersList )
@@ -838,16 +838,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mBtnAddTrustedProject, &QAbstractButton::clicked, this, &QgsOptions::addTrustedProject );
   connect( mBtnRemoveTrustedProject, &QAbstractButton::clicked, this, &QgsOptions::removeTrustedProject );
 
-  const QStringList deniedProjectsFoldersList = QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->value();
-  for ( const QString &path : deniedProjectsFoldersList )
+  const QStringList untrustedProjectsFoldersList = QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders->value();
+  for ( const QString &path : untrustedProjectsFoldersList )
   {
-    QListWidgetItem *newItem = new QListWidgetItem( mDeniedProjectsFoldersList );
+    QListWidgetItem *newItem = new QListWidgetItem( mUntrustedProjectsFoldersList );
     newItem->setText( path );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mDeniedProjectsFoldersList->addItem( newItem );
+    mUntrustedProjectsFoldersList->addItem( newItem );
   }
-  connect( mBtnAddDeniedProject, &QAbstractButton::clicked, this, &QgsOptions::addDeniedProject );
-  connect( mBtnRemoveDeniedProject, &QAbstractButton::clicked, this, &QgsOptions::removeDeniedProject );
+  connect( mBtnAddUntrustedProject, &QAbstractButton::clicked, this, &QgsOptions::addUntrustedProject );
+  connect( mBtnRemoveUntrustedProject, &QAbstractButton::clicked, this, &QgsOptions::removeUntrustedProject );
 
   mDefaultPathsComboBox->addItem( tr( "Absolute" ), static_cast<int>( Qgis::FilePathType::Absolute ) );
   mDefaultPathsComboBox->addItem( tr( "Relative" ), static_cast<int>( Qgis::FilePathType::Relative ) );
@@ -1655,7 +1655,7 @@ void QgsOptions::saveOptions()
     mSettings->setValue( QStringLiteral( "/qgis/projectTemplateDir" ), leTemplateFolder->text() );
     QgisApp::instance()->updateProjectFromTemplates();
   }
-  QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->setValue( mProjectTrustBehaviorComboBox->currentData().value<Qgis::PythonEmbeddedMode>() );
+  QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->setValue( mProjectTrustBehaviorComboBox->currentData().value<Qgis::EmbeddedScriptMode>() );
 
   QStringList trustedProjectsFoldersList;
   for ( int i = 0; i < mTrustedProjectsFoldersList->count(); ++i )
@@ -1668,16 +1668,16 @@ void QgsOptions::saveOptions()
   }
   QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->setValue( trustedProjectsFoldersList );
 
-  QStringList deniedProjectsFoldersList;
-  for ( int i = 0; i < mDeniedProjectsFoldersList->count(); ++i )
+  QStringList untrustedProjectsFoldersList;
+  for ( int i = 0; i < mUntrustedProjectsFoldersList->count(); ++i )
   {
-    const QString path = mDeniedProjectsFoldersList->item( i )->text().trimmed();
+    const QString path = mUntrustedProjectsFoldersList->item( i )->text().trimmed();
     if ( !path.isEmpty() )
     {
-      deniedProjectsFoldersList << path;
+      untrustedProjectsFoldersList << path;
     }
   }
-  QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->setValue( deniedProjectsFoldersList );
+  QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders->setValue( untrustedProjectsFoldersList );
 
   mSettings->setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), static_cast<Qgis::FilePathType>( mDefaultPathsComboBox->currentData().toInt() ) == Qgis::FilePathType::Relative );
 
@@ -2135,7 +2135,7 @@ void QgsOptions::removeTrustedProject()
   delete itemToRemove;
 }
 
-void QgsOptions::addDeniedProject()
+void QgsOptions::addUntrustedProject()
 {
   QString path = QFileDialog::getOpenFileName(
     this,
@@ -2146,18 +2146,18 @@ void QgsOptions::addDeniedProject()
 
   if ( !path.isEmpty() )
   {
-    QListWidgetItem *newItem = new QListWidgetItem( mDeniedProjectsFoldersList );
+    QListWidgetItem *newItem = new QListWidgetItem( mUntrustedProjectsFoldersList );
     newItem->setText( path );
     newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mDeniedProjectsFoldersList->addItem( newItem );
-    mDeniedProjectsFoldersList->setCurrentItem( newItem );
+    mUntrustedProjectsFoldersList->addItem( newItem );
+    mUntrustedProjectsFoldersList->setCurrentItem( newItem );
   }
 }
 
-void QgsOptions::removeDeniedProject()
+void QgsOptions::removeUntrustedProject()
 {
-  int currentRow = mDeniedProjectsFoldersList->currentRow();
-  QListWidgetItem *itemToRemove = mDeniedProjectsFoldersList->takeItem( currentRow );
+  int currentRow = mUntrustedProjectsFoldersList->currentRow();
+  QListWidgetItem *itemToRemove = mUntrustedProjectsFoldersList->takeItem( currentRow );
   delete itemToRemove;
 }
 

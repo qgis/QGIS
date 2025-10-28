@@ -133,19 +133,19 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, const QList<Q
     QListWidgetItem *newItem = new QListWidgetItem( mCodePreviewList );
     switch ( codeDetails.type )
     {
-      case Qgis::PythonEmbeddedType::Macro:
+      case Qgis::EmbeddedScriptType::Macro:
         newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPythonFile.svg" ) ) );
         break;
 
-      case Qgis::PythonEmbeddedType::ExpressionFunction:
+      case Qgis::EmbeddedScriptType::ExpressionFunction:
         newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
         break;
 
-      case Qgis::PythonEmbeddedType::Action:
+      case Qgis::EmbeddedScriptType::Action:
         newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
         break;
 
-      case Qgis::PythonEmbeddedType::FormInitCode:
+      case Qgis::EmbeddedScriptType::FormInitCode:
         newItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) ) );
         break;
     }
@@ -170,12 +170,13 @@ void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
   {
     QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value();
     trustedProjectsFolders.removeAll( path );
-    QStringList temporarilyTrustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->value();
+    QStringList untrustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders->value();
+    untrustedProjectsFolders.removeAll( path );
+
+    QStringList temporarilyTrustedProjectsFolders = QgsApplication::temporarilyTrustedProjectsFolders();
     temporarilyTrustedProjectsFolders.removeAll( path );
-    QStringList deniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->value();
-    deniedProjectsFolders.removeAll( path );
-    QStringList temporarilyDeniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->value();
-    temporarilyDeniedProjectsFolders.removeAll( path );
+    QStringList temporarilyUntrustedProjectsFolders = QgsApplication::temporarilyUntrustedProjectsFolders();
+    temporarilyUntrustedProjectsFolders.removeAll( path );
 
     if ( buttonType == QDialogButtonBox::StandardButton::YesToAll )
     {
@@ -189,24 +190,25 @@ void QgsProjectTrustDialog::buttonBoxClicked( QAbstractButton *button )
     }
     else if ( buttonType == QDialogButtonBox::StandardButton::NoToAll )
     {
-      deniedProjectsFolders << path;
+      untrustedProjectsFolders << path;
       accepted = false;
     }
     else if ( buttonType == QDialogButtonBox::StandardButton::No )
     {
-      temporarilyDeniedProjectsFolders << path;
+      temporarilyUntrustedProjectsFolders << path;
       accepted = false;
     }
 
     trustedProjectsFolders.sort();
+    untrustedProjectsFolders.sort();
     temporarilyTrustedProjectsFolders.sort();
-    deniedProjectsFolders.sort();
-    temporarilyDeniedProjectsFolders.sort();
+    temporarilyUntrustedProjectsFolders.sort();
 
     QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->setValue( trustedProjectsFolders );
-    QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->setValue( temporarilyTrustedProjectsFolders );
-    QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->setValue( deniedProjectsFolders );
-    QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->setValue( temporarilyDeniedProjectsFolders );
+    QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders->setValue( untrustedProjectsFolders );
+
+    QgsApplication::setTemporarilyTrustedProjectsFolders( temporarilyTrustedProjectsFolders );
+    QgsApplication::setTemporarilyUntrustedProjectsFolders( temporarilyUntrustedProjectsFolders );
   }
 
   done( accepted ? QDialog::Accepted : QDialog::Rejected );

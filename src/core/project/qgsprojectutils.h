@@ -64,7 +64,7 @@ class CORE_EXPORT QgsProjectUtils
      *
      * \since QGIS 4.0
      */
-    static bool checkUserTrust( QgsProject *project, bool *undetermined SIP_OUT = nullptr );
+    static Qgis::ProjectTrustStatus checkUserTrust( QgsProject *project, bool *undetermined SIP_OUT = nullptr );
 
     /**
      * Traverses settings to return all embedded code found within the \a project.

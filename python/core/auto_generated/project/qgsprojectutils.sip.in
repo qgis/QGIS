@@ -48,7 +48,7 @@ Returns ``True`` if the specified ``layer`` is a child layer from any
 .. versionadded:: 3.24
 %End
 
-    static bool checkUserTrust( QgsProject *project, bool *undetermined /Out/ = 0 );
+    static Qgis::ProjectTrustStatus checkUserTrust( QgsProject *project, bool *undetermined /Out/ = 0 );
 %Docstring
 Returns ``True`` if the specified ``project`` has been ``granted`` trust
 by the user. If the user has not yet taken a decision, the optional

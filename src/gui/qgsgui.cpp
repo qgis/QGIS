@@ -390,14 +390,14 @@ QgsGui::QgsGui()
 
 bool QgsGui::pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar *messageBar )
 {
-  const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
+  const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
   bool undetermined = false;
-  bool trusted = QgsProjectUtils::checkUserTrust( project, &undetermined );
-  if ( undetermined && pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Ask )
+  Qgis::ProjectTrustStatus trustStatus = QgsProjectUtils::checkUserTrust( project, &undetermined );
+  if ( trustStatus == Qgis::ProjectTrustStatus::Undetermined && embeddedScriptMode == Qgis::EmbeddedScriptMode::Ask )
   {
     QgsProjectTrustDialog dialog( project, QgsProjectUtils::embeddedCode( project ) );
     dialog.exec();
-    trusted = QgsProjectUtils::checkUserTrust( project );
+    trustStatus = QgsProjectUtils::checkUserTrust( project );
   }
 
   if ( messageBar )
@@ -407,7 +407,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar 
       messageBar->pushMessage(
         tr( "Security warning" ),
         tr( "The loaded project contains embedded Python code which has been allowed execution." ),
-        pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Always ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
+        embeddedScriptMode == Qgis::EmbeddedScriptMode::Always ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
       );
     }
     else
@@ -415,7 +415,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar 
       messageBar->pushMessage(
         tr( "Security warning" ),
         tr( "The loaded project contains embedded Python code which has been denied execution." ),
-        pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Never ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
+        embeddedScriptMode == Qgis::EmbeddedScriptMode::Never ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
       );
     }
   }

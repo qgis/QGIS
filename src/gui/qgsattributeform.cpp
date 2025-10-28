@@ -2348,7 +2348,7 @@ void QgsAttributeForm::initPython()
     // If we have a function code, run it
     if ( !initCode.isEmpty() )
     {
-      if ( QgsProjectUtils::checkUserTrust( QgsProject::instance() ) )
+      if ( QgsProjectUtils::checkUserTrust( QgsProject::instance() ) == Qgis::ProjectTrustStatus::Trusted )
       {
         QgsPythonRunner::run( initCode );
       }

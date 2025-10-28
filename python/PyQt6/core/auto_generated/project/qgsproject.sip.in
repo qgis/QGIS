@@ -47,7 +47,7 @@ reference open within the main QGIS application.
 
     struct EmbeddedCode
     {
-      Qgis::PythonEmbeddedType type;
+      Qgis::EmbeddedScriptType type;
       QString name;
       QString code;
     };

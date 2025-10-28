@@ -100,83 +100,75 @@ bool QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject *project, QgsMapL
   return traverseTree( project->layerTreeRoot() );
 }
 
-bool QgsProjectUtils::checkUserTrust( QgsProject *project, bool *undetermined )
+Qgis::ProjectTrustStatus QgsProjectUtils::checkUserTrust( QgsProject *project, bool *undetermined )
 {
-  const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
-  if ( pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Always )
+  const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
+  switch ( embeddedScriptMode )
   {
-    // A user having changed the behavior to always allow is considered as determined
-    if ( undetermined )
+    case Qgis::EmbeddedScriptMode::Always:
     {
-      *undetermined = false;
+      // A user having changed the behavior to always allow is considered as determined
+      return Qgis::ProjectTrustStatus::Trusted;
     }
-    return true;
-  }
-  else if ( pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Never )
-  {
-    // A user having changed the behavior to always deny is considered as determined
-    if ( undetermined )
-    {
-      *undetermined = false;
-    }
-    return false;
-  }
 
-  QString absoluteFilePath;
-  QString absolutePath;
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( project->fileName() );
-  if ( storage )
-  {
-    if ( !storage->filePath( project->fileName() ).isEmpty() )
+    case Qgis::EmbeddedScriptMode::Never:
     {
-      QFileInfo fileInfo( storage->filePath( project->fileName() ) );
-      absoluteFilePath = fileInfo.absoluteFilePath();
-      absolutePath = fileInfo.absolutePath();
+      // A user having changed the behavior to always deny is considered as determined
+      return Qgis::ProjectTrustStatus::Untrusted;
     }
-    else
-    {
-      // Match non-file based URIs too
-      absolutePath = project->fileName();
-    }
-  }
-  else
-  {
-    QFileInfo fileInfo( project->fileName() );
-    absoluteFilePath = fileInfo.absoluteFilePath();
-    absolutePath = fileInfo.absolutePath();
-  }
 
-  const QStringList deniedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionDeniedProjectsFolders->value() + QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyDeniedProjectsFolders->value();
-  for ( const QString &path : deniedProjectsFolders )
-  {
-    if ( absoluteFilePath == path || absolutePath == path )
+    case Qgis::EmbeddedScriptMode::Ask:
+    case Qgis::EmbeddedScriptMode::NeverAsk:
+    case Qgis::EmbeddedScriptMode::SessionOnly:
+    case Qgis::EmbeddedScriptMode::NotForThisSession:
     {
-      if ( undetermined )
+      QString absoluteFilePath;
+      QString absolutePath;
+      QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( project->fileName() );
+      if ( storage )
       {
-        *undetermined = false;
+        if ( !storage->filePath( project->fileName() ).isEmpty() )
+        {
+          QFileInfo fileInfo( storage->filePath( project->fileName() ) );
+          absoluteFilePath = fileInfo.absoluteFilePath();
+          absolutePath = fileInfo.absolutePath();
+        }
+        else
+        {
+          // Match non-file based URIs too
+          absolutePath = project->fileName();
+        }
       }
-      return false;
-    }
-  }
-
-  const QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value() + QgsSettingsRegistryCore::settingsCodeExecutionTemporarilyTrustedProjectsFolders->value();
-  for ( const QString &path : trustedProjectsFolders )
-  {
-    if ( absoluteFilePath == path || absolutePath == path )
-    {
-      if ( undetermined )
+      else
       {
-        *undetermined = false;
+        QFileInfo fileInfo( project->fileName() );
+        absoluteFilePath = fileInfo.absoluteFilePath();
+        absolutePath = fileInfo.absolutePath();
       }
-      return true;
+
+      const QStringList untrustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders->value() + QgsApplication::temporarilyUntrustedProjectsFolders();
+      for ( const QString &path : untrustedProjectsFolders )
+      {
+        if ( absoluteFilePath == path || absolutePath == path )
+        {
+          return Qgis::ProjectTrustStatus::Untrusted;
+        }
+      }
+
+      const QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value() + QgsApplication::temporarilyTrustedProjectsFolders();
+      for ( const QString &path : trustedProjectsFolders )
+      {
+        if ( absoluteFilePath == path || absolutePath == path )
+        {
+          return Qgis::ProjectTrustStatus::Trusted;
+        }
+      }
+
+      return Qgis::ProjectTrustStatus::Undetermined;
     }
   }
 
-  if ( undetermined )
-  {
-    *undetermined = true;
-  }
-  return false;
+  return Qgis::ProjectTrustStatus::Undetermined;
 }
 
 QList<QgsProject::EmbeddedCode> QgsProjectUtils::embeddedCode( QgsProject *project )
@@ -187,7 +179,7 @@ QList<QgsProject::EmbeddedCode> QgsProjectUtils::embeddedCode( QgsProject *proje
   if ( !macros.isEmpty() )
   {
     QgsProject::EmbeddedCode details;
-    details.type = Qgis::PythonEmbeddedType::Macro;
+    details.type = Qgis::EmbeddedScriptType::Macro;
     details.name = QObject::tr( "Macros" );
     details.code = macros;
     code << details;
@@ -197,7 +189,7 @@ QList<QgsProject::EmbeddedCode> QgsProjectUtils::embeddedCode( QgsProject *proje
   if ( !expressionFunctions.isEmpty() )
   {
     QgsProject::EmbeddedCode details;
-    details.type = Qgis::PythonEmbeddedType::ExpressionFunction;
+    details.type = Qgis::EmbeddedScriptType::ExpressionFunction;
     details.name = QObject::tr( "Expression functions" );
     details.code = expressionFunctions;
     code << details;
@@ -209,13 +201,33 @@ QList<QgsProject::EmbeddedCode> QgsProjectUtils::embeddedCode( QgsProject *proje
     const QList<QgsAction> actions = layer->actions()->actions();
     for ( const QgsAction &action : actions )
     {
-      if ( action.type() == Qgis::AttributeActionType::GenericPython && !action.command().isEmpty() )
+      if ( action.command().isEmpty() )
       {
-        QgsProject::EmbeddedCode details;
-        details.type = Qgis::PythonEmbeddedType::Action;
-        details.name = QObject::tr( "%1: Action ’%2’" ).arg( layer->name(), action.name() );
-        details.code = action.command();
-        code << details;
+        continue;
+      }
+
+      switch ( action.type() )
+      {
+        case Qgis::AttributeActionType::GenericPython:
+        case Qgis::AttributeActionType::Mac:
+        case Qgis::AttributeActionType::Windows:
+        case Qgis::AttributeActionType::Unix:
+        {
+          QgsProject::EmbeddedCode details;
+          details.type = Qgis::EmbeddedScriptType::Action;
+          details.name = QObject::tr( "%1: Action ’%2’" ).arg( layer->name(), action.name() );
+          details.code = action.command();
+          code << details;
+          break;
+        }
+
+        case Qgis::AttributeActionType::Generic:
+        case Qgis::AttributeActionType::OpenUrl:
+        case Qgis::AttributeActionType::SubmitUrlEncoded:
+        case Qgis::AttributeActionType::SubmitUrlMultipart:
+        {
+          break;
+        }
       }
     }
 
@@ -260,7 +272,7 @@ QList<QgsProject::EmbeddedCode> QgsProjectUtils::embeddedCode( QgsProject *proje
     if ( !initCode.isEmpty() )
     {
       QgsProject::EmbeddedCode details;
-      details.type = Qgis::PythonEmbeddedType::FormInitCode;
+      details.type = Qgis::EmbeddedScriptType::FormInitCode;
       details.name = QObject::tr( "%1: Attribute form init code" ).arg( layer->name() );
       details.code = initCode;
       code << details;
