@@ -319,6 +319,9 @@ QVariantMap QgsLayerToBookmarksAlgorithm::postProcessAlgorithm( QgsProcessingCon
     case 1:
       dest = QgsApplication::bookmarkManager();
       break;
+
+    default:
+      throw QgsProcessingException( QObject::tr( "Invalid bookmark destination" ) );
   }
 
   for ( const QgsBookmark &b : std::as_const( mBookmarks ) )
