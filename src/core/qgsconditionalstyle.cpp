@@ -177,6 +177,7 @@ QgsConditionalStyle::QgsConditionalStyle( const QString &rule )
 QgsConditionalStyle::~QgsConditionalStyle() = default;
 
 QgsConditionalStyle::QgsConditionalStyle( const QgsConditionalStyle &other )
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mValid( other.mValid )
   , mName( other.mName )
   , mRule( other.mRule )
@@ -184,13 +185,28 @@ QgsConditionalStyle::QgsConditionalStyle( const QgsConditionalStyle &other )
   , mBackColor( other.mBackColor )
   , mTextColor( other.mTextColor )
   , mIcon( other.mIcon )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
   if ( other.mSymbol )
     mSymbol.reset( other.mSymbol->clone() );
 }
 
+QgsConditionalStyle::QgsConditionalStyle( QgsConditionalStyle &&other )
+  : mValid( other.mValid )
+  , mName( std::move( other.mName ) )
+  , mRule( std::move( other.mRule ) )
+  , mSymbol( std::move( other.mSymbol ) )
+  , mFont( std::move( other.mFont ) )
+  , mBackColor( std::move( other.mBackColor ) )
+  , mTextColor( std::move( other.mTextColor ) )
+  , mIcon( std::move( other.mIcon ) )
+{
+
+}
+
 QgsConditionalStyle &QgsConditionalStyle::operator=( const QgsConditionalStyle &other )
 {
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mValid = other.mValid;
   mRule = other.mRule;
   mFont = other.mFont;
@@ -206,6 +222,20 @@ QgsConditionalStyle &QgsConditionalStyle::operator=( const QgsConditionalStyle &
   {
     mSymbol.reset();
   }
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+  return ( *this );
+}
+
+QgsConditionalStyle &QgsConditionalStyle::operator=( QgsConditionalStyle &&other )
+{
+  mValid = other.mValid;
+  mRule = std::move( other.mRule );
+  mFont = std::move( other.mFont );
+  mBackColor = std::move( other.mBackColor );
+  mTextColor = std::move( other.mTextColor );
+  mIcon = std::move( other.mIcon );
+  mName = std::move( other.mName );
+  mSymbol = std::move( other.mSymbol );
   return ( *this );
 }
 
