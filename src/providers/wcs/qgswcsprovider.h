@@ -120,11 +120,6 @@ class QgsWcsProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
 
     bool isValid() const override;
 
-    /**
-     * Returns the base url
-     */
-    virtual QString baseUrl() const;
-
     //! Gets WCS version string
     QString wcsVersion();
 
