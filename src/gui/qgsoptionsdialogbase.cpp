@@ -609,7 +609,7 @@ void QgsOptionsDialogBase::searchText( const QString &text )
     if ( mOptButtonBox )
       mOptButtonBox->hide();
   }
-  else if ( mOptTreeView )
+  else if ( mOptTreeView && mTreeProxyModel )
   {
     const QModelIndex currentSourceIndex = mTreeProxyModel->pageNumberToSourceIndex( mOptStackedWidget->currentIndex() );
     if ( !mTreeProxyModel->filterAcceptsRow( currentSourceIndex.row(), currentSourceIndex.parent() ) )
