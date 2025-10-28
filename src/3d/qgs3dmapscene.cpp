@@ -33,7 +33,6 @@
 #include "qgscameracontroller.h"
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
-#include "qgsdebugtexturerenderview.h"
 #include "qgsdirectionallightsettings.h"
 #include "qgseventtracing.h"
 #include "qgsforwardrenderview.h"
@@ -49,6 +48,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsmessageoutput.h"
+#include "qgsoverlaytexturerenderview.h"
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspointcloudlayer.h"
@@ -537,7 +537,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints )
 {
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
-  QgsDebugTextureRenderView &debugRenderView = frameGraph->debugTextureRenderView();
+  QgsOverlayTextureRenderView &overlayRenderView = frameGraph->overlayTextureRenderView();
 
   if ( !mMap.is2DMapOverlayEnabled() )
   {
@@ -545,16 +545,16 @@ void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoi
     {
       mMapOverlayEntity.reset();
     }
-    debugRenderView.setEnabled( mMap.debugShadowMapEnabled() || mMap.debugDepthMapEnabled() );
+    overlayRenderView.setEnabled( mMap.debugShadowMapEnabled() || mMap.debugDepthMapEnabled() );
     return;
   }
 
   if ( !mMapOverlayEntity )
   {
     QgsWindow3DEngine *engine = qobject_cast<QgsWindow3DEngine *>( mEngine );
-    mMapOverlayEntity.reset( new QgsMapOverlayEntity( engine, &debugRenderView, &mMap, this ) );
+    mMapOverlayEntity.reset( new QgsMapOverlayEntity( engine, &overlayRenderView, &mMap, this ) );
     mMapOverlayEntity->setEnabled( true );
-    debugRenderView.setEnabled( true );
+    overlayRenderView.setEnabled( true );
   }
 
 
