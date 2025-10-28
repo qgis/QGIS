@@ -55,19 +55,40 @@ void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
 
 void QgsDefaultSearchWidgetWrapper::setExpression( const QString &expression )
 {
-  const QMetaType::Type fldType = layer()->fields().at( mFieldIdx ).type();
-  const bool numeric = ( fldType == QMetaType::Type::Int || fldType == QMetaType::Type::Double || fldType == QMetaType::Type::LongLong );
-
-  QString exp = expression;
   const QString nullValue = QgsApplication::nullRepresentation();
   const QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
-  if ( exp == nullValue )
+  if ( expression == nullValue )
   {
     str = QStringLiteral( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
   }
   else
   {
+    const QMetaType::Type fldType = layer()->fields().at( mFieldIdx ).type();
+    const bool numeric = ( fldType == QMetaType::Type::Int || fldType == QMetaType::Type::Double || fldType == QMetaType::Type::LongLong );
+    QString exp = expression;
+    if ( numeric )
+    {
+      //if it is a numeric value, we remove the local formatting of a string.
+      bool ok = false;
+      QString rawExp;
+      if ( fldType == QMetaType::Type::Int )
+      {
+        rawExp = QString::number( QLocale().toInt( expression, &ok ) );
+      }
+      else if ( fldType == QMetaType::Type::Double )
+      {
+        rawExp = QString::number( QLocale().toDouble( expression, &ok ) );
+      }
+      else if ( fldType == QMetaType::Type::LongLong )
+      {
+        rawExp = QString::number( QLocale().toLongLong( expression, &ok ) );
+      }
+      if ( ok )
+      {
+        exp = rawExp;
+      }
+    }
     str = QStringLiteral( "%1 %2 '%3'" )
             .arg( QgsExpression::quotedColumnRef( fieldName ), numeric ? QStringLiteral( "=" ) : mCaseString, numeric ? exp.replace( '\'', QLatin1String( "''" ) ) : '%' + exp.replace( '\'', QLatin1String( "''" ) ) + '%' ); // escape quotes
   }
