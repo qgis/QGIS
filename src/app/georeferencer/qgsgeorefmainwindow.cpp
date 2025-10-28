@@ -495,11 +495,14 @@ bool QgsGeoreferencerMainWindow::showTransformSettingsDialog()
 
   mTransformParamLabel->setText( tr( "Transform: " ) + QgsGcpTransformerInterface::methodToString( mTransformMethod ) );
   mGeorefTransform.setMethod( mTransformMethod );
-  mGCPListWidget->setGeorefTransform( &mGeorefTransform );
+  if ( mGCPListWidget )
+  {
+    mGCPListWidget->setGeorefTransform( &mGeorefTransform );
+  }
   mWorldFileName = guessWorldFileName( mFileName );
 
   const bool hasReferencing = QgsGcpTransformerInterface::TransformMethod::InvalidTransform != mTransformMethod
-                              || mLayer->crs().isValid();
+                              || ( mLayer && mLayer->crs().isValid() );
   mActionLinkGeorefToQgis->setEnabled( hasReferencing );
   mActionLinkQGisToGeoref->setEnabled( hasReferencing );
   if ( !hasReferencing )
