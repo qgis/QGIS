@@ -53,7 +53,7 @@ QgsMeshEditor::QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangular
   connect( mUndoStack, &QUndoStack::indexChanged, this, &QgsMeshEditor::meshEdited );
 }
 
-QgsMeshDatasetGroup *QgsMeshEditor::createZValueDatasetGroup()
+std::unique_ptr< QgsMeshDatasetGroup > QgsMeshEditor::createZValueDatasetGroup()
 {
   std::unique_ptr<QgsMeshDatasetGroup> zValueDatasetGroup = std::make_unique<QgsMeshVerticesElevationDatasetGroup>( tr( "vertices Z value" ), mMesh );
 
@@ -63,7 +63,7 @@ QgsMeshDatasetGroup *QgsMeshEditor::createZValueDatasetGroup()
   // cppcheck-suppress danglingLifetime
   mZValueDatasetGroup = zValueDatasetGroup.get();
 
-  return zValueDatasetGroup.release();
+  return zValueDatasetGroup;
 }
 
 QgsMeshEditor::~QgsMeshEditor() = default;
