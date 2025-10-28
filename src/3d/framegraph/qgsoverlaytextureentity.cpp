@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdebugtextureentity.cpp
+  qgsoverlaytextureentity.cpp
   --------------------------------------
   Date                 : June 2024
   Copyright            : (C) 2024 by Benoit De Mezzo
@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdebugtextureentity.h"
+#include "qgsoverlaytextureentity.h"
 
 #include <QUrl>
 #include <QVector2D>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
 
-#include "moc_qgsdebugtextureentity.cpp"
+#include "moc_qgsoverlaytextureentity.cpp"
 
-QgsDebugTextureEntity::QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent )
+QgsOverlayTextureEntity::QgsOverlayTextureEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )
 {
-  setObjectName( "DebugTextureQuad" );
+  setObjectName( "OverlayTextureQuad" );
 
   mTextureParameter = new Qt3DRender::QParameter( "previewTexture", texture );
   mCenterTextureCoords = new Qt3DRender::QParameter( "centerTexCoords", QVector2D( 0, 0 ) );
@@ -47,12 +47,12 @@ QgsDebugTextureEntity::QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Q
   setEnabled( false );
 }
 
-void QgsDebugTextureEntity::setPosition( Qt::Corner corner, double size, double offset )
+void QgsOverlayTextureEntity::setPosition( Qt::Corner corner, double size, double offset )
 {
   setPosition( corner, QSizeF( size, size ), QSizeF( offset, offset ) );
 }
 
-void QgsDebugTextureEntity::setPosition( Qt::Corner corner, QSizeF size, QSizeF offset )
+void QgsOverlayTextureEntity::setPosition( Qt::Corner corner, QSizeF size, QSizeF offset )
 {
   switch ( corner )
   {
@@ -72,7 +72,7 @@ void QgsDebugTextureEntity::setPosition( Qt::Corner corner, QSizeF size, QSizeF 
 }
 
 
-void QgsDebugTextureEntity::setViewport( const QPointF &centerTexCoords, const QSizeF &sizeTexCoords )
+void QgsOverlayTextureEntity::setViewport( const QPointF &centerTexCoords, const QSizeF &sizeTexCoords )
 {
   mCenterTextureCoords->setValue( QVector2D( static_cast<float>( centerTexCoords.x() ), static_cast<float>( centerTexCoords.y() ) ) );
   mSizeTextureCoords->setValue( QVector2D( static_cast<float>( sizeTexCoords.width() ), static_cast<float>( sizeTexCoords.height() ) ) );

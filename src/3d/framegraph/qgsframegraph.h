@@ -49,7 +49,7 @@ class QgsForwardRenderView;
 class QgsShadowRenderView;
 class QgsDepthRenderView;
 class QgsShadowSettings;
-class QgsDebugTextureEntity;
+class QgsOverlayTextureEntity;
 class QgsDebugTextureRenderView;
 class QgsAmbientOcclusionRenderView;
 class QgsAmbientOcclusionSettings;
@@ -269,9 +269,9 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
 
     //! shadow texture debugging
-    QgsDebugTextureEntity *mShadowTextureDebugging = nullptr;
+    QgsOverlayTextureEntity *mShadowTextureDebugging = nullptr;
     //! depth texture debugging
-    QgsDebugTextureEntity *mDepthTextureDebugging = nullptr;
+    QgsOverlayTextureEntity *mDepthTextureDebugging = nullptr;
 
     void constructShadowRenderPass();
     void constructForwardRenderPass();
