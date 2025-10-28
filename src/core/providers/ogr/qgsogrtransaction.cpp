@@ -24,8 +24,8 @@
 #include "qgis.h"
 
 QgsOgrTransaction::QgsOgrTransaction( const QString &connString, QgsOgrDatasetSharedPtr ds )
-  : QgsTransaction( connString ), mSharedDS( ds )
-
+  : QgsTransaction( connString )
+  , mSharedDS( std::move( ds ) )
 {
   Q_ASSERT( mSharedDS );
 }

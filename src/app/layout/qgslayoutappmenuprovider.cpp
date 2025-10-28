@@ -116,7 +116,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     {
       QAction *manageGuidesAction = new QAction( tr( "Manage Guides for Page…" ), menu );
       QPointer<QgsLayoutGuideWidget> guideManager( mDesigner->guideWidget() );
-      connect( manageGuidesAction, &QAction::triggered, this, [this, pageNumber, guideManager]() {
+      connect( manageGuidesAction, &QAction::triggered, this, [this, pageNumber, guideManager = std::move( guideManager )]() {
         if ( guideManager )
         {
           guideManager->setCurrentPage( pageNumber );
