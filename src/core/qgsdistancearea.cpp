@@ -55,23 +55,49 @@ QgsDistanceArea::QgsDistanceArea()
 QgsDistanceArea::~QgsDistanceArea() = default;
 
 QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea &other )
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mCoordTransform( other.mCoordTransform )
   , mEllipsoid( other.mEllipsoid )
   , mSemiMajor( other.mSemiMajor )
   , mSemiMinor( other.mSemiMinor )
   , mInvFlattening( other.mInvFlattening )
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
   computeAreaInit();
 }
 
+
+QgsDistanceArea::QgsDistanceArea( QgsDistanceArea &&other )
+  : mCoordTransform( std::move( other.mCoordTransform ) )
+  , mEllipsoid( std::move( other.mEllipsoid ) )
+  , mSemiMajor( other.mSemiMajor )
+  , mSemiMinor( other.mSemiMinor )
+  , mInvFlattening( other.mInvFlattening )
+  , mGeod( std::move( other.mGeod ) )
+{
+}
+
 QgsDistanceArea &QgsDistanceArea::operator=( const QgsDistanceArea &other )
 {
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mCoordTransform = other.mCoordTransform;
   mEllipsoid = other.mEllipsoid;
   mSemiMajor = other.mSemiMajor;
   mSemiMinor = other.mSemiMinor;
   mInvFlattening = other.mInvFlattening;
   computeAreaInit();
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+  return *this;
+}
+
+QgsDistanceArea &QgsDistanceArea::operator=( QgsDistanceArea &&other )
+{
+  mCoordTransform = other.mCoordTransform;
+  mEllipsoid = other.mEllipsoid;
+  mSemiMajor = other.mSemiMajor;
+  mSemiMinor = other.mSemiMinor;
+  mInvFlattening = other.mInvFlattening;
+  mGeod = std::move( other.mGeod );
   return *this;
 }
 
