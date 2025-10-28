@@ -85,30 +85,30 @@ void QgsLayerTreeModelLegendNode::setUserPatchSize( QSizeF size )
   emit sizeChanged();
 }
 
-QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( const QgsLegendSettings &settings, ItemContext *ctx )
+QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( const QgsLegendSettings &settings, ItemContext &ctx )
 {
   const QgsTextFormat f = settings.style( Qgis::LegendComponent::SymbolLabel ).textFormat();
 
-  const QStringList lines = settings.evaluateItemText( data( Qt::DisplayRole ).toString(), ctx->context->expressionContext() );
+  const QStringList lines = settings.evaluateItemText( data( Qt::DisplayRole ).toString(), ctx.context->expressionContext() );
 
   const QgsTextDocument textDocument = QgsTextDocument::fromTextAndFormat( lines, f );
   // cppcheck-suppress autoVariables
 
-  std::optional< QgsScopedRenderContextScaleToPixels > scaleToPx( *ctx->context );
-  const double textScaleFactor = QgsTextRenderer::calculateScaleFactorForFormat( *ctx->context, f );
+  std::optional< QgsScopedRenderContextScaleToPixels > scaleToPx( *ctx.context );
+  const double textScaleFactor = QgsTextRenderer::calculateScaleFactorForFormat( *ctx.context, f );
 
   QgsTextDocumentRenderContext documentContext;
 
   if ( settings.autoWrapLinesAfter() > 0 )
   {
-    documentContext.setMaximumWidth( ctx->context->convertToPainterUnits( settings.autoWrapLinesAfter(), Qgis::RenderUnit::Millimeters ) );
+    documentContext.setMaximumWidth( ctx.context->convertToPainterUnits( settings.autoWrapLinesAfter(), Qgis::RenderUnit::Millimeters ) );
     documentContext.setFlags( Qgis::TextRendererFlag::WrapLines );
   }
 
-  const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, f, *ctx->context, textScaleFactor, documentContext );
+  const QgsTextDocumentMetrics textDocumentMetrics = QgsTextDocumentMetrics::calculateMetrics( textDocument, f, *ctx.context, textScaleFactor, documentContext );
   // cppcheck-suppress autoVariables
-  ctx->textDocumentMetrics = &textDocumentMetrics;
-  ctx->textDocument = &textDocumentMetrics.document();
+  ctx.textDocumentMetrics = &textDocumentMetrics;
+  ctx.textDocument = &textDocumentMetrics.document();
   scaleToPx.reset();
 
   // itemHeight here is not really item height, it is only for symbol
@@ -116,15 +116,15 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   // if there are more lines, those run under the symbol
   // also note that we explicitly use the first line cap height here, in order to match the Qgis::TextLayoutMode::RectangleCapHeightBased mode
   // used when rendering the symbol text
-  const double textHeight = textDocumentMetrics.firstLineCapHeight() / ctx->context->scaleFactor();
-  const double itemHeight = std::max( static_cast< double >( ctx && ctx->patchSize.height() > 0 ? ctx->patchSize.height() : settings.symbolSize().height() ), textHeight );
+  const double textHeight = textDocumentMetrics.firstLineCapHeight() / ctx.context->scaleFactor();
+  const double itemHeight = std::max( static_cast< double >( ctx.patchSize.height() > 0 ? ctx.patchSize.height() : settings.symbolSize().height() ), textHeight );
 
   ItemMetrics im;
-  im.symbolSize = drawSymbol( settings, ctx, itemHeight );
-  im.labelSize = drawSymbolText( settings, ctx, im.symbolSize );
+  im.symbolSize = drawSymbol( settings, &ctx, itemHeight );
+  im.labelSize = drawSymbolText( settings, &ctx, im.symbolSize );
 
-  ctx->textDocument = nullptr;
-  ctx->textDocumentMetrics = nullptr;
+  ctx.textDocument = nullptr;
+  ctx.textDocumentMetrics = nullptr;
   return im;
 }
 
@@ -1521,13 +1521,13 @@ QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
   return QVariant();
 }
 
-QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( const QgsLegendSettings &settings, QgsLayerTreeModelLegendNode::ItemContext *ctx )
+QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( const QgsLegendSettings &settings, QgsLayerTreeModelLegendNode::ItemContext &ctx )
 {
   // setup temporary render context if none specified
   QgsRenderContext *context = nullptr;
   std::unique_ptr< QgsRenderContext > tempRenderContext;
-  if ( ctx && ctx->context )
-    context = ctx->context;
+  if ( ctx.context )
+    context = ctx.context;
   else
   {
     tempRenderContext = std::make_unique< QgsRenderContext >();
@@ -1538,7 +1538,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
     tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
     tempRenderContext->setForceVectorOutput( true );
-    tempRenderContext->setPainter( ctx ? ctx->painter : nullptr );
+    tempRenderContext->setPainter( ctx.painter );
     tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     Q_NOWARN_DEPRECATED_POP
 
@@ -1552,7 +1552,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   if ( context->painter() )
   {
     context->painter()->save();
-    context->painter()->translate( ctx->columnLeft, ctx->top );
+    context->painter()->translate( ctx.columnLeft, ctx.top );
 
     // scale to pixels
     context->painter()->scale( 1 / context->scaleFactor(), 1 / context->scaleFactor() );
