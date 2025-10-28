@@ -74,6 +74,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
 }
 
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh )
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mCt( rh.mCt )
   , mPlacement( rh.mPlacement )
   , mPlacementFlags( rh.mPlacementFlags )
@@ -84,12 +85,28 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings 
   , mRenderer( rh.mRenderer ? rh.mRenderer->clone() : nullptr )
   , mShowAll( rh.mShowAll )
   , mDataDefinedProperties( rh.mDataDefinedProperties )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
   initPropertyDefinitions();
 }
 
+QgsDiagramLayerSettings::QgsDiagramLayerSettings( QgsDiagramLayerSettings &&rh )
+  : mCt( std::move( rh.mCt ) )
+  , mPlacement( rh.mPlacement )
+  , mPlacementFlags( rh.mPlacementFlags )
+  , mPriority( rh.mPriority )
+  , mZIndex( rh.mZIndex )
+  , mObstacle( rh.mObstacle )
+  , mDistance( rh.mDistance )
+  , mRenderer( std::move( rh.mRenderer ) )
+  , mShowAll( rh.mShowAll )
+  , mDataDefinedProperties( std::move( rh.mDataDefinedProperties ) )
+{
+}
+
 QgsDiagramLayerSettings &QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings &rh )
 {
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mPlacement = rh.mPlacement;
   mPlacementFlags = rh.mPlacementFlags;
   mPriority = rh.mPriority;
@@ -100,6 +117,22 @@ QgsDiagramLayerSettings &QgsDiagramLayerSettings::operator=( const QgsDiagramLay
   mCt = rh.mCt;
   mShowAll = rh.mShowAll;
   mDataDefinedProperties = rh.mDataDefinedProperties;
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+  return *this;
+}
+
+QgsDiagramLayerSettings &QgsDiagramLayerSettings::operator=( QgsDiagramLayerSettings &&rh )
+{
+  mPlacement = rh.mPlacement;
+  mPlacementFlags = rh.mPlacementFlags;
+  mPriority = rh.mPriority;
+  mZIndex = rh.mZIndex;
+  mObstacle = rh.mObstacle;
+  mDistance = rh.mDistance;
+  mRenderer = std::move( rh.mRenderer );
+  mCt = std::move( rh.mCt );
+  mShowAll = rh.mShowAll;
+  mDataDefinedProperties = std::move( rh.mDataDefinedProperties );
   return *this;
 }
 
