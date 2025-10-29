@@ -39,6 +39,7 @@ QgsTextFormat::QgsTextFormat()
 }
 
 QgsTextFormat::QgsTextFormat( const QgsTextFormat &other ) //NOLINT
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mBufferSettings( other.mBufferSettings )
   , mBackgroundSettings( other.mBackgroundSettings )
   , mShadowSettings( other.mShadowSettings )
@@ -46,18 +47,45 @@ QgsTextFormat::QgsTextFormat( const QgsTextFormat &other ) //NOLINT
   , mTextFontFamily( other.mTextFontFamily )
   , mTextFontFound( other.mTextFontFound )
   , d( other.d )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+{
+
+}
+
+QgsTextFormat::QgsTextFormat( QgsTextFormat &&other ) //NOLINT
+  : mBufferSettings( std::move( other.mBufferSettings ) )
+  , mBackgroundSettings( std::move( other.mBackgroundSettings ) )
+  , mShadowSettings( std::move( other.mShadowSettings ) )
+  , mMaskSettings( std::move( other.mMaskSettings ) )
+  , mTextFontFamily( std::move( other.mTextFontFamily ) )
+  , mTextFontFound( other.mTextFontFound )
+  , d( std::move( other.d ) )
 {
 
 }
 
 QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat &other )  //NOLINT
 {
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   d = other.d;
   mBufferSettings = other.mBufferSettings;
   mBackgroundSettings = other.mBackgroundSettings;
   mShadowSettings = other.mShadowSettings;
   mMaskSettings = other.mMaskSettings;
   mTextFontFamily = other.mTextFontFamily;
+  mTextFontFound = other.mTextFontFound;
+  return *this;
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+}
+
+QgsTextFormat &QgsTextFormat::operator=( QgsTextFormat &&other )  //NOLINT
+{
+  d = std::move( other.d );
+  mBufferSettings = std::move( other.mBufferSettings );
+  mBackgroundSettings = std::move( other.mBackgroundSettings );
+  mShadowSettings = std::move( other.mShadowSettings );
+  mMaskSettings = std::move( other.mMaskSettings );
+  mTextFontFamily = std::move( other.mTextFontFamily );
   mTextFontFound = other.mTextFontFound;
   return *this;
 }

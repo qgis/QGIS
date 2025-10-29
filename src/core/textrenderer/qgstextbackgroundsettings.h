@@ -82,8 +82,10 @@ class CORE_EXPORT QgsTextBackgroundSettings
     QgsTextBackgroundSettings();
 
     QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other );
+    SIP_SKIP QgsTextBackgroundSettings( QgsTextBackgroundSettings &&other );
 
     QgsTextBackgroundSettings &operator=( const QgsTextBackgroundSettings &other );
+    QgsTextBackgroundSettings &operator=( QgsTextBackgroundSettings &&other );
 
     ~QgsTextBackgroundSettings();
 
