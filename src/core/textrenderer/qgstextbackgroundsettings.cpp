@@ -49,9 +49,21 @@ QgsTextBackgroundSettings::QgsTextBackgroundSettings( const QgsTextBackgroundSet
 
 }
 
+QgsTextBackgroundSettings::QgsTextBackgroundSettings( QgsTextBackgroundSettings &&other ) //NOLINT
+  : d( std::move( other.d ) )
+{
+
+}
+
 QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings &other )  //NOLINT
 {
   d = other.d;
+  return *this;
+}
+
+QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( QgsTextBackgroundSettings &&other )  //NOLINT
+{
+  d = std::move( other.d );
   return *this;
 }
 
