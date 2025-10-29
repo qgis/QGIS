@@ -42,12 +42,18 @@ QgsTextShadowSettings::QgsTextShadowSettings( QgsTextShadowSettings &&other ) //
 
 QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSettings &other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
   d = other.d;
   return *this;
 }
 
 QgsTextShadowSettings &QgsTextShadowSettings::operator=( QgsTextShadowSettings &&other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
   d = std::move( other.d );
   return *this;
 }

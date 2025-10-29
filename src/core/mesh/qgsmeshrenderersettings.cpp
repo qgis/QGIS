@@ -440,6 +440,9 @@ QgsMeshRendererSettings::QgsMeshRendererSettings( QgsMeshRendererSettings &&othe
 
 QgsMeshRendererSettings &QgsMeshRendererSettings::operator=( const QgsMeshRendererSettings &other )
 {
+  if ( &other == this )
+    return *this;
+
   //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mRendererNativeMeshSettings = other.mRendererNativeMeshSettings;
   mRendererTriangularMeshSettings = other.mRendererTriangularMeshSettings;
@@ -455,6 +458,9 @@ QgsMeshRendererSettings &QgsMeshRendererSettings::operator=( const QgsMeshRender
 
 QgsMeshRendererSettings &QgsMeshRendererSettings::operator=( QgsMeshRendererSettings &&other )
 {
+  if ( &other == this )
+    return *this;
+
   mRendererNativeMeshSettings = std::move( other.mRendererNativeMeshSettings );
   mRendererTriangularMeshSettings = std::move( other.mRendererTriangularMeshSettings );
   mRendererEdgeMeshSettings = std::move( other.mRendererEdgeMeshSettings );

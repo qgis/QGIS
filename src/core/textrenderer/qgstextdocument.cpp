@@ -42,12 +42,18 @@ QgsTextDocument::QgsTextDocument( QgsTextDocument &&other )
 
 QgsTextDocument &QgsTextDocument::operator=( const QgsTextDocument &other )
 {
+  if ( &other == this )
+    return *this;
+
   mBlocks = other.mBlocks;
   return *this;
 }
 
 QgsTextDocument &QgsTextDocument::operator=( QgsTextDocument &&other )
 {
+  if ( &other == this )
+    return *this;
+
   mBlocks = std::move( other.mBlocks );
   return *this;
 }

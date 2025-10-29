@@ -53,12 +53,18 @@ QgsCoordinateTransformContext::QgsCoordinateTransformContext( QgsCoordinateTrans
 
 QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( const QgsCoordinateTransformContext &rhs )  //NOLINT
 {
+  if ( &rhs == this )
+    return *this;
+
   d = rhs.d;
   return *this;
 }
 
 QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( QgsCoordinateTransformContext &&rhs )  //NOLINT
 {
+  if ( &rhs == this )
+    return *this;
+
   d = std::move( rhs.d );
   return *this;
 }

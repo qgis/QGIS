@@ -59,6 +59,9 @@ QgsLabelingEngineSettings::QgsLabelingEngineSettings( QgsLabelingEngineSettings 
 
 QgsLabelingEngineSettings &QgsLabelingEngineSettings::operator=( const QgsLabelingEngineSettings &other )
 {
+  if ( &other == this )
+    return *this;
+
   //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mFlags = other.mFlags;
   mSearchMethod = other.mSearchMethod;
@@ -79,6 +82,9 @@ QgsLabelingEngineSettings &QgsLabelingEngineSettings::operator=( const QgsLabeli
 
 QgsLabelingEngineSettings &QgsLabelingEngineSettings::operator=( QgsLabelingEngineSettings &&other )
 {
+  if ( &other == this )
+    return *this;
+
   mFlags = other.mFlags;
   mSearchMethod = other.mSearchMethod;
   mMaxLineCandidatesPerCm = other.mMaxLineCandidatesPerCm;

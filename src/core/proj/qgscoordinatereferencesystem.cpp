@@ -134,6 +134,9 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateR
 
 QgsCoordinateReferenceSystem &QgsCoordinateReferenceSystem::operator=( const QgsCoordinateReferenceSystem &srs )  //NOLINT
 {
+  if ( &srs == this )
+    return *this;
+
   d = srs.d;
   mValidationHint = srs.mValidationHint;
   mNativeFormat = srs.mNativeFormat;

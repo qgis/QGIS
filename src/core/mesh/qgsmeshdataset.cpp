@@ -375,6 +375,9 @@ QgsMesh3DDataBlock::QgsMesh3DDataBlock( QgsMesh3DDataBlock &&other )
 
 QgsMesh3DDataBlock &QgsMesh3DDataBlock::operator=( const QgsMesh3DDataBlock &other )
 {
+  if ( &other == this )
+    return *this;
+
   mSize = other.mSize;
   mIsValid = other.mIsValid;
   mIsVector = other.mIsVector;
@@ -387,6 +390,9 @@ QgsMesh3DDataBlock &QgsMesh3DDataBlock::operator=( const QgsMesh3DDataBlock &oth
 
 QgsMesh3DDataBlock &QgsMesh3DDataBlock::operator=( QgsMesh3DDataBlock &&other )
 {
+  if ( &other == this )
+    return *this;
+
   mSize = other.mSize;
   mIsValid = other.mIsValid;
   mIsVector = other.mIsVector;

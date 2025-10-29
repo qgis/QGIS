@@ -33,6 +33,9 @@ QgsVectorLayerToolsContext::QgsVectorLayerToolsContext( const QgsVectorLayerTool
 
 QgsVectorLayerToolsContext &QgsVectorLayerToolsContext::operator=( const QgsVectorLayerToolsContext &other )
 {
+  if ( &other == this )
+    return *this;
+
   mParentWidget = other.mParentWidget;
   mShowModal = other.mShowModal;
   mHideParent = other.mHideParent;

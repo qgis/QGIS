@@ -31,6 +31,9 @@ QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
 
 QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )
 {
+  if ( &rhs == this )
+    return *this;
+
   this->mRenderShadows = rhs.mRenderShadows;
   this->mSelectedDirectionalLight = rhs.mSelectedDirectionalLight;
   this->mMaximumShadowRenderingDistance = rhs.mMaximumShadowRenderingDistance;

@@ -39,6 +39,9 @@ QgsTableCell::~QgsTableCell() = default;
 
 QgsTableCell &QgsTableCell::operator=( const QgsTableCell &other )
 {
+  if ( &other == this )
+    return *this;
+
   mContent = other.mContent;
   mBackgroundColor = other.mBackgroundColor;
   mForegroundColor = other.mForegroundColor;

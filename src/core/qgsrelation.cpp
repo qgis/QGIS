@@ -52,6 +52,9 @@ QgsRelation::QgsRelation( QgsRelation &&other )
 
 QgsRelation &QgsRelation::operator=( const QgsRelation &other )
 {
+  if ( &other == this )
+    return *this;
+
   d = other.d;
   mContext = other.mContext;
   return *this;
@@ -59,6 +62,9 @@ QgsRelation &QgsRelation::operator=( const QgsRelation &other )
 
 QgsRelation &QgsRelation::operator=( QgsRelation &&other )
 {
+  if ( &other == this )
+    return *this;
+
   d = std::move( other.d );
   mContext = std::move( other.mContext );
   return *this;

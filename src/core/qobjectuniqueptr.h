@@ -91,6 +91,9 @@ class QObjectUniquePtr
 
     QObjectUniquePtr &operator=( QObjectUniquePtr &&other ) noexcept
     {
+      if ( &other == this )
+        return *this;
+
       delete mPtr.data();
       mPtr = other.mPtr;
       other.clear();

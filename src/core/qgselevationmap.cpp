@@ -76,6 +76,9 @@ std::unique_ptr<QgsElevationMap> QgsElevationMap::fromRasterBlock( QgsRasterBloc
 
 QgsElevationMap &QgsElevationMap::operator=( const QgsElevationMap &other )
 {
+  if ( &other == this )
+    return *this;
+
   mPainter.reset();
   mElevationImage = other.mElevationImage;
   return *this;

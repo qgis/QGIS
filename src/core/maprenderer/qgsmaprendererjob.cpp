@@ -65,6 +65,9 @@ const QString QgsMapRendererJob::LABEL_PREVIEW_CACHE_ID = QStringLiteral( "_prev
 
 LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
 {
+  if ( &other == this )
+    return *this;
+
   mContext = std::move( other.mContext );
 
   img = other.img;

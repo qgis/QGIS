@@ -49,6 +49,9 @@ QgsPolymorphicRelation::QgsPolymorphicRelation( QgsPolymorphicRelation &&other )
 
 QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( const QgsPolymorphicRelation &other )
 {
+  if ( &other == this )
+    return *this;
+
   d = other.d;
   mContext = other.mContext;
   return *this;
@@ -56,6 +59,9 @@ QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( const QgsPolymorphicR
 
 QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( QgsPolymorphicRelation &&other )
 {
+  if ( &other == this )
+    return *this;
+
   d = std::move( other.d );
   mContext = std::move( other.mContext );
   return *this;

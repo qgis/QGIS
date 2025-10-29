@@ -75,6 +75,9 @@ QgsExpressionNode::QgsExpressionNode( const QgsExpressionNode &other )
 
 QgsExpressionNode &QgsExpressionNode::operator=( const QgsExpressionNode &other )
 {
+  if ( &other == this )
+    return *this;
+
   parserFirstLine = other.parserFirstLine;
   parserFirstColumn = other.parserFirstColumn;
   parserLastLine = other.parserLastLine;

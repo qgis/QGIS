@@ -57,6 +57,9 @@ QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( QgsColorRampLege
 
 QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( const QgsColorRampLegendNodeSettings &other )
 {
+  if ( &other == this )
+    return *this;
+
   //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mUseContinuousLegend = other.mUseContinuousLegend;
   mMinimumLabel = other.mMinimumLabel;
@@ -73,6 +76,9 @@ QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( const
 
 QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( QgsColorRampLegendNodeSettings &&other )
 {
+  if ( &other == this )
+    return *this;
+
   mUseContinuousLegend = other.mUseContinuousLegend;
   mMinimumLabel = std::move( other.mMinimumLabel );
   mMaximumLabel = std::move( other.mMaximumLabel );

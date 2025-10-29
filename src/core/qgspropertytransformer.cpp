@@ -59,6 +59,9 @@ QgsPropertyTransformer::QgsPropertyTransformer( const QgsPropertyTransformer &ot
 
 QgsPropertyTransformer &QgsPropertyTransformer::operator=( const QgsPropertyTransformer &other )
 {
+  if ( &other == this )
+    return *this;
+
   mMinValue = other.mMinValue;
   mMaxValue = other.mMaxValue;
   mCurveTransform.reset( other.mCurveTransform ? new QgsCurveTransform( *other.mCurveTransform ) : nullptr );
@@ -546,6 +549,9 @@ QgsColorRampTransformer::QgsColorRampTransformer( const QgsColorRampTransformer 
 
 QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampTransformer &other )
 {
+  if ( &other == this )
+    return *this;
+
   QgsPropertyTransformer::operator=( other );
   mMinValue = other.mMinValue;
   mMaxValue = other.mMaxValue;

@@ -106,6 +106,9 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings( QgsDiagramLayerSettings &&rh )
 
 QgsDiagramLayerSettings &QgsDiagramLayerSettings::operator=( const QgsDiagramLayerSettings &rh )
 {
+  if ( &rh == this )
+    return *this;
+
   //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mPlacement = rh.mPlacement;
   mPlacementFlags = rh.mPlacementFlags;
@@ -123,6 +126,9 @@ QgsDiagramLayerSettings &QgsDiagramLayerSettings::operator=( const QgsDiagramLay
 
 QgsDiagramLayerSettings &QgsDiagramLayerSettings::operator=( QgsDiagramLayerSettings &&rh )
 {
+  if ( &rh == this )
+    return *this;
+
   mPlacement = rh.mPlacement;
   mPlacementFlags = rh.mPlacementFlags;
   mPriority = rh.mPriority;
@@ -519,6 +525,9 @@ QgsDiagramRenderer::QgsDiagramRenderer( const QgsDiagramRenderer &other )
 
 QgsDiagramRenderer &QgsDiagramRenderer::operator=( const QgsDiagramRenderer &other )
 {
+  if ( &other == this )
+    return *this;
+
   mDiagram.reset( other.mDiagram ? other.mDiagram->clone() : nullptr );
   mShowAttributeLegend = other.mShowAttributeLegend;
   return *this;
@@ -911,6 +920,9 @@ QgsStackedDiagramRenderer::QgsStackedDiagramRenderer( const QgsStackedDiagramRen
 
 QgsStackedDiagramRenderer &QgsStackedDiagramRenderer::operator=( const QgsStackedDiagramRenderer &other )
 {
+  if ( &other == this )
+    return *this;
+
   mSettings = other.mSettings;
   qDeleteAll( mDiagramRenderers );
   mDiagramRenderers.clear();
@@ -1291,6 +1303,9 @@ QgsDiagramSettings::QgsDiagramSettings( const QgsDiagramSettings &other )
 
 QgsDiagramSettings &QgsDiagramSettings::operator=( const QgsDiagramSettings &other )
 {
+  if ( &other == this )
+    return *this;
+
   enabled = other.enabled;
   font = other.font;
   categoryColors = other.categoryColors;

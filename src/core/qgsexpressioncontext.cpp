@@ -75,6 +75,9 @@ QgsExpressionContextScope::QgsExpressionContextScope( QgsExpressionContextScope 
 
 QgsExpressionContextScope &QgsExpressionContextScope::operator=( const QgsExpressionContextScope &other )
 {
+  if ( &other == this )
+    return *this;
+
   //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mName = other.mName;
   mVariables = other.mVariables;
@@ -98,6 +101,9 @@ QgsExpressionContextScope &QgsExpressionContextScope::operator=( const QgsExpres
 
 QgsExpressionContextScope &QgsExpressionContextScope::operator=( QgsExpressionContextScope &&other )
 {
+  if ( &other == this )
+    return *this;
+
   mName = std::move( other.mName );
   mVariables = std::move( other.mVariables );
   mHasFeature = other.mHasFeature;
