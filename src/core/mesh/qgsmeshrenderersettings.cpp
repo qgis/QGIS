@@ -412,6 +412,60 @@ QgsMeshRendererSettings::QgsMeshRendererSettings()
 {
 }
 
+QgsMeshRendererSettings::QgsMeshRendererSettings( const QgsMeshRendererSettings &other )
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  : mRendererNativeMeshSettings( other.mRendererNativeMeshSettings )
+  , mRendererTriangularMeshSettings( other.mRendererTriangularMeshSettings )
+  , mRendererEdgeMeshSettings( other.mRendererEdgeMeshSettings )
+  , mRendererScalarSettings( other.mRendererScalarSettings )
+  , mRendererVectorSettings( other.mRendererVectorSettings )
+  , mActiveScalarDatasetGroup( other.mActiveScalarDatasetGroup )
+  , mActiveVectorDatasetGroup( other.mActiveVectorDatasetGroup )
+  , mAveragingMethod( other.mAveragingMethod )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+{
+}
+
+QgsMeshRendererSettings::QgsMeshRendererSettings( QgsMeshRendererSettings &&other )
+  : mRendererNativeMeshSettings( std::move( other.mRendererNativeMeshSettings ) )
+  , mRendererTriangularMeshSettings( std::move( other.mRendererTriangularMeshSettings ) )
+  , mRendererEdgeMeshSettings( std::move( other.mRendererEdgeMeshSettings ) )
+  , mRendererScalarSettings( std::move( other.mRendererScalarSettings ) )
+  , mRendererVectorSettings( std::move( other.mRendererVectorSettings ) )
+  , mActiveScalarDatasetGroup( other.mActiveScalarDatasetGroup )
+  , mActiveVectorDatasetGroup( other.mActiveVectorDatasetGroup )
+  , mAveragingMethod( std::move( other.mAveragingMethod ) )
+{
+}
+
+QgsMeshRendererSettings &QgsMeshRendererSettings::operator=( const QgsMeshRendererSettings &other )
+{
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+  mRendererNativeMeshSettings = other.mRendererNativeMeshSettings;
+  mRendererTriangularMeshSettings = other.mRendererTriangularMeshSettings;
+  mRendererEdgeMeshSettings = other.mRendererEdgeMeshSettings;
+  mRendererScalarSettings = other.mRendererScalarSettings;
+  mRendererVectorSettings = other.mRendererVectorSettings;
+  mActiveScalarDatasetGroup = other.mActiveScalarDatasetGroup;
+  mActiveVectorDatasetGroup = other.mActiveVectorDatasetGroup;
+  mAveragingMethod = other.mAveragingMethod;
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+  return *this;
+}
+
+QgsMeshRendererSettings &QgsMeshRendererSettings::operator=( QgsMeshRendererSettings &&other )
+{
+  mRendererNativeMeshSettings = std::move( other.mRendererNativeMeshSettings );
+  mRendererTriangularMeshSettings = std::move( other.mRendererTriangularMeshSettings );
+  mRendererEdgeMeshSettings = std::move( other.mRendererEdgeMeshSettings );
+  mRendererScalarSettings = std::move( other.mRendererScalarSettings );
+  mRendererVectorSettings = std::move( other.mRendererVectorSettings );
+  mActiveScalarDatasetGroup = other.mActiveScalarDatasetGroup;
+  mActiveVectorDatasetGroup = other.mActiveVectorDatasetGroup;
+  mAveragingMethod = std::move( other.mAveragingMethod );
+  return *this;
+}
+
 QgsMeshRendererSettings::~QgsMeshRendererSettings() = default;
 
 QgsMesh3DAveragingMethod *QgsMeshRendererSettings::averagingMethod() const
