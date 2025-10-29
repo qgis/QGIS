@@ -381,6 +381,8 @@ void TestQgsExpressionContext::contextMove()
   context << new QgsExpressionContextScope();
   context.scope( 0 )->setVariable( QStringLiteral( "test" ), 1 );
 
+  // NOLINTBEGIN(bugprone-use-after-move)
+  // NOLINTBEGIN(clang-analyzer-cplusplus.Move)
   //move constructor
   QgsExpressionContext newContext( std::move( context ) );
   QCOMPARE( newContext.scopeCount(), 1 );
@@ -396,6 +398,8 @@ void TestQgsExpressionContext::contextMove()
   QVERIFY( newContext2.hasVariable( "test" ) );
   QCOMPARE( newContext2.variable( "test" ).toInt(), 1 );
   QCOMPARE( newContext2.variableNames().length(), 1 );
+  // NOLINTEND(clang-analyzer-cplusplus.Move)
+  // NOLINTEND(bugprone-use-after-move)
 }
 
 void TestQgsExpressionContext::contextStackFunctions()
