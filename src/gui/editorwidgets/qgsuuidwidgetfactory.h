@@ -33,7 +33,7 @@ class GUI_EXPORT QgsUuidWidgetFactory : public QgsEditorWidgetFactory
   public:
     /**
      * Constructor for QgsUuidWidgetFactory, where \a name is a human-readable
-     * name for the factory and \a icon provides a visual representation of the widget.
+     * name for the factory and \a icon provides a visual representation of this widget type.
      */
     explicit QgsUuidWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 

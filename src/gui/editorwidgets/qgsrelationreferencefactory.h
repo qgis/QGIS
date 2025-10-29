@@ -36,7 +36,7 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
   public:
     /**
      * Constructor for QgsRelationReferenceFactory, where \a name is a human-readable
-     * name for the factory and \a icon provides a visual representation of the widget.
+     * name for the factory and \a icon provides a visual representation of this widget type.
      *
      * The \a canvas argument is used to interact with the main map canvas and
      * the \a messageBar argument can be used to link the widget to a QgsMessageBar
