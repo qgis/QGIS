@@ -19993,6 +19993,7 @@ QgsVectorLayerUtils.duplicateFeature: src/core/vector/qgsvectorlayerutils.h#L225
 QgsVectorLayerUtils.fieldEditabilityDependsOnFeature: src/core/vector/qgsvectorlayerutils.h#L341
 QgsVectorLayerUtils.fieldIsEditable: src/core/vector/qgsvectorlayerutils.h#L319
 QgsVectorLayerUtils.fieldIsReadOnly: src/core/vector/qgsvectorlayerutils.h#L330
+QgsVectorLayerUtils.fieldToDataArray: src/core/vector/qgsvectorlayerutils.h#L487
 QgsVectorLayerUtils.getFeatureDisplayString: src/core/vector/qgsvectorlayerutils.h#L368
 QgsVectorLayerUtils.getValuesIterator: src/core/vector/qgsvectorlayerutils.h#L124
 QgsVectorLayerUtils.guessFriendlyIdentifierField: src/core/vector/qgsvectorlayerutils.h#L432
