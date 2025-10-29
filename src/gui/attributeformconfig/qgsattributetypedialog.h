@@ -299,6 +299,8 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
 
     void defaultExpressionChanged();
 
+    void updateReuseLastValuePolicyLabel();
+
     void updateSplitPolicyLabel();
 
     void updateDuplicatePolicyLabel();

@@ -20,7 +20,9 @@ from qgis.core import (
     QgsDefaultValue,
     QgsEditFormConfig,
     QgsEditorWidgetSetup,
+    QgsExpressionContext,
     QgsFeature,
+    QgsGeometry,
     QgsField,
     QgsVectorLayer,
 )
@@ -199,7 +201,11 @@ class TestQgsAttributeForm(QgisTestCase):
         )
         layer.setEditFormConfig(config)
 
-        feature = QgsAttributeForm.createFeature(layer)
+        geometry = QgsGeometry()
+        attributes = {}
+        context = QgsExpressionContext()
+
+        feature = QgsAttributeForm.createFeature(layer, geometry, attributes, context)
         form = QgsAttributeForm(layer)
         form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
         form.setFeature(feature)
@@ -210,7 +216,7 @@ class TestQgsAttributeForm(QgisTestCase):
         form.changeAttribute("number", 12)
         self.assertEqual(form.save(), True)
 
-        feature = QgsAttributeForm.createFeature(layer)
+        feature = QgsAttributeForm.createFeature(layer, geometry, attributes, context)
         self.assertEqual(feature.attribute(0), 12)
         self.assertEqual(feature.attribute(1), None)
 
@@ -230,7 +236,7 @@ class TestQgsAttributeForm(QgisTestCase):
         form.changeAttribute("number", 10)
         self.assertEqual(form.save(), True)
 
-        feature = QgsAttributeForm.createFeature(layer)
+        feature = QgsAttributeForm.createFeature(layer, geometry, attributes, context)
         self.assertEqual(feature.attribute(0), None)
         self.assertEqual(feature.attribute(1), None)
 

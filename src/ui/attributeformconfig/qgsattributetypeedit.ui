@@ -281,17 +281,27 @@
       <item row="0" column="1" colspan="3">
        <widget class="QComboBox" name="mReuseLastValuePolicyComboBox"/>
       </item>
-      <item row="1" column="0">
+      <item row="1" column="0" colspan="4">
+       <widget class="QLabel" name="mReuseLastValuePolicyDescriptionLabel">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
        <widget class="QLabel" name="mSplitPolicyLabel">
         <property name="text">
          <string>When splitting features</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1" colspan="3">
+      <item row="6" column="1" colspan="3">
        <widget class="QComboBox" name="mDuplicatePolicyComboBox"/>
       </item>
-      <item row="6" column="0" colspan="4">
+      <item row="7" column="0" colspan="4">
        <widget class="QLabel" name="mDuplicatePolicyDescriptionLabel">
         <property name="text">
          <string>TextLabel</string>
@@ -301,27 +311,27 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1" colspan="3">
+      <item row="8" column="1" colspan="3">
        <widget class="QComboBox" name="mMergePolicyComboBox"/>
       </item>
-      <item row="7" column="0">
+      <item row="8" column="0">
        <widget class="QLabel" name="mMergePolicyLabel">
         <property name="text">
          <string>When merging features</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="mDuplicatePolicyLabel">
         <property name="text">
          <string>When duplicating features</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="3">
+      <item row="2" column="1" colspan="3">
        <widget class="QComboBox" name="mSplitPolicyComboBox"/>
       </item>
-      <item row="2" column="0" colspan="4">
+      <item row="3" column="0" colspan="4">
        <widget class="QLabel" name="mSplitPolicyDescriptionLabel">
         <property name="text">
          <string>TextLabel</string>
@@ -331,7 +341,7 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="4">
+      <item row="9" column="0" colspan="4">
        <widget class="QLabel" name="mMergePolicyDescriptionLabel">
         <property name="text">
          <string>TextLabel</string>

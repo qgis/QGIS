@@ -205,7 +205,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * context such as the remembrance and reuse of last attribute values.
      * \since QGIS 4.0
      */
-    static QgsFeature createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry = QgsGeometry(), const QgsAttributeMap &attributes = QgsAttributeMap(), QgsExpressionContext *context = nullptr );
+    static QgsFeature createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsAttributeMap &attributes, QgsExpressionContext &context );
 
   signals:
 

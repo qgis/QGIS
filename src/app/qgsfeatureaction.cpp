@@ -182,7 +182,7 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttrib
     context.appendScope( scope.release() );
   }
 
-  const QgsFeature newFeature = QgsAttributeForm::createFeature( mLayer, mFeature->geometry(), defaultAttributes, &context );
+  const QgsFeature newFeature = QgsAttributeForm::createFeature( mLayer, mFeature->geometry(), defaultAttributes, context );
   *mFeature = newFeature;
 
   //show the dialog to enter attribute values
