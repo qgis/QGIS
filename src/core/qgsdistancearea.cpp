@@ -79,6 +79,9 @@ QgsDistanceArea::QgsDistanceArea( QgsDistanceArea &&other )
 
 QgsDistanceArea &QgsDistanceArea::operator=( const QgsDistanceArea &other )
 {
+  if ( &other == this )
+    return *this;
+
   //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mCoordTransform = other.mCoordTransform;
   mEllipsoid = other.mEllipsoid;
@@ -92,6 +95,9 @@ QgsDistanceArea &QgsDistanceArea::operator=( const QgsDistanceArea &other )
 
 QgsDistanceArea &QgsDistanceArea::operator=( QgsDistanceArea &&other )
 {
+  if ( &other == this )
+    return *this;
+
   mCoordTransform = other.mCoordTransform;
   mEllipsoid = other.mEllipsoid;
   mSemiMajor = other.mSemiMajor;

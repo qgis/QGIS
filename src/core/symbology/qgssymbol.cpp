@@ -87,6 +87,9 @@ QgsSymbolBufferSettings::QgsSymbolBufferSettings( const QgsSymbolBufferSettings 
 
 QgsSymbolBufferSettings &QgsSymbolBufferSettings::operator=( const QgsSymbolBufferSettings &other )
 {
+  if ( &other == this )
+    return *this;
+
   mEnabled = other.mEnabled;
   mSize = other.mSize;
   mSizeUnit = other.mSizeUnit;

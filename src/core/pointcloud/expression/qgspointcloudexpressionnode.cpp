@@ -68,6 +68,9 @@ QgsPointCloudExpressionNode::QgsPointCloudExpressionNode( const QgsPointCloudExp
 
 QgsPointCloudExpressionNode &QgsPointCloudExpressionNode::operator=( const QgsPointCloudExpressionNode &other )
 {
+  if ( &other == this )
+    return *this;
+
   parserFirstLine = other.parserFirstLine;
   parserFirstColumn = other.parserFirstColumn;
   parserLastLine = other.parserLastLine;

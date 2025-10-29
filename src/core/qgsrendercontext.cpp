@@ -161,6 +161,9 @@ QgsRenderContext::QgsRenderContext( QgsRenderContext &&rh )
 
 QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 {
+  if ( &rh == this )
+    return *this;
+
   //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mFlags = rh.mFlags;
   mRasterizedRenderingPolicy = rh.mRasterizedRenderingPolicy;
@@ -223,6 +226,9 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 
 QgsRenderContext &QgsRenderContext::operator=( QgsRenderContext &&rh )
 {
+  if ( &rh == this )
+    return *this;
+
   mFlags = rh.mFlags;
   mRasterizedRenderingPolicy = rh.mRasterizedRenderingPolicy;
   mPainter = rh.mPainter;

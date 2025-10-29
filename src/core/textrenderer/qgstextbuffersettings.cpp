@@ -42,12 +42,18 @@ QgsTextBufferSettings::QgsTextBufferSettings( QgsTextBufferSettings &&other ) //
 
 QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings &other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
   d = other.d;
   return *this;
 }
 
 QgsTextBufferSettings &QgsTextBufferSettings::operator=( QgsTextBufferSettings &&other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
   d = std::move( other.d );
   return *this;
 }

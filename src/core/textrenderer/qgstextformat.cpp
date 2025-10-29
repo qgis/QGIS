@@ -66,6 +66,9 @@ QgsTextFormat::QgsTextFormat( QgsTextFormat &&other ) //NOLINT
 
 QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat &other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
   //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   d = other.d;
   mBufferSettings = other.mBufferSettings;
@@ -80,6 +83,9 @@ QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat &other )  //NOLINT
 
 QgsTextFormat &QgsTextFormat::operator=( QgsTextFormat &&other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
   d = std::move( other.d );
   mBufferSettings = std::move( other.mBufferSettings );
   mBackgroundSettings = std::move( other.mBackgroundSettings );

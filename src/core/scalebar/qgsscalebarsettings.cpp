@@ -88,6 +88,9 @@ QgsScaleBarSettings::QgsScaleBarSettings( const QgsScaleBarSettings &other )
 
 QgsScaleBarSettings &QgsScaleBarSettings::operator=( const QgsScaleBarSettings &other )
 {
+  if ( &other == this )
+    return *this;
+
   mNumSegments = other.mNumSegments;
   mNumSegmentsLeft = other.mNumSegmentsLeft;
   mNumSubdivisions = other.mNumSubdivisions;

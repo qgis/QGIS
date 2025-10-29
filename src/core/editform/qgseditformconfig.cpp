@@ -163,6 +163,9 @@ QgsEditFormConfig::~QgsEditFormConfig() //NOLINT
 
 QgsEditFormConfig &QgsEditFormConfig::operator=( const QgsEditFormConfig &o )  //NOLINT
 {
+  if ( &o == this )
+    return *this;
+
   d = o.d;
   return *this;
 }

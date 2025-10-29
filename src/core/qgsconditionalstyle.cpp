@@ -206,6 +206,9 @@ QgsConditionalStyle::QgsConditionalStyle( QgsConditionalStyle &&other )
 
 QgsConditionalStyle &QgsConditionalStyle::operator=( const QgsConditionalStyle &other )
 {
+  if ( &other == this )
+    return *this;
+
   //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mValid = other.mValid;
   mRule = other.mRule;
@@ -228,6 +231,9 @@ QgsConditionalStyle &QgsConditionalStyle::operator=( const QgsConditionalStyle &
 
 QgsConditionalStyle &QgsConditionalStyle::operator=( QgsConditionalStyle &&other )
 {
+  if ( &other == this )
+    return *this;
+
   mValid = other.mValid;
   mRule = std::move( other.mRule );
   mFont = std::move( other.mFont );
