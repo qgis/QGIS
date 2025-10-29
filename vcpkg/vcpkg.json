@@ -164,6 +164,12 @@
       "dependencies": [
         "fastcgi"
       ]
+    },
+    "sfcgal": {
+      "description": "Build with SFCGAL support",
+      "dependencies": [
+        "sfcgal"
+      ]
     }
   }
 }
