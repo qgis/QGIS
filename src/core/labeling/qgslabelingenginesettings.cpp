@@ -28,6 +28,7 @@ QgsLabelingEngineSettings::QgsLabelingEngineSettings()
 QgsLabelingEngineSettings::~QgsLabelingEngineSettings() = default;
 
 QgsLabelingEngineSettings::QgsLabelingEngineSettings( const QgsLabelingEngineSettings &other )
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mFlags( other.mFlags )
   , mSearchMethod( other.mSearchMethod )
   , mMaxLineCandidatesPerCm( other.mMaxLineCandidatesPerCm )
@@ -35,6 +36,7 @@ QgsLabelingEngineSettings::QgsLabelingEngineSettings( const QgsLabelingEngineSet
   , mUnplacedLabelColor( other.mUnplacedLabelColor )
   , mPlacementVersion( other.mPlacementVersion )
   , mDefaultTextRenderFormat( other.mDefaultTextRenderFormat )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
   mEngineRules.reserve( other.mEngineRules.size() );
   for ( const auto &rule : other.mEngineRules )
@@ -43,8 +45,21 @@ QgsLabelingEngineSettings::QgsLabelingEngineSettings( const QgsLabelingEngineSet
   }
 }
 
+QgsLabelingEngineSettings::QgsLabelingEngineSettings( QgsLabelingEngineSettings &&other )
+  : mFlags( other.mFlags )
+  , mSearchMethod( other.mSearchMethod )
+  , mMaxLineCandidatesPerCm( other.mMaxLineCandidatesPerCm )
+  , mMaxPolygonCandidatesPerCmSquared( other.mMaxPolygonCandidatesPerCmSquared )
+  , mUnplacedLabelColor( std::move( other.mUnplacedLabelColor ) )
+  , mPlacementVersion( other.mPlacementVersion )
+  , mDefaultTextRenderFormat( other.mDefaultTextRenderFormat )
+  , mEngineRules( std::move( other.mEngineRules ) )
+{
+}
+
 QgsLabelingEngineSettings &QgsLabelingEngineSettings::operator=( const QgsLabelingEngineSettings &other )
 {
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mFlags = other.mFlags;
   mSearchMethod = other.mSearchMethod;
   mMaxLineCandidatesPerCm = other.mMaxLineCandidatesPerCm;
@@ -58,6 +73,20 @@ QgsLabelingEngineSettings &QgsLabelingEngineSettings::operator=( const QgsLabeli
   {
     mEngineRules.emplace_back( rule->clone() );
   }
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+  return *this;
+}
+
+QgsLabelingEngineSettings &QgsLabelingEngineSettings::operator=( QgsLabelingEngineSettings &&other )
+{
+  mFlags = other.mFlags;
+  mSearchMethod = other.mSearchMethod;
+  mMaxLineCandidatesPerCm = other.mMaxLineCandidatesPerCm;
+  mMaxPolygonCandidatesPerCmSquared = other.mMaxPolygonCandidatesPerCmSquared;
+  mUnplacedLabelColor = std::move( other.mUnplacedLabelColor );
+  mPlacementVersion = other.mPlacementVersion;
+  mDefaultTextRenderFormat = other.mDefaultTextRenderFormat;
+  mEngineRules = std::move( other.mEngineRules );
   return *this;
 }
 
