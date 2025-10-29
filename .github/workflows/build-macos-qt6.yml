@@ -92,6 +92,7 @@ jobs:
                 -D WITH_QTWEBENGINE=OFF \
                 -D WITH_BINDINGS=ON \
                 -D WITH_ORACLE=ON \
+                -D WITH_SFCGAL=ON \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
