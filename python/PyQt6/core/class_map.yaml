@@ -17581,7 +17581,6 @@ QgsSymbolLayerUtils.rescaleUom: src/core/symbology/qgssymbollayerutils.h#L1004
 QgsSymbolLayerUtils.rescaleUom: src/core/symbology/qgssymbollayerutils.h#L1010
 QgsSymbolLayerUtils.resetSymbolLayerIds: src/core/symbology/qgssymbollayerutils.h#L1119
 QgsSymbolLayerUtils.resetSymbolLayerIds: src/core/symbology/qgssymbollayerutils.h#L1125
-QgsSymbolLayerUtils.restrictedSizeSymbol: src/core/symbology/qgssymbollayerutils.h#L1084
 QgsSymbolLayerUtils.rotationFromSldElement: src/core/symbology/qgssymbollayerutils.h#L629
 QgsSymbolLayerUtils.saveColorRamp: src/core/symbology/qgssymbollayerutils.h#L755
 QgsSymbolLayerUtils.saveColorsToGpl: src/core/symbology/qgssymbollayerutils.h#L828
