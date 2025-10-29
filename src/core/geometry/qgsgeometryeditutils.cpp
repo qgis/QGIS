@@ -211,7 +211,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
           std::unique_ptr< QgsCurve > line( curve->segmentize() );
           part = std::move( line );
         }
-        added = geomCollection->addGeometry( qgsgeometry_cast<QgsCurve *>( part.release() ) );
+        added = geomCollection->addGeometry( qgis::down_cast<QgsCurve *>( part.release() ) );
       }
       else
       {

@@ -1208,14 +1208,14 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
 
     if ( qgsgeometry_cast<QgsMultiPoint *>( splitGeom.get() ) )
     {
-      splitPoints.reset( qgsgeometry_cast<QgsMultiPoint *>( splitGeom.release() ) );
+      splitPoints.reset( qgis::down_cast<QgsMultiPoint *>( splitGeom.release() ) );
     }
     else if ( qgsgeometry_cast<QgsPoint *>( splitGeom.get() ) )
     {
       splitPoints = std::make_unique< QgsMultiPoint >();
       if ( qgsgeometry_cast<QgsPoint *>( splitGeom.get() ) )
       {
-        splitPoints->addGeometry( qgsgeometry_cast<QgsPoint *>( splitGeom.release() ) );
+        splitPoints->addGeometry( qgis::down_cast<QgsPoint *>( splitGeom.release() ) );
       }
     }
   }
