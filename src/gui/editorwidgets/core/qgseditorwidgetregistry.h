@@ -125,13 +125,24 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS ) SIP_FACTORY;
 
     /**
-     * Gets the human readable name for a widget type
+     * Returns the human readable name for a widget type
      *
      * \param widgetId The widget type to get the name for
      *
      * \returns A human readable name
      */
     QString name( const QString &widgetId );
+
+    /**
+     * Returns the icon for a widget type
+     *
+     * \param widgetId The widget type to get the icon for
+     *
+     * \returns An icon
+     * 
+     * \since QGIS 4.0
+     */
+    QIcon icon( const QString &widgetId );
 
     /**
      * Gets the widget's read-only flag
