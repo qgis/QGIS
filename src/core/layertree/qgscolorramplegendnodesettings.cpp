@@ -26,6 +26,7 @@ QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings()
 }
 
 QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( const QgsColorRampLegendNodeSettings &other )
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
   : mUseContinuousLegend( other.mUseContinuousLegend )
   , mMinimumLabel( other.mMinimumLabel )
   , mMaximumLabel( other.mMaximumLabel )
@@ -35,12 +36,28 @@ QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( const QgsColorRa
   , mNumericFormat( other.numericFormat()->clone() )
   , mTextFormat( other.textFormat() )
   , mOrientation( other.mOrientation )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+{
+
+}
+
+QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( QgsColorRampLegendNodeSettings &&other )
+  : mUseContinuousLegend( other.mUseContinuousLegend )
+  , mMinimumLabel( std::move( other.mMinimumLabel ) )
+  , mMaximumLabel( std::move( other.mMaximumLabel ) )
+  , mPrefix( std::move( other.mPrefix ) )
+  , mSuffix( std::move( other.mSuffix ) )
+  , mDirection( other.mDirection )
+  , mNumericFormat( std::move( other.mNumericFormat ) )
+  , mTextFormat( std::move( other.mTextFormat ) )
+  , mOrientation( other.mOrientation )
 {
 
 }
 
 QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( const QgsColorRampLegendNodeSettings &other )
 {
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mUseContinuousLegend = other.mUseContinuousLegend;
   mMinimumLabel = other.mMinimumLabel;
   mMaximumLabel = other.mMaximumLabel;
@@ -49,6 +66,21 @@ QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( const
   mDirection = other.mDirection;
   mNumericFormat.reset( other.numericFormat()->clone() );
   mTextFormat = other.mTextFormat;
+  mOrientation = other.mOrientation;
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+  return *this;
+}
+
+QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( QgsColorRampLegendNodeSettings &&other )
+{
+  mUseContinuousLegend = other.mUseContinuousLegend;
+  mMinimumLabel = std::move( other.mMinimumLabel );
+  mMaximumLabel = std::move( other.mMaximumLabel );
+  mPrefix = std::move( other.mPrefix );
+  mSuffix = std::move( other.mSuffix );
+  mDirection = other.mDirection;
+  mNumericFormat = std::move( other.mNumericFormat );
+  mTextFormat = std::move( other.mTextFormat );
   mOrientation = other.mOrientation;
   return *this;
 }
