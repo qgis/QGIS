@@ -303,7 +303,9 @@ class CORE_EXPORT QgsPlotData
     ~QgsPlotData();
 
     QgsPlotData( const QgsPlotData &other );
+    SIP_SKIP QgsPlotData( QgsPlotData &&other );
     QgsPlotData &operator=( const QgsPlotData &other );
+    QgsPlotData &operator=( QgsPlotData &&other );
 
     /**
      * Returns the list of series forming the plot data.
