@@ -41,10 +41,23 @@ QgsPolymorphicRelation::QgsPolymorphicRelation( const QgsPolymorphicRelation &ot
 {
 }
 
+QgsPolymorphicRelation::QgsPolymorphicRelation( QgsPolymorphicRelation &&other )
+  : d( std::move( other.d ) )
+  , mContext( std::move( other.mContext ) )
+{
+}
+
 QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( const QgsPolymorphicRelation &other )
 {
   d = other.d;
   mContext = other.mContext;
+  return *this;
+}
+
+QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( QgsPolymorphicRelation &&other )
+{
+  d = std::move( other.d );
+  mContext = std::move( other.mContext );
   return *this;
 }
 
