@@ -1237,12 +1237,18 @@ QgsPlotData::~QgsPlotData()
 }
 
 QgsPlotData::QgsPlotData( const QgsPlotData &other )
+  : mCategories( other.mCategories )
 {
-  mCategories = other.mCategories;
   for ( QgsAbstractPlotSeries *series : other.mSeries )
   {
     addSeries( series->clone() );
   }
+}
+
+QgsPlotData::QgsPlotData( QgsPlotData &&other )
+  : mSeries( std::move( other.mSeries ) )
+  , mCategories( std::move( other.mCategories ) )
+{
 }
 
 QgsPlotData &QgsPlotData::operator=( const QgsPlotData &other )
@@ -1256,6 +1262,18 @@ QgsPlotData &QgsPlotData::operator=( const QgsPlotData &other )
     {
       addSeries( series->clone() );
     }
+  }
+  return *this;
+}
+
+QgsPlotData &QgsPlotData::operator=( QgsPlotData &&other )
+{
+  if ( this != &other )
+  {
+    clearSeries();
+
+    mCategories = std::move( other.mCategories );
+    mSeries = std::move( other.mSeries );
   }
   return *this;
 }
