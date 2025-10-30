@@ -333,6 +333,7 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
   nanoarrow::UniqueArray tmp;
   struct ArrowError error {};
   QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowArrayInitFromSchema( tmp.get(), &mSchema, &error ), &error );
+  QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayReserve( tmp.get(), n ) );
 
   std::vector<QString> colNames( mSchema.n_children );
   for ( int64_t i = 0; i < mSchema.n_children; i++ )
@@ -341,8 +342,9 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
   }
 
   QgsFeature feat;
-  while ( mFeatureIterator.nextFeature( feat ) )
+  while ( n > 0 && mFeatureIterator.nextFeature( feat ) )
   {
+    --n;
     QVariantMap attrs = feat.attributeMap();
 
     for ( int64_t i = 0; i < mSchema.n_children; i++ )
