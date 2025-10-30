@@ -416,17 +416,17 @@ class CORE_EXPORT Qgis
     Q_FLAG( VectorLayerTypeFlags )
 
     /**
-     * Authorisation to run Python Embedded in projects
+     * Authorisation to run script embedded in projects
      * \since QGIS 3.40
      */
     enum class EmbeddedScriptMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
       {
-      Never = 0,              //!< Python embedded never run
-      Ask = 1,                //!< User is prompt before running
+      Never = 0,              //!< Embedded scripts never run
+      Ask = 1,                //!< User is prompted before running scripts
       SessionOnly = 2,        //!< Only during this session (only used prior to QGIS 4.0)
-      Always = 3,             //!< Python embedded is always run
-      NotForThisSession = 4,  //!< Python embedded will not be run for this session (only used prior to QGIS 4.0)
-      NeverAsk = 5,           //!< User never prompted, python embedded is only run on trusted projects and folders \since QGIS 4.0
+      Always = 3,             //!< Embedded scripts are always run
+      NotForThisSession = 4,  //!< Embedded scripts will not be run for this session (only used prior to QGIS 4.0)
+      NeverAsk = 5,           //!< The user is never prompted, embedded scripts are only run on trusted projects and folders \since QGIS 4.0
     };
     Q_ENUM( EmbeddedScriptMode )
 

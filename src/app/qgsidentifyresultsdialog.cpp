@@ -1913,17 +1913,32 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, const QUuid &act
   }
 
   const QgsAction act = layer->actions()->action( action );
-  if ( act.type() == Qgis::AttributeActionType::GenericPython )
+  switch ( act.type() )
   {
-    const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
-    if ( !allowed )
+    case Qgis::AttributeActionType::GenericPython:
+    case Qgis::AttributeActionType::Mac:
+    case Qgis::AttributeActionType::Windows:
+    case Qgis::AttributeActionType::Unix:
     {
-      QgisApp::instance()->messageBar()->pushMessage(
-        tr( "Security warning" ),
-        tr( "The action contains embedded script which has been denied execution." ),
-        Qgis::MessageLevel::Warning
-      );
-      return;
+      const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+      if ( !allowed )
+      {
+        QgisApp::instance()->messageBar()->pushMessage(
+          tr( "Security warning" ),
+          tr( "The action contains an embedded script which has been denied execution." ),
+          Qgis::MessageLevel::Warning
+        );
+        return;
+      }
+      break;
+    }
+
+    case Qgis::AttributeActionType::Generic:
+    case Qgis::AttributeActionType::OpenUrl:
+    case Qgis::AttributeActionType::SubmitUrlEncoded:
+    case Qgis::AttributeActionType::SubmitUrlMultipart:
+    {
+      break;
     }
   }
 

@@ -2113,7 +2113,7 @@ void QgsOptions::addTrustedProject()
 {
   QString path = QFileDialog::getOpenFileName(
     this,
-    tr( "Choose a project file" ),
+    tr( "Choose a Project File" ),
     QDir::toNativeSeparators( QDir::homePath() ),
     tr( "Project files (*.qgs *.qgz *.QGS *.QGZ)" )
   );
@@ -2139,7 +2139,7 @@ void QgsOptions::addUntrustedProject()
 {
   QString path = QFileDialog::getOpenFileName(
     this,
-    tr( "Choose a project file" ),
+    tr( "Choose a Project File" ),
     QDir::toNativeSeparators( QDir::homePath() ),
     tr( "Project files (*.qgs *.qgz *.QGS *.QGZ)" )
   );

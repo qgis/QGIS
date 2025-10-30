@@ -1969,6 +1969,7 @@ bool QgsVectorLayer::accept( QgsObjectEntityVisitorInterface *visitor ) const
     case Qgis::AttributeFormPythonInitCodeSource::Environment:
     {
       initCode = QStringLiteral( "# Calling function ’%1’\n# From environment\n\n" ).arg( mEditFormConfig.initFunction() );
+      break;
     }
 
     case Qgis::AttributeFormPythonInitCodeSource::NoSource:

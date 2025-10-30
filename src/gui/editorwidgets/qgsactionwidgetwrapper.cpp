@@ -104,34 +104,46 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
       QgsExpressionContext expressionContext = layer()->createExpressionContext();
       expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
       expressionContext.setFeature( mFeature );
-      if ( mAction.type() == Qgis::AttributeActionType::GenericPython )
+      switch ( mAction.type() )
       {
-        if ( QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent() ) )
+        case Qgis::AttributeActionType::GenericPython:
+        case Qgis::AttributeActionType::Mac:
+        case Qgis::AttributeActionType::Windows:
+        case Qgis::AttributeActionType::Unix:
         {
-          const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
-          if ( !allowed )
+          if ( QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent() ) )
           {
-            if ( mMessageBar )
+            const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+            if ( !allowed )
             {
-              mMessageBar->pushMessage(
-                tr( "Security warning" ),
-                tr( "The action contains embedded script which has been denied execution." ),
-                Qgis::MessageLevel::Warning
-              );
+              if ( mMessageBar )
+              {
+                mMessageBar->pushMessage(
+                  tr( "Security warning" ),
+                  tr( "The action contains an embedded script which has been denied execution." ),
+                  Qgis::MessageLevel::Warning
+                );
+              }
+              return;
             }
-            return;
-          }
 
-          const QString formCode = QStringLiteral( "locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n" )
-                                     .arg( ( quint64 ) form );
-          QgsAction action { mAction };
-          action.setCommand( formCode + mAction.command() );
-          action.run( layer(), mFeature, expressionContext );
+            const QString formCode = QStringLiteral( "locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n" )
+                                       .arg( ( quint64 ) form );
+            QgsAction action { mAction };
+            action.setCommand( formCode + mAction.command() );
+            action.run( layer(), mFeature, expressionContext );
+          }
+          break;
         }
-      }
-      else
-      {
-        mAction.run( layer(), mFeature, expressionContext );
+
+        case Qgis::AttributeActionType::Generic:
+        case Qgis::AttributeActionType::OpenUrl:
+        case Qgis::AttributeActionType::SubmitUrlEncoded:
+        case Qgis::AttributeActionType::SubmitUrlMultipart:
+        {
+          mAction.run( layer(), mFeature, expressionContext );
+          break;
+        }
       }
     } );
   }

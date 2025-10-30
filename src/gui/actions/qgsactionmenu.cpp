@@ -114,13 +114,28 @@ void QgsActionMenu::triggerAction()
     case Qgis::ActionType::AttributeAction:
     {
       const QgsAction act = data.actionData.value<QgsAction>();
-      if ( act.type() == Qgis::AttributeActionType::GenericPython )
+      switch ( act.type() )
       {
-        const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
-        if ( !allowed )
+        case Qgis::AttributeActionType::GenericPython:
+        case Qgis::AttributeActionType::Mac:
+        case Qgis::AttributeActionType::Windows:
+        case Qgis::AttributeActionType::Unix:
         {
-          emit messageEmitted( tr( "The action contains embedded script which has been denied execution." ), Qgis::MessageLevel::Warning );
-          return;
+          const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+          if ( !allowed )
+          {
+            emit messageEmitted( tr( "The action contains embedded scripts which have been denied execution." ), Qgis::MessageLevel::Warning );
+            return;
+          }
+          break;
+        }
+
+        case Qgis::AttributeActionType::Generic:
+        case Qgis::AttributeActionType::OpenUrl:
+        case Qgis::AttributeActionType::SubmitUrlEncoded:
+        case Qgis::AttributeActionType::SubmitUrlMultipart:
+        {
+          break;
         }
       }
 

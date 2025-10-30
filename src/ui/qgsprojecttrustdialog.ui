@@ -80,7 +80,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>This project contains executable script which you should only allow if you trust the authors of this project. If you don't trust or you are unsure, we recommend denying.</string>
+      <string>This project contains executable scripts which you should only allow if you trust the authors of this project. If you don't trust or you are unsure, we recommend denying.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

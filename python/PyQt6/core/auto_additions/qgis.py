@@ -745,32 +745,32 @@ Qgis.PythonMacroMode = Qgis.EmbeddedScriptMode
 # monkey patching scoped based enum
 Qgis.Never = Qgis.EmbeddedScriptMode.Never
 Qgis.Never.is_monkey_patched = True
-Qgis.Never.__doc__ = "Python embedded never run"
+Qgis.Never.__doc__ = "Embedded scripts never run"
 Qgis.Ask = Qgis.EmbeddedScriptMode.Ask
 Qgis.Ask.is_monkey_patched = True
-Qgis.Ask.__doc__ = "User is prompt before running"
+Qgis.Ask.__doc__ = "User is prompted before running scripts"
 Qgis.SessionOnly = Qgis.EmbeddedScriptMode.SessionOnly
 Qgis.SessionOnly.is_monkey_patched = True
 Qgis.SessionOnly.__doc__ = "Only during this session (only used prior to QGIS 4.0)"
 Qgis.Always = Qgis.EmbeddedScriptMode.Always
 Qgis.Always.is_monkey_patched = True
-Qgis.Always.__doc__ = "Python embedded is always run"
+Qgis.Always.__doc__ = "Embedded scripts are always run"
 Qgis.NotForThisSession = Qgis.EmbeddedScriptMode.NotForThisSession
 Qgis.NotForThisSession.is_monkey_patched = True
-Qgis.NotForThisSession.__doc__ = "Python embedded will not be run for this session (only used prior to QGIS 4.0)"
+Qgis.NotForThisSession.__doc__ = "Embedded scripts will not be run for this session (only used prior to QGIS 4.0)"
 Qgis.NeverAsk = Qgis.EmbeddedScriptMode.NeverAsk
 Qgis.NeverAsk.is_monkey_patched = True
-Qgis.NeverAsk.__doc__ = "User never prompted, python embedded is only run on trusted projects and folders \n.. versionadded:: 4.0"
-Qgis.EmbeddedScriptMode.__doc__ = """Authorisation to run Python Embedded in projects
+Qgis.NeverAsk.__doc__ = "The user is never prompted, embedded scripts are only run on trusted projects and folders \n.. versionadded:: 4.0"
+Qgis.EmbeddedScriptMode.__doc__ = """Authorisation to run script embedded in projects
 
 .. versionadded:: 3.40
 
-* ``Never``: Python embedded never run
-* ``Ask``: User is prompt before running
+* ``Never``: Embedded scripts never run
+* ``Ask``: User is prompted before running scripts
 * ``SessionOnly``: Only during this session (only used prior to QGIS 4.0)
-* ``Always``: Python embedded is always run
-* ``NotForThisSession``: Python embedded will not be run for this session (only used prior to QGIS 4.0)
-* ``NeverAsk``: User never prompted, python embedded is only run on trusted projects and folders
+* ``Always``: Embedded scripts are always run
+* ``NotForThisSession``: Embedded scripts will not be run for this session (only used prior to QGIS 4.0)
+* ``NeverAsk``: The user is never prompted, embedded scripts are only run on trusted projects and folders
 
   .. versionadded:: 4.0
 
