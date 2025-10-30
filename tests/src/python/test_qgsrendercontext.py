@@ -190,6 +190,7 @@ class TestQgsRenderContext(QgisTestCase):
             supports_lossless = False
 
         c = QgsRenderContext.fromQPainter(p)
+        p.end()
         self.assertEqual(c.painter(), p)
         self.assertEqual(c.testFlag(QgsRenderContext.Flag.Antialiasing), True)
         self.assertEqual(
