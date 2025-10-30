@@ -89,7 +89,7 @@ class CORE_EXPORT QgsArrowIterator
     QgsArrowIterator() = default;
 
     //! Construct iterator from an existing feature iterator
-    QgsArrowIterator( QgsFeatureIterator featureIterator, struct ArrowSchema *arrowSchema = nullptr );
+    QgsArrowIterator( QgsFeatureIterator featureIterator );
 
     ~QgsArrowIterator();
 

@@ -15,15 +15,49 @@
 
 #include "qgsarrowiterator.h"
 
+#include <nanoarrow/nanoarrow.hpp>
+
 #include "qgsfeatureiterator.h"
 
-QgsArrowIterator::QgsArrowIterator( QgsFeatureIterator featureIterator, struct ArrowSchema *arrowSchema )
-  : mFeatureIterator( featureIterator ) {}
 
-QgsArrowIterator::~QgsArrowIterator() {}
 
-void QgsArrowIterator::setSchema( const struct ArrowSchema *requestedSchema ) {}
+QgsArrowIterator::QgsArrowIterator( QgsFeatureIterator featureIterator )
+  : mFeatureIterator( featureIterator ) {
 
-void QgsArrowIterator::inferSchema( struct ArrowSchema *out ) {}
+  }
 
-void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out ) {}
+QgsArrowIterator::~QgsArrowIterator() {
+    if (mSchema.release != nullptr) {
+        ArrowSchemaRelease(&mSchema);
+    }
+}
+
+void QgsArrowIterator::setSchema( const struct ArrowSchema *requestedSchema ) {
+    if (requestedSchema == nullptr || requestedSchema->release == nullptr) {
+        throw QgsException("Invalid or null ArrowSchema provided");
+    }
+
+    if (mSchema.release != nullptr) {
+        ArrowSchemaRelease(&mSchema);
+    }
+
+    ArrowSchemaDeepCopy(requestedSchema, &mSchema);
+}
+
+void QgsArrowIterator::inferSchema( struct ArrowSchema *out ) {
+    if (out == nullptr) {
+        throw QgsException("null output ArrowSchema provided");
+    }
+
+    throw QgsException("ArrowSchema inference not yet implemented");
+}
+
+void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out ) {
+    if (out == nullptr) {
+        throw QgsException("null output ArrowSchema provided");
+    }
+
+    if (n < 1) {
+        throw QgsException("QgsArrowIterator can't iterate over less than one feature");
+    }
+}
