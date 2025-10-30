@@ -20,7 +20,6 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 
 from __future__ import annotations
 
-import codecs
 import importlib
 import os
 import pyclbr
@@ -843,7 +842,7 @@ class EditorTabWidget(QTabWidget):
         if filename:
             read_only = not QFileInfo(filename).isWritable()
             try:
-                fn = codecs.open(filename, "rb", encoding="utf-8")
+                fn = open(filename, "rb")
                 fn.read()
                 fn.close()
             except OSError as error:
