@@ -1,12 +1,12 @@
 <svg viewBox="0 0 61.06 96.62" xmlns="http://www.w3.org/2000/svg">
 <g transform="translate(-1.438 30.744)">
-<path d="m32-9.453l28.938 73.826-29-29-29 29z" fill="param(fill)" stroke="param(outline)" stroke-width="3"/>
-<path d="m32-9.453l29 73.45-29-29-29 29z" fill="none" stroke="param(outline)" stroke-linecap="square"/>
-<text fill="param(fill)" font-family="OPEN SANS" font-size="40" letter-spacing="0" line-height="125%" word-spacing="0" x="22.71" y="-10.854">
+<path d="m32-9.453l28.938 73.826-29-29-29 29z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="3"/>
+<path d="m32-9.453l29 73.45-29-29-29 29z" fill="none" stroke="param(outline)" stroke-linecap="square" stroke-opacity="param(outline-opacity)"/>
+<text fill="param(fill)" fill-opacity="param(fill-opacity)" font-family="OPEN SANS" font-size="40" letter-spacing="0" line-height="125%" word-spacing="0" x="22.71" y="-10.854">
 <tspan font-family="Adobe Heiti Std R" font-size="26" x="22.71" y="-10.854">N</tspan>
 </text>
 </g>
-<g fill="none" stroke="param(outline)" stroke-width=".25" transform="translate(0 -3.829)">
+<g fill="none" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width=".25" transform="translate(0 -3.829)">
 <path d="m4 92.82l6.74-3.891"/>
 <path d="m4.603 90.7l10.397-6"/>
 <path d="m3 95.17l4-2.309"/>
