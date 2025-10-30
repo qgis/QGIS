@@ -25,25 +25,15 @@ class TestQgsDateTimeEdit(QgisTestCase):
 
     def testSettersGetters(self):
         """test widget handling of null values"""
-        w = QgsDateTimeEdit()
-        w.setAllowNull(False)
+        for date in [DATE, DATE_Z]:
+            w = QgsDateTimeEdit()
+            w.setAllowNull(False)
 
-        w.setDateTime(DATE)
-        self.assertEqual(w.dateTime(), DATE)
-        # date should remain when setting an invalid date
-        w.setDateTime(QDateTime())
-        self.assertEqual(w.dateTime(), DATE)
-
-    def testSettersGetters_DATE_Z(self):
-        """test widget handling with Z time spec"""
-        w = QgsDateTimeEdit()
-        w.setAllowNull(False)
-
-        w.setDateTime(DATE_Z)
-        self.assertEqual(w.dateTime(), DATE_Z)
-        # date should remain when setting an invalid date
-        w.setDateTime(QDateTime())
-        self.assertEqual(w.dateTime(), DATE_Z)
+            w.setDateTime(date)
+            self.assertEqual(w.dateTime(), date)
+            # date should remain when setting an invalid date
+            w.setDateTime(QDateTime())
+            self.assertEqual(w.dateTime(), date)
 
     def testNullValueHandling(self):
         """test widget handling of null values"""
