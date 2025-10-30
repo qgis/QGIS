@@ -96,17 +96,14 @@ class CORE_EXPORT QgsArrowIterator
     //! Request a specific Arrow schema for this output
     void setSchema( const struct ArrowSchema *requestedSchema );
 
-    //! Guess the schema for this feature iterator
-    //!
-    //! The schema populated by inferSchema() is not affected by any previous call to
-    //! setSchema().
-    void inferSchema( struct ArrowSchema *out );
-
     //! Populate out with the next n features (or fewer depending on the number of features remaining)
     void nextFeatures( int64_t n, struct ArrowArray *out );
 
+    //! Guess the schema for a given QgsVectorLayer and return the geometry column index
+    static int64_t inferSchema(const QgsVectorLayer& layer, struct ArrowSchema *out);
 
   private:
     QgsFeatureIterator mFeatureIterator;
     struct ArrowSchema mSchema {};
+    int64_t mSchemaGeometryColumnIndex;
 };
