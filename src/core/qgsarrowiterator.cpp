@@ -13,13 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsarrowiterator.h"
+
 #include "qgsfeatureiterator.h"
 
 QgsArrowIterator::QgsArrowIterator( QgsFeatureIterator featureIterator, struct ArrowSchema *arrowSchema )
   : mFeatureIterator( featureIterator ) {}
 
-void QgsArrowIterator::getSchema( struct ArrowSchema *out ) {}
+QgsArrowIterator::~QgsArrowIterator() {}
+
+void QgsArrowIterator::setSchema( const struct ArrowSchema *requestedSchema ) {}
+
+void QgsArrowIterator::inferSchema( struct ArrowSchema *out ) {}
 
 void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out ) {}
-
-void QgsArrowIterator::setSchema( struct ArrowSchema *requestedSchema ) {}

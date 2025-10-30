@@ -91,8 +91,10 @@ class CORE_EXPORT QgsArrowIterator
     //! Construct iterator from an existing feature iterator
     QgsArrowIterator( QgsFeatureIterator featureIterator, struct ArrowSchema *arrowSchema = nullptr );
 
+    ~QgsArrowIterator();
+
     //! Request a specific Arrow schema for this output
-    void setSchema( struct ArrowSchema *requestedSchema );
+    void setSchema( const struct ArrowSchema *requestedSchema );
 
     //! Guess the schema for this feature iterator
     //!
@@ -106,4 +108,5 @@ class CORE_EXPORT QgsArrowIterator
 
   private:
     QgsFeatureIterator mFeatureIterator;
+    struct ArrowSchema mSchema {};
 };
