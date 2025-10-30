@@ -900,7 +900,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     bool masterPasswordInput();
 
-    bool masterPasswordRowsInDb( int *rows ) const;
+    /**
+     * Calculate the total number of master password rows in all storages.
+     *
+     * Returns TRUE if the calculation was successful for at least one storage,
+     * or FALSE if no storages could be queried.
+     */
+    bool masterPasswordRowsInDb( int &rows ) const;
 
     bool masterPasswordCheckAgainstDb( const QString &compare = QString() ) const;
 
