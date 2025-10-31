@@ -26,7 +26,7 @@
     const int ec = ( expr );                                                                                              \
     if ( ec != NANOARROW_OK )                                                                                             \
     {                                                                                                                     \
-      throw QgsException( QString( "nanoarrow error (%1): %2" ).arg( ec ).arg( QString::fromUtf8( ( err )->message ) ) ); \
+      throw QgsException( QStringLiteral( "nanoarrow error (%1): %2" ).arg( ec ).arg( QString::fromUtf8( ( err )->message ) ) ); \
     }                                                                                                                     \
   } while ( 0 )
 
@@ -36,7 +36,7 @@
     const int ec = ( expr );                                             \
     if ( ec != NANOARROW_OK )                                            \
     {                                                                    \
-      throw QgsException( QString( "nanoarrow error (%1)" ).arg( ec ) ); \
+      throw QgsException( QStringLiteral( "nanoarrow error (%1)" ).arg( ec ) ); \
     }                                                                    \
   } while ( 0 )
 
@@ -52,7 +52,7 @@ namespace
     QString crsString = layer.crs().toWkt( Qgis::CrsWktVariant::Wkt2_2019 );
     QJsonObject crsMetadata;
     crsMetadata["crs"] = crsString;
-    QString metadataJson = QJsonDocument( crsMetadata ).toJson( QJsonDocument::Compact );
+    const std::string metadataJson = QgsJsonUtils::jsonFromVariant( crsMetadata ).dump();
 
     nanoarrow::UniqueBuffer metadataKv;
     QGIS_NANOARROW_THROW_NOT_OK( ArrowMetadataBuilderInit( metadataKv.get(), nullptr ) );
@@ -61,7 +61,7 @@ namespace
     QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetMetadata( col, reinterpret_cast<char *>( metadataKv->data ) ) );
   }
 
-  void appendGeometry( const QgsFeature feat, struct ArrowArray *col )
+  void appendGeometry( const QgsFeature &feature, struct ArrowArray *col )
   {
     if ( !feat.hasGeometry() )
     {
@@ -69,7 +69,7 @@ namespace
       return;
     }
 
-    QByteArray wkb = feat.geometry().asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons );
+    const QByteArray wkb = feat.geometry().asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons );
     struct ArrowBufferView v { { wkb.data() }, static_cast<int64_t>( wkb.size() ) };
     QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, v ) );
   }
@@ -133,7 +133,7 @@ namespace
         break;
 
       default:
-        throw QgsException( QString( "QgsArrowIterator can't infer field type '%1' for field '%2'" ).arg( QMetaType::typeName( field.type() ) ).arg( field.name() ) );
+        throw QgsException( QStringLiteral( "QgsArrowIterator can't infer field type '%1' for field '%2'" ).arg( QMetaType::typeName( field.type() ) ).arg( field.name() ) );
     }
   }
 
@@ -168,8 +168,8 @@ namespace
       case NANOARROW_TYPE_LARGE_STRING:
       case NANOARROW_TYPE_STRING_VIEW:
       {
-        QString string = v.toString().toUtf8();
-        struct ArrowBufferView bytesView { { string.constData() }, static_cast<int64_t>( string.size() ) };
+        const QString string = v.toString();
+        struct ArrowBufferView bytesView { { string.toUtf8().constData() }, static_cast<int64_t>( string.size() ) };
         QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, bytesView ) );
         break;
       }
@@ -179,7 +179,7 @@ namespace
       case NANOARROW_TYPE_BINARY_VIEW:
       case NANOARROW_TYPE_FIXED_SIZE_BINARY:
       {
-        QByteArray bytes = v.toByteArray();
+        const QByteArray bytes = v.toByteArray();
         struct ArrowBufferView bytesView { { bytes.data() }, static_cast<int64_t>( bytes.size() ) };
         QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, bytesView ) );
         break;
@@ -197,7 +197,7 @@ namespace
       {
         static QDate epoch = QDate( 1970, 1, 1 );
         int64_t daysSinceEpoch = epoch.daysTo( v.toDate() );
-        int64_t msSinceEpoch = daysSinceEpoch * 24 * 60 * 80 * 1000;
+        int64_t msSinceEpoch = daysSinceEpoch * 24 * 60 * 60 * 1000;
         QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, msSinceEpoch ) );
         break;
       }
@@ -260,11 +260,10 @@ namespace
           case NANOARROW_TYPE_LARGE_STRING:
           case NANOARROW_TYPE_STRING_VIEW:
           {
-            QStringList stringList = v.toStringList();
-            for ( const auto &item : stringList )
+            const QStringList stringList = v.toStringList();
+            for ( const QString &item : stringList )
             {
-              QString string = item.toUtf8();
-              struct ArrowBufferView bytesView { { string.constData() }, static_cast<int64_t>( string.size() ) };
+              struct ArrowBufferView bytesView { { string.toUtf8().constData() }, static_cast<int64_t>( string.size() ) };
               QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col->children[0], bytesView ) );
             }
 
@@ -272,13 +271,13 @@ namespace
             break;
           }
           default:
-            throw QgsException( QString( "Can't convert variant of type '%1' to list of Arrow '%2'" ).arg( QMetaType::typeName( v.metaType().id() ) ).arg( ArrowTypeString( colTypeView.type ) ) );
+            throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to list of Arrow '%2'" ).arg( QMetaType::typeName( v.metaType().id() ) ).arg( ArrowTypeString( colTypeView.type ) ) );
         }
 
         break;
       }
       default:
-        throw QgsException( QString( "Can't convert variant of type '%1' to Arrow type '%2'" ).arg( QMetaType::typeName( v.metaType().id() ) ).arg( ArrowTypeString( colTypeView.type ) ) );
+        throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to Arrow type '%2'" ).arg( QMetaType::typeName( v.metaType().id() ) ).arg( ArrowTypeString( colTypeView.type ) ) );
     }
   }
 
@@ -299,9 +298,9 @@ QgsArrowIterator::~QgsArrowIterator()
 
 void QgsArrowIterator::setSchema( const struct ArrowSchema *requestedSchema )
 {
-  if ( requestedSchema == nullptr || requestedSchema->release == nullptr )
+  if ( !requestedSchema || !requestedSchema->release )
   {
-    throw QgsException( "Invalid or null ArrowSchema provided" );
+    throw QgsException( QStringLiteral( "Invalid or null ArrowSchema provided" ) );
   }
 
   if ( mSchema.release != nullptr )
