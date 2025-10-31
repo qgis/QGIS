@@ -36,7 +36,7 @@ jobs:
       QGIS_WORKSPACE: ${{ github.workspace }} # used in docker compose
       RUN_FLAKY_TESTS: ${{ contains( github.event.pull_request.labels.*.name, 'run flaky tests') }}
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     continue-on-error: ${{ matrix.experimental }}
 
     strategy:
@@ -257,7 +257,7 @@ jobs:
     env:
       QGIS_WORKSPACE: ${{ github.workspace }} # used in docker compose
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     needs: build
     if: always()
@@ -429,7 +429,7 @@ jobs:
 
   clang-tidy:
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build
 
     strategy:
