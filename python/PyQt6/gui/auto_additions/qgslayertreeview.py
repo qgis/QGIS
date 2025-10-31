@@ -17,3 +17,7 @@ try:
     QgsLayerTreeViewMenuProvider.__group__ = ['layertree']
 except (NameError, AttributeError):
     pass
+try:
+    QgsLayerTreeViewBase.__group__ = ['layertree']
+except (NameError, AttributeError):
+    pass

@@ -309,6 +309,12 @@ void QgsLayoutItemChart::prepareGatherer()
     update();
   }
 
+  if ( !metadata )
+  {
+    QgsDebugError( "Could not find plot metadata" );
+    return;
+  }
+
   mGatherer = metadata->createPlotDataGatherer( mPlot.get() );
   if ( !mGatherer )
   {

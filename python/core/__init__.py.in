@@ -25,6 +25,7 @@ import typing as _typing
 
 from qgis.PyQt.QtCore import NULL
 from qgis.PyQt.QtCore import Qt as _Qt
+from qgis.PyQt.QtCore import QMetaType as _QMetaType
 from qgis._core import *
 
 @MONKEYPATCH_INJECTIONS@
@@ -634,9 +635,24 @@ try:
        }
       return qgis_to_numpy_dtype_dict[dataType]
 
+   def _qvariant_type_to_numeric_data_type(dataType: _QMetaType.Type) -> _typing.Optional[_numpy.dtype]:
+      qmetatype_to_numpy_dtype_dict = {
+        _QMetaType.Type.Int: _numpy.int32,
+            _QMetaType.Type.UInt: _numpy.uint32,
+            _QMetaType.Type.LongLong:_numpy.int64,
+            _QMetaType.Type.ULongLong: _numpy.uint64,
+            _QMetaType.Type.Short: _numpy.int16,
+            _QMetaType.Type.UShort: _numpy.uint16,
+            _QMetaType.Type.Long: _numpy.int64,
+            _QMetaType.Type.ULong: _numpy.uint64,
+            _QMetaType.Type.Float: _numpy.float32,
+            _QMetaType.Type.Double: _numpy.float64,
+       }
+      return qmetatype_to_numpy_dtype_dict.get(dataType)
+
    def _raster_block_as_numpy(self, use_masking:bool = True) -> _typing.Union[_numpy.ndarray, _numpy.ma.MaskedArray]:
       raster_dtype = _qgis_data_type_to_numeric_data_type(self.dataType())
-      if not raster_dtype:
+      if raster_dtype is None:
          raise ValueError(f"The raster block data type '{str(self.dataType())}' is not compatible with NumPy arrays.")
       src_array = _numpy.frombuffer(self.data(), dtype=raster_dtype)
       src_array = src_array.reshape((self.height(), self.width()))
@@ -667,6 +683,26 @@ try:
           return _numpy.array(arrays)
 
    QgsRasterLayer.as_numpy = _raster_layer_as_numpy
+
+   def _field_as_numpy(self, field_name: str, null_value: object, request: _typing.Optional[QgsFeatureRequest] = None) -> _numpy.ma.MaskedArray:
+      field_index = self.fields().lookupField(field_name)
+      if field_index < 0:
+         raise KeyError(f"Field '{field_name}' does not exist.")
+      field = self.fields().at(field_index)
+      numpy_dtype = _qvariant_type_to_numeric_data_type(field.type())
+      if numpy_dtype is None:
+         raise TypeError(f"The field data type '{str(field.type())}' is not compatible with NumPy arrays.")
+
+      if request is None:
+         request = QgsFeatureRequest().setFlags(Qgis.FeatureRequestFlag.NoGeometry).setSubsetOfAttributes([
+        field_index
+      ])
+
+      src_array = QgsVectorLayerUtils.fieldToDataArray(self.fields(), field_name, self.getFeatures(request), null_value)
+      numpy_array = _numpy.frombuffer(src_array.data(), dtype=numpy_dtype)
+      return _numpy.ma.masked_equal(numpy_array, null_value)
+
+   QgsVectorLayer.field_as_numpy = _field_as_numpy
 
    def _qgsgeometry_as_numpy(self) -> _typing.Union[_numpy.ndarray, _typing.List[_numpy.ndarray]]:
        wkb_type = self.wkbType()
@@ -740,6 +776,11 @@ except ModuleNotFoundError:
       raise QgsNotSupportedException('QgsGeometry.as_numpy is not available, numpy is not installed on the system')
 
    QgsGeometry.as_numpy = _geometry_as_numpy
+
+   def _field_as_numpy(self, field_name: str, null_value, request: _typing.Optional[QgsFeatureRequest] = None):
+      raise QgsNotSupportedException('QgsVectorLayer.field_as_numpy is not available, numpy is not installed on the system')
+
+   QgsVectorLayer.field_as_numpy = _field_as_numpy
 
 try:
    import shapely as _shapely
@@ -856,6 +897,31 @@ All features from the layer are converted to a GeoDataFrame, including their geo
 original layer.
 
 :raises QgsNotSupportedException: if geopandas is not available on the system
+
+.. versionadded:: 4.0
+"""
+
+QgsVectorLayer.field_as_numpy.__doc__ = """
+Returns the values from a field as a numpy masked array.
+
+:param field_name: field name to source values from
+:param null_value: value to use when original field value is a null. Must
+                   be of the same data type as the source field. This value will be
+                   used as the mask when converting the array to a numpy masked array, and must
+                   be carefully selected to avoid conflicts with valid, existing field values.
+:param request: optional QgsFeatureRequest to control which features to source values from.
+                If not specified, an optimized feature request over all layer features will
+                be used.
+
+.. warning::
+
+   Only numeric field types are supported.
+
+:raises KeyError: if the field name is not found
+
+:raises TypeError: if the field is of a non-supported type
+
+:raises QgsNotSupportedException: if numpy is not available on the system
 
 .. versionadded:: 4.0
 """

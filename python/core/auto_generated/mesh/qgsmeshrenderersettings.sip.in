@@ -778,6 +778,9 @@ Represents all mesh renderer settings.
 %Docstring
 Constructs renderer with default single layer averaging method
 %End
+    QgsMeshRendererSettings( const QgsMeshRendererSettings &other );
+
+
     ~QgsMeshRendererSettings();
 
     QgsMeshRendererMeshSettings nativeMeshSettings() const;

@@ -300,17 +300,17 @@ int Qgs3DMapScene::totalPendingJobsCount() const
   return count;
 }
 
-float Qgs3DMapScene::worldSpaceError( float epsilon, float distance ) const
+double Qgs3DMapScene::worldSpaceError( double epsilon, double distance ) const
 {
   Qt3DRender::QCamera *camera = mCameraController->camera();
-  float fov = camera->fieldOfView();
+  const double fov = camera->fieldOfView();
   const QSize size = mEngine->size();
-  float screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
+  const int screenSizePx = std::max( size.width(), size.height() ); // TODO: is this correct?
 
   // see Qgs3DUtils::screenSpaceError() for the inverse calculation (world space error to screen space error)
   // with explanation of the math.
-  float frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
-  float err = frustumWidthAtDistance * epsilon / screenSizePx;
+  const double frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
+  const double err = frustumWidthAtDistance * epsilon / screenSizePx;
   return err;
 }
 
@@ -347,12 +347,12 @@ void Qgs3DMapScene::onCameraChanged()
   }
 }
 
-void Qgs3DMapScene::updateScene( bool forceUpdate )
+bool Qgs3DMapScene::updateScene( bool forceUpdate )
 {
   if ( !mSceneUpdatesEnabled )
   {
     QgsDebugMsgLevel( "Scene update skipped", 2 );
-    return;
+    return false;
   }
 
   QgsEventTracing::ScopedEvent traceEvent( QStringLiteral( "3D" ), forceUpdate ? QStringLiteral( "Force update scene" ) : QStringLiteral( "Update scene" ) );
@@ -367,24 +367,60 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   // Make our own projection matrix so that frustum culling done by the
   // entities isn't dependent on the current near/far planes, which would then
   // require multiple steps to stabilize.
-  // The matrix is constructed just like in QMatrix4x4::perspective(), but for
-  // all elements involving the near and far plane, the limit of the expression
-  // with the far plane going to infinity is taken.
-  float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
-  float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
-  QMatrix4x4 projMatrix(
-    fovCotan / camera->aspectRatio(), 0, 0, 0,
-    0, fovCotan, 0, 0,
-    0, 0, -1, -2,
-    0, 0, -1, 0
-  );
+  // The matrix is constructed just like in QMatrix4x4::perspective() /
+  // ortho(), but for all elements involving the near and far plane, the limit
+  // of the expression with the far plane going to infinity is taken.
+  QMatrix4x4 projMatrix;
+  switch ( mMap.projectionType() )
+  {
+    case Qt3DRender::QCameraLens::PerspectiveProjection:
+    {
+      float fovRadians = ( camera->fieldOfView() / 2.0f ) * static_cast<float>( M_PI ) / 180.0f;
+      float fovCotan = std::cos( fovRadians ) / std::sin( fovRadians );
+      projMatrix = {
+        fovCotan / camera->aspectRatio(), 0, 0, 0,
+        0, fovCotan, 0, 0,
+        0, 0, -1, -2,
+        0, 0, -1, 0
+      };
+      break;
+    }
+    case Qt3DRender::QCameraLens::OrthographicProjection:
+    {
+      Qt3DRender::QCameraLens *lens = camera->lens();
+      projMatrix = {
+        2.0f / ( lens->right() - lens->left() ),
+        0,
+        0,
+        0,
+        0,
+        2.0f / ( lens->top() - lens->bottom() ),
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        -( lens->left() + lens->right() ) / ( lens->right() - lens->left() ),
+        -( lens->top() + lens->bottom() ) / ( lens->top() - lens->bottom() ),
+        -1.0f,
+        1.0f,
+      };
+      break;
+    }
+    default:
+      QgsDebugError( "Unhandled 3D projection type" );
+      projMatrix = camera->projectionMatrix(); // Give up and use the current matrix
+  }
   sceneContext.viewProjectionMatrix = projMatrix * camera->viewMatrix();
 
 
+  bool anyUpdated = false;
   for ( Qgs3DMapSceneEntity *entity : std::as_const( mSceneEntities ) )
   {
     if ( forceUpdate || ( entity->isEnabled() && entity->needsUpdate() ) )
     {
+      anyUpdated = true;
       entity->handleSceneUpdate( sceneContext );
       if ( entity->hasReachedGpuMemoryLimit() )
         emit gpuMemoryLimitReached();
@@ -392,6 +428,8 @@ void Qgs3DMapScene::updateScene( bool forceUpdate )
   }
 
   updateSceneState();
+
+  return anyUpdated;
 }
 
 bool Qgs3DMapScene::updateCameraNearFarPlanes()
@@ -460,7 +498,10 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 
   mCameraController->frameTriggered( dt );
 
-  updateScene();
+  if ( updateScene() )
+    // If the scene was changed, node bboxes might have changed, so we need to
+    // update near/far planes.
+    updateCameraNearFarPlanes();
 
   // lock changing the FPS counter to 5 fps
   static int frameCount = 0;

@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgsrange.h"
+#include "qgsraycastresult.h"
 
 #include <QtGui/QWindow>
 
@@ -67,6 +68,7 @@ class Qgs3DMapSettings;
 class QgsFeature;
 class QgsMapLayer;
 class QgsRubberBand3D;
+class QgsRayCastContext;
 
 
 /**
@@ -108,6 +110,14 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
      * \since QGIS 4.0
      */
     Qgs3DMapTool *mapTool() const { return mMapTool; }
+
+    /**
+     * Casts a ray towards the 3d scene and returns information about the intersected 3d entities.
+     * \param screenPoint The ray starts from the current camera center and goes through this point (in pixel coordinates, originating at top left corner).
+     * \param context A context object defining parameters for the ray casting.
+     * \since QGIS 4.0
+     */
+    QgsRayCastResult castRay( const QPoint &screenPoint, QgsRayCastContext context );
 
     /**
      * Enables cross section mode for the 3D map canvas.

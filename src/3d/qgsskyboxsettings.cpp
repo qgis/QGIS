@@ -29,6 +29,9 @@ QgsSkyboxSettings::QgsSkyboxSettings( const QgsSkyboxSettings &other )
 
 QgsSkyboxSettings &QgsSkyboxSettings::operator=( QgsSkyboxSettings const &rhs )
 {
+  if ( &rhs == this )
+    return *this;
+
   this->mSkyboxType = rhs.mSkyboxType;
   this->mPanoramicTexturePath = rhs.mPanoramicTexturePath;
   this->mCubeMapFacesPaths = rhs.mCubeMapFacesPaths;

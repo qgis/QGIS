@@ -16,6 +16,7 @@
 #include "qgs3dutils.h"
 
 #include "qgs3dmapcanvas.h"
+#include "qgsapplication.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgsfeaturerequest.h"
@@ -32,7 +33,6 @@
 #include "qgscameracontroller.h"
 #include "qgschunkedentity.h"
 #include "qgsterrainentity.h"
-#include "qgsraycastingutils_p.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloud3dsymbol.h"
@@ -40,6 +40,8 @@
 #include "qgspointcloudrgbrenderer.h"
 #include "qgspointcloudattributebyramprenderer.h"
 #include "qgspointcloudclassifiedrenderer.h"
+#include "qgsraycastresult.h"
+#include "qgsraycastcontext.h"
 
 #include <QtMath>
 #include <Qt3DExtras/QPhongMaterial>
@@ -79,6 +81,14 @@ void Qgs3DUtils::waitForFrame( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene
   frameAction->deleteLater();
 
   engine.renderSettings()->setRenderPolicy( oldPolicy );
+}
+
+void Qgs3DUtils::waitForEntitiesLoaded( Qgs3DMapScene *scene )
+{
+  while ( scene->totalPendingJobsCount() > 0 )
+  {
+    QgsApplication::processEvents();
+  }
 }
 
 QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
@@ -763,15 +773,16 @@ QgsRay3D Qgs3DUtils::rayFromScreenPoint( const QPoint &point, const QSize &windo
 
 QVector3D Qgs3DUtils::screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera )
 {
-  double dNear = camera->nearPlane();
-  double dFar = camera->farPlane();
-  double distance = ( 2.0 * dNear * dFar ) / ( dFar + dNear - ( depth * 2 - 1 ) * ( dFar - dNear ) );
+  // Transform pixel coordinates and [0.0, 1.0]-range sampled depth to [-1.0, 1.0]
+  // normalised device coordinates used by projection matrix.
+  QVector3D screenPointNdc {
+    ( static_cast<float>( screenPoint.x() ) / ( static_cast<float>( screenSize.width() ) / 2.0f ) - 1.0f ),
+    -( static_cast<float>( screenPoint.y() ) / ( static_cast<float>( screenSize.height() ) / 2.0f ) - 1.0f ),
+    static_cast<float>( depth * 2 - 1 ),
+  };
 
-  QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPoint, screenSize, camera );
-  double dot = QVector3D::dotProduct( ray.direction(), camera->viewVector().normalized() );
-  distance /= dot;
-
-  return ray.origin() + distance * ray.direction();
+  // Apply inverse of projection matrix, then view matrix, to get from NDC to world coords.
+  return camera->viewMatrix().inverted() * camera->projectionMatrix().inverted() * screenPointNdc;
 }
 
 void Qgs3DUtils::pitchAndYawFromViewVector( QVector3D vect, double &pitch, double &yaw )
@@ -838,10 +849,9 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
   return nullptr;
 }
 
-QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastingUtils::RayCastContext &context )
+QgsRayCastResult Qgs3DUtils::castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastContext &context )
 {
-  QgsRayCastingUtils::Ray3D r( ray.origin(), ray.direction(), context.maxDistance );
-  QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> results;
+  QgsRayCastResult results;
   const QList<QgsMapLayer *> keys = scene->layers();
   for ( QgsMapLayer *layer : keys )
   {
@@ -849,22 +859,25 @@ QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> Qgs3DUtils::castRay( Q
 
     if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
     {
-      const QVector<QgsRayCastingUtils::RayHit> result = chunkedEntity->rayIntersection( r, context );
-      if ( !result.isEmpty() )
-        results[layer] = result;
+      const QList<QgsRayCastHit> hits = chunkedEntity->rayIntersection( ray, context );
+
+      if ( !hits.isEmpty() )
+        results.addLayerHits( layer, hits );
     }
   }
   if ( QgsTerrainEntity *terrain = scene->terrainEntity() )
   {
-    const QVector<QgsRayCastingUtils::RayHit> result = terrain->rayIntersection( r, context );
-    if ( !result.isEmpty() )
-      results[nullptr] = result; // Terrain hits are not tied to a layer so we use nullptr as their key here
+    const QList<QgsRayCastHit> hits = terrain->rayIntersection( ray, context );
+
+    if ( !hits.isEmpty() )
+      results.addTerrainHits( hits );
   }
   if ( QgsGlobeEntity *globe = scene->globeEntity() )
   {
-    const QVector<QgsRayCastingUtils::RayHit> result = globe->rayIntersection( r, context );
-    if ( !result.isEmpty() )
-      results[nullptr] = result; // Terrain hits are not tied to a layer so we use nullptr as their key here
+    const QList<QgsRayCastHit> hits = globe->rayIntersection( ray, context );
+
+    if ( !hits.isEmpty() )
+      results.addTerrainHits( hits );
   }
   return results;
 }

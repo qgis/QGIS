@@ -54,7 +54,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   while ( it.hasNext() )
   {
     it.next();
-    mWidgetTypeComboBox->addItem( it.value()->name(), it.key() );
+    mWidgetTypeComboBox->addItem( it.value()->icon(), it.value()->name(), it.key() );
     QStandardItem *item = widgetTypeModel->item( mWidgetTypeComboBox->count() - 1 );
     if ( !it.value()->supportsField( vl, fieldIdx ) )
       item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
@@ -214,7 +214,10 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type, bool forc
     {
       // Force to reset the config, even if
       // if the type matches the current one
-      mEditorConfigWidgets.value( type )->setConfig( mWidgetConfig );
+      if ( QgsEditorConfigWidget *widget = mEditorConfigWidgets.value( type ) )
+      {
+        widget->setConfig( mWidgetConfig );
+      }
     }
     stackedWidget->setCurrentWidget( mEditorConfigWidgets[type] );
   }

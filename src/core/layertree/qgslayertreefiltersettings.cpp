@@ -43,6 +43,9 @@ QgsLayerTreeFilterSettings::QgsLayerTreeFilterSettings( const QgsLayerTreeFilter
 
 QgsLayerTreeFilterSettings &QgsLayerTreeFilterSettings::operator=( const QgsLayerTreeFilterSettings &other )
 {
+  if ( &other == this )
+    return *this;
+
   mLayerFilterExpressions = other.mLayerFilterExpressions;
   mMapSettings.reset( other.mMapSettings ? new QgsMapSettings( *other.mMapSettings ) : nullptr );
   mFilterPolygon = other.mFilterPolygon;

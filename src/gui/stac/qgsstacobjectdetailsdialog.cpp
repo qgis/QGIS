@@ -49,8 +49,10 @@ void QgsStacObjectDetailsDialog::setStacObject( QgsStacObject *stacObject )
         {
           QStringList connectionItems;
           connectionItems << uri;
-          QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, mAuthcfg );
-          uri = connectionItems.first();
+          if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, mAuthcfg ) )
+          {
+            uri = connectionItems.first();
+          }
         }
 
         thumbnails.append( QStringLiteral( "<img src=\"%1\" border=1><br>" ).arg( uri ) );

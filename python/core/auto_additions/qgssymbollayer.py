@@ -618,7 +618,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsSymbolLayer.__virtual_methods__ = ['flags', 'color', 'setColor', 'setStrokeColor', 'strokeColor', 'setFillColor', 'fillColor', 'startFeatureRender', 'stopFeatureRender', 'toSld', 'ogrFeatureStyle', 'subSymbol', 'setSubSymbol', 'isCompatibleWithSymbol', 'canCauseArtifactsBetweenAdjacentTiles', 'estimateMaxBleed', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'setDataDefinedProperty', 'writeDxf', 'dxfWidth', 'dxfSize', 'dxfOffset', 'dxfColor', 'dxfAngle', 'dxfCustomDashPattern', 'dxfPenStyle', 'dxfBrushColor', 'dxfBrushStyle', 'prepareExpressions', 'hasDataDefinedProperties', 'masks', 'prepareMasks']
+    QgsSymbolLayer.__virtual_methods__ = ['flags', 'color', 'setColor', 'setStrokeColor', 'strokeColor', 'setFillColor', 'fillColor', 'startFeatureRender', 'stopFeatureRender', 'toSld', 'ogrFeatureStyle', 'subSymbol', 'setSubSymbol', 'isCompatibleWithSymbol', 'rendersIdenticallyTo', 'canCauseArtifactsBetweenAdjacentTiles', 'estimateMaxBleed', 'setOutputUnit', 'outputUnit', 'usesMapUnits', 'setMapUnitScale', 'mapUnitScale', 'usedAttributes', 'setDataDefinedProperty', 'writeDxf', 'dxfWidth', 'dxfSize', 'dxfOffset', 'dxfColor', 'dxfAngle', 'dxfCustomDashPattern', 'dxfPenStyle', 'dxfBrushColor', 'dxfBrushStyle', 'prepareExpressions', 'hasDataDefinedProperties', 'masks', 'prepareMasks']
     QgsSymbolLayer.__abstract_methods__ = ['layerType', 'startRender', 'stopRender', 'clone', 'properties', 'drawPreviewIcon']
     QgsSymbolLayer.__group__ = ['symbology']
 except (NameError, AttributeError):

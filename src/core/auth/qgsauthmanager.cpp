@@ -552,7 +552,7 @@ bool QgsAuthManager::verifyMasterPassword( const QString &compare )
     return false;
 
   int rows = 0;
-  if ( !masterPasswordRowsInDb( &rows ) )
+  if ( !masterPasswordRowsInDb( rows ) )
   {
     const char *err = QT_TR_NOOP( "Master password: FAILED to access database" );
     QgsDebugError( err );
@@ -3586,40 +3586,44 @@ bool QgsAuthManager::masterPasswordInput()
   return false;
 }
 
-bool QgsAuthManager::masterPasswordRowsInDb( int *rows ) const
+bool QgsAuthManager::masterPasswordRowsInDb( int &rows ) const
 {
+  bool res = false;
   ensureInitialized();
 
   if ( isDisabled() )
-    return false;
+    return res;
 
-  *rows = 0;
+  rows = 0;
 
   QMutexLocker locker( mMutex.get() );
 
   // Loop through all storages with capability ReadMasterPassword and count the number of master passwords
   const QList<QgsAuthConfigurationStorage *> storages { authConfigurationStorageRegistry()->readyStoragesWithCapability( Qgis::AuthConfigurationStorageCapability::ReadMasterPassword ) };
 
-  for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
-  {
-    try
-    {
-      *rows += storage->masterPasswords( ).count();
-    }
-    catch ( const QgsNotSupportedException &e )
-    {
-      // It should not happen because we are checking the capability in advance
-      emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
-    }
-  }
-
   if ( storages.empty() )
   {
     emit messageLog( tr( "Could not connect to any authentication configuration storage." ), authManTag(), Qgis::MessageLevel::Critical );
   }
+  else
+  {
+    for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
+    {
+      try
+      {
+        rows += storage->masterPasswords( ).count();
+        // if we successfully queuried at least one storage, the result from this function must be true
+        res = true;
+      }
+      catch ( const QgsNotSupportedException &e )
+      {
+        // It should not happen because we are checking the capability in advance
+        emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
+      }
+    }
+  }
 
-  return rows != 0;
-
+  return res;
 }
 
 bool QgsAuthManager::masterPasswordHashInDatabase() const
@@ -3630,7 +3634,7 @@ bool QgsAuthManager::masterPasswordHashInDatabase() const
     return false;
 
   int rows = 0;
-  if ( !masterPasswordRowsInDb( &rows ) )
+  if ( !masterPasswordRowsInDb( rows ) )
   {
     const char *err = QT_TR_NOOP( "Master password: FAILED to access database" );
     QgsDebugError( err );

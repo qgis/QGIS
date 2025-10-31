@@ -75,6 +75,20 @@ If the tool is ``None``, events will be used for camera manipulation.
 .. versionadded:: 4.0
 %End
 
+    QgsRayCastResult castRay( const QPoint &screenPoint, QgsRayCastContext context );
+%Docstring
+Casts a ray towards the 3d scene and returns information about the
+intersected 3d entities.
+
+:param screenPoint: The ray starts from the current camera center and
+                    goes through this point (in pixel coordinates,
+                    originating at top left corner).
+:param context: A context object defining parameters for the ray
+                casting.
+
+.. versionadded:: 4.0
+%End
+
     void enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double tolerance, bool setSideView = true );
 %Docstring
 Enables cross section mode for the 3D map canvas. The 3D scene will be

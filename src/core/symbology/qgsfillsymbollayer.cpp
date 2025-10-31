@@ -3231,7 +3231,10 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
     return;
   }
 
-  if ( !mFillLineSymbolRenderStarted && mFillLineSymbol )
+  if ( !mFillLineSymbol )
+    return;
+
+  if ( !mFillLineSymbolRenderStarted )
   {
     mFillLineSymbol->setRenderHints( mFillLineSymbol->renderHints() | Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
     mFillLineSymbol->startRender( context.renderContext(), context.fields() );
@@ -5802,6 +5805,19 @@ QgsRandomMarkerFillSymbolLayer *QgsRandomMarkerFillSymbolLayer::clone() const
 
 bool QgsRandomMarkerFillSymbolLayer::canCauseArtifactsBetweenAdjacentTiles() const
 {
+  return true;
+}
+
+bool QgsRandomMarkerFillSymbolLayer::rendersIdenticallyTo( const QgsSymbolLayer *other ) const
+{
+  if ( !QgsFillSymbolLayer::rendersIdenticallyTo( other ) )
+    return false;
+
+  // special case -- two QgsRandomMarkerFillSymbolLayer will render differently if they have
+  // no seed value set.
+  if ( mSeed == 0 )
+    return false;
+
   return true;
 }
 

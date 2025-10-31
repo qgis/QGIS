@@ -102,6 +102,12 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
                   if ( elevationProperties->respectLayerSymbology() )
                   {
+                    if ( !symbol )
+                    {
+                      // just use default layer icon
+                      return QgsLayerTreeModel::data( index, role );
+                    }
+
                     if ( QgsSingleSymbolRenderer *renderer = dynamic_cast<QgsSingleSymbolRenderer *>( qobject_cast<QgsVectorLayer *>( layer )->renderer() ) )
                     {
                       if ( renderer->symbol()->type() == symbol->type() )
@@ -415,42 +421,16 @@ bool QgsElevationProfileLayerTreeProxyModel::filterAcceptsRow( int sourceRow, co
 
 
 QgsElevationProfileLayerTreeView::QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent )
-  : QTreeView( parent )
+  : QgsLayerTreeViewBase( parent )
   , mLayerTree( rootNode )
 {
   mModel = new QgsElevationProfileLayerTreeModel( rootNode, this );
+
   connect( mModel, &QgsElevationProfileLayerTreeModel::addLayers, this, &QgsElevationProfileLayerTreeView::addLayers );
   mProxyModel = new QgsElevationProfileLayerTreeProxyModel( mModel, this );
 
-  setHeaderHidden( true );
-
-  setDragEnabled( true );
-  setAcceptDrops( true );
-  setDropIndicatorShown( true );
-  setExpandsOnDoubleClick( false );
-
-  // Ensure legend graphics are scrollable
-  header()->setStretchLastSection( false );
-  header()->setSectionResizeMode( QHeaderView::ResizeToContents );
-
-  // If vertically scrolling by item, legend graphics can get clipped
-  setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-
-  setDefaultDropAction( Qt::MoveAction );
-
   setModel( mProxyModel );
-}
-
-QgsMapLayer *QgsElevationProfileLayerTreeView::indexToLayer( const QModelIndex &index )
-{
-  if ( QgsLayerTreeNode *node = mModel->index2node( mProxyModel->mapToSource( index ) ) )
-  {
-    if ( QgsLayerTreeLayer *layerTreeLayerNode = mLayerTree->toLayer( node ) )
-    {
-      return layerTreeLayerNode->layer();
-    }
-  }
-  return nullptr;
+  setLayerTreeModel( mModel );
 }
 
 void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *project )

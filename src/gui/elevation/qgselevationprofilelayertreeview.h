@@ -20,6 +20,7 @@
 
 #include "qgsconfig.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreeview.h"
 #include "qgis_gui.h"
 
 #include <QSortFilterProxyModel>
@@ -108,7 +109,7 @@ class GUI_EXPORT QgsElevationProfileLayerTreeProxyModel : public QSortFilterProx
  *
  * \since QGIS 3.30
  */
-class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
+class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
 {
     Q_OBJECT
 
@@ -120,11 +121,6 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
      * The root node is not transferred by the view.
      */
     explicit QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent = nullptr );
-
-    /**
-     * Converts a view \a index to a map layer.
-     */
-    QgsMapLayer *indexToLayer( const QModelIndex &index );
 
     /**
      * Initially populates the tree view using layers from a \a project, as well as sources from the source registry.

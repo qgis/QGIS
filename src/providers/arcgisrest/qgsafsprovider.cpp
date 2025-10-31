@@ -657,7 +657,7 @@ QString QgsAfsProvider::defaultValueClause( int fieldId ) const
 
 bool QgsAfsProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint, const QVariant &value ) const
 {
-  return fieldIndex == mSharedData->mObjectIdFieldIdx && value.toString() == QLatin1String( "Autogenerate" );
+  return fieldIndex == mSharedData->mObjectIdFieldIdx && ( QgsVariantUtils::isUnsetAttributeValue( value ) || value.toString() == QLatin1String( "Autogenerate" ) );
 }
 
 QString QgsAfsProvider::subsetString() const

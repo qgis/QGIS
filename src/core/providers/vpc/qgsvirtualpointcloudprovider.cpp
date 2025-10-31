@@ -34,6 +34,7 @@
 #include "qgsgeometry.h"
 #include "qgsmultipolygon.h"
 #include "qgscoordinatetransform.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QIcon>
 
@@ -152,21 +153,53 @@ void QgsVirtualPointCloudProvider::generateIndex()
 
 void QgsVirtualPointCloudProvider::parseFile()
 {
-  QFile file( dataSourceUri() );
-  const QFileInfo fInfo( file );
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( PROVIDER_KEY );
+  const QVariantMap decodedUri = metadata->decodeUri( dataSourceUri() );
+  const QString authcfg = decodedUri.value( QStringLiteral( "authcfg" ) ).toString();
+  const QString path = decodedUri.value( QStringLiteral( "path" ) ).toString();
 
+  QUrl url;
   nlohmann::json data;
-  if ( file.open( QFile::ReadOnly ) )
+  QByteArray jsonData;
+  if ( path.startsWith( QLatin1String( "http" ) ) )
   {
-    try
+    url.setUrl( path );
+    QNetworkRequest request( url );
+    const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet( request, authcfg );
+    if ( reply.error() == QNetworkReply::NoError )
     {
-      data = json::parse( file.readAll().toStdString() );
+      jsonData = reply.content();
     }
-    catch ( std::exception &e )
+    else
     {
-      appendError( QgsErrorMessage( QStringLiteral( "JSON parsing error: %1" ).arg( QString::fromStdString( e.what() ) ), QString() ) );
+      appendError( QgsErrorMessage( QStringLiteral( "Could not download file: %1" ).arg( reply.errorString() ) ) );
       return;
     }
+  }
+  else
+  {
+    url = QUrl::fromLocalFile( path );
+    QFile file( url.toLocalFile() );
+    if ( file.open( QFile::ReadOnly ) )
+    {
+      jsonData = file.readAll();
+    }
+  }
+
+  if ( jsonData.isEmpty() )
+  {
+    appendError( QgsErrorMessage( QStringLiteral( "Could not read file: %1" ).arg( path ) ) );
+    return;
+  }
+
+  try
+  {
+    data = json::parse( jsonData.toStdString() );
+  }
+  catch ( const json::parse_error &e )
+  {
+    appendError( QgsErrorMessage( QStringLiteral( "JSON parsing error: %1" ).arg( QString::fromStdString( e.what() ) ), QString() ) );
+    return;
   }
 
   if ( data["type"] != "FeatureCollection" ||
@@ -214,21 +247,19 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( !mOverview && f["assets"].contains( "overview" ) && f["assets"]["overview"].contains( "href" ) )
     {
       mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
-      mOverview.load( fInfo.absoluteDir().absoluteFilePath( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
+      const QUrl overviewUrl = url.resolved( QUrl( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
+      mOverview.load( overviewUrl.isLocalFile() ? overviewUrl.toLocalFile() : overviewUrl.toString(), authcfg );
     }
     // if it doesn't exist look for overview file in the directory
     else if ( !mOverview )
     {
-      QDir vpcDir = fInfo.absoluteDir();
-      QStringList nameFilter = { QString( fInfo.baseName() + "-overview.copc.laz" ) };
-      vpcDir.setNameFilters( nameFilter );
-      vpcDir.setFilter( QDir::Files );
-      if ( !vpcDir.entryList().empty() )
-      {
-        mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );;
-        mOverview.load( vpcDir.absoluteFilePath( vpcDir.entryList().first() ) );
-      }
+      const QString baseName = QFileInfo( url.fileName() ).baseName();
+      const QUrl overviewUrl = url.resolved( QUrl( baseName + QStringLiteral( "-overview.copc.laz" ) ) );
+      mOverview = QgsPointCloudIndex( new QgsCopcPointCloudIndex() );
+      mOverview.load( overviewUrl.isLocalFile() ? overviewUrl.toLocalFile() : overviewUrl.toString(), authcfg );
     }
+    if ( !mOverview.isValid() )
+      mOverview = QgsPointCloudIndex();
 
     // Only COPC and EPT formats are currently supported. Other files will only have their bounds rendered
     if ( !uri.endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) &&
@@ -359,7 +390,8 @@ void QgsVirtualPointCloudProvider::parseFile()
     if ( uri.startsWith( QLatin1String( "./" ) ) )
     {
       // resolve relative path
-      uri = QDir::cleanPath( fInfo.absoluteDir().absoluteFilePath( uri ) );
+      const QUrl resolvedUrl = url.resolved( QUrl( uri ) );
+      uri = resolvedUrl.isLocalFile() ? resolvedUrl.toLocalFile() : resolvedUrl.toString();
     }
 
     if ( f["properties"].contains( "pc:schemas" ) )
@@ -598,9 +630,20 @@ QList<Qgis::LayerType> QgsVirtualPointCloudProviderMetadata::validLayerTypesForU
 QVariantMap QgsVirtualPointCloudProviderMetadata::decodeUri( const QString &uri ) const
 {
   QVariantMap uriComponents;
-  QUrl url = QUrl::fromUserInput( uri );
+
+  const thread_local QRegularExpression rx( QStringLiteral( " authcfg='([^']*)'" ) );
+  const QRegularExpressionMatch match = rx.match( uri );
+  if ( match.hasMatch() )
+    uriComponents.insert( QStringLiteral( "authcfg" ), match.captured( 1 ) );
+
+  QString path = uri;
+  path.remove( rx );
+  path = path.trimmed();
+  const QUrl url = QUrl::fromUserInput( path );
+
+  uriComponents.insert( QStringLiteral( "path" ), path );
   uriComponents.insert( QStringLiteral( "file-name" ), url.fileName() );
-  uriComponents.insert( QStringLiteral( "path" ), uri );
+
   return uriComponents;
 }
 
@@ -634,8 +677,13 @@ QList<Qgis::LayerType> QgsVirtualPointCloudProviderMetadata::supportedLayerTypes
 
 QString QgsVirtualPointCloudProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
-  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  return path;
+  QString uri = parts.value( QStringLiteral( "path" ) ).toString();
+
+  const QString authcfg = parts.value( QStringLiteral( "authcfg" ) ).toString();
+  if ( !authcfg.isEmpty() )
+    uri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
+
+  return uri;
 }
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsVirtualPointCloudProviderMetadata::capabilities() const

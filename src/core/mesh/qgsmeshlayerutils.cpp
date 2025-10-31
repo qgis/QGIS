@@ -489,7 +489,7 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMeshLa
 {
   QVector<double> ret;
 
-  if ( !meshLayer && !index.isValid() )
+  if ( !meshLayer || !index.isValid() )
     return ret;
 
   const QgsTriangularMesh *triangularMesh = meshLayer->triangularMesh();
