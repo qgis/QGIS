@@ -39,7 +39,7 @@ QgsMessageOutput *QgsMessageOutput::createMessageOutput()
   return mMessageOutputCreator();
 }
 
-void QgsMessageOutput::showMessage( const QString &title, const QString &message, MessageType msgType )
+void QgsMessageOutput::showMessage( const QString &title, const QString &message, Qgis::MessageType msgType )
 {
   QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
   output->setTitle( title );
@@ -50,7 +50,7 @@ void QgsMessageOutput::showMessage( const QString &title, const QString &message
 ////////////////////////////////
 // QgsMessageOutputConsole
 
-void QgsMessageOutputConsole::setMessage( const QString &message, MessageType msgType )
+void QgsMessageOutputConsole::setMessage( const QString &message, Qgis::MessageType msgType )
 {
   mMessage = message;
   mMsgType = msgType;
@@ -63,14 +63,7 @@ void QgsMessageOutputConsole::appendMessage( const QString &message )
 
 void QgsMessageOutputConsole::showMessage( bool )
 {
-  if ( mMsgType == MessageHtml )
-  {
-    mMessage.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
-    mMessage.replace( QLatin1String( "&nbsp;" ), QLatin1String( " " ) );
-    const thread_local QRegularExpression tagRX( QStringLiteral( "</?[^>]+>" ) );
-    mMessage.replace( tagRX, QString() );
-  }
-  QgsMessageLog::logMessage( mMessage, mTitle.isNull() ? QObject::tr( "Console" ) : mTitle );
+  QgsMessageLog::logMessage( mMessage, mTitle.isNull() ? QObject::tr( "Console" ) : mTitle, Qgis::MessageLevel::Info, mMsgType );
   emit destroyed();
   delete this;
 }

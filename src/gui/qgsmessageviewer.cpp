@@ -55,9 +55,9 @@ void QgsMessageViewer::appendMessage( const QString &msg )
 }
 
 
-void QgsMessageViewer::setMessage( const QString &message, MessageType msgType )
+void QgsMessageViewer::setMessage( const QString &message, Qgis::MessageType msgType )
 {
-  if ( msgType == MessageHtml )
+  if ( msgType == Qgis::MessageType::MessageHtml )
     setMessageAsHtml( message );
   else
     setMessageAsPlainText( message );
