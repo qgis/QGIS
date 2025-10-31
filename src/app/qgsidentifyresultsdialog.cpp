@@ -106,6 +106,7 @@
 // Qt::DisplayRole is empty for fields that use an alternate widget, like json or url, so
 // we store the representedValue to UserRole + 2 and read from that when copying to clipboard
 constexpr int REPRESENTED_VALUE_ROLE = Qt::UserRole + 2;
+constexpr int RAW_STRING_VALUE_ROLE = Qt::UserRole + 3;
 
 const QgsSettingsEntryBool *QgsIdentifyResultsDialog::settingHideNullValues = new QgsSettingsEntryBool( QStringLiteral( "hide-null-values" ), QgsSettingsTree::sTreeMap, false, QStringLiteral( "Whether to hide attributes with NULL values in the identify feature result" ) );
 
@@ -640,6 +641,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     item = new QTableWidgetItem( value );
     item->setData( Qt::UserRole, value );
     item->setData( Qt::DisplayRole, value2 );
+
     tblResults->setItem( j, 3, item );
 
     // highlight first item
@@ -792,6 +794,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
     attrItem->setSortData( 1, representedValue );
     attrItem->setToolTip( 1, representedValue );
     attrItem->setData( 1, REPRESENTED_VALUE_ROLE, representedValue );
+    attrItem->setData( 1, RAW_STRING_VALUE_ROLE, attrs.at( i ).toString() );
 
     if ( !QgsVariantUtils::isNull( attrs.at( i ) ) && setup.type() == QLatin1String( "JsonEdit" ) )
     {
@@ -1337,6 +1340,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorTileLayer *layer, const QStr
     attrItem->setData( 0, Qt::UserRole + 1, i );
 
     attrItem->setData( 1, REPRESENTED_VALUE_ROLE, value );
+    attrItem->setData( 1, RAW_STRING_VALUE_ROLE, attrs.at( i ).toString() );
     attrItem->setSortData( 1, value );
     attrItem->setToolTip( 1, value );
     bool foundLinks = false;
@@ -1694,7 +1698,8 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
       }
     }
 
-    mActionPopup->addAction( tr( "Copy Attribute Value" ), this, &QgsIdentifyResultsDialog::copyAttributeValue );
+    mActionPopup->addAction( tr( "Copy Attribute Value" ), this, [this] { copyAttributeValue(); } );
+    mActionPopup->addAction( tr( "Copy Raw Attribute Value" ), this, [this] { copyAttributeValue( true ); } );
     mActionPopup->addAction( tr( "Copy Feature Attributes" ), this, &QgsIdentifyResultsDialog::copyFeatureAttributes );
 
     mActionPopup->addAction( tr( "Select Features by Attribute Value" ), this, &QgsIdentifyResultsDialog::selectFeatureByAttribute );
@@ -2098,10 +2103,13 @@ QgsAttributeMap QgsIdentifyResultsDialog::retrieveAttributes( QTreeWidgetItem *i
   return attributes;
 }
 
-QVariant QgsIdentifyResultsDialog::retrieveAttribute( QTreeWidgetItem *item )
+QVariant QgsIdentifyResultsDialog::retrieveAttribute( QTreeWidgetItem *item, const bool raw )
 {
   if ( !item )
     return QVariant();
+
+  if ( raw )
+    return item->data( 1, RAW_STRING_VALUE_ROLE );
 
   // prefer represented values, if available.
   const QVariant representedValue = item->data( 1, REPRESENTED_VALUE_ROLE );
@@ -2519,10 +2527,10 @@ void QgsIdentifyResultsDialog::collapseAll()
   lstResults->collapseAll();
 }
 
-void QgsIdentifyResultsDialog::copyAttributeValue()
+void QgsIdentifyResultsDialog::copyAttributeValue( const bool raw )
 {
   QClipboard *clipboard = QApplication::clipboard();
-  const QVariant attributeValue = retrieveAttribute( lstResults->currentItem() );
+  const QVariant attributeValue = retrieveAttribute( lstResults->currentItem(), raw );
   const QString text = attributeValue.toString();
   QgsDebugMsgLevel( QStringLiteral( "set clipboard: %1" ).arg( text ), 2 );
   clipboard->setText( text );

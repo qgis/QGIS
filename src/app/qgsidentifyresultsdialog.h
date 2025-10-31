@@ -252,7 +252,7 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     void featureForm();
     void zoomToFeature();
     void identifyFeature();
-    void copyAttributeValue();
+    void copyAttributeValue( const bool raw = false );
     void copyFeature();
     void toggleFeatureSelection();
     void copyFeatureAttributes();
@@ -274,7 +274,7 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     void itemExpanded( QTreeWidgetItem *item );
 
     QgsAttributeMap retrieveAttributes( QTreeWidgetItem *item );
-    QVariant retrieveAttribute( QTreeWidgetItem *item );
+    QVariant retrieveAttribute( QTreeWidgetItem *item, const bool raw = false );
 
     void cmbIdentifyMode_currentIndexChanged( int index );
 
