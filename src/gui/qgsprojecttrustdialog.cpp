@@ -64,7 +64,7 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
   if ( svg.isValid() )
   {
     const double maxLength = 64.0;
-    QSize size( maxLength, maxLength );
+    QSizeF size( maxLength, maxLength );
     const QRectF viewBox = svg.viewBoxF();
     if ( viewBox.height() > viewBox.width() )
     {
@@ -75,7 +75,7 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
       size.setHeight( maxLength * viewBox.height() / viewBox.width() );
     }
 
-    QPixmap pixmap( maxLength, maxLength );
+    QPixmap pixmap( static_cast<int>( maxLength ), static_cast<int>( maxLength ) );
     pixmap.fill( Qt::transparent );
 
     QPainter painter;

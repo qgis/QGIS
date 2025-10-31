@@ -18,6 +18,7 @@ from qgis.core import (
     QgsAction,
     QgsActionManager,
     QgsEditFormConfig,
+    QgsObjectVisitorContext,
     Qgis,
 )
 import unittest
@@ -39,8 +40,10 @@ class TestQgsObjectVisitor(QgisTestCase):
         p.writeEntry("Macros", "/pythonCode", "macros123")
         p.writeEntry("ExpressionFunctions", "/pythonCode", "functions123")
 
+        context = QgsObjectVisitorContext()
+
         visitor = QgsEmbeddedScriptVisitor()
-        p.accept(visitor)
+        p.accept(visitor, context)
 
         self.assertEqual(len(visitor.embeddedScripts()), 2)
         self.assertEqual(
@@ -69,7 +72,7 @@ class TestQgsObjectVisitor(QgisTestCase):
         p.addMapLayer(layer)
 
         visitor = QgsEmbeddedScriptVisitor()
-        p.accept(visitor)
+        p.accept(visitor, context)
 
         self.assertEqual(len(visitor.embeddedScripts()), 4)
         self.assertEqual(
