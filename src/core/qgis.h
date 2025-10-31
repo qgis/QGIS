@@ -162,6 +162,17 @@ class CORE_EXPORT Qgis
     Q_ENUM( MessageLevel )
 
     /**
+     * \brief Type of message
+     * This will be used both for message log and message bar in application.
+     */
+    enum MessageType
+    {
+      MessageText, //!< Text message
+      MessageHtml, //!< HTML message
+    };
+    Q_ENUM( MessageType )
+
+    /**
      * \brief Flags controlling behavior of network requests.
      *
      * \since QGIS 4.0

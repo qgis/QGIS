@@ -48,7 +48,7 @@ class GUI_EXPORT QgsMessageLogViewer : public QDialog, private Ui::QgsMessageLog
     /**
      * Logs a \a message to the viewer.
      */
-    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::MessageType type );
 
     /**
      * Activates the tab whose title matches the given \a tag, if any.
