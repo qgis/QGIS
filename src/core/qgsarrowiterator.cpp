@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsarrowreader.h
+    qgsarrowiterator.cpp
     ---------------------
     begin                : November 2025
     copyright            : (C) 2025 by Dewey Dunnington
@@ -16,28 +16,30 @@
 #include "qgsarrowiterator.h"
 
 #include <nanoarrow/nanoarrow.hpp>
+#include <nlohmann/json.hpp>
 
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
+#include "qgsjsonutils.h"
 
-#define QGIS_NANOARROW_THROW_NOT_OK_ERR( expr, err )                                                                      \
-  do                                                                                                                      \
-  {                                                                                                                       \
-    const int ec = ( expr );                                                                                              \
-    if ( ec != NANOARROW_OK )                                                                                             \
-    {                                                                                                                     \
+#define QGIS_NANOARROW_THROW_NOT_OK_ERR( expr, err )                                                                             \
+  do                                                                                                                             \
+  {                                                                                                                              \
+    const int ec = ( expr );                                                                                                     \
+    if ( ec != NANOARROW_OK )                                                                                                    \
+    {                                                                                                                            \
       throw QgsException( QStringLiteral( "nanoarrow error (%1): %2" ).arg( ec ).arg( QString::fromUtf8( ( err )->message ) ) ); \
-    }                                                                                                                     \
+    }                                                                                                                            \
   } while ( 0 )
 
-#define QGIS_NANOARROW_THROW_NOT_OK( expr )                              \
-  do                                                                     \
-  {                                                                      \
-    const int ec = ( expr );                                             \
-    if ( ec != NANOARROW_OK )                                            \
-    {                                                                    \
+#define QGIS_NANOARROW_THROW_NOT_OK( expr )                                     \
+  do                                                                            \
+  {                                                                             \
+    const int ec = ( expr );                                                    \
+    if ( ec != NANOARROW_OK )                                                   \
+    {                                                                           \
       throw QgsException( QStringLiteral( "nanoarrow error (%1)" ).arg( ec ) ); \
-    }                                                                    \
+    }                                                                           \
   } while ( 0 )
 
 namespace
@@ -57,19 +59,19 @@ namespace
     nanoarrow::UniqueBuffer metadataKv;
     QGIS_NANOARROW_THROW_NOT_OK( ArrowMetadataBuilderInit( metadataKv.get(), nullptr ) );
     QGIS_NANOARROW_THROW_NOT_OK( ArrowMetadataBuilderAppend( metadataKv.get(), ArrowCharView( "ARROW:extension:name" ), ArrowCharView( "geoarrow.wkb" ) ) );
-    QGIS_NANOARROW_THROW_NOT_OK( ArrowMetadataBuilderAppend( metadataKv.get(), ArrowCharView( "ARROW:extension:metadata" ), ArrowCharView( metadataJson.toUtf8().constData() ) ) );
+    QGIS_NANOARROW_THROW_NOT_OK( ArrowMetadataBuilderAppend( metadataKv.get(), ArrowCharView( "ARROW:extension:metadata" ), ArrowCharView( metadataJson.c_str() ) ) );
     QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetMetadata( col, reinterpret_cast<char *>( metadataKv->data ) ) );
   }
 
   void appendGeometry( const QgsFeature &feature, struct ArrowArray *col )
   {
-    if ( !feat.hasGeometry() )
+    if ( !feature.hasGeometry() )
     {
       QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendNull( col, 1 ) );
       return;
     }
 
-    const QByteArray wkb = feat.geometry().asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons );
+    const QByteArray wkb = feature.geometry().asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons );
     struct ArrowBufferView v { { wkb.data() }, static_cast<int64_t>( wkb.size() ) };
     QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, v ) );
   }
@@ -261,7 +263,7 @@ namespace
           case NANOARROW_TYPE_STRING_VIEW:
           {
             const QStringList stringList = v.toStringList();
-            for ( const QString &item : stringList )
+            for ( const QString &string : stringList )
             {
               struct ArrowBufferView bytesView { { string.toUtf8().constData() }, static_cast<int64_t>( string.size() ) };
               QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col->children[0], bytesView ) );

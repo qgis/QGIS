@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsarrowreader.h
+    qgsarrowiterator.h
     ---------------------
     begin                : November 2025
     copyright            : (C) 2025 by Dewey Dunnington
