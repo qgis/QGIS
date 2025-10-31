@@ -18,6 +18,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QSignalSpy>
+#include <QComboBox>
 
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include "qgsattributeform.h"
@@ -34,6 +35,12 @@
 #include "qgsattributeeditorfield.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsspinbox.h"
+#include "qgsvaluemapconfigdlg.h"
+#include "qgsvaluerelationconfigdlg.h"
+#include "qgsrenderer.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgsstyle.h"
+#include "qgscategorizedsymbolrendererwidget.h"
 
 class TestQgsAttributeForm : public QObject
 {
@@ -64,6 +71,8 @@ class TestQgsAttributeForm : public QObject
     void testMinimumWidth();
     void testFieldConstraintDuplicateField();
     void testCaseInsensitiveFieldConstraint();
+    void testDisableComboBoxes();
+    void testTest();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -1295,6 +1304,67 @@ void TestQgsAttributeForm::testCaseInsensitiveFieldConstraint()
 
   auto depsF3 = form.constraintDependencies( qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] ) );
   QCOMPARE( depsF3.size(), 2 );
+}
+
+void TestQgsAttributeForm::testDisableComboBoxes()
+{
+  for( int i = 0; i<3; i++ )
+  {
+    // make a temporary layer to check through
+    const QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer" );
+    QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+
+    bool allowNull = i;
+    // set default value
+    if ( i == 2 )
+      layer->setDefaultValueDefinition( 1, QgsDefaultValue( QStringLiteral( "\"col0\"+1" ), true ) );
+
+    // build a form, set a feature
+    QgsFeature ft( layer->fields(), 1 );
+    QgsAttributeForm form( layer );
+    form.setMode( QgsAttributeEditorContext::AddFeatureMode );
+    form.setFeature( ft );
+
+    // create a value map configuration
+    QgsValueMapConfigDlg *valueMapConfig = static_cast<QgsValueMapConfigDlg *>( QgsGui::editorWidgetRegistry()->createConfigWidget( "ValueMap", layer, 1, nullptr ) );
+    QVariantMap config = valueMapConfig->config();
+
+    // set allow null in value map configuration and apply it to the layer
+    config.remove(QStringLiteral("AllowNull"));
+    config.insert( QStringLiteral( "AllowNull" ), allowNull );
+
+    layer->setEditorWidgetSetup( 1, QgsEditorWidgetSetup( "ValueMap", config ) );
+
+    //set value in col0:
+    QgsEditorWidgetWrapper *ww0;
+    ww0 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+    ww0->setValue( 1 );
+
+    QComboBox *cb = form.findChild<QComboBox*>("col1");
+    if ( i != 0 )  //ToDO: remove if PR #39895 get's merged
+    {
+      switch( i )
+      {
+        case 0:
+          QVERIFY( !cb->isEnabled() );
+          QCOMPARE( cb->toolTip(), "No values available" );
+          break;
+        case 1:
+          QVERIFY( !cb->isEnabled() );
+          QCOMPARE( cb->toolTip(), "No other values available" );
+          break;
+        case 2:
+          QVERIFY( cb->isEnabled() );
+          QVERIFY( cb->toolTip().isEmpty() );
+      }
+    }
+    delete valueMapConfig;
+  }
+}
+
+void TestQgsAttributeForm::testTest()
+{
+
 }
 
 QGSTEST_MAIN( TestQgsAttributeForm )
