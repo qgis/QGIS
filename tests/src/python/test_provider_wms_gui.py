@@ -80,12 +80,6 @@ class TestPyQgsWMSProviderGUI(QgisTestCase):
 
     def test(self):
 
-        # This test is quite fragile as it depends on windows manager behavior
-        # regarding focus, so not surprising it doesn't pass
-        # on other platforms than Linux.
-        # if 'TRAVIS_OS_NAME' in os.environ and os.environ['TRAVIS_OS_NAME'] == 'osx':
-        #    return
-
         # Set the last used format in global settings
         QgsSettings().setValue("qgis/lastWmsImageEncoding", "image/tiff")
 
