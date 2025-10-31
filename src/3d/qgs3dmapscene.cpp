@@ -219,6 +219,23 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   // force initial update of ambient occlusion settings
   onAmbientOcclusionSettingsChanged();
 
+  // Timers are used to refresh the map overlay every 250 ms while the camera is moving.
+  //
+  // 1. When camera movement starts:
+  //    - Trigger an immediate map update to prevent the overlay from appearing outdated
+  //    - Start mMapOverlayTimer, which updates the overlay every 250 ms
+  //    - Restart the single-shot mMapOverlayDebounceTimer, which will be triggered once movement stops
+  //
+  // 2. When camera movement ends, onMapOverlayDebounceTimeout() is called:
+  //    - Stop mMapOverlayTimer.
+  //    - Perform one final overlay refresh to ensure the map is up-to-date
+  mMapOverlayTimer.setInterval( 250 );
+  mMapOverlayTimer.setSingleShot( false );
+  connect( &mMapOverlayTimer, &QTimer::timeout, this, &Qgs3DMapScene::onShowMapOverlayChanged );
+
+  mMapOverlayDebounceTimer.setSingleShot( true );
+  connect( &mMapOverlayDebounceTimer, &QTimer::timeout, this, &Qgs3DMapScene::onMapOverlayDebounceTimeout );
+
   // force initial update of map overlay entity
   onShowMapOverlayChanged();
 
@@ -340,7 +357,24 @@ void Qgs3DMapScene::onCameraChanged()
 
   const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
   emit viewed2DExtentFrom3DChanged( extent2D );
-  update2DMapOverlay( extent2D );
+
+  // Update map overlay on first movement
+  if ( !mOverlayUpdatedOnFirstMovement )
+  {
+    mOverlayUpdatedOnFirstMovement = update2DMapOverlay( extent2D );
+  }
+
+  if ( mMap.is2DMapOverlayEnabled() )
+  {
+    // start periodic timer to update overlay
+    if ( !mMapOverlayTimer.isActive() )
+    {
+      mMapOverlayTimer.start();
+    }
+
+    // Restart the timer which will be triggered once movement stops
+    mMapOverlayDebounceTimer.start( 250 );
+  }
 
   // The magic to make things work better in large scenes (e.g. more than 50km across)
   // is here: we will simply move the origin of the scene, and update transforms
@@ -535,7 +569,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
   }
 }
 
-void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints )
+bool Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints )
 {
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
   QgsOverlayTextureRenderView &overlayRenderView = frameGraph->overlayTextureRenderView();
@@ -544,23 +578,25 @@ void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoi
   {
     if ( mMapOverlayEntity )
     {
+      QgsDebugMsgLevel( "Destroy 2D map overlay", 2 );
       mMapOverlayEntity->setParent( static_cast<Qt3DCore::QEntity *>( nullptr ) );
       mMapOverlayEntity->deleteLater();
       mMapOverlayEntity = nullptr;
     }
     overlayRenderView.setEnabled( mMap.debugShadowMapEnabled() || mMap.debugDepthMapEnabled() );
-    return;
+    return false;
   }
 
   if ( !mMapOverlayEntity )
   {
+    QgsDebugMsgLevel( "Create 2D map overlay", 2 );
     QgsWindow3DEngine *engine = qobject_cast<QgsWindow3DEngine *>( mEngine );
     mMapOverlayEntity = new QgsMapOverlayEntity( engine, &overlayRenderView, &mMap, this );
     mMapOverlayEntity->setEnabled( true );
     overlayRenderView.setEnabled( true );
   }
 
-
+  QgsDebugMsgLevel( "Update 2d map overlay", 2 );
   Qt3DRender::QCamera *camera = mEngine->camera();
   const QgsVector3D extentCenter3D = mMap.worldToMapCoordinates( camera->position() );
   const QgsPointXY extentCenter2D( extentCenter3D.x(), extentCenter3D.y() );
@@ -584,6 +620,7 @@ void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoi
 
   const QgsRectangle overviewExtent = QgsRectangle::fromCenterAndSize( extentCenter2D, adjustedHalfExtent, adjustedHalfExtent );
   mMapOverlayEntity->update( overviewExtent, mCameraController->yaw() );
+  return true;
 }
 
 void Qgs3DMapScene::createTerrain()
@@ -1181,6 +1218,17 @@ void Qgs3DMapScene::onShowMapOverlayChanged()
 {
   const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
   update2DMapOverlay( extent2D );
+}
+
+void Qgs3DMapScene::onMapOverlayDebounceTimeout()
+{
+  // Final update after the end of the movement
+  onShowMapOverlayChanged();
+
+  // Stop the periodic timer
+  mMapOverlayTimer.stop();
+
+  mOverlayUpdatedOnFirstMovement = false;
 }
 
 void Qgs3DMapScene::onCameraMovementSpeedChanged()
