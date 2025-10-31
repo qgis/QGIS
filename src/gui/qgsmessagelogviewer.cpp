@@ -104,7 +104,7 @@ void QgsMessageLogViewer::reject()
 {
 }
 
-void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::MessageType type)
+void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::MessageType msgType )
 {
   constexpr int MESSAGE_COUNT_LIMIT = 10000;
   // Avoid logging too many messages, which might blow memory.
