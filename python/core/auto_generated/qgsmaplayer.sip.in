@@ -1910,7 +1910,7 @@ or ``False`` if visiting should be canceled.
 .. versionadded:: 3.10
 %End
 
-    virtual bool accept( QgsObjectEntityVisitorInterface *visitor ) const;
+    virtual bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
 %Docstring
 Accepts the specified object ``visitor``, causing it to visit all
 relevant objects associated with the layer.

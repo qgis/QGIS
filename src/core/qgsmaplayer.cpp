@@ -2972,7 +2972,7 @@ bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const
   return true;
 }
 
-bool QgsMapLayer::accept( QgsObjectEntityVisitorInterface * ) const
+bool QgsMapLayer::accept( QgsObjectEntityVisitorInterface *, const QgsObjectVisitorContext & ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

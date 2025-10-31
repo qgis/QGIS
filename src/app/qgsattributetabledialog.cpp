@@ -638,7 +638,7 @@ void QgsAttributeTableDialog::layerActionTriggered()
     case Qgis::AttributeActionType::Windows:
     case Qgis::AttributeActionType::Unix:
     {
-      const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+      const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
       if ( !allowed )
       {
         QgisApp::instance()->messageBar()->pushMessage(

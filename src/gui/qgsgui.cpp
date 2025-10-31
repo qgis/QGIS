@@ -388,7 +388,7 @@ QgsGui::QgsGui()
   qRegisterMetaType<QgsHistoryEntry>( "QgsHistoryEntry" );
 }
 
-bool QgsGui::pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar *messageBar )
+bool QgsGui::allowExecutionOfEmbeddedScripts( QgsProject *project, QgsMessageBar *messageBar )
 {
   const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
   Qgis::ProjectTrustStatus trustStatus = QgsProjectUtils::checkUserTrust( project );

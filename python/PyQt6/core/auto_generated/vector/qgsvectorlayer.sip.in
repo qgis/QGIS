@@ -2813,7 +2813,7 @@ Sets the coordinate transform context to ``transformContext``
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
-    virtual bool accept( QgsObjectEntityVisitorInterface *visitor ) const;
+    virtual bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
 
 
   signals:

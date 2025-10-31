@@ -5363,7 +5363,7 @@ bool QgsProject::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
-bool QgsProject::accept( QgsObjectEntityVisitorInterface *visitor ) const
+bool QgsProject::accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -5371,7 +5371,7 @@ bool QgsProject::accept( QgsObjectEntityVisitorInterface *visitor ) const
   if ( !macros.isEmpty() )
   {
     QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::Macro, tr( "Macros" ), macros );
-    if ( !visitor->visitEmbeddedScript( entity ) )
+    if ( !visitor->visitEmbeddedScript( entity, context ) )
     {
       return false;
     }
@@ -5381,7 +5381,7 @@ bool QgsProject::accept( QgsObjectEntityVisitorInterface *visitor ) const
   if ( !expressionFunctions.isEmpty() )
   {
     QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::ExpressionFunction, tr( "Expression functions" ), expressionFunctions );
-    if ( !visitor->visitEmbeddedScript( entity ) )
+    if ( !visitor->visitEmbeddedScript( entity, context ) )
     {
       return false;
     }
@@ -5392,7 +5392,7 @@ bool QgsProject::accept( QgsObjectEntityVisitorInterface *visitor ) const
   {
     for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
     {
-      if ( !( ( *it )->accept( visitor ) ) )
+      if ( !( ( *it )->accept( visitor, context ) ) )
       {
         return false;
       }

@@ -102,7 +102,7 @@ class CORE_EXPORT QgsObjectEntityVisitorInterface
      * Subclasses should return FALSE to abort further visitations, or TRUE to continue
      * visiting after processing this entity.
      */
-    virtual bool visitEmbeddedScript( const QgsEmbeddedScriptEntity &entity, const QgsObjectVisitorContext &context = QgsObjectVisitorContext() )
+    virtual bool visitEmbeddedScript( const QgsEmbeddedScriptEntity &entity, const QgsObjectVisitorContext &context )
     {
       Q_UNUSED( entity )
       Q_UNUSED( context )

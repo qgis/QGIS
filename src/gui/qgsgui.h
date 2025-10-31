@@ -311,7 +311,7 @@ class GUI_EXPORT QgsGui : public QObject
      * \note Not available in Python bindings
      * \since QGIS 3.40
      */
-    static bool pythonEmbeddedInProjectAllowed( QgsProject *project, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
+    static bool allowExecutionOfEmbeddedScripts( QgsProject *project, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
 
     /**
      * Initializes callout widgets.

@@ -6481,7 +6481,7 @@ bool QgisApp::addProject( const QString &projectFile )
       const bool projectContainsExpressionFunctions = !QgsProject::instance()->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() ).isEmpty();
       if ( projectContainsMacros || projectContainsExpressionFunctions )
       {
-        const bool projectTrusted = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance(), mInfoBar );
+        const bool projectTrusted = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance(), mInfoBar );
         if ( projectTrusted && projectContainsMacros )
         {
           QgisApp::instance()->enableProjectMacros();

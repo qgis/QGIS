@@ -55,6 +55,7 @@ class QgsMapLayerTemporalProperties;
 class QgsMapLayerElevationProperties;
 class QgsMapLayerSelectionProperties;
 class QgsObjectEntityVisitorInterface;
+class QgsObjectVisitorContext;
 class QgsSldExportContext;
 
 class QDomDocument;
@@ -1794,7 +1795,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \since QGIS 4.0
      */
-    virtual bool accept( QgsObjectEntityVisitorInterface *visitor ) const;
+    virtual bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
 
     /**
      * Returns the layer's selection properties. This may be NULLPTR, depending on the layer type.

@@ -1900,7 +1900,7 @@ bool QgsVectorLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
-bool QgsVectorLayer::accept( QgsObjectEntityVisitorInterface *visitor ) const
+bool QgsVectorLayer::accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1922,7 +1922,7 @@ bool QgsVectorLayer::accept( QgsObjectEntityVisitorInterface *visitor ) const
         case Qgis::AttributeActionType::Unix:
         {
           QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::Action, tr( "%1: Action ’%2’" ).arg( name(), action.name() ), action.command() );
-          if ( !visitor->visitEmbeddedScript( entity ) )
+          if ( !visitor->visitEmbeddedScript( entity, context ) )
           {
             return false;
           }
@@ -1981,7 +1981,7 @@ bool QgsVectorLayer::accept( QgsObjectEntityVisitorInterface *visitor ) const
   if ( !initCode.isEmpty() )
   {
     QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::FormInitCode, tr( "%1: Attribute form init code" ).arg( name() ), initCode );
-    if ( !visitor->visitEmbeddedScript( entity ) )
+    if ( !visitor->visitEmbeddedScript( entity, context ) )
     {
       return false;
     }

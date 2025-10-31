@@ -80,7 +80,7 @@ embedded script) nodes using the visitor pattern.
 
     virtual ~QgsObjectEntityVisitorInterface();
 
-    virtual bool visitEmbeddedScript( const QgsEmbeddedScriptEntity &entity, const QgsObjectVisitorContext &context = QgsObjectVisitorContext() );
+    virtual bool visitEmbeddedScript( const QgsEmbeddedScriptEntity &entity, const QgsObjectVisitorContext &context );
 %Docstring
 Called when the visitor will visit an embedded script ``entity``.
 

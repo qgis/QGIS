@@ -113,7 +113,7 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
         {
           if ( QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent() ) )
           {
-            const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+            const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
             if ( !allowed )
             {
               if ( mMessageBar )

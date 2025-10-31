@@ -2288,7 +2288,7 @@ void QgsAttributeForm::initPython()
   if ( !mLayer->editFormConfig().initFunction().isEmpty()
        && mLayer->editFormConfig().initCodeSource() != Qgis::AttributeFormPythonInitCodeSource::NoSource )
   {
-    const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+    const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
     if ( !allowed )
     {
       mMessageBar->pushMessage(

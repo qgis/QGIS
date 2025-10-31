@@ -84,6 +84,7 @@ class QgsVectorLayerTemporalProperties;
 class QgsFeatureRendererGenerator;
 class QgsVectorLayerElevationProperties;
 class QgsObjectEntityVisitorInterface;
+class QgsObjectVisitorContext;
 
 #ifndef SIP_RUN
 template<class T>
@@ -2590,7 +2591,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
-    bool accept( QgsObjectEntityVisitorInterface *visitor ) const override;
+    bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const override;
 
   signals:
 

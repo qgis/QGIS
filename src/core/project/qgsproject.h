@@ -91,6 +91,7 @@ class QgsProjectElevationProperties;
 class QgsProjectGpsSettings;
 class QgsSensorManager;
 class QgsObjectEntityVisitorInterface;
+class QgsObjectVisitorContext;
 
 /**
  * \ingroup core
@@ -1788,7 +1789,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 4.0
      */
-    bool accept( QgsObjectEntityVisitorInterface *visitor ) const;
+    bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
 
     /**
      * Returns the elevation shading renderer used for map shading

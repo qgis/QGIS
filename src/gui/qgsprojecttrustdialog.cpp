@@ -126,7 +126,7 @@ QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *pare
       mTrustProjectFolderCheckBox->setVisible( false );
     }
 
-    project->accept( &mEmbeddedScriptsVisitor );
+    project->accept( &mEmbeddedScriptsVisitor, QgsObjectVisitorContext() );
   }
 
   for ( const QgsEmbeddedScriptEntity &scriptDetails : mEmbeddedScriptsVisitor.embeddedScripts() )

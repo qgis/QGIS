@@ -121,7 +121,7 @@ void QgsActionMenu::triggerAction()
         case Qgis::AttributeActionType::Windows:
         case Qgis::AttributeActionType::Unix:
         {
-          const bool allowed = QgsGui::pythonEmbeddedInProjectAllowed( QgsProject::instance() );
+          const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
           if ( !allowed )
           {
             emit messageEmitted( tr( "The action contains embedded scripts which have been denied execution." ), Qgis::MessageLevel::Warning );

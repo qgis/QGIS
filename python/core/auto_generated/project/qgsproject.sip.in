@@ -1784,7 +1784,7 @@ or ``False`` if visiting should be canceled.
 .. versionadded:: 3.10
 %End
 
-    bool accept( QgsObjectEntityVisitorInterface *visitor ) const;
+    bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
 %Docstring
 Accepts the specified object entity ``visitor``, causing it to visit all
 object entities associated with the project.
