@@ -641,7 +641,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     item = new QTableWidgetItem( value );
     item->setData( Qt::UserRole, value );
     item->setData( Qt::DisplayRole, value2 );
-
+    QString tooltip = value2;
+    if ( value2 != attrs.at( i ).toString() )
+    {
+      tooltip = tr( "%1 (%2)" ).arg( value2, attrs.at( i ).toString() );
+    }
+    item->setToolTip( tooltip );
     tblResults->setItem( j, 3, item );
 
     // highlight first item
@@ -792,7 +797,12 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
 
     const QString representedValue = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
     attrItem->setSortData( 1, representedValue );
-    attrItem->setToolTip( 1, representedValue );
+    QString tooltip = representedValue;
+    if ( representedValue != attrs.at( i ).toString() )
+    {
+      tooltip = tr( "%1 (%2)" ).arg( representedValue, attrs.at( i ).toString() );
+    }
+    attrItem->setToolTip( 1, tooltip );
     attrItem->setData( 1, REPRESENTED_VALUE_ROLE, representedValue );
     attrItem->setData( 1, RAW_STRING_VALUE_ROLE, attrs.at( i ).toString() );
 
@@ -1342,7 +1352,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorTileLayer *layer, const QStr
     attrItem->setData( 1, REPRESENTED_VALUE_ROLE, value );
     attrItem->setData( 1, RAW_STRING_VALUE_ROLE, attrs.at( i ).toString() );
     attrItem->setSortData( 1, value );
-    attrItem->setToolTip( 1, value );
+    QString tooltip = value;
+    if ( value != attrs.at( i ).toString() )
+    {
+      tooltip = tr( "%1 (%2)" ).arg( value, attrs.at( i ).toString() );
+    }
+    attrItem->setToolTip( 1, tooltip );
     bool foundLinks = false;
     const QString links = QgsStringUtils::insertLinks( value, &foundLinks );
     if ( foundLinks )
