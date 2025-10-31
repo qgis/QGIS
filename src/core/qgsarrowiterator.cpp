@@ -51,6 +51,7 @@ namespace
     QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetName( col, "geometry" ) );
     QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_BINARY ) );
 
+    // Should be PROJJSON
     QString crsString = layer.crs().toWkt( Qgis::CrsWktVariant::Wkt2_2019 );
     QJsonObject crsMetadata;
     crsMetadata["crs"] = crsString;
@@ -139,12 +140,15 @@ namespace
     }
   }
 
-  void appendVariant( const QVariant &v, struct ArrowArray *col, const struct ArrowSchema *colType, struct ArrowError *error )
+  void appendVariant( const QVariant &v, struct ArrowArray *col, struct ArrowSchemaView &columnTypeView )
   {
-    struct ArrowSchemaView colTypeView;
-    QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &colTypeView, colType, error ), error );
+    if ( v.isNull() )
+    {
+      QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendNull( col, 1 ) );
+      return;
+    }
 
-    switch ( colTypeView.type )
+    switch ( columnTypeView.type )
     {
       case NANOARROW_TYPE_BOOL:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, v.toBool() ) );
@@ -206,8 +210,8 @@ namespace
 
       case NANOARROW_TYPE_TIMESTAMP:
       {
-        QDateTime dateTime = v.toDateTime();
-        switch ( colTypeView.time_unit )
+        const QDateTime dateTime = v.toDateTime();
+        switch ( columnTypeView.time_unit )
         {
           case NANOARROW_TIME_UNIT_SECOND:
             QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toSecsSinceEpoch() ) );
@@ -228,8 +232,8 @@ namespace
       case NANOARROW_TYPE_TIME32:
       case NANOARROW_TYPE_TIME64:
       {
-        QTime time = v.toTime();
-        switch ( colTypeView.time_unit )
+        const QTime time = v.toTime();
+        switch ( columnTypeView.time_unit )
         {
           case NANOARROW_TIME_UNIT_SECOND:
             QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, time.msec() / 1000 ) );
@@ -254,32 +258,18 @@ namespace
       case NANOARROW_TYPE_LIST_VIEW:
       case NANOARROW_TYPE_LARGE_LIST_VIEW:
       {
-        struct ArrowSchemaView childView;
-        QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &childView, colType->children[0], error ), error );
-        switch ( childView.type )
+        const QStringList stringList = v.toStringList();
+        for ( const QString &string : stringList )
         {
-          case NANOARROW_TYPE_STRING:
-          case NANOARROW_TYPE_LARGE_STRING:
-          case NANOARROW_TYPE_STRING_VIEW:
-          {
-            const QStringList stringList = v.toStringList();
-            for ( const QString &string : stringList )
-            {
-              struct ArrowBufferView bytesView { { string.toUtf8().constData() }, static_cast<int64_t>( string.size() ) };
-              QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col->children[0], bytesView ) );
-            }
-
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayFinishElement( col ) );
-            break;
-          }
-          default:
-            throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to list of Arrow '%2'" ).arg( QMetaType::typeName( v.metaType().id() ) ).arg( ArrowTypeString( colTypeView.type ) ) );
+          struct ArrowBufferView bytesView { { string.toUtf8().constData() }, static_cast<int64_t>( string.size() ) };
+          QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col->children[0], bytesView ) );
         }
 
+        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayFinishElement( col ) );
         break;
       }
       default:
-        throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to Arrow type '%2'" ).arg( QMetaType::typeName( v.metaType().id() ) ).arg( ArrowTypeString( colTypeView.type ) ) );
+        throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to Arrow type '%2'" ).arg( QMetaType::typeName( v.metaType().id() ) ).arg( ArrowTypeString( columnTypeView.type ) ) );
     }
   }
 
@@ -292,7 +282,7 @@ QgsArrowIterator::QgsArrowIterator( QgsFeatureIterator featureIterator )
 
 QgsArrowIterator::~QgsArrowIterator()
 {
-  if ( mSchema.release != nullptr )
+  if ( !mSchema.release )
   {
     ArrowSchemaRelease( &mSchema );
   }
@@ -305,7 +295,7 @@ void QgsArrowIterator::setSchema( const struct ArrowSchema *requestedSchema )
     throw QgsException( QStringLiteral( "Invalid or null ArrowSchema provided" ) );
   }
 
-  if ( mSchema.release != nullptr )
+  if ( !mSchema.release )
   {
     ArrowSchemaRelease( &mSchema );
   }
@@ -316,7 +306,7 @@ void QgsArrowIterator::setSchema( const struct ArrowSchema *requestedSchema )
 
 void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
 {
-  if ( out == nullptr )
+  if ( !out )
   {
     throw QgsException( "null output ArrowSchema provided" );
   }
@@ -326,52 +316,103 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
     throw QgsException( "QgsArrowIterator can't iterate over less than one feature" );
   }
 
-  if ( mSchema.release == nullptr )
+  if ( !mSchema.release )
   {
     throw QgsException( "QgsArrowIterator schema not set" );
   }
 
-  nanoarrow::UniqueArray tmp;
+  // Check the schema and cache a few things about it before we loop over features.
+  // This could also be done when setting the schema (although the struct ArrowSchemaView
+  // would have to be opaque in the header if this were cached as a class member).
   struct ArrowError error {};
-  QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowArrayInitFromSchema( tmp.get(), &mSchema, &error ), &error );
-  QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayReserve( tmp.get(), n ) );
-
-  std::vector<QString> colNames( mSchema.n_children );
+  std::vector<QString> columnNames( mSchema.n_children );
+  std::vector<struct ArrowSchemaView> colTypeViews( mSchema.n_children );
   for ( int64_t i = 0; i < mSchema.n_children; i++ )
   {
-    colNames[i] = QString( mSchema.name != nullptr ? mSchema.name : "" );
+    columnNames[i] = QString( mSchema.name != nullptr ? mSchema.name : "" );
+    QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &colTypeViews[i], mSchema.children[i], &error ), &error );
+
+    // Check that any columns with a list type are lists of strings, as that's the
+    // only list type supported here.
+    switch ( colTypeViews[i].type )
+    {
+      case NANOARROW_TYPE_LIST:
+      case NANOARROW_TYPE_FIXED_SIZE_LIST:
+      case NANOARROW_TYPE_LARGE_LIST:
+      case NANOARROW_TYPE_LIST_VIEW:
+      case NANOARROW_TYPE_LARGE_LIST_VIEW:
+      {
+        struct ArrowSchemaView childView;
+        QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &childView, mSchema.children[i]->children[0], &error ), &error );
+        switch ( childView.type )
+        {
+          case NANOARROW_TYPE_STRING:
+          case NANOARROW_TYPE_LARGE_STRING:
+          case NANOARROW_TYPE_STRING_VIEW:
+            break;
+          default:
+            throw QgsException( QStringLiteral( "Can't convert to list of Arrow '%1' (only lists of strings are supported)" ).arg( ArrowTypeString( colTypeViews[i].type ) ) );
+        }
+
+        break;
+      }
+      default:
+        // No checking needed for other destination types
+        break;
+    }
   }
 
-  QgsFeature feat;
-  while ( n > 0 && mFeatureIterator.nextFeature( feat ) )
+  // Create the output array
+  nanoarrow::UniqueArray tmp;
+  QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowArrayInitFromSchema( tmp.get(), &mSchema, &error ), &error );
+  QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayReserve( tmp.get(), n ) );
+  QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayStartAppending( tmp.get() ) );
+
+  // Loop features
+  std::vector<int> featureAttributeIndex;
+  QgsFeature feature;
+  while ( n > 0 && mFeatureIterator.nextFeature( feature ) )
   {
     --n;
-    QVariantMap attrs = feat.attributeMap();
 
+    // Cache the attribute index per output schema index on the first feature
+    if ( featureAttributeIndex.empty() )
+    {
+      for ( int64_t i = 0; i < mSchema.n_children; i++ )
+      {
+        featureAttributeIndex.push_back( feature.fieldNameIndex( columnNames[i] ) );
+      }
+    }
+
+    // Loop over the output schema fields and append the appropriate attribute from the
+    // feature (or geometry, or null if the feature does not contain that field).
     for ( int64_t i = 0; i < mSchema.n_children; i++ )
     {
-      struct ArrowArray *col = tmp->children[i];
+      int attributeIndex = featureAttributeIndex[i];
+      struct ArrowArray *columnArray = tmp->children[i];
 
       if ( i == mSchemaGeometryColumnIndex )
       {
-        appendGeometry( feat, col );
+        appendGeometry( feature, columnArray );
       }
-      else if ( attrs.contains( colNames[i] ) )
+      else if ( attributeIndex > 0 && attributeIndex < feature.attributeCount() )
       {
-        appendVariant( attrs.value( colNames[i] ), col, mSchema.children[i], &error );
+        appendVariant( feature.attribute( attributeIndex ), columnArray, colTypeViews[i] );
       }
       else
       {
-        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendNull( col, 1 ) );
+        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendNull( columnArray, 1 ) );
       }
     }
   }
+
+  QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowArrayFinishBuildingDefault( tmp.get(), &error ), &error );
 }
 
 
 int64_t QgsArrowIterator::inferSchema( const QgsVectorLayer &layer, struct ArrowSchema *out )
 {
-  if ( out == nullptr )
+  if ( !out )
   {
     throw QgsException( "null output ArrowSchema provided" );
   }
