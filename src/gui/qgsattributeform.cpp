@@ -31,6 +31,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsgui.h"
 #include "qgsproject.h"
+#include "qgsprojectutils.h"
 #include "qgspythonrunner.h"
 #include "qgsrelationwidgetwrapper.h"
 #include "qgstextwidgetwrapper.h"
@@ -2287,6 +2288,17 @@ void QgsAttributeForm::initPython()
   if ( !mLayer->editFormConfig().initFunction().isEmpty()
        && mLayer->editFormConfig().initCodeSource() != Qgis::AttributeFormPythonInitCodeSource::NoSource )
   {
+    const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
+    if ( !allowed )
+    {
+      mMessageBar->pushMessage(
+        tr( "Security warning" ),
+        tr( "The attribute form contains an embedded script which has been denied execution." ),
+        Qgis::MessageLevel::Warning
+      );
+      return;
+    }
+
     QString initFunction = mLayer->editFormConfig().initFunction();
     QString initFilePath = mLayer->editFormConfig().initFilePath();
     QString initCode;
@@ -2336,10 +2348,14 @@ void QgsAttributeForm::initPython()
     // If we have a function code, run it
     if ( !initCode.isEmpty() )
     {
-      if ( QgsGui::pythonEmbeddedInProjectAllowed( nullptr, nullptr, Qgis::PythonEmbeddedType::Macro ) )
+      if ( QgsProjectUtils::checkUserTrust( QgsProject::instance() ) == Qgis::ProjectTrustStatus::Trusted )
+      {
         QgsPythonRunner::run( initCode );
+      }
       else
+      {
         mMessageBar->pushMessage( QString(), tr( "Python macro could not be run due to missing permissions." ), Qgis::MessageLevel::Warning );
+      }
     }
 
     QgsPythonRunner::run( QStringLiteral( "import inspect" ) );
@@ -2404,7 +2420,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       if ( !elementDef )
         break;
 
-      QgsActionWidgetWrapper *actionWrapper = new QgsActionWidgetWrapper( mLayer, nullptr, this );
+      QgsActionWidgetWrapper *actionWrapper = new QgsActionWidgetWrapper( mLayer, nullptr, this, mMessageBar );
       actionWrapper->setAction( elementDef->action( vl ) );
       context.setAttributeFormMode( mMode );
       actionWrapper->setContext( context );

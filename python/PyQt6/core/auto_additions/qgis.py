@@ -741,49 +741,75 @@ Qgis.VectorLayerTypeFlag.baseClass = Qgis
 Qgis.VectorLayerTypeFlags = lambda flags=0: Qgis.VectorLayerTypeFlag(flags)
 Qgis.VectorLayerTypeFlags.baseClass = Qgis
 VectorLayerTypeFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
-Qgis.PythonMacroMode = Qgis.PythonEmbeddedMode
+Qgis.PythonMacroMode = Qgis.EmbeddedScriptMode
 # monkey patching scoped based enum
-Qgis.Never = Qgis.PythonEmbeddedMode.Never
+Qgis.Never = Qgis.EmbeddedScriptMode.Never
 Qgis.Never.is_monkey_patched = True
-Qgis.Never.__doc__ = "Python embedded never run"
-Qgis.Ask = Qgis.PythonEmbeddedMode.Ask
+Qgis.Never.__doc__ = "Embedded scripts never run"
+Qgis.Ask = Qgis.EmbeddedScriptMode.Ask
 Qgis.Ask.is_monkey_patched = True
-Qgis.Ask.__doc__ = "User is prompt before running"
-Qgis.SessionOnly = Qgis.PythonEmbeddedMode.SessionOnly
+Qgis.Ask.__doc__ = "User is prompted before running scripts"
+Qgis.SessionOnly = Qgis.EmbeddedScriptMode.SessionOnly
 Qgis.SessionOnly.is_monkey_patched = True
-Qgis.SessionOnly.__doc__ = "Only during this session"
-Qgis.Always = Qgis.PythonEmbeddedMode.Always
+Qgis.SessionOnly.__doc__ = "Only during this session (only used prior to QGIS 4.0)"
+Qgis.Always = Qgis.EmbeddedScriptMode.Always
 Qgis.Always.is_monkey_patched = True
-Qgis.Always.__doc__ = "Python embedded is always run"
-Qgis.NotForThisSession = Qgis.PythonEmbeddedMode.NotForThisSession
+Qgis.Always.__doc__ = "Embedded scripts are always run"
+Qgis.NotForThisSession = Qgis.EmbeddedScriptMode.NotForThisSession
 Qgis.NotForThisSession.is_monkey_patched = True
-Qgis.NotForThisSession.__doc__ = "Python embedded will not be run for this session"
-Qgis.PythonEmbeddedMode.__doc__ = """Authorisation to run Python Embedded in projects
+Qgis.NotForThisSession.__doc__ = "Embedded scripts will not be run for this session (only used prior to QGIS 4.0)"
+Qgis.NeverAsk = Qgis.EmbeddedScriptMode.NeverAsk
+Qgis.NeverAsk.is_monkey_patched = True
+Qgis.NeverAsk.__doc__ = "The user is never prompted, embedded scripts are only run on trusted projects and folders \n.. versionadded:: 4.0"
+Qgis.EmbeddedScriptMode.__doc__ = """Authorisation to run script embedded in projects
 
 .. versionadded:: 3.40
 
-* ``Never``: Python embedded never run
-* ``Ask``: User is prompt before running
-* ``SessionOnly``: Only during this session
-* ``Always``: Python embedded is always run
-* ``NotForThisSession``: Python embedded will not be run for this session
+* ``Never``: Embedded scripts never run
+* ``Ask``: User is prompted before running scripts
+* ``SessionOnly``: Only during this session (only used prior to QGIS 4.0)
+* ``Always``: Embedded scripts are always run
+* ``NotForThisSession``: Embedded scripts will not be run for this session (only used prior to QGIS 4.0)
+* ``NeverAsk``: The user is never prompted, embedded scripts are only run on trusted projects and folders
+
+  .. versionadded:: 4.0
+
 
 """
 # --
-Qgis.PythonEmbeddedMode.baseClass = Qgis
+Qgis.EmbeddedScriptMode.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.PythonEmbeddedType.Macro.__doc__ = ""
-Qgis.PythonEmbeddedType.ExpressionFunction.__doc__ = ""
-Qgis.PythonEmbeddedType.__doc__ = """Type of Python Embedded in projects
+Qgis.EmbeddedScriptType.Macro.__doc__ = ""
+Qgis.EmbeddedScriptType.ExpressionFunction.__doc__ = ""
+Qgis.EmbeddedScriptType.Action.__doc__ = ""
+Qgis.EmbeddedScriptType.FormInitCode.__doc__ = ""
+Qgis.EmbeddedScriptType.__doc__ = """Type of Python Embedded in projects
 
 .. versionadded:: 3.40
 
 * ``Macro``: 
 * ``ExpressionFunction``: 
+* ``Action``: 
+* ``FormInitCode``: 
 
 """
 # --
-Qgis.PythonEmbeddedType.baseClass = Qgis
+Qgis.EmbeddedScriptType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProjectTrustStatus.Undetermined.__doc__ = ""
+Qgis.ProjectTrustStatus.Trusted.__doc__ = ""
+Qgis.ProjectTrustStatus.Untrusted.__doc__ = ""
+Qgis.ProjectTrustStatus.__doc__ = """Project trust status
+
+.. versionadded:: 4.0
+
+* ``Undetermined``: 
+* ``Trusted``: 
+* ``Untrusted``: 
+
+"""
+# --
+Qgis.ProjectTrustStatus.baseClass = Qgis
 QgsDataProvider.ReadFlag = Qgis.DataProviderReadFlag
 # monkey patching scoped based enum
 QgsDataProvider.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource

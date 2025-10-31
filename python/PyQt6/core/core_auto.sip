@@ -131,6 +131,7 @@
 %Include auto_generated/qgsmimedatautils.sip
 %Include auto_generated/qgsmultirenderchecker.sip
 %Include auto_generated/qgsobjectcustomproperties.sip
+%Include auto_generated/qgsobjectvisitor.sip
 %Include auto_generated/qgsofflineediting.sip
 %Include auto_generated/qgsogcutils.sip
 %Include auto_generated/qgsoptional.sip

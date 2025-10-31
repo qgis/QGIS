@@ -30,6 +30,7 @@
 #include "moc_qgsmaplayer.cpp"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsobjectvisitor.h"
 #include "qgspathresolver.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsproject.h"
@@ -2965,6 +2966,13 @@ QString QgsMapLayer::generateId( const QString &layerName )
 }
 
 bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return true;
+}
+
+bool QgsMapLayer::accept( QgsObjectEntityVisitorInterface *, const QgsObjectVisitorContext & ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

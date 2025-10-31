@@ -2160,6 +2160,26 @@ void QgsApplication::setCustomVariable( const QString &name, const QVariant &val
   emit instance()->customVariablesChanged();
 }
 
+QStringList QgsApplication::temporarilyTrustedProjectsFolders()
+{
+  return instance()->mTemporarilyTrustedProjectFolders;
+}
+
+void QgsApplication::setTemporarilyTrustedProjectsFolders( const QStringList &trustedProjectsFolders )
+{
+  instance()->mTemporarilyTrustedProjectFolders = trustedProjectsFolders;
+}
+
+QStringList QgsApplication::temporarilyUntrustedProjectsFolders()
+{
+  return instance()->mTemporarilyUntrustedProjectFolders;
+}
+
+void QgsApplication::setTemporarilyUntrustedProjectsFolders( const QStringList &untrustedProjectsFolders )
+{
+  instance()->mTemporarilyUntrustedProjectFolders = untrustedProjectsFolders;
+}
+
 int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio )
 {
   QFontMetrics fm( ( QFont() ) );

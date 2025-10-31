@@ -32,6 +32,7 @@
 #include "qgspathresolver.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgsprojectutils.h"
 #include "qgsprojectversion.h"
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
@@ -77,6 +78,7 @@
 #include "qgssettingsregistrycore.h"
 #include "qgspluginlayer.h"
 #include "qgspythonrunner.h"
+#include "qgsobjectvisitor.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -5361,6 +5363,45 @@ bool QgsProject::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
+bool QgsProject::accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  const QString macros = readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() );
+  if ( !macros.isEmpty() )
+  {
+    QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::Macro, tr( "Macros" ), macros );
+    if ( !visitor->visitEmbeddedScript( entity, context ) )
+    {
+      return false;
+    }
+  }
+
+  const QString expressionFunctions = readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ) );
+  if ( !expressionFunctions.isEmpty() )
+  {
+    QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::ExpressionFunction, tr( "Expression functions" ), expressionFunctions );
+    if ( !visitor->visitEmbeddedScript( entity, context ) )
+    {
+      return false;
+    }
+  }
+
+  const QMap<QString, QgsMapLayer *> layers = mapLayers( false );
+  if ( !layers.empty() )
+  {
+    for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
+    {
+      if ( !( ( *it )->accept( visitor, context ) ) )
+      {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 QgsElevationShadingRenderer QgsProject::elevationShadingRenderer() const
 {
   return mElevationShadingRenderer;
@@ -5402,9 +5443,7 @@ bool QgsProject::loadFunctionsFromProject( bool force )
 {
   if ( QgsPythonRunner::isValid() )
   {
-    const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettings().enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
-
-    if ( force || pythonEmbeddedMode == Qgis::PythonEmbeddedMode::SessionOnly || pythonEmbeddedMode == Qgis::PythonEmbeddedMode::Always )
+    if ( force || QgsProjectUtils::checkUserTrust( this ) == Qgis::ProjectTrustStatus::Trusted )
     {
       const QString projectFunctions = readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString() );
       if ( !projectFunctions.isEmpty() )

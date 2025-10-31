@@ -129,6 +129,22 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      */
     void reinit();
 
+    /**
+     * Emitted when a \a message should be shown to the user in the application message bar.
+     *
+     * \see messageDiscarded()
+     * \since QGIS 4.0
+     */
+    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+
+    /**
+     * Emitted when the previous message from the tool should be cleared from the application message bar.
+     *
+     * \see messageEmitted()
+     * \since QGIS 4.0
+     */
+    void messageDiscarded();
+
   private slots:
     void triggerAction();
     void reloadActions();

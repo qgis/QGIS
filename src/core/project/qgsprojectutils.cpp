@@ -16,10 +16,18 @@
  ***************************************************************************/
 
 #include "qgsprojectutils.h"
-#include "qgsmaplayerutils.h"
-#include "qgsproject.h"
+#include "qgsaction.h"
+#include "qgsactionmanager.h"
+#include "qgsapplication.h"
 #include "qgsgrouplayer.h"
 #include "qgslayertree.h"
+#include "qgsmaplayerutils.h"
+#include "qgsproject.h"
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 
 QList<QgsMapLayer *> QgsProjectUtils::layersMatchingPath( const QgsProject *project, const QString &path )
 {
@@ -88,4 +96,75 @@ bool QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject *project, QgsMapL
     return false;
   };
   return traverseTree( project->layerTreeRoot() );
+}
+
+Qgis::ProjectTrustStatus QgsProjectUtils::checkUserTrust( QgsProject *project )
+{
+  const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
+  switch ( embeddedScriptMode )
+  {
+    case Qgis::EmbeddedScriptMode::Always:
+    {
+      // A user having changed the behavior to always allow is considered as determined
+      return Qgis::ProjectTrustStatus::Trusted;
+    }
+
+    case Qgis::EmbeddedScriptMode::Never:
+    {
+      // A user having changed the behavior to always deny is considered as determined
+      return Qgis::ProjectTrustStatus::Untrusted;
+    }
+
+    case Qgis::EmbeddedScriptMode::Ask:
+    case Qgis::EmbeddedScriptMode::NeverAsk:
+    case Qgis::EmbeddedScriptMode::SessionOnly:
+    case Qgis::EmbeddedScriptMode::NotForThisSession:
+    {
+      QString absoluteFilePath;
+      QString absolutePath;
+      QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( project->fileName() );
+      if ( storage )
+      {
+        if ( !storage->filePath( project->fileName() ).isEmpty() )
+        {
+          QFileInfo fileInfo( storage->filePath( project->fileName() ) );
+          absoluteFilePath = fileInfo.absoluteFilePath();
+          absolutePath = fileInfo.absolutePath();
+        }
+        else
+        {
+          // Match non-file based URIs too
+          absolutePath = project->fileName();
+        }
+      }
+      else
+      {
+        QFileInfo fileInfo( project->fileName() );
+        absoluteFilePath = fileInfo.absoluteFilePath();
+        absolutePath = fileInfo.absolutePath();
+      }
+
+      const QStringList untrustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionUntrustedProjectsFolders->value() + QgsApplication::temporarilyUntrustedProjectsFolders();
+      for ( const QString &path : untrustedProjectsFolders )
+      {
+        if ( absoluteFilePath == path || absolutePath == path )
+        {
+          return Qgis::ProjectTrustStatus::Untrusted;
+        }
+      }
+
+      const QStringList trustedProjectsFolders = QgsSettingsRegistryCore::settingsCodeExecutionTrustedProjectsFolders->value() + QgsApplication::temporarilyTrustedProjectsFolders();
+      for ( const QString &path : trustedProjectsFolders )
+      {
+        if ( absoluteFilePath == path || absolutePath == path )
+        {
+          return Qgis::ProjectTrustStatus::Trusted;
+        }
+      }
+
+      return Qgis::ProjectTrustStatus::Undetermined;
+    }
+  }
+
+  return Qgis::ProjectTrustStatus::Undetermined;
 }

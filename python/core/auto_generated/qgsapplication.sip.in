@@ -1115,6 +1115,38 @@ generated variables (like system name, user name etc.)
 Set a single custom expression variable.
 %End
 
+    static QStringList temporarilyTrustedProjectsFolders();
+%Docstring
+Returns the list of projects and folders that have been temporarily
+determined as trusted by the user.
+
+.. versionadded:: 4.0
+%End
+
+    static void setTemporarilyTrustedProjectsFolders( const QStringList &trustedProjectsFolders );
+%Docstring
+Sets the list of projects and folders that have been temporarily
+determined as trusted by the user.
+
+.. versionadded:: 4.0
+%End
+
+    static QStringList temporarilyUntrustedProjectsFolders();
+%Docstring
+Returns the list of projects and folders that have been temporarily
+determined as untrusted by the user.
+
+.. versionadded:: 4.0
+%End
+
+    static void setTemporarilyUntrustedProjectsFolders( const QStringList &untrustedProjectsFolders );
+%Docstring
+Sets the list of projects and folders that have been temporarily
+determined as untrusted by the user.
+
+.. versionadded:: 4.0
+%End
+
     static int scaleIconSize( int standardSize, bool applyDevicePixelRatio = false );
 %Docstring
 Scales an icon size to compensate for display pixel density, making the
