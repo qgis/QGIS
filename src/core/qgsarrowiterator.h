@@ -13,6 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSARROWITERATOR_H
+#define QGSARROWITERATOR_H
+
+#include "qgis_core.h"
 #include "qgsfeatureiterator.h"
 
 #ifndef ARROW_C_DATA_INTERFACE
@@ -94,16 +98,18 @@ class CORE_EXPORT QgsArrowIterator
     ~QgsArrowIterator();
 
     //! Request a specific Arrow schema for this output
-    void setSchema( const struct ArrowSchema *requestedSchema );
+    void setSchema( const struct ArrowSchema *requestedSchema ) SIP_SKIP;
 
     //! Populate out with the next n features (or fewer depending on the number of features remaining)
-    void nextFeatures( int64_t n, struct ArrowArray *out );
+    void nextFeatures( int64_t n, struct ArrowArray *out ) SIP_SKIP;
 
     //! Guess the schema for a given QgsVectorLayer and return the geometry column index
-    static int64_t inferSchema(const QgsVectorLayer& layer, struct ArrowSchema *out);
+    static int64_t inferSchema( const QgsVectorLayer &layer, struct ArrowSchema *out ) SIP_SKIP;
 
   private:
     QgsFeatureIterator mFeatureIterator;
     struct ArrowSchema mSchema {};
     int64_t mSchemaGeometryColumnIndex;
 };
+
+#endif // QGSARROWITERATOR_H
