@@ -842,6 +842,13 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
     QApplication::clipboard()->setText( var.toString() );
   } );
 
+  QAction *copyRawContentAction = menu->addAction( tr( "Copy Raw Content" ) );
+  menu->addAction( copyRawContentAction );
+  connect( copyRawContentAction, &QAction::triggered, this, [masterIndex, this] {
+    const QVariant var = mMasterModel->data( masterIndex, Qt::EditRole );
+    QApplication::clipboard()->setText( var.toString() );
+  } );
+
   QgsVectorLayer *vl = mFilterModel->layer();
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
   if ( canvas && vl && vl->isSpatial() )
