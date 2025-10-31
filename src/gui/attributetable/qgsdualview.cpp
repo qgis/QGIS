@@ -842,7 +842,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
     QApplication::clipboard()->setText( var.toString() );
   } );
 
-  QAction *copyRawContentAction = menu->addAction( tr( "Copy Raw Content" ) );
+  QAction *copyRawContentAction = menu->addAction( tr( "Copy Raw Cell Content" ) );
   menu->addAction( copyRawContentAction );
   connect( copyRawContentAction, &QAction::triggered, this, [masterIndex, this] {
     const QVariant var = mMasterModel->data( masterIndex, Qt::EditRole );
