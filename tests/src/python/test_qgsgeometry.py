@@ -3215,7 +3215,7 @@ class TestQgsGeometry(QgisTestCase):
         wkt = circularstring.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
-        # test consequtive vertice deletion
+        # test consecutive vertex deletion
         circularstring = QgsGeometry.fromWkt(circularstringwkt)
         assert circularstring.deleteVertices([3, 4]), "Delete vertices [3, 4] failed"
         expwkt = "CircularString (0 1, 1 2, 2 1)"

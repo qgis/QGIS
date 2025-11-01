@@ -877,7 +877,7 @@ class CORE_EXPORT QgsGeometry
      * TRUE if the vertex was successfully deleted or the geometry was cleared.
      */
     bool deleteVertex( int atVertex );
-    
+
     /**
      * Deletes vertices at the given positions
      * (first number is index 0)

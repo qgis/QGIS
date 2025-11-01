@@ -2643,7 +2643,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Qgis:
     QgsGeos geos( d->geometry.get() );
     mLastError.clear();
     std::unique_ptr< QgsAbstractGeometry > bufferGeom = geos.singleSidedBuffer( distance, segments, side,
-      joinStyle, miterLimit, &mLastError );
+        joinStyle, miterLimit, &mLastError );
     if ( !bufferGeom )
     {
       QgsGeometry result;

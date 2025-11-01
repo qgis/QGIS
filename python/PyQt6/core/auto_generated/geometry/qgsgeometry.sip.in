@@ -833,7 +833,7 @@ LineString with less than 2 vertices), the geometry is cleared instead.
          this geometry or if the geometry is null, ``True`` if the
          vertex was successfully deleted or the geometry was cleared.
 %End
-    
+
     bool deleteVertices( const QList<int> atVertices );
 %Docstring
 Deletes vertices at the given positions (first number is index 0)
