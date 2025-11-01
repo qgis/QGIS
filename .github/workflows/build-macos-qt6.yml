@@ -106,7 +106,7 @@ jobs:
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
 
       - name: 📑 Upload vcpkg build logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: build-logs-${{ matrix.triplet }}
@@ -120,7 +120,7 @@ jobs:
 
       - name: 📤 Upload sdk
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: qgis-sdk-${{ matrix.triplet }}
           path: |
@@ -138,7 +138,7 @@ jobs:
           gtar -cpvzf qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}
           path: |
@@ -194,7 +194,7 @@ jobs:
             universal/*/*.app
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         id: artifact-mac-qt6
         with:
           name: qgis-${{steps.workflow-artifact-ids.outputs.filename}}-dmg
