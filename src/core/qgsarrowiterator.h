@@ -26,6 +26,7 @@
 #define ARROW_FLAG_NULLABLE 2
 #define ARROW_FLAG_MAP_KEYS_SORTED 4
 
+#ifndef SIP_RUN
 struct ArrowSchema
 {
   // Array type description
@@ -42,7 +43,9 @@ struct ArrowSchema
   // Opaque producer-specific data
   void *private_data;
 };
+#endif
 
+#ifndef SIP_RUN
 struct ArrowArray
 {
   // Array data description
@@ -60,12 +63,14 @@ struct ArrowArray
   // Opaque producer-specific data
   void *private_data;
 };
+#endif
 
 #endif // ARROW_C_DATA_INTERFACE
 
 #ifndef ARROW_C_STREAM_INTERFACE
 #define ARROW_C_STREAM_INTERFACE
 
+#ifndef SIP_RUN
 struct ArrowArrayStream
 {
   // Callbacks providing stream functionality
@@ -79,13 +84,14 @@ struct ArrowArrayStream
   // Opaque producer-specific data
   void *private_data;
 };
+#endif
 
 #endif // ARROW_C_STREAM_INTERFACE
 
 
 /**
  * \ingroup core
- * \brief Wrapper around an ArrowSchema
+ * \brief Wrapper around an ArrowSchema.
  */
 class CORE_EXPORT QgsArrowSchema
 {
@@ -101,9 +107,11 @@ class CORE_EXPORT QgsArrowSchema
 
     ~QgsArrowSchema();
 
-    struct ArrowSchema *schema() SIP_SKIP;
+#ifndef SIP_RUN
+    struct ArrowSchema *schema();
 
-    const struct ArrowSchema *schema() const SIP_SKIP;
+    const struct ArrowSchema *schema() const;
+#endif
 
     //! Returns the address of the underlying ArrowSchema for export to or import from other systems
     uintptr_t cSchemaAddress();

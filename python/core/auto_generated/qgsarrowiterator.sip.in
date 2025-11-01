@@ -1,0 +1,104 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsarrowiterator.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+class QgsArrowSchema
+{
+%Docstring(signature="appended")
+Wrapper around an ArrowSchema.
+%End
+
+%TypeHeaderCode
+#include "qgsarrowiterator.h"
+%End
+  public:
+    QgsArrowSchema();
+%Docstring
+Construct invalid schema holder
+%End
+
+    QgsArrowSchema( const QgsArrowSchema &other );
+%Docstring
+Copy constructor
+%End
+
+
+    ~QgsArrowSchema();
+
+
+    uintptr_t cSchemaAddress();
+%Docstring
+Returns the address of the underlying ArrowSchema for export to or
+import from other systems
+%End
+
+    void exportToAddress( uintptr_t otherAddress );
+%Docstring
+Export this schema to the address of a similar object
+%End
+
+    bool isValid() const;
+%Docstring
+Returns true if this wrapper object holds a valid ArrowSchema
+%End
+
+};
+
+
+class QgsArrowIterator
+{
+%Docstring(signature="appended")
+Wrapper for an Arrow reader of features from vector data provider or
+vector layer.
+%End
+
+%TypeHeaderCode
+#include "qgsarrowiterator.h"
+%End
+  public:
+    QgsArrowIterator();
+%Docstring
+Construct invalid iterator
+%End
+
+    QgsArrowIterator( QgsFeatureIterator featureIterator );
+%Docstring
+Construct iterator from an existing feature iterator
+%End
+
+    void setSchema( const QgsArrowSchema &schema );
+%Docstring
+Request a specific Arrow schema for this output
+%End
+
+
+    static QgsArrowSchema inferSchema( const QgsVectorLayer &layer );
+%Docstring
+Guess the schema for a given :py:class:`QgsVectorLayer` and return the
+geometry column index
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsarrowiterator.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

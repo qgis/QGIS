@@ -65,12 +65,12 @@ QgsArrowSchema::~QgsArrowSchema()
   }
 }
 
-struct ArrowSchema *QgsArrowSchema::schema() SIP_SKIP
+struct ArrowSchema *QgsArrowSchema::schema()
 {
   return &mSchema;
 }
 
-const struct ArrowSchema *QgsArrowSchema::schema() const SIP_SKIP
+const struct ArrowSchema *QgsArrowSchema::schema() const
 {
   return &mSchema;
 }
