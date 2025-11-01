@@ -692,7 +692,7 @@ QgsTextFormat QgsTableEditorWidget::selectionTextFormat()
     QgsTextFormat cellFormat = model()->data( index, TextFormat ).value<QgsTextFormat>();
     if ( first )
     {
-      format = cellFormat;
+      format = std::move( cellFormat );
       first = false;
     }
     else if ( cellFormat == format )
