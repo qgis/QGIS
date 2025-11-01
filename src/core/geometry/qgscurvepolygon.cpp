@@ -1331,8 +1331,8 @@ bool QgsCurvePolygon::deleteVertices( QList<QgsVertexId> positions )
     QgsVertexId firstVertexId = vertices.first();
     QgsVertexId lastVertexId = vertices.last();
 
-    // check if we are deleting the same point twice
-    if ( ( firstVertexId.vertex == 0 ) && ( lastVertexId.vertex == n - 1 ) )
+    // check if we are deleting the same point twice and remove the first, but not in a compound curve
+    if ( ( firstVertexId.vertex == 0 ) && ( lastVertexId.vertex == n - 1 ) && !( QgsWkbTypes::flatType( ring->wkbType() ) == Qgis::WkbType::CompoundCurve ) )
     {
       vertices.removeFirst();
     }
@@ -1358,6 +1358,19 @@ bool QgsCurvePolygon::deleteVertices( QList<QgsVertexId> positions )
     if ( !ring->deleteVertices( vertices ) )
     {
       return false;
+    }
+
+    // in case of a compound curve, first/last vertex may have been deleted even if not specified
+    // in such case, we copy the first vertex and add it at the end
+    if ( QgsWkbTypes::flatType( ring->wkbType() ) == Qgis::WkbType::CompoundCurve )
+    {
+      // add start point at the end if not the same
+      if ( !( ring->vertexAt( QgsVertexId( 0, 0, 0 ) ) == ring->vertexAt( QgsVertexId( 0, 0, ring->numPoints() - 1 ) ) ) )
+      {
+        QgsCompoundCurve *compoundRing = qgsgeometry_cast<QgsCompoundCurve *>( ring );
+        compoundRing->addVertex( ring->vertexAt( QgsVertexId( 0, 0, 0 ) ) );
+      }
+      continue;
     }
 
     // If first or last vertex is removed, re-sync the last/first vertex
