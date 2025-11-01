@@ -955,8 +955,8 @@ bool QgsCompoundCurve::deleteVertices( QList<QgsVertexId> positions )
     QList<QgsVertexId> vertices = curveVerticesIt.value();
 
     const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( curve );
-    // If the vertex to delete is the middle vertex of a CircularString, we transform
-    // this CircularString into a LineString without the middle vertex
+    // If the vertex to delete is the middle vertex of a circularstring arc, we transform
+    // this circularstring arc into a linestring without the middle vertex
     if ( circularString )
     {
       // we loop through the vertices to see if we need to handle special case
@@ -966,92 +966,96 @@ bool QgsCompoundCurve::deleteVertices( QList<QgsVertexId> positions )
 
       QListIterator<QgsVertexId> curveVerticesIt( vertices );
 
-      bool oddVertex = false;
-
       // search for odd vertices (middle vertices of an arc)
-      for ( size_t i = vertices.size(); i --> 0; )
+      for ( size_t i = vertices.size(); i -- > 0; )
       {
         const QgsVertexId curveVertexId = vertices.at( i );
+
+        // check if a middle vertex of an arc
         if ( curveVertexId.vertex % 2 == 1 )
         {
+          // check if neighbouring vertices are also to be deleted
+          // if so, we just add this vertex to the list and continue iterating
           if ( !circularVerticesToDelete.isEmpty() )
           {
             if ( curveVertexId.vertex == circularVerticesToDelete.last().vertex - 1 )
             {
               circularVerticesToDelete.append( curveVertexId );
-              vertices.removeAt( i );
               continue;
             }
           }
           else if ( i != 0 && curveVertexId.vertex - 1 == vertices.at( i - 1 ).vertex )
           {
             circularVerticesToDelete.append( curveVertexId );
-            vertices.removeAt( i );
             continue;
           }
 
-          // we found an odd vertex that is not next to another vertex to delete
-          oddVertex = true;
-          break;
+          // we found a middle vertex of an arc and none of its neighbours are to be deleted
+          // we need to handle special case of middle vertex of an arc deletion
+          // first we delete all the vertices that come before it in this circularstring
+          if ( !circularVerticesToDelete.isEmpty() )
+          {
+            if ( !curve->deleteVertices( circularVerticesToDelete ) )
+              return false;
+          }
+          circularVerticesToDelete.clear();
+
+          // next, we remove that arc and replace it with a linestring that skips the middle vertex
+          QgsPointSequence points;
+          circularString->points( points );
+
+          removeCurve( curveId );
+
+          if ( curveVertexId.vertex < points.length() - 2 )
+          {
+            auto curveC = std::make_unique<QgsCircularString>();
+            curveC->setPoints( points.mid( curveVertexId.vertex + 1 ) );
+            mCurves.insert( curveId, curveC.release() );
+          }
+
+          const QgsPointSequence partB = QgsPointSequence() << points[curveVertexId.vertex - 1] << points[curveVertexId.vertex + 1];
+          auto curveB = std::make_unique<QgsLineString>();
+          curveB->setPoints( partB );
+          mCurves.insert( curveId, curveB.release() );
+          curve = mCurves.at( curveId );
+
+          if ( curveVertexId.vertex > 1 )
+          {
+            auto curveA = std::make_unique<QgsCircularString>();
+            curveA->setPoints( points.mid( 0, curveVertexId.vertex ) );
+            mCurves.insert( curveId, curveA.release() );
+          }
+          curve = mCurves.at( curveId ); // we need to get the new curve
+          circularString = qgsgeometry_cast<const QgsCircularString *>( curve );
+
+          continue;
         }
 
+        // not a middle vertex of an arc
         circularVerticesToDelete.append( curveVertexId );
-        vertices.removeAt( i );
       }
 
-      // we need to handle special case of middle vertex deletion
-      // first we delete all the vertices that come before it
+      // remove any remaining circular vertices to delete
       if ( !circularVerticesToDelete.isEmpty() )
       {
         if ( !curve->deleteVertices( circularVerticesToDelete ) )
           return false;
       }
-      // and then we transform the circular string into a line string
-      // without the middle vertex
-      if ( oddVertex )
-      {
-        QgsPointSequence points;
-        circularString->points( points );
-
-        removeCurve( curveId );
-
-        const QgsVertexId subVertexId = vertices.last();
-        vertices.removeLast();
-        if ( subVertexId.vertex < points.length() - 2 )
-        {
-          auto curveC = std::make_unique<QgsCircularString>();
-          curveC->setPoints( points.mid( subVertexId.vertex + 1 ) );
-          mCurves.insert( curveId, curveC.release() );
-        }
-
-        const QgsPointSequence partB = QgsPointSequence() << points[subVertexId.vertex - 1] << points[subVertexId.vertex + 1];
-        auto curveB = std::make_unique<QgsLineString>();
-        curveB->setPoints( partB );
-        mCurves.insert( curveId, curveB.release() );
-        curve = mCurves.at( curveId );
-
-        if ( subVertexId.vertex > 1 )
-        {
-          auto curveA = std::make_unique<QgsCircularString>();
-          curveA->setPoints( points.mid( 0, subVertexId.vertex ) );
-          mCurves.insert( curveId, curveA.release() );
-        }
-        curve = mCurves.at( curveId ); // we need to get the new curve
-      }
-    }
-
-    // if there are no more vertices to delete for this curve, we continue
-    // in case of a circularstring, we may already have deleted all vertices above
-    if ( vertices.isEmpty() )
-    {
-      continue;
+      continue; // circularstring handled, continue to next curve
     }
 
     if ( !curve->deleteVertices( vertices ) )
       return false;
+  }
 
+  // remove any empty curves
+  for ( size_t i = mCurves.size() - 1; i >= 0; i-- )
+  {
+    QgsCurve *curve = mCurves.at( i );
     if ( curve->numPoints() == 0 )
-      removeCurve( curveId );
+    {
+      removeCurve( i );
+    }
   }
 
   if ( mCurves.isEmpty() )
@@ -1060,7 +1064,7 @@ bool QgsCompoundCurve::deleteVertices( QList<QgsVertexId> positions )
     return true;
   }
 
-  // after deletion, ensure all curves are connected
+  // ensure all curves are connected
   for ( size_t i = mCurves.size() - 1; i > 0; i-- )
   {
     QgsCurve *curve = mCurves.at( i );
