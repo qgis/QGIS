@@ -1140,6 +1140,11 @@ void QgsPostgresDataItemGuiProvider::saveProjects( QgsPGSchemaItem *schemaItem, 
 {
   const QgsDataSourceUri uri = QgsPostgresConn::connUri( schemaItem->connectionName() );
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
+  if ( !conn )
+  {
+    notify( tr( "Save Project" ), tr( "Could not connect to database." ), context, Qgis::MessageLevel::Warning );
+    return;
+  }
 
   if ( !QgsPostgresUtils::projectsTableExists( conn, schemaItem->name() ) )
   {

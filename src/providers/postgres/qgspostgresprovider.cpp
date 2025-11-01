@@ -2231,6 +2231,7 @@ void QgsPostgresProvider::dropOrphanedTopoGeoms()
   if ( !conn )
   {
     QgsDebugError( QStringLiteral( "Cannot drop orphaned topo geoms from invalid provider" ) );
+    return;
   }
 
   QString sql = QString( "DELETE FROM %1.relation WHERE layer_id = %2 AND "
