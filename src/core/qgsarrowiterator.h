@@ -28,37 +28,37 @@
 
 struct ArrowSchema
 {
-    // Array type description
-    const char *format;
-    const char *name;
-    const char *metadata;
-    int64_t flags;
-    int64_t n_children;
-    struct ArrowSchema **children;
-    struct ArrowSchema *dictionary;
+  // Array type description
+  const char *format;
+  const char *name;
+  const char *metadata;
+  int64_t flags;
+  int64_t n_children;
+  struct ArrowSchema **children;
+  struct ArrowSchema *dictionary;
 
-    // Release callback
-    void ( *release )( struct ArrowSchema * );
-    // Opaque producer-specific data
-    void *private_data;
+  // Release callback
+  void ( *release )( struct ArrowSchema * );
+  // Opaque producer-specific data
+  void *private_data;
 };
 
 struct ArrowArray
 {
-    // Array data description
-    int64_t length;
-    int64_t null_count;
-    int64_t offset;
-    int64_t n_buffers;
-    int64_t n_children;
-    const void **buffers;
-    struct ArrowArray **children;
-    struct ArrowArray *dictionary;
+  // Array data description
+  int64_t length;
+  int64_t null_count;
+  int64_t offset;
+  int64_t n_buffers;
+  int64_t n_children;
+  const void **buffers;
+  struct ArrowArray **children;
+  struct ArrowArray *dictionary;
 
-    // Release callback
-    void ( *release )( struct ArrowArray * );
-    // Opaque producer-specific data
-    void *private_data;
+  // Release callback
+  void ( *release )( struct ArrowArray * );
+  // Opaque producer-specific data
+  void *private_data;
 };
 
 #endif // ARROW_C_DATA_INTERFACE
@@ -68,19 +68,56 @@ struct ArrowArray
 
 struct ArrowArrayStream
 {
-    // Callbacks providing stream functionality
-    int ( *get_schema )( struct ArrowArrayStream *, struct ArrowSchema *out );
-    int ( *get_next )( struct ArrowArrayStream *, struct ArrowArray *out );
-    const char *( *get_last_error )( struct ArrowArrayStream * );
+  // Callbacks providing stream functionality
+  int ( *get_schema )( struct ArrowArrayStream *, struct ArrowSchema *out );
+  int ( *get_next )( struct ArrowArrayStream *, struct ArrowArray *out );
+  const char *( *get_last_error )( struct ArrowArrayStream * );
 
-    // Release callback
-    void ( *release )( struct ArrowArrayStream * );
+  // Release callback
+  void ( *release )( struct ArrowArrayStream * );
 
-    // Opaque producer-specific data
-    void *private_data;
+  // Opaque producer-specific data
+  void *private_data;
 };
 
 #endif // ARROW_C_STREAM_INTERFACE
+
+
+/**
+ * \ingroup core
+ * \brief Wrapper around an ArrowSchema
+ */
+class CORE_EXPORT QgsArrowSchema
+{
+  public:
+    //! Construct invalid schema holder
+    QgsArrowSchema() = default;
+
+    //! Copy constructor
+    QgsArrowSchema( const QgsArrowSchema &other );
+
+    //! Assignment operator
+    QgsArrowSchema &operator=( const QgsArrowSchema &other );
+
+    ~QgsArrowSchema();
+
+    struct ArrowSchema *schema() SIP_SKIP;
+
+    const struct ArrowSchema *schema() const SIP_SKIP;
+
+    //! Returns the address of the underlying ArrowSchema for export to or import from other systems
+    uintptr_t cSchemaAddress();
+
+    //! Export this schema to the address of a similar object
+    void exportToAddress( uintptr_t otherAddress );
+
+    //! Returns true if this wrapper object holds a valid ArrowSchema
+    bool isValid() const;
+
+  private:
+    struct ArrowSchema mSchema {};
+};
+
 
 /**
  * \ingroup core
@@ -95,20 +132,18 @@ class CORE_EXPORT QgsArrowIterator
     //! Construct iterator from an existing feature iterator
     QgsArrowIterator( QgsFeatureIterator featureIterator );
 
-    ~QgsArrowIterator();
-
     //! Request a specific Arrow schema for this output
-    void setSchema( const struct ArrowSchema *requestedSchema ) SIP_SKIP;
+    void setSchema( const QgsArrowSchema &schema );
 
     //! Populate out with the next n features (or fewer depending on the number of features remaining)
     void nextFeatures( int64_t n, struct ArrowArray *out ) SIP_SKIP;
 
     //! Guess the schema for a given QgsVectorLayer and return the geometry column index
-    static int64_t inferSchema( const QgsVectorLayer &layer, struct ArrowSchema *out ) SIP_SKIP;
+    static QgsArrowSchema inferSchema( const QgsVectorLayer &layer );
 
   private:
     QgsFeatureIterator mFeatureIterator;
-    struct ArrowSchema mSchema {};
+    QgsArrowSchema mSchema;
     int64_t mSchemaGeometryColumnIndex;
 };
 

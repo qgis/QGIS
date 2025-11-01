@@ -42,6 +42,55 @@
     }                                                                           \
   } while ( 0 )
 
+QgsArrowSchema::QgsArrowSchema( const QgsArrowSchema &other )
+{
+  QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaDeepCopy( &other.mSchema, &mSchema ) );
+}
+
+QgsArrowSchema &QgsArrowSchema::operator=( const QgsArrowSchema &other )
+{
+  if ( mSchema.release )
+  {
+    ArrowSchemaRelease( &mSchema );
+  }
+  QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaDeepCopy( &other.mSchema, &mSchema ) );
+  return *this;
+}
+
+QgsArrowSchema::~QgsArrowSchema()
+{
+  if ( !mSchema.release )
+  {
+    ArrowSchemaRelease( &mSchema );
+  }
+}
+
+struct ArrowSchema *QgsArrowSchema::schema() SIP_SKIP
+{
+  return &mSchema;
+}
+
+const struct ArrowSchema *QgsArrowSchema::schema() const SIP_SKIP
+{
+  return &mSchema;
+}
+
+uintptr_t QgsArrowSchema::cSchemaAddress()
+{
+  return reinterpret_cast<uintptr_t>( &mSchema );
+}
+
+void QgsArrowSchema::exportToAddress( uintptr_t otherAddress )
+{
+  struct ArrowSchema *otherArrowSchema = reinterpret_cast<struct ArrowSchema *>( otherAddress );
+  ArrowSchemaMove( &mSchema, otherArrowSchema );
+}
+
+bool QgsArrowSchema::isValid() const
+{
+  return mSchema.release;
+}
+
 namespace
 {
 
@@ -280,27 +329,14 @@ QgsArrowIterator::QgsArrowIterator( QgsFeatureIterator featureIterator )
 {
 }
 
-QgsArrowIterator::~QgsArrowIterator()
+void QgsArrowIterator::setSchema( const QgsArrowSchema &schema )
 {
-  if ( !mSchema.release )
-  {
-    ArrowSchemaRelease( &mSchema );
-  }
-}
-
-void QgsArrowIterator::setSchema( const struct ArrowSchema *requestedSchema )
-{
-  if ( !requestedSchema || !requestedSchema->release )
+  if ( schema.isValid() )
   {
     throw QgsException( QStringLiteral( "Invalid or null ArrowSchema provided" ) );
   }
 
-  if ( !mSchema.release )
-  {
-    ArrowSchemaRelease( &mSchema );
-  }
-
-  ArrowSchemaDeepCopy( requestedSchema, &mSchema );
+  mSchema = schema;
 }
 
 
@@ -316,7 +352,7 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
     throw QgsException( "QgsArrowIterator can't iterate over less than one feature" );
   }
 
-  if ( !mSchema.release )
+  if ( !mSchema.isValid() )
   {
     throw QgsException( "QgsArrowIterator schema not set" );
   }
@@ -324,13 +360,15 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
   // Check the schema and cache a few things about it before we loop over features.
   // This could also be done when setting the schema (although the struct ArrowSchemaView
   // would have to be opaque in the header if this were cached as a class member).
+  const struct ArrowSchema *schema = mSchema.schema();
+
   struct ArrowError error {};
-  std::vector<QString> columnNames( mSchema.n_children );
-  std::vector<struct ArrowSchemaView> colTypeViews( mSchema.n_children );
-  for ( int64_t i = 0; i < mSchema.n_children; i++ )
+  std::vector<QString> columnNames( schema->n_children );
+  std::vector<struct ArrowSchemaView> colTypeViews( schema->n_children );
+  for ( int64_t i = 0; i < schema->n_children; i++ )
   {
-    columnNames[i] = QString( mSchema.name != nullptr ? mSchema.name : "" );
-    QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &colTypeViews[i], mSchema.children[i], &error ), &error );
+    columnNames[i] = QString( schema->children[i]->name != nullptr ? schema->children[i]->name : "" );
+    QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &colTypeViews[i], schema->children[i], &error ), &error );
 
     // Check that any columns with a list type are lists of strings, as that's the
     // only list type supported here.
@@ -343,7 +381,7 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
       case NANOARROW_TYPE_LARGE_LIST_VIEW:
       {
         struct ArrowSchemaView childView;
-        QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &childView, mSchema.children[i]->children[0], &error ), &error );
+        QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &childView, schema->children[i]->children[0], &error ), &error );
         switch ( childView.type )
         {
           case NANOARROW_TYPE_STRING:
@@ -364,7 +402,7 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
 
   // Create the output array
   nanoarrow::UniqueArray tmp;
-  QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowArrayInitFromSchema( tmp.get(), &mSchema, &error ), &error );
+  QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowArrayInitFromSchema( tmp.get(), schema, &error ), &error );
   QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayReserve( tmp.get(), n ) );
   QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayStartAppending( tmp.get() ) );
 
@@ -378,7 +416,7 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
     // Cache the attribute index per output schema index on the first feature
     if ( featureAttributeIndex.empty() )
     {
-      for ( int64_t i = 0; i < mSchema.n_children; i++ )
+      for ( int64_t i = 0; i < schema->n_children; i++ )
       {
         featureAttributeIndex.push_back( feature.fieldNameIndex( columnNames[i] ) );
       }
@@ -386,7 +424,7 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
 
     // Loop over the output schema fields and append the appropriate attribute from the
     // feature (or geometry, or null if the feature does not contain that field).
-    for ( int64_t i = 0; i < mSchema.n_children; i++ )
+    for ( int64_t i = 0; i < schema->n_children; i++ )
     {
       int attributeIndex = featureAttributeIndex[i];
       struct ArrowArray *columnArray = tmp->children[i];
@@ -410,36 +448,23 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
 }
 
 
-int64_t QgsArrowIterator::inferSchema( const QgsVectorLayer &layer, struct ArrowSchema *out )
+QgsArrowSchema QgsArrowIterator::inferSchema( const QgsVectorLayer &layer )
 {
-  if ( !out )
-  {
-    throw QgsException( "null output ArrowSchema provided" );
-  }
-
   bool layerHasGeometry = layer.geometryType() != Qgis::GeometryType::Unknown && layer.geometryType() != Qgis::GeometryType::Null;
 
   QgsFields fields = layer.fields();
-  nanoarrow::UniqueSchema tmp;
-  QgisPrivateArrowSchemaInit( tmp.get() );
-  QGIS_NANOARROW_THROW_NOT_OK( QgisPrivateArrowSchemaSetTypeStruct( tmp.get(), fields.count() + layerHasGeometry ) );
+  QgsArrowSchema out;
+  QgisPrivateArrowSchemaInit( out.schema() );
+  QGIS_NANOARROW_THROW_NOT_OK( QgisPrivateArrowSchemaSetTypeStruct( out.schema(), fields.count() + layerHasGeometry ) );
   for ( int i = 0; i < fields.count(); i++ )
   {
-    inferField( fields.field( i ), tmp->children[i] );
+    inferField( fields.field( i ), out.schema()->children[i] );
   }
 
   if ( layerHasGeometry )
   {
-    inferGeometry( layer, tmp->children[fields.count()] );
+    inferGeometry( layer, out.schema()->children[fields.count()] );
   }
 
-  ArrowSchemaMove( tmp.get(), out );
-  if ( layerHasGeometry )
-  {
-    return fields.count();
-  }
-  else
-  {
-    return -1;
-  }
+  return out;
 }
