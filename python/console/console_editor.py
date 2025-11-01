@@ -373,7 +373,7 @@ class Editor(QgsCodeEditorPython):
         msgEditorBlank = QCoreApplication.translate(
             "PythonConsole", "Hey, type something to run!"
         )
-        if filename is None:
+        if not filename:
             if not self.isModified():
                 self.showMessage(msgEditorBlank)
                 return
