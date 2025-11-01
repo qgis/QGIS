@@ -810,7 +810,7 @@ is index 0)
          these error conditions. (Or maybe we add another method to this
          object to help make the distinction?)
 %End
-    
+
     bool deleteVertices( const QList<int> atVertices );
 %Docstring
 Deletes vertices at the given positions (first number is index 0)

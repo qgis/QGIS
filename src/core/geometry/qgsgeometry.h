@@ -862,7 +862,7 @@ class CORE_EXPORT QgsGeometry
      * object to help make the distinction?)
      */
     bool deleteVertex( int atVertex );
-    
+
     /**
      * Deletes vertices at the given positions
      * (first number is index 0)
