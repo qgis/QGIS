@@ -1308,13 +1308,15 @@ bool QgsCurvePolygon::deleteVertices( QList<QgsVertexId> positions )
 
   QMapIterator<int, QList<QgsVertexId >> ringVerticesIt( ringVertices );
   ringVerticesIt.toBack();
-  while( ringVerticesIt.hasPrevious() )
+  while ( ringVerticesIt.hasPrevious() )
   {
     ringVerticesIt.previous();
     QList<QgsVertexId> vertices = ringVerticesIt.value();
     int ringId = ringVerticesIt.key();
 
     const int interiorRingId = ringId - 1;
+
+    // cppcheck-suppress containerOutOfBounds
     QgsCurve *ring = ringId == 0 ? mExteriorRing.get() : mInteriorRings.at( interiorRingId );
 
     int n = ring->numPoints();
