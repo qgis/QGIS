@@ -131,7 +131,10 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   }
 
   connect( this, &QgsSymbolsListWidget::changed, this, &QgsSymbolsListWidget::updateAssistantSymbol );
-  updateAssistantSymbol();
+  if ( mSymbol )
+  {
+    updateAssistantSymbol();
+  }
 
   mSymbolColorButton->setAllowOpacity( true );
   mSymbolColorButton->setColorDialogTitle( tr( "Select Color" ) );
