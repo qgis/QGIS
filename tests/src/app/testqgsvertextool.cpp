@@ -87,6 +87,7 @@ class TestQgsVertexTool : public QObject
     void testMoveVertexTopo();
     void testDeleteVertexTopo();
     void testAddVertexTopo();
+    void testAddVertexZMTopo();
     void testMoveEdgeTopo();
     void testAddVertexTopoFirstSegment();
     void testAddVertexTopoMultipleLayers();
@@ -167,6 +168,7 @@ class TestQgsVertexTool : public QObject
     QPointer< QgsVectorLayer > mLayerPoint;
     QPointer< QgsVectorLayer > mLayerPointZ;
     QPointer< QgsVectorLayer > mLayerLineZ;
+    QPointer< QgsVectorLayer > mLayerLineTopoPoints;
     QPointer< QgsVectorLayer > mLayerLineM;
     QPointer< QgsVectorLayer > mLayerCompoundCurve;
     QPointer< QgsVectorLayer > mLayerLineReprojected;
@@ -244,10 +246,13 @@ void TestQgsVertexTool::init()
   mLayerLineM = new QgsVectorLayer( QStringLiteral( "LineStringM?" ), QStringLiteral( "layer line m" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLineM->isValid() );
   mLayerLineM->setCrs( mFake27700 );
+  mLayerLineTopoPoints = new QgsVectorLayer( QStringLiteral( "LineStringZM?" ), QStringLiteral( "layer linezm" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLineTopoPoints->isValid() );
+  mLayerLineTopoPoints->setCrs( mFake27700 );
   mLayerCompoundCurve = new QgsVectorLayer( QStringLiteral( "CompoundCurve?" ), QStringLiteral( "layer compound curve" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerCompoundCurve->isValid() );
   mLayerCompoundCurve->setCrs( mFake27700 );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerCompoundCurve );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerLineTopoPoints << mLayerCompoundCurve );
 
 
   QgsFeature lineF1;
@@ -378,7 +383,7 @@ void TestQgsVertexTool::init()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerCompoundCurve );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerMultiLine << mLayerLineReprojected << mLayerPolygon << mLayerMultiPolygon << mLayerPoint << mLayerPointZ << mLayerLineZ << mLayerLineM << mLayerLineTopoPoints << mLayerCompoundCurve );
 
   QgsMapCanvasSnappingUtils *snappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
   mCanvas->setSnappingUtils( snappingUtils );
@@ -392,6 +397,7 @@ void TestQgsVertexTool::init()
   snappingUtils->locatorForLayer( mLayerPointZ )->init();
   snappingUtils->locatorForLayer( mLayerLineZ )->init();
   snappingUtils->locatorForLayer( mLayerLineM )->init();
+  snappingUtils->locatorForLayer( mLayerLineTopoPoints )->init();
   snappingUtils->locatorForLayer( mLayerCompoundCurve )->init();
 
   // create vertex tool
@@ -415,6 +421,7 @@ void TestQgsVertexTool::cleanup()
   mLayerPointZ->rollBack();
   mLayerLineZ->rollBack();
   mLayerCompoundCurve->rollBack();
+  mLayerLineTopoPoints->rollBack();
 
   QgsProject::instance()->clear();
 }
@@ -1358,6 +1365,47 @@ void TestQgsVertexTool::testAddVertexTopo()
   mLayerPolygon->undoStack()->undo();
 
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+}
+
+void TestQgsVertexTool::testAddVertexZMTopo()
+{
+  // test addition of a vertex on a segment shared with another geometry, z/m value interpolation
+  QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 333 );
+  QgsSettingsRegistryCore::settingsDigitizingDefaultMValue->setValue( 444 );
+
+  QgsProject::instance()->setTopologicalEditing( true );
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
+  cfg.setTolerance( 10 );
+  cfg.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex ) );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+
+  mLayerLineTopoPoints->startEditing();
+  QgsFeature lineF1;
+  lineF1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString ZM (6 7 1 10, 6 6 2 20, 7 5 3 30, 8 5 4 40)" ) ) );
+  mLayerLineTopoPoints->startEditing();
+  mLayerLineTopoPoints->addFeature( lineF1 );
+  const QgsFeatureId topoFidLineF1 = lineF1.id();
+
+  mCanvas->setCurrentLayer( mLayerLineZ );
+  // add vertex in linestringZ
+
+  // in middle of segment
+  mouseClick( 6.5, 5.5, Qt::LeftButton );
+  QCOMPARE( mVertexTool->mDraggingVertexType, QgsVertexTool::DraggingVertexType::AddingVertex );
+  QCOMPARE( mVertexTool->mDraggingVertex->layer->id(), mLayerLineZ->id() );
+  QCOMPARE( mVertexTool->mDraggingVertex->fid, mFidLineZF1 );
+  QCOMPARE( mVertexTool->mDraggingVertex->vertexId, 2 );
+  mouseClick( 7, 6, Qt::LeftButton );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 4 );
+  // when adding a vertex in the middle of an existing segment with z values, the z value should be linearly interpolated
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString Z (5 5 1, 6 6 1, 7 6 1, 7 5 1)" ) );
+  // this should also apply to matching topological segments from other layers -- here both the Z and M values should be interpolated for the Z+M enabled topological layer
+  QCOMPARE( mLayerLineTopoPoints->getFeature( topoFidLineF1 ).geometry().asWkt( 1 ), QStringLiteral( "LineString ZM (6 7 1 10, 6 6 2 20, 7 6 2.5 25, 7 5 3 30, 8 5 4 40)" ) );
 }
 
 void TestQgsVertexTool::testMoveEdgeTopo()
