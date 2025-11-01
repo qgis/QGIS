@@ -114,16 +114,16 @@ class CORE_EXPORT QgsArrowSchema
 #endif
 
     //! Returns the address of the underlying ArrowSchema for export to or import from other systems
-    uintptr_t cSchemaAddress();
+    unsigned long long cSchemaAddress();
 
     //! Export this schema to the address of a similar object
-    void exportToAddress( uintptr_t otherAddress );
+    void exportToAddress( unsigned long long otherAddress );
 
     //! Returns true if this wrapper object holds a valid ArrowSchema
     bool isValid() const;
 
   private:
-    struct ArrowSchema mSchema {};
+    struct ArrowSchema mSchema;
 };
 
 

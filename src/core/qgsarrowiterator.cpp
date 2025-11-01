@@ -59,7 +59,7 @@ QgsArrowSchema &QgsArrowSchema::operator=( const QgsArrowSchema &other )
 
 QgsArrowSchema::~QgsArrowSchema()
 {
-  if ( !mSchema.release )
+  if ( mSchema.release )
   {
     ArrowSchemaRelease( &mSchema );
   }
@@ -75,12 +75,12 @@ const struct ArrowSchema *QgsArrowSchema::schema() const
   return &mSchema;
 }
 
-uintptr_t QgsArrowSchema::cSchemaAddress()
+unsigned long long QgsArrowSchema::cSchemaAddress()
 {
-  return reinterpret_cast<uintptr_t>( &mSchema );
+  return reinterpret_cast<unsigned long long>( &mSchema );
 }
 
-void QgsArrowSchema::exportToAddress( uintptr_t otherAddress )
+void QgsArrowSchema::exportToAddress( unsigned long long otherAddress )
 {
   struct ArrowSchema *otherArrowSchema = reinterpret_cast<struct ArrowSchema *>( otherAddress );
   ArrowSchemaMove( &mSchema, otherArrowSchema );

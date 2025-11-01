@@ -41,13 +41,13 @@ Copy constructor
     ~QgsArrowSchema();
 
 
-    uintptr_t cSchemaAddress();
+    unsigned long long cSchemaAddress();
 %Docstring
 Returns the address of the underlying ArrowSchema for export to or
 import from other systems
 %End
 
-    void exportToAddress( uintptr_t otherAddress );
+    void exportToAddress( unsigned long long otherAddress );
 %Docstring
 Export this schema to the address of a similar object
 %End
