@@ -59,7 +59,6 @@ Returns true if this wrapper object holds a valid ArrowSchema
 
 };
 
-
 class QgsArrowIterator
 {
 %Docstring(signature="appended")
@@ -81,11 +80,16 @@ Construct invalid iterator
 Construct iterator from an existing feature iterator
 %End
 
-    void setSchema( const QgsArrowSchema &schema );
+    void setSchema( const QgsArrowSchema &schema, int geometryColumnIndex );
 %Docstring
 Request a specific Arrow schema for this output
 %End
 
+    void nextFeatures( int n, unsigned long long arrayAddr );
+%Docstring
+Populate out with the next n features (or fewer depending on the number
+of features remaining)
+%End
 
     static QgsArrowSchema inferSchema( const QgsVectorLayer &layer );
 %Docstring

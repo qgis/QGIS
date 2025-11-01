@@ -83,7 +83,7 @@ unsigned long long QgsArrowSchema::cSchemaAddress()
 void QgsArrowSchema::exportToAddress( unsigned long long otherAddress )
 {
   struct ArrowSchema *otherArrowSchema = reinterpret_cast<struct ArrowSchema *>( otherAddress );
-  ArrowSchemaMove( &mSchema, otherArrowSchema );
+  QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaDeepCopy( &mSchema, otherArrowSchema ) );
 }
 
 bool QgsArrowSchema::isValid() const
@@ -329,24 +329,20 @@ QgsArrowIterator::QgsArrowIterator( QgsFeatureIterator featureIterator )
 {
 }
 
-void QgsArrowIterator::setSchema( const QgsArrowSchema &schema )
+void QgsArrowIterator::setSchema( const QgsArrowSchema &schema, int geometryColumnIndex )
 {
-  if ( schema.isValid() )
+  if ( !schema.isValid() )
   {
     throw QgsException( QStringLiteral( "Invalid or null ArrowSchema provided" ) );
   }
 
   mSchema = schema;
+  mSchemaGeometryColumnIndex = geometryColumnIndex;
 }
 
 
-void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
+void QgsArrowIterator::nextFeatures( int n, unsigned long long arrayAddr )
 {
-  if ( !out )
-  {
-    throw QgsException( "null output ArrowSchema provided" );
-  }
-
   if ( n < 1 )
   {
     throw QgsException( "QgsArrowIterator can't iterate over less than one feature" );
@@ -433,7 +429,7 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
       {
         appendGeometry( feature, columnArray );
       }
-      else if ( attributeIndex > 0 && attributeIndex < feature.attributeCount() )
+      else if ( attributeIndex >= 0 && attributeIndex < feature.attributeCount() )
       {
         appendVariant( feature.attribute( attributeIndex ), columnArray, colTypeViews[i] );
       }
@@ -442,9 +438,13 @@ void QgsArrowIterator::nextFeatures( int64_t n, struct ArrowArray *out )
         QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendNull( columnArray, 1 ) );
       }
     }
+
+    QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayFinishElement( tmp.get() ) );
   }
 
   QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowArrayFinishBuildingDefault( tmp.get(), &error ), &error );
+  struct ArrowArray *out = reinterpret_cast<struct ArrowArray *>( static_cast<uintptr_t>( arrayAddr ) );
+  ArrowArrayMove( tmp.get(), out );
 }
 
 

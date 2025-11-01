@@ -126,7 +126,6 @@ class CORE_EXPORT QgsArrowSchema
     struct ArrowSchema mSchema;
 };
 
-
 /**
  * \ingroup core
  * \brief Wrapper for an Arrow reader of features from vector data provider or vector layer.
@@ -141,10 +140,10 @@ class CORE_EXPORT QgsArrowIterator
     QgsArrowIterator( QgsFeatureIterator featureIterator );
 
     //! Request a specific Arrow schema for this output
-    void setSchema( const QgsArrowSchema &schema );
+    void setSchema( const QgsArrowSchema &schema, int geometryColumnIndex );
 
     //! Populate out with the next n features (or fewer depending on the number of features remaining)
-    void nextFeatures( int64_t n, struct ArrowArray *out ) SIP_SKIP;
+    void nextFeatures( int n, unsigned long long arrayAddr );
 
     //! Guess the schema for a given QgsVectorLayer and return the geometry column index
     static QgsArrowSchema inferSchema( const QgsVectorLayer &layer );
