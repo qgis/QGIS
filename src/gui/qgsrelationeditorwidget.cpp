@@ -647,7 +647,7 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
       nmRequest.setFilterExpression( filters.join( QStringLiteral( " OR " ) ) );
     }
 
-    request = nmRequest;
+    request = std::move( nmRequest );
     layer = mNmRelation.referencedLayer();
   }
   else if ( mRelation.referencingLayer() )
