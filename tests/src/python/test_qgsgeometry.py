@@ -3402,6 +3402,106 @@ class TestQgsGeometry(QgisTestCase):
         wkt = curvepolygon.asWkt()
         assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
 
+        # curvepolygon3
+        curvepolygonwkt = "CurvePolygon (CompoundCurve (CircularString (3 19, 0 22, 3 25, 6 28, 9 25),( 9 25, 14 20, 19 25 ),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 19) ))))"
+
+        # passing all the vertices should not crash and the entire geometry should be cleared
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices(
+            [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                24,
+            ]
+        ), "Delete vertices [0, 1, 2, 3, 4] failed"
+        expwkt = "CurvePolygon EMPTY"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deleting single circularstring
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices(
+            [0, 1, 2, 3, 4]
+        ), "Delete vertices [0, 1, 2, 3, 4] failed"
+        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 19, 14 20)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deleting circularstrings on opposing sides
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices(
+            [0, 1, 2, 3, 4, 12, 13, 14, 15, 16]
+        ), "Delete vertices [0, 1, 2, 3, 4, 12, 13, 14, 15, 16] failed"
+        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 19, 14 20)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # delete all but first circularstring
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        ), "Delete vertices [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] failed"
+        expwkt = "CurvePolygon (CompoundCurve ((14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 19, 14 8)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deleting all but last arm
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices(
+            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        ), "Delete vertices [0, 1, 2, 3, 4, 12, 13, 14, 15, 16] failed"
+        expwkt = "CurvePolygon (CompoundCurve ((14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 19, 14 8)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deleting first and last circularstring along with their connecting lines
+        # we are checking if the ring is properly closed after vertices are deleted
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices(
+            [0, 1, 2, 3, 4, 18, 19, 20, 21, 22, 23, 24]
+        ), "Delete vertices [0, 1, 2, 3, 4, 18, 19, 20, 21, 22, 23, 24] failed"
+        expwkt = "CurvePolygon (CompoundCurve ((14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 14 20)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # deletion of first/last point works differently if compound curve, the ring should be properly closed
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([0, 24]), "Delete vertices [0, 24] failed"
+        expwkt = "CurvePolygon (CompoundCurve (CircularString (3 25, 6 28, 9 25),( 9 25, 14 20, 19 25 ),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 8 14, 3 25)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
+        # test deletion of line connection between first and last circularstrings
+        # connecting line is made out of 3 points, after removing 2 of them
+        # circularstrings should not merge, but be joined with a line connecting the start/end points
+        curvepolygon = QgsGeometry.fromWkt(curvepolygonwkt)
+        assert curvepolygon.deleteVertices([24, 23]), "Delete vertices [24, 23] failed"
+        expwkt = "CurvePolygon (CompoundCurve (CircularString (3 19, 0 22, 3 25, 6 28, 9 25),(9 25, 14 20, 19 25),CircularString (19 25, 22 28, 25 25, 28 22, 25 19),(25 19, 20 14, 25 9),CircularString (25 9, 28 6, 25 3, 22 0, 19 3),(19 3, 14 8, 9 3),CircularString (9 3, 6 0, 3 3, 0 6, 3 9),(3 9, 3 19)))"
+        wkt = curvepolygon.asWkt()
+        assert compareWkt(expwkt, wkt), f"Expected:\n{expwkt}\nGot:\n{wkt}\n"
+
     def testInsertVertex(self):
         linestring = QgsGeometry.fromWkt("LineString(1 0, 2 0)")
 
