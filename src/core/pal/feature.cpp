@@ -419,6 +419,10 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
         return nullptr;
       GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
     }
+    else
+    {
+      return nullptr;
+    }
   }
   catch ( GEOSException &e )
   {
