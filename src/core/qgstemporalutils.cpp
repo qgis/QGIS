@@ -329,15 +329,15 @@ long long QgsTimeDuration::toSeconds() const
   long long secs = 0.0;
 
   if ( years )
-    secs += years * QgsInterval::YEARS;
+    secs += years * static_cast< long long >( QgsInterval::YEARS );
   if ( months )
-    secs += months * QgsInterval::MONTHS;
+    secs += months * static_cast< long long >( QgsInterval::MONTHS );
   if ( days )
-    secs += days * QgsInterval::DAY;
+    secs += days * static_cast< long long >( QgsInterval::DAY );
   if ( hours )
-    secs += hours * QgsInterval::HOUR;
+    secs += hours * static_cast< long long >( QgsInterval::HOUR );
   if ( minutes )
-    secs += minutes * QgsInterval::MINUTE;
+    secs += minutes * static_cast< long long >( QgsInterval::MINUTE );
   if ( seconds )
     secs += seconds;
 
