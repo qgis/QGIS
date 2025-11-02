@@ -192,7 +192,7 @@ void QgsLabelingGui::showLineAnchorSettings()
   QgsLabelLineAnchorWidget *widget = new QgsLabelLineAnchorWidget( nullptr, vLayer );
   widget->setDataDefinedProperties( mDataDefinedProperties );
   widget->setSettings( mLineSettings );
-  widget->setGeometryType( vLayer ? vLayer->geometryType() : Qgis::GeometryType::Unknown );
+  widget->setGeometryType( vLayer->geometryType() );
   widget->setContext( symbolContext );
 
   auto applySettings = [this, widget] {
