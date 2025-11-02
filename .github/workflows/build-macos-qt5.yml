@@ -70,7 +70,7 @@ jobs:
                 -B build \
                 -D WITH_VCPKG=ON \
                 -D BUILD_WITH_QT6=OFF \
-                -D WITH_QTWEBKIT=ON \
+                -D WITH_QTWEBKIT=OFF \
                 -D WITH_BINDINGS=ON \
                 -D QGIS_MACAPP_FRAMEWORK=OFF \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
