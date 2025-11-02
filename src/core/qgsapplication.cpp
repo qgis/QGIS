@@ -380,9 +380,8 @@ void QgsApplication::init( QString profileFolder )
     // This doesn't get this hit for QGIS Desktop because we setup the profile via main
     QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( profileFolder );
     QgsUserProfileManager manager( rootProfileFolder );
-    QgsUserProfile *profile = manager.getProfile();
+    std::unique_ptr< QgsUserProfile > profile = manager.getProfile();
     profileFolder = profile->folder();
-    delete profile;
   }
 
   *sProfilePath() = profileFolder;
