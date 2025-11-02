@@ -2436,6 +2436,9 @@ QgsProcessingFileWidgetWrapper::QgsProcessingFileWidgetWrapper( const QgsProcess
 QWidget *QgsProcessingFileWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterFile *fileParam = dynamic_cast<const QgsProcessingParameterFile *>( parameterDefinition() );
+  if ( !fileParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -5322,6 +5325,8 @@ QgsProcessingMapThemeWidgetWrapper::QgsProcessingMapThemeWidgetWrapper( const Qg
 QWidget *QgsProcessingMapThemeWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterMapTheme *themeParam = dynamic_cast<const QgsProcessingParameterMapTheme *>( parameterDefinition() );
+  if ( !themeParam )
+    return nullptr;
 
   mComboBox = new QComboBox();
 
@@ -5787,6 +5792,8 @@ QgsProcessingDatabaseSchemaWidgetWrapper::QgsProcessingDatabaseSchemaWidgetWrapp
 QWidget *QgsProcessingDatabaseSchemaWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDatabaseSchema *schemaParam = dynamic_cast<const QgsProcessingParameterDatabaseSchema *>( parameterDefinition() );
+  if ( !schemaParam )
+    return nullptr;
 
   mSchemaComboBox = new QgsDatabaseSchemaComboBox( QString(), QString() );
   if ( schemaParam->flags() & Qgis::ProcessingParameterFlag::Optional )
