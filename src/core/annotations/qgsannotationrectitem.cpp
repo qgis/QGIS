@@ -358,7 +358,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       if ( moveOperation->nodeId().part == 0 )
       {
         switch ( mPlacementMode )
