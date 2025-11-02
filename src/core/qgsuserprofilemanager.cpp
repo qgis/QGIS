@@ -38,7 +38,7 @@ QString QgsUserProfileManager::resolveProfilesFolder( const QString &basePath )
   return basePath + QDir::separator() + "profiles";
 }
 
-QgsUserProfile *QgsUserProfileManager::getProfile( const QString &defaultProfile, bool createNew, bool initSettings )
+std::unique_ptr< QgsUserProfile > QgsUserProfileManager::getProfile( const QString &defaultProfile, bool createNew, bool initSettings )
 {
   const QString profileName = defaultProfile.isEmpty() ? defaultProfileName() : defaultProfile;
 
@@ -47,7 +47,7 @@ QgsUserProfile *QgsUserProfileManager::getProfile( const QString &defaultProfile
     createUserProfile( profileName );
   }
 
-  QgsUserProfile *profile = profileForName( profileName );
+  std::unique_ptr< QgsUserProfile > profile = profileForName( profileName );
   if ( initSettings )
     profile->initSettings();
 
@@ -150,10 +150,10 @@ bool QgsUserProfileManager::profileExists( const QString &name ) const
   return allProfiles().contains( name );
 }
 
-QgsUserProfile *QgsUserProfileManager::profileForName( const QString &name ) const
+std::unique_ptr< QgsUserProfile > QgsUserProfileManager::profileForName( const QString &name ) const
 {
   const QString profilePath = mRootProfilePath + QDir::separator() + name;
-  return new QgsUserProfile( profilePath );
+  return std::make_unique< QgsUserProfile >( profilePath );
 }
 
 QgsError QgsUserProfileManager::createUserProfile( const QString &name )
@@ -260,6 +260,6 @@ void QgsUserProfileManager::setActiveUserProfile( const QString &profile )
 {
   if ( ! mUserProfile )
   {
-    mUserProfile.reset( profileForName( profile ) );
+    mUserProfile = profileForName( profile );
   }
 }
