@@ -1049,7 +1049,7 @@ bool QgsCompoundCurve::deleteVertices( QList<QgsVertexId> positions )
   }
 
   // remove any empty curves
-  for ( size_t i = mCurves.size() - 1; i >= 0; i-- )
+  for ( int i = mCurves.size() - 1; i >= 0; i-- )
   {
     QgsCurve *curve = mCurves.at( i );
     if ( curve->numPoints() == 0 )
