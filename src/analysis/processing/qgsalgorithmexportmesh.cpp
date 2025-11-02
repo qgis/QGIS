@@ -688,7 +688,10 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
         feat.setGeometry( geom );
         feat.setAttributes( attributes );
 
-        sink->addFeature( feat );
+        if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
+        {
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
+        }
       }
     }
   }
