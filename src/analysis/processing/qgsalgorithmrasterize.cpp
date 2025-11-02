@@ -153,6 +153,10 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
   }
   const bool transparent { parameterAsBool( parameters, QStringLiteral( "MAKE_BACKGROUND_TRANSPARENT" ), context ) };
   const double mapUnitsPerPixel { parameterAsDouble( parameters, QStringLiteral( "MAP_UNITS_PER_PIXEL" ), context ) };
+  if ( mapUnitsPerPixel <= 0 )
+  {
+    throw QgsProcessingException( QObject::tr( "Map units per pixel must be > 0" ) );
+  }
   const double extentBuffer { parameterAsDouble( parameters, QStringLiteral( "EXTENT_BUFFER" ), context ) };
   const QString outputLayerFileName { parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context ) };
 
