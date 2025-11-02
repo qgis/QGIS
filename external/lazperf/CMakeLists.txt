@@ -24,7 +24,7 @@ lazperf/detail/field_rgb14.cpp
 
 target_include_directories(lazperf PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_library(QGis::lazperf ALIAS lazperf)
+add_library(LAZPERF::lazperf ALIAS lazperf)
 
 install(TARGETS lazperf
   RUNTIME DESTINATION ${QGIS_BIN_DIR}

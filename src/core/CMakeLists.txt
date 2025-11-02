@@ -2293,13 +2293,6 @@ if (WITH_COPC)
 endif()
 
 if (WITH_EPT OR WITH_COPC)
-  if (LazPerf_FOUND)
-    # Use system laz-perf
-    include_directories(SYSTEM
-      ${LazPerf_INCLUDE_DIR}
-    )
-  endif()
-
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       pointcloud/qgseptdecoder.cpp
       pointcloud/qgslazdecoder.cpp
@@ -2583,11 +2576,7 @@ if (WITH_EPT)
 endif()
 
 if (WITH_EPT OR WITH_COPC)
-  if (LazPerf_FOUND)
-    target_link_libraries(qgis_core ${LazPerf_LIBRARY})
-  else()
-    target_link_libraries(qgis_core QGis::lazperf)
-  endif()
+  target_link_libraries(qgis_core LAZPERF::lazperf)
 endif()
 
 if (WITH_PDAL)

@@ -119,27 +119,6 @@ set(UNTWINE_INCLUDE_DIRS
   ${CMAKE_BINARY_DIR}/untwine
 )
 
-if (NOT LazPerf_FOUND)
-  set(UNTWINE_SRCS
-    ${UNTWINE_SRCS}
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/charbuf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/filestream.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/header.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/lazperf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/readers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/vlr.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/writers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_gpstime10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_nir14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb14.cpp
-  )
-endif()
-
 set(PDAL_WRENCH_SRCS
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/main.cpp
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/alg.cpp
@@ -269,16 +248,9 @@ if (WITH_GUI)
   add_dependencies(provider_pdal_gui_a ui)
 endif()
 
-if (LazPerf_FOUND)
-  # Use system laz-perf
-  target_include_directories(provider_pdal PRIVATE ${LazPerf_INCLUDE_DIR})
-  target_include_directories(provider_pdal_a PRIVATE ${LazPerf_INCLUDE_DIR})
-  target_include_directories(untwine PRIVATE ${LazPerf_INCLUDE_DIR})
-else()
-  target_link_libraries(provider_pdal QGis::lazperf)
-  target_link_libraries(provider_pdal_a QGis::lazperf)
-  target_link_libraries(untwine QGis::lazperf)
-endif()
+target_link_libraries(provider_pdal LAZPERF::lazperf)
+target_link_libraries(provider_pdal_a LAZPERF::lazperf)
+target_link_libraries(untwine LAZPERF::lazperf)
 
 install(TARGETS provider_pdal
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

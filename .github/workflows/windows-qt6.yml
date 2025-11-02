@@ -83,6 +83,7 @@ jobs:
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
+                -D WITH_INTERNAL_LAZPERF=OFF \
                 -D ENABLE_TESTS=OFF \
                 -D BUILD_WITH_QT6=ON \
                 -D USE_CCACHE=ON \
