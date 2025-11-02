@@ -475,12 +475,12 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           {
             QgsGeometry boundary( feature.geometry().constGet()->boundary() );
             const double boundaryLength = boundary.length();
-            lineAnchorPercent = boundaryLength > 0 ? boundary.lineLocatePoint( releaseCoordsGeometry ) / boundary.length() : 0.5;
+            lineAnchorPercent = boundaryLength > 0 ? boundary.lineLocatePoint( releaseCoordsGeometry ) / boundaryLength : 0.5;
           }
           else
           {
             const double length = feature.geometry().length();
-            lineAnchorPercent = length > 0 ? feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / feature.geometry().length() : 0.5;
+            lineAnchorPercent = length > 0 ? feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / length : 0.5;
           }
 
           vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
