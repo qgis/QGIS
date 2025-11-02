@@ -640,7 +640,6 @@ QString LocalizedDoubleDelegate::displayText( const QVariant &value, const QLoca
       return QLocale().toString( value.toDouble(), 'f', precision );
     }
   }
-  return QLocale().toString( value.toDouble(), 'f' );
 }
 
 ///@endcond private
