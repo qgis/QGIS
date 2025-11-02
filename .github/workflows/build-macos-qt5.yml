@@ -76,6 +76,7 @@ jobs:
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
+                -D NUGET_SOURCE="https://nuget.pkg.github.com/m-kuhn/index.json" \
                 -D NUGET_USERNAME=${{ github.actor }} \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }} || true
 
