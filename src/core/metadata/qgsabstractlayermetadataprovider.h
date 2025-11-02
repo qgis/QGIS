@@ -153,7 +153,7 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     //! Layer data provider name
     QString mDataProviderName;
     //! Layer type (vector, raster etc.)
-    Qgis::LayerType mLayerType;
+    Qgis::LayerType mLayerType = Qgis::LayerType::Vector;
     //! Metadata standard uri, QGIS QMD metadata format uses "http://mrcc.com/qgis.dtd"
     QString mStandardUri;
 };
