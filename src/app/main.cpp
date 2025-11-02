@@ -1117,10 +1117,10 @@ int main( int argc, char *argv[] )
   }
 
   // Calling getProfile() will create the profile if it doesn't exist, and init the QgsSettings
-  QgsUserProfile *profile = manager.getProfile( profileName, true );
+  std::unique_ptr< QgsUserProfile > profile = manager.getProfile( profileName, true );
   QString profileFolder = profile->folder();
   profileName = profile->name();
-  delete profile;
+  profile.reset();
 
   {
     // The profile is selected, we can now set up the translation file for QGIS.
