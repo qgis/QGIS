@@ -755,7 +755,14 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   mDataProvider->setParent( this );
 
   // Set data provider into pipe even if not valid so that it is deleted with pipe (with layer)
-  mPipe->set( mDataProvider );
+  if ( !mPipe->set( mDataProvider ) )
+  {
+    // data provider has been deleted by the pipe
+    mDataProvider = nullptr;
+    appendError( ERR( tr( "Could not insert provider into layer pipe (provider: %1, URI: %2" ).arg( mProviderKey, mDataSource ) ) );
+    return;
+  }
+
   if ( !mDataProvider->isValid() )
   {
     setError( mDataProvider->error() );
@@ -960,9 +967,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   // resampler (must be after renderer)
   QgsRasterResampleFilter *resampleFilter = new QgsRasterResampleFilter();
-  mPipe->set( resampleFilter );
-
-  if ( mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintBenefitsFromResampling )
+  if ( mPipe->set( resampleFilter ) && mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::ProviderHintBenefitsFromResampling )
   {
     const QgsSettings settings;
     QString resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
@@ -2187,35 +2192,35 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
 
     //brightness
     QgsBrightnessContrastFilter *brightnessFilter = new QgsBrightnessContrastFilter();
-    mPipe->set( brightnessFilter );
-
-    //brightness coefficient
-    const QDomElement brightnessElem = pipeNode.firstChildElement( QStringLiteral( "brightnesscontrast" ) );
-    if ( !brightnessElem.isNull() )
+    if ( mPipe->set( brightnessFilter ) )
     {
-      brightnessFilter->readXml( brightnessElem );
+      const QDomElement brightnessElem = pipeNode.firstChildElement( QStringLiteral( "brightnesscontrast" ) );
+      if ( !brightnessElem.isNull() )
+      {
+        brightnessFilter->readXml( brightnessElem );
+      }
     }
 
     //hue/saturation
     QgsHueSaturationFilter *hueSaturationFilter = new QgsHueSaturationFilter();
-    mPipe->set( hueSaturationFilter );
-
-    //saturation coefficient
-    const QDomElement hueSaturationElem = pipeNode.firstChildElement( QStringLiteral( "huesaturation" ) );
-    if ( !hueSaturationElem.isNull() )
+    if ( mPipe->set( hueSaturationFilter ) )
     {
-      hueSaturationFilter->readXml( hueSaturationElem );
+      const QDomElement hueSaturationElem = pipeNode.firstChildElement( QStringLiteral( "huesaturation" ) );
+      if ( !hueSaturationElem.isNull() )
+      {
+        hueSaturationFilter->readXml( hueSaturationElem );
+      }
     }
 
     //resampler
     QgsRasterResampleFilter *resampleFilter = new QgsRasterResampleFilter();
-    mPipe->set( resampleFilter );
-
-    //max oversampling
-    const QDomElement resampleElem = pipeNode.firstChildElement( QStringLiteral( "rasterresampler" ) );
-    if ( !resampleElem.isNull() )
+    if ( mPipe->set( resampleFilter ) )
     {
-      resampleFilter->readXml( resampleElem );
+      const QDomElement resampleElem = pipeNode.firstChildElement( QStringLiteral( "rasterresampler" ) );
+      if ( !resampleElem.isNull() )
+      {
+        resampleFilter->readXml( resampleElem );
+      }
     }
 
     //provider

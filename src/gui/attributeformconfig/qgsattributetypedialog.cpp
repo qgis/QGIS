@@ -214,7 +214,10 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type, bool forc
     {
       // Force to reset the config, even if
       // if the type matches the current one
-      mEditorConfigWidgets.value( type )->setConfig( mWidgetConfig );
+      if ( QgsEditorConfigWidget *widget = mEditorConfigWidgets.value( type ) )
+      {
+        widget->setConfig( mWidgetConfig );
+      }
     }
     stackedWidget->setCurrentWidget( mEditorConfigWidgets[type] );
   }

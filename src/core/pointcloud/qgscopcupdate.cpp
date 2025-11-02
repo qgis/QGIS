@@ -363,7 +363,7 @@ void QgsCopcUpdate::readHierarchy()
       std::vector<char> evlrBlob;
       evlrBlob.resize( evlr1.data_length );
       mFile.read( evlrBlob.data(), static_cast<long>( evlrBlob.size() ) );
-      mEvlrData.push_back( evlrBlob );
+      mEvlrData.emplace_back( std::move( evlrBlob ) );
     }
   }
 
