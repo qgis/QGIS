@@ -480,7 +480,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     *
     * \since QGIS 4.0
     */
-    static QByteArray fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue,  const QMetaType::Type &targetType );
+    static std::pair<QByteArray, int> fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue,  const QMetaType::Type &targetType );
 
 #else
 
@@ -551,7 +551,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     * \warning Only numeric field types are supported.
     * \since QGIS 4.0
     */
-    static QByteArray fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue, QMetaType::Type targetType );
+    static std::pair<QByteArray, int> fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue, QMetaType::Type targetType );
     % MethodCode
     // Validate that all field names exist and are numeric
     for ( const QString &fieldName : *a1 )
@@ -576,7 +576,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     if ( sipIsErr == 0 )
     {
       Py_BEGIN_ALLOW_THREADS
-      sipRes = new QByteArray( QgsVectorLayerUtils::fieldsToDataArray( *a0, *a1, *a2, *a3, a4 ) );
+      sipRes = new std::pair<QByteArray, int>( QgsVectorLayerUtils::fieldsToDataArray( *a0, *a1, *a2, *a3, a4 ) );
       Py_END_ALLOW_THREADS
     }
     % End

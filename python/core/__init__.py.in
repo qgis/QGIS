@@ -789,12 +789,11 @@ try:
       if request is None:
          request = QgsFeatureRequest().setFlags(Qgis.FeatureRequestFlag.NoGeometry).setSubsetOfAttributes(field_indices)
 
-      if request.limit == -1:
-         n_features = self.featureCount()
-      else:
+      src_array, n_features = QgsVectorLayerUtils.fieldsToDataArray(self.fields(), field_names, self.getFeatures(request), null_value, qmeta_type)
+
+      if request.limit != -1:
          n_features = request.limit()
 
-      src_array = QgsVectorLayerUtils.fieldsToDataArray(self.fields(), field_names, self.getFeatures(request), null_value, qmeta_type)
       numpy_array = _numpy.frombuffer(src_array.data(), dtype=target_type)
       numpy_array = numpy_array.reshape(n_features, len(field_indices))
 
