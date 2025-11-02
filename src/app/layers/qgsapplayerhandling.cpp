@@ -1405,8 +1405,7 @@ QList<T *> QgsAppLayerHandling::addLayerPrivate( Qgis::LayerType type, const QSt
   if ( canQuerySublayers )
   {
     // query sublayers
-    QList<QgsProviderSublayerDetails> sublayers = providerMetadata ? providerMetadata->querySublayers( updatedUri, Qgis::SublayerQueryFlag::IncludeSystemTables )
-                                                                   : QgsProviderRegistry::instance()->querySublayers( updatedUri );
+    QList<QgsProviderSublayerDetails> sublayers = providerMetadata->querySublayers( updatedUri, Qgis::SublayerQueryFlag::IncludeSystemTables );
 
     // filter out non-matching sublayers
     sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [type]( const QgsProviderSublayerDetails &sublayer ) {
