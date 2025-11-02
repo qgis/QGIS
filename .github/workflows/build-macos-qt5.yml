@@ -1,13 +1,13 @@
 ---
 name: 🍎 Build - MacOS Qt5
 on:
- push:
-   branches:
-     - main
-     - qt5-qgis-3-44
- pull_request:
- release:
-   types: ['published']
+  push:
+    branches:
+      - main
+      - qt5-qgis-3-44
+  pull_request:
+  release:
+    types: ['published']
   workflow_dispatch:
 
 concurrency:
