@@ -2993,7 +2993,6 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   mFieldFormatterRegistry.reset();
   mGpsConnectionRegistry.reset();
   mGpsBabelFormatRegistry.reset();
-  mMessageLog.reset();
   mPaintEffectRegistry.reset();
   mPluginLayerRegistry.reset();
   mProcessingRegistry.reset();
@@ -3027,6 +3026,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   mLocalizedDataPathRegistry.reset();
   mCrsRegistry.reset();
   mQueryLogger.reset();
+  mMessageLog.reset();
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()
