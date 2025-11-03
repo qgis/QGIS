@@ -3137,9 +3137,8 @@ bool QgsMssqlProvider::getExtentFromGeometryColumns( QgsRectangle &extent ) cons
 
   const QString statement = sql.arg( QgsMssqlUtils::quotedValue( mTableName ), QgsMssqlUtils::quotedValue( mSchemaName ) );
 
-  if ( LoggedExec( query, statement ) && query.isActive() )
+  if ( LoggedExec( query, statement ) && query.isActive() && query.next() )
   {
-    query.next();
     if ( query.isValid() )
     {
       extent.setXMinimum( query.value( 0 ).toDouble() );
