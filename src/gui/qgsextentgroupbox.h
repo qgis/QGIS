@@ -23,7 +23,6 @@
 #include "qgsrectangle.h"
 #include "qgis_gui.h"
 
-class QgsCoordinateReferenceSystem;
 class QgsMapLayer;
 class QgsExtentWidget;
 class QgsMapCanvas;

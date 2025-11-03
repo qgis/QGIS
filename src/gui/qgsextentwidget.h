@@ -31,7 +31,6 @@
 #include <QRegularExpression>
 
 class QgsBookmarkManagerProxyModel;
-class QgsCoordinateReferenceSystem;
 class QgsMapLayerProxyModel;
 class QgsMapLayer;
 
