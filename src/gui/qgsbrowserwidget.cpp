@@ -597,11 +597,22 @@ void QgsBrowserWidget::navigateToPath()
       return;
     }
 
-    // If user entered just the drive letter, add trailing slash
+    // If user entered just the drive letter (e.g., "C:", "C:\", "C:/"),
+    // navigate directly to the drive root without recursion
     if ( path.length() == 2 || ( path.length() == 3 && ( path[2] == '/' || path[2] == '\\' ) ) )
     {
-      mLeLocationBar->setText( drivePath );
-      navigateToPath();
+      // Navigate to the drive root
+      if ( navigateToTarget( drivePath, QString() ) )
+      {
+        mLeLocationBar->clear();
+      }
+      else
+      {
+        if ( mMessageBar )
+        {
+          mMessageBar->pushWarning( tr( "Navigation Error" ), tr( "Could not navigate to drive: %1" ).arg( driveLetter ) );
+        }
+      }
       return;
     }
   }
