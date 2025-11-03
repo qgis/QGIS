@@ -58,19 +58,6 @@ if(NOT SFCGAL_FOUND)
         )
       ENDIF (MSVC)
 
-    ELSEIF(APPLE AND QGIS_MAC_DEPS_DIR)
-      FIND_PATH(SFCGAL_INCLUDE_DIR
-        SFCGAL/capi/sfcgal_c.h
-        "$ENV{LIB_DIR}/include"
-        ${SFCGAL_DIR}/include
-      )
-
-      FIND_LIBRARY(SFCGAL_LIBRARY NAMES SFCGAL
-        PATHS
-        "$ENV{LIB_DIR}/lib"
-        ${SFCGAL_DIR}/include
-      )
-
     ELSE(WIN32)
 
       # try to use framework on mac
