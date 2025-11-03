@@ -1830,7 +1830,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case Qgis::WkbType::MultiLineString:
       case Qgis::WkbType::GeometryCollection:
       {
-        const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( processedGeometry );
+        const QgsGeometryCollection *geomCollection = qgis::down_cast<const QgsGeometryCollection *>( processedGeometry );
 
         const unsigned int num = geomCollection->numGeometries();
         for ( unsigned int i = 0; i < num; ++i )
