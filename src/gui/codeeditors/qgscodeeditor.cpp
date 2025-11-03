@@ -1026,7 +1026,10 @@ void QgsCodeEditor::clearPersistentHistory()
   if ( !mHistoryFilePath.isEmpty() && QFile::exists( mHistoryFilePath ) )
   {
     QFile file( mHistoryFilePath );
-    file.open( QFile::WriteOnly | QFile::Truncate );
+    if ( !file.open( QFile::WriteOnly | QFile::Truncate ) )
+    {
+      QgsDebugError( QStringLiteral( "Could not truncate %1" ).arg( mHistoryFilePath ) );
+    }
   }
 
   emit persistentHistoryCleared();
