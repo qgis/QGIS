@@ -170,7 +170,7 @@ jobs:
       - name: Compile QGIS
         id: compile
         run: |
-          docker run -t --name qgis_container \
+          docker run -t \
                      -v $(pwd):/root/QGIS \
                      -v /home/runner/QGIS/.ccache:/root/.ccache \
                      --env-file .docker/docker-variables.env \
@@ -500,7 +500,7 @@ jobs:
 
       - name: Run Clang-Tidy
         run: |
-          docker run -t --name qgis_container \
+          docker run -t \
           -v $(pwd):/root/QGIS \
           -v /home/runner/QGIS/.ccache:/root/.ccache \
           --env-file .docker/docker-variables.env \
