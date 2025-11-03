@@ -974,7 +974,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         case QgsVectorFileWriter::Hidden:
         {
           QgsVectorFileWriter::HiddenOption *opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
-          if ( !opt->mValue.isEmpty() )
+          if ( opt && !opt->mValue.isEmpty() )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
