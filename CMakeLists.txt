@@ -179,7 +179,7 @@ if (USE_CCACHE AND MSVC)
   # CCache doesn't work yet with precompiled headers (cf https://github.com/ccache/ccache/issues/1383)
   set(USE_PRECOMPILED_HEADERS OFF)
 else()
-  set(USE_PRECOMPILED_HEADERS ON)
+  option(USE_PRECOMPILED_HEADERS "Use precompiled headers" ON)
 endif()
 
 if (IOS)
