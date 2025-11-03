@@ -463,16 +463,6 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addOgrVectorLayers( const QStringList 
             break;
         };
       }
-      else if ( detailsAreIncomplete )
-      {
-        // requery sublayers, resolving geometry types
-        sublayers = QgsProviderRegistry::instance()->querySublayers( uri, Qgis::SublayerQueryFlag::ResolveGeometryType );
-        // filter out non-vector sublayers
-        sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails &sublayer ) {
-                           return sublayer.type() != Qgis::LayerType::Vector;
-                         } ),
-                         sublayers.end() );
-      }
 
       // now add sublayers
       if ( !sublayers.empty() )
