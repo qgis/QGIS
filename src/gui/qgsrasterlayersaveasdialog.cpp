@@ -182,7 +182,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   // Enable snap-to-grid functionality using the built-in extent widget button
   connect( mExtentGroupBox, &QgsExtentGroupBox::snapToGridChanged, this, &QgsRasterLayerSaveAsDialog::snapToGridChanged );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
-  
+
   // Initialize snap-to-grid button to make it visible
   if ( mDataProvider )
   {
@@ -191,7 +191,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
     QgsRectangle providerExtent = mDataProvider->extent();
     double originX = providerExtent.xMinimum();
     double originY = providerExtent.yMinimum();
-    
+
     // Make snap-to-grid button available with normal button appearance
     mExtentGroupBox->setSnapToGrid( false, xRes, yRes, originX, originY );
   }
@@ -1023,12 +1023,12 @@ void QgsRasterLayerSaveAsDialog::snapToGridChanged( bool enabled )
     // Get raster properties for snapping
     double xRes = mDataProvider->xSize() > 0 ? mDataProvider->extent().width() / mDataProvider->xSize() : 1.0;
     double yRes = mDataProvider->ySize() > 0 ? mDataProvider->extent().height() / mDataProvider->ySize() : 1.0;
-    
+
     // Get the origin (bottom-left corner) of the raster
     QgsRectangle providerExtent = mDataProvider->extent();
     double originX = providerExtent.xMinimum();
     double originY = providerExtent.yMinimum();
-    
+
     // Enable snap-to-grid with raster parameters
     mExtentGroupBox->setSnapToGrid( true, xRes, yRes, originX, originY );
   }

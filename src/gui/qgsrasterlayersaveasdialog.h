@@ -194,7 +194,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     bool outputLayerExists() const;
 
     void insertAvailableOutputFormats();
-    
+
     friend class TestQgsRasterLayerSaveAsDialog;
 };
 

@@ -275,19 +275,19 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
 
     //! Base part of the title used for the extent
     QString mTitleBase;
-    
+
     //! Whether to snap the extent to the grid of a reference raster
     bool mSnapToGrid = false;
-    
+
     //! X resolution of the reference raster for snapping to grid
     double mRasterXRes = 1.0;
-    
+
     //! Y resolution of the reference raster for snapping to grid
     double mRasterYRes = 1.0;
-    
+
     //! Minimum X coordinate of the reference raster for snapping to grid
     double mRasterMinX = 0.0;
-    
+
     //! Minimum Y coordinate of the reference raster for snapping to grid
     double mRasterMinY = 0.0;
 };

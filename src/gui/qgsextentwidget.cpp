@@ -578,20 +578,20 @@ QgsRectangle QgsExtentWidget::outputExtent() const
     return QgsRectangle();
 
   QgsRectangle extent( xmin, ymin, xmax, ymax );
-  
+
   if ( mSnapToGridEnabled && mRasterXRes > 0 && mRasterYRes > 0 )
   {
     double snappedXmin = mRasterMinX + std::floor( ( extent.xMinimum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
     double snappedYmin = mRasterMinY + std::floor( ( extent.yMinimum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
     double snappedXmax = mRasterMinX + std::ceil( ( extent.xMaximum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
     double snappedYmax = mRasterMinY + std::ceil( ( extent.yMaximum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
-    
+
     extent.setXMinimum( snappedXmin );
     extent.setYMinimum( snappedYmin );
     extent.setXMaximum( snappedXmax );
     extent.setYMaximum( snappedYmax );
   }
-  
+
   return extent;
 }
 
