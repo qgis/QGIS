@@ -178,15 +178,15 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
 
   if ( field.isNumeric() )
   {
-    outputs = calculateNumericStatistics( fieldIndex, features, count, sink.get(), data, feedback );
+    outputs = calculateNumericStatistics( parameters, fieldIndex, features, count, sink.get(), data, feedback );
   }
   else if ( field.isDateOrTime() )
   {
-    outputs = calculateDateTimeStatistics( fieldIndex, field, features, count, sink.get(), data, feedback );
+    outputs = calculateDateTimeStatistics( parameters, fieldIndex, field, features, count, sink.get(), data, feedback );
   }
   else
   {
-    outputs = calculateStringStatistics( fieldIndex, features, count, sink.get(), data, feedback );
+    outputs = calculateStringStatistics( parameters, fieldIndex, features, count, sink.get(), data, feedback );
   }
   if ( sink )
     sink->finalize();
@@ -219,7 +219,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
   return outputs;
 }
 
-QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
+QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
 {
   const double step = count > 0 ? 100.0 / count : 1;
   long long current = 0;
@@ -283,13 +283,16 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateNumericStatistics( const int f
   {
     QgsFeature f;
     f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) ) << outputs.value( QStringLiteral( "UNIQUE" ) ) << outputs.value( QStringLiteral( "EMPTY" ) ) << outputs.value( QStringLiteral( "FILLED" ) ) << outputs.value( QStringLiteral( "MIN" ) ) << outputs.value( QStringLiteral( "MAX" ) ) << outputs.value( QStringLiteral( "RANGE" ) ) << outputs.value( QStringLiteral( "SUM" ) ) << outputs.value( QStringLiteral( "MEAN" ) ) << outputs.value( QStringLiteral( "MEDIAN" ) ) << outputs.value( QStringLiteral( "STD_DEV" ) ) << outputs.value( QStringLiteral( "CV" ) ) << outputs.value( QStringLiteral( "MINORITY" ) ) << outputs.value( QStringLiteral( "MAJORITY" ) ) << outputs.value( QStringLiteral( "FIRSTQUARTILE" ) ) << outputs.value( QStringLiteral( "THIRDQUARTILE" ) ) << outputs.value( QStringLiteral( "IQR" ) ) );
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+    {
+      throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
+    }
   }
 
   return outputs;
 }
 
-QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( const int fieldIndex, QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
+QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( const QVariantMap &parameters, const int fieldIndex, QgsField field, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
 {
   const double step = count > 0 ? 100.0 / count : 1;
   long long current = 0;
@@ -331,13 +334,16 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateDateTimeStatistics( const int 
   {
     QgsFeature f;
     f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) ) << outputs.value( QStringLiteral( "UNIQUE" ) ) << outputs.value( QStringLiteral( "EMPTY" ) ) << outputs.value( QStringLiteral( "FILLED" ) ) << outputs.value( QStringLiteral( "MIN" ) ) << outputs.value( QStringLiteral( "MAX" ) ) << outputs.value( QStringLiteral( "RANGE" ) ) );
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+    {
+      throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
+    }
   }
 
   return outputs;
 }
 
-QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
+QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( const QVariantMap &parameters, const int fieldIndex, QgsFeatureIterator features, const long long count, QgsFeatureSink *sink, QStringList &data, QgsProcessingFeedback *feedback )
 {
   const double step = count > 0 ? 100.0 / count : 1;
   long long current = 0;
@@ -387,7 +393,10 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( const int fi
   {
     QgsFeature f;
     f.setAttributes( QgsAttributes() << outputs.value( QStringLiteral( "COUNT" ) ) << outputs.value( QStringLiteral( "UNIQUE" ) ) << outputs.value( QStringLiteral( "EMPTY" ) ) << outputs.value( QStringLiteral( "FILLED" ) ) << outputs.value( QStringLiteral( "MIN" ) ) << outputs.value( QStringLiteral( "MAX" ) ) << outputs.value( QStringLiteral( "MIN_LENGTH" ) ) << outputs.value( QStringLiteral( "MAX_LENGTH" ) ) << outputs.value( QStringLiteral( "MEAN_LENGTH" ) ) << outputs.value( QStringLiteral( "MINORITY" ) ) << outputs.value( QStringLiteral( "MAJORITY" ) ) );
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+    {
+      throw QgsProcessingException( writeFeatureError( sink, parameters, QString() ) );
+    }
   }
 
   return outputs;
