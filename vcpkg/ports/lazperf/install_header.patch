@@ -1,12 +1,19 @@
 diff --git a/cpp/CMakeLists.txt b/cpp/CMakeLists.txt
-index 60da7f3..4a5efb3 100644
+index 60da7f3..7cb3ca2 100644
 --- a/cpp/CMakeLists.txt
 +++ b/cpp/CMakeLists.txt
-@@ -20,6 +20,7 @@ install(
+@@ -20,6 +20,14 @@ install(
          lazperf/readers.hpp
          lazperf/vlr.hpp
          lazperf/writers.hpp
 +        lazperf/las.hpp
++        lazperf/coderbase.hpp
++        lazperf/utils.hpp
++        lazperf/lazperf.hpp
++        lazperf/excepts.hpp
++        lazperf/filestream.hpp
++        lazperf/portable_endian.hpp
++        lazperf/decompressor.hpp
      DESTINATION
          include/lazperf
  )
