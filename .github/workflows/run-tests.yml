@@ -353,6 +353,7 @@ jobs:
           file: .docker/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps.dockerfile
           tags: qgis/qgis3-${{ matrix.distro }}-qt${{ matrix.qt-version }}-build-deps-bin-only:${{ github.event.pull_request.base.ref || github.ref_name }}
           push: ${{ github.event_name == 'push' && github.repository == 'qgis/QGIS' }}
+          load: true
           pull: true
           target: ${{ matrix.docker-target }}
           build-args:
