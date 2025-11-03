@@ -1367,6 +1367,26 @@ QString QgsCoordinateReferenceSystem::toProj() const
   return d->mProj4.trimmed();
 }
 
+std::string QgsCoordinateReferenceSystem::toJsonString( bool multiline, int indentationWidth, const QString &schema ) const
+{
+  if ( !d->mIsValid )
+    return {};
+
+  if ( PJ *obj = d->threadLocalProjObject() )
+  {
+    const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
+    const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
+    const QByteArray schemaOption = QStringLiteral( "SCHEMA=%1" ).arg( schema ).toLocal8Bit();
+    const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), schemaOption.constData(), nullptr};
+
+    return std::string{ proj_as_projjson( QgsProjContext::get(), obj, options ) };
+  }
+  else
+  {
+    return {};
+  }
+}
+
 Qgis::CrsType QgsCoordinateReferenceSystem::type() const
 {
   // NOLINTBEGIN(bugprone-branch-clone)
