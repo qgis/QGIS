@@ -756,6 +756,19 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QString toProj() const;
 
     /**
+     * Returns a JSON string representation of this CRS.
+     *
+     * The returned string will be a PROJJSON string representation of the CRS.
+     *
+     * If \a multiline is TRUE then a formatted multiline json string will be returned, using the specified \a indentationWidth.
+     *
+     * The \a schema argument can be used to set a URL to PROJJSON schema. This can be set to empty string to disable it.
+     *
+     * \since QGIS 4.0
+     */
+    std::string toJsonString( bool multiline = false, int indentationWidth = 4, const QString &schema = QString() ) const;
+
+    /**
      * Returns the type of the CRS.
      *
      * \since QGIS 3.34
