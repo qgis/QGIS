@@ -94,19 +94,13 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
 {
   const bool prevSkip = outputIsSkipped();
   mUseRemapping = false;
-  if ( !value.isValid() || ( value.userType() == QMetaType::Type::QString && value.toString().isEmpty() ) )
+  if ( !value.isValid() || ( value.userType() == QMetaType::Type::QString && couldBeTemporaryLayerName( value.toString() ) ) )
   {
     if ( mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
       skipOutput();
     else
       saveToTemporary();
-  }
-  else if ( value.userType() == QMetaType::Type::QString && isTemporaryLayerName( value.toString() ) )
-  {
-    if ( mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
-      skipOutput();
-    else
-      saveToTemporary();
+
     if ( !value.toString().isEmpty() )
     {
       QSignalBlocker blocker( leText );
