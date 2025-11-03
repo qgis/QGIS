@@ -168,7 +168,10 @@ QVariantMap QgsHttpRequestAlgorithm::processAlgorithm( const QVariantMap &parame
     if ( !outputFile.isEmpty() )
     {
       QFile tempFile( outputFile );
-      tempFile.open( QIODevice::WriteOnly );
+      if ( !tempFile.open( QIODevice::WriteOnly ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not open %1 for writing" ).arg( outputFile ) );
+      }
       tempFile.write( resultData );
       tempFile.close();
 
