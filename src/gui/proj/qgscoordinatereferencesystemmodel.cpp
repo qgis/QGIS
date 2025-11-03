@@ -291,9 +291,8 @@ void QgsCoordinateReferenceSystemModel::userCrsAdded( const QString &id )
           QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ), QStringLiteral( "USER" )
         );
         beginInsertRows( QModelIndex(), mRootNode->children().length(), mRootNode->children().length() );
-        mRootNode->addChildNode( newGroup.get() );
+        group = dynamic_cast<QgsCoordinateReferenceSystemModelGroupNode *>( mRootNode->addChildNode( std::move( newGroup ) ) );
         endInsertRows();
-        group = newGroup.release();
       }
 
       const QModelIndex parentGroupIndex = node2index( group );
@@ -439,8 +438,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
   else
   {
     auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( groupName, groupIcon, groupId );
-    parentNode->addChildNode( newGroup.get() );
-    parentNode = newGroup.release();
+    parentNode = dynamic_cast< QgsCoordinateReferenceSystemModelGroupNode * >( parentNode->addChildNode( std::move( newGroup ) ) );
   }
 
   if ( ( record.authName != QLatin1String( "USER" ) && record.authName != QLatin1String( "CUSTOM" ) ) && ( record.type == Qgis::CrsType::Projected || record.type == Qgis::CrsType::DerivedProjected ) )
@@ -458,13 +456,11 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
     else
     {
       auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( projectionName, QIcon(), record.projectionAcronym );
-      parentNode->addChildNode( newGroup.get() );
-      parentNode = newGroup.release();
+      parentNode = dynamic_cast< QgsCoordinateReferenceSystemModelGroupNode * >( parentNode->addChildNode( std::move( newGroup ) ) );
     }
   }
 
-  parentNode->addChildNode( crsNode.get() );
-  return crsNode.release();
+  return dynamic_cast< QgsCoordinateReferenceSystemModelCrsNode * >( parentNode->addChildNode( std::move( crsNode ) ) );
 }
 
 QModelIndex QgsCoordinateReferenceSystemModel::addCustomCrs( const QgsCoordinateReferenceSystem &crs )
@@ -482,9 +478,8 @@ QModelIndex QgsCoordinateReferenceSystemModel::addCustomCrs( const QgsCoordinate
       QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ), QStringLiteral( "CUSTOM" )
     );
     beginInsertRows( QModelIndex(), mRootNode->children().length(), mRootNode->children().length() );
-    mRootNode->addChildNode( newGroup.get() );
+    group = dynamic_cast< QgsCoordinateReferenceSystemModelGroupNode * >( mRootNode->addChildNode( std::move( newGroup ) ) );
     endInsertRows();
-    group = newGroup.release();
   }
 
   const QModelIndex parentGroupIndex = node2index( group );
@@ -544,15 +539,16 @@ QgsCoordinateReferenceSystemModelNode *QgsCoordinateReferenceSystemModelNode::ta
   return mChildren.takeAt( mChildren.indexOf( node ) );
 }
 
-void QgsCoordinateReferenceSystemModelNode::addChildNode( QgsCoordinateReferenceSystemModelNode *node )
+QgsCoordinateReferenceSystemModelNode *QgsCoordinateReferenceSystemModelNode::addChildNode( std::unique_ptr<QgsCoordinateReferenceSystemModelNode> node )
 {
   if ( !node )
-    return;
+    return nullptr;
 
   Q_ASSERT( !node->mParent );
   node->mParent = this;
 
-  mChildren.append( node );
+  mChildren.append( node.release() );
+  return mChildren.back();
 }
 
 void QgsCoordinateReferenceSystemModelNode::deleteChildren()
