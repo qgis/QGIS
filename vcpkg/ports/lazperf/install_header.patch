@@ -1,0 +1,12 @@
+diff --git a/cpp/CMakeLists.txt b/cpp/CMakeLists.txt
+index 60da7f3..4a5efb3 100644
+--- a/cpp/CMakeLists.txt
++++ b/cpp/CMakeLists.txt
+@@ -20,6 +20,7 @@ install(
+         lazperf/readers.hpp
+         lazperf/vlr.hpp
+         lazperf/writers.hpp
++        lazperf/las.hpp
+     DESTINATION
+         include/lazperf
+ )

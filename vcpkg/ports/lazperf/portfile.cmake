@@ -6,6 +6,7 @@ vcpkg_from_github(
     HEAD_REF master
     PATCHES
         static.patch
+        install_header.patch
 )
 
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "dynamic")
