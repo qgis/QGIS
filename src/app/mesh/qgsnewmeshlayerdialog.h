@@ -57,7 +57,7 @@ class APP_EXPORT QgsNewMeshLayerDialog : public QDialog, private Ui::QgsNewMeshL
     bool apply();
 
     std::unique_ptr<QgsMeshLayer> mSourceMeshFromFile;
-    bool mSourceMeshFrameReady;
+    bool mSourceMeshFrameReady = false;
     QMap<QString, QString> mDriverSuffixes;
     QMap<QString, QString> mDriverFileFilters;
 
