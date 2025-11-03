@@ -156,8 +156,12 @@ jobs:
         run: docker tag ${{ steps.docker-build.outputs.imageid }} qgis3-build-deps
 
       - name: Restore build cache
-        uses: actions/cache/restore@v4
+        uses: tespkg/actions-cache/restore@v1
         with:
+          endpoint: ${{ secrets.HETZNER_S3_ENDPOINT }}
+          accessKey: ${{ secrets.HETZNER_S3_ACCESS_KEY }}
+          secretKey: ${{ secrets.HETZNER_S3_SECRET_KEY }}
+          bucket: ${{ secrets.HETZNER_S3_BUCKET }}
           path: /home/runner/QGIS/.ccache
           key: build-ccache-${{ matrix.distro }}-qt${{ matrix.qt-version }}-${{ github.event.pull_request.base.ref || github.ref_name }}
           restore-keys: |
@@ -195,9 +199,13 @@ jobs:
                      /root/QGIS/.docker/docker-qgis-build.sh
 
       - name: Save build cache for push only
-        uses: actions/cache/save@v4
+        uses: tespkg/actions-cache/save@v1
         if: ${{ github.event_name == 'push' }}
         with:
+          endpoint: ${{ secrets.HETZNER_S3_ENDPOINT }}
+          accessKey: ${{ secrets.HETZNER_S3_ACCESS_KEY }}
+          secretKey: ${{ secrets.HETZNER_S3_SECRET_KEY }}
+          bucket: ${{ secrets.HETZNER_S3_BUCKET }}
           path: /home/runner/QGIS/.ccache
           key: build-ccache-${{ matrix.distro }}-qt${{ matrix.qt-version }}-${{ github.ref_name }}-${{ github.run_id }}
 
