@@ -473,7 +473,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           double lineAnchorPercent = 0.0;
           if ( feature.geometry().type() == Qgis::GeometryType::Polygon )
           {
-            QgsGeometry boundary( feature.geometry().constGet()->boundary() );
+            const QgsGeometry boundary( feature.geometry().constGet()->boundary() );
             const double boundaryLength = boundary.length();
             lineAnchorPercent = boundaryLength > 0 ? boundary.lineLocatePoint( releaseCoordsGeometry ) / boundaryLength : 0.5;
           }
