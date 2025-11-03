@@ -2230,13 +2230,13 @@ void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
         QgsFeature feature;
         QgsGeometry geom( mConstructionGuideLine.clone() );
         feature.setGeometry( geom );
-        mConstructionGuidesLayer->dataProvider()->addFeature( feature );
+        ( void ) mConstructionGuidesLayer->dataProvider()->addFeature( feature );
         mConstructionGuideId = feature.id();
       }
       else if ( mConstructionGuideLine.numPoints() > 2 )
       {
         QgsGeometry geom( mConstructionGuideLine.clone() );
-        mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
+        ( void ) mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
       }
     }
     else
@@ -2246,7 +2246,7 @@ void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
         mConstructionGuideLine.addVertex( pt );
 
         QgsGeometry geom( mConstructionGuideLine.clone() );
-        mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
+        ( void ) mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
         mConstructionGuideLine.clear();
       }
     }
