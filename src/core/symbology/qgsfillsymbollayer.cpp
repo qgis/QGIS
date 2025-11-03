@@ -5551,7 +5551,7 @@ QgsSymbolLayer *QgsRandomMarkerFillSymbolLayer::create( const QVariantMap &prope
     // if we a creating a new random marker fill from scratch, we default to a random seed
     // because seed based fills are just nicer for users vs seeing points jump around with every map refresh
     std::random_device rd;
-    std::mt19937 mt( seed == 0 ? rd() : seed );
+    std::mt19937 mt( rd() );
     std::uniform_int_distribution<> uniformDist( 1, 999999999 );
     seed = uniformDist( mt );
   }
