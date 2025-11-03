@@ -2969,40 +2969,64 @@ QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool w
     valueLabel->setTextInteractionFlags( Qt::NoTextInteraction );
     valueLabel->setAttribute( Qt::WA_TransparentForMouseEvents, true );
     valueLabel->setContextMenuPolicy( Qt::NoContextMenu );
-    valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-
+    valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
     QString wrapped = text;
     wrapped.replace( QStringLiteral( "/" ), QStringLiteral( "/\u00AD" ) );
     wrapped.replace( QStringLiteral( "\\" ), QStringLiteral( "\\\u00AD" ) );
 
-    // Create a QTextDocument to measure text and apply max lines + ellipsis
-    QTextDocument doc;
-    doc.setDefaultFont( valueLabel->font() );
-    doc.setPlainText( wrapped );
-    doc.setTextWidth( valueLabel->width() > 0 ? valueLabel->width() : 300 );
-
+    // Use QTextLayout to count actual visual lines after word wrapping
     const int maxLines = 20;
-    QTextBlock block = doc.begin();
-    int lineCount = 0;
-    QString truncatedText;
+    const int availableWidth = valueLabel->width() > 0 ? valueLabel->width() : 300;
 
-    while ( block.isValid() && lineCount < maxLines )
+    QTextLayout textLayout( wrapped, valueLabel->font() );
+    textLayout.beginLayout();
+
+    int visualLineCount = 0;
+    QString truncatedText;
+    bool needsEllipsis = false;
+
+    while ( true )
     {
-      if ( !truncatedText.isEmpty() )
-        truncatedText += "\n";
-      truncatedText += block.text();
-      block = block.next();
-      lineCount++;
+      QTextLine line = textLayout.createLine();
+      if ( !line.isValid() )
+        break;
+
+      line.setLineWidth( availableWidth );
+
+      if ( visualLineCount < maxLines )
+      {
+        // Extract the text for this visual line
+        const int start = line.textStart();
+        const int length = line.textLength();
+        const QString lineText = wrapped.mid( start, length );
+
+        if ( visualLineCount > 0 )
+          truncatedText += "\n";
+        truncatedText += lineText;
+        visualLineCount++;
+      }
+      else
+      {
+        needsEllipsis = true;
+        break;
+      }
     }
 
-    if ( block.isValid() )
+    textLayout.endLayout();
+
+    if ( needsEllipsis )
     {
-      // Text was truncated, add ellipsis
-      truncatedText += QStringLiteral( "…" );
+      truncatedText = truncatedText.trimmed() + QStringLiteral( "…" );
     }
 
     valueLabel->setText( truncatedText );
+
+    const QFontMetrics fm( valueLabel->font() );
+    const int lineHeight = fm.height();
+    const int actualLines = std::min( visualLineCount, maxLines );
+    const int height = actualLines * lineHeight + 4;
+    valueLabel->setFixedHeight( height );
   }
   else
   {
