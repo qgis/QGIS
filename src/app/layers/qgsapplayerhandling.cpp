@@ -634,15 +634,6 @@ bool QgsAppLayerHandling::askUserForZipItemLayers( const QString &path, const QL
         break;
     };
   }
-  else if ( detailsAreIncomplete )
-  {
-    // requery sublayers, resolving geometry types
-    sublayers = QgsProviderRegistry::instance()->querySublayers( path, Qgis::SublayerQueryFlag::ResolveGeometryType );
-    sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [acceptableTypes]( const QgsProviderSublayerDetails &sublayer ) {
-                       return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() );
-                     } ),
-                     sublayers.end() );
-  }
 
   // now add sublayers
   if ( !sublayers.empty() )
