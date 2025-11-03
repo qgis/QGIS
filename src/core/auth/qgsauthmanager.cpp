@@ -1494,7 +1494,7 @@ bool QgsAuthManager::importAuthenticationConfigsFromXml( const QString &filename
   while ( !configuration.isNull() )
   {
     QgsAuthMethodConfig authMethodConfig;
-    authMethodConfig.readXml( configuration );
+    ( void )authMethodConfig.readXml( configuration );
     storeAuthenticationConfig( authMethodConfig, overwrite );
 
     configuration = configuration.nextSiblingElement();
