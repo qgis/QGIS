@@ -123,7 +123,10 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
   private:
     void setAppendDestination( const QString &uri, const QgsFields &destFields );
 
-    bool isTemporaryLayerName( const QString &value );
+    /**
+     * Checks if \a value can be used as name for temporary layer. Empty value is a valid case.
+     */
+    bool couldBeTemporaryLayerName( const QString &value );
 
     QString mimeDataToPath( const QMimeData *data );
 

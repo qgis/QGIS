@@ -640,7 +640,7 @@ void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text
   mUseTemporary = text.isEmpty();
   mUseRemapping = false;
 
-  if ( isTemporaryLayerName( text ) || text.isEmpty() )
+  if ( couldBeTemporaryLayerName( text ) )
   {
     leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
     mUseTemporary = true;
@@ -767,10 +767,13 @@ void QgsProcessingLayerOutputDestinationWidget::dropEvent( QDropEvent *event )
   leText->setHighlighted( false );
 }
 
-bool QgsProcessingLayerOutputDestinationWidget::isTemporaryLayerName( const QString &value )
+bool QgsProcessingLayerOutputDestinationWidget::couldBeTemporaryLayerName( const QString &value )
 {
-  if ( value == QgsProcessing::TEMPORARY_OUTPUT || value.isEmpty() || mParameter->type() != QgsProcessingParameterFeatureSink::typeName() || !mParameter->supportsNonFileBasedOutput() )
+  if ( value == QgsProcessing::TEMPORARY_OUTPUT || mParameter->type() != QgsProcessingParameterFeatureSink::typeName() || !mParameter->supportsNonFileBasedOutput() )
     return false;
+
+  if ( value.isEmpty() )
+    return true;
 
   QString provider;
   QString uri;
