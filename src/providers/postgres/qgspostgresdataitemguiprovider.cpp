@@ -191,6 +191,11 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       QAction *moveProjectToSchemaAction = new QAction( tr( "Move Project to Schema…" ), menu );
       connect( moveProjectToSchemaAction, &QAction::triggered, this, [projectItem, context] { moveProjectsToSchema( { projectItem }, context ); } );
       menu->addAction( moveProjectToSchemaAction );
+
+      // Set project comment
+      QAction *setProjectCommentAction = new QAction( tr( "Set Comment…" ), menu );
+      connect( setProjectCommentAction, &QAction::triggered, this, [projectItem, context] { setProjectComment( projectItem, context ); } );
+      menu->addAction( setProjectCommentAction );
     }
     else
     {
@@ -1010,16 +1015,22 @@ void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProj
       return;
     }
 
-    if ( !QgsPostgresUtils::projectsTableExists( conn2, newSchemaName ) )
+    if ( !QgsPostgresUtils::createProjectsTable( conn2, newSchemaName ) )
     {
-      if ( !QgsPostgresUtils::createProjectsTable( conn2, newSchemaName ) )
-      {
-        const QString errCause = tr( "Unable to move projects. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( mainItem->postgresProjectUri().connInfo.username() );
+      const QString errCause = tr( "Unable to move projects. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( mainItem->postgresProjectUri().connInfo.username() );
 
-        notify( tr( "Move Projects to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
-        conn2->unref();
-        return;
-      }
+      notify( tr( "Move Projects to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
+      conn2->unref();
+      return;
+    }
+
+    if ( !QgsPostgresUtils::addCommentColumnToProjectsTable( conn2, newSchemaName ) )
+    {
+      const QString errCause = tr( "Unable to move projects. It's not possible to add the comment column to the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin." ).arg( mainItem->postgresProjectUri().connInfo.username() );
+
+      notify( tr( "Move Projects to Another Schema" ), errCause, context, Qgis::MessageLevel::Warning );
+      conn2->unref();
+      return;
     }
 
     int movedProjectCount = 0;
@@ -1062,6 +1073,38 @@ void QgsPostgresDataItemGuiProvider::moveProjectsToSchema( const QList<QgsPGProj
       notify( tr( "Move Projects to Another Schema" ), tr( "Move of %1 projects to schema “%2” successful." ).arg( movedProjectCount ).arg( newSchemaName ), context, Qgis::MessageLevel::Success );
     }
   }
+}
+
+void QgsPostgresDataItemGuiProvider::setProjectComment( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
+{
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
+
+  if ( !conn )
+  {
+    notify( tr( "Set Project Comment" ), tr( "Unable to connect to database." ), context, Qgis::MessageLevel::Warning );
+    return;
+  }
+
+  const QString comment = QgsPostgresUtils::projectComment( conn, projectItem->schemaName(), projectItem->name() );
+  bool ok = false;
+
+  const QString newComment = QInputDialog::getMultiLineText( nullptr, tr( "Set Comment For Project %1" ).arg( projectItem->name() ), tr( "Comment" ), comment, &ok );
+  if ( ok && newComment != comment )
+  {
+    const bool res = QgsPostgresUtils::setProjectComment( conn, projectItem->name(), projectItem->schemaName(), newComment );
+
+    if ( !res )
+    {
+      notify( tr( "Set Project Comment" ), tr( "Failed to set project comment for '%1'" ).arg( projectItem->name() ), context, Qgis::MessageLevel::Warning );
+    }
+    else
+    {
+      notify( tr( "Set Project Comment" ), tr( "Comment updated for project '%1'" ).arg( projectItem->name() ), context, Qgis::MessageLevel::Success );
+      projectItem->parent()->refresh();
+    }
+  }
+
+  conn->unref();
 }
 
 void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context )
