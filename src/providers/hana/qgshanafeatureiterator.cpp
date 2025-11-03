@@ -150,7 +150,15 @@ bool QgsHanaFeatureIterator::close()
 
   if ( mResultSet )
   {
-    mResultSet->close();
+    try
+    {
+      mResultSet->close();
+    }
+    catch ( QgsHanaException &e )
+    {
+      QgsDebugError( QStringLiteral( "An error occurred while closing the HANA result set: %1" ).arg( e.what() ) );
+    }
+
     mResultSet.reset();
   }
 
