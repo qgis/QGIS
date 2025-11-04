@@ -15,6 +15,7 @@
 
 #include "qgstessellator.h"
 
+#include "qgis.h"
 #include "qgscurve.h"
 #include "qgsgeometryutils_base.h"
 #include "qgsgeometry.h"
@@ -175,39 +176,108 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
     data << textureCoordinates[10] << textureCoordinates[11];
 }
 
+QgsTessellator::QgsTessellator() = default;
 
 QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ,
                                 bool addTextureCoords, int facade, float textureRotation )
-  : mOriginX( originX )
-  , mOriginY( originY )
-  , mAddNormals( addNormals )
-  , mInvertNormals( invertNormals )
-  , mAddBackFaces( addBackFaces )
-  , mAddTextureCoords( addTextureCoords )
-  , mNoZ( noZ )
-  , mTessellatedFacade( facade )
-  , mTextureRotation( textureRotation )
 {
-  init();
+  setOrigin( QgsVector3D( originX, originY, 0 ) );
+  setAddNormals( addNormals );
+  setInvertNormals( invertNormals );
+  setExtrusionFacesLegacy( facade );
+  setAddBackFaces( addBackFaces );
+  setAddTextureUVs( addTextureCoords );
+  setExtrusionEnabled( noZ );
+  setTextureRotation( textureRotation );
 }
 
 QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals, bool addBackFaces, bool noZ,
                                 bool addTextureCoords, int facade, float textureRotation )
-  : mBounds( bounds )
-  , mOriginX( mBounds.xMinimum() )
-  , mOriginY( mBounds.yMinimum() )
-  , mAddNormals( addNormals )
-  , mInvertNormals( invertNormals )
-  , mAddBackFaces( addBackFaces )
-  , mAddTextureCoords( addTextureCoords )
-  , mNoZ( noZ )
-  , mTessellatedFacade( facade )
-  , mTextureRotation( textureRotation )
 {
-  init();
+  setAddTextureUVs( addTextureCoords );
+  setExtrusionFacesLegacy( facade );
+  setBounds( bounds );
+  setAddNormals( addNormals );
+  setInvertNormals( invertNormals );
+  setAddBackFaces( addBackFaces );
+  setExtrusionEnabled( noZ );
+  setTextureRotation( textureRotation );
 }
 
-void QgsTessellator::init()
+void QgsTessellator::setOrigin( QgsVector3D origin )
+{
+  mOrigin = origin;
+}
+
+void QgsTessellator::setBounds( const QgsRectangle &bounds )
+{
+  mOrigin = QgsVector3D( bounds.xMinimum(), bounds.yMinimum(), 0 );
+  mScale = bounds.isNull() ? 1.0 : std::max( 10000.0 / bounds.width(), 10000.0 / bounds.height() );
+}
+
+void QgsTessellator::setExtrusionEnabled( bool enabled )
+{
+  mNoZ = !enabled;
+}
+
+void QgsTessellator::setExtrusionFaces( Qgis::ExtrusionFaces faces )
+{
+  mExtrusionFaces = faces;
+}
+
+void QgsTessellator::setExtrusionFacesLegacy( int facade )
+{
+  switch ( facade )
+  {
+    case 0:
+      mExtrusionFaces = Qgis::ExtrusionFace::NoFace;
+      break;
+    case 1:
+      mExtrusionFaces = Qgis::ExtrusionFace::Walls;
+      break;
+    case 2:
+      mExtrusionFaces = Qgis::ExtrusionFace::Roof;
+      break;
+    case 3:
+      mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
+      break;
+    case 4:
+      mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof | Qgis::ExtrusionFace::Floor;
+      break;
+    default:
+      break;
+  }
+}
+
+void QgsTessellator::setTextureRotation( float rotation )
+{
+  mTextureRotation = rotation;
+}
+
+void QgsTessellator::setAddBackFaces( bool addBackFaces )
+{
+  mAddBackFaces = addBackFaces;
+  updateStride();
+}
+
+void QgsTessellator::setInvertNormals( bool invertNormals )
+{
+  mInvertNormals = invertNormals;
+}
+
+void QgsTessellator::setAddNormals( bool addNormals )
+{
+  mAddNormals = addNormals;
+  updateStride();
+}
+
+void QgsTessellator::setAddTextureUVs( bool addTextureUVs )
+{
+  mAddTextureCoords = addTextureUVs;
+  updateStride();
+}
+
+void QgsTessellator::updateStride()
 {
   mStride = 3 * sizeof( float );
   if ( mAddNormals )

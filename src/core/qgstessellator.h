@@ -39,9 +39,14 @@ class QgsMultiPolygon;
 class CORE_EXPORT QgsTessellator
 {
   public:
-    //! Creates tessellator with a specified origin point of the world (in map coordinates)
-    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
+    QgsTessellator();
+
+    /**
+     * \brief Creates tessellator with a specified origin point of the world (in map coordinates)
+     * \deprecated QGIS 4.0. Use the default QgsTessellator() constructor and individual setters instead.
+     */
+    Q_DECL_DEPRECATED QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
+                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) SIP_DEPRECATED;
 
     /**
      * Creates tessellator with a specified \a bounds of input geometry coordinates.
@@ -51,9 +56,65 @@ class CORE_EXPORT QgsTessellator
      * If \a noZ is TRUE, then a 2-dimensional tessellation only will be performed and all z coordinates will be ignored.
      *
      * \since QGIS 3.10
+     * \deprecated QGIS 4.0. Use the default QgsTessellator() constructor and individual setters instead.
      */
-    QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
+    Q_DECL_DEPRECATED QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
+                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) SIP_DEPRECATED;
+
+    /**
+     * Sets the origin point of the map.
+     * \since QGIS 4.0
+     */
+    void setOrigin( QgsVector3D origin );
+
+    /**
+     * Sets scaling and the bounds of the input geometry coordinates.
+     * \since QGIS 4.0
+     */
+    void setBounds( const QgsRectangle &bounds );
+
+    /**
+     * Sets whether extrusion is enabled (TRUE) or disabled (FALSE).
+     * By default, extrusion is disabled.
+     * \since QGIS 4.0
+     */
+    void setExtrusionEnabled( bool enabled );
+
+    /**
+     * Sets which faces should be generated during extrusion.
+     * \since QGIS 4.0
+     */
+    void setExtrusionFaces( Qgis::ExtrusionFaces faces );
+
+    /**
+     * Sets the rotation of generated faces.
+     * \since QGIS 4.0
+     */
+    void setTextureRotation( float rotation );
+
+    /**
+     * Sets whether texture UV coordinates should be added to the output data (TRUE) or not (FALSE).
+     * \since QGIS 4.0
+     */
+    void setAddTextureUVs( bool addTextureUVs );
+
+    /**
+     * Sets whether normals should be added to the output data (TRUE) or not (FALSE).
+     * \since QGIS 4.0
+     */
+    void setAddNormals( bool addNormals );
+
+    /**
+     * Sets whether back faces should be added to the output data (TRUE) or not (FALSE).
+     * \since QGIS 4.0
+     */
+    void setAddBackFaces( bool addBackFaces );
+
+    /**
+     * Sets whether normals should be inverted (TRUE) or not (FALSE).
+     * \since QGIS 4.0
+     */
+    void setInvertNormals( bool invertNormals );
 
     /**
      * Sets whether the "up" direction should be the Z axis on output (TRUE),
