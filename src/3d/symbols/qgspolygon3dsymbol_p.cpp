@@ -98,11 +98,33 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
-  outNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false, texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(), mSymbol->renderedFacade(), texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
-  outSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false, texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(), mSymbol->renderedFacade(), texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
+  QgsTessellator *tessellator = new QgsTessellator();
+  tessellator->setOrigin( chunkOrigin );
+  tessellator->setAddNormals( true );
+  tessellator->setInvertNormals( mSymbol->invertNormals() );
+  tessellator->setAddBackFaces( mSymbol->addBackFaces() );
+  tessellator->setExtrusionEnabled( true );
+  tessellator->setOutputZUp( true );
+  tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
+  tessellator->setTextureRotation( texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 );
+  tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
+  tessellator->setOutputZUp( true );
+  
+  outNormal.tessellator.reset( tessellator );
 
-  outNormal.tessellator->setOutputZUp( true );
-  outSelected.tessellator->setOutputZUp( true );
+  tessellator = new QgsTessellator();
+  tessellator->setOrigin( chunkOrigin );
+  tessellator->setAddNormals( true );
+  tessellator->setInvertNormals( mSymbol->invertNormals() );
+  tessellator->setAddBackFaces( mSymbol->addBackFaces() );
+  tessellator->setExtrusionEnabled( true );
+  tessellator->setOutputZUp( true );
+  tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
+  tessellator->setTextureRotation( texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 );
+  tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
+  tessellator->setOutputZUp( true );
+
+  outSelected.tessellator.reset( tessellator );
 
   QSet<QString> attrs = mSymbol->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
