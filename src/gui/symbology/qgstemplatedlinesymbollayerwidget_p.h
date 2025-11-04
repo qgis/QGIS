@@ -26,7 +26,7 @@
 /**
  * \ingroup gui
  * \class QgsTemplatedLineSymbolLayerWidget
- * \brief A widget for controlling common the properties of QgsMarkerLineSymbolLayer and QgsHashedLineSymbolLayer.
+ * \brief A widget for controlling the common the properties of QgsMarkerLineSymbolLayer and QgsHashedLineSymbolLayer.
  * \since QGIS 4.0
  */
 template<class Ui, class SL>
@@ -88,7 +88,6 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
     }
 
     void setSymbolLayer( QgsSymbolLayer *layer ) override
-
     {
       if ( ( std::is_same<SL, QgsMarkerLineSymbolLayer>::value && layer->layerType() != QLatin1String( "MarkerLine" ) )
            || ( std::is_same<SL, QgsHashedLineSymbolLayer>::value && layer->layerType() != QLatin1String( "HashLine" ) ) )
