@@ -101,6 +101,69 @@ bool QgsArrowSchema::isValid() const
   return mSchema.release;
 }
 
+
+QgsArrowArray::QgsArrowArray( const QgsArrowArray &other )
+{
+  if ( other.isValid() )
+  {
+    throw QgsException( "Can't copy valid QgsArrowArray" );
+  }
+}
+
+QgsArrowArray::QgsArrowArray( QgsArrowArray &&other )
+{
+  if ( mArray.release )
+  {
+    ArrowArrayRelease( &mArray );
+  }
+
+  ArrowArrayMove( other.array(), &mArray );
+}
+
+QgsArrowArray &QgsArrowArray::operator=( const QgsArrowArray &other )
+{
+  if ( other.isValid() )
+  {
+    throw QgsException( "Can't copy-assign valid QgsArrowArray" );
+  }
+
+  return *this;
+}
+
+QgsArrowArray::~QgsArrowArray()
+{
+  if ( mArray.release )
+  {
+    ArrowArrayRelease( &mArray );
+  }
+}
+
+struct ArrowArray *QgsArrowArray::array()
+{
+  return &mArray;
+}
+
+const struct ArrowArray *QgsArrowArray::array() const
+{
+  return &mArray;
+}
+
+unsigned long long QgsArrowArray::cArrayAddress()
+{
+  return reinterpret_cast<unsigned long long>( &mArray );
+}
+
+void QgsArrowArray::exportToAddress( unsigned long long otherAddress )
+{
+  struct ArrowArray *otherArrowArray = reinterpret_cast<struct ArrowArray *>( otherAddress );
+  ArrowArrayMove( &mArray, otherArrowArray );
+}
+
+bool QgsArrowArray::isValid() const
+{
+  return mArray.release;
+}
+
 namespace
 {
 
@@ -368,7 +431,7 @@ void QgsArrowIterator::setSchema( const QgsArrowSchema &schema, int geometryColu
 }
 
 
-void QgsArrowIterator::nextFeatures( int n, unsigned long long arrayAddr )
+QgsArrowArray QgsArrowIterator::nextFeatures( int n )
 {
   if ( n < 1 )
   {
@@ -416,6 +479,7 @@ void QgsArrowIterator::nextFeatures( int n, unsigned long long arrayAddr )
         struct ArrowSchemaView childView;
         QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &childView, schema->children[i]->children[0], &error ), &error );
         colListTypeViews[i] = std::move( childView );
+        break;
       }
       default:
         colListTypeViews[i] = ArrowSchemaView {};
@@ -470,8 +534,10 @@ void QgsArrowIterator::nextFeatures( int n, unsigned long long arrayAddr )
   }
 
   QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowArrayFinishBuildingDefault( tmp.get(), &error ), &error );
-  struct ArrowArray *out = reinterpret_cast<struct ArrowArray *>( static_cast<uintptr_t>( arrayAddr ) );
-  ArrowArrayMove( tmp.get(), out );
+
+  QgsArrowArray out;
+  ArrowArrayMove( tmp.get(), out.array() );
+  return out;
 }
 
 

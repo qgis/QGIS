@@ -16,6 +16,33 @@
 
 
 
+class QgsArrowInferSchemaOptions
+{
+%Docstring(signature="appended")
+Options for inferring an ArrowSchema from a :py:class:`QgsVectorLayer`.
+%End
+
+%TypeHeaderCode
+#include "qgsarrowiterator.h"
+%End
+  public:
+    QgsArrowInferSchemaOptions();
+%Docstring
+Construct default options
+%End
+
+    void setGeometryColumnName( QString geometryColumnName );
+%Docstring
+Set the name that should be used to refer to the geometry column
+(default: "geometry")
+%End
+
+    const QString &geometryColumnName() const;
+%Docstring
+The name that should be used for a layer's geometry column
+%End
+
+};
 
 class QgsArrowSchema
 {
@@ -59,6 +86,53 @@ Returns true if this wrapper object holds a valid ArrowSchema
 
 };
 
+class QgsArrowArray
+{
+%Docstring(signature="appended")
+Wrapper around an ArrowArray.
+%End
+
+%TypeHeaderCode
+#include "qgsarrowiterator.h"
+%End
+  public:
+    QgsArrowArray();
+%Docstring
+Construct invalid schema holder
+%End
+
+    QgsArrowArray( const QgsArrowArray &other );
+%Docstring
+Copy constructor
+%End
+
+    QgsArrowArray( QgsArrowArray &&other );
+%Docstring
+Move constructor
+%End
+
+
+    ~QgsArrowArray();
+
+
+    unsigned long long cArrayAddress();
+%Docstring
+Returns the address of the underlying ArrowSchema for export to or
+import from other systems
+%End
+
+    void exportToAddress( unsigned long long otherAddress );
+%Docstring
+Export this schema to the address of a similar object
+%End
+
+    bool isValid() const;
+%Docstring
+Returns true if this wrapper object holds a valid ArrowArray
+%End
+
+};
+
 class QgsArrowIterator
 {
 %Docstring(signature="appended")
@@ -85,13 +159,13 @@ Construct iterator from an existing feature iterator
 Request a specific Arrow schema for this output
 %End
 
-    void nextFeatures( int n, unsigned long long arrayAddr );
+    QgsArrowArray nextFeatures( int n );
 %Docstring
-Populate out with the next n features (or fewer depending on the number
-of features remaining)
+Build an ArrowArray using the next n features (or fewer depending on the
+number of features remaining)
 %End
 
-    static QgsArrowSchema inferSchema( const QgsVectorLayer &layer );
+    static QgsArrowSchema inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );
 %Docstring
 Guess the schema for a given :py:class:`QgsVectorLayer` and return the
 geometry column index

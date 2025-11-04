@@ -35,31 +35,32 @@ from qgis.testing import start_app, QgisTestCase
 # start_app()
 
 
-        # if field_type_parameter == 0:  # Integer
-        #     field_type = QMetaType.Type.Int
-        # elif field_type_parameter == 1:  # Float
-        #     field_type = QMetaType.Type.Double
-        # elif field_type_parameter == 2:  # String
-        #     field_type = QMetaType.Type.QString
-        # elif field_type_parameter == 3:  # Boolean
-        #     field_type = QMetaType.Type.Bool
-        # elif field_type_parameter == 4:  # Date
-        #     field_type = QMetaType.Type.QDate
-        # elif field_type_parameter == 5:  # Time
-        #     field_type = QMetaType.Type.QTime
-        # elif field_type_parameter == 6:  # DateTime
-        #     field_type = QMetaType.Type.QDateTime
-        # elif field_type_parameter == 7:  # Binary
-        #     field_type = QMetaType.Type.QByteArray
-        # elif field_type_parameter == 8:  # StringList
-        #     field_type = QMetaType.Type.QStringList
-        #     field_sub_type = QMetaType.Type.QString
-        # elif field_type_parameter == 9:  # IntegerList
-        #     field_type = QMetaType.Type.QVariantList
-        #     field_sub_type = QMetaType.Type.Int
-        # elif field_type_parameter == 10:  # DoubleList
-        #     field_type = QMetaType.Type.QVariantList
-        #     field_sub_type = QMetaType.Type.Double
+# if field_type_parameter == 0:  # Integer
+#     field_type = QMetaType.Type.Int
+# elif field_type_parameter == 1:  # Float
+#     field_type = QMetaType.Type.Double
+# elif field_type_parameter == 2:  # String
+#     field_type = QMetaType.Type.QString
+# elif field_type_parameter == 3:  # Boolean
+#     field_type = QMetaType.Type.Bool
+# elif field_type_parameter == 4:  # Date
+#     field_type = QMetaType.Type.QDate
+# elif field_type_parameter == 5:  # Time
+#     field_type = QMetaType.Type.QTime
+# elif field_type_parameter == 6:  # DateTime
+#     field_type = QMetaType.Type.QDateTime
+# elif field_type_parameter == 7:  # Binary
+#     field_type = QMetaType.Type.QByteArray
+# elif field_type_parameter == 8:  # StringList
+#     field_type = QMetaType.Type.QStringList
+#     field_sub_type = QMetaType.Type.QString
+# elif field_type_parameter == 9:  # IntegerList
+#     field_type = QMetaType.Type.QVariantList
+#     field_sub_type = QMetaType.Type.Int
+# elif field_type_parameter == 10:  # DoubleList
+#     field_type = QMetaType.Type.QVariantList
+#     field_sub_type = QMetaType.Type.Double
+
 
 class TestQgsArrowIterator(QgisTestCase):
 
@@ -72,10 +73,7 @@ class TestQgsArrowIterator(QgisTestCase):
         fields.append(QgsField("value", QMetaType.Type.Double))
 
         layer = QgsMemoryProviderUtils.createMemoryLayer(
-            "test_layer",
-            fields,
-            QgsWkbTypes.Point,
-            crs
+            "test_layer", fields, QgsWkbTypes.Point, crs
         )
 
         # Add features
@@ -109,7 +107,9 @@ class TestQgsArrowIterator(QgisTestCase):
 
         geometry_field_metadata = pa_schema.field("geometry").metadata
         assert geometry_field_metadata[b"ARROW:extension:name"] == b"geoarrow.wkb"
-        geoarrow_metadata = json.loads(geometry_field_metadata[b"ARROW:extension:metadata"])
+        geoarrow_metadata = json.loads(
+            geometry_field_metadata[b"ARROW:extension:metadata"]
+        )
         assert geoarrow_metadata["crs"]["type"] == "GeographicCRS"
 
     def test_infer_schema_no_crs(self):
@@ -117,7 +117,9 @@ class TestQgsArrowIterator(QgisTestCase):
         schema = QgsArrowIterator.inferSchema(layer)
         pa_schema = pa.Schema._import_from_c(schema.cSchemaAddress())
         geometry_field_metadata = pa_schema.field("geometry").metadata
-        geoarrow_metadata = json.loads(geometry_field_metadata[b"ARROW:extension:metadata"])
+        geoarrow_metadata = json.loads(
+            geometry_field_metadata[b"ARROW:extension:metadata"]
+        )
         assert geoarrow_metadata == {}
 
     def test_iterate(self):
@@ -129,8 +131,6 @@ class TestQgsArrowIterator(QgisTestCase):
         iterator.setSchema(schema, 3)
 
         pa_schema = pa.Schema._import_from_c(schema.cSchemaAddress())
-
-
 
 
 if __name__ == "__main__":
