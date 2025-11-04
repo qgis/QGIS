@@ -215,7 +215,13 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      */
     void nameChanged( const QString &newName );
 
+  private slots:
+
+    void dirtyProject();
+
   private:
+
+    void setupLayerTreeConnections();
 
     QPointer< QgsProject > mProject;
     QString mName;

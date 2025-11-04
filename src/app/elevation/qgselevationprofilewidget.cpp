@@ -382,7 +382,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
     if ( mProfile )
     {
       mProfile->setTolerance( value );
-      QgsProject::instance()->setDirty();
     }
     settingTolerance->setValue( value );
     createOrUpdateRubberBands();
@@ -426,7 +425,6 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
         if ( mProfile )
         {
           mProfile->setDistanceUnit( unit );
-          QgsProject::instance()->setDirty();
         }
         mCanvas->setDistanceUnit( unit );
       }
@@ -530,11 +528,9 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
   mLayerTreeView->populateInitialSources( QgsProject::instance() );
 
   connect( mProfile->layerTree(), &QgsLayerTree::layerOrderChanged, this, [this] {
-    QgsProject::instance()->setDirty();
     updateCanvasSources();
   } );
   connect( mProfile->layerTree(), &QgsLayerTreeGroup::visibilityChanged, this, [this] {
-    QgsProject::instance()->setDirty();
     updateCanvasSources();
   } );
 
@@ -855,7 +851,6 @@ void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve, bool 
     {
       mProfile->setProfileCurve( profileCurve->clone() );
       mProfile->setCrs( QgsProject::instance()->crs3D() );
-      QgsProject::instance()->setDirty();
     }
   }
 }
@@ -1139,7 +1134,6 @@ void QgsElevationProfileWidget::axisScaleLockToggled( bool active )
   if ( mProfile )
   {
     mProfile->setLockAxisScales( active );
-    QgsProject::instance()->setDirty();
   }
   settingLockAxis->setValue( active );
   mCanvas->setLockAxisScales( active );
@@ -1190,7 +1184,6 @@ void QgsElevationProfileWidget::renameProfileTriggered()
 
   mProfile->setName( newTitle );
   mDockableWidgetHelper->setWindowTitle( newTitle );
-  QgsProject::instance()->setDirty();
 }
 
 void QgsElevationProfileWidget::showSubsectionsTriggered()
