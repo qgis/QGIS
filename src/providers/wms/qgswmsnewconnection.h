@@ -24,7 +24,6 @@ class QgsWmsNewConnection : public QgsNewHttpConnection
     Q_OBJECT
   public:
     QgsWmsNewConnection( QWidget *parent = nullptr, const QString &connName = QString() );
-    ~QgsWmsNewConnection() override;
 
   private slots:
 

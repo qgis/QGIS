@@ -410,7 +410,7 @@ void QgsNewHttpConnection::showEvent( QShowEvent *event )
   QDialog::showEvent( event );
 }
 
-QString QgsNewHttpConnection::originalConnName() const
+QString QgsNewHttpConnection::originalConnectionName() const
 {
   return mOriginalConnName;
 }

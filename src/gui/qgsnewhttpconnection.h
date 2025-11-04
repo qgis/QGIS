@@ -94,7 +94,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * Returns the original connection name (might be empty)
      * \since QGIS 4.0
      */
-    QString originalConnName() const;
+    QString originalConnectionName() const;
 
   public slots:
 
@@ -144,10 +144,11 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * Returns the WMS Format Detect Button
      * \since QGIS 4.0
      */
-    QPushButton *wmsFormatDetectButton();
+    QPushButton *wmsFormatDetectButton() SIP_SKIP;
 
     /**
      * Returns the current authentication settings widget.
+     * \note Not available in Python bindings
      * \since QGIS 3.8
      */
     QgsAuthSettingsWidget *authSettingsWidget() SIP_SKIP;

@@ -18,6 +18,7 @@
 #include "qgswmsprovider.h"
 #include "moc_qgswmsnewconnection.cpp"
 #include "qgsproject.h"
+#include "qgsguiutils.h"
 
 #include <QMessageBox>
 
@@ -28,22 +29,14 @@ QgsWmsNewConnection::QgsWmsNewConnection( QWidget *parent, const QString &connNa
   initWmsSpecificSettings();
 }
 
-QgsWmsNewConnection::~QgsWmsNewConnection()
-{
-  if ( mCapabilities )
-  {
-    QApplication::restoreOverrideCursor();
-  }
-}
 
 void QgsWmsNewConnection::detectFormat()
 {
   const QString preparedUrl { QgsWmsProvider::prepareUri( url() ) };
   QgsWmsCapabilitiesDownload capDownload( preparedUrl, authorizationSettings(), true );
 
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+  const QgsTemporaryCursorOverride busyCursor { Qt::WaitCursor };
   bool res = capDownload.downloadCapabilities();
-  QApplication::restoreOverrideCursor();
 
   if ( !res )
   {
@@ -94,7 +87,7 @@ void QgsWmsNewConnection::detectFormat()
 
 void QgsWmsNewConnection::initWmsSpecificSettings()
 {
-  QStringList detailsParameters = { QStringLiteral( "wms" ), originalConnName() };
+  QStringList detailsParameters = { QStringLiteral( "wms" ), originalConnectionName() };
   QString imageFormat = QgsOwsConnection::settingsDefaultImageFormat->value( detailsParameters );
 
   wmsPreferredFormatCombo()->clear();
