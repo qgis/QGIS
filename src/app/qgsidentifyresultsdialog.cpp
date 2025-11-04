@@ -1713,8 +1713,32 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
       }
     }
 
-    mActionPopup->addAction( tr( "Copy Attribute Value" ), this, [this] { copyAttributeValue(); } );
-    mActionPopup->addAction( tr( "Copy Raw Attribute Value" ), this, [this] { copyAttributeValue( true ); } );
+    const QVariant displayValue = retrieveAttribute( lstResults->currentItem(), false );
+    if ( displayValue.isValid() )
+    {
+      // get values for preview in menu
+      QString previewDisplayValue = displayValue.toString();
+      if ( previewDisplayValue.length() > 12 )
+      {
+        previewDisplayValue.truncate( 12 );
+        previewDisplayValue.append( QStringLiteral( "…" ) );
+      }
+      mActionPopup->addAction( tr( "Copy Attribute Value (%1)" ).arg( previewDisplayValue ), this, [this, displayValue] { copyAttributeValue( displayValue.toString() ); } );
+    }
+
+    const QVariant rawValue = retrieveAttribute( lstResults->currentItem(), true );
+    if ( rawValue.isValid() )
+    {
+      // get values for preview in menu
+      QString previewRawValue = rawValue.toString();
+      if ( previewRawValue.length() > 12 )
+      {
+        previewRawValue.truncate( 12 );
+        previewRawValue.append( QStringLiteral( "…" ) );
+      }
+      mActionPopup->addAction( tr( "Copy Raw Value (%1)" ).arg( previewRawValue ), this, [this, rawValue] { copyAttributeValue( rawValue.toString() ); } );
+    }
+
     mActionPopup->addAction( tr( "Copy Feature Attributes" ), this, &QgsIdentifyResultsDialog::copyFeatureAttributes );
 
     mActionPopup->addAction( tr( "Select Features by Attribute Value" ), this, &QgsIdentifyResultsDialog::selectFeatureByAttribute );
@@ -2542,13 +2566,11 @@ void QgsIdentifyResultsDialog::collapseAll()
   lstResults->collapseAll();
 }
 
-void QgsIdentifyResultsDialog::copyAttributeValue( const bool raw )
+void QgsIdentifyResultsDialog::copyAttributeValue( const QString &value )
 {
   QClipboard *clipboard = QApplication::clipboard();
-  const QVariant attributeValue = retrieveAttribute( lstResults->currentItem(), raw );
-  const QString text = attributeValue.toString();
-  QgsDebugMsgLevel( QStringLiteral( "set clipboard: %1" ).arg( text ), 2 );
-  clipboard->setText( text );
+  QgsDebugMsgLevel( QStringLiteral( "set clipboard: %1" ).arg( value ), 2 );
+  clipboard->setText( value );
 }
 
 void QgsIdentifyResultsDialog::copyFeatureAttributes()
