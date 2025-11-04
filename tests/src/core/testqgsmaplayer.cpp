@@ -158,26 +158,28 @@ void TestQgsMapLayer::testId()
 
 void TestQgsMapLayer::generalHtmlMetadata()
 {
-  QgsDataSourceUri ds;
-  QString sourceUrl = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
-  ds.setParam( QStringLiteral( "type" ), "xyz" );
-  ds.setParam( QStringLiteral( "zmax" ), "1" );
-
   {
-    ds.setParam( QStringLiteral( "url" ), sourceUrl );
+    QgsDataSourceUri ds;
+    ds.setParam( QStringLiteral( "type" ), "xyz" );
+    ds.setParam( QStringLiteral( "zmax" ), "1" );
+    ds.setParam( QStringLiteral( "url" ), "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" );
     std::unique_ptr<QgsVectorTileLayer> vl( new QgsVectorTileLayer( ds.encodedUri(), QStringLiteral( "testLayer" ) ) );
     QVERIFY( vl->dataProvider() );
-    QCOMPARE( ds.param( QStringLiteral( "url" ) ), sourceUrl );
+    QVERIFY( vl->dataProvider()->isValid() );
+    QCOMPARE( ds.param( QStringLiteral( "url" ) ), "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" );
     QVERIFY( vl->generalHtmlMetadata().contains( "URL</td><td><a href=\"https://s3.amazonaws.com/elevation-tiles-prod/terrarium/%7Bz%7D/%7Bx%7D/%7By%7D.png" ) );
   }
 
   {
-    QString encodedUrl = QUrl::toPercentEncoding( sourceUrl );
-    ds.setParam( QStringLiteral( "url" ), encodedUrl );
+    QgsDataSourceUri ds;
+    ds.setParam( QStringLiteral( "type" ), "mbtiles" );
+    ds.setParam( QStringLiteral( "zmax" ), "1" );
+    ds.setParam( QStringLiteral( "url" ), QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
     std::unique_ptr<QgsVectorTileLayer> vl( new QgsVectorTileLayer( ds.encodedUri(), QStringLiteral( "testLayer" ) ) );
     QVERIFY( vl->dataProvider() );
-    QCOMPARE( ds.param( QStringLiteral( "url" ) ), encodedUrl );
-    QVERIFY( vl->generalHtmlMetadata().contains( "URL</td><td><a href=\"https://s3.amazonaws.com/elevation-tiles-prod/terrarium/%7Bz%7D/%7Bx%7D/%7By%7D.png" ) );
+    QVERIFY( vl->dataProvider()->isValid() );
+    QCOMPARE( ds.param( QStringLiteral( "url" ) ), QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+    QVERIFY( vl->generalHtmlMetadata().contains( QStringLiteral( "Path</td><td><a href=\"file://%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ) );
   }
 }
 
