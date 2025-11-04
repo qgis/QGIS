@@ -632,8 +632,6 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate, QgsFeatur
         QString typeString;
         if ( resultType == QMetaType::Type::UnknownType )
           typeString = QObject::tr( "null" );
-        else if ( resultType == QMetaType::Type::User )
-          typeString = QMetaType::typeName( userType );
         else
           typeString = resultType == QMetaType::Type::QString ? QObject::tr( "string" ) : QVariant::typeToName( resultType );
 
