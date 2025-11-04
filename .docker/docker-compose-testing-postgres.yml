@@ -18,6 +18,8 @@ services:
     image: qgis3-build-deps-binary-image
     volumes:
       - ${QGIS_WORKSPACE}:/root/QGIS
+   depends_on:
+      - postgres
     env_file:
       - docker-variables.env
     environment:
