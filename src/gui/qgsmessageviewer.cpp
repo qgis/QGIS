@@ -55,12 +55,17 @@ void QgsMessageViewer::appendMessage( const QString &msg )
 }
 
 
-void QgsMessageViewer::setMessage( const QString &message, Qgis::MessageType msgType )
+void QgsMessageViewer::setMessage( const QString &message, Qgis::LogMessageType msgType )
 {
-  if ( msgType == Qgis::MessageType::MessageHtml )
-    setMessageAsHtml( message );
-  else
-    setMessageAsPlainText( message );
+  switch ( msgType )
+  {
+    case Qgis::LogMessageType::Html:
+      setMessageAsHtml( message );
+      break;
+    case Qgis::LogMessageType::Text:
+      setMessageAsPlainText( message );
+      break;
+  }
 }
 
 void QgsMessageViewer::showMessage( bool blocking )

@@ -162,15 +162,16 @@ class CORE_EXPORT Qgis
     Q_ENUM( MessageLevel )
 
     /**
-     * \brief Type of message
-     * This will be used both for message log and message bar in application.
+     * \brief Type of log message
+     *
+     * \since QGIS 4.0
      */
-    enum MessageType
+    enum class LogMessageType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMessageOutput, MessageType ) : int
     {
-      MessageText, //!< Text message
-      MessageHtml, //!< HTML message
+      Text SIP_MONKEYPATCH_COMPAT_NAME( MessageText ), //!< Text message
+      Html SIP_MONKEYPATCH_COMPAT_NAME( MessageHtml ), //!< HTML message
     };
-    Q_ENUM( MessageType )
+    Q_ENUM( LogMessageType )
 
     /**
      * \brief Flags controlling behavior of network requests.

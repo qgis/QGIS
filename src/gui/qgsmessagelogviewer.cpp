@@ -104,7 +104,7 @@ void QgsMessageLogViewer::reject()
 {
 }
 
-void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::MessageType msgType )
+void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::LogMessageType type )
 {
   constexpr int MESSAGE_COUNT_LIMIT = 10000;
   // Avoid logging too many messages, which might blow memory.
@@ -170,14 +170,16 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   const QString prefix = QStringLiteral( "<font color=\"%1\">%2 &nbsp;&nbsp;&nbsp; %3 &nbsp;&nbsp;&nbsp;</font>" )
                            .arg( color.name(), QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
   
-  if ( msgType == Qgis::MessageType::MessageHtml )
+  QString cleanedMessage;
+  switch ( type )
   {
-    cleanedMessage = message;
+    case Qgis::LogMessageType::Html:
+      cleanedMessage = message;
+      break;
+    case Qgis::LogMessageType::Text:
+      cleanedMessage = message.toHtmlEscaped();
+      break;
   }
-  else
-  {
-    cleanedMessage = message.toHtmlEscaped();
-  }           
   if ( mMessageLoggedCount == MESSAGE_COUNT_LIMIT )
     cleanedMessage = tr( "Message log truncated" );
 
