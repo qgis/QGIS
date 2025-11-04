@@ -70,8 +70,8 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
 
   mReuseLastValuePolicyComboBox->setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLengthWithIcon );
   mReuseLastValuePolicyComboBox->addItem( tr( "Use Default Value" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) );
-  mReuseLastValuePolicyComboBox->addItem( tr( "Reuse Last Value by Default" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn ) );
-  mReuseLastValuePolicyComboBox->addItem( tr( "Allow Reuse of Last Values" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOff ) );
+  mReuseLastValuePolicyComboBox->addItem( tr( "Reuse Last Entered Value" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn ) );
+  mReuseLastValuePolicyComboBox->addItem( tr( "Allow Reuse of Last Entered Value" ), QVariant::fromValue( Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOff ) );
   connect( mReuseLastValuePolicyComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::updateReuseLastValuePolicyLabel );
   updateReuseLastValuePolicyLabel();
 
@@ -593,11 +593,11 @@ void QgsAttributeTypeDialog::updateReuseLastValuePolicyLabel()
       break;
 
     case Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn:
-      helperText = tr( "The last value will be reused by default. A pin button is added to toggle the behavior across feature addition. When active, the last vlaue will take priority over the default value." );
+      helperText = tr( "The last value will be reused. A pin button is added to toggle the behavior. When active, the last value will take priority over the default value." );
       break;
 
     case Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOff:
-      helperText = tr( "The last value can be reused but will not be by default. A pin toggle is added to toggle the behavior across feature addition. When active, the last vlaue will take priority over the default value." );
+      helperText = tr( "The last value can be reused, however it will not be by default. A pin button is added to toggle the behavior. When active, the last value will take priority over the default value." );
       break;
   }
   mReuseLastValuePolicyDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );
