@@ -3167,10 +3167,10 @@ template <TYPE>
     PyTuple_SetItem( obj, 0, v1 );
     PyObject *v2 = PyFloat_FromDouble( ( *it ).second );
     PyTuple_SetItem( obj, 1, v2 );
-    
+
     PyList_SET_ITEM(l, i, obj);
   }
-  
+
   return l;
 %End
 
@@ -3193,7 +3193,7 @@ template <TYPE>
 
     PyObject *sipSecond = PyTuple_GetItem( PyList_GET_ITEM(sipPy, i), 1 );
     double v2 = PyFloat_AsDouble(sipSecond);
-    
+
     ql->append( std::make_pair( v1, v2 ) );
   }
 
