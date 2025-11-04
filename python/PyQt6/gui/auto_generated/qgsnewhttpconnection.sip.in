@@ -64,7 +64,7 @@ Returns the current connection name.
 Returns the current connection url.
 %End
 
-    QString originalConnName() const;
+    QString originalConnectionName() const;
 %Docstring
 Returns the original connection name (might be empty)
 
