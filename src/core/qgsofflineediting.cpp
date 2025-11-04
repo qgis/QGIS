@@ -244,6 +244,11 @@ void QgsOfflineEditing::synchronize( bool useTransaction )
   {
     std::shared_ptr<QgsVectorLayer> remoteLayer = remoteLayersByOfflineId.value( offlineLayerId );
     QgsVectorLayer *offlineLayer = offlineLayersByOfflineId.value( offlineLayerId );
+    if ( !offlineLayer )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Failed to find offline layer %1" ).arg( offlineLayerId ), 4 );
+      continue;
+    }
 
     // NOTE: if transaction is enabled, the layer might be already in editing mode
     if ( !remoteLayer->startEditing() && !remoteLayer->isEditable() )
