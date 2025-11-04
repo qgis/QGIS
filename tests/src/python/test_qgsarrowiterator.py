@@ -10,6 +10,7 @@ __author__ = "(C) 2025 by Dewey Dunnington"
 __date__ = "04/11/2025"
 __copyright__ = "Copyright 2025, The QGIS Project"
 
+import datetime
 import json
 import unittest
 
@@ -37,7 +38,7 @@ from qgis.testing import QgisTestCase
 
 class TestQgsArrowIterator(QgisTestCase):
 
-    def create_test_layer(self, crs):
+    def create_test_layer_with_geometry(self, crs):
         # Create fields
         fields = QgsFields()
         fields.append(QgsField("id", QMetaType.Type.Int))
@@ -65,9 +66,25 @@ class TestQgsArrowIterator(QgisTestCase):
 
         return layer
 
+    def create_test_layer_single_field(
+        self, meta_type, py_values, subtype=QMetaType.Type.UnknownType
+    ):
+        fields = QgsFields()
+        fields.append(QgsField("f", meta_type, subType=subtype))
+        layer = QgsMemoryProviderUtils.createMemoryLayer("test_layer", fields)
+
+        features = []
+        for py_value in py_values:
+            feature = QgsFeature(fields)
+            feature.setAttributes([py_value])
+            features.append(feature)
+
+        layer.dataProvider().addFeatures(features)
+        return layer
+
     def test_infer_schema(self):
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
-        layer = self.create_test_layer(crs)
+        layer = self.create_test_layer_with_geometry(crs)
 
         schema = QgsArrowIterator.inferSchema(layer)
         self.assertTrue(schema.isValid())
@@ -84,7 +101,7 @@ class TestQgsArrowIterator(QgisTestCase):
         assert geoarrow_metadata["crs"]["type"] == "GeographicCRS"
 
     def test_infer_schema_no_crs(self):
-        layer = self.create_test_layer(QgsCoordinateReferenceSystem())
+        layer = self.create_test_layer_with_geometry(QgsCoordinateReferenceSystem())
         schema = QgsArrowIterator.inferSchema(layer)
         pa_schema = pa.Schema._import_from_c(schema.cSchemaAddress())
         geometry_field_metadata = pa_schema.field("geometry").metadata
@@ -95,7 +112,7 @@ class TestQgsArrowIterator(QgisTestCase):
 
     def test_iterate(self):
         crs = QgsCoordinateReferenceSystem("EPSG:4326")
-        layer = self.create_test_layer(crs)
+        layer = self.create_test_layer_with_geometry(crs)
         schema = QgsArrowIterator.inferSchema(layer)
 
         iterator = QgsArrowIterator(layer.getFeatures())
@@ -122,40 +139,99 @@ class TestQgsArrowIterator(QgisTestCase):
         assert expected_geometries == shapely_geometries
 
     def test_type_int(self):
-        pass
-
-    def test_type_float(self):
-        pass
+        layer = self.create_test_layer_single_field(
+            QMetaType.Type.Int, [1, 2, None, 4, 5]
+        )
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.int32()})
 
     def test_type_double(self):
-        pass
+        layer = self.create_test_layer_single_field(
+            QMetaType.Type.Double, [1.0, 2.0, None, 4.0, 5.0]
+        )
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.float64()})
 
     def test_type_string(self):
-        pass
+        layer = self.create_test_layer_single_field(
+            QMetaType.Type.QString, ["a", "b", None, "d", "e"]
+        )
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.string()})
 
     def test_type_binary(self):
-        pass
+        layer = self.create_test_layer_single_field(
+            QMetaType.Type.QByteArray, [b"a", b"b", None, b"d", b"e"]
+        )
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.binary()})
 
     def test_type_boolean(self):
-        pass
+        layer = self.create_test_layer_single_field(
+            QMetaType.Type.Bool, [True, False, None, True, False]
+        )
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.bool_()})
 
     def test_type_date(self):
-        pass
+        dates = [datetime.date(2020, 1, i) for i in range(1, 6)]
+        dates[2] = None
+
+        layer = self.create_test_layer_single_field(QMetaType.Type.QDate, dates)
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.date32()})
 
     def test_type_time(self):
-        pass
+        times = [datetime.time(17, 0, i) for i in range(5)]
+        times[2] = None
+
+        layer = self.create_test_layer_single_field(QMetaType.Type.QTime, times)
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.time32("ms")})
 
     def test_type_datetime(self):
-        pass
+        datetimes = [datetime.datetime(2020, 1, 1, 17, 0, i) for i in range(5)]
+        datetimes[2] = None
+
+        layer = self.create_test_layer_single_field(QMetaType.Type.QDateTime, datetimes)
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.timestamp("ms", tz=None)})
 
     def test_type_string_list(self):
-        pass
+        items = [["a", "b"], ["c"], None, ["d", "e", "f"], ["g"]]
+
+        layer = self.create_test_layer_single_field(QMetaType.Type.QStringList, items)
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.list_(pa.string())})
 
     def test_type_double_list(self):
-        pass
+        items = [[1.0, 2.0], [3.0], None, [4.0, 5.0, 6.0], [7.0]]
+
+        layer = self.create_test_layer_single_field(
+            QMetaType.Type.QVariantList, items, subtype=QMetaType.Type.Double
+        )
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.list_(pa.float64())})
 
     def test_type_int_list(self):
-        pass
+        items = [[1, 2], [3], None, [4, 5, 6], [7]]
+
+        layer = self.create_test_layer_single_field(
+            QMetaType.Type.QVariantList, items, subtype=QMetaType.Type.Int
+        )
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.list_(pa.int32())})
 
 
 if __name__ == "__main__":
