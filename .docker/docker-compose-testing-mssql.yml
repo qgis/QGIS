@@ -8,14 +8,14 @@ services:
       MSSQL_SA_PASSWORD: QGIStestSQLServer1234
     ports:
       - 1433:1433
+    networks:
+      - qgisnet
 
   qgis-deps:
     tty: true
     image: qgis3-build-deps-binary-image
     volumes:
       - ${QGIS_WORKSPACE}:/root/QGIS
-    links:
-      - mssql
     env_file:
       - docker-variables.env
     environment:
@@ -23,3 +23,9 @@ services:
       - LC_ALL=en_US.UTF-8
     cap_add:
       - NET_ADMIN
+    networks:
+      - qgisnet
+
+networks:
+  qgisnet:
+    driver: bridge
