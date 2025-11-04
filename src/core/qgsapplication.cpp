@@ -232,7 +232,14 @@ void QgsApplication::init( QString profileFolder )
   if ( platform() == QLatin1String( "desktop" ) )
   {
     instance()->mApplicationMembers = new ApplicationMembers();
-    instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    try
+    {
+      instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Error migrating old settings: %1" ).arg( e.what() ) );
+    }
   }
 
   if ( profileFolder.isEmpty() )
