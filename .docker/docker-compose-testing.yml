@@ -29,6 +29,10 @@ services:
     volumes:
       - ${QGIS_WORKSPACE}:/root/QGIS
       - ${QGIS_COMMON_GIT_DIR}:${QGIS_COMMON_GIT_DIR}
+    depends_on:
+      - webdav
+      - minio
+      - httpbin
     env_file:
       - docker-variables.env
     environment:
