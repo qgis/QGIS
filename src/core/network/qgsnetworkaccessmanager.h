@@ -119,7 +119,7 @@ class CORE_EXPORT QgsNetworkRequestParameters
 
   private:
 
-    QNetworkAccessManager::Operation mOperation;
+    QNetworkAccessManager::Operation mOperation = QNetworkAccessManager::Operation::UnknownOperation;
     QNetworkRequest mRequest;
     QString mOriginatingThreadId;
     int mRequestId = 0;
