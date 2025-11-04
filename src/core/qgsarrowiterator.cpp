@@ -216,7 +216,7 @@ namespace
     }
   }
 
-  void appendVariant( const QVariant &v, struct ArrowArray *col, struct ArrowSchemaView &columnTypeView )
+  void appendVariant( const QVariant &v, struct ArrowArray *col, struct ArrowSchemaView &columnTypeView, struct ArrowSchemaView &columnListTypeView )
   {
     if ( v.isNull() )
     {
@@ -334,12 +334,11 @@ namespace
       case NANOARROW_TYPE_LIST_VIEW:
       case NANOARROW_TYPE_LARGE_LIST_VIEW:
       {
-        // TODO: QVariantList, where the subtype could be Int or Double (or arbitrary?)
-        const QStringList stringList = v.toStringList();
-        for ( const QString &string : stringList )
+        const QVariantList variantList = v.toList();
+        struct ArrowSchemaView dummyListType {};
+        for ( const QVariant &item : variantList )
         {
-          struct ArrowBufferView bytesView { { string.toUtf8().constData() }, static_cast<int64_t>( string.size() ) };
-          QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col->children[0], bytesView ) );
+          appendVariant( item, col->children[0], columnListTypeView, dummyListType );
         }
 
         QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayFinishElement( col ) );
@@ -387,15 +386,25 @@ void QgsArrowIterator::nextFeatures( int n, unsigned long long arrayAddr )
   const struct ArrowSchema *schema = mSchema.schema();
 
   struct ArrowError error {};
+
+  // Check that the top-level schema is a struct
+  struct ArrowSchemaView schemaView;
+  QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &schemaView, schema, &error ), &error );
+  if ( schemaView.type != NANOARROW_TYPE_STRUCT )
+  {
+    throw QgsException( QStringLiteral( "QgsArrowIterator expected requested schema as struct but got '%1'" ).arg( ArrowTypeString( schemaView.type ) ) );
+  }
+
   std::vector<QString> columnNames( schema->n_children );
   std::vector<struct ArrowSchemaView> colTypeViews( schema->n_children );
+  std::vector<struct ArrowSchemaView> colListTypeViews( schema->n_children );
   for ( int64_t i = 0; i < schema->n_children; i++ )
   {
+    // Parse the column schema
     columnNames[i] = QString( schema->children[i]->name != nullptr ? schema->children[i]->name : "" );
     QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &colTypeViews[i], schema->children[i], &error ), &error );
 
-    // Check that any columns with a list type are lists of strings, as that's the
-    // only list type supported here.
+    // Parse the column list type if applicable
     switch ( colTypeViews[i].type )
     {
       case NANOARROW_TYPE_LIST:
@@ -406,20 +415,10 @@ void QgsArrowIterator::nextFeatures( int n, unsigned long long arrayAddr )
       {
         struct ArrowSchemaView childView;
         QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &childView, schema->children[i]->children[0], &error ), &error );
-        switch ( childView.type )
-        {
-          case NANOARROW_TYPE_STRING:
-          case NANOARROW_TYPE_LARGE_STRING:
-          case NANOARROW_TYPE_STRING_VIEW:
-            break;
-          default:
-            throw QgsException( QStringLiteral( "Can't convert to list of Arrow '%1' (only lists of strings are supported)" ).arg( ArrowTypeString( colTypeViews[i].type ) ) );
-        }
-
-        break;
+        colListTypeViews[i] = std::move( childView );
       }
       default:
-        // No checking needed for other destination types
+        colListTypeViews[i] = ArrowSchemaView {};
         break;
     }
   }
@@ -459,7 +458,7 @@ void QgsArrowIterator::nextFeatures( int n, unsigned long long arrayAddr )
       }
       else if ( attributeIndex >= 0 && attributeIndex < feature.attributeCount() )
       {
-        appendVariant( feature.attribute( attributeIndex ), columnArray, colTypeViews[i] );
+        appendVariant( feature.attribute( attributeIndex ), columnArray, colTypeViews[i], colListTypeViews[i] );
       }
       else
       {
