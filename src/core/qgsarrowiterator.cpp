@@ -41,6 +41,17 @@
     }                                                                           \
   } while ( 0 )
 
+
+void QgsArrowInferSchemaOptions::setGeometryColumnName( QString geometryColumnName )
+{
+  mGeometryColumnName = std::move( geometryColumnName );
+}
+const QString &QgsArrowInferSchemaOptions::geometryColumnName() const
+{
+  return mGeometryColumnName;
+}
+
+
 QgsArrowSchema::QgsArrowSchema( const QgsArrowSchema &other )
 {
   QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaDeepCopy( &other.mSchema, &mSchema ) );
@@ -94,9 +105,9 @@ namespace
 {
 
 
-  void inferGeometry( const QgsVectorLayer &layer, struct ArrowSchema *col )
+  void inferGeometry( const QgsVectorLayer &layer, struct ArrowSchema *col, const QString &name )
   {
-    QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetName( col, "geometry" ) );
+    QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetName( col, name.toUtf8().constData() ) );
     QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_BINARY ) );
 
     std::string crsString = layer.crs().toJsonString();
@@ -465,7 +476,7 @@ void QgsArrowIterator::nextFeatures( int n, unsigned long long arrayAddr )
 }
 
 
-QgsArrowSchema QgsArrowIterator::inferSchema( const QgsVectorLayer &layer )
+QgsArrowSchema QgsArrowIterator::inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options )
 {
   bool layerHasGeometry = layer.geometryType() != Qgis::GeometryType::Unknown && layer.geometryType() != Qgis::GeometryType::Null;
 
@@ -480,7 +491,7 @@ QgsArrowSchema QgsArrowIterator::inferSchema( const QgsVectorLayer &layer )
 
   if ( layerHasGeometry )
   {
-    inferGeometry( layer, out.schema()->children[fields.count()] );
+    inferGeometry( layer, out.schema()->children[fields.count()], options.geometryColumnName() );
   }
 
   return out;
