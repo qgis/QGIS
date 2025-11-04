@@ -94,7 +94,15 @@ QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
   {
     QgsCoordinateTransform ct( mPresetFullExtent.crs(), mProject->crs(), mProject->transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
-    return QgsReferencedRectangle( ct.transformBoundingBox( mPresetFullExtent ), mProject->crs() );
+    try
+    {
+      return QgsReferencedRectangle( ct.transformBoundingBox( mPresetFullExtent ), mProject->crs() );
+    }
+    catch ( QgsCsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Transform error encountered while determining project extent: %1" ).arg( e.what() ) );
+      return QgsReferencedRectangle();
+    }
   }
   else
   {
