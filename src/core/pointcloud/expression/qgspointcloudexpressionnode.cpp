@@ -165,7 +165,7 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
         return nullptr;
       }
       const bool notIn = n->isNotIn();
-      QgsPointCloudExpressionNode::NodeList *nodeList = new QgsPointCloudExpressionNode::NodeList; \
+      auto nodeList = std::make_unique< QgsPointCloudExpressionNode::NodeList >();
       const QList<QgsExpressionNode *> nNodeList = n->list()->list();
       for ( const QgsExpressionNode *nd : nNodeList )
       {
@@ -173,12 +173,11 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
         if ( !convertedNode )
         {
           delete node;
-          qDeleteAll( nodeList->list() );
           return nullptr;
         }
         nodeList->append( convertedNode );
       }
-      return new QgsPointCloudExpressionNodeInOperator( node, nodeList, notIn );
+      return new QgsPointCloudExpressionNodeInOperator( node, nodeList.release(), notIn );
     }
     case QgsExpressionNode::NodeType::ntUnaryOperator:
     {

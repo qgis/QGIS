@@ -263,7 +263,7 @@ QgsColorRampLegendNodeSettings *QgsMapLayerLegendUtils::legendNodeColorRampSetti
 
   QgsColorRampLegendNodeSettings settings;
   settings.readXml( elem, rwContext );
-  return new QgsColorRampLegendNodeSettings( settings );
+  return new QgsColorRampLegendNodeSettings( std::move( settings ) );
 }
 
 void QgsMapLayerLegendUtils::setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode )

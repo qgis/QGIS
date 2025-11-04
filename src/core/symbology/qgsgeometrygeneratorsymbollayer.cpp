@@ -485,7 +485,15 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
       {
         // convert feature geometry to painter units
         QgsGeometry transformed = f.geometry();
-        transformed.transform( context.renderContext().coordinateTransform() );
+
+        try
+        {
+          transformed.transform( context.renderContext().coordinateTransform() );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugError( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
+        }
         const QTransform mapToPixel = context.renderContext().mapToPixel().transform();
         transformed.transform( mapToPixel );
 

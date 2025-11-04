@@ -2436,6 +2436,9 @@ QgsProcessingFileWidgetWrapper::QgsProcessingFileWidgetWrapper( const QgsProcess
 QWidget *QgsProcessingFileWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterFile *fileParam = dynamic_cast<const QgsProcessingParameterFile *>( parameterDefinition() );
+  if ( !fileParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:
@@ -3358,8 +3361,7 @@ void QgsProcessingEnumWidgetWrapper::setWidgetValue( const QVariant &value, QgsP
     QVariantList opts;
     if ( value.isValid() )
     {
-      const QgsProcessingParameterEnum *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() );
-      if ( enumDef->usesStaticStrings() )
+      if ( const QgsProcessingParameterEnum *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() ); enumDef && enumDef->usesStaticStrings() )
       {
         const QStringList v = QgsProcessingParameters::parameterAsEnumStrings( parameterDefinition(), value, context );
         opts.reserve( v.size() );
@@ -5322,6 +5324,8 @@ QgsProcessingMapThemeWidgetWrapper::QgsProcessingMapThemeWidgetWrapper( const Qg
 QWidget *QgsProcessingMapThemeWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterMapTheme *themeParam = dynamic_cast<const QgsProcessingParameterMapTheme *>( parameterDefinition() );
+  if ( !themeParam )
+    return nullptr;
 
   mComboBox = new QComboBox();
 
@@ -5787,6 +5791,8 @@ QgsProcessingDatabaseSchemaWidgetWrapper::QgsProcessingDatabaseSchemaWidgetWrapp
 QWidget *QgsProcessingDatabaseSchemaWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDatabaseSchema *schemaParam = dynamic_cast<const QgsProcessingParameterDatabaseSchema *>( parameterDefinition() );
+  if ( !schemaParam )
+    return nullptr;
 
   mSchemaComboBox = new QgsDatabaseSchemaComboBox( QString(), QString() );
   if ( schemaParam->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -6240,6 +6246,9 @@ QgsProcessingExtentWidgetWrapper::QgsProcessingExtentWidgetWrapper( const QgsPro
 QWidget *QgsProcessingExtentWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterExtent *extentParam = dynamic_cast<const QgsProcessingParameterExtent *>( parameterDefinition() );
+  if ( !extentParam )
+    return nullptr;
+
   switch ( type() )
   {
     case Qgis::ProcessingMode::Standard:

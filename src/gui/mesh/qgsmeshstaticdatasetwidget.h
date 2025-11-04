@@ -91,7 +91,7 @@ class GUI_EXPORT QgsMeshStaticDatasetWidget : public QWidget, private Ui::QgsMes
     QgsMeshDatasetListModel *mDatasetScalarModel = nullptr;
     QgsMeshDatasetListModel *mDatasetVectorModel = nullptr;
 
-    QgsMeshLayer *mLayer;
+    QgsMeshLayer *mLayer = nullptr;
 };
 
 #endif // QGSMESHSTATICDATASETWIDGET_H

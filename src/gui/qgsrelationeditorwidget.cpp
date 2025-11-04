@@ -653,7 +653,7 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
       nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
     }
 
-    request = nmRequest;
+    request = std::move( nmRequest );
     layer = mNmRelation.referencedLayer();
   }
   else if ( mRelation.referencingLayer() )

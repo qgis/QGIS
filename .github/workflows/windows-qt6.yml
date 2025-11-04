@@ -33,7 +33,7 @@ jobs:
           choco uninstall cmake.install
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@2ecc21724e5215b0e567bc399a2602d2ecb48541
+        uses: lukka/get-cmake@628dd514bed37cb0a609e84a6186cbbaa2fc0140
         with:
           cmakeVersion: 3.31.6
 
@@ -114,14 +114,14 @@ jobs:
 
       - name: 📤 Upload sdk
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: qgis-sdk-x64-windows
           path: |
             sdk/vcpkg-export-*.zip
 
       - name: 📑 Upload dep build logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: build-logs-x64-windows
@@ -129,7 +129,7 @@ jobs:
             C:/src/**/*.log
 
       - name: 📤 Upload bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         id: artifact-win64-qt6
         with:
           name: qgis-windows-qt6

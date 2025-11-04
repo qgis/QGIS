@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressionselectiondialog.h"
 #include "qgsmapcanvas.h"
+#include "qgsgui.h"
 
 #include <QWindow>
 
@@ -32,6 +33,7 @@ QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAtt
   , mContext( context )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   mFeatureSelection = new QgsVectorLayerSelectionManager( vl, mDualView );
 
