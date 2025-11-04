@@ -840,6 +840,9 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
 int QgsTessellator::dataVerticesCount() const
 {
+  if ( mData.size() == 0 )
+    return 0;
+
   return mData.size() / ( stride() / sizeof( float ) );
 }
 
