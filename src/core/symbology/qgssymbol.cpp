@@ -2227,7 +2227,14 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         z = 0.0;
         if ( ct.isValid() )
         {
-          ct.transformInPlace( x, y, z );
+          try
+          {
+            ct.transformInPlace( x, y, z );
+          }
+          catch ( QgsCsException & )
+          {
+            continue;
+          }
         }
         mapPoint.setX( x );
         mapPoint.setY( y );

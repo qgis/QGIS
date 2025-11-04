@@ -1826,7 +1826,11 @@ QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area,
   QgsPoint pt1;
   QgsPoint pt2;
   // get first point
-  hull->nextVertex( vertexId, pt0 );
+  if ( !hull->nextVertex( vertexId, pt0 ) )
+  {
+    return QgsGeometry();
+  }
+
   pt1 = pt0;
   double totalRotation = 0;
   while ( hull->nextVertex( vertexId, pt2 ) )
