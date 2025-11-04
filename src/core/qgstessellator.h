@@ -173,6 +173,7 @@ class CORE_EXPORT QgsTessellator
     QString error() const { return mError; }
 
   private:
+    void calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base );
     void addTriangleVertices( const std::array<QVector3D, 3> &points, QVector3D pNormal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, bool reverse );
     bool mAddNormals = false;
     bool mInvertNormals = false;

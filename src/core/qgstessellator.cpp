@@ -543,34 +543,29 @@ double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
   return min_d != 1e20 ? std::sqrt( min_d ) : 1e20;
 }
 
-void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeight )
+void QgsTessellator::calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base )
 {
-  const QgsLineString *exterior = qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() );
-  if ( !exterior )
-    return;
-
-  const QVector3D pNormal = !mNoZ ? _calculateNormal( exterior, mOriginX, mOriginY, mInvertNormals, extrusionHeight ) : QVector3D();
-  const int pCount = exterior->numPoints();
-  if ( pCount == 0 )
-    return;
-
-  float zMin = std::numeric_limits<float>::max();
-  float zMaxBase = -std::numeric_limits<float>::max();
-  float zMaxExtruded = -std::numeric_limits<float>::max();
-
-  const float scale = mBounds.isNull() ? 1.0 : std::max( 10000.0 / mBounds.width(), 10000.0 / mBounds.height() );
-
-  std::unique_ptr<QMatrix4x4> toNewBase, toOldBase;
-  QgsPoint ptStart, pt0;
-  std::unique_ptr<QgsPolygon> polygonNew;
-  auto rotatePolygonToXYPlane = [&]()
+  if ( !mNoZ && pNormal != QVector3D( 0, 0, 1 ) )
   {
-    if ( !mNoZ && pNormal != QVector3D( 0, 0, 1 ) )
-    {
-      // this is not a horizontal plane - need to reproject the polygon to a new base so that
-      // we can do the triangulation in a plane
-      QVector3D pXVector, pYVector;
-      _normalVectorToXYVectors( pNormal, pXVector, pYVector );
+    // this is not a horizontal plane - need to reproject to a new base so that
+    // we can do the triangulation in a plane
+    QVector3D pXVector, pYVector;
+    _normalVectorToXYVectors( pNormal, pXVector, pYVector );
+
+    // so now we have three orthogonal unit vectors defining new base
+    // let's build transform matrix. We actually need just a 3x3 matrix,
+    // but Qt does not have good support for it, so using 4x4 matrix instead.
+    *base = QMatrix4x4(
+                        pXVector.x(), pXVector.y(), pXVector.z(), 0,
+                        pYVector.x(), pYVector.y(), pYVector.z(), 0,
+                        pNormal.x(), pNormal.y(), pNormal.z(), 0,
+                        0, 0, 0, 0 );
+  }
+  else
+  {
+    base->setToIdentity();
+  }
+}
 
 void QgsTessellator::addTriangleVertices( 
   const std::array<QVector3D, 3> &points,
