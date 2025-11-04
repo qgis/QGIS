@@ -173,24 +173,31 @@ class CORE_EXPORT QgsTessellator
     QString error() const { return mError; }
 
   private:
+    void updateStride();
+
+    void setExtrusionFacesLegacy( int facade );
     void calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base );
     void addTriangleVertices( const std::array<QVector3D, 3> &points, QVector3D pNormal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, bool reverse );
     void addTextureCoords( const std::array<QVector3D, 3> *points, bool reverse );
     std::vector<QVector3D> generateConstrainedDelaunayTriangles( const QgsPolygon *polygonNew );
+
+    QgsVector3D mOrigin = QgsVector3D( 0, 0, 0 );
     bool mAddNormals = false;
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
     bool mAddTextureCoords = false;
     bool mOutputZUp = false;
     QVector<float> mData;
-    int mStride;
+    int mStride = 3 * sizeof( float );
     bool mNoZ = false;
-    int mTessellatedFacade = 3;
+    Qgis::ExtrusionFaces mExtrusionFaces = Qgis::ExtrusionFaces::Walls | Qgis::ExtrusionFaces::Roof;
     float mTextureRotation = 0.0f;
+    float mScale = 1.0;
     QString mError;
 
     float mZMin = std::numeric_limits<float>::max();
     float mZMax = -std::numeric_limits<float>::max();
 };
+
 
 #endif // QGSTESSELLATOR_H
