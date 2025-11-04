@@ -216,7 +216,11 @@ namespace
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_BOOL ) );
         break;
       case QMetaType::QChar:
+      case QMetaType::SChar:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_INT8 ) );
+        break;
+      case QMetaType::UChar:
+        QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_UINT8 ) );
         break;
       case QMetaType::Short:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_INT16 ) );

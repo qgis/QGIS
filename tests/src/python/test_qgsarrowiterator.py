@@ -28,38 +28,11 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QMetaType
-from qgis.testing import start_app, QgisTestCase
+from qgis.testing import QgisTestCase
 
 
 # Crashes pytest for me locally
 # start_app()
-
-
-# if field_type_parameter == 0:  # Integer
-#     field_type = QMetaType.Type.Int
-# elif field_type_parameter == 1:  # Float
-#     field_type = QMetaType.Type.Double
-# elif field_type_parameter == 2:  # String
-#     field_type = QMetaType.Type.QString
-# elif field_type_parameter == 3:  # Boolean
-#     field_type = QMetaType.Type.Bool
-# elif field_type_parameter == 4:  # Date
-#     field_type = QMetaType.Type.QDate
-# elif field_type_parameter == 5:  # Time
-#     field_type = QMetaType.Type.QTime
-# elif field_type_parameter == 6:  # DateTime
-#     field_type = QMetaType.Type.QDateTime
-# elif field_type_parameter == 7:  # Binary
-#     field_type = QMetaType.Type.QByteArray
-# elif field_type_parameter == 8:  # StringList
-#     field_type = QMetaType.Type.QStringList
-#     field_sub_type = QMetaType.Type.QString
-# elif field_type_parameter == 9:  # IntegerList
-#     field_type = QMetaType.Type.QVariantList
-#     field_sub_type = QMetaType.Type.Int
-# elif field_type_parameter == 10:  # DoubleList
-#     field_type = QMetaType.Type.QVariantList
-#     field_sub_type = QMetaType.Type.Double
 
 
 class TestQgsArrowIterator(QgisTestCase):
@@ -147,6 +120,42 @@ class TestQgsArrowIterator(QgisTestCase):
         expected_geometries = [shapely.Point(i, i + 20) for i in range(10)]
         shapely_geometries = [shapely.from_wkb(g) for g in tab["geometry"].to_pylist()]
         assert expected_geometries == shapely_geometries
+
+    def test_type_int(self):
+        pass
+
+    def test_type_float(self):
+        pass
+
+    def test_type_double(self):
+        pass
+
+    def test_type_string(self):
+        pass
+
+    def test_type_binary(self):
+        pass
+
+    def test_type_boolean(self):
+        pass
+
+    def test_type_date(self):
+        pass
+
+    def test_type_time(self):
+        pass
+
+    def test_type_datetime(self):
+        pass
+
+    def test_type_string_list(self):
+        pass
+
+    def test_type_double_list(self):
+        pass
+
+    def test_type_int_list(self):
+        pass
 
 
 if __name__ == "__main__":
