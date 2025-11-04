@@ -20,7 +20,6 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
-#include "qgsjsonutils.h"
 
 #define QGIS_NANOARROW_THROW_NOT_OK_ERR( expr, err )                                                                             \
   do                                                                                                                             \
@@ -100,16 +99,21 @@ namespace
     QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetName( col, "geometry" ) );
     QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_BINARY ) );
 
-    // Should be PROJJSON
-    QString crsString = layer.crs().toWkt( Qgis::CrsWktVariant::Wkt2_2019 );
-    QJsonObject crsMetadata;
-    crsMetadata["crs"] = crsString;
-    const std::string metadataJson = QgsJsonUtils::jsonFromVariant( crsMetadata ).dump();
+    std::string crsString = layer.crs().toJsonString();
+    std::string geoArrowMetadata;
+    if ( crsString.empty() )
+    {
+      geoArrowMetadata = "{}";
+    }
+    else
+    {
+      geoArrowMetadata = R"({"crs":)" + crsString + R"(})";
+    }
 
     nanoarrow::UniqueBuffer metadataKv;
     QGIS_NANOARROW_THROW_NOT_OK( ArrowMetadataBuilderInit( metadataKv.get(), nullptr ) );
     QGIS_NANOARROW_THROW_NOT_OK( ArrowMetadataBuilderAppend( metadataKv.get(), ArrowCharView( "ARROW:extension:name" ), ArrowCharView( "geoarrow.wkb" ) ) );
-    QGIS_NANOARROW_THROW_NOT_OK( ArrowMetadataBuilderAppend( metadataKv.get(), ArrowCharView( "ARROW:extension:metadata" ), ArrowCharView( metadataJson.c_str() ) ) );
+    QGIS_NANOARROW_THROW_NOT_OK( ArrowMetadataBuilderAppend( metadataKv.get(), ArrowCharView( "ARROW:extension:metadata" ), ArrowCharView( geoArrowMetadata.c_str() ) ) );
     QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetMetadata( col, reinterpret_cast<char *>( metadataKv->data ) ) );
   }
 
@@ -188,6 +192,14 @@ namespace
         throw QgsException( QStringLiteral( "QgsArrowIterator can't infer field type '%1' for field '%2'" ).arg( QMetaType::typeName( field.type() ) ).arg( field.name() ) );
     }
   }
+
+  // Also need handling
+  // # elif field_type_parameter == 9:  # IntegerList
+  // #     field_type = QMetaType.Type.QVariantList
+  // #     field_sub_type = QMetaType.Type.Int
+  // # elif field_type_parameter == 10:  # DoubleList
+  // #     field_type = QMetaType.Type.QVariantList
+  // #     field_sub_type = QMetaType.Type.Double
 
   void appendVariant( const QVariant &v, struct ArrowArray *col, struct ArrowSchemaView &columnTypeView )
   {
