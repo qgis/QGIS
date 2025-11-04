@@ -575,7 +575,7 @@ if(WITH_CORE)
 
   if (BUILD_WITH_QT6)
     set(QT_VERSION_MAJOR 6)
-    set(QT_MIN_VERSION 6.4.0)
+    set(QT_MIN_VERSION 6.6.0)
     set(QT_VERSION_BASE "Qt6")
     set(QT_VERSION_BASE_LOWER "qt6")
   else()
