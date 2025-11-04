@@ -130,11 +130,9 @@ namespace
     QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, v ) );
   }
 
-  void inferField( const QgsField &field, struct ArrowSchema *col )
+  void inferMetaType( const QMetaType::Type metaType, struct ArrowSchema *col, const QString &fieldName )
   {
-    QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetName( col, field.name().toUtf8().constData() ) );
-
-    switch ( field.type() )
+    switch ( metaType )
     {
       case QMetaType::Bool:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_BOOL ) );
@@ -187,19 +185,25 @@ namespace
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_LIST ) );
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col->children[0], NANOARROW_TYPE_STRING ) );
         break;
-
       default:
-        throw QgsException( QStringLiteral( "QgsArrowIterator can't infer field type '%1' for field '%2'" ).arg( QMetaType::typeName( field.type() ) ).arg( field.name() ) );
+        throw QgsException( QStringLiteral( "QgsArrowIterator can't infer field type '%1' for field '%2'" ).arg( QMetaType::typeName( metaType ) ).arg( fieldName ) );
     }
   }
 
-  // Also need handling
-  // # elif field_type_parameter == 9:  # IntegerList
-  // #     field_type = QMetaType.Type.QVariantList
-  // #     field_sub_type = QMetaType.Type.Int
-  // # elif field_type_parameter == 10:  # DoubleList
-  // #     field_type = QMetaType.Type.QVariantList
-  // #     field_sub_type = QMetaType.Type.Double
+  void inferField( const QgsField &field, struct ArrowSchema *col )
+  {
+    QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetName( col, field.name().toUtf8().constData() ) );
+    switch ( field.type() )
+    {
+      case QMetaType::QVariantList:
+        QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_LIST ) );
+        inferMetaType( field.subType(), col->children[0], field.name() );
+        break;
+      default:
+        inferMetaType( field.type(), col, field.name() );
+        break;
+    }
+  }
 
   void appendVariant( const QVariant &v, struct ArrowArray *col, struct ArrowSchemaView &columnTypeView )
   {
@@ -319,6 +323,7 @@ namespace
       case NANOARROW_TYPE_LIST_VIEW:
       case NANOARROW_TYPE_LARGE_LIST_VIEW:
       {
+        // TODO: QVariantList, where the subtype could be Int or Double (or arbitrary?)
         const QStringList stringList = v.toStringList();
         for ( const QString &string : stringList )
         {
