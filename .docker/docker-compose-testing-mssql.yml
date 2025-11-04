@@ -16,6 +16,8 @@ services:
     image: qgis3-build-deps-binary-image
     volumes:
       - ${QGIS_WORKSPACE}:/root/QGIS
+    depends_on:
+      - mssql
     env_file:
       - docker-variables.env
     environment:
