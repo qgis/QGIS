@@ -190,7 +190,7 @@ class CORE_EXPORT QgsTessellator
     QVector<float> mData;
     int mStride = 3 * sizeof( float );
     bool mNoZ = false;
-    Qgis::ExtrusionFaces mExtrusionFaces = Qgis::ExtrusionFaces::Walls | Qgis::ExtrusionFaces::Roof;
+    Qgis::ExtrusionFaces mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
     float mTextureRotation = 0.0f;
     float mScale = 1.0;
     QString mError;

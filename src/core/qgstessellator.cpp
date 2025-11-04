@@ -556,10 +556,10 @@ void QgsTessellator::calculateBaseTransform( const QVector3D &pNormal, QMatrix4x
     // let's build transform matrix. We actually need just a 3x3 matrix,
     // but Qt does not have good support for it, so using 4x4 matrix instead.
     *base = QMatrix4x4(
-                        pXVector.x(), pXVector.y(), pXVector.z(), 0,
-                        pYVector.x(), pYVector.y(), pYVector.z(), 0,
-                        pNormal.x(), pNormal.y(), pNormal.z(), 0,
-                        0, 0, 0, 0 );
+              pXVector.x(), pXVector.y(), pXVector.z(), 0,
+              pYVector.x(), pYVector.y(), pYVector.z(), 0,
+              pNormal.x(), pNormal.y(), pNormal.z(), 0,
+              0, 0, 0, 0 );
   }
   else
   {
@@ -567,10 +567,10 @@ void QgsTessellator::calculateBaseTransform( const QVector3D &pNormal, QMatrix4x
   }
 }
 
-void QgsTessellator::addTriangleVertices( 
+void QgsTessellator::addTriangleVertices(
   const std::array<QVector3D, 3> &points,
-  QVector3D pNormal, 
-  float extrusionHeight, 
+  QVector3D pNormal,
+  float extrusionHeight,
   QMatrix4x4 *transformMatrix,
   const QgsPoint *originOffset,
   bool reverse
@@ -582,6 +582,7 @@ void QgsTessellator::addTriangleVertices(
   {
     const int index = reverse ? 2 - i : i;
 
+    // cppcheck-suppress negativeContainerIndex
     QVector3D point = points[ index ];
     const double z = mNoZ ? 0.0 : point.z();
     QVector4D pt( point.x(), point.y(), z, 0 );
@@ -612,7 +613,7 @@ void QgsTessellator::addTriangleVertices(
       if ( mAddNormals )
         mData << normal.x() << normal.z() << - normal.y();
     }
-  } 
+  }
 }
 
 void QgsTessellator::addTextureCoords( const std::array<QVector3D, 3> *points, bool reverse )
@@ -654,7 +655,7 @@ std::vector<QVector3D> QgsTessellator::generateConstrainedDelaunayTriangles( con
 
   std::vector<QVector3D> trianglePoints;
   trianglePoints.reserve( triangles.size() * 3 );
-  
+
   for ( p2t::Triangle *t : triangles )
   {
     trianglePoints.emplace_back( QVector3D( t->GetPoint( 0 )->x / mScale, t->GetPoint( 0 )->y / mScale, z.value( t->GetPoint( 0 ) ) ) );
@@ -688,8 +689,6 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   if ( !mNoZ && !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
     return;  // this should not happen - pNormal should be normalized to unit length
 
-  const QVector3D upVector( 0, 0, 1 );
-
   // const float detectionDelta = qDegreesToRadians( 10.0f );
   bool buildWalls = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Walls );
   bool buildFloor = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Floor );
@@ -720,7 +719,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           addTriangleVertices( points, pNormal, 0, &base, &pointZero, true );
         }
       }
-      
+
       if ( mAddTextureCoords )
       {
         Q_ASSERT( polygonNew->exteriorRing()->numPoints() >= 3 );
@@ -733,7 +732,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         const QVector3D p3( triangle->xAt( 2 ), triangle->yAt( 2 ), mNoZ || std::isnan( triangle->zAt( 2 ) ) ? 0.0f : triangle->zAt( 2 ) );
         const std::array<QVector3D, 3> points = { { p1, p2, p3 } };
 
-        if ( mAddTextureCoords)
+        if ( mAddTextureCoords )
         {
           addTextureCoords( &points, false );
 
@@ -783,6 +782,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       {
         std::vector<QVector3D> trianglePoints = generateConstrainedDelaunayTriangles( polygonNew.get() );
         mData.reserve( mData.size() + trianglePoints.size() * 3 * ( stride() / sizeof( float ) ) );
+
         for ( size_t i = 0; i < trianglePoints.size(); i += 3 )
         {
           const QVector3D p1 = trianglePoints[ i + 0 ];

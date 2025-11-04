@@ -202,12 +202,16 @@ Sets edge lines color
 .. versionadded:: 3.8
 %End
 
- void setRenderedFacade( int side ) /Deprecated/;
+ void setRenderedFacade( int side ) /Deprecated="Since 4.0. Use setExtrusionFaces() instead."/;
 %Docstring
 Sets which facade of the buildings is rendered (0 for None, 1 for Walls,
 2 for Roof, 3 for WallsAndRoof)
 
 .. versionadded:: 3.16
+
+.. deprecated:: 4.0
+
+   Use :py:func:`~QgsPolygon3DSymbol.setExtrusionFaces` instead.
 %End
 
     void setExtrusionFaces( Qgis::ExtrusionFaces side );
@@ -217,12 +221,16 @@ Sets which facade of the buildings is rendered.
 .. versionadded:: 4.0
 %End
 
- int renderedFacade() /Deprecated/;
+ int renderedFacade() /Deprecated="Since 4.0. Use extrusionFaces() instead."/;
 %Docstring
 Returns which facade of the buildings is rendered (0 for None, 1 for
 Walls, 2 for Roof, 3 for WallsAndRoof)
 
 .. versionadded:: 3.16
+
+.. deprecated:: 4.0
+
+   Use :py:func:`~QgsPolygon3DSymbol.extrusionFaces` instead.
 %End
 
     Qgis::ExtrusionFaces extrusionFaces() const;
