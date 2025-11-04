@@ -13,8 +13,8 @@ __copyright__ = "Copyright 2025, The QGIS Project"
 import json
 import unittest
 
-import geopandas
 import pyarrow as pa
+import shapely
 
 from qgis.core import (
     QgsArrowIterator,
@@ -65,12 +65,10 @@ from qgis.testing import start_app, QgisTestCase
 class TestQgsArrowIterator(QgisTestCase):
 
     def create_test_layer(self, crs):
-        """Create a test layer with 10 features and a CRS"""
         # Create fields
         fields = QgsFields()
         fields.append(QgsField("id", QMetaType.Type.Int))
         fields.append(QgsField("name", QMetaType.Type.QString))
-        fields.append(QgsField("value", QMetaType.Type.Double))
 
         layer = QgsMemoryProviderUtils.createMemoryLayer(
             "test_layer", fields, QgsWkbTypes.Point, crs
@@ -80,10 +78,10 @@ class TestQgsArrowIterator(QgisTestCase):
         features = []
         for i in range(10):
             feature = QgsFeature(fields)
-            feature.setAttributes([i + 1, f"Feature_{i + 1}", (i + 1) * 10.5])
+            feature.setAttributes([i + 1, f"feat_{i + 1}"])
 
             # Create point geometry
-            point = QgsPointXY(-120 + i, 40 + i * 0.1)
+            point = QgsPointXY(i, i + 20)
             feature.setGeometry(QgsGeometry.fromPointXY(point))
 
             features.append(feature)
@@ -102,8 +100,8 @@ class TestQgsArrowIterator(QgisTestCase):
         self.assertTrue(schema.isValid())
 
         pa_schema = pa.Schema._import_from_c(schema.cSchemaAddress())
-        assert pa_schema.names == ["id", "name", "value", "geometry"]
-        assert pa_schema.types == [pa.int32(), pa.string(), pa.float64(), pa.binary()]
+        assert pa_schema.names == ["id", "name", "geometry"]
+        assert pa_schema.types == [pa.int32(), pa.string(), pa.binary()]
 
         geometry_field_metadata = pa_schema.field("geometry").metadata
         assert geometry_field_metadata[b"ARROW:extension:name"] == b"geoarrow.wkb"
@@ -128,9 +126,27 @@ class TestQgsArrowIterator(QgisTestCase):
         schema = QgsArrowIterator.inferSchema(layer)
 
         iterator = QgsArrowIterator(layer.getFeatures())
-        iterator.setSchema(schema, 3)
+        iterator.setSchema(schema, 2)
 
         pa_schema = pa.Schema._import_from_c(schema.cSchemaAddress())
+        batch0 = iterator.nextFeatures(4)
+        pa_batch0 = pa.RecordBatch._import_from_c(batch0.cArrayAddress(), pa_schema)
+        batch1 = iterator.nextFeatures(4)
+        pa_batch1 = pa.RecordBatch._import_from_c(batch1.cArrayAddress(), pa_schema)
+        batch2 = iterator.nextFeatures(4)
+        pa_batch2 = pa.RecordBatch._import_from_c(batch2.cArrayAddress(), pa_schema)
+
+        assert len(pa_batch0) == 4
+        assert len(pa_batch1) == 4
+        assert len(pa_batch2) == 2
+
+        tab = pa.Table.from_batches([pa_batch0, pa_batch1, pa_batch2])
+        assert tab["id"].to_pylist() == [i + 1 for i in range(10)]
+        assert tab["name"].to_pylist() == [f"feat_{i + 1}" for i in range(10)]
+
+        expected_geometries = [shapely.Point(i, i + 20) for i in range(10)]
+        shapely_geometries = [shapely.from_wkb(g) for g in tab["geometry"].to_pylist()]
+        assert expected_geometries == shapely_geometries
 
 
 if __name__ == "__main__":

@@ -96,7 +96,7 @@ class CORE_EXPORT QgsArrowInferSchemaOptions
 {
   public:
     //! Construct default options
-    QgsArrowInferSchemaOptions() = default;
+    QgsArrowInferSchemaOptions();
 
     //! Set the name that should be used to refer to the geometry column (default: "geometry")
     void setGeometryColumnName( QString geometryColumnName );
@@ -158,8 +158,10 @@ class CORE_EXPORT QgsArrowArray
     //! Copy constructor
     QgsArrowArray( const QgsArrowArray &other );
 
+#ifndef SIP_RUN
     //! Move constructor
     QgsArrowArray( QgsArrowArray &&other );
+#endif
 
     //! Assignment operator
     QgsArrowArray &operator=( const QgsArrowArray &other );
@@ -172,10 +174,10 @@ class CORE_EXPORT QgsArrowArray
     const struct ArrowArray *array() const;
 #endif
 
-    //! Returns the address of the underlying ArrowSchema for export to or import from other systems
+    //! Returns the address of the underlying ArrowArray for export to or import from other systems
     unsigned long long cArrayAddress();
 
-    //! Export this schema to the address of a similar object
+    //! Export this array to the address of a similar object
     void exportToAddress( unsigned long long otherAddress );
 
     //! Returns true if this wrapper object holds a valid ArrowArray

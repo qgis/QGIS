@@ -106,10 +106,6 @@ Construct invalid schema holder
 Copy constructor
 %End
 
-    QgsArrowArray( QgsArrowArray &&other );
-%Docstring
-Move constructor
-%End
 
 
     ~QgsArrowArray();
@@ -117,13 +113,13 @@ Move constructor
 
     unsigned long long cArrayAddress();
 %Docstring
-Returns the address of the underlying ArrowSchema for export to or
-import from other systems
+Returns the address of the underlying ArrowArray for export to or import
+from other systems
 %End
 
     void exportToAddress( unsigned long long otherAddress );
 %Docstring
-Export this schema to the address of a similar object
+Export this array to the address of a similar object
 %End
 
     bool isValid() const;

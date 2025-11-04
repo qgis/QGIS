@@ -42,10 +42,14 @@
   } while ( 0 )
 
 
+QgsArrowInferSchemaOptions::QgsArrowInferSchemaOptions()
+  : mGeometryColumnName( "geometry" ) {}
+
 void QgsArrowInferSchemaOptions::setGeometryColumnName( QString geometryColumnName )
 {
   mGeometryColumnName = std::move( geometryColumnName );
 }
+
 const QString &QgsArrowInferSchemaOptions::geometryColumnName() const
 {
   return mGeometryColumnName;
