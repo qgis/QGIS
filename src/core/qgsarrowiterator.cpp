@@ -261,7 +261,7 @@ namespace
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetTypeDateTime( col, NANOARROW_TYPE_TIME32, NANOARROW_TIME_UNIT_MILLI, nullptr ) );
         break;
       case QMetaType::QDateTime:
-        QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetTypeDateTime( col, NANOARROW_TYPE_TIMESTAMP, NANOARROW_TIME_UNIT_MILLI, nullptr ) );
+        QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetTypeDateTime( col, NANOARROW_TYPE_TIMESTAMP, NANOARROW_TIME_UNIT_MILLI, "UTC" ) );
         break;
       case QMetaType::QStringList:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_LIST ) );
@@ -357,7 +357,7 @@ namespace
 
       case NANOARROW_TYPE_TIMESTAMP:
       {
-        const QDateTime dateTime = v.toDateTime();
+        const QDateTime dateTime = v.toDateTime().toUTC();
         switch ( columnTypeView.time_unit )
         {
           case NANOARROW_TIME_UNIT_SECOND:

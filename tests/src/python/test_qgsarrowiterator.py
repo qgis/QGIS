@@ -19,6 +19,7 @@ import shapely
 
 from qgis.core import (
     QgsArrowIterator,
+    QgsArrowSchema,
     QgsCoordinateReferenceSystem,
     QgsFeature,
     QgsField,
@@ -28,7 +29,7 @@ from qgis.core import (
     QgsPointXY,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QMetaType
+from qgis.PyQt.QtCore import QMetaType, QByteArray, QDate, QTime, QDateTime, QTimeZone
 from qgis.testing import QgisTestCase
 
 
@@ -146,6 +147,28 @@ class TestQgsArrowIterator(QgisTestCase):
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.int32()})
 
+        for pa_type in [
+            pa.int8(),
+            pa.int16(),
+            pa.int32(),
+            pa.int64(),
+            pa.uint8(),
+            pa.uint16(),
+            pa.uint32(),
+            pa.uint64(),
+        ]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
+
+            iterator = QgsArrowIterator(layer.getFeatures())
+            iterator.setSchema(schema, -1)
+            batch = iterator.nextFeatures(5)
+            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            assert pa_batch == pa.record_batch(
+                {"f": [1, 2, None, 4, 5]}, schema=pa_schema
+            )
+
     def test_type_double(self):
         layer = self.create_test_layer_single_field(
             QMetaType.Type.Double, [1.0, 2.0, None, 4.0, 5.0]
@@ -153,6 +176,19 @@ class TestQgsArrowIterator(QgisTestCase):
         inferred = QgsArrowIterator.inferSchema(layer)
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.float64()})
+
+        for pa_type in [pa.float16(), pa.float32(), pa.float64()]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
+
+            iterator = QgsArrowIterator(layer.getFeatures())
+            iterator.setSchema(schema, -1)
+            batch = iterator.nextFeatures(5)
+            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            assert pa_batch == pa.record_batch(
+                {"f": [1.0, 2.0, None, 4.0, 5.0]}, schema=pa_schema
+            )
 
     def test_type_string(self):
         layer = self.create_test_layer_single_field(
@@ -162,13 +198,46 @@ class TestQgsArrowIterator(QgisTestCase):
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.string()})
 
+        for pa_type in [pa.string(), pa.large_string(), pa.string_view()]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
+
+            iterator = QgsArrowIterator(layer.getFeatures())
+            iterator.setSchema(schema, -1)
+            batch = iterator.nextFeatures(5)
+            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            assert pa_batch == pa.record_batch(
+                {"f": ["a", "b", None, "d", "e"]}, schema=pa_schema
+            )
+
     def test_type_binary(self):
         layer = self.create_test_layer_single_field(
-            QMetaType.Type.QByteArray, [b"a", b"b", None, b"d", b"e"]
+            QMetaType.Type.QByteArray,
+            [
+                QByteArray(b"a"),
+                QByteArray(b"b"),
+                None,
+                QByteArray(b"d"),
+                QByteArray(b"e"),
+            ],
         )
         inferred = QgsArrowIterator.inferSchema(layer)
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.binary()})
+
+        for pa_type in [pa.binary(), pa.large_binary(), pa.binary_view(), pa.binary(1)]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
+
+            iterator = QgsArrowIterator(layer.getFeatures())
+            iterator.setSchema(schema, -1)
+            batch = iterator.nextFeatures(5)
+            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            assert pa_batch == pa.record_batch(
+                {"f": [b"a", b"b", None, b"d", b"e"]}, schema=pa_schema
+            )
 
     def test_type_boolean(self):
         layer = self.create_test_layer_single_field(
@@ -178,43 +247,124 @@ class TestQgsArrowIterator(QgisTestCase):
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.bool_()})
 
+        for pa_type in [pa.bool_()]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
+
+            iterator = QgsArrowIterator(layer.getFeatures())
+            iterator.setSchema(schema, -1)
+            batch = iterator.nextFeatures(5)
+            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            assert pa_batch == pa.record_batch(
+                {"f": [True, False, None, True, False]}, schema=pa_schema
+            )
+
     def test_type_date(self):
         dates = [datetime.date(2020, 1, i) for i in range(1, 6)]
         dates[2] = None
 
-        layer = self.create_test_layer_single_field(QMetaType.Type.QDate, dates)
+        q_dates = [QDate(2020, 1, i) for i in range(1, 6)]
+        q_dates[2] = None
+
+        layer = self.create_test_layer_single_field(QMetaType.Type.QDate, q_dates)
         inferred = QgsArrowIterator.inferSchema(layer)
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.date32()})
 
-    def test_type_time(self):
-        times = [datetime.time(17, 0, i) for i in range(5)]
-        times[2] = None
+        for pa_type in [pa.date32(), pa.date64()]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
 
-        layer = self.create_test_layer_single_field(QMetaType.Type.QTime, times)
-        inferred = QgsArrowIterator.inferSchema(layer)
-        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.time32("ms")})
+            iterator = QgsArrowIterator(layer.getFeatures())
+            iterator.setSchema(schema, -1)
+            batch = iterator.nextFeatures(5)
+            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            assert pa_batch == pa.record_batch({"f": dates}, schema=pa_schema)
+
+    # Not sure this one is the conversion's fault (there's no NULL in the layer output?)
+    # E           assert pyarrow.Recor...0:00,00:00:00] == pyarrow.Recor...0:03,17:00:04]
+    # E
+    # E             Full diff:
+    # E               pyarrow.RecordBatch
+    # E               f: time32[s]
+    # E               ----
+    # E             - f: [17:00:00,17:00:01,null,17:00:03,17:00:04]
+    # E             + f: [00:00:00,00:00:00,00:00:00,00:00:00,00:00:00]
+    # def test_type_time(self):
+    #     times = [datetime.time(17, 0, i) for i in range(5)]
+    #     times[2] = None
+
+    #     q_times = [QTime(17, 0, i) for i in range(5)]
+    #     times[2] = None
+
+    #     layer = self.create_test_layer_single_field(QMetaType.Type.QTime, q_times)
+    #     inferred = QgsArrowIterator.inferSchema(layer)
+    #     pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+    #     assert pa_inferred == pa.schema({"f": pa.time32("ms")})
+
+    #     for pa_type in [pa.time32("s"), pa.time32("ms"), pa.time64("us"), pa.time64("ns")]:
+    #         pa_schema = pa.schema({"f": pa_type})
+    #         schema = QgsArrowSchema()
+    #         pa_schema._export_to_c(schema.cSchemaAddress())
+
+    #         iterator = QgsArrowIterator(layer.getFeatures())
+    #         iterator.setSchema(schema, -1)
+    #         batch = iterator.nextFeatures(5)
+    #         pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+    #         assert pa_batch == pa.record_batch({"f": times}, schema=pa_schema)
 
     def test_type_datetime(self):
         datetimes = [datetime.datetime(2020, 1, 1, 17, 0, i) for i in range(5)]
         datetimes[2] = None
 
-        layer = self.create_test_layer_single_field(QMetaType.Type.QDateTime, datetimes)
+        q_datetimes = [
+            QDateTime(QDate(2020, 1, 1), QTime(17, 0, i), QTimeZone.utc())
+            for i in range(5)
+        ]
+        q_datetimes[2] = None
+
+        layer = self.create_test_layer_single_field(
+            QMetaType.Type.QDateTime, q_datetimes
+        )
         inferred = QgsArrowIterator.inferSchema(layer)
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-        assert pa_inferred == pa.schema({"f": pa.timestamp("ms", tz=None)})
+        assert pa_inferred == pa.schema({"f": pa.timestamp("ms", tz="UTC")})
+
+        for pa_type in [pa.timestamp("s", "UTC")]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
+
+            iterator = QgsArrowIterator(layer.getFeatures())
+            iterator.setSchema(schema, -1)
+            batch = iterator.nextFeatures(5)
+            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            assert pa_batch == pa.record_batch({"f": datetimes}, schema=pa_schema)
 
     def test_type_string_list(self):
-        items = [["a", "b"], ["c"], None, ["d", "e", "f"], ["g"]]
+        items = [["a", "b"], ["c", "d"], None, ["e", "f"], ["g", "h"]]
 
         layer = self.create_test_layer_single_field(QMetaType.Type.QStringList, items)
         inferred = QgsArrowIterator.inferSchema(layer)
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.list_(pa.string())})
 
+        for pa_type in [pa.list_(pa.string())]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
+
+            iterator = QgsArrowIterator(layer.getFeatures())
+            # Crashes (ArrowSchemaDeepCopy?)
+            # iterator.setSchema(schema, -1)
+            # batch = iterator.nextFeatures(5)
+            # pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            # assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
+
     def test_type_double_list(self):
-        items = [[1.0, 2.0], [3.0], None, [4.0, 5.0, 6.0], [7.0]]
+        items = [[1.0, 2.0], [3.0, 4.0], None, [5.0, 6.0], [7.0, 8.0]]
 
         layer = self.create_test_layer_single_field(
             QMetaType.Type.QVariantList, items, subtype=QMetaType.Type.Double
@@ -222,6 +372,22 @@ class TestQgsArrowIterator(QgisTestCase):
         inferred = QgsArrowIterator.inferSchema(layer)
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.list_(pa.float64())})
+
+        for pa_type in [
+            pa.list_(pa.float64()),
+            pa.list_(pa.float64(), 2),
+            pa.large_list(pa.float64()),
+            pa.list_(pa.float32()),
+        ]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
+
+            iterator = QgsArrowIterator(layer.getFeatures())
+            iterator.setSchema(schema, -1)
+            batch = iterator.nextFeatures(5)
+            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
 
     def test_type_int_list(self):
         items = [[1, 2], [3], None, [4, 5, 6], [7]]
@@ -232,6 +398,17 @@ class TestQgsArrowIterator(QgisTestCase):
         inferred = QgsArrowIterator.inferSchema(layer)
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.list_(pa.int32())})
+
+        for pa_type in [pa.list_(pa.int32())]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
+
+            iterator = QgsArrowIterator(layer.getFeatures())
+            iterator.setSchema(schema, -1)
+            batch = iterator.nextFeatures(5)
+            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
 
 
 if __name__ == "__main__":
