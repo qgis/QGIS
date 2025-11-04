@@ -27,15 +27,21 @@ when extrusion height is non-zero.
 #include "qgstessellator.h"
 %End
   public:
-    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
+    QgsTessellator();
+
+ QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
+                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) /Deprecated="Since 4.0. Use the default QgsTessellator() constructor and individual setters instead."/;
 %Docstring
 Creates tessellator with a specified origin point of the world (in map
 coordinates)
+
+.. deprecated:: 4.0
+
+   Use the default QgsTessellator() constructor and individual setters instead.
 %End
 
-    QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
-                    bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
+ QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
+                                      bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f ) /Deprecated="Since 4.0. Use the default QgsTessellator() constructor and individual setters instead."/;
 %Docstring
 Creates tessellator with a specified ``bounds`` of input geometry
 coordinates. This constructor allows the tessellator to map input
@@ -46,6 +52,77 @@ If ``noZ`` is ``True``, then a 2-dimensional tessellation only will be
 performed and all z coordinates will be ignored.
 
 .. versionadded:: 3.10
+
+.. deprecated:: 4.0
+
+   Use the default QgsTessellator() constructor and individual setters instead.
+%End
+
+    void setOrigin( QgsVector3D origin );
+%Docstring
+Sets the origin point of the map.
+
+.. versionadded:: 4.0
+%End
+
+    void setBounds( const QgsRectangle &bounds );
+%Docstring
+Sets scaling and the bounds of the input geometry coordinates.
+
+.. versionadded:: 4.0
+%End
+
+    void setExtrusionEnabled( bool enabled );
+%Docstring
+Sets whether extrusion is enabled (``True``) or disabled (``False``). By
+default, extrusion is disabled.
+
+.. versionadded:: 4.0
+%End
+
+    void setExtrusionFaces( Qgis::ExtrusionFaces faces );
+%Docstring
+Sets which faces should be generated during extrusion.
+
+.. versionadded:: 4.0
+%End
+
+    void setTextureRotation( float rotation );
+%Docstring
+Sets the rotation of generated faces.
+
+.. versionadded:: 4.0
+%End
+
+    void setAddTextureUVs( bool addTextureUVs );
+%Docstring
+Sets whether texture UV coordinates should be added to the output data
+(``True``) or not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    void setAddNormals( bool addNormals );
+%Docstring
+Sets whether normals should be added to the output data (``True``) or
+not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    void setAddBackFaces( bool addBackFaces );
+%Docstring
+Sets whether back faces should be added to the output data (``True``) or
+not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    void setInvertNormals( bool invertNormals );
+%Docstring
+Sets whether normals should be inverted (``True``) or not (``False``).
+
+.. versionadded:: 4.0
 %End
 
     void setOutputZUp( bool zUp );
@@ -114,6 +191,7 @@ Returns a descriptive error string if the tessellation failed.
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

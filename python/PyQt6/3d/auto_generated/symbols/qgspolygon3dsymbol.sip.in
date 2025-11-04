@@ -202,20 +202,34 @@ Sets edge lines color
 .. versionadded:: 3.8
 %End
 
-    void setRenderedFacade( int side );
+ void setRenderedFacade( int side ) /Deprecated/;
 %Docstring
 Sets which facade of the buildings is rendered (0 for None, 1 for Walls,
-2 for Roofs, 3 for WallsAndRoofs)
+2 for Roof, 3 for WallsAndRoof)
 
 .. versionadded:: 3.16
 %End
 
-    int renderedFacade() const;
+    void setExtrusionFaces( Qgis::ExtrusionFaces side );
+%Docstring
+Sets which facade of the buildings is rendered.
+
+.. versionadded:: 4.0
+%End
+
+ int renderedFacade() /Deprecated/;
 %Docstring
 Returns which facade of the buildings is rendered (0 for None, 1 for
-Walls, 2 for Roofs, 3 for WallsAndRoofs)
+Walls, 2 for Roof, 3 for WallsAndRoof)
 
 .. versionadded:: 3.16
+%End
+
+    Qgis::ExtrusionFaces extrusionFaces() const;
+%Docstring
+Returns which facade of the buildings is rendered.
+
+.. versionadded:: 4.0
 %End
 
 
