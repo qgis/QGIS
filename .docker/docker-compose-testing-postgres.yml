@@ -10,14 +10,14 @@ services:
       - SSL_CERT_FILE=/etc/ssl/certs/postgres.crt
       - SSL_KEY_FILE=/etc/ssl/private/postgres.key
       - SSL_CA_FILE=/etc/ssl/certs/qgis_ca.crt
+    networks:
+      - qgisnet
 
   qgis-deps:
     tty: true
     image: qgis3-build-deps-binary-image
     volumes:
       - ${QGIS_WORKSPACE}:/root/QGIS
-    links:
-      - postgres
     env_file:
       - docker-variables.env
     environment:
@@ -25,3 +25,9 @@ services:
       - LC_ALL=en_US.UTF-8
     cap_add:
       - NET_ADMIN
+    networks:
+      - qgisnet
+
+networks:
+  qgisnet:
+    driver: bridge
