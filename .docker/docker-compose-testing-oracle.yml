@@ -17,6 +17,8 @@ services:
     image: qgis3-build-deps-binary-image
     volumes:
       - ${QGIS_WORKSPACE}:/root/QGIS
+    depends_on:
+      - oracle
     env_file:
       - docker-variables.env
     environment:
