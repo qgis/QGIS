@@ -177,10 +177,10 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void setAvailableWidgetsIndicatorProvidersEnabled( bool enabled );
     void setFormLayoutIndicatorProvidersEnabled( bool enabled );
 
-    QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel;
-    QgsAttributesFormLayoutModel *mFormLayoutModel;
-    QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel;
-    QgsAttributesFormProxyModel *mFormLayoutProxyModel;
+    QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel = nullptr;
+    QgsAttributesFormLayoutModel *mFormLayoutModel = nullptr;
+    QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel = nullptr;
+    QgsAttributesFormProxyModel *mFormLayoutProxyModel = nullptr;
 
     QgsMessageBar *mMessageBar = nullptr;
 
