@@ -43,9 +43,11 @@ QgsRenderContext QgsMapCanvasSymbolItem::renderContext( QPainter *painter )
 {
   QgsExpressionContext context;
 
+  QgsMapSettings ms;
   if ( mMapCanvas )
   {
     context = mMapCanvas->createExpressionContext();
+    ms = mMapCanvas->mapSettings();
   }
   else
   {
@@ -59,7 +61,6 @@ QgsRenderContext QgsMapCanvasSymbolItem::renderContext( QPainter *painter )
   context.setFields( mFeature.fields() );
 
   //setup render context
-  QgsMapSettings ms = mMapCanvas->mapSettings();
   ms.setExpressionContext( context );
   QgsRenderContext rc = QgsRenderContext::fromMapSettings( ms );
   rc.setPainter( painter );
