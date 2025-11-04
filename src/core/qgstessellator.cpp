@@ -668,168 +668,174 @@ std::vector<QVector3D> QgsTessellator::generateConstrainedDelaunayTriangles( con
   return trianglePoints;
 }
 
-    if ( _minimum_distance_between_coordinates( *polygonNew ) < 0.001 )
+void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeight )
+{
+  const QgsLineString *exterior = qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() );
+  if ( !exterior )
+    return;
+
+  const QVector3D pNormal = !mNoZ ? _calculateNormal( exterior, mOrigin.x(), mOrigin.y(), mInvertNormals, extrusionHeight ) : QVector3D();
+  const int pCount = exterior->numPoints();
+  if ( pCount == 0 )
+    return;
+
+  QMatrix4x4 base = QMatrix4x4();  // identity matrix by default
+  const QgsPoint ptStart = QgsPoint( exterior->startPoint() );
+  const QgsPoint extrusionOrigin = QgsPoint( Qgis::WkbType::PointZ, ptStart.x(), ptStart.y(), std::isnan( ptStart.z() ) ? 0 : ptStart.z() );
+  const QgsPoint pointZero = QgsPoint( 0, 0, 0 );
+  std::unique_ptr<QgsPolygon> polygonNew;
+
+  if ( !mNoZ && !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
+    return;  // this should not happen - pNormal should be normalized to unit length
+
+  const QVector3D upVector( 0, 0, 1 );
+
+  // const float detectionDelta = qDegreesToRadians( 10.0f );
+  bool buildWalls = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Walls );
+  bool buildFloor = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Floor );
+  bool buildRoof = mExtrusionFaces.testFlag( Qgis::ExtrusionFace::Roof );
+
+  if ( buildFloor || buildRoof )
+  {
+    if ( pCount == 4 && polygon.numInteriorRings() == 0 )
     {
-      // when the distances between coordinates of input points are very small,
-      // the triangulation likes to crash on numerical errors - when the distances are ~ 1e-5
-      // Assuming that the coordinates should be in a projected CRS, we should be able
-      // to simplify geometries that may cause problems and avoid possible crashes
-      const QgsGeometry polygonSimplified = QgsGeometry( polygonNew->clone() ).simplify( 0.001 );
-      if ( polygonSimplified.isNull() )
+      // polygon is a triangle - write vertices to the output data array without triangulation
+      const QVector3D p1( exterior->xAt( 0 ), exterior->yAt( 0 ), std::isnan( exterior->zAt( 0 ) ) ? 0.0f : exterior->zAt( 0 ) );
+      const QVector3D p2( exterior->xAt( 1 ), exterior->yAt( 1 ), std::isnan( exterior->zAt( 1 ) ) ? 0.0f : exterior->zAt( 1 ) );
+      const QVector3D p3( exterior->xAt( 2 ), exterior->yAt( 2 ), std::isnan( exterior->zAt( 2 ) ) ? 0.0f : exterior->zAt( 2 ) );
+      const std::array<QVector3D, 3> points = { { p1, p2, p3 } };
+
+      addTriangleVertices( points, pNormal, extrusionHeight, &base, &pointZero, false );
+
+      if ( mAddBackFaces )
       {
-        mError = QObject::tr( "geometry simplification failed - skipping" );
-        return;
+        addTriangleVertices( points, pNormal, extrusionHeight, &base, &pointZero, true );
       }
-      const QgsPolygon *polygonSimplifiedData = qgsgeometry_cast<const QgsPolygon *>( polygonSimplified.constGet() );
-      if ( !polygonSimplifiedData || _minimum_distance_between_coordinates( *polygonSimplifiedData ) < 0.001 )
+
+      if ( extrusionHeight && buildFloor )
       {
-        // Failed to fix that. It could be a really tiny geometry... or maybe they gave us
-        // geometry in unprojected lat/lon coordinates
-        mError = QObject::tr( "geometry's coordinates are too close to each other and simplification failed - skipping" );
-        return;
-      }
-      else
-      {
-        polygonNew.reset( polygonSimplifiedData->clone() );
-      }
-    }
-
-    QList< std::vector<p2t::Point *> > polylinesToDelete;
-    QHash<p2t::Point *, float> z;
-
-    // polygon exterior
-    std::vector<p2t::Point *> polyline;
-    _ringToPoly2tri( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, mNoZ ? nullptr : &z );
-    polylinesToDelete << polyline;
-
-    auto cdt = std::make_unique<p2t::CDT>( polyline );
-
-    // polygon holes
-    for ( int i = 0; i < polygonNew->numInteriorRings(); ++i )
-    {
-      std::vector<p2t::Point *> holePolyline;
-      const QgsLineString *hole = qgsgeometry_cast< const QgsLineString *>( polygonNew->interiorRing( i ) );
-
-      _ringToPoly2tri( hole, holePolyline, mNoZ ? nullptr : &z );
-
-      cdt->AddHole( holePolyline );
-      polylinesToDelete << holePolyline;
-    }
-
-    // run triangulation and write vertices to the output data array
-    try
-    {
-      cdt->Triangulate();
-
-      std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
-
-      mData.reserve( mData.size() + 3 * triangles.size() * ( stride() / sizeof( float ) ) );
-      for ( size_t i = 0; i < triangles.size(); ++i )
-      {
-        p2t::Triangle *t = triangles[i];
-        for ( int j = 0; j < 3; ++j )
+        addTriangleVertices( points, pNormal, 0, &base, &pointZero, false );
+        if ( mAddBackFaces )
         {
-          p2t::Point *p = t->GetPoint( j );
-          QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
-          if ( toOldBase )
-            pt = *toOldBase * pt;
-          const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
-          const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
-          const double baseHeight = mNoZ ? 0 : ( pt.z() + pt0.z() );
-          const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
-          if ( baseHeight < zMin )
-            zMin = baseHeight;
-          if ( baseHeight > zMaxBase )
-            zMaxBase = baseHeight;
-          if ( fz > zMaxExtruded )
-            zMaxExtruded = fz;
+          addTriangleVertices( points, pNormal, 0, &base, &pointZero, true );
+        }
+      }
+      
+      if ( mAddTextureCoords )
+      {
+        Q_ASSERT( polygonNew->exteriorRing()->numPoints() >= 3 );
 
-          if ( mOutputZUp )
+        calculateBaseTransform( pNormal, &base );
+        polygonNew.reset( _transform_polygon_to_new_base( polygon, extrusionOrigin, &base, mScale ) );
+        const QgsLineString *triangle = qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() );
+        const QVector3D p1( triangle->xAt( 0 ), triangle->yAt( 0 ), mNoZ || std::isnan( triangle->zAt( 0 ) ) ? 0.0f : triangle->zAt( 0 ) );
+        const QVector3D p2( triangle->xAt( 1 ), triangle->yAt( 1 ), mNoZ || std::isnan( triangle->zAt( 1 ) ) ? 0.0f : triangle->zAt( 1 ) );
+        const QVector3D p3( triangle->xAt( 2 ), triangle->yAt( 2 ), mNoZ || std::isnan( triangle->zAt( 2 ) ) ? 0.0f : triangle->zAt( 2 ) );
+        const std::array<QVector3D, 3> points = { { p1, p2, p3 } };
+
+        if ( mAddTextureCoords)
+        {
+          addTextureCoords( &points, false );
+
+          if ( mAddBackFaces )
           {
-            mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
-            if ( mAddNormals )
-              mData << pNormal.x() << pNormal.y() << pNormal.z();
+            addTextureCoords( &points, true );
           }
-          else
+        }
+      }
+    }
+    else  // we need to triangulate the polygon
+    {
+      calculateBaseTransform( pNormal, &base );
+      polygonNew.reset( _transform_polygon_to_new_base( polygon, extrusionOrigin, &base, mScale ) );
+
+      // our 3x3 matrix is orthogonal, so for inverse we only need to transpose it
+      QMatrix4x4 baseTransposed = base.transposed();
+
+      if ( _minimum_distance_between_coordinates( *polygonNew ) < 0.001 )
+      {
+        // when the distances between coordinates of input points are very small,
+        // the triangulation likes to crash on numerical errors - when the distances are ~ 1e-5
+        // Assuming that the coordinates should be in a projected CRS, we should be able
+        // to simplify geometries that may cause problems and avoid possible crashes
+        const QgsGeometry polygonSimplified = QgsGeometry( polygonNew->clone() ).simplify( 0.001 );
+        if ( polygonSimplified.isNull() )
+        {
+          mError = QObject::tr( "geometry simplification failed - skipping" );
+          return;
+        }
+        const QgsPolygon *polygonSimplifiedData = qgsgeometry_cast<const QgsPolygon *>( polygonSimplified.constGet() );
+        if ( !polygonSimplifiedData || _minimum_distance_between_coordinates( *polygonSimplifiedData ) < 0.001 )
+        {
+          // Failed to fix that. It could be a really tiny geometry... or maybe they gave us
+          // geometry in unprojected lat/lon coordinates
+          mError = QObject::tr( "geometry's coordinates are too close to each other and simplification failed - skipping" );
+          return;
+        }
+        else
+        {
+          polygonNew.reset( polygonSimplifiedData->clone() );
+        }
+      }
+
+      // run triangulation and write vertices to the output data array
+      try
+      {
+        std::vector<QVector3D> trianglePoints = generateConstrainedDelaunayTriangles( polygonNew.get() );
+        mData.reserve( mData.size() + trianglePoints.size() * 3 * ( stride() / sizeof( float ) ) );
+        for ( size_t i = 0; i < trianglePoints.size(); i += 3 )
+        {
+          const QVector3D p1 = trianglePoints[ i + 0 ];
+          const QVector3D p2 = trianglePoints[ i + 1 ];
+          const QVector3D p3 = trianglePoints[ i + 2 ];
+          const std::array<QVector3D, 3> points = { { p1, p2, p3 } };
+
+          addTriangleVertices( points, pNormal, extrusionHeight, &baseTransposed, &extrusionOrigin, false );
+
+          if ( mAddBackFaces )
           {
-            mData << static_cast<float>( fx ) << static_cast<float>( fz ) << static_cast<float>( -fy );
-            if ( mAddNormals )
-              mData << pNormal.x() << pNormal.z() << - pNormal.y();
+            addTriangleVertices( points, pNormal, extrusionHeight, &baseTransposed, &extrusionOrigin, true );
+          }
+
+          if ( extrusionHeight && buildFloor )
+          {
+            addTriangleVertices( points, pNormal, 0, &baseTransposed, &extrusionOrigin, true );
+            if ( mAddBackFaces )
+            {
+              addTriangleVertices( points, pNormal, 0, &baseTransposed, &extrusionOrigin, false );
+            }
           }
 
           if ( mAddTextureCoords )
           {
-            const std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
-            mData << pr.first << pr.second;
-          }
-        }
+            addTextureCoords( &points, false );
 
-        if ( mAddBackFaces )
-        {
-          // the same triangle with reversed order of coordinates and inverted normal
-          for ( int j = 2; j >= 0; --j )
-          {
-            p2t::Point *p = t->GetPoint( j );
-            QVector4D pt( p->x, p->y, mNoZ ? 0 : z[p], 0 );
-            if ( toOldBase )
-              pt = *toOldBase * pt;
-            const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
-            const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
-            const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
-
-            if ( mOutputZUp )
+            if ( mAddBackFaces )
             {
-              mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
-              if ( mAddNormals )
-                mData << -pNormal.x() << -pNormal.y() << -pNormal.z();
-            }
-            else
-            {
-              mData << static_cast<float>( fx ) << static_cast<float>( fz ) << static_cast<float>( -fy );
-              if ( mAddNormals )
-                mData << -pNormal.x() << -pNormal.z() << pNormal.y();
-            }
-
-            if ( mAddTextureCoords )
-            {
-              const std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
-              mData << pr.first << pr.second;
+              addTextureCoords( &points, true );
             }
           }
         }
       }
+      catch ( std::runtime_error &err )
+      {
+        mError = err.what();
+      }
+      catch ( ... )
+      {
+        mError = QObject::tr( "An unknown error occurred" );
+      }
     }
-    catch ( std::runtime_error &err )
-    {
-      mError = err.what();
-    }
-    catch ( ... )
-    {
-      mError = QObject::tr( "An unknown error occurred" );
-    }
-
-    for ( int i = 0; i < polylinesToDelete.count(); ++i )
-      qDeleteAll( polylinesToDelete[i] );
   }
 
   // add walls if extrusion is enabled
-  if ( extrusionHeight != 0 && ( mTessellatedFacade & 1 ) )
+  if ( extrusionHeight != 0 && buildWalls )
   {
-    _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mTextureRotation, mOutputZUp );
+    _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOrigin.x(), mOrigin.y(), mTextureRotation, mOutputZUp );
 
     for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-      _makeWalls( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), true, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mTextureRotation, mOutputZUp );
-
-    if ( zMaxBase + extrusionHeight > zMaxExtruded )
-      zMaxExtruded = zMaxBase + extrusionHeight;
+      _makeWalls( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), true, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOrigin.x(), mOrigin.y(), mTextureRotation, mOutputZUp );
   }
-
-  if ( zMin < mZMin )
-    mZMin = zMin;
-  if ( zMaxExtruded > mZMax )
-    mZMax = zMaxExtruded;
-  if ( zMaxBase > mZMax )
-    mZMax = zMaxBase;
 }
 
 int QgsTessellator::dataVerticesCount() const
