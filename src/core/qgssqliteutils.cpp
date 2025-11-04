@@ -218,9 +218,8 @@ long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString 
   int resultCode = 0;
   sqlite3_statement_unique_ptr stmt { dsPtr.prepare( QStringLiteral( "SELECT seq FROM sqlite_sequence WHERE name = %1" )
                                       .arg( quotedTableName ), resultCode )};
-  if ( resultCode == SQLITE_OK )
+  if ( resultCode == SQLITE_OK && stmt.step() )
   {
-    stmt.step();
     result = sqlite3_column_int64( stmt.get(), 0 );
     // Try to create the sequence in case this is an empty layer
     if ( sqlite3_column_count( stmt.get() ) == 0 )
