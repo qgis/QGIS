@@ -279,7 +279,14 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   if ( platformName != QLatin1String( "desktop" ) )
   {
     mApplicationMembers = std::make_unique<ApplicationMembers>();
-    mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    try
+    {
+      mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Error migrating old settings: %1" ).arg( e.what() ) );
+    }
   }
   else
   {
@@ -363,7 +370,14 @@ void QgsApplication::init( QString profileFolder )
   if ( platform() == QLatin1String( "desktop" ) )
   {
     instance()->mApplicationMembers = std::make_unique<ApplicationMembers>();
-    instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    try
+    {
+      instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Error migrating old settings: %1" ).arg( e.what() ) );
+    }
   }
 
   if ( profileFolder.isEmpty() )
