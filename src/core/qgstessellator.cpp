@@ -625,6 +625,48 @@ void QgsTessellator::addTextureCoords( const std::array<QVector3D, 3> *points, b
   }
 }
 
+std::vector<QVector3D> QgsTessellator::generateConstrainedDelaunayTriangles( const QgsPolygon *polygonNew )
+{
+  QList<std::vector<p2t::Point *>> polylinesToDelete;
+  QHash<p2t::Point *, float> z;
+
+  // polygon exterior
+  std::vector<p2t::Point *> polyline;
+  _ringToPoly2tri( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, mNoZ ? nullptr : &z );
+  polylinesToDelete << polyline;
+
+  p2t::CDT cdt = p2t::CDT( polyline );
+
+  // polygon holes
+  for ( int i = 0; i < polygonNew->numInteriorRings(); ++i )
+  {
+    std::vector<p2t::Point *> holePolyline;
+    const QgsLineString *hole = qgsgeometry_cast< const QgsLineString *>( polygonNew->interiorRing( i ) );
+
+    _ringToPoly2tri( hole, holePolyline, mNoZ ? nullptr : &z );
+
+    cdt.AddHole( holePolyline );
+    polylinesToDelete << holePolyline;
+  }
+
+  cdt.Triangulate();
+  std::vector<p2t::Triangle *> triangles = cdt.GetTriangles();
+
+  std::vector<QVector3D> trianglePoints;
+  trianglePoints.reserve( triangles.size() * 3 );
+  
+  for ( p2t::Triangle *t : triangles )
+  {
+    trianglePoints.emplace_back( QVector3D( t->GetPoint( 0 )->x / mScale, t->GetPoint( 0 )->y / mScale, z.value( t->GetPoint( 0 ) ) ) );
+    trianglePoints.emplace_back( QVector3D( t->GetPoint( 1 )->x / mScale, t->GetPoint( 1 )->y / mScale, z.value( t->GetPoint( 1 ) ) ) );
+    trianglePoints.emplace_back( QVector3D( t->GetPoint( 2 )->x / mScale, t->GetPoint( 2 )->y / mScale, z.value( t->GetPoint( 2 ) ) ) );
+  }
+
+  for ( int i = 0; i < polylinesToDelete.count(); ++i )
+    qDeleteAll( polylinesToDelete[i] );
+
+  return trianglePoints;
+}
 
     if ( _minimum_distance_between_coordinates( *polygonNew ) < 0.001 )
     {
