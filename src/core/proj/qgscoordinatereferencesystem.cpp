@@ -1379,7 +1379,8 @@ std::string QgsCoordinateReferenceSystem::toJsonString( bool multiline, int inde
     const QByteArray schemaOption = QStringLiteral( "SCHEMA=%1" ).arg( schema ).toLocal8Bit();
     const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), schemaOption.constData(), nullptr};
 
-    return std::string{ proj_as_projjson( QgsProjContext::get(), obj, options ) };
+    const char *json = proj_as_projjson( QgsProjContext::get(), obj, options );
+    return json ? std::string{ json } : std::string{};
   }
   else
   {
