@@ -200,7 +200,6 @@ jobs:
 
       - name: Save build cache for push only
         uses: tespkg/actions-cache/save@v1
-        if: ${{ github.event_name == 'push' }}
         with:
           endpoint: ${{ secrets.HETZNER_S3_ENDPOINT }}
           accessKey: ${{ secrets.HETZNER_S3_ACCESS_KEY }}
