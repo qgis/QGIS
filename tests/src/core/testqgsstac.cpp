@@ -172,11 +172,13 @@ void TestQgsStac::testParseLocalItem()
   QCOMPARE( item->description(), QStringLiteral( "A sample STAC Item that includes examples of all common metadata" ) );
 
   const QgsMimeDataUtils::UriList uris = item->uris();
-  QCOMPARE( uris.size(), 2 );
-  QCOMPARE( uris.first().uri, QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "20201211_223832_CS2_analytic.tif" ) ) );
-  QCOMPARE( uris.first().name, QStringLiteral( "4-Band Analytic" ) );
-  QCOMPARE( uris.last().uri, QStringLiteral( "/vsicurl/https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.tif" ) );
-  QCOMPARE( uris.last().name, QStringLiteral( "3-Band Visual" ) );
+  QCOMPARE( uris.size(), 3 );
+  QCOMPARE( uris.at( 0 ).uri, QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "20201211_223832_CS2_analytic.tif" ) ) );
+  QCOMPARE( uris.at( 0 ).name, QStringLiteral( "4-Band Analytic" ) );
+  QCOMPARE( uris.at( 1 ).uri, QStringLiteral( "/vsicurl/https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.tif" ) );
+  QCOMPARE( uris.at( 1 ).name, QStringLiteral( "3-Band Visual" ) );
+  QCOMPARE( uris.at( 2 ).uri, QStringLiteral( "ZARR:\"/vsicurl/https://objectstore.eodc.eu:2222/e05ab01a9d56408d82ac32d69a5aae2a:202505-s02msil2a/22/products/cpm_v256/S2B_MSIL2A_20250522T125039_N0511_R095_T26TML_20250522T133252.zarr\"" ) );
+  QCOMPARE( uris.at( 2 ).name, QStringLiteral( "Example Zarr Store" ) );
 
   // check that relative links are correctly resolved into absolute links
   const QVector<QgsStacLink> links = item->links();
@@ -187,11 +189,12 @@ void TestQgsStac::testParseLocalItem()
   QCOMPARE( links.at( 2 ).href(), QStringLiteral( "%1collection.json" ).arg( basePath ) );
   QCOMPARE( links.at( 3 ).href(), QStringLiteral( "http://remotedata.io/catalog/20201211_223832_CS2/index.html" ) );
 
-  QCOMPARE( item->assets().size(), 6 );
+  QCOMPARE( item->assets().size(), 7 );
   QgsStacAsset asset = item->assets().value( QStringLiteral( "analytic" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
   QCOMPARE( asset.href(), basePath + QStringLiteral( "20201211_223832_CS2_analytic.tif" ) );
   QVERIFY( asset.isCloudOptimized() );
   QCOMPARE( asset.formatName(), QStringLiteral( "COG" ) );
+  QVERIFY( asset.isDownloadable() );
 
   QgsMimeDataUtils::Uri uri = asset.uri();
   QCOMPARE( uri.uri, basePath + QStringLiteral( "20201211_223832_CS2_analytic.tif" ) );
@@ -205,6 +208,7 @@ void TestQgsStac::testParseLocalItem()
   QVERIFY( !uri.isValid() );
   QVERIFY( uri.uri.isEmpty() );
   QVERIFY( uri.name.isEmpty() );
+  QVERIFY( asset.isDownloadable() );
 
   // normal geotiff is not cloud optimized
   asset = item->assets().value( QStringLiteral( "udm" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
@@ -214,6 +218,14 @@ void TestQgsStac::testParseLocalItem()
   QVERIFY( !uri.isValid() );
   QVERIFY( uri.uri.isEmpty() );
   QVERIFY( uri.name.isEmpty() );
+  QVERIFY( asset.isDownloadable() );
+
+  // Zarr recognised as cloud optimized
+  asset = item->assets().value( QStringLiteral( "zarr-store" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
+  QVERIFY( asset.isCloudOptimized() );
+  QCOMPARE( asset.formatName(), QStringLiteral( "Zarr" ) );
+  QCOMPARE( asset.uri().layerType, QStringLiteral( "raster" ) );
+  QVERIFY( !asset.isDownloadable() );
 }
 
 void TestQgsStac::testParseLocalItemCollection()
