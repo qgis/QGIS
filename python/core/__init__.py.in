@@ -778,26 +778,39 @@ try:
 
    QgsGeometry.as_numpy = _qgsgeometry_as_numpy
 
-   def _fields_as_numpy(self, field_names: _typing.List[str], null_value: _typing.Optional[object], request: _typing.Optional[QgsFeatureRequest] = None, target_type: _typing.Optional[_numpy.dtype] = _numpy.int32) -> _numpy.ma.MaskedArray:
-      qmeta_type = _numpy_dtype_to_qmetatype(target_type)
-    
+   def _fields_as_numpy(self, field_names: _typing.List[str], null_value: _typing.Optional[object], request: _typing.Optional[QgsFeatureRequest] = None, target_types: _typing.Optional[_typing.List[_numpy.dtype]] = None, use_masking: bool = True) -> _typing.Union[_numpy.ndarray, _numpy.ma.MaskedArray]:      
       field_indices = [self.fields().lookupField(name) for name in field_names]
-      for field_index in field_indices:
+      for field_index, field_name in zip(field_indices, field_names):
           if field_index < 0:
-            raise KeyError(f"Field '{field_names[field_index]}' does not exist.")
+            raise KeyError(f"Field '{field_name}' does not exist.")
+
+      if target_types is None:
+          dtypes = [(self.fields().at(i).name(), _qvariant_type_to_numeric_data_type(self.fields().at(i).type())) for i in field_indices]
+      else:
+          if len(target_types) != len(field_names):
+           raise ValueError("Length of target_types must match length of field_names")
+          dtypes = [(field_names[i], dtype) for i, dtype in enumerate(target_types)]
+      structured_dtype = _numpy.dtype(dtypes, align=False)
 
       if request is None:
          request = QgsFeatureRequest().setFlags(Qgis.FeatureRequestFlag.NoGeometry).setSubsetOfAttributes(field_indices)
 
-      src_array, n_features = QgsVectorLayerUtils.fieldsToDataArray(self.fields(), field_names, self.getFeatures(request), null_value, qmeta_type)
-
-      if request.limit != -1:
+      src_array, n_features = QgsVectorLayerUtils.fieldsToDataArray(self.fields(), field_names, self.getFeatures(request), null_value)
+      if request.limit() != -1:
          n_features = request.limit()
 
-      numpy_array = _numpy.frombuffer(src_array.data(), dtype=target_type)
-      numpy_array = numpy_array.reshape(n_features, len(field_indices))
+      numpy_array = _numpy.frombuffer(src_array.data(), dtype=structured_dtype)
+      numpy_array = numpy_array.reshape((n_features,))
+    
+      if use_masking:
+        mask = _numpy.zeros(numpy_array.shape, dtype=bool)
+        for field in numpy_array.dtype.names:
+            mask |= (numpy_array[field] == null_value)
 
-      return _numpy.ma.masked_equal(numpy_array, null_value)
+        return _numpy.ma.masked_array(numpy_array, mask)
+
+      else:
+        return numpy_array
 
    QgsVectorLayer.fields_as_numpy = _fields_as_numpy
 

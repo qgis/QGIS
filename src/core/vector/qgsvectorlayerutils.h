@@ -480,7 +480,7 @@ class CORE_EXPORT QgsVectorLayerUtils
     *
     * \since QGIS 4.0
     */
-    static std::pair<QByteArray, int> fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue,  const QMetaType::Type &targetType );
+    static std::pair<QByteArray, int> fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue );
 
 #else
 
@@ -542,16 +542,21 @@ class CORE_EXPORT QgsVectorLayerUtils
     /**
     * Converts field values from an iterator to an array of data.
     *
+    * Returns a tuple of (data, count) where data is the byte array and count is the number of features processed.
+    *
     * \param fields layer fields
-    * \param fieldName field name to source values from
+    * \param fieldNames list of field names to source values from
     * \param it feature iterator for features to include
     * \param nullValue value to use when original field value is a null. Must be of the same data type as the source field.
-    * \param targetType the desired data type for the output array elements
     *
     * \warning Only numeric field types are supported.
+    *
+    * \throws KeyError if any field name is not found
+    * \throws TypeError if any field is of a non-supported type
+    *
     * \since QGIS 4.0
     */
-    static std::pair<QByteArray, int> fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue, QMetaType::Type targetType );
+    static SIP_PYOBJECT fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue ) SIP_TYPEHINT( Tuple[QByteArray, int] );
     % MethodCode
     // Validate that all field names exist and are numeric
     for ( const QString &fieldName : *a1 )
@@ -575,9 +580,15 @@ class CORE_EXPORT QgsVectorLayerUtils
 
     if ( sipIsErr == 0 )
     {
+      std::pair<QByteArray, int> result;
       Py_BEGIN_ALLOW_THREADS
-      sipRes = new std::pair<QByteArray, int>( QgsVectorLayerUtils::fieldsToDataArray( *a0, *a1, *a2, *a3, a4 ) );
+      result = QgsVectorLayerUtils::fieldsToDataArray( *a0, *a1, *a2, *a3 );
       Py_END_ALLOW_THREADS
+
+      // Convert std::pair to Python tuple
+      sipRes = PyTuple_New( 2 );
+      PyTuple_SET_ITEM( sipRes, 0, sipConvertFromNewType( new QByteArray( result.first ), sipType_QByteArray, Py_None ) );
+      PyTuple_SET_ITEM( sipRes, 1, PyLong_FromLong( result.second ) );
     }
     % End
 

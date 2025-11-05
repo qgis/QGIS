@@ -1452,12 +1452,14 @@ void populateFieldsDataArray( const QVariant &value, const QVariant &nullValue, 
   }
 }
 
-std::pair<QByteArray, int> QgsVectorLayerUtils::fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue, const QMetaType::Type &targetType )
+std::pair<QByteArray, int> QgsVectorLayerUtils::fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue )
 {
   QByteArray res;
   QVector<int> fieldIndices;
 
   int fieldIdx = -1;
+  QVector<QMetaType::Type> fieldTypes;
+
   for ( const QString &fieldName : fieldNames )
   {
     fieldIdx = fields.lookupField( fieldName );
@@ -1466,6 +1468,7 @@ std::pair<QByteArray, int> QgsVectorLayerUtils::fieldsToDataArray( const QgsFiel
       return {QByteArray(), 0};
     }
     fieldIndices.append( fieldIdx );
+    fieldTypes.append( fields.at( fieldIdx ).type() );
   }
 
   QgsFeature f;
@@ -1477,7 +1480,7 @@ std::pair<QByteArray, int> QgsVectorLayerUtils::fieldsToDataArray( const QgsFiel
     {
       QVariant value = f.attribute( fieldIndices[i] );
 
-      switch ( targetType )
+      switch ( fieldTypes[i] )
       {
         case QMetaType::Int:
           populateFieldsDataArray<int>( value, nullValue, res, []( const QVariant & v ) { return v.toInt(); } );

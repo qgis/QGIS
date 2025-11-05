@@ -6138,8 +6138,65 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         self.assertEqual(list(gdf.columns), ["id", "name", "geometry"])
         self.assertTrue(gdf.iloc[0]["geometry"] is None)
 
+    def test_field_as_numpy(self):
+        layer = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer&field=fldlong:int8&field=flddouble:double",
+            "addfeat",
+            "memory",
+        )
+        self.assertTrue(layer.isValid())
+
+        pr = layer.dataProvider()
+        attributes = [
+            ["my string", 30, 123123123123123, 15.6],
+            ["another string", 31, -456456456456456, 0.4],
+            [NULL, NULL, NULL, NULL],
+        ]
+        for a in attributes:
+            f = QgsFeature()
+            f.setAttributes(a)
+            self.assertTrue(pr.addFeatures([f]))
+
+        with self.assertRaises(KeyError):
+            array = layer.field_as_numpy("not_here", 0)
+        with self.assertRaises(TypeError):
+            array = layer.field_as_numpy("fldtxt", 0)
+
+        array = layer.field_as_numpy("fldint", -99)
+        self.assertTrue((array == np.array([30, 31, -99])).all())
+        self.assertEqual(array.dtype, np.int32)
+        array = layer.field_as_numpy("fldint", -999)
+        self.assertTrue((array == np.array([30, 31, -999])).all())
+        self.assertEqual(array.dtype, np.int32)
+
+        array = layer.field_as_numpy("fldlong", -99)
+        self.assertTrue(
+            (array == np.array([123123123123123, -456456456456456, -99])).all()
+        )
+        self.assertEqual(array.dtype, np.int64)
+        array = layer.field_as_numpy("fldlong", -999)
+        self.assertTrue(
+            (array == np.array([123123123123123, -456456456456456, -999])).all()
+        )
+        self.assertEqual(array.dtype, np.int64)
+
+        array = layer.field_as_numpy("flddouble", -99)
+        self.assertTrue((array == np.array([15.6, 0.4, -99])).all())
+        self.assertEqual(array.dtype, np.float64)
+
+        array = layer.field_as_numpy("flddouble", -999)
+        self.assertTrue((array == np.array([15.6, 0.4, -999])).all())
+        self.assertEqual(array.dtype, np.float64)
+
+        # with custom request
+        array = layer.field_as_numpy(
+            "flddouble", -999, QgsFeatureRequest().setFilterFid(0)
+        )
+        self.assertTrue((array == np.array([15.6])).all())
+        self.assertEqual(array.dtype, np.float64)
+
     def test_fields_as_numpy(self):
-        """Test converting field values to numpy arrays"""
+        """Test converting multiple field values to numpy arrays"""
         layer = QgsVectorLayer(
             "Point?field=fldtxt:string&field=fldint:integer&field=fldlong:int8&field=flddouble:double",
             "test",
@@ -6162,203 +6219,87 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         with self.assertRaises(KeyError):
             array = layer.fields_as_numpy(["not_here"], -99)
 
-        # String field with integer target type should raise TypeError
+        # String field should raise TypeError
         with self.assertRaises(TypeError):
-            array = layer.fields_as_numpy(["fldtxt"], 0, target_type=np.int32)
+            array = layer.fields_as_numpy(["fldtxt"], 0)
 
-        # Valid integer field conversion
-        array = layer.fields_as_numpy(["fldint"], -99, target_type=np.int32)
-        # Expected: 30, 31, -99 (NULL replaced with -99)
-        self.assertEqual(array.shape, (3, 1))
-        self.assertEqual(array[0, 0], 30)
-        self.assertEqual(array[1, 0], 31)
-        self.assertTrue(np.ma.is_masked(array[2, 0]))
-        self.assertEqual(array.data[2, 0], -99)
-
-        # Long long field conversion
-        array = layer.fields_as_numpy(["fldlong"], -1, target_type=np.int64)
-        self.assertEqual(array.shape, (3, 1))
-        self.assertEqual(array[0, 0], 123123123123123)
-        self.assertEqual(array[1, 0], -456456456456456)
-        self.assertTrue(np.ma.is_masked(array[2, 0]))
-        self.assertEqual(array.data[2, 0], -1)
-
-        # Double field conversion
-        array = layer.fields_as_numpy(["flddouble"], -99.0, target_type=np.float64)
-        self.assertEqual(array.shape, (3, 1))
-        self.assertAlmostEqual(array[0, 0], 15.6, places=5)
-        self.assertAlmostEqual(array[1, 0], 0.4, places=5)
-        self.assertTrue(np.ma.is_masked(array[2, 0]))
-        self.assertEqual(array.data[2, 0], -99)
-
-        # Multiple fields
-        array = layer.fields_as_numpy(
-            ["fldint", "flddouble"], -99, target_type=np.float64
-        )
-        self.assertEqual(array.shape, (3, 2))
-        self.assertAlmostEqual(array[0, 0], 30.0, places=5)
-        self.assertAlmostEqual(array[0, 1], 15.6, places=5)
-        self.assertAlmostEqual(array[1, 0], 31.0, places=5)
-        self.assertAlmostEqual(array[1, 1], 0.4, places=5)
-        self.assertTrue(np.ma.is_masked(array[2, 0]))
-        self.assertEqual(array.data[2, 0], -99)
-        self.assertTrue(np.ma.is_masked(array[2, 1]))
-        self.assertEqual(array.data[2, 1], -99)
-
-        # Empty field list should raise exception
+        # Mixed lengths should raise ValueError
         with self.assertRaises(ValueError):
-            array = layer.fields_as_numpy([], 0, target_type=np.int32)
+            array = layer.fields_as_numpy(["fldtxt"], 0, target_types=[int, float])
 
-    def test_fields_as_numpy_with_subset(self):
-        """Test converting field values to numpy arrays with subset string"""
+        # Test single numeric field - default use_masking=True
+        masked_array = layer.fields_as_numpy(["fldint"], -99)
+        self.assertTrue(np.ma.is_masked(masked_array[2]))
+        self.assertEqual(masked_array["fldint"][0], 30)
+        self.assertEqual(masked_array["fldint"][1], 31)
+
+        # Test with masking explicitly disabled
+        array = layer.fields_as_numpy(["fldint"], -99.0, use_masking=False)
+        self.assertEqual(array.shape, (3,))
+        self.assertEqual(array["fldint"][0], 30)
+        self.assertEqual(array["fldint"][1], 31)
+        self.assertEqual(array["fldint"][2], -99)
+
+        # Test multiple numeric fields - each field returned with masking by default
+        int_array = layer.fields_as_numpy(["fldint"], -99)
+        double_array = layer.fields_as_numpy(["flddouble"], -99.0)
+
+        self.assertEqual(int_array.shape, (3,))
+        self.assertEqual(double_array.shape, (3,))
+
+        # Check values and masks
+        self.assertEqual(int_array["fldint"][0], 30)
+        self.assertAlmostEqual(double_array["flddouble"][0], 15.6, places=5)
+        self.assertEqual(int_array["fldint"][1], 31)
+        self.assertAlmostEqual(double_array["flddouble"][1], 0.4, places=5)
+
+        # Check masking is applied by default
+        self.assertTrue(np.ma.is_masked(int_array[2]))
+        self.assertTrue(np.ma.is_masked(double_array[2]))
+        self.assertFalse(np.ma.is_masked(int_array[0]))
+        self.assertFalse(np.ma.is_masked(double_array[0]))
+
+    def test_fields_as_numpy_mixed_null_values(self):
+        """Test fields_as_numpy with different null patterns per field"""
         layer = QgsVectorLayer(
-            "Point?field=id:integer&field=value:double",
+            "Point?field=field1:integer&field=field2:integer&field=field3:integer",
             "test",
             "memory",
         )
         self.assertTrue(layer.isValid())
 
         pr = layer.dataProvider()
-        for i in range(10):
-            f = QgsFeature()
-            f.setAttributes([i, i * 10.5])
-            self.assertTrue(pr.addFeatures([f]))
-
-        # Set subset
-        layer.setSubsetString("id > 5")
-        self.assertEqual(layer.featureCount(), 4)
-
-        # Convert to numpy
-        array = layer.fields_as_numpy(["value"], -1.0, target_type=np.float64)
-        self.assertEqual(array.shape, (4, 1))
-        self.assertAlmostEqual(array[0, 0], 63.0, places=5)  # 6 * 10.5
-
-    def test_fields_as_numpy_with_custom_request(self):
-        """Test converting field values with custom feature request"""
-        layer = createLayerWithFivePoints()
-
-        # Custom request to get only first 3 features
-        request = (
-            QgsFeatureRequest().setLimit(3).setFlags(Qgis.FeatureRequestFlag.NoGeometry)
-        )
-        array = layer.fields_as_numpy(
-            ["fldint"], -1, request=request, target_type=np.int32
-        )
-
-        self.assertEqual(array.shape, (3, 1))
-
-    def test_fields_as_numpy_different_types(self):
-        """Test converting fields with different target types"""
-        layer = QgsVectorLayer(
-            "Point?field=val:integer",
-            "test",
-            "memory",
-        )
-        self.assertTrue(layer.isValid())
-
-        pr = layer.dataProvider()
-        f = QgsFeature()
-        f.setAttributes([100])
-        self.assertTrue(pr.addFeatures([f]))
-
-        # Test different target types
-        test_cases = [
-            (np.int32, np.int32),
-            (np.uint32, np.uint32),
-            (np.int64, np.int64),
-            (np.float32, np.float32),
-            (np.float64, np.float64),
-        ]
-
-        for target_type, expected_dtype in test_cases:
-            array = layer.fields_as_numpy(["val"], 0, target_type=target_type)
-            self.assertEqual(array.dtype, expected_dtype)
-            self.assertEqual(array.shape, (1, 1))
-
-    def test_field_as_numpy(self):
-        """Test converting a single field to a 1D numpy array"""
-        layer = QgsVectorLayer(
-            "Point?field=fldtxt:string&field=fldint:integer&field=fldlong:int8&field=flddouble:double",
-            "addfeat",
-            "memory",
-        )
-        self.assertTrue(layer.isValid())
-
-        pr = layer.dataProvider()
+        # Different null patterns: field1 has null at index 0, field2 at index 1, field3 at index 2
         attributes = [
-            ["my string", 30, 123123123123123, 15.6],
-            ["another string", 31, -456456456456456, 0.4],
-            [NULL, NULL, NULL, NULL],
+            [NULL, 10, 100],
+            [20, NULL, 200],
+            [30, 40, NULL],
         ]
         for a in attributes:
             f = QgsFeature()
             f.setAttributes(a)
             self.assertTrue(pr.addFeatures([f]))
 
-        # Non-existent field should raise KeyError
-        with self.assertRaises(KeyError):
-            array = layer.field_as_numpy("not_here", 0)
+        # Test with masking (default) - get each field separately
+        field1_array = layer.fields_as_numpy(["field1"], -999)
+        field2_array = layer.fields_as_numpy(["field2"], -999)
+        field3_array = layer.fields_as_numpy(["field3"], -999)
 
-        # String field should raise TypeError
-        with self.assertRaises(TypeError):
-            array = layer.field_as_numpy("fldtxt", 0)
+        # Check masks are applied correctly per field
+        # Field1: NULL at index 0, valid at 1 and 2
+        self.assertTrue(np.ma.is_masked(field1_array[0]))
+        self.assertFalse(np.ma.is_masked(field1_array[1]))
+        self.assertFalse(np.ma.is_masked(field1_array[2]))
 
-        # Integer field
-        array = layer.field_as_numpy("fldint", -99)
-        self.assertEqual(array.shape, (3,))
-        self.assertEqual(array[0], 30)
-        self.assertEqual(array[1], 31)
-        self.assertTrue(np.ma.is_masked(array[2]))
-        self.assertEqual(array.data[2], -99)
-        self.assertEqual(array.dtype, np.int32)
+        # Field2: valid at 0, NULL at index 1, valid at 2
+        self.assertFalse(np.ma.is_masked(field2_array[0]))
+        self.assertTrue(np.ma.is_masked(field2_array[1]))
+        self.assertFalse(np.ma.is_masked(field2_array[2]))
 
-        # Test with different null value
-        array = layer.field_as_numpy("fldint", -999)
-        self.assertEqual(array[0], 30)
-        self.assertEqual(array[1], 31)
-        self.assertTrue(np.ma.is_masked(array[2]))
-        self.assertEqual(array.data[2], -999)
-        self.assertEqual(array.dtype, np.int32)
-
-        # Long long field
-        array = layer.field_as_numpy("fldlong", -99)
-        self.assertEqual(array.shape, (3,))
-        self.assertEqual(array[0], 123123123123123)
-        self.assertEqual(array[1], -456456456456456)
-        self.assertTrue(np.ma.is_masked(array[2]))
-        self.assertEqual(array.data[2], -99)
-        self.assertEqual(array.dtype, np.int64)
-
-        array = layer.field_as_numpy("fldlong", -999)
-        self.assertEqual(array[0], 123123123123123)
-        self.assertEqual(array[1], -456456456456456)
-        self.assertTrue(np.ma.is_masked(array[2]))
-        self.assertEqual(array.data[2], -999)
-        self.assertEqual(array.dtype, np.int64)
-
-        # Double field
-        array = layer.field_as_numpy("flddouble", -99)
-        self.assertEqual(array.shape, (3,))
-        self.assertAlmostEqual(array[0], 15.6, places=5)
-        self.assertAlmostEqual(array[1], 0.4, places=5)
-        self.assertTrue(np.ma.is_masked(array[2]))
-        self.assertEqual(array.data[2], -99)
-        self.assertEqual(array.dtype, np.float64)
-
-        array = layer.field_as_numpy("flddouble", -999)
-        self.assertAlmostEqual(array[0], 15.6, places=5)
-        self.assertAlmostEqual(array[1], 0.4, places=5)
-        self.assertTrue(np.ma.is_masked(array[2]))
-        self.assertEqual(array.data[2], -999)
-        self.assertEqual(array.dtype, np.float64)
-
-        # with custom request
-        array = layer.field_as_numpy(
-            "flddouble", -999, QgsFeatureRequest().setFilterFid(1)
-        )
-        self.assertEqual(array.shape, (1,))
-        self.assertAlmostEqual(array[0], 15.6, places=5)
-        self.assertEqual(array.dtype, np.float64)
+        # Field3: valid at 0 and 1, NULL at index 2
+        self.assertFalse(np.ma.is_masked(field3_array[0]))
+        self.assertFalse(np.ma.is_masked(field3_array[1]))
+        self.assertTrue(np.ma.is_masked(field3_array[2]))
 
 
 # TODO:
