@@ -156,7 +156,6 @@ specification of rules for 3D symbols.
 %Docstring
 Construct renderer with the given categories
 %End
-    ~QgsCategorized3DRenderer();
 
     virtual QString type() const;
     virtual QgsCategorized3DRenderer *clone() const /Factory/;
