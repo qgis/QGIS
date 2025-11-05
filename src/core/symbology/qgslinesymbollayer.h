@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgssymbollayer.h"
+#include "qgsblanksegmentutils_p.h"
 
 #include <QPen>
 #include <QVector>
@@ -832,19 +833,6 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
 
-    typedef QList<QPair<double, double>> BlankSegments SIP_SKIP;
-
-    /**
-     * Parse blank segments string representation \a strBlankSegments
-     * The blank segments are expected to be expressed in \a unit and converted in pixels regarding render context \a renderContext
-     * \a error is populated with a descritive message if the string representation is not well formatted
-     * Returns a list of start and end distance expressed in pixels for each part and rings
-     *
-     * \since QGIS 4.0
-     */
-    static QList<QList<BlankSegments>> parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, QString &error ) SIP_SKIP;
-
-
   protected:
 
     /**
@@ -893,9 +881,9 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
 
   private:
 
-    void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const BlankSegments &blankSegments );
-    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const BlankSegments &blankSegments );
-    void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const BlankSegments &blankSegments );
+    void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
+    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
+    void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
     double markerAngle( const QPolygonF &points, bool isRing, int vertex );
 
     /**

@@ -991,9 +991,6 @@ Returns the unit for for blank segments start and end distances
     virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
 
-
-
-
   protected:
 
     virtual void setSymbolLineAngle( double angle ) = 0;
