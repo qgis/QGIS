@@ -367,10 +367,10 @@ namespace
             QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toMSecsSinceEpoch() ) );
             break;
           case NANOARROW_TIME_UNIT_MICRO:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toSecsSinceEpoch() * 1000 ) );
+            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toMSecsSinceEpoch() * 1000 ) );
             break;
           case NANOARROW_TIME_UNIT_NANO:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toSecsSinceEpoch() * 1000 * 1000 ) );
+            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toMSecsSinceEpoch() * 1000 * 1000 ) );
             break;
         }
 

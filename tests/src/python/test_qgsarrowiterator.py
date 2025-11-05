@@ -29,7 +29,15 @@ from qgis.core import (
     QgsPointXY,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QMetaType, QByteArray, QDate, QTime, QDateTime, QTimeZone, QVariant
+from qgis.PyQt.QtCore import (
+    QMetaType,
+    QByteArray,
+    QDate,
+    QTime,
+    QDateTime,
+    QTimeZone,
+    QVariant,
+)
 from qgis.testing import QgisTestCase
 
 
@@ -295,7 +303,12 @@ class TestQgsArrowIterator(QgisTestCase):
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.time32("ms")})
 
-        for pa_type in [pa.time32("s"), pa.time32("ms"), pa.time64("us"), pa.time64("ns")]:
+        for pa_type in [
+            pa.time32("s"),
+            pa.time32("ms"),
+            pa.time64("us"),
+            pa.time64("ns"),
+        ]:
             pa_schema = pa.schema({"f": pa_type})
             schema = QgsArrowSchema()
             pa_schema._export_to_c(schema.cSchemaAddress())
@@ -323,7 +336,13 @@ class TestQgsArrowIterator(QgisTestCase):
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.timestamp("ms", tz="UTC")})
 
-        for pa_type in [pa.timestamp("s", "UTC")]:
+        for pa_type in [
+            pa.timestamp("s", "UTC"),
+            pa.timestamp("ms", "UTC"),
+            pa.timestamp("us", "UTC"),
+            pa.timestamp("ns", "UTC"),
+            pa.timestamp("ms", "America/Halifax"),
+        ]:
             pa_schema = pa.schema({"f": pa_type})
             schema = QgsArrowSchema()
             pa_schema._export_to_c(schema.cSchemaAddress())
