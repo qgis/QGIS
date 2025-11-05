@@ -16,6 +16,9 @@ concurrency:
 
 jobs:
   build:
+    permissions:
+      contents: read
+      packages: write
     strategy:
       matrix:
         include:
