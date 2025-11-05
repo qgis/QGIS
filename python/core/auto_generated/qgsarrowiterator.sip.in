@@ -48,6 +48,14 @@ class QgsArrowSchema
 {
 %Docstring(signature="appended")
 Wrapper around an ArrowSchema.
+
+This object provides a helper to allow schemas to be passed to or
+returned from QGIS functions in C++ or Python. See the documentation for
+the Arrow C Data Interface for how to interact with the underlying
+ArrowSchema. https://arrow.apache.org/docs/format/CDataInterface.html
+
+This object also stores the index of the geometry column that should
+be/will be populated from the geometry of iterated-over features.
 %End
 
 %TypeHeaderCode
@@ -70,18 +78,39 @@ Copy constructor
 
     unsigned long long cSchemaAddress();
 %Docstring
-Returns the address of the underlying ArrowSchema for export to or
-import from other systems
+Returns the address of the underlying ArrowSchema for import or export
+across boundaries
+
+This is intended for advanced usage and may cause a crash if used
+incorrectly.
 %End
 
     void exportToAddress( unsigned long long otherAddress );
 %Docstring
-Export this schema to the address of a similar object
+Export this array to the address of an empty ArrowSchema for export
+across boundaries
+
+This is intended for advanced usage and may cause a crash if used
+incorrectly.
 %End
 
     bool isValid() const;
 %Docstring
 Returns true if this wrapper object holds a valid ArrowSchema
+%End
+
+    int geometryColumnIndex() const;
+%Docstring
+Returns the index of the column in this schema that should be populated
+with a feature geometry
+
+Returns -1 if this value has not been specified.
+%End
+
+    void setGeometryColumnIndex( int geometryColumnIndex );
+%Docstring
+Set the index of the column in this schema that should be populated with
+a feature geometry
 %End
 
 };
@@ -90,6 +119,11 @@ class QgsArrowArray
 {
 %Docstring(signature="appended")
 Wrapper around an ArrowArray.
+
+This object provides a helper to allow arrays to be passed to or
+returned from QGIS functions in C++ or Python. See the documentation for
+the Arrow C Data Interface for how to interact with the underlying
+ArrowArray: https://arrow.apache.org/docs/format/CDataInterface.html
 %End
 
 %TypeHeaderCode
@@ -98,12 +132,16 @@ Wrapper around an ArrowArray.
   public:
     QgsArrowArray();
 %Docstring
-Construct invalid schema holder
+Construct invalid array holder
 %End
 
     QgsArrowArray( const QgsArrowArray &other );
 %Docstring
 Copy constructor
+
+ArrowArrays are not copyable objects, so this wrapper will throw an
+exception if there is an attempt to copy it while it holds a valid array
+to prevent leaking the array.
 %End
 
 
@@ -113,13 +151,20 @@ Copy constructor
 
     unsigned long long cArrayAddress();
 %Docstring
-Returns the address of the underlying ArrowArray for export to or import
-from other systems
+Returns the address of the underlying ArrowArray for import or export
+across boundaries
+
+This is intended for advanced usage and may cause a crash if used
+incorrectly.
 %End
 
     void exportToAddress( unsigned long long otherAddress );
 %Docstring
-Export this array to the address of a similar object
+Export this array to the address of an empty ArrowArray for export
+across boundaries
+
+This is intended for advanced usage and may cause a crash if used
+incorrectly.
 %End
 
     bool isValid() const;
@@ -150,21 +195,32 @@ Construct invalid iterator
 Construct iterator from an existing feature iterator
 %End
 
-    void setSchema( const QgsArrowSchema &schema, int geometryColumnIndex );
+    void setSchema( const QgsArrowSchema &schema );
 %Docstring
-Request a specific Arrow schema for this output
+Set the ArrowSchema for the output of all future batches
+
+This must be set before calling
+:py:func:`~QgsArrowIterator.nextFeatures`.
 %End
 
     QgsArrowArray nextFeatures( int n );
 %Docstring
 Build an ArrowArray using the next n features (or fewer depending on the
 number of features remaining)
+
+If no features remain, the returned array will be invalid (i.e.,
+:py:func:`~QgsArrowIterator.isValid` will return false).
 %End
 
     static QgsArrowSchema inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );
 %Docstring
-Guess the schema for a given :py:class:`QgsVectorLayer` and return the
-geometry column index
+Infer the :py:class:`QgsArrowSchema` for a given
+:py:class:`QgsVectorLayer`
+%End
+
+    static QgsArrowSchema inferSchema( const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );
+%Docstring
+Infer the :py:class:`QgsArrowSchema` from components
 %End
 
 };

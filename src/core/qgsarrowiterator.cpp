@@ -55,10 +55,13 @@ const QString &QgsArrowInferSchemaOptions::geometryColumnName() const
   return mGeometryColumnName;
 }
 
+QgsArrowSchema::QgsArrowSchema()
+  : mGeometryColumnIndex( -1 ) {}
 
 QgsArrowSchema::QgsArrowSchema( const QgsArrowSchema &other )
 {
   QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaDeepCopy( &other.mSchema, &mSchema ) );
+  mGeometryColumnIndex = other.mGeometryColumnIndex;
 }
 
 QgsArrowSchema &QgsArrowSchema::operator=( const QgsArrowSchema &other )
@@ -68,6 +71,7 @@ QgsArrowSchema &QgsArrowSchema::operator=( const QgsArrowSchema &other )
     ArrowSchemaRelease( &mSchema );
   }
   QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaDeepCopy( &other.mSchema, &mSchema ) );
+  mGeometryColumnIndex = other.mGeometryColumnIndex;
   return *this;
 }
 
@@ -105,6 +109,9 @@ bool QgsArrowSchema::isValid() const
   return mSchema.release;
 }
 
+int QgsArrowSchema::geometryColumnIndex() const { return mGeometryColumnIndex; }
+
+void QgsArrowSchema::setGeometryColumnIndex( int geometryColumnIndex ) { mGeometryColumnIndex = geometryColumnIndex; }
 
 QgsArrowArray::QgsArrowArray( const QgsArrowArray &other )
 {
@@ -172,12 +179,12 @@ namespace
 {
 
 
-  void inferGeometry( const QgsVectorLayer &layer, struct ArrowSchema *col, const QString &name )
+  void inferGeometry( struct ArrowSchema *col, const QString &name, const QgsCoordinateReferenceSystem &crs )
   {
     QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetName( col, name.toUtf8().constData() ) );
     QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_BINARY ) );
 
-    std::string crsString = layer.crs().toJsonString();
+    std::string crsString = crs.toJsonString();
     std::string geoArrowMetadata;
     if ( crsString.empty() )
     {
@@ -472,7 +479,7 @@ QgsArrowIterator::QgsArrowIterator( QgsFeatureIterator featureIterator )
 {
 }
 
-void QgsArrowIterator::setSchema( const QgsArrowSchema &schema, int geometryColumnIndex )
+void QgsArrowIterator::setSchema( const QgsArrowSchema &schema )
 {
   if ( !schema.isValid() )
   {
@@ -480,7 +487,6 @@ void QgsArrowIterator::setSchema( const QgsArrowSchema &schema, int geometryColu
   }
 
   mSchema = schema;
-  mSchemaGeometryColumnIndex = geometryColumnIndex;
 }
 
 
@@ -569,7 +575,7 @@ QgsArrowArray QgsArrowIterator::nextFeatures( int n )
       int attributeIndex = featureAttributeIndex[i];
       struct ArrowArray *columnArray = tmp->children[i];
 
-      if ( i == mSchemaGeometryColumnIndex )
+      if ( i == mSchema.geometryColumnIndex() )
       {
         appendGeometry( feature, columnArray );
       }
@@ -589,27 +595,34 @@ QgsArrowArray QgsArrowIterator::nextFeatures( int n )
   QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowArrayFinishBuildingDefault( tmp.get(), &error ), &error );
 
   QgsArrowArray out;
-  ArrowArrayMove( tmp.get(), out.array() );
+  if ( tmp->length > 0 )
+  {
+    ArrowArrayMove( tmp.get(), out.array() );
+  }
   return out;
 }
-
 
 QgsArrowSchema QgsArrowIterator::inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options )
 {
   bool layerHasGeometry = layer.geometryType() != Qgis::GeometryType::Unknown && layer.geometryType() != Qgis::GeometryType::Null;
+  return inferSchema( layer.fields(), layerHasGeometry, layer.crs(), options );
+}
 
-  QgsFields fields = layer.fields();
+
+QgsArrowSchema QgsArrowIterator::inferSchema( const QgsFields &fields, bool hasGeometry, const QgsCoordinateReferenceSystem &crs, const QgsArrowInferSchemaOptions &options )
+{
   QgsArrowSchema out;
   QgisPrivateArrowSchemaInit( out.schema() );
-  QGIS_NANOARROW_THROW_NOT_OK( QgisPrivateArrowSchemaSetTypeStruct( out.schema(), fields.count() + layerHasGeometry ) );
+  QGIS_NANOARROW_THROW_NOT_OK( QgisPrivateArrowSchemaSetTypeStruct( out.schema(), fields.count() + hasGeometry ) );
   for ( int i = 0; i < fields.count(); i++ )
   {
     inferField( fields.field( i ), out.schema()->children[i] );
   }
 
-  if ( layerHasGeometry )
+  if ( hasGeometry )
   {
-    inferGeometry( layer, out.schema()->children[fields.count()], options.geometryColumnName() );
+    inferGeometry( out.schema()->children[fields.count()], options.geometryColumnName(), crs );
+    out.setGeometryColumnIndex( fields.count() );
   }
 
   return out;

@@ -111,12 +111,20 @@ class CORE_EXPORT QgsArrowInferSchemaOptions
 /**
  * \ingroup core
  * \brief Wrapper around an ArrowSchema.
+ *
+ * This object provides a helper to allow schemas to be passed to or returned from
+ * QGIS functions in C++ or Python. See the documentation for the
+ * Arrow C Data Interface for how to interact with the underlying ArrowSchema.
+ * https://arrow.apache.org/docs/format/CDataInterface.html
+ *
+ * This object also stores the index of the geometry column that should be/will be
+ * populated from the geometry of iterated-over features.
  */
 class CORE_EXPORT QgsArrowSchema
 {
   public:
     //! Construct invalid schema holder
-    QgsArrowSchema() = default;
+    QgsArrowSchema();
 
     //! Copy constructor
     QgsArrowSchema( const QgsArrowSchema &other );
@@ -127,35 +135,67 @@ class CORE_EXPORT QgsArrowSchema
     ~QgsArrowSchema();
 
 #ifndef SIP_RUN
+    //! Access the underlying ArrowSchema from C++
     struct ArrowSchema *schema();
 
+    //! Access the underlying ArrowSchema immutably from C++
     const struct ArrowSchema *schema() const;
 #endif
 
-    //! Returns the address of the underlying ArrowSchema for export to or import from other systems
+    /**
+     * Returns the address of the underlying ArrowSchema for import or export across boundaries
+     *
+     * This is intended for advanced usage and may cause a crash if used incorrectly.
+     */
     unsigned long long cSchemaAddress();
 
-    //! Export this schema to the address of a similar object
+    /**
+     * Export this array to the address of an empty ArrowSchema for export across boundaries
+     *
+     * This is intended for advanced usage and may cause a crash if used incorrectly.
+     */
     void exportToAddress( unsigned long long otherAddress );
 
     //! Returns true if this wrapper object holds a valid ArrowSchema
     bool isValid() const;
 
+    /**
+     * Returns the index of the column in this schema that should be populated with a feature geometry
+     *
+     * Returns -1 if this value has not been specified.
+     */
+    int geometryColumnIndex() const;
+
+    //! Set the index of the column in this schema that should be populated with a feature geometry
+    void setGeometryColumnIndex( int geometryColumnIndex );
+
   private:
     struct ArrowSchema mSchema;
+    int mGeometryColumnIndex;
 };
 
 /**
  * \ingroup core
  * \brief Wrapper around an ArrowArray.
+ *
+ * This object provides a helper to allow arrays to be passed to or returned from
+ * QGIS functions in C++ or Python. See the documentation for the
+ * Arrow C Data Interface for how to interact with the underlying ArrowArray:
+ * https://arrow.apache.org/docs/format/CDataInterface.html
  */
 class CORE_EXPORT QgsArrowArray
 {
   public:
-    //! Construct invalid schema holder
+    //! Construct invalid array holder
     QgsArrowArray() = default;
 
-    //! Copy constructor
+    /**
+     * Copy constructor
+     *
+     * ArrowArrays are not copyable objects, so this wrapper will throw an
+     * exception if there is an attempt to copy it while it holds a valid array
+     * to prevent leaking the array.
+     */
     QgsArrowArray( const QgsArrowArray &other );
 
 #ifndef SIP_RUN
@@ -163,7 +203,13 @@ class CORE_EXPORT QgsArrowArray
     QgsArrowArray( QgsArrowArray &&other );
 #endif
 
-    //! Assignment operator
+    /**
+     * Assignment operator
+     *
+     * ArrowArrays are not copyable objects, so this wrapper will throw an
+     * exception if there is an attempt to copy it while it holds a valid array
+     * to prevent leaking the array.
+     */
     QgsArrowArray &operator=( const QgsArrowArray &other );
 
     ~QgsArrowArray();
@@ -174,10 +220,18 @@ class CORE_EXPORT QgsArrowArray
     const struct ArrowArray *array() const;
 #endif
 
-    //! Returns the address of the underlying ArrowArray for export to or import from other systems
+    /**
+     * Returns the address of the underlying ArrowArray for import or export across boundaries
+     *
+     * This is intended for advanced usage and may cause a crash if used incorrectly.
+     */
     unsigned long long cArrayAddress();
 
-    //! Export this array to the address of a similar object
+    /**
+     * Export this array to the address of an empty ArrowArray for export across boundaries
+     *
+     * This is intended for advanced usage and may cause a crash if used incorrectly.
+     */
     void exportToAddress( unsigned long long otherAddress );
 
     //! Returns true if this wrapper object holds a valid ArrowArray
@@ -200,19 +254,29 @@ class CORE_EXPORT QgsArrowIterator
     //! Construct iterator from an existing feature iterator
     QgsArrowIterator( QgsFeatureIterator featureIterator );
 
-    //! Request a specific Arrow schema for this output
-    void setSchema( const QgsArrowSchema &schema, int geometryColumnIndex );
+    /**
+     * Set the ArrowSchema for the output of all future batches
+     *
+     * This must be set before calling nextFeatures().
+     */
+    void setSchema( const QgsArrowSchema &schema );
 
-    //! Build an ArrowArray using the next n features (or fewer depending on the number of features remaining)
+    /**
+     * Build an ArrowArray using the next n features (or fewer depending on the number of features remaining)
+     *
+     * If no features remain, the returned array will be invalid (i.e., isValid() will return false).
+     */
     QgsArrowArray nextFeatures( int n );
 
-    //! Guess the schema for a given QgsVectorLayer and return the geometry column index
+    //! Infer the QgsArrowSchema for a given QgsVectorLayer
     static QgsArrowSchema inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );
+
+    //! Infer the QgsArrowSchema from components
+    static QgsArrowSchema inferSchema( const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );
 
   private:
     QgsFeatureIterator mFeatureIterator;
     QgsArrowSchema mSchema;
-    int64_t mSchemaGeometryColumnIndex;
 };
 
 #endif // QGSARROWITERATOR_H
