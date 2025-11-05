@@ -29,7 +29,7 @@ from qgis.core import (
     QgsPointXY,
     QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import QMetaType, QByteArray, QDate, QTime, QDateTime, QTimeZone
+from qgis.PyQt.QtCore import QMetaType, QByteArray, QDate, QTime, QDateTime, QTimeZone, QVariant
 from qgis.testing import QgisTestCase
 
 
@@ -283,37 +283,28 @@ class TestQgsArrowIterator(QgisTestCase):
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch({"f": dates}, schema=pa_schema)
 
-    # Not sure this one is the conversion's fault (there's no NULL in the layer output?)
-    # E           assert pyarrow.Recor...0:00,00:00:00] == pyarrow.Recor...0:03,17:00:04]
-    # E
-    # E             Full diff:
-    # E               pyarrow.RecordBatch
-    # E               f: time32[s]
-    # E               ----
-    # E             - f: [17:00:00,17:00:01,null,17:00:03,17:00:04]
-    # E             + f: [00:00:00,00:00:00,00:00:00,00:00:00,00:00:00]
-    # def test_type_time(self):
-    #     times = [datetime.time(17, 0, i) for i in range(5)]
-    #     times[2] = None
+    def test_type_time(self):
+        times = [datetime.time(17, 0, i) for i in range(5)]
+        times[2] = None
 
-    #     q_times = [QTime(17, 0, i) for i in range(5)]
-    #     times[2] = None
+        q_times = [QTime(17, 0, i) for i in range(5)]
+        q_times[2] = None
 
-    #     layer = self.create_test_layer_single_field(QMetaType.Type.QTime, q_times)
-    #     inferred = QgsArrowIterator.inferSchema(layer)
-    #     pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
-    #     assert pa_inferred == pa.schema({"f": pa.time32("ms")})
+        layer = self.create_test_layer_single_field(QMetaType.Type.QTime, q_times)
+        inferred = QgsArrowIterator.inferSchema(layer)
+        pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
+        assert pa_inferred == pa.schema({"f": pa.time32("ms")})
 
-    #     for pa_type in [pa.time32("s"), pa.time32("ms"), pa.time64("us"), pa.time64("ns")]:
-    #         pa_schema = pa.schema({"f": pa_type})
-    #         schema = QgsArrowSchema()
-    #         pa_schema._export_to_c(schema.cSchemaAddress())
+        for pa_type in [pa.time32("s"), pa.time32("ms"), pa.time64("us"), pa.time64("ns")]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
 
-    #         iterator = QgsArrowIterator(layer.getFeatures())
-    #         iterator.setSchema(schema, -1)
-    #         batch = iterator.nextFeatures(5)
-    #         pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-    #         assert pa_batch == pa.record_batch({"f": times}, schema=pa_schema)
+            iterator = QgsArrowIterator(layer.getFeatures())
+            iterator.setSchema(schema, -1)
+            batch = iterator.nextFeatures(5)
+            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            assert pa_batch == pa.record_batch({"f": times}, schema=pa_schema)
 
     def test_type_datetime(self):
         datetimes = [datetime.datetime(2020, 1, 1, 17, 0, i) for i in range(5)]

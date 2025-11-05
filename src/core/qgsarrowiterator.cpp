@@ -383,16 +383,16 @@ namespace
         switch ( columnTypeView.time_unit )
         {
           case NANOARROW_TIME_UNIT_SECOND:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, time.msec() / 1000 ) );
+            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, time.msecsSinceStartOfDay() / 1000 ) );
             break;
           case NANOARROW_TIME_UNIT_MILLI:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, time.msec() ) );
+            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, time.msecsSinceStartOfDay() ) );
             break;
           case NANOARROW_TIME_UNIT_MICRO:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, static_cast<int64_t>( time.msec() ) * 1000 ) );
+            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, static_cast<int64_t>( time.msecsSinceStartOfDay() ) * 1000 ) );
             break;
           case NANOARROW_TIME_UNIT_NANO:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, static_cast<int64_t>( time.msec() ) * 1000 * 1000 ) );
+            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, static_cast<int64_t>( time.msecsSinceStartOfDay() ) * 1000 * 1000 ) );
             break;
         }
 
