@@ -1,0 +1,198 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgscategorized3drenderer.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsCategorized3DRendererMetadata : Qgs3DRendererAbstractMetadata
+{
+%Docstring(signature="appended")
+Metadata for Categorized 3D renderer to allow creation of its instances
+from XML.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgscategorized3drenderer.h"
+%End
+  public:
+    QgsCategorized3DRendererMetadata();
+
+    virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
+
+%Docstring
+Creates an instance of a 3D renderer Categorized on a DOM element with
+renderer configuration
+%End
+};
+
+
+class Qgs3DRendererCategory
+{
+%Docstring(signature="appended")
+Represents an individual category (class) from a
+:py:class:`QgsCategorized3DRenderer`.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgscategorized3drenderer.h"
+%End
+  public:
+    Qgs3DRendererCategory();
+
+    Qgs3DRendererCategory( const QVariant &value, QgsAbstract3DSymbol *symbol /Transfer/, bool render = true );
+%Docstring
+Constructor for a new :py:class:`QgsRendererCategory`, with the
+specified ``value`` and ``symbol``.
+
+If ``value`` is a list, then the category will match any of the values
+from this list.
+
+The ownership of ``symbol`` is transferred to the category.
+
+The ``render`` argument indicates whether the category should initially
+be rendered and appear checked in the layer tree.
+%End
+
+    Qgs3DRendererCategory( const Qgs3DRendererCategory &other );
+
+    const QVariant value() const;
+%Docstring
+Returns the value corresponding to this category.
+
+If the returned value is a list, then the category will match any of the
+values from this list.
+
+.. seealso:: :py:func:`setValue`
+%End
+
+    QgsAbstract3DSymbol *symbol() const;
+%Docstring
+Returns the symbol which will be used to render this category.
+
+.. seealso:: :py:func:`setSymbol`
+%End
+
+    bool renderState() const;
+%Docstring
+Returns ``True`` if the category is currently enabled and should be
+rendered.
+
+.. seealso:: :py:func:`setRenderState`
+%End
+
+    void setValue( const QVariant &value );
+%Docstring
+Sets the ``value`` corresponding to this category.
+
+If ``value`` is a list, then the category will match any of the values
+from this list.
+
+.. seealso:: :py:func:`value`
+%End
+
+    void setSymbol( QgsAbstract3DSymbol *symbol /Transfer/ );
+%Docstring
+Sets the symbol which will be used to render this category.
+
+Ownership of the symbol is transferred to the category.
+
+.. seealso:: :py:func:`symbol`
+%End
+
+    void setRenderState( bool render );
+%Docstring
+Sets whether the category is currently enabled and should be rendered.
+
+.. seealso:: :py:func:`renderState`
+%End
+
+};
+
+typedef QList<Qgs3DRendererCategory> Qgs3DCategoryList;
+
+
+class QgsCategorized3DRenderer : QgsAbstractVectorLayer3DRenderer
+{
+%Docstring(signature="appended")
+Categorized 3D renderer.
+
+Similar to Categorized 2D renderer and Categorized labeling, it allows
+specification of rules for 3D symbols.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgscategorized3drenderer.h"
+%End
+  public:
+    QgsCategorized3DRenderer( const QString &attributeName = QString(), const Qgs3DCategoryList &categories = Qgs3DCategoryList() );
+%Docstring
+Construct renderer with the given categories
+%End
+    ~QgsCategorized3DRenderer();
+
+    virtual QString type() const;
+    virtual QgsCategorized3DRenderer *clone() const /Factory/;
+
+
+    Qgs3DCategoryList categories() const;
+
+    QString classAttribute() const;
+%Docstring
+Returns the class attribute for the renderer, which is the field name or
+expression string from the layer which will be matched against the
+renderer categories.
+
+.. seealso:: :py:func:`setClassAttribute`
+%End
+
+    void setClassAttribute( QString attributeName );
+%Docstring
+Sets the class attribute for the renderer, which is the field name or
+expression string from the layer which will be matched against the
+renderer categories.
+
+.. seealso:: :py:func:`classAttribute`
+%End
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgscategorized3drenderer.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
