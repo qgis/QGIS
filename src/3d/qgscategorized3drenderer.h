@@ -146,7 +146,6 @@ class _3D_EXPORT QgsCategorized3DRenderer : public QgsAbstractVectorLayer3DRende
   public:
     //! Construct renderer with the given categories
     QgsCategorized3DRenderer( const QString &attributeName = QString(), const Qgs3DCategoryList &categories = Qgs3DCategoryList() );
-    ~QgsCategorized3DRenderer() = default;
 
     QString type() const override { return "categorized"; }
     QgsCategorized3DRenderer *clone() const override SIP_FACTORY;
