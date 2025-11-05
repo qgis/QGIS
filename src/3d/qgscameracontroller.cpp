@@ -972,7 +972,6 @@ bool QgsCameraController::onKeyPressedTerrainNavigation( QKeyEvent *event )
     center.set( center.x(), center.y(), center.z() + tElev * 10 );
     mCameraPose.setCenterPoint( center );
     return true;
-    updateCameraFromPose();
   }
 
   return false;

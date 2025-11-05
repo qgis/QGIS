@@ -14730,7 +14730,7 @@ void QgisApp::selectionChanged( const QgsFeatureIds &, const QgsFeatureIds &, bo
             request.setFlags( request.flags() | Qgis::FeatureRequestFlag::NoGeometry );
 
           QgsFeature feat;
-          QgsFeatureIterator featureIt = vlayer->getSelectedFeatures( request );
+          QgsFeatureIterator featureIt = vlayer->getSelectedFeatures( std::move( request ) );
           while ( featureIt.nextFeature( feat ) )
           {
             context.setFeature( feat );

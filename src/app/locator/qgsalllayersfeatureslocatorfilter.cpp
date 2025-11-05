@@ -84,8 +84,8 @@ QStringList QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, c
     preparedLayer->layerId = layer->id();
     preparedLayer->layerName = layer->name();
     preparedLayer->featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
-    preparedLayer->request = req;
-    preparedLayer->exactMatchRequest = exactMatchRequest;
+    preparedLayer->request = std::move( req );
+    preparedLayer->exactMatchRequest = std::move( exactMatchRequest );
     preparedLayer->layerIcon = QgsIconUtils::iconForLayer( layer );
     preparedLayer->layerIsSpatial = layer->isSpatial();
 
