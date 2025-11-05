@@ -9587,6 +9587,7 @@ QgsMapLayerUtils.databaseConnection: src/core/qgsmaplayerutils.h#L55
 QgsMapLayerUtils.isOpenStreetMapLayer: src/core/qgsmaplayerutils.h#L105
 QgsMapLayerUtils.launderLayerName: src/core/qgsmaplayerutils.h#L98
 QgsMapLayerUtils.layerSourceMatchesPath: src/core/qgsmaplayerutils.h#L64
+QgsMapLayerUtils.layerTypeToString: src/core/qgsmaplayerutils.h#L112
 QgsMapLayerUtils.updateLayerSourcePath: src/core/qgsmaplayerutils.h#L74
 QgsMapLayerUtils: src/core/qgsmaplayerutils.h#L38
 QgsMapRendererAbstractCustomPainterJob.preparePainter: src/core/maprenderer/qgsmaprenderercustompainterjob.h#L49
