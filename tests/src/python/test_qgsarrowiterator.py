@@ -367,11 +367,10 @@ class TestQgsArrowIterator(QgisTestCase):
             pa_schema._export_to_c(schema.cSchemaAddress())
 
             iterator = QgsArrowIterator(layer.getFeatures())
-            # Crashes (ArrowSchemaDeepCopy?)
-            # iterator.setSchema(schema, -1)
-            # batch = iterator.nextFeatures(5)
-            # pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
-            # assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
+            iterator.setSchema(schema, -1)
+            batch = iterator.nextFeatures(5)
+            pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
+            assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
 
     def test_type_double_list(self):
         items = [[1.0, 2.0], [3.0, 4.0], None, [5.0, 6.0], [7.0, 8.0]]
@@ -400,7 +399,7 @@ class TestQgsArrowIterator(QgisTestCase):
             assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
 
     def test_type_int_list(self):
-        items = [[1, 2], [3], None, [4, 5, 6], [7]]
+        items = [[1, 2], [3, 4], None, [5, 6], [7, 8]]
 
         layer = self.create_test_layer_single_field(
             QMetaType.Type.QVariantList, items, subtype=QMetaType.Type.Int
@@ -409,7 +408,12 @@ class TestQgsArrowIterator(QgisTestCase):
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.list_(pa.int32())})
 
-        for pa_type in [pa.list_(pa.int32())]:
+        for pa_type in [
+            pa.list_(pa.int32()),
+            pa.list_(pa.int32(), 2),
+            pa.large_list(pa.int32()),
+            pa.list_(pa.int16()),
+        ]:
             pa_schema = pa.schema({"f": pa_type})
             schema = QgsArrowSchema()
             pa_schema._export_to_c(schema.cSchemaAddress())
