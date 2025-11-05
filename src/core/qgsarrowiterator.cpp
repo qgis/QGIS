@@ -214,59 +214,60 @@ namespace
     {
       case QMetaType::Bool:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_BOOL ) );
-        break;
+        return;
       case QMetaType::QChar:
       case QMetaType::SChar:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_INT8 ) );
-        break;
+        return;
       case QMetaType::UChar:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_UINT8 ) );
-        break;
+        return;
       case QMetaType::Short:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_INT16 ) );
-        break;
+        return;
       case QMetaType::UShort:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_UINT16 ) );
-        break;
+        return;
       case QMetaType::Int:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_INT32 ) );
-        break;
+        return;
       case QMetaType::UInt:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_UINT32 ) );
-        break;
+        return;
       case QMetaType::Long:
       case QMetaType::LongLong:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_INT64 ) );
-        break;
+        return;
       case QMetaType::ULong:
       case QMetaType::ULongLong:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_UINT64 ) );
-        break;
+        return;
       case QMetaType::Float:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_FLOAT ) );
-        break;
+        return;
       case QMetaType::Double:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_DOUBLE ) );
-        break;
+        return;
       case QMetaType::QString:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_STRING ) );
-        break;
+        return;
       case QMetaType::QByteArray:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_BINARY ) );
-        break;
+        return;
       case QMetaType::QDate:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_DATE32 ) );
-        break;
+        return;
       case QMetaType::QTime:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetTypeDateTime( col, NANOARROW_TYPE_TIME32, NANOARROW_TIME_UNIT_MILLI, nullptr ) );
-        break;
+        return;
       case QMetaType::QDateTime:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetTypeDateTime( col, NANOARROW_TYPE_TIMESTAMP, NANOARROW_TIME_UNIT_MILLI, "UTC" ) );
-        break;
+        return;
       case QMetaType::QStringList:
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_LIST ) );
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col->children[0], NANOARROW_TYPE_STRING ) );
-        break;
+        return;
+        ;
       default:
         throw QgsException( QStringLiteral( "QgsArrowIterator can't infer field type '%1' for field '%2'" ).arg( QMetaType::typeName( metaType ) ).arg( fieldName ) );
     }
@@ -298,32 +299,52 @@ namespace
     switch ( columnTypeView.type )
     {
       case NANOARROW_TYPE_BOOL:
-        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, v.toBool() ) );
-        return;
+        if ( v.canConvert( QMetaType::Bool ) )
+        {
+          QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, v.toBool() ) );
+          return;
+        }
+        break;
       case NANOARROW_TYPE_UINT8:
       case NANOARROW_TYPE_UINT16:
       case NANOARROW_TYPE_UINT32:
       case NANOARROW_TYPE_UINT64:
-        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendUInt( col, v.toULongLong() ) );
+        if ( v.canConvert( QMetaType::ULongLong ) )
+        {
+          QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendUInt( col, v.toULongLong() ) );
+          return;
+        }
         break;
       case NANOARROW_TYPE_INT8:
       case NANOARROW_TYPE_INT16:
       case NANOARROW_TYPE_INT32:
       case NANOARROW_TYPE_INT64:
-        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, v.toLongLong() ) );
+        if ( v.canConvert( QMetaType::LongLong ) )
+        {
+          QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, v.toLongLong() ) );
+          return;
+        }
         break;
       case NANOARROW_TYPE_HALF_FLOAT:
       case NANOARROW_TYPE_FLOAT:
       case NANOARROW_TYPE_DOUBLE:
-        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendDouble( col, v.toDouble() ) );
+        if ( v.canConvert( QMetaType::Double ) )
+        {
+          QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendDouble( col, v.toDouble() ) );
+          return;
+        }
         break;
       case NANOARROW_TYPE_STRING:
       case NANOARROW_TYPE_LARGE_STRING:
       case NANOARROW_TYPE_STRING_VIEW:
       {
-        const QString string = v.toString();
-        struct ArrowBufferView bytesView { { string.toUtf8().constData() }, static_cast<int64_t>( string.size() ) };
-        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, bytesView ) );
+        if ( v.canConvert( QMetaType::QString ) )
+        {
+          const QString string = v.toString();
+          struct ArrowBufferView bytesView { { string.toUtf8().constData() }, static_cast<int64_t>( string.size() ) };
+          QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, bytesView ) );
+          return;
+        }
         break;
       }
 
@@ -332,46 +353,61 @@ namespace
       case NANOARROW_TYPE_BINARY_VIEW:
       case NANOARROW_TYPE_FIXED_SIZE_BINARY:
       {
-        const QByteArray bytes = v.toByteArray();
-        struct ArrowBufferView bytesView { { bytes.data() }, static_cast<int64_t>( bytes.size() ) };
-        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, bytesView ) );
+        if ( v.canConvert( QMetaType::QByteArray ) )
+        {
+          const QByteArray bytes = v.toByteArray();
+          struct ArrowBufferView bytesView { { bytes.data() }, static_cast<int64_t>( bytes.size() ) };
+          QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, bytesView ) );
+          return;
+        }
         break;
       }
 
       case NANOARROW_TYPE_DATE32:
       {
-        static QDate epoch = QDate( 1970, 1, 1 );
-        int64_t daysSinceEpoch = epoch.daysTo( v.toDate() );
-        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, daysSinceEpoch ) );
+        if ( v.canConvert( QMetaType::QDate ) )
+        {
+          static QDate epoch = QDate( 1970, 1, 1 );
+          int64_t daysSinceEpoch = epoch.daysTo( v.toDate() );
+          QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, daysSinceEpoch ) );
+          return;
+        }
         break;
       }
 
       case NANOARROW_TYPE_DATE64:
       {
-        static QDate epoch = QDate( 1970, 1, 1 );
-        int64_t daysSinceEpoch = epoch.daysTo( v.toDate() );
-        int64_t msSinceEpoch = daysSinceEpoch * 24 * 60 * 60 * 1000;
-        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, msSinceEpoch ) );
+        if ( v.canConvert( QMetaType::QDate ) )
+        {
+          static QDate epoch = QDate( 1970, 1, 1 );
+          int64_t daysSinceEpoch = epoch.daysTo( v.toDate() );
+          int64_t msSinceEpoch = daysSinceEpoch * 24 * 60 * 60 * 1000;
+          QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, msSinceEpoch ) );
+          return;
+        }
         break;
       }
 
       case NANOARROW_TYPE_TIMESTAMP:
       {
-        const QDateTime dateTime = v.toDateTime().toUTC();
-        switch ( columnTypeView.time_unit )
+        if ( v.canConvert( QMetaType::QDateTime ) )
         {
-          case NANOARROW_TIME_UNIT_SECOND:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toSecsSinceEpoch() ) );
-            break;
-          case NANOARROW_TIME_UNIT_MILLI:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toMSecsSinceEpoch() ) );
-            break;
-          case NANOARROW_TIME_UNIT_MICRO:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toMSecsSinceEpoch() * 1000 ) );
-            break;
-          case NANOARROW_TIME_UNIT_NANO:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toMSecsSinceEpoch() * 1000 * 1000 ) );
-            break;
+          const QDateTime dateTime = v.toDateTime().toUTC();
+          switch ( columnTypeView.time_unit )
+          {
+            case NANOARROW_TIME_UNIT_SECOND:
+              QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toSecsSinceEpoch() ) );
+              return;
+            case NANOARROW_TIME_UNIT_MILLI:
+              QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toMSecsSinceEpoch() ) );
+              return;
+            case NANOARROW_TIME_UNIT_MICRO:
+              QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toMSecsSinceEpoch() * 1000 ) );
+              return;
+            case NANOARROW_TIME_UNIT_NANO:
+              QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, dateTime.toMSecsSinceEpoch() * 1000 * 1000 ) );
+              return;
+          }
         }
 
         break;
@@ -379,21 +415,24 @@ namespace
       case NANOARROW_TYPE_TIME32:
       case NANOARROW_TYPE_TIME64:
       {
-        const QTime time = v.toTime();
-        switch ( columnTypeView.time_unit )
+        if ( v.canConvert( QMetaType::QTime ) )
         {
-          case NANOARROW_TIME_UNIT_SECOND:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, time.msecsSinceStartOfDay() / 1000 ) );
-            break;
-          case NANOARROW_TIME_UNIT_MILLI:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, time.msecsSinceStartOfDay() ) );
-            break;
-          case NANOARROW_TIME_UNIT_MICRO:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, static_cast<int64_t>( time.msecsSinceStartOfDay() ) * 1000 ) );
-            break;
-          case NANOARROW_TIME_UNIT_NANO:
-            QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, static_cast<int64_t>( time.msecsSinceStartOfDay() ) * 1000 * 1000 ) );
-            break;
+          const QTime time = v.toTime();
+          switch ( columnTypeView.time_unit )
+          {
+            case NANOARROW_TIME_UNIT_SECOND:
+              QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, time.msecsSinceStartOfDay() / 1000 ) );
+              return;
+            case NANOARROW_TIME_UNIT_MILLI:
+              QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, time.msecsSinceStartOfDay() ) );
+              return;
+            case NANOARROW_TIME_UNIT_MICRO:
+              QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, static_cast<int64_t>( time.msecsSinceStartOfDay() ) * 1000 ) );
+              return;
+            case NANOARROW_TIME_UNIT_NANO:
+              QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendInt( col, static_cast<int64_t>( time.msecsSinceStartOfDay() ) * 1000 * 1000 ) );
+              return;
+          }
         }
 
         break;
@@ -405,19 +444,25 @@ namespace
       case NANOARROW_TYPE_LIST_VIEW:
       case NANOARROW_TYPE_LARGE_LIST_VIEW:
       {
-        const QVariantList variantList = v.toList();
-        struct ArrowSchemaView dummyListType {};
-        for ( const QVariant &item : variantList )
+        if ( v.canConvert( QMetaType::QVariantList ) )
         {
-          appendVariant( item, col->children[0], columnListTypeView, dummyListType );
-        }
+          const QVariantList variantList = v.toList();
+          struct ArrowSchemaView dummyListType {};
+          for ( const QVariant &item : variantList )
+          {
+            appendVariant( item, col->children[0], columnListTypeView, dummyListType );
+          }
 
-        QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayFinishElement( col ) );
+          QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayFinishElement( col ) );
+          return;
+        }
         break;
       }
       default:
-        throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to Arrow type '%2'" ).arg( QMetaType::typeName( v.metaType().id() ) ).arg( ArrowTypeString( columnTypeView.type ) ) );
+        break;
     }
+
+    throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to Arrow type '%2'" ).arg( QMetaType::typeName( v.metaType().id() ) ).arg( ArrowTypeString( columnTypeView.type ) ) );
   }
 
 } //namespace

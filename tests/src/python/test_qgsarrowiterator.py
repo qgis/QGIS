@@ -28,7 +28,9 @@ from qgis.core import (
     QgsMemoryProviderUtils,
     QgsPointXY,
     QgsWkbTypes,
+    QgsException,
 )
+
 from qgis.PyQt.QtCore import (
     QMetaType,
     QByteArray,
@@ -36,7 +38,6 @@ from qgis.PyQt.QtCore import (
     QTime,
     QDateTime,
     QTimeZone,
-    QVariant,
 )
 from qgis.testing import QgisTestCase
 
@@ -423,6 +424,22 @@ class TestQgsArrowIterator(QgisTestCase):
             batch = iterator.nextFeatures(5)
             pa_batch = pa.RecordBatch._import_from_c(batch.cArrayAddress(), pa_schema)
             assert pa_batch == pa.record_batch({"f": items}, schema=pa_schema)
+
+    def test_type_unsupported_conversion(self):
+        layer = self.create_test_layer_single_field(
+            QMetaType.Type.Int, [1, 2, None, 4, 5]
+        )
+
+        for pa_type in [pa.list_(pa.time32("s")), pa.month_day_nano_interval()]:
+            pa_schema = pa.schema({"f": pa_type})
+            schema = QgsArrowSchema()
+            pa_schema._export_to_c(schema.cSchemaAddress())
+
+            iterator = QgsArrowIterator(layer.getFeatures())
+            iterator.setSchema(schema, -1)
+
+            with self.assertRaisesRegex(QgsException, "Can't convert"):
+                iterator.nextFeatures(5)
 
 
 if __name__ == "__main__":
