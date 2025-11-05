@@ -436,7 +436,7 @@ void QgsThickLine3DSymbolHandler::processMaterialDatadefined( uint verticesCount
 namespace Qgs3DSymbolImpl
 {
 
-  QgsFeature3DHandler *handlerForLine3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
+  QgsFeature3DHandler *handlerForLine3DSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
   {
     const QgsLine3DSymbol *lineSymbol = dynamic_cast<const QgsLine3DSymbol *>( symbol );
     if ( !lineSymbol )
