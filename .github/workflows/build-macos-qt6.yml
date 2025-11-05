@@ -49,7 +49,7 @@ jobs:
 
       - name: 🔨 Prepare build env
         run: |
-          brew install automake bison flex gnu-sed autoconf-archive nasm libtool fdupes
+          brew install automake bison flex gnu-sed autoconf-archive nasm libtool fdupes swig
           echo $(brew --prefix bison)/bin >> $GITHUB_PATH
           echo $(brew --prefix flex)/bin >> $GITHUB_PATH
           echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
