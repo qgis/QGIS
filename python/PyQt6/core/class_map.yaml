@@ -18718,12 +18718,10 @@ QgsUserProfileManager.allProfiles: src/core/qgsuserprofilemanager.h#L115
 QgsUserProfileManager.createUserProfile: src/core/qgsuserprofilemanager.h#L182
 QgsUserProfileManager.defaultProfileName: src/core/qgsuserprofilemanager.h#L131
 QgsUserProfileManager.deleteProfile: src/core/qgsuserprofilemanager.h#L190
-QgsUserProfileManager.getProfile: src/core/qgsuserprofilemanager.h#L70
 QgsUserProfileManager.isNewProfileNotificationEnabled: src/core/qgsuserprofilemanager.h#L104
 QgsUserProfileManager.lastProfileName: src/core/qgsuserprofilemanager.h#L149
 QgsUserProfileManager.loadUserProfile: src/core/qgsuserprofilemanager.h#L211
 QgsUserProfileManager.profileExists: src/core/qgsuserprofilemanager.h#L121
-QgsUserProfileManager.profileForName: src/core/qgsuserprofilemanager.h#L175
 QgsUserProfileManager.profilesChanged: src/core/qgsuserprofilemanager.h#L230
 QgsUserProfileManager.resolveProfilesFolder: src/core/qgsuserprofilemanager.h#L57
 QgsUserProfileManager.rootLocation: src/core/qgsuserprofilemanager.h#L83
