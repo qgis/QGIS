@@ -1922,11 +1922,11 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
 
       const QPointF pt = symbolPoints[i];
       if ( i < pointIndices.count() && blankSegmentsWalker.insideBlankSegment( pt, pointIndices.at( i ) ) )
+        // skip the rendering
         continue;
 
       const QPointF startPt = angleStartPoints[i];
       const QPointF endPt = angleEndPoints[i];
-
 
       MyLine l( startPt, endPt );
       // rotate marker (if desired)
