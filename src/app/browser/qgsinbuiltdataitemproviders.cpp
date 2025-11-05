@@ -537,7 +537,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     {
       const QgsProviderSublayerDetails &sublayer { sublayers.first() };
       openDataSourceManagerAction = new QAction( tr( "Open with Data Source Manager…" ), menu );
-      connect( openDataSourceManagerAction, &QAction::triggered, this, [sublayer, layerItem] {
+      connect( openDataSourceManagerAction, &QAction::triggered, this, [sublayer] {
         QString pageName { sublayer.providerKey() };
         // GPKG special handling
         if ( sublayer.driverName() == QLatin1String( "GeoPackage" ) )
@@ -548,7 +548,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
         {
           pageName = QStringLiteral( "Spatialite" );
         }
-        QgisApp::instance()->dataSourceManager( pageName, layerItem->uri() );
+        QgisApp::instance()->dataSourceManager( pageName, sublayer.uri() );
       } );
     }
   }
