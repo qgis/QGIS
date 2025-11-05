@@ -17091,10 +17091,12 @@ QgsStacAsset.description: src/core/stac/qgsstacasset.h#L52
 QgsStacAsset.formatName: src/core/stac/qgsstacasset.h#L73
 QgsStacAsset.href: src/core/stac/qgsstacasset.h#L43
 QgsStacAsset.isCloudOptimized: src/core/stac/qgsstacasset.h#L67
+QgsStacAsset.isDownloadable: src/core/stac/qgsstacasset.h#L96
 QgsStacAsset.mediaType: src/core/stac/qgsstacasset.h#L55
 QgsStacAsset.roles: src/core/stac/qgsstacasset.h#L61
 QgsStacAsset.title: src/core/stac/qgsstacasset.h#L46
-QgsStacAsset.uri: src/core/stac/qgsstacasset.h#L79
+QgsStacAsset.toHtml: src/core/stac/qgsstacasset.h#L90
+QgsStacAsset.uri: src/core/stac/qgsstacasset.h#L84
 QgsStacAsset: src/core/stac/qgsstacasset.h#L32
 QgsStacCatalog.addConformanceClass: src/core/stac/qgsstaccatalog.h#L75
 QgsStacCatalog.conformsTo: src/core/stac/qgsstaccatalog.h#L78
