@@ -847,6 +847,9 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
   const QString categoriesKeys( metaEnum.valueToKeys( static_cast<int>( categories ) ) );
   layerElement.setAttribute( QStringLiteral( "styleCategories" ), categoriesKeys );
 
+  // Store layer type
+  layerElement.setAttribute( QStringLiteral( "layerType" ), qgsEnumValueToKey( type() ) );
+
   if ( categories.testFlag( Rendering ) )
   {
     // use scale dependent visibility flag
