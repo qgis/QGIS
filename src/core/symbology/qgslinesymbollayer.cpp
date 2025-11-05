@@ -1721,11 +1721,11 @@ void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbo
  * Helper class to go through BlankSegment while rendering points.
  * The class expects to be used while rendering points in the correct order
  */
-class BlankSegmentsScanner
+class BlankSegmentsWalker
 {
   public :
 
-    BlankSegmentsScanner( const QPolygonF &points, const QgsTemplatedLineSymbolLayerBase::BlankSegments &blankSegments )
+    BlankSegmentsWalker( const QPolygonF &points, const QgsTemplatedLineSymbolLayerBase::BlankSegments &blankSegments )
       : mBlankSegments( blankSegments )
       , mPoints( points )
       , mItBlankSegment( blankSegments.cbegin() )
@@ -1914,14 +1914,14 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     collectOffsetPoints( points, angleEndPoints, painterUnitInterval, lengthLeft - averageOver, nullptr, 0, symbolPoints.size() );
 
     int pointNum = 0;
-    BlankSegmentsScanner blankSegmentsScanner( points, blankSegments );
+    BlankSegmentsWalker blankSegmentsWalker( points, blankSegments );
     for ( int i = 0; i < symbolPoints.size(); ++ i )
     {
       if ( context.renderContext().renderingStopped() )
         break;
 
       const QPointF pt = symbolPoints[i];
-      if ( i < pointIndices.count() && blankSegmentsScanner.insideBlankSegment( pt, pointIndices.at( i ) ) )
+      if ( i < pointIndices.count() && blankSegmentsWalker.insideBlankSegment( pt, pointIndices.at( i ) ) )
         continue;
 
       const QPointF startPt = angleStartPoints[i];
@@ -1945,7 +1945,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     // not averaging line angle -- always use exact section angle
     int pointNum = 0;
     QPointF lastPt = points[0];
-    BlankSegmentsScanner itBlankSegment( points, blankSegments );
+    BlankSegmentsWalker itBlankSegment( points, blankSegments );
     for ( int i = 1; i < points.count(); ++i )
     {
       if ( context.renderContext().renderingStopped() )
@@ -2178,7 +2178,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
     prevPoint = points.at( 0 );
 
   QPointF symbolPoint;
-  BlankSegmentsScanner blankSegmentsScanner( points, blankSegments );
+  BlankSegmentsWalker blankSegmentsWalker( points, blankSegments );
   for ( ; i < maxCount; ++i )
   {
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
@@ -2214,7 +2214,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineVertex( const QPolygonF &poi
 
     mFinalVertex = symbolPoint;
     if ( ( i != points.count() - 1 || placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature )
-         && !blankSegmentsScanner.insideBlankSegment( symbolPoint, i ) )
+         && !blankSegmentsWalker.insideBlankSegment( symbolPoint, i ) )
       renderSymbol( symbolPoint, context.feature(), rc, -1, useSelectedColor );
   }
 }
@@ -2323,7 +2323,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
   int startPoint = distance > 0 ? std::min( vertex + 1, static_cast<int>( points.count() ) - 1 ) : std::max( vertex - 1, 0 );
   int endPoint = distance > 0 ? points.count() - 1 : 0;
   double distanceLeft = std::fabs( distance );
-  BlankSegmentsScanner blankSegmentsScanner( points, blankSegments );
+  BlankSegmentsWalker blankSegmentsWalker( points, blankSegments );
 
   for ( int i = startPoint; pointIncrement > 0 ? i <= endPoint : i >= endPoint; i += pointIncrement )
   {
@@ -2346,7 +2346,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
       }
       mFinalVertex = markerPoint;
       if ( ( placement != Qgis::MarkerLinePlacement::LastVertex || mPlaceOnEveryPart || !mRenderingFeature )
-           && !blankSegmentsScanner.insideBlankSegment( markerPoint, i - 1 ) )
+           && !blankSegmentsWalker.insideBlankSegment( markerPoint, i - 1 ) )
         renderSymbol( markerPoint, context.feature(), rc, -1, useSelectedColor );
       return;
     }
@@ -2491,8 +2491,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
 
     const double midPoint = length / 2;
 
-    BlankSegmentsScanner blankSegmentsScanner( points, blankSegments );
-    if ( blankSegmentsScanner.insideBlankSegment( midPoint ) )
+    BlankSegmentsWalker blankSegmentsWalker( points, blankSegments );
+    if ( blankSegmentsWalker.insideBlankSegment( midPoint ) )
       return;
 
     QPointF pt;
