@@ -44,6 +44,10 @@
 #include "qgsrasterlayer.h"
 #include "qgscolorramplegendnode.h"
 #include "qgsmeshlayer.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterminmaxorigin.h"
+#include "qgsmeshdataset.h"
+#include "qgsmeshrenderersettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
