@@ -796,8 +796,6 @@ try:
          request = QgsFeatureRequest().setFlags(Qgis.FeatureRequestFlag.NoGeometry).setSubsetOfAttributes(field_indices)
 
       src_array, n_features = QgsVectorLayerUtils.fieldsToDataArray(self.fields(), field_names, self.getFeatures(request), null_value)
-      if request.limit() != -1:
-         n_features = request.limit()
 
       numpy_array = _numpy.frombuffer(src_array.data(), dtype=structured_dtype)
       numpy_array = numpy_array.reshape((n_features,))
