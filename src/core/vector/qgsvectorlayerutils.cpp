@@ -1452,7 +1452,7 @@ void populateFieldsDataArray( const QVariant &value, const QVariant &nullValue, 
   }
 }
 
-std::pair<QByteArray, int> QgsVectorLayerUtils::fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue )
+std::pair<QByteArray, long long> QgsVectorLayerUtils::fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue )
 {
   QByteArray res;
   QVector<int> fieldIndices;
@@ -1472,7 +1472,7 @@ std::pair<QByteArray, int> QgsVectorLayerUtils::fieldsToDataArray( const QgsFiel
   }
 
   QgsFeature f;
-  int counter = 0;
+  long long counter = 0;
   while ( it.nextFeature( f ) )
   {
     counter++;

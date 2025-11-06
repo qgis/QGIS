@@ -474,13 +474,12 @@ class CORE_EXPORT QgsVectorLayerUtils
     * \param fieldNames list of field names to source values from
     * \param it feature iterator for features to include
     * \param nullValue value to use when original field value is a null. Must be of the same data type as the source field.
-    * \param targetType the desired data type for the output array elements
     *
     * \warning Only numeric field types are supported.
     *
     * \since QGIS 4.0
     */
-    static std::pair<QByteArray, int> fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue );
+    static std::pair<QByteArray, long long> fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue );
 
 #else
 
@@ -580,7 +579,7 @@ class CORE_EXPORT QgsVectorLayerUtils
 
     if ( sipIsErr == 0 )
     {
-      std::pair<QByteArray, int> result;
+      std::pair<QByteArray, long long> result;
       Py_BEGIN_ALLOW_THREADS
       result = QgsVectorLayerUtils::fieldsToDataArray( *a0, *a1, *a2, *a3 );
       Py_END_ALLOW_THREADS

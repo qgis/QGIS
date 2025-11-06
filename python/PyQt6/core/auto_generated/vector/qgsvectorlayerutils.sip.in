@@ -528,7 +528,7 @@ is the number of features processed.
 
     if ( sipIsErr == 0 )
     {
-      std::pair<QByteArray, int> result;
+      std::pair<QByteArray, long long> result;
       Py_BEGIN_ALLOW_THREADS
       result = QgsVectorLayerUtils::fieldsToDataArray( *a0, *a1, *a2, *a3 );
       Py_END_ALLOW_THREADS
