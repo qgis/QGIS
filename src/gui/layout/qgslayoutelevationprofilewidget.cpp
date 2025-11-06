@@ -683,7 +683,7 @@ void QgsLayoutElevationProfileWidget::syncLayerTreeAndProfileItemSources()
   const QList<QgsLayerTreeNode *> nodes = mLayerTree->findLayersAndCustomNodes();
   for ( QgsLayerTreeNode *node : nodes )
   {
-    QgsAbstractProfileSource *source;
+    QgsAbstractProfileSource *source = nullptr;
     if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer *layerNode = QgsLayerTree::toLayer( node );
@@ -697,11 +697,16 @@ void QgsLayoutElevationProfileWidget::syncLayerTreeAndProfileItemSources()
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
       source = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() );
-      if ( !source )
-        continue;
     }
 
-    node->setItemVisibilityChecked( mProfile->sources().contains( source ) );
+    if ( !source )
+    {
+      node->setItemVisibilityChecked( false );
+    }
+    else
+    {
+      node->setItemVisibilityChecked( mProfile->sources().contains( source ) );
+    }
   }
 
   // Update layer tree node ordering, based on layout item profile
