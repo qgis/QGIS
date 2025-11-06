@@ -19,10 +19,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-15-intel
+          - os: macos-14
             triplet: x64-osx-dynamic-release
             deployment-target: "10.15"
-          - os: macos-15
+          - os: macos-14
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
     name: build (macos)
