@@ -137,6 +137,10 @@ jobs:
           cmake --build build
           cmake --build build --target bundle
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: always()
+
       - name: Archive app
         run: |
           gtar -cpvzf qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
