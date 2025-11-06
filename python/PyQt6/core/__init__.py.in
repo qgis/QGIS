@@ -775,12 +775,7 @@ try:
           if field_index < 0:
             raise KeyError(f"Field '{field_names[idx]}' does not exist.")
 
-      if target_types is None:
-          dtypes = [(self.fields().at(i).name(), _qvariant_type_to_numeric_data_type(self.fields().at(i).type())) for i in field_indices]
-      else:
-          if len(target_types) != len(field_names):
-           raise ValueError("Length of target_types must match length of field_names")
-          dtypes = [(field_names[i], dtype) for i, dtype in enumerate(target_types)]
+      dtypes = [(self.fields().at(i).name(), _qvariant_type_to_numeric_data_type(self.fields().at(i).type())) for i in field_indices]
       structured_dtype = _numpy.dtype(dtypes, align=False)
 
       if request is None:

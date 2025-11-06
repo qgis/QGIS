@@ -6223,10 +6223,6 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         with self.assertRaises(TypeError):
             array = layer.fields_as_numpy(["fldtxt"], 0)
 
-        # Mixed lengths should raise ValueError
-        with self.assertRaises(ValueError):
-            array = layer.fields_as_numpy(["fldtxt"], 0, target_types=[int, float])
-
         # Test single numeric field - default use_masking=True
         masked_array = layer.fields_as_numpy(["fldint"], -99)
         self.assertTrue(np.ma.is_masked(masked_array[2]))
