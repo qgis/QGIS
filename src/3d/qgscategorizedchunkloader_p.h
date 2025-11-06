@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgsvectorlayerchunkloader_p.h
+  qgscategorizedchunkloader_p.h
   --------------------------------------
-  Date                 : July 2019
-  Copyright            : (C) 2019 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
+  Date                 : November 2025
+  Copyright            : (C) 2025 by Jean Felder
+  Email                : jean dot felder at oslandia dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVECTORLAYERCHUNKLOADER_P_H
-#define QGSVECTORLAYERCHUNKLOADER_P_H
+#ifndef QGSCATEGORIZEDCHUNKLOADER_H
+#define QGSCATEGORIZEDCHUNKLOADER_H
 
 ///@cond PRIVATE
 
@@ -28,13 +28,16 @@
 //
 
 #include "qgs3drendercontext.h"
+#include "qgscategorized3drenderer.h"
 #include "qgschunkedentity.h"
 #include "qgschunkloader.h"
 
+#include <QFutureWatcher>
+
 #define SIP_NO_FILE
 
+class Qgs3DMapSettings;
 class QgsVectorLayer;
-class QgsVectorLayer3DTilingSettings;
 class QgsVectorLayerFeatureSource;
 class QgsAbstract3DSymbol;
 class QgsFeature3DHandler;
@@ -44,32 +47,31 @@ namespace Qt3DCore
   class QTransform;
 }
 
-#include <QFutureWatcher>
-
-
 /**
  * \ingroup qgis_3d
  * \brief This loader factory is responsible for creation of loaders for individual tiles
- * of QgsVectorLayerChunkedEntity whenever a new tile is requested by the entity.
+ * of QgsCategorizedChunkedEntity whenever a new tile is requested by the entity.
  *
- * \since QGIS 3.12
+ * \since QGIS 4.0
  */
-class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
+class QgsCategorizedChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 {
     Q_OBJECT
 
   public:
-    //! Constructs the factory
-    QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures );
+    //! Constructs the factory (vectorLayer and renderer must not be null)
+    QgsCategorizedChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vectorLayer, const QgsCategorized3DRenderer *renderer, double zMin, double zMax, int maxFeatures );
+    ~QgsCategorizedChunkLoaderFactory() override;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     bool canCreateChildren( QgsChunkNode *node ) override;
     QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
-    std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
+    Qgs3DCategoryList mCategories;
+    QString mAttributeName;
     //! Contains loaded nodes and whether they are leaf nodes or not
     mutable QHash< QString, bool > mNodesAreLeafs;
     int mMaxFeatures;
@@ -79,72 +81,73 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 /**
  * \ingroup qgis_3d
  * \brief This loader class is responsible for async loading of data for a single tile
- * of QgsVectorLayerChunkedEntity and creation of final 3D entity from the data
+ * of QgsCategorizedChunkedEntity and creation of final 3D entity from the data
  * previously prepared in a worker thread.
  *
- * \since QGIS 3.12
+ * \since QGIS 4.0
  */
-class QgsVectorLayerChunkLoader : public QgsChunkLoader
+class QgsCategorizedChunkLoader : public QgsChunkLoader
 {
     Q_OBJECT
 
   public:
-    //! Constructs the loader
-    QgsVectorLayerChunkLoader( const QgsVectorLayerChunkLoaderFactory *factory, QgsChunkNode *node );
-    ~QgsVectorLayerChunkLoader() override;
+    //! Constructs the loader (factory and node must not be null)
+    QgsCategorizedChunkLoader( const QgsCategorizedChunkLoaderFactory *factory, QgsChunkNode *node );
+    ~QgsCategorizedChunkLoader() override;
 
     void start() override;
-    void cancel() override;
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    virtual void cancel() override;
+    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
-    const QgsVectorLayerChunkLoaderFactory *mFactory;
-    std::unique_ptr<QgsFeature3DHandler> mHandler;
-    Qgs3DRenderContext mRenderContext;
+    const QSet<QString> prepareHandlers( const QgsBox3D &chunkExtent );
+    void processFeature( const QgsFeature &feature ) const;
+
+  private:
+    const QgsCategorizedChunkLoaderFactory *mFactory;
+    Qgs3DRenderContext mContext;
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
-    QString mLayerName;
     bool mNodeIsLeaf = false;
+
+    //! hashtable for faster access to symbols
+    QHash<QString, QgsFeature3DHandler *> mFeaturesHandlerHash;
+    std::unique_ptr<QgsExpression> mExpression;
+    int mAttributeIdx = -1;
 };
 
 
 /**
  * \ingroup qgis_3d
- * \brief 3D entity used for rendering of vector layers with a single 3D symbol for all features.
+ * \brief 3D entity used for rendering of vector layers using categories (just like
+ * in case of 2D categories rendering).
  *
  * It is implemented using tiling approach with QgsChunkedEntity. Internally it uses
- * QgsVectorLayerChunkLoaderFactory and QgsVectorLayerChunkLoader to do the actual work
+ * QgsCategorizedChunkLoaderFactory and QgsCategorizedChunkLoader to do the actual work
  * of loading and creating 3D sub-entities for each tile.
  *
- * \since QGIS 3.12
+ * \since QGIS 4.0
  */
-class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
+class QgsCategorizedChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
     //! Constructs the entity. The argument maxLevel determines how deep the tree of tiles will be
-    explicit QgsVectorLayerChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol );
+    explicit QgsCategorizedChunkedEntity( Qgs3DMapSettings *mapSettings, QgsVectorLayer *vectorLayer, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, const QgsCategorized3DRenderer *renderer );
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
-    ~QgsVectorLayerChunkedEntity() override;
+    ~QgsCategorizedChunkedEntity() override;
   private slots:
     void onTerrainElevationOffsetChanged();
 
   private:
-    friend class QgsRuleBasedChunkedEntity;
-    friend class QgsCategorizedChunkedEntity;
-    //! This implementation is shared between QgsVectorLayerChunkedEntity, QgsRuleBasedChunkedEntity and QgsCategorizedChunkedEntity
-    static QList<QgsRayCastHit> rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin );
-
     Qt3DCore::QTransform *mTransform = nullptr;
 
     bool applyTerrainOffset() const;
-
-    friend class TestQgsChunkedEntity;
 };
 
 /// @endcond
 
-#endif // QGSVECTORLAYERCHUNKLOADER_P_H
+#endif // QGSCATEGORIZEDCHUNKLOADER_H

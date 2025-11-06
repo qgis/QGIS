@@ -18,6 +18,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsapplication.h"
+#include "qgscategorizedchunkloader_p.h"
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
 
@@ -104,9 +105,24 @@ QgsCategorized3DRenderer *QgsCategorized3DRenderer::clone() const
   return renderer;
 }
 
-Qt3DCore::QEntity *QgsCategorized3DRenderer::createEntity( Qgs3DMapSettings * ) const
+Qt3DCore::QEntity *QgsCategorized3DRenderer::createEntity( Qgs3DMapSettings *mapSettings ) const
 {
-  return nullptr;
+  QgsVectorLayer *vectorLayer = layer();
+
+  if ( !vectorLayer )
+  {
+    return nullptr;
+  }
+
+  // we start with a maximal z range because we can't know this upfront. There's too many
+  // factors to consider eg vertex z data, terrain heights, data defined offsets and extrusion heights,...
+  // This range will be refined after populating the nodes to the actual z range of the generated chunks nodes.
+  // Assuming the vertical height is in meter, then it's extremely unlikely that a real vertical
+  // height will exceed this amount!
+  constexpr double MINIMUM_VECTOR_Z_ESTIMATE = -100000;
+  constexpr double MAXIMUM_VECTOR_Z_ESTIMATE = 100000;
+
+  return new QgsCategorizedChunkedEntity( mapSettings, vectorLayer, MINIMUM_VECTOR_Z_ESTIMATE, MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), this );
 }
 
 void QgsCategorized3DRenderer::setClassAttribute( QString attributeName )
