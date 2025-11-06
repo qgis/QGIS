@@ -101,7 +101,8 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
 
   // Snap-to-grid button is hidden by default, shown when snap-to-grid is available
   mSnapToGridButton->setVisible( false );
-  connect( mSnapToGridButton, &QAbstractButton::toggled, this, &QgsExtentWidget::snapToGridToggled );
+  mSnapToGridButton->setCheckable( false );
+  connect( mSnapToGridButton, &QAbstractButton::clicked, this, &QgsExtentWidget::applySnapToGrid );
 
   switch ( style )
   {
@@ -710,7 +711,7 @@ void QgsExtentWidget::setSnapToGridAvailable( bool available, bool enabled, doub
   mRasterMinY = rasterMinY;
 
   mSnapToGridButton->setVisible( available );
-  mSnapToGridButton->setChecked( enabled );
+  // Button is no longer checkable, so no setChecked() needed
 }
 
 bool QgsExtentWidget::snapToGridEnabled() const
@@ -723,4 +724,24 @@ void QgsExtentWidget::snapToGridToggled( bool enabled )
   mSnapToGridEnabled = enabled;
   emit snapToGridChanged( enabled );
   emit extentChanged( outputExtent() );
+}
+
+void QgsExtentWidget::applySnapToGrid()
+{
+  if ( mRasterXRes <= 0 || mRasterYRes <= 0 )
+    return;
+
+  const bool wasEnabled = mSnapToGridEnabled;
+  mSnapToGridEnabled = true;
+
+  // outputExtent() will apply snapping if mSnapToGridEnabled is true
+  const QgsRectangle snappedExtent = outputExtent();
+
+  mSnapToGridEnabled = wasEnabled;
+
+  if ( snappedExtent.isNull() )
+    return;
+
+  // Update the line edits with snapped values
+  setOutputExtentFromUser( snappedExtent, mOutputCrs );
 }

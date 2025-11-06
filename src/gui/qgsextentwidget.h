@@ -280,6 +280,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     void extentDrawn( const QgsRectangle &extent );
     void mapToolDeactivated();
     void snapToGridToggled( bool enabled );
+    void applySnapToGrid();
 
   private:
     void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentWidget::ExtentState state );

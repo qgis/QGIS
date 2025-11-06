@@ -145,20 +145,6 @@ void QgsExtentGroupBox::setSnapToGrid( bool snapToGrid, double rasterXRes, doubl
   mRasterMinY = rasterMinY;
 
   mWidget->setSnapToGridAvailable( true, snapToGrid, rasterXRes, rasterYRes, rasterMinX, rasterMinY );
-
-  // Update the displayed extent fields so that the north/south/east/west values reflect
-  // the current snapping mode. We retrieve the (potentially) snapped extent using the
-  // updated configuration and then push this extent back to the underlying widget so
-  // that its line edits are refreshed accordingly. This ensures that toggling the
-  // snap-to-grid checkbox immediately updates the UI, and disabling it restores the
-  // original, unsnapped coordinates.
-  QgsRectangle newExtent = outputExtent();
-  if ( newExtent.isNull() )
-    return; // nothing to update
-
-  // Use the widget's user extent setter – this will update the line edits and emit
-  // extentChanged(). The CRS is already the widget's output CRS.
-  mWidget->setOutputExtentFromUser( newExtent, mWidget->outputCrs() );
 }
 
 void QgsExtentGroupBox::groupBoxClicked()
