@@ -1537,8 +1537,7 @@ void QgsLayoutItemLegend::syncLayersWithUpdatedCanvasMinimumMaximum()
         found = !( std::isnan( min ) && std::isnan( max ) );
       }
     }
-
-    if ( QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( mapLayer ) )
+    else if ( QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( mapLayer ) )
     {
       QgsRenderContext renderContext = QgsLayoutUtils::createRenderContextForMap( mMap, nullptr );
 
