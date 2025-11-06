@@ -181,6 +181,8 @@ typedef QList<QgsRendererCategory> QgsCategoryList;
 class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 {
   public:
+    using Category = QgsRendererCategory;
+
     /**
      * Constructor for QgsCategorizedSymbolRenderer.
      *
