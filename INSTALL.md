@@ -107,7 +107,7 @@ Required build tools:
 
 Required build dependencies:
 
-* Qt >= 6.4.0 (or 5.15.2)
+* Qt >= 6.6.0 (or 5.15.2)
 * Proj >= 8.1.0
 * GEOS >= 3.9
 * Sqlite3 >= 3.0.0
