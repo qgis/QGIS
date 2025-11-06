@@ -1515,6 +1515,8 @@ void QgsLayoutItemLegend::syncLayersWithUpdatedCanvasMinimumMaximum()
   for ( QgsLayerTreeLayer *layerTreeLayer : layers )
   {
     QgsMapLayer *mapLayer = layerTreeLayer->layer();
+    if ( !mapLayer || !mapLayer->isValid() )
+       continue;
 
     double min = std::numeric_limits<double>::quiet_NaN();
     double max = std::numeric_limits<double>::quiet_NaN();
