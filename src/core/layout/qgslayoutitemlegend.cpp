@@ -1531,13 +1531,20 @@ void QgsLayoutItemLegend::syncLayersWithUpdatedCanvasMinimumMaximum()
 
       QgsRasterMinMaxOrigin minMaxOrigin = renderer->minMaxOrigin();
 
-      if ( minMaxOrigin.extent() == Qgis::RasterRangeExtent::UpdatedCanvas )
+      switch ( minMaxOrigin.extent() )
       {
-        rasterLayer->computeMinMax( renderer->inputBand(), minMaxOrigin, minMaxOrigin.limits(),
-                                    mMap->extent(), static_cast<int>( QgsRasterLayer::SAMPLE_SIZE ),
-                                    min, max );
+        case Qgis::RasterRangeExtent::UpdatedCanvas:
+        {
+          rasterLayer->computeMinMax( renderer->inputBand(), minMaxOrigin, minMaxOrigin.limits(),
+                                      mMap->extent(), static_cast<int>( QgsRasterLayer::SAMPLE_SIZE ),
+                                      min, max );
 
-        found = !( std::isnan( min ) && std::isnan( max ) );
+          found = !( std::isnan( min ) && std::isnan( max ) );
+          break;
+        }
+        case Qgis::RasterRangeExtent::WholeRaster:
+        case Qgis::RasterRangeExtent::FixedCanvas:
+          break;
       }
     }
     else if ( QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( mapLayer ) )
@@ -1548,10 +1555,24 @@ void QgsLayoutItemLegend::syncLayersWithUpdatedCanvasMinimumMaximum()
       {
         QgsMeshRendererScalarSettings scalarRendererSettings = meshLayer->rendererSettings().scalarSettings( activeDatasetIndex.group() );
 
-        if ( scalarRendererSettings.extent() == Qgis::MeshRangeExtent::UpdatedCanvas &&
-             scalarRendererSettings.limits() == Qgis::MeshRangeLimit::MinimumMaximum )
+        switch ( scalarRendererSettings.extent() )
         {
-          found  = meshLayer->minimumMaximumActiveScalarDataset( mMap->extent(), activeDatasetIndex, min, max );
+          case Qgis::MeshRangeExtent::UpdatedCanvas:
+          {
+            switch ( scalarRendererSettings.limits() )
+            {
+              case Qgis::MeshRangeLimit::MinimumMaximum:
+              {
+                found  = meshLayer->minimumMaximumActiveScalarDataset( mMap->extent(), activeDatasetIndex, min, max );
+                break;
+              }
+              case Qgis::MeshRangeLimit::NotSet:
+                break;
+            }
+          }
+          case Qgis::MeshRangeExtent::WholeMesh:
+          case Qgis::MeshRangeExtent::FixedCanvas:
+            break;
         }
       }
     }
