@@ -17,8 +17,10 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgsabstract3dsymbol.h"
 #include "qgsapplication.h"
 #include "qgscategorizedchunkloader_p.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
 
@@ -130,6 +132,79 @@ void QgsCategorized3DRenderer::setClassAttribute( QString attributeName )
   mAttributeName = attributeName;
 }
 
+bool QgsCategorized3DRenderer::updateCategoryValue( int catIndex, const QVariant &value )
+{
+  if ( catIndex < 0 || catIndex >= mCategories.size() )
+  {
+    return false;
+  }
+
+  mCategories[catIndex].setValue( value );
+  return true;
+}
+
+bool QgsCategorized3DRenderer::updateCategorySymbol( int catIndex, QgsAbstract3DSymbol *symbol )
+{
+  if ( catIndex < 0 || catIndex >= mCategories.size() )
+  {
+    return false;
+  }
+
+  mCategories[catIndex].setSymbol( symbol );
+  return true;
+}
+
+bool QgsCategorized3DRenderer::updateCategoryRenderState( int catIndex, bool render )
+{
+  if ( catIndex < 0 || catIndex >= mCategories.size() )
+  {
+    return false;
+  }
+
+  mCategories[catIndex].setRenderState( render );
+  return true;
+}
+
+void QgsCategorized3DRenderer::addCategory( const Qgs3DRendererCategory &category )
+{
+  mCategories.append( category );
+}
+
+bool QgsCategorized3DRenderer::deleteCategory( int catIndex )
+{
+  if ( catIndex < 0 || catIndex >= mCategories.size() )
+  {
+    return false;
+  }
+
+  mCategories.removeAt( catIndex );
+  return true;
+}
+
+void QgsCategorized3DRenderer::deleteAllCategories()
+{
+  mCategories.clear();
+}
+
+bool QgsCategorized3DRenderer::moveCategory( int from, int to )
+{
+  if ( from < 0 || from >= mCategories.size() || to < 0 || to >= mCategories.size() )
+  {
+    return false;
+  }
+
+  mCategories.move( from, to );
+  return true;
+}
+
+void QgsCategorized3DRenderer::sortByValue( Qt::SortOrder order )
+{
+  std::sort( mCategories.begin(), mCategories.end(), [order]( const Qgs3DRendererCategory &cat1, const Qgs3DRendererCategory &cat2 ) {
+    bool less = qgsVariantLessThan( cat1.value(), cat2.value() );
+    return ( order == Qt::AscendingOrder ) ? less : !less;
+  } );
+}
+
 void QgsCategorized3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();
@@ -179,14 +254,14 @@ void QgsCategorized3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
         const bool render = static_cast<bool>( catElem.attribute( u"render"_s, u"0"_s ).toInt() );
 
         QgsAbstract3DSymbol *symbol = nullptr;
-        QDomElement elemSymbol = catElem.firstChildElement( u"symbol"_s );
-        if ( !elemSymbol.isNull() )
+        QDomElement symbolElem = catElem.firstChildElement( u"symbol"_s );
+        if ( !symbolElem.isNull() )
         {
-          QString symbolType = elemSymbol.attribute( u"type"_s );
+          QString symbolType = symbolElem.attribute( u"type"_s );
           symbol = QgsApplication::symbol3DRegistry()->createSymbol( symbolType );
           if ( symbol )
           {
-            symbol->readXml( elemSymbol, context );
+            symbol->readXml( symbolElem, context );
           }
         }
 
@@ -195,4 +270,31 @@ void QgsCategorized3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
       catElem = catElem.nextSiblingElement();
     }
   }
+}
+
+Qgs3DCategoryList QgsCategorized3DRenderer::createCategories( const QList<QVariant> &values, const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer, const QString &attributeName )
+{
+  Qgs3DCategoryList cats;
+  QVariantList vals = values;
+  // sort the categories first
+  QgsSymbolLayerUtils::sortVariantList( vals, Qt::AscendingOrder );
+
+  if ( layer && !attributeName.isNull() )
+  {
+    const QgsFields fields = layer->fields();
+    for ( const QVariant &value : vals )
+    {
+      if ( !QgsVariantUtils::isNull( value ) )
+      {
+        QgsAbstract3DSymbol *newSymbol = symbol->clone();
+        cats.append( Qgs3DRendererCategory( value, newSymbol, true ) );
+      }
+    }
+  }
+
+  // add null (default) value
+  QgsAbstract3DSymbol *newSymbol = symbol->clone();
+  cats.append( Qgs3DRendererCategory( QVariant(), newSymbol, true ) );
+
+  return cats;
 }
