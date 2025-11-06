@@ -144,6 +144,8 @@ using Qgs3DCategoryList = QList<Qgs3DRendererCategory>;
 class _3D_EXPORT QgsCategorized3DRenderer : public QgsAbstractVectorLayer3DRenderer
 {
   public:
+    using Category = Qgs3DRendererCategory;
+
     //! Construct renderer with the given categories
     QgsCategorized3DRenderer( const QString &attributeName = QString(), const Qgs3DCategoryList &categories = Qgs3DCategoryList() );
 
@@ -151,6 +153,9 @@ class _3D_EXPORT QgsCategorized3DRenderer : public QgsAbstractVectorLayer3DRende
     QgsCategorized3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *mapSettings ) const override SIP_SKIP;
 
+    /**
+     * Returns a list of all categories recognized by the renderer.
+     */
     Qgs3DCategoryList categories() const
     {
       return mCategories;
@@ -176,6 +181,80 @@ class _3D_EXPORT QgsCategorized3DRenderer : public QgsAbstractVectorLayer3DRende
      * \see classAttribute()
      */
     void setClassAttribute( QString attributeName );
+
+    /**
+     * Changes the value for the category with the specified index.
+     *
+     * If \a value is a list, then the category will match any of the values from this list.
+     *
+     * \see updateCategorySymbol()
+     * \see updateCategoryRenderState()
+     */
+    bool updateCategoryValue( int catIndex, const QVariant &value );
+
+    /**
+     * Changes the \a symbol for the category with the specified index.
+     *
+     * Ownership of \a symbol is transferred to the renderer.
+     *
+     * \see updateCategoryValue()
+     * \see updateCategoryRenderState()
+     */
+    bool updateCategorySymbol( int catIndex, QgsAbstract3DSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Changes the render state for the category with the specified index.
+     *
+     * The render state indicates whether or not the category will be rendered,
+     * and is reflected in whether the category is checked with the project's layer tree.
+     *
+     * \see updateCategoryValue()
+     * \see updateCategorySymbol()
+     *
+     */
+    bool updateCategoryRenderState( int catIndex, bool render );
+
+    /**
+     * Adds a new \a category to the renderer.
+     *
+     * \see categories()
+     */
+    void addCategory( const Qgs3DRendererCategory &category );
+
+    /**
+     * Deletes the category with the specified index from the renderer.
+     *
+     * \see deleteAllCategories()
+     */
+    bool deleteCategory( int catIndex );
+
+    /**
+     * Deletes all existing categories from the renderer.
+     *
+     * \see deleteCategory()
+     */
+    void deleteAllCategories();
+
+    /**
+     * Moves an existing category at index position from to index position to.
+     */
+    bool moveCategory( int from, int to );
+
+    /**
+     * Create categories for a list of \a values.
+     * The returned symbols in the category list will be a modification of \a symbol.
+     *
+     * If \a layer and \a fieldName are specified it will try to find nicer values
+     * to represent the description for the categories based on the respective field
+     * configuration.
+     */
+    static Qgs3DCategoryList createCategories( const QVariantList &values, const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer = nullptr, const QString &attributeName = QString() );
+
+    /**
+     * Sorts the existing categories by their value.
+     *
+     */
+    void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;

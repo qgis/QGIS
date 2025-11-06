@@ -152,6 +152,8 @@ specification of rules for 3D symbols.
 #include "qgscategorized3drenderer.h"
 %End
   public:
+    typedef Qgs3DRendererCategory Category;
+
     QgsCategorized3DRenderer( const QString &attributeName = QString(), const Qgs3DCategoryList &categories = Qgs3DCategoryList() );
 %Docstring
 Construct renderer with the given categories
@@ -162,6 +164,9 @@ Construct renderer with the given categories
 
 
     Qgs3DCategoryList categories() const;
+%Docstring
+Returns a list of all categories recognized by the renderer.
+%End
 
     QString classAttribute() const;
 %Docstring
@@ -179,6 +184,83 @@ expression string from the layer which will be matched against the
 renderer categories.
 
 .. seealso:: :py:func:`classAttribute`
+%End
+
+    bool updateCategoryValue( int catIndex, const QVariant &value );
+%Docstring
+Changes the value for the category with the specified index.
+
+If ``value`` is a list, then the category will match any of the values
+from this list.
+
+.. seealso:: :py:func:`updateCategorySymbol`
+
+.. seealso:: :py:func:`updateCategoryRenderState`
+%End
+
+    bool updateCategorySymbol( int catIndex, QgsAbstract3DSymbol *symbol /Transfer/ );
+%Docstring
+Changes the ``symbol`` for the category with the specified index.
+
+Ownership of ``symbol`` is transferred to the renderer.
+
+.. seealso:: :py:func:`updateCategoryValue`
+
+.. seealso:: :py:func:`updateCategoryRenderState`
+%End
+
+    bool updateCategoryRenderState( int catIndex, bool render );
+%Docstring
+Changes the render state for the category with the specified index.
+
+The render state indicates whether or not the category will be rendered,
+and is reflected in whether the category is checked with the project's
+layer tree.
+
+.. seealso:: :py:func:`updateCategoryValue`
+
+.. seealso:: :py:func:`updateCategorySymbol`
+%End
+
+    void addCategory( const Qgs3DRendererCategory &category );
+%Docstring
+Adds a new ``category`` to the renderer.
+
+.. seealso:: :py:func:`categories`
+%End
+
+    bool deleteCategory( int catIndex );
+%Docstring
+Deletes the category with the specified index from the renderer.
+
+.. seealso:: :py:func:`deleteAllCategories`
+%End
+
+    void deleteAllCategories();
+%Docstring
+Deletes all existing categories from the renderer.
+
+.. seealso:: :py:func:`deleteCategory`
+%End
+
+    bool moveCategory( int from, int to );
+%Docstring
+Moves an existing category at index position from to index position to.
+%End
+
+    static Qgs3DCategoryList createCategories( const QVariantList &values, const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer = 0, const QString &attributeName = QString() );
+%Docstring
+Create categories for a list of ``values``. The returned symbols in the
+category list will be a modification of ``symbol``.
+
+If ``layer`` and ``fieldName`` are specified it will try to find nicer
+values to represent the description for the categories based on the
+respective field configuration.
+%End
+
+    void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
+%Docstring
+Sorts the existing categories by their value.
 %End
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
