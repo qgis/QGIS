@@ -1510,13 +1510,16 @@ void QgsLayoutItemLegend::syncLayersWithUpdatedCanvasMinimumMaximum()
   if ( !root )
     return;
 
+  QgsRenderContext renderContext = QgsLayoutUtils::createRenderContextForMap( mMap, nullptr );
+
   const QList<QgsLayerTreeLayer *> layers = root->findLayers();
 
   for ( QgsLayerTreeLayer *layerTreeLayer : layers )
   {
     QgsMapLayer *mapLayer = layerTreeLayer->layer();
+
     if ( !mapLayer || !mapLayer->isValid() )
-       continue;
+      continue;
 
     double min = std::numeric_limits<double>::quiet_NaN();
     double max = std::numeric_limits<double>::quiet_NaN();
@@ -1539,8 +1542,6 @@ void QgsLayoutItemLegend::syncLayersWithUpdatedCanvasMinimumMaximum()
     }
     else if ( QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( mapLayer ) )
     {
-      QgsRenderContext renderContext = QgsLayoutUtils::createRenderContextForMap( mMap, nullptr );
-
       const QgsMeshDatasetIndex activeDatasetIndex = meshLayer->activeScalarDatasetIndex( renderContext );
 
       if ( activeDatasetIndex.isValid() )
