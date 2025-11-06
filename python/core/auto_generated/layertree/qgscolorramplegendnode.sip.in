@@ -105,6 +105,18 @@ Sets the node's ``settings``.
 .. seealso:: :py:func:`settings`
 %End
 
+    void setMaximum( const double maximum );
+%Docstring
+Sets legend node maximum value to ``maximum``.
+
+@param maximum
+%End
+    void setMinimum( const double minimum );
+%Docstring
+Sets legend node minimum value to ``minimum``.
+
+@param minimum
+%End
 };
 
 

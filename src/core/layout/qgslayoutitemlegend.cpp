@@ -1496,9 +1496,6 @@ bool QgsLayoutItemLegend::isRefreshing() const
 void QgsLayoutItemLegend::syncLayersWithUpdatedCanvasMinimumMaximum()
 {
 
-  if ( mCustomLayerTree )
-    return;
-
   if ( !mMap )
     return;
 
@@ -1585,10 +1582,8 @@ void QgsLayoutItemLegend::syncLayersWithUpdatedCanvasMinimumMaximum()
       {
         if ( auto *colorRampNode = dynamic_cast<QgsColorRampLegendNode *>( legendNode ) )
         {
-          QgsColorRampLegendNodeSettings settings = colorRampNode->settings();
-          settings.setMinimumLabel( QString::number( min ) );
-          settings.setMaximumLabel( QString::number( max ) );
-          colorRampNode->setSettings( settings );
+          colorRampNode->setMinimum( min );
+          colorRampNode->setMaximum( max );
         }
       }
     }

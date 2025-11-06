@@ -105,6 +105,20 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
      */
     void setSettings( const QgsColorRampLegendNodeSettings &settings );
 
+    /**
+     * Sets legend node maximum value to \a maximum.
+     *
+     * @param maximum
+     */
+    void setMaximum( const double maximum ) { mMaximumValue = maximum;};
+
+    /**
+     * Sets legend node minimum value to \a minimum.
+     *
+     * @param minimum
+     */
+    void setMinimum( const double minimum ) { mMinimumValue = minimum;};
+
   private:
     void init( QgsLayerTreeLayer *nodeLayer );
 
