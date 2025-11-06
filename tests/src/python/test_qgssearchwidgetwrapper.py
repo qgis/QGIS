@@ -10,7 +10,7 @@ __author__ = "Nyall Dawson"
 __date__ = "2016-05"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QTime
+from qgis.PyQt.QtCore import QDate, QDateTime, QTime, QLocale
 from qgis.PyQt.QtWidgets import QWidget
 from qgis.core import QgsFeature, QgsProject, QgsRelation, QgsVectorLayer
 from qgis.gui import (
@@ -59,6 +59,11 @@ class PyQgsSearchWidgetWrapper(QgisTestCase):
 
 
 class PyQgsDefaultSearchWidgetWrapper(QgisTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        QLocale.setDefault(QLocale(QLocale.Language.English))
+        super().setUpClass()
 
     def testCreateExpression(self):
         """Test creating an expression using the widget"""
