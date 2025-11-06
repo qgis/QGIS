@@ -1438,7 +1438,7 @@ QByteArray QgsVectorLayerUtils::fieldToDataArray( const QgsFields &fields, const
 template <typename T, typename ConverterFunc>
 void populateFieldsDataArray( const QVariant &value, const QVariant &nullValue, QByteArray &res, ConverterFunc converter )
 {
-  const int oldSize = res.size();
+  const long long oldSize = res.size();
   res.resize( oldSize + sizeof( T ) );
   T *data = reinterpret_cast<T *>( res.data() + oldSize );
 
