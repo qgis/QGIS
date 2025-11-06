@@ -1639,6 +1639,7 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbolselectordialog.h
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
+  symbology/qgstemplatedcategorizedrendererwidget_p.h
   symbology/qgsvectorfieldsymbollayerwidget.h
 
   sensor/qgssensorguiregistry.h
