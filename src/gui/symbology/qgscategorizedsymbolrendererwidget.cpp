@@ -60,277 +60,42 @@ using namespace Qt::StringLiterals;
 ///@cond PRIVATE
 
 QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *parent, QScreen *screen )
-  : QAbstractItemModel( parent )
-  , mMimeFormat( u"application/x-qgscategorizedsymbolrendererv2model"_s )
-  , mScreen( screen )
+  : QgsTemplatedCategorizedRendererModel<QgsCategorizedSymbolRenderer>( parent, screen )
 {}
 
-void QgsCategorizedSymbolRendererModel::setRenderer( QgsCategorizedSymbolRenderer *renderer )
+Qt::ItemFlags QgsCategorizedSymbolRendererModel::extraFlags( const QModelIndex &index ) const
 {
-  if ( mRenderer )
-  {
-    beginRemoveRows( QModelIndex(), 0, std::max<int>( mRenderer->categories().size() - 1, 0 ) );
-    mRenderer = nullptr;
-    endRemoveRows();
-  }
-  if ( renderer )
-  {
-    mRenderer = renderer;
-    if ( renderer->categories().size() > 0 )
-    {
-      beginInsertRows( QModelIndex(), 0, renderer->categories().size() - 1 );
-      endInsertRows();
-    }
-  }
+  // legend column
+  return index.column() == 2 ? Qt::ItemFlags( Qt::ItemIsEditable ) : Qt::NoItemFlags;
 }
 
-void QgsCategorizedSymbolRendererModel::addCategory( const QgsRendererCategory &cat )
+QIcon QgsCategorizedSymbolRendererModel::symbolIcon( const QgsCategorizedSymbolRenderer::Category &category ) const
 {
-  if ( !mRenderer )
-    return;
-  const int idx = mRenderer->categories().size();
-  beginInsertRows( QModelIndex(), idx, idx );
-  mRenderer->addCategory( cat );
-  endInsertRows();
+  const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+  return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( iconSize, iconSize ), 0, nullptr, QgsScreenProperties( mScreen.data() ) );
 }
 
-QgsRendererCategory QgsCategorizedSymbolRendererModel::category( const QModelIndex &index )
+bool QgsCategorizedSymbolRendererModel::setExtraData( const QModelIndex &index, const QVariant &value )
 {
-  if ( !mRenderer )
+  if ( index.column() == 2 ) // legend
   {
-    return QgsRendererCategory();
-  }
-  const QgsCategoryList &catList = mRenderer->categories();
-  const int row = index.row();
-  if ( row >= catList.size() )
-  {
-    return QgsRendererCategory();
-  }
-  return catList.at( row );
-}
-
-
-Qt::ItemFlags QgsCategorizedSymbolRendererModel::flags( const QModelIndex &index ) const
-{
-  // Flat list, to ease drop handling valid indexes are not dropEnabled
-  if ( !index.isValid() || !mRenderer )
-  {
-    return Qt::ItemIsDropEnabled;
-  }
-
-  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable;
-  if ( index.column() == 1 )
-  {
-    const QgsRendererCategory category = mRenderer->categories().value( index.row() );
-    if ( category.value().userType() != QMetaType::Type::QVariantList )
-    {
-      flags |= Qt::ItemIsEditable;
-    }
-  }
-  else if ( index.column() == 2 )
-  {
-    flags |= Qt::ItemIsEditable;
-  }
-  return flags;
-}
-
-Qt::DropActions QgsCategorizedSymbolRendererModel::supportedDropActions() const
-{
-  return Qt::MoveAction;
-}
-
-QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int role ) const
-{
-  if ( !index.isValid() || !mRenderer )
-    return QVariant();
-
-  const QgsRendererCategory category = mRenderer->categories().value( index.row() );
-
-  switch ( role )
-  {
-    case Qt::CheckStateRole:
-    {
-      if ( index.column() == 0 )
-      {
-        return category.renderState() ? Qt::Checked : Qt::Unchecked;
-      }
-      break;
-    }
-
-    case Qt::DisplayRole:
-    case Qt::ToolTipRole:
-    {
-      switch ( index.column() )
-      {
-        case 1:
-        {
-          if ( category.value().userType() == QMetaType::Type::QVariantList )
-          {
-            QStringList res;
-            const QVariantList list = category.value().toList();
-            res.reserve( list.size() );
-            for ( const QVariant &v : list )
-              res << QgsVariantUtils::displayString( v );
-
-            if ( role == Qt::DisplayRole )
-              return res.join( ';' );
-            else // tooltip
-              return res.join( '\n' );
-          }
-          else if ( QgsVariantUtils::isNull( category.value() ) || category.value().toString().isEmpty() )
-          {
-            return tr( "all other values" );
-          }
-          else
-          {
-            return QgsVariantUtils::displayString( category.value() );
-          }
-        }
-        case 2:
-          return category.label();
-      }
-      break;
-    }
-
-    case Qt::FontRole:
-    {
-      if ( index.column() == 1 && category.value().userType() != QMetaType::Type::QVariantList && ( QgsVariantUtils::isNull( category.value() ) || category.value().toString().isEmpty() ) )
-      {
-        QFont italicFont;
-        italicFont.setItalic( true );
-        return italicFont;
-      }
-      return QVariant();
-    }
-
-    case Qt::DecorationRole:
-    {
-      if ( index.column() == 0 && category.symbol() )
-      {
-        const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
-        return QgsSymbolLayerUtils::symbolPreviewIcon( category.symbol(), QSize( iconSize, iconSize ), 0, nullptr, QgsScreenProperties( mScreen.data() ) );
-      }
-      break;
-    }
-
-    case Qt::ForegroundRole:
-    {
-      QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
-      if ( index.column() == 1 && ( category.value().userType() == QMetaType::Type::QVariantList || QgsVariantUtils::isNull( category.value() ) || category.value().toString().isEmpty() ) )
-      {
-        QColor fadedTextColor = brush.color();
-        fadedTextColor.setAlpha( 128 );
-        brush.setColor( fadedTextColor );
-      }
-      return brush;
-    }
-
-    case Qt::TextAlignmentRole:
-    {
-      return ( index.column() == 0 ) ? static_cast<Qt::Alignment::Int>( Qt::AlignHCenter ) : static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
-    }
-
-    case Qt::EditRole:
-    {
-      switch ( index.column() )
-      {
-        case 1:
-        {
-          if ( category.value().userType() == QMetaType::Type::QVariantList )
-          {
-            QStringList res;
-            const QVariantList list = category.value().toList();
-            res.reserve( list.size() );
-            for ( const QVariant &v : list )
-              res << v.toString();
-
-            return res.join( ';' );
-          }
-          else
-          {
-            return category.value();
-          }
-        }
-
-        case 2:
-          return category.label();
-      }
-      break;
-    }
-    case static_cast<int>( QgsCategorizedSymbolRendererWidget::CustomRole::Value ):
-    {
-      if ( index.column() == 1 )
-        return category.value();
-      break;
-    }
-  }
-
-  return QVariant();
-}
-
-bool QgsCategorizedSymbolRendererModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-  if ( !index.isValid() )
-    return false;
-
-  if ( index.column() == 0 && role == Qt::CheckStateRole )
-  {
-    mRenderer->updateCategoryRenderState( index.row(), value == Qt::Checked );
+    mRenderer->updateCategoryLabel( index.row(), value.toString() );
     emit dataChanged( index, index );
     return true;
   }
 
-  if ( role != Qt::EditRole )
-    return false;
+  return false;
+}
 
-  switch ( index.column() )
+QVariant QgsCategorizedSymbolRendererModel::extraData( const QModelIndex &index, int role ) const
+{
+  if ( index.column() == 2 && ( role == Qt::DisplayRole || role == Qt::ToolTipRole || role == Qt::EditRole ) ) // legend
   {
-    case 1: // value
-    {
-      // try to preserve variant type for this value, unless it was an empty string (other values)
-      QVariant val = value;
-      const QVariant previousValue = mRenderer->categories().value( index.row() ).value();
-      if ( previousValue.userType() != QMetaType::Type::QString && !previousValue.toString().isEmpty() )
-      {
-        switch ( previousValue.userType() )
-        {
-          case QMetaType::Type::Int:
-            val = value.toInt();
-            break;
-          case QMetaType::Type::Double:
-            val = value.toDouble();
-            break;
-          case QMetaType::Type::QVariantList:
-          {
-            const QStringList parts = value.toString().split( ';' );
-            QVariantList list;
-            list.reserve( parts.count() );
-            for ( const QString &p : parts )
-              list << p;
-
-            if ( list.count() == 1 )
-              val = list.at( 0 );
-            else
-              val = list;
-            break;
-          }
-          default:
-            val = value.toString();
-            break;
-        }
-      }
-      mRenderer->updateCategoryValue( index.row(), val );
-      break;
-    }
-    case 2: // label
-      mRenderer->updateCategoryLabel( index.row(), value.toString() );
-      break;
-    default:
-      return false;
+    const QgsRendererCategory category = mRenderer->categories().value( index.row() );
+    return category.label();
   }
 
-  emit dataChanged( index, index );
-  return true;
+  return QVariant();
 }
 
 QVariant QgsCategorizedSymbolRendererModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -344,154 +109,32 @@ QVariant QgsCategorizedSymbolRendererModel::headerData( int section, Qt::Orienta
   return QVariant();
 }
 
-int QgsCategorizedSymbolRendererModel::rowCount( const QModelIndex &parent ) const
-{
-  if ( parent.isValid() || !mRenderer )
-  {
-    return 0;
-  }
-  return mRenderer->categories().size();
-}
-
 int QgsCategorizedSymbolRendererModel::columnCount( const QModelIndex &index ) const
 {
   Q_UNUSED( index )
   return 3;
 }
 
-QModelIndex QgsCategorizedSymbolRendererModel::index( int row, int column, const QModelIndex &parent ) const
-{
-  if ( hasIndex( row, column, parent ) )
-  {
-    return createIndex( row, column );
-  }
-  return QModelIndex();
-}
-
-QModelIndex QgsCategorizedSymbolRendererModel::parent( const QModelIndex &index ) const
-{
-  Q_UNUSED( index )
-  return QModelIndex();
-}
-
-QStringList QgsCategorizedSymbolRendererModel::mimeTypes() const
-{
-  QStringList types;
-  types << mMimeFormat;
-  return types;
-}
-
-QMimeData *QgsCategorizedSymbolRendererModel::mimeData( const QModelIndexList &indexes ) const
-{
-  QMimeData *mimeData = new QMimeData();
-  QByteArray encodedData;
-
-  QDataStream stream( &encodedData, QIODevice::WriteOnly );
-
-  // Create list of rows
-  const auto constIndexes = indexes;
-  for ( const QModelIndex &index : constIndexes )
-  {
-    if ( !index.isValid() || index.column() != 0 )
-      continue;
-
-    stream << index.row();
-  }
-  mimeData->setData( mMimeFormat, encodedData );
-  return mimeData;
-}
-
-bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
-{
-  Q_UNUSED( column )
-  Q_UNUSED( parent ) // Unused because only invalid indexes have Qt::ItemIsDropEnabled
-  if ( action != Qt::MoveAction )
-    return true;
-
-  if ( !data->hasFormat( mMimeFormat ) )
-    return false;
-
-  QByteArray encodedData = data->data( mMimeFormat );
-  QDataStream stream( &encodedData, QIODevice::ReadOnly );
-
-  QVector<int> rows;
-  while ( !stream.atEnd() )
-  {
-    int r;
-    stream >> r;
-    rows.append( r );
-  }
-
-  // Items may come unsorted depending on selecion order
-  std::sort( rows.begin(), rows.end() );
-
-  int to = row;
-
-  // to is -1 if dragged outside items, i.e. below any item,
-  // then move to the last position
-  if ( to == -1 )
-    to = mRenderer->categories().size(); // out of rang ok, will be decreased
-  for ( int i = rows.size() - 1; i >= 0; i-- )
-  {
-    QgsDebugMsgLevel( u"move %1 to %2"_s.arg( rows[i] ).arg( to ), 2 );
-    int t = to;
-    // moveCategory first removes and then inserts
-    if ( rows[i] < t )
-      t--;
-    mRenderer->moveCategory( rows[i], t );
-    // current moved under another, shift its index up
-    for ( int j = 0; j < i; j++ )
-    {
-      if ( to < rows[j] && rows[i] > rows[j] )
-        rows[j] += 1;
-    }
-    // removed under 'to' so the target shifted down
-    if ( rows[i] < to )
-      to--;
-  }
-  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->categories().size(), 0 ) );
-  emit rowsMoved();
-  return false;
-}
-
-void QgsCategorizedSymbolRendererModel::deleteRows( QList<int> rows )
-{
-  std::sort( rows.begin(), rows.end() ); // list might be unsorted, depending on how the user selected the rows
-  for ( int i = rows.size() - 1; i >= 0; i-- )
-  {
-    beginRemoveRows( QModelIndex(), rows[i], rows[i] );
-    mRenderer->deleteCategory( rows[i] );
-    endRemoveRows();
-  }
-}
-
-void QgsCategorizedSymbolRendererModel::removeAllRows()
-{
-  beginRemoveRows( QModelIndex(), 0, mRenderer->categories().size() - 1 );
-  mRenderer->deleteAllCategories();
-  endRemoveRows();
-}
-
 void QgsCategorizedSymbolRendererModel::sort( int column, Qt::SortOrder order )
 {
-  if ( column == 0 )
+  if ( column == symbolColumn() )
   {
     return;
   }
-  if ( column == 1 )
+  if ( column == valueColumn() )
   {
     mRenderer->sortByValue( order );
   }
-  else if ( column == 2 )
+  else if ( column == 2 ) // legend
   {
     mRenderer->sortByLabel( order );
   }
-  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->categories().size(), 0 ) );
+  emit dataChanged( createIndex( 0, 0 ), createIndex( static_cast<int>( mRenderer->categories().size() ), 0 ) );
 }
 
-void QgsCategorizedSymbolRendererModel::updateSymbology()
+void QgsCategorizedSymbolRendererModel::onRowsMoved()
 {
-  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->categories().size(), 0 ) );
+  emit rowsMoved();
 }
 
 // ------------------------------ View style --------------------------------
@@ -862,7 +505,7 @@ void QgsCategorizedSymbolRendererWidget::categoryColumnChanged( const QString &f
 
 void QgsCategorizedSymbolRendererWidget::categoriesDoubleClicked( const QModelIndex &idx )
 {
-  if ( idx.isValid() && idx.column() == 0 )
+  if ( idx.isValid() && idx.column() == mModel->symbolColumn() )
     changeCategorySymbol();
 }
 
@@ -928,7 +571,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   }
 
 #if 0
-  DlgAddCategories dlg( mStyle, createDefaultSymbol(), unique_vals, this );
+  DlgAddCategories dlg( mStyle, createDefaultSymbol(), unique_vals, this    );
   if ( !dlg.exec() )
     return;
 #endif
