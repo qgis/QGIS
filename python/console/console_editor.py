@@ -344,7 +344,7 @@ class Editor(QgsCodeEditorPython):
         filename = self.code_editor_widget.filePath()
         filename_override = None
         msgEditorBlank = QCoreApplication.translate(
-            "PythonConsole", "Hey, type something to run!"
+            "PythonConsole", "Empty scripts cannot be run!"
         )
         if not filename:
             if not self.isModified():
