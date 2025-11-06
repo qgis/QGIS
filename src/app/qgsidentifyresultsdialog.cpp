@@ -2958,7 +2958,7 @@ void QgsIdentifyResultsDialog::updateTextDisplay()
 QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool wordWrap )
 {
   QLabel *valueLabel = new QLabel();
-  valueLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+  valueLabel->setAlignment( Qt::AlignLeft | Qt::AlignTop );
   valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; padding-left: 2px; }" ) );
   valueLabel->setContentsMargins( 0, 0, 0, 0 );
   valueLabel->setMargin( 0 );
@@ -2969,64 +2969,27 @@ QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool w
     valueLabel->setTextInteractionFlags( Qt::NoTextInteraction );
     valueLabel->setAttribute( Qt::WA_TransparentForMouseEvents, true );
     valueLabel->setContextMenuPolicy( Qt::NoContextMenu );
-    valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
     QString wrapped = text;
     wrapped.replace( QStringLiteral( "/" ), QStringLiteral( "/\u00AD" ) );
     wrapped.replace( QStringLiteral( "\\" ), QStringLiteral( "\\\u00AD" ) );
 
-    // Use QTextLayout to count actual visual lines after word wrapping
-    const int maxLines = 20;
-    const int availableWidth = valueLabel->width() > 0 ? valueLabel->width() : 300;
+    valueLabel->setText( wrapped );
 
-    QTextLayout textLayout( wrapped, valueLabel->font() );
-    textLayout.beginLayout();
-
-    int visualLineCount = 0;
-    QString truncatedText;
-    bool needsEllipsis = false;
-
-    while ( true )
-    {
-      QTextLine line = textLayout.createLine();
-      if ( !line.isValid() )
-        break;
-
-      line.setLineWidth( availableWidth );
-
-      if ( visualLineCount < maxLines )
-      {
-        // Extract the text for this visual line
-        const int start = line.textStart();
-        const int length = line.textLength();
-        const QString lineText = wrapped.mid( start, length );
-
-        if ( visualLineCount > 0 )
-          truncatedText += "\n";
-        truncatedText += lineText;
-        visualLineCount++;
-      }
-      else
-      {
-        needsEllipsis = true;
-        break;
-      }
-    }
-
-    textLayout.endLayout();
-
-    if ( needsEllipsis )
-    {
-      truncatedText = truncatedText.trimmed() + QStringLiteral( "…" );
-    }
-
-    valueLabel->setText( truncatedText );
 
     const QFontMetrics fm( valueLabel->font() );
-    const int lineHeight = fm.height();
-    const int actualLines = std::min( visualLineCount, maxLines );
-    const int height = actualLines * lineHeight + 4;
-    valueLabel->setFixedHeight( height );
+    const int avgCharWidth = fm.averageCharWidth();
+    const int maxCharsPerLine = 100; // Reasonable column width estimate
+    const int maxLines = 20;
+    const int maxTotalChars = maxCharsPerLine * maxLines;
+
+    if ( wrapped.length() > maxTotalChars )
+    {
+      // Truncate and add ellipsis for very long text
+      QString truncated = wrapped.left( maxTotalChars - 1 ) + QStringLiteral( "…" );
+      valueLabel->setText( truncated );
+    }
   }
   else
   {
@@ -3044,21 +3007,20 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
   if ( !item )
     return;
 
-  // Determine the text to display. Some items store their represented value in a custom role.
   const bool hasRepresented = item->data( 1, REPRESENTED_VALUE_ROLE ).isValid();
   const QString fullText = hasRepresented ? item->data( 1, REPRESENTED_VALUE_ROLE ).toString()
                                           : item->text( 1 );
 
   QTreeWidget *treeWidget = item->treeWidget();
+  const int lengthThreshold = 100; // Characters
+  const bool isLongText = fullText.length() > lengthThreshold || fullText.contains( '\n' );
 
-  // Use wrapping widget when showFullText is enabled
-  if ( showFullText && !fullText.isEmpty() )
+  if ( showFullText && isLongText && !fullText.isEmpty() )
   {
     QLabel *valueLabel = createStyledLabel( fullText, true );
     if ( treeWidget )
       treeWidget->setItemWidget( item, 1, valueLabel );
-    item->setText( 1, fullText );
-    item->setData( 1, Qt::DisplayRole, QString() );
+    item->setData( 1, REPRESENTED_VALUE_ROLE, fullText );
   }
   else
   {
@@ -3068,6 +3030,7 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
       QTimer::singleShot( 0, treeWidget, &QTreeWidget::doItemsLayout );
     }
     item->setText( 1, fullText );
+    item->setData( 1, REPRESENTED_VALUE_ROLE, fullText );
   }
 
   for ( int i = 0; i < item->childCount(); ++i )
