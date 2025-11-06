@@ -55,11 +55,14 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_geom sfcgalGeom )
 }
 
 QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_prim sfcgalPrim, sfcgal::primitiveType type )
-  : mIsPrimitive( true ), mPrimType( type )
+  : mIsPrimitive( true )
 {
 #if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
   mSfcgalPrim = sfcgalPrim;
+  mPrimType = type;
 #else
+  ( void ) sfcgalPrim;
+  ( void ) type;
   throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
 #endif
 }
@@ -547,6 +550,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::transform( const QMatrix4x
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
 
+#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
   sfcgal::shared_geom geom = workingGeom();
 
   sfcgal::shared_geom result = QgsSfcgalEngine::transform( geom.get(), mat );
@@ -555,6 +559,10 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::transform( const QMatrix4x
   auto resultGeom = QgsSfcgalEngine::toSfcgalGeometry( result, &errorMsg );
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
+#else
+  ( void ) mat;
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
+#endif
 }
 
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center ) const
@@ -630,6 +638,9 @@ double QgsSfcgalGeometry::volume( bool withDiscretization ) const
   double result;
 #if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 3
   result = QgsSfcgalEngine::primitiveVolume( mSfcgalPrim.get(), withDiscretization, &errorMsg );
+#else
+  ( void ) withDiscretization;
+  throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
 #endif
 
   THROW_ON_ERROR( &errorMsg );
@@ -878,6 +889,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::createCube( double size )
   THROW_ON_ERROR( &errorMsg );
   return resultGeom;
 #else
+  ( void ) size;
   throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
 #endif
 }
@@ -949,6 +961,7 @@ QVariant QgsSfcgalGeometry::primitiveParameter( const QString &name ) const
 
   return result;
 #else
+  ( void ) name;
   throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
 #endif
 }
@@ -965,6 +978,8 @@ void QgsSfcgalGeometry::primitiveSetParameter( const QString &name, const QVaria
   THROW_ON_ERROR( &errorMsg );
 
 #else
+  ( void ) name;
+  ( void ) value;
   throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.3 or later" ) );
 #endif
 }

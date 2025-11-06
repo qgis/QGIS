@@ -510,7 +510,7 @@ Checks if ``otherGeom`` intersects this.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom )  const throw( QgsSfcgalException );
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom ) const throw( QgsSfcgalException );
 %Docstring
 Calculate the intersection of this and ``otherGeom``.
 

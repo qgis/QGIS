@@ -466,7 +466,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom )  const SIP_THROW( QgsSfcgalException );
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate the intersection of this and \a otherGeom.
