@@ -17,7 +17,10 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgs3dutils.h"
 #include "qgsapplication.h"
+#include "qgscategorizedchunkloader_p.h"
+#include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
 
 #include <QString>
@@ -99,9 +102,16 @@ QgsCategorized3DRenderer *QgsCategorized3DRenderer::clone() const
   return renderer;
 }
 
-Qt3DCore::QEntity *QgsCategorized3DRenderer::createEntity( Qgs3DMapSettings * ) const
+Qt3DCore::QEntity *QgsCategorized3DRenderer::createEntity( Qgs3DMapSettings *mapSettings ) const
 {
-  return nullptr;
+  QgsVectorLayer *vectorLayer = layer();
+
+  if ( !vectorLayer )
+  {
+    return nullptr;
+  }
+
+  return new QgsCategorizedChunkedEntity( mapSettings, vectorLayer, Qgs3DUtils::MINIMUM_VECTOR_Z_ESTIMATE, Qgs3DUtils::MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), this );
 }
 
 void QgsCategorized3DRenderer::setClassAttribute( QString attributeName )
