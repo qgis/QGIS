@@ -771,9 +771,9 @@ try:
 
    def _fields_as_numpy(self, field_names: _typing.List[str], null_value: _typing.Optional[object], request: _typing.Optional[QgsFeatureRequest] = None, target_types: _typing.Optional[_typing.List[_numpy.dtype]] = None, use_masking: bool = True) -> _typing.Union[_numpy.ndarray, _numpy.ma.MaskedArray]:      
       field_indices = [self.fields().lookupField(name) for name in field_names]
-      for field_index in field_indices:
+      for idx, field_index in enumerate(field_indices):
           if field_index < 0:
-            raise KeyError(f"Field '{field_names[field_index]}' does not exist.")
+            raise KeyError(f"Field '{field_names[idx]}' does not exist.")
 
       if target_types is None:
           dtypes = [(self.fields().at(i).name(), _qvariant_type_to_numeric_data_type(self.fields().at(i).type())) for i in field_indices]
