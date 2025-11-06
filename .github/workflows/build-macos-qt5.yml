@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-14-intel
+          - os: macos-14
             triplet: x64-osx-dynamic-release
             deployment-target: "10.15"
           - os: macos-14
