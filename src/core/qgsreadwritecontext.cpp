@@ -87,8 +87,9 @@ void QgsReadWriteContext::setTransformContext( const QgsCoordinateTransformConte
 void QgsReadWriteContext::setProjectTranslator( QgsProjectTranslator *projectTranslator )
 {
   mProjectTranslator = projectTranslator;
+  if ( !mProjectTranslator )
+    mProjectTranslator = sDefaultTranslator();
 }
-
 
 QList<QgsReadWriteContext::ReadWriteMessage > QgsReadWriteContext::takeMessages()
 {

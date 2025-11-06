@@ -291,7 +291,8 @@ static void dumpBacktrace( unsigned int depth )
     int dup_stderr = dup( stderr_fd );
     if ( dup_stderr != STDERR_FILENO )
     {
-      close( dup_stderr );
+      if ( dup_stderr >= 0 )
+        close( dup_stderr );
       QgsDebugError( QStringLiteral( "dup to stderr failed" ) );
     }
     close( stderr_fd );

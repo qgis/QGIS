@@ -11313,6 +11313,9 @@ void QgisApp::updateLayerModifiedActions()
 
 QList<QgsMapLayer *> QgisApp::editableLayers( bool modified, bool ignoreLayersWhichCannotBeToggled ) const
 {
+  if ( !mLayerTreeView )
+    return {};
+
   QList<QgsMapLayer *> editLayers;
   // use legend layers (instead of registry) so QList mirrors its order
   const auto constFindLayers = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();

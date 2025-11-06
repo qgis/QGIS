@@ -875,6 +875,8 @@ bool QgsMapToolMoveLabel::currentCalloutDataDefinedPosition( double &x, bool &xS
 QgsPointXY QgsMapToolMoveLabel::snapCalloutPointToCommonAngle( const QgsPointXY &mapPoint, bool showStatusMessage ) const
 {
   const int index = mCurrentCalloutMoveOrigin ? 0 : 1;
+  if ( !mCalloutMoveRubberBand )
+    return mapPoint;
 
   const QgsPointXY start = *mCalloutMoveRubberBand->getPoint( 0, index == 0 ? 1 : 0 );
   const double cursorDistance = start.distance( mapPoint );

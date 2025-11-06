@@ -150,8 +150,11 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mFilterByMapCheckBox, &QCheckBox::toggled, mButtonLinkedMaps, &QWidget::setEnabled );
   mButtonLinkedMaps->setEnabled( false );
   connect( mButtonLinkedMaps, &QToolButton::clicked, this, [=] {
-    mMapFilteringWidget = new QgsLayoutLegendMapFilteringWidget( mLegend );
-    openPanel( mMapFilteringWidget );
+    if ( mLegend )
+    {
+      mMapFilteringWidget = new QgsLayoutLegendMapFilteringWidget( mLegend );
+      openPanel( mMapFilteringWidget );
+    }
   } );
 
   setPanelTitle( tr( "Legend Properties" ) );

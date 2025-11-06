@@ -282,9 +282,9 @@ bool QgsBrowserProxyModel::hasChildren( const QModelIndex &parent ) const
   if ( isFertile && parent.isValid() )
   {
     QgsDataItem *item = dataItem( parent );
-    if ( ! mShowLayers )
+    if ( item && !mShowLayers )
     {
-      return ! item->layerCollection();
+      return !item->layerCollection();
     }
     // Hide everything below layers if filter is set
     else if ( mFilterByLayerType && qobject_cast< QgsLayerItem * >( item ) )

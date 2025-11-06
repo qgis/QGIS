@@ -130,7 +130,7 @@ std::vector<QgsGeometry> QgsExplodeAlgorithm::extractAsParts( const QgsGeometry 
   if ( geometry.isMultipart() )
   {
     std::vector<QgsGeometry> parts;
-    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry.constGet() );
+    const QgsGeometryCollection *collection = qgis::down_cast< const QgsGeometryCollection * >( geometry.constGet() );
     for ( int part = 0; part < collection->numGeometries(); ++part )
     {
       std::vector<QgsGeometry> segments = curveAsSingleSegments( qgsgeometry_cast<const QgsCurve *>( collection->geometryN( part ) ) );
