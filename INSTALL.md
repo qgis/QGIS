@@ -13,18 +13,16 @@ Building QGIS from source - step by step
    * [3.6. Check out the QGIS Source Code](#36-check-out-the-qgis-source-code)
    * [3.7. Starting the compile](#37-starting-the-compile)
       + [3.7.1 Available compilation flags](#371-available-compilation-flags)
-   * [3.8. Compiling with 3D](#38-compiling-with-3d)
-      + [3.8.1. Compiling with 3D on old Debian based distributions](#381-compiling-with-3d-on-old-debian-based-distributions)
-   * [3.9. Building different branches](#39-building-different-branches)
-   * [3.10. Building Debian packages](#310-building-debian-packages)
-      + [3.10.1. Building packages with Oracle support](#3101-building-packages-with-oracle-support)
-   * [3.11. On Fedora Linux](#311-on-fedora-linux)
-      + [3.11.1. Install build dependencies](#3111-install-build-dependencies)
-      + [3.11.2. Suggested system tweaks](#3112-suggested-system-tweaks)
-      + [3.11.3. Additional tools for QGIS development](#3113-additional-tools-for-qgis-development)
-      + [3.11.4. QT6 builds with Fedora Rawhide](#3114-qt6-builds-with-fedora-rawhide)
-   * [3.12. Building on Linux with vcpkg](#312-building-on-linux-with-vcpkg)
-   * [3.13. Building and running with Nix](#313-building-and-running-with-nix)
+   * [3.8. Building different branches](#38-building-different-branches)
+   * [3.9. Building Debian packages](#39-building-debian-packages)
+      + [3.9.1. Building packages with Oracle support](#391-building-packages-with-oracle-support)
+   * [3.10. On Fedora Linux](#310-on-fedora-linux)
+      + [3.10.1. Install build dependencies](#3101-install-build-dependencies)
+      + [3.10.2. Suggested system tweaks](#3102-suggested-system-tweaks)
+      + [3.10.3. Additional tools for QGIS development](#3103-additional-tools-for-qgis-development)
+      + [3.10.4. QT6 builds with Fedora Rawhide](#3104-qt6-builds-with-fedora-rawhide)
+   * [3.11. Building on Linux with vcpkg](#311-building-on-linux-with-vcpkg)
+   * [3.12. Building and running with Nix](#312-building-and-running-with-nix)
 - [4. Building on Windows](#4-building-on-windows)
    * [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
       + [4.1.1. Visual Studio 2022 Community Edition](#411-visual-studio-2022-community-edition)
@@ -376,30 +374,13 @@ A complete list can been extracted from the source code with the following comma
 cmake .. -N -LH | grep -B1 WITH_
 ```
 
-## 3.8. Compiling with 3D
+As an example, to build with 3D, you need to enable in the cmake:
 
-In the cmake, you need to enable:
 ```bash
 WITH_3D=True
 ```
 
-### 3.8.1. Compiling with 3D on old Debian based distributions
-
-QGIS 3D requires Qt53DExtras. These headers have been removed
-from Qt upstream on Debian Buster and Ubuntu focal (20.04) based distributions.
-A copy has been made in the QGIS repository in `external/qt3dextra-headers`.
-To compile with 3D enabled on these distributions, you need to add some cmake options:
-
-```bash
-CMAKE_PREFIX_PATH={path to QGIS Git repo}/external/qt3dextra-headers/cmake
-QT5_3DEXTRA_INCLUDE_DIR={path to QGIS Git repo}/external/qt3dextra-headers
-QT5_3DEXTRA_LIBRARY=/usr/lib/x86_64-linux-gnu/libQt53DExtras.so
-Qt53DExtras_DIR={path to QGIS Git repo}/external/qt3dextra-headers/cmake/Qt53DExtras
-```
-
-Above instructions do not apply to newer versions of Debian and Ubuntu.
-
-## 3.9. Building different branches
+## 3.8. Building different branches
 
 By using `git worktree`, you can switch between different branches to use
 several sources in parallel, based on the same Git configuration.
@@ -415,7 +396,7 @@ git rebase -i qgis/master
 git push -u my_own_repo my_new_functionality
 ```
 
-## 3.10. Building Debian packages
+## 3.9. Building Debian packages
 
 Instead of creating a personal installation as in the previous step you can
 also create debian package. This is done from the QGIS root directory, where
@@ -459,7 +440,7 @@ Install them using `dpkg`.  E.g.:
 sudo debi
 ```
 
-### 3.10.1. Building packages with Oracle support
+### 3.9.1. Building packages with Oracle support
 
 To build packages with Oracle support you need the Oracle libraries (currently
 21.11) as additional build dependencies:
@@ -481,12 +462,12 @@ dch -l ~sid~oracle --force-distribution --distribution sid-oracle "sid build wit
 dpkg-buildpackage -us -uc -b
 ```
 
-## 3.11. On Fedora Linux
+## 3.10. On Fedora Linux
 
 We assume that you have the source code of QGIS ready and created a
 new subdirectory called `build` or `build-qt5` in it.
 
-### 3.11.1. Install build dependencies
+### 3.10.1. Install build dependencies
 
 |Distribution|Install command for packages|
 |------------|----------------------------|
@@ -553,7 +534,7 @@ default.debug=true
 EOL
 ```
 
-### 3.11.3. Additional tools for QGIS development
+### 3.10.3. Additional tools for QGIS development
 
 If you're going to be developing QGIS on a Fedora system, the following extra packages
 are required for the various QGIS source formatting and preparation scripts.
@@ -562,7 +543,7 @@ are required for the various QGIS source formatting and preparation scripts.
 dnf install ag ccache expect ninja-build astyle python3-autopep8 python3-mock python3-nose2 perl-YAML-Tiny
 ```
 
-### 3.11.4. QT6 builds with Fedora Rawhide
+### 3.10.4. QT6 builds with Fedora Rawhide
 
 This requires latest QGIS master (>= January 25th 2024).
 
@@ -586,7 +567,7 @@ To build,
 cmake ..
 ```
 
-## 3.12. Building on Linux with vcpkg
+## 3.11. Building on Linux with vcpkg
 
 With [vcpkg](https://github.com/microsoft/vcpkg/) you can develop QGIS using
 Qt6 on a Linux system.
@@ -618,7 +599,7 @@ Build:
 cmake --build ./build-x64-linux
 ```
 
-## 3.13. Building and running with Nix
+## 3.12. Building and running with Nix
 
 With [Nix](https://nixos.org/) and [Nixpkgs](https://github.com/NixOS/nixpkgs)
 you can build and run any QGIS version directly from Git using a single command.
