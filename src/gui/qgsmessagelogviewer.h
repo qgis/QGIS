@@ -50,7 +50,7 @@ class GUI_EXPORT QgsMessageLogViewer : public QDialog, private Ui::QgsMessageLog
      *
      * The \a type argument was added in QGIS 4.0
      */
-    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::LogMessageType type = Qgis::LogMessageType::Text );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat type = Qgis::StringFormat::PlainText );
 
     /**
      * Activates the tab whose title matches the given \a tag, if any.

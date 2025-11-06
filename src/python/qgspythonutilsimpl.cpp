@@ -135,7 +135,7 @@ _ssr = StartupScriptRunner()
     {
       QgsMessageOutput *msg = QgsMessageOutput::createMessageOutput();
       msg->setTitle( QObject::tr( "Python error" ) );
-      msg->setMessage( QObject::tr( "The extra plugin path '%1' does not exist!" ).arg( p ), QgsMessageOutput::MessageText );
+      msg->setMessage( QObject::tr( "The extra plugin path '%1' does not exist!" ).arg( p ), Qgis::StringFormat::PlainText );
       msg->showMessage();
     }
 #ifdef Q_OS_WIN
@@ -467,7 +467,7 @@ bool QgsPythonUtilsImpl::runString( const QString &command, QString msgOnError, 
   qDebug() << str;
   QgsMessageOutput *msg = QgsMessageOutput::createMessageOutput();
   msg->setTitle( QObject::tr( "Python error" ) );
-  msg->setMessage( str, QgsMessageOutput::MessageHtml );
+  msg->setMessage( str, Qgis::StringFormat::Html );
   msg->showMessage();
 
   return res;
@@ -525,7 +525,7 @@ bool QgsPythonUtilsImpl::runFile( const QString &filename, const QString &messag
 
   QgsMessageOutput *msg = QgsMessageOutput::createMessageOutput();
   msg->setTitle( QObject::tr( "Python error" ) );
-  msg->setMessage( str, QgsMessageOutput::MessageHtml );
+  msg->setMessage( str, Qgis::StringFormat::Html );
   msg->showMessage();
 
   return false;
@@ -593,7 +593,7 @@ bool QgsPythonUtilsImpl::setArgv( const QStringList &arguments, const QString &m
 
   QgsMessageOutput *msg = QgsMessageOutput::createMessageOutput();
   msg->setTitle( QObject::tr( "Python error" ) );
-  msg->setMessage( str, QgsMessageOutput::MessageHtml );
+  msg->setMessage( str, Qgis::StringFormat::Html );
   msg->showMessage();
 
   return false;

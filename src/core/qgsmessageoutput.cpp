@@ -39,7 +39,7 @@ QgsMessageOutput *QgsMessageOutput::createMessageOutput()
   return mMessageOutputCreator();
 }
 
-void QgsMessageOutput::showMessage( const QString &title, const QString &message, Qgis::LogMessageType msgType )
+void QgsMessageOutput::showMessage( const QString &title, const QString &message, Qgis::StringFormat msgType )
 {
   QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
   output->setTitle( title );
@@ -50,7 +50,7 @@ void QgsMessageOutput::showMessage( const QString &title, const QString &message
 ////////////////////////////////
 // QgsMessageOutputConsole
 
-void QgsMessageOutputConsole::setMessage( const QString &message, Qgis::LogMessageType msgType )
+void QgsMessageOutputConsole::setMessage( const QString &message, Qgis::StringFormat msgType )
 {
   mMessage = message;
   mMsgType = msgType;

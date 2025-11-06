@@ -62,7 +62,7 @@ QgsRunProcess::QgsRunProcess( const QString &action, bool capture )
     // It will delete itself when the dialog box is closed.
     mOutput = QgsMessageOutput::createMessageOutput();
     mOutput->setTitle( action );
-    mOutput->setMessage( tr( "<b>Starting %1…</b>" ).arg( action ), QgsMessageOutput::MessageHtml );
+    mOutput->setMessage( tr( "<b>Starting %1…</b>" ).arg( action ), Qgis::StringFormat::Html );
     mOutput->showMessage( false ); // non-blocking
 
     // get notification of delete if it's derived from QObject
@@ -164,7 +164,7 @@ void QgsRunProcess::processError( QProcess::ProcessError err )
   if ( err == QProcess::FailedToStart )
   {
     QgsMessageOutput *output = mOutput ? mOutput : QgsMessageOutput::createMessageOutput();
-    output->setMessage( tr( "Unable to run command %1" ).arg( mCommand ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Unable to run command %1" ).arg( mCommand ), Qgis::StringFormat::PlainText );
     // Didn't work, so no need to hang around
     die();
   }

@@ -104,7 +104,7 @@ void QgsMessageLogViewer::reject()
 {
 }
 
-void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::LogMessageType type )
+void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat type )
 {
   constexpr int MESSAGE_COUNT_LIMIT = 10000;
   // Avoid logging too many messages, which might blow memory.
@@ -173,10 +173,10 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   QString cleanedMessage;
   switch ( type )
   {
-    case Qgis::LogMessageType::Html:
+    case Qgis::StringFormat::Html:
       cleanedMessage = message;
       break;
-    case Qgis::LogMessageType::Text:
+    case Qgis::StringFormat::PlainText:
       cleanedMessage = message.toHtmlEscaped();
       break;
   }
