@@ -109,13 +109,13 @@ Sets the node's ``settings``.
 %Docstring
 Sets legend node maximum value to ``maximum``.
 
-@param maximum
+:param maximum: 
 %End
     void setMinimum( const double minimum );
 %Docstring
 Sets legend node minimum value to ``minimum``.
 
-@param minimum
+:param minimum: 
 %End
 };
 
