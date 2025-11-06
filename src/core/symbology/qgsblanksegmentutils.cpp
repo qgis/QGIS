@@ -20,12 +20,10 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
 {
   QString currentNumber;
   QList<QList<BlankSegments>> blankSegments;
+  constexpr char internalError[] = "Internal error while processing blank segments";
 
-  constexpr QStringView internalError = u"Internal error while processing blank segments";
-
-  auto appendLevel = [&blankSegments, &internalError]( int level ) -> QString
+  auto appendLevel = [&blankSegments, &internalError]( int level ) -> void
   {
-
     if ( level == 0 )
     {
       blankSegments.append( QList<BlankSegments>() );
@@ -33,160 +31,121 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
     else if ( level == 1 )
     {
       if ( blankSegments.isEmpty() )
-        return internalError.toString() ; // should not happen
-
+        throw std::runtime_error( internalError ); // should not happen
       blankSegments.back().append( BlankSegments() );
     }
     else if ( level == 2 )
     {
       if ( blankSegments.isEmpty() || blankSegments.back().isEmpty() )
-        return internalError.toString(); // should not happen
-
+        throw std::runtime_error( internalError ); // should not happen
       blankSegments.back().back().append( QPair<double, double>( -1, -1 ) );
     }
     else
-      return internalError.toString(); // should not happen
-
-    return QString();
+      throw std::runtime_error( internalError ); // should not happen
   };
 
-
-  auto addNumber = [&blankSegments, &internalError, &currentNumber]( const QChar & c ) -> QString
+  auto addNumber = [&blankSegments, &internalError, &currentNumber]( const QChar & c ) -> void
   {
     if ( blankSegments.isEmpty() || blankSegments.back().isEmpty() || blankSegments.back().back().isEmpty() )
     {
-      return internalError.toString(); // should not happen
+      throw std::runtime_error( internalError ); // should not happen
     }
-    else if ( ( c == ')' || c == ',' ) && blankSegments.back().back().back().first == -1 )
+
+    if ( ( c == ')' || c == ',' ) && blankSegments.back().back().back().first == -1 )
     {
-      return QStringLiteral( "Missing number" );
+      throw std::runtime_error( "Missing number" );
     }
-    else if ( blankSegments.back().back().back().second != -1 )
+
+    if ( blankSegments.back().back().back().second != -1 )
     {
-      return QStringLiteral( "Too many number" );
+      throw std::runtime_error( "Too many number" );
+    }
+
+    bool ok;
+    const double number = currentNumber.toDouble( &ok );
+    if ( !ok )
+    {
+      throw std::runtime_error( QStringLiteral( "bad formatted number '%1'" ).arg( currentNumber ).toStdString() );
+    }
+
+    BlankSegments &segments = blankSegments.back().back();
+    if ( segments.back().first == -1 )
+    {
+      if ( segments.count() > 1 && segments.at( segments.count() - 2 ).second > number )
+        throw std::runtime_error( QStringLiteral( "Wrong blank segments distances, start (%1) < previous end (%2)" ).arg( number ).arg( segments.at( segments.count() - 2 ).second ).toStdString() );
+
+      blankSegments.back().back().back().first = number;
+    }
+    else if ( blankSegments.back().back().back().first > number )
+    {
+      throw std::runtime_error( QStringLiteral( "Wrong blank segments distances, start (%1) > end (%2)" ).arg( blankSegments.back().back().back().first ).arg( number ).toStdString() );
     }
     else
     {
-      bool ok;
-      const double number = currentNumber.toDouble( &ok );
-      if ( !ok )
-      {
-        return QStringLiteral( "bad formatted number '%1'" ).arg( currentNumber );
-      }
-      else
-      {
-        BlankSegments &segments = blankSegments.back().back();
-        if ( segments.back().first == -1 )
-        {
-          if ( segments.count() > 1 && segments.at( segments.count() - 2 ).second > number )
-          {
-            return QStringLiteral( "Wrong blank segments distances, start (%1) < previous end (%2)" ).arg( number ).arg( segments.at( segments.count() - 2 ).second );
-          }
-          blankSegments.back().back().back().first = number;
-        }
-        else if ( blankSegments.back().back().back().first > number )
-        {
-          return QStringLiteral( "Wrong blank segments distances, start (%1) > end (%2)" ).arg( blankSegments.back().back().back().first ).arg( number );
-        }
-        else
-        {
-          blankSegments.back().back().back().second = number;
-        }
-        currentNumber.clear();
-      }
+      blankSegments.back().back().back().second = number;
     }
-
-    return QString();
+    currentNumber.clear();
   };
 
   int level = -1;
   int iChar = 0;
-  for ( const QChar &c : strBlankSegments )
+  try
   {
-    if ( !currentNumber.isEmpty() && ( c.isSpace() || c == ')' || c == "," ) )
+    for ( const QChar &c : strBlankSegments )
     {
-      if ( level < 2 )
+      if ( !currentNumber.isEmpty() && ( c.isSpace() || c == ')' || c == "," ) )
       {
-        error = QStringLiteral( "Missing '('" );
+        if ( level < 2 )
+          throw std::runtime_error( "Missing '('" );
+        addNumber( c );
       }
-      else
-      {
-        error = addNumber( c );
-      }
-    }
 
-    if ( !error.isEmpty() )
-    {
-      break;
-    }
-
-    if ( c == '(' )
-    {
-      if ( level >= 2 )
+      if ( c == '(' )
       {
-        error = QStringLiteral( "Extraneous '('" );
+        if ( level >= 2 )
+          throw std::runtime_error( "Extraneous '('" );
+        appendLevel( ++level );
       }
-      else
+      else if ( c == ')' )
       {
-        error = appendLevel( ++level );
-      }
-    }
-    else if ( c == ')' )
-    {
-      if ( level < 0 )
-      {
-        error = QStringLiteral( "Extraneous ')'" );
-      }
-      else
-      {
+        if ( level < 0 )
+          throw std::runtime_error( "Extraneous ')'" );
         if ( level == 2 && !blankSegments.isEmpty() && !blankSegments.back().isEmpty() && blankSegments.back().back().count() == 1
              && blankSegments.back().back().back() == QPair<double, double>( -1, -1 ) )
         {
           blankSegments.back().back().pop_back();
         }
         level--;
+
       }
-    }
-    else if ( c == ',' )
-    {
-      if ( ( level == 0 && blankSegments.count() == 0 )
-           || ( level == 1 && !blankSegments.isEmpty() && blankSegments.back().count() == 0 )
-           || ( level == 2 && !blankSegments.isEmpty() && !blankSegments.back().isEmpty() &&  blankSegments.back().back().count() == 0 ) )
+      else if ( c == ',' )
       {
-        error = QStringLiteral( "No elements, Not expecting ','" );
+        if ( ( level == 0 && blankSegments.count() == 0 )
+             || ( level == 1 && !blankSegments.isEmpty() && blankSegments.back().count() == 0 )
+             || ( level == 2 && !blankSegments.isEmpty() && !blankSegments.back().isEmpty() &&  blankSegments.back().back().count() == 0 ) )
+          throw std::runtime_error( "No elements, Not expecting ','" );
+
+        appendLevel( level );
       }
-      else
+      else if ( c.isNumber() || c == '.' )
       {
-        error = appendLevel( level );
+        currentNumber.append( c );
       }
+      else if ( !c.isSpace() )
+      {
+        throw std::runtime_error( QStringLiteral( "Invalid character '%1'" ).arg( c ).toStdString() );
+      }
+      iChar++;
     }
-    else if ( c.isNumber() || c == '.' )
+    if ( level != -1 )
     {
-      currentNumber.append( c );
+      throw std::runtime_error( "Missing ')'" );
     }
-    else if ( !c.isSpace() )
-    {
-      error = QStringLiteral( "Invalid character '%1'" ).arg( c );
-    }
-
-    if ( !error.isEmpty() )
-    {
-      break;
-    }
-
-    iChar++;
   }
-
-
-  if ( error.isEmpty() && level != -1 )
-  {
-    error = "Missing ')'";
-  }
-
-  if ( !error.isEmpty() )
+  catch ( const std::exception &e )
   {
     blankSegments.clear();
-    error += QStringLiteral( " (column: %1)" ).arg( iChar );
+    error = QStringLiteral( "%1 (column: %2)" ).arg( e.what() ).arg( iChar );
   }
 
   // convert in pixels
