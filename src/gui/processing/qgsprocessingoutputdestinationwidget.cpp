@@ -200,9 +200,17 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
     value.setRemappingDefinition( mRemapDefinition );
 
   // this marks named temporary layer
-  if ( key == QgsProcessing::TEMPORARY_OUTPUT && !leText->text().isEmpty() )
+  if ( key == QgsProcessing::TEMPORARY_OUTPUT && !leText->text().isEmpty() && couldBeTemporaryLayerName( leText->text() ) )
   {
-    value.destinationName = leText->text();
+    QString memoryLayerName = memoryProviderLayerName( leText->text() );
+    if ( !memoryLayerName.isEmpty() )
+    {
+      value.destinationName = memoryLayerName;
+    }
+    else
+    {
+      value.destinationName = leText->text();
+    }
   }
 
   return value;
@@ -759,7 +767,24 @@ void QgsProcessingLayerOutputDestinationWidget::dropEvent( QDropEvent *event )
   leText->setHighlighted( false );
 }
 
-bool QgsProcessingLayerOutputDestinationWidget::couldBeTemporaryLayerName( const QString &value )
+QString QgsProcessingLayerOutputDestinationWidget::memoryProviderLayerName( const QString &value ) const
+{
+  if ( value == QLatin1String( "memory:" ) )
+    return QString();
+
+  QString provider;
+  QString uri;
+  bool hasProviderAndUri = QgsProcessingUtils::decodeProviderKeyAndUri( value, provider, uri );
+
+  if ( hasProviderAndUri && provider == QLatin1String( "memory" ) )
+  {
+    return uri;
+  }
+
+  return QString();
+}
+
+bool QgsProcessingLayerOutputDestinationWidget::couldBeTemporaryLayerName( const QString &value ) const
 {
   if ( value == QgsProcessing::TEMPORARY_OUTPUT || mParameter->type() != QgsProcessingParameterFeatureSink::typeName() || !mParameter->supportsNonFileBasedOutput() )
     return false;

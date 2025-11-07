@@ -126,7 +126,8 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     /**
      * Checks if \a value can be used as name for temporary layer. Empty value is a valid case.
      */
-    bool couldBeTemporaryLayerName( const QString &value );
+    bool couldBeTemporaryLayerName( const QString &value ) const;
+    QString memoryProviderLayerName( const QString &value ) const;
 
     QString mimeDataToPath( const QMimeData *data );
 
