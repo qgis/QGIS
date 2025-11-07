@@ -97,6 +97,43 @@ QColor QgsPhongMaterialSettings::averageColor() const
   return QColor::fromRgbF( static_cast<float>( red ), static_cast<float>( green ), static_cast<float>( blue ), static_cast<float>( mOpacity ) );
 }
 
+void QgsPhongMaterialSettings::setColorsFromBase( const QColor &baseColor, float metallic )
+{
+  metallic = std::clamp( metallic, 0.0f, 1.0f );
+
+  const float baseR = baseColor.redF();
+  const float baseG = baseColor.greenF();
+  const float baseB = baseColor.blueF();
+
+  // ambient: stable, non-directional lighting
+  constexpr float AMBIENT_FACTOR = 0.2f;
+  mAmbient = QColor::fromRgbF( baseR * AMBIENT_FACTOR, baseG * AMBIENT_FACTOR, baseB * AMBIENT_FACTOR );
+
+  // F0: Fresnel reflectance at normal incidence
+  constexpr float F0_DIELECTRIC = 0.04f;
+  constexpr float F0_METALLIC = 0.6f;
+  const float ks = F0_DIELECTRIC * ( 1.0f - metallic ) + F0_METALLIC * metallic;
+  const float kd = 1.0f - ks;
+
+
+  mDiffuse = QColor::fromRgbF( kd * baseR, kd * baseG, kd * baseB );
+
+  // specular
+  // * Non-metallic surfaces: Independent of base color
+  // * Metallic surfaces:
+  //   - Reflect their own color
+  //   - Linear interpolation from white to base color as metallic increases
+  mSpecular = QColor::fromRgbF(
+    ( 1.0f - metallic ) * F0_DIELECTRIC + metallic * baseR,
+    ( 1.0f - metallic ) * F0_DIELECTRIC + metallic * baseG,
+    ( 1.0f - metallic ) * F0_DIELECTRIC + metallic * baseB
+  );
+
+  constexpr float MIN_SHININESS = 32.0f;
+  constexpr float MAX_SHININESS = 200.0f;
+  mShininess = MIN_SHININESS + metallic * ( MAX_SHININESS - MIN_SHININESS );
+}
+
 void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsColorUtils::colorFromString( elem.attribute( u"ambient"_s, u"25,25,25"_s ) );
