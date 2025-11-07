@@ -230,7 +230,8 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       transparencyItem->setData( Qt::UserRole, RasterTransparency );
       mOptionsListWidget->addItem( transparencyItem );
 
-      if ( static_cast<QgsRasterLayer *>( layer )->dataProvider() && static_cast<QgsRasterLayer *>( layer )->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size )
+      QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( layer->dataProvider() );
+      if ( provider && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
       {
         QListWidgetItem *histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/histogram.svg" ) ), QString() );
         histogramItem->setData( Qt::UserRole, RasterHistogram );
@@ -645,7 +646,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           }
           case 2: // Histogram
           {
-            if ( rlayer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size )
+            QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( rlayer->dataProvider() );
+            if ( provider && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
             {
               if ( !mRasterStyleWidget )
               {
