@@ -282,6 +282,12 @@
         "qtpositioning"
       ]
     },
+    "qtwebengine": {
+      "description": "Determines whether QGIS should be built with webengine",
+      "dependencies": [
+        "qtwebengine"
+      ]
+    },
     "server": {
       "description": "Determines whether QGIS server should be built",
       "dependencies": [
