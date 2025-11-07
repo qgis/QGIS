@@ -312,6 +312,12 @@
       "dependencies": [
         "sfcgal"
       ]
+    },
+    "qtwebengine": {
+      "description": "Determines whether QGIS should be built with webengine",
+      "dependencies": [
+        "qtwebengine"
+      ]
     }
   }
 }

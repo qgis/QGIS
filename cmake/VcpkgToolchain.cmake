@@ -37,6 +37,9 @@ endif()
 if(VCPKG_TARGET_TRIPLET MATCHES "^wasm32-")
   set(VCPKG_MANIFEST_NO_DEFAULT_FEATURES ON)
 endif()
+if(WITH_QTWEBENGINE)
+  list(APPEND VCPKG_MANIFEST_FEATURES "qtwebengine")
+endif()
 
 # Binarycache can only be used on Windows or if mono is available.
 find_program(_VCPKG_MONO mono)
