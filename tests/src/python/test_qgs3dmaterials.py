@@ -258,6 +258,49 @@ class TestQgsPhongMaterialSettings(QgisTestCase):
         self.assertEqual(avg_color.blue(), 5)
         self.assertEqual(avg_color.alpha(), 191)
 
+    def test_set_colors_from_base(self):
+        settings = QgsPhongMaterialSettings()
+        settings.setShininess(100.0)
+        base_color = QColor(217, 151, 103)
+        settings.setColorsFromBase(base_color)
+
+        ambient = settings.ambient()
+        self.assertEqual(ambient.red(), 43)
+        self.assertEqual(ambient.green(), 30)
+        self.assertEqual(ambient.blue(), 21)
+
+        diffuse = settings.diffuse()
+        self.assertEqual(diffuse.red(), 208)
+        self.assertEqual(diffuse.green(), 145)
+        self.assertEqual(diffuse.blue(), 99)
+
+        specular = settings.specular()
+        self.assertEqual(specular.red(), 10)
+        self.assertEqual(specular.green(), 10)
+        self.assertEqual(specular.blue(), 10)
+
+        self.assertAlmostEqual(settings.shininess(), 32.0, 1)
+
+        # with metallic parameter
+        settings.setColorsFromBase(base_color, 0.6)
+
+        ambient = settings.ambient()
+        self.assertEqual(ambient.red(), 43)
+        self.assertEqual(ambient.green(), 30)
+        self.assertEqual(ambient.blue(), 21)
+
+        diffuse = settings.diffuse()
+        self.assertEqual(diffuse.red(), 135)
+        self.assertEqual(diffuse.green(), 94)
+        self.assertEqual(diffuse.blue(), 64)
+
+        specular = settings.specular()
+        self.assertEqual(specular.red(), 134)
+        self.assertEqual(specular.green(), 95)
+        self.assertEqual(specular.blue(), 66)
+
+        self.assertAlmostEqual(settings.shininess(), 132.8, 1)
+
 
 class TestQgsGoochMaterialSettings(QgisTestCase):
     def test_getters_setters(self):
