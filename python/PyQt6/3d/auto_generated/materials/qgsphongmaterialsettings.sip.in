@@ -182,6 +182,22 @@ strength factor of the specular color).
 .. versionadded:: 3.36
 %End
 
+    QColor averageColor() const;
+%Docstring
+Returns an approximate color representing the blended material color.
+
+This function calculates a weighted average of the ambient, diffuse, and
+specular color components to produce a single representative color.
+
+.. seealso:: :py:func:`ambient`
+
+.. seealso:: :py:func:`diffuse`
+
+.. seealso:: :py:func:`specular`
+
+.. versionadded:: 4.0
+%End
+
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;

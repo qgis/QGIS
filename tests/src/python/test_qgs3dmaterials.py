@@ -230,6 +230,33 @@ class TestQgsPhongMaterialSettings(QgisTestCase):
 
         self.assertEqual(settings, settings2)
 
+    def test_average_color(self):
+        # metallic blue
+        settings = QgsPhongMaterialSettings()
+        settings.setAmbient(QColor(0, 17, 51))
+        settings.setDiffuse(QColor(0, 132, 255))
+        settings.setSpecular(QColor(255, 255, 255))
+        settings.setShininess(100.0)
+        settings.setOpacity(1.0)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 26)
+        self.assertEqual(avg_color.green(), 109)
+        self.assertEqual(avg_color.blue(), 204)
+        self.assertEqual(avg_color.alpha(), 255)
+
+        # Matte red
+        settings = QgsPhongMaterialSettings()
+        settings.setAmbient(QColor(34, 0, 0))
+        settings.setDiffuse(QColor(204, 0, 0))
+        settings.setSpecular(QColor(51, 51, 51))
+        settings.setShininess(40.0)
+        settings.setOpacity(0.75)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 141)
+        self.assertEqual(avg_color.green(), 5)
+        self.assertEqual(avg_color.blue(), 5)
+        self.assertEqual(avg_color.alpha(), 191)
+
 
 class TestQgsGoochMaterialSettings(QgisTestCase):
     def test_getters_setters(self):

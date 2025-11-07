@@ -73,6 +73,30 @@ bool QgsPhongMaterialSettings::equals( const QgsAbstractMaterialSettings *other 
   return *this == *otherPhong;
 }
 
+QColor QgsPhongMaterialSettings::averageColor() const
+{
+  const double avgDiffuseFactor = 0.5;
+  const double avgSpecularFactor = 0.1;
+
+  double red = mAmbientCoefficient * mAmbient.redF()
+               + mDiffuseCoefficient * avgDiffuseFactor * mDiffuse.redF()
+               + mSpecularCoefficient * avgSpecularFactor * mSpecular.redF();
+
+  double green = mAmbientCoefficient * mAmbient.greenF()
+                 + mDiffuseCoefficient * avgDiffuseFactor * mDiffuse.greenF()
+                 + mSpecularCoefficient * avgSpecularFactor * mSpecular.greenF();
+
+  double blue = mAmbientCoefficient * mAmbient.blueF()
+                + mDiffuseCoefficient * avgDiffuseFactor * mDiffuse.blueF()
+                + mSpecularCoefficient * avgSpecularFactor * mSpecular.blueF();
+
+  red = std::clamp( red, 0.0, 1.0 );
+  green = std::clamp( green, 0.0, 1.0 );
+  blue = std::clamp( blue, 0.0, 1.0 );
+
+  return QColor::fromRgbF( static_cast<float>( red ), static_cast<float>( green ), static_cast<float>( blue ), static_cast<float>( mOpacity ) );
+}
+
 void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsColorUtils::colorFromString( elem.attribute( u"ambient"_s, u"25,25,25"_s ) );
