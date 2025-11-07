@@ -154,6 +154,26 @@ specular color components to produce a single representative color.
 .. versionadded:: 4.0
 %End
 
+    void setColorsFromBase( const QColor &baseColor, float metallic = 0.0f );
+%Docstring
+Decompose an average color into Phong material components.
+
+Sets ambient and specular colors from the input color. This also sets
+the shininess parameter based on the metallic value.
+
+:param baseColor: The color to decompose
+:param metallic: Controls how "metal-like" a material appears. Value
+                 between 0 and 1
+
+.. seealso:: :py:func:`setAmbient`
+
+.. seealso:: :py:func:`setSpecular`
+
+.. seealso:: :py:func:`setShininess`
+
+.. versionadded:: 4.0
+%End
+
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
