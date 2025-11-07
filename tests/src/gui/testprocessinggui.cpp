@@ -9319,16 +9319,6 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QCOMPARE( skipSpy.count(), 0 );
   QCOMPARE( changedSpy.count(), 4 );
 
-  // set value that will specify layer name and check that it is TEMPORARY_OUTPUT but with destinationName set correctly
-  QString layerName = QStringLiteral( "new layer" );
-  panel.setValue( layerName );
-  v = panel.value();
-  QCOMPARE( changedSpy.count(), 5 );
-  QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
-  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().destinationName, layerName );
-  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
-
-
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), TEST_DATA_DIR );
   panel.setValue( QStringLiteral( "test.shp" ) );
@@ -9336,6 +9326,26 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "utf8" ) );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.shp" ) ) );
+
+  // set value that will specify layer name and check that it is TEMPORARY_OUTPUT but with destinationName set correctly
+  QString layerName = QStringLiteral( "new layer" );
+  panel.setValue( layerName );
+  v = panel.value();
+  QCOMPARE( changedSpy.count(), 6 );
+  QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().destinationName, layerName );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+
+  QgsProcessingOutputLayerDefinition paramDef = QgsProcessingOutputLayerDefinition( QgsProcessing::TEMPORARY_OUTPUT );
+  QString destName = QStringLiteral( "new layer name" );
+  paramDef.destinationName = destName;
+
+  panel.setValue( paramDef );
+  v = panel.value();
+  QCOMPARE( changedSpy.count(), 7 );
+  QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().destinationName, destName );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
 
   // optional, test skipping
   sink.setFlags( sink.flags() | Qgis::ProcessingParameterFlag::Optional );
