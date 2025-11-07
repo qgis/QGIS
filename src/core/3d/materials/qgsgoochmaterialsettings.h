@@ -92,6 +92,21 @@ class CORE_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     //! Sets beta value
     void setBeta( double beta ) { mBeta = beta; }
 
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * This function calculates a weighted average of the cool, warm, diffuse, and
+     * specular color components to produce a single representative color.
+     *
+     * \see cool()
+     * \see diffuse()
+     * \see specular()
+     * \see warm()
+     *
+     * \since QGIS 4.2
+     */
+    QColor averageColor() const;
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
