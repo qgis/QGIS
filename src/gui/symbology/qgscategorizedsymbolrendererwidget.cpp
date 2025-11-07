@@ -1134,7 +1134,7 @@ void QgsCategorizedSymbolRendererWidget::addCategory()
   if ( !mModel )
     return;
   QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
-  const QgsRendererCategory cat( QString(), symbol, QString(), true );
+  const QgsRendererCategory cat( QVariant(), symbol, QString(), true );
   mModel->addCategory( cat );
   emit widgetChanged();
 }
