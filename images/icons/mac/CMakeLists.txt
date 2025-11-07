@@ -2,5 +2,5 @@
 if (WITH_DESKTOP)
   file (GLOB ICONS *.icns)
   install (FILES ${ICONS}
-           DESTINATION ${APP_RESOURCES_DIR})
+           DESTINATION "${DEFAULT_DATA_SUBDIR}")
 endif()

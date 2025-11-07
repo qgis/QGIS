@@ -91,7 +91,7 @@ ELSE()
   SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 ENDIF()
 
-set(QGIS_PYTHON_DIR ${Python_SITEARCH}/qgis)
+set(QGIS_PYTHON_DIR ${QGIS_PYTHON_INSTALL_DIR}/qgis)
 
 # core module
 file(GLOB_RECURSE sip_files_core ${BINDING_FILES_ROOT_DIR}/core/*.sip ${BINDING_FILES_ROOT_DIR}/core/*.sip.in)
