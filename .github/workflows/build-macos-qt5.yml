@@ -25,9 +25,11 @@ jobs:
           - os: macos-14
             triplet: x64-osx-dynamic-release
             deployment-target: "10.15"
+            osx-architecture: "x86_64"
           - os: macos-14
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
+            osx-architecture: "arm64"
     name: build (macos)
     runs-on: ${{ matrix.os }}
 
@@ -101,6 +103,7 @@ jobs:
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
                 -D CMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.deployment-target }} \
+                -D CMAKE_OSX_ARCHITECTURES=${{ matrix.osx-architecture }} \
                 -D NUGET_USERNAME=${{ github.actor }} \
                 -D NUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }} || true
