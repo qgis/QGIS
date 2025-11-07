@@ -7,6 +7,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 import unittest
+from pathlib import Path
 
 from qgis._3d import (
     QgsGoochMaterialSettings,
@@ -23,7 +24,7 @@ from qgis.testing import QgisTestCase, start_app
 from utilities import unitTestDataPath
 
 start_app()
-TEST_DATA_DIR = unitTestDataPath()
+TEST_DATA_DIR = unitTestDataPath("3d")
 
 
 class TestQgsSimpleLineMaterialSettings(QgisTestCase):
@@ -602,6 +603,35 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
 
         settings.setDiffuseTexturePath("")
         self.assertFalse(settings.requiresTextureCoordinates())
+
+    def test_average_color(self):
+        # metallic blue
+        settings = QgsPhongTexturedMaterialSettings()
+        settings.setAmbient(QColor(0, 17, 71))
+        settings.setSpecular(QColor(255, 255, 255))
+        blue_texture_path = Path(TEST_DATA_DIR) / "texture_blue.png"
+        settings.setDiffuseTexturePath(str(blue_texture_path))
+        settings.setShininess(100.0)
+        settings.setOpacity(1.0)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 14)
+        self.assertEqual(avg_color.green(), 34)
+        self.assertEqual(avg_color.blue(), 66)
+        self.assertEqual(avg_color.alpha(), 255)
+
+        # Matte red
+        settings = QgsPhongTexturedMaterialSettings()
+        settings.setAmbient(QColor(34, 0, 0))
+        settings.setSpecular(QColor(51, 51, 51))
+        red_texture_path = Path(TEST_DATA_DIR) / "texture_red.png"
+        settings.setDiffuseTexturePath(str(red_texture_path))
+        settings.setShininess(40.0)
+        settings.setOpacity(0.75)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 43)
+        self.assertEqual(avg_color.green(), 3)
+        self.assertEqual(avg_color.blue(), 3)
+        self.assertEqual(avg_color.alpha(), 191)
 
 
 class TestQgsNullMaterialSettings(QgisTestCase):
