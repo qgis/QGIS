@@ -242,7 +242,7 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   cbxAllowGeometrylessTables->setDisabled( true );
 }
 
-//! Autoconnected SLOTS *
+//! Autoconnected slots *
 // Slot for adding a new connection
 void QgsHanaSourceSelect::btnNew_clicked()
 {
@@ -302,7 +302,7 @@ void QgsHanaSourceSelect::btnEdit_clicked()
   }
 }
 
-//! End Autoconnected SLOTS *
+//! End Autoconnected slots *
 
 // Remember which database is selected
 void QgsHanaSourceSelect::cmbConnections_activated( int )

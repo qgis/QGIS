@@ -220,6 +220,7 @@ class QgsConnectionPoolGroup
     {
       expirationTimer = new QTimer( parent );
       expirationTimer->setInterval( CONN_POOL_EXPIRATION_TIME * 1000 );
+      // We cannot remove the SLOT() here because it is actually implemented in derived classes
       QObject::connect( expirationTimer, SIGNAL( timeout() ), parent, SLOT( handleConnectionExpired() ) );
 
       // just to make sure the object belongs to main thread and thus will get events

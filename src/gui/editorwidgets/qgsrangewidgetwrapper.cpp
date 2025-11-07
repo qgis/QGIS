@@ -75,7 +75,7 @@ static void setupIntEditor( const QVariant &min, const QVariant &max, const QVar
   slider->setMinimum( min.isValid() ? min.toInt() : std::numeric_limits<int>::lowest() );
   slider->setMaximum( max.isValid() ? max.toInt() : std::numeric_limits<int>::max() );
   slider->setSingleStep( step.isValid() ? step.toInt() : 1 );
-  QObject::connect( slider, SIGNAL( valueChanged( int ) ), wrapper, SLOT( emitValueChanged() ) );
+  QObject::connect( slider, &T::valueChanged, wrapper, &QgsRangeWidgetWrapper::emitValueChanged );
 }
 
 void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
