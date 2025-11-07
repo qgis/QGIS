@@ -54,6 +54,7 @@
     },
     "geos",
     "gsl",
+    "lazperf",
     "jhasse-poly2tri",
     "libpq",
     "libspatialindex",
