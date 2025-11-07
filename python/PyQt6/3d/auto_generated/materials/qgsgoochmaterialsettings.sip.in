@@ -115,6 +115,24 @@ Sets alpha value
 Sets beta value
 %End
 
+    QColor averageColor() const;
+%Docstring
+Returns an approximate color representing the blended material color.
+
+This function calculates a weighted average of the cool, warm, diffuse,
+and specular color components to produce a single representative color.
+
+.. seealso:: :py:func:`cool`
+
+.. seealso:: :py:func:`diffuse`
+
+.. seealso:: :py:func:`specular`
+
+.. seealso:: :py:func:`warm`
+
+.. versionadded:: 4.0
+%End
+
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
