@@ -8217,7 +8217,6 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
         } );
       }
 
-
       this->visibleMessageBar()->pushItem( barItem );
     }
   };
