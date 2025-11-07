@@ -68,7 +68,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
       attribCombo->addItem( field.name() );
     }
     attribCombo->setCurrentIndex( 0 );
-    connect( attribCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateMergeAttributeIndices() ) );
+    connect( attribCombo, &QComboBox::currentIndexChanged, this, &QgsGeometryCheckerResultTab::updateMergeAttributeIndices );
     ui.treeWidgetMergeAttribute->setItemWidget( item, 1, attribCombo );
   }
   updateMergeAttributeIndices();

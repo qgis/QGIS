@@ -313,7 +313,7 @@ void QgsSourceFieldsProperties::apply()
   }
 }
 
-//SLOTS
+// slots
 
 void QgsSourceFieldsProperties::editingToggled()
 {

@@ -81,7 +81,6 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
 
   connect( actionConfigure, &QAction::triggered, this, &checkDock::configure );
   connect( actionValidateAll, &QAction::triggered, this, &checkDock::validateAll );
-  //connect( mValidateSelectedButton, SIGNAL( clicked() ), this, SLOT( validateSelected() ) );
   connect( actionValidateExtent, &QAction::triggered, this, &checkDock::validateExtent );
   connect( mToggleRubberband, &QAbstractButton::clicked, this, &checkDock::toggleErrorMarker );
 
