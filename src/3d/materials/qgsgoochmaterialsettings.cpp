@@ -74,6 +74,22 @@ bool QgsGoochMaterialSettings::equals( const QgsAbstractMaterialSettings *other 
   return *this == *otherGooch;
 }
 
+QColor QgsGoochMaterialSettings::averageColor() const
+{
+  const double kDiffuse = 0.8;
+  const double kSpecular = 0.2;
+
+  double red = 0.5 * kDiffuse * ( ( mCool.redF() + mAlpha * mDiffuse.redF() ) + ( mWarm.redF() + mBeta * mDiffuse.redF() ) ) + kSpecular * mSpecular.redF();
+  double green = 0.5 * kDiffuse * ( ( mCool.greenF() + mAlpha * mDiffuse.greenF() ) + ( mWarm.greenF() + mBeta * mDiffuse.greenF() ) ) + kSpecular * mSpecular.greenF();
+  double blue = 0.5 * kDiffuse * ( ( mCool.blueF() + mAlpha * mDiffuse.blueF() ) + ( mWarm.blueF() + mBeta * mDiffuse.blueF() ) ) + kSpecular * mSpecular.blueF();
+
+  red = std::clamp( red, 0.0, 1.0 );
+  green = std::clamp( green, 0.0, 1.0 );
+  blue = std::clamp( blue, 0.0, 1.0 );
+
+  return QColor::fromRgbF( static_cast<float>( red ), static_cast<float>( green ), static_cast<float>( blue ) );
+}
+
 void QgsGoochMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mWarm = QgsColorUtils::colorFromString( elem.attribute( u"warm"_s, u"107,0,107"_s ) );
