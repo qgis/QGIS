@@ -10,6 +10,7 @@
 
 
 
+
 class QgsPhongTexturedMaterialSettings : QgsAbstractMaterialSettings
 {
 %Docstring(signature="appended")
@@ -134,6 +135,22 @@ Sets the texture rotation in degrees
 Sets opacity of the surface.
 
 .. versionadded:: 3.28
+%End
+
+    QColor averageColor() const;
+%Docstring
+Returns an approximate color representing the blended material color.
+
+This function calculates a weighted average of the ambient, diffuse, and
+specular color components to produce a single representative color.
+
+.. seealso:: :py:func:`ambient`
+
+.. seealso:: :py:func:`specular`
+
+.. seealso:: :py:func:`diffuseTexturePath`
+
+.. versionadded:: 4.0
 %End
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
