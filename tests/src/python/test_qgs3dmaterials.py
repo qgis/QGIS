@@ -460,6 +460,68 @@ class TestQgsGoochMaterialSettings(QgisTestCase):
         self.assertEqual(avg_color.blue(), 255)
         self.assertEqual(avg_color.alpha(), 255)
 
+    def test_set_colors_from_base(self):
+        settings = QgsGoochMaterialSettings()
+        settings.setShininess(100.0)
+        self.assertEqual(settings.alpha(), 0.25)
+        self.assertEqual(settings.beta(), 0.5)
+        # bright green
+        base_color = QColor(76, 204, 51)
+        settings.setColorsFromBase(base_color)
+        self.assertEqual(settings.alpha(), 0.25)
+        self.assertEqual(settings.beta(), 0.5)
+
+        cool = settings.cool()
+        self.assertEqual(cool.red(), 57)
+        self.assertEqual(cool.green(), 153)
+        self.assertEqual(cool.blue(), 102)
+
+        warm = settings.warm()
+        self.assertEqual(warm.red(), 166)
+        self.assertEqual(warm.green(), 230)
+        self.assertEqual(warm.blue(), 26)
+
+        diffuse = settings.diffuse()
+        self.assertEqual(diffuse.red(), 111)
+        self.assertEqual(diffuse.green(), 191)
+        self.assertEqual(diffuse.blue(), 64)
+
+        specular = settings.specular()
+        self.assertEqual(specular.red(), 102)
+        self.assertEqual(specular.green(), 102)
+        self.assertEqual(specular.blue(), 102)
+
+        # set alpha and beta
+        settings2 = QgsGoochMaterialSettings()
+        settings2.setShininess(100.0)
+        self.assertEqual(settings2.alpha(), 0.25)
+        self.assertEqual(settings2.beta(), 0.5)
+        # bright green
+        base_color = QColor(76, 204, 51)
+        settings2.setColorsFromBase(base_color, 0.3, 0.6)
+        self.assertEqual(settings2.alpha(), 0.3)
+        self.assertEqual(settings2.beta(), 0.6)
+
+        cool = settings2.cool()
+        self.assertEqual(cool.red(), 53)
+        self.assertEqual(cool.green(), 143)
+        self.assertEqual(cool.blue(), 112)
+
+        warm = settings2.warm()
+        self.assertEqual(warm.red(), 183)
+        self.assertEqual(warm.green(), 235)
+        self.assertEqual(warm.blue(), 20)
+
+        diffuse = settings2.diffuse()
+        self.assertEqual(diffuse.red(), 118)
+        self.assertEqual(diffuse.green(), 189)
+        self.assertEqual(diffuse.blue(), 66)
+
+        specular = settings2.specular()
+        self.assertEqual(specular.red(), 102)
+        self.assertEqual(specular.green(), 102)
+        self.assertEqual(specular.blue(), 102)
+
 
 class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
     def test_getters_setters(self):
