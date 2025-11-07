@@ -99,13 +99,7 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
     if ( mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
       skipOutput();
     else
-      saveToTemporary();
-
-    if ( !value.toString().isEmpty() )
-    {
-      QSignalBlocker blocker( leText );
-      leText->setText( value.toString() );
-    }
+      saveToTemporary( value.toString() );
   }
   else
   {
@@ -118,7 +112,7 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
       const QgsProcessingOutputLayerDefinition def = value.value<QgsProcessingOutputLayerDefinition>();
       if ( def.sink.staticValue().toString() == QLatin1String( "memory:" ) || def.sink.staticValue().toString() == QgsProcessing::TEMPORARY_OUTPUT || def.sink.staticValue().toString().isEmpty() )
       {
-        saveToTemporary();
+        saveToTemporary( def.destinationName );
       }
       else
       {
@@ -277,7 +271,7 @@ void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
       actionSaveToTemp = new QAction( tr( "Save to a Temporary File" ), this );
     }
 
-    connect( actionSaveToTemp, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToTemporary );
+    connect( actionSaveToTemp, &QAction::triggered, this, [this]() { saveToTemporary(); } );
     mMenu->addAction( actionSaveToTemp );
   }
 
@@ -341,7 +335,7 @@ void QgsProcessingLayerOutputDestinationWidget::skipOutput()
   emit destinationChanged();
 }
 
-void QgsProcessingLayerOutputDestinationWidget::saveToTemporary()
+void QgsProcessingLayerOutputDestinationWidget::saveToTemporary( const QString name )
 {
   const bool prevSkip = outputIsSkipped();
 
@@ -357,10 +351,14 @@ void QgsProcessingLayerOutputDestinationWidget::saveToTemporary()
   {
     leText->setPlaceholderText( tr( "[Save to temporary file]" ) );
   }
-  leText->clear();
 
-  if ( mUseTemporary )
+  if ( name.isEmpty() )
+    leText->clear();
+
+  if ( mUseTemporary && leText->text() == name )
     return;
+
+  leText->setText( name );
 
   mUseTemporary = true;
   mUseRemapping = false;

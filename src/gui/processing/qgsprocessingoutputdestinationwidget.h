@@ -111,7 +111,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
 
     void menuAboutToShow();
     void skipOutput();
-    void saveToTemporary();
+    void saveToTemporary( const QString name = QString() );
     void selectDirectory();
     void selectFile();
     void saveToGeopackage();
