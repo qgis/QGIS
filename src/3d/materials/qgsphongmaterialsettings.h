@@ -151,6 +151,20 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      */
     void setSpecularCoefficient( double coefficient ) { mSpecularCoefficient = coefficient; }
 
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * This function calculates a weighted average of the ambient, diffuse, and
+     * specular color components to produce a single representative color.
+     *
+     * \see ambient()
+     * \see diffuse()
+     * \see specular()
+     *
+     * \since QGIS 4.0
+     */
+    QColor averageColor() const;
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
