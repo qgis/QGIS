@@ -386,6 +386,37 @@ class TestQgsGoochMaterialSettings(QgisTestCase):
 
         self.assertEqual(settings, settings2)
 
+    def test_average_color(self):
+        # warm beige-orange color
+        settings = QgsGoochMaterialSettings()
+        settings.setWarm(QColor(255, 200, 100))
+        settings.setCool(QColor(0, 50, 150))
+        settings.setDiffuse(QColor(200, 100, 50))
+        settings.setSpecular(QColor(255, 255, 200))
+        settings.setShininess(60.0)
+        settings.setAlpha(0.3)
+        settings.setBeta(0.6)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 225)
+        self.assertEqual(avg_color.green(), 187)
+        self.assertEqual(avg_color.blue(), 158)
+        self.assertEqual(avg_color.alpha(), 255)
+
+        # Metallic blue
+        settings = QgsGoochMaterialSettings()
+        settings.setWarm(QColor(150, 170, 220))
+        settings.setCool(QColor(20, 60, 160))
+        settings.setDiffuse(QColor(100, 140, 200))
+        settings.setSpecular(QColor(220, 235, 255))
+        settings.setShininess(120.0)
+        settings.setAlpha(0.3)
+        settings.setBeta(0.6)
+        avg_color = settings.averageColor()
+        self.assertEqual(avg_color.red(), 148)
+        self.assertEqual(avg_color.green(), 189)
+        self.assertEqual(avg_color.blue(), 255)
+        self.assertEqual(avg_color.alpha(), 255)
+
 
 class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
     def test_getters_setters(self):
