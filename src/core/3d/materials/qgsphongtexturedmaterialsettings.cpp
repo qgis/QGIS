@@ -18,6 +18,7 @@
 #include "qgscolorutils.h"
 #include "qgsphongmaterialsettings.h"
 
+#include <QImage>
 #include <QMap>
 #include <QString>
 
@@ -74,6 +75,76 @@ bool QgsPhongTexturedMaterialSettings::requiresTextureCoordinates() const
 double QgsPhongTexturedMaterialSettings::textureRotation() const
 {
   return mTextureRotation;
+}
+
+QColor QgsPhongTexturedMaterialSettings::averageColor() const
+{
+  const double avgDiffuseFactor = 0.3;
+  const double avgSpecularFactor = 0.2;
+
+  const double kAmbient = 0.2;
+  const double kDiffuse = 0.6;
+  const double kSpecular = 0.2;
+
+  const QColor diffuse = textureAverageColor();
+
+  double red = kAmbient * mAmbient.redF() + kDiffuse * avgDiffuseFactor * diffuse.redF() + kSpecular * avgSpecularFactor * mSpecular.redF();
+
+  double green = kAmbient * mAmbient.greenF() + kDiffuse * avgDiffuseFactor * diffuse.greenF() + kSpecular * avgSpecularFactor * mSpecular.greenF();
+
+  double blue = kAmbient * mAmbient.blueF() + kDiffuse * avgDiffuseFactor * diffuse.blueF() + kSpecular * avgSpecularFactor * mSpecular.blueF();
+
+  red = std::clamp( red, 0.0, 1.0 );
+  green = std::clamp( green, 0.0, 1.0 );
+  blue = std::clamp( blue, 0.0, 1.0 );
+
+  return QColor::fromRgbF( static_cast<float>( red ), static_cast<float>( green ), static_cast<float>( blue ), static_cast<float>( mOpacity ) );
+}
+
+
+QColor QgsPhongTexturedMaterialSettings::textureAverageColor() const
+{
+  if ( mTextureAverageColor.has_value() )
+  {
+    return *mTextureAverageColor;
+  }
+
+  QImage texture( mDiffuseTexturePath );
+  if ( texture.isNull() )
+  {
+    mTextureAverageColor = QColor( 127, 127, 127 );
+    return *mTextureAverageColor;
+  }
+
+  if ( texture.format() != QImage::Format_ARGB32 )
+  {
+    texture = texture.convertToFormat( QImage::Format_ARGB32 );
+  }
+
+  unsigned long long red = 0;
+  unsigned long long green = 0;
+  unsigned long long blue = 0;
+  unsigned long long pixelCount = 0;
+
+  // downsampling to ensure a fast computation
+  const int sampleStep = std::min( texture.width() / 5, texture.height() / 5 );
+  const int width = texture.width();
+  const int height = texture.height();
+  for ( int y = 0; y < height; y += sampleStep )
+  {
+    const QRgb *line = reinterpret_cast< const QRgb * >( texture.constScanLine( y ) );
+    for ( int x = 0; x < width; x += sampleStep )
+    {
+      const QRgb pixel = line[x];
+      red += qRed( pixel );
+      green += qGreen( pixel );
+      blue += qBlue( pixel );
+      pixelCount++;
+    }
+  }
+
+  mTextureAverageColor = QColor( static_cast<int>( red / pixelCount ), static_cast<int>( green / pixelCount ), static_cast<int>( blue / pixelCount ) );
+  return *mTextureAverageColor;
 }
 
 void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )

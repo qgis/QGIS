@@ -16,6 +16,8 @@
 #ifndef QGSPHONGTEXTUREDMATERIALSETTINGS_H
 #define QGSPHONGTEXTUREDMATERIALSETTINGS_H
 
+#include <optional>
+
 #include "qgis_core.h"
 #include "qgsabstractmaterialsettings.h"
 
@@ -99,7 +101,11 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
      * Sets the \a path of the diffuse texture.
      * \see diffuseTexturePath()
      */
-    void setDiffuseTexturePath( const QString &path ) { mDiffuseTexturePath = path; }
+    void setDiffuseTexturePath( const QString &path )
+    {
+      mDiffuseTexturePath = path;
+      mTextureAverageColor.reset();
+    }
 
     /**
      * Sets the texture scale
@@ -116,6 +122,20 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
      * \since QGIS 3.28
      */
     void setOpacity( double opacity ) { mOpacity = opacity; }
+
+    /**
+     * Returns an approximate color representing the blended material color.
+     *
+     * This function calculates a weighted average of the ambient, diffuse, and
+     * specular color components to produce a single representative color.
+     *
+     * \see ambient()
+     * \see specular()
+     * \see diffuseTexturePath()
+     *
+     * \since QGIS 4.2
+     */
+    QColor averageColor() const;
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
@@ -134,6 +154,9 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
     }
 
   private:
+    QColor textureAverageColor() const;
+
+  private:
     QColor mAmbient { QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
     QColor mSpecular { QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     double mShininess = 0.0;
@@ -141,6 +164,7 @@ class CORE_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialS
     QString mDiffuseTexturePath;
     double mTextureScale { 1.0f };
     double mTextureRotation { 0.0f };
+    mutable std::optional<QColor> mTextureAverageColor;
 };
 
 
