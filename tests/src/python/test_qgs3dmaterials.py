@@ -707,6 +707,40 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         self.assertEqual(avg_color.blue(), 3)
         self.assertEqual(avg_color.alpha(), 191)
 
+    def test_set_colors_from_base(self):
+        settings = QgsPhongTexturedMaterialSettings()
+        settings.setShininess(100.0)
+        settings.setDiffuseTexturePath("/path/to/texture.png")
+        base_color = QColor(217, 151, 103)
+        settings.setColorsFromBase(base_color)
+
+        ambient = settings.ambient()
+        self.assertEqual(ambient.red(), 43)
+        self.assertEqual(ambient.green(), 30)
+        self.assertEqual(ambient.blue(), 21)
+
+        specular = settings.specular()
+        self.assertEqual(specular.red(), 10)
+        self.assertEqual(specular.green(), 10)
+        self.assertEqual(specular.blue(), 10)
+
+        self.assertAlmostEqual(settings.shininess(), 32.0, 1)
+
+        # with metallic parameter
+        settings.setColorsFromBase(base_color, 0.6)
+
+        ambient = settings.ambient()
+        self.assertEqual(ambient.red(), 43)
+        self.assertEqual(ambient.green(), 30)
+        self.assertEqual(ambient.blue(), 21)
+
+        specular = settings.specular()
+        self.assertEqual(specular.red(), 134)
+        self.assertEqual(specular.green(), 95)
+        self.assertEqual(specular.blue(), 66)
+
+        self.assertAlmostEqual(settings.shininess(), 132.8, 1)
+
 
 class TestQgsNullMaterialSettings(QgisTestCase):
     def test_clone(self):
