@@ -163,6 +163,24 @@ class CORE_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
      */
     QColor averageColor() const override;
 
+    /**
+     * Decomposes a base color into Phong material components, and sets the material's colors accordingly.
+     *
+     * Sets ambient, diffuse, and specular colors from the input color.
+     * This also sets the shininess parameter based on the metallic value.
+     *
+     * \param baseColor The color to decompose
+     * \param metallic Controls how "metal-like" a material appears. Value between 0 and 1
+     *
+     * \see setAmbient()
+     * \see setDiffuse()
+     * \see setSpecular()
+     * \see setShininess()
+     *
+     * \since QGIS 4.2
+     */
+    void setColorsFromBase( const QColor &baseColor, float metallic = 0.0f );
+
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
