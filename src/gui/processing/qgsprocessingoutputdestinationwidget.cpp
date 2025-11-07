@@ -632,7 +632,7 @@ void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text
   mUseTemporary = text.isEmpty();
   mUseRemapping = false;
 
-  if ( couldBeTemporaryLayerName( text ) )
+  if ( couldBeTemporaryLayerName( text ) || text == QLatin1String( "memory:" ) )
   {
     leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
     mUseTemporary = true;
@@ -766,6 +766,9 @@ bool QgsProcessingLayerOutputDestinationWidget::couldBeTemporaryLayerName( const
 
   if ( value.isEmpty() )
     return true;
+
+  if ( value == QLatin1String( "memory:" ) )
+    return false;
 
   QString provider;
   QString uri;
