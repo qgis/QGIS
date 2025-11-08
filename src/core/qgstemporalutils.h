@@ -152,6 +152,13 @@ class CORE_EXPORT QgsTemporalUtils
       //! Duration of individual export frames
       QgsInterval frameDuration;
 
+      /**
+       * The animation temporal range cumulative settings.
+       *
+       * \since QGIS 4.0
+       */
+      bool temporalRangeCumulative = false;
+
       //! Destination directory for created image files.
       QString outputDirectory;
 
