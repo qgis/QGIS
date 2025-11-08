@@ -3163,9 +3163,8 @@ bool QgsMssqlProvider::getPrimaryKeyFromGeometryColumns( QStringList &primaryKey
                                       "WHERE f_table_name = %1 AND f_table_schema = %2 AND NOT qgis_pkey IS NULL" );
   const QString statement = sql.arg( QgsMssqlUtils::quotedValue( mTableName ), QgsMssqlUtils::quotedValue( mSchemaName ) );
 
-  if ( LoggedExec( query, statement ) && query.isActive() )
+  if ( LoggedExec( query, statement ) && query.isActive() && query.next() )
   {
-    query.next();
     if ( query.isValid() )
     {
       primaryKeys = query.value( 0 ).toString().split( ',' );
