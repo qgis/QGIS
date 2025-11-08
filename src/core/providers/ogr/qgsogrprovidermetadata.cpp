@@ -1020,9 +1020,6 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       }
 
       QgsOgrLayer *sublayer = i == 0 ? firstLayer.get() : layer.get();
-      if ( !sublayer )
-        continue;
-
       const QString layerName = QString::fromUtf8( sublayer->name() );
       if ( !originalUriLayerName.isEmpty() && layerName != originalUriLayerName )
         continue;
