@@ -94,7 +94,7 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )
   }
 
   //cache joined layer to virtual memory if specified by user
-  if ( joinInfo.isUsingMemoryCache() )
+  if ( mLayer && joinInfo.isUsingMemoryCache() )
   {
     cacheJoinLayer( mVectorJoins.last() );
   }
