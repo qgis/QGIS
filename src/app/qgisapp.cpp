@@ -9323,7 +9323,7 @@ void QgisApp::populateElevationProfilesMenu( QMenu *menu )
   {
     QAction *a = new QAction( object->name(), menu );
     QPointer< QgsElevationProfile > profilePointer( object );
-    connect( a, &QAction::triggered, this, [this, profilePointer] {
+    connect( a, &QAction::triggered, this, [this, profilePointer = std::move( profilePointer )] {
       if ( profilePointer )
         openElevationProfile( profilePointer.data() );
     } );
