@@ -239,7 +239,8 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
 
   iterator.startRasterRead( mBandNumber, subRegionWidth, subRegionHeight, rasterSubRegion, feedback );
 
-  const QgsNumericFormatContext numericContext;
+  QgsNumericFormatContext numericContext;
+  numericContext.setExpressionContext( context.expressionContext() );
   QgsNumericFormat *numericFormat = mNumericFormat.get();
 
   int iterLeft = 0;
