@@ -185,6 +185,7 @@ jobs:
 
           pip install lipomerge
           lipomerge ./x64 ./arm64 universal
+          rm -rf universal/*/*.app/include
 
       - name: Create dmg
         run: |
