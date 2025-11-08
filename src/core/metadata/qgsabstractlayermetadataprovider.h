@@ -146,7 +146,7 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     //! Layer spatial extent of the layer in EPSG:4326
     QgsPolygon mGeographicExtent;
     //! Layer geometry type (Point, Polygon, Linestring)
-    Qgis::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType = Qgis::GeometryType::Unknown;
     //! Layer CRS authid
     QString mAuthid;
     //! Layer QgsDataSourceUri string
