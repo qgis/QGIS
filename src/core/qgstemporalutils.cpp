@@ -94,7 +94,10 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
   navigator.setTemporalExtents( settings.animationRange );
   navigator.setFrameDuration( settings.frameDuration );
   if ( settings.frameDuration.originalUnit() == Qgis::TemporalUnit::IrregularStep )
+  {
     navigator.setAvailableTemporalRanges( settings.availableTemporalRanges );
+  }
+  navigator.setTemporalRangeCumulative( settings.temporalRangeCumulative );
 
   QgsMapSettings ms = mapSettings;
   const QgsExpressionContext context = ms.expressionContext();
