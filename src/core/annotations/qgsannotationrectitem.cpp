@@ -406,7 +406,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationRectItem::transient
       }
       else
       {
-        QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+        QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
         return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
       }
       break;
