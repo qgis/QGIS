@@ -591,6 +591,12 @@ QgsElevationProfileWidget::~QgsElevationProfileWidget()
   if ( mMapPointRubberBand )
     mMapPointRubberBand.reset();
 
+  // must be deleted BEFORE the dockable widget helper, or we get a crash
+  // when a queued event triggered by the dockable widget helper cleanup
+  // tries to repaint the layer tree view, which is then in an undefined state... :o
+  delete mLayerTreeView;
+  mLayerTreeView = nullptr;
+
   delete mDockableWidgetHelper;
 }
 
