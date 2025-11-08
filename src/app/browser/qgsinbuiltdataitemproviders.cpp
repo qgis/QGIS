@@ -2750,7 +2750,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
           QPointer<QgsDataItem> itemWeakPointer( item );
 
-          connect( editRelationshipAction, &QAction::triggered, this, [md, itemWeakPointer, relation, connectionUri, context] {
+          connect( editRelationshipAction, &QAction::triggered, this, [md, itemWeakPointer = std::move( itemWeakPointer ), relation, connectionUri, context] {
             std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
 
             QgsDbRelationDialog dialog( conn.release(), QgisApp::instance() );
