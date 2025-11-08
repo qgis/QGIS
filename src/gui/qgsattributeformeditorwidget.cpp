@@ -358,7 +358,7 @@ void QgsAttributeFormEditorWidget::updateWidgets()
     {
       if ( mIsConstraintResultVisible && editPage()->layout()->indexOf( mConstraintResultLabel ) == -1 )
       {
-        if ( !layer() || QgsVectorLayerUtils::attributeHasConstraints( layer(), mEditorWidget->fieldIdx() ) )
+        if ( !layer() || ( mEditorWidget && QgsVectorLayerUtils::attributeHasConstraints( layer(), mEditorWidget->fieldIdx() ) ) )
         {
           editPage()->layout()->addWidget( mConstraintResultLabel );
         }
