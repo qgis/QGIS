@@ -2623,14 +2623,7 @@ std::unique_ptr< QgsLineString > roundWavesRandomizedAlongLine( const QgsLineStr
       const double sinAngle = std::sin( segmentAngleRadians + M_PI_2 );
       const double cosAngle = std::cos( segmentAngleRadians + M_PI_2 );
 
-      if ( bufferIndex == 0 )
-      {
-        xOutBuffer[0] = pX + side * amplitude * sinAngle;
-        yOutBuffer[0] = pY + side * amplitude * cosAngle;
-        bufferIndex = 1;
-        distanceToNextPointFromStartOfSegment += wavelength / 4;
-      }
-      else if ( bufferIndex == 1 && isFirstPart )
+      if ( bufferIndex == 1 && isFirstPart )
       {
         xOutBuffer[1] = ( xOutBuffer[0] + pX - side * amplitude * sinAngle ) * 0.5;
         yOutBuffer[1] = ( yOutBuffer[0] + pY - side * amplitude * cosAngle ) * 0.5;
