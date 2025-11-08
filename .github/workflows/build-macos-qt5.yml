@@ -124,7 +124,7 @@ jobs:
       - name: 📦 Create SDK
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
         run: |
-          ${VCPKG_ROOT}/vcpkg export --zip --output-dir=./sdk --x-install-root=./build/vcpkg_installed  --x-manifest-root=vcpkg
+          ${VCPKG_ROOT}/vcpkg export --zip --output-dir=./sdk --x-install-root=./build/vcpkg_installed  --x-manifest-root=vcpkg/.qt5
 
       - name: 📤 Upload sdk
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
