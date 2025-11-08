@@ -1005,7 +1005,7 @@ void QgsElevationProfileWidget::showSubsectionsTriggered()
 
   if ( showSubSections )
   {
-    mCanvas->setSubsectionsSymbol( mSubsectionsSymbol->clone() );
+    mCanvas->setSubsectionsSymbol( mSubsectionsSymbol ? mSubsectionsSymbol->clone() : nullptr );
   }
   else
   {
