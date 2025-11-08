@@ -263,7 +263,16 @@ void QgsNewsFeedParser::onFetch( const QString &content )
 
 void QgsNewsFeedParser::readStoredEntries()
 {
-  QStringList existing = sTreeNewsFeedEntries->items( {mFeedKey} );
+  QStringList existing;
+  try
+  {
+    existing = sTreeNewsFeedEntries->items( {mFeedKey} );
+  }
+  catch ( QgsSettingsException &e )
+  {
+    QgsDebugError( QStringLiteral( "Could not read news feed entries: %1" ).arg( e.what( ) ) );
+  }
+
   std::sort( existing.begin(), existing.end(), []( const QString & a, const QString & b )
   {
     return a.toInt() < b.toInt();
