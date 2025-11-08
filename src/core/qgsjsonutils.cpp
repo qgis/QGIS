@@ -83,7 +83,20 @@ QgsCoordinateReferenceSystem QgsJsonExporter::sourceCrs() const
 QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties,
                                         const QVariant &id, int indent ) const
 {
-  return QString::fromStdString( exportFeatureToJsonObject( feature, extraProperties, id ).dump( indent ) );
+  try
+  {
+    return QString::fromStdString( exportFeatureToJsonObject( feature, extraProperties, id ).dump( indent ) );
+  }
+  catch ( json::type_error &ex )
+  {
+    QgsLogger::warning( QStringLiteral( "Cannot export feature to json: %1" ).arg( ex.what() ) );
+    return QString();
+  }
+  catch ( json::other_error &ex )
+  {
+    QgsLogger::warning( QStringLiteral( "Cannot export feature to json: %1" ).arg( ex.what() ) );
+    return QString();
+  }
 }
 
 json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, const QVariantMap &extraProperties, const QVariant &id ) const
@@ -797,6 +810,10 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString, QString &error 
     return jsonToVariant( j );
   }
   catch ( json::parse_error &ex )
+  {
+    error = QString::fromStdString( ex.what() );
+  }
+  catch ( json::type_error &ex )
   {
     error = QString::fromStdString( ex.what() );
   }
