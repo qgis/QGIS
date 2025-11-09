@@ -216,12 +216,12 @@ class QgsConnectionPoolGroup
 
   protected:
 
-    void initTimer( QObject *parent )
+    template<typename U>
+    void initTimer( U *parent )
     {
       expirationTimer = new QTimer( parent );
       expirationTimer->setInterval( CONN_POOL_EXPIRATION_TIME * 1000 );
-      // We cannot remove the SLOT() here because it is actually implemented in derived classes
-      QObject::connect( expirationTimer, SIGNAL( timeout() ), parent, SLOT( handleConnectionExpired() ) );
+      QObject::connect( expirationTimer, &QTimer::timeout, parent, &U::handleConnectionExpired );
 
       // just to make sure the object belongs to main thread and thus will get events
       if ( qApp )
