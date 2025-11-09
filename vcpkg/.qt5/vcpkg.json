@@ -101,6 +101,7 @@
     },
     "qt5-multimedia",
     "qt5-svg",
+    "qt5-webkit",
     "qt5-tools",
     {
       "name": "qt5-winextras",
