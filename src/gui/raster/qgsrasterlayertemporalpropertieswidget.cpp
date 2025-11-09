@@ -145,6 +145,7 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
   temporalProperties->setFixedRangePerBand( mFixedRangePerBandModel->rangeData() );
 
   temporalProperties->setTemporalRepresentationOffset( mOffsetDateTimeEdit->dateTime() );
+  temporalProperties->setAccumulatePixels( mAccumulateCheckBox->isChecked() );
 
   const QgsInterval scale( mScaleSpinBox->value(), static_cast<Qgis::TemporalUnit>( mScaleUnitComboBox->currentData().toInt() ) );
   temporalProperties->setTemporalRepresentationScale( scale );
@@ -200,6 +201,7 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
   mBandRangesTable->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
 
   mOffsetDateTimeEdit->setDateTime( temporalProperties->temporalRepresentationOffset() );
+  mAccumulateCheckBox->setChecked( temporalProperties->accumulatePixels() );
 
   mScaleSpinBox->setValue( temporalProperties->temporalRepresentationScale().originalDuration() );
   mScaleUnitComboBox->setCurrentIndex( mScaleUnitComboBox->findData( static_cast<int>( temporalProperties->temporalRepresentationScale().originalUnit() ) ) );
