@@ -216,6 +216,12 @@ class QgsConnectionPoolGroup
 
   protected:
 
+    /**
+     * Initializes the connection timeout handling.
+     *
+     * Should be called from subclasses within their constructors, passing themselves as the
+     * \a parent.
+     */
     template<typename U>
     void initTimer( U *parent )
     {
