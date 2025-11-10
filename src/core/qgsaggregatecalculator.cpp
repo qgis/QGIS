@@ -117,7 +117,7 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate,
   if ( context )
     request.setExpressionContext( *context );
 
-  request.setFeedback( feedback ? feedback : ( context ? context->feedback() : nullptr ) );
+  request.setFeedback( feedback ? feedback : context->feedback() );
 
   //determine result type
   QMetaType::Type resultType = QMetaType::Type::Double;

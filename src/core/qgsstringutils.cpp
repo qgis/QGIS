@@ -53,7 +53,7 @@ QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization 
       {
         first = false;
         letterSplitter.setPosition( wordSplitter.position() );
-        letterSplitter.toNextBoundary();
+        ( void )letterSplitter.toNextBoundary();
         QString substr = string.mid( wordSplitter.position(), letterSplitter.position() - wordSplitter.position() );
         temp.replace( wordSplitter.position(), substr.length(), substr.toUpper() );
       }

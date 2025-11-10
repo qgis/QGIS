@@ -557,7 +557,16 @@ void QgsApplication::installTranslators()
 QgsApplication::~QgsApplication()
 {
   if ( mApplicationMembers )
-    mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
+  {
+    try
+    {
+      mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "An error occurred while performing backwards compatibility for settings: %1" ).arg( e.what() ) );
+    }
+  }
 
   delete mDataItemProviderRegistry;
   delete mApplicationMembers;
