@@ -191,7 +191,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
   return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle );
 }
 
-std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, CurvedTextFlags flags, double maxConcaveAngle, double maxConvexAngle, bool isSecondAttempt )
+std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, Qgis::CurvedTextFlags flags, double maxConcaveAngle, double maxConvexAngle, bool isSecondAttempt )
 {
   std::unique_ptr< CurvePlacementProperties > output = std::make_unique< CurvePlacementProperties >();
   output->graphemePlacement.reserve( metrics.count() );
@@ -233,7 +233,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
     {
       const double characterWidth = metrics.characterWidth( i );
       double characterStartX, characterStartY;
-      if ( !nextCharPosition( characterWidth, pathDistances[endindex], x, y, numPoints, endindex, distance, characterStartX, characterStartY, endLabelX, endLabelY ) )
+      if ( !nextCharPosition( characterWidth, pathDistances[endindex], x, y, numPoints, endindex, distance, characterStartX, characterStartY, endLabelX, endLabelY, flags ) )
       {
         if ( flags & Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
         {
@@ -296,7 +296,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
     double characterStartY = 0;
     double characterEndX = 0;
     double characterEndY = 0;
-    if ( !nextCharPosition( characterWidth, pathDistances[index], x, y, numPoints, index, offsetAlongSegment, characterStartX, characterStartY, characterEndX, characterEndY ) )
+    if ( !nextCharPosition( characterWidth, pathDistances[index], x, y, numPoints, index, offsetAlongSegment, characterStartX, characterStartY, characterEndX, characterEndY, flags ) )
     {
       if ( flags & Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
       {
@@ -381,7 +381,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
   return output;
 }
 
-bool QgsTextRendererUtils::nextCharPosition( double charWidth, double segmentLength, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment, double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY )
+bool QgsTextRendererUtils::nextCharPosition( double charWidth, double segmentLength, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment, double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY, Qgis::CurvedTextFlags flags )
 {
   // Coordinates this character will start at
   if ( qgsDoubleNear( segmentLength, 0.0 ) )
@@ -419,13 +419,35 @@ bool QgsTextRendererUtils::nextCharPosition( double charWidth, double segmentLen
     // then we need to search until we find the line segment that ends further than ci.width away
     do
     {
-      segmentStartX = segmentEndX;
-      segmentStartY = segmentEndY;
       index++;
       if ( index >= numPoints ) // Bail out if we run off the end of the shape
       {
-        return false;
+        if ( flags & Qgis::CurvedTextFlag::ExtendLineToFitText )
+        {
+          // here we should extend out the final segment of the line to fit the character
+          const double lastSegmentDx = segmentEndX - segmentStartX;
+          const double lastSegmentDy = segmentEndY - segmentStartY;
+          const double lastSegmentLength = std::sqrt( lastSegmentDx * lastSegmentDx + lastSegmentDy * lastSegmentDy );
+          if ( qgsDoubleNear( lastSegmentLength, 0.0 ) )
+          {
+            // last segment has 0 length, can't extend
+            return false;
+          }
+
+          segmentEndX = segmentStartX + ( lastSegmentDx / lastSegmentLength ) * charWidth;
+          segmentEndY = segmentStartY + ( lastSegmentDy / lastSegmentLength ) * charWidth;
+          index--;
+          break;
+
+        }
+        else
+        {
+          return false;
+        }
       }
+
+      segmentStartX = segmentEndX;
+      segmentStartY = segmentEndY;
       segmentEndX = x[index];
       segmentEndY = y[index];
     }

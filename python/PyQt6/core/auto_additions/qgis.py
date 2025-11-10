@@ -5223,6 +5223,9 @@ QgsTextRendererUtils.UseBaselinePlacement.__doc__ = "Generate placement based on
 QgsTextRendererUtils.UprightCharactersOnly = Qgis.CurvedTextFlag.UprightCharactersOnly
 QgsTextRendererUtils.UprightCharactersOnly.is_monkey_patched = True
 QgsTextRendererUtils.UprightCharactersOnly.__doc__ = "Permit upright characters only. If not present then upside down text placement is permitted."
+QgsTextRendererUtils.ExtendLineToFitText = Qgis.CurvedTextFlag.ExtendLineToFitText
+QgsTextRendererUtils.ExtendLineToFitText.is_monkey_patched = True
+QgsTextRendererUtils.ExtendLineToFitText.__doc__ = "When a string is too long for the line, extend the line's final segment to fit the entire string. \n.. versionadded:: 4.0"
 Qgis.CurvedTextFlag.__doc__ = """Flags controlling behavior of curved text generation.
 
 .. versionadded:: 4.0.
@@ -5230,6 +5233,10 @@ Qgis.CurvedTextFlag.__doc__ = """Flags controlling behavior of curved text gener
 * ``TruncateStringWhenLineIsTooShort``: When a string is too long for the line, truncate characters instead of aborting the placement
 * ``UseBaselinePlacement``: Generate placement based on the character baselines instead of centers
 * ``UprightCharactersOnly``: Permit upright characters only. If not present then upside down text placement is permitted.
+* ``ExtendLineToFitText``: When a string is too long for the line, extend the line's final segment to fit the entire string.
+
+  .. versionadded:: 4.0
+
 
 """
 # --
