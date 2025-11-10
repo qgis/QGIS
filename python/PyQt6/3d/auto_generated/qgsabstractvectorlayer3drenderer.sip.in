@@ -22,20 +22,28 @@ Defines configuration of how a vector layer gets tiled for 3D rendering.
 #include "qgsabstractvectorlayer3drenderer.h"
 %End
   public:
- int zoomLevelsCount() const /Deprecated/;
+ int zoomLevelsCount() const /Deprecated="Since 4.0. Tiling is now done based on maximumScreenError() and maximumChunkFeatures()."/;
 %Docstring
 Returns number of zoom levels. One zoom level means there will be one
 tile. Every extra zoom level multiplies number of tiles by four. For
 example, three zoom levels will produce 16 tiles at the highest zoom
 level. It is therefore recommended to keep the number of zoom levels low
 to prevent excessive number of tiles.
+
+.. deprecated:: 4.0
+
+   Tiling is now done based on :py:func:`~QgsVectorLayer3DTilingSettings.maximumScreenError` and :py:func:`~QgsVectorLayer3DTilingSettings.maximumChunkFeatures`.
 %End
 
- void setZoomLevelsCount( int count ) /Deprecated/;
+ void setZoomLevelsCount( int count ) /Deprecated="Since 4.0. Tiling is now done based on maximumScreenError() and maximumChunkFeatures()."/;
 %Docstring
 Sets number of zoom levels. See
 :py:func:`~QgsVectorLayer3DTilingSettings.zoomLevelsCount` documentation
 for more details.
+
+.. deprecated:: 4.0
+
+   Tiling is now done based on :py:func:`~QgsVectorLayer3DTilingSettings.maximumScreenError` and :py:func:`~QgsVectorLayer3DTilingSettings.maximumChunkFeatures`.
 %End
 
     void setShowBoundingBoxes( bool enabled );

@@ -39,11 +39,13 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
      * zoom levels will produce 16 tiles at the highest zoom level. It is therefore
      * recommended to keep the number of zoom levels low to prevent excessive number
      * of tiles.
+     * \deprecated QGIS 4.0. Tiling is now done based on maximumScreenError() and maximumChunkFeatures().
      */
     Q_DECL_DEPRECATED int zoomLevelsCount() const SIP_DEPRECATED { return mZoomLevelsCount; }
 
     /**
      * Sets number of zoom levels. See zoomLevelsCount() documentation for more details.
+     * \deprecated QGIS 4.0. Tiling is now done based on maximumScreenError() and maximumChunkFeatures().
      */
     Q_DECL_DEPRECATED void setZoomLevelsCount( int count ) SIP_DEPRECATED { mZoomLevelsCount = count; }
 

@@ -92,7 +92,9 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int zoomLevels
   QgsVectorLayer3DRenderer *renderer3d = dynamic_cast<QgsVectorLayer3DRenderer *>( layerPoly->renderer3D() );
   QgsVectorLayer3DRenderer *newRenderer3d = new QgsVectorLayer3DRenderer( renderer3d->symbol()->clone() );
   QgsVectorLayer3DTilingSettings tilingSettings;
+  Q_NOWARN_DEPRECATED_PUSH
   tilingSettings.setZoomLevelsCount( zoomLevelsCount );
+  Q_NOWARN_DEPRECATED_POP
   tilingSettings.setShowBoundingBoxes( true );
   newRenderer3d->setTilingSettings( tilingSettings );
   layerPoly->setRenderer3D( newRenderer3d );
