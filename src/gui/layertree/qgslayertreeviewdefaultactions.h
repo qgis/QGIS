@@ -45,10 +45,44 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
      */
     QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view );
 
+    /**
+     * Returns a new action which adds a group.
+     */
     QAction *actionAddGroup( QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * Returns a new action which removes either a group or layer, depending on the selected node.
+     *
+     * If a group is removed, all children for that group will also be removed.
+     *
+     * \see actionRemoveGroupPromoteLayers()
+     */
     QAction *actionRemoveGroupOrLayer( QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * Returns a new action which removes a group.
+     *
+     * Any existing children in the group will be moved up to the parent of
+     * the removed group.
+     *
+     * \see actionRemoveGroupOrLayer()
+     * \since QGIS 4.0
+     */
+    QAction *actionRemoveGroupPromoteLayers( QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * Returns a new action for toggling whether a layer is shown in the map overview.
+     */
     QAction *actionShowInOverview( QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * Returns a new action for renaming a group or layer, depending on the selected node.
+     */
     QAction *actionRenameGroupOrLayer( QObject *parent = nullptr ) SIP_FACTORY;
+
+    /**
+     * Returns a new action for toggling whether the feature count is shown for a layer.
+     */
     QAction *actionShowFeatureCount( QObject *parent = nullptr ) SIP_FACTORY;
 
     //! Action to check a group and all its children
@@ -134,6 +168,15 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 
   protected slots:
     void removeGroupOrLayer();
+
+    /**
+     * Removes the selected group node, promoting all child nodes up into the removed
+     * group's parent node.
+     *
+     * \since QGIS 4.0
+     */
+    void removeGroupPromoteLayers();
+
     void renameGroupOrLayer();
     void showFeatureCount();
 
