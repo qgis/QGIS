@@ -179,12 +179,14 @@ class CORE_EXPORT QgsTextRenderer
      * \param format text format
      * \param offsetAlongLine offset along the line (in painter units) to start text at
      * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+     * \param flags curved text behavior flags (since QGIS 4.0)
      *
      * \since QGIS 3.32
      */
     static void drawTextOnLine( const QPolygonF &line, const QString &text,
                                 QgsRenderContext &context, const QgsTextFormat &format,
-                                double offsetAlongLine = 0, double offsetFromLine = 0 );
+                                double offsetAlongLine = 0, double offsetFromLine = 0,
+                                Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort );
 
     /**
      * Draws a text document along a line using the specified settings.
@@ -195,6 +197,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param context render context
      * \param offsetAlongLine offset along the line (in painter units) to start text at
      * \param offsetFromLine offset from the line (in painter units). Negative values will shift the text to the left of the line, positive values will shift the text to the right.
+     * \param flags curved text behavior flags (since QGIS 4.0)
      *
      * \since QGIS 3.32
      */
@@ -203,7 +206,8 @@ class CORE_EXPORT QgsTextRenderer
                                     const QgsTextDocument &document,
                                     QgsRenderContext &context,
                                     double offsetAlongLine = 0,
-                                    double offsetFromLine = 0 );
+                                    double offsetFromLine = 0,
+                                    Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort );
 
     /**
      * Draws a single component of rendered text using the specified settings.
