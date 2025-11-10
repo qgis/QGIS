@@ -97,6 +97,7 @@ struct ArrowArrayStream
 /**
  * \ingroup core
  * \brief Options for inferring an ArrowSchema from a feature source.
+ * \since QGIS 4.0
  */
 class CORE_EXPORT QgsArrowInferSchemaOptions
 {
