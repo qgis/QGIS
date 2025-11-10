@@ -122,7 +122,14 @@ void QgsNewsFeedParser::dismissEntry( int key )
   if ( beforeSize == mEntries.size() )
     return; // didn't find matching entry
 
-  sTreeNewsFeedEntries->deleteItem( QString::number( key ), {mFeedKey} );
+  try
+  {
+    sTreeNewsFeedEntries->deleteItem( QString::number( key ), {mFeedKey} );
+  }
+  catch ( QgsSettingsException &e )
+  {
+    QgsDebugError( QStringLiteral( "Could not dismiss news feed entry: %1" ).arg( e.what( ) ) );
+  }
 
   // also remove preview image, if it exists
   if ( !dismissed.imageUrl.isEmpty() )
