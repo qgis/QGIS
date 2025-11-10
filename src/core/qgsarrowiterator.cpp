@@ -123,6 +123,16 @@ QgsArrowArray::QgsArrowArray( QgsArrowArray &&other )
   ArrowArrayMove( other.array(), &mArray );
 }
 
+QgsArrowArray &QgsArrowArray::operator=( QgsArrowArray &&other )
+{
+  if ( this != &other )
+  {
+    ArrowArrayMove( other.array(), &mArray );
+  }
+
+  return *this;
+}
+
 QgsArrowArray::~QgsArrowArray()
 {
   if ( mArray.release )

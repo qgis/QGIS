@@ -200,12 +200,15 @@ class CORE_EXPORT QgsArrowArray
     //! Construct invalid array holder
     QgsArrowArray() = default;
 
+    QgsArrowArray &operator=( QgsArrowArray &other ) = delete;
     QgsArrowArray( const QgsArrowArray &other ) = delete;
-    QgsArrowArray &operator=( const QgsArrowArray &other ) = delete;
 
 #ifndef SIP_RUN
     //! Move constructor
     QgsArrowArray( QgsArrowArray &&other );
+
+    //! Move-assign constructor
+    QgsArrowArray &operator=( QgsArrowArray &&other );
 #endif
 
     ~QgsArrowArray();
