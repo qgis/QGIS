@@ -543,7 +543,7 @@ double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
   return min_d != 1e20 ? std::sqrt( min_d ) : 1e20;
 }
 
-void QgsTessellator::calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base )
+void QgsTessellator::calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base ) const
 {
   if ( !mNoZ && pNormal != QVector3D( 0, 0, 1 ) )
   {
