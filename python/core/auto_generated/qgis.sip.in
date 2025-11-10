@@ -1710,6 +1710,7 @@ The development version
       TruncateStringWhenLineIsTooShort,
       UseBaselinePlacement,
       UprightCharactersOnly,
+      ExtendLineToFitText,
     };
 
     typedef QFlags<Qgis::CurvedTextFlag> CurvedTextFlags;

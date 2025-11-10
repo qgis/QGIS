@@ -183,7 +183,7 @@ class CORE_EXPORT QgsTextRendererUtils
 
     //! Returns TRUE if the next char position is found. The referenced parameters are updated.
     static bool nextCharPosition( double charWidth, double segmentLength, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment,
-                                  double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY );
+                                  double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY, Qgis::CurvedTextFlags flags );
 
     static void findLineCircleIntersection( double cx, double cy, double radius,
                                             double x1, double y1, double x2, double y2,
