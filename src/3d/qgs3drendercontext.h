@@ -129,7 +129,7 @@ class _3D_EXPORT Qgs3DRenderContext
     /**
      * Returns the terrain generator.
      */
-    QgsTerrainGenerator *terrainGenerator() const { return mTerrainGenerator; }
+    QgsTerrainGenerator *terrainGenerator() const { return mTerrainGenerator.get(); }
 
     /**
      * Sets the expression context. This context is used for all expression evaluation
@@ -171,7 +171,7 @@ class _3D_EXPORT Qgs3DRenderContext
 
     // not owned, currently a pointer to the Qgs3DMapSettings terrain generator.
     // TODO -- fix during implementation of https://github.com/qgis/QGIS-Enhancement-Proposals/issues/301
-    QgsTerrainGenerator *mTerrainGenerator = nullptr; //!< Implementation of the terrain generation
+    std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator; //!< Implementation of the terrain generation
 };
 
 
