@@ -17841,9 +17841,9 @@ QgsTemporalRangeObject.isTemporal: src/core/qgstemporalrangeobject.h#L61
 QgsTemporalRangeObject.setIsTemporal: src/core/qgstemporalrangeobject.h#L52
 QgsTemporalRangeObject.setTemporalRange: src/core/qgstemporalrangeobject.h#L73
 QgsTemporalRangeObject: src/core/qgstemporalrangeobject.h#L33
-QgsTemporalUtils.calculateFrameTime: src/core/qgstemporalutils.h#L232
+QgsTemporalUtils.calculateFrameTime: src/core/qgstemporalutils.h#L239
 QgsTemporalUtils.calculateTemporalRangeForProject: src/core/qgstemporalutils.h#L131
-QgsTemporalUtils.exportAnimation: src/core/qgstemporalutils.h#L209
+QgsTemporalUtils.exportAnimation: src/core/qgstemporalutils.h#L216
 QgsTemporalUtils: src/core/qgstemporalutils.h#L121
 QgsTessellator.addPolygon: src/core/qgstessellator.h#L75
 QgsTessellator.dataVerticesCount: src/core/qgstessellator.h#L85
