@@ -699,7 +699,6 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
         const auto pairs = relation.fieldPairs();
         for ( const QgsRelation::FieldPair &fieldPair : pairs )
         {
-          qDebug() << "setAttribute" << fieldPair.first << newFeature.attribute( fieldPair.second );
           childFeature.setAttribute( fieldPair.first, newFeature.attribute( fieldPair.second ) );
         }
         //call the function for the child
