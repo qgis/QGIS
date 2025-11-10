@@ -15,11 +15,6 @@ class QgsVectorLayer3DTilingSettings
 %Docstring(signature="appended")
 Defines configuration of how a vector layer gets tiled for 3D rendering.
 
-Zoom levels count tells how deep will be the quadtree and thus how many
-tiles will be generated ( 4 ^ (count-1) ). So for example, for count=1
-there will be just a single tile for the whole layer, for count=3 there
-will be 16 tiles.
-
 .. versionadded:: 3.12
 %End
 
@@ -27,7 +22,7 @@ will be 16 tiles.
 #include "qgsabstractvectorlayer3drenderer.h"
 %End
   public:
-    int zoomLevelsCount() const;
+ int zoomLevelsCount() const /Deprecated/;
 %Docstring
 Returns number of zoom levels. One zoom level means there will be one
 tile. Every extra zoom level multiplies number of tiles by four. For
@@ -36,7 +31,7 @@ level. It is therefore recommended to keep the number of zoom levels low
 to prevent excessive number of tiles.
 %End
 
-    void setZoomLevelsCount( int count );
+ void setZoomLevelsCount( int count ) /Deprecated/;
 %Docstring
 Sets number of zoom levels. See
 :py:func:`~QgsVectorLayer3DTilingSettings.zoomLevelsCount` documentation
@@ -51,6 +46,39 @@ Sets whether to display bounding boxes of entity's tiles (for debugging)
 %Docstring
 Returns whether to display bounding boxes of entity's tiles (for
 debugging)
+%End
+
+    double maximumScreenError() const;
+%Docstring
+Returns the maximum allowed screen space error. This is the maximum
+number of pixels required for rendering a tile's largest side before
+using its children, ie the next quad tree level.
+
+.. versionadded:: 4.0
+%End
+
+    void setMaximumScreenError( double value );
+%Docstring
+Sets the maximum allowed screen space error. This is the maximum number
+of pixels required for rendering a tile's largest side before using its
+children, ie the next quad tree level.
+
+.. versionadded:: 4.0
+%End
+
+    int maximumChunkFeatures() const;
+%Docstring
+Returns the maximum number of features that will be fetched in any
+chunk.
+
+.. versionadded:: 4.0
+%End
+
+    void setMaximumChunkFeatures( int value );
+%Docstring
+Sets the maximum number of features that will be fetched in any chunk.
+
+.. versionadded:: 4.0
 %End
 
     void writeXml( QDomElement &elem ) const;

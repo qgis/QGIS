@@ -28,7 +28,7 @@
 //
 
 #include "qgschunkloader.h"
-#include "qgsfeature3dhandler_p.h"
+#include "qgs3drendercontext.h"
 #include "qgschunkedentity.h"
 
 #define SIP_NO_FILE
@@ -60,15 +60,19 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 
   public:
     //! Constructs the factory
-    QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax );
+    QgsVectorLayerChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, double zMin, double zMax, int maxFeatures );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    virtual bool canCreateChildren( QgsChunkNode *node ) override;
+    virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol;
-    int mLeafLevel;
+    //! Contains loaded nodes and whether they are leaf nodes or not
+    mutable QHash< QString, bool > mNodesAreLeafs;
+    int mMaxFeatures;
 };
 
 
@@ -101,6 +105,7 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
     QString mLayerName;
+    bool mNodeIsLeaf = false;
 };
 
 

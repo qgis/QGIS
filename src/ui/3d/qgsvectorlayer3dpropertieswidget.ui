@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>386</width>
-    <height>130</height>
+    <height>310</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,35 +31,48 @@
      <property name="title">
       <string>Layer Rendering</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Zoom levels count</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QgsSpinBox" name="spinZoomLevelsCount">
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>5</number>
-          </property>
-          <property name="value">
-           <number>3</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblMaxError">
+        <property name="text">
+         <string>Maximum screen space error</string>
+        </property>
+       </widget>
       </item>
-      <item>
+      <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="chkShowBoundingBoxes">
         <property name="text">
          <string>Show bounding boxes of tiles</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsSpinBox" name="mMaxFeaturesSpinBox">
+        <property name="maximum">
+         <number>999999</number>
+        </property>
+        <property name="value">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblMaxFeatures">
+        <property name="text">
+         <string>Maximum Features per Chunk</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QgsDoubleSpinBox" name="mMaxErrorSpinBox">
+        <property name="suffix">
+         <string> px</string>
+        </property>
+        <property name="maximum">
+         <double>10000.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>100.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -70,19 +83,25 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>spinZoomLevelsCount</tabstop>
+  <tabstop>mMaxErrorSpinBox</tabstop>
+  <tabstop>mMaxFeaturesSpinBox</tabstop>
   <tabstop>chkShowBoundingBoxes</tabstop>
  </tabstops>
  <resources/>

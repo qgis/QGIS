@@ -25,6 +25,8 @@ void QgsVectorLayer3DTilingSettings::writeXml( QDomElement &elem ) const
   QDomElement elemTiling = doc.createElement( QStringLiteral( "vector-layer-3d-tiling" ) );
   elemTiling.setAttribute( QStringLiteral( "zoom-levels-count" ), mZoomLevelsCount );
   elemTiling.setAttribute( QStringLiteral( "show-bounding-boxes" ), mShowBoundingBoxes ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elemTiling.setAttribute( QStringLiteral( "max-screen-error" ), mMaxScreenError );
+  elemTiling.setAttribute( QStringLiteral( "max-chunk-features" ), mMaxChunkFeatures );
   elem.appendChild( elemTiling );
 }
 
@@ -35,6 +37,8 @@ void QgsVectorLayer3DTilingSettings::readXml( const QDomElement &elem )
   {
     mZoomLevelsCount = elemTiling.attribute( QStringLiteral( "zoom-levels-count" ) ).toInt();
     mShowBoundingBoxes = elemTiling.attribute( QStringLiteral( "show-bounding-boxes" ) ).toInt();
+    mMaxScreenError = elemTiling.attribute( QStringLiteral( "max-screen-error" ), QString::number( mMaxScreenError ) ).toDouble();
+    mMaxChunkFeatures = elemTiling.attribute( QStringLiteral( "max-chunk-features" ), QString::number( mMaxChunkFeatures ) ).toInt();
   }
 }
 

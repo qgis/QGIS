@@ -41,7 +41,7 @@ QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkN
 {
   QVector<QgsChunkNode *> children;
 
-  if ( node->level() >= mMaxLevel )
+  if ( mMaxLevel != -1 && node->level() >= mMaxLevel )
     return children;
 
   const QgsChunkNodeId nodeId = node->tileId();

@@ -22,29 +22,42 @@ QgsVectorLayer3DPropertiesWidget::QgsVectorLayer3DPropertiesWidget( QWidget *par
   : QWidget( parent )
 {
   setupUi( this );
-  spinZoomLevelsCount->setClearValue( 3 );
+
+  constexpr double maxError = 100.;
+  constexpr int maxFeatures = 1000;
+  mMaxErrorSpinBox->setValue( maxError );
+  mMaxErrorSpinBox->setClearValue( maxError );
+  mMaxErrorSpinBox->setToolTip( tr( "This is the maximum size of a node in pixels before its child nodes are fetched." ) );
+  mMaxFeaturesSpinBox->setValue( maxFeatures );
+  mMaxFeaturesSpinBox->setClearValue( maxFeatures );
+  mMaxFeaturesSpinBox->setToolTip( tr( "This is the maximum number of features that any node will attempt to load.\nFeatures beyond that number will be fetched by child nodes when Maximum Screen Space Error is reached." ) );
 
   groupLayerRendering->setCollapsed( true );
 
   connect( chkShowBoundingBoxes, &QCheckBox::clicked, this, &QgsVectorLayer3DPropertiesWidget::changed );
-  connect( spinZoomLevelsCount, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsVectorLayer3DPropertiesWidget::changed );
+  connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsVectorLayer3DPropertiesWidget::changed );
+  connect( mMaxFeaturesSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsVectorLayer3DPropertiesWidget::changed );
 }
 
 void QgsVectorLayer3DPropertiesWidget::load( QgsAbstractVectorLayer3DRenderer *renderer )
 {
-  whileBlocking( spinZoomLevelsCount )->setValue( renderer->tilingSettings().zoomLevelsCount() );
   whileBlocking( chkShowBoundingBoxes )->setChecked( renderer->tilingSettings().showBoundingBoxes() );
+  whileBlocking( mMaxErrorSpinBox )->setValue( renderer->tilingSettings().maximumScreenError() );
+  whileBlocking( mMaxFeaturesSpinBox )->setValue( renderer->tilingSettings().maximumChunkFeatures() );
 }
 
 void QgsVectorLayer3DPropertiesWidget::apply( QgsAbstractVectorLayer3DRenderer *renderer )
 {
   QgsVectorLayer3DTilingSettings tilingSettings;
-  tilingSettings.setZoomLevelsCount( spinZoomLevelsCount->value() );
   tilingSettings.setShowBoundingBoxes( chkShowBoundingBoxes->isChecked() );
+  tilingSettings.setMaximumScreenError( mMaxErrorSpinBox->value() );
+  tilingSettings.setMaximumChunkFeatures( mMaxFeaturesSpinBox->value() );
   renderer->setTilingSettings( tilingSettings );
 }
 
 void QgsVectorLayer3DPropertiesWidget::reset()
 {
   whileBlocking( chkShowBoundingBoxes )->setChecked( false );
+  whileBlocking( mMaxErrorSpinBox )->clear();
+  whileBlocking( mMaxFeaturesSpinBox )->clear();
 }

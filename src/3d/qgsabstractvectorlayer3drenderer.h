@@ -28,10 +28,6 @@ class QgsVectorLayer;
  * \ingroup qgis_3d
  * \brief Defines configuration of how a vector layer gets tiled for 3D rendering.
  *
- * Zoom levels count tells how deep will be the quadtree and thus how many tiles will
- * be generated ( 4 ^ (count-1) ). So for example, for count=1 there will be just
- * a single tile for the whole layer, for count=3 there will be 16 tiles.
- *
  * \since QGIS 3.12
  */
 class _3D_EXPORT QgsVectorLayer3DTilingSettings
@@ -44,17 +40,45 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
      * recommended to keep the number of zoom levels low to prevent excessive number
      * of tiles.
      */
-    int zoomLevelsCount() const { return mZoomLevelsCount; }
+    Q_DECL_DEPRECATED int zoomLevelsCount() const SIP_DEPRECATED { return mZoomLevelsCount; }
 
     /**
      * Sets number of zoom levels. See zoomLevelsCount() documentation for more details.
      */
-    void setZoomLevelsCount( int count ) { mZoomLevelsCount = count; }
+    Q_DECL_DEPRECATED void setZoomLevelsCount( int count ) SIP_DEPRECATED { mZoomLevelsCount = count; }
 
     //! Sets whether to display bounding boxes of entity's tiles (for debugging)
     void setShowBoundingBoxes( bool enabled ) { mShowBoundingBoxes = enabled; }
     //! Returns whether to display bounding boxes of entity's tiles (for debugging)
     bool showBoundingBoxes() const { return mShowBoundingBoxes; }
+
+    /**
+     * Returns the maximum allowed screen space error.
+     * This is the maximum number of pixels required for rendering a tile's largest side
+     * before using its children, ie the next quad tree level.
+     * \since QGIS 4.0
+     */
+    double maximumScreenError() const { return mMaxScreenError; }
+
+    /**
+     * Sets the maximum allowed screen space error.
+     * This is the maximum number of pixels required for rendering a tile's largest side
+     * before using its children, ie the next quad tree level.
+     * \since QGIS 4.0
+     */
+    void setMaximumScreenError( double value ) { mMaxScreenError = value; }
+
+    /**
+     * Returns the maximum number of features that will be fetched in any chunk.
+     * \since QGIS 4.0
+     */
+    int maximumChunkFeatures() const { return mMaxChunkFeatures; }
+
+    /**
+     * Sets the maximum number of features that will be fetched in any chunk.
+     * \since QGIS 4.0
+     */
+    void setMaximumChunkFeatures( int value ) { mMaxChunkFeatures = value; }
 
     //! Writes content of the object to XML
     void writeXml( QDomElement &elem ) const;
@@ -64,6 +88,8 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
   private:
     int mZoomLevelsCount = 3;
     bool mShowBoundingBoxes = false;
+    double mMaxScreenError = 100;
+    int mMaxChunkFeatures = 1000;
 };
 
 

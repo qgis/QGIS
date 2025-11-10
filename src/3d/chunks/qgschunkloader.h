@@ -131,7 +131,7 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     virtual ~QgsQuadtreeChunkLoaderFactory();
 
     //! Initializes the root node setup (bounding box and error) and tree depth
-    void setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel, const QgsBox3D &clippingBox3D = QgsBox3D() );
+    void setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel = -1, const QgsBox3D &clippingBox3D = QgsBox3D() );
 
     virtual QgsChunkNode *createRootNode() const override;
     virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
@@ -140,8 +140,8 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     QgsBox3D mRootBox3D;
     QgsBox3D mClippingBox3D;
     float mRootError = 0;
-    //! maximum allowed depth of quad tree
-    int mMaxLevel = 0;
+    //! maximum allowed depth of quad tree. -1 for no max depth.
+    int mMaxLevel = -1;
 };
 
 /**
