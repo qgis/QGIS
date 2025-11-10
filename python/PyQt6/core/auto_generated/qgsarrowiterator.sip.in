@@ -19,7 +19,9 @@
 class QgsArrowInferSchemaOptions
 {
 %Docstring(signature="appended")
-Options for inferring an ArrowSchema from a :py:class:`QgsVectorLayer`.
+Options for inferring an ArrowSchema from a feature source.
+
+.. versionadded:: 4.0
 %End
 
 %TypeHeaderCode
@@ -31,13 +33,13 @@ Options for inferring an ArrowSchema from a :py:class:`QgsVectorLayer`.
 Construct default options
 %End
 
-    void setGeometryColumnName( QString geometryColumnName );
+    void setGeometryColumnName( const QString &geometryColumnName );
 %Docstring
 Set the name that should be used to refer to the geometry column
 (default: "geometry")
 %End
 
-    const QString &geometryColumnName() const;
+    QString geometryColumnName() const;
 %Docstring
 The name that should be used for a layer's geometry column
 %End
@@ -56,6 +58,8 @@ ArrowSchema. https://arrow.apache.org/docs/format/CDataInterface.html
 
 This object also stores the index of the geometry column that should
 be/will be populated from the geometry of iterated-over features.
+
+.. versionadded:: 4.0
 %End
 
 %TypeHeaderCode
@@ -81,8 +85,9 @@ Copy constructor
 Returns the address of the underlying ArrowSchema for import or export
 across boundaries
 
-This is intended for advanced usage and may cause a crash if used
-incorrectly.
+.. warning::
+
+   This is intended for advanced usage and may cause a crash if used incorrectly.
 %End
 
     void exportToAddress( unsigned long long otherAddress );
@@ -90,13 +95,14 @@ incorrectly.
 Export this array to the address of an empty ArrowSchema for export
 across boundaries
 
-This is intended for advanced usage and may cause a crash if used
-incorrectly.
+.. warning::
+
+   This is intended for advanced usage and may cause a crash if used incorrectly.
 %End
 
     bool isValid() const;
 %Docstring
-Returns true if this wrapper object holds a valid ArrowSchema
+Returns ``True`` if this wrapper object holds a valid ArrowSchema
 %End
 
     int geometryColumnIndex() const;
@@ -124,6 +130,8 @@ This object provides a helper to allow arrays to be passed to or
 returned from QGIS functions in C++ or Python. See the documentation for
 the Arrow C Data Interface for how to interact with the underlying
 ArrowArray: https://arrow.apache.org/docs/format/CDataInterface.html
+
+.. versionadded:: 4.0
 %End
 
 %TypeHeaderCode
@@ -133,15 +141,6 @@ ArrowArray: https://arrow.apache.org/docs/format/CDataInterface.html
     QgsArrowArray();
 %Docstring
 Construct invalid array holder
-%End
-
-    QgsArrowArray( const QgsArrowArray &other );
-%Docstring
-Copy constructor
-
-ArrowArrays are not copyable objects, so this wrapper will throw an
-exception if there is an attempt to copy it while it holds a valid array
-to prevent leaking the array.
 %End
 
 
@@ -154,8 +153,9 @@ to prevent leaking the array.
 Returns the address of the underlying ArrowArray for import or export
 across boundaries
 
-This is intended for advanced usage and may cause a crash if used
-incorrectly.
+.. warning::
+
+   This is intended for advanced usage and may cause a crash if used incorrectly.
 %End
 
     void exportToAddress( unsigned long long otherAddress );
@@ -163,15 +163,18 @@ incorrectly.
 Export this array to the address of an empty ArrowArray for export
 across boundaries
 
-This is intended for advanced usage and may cause a crash if used
-incorrectly.
+.. warning::
+
+   This is intended for advanced usage and may cause a crash if used incorrectly.
 %End
 
     bool isValid() const;
 %Docstring
-Returns true if this wrapper object holds a valid ArrowArray
+Returns ``True`` if this wrapper object holds a valid ArrowArray
 %End
 
+  private:
+    QgsArrowArray( const QgsArrowArray &other );
 };
 
 class QgsArrowIterator
@@ -179,6 +182,8 @@ class QgsArrowIterator
 %Docstring(signature="appended")
 Wrapper for an Arrow reader of features from vector data provider or
 vector layer.
+
+.. versionadded:: 4.0
 %End
 
 %TypeHeaderCode
@@ -210,17 +215,27 @@ number of features remaining)
 
 If no features remain, the returned array will be invalid (i.e.,
 :py:func:`~QgsArrowIterator.isValid` will return false).
+
+:raises QgsException: if a feature's attribute cannot be appended to an
+                      ArrowArray of the requested type or on internal
+                      error when building the array.
 %End
 
     static QgsArrowSchema inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );
 %Docstring
 Infer the :py:class:`QgsArrowSchema` for a given
 :py:class:`QgsVectorLayer`
+
+:raises QgsException: if one or more attribute fields is of an
+                      unsupported type.
 %End
 
     static QgsArrowSchema inferSchema( const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );
 %Docstring
 Infer the :py:class:`QgsArrowSchema` from components
+
+:raises QgsException: if one or more attribute fields is of an
+                      unsupported type.
 %End
 
 };

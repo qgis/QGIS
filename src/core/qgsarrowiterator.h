@@ -30,19 +30,19 @@
 ///@cond PRIVATE
 struct ArrowSchema
 {
-  // Array type description
-  const char *format;
-  const char *name;
-  const char *metadata;
-  int64_t flags;
-  int64_t n_children;
-  struct ArrowSchema **children;
-  struct ArrowSchema *dictionary;
+    // Array type description
+    const char *format;
+    const char *name;
+    const char *metadata;
+    int64_t flags;
+    int64_t n_children;
+    struct ArrowSchema **children;
+    struct ArrowSchema *dictionary;
 
-  // Release callback
-  void ( *release )( struct ArrowSchema * );
-  // Opaque producer-specific data
-  void *private_data;
+    // Release callback
+    void ( *release )( struct ArrowSchema * );
+    // Opaque producer-specific data
+    void *private_data;
 };
 /// @endcond
 #endif
@@ -51,20 +51,20 @@ struct ArrowSchema
 ///@cond PRIVATE
 struct ArrowArray
 {
-  // Array data description
-  int64_t length;
-  int64_t null_count;
-  int64_t offset;
-  int64_t n_buffers;
-  int64_t n_children;
-  const void **buffers;
-  struct ArrowArray **children;
-  struct ArrowArray *dictionary;
+    // Array data description
+    int64_t length;
+    int64_t null_count;
+    int64_t offset;
+    int64_t n_buffers;
+    int64_t n_children;
+    const void **buffers;
+    struct ArrowArray **children;
+    struct ArrowArray *dictionary;
 
-  // Release callback
-  void ( *release )( struct ArrowArray * );
-  // Opaque producer-specific data
-  void *private_data;
+    // Release callback
+    void ( *release )( struct ArrowArray * );
+    // Opaque producer-specific data
+    void *private_data;
 };
 ///@endcond
 #endif
@@ -78,16 +78,16 @@ struct ArrowArray
 ///@cond PRIVATE
 struct ArrowArrayStream
 {
-  // Callbacks providing stream functionality
-  int ( *get_schema )( struct ArrowArrayStream *, struct ArrowSchema *out );
-  int ( *get_next )( struct ArrowArrayStream *, struct ArrowArray *out );
-  const char *( *get_last_error )( struct ArrowArrayStream * );
+    // Callbacks providing stream functionality
+    int ( *get_schema )( struct ArrowArrayStream *, struct ArrowSchema *out );
+    int ( *get_next )( struct ArrowArrayStream *, struct ArrowArray *out );
+    const char *( *get_last_error )( struct ArrowArrayStream * );
 
-  // Release callback
-  void ( *release )( struct ArrowArrayStream * );
+    // Release callback
+    void ( *release )( struct ArrowArrayStream * );
 
-  // Opaque producer-specific data
-  void *private_data;
+    // Opaque producer-specific data
+    void *private_data;
 };
 ///@endcond
 #endif
@@ -200,28 +200,13 @@ class CORE_EXPORT QgsArrowArray
     //! Construct invalid array holder
     QgsArrowArray() = default;
 
-    /**
-     * Copy constructor
-     *
-     * ArrowArrays are not copyable objects, so this wrapper will throw an
-     * exception if there is an attempt to copy it while it holds a valid array
-     * to prevent leaking the array.
-     */
-    QgsArrowArray( const QgsArrowArray &other );
+    QgsArrowArray( const QgsArrowArray &other ) = delete;
+    QgsArrowArray &operator=( const QgsArrowArray &other ) = delete;
 
 #ifndef SIP_RUN
     //! Move constructor
     QgsArrowArray( QgsArrowArray &&other );
 #endif
-
-    /**
-     * Assignment operator
-     *
-     * ArrowArrays are not copyable objects, so this wrapper will throw an
-     * exception if there is an attempt to copy it while it holds a valid array
-     * to prevent leaking the array.
-     */
-    QgsArrowArray &operator=( const QgsArrowArray &other );
 
     ~QgsArrowArray();
 
@@ -250,6 +235,10 @@ class CORE_EXPORT QgsArrowArray
 
   private:
     struct ArrowArray mArray {};
+
+#ifdef SIP_RUN
+    QgsArrowArray( const QgsArrowArray &other );
+#endif
 };
 
 /**
@@ -278,15 +267,24 @@ class CORE_EXPORT QgsArrowIterator
      *
      * If no features remain, the returned array will be invalid (i.e., isValid() will return false).
      *
-     * \throws QgsException when XXX
+     * \throws QgsException if a feature's attribute cannot be appended to an ArrowArray of the
+     * requested type or on internal error when building the array.
      */
     QgsArrowArray nextFeatures( int n ) SIP_THROW( QgsException );
 
-    //! Infer the QgsArrowSchema for a given QgsVectorLayer
-    static QgsArrowSchema inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );
+    /**
+     * Infer the QgsArrowSchema for a given QgsVectorLayer
+     *
+     * \throws QgsException if one or more attribute fields is of an unsupported type.
+     */
+    static QgsArrowSchema inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() ) SIP_THROW( QgsException );
 
-    //! Infer the QgsArrowSchema from components
-    static QgsArrowSchema inferSchema( const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );
+    /**
+     * Infer the QgsArrowSchema from components
+     *
+     * \throws QgsException if one or more attribute fields is of an unsupported type.
+     */
+    static QgsArrowSchema inferSchema( const QgsFields &fields, bool hasGeometry = false, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() ) SIP_THROW( QgsException );
 
   private:
     QgsFeatureIterator mFeatureIterator;

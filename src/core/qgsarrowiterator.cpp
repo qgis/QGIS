@@ -113,14 +113,6 @@ int QgsArrowSchema::geometryColumnIndex() const { return mGeometryColumnIndex; }
 
 void QgsArrowSchema::setGeometryColumnIndex( int geometryColumnIndex ) { mGeometryColumnIndex = geometryColumnIndex; }
 
-QgsArrowArray::QgsArrowArray( const QgsArrowArray &other )
-{
-  if ( other.isValid() )
-  {
-    throw QgsException( "Can't copy valid QgsArrowArray" );
-  }
-}
-
 QgsArrowArray::QgsArrowArray( QgsArrowArray &&other )
 {
   if ( mArray.release )
@@ -129,16 +121,6 @@ QgsArrowArray::QgsArrowArray( QgsArrowArray &&other )
   }
 
   ArrowArrayMove( other.array(), &mArray );
-}
-
-QgsArrowArray &QgsArrowArray::operator=( const QgsArrowArray &other )
-{
-  if ( other.isValid() )
-  {
-    throw QgsException( "Can't copy-assign valid QgsArrowArray" );
-  }
-
-  return *this;
 }
 
 QgsArrowArray::~QgsArrowArray()
