@@ -442,7 +442,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
   else
   {
     auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( groupName, groupIcon, groupId );
-    parentNode = dynamic_cast< QgsCoordinateReferenceSystemModelGroupNode * >( parentNode->addChildNode( std::move( newGroup ) ) );
+    parentNode = qgis::down_cast< QgsCoordinateReferenceSystemModelGroupNode * >( parentNode->addChildNode( std::move( newGroup ) ) );
   }
 
   if ( ( record.authName != QLatin1String( "USER" ) && record.authName != QLatin1String( "CUSTOM" ) ) && ( record.type == Qgis::CrsType::Projected || record.type == Qgis::CrsType::DerivedProjected ) )
@@ -460,7 +460,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
     else
     {
       auto newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( projectionName, QIcon(), record.projectionAcronym );
-      parentNode = dynamic_cast< QgsCoordinateReferenceSystemModelGroupNode * >( parentNode->addChildNode( std::move( newGroup ) ) );
+      parentNode = qgis::down_cast< QgsCoordinateReferenceSystemModelGroupNode * >( parentNode->addChildNode( std::move( newGroup ) ) );
     }
   }
 
