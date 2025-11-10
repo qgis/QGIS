@@ -27,6 +27,7 @@
 #define ARROW_FLAG_MAP_KEYS_SORTED 4
 
 #ifndef SIP_RUN
+///@cond PRIVATE
 struct ArrowSchema
 {
   // Array type description
@@ -43,9 +44,11 @@ struct ArrowSchema
   // Opaque producer-specific data
   void *private_data;
 };
+/// @endcond
 #endif
 
 #ifndef SIP_RUN
+///@cond PRIVATE
 struct ArrowArray
 {
   // Array data description
@@ -63,6 +66,7 @@ struct ArrowArray
   // Opaque producer-specific data
   void *private_data;
 };
+///@endcond
 #endif
 
 #endif // ARROW_C_DATA_INTERFACE
@@ -71,6 +75,7 @@ struct ArrowArray
 #define ARROW_C_STREAM_INTERFACE
 
 #ifndef SIP_RUN
+///@cond PRIVATE
 struct ArrowArrayStream
 {
   // Callbacks providing stream functionality
@@ -84,6 +89,7 @@ struct ArrowArrayStream
   // Opaque producer-specific data
   void *private_data;
 };
+///@endcond
 #endif
 
 #endif // ARROW_C_STREAM_INTERFACE
