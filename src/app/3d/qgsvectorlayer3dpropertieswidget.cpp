@@ -43,3 +43,8 @@ void QgsVectorLayer3DPropertiesWidget::apply( QgsAbstractVectorLayer3DRenderer *
   tilingSettings.setShowBoundingBoxes( chkShowBoundingBoxes->isChecked() );
   renderer->setTilingSettings( tilingSettings );
 }
+
+void QgsVectorLayer3DPropertiesWidget::reset()
+{
+  whileBlocking( chkShowBoundingBoxes )->setChecked( false );
+}
