@@ -281,7 +281,7 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
       );
       enableBinding = false; // not used in absolute mode
 
-      if ( QgsWkbTypes::hasZ( mLayer->wkbType() ) )
+      if ( mLayer && QgsWkbTypes::hasZ( mLayer->wkbType() ) )
       {
         mOffsetLabel->setText( tr( "Offset" ) );
       }

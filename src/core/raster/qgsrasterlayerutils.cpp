@@ -28,6 +28,12 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   const QgsDoubleRange &elevationRange,
   bool &matched )
 {
+  if ( !layer )
+  {
+    matched = false;
+    return -1;
+  }
+
   matched = true;
   const QgsRasterLayerElevationProperties *elevationProperties = qobject_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() );
   const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< QgsRasterLayerTemporalProperties *>( layer->temporalProperties() );
@@ -116,52 +122,48 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
 
     case Qgis::RasterElevationMode::DynamicRangePerBand:
     {
-      if ( layer )
+      QgsExpressionContext context;
+      context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+      QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
+      context.appendScope( bandScope );
+
+      QgsProperty lowerProperty = elevationProperties->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation );
+      QgsProperty upperProperty = elevationProperties->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation );
+      lowerProperty.prepare( context );
+      upperProperty.prepare( context );
+
+      int currentMatchingBand = -1;
+      matched = false;
+      QgsDoubleRange currentMatchingRange;
+
+      for ( int band : temporalBands )
       {
-        QgsExpressionContext context;
-        context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-        QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-        context.appendScope( bandScope );
+        bandScope->setVariable( QStringLiteral( "band" ), band );
+        bandScope->setVariable( QStringLiteral( "band_name" ), layer->dataProvider()->displayBandName( band ) );
+        bandScope->setVariable( QStringLiteral( "band_description" ), layer->dataProvider()->bandDescription( band ) );
 
-        QgsProperty lowerProperty = elevationProperties->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation );
-        QgsProperty upperProperty = elevationProperties->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation );
-        lowerProperty.prepare( context );
-        upperProperty.prepare( context );
+        bool ok = false;
+        const double lower = lowerProperty.valueAsDouble( context, 0, &ok );
+        if ( !ok )
+          continue;
+        const double upper = upperProperty.valueAsDouble( context, 0, &ok );
+        if ( !ok )
+          continue;
 
-        int currentMatchingBand = -1;
-        matched = false;
-        QgsDoubleRange currentMatchingRange;
-
-        for ( int band : temporalBands )
+        const QgsDoubleRange bandRange = QgsDoubleRange( lower, upper );
+        if ( bandRange.overlaps( elevationRange ) )
         {
-          bandScope->setVariable( QStringLiteral( "band" ), band );
-          bandScope->setVariable( QStringLiteral( "band_name" ), layer->dataProvider()->displayBandName( band ) );
-          bandScope->setVariable( QStringLiteral( "band_description" ), layer->dataProvider()->bandDescription( band ) );
-
-          bool ok = false;
-          const double lower = lowerProperty.valueAsDouble( context, 0, &ok );
-          if ( !ok )
-            continue;
-          const double upper = upperProperty.valueAsDouble( context, 0, &ok );
-          if ( !ok )
-            continue;
-
-          const QgsDoubleRange bandRange = QgsDoubleRange( lower, upper );
-          if ( bandRange.overlaps( elevationRange ) )
+          if ( currentMatchingRange.isInfinite()
+               || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
+               || ( !currentMatchingRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() ) )
           {
-            if ( currentMatchingRange.isInfinite()
-                 || ( bandRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() )
-                 || ( !currentMatchingRange.includeUpper() && bandRange.upper() >= currentMatchingRange.upper() ) )
-            {
-              currentMatchingBand = band;
-              currentMatchingRange = bandRange;
-              matched = true;
-            }
+            currentMatchingBand = band;
+            currentMatchingRange = bandRange;
+            matched = true;
           }
         }
-        return currentMatchingBand;
       }
-      return -1;
+      return currentMatchingBand;
     }
   }
   BUILTIN_UNREACHABLE;
