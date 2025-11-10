@@ -75,7 +75,7 @@ static void setupIntEditor( const QVariant &min, const QVariant &max, const QVar
   slider->setMinimum( min.isValid() ? min.toInt() : std::numeric_limits<int>::lowest() );
   slider->setMaximum( max.isValid() ? max.toInt() : std::numeric_limits<int>::max() );
   slider->setSingleStep( step.isValid() ? step.toInt() : 1 );
-  QObject::connect( slider, &T::valueChanged, wrapper, &QgsRangeWidgetWrapper::emitValueChanged );
+  QObject::connect( slider, qOverload<int>( &T::valueChanged ), wrapper, &QgsRangeWidgetWrapper::emitValueChanged );
 }
 
 void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
@@ -175,9 +175,9 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     ( void ) field().convertCompatible( max );
     ( void ) field().convertCompatible( step );
     if ( mQgsDial )
-      setupIntEditor( min, max, step, mQgsDial, this );
+      setupIntEditor<QDial>( min, max, step, mQgsDial, this );
     else if ( mQgsSlider )
-      setupIntEditor( min, max, step, mQgsSlider, this );
+      setupIntEditor<QSlider>( min, max, step, mQgsSlider, this );
     else if ( mDial )
       setupIntEditor( min, max, step, mDial, this );
     else if ( mSlider )
