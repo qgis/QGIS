@@ -595,7 +595,7 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
   mDistanceAxisLabelIntervalSpin->setClearValue( canvas->plot().xAxis().labelInterval() );
   mProfile->plot()->xAxis().setLabelInterval( canvas->plot().xAxis().labelInterval() );
 
-  mSpinMinElevation->setValue( canvas->plot().xMinimum() );
+  mSpinMinElevation->setValue( canvas->plot().yMinimum() );
   mSpinMinElevation->setClearValue( canvas->plot().yMinimum() );
   mProfile->plot()->setYMinimum( canvas->plot().yMinimum() );
 
