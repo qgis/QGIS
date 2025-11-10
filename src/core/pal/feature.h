@@ -225,7 +225,7 @@ namespace pal
        */
       std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *mapShape, const std::vector<double> &pathDistances,
           QgsTextRendererUtils::LabelLineDirection direction, double distance, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints,
-          QgsTextRendererUtils::CurvedTextFlags flags );
+          Qgis::CurvedTextFlags flags );
 
       /**
        * Generate curved candidates for line features.
