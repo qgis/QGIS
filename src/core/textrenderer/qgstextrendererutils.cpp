@@ -152,7 +152,7 @@ QColor QgsTextRendererUtils::readColor( QgsVectorLayer *layer, const QString &pr
   return QColor( r, g, b, a );
 }
 
-std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QPolygonF &line, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, CurvedTextFlags flags )
+std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QPolygonF &line, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, Qgis::CurvedTextFlags flags )
 {
   const int numPoints = line.size();
   std::vector<double> pathDistances( numPoints );
@@ -186,7 +186,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
   return generateCurvedTextPlacementPrivate( metrics, x.data(), y.data(), numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle, false );
 }
 
-std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, CurvedTextFlags flags )
+std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, Qgis::CurvedTextFlags flags )
 {
   return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle );
 }
@@ -235,7 +235,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
       double characterStartX, characterStartY;
       if ( !nextCharPosition( characterWidth, pathDistances[endindex], x, y, numPoints, endindex, distance, characterStartX, characterStartY, endLabelX, endLabelY ) )
       {
-        if ( flags & QgsTextRendererUtils::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
+        if ( flags & Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
         {
           characterCount = i + 1;
           break;
@@ -298,7 +298,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
     double characterEndY = 0;
     if ( !nextCharPosition( characterWidth, pathDistances[index], x, y, numPoints, index, offsetAlongSegment, characterStartX, characterStartY, characterEndX, characterEndY ) )
     {
-      if ( flags & QgsTextRendererUtils::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
+      if ( flags & Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
       {
         characterCount = i + 1;
         break;
@@ -331,7 +331,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
       }
     }
 
-    if ( !( flags & CurvedTextFlag::UseBaselinePlacement ) )
+    if ( !( flags & Qgis::CurvedTextFlag::UseBaselinePlacement ) )
     {
       // Shift the character downwards since the draw position is specified at the baseline
       // and we're calculating the mean line here
@@ -371,7 +371,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
       output->upsideDownCharCount++;
   }
 
-  if ( !isSecondAttempt && ( flags & QgsTextRendererUtils::CurvedTextFlag::UprightCharactersOnly ) && output->upsideDownCharCount >= characterCount / 2.0 )
+  if ( !isSecondAttempt && ( flags & Qgis::CurvedTextFlag::UprightCharactersOnly ) && output->upsideDownCharCount >= characterCount / 2.0 )
   {
     // more of text is upside down then right side up...
     // if text should be shown upright then retry with the opposite orientation

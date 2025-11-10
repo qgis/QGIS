@@ -1730,6 +1730,16 @@ The development version
       SubScript,
     };
 
+    enum class CurvedTextFlag
+    {
+      TruncateStringWhenLineIsTooShort,
+      UseBaselinePlacement,
+      UprightCharactersOnly,
+    };
+
+    typedef QFlags<Qgis::CurvedTextFlag> CurvedTextFlags;
+
+
     enum class VectorSimplificationAlgorithm
       {
       Distance,
@@ -3780,6 +3790,9 @@ QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCa
 QFlags<Qgis::LayoutRenderFlag> operator|(Qgis::LayoutRenderFlag f1, QFlags<Qgis::LayoutRenderFlag> f2);
 
 QFlags<Qgis::MapLayerLegendFlag> operator|(Qgis::MapLayerLegendFlag f1, QFlags<Qgis::MapLayerLegendFlag> f2);
+
+QFlags<Qgis::CurvedTextFlag> operator|(Qgis::CurvedTextFlag f1, QFlags<Qgis::CurvedTextFlag> f2);
+
 
 
 
