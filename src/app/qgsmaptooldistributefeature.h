@@ -30,31 +30,7 @@
 
 #include "ui_qgsdistributefeatureuserinputwidget.h"
 
-class APP_EXPORT QgsDistributeFeatureUserWidget : public QWidget, private Ui::QgsDistributeFeatureUserInputBase
-{
-    Q_OBJECT
-
-  public:
-    explicit QgsDistributeFeatureUserWidget( QWidget *parent = nullptr );
-
-    ~QgsDistributeFeatureUserWidget() override;
-
-    enum DistributeMode
-    {
-      FeatureCount,           //!< Distribute a fixed number of features with an undefined spacing
-      FeatureSpacing,         //!< Distribute a undefined number of features with a fixed spacing
-      FeatureNumberAndSpacing //!< Distribute a fixed number of features with a fixed spacing
-    };
-    Q_ENUM( DistributeMode )
-
-    void setFeatureSpacing( double spacing );
-    double featureSpacing() const;
-    void setFeatureCount( int featureCount );
-    int featureCount() const;
-    void setMode( QgsDistributeFeatureUserWidget::DistributeMode mode );
-    QgsDistributeFeatureUserWidget::DistributeMode mode() const;
-    void updateUi();
-};
+class QgsDistributeFeatureUserWidget;
 
 //! Map tool for copying and distributing features by mouse drag
 class APP_EXPORT QgsMapToolDistributeFeature : public QgsMapToolAdvancedDigitizing
@@ -64,59 +40,91 @@ class APP_EXPORT QgsMapToolDistributeFeature : public QgsMapToolAdvancedDigitizi
     QgsMapToolDistributeFeature( QgsMapCanvas *canvas );
 
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
-
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
-
     void keyPressEvent( QKeyEvent *e ) override;
 
     void deactivate() override;
-
     void activate() override;
 
-    //! Settings entry digitizing: mode
-    static const QgsSettingsEntryEnumFlag<QgsDistributeFeatureUserWidget::DistributeMode> *settingsMode;
+    enum DistributeMode
+    {
+      FeatureCount,           //!< Distribute a fixed number of features with an undefined spacing
+      FeatureSpacing,         //!< Distribute a undefined number of features with a fixed spacing
+      FeatureNumberAndSpacing //!< Distribute a fixed number of features with a fixed spacing
+    };
+    Q_ENUM( DistributeMode )
 
-    //! Settings entry digitizing: feature count
+    //! The number of features to distribute
+    int featureCount() const;
+    void setFeatureCount( int featureCount );
+
+    //! The spacing between features to distribute
+    double featureSpacing() const;
+    void setFeatureSpacing( double featureSpacing );
+
+    //! The distribution mode
+    DistributeMode mode() const { return mMode; };
+    void setMode( DistributeMode mode );
+
+    //! Settings in digitizing entry
+    static const QgsSettingsEntryEnumFlag<DistributeMode> *settingsMode;
     static const QgsSettingsEntryInteger *settingsFeatureCount;
-
-    //! Settings entry digitizing: feature spacing
     static const QgsSettingsEntryDouble *settingsFeatureSpacing;
 
   private:
+    //! The mode, feature count, and feature spacing
+    int mFeatureCount;
+    double mFeatureSpacing;
+    DistributeMode mMode;
+
     //! Start point of the move in map coordinates
     QgsPointXY mStartPointMapCoords;
     QgsPointXY mEndPointMapCoords;
 
-    //! The current feature ID
+    //! The current feature ID, geometry, and layer
     QgsFeatureId mFeatureId;
-
-    //! The feature geometry
     QgsGeometry mFeatureGeom;
-
-    //! The feature layer
     QgsVectorLayer *mFeatureLayer;
 
-    //! The distribute feature widget
+    //! The user widget
     std::unique_ptr<QgsDistributeFeatureUserWidget> mUserInputWidget;
 
-    //! Rubberband that shows the feature being moved
-    std::unique_ptr<QgsRubberBand> mFeaturesRubberBand;
-
-    //! Snapping config that will be restored on deactivation
-    QgsSnappingConfig mOriginalSnappingConfig;
-
+    //! The rubberband that shows the feature being distributed
+    std::unique_ptr<QgsRubberBand> mRubberBand;
     void deleteRubberbands();
-
     void updateRubberband();
-
-    //! The number of features to distribute
-    int featureCount() const;
-
-    //! The spacing between features to distribute
-    double featureSpacing() const;
 
     //! The coordinates of the first feature on the distribution
     QgsPointXY firstFeatureMapPoint() const;
+};
+
+//! User widget for the distribute map tool
+class APP_EXPORT QgsDistributeFeatureUserWidget : public QWidget, private Ui::QgsDistributeFeatureUserInputBase
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsDistributeFeatureUserWidget( QWidget *parent = nullptr );
+
+    //! The number of features to distribute
+    int featureCount() const;
+    void setFeatureCount( int featureCount );
+
+    //! The spacing between features to distribute
+    double featureSpacing() const;
+    void setFeatureSpacing( double featureSpacing );
+
+    //! The distribution mode
+    QgsMapToolDistributeFeature::DistributeMode mode() const;
+    void setMode( QgsMapToolDistributeFeature::DistributeMode mode );
+
+  signals:
+    void modeChanged( QgsMapToolDistributeFeature::DistributeMode mode );
+    void featureCountChanged( int featureCount );
+    void featureSpacingChanged( double featureSpacing );
+
+  private:
+    void updateUi();
 };
 
 #endif
