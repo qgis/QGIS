@@ -48,9 +48,9 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mCancelButton->hide();
 
   mContextMenu = new QMenu( tr( "Options" ), this );
-  mContextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeColor() ) );
-  mContextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeOpacity() ) );
-  mContextMenu->addAction( tr( "Change Label…" ), this, SLOT( changeLabel() ) );
+  mContextMenu->addAction( tr( "Change Color…" ), this, &QgsPalettedRendererWidget::changeColor );
+  mContextMenu->addAction( tr( "Change Opacity…" ), this, &QgsPalettedRendererWidget::changeOpacity );
+  mContextMenu->addAction( tr( "Change Label…" ), this, &QgsPalettedRendererWidget::changeLabel );
 
   mAdvancedMenu = new QMenu( tr( "Advanced Options" ), this );
   QAction *mLoadFromLayerAction = mAdvancedMenu->addAction( tr( "Load Classes from Layer" ) );

@@ -21,7 +21,6 @@
 #include "qgsserverquerystringparameter.h"
 #include "qgsserverogcapi.h"
 #include <nlohmann/json_fwd.hpp>
-#include "inja/inja.hpp"
 
 #ifndef SIP_RUN
 using namespace nlohmann;

@@ -24,7 +24,13 @@ tree view.
 #include "qgslayertreeviewdefaultactions.h"
 %End
   public:
-    QgsLayerTreeViewDefaultActions( QgsLayerTreeView *view );
+    QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view );
+%Docstring
+Constructor for QgsLayerTreeViewDefaultActions, creating actions for a
+``view``.
+
+The object will be parented to the specified ``view``.
+%End
 
     QAction *actionAddGroup( QObject *parent = 0 ) /Factory/;
     QAction *actionRemoveGroupOrLayer( QObject *parent = 0 ) /Factory/;

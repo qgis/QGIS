@@ -72,11 +72,11 @@ QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer 
   ok = true;
   if ( !selectedOnly )
   {
-    return layer->getFeatures( request );
+    return layer->getFeatures( std::move( request ) );
   }
   else
   {
-    return layer->getSelectedFeatures( request );
+    return layer->getSelectedFeatures( std::move( request ) );
   }
 }
 
@@ -1331,4 +1331,106 @@ QString QgsVectorLayerUtils::guessFriendlyIdentifierField( const QgsFields &fiel
     // no string fields found - just return first field
     return fields.at( 0 ).name();
   }
+}
+
+template <typename T, typename ConverterFunc>
+void populateFieldDataArray( const QVector<QVariant> &values, const QVariant &nullValue, QByteArray &res, ConverterFunc converter )
+{
+  res.resize( values.size() * sizeof( T ) );
+  T *data = reinterpret_cast<T *>( res.data() );
+  for ( const QVariant &val : values )
+  {
+    if ( QgsVariantUtils::isNull( val ) )
+    {
+      *data++ = converter( nullValue );
+    }
+    else
+    {
+      *data++ = converter( val );
+    }
+  }
+}
+
+QByteArray QgsVectorLayerUtils::fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue )
+{
+  const int fieldIndex = fields.lookupField( fieldName );
+  if ( fieldIndex < 0 )
+    return QByteArray();
+
+  QVector< QVariant > values;
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    values.append( f.attribute( fieldIndex ) );
+  }
+
+  const QgsField field = fields.at( fieldIndex );
+  QByteArray res;
+  switch ( field.type( ) )
+  {
+    case QMetaType::Int:
+    {
+      populateFieldDataArray<int>( values, nullValue, res, []( const QVariant & v ) { return v.toInt(); } );
+      break;
+    }
+
+    case QMetaType::UInt:
+    {
+      populateFieldDataArray<unsigned int>( values, nullValue, res, []( const QVariant & v ) { return v.toUInt(); } );
+      break;
+    }
+
+    case QMetaType::LongLong:
+    {
+      populateFieldDataArray<long long>( values, nullValue, res, []( const QVariant & v ) { return v.toLongLong(); } );
+      break;
+    }
+
+    case QMetaType::ULongLong:
+    {
+      populateFieldDataArray<unsigned long long>( values, nullValue, res, []( const QVariant & v ) { return v.toULongLong(); } );
+      break;
+    }
+
+    case QMetaType::Double:
+    {
+      populateFieldDataArray<double>( values, nullValue, res, []( const QVariant & v ) { return v.toDouble(); } );
+      break;
+    }
+
+    case QMetaType::Long:
+    {
+      populateFieldDataArray<long>( values, nullValue, res, []( const QVariant & v ) { return v.toLongLong(); } );
+      break;
+    }
+
+    case QMetaType::Short:
+    {
+      populateFieldDataArray<short>( values, nullValue, res, []( const QVariant & v ) { return v.toInt(); } );
+      break;
+    }
+
+    case QMetaType::ULong:
+    {
+      populateFieldDataArray<unsigned long>( values, nullValue, res, []( const QVariant & v ) { return v.toULongLong(); } );
+      break;
+    }
+
+    case QMetaType::UShort:
+    {
+      populateFieldDataArray<unsigned short>( values, nullValue, res, []( const QVariant & v ) { return v.toUInt(); } );
+      break;
+    }
+
+    case QMetaType::Float:
+    {
+      populateFieldDataArray<float>( values, nullValue, res, []( const QVariant & v ) { return v.toFloat(); } );
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  return res;
 }

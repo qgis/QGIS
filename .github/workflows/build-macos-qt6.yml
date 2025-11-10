@@ -19,12 +19,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-13
+          - os: macos-14
             triplet: x64-osx-dynamic-release
             deployment-target: "10.15"
+            osx-architecture: "x86_64"
           - os: macos-14
             triplet: arm64-osx-dynamic-release
             deployment-target: "11.0"
+            osx-architecture: "arm64"
     name: build (macos)
     runs-on: ${{ matrix.os }}
 
@@ -33,7 +35,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@2ecc21724e5215b0e567bc399a2602d2ecb48541 # latest
+        uses: lukka/get-cmake@628dd514bed37cb0a609e84a6186cbbaa2fc0140 # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
@@ -49,7 +51,7 @@ jobs:
 
       - name: 🔨 Prepare build env
         run: |
-          brew install automake bison flex gnu-sed autoconf-archive nasm libtool fdupes
+          brew install automake bison flex gnu-sed autoconf-archive nasm libtool fdupes swig mono
           echo $(brew --prefix bison)/bin >> $GITHUB_PATH
           echo $(brew --prefix flex)/bin >> $GITHUB_PATH
           echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
@@ -92,10 +94,12 @@ jobs:
                 -D WITH_QTWEBENGINE=OFF \
                 -D WITH_BINDINGS=ON \
                 -D WITH_ORACLE=ON \
+                -D WITH_SFCGAL=ON \
                 -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
                 -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
                 -D CMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.deployment-target }} \
+                -D CMAKE_OSX_ARCHITECTURES=${{ matrix.osx-architecture }} \
                 -D ENABLE_UNITY_BUILDS=ON \
                 -D NUGET_USERNAME=${{ github.actor }} \
                 -D NUGET_SOURCE="https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
@@ -106,7 +110,7 @@ jobs:
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
 
       - name: 📑 Upload vcpkg build logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: build-logs-${{ matrix.triplet }}
@@ -120,7 +124,7 @@ jobs:
 
       - name: 📤 Upload sdk
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: qgis-sdk-${{ matrix.triplet }}
           path: |
@@ -138,7 +142,7 @@ jobs:
           gtar -cpvzf qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}
           path: |
@@ -162,7 +166,7 @@ jobs:
         uses: ./.github/actions/get-workflow-artifact-ids
 
       - name: 📤 Download app
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           pattern: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-*
           path: |
@@ -194,7 +198,7 @@ jobs:
             universal/*/*.app
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         id: artifact-mac-qt6
         with:
           name: qgis-${{steps.workflow-artifact-ids.outputs.filename}}-dmg

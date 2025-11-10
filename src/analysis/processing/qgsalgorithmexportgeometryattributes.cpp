@@ -257,9 +257,13 @@ QgsAttributes QgsExportGeometryAttributesAlgorithm::pointAttributes( const QgsGe
       attrs.append( point->m() );
     }
   }
+  else if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() ) )
+  {
+    attrs.append( collection->numGeometries() );
+  }
   else
   {
-    attrs.append( qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() )->numGeometries() );
+    attrs.append( 0 );
   }
   return attrs;
 }

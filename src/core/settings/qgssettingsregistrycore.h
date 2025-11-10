@@ -175,6 +175,15 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry autosize columns by default when opening attribute table
     static const QgsSettingsEntryBool *settingsAutosizeAttributeTable;
 
+    //! Settings entry for behavior handling embedded scripts within projects
+    static const QgsSettingsEntryEnumFlag<Qgis::EmbeddedScriptMode> *settingsCodeExecutionBehaviorUndeterminedProjects;
+
+    //! Settings entry for projects and folders that are allowed execution of embedded scripts across sessions
+    static const QgsSettingsEntryStringList *settingsCodeExecutionTrustedProjectsFolders;
+
+    //! Settings entry for projects and folders that are denied execution of embedded scripts across sessions
+    static const QgsSettingsEntryStringList *settingsCodeExecutionUntrustedProjectsFolders;
+
   private:
     friend class QgsApplication;
 

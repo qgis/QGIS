@@ -318,6 +318,7 @@ void QgsAnnotationLayerChunkLoader::start()
           geometry.position = billboard.position;
           geometry.textureAtlasOffset = QVector2D( static_cast< float >( textureRect.left() ) / static_cast< float>( mBillboardAtlas.width() ), 1 - ( static_cast< float >( textureRect.bottom() ) / static_cast< float>( mBillboardAtlas.height() ) ) );
           geometry.textureAtlasSize = QVector2D( static_cast< float >( textureRect.width() ) / static_cast< float>( mBillboardAtlas.width() ), static_cast< float>( textureRect.height() ) / static_cast< float>( mBillboardAtlas.height() ) );
+          geometry.pixelOffset = QPoint( 0, textureRect.height() / 2 );
           mBillboardPositions.append( geometry );
         }
       }
@@ -419,14 +420,14 @@ Qt3DCore::QEntity *QgsAnnotationLayerChunkLoader::createEntity( Qt3DCore::QEntit
   if ( !mBillboardPositions.empty() )
   {
     QgsBillboardGeometry *billboardGeometry = new QgsBillboardGeometry();
-    billboardGeometry->setBillboardData( mBillboardPositions );
+    billboardGeometry->setBillboardData( mBillboardPositions, true );
 
     Qt3DRender::QGeometryRenderer *billboardGeometryRenderer = new Qt3DRender::QGeometryRenderer;
     billboardGeometryRenderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::Points );
     billboardGeometryRenderer->setGeometry( billboardGeometry );
     billboardGeometryRenderer->setVertexCount( billboardGeometry->count() );
 
-    QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::Mode::AtlasTexture );
+    QgsPoint3DBillboardMaterial *billboardMaterial = new QgsPoint3DBillboardMaterial( QgsPoint3DBillboardMaterial::Mode::AtlasTextureWithPixelOffsets );
     billboardMaterial->setTexture2DFromImage( mBillboardAtlas );
 
 

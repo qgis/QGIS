@@ -154,7 +154,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 
     struct SLException
     {
-        explicit SLException( char *msg )
+        explicit SLException( const QString &msg )
           : errMsg( msg )
         {
         }
@@ -166,19 +166,17 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 
         ~SLException()
         {
-          if ( errMsg )
-            sqlite3_free( errMsg );
         }
 
         SLException &operator=( const SLException &other ) = delete;
 
         QString errorMessage() const
         {
-          return errMsg ? QString::fromUtf8( errMsg ) : QStringLiteral( "unknown cause" );
+          return !errMsg.isEmpty() ? errMsg : QStringLiteral( "unknown cause" );
         }
 
       private:
-        char *errMsg = nullptr;
+        QString errMsg;
     };
 
     //! Check if version is above major and minor
@@ -193,7 +191,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
     /**
      * Sqlite exec sql wrapper for SQL logging
      */
-    static int exec_sql( sqlite3 *handle, const QString &sql, const QString &uri, char *errMsg = nullptr, const QString &origin = QString() );
+    static int exec_sql( sqlite3 *handle, const QString &sql, const QString &uri, QString &errMsg, const QString &origin = QString() );
 
   private:
     //! Loads fields from input file to member mAttributeFields
@@ -335,8 +333,6 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
     //! SpatiaLite minor version
     int mSpatialiteVersionMinor = 0;
 
-    //! Internal transaction handling (for addFeatures etc.)
-    int mSavepointId;
     static QAtomicInt sSavepointId;
 
     /**
@@ -377,7 +373,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
     /**
      * Handles an error encountered while executing an sql statement.
      */
-    void handleError( const QString &sql, char *errorMessage, const QString &savepointId );
+    void handleError( const QString &sql, const QString &errorMessage, const QString &savepointId );
 
     /**
      * Returns the sqlite handle to be used, if we are inside a transaction it will be the transaction's handle

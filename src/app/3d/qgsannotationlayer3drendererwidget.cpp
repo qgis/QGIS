@@ -38,6 +38,8 @@ QgsAnnotationLayer3DRendererWidget::QgsAnnotationLayer3DRendererWidget( QgsAnnot
   mComboRendererType->setCurrentIndex( mComboRendererType->findData( QVariant::fromValue( RendererType::None ) ) );
   mStackedWidget->setCurrentWidget( mPageNoRenderer );
 
+  mOffsetZSpinBox->setClearValue( 0 );
+
   connect( mComboRendererType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsAnnotationLayer3DRendererWidget::rendererTypeChanged );
 
   mComboClamping->addItem( tr( "Relative to Terrain" ), QVariant::fromValue( Qgis::AltitudeClamping::Relative ) );

@@ -62,16 +62,16 @@ class DataDefinedRestorer : public QObject
   private:
     QgsMarkerSymbol *mMarker = nullptr;
     const QgsMarkerSymbolLayer *mMarkerSymbolLayer = nullptr;
-    double mSize;
-    double mAngle;
+    double mSize = 0;
+    double mAngle = 0;
     QPointF mMarkerOffset;
     QgsProperty mDDSize;
     QgsProperty mDDAngle;
 
     QgsLineSymbol *mLine = nullptr;
     const QgsLineSymbolLayer *mLineSymbolLayer = nullptr;
-    double mWidth;
-    double mLineOffset;
+    double mWidth = 0;
+    double mLineOffset = 0;
     QgsProperty mDDWidth;
 
     void save();

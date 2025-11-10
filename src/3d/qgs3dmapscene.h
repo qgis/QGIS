@@ -382,7 +382,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void addCameraRotationCenterEntity( QgsCameraController *controller );
     void setSceneState( SceneState state );
     void updateSceneState();
-    void updateScene( bool forceUpdate = false );
+    //! \returns whether at least one node was told to update
+    bool updateScene( bool forceUpdate = false );
     void finalizeNewEntity( Qt3DCore::QEntity *newEntity );
     int maximumTextureSize() const;
 

@@ -984,10 +984,7 @@ bool QgsWFSProvider::supportsSubsetString() const
 
 QgsAbstractFeatureSource *QgsWFSProvider::featureSource() const
 {
-  auto fs = new QgsBackgroundCachedFeatureSource( mShared );
-  /*connect( fs, SIGNAL( extentRequested( const QgsRectangle & ) ),
-           this, SLOT( extendExtent( const QgsRectangle & ) ) );*/
-  return fs;
+  return new QgsBackgroundCachedFeatureSource( mShared );
 }
 
 void QgsWFSProvider::reloadProviderData()

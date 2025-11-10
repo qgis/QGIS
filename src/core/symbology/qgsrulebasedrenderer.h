@@ -109,6 +109,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
       QgsRuleBasedRenderer::RenderLevel &operator=( const QgsRuleBasedRenderer::RenderLevel &rh )
       {
+        if ( &rh == this )
+          return *this;
+
         zIndex = rh.zIndex;
         qDeleteAll( jobs );
         jobs.clear();

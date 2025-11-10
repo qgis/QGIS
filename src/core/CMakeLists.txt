@@ -1267,6 +1267,7 @@ set(QGIS_CORE_HDRS
   qgsmimedatautils.h
   qgsmultirenderchecker.h
   qgsobjectcustomproperties.h
+  qgsobjectvisitor.h
   qgsofflineediting.h
   qgsogcutils.h
   qgsogrproxytextcodec.h
@@ -2018,6 +2019,7 @@ set(QGIS_CORE_HDRS
 
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
+  symbology/qgsblanksegmentutils.cpp
   symbology/qgscategorizedsymbolrenderer.h
   symbology/qgscolorbrewerpalette.h
   symbology/qgscombinedstylemodel.h
@@ -2200,6 +2202,8 @@ set(QGIS_CORE_PRIVATE_HDRS
   proj/qgscoordinatereferencesystem_legacy_p.h
 
   providers/ogr/qgscplerrorhandler_p.h
+
+  symbology/qgsblanksegmentutils_p.h
 
   textrenderer/qgstextrenderer_p.h
 )

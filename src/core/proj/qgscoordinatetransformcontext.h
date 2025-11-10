@@ -65,7 +65,9 @@ class CORE_EXPORT QgsCoordinateTransformContext
     ~QgsCoordinateTransformContext() ;
 
     QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
+    SIP_SKIP QgsCoordinateTransformContext( QgsCoordinateTransformContext &&rhs );
     QgsCoordinateTransformContext &operator=( const QgsCoordinateTransformContext &rhs ) SIP_SKIP;
+    QgsCoordinateTransformContext &operator=( QgsCoordinateTransformContext &&rhs );
 
     bool operator==( const QgsCoordinateTransformContext &rhs ) const;
     bool operator!=( const QgsCoordinateTransformContext &rhs ) const;

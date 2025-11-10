@@ -2,19 +2,18 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "9e7bfb1bcd1fa2e6e0755c4076441360b9c9ded7",
+      "baseline": "0e39c10736341cc8135b560438229bbda3d3219a",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "b7adf319e27723718179b451efde85606a2c42ae",
+        "baseline": "945f8fd57e754cb9fcc4187fc0ec90e83eb847f4",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
           "py-*",
           "gdal",
-          "swig",
           "vcpkg-python-scripts",
           "vcpkg-tool-mercurial",
           "pybind11"
@@ -163,6 +162,12 @@
       "description": "Determines whether QGIS server should be built",
       "dependencies": [
         "fastcgi"
+      ]
+    },
+    "sfcgal": {
+      "description": "Build with SFCGAL support",
+      "dependencies": [
+        "sfcgal"
       ]
     }
   }

@@ -1374,7 +1374,7 @@ QgsGradientColorRamp QgsRasterAttributeTable::colorRamp( QStringList &labels, co
       if ( range != 0 )
       {
 
-        if ( ! isnan( min ) && ! isnan( max ) )
+        if ( ! std::isnan( min ) && ! std::isnan( max ) )
         {
           const QList<QVariantList> dataCopy( orderedRows() );
 

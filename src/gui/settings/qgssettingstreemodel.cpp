@@ -92,7 +92,7 @@ void QgsSettingsTreeModelNodeData::addChildForTreeNode( const QgsSettingsTreeNod
   if ( node->type() == Qgis::SettingsTreeNodeType::NamedList )
   {
     nodeData->mType = Type::NamedListTreeNode;
-    const QgsSettingsTreeNamedListNode *nln = dynamic_cast<const QgsSettingsTreeNamedListNode *>( node );
+    const QgsSettingsTreeNamedListNode *nln = qgis::down_cast<const QgsSettingsTreeNamedListNode *>( node );
     const QStringList items = nln->items( mNamedParentNodes );
     for ( const QString &item : items )
     {

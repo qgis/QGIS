@@ -36,12 +36,12 @@ class GUI_EXPORT QgsGeometryWidgetFactory : public QgsEditorWidgetFactory
   public:
     /**
      * Constructor for QgsGeometryWidgetFactory, where \a name is a human-readable
-     * name for the factory.
+     * name for the factory and \a icon provides a visual representation of this widget type.
      *
      * The \a messageBar argument can be used to link the widget to a QgsMessageBar
      * for providing user feedback.
      */
-    explicit QgsGeometryWidgetFactory( const QString &name, QgsMessageBar *messageBar );
+    explicit QgsGeometryWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:

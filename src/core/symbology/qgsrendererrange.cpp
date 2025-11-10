@@ -55,6 +55,9 @@ QgsRendererRange::~QgsRendererRange() = default;
 
 QgsRendererRange &QgsRendererRange::operator=( QgsRendererRange range )
 {
+  if ( &range == this )
+    return *this;
+
   mLowerValue = range.mLowerValue;
   mUpperValue = range.mUpperValue;
   mSymbol.reset( range.mSymbol ? range.mSymbol->clone() : nullptr );

@@ -136,6 +136,10 @@ try:
     QgsApplication.customVariables = staticmethod(QgsApplication.customVariables)
     QgsApplication.setCustomVariables = staticmethod(QgsApplication.setCustomVariables)
     QgsApplication.setCustomVariable = staticmethod(QgsApplication.setCustomVariable)
+    QgsApplication.temporarilyTrustedProjectsFolders = staticmethod(QgsApplication.temporarilyTrustedProjectsFolders)
+    QgsApplication.setTemporarilyTrustedProjectsFolders = staticmethod(QgsApplication.setTemporarilyTrustedProjectsFolders)
+    QgsApplication.temporarilyUntrustedProjectsFolders = staticmethod(QgsApplication.temporarilyUntrustedProjectsFolders)
+    QgsApplication.setTemporarilyUntrustedProjectsFolders = staticmethod(QgsApplication.setTemporarilyUntrustedProjectsFolders)
     QgsApplication.scaleIconSize = staticmethod(QgsApplication.scaleIconSize)
     QgsApplication.setTranslation = staticmethod(QgsApplication.setTranslation)
     QgsApplication.__overridden_methods__ = ['event', 'notify']

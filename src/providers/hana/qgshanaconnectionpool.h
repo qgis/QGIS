@@ -58,7 +58,7 @@ class QgsHanaConnectionPoolGroup
   public:
     explicit QgsHanaConnectionPoolGroup( const QString &name );
 
-  protected slots:
+  public slots:
     void handleConnectionExpired() { onConnectionExpired(); }
     void startExpirationTimer() { expirationTimer->start(); }
     void stopExpirationTimer() { expirationTimer->stop(); }

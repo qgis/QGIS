@@ -65,6 +65,9 @@ const QString QgsMapRendererJob::LABEL_PREVIEW_CACHE_ID = QStringLiteral( "_prev
 
 LayerRenderJob &LayerRenderJob::operator=( LayerRenderJob &&other )
 {
+  if ( &other == this )
+    return *this;
+
   mContext = std::move( other.mContext );
 
   img = other.img;
@@ -729,7 +732,7 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
       job.context()->setElevationMap( job.elevationMap );
     }
 
-    if ( ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputs ) && ( mSettings.flags() & Qgis::MapSettingsFlag::RenderPartialOutput ) )
+    if ( job.renderer && ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputs ) && ( mSettings.flags() & Qgis::MapSettingsFlag::RenderPartialOutput ) )
     {
       if ( canUseCache && ( job.renderer->flags() & Qgis::MapLayerRendererFlag::RenderPartialOutputOverPreviousCachedImage ) && mCache->hasAnyCacheImage( job.layerId + QStringLiteral( "_preview" ) ) )
       {

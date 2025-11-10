@@ -23,7 +23,7 @@
 class QAction;
 
 class QgsLayerTreeGroup;
-class QgsLayerTreeView;
+class QgsLayerTreeViewBase;
 class QgsMapCanvas;
 class QgsMapLayer;
 
@@ -38,7 +38,12 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 {
     Q_OBJECT
   public:
-    QgsLayerTreeViewDefaultActions( QgsLayerTreeView *view );
+    /**
+     * Constructor for QgsLayerTreeViewDefaultActions, creating actions for a \a view.
+     *
+     * The object will be parented to the specified \a view.
+     */
+    QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view );
 
     QAction *actionAddGroup( QObject *parent = nullptr ) SIP_FACTORY;
     QAction *actionRemoveGroupOrLayer( QObject *parent = nullptr ) SIP_FACTORY;
@@ -193,7 +198,7 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     QString uniqueGroupName( QgsLayerTreeGroup *parentGroup );
 
   protected:
-    QgsLayerTreeView *mView = nullptr;
+    QgsLayerTreeViewBase *mView = nullptr;
 };
 
 

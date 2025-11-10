@@ -1708,7 +1708,7 @@ void QgsAbstractDatabaseProviderConnection::QueryResult::appendColumn( const QSt
 
 
 QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr<QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator> iterator )
-  : mResultIterator( iterator )
+  : mResultIterator( std::move( iterator ) )
 {}
 
 double QgsAbstractDatabaseProviderConnection::QueryResult::queryExecutionTime() const

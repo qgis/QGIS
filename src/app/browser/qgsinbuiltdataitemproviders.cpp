@@ -537,7 +537,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     {
       const QgsProviderSublayerDetails &sublayer { sublayers.first() };
       openDataSourceManagerAction = new QAction( tr( "Open with Data Source Manager…" ), menu );
-      connect( openDataSourceManagerAction, &QAction::triggered, this, [sublayer, layerItem] {
+      connect( openDataSourceManagerAction, &QAction::triggered, this, [sublayer] {
         QString pageName { sublayer.providerKey() };
         // GPKG special handling
         if ( sublayer.driverName() == QLatin1String( "GeoPackage" ) )
@@ -548,7 +548,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
         {
           pageName = QStringLiteral( "Spatialite" );
         }
-        QgisApp::instance()->dataSourceManager( pageName, layerItem->uri() );
+        QgisApp::instance()->dataSourceManager( pageName, sublayer.uri() );
       } );
     }
   }
@@ -1847,80 +1847,107 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     const bool isTable = qobject_cast<QgsLayerItem *>( item );
     if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::MoveTableToSchema ) )
     {
-      QAction *moveToSchemaAction = new QAction( tr( "Move to Another Schema…" ), menu );
-
-      QgsDataItemGuiProviderUtils::addToSubMenu( menu, moveToSchemaAction, tr( "Manage" ) );
-
       const QString connectionUri = conn->uri();
       const QString providerKey = conn->providerKey();
 
-      connect( moveToSchemaAction, &QAction::triggered, moveToSchemaAction, [item, context, connectionUri, providerKey] {
+      bool allMovableLayers = true;
+      bool allSameDatabase = true;
+
+      if ( selectedItems.count() > 1 )
+      {
+        allMovableLayers = std::all_of( selectedItems.begin(), selectedItems.end(), []( QgsDataItem *item ) {
+          QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+          if ( layerItem == nullptr )
+          {
+            return false;
+          }
+          return layerItem->mapLayerType() == Qgis::LayerType::Vector || layerItem->mapLayerType() == Qgis::LayerType::Raster;
+        } );
+
+        allSameDatabase = std::all_of( selectedItems.begin(), selectedItems.end(), [connectionUri]( QgsDataItem *item ) {
+          QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+          if ( layerItem == nullptr )
+          {
+            return false;
+          }
+          QgsDataSourceUri layerUri( layerItem->uri() );
+          QgsDataSourceUri mainUri( connectionUri );
+
+          return layerUri.host() == mainUri.host() && layerUri.database() == mainUri.database();
+        } );
+      }
+
+      QAction *moveToSchemaAction = new QAction( tr( "Move to Another Schema…" ), menu );
+
+      connect( moveToSchemaAction, &QAction::triggered, this, [this, item, selectedItems, context, connectionUri, providerKey] {
         QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
         if ( !md )
           return;
 
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
 
-        QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( conn2.get() );
+        QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( conn2.release() );
 
         if ( dlg->exec() == QDialog::Accepted )
         {
-          const QString originalSchemaName = item->parent()->name();
-          const QString tableName = item->name();
-
-          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-
-          QString errCause;
-          if ( conn3 )
+          if ( selectedItems.count() == 1 )
           {
-            try
-            {
-              QgsTemporaryCursorOverride override( Qt::WaitCursor );
-              conn3->moveTableToSchema( originalSchemaName, tableName, dlg->selectedSchema() );
-            }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              errCause = ex.what();
-            }
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+            bool success = moveTableToSchema( std::move( conn3 ), item->parent()->name(), item->name(), dlg->selectedSchema(), context, true );
+            if ( !success )
+              return;
+
+            // refresh parent item (schema)
+            if ( qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
+              item->parent()->refresh();
+
+            if ( !qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() ) )
+              return;
+
+            QgsDataItemGuiProviderUtils::refreshChildWithName( item->parent()->parent(), dlg->selectedSchema() );
           }
           else
           {
-            errCause = QObject::tr( "There was an error retrieving the connection to %1" ).arg( connectionUri );
-          }
-
-          if ( !errCause.isEmpty() )
-          {
-            notify( tr( "Cannot move %1 to schema %2" ).arg( tableName, dlg->selectedSchema() ), errCause, context, Qgis::MessageLevel::Critical );
-            return;
-          }
-          else if ( context.messageBar() )
-          {
-            context.messageBar()->pushMessage( tr( "Moved %1 to schema %2" ).arg( tableName, dlg->selectedSchema() ), Qgis::MessageLevel::Success );
-          }
-
-          // refresh parent item (schema) and also the schema that table was moved to if it was populated
-          if ( !item->parent() )
-            return;
-
-          item->parent()->refresh();
-
-          if ( !item->parent()->parent() )
-            return;
-
-          const QVector<QgsDataItem *> constChildren { item->parent()->parent()->children() };
-          for ( QgsDataItem *c : constChildren )
-          {
-            if ( c->name() == dlg->selectedSchema() )
+            int numberImported = 0;
+            QSet<QString> schemasToRefresh;
+            for ( const QgsDataItem *selectedItem : selectedItems )
             {
-              if ( c->state() != Qgis::BrowserItemState::NotPopulated )
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+              bool success = moveTableToSchema( std::move( conn3 ), selectedItem->parent()->name(), selectedItem->name(), dlg->selectedSchema(), context, false );
+
+              if ( success )
               {
-                c->refresh();
+                numberImported++;
+
+                if ( selectedItem->parent() && qobject_cast<QgsDatabaseSchemaItem *>( selectedItem->parent() ) )
+                  schemasToRefresh.insert( selectedItem->parent()->name() );
               }
-              break;
             }
+
+            if ( !qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
+              return;
+
+            QgsDataCollectionItem *dbItem = qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() );
+            if ( !dbItem )
+              return;
+
+            // add target schema to schemas to refresh
+            schemasToRefresh.insert( dlg->selectedSchema() );
+
+            for ( const QString &schema : schemasToRefresh )
+            {
+              QgsDataItemGuiProviderUtils::refreshChildWithName( dbItem, schema );
+            }
+
+            notify( tr( "Move Tables" ), tr( "%1 tables moved to schema %2" ).arg( numberImported ).arg( dlg->selectedSchema() ), context, Qgis::MessageLevel::Success );
           }
         }
       } );
+
+      if ( allMovableLayers && allSameDatabase )
+      {
+        QgsDataItemGuiProviderUtils::addToSubMenu( menu, moveToSchemaAction, tr( "Manage" ) );
+      }
     }
 
     if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteSpatialIndex ) )
@@ -2070,6 +2097,36 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       } );
     }
   }
+}
+
+bool QgsDatabaseItemGuiProvider::moveTableToSchema( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notifyUser )
+{
+  QString errCause;
+
+  try
+  {
+    QgsTemporaryCursorOverride override( Qt::WaitCursor );
+    conn->moveTableToSchema( originalSchema, table, targetSchema );
+  }
+  catch ( QgsProviderConnectionException &ex )
+  {
+    errCause = ex.what();
+  }
+
+  if ( !errCause.isEmpty() )
+  {
+    if ( notifyUser )
+    {
+      notify( tr( "Cannot move %1 to schema %2" ).arg( table, targetSchema ), errCause, context, Qgis::MessageLevel::Critical );
+    }
+    return false;
+  }
+  else if ( context.messageBar() && notifyUser )
+  {
+    context.messageBar()->pushMessage( tr( "Moved %1 to schema %2" ).arg( table, targetSchema ), Qgis::MessageLevel::Success );
+  }
+
+  return true;
 }
 
 bool QgsDatabaseItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiContext )
@@ -2693,7 +2750,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
           QPointer<QgsDataItem> itemWeakPointer( item );
 
-          connect( editRelationshipAction, &QAction::triggered, this, [md, itemWeakPointer, relation, connectionUri, context] {
+          connect( editRelationshipAction, &QAction::triggered, this, [md, itemWeakPointer = std::move( itemWeakPointer ), relation, connectionUri, context] {
             std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
 
             QgsDbRelationDialog dialog( conn.release(), QgisApp::instance() );
@@ -2727,7 +2784,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
           QPointer<QgsDataItem> itemWeakPointer( item );
 
-          connect( deleteRelationshipAction, &QAction::triggered, this, [relation, md, connectionUri, itemWeakPointer, context] {
+          connect( deleteRelationshipAction, &QAction::triggered, this, [relation, md, connectionUri, itemWeakPointer = std::move( itemWeakPointer ), context] {
             if ( QMessageBox::question( nullptr, tr( "Delete Relationship" ), tr( "Are you sure you want to delete the %1 relationship?" ).arg( relation.name() ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
             {
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };

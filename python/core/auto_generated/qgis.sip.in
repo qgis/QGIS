@@ -287,19 +287,29 @@ The development version
     typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
 
 
-    enum class PythonEmbeddedMode
+    enum class EmbeddedScriptMode
       {
       Never,
       Ask,
       SessionOnly,
       Always,
       NotForThisSession,
+      NeverAsk,
     };
 
-    enum class PythonEmbeddedType
+    enum class EmbeddedScriptType
     {
       Macro,
       ExpressionFunction,
+      Action,
+      FormInitCode,
+    };
+
+    enum class ProjectTrustStatus
+    {
+      Undetermined,
+      Trusted,
+      Untrusted,
     };
 
     enum class DataProviderReadFlag
@@ -3094,6 +3104,13 @@ The development version
       File,
       Dialog,
       Environment
+    };
+
+    enum class AttributeFormReuseLastValuePolicy
+    {
+      NotAllowed,
+      AllowedDefaultOn,
+      AllowedDefaultOff,
     };
 
     enum class ExpressionType

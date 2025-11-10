@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgsactionmanager.h"
 #include "qgsattributesformmodel.h"
 #include "moc_qgsattributesformmodel.cpp"
@@ -40,7 +41,7 @@ QgsAttributesFormData::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx 
   mComment = layer->fields().at( idx ).comment();
   mEditable = !layer->editFormConfig().readOnly( idx );
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
-  mReuseLastValues = layer->editFormConfig().reuseLastValue( idx );
+  mReuseLastValuePolicy = layer->editFormConfig().reuseLastValuePolicy( idx );
   mFieldConstraints = layer->fields().at( idx ).constraints();
   const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( layer, layer->fields().field( idx ).name() );
   mEditorWidgetType = setup.type();
@@ -607,6 +608,7 @@ void QgsAttributesAvailableWidgetsModel::populate()
     itemRelation->setData( ItemNameRole, name );
     itemRelation->setData( ItemIdRole, relation.id() );
     itemRelation->setData( ItemDataRole, itemData );
+    itemRelation->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetRelationEditor.svg" ) ) );
     itemRelations->addChild( std::move( itemRelation ) );
   }
 
@@ -625,21 +627,25 @@ void QgsAttributesAvailableWidgetsModel::populate()
   QgsAttributesFormData::AttributeFormItemData itemData = QgsAttributesFormData::AttributeFormItemData();
   itemData.setShowLabel( true );
   auto itemQml = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::QmlWidget, itemData, QStringLiteral( "QML Widget" ), tr( "QML Widget" ) );
+  itemQml->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetQml.svg" ) ) );
   itemOtherWidgets->addChild( std::move( itemQml ) );
 
   QgsAttributesFormData::AttributeFormItemData itemHtmlData = QgsAttributesFormData::AttributeFormItemData();
   itemHtmlData.setShowLabel( true );
   auto itemHtml = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::HtmlWidget, itemHtmlData, QStringLiteral( "HTML Widget" ), tr( "HTML Widget" ) );
+  itemHtml->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetHtml.svg" ) ) );
   itemOtherWidgets->addChild( std::move( itemHtml ) );
 
   QgsAttributesFormData::AttributeFormItemData itemTextData = QgsAttributesFormData::AttributeFormItemData();
   itemTextData.setShowLabel( true );
   auto itemText = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::TextWidget, itemTextData, QStringLiteral( "Text Widget" ), tr( "Text Widget" ) );
+  itemText->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetText.svg" ) ) );
   itemOtherWidgets->addChild( std::move( itemText ) );
 
   QgsAttributesFormData::AttributeFormItemData itemSpacerData = QgsAttributesFormData::AttributeFormItemData();
   itemTextData.setShowLabel( false );
   auto itemSpacer = std::make_unique< QgsAttributesFormItem >( QgsAttributesFormData::SpacerWidget, QStringLiteral( "Spacer Widget" ), tr( "Spacer Widget" ) );
+  itemSpacer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetSpacer.svg" ) ) );
   itemOtherWidgets->addChild( std::move( itemSpacer ) );
 
   mRootItem->addChild( std::move( itemOtherWidgets ) );
@@ -692,6 +698,7 @@ void QgsAttributesAvailableWidgetsModel::populateActionItems( const QList<QgsAct
       itemAction->setData( ItemTypeRole, QgsAttributesFormData::Action );
       itemAction->setData( ItemNameRole, actionTitle );
       itemAction->setData( ItemDataRole, itemData );
+      itemAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetAction.svg" ) ) );
 
       itemActions->addChild( std::move( itemAction ) );
     }
@@ -753,7 +760,7 @@ QVariant QgsAttributesAvailableWidgetsModel::data( const QModelIndex &index, int
     case Qt::BackgroundRole:
     {
       if ( item->type() == QgsAttributesFormData::AttributesFormItemType::WidgetType )
-        return QBrush( Qt::lightGray );
+        return QBrush( QColor( 140, 140, 140, 50 ) );
 
       return QVariant();
     }
@@ -972,6 +979,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
 
         QgsAttributesFormData::FieldConfig config( mLayer, fieldIndex );
         editorItem->setData( ItemFieldConfigRole, config );
+        editorItem->setIcon( QgsGui::instance()->editorWidgetRegistry()->icon( config.mEditorWidgetType ) );
       }
 
       break;
@@ -990,6 +998,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
         editorItem->setData( ItemNameRole, action.shortTitle().isEmpty() ? action.name() : action.shortTitle() );
         editorItem->setData( ItemTypeRole, QgsAttributesFormData::Action );
         editorItem->setData( ItemDataRole, itemData );
+        editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetAction.svg" ) ) );
       }
       else
       {
@@ -1025,6 +1034,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( ItemDisplayRole, relationEditorConfig.label );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::Relation );
       editorItem->setData( ItemDataRole, itemData );
+      editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetRelationEditor.svg" ) ) );
 
       break;
     }
@@ -1072,6 +1082,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( ItemNameRole, editorElement->name() );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::QmlWidget );
       editorItem->setData( ItemDataRole, itemData );
+      editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetQml.svg" ) ) );
       break;
     }
 
@@ -1088,6 +1099,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( ItemNameRole, editorElement->name() );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::HtmlWidget );
       editorItem->setData( ItemDataRole, itemData );
+      editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetHtml.svg" ) ) );
       break;
     }
 
@@ -1104,6 +1116,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( ItemNameRole, editorElement->name() );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::TextWidget );
       editorItem->setData( ItemDataRole, itemData );
+      editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetText.svg" ) ) );
       break;
     }
 
@@ -1121,6 +1134,7 @@ void QgsAttributesFormLayoutModel::loadAttributeEditorElementItem( QgsAttributeE
       editorItem->setData( ItemNameRole, editorElement->name() );
       editorItem->setData( ItemTypeRole, QgsAttributesFormData::SpacerWidget );
       editorItem->setData( ItemDataRole, itemData );
+      editorItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mEditorWidgetSpacer.svg" ) ) );
       break;
     }
 
@@ -1221,7 +1235,7 @@ QVariant QgsAttributesFormLayoutModel::data( const QModelIndex &index, int role 
     case Qt::BackgroundRole:
     {
       if ( item->type() == QgsAttributesFormData::Container )
-        return QBrush( Qt::lightGray );
+        return QBrush( QColor( 140, 140, 140, 50 ) );
 
       return QVariant();
     }
@@ -1506,6 +1520,7 @@ void QgsAttributesFormLayoutModel::updateFieldConfigForFieldItemsRecursive( QgsA
     if ( child->name() == fieldName && child->type() == QgsAttributesFormData::Field )
     {
       child->setData( ItemFieldConfigRole, QVariant::fromValue( config ) );
+      child->setIcon( QgsGui::instance()->editorWidgetRegistry()->icon( config.mEditorWidgetType ) );
       emit fieldConfigDataChanged( child ); // Item's field config has changed, let views know about it
     }
 

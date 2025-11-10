@@ -242,7 +242,7 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   cbxAllowGeometrylessTables->setDisabled( true );
 }
 
-//! Autoconnected SLOTS *
+//! Autoconnected slots *
 // Slot for adding a new connection
 void QgsHanaSourceSelect::btnNew_clicked()
 {
@@ -302,7 +302,7 @@ void QgsHanaSourceSelect::btnEdit_clicked()
   }
 }
 
-//! End Autoconnected SLOTS *
+//! End Autoconnected slots *
 
 // Remember which database is selected
 void QgsHanaSourceSelect::cmbConnections_activated( int )
@@ -445,13 +445,14 @@ void QgsHanaSourceSelect::btnConnect_clicked()
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
   mColumnTypeThread = std::make_unique<QgsHanaColumnTypeThread>( mConnectionName, uri, settings.allowGeometrylessTables(), settings.userTablesOnly() );
-  mColumnTypeTask = std::make_unique<QgsProxyProgressTask>( tr( "Scanning tables for %1" ).arg( mConnectionName ) );
-  QgsApplication::taskManager()->addTask( mColumnTypeTask.get() );
+  mColumnTypeTask = new QgsProxyProgressTask( tr( "Scanning tables for %1" ).arg( mConnectionName ) );
+  QgsApplication::taskManager()->addTask( mColumnTypeTask );
 
   connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::setLayerType, this, &QgsHanaSourceSelect::setLayerType );
   connect( mColumnTypeThread.get(), &QThread::finished, this, &QgsHanaSourceSelect::columnThreadFinished );
-  connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::progress, mColumnTypeTask.get(), [&]( int i, int n ) {
-    mColumnTypeTask->setProxyProgress( 100.0 * static_cast<double>( i ) / n );
+  connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::progress, mColumnTypeTask, [&]( int i, int n ) {
+    if ( mColumnTypeTask )
+      mColumnTypeTask->setProxyProgress( 100.0 * static_cast<double>( i ) / n );
   } );
   connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::progressMessage, this, &QgsHanaSourceSelect::progressMessage );
 
@@ -471,8 +472,11 @@ void QgsHanaSourceSelect::columnThreadFinished()
 {
   const QString errorMsg = mColumnTypeThread->errorMessage();
   mColumnTypeThread.reset( nullptr );
-  QgsProxyProgressTask *task = mColumnTypeTask.release();
-  task->finalize( errorMsg.isEmpty() );
+  if ( mColumnTypeTask )
+  {
+    mColumnTypeTask->finalize( errorMsg.isEmpty() );
+    mColumnTypeTask = nullptr;
+  }
   if ( !errorMsg.isEmpty() )
     pushMessage( tr( "Failed to retrieve tables for %1" ).arg( mConnectionName ), errorMsg, Qgis::MessageLevel::Warning );
 

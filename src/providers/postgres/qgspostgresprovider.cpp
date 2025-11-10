@@ -2227,6 +2227,13 @@ bool QgsPostgresProvider::getTopoLayerInfo()
 /* private */
 void QgsPostgresProvider::dropOrphanedTopoGeoms()
 {
+  QgsPostgresConn *conn = connectionRW();
+  if ( !conn )
+  {
+    QgsDebugError( QStringLiteral( "Cannot drop orphaned topo geoms from invalid provider" ) );
+    return;
+  }
+
   QString sql = QString( "DELETE FROM %1.relation WHERE layer_id = %2 AND "
                          "topogeo_id NOT IN ( SELECT id(%3) FROM %4.%5 )" )
                   .arg( quotedIdentifier( mTopoLayerInfo.topologyName ) )
@@ -2235,7 +2242,7 @@ void QgsPostgresProvider::dropOrphanedTopoGeoms()
 
   QgsDebugMsgLevel( "TopoGeom orphans cleanup query: " + sql, 2 );
 
-  connectionRW()->LoggedPQexecNR( "QgsPostgresProvider", sql );
+  conn->LoggedPQexecNR( "QgsPostgresProvider", sql );
 }
 
 QString QgsPostgresProvider::geomParam( int offset ) const

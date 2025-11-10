@@ -238,17 +238,6 @@ ifneq (,$(filter $(DISTRIBUTION),trixie sid noble plucky questing))
 		-DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
 endif
 
-ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
-$(shell test -f /usr/include/$(DEB_BUILD_MULTIARCH)/qt5/Qt3DExtras/qt3dextrasversion.h -a -f /usr/lib/$(DEB_BUILD_MULTIARCH)/cmake/Qt53DExtras/Qt53DExtrasConfig.cmake)
-ifneq (0,$(.SHELLSTATUS))
-# Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
-	QT5_CMAKE_OPTS += \
-		-DQt53DExtras_DIR=$(realpath external/qt3dextra-headers/cmake/Qt53DExtras) \
-		-DQT5_3DEXTRA_INCLUDE_DIR=$(realpath external/qt3dextra-headers) \
-		-DQT5_3DEXTRA_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libQt53DExtras.so
-endif
-endif
-
 ifneq (,$(filter apidoc,$(CONTROL_EXPRESSIONS)))
 ifneq (,$(filter qt5,$(CONTROL_EXPRESSIONS)))
 	QT5_CMAKE_OPTS += -DWITH_APIDOC=TRUE -DGENERATE_QHP=TRUE

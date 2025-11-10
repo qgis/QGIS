@@ -62,8 +62,8 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( mLegendSettingsButton, &QPushButton::clicked, this, &QgsColorRampShaderWidget::showLegendSettings );
 
   contextMenu = new QMenu( tr( "Options" ), this );
-  contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeColor() ) );
-  contextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeOpacity() ) );
+  contextMenu->addAction( tr( "Change Color…" ), this, &QgsColorRampShaderWidget::changeColor );
+  contextMenu->addAction( tr( "Change Opacity…" ), this, &QgsColorRampShaderWidget::changeOpacity );
 
   mColormapTreeWidget->setItemDelegateForColumn( ColorColumn, new QgsColorSwatchDelegate( this ) );
   mValueDelegate = new QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType::UnknownDataType, this );

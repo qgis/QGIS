@@ -52,8 +52,10 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
     ~QgsColorRampLegendNodeSettings();
 
     QgsColorRampLegendNodeSettings( const QgsColorRampLegendNodeSettings &other );
+    SIP_SKIP QgsColorRampLegendNodeSettings( QgsColorRampLegendNodeSettings &&other );
 
     QgsColorRampLegendNodeSettings &operator=( const QgsColorRampLegendNodeSettings &other );
+    QgsColorRampLegendNodeSettings &operator=( QgsColorRampLegendNodeSettings &&other );
 
     /**
      * Returns the direction of the ramp.

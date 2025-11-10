@@ -4932,7 +4932,7 @@ QgsCachedImageFetcher::QgsCachedImageFetcher( const QImage &img )
 
 void QgsCachedImageFetcher::start()
 {
-  QTimer::singleShot( 1, this, SLOT( send() ) );
+  QTimer::singleShot( 1, this, &QgsCachedImageFetcher::send );
 }
 
 

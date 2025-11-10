@@ -122,7 +122,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
       if ( QThread::currentThread() == store->thread() )
         findLayerInStoreFunction();
       else
-        QMetaObject::invokeMethod( store, findLayerInStoreFunction, Qt::BlockingQueuedConnection );
+        QMetaObject::invokeMethod( store, std::move( findLayerInStoreFunction ), Qt::BlockingQueuedConnection );
       if ( ml )
         return ml;
     }
@@ -275,7 +275,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     for ( QgsMapLayerStore *store : stores )
     {
       QPointer< QgsMapLayerStore > storePointer( store );
-      auto findLayerInStoreFunction = [ storePointer, identifier, function, &foundLayer ]
+      auto findLayerInStoreFunction = [ storePointer = std::move( storePointer ), identifier, function, &foundLayer ]
       {
         QgsMapLayer *ml = nullptr;
         if ( QgsMapLayerStore *store = storePointer.data() )

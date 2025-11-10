@@ -3278,7 +3278,14 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
       // never manually set the crs for the main canvas - this is instead connected to the project CRS
       setDestinationCrs( tmpSettings.destinationCrs() );
     }
-    setExtent( tmpSettings.extent() );
+    if ( QgsProject::instance()->viewSettings()->restoreProjectExtentOnProjectLoad() && objectName() == QLatin1String( "theMapCanvas" ) )
+    {
+      zoomToProjectExtent();
+    }
+    else
+    {
+      setExtent( tmpSettings.extent() );
+    }
     setRotation( tmpSettings.rotation() );
     enableMapTileRendering( tmpSettings.testFlag( Qgis::MapSettingsFlag::RenderMapTile ) );
 

@@ -56,6 +56,9 @@ QgsFeature::QgsFeature( const QgsFeature &rhs ) //NOLINT
 
 QgsFeature &QgsFeature::operator=( const QgsFeature &rhs )   //NOLINT
 {
+  if ( &rhs == this )
+    return *this;
+
   d = rhs.d;
   return *this;
 }

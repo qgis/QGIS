@@ -57,7 +57,9 @@ class CORE_EXPORT QgsDistanceArea
     ~QgsDistanceArea();
 
     QgsDistanceArea( const QgsDistanceArea &other );
+    SIP_SKIP QgsDistanceArea( QgsDistanceArea &&other );
     QgsDistanceArea &operator=( const QgsDistanceArea &other );
+    QgsDistanceArea &operator=( QgsDistanceArea &&other );
 
     /**
      * Returns whether calculations will use the ellipsoid. Calculations will only use the

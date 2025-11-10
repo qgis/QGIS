@@ -18,8 +18,8 @@
 #include "qgsuniquevaluewidgetwrapper.h"
 #include "qgsuniquevaluesconfigdlg.h"
 
-QgsUniqueValueWidgetFactory::QgsUniqueValueWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsUniqueValueWidgetFactory::QgsUniqueValueWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 

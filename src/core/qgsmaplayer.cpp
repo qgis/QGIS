@@ -30,6 +30,7 @@
 #include "moc_qgsmaplayer.cpp"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsobjectvisitor.h"
 #include "qgspathresolver.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsproject.h"
@@ -845,6 +846,9 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
   const QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::StyleCategories>();
   const QString categoriesKeys( metaEnum.valueToKeys( static_cast<int>( categories ) ) );
   layerElement.setAttribute( QStringLiteral( "styleCategories" ), categoriesKeys );
+
+  // Store layer type
+  layerElement.setAttribute( QStringLiteral( "layerType" ), qgsEnumValueToKey( type() ) );
 
   if ( categories.testFlag( Rendering ) )
   {
@@ -2965,6 +2969,13 @@ QString QgsMapLayer::generateId( const QString &layerName )
 }
 
 bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return true;
+}
+
+bool QgsMapLayer::accept( QgsObjectEntityVisitorInterface *, const QgsObjectVisitorContext & ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
