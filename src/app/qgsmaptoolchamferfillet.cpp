@@ -183,29 +183,29 @@ void QgsMapToolChamferFillet::computeValuesFromMousePos( const QgsPointXY &mapPo
   handleModifier( isShiftKeyPressed, value1, value2 );
   handleMaxAndLock( value1, value2 );
 
-  if ( mUserInputWidget )
+  if ( !mUserInputWidget )
+    return;
+
+  mUserInputWidget->blockSignals( true );
+  QgsGeometry::ChamferFilletOperationType op = QgsMapToolChamferFillet::settingsOperation->value();
+  if ( op == QgsGeometry::ChamferFilletOperationType::Chamfer )
   {
-    mUserInputWidget->blockSignals( true );
-    QgsGeometry::ChamferFilletOperationType op = QgsMapToolChamferFillet::settingsOperation->value();
-    if ( op == QgsGeometry::ChamferFilletOperationType::Chamfer )
-    {
-      bool locked = QgsMapToolChamferFillet::settingsLock1->value();
-      if ( !locked )
-        mUserInputWidget->setValue1( value1 );
-      locked = QgsMapToolChamferFillet::settingsLock2->value();
-      if ( !locked )
-        mUserInputWidget->setValue2( value2 );
-    }
-    else
-    {
-      bool locked = QgsMapToolChamferFillet::settingsLock1->value();
-      if ( !locked )
-        mUserInputWidget->setValue1( value1 );
-    }
-    mUserInputWidget->blockSignals( false );
-    mUserInputWidget->setFocus( Qt::TabFocusReason );
-    mUserInputWidget->editor()->selectAll();
+    bool locked = QgsMapToolChamferFillet::settingsLock1->value();
+    if ( !locked )
+      mUserInputWidget->setValue1( value1 );
+    locked = QgsMapToolChamferFillet::settingsLock2->value();
+    if ( !locked )
+      mUserInputWidget->setValue2( value2 );
   }
+  else
+  {
+    bool locked = QgsMapToolChamferFillet::settingsLock1->value();
+    if ( !locked )
+      mUserInputWidget->setValue1( value1 );
+  }
+  mUserInputWidget->blockSignals( false );
+  mUserInputWidget->setFocus( Qt::TabFocusReason );
+  mUserInputWidget->editor()->selectAll();
 }
 
 void QgsMapToolChamferFillet::calculateDistances( const QgsPointXY &mapPoint, double &value1, double &value2 )
@@ -250,78 +250,78 @@ void QgsMapToolChamferFillet::keyPressEvent( QKeyEvent *e )
 
 void QgsMapToolChamferFillet::computeMaxValues()
 {
-  if ( mVertexIndex >= 0 )
+  if ( mVertexIndex < 0 )
+    return;
+
+  // Get the segments around the vertex
+  QgsPoint vertexBefore = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex - 1 );
+  const QgsPoint vertex = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex );
+  QgsPoint vertexAfter = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex + 1 );
+
+  // find vertex before first or after last point.
+  if ( vertexBefore.isEmpty() || vertexAfter.isEmpty() )
   {
-    // Get the segments around the vertex
-    QgsPoint vertexBefore = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex - 1 );
-    const QgsPoint vertex = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex );
-    QgsPoint vertexAfter = mManipulatedGeometryInSourceLayerCrs.vertexAt( mVertexIndex + 1 );
+    const QgsAbstractGeometry *absPoly;
+    if ( const QgsPolygon *poly = qgsgeometry_cast<const QgsPolygon *>( mManipulatedGeometryInSourceLayerCrs.get() ) )
+      absPoly = poly;
+    else if ( const QgsMultiPolygon *multiPoly = qgsgeometry_cast<const QgsMultiPolygon *>( mManipulatedGeometryInSourceLayerCrs.get() ) )
+      absPoly = multiPoly;
+    else
+      absPoly = nullptr;
 
-    // find vertex before first or after last point.
-    if ( vertexBefore.isEmpty() || vertexAfter.isEmpty() )
+    if ( absPoly != nullptr )
     {
-      const QgsAbstractGeometry *absPoly;
-      if ( const QgsPolygon *poly = qgsgeometry_cast<const QgsPolygon *>( mManipulatedGeometryInSourceLayerCrs.get() ) )
-        absPoly = poly;
-      else if ( const QgsMultiPolygon *mPoly = qgsgeometry_cast<const QgsMultiPolygon *>( mManipulatedGeometryInSourceLayerCrs.get() ) )
-        absPoly = mPoly;
-      else
-        absPoly = nullptr;
-
-      if ( absPoly != nullptr )
+      QgsVertexId vId;
+      mManipulatedGeometryInSourceLayerCrs.vertexIdFromVertexNr( mVertexIndex, vId );
+      if ( vertexBefore.isEmpty() )
       {
-        QgsVertexId vId;
-        mManipulatedGeometryInSourceLayerCrs.vertexIdFromVertexNr( mVertexIndex, vId );
-        if ( vertexBefore.isEmpty() )
-        {
-          vId.vertex = absPoly->vertexCount( vId.part, vId.ring ) - 2;
-          vertexBefore = absPoly->vertexAt( vId );
-        }
-        else if ( vertexAfter.isEmpty() )
-        {
-          vId.vertex = 1;
-          vertexAfter = absPoly->vertexAt( vId );
-        }
+        vId.vertex = absPoly->vertexCount( vId.part, vId.ring ) - 2;
+        vertexBefore = absPoly->vertexAt( vId );
+      }
+      else if ( vertexAfter.isEmpty() )
+      {
+        vId.vertex = 1;
+        vertexAfter = absPoly->vertexAt( vId );
+      }
+    }
+  }
+
+  if ( !vertexBefore.isEmpty() && !vertex.isEmpty() && !vertexAfter.isEmpty() )
+  {
+    QgsGeometry::ChamferFilletOperationType op = QgsMapToolChamferFillet::settingsOperation->value();
+    if ( op == QgsGeometry::ChamferFilletOperationType::Fillet )
+    {
+      const double maxRadius = QgsGeometryUtils::maxFilletRadius( vertexBefore, vertex, vertex, vertexAfter );
+      if ( maxRadius > 0 )
+      {
+        mMaxValue1 = maxRadius;
+      }
+      mMaxValue2 = 64;
+    }
+    else
+    {
+      double dist1 = vertex.distance( vertexBefore );
+      double dist2 = vertex.distance( vertexAfter );
+      if ( dist1 > 0 )
+      {
+        mMaxValue1 = dist1;
+      }
+      if ( dist2 > 0 )
+      {
+        mMaxValue2 = dist2;
       }
     }
 
-    if ( !vertexBefore.isEmpty() && !vertex.isEmpty() && !vertexAfter.isEmpty() )
+    if ( mUserInputWidget )
     {
-      QgsGeometry::ChamferFilletOperationType op = QgsMapToolChamferFillet::settingsOperation->value();
-      if ( op == QgsGeometry::ChamferFilletOperationType::Fillet )
-      {
-        const double maxRadius = QgsGeometryUtils::maxFilletRadius( vertexBefore, vertex, vertex, vertexAfter );
-        if ( maxRadius > 0 )
-        {
-          mMaxValue1 = maxRadius;
-        }
-        mMaxValue2 = 64;
-      }
-      else
-      {
-        double dist1 = vertex.distance( vertexBefore );
-        double dist2 = vertex.distance( vertexAfter );
-        if ( dist1 > 0 )
-        {
-          mMaxValue1 = dist1;
-        }
-        if ( dist2 > 0 )
-        {
-          mMaxValue2 = dist2;
-        }
-      }
-
-      if ( mUserInputWidget )
-      {
-        mUserInputWidget->blockSignals( true );
-        bool locked = QgsMapToolChamferFillet::settingsLock1->value();
-        if ( !locked )
-          mUserInputWidget->setMaximumValue1( mMaxValue1 );
-        locked = QgsMapToolChamferFillet::settingsLock2->value();
-        if ( !locked )
-          mUserInputWidget->setMaximumValue2( mMaxValue2 );
-        mUserInputWidget->blockSignals( false );
-      }
+      mUserInputWidget->blockSignals( true );
+      bool locked = QgsMapToolChamferFillet::settingsLock1->value();
+      if ( !locked )
+        mUserInputWidget->setMaximumValue1( mMaxValue1 );
+      locked = QgsMapToolChamferFillet::settingsLock2->value();
+      if ( !locked )
+        mUserInputWidget->setMaximumValue2( mMaxValue2 );
+      mUserInputWidget->blockSignals( false );
     }
   }
 }
