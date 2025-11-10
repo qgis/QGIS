@@ -1417,6 +1417,7 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
     if ( QgsLayerTree::isGroup( node ) )
     {
       menu->addAction( defaultActions()->actionRenameGroupOrLayer( menu ) );
+      menu->addAction( defaultActions()->actionRemoveGroupPromoteLayers( menu ) );
     }
   }
 
