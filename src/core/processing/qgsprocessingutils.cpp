@@ -1445,7 +1445,7 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
     }
 
     if ( selectedFeaturesOnly )
-      it = vl->getSelectedFeatures( request );
+      it = vl->getSelectedFeatures( std::move( request ) );
     else
       it = vl->getFeatures( request );
 

@@ -55,8 +55,8 @@ class QgsSingleSidedBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsProperty mDistanceProperty;
 
     int mSegments = 0;
-    Qgis::BufferSide mSide;
-    Qgis::JoinStyle mJoinStyle;
+    Qgis::BufferSide mSide = Qgis::BufferSide::Left;
+    Qgis::JoinStyle mJoinStyle = Qgis::JoinStyle::Round;
     double mMiterLimit = 0.0;
 };
 

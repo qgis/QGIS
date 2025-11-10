@@ -270,7 +270,9 @@ QgsDxfExport::ExportResult QgsDxfExport::writeToFile( QIODevice *d, const QStrin
       const QgsRectangle extentRect = mMapSettings.mapToLayerCoordinates( vl, mExtent );
       request.setFilterRect( extentRect );
     }
-    QgsFeatureIterator featureIt = ( mFlags & FlagOnlySelectedFeatures ) ? vl->getSelectedFeatures( request ) : vl->getFeatures( request );
+    // cppcheck-suppress accessMoved
+    QgsFeatureIterator featureIt = ( mFlags & FlagOnlySelectedFeatures ) ? vl->getSelectedFeatures( std::move( request ) ) : vl->getFeatures( std::move( request ) );
+    // cppcheck-suppress accessMoved
     QgsFeature feature;
     if ( featureIt.nextFeature( feature ) )
     {
