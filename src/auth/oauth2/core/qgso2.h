@@ -108,6 +108,9 @@ class QgsO2 : public O2
 
     bool isLocalHost( const QUrl redirectUrl ) const;
 
+    // Activate a timer to automatically refresh the token
+    void setExpiresPrivate( qint64 v );
+
     QString mTokenCacheFile;
     QString mAuthcfg;
     // Follow O2 style for this variable only:
@@ -115,6 +118,7 @@ class QgsO2 : public O2
     QgsAuthOAuth2Config *mOAuth2Config;
     bool mIsLocalHost = false;
     int mExpirationDelay = 0;
+    std::unique_ptr<QTimer> mRefreshTimer;
 
     static QString O2_OAUTH2_STATE;
     friend class QgsOAuth2Factory;

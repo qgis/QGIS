@@ -187,6 +187,28 @@ bool QgsO2::isLocalHost( const QUrl redirectUrl ) const
   return false;
 }
 
+void QgsO2::setExpiresPrivate( qint64 v )
+{
+  const qint64 cursecs { QDateTime::currentMSecsSinceEpoch() / 1000 };
+  const qint64 interval { v - cursecs };
+
+  // 120 seconds before expiry or 10% of the interval, whichever is smaller
+  const qint64 refreshInterval = interval - qMin( static_cast<qint64>( 120 ), interval / 10 );
+
+  mRefreshTimer = std::make_unique<QTimer>();
+  mRefreshTimer->setSingleShot( true );
+
+  auto doRefresh = [this]() {
+    QgsDebugError( QStringLiteral( "Token refresh triggered for client %1" ).arg( clientId() ) );
+    refreshSynchronous();
+  };
+
+  connect( mRefreshTimer.get(), &QTimer::timeout, this, doRefresh );
+  mRefreshTimer->start( refreshInterval * 1000 );
+
+  O2::setExpires( v );
+}
+
 // slot
 void QgsO2::clearProperties()
 {
@@ -444,7 +466,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
         if ( ok )
         {
           QgsDebugMsgLevel( QStringLiteral( "O2::onVerificationReceived: Token expires in %1 seconds" ).arg( expiresIn ), 2 );
-          setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast<qint64>( expiresIn ) );
+          setExpiresPrivate( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast<qint64>( expiresIn ) );
         }
       }
       setLinked( true );
@@ -535,7 +557,7 @@ void QgsO2::refreshSynchronous()
     {
       setToken( tokens.value( O2_OAUTH2_ACCESS_TOKEN ).toString() );
       const int expiresIn = tokens.value( O2_OAUTH2_EXPIRES_IN ).toInt();
-      setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast<qint64>( expiresIn ) );
+      setExpiresPrivate( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast<qint64>( expiresIn ) );
       const QString refreshToken = tokens.value( O2_OAUTH2_REFRESH_TOKEN ).toString();
       if ( !refreshToken.isEmpty() )
         setRefreshToken( refreshToken );

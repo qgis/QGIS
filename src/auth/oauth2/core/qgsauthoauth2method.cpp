@@ -158,6 +158,7 @@ QgsAuthOAuth2Method::~QgsAuthOAuth2Method()
   {
     QgsDebugError( QStringLiteral( "FAILED to delete temp token cache directory: %1" ).arg( tempdir.path() ) );
   }
+  qDeleteAll( mTokenRefreshTimers );
 }
 
 QString QgsAuthOAuth2Method::key() const
@@ -209,7 +210,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     bool expired = false;
     if ( o2->expires() > 0 ) // QStringLiteral("").toInt() result for tokens with no expiration
     {
-      const int cursecs = static_cast<int>( QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000 );
+      const int cursecs = static_cast<int>( QDateTime::currentMSecsSinceEpoch() / 1000 );
       const int lExpirationDelay = o2->expirationDelay();
       // try refresh with expired or two minutes to go (or a fraction of the initial expiration delay if it is short)
       const int refreshThreshold = lExpirationDelay > 0 ? std::min( 120, std::max( 2, lExpirationDelay / 10 ) ) : 120;
@@ -235,7 +236,10 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
 
         // refresh result should set o2 to (un)linked
         if ( o2->linked() )
+        {
           o2->computeExpirationDelay();
+          //scheduleRefresh(authcfg, o2->expires(), o2->expirationDelay() );
+        }
       }
     }
   }
@@ -300,6 +304,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     }
 
     o2->computeExpirationDelay();
+    //scheduleRefresh(authcfg, o2->expires(), o2->expirationDelay() );
   }
 
   if ( o2->token().isEmpty() )
@@ -722,6 +727,53 @@ void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )
     it.value()->deleteLater();
     mOAuth2ConfigCache.erase( it );
     QgsDebugMsgLevel( QStringLiteral( "Removed oauth2 bundle for authcfg: %1" ).arg( authcfg ), 2 );
+  }
+}
+
+void QgsAuthOAuth2Method::scheduleRefresh( const QString &authcfg, const qint64 expires, const qint64 expirationDelay )
+{
+  // cancel any existing timer
+  removeRefreshTimer( authcfg );
+
+  if ( expirationDelay > 0 )
+  {
+    QTimer *timer = new QTimer( this );
+    timer->setSingleShot( true );
+
+    auto doRefresh = [this, authcfg, timer]() {
+      QgsO2 *o2 = getOAuth2Bundle( authcfg );
+      if ( o2 )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Refreshing token for authcfg: %1" ).arg( authcfg ), 2 );
+        o2->refresh();
+      }
+      else
+      {
+        QgsDebugError( QStringLiteral( "Token refresh FAILED for authcfg %1: could not get authenticator object" ).arg( authcfg ) );
+      }
+      removeRefreshTimer( authcfg );
+    };
+
+
+    // try refresh with expired or two minutes to go (or a fraction of the initial expiration delay if it is short)
+    const qint64 refreshThreshold = expirationDelay > 0 ? std::min( 120LL, std::max( 2LL, expirationDelay / 10LL ) ) : 120;
+
+    // Schedule next refresh
+    connect( timer, &QTimer::timeout, this, doRefresh );
+    timer->start( static_cast<int>( refreshThreshold * 1000 ) );
+    QgsDebugMsgLevel( QStringLiteral( "Scheduled token refresh for authcfg: %1 in %2 s" ).arg( authcfg ).arg( refreshThreshold ), 2 );
+    // Add timer to the map
+    mTokenRefreshTimers.insert( authcfg, timer );
+  }
+}
+
+void QgsAuthOAuth2Method::removeRefreshTimer( const QString &authcfg )
+{
+  QTimer *timer = mTokenRefreshTimers.value( authcfg, nullptr );
+  if ( timer )
+  {
+    timer->deleteLater();
+    mTokenRefreshTimers.remove( authcfg );
   }
 }
 

@@ -384,6 +384,8 @@ if QGIS_SERVER_OAUTH2_AUTH:
                     handler.setResponseHeader(k, v)
                 handler.setStatusCode(code)
                 handler.appendBody(payload.encode("utf-8"))
+                # print("Issued token with TTL=%s seconds" % ttl, flush=True)
+                # print("Payload: %s" % payload, flush=True)
 
             # Token expiration
             ttl = handler.parameterMap().get("TTL", QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN)

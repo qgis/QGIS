@@ -153,6 +153,10 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 
     void removeOAuth2Bundle( const QString &authcfg );
 
+    void scheduleRefresh( const QString &authcfg, const qint64 expires, const qint64 expirationDelay );
+
+    void removeRefreshTimer( const QString &authcfg );
+
     QReadWriteLock mO2CacheLock;
     QMap<QString, QgsO2 *> mOAuth2ConfigCache;
 
@@ -160,6 +164,9 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 
     // TODO: This mutex does not appear to be protecting anything which is thread-unsafe?
     QRecursiveMutex mNetworkRequestMutex;
+
+    // Keep track of existing timers, so we can avoid creating multiple timers for the same authcfg
+    QMap<QString, QTimer *> mTokenRefreshTimers;
 };
 
 

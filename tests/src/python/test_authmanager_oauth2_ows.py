@@ -24,6 +24,7 @@ import subprocess
 import sys
 import tempfile
 import urllib
+import time
 
 __author__ = "Alessandro Pasotti"
 __date__ = "20/04/2017"
@@ -289,6 +290,28 @@ class TestAuthManager(QgisTestCase):
         self.assertTrue(wfs_layer.isValid())
         wms_layer = self._getWMSLayer("testlayer_èé", authcfg=self.auth_config.id())
         self.assertTrue(wms_layer.isValid())
+
+    def testExpiration(self):
+        """
+        Access the protected layer with valid credentials,
+        wait for token expiration and access again
+        """
+        wfs_layer = self._getWFSLayer("testlayer_èé", authcfg=self.auth_config.id())
+        self.assertTrue(wfs_layer.isValid())
+        # Wait for token expiration
+
+        # Need to call processEvents to let the token expiration
+        wait_time = 5
+        end_time = time.time() + wait_time
+        print(f"Waiting {wait_time} seconds for token expiration")
+        while time.time() < end_time:
+            qgis_app.processEvents()
+            print(".", end="", flush=True)
+            time.sleep(0.1)
+        print(" done.")
+
+        wfs_layer = self._getWFSLayer("testlayer_èé", authcfg=self.auth_config.id())
+        self.assertTrue(wfs_layer.isValid())
 
 
 if __name__ == "__main__":
