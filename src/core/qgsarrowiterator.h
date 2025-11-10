@@ -96,7 +96,7 @@ struct ArrowArrayStream
 
 /**
  * \ingroup core
- * \brief Options for inferring an ArrowSchema from a QgsVectorLayer.
+ * \brief Options for inferring an ArrowSchema from a feature source.
  */
 class CORE_EXPORT QgsArrowInferSchemaOptions
 {
@@ -105,10 +105,10 @@ class CORE_EXPORT QgsArrowInferSchemaOptions
     QgsArrowInferSchemaOptions();
 
     //! Set the name that should be used to refer to the geometry column (default: "geometry")
-    void setGeometryColumnName( QString geometryColumnName );
+    void setGeometryColumnName( const QString &geometryColumnName );
 
     //! The name that should be used for a layer's geometry column
-    const QString &geometryColumnName() const;
+    QString geometryColumnName() const;
 
   private:
     QString mGeometryColumnName;
@@ -125,6 +125,8 @@ class CORE_EXPORT QgsArrowInferSchemaOptions
  *
  * This object also stores the index of the geometry column that should be/will be
  * populated from the geometry of iterated-over features.
+ *
+ * \since QGIS 4.0
  */
 class CORE_EXPORT QgsArrowSchema
 {
@@ -151,18 +153,18 @@ class CORE_EXPORT QgsArrowSchema
     /**
      * Returns the address of the underlying ArrowSchema for import or export across boundaries
      *
-     * This is intended for advanced usage and may cause a crash if used incorrectly.
+     * \warning This is intended for advanced usage and may cause a crash if used incorrectly.
      */
     unsigned long long cSchemaAddress();
 
     /**
      * Export this array to the address of an empty ArrowSchema for export across boundaries
      *
-     * This is intended for advanced usage and may cause a crash if used incorrectly.
+     * \warning This is intended for advanced usage and may cause a crash if used incorrectly.
      */
     void exportToAddress( unsigned long long otherAddress );
 
-    //! Returns true if this wrapper object holds a valid ArrowSchema
+    //! Returns TRUE if this wrapper object holds a valid ArrowSchema
     bool isValid() const;
 
     /**
@@ -177,7 +179,7 @@ class CORE_EXPORT QgsArrowSchema
 
   private:
     struct ArrowSchema mSchema;
-    int mGeometryColumnIndex;
+    int mGeometryColumnIndex = -1;
 };
 
 /**
@@ -188,6 +190,8 @@ class CORE_EXPORT QgsArrowSchema
  * QGIS functions in C++ or Python. See the documentation for the
  * Arrow C Data Interface for how to interact with the underlying ArrowArray:
  * https://arrow.apache.org/docs/format/CDataInterface.html
+ *
+ * \since QGIS 4.0
  */
 class CORE_EXPORT QgsArrowArray
 {
@@ -229,18 +233,18 @@ class CORE_EXPORT QgsArrowArray
     /**
      * Returns the address of the underlying ArrowArray for import or export across boundaries
      *
-     * This is intended for advanced usage and may cause a crash if used incorrectly.
+     * \warning This is intended for advanced usage and may cause a crash if used incorrectly.
      */
     unsigned long long cArrayAddress();
 
     /**
      * Export this array to the address of an empty ArrowArray for export across boundaries
      *
-     * This is intended for advanced usage and may cause a crash if used incorrectly.
+     * \warning This is intended for advanced usage and may cause a crash if used incorrectly.
      */
     void exportToAddress( unsigned long long otherAddress );
 
-    //! Returns true if this wrapper object holds a valid ArrowArray
+    //! Returns TRUE if this wrapper object holds a valid ArrowArray
     bool isValid() const;
 
   private:
@@ -250,6 +254,7 @@ class CORE_EXPORT QgsArrowArray
 /**
  * \ingroup core
  * \brief Wrapper for an Arrow reader of features from vector data provider or vector layer.
+ * \since QGIS 4.0
  */
 class CORE_EXPORT QgsArrowIterator
 {
@@ -271,8 +276,10 @@ class CORE_EXPORT QgsArrowIterator
      * Build an ArrowArray using the next n features (or fewer depending on the number of features remaining)
      *
      * If no features remain, the returned array will be invalid (i.e., isValid() will return false).
+     *
+     * \throws QgsException when XXX
      */
-    QgsArrowArray nextFeatures( int n );
+    QgsArrowArray nextFeatures( int n ) SIP_THROW( QgsException );
 
     //! Infer the QgsArrowSchema for a given QgsVectorLayer
     static QgsArrowSchema inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options = QgsArrowInferSchemaOptions() );

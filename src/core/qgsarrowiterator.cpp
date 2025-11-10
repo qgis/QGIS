@@ -297,7 +297,7 @@ namespace
 
   void appendVariant( const QVariant &v, struct ArrowArray *col, struct ArrowSchemaView &columnTypeView, struct ArrowSchemaView &columnListTypeView )
   {
-    if ( v.isNull() )
+    if ( QgsVariantUtils::isNull( v ) )
     {
       QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendNull( col, 1 ) );
       return;
@@ -523,7 +523,7 @@ QgsArrowArray QgsArrowIterator::nextFeatures( int n )
   for ( int64_t i = 0; i < schema->n_children; i++ )
   {
     // Parse the column schema
-    columnNames[i] = QString( schema->children[i]->name != nullptr ? schema->children[i]->name : "" );
+    columnNames[i] = QString( schema->children[i]->name != nullptr ? schema->children[i]->name : QString() );
     QGIS_NANOARROW_THROW_NOT_OK_ERR( ArrowSchemaViewInit( &colTypeViews[i], schema->children[i], &error ), &error );
 
     // Parse the column list type if applicable
@@ -604,7 +604,7 @@ QgsArrowArray QgsArrowIterator::nextFeatures( int n )
 
 QgsArrowSchema QgsArrowIterator::inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options )
 {
-  bool layerHasGeometry = layer.geometryType() != Qgis::GeometryType::Unknown && layer.geometryType() != Qgis::GeometryType::Null;
+  bool layerHasGeometry = layer.isSpatial();
   return inferSchema( layer.fields(), layerHasGeometry, layer.crs(), options );
 }
 
