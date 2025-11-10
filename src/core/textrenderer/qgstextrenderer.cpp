@@ -154,7 +154,7 @@ void QgsTextRenderer::drawDocument( QPointF point, const QgsTextFormat &_format,
   drawParts( point, rotation, alignment, document, metrics, context, lFormat, components, mode );
 }
 
-void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &_format, double offsetAlongLine, double offsetFromLine )
+void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &_format, double offsetAlongLine, double offsetFromLine, Qgis::CurvedTextFlags flags )
 {
   QgsTextFormat lFormat = _format;
   if ( _format.dataDefinedProperties().hasActiveProperties() ) // note, we use _format instead of tmpFormat here, it's const and potentially avoids a detach
@@ -166,10 +166,11 @@ void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text
   // todo handle newlines??
   const QgsTextDocument document = QgsTextDocument::fromTextAndFormat( {text}, lFormat );
 
-  drawDocumentOnLine( line, lFormat, document, context, offsetAlongLine, offsetFromLine );
+  drawDocumentOnLine( line, lFormat, document, context, offsetAlongLine, offsetFromLine, flags );
 }
 
-void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFormat &format, const QgsTextDocument &document, QgsRenderContext &context, double offsetAlongLine, double offsetFromLine )
+void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFormat &format, const QgsTextDocument &document, QgsRenderContext &context, double offsetAlongLine, double offsetFromLine,
+    Qgis::CurvedTextFlags flags )
 {
   QPolygonF labelBaselineCurve = line;
   if ( !qgsDoubleNear( offsetFromLine, 0 ) )
@@ -312,8 +313,7 @@ void QgsTextRenderer::drawDocumentOnLine( const QPolygonF &line, const QgsTextFo
         metrics, labelBaselineCurve, offsetAlongLine,
         QgsTextRendererUtils::RespectPainterOrientation,
         -1, -1,
-        QgsTextRendererUtils::CurvedTextFlag::UseBaselinePlacement
-        | QgsTextRendererUtils::CurvedTextFlag::TruncateStringWhenLineIsTooShort
+        flags
       );
 
   if ( placement->graphemePlacement.empty() )
