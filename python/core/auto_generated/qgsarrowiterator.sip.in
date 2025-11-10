@@ -36,12 +36,17 @@ Construct default options
     void setGeometryColumnName( const QString &geometryColumnName );
 %Docstring
 Set the name that should be used to refer to the geometry column
-(default: "geometry")
+
+If empty, the geometry column will be derived from the layer or be named
+geometry if the layer does not declare a geometry column name.
 %End
 
     QString geometryColumnName() const;
 %Docstring
 The name that should be used for a layer's geometry column
+
+If empty, the geometry column should be derived from the layer or be
+named geometry if the layer does not declare a geometry column name.
 %End
 
 };

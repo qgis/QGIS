@@ -105,10 +105,20 @@ class CORE_EXPORT QgsArrowInferSchemaOptions
     //! Construct default options
     QgsArrowInferSchemaOptions();
 
-    //! Set the name that should be used to refer to the geometry column (default: "geometry")
+    /**
+     * Set the name that should be used to refer to the geometry column
+     *
+     * If empty, the geometry column will be derived from the layer or be named
+     * geometry if the layer does not declare a geometry column name.
+     */
     void setGeometryColumnName( const QString &geometryColumnName );
 
-    //! The name that should be used for a layer's geometry column
+    /**
+     * The name that should be used for a layer's geometry column
+     *
+     * If empty, the geometry column should be derived from the layer or be named
+     * geometry if the layer does not declare a geometry column name.
+     */
     QString geometryColumnName() const;
 
   private:

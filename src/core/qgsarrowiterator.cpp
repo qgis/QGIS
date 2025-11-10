@@ -43,7 +43,7 @@
 
 
 QgsArrowInferSchemaOptions::QgsArrowInferSchemaOptions()
-  : mGeometryColumnName( "geometry" ) {}
+  : mGeometryColumnName( "" ) {}
 
 void QgsArrowInferSchemaOptions::setGeometryColumnName( const QString &geometryColumnName )
 {
@@ -597,7 +597,16 @@ QgsArrowArray QgsArrowIterator::nextFeatures( int n )
 QgsArrowSchema QgsArrowIterator::inferSchema( const QgsVectorLayer &layer, const QgsArrowInferSchemaOptions &options )
 {
   bool layerHasGeometry = layer.isSpatial();
-  return inferSchema( layer.fields(), layerHasGeometry, layer.crs(), options );
+  if ( layerHasGeometry && options.geometryColumnName().isEmpty() )
+  {
+    QgsArrowInferSchemaOptions optionsClone( options );
+    optionsClone.setGeometryColumnName( layer.dataProvider()->geometryColumnName() );
+    return inferSchema( layer.fields(), layerHasGeometry, layer.crs(), optionsClone );
+  }
+  else
+  {
+    return inferSchema( layer.fields(), layerHasGeometry, layer.crs(), options );
+  }
 }
 
 
@@ -613,7 +622,13 @@ QgsArrowSchema QgsArrowIterator::inferSchema( const QgsFields &fields, bool hasG
 
   if ( hasGeometry )
   {
-    inferGeometry( out.schema()->children[fields.count()], options.geometryColumnName(), crs );
+    QString geometryColumnName = options.geometryColumnName();
+    if ( geometryColumnName.isEmpty() )
+    {
+      geometryColumnName = QString( "geometry" );
+    }
+
+    inferGeometry( out.schema()->children[fields.count()], geometryColumnName, crs );
     out.setGeometryColumnIndex( fields.count() );
   }
 
