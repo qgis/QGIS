@@ -60,12 +60,12 @@ sfcgal::shared_prim sfcgal::make_shared_prim( sfcgal::primitive *prim )
 }
 #endif
 
-bool sfcgal::ErrorHandler::hasSucceedOrStack( QString *errorMsg, const std::source_location &location )
+bool sfcgal::ErrorHandler::hasSucceedOrStack( QString *errorMsg, const char *fromFile, const char *fromFunc, int fromLine )
 {
   bool succeed = isTextEmpty();
   if ( !succeed )
   {
-    addText( "relaying error from: ", location );
+    addText( "relaying error from: ", fromFile, fromFunc, fromLine );
     if ( errorMsg )
     {
       errorMsg->append( errorMessages.first() );
@@ -83,7 +83,7 @@ int sfcgal::errorCallback( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL error occurred: %1" ).arg( buffer ) );
+  sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL error occurred: %1" ).arg( buffer ), __FILE__, __FUNCTION__, __LINE__ );
 
   return static_cast<int>( strlen( buffer ) );
 }
@@ -97,7 +97,7 @@ int sfcgal::warningCallback( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL warning occurred: %1" ).arg( buffer ) );
+  sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL warning occurred: %1" ).arg( buffer ), __FILE__, __FUNCTION__, __LINE__ );
 
   return static_cast<int>( strlen( buffer ) );
 }
@@ -133,12 +133,9 @@ bool sfcgal::ErrorHandler::isTextEmpty() const
   return errorMessages.isEmpty();
 }
 
-void sfcgal::ErrorHandler::addText( const QString &msg, const std::source_location &location )
+void sfcgal::ErrorHandler::addText( const QString &msg, const char *fromFile, const char *fromFunc, int fromLine )
 {
-  QString txt = QString( "%2 (%3:%4) %1" ).arg( msg ) //
-                .arg( QString::fromStdString( location.function_name() ) ) //
-                .arg( QString::fromStdString( location.file_name() ) ) //
-                .arg( location.line() );
+  QString txt = QString( "%2 (%3:%4) %1" ).arg( msg ).arg( fromFunc ).arg( fromFile ).arg( fromLine );
 
   errorMessages.push_front( txt );
 }
@@ -331,7 +328,8 @@ std::unique_ptr<QgsAbstractGeometry> QgsSfcgalEngine::toAbstractGeometry( const 
     Qgis::WkbType sfcgalType = QgsSfcgalEngine::wkbType( geom );
     sfcgal::errorHandler()->addText( QStringLiteral( "WKB contains unmanaged geometry type (WKB:%1 / SFCGAL:%2" ) //
                                      .arg( static_cast<int>( wkbPtr.readHeader() ) )                          //
-                                     .arg( static_cast<int>( sfcgalType ) ) );
+                                     .arg( static_cast<int>( sfcgalType ) ),
+                                     __FILE__, __FUNCTION__, __LINE__ );
   }
 
   return out;
@@ -455,7 +453,8 @@ Qgis::WkbType QgsSfcgalEngine::wkbType( const sfcgal::geometry *geom, QString *e
   if ( qgisType >= Qgis::WkbType::Unknown && qgisType <= Qgis::WkbType::TriangleZM )
     return qgisType;
 
-  sfcgal::errorHandler()->addText( QStringLiteral( "WKB type '%1' is not known from QGIS" ).arg( wkbType ) );
+  sfcgal::errorHandler()->addText( QStringLiteral( "WKB type '%1' is not known from QGIS" ).arg( wkbType ), //
+                                   __FILE__, __FUNCTION__, __LINE__ );
   return Qgis::WkbType::Unknown;
 }
 
