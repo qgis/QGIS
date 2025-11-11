@@ -446,6 +446,53 @@ class TestPyQgsProviderConnectionMssql(
         self.assertEqual(res_ds.geometryColumn(), "geometry")
         self.assertEqual(res_ds.keyColumn(), "pk")
 
+    def test_move_table_to_schema(self):
+        """Test that table can be moved to another schema."""
+
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.uri, {})
+
+        conn.executeSql("DROP TABLE IF EXISTS qgis_test.table_to_move")
+        conn.executeSql(
+            """CREATE TABLE qgis_test.table_to_move
+            (pk INTEGER PRIMARY KEY,cnt integer, name nvarchar(max), name2 nvarchar(max)
+        );"""
+        )
+
+        conn.dropSchema("qgis_schema_test", True)
+        conn.executeSql("CREATE SCHEMA qgis_schema_test;")
+
+        # test table exist
+        table = conn.table("qgis_test", "table_to_move")
+        self.assertEqual(table.tableName(), "table_to_move")
+
+        # test fail in move - target schema does not exist
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.moveTableToSchema(
+                "qgis_test",
+                "table_to_move",
+                "schema_test_non_existent",
+            )
+
+        # test fail in move - table does not exist
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.moveTableToSchema(
+                "qgis_test",
+                "table_to_move_non_existent",
+                "schema_test",
+            )
+
+        # move table to another schema
+        conn.moveTableToSchema(
+            "qgis_test",
+            "table_to_move",
+            "qgis_schema_test",
+        )
+
+        # test moved table exist in the schema
+        table = conn.table("qgis_schema_test", "table_to_move")
+        self.assertEqual(table.tableName(), "table_to_move")
+
 
 if __name__ == "__main__":
     unittest.main()

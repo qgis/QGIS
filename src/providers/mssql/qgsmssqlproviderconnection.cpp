@@ -97,7 +97,8 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::TableExists,
     Capability::DeleteField,
     Capability::DeleteFieldCascade,
-    Capability::AddField
+    Capability::AddField,
+    Capability::MoveTableToSchema
   };
   mGeometryColumnCapabilities = {
     GeometryColumnCapability::Z,
@@ -846,6 +847,12 @@ Qgis::DatabaseProviderTableImportCapabilities QgsMssqlProviderConnection::tableI
 QString QgsMssqlProviderConnection::defaultPrimaryKeyColumnName() const
 {
   return QStringLiteral( "qgs_fid" );
+}
+
+void QgsMssqlProviderConnection::moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const
+{
+  executeSqlPrivate( QStringLiteral( "ALTER SCHEMA %1 TRANSFER %2.%3" )
+                       .arg( QgsMssqlUtils::quotedIdentifier( targetSchema ), QgsMssqlUtils::quotedIdentifier( sourceSchema ), QgsMssqlUtils::quotedIdentifier( tableName ) ) );
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderConnection::sqlOptions( const QString &layerSource )
