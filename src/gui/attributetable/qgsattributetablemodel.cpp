@@ -692,9 +692,13 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   {
     const unsigned long cacheIndex = role - static_cast<int>( CustomRole::Sort );
     if ( cacheIndex < mSortCaches.size() )
+    {
       return mSortCaches.at( cacheIndex ).sortCache.value( rowId );
+    }
     else
+    {
       return QVariant();
+    }
   }
 
   const QgsField field = mLayer->fields().at( fieldId );
