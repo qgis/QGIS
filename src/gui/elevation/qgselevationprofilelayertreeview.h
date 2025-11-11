@@ -157,6 +157,13 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
      */
     void removeNodeForUnregisteredSource( const QString &sourceId );
 
+    /**
+     * Adds any layers from a \a project which currently aren't within the profile's layer tree.
+     *
+     * \since QGIS 4.0
+     */
+    void populateMissingLayers( QgsProject *project );
+
   signals:
 
     /**
@@ -170,11 +177,6 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
     void resizeEvent( QResizeEvent *event ) override;
 
   private:
-    /**
-     * Initially populates the tree view using layers from a \a project.
-     */
-    void populateInitialLayers( QgsProject *project );
-
     QgsElevationProfileLayerTreeModel *mModel = nullptr;
     QgsElevationProfileLayerTreeProxyModel *mProxyModel = nullptr;
     QgsLayerTree *mLayerTree = nullptr;

@@ -526,6 +526,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   // initially populate layer tree with project layers and registered sources
   mLayerTreeView->populateInitialSources( QgsProject::instance() );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, mLayerTreeView, [this] { mLayerTreeView->populateMissingLayers( QgsProject::instance() ); } );
 
   connect( mProfile->layerTree(), &QgsLayerTree::layerOrderChanged, this, [this] {
     updateCanvasSources();
