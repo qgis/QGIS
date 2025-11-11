@@ -340,6 +340,12 @@ class TestQgsRasterLabeling(QgisTestCase):
         )
         self.assertTrue(raster_layer.isValid())
 
+        variable_names = ["test"]
+        variable_values = ["a\nb\nc"]
+
+        raster_layer.setCustomProperty("variableNames", variable_names)
+        raster_layer.setCustomProperty("variableValues", variable_values)
+
         format = QgsTextFormat()
         format.setFont(getTestFont("bold"))
         format.setColor(QColor(255, 0, 0))
@@ -349,7 +355,7 @@ class TestQgsRasterLabeling(QgisTestCase):
         labeling.setTextFormat(format)
 
         expression_format = QgsExpressionBasedNumericFormat()
-        expression_format.setExpression("a\\n\\b\\n\\c")
+        expression_format.setExpression("@test")
         labeling.setNumericFormat(expression_format)
 
         raster_layer.setLabeling(labeling)
