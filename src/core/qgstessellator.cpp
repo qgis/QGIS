@@ -613,16 +613,12 @@ void QgsTessellator::addTriangleVertices(
       if ( mAddNormals )
         mData << normal.x() << normal.z() << - normal.y();
     }
-  }
-}
 
-void QgsTessellator::addTextureCoords( const std::array<QVector3D, 3> *points, bool reverse )
-{
-  for ( int i = 0; i < 3; ++i )
-  {
-    const int index = reverse ? 2 - i : i;
-    const std::pair<float, float> pr = rotateCoords( ( *points )[ index ].x(), ( *points )[ index ].y(), 0.0f, 0.0f, mTextureRotation );
-    mData << pr.first << pr.second;
+    if ( mAddTextureCoords )
+    {
+      const std::pair<float, float> pr = rotateCoords( static_cast<float>( fx ), static_cast<float>( fy ), 0.0f, 0.0f, mTextureRotation );
+      mData << pr.first << pr.second;
+    }
   }
 }
 
