@@ -215,6 +215,9 @@ class VLayerConnector(DBConnector):
         for _, l in QgsProject.instance().mapLayers().items():
             if l.type() == QgsMapLayerType.VectorLayer:
 
+                if not l.isValid():
+                    continue
+                
                 lname = l.name()
                 # if there is already a layer with this name, use the layer id
                 # as name
@@ -224,7 +227,7 @@ class VLayerConnector(DBConnector):
 
                 geomType = None
                 dim = None
-                if l.isSpatial() and l.dataProvider():
+                if l.isSpatial():
                     g = l.dataProvider().wkbType()
                     g_flat = QgsWkbTypes.flatType(g)
                     geomType = QgsWkbTypes.displayString(g_flat).upper()
