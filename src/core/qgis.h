@@ -164,7 +164,7 @@ class CORE_EXPORT Qgis
     /**
      * \brief Format of strings
      *
-     * \since QGIS 4.0
+     * \since QGIS 4.0. Prior to QGIS 4.0 this was available as QgsMessageOutput.MessageType
      */
     enum class StringFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMessageOutput, MessageType ) : int
     {

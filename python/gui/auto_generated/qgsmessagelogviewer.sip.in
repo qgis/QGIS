@@ -28,9 +28,11 @@ to the system's :py:func:`QgsApplication.messageLog()` instance.
 
   public slots:
 
-    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat type = Qgis::StringFormat::PlainText );
 %Docstring
 Logs a ``message`` to the viewer.
+
+The ``type`` argument was added in QGIS 4.0
 %End
 
     void showTab( const QString &tag );

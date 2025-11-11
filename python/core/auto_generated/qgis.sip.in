@@ -121,6 +121,12 @@ The development version
       NoLevel,
     };
 
+    enum class StringFormat
+    {
+      PlainText,
+      Html,
+    };
+
     enum class NetworkRequestFlag
     {
       DisableMessageLogging,

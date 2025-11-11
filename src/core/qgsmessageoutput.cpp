@@ -63,7 +63,14 @@ void QgsMessageOutputConsole::appendMessage( const QString &message )
 
 void QgsMessageOutputConsole::showMessage( bool )
 {
-  QgsMessageLog::logMessage( mMessage, mTitle.isNull() ? QObject::tr( "Console" ) : mTitle, Qgis::MessageLevel::Info, mMsgType );
+  if ( mMsgType == Qgis::StringFormat::Html )
+  {
+    mMessage.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
+    mMessage.replace( QLatin1String( "&nbsp;" ), QLatin1String( " " ) );
+    const thread_local QRegularExpression tagRX( QStringLiteral( "</?[^>]+>" ) );
+    mMessage.replace( tagRX, QString() );
+  }
+  QgsMessageLog::logMessage( mMessage, mTitle.isNull() ? QObject::tr( "Console" ) : mTitle );
   emit destroyed();
   delete this;
 }
