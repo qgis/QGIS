@@ -55,6 +55,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
+    void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
     void createSchema( const QString &name ) const override;
     void dropSchema( const QString &name, bool force = false ) const override;
     QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback ) const override;
