@@ -13,6 +13,7 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
 
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     QgsDataSourceUri,
     QgsProviderRegistry,
@@ -22,6 +23,7 @@ from qgis.core import (
     QgsFields,
     QgsAbstractDatabaseProviderConnection,
     QgsProviderConnectionException,
+    QgsField,
 )
 from qgis.testing import unittest
 
@@ -497,6 +499,39 @@ class TestPyQgsProviderConnectionMssql(
         # test moved table exist in the schema
         table = conn.table("qgis_schema_test", "table_to_move")
         self.assertEqual(table.tableName(), "table_to_move")
+
+    def test_rename_field(self):
+        """Test rename fields"""
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.uri, {})
+
+        conn.dropVectorTable("qgis_test", "test_rename_field")
+
+        fields = QgsFields()
+        fields.append(QgsField("field1", QVariant.String))
+        fields.append(QgsField("field2", QVariant.String))
+        fields.append(QgsField("field3", QVariant.String))
+
+        conn.createVectorTable(
+            "qgis_test",
+            "test_rename_field",
+            fields,
+            Qgis.WkbType.PolygonZ,
+            QgsCoordinateReferenceSystem(),
+            True,
+            {},
+        )
+
+        fields = conn.fields("qgis_test", "test_rename_field")
+        self.assertEqual(fields.names(), ["qgs_fid", "field1", "field2", "field3"])
+
+        conn.renameField("qgis_test", "test_rename_field", "field1", "new_field1")
+
+        fields = conn.fields("qgis_test", "test_rename_field")
+        self.assertEqual(fields.names(), ["qgs_fid", "new_field1", "field2", "field3"])
+
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.renameField("qgis_test", "test_rename_field", "xxx", "yyy")
 
 
 if __name__ == "__main__":
