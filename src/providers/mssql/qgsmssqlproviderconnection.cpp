@@ -87,6 +87,7 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
   mCapabilities = {
     Capability::DropVectorTable,
     Capability::CreateVectorTable,
+    Capability::RenameVectorTable,
     Capability::DropSchema,
     Capability::CreateSchema,
     Capability::ExecuteSql,
@@ -145,6 +146,12 @@ void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const 
                               QgsMssqlUtils::quotedValue( name ), QgsMssqlUtils::quotedValue( schema ), QgsMssqlUtils::quotedIdentifier( name ), QgsMssqlUtils::quotedIdentifier( schema ) ) };
 
   executeSqlPrivate( sql );
+}
+
+void QgsMssqlProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
+{
+  executeSqlPrivate( QStringLiteral( "EXECUTE sp_rename '%1.%2', %3" )
+                       .arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( name ), QgsMssqlUtils::quotedValue( newName ) ) );
 }
 
 void QgsMssqlProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const
@@ -215,6 +222,11 @@ void QgsMssqlProviderConnection::dropVectorTable( const QString &schema, const Q
   dropTablePrivate( schema, name );
 }
 
+void QgsMssqlProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameVectorTable );
+  renameTablePrivate( schema, name, newName );
+}
 
 void QgsMssqlProviderConnection::createSchema( const QString &schemaName ) const
 {
