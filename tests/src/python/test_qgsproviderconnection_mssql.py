@@ -459,7 +459,12 @@ class TestPyQgsProviderConnectionMssql(
         );"""
         )
 
-        conn.dropSchema("qgis_schema_test", True)
+        try:
+            conn.dropSchema("qgis_schema_test", True)
+        except QgsProviderConnectionException:
+            # likely schema does not exist
+            pass
+
         conn.executeSql("CREATE SCHEMA qgis_schema_test;")
 
         # test table exist
