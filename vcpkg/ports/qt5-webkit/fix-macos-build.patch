@@ -1,0 +1,13 @@
+diff --git a/Source/JavaScriptCore/jsc.cpp b/Source/JavaScriptCore/jsc.cpp
+index 2bdb953e2..da97b8e1d 100644
+--- a/Source/JavaScriptCore/jsc.cpp
++++ b/Source/JavaScriptCore/jsc.cpp
+@@ -189,7 +189,7 @@ private:
+ 
+ class ElementHandleOwner : public WeakHandleOwner {
+ public:
+-    bool isReachableFromOpaqueRoots(Handle<JSC::Unknown> handle, void*, SlotVisitor& visitor) override
++    bool isReachableFromOpaqueRoots(JSC::Handle<JSC::Unknown> handle, void*, SlotVisitor& visitor) override
+     {
+         Element* element = jsCast<Element*>(handle.slot()->asCell());
+         return visitor.containsOpaqueRoot(element->root());

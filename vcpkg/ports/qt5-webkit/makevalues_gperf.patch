@@ -1,0 +1,38 @@
+diff --git a/Source/WebCore/CMakeLists.txt b/Source/WebCore/CMakeLists.txt
+index 48f779e1e642..85028d0a949d 100644
+--- a/Source/WebCore/CMakeLists.txt
++++ b/Source/WebCore/CMakeLists.txt
+@@ -3523,7 +3523,7 @@ add_custom_command(
+     DEPENDS ${WebCore_CSS_VALUE_KEYWORDS}
+     WORKING_DIRECTORY ${DERIVED_SOURCES_WEBCORE_DIR}
+     COMMAND ${PERL_EXECUTABLE} -ne "print" ${WebCore_CSS_VALUE_KEYWORDS} > ${DERIVED_SOURCES_WEBCORE_DIR}/CSSValueKeywords.in
+-    COMMAND ${PERL_EXECUTABLE} -I${WEBCORE_DIR}/bindings/scripts ${WEBCORE_DIR}/css/makevalues.pl --defines "${FEATURE_DEFINES_WITH_SPACE_SEPARATOR}" --preprocessor "${CODE_GENERATOR_PREPROCESSOR}"
++    COMMAND ${PERL_EXECUTABLE} -I${WEBCORE_DIR}/bindings/scripts ${WEBCORE_DIR}/css/makevalues.pl --defines "${FEATURE_DEFINES_WITH_SPACE_SEPARATOR}" --preprocessor "${CODE_GENERATOR_PREPROCESSOR}" --gperf-executable "${GPERF_EXECUTABLE}"
+     VERBATIM)
+ list(APPEND WebCore_SOURCES ${DERIVED_SOURCES_WEBCORE_DIR}/CSSValueKeywords.cpp)
+ ADD_SOURCE_WEBCORE_DERIVED_DEPENDENCIES(${WEBCORE_DIR}/css/CSSParser.cpp CSSValueKeywords.h)
+diff --git a/Source/WebCore/css/makevalues.pl b/Source/WebCore/css/makevalues.pl
+index 98ca601bcc68..5dda8d5b714a 100755
+--- a/Source/WebCore/css/makevalues.pl
++++ b/Source/WebCore/css/makevalues.pl
+@@ -28,8 +28,10 @@ use warnings;
+ 
+ my $defines;
+ my $preprocessor;
++my $gperf;
+ GetOptions('defines=s' => \$defines,
+-           'preprocessor=s' => \$preprocessor);
++           'preprocessor=s' => \$preprocessor,
++           'gperf-executable=s' => \$gperf);
+ 
+ my @NAMES = applyPreprocessor("CSSValueKeywords.in", $defines, $preprocessor);
+ 
+@@ -171,5 +173,7 @@ const char* getValueName(unsigned short id);
+ EOF
+ close HEADER;
+ 
+-my $gperf = $ENV{GPERF} ? $ENV{GPERF} : "gperf";
++if (not $gperf) {
++    $gperf = $ENV{GPERF} ? $ENV{GPERF} : "gperf";
++}
+ system("\"$gperf\" --key-positions=\"*\" -D -n -s 2 CSSValueKeywords.gperf --output-file=CSSValueKeywords.cpp") == 0 || die "calling gperf failed: $?";

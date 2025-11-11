@@ -1,0 +1,17 @@
+diff --git a/Source/cmake/OptionsQt.cmake b/Source/cmake/OptionsQt.cmake
+index 6b2414ab0e..1d65761a1e 100644
+--- a/Source/cmake/OptionsQt.cmake
++++ b/Source/cmake/OptionsQt.cmake
+@@ -89,7 +89,7 @@
+ 
+-    if (NOT Qt5${_qt_component}_PRIVATE_HEADER_FOUND)
+-        message(FATAL_ERROR "Header ${_header} is not found. Please make sure that:
+-    1. Private headers of Qt5${_qt_component} are installed
+-    2. Qt5${_qt_component}_PRIVATE_INCLUDE_DIRS is correctly defined in Qt5${_qt_component}Config.cmake")
+-    endif ()
++#    if (NOT Qt5${_qt_component}_PRIVATE_HEADER_FOUND)
++#        message(FATAL_ERROR "Header ${_header} is not found. Please make sure that:
++#    1. Private headers of Qt5${_qt_component} are installed
++#    2. Qt5${_qt_component}_PRIVATE_INCLUDE_DIRS is correctly defined in Qt5${_qt_component}Config.cmake")
++#    endif ()
+ endmacro()

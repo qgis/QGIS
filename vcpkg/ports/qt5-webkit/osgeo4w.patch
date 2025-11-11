@@ -1,0 +1,461 @@
+ if (NOT RUBY_FOUND AND RUBY_EXECUTABLE AND NOT RUBY_VERSION VERSION_LESS 1.9)
+diff -ur qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/generate-bytecode-files ../Source/JavaScriptCore/generate-bytecode-files
+--- qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/generate-bytecode-files	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/JavaScriptCore/generate-bytecode-files	2020-10-16 01:50:57.725175000 +0200
+@@ -116,6 +116,7 @@
+     bytecodeJSONFile = args[0]
+     bytecodeFile = openOrExit(bytecodeJSONFile, "rb")
+     sha1Hash = hashFile(bytecodeFile)
++    bytecodeFile = openOrExit(bytecodeJSONFile, "r")
+ 
+     hFileHashString = "// SHA1Hash: {0}\n".format(sha1Hash)
+     asmFileHashString = "# SHA1Hash: {0}\n".format(sha1Hash)
+@@ -163,7 +164,7 @@
+         initBytecodesFile = openOrExit(initASMFileName, "w")
+ 
+     try:
+-        bytecodeSections = json.load(bytecodeFile, encoding = "utf-8")
++        bytecodeSections = json.load(bytecodeFile)
+     except:
+         print("Unexpected error parsing {0}: {1}".format(bytecodeJSONFile, sys.exc_info()))
+ 
+diff -ur qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/inspector/scripts/codegen/objc_generator.py ../Source/JavaScriptCore/inspector/scripts/codegen/objc_generator.py
+--- qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/inspector/scripts/codegen/objc_generator.py	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/JavaScriptCore/inspector/scripts/codegen/objc_generator.py	2020-10-16 01:55:50.195955800 +0200
+@@ -66,11 +66,11 @@
+     @staticmethod
+     def category_for_type(_type):
+         if (isinstance(_type, PrimitiveType)):
+-            if _type.raw_name() is 'string':
++            if _type.raw_name() == 'string':
+                 return ObjCTypeCategory.String
+             if  _type.raw_name() in ['object', 'any']:
+                 return ObjCTypeCategory.Object
+-            if _type.raw_name() is 'array':
++            if _type.raw_name() == 'array':
+                 return ObjCTypeCategory.Array
+             return ObjCTypeCategory.Simple
+         if (isinstance(_type, ObjectType)):
+@@ -109,7 +109,7 @@
+     @staticmethod
+     def should_generate_domain_types_filter(model):
+         def should_generate_domain_types(domain):
+-            if model.framework is Frameworks.Test:
++            if model.framework == Frameworks.Test:
+                 return True
+             whitelist = set(ObjCGenerator.DOMAINS_TO_GENERATE)
+             whitelist.update(set(['Console', 'Debugger', 'Runtime']))
+@@ -119,7 +119,7 @@
+     @staticmethod
+     def should_generate_domain_command_handler_filter(model):
+         def should_generate_domain_command_handler(domain):
+-            if model.framework is Frameworks.Test:
++            if model.framework == Frameworks.Test:
+                 return True
+             whitelist = set(ObjCGenerator.DOMAINS_TO_GENERATE)
+             return domain.domain_name in whitelist
+@@ -128,7 +128,7 @@
+     @staticmethod
+     def should_generate_domain_event_dispatcher_filter(model):
+         def should_generate_domain_event_dispatcher(domain):
+-            if model.framework is Frameworks.Test:
++            if model.framework == Frameworks.Test:
+                 return True
+             whitelist = set(ObjCGenerator.DOMAINS_TO_GENERATE)
+             whitelist.add('Console')
+@@ -196,15 +196,15 @@
+ 
+     @staticmethod
+     def objc_type_for_raw_name(raw_name):
+-        if raw_name is 'string':
++        if raw_name == 'string':
+             return 'NSString *'
+-        if raw_name is 'array':
++        if raw_name == 'array':
+             return 'NSArray *'
+-        if raw_name is 'integer':
++        if raw_name == 'integer':
+             return 'int'
+-        if raw_name is 'number':
++        if raw_name == 'number':
+             return 'double'
+-        if raw_name is 'boolean':
++        if raw_name == 'boolean':
+             return 'BOOL'
+         if raw_name in ['any', 'object']:
+             return '%s *' % ObjCGenerator.OBJC_JSON_OBJECT_BASE
+@@ -212,9 +212,9 @@
+ 
+     @staticmethod
+     def objc_class_for_raw_name(raw_name):
+-        if raw_name is 'string':
++        if raw_name == 'string':
+             return 'NSString'
+-        if raw_name is 'array':
++        if raw_name == 'array':
+             return 'NSArray'
+         if raw_name in ['integer', 'number', 'boolean']:
+             return 'NSNumber'
+@@ -226,13 +226,13 @@
+ 
+     @staticmethod
+     def protocol_type_for_raw_name(raw_name):
+-        if raw_name is 'string':
++        if raw_name == 'string':
+             return 'String'
+-        if raw_name is 'integer':
++        if raw_name == 'integer':
+             return 'int'
+-        if raw_name is 'number':
++        if raw_name == 'number':
+             return 'double'
+-        if raw_name is 'boolean':
++        if raw_name == 'boolean':
+             return 'bool'
+         if raw_name in ['any', 'object']:
+             return 'InspectorObject'
+@@ -367,18 +367,18 @@
+             if isinstance(var_type, EnumType):
+                 return 'toProtocolString(%s)' % var_name
+             return var_name
+-        if category is ObjCTypeCategory.Object:
++        if category == ObjCTypeCategory.Object:
+             return '[%s toInspectorObject]' % var_name
+-        if category is ObjCTypeCategory.Array:
++        if category == ObjCTypeCategory.Array:
+             protocol_type = ObjCGenerator.protocol_type_for_type(var_type.element_type)
+             objc_class = ObjCGenerator.objc_class_for_type(var_type.element_type)
+             if protocol_type == 'Inspector::Protocol::Array<String>':
+                 return 'inspectorStringArrayArray(%s)' % var_name
+-            if protocol_type is 'String' and objc_class is 'NSString':
++            if protocol_type == 'String' and objc_class == 'NSString':
+                 return 'inspectorStringArray(%s)' % var_name
+-            if protocol_type is 'int' and objc_class is 'NSNumber':
++            if protocol_type == 'int' and objc_class == 'NSNumber':
+                 return 'inspectorIntegerArray(%s)' % var_name
+-            if protocol_type is 'double' and objc_class is 'NSNumber':
++            if protocol_type == 'double' and objc_class == 'NSNumber':
+                 return 'inspectorDoubleArray(%s)' % var_name
+             return 'inspectorObjectArray(%s)' % var_name
+ 
+@@ -403,14 +403,14 @@
+         category = ObjCTypeCategory.category_for_type(var_type)
+         if category in [ObjCTypeCategory.Simple, ObjCTypeCategory.String]:
+             return var_name
+-        if category is ObjCTypeCategory.Object:
++        if category == ObjCTypeCategory.Object:
+             objc_class = ObjCGenerator.objc_class_for_type(var_type)
+             return '[[[%s alloc] initWithInspectorObject:%s] autorelease]' % (objc_class, var_name)
+-        if category is ObjCTypeCategory.Array:
++        if category == ObjCTypeCategory.Array:
+             objc_class = ObjCGenerator.objc_class_for_type(var_type.element_type)
+-            if objc_class is 'NSString':
++            if objc_class == 'NSString':
+                 return 'objcStringArray(%s)' % var_name
+-            if objc_class is 'NSNumber':  # FIXME: Integer or Double?
++            if objc_class == 'NSNumber':  # FIXME: Integer or Double?
+                 return 'objcIntegerArray(%s)' % var_name
+             return 'objcArray<%s>(%s)' % (objc_class, var_name)
+ 
+@@ -425,15 +425,15 @@
+             if isinstance(member.type, EnumType):
+                 return 'toProtocolString(%s)' % sub_expression
+             return sub_expression
+-        if category is ObjCTypeCategory.Object:
++        if category == ObjCTypeCategory.Object:
+             return sub_expression
+-        if category is ObjCTypeCategory.Array:
++        if category == ObjCTypeCategory.Array:
+             objc_class = ObjCGenerator.objc_class_for_type(member.type.element_type)
+-            if objc_class is 'NSString':
++            if objc_class == 'NSString':
+                 return 'inspectorStringArray(%s)' % sub_expression
+-            if objc_class is 'NSNumber':
++            if objc_class == 'NSNumber':
+                 protocol_type = ObjCGenerator.protocol_type_for_type(member.type.element_type)
+-                if protocol_type is 'double':
++                if protocol_type == 'double':
+                     return 'inspectorDoubleArray(%s)' % sub_expression
+                 return 'inspectorIntegerArray(%s)' % sub_expression
+             return 'inspectorObjectArray(%s)' % sub_expression
+@@ -447,17 +447,17 @@
+                     return 'fromProtocolString<%s>(%s)' % (ObjCGenerator.objc_enum_name_for_anonymous_enum_member(declaration, member), sub_expression)
+                 return 'fromProtocolString<%s>(%s)' % (ObjCGenerator.objc_enum_name_for_non_anonymous_enum(member.type), sub_expression)
+             return sub_expression
+-        if category is ObjCTypeCategory.Object:
++        if category == ObjCTypeCategory.Object:
+             objc_type = ObjCGenerator.objc_type_for_member(declaration, member)
+             return '(%s)%s' % (objc_type, sub_expression)
+-        if category is ObjCTypeCategory.Array:
++        if category == ObjCTypeCategory.Array:
+             protocol_type = ObjCGenerator.protocol_type_for_type(member.type.element_type)
+             objc_class = ObjCGenerator.objc_class_for_type(member.type.element_type)
+-            if objc_class is 'NSString':
++            if objc_class == 'NSString':
+                 return 'objcStringArray(%s)' % sub_expression
+-            if objc_class is 'NSNumber':
++            if objc_class == 'NSNumber':
+                 protocol_type = ObjCGenerator.protocol_type_for_type(member.type.element_type)
+-                if protocol_type is 'double':
++                if protocol_type == 'double':
+                     return 'objcDoubleArray(%s)' % sub_expression
+                 return 'objcIntegerArray(%s)' % sub_expression
+             return 'objcArray<%s>(%s)' % (objc_class, sub_expression)
+@@ -474,17 +474,17 @@
+             _type = _type.aliased_type
+         if (isinstance(_type, PrimitiveType)):
+             raw_name = _type.raw_name()
+-            if raw_name is 'boolean':
++            if raw_name == 'boolean':
+                 return 'setBool'
+-            if raw_name is 'integer':
++            if raw_name == 'integer':
+                 return 'setInteger'
+-            if raw_name is 'number':
++            if raw_name == 'number':
+                 return 'setDouble'
+-            if raw_name is 'string':
++            if raw_name == 'string':
+                 return 'setString'
+             if raw_name in ['any', 'object']:
+                 return 'setObject'
+-            if raw_name is 'array':
++            if raw_name == 'array':
+                 return 'setInspectorArray'
+             return None
+         if (isinstance(_type, EnumType)):
+@@ -505,17 +505,17 @@
+             _type = _type.aliased_type
+         if (isinstance(_type, PrimitiveType)):
+             raw_name = _type.raw_name()
+-            if raw_name is 'boolean':
++            if raw_name == 'boolean':
+                 return 'boolForKey'
+-            if raw_name is 'integer':
++            if raw_name == 'integer':
+                 return 'integerForKey'
+-            if raw_name is 'number':
++            if raw_name == 'number':
+                 return 'doubleForKey'
+-            if raw_name is 'string':
++            if raw_name == 'string':
+                 return 'stringForKey'
+             if raw_name in ['any', 'object']:
+                 return 'objectForKey'
+-            if raw_name is 'array':
++            if raw_name == 'array':
+                 return 'inspectorArrayForKey'
+             return None
+         if (isinstance(_type, EnumType)):
+diff -ur qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/offlineasm/parser.rb ../Source/JavaScriptCore/offlineasm/parser.rb
+--- qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/offlineasm/parser.rb	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/JavaScriptCore/offlineasm/parser.rb	2020-10-16 01:53:30.969260700 +0200
+@@ -815,11 +815,11 @@
+ end
+ 
+ def parse(fileName)
+-    parseData(IO::read(fileName), fileName)
++    parseData(IO::read(fileName, mode: 'rt'), fileName)
+ end
+ 
+ def parseHash(fileName)
+-    parser = Parser.new(IO::read(fileName), SourceFile.new(fileName))
++    parser = Parser.new(IO::read(fileName, mode: 'rt'), SourceFile.new(fileName))
+     fileList = parser.parseIncludes(nil, "")
+     fileListHash(fileList)
+ end
+diff -ur qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/Scripts/generate-js-builtins.py ../Source/JavaScriptCore/Scripts/generate-js-builtins.py
+--- qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/Scripts/generate-js-builtins.py	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/JavaScriptCore/Scripts/generate-js-builtins.py	2020-10-16 12:00:17.462469500 +0200
+@@ -124,7 +124,7 @@
+     cli_parser.add_option("-t", "--test", action="store_true", help="Enable test mode.")
+ 
+     arg_options, arg_values = cli_parser.parse_args()
+-    if len(arg_values) is 0 and not arg_options.input_directory:
++    if len(arg_values) == 0 and not arg_options.input_directory:
+         raise ParseException("At least one input file or directory expected.")
+ 
+     if not arg_options.output_directory:
+diff -ur qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/Scripts/inline-and-minify-stylesheets-and-scripts.py ../Source/JavaScriptCore/Scripts/inline-and-minify-stylesheets-and-scripts.py
+--- qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/Scripts/inline-and-minify-stylesheets-and-scripts.py	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/JavaScriptCore/Scripts/inline-and-minify-stylesheets-and-scripts.py	2020-10-16 01:53:30.975673000 +0200
+@@ -67,7 +67,7 @@
+     outputContent = re.sub(r'<link rel="stylesheet" href=[\'"]([^\'"]+)[\'"]>', inlineStylesheet, inputContent)
+     outputContent = re.sub(r'<script src=[\'"]([^\'"]+)[\'"]></script>', inlineScript, outputContent)
+ 
+-    outputFile = open(outputFileName, 'w')
++    outputFile = open(outputFileName, 'w', newline='\n')
+     outputFile.write(outputContent)
+     outputFile.close()
+ 
+diff -ur qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/Scripts/make-js-file-arrays.py ../Source/JavaScriptCore/Scripts/make-js-file-arrays.py
+--- qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/Scripts/make-js-file-arrays.py	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/JavaScriptCore/Scripts/make-js-file-arrays.py	2020-10-16 01:53:30.978672900 +0200
+@@ -61,10 +61,10 @@
+     sourcePath = arguments[1]
+     inputPaths = arguments[2:]
+ 
+-    headerFile = open(headerPath, 'w')
++    headerFile = open(headerPath, 'w', newline='\n')
+     print('namespace {0:s} {{'.format(namespace), file=headerFile)
+ 
+-    sourceFile = open(sourcePath, 'w')
++    sourceFile = open(sourcePath, 'w', newline='\n')
+     print('#include "{0:s}"'.format(os.path.basename(headerPath)), file=sourceFile)
+     print('namespace {0:s} {{'.format(namespace), file=sourceFile)
+ 
+diff -ur qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/Scripts/UpdateContents.py ../Source/JavaScriptCore/Scripts/UpdateContents.py
+--- qtwebkit-5.212.0-alpha4/Source/JavaScriptCore/Scripts/UpdateContents.py	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/JavaScriptCore/Scripts/UpdateContents.py	2020-10-16 01:53:30.981673800 +0200
+@@ -43,6 +43,6 @@
+     t = True
+ 
+ if (not t or comp != comparator):
+-    f = open(filename, 'w')
++    f = open(filename, 'w', newline='\n')
+     f.write(comp)
+     f.close()
+diff -ur qtwebkit-5.212.0-alpha4/Source/ThirdParty/ANGLE/src/libANGLE/renderer/generate_new_renderer.py ../Source/ThirdParty/ANGLE/src/libANGLE/renderer/generate_new_renderer.py
+--- qtwebkit-5.212.0-alpha4/Source/ThirdParty/ANGLE/src/libANGLE/renderer/generate_new_renderer.py	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/ThirdParty/ANGLE/src/libANGLE/renderer/generate_new_renderer.py	2020-10-16 01:53:30.984672200 +0200
+@@ -189,6 +189,7 @@
+ 
+     return impl_stubs, private_impl_stubs, constructor
+ 
++
+ for impl_class in impl_classes:
+ 
+     base_impl = impl_class
+@@ -202,8 +203,8 @@
+     h_file_path = os.path.join(renderer_name, typed_impl + '.h')
+     cpp_file_path = os.path.join(renderer_name, typed_impl + '.cpp')
+ 
+-    h_file = open(h_file_path, 'w')
+-    cpp_file = open(cpp_file_path, 'w')
++    h_file = open(h_file_path, 'w', newline='\n')
++    cpp_file = open(cpp_file_path, 'w', newline='\n')
+ 
+     # extract impl stubs
+     impl_stubs, private_impl_stubs, constructor = parse_impl_header(base_impl)
+diff -ur qtwebkit-5.212.0-alpha4/Source/WebCore/bindings/scripts/generate-bindings.pl ../Source/WebCore/bindings/scripts/generate-bindings.pl
+--- qtwebkit-5.212.0-alpha4/Source/WebCore/bindings/scripts/generate-bindings.pl	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/WebCore/bindings/scripts/generate-bindings.pl	2020-10-16 15:31:38.890455800 +0200
+@@ -77,6 +77,7 @@
+     $outputHeadersDirectory = $outputDirectory;
+ }
+ $targetIdlFile = Cwd::realpath($targetIdlFile);
++$targetIdlFile =~ s#/cygdrive/(.)/#$1:/#;
+ if ($verbose) {
+     print "$generator: $targetIdlFile\n";
+ }
+@@ -208,10 +210,12 @@
+ */
+ ";
+     open FH, "> ${outputHeadersDirectory}/${headerName}" or die "Cannot open $headerName\n";
++    binmode FH;
+     print FH $contents;
+     close FH;
+ 
+     open FH, "> ${outputDirectory}/${cppName}" or die "Cannot open $cppName\n";
++    binmode FH;
+     print FH $contents;
+     close FH;
+ }
+diff -ur qtwebkit-5.212.0-alpha4/Source/WebCore/bindings/scripts/preprocess-idls.pl ../Source/WebCore/bindings/scripts/preprocess-idls.pl
+--- qtwebkit-5.212.0-alpha4/Source/WebCore/bindings/scripts/preprocess-idls.pl	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/WebCore/bindings/scripts/preprocess-idls.pl	2020-10-16 15:03:48.336113300 +0200
+@@ -78,7 +78,9 @@
+ 
+ # Populate $idlFileToInterfaceName and $interfaceNameToIdlFile.
+ foreach my $idlFile (keys %idlFileHash) {
++    $idlFile =~ s/\s+$//;
+     my $fullPath = Cwd::realpath($idlFile);
++    $fullPath =~ s#/cygdrive/(.)/#$1:/#;
+     my $interfaceName = fileparse(basename($idlFile), ".idl");
+     $idlFileToInterfaceName{$fullPath} = $interfaceName;
+     $interfaceNameToIdlFile{$interfaceName} = $fullPath;
+@@ -87,6 +89,7 @@
+ # Parse all IDL files.
+ foreach my $idlFile (sort keys %idlFileHash) {
+     my $fullPath = Cwd::realpath($idlFile);
++    $fullPath =~ s#/cygdrive/(.)/#$1:/#;
+     my $idlFileContents = getFileContents($fullPath);
+     # Handle partial interfaces.
+     my $partialInterfaceName = getPartialInterfaceNameFromIDL($idlFileContents);
+@@ -203,6 +206,7 @@
+         return if $contents eq $oldContents;
+     }
+     open FH, ">", $fileName or die "Couldn't open $fileName: $!\n";
++    binmode FH;
+     print FH $contents;
+     close FH;
+ }
+@@ -217,6 +221,7 @@
+     WriteFileIfChanged($destinationFile, $contents);
+ 
+     my $fullPath = Cwd::realpath($destinationFile);
++    $fullPath =~ s#/cygdrive/(.)/#$1:/#;
+     $supplementalDependencies{$fullPath} = [$interfaceName] if $interfaceNameToIdlFile{$interfaceName};
+ }
+ 
+diff -ur qtwebkit-5.212.0-alpha4/Source/WebCore/bindings/scripts/preprocessor.pm ../Source/WebCore/bindings/scripts/preprocessor.pm
+--- qtwebkit-5.212.0-alpha4/Source/WebCore/bindings/scripts/preprocessor.pm	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/WebCore/bindings/scripts/preprocessor.pm	2020-10-16 01:53:30.996316100 +0200
+@@ -85,8 +85,8 @@
+         if ($preprocessor eq "/usr/bin/gcc") {
+             @preprocessorAndFlags = split(' ', $preprocessor);
+         } else {        
+-            $preprocessor =~ /"(.*)"/;
+-            chomp(my $preprocessor = `cygpath -u '$1'`) if (defined $1);
++            $preprocessor = $1 if $preprocessor =~ /"(.*)"/;
++            chomp(my $preprocessor = `cygpath -u '$preprocessor'`);
+             chomp($fileName = `cygpath -w '$fileName'`);
+             @preprocessorAndFlags = ($preprocessor, "/nologo", "/EP");
+         }
+diff -ur qtwebkit-5.212.0-alpha4/Source/WebCore/css/makeSelectorPseudoClassAndCompatibilityElementMap.py ../Source/WebCore/css/makeSelectorPseudoClassAndCompatibilityElementMap.py
+--- qtwebkit-5.212.0-alpha4/Source/WebCore/css/makeSelectorPseudoClassAndCompatibilityElementMap.py	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/WebCore/css/makeSelectorPseudoClassAndCompatibilityElementMap.py	2020-10-16 01:53:31.003315200 +0200
+@@ -57,7 +57,8 @@
+ def expand_ifdef_condition(condition):
+     return condition.replace('(', '_').replace(')', '')
+ 
+-output_file = open('SelectorPseudoClassAndCompatibilityElementMap.gperf', 'w')
++
++output_file = open('SelectorPseudoClassAndCompatibilityElementMap.gperf', 'w', newline='\n')
+ 
+ output_file.write("""
+ %{
+diff -ur qtwebkit-5.212.0-alpha4/Source/WebCore/css/makeSelectorPseudoElementsMap.py ../Source/WebCore/css/makeSelectorPseudoElementsMap.py
+--- qtwebkit-5.212.0-alpha4/Source/WebCore/css/makeSelectorPseudoElementsMap.py	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/WebCore/css/makeSelectorPseudoElementsMap.py	2020-10-16 01:53:31.005315800 +0200
+@@ -57,7 +57,8 @@
+ def expand_ifdef_condition(condition):
+     return condition.replace('(', '_').replace(')', '')
+ 
+-output_file = open('SelectorPseudoElementTypeMap.gperf', 'w')
++
++output_file = open('SelectorPseudoElementTypeMap.gperf', 'w', newline='\n')
+ 
+ output_file.write("""
+ %{
+diff -ur qtwebkit-5.212.0-alpha4/Source/WebCore/platform/network/create-http-header-name-table ../Source/WebCore/platform/network/create-http-header-name-table
+--- qtwebkit-5.212.0-alpha4/Source/WebCore/platform/network/create-http-header-name-table	2020-03-04 18:16:37.000000000 +0100
++++ ../Source/WebCore/platform/network/create-http-header-name-table	2020-10-16 01:53:31.009340100 +0200
+@@ -54,7 +54,7 @@
+ 
+ http_header_names.sort()
+ 
+-gperf_file = open('HTTPHeaderNames.gperf', 'w')
++gperf_file = open('HTTPHeaderNames.gperf', 'w', newline='\n')
+ gperf_file.write('''
+ %{
+ /*
+@@ -182,7 +182,7 @@
+ 
+ gperf_file.close()
+ 
+-header_file = open('HTTPHeaderNames.h', 'w')
++header_file = open('HTTPHeaderNames.h', 'w', newline='\n')
+ header_file.write('''
+ /*
+  * Copyright (C) 2014 Apple Inc. All rights reserved.

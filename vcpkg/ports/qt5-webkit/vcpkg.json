@@ -1,0 +1,47 @@
+{
+  "name": "qt5-webkit",
+  "version": "5.212.0-alpha4",
+  "port-version": 1,
+  "description": "Qt5 port of webkit.",
+  "homepage": "https://github.com/movableink/webkit",
+  "dependencies": [
+    {
+      "name": "qt5-base",
+      "default-features": false
+    },
+    {
+      "name": "qt5-location",
+      "default-features": false
+    },
+    {
+      "name": "qt5-sensors",
+      "default-features": false
+    },
+    {
+      "name": "harfbuzz",
+      "default-features": false,
+      "features":
+      [
+        "icu"
+      ]
+    },
+    "libxml2",
+    {
+      "name": "shiftmedia-libgcrypt",
+      "platform": "windows"
+    },
+    {
+      "name": "libgcrypt",
+      "platform": "!windows"
+    },
+    "gperf",
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "pkgconf",
+      "host": true
+    }
+  ]
+}
