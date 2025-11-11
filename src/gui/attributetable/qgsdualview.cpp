@@ -172,7 +172,14 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   //mTableView->resizeColumnsToContents();
 
   if ( showFirstFeature && mFeatureListModel->rowCount() > 0 )
+  {
     mFeatureListView->setEditSelection( QgsFeatureIds() << mFeatureListModel->data( mFeatureListModel->index( 0, 0 ), QgsFeatureListModel::Role::FeatureRole ).value<QgsFeature>().id() );
+  }
+  else
+  {
+    // Set attribute table config to allow for proper sorting ordering in feature list view
+    setAttributeTableConfig( mLayer->attributeTableConfig() );
+  }
 }
 
 void QgsDualView::initAttributeForm( const QgsFeature &feature )
