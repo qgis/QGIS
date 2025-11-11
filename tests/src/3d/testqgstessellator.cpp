@@ -208,7 +208,7 @@ void TestQgsTessellator::testBasic()
   QgsTessellator t = QgsTessellator();
   t.setOrigin( QgsVector3D( 0, 0, 0 ) );
   t.setAddNormals( false );
-  
+
   t.setOutputZUp( true );
   t.addPolygon( polygon, 0 );
   QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
@@ -707,7 +707,7 @@ void TestQgsTessellator::testNoZ()
 
   QgsTessellator t = QgsTessellator();
   t.setBounds( polygonZ.boundingBox() );
-  t.setExtrusionEnabled( true );
+  t.setExtrusionEnabled( false );
   t.setOutputZUp( true );
   t.addPolygon( polygonZ, 0 );
   QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
