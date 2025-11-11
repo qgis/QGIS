@@ -224,7 +224,7 @@ class VLayerConnector(DBConnector):
 
                 geomType = None
                 dim = None
-                if l.isSpatial():
+                if l.isSpatial() and l.dataProvider():
                     g = l.dataProvider().wkbType()
                     g_flat = QgsWkbTypes.flatType(g)
                     geomType = QgsWkbTypes.displayString(g_flat).upper()
