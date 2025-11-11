@@ -1646,3 +1646,27 @@ QByteArray QgsVectorLayerUtils::fieldToDataArray( const QgsFields &fields, const
 
   return res;
 }
+
+QgsFeatureIds QgsVectorLayerUtils::filterValidFeatureIds( const QgsVectorLayer *layer, const QgsFeatureIds &featureIds )
+{
+  if ( !layer || featureIds.isEmpty() )
+    return featureIds;
+
+  // build up an optimised feature request
+  QgsFeatureRequest request;
+  request.setFilterFids( featureIds );
+  request.setNoAttributes();
+  request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
+
+  QgsFeatureIds validIds;
+  validIds.reserve( featureIds.size() );
+
+  QgsFeature feat;
+  QgsFeatureIterator it = layer->getFeatures( request );
+  while ( it.nextFeature( feat ) )
+  {
+    validIds.insert( feat.id() );
+  }
+
+  return validIds;
+}
