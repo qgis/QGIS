@@ -679,7 +679,6 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   QMatrix4x4 base = QMatrix4x4();  // identity matrix by default
   const QgsPoint ptStart = QgsPoint( exterior->startPoint() );
   const QgsPoint extrusionOrigin = QgsPoint( Qgis::WkbType::PointZ, ptStart.x(), ptStart.y(), std::isnan( ptStart.z() ) ? 0 : ptStart.z() );
-  const QgsPoint pointZero = QgsPoint( 0, 0, 0 );
   std::unique_ptr<QgsPolygon> polygonNew;
 
   if ( !mNoZ && !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
@@ -692,61 +691,40 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
   if ( buildFloor || buildRoof )
   {
+    calculateBaseTransform( pNormal, &base );
+    polygonNew.reset( _transform_polygon_to_new_base( polygon, extrusionOrigin, &base, mScale ) );
+
+    // our 3x3 matrix is orthogonal, so for inverse we only need to transpose it
+    base = base.transposed();
+
     if ( pCount == 4 && polygon.numInteriorRings() == 0 )
     {
-      // polygon is a triangle - write vertices to the output data array without triangulation
-      const QVector3D p1( exterior->xAt( 0 ), exterior->yAt( 0 ), std::isnan( exterior->zAt( 0 ) ) ? 0.0f : exterior->zAt( 0 ) );
-      const QVector3D p2( exterior->xAt( 1 ), exterior->yAt( 1 ), std::isnan( exterior->zAt( 1 ) ) ? 0.0f : exterior->zAt( 1 ) );
-      const QVector3D p3( exterior->xAt( 2 ), exterior->yAt( 2 ), std::isnan( exterior->zAt( 2 ) ) ? 0.0f : exterior->zAt( 2 ) );
+      Q_ASSERT( polygonNew->exteriorRing()->numPoints() >= 3 );
+
+      const QgsLineString *triangle = qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() );
+      const QVector3D p1( triangle->xAt( 0 ), triangle->yAt( 0 ), mNoZ || std::isnan( triangle->zAt( 0 ) ) ? 0.0f : triangle->zAt( 0 ) );
+      const QVector3D p2( triangle->xAt( 1 ), triangle->yAt( 1 ), mNoZ || std::isnan( triangle->zAt( 1 ) ) ? 0.0f : triangle->zAt( 1 ) );
+      const QVector3D p3( triangle->xAt( 2 ), triangle->yAt( 2 ), mNoZ || std::isnan( triangle->zAt( 2 ) ) ? 0.0f : triangle->zAt( 2 ) );
       const std::array<QVector3D, 3> points = { { p1, p2, p3 } };
 
-      addTriangleVertices( points, pNormal, extrusionHeight, &base, &pointZero, false );
+      addTriangleVertices( points, pNormal, extrusionHeight, &base, &extrusionOrigin, false );
 
       if ( mAddBackFaces )
       {
-        addTriangleVertices( points, pNormal, extrusionHeight, &base, &pointZero, true );
+        addTriangleVertices( points, pNormal, extrusionHeight, &base, &extrusionOrigin, true );
       }
 
       if ( extrusionHeight && buildFloor )
       {
-        addTriangleVertices( points, pNormal, 0, &base, &pointZero, false );
+        addTriangleVertices( points, pNormal, 0, &base, &extrusionOrigin, false );
         if ( mAddBackFaces )
         {
-          addTriangleVertices( points, pNormal, 0, &base, &pointZero, true );
-        }
-      }
-
-      if ( mAddTextureCoords )
-      {
-        Q_ASSERT( polygonNew->exteriorRing()->numPoints() >= 3 );
-
-        calculateBaseTransform( pNormal, &base );
-        polygonNew.reset( _transform_polygon_to_new_base( polygon, extrusionOrigin, &base, mScale ) );
-        const QgsLineString *triangle = qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() );
-        const QVector3D p1( triangle->xAt( 0 ), triangle->yAt( 0 ), mNoZ || std::isnan( triangle->zAt( 0 ) ) ? 0.0f : triangle->zAt( 0 ) );
-        const QVector3D p2( triangle->xAt( 1 ), triangle->yAt( 1 ), mNoZ || std::isnan( triangle->zAt( 1 ) ) ? 0.0f : triangle->zAt( 1 ) );
-        const QVector3D p3( triangle->xAt( 2 ), triangle->yAt( 2 ), mNoZ || std::isnan( triangle->zAt( 2 ) ) ? 0.0f : triangle->zAt( 2 ) );
-        const std::array<QVector3D, 3> points = { { p1, p2, p3 } };
-
-        if ( mAddTextureCoords )
-        {
-          addTextureCoords( &points, false );
-
-          if ( mAddBackFaces )
-          {
-            addTextureCoords( &points, true );
-          }
+          addTriangleVertices( points, pNormal, 0, &base, &extrusionOrigin, true );
         }
       }
     }
     else  // we need to triangulate the polygon
     {
-      calculateBaseTransform( pNormal, &base );
-      polygonNew.reset( _transform_polygon_to_new_base( polygon, extrusionOrigin, &base, mScale ) );
-
-      // our 3x3 matrix is orthogonal, so for inverse we only need to transpose it
-      QMatrix4x4 baseTransposed = base.transposed();
-
       if ( _minimum_distance_between_coordinates( *polygonNew ) < 0.001 )
       {
         // when the distances between coordinates of input points are very small,
@@ -777,6 +755,9 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       try
       {
         std::vector<QVector3D> trianglePoints = generateConstrainedDelaunayTriangles( polygonNew.get() );
+
+        Q_ASSERT( trianglePoints.size() % 3 == 0 );
+
         mData.reserve( mData.size() + trianglePoints.size() * 3 * ( stride() / sizeof( float ) ) );
 
         for ( size_t i = 0; i < trianglePoints.size(); i += 3 )
@@ -786,29 +767,19 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           const QVector3D p3 = trianglePoints[ i + 2 ];
           const std::array<QVector3D, 3> points = { { p1, p2, p3 } };
 
-          addTriangleVertices( points, pNormal, extrusionHeight, &baseTransposed, &extrusionOrigin, false );
+          addTriangleVertices( points, pNormal, extrusionHeight, &base, &extrusionOrigin, false );
 
           if ( mAddBackFaces )
           {
-            addTriangleVertices( points, pNormal, extrusionHeight, &baseTransposed, &extrusionOrigin, true );
+            addTriangleVertices( points, pNormal, extrusionHeight, &base, &extrusionOrigin, true );
           }
 
           if ( extrusionHeight && buildFloor )
           {
-            addTriangleVertices( points, pNormal, 0, &baseTransposed, &extrusionOrigin, true );
+            addTriangleVertices( points, pNormal, 0, &base, &extrusionOrigin, true );
             if ( mAddBackFaces )
             {
-              addTriangleVertices( points, pNormal, 0, &baseTransposed, &extrusionOrigin, false );
-            }
-          }
-
-          if ( mAddTextureCoords )
-          {
-            addTextureCoords( &points, false );
-
-            if ( mAddBackFaces )
-            {
-              addTextureCoords( &points, true );
+              addTriangleVertices( points, pNormal, 0, &base, &extrusionOrigin, false );
             }
           }
         }

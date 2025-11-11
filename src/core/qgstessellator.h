@@ -178,7 +178,6 @@ class CORE_EXPORT QgsTessellator
     void setExtrusionFacesLegacy( int facade );
     void calculateBaseTransform( const QVector3D &pNormal, QMatrix4x4 *base ) const;
     void addTriangleVertices( const std::array<QVector3D, 3> &points, QVector3D pNormal, float extrusionHeight, QMatrix4x4 *transformMatrix, const QgsPoint *originOffset, bool reverse );
-    void addTextureCoords( const std::array<QVector3D, 3> *points, bool reverse );
     std::vector<QVector3D> generateConstrainedDelaunayTriangles( const QgsPolygon *polygonNew );
 
     QgsVector3D mOrigin = QgsVector3D( 0, 0, 0 );
