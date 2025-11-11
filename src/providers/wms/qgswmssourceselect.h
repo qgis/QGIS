@@ -101,9 +101,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void filterTiles( const QString &searchText );
 
   private:
-    //! Populate the connection list combo box
-    void populateConnectionList();
-
     //! Connection name
     QString connName();
 
@@ -118,16 +115,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     //! Common CRSs for selected layers
     QSet<QString> mCRSs;
-
-    //! Supported formats
-    //QStringList mFormats;
-    QVector<QgsWmsSupportedFormat> mFormats;
-
-    //! Labels for supported formats
-    //QStringList mLabels;
-
-    //! Map mime types to supported formats
-    QMap<QString, int> mMimeMap;
 
     // Clear layers list, crs, encodings ...
     void clear();
@@ -187,7 +174,11 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     QgsWmsInterpretationComboBox *mInterpretationCombo = nullptr;
 
+    void updateFormatButtons( const QStringList &availableFormats = QStringList(), const QString &preferredFormat = QString() );
+
   private slots:
+    //! Populate the connection list combo box
+    void populateConnectionList();
     void lstTilesets_itemClicked( QTableWidgetItem *item );
     void mLayerUpButton_clicked();
     void mLayerDownButton_clicked();

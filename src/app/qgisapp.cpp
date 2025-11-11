@@ -5671,16 +5671,19 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
     }
   }
 
-  // Use the last used image format
-  QString lastImageEncoding = QgsSettings().value( QStringLiteral( "/qgis/lastWmsImageEncoding" ), "image/png" ).toString();
-  for ( const QString &fmt : supportedFormats )
+  // Use the last used image format if not specified in the uri
+  if ( !uri.contains( QStringLiteral( "format=" ) ) )
   {
-    if ( fmt == lastImageEncoding )
+    const QString lastImageEncoding = QgsSettings().value( QStringLiteral( "/qgis/lastWmsImageEncoding" ), QStringLiteral( "image/png" ) ).toString();
+    for ( const QString &fmt : supportedFormats )
     {
-      const thread_local QRegularExpression sFormatRegEx( QStringLiteral( "format=[^&]+" ) );
-      newuri.replace( sFormatRegEx, "format=" + fmt );
-      QgsDebugMsgLevel( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ), 2 );
-      break;
+      if ( fmt == lastImageEncoding )
+      {
+        const thread_local QRegularExpression sFormatRegEx( QStringLiteral( "format=[^&]+" ) );
+        newuri.replace( sFormatRegEx, "format=" + fmt );
+        QgsDebugMsgLevel( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ), 2 );
+        break;
+      }
     }
   }
   return newuri;
