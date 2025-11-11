@@ -212,6 +212,9 @@ void QgsPolygon3DSymbol::setRenderedFacade( int side )
 {
   switch ( side )
   {
+    case 0:
+      mRenderedFacade = Qgis::ExtrusionFace::NoFace;
+      break;
     case 1:
       mRenderedFacade = Qgis::ExtrusionFace::Walls;
       break;
