@@ -231,7 +231,9 @@ bool QgsFeatureListModel::setDisplayExpression( const QString &expression )
   mDisplayExpression = exp;
 
   if ( mSortByDisplayExpression )
+  {
     masterModel()->prefetchSortData( expression, 1 );
+  }
 
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 
@@ -293,11 +295,18 @@ bool QgsFeatureListModel::sortByDisplayExpression() const
 
 void QgsFeatureListModel::setSortByDisplayExpression( bool sortByDisplayExpression, Qt::SortOrder order )
 {
+  if ( !mSortByDisplayExpression && sortByDisplayExpression )
+  {
+    masterModel()->prefetchSortData( mDisplayExpression.expression(), 1 );
+  }
+
   mSortByDisplayExpression = sortByDisplayExpression;
 
   // If we are sorting by display expression, we do not support injected null
   if ( mSortByDisplayExpression )
+  {
     setInjectNull( false );
+  }
 
   setSortRole( static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) + 1 );
   setDynamicSortFilter( mSortByDisplayExpression );
