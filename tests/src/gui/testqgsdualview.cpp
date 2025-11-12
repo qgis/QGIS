@@ -26,6 +26,7 @@
 #include "qgsattributeformeditorwidget.h"
 #include <qgsapplication.h>
 #include "qgsfeatureiterator.h"
+#include "qgsfeaturelistmodel.h"
 #include <qgsvectorlayer.h>
 #include "qgsvectordataprovider.h"
 #include <qgsmapcanvas.h>
@@ -62,6 +63,7 @@ class TestQgsDualView : public QObject
 
     void testAttributeFormSharedValueScanning();
     void testNoGeom();
+    void testNoShowFirstFeature();
 
     void testDuplicateField();
 
@@ -360,6 +362,22 @@ void TestQgsDualView::testNoGeom()
   model = dv->masterModel();
   QVERIFY( model->layerCache()->cacheGeometry() );
   QVERIFY( !( model->request().flags() & Qgis::FeatureRequestFlag::NoGeometry ) );
+}
+
+void TestQgsDualView::testNoShowFirstFeature()
+{
+  auto dv = std::make_unique<QgsDualView>();
+
+  QgsAttributeTableConfig config = mPointsLayer->attributeTableConfig();
+  config.setSortExpression( QStringLiteral( "\"Class\"" ) );
+  mPointsLayer->setAttributeTableConfig( config );
+
+  QgsFeatureRequest req;
+  dv->init( mPointsLayer, mCanvas, req, QgsAttributeEditorContext(), true, false );
+  QCOMPARE( dv->mFeatureListModel->data( dv->mFeatureListModel->index( 0, 0 ), QgsFeatureListModel::Role::FeatureRole ).value<QgsFeature>().attribute( QStringLiteral( "Class" ) ), QStringLiteral( "B52" ) );
+
+  config.setSortExpression( QString() );
+  mPointsLayer->setAttributeTableConfig( config );
 }
 
 #ifdef WITH_QTWEBKIT
