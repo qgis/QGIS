@@ -430,9 +430,6 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( mSelectionMethod == SelectionRange )
   {
-#ifdef unused
-    rangeMethodPressEvent( e );
-#endif
     return;
   }
 
@@ -3119,14 +3116,6 @@ QList<Vertex> QgsVertexTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureI
   }
   return lst;
 }
-
-#ifdef unused
-void QgsVertexTool::rangeMethodPressEvent( QgsMapMouseEvent *e )
-{
-  // nothing to do here for now...
-  Q_UNUSED( e )
-}
-#endif
 
 void QgsVertexTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )
 {
