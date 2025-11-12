@@ -256,7 +256,7 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
   }
 }
 
-bool QgsTextEditWrapper::isInvalidJSON()
+bool QgsTextEditWrapper::isInvalidJSON() const
 {
   return mInvalidJSON;
 }

@@ -73,7 +73,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void appendScope( QgsExpressionContextScope *scope SIP_TRANSFER );
 
     //! Returns the title used for the expression dialog
-    const QString expressionDialogTitle() { return mExpressionDialogTitle; }
+    QString expressionDialogTitle() const { return mExpressionDialogTitle; }
 
     //! setFilters allows filtering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );

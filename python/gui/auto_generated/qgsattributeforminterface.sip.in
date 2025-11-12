@@ -29,9 +29,9 @@ Interface class for custom attribute forms.
 
     virtual void featureChanged();
 
-    QgsAttributeForm *form();
+    QgsAttributeForm *form() const;
 
-    const QgsFeature &feature();
+    const QgsFeature &feature() const;
 
 };
 

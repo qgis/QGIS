@@ -43,9 +43,9 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     QgsOfflineEditingPluginGui( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsOfflineEditingPluginGui() override;
 
-    QString offlineDataPath();
-    QString offlineDbFile();
-    QStringList selectedLayerIds();
+    QString offlineDataPath() const;
+    QString offlineDbFile() const;
+    QStringList selectedLayerIds() const;
     bool onlySelected() const;
     QgsOfflineEditing::ContainerType dbContainerType() const;
 

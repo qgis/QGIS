@@ -72,7 +72,7 @@ this item.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
-    bool hasChildren();
+    bool hasChildren() const;
 
     virtual bool layerCollection() const;
 %Docstring
@@ -83,7 +83,7 @@ if their children are layers.
 .. versionadded:: 3.14
 %End
 
-    int rowCount();
+    int rowCount() const;
 
     virtual QVector<QgsDataItem *> createChildren() /TransferBack/;
 %Docstring
@@ -431,7 +431,7 @@ Ownership of the returned objects is transferred to the caller.
 Refresh the items from a specified list of child items.
 %End
 
-    bool deferredDelete();
+    bool deferredDelete() const;
 %Docstring
 The item is scheduled to be deleted. E.g. if
 :py:func:`~QgsDataItem.deleteLater` is called when item is in Populating

@@ -133,9 +133,15 @@ bool QgsAnnotationItemGuiRegistry::addItemGroup( const QgsAnnotationItemGuiGroup
   return true;
 }
 
-const QgsAnnotationItemGuiGroup &QgsAnnotationItemGuiRegistry::itemGroup( const QString &id )
+const QgsAnnotationItemGuiGroup &QgsAnnotationItemGuiRegistry::itemGroup( const QString &id ) const
 {
-  return mItemGroups[id];
+  auto iter = mItemGroups.find( id );
+  if ( iter == mItemGroups.end() )
+  {
+    static QgsAnnotationItemGuiGroup invalidGroup;
+    return invalidGroup;
+  }
+  return *iter;
 }
 
 QgsAnnotationItem *QgsAnnotationItemGuiRegistry::createItem( int metadataId ) const

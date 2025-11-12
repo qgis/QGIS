@@ -91,7 +91,7 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
      * Returns TRUE if the model allows custom expressions to be created and displayed.
      * \see setAllowExpression()
      */
-    bool allowExpression() { return mAllowExpression; }
+    bool allowExpression() const { return mAllowExpression; }
 
     /**
      * Sets whether an optional empty field ("not set") option is present in the model.

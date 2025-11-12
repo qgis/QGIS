@@ -39,9 +39,9 @@ class GUI_EXPORT QgsAttributeFormInterface
 
     virtual void featureChanged();
 
-    QgsAttributeForm *form();
+    QgsAttributeForm *form() const;
 
-    const QgsFeature &feature();
+    const QgsFeature &feature() const;
 
   private:
     QgsAttributeForm *mForm = nullptr;
