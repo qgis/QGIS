@@ -44,8 +44,14 @@ setHighlight
 %End
 
     QgsAttributeForm *attributeForm() const;
+%Docstring
+Returns the attribute form.
+%End
 
     const QgsFeature *feature() const;
+%Docstring
+Returns the current feature of the attribute form.
+%End
 
     bool editable() const;
 %Docstring

@@ -99,6 +99,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     % End
 #endif
 
+    /**
+     * Returns whether this item has children.
+     */
     bool hasChildren() const;
 
     /**
@@ -108,12 +111,15 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual bool layerCollection() const;
 
+    /**
+     * Returns the number of rows of this item
+     */
     int rowCount() const;
 
     /**
      * Create children. Children are not expected to have parent set.
      * \warning This method MUST BE THREAD SAFE.
-    */
+     */
     virtual QVector<QgsDataItem *> createChildren() SIP_TRANSFERBACK;
 #ifdef SIP_RUN
     SIP_VIRTUAL_CATCHER_CODE

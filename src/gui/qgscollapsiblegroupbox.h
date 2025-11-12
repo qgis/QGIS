@@ -223,7 +223,15 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
      * in multiple places or used as options for different parent objects
     */
     void setSaveCheckedState( bool save ) { mSaveCheckedState = save; }
+
+    /**
+     * Returns whether the collapsed state of this group box is saved and loaded persistently in QgsSettings
+     */
     bool saveCollapsedState() const { return mSaveCollapsedState; }
+
+    /**
+     * Returns whether the checked state of this group box is saved and loaded persistently in QgsSettings
+     */
     bool saveCheckedState() const { return mSaveCheckedState; }
 
     //! Sets this to a defined string to share save/restore states across different parent dialogs

@@ -44,6 +44,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     //! Constructor for QgsAuthCertInfo
     explicit QgsAuthCertInfo( const QSslCertificate &cert, bool manageCertTrust = false, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
+    //! Returns whether the cache of trust chain has been rebuilt.
     bool trustCacheRebuilt() const { return mTrustCacheRebuilt; }
 
   private slots:
