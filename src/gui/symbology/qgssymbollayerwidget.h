@@ -447,16 +447,71 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
 
 ///////////
 
-#include "ui_widget_markerline.h"
+#include "ui_widget_templatedline.h"
 
-class QgsMarkerLineSymbolLayer;
+class QgsTemplatedLineSymbolLayerBase;
+
+/**
+ * \ingroup gui
+ * \class QgsHashedLineSymbolLayerWidget
+ * \brief A widget for controlling the properties of a templated line symbol layer (hash or markers).
+ * \since QGIS 4.0
+ */
+class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetHashedLine
+{
+    Q_OBJECT
+
+  public:
+    enum class TemplatedSymbolType
+    {
+      Hash,
+      Marker
+    };
+
+    /**
+     * Constructor for QgsTemplatedLineSymbolLayerWidget.
+     * \param symbolType templated symbol type
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsTemplatedLineSymbolLayerWidget( TemplatedSymbolType symbolType, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    // from base class
+    void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    QgsSymbolLayer *symbolLayer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
+
+  public slots:
+
+    void setInterval( double val );
+    void setOffsetAlongLine( double val );
+
+  private slots:
+
+    void setHashLength( double val );
+    void setHashAngle( double val );
+
+    void setRotate();
+    void setOffset();
+    void setPlacement();
+    void mIntervalUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
+    void mOffsetAlongLineUnitWidget_changed();
+    void hashLengthUnitWidgetChanged();
+    void averageAngleUnitChanged();
+    void setAverageAngle( double val );
+
+  private:
+    QgsTemplatedLineSymbolLayerBase *mLayer = nullptr;
+    TemplatedSymbolType mSymbolType = TemplatedSymbolType::Hash;
+};
 
 /**
  * \ingroup gui
  * \class QgsMarkerLineSymbolLayerWidget
  * \brief A widget for controlling the properties of a QgsMarkerLineSymbolLayer.
  */
-class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetMarkerLine
+class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsTemplatedLineSymbolLayerWidget
 {
     Q_OBJECT
 
@@ -473,35 +528,7 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsMarkerLineSymbolLayerWidget( vl ); }
-
-    // from base class
-    void setSymbolLayer( QgsSymbolLayer *layer ) override;
-    QgsSymbolLayer *symbolLayer() override;
-    void setContext( const QgsSymbolWidgetContext &context ) override;
-
-  public slots:
-
-    void setInterval( double val );
-    void setOffsetAlongLine( double val );
-
-  protected:
-    QgsMarkerLineSymbolLayer *mLayer = nullptr;
-
-  private slots:
-    void setRotate();
-    void setOffset();
-    void setPlacement();
-    void mIntervalUnitWidget_changed();
-    void mOffsetUnitWidget_changed();
-    void mOffsetAlongLineUnitWidget_changed();
-    void averageAngleUnitChanged();
-    void setAverageAngle( double val );
 };
-
-
-#include "ui_widget_hashline.h"
-
-class QgsHashedLineSymbolLayer;
 
 /**
  * \ingroup gui
@@ -509,7 +536,7 @@ class QgsHashedLineSymbolLayer;
  * \brief A widget for controlling the properties of a QgsHashedLineSymbolLayer.
  * \since QGIS 3.8
  */
-class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetHashedLine
+class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsTemplatedLineSymbolLayerWidget
 {
     Q_OBJECT
 
@@ -526,31 +553,6 @@ class GUI_EXPORT QgsHashedLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsHashedLineSymbolLayerWidget( vl ); }
-
-    // from base class
-    void setSymbolLayer( QgsSymbolLayer *layer ) override;
-    QgsSymbolLayer *symbolLayer() override;
-    void setContext( const QgsSymbolWidgetContext &context ) override;
-
-  private slots:
-
-    void setInterval( double val );
-    void setOffsetAlongLine( double val );
-    void setHashLength( double val );
-    void setHashAngle( double val );
-
-    void setRotate();
-    void setOffset();
-    void setPlacement();
-    void mIntervalUnitWidget_changed();
-    void mOffsetUnitWidget_changed();
-    void mOffsetAlongLineUnitWidget_changed();
-    void hashLengthUnitWidgetChanged();
-    void averageAngleUnitChanged();
-    void setAverageAngle( double val );
-
-  private:
-    QgsHashedLineSymbolLayer *mLayer = nullptr;
 };
 
 ///////////

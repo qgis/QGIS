@@ -1,4 +1,14 @@
 # The following has been generated automatically from src/gui/symbology/qgssymbollayerwidget.h
+# monkey patching scoped based enum
+QgsTemplatedLineSymbolLayerWidget.TemplatedSymbolType.Hash.__doc__ = ""
+QgsTemplatedLineSymbolLayerWidget.TemplatedSymbolType.Marker.__doc__ = ""
+QgsTemplatedLineSymbolLayerWidget.TemplatedSymbolType.__doc__ = """
+
+* ``Hash``: 
+* ``Marker``: 
+
+"""
+# --
 try:
     QgsSymbolLayerWidget.__attribute_docs__ = {'changed': 'Should be emitted whenever configuration changes happened on this symbol\nlayer configuration. If the subsymbol is changed,\n:py:func:`~QgsSymbolLayerWidget.symbolChanged` should be emitted\ninstead.\n', 'symbolChanged': 'Should be emitted whenever the sub symbol changed on this symbol layer\nconfiguration. Normally :py:func:`~QgsSymbolLayerWidget.changed` should\nbe preferred.\n\n.. seealso:: :py:func:`changed`\n'}
     QgsSymbolLayerWidget.__virtual_methods__ = ['setContext']
@@ -45,13 +55,11 @@ except (NameError, AttributeError):
     pass
 try:
     QgsMarkerLineSymbolLayerWidget.create = staticmethod(QgsMarkerLineSymbolLayerWidget.create)
-    QgsMarkerLineSymbolLayerWidget.__overridden_methods__ = ['setSymbolLayer', 'symbolLayer', 'setContext']
     QgsMarkerLineSymbolLayerWidget.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
 try:
     QgsHashedLineSymbolLayerWidget.create = staticmethod(QgsHashedLineSymbolLayerWidget.create)
-    QgsHashedLineSymbolLayerWidget.__overridden_methods__ = ['setSymbolLayer', 'symbolLayer', 'setContext']
     QgsHashedLineSymbolLayerWidget.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
@@ -143,5 +151,10 @@ try:
     QgsGeometryGeneratorSymbolLayerWidget.create = staticmethod(QgsGeometryGeneratorSymbolLayerWidget.create)
     QgsGeometryGeneratorSymbolLayerWidget.__overridden_methods__ = ['setSymbolLayer', 'symbolLayer']
     QgsGeometryGeneratorSymbolLayerWidget.__group__ = ['symbology']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsTemplatedLineSymbolLayerWidget.__overridden_methods__ = ['setSymbolLayer', 'symbolLayer', 'setContext']
+    QgsTemplatedLineSymbolLayerWidget.__group__ = ['symbology']
 except (NameError, AttributeError):
     pass
