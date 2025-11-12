@@ -1465,30 +1465,30 @@ li.checked::marker { content: &quot;\2612&quot;; }
                <number>0</number>
               </property>
               <item row="0" column="0">
-               <widget class="QCheckBox" name="mEnableMapTips">
-                <property name="toolTip">
-                 <string>Indicates whether map tips are displayed for this layer or not</string>
+               <widget class="QGroupBox" name="mEnableMapTips">
+                <property name="title">
+                 <string>Enable Map Tips</string>
                 </property>
-                <property name="text">
-                 <string>Enable map tips</string>
-                </property>
-                <property name="checked">
+                <property name="checkable">
                  <bool>true</bool>
                 </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QGroupBox" name="mHtmlMapTipGroupBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="title">
-                 <string>HTML Map Tip</string>
-                </property>
                 <layout class="QVBoxLayout" name="verticalLayout_22">
+                 <item>
+                  <widget class="QLabel" name="labelMapTipInfo">
+                   <property name="text">
+                    <string>Map tips are shown when moving mouse over raster cells of the currently selected layer when the 'Show Map Tips' action is toggled on.</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
                  <item>
                   <widget class="QSplitter" name="mMapTipSplitter">
                    <property name="sizePolicy">
@@ -1541,16 +1541,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
                    <property name="icon">
                     <iconset resource="../../images/images.qrc">
                      <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="labelMapTipInfo">
-                   <property name="text">
-                    <string>The HTML map tips are shown when moving mouse over features of the currently selected layer when the 'Show Map Tips' action is toggled on.</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
