@@ -126,7 +126,7 @@ bool QgsPuzzleWidget::letsGetThePartyStarted()
   mScene = new QGraphicsScene;
 
   QTemporaryFile f;
-  f.open();
+  ( void ) f.open();
   f.close();
 
   const QString filename( f.fileName() );
