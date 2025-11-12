@@ -25,18 +25,19 @@ import copy
 from qgis.PyQt.QtCore import QCoreApplication, QFileInfo
 
 from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsProcessingAlgorithm,
     QgsProcessingException,
     QgsProcessingParameterDefinition,
-    QgsProcessingParameterString,
-    QgsProcessingParameterMultipleLayers,
-    QgsProcessingParameterFolderDestination,
-    Qgis,
-    QgsProcessingAlgorithm,
     QgsProcessingMultiStepFeedback,
     QgsProcessingOutputMultipleLayers,
-    QgsApplication,
+    QgsProcessingParameterFolderDestination,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterString,
     QgsRasterLayer,
 )
+from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
