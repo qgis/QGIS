@@ -439,16 +439,17 @@ Refresh the items from a specified list of child items.
 
     bool deferredDelete() const;
 %Docstring
-The item is scheduled to be deleted. E.g. if
-:py:func:`~QgsDataItem.deleteLater` is called when item is in Populating
-state (:py:func:`~QgsDataItem.createChildren` running in another
-thread), the :py:func:`~QgsDataItem.deferredDelete` returns ``True`` and
-item will be deleted once Populating finished. Items with slow
-:py:func:`~QgsDataItem.reateChildren` (for example network or database
-based) may check during :py:func:`~QgsDataItem.createChildren` if
-:py:func:`~QgsDataItem.deferredDelete` returns ``True`` and return from
-:py:func:`~QgsDataItem.createChildren` immediately because result will
-be useless.
+Returns ``True`` if the item is scheduled to be deleted.
+
+E.g. if :py:func:`~QgsDataItem.deleteLater` is called when item is in
+Populating state (:py:func:`~QgsDataItem.createChildren` running in
+another thread), the :py:func:`~QgsDataItem.deferredDelete` returns
+``True`` and item will be deleted once Populating finished. Items with
+slow :py:func:`~QgsDataItem.reateChildren` (for example network or
+database based) may check during :py:func:`~QgsDataItem.createChildren`
+if :py:func:`~QgsDataItem.deferredDelete` returns ``True`` and return
+from :py:func:`~QgsDataItem.createChildren` immediately because result
+will be useless.
 %End
 
 
