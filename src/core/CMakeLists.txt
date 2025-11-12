@@ -2417,6 +2417,10 @@ if(WITH_INTERNAL_SPATIALINDEX)
   check_function_exists(memcpy HAVE_MEMCPY)
   check_function_exists(bcopy HAVE_BCOPY)
 
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_OPTIONS "-Wno-type-limits;-Wno-extra;-Wno-overloaded-virtual")
+  endif()
+
   if(HAVE_SRAND48)
     set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_FLAGS -DHAVE_SRAND48=1)
   else()
