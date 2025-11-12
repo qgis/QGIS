@@ -75,7 +75,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   setLayout( mLayout );
 }
 
-QString QgsFileWidget::filePath()
+QString QgsFileWidget::filePath() const
 {
   return mFilePath;
 }

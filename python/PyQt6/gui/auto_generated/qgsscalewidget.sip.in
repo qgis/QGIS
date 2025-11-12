@@ -42,7 +42,7 @@ the map canvas next to the combobox.
 .. seealso:: :py:func:`setMapCanvas`
 %End
 
-    bool showCurrentScaleButton();
+    bool showCurrentScaleButton() const;
 %Docstring
 Returns whether a button to set the scale from map canvas is shown or
 not.

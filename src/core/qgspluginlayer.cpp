@@ -31,7 +31,7 @@ QgsPluginLayer::~QgsPluginLayer()
   delete mDataProvider;
 }
 
-QString QgsPluginLayer::pluginLayerType()
+QString QgsPluginLayer::pluginLayerType() const
 {
   return mPluginLayerType;
 }

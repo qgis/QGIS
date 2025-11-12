@@ -99,7 +99,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     % End
 #endif
 
-    bool hasChildren();
+    bool hasChildren() const;
 
     /**
      * Returns TRUE if the data item is a collection of layers
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual bool layerCollection() const;
 
-    int rowCount();
+    int rowCount() const;
 
     /**
      * Create children. Children are not expected to have parent set.
@@ -450,7 +450,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * check during createChildren() if deferredDelete() returns TRUE and return from
      * createChildren() immediately because result will be useless.
     */
-    bool deferredDelete() { return mDeferredDelete; }
+    bool deferredDelete() const { return mDeferredDelete; }
 
     Qgis::BrowserItemType mType;
     Qgis::BrowserItemCapabilities mCapabilities = Qgis::BrowserItemCapability::NoCapabilities;

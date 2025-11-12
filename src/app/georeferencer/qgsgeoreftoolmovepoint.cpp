@@ -25,7 +25,7 @@ QgsGeorefToolMovePoint::QgsGeorefToolMovePoint( QgsMapCanvas *canvas )
   mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
 }
 
-bool QgsGeorefToolMovePoint::isCanvas( QgsMapCanvas *canvas )
+bool QgsGeorefToolMovePoint::isCanvas( QgsMapCanvas *canvas ) const
 {
   return ( mCanvas == canvas );
 }

@@ -103,8 +103,8 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererWidget : public QgsPointCloudRen
     static QgsPointCloudRendererWidget *create( QgsPointCloudLayer *layer, QgsStyle *style, QgsPointCloudRenderer * );
 
     QgsPointCloudRenderer *renderer() override;
-    QgsPointCloudCategoryList categoriesList();
-    QString attribute();
+    QgsPointCloudCategoryList categoriesList() const;
+    QString attribute() const;
 
     /**
      * Sets the selected attribute and categories based on a 2D renderer.

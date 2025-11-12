@@ -105,7 +105,7 @@ class topolTest : public QObject
     /**
      * Returns copy of the test map
      */
-    QMap<QString, TopologyRule> testMap() { return mTopologyRuleMap; }
+    QMap<QString, TopologyRule> testMap() const { return mTopologyRuleMap; }
 
     /**
      * Runs the test and returns all found errors

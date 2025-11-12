@@ -44,10 +44,10 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     explicit QgsAuthConfigIdEdit( QWidget *parent = nullptr, const QString &authcfg = QString(), bool allowEmpty = true );
 
     //! The authentication configuration ID, if valid, otherwise an empty QString
-    QString const configId();
+    QString configId();
 
     //! Whether to allow no ID to be set
-    bool allowEmptyId() { return mAllowEmpty; }
+    bool allowEmptyId() const { return mAllowEmpty; }
 
     //! Validate the widget state and ID
     bool validate();

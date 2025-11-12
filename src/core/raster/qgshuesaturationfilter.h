@@ -86,7 +86,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
   private:
     //! Process a change in saturation and update resultant HSL & RGB values
-    void processSaturation( int &r, int &g, int &b, int &h, int &s, int &l );
+    void processSaturation( int &r, int &g, int &b, int &h, int &s, int &l ) const;
     //! Process a colorization and update resultant HSL & RGB values
     void processColorization( int &r, int &g, int &b, int &h, int &s, int &l ) const;
 

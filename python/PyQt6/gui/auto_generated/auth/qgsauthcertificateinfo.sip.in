@@ -27,7 +27,7 @@ trust chain.
 Constructor for QgsAuthCertInfo
 %End
 
-    bool trustCacheRebuilt();
+    bool trustCacheRebuilt() const;
 
 };
 
@@ -60,7 +60,7 @@ hierarchical trust chain
 Gets access to embedded info widget
 %End
 
-    bool trustCacheRebuilt();
+    bool trustCacheRebuilt() const;
 %Docstring
 Whether the trust cache has been rebuilt
 

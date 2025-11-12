@@ -102,7 +102,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
   private:
     //! Connection name
-    QString connName();
+    QString connName() const;
 
     //! Sets the server connection combo box to that stored in the config file.
     void setConnectionListPosition();

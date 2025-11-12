@@ -42,7 +42,7 @@ The attribute form widget for vector layer features.
     explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
     ~QgsAttributeForm();
 
-    const QgsFeature &feature();
+    const QgsFeature &feature() const;
 
     QgsFeature currentFormFeature() const;
 %Docstring

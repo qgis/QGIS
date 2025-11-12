@@ -347,7 +347,7 @@ long long QgsTimeDuration::toSeconds() const
   return secs;
 }
 
-QDateTime QgsTimeDuration::addToDateTime( const QDateTime &dateTime )
+QDateTime QgsTimeDuration::addToDateTime( const QDateTime &dateTime ) const
 {
   QDateTime resultDateTime = dateTime;
 

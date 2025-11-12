@@ -162,13 +162,13 @@ class ProjectorData
   private:
 
     //! Returns the destination point for _current_ destination position.
-    void destPointOnCPMatrix( int row, int col, double *theX, double *theY );
+    void destPointOnCPMatrix( int row, int col, double *theX, double *theY ) const;
 
     //! Returns the matrix upper left row index for destination row.
-    int matrixRow( int destRow );
+    int matrixRow( int destRow ) const;
 
     //! Returns the matrix upper left col index for destination col.
-    int matrixCol( int destCol );
+    int matrixCol( int destCol ) const;
 
     //! Returns precise source row and column indexes for current source extent and resolution.
     inline bool preciseSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol );
@@ -201,13 +201,13 @@ class ProjectorData
      * \brief check error along columns
      * returns TRUE if within threshold
     */
-    bool checkCols( const QgsCoordinateTransform &ct );
+    bool checkCols( const QgsCoordinateTransform &ct ) const;
 
     /**
      * \brief check error along rows
      * returns TRUE if within threshold
     */
-    bool checkRows( const QgsCoordinateTransform &ct );
+    bool checkRows( const QgsCoordinateTransform &ct ) const;
 
     //! Calculate array of src helper points
     void calcHelper( int matrixRow, QgsPointXY *points );

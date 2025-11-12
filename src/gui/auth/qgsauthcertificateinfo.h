@@ -44,7 +44,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     //! Constructor for QgsAuthCertInfo
     explicit QgsAuthCertInfo( const QSslCertificate &cert, bool manageCertTrust = false, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
-    bool trustCacheRebuilt() { return mTrustCacheRebuilt; }
+    bool trustCacheRebuilt() const { return mTrustCacheRebuilt; }
 
   private slots:
     void setupError( const QString &msg );
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
      * Whether the trust cache has been rebuilt
      * \note This happens when a trust policy has been adjusted for any cert in the hierarchy
      */
-    bool trustCacheRebuilt() { return mCertInfoWdgt->trustCacheRebuilt(); }
+    bool trustCacheRebuilt() const { return mCertInfoWdgt->trustCacheRebuilt(); }
 
   private:
     QgsAuthCertInfo *mCertInfoWdgt = nullptr;
