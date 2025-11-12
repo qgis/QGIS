@@ -6249,6 +6249,21 @@ class CORE_EXPORT Qgis
     static QString geosVersion();
 
     /**
+     * Returns TRUE if the QGIS build contains SFCGAL.
+     *
+     * \since QGIS 4.0
+     */
+    static bool hasSfcgal();
+
+    /**
+     * Returns the version of the SFCGAL library if QGIS is built with SFCGAL. Else throws an exception.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based without SFCGAL.
+     * \since QGIS 4.0
+     */
+    static int sfcgalVersionInt();
+
+    /**
      * Returns TRUE if the QGIS build contains QtWebkit.
      *
      * \since QGIS 4.0
