@@ -14,8 +14,15 @@ import datetime
 import json
 import unittest
 
-import pyarrow as pa
-import shapely
+try:
+    import pyarrow as pa
+except ImportError:
+    pa = None
+
+try:
+    import shapely
+except ImportError:
+    shapely = None
 
 from qgis.core import (
     QgsArrowIterator,
@@ -42,10 +49,8 @@ from qgis.PyQt.QtCore import (
 from qgis.testing import QgisTestCase
 
 
-# Crashes pytest for me locally
-# start_app()
-
-
+@unittest.skipIf(pa is None, "pyarrow is not available")
+@unittest.skipIf(shapely is None, "shapely is not available")
 class TestQgsArrowIterator(QgisTestCase):
 
     def create_test_layer_with_geometry(self, crs):
