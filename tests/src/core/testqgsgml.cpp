@@ -125,7 +125,7 @@ void TestQgsGML::testFromURL()
   QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   Qgis::WkbType wkbType;
   QTemporaryFile tmpFile;
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   tmpFile.write( data1.toLatin1() );
   tmpFile.flush();
   QCOMPARE( gmlParser.getFeatures( QUrl::fromLocalFile( tmpFile.fileName() ).toString(), &wkbType ), 0 );

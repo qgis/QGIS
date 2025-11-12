@@ -103,7 +103,7 @@ void TestQgsTranslateProject::createTsFile()
   QFile tsFile( tsFileName );
   QVERIFY( tsFile.exists() );
 
-  tsFile.open( QIODevice::ReadWrite );
+  QVERIFY( tsFile.open( QIODevice::ReadWrite ) );
 
   const QString tsFileContent( tsFile.readAll() );
 
