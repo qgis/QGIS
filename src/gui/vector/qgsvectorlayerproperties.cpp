@@ -172,7 +172,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   if ( !mLayer )
     return;
 
-  connect( mEnableMapTips, &QAbstractButton::toggled, mHtmlMapTipGroupBox, &QWidget::setEnabled );
   mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
 
   QVBoxLayout *layout = nullptr;
