@@ -93,7 +93,7 @@ QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBla
   {
     for ( const QChar &c : strBlankSegments )
     {
-      if ( !currentNumber.isEmpty() && ( c.isSpace() || c == ')' || c == "," ) )
+      if ( !currentNumber.isEmpty() && ( c.isSpace() || c == ')' || c == ',' ) )
       {
         if ( level < 2 )
           throw std::runtime_error( "Missing '('" );
