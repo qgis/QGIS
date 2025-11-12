@@ -128,7 +128,7 @@ void TestQgs3DExporter::do3DSceneExport( const QString &testName, int zoomLevels
   QCOMPARE( exporter.mObjects.size(), expectedObjectCount );
 
   QFile file( QString( "%1/%2.obj" ).arg( QDir::tempPath(), objFileName ) );
-  file.open( QIODevice::ReadOnly | QIODevice::Text );
+  QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
   QTextStream fileStream( &file );
 
   // check the generated obj file

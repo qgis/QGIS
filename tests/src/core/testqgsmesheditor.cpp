@@ -1906,9 +1906,9 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   QFile expectedFile( QString( mDataDir + "/quad_flower_to_edit_expected.2dm" ) );
   QFile original( QString( mDataDir + "/quad_flower.2dm" ) );
 
-  alteredFile.open( QIODevice::ReadOnly );
-  original.open( QIODevice::ReadOnly );
-  expectedFile.open( QIODevice::ReadOnly );
+  QVERIFY( alteredFile.open( QIODevice::ReadOnly ) );
+  QVERIFY( original.open( QIODevice::ReadOnly ) );
+  QVERIFY( expectedFile.open( QIODevice::ReadOnly ) );
 
   QTextStream streamAltered( &alteredFile );
   QTextStream streamOriginal( &original );
@@ -1922,7 +1922,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   meshLayerQuadFlower->commitFrameEditing( transform, false );
   QVERIFY( meshLayerQuadFlower->meshEditor() == nullptr );
 
-  alteredFile.open( QIODevice::WriteOnly );
+  QVERIFY( alteredFile.open( QIODevice::WriteOnly ) );
   streamAltered << streamOriginal.readAll();
 }
 

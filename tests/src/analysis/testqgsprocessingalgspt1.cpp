@@ -1263,7 +1263,7 @@ void TestQgsProcessingAlgsPt1::createDirectory()
   if ( QFile::exists( outputPath ) )
     QFile::remove( outputPath );
   QFile file( outputPath );
-  file.open( QIODevice::ReadWrite );
+  QVERIFY( file.open( QIODevice::ReadWrite ) );
   file.close();
 
   QVariantMap parameters;
@@ -2508,7 +2508,7 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp()
   {
     // generate unique filename (need to open the file first to generate it)
     QTemporaryFile tmpFile;
-    tmpFile.open();
+    QVERIFY( tmpFile.open() );
     tmpFile.close();
 
     // create a GeoTIFF - this will create data provider in editable mode
@@ -2547,7 +2547,7 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp()
 
   // make destination OR raster
   QTemporaryFile tmpFile2;
-  tmpFile2.open();
+  QVERIFY( tmpFile2.open() );
   tmpFile2.close();
 
   // create a GeoTIFF - this will create data provider in editable mode
@@ -2557,7 +2557,7 @@ void TestQgsProcessingAlgsPt1::rasterLogicOp()
 
   // make destination AND raster
   QTemporaryFile tmpFile3;
-  tmpFile3.open();
+  QVERIFY( tmpFile3.open() );
   tmpFile3.close();
 
   // create a GeoTIFF - this will create data provider in editable mode
@@ -4436,7 +4436,7 @@ void TestQgsProcessingAlgsPt1::styleFromProject()
 
   // using a project path
   QTemporaryFile tmpFile;
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   tmpFile.close();
   QVERIFY( p.write( tmpFile.fileName() ) );
   p.clear();
@@ -4478,11 +4478,11 @@ void TestQgsProcessingAlgsPt1::combineStyles()
   s2.addTextFormat( QStringLiteral( "format2" ), QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ), true );
 
   QTemporaryFile tmpFile;
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   tmpFile.close();
   QVERIFY( s1.exportXml( tmpFile.fileName() ) );
   QTemporaryFile tmpFile2;
-  tmpFile2.open();
+  QVERIFY( tmpFile2.open() );
   tmpFile2.close();
   QVERIFY( s2.exportXml( tmpFile2.fileName() ) );
 
