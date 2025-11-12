@@ -25,6 +25,7 @@
 #include "qgswmsdimensiondialog.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
+#include "qgsattributetableconfig.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsdiagramwidget.h"
 #include "qgssourcefieldsproperties.h"
@@ -165,6 +166,12 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mDisplayExpressionWidget->setLayer( lyr );
   mDisplayExpressionWidget->registerExpressionContextGenerator( this );
   initMapTipPreview();
+
+  mFeaturesSortOrderExpressionWidget->setLayer( lyr );
+  mFeaturesSortOrderExpressionWidget->registerExpressionContextGenerator( this );
+  connect( mFeaturesSortOrderDirectionButton, &QAbstractButton::clicked, this, [this]() {
+    mFeaturesSortOrderDirectionButton->setArrowType( mFeaturesSortOrderDirectionButton->arrowType() == Qt::UpArrow ? Qt::DownArrow : Qt::UpArrow );
+  } );
 
   connect( mMapTipInsertFieldButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertField );
   connect( mMapTipInsertExpressionButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertOrEditExpression );
@@ -538,6 +545,9 @@ void QgsVectorLayerProperties::syncToLayer()
   mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
   mMapTipWidget->setText( mLayer->mapTipTemplate() );
 
+  mFeaturesSortOrderExpressionWidget->setField( mLayer->attributeTableConfig().sortExpression() );
+  mFeaturesSortOrderDirectionButton->setArrowType( mLayer->attributeTableConfig().sortOrder() == Qt::AscendingOrder ? Qt::UpArrow : Qt::DownArrow );
+
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
   mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
@@ -712,6 +722,11 @@ void QgsVectorLayerProperties::apply()
   mLayer->setDisplayExpression( mDisplayExpressionWidget->asExpression() );
   mLayer->setMapTipsEnabled( mEnableMapTips->isChecked() );
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
+
+  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+  config.setSortExpression( mFeaturesSortOrderExpressionWidget->asExpression() );
+  config.setSortOrder( mFeaturesSortOrderDirectionButton->arrowType() == Qt::UpArrow ? Qt::AscendingOrder : Qt::DescendingOrder );
+  mLayer->setAttributeTableConfig( config );
 
   mLayer->actions()->clearActions();
   const auto constActions = mActionDialog->actions();

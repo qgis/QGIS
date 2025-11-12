@@ -1444,7 +1444,7 @@
                 </layout>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="2" column="0">
                 <widget class="QGroupBox" name="mEnableMapTips">
                  <property name="title">
                   <string>Enable Map Tips</string>
@@ -1594,6 +1594,51 @@
                     </property>
                     <layout class="QVBoxLayout" name="mMapTipPreviewLayout"/>
                    </widget>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QGroupBox" name="featuresSortOrderGroupBox">
+                <property name="title">
+                 <string>Sort Order</string>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QGridLayout" name="featuresSortOrderLayout">
+                 <item row="0" column="0">
+                  <widget class="QgsFieldExpressionWidget" name="mFeaturesSortOrderExpressionWidget" native="true">
+                   <property name="focusPolicy">
+                    <enum>Qt::FocusPolicy::StrongFocus</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QToolButton" name="mFeaturesSortOrderDirectionButton">
+                   <property name="toolTip">
+                    <string>Sort direction</string>
+                   </property>
+                   <property name="text">
+                    <string>…</string>
+                   </property>
+                   <property name="arrowType">
+                    <enum>Qt::UpArrow</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="2">
+                  <widget class="QLabel" name="labelfeaturesSortOrderInfo">
+                   <property name="text">
+                    <string>The sort order expression is used to sort features displayed in the attribute table's views as well as the relation editor widget.</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
                   </widget>
                  </item>
                 </layout>
