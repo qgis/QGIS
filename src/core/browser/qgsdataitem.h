@@ -449,7 +449,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void refresh( const QVector<QgsDataItem *> &children );
 
     /**
-     * The item is scheduled to be deleted. E.g. if deleteLater() is called when
+     * Returns TRUE if the item is scheduled to be deleted.
+     *
+     * E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
      * the deferredDelete() returns TRUE and item will be deleted once Populating finished.
      * Items with slow reateChildren() (for example network or database based) may
