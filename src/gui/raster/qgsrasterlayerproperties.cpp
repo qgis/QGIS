@@ -206,7 +206,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     return;
   }
 
-  connect( mEnableMapTips, &QAbstractButton::toggled, mHtmlMapTipGroupBox, &QWidget::setEnabled );
   mEnableMapTips->setChecked( mRasterLayer->mapTipsEnabled() );
 
   updateRasterAttributeTableOptionsPage();
