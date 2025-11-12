@@ -104,7 +104,9 @@ class CreateCloudOptimizedGeoTIFF(QgsProcessingAlgorithm):
         )
 
     def tags(self):
-        return ["gdal", self.commandName(), "COG", "cloud optimized geotiff"]
+        return self.tr("gdal,gdal,gdal_translate,COG,cloud optimized geotiff").split(
+            ","
+        )
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerGdal.svg")
