@@ -3686,7 +3686,8 @@ void QgsGdalProvider::initBaseDataset()
               || mGeoTransform[4] != 0.0
               || mGeoTransform[5] > 0.0 ) )
        || GDALGetGCPCount( mGdalBaseDataset ) > 0
-       || GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
+       || GDALGetMetadata( mGdalBaseDataset, "RPC" )
+       || GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Creating Warped VRT." ), 2 );
 
@@ -3697,21 +3698,23 @@ void QgsGdalProvider::initBaseDataset()
     // when the raster is rotated). For example, this fixes the issue for RGB rasters
     // (with no alpha channel) or single-band raster without "no data" value set.
 
-    // South-up oriented raster without any rotation, GCP or RPC doesn't need alpha band
+    // South-up oriented raster without any rotation, GCP, RPC or GEOLOCATION doesn't need alpha band
     const bool isSouthUpWithoutRotationGcpOrRPC = ( hasGeoTransform
         && ( mGeoTransform[1] > 0.0
              && mGeoTransform[2] == 0.0
              && mGeoTransform[4] == 0.0
              && mGeoTransform[5] > 0.0 ) )
         && GDALGetGCPCount( mGdalBaseDataset ) == 0
-        && !GDALGetMetadata( mGdalBaseDataset, "RPC" );
+        && !GDALGetMetadata( mGdalBaseDataset, "RPC" )
+        && !GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" );
 
     if ( !isSouthUpWithoutRotationGcpOrRPC && GDALGetMaskFlags( GDALGetRasterBand( mGdalBaseDataset, 1 ) ) == GMF_ALL_VALID )
     {
       psWarpOptions->nDstAlphaBand = GDALGetRasterCount( mGdalBaseDataset ) + 1;
     }
 
-    if ( GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
+    if ( GDALGetMetadata( mGdalBaseDataset, "RPC" ) ||
+         GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) )
     {
       mGdalDataset =
         QgsGdalUtils::rpcAwareAutoCreateWarpedVrt( mGdalBaseDataset, nullptr, nullptr,
@@ -3810,9 +3813,10 @@ void QgsGdalProvider::initBaseDataset()
   else
   {
     if ( mGdalBaseDataset != mGdalDataset &&
-         GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
+         ( GDALGetMetadata( mGdalBaseDataset, "RPC" ) ||
+           GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) ) )
     {
-      // Warped VRT of RPC is in EPSG:4326
+      // Warped VRT of RPC / GEOLOCATION is in EPSG:4326
       mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
     }
     else
