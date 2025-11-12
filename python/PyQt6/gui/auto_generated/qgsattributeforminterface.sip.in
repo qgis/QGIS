@@ -30,8 +30,14 @@ Interface class for custom attribute forms.
     virtual void featureChanged();
 
     QgsAttributeForm *form() const;
+%Docstring
+Returns the attribute form.
+%End
 
     const QgsFeature &feature() const;
+%Docstring
+Returns the current feature for the attribute form.
+%End
 
 };
 

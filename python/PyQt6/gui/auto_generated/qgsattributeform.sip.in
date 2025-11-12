@@ -43,6 +43,9 @@ The attribute form widget for vector layer features.
     ~QgsAttributeForm();
 
     const QgsFeature &feature() const;
+%Docstring
+Returns feature of attribute form. */
+%End
 
     QgsFeature currentFormFeature() const;
 %Docstring

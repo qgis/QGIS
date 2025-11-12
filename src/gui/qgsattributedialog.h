@@ -62,8 +62,14 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
      */
     void setHighlight( QgsHighlight *h );
 
+    /**
+     * Returns the attribute form.
+     */
     QgsAttributeForm *attributeForm() const { return mAttributeForm; }
 
+    /**
+     * Returns the current feature of the attribute form.
+     */
     const QgsFeature *feature() const { return &mAttributeForm->feature(); }
 
     /**

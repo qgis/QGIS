@@ -28,6 +28,9 @@ Constructor for QgsAuthCertInfo
 %End
 
     bool trustCacheRebuilt() const;
+%Docstring
+Returns whether the cache of trust chain has been rebuilt.
+%End
 
 };
 

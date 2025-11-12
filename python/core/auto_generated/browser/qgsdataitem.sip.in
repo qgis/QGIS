@@ -73,6 +73,9 @@ this item.
 %End
 
     bool hasChildren() const;
+%Docstring
+Returns whether this item has children.
+%End
 
     virtual bool layerCollection() const;
 %Docstring
@@ -84,6 +87,9 @@ if their children are layers.
 %End
 
     int rowCount() const;
+%Docstring
+Returns the number of rows of this item
+%End
 
     virtual QVector<QgsDataItem *> createChildren() /TransferBack/;
 %Docstring
