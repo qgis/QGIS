@@ -37,6 +37,7 @@ vcpkg_cmake_configure(
       "-DUSE_WOFF2=FALSE"
       "-DPORT=Qt"
       "-DENABLE_QT_WEBCHANNEL=FALSE"
+      "-DMACOS_BUILD_FRAMEWORKS=FALSE"
 )
 
 vcpkg_cmake_install()
