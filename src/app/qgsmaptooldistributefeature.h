@@ -48,9 +48,9 @@ class APP_EXPORT QgsMapToolDistributeFeature : public QgsMapToolAdvancedDigitizi
 
     enum DistributeMode
     {
-      FeatureCount,           //!< Distribute a fixed number of features with an undefined spacing
-      FeatureSpacing,         //!< Distribute a undefined number of features with a fixed spacing
-      FeatureNumberAndSpacing //!< Distribute a fixed number of features with a fixed spacing
+      FeatureCount,          //!< Distribute a fixed number of features with an undefined spacing
+      FeatureSpacing,        //!< Distribute a undefined number of features with a fixed spacing
+      FeatureCountAndSpacing //!< Distribute a fixed number of features with a fixed spacing
     };
     Q_ENUM( DistributeMode )
 

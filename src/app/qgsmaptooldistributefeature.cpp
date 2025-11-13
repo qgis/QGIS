@@ -182,6 +182,7 @@ void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   else
   {
     // A rubberband exists: end the process and create the new features
+    mEndPointMapCoords = e->mapPoint();
     const int count = featureCount();
     if ( count >= 0 )
     {
@@ -287,13 +288,10 @@ void QgsMapToolDistributeFeature::updateRubberband()
 
 double QgsMapToolDistributeFeature::featureSpacing() const
 {
-  if ( !mUserInputWidget )
-    return 0;
-
   switch ( mode() )
   {
     case DistributeMode::FeatureSpacing:
-    case DistributeMode::FeatureNumberAndSpacing:
+    case DistributeMode::FeatureCountAndSpacing:
     {
       return mFeatureSpacing;
     }
@@ -309,13 +307,10 @@ double QgsMapToolDistributeFeature::featureSpacing() const
 
 int QgsMapToolDistributeFeature::featureCount() const
 {
-  if ( !mUserInputWidget )
-    return 0;
-
   switch ( mode() )
   {
     case DistributeMode::FeatureCount:
-    case DistributeMode::FeatureNumberAndSpacing:
+    case DistributeMode::FeatureCountAndSpacing:
     {
       return mFeatureCount;
     }
@@ -336,7 +331,7 @@ QgsDistributeFeatureUserWidget::QgsDistributeFeatureUserWidget( QWidget *parent 
 
   mModeComboBox->addItem( tr( "Feature count" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureCount ) );
   mModeComboBox->addItem( tr( "Spacing" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureSpacing ) );
-  mModeComboBox->addItem( tr( "Spacing and feature count" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureNumberAndSpacing ) );
+  mModeComboBox->addItem( tr( "Spacing and feature count" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing ) );
 
   updateUi();
 
@@ -352,20 +347,20 @@ void QgsDistributeFeatureUserWidget::updateUi()
 
   mFeatureCountLabel->setVisible(
     currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCount
-    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureNumberAndSpacing
+    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing
   );
   mFeatureCountSpinBox->setVisible(
     currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCount
-    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureNumberAndSpacing
+    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing
   );
 
   mFeatureSpacingLabel->setVisible(
     currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureSpacing
-    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureNumberAndSpacing
+    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing
   );
   mFeatureSpacingSpinBox->setVisible(
     currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureSpacing
-    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureNumberAndSpacing
+    || currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing
   );
 }
 
