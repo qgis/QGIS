@@ -1,0 +1,35 @@
+diff --git a/Source/cmake/WebKitMacros.cmake b/Source/cmake/WebKitMacros.cmake
+index 8d57af7af..10f718e84 100644
+--- a/Source/cmake/WebKitMacros.cmake
++++ b/Source/cmake/WebKitMacros.cmake
+@@ -285,18 +285,18 @@ macro(WEBKIT_FRAMEWORK _target)
+         add_custom_command(TARGET ${_target} POST_BUILD COMMAND ${${_target}_POST_BUILD_COMMAND} VERBATIM)
+     endif ()
+ 
+-    if (APPLE AND NOT PORT STREQUAL "GTK" AND NOT ${${_target}_LIBRARY_TYPE} MATCHES STATIC)
+-        set_target_properties(${_target} PROPERTIES FRAMEWORK TRUE)
+-        if (${_target}_PUBLIC_HEADERS)
+-            set_target_properties(${_target} PROPERTIES PUBLIC_HEADER "${${_target}_PUBLIC_HEADERS}")
+-            if (${_target}_PRIVATE_HEADERS)
+-                foreach (CURRENT_PRIVATE_HEADER ${${_target}_PRIVATE_HEADERS})
+-                    set_property(SOURCE ${CURRENT_PRIVATE_HEADER} PROPERTY MACOSX_PACKAGE_LOCATION ${${_target}_PRIVATE_HEADERS_LOCATION})
+-                endforeach ()
+-            endif ()
+-        endif ()
+-        install(TARGETS ${_target} FRAMEWORK DESTINATION ${LIB_INSTALL_DIR})
+-    endif ()
++#    if (APPLE AND NOT PORT STREQUAL "GTK" AND NOT ${${_target}_LIBRARY_TYPE} MATCHES STATIC)
++#        set_target_properties(${_target} PROPERTIES FRAMEWORK TRUE)
++#        if (${_target}_PUBLIC_HEADERS)
++#            set_target_properties(${_target} PROPERTIES PUBLIC_HEADER "${${_target}_PUBLIC_HEADERS}")
++#            if (${_target}_PRIVATE_HEADERS)
++#                foreach (CURRENT_PRIVATE_HEADER ${${_target}_PRIVATE_HEADERS})
++#                    set_property(SOURCE ${CURRENT_PRIVATE_HEADER} PROPERTY MACOSX_PACKAGE_LOCATION ${${_target}_PRIVATE_HEADERS_LOCATION})
++#                endforeach ()
++#            endif ()
++#        endif ()
++#        install(TARGETS ${_target} FRAMEWORK DESTINATION ${LIB_INSTALL_DIR})
++#    endif ()
+ endmacro()
+ 
+ macro(WEBKIT_CREATE_FORWARDING_HEADER _target_directory _file)

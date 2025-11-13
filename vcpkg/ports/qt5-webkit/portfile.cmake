@@ -12,6 +12,7 @@ vcpkg_from_github(
     makevalues_gperf.patch
     arm64-osx.patch
     fix-macos-build.patch
+    noframeworks.patch
 )
 
 file(REMOVE ${SOURCE_PATH}/Source/cmake/FindICU.cmake)
@@ -37,7 +38,6 @@ vcpkg_cmake_configure(
       "-DUSE_WOFF2=FALSE"
       "-DPORT=Qt"
       "-DENABLE_QT_WEBCHANNEL=FALSE"
-      "-DMACOS_BUILD_FRAMEWORKS=FALSE"
 )
 
 vcpkg_cmake_install()
