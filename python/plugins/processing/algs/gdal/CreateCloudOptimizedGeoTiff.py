@@ -20,8 +20,9 @@ __date__ = "October 2025"
 __copyright__ = "(C) 2025 by Jan Caha"
 
 import os
+from pathlib import Path
 
-from qgis.PyQt.QtCore import QCoreApplication, QFileInfo
+from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (
     Qgis,
@@ -123,10 +124,10 @@ class CreateCloudOptimizedGeoTIFF(QgsProcessingAlgorithm):
 
     def output_path(self, input_layer: QgsRasterLayer) -> str:
         # if source is a file baseName is used for output, otherwise use layer name
-        fileInfo = QFileInfo(input_layer.source())
+        fileInfo = Path(input_layer.source())
 
-        if fileInfo.isFile():
-            output_file = fileInfo.baseName() + self.extension
+        if fileInfo.is_file():
+            output_file = fileInfo.stem + self.extension
         else:
             output_file = input_layer.name() + self.extension
 
@@ -198,14 +199,14 @@ class CreateCloudOptimizedGeoTIFF(QgsProcessingAlgorithm):
 
             command = self.getTranslateCommand(inputLayer, output_file)
 
-            if QFileInfo(output_file).exists():
-                feedback.pushInfo(
+            if Path(output_file).exists():
+                feedback.pushWarning(
                     f"Output file {output_file} already exists. It will be overwritten."
                 )
 
             GdalUtils.runGdal(command, feedback)
 
-            if QFileInfo(output_file).exists():
+            if Path(output_file).exists():
                 self.output_layers.append(output_file)
 
         return {
