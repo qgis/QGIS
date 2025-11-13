@@ -616,7 +616,7 @@ void QgsTessellator::addTriangleVertices(
 
     if ( mAddTextureCoords )
     {
-      const std::pair<float, float> pr = rotateCoords( static_cast<float>( fx ), static_cast<float>( fy ), 0.0f, 0.0f, mTextureRotation );
+      const std::pair<float, float> pr = rotateCoords( static_cast<float>( pt.x() ), static_cast<float>( pt.y() ), 0.0f, 0.0f, mTextureRotation );
       mData << pr.first << pr.second;
     }
   }
