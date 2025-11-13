@@ -39,8 +39,6 @@ from qgis.core import (
 )
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
-
 
 class CreateCloudOptimizedGeoTIFF(QgsProcessingAlgorithm):
     LAYERS = "LAYERS"
