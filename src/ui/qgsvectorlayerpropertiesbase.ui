@@ -1590,8 +1590,9 @@
                      </size>
                     </property>
                     <property name="title">
-                     <string>Preview</string>
+                     <string>Map Tips Preview</string>
                     </property>
+                    <layout class="QVBoxLayout" name="mMapTipPreviewLayout"/>
                    </widget>
                   </widget>
                  </item>
