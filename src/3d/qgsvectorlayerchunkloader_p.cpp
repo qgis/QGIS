@@ -114,7 +114,7 @@ void QgsVectorLayerChunkLoader::start()
     while ( fi.nextFeature( f ) )
     {
       if ( mCanceled )
-        break;
+        return;
 
       if ( ++fc > mFactory->mMaxFeatures )
       {
@@ -125,10 +125,14 @@ void QgsVectorLayerChunkLoader::start()
       mRenderContext.expressionContext().setFeature( f );
       mHandler->processFeature( f, mRenderContext );
     }
+
     if ( !featureLimitReached )
     {
       QgsDebugMsgLevel( QStringLiteral( "All features fetched for node: %1" ).arg( mNode->tileId().text() ), 3 );
-      mNodeIsLeaf = true;
+      // we want to avoid having huge leaf nodes so we don't have float precision issues
+      constexpr int maxLeafSize = 500'000;
+      if ( fc == 0 || std::max<double>( mNode->box3D().width(), mNode->box3D().height() ) < maxLeafSize )
+        mNodeIsLeaf = true;
     }
   } );
 
