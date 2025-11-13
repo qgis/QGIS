@@ -20,7 +20,6 @@ __date__ = "October 2025"
 __copyright__ = "(C) 2025 by Jan Caha"
 
 import os
-import copy
 
 from qgis.PyQt.QtCore import QCoreApplication, QFileInfo
 
@@ -139,7 +138,7 @@ class CreateCloudOptimizedGeoTIFF(QgsProcessingAlgorithm):
         """Builds the gdal_translate command for a given input layer.
         Returns a tuple of output file path and command arguments list."""
 
-        arguments = copy.deepcopy(self.common_arguments)
+        arguments = self.common_arguments.copy()
 
         input_details = GdalUtils.gdal_connection_details_from_layer(input_layer)
 
@@ -183,14 +182,12 @@ class CreateCloudOptimizedGeoTIFF(QgsProcessingAlgorithm):
 
         feedback = QgsProcessingMultiStepFeedback(len(self.inputLayers), feedback)
 
-        i = 0
-        for inputLayer in self.inputLayers:
+        for i, inputLayer in enumerate(self.inputLayers):
 
             if feedback.isCanceled():
                 return {}
 
             feedback.setCurrentStep(i)
-            i += 1
 
             if inputLayer is None or not inputLayer.isValid():
                 continue
