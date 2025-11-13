@@ -3713,8 +3713,7 @@ void QgsGdalProvider::initBaseDataset()
       psWarpOptions->nDstAlphaBand = GDALGetRasterCount( mGdalBaseDataset ) + 1;
     }
 
-    if ( GDALGetMetadata( mGdalBaseDataset, "RPC" ) ||
-         GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) )
+    if ( GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
     {
       mGdalDataset =
         QgsGdalUtils::rpcAwareAutoCreateWarpedVrt( mGdalBaseDataset, nullptr, nullptr,
@@ -3810,19 +3809,29 @@ void QgsGdalProvider::initBaseDataset()
   {
     mCrs = QgsCoordinateReferenceSystem::fromWkt( crsWkt );
   }
-  else
+  else if ( mGdalBaseDataset != mGdalDataset &&
+            GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
   {
-    if ( mGdalBaseDataset != mGdalDataset &&
-         ( GDALGetMetadata( mGdalBaseDataset, "RPC" ) ||
-           GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) ) )
+    // Warped VRT of RPC is in EPSG:4326
+    mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+  }
+  else if ( mGdalBaseDataset != mGdalDataset &&
+            GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) )
+  {
+    // Warped VRT of GEOLOCATION is not always in EPSG:4326, it may have a SRS defined
+    crsWkt = GDALGetMetadataItem( mGdalBaseDataset, "SRS", "GEOLOCATION" );
+    if ( !crsWkt.isEmpty() )
     {
-      // Warped VRT of RPC / GEOLOCATION is in EPSG:4326
+      mCrs = QgsCoordinateReferenceSystem::fromWkt( crsWkt );
+    }
+    if ( !mCrs.isValid() )
+    {
       mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
     }
-    else
-    {
-      QgsDebugMsgLevel( QStringLiteral( "No valid CRS identified" ), 2 );
-    }
+  }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "No valid CRS identified" ), 2 );
   }
 
   //set up the coordinat transform - in the case of raster this is mainly used to convert
