@@ -177,7 +177,15 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
     {
       // output name does not include a folder - use default
       QString defaultFolder = settings.value( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), QStringLiteral( "%1/processing" ).arg( QDir::homePath() ) ).toString();
-      key = QDir( defaultFolder ).filePath( key );
+      QDir destDir( defaultFolder );
+      if ( !destDir.exists() )
+      {
+        if ( !QDir().mkpath( defaultFolder ) )
+        {
+          QgsDebugError( QStringLiteral( "Can't create output folder '%1'" ).arg( defaultFolder ) );
+        }
+      }
+      key = destDir.filePath( key );
     }
   }
 
