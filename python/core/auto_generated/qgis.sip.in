@@ -3547,6 +3547,23 @@ GEOS string version linked
 .. versionadded:: 3.20
 %End
 
+    static bool hasSfcgal();
+%Docstring
+Returns ``True`` if the QGIS build contains SFCGAL.
+
+.. versionadded:: 4.0
+%End
+
+    static int sfcgalVersionInt();
+%Docstring
+Returns the version of the SFCGAL library if QGIS is built with SFCGAL.
+Else throws an exception.
+
+:raises QgsNotSupportedException: on QGIS builds based without SFCGAL.
+
+.. versionadded:: 4.0
+%End
+
     static bool hasQtWebkit();
 %Docstring
 Returns ``True`` if the QGIS build contains QtWebkit.

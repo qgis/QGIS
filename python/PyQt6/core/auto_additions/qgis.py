@@ -11819,6 +11819,8 @@ try:
     Qgis.geosVersionMinor = staticmethod(Qgis.geosVersionMinor)
     Qgis.geosVersionPatch = staticmethod(Qgis.geosVersionPatch)
     Qgis.geosVersion = staticmethod(Qgis.geosVersion)
+    Qgis.hasSfcgal = staticmethod(Qgis.hasSfcgal)
+    Qgis.sfcgalVersionInt = staticmethod(Qgis.sfcgalVersionInt)
     Qgis.hasQtWebkit = staticmethod(Qgis.hasQtWebkit)
     Qgis.geoNone = staticmethod(Qgis.geoNone)
     Qgis.geographicCrsAuthId = staticmethod(Qgis.geographicCrsAuthId)
