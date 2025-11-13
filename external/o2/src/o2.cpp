@@ -513,13 +513,11 @@ QByteArray O2::buildRequestBody(const QMap<QString, QString> &parameters) {
 
 qint64 O2::expires() {
     QString key = QString(O2_KEY_EXPIRES).arg(clientId_);
-    qDebug() << " O2::expires key=" << key << " value=" << store_->value(key);
     return store_->value(key).toLongLong();
 }
 
 void O2::setExpires(qint64 v) {
     QString key = QString(O2_KEY_EXPIRES).arg(clientId_);
-    qDebug() << " O2::setExpires key=" << key << " value=" << v;
     store_->setValue(key, QString::number(v));
 }
 

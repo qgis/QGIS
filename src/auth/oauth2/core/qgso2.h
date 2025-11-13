@@ -78,6 +78,9 @@ class QgsO2 : public O2
     //! Triggered when auth code was set
     void onSetAuthCode( const QString &code );
 
+    //! Stop the refresh timer (it is safe to call even if the timer is not active)
+    void stopRefreshTimer();
+
   protected slots:
 
     //! Handle verification response.
@@ -109,7 +112,7 @@ class QgsO2 : public O2
     bool isLocalHost( const QUrl redirectUrl ) const;
 
     // Activate a timer to automatically refresh the token
-    void setExpiresPrivate( qint64 v );
+    void startRefreshTimer();
 
     QString mTokenCacheFile;
     QString mAuthcfg;
