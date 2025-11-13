@@ -23,10 +23,10 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsexpressioncontext.h"
+#include "qgsterraingenerator.h"
 
 #include <QColor>
 
-class QgsTerrainGenerator;
 class Qgs3DMapSettings;
 
 #define SIP_NO_FILE
@@ -168,7 +168,7 @@ class _3D_EXPORT Qgs3DRenderContext
 
     // not owned, currently a pointer to the Qgs3DMapSettings terrain generator.
     // TODO -- fix during implementation of https://github.com/qgis/QGIS-Enhancement-Proposals/issues/301
-    QgsTerrainGenerator *mTerrainGenerator = nullptr; //!< Implementation of the terrain generation
+    QPointer<QgsTerrainGenerator> mTerrainGenerator; //!< Implementation of the terrain generation
 };
 
 
