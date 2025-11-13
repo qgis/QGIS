@@ -396,7 +396,18 @@ Constructor for QgsTemplatedLineSymbolLayerWidget.
   public slots:
 
     void setInterval( double val );
+%Docstring
+Set templated line interval
+
+:param val: interval value
+%End
+
     void setOffsetAlongLine( double val );
+%Docstring
+Set offset along line
+
+:param val: offset along line value
+%End
 
 };
 

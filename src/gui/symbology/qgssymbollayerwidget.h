@@ -453,7 +453,7 @@ class QgsTemplatedLineSymbolLayerBase;
 
 /**
  * \ingroup gui
- * \class QgsHashedLineSymbolLayerWidget
+ * \class QgsTemplatedLineSymbolLayerWidget
  * \brief A widget for controlling the properties of a templated line symbol layer (hash or markers).
  * \since QGIS 4.0
  */
@@ -462,10 +462,13 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
     Q_OBJECT
 
   public:
+    /**
+     * Templated symbol type
+     */
     enum class TemplatedSymbolType
     {
-      Hash,
-      Marker
+      Hash,  //!< Hash symbol type
+      Marker //!< Marker symbol type
     };
 
     /**
@@ -476,14 +479,22 @@ class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget
      */
     QgsTemplatedLineSymbolLayerWidget( TemplatedSymbolType symbolType, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    // from base class
     void setSymbolLayer( QgsSymbolLayer *layer ) override;
     QgsSymbolLayer *symbolLayer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
   public slots:
 
+    /**
+     * Set templated line interval
+     * \param val interval value
+     */
     void setInterval( double val );
+
+    /**
+     * Set offset along line
+     * \param val offset along line value
+     */
     void setOffsetAlongLine( double val );
 
   private slots:

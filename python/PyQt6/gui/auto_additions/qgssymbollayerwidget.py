@@ -1,11 +1,11 @@
 # The following has been generated automatically from src/gui/symbology/qgssymbollayerwidget.h
 # monkey patching scoped based enum
-QgsTemplatedLineSymbolLayerWidget.TemplatedSymbolType.Hash.__doc__ = ""
-QgsTemplatedLineSymbolLayerWidget.TemplatedSymbolType.Marker.__doc__ = ""
-QgsTemplatedLineSymbolLayerWidget.TemplatedSymbolType.__doc__ = """
+QgsTemplatedLineSymbolLayerWidget.TemplatedSymbolType.Hash.__doc__ = "Hash symbol type"
+QgsTemplatedLineSymbolLayerWidget.TemplatedSymbolType.Marker.__doc__ = "Marker symbol type"
+QgsTemplatedLineSymbolLayerWidget.TemplatedSymbolType.__doc__ = """Templated symbol type
 
-* ``Hash``: 
-* ``Marker``: 
+* ``Hash``: Hash symbol type
+* ``Marker``: Marker symbol type
 
 """
 # --
