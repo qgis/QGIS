@@ -1385,6 +1385,7 @@ void QgsRasterLayerProperties::initMapTipPreview()
   // Note: there's quite a bit of overlap between this and the code in QgsMapTip::showMapTip
   // Create the WebView
   mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
+  mMapTipPreviewLayout->addWidget( mMapTipPreview );
 
 #if WITH_QTWEBKIT
   mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks ); //Handle link clicks by yourself
