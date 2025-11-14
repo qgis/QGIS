@@ -47,8 +47,8 @@ import unittest
 from qgis.testing import start_app, QgisTestCase
 from utilities import unitTestDataPath, waitServer
 
-TOKEN_TLL = 3  # seconds
-CACHE_HOUSEKEEPING_INTERVAL = TOKEN_TLL + 1  # seconds
+TOKEN_TTL = 3  # seconds
+CACHE_HOUSEKEEPING_INTERVAL = TOKEN_TTL + 1  # seconds
 
 try:
     QGIS_SERVER_ENDPOINT_PORT = os.environ["QGIS_SERVER_ENDPOINT_PORT"]
@@ -149,10 +149,10 @@ class TestAuthManager(QgisTestCase):
         os.environ["QGIS_SERVER_OAUTH2_USERNAME"] = cls.username
         os.environ["QGIS_SERVER_OAUTH2_PASSWORD"] = cls.password
         os.environ["QGIS_SERVER_OAUTH2_AUTHORITY"] = cls.server_rootcert
-        # Set default token expiration to TOKEN_TLL, note that this can be
+        # Set default token expiration to TOKEN_TTL, note that this can be
         # also controlled when issuing token requests by adding ttl=<int>
         # to the query string
-        os.environ["QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN"] = f"{TOKEN_TLL}"
+        os.environ["QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN"] = f"{TOKEN_TTL}"
 
     @classmethod
     def setUpClass(cls):
@@ -348,7 +348,7 @@ class TestAuthManager(QgisTestCase):
             print(" timeout.")
             return False
 
-        self.assertTrue(wait_log(logs, "/refresh", TOKEN_TLL * 1000 + 100))
+        self.assertTrue(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 100))
 
         # Make another request to ensure the refreshed token is used
         logs.clear()
@@ -363,11 +363,11 @@ class TestAuthManager(QgisTestCase):
         # Wait for the cache housekeeping to run
         wait(CACHE_HOUSEKEEPING_INTERVAL * 1000 + 100)
         # Wait for the token to expire and be refreshed
-        self.assertTrue(wait_log(logs, "/refresh", TOKEN_TLL * 1000 + 100))
+        self.assertTrue(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 100))
 
         # Remove all layers from the project to allow oauth cache cleanup
         QgsProject.instance().removeAllMapLayers()
-        self.assertFalse(wait_log(logs, "/refresh", TOKEN_TLL * 1000 + 100))
+        self.assertFalse(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 100))
 
 
 if __name__ == "__main__":
