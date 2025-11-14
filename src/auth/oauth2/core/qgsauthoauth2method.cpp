@@ -151,6 +151,11 @@ QgsAuthOAuth2Method::QgsAuthOAuth2Method()
 #else
   constexpr int interval = 15 * 60 * 1000;
 #endif
+  connect( QgsProject::instance(), &QgsProject::layersRemoved, this, [this]( const QStringList & ) {
+    mCacheHousekeepingTimer.stop();
+    cleanupCache();
+    mCacheHousekeepingTimer.start();
+  } );
   mCacheHousekeepingTimer.setInterval( static_cast<std::chrono::milliseconds>( interval ) );
   mCacheHousekeepingTimer.start();
 }

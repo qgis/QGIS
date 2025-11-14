@@ -367,8 +367,6 @@ class TestAuthManager(QgisTestCase):
 
         # Remove all layers from the project to allow oauth cache cleanup
         QgsProject.instance().removeAllMapLayers()
-
-        wait(CACHE_HOUSEKEEPING_INTERVAL * 1000 + 100)
         self.assertFalse(wait_log(logs, "/refresh", TOKEN_TLL * 1000 + 100))
 
 
