@@ -6145,6 +6145,27 @@ class CORE_EXPORT Qgis
     Q_ENUM( DevToolsNodeRole )
 
     /**
+     * Extrusion face types for the QgsTessellator.
+     *
+     * \since QGIS 4.0
+     */
+    enum class ExtrusionFace : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoFace = 0,
+      Walls = 1 << 0,
+      Roof = 1 << 1,
+      Floor = 1 << 2
+    };
+    Q_ENUM( ExtrusionFace )
+
+    /**
+    * Tessellator extrusion face types.
+    * \since QGIS 4.0
+    */
+    Q_DECLARE_FLAGS( ExtrusionFaces, ExtrusionFace )
+    Q_FLAG( ExtrusionFaces )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -6424,7 +6445,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapCanvasFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayoutRenderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerLegendFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CurvedTextFlags )
-
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ExtrusionFaces )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 
