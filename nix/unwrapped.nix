@@ -1,6 +1,7 @@
 { lib
 , stdenv
 
+, fetchFromGitHub
 , makeWrapper
 , replaceVars
 , runCommand
@@ -15,7 +16,6 @@
 , draco
 , exiv2
 , fcgi
-, fetchFromGitHub
 , flex
 , geos
 , grass
