@@ -209,7 +209,7 @@ void QgsO2::startRefreshTimer()
   mRefreshTimer = std::make_unique<QTimer>();
 
   // 120 seconds before expiry or 10% of the interval, whichever is smaller
-  qint64 refreshInterval = interval - qMin( static_cast<qint64>( 120 ), interval / 10 );
+  qint64 refreshInterval = interval - std::min( static_cast<qint64>( 120 ), interval / 10 );
 
   auto doRefresh = [this]() {
     QgsDebugMsgLevel( QStringLiteral( "QgsO2::startRefreshTimer() - Token refresh triggered for client %1" ).arg( clientId() ), 2 );
