@@ -181,10 +181,10 @@ void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
   else
   {
-    // A rubberband exists: end the process and create the new features
+    // A rubberband exists: create the new features
     mEndPointMapCoords = e->mapPoint();
     const int count = featureCount();
-    if ( count >= 0 )
+    if ( count >= 0 && mStartPointMapCoords != mEndPointMapCoords )
     {
       // Save features
       QString errorMsg;
