@@ -584,7 +584,7 @@ void QgsTessellator::addTriangleVertices(
 
     // cppcheck-suppress negativeContainerIndex
     QVector3D point = points[ index ];
-    const double z = mNoZ ? 0.0 : point.z();
+    const float z = mNoZ ? 0.0 : point.z();
     QVector4D pt( point.x(), point.y(), z, 0 );
 
     pt = *transformMatrix * pt;
@@ -595,12 +595,13 @@ void QgsTessellator::addTriangleVertices(
     const double fz = mNoZ ? 0.0 : ( baseHeight + extrusionHeight );
 
     if ( baseHeight < mZMin )
-      mZMin = baseHeight;
+      mZMin =  static_cast<float>( baseHeight );
     if ( baseHeight > mZMax )
-      mZMax = baseHeight;
+      mZMax = static_cast<float>( baseHeight );
     if ( fz > mZMax )
-      mZMax = fz;
+      mZMax = static_cast<float>( fz );
 
+    // NOLINTBEGIN(bugprone-branch-clone)
     if ( mOutputZUp )
     {
       mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
@@ -613,6 +614,7 @@ void QgsTessellator::addTriangleVertices(
       if ( mAddNormals )
         mData << normal.x() << normal.z() << - normal.y();
     }
+    // NOLINTEND(bugprone-branch-clone)
 
     if ( mAddTextureCoords )
     {
@@ -702,9 +704,9 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       Q_ASSERT( polygonNew->exteriorRing()->numPoints() >= 3 );
 
       const QgsLineString *triangle = qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() );
-      const QVector3D p1( triangle->xAt( 0 ), triangle->yAt( 0 ), mNoZ || std::isnan( triangle->zAt( 0 ) ) ? 0.0f : triangle->zAt( 0 ) );
-      const QVector3D p2( triangle->xAt( 1 ), triangle->yAt( 1 ), mNoZ || std::isnan( triangle->zAt( 1 ) ) ? 0.0f : triangle->zAt( 1 ) );
-      const QVector3D p3( triangle->xAt( 2 ), triangle->yAt( 2 ), mNoZ || std::isnan( triangle->zAt( 2 ) ) ? 0.0f : triangle->zAt( 2 ) );
+      const QVector3D p1( static_cast<float>( triangle->xAt( 0 ) ), static_cast<float>( triangle->yAt( 0 ) ), mNoZ || std::isnan( triangle->zAt( 0 ) ) ? 0.0f : static_cast<float>( triangle->zAt( 0 ) ) );
+      const QVector3D p2( static_cast<float>( triangle->xAt( 1 ) ), static_cast<float>( triangle->yAt( 1 ) ), mNoZ || std::isnan( triangle->zAt( 1 ) ) ? 0.0f : static_cast<float>( triangle->zAt( 1 ) ) );
+      const QVector3D p3( static_cast<float>( triangle->xAt( 2 ) ), static_cast<float>( triangle->yAt( 2 ) ), mNoZ || std::isnan( triangle->zAt( 2 ) ) ? 0.0f : static_cast<float>( triangle->zAt( 2 ) ) );
       const std::array<QVector3D, 3> points = { { p1, p2, p3 } };
 
       addTriangleVertices( points, pNormal, extrusionHeight, &base, &extrusionOrigin, false );
@@ -714,7 +716,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         addTriangleVertices( points, pNormal, extrusionHeight, &base, &extrusionOrigin, true );
       }
 
-      if ( extrusionHeight && buildFloor )
+      if ( extrusionHeight != 0 && buildFloor )
       {
         addTriangleVertices( points, pNormal, 0, &base, &extrusionOrigin, false );
         if ( mAddBackFaces )
@@ -774,7 +776,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
             addTriangleVertices( points, pNormal, extrusionHeight, &base, &extrusionOrigin, true );
           }
 
-          if ( extrusionHeight && buildFloor )
+          if ( extrusionHeight != 0 && buildFloor )
           {
             addTriangleVertices( points, pNormal, 0, &base, &extrusionOrigin, true );
             if ( mAddBackFaces )

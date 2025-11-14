@@ -224,8 +224,10 @@ void QgsPolygon3DSymbol::setRenderedFacade( int side )
     case 3:
       mRenderedFacade = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
       break;
+    case 4:
+      mRenderedFacade = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof | Qgis::ExtrusionFace::Floor;
+      break;
     default:
-      mRenderedFacade = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
       break;
   }
 }

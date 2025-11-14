@@ -106,10 +106,10 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setExtrusionEnabled( true );
   tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
-  tessellator->setTextureRotation( texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 );
+  tessellator->setTextureRotation( texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0 );
   tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
   tessellator->setOutputZUp( true );
-  
+
   outNormal.tessellator.reset( tessellator );
 
   tessellator = new QgsTessellator();
@@ -120,7 +120,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setExtrusionEnabled( true );
   tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
-  tessellator->setTextureRotation( texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 );
+  tessellator->setTextureRotation( texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0 );
   tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
   tessellator->setOutputZUp( true );
 
