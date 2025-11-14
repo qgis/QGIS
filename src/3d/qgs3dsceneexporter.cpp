@@ -858,7 +858,7 @@ bool Qgs3DSceneExporter::saveObj( QString sceneName, QString sceneFolderPath, in
   out << "mtllib " << mtlLibName << "\n";
 
   QTextStream mtlOut( &mtlFile );
-  for ( Qgs3DExportObject *obj : qAsConst( mObjects ) )
+  for ( Qgs3DExportObject *obj : std::as_const( mObjects ) )
   {
     if ( !obj )
       continue;
