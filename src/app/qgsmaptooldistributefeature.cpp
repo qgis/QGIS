@@ -18,6 +18,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptooldistributefeature.h"
+#include "moc_qgsmaptooldistributefeature.cpp"
 #include "qgsadvanceddigitizingdockwidget.h"
 
 #include "qgssettingstree.h"
@@ -30,6 +31,12 @@ QgsMapToolDistributeFeature::QgsMapToolDistributeFeature( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
 {
   mToolName = tr( "Copy and distribute feature" );
+
+  mMode = QgsMapToolDistributeFeature::settingsMode->value();
+  mFeatureCount = QgsMapToolDistributeFeature::settingsFeatureCount->value();
+  mFeatureSpacing = QgsMapToolDistributeFeature::settingsFeatureSpacing->value();
+  mFeatureLayer = nullptr;
+
   setUseSnappingIndicator( true );
 }
 
@@ -111,7 +118,7 @@ void QgsMapToolDistributeFeature::keyPressEvent( QKeyEvent *e )
     return;
   }
 
-  if ( e->key() == Qt::Key_Escape )
+  if ( e && e->key() == Qt::Key_Escape )
   {
     deleteRubberbands();
     return;
@@ -172,7 +179,7 @@ void QgsMapToolDistributeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    // Feature found: store internal informations and create rubberband
+    // Feature found: store internal information and create rubberband
     mFeatureId = cf.id();
     mFeatureGeom = cf.geometry();
     mStartPointMapCoords = e->mapPoint();
@@ -303,6 +310,7 @@ double QgsMapToolDistributeFeature::featureSpacing() const
       return currentLine.length() / featureCount();
     }
   }
+  return 0; // should not happen
 }
 
 int QgsMapToolDistributeFeature::featureCount() const
@@ -322,6 +330,7 @@ int QgsMapToolDistributeFeature::featureCount() const
       return std::floor( currentLine.length() / featureSpacing() );
     }
   }
+  return 0; // should not happen
 }
 
 QgsDistributeFeatureUserWidget::QgsDistributeFeatureUserWidget( QWidget *parent )
