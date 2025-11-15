@@ -18,21 +18,21 @@ jobs:
       - name: Add upstream remote
         run: |
           git remote add upstream https://github.com/qgis/QGIS.git
-          git fetch upstream --tags
+          git fetch upstream --no-tags  "refs/tags/final-3_44_*:refs/upstream-tags/final-3_44_*"
 
       - name: Determine latest upstream tag in 3.44 series
         id: latest_tag
         run: |
-          TAG=$(git tag -l "final-3_44*" --sort=-v:refname | head -n 1)
+          UPSTREAM_TAG=$(git for-each-ref --sort=-v:refname --format='%(refname:strip=2)' refs/upstream-tags/final-3_44_* | head -n 1) 
 
-          if [ -z "$TAG" ]; then
+          if [ -z "$UPSTREAM_TAG" ]; then
             echo "No upstream 3.44 tags found."
             echo "tag=" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          echo "Latest upstream tag: $TAG"
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Latest upstream tag: $UPSTREAM_TAG"
+          echo "tag=$UPSTREAM_TAG" >> $GITHUB_OUTPUT
 
       - name: Exit early if no upstream tag
         if: steps.latest_tag.outputs.tag == ''
@@ -41,10 +41,11 @@ jobs:
       - name: Check if tag already exists locally
         id: tag_exists
         run: |
-          if git rev-parse "${{ steps.latest_tag.outputs.tag }}" >/dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
+          TAG="${{ steps.latest_tag.outputs.tag }}"
+          if git show-ref --verify --quiet "refs/tags/${TAG}"; then
+          echo "exists=true" >> $GITHUB_OUTPUT
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
+          echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Exit if tag already exists locally
@@ -60,7 +61,7 @@ jobs:
       - name: Merge upstream changes
         if: steps.tag_exists.outputs.exists == 'false'
         run: |
-          git cherry-pick upstream/release-3_44..upstream/${{ steps.latest_tag.outputs.tag }}
+          git merge --no-edit refs/upstream-tags/${{ steps.latest_tag.outputs.tag }}
 
       - name: Push updated branch
         if: steps.tag_exists.outputs.exists == 'false'
@@ -80,3 +81,4 @@ jobs:
           tag_name: ${{ steps.latest_tag.outputs.tag }}
           name: ${{ steps.latest_tag.outputs.tag }}
           body: "Auto-synced from upstream release."
+          token: ${{ secrets.NOTARIZE_PAT }}
