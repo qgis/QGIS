@@ -1129,24 +1129,23 @@ void QgsCircularString::transform( const QgsCoordinateTransform &ct, Qgis::Trans
 {
   clearCache();
 
-  double *zArray = mZ.data();
-
+  double *zArray = nullptr;
   bool hasZ = is3D();
   int nPoints = numPoints();
-  bool useDummyZ = !hasZ || !transformZ;
-  if ( useDummyZ )
+
+  // it's possible that transformCoords will throw an exception - so we need to use
+  // a smart pointer for the dummy z values in order to ensure that they always get cleaned up
+  std::unique_ptr< double[] > dummyZ;
+  if ( !hasZ || !transformZ )
   {
-    zArray = new double[nPoints];
-    for ( int i = 0; i < nPoints; ++i )
-    {
-      zArray[i] = 0;
-    }
+    dummyZ.reset( new double[nPoints]() );
+    zArray = dummyZ.get();
+  }
+  else
+  {
+    zArray = mZ.data();
   }
   ct.transformCoords( nPoints, mX.data(), mY.data(), zArray, d );
-  if ( useDummyZ )
-  {
-    delete[] zArray;
-  }
 }
 
 void QgsCircularString::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
