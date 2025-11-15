@@ -1,0 +1,82 @@
+name: Sync upstream releases
+
+on:
+  schedule:
+    - cron: "40 13 * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/qgis/QGIS.git
+          git fetch upstream --tags
+
+      - name: Determine latest upstream tag in 3.44 series
+        id: latest_tag
+        run: |
+          TAG=$(git tag -l "final-3_44*" --sort=-v:refname | head -n 1)
+
+          if [ -z "$TAG" ]; then
+            echo "No upstream 3.44 tags found."
+            echo "tag=" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Latest upstream tag: $TAG"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Exit early if no upstream tag
+        if: steps.latest_tag.outputs.tag == ''
+        run: echo "Nothing to do."
+
+      - name: Check if tag already exists locally
+        id: tag_exists
+        run: |
+          if git rev-parse "${{ steps.latest_tag.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Exit if tag already exists locally
+        if: steps.tag_exists.outputs.exists == 'true'
+        run: echo "Tag already exists here; nothing to do."
+
+      - name: Prepare local branch
+        if: steps.tag_exists.outputs.exists == 'false'
+        run: |
+          git checkout qt5-qgis-3-44
+          git pull --ff-only origin qt5-qgis-3-44
+
+      - name: Merge upstream changes
+        if: steps.tag_exists.outputs.exists == 'false'
+        run: |
+          git cherry-pick upstream/release-3_44..upstream/${{ steps.latest_tag.outputs.tag }}
+
+      - name: Push updated branch
+        if: steps.tag_exists.outputs.exists == 'false'
+        run: |
+          git push origin qt5-qgis-3-44
+
+      - name: Create tag in repo_b
+        if: steps.tag_exists.outputs.exists == 'false'
+        run: |
+          git tag "${{ steps.latest_tag.outputs.tag }}"
+          git push origin "${{ steps.latest_tag.outputs.tag }}"
+
+      - name: Create GitHub Release
+        if: steps.tag_exists.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.latest_tag.outputs.tag }}
+          name: ${{ steps.latest_tag.outputs.tag }}
+          body: "Auto-synced from upstream release."
