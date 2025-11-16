@@ -1326,9 +1326,6 @@ int main( int argc, char *argv[] )
 #ifdef Q_OS_MAC
   // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
   QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
-
-  // Set 1024x1024 icon for dock, app switcher, etc., rendering
-  myApp.setWindowIcon( QIcon( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) ) );
 #else
   QgsApplication::setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 #endif
