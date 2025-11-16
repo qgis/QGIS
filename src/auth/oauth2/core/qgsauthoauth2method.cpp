@@ -255,7 +255,6 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
         if ( o2->linked() )
         {
           o2->computeExpirationDelay();
-          //scheduleRefresh(authcfg, o2->expires(), o2->expirationDelay() );
         }
       }
     }
@@ -321,7 +320,6 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     }
 
     o2->computeExpirationDelay();
-    //scheduleRefresh(authcfg, o2->expires(), o2->expirationDelay() );
   }
 
   if ( o2->token().isEmpty() )
