@@ -45,6 +45,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsmeshlayerelevationproperties.h"
 #include "qgsrenderedlayerstatistics.h"
+#include "qgsthreadingutils.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -418,6 +419,8 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 
 bool QgsMeshLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   std::unique_ptr< QgsScopedRuntimeProfile > preparingProfile;
   if ( mEnableProfile )
