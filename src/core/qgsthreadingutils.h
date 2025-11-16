@@ -32,6 +32,11 @@
 #include <QCoreApplication>
 #include <memory>
 
+
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+#include <sys/prctl.h>
+#endif
+
 #ifdef __clang_analyzer__
 #define QGIS_PROTECT_QOBJECT_THREAD_ACCESS \
   do                                       \
@@ -270,6 +275,75 @@ class CORE_EXPORT QgsThreadingUtils
     //! Mutex protecting sEmittedWarnings
     static QMutex sEmittedWarningMutex;
 #endif
+};
+
+
+/**
+ * \ingroup core
+ *
+ * \brief Scoped object for setting the current thread name.
+ *
+ * Temporarily overrides the current thread name.
+ *
+ * \warning This class is not supported on all platforms.
+ * \warning This class has no impact on non-debug enabled builds.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 4.0
+ */
+class QgsScopedThreadName
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedThreadName.
+     */
+    QgsScopedThreadName( const QString &name )
+    {
+#ifdef QGISDEBUG
+      mOldName = getCurrentThreadName();
+      setCurrentThreadName( name );
+#else
+      ( void )name;
+#endif
+    }
+
+    /**
+     * Restores the thread name back to its original state.
+     */
+    ~QgsScopedThreadName()
+    {
+#ifdef QGISDEBUG
+      setCurrentThreadName( mOldName );
+#endif
+    }
+
+  private:
+
+#ifdef QGISDEBUG
+    QString mOldName;
+
+    static QString getCurrentThreadName()
+    {
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+      char name[16];
+      prctl( PR_GET_NAME, name, 0, 0, 0 );
+      return QString( name );
+#else
+      return QString();
+#endif
+    }
+
+    static void setCurrentThreadName( const QString &name )
+    {
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
+      prctl( PR_SET_NAME, name.toLocal8Bit().constData(), 0, 0, 0 );
+#else
+      ( void )name;
+#endif
+    }
+#endif
+
 };
 
 
