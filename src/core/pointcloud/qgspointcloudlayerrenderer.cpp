@@ -37,6 +37,7 @@
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsvirtualpointcloudprovider.h"
+#include "qgsthreadingutils.h"
 
 #include <delaunator.hpp>
 
@@ -96,6 +97,8 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
 
 bool QgsPointCloudLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( mEnableProfile )
   {
