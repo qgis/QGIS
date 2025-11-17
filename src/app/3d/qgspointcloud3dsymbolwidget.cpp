@@ -447,7 +447,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( renderer2d->minimum(), renderer2d->maximum() );
       mBlockChangedSignals--;
     }
-    else if ( newSymbolType == QLatin1String( "rgb" ) )
+    else if ( newSymbolType == QLatin1String( "rgb" ) && mLayer->renderer()->type() == QLatin1String( "rgb" ) )
     {
       const QgsPointCloudRgbRenderer *renderer2d = dynamic_cast<const QgsPointCloudRgbRenderer *>( mLayer->renderer() );
       mBlockChangedSignals++;
@@ -485,7 +485,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       ( void ) ( renderer2d );
       mBlockChangedSignals--;
     }
-    else if ( newSymbolType == QLatin1String( "classification" ) )
+    else if ( newSymbolType == QLatin1String( "classification" ) && mLayer->renderer()->type() == QLatin1String( "classified" ) )
     {
       mClassifiedRendererWidget->setFromRenderer( mLayer->renderer() );
     }
