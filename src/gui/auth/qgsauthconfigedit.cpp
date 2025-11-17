@@ -74,13 +74,6 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
 
     connect( authCfgEdit, &QgsAuthConfigIdEdit::validityChanged, this, &QgsAuthConfigEdit::validateAuth );
 
-    // needed (if only combobox is ever changed)?
-    // connect( stkwAuthMethods, SIGNAL( currentChanged( int ) ),
-    //          cmbAuthMethods, SLOT( setCurrentIndex( int ) ) );
-
-    // connect( stkwAuthMethods, SIGNAL( currentChanged( int ) ),
-    //          this, SLOT( validateAuth() ) );
-
     if ( cmbAuthMethods->count() > 0 )
     {
       cmbAuthMethods->setCurrentIndex( 0 );

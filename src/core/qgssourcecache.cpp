@@ -108,7 +108,11 @@ QString QgsSourceCache::fetchSource( const QString &path, bool &isBroken, bool b
         filePath = temporaryDir->filePath( QString::number( ++id ) );
 
       QFile file( filePath );
-      file.open( QIODevice::WriteOnly );
+      if ( !file.open( QIODevice::WriteOnly ) )
+      {
+        QgsDebugError( QStringLiteral( "Can't open file %1" ).arg( filePath ) );
+        return QString();
+      }
       file.write( ba );
       file.close();
     }

@@ -39,7 +39,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      * Constructor for QgsTiledSceneWireframeRenderer.
      */
     QgsTiledSceneWireframeRenderer();
-    ~QgsTiledSceneWireframeRenderer();
+    ~QgsTiledSceneWireframeRenderer() override;
 
     QString type() const override;
     QgsTiledSceneRenderer *clone() const override;

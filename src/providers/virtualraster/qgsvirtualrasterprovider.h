@@ -73,7 +73,7 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
 
     static QString providerKey();
 
-    QString formulaString();
+    QString formulaString() const;
 
   private:
     QgsVirtualRasterProvider( const QgsVirtualRasterProvider &other );

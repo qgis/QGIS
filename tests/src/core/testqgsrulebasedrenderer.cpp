@@ -1409,7 +1409,7 @@ class TestQgsRuleBasedRenderer : public QgsTest
       Q_ASSERT( sld.contains( QStringLiteral( "<se:ElseFilter" ) ) );
 
       QTemporaryFile sldFile;
-      sldFile.open();
+      QVERIFY( sldFile.open() );
       sldFile.write( sld.toUtf8() );
       sldFile.close();
 

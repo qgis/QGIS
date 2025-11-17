@@ -242,7 +242,7 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   cbxAllowGeometrylessTables->setDisabled( true );
 }
 
-//! Autoconnected SLOTS *
+//! Autoconnected slots *
 // Slot for adding a new connection
 void QgsHanaSourceSelect::btnNew_clicked()
 {
@@ -302,7 +302,7 @@ void QgsHanaSourceSelect::btnEdit_clicked()
   }
 }
 
-//! End Autoconnected SLOTS *
+//! End Autoconnected slots *
 
 // Remember which database is selected
 void QgsHanaSourceSelect::cmbConnections_activated( int )
@@ -369,12 +369,12 @@ void QgsHanaSourceSelect::populateConnectionList()
   cmbConnections->setDisabled( cmbConnections->count() == 0 );
 }
 
-QStringList QgsHanaSourceSelect::selectedTables()
+QStringList QgsHanaSourceSelect::selectedTables() const
 {
   return mSelectedTables;
 }
 
-QString QgsHanaSourceSelect::connectionInfo()
+QString QgsHanaSourceSelect::connectionInfo() const
 {
   return mConnectionInfo;
 }
@@ -533,11 +533,6 @@ void QgsHanaSourceSelect::setConnectionListPosition()
   cmbConnections->setCurrentIndex( cmbConnections->findText( selectedConnName ) );
   if ( cmbConnections->currentIndex() < 0 )
     cmbConnections->setCurrentIndex( selectedConnName.isNull() ? 0 : cmbConnections->count() - 1 );
-}
-
-void QgsHanaSourceSelect::setSearchExpression( const QString &regexp )
-{
-  Q_UNUSED( regexp )
 }
 
 void QgsHanaSourceSelect::treeWidgetSelectionChanged(

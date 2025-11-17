@@ -190,7 +190,7 @@ class CORE_EXPORT QgsVectorTileWriter
 
   private:
     bool writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QgsTileMatrix &tileMatrix, const QByteArray &tileData );
-    QString mbtilesJsonSchema();
+    QString mbtilesJsonSchema() const;
 
   private:
     QgsTileMatrix mRootTileMatrix;

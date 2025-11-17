@@ -531,12 +531,12 @@ void QgsMssqlSourceSelect::columnThreadFinished()
   finishList();
 }
 
-QStringList QgsMssqlSourceSelect::selectedTables()
+QStringList QgsMssqlSourceSelect::selectedTables() const
 {
   return mSelectedTables;
 }
 
-QString QgsMssqlSourceSelect::connectionInfo()
+QString QgsMssqlSourceSelect::connectionInfo() const
 {
   return mConnInfo;
 }
@@ -621,11 +621,6 @@ void QgsMssqlSourceSelect::setConnectionListPosition()
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
   }
   cmbConnections_activated( cmbConnections->currentIndex() );
-}
-
-void QgsMssqlSourceSelect::setSearchExpression( const QString &regexp )
-{
-  Q_UNUSED( regexp )
 }
 
 void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )

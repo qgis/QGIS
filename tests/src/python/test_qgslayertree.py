@@ -40,6 +40,39 @@ class TestQgsLayerTree(QgisTestCase):
         """Run once on class initialization."""
         QgisTestCase.__init__(self, methodName)
 
+    def test_python(self):
+        """
+        Test python methods for layer tree classes
+        """
+        group = QgsLayerTreeGroup("test")
+        self.assertEqual(len(group), 0)
+        with self.assertRaises(IndexError):
+            group[0]
+        with self.assertRaises(IndexError):
+            group[-1]
+        group2 = group.addGroup("test 2")
+        self.assertEqual(len(group), 1)
+        self.assertEqual(group[0], group2)
+        with self.assertRaises(IndexError):
+            group[1]
+        with self.assertRaises(IndexError):
+            group[-1]
+        group3 = group.addGroup("test 3")
+        self.assertEqual(len(group), 2)
+        self.assertEqual(group[0], group2)
+        self.assertEqual(group[1], group3)
+        with self.assertRaises(IndexError):
+            group[2]
+
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
+        layer_node = group.addLayer(layer)
+        self.assertEqual(len(group), 3)
+        self.assertEqual(group[0], group2)
+        self.assertEqual(group[1], group3)
+        self.assertEqual(group[2], layer_node)
+        with self.assertRaises(IndexError):
+            group[3]
+
     def testCustomLayerOrder(self):
         """test project layer order"""
         prj = QgsProject()

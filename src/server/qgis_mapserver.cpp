@@ -112,7 +112,7 @@ class HttpException : public std::exception
     /**
      * Returns the exception message.
      */
-    QString message()
+    QString message() const
     {
       return mMessage;
     }

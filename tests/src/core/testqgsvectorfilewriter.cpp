@@ -482,7 +482,7 @@ void TestQgsVectorFileWriter::prepareWriteAsVectorFormat()
   ml.dataProvider()->addFeature( ft );
   QVERIFY( ml.isValid() );
   QTemporaryFile tmpFile( QDir::tempPath() + "/test_qgsvectorfilewriter_XXXXXX.gpkg" );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   const QString fileName( tmpFile.fileName() );
   options.driverName = "GPKG";
   options.layerName = "test";
@@ -507,7 +507,7 @@ void TestQgsVectorFileWriter::prepareWriteAsVectorFormat()
 void TestQgsVectorFileWriter::testTextFieldLength()
 {
   QTemporaryFile tmpFile( QDir::tempPath() + "/test_qgsvectorfilewriter2_XXXXXX.gpkg" );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   const QString fileName( tmpFile.fileName() );
   QgsVectorLayer vl( "Point?field=firstfield:string(1024)", "test", "memory" );
   QCOMPARE( vl.fields().at( 0 ).length(), 1024 );
@@ -539,7 +539,7 @@ void TestQgsVectorFileWriter::testTextFieldLength()
 void TestQgsVectorFileWriter::testExportArrayToGpkg()
 {
   QTemporaryFile tmpFile( QDir::tempPath() + "/test_qgsvectorfilewriter3_XXXXXX.gpkg" );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   const QString fileName( tmpFile.fileName() );
   QgsVectorLayer vl( "Point?field=arrayfield:integerlist&field=arrayfield2:stringlist", "test", "memory" );
   QCOMPARE( vl.fields().at( 0 ).type(), QMetaType::Type::QVariantList );
@@ -581,7 +581,7 @@ void TestQgsVectorFileWriter::testExportArrayToGpkg()
 void TestQgsVectorFileWriter::_testExportToGpx( const QString &geomTypeName, const QString &wkt, const QString &expectedLayerName, const QString &inputLayerName, const QStringList &layerOptions )
 {
   QTemporaryFile tmpFile( QDir::tempPath() + "/test_qgsvectorfilewriter_testExportToGpx" + geomTypeName + "_XXXXXX.gpx" );
-  tmpFile.open();
+  QVERIFY( tmpFile.open() );
   const QString fileName( tmpFile.fileName() );
   QString memLayerDef( geomTypeName );
   if ( inputLayerName == QLatin1String( "track_points" ) )

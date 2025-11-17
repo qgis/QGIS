@@ -62,16 +62,22 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
      */
     void setHighlight( QgsHighlight *h );
 
-    QgsAttributeForm *attributeForm() { return mAttributeForm; }
+    /**
+     * Returns the attribute form.
+     */
+    QgsAttributeForm *attributeForm() const { return mAttributeForm; }
 
-    const QgsFeature *feature() { return &mAttributeForm->feature(); }
+    /**
+     * Returns the current feature of the attribute form.
+     */
+    const QgsFeature *feature() const { return &mAttributeForm->feature(); }
 
     /**
      * Is this dialog editable?
      *
      * \returns returns TRUE, if this dialog was created in an editable manner.
      */
-    bool editable() { return mAttributeForm->editable(); }
+    bool editable() const { return mAttributeForm->editable(); }
 
     /**
      * Toggles the form mode.
