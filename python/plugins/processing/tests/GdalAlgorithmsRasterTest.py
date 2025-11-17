@@ -6603,7 +6603,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             rlayer = QgsRasterLayer(source_dem, "Input dem")
             self.assertTrue(rlayer.isValid())
 
-            alg.run({"INPUT": [rlayer], "OUTPUT": outdir}, context, feedback)
+            res = alg.run({"LAYERS": [rlayer], "OUTPUT": outdir}, context, feedback)
             self.assertTrue(os.path.exists(os.path.join(outdir, "dem.tif")))
 
         with tempfile.TemporaryDirectory() as outdir:
@@ -6613,7 +6613,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             rlayer2 = QgsRasterLayer(source_raster, "Input raster")
             self.assertTrue(rlayer2.isValid())
 
-            alg.run({"INPUT": [rlayer1, rlayer2], "OUTPUT": outdir}, context, feedback)
+            alg.run({"LAYERS": [rlayer1, rlayer2], "OUTPUT": outdir}, context, feedback)
 
             files = os.listdir(outdir)
             self.assertEqual(len(files), 2)
