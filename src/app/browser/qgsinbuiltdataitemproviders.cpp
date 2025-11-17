@@ -2407,12 +2407,27 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
 {
   if ( qobject_cast<QgsFieldDomainsItem *>( item )
        || qobject_cast<QgsGeoPackageCollectionItem *>( item )
-       || qobject_cast<QgsFileDataCollectionItem *>( item ) )
+       || qobject_cast<QgsFileDataCollectionItem *>( item )
+       || qobject_cast<QgsFieldDomainItem *>( item ) )
   {
     QString providerKey;
     QString connectionUri;
 
-    if ( QgsFieldDomainsItem *fieldDomainsItem = qobject_cast<QgsFieldDomainsItem *>( item ) )
+    QgsFieldDomainsItem *fieldDomainsItem = nullptr;
+
+    // this is for field domain item (currently only used on GPKG) where the field domains item is a parent
+    // this is used to extract providerKey and connectionUri which is not hold on field domain item itself
+    // this may need to extended further if more databases support field domains
+    if ( qobject_cast<QgsFieldDomainItem *>( item ) )
+    {
+      fieldDomainsItem = qobject_cast<QgsFieldDomainsItem *>( item->parent() );
+    }
+    else
+    {
+      fieldDomainsItem = qobject_cast<QgsFieldDomainsItem *>( item );
+    }
+
+    if ( fieldDomainsItem )
     {
       providerKey = fieldDomainsItem->providerKey();
       connectionUri = fieldDomainsItem->connectionUri();
@@ -2433,163 +2448,139 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     if ( md )
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddFieldDomain ) )
-      {
-        QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
-        menu->addMenu( createFieldDomainMenu );
 
-        auto createDomain = [context, itemWeakPointer = QPointer<QgsDataItem>( item ), md, connectionUri]( Qgis::FieldDomainType type ) {
-          QgsFieldDomainDialog dialog( type, QgisApp::instance() );
-          dialog.setWindowTitle( tr( "New Field Domain" ) );
-          if ( dialog.exec() )
-          {
-            std::unique_ptr<QgsFieldDomain> newDomain( dialog.createFieldDomain() );
-            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-            try
+      // for every object besides field domain item the menu actions are creation of field domain (different types)
+      if ( !qobject_cast<QgsFieldDomainItem *>( item ) )
+      {
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddFieldDomain ) )
+        {
+          QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
+          menu->addMenu( createFieldDomainMenu );
+
+          auto createDomain = [context, itemWeakPointer = QPointer<QgsDataItem>( item ), md, connectionUri]( Qgis::FieldDomainType type ) {
+            QgsFieldDomainDialog dialog( type, QgisApp::instance() );
+            dialog.setWindowTitle( tr( "New Field Domain" ) );
+            if ( dialog.exec() )
             {
-              conn->addFieldDomain( *newDomain, QString() );
-              notify( QObject::tr( "New Field Domain Created" ), QObject::tr( "Field domain '%1' was created successfully." ).arg( newDomain->name() ), context, Qgis::MessageLevel::Success );
-              if ( itemWeakPointer )
+              std::unique_ptr<QgsFieldDomain> newDomain( dialog.createFieldDomain() );
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+              try
               {
-                itemWeakPointer->refresh();
+                conn->addFieldDomain( *newDomain, QString() );
+                notify( QObject::tr( "New Field Domain Created" ), QObject::tr( "Field domain '%1' was created successfully." ).arg( newDomain->name() ), context, Qgis::MessageLevel::Success );
+                if ( itemWeakPointer )
+                {
+                  itemWeakPointer->refresh();
+                }
+              }
+              catch ( QgsProviderConnectionException &ex )
+              {
+                notify( QObject::tr( "Field Domain Creation Error" ), QObject::tr( "Error creating new field domain '%1': %2" ).arg( newDomain->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
               }
             }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              notify( QObject::tr( "Field Domain Creation Error" ), QObject::tr( "Error creating new field domain '%1': %2" ).arg( newDomain->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
-            }
+          };
+
+          const QList<Qgis::FieldDomainType> supportedDomainTypes = conn->supportedFieldDomainTypes();
+
+          if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Range ) )
+          {
+            QAction *rangeDomainAction = new QAction( QObject::tr( "New Range Domain…" ) );
+            createFieldDomainMenu->addAction( rangeDomainAction );
+            connect( rangeDomainAction, &QAction::triggered, this, [createDomain] {
+              createDomain( Qgis::FieldDomainType::Range );
+            } );
           }
-        };
 
-        const QList<Qgis::FieldDomainType> supportedDomainTypes = conn->supportedFieldDomainTypes();
+          if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Coded ) )
+          {
+            QAction *codedDomainAction = new QAction( QObject::tr( "New Coded Values Domain…" ) );
+            createFieldDomainMenu->addAction( codedDomainAction );
+            connect( codedDomainAction, &QAction::triggered, this, [createDomain] {
+              createDomain( Qgis::FieldDomainType::Coded );
+            } );
+          }
 
-        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Range ) )
+          if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Glob ) )
+          {
+            QAction *globDomainAction = new QAction( QObject::tr( "New Glob Domain…" ) );
+            createFieldDomainMenu->addAction( globDomainAction );
+            connect( globDomainAction, &QAction::triggered, this, [createDomain] {
+              createDomain( Qgis::FieldDomainType::Glob );
+            } );
+          }
+        }
+      }
+      // for field domain item the menu actions are edit and delete
+      else
+      {
+        if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::EditFieldDomain ) )
         {
-          QAction *rangeDomainAction = new QAction( QObject::tr( "New Range Domain…" ) );
-          createFieldDomainMenu->addAction( rangeDomainAction );
-          connect( rangeDomainAction, &QAction::triggered, this, [createDomain] {
-            createDomain( Qgis::FieldDomainType::Range );
-          } );
+          std::unique_ptr<QgsFieldDomain> fieldDomain( conn->fieldDomain( item->name() ) );
+
+          if ( fieldDomain )
+          {
+            QAction *editFieldDomainAction = new QAction( QObject::tr( "Edit Field Domain…" ) );
+            menu->addAction( editFieldDomainAction );
+
+            connect( editFieldDomainAction, &QAction::triggered, this, [context, item, md, connectionUri, fieldDomainLambda = std::move( fieldDomain )] {
+              QgsFieldDomainDialog dialog( fieldDomainLambda->type(), QgisApp::instance() );
+              dialog.setWindowTitle( tr( "Edit Field Domain" ) );
+              dialog.setFieldDomain( fieldDomainLambda.get() );
+              dialog.setNameEditable( false );
+
+              if ( dialog.exec() )
+              {
+                std::unique_ptr<QgsFieldDomain> updatedDomain( dialog.createFieldDomain() );
+                std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+                try
+                {
+                  conn->updateFieldDomain( updatedDomain.get(), QString() );
+                  notify( QObject::tr( "Field Domain Updated" ), QObject::tr( "Field domain '%1' was updated successfully." ).arg( updatedDomain->name() ), context, Qgis::MessageLevel::Success );
+                  if ( item )
+                  {
+                    item->refresh();
+                  }
+                }
+                catch ( QgsProviderConnectionException &ex )
+                {
+                  notify( QObject::tr( "Field Domain Update Error" ), QObject::tr( "Error updating field domain '%1': %2" ).arg( updatedDomain->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+                }
+              }
+            } );
+          }
         }
 
-        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Coded ) )
+        if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain ) )
         {
-          QAction *codedDomainAction = new QAction( QObject::tr( "New Coded Values Domain…" ) );
-          createFieldDomainMenu->addAction( codedDomainAction );
-          connect( codedDomainAction, &QAction::triggered, this, [createDomain] {
-            createDomain( Qgis::FieldDomainType::Coded );
-          } );
-        }
+          QAction *deleteFieldDomainAction = new QAction( tr( "Delete Field Domain…" ), menu );
+          menu->addAction( deleteFieldDomainAction );
 
-        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Glob ) )
-        {
-          QAction *globDomainAction = new QAction( QObject::tr( "New Glob Domain…" ) );
-          createFieldDomainMenu->addAction( globDomainAction );
-          connect( globDomainAction, &QAction::triggered, this, [createDomain] {
-            createDomain( Qgis::FieldDomainType::Glob );
+          connect( deleteFieldDomainAction, &QAction::triggered, this, [md, item, connectionUri, context] {
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+
+            QMessageBox msgbox { QMessageBox::Icon::Question, tr( "Delete Field Domain" ), tr( "Delete field domain %1" ).arg( item->name() ), QMessageBox::Ok | QMessageBox::Cancel };
+
+            if ( msgbox.exec() == QMessageBox::Ok )
+            {
+              try
+              {
+                conn->deleteFieldDomain( item->name(), QString() );
+                notify( QObject::tr( "Delete Field Domain" ), QObject::tr( "Field domain '%1' was deleted successfully." ).arg( item->name() ), context, Qgis::MessageLevel::Success );
+                if ( item->parent() )
+                {
+                  item->parent()->refresh();
+                }
+              }
+              catch ( QgsProviderConnectionException &ex )
+              {
+                notify( QObject::tr( "Delete Field Domain Error" ), QObject::tr( "Error deleting field domain '%1': %2" ).arg( item->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+              }
+            }
           } );
         }
       }
     }
   }
-
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 12, 0 )
-  if ( qobject_cast<QgsFieldDomainItem *>( item ) )
-  {
-    QString providerKey;
-    QString connectionUri;
-
-    if ( QgsFieldDomainsItem *fieldDomainsItem = qobject_cast<QgsFieldDomainsItem *>( item->parent() ) )
-    {
-      providerKey = fieldDomainsItem->providerKey();
-      connectionUri = fieldDomainsItem->connectionUri();
-    }
-    else if ( QgsGeoPackageCollectionItem *gpkgItem = qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
-    {
-      providerKey = QStringLiteral( "ogr" );
-      connectionUri = gpkgItem->path().remove( QStringLiteral( "gpkg:/" ) );
-    }
-    else if ( QgsFileDataCollectionItem *fileItem = qobject_cast<QgsFileDataCollectionItem *>( item ) )
-    {
-      providerKey = QStringLiteral( "ogr" );
-      connectionUri = fileItem->path();
-    }
-
-    // Check if domain creation is supported
-    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
-
-    if ( !md )
-      return;
-
-    std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-
-    if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::EditFieldDomain ) )
-    {
-      QgsFieldDomain *fieldDomain = conn->fieldDomain( item->name() );
-
-      if ( fieldDomain )
-      {
-        QAction *editFieldDomainAction = new QAction( QObject::tr( "Edit Field Domain…" ) );
-        menu->addAction( editFieldDomainAction );
-
-        connect( editFieldDomainAction, &QAction::triggered, this, [context, item, md, connectionUri, fieldDomain] {
-          QgsFieldDomainDialog dialog( fieldDomain->type(), QgisApp::instance() );
-          dialog.setWindowTitle( tr( "Edit Field Domain" ) );
-          dialog.setFieldDomain( fieldDomain );
-          dialog.setNameEditable( false );
-
-          if ( dialog.exec() )
-          {
-            std::unique_ptr<QgsFieldDomain> updatedDomain( dialog.createFieldDomain() );
-            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-            try
-            {
-              conn->updateFieldDomain( updatedDomain.get(), QString() );
-              notify( QObject::tr( "Field Domain Updated" ), QObject::tr( "Field domain '%1' was updated successfully." ).arg( updatedDomain->name() ), context, Qgis::MessageLevel::Success );
-              if ( item )
-              {
-                item->refresh();
-              }
-            }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              notify( QObject::tr( "Field Domain Update Error" ), QObject::tr( "Error updating field domain '%1': %2" ).arg( updatedDomain->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
-            }
-          }
-        } );
-      }
-    }
-
-    if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain ) )
-    {
-      QAction *deleteFieldDomainAction = new QAction( tr( "Delete Field Domain…" ), menu );
-      menu->addAction( deleteFieldDomainAction );
-
-      connect( deleteFieldDomainAction, &QAction::triggered, this, [md, item, connectionUri, context] {
-        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-
-        QMessageBox msgbox { QMessageBox::Icon::Question, tr( "Delete Field Domain" ), tr( "Delete field domain %1" ).arg( item->name() ), QMessageBox::Ok | QMessageBox::Cancel };
-
-        if ( msgbox.exec() == QMessageBox::Ok )
-        {
-          try
-          {
-            conn->deleteFieldDomain( item->name(), QString() );
-            notify( QObject::tr( "Delete Field Domain" ), QObject::tr( "Field domain '%1' was deleted successfully." ).arg( item->name() ), context, Qgis::MessageLevel::Success );
-            if ( item->parent() )
-            {
-              item->parent()->refresh();
-            }
-          }
-          catch ( QgsProviderConnectionException &ex )
-          {
-            notify( QObject::tr( "Delete Field Domain Error" ), QObject::tr( "Error deleting field domain '%1': %2" ).arg( item->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
-          }
-        }
-      } );
-    }
-  }
-#endif
 }
 
 QWidget *QgsFieldDomainItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
