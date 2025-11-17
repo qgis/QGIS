@@ -3805,6 +3805,9 @@ void QgsGdalProvider::initBaseDataset()
       crsWkt = QgsOgrUtils::OGRSpatialReferenceToWkt( spatialRefSys );
     }
   }
+
+  // silence clang-tidy, RPC and GEOLOCATION are distinct cases and a duplicate branch should not matter
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( !crsWkt.isEmpty() )
   {
     mCrs = QgsCoordinateReferenceSystem::fromWkt( crsWkt );
@@ -3820,10 +3823,7 @@ void QgsGdalProvider::initBaseDataset()
   {
     // Warped VRT of GEOLOCATION is not always in EPSG:4326, it may have a SRS defined
     crsWkt = GDALGetMetadataItem( mGdalBaseDataset, "SRS", "GEOLOCATION" );
-    if ( !crsWkt.isEmpty() )
-    {
-      mCrs = QgsCoordinateReferenceSystem::fromWkt( crsWkt );
-    }
+    mCrs = QgsCoordinateReferenceSystem::fromWkt( crsWkt );
     if ( !mCrs.isValid() )
     {
       mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
@@ -3833,6 +3833,7 @@ void QgsGdalProvider::initBaseDataset()
   {
     QgsDebugMsgLevel( QStringLiteral( "No valid CRS identified" ), 2 );
   }
+  // NOLINTEND(bugprone-branch-clone)
 
   //set up the coordinat transform - in the case of raster this is mainly used to convert
   //the inverese projection of the map extents of the canvas when zooming in etc. so
