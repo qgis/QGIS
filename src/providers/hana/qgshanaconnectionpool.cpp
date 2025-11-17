@@ -24,7 +24,7 @@
 QgsHanaConnectionPoolGroup::QgsHanaConnectionPoolGroup( const QString &name )
   : QgsConnectionPoolGroup<QgsHanaConnection *>( name )
 {
-  initTimer( this );
+  initTimer<QgsHanaConnectionPoolGroup>( this );
 }
 
 QBasicMutex QgsHanaConnectionPool::sMutex;

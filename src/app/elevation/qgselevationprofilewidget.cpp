@@ -526,6 +526,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   // initially populate layer tree with project layers and registered sources
   mLayerTreeView->populateInitialSources( QgsProject::instance() );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, mLayerTreeView, [this] { mLayerTreeView->populateMissingLayers( QgsProject::instance() ); } );
 
   connect( mProfile->layerTree(), &QgsLayerTree::layerOrderChanged, this, [this] {
     updateCanvasSources();
@@ -1416,6 +1417,7 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
     if ( QgsLayerTree::isGroup( node ) )
     {
       menu->addAction( defaultActions()->actionRenameGroupOrLayer( menu ) );
+      menu->addAction( defaultActions()->actionRemoveGroupPromoteLayers( menu ) );
     }
   }
 

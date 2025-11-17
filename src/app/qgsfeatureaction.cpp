@@ -268,7 +268,7 @@ QgsFeatureAction::AddFeatureResult QgsFeatureAction::addFeature( const QgsAttrib
     emit addFeatureFinished();
   }
 
-  // Will be set in the onFeatureSaved SLOT
+  // Will be set in the onFeatureSaved slot
   // assume dialog was canceled if dialog was shown yet feature wasn't added
   return mFeatureSaved ? AddFeatureResult::Success : ( dialogWasShown ? AddFeatureResult::Canceled : AddFeatureResult::FeatureError );
 }

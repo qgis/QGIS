@@ -221,8 +221,8 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     // utils
     bool validate();
     QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, QgsGeorefTransform &t, bool rasterToWorld = true, uint numSamples = 4 );
-    QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
-    int polynomialOrder( QgsGeorefTransform::TransformMethod transform );
+    static QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
+    static int polynomialOrder( QgsGeorefTransform::TransformMethod transform );
     QString guessWorldFileName( const QString &sourceFileName );
     bool checkFileExisting( const QString &fileName, const QString &title, const QString &question );
     bool equalGCPlists( const QList<QgsGcpPoint> &list1, const QgsGCPList &list2 );

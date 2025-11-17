@@ -85,7 +85,7 @@ void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback *
 
   const double offsetFromLine = context.convertToPainterUnits( mOffsetFromLineDistance, mOffsetFromLineUnit, mOffsetFromLineScale );
 
-  QgsTextRenderer::drawTextOnLine( pts, displayText, context, mTextFormat, 0, offsetFromLine );
+  QgsTextRenderer::drawTextOnLine( pts, displayText, context, mTextFormat, 0, offsetFromLine, Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::ExtendLineToFitText );
 }
 
 bool QgsAnnotationLineTextItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const

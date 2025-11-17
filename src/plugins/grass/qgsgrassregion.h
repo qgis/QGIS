@@ -148,7 +148,7 @@ class QgsGrassRegionEdit : public QgsMapTool
     void deactivate() override;
 
     //! Gets the rectangle
-    QgsRectangle getRegion();
+    QgsRectangle getRegion() const;
 
     //! refresh the rectangle displayed in canvas
     void setRegion( const QgsPointXY &, const QgsPointXY & );

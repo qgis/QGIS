@@ -1901,7 +1901,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             if ( qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
               item->parent()->refresh();
 
-            if ( !qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() ) )
+            if ( !item->parent() || !qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() ) )
               return;
 
             QgsDataItemGuiProviderUtils::refreshChildWithName( item->parent()->parent(), dlg->selectedSchema() );

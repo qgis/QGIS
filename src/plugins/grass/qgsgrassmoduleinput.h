@@ -270,12 +270,12 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     //! Does this options causes use of region?
     //  Raster input/output uses region by default
     //  Use of region can be forced by 'region' attribute in qgm
-    bool usesRegion() { return mUsesRegion; }
+    bool usesRegion() const { return mUsesRegion; }
 
     //! Should be used region of this input
     bool useRegion();
 
-    QgsGrassObject::Type type() { return mType; }
+    QgsGrassObject::Type type() const { return mType; }
 
     void setGeometryTypeOption( const QString &optionName ) { mGeometryTypeOption = optionName; }
     QString geometryTypeOption() const { return mGeometryTypeOption; }

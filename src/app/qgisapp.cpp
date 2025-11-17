@@ -1566,7 +1566,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 #ifdef Q_OS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
   mWindowAction = new QAction( this );
-  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
+  connect( mWindowAction, &QAction::triggered, this, &QgisApp::activate );
 
   // add this window to Window menu
   addWindow( mWindowAction );
@@ -3100,15 +3100,15 @@ void QgisApp::createActions()
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
   mActionWindowMinimize->setShortcut( tr( "Ctrl+M", "Minimize Window" ) );
   mActionWindowMinimize->setStatusTip( tr( "Minimizes the active window to the dock" ) );
-  connect( mActionWindowMinimize, SIGNAL( triggered() ), this, SLOT( showActiveWindowMinimized() ) );
+  connect( mActionWindowMinimize, &QAction::triggered, this, &QgisApp::showActiveWindowMinimized );
 
   mActionWindowZoom = new QAction( tr( "Zoom" ), this );
   mActionWindowZoom->setStatusTip( tr( "Toggles between a predefined size and the window size set by the user" ) );
-  connect( mActionWindowZoom, SIGNAL( triggered() ), this, SLOT( toggleActiveWindowMaximized() ) );
+  connect( mActionWindowZoom, &QAction::triggered, this, &QgisApp::toggleActiveWindowMaximized );
 
   mActionWindowAllToFront = new QAction( tr( "Bring All to Front" ), this );
   mActionWindowAllToFront->setStatusTip( tr( "Bring forward all open windows" ) );
-  connect( mActionWindowAllToFront, SIGNAL( triggered() ), this, SLOT( bringAllToFront() ) );
+  connect( mActionWindowAllToFront, &QAction::triggered, this, &QgisApp::bringAllToFront );
 
   // list of open windows
   mWindowActions = new QActionGroup( this );
@@ -5671,16 +5671,19 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
     }
   }
 
-  // Use the last used image format
-  QString lastImageEncoding = QgsSettings().value( QStringLiteral( "/qgis/lastWmsImageEncoding" ), "image/png" ).toString();
-  for ( const QString &fmt : supportedFormats )
+  // Use the last used image format if not specified in the uri
+  if ( !uri.contains( QStringLiteral( "format=" ) ) )
   {
-    if ( fmt == lastImageEncoding )
+    const QString lastImageEncoding = QgsSettings().value( QStringLiteral( "/qgis/lastWmsImageEncoding" ), QStringLiteral( "image/png" ) ).toString();
+    for ( const QString &fmt : supportedFormats )
     {
-      const thread_local QRegularExpression sFormatRegEx( QStringLiteral( "format=[^&]+" ) );
-      newuri.replace( sFormatRegEx, "format=" + fmt );
-      QgsDebugMsgLevel( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ), 2 );
-      break;
+      if ( fmt == lastImageEncoding )
+      {
+        const thread_local QRegularExpression sFormatRegEx( QStringLiteral( "format=[^&]+" ) );
+        newuri.replace( sFormatRegEx, "format=" + fmt );
+        QgsDebugMsgLevel( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ), 2 );
+        break;
+      }
     }
   }
   return newuri;

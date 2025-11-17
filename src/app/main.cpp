@@ -1577,9 +1577,8 @@ int main( int argc, char *argv[] )
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
   QgsApplication::connect(
-    &myApp, SIGNAL( preNotify( QObject *, QEvent *, bool * ) ),
-    //qgis, SLOT( preNotify( QObject *, QEvent *))
-    QgsCustomization::instance(), SLOT( preNotify( QObject *, QEvent *, bool * ) )
+    &myApp, &QgsApplication::preNotify,
+    QgsCustomization::instance(), &QgsCustomization::preNotify
   );
 
   /////////////////////////////////////////////////////////////////////
@@ -1813,7 +1812,7 @@ int main( int argc, char *argv[] )
   // Continue on to interactive gui...
   /////////////////////////////////////////////////////////////////////
   qgis->show();
-  QgsApplication::connect( &myApp, SIGNAL( lastWindowClosed() ), &myApp, SLOT( quit() ) );
+  QgsApplication::connect( &myApp, &QgsApplication::lastWindowClosed, &myApp, &QgsApplication::quit );
 
   mypSplash->finish( qgis );
   delete mypSplash;

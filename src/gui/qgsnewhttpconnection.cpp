@@ -65,7 +65,15 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   {
     connectionType = QStringLiteral( "WMS/WMTS" );
   }
-  setWindowTitle( tr( "Create a New %1 Connection" ).arg( connectionType ) );
+
+  if ( connectionName.isEmpty() )
+  {
+    setWindowTitle( tr( "Create a New %1 Connection" ).arg( connectionType ) );
+  }
+  else
+  {
+    setWindowTitle( tr( "Edit %1 Connection \"%2\"" ).arg( connectionType, connectionName ) );
+  }
 
   txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]+" ), txtName ) );
 
@@ -123,6 +131,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     mAuthSettings->setPassword( QgsOwsConnection::settingsPassword->value( detailParameters ) );
     mAuthSettings->setConfigId( QgsOwsConnection::settingsAuthCfg->value( detailParameters ) );
   }
+
   mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
 
   if ( !( mTypes & ConnectionWms ) && !( mTypes & ConnectionWcs ) )
@@ -179,6 +188,8 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     mGroupBox->layout()->removeWidget( mAuthGroupBox );
   }
 
+  mWmsFormatDetectButton->setDisabled( txtUrl->text().isEmpty() );
+
   connect( txtName, &QLineEdit::textChanged, this, &QgsNewHttpConnection::nameChanged );
   connect( txtUrl, &QLineEdit::textChanged, this, &QgsNewHttpConnection::urlChanged );
 
@@ -230,6 +241,7 @@ void QgsNewHttpConnection::urlChanged( const QString &text )
   Q_UNUSED( text )
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
   mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
+  mWmsFormatDetectButton->setDisabled( txtUrl->text().isEmpty() );
 }
 
 void QgsNewHttpConnection::updateOkButtonState()
@@ -263,10 +275,36 @@ QPushButton *QgsNewHttpConnection::testConnectButton()
   return mTestConnectionButton;
 }
 
+QPushButton *QgsNewHttpConnection::wmsFormatDetectButton()
+{
+  return mWmsFormatDetectButton;
+}
+
 QgsAuthSettingsWidget *QgsNewHttpConnection::authSettingsWidget()
 {
   return mAuthSettings;
 }
+
+QgsAuthorizationSettings QgsNewHttpConnection::authorizationSettings() const
+{
+  return QgsAuthorizationSettings( mAuthSettings->username(), mAuthSettings->password(), mHttpHeaders->httpHeaders(), mAuthSettings->configId() );
+}
+
+bool QgsNewHttpConnection::ignoreAxisOrientation() const
+{
+  return cbxWmsIgnoreAxisOrientation->isChecked();
+}
+
+QComboBox *QgsNewHttpConnection::wmsPreferredFormatCombo() const
+{
+  return mWmsPreferredFormatCombo;
+}
+
+bool QgsNewHttpConnection::invertAxisOrientation() const
+{
+  return cbxWmsInvertAxisOrientation->isChecked();
+}
+
 
 QPushButton *QgsNewHttpConnection::wfsVersionDetectButton()
 {
@@ -326,6 +364,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 
   Qgis::DpiMode dpiMode = QgsOwsConnection::settingsDpiMode->value( detailsParameters );
   cmbDpiMode->setCurrentIndex( cmbDpiMode->findData( static_cast<int>( dpiMode ) ) );
+
   Qgis::TilePixelRatio tilePixelRatio = QgsOwsConnection::settingsTilePixelRatio->value( detailsParameters );
   cmbTilePixelRatio->setCurrentIndex( cmbTilePixelRatio->findData( static_cast<int>( tilePixelRatio ) ) );
 
@@ -369,6 +408,11 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 void QgsNewHttpConnection::showEvent( QShowEvent *event )
 {
   QDialog::showEvent( event );
+}
+
+QString QgsNewHttpConnection::originalConnectionName() const
+{
+  return mOriginalConnName;
 }
 
 QUrl QgsNewHttpConnection::urlTrimmed() const
@@ -437,6 +481,14 @@ void QgsNewHttpConnection::accept()
 
     Qgis::DpiMode dpiMode = cmbDpiMode->currentData().value<Qgis::DpiMode>();
     QgsOwsConnection::settingsDpiMode->setValue( dpiMode, detailsParameters );
+    // Get all values from the combo
+    QStringList availableFormats;
+    for ( int i = 0; i < mWmsPreferredFormatCombo->count(); ++i )
+    {
+      availableFormats.append( mWmsPreferredFormatCombo->itemData( i ).toString() );
+    }
+    QgsOwsConnection::settingsDefaultImageFormat->setValue( mWmsPreferredFormatCombo->currentData().toString(), detailsParameters );
+    QgsOwsConnection::settingsAvailableImageFormats->setValue( availableFormats, detailsParameters );
     Qgis::TilePixelRatio tilePixelRatio = cmbTilePixelRatio->currentData().value<Qgis::TilePixelRatio>();
     QgsOwsConnection::settingsTilePixelRatio->setValue( tilePixelRatio, detailsParameters );
 

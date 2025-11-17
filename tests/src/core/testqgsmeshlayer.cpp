@@ -1067,8 +1067,8 @@ void TestQgsMeshLayer::test_reload()
   auto copyToTemporaryFile = []( QFile &fileTocopy, QTemporaryFile &tempFile ) {
     QDataStream streamToCopy( &fileTocopy );
     QDataStream streamTemporaryFile( &tempFile );
-    tempFile.open();
-    fileTocopy.open( QIODevice::ReadOnly );
+    QVERIFY( tempFile.open() );
+    QVERIFY( fileTocopy.open( QIODevice::ReadOnly ) );
 
     while ( !streamToCopy.atEnd() )
     {
@@ -1148,8 +1148,8 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   auto copyToTemporaryFile = []( QFile &fileTocopy, QTemporaryFile &tempFile ) {
     QDataStream streamToCopy( &fileTocopy );
     QDataStream streamTemporaryFile( &tempFile );
-    tempFile.open();
-    fileTocopy.open( QIODevice::ReadOnly );
+    QVERIFY( tempFile.open() );
+    QVERIFY( fileTocopy.open( QIODevice::ReadOnly ) );
 
     while ( !streamToCopy.atEnd() )
     {

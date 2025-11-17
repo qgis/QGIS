@@ -5110,7 +5110,11 @@ QString QgsProject::createAttachedFile( const QString &nameTemplate )
   const QDir archiveDir( mArchive->dir() );
   QTemporaryFile tmpFile( archiveDir.filePath( "XXXXXX_" + nameTemplate ), this );
   tmpFile.setAutoRemove( false );
-  tmpFile.open();
+  if ( !tmpFile.open() )
+  {
+    setError( tr( "Unable to open %1" ).arg( tmpFile.fileName() ) );
+    return QString();
+  }
   mArchive->addFile( tmpFile.fileName() );
   return tmpFile.fileName();
 }

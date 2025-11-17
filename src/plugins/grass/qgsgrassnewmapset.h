@@ -77,13 +77,6 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void mSelectLocationRadioButton_clicked() { locationRadioSwitched(); }
     void locationRadioSwitched();
 
-    //! Existing location selection
-    void mLocationComboBox_textChanged( const QString &txt )
-    {
-      existingLocationChanged( txt );
-    }
-    void existingLocationChanged( const QString & );
-
     //! New location name has changed
     void mLocationLineEdit_returnPressed() { newLocationChanged(); }
     void mLocationLineEdit_textChanged() { newLocationChanged(); }

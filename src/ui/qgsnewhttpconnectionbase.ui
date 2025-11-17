@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>868</width>
-        <height>805</height>
+        <width>862</width>
+        <height>808</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -180,13 +180,91 @@
             <string>WMS/WMTS Options</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_2">
+            <item row="2" column="0">
+             <widget class="QLabel" name="lblTilePixelRatio">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>WMTS server-side tile pixel ratio</string>
+              </property>
+              <property name="buddy">
+               <cstring>cmbTilePixelRatio</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="0" colspan="2">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Orientation::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblWmsFormat">
+              <property name="text">
+               <string>Default image format</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="lblFeatureCount">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Maximum number of GetFeatureInfo results</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="lblDpiMode">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>WMS DPI-&amp;Mode</string>
+              </property>
+              <property name="buddy">
+               <cstring>cmbDpiMode</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QPushButton" name="mWmsFormatDetectButton">
+              <property name="toolTip">
+               <string>Ask the server for the available formats</string>
+              </property>
+              <property name="text">
+               <string>Detect</string>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="1">
+             <widget class="QComboBox" name="mWmsPreferredFormatCombo"/>
+            </item>
+            <item row="1" column="1" colspan="2">
              <widget class="QComboBox" name="cmbDpiMode"/>
             </item>
-            <item row="1" column="1">
+            <item row="2" column="1" colspan="2">
              <widget class="QComboBox" name="cmbTilePixelRatio"/>
             </item>
-            <item row="2" column="1">
+            <item row="3" column="1" colspan="2">
              <widget class="QSpinBox" name="sbFeatureCount">
               <property name="toolTip">
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Specify a default value for FEATURE_COUNT when a new layer is created from this connection. &lt;/p&gt;&lt;p&gt;FEATURE_COUNT defines the maximum number of results returned by a GetFeatureInfo request, if not specified the server default value (usually 1) will be used.&lt;/p&gt;&lt;p&gt;Set to 0 to use server default: no FEATURE_COUNT parameter will be added to the request.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -205,105 +283,47 @@
               </property>
              </widget>
             </item>
-            <item row="8" column="0" colspan="2">
-             <widget class="QCheckBox" name="cbxWmsIgnoreAxisOrientation">
-              <property name="text">
-               <string>Ignore axis orientation (WMS 1.3/WMTS)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="lblDpiMode">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>WMS DPI-&amp;Mode</string>
-              </property>
-              <property name="buddy">
-               <cstring>cmbDpiMode</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="13" column="0" colspan="2">
-             <widget class="QCheckBox" name="cbxSmoothPixmapTransform">
-              <property name="text">
-               <string>Smooth pixmap transform</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="lblFeatureCount">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Maximum number of GetFeatureInfo results</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0" colspan="2">
-             <widget class="QCheckBox" name="cbxIgnoreGetFeatureInfoURI">
-              <property name="text">
-               <string>Ignore GetFeatureInfo URI reported in capabilities</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="0" colspan="2">
-             <widget class="QCheckBox" name="cbxWmsInvertAxisOrientation">
-              <property name="text">
-               <string>Invert axis orientation</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="lblTilePixelRatio">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>WMTS server-side tile pixel ratio</string>
-              </property>
-              <property name="buddy">
-               <cstring>cmbTilePixelRatio</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0" colspan="2">
-             <widget class="QCheckBox" name="cbxWmsIgnoreReportedLayerExtents">
-              <property name="text">
-               <string>Ignore reported layer extents</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0" colspan="2">
+            <item row="6" column="0" colspan="3">
              <widget class="QCheckBox" name="cbxIgnoreGetMapURI">
               <property name="text">
                <string>Ignore GetMap/GetTile/GetLegendGraphic URI reported in capabilities</string>
               </property>
              </widget>
             </item>
-            <item row="14" column="0" colspan="2">
-             <spacer name="verticalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Orientation::Vertical</enum>
+            <item row="7" column="0" colspan="3">
+             <widget class="QCheckBox" name="cbxIgnoreGetFeatureInfoURI">
+              <property name="text">
+               <string>Ignore GetFeatureInfo URI reported in capabilities</string>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>0</height>
-               </size>
+             </widget>
+            </item>
+            <item row="8" column="0" colspan="3">
+             <widget class="QCheckBox" name="cbxWmsIgnoreReportedLayerExtents">
+              <property name="text">
+               <string>Ignore reported layer extents</string>
               </property>
-             </spacer>
+             </widget>
+            </item>
+            <item row="9" column="0" colspan="3">
+             <widget class="QCheckBox" name="cbxWmsIgnoreAxisOrientation">
+              <property name="text">
+               <string>Ignore axis orientation (WMS 1.3/WMTS)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="10" column="0" colspan="3">
+             <widget class="QCheckBox" name="cbxWmsInvertAxisOrientation">
+              <property name="text">
+               <string>Invert axis orientation</string>
+              </property>
+             </widget>
+            </item>
+            <item row="14" column="0" colspan="3">
+             <widget class="QCheckBox" name="cbxSmoothPixmapTransform">
+              <property name="text">
+               <string>Smooth pixmap transform</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -526,7 +546,6 @@
   <tabstop>txtName</tabstop>
   <tabstop>txtUrl</tabstop>
   <tabstop>mTestConnectionButton</tabstop>
-  <tabstop>cmbDpiMode</tabstop>
   <tabstop>cmbTilePixelRatio</tabstop>
   <tabstop>sbFeatureCount</tabstop>
   <tabstop>cbxIgnoreGetMapURI</tabstop>
