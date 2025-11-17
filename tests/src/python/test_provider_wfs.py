@@ -9226,11 +9226,11 @@ class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
         self.assertEqual(
             parts,
             {
-                "authcfg": "XYZ123",
+                "url": "http://qgis.server.org/wfs",
+                "typename": "my:typename",
                 "httpMethod": "post",
                 "skipInitialGetFeature": "true",
-                "typename": "my:typename",
-                "url": "http://qgis.server.org/wfs",
+                "authcfg": "XYZ123",
             },
         )
 
