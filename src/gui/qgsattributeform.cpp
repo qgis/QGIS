@@ -1095,7 +1095,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
   updateConstraints( eww );
 
   // Update dependent fields (only if form is not initializing)
-  if ( mValuesInitialized )
+  if ( mValuesInitialized && !mIsSettingMultiEditFeatures )
   {
     //append field index here, so it's not updated recursive
     mAlreadyUpdatedFields.append( eww->fieldIdx() );
