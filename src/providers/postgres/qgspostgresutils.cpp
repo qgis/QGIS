@@ -610,6 +610,19 @@ bool QgsPostgresUtils::moveProjectToSchema( QgsPostgresConn *conn, const QString
     return false;
   }
 
+  if ( QgsPostgresUtils::qgisProjectVersioningActive( conn, originalSchema ) )
+  {
+    if ( !QgsPostgresUtils::setupQgisProjectVersioning( conn, targetSchema ) )
+    {
+      return false;
+    }
+
+    if ( !QgsPostgresUtils::moveProjectVersions( conn, originalSchema, projectName, targetSchema ) )
+    {
+      return false;
+    }
+  }
+
   if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectName, originalSchema ) )
   {
     return false;
