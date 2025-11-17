@@ -635,7 +635,7 @@ void QgsLayoutElevationProfileWidget::copySettingsFromProfileCanvas( QgsElevatio
   mDistanceAxisLabelIntervalSpin->setClearValue( canvas->plot().xAxis().labelInterval() );
   mProfile->plot()->xAxis().setLabelInterval( canvas->plot().xAxis().labelInterval() );
 
-  mSpinMinElevation->setValue( canvas->plot().xMinimum() );
+  mSpinMinElevation->setValue( canvas->plot().yMinimum() );
   mSpinMinElevation->setClearValue( canvas->plot().yMinimum() );
   mProfile->plot()->setYMinimum( canvas->plot().yMinimum() );
 
@@ -683,7 +683,7 @@ void QgsLayoutElevationProfileWidget::syncLayerTreeAndProfileItemSources()
   const QList<QgsLayerTreeNode *> nodes = mLayerTree->findLayersAndCustomNodes();
   for ( QgsLayerTreeNode *node : nodes )
   {
-    QgsAbstractProfileSource *source;
+    QgsAbstractProfileSource *source = nullptr;
     if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer *layerNode = QgsLayerTree::toLayer( node );
@@ -697,11 +697,16 @@ void QgsLayoutElevationProfileWidget::syncLayerTreeAndProfileItemSources()
     {
       QgsLayerTreeCustomNode *customNode = QgsLayerTree::toCustomNode( node );
       source = QgsApplication::profileSourceRegistry()->findSourceById( customNode->nodeId() );
-      if ( !source )
-        continue;
     }
 
-    node->setItemVisibilityChecked( mProfile->sources().contains( source ) );
+    if ( !source )
+    {
+      node->setItemVisibilityChecked( false );
+    }
+    else
+    {
+      node->setItemVisibilityChecked( mProfile->sources().contains( source ) );
+    }
   }
 
   // Update layer tree node ordering, based on layout item profile

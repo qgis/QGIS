@@ -31,7 +31,6 @@
 #include "qgsproject.h"
 #include "qgspostgresutils.h"
 
-
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path, QStringLiteral( "PostGIS" ) )
@@ -428,6 +427,37 @@ QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, con
   : QgsProjectItem( parent, name, QgsPostgresProjectStorage::encodeUri( postgresProjectUri ), QStringLiteral( "postgres" ) ), mProjectUri( postgresProjectUri ), mConnectionName( connectionName )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;
+
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( "postgres" ) };
+  if ( md )
+  {
+    QgsPostgresConn *conn = QgsPostgresConn::connectDb( postgresProjectUri.connInfo, false );
+    if ( conn )
+    {
+      QString commentColumn;
+      if ( QgsPostgresUtils::columnExists( conn, postgresProjectUri.schemaName, QStringLiteral( "qgis_projects" ), QStringLiteral( "comment" ) ) )
+      {
+        commentColumn = QStringLiteral( ", comment " );
+      }
+
+      const QString sql = QStringLiteral( "SELECT (metadata->>'last_modified_time')::timestamp(0)::TEXT AS time, "
+                                          "metadata->>'last_modified_user' AS user %1"
+                                          "FROM %2.qgis_projects WHERE name = %3" )
+                            .arg( commentColumn, QgsPostgresConn::quotedIdentifier( postgresProjectUri.schemaName ), QgsPostgresConn::quotedValue( name ) );
+
+      QgsPostgresResult res( conn->PQexec( sql ) );
+
+      if ( res.PQntuples() == 1 )
+      {
+        const QString tooltip = QStringLiteral( "%1: %2\n"
+                                                "%3: %4\n"
+                                                "%5: %6" )
+                                  .arg( tr( "Last modified time" ), res.PQgetvalue( 0, 0 ), tr( "Last modified user" ), res.PQgetvalue( 0, 1 ), tr( "Comment" ), commentColumn.isEmpty() ? QString() : res.PQgetvalue( 0, 2 ) );
+        setToolTip( tooltip );
+      }
+      conn->unref();
+    }
+  }
 }
 
 QString QgsPGProjectItem::uriWithNewName( const QString &newProjectName )

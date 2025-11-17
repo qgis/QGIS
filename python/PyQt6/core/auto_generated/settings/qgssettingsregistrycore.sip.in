@@ -26,7 +26,7 @@ Used for settings introspection and collects all
   public:
 
     QgsSettingsRegistryCore();
-    virtual ~QgsSettingsRegistryCore();
+    ~QgsSettingsRegistryCore();
 
 };
 

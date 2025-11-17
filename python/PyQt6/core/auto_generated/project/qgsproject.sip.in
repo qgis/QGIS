@@ -1784,6 +1784,17 @@ or ``False`` if visiting should be canceled.
 .. versionadded:: 3.10
 %End
 
+    bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
+%Docstring
+Accepts the specified object entity ``visitor``, causing it to visit all
+object entities associated with the project.
+
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
+
+.. versionadded:: 4.0
+%End
+
     QgsElevationShadingRenderer elevationShadingRenderer() const;
 %Docstring
 Returns the elevation shading renderer used for map shading
@@ -1797,7 +1808,6 @@ Sets the elevation shading renderer used for global map shading
 
 .. versionadded:: 3.30
 %End
-
 
 
 

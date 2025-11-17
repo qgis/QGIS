@@ -341,6 +341,8 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     if ( !createMenu && mShowFeatureActions )
     {
       QgsActionMenu *featureActionMenu = new QgsActionMenu( layer, results[0].mFeature, QStringLiteral( "Feature" ), this );
+      connect( featureActionMenu, &QgsActionMenu::messageEmitted, this, &QgsIdentifyMenu::messageEmitted );
+      connect( featureActionMenu, &QgsActionMenu::messageDiscarded, this, &QgsIdentifyMenu::messageDiscarded );
       featureActionMenu->setMode( QgsAttributeEditorContext::IdentifyMode );
       createMenu = !featureActionMenu->actions().isEmpty();
       delete featureActionMenu;
@@ -418,6 +420,8 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     if ( mShowFeatureActions )
     {
       featureActionMenu = new QgsActionMenu( layer, result.mFeature, QStringLiteral( "Feature" ), layerMenu );
+      connect( featureActionMenu, &QgsActionMenu::messageEmitted, this, &QgsIdentifyMenu::messageEmitted );
+      connect( featureActionMenu, &QgsActionMenu::messageDiscarded, this, &QgsIdentifyMenu::messageDiscarded );
       featureActionMenu->setMode( QgsAttributeEditorContext::IdentifyMode );
       featureActionMenu->setExpressionContextScope( mExpressionContextScope );
     }

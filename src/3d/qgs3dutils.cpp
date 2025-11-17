@@ -194,7 +194,7 @@ double Qgs3DUtils::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity )
   for ( Qt3DRender::QTexture2D *tex : entity->findChildren<Qt3DRender::QTexture2D *>() )
   {
     // TODO : lift the assumption that the texture is RGBA
-    usedGpuMemory += tex->width() * tex->height() * 4;
+    usedGpuMemory += static_cast< long long >( tex->width() ) * static_cast< long long >( tex->height() ) * 4;
   }
   return usedGpuMemory / 1024.0 / 1024.0;
 }
@@ -811,7 +811,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
   std::unique_ptr<QgsPointCloud3DSymbol> symbol3D;
   if ( renderer->type() == QLatin1String( "ramp" ) )
   {
-    const QgsPointCloudAttributeByRampRenderer *renderer2D = dynamic_cast<const QgsPointCloudAttributeByRampRenderer *>( renderer );
+    const QgsPointCloudAttributeByRampRenderer *renderer2D = qgis::down_cast<const QgsPointCloudAttributeByRampRenderer *>( renderer );
     symbol3D = std::make_unique<QgsColorRampPointCloud3DSymbol>();
     QgsColorRampPointCloud3DSymbol *symbol = static_cast<QgsColorRampPointCloud3DSymbol *>( symbol3D.get() );
     symbol->setAttribute( renderer2D->attribute() );
@@ -820,7 +820,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
   }
   else if ( renderer->type() == QLatin1String( "rgb" ) )
   {
-    const QgsPointCloudRgbRenderer *renderer2D = dynamic_cast<const QgsPointCloudRgbRenderer *>( renderer );
+    const QgsPointCloudRgbRenderer *renderer2D = qgis::down_cast<const QgsPointCloudRgbRenderer *>( renderer );
     symbol3D = std::make_unique<QgsRgbPointCloud3DSymbol>();
     QgsRgbPointCloud3DSymbol *symbol = static_cast<QgsRgbPointCloud3DSymbol *>( symbol3D.get() );
     symbol->setRedAttribute( renderer2D->redAttribute() );
@@ -833,7 +833,7 @@ std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DUtils::convert2DPointCloudRen
   }
   else if ( renderer->type() == QLatin1String( "classified" ) )
   {
-    const QgsPointCloudClassifiedRenderer *renderer2D = dynamic_cast<const QgsPointCloudClassifiedRenderer *>( renderer );
+    const QgsPointCloudClassifiedRenderer *renderer2D = qgis::down_cast<const QgsPointCloudClassifiedRenderer *>( renderer );
     symbol3D = std::make_unique<QgsClassificationPointCloud3DSymbol>();
     QgsClassificationPointCloud3DSymbol *symbol = static_cast<QgsClassificationPointCloud3DSymbol *>( symbol3D.get() );
     symbol->setAttribute( renderer2D->attribute() );

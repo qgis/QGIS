@@ -540,7 +540,7 @@ bool QgsPostgresUtils::createStylesTable( QgsPostgresConn *conn, QString loggedC
 bool QgsPostgresUtils::createProjectsTable( QgsPostgresConn *conn, const QString &schemaName )
 {
   // try to create projects table
-  const QString sql = QStringLiteral( "CREATE TABLE %1.qgis_projects(name TEXT PRIMARY KEY, metadata JSONB, content BYTEA)" )
+  const QString sql = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1.qgis_projects(name TEXT PRIMARY KEY, metadata JSONB, content BYTEA, comment TEXT DEFAULT '')" )
                         .arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
 
   QgsPostgresResult res( conn->PQexec( sql ) );
@@ -657,6 +657,39 @@ QString QgsPostgresUtils::variantMapToHtml( const QVariantMap &variantMap, const
     }
   }
   return result;
+}
+
+bool QgsPostgresUtils::setProjectComment( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName, const QString &comment )
+{
+  const QString sql = QStringLiteral( "ALTER TABLE %1.qgis_projects ADD COLUMN IF NOT EXISTS comment TEXT DEFAULT '';"
+                                      "UPDATE %1.qgis_projects SET comment = %3 WHERE name = %2" )
+                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ), QgsPostgresConn::quotedValue( projectName ), QgsPostgresConn::quotedValue( comment ) );
+
+  QgsPostgresResult res( conn->PQexec( sql ) );
+  return res.PQresultStatus() == PGRES_COMMAND_OK;
+}
+
+QString QgsPostgresUtils::projectComment( QgsPostgresConn *conn, const QString &schemaName, const QString &projectName )
+{
+  const QString sql = QStringLiteral( "SELECT comment FROM %1.qgis_projects WHERE name = %2" )
+                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ), QgsPostgresConn::quotedValue( projectName ) );
+
+  QgsPostgresResult res( conn->PQexec( sql ) );
+  if ( res.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    return QString();
+  }
+
+  return res.PQgetvalue( 0, 0 );
+}
+
+bool QgsPostgresUtils::addCommentColumnToProjectsTable( QgsPostgresConn *conn, const QString &schemaName )
+{
+  const QString sqlAddColumn = QStringLiteral( "ALTER TABLE %1.qgis_projects ADD COLUMN IF NOT EXISTS comment TEXT DEFAULT ''" )
+                                 .arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
+
+  QgsPostgresResult resAddColumn( conn->PQexec( sqlAddColumn ) );
+  return resAddColumn.PQresultStatus() == PGRES_COMMAND_OK;
 }
 
 bool QgsPostgresUtils::setupQgisProjectVersioning( QgsPostgresConn *conn, const QString &schema )

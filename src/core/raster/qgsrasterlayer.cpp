@@ -2289,9 +2289,15 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Legend" ) );
 
     const QDomElement legendElem = layer_node.firstChildElement( QStringLiteral( "legend" ) );
-    if ( QgsMapLayerLegend *l = legend(); !legendElem.isNull() )
+    QgsMapLayerLegend *rasterLegend = legend();
+    if ( rasterLegend && !legendElem.isNull() )
     {
-      l->readXml( legendElem, context );
+      rasterLegend->readXml( legendElem, context );
+    }
+    else if ( rasterLegend )
+    {
+      // Temporary fix for #63346 because legend was not saved if empty
+      rasterLegend->setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, false );
     }
   }
 

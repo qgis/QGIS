@@ -320,7 +320,7 @@ class QgsHanaSettings
     QString mDsn;
     QString mDriver;
     QString mHost;
-    uint mIdentifierType;
+    uint mIdentifierType = QgsHanaIdentifierType::InstanceNumber;
     QString mIdentifier;
     QString mDatabase;
     bool mMultitenant = false;

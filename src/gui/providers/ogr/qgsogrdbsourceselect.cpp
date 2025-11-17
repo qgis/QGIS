@@ -365,11 +365,6 @@ void QgsOgrDbSourceSelect::setConnectionListPosition()
   }
 }
 
-void QgsOgrDbSourceSelect::setSearchExpression( const QString &regexp )
-{
-  Q_UNUSED( regexp )
-}
-
 void QgsOgrDbSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( deselected )

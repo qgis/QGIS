@@ -24,7 +24,7 @@ QgsElevationProfile::QgsElevationProfile( QgsProject *project )
   : mProject( project )
   , mLayerTree( std::make_unique< QgsLayerTree >() )
 {
-
+  setupLayerTreeConnections();
 }
 
 QgsElevationProfile::~QgsElevationProfile() = default;
@@ -110,6 +110,7 @@ bool QgsElevationProfile::readXml( const QDomElement &element, const QDomDocumen
   {
     const QDomElement layerTreeElem = element.firstChildElement( QStringLiteral( "layer-tree-group" ) );
     mLayerTree = QgsLayerTree::readXml( layerTreeElem, context );
+    setupLayerTreeConnections();
   }
 
   const QDomElement subsectionsElement = element.firstChildElement( QStringLiteral( "subsections" ) );
@@ -143,7 +144,11 @@ QgsLayerTree *QgsElevationProfile::layerTree()
 
 void QgsElevationProfile::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  if ( mCrs == crs )
+    return;
+
   mCrs = crs;
+  dirtyProject();
 }
 
 QgsCoordinateReferenceSystem QgsElevationProfile::crs() const
@@ -156,6 +161,7 @@ void QgsElevationProfile::setProfileCurve( QgsCurve *curve )
   if ( curve == mProfileCurve.get() )
     return;
   mProfileCurve.reset( curve );
+  dirtyProject();
 }
 
 QgsCurve *QgsElevationProfile::profileCurve() const
@@ -165,7 +171,11 @@ QgsCurve *QgsElevationProfile::profileCurve() const
 
 void QgsElevationProfile::setTolerance( double tolerance )
 {
+  if ( qgsDoubleNear( tolerance, mTolerance ) )
+    return;
+
   mTolerance = tolerance;
+  dirtyProject();
 }
 
 double QgsElevationProfile::tolerance() const
@@ -185,12 +195,33 @@ Qgis::DistanceUnit QgsElevationProfile::distanceUnit() const
 
 void QgsElevationProfile::setLockAxisScales( bool lock )
 {
+  if ( lock == mLockAxisScales )
+    return;
+
   mLockAxisScales = lock;
+  dirtyProject();
 }
 
 void QgsElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
 {
+  if ( mDistanceUnit == unit )
+    return;
+
   mDistanceUnit = unit;
+  dirtyProject();
+}
+
+void QgsElevationProfile::dirtyProject()
+{
+  if ( mProject )
+    mProject->setDirty();
+}
+
+void QgsElevationProfile::setupLayerTreeConnections()
+{
+  connect( mLayerTree.get(), &QgsLayerTree::layerOrderChanged, this, &QgsElevationProfile::dirtyProject );
+  connect( mLayerTree.get(), &QgsLayerTree::visibilityChanged, this, &QgsElevationProfile::dirtyProject );
+  connect( mLayerTree.get(), &QgsLayerTree::nameChanged, this, &QgsElevationProfile::dirtyProject );
 }
 
 QgsLineSymbol *QgsElevationProfile::subsectionsSymbol()
@@ -204,6 +235,7 @@ void QgsElevationProfile::setSubsectionsSymbol( QgsLineSymbol *symbol )
     return;
 
   mSubsectionsSymbol.reset( symbol );
+  dirtyProject();
 }
 
 void QgsElevationProfile::setName( const QString &name )
@@ -212,5 +244,6 @@ void QgsElevationProfile::setName( const QString &name )
     return;
 
   mName = name;
+  dirtyProject();
   emit nameChanged( mName );
 }

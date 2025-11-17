@@ -77,7 +77,7 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   const int nRoutePts = 10;
   QTemporaryFile testFile( QStringLiteral( "testXXXXXX.gpx" ) );
   testFile.setAutoRemove( false );
-  testFile.open();
+  QVERIFY( testFile.open() );
   testFile.write( "<gpx version=\"1.1\" creator=\"qgis\">\n" );
   for ( int i = 0; i < nWaypoints; ++i )
   {

@@ -174,9 +174,8 @@ void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand *rubber
   rubberBand->show();
 }
 
-QgsRectangle QgsGrassRegionEdit::getRegion()
+QgsRectangle QgsGrassRegionEdit::getRegion() const
 {
-  //return QgsRectangle( mStartPoint, mEndPoint );
   return mSrcRectangle;
 }
 

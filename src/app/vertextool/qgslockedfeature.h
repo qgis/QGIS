@@ -81,13 +81,13 @@ class APP_EXPORT QgsLockedFeature : public QObject
      * \param vertexNr number of vertex for which we are getting info
      * \returns TRUE if vertex is selected, FALSE otherwise
      */
-    bool isSelected( int vertexNr );
+    bool isSelected( int vertexNr ) const;
 
     /**
      * Getting feature Id of feature selected
      * \returns feature id of selected feature
      */
-    QgsFeatureId featureId();
+    QgsFeatureId featureId() const;
 
     /**
      * Getting vertex map of vertices

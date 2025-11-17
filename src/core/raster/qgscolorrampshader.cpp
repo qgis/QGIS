@@ -63,6 +63,9 @@ QgsColorRampShader::QgsColorRampShader( const QgsColorRampShader &other )
 
 QgsColorRampShader &QgsColorRampShader::operator=( const QgsColorRampShader &other )
 {
+  if ( &other == this )
+    return *this;
+
   QgsRasterShaderFunction::operator=( other );
   if ( auto *lSourceColorRamp = other.sourceColorRamp() )
     mSourceColorRamp.reset( lSourceColorRamp->clone() );

@@ -90,6 +90,8 @@ class QgsMapViewsManager;
 class QgsProjectElevationProperties;
 class QgsProjectGpsSettings;
 class QgsSensorManager;
+class QgsObjectEntityVisitorInterface;
+class QgsObjectVisitorContext;
 
 /**
  * \ingroup core
@@ -1779,6 +1781,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
     /**
+     * Accepts the specified object entity \a visitor, causing it to visit all object entities associated
+     * with the project.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 4.0
+     */
+    bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
+
+    /**
      * Returns the elevation shading renderer used for map shading
      *
      * \since QGIS 3.30
@@ -1810,7 +1823,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       * \since QGIS 3.40
       */
     void cleanFunctionsFromProject() SIP_SKIP;
-
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

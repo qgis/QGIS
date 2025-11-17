@@ -91,7 +91,7 @@ void QgsEncodingFileDialog::addCancelAll()
   }
 }
 
-bool QgsEncodingFileDialog::cancelAll()
+bool QgsEncodingFileDialog::cancelAll() const
 {
   return mCancelAll;
 }

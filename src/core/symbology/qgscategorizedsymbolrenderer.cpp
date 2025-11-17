@@ -67,6 +67,9 @@ QgsRendererCategory::QgsRendererCategory( const QgsRendererCategory &cat )
 
 QgsRendererCategory &QgsRendererCategory::operator=( QgsRendererCategory cat )
 {
+  if ( &cat == this )
+    return *this;
+
   mValue = cat.mValue;
   mSymbol.reset( cat.mSymbol ? cat.mSymbol->clone() : nullptr );
   mLabel = cat.mLabel;

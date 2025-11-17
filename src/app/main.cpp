@@ -291,7 +291,8 @@ static void dumpBacktrace( unsigned int depth )
     int dup_stderr = dup( stderr_fd );
     if ( dup_stderr != STDERR_FILENO )
     {
-      close( dup_stderr );
+      if ( dup_stderr >= 0 )
+        close( dup_stderr );
       QgsDebugError( QStringLiteral( "dup to stderr failed" ) );
     }
     close( stderr_fd );
@@ -1118,10 +1119,10 @@ int main( int argc, char *argv[] )
   }
 
   // Calling getProfile() will create the profile if it doesn't exist, and init the QgsSettings
-  QgsUserProfile *profile = manager.getProfile( profileName, true );
+  std::unique_ptr< QgsUserProfile > profile = manager.getProfile( profileName, true );
   QString profileFolder = profile->folder();
   profileName = profile->name();
-  delete profile;
+  profile.reset();
 
   {
     // The profile is selected, we can now set up the translation file for QGIS.
@@ -1576,9 +1577,8 @@ int main( int argc, char *argv[] )
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
 
   QgsApplication::connect(
-    &myApp, SIGNAL( preNotify( QObject *, QEvent *, bool * ) ),
-    //qgis, SLOT( preNotify( QObject *, QEvent *))
-    QgsCustomization::instance(), SLOT( preNotify( QObject *, QEvent *, bool * ) )
+    &myApp, &QgsApplication::preNotify,
+    QgsCustomization::instance(), &QgsCustomization::preNotify
   );
 
   /////////////////////////////////////////////////////////////////////
@@ -1812,7 +1812,7 @@ int main( int argc, char *argv[] )
   // Continue on to interactive gui...
   /////////////////////////////////////////////////////////////////////
   qgis->show();
-  QgsApplication::connect( &myApp, SIGNAL( lastWindowClosed() ), &myApp, SLOT( quit() ) );
+  QgsApplication::connect( &myApp, &QgsApplication::lastWindowClosed, &myApp, &QgsApplication::quit );
 
   mypSplash->finish( qgis );
   delete mypSplash;

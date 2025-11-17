@@ -181,7 +181,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
      * Returns the styleSheet which should be used to style a QgsMessageBar object when
      * this item is displayed.
      */
-    QString getStyleSheet() { return mStyleSheet; }
+    QString getStyleSheet() const { return mStyleSheet; }
 
   public slots:
 

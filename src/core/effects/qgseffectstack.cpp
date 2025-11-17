@@ -78,6 +78,9 @@ QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack &rhs )
 
 QgsEffectStack &QgsEffectStack::operator=( QgsEffectStack &&other )
 {
+  if ( &other == this )
+    return *this;
+
   std::swap( mEffectList, other.mEffectList );
   mEnabled = other.enabled();
   return *this;

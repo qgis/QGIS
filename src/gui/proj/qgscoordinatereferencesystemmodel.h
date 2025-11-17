@@ -79,8 +79,10 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelNode
     /**
      * Adds a child \a node to this node, transferring ownership of the node
      * to this node.
+     *
+     * Returns the newly added node.
      */
-    void addChildNode( QgsCoordinateReferenceSystemModelNode *node );
+    QgsCoordinateReferenceSystemModelNode *addChildNode( std::unique_ptr< QgsCoordinateReferenceSystemModelNode > node );
 
     /**
      * Deletes all child nodes from this node.

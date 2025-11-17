@@ -912,7 +912,11 @@ QString QgsAuxiliaryStorage::filenameForProject( const QgsProject &project )
 void QgsAuxiliaryStorage::initTmpFileName()
 {
   QTemporaryFile tmpFile;
-  tmpFile.open();
+  if ( !tmpFile.open() )
+  {
+    QgsDebugError( QStringLiteral( "Can't open temporary file" ) );
+    return;
+  }
   tmpFile.close();
   mTmpFileName = tmpFile.fileName();
 }

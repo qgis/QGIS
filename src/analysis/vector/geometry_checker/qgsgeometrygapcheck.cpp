@@ -332,6 +332,10 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   for ( const QString &layerId : layerIds )
   {
     QgsFeaturePool *featurePool = featurePools.value( layerId );
+    if ( !featurePool )
+    {
+      return false;
+    }
     std::unique_ptr<QgsAbstractGeometry> errLayerGeom( errGeometry->clone() );
     const QgsCoordinateTransform ct( featurePool->crs(), mContext->mapCrs, mContext->transformContext );
     errLayerGeom->transform( ct, Qgis::TransformDirection::Reverse );

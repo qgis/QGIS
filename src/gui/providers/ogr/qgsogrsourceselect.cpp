@@ -153,17 +153,17 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( mCredentialsWidget, &QgsGdalCredentialOptionsWidget::optionsChanged, this, &QgsOgrSourceSelect::credentialOptionsChanged );
 }
 
-QStringList QgsOgrSourceSelect::dataSources()
+QStringList QgsOgrSourceSelect::dataSources() const
 {
   return mDataSources;
 }
 
-QString QgsOgrSourceSelect::encoding()
+QString QgsOgrSourceSelect::encoding() const
 {
   return cmbEncodings->currentData().isValid() ? cmbEncodings->currentData().toString() : cmbEncodings->currentText();
 }
 
-QString QgsOgrSourceSelect::dataSourceType()
+QString QgsOgrSourceSelect::dataSourceType() const
 {
   return mDataSourceType;
 }

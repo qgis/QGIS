@@ -1811,7 +1811,7 @@ void QgsGrassMapcalcConnector::setPoint( int index, QPoint point )
   QGraphicsLineItem::update();
 }
 
-QPoint QgsGrassMapcalcConnector::point( int index )
+QPoint QgsGrassMapcalcConnector::point( int index ) const
 {
   return ( mPoints[index] );
 }
@@ -1845,7 +1845,7 @@ void QgsGrassMapcalcConnector::selectEnd( QPoint point )
   QgsDebugMsgLevel( QString( "mSelectedEnd = %1" ).arg( mSelectedEnd ), 2 );
 }
 
-int QgsGrassMapcalcConnector::selectedEnd()
+int QgsGrassMapcalcConnector::selectedEnd() const
 {
   return mSelectedEnd;
 }

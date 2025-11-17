@@ -193,7 +193,7 @@ class CORE_EXPORT QgsSettingsTreeNode
 class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
 {
   public:
-    virtual ~QgsSettingsTreeNamedListNode();
+    ~QgsSettingsTreeNamedListNode() override;
 
     /**
      *  Returns the list of items

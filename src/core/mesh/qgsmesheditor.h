@@ -76,11 +76,16 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = nullptr ); SIP_SKIP
     ~QgsMeshEditor();
 
+    // TODO QGIS 5.0 -- fix this mess
+
     /**
      * Creates and returns a scalar dataset group with value on vertex that is can be used to access the Z value of the edited mesh.
      * The caller takes ownership.
+     *
+     * \warning This is dangerous API to call -- the caller takes ownership of the returned object, but this object
+     * MUST exist for the lifetime of the editor. Use with extreme caution.
      */
-    QgsMeshDatasetGroup *createZValueDatasetGroup() SIP_TRANSFERBACK;
+    std::unique_ptr< QgsMeshDatasetGroup > createZValueDatasetGroup();
 
     //! Initializes the mesh editor and returns first error if the internal native mesh has topological errors
     QgsMeshEditingError initialize();

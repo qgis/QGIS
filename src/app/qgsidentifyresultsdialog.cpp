@@ -100,6 +100,7 @@
 #include "qgsmaplayeraction.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgsmessagebar.h"
 
 #include <nlohmann/json.hpp>
 
@@ -1697,7 +1698,10 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     mActionPopup->addAction( tr( "Copy Attribute Value" ), this, &QgsIdentifyResultsDialog::copyAttributeValue );
     mActionPopup->addAction( tr( "Copy Feature Attributes" ), this, &QgsIdentifyResultsDialog::copyFeatureAttributes );
 
-    mActionPopup->addAction( tr( "Select Features by Attribute Value" ), this, &QgsIdentifyResultsDialog::selectFeatureByAttribute );
+    if ( vlayer )
+    {
+      mActionPopup->addAction( tr( "Select Features by Attribute Value" ), this, &QgsIdentifyResultsDialog::selectFeatureByAttribute );
+    }
 
     if ( item->parent() == featItem && item->childCount() == 0 )
     {
@@ -1908,6 +1912,36 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, const QUuid &act
         idx = fldIdx;
         break;
       }
+    }
+  }
+
+  const QgsAction act = layer->actions()->action( action );
+  switch ( act.type() )
+  {
+    case Qgis::AttributeActionType::GenericPython:
+    case Qgis::AttributeActionType::Mac:
+    case Qgis::AttributeActionType::Windows:
+    case Qgis::AttributeActionType::Unix:
+    {
+      const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
+      if ( !allowed )
+      {
+        QgisApp::instance()->messageBar()->pushMessage(
+          tr( "Security warning" ),
+          tr( "The action contains an embedded script which has been denied execution." ),
+          Qgis::MessageLevel::Warning
+        );
+        return;
+      }
+      break;
+    }
+
+    case Qgis::AttributeActionType::Generic:
+    case Qgis::AttributeActionType::OpenUrl:
+    case Qgis::AttributeActionType::SubmitUrlEncoded:
+    case Qgis::AttributeActionType::SubmitUrlMultipart:
+    {
+      break;
     }
   }
 

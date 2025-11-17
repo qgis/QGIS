@@ -47,6 +47,7 @@ QgsElevationProfileLayerTreeModel::QgsElevationProfileLayerTreeModel( QgsLayerTr
   setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
   setFlag( QgsLayerTreeModel::ShowLegendAsTree );
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
+  setFlag( QgsLayerTreeModel::AllowNodeRename );
 }
 
 QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int role ) const
@@ -102,6 +103,12 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
                   if ( elevationProperties->respectLayerSymbology() )
                   {
+                    if ( !symbol )
+                    {
+                      // just use default layer icon
+                      return QgsLayerTreeModel::data( index, role );
+                    }
+
                     if ( QgsSingleSymbolRenderer *renderer = dynamic_cast<QgsSingleSymbolRenderer *>( qobject_cast<QgsVectorLayer *>( layer )->renderer() ) )
                     {
                       if ( renderer->symbol()->type() == symbol->type() )
@@ -256,6 +263,20 @@ bool QgsElevationProfileLayerTreeModel::setData( const QModelIndex &index, const
   }
 
   return QgsLayerTreeModel::setData( index, value, role );
+}
+
+Qt::ItemFlags QgsElevationProfileLayerTreeModel::flags( const QModelIndex &index ) const
+{
+  Qt::ItemFlags f = QgsLayerTreeModel::flags( index );
+
+  // the elevation tree model only supports group renames, not layer renames (otherwise
+  // we'd be renaming the actual layer, which is likely NOT what users expect)
+  QgsLayerTreeNode *node = index2node( index );
+  if ( !QgsLayerTree::isGroup( node ) )
+  {
+    f.setFlag( Qt::ItemFlag::ItemIsEditable, false );
+  }
+  return f;
 }
 
 bool QgsElevationProfileLayerTreeModel::canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const
@@ -427,7 +448,7 @@ QgsElevationProfileLayerTreeView::QgsElevationProfileLayerTreeView( QgsLayerTree
   setLayerTreeModel( mModel );
 }
 
-void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *project )
+void QgsElevationProfileLayerTreeView::populateMissingLayers( QgsProject *project )
 {
   const QList<QgsMapLayer *> layers = project->layers<QgsMapLayer *>().toList();
 
@@ -439,6 +460,10 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
   std::reverse( sortedLayers.begin(), sortedLayers.end() );
   for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )
   {
+    // don't re-add existing layers
+    if ( mLayerTree->findLayer( layer ) )
+      continue;
+
     QgsLayerTreeLayer *node = mLayerTree->addLayer( layer );
 
     if ( layer->customProperty( QStringLiteral( "_include_in_elevation_profiles" ) ).isValid() )
@@ -455,12 +480,12 @@ void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *projec
 void QgsElevationProfileLayerTreeView::populateInitialSources( QgsProject *project )
 {
   const QList< QgsAbstractProfileSource * > sources = QgsApplication::profileSourceRegistry()->profileSources();
-  for ( auto *source : sources )
+  for ( QgsAbstractProfileSource *source : sources )
   {
     addNodeForRegisteredSource( source->profileSourceId(), source->profileSourceName() );
   }
 
-  populateInitialLayers( project );
+  populateMissingLayers( project );
 }
 
 void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName )

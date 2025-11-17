@@ -31,6 +31,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaplayeraction.h"
+#include "qgsmessagebar.h"
 
 #include <QSettings>
 #include <QStatusBar>
@@ -170,6 +171,35 @@ void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const Q
   QgsAction defaultAction = layer->actions()->defaultAction( QStringLiteral( "Canvas" ) );
   if ( defaultAction.isValid() )
   {
+    switch ( defaultAction.type() )
+    {
+      case Qgis::AttributeActionType::GenericPython:
+      case Qgis::AttributeActionType::Mac:
+      case Qgis::AttributeActionType::Windows:
+      case Qgis::AttributeActionType::Unix:
+      {
+        const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
+        if ( !allowed )
+        {
+          QgisApp::instance()->messageBar()->pushMessage(
+            tr( "Security warning" ),
+            tr( "The action contains an embedded script which has been denied execution." ),
+            Qgis::MessageLevel::Warning
+          );
+          return;
+        }
+        break;
+      }
+
+      case Qgis::AttributeActionType::Generic:
+      case Qgis::AttributeActionType::OpenUrl:
+      case Qgis::AttributeActionType::SubmitUrlEncoded:
+      case Qgis::AttributeActionType::SubmitUrlMultipart:
+      {
+        break;
+      }
+    }
+
     // define custom substitutions: layer id and clicked coords
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()

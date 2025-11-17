@@ -135,10 +135,12 @@ class CORE_EXPORT QgsConditionalStyle
   public:
     QgsConditionalStyle();
     QgsConditionalStyle( const QgsConditionalStyle &other );
+    SIP_SKIP QgsConditionalStyle( QgsConditionalStyle &&other );
     QgsConditionalStyle( const QString &rule );
     ~QgsConditionalStyle();
 
     QgsConditionalStyle &operator=( const QgsConditionalStyle &other );
+    QgsConditionalStyle &operator=( QgsConditionalStyle &&other );
 
     /**
      * \brief Check if the rule matches using the given value and feature

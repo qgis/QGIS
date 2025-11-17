@@ -22,16 +22,6 @@ QgsRelationContext::QgsRelationContext( QgsProject *project )
 
 QgsRelationContext::~QgsRelationContext() = default;
 
-QgsRelationContext::QgsRelationContext( const QgsRelationContext &other )
-  : mProject( other.mProject )
-{
-}
-
-QgsRelationContext &QgsRelationContext::operator=( const QgsRelationContext &other )
-{
-  mProject = other.mProject;
-  return *this;
-}
 
 const QgsProject *QgsRelationContext::project() const
 {
