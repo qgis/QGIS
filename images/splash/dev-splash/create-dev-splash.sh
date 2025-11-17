@@ -26,12 +26,10 @@ if [[ "${keep_avatars}" == "true" ]]; then
 else
   rm -f avatars.dat || true
   # touch avatars.dat
-  for p in 1 2; do
-    echo "downloading avatars page $p"
-    curl -H "Accept: application/vnd.github.v3+json" \
-      "https://api.github.com/repos/qgis/QGIS/contributors?page=${p}&per_page=$((number_of_avatars/2))" \
-      | jq -r "sort_by(.contributions) | reverse | .[] | \"\(.login) \(.avatar_url)\""  >>  avatars.dat
-  done
+  echo "downloading avatars page $p"
+  curl -H "Accept: application/vnd.github.v3+json" \
+      "https://raw.githubusercontent.com/qgis/QGIS-Website/refs/heads/main/data/contributors/contributors.json" \
+      | jq -r "(.contributors)[0:$number_of_avatars][] | \"\(.login) \(.avatar_url)\""  >>  avatars.dat
 
   for (( t=0; t<number_of_tiles; t++ )); do
     odir=avatars_${t}
