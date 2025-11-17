@@ -200,6 +200,13 @@ class QgsPostgresUtils
     * \since QGIS 4.0
     */
     static bool qgisProjectVersioningActive( QgsPostgresConn *conn, const QString &schema );
+
+    /*
+     * Move project versions to \a targetSchema
+     *
+     * \since QGIS 4.0
+     */
+    static bool moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema );
 };
 
 #endif

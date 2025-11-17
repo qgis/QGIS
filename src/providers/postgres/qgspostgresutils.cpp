@@ -773,3 +773,32 @@ bool QgsPostgresUtils::qgisProjectVersioningActive( QgsPostgresConn *conn, const
   QgsPostgresResult res( conn->PQexec( sqlCheckTrigger ) );
   return res.PQgetvalue( 0, 0 ).startsWith( QStringLiteral( "t" ) );
 }
+
+bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema )
+{
+  const QString sqlCopy = QStringLiteral( "INSERT INTO %1.qgis_projects_versions SELECT * FROM %2.qgis_projects_versions WHERE name=%3;" )
+                            .arg( QgsPostgresConn::quotedIdentifier( targetSchema ) )
+                            .arg( QgsPostgresConn::quotedIdentifier( originalSchema ) )
+                            .arg( QgsPostgresConn::quotedValue( project ) );
+
+  QgsPostgresResult resCopy( conn->PQexec( sqlCopy ) );
+
+  if ( resCopy.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    return false;
+  }
+
+  const QString sqlDelete = QStringLiteral( "DELETE FROM %1.qgis_projects_versions WHERE name=%2;" )
+                              .arg( QgsPostgresConn::quotedIdentifier( originalSchema ) )
+                              .arg( QgsPostgresConn::quotedValue( project ) );
+  ;
+
+  QgsPostgresResult resDelete( conn->PQexec( sqlDelete ) );
+
+  if ( resDelete.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    return false;
+  }
+
+  return true;
+}
