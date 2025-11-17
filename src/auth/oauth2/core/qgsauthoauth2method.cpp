@@ -783,7 +783,10 @@ void QgsAuthOAuth2Method::cleanupCache()
         }
         else
         {
+          // Suppress warning: Potential leak of memory pointed to by 'callable' [clang-analyzer-cplusplus.NewDeleteLeaks]
+#ifndef __clang_analyzer__
           QMetaObject::invokeMethod( it.value(), &QgsO2::stopRefreshTimer, Qt::QueuedConnection );
+#endif          
         }
       }
     }
