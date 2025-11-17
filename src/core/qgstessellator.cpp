@@ -584,7 +584,7 @@ void QgsTessellator::addTriangleVertices(
 
     // cppcheck-suppress negativeContainerIndex
     QVector3D point = points[ index ];
-    const double z = mNoZ ? 0.0 : point.z();
+    const float z = mNoZ ? 0.0f : point.z();
     QVector4D pt( point.x(), point.y(), z, 0 );
 
     pt = *transformMatrix * pt;
