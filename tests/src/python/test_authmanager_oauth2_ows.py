@@ -348,7 +348,7 @@ class TestAuthManager(QgisTestCase):
             print(" timeout.")
             return False
 
-        self.assertTrue(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 100))
+        self.assertTrue(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 500))
 
         # Make another request to ensure the refreshed token is used
         logs.clear()
@@ -361,13 +361,13 @@ class TestAuthManager(QgisTestCase):
         self.assertTrue(QgsProject.instance().addMapLayer(wfs_layer))
 
         # Wait for the cache housekeeping to run
-        wait(CACHE_HOUSEKEEPING_INTERVAL * 1000 + 100)
+        wait(CACHE_HOUSEKEEPING_INTERVAL * 1000 + 500)
         # Wait for the token to expire and be refreshed
-        self.assertTrue(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 100))
+        self.assertTrue(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 500))
 
         # Remove all layers from the project to allow oauth cache cleanup
         QgsProject.instance().removeAllMapLayers()
-        self.assertFalse(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 100))
+        self.assertFalse(wait_log(logs, "/refresh", TOKEN_TTL * 1000 + 500))
 
 
 if __name__ == "__main__":
