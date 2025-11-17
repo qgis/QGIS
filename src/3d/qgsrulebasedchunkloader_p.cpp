@@ -196,7 +196,7 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DRende
     // TODO: add support for handling of vector layers
     // (we're using dummy quadtree here to make sure the empty extent does not break the scene completely)
     QgsDebugError( QStringLiteral( "Vector layers in globe scenes are not supported yet!" ) );
-    setupQuadtree( QgsBox3D( -1e7, -1e7, -1e7, 1e7, 1e7, 1e7 ), -1, 3 );
+    setupQuadtree( QgsBox3D( -7e6, -7e6, -7e6, 7e6, 7e6, 7e6 ), -1, 3 );
     return;
   }
 
