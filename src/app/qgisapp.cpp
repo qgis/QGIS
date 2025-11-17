@@ -8206,7 +8206,7 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
             button->setEnabled( false );
           } );
 
-          connect( button, &QPushButton::clicked, barItem, [button, vl, newLayerName]() {
+          connect( button, &QPushButton::clicked, vl, [button, vl, newLayerName]() {
             vl->setName( newLayerName );
             button->setEnabled( false );
           } );
