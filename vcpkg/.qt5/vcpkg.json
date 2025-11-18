@@ -21,7 +21,7 @@
       },
       {
         "kind": "git",
-        "baseline": "945f8fd57e754cb9fcc4187fc0ec90e83eb847f4",
+        "baseline": "68c620c08921741b02625a092e44e28c438c8e0d",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -29,6 +29,7 @@
           "gdal",
           "vcpkg-python-scripts",
           "vcpkg-tool-mercurial",
+          "vcpkg-tool-rust",
           "pybind11"
         ]
       }
@@ -45,8 +46,8 @@
   "description": "QGIS is a free, open source, cross platform (lin/win/mac) geographical information system (GIS)",
   "homepage": "https://qgis.org",
   "dependencies": [
-    "duckdb",
     "draco",
+    "duckdb",
     {
       "name": "exiv2",
       "features": [
@@ -54,8 +55,6 @@
       ]
     },
     "expat",
-    "py-psycopg2",
-    "python3",
     {
       "name": "gdal",
       "features": [
@@ -86,6 +85,8 @@
     "pdal",
     "proj",
     "protobuf",
+    "py-psycopg2",
+    "python3",
     {
       "name": "qca-qt5",
       "default-features": false,
@@ -101,8 +102,8 @@
     },
     "qt5-multimedia",
     "qt5-svg",
-    "qt5-webkit",
     "qt5-tools",
+    "qt5-webkit",
     {
       "name": "qt5-winextras",
       "platform": "windows"
@@ -126,30 +127,42 @@
             "python"
           ]
         },
+        "py-attrs",
         "py-autopep8",
+        "py-beautifulsoup4",
         "py-dateutil",
         "py-duckdb",
         "py-isort",
         "py-jinja2",
+        {
+          "name": "py-jsonschema",
+          "platform": "!windows"
+        },
         "py-lxml",
         "py-markupsafe",
+        "py-networkx",
         "py-numpy",
         "py-owslib",
         "py-pip",
         "py-psycopg",
         "py-psycopg2",
         "py-pydantic",
+        "py-pyproj",
         {
           "name": "py-pyqt5",
           "features": [
             "3d"
           ]
         },
-        "py-qscintilla-qt5",
+        "py-pysal",
         "py-pytz",
         "py-pyyaml",
+        "py-qscintilla-qt5",
+        "py-rasterio",
         "py-requests",
+        "py-shapely",
         "py-six",
+        "py-urllib3",
         "python3"
       ]
     },
