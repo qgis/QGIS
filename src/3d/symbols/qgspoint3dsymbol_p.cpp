@@ -77,7 +77,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -98,22 +98,19 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     PointData outNormal;   //!< Features that are not selected
     PointData outSelected; //!< Features that are selected
 };
 
 
-bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( context )
   Q_UNUSED( attributeNames )
 
-  mChunkOrigin = chunkOrigin;
+  mChunkOrigin = chunkExtent.center();
+  mChunkExtent = chunkExtent;
 
   return true;
 }
@@ -411,7 +408,7 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -432,21 +429,18 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     PointData outNormal;   //!< Features that are not selected
     PointData outSelected; //!< Features that are selected
 };
 
-bool QgsModelPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsModelPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( context )
   Q_UNUSED( attributeNames )
 
-  mChunkOrigin = chunkOrigin;
+  mChunkOrigin = chunkExtent.center();
+  mChunkExtent = chunkExtent;
 
   return true;
 }
@@ -579,7 +573,7 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsPoint3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -596,21 +590,18 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsPoint3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     PointData outNormal;   //!< Features that are not selected
     PointData outSelected; //!< Features that are selected
 };
 
-bool QgsPoint3DBillboardSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsPoint3DBillboardSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( context )
   Q_UNUSED( attributeNames )
 
-  mChunkOrigin = chunkOrigin;
+  mChunkOrigin = chunkExtent.center();
+  mChunkExtent = chunkExtent;
 
   return true;
 }

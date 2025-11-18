@@ -54,7 +54,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsPolygon3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &f, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -77,10 +77,6 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsPolygon3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     PolygonData outNormal;   //!< Features that are not selected
     PolygonData outSelected; //!< Features that are selected
@@ -89,17 +85,19 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 };
 
 
-bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
-  outEdges.withAdjacency = true;
-  outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context, chunkOrigin );
+  mChunkOrigin = chunkExtent.center();
+  mChunkOrigin.setZ( 0. ); // set the chunk origin to the bottom of the box, as the tessellator currently always considers origin z to be zero
+  mChunkExtent = chunkExtent;
 
-  mChunkOrigin = chunkOrigin;
+  outEdges.withAdjacency = true;
+  outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, context, mChunkOrigin );
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
-  outNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false, texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(), mSymbol->renderedFacade(), texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
-  outSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false, texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(), mSymbol->renderedFacade(), texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
+  outNormal.tessellator.reset( new QgsTessellator( mChunkOrigin.x(), mChunkOrigin.y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false, texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(), mSymbol->renderedFacade(), texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
+  outSelected.tessellator.reset( new QgsTessellator( mChunkOrigin.x(), mChunkOrigin.y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false, texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(), mSymbol->renderedFacade(), texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
 
   outNormal.tessellator->setOutputZUp( true );
   outSelected.tessellator->setOutputZUp( true );
@@ -168,6 +166,15 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   PolygonData &out = mSelectedIds.contains( f.id() ) ? outSelected : outNormal;
 
   QgsGeometry geom = f.geometry();
+
+  // let's clip gigantic geometries to the chunk's extents
+  constexpr double MAX_GEOM_BBOX_SIZE = 1e6;
+  if ( geom.boundingBox().width() > MAX_GEOM_BBOX_SIZE || geom.boundingBox().height() > MAX_GEOM_BBOX_SIZE )
+    geom = geom.clipped( mChunkExtent.toRectangle() );
+
+  if ( geom.isEmpty() )
+    return;
+
   const QgsAbstractGeometry *g = geom.constGet()->simplifiedTypeRef();
 
   // segmentize curved geometries if necessary

@@ -57,12 +57,6 @@ void QgsRuleBasedChunkLoader::start()
 
   QgsVectorLayer *layer = mFactory->mLayer;
 
-  // only a subset of data to be queried
-  const QgsRectangle rect = node->box3D().toRectangle();
-  // origin for coordinates of the chunk - it is kind of arbitrary, but it should be
-  // picked so that the coordinates are relatively small to avoid numerical precision issues
-  QgsVector3D chunkOrigin( rect.center().x(), rect.center().y(), 0 );
-
   QgsExpressionContext exprContext;
   exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   exprContext.setFields( layer->fields() );
@@ -77,9 +71,11 @@ void QgsRuleBasedChunkLoader::start()
   mRootRule->createHandlers( layer, mHandlers );
 
   QSet<QString> attributeNames;
-  mRootRule->prepare( mContext, attributeNames, chunkOrigin, mHandlers );
+  mRootRule->prepare( mContext, attributeNames, node->box3D(), mHandlers );
 
   // build the feature request
+  // only a subset of data to be queried
+  const QgsRectangle rect = node->box3D().toRectangle();
   QgsFeatureRequest req;
   req.setDestinationCrs( mContext.crs(), mContext.transformContext() );
   req.setSubsetOfAttributes( attributeNames, layer->fields() );

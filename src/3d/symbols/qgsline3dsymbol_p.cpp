@@ -65,7 +65,7 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast<QgsLine3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -86,28 +86,26 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsLine3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     LineData mLineDataNormal;   //!< Features that are not selected
     LineData mLineDataSelected; //!< Features that are selected
 };
 
 
-bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( attributeNames )
 
-  mChunkOrigin = chunkOrigin;
+  mChunkOrigin = chunkExtent.center();
+  mChunkOrigin.setZ( 0. ); // set the chunk origin to the bottom of the box, as the tessellator currently always considers origin z to be zero
+  mChunkExtent = chunkExtent;
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
   const float textureRotation = texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0;
   const bool requiresTextureCoordinates = texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false;
-  mLineDataNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
-  mLineDataSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
+  mLineDataNormal.tessellator.reset( new QgsTessellator( mChunkOrigin.x(), mChunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
+  mLineDataSelected.tessellator.reset( new QgsTessellator( mChunkOrigin.x(), mChunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
 
   mLineDataNormal.tessellator->setOutputZUp( true );
   mLineDataSelected.tessellator->setOutputZUp( true );
@@ -123,6 +121,15 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &feature, 
   LineData &lineData = mSelectedIds.contains( feature.id() ) ? mLineDataSelected : mLineDataNormal;
 
   QgsGeometry geom = feature.geometry();
+
+  // let's clip gigantic geometries to the chunk's extents
+  constexpr double MAX_GEOM_BBOX_SIZE = 1e6;
+  if ( geom.boundingBox().width() > MAX_GEOM_BBOX_SIZE || geom.boundingBox().height() > MAX_GEOM_BBOX_SIZE )
+    geom = geom.clipped( mChunkExtent.toRectangle() );
+
+  if ( geom.isEmpty() )
+    return;
+
   const QgsAbstractGeometry *abstractGeom = geom.constGet()->simplifiedTypeRef();
 
   // segmentize curved geometries if necessary
@@ -251,7 +258,7 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
     {
     }
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -264,26 +271,23 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
     std::unique_ptr<QgsLine3DSymbol> mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
-
-    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
-    QgsVector3D mChunkOrigin;
-
     // outputs
     QgsLineVertexData mLineDataNormal;   //!< Features that are not selected
     QgsLineVertexData mLineDataSelected; //!< Features that are selected
 };
 
 
-bool QgsThickLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
+bool QgsThickLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent )
 {
   Q_UNUSED( attributeNames )
 
-  mChunkOrigin = chunkOrigin;
+  mChunkOrigin = chunkExtent.center();
+  mChunkExtent = chunkExtent;
 
   mLineDataNormal.withAdjacency = true;
   mLineDataSelected.withAdjacency = true;
-  mLineDataNormal.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context, chunkOrigin );
-  mLineDataSelected.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context, chunkOrigin );
+  mLineDataNormal.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context, mChunkOrigin );
+  mLineDataSelected.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context, mChunkOrigin );
 
   QSet<QString> attrs = mSymbol->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
@@ -310,6 +314,15 @@ void QgsThickLine3DSymbolHandler::processFeature( const QgsFeature &feature, con
   const int oldVerticesCount = lineVertexData.vertices.size();
 
   QgsGeometry geom = feature.geometry();
+
+  // let's clip gigantic geometries to the chunk's extents
+  constexpr double MAX_GEOM_BBOX_SIZE = 1e6;
+  if ( geom.boundingBox().width() > MAX_GEOM_BBOX_SIZE || geom.boundingBox().height() > MAX_GEOM_BBOX_SIZE )
+    geom = geom.clipped( mChunkExtent.toRectangle() );
+
+  if ( geom.isEmpty() )
+    return;
+
   const QgsAbstractGeometry *abstractGeom = geom.constGet()->simplifiedTypeRef();
 
   // segmentize curved geometries if necessary
