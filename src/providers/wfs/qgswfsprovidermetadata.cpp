@@ -214,9 +214,16 @@ QString QgsWfsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   QgsDataSourceUri dsUri;
   for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
   {
-    dsUri.setParam( it.key(), it.value().toString() );
+    if ( it.key() == QStringLiteral( "authcfg" ) )
+    {
+      dsUri.setAuthConfigId( it.value().toString() );
+    }
+    else
+    {
+      dsUri.setParam( it.key(), it.value().toString() );
+    }
   }
-  return dsUri.uri();
+  return dsUri.uri( false );
 }
 
 QVariantMap QgsWfsProviderMetadata::decodeUri( const QString &uri ) const

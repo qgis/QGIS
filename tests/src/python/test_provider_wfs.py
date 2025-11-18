@@ -9221,18 +9221,14 @@ class TestPyQgsWFSProviderPost(QgisTestCase, ProviderTestCase):
     def testDecodeEncodeUri(self):
         """Test decodeUri/encodeUri support"""
 
-        uri = "url='http://qgis.server.org/wfs' typename='my:typename' httpMethod='post' skipInitialGetFeature='true' authcfg=XYZ123"
+        uri = "authcfg=XYZ123 httpMethod='post' skipInitialGetFeature='true' typename='my:typename' url='http://qgis.server.org/wfs'"
         parts = QgsProviderRegistry.instance().decodeUri("WFS", uri)
-        self.assertEqual(
-            parts,
-            {
-                "url": "http://qgis.server.org/wfs",
-                "typename": "my:typename",
-                "httpMethod": "post",
-                "skipInitialGetFeature": "true",
-                "authcfg": "XYZ123",
-            },
-        )
+        self.assertEqual(len(parts), 5)
+        self.assertEqual(parts["url"], "http://qgis.server.org/wfs")
+        self.assertEqual(parts["typename"], "my:typename")
+        self.assertEqual(parts["httpMethod"], "post")
+        self.assertEqual(parts["skipInitialGetFeature"], "true")
+        self.assertEqual(parts["authcfg"], "XYZ123")
 
         encodedUri = QgsProviderRegistry.instance().encodeUri("WFS", parts)
         self.assertEqual(encodedUri, uri)
