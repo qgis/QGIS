@@ -194,6 +194,31 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       break;
     }
 
+    case QMetaType::Type::QRect:
+    {
+      element.setAttribute( QStringLiteral( "type" ), "QRect" );
+
+      const QRect rect = value.toRect();
+
+      QDomElement xElt = writeVariant( rect.x(), doc );
+      xElt.setAttribute( QStringLiteral( "name" ),  QStringLiteral( "x" ) );
+      element.appendChild( xElt );
+
+      QDomElement yElt = writeVariant( rect.y(), doc );
+      yElt.setAttribute( QStringLiteral( "name" ),  QStringLiteral( "y" ) );
+      element.appendChild( yElt );
+
+      QDomElement widthElt = writeVariant( rect.width(), doc );
+      widthElt.setAttribute( QStringLiteral( "name" ),  QStringLiteral( "width" ) );
+      element.appendChild( widthElt );
+
+      QDomElement heightElt = writeVariant( rect.height(), doc );
+      heightElt.setAttribute( QStringLiteral( "name" ),  QStringLiteral( "height" ) );
+      element.appendChild( heightElt );
+
+      break;
+    }
+
     case QMetaType::Type::Int:
     case QMetaType::Type::UInt:
     case QMetaType::Type::Bool:
@@ -382,6 +407,45 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
       list.append( readVariant( elem ).toString() );
     }
     return list;
+  }
+  else if ( type == QLatin1String( "QRect" ) )
+  {
+    int x = 0;
+    int y = 0;
+    int width = 0;
+    int height = 0;
+
+    QDomNodeList children = element.elementsByTagName( "Option" );
+    for ( int i = 0; i < children.count(); ++i )
+    {
+      QDomElement child = children.at( i ).toElement();
+      if ( child.isNull() )
+      {
+        continue;
+      }
+
+      QString name = child.attribute( "name" );
+      int value = child.attribute( "value" ).toInt();
+
+      if ( name == "x" )
+      {
+        x = value;
+      }
+      else if ( name == "y" )
+      {
+        y = value;
+      }
+      else if ( name == "width" )
+      {
+        width = value;
+      }
+      else if ( name == "height" )
+      {
+        height = value;
+      }
+    }
+
+    return QRect( x, y, width, height );
   }
   else if ( type == QLatin1String( "QgsProperty" ) )
   {
