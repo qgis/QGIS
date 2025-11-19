@@ -1,0 +1,8 @@
+{
+  "name": "vcpkg-tool-rust",
+  "version-date": "2025-03-13",
+  "description": "Rust",
+  "homepage": "https://www.rust-lang.org//",
+  "license": "MIT",
+  "supports": "native"
+}
