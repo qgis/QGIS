@@ -1578,11 +1578,11 @@ double QgsCircularString::vertexAngle( QgsVertexId vId ) const
 
 double QgsCircularString::segmentLength( QgsVertexId startVertex ) const
 {
-  if ( startVertex.vertex < 0 || startVertex.vertex >= mX.count() - 2 )
-    return 0.0;
-
   if ( startVertex.vertex % 2 == 1 )
     return 0.0; // curve point?
+
+  if ( startVertex.vertex < 0 || startVertex.vertex >= mX.count() - 2 )
+    return 0.0;
 
   double x1 = mX.at( startVertex.vertex );
   double y1 = mY.at( startVertex.vertex );
@@ -1619,8 +1619,12 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
   const double *yData = mY.constData();
   double totalDistance = 0.0;
 
+  // Start iteration from the arc containing fromVertex
+  // Each arc starts at an even index (0, 2, 4, ...) and spans 3 vertices
+  const int startArc = ( fromVertexNumber / 2 ) * 2;
+
   // Iterate through the arcs, accumulating distance between fromVertex and toVertex
-  for ( int i = 0; i < nPoints - 2; i += 2 )
+  for ( int i = startArc; i < nPoints - 2; i += 2 )
   {
     // Arc segment from i to i+2, with curve point at i+1
     double x1 = xData[i];     // Start point
@@ -1643,7 +1647,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
         // Arc from start point to curve point - use precise calculation
         double centerX, centerY, radius;
         QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
-        // Calculate arc length from vertex i to vertex i+1
+        // Calculate arc length from vertex 0 to vertex 1
         return QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 0, 1 );
       }
       else if ( fromVertexNumber == i + 1 && toVertexNumber == i + 2 )
@@ -1651,7 +1655,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
         // Arc from curve point to end point - use precise calculation
         double centerX, centerY, radius;
         QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
-        // Calculate arc length from vertex i+1 to vertex i+2
+        // Calculate arc length from vertex 1 to vertex 2
         return QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 1, 2 );
       }
       else if ( fromVertexNumber == i + 1 && toVertexNumber == i + 1 )
