@@ -149,8 +149,14 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
     if ( mDynamicAngle )
       evaluatedAngle = mAngleProperty.valueAsDouble( context.expressionContext(), mAngle );
 
+    // Segmentize curved geometries to convert them to straight line segments
+    if ( QgsWkbTypes::isCurvedType( inputGeometry.wkbType() ) )
+    {
+      inputGeometry = QgsGeometry( inputGeometry.constGet()->segmentize() );
+    }
+
     inputGeometry.convertToMultiType();
-    const QgsMultiLineString *multiLine = static_cast<const QgsMultiLineString *>( inputGeometry.constGet() );
+    const QgsMultiLineString *multiLine = qgsgeometry_cast<const QgsMultiLineString *>( inputGeometry.constGet() );
 
     for ( int part = 0; part < multiLine->numGeometries(); ++part )
     {
