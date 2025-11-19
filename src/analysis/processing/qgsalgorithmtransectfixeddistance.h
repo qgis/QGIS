@@ -47,6 +47,7 @@ class QgsTransectFixedDistanceAlgorithm : public QgsTransectAlgorithmBase
 
   private:
     double mInterval = 10.0;
+    bool mIncludeStartPoint = true;
 };
 
 ///@endcond PRIVATE
