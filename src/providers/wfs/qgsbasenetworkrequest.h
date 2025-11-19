@@ -158,6 +158,12 @@ class QgsBaseNetworkRequest : public QObject
     bool sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteArray &verb, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders = QList<QNetworkReply::RawHeaderPair>() );
 
     bool issueRequest( QNetworkRequest &request, const QByteArray &verb, const QByteArray *data, bool synchronous );
+
+    // For unit tests in simulated HTTP mode, when the mFakeResponseHasHeaders
+    // has been set by the derived class, this method will read HTTP response
+    // headers contained at the top of the response file and set them into
+    // mResponseHeaders, while stripping them from mResponse.
+    void extractResponseHeadersForUnitTests();
 };
 
 
