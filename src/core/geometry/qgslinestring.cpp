@@ -2853,7 +2853,7 @@ double QgsLineString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVertex
     double dy = yData[i + 1] - yData[i];
     double dz = 0.0;
 
-    if ( is3DGeometry && i + 1 < mZ.size() )
+    if ( is3DGeometry )
     {
       dz = zData[i + 1] - zData[i];
     }
