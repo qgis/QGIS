@@ -83,13 +83,13 @@ std::vector<QgsPoint> QgsTransectFixedDistanceAlgorithm::generateSamplingPoints(
   if ( line.isMeasure() )
     pointType = QgsWkbTypes::addM( pointType );
 
-  int pointIndex = 0;
+  if ( mIncludeStartPoint )
+  {
+    samplingPoints.push_back( line.startPoint() );
+  }
+
   line.visitPointsByRegularDistance( mInterval, [&]( double x, double y, double z, double m, double, double, double, double, double, double, double, double ) -> bool {
-    if ( mIncludeStartPoint || pointIndex > 0 )
-    {
-      samplingPoints.emplace_back( pointType, x, y, z, m );
-    }
-    pointIndex++;
+    samplingPoints.emplace_back( pointType, x, y, z, m );
     return true;
   } );
 
