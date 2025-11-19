@@ -1644,9 +1644,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
         double centerX, centerY, radius;
         QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
         // Calculate arc length from vertex i to vertex i+1
-        int relativeFrom = fromVertexNumber - i;  // Should be 0
-        int relativeTo = toVertexNumber - i;      // Should be 1
-        return QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, relativeFrom, relativeTo );
+        return QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 0, 1 );
       }
       else if ( fromVertexNumber == i + 1 && toVertexNumber == i + 2 )
       {
@@ -1654,9 +1652,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
         double centerX, centerY, radius;
         QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
         // Calculate arc length from vertex i+1 to vertex i+2
-        int relativeFrom = fromVertexNumber - i;  // Should be 1
-        int relativeTo = toVertexNumber - i;      // Should be 2
-        return QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, relativeFrom, relativeTo );
+        return QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 1, 2 );
       }
       else if ( fromVertexNumber == i + 1 && toVertexNumber == i + 1 )
       {
