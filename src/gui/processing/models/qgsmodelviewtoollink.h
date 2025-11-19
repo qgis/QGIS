@@ -75,6 +75,8 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
     /* Used to return to select tool */
     QPointer<QgsModelViewTool> mPreviousViewTool;
 
+    // These two are populated when clicking on an input socket that is already connected
+    // We use them to restore the connection when aborting, or to skip the undo step when the same input is selected
     QString mPreviousInputChildId;
     int mPreviousInputSocketNumber = -1;
 };

@@ -121,6 +121,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
 
     /**
      * Aborts pending undo command
+     * \since QGIS 4.0
      */
     void abortCommand();
 
@@ -219,6 +220,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
 
     /**
      * Emitted when an undo command in the view was aborted.
+     * \since QGIS 4.0
      */
     void commandAborted();
 

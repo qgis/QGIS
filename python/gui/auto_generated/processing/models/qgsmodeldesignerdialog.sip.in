@@ -50,6 +50,8 @@ made to the model.
 %Docstring
 Aborts pending undo command, turning last call to beginUndoCommand
 obsolete
+
+.. versionadded:: 4.0
 %End
 
     QgsProcessingModelAlgorithm *model();

@@ -93,6 +93,8 @@ Ends a single undo command
     void abortCommand();
 %Docstring
 Aborts pending undo command
+
+.. versionadded:: 4.0
 %End
 
 
@@ -194,6 +196,8 @@ Emitted when an undo command in the view has ended.
     void commandAborted();
 %Docstring
 Emitted when an undo command in the view was aborted.
+
+.. versionadded:: 4.0
 %End
 
     void deleteSelectedItems();

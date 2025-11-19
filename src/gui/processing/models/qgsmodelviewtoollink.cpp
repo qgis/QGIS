@@ -238,11 +238,11 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
   // If it's an input socket and it's already connected, we want 'From' to be the output at the other end of the connection
   if ( mFromSocket->isInput() )
   {
-    mPreviousInputSocketNumber = mFromSocket->index();
     QgsProcessingModelChildAlgorithm *childFrom = dynamic_cast<QgsProcessingModelChildAlgorithm *>( mFromSocket->component() );
     if ( !childFrom )
       return;
 
+    mPreviousInputSocketNumber = mFromSocket->index();
     const QgsProcessingParameterDefinition *param = childFrom->algorithm()->parameterDefinitions().at( mPreviousInputSocketNumber );
     const QList<QgsProcessingModelChildParameterSource> currentSources = childFrom->parameterSources().value( param->name() );
     mPreviousInputChildId = childFrom->childId();
@@ -260,10 +260,15 @@ void QgsModelViewToolLink::setFromSocket( QgsModelDesignerSocketGraphicItem *soc
         {
           view()->beginCommand( tr( "Unlink %1: %2", "Unlink Algorithm: Input" ).arg( childFrom->description(), param->description() ) );
 
-          // reset to default value. Layers/feature sources default to an empty model parameter
+          // reset to default value.
           QList<QgsProcessingModelChildParameterSource> newSources;
           if ( param->type() == QgsProcessingParameterFeatureSource::typeName() || param->type() == QgsProcessingParameterMapLayer::typeName() || param->type() == QgsProcessingParameterMeshLayer::typeName() || param->type() == QgsProcessingParameterPointCloudLayer::typeName() || param->type() == QgsProcessingParameterRasterLayer::typeName() || param->type() == QgsProcessingParameterVectorLayer::typeName() )
           {
+            // Layers/feature sources default to an empty model input parameter
+            // This is the same default that a newly added algorithm uses. It's not the best, since when opening the algorithm's
+            // dialog it will be automatically assigned to the first available input, however it is more consistent behavior.
+            // If we defaulted to an empty static value, then it would be populated by the first available project layer which
+            // would be more confusing.
             newSources << QgsProcessingModelChildParameterSource::fromModelParameter( QString() );
           }
           else
