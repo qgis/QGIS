@@ -126,7 +126,7 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
       {
         // 3D case, or 2D case with unsupported GEOS version -- use less stable poly2tri backend
         const QgsRectangle bounds = f.geometry().boundingBox();
-        QgsTessellator t = QgsTessellator();
+        QgsTessellator t;
         t.setBounds( bounds );
         t.setOutputZUp( true );
 

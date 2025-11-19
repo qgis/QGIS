@@ -216,7 +216,7 @@ Sets which facade of the buildings is rendered (0 for None, 1 for Walls,
 
     void setExtrusionFaces( Qgis::ExtrusionFaces side );
 %Docstring
-Sets which facade of the buildings is rendered.
+Sets the building extrusion sides to be rendered.
 
 .. versionadded:: 4.0
 %End
@@ -235,7 +235,7 @@ Walls, 2 for Roof, 3 for WallsAndRoof)
 
     Qgis::ExtrusionFaces extrusionFaces() const;
 %Docstring
-Returns which facade of the buildings is rendered.
+Returns the building extrusion sides to be rendered.
 
 .. versionadded:: 4.0
 %End

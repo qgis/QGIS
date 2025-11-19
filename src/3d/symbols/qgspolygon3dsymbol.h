@@ -173,10 +173,10 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     Q_DECL_DEPRECATED void setRenderedFacade( int side ) SIP_DEPRECATED;
 
     /**
-     * Sets which facade of the buildings is rendered.
+     * Sets the building extrusion sides to be rendered.
      * \since QGIS 4.0
      */
-    void setExtrusionFaces( Qgis::ExtrusionFaces side ) { mRenderedFacade = side; }
+    void setExtrusionFaces( Qgis::ExtrusionFaces side ) { mExtrusionFaces = side; }
 
     /**
      * Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roof, 3 for WallsAndRoof)
@@ -186,10 +186,10 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     Q_DECL_DEPRECATED int renderedFacade() SIP_DEPRECATED;
 
     /**
-     * Returns which facade of the buildings is rendered.
+     * Returns the building extrusion sides to be rendered.
      * \since QGIS 4.0
      */
-    Qgis::ExtrusionFaces extrusionFaces() const { return mRenderedFacade; }
+    Qgis::ExtrusionFaces extrusionFaces() const { return mExtrusionFaces; }
 
     /**
      * Exports the geometries contained within the hierarchy of entity.
@@ -210,7 +210,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;   //!< Front/back culling mode
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
-    Qgis::ExtrusionFaces mRenderedFacade = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof; //!< Which facade of the buildings is rendered
+    Qgis::ExtrusionFaces mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
 
     bool mEdgesEnabled = false;    //!< Whether to highlight edges
     float mEdgeWidth = 1.f;        //!< Width of edges in pixels

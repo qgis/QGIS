@@ -58,9 +58,16 @@ performed and all z coordinates will be ignored.
    Use the default QgsTessellator() constructor and individual setters instead.
 %End
 
-    void setOrigin( QgsVector3D origin );
+    void setOrigin( const QgsVector3D &origin );
 %Docstring
 Sets the origin point of the map.
+
+.. versionadded:: 4.0
+%End
+
+    QgsVector3D origin() const;
+%Docstring
+Returns the origin point of the map.
 
 .. versionadded:: 4.0
 %End
@@ -72,9 +79,17 @@ Sets scaling and the bounds of the input geometry coordinates.
 .. versionadded:: 4.0
 %End
 
-    void setExtrusionEnabled( bool enabled );
+    void setInputZValueIgnored( bool ignore );
 %Docstring
-Sets whether extrusion is enabled (``True``) or disabled (``False``). By
+Sets whether Z values are ignored (``True``) or not (``False``). By
+default, extrusion is disabled.
+
+.. versionadded:: 4.0
+%End
+
+    bool isZValueIgnored() const;
+%Docstring
+Returns whether Z values are ignored (``True``) or not (``False``). By
 default, extrusion is disabled.
 
 .. versionadded:: 4.0
@@ -87,9 +102,23 @@ Sets which faces should be generated during extrusion.
 .. versionadded:: 4.0
 %End
 
+    Qgis::ExtrusionFaces extrusionFaces() const;
+%Docstring
+Returns which faces are generated during extrusion.
+
+.. versionadded:: 4.0
+%End
+
     void setTextureRotation( float rotation );
 %Docstring
 Sets the rotation of generated faces.
+
+.. versionadded:: 4.0
+%End
+
+    float textureRotation() const;
+%Docstring
+Returns the rotation of generated faces.
 
 .. versionadded:: 4.0
 %End
@@ -102,9 +131,25 @@ Sets whether texture UV coordinates should be added to the output data
 .. versionadded:: 4.0
 %End
 
+    bool hasTextureUVs() const;
+%Docstring
+Returns whether texture UV coordinates are being added to the output
+data (``True``) or not (``False``).
+
+.. versionadded:: 4.0
+%End
+
     void setAddNormals( bool addNormals );
 %Docstring
 Sets whether normals should be added to the output data (``True``) or
+not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    bool hasNormals() const;
+%Docstring
+Returns whether normals are being added to the output data (``True``) or
 not (``False``).
 
 .. versionadded:: 4.0
@@ -118,9 +163,24 @@ not (``False``).
 .. versionadded:: 4.0
 %End
 
+    bool hasBackFaces() const;
+%Docstring
+Returns whether back faces are being added to the output data (``True``)
+or not (``False``).
+
+.. versionadded:: 4.0
+%End
+
     void setInvertNormals( bool invertNormals );
 %Docstring
 Sets whether normals should be inverted (``True``) or not (``False``).
+
+.. versionadded:: 4.0
+%End
+
+    bool hasInvertedNormals() const;
+%Docstring
+Returns whether normals are inverted (``True``) or not (``False``).
 
 .. versionadded:: 4.0
 %End

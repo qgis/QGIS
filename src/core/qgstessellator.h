@@ -65,7 +65,13 @@ class CORE_EXPORT QgsTessellator
      * Sets the origin point of the map.
      * \since QGIS 4.0
      */
-    void setOrigin( QgsVector3D origin );
+    void setOrigin( const QgsVector3D &origin );
+
+    /**
+     * Returns the origin point of the map.
+     * \since QGIS 4.0
+     */
+    QgsVector3D origin() const { return mOrigin; }
 
     /**
      * Sets scaling and the bounds of the input geometry coordinates.
@@ -74,11 +80,18 @@ class CORE_EXPORT QgsTessellator
     void setBounds( const QgsRectangle &bounds );
 
     /**
-     * Sets whether extrusion is enabled (TRUE) or disabled (FALSE).
+     * Sets whether Z values are ignored (TRUE) or not (FALSE).
      * By default, extrusion is disabled.
      * \since QGIS 4.0
      */
-    void setExtrusionEnabled( bool enabled );
+    void setInputZValueIgnored( bool ignore );
+
+    /**
+     * Returns whether Z values are ignored (TRUE) or not (FALSE).
+     * By default, extrusion is disabled.
+     * \since QGIS 4.0
+     */
+    bool isZValueIgnored() const { return mInputZValueIgnored; }
 
     /**
      * Sets which faces should be generated during extrusion.
@@ -87,10 +100,22 @@ class CORE_EXPORT QgsTessellator
     void setExtrusionFaces( Qgis::ExtrusionFaces faces );
 
     /**
+     * Returns which faces are generated during extrusion.
+     * \since QGIS 4.0
+     */
+    Qgis::ExtrusionFaces extrusionFaces() const { return mExtrusionFaces; }
+
+    /**
      * Sets the rotation of generated faces.
      * \since QGIS 4.0
      */
     void setTextureRotation( float rotation );
+
+    /**
+     * Returns the rotation of generated faces.
+     * \since QGIS 4.0
+     */
+    float textureRotation() const { return mTextureRotation; }
 
     /**
      * Sets whether texture UV coordinates should be added to the output data (TRUE) or not (FALSE).
@@ -99,10 +124,22 @@ class CORE_EXPORT QgsTessellator
     void setAddTextureUVs( bool addTextureUVs );
 
     /**
+     * Returns whether texture UV coordinates are being added to the output data (TRUE) or not (FALSE).
+     * \since QGIS 4.0
+     */
+    bool hasTextureUVs() const { return mAddTextureCoords; }
+
+    /**
      * Sets whether normals should be added to the output data (TRUE) or not (FALSE).
      * \since QGIS 4.0
      */
     void setAddNormals( bool addNormals );
+
+    /**
+     * Returns whether normals are being added to the output data (TRUE) or not (FALSE).
+     * \since QGIS 4.0
+     */
+    bool hasNormals() const { return mAddNormals; }
 
     /**
      * Sets whether back faces should be added to the output data (TRUE) or not (FALSE).
@@ -111,10 +148,22 @@ class CORE_EXPORT QgsTessellator
     void setAddBackFaces( bool addBackFaces );
 
     /**
+     * Returns whether back faces are being added to the output data (TRUE) or not (FALSE).
+     * \since QGIS 4.0
+     */
+    bool hasBackFaces() const { return mAddBackFaces; }
+
+    /**
      * Sets whether normals should be inverted (TRUE) or not (FALSE).
      * \since QGIS 4.0
      */
     void setInvertNormals( bool invertNormals );
+
+    /**
+     * Returns whether normals are inverted (TRUE) or not (FALSE).
+     * \since QGIS 4.0
+     */
+    bool hasInvertedNormals() const { return mInvertNormals; }
 
     /**
      * Sets whether the "up" direction should be the Z axis on output (TRUE),
@@ -188,10 +237,10 @@ class CORE_EXPORT QgsTessellator
     bool mOutputZUp = false;
     QVector<float> mData;
     int mStride = 3 * sizeof( float );
-    bool mNoZ = false;
+    bool mInputZValueIgnored = false;
     Qgis::ExtrusionFaces mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
     float mTextureRotation = 0.0f;
-    float mScale = 1.0;
+    float mScale = 1.0f;
     QString mError;
 
     float mZMin = std::numeric_limits<float>::max();

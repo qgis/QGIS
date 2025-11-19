@@ -43,10 +43,8 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
 {
   mVertexBuffer = new Qt3DQBuffer( this );
 
-  QgsTessellator tmpTess = QgsTessellator();
-  tmpTess.setInvertNormals( mInvertNormals );
+  QgsTessellator tmpTess;
   tmpTess.setAddNormals( mWithNormals );
-  tmpTess.setAddBackFaces( mAddBackFaces );
   tmpTess.setAddTextureUVs( mAddTextureCoords );
   const int stride = tmpTess.stride();
 

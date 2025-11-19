@@ -1235,13 +1235,9 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
 {
   // step 1 - tessellate the polygon to triangles
   QgsRectangle bounds = geometry->boundingBox();
-  QgsTessellator t = QgsTessellator();
+  QgsTessellator t;
   t.setBounds( bounds );
-  t.setAddNormals( true );
-  t.setInvertNormals( false );
-  t.setAddBackFaces( false );
-  t.setExtrusionEnabled( false );
-  t.setOutputZUp( true );
+  t.setInputZValueIgnored( true );
 
   if ( const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( geometry ) )
   {
