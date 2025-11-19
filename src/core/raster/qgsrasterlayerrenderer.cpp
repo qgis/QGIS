@@ -41,6 +41,7 @@
 #include "qgsrasternuller.h"
 #include "qgsrenderedlayerstatistics.h"
 #include "qgsrasterlabeling.h"
+#include "qgsthreadingutils.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
@@ -510,6 +511,8 @@ QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
 
 bool QgsRasterLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( mEnableProfile )
   {

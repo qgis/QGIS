@@ -53,6 +53,7 @@ class CORE_EXPORT QgsAnnotationLayerRenderer : public QgsMapLayerRenderer
   private:
     std::vector < std::pair< QString, std::unique_ptr< QgsAnnotationItem > > > mItems;
     std::unique_ptr< QgsFeedback > mFeedback;
+    QString mLayerName;
     double mLayerOpacity = 1.0;
     QPainter::CompositionMode mLayerBlendMode = QPainter::CompositionMode::CompositionMode_SourceOver;
     std::unique_ptr< QgsPaintEffect > mPaintEffect;
