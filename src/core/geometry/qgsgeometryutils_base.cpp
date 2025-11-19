@@ -244,30 +244,18 @@ double QgsGeometryUtilsBase::calculateArcLength( double centerX, double centerY,
   // Map vertex indices to angles
   double fromAngle, toAngle;
   if ( fromVertex == 0 )
-  {
     fromAngle = angle1;
-  }
   else if ( fromVertex == 1 )
-  {
     fromAngle = angle2;
-  }
   else
-  {
     fromAngle = angle3;
-  }
 
   if ( toVertex == 0 )
-  {
     toAngle = angle1;
-  }
   else if ( toVertex == 1 )
-  {
     toAngle = angle2;
-  }
   else
-  {
     toAngle = angle3;
-  }
 
   // Calculate the arc angle between the two points following the arc direction (in degrees)
   double arcAngleDegrees;
