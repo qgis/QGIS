@@ -121,6 +121,8 @@ Returns the invert axis orientation checkbox status.
 
 
 
+
+
     Qgis::HttpMethod preferredHttpMethod() const;
 %Docstring
 Returns the selected preferred HTTP method.
