@@ -75,13 +75,16 @@ std::vector<QgsPoint> QgsTransectFixedDistanceAlgorithm::generateSamplingPoints(
 {
   std::vector<QgsPoint> samplingPoints;
 
-  // Sample points at fixed intervals
-  double totalLength = line.length();
-  for ( double d = 0; d <= totalLength; d += mInterval )
-  {
-    QgsPoint *pt = line.interpolatePoint( d );
-    samplingPoints.push_back( *pt );
-  }
+  Qgis::WkbType pointType = Qgis::WkbType::Point;
+  if ( line.is3D() )
+    pointType = Qgis::WkbType::PointZ;
+  if ( line.isMeasure() )
+    pointType = QgsWkbTypes::addM( pointType );
+
+  line.visitPointsByRegularDistance( mInterval, [&]( double x, double y, double z, double m, double, double, double, double, double, double, double, double ) -> bool {
+    samplingPoints.emplace_back( pointType, x, y, z, m );
+    return true;
+  } );
 
   return samplingPoints;
 }
