@@ -120,10 +120,6 @@ void QgsModelViewToolLink::modelReleaseEvent( QgsModelViewMouseEvent *event )
     return;
   }
 
-  view()->beginCommand( tr( "Edit link" ) );
-
-  QList<QgsProcessingModelChildParameterSource> sources;
-
   /**
    * Reorder input and output socket
    * whether the user dragged :
