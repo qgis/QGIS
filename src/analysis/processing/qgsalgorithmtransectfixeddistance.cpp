@@ -63,11 +63,13 @@ QgsTransectFixedDistanceAlgorithm *QgsTransectFixedDistanceAlgorithm::createInst
 void QgsTransectFixedDistanceAlgorithm::addAlgorithmParams()
 {
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "INTERVAL" ), QObject::tr( "Fixed sampling interval" ), 10.0, QStringLiteral( "INPUT" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "INCLUDE_START" ), QObject::tr( "Include transect at start of line" ), true ) );
 }
 
 bool QgsTransectFixedDistanceAlgorithm::prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mInterval = parameterAsDouble( parameters, QStringLiteral( "INTERVAL" ), context );
+  mIncludeStartPoint = parameterAsBool( parameters, QStringLiteral( "INCLUDE_START" ), context );
   return true;
 }
 
@@ -81,8 +83,13 @@ std::vector<QgsPoint> QgsTransectFixedDistanceAlgorithm::generateSamplingPoints(
   if ( line.isMeasure() )
     pointType = QgsWkbTypes::addM( pointType );
 
+  int pointIndex = 0;
   line.visitPointsByRegularDistance( mInterval, [&]( double x, double y, double z, double m, double, double, double, double, double, double, double, double ) -> bool {
-    samplingPoints.emplace_back( pointType, x, y, z, m );
+    if ( mIncludeStartPoint || pointIndex > 0 )
+    {
+      samplingPoints.emplace_back( pointType, x, y, z, m );
+    }
+    pointIndex++;
     return true;
   } );
 
