@@ -164,17 +164,15 @@ QVariantMap QgsTransectAlgorithmBase::processAlgorithm( const QVariantMap &param
       if ( !lineString )
         continue;
 
-      QgsLineString line = *lineString;
-
       // Let subclass generate sampling points using their specific strategy
-      std::vector<QgsPoint> samplingPoints = generateSamplingPoints( line, parameters, context );
+      std::vector<QgsPoint> samplingPoints = generateSamplingPoints( *lineString, parameters, context );
 
       for ( int i = 0; i < static_cast<int>( samplingPoints.size() ); ++i )
       {
         const QgsPoint &pt = samplingPoints[i];
 
         // Let subclass calculate azimuth using their specific method
-        double azimuth = calculateAzimuth( line, pt, i );
+        double azimuth = calculateAzimuth( *lineString, pt, i );
 
         QgsFeature outFeat;
         QgsAttributes attrs = feat.attributes();
