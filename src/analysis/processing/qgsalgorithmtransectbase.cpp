@@ -62,7 +62,7 @@ void QgsTransectAlgorithmBase::initAlgorithm( const QVariantMap & )
   angle->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( angle.release() );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SIDE" ), QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SIDE" ), QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false, 2 ) );
 
   // Allow subclasses to add their specific parameters
   addAlgorithmParams();
