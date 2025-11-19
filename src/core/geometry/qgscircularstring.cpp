@@ -1644,7 +1644,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
       }
       else if ( fromVertexNumber == i && toVertexNumber == i + 1 )
       {
-        // Arc from start point to curve point - use precise calculation
+        // Arc from start point to curve point
         double centerX, centerY, radius;
         QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
         // Calculate arc length from vertex 0 to vertex 1
@@ -1652,7 +1652,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
       }
       else if ( fromVertexNumber == i + 1 && toVertexNumber == i + 2 )
       {
-        // Arc from curve point to end point - use precise calculation
+        // Arc from curve point to end point
         double centerX, centerY, radius;
         QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
         // Calculate arc length from vertex 1 to vertex 2
@@ -1676,7 +1676,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
         totalDistance += QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
       else if ( fromVertexNumber == i + 1 )
       {
-        // From curve point to end of segment - use precise calculation
+        // From curve point to end of segment
         double centerX, centerY, radius;
         QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
         totalDistance += QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 1, 2 );
@@ -1687,7 +1687,7 @@ double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVe
       // fromVertex is before this segment, toVertex is in this segment
       if ( toVertexNumber == i + 1 )
       {
-        // From start of segment to curve point - use precise calculation
+        // From start of segment to curve point
         double centerX, centerY, radius;
         QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
         totalDistance += QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 0, 1 );
