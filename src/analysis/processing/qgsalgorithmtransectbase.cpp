@@ -202,18 +202,22 @@ QgsGeometry QgsTransectAlgorithmBase::calcTransect( const QgsPoint &point, const
 
   QgsPolyline line;
 
-  if ( ( orientation == QgsTransectAlgorithmBase::Right ) || ( orientation == QgsTransectAlgorithmBase::Both ) )
+  switch ( orientation )
   {
-    pLeft = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
-    if ( orientation != QgsTransectAlgorithmBase::Both )
+    case QgsTransectAlgorithmBase::Right:
+      pLeft = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
       pRight = point;
-  }
+      break;
 
-  if ( ( orientation == QgsTransectAlgorithmBase::Left ) || ( orientation == QgsTransectAlgorithmBase::Both ) )
-  {
-    pRight = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
-    if ( orientation != QgsTransectAlgorithmBase::Both )
+    case QgsTransectAlgorithmBase::Left:
+      pRight = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
       pLeft = point;
+      break;
+
+    case QgsTransectAlgorithmBase::Both:
+      pLeft = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
+      pRight = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
+      break;
   }
 
   line.append( pLeft );
