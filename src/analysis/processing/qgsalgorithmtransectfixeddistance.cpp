@@ -62,7 +62,7 @@ QgsTransectFixedDistanceAlgorithm *QgsTransectFixedDistanceAlgorithm::createInst
 
 void QgsTransectFixedDistanceAlgorithm::addAlgorithmParams()
 {
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "INTERVAL" ), QObject::tr( "Fixed sampling interval" ), Qgis::ProcessingNumberParameterType::Double, 10.0, false, 0 ) );
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "INTERVAL" ), QObject::tr( "Fixed sampling interval" ), 10.0, QStringLiteral( "INPUT" ), false, 0 ) );
 }
 
 bool QgsTransectFixedDistanceAlgorithm::prepareAlgorithmTransectParameters( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
