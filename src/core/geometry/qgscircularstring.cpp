@@ -1595,18 +1595,18 @@ double QgsCircularString::segmentLength( QgsVertexId startVertex ) const
 
 double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const
 {
+  // Ensure fromVertex < toVertex for simplicity
+  if ( fromVertex.vertex > toVertex.vertex )
+  {
+    return distanceBetweenVertices( toVertex, fromVertex );
+  }
+
   // Convert QgsVertexId to simple vertex numbers for curves (single ring, single part)
   if ( fromVertex.part != 0 || fromVertex.ring != 0 || toVertex.part != 0 || toVertex.ring != 0 )
     return -1.0;
 
   const int fromVertexNumber = fromVertex.vertex;
   const int toVertexNumber = toVertex.vertex;
-
-  // Ensure fromVertex < toVertex for simplicity
-  if ( fromVertexNumber > toVertexNumber )
-  {
-    return distanceBetweenVertices( QgsVertexId( 0, 0, toVertexNumber ), QgsVertexId( 0, 0, fromVertexNumber ) );
-  }
 
   const int nPoints = numPoints();
   if ( fromVertexNumber < 0 || fromVertexNumber >= nPoints || toVertexNumber < 0 || toVertexNumber >= nPoints )
