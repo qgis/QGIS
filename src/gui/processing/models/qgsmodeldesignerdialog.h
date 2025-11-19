@@ -74,6 +74,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     /**
      * Aborts pending undo command, turning last call to beginUndoCommand obsolete
+     * \since QGIS 4.0
      */
     void abortUndoCommand();
 
