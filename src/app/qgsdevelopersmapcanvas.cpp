@@ -18,7 +18,110 @@
 #include "moc_qgsdevelopersmapcanvas.cpp"
 #include "qgsdevelopersmapcanvas.h"
 #include "qgsapplication.h"
+#include "qgsmapmouseevent.h"
+#include "qgsfeaturerequest.h"
 
+#include <QCursor>
+#include <QFrame>
+#include <QVBoxLayout>
+
+QgsDevelopersMapTool::QgsDevelopersMapTool( QgsMapCanvas *canvas, QgsVectorLayer *layer )
+  : QgsMapToolPan( canvas )
+  , mDevelopersMapLayer( layer )
+{
+  mDevelopersMapFloatingPanel = std::make_unique<QgsDevelopersMapFloatingPanel>( canvas );
+  mDevelopersMapFloatingPanel->setAnchorWidget( canvas );
+  mDevelopersMapFloatingPanel->setAnchorWidgetPoint( QgsFloatingWidget::BottomRight );
+  mDevelopersMapFloatingPanel->setAnchorPoint( QgsFloatingWidget::BottomRight );
+  mDevelopersMapFloatingPanel->hide();
+}
+
+void QgsDevelopersMapTool::canvasMoveEvent( QgsMapMouseEvent *e )
+{
+  if ( !isPinching() && !( e->buttons() & Qt::LeftButton ) )
+  {
+    const QgsMapSettings mapSettings = mCanvas->mapSettings();
+    const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+    double searchRadius = context.convertToMapUnits( 8, Qgis::RenderUnit::Millimeters );
+
+    const QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+    QgsRectangle rect = toLayerCoordinates( mDevelopersMapLayer, QgsRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius ) );
+    QgsFeatureRequest featureRequest;
+    featureRequest.setFilterRect( rect );
+    featureRequest.setNoAttributes();
+    featureRequest.setFlags( Qgis::Qgis::FeatureRequestFlag::NoGeometry );
+    QgsFeatureIterator fit = mDevelopersMapLayer->getFeatures( featureRequest );
+    QgsFeature f;
+    if ( fit.nextFeature( f ) )
+    {
+      setCursor( QCursor( Qt::PointingHandCursor ) );
+    }
+    else
+    {
+      setCursor( QCursor( Qt::ArrowCursor ) );
+    }
+  }
+  else
+  {
+    QgsMapToolPan::canvasMoveEvent( e );
+  }
+}
+
+void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
+{
+  if ( !isPinching() && !isDragging() )
+  {
+    const QgsMapSettings mapSettings = mCanvas->mapSettings();
+    const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+    double searchRadius = context.convertToMapUnits( 8, Qgis::RenderUnit::Millimeters );
+
+    const QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+    QgsRectangle rect = toLayerCoordinates( mDevelopersMapLayer, QgsRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius ) );
+    QgsFeatureRequest featureRequest;
+    featureRequest.setFilterRect( rect );
+    featureRequest.setFlags( Qgis::Qgis::FeatureRequestFlag::NoGeometry );
+    QgsFeatureIterator fit = mDevelopersMapLayer->getFeatures( featureRequest );
+    QgsFeature f;
+    if ( fit.nextFeature( f ) )
+    {
+      mDevelopersMapFloatingPanel->setText( QStringLiteral( "**%1**" ).arg( f.attribute( QStringLiteral( "Name" ) ).toString() ) );
+      mDevelopersMapFloatingPanel->show();
+    }
+    else
+    {
+      mDevelopersMapFloatingPanel->hide();
+    }
+  }
+  else
+  {
+    QgsMapToolPan::canvasReleaseEvent( e );
+  }
+}
+
+
+QgsDevelopersMapFloatingPanel::QgsDevelopersMapFloatingPanel( QWidget *parent )
+  : QgsFloatingWidget( parent )
+{
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  mLabel = new QLabel( this );
+  mLabel->setAutoFillBackground( true );
+  mLabel->setFrameShape( QFrame::StyledPanel );
+  mLabel->setFrameShadow( QFrame::Plain );
+  mLabel->setMargin( 10 );
+  mLabel->setTextFormat( Qt::MarkdownText );
+  mLabel->setFixedWidth( 200 );
+  mLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+  layout->addWidget( mLabel );
+  layout->setSizeConstraint( QLayout::SetFixedSize );
+
+  setLayout( layout );
+  setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+}
+
+void QgsDevelopersMapFloatingPanel::setText( const QString &text )
+{
+  mLabel->setText( text );
+}
 
 QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
   : QgsMapCanvas( parent )
@@ -43,6 +146,6 @@ QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
   mapSettings().setExtent( extent );
   refresh();
 
-  mDevelopersMapTool = std::make_unique<QgsMapToolPan>( this );
+  mDevelopersMapTool = std::make_unique<QgsDevelopersMapTool>( this, mDevelopersMapLayer.get() );
   setMapTool( mDevelopersMapTool.get() );
 }
