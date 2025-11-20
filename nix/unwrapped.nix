@@ -222,7 +222,7 @@ mkDerivation
   dontWrapGApps = true; # wrapper params passed below
 
   postFixup = lib.optionalString withGrass ''
-    # GRASS has to be availble on the command line even though we baked in
+    # GRASS has to be available on the command line even though we baked in
     # the path at build time using GRASS_PREFIX.
     # Using wrapGAppsHook also prevents file dialogs from crashing the program
     # on non-NixOS.
