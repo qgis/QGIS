@@ -18,16 +18,17 @@
 #include "qgsabout.h"
 #include "moc_qgsabout.cpp"
 #include "qgsapplication.h"
+#include "qgsdevelopersmapcanvas.h"
 #include "qgsauthmethodregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
+
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QFile>
 #include <QTextStream>
 #include <QImageReader>
 #include <QSqlDatabase>
-#include <QTcpSocket>
 #include <QUrl>
 #include <QRegularExpression>
 
@@ -61,25 +62,6 @@ QgsAbout::QgsAbout( QWidget *parent )
 void QgsAbout::init()
 {
   setPluginInfo();
-
-  // check internet connection in order to hide/show the developers map widget
-  const int DEVELOPERS_MAP_INDEX = 5;
-  QTcpSocket socket;
-  socket.connectToHost( QgsApplication::QGIS_ORGANIZATION_DOMAIN, 80 );
-  if ( socket.waitForConnected( 1000 ) )
-  {
-    setDevelopersMap();
-  }
-  else
-  {
-    mOptionsListWidget->item( DEVELOPERS_MAP_INDEX )->setHidden( true );
-    const QModelIndex firstItem = mOptionsListWidget->model()->index( 0, 0, QModelIndex() );
-    mOptionsListWidget->setCurrentIndex( firstItem );
-  }
-  developersMapView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-  developersMapView->setContextMenuPolicy( Qt::NoContextMenu );
-
-  connect( developersMapView, &QgsWebView::linkClicked, this, &QgsAbout::openUrl );
 
   //read the authors file to populate the svn committers list
   QStringList lines;
@@ -326,11 +308,4 @@ QString QgsAbout::fileSystemSafe( const QString &fileName )
   QgsDebugMsgLevel( result, 3 );
 
   return result;
-}
-
-void QgsAbout::setDevelopersMap()
-{
-  developersMapView->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
-  const QUrl url = QUrl::fromLocalFile( QgsApplication::developersMapFilePath() );
-  developersMapView->load( url );
 }
