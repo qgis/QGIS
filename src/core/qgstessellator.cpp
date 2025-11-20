@@ -298,13 +298,13 @@ static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeig
   for ( int i = 1; i < ring.numPoints(); ++i )
   {
     pt = ring.pointN( is_counter_clockwise == ccw ? i : ring.numPoints() - i - 1 );
-    float x0 = ptPrev.x() - originX, y0 = ptPrev.y() - originY;
-    float x1 = pt.x() - originX, y1 = pt.y() - originY;
-    const float z0 = std::isnan( ptPrev.z() ) ? 0 : ptPrev.z() - originZ;
-    const float z1 = std::isnan( pt.z() ) ? 0 : pt.z() - originZ;
+    const double x0 = ptPrev.x() - originX, y0 = ptPrev.y() - originY;
+    const double x1 = pt.x() - originX, y1 = pt.y() - originY;
+    const double z0 = std::isnan( ptPrev.z() ) ? 0.0 : ptPrev.z() - originZ;
+    const double z1 = std::isnan( pt.z() ) ? 0.0 : pt.z() - originZ;
 
     // make a quad
-    make_quad( x0, y0, z0, x1, y1, z1, extrusionHeight, data, addNormals, addTextureCoords, textureRotation, zUp );
+    make_quad( static_cast<float>( x0 ), static_cast<float>( y0 ), static_cast<float>( z0 ), static_cast<float>( x1 ), static_cast<float>( y1 ), static_cast<float>( z1 ), extrusionHeight, data, addNormals, addTextureCoords, textureRotation, zUp );
     ptPrev = pt;
   }
 }
