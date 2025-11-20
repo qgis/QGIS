@@ -71,4 +71,4 @@ class GUI_EXPORT QgsLayerChangesCommitBlockerInterface
     virtual bool allowCommit( QgsMapLayer* layer ) = 0;
 };
 
-#endif // QgsCustomProjectOpenHandler_H
+#endif // QGSLAYERCHANGESCOMMITBLOCKERINTERFACE_H
