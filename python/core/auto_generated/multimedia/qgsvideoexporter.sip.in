@@ -1,0 +1,74 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/multimedia/qgsvideoexporter.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+class QgsVideoExporter : QObject
+{
+%Docstring(signature="appended")
+Handles exports of sequential image files to video formats.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsvideoexporter.h"
+%End
+  public:
+
+    QgsVideoExporter( const QString &filename, QSize size, double framesPerSecond );
+%Docstring
+Constructor for QgsVideoExporter.
+
+:param filename: destination video file name
+:param size: output video frame size
+:param framesPerSecond: output video frames per second
+%End
+    ~QgsVideoExporter();
+
+    void setInputFiles( const QStringList &files );
+%Docstring
+Sets the list of input image ``files``.
+
+The list must be an ordered list of existing image file paths, which
+will form the output video frames.
+
+.. seealso:: :py:func:`inputFiles`
+%End
+
+    QStringList inputFiles() const;
+%Docstring
+Returns the list of input image ``files``.
+
+.. seealso:: :py:func:`setInputFiles`
+%End
+
+    void setFileFormat( QMediaFormat::FileFormat format );
+    QMediaFormat::FileFormat fileFormat() const;
+
+    void setVideoCodec( QMediaFormat::VideoCodec codec );
+    QMediaFormat::VideoCodec videoCodec() const;
+
+
+    bool writeVideo();
+
+  signals:
+
+    void finished();
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/multimedia/qgsvideoexporter.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
