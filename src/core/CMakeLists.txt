@@ -89,6 +89,8 @@ set(QGIS_CORE_SRCS
   gps/qgssatelliteinformation.cpp
   gps/qgsvectorlayergpslogger.cpp
 
+  multimedia/qgsvideoexporter.cpp
+
   plot/qgsbarchartplot.cpp
   plot/qgslinechartplot.cpp
   plot/qgspiechartplot.cpp
@@ -1732,6 +1734,8 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshlayerlabelprovider.h
   mesh/qgsmeshutils.h
 
+  multimedia/qgsvideoexporter.h
+
   painting/qgsgeometrypaintdevice.h
   painting/qgsmaskpaintdevice.h
   painting/qgsnullpainterdevice.h
@@ -2617,6 +2621,8 @@ if (WITH_COPC)
     ${CMAKE_SOURCE_DIR}/src/core/providers/vpc)
 endif()
 
+find_package(${QT_VERSION_BASE} COMPONENTS Multimedia REQUIRED)
+
 GENERATE_EXPORT_HEADER(
   qgis_core
   BASE_NAME CORE
@@ -2675,6 +2681,7 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::Concurrent
   ${QT_VERSION_BASE}::Positioning
+  ${QT_VERSION_BASE}::Multimedia
   ${OPTIONAL_QTWEBKIT}
   ${QCA_LIBRARY}
   GEOS::geos_c
