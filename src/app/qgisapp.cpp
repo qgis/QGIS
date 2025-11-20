@@ -8215,11 +8215,11 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
         QPushButton *button = new QPushButton( tr( "Also rename layer in layers panel" ), this );
         barItem->setWidget( button );
 
-        connect( vl, &QgsVectorLayer::willBeDeleted, this, [button]() {
+        connect( vl, &QgsVectorLayer::willBeDeleted, barItem, [button]() {
           button->setEnabled( false );
         } );
 
-        connect( button, &QPushButton::clicked, this, [button, vl, layerNameForRename]() {
+        connect( button, &QPushButton::clicked, vl, [button, vl, layerNameForRename]() {
           vl->setName( layerNameForRename );
           button->setEnabled( false );
         } );
