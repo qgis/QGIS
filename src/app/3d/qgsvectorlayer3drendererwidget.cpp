@@ -17,6 +17,8 @@
 
 #include "qgs3dsymbolregistry.h"
 #include "qgsapplication.h"
+#include "qgscategorized3drenderer.h"
+#include "qgscategorized3drendererwidget.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgsrulebased3drendererwidget.h"
 #include "qgssymbol3dwidget.h"
@@ -106,6 +108,7 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   cboRendererType = new QComboBox( this );
   cboRendererType->addItem( QgsApplication::getThemeIcon( u"mIconRenderOnTerrain.svg"_s ), tr( "Render on Terrain Surface" ) );
   cboRendererType->addItem( QgsApplication::getThemeIcon( u"rendererSingleSymbol.svg"_s ), tr( "Single Symbol" ) );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( u"rendererCategorizedSymbol.svg"_s ), tr( "Categorized" ) );
   cboRendererType->addItem( QgsApplication::getThemeIcon( u"rendererRuleBasedSymbol.svg"_s ), tr( "Rule-based" ) );
 
   widgetBaseProperties = new QgsVectorLayer3DPropertiesWidget( this );
@@ -117,14 +120,18 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
 
   widgetNoRenderer = new QLabel;
   widgetSingleSymbolRenderer = new QgsSingleSymbol3DRendererWidget( qobject_cast<QgsVectorLayer *>( layer ), this );
+  widgetCategorizedRenderer = new QgsCategorized3DRendererWidget( this );
   widgetRuleBasedRenderer = new QgsRuleBased3DRendererWidget( this );
 
   widgetRendererStack->addWidget( widgetNoRenderer );
   widgetRendererStack->addWidget( widgetSingleSymbolRenderer );
+  widgetRendererStack->addWidget( widgetCategorizedRenderer );
   widgetRendererStack->addWidget( widgetRuleBasedRenderer );
 
   connect( cboRendererType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
   connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetCategorizedRenderer, &QgsCategorized3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
+  connect( widgetCategorizedRenderer, &QgsCategorized3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
   connect( widgetBaseProperties, &QgsVectorLayer3DPropertiesWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
@@ -152,9 +159,14 @@ void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
     pageIndex = 1;
     widgetSingleSymbolRenderer->setLayer( vlayer );
   }
-  else if ( r && r->type() == "rulebased"_L1 )
+  else if ( r && r->type() == "categorized"_L1 )
   {
     pageIndex = 2;
+    widgetCategorizedRenderer->setLayer( vlayer );
+  }
+  else if ( r && r->type() == "rulebased"_L1 )
+  {
+    pageIndex = 3;
     widgetRuleBasedRenderer->setLayer( vlayer );
   }
   else
@@ -164,7 +176,7 @@ void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
   widgetRendererStack->setCurrentIndex( pageIndex );
   whileBlocking( cboRendererType )->setCurrentIndex( pageIndex );
 
-  if ( r && ( r->type() == "vector"_L1 || r->type() == "rulebased"_L1 ) )
+  if ( r && ( QStringList { u"vector"_s, u"rulebased"_s, u"categorized"_s }.contains( r->type() ) ) )
   {
     widgetBaseProperties->load( static_cast<QgsAbstractVectorLayer3DRenderer *>( r ) );
   }
@@ -178,6 +190,7 @@ void QgsVectorLayer3DRendererWidget::setDockMode( bool dockMode )
 {
   QgsPanelWidget::setDockMode( dockMode );
   widgetRuleBasedRenderer->setDockMode( dockMode );
+  widgetCategorizedRenderer->setDockMode( dockMode );
 }
 
 
@@ -199,6 +212,14 @@ void QgsVectorLayer3DRendererWidget::apply()
     }
     break;
     case 2:
+    {
+      QgsCategorized3DRenderer *renderer = widgetCategorizedRenderer->renderer()->clone();
+      renderer->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
+      widgetBaseProperties->apply( renderer );
+      mLayer->setRenderer3D( renderer );
+    }
+    break;
+    case 3:
     {
       QgsRuleBased3DRenderer *r = new QgsRuleBased3DRenderer( widgetRuleBasedRenderer->rootRule()->clone() );
       r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
@@ -222,6 +243,9 @@ void QgsVectorLayer3DRendererWidget::onRendererTypeChanged( int index )
       widgetSingleSymbolRenderer->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
       break;
     case 2:
+      widgetCategorizedRenderer->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
+      break;
+    case 3:
       widgetRuleBasedRenderer->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
       break;
     default:
