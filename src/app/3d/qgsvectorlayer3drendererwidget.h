@@ -31,6 +31,7 @@ class QStackedWidget;
 class QgsVectorLayer;
 class QgsMapCanvas;
 
+class QgsCategorized3DRendererWidget;
 class QgsRuleBased3DRendererWidget;
 class QgsSymbol3DWidget;
 class QgsVectorLayer3DPropertiesWidget;
@@ -84,6 +85,7 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
 
     QLabel *widgetNoRenderer = nullptr;
     QgsSingleSymbol3DRendererWidget *widgetSingleSymbolRenderer = nullptr;
+    QgsCategorized3DRendererWidget *widgetCategorizedRenderer = nullptr;
     QgsRuleBased3DRendererWidget *widgetRuleBasedRenderer = nullptr;
 };
 
