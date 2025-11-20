@@ -36,9 +36,9 @@ def check_font_exists(font_name):
 
 def download_avatars():
     for t in range(NUMBER_OF_TILES):
-        odir = f"avatars_{t}"
-        shutil.rmtree(odir, ignore_errors=True)
-        os.makedirs(odir, exist_ok=True)
+        tile_dir = f"avatars_{t:02d}"
+        shutil.rmtree(tile_dir, ignore_errors=True)
+        os.makedirs(tile_dir, exist_ok=True)
 
     api_url = "https://raw.githubusercontent.com/qgis/QGIS-Website/refs/heads/main/data/contributors/contributors.json"
     headers = {"Accept": "application/vnd.github.v3+json"}
@@ -66,8 +66,8 @@ def download_avatars():
         print(f"Downloading avatar {i + 1}/{NUMBER_OF_AVATARS} for {login} from {url}")
 
         t = i // AVATARS_PER_TILE
-        odir = f"avatars_{t}"
-        output = os.path.join(odir, f"{i}.png")
+        tile_dir = f"avatars_{t:02d}"
+        output = os.path.join(tile_dir, f"{i:04d}.png")
 
         alternate_path = os.path.join(ALTERNATE_AVATARS_DIR, f"{login}.png")
 
@@ -92,9 +92,9 @@ def create_tiles():
 
     for t in range(NUMBER_OF_TILES):
         print(f"Generating tile {t + 1}/{NUMBER_OF_TILES}")
-        odir = f"avatars_{t}"
+        tile_dir = f"avatars_{t:02d}"
         output_file = os.path.join(mosaic_dir, f"mosaic{t:02d}0.png")
-        input_files = os.path.join(odir, "*.png")
+        input_files = os.path.join(tile_dir, "*.png")
 
         command = [
             "montage",
