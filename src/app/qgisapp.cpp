@@ -2212,6 +2212,8 @@ QgisApp::~QgisApp()
   mLayerTreeView = nullptr;
   delete mMessageButton;
   mMessageButton = nullptr;
+  delete mAboutDialog;
+  mAboutDialog = nullptr;
 
   QgsGui::nativePlatformInterface()->cleanup();
 
@@ -5450,15 +5452,15 @@ void QgisApp::sponsors()
 
 void QgisApp::about()
 {
-  static QgsAbout *sAbt = nullptr;
-  if ( !sAbt )
+  if ( !mAboutDialog )
   {
-    sAbt = new QgsAbout( this );
+    mAboutDialog = new QgsAbout( this );
   }
-  sAbt->setVersion( QgisApp::getVersionString() );
-  sAbt->show();
-  sAbt->raise();
-  sAbt->activateWindow();
+
+  mAboutDialog->setVersion( QgisApp::getVersionString() );
+  mAboutDialog->show();
+  mAboutDialog->raise();
+  mAboutDialog->activateWindow();
 }
 
 QString QgisApp::getVersionString()

@@ -38,6 +38,7 @@ class QValidator;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
+class QgsAbout;
 class QgsAppDbUtils;
 class QgsAnnotation;
 class QgsMapCanvasAnnotationItem;
@@ -2825,6 +2826,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool mBlockAutoSelectAddedLayer = false;
 
     int mFreezeCount = 0;
+
+    QgsAbout *mAboutDialog = nullptr;
+
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;
 

@@ -1,9 +1,9 @@
 /***************************************************************************
-                          qgsabout.h  -  description
+                          qgsdevelopersmapcanvas.h
                              -------------------
-    begin                : Sat Aug 10 2002
-    copyright            : (C) 2002 by Gary E.Sherman
-    email                : sherman at mrcc.com
+    begin                : November 2025
+    copyright            : (C) 2025 by Mathieu Pellerin
+    email                : mathieu at opengis dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,35 +14,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSABOUT_H
-#define QGSABOUT_H
+#ifndef QGSDEVELOPERSMAPCANVAS_H
+#define QGSDEVELOPERSMAPCANVAS_H
 
-#include "ui_qgsabout.h"
 #include "qgis_app.h"
-#include "qgsoptionsdialogbase.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolpan.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
 
-class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
+class APP_EXPORT QgsDevelopersMapCanvas : public QgsMapCanvas
 {
     Q_OBJECT
   public:
-    QgsAbout( QWidget *parent );
-
-    void setVersion( const QString &v );
-    static QString fileSystemSafe( const QString &string );
-
-  private slots:
-    void btnCopyToClipboard_clicked();
-    void btnQgisUser_clicked();
-    void btnQgisHome_clicked();
-    void openUrl( const QUrl &url );
+    QgsDevelopersMapCanvas( QWidget *parent = nullptr );
+    ~QgsDevelopersMapCanvas() override {}
 
   private:
-    void setWhatsNew();
-    void setLicence();
-    void setPluginInfo();
-    void init();
-
-    QString mVersionString;
+    std::unique_ptr<QgsRasterLayer> mDevelopersMapBaseLayer;
+    std::unique_ptr<QgsVectorLayer> mDevelopersMapLayer;
+    std::unique_ptr<QgsMapToolPan> mDevelopersMapTool;
 };
 
-#endif
+#endif // QGSDEVELOPERSMAPCANVAS_H
