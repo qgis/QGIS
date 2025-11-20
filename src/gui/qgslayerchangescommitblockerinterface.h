@@ -46,7 +46,7 @@
  *   iface.registerApplicationExitBlocker(my_blocker)
  * \endcode
  *
- * \since QGIS 3.44
+ * \since QGIS 4.0
  */
 #include "qgis_gui.h"
 #include "qgsmaplayer.h"
