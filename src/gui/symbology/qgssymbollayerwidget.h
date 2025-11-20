@@ -457,7 +457,7 @@ class QgsTemplatedLineSymbolLayerBase;
  * \brief A widget for controlling the properties of a templated line symbol layer (hash or markers).
  * \since QGIS 4.0
  */
-class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetHashedLine
+class GUI_EXPORT QgsTemplatedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetTemplatedLine
 {
     Q_OBJECT
 

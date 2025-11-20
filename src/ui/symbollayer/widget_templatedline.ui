@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WidgetHashedLine</class>
- <widget class="QWidget" name="WidgetHashedLine">
+ <class>WidgetTemplatedLine</class>
+ <widget class="QWidget" name="WidgetTemplatedLine">
   <property name="geometry">
    <rect>
     <x>0</x>
