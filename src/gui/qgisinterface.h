@@ -1351,6 +1351,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Unregister a previously registered commit layer changes \a blocker.
      * \see registerLayerChangesCommitBlocker()
+     * \since QGIS 4.0
     */
     virtual void unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) = 0;
 
