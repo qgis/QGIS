@@ -38,6 +38,13 @@ class CORE_EXPORT QgsVideoExporter : public QObject
 
   public:
 
+    /**
+     * Constructor for QgsVideoExporter.
+     *
+     * \param filename destination video file name
+     * \param size output video frame size
+     * \param framesPerSecond output video frames per second
+     */
     QgsVideoExporter( const QString &filename, QSize size, double framesPerSecond );
     ~QgsVideoExporter() override;
 
