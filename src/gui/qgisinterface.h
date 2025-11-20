@@ -1344,6 +1344,7 @@ class GUI_EXPORT QgisInterface : public QObject
      *       be unregistered when plugin is unloaded.
      *
      * \see unregisterLayerChangesCommitBlocker()
+     * \since QGIS 4.0
      */
     virtual void registerLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) = 0;
 
