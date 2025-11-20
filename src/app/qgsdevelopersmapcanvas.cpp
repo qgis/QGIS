@@ -84,7 +84,18 @@ void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
     QgsFeature f;
     if ( fit.nextFeature( f ) )
     {
-      mDevelopersMapFloatingPanel->setText( QStringLiteral( "**%1**" ).arg( f.attribute( QStringLiteral( "Name" ) ).toString() ) );
+      QString details = QStringLiteral( "**%1**" ).arg( f.attribute( QStringLiteral( "Name" ) ).toString() );
+      QString gitNickname = f.attribute( QStringLiteral( "GIT Nickname" ) ).toString();
+      if ( !gitNickname.isEmpty() )
+      {
+        details += QStringLiteral( " / [@%1](https://github.com/%1/)" ).arg( gitNickname );
+      }
+      if ( f.attribute( QStringLiteral( "Committer" ) ).toBool() )
+      {
+        details += QStringLiteral( "\n\n%1" ).arg( tr( "Committer" ) );
+      }
+
+      mDevelopersMapFloatingPanel->setText( details );
       mDevelopersMapFloatingPanel->show();
     }
     else
@@ -109,8 +120,8 @@ QgsDevelopersMapFloatingPanel::QgsDevelopersMapFloatingPanel( QWidget *parent )
   mLabel->setFrameShadow( QFrame::Plain );
   mLabel->setMargin( 10 );
   mLabel->setTextFormat( Qt::MarkdownText );
-  mLabel->setFixedWidth( 200 );
-  mLabel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+  mLabel->setOpenExternalLinks( true );
+  mLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   layout->addWidget( mLabel );
   layout->setSizeConstraint( QLayout::SetFixedSize );
 
@@ -140,7 +151,6 @@ QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
     extent = mDevelopersMapBaseLayer->extent();
   }
 
-  mapSettings().setOutputSize( size() );
   mapSettings().setLayers( QList<QgsMapLayer *>() << mDevelopersMapLayer.get() << mDevelopersMapBaseLayer.get() );
   mapSettings().setDestinationCrs( mDevelopersMapBaseLayer->crs() );
   mapSettings().setExtent( extent );
