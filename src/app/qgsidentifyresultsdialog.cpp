@@ -2955,7 +2955,7 @@ void QgsIdentifyResultsDialog::updateTextDisplay()
   }
 }
 
-QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool wordWrap )
+QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text )
 {
   QLabel *valueLabel = new QLabel();
   valueLabel->setAlignment( Qt::AlignLeft | Qt::AlignTop );
@@ -2963,40 +2963,23 @@ QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text, bool w
   valueLabel->setContentsMargins( 0, 0, 0, 0 );
   valueLabel->setMargin( 0 );
 
-  if ( wordWrap )
+  valueLabel->setWordWrap( true );
+  valueLabel->setTextInteractionFlags( Qt::NoTextInteraction );
+  valueLabel->setAttribute( Qt::WA_TransparentForMouseEvents, true );
+  valueLabel->setContextMenuPolicy( Qt::NoContextMenu );
+  valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+
+  QString wrapped = text;
+  wrapped.replace( QStringLiteral( "/" ), QStringLiteral( "/\u00AD" ) );
+  wrapped.replace( QStringLiteral( "\\" ), QStringLiteral( "\\\u00AD" ) );
+
+  valueLabel->setText( wrapped );
+
+  const int maxTotalChars = 2000;
+  if ( wrapped.length() > maxTotalChars )
   {
-    valueLabel->setWordWrap( true );
-    valueLabel->setTextInteractionFlags( Qt::NoTextInteraction );
-    valueLabel->setAttribute( Qt::WA_TransparentForMouseEvents, true );
-    valueLabel->setContextMenuPolicy( Qt::NoContextMenu );
-    valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-
-    QString wrapped = text;
-    wrapped.replace( QStringLiteral( "/" ), QStringLiteral( "/\u00AD" ) );
-    wrapped.replace( QStringLiteral( "\\" ), QStringLiteral( "\\\u00AD" ) );
-
-    valueLabel->setText( wrapped );
-
-
-    const QFontMetrics fm( valueLabel->font() );
-    const int avgCharWidth = fm.averageCharWidth();
-    const int maxCharsPerLine = 100; // Reasonable column width estimate
-    const int maxLines = 20;
-    const int maxTotalChars = maxCharsPerLine * maxLines;
-
-    if ( wrapped.length() > maxTotalChars )
-    {
-      // Truncate and add ellipsis for very long text
-      QString truncated = wrapped.left( maxTotalChars - 1 ) + QStringLiteral( "…" );
-      valueLabel->setText( truncated );
-    }
-  }
-  else
-  {
-    valueLabel->setWordWrap( false );
-    valueLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
-    valueLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-    valueLabel->setText( text );
+    QString truncated = wrapped.left( maxTotalChars - 1 ) + QStringLiteral( "…" );
+    valueLabel->setText( truncated );
   }
 
   return valueLabel;
@@ -3012,12 +2995,10 @@ void QgsIdentifyResultsDialog::updateTextDisplayForItem( QTreeWidgetItem *item, 
                                           : item->text( 1 );
 
   QTreeWidget *treeWidget = item->treeWidget();
-  const int lengthThreshold = 100; // Characters
-  const bool isLongText = fullText.length() > lengthThreshold || fullText.contains( '\n' );
 
-  if ( showFullText && isLongText && !fullText.isEmpty() )
+  if ( showFullText && !fullText.isEmpty() )
   {
-    QLabel *valueLabel = createStyledLabel( fullText, true );
+    QLabel *valueLabel = createStyledLabel( fullText );
     if ( treeWidget )
       treeWidget->setItemWidget( item, 1, valueLabel );
     item->setData( 1, REPRESENTED_VALUE_ROLE, fullText );
