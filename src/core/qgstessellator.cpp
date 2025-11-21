@@ -185,7 +185,7 @@ QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals,
   setAddNormals( addNormals );
   setInvertNormals( invertNormals );
   setExtrusionFacesLegacy( facade );
-  setAddBackFaces( addBackFaces );
+  setBackFacesEnabled( addBackFaces );
   setAddTextureUVs( addTextureCoords );
   setInputZValueIgnored( noZ );
   setTextureRotation( textureRotation );
@@ -199,7 +199,7 @@ QgsTessellator::QgsTessellator( const QgsRectangle &bounds, bool addNormals, boo
   setBounds( bounds );
   setAddNormals( addNormals );
   setInvertNormals( invertNormals );
-  setAddBackFaces( addBackFaces );
+  setBackFacesEnabled( addBackFaces );
   setInputZValueIgnored( noZ );
   setTextureRotation( textureRotation );
 }
@@ -241,7 +241,7 @@ void QgsTessellator::setExtrusionFacesLegacy( int facade )
     case 3:
       mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
       break;
-    case 4:
+    case 7:
       mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof | Qgis::ExtrusionFace::Floor;
       break;
     default:
@@ -254,7 +254,7 @@ void QgsTessellator::setTextureRotation( float rotation )
   mTextureRotation = rotation;
 }
 
-void QgsTessellator::setAddBackFaces( bool addBackFaces )
+void QgsTessellator::setBackFacesEnabled( bool addBackFaces )
 {
   mAddBackFaces = addBackFaces;
 }
@@ -309,7 +309,7 @@ static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeig
   }
 }
 
-static QVector3D _calculateNormal( const QgsLineString *curve, double originX, double originY, bool invertNormal, float extrusionHeight )
+static QVector3D _calculateNormal( const QgsLineString *curve, double originX, double originY, double originZ, bool invertNormal, float extrusionHeight )
 {
   if ( !QgsWkbTypes::hasZ( curve->wkbType() ) )
   {
@@ -353,14 +353,13 @@ static QVector3D _calculateNormal( const QgsLineString *curve, double originX, d
   // shift points by the tessellator's origin - this does not affect normal calculation and it may save us from losing some precision
   pt1.setX( pt1.x() - originX );
   pt1.setY( pt1.y() - originY );
+  pt1.setZ( std::isnan( pt1.z() ) ? 0.0 : pt1.z() - originZ );
   for ( int i = 1; i < curve->numPoints(); i++ )
   {
     pt2 = curve->pointN( i );
     pt2.setX( pt2.x() - originX );
     pt2.setY( pt2.y() - originY );
-
-    if ( std::isnan( pt1.z() ) || std::isnan( pt2.z() ) )
-      continue;
+    pt2.setZ( std::isnan( pt2.z() ) ? 0.0 : pt2.z() - originZ );
 
     nx += ( pt1.y() - pt2.y() ) * ( pt1.z() + pt2.z() );
     ny += ( pt1.z() - pt2.z() ) * ( pt1.x() + pt2.x() );
@@ -672,14 +671,14 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   if ( !exterior )
     return;
 
-  const QVector3D pNormal = !mInputZValueIgnored ? _calculateNormal( exterior, mOrigin.x(), mOrigin.y(), mInvertNormals, extrusionHeight ) : QVector3D();
+  const QVector3D pNormal = !mInputZValueIgnored ? _calculateNormal( exterior, mOrigin.x(), mOrigin.y(), mOrigin.z(), mInvertNormals, extrusionHeight ) : QVector3D();
   const int pCount = exterior->numPoints();
   if ( pCount == 0 )
     return;
 
-  QMatrix4x4 base = QMatrix4x4();  // identity matrix by default
-  const QgsPoint ptStart = QgsPoint( exterior->startPoint() );
-  const QgsPoint extrusionOrigin = QgsPoint( Qgis::WkbType::PointZ, ptStart.x(), ptStart.y(), std::isnan( ptStart.z() ) ? 0 : ptStart.z() );
+  QMatrix4x4 base;  // identity matrix by default
+  const QgsPoint ptStart( exterior->startPoint() );
+  const QgsPoint extrusionOrigin( Qgis::WkbType::PointZ, ptStart.x(), ptStart.y(), std::isnan( ptStart.z() ) ? 0 : ptStart.z() );
   std::unique_ptr<QgsPolygon> polygonNew;
 
   if ( !mInputZValueIgnored && !qgsDoubleNear( pNormal.length(), 1, 0.001 ) )
@@ -702,9 +701,9 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       Q_ASSERT( polygonNew->exteriorRing()->numPoints() >= 3 );
 
       const QgsLineString *triangle = qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() );
-      const QVector3D p1( static_cast<float>( triangle->xAt( 0 ) ), static_cast<float>( triangle->yAt( 0 ) ), mInputZValueIgnored || std::isnan( triangle->zAt( 0 ) ) ? 0.0f : static_cast<float>( triangle->zAt( 0 ) ) );
-      const QVector3D p2( static_cast<float>( triangle->xAt( 1 ) ), static_cast<float>( triangle->yAt( 1 ) ), mInputZValueIgnored || std::isnan( triangle->zAt( 1 ) ) ? 0.0f : static_cast<float>( triangle->zAt( 1 ) ) );
-      const QVector3D p3( static_cast<float>( triangle->xAt( 2 ) ), static_cast<float>( triangle->yAt( 2 ) ), mInputZValueIgnored || std::isnan( triangle->zAt( 2 ) ) ? 0.0f : static_cast<float>( triangle->zAt( 2 ) ) );
+      const QVector3D p1( static_cast<float>( triangle->xAt( 0 ) ), static_cast<float>( triangle->yAt( 0 ) ), static_cast<float>( triangle->zAt( 0 ) ) );
+      const QVector3D p2( static_cast<float>( triangle->xAt( 1 ) ), static_cast<float>( triangle->yAt( 1 ) ), static_cast<float>( triangle->zAt( 1 ) ) );
+      const QVector3D p3( static_cast<float>( triangle->xAt( 2 ) ), static_cast<float>( triangle->yAt( 2 ) ), static_cast<float>( triangle->zAt( 2 ) ) );
       const std::array<QVector3D, 3> points = { { p1, p2, p3 } };
 
       addTriangleVertices( points, pNormal, extrusionHeight, &base, &extrusionOrigin, false );

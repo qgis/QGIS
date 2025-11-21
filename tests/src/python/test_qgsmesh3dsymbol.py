@@ -49,7 +49,7 @@ class TestQgsQgsMesh3DSymbol(QgisTestCase):
 
         # Test add back faces
         self.assertFalse(symbol.addBackFaces())
-        symbol.setAddBackFaces(True)
+        symbol.setBackFacesEnabled(True)
         self.assertTrue(symbol.addBackFaces())
 
         # Test smoothed triangles
@@ -164,9 +164,9 @@ class TestQgsQgsMesh3DSymbol(QgisTestCase):
         self.assertEqual(symbol1, symbol2)
 
         # Test back faces
-        symbol2.setAddBackFaces(True)
+        symbol2.setBackFacesEnabled(True)
         self.assertNotEqual(symbol1, symbol2)
-        symbol2.setAddBackFaces(False)
+        symbol2.setBackFacesEnabled(False)
         self.assertEqual(symbol1, symbol2)
 
         # Test smoothed triangles

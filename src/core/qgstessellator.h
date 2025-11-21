@@ -80,15 +80,14 @@ class CORE_EXPORT QgsTessellator
     void setBounds( const QgsRectangle &bounds );
 
     /**
-     * Sets whether Z values are ignored (TRUE) or not (FALSE).
-     * By default, extrusion is disabled.
+     * Sets whether Z values from the input geometries are ignored (TRUE) or not (FALSE).
+     * By default, this is FALSE.
      * \since QGIS 4.0
      */
     void setInputZValueIgnored( bool ignore );
 
     /**
-     * Returns whether Z values are ignored (TRUE) or not (FALSE).
-     * By default, extrusion is disabled.
+     * Returns whether Z values from the input geometries are ignored (TRUE) or not (FALSE).
      * \since QGIS 4.0
      */
     bool isZValueIgnored() const { return mInputZValueIgnored; }
@@ -106,13 +105,13 @@ class CORE_EXPORT QgsTessellator
     Qgis::ExtrusionFaces extrusionFaces() const { return mExtrusionFaces; }
 
     /**
-     * Sets the rotation of generated faces.
+     * Sets the rotation of exture UV coordinates (in degrees).
      * \since QGIS 4.0
      */
     void setTextureRotation( float rotation );
 
     /**
-     * Returns the rotation of generated faces.
+     * Returns the rotation of texture UV coordinates (in degrees).
      * \since QGIS 4.0
      */
     float textureRotation() const { return mTextureRotation; }
@@ -145,13 +144,13 @@ class CORE_EXPORT QgsTessellator
      * Sets whether back faces should be added to the output data (TRUE) or not (FALSE).
      * \since QGIS 4.0
      */
-    void setAddBackFaces( bool addBackFaces );
+    void setBackFacesEnabled( bool addBackFaces );
 
     /**
      * Returns whether back faces are being added to the output data (TRUE) or not (FALSE).
      * \since QGIS 4.0
      */
-    bool hasBackFaces() const { return mAddBackFaces; }
+    bool hasBackFacesEnabled() const { return mAddBackFaces; }
 
     /**
      * Sets whether normals should be inverted (TRUE) or not (FALSE).

@@ -102,7 +102,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setOrigin( chunkOrigin );
   tessellator->setAddNormals( true );
   tessellator->setInvertNormals( mSymbol->invertNormals() );
-  tessellator->setAddBackFaces( mSymbol->addBackFaces() );
+  tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
   tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
   tessellator->setTextureRotation( texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0.f );
@@ -115,7 +115,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setOrigin( chunkOrigin );
   tessellator->setAddNormals( true );
   tessellator->setInvertNormals( mSymbol->invertNormals() );
-  tessellator->setAddBackFaces( mSymbol->addBackFaces() );
+  tessellator->setBackFacesEnabled( mSymbol->addBackFaces() );
   tessellator->setOutputZUp( true );
   tessellator->setExtrusionFaces( mSymbol->extrusionFaces() );
   tessellator->setTextureRotation( texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0.f );

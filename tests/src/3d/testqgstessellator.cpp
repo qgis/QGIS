@@ -460,7 +460,7 @@ void TestQgsTessellator::testBackEdges()
   // QgsTessellator tN( 0, 0, true, false, true );
   QgsTessellator tN;
   tN.setAddNormals( true );
-  tN.setAddBackFaces( true );
+  tN.setBackFacesEnabled( true );
   tN.setOutputZUp( true );
   tN.addPolygon( polygon, 0 );
   QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );

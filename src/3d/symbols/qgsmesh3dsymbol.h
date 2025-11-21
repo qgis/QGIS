@@ -127,7 +127,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     /**
      * Sets whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
      */
-    void setAddBackFaces( bool add ) { mAddBackFaces = add; }
+    void setBackFacesEnabled( bool add ) { mAddBackFaces = add; }
 
     /**
      * Returns if mesh triangle are smoothed

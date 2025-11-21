@@ -81,16 +81,16 @@ Sets scaling and the bounds of the input geometry coordinates.
 
     void setInputZValueIgnored( bool ignore );
 %Docstring
-Sets whether Z values are ignored (``True``) or not (``False``). By
-default, extrusion is disabled.
+Sets whether Z values from the input geometries are ignored (``True``)
+or not (``False``). By default, this is ``False``.
 
 .. versionadded:: 4.0
 %End
 
     bool isZValueIgnored() const;
 %Docstring
-Returns whether Z values are ignored (``True``) or not (``False``). By
-default, extrusion is disabled.
+Returns whether Z values from the input geometries are ignored
+(``True``) or not (``False``).
 
 .. versionadded:: 4.0
 %End
@@ -111,14 +111,14 @@ Returns which faces are generated during extrusion.
 
     void setTextureRotation( float rotation );
 %Docstring
-Sets the rotation of generated faces.
+Sets the rotation of exture UV coordinates (in degrees).
 
 .. versionadded:: 4.0
 %End
 
     float textureRotation() const;
 %Docstring
-Returns the rotation of generated faces.
+Returns the rotation of texture UV coordinates (in degrees).
 
 .. versionadded:: 4.0
 %End
@@ -155,7 +155,7 @@ not (``False``).
 .. versionadded:: 4.0
 %End
 
-    void setAddBackFaces( bool addBackFaces );
+    void setBackFacesEnabled( bool addBackFaces );
 %Docstring
 Sets whether back faces should be added to the output data (``True``) or
 not (``False``).
@@ -163,7 +163,7 @@ not (``False``).
 .. versionadded:: 4.0
 %End
 
-    bool hasBackFaces() const;
+    bool hasBackFacesEnabled() const;
 %Docstring
 Returns whether back faces are being added to the output data (``True``)
 or not (``False``).
