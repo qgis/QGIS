@@ -39,6 +39,7 @@
 #include "qgssettings.h"
 #include "qgsguiutils.h"
 #include "qgsmarkersymbol.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -907,7 +908,13 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
 void QgsCategorizedSymbolRendererWidget::addCategories()
 {
   const QString attrName = mExpressionWidget->currentField();
-  const QList<QVariant> uniqueValues = layerUniqueValues( attrName );
+  bool valuesRetrieved;
+  const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
+  if ( !valuesRetrieved )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
+    return;
+  }
 
   // ask to abort if too many classes
   if ( uniqueValues.size() >= 1000 )
@@ -1078,7 +1085,12 @@ void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
   if ( !mRenderer )
     return;
   const QString attrName = mExpressionWidget->currentField();
-  const QList<QVariant> uniqueValues = layerUniqueValues( attrName );
+  bool valuesRetrieved;
+  const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
+  if ( !valuesRetrieved )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
+  }
 
   const QgsCategoryList catList = mRenderer->categories();
 
@@ -1098,33 +1110,11 @@ void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
 
 QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( const QString &attrName )
 {
-  const int idx = mLayer->fields().lookupField( attrName );
-  QList<QVariant> uniqueValues;
-  if ( idx == -1 )
+  bool valuesRetrieved;
+  const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
+  if ( !valuesRetrieved )
   {
-    // Lets assume it's an expression
-    QgsExpression expression = QgsExpression( attrName );
-    QgsExpressionContext context;
-    context << QgsExpressionContextUtils::globalScope()
-            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-            << QgsExpressionContextUtils::atlasScope( nullptr )
-            << QgsExpressionContextUtils::layerScope( mLayer );
-
-    expression.prepare( &context );
-    QgsFeatureIterator fit = mLayer->getFeatures();
-    QgsFeature feature;
-    while ( fit.nextFeature( feature ) )
-    {
-      context.setFeature( feature );
-      const QVariant value = expression.evaluate( &context );
-      if ( uniqueValues.contains( value ) )
-        continue;
-      uniqueValues << value;
-    }
-  }
-  else
-  {
-    uniqueValues = qgis::setToList( mLayer->uniqueValues( idx ) );
+    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
   }
   return uniqueValues;
 }
