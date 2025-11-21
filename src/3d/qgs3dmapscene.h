@@ -23,6 +23,7 @@
 #include "qgsrectangle.h"
 #include "qgscameracontroller.h"
 #include <QVector4D>
+#include <QTimer>
 
 #ifndef SIP_RUN
 namespace Qt3DRender
@@ -49,6 +50,7 @@ class QgsAbstract3DEngine;
 class QgsAbstract3DRenderer;
 class QgsMapLayer;
 class Qgs3DMapSettings;
+class QgsMapOverlayEntity;
 class QgsTerrainEntity;
 class QgsGlobeEntity;
 class QgsChunkedEntity;
@@ -365,6 +367,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onDebugOverlayEnabledChanged();
     void onStopUpdatesChanged();
     void on3DAxisSettingsChanged();
+    void onShowMapOverlayChanged();
+    void onMapOverlayDebounceTimeout();
 
     void onOriginChanged();
 
@@ -390,6 +394,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void handleClippingOnEntity( QEntity *entity ) const;
     void handleClippingOnAllEntities() const;
 
+    bool update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints );
+
   private:
     Qgs3DMapSettings &mMap;
     QgsAbstract3DEngine *mEngine = nullptr;
@@ -414,6 +420,12 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     //! 3d axis visualization
     Qgs3DAxis *m3DAxis = nullptr;
+
+    //! 2d map overlay
+    QgsMapOverlayEntity *mMapOverlayEntity = nullptr;
+    QTimer mMapOverlayTimer;
+    QTimer mMapOverlayDebounceTimer;
+    bool mOverlayUpdatedOnFirstMovement = true;
 
     bool mSceneUpdatesEnabled = true;
     bool mSceneOriginShiftEnabled = true;

@@ -898,6 +898,16 @@
                 </widget>
                </item>
                <item>
+                <widget class="QCheckBox" name="mShowMapOverlayCheckBox">
+                 <property name="text">
+                  <string>Show 2D map overlay</string>
+                 </property>
+                 <property name="styleSheet">
+                   <string notr="true">font-weight: bold</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacerCameraSkybox">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
