@@ -31,6 +31,7 @@ namespace Qt3DRender
   class QRenderStateSet;
   class QRenderCapture;
   class QRenderTarget;
+  class QLayer;
 } //namespace Qt3DRender
 
 class QgsPostprocessingEntity;
@@ -62,6 +63,9 @@ class QgsPostprocessingRenderView : public QgsAbstractRenderView
                                  QSize mSize,                                 //
                                  Qt3DCore::QEntity *rootSceneEntity );
 
+    //! Default destructor
+    virtual ~QgsPostprocessingRenderView();
+
     virtual void updateWindowResize( int width, int height ) override;
 
     //! Returns the render capture object used to take an image of the postprocessing buffer of the scene
@@ -75,22 +79,25 @@ class QgsPostprocessingRenderView : public QgsAbstractRenderView
      */
     void setOffScreenRenderCaptureEnabled( bool enabled );
 
-    //! Returns the top node of all subpasses
-    QVector<Qt3DRender::QFrameGraphNode *> subPasses() const;
+    //! Returns layer in which entities must be added in the in order to be processed by this renderview.
+    Qt3DRender::QLayer *debugTextureLayer() const;
 
-    /**
-     * Updates the subpasses with the new \a topNodes
-     */
-    void setSubPasses( QVector<Qt3DRender::QFrameGraphNode *> topNodes );
+    void setDebugTextureEnabled( bool enable );
 
   private:
     Qt3DRender::QRenderTarget *buildRenderCaptureTextures( QSize mSize );
-    Qt3DRender::QFrameGraphNode *constructPostprocessingMainPass( QSize mSize );
-    Qt3DRender::QFrameGraphNode *constructSubPostPassForProcessing( QgsShadowRenderView &shadowRenderView,       //
+    Qt3DRender::QFrameGraphNode *constructMainPass( QgsShadowRenderView &shadowRenderView,       //
+                                                    QgsForwardRenderView &forwardRenderView,     //
+                                                    QgsAmbientOcclusionRenderView &aoRenderView, //
+                                                    QSize mSize,                                 //
+                                                    Qt3DCore::QEntity *rootSceneEntity );
+    Qt3DRender::QFrameGraphNode *constructSubPassForPostProcessing( QgsShadowRenderView &shadowRenderView,       //
                                                                     QgsForwardRenderView &forwardRenderView,     //
                                                                     QgsAmbientOcclusionRenderView &aoRenderView, //
                                                                     Qt3DCore::QEntity *rootSceneEntity );
-    Qt3DRender::QFrameGraphNode *constructSubPostPassForRenderCapture();
+    Qt3DRender::QFrameGraphNode *constructSubPassForRenderCapture();
+
+    Qt3DRender::QFrameGraphNode *constructSubPassForDebugTexture();
 
     Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;
     Qt3DRender::QRenderCapture *mRenderCapture = nullptr;
@@ -101,7 +108,9 @@ class QgsPostprocessingRenderView : public QgsAbstractRenderView
     Qt3DRender::QTexture2D *mRenderCaptureColorTexture = nullptr;
     Qt3DRender::QTexture2D *mRenderCaptureDepthTexture = nullptr;
 
-    Qt3DRender::QFrameGraphNode *mSubPassesNode = nullptr;
+    Qt3DRender::QLayer *mDebugTextureLayer = nullptr;
+    QPointer<Qt3DRender::QFrameGraphNode> mDebugTextureRoot;
+    Qt3DRender::QSubtreeEnabler *mDebugTextureRendererEnabler = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGRENDERVIEW_H

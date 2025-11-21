@@ -41,13 +41,12 @@
             (Qt3DRender::QRenderTargetSelector{128/ambient_occlusion::RenderTargetSelector(Blur)}) [ (outputs:[ (Color0:{126[R32F]/ambient_occlusion::ColorTarget(blur)) ]) ]
     (Qt3DRender::QNoDraw{141/post_processing::NoDraw}) [D]
       (Qt3DRender::QSubtreeEnabler{142/post_processing::SubtreeEnabler})
-        (Qt3DRender::QRenderTargetSelector{143/post_processing::RenderTargetSelector}) [D] [ (outputs:[ (Color0:{146[RGB8_UNorm]/post_processing::ColorTarget), (Depth:{148[DepthFormat]/post_processing::DepthTarget) ]) ]
-          (Qt3DRender::QFrameGraphNode{149/post_processing::Sub passes top node})
-            (Qt3DRender::QLayerFilter{150/post_processing::Sub pass::Postprocessing}) [ (AcceptAnyMatchingLayers:[ {151/<no_name>} ]) ]
-              (Qt3DRender::QClearBuffers{152/<no_name>})
-            (Qt3DRender::QNoDraw{188/debug_texture::NoDraw})
-              (Qt3DRender::QSubtreeEnabler{189/debug_texture::SubtreeEnabler}) [D]
-                (Qt3DRender::QLayerFilter{191/<no_name>}) [ (AcceptAnyMatchingLayers:[ {190/debug_texture::Layer} ]) ]
-                  (Qt3DRender::QRenderStateSet{192/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
-            (Qt3DRender::QNoDraw{186/post_processing::Sub pass::RenderCapture}) [D]
-              (Qt3DRender::QRenderCapture{187/<no_name>})
+        (Qt3DRender::QRenderTargetSelector{144/post_processing::RenderTargetSelector}) [D] [ (outputs:[ (Color0:{147[RGB8_UNorm]/post_processing::ColorTarget), (Depth:{149[DepthFormat]/post_processing::DepthTarget) ]) ]
+          (Qt3DRender::QLayerFilter{150/post_processing::Sub pass::Postprocessing}) [ (AcceptAnyMatchingLayers:[ {151/<no_name>} ]) ]
+            (Qt3DRender::QClearBuffers{152/<no_name>})
+          (Qt3DRender::QNoDraw{186/post_processing::DebugTexture::NoDraw})
+            (Qt3DRender::QSubtreeEnabler{187/post_processing::DebugTexture::SubtreeEnabler}) [D]
+              (Qt3DRender::QLayerFilter{188/<no_name>}) [ (AcceptAnyMatchingLayers:[ {143/post_processing::DebugTextureLayer} ]) ]
+                (Qt3DRender::QRenderStateSet{189/<no_name>}) [ (QDepthTest:Always), (QCullFace:NoCulling) ]
+          (Qt3DRender::QNoDraw{192/post_processing::Sub pass::RenderCapture}) [D]
+            (Qt3DRender::QRenderCapture{193/<no_name>})
