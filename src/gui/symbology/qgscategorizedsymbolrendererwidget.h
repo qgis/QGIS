@@ -245,8 +245,10 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      * Returns the list of unique values in the current widget's layer for attribute name \a attrName.
      *
      * Called by addCategories() and deleteUnusedCategories()
+     *
+     * \deprecated QGIS 4.0. Use QgsVectorLayerUtils::uniqueValues instead.
      */
-    QList<QVariant> layerUniqueValues( const QString &attrName );
+    Q_DECL_DEPRECATED QList<QVariant> layerUniqueValues( const QString &attrName ) SIP_DEPRECATED;
 
     QList<QgsSymbol *> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();
