@@ -103,7 +103,7 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbolWidget::symbol()
   sym->setAltitudeBinding( static_cast<Qgis::AltitudeBinding>( cboAltBinding->currentIndex() ) );
   sym->setCullingMode( static_cast<Qgs3DTypes::CullingMode>( cboCullingMode->currentData().toInt() ) );
   sym->setExtrusionFaces( qgsFlagKeysToValue( cboRenderedFacade->currentData().toString(), Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof ) );
-  sym->setBackFacesEnabled( chkAddBackFaces->isChecked() );
+  sym->setAddBackFaces( chkAddBackFaces->isChecked() );
   sym->setInvertNormals( chkInvertNormals->isChecked() );
   sym->setMaterialSettings( widgetMaterial->settings() );
 

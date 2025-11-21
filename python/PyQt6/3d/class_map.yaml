@@ -515,7 +515,7 @@ QgsMesh3DSymbol.materialSettings: src/3d/symbols/qgsmesh3dsymbol.h#L113
 QgsMesh3DSymbol.maximumTextureSize: src/3d/symbols/qgsmesh3dsymbol.h#L307
 QgsMesh3DSymbol.readXml: src/3d/symbols/qgsmesh3dsymbol.h#L72
 QgsMesh3DSymbol.renderingStyle: src/3d/symbols/qgsmesh3dsymbol.h#L235
-QgsMesh3DSymbol.setBackFacesEnabled: src/3d/symbols/qgsmesh3dsymbol.h#L130
+QgsMesh3DSymbol.setAddBackFaces: src/3d/symbols/qgsmesh3dsymbol.h#L130
 QgsMesh3DSymbol.setAltitudeClamping: src/3d/symbols/qgsmesh3dsymbol.h#L105
 QgsMesh3DSymbol.setArrowsEnabled: src/3d/symbols/qgsmesh3dsymbol.h#L284
 QgsMesh3DSymbol.setArrowsFixedSize: src/3d/symbols/qgsmesh3dsymbol.h#L330
@@ -731,7 +731,7 @@ QgsPolygon3DSymbol.materialSettings: src/3d/symbols/qgspolygon3dsymbol.h#L101
 QgsPolygon3DSymbol.offset: src/3d/symbols/qgspolygon3dsymbol.h#L86
 QgsPolygon3DSymbol.readXml: src/3d/symbols/qgspolygon3dsymbol.h#L46
 QgsPolygon3DSymbol.renderedFacade: src/3d/symbols/qgspolygon3dsymbol.h#L178
-QgsPolygon3DSymbol.setBackFacesEnabled: src/3d/symbols/qgspolygon3dsymbol.h#L130
+QgsPolygon3DSymbol.setAddBackFaces: src/3d/symbols/qgspolygon3dsymbol.h#L130
 QgsPolygon3DSymbol.setAltitudeBinding: src/3d/symbols/qgspolygon3dsymbol.h#L65
 QgsPolygon3DSymbol.setAltitudeClamping: src/3d/symbols/qgspolygon3dsymbol.h#L60
 QgsPolygon3DSymbol.setCullingMode: src/3d/symbols/qgspolygon3dsymbol.h#L113

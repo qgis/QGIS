@@ -122,7 +122,7 @@ Returns whether also triangles facing the other side will be created.
 Useful if input data have inconsistent order of vertices
 %End
 
-    void setBackFacesEnabled( bool add );
+    void setAddBackFaces( bool add );
 %Docstring
 Sets whether also triangles facing the other side will be created.
 Useful if input data have inconsistent order of vertices

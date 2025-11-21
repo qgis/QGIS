@@ -105,7 +105,7 @@ class CORE_EXPORT QgsTessellator
     Qgis::ExtrusionFaces extrusionFaces() const { return mExtrusionFaces; }
 
     /**
-     * Sets the rotation of exture UV coordinates (in degrees).
+     * Sets the rotation of texture UV coordinates (in degrees).
      * \since QGIS 4.0
      */
     void setTextureRotation( float rotation );

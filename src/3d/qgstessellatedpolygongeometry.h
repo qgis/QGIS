@@ -78,7 +78,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
      * Sets whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
      * \since QGIS 3.2
      */
-    void setBackFacesEnabled( bool add ) { mAddBackFaces = add; }
+    void setAddBackFaces( bool add ) { mAddBackFaces = add; }
 
     /**
      * Sets whether the texture coordinates will be generated

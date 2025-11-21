@@ -111,7 +111,7 @@ Returns which faces are generated during extrusion.
 
     void setTextureRotation( float rotation );
 %Docstring
-Sets the rotation of exture UV coordinates (in degrees).
+Sets the rotation of texture UV coordinates (in degrees).
 
 .. versionadded:: 4.0
 %End
