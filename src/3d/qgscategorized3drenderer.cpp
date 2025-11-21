@@ -17,9 +17,11 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgs3dsymbolutils.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgsapplication.h"
 #include "qgscategorizedchunkloader_p.h"
+#include "qgscolorrampimpl.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
@@ -103,6 +105,17 @@ QgsCategorized3DRenderer::QgsCategorized3DRenderer( const QString &attributeName
 QgsCategorized3DRenderer *QgsCategorized3DRenderer::clone() const
 {
   QgsCategorized3DRenderer *renderer = new QgsCategorized3DRenderer( mAttributeName, mCategories );
+
+  if ( mSourceSymbol )
+  {
+    renderer->setSourceSymbol( mSourceSymbol->clone() );
+  }
+
+  if ( mSourceColorRamp )
+  {
+    renderer->setSourceColorRamp( mSourceColorRamp->clone() );
+  }
+
   copyBaseProperties( renderer );
   return renderer;
 }
@@ -127,9 +140,73 @@ Qt3DCore::QEntity *QgsCategorized3DRenderer::createEntity( Qgs3DMapSettings *map
   return new QgsCategorizedChunkedEntity( mapSettings, vectorLayer, MINIMUM_VECTOR_Z_ESTIMATE, MAXIMUM_VECTOR_Z_ESTIMATE, tilingSettings(), this );
 }
 
+void QgsCategorized3DRenderer::updateSymbols( QgsAbstract3DSymbol *symbol )
+{
+  int i = 0;
+  for ( const Qgs3DRendererCategory &cat : mCategories )
+  {
+    QgsAbstract3DSymbol *newSymbol = symbol->clone();
+    Qgs3DSymbolUtils::copyVectorSymbolMaterial( cat.symbol(), newSymbol );
+    updateCategorySymbol( i, newSymbol );
+    ++i;
+  }
+  setSourceSymbol( symbol->clone() );
+}
+
 void QgsCategorized3DRenderer::setClassAttribute( QString attributeName )
 {
   mAttributeName = attributeName;
+}
+
+QgsAbstract3DSymbol *QgsCategorized3DRenderer::sourceSymbol()
+{
+  return mSourceSymbol.get();
+}
+
+const QgsAbstract3DSymbol *QgsCategorized3DRenderer::sourceSymbol() const
+{
+  return mSourceSymbol.get();
+}
+
+void QgsCategorized3DRenderer::setSourceSymbol( QgsAbstract3DSymbol *symbol )
+{
+  mSourceSymbol.reset( symbol );
+}
+
+QgsColorRamp *QgsCategorized3DRenderer::sourceColorRamp()
+{
+  return mSourceColorRamp.get();
+}
+
+const QgsColorRamp *QgsCategorized3DRenderer::sourceColorRamp() const
+{
+  return mSourceColorRamp.get();
+}
+
+void QgsCategorized3DRenderer::setSourceColorRamp( QgsColorRamp *ramp )
+{
+  mSourceColorRamp.reset( ramp );
+}
+
+void QgsCategorized3DRenderer::updateColorRamp( QgsColorRamp *ramp )
+{
+  setSourceColorRamp( ramp );
+  const double num = static_cast<double>( mCategories.count() - 1 );
+  double count = 0.;
+
+  QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp );
+  if ( randomRamp )
+  {
+    //ramp is a random colors ramp, so inform it of the total number of required colors
+    //this allows the ramp to pregenerate a set of visually distinctive colors
+    randomRamp->setTotalColorCount( static_cast<int>( mCategories.count() ) );
+  }
+
+  for ( const Qgs3DRendererCategory &cat : mCategories )
+  {
+    Qgs3DSymbolUtils::setVectorSymbolBaseColor( cat.symbol(), mSourceColorRamp->color( count / num ) );
+    count += 1.;
+  }
 }
 
 bool QgsCategorized3DRenderer::updateCategoryValue( int catIndex, const QVariant &value )
@@ -233,6 +310,22 @@ void QgsCategorized3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCo
     }
     elem.appendChild( catsElem );
   }
+
+  // save source symbol
+  if ( mSourceSymbol )
+  {
+    QDomElement sourceSymbolElem = doc.createElement( u"source-symbol"_s );
+    sourceSymbolElem.setAttribute( u"type"_s, mSourceSymbol->type() );
+    mSourceSymbol->writeXml( sourceSymbolElem, context );
+    elem.appendChild( sourceSymbolElem );
+  }
+
+  // save source color ramp
+  if ( mSourceColorRamp )
+  {
+    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( u"[source]"_s, mSourceColorRamp.get(), doc );
+    elem.appendChild( colorRampElem );
+  }
 }
 
 void QgsCategorized3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -269,6 +362,26 @@ void QgsCategorized3DRenderer::readXml( const QDomElement &elem, const QgsReadWr
       }
       catElem = catElem.nextSiblingElement();
     }
+  }
+
+  // load source symbol
+  QDomElement sourceSymbolElem = elem.firstChildElement( u"source-symbol"_s );
+  if ( !sourceSymbolElem.isNull() )
+  {
+    QString symbolType = sourceSymbolElem.attribute( u"type"_s );
+    QgsAbstract3DSymbol *sourceSymbol = QgsApplication::symbol3DRegistry()->createSymbol( symbolType );
+    if ( sourceSymbol )
+    {
+      sourceSymbol->readXml( sourceSymbolElem, context );
+      mSourceSymbol.reset( sourceSymbol );
+    }
+  }
+
+  // load source color ramp
+  QDomElement sourceColorRampElem = elem.firstChildElement( u"colorramp"_s );
+  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( u"name"_s ) == "[source]"_L1 )
+  {
+    mSourceColorRamp = QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem );
   }
 }
 

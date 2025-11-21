@@ -23,6 +23,7 @@
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgsabstractvectorlayer3drenderer.h"
+#include "qgscolorramp.h"
 
 class Qgs3DRenderContext;
 class QgsFeature3DHandler;
@@ -154,6 +155,14 @@ class _3D_EXPORT QgsCategorized3DRenderer : public QgsAbstractVectorLayer3DRende
     Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *mapSettings ) const override SIP_SKIP;
 
     /**
+     * Update all the symbols but leave categories and colors. This method also sets the source
+     * symbol for the renderer.
+     * \param symbol source symbol to use for categories. Ownership is not transferred.
+     * \see setSourceSymbol()
+     */
+    void updateSymbols( QgsAbstract3DSymbol *symbol );
+
+    /**
      * Returns a list of all categories recognized by the renderer.
      */
     Qgs3DCategoryList categories() const
@@ -181,6 +190,61 @@ class _3D_EXPORT QgsCategorized3DRenderer : public QgsAbstractVectorLayer3DRende
      * \see classAttribute()
      */
     void setClassAttribute( QString attributeName );
+
+    /**
+     * Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
+     * the categories' color.
+     * \see setSourceSymbol()
+     * \see sourceColorRamp()
+     */
+    QgsAbstract3DSymbol *sourceSymbol();
+
+    /**
+     * Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
+     * the categories' color.
+     * \see setSourceSymbol()
+     * \see sourceColorRamp()
+     * \note Not available in Python bindings.
+     */
+    const QgsAbstract3DSymbol *sourceSymbol() const SIP_SKIP;
+
+    /**
+     * Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
+     * the categories' color.
+     * \param symbol source symbol, ownership is transferred to the renderer
+     * \see sourceSymbol()
+     * \see setSourceColorRamp()
+     */
+    void setSourceSymbol( QgsAbstract3DSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the source color ramp, from which each categories' color is derived.
+     * \see setSourceColorRamp()
+     * \see sourceSymbol()
+     */
+    QgsColorRamp *sourceColorRamp();
+
+    /**
+     * Returns the source color ramp, from which each categories' color is derived.
+     * \see setSourceColorRamp()
+     * \see sourceSymbol()
+     * \note Not available in Python bindings.
+     */
+    const QgsColorRamp *sourceColorRamp() const SIP_SKIP;
+
+    /**
+     * Sets the source color ramp.
+      * \param ramp color ramp. Ownership is transferred to the renderer
+      * \see sourceColorRamp()
+      * \see setSourceSymbol()
+      */
+    void setSourceColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
+
+    /**
+     * Update the color ramp used and all symbols colors.
+      * \param ramp color ramp. Ownership is transferred to the renderer
+      */
+    void updateColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /**
      * Changes the value for the category with the specified index.
@@ -262,6 +326,8 @@ class _3D_EXPORT QgsCategorized3DRenderer : public QgsAbstractVectorLayer3DRende
   private:
     QString mAttributeName;
     Qgs3DCategoryList mCategories;
+    std::unique_ptr<QgsColorRamp> mSourceColorRamp;
+    std::unique_ptr<QgsAbstract3DSymbol> mSourceSymbol;
 };
 
 #endif // QGSCATEGORIZED3DRENDERER_H
