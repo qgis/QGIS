@@ -18,6 +18,7 @@
 #include "moc_qgsdevelopersmapcanvas.cpp"
 #include "qgsdevelopersmapcanvas.h"
 #include "qgsapplication.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsmapmouseevent.h"
 #include "qgsfeaturerequest.h"
 
@@ -42,7 +43,7 @@ void QgsDevelopersMapTool::canvasMoveEvent( QgsMapMouseEvent *e )
   {
     const QgsMapSettings mapSettings = mCanvas->mapSettings();
     const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-    double searchRadius = context.convertToMapUnits( 8, Qgis::RenderUnit::Millimeters );
+    double searchRadius = context.convertToMapUnits( 3.5, Qgis::RenderUnit::Millimeters );
 
     const QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
     QgsRectangle rect = toLayerCoordinates( mDevelopersMapLayer, QgsRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius ) );
@@ -73,7 +74,7 @@ void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     const QgsMapSettings mapSettings = mCanvas->mapSettings();
     const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-    double searchRadius = context.convertToMapUnits( 8, Qgis::RenderUnit::Millimeters );
+    double searchRadius = context.convertToMapUnits( 3.5, Qgis::RenderUnit::Millimeters );
 
     const QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
     QgsRectangle rect = toLayerCoordinates( mDevelopersMapLayer, QgsRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius ) );
@@ -82,7 +83,20 @@ void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
     featureRequest.setFlags( Qgis::Qgis::FeatureRequestFlag::NoGeometry );
     QgsFeatureIterator fit = mDevelopersMapLayer->getFeatures( featureRequest );
     QgsFeature f;
-    if ( fit.nextFeature( f ) )
+    int featureCount = 0;
+    while ( fit.nextFeature( f ) )
+    {
+      if ( ++featureCount > 1 )
+      {
+        break;
+      }
+    }
+
+    if ( featureCount > 1 )
+    {
+      mCanvas->zoomWithCenter( e->x(), e->y(), true );
+    }
+    else if ( featureCount == 1 )
     {
       QString details = QStringLiteral( "**%1**" ).arg( f.attribute( QStringLiteral( "Name" ) ).toString() );
       QString gitNickname = f.attribute( QStringLiteral( "GIT Nickname" ) ).toString();
@@ -139,6 +153,9 @@ QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
 {
   mDevelopersMapBaseLayer = std::make_unique<QgsRasterLayer>( QStringLiteral( "type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857" ), QStringLiteral( "OpenStreetMap" ), QLatin1String( "wms" ) );
   mDevelopersMapLayer = std::make_unique<QgsVectorLayer>( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" ), tr( "Contributors" ), QLatin1String( "ogr" ) );
+  bool ok = false;
+  qDebug() << ( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors_map.qml" ) );
+  mDevelopersMapLayer->loadNamedStyle( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors_map.qml" ), ok );
 
   QgsCoordinateTransform transform( mDevelopersMapLayer->crs(), mDevelopersMapBaseLayer->crs(), QgsProject::instance()->transformContext() );
   QgsRectangle extent = mDevelopersMapLayer->extent();
@@ -150,10 +167,13 @@ QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
   {
     extent = mDevelopersMapBaseLayer->extent();
   }
+  extent.scale( 1.05 );
 
   mapSettings().setLayers( QList<QgsMapLayer *>() << mDevelopersMapLayer.get() << mDevelopersMapBaseLayer.get() );
   mapSettings().setDestinationCrs( mDevelopersMapBaseLayer->crs() );
   mapSettings().setExtent( extent );
+
+  setCanvasColor( palette().color( QPalette::Window ) );
   refresh();
 
   mDevelopersMapTool = std::make_unique<QgsDevelopersMapTool>( this, mDevelopersMapLayer.get() );
