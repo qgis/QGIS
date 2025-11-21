@@ -60,8 +60,8 @@ class CORE_EXPORT QgsGpsInformation
      *
      * Negative values indicate that mean sea level is below the ellipsoid.
      *
-     * This value can be added to the elevation value to obtain the geoidal elevation.
-     *
+     * This value can be added to the (geoid) elevation value to obtain the ellipsoid elevation.
+     * \code ellipsoid_elevation = geoid_elevation + geoid_separation \endcode
      * \since QGIS 3.18
      */
     double elevation_diff = 0;
