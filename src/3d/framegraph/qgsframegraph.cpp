@@ -68,10 +68,10 @@ void QgsFrameGraph::constructShadowRenderPass()
   registerRenderView( std::make_unique<QgsShadowRenderView>( SHADOW_RENDERVIEW ), SHADOW_RENDERVIEW );
 }
 
-void QgsFrameGraph::constructDebugTexturePass( Qt3DRender::QFrameGraphNode *topNode )
-{
-  registerRenderView( std::make_unique<QgsDebugTextureRenderView>( DEBUG_RENDERVIEW ), DEBUG_RENDERVIEW, topNode );
-}
+// void QgsFrameGraph::constructDebugTexturePass( Qt3DRender::QFrameGraphNode *topNode )
+// {
+//   registerRenderView( std::make_unique<QgsDebugTextureRenderView>( DEBUG_RENDERVIEW ), DEBUG_RENDERVIEW, topNode );
+// }
 
 void QgsFrameGraph::constructPostprocessingPass()
 {
@@ -85,12 +85,7 @@ void QgsFrameGraph::constructPostprocessingPass()
   registerRenderView( std::unique_ptr<QgsPostprocessingRenderView>( pprv ), POSTPROC_RENDERVIEW );
 
   // create debug texture render view and register it (will be detach from main framegraph and attach to postprocessing renderview)
-  constructDebugTexturePass();
-
-  // add debug texture render view to post processing subpasses (before the render capture one)
-  QVector<Qt3DRender::QFrameGraphNode *> subPasses = pprv->subPasses();
-  subPasses.insert( subPasses.length() - 1, renderView( DEBUG_RENDERVIEW )->topGraphNode() );
-  pprv->setSubPasses( subPasses );
+  //constructDebugTexturePass();
 }
 
 void QgsFrameGraph::constructAmbientOcclusionRenderPass()
@@ -322,17 +317,13 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
 
 void QgsFrameGraph::updateDebugShadowMapSettings( const Qgs3DMapSettings &settings )
 {
-  QgsDebugTextureRenderView *debugRenderView = dynamic_cast<QgsDebugTextureRenderView *>( mRenderViewMap[DEBUG_RENDERVIEW].get() );
-  if ( !debugRenderView )
-    return;
-
   if ( !mShadowTextureDebugging && settings.debugShadowMapEnabled() )
   {
     Qt3DRender::QTexture2D *shadowDepthTexture = shadowRenderView().mapTexture();
-    mShadowTextureDebugging = new QgsDebugTextureEntity( shadowDepthTexture, debugRenderView->debugLayer(), this );
+    mShadowTextureDebugging = new QgsDebugTextureEntity( shadowDepthTexture, postprocessingRenderView().debugTextureLayer(), this );
   }
 
-  debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() );
+  postprocessingRenderView().setDebugTextureEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() );
 
   if ( mShadowTextureDebugging )
   {
@@ -349,17 +340,13 @@ void QgsFrameGraph::updateDebugShadowMapSettings( const Qgs3DMapSettings &settin
 
 void QgsFrameGraph::updateDebugDepthMapSettings( const Qgs3DMapSettings &settings )
 {
-  QgsDebugTextureRenderView *debugRenderView = dynamic_cast<QgsDebugTextureRenderView *>( mRenderViewMap[DEBUG_RENDERVIEW].get() );
-  if ( !debugRenderView )
-    return;
-
   if ( !mDepthTextureDebugging && settings.debugDepthMapEnabled() )
   {
     Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView().depthTexture();
-    mDepthTextureDebugging = new QgsDebugTextureEntity( forwardDepthTexture, debugRenderView->debugLayer(), this );
+    mDepthTextureDebugging = new QgsDebugTextureEntity( forwardDepthTexture, postprocessingRenderView().debugTextureLayer(), this );
   }
 
-  debugRenderView->setEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() );
+  postprocessingRenderView().setDebugTextureEnabled( settings.debugShadowMapEnabled() || settings.debugDepthMapEnabled() );
 
   if ( mDepthTextureDebugging )
   {

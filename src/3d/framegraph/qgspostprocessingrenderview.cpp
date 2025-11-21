@@ -24,6 +24,10 @@
 #include <Qt3DRender/QLayerFilter>
 #include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QNoDraw>
+#include <Qt3DRender/QRenderStateSet>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthTest>
+
 #include <QNode>
 #include "qgspostprocessingentity.h"
 #include "qgsforwardrenderview.h"
@@ -38,40 +42,18 @@ QgsPostprocessingRenderView::QgsPostprocessingRenderView( const QString &viewNam
                                                           Qt3DCore::QEntity *rootSceneEntity )
   : QgsAbstractRenderView( viewName )
 {
+  mDebugTextureLayer = new Qt3DRender::QLayer;
+  mDebugTextureLayer->setRecursive( true );
+  mDebugTextureLayer->setObjectName( mViewName + "::DebugTextureLayer" );
+
   // postprocessing main rendering pass
-  constructPostprocessingMainPass( mSize );
-
-  // sub passes:
-  QVector<Qt3DRender::QFrameGraphNode *> subpasses;
-  // 1. postprocessing real render view
-  subpasses << constructSubPostPassForProcessing( shadowRenderView, forwardRenderView, aoRenderView, rootSceneEntity );
-  // 2. render capture render view
-  subpasses << constructSubPostPassForRenderCapture();
-
-  setSubPasses( subpasses );
+  constructMainPass( shadowRenderView, forwardRenderView, aoRenderView, mSize, rootSceneEntity );
 }
 
-QVector<Qt3DRender::QFrameGraphNode *> QgsPostprocessingRenderView::subPasses() const
+QgsPostprocessingRenderView::~QgsPostprocessingRenderView()
 {
-  QVector<Qt3DRender::QFrameGraphNode *> out;
-  Qt3DCore::QNodeVector children = mSubPassesNode->childNodes();
-  for ( Qt3DCore::QNode *child : children )
-    if ( dynamic_cast<Qt3DRender::QFrameGraphNode *>( child ) && child->parent() == mSubPassesNode )
-      out << dynamic_cast<Qt3DRender::QFrameGraphNode *>( child );
-  return out;
-}
-
-void QgsPostprocessingRenderView::setSubPasses( QVector<Qt3DRender::QFrameGraphNode *> topNodes )
-{
-  // detach all subpasses
-  Qt3DCore::QNodeVector children = mSubPassesNode->childNodes();
-  for ( Qt3DCore::QNode *child : children )
-    if ( dynamic_cast<Qt3DRender::QFrameGraphNode *>( child ) && child->parent() == mSubPassesNode )
-      child->setParent( ( Qt3DCore::QNode * ) nullptr );
-
-  // attach new subpasses
-  for ( Qt3DRender::QFrameGraphNode *child : topNodes )
-    child->setParent( mSubPassesNode );
+  delete mDebugTextureRoot.data();
+  mDebugTextureRoot.clear();
 }
 
 void QgsPostprocessingRenderView::updateWindowResize( int width, int height )
@@ -131,7 +113,11 @@ Qt3DRender::QRenderTarget *QgsPostprocessingRenderView::buildRenderCaptureTextur
   // =============== ^ NEEDED ONLY FOR OFFSCREEN ENGINE ^
 }
 
-Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructPostprocessingMainPass( QSize mSize )
+Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructMainPass( QgsShadowRenderView &shadowRenderView,       //
+                                                                             QgsForwardRenderView &forwardRenderView,     //
+                                                                             QgsAmbientOcclusionRenderView &aoRenderView, //
+                                                                             QSize mSize,                                 //
+                                                                             Qt3DCore::QEntity *rootSceneEntity )
 {
   // Due to a bug in Qt5 (fixed in Qt6 - https://codereview.qt-project.org/c/qt/qt3d/+/462575) we need to move the render target selector at the top
   // of this branch. Doing so this allows Qt3d to have a FBO format matching the one need to do the capture
@@ -143,15 +129,20 @@ Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructPostprocessin
   Qt3DRender::QRenderTarget *renderTarget = buildRenderCaptureTextures( mSize );
   mRenderCaptureTargetSelector->setTarget( renderTarget );
 
-  // add node for sub passes
-  mSubPassesNode = new Qt3DRender::QFrameGraphNode( mRenderCaptureTargetSelector );
-  mSubPassesNode->setObjectName( mViewName + "::Sub passes top node" );
+  Qt3DRender::QFrameGraphNode *postprocessingNode = constructSubPassForPostProcessing( shadowRenderView, forwardRenderView, aoRenderView, rootSceneEntity );
+  postprocessingNode->setParent( mRenderCaptureTargetSelector );
+
+  Qt3DRender::QFrameGraphNode *debugTextureNode = constructSubPassForDebugTexture();
+  debugTextureNode->setParent( mRenderCaptureTargetSelector );
+
+  Qt3DRender::QFrameGraphNode *renderCaptureNode = constructSubPassForRenderCapture();
+  renderCaptureNode->setParent( mRenderCaptureTargetSelector );
 
   return mRenderCaptureTargetSelector;
 }
 
 
-Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructSubPostPassForProcessing( QgsShadowRenderView &shadowRenderView,       //
+Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructSubPassForPostProcessing( QgsShadowRenderView &shadowRenderView,       //
                                                                                              QgsForwardRenderView &forwardRenderView,     //
                                                                                              QgsAmbientOcclusionRenderView &aoRenderView, //
                                                                                              Qt3DCore::QEntity *rootSceneEntity )
@@ -176,7 +167,7 @@ Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructSubPostPassFo
   return layerFilter;
 }
 
-Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructSubPostPassForRenderCapture()
+Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructSubPassForRenderCapture()
 {
   Qt3DRender::QFrameGraphNode *top = new Qt3DRender::QNoDraw;
   top->setObjectName( mViewName + "::Sub pass::RenderCapture" );
@@ -184,6 +175,41 @@ Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructSubPostPassFo
   mRenderCapture = new Qt3DRender::QRenderCapture( top );
 
   return top;
+}
+
+
+Qt3DRender::QFrameGraphNode *QgsPostprocessingRenderView::constructSubPassForDebugTexture()
+{
+  mDebugTextureRoot = new Qt3DRender::QNoDraw;
+  mDebugTextureRoot->setEnabled( false );
+  mDebugTextureRoot->setObjectName( mViewName + "::DebugTexture::NoDraw" );
+  mDebugTextureRendererEnabler = new Qt3DRender::QSubtreeEnabler( mDebugTextureRoot );
+  mDebugTextureRendererEnabler->setEnablement( Qt3DRender::QSubtreeEnabler::Persistent );
+  mDebugTextureRendererEnabler->setObjectName( mViewName + "::DebugTexture::SubtreeEnabler" );
+
+  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( mDebugTextureRendererEnabler );
+  layerFilter->addLayer( mDebugTextureLayer );
+
+  Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( layerFilter );
+  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
+  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+  renderStateSet->addRenderState( depthTest );
+  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+  cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+  renderStateSet->addRenderState( cullFace );
+
+  return mDebugTextureRoot;
+}
+
+void QgsPostprocessingRenderView::setDebugTextureEnabled( bool enable )
+{
+  mDebugTextureRoot->setEnabled( !enable );
+  mDebugTextureRendererEnabler->setEnabled( enable );
+}
+
+Qt3DRender::QLayer *QgsPostprocessingRenderView::debugTextureLayer() const
+{
+  return mDebugTextureLayer;
 }
 
 Qt3DRender::QRenderCapture *QgsPostprocessingRenderView::renderCapture() const
