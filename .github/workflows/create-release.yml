@@ -61,6 +61,8 @@ jobs:
       - name: Merge upstream changes
         if: steps.tag_exists.outputs.exists == 'false'
         run: |
+          git config --global user.email "bot@qgis.org"
+          git config --global user.name "QGIS Bot"
           git merge --no-edit refs/upstream-tags/${{ steps.latest_tag.outputs.tag }}
 
       - name: Push updated branch
