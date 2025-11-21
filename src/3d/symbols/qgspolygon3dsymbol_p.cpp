@@ -37,6 +37,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslinestring.h"
 #include "qgsmultipolygon.h"
+#include "qgsmultilinestring.h"
 #include "qgspolygon.h"
 #include "qgsmessagelog.h"
 #include "qgsgeotransform.h"
@@ -82,6 +83,9 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
     PolygonData outSelected; //!< Features that are selected
 
     QgsLineVertexData outEdges; //!< When highlighting edges, this holds data for vertex/index buffer
+
+    //! This is set to TRUE when a feature is clipped to the chunk's extent
+    bool mWasClippedToExtent = false;
 };
 
 
@@ -117,16 +121,65 @@ void QgsPolygon3DSymbolHandler::processPolygon( const QgsPolygon *poly, QgsFeatu
   if ( mSymbol->edgesEnabled() )
   {
     // add edges before the polygon gets the Z values modified because addLineString() does its own altitude handling
-    outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->exteriorRing() ), offset );
+    const QgsAbstractGeometry *exteriorRing = static_cast<const QgsLineString *>( polyClone->exteriorRing() );
+
+    // This geometry will take ownership of the cleaned exteriorRing abstract geom.
+    // We need this to live for as long as exteriorRing is used.
+    QgsGeometry cleanedExteriorRingGeometry;
+
+    if ( mWasClippedToExtent )
+    {
+      // if the polygon was clipped to the chunk extent, then we need to remove any part of the exterior ring that
+      // overlaps the chunk extent line, otherwise the chunk extents will appear as edges.
+      const QVector< QgsPointXY > extentPoints {
+        { mChunkExtent.xMinimum(), mChunkExtent.yMinimum() },
+        { mChunkExtent.xMaximum(), mChunkExtent.yMinimum() },
+        { mChunkExtent.xMaximum(), mChunkExtent.yMaximum() },
+        { mChunkExtent.xMinimum(), mChunkExtent.yMaximum() },
+        { mChunkExtent.xMinimum(), mChunkExtent.yMinimum() }
+      };
+      auto extentLinestring = std::make_unique<QgsLineString>( extentPoints );
+
+      const QgsGeometry exteriorRingGeometry( exteriorRing->clone() );
+      cleanedExteriorRingGeometry = exteriorRingGeometry.difference( QgsGeometry( extentLinestring.release() ) );
+      exteriorRing = cleanedExteriorRingGeometry.constGet()->simplifiedTypeRef();
+    }
+
+    if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( exteriorRing ) )
+    {
+      outEdges.addLineString( *line, offset );
+    }
+    else if ( const QgsMultiLineString *mline = qgsgeometry_cast<const QgsMultiLineString *>( exteriorRing ) )
+    {
+      for ( int i = 0; i < mline->numGeometries(); ++i )
+      {
+        const QgsLineString *line = mline->lineStringN( i );
+        outEdges.addLineString( *line, offset );
+      }
+    }
+
     for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
       outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->interiorRing( i ) ), offset );
 
-    if ( extrusionHeight )
+    if ( extrusionHeight != 0.f )
     {
       // add roof and wall edges
-      const QgsLineString *exterior = static_cast<const QgsLineString *>( polyClone->exteriorRing() );
-      outEdges.addLineString( *exterior, extrusionHeight + offset );
-      outEdges.addVerticalLines( *exterior, extrusionHeight, offset );
+
+      if ( const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( exteriorRing ) )
+      {
+        outEdges.addLineString( *line, extrusionHeight + offset );
+        outEdges.addVerticalLines( *line, extrusionHeight, offset );
+      }
+      else if ( const QgsMultiLineString *mline = qgsgeometry_cast<const QgsMultiLineString *>( exteriorRing ) )
+      {
+        for ( int i = 0; i < mline->numGeometries(); ++i )
+        {
+          const QgsLineString *line = mline->lineStringN( i );
+          outEdges.addLineString( *line, extrusionHeight + offset );
+          outEdges.addVerticalLines( *line, extrusionHeight, offset );
+        }
+      }
+
       for ( int i = 0; i < polyClone->numInteriorRings(); ++i )
       {
         const QgsLineString *interior = static_cast<const QgsLineString *>( polyClone->interiorRing( i ) );
@@ -170,7 +223,14 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   // let's clip gigantic geometries to the chunk's extents
   constexpr double MAX_GEOM_BBOX_SIZE = 1e6;
   if ( geom.boundingBox().width() > MAX_GEOM_BBOX_SIZE || geom.boundingBox().height() > MAX_GEOM_BBOX_SIZE )
+  {
     geom = geom.clipped( mChunkExtent.toRectangle() );
+    mWasClippedToExtent = true;
+  }
+  else
+  {
+    mWasClippedToExtent = false;
+  }
 
   if ( geom.isEmpty() )
     return;
