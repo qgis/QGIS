@@ -1325,7 +1325,7 @@ void TestQgsVertexTool::testTopoTolerance()
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );    // nothing moved in line layer
   QCOMPARE( mLayerPolygon->undoStack()->index(), 2 ); // a vertex moved in polygon layer
-  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 3 3, 4 4, 4 1))" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 5 ), QStringLiteral( "POLYGON((4 1, 7 1, 3 3, 4 4, 4 1))" ) );
   mLayerPolygon->undoStack()->undo();
 
   mCanvas->setCurrentLayer( nullptr );
