@@ -2,6 +2,7 @@
 try:
     QgsVectorLayerUtils.getValuesIterator = staticmethod(QgsVectorLayerUtils.getValuesIterator)
     QgsVectorLayerUtils.getValues = staticmethod(QgsVectorLayerUtils.getValues)
+    QgsVectorLayerUtils.getUniqueValues = staticmethod(QgsVectorLayerUtils.getUniqueValues)
     QgsVectorLayerUtils.getDoubleValues = staticmethod(QgsVectorLayerUtils.getDoubleValues)
     QgsVectorLayerUtils.valueExists = staticmethod(QgsVectorLayerUtils.valueExists)
     QgsVectorLayerUtils.createUniqueValue = staticmethod(QgsVectorLayerUtils.createUniqueValue)

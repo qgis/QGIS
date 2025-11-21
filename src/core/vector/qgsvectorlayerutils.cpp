@@ -120,6 +120,52 @@ QList<QVariant> QgsVectorLayerUtils::getValues( const QgsVectorLayer *layer, con
   return values;
 }
 
+QList<QVariant> QgsVectorLayerUtils::getUniqueValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly, QgsFeedback *feedback )
+{
+  QList<QVariant> uniqueValues;
+  QgsFeatureIterator fit = getValuesIterator( layer, fieldOrExpression, ok, selectedOnly );
+  if ( ok )
+  {
+    std::unique_ptr<QgsExpression> expression;
+    QgsExpressionContext context;
+
+    int attrNum = layer->fields().lookupField( fieldOrExpression );
+    if ( attrNum == -1 )
+    {
+      // use expression, already validated in the getValuesIterator() function
+      expression.reset( new QgsExpression( fieldOrExpression ) );
+      context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+    }
+
+    QgsFeature feature;
+    while ( fit.nextFeature( feature ) )
+    {
+      QVariant newValue;
+      if ( expression )
+      {
+        context.setFeature( feature );
+        newValue = expression->evaluate( &context );
+      }
+      else
+      {
+        newValue = feature.attribute( attrNum );
+      }
+
+      if ( !uniqueValues.contains( newValue ) )
+      {
+        uniqueValues << newValue;
+      }
+
+      if ( feedback && feedback->isCanceled() )
+      {
+        ok = false;
+        return uniqueValues;
+      }
+    }
+  }
+  return uniqueValues;
+}
+
 QList<double> QgsVectorLayerUtils::getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly, int *nullCount, QgsFeedback *feedback )
 {
   QList<double> values;
