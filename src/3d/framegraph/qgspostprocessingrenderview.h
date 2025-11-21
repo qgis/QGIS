@@ -1,0 +1,116 @@
+/***************************************************************************
+  qgspostprocessingrenderview.h
+  --------------------------------------
+  Date                 : May 2025
+  Copyright            : (C) 2025 by Benoit De Mezzo and (C) 2020 by Belgacem Nedjima
+  Email                : benoit dot de dot mezzo at oslandia dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSPOSTPROCESSINGRENDERVIEW_H
+#define QGSPOSTPROCESSINGRENDERVIEW_H
+
+#include "qgsabstractrenderview.h"
+
+namespace Qt3DCore
+{
+  class QEntity;
+} //namespace Qt3DCore
+
+namespace Qt3DRender
+{
+  class QTexture2D;
+  class QRenderTargetSelector;
+  class QClearBuffers;
+  class QRenderStateSet;
+  class QRenderCapture;
+  class QRenderTarget;
+  class QLayer;
+} //namespace Qt3DRender
+
+class QgsPostprocessingEntity;
+class QgsShadowRenderView;
+class QgsForwardRenderView;
+class QgsAmbientOcclusionRenderView;
+
+
+#define SIP_NO_FILE
+
+/**
+ * \ingroup qgis_3d
+ * \brief Container class that holds different objects related to postprocessing rendering
+ *
+ * \note Not available in Python bindings
+ *
+ * The postprocessing pass apply post-processing effects (shadows, EDL, SSAO).
+ *
+ * \since QGIS 3.44
+ */
+class QgsPostprocessingRenderView : public QgsAbstractRenderView
+{
+  public:
+    //! Default constructor
+    QgsPostprocessingRenderView( const QString &viewName,                     //
+                                 QgsShadowRenderView &shadowRenderView,       //
+                                 QgsForwardRenderView &forwardRenderView,     //
+                                 QgsAmbientOcclusionRenderView &aoRenderView, //
+                                 QSize mSize,                                 //
+                                 Qt3DCore::QEntity *rootSceneEntity );
+
+    //! Default destructor
+    virtual ~QgsPostprocessingRenderView();
+
+    virtual void updateWindowResize( int width, int height ) override;
+
+    //! Returns the render capture object used to take an image of the postprocessing buffer of the scene
+    Qt3DRender::QRenderCapture *renderCapture() const;
+
+    //! Returns the QT3D entity used to do the rendering
+    QgsPostprocessingEntity *entity() const;
+
+    /**
+     * Sets whether it will be possible to render to an image
+     */
+    void setOffScreenRenderCaptureEnabled( bool enabled );
+
+    //! Returns layer in which entities must be added in the in order to be processed by this renderview.
+    Qt3DRender::QLayer *debugTextureLayer() const;
+
+    void setDebugTextureEnabled( bool enable );
+
+  private:
+    Qt3DRender::QRenderTarget *buildRenderCaptureTextures( QSize mSize );
+    Qt3DRender::QFrameGraphNode *constructMainPass( QgsShadowRenderView &shadowRenderView,       //
+                                                    QgsForwardRenderView &forwardRenderView,     //
+                                                    QgsAmbientOcclusionRenderView &aoRenderView, //
+                                                    QSize mSize,                                 //
+                                                    Qt3DCore::QEntity *rootSceneEntity );
+    Qt3DRender::QFrameGraphNode *constructSubPassForPostProcessing( QgsShadowRenderView &shadowRenderView,       //
+                                                                    QgsForwardRenderView &forwardRenderView,     //
+                                                                    QgsAmbientOcclusionRenderView &aoRenderView, //
+                                                                    Qt3DCore::QEntity *rootSceneEntity );
+    Qt3DRender::QFrameGraphNode *constructSubPassForRenderCapture();
+
+    Qt3DRender::QFrameGraphNode *constructSubPassForDebugTexture();
+
+    Qt3DRender::QRenderTargetSelector *mRenderCaptureTargetSelector = nullptr;
+    Qt3DRender::QRenderCapture *mRenderCapture = nullptr;
+
+    QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
+
+    // Post processing pass texture related objects:
+    Qt3DRender::QTexture2D *mRenderCaptureColorTexture = nullptr;
+    Qt3DRender::QTexture2D *mRenderCaptureDepthTexture = nullptr;
+
+    Qt3DRender::QLayer *mDebugTextureLayer = nullptr;
+    QPointer<Qt3DRender::QFrameGraphNode> mDebugTextureRoot;
+    Qt3DRender::QSubtreeEnabler *mDebugTextureRendererEnabler = nullptr;
+};
+
+#endif // QGSPOSTPROCESSINGRENDERVIEW_H
