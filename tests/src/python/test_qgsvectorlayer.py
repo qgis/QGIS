@@ -26,6 +26,7 @@ from qgis.PyQt.QtCore import (
     QTime,
     QTimer,
     QVariant,
+    QMetaType,
 )
 from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
@@ -92,6 +93,7 @@ from utilities import unitTestDataPath
 import geopandas as gpd
 import pandas as pd
 import shapely
+import numpy as np
 import numpy as np
 
 TEST_DATA_DIR = unitTestDataPath()
@@ -6192,6 +6194,108 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
         )
         self.assertTrue((array == np.array([15.6])).all())
         self.assertEqual(array.dtype, np.float64)
+
+    def test_fields_as_numpy(self):
+        """Test converting multiple field values to numpy arrays"""
+        layer = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer&field=fldlong:int8&field=flddouble:double",
+            "test",
+            "memory",
+        )
+        self.assertTrue(layer.isValid())
+
+        pr = layer.dataProvider()
+        attributes = [
+            ["my string", 30, 123123123123123, 15.6],
+            ["another string", 31, -456456456456456, 0.4],
+            [NULL, NULL, NULL, NULL],
+        ]
+        for a in attributes:
+            f = QgsFeature()
+            f.setAttributes(a)
+            self.assertTrue(pr.addFeatures([f]))
+
+        # Non-existent field should raise KeyError
+        with self.assertRaises(KeyError):
+            array = layer.fields_as_numpy(["not_here"], -99)
+
+        # String field should raise TypeError
+        with self.assertRaises(TypeError):
+            array = layer.fields_as_numpy(["fldtxt"], 0)
+
+        # Test single numeric field - default use_masking=True
+        masked_array = layer.fields_as_numpy(["fldint"], -99)
+        self.assertTrue(np.ma.is_masked(masked_array[2]))
+        self.assertEqual(masked_array["fldint"][0], 30)
+        self.assertEqual(masked_array["fldint"][1], 31)
+
+        # Test with masking explicitly disabled
+        array = layer.fields_as_numpy(["fldint"], -99.0, use_masking=False)
+        self.assertEqual(array.shape, (3,))
+        self.assertEqual(array["fldint"][0], 30)
+        self.assertEqual(array["fldint"][1], 31)
+        self.assertEqual(array["fldint"][2], -99)
+
+        # Test multiple numeric fields - each field returned with masking by default
+        int_array = layer.fields_as_numpy(["fldint"], -99)
+        double_array = layer.fields_as_numpy(["flddouble"], -99.0)
+
+        self.assertEqual(int_array.shape, (3,))
+        self.assertEqual(double_array.shape, (3,))
+
+        # Check values and masks
+        self.assertEqual(int_array["fldint"][0], 30)
+        self.assertAlmostEqual(double_array["flddouble"][0], 15.6, places=5)
+        self.assertEqual(int_array["fldint"][1], 31)
+        self.assertAlmostEqual(double_array["flddouble"][1], 0.4, places=5)
+
+        # Check masking is applied by default
+        self.assertTrue(np.ma.is_masked(int_array[2]))
+        self.assertTrue(np.ma.is_masked(double_array[2]))
+        self.assertFalse(np.ma.is_masked(int_array[0]))
+        self.assertFalse(np.ma.is_masked(double_array[0]))
+
+    def test_fields_as_numpy_mixed_null_values(self):
+        """Test fields_as_numpy with different null patterns per field"""
+        layer = QgsVectorLayer(
+            "Point?field=field1:integer&field=field2:integer&field=field3:integer",
+            "test",
+            "memory",
+        )
+        self.assertTrue(layer.isValid())
+
+        pr = layer.dataProvider()
+        # Different null patterns: field1 has null at index 0, field2 at index 1, field3 at index 2
+        attributes = [
+            [NULL, 10, 100],
+            [20, NULL, 200],
+            [30, 40, NULL],
+        ]
+        for a in attributes:
+            f = QgsFeature()
+            f.setAttributes(a)
+            self.assertTrue(pr.addFeatures([f]))
+
+        # Test with masking (default) - get each field separately
+        field1_array = layer.fields_as_numpy(["field1"], -999)
+        field2_array = layer.fields_as_numpy(["field2"], -999)
+        field3_array = layer.fields_as_numpy(["field3"], -999)
+
+        # Check masks are applied correctly per field
+        # Field1: NULL at index 0, valid at 1 and 2
+        self.assertTrue(np.ma.is_masked(field1_array[0]))
+        self.assertFalse(np.ma.is_masked(field1_array[1]))
+        self.assertFalse(np.ma.is_masked(field1_array[2]))
+
+        # Field2: valid at 0, NULL at index 1, valid at 2
+        self.assertFalse(np.ma.is_masked(field2_array[0]))
+        self.assertTrue(np.ma.is_masked(field2_array[1]))
+        self.assertFalse(np.ma.is_masked(field2_array[2]))
+
+        # Field3: valid at 0 and 1, NULL at index 2
+        self.assertFalse(np.ma.is_masked(field3_array[0]))
+        self.assertFalse(np.ma.is_masked(field3_array[1]))
+        self.assertTrue(np.ma.is_masked(field3_array[2]))
 
 
 # TODO:
