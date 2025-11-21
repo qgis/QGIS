@@ -8,9 +8,6 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    permissions:
-      actions: write
-      contents: write
 
     steps:
       - name: Checkout
@@ -66,6 +63,8 @@ jobs:
         run: |
           git config --global user.email "bot@qgis.org"
           git config --global user.name "QGIS Bot"
+          git remote remove origin
+          git remote add origin https://${{secrets.PAT }}@github.com/m-kuhn/QGIS
           git merge --no-edit refs/upstream-tags/${{ steps.latest_tag.outputs.tag }}
 
       - name: Push updated branch
