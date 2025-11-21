@@ -969,7 +969,12 @@ QString QgsApplication::resolvePkgPath()
   {
     if ( QCoreApplication::instance() )
     {
+#if defined(QGIS_MAC_BUNDLE)
+      QDir myDir( applicationDirPath() + QLatin1String( "/../.." ) );
+      appPath = myDir.absolutePath();
+#else
       appPath = applicationDirPath();
+#endif
     }
     else
     {
