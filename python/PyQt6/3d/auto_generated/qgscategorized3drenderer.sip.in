@@ -163,6 +163,17 @@ Construct renderer with the given categories
     virtual QgsCategorized3DRenderer *clone() const /Factory/;
 
 
+    void updateSymbols( QgsAbstract3DSymbol *symbol );
+%Docstring
+Update all the symbols but leave categories and colors. This method also
+sets the source symbol for the renderer.
+
+:param symbol: source symbol to use for categories. Ownership is not
+               transferred.
+
+.. seealso:: :py:func:`setSourceSymbol`
+%End
+
     Qgs3DCategoryList categories() const;
 %Docstring
 Returns a list of all categories recognized by the renderer.
@@ -184,6 +195,58 @@ expression string from the layer which will be matched against the
 renderer categories.
 
 .. seealso:: :py:func:`classAttribute`
+%End
+
+    QgsAbstract3DSymbol *sourceSymbol();
+%Docstring
+Returns the renderer's source symbol, which is the base symbol used for
+the each categories' symbol before applying the categories' color.
+
+.. seealso:: :py:func:`setSourceSymbol`
+
+.. seealso:: :py:func:`sourceColorRamp`
+%End
+
+
+    void setSourceSymbol( QgsAbstract3DSymbol *symbol /Transfer/ );
+%Docstring
+Sets the source symbol for the renderer, which is the base symbol used
+for the each categories' symbol before applying the categories' color.
+
+:param symbol: source symbol, ownership is transferred to the renderer
+
+.. seealso:: :py:func:`sourceSymbol`
+
+.. seealso:: :py:func:`setSourceColorRamp`
+%End
+
+    QgsColorRamp *sourceColorRamp();
+%Docstring
+Returns the source color ramp, from which each categories' color is
+derived.
+
+.. seealso:: :py:func:`setSourceColorRamp`
+
+.. seealso:: :py:func:`sourceSymbol`
+%End
+
+
+    void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
+%Docstring
+Sets the source color ramp.
+
+:param ramp: color ramp. Ownership is transferred to the renderer
+
+.. seealso:: :py:func:`sourceColorRamp`
+
+.. seealso:: :py:func:`setSourceSymbol`
+%End
+
+    void updateColorRamp( QgsColorRamp *ramp /Transfer/ );
+%Docstring
+Update the color ramp used and all symbols colors.
+
+:param ramp: color ramp. Ownership is transferred to the renderer
 %End
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
