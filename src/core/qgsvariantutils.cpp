@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvariantutils.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsunsetattributevalue.h"
 
@@ -631,4 +632,124 @@ QVariant QgsVariantUtils::createNullVariant( QMetaType::Type metaType )
   return QVariant( QMetaType( metaType ) );
 #endif
 
+}
+
+QString QgsVariantUtils::displayString( const QVariant &variant, int precision )
+{
+
+  auto _displayString = [ ]( const QVariant & variant, int precision ) -> QString
+  {
+
+    if ( QgsVariantUtils::isNull( variant ) )
+    {
+      return QgsApplication::nullRepresentation();
+    }
+
+    const bool isNumeric {variant.userType() == QMetaType::Type::Double || variant.userType() == QMetaType::Type::Int || variant.userType() == QMetaType::Type::UInt || variant.userType() == QMetaType::Type::LongLong || variant.userType() == QMetaType::Type::ULongLong};
+
+    // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
+    if ( variant.userType() == QMetaType::Type::Double )
+    {
+      // if value doesn't contain a double (a default value expression for instance),
+      // apply no transformation
+      bool ok;
+      variant.toDouble( &ok );
+      if ( !ok )
+        return variant.toString();
+
+      // Locales with decimal point != '.' or that require group separator: use QLocale
+      if ( QLocale().decimalPoint() != '.' ||
+           !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+      {
+        if ( precision > 0 )
+        {
+          if ( -1 < variant.toDouble() && variant.toDouble() < 1 )
+          {
+            return QLocale().toString( variant.toDouble(), 'g', precision );
+          }
+          else
+          {
+            return QLocale().toString( variant.toDouble(), 'f', precision );
+          }
+        }
+        else
+        {
+          // Precision is not set, let's guess it from the
+          // standard conversion to string
+          const QString s( variant.toString() );
+          const int dotPosition( s.indexOf( '.' ) );
+          int precision;
+          if ( dotPosition < 0 && s.indexOf( 'e' ) < 0 )
+          {
+            precision = 0;
+            return QLocale().toString( variant.toDouble(), 'f', precision );
+          }
+          else
+          {
+            if ( dotPosition < 0 ) precision = 0;
+            else precision = s.length() - dotPosition - 1;
+
+            if ( -1 < variant.toDouble() && variant.toDouble() < 1 )
+            {
+              return QLocale().toString( variant.toDouble(), 'g', precision );
+            }
+            else
+            {
+              return QLocale().toString( variant.toDouble(), 'f', precision );
+            }
+          }
+        }
+      }
+      // Default for doubles with precision
+      else if ( precision > 0 )
+      {
+        if ( -1 < variant.toDouble() && variant.toDouble() < 1 )
+        {
+          return QString::number( variant.toDouble(), 'g', precision );
+        }
+        else
+        {
+          return QString::number( variant.toDouble(), 'f', precision );
+        }
+      }
+    }
+    // Other numeric types than doubles
+    else if ( isNumeric &&
+              !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+    {
+      bool ok;
+      const qlonglong converted( variant.toLongLong( &ok ) );
+      if ( ok )
+        return QLocale().toString( converted );
+    }
+    else if ( variant.userType() == QMetaType::Type::QByteArray )
+    {
+      return QObject::tr( "BLOB" );
+    }
+
+    // Fallback if special rules do not apply
+    return variant.toString();
+  };
+
+  if ( variant.userType() == QMetaType::Type::QStringList || variant.userType() == QMetaType::Type::QVariantList )
+  {
+    // Note that this code is never hit because the joining of lists (merged categories) happens
+    // in data(); I'm leaving this here anyway because it is tested and it may be useful for
+    // other purposes in the future.
+    QString result;
+    const QVariantList list = variant.toList();
+    for ( const QVariant &var : list )
+    {
+      if ( !result.isEmpty() )
+      {
+        result.append( ';' );
+      }
+      result.append( _displayString( var, precision ) );
+    }
+    return result;
+  }
+  else
+  {
+    return _displayString( variant, precision );
+  }
 }
