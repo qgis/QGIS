@@ -92,11 +92,7 @@ void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
     }
 
-    if ( featureCount > 1 )
-    {
-      mCanvas->zoomWithCenter( e->x(), e->y(), true );
-    }
-    else if ( featureCount == 1 )
+    if ( featureCount == 1 )
     {
       QString details = QStringLiteral( "**%1**" ).arg( f.attribute( QStringLiteral( "Name" ) ).toString() );
       QString gitNickname = f.attribute( QStringLiteral( "GIT Nickname" ) ).toString();
@@ -114,6 +110,10 @@ void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
     }
     else
     {
+      if ( featureCount > 1 )
+      {
+        mCanvas->zoomWithCenter( e->x(), e->y(), true );
+      }
       mDevelopersMapFloatingPanel->hide();
     }
   }
@@ -165,6 +165,7 @@ QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
   }
   catch ( const QgsException &e )
   {
+    Q_UNUSED( e )
     extent = mDevelopersMapBaseLayer->extent();
   }
   extent.scale( 1.05 );
