@@ -1,4 +1,4 @@
-""""Test for a python implementation of layer metadata provider
+""" "Test for a python implementation of layer metadata provider
 
 .. note:: This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

@@ -181,6 +181,28 @@ The specified ``notSetText`` will be used for showing null values.
    This mode only applies to widgets in the condensed state!
 %End
 
+    void setSnapToGridAvailable( bool available, bool enabled = false, double rasterXRes = 1.0, double rasterYRes = 1.0, double rasterMinX = 0.0, double rasterMinY = 0.0 );
+%Docstring
+Sets the snap-to-grid functionality and shows/hides the snap-to-grid
+button.
+
+:param available: whether snap-to-grid functionality should be available
+:param enabled: whether snap-to-grid should be initially enabled
+:param rasterXRes: X resolution of the reference raster for snapping
+:param rasterYRes: Y resolution of the reference raster for snapping
+:param rasterMinX: minimum X coordinate of the reference raster
+:param rasterMinY: minimum Y coordinate of the reference raster
+
+.. versionadded:: 3.46
+%End
+
+    bool snapToGridEnabled() const;
+%Docstring
+Returns whether snap-to-grid is currently enabled.
+
+.. versionadded:: 3.46
+%End
+
   public slots:
 
     void setOutputExtentFromOriginal();
@@ -248,6 +270,15 @@ permit access to the map canvas)
 Emitted when the extent layer is changed.
 
 .. versionadded:: 3.44
+%End
+
+    void snapToGridChanged( bool enabled );
+%Docstring
+Emitted when the snap-to-grid state is changed.
+
+:param enabled: whether snap-to-grid is enabled
+
+.. versionadded:: 3.46
 %End
 
   protected:
