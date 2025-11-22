@@ -41,6 +41,13 @@
 #include "qgslayertreefiltersettings.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsrasterlayer.h"
+#include "qgscolorramplegendnode.h"
+#include "qgsmeshlayer.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterminmaxorigin.h"
+#include "qgsmeshdataset.h"
+#include "qgsmeshrenderersettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -1373,6 +1380,8 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     mLegendModel->setFilterSettings( nullptr );
   }
 
+  syncLayersWithUpdatedCanvasMinimumMaximum();
+
   clearLegendCachedData();
   mForceResize = true;
 }
@@ -1483,6 +1492,103 @@ bool QgsLayoutItemLegend::isRefreshing() const
   return mLegendModel->hitTestInProgress();
 }
 
+
+void QgsLayoutItemLegend::syncLayersWithUpdatedCanvasMinimumMaximum()
+{
+
+  if ( !mMap )
+    return;
+
+  QgsLegendModel *model = this->model();
+  if ( !model )
+    return;
+
+  QgsLayerTreeGroup *root = model->rootGroup();
+  if ( !root )
+    return;
+
+  QgsRenderContext renderContext = QgsLayoutUtils::createRenderContextForMap( mMap, nullptr );
+
+  const QList<QgsLayerTreeLayer *> layers = root->findLayers();
+
+  for ( QgsLayerTreeLayer *layerTreeLayer : layers )
+  {
+    QgsMapLayer *mapLayer = layerTreeLayer->layer();
+
+    if ( !mapLayer || !mapLayer->isValid() )
+      continue;
+
+    double min = std::numeric_limits<double>::quiet_NaN();
+    double max = std::numeric_limits<double>::quiet_NaN();
+    bool found = false;
+
+    if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( mapLayer ) )
+    {
+      QgsRasterRenderer *renderer = rasterLayer->renderer();
+
+      QgsRasterMinMaxOrigin minMaxOrigin = renderer->minMaxOrigin();
+
+      switch ( minMaxOrigin.extent() )
+      {
+        case Qgis::RasterRangeExtent::UpdatedCanvas:
+        {
+          rasterLayer->computeMinMax( renderer->inputBand(), minMaxOrigin, minMaxOrigin.limits(),
+                                      mMap->extent(), static_cast<int>( QgsRasterLayer::SAMPLE_SIZE ),
+                                      min, max );
+
+          found = !( std::isnan( min ) && std::isnan( max ) );
+          break;
+        }
+        case Qgis::RasterRangeExtent::WholeRaster:
+        case Qgis::RasterRangeExtent::FixedCanvas:
+          break;
+      }
+    }
+    else if ( QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( mapLayer ) )
+    {
+      const QgsMeshDatasetIndex activeDatasetIndex = meshLayer->activeScalarDatasetIndex( renderContext );
+
+      if ( activeDatasetIndex.isValid() )
+      {
+        QgsMeshRendererScalarSettings scalarRendererSettings = meshLayer->rendererSettings().scalarSettings( activeDatasetIndex.group() );
+
+        switch ( scalarRendererSettings.extent() )
+        {
+          case Qgis::MeshRangeExtent::UpdatedCanvas:
+          {
+            switch ( scalarRendererSettings.limits() )
+            {
+              case Qgis::MeshRangeLimit::MinimumMaximum:
+              {
+                found  = meshLayer->minimumMaximumActiveScalarDataset( mMap->extent(), activeDatasetIndex, min, max );
+                break;
+              }
+              case Qgis::MeshRangeLimit::NotSet:
+                break;
+            }
+          }
+          case Qgis::MeshRangeExtent::WholeMesh:
+          case Qgis::MeshRangeExtent::FixedCanvas:
+            break;
+        }
+      }
+    }
+
+    if ( found )
+    {
+      const QList<QgsLayerTreeModelLegendNode *> legendNodes = mLegendModel->layerLegendNodes( layerTreeLayer );
+
+      for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
+      {
+        if ( auto *colorRampNode = dynamic_cast<QgsColorRampLegendNode *>( legendNode ) )
+        {
+          colorRampNode->setMinimum( min );
+          colorRampNode->setMaximum( max );
+        }
+      }
+    }
+  }
+}
 
 // -------------------------------------------------------------------------
 

@@ -700,6 +700,11 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     QgsLegendRenderer createRenderer() const;
 
+    /**
+     * Updates legend minimum maximum values for legend entries for layers that have limits from current canvas
+     */
+    void syncLayersWithUpdatedCanvasMinimumMaximum();
+
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTree > mCustomLayerTree;
     bool mDeferLegendModelInitialization = true;
