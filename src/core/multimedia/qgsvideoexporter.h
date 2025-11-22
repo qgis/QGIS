@@ -65,17 +65,48 @@ class CORE_EXPORT QgsVideoExporter : public QObject
      */
     QStringList inputFiles() const;
 
+    /**
+     * Sets the output file \a format.
+     *
+     * \see fileFormat()
+     */
     void setFileFormat( QMediaFormat::FileFormat format );
+
+    /**
+     * Returns the output file format.
+     *
+     * \see setFileFormat()
+     */
     QMediaFormat::FileFormat fileFormat() const;
 
+    /**
+     * Sets the output video \a codec.
+     *
+     * \see videoCodec()
+     */
     void setVideoCodec( QMediaFormat::VideoCodec codec );
+
+    /**
+     * Returns the output video codec.
+     *
+     * \see setVideoCodec()
+     */
     QMediaFormat::VideoCodec videoCodec() const;
 
+  public slots:
 
-    bool writeVideo();
+    /**
+     * Starts the video export operation.
+     *
+     * The finished() signal will be emitted when the operation is complete.
+     */
+    void writeVideo();
 
   signals:
 
+    /**
+     * Emitted when the video export finishes.
+     */
     void finished();
 
   private slots:
