@@ -9363,6 +9363,26 @@ void TestProcessingGui::testOutputDefinitionWidget()
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "utf8" ) );
   QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.shp" ) ) );
 
+  // set value that will specify layer name and check that it is TEMPORARY_OUTPUT but with destinationName set correctly
+  QString layerName = QStringLiteral( "new layer" );
+  panel.setValue( layerName );
+  v = panel.value();
+  QCOMPARE( changedSpy.count(), 6 );
+  QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().destinationName, layerName );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+
+  QgsProcessingOutputLayerDefinition paramDef = QgsProcessingOutputLayerDefinition( QgsProcessing::TEMPORARY_OUTPUT );
+  QString destName = QStringLiteral( "new layer name" );
+  paramDef.destinationName = destName;
+
+  panel.setValue( paramDef );
+  v = panel.value();
+  QCOMPARE( changedSpy.count(), 7 );
+  QCOMPARE( v.userType(), qMetaTypeId<QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().destinationName, destName );
+  QCOMPARE( v.value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+
   // optional, test skipping
   sink.setFlags( sink.flags() | Qgis::ProcessingParameterFlag::Optional );
   sink.setCreateByDefault( true );
@@ -10175,12 +10195,18 @@ void TestProcessingGui::testSinkWrapper()
         QCOMPARE( spy.count(), 2 );
         QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/aa.shp" ) );
         QCOMPARE( static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->value().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/aa.shp" ) );
+        // test that setting value that only is layer name works
+        QString layerName = QStringLiteral( "new name" );
+        wrapper.setWidgetValue( layerName, context );
+        QCOMPARE( spy.count(), 3 );
+        QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
+        QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().destinationName, layerName );
         break;
     }
 
     // check signal
     static_cast<QgsProcessingLayerOutputDestinationWidget *>( wrapper.wrappedWidget() )->setValue( QStringLiteral( "/cc.shp" ) );
-    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( spy.count(), 4 );
     QCOMPARE( wrapper.widgetValue().value<QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QStringLiteral( "/cc.shp" ) );
     delete w;
 
