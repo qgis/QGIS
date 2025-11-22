@@ -107,6 +107,7 @@ done:
 %Import QtPrintSupport/QtPrintSupportmod.sip
 %Import QtWidgets/QtWidgetsmod.sip
 %Import QtPositioning/QtPositioningmod.sip
+%Import QtMultimedia/QtMultimediamod.sip
 
 %If (HAVE_QTSERIALPORT)
 %Import QtSerialPort/QtSerialPortmod.sip
