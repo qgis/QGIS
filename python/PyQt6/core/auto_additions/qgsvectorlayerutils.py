@@ -22,6 +22,7 @@ try:
     QgsVectorLayerUtils.getFeatureDisplayString = staticmethod(QgsVectorLayerUtils.getFeatureDisplayString)
     QgsVectorLayerUtils.impactsCascadeFeatures = staticmethod(QgsVectorLayerUtils.impactsCascadeFeatures)
     QgsVectorLayerUtils.guessFriendlyIdentifierField = staticmethod(QgsVectorLayerUtils.guessFriendlyIdentifierField)
+    QgsVectorLayerUtils.filterValidFeatureIds = staticmethod(QgsVectorLayerUtils.filterValidFeatureIds)
     QgsVectorLayerUtils.fieldToDataArray = staticmethod(QgsVectorLayerUtils.fieldToDataArray)
     QgsVectorLayerUtils.__group__ = ['vector']
 except (NameError, AttributeError):
