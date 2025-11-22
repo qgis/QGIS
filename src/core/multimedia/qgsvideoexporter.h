@@ -30,6 +30,10 @@ class QVideoFrameInput;
  * \ingroup core
  * \brief Handles exports of sequential image files to video formats.
  *
+ * Video export functionality is not available on all systems. The
+ * isAvailable() function can be used to test whether video
+ * export is available on the current system.
+ *
  * \since QGIS 4.0
  */
 class CORE_EXPORT QgsVideoExporter : public QObject
@@ -37,6 +41,11 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     Q_OBJECT
 
   public:
+
+    /**
+     * Returns TRUE if the video export functionality is available on the current system.
+     */
+    static bool isAvailable();
 
     /**
      * Constructor for QgsVideoExporter.
@@ -99,8 +108,10 @@ class CORE_EXPORT QgsVideoExporter : public QObject
      * Starts the video export operation.
      *
      * The finished() signal will be emitted when the operation is complete.
+     *
+     * \throws QgsNotSupportedException if writing video is not supported on the current system.
      */
-    void writeVideo();
+    void writeVideo() SIP_THROW( QgsNotSupportedException );
 
   signals:
 
