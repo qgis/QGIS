@@ -14,6 +14,10 @@ class QgsVideoExporter : QObject
 %Docstring(signature="appended")
 Handles exports of sequential image files to video formats.
 
+Video export functionality is not available on all systems. The
+:py:func:`~isAvailable` function can be used to test whether video
+export is available on the current system.
+
 .. versionadded:: 4.0
 %End
 
@@ -21,6 +25,12 @@ Handles exports of sequential image files to video formats.
 #include "qgsvideoexporter.h"
 %End
   public:
+
+    static bool isAvailable();
+%Docstring
+Returns ``True`` if the video export functionality is available on the
+current system.
+%End
 
     QgsVideoExporter( const QString &filename, QSize size, double framesPerSecond );
 %Docstring
@@ -85,6 +95,9 @@ Starts the video export operation.
 
 The :py:func:`~QgsVideoExporter.finished` signal will be emitted when
 the operation is complete.
+
+:raises QgsNotSupportedException: if writing video is not supported on
+                                  the current system.
 %End
 
   signals:

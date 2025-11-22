@@ -20,6 +20,15 @@
 #include <QtMultimedia/QVideoFrameInput>
 #include <QtMultimedia/QVideoFrame>
 
+bool QgsVideoExporter::isAvailable()
+{
+#if QT_VERSION < QT_VERSION_CHECK( 6, 8, 0 )
+  return false;
+#else
+  return true;
+#endif
+}
+
 QgsVideoExporter::QgsVideoExporter( const QString &filename, QSize size, double framesPerSecond )
   : mFileName( filename )
   , mSize( size )
@@ -63,8 +72,11 @@ QMediaFormat::VideoCodec QgsVideoExporter::videoCodec() const
   return mCodec;
 }
 
-bool QgsVideoExporter::writeVideo()
+void QgsVideoExporter::writeVideo()
 {
+#if QT_VERSION < QT_VERSION_CHECK( 6, 8, 0 )
+  throw QgsNotSupportedException( QStringLiteral( "Writing video is not supported on this system" ) );
+#else
   mSession = std::make_unique< QMediaCaptureSession >();
   mRecorder = std::make_unique< QMediaRecorder >();
   mVideoInput = std::make_unique< QVideoFrameInput >();
@@ -91,11 +103,12 @@ bool QgsVideoExporter::writeVideo()
 
   mRecorder->record();
   feedFrames();
-  return true;
+#endif
 }
 
 void QgsVideoExporter::feedFrames()
 {
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   if ( !mRecorder
        || !mVideoInput
        || mRecorder->recorderState() != QMediaRecorder::RecorderState::RecordingState )
@@ -121,6 +134,7 @@ void QgsVideoExporter::feedFrames()
   {
     mRecorder->stop();
   }
+#endif
 }
 
 void QgsVideoExporter::checkStatus( QMediaRecorder::RecorderState state )
