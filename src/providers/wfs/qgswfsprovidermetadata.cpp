@@ -209,6 +209,34 @@ QString QgsWfsProviderMetadata::suggestGroupNameForUri( const QString &uri ) con
   return wfsUri.typeName();
 }
 
+QString QgsWfsProviderMetadata::encodeUri( const QVariantMap &parts ) const
+{
+  QgsDataSourceUri dsUri;
+  for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
+  {
+    if ( it.key() == QStringLiteral( "authcfg" ) )
+    {
+      dsUri.setAuthConfigId( it.value().toString() );
+    }
+    else
+    {
+      dsUri.setParam( it.key(), it.value().toString() );
+    }
+  }
+  return dsUri.uri( false );
+}
+
+QVariantMap QgsWfsProviderMetadata::decodeUri( const QString &uri ) const
+{
+  const QgsDataSourceUri dsUri { uri };
+  QVariantMap decoded;
+  const QSet<QString> parameterKeys = dsUri.parameterKeys();
+  for ( const QString &key : std::as_const( parameterKeys ) )
+  {
+    decoded.insert( key, dsUri.param( key ) );
+  }
+  return decoded;
+}
 
 QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const
 {
