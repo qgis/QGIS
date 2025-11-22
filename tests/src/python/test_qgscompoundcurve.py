@@ -12,7 +12,13 @@ __copyright__ = "Copyright 2023, The QGIS Project"
 
 import qgis  # NOQA
 
-from qgis.core import QgsCompoundCurve, QgsCircularString, QgsLineString, QgsPoint, QgsVertexId
+from qgis.core import (
+    QgsCompoundCurve,
+    QgsCircularString,
+    QgsLineString,
+    QgsPoint,
+    QgsVertexId,
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -336,7 +342,9 @@ class TestQgsCompoundCurve(QgisTestCase):
 
         # Test case: CompoundCurve((-10 0, -3 -7, 0 0), CircularString(0 0, 3 7, 10 10), (10 10, 12 10, 12 12))
         compound = QgsCompoundCurve()
-        compound.fromWkt("CompoundCurve((-10 0, -3 -7, 0 0), CircularString(0 0, 3 7, 10 10), (10 10, 12 10, 12 12))")
+        compound.fromWkt(
+            "CompoundCurve((-10 0, -3 -7, 0 0), CircularString(0 0, 3 7, 10 10), (10 10, 12 10, 12 12))"
+        )
 
         # Verify the compound curve was created correctly
         self.assertTrue(compound.isValid())
@@ -348,22 +356,40 @@ class TestQgsCompoundCurve(QgisTestCase):
 
         # Test basic functionality - distance from first to last vertex should equal total length
         total_length = compound.length()
-        distance_first_to_last = compound.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, total_vertices - 1))
+        distance_first_to_last = compound.distanceBetweenVertices(
+            QgsVertexId(0, 0, 0), QgsVertexId(0, 0, total_vertices - 1)
+        )
         self.assertAlmostEqual(distance_first_to_last, total_length, places=10)
 
         # Test edge cases
-        self.assertEqual(compound.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 0)), 0.0)  # Same vertex
-        self.assertEqual(compound.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 999)), -1.0)  # Invalid vertex index
+        self.assertEqual(
+            compound.distanceBetweenVertices(
+                QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 0)
+            ),
+            0.0,
+        )  # Same vertex
+        self.assertEqual(
+            compound.distanceBetweenVertices(
+                QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 999)
+            ),
+            -1.0,
+        )  # Invalid vertex index
 
         # Test reverse direction (should give same result)
-        distance_reverse = compound.distanceBetweenVertices(QgsVertexId(0, 0, total_vertices - 1), QgsVertexId(0, 0, 0))
+        distance_reverse = compound.distanceBetweenVertices(
+            QgsVertexId(0, 0, total_vertices - 1), QgsVertexId(0, 0, 0)
+        )
         self.assertAlmostEqual(distance_reverse, distance_first_to_last, places=10)
 
         # Test intermediate distances
         if total_vertices >= 3:
             mid_vertex = total_vertices // 2
-            distance_first_to_mid = compound.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, mid_vertex))
-            distance_mid_to_last = compound.distanceBetweenVertices(QgsVertexId(0, 0, mid_vertex), QgsVertexId(0, 0, total_vertices - 1))
+            distance_first_to_mid = compound.distanceBetweenVertices(
+                QgsVertexId(0, 0, 0), QgsVertexId(0, 0, mid_vertex)
+            )
+            distance_mid_to_last = compound.distanceBetweenVertices(
+                QgsVertexId(0, 0, mid_vertex), QgsVertexId(0, 0, total_vertices - 1)
+            )
 
             # Sum should equal total
             sum_distances = distance_first_to_mid + distance_mid_to_last
@@ -385,15 +411,21 @@ class TestQgsCompoundCurve(QgisTestCase):
         self.assertEqual(simple_compound.numPoints(), 3)  # (0,0), (2,0), (4,0)
 
         # Distance from point 0 to point 1 should be 2.0
-        dist_0_to_1 = simple_compound.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 1))
+        dist_0_to_1 = simple_compound.distanceBetweenVertices(
+            QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 1)
+        )
         self.assertAlmostEqual(dist_0_to_1, 2.0, places=10)
 
         # Distance from point 1 to point 2 should be 2.0
-        dist_1_to_2 = simple_compound.distanceBetweenVertices(QgsVertexId(0, 0, 1), QgsVertexId(0, 0, 2))
+        dist_1_to_2 = simple_compound.distanceBetweenVertices(
+            QgsVertexId(0, 0, 1), QgsVertexId(0, 0, 2)
+        )
         self.assertAlmostEqual(dist_1_to_2, 2.0, places=10)
 
         # Total distance from point 0 to point 2 should be 4.0
-        dist_0_to_2 = simple_compound.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 2))
+        dist_0_to_2 = simple_compound.distanceBetweenVertices(
+            QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 2)
+        )
         self.assertAlmostEqual(dist_0_to_2, 4.0, places=10)
 
         # Verify that the sum equals the total

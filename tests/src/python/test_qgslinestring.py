@@ -610,9 +610,21 @@ class TestQgsLineString(QgisTestCase):
         # Point 0 to 2: 7.616 + 7.616 = 15.232
         expected_0_to_2 = expected_0_to_1 + expected_1_to_2
 
-        self.assertAlmostEqual(line1.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 1)), expected_0_to_1, places=6)
-        self.assertAlmostEqual(line1.distanceBetweenVertices(QgsVertexId(0, 0, 1), QgsVertexId(0, 0, 2)), expected_1_to_2, places=6)
-        self.assertAlmostEqual(line1.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 2)), expected_0_to_2, places=6)
+        self.assertAlmostEqual(
+            line1.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 1)),
+            expected_0_to_1,
+            places=6,
+        )
+        self.assertAlmostEqual(
+            line1.distanceBetweenVertices(QgsVertexId(0, 0, 1), QgsVertexId(0, 0, 2)),
+            expected_1_to_2,
+            places=6,
+        )
+        self.assertAlmostEqual(
+            line1.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 2)),
+            expected_0_to_2,
+            places=6,
+        )
 
         # Test case 2: LineString(-10 0, -3 -7, 0 0, 3 7, 10 10)
         line2 = QgsLineString()
@@ -628,21 +640,56 @@ class TestQgsLineString(QgisTestCase):
         # Point 3 to 4: sqrt((10-3)² + (10-7)²) = sqrt(49 + 9) = sqrt(58) ≈ 7.616
         expected_3_to_4_line2 = math.sqrt(49 + 9)
 
-        self.assertAlmostEqual(line2.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 1)), expected_0_to_1_line2, places=6)
-        self.assertAlmostEqual(line2.distanceBetweenVertices(QgsVertexId(0, 0, 1), QgsVertexId(0, 0, 2)), expected_1_to_2_line2, places=6)
-        self.assertAlmostEqual(line2.distanceBetweenVertices(QgsVertexId(0, 0, 2), QgsVertexId(0, 0, 3)), expected_2_to_3_line2, places=6)
-        self.assertAlmostEqual(line2.distanceBetweenVertices(QgsVertexId(0, 0, 3), QgsVertexId(0, 0, 4)), expected_3_to_4_line2, places=6)
+        self.assertAlmostEqual(
+            line2.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 1)),
+            expected_0_to_1_line2,
+            places=6,
+        )
+        self.assertAlmostEqual(
+            line2.distanceBetweenVertices(QgsVertexId(0, 0, 1), QgsVertexId(0, 0, 2)),
+            expected_1_to_2_line2,
+            places=6,
+        )
+        self.assertAlmostEqual(
+            line2.distanceBetweenVertices(QgsVertexId(0, 0, 2), QgsVertexId(0, 0, 3)),
+            expected_2_to_3_line2,
+            places=6,
+        )
+        self.assertAlmostEqual(
+            line2.distanceBetweenVertices(QgsVertexId(0, 0, 3), QgsVertexId(0, 0, 4)),
+            expected_3_to_4_line2,
+            places=6,
+        )
 
         # Test total distance from point 0 to point 4
-        expected_total = expected_0_to_1_line2 + expected_1_to_2_line2 + expected_2_to_3_line2 + expected_3_to_4_line2
-        self.assertAlmostEqual(line2.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 4)), expected_total, places=6)
+        expected_total = (
+            expected_0_to_1_line2
+            + expected_1_to_2_line2
+            + expected_2_to_3_line2
+            + expected_3_to_4_line2
+        )
+        self.assertAlmostEqual(
+            line2.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 4)),
+            expected_total,
+            places=6,
+        )
 
         # Test edge cases
-        self.assertEqual(line2.distanceBetweenVertices(QgsVertexId(0, 0, 2), QgsVertexId(0, 0, 2)), 0.0)  # Same vertex
-        self.assertEqual(line2.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 10)), -1.0)  # Invalid vertex index
+        self.assertEqual(
+            line2.distanceBetweenVertices(QgsVertexId(0, 0, 2), QgsVertexId(0, 0, 2)),
+            0.0,
+        )  # Same vertex
+        self.assertEqual(
+            line2.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 10)),
+            -1.0,
+        )  # Invalid vertex index
 
         # Test reverse direction (should give same result)
-        self.assertAlmostEqual(line2.distanceBetweenVertices(QgsVertexId(0, 0, 4), QgsVertexId(0, 0, 0)), expected_total, places=6)
+        self.assertAlmostEqual(
+            line2.distanceBetweenVertices(QgsVertexId(0, 0, 4), QgsVertexId(0, 0, 0)),
+            expected_total,
+            places=6,
+        )
 
 
 if __name__ == "__main__":

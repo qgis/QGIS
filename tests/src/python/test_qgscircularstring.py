@@ -151,18 +151,26 @@ class TestQgsCircularString(QgisTestCase):
 
         # Distance from vertex 0 to vertex 2 should equal the total arc length
         total_length = arc1.length()
-        distance_0_to_2 = arc1.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 2))
+        distance_0_to_2 = arc1.distanceBetweenVertices(
+            QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 2)
+        )
         self.assertAlmostEqual(distance_0_to_2, total_length, places=10)
 
         # Distance from vertex 0 to vertex 1 (middle point) should be half the arc
         # Note: this is approximate since vertex 1 is the curve control point
-        distance_0_to_1 = arc1.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 1))
+        distance_0_to_1 = arc1.distanceBetweenVertices(
+            QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 1)
+        )
         self.assertAlmostEqual(distance_0_to_1, 7.802700546685484, places=10)
-        distance_1_to_2 = arc1.distanceBetweenVertices(QgsVertexId(0, 0, 1), QgsVertexId(0, 0, 2))
+        distance_1_to_2 = arc1.distanceBetweenVertices(
+            QgsVertexId(0, 0, 1), QgsVertexId(0, 0, 2)
+        )
         self.assertAlmostEqual(distance_1_to_2, 7.802700546685484, places=10)
 
         # The sum of partial distances should equal total distance
-        self.assertAlmostEqual(distance_0_to_1 + distance_1_to_2, distance_0_to_2, places=10)
+        self.assertAlmostEqual(
+            distance_0_to_1 + distance_1_to_2, distance_0_to_2, places=10
+        )
 
         # Test case 2: CircularString(-10 0, -3 -7, 0 0, 3 7, 10 10)
         arc2 = QgsCircularString()
@@ -172,31 +180,51 @@ class TestQgsCircularString(QgisTestCase):
 
         # Test total distance equals total arc length
         total_length2 = arc2.length()
-        distance_0_to_4 = arc2.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 4))
+        distance_0_to_4 = arc2.distanceBetweenVertices(
+            QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 4)
+        )
         self.assertAlmostEqual(distance_0_to_4, total_length2, places=10)
 
         # Test intermediate distances
-        distance_0_to_2 = arc2.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 2))
+        distance_0_to_2 = arc2.distanceBetweenVertices(
+            QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 2)
+        )
         self.assertAlmostEqual(distance_0_to_2, 21.016173298295566, places=10)
-        distance_2_to_4 = arc2.distanceBetweenVertices(QgsVertexId(0, 0, 2), QgsVertexId(0, 0, 4))
+        distance_2_to_4 = arc2.distanceBetweenVertices(
+            QgsVertexId(0, 0, 2), QgsVertexId(0, 0, 4)
+        )
         self.assertAlmostEqual(distance_2_to_4, 15.60540109337097, places=10)
 
         # Sum should equal total
-        self.assertAlmostEqual(distance_0_to_2 + distance_2_to_4, distance_0_to_4, places=10)
+        self.assertAlmostEqual(
+            distance_0_to_2 + distance_2_to_4, distance_0_to_4, places=10
+        )
 
         # Test edge cases
-        self.assertEqual(arc2.distanceBetweenVertices(QgsVertexId(0, 0, 2), QgsVertexId(0, 0, 2)), 0.0)  # Same vertex
-        self.assertEqual(arc2.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 10)), -1.0)  # Invalid vertex index
+        self.assertEqual(
+            arc2.distanceBetweenVertices(QgsVertexId(0, 0, 2), QgsVertexId(0, 0, 2)),
+            0.0,
+        )  # Same vertex
+        self.assertEqual(
+            arc2.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 10)),
+            -1.0,
+        )  # Invalid vertex index
 
         # Test reverse direction (should give same result)
-        self.assertAlmostEqual(arc2.distanceBetweenVertices(QgsVertexId(0, 0, 4), QgsVertexId(0, 0, 0)), distance_0_to_4, places=10)
+        self.assertAlmostEqual(
+            arc2.distanceBetweenVertices(QgsVertexId(0, 0, 4), QgsVertexId(0, 0, 0)),
+            distance_0_to_4,
+            places=10,
+        )
 
         # Test that arc distance is different from straight line distance
         # Create a simple arc where we can verify the arc is longer than straight line
         simple_arc = QgsCircularString()
         simple_arc.fromWkt("CircularString(0 0, 1 1, 2 0)")
 
-        arc_distance = simple_arc.distanceBetweenVertices(QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 2))
+        arc_distance = simple_arc.distanceBetweenVertices(
+            QgsVertexId(0, 0, 0), QgsVertexId(0, 0, 2)
+        )
         # Straight line distance from (0,0) to (2,0) would be 2.0
         straight_distance = 2.0
 
