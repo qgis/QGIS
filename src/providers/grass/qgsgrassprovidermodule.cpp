@@ -849,9 +849,8 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
       }
       else
       {
-        QgsRasterPipe *pipe = new QgsRasterPipe();
-        pipe->set( rasterProvider );
-        if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
+        auto pipe = std::make_unique< QgsRasterPipe >();
+        if ( pipe->set( rasterProvider ) && providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
         {
           QgsRasterProjector *projector = new QgsRasterProjector;
           projector->setCrs( providerCrs, mapsetCrs, QgsProject::instance()->transformContext() );
@@ -868,7 +867,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
         QgsDebugMsgLevel( QStringLiteral( "newXSize = %1 newYSize = %2" ).arg( newXSize ).arg( newYSize ), 2 );
 
         //QString path = mPath + "/" + "raster" + "/" + u.name;
-        import = new QgsGrassRasterImport( pipe, rasterObject, newExtent, newXSize, newYSize ); // takes pipe ownership
+        import = new QgsGrassRasterImport( std::move( pipe ), rasterObject, newExtent, newXSize, newYSize ); // takes pipe ownership
       }
     }
     else if ( u.layerType == QLatin1String( "vector" ) )

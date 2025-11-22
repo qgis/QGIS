@@ -130,7 +130,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEditV2( Q
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       if ( mPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
         return Qgis::AnnotationItemEditOperationResult::Success;
       break;
@@ -174,7 +174,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transi
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
       if ( modifiedPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
       {

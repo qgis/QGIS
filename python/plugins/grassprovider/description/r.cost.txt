@@ -12,6 +12,6 @@ QgsProcessingParameterRasterLayer|start_raster|Name of starting raster points ma
 QgsProcessingParameterNumber|max_cost|Maximum cumulative cost|QgsProcessingParameterNumber.Double|0.0|True|None|None
 QgsProcessingParameterNumber|null_cost|Cost assigned to null cells. By default, null cells are excluded|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterNumber|memory|Maximum memory to be used in MB|QgsProcessingParameterNumber.Integer|300|True|1|None
-QgsProcessingParameterRasterDestination|output|Cumulative cost|None|True
+QgsProcessingParameterRasterDestination|output|Cumulative cost|None|False
 QgsProcessingParameterRasterDestination|nearest|Cost allocation map|None|True
 QgsProcessingParameterRasterDestination|outdir|Movement directions|None|True

@@ -421,7 +421,7 @@ bool QgsPGSchemaItem::layerCollection() const
   return true;
 }
 
-QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri postgresProjectUri )
+QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri &postgresProjectUri )
   : QgsProjectItem( parent, name, QgsPostgresProjectStorage::encodeUri( postgresProjectUri ), QStringLiteral( "postgres" ) ), mProjectUri( postgresProjectUri )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete | Qgis::BrowserItemCapability::Fertile;

@@ -220,7 +220,14 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   if ( platformName != QLatin1String( "desktop" ) )
   {
     mApplicationMembers = std::make_unique<ApplicationMembers>();
-    mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    try
+    {
+      mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Error migrating old settings: %1" ).arg( e.what() ) );
+    }
   }
   else
   {
@@ -303,7 +310,14 @@ void QgsApplication::init( QString profileFolder )
   if ( platform() == QLatin1String( "desktop" ) )
   {
     instance()->mApplicationMembers = std::make_unique<ApplicationMembers>();
-    instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    try
+    {
+      instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Error migrating old settings: %1" ).arg( e.what() ) );
+    }
   }
 
   if ( profileFolder.isEmpty() )
@@ -320,9 +334,8 @@ void QgsApplication::init( QString profileFolder )
     // This doesn't get this hit for QGIS Desktop because we setup the profile via main
     QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( profileFolder );
     QgsUserProfileManager manager( rootProfileFolder );
-    QgsUserProfile *profile = manager.getProfile();
+    std::unique_ptr< QgsUserProfile > profile = manager.getProfile();
     profileFolder = profile->folder();
-    delete profile;
   }
 
   *sProfilePath() = profileFolder;
@@ -570,7 +583,16 @@ void QgsApplication::installTranslators()
 QgsApplication::~QgsApplication()
 {
   if ( mApplicationMembers )
-    mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
+  {
+    try
+    {
+      mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "An error occurred while performing backwards compatibility for settings: %1" ).arg( e.what() ) );
+    }
+  }
 
   // we do this here as well as in exitQgis() -- it's safe to call as often as we want,
   // and there's just a *chance* that someone hasn't properly called exitQgis prior to
@@ -2907,7 +2929,6 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   mFieldFormatterRegistry.reset();
   mGpsConnectionRegistry.reset();
   mGpsBabelFormatRegistry.reset();
-  mMessageLog.reset();
   mPaintEffectRegistry.reset();
   mPluginLayerRegistry.reset();
   mProcessingRegistry.reset();
@@ -2940,6 +2961,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   mLocalizedDataPathRegistry.reset();
   mCrsRegistry.reset();
   mQueryLogger.reset();
+  mMessageLog.reset();
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

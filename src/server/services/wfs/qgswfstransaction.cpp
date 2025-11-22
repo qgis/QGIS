@@ -1226,7 +1226,7 @@ namespace QgsWfs
     action.typeName = typeName;
     action.propertyMap = propertyMap;
     action.geometryElement = geometryElem;
-    action.featureRequest = featureRequest;
+    action.featureRequest = std::move( featureRequest );
     action.serverFids = serverFids;
     action.error = false;
 

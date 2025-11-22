@@ -189,15 +189,12 @@ changed. Default implementation does nothing.
       QSizeF labelSize;
     };
 
-    virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
+    virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext &ctx );
 %Docstring
 Entry point called from :py:class:`QgsLegendRenderer` to do the
 rendering. Default implementation calls
 :py:func:`~QgsLayerTreeModelLegendNode.drawSymbol` and
 :py:func:`~QgsLayerTreeModelLegendNode.drawSymbolText` methods.
-
-If ctx is ``None``, this is just first stage when preparing layout -
-without actual rendering.
 %End
 
     QJsonObject exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context );
@@ -731,7 +728,7 @@ definition of the node's appearance
     virtual QVariant data( int role ) const;
 
 
-    virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
+    virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext &ctx );
 
 
     SIP_PYOBJECT __repr__();

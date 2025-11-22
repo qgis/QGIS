@@ -140,23 +140,25 @@ const QgsAnnotationItemGuiGroup &QgsAnnotationItemGuiRegistry::itemGroup( const 
 
 QgsAnnotationItem *QgsAnnotationItemGuiRegistry::createItem( int metadataId ) const
 {
-  if ( !mMetadata.contains( metadataId ) )
+  auto it = mMetadata.constFind( metadataId );
+  if ( it == mMetadata.constEnd() )
     return nullptr;
 
-  std::unique_ptr<QgsAnnotationItem> item( mMetadata.value( metadataId )->createItem() );
+  std::unique_ptr<QgsAnnotationItem> item( it.value()->createItem() );
   if ( item )
     return item.release();
 
-  const QString type = mMetadata.value( metadataId )->type();
+  const QString type = it.value()->type();
   return QgsApplication::annotationItemRegistry()->createItem( type );
 }
 
 void QgsAnnotationItemGuiRegistry::newItemAddedToLayer( int metadataId, QgsAnnotationItem *item, QgsAnnotationLayer *layer )
 {
-  if ( !mMetadata.contains( metadataId ) )
+  auto it = mMetadata.constFind( metadataId );
+  if ( it == mMetadata.constEnd() )
     return;
 
-  mMetadata.value( metadataId )->newItemAddedToLayer( item, layer );
+  it.value()->newItemAddedToLayer( item, layer );
 }
 
 QgsAnnotationItemBaseWidget *QgsAnnotationItemGuiRegistry::createItemWidget( QgsAnnotationItem *item ) const

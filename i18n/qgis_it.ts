@@ -33546,7 +33546,7 @@ Tali attributi aggiuntivi e i loro valori sono ricavati da un secondo vettore. P
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcalculateoverlaps.cpp" line="33"/>
         <source>Overlap analysis</source>
-        <translation>Analisi sovrapposizione</translation>
+        <translation>Analisi di sovrapposizione</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmcalculateoverlaps.cpp" line="38"/>
@@ -46411,7 +46411,7 @@ The name and characteristics of the attribute are defined as parameters. The new
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddtablefield.cpp" line="42"/>
         <source>Adds a new attribute to a vector layer.</source>
-        <translation type="unfinished"/>
+        <translation>Aggiunge un nuovo attributo a un livello vettoriale.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaddtablefield.cpp" line="47"/>
@@ -46632,7 +46632,7 @@ Geometrie già curvate verranno mantenute senza cambiamenti.</translation>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconverttocurves.cpp" line="60"/>
         <source>Converts a geometry into its curved geometry equivalent.</source>
-        <translation type="unfinished"/>
+        <translation>Converte una geometria nella sua geometria curva equivalente.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmconverttocurves.cpp" line="75"/>
@@ -47021,7 +47021,7 @@ L&apos;algoritmo genera tre vettori, uno contenente tutti gli elementi che sono 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="80"/>
         <source>Generates a raster dataset with the NoData values in the input raster filled with a given value.</source>
-        <translation type="unfinished"/>
+        <translation>Genera un raster con i valori NoData nel raster in ingresso di input sostituiti da un valore specificato.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfillnodata.cpp" line="116"/>
@@ -47868,7 +47868,7 @@ Il risultato viene generato come file HTML con i valori statistici calcolati.</t
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmnearestneighbouranalysis.cpp" line="60"/>
         <source>Performs nearest neighbor analysis for a point layer.</source>
-        <translation type="unfinished"/>
+        <translation>Esegue l&apos;analisi del vicino più prossimo per un layer di punti.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmnearestneighbouranalysis.cpp" line="81"/>
@@ -48105,7 +48105,7 @@ L&apos;algoritmo è iterativo. L&apos;impostazione di un numero maggiore per le 
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpolygonize.cpp" line="35"/>
         <source>This algorithm creates a polygon layer from the input lines layer.</source>
-        <translation type="unfinished"/>
+        <translation>Crea un layer poligonale dal vettore lineare in ingresso.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmpolygonize.cpp" line="40"/>
@@ -57143,7 +57143,7 @@ This algorithm does not change the layer geometry type, which will remain multip
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="88"/>
         <source>Strictly-multipart layer</source>
-        <translation type="unfinished"/>
+        <translation>Layer rigorosamente multiparte</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometrymultipart.cpp" line="91"/>
@@ -57179,7 +57179,7 @@ This algorithm does not change the layer geometry type, which will remain multip
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="89"/>
         <source>Field of error value</source>
-        <translation type="unfinished"/>
+        <translation>Campo del valore di errore</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmfixgeometryoverlap.cpp" line="96"/>
@@ -57598,17 +57598,17 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterrank.cpp" line="80"/>
         <source>Exclude NoData from values lists</source>
-        <translation type="unfinished"/>
+        <translation>Escludi NoData dagli elenchi di valori</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterrank.cpp" line="80"/>
         <source>Presence of NoData in a values list results in NoData output cell</source>
-        <translation type="unfinished"/>
+        <translation>La presenza di NoData in un elenco di valori determina la creazione di una cella NoData in uscita..</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterrank.cpp" line="86"/>
         <source>Output cell size</source>
-        <translation type="unfinished"/>
+        <translation>Dimensione cella in uscita</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrasterrank.cpp" line="95"/>
@@ -58573,7 +58573,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/gui/qgsdbqueryhistoryprovider.cpp" line="168"/>
         <source>Load SQL Command…</source>
-        <translation type="unfinished"/>
+        <translation>Carica Comando SQL…</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsdbqueryhistoryprovider.cpp" line="177"/>
@@ -65460,7 +65460,7 @@ Errori: %2
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="283"/>
         <source>%1 — %2 — Update SQL</source>
-        <translation type="unfinished"/>
+        <translation>%1 — %2 — Aggiorna SQL</translation>
     </message>
     <message>
         <location filename="../src/app/qgsapplayertreeviewmenuprovider.cpp" line="324"/>
@@ -70044,7 +70044,7 @@ Memorizza le credenziali in un database %1.</translation>
     <message>
         <location filename="../src/core/auth/qgsauthconfigurationstoragesqlite.cpp" line="105"/>
         <source>Store credentials in a local SQLite database</source>
-        <translation type="unfinished"/>
+        <translation>Memorizza le credenziali in un database SQLite locale.</translation>
     </message>
     <message>
         <location filename="../src/core/auth/qgsauthconfigurationstoragesqlite.cpp" line="119"/>
@@ -75274,7 +75274,7 @@ Il negativo viene arrotondato alle potenze di 10</translation>
     <message>
         <location filename="../src/ui/qgscompoundcolorwidget.ui"/>
         <source>Sample color</source>
-        <translation>Colore d&apos;esempio</translation>
+        <translation>Colore campione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompoundcolorwidget.ui"/>
@@ -91687,7 +91687,7 @@ Supporta un indice positivo (0 per il primo elemento) e negativo (l&apos;ultimo 
     </message>
     <message>
         <source>crs value &apos;EPSG:3857 - WGS 84 / Pseudo-Mercator&apos;</source>
-        <translation type="unfinished"/>
+        <translation>valore SR &apos;EPSG:3857 - WGS 84 / Pseudo-Mercator&apos;</translation>
     </message>
     <message>
         <source>crs_from_text(&apos;PROJ:+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs&apos;)</source>
@@ -106613,7 +106613,7 @@ Vuoi davvero eliminare lo schema e tutti gli oggetti?</translation>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="541"/>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="568"/>
         <source>Import to SAP HANA database</source>
-        <translation type="unfinished"/>
+        <translation>Importa in database SAP HANA</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="476"/>
@@ -106626,12 +106626,14 @@ Vuoi davvero eliminare lo schema e tutti gli oggetti?</translation>
         <source>Failed to import some layers!
 
 </source>
-        <translation type="unfinished"/>
+        <translation>Errore d&apos;importazione di alcuni layer!
+
+</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="498"/>
         <source>%1: Not a valid layer!</source>
-        <translation type="unfinished"/>
+        <translation>%1: Non è un layer valido!</translation>
     </message>
     <message>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="505"/>
@@ -106642,7 +106644,7 @@ Vuoi davvero eliminare lo schema e tutti gli oggetti?</translation>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="541"/>
         <location filename="../src/providers/hana/qgshanadataitemguiprovider.cpp" line="568"/>
         <source>SAP HANA Import</source>
-        <translation type="unfinished"/>
+        <translation>Importa SAP HANA</translation>
     </message>
 </context>
 <context>
@@ -107740,7 +107742,7 @@ b) usa la scheda di configurazione per aggiungere le tue credenziali in un metod
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="44"/>
         <source>Performs a HTTP(S) POST/GET request and returns the result code, error message and the data.</source>
-        <translation type="unfinished"/>
+        <translation>Esegue una richiesta HTTP(S) POST/GET e restituisce il codice di risultato, il messaggio di errore e i dati.</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmhttprequest.cpp" line="49"/>
@@ -129775,7 +129777,7 @@ Vedi il log per ulteriori informazioni.</translation>
         <location filename="../src/providers/mssql/qgsmssqldataitemguiprovider.cpp" line="357"/>
         <location filename="../src/providers/mssql/qgsmssqldataitemguiprovider.cpp" line="382"/>
         <source>Import to MS SQL Server database</source>
-        <translation type="unfinished"/>
+        <translation>Importa in database MS SQL Server</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitemguiprovider.cpp" line="342"/>
@@ -129799,13 +129801,13 @@ Vedi il log per ulteriori informazioni.</translation>
         <location filename="../src/providers/mssql/qgsmssqldataitemguiprovider.cpp" line="417"/>
         <location filename="../src/providers/mssql/qgsmssqldataitemguiprovider.cpp" line="450"/>
         <source>SQL Server Import</source>
-        <translation type="unfinished"/>
+        <translation>Importa SQL Server</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitemguiprovider.cpp" line="417"/>
         <location filename="../src/providers/mssql/qgsmssqldataitemguiprovider.cpp" line="450"/>
         <source>Import to SQL Server database</source>
-        <translation type="unfinished"/>
+        <translation>Importa in database SQL Server</translation>
     </message>
 </context>
 <context>
@@ -138274,7 +138276,7 @@ b) usa la scheda di configurazione per aggiungere le tue credenziali in un metod
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui"/>
         <source>Create a New PostgreSQL Connection</source>
-        <translation type="unfinished"/>
+        <translation>Crea una Nuova Connessione PostgreSQL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui"/>
@@ -142330,7 +142332,7 @@ Result: %3 (%4)</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="287"/>
         <source>Edit PostgreSQL Connection</source>
-        <translation type="unfinished"/>
+        <translation>Modifica Connessione PostgreSQL</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="425"/>
@@ -150327,7 +150329,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1274"/>
         <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1283"/>
         <source>%1 — Execute SQL</source>
-        <translation type="unfinished"/>
+        <translation>%1 — Esegui SQL</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsqueryresultwidget.cpp" line="1276"/>
@@ -159854,7 +159856,7 @@ inserire un nome nuovo:</translation>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
         <source>Edit selected service connection</source>
-        <translation type="unfinished"/>
+        <translation>Modifica la connessione al servizio selezionato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
@@ -159864,7 +159866,7 @@ inserire un nome nuovo:</translation>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
         <source>Remove connection to selected service</source>
-        <translation type="unfinished"/>
+        <translation>Rimuovi la connessione al servizio selezionato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstacsourceselectbase.ui"/>
@@ -181126,7 +181128,7 @@ I formati in uscita supportati per questa opzione sono:
     </message>
     <message>
         <source>List of target pixels</source>
-        <translation type="unfinished"/>
+        <translation>Lista dei pixel di destinazione</translation>
     </message>
     <message>
         <source>Comma-separated list of pixel values in the source image to consider as target pixels. If not specified, all non-zero pixels will be considered target pixels.</source>
@@ -181146,7 +181148,7 @@ I formati in uscita supportati per questa opzione sono:
     </message>
     <message>
         <source>NoData value to use for the pixels beyond the maximum distance. If not provided, it will be set to the one from the output band, or ultimately to 65535.</source>
-        <translation type="unfinished"/>
+        <translation>Valore NoData da utilizzare per i pixel oltre la distanza massima. Se non fornito, verrà impostato su quello della banda di uscita o, in ultima analisi, su 65535.</translation>
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>

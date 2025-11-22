@@ -398,7 +398,7 @@ void QgsVectorLayerUndoPassthroughCommandAddAttribute::undo()
     // isn't already gone
     if ( mBuffer->L->dataProvider()->fieldNameIndex( mField.name() ) != -1 )
     {
-      mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr );
+      ( void )mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr );
     }
     mBuffer->mAddedAttributes.removeAll( mField );
     mBuffer->updateLayerFields();

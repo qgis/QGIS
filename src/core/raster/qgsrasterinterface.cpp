@@ -237,7 +237,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
   // stdDev may differ  from GDAL stats, because GDAL is using naive single pass
   // algorithm which is more error prone (because of rounding errors)
   // Divide result by sample size - 1 and get square root to get stdev
-  myRasterBandStats.stdDev = std::sqrt( mySumOfSquares / ( myRasterBandStats.elementCount - 1 ) );
+  myRasterBandStats.stdDev = std::sqrt( mySumOfSquares / ( static_cast< double >( myRasterBandStats.elementCount ) - 1 ) );
 
   QgsDebugMsgLevel( QStringLiteral( "************ STATS **************" ), 4 );
   QgsDebugMsgLevel( QStringLiteral( "MIN %1" ).arg( myRasterBandStats.minimumValue ), 4 );

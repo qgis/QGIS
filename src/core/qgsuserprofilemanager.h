@@ -67,7 +67,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \return The user profile
      * \note Returns a new QgsUserProfile. Ownership transferred to caller.
      */
-    QgsUserProfile *getProfile( const QString &defaultProfile = "default", bool createNew = true, bool initSettings = true ) SIP_FACTORY;
+    std::unique_ptr< QgsUserProfile > getProfile( const QString &defaultProfile = "default", bool createNew = true, bool initSettings = true );
 
     /**
      * Set the root profile location for the profile manager. All profiles are loaded from this
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \param name The name of the profile to return.
      * \return A QgsUserprofile pointing to the location of the user profile.
      */
-    QgsUserProfile *profileForName( const QString &name ) const SIP_FACTORY;
+    std::unique_ptr< QgsUserProfile > profileForName( const QString &name ) const;
 
     /**
      * Create a user profile given by the name

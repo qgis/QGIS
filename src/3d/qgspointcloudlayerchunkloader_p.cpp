@@ -82,7 +82,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
   const QgsBox3D box3D = node->box3D();
-  const QFuture<void> future = QtConcurrent::run( [pc, pcNode, box3D, this] {
+  const QFuture<void> future = QtConcurrent::run( [pc = std::move( pc ), pcNode, box3D, this] {
     const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
 
     if ( mContext.isCanceled() )
@@ -141,7 +141,7 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
 QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int pointBudget )
   : mRenderContext( context )
   , mCoordinateTransform( coordinateTransform )
-  , mPointCloudIndex( pc )
+  , mPointCloudIndex( std::move( pc ) )
   , mZValueScale( zValueScale )
   , mZValueOffset( zValueOffset )
   , mPointBudget( pointBudget )
@@ -279,7 +279,7 @@ static QgsChunkNode *findChunkNodeFromNodeId( QgsChunkNode *rootNode, QgsPointCl
 
 
 QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, QgsPointCloudIndex index, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
-  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, index, symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
+  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, std::move( index ), symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
   , mLayer( pcl )
 {
   setShowBoundingBoxes( showBoundingBoxes );

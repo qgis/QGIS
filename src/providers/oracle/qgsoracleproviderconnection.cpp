@@ -56,7 +56,7 @@ class QgsOracleQuery : public QSqlQuery
   public:
     explicit QgsOracleQuery( std::shared_ptr<QgsPoolOracleConn> pconn )
       : QSqlQuery( *pconn->get() )
-      , mPconn( pconn )
+      , mPconn( std::move( pconn ) )
     {}
 
   private:

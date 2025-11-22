@@ -95,13 +95,8 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
         if ( !context )
           return true;
 
-        mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "layer" ) ).toString(), *context );
-        if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector || !mapLayer->isSpatial() )
-          return false;
-
-        vectorLayer = static_cast<QgsVectorLayer *>( mapLayer );
-
-        if ( !vectorLayer )
+        vectorLayer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "layer" ) ).toString(), *context ) );
+        if ( !vectorLayer || !vectorLayer->isSpatial() )
           return false;
 
         if ( layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt() >= vectorLayer->fields().count() )

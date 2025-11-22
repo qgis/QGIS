@@ -157,6 +157,16 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       LayerCheck        //!< The check controls a whole layer (topology checks)
     };
 
+    //! Result of the geometry checker operation \since QGIS 4.0
+    enum class Result : int
+    {
+      Success = 0,               //!< Operation completed successfully
+      Canceled = 1,              //!< User canceled calculation
+      DuplicatedUniqueId = 2,    //!< Found duplicated unique ID value
+      InvalidReferenceLayer = 3, //!< Missed or invalid reference layer
+      GeometryOverlayError = 4   //!< Error performing geometry overlay operation
+    };
+
     /**
      * Flags for geometry checks.
      */
@@ -269,14 +279,16 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * Check all features available from \a featurePools and write errors found to \a errors.
      * Other status messages can be written to \a messages.
      * Progress should be reported to \a feedback. Only features and layers listed in \a ids should be checked.
+     * \returns QgsGeometryCheck::Result::Success in case of success or error value on failure.
      *
      * \since QGIS 3.4
      */
-    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
+    virtual Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const;
 
     /**
      * Fixes the error \a error with the specified \a method.
      * Is executed on the main thread.
+     *
      *
      * \see availableResolutionMethods()
      * \since QGIS 3.4
@@ -370,6 +382,14 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * \since QGIS 3.4
      */
     double scaleFactor( const QPointer<QgsVectorLayer> &layer ) const SIP_SKIP;
+
+    /**
+     * Checks that there are no duplicated unique IDs
+     * \returns QgsGeometryCheck::Result::Success in case if there are no duplicates or error value on failure.
+     *
+     * \since QGIS 4.0
+     */
+    Result checkUniqueId( const QgsGeometryCheckerUtils::LayerFeature layerFeature, QMap< QString, QSet<QVariant> > &uniqueIds ) const SIP_SKIP;
 };
 
 #endif // QGS_GEOMETRY_CHECK_H

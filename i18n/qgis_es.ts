@@ -4761,7 +4761,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Day of Year of satellite overpass [0-366]</source>
         <extracomment>i.aster.toar</extracomment>
-        <translation type="unfinished"/>
+        <translation>Día del Año de cruce satelital [0-366]</translation>
     </message>
     <message>
         <source>Name of the surface skin temperature [K]</source>
@@ -4871,7 +4871,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Number of column used as x coordinate</source>
         <extracomment>v.in.ascii</extracomment>
-        <translation type="unfinished"/>
+        <translation>Número de columna usada como coordenada x</translation>
     </message>
     <message>
         <source>Computes evapotranspiration calculation modified or original Hargreaves formulation, 2001.</source>
@@ -4987,7 +4987,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Name of QC type to extract</source>
         <extracomment>i.modis.qc</extracomment>
-        <translation type="unfinished"/>
+        <translation>Nombre del tipo QC a extraer</translation>
     </message>
     <message>
         <source>Input raster layer with data gaps to fill</source>
@@ -6304,7 +6304,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Manages category values and labels associated with user-specified raster map layers.</source>
         <extracomment>r.category</extracomment>
-        <translation type="unfinished"/>
+        <translation>Administra valores de categoría y etiquetas asociadas con capas mapa ráster especificadas por usuario.</translation>
     </message>
     <message>
         <source>Splits a raster map into tiles</source>
@@ -7284,7 +7284,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Height-field type (0=actual heights 1=normalized)</source>
         <extracomment>r.out.pov</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tipo de campo de altura (0=alturas reales 1=normalizadas)</translation>
     </message>
     <message>
         <source>Filter range for z data (min,max)</source>
@@ -7304,7 +7304,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Value of the height independent friction velocity (u*) [m/s]</source>
         <extracomment>i.eb.hsebal01</extracomment>
-        <translation type="unfinished"/>
+        <translation>Valor de la velocidad independiente de la fricción de altura (u*) [m/s]</translation>
     </message>
     <message>
         <source>Category values (for Integer rasters). Example: 1,3,7-9,13</source>
@@ -7774,7 +7774,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Univariate results</source>
         <extracomment>r.univar</extracomment>
-        <translation type="unfinished"/>
+        <translation>Resultados univariados</translation>
     </message>
     <message>
         <source>Aggregate operation</source>
@@ -7849,7 +7849,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Name of raster map containing wind directions (degree)</source>
         <extracomment>r.ros</extracomment>
-        <translation type="unfinished"/>
+        <translation>Nombre del mapa ráster conteniendo direcciones del viento (grados)</translation>
     </message>
     <message>
         <source>Sampling distance step coefficient</source>
@@ -9829,7 +9829,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Title for error matrix and kappa</source>
         <extracomment>r.kappa</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tesela para matriz de error y kappa</translation>
     </message>
     <message>
         <source>Object modifier (OBJECT_MODIFIER in POV-Ray documentation)</source>
@@ -10034,7 +10034,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Sun elevation angle (degrees, &lt; 90.0)</source>
         <extracomment>i.aster.toar</extracomment>
-        <translation type="unfinished"/>
+        <translation>Ángulo de elevación del sol (grados, &lt; 90.0)</translation>
     </message>
     <message>
         <source>Barrier</source>
@@ -11434,7 +11434,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>ASCII</source>
         <extracomment>v.in.ascii</extracomment>
-        <translation type="unfinished"/>
+        <translation>ASCII</translation>
     </message>
     <message>
         <source>Minimum deviation in map units</source>
@@ -12809,7 +12809,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Name of input net solar radiation raster map [MJ/m2/h]</source>
         <extracomment>i.evapo.pm</extracomment>
-        <translation type="unfinished"/>
+        <translation>Nombre del mapa ráster de entrada de radiación solar neta [MJ/m2/h]</translation>
     </message>
     <message>
         <source>Name of the input slope raster map (terrain slope or solar panel inclination) [decimal degrees]</source>
@@ -13659,7 +13659,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Drapes a color raster over an shaded relief or aspect map. </source>
         <extracomment>r.shade</extracomment>
-        <translation type="unfinished"/>
+        <translation>Cubre con un ráster de color sobre un relieve sombreado o mapa de aspecto.</translation>
     </message>
     <message>
         <source>Scale factor for output</source>
@@ -13744,7 +13744,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Regression coefficients</source>
         <extracomment>r.regression.multi</extracomment>
-        <translation type="unfinished"/>
+        <translation>Coeficientes de regresión</translation>
     </message>
     <message>
         <source>Rescale output raster map [0,255]</source>
@@ -13794,7 +13794,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Error break criteria for iterative solvers (jacobi, sor, cg or bicgstab)</source>
         <extracomment>r.gwflow</extracomment>
-        <translation type="unfinished"/>
+        <translation>Criterios de parada de error para solucionadores iterativos (jacobi, sor, cg or bicgstab)</translation>
     </message>
     <message>
         <source>Disable loop support</source>

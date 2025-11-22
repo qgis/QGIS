@@ -161006,12 +161006,12 @@ vă rugăm să furnizați un nume nou:</translation>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="789"/>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="795"/>
         <source>Paste Label Settings</source>
-        <translation type="unfinished"/>
+        <translation>Lipire Setări Etichetă</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="795"/>
         <source>A label setting with the name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation type="unfinished"/>
+        <translation>O setare de etichetare cu numele &apos;%1&apos; există deja. O suprascrieți?</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="816"/>

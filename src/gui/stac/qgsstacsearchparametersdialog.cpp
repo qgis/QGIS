@@ -110,7 +110,7 @@ void QgsStacSearchParametersDialog::reject()
   {
     const QModelIndex index = mCollectionsModel->index( i, 0 );
     const bool isChecked = mSelectedCollections.contains( mCollectionsModel->data( index, Qt::UserRole ).toString() );
-    mCollectionsModel->setData( index, isChecked ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole );
+    ( void ) mCollectionsModel->setData( index, isChecked ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole );
   }
   QDialog::reject();
 }

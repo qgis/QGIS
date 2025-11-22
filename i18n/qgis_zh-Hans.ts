@@ -6722,7 +6722,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Enable disk swap memory option (-m): Operation is slow</source>
         <extracomment>r.watershed</extracomment>
-        <translation>启用磁盘交换内存选项 (-m): 操作缓慢</translation>
+        <translation>启用磁盘交换内存选项 (-m): 运算缓慢</translation>
     </message>
     <message>
         <source>r.li.mpa.ascii - Calculates mean pixel attribute index on a raster map</source>
@@ -7777,7 +7777,7 @@ Field code block does not return &apos;{0}&apos; variable! Please declare this v
     <message>
         <source>Aggregate operation</source>
         <extracomment>r.series</extracomment>
-        <translation>聚合操作</translation>
+        <translation>聚合运算</translation>
     </message>
     <message>
         <source>To WHERE conditions of SQL statement without &apos;where&apos; keyword</source>
@@ -17543,11 +17543,11 @@ Ctrl+2nd click to offset a copy of the selected geometry.
 Ctrl+click with snapping to select another layer's geometry to copy and offset.
 </source>
         <translation>偏移曲线
-创建几何图形的偏移或偏移副本：
+为几何图形创建偏移或偏移副本：
 单击选择要偏移的几何图形。
-第2次单击指定偏移距离。
-Ctrl+第2次单击可偏移选中的几何图形的副本。
-Ctrl+单击以捕捉选择另一个图层的几何图形进行复制和偏移。
+双击指定偏移距离。
+Ctrl+双击偏移所选几何图形的副本。
+Ctrl+单击启用捕以捉选择其他图层的几何图形进行复制和偏移。
 </translation>
     </message>
     <message>
@@ -20072,7 +20072,7 @@ This can cause unexpected results.</source>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="189"/>
         <source>A vector layer parameter, e.g. for algorithms which change layer styles, edit layers in place, or other operations which affect an entire layer.</source>
-        <translation>矢量图层参数，例如用于更改图层样式、就地编辑图层或影响整个图层的其他操作的算法。</translation>
+        <translation>矢量图层参数，例如用于更改图层样式、就地编辑图层或影响整个图层的其他运算的算法。</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="275"/>
@@ -20397,12 +20397,12 @@ This can cause unexpected results.</source>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="2424"/>
         <source>A coordinate operation parameter.</source>
-        <translation>坐标操作参数。</translation>
+        <translation>坐标运算参数。</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="2429"/>
         <source>Coordinate Operation</source>
-        <translation>坐标操作</translation>
+        <translation>坐标运算</translation>
     </message>
     <message>
         <location filename="../src/core/processing/qgsprocessingparametertypeimpl.h" line="2488"/>
@@ -21629,7 +21629,7 @@ Layers are referred by their name as displayed in the layer list and the number 
 When using the calculator in the batch interface or from the console, the files to use have to be specified. The corresponding layers are referred using the base name of the file (without the full path). For instance, if using a layer at path/to/my/rasterfile.tif, the first band of that layer will be referred as rasterfile.tif@1.
 </source>
         <extracomment>qgis:rastercalculator</extracomment>
-        <translation>该算法允许对栅格图层执行代数操作。
+        <translation>该算法允许对栅格图层执行代数运算。
 将根据表达式计算结果图层的值。表达式可以包含数值、运算符和对当前工程中任何图层的引用。还支持以下函数：
 ——sin()、cos()、tan()、atan2()、ln()、log10()
 范围、像元大小和输出 CRS 可由用户定义：如果未指定范围，则将使用涵盖所选参照图层的最小范围；如果未指定像元大小，则将使用所选参照图层的最小像元大小；如果未指定输出 CRS，则将使用第一个参照图层的 CRS。
@@ -22535,7 +22535,7 @@ The distance is specified in layer units, and the bearing in degrees clockwise f
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemregistry.cpp" line="358"/>
         <source>Initialize PROJ operations</source>
-        <translation>初始化 PROJ 操作</translation>
+        <translation>初始化 PROJ 运算</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatereferencesystemregistry.cpp" line="387"/>
@@ -26905,7 +26905,7 @@ please provide a new name:</source>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3653"/>
         <source>Unsupported operation</source>
-        <translation>不支持的操作</translation>
+        <translation>不支持的运算</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsogrproviderutils.cpp" line="3656"/>
@@ -28428,7 +28428,7 @@ The additional attributes and their values are taken from a second vector layer.
     <message>
         <location filename="../src/app/devtools/networklogger/qgsnetworkloggernode.cpp" line="366"/>
         <source>Operation</source>
-        <translation>操作</translation>
+        <translation>运算</translation>
     </message>
     <message>
         <location filename="../src/app/devtools/networklogger/qgsnetworkloggernode.cpp" line="367"/>
@@ -30964,7 +30964,7 @@ This will update all data within the table.</source>
 Operation can NOT be undone!</source>
         <translation>确定要移除全部认证数据库配置吗？
 
-该操作将无法撤销！</translation>
+该运算将无法撤销！</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="272"/>
@@ -31035,9 +31035,9 @@ Operation can NOT be undone!
 (Current database will be backed up and new one created.)</source>
         <translation>确定要清空整个认证数据库吗？ 
 
-该操作将无法撤销！
+该运算将无法撤销！
 
-（将备份当前数据库并创建新数据库。）</translation>
+(将备份当前数据库并创建新数据库。)</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthguiutils.cpp" line="320"/>
@@ -32710,7 +32710,7 @@ The attributes associated to each point in the output layer are the same ones as
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmclip.cpp" line="70"/>
         <source>The attributes of the features are not modified, although properties such as area or length of the features will be modified by the clipping operation. If such properties are stored as attributes, those attributes will have to be manually updated.</source>
-        <translation>不会修改要素的属性，但裁剪操作会修改要素的面积或长度等属性。如果之前在属性表中储存过此类属性，必须手动更新这些属性。</translation>
+        <translation>不会修改要素的属性，但裁剪运算会修改要素的面积或长度等属性。如果之前在属性表中储存过此类属性，必须手动更新这些属性。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmclip.cpp" line="77"/>
@@ -35461,7 +35461,7 @@ This is useful for dividing a complex geometry into less complex parts, which ar
 Curved geometries will be segmentized before subdivision.</source>
         <translation>该算法再分几何图形。返回几何图形将包含由原几何图形再分部件的集合，其中没有部件超过指定的最大节点数。
 
-这对于将复杂几何图形拆分成复杂程度较低的部件很有用。后者比较容易进行空间索引，在执行诸如相交等进一步操作时速度也更快。返回的几何图形部件可能会无效，也可能会存在自相交。
+这对于将复杂几何图形拆分成复杂程度较低的部件很有用。后者比较容易进行空间索引，在执行诸如相交等进一步运算时速度也更快。返回的几何图形部件可能会无效，也可能会存在自相交。
 
 曲线几何图形将在细分之前进行分段。</translation>
     </message>
@@ -35747,7 +35747,7 @@ Additionally an output data type can be specified. The algorithm will abort if a
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalreproject.cpp" line="65"/>
         <location filename="../src/analysis/processing/qgsalgorithmtransform.cpp" line="33"/>
         <source>Coordinate operation</source>
-        <translation>坐标操作</translation>
+        <translation>坐标运算</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/pdal/qgsalgorithmpdalreproject.cpp" line="69"/>
@@ -35792,7 +35792,7 @@ Attributes are not modified by this algorithm.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtransform.cpp" line="140"/>
         <source>An alternative, ballpark-only transform was used when transforming coordinates for one or more features. (Possibly an incorrect choice of operation was made for transformations between these reference systems - check that the selected operation is valid for the full extent of the input layer.)</source>
-        <translation>在转换一个或多个要素的坐标时，使用了可供选择、仅相近的转换。(对于这些参照系之间的变换，可能选择了错误的操作 - 请检查所选操作对输入图层的整个范围是否有效。)</translation>
+        <translation>在转换一个或多个要素的坐标时，使用了另一种仅限可量范围的转换。(对于这些参照系之间的变换，可能选择了错误的运算 - 请检查所选运算对输入图层的整个范围是否有效。)</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmtranslate.cpp" line="30"/>
@@ -35876,7 +35876,7 @@ Attributes are not modified by this algorithm.</source>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaffinetransform.cpp" line="55"/>
         <source>This algorithm applies an affine transformation to the geometries from a layer. Affine transformations can include translation, scaling and rotation. The operations are performed in a scale, rotation, translation order.</source>
-        <translation>该算法将仿射变换应用于图层的几何图形， 仿射变换可以包括平移、缩放和旋转。 这些操作按缩放、旋转和平移顺序执行。</translation>
+        <translation>该算法将仿射变换应用于图层的几何图形， 仿射变换可以包括平移、缩放和旋转。 这些运算按缩放、旋转和平移顺序执行。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmaffinetransform.cpp" line="58"/>
@@ -39887,7 +39887,7 @@ Last frames:
         <location filename="../src/core/qgsziputils.cpp" line="48"/>
         <location filename="../src/core/qgsziputils.cpp" line="153"/>
         <source>Error zip filename is empty</source>
-        <translation>错误，压缩文件名为空</translation>
+        <translation>错误，ZIP文件名为空</translation>
     </message>
     <message>
         <location filename="../src/core/qgsziputils.cpp" line="53"/>
@@ -39954,7 +39954,7 @@ Last frames:
     <message>
         <location filename="../src/core/qgsziputils.cpp" line="202"/>
         <source>Error creating zip archive &apos;%1&apos;: %2</source>
-        <translation>创建压缩包“%1”时出错：%2</translation>
+        <translation>创建ZIP归档文件 &apos;%1&apos; 时出错: %2</translation>
     </message>
     <message>
         <location filename="../src/core/symbology/qgssymbollayer.cpp" line="52"/>
@@ -41709,7 +41709,7 @@ If the input layer consists of CircularStrings or CompoundCurves, the output lay
         <location filename="../src/analysis/processing/qgsalgorithmdifference.cpp" line="55"/>
         <location filename="../src/analysis/processing/qgsalgorithmmultidifference.cpp" line="58"/>
         <source>Attributes are not modified, although properties such as area or length of the features will be modified by the difference operation. If such properties are stored as attributes, those attributes will have to be manually updated.</source>
-        <translation>尽管差集操作会修改要素的面积或长度等属性，但不会修改属性值。如果此类属性储存为属性，则必须手动更新这些属性。</translation>
+        <translation>尽管差集运算会修改要素的面积或长度等属性，但不会修改属性值。如果此类属性储存为属性，则必须手动更新这些属性。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmdifference.cpp" line="62"/>
@@ -45441,23 +45441,23 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="61"/>
         <source>Operation &apos;createVectorLayerExporterDestinationUri&apos; is not supported</source>
-        <translation>不支持操作 &apos;createVectorLayerExporterDestinationUri&apos;</translation>
+        <translation>不支持运算 &apos;createVectorLayerExporterDestinationUri&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="68"/>
         <source>Operation &apos;tableUri&apos; is not supported</source>
-        <translation>不支持操作&apos;tableUri&apos;</translation>
+        <translation>不支持运算 &apos;tableUri&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="79"/>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="87"/>
         <source>Operation &apos;%1&apos; is not supported for this connection</source>
-        <translation>此连接不支持操作&apos;%1&apos;</translation>
+        <translation>此连接不支持运算 &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="1107"/>
         <source>Operation &apos;createVectorTable&apos; is not supported</source>
-        <translation>不支持操作&apos;createVectorTable&apos;</translation>
+        <translation>不支持运算 &apos;createVectorTable&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/providers/qgsabstractdatabaseproviderconnection.cpp" line="1231"/>
@@ -45508,7 +45508,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
         <location filename="../src/providers/mssql/qgsmssqlproviderconnection.cpp" line="368"/>
         <location filename="../src/providers/postgres/qgspostgresproviderconnection.cpp" line="771"/>
         <source>Table &apos;%1&apos; was not found in schema &apos;%2&apos;</source>
-        <translation>在架构&apos;%2&apos;中未找到表&apos;%1&apos;</translation>
+        <translation>架构 &apos;%2&apos; 中未找到表 &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/providers/ogr/qgsgeopackageproviderconnection.cpp" line="593"/>
@@ -45556,7 +45556,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="298"/>
         <source>Could not use operation specified in project between %1 and %2. (Wanted to use: %3).</source>
-        <translation>无法使用工程在%1和%2之间指定的操作。(请使用：%3)。</translation>
+        <translation>无法使用工程在%1和%2之间指定的运算。(请使用：%3)。</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="397"/>
@@ -45568,7 +45568,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="342"/>
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="481"/>
         <source>No coordinate operations are available between these two reference systems</source>
-        <translation>这两个参照系之间没有可用的坐标操作</translation>
+        <translation>这两个参照系之间没有可用的坐标运算</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="381"/>
@@ -45578,7 +45578,7 @@ The extracted symbols are saved to a QGIS style database (XML format), which can
     <message>
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="443"/>
         <source>Using non-preferred coordinate operation between %1 and %2. Using %3, preferred %4.</source>
-        <translation>在%1和%2之间使用非首选坐标操作。使用%3，首选%4。</translation>
+        <translation>在%1和%2之间使用非首选坐标运算。使用%3，首选%4。</translation>
     </message>
     <message>
         <location filename="../src/core/proj/qgscoordinatetransform_p.cpp" line="498"/>
@@ -50440,7 +50440,7 @@ The created point layer will be in the same spatial reference system as the sele
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1748"/>
         <source>Error creating new table &apos;%1&apos;: %2</source>
-        <translation>创建新表&apos;%1&apos;时出错：%2</translation>
+        <translation>创建新表 &apos;%1&apos; 时出错: %2</translation>
     </message>
     <message>
         <location filename="../src/app/browser/qgsinbuiltdataitemproviders.cpp" line="1756"/>
@@ -54783,7 +54783,7 @@ For more details, please see the following papers:
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmultidifference.cpp" line="53"/>
         <source>This algorithm extracts features from the Input layer that fall completely outside or only partially overlap the features from any of the Overlay layer(s). For each overlay layer the difference is calculated between the result of all previous difference operations and this overlay layer. Input layer features that partially overlap feature(s) in the Overlay layers are split along those features&apos; boundary and only the portions outside the Overlay layer features are retained.</source>
-        <translation>该算法从输入图层提取完全位于叠加图层之外或仅部分重叠的要素。对于每个叠加图层，是计算所有之前差集操作的结果与该叠加图层之间的差集。叠加图层中部分重叠要素的输入图层要素将沿这些要素的边界分割，并且仅保留叠加图层要素之外的部分。</translation>
+        <translation>该算法从输入图层提取完全位于叠加图层之外或仅部分重叠的要素。对于每个叠加图层，是计算所有之前差集运算的结果与该叠加图层之间的差集。叠加图层中部分重叠要素的输入图层要素将沿这些要素的边界分割，并且仅保留叠加图层要素之外的部分。</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmmultidifference.cpp" line="65"/>
@@ -58512,7 +58512,7 @@ If multiband rasters are used in the data raster stack, the algorithm will alway
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="973"/>
         <source>Could not store value &apos;%1&apos; in field of type %2: %3</source>
-        <translation>不能将值‘%1’储存在类型为%2的字段中: %3</translation>
+        <translation>无法在类型为%2的字段中存储值 &apos;%1&apos;: %3</translation>
     </message>
     <message>
         <location filename="../src/core/vector/qgsvectorlayereditutils.cpp" line="978"/>
@@ -59977,7 +59977,7 @@ Please cancel these tasks and retry.</source>
         <location filename="../src/app/qgisapp.cpp" line="6218"/>
         <location filename="../src/app/qgisapp.cpp" line="6289"/>
         <source>Insufficient memory available for operation.</source>
-        <translation>操作所需内存无法满足。</translation>
+        <translation>运算所需内存无法满足。</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6222"/>
@@ -60456,7 +60456,7 @@ Delete these features?</source>
         <location filename="../src/app/qgisapp.cpp" line="9657"/>
         <location filename="../src/app/qgisapp.cpp" line="9715"/>
         <source>An error occurred during the merge operation.</source>
-        <translation>合并操作过程中发生错误。</translation>
+        <translation>合并运算过程中发生错误。</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2970"/>
@@ -60852,7 +60852,7 @@ Delete these features?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9522"/>
         <source>Could not store value &apos;%1&apos; in field of type %2: %3</source>
-        <translation>不能将值‘%1’储存在类型为%2的字段中: %3</translation>
+        <translation>无法在类型为%2的字段中存储值 &apos;%1&apos;: %3</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="9850"/>
@@ -65943,7 +65943,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="235"/>
         <source>&lt;p&gt;The operation specified for use in the project is:&lt;/p&gt;&lt;p&gt;&lt;code&gt;%1&lt;/code&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt;指定在工程中使用的操作符是：&lt;/p&gt;&lt;p&gt;&lt;code&gt;%1&lt;/code&gt;&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;指定在工程中使用的运算是：&lt;/p&gt;&lt;p&gt;&lt;code&gt;%1&lt;/code&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="243"/>
@@ -65958,7 +65958,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="262"/>
         <source>&lt;p&gt;An alternative, ballpark-only transform was used when transforming coordinates between &lt;i&gt;%1&lt;/i&gt; and &lt;i&gt;%2&lt;/i&gt;. The results may not match those obtained by using the preferred operation:&lt;/p&gt;&lt;code&gt;%3&lt;/code&gt;&lt;p style=&quot;font-weight: bold&quot;&gt;Possibly an incorrect choice of operation was made for transformations between these reference systems. Check the Project Properties and ensure that the selected transform operations are applicable over the whole extent of the current project.</source>
-        <translation>&lt;p&gt;在&lt;i&gt; %1 &lt;/i&gt;和&lt;i&gt; %2 &lt;/i&gt;之间转换坐标时，使用了另一种替代的、仅限于可量范围的变换。结果可能与使用首选操作所获得的结果不匹配：&lt;/p&gt;&lt;code&gt; %3 &lt;/code&gt;&lt;p style=&quot;font-weight: bold&quot;&gt;对于这些参照系之间的转换，可能选择了错误的操作。请检查工程属性，并确保所选的转换操作适用于当前工程的整个范围。</translation>
+        <translation>&lt;p&gt;在&lt;i&gt; %1 &lt;/i&gt;和&lt;i&gt; %2 &lt;/i&gt;之间转换坐标时，使用了另一种替代的、仅限于可量范围的变换。结果可能与使用首选运算所获得的结果不匹配：&lt;/p&gt;&lt;code&gt; %3 &lt;/code&gt;&lt;p style=&quot;font-weight: bold&quot;&gt;对于这些参照系之间的转换，可能选择了错误的运算。请检查工程属性，并确保所选的转换运算适用于当前工程的整个范围。</translation>
     </message>
     <message>
         <location filename="../src/app/qgsappcoordinateoperationhandlers.cpp" line="270"/>
@@ -68977,7 +68977,7 @@ control = dialog.findChild(QWidget, &quot;MyLineEdit&quot;)
 Operation can NOT be undone!</source>
         <translation>确定要从数据库移除选中的证书授权吗？
 
-该操作将无法撤销！</translation>
+该运算无法撤销！</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthauthoritieseditor.cpp" line="552"/>
@@ -69651,9 +69651,9 @@ Operation can NOT be undone!</source>
         <source>Are you sure you want to remove '%1'?
 
 Operation can NOT be undone!</source>
-        <translation>确定要移除“%1”吗？
+        <translation>确定要移除 &apos;%1&apos; 吗？
 
-该操作无法撤销！</translation>
+该运算无法撤销！</translation>
     </message>
 </context>
 <context>
@@ -69753,7 +69753,7 @@ Operation can NOT be undone!</source>
 Operation can NOT be undone!</source>
         <translation>确定要立刻永久移除该配置吗？
 
-该操作将无法撤销！</translation>
+该运算无法撤销！</translation>
     </message>
 </context>
 <context>
@@ -70435,7 +70435,7 @@ Error: %2</source>
 Operation can NOT be undone!</source>
         <translation>确定要从数据库中移除选中的证书标识吗？
 
-该操作将无法撤销！</translation>
+该运算无法撤销！</translation>
     </message>
     <message>
         <location filename="../src/ui/auth/qgsauthidentitieseditor.ui"/>
@@ -71961,7 +71961,7 @@ Description: %3</source>
 Operation can NOT be undone!</source>
         <translation>确定要从数据库中移除选中的 SSL 自定义配置吗？
 
-该操作将无法撤销！</translation>
+该运算无法撤销！</translation>
     </message>
     <message>
         <location filename="../src/gui/auth/qgsauthserverseditor.cpp" line="306"/>
@@ -75056,7 +75056,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscolorrampshaderwidgetbase.ui"/>
         <location filename="../src/ui/raster/qgscolorrampshaderwidgetbase.ui"/>
         <source>Remove selected row(s)</source>
-        <translation>移除选中的行</translation>
+        <translation>移除所选行</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscolorrampshaderwidgetbase.ui"/>
@@ -75826,7 +75826,7 @@ Negative rounds to powers of 10</source>
     <message>
         <location filename="../src/gui/proj/qgscoordinateoperationwidget.cpp" line="490"/>
         <source>File &apos;%1&apos; not found in directory &apos;%2&apos;</source>
-        <translation>目录“%2”中找不到文件“%1”</translation>
+        <translation>目录 &apos;%2&apos; 中未找到文件 &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/gui/proj/qgscoordinateoperationwidget.cpp" line="527"/>
@@ -75878,14 +75878,14 @@ used in the case that the specified coordinate operation fails
 (such as when coordinates from outside a required grid shift
 file are transformed).</source>
         <translation>设置是否可以进行 &quot;可量范围&quot; 回退变换
-在指定坐标操作失败的情况下使用
-（例如，当坐标从外部移到必需的网格时
-文件已转换）。</translation>
+在指定坐标运算失败的情况下使用
+(例如，当坐标从外部移到必需的网格时
+文件已转换)。</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscoordinateoperationwidgetbase.ui"/>
         <source>Allow fallback transforms if preferred operation fails</source>
-        <translation>如果首选操作失败，允许回退转换</translation>
+        <translation>如果首选运算失败，允许回退转换</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscoordinateoperationwidgetbase.ui"/>
@@ -77879,7 +77879,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-weight:600;&quot;&gt;两个坐标参照系之间转换坐标时可能存在多种操作。&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;请根据所需的使用范围、数据来源以及其他对特定转换操作来说可能改变&amp;quot;适合目标&amp;quot;的约束条件，来选择合适的变换操作。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-weight:600;&quot;&gt;两个坐标参照系之间转换坐标时可能存在多种运算。&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;;&quot;&gt;请根据所需的使用范围、数据来源以及其他对特定转换运算来说可能改变&amp;quot;适合目标&amp;quot;的约束条件，来选择合适的变换运算。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -77892,7 +77892,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdatumtransformtablewidget.cpp" line="143"/>
         <source>Operation</source>
-        <translation>操作</translation>
+        <translation>运算</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdatumtransformtablewidget.cpp" line="145"/>
@@ -86463,7 +86463,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>affine,coordinate,operations,spatial,transformation,reference,offset,system,calculations,translation,rotation,order,added,present,scale</source>
-        <translation>仿射,坐标,operations,spatial,变换,reference,偏移,system,calculations,translation,rotation,order,added,present,scale</translation>
+        <translation>仿射,坐标,运算,空间,变换,参照,偏移,系统,计算,translation,rotation,order,added,present,scale</translation>
     </message>
     <message>
         <source>aggregate,combine,features,calculated,merge,concatenate,sum,mean,median,count,quartile,minimum,maximum,minority,majority,standard,deviation,length,unique</source>
@@ -91043,7 +91043,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns the geometry after an affine transformation. Calculations are in the Spatial Reference System of this geometry. The operations are performed in a scale, rotation, translation order. If there is a Z or M offset but the coordinate is not present in the geometry, it will be added.</source>
-        <translation>返回仿射变换后的几何图形。计算在此几何图形的空间参照系中，操作按比例、旋转、平移顺序执行。如果存在 Z 或 M 偏移，但几何图形中不存在该坐标，将添加该坐标。</translation>
+        <translation>返回仿射变换后的几何图形。计算在此几何图形的空间参照系中，运算按比例、旋转、平移顺序执行。如果存在 Z 或 M 偏移，但几何图形中不存在该坐标，将添加该坐标。</translation>
     </message>
     <message>
         <source>affine_transform</source>
@@ -123350,7 +123350,7 @@ Rasterizing map is recommended for proper rendering.</source>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="169"/>
         <source>Unexpected OperationResult: %1</source>
-        <translation>意外的操作结果：%1</translation>
+        <translation>意外的运算结果: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="207"/>
@@ -123699,12 +123699,12 @@ Rasterizing map is recommended for proper rendering.</source>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="1814"/>
         <source>removing the vertex %1 leads to a topological error, operation canceled.</source>
-        <translation>移除顶点 %1 将导致拓扑错误，操作已取消。</translation>
+        <translation>移除顶点 %1 将导致拓扑错误，运算已取消。</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="1834"/>
         <source>removing the faces %1 leads to a topological error, operation canceled.</source>
-        <translation>移除面 %1 将导致拓扑错误，操作已取消。</translation>
+        <translation>移除面 %1 将导致拓扑错误，运算已取消。</translation>
     </message>
     <message>
         <location filename="../src/app/mesh/qgsmaptooleditmeshframe.cpp" line="1863"/>
@@ -124552,7 +124552,7 @@ Rasterizing map is recommended for proper rendering.</source>
     <message>
         <location filename="../src/app/qgsmaptooloffsetcurve.cpp" line="119"/>
         <source>Could not find a nearby feature in any vector layer.</source>
-        <translation>在任何矢量图层中均找不到临近要素。</translation>
+        <translation>无法在所有矢量图层中找到临近要素。</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooloffsetcurve.cpp" line="334"/>
@@ -134824,7 +134824,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
         <source>Coordinate transformations and operations</source>
-        <translation>坐标变换和操作</translation>
+        <translation>坐标变换和运算</translation>
     </message>
     <message>
         <location filename="../src/app/options/qgsoptions.cpp" line="113"/>
@@ -136852,14 +136852,14 @@ SQL: %2</translation>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;b&gt;Only list the existing geometry types and don't offer to add others.&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;b&gt;仅列出现有几何图形类型，不提供添加其他类型。&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;设置图层时，Oracle表需要各种元数据。这包括如表行数、几何图形类型和几何图形列中数据的空间范围等信息。如果表包含大量行，则此元数据将很耗时。&lt;/p&gt;&lt;p&gt;激活此选项，可以快速完成以下表元数据操作:&lt;/p&gt;&lt;p&gt;1) 行数由 all_tables.num_rows 确定。&lt;/p&gt;&lt;p&gt;2) 即使应用了图层过滤，表范围也始终由 SDO_TUNE.EXTENTS_OF 函数决定。&lt;/p&gt;&lt;p&gt;3) 表几何图形由表中的前100个非空几何图形行确定。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p&gt;设置图层时，Oracle表需要各种元数据。这包括如表行数、几何图形类型和几何图形列中数据的空间范围等信息。如果表包含大量行，则此元数据将很耗时。&lt;/p&gt;&lt;p&gt;激活此选项，可以快速完成以下表元数据运算:&lt;/p&gt;&lt;p&gt;1) 行数由 all_tables.num_rows 确定。&lt;/p&gt;&lt;p&gt;2) 即使应用了图层过滤，表范围也始终由 SDO_TUNE.EXTENTS_OF 函数决定。&lt;/p&gt;&lt;p&gt;3) 表几何图形由表中的前100个非空几何图形行确定。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;b&gt;Use estimated table statistics for the layer metadata.&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;b&gt;对图层元数据使用预估的表统计信息。&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;设置图层时，Oracle表需要各种元数据。这包括如表行数、几何图形类型和几何图形列中数据的空间范围等信息。如果表包含大量行，则此元数据将很耗时。&lt;/p&gt;&lt;p&gt;激活此选项，可以快速完成以下表元数据操作:&lt;/p&gt;&lt;p&gt;1) 行数由 all_tables.num_rows 确定。&lt;/p&gt;&lt;p&gt;2) 即使应用了图层过滤，表范围也始终由 SDO_TUNE.EXTENTS_OF 函数决定。&lt;/p&gt;&lt;p&gt;3) 表几何图形由表中的前100个非空几何图形行确定。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p&gt;设置图层时，Oracle表需要各种元数据。这包括如表行数、几何图形类型和几何图形列中数据的空间范围等信息。如果表包含大量行，则此元数据将很耗时。&lt;/p&gt;&lt;p&gt;激活此选项，可以快速完成以下表元数据运算:&lt;/p&gt;&lt;p&gt;1) 行数由 all_tables.num_rows 确定。&lt;/p&gt;&lt;p&gt;2) 即使应用了图层过滤，表范围也始终由 SDO_TUNE.EXTENTS_OF 函数决定。&lt;/p&gt;&lt;p&gt;3) 表几何图形由表中的前100个非空几何图形行确定。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -137921,7 +137921,7 @@ Should the existing classes be deleted?</source>
     <message>
         <location filename="../src/ui/qgspalettedrendererwidgetbase.ui"/>
         <source>Remove selected row(s)</source>
-        <translation>移除选中的行</translation>
+        <translation>移除所选行</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspalettedrendererwidgetbase.ui"/>
@@ -138462,7 +138462,7 @@ b）在配置标签页中添加 HTTP 基本认证凭据并保存到加密的数�
 &lt;body&gt;
 &lt;p&gt;&lt;b&gt;对图层元数据使用预估的表统计信息。&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;设置图层时，PostGIS表需要各种元数据。这包括表行数、几何图形类型和几何图形列中数据的空间范围等信息。如果表包含大量行，则算出此元数据将很耗时。&lt;/p&gt;
-&lt;p&gt;通过激活该选项，可以完成以下快速表元数据操作：&lt;/p&gt;
+&lt;p&gt;通过激活该选项，可以完成以下快速表元数据运算：&lt;/p&gt;
 &lt;p&gt;1) 行数是根据在表中运行PostgreSQL分析函数的结果而确定。&lt;/p&gt;
 &lt;p&gt;2) 即使应用了图层过滤，表范围也始终由 estimated_extent PostGIS 函数确定。&lt;/p&gt;
 &lt;p&gt;3) 如果表几何图形类型未知，且不完全取自 geometry_columns 表，则从表的前100个非空几何图形行中确定。&lt;/p&gt;
@@ -142470,7 +142470,7 @@ SQL：%2
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="173"/>
         <source>Move Project to Schema…</source>
-        <translation>将工程移动到架构…</translation>
+        <translation>将工程移到架构…</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitemguiprovider.cpp" line="258"/>
@@ -148869,7 +148869,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
         <source>Coordinate transformations and operations</source>
-        <translation>坐标变换和操作</translation>
+        <translation>坐标变换和运算</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui"/>
@@ -150341,7 +150341,7 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;检索矢量文件中的&lt;span style=&quot; font-weight:600;&quot;&gt;所有&lt;/span&gt;记录（&lt;span style=&quot; font-style:italic;&quot;&gt;若表格很大，操作会花上一些时间&lt;/span&gt;）&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;检索矢量文件中的&lt;span style=&quot; font-weight:600;&quot;&gt;所有&lt;/span&gt;记录（&lt;span style=&quot; font-style:italic;&quot;&gt;若表很大，运算会花上一些时间&lt;/span&gt;）&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui"/>
@@ -153792,7 +153792,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui"/>
         <source>Remove selected row</source>
-        <translation>移除选中的行</translation>
+        <translation>移除所选行</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui"/>
@@ -154409,7 +154409,7 @@ standard de&amp;viation ×</source>
     <message>
         <location filename="../src/ui/raster/qgsrastertransparencywidget.ui"/>
         <source>Remove selected row</source>
-        <translation>移除选中的行</translation>
+        <translation>移除所选行</translation>
     </message>
     <message>
         <location filename="../src/ui/raster/qgsrastertransparencywidget.ui"/>
@@ -156659,7 +156659,7 @@ features are found</source>
     <message>
         <location filename="../src/gui/symbology/qgsrulebasedrendererwidget.cpp" line="321"/>
         <source>Parent rule %1 must have a symbol for this operation.</source>
-        <translation>父规则%1必须含有针对该操作的符号。</translation>
+        <translation>父规则%1必须含有针对该运算的符号。</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsrulebasedrendererwidget.cpp" line="321"/>
@@ -160970,12 +160970,12 @@ please provide a new name:</source>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="789"/>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="795"/>
         <source>Paste Label Settings</source>
-        <translation type="unfinished"/>
+        <translation>粘贴标注设置</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="795"/>
         <source>A label setting with the name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation type="unfinished"/>
+        <translation>已存在名称为 &apos;%1&apos; 的标标注设置。是否盖写？</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="816"/>
@@ -167199,7 +167199,7 @@ Error was: %2</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerdigitizingproperties.ui"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The geometry precision defines the maximum precision of geometry coordinates that should be stored on this layer. A snap to grid algorithm will be applied on every geometry entering this layer, resulting in coordinates being rounded to multiples of this value. The operation is applied in this layer&apos;s coordinate reference system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;几何图形精度定义了存储在该图层上的几何图形坐标的最大精度。捕捉到网格的算法将被应用到每一个加入该图层的几何图形，并将坐标四舍五入为该值的倍数。该操作被应用于此图层的坐标参照系。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;几何图形精度定义了存储在该图层上的几何图形坐标的最大精度。捕捉到网格的算法将被应用到每一个加入该图层的几何图形，并将坐标四舍五入为该值的倍数。该运算被应用于此图层的坐标参照系。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -169720,7 +169720,7 @@ Error was: %2</source>
     <message>
         <location filename="../src/core/vectortile/qgsvectortilewriter.cpp" line="195"/>
         <source>Operation has been canceled</source>
-        <translation>操作被取消</translation>
+        <translation>运算已取消</translation>
     </message>
     <message>
         <location filename="../src/core/vectortile/qgsvectortilewriter.cpp" line="265"/>
@@ -171558,12 +171558,12 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1030"/>
         <source>Operation request contains an output CRS that can not be used within the output format.</source>
-        <translation>操作请求包含无法在输出格式中使用的输出CRS。</translation>
+        <translation>运算请求包含无法在输出格式中使用的输出CRS。</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1031"/>
         <source>Operation request specifies to &quot;store&quot; the result, but not enough storage is available to do this.</source>
-        <translation>操作请求指定“储存”结果，但没有足够的存储空间执行此操作。</translation>
+        <translation>运算请求指定“储存”结果，但没有足够的存储空间执行此操作。</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1057"/>
@@ -172443,7 +172443,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2133"/>
         <source>Request is for an optional operation that is not supported by the server.</source>
-        <translation>请求了一个服务器不支持的可选操作。</translation>
+        <translation>请求了一个服务器不支持的可选运算。</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2139"/>
@@ -178675,11 +178675,11 @@ Check the processing framework log to look for errors.</source>
     </message>
     <message>
         <source>Assign new value as result of operation on columns to column in attribute table</source>
-        <translation>给属性表中的列分配新的值，作为列操作的结果</translation>
+        <translation>给属性表中的列分配新的值，作为列运算的结果</translation>
     </message>
     <message>
         <source>Assign new value to column as result of operation on columns only if the result of query is TRUE</source>
-        <translation>仅在查询结果为真时给列分配新的值，作为列操作的结果</translation>
+        <translation>仅在查询结果为真时给列分配新的值，作为列运算的结果</translation>
     </message>
     <message>
         <source>Assigns a color table from an existing raster or raster3d map to each raster map of the space time raster dataset</source>

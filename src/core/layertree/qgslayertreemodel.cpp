@@ -663,14 +663,9 @@ void QgsLayerTreeModel::setFilterSettings( const QgsLayerTreeFilterSettings *set
       hitTestWasRunning = true;
     }
 
-    std::unique_ptr< QgsMapHitTest > blockingHitTest;
     if ( mFlags & QgsLayerTreeModel::Flag::UseThreadedHitTest )
-      mHitTestTask = new QgsMapHitTestTask( *mFilterSettings );
-    else
-      blockingHitTest = std::make_unique< QgsMapHitTest >( *mFilterSettings );
-
-    if ( mHitTestTask )
     {
+      mHitTestTask = new QgsMapHitTestTask( *mFilterSettings );
       connect( mHitTestTask, &QgsTask::taskCompleted, this, &QgsLayerTreeModel::hitTestTaskCompleted );
       QgsApplication::taskManager()->addTask( mHitTestTask );
 
@@ -679,6 +674,7 @@ void QgsLayerTreeModel::setFilterSettings( const QgsLayerTreeFilterSettings *set
     }
     else
     {
+      auto blockingHitTest = std::make_unique< QgsMapHitTest >( *mFilterSettings );
       blockingHitTest->run();
       mHitTestResults = blockingHitTest->results();
       handleHitTestResults();

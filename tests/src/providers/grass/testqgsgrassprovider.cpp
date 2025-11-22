@@ -820,7 +820,7 @@ void TestQgsGrassProvider::rasterImport()
     int newXSize = provider->xSize();
     int newYSize = provider->ySize();
 
-    QgsRasterPipe *pipe = new QgsRasterPipe();
+    auto pipe = std::make_unique< QgsRasterPipe >();
     pipe->set( provider );
 
     QgsCoordinateReferenceSystem providerCrs = provider->crs();
@@ -836,7 +836,7 @@ void TestQgsGrassProvider::rasterImport()
     }
 
     QgsGrassObject rasterObject( tmpGisdbase, tmpLocation, tmpMapset, name, QgsGrassObject::Raster );
-    QgsGrassRasterImport *import = new QgsGrassRasterImport( pipe, rasterObject, newExtent, newXSize, newYSize );
+    QgsGrassRasterImport *import = new QgsGrassRasterImport( std::move( pipe ), rasterObject, newExtent, newXSize, newYSize );
     if ( !import->import() )
     {
       reportRow( "import failed: " + import->error() );

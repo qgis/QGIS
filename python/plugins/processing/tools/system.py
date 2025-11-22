@@ -42,9 +42,6 @@ def userFolder():
 
 def defaultOutputFolder():
     folder = os.path.join(QDir.homePath(), "processing")
-    if not QDir(folder).exists():
-        QDir().mkpath(folder)
-
     return str(QDir.toNativeSeparators(folder))
 
 

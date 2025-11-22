@@ -47,7 +47,7 @@ QgsRasterLayerLabelProvider::~QgsRasterLayerLabelProvider()
 void QgsRasterLayerLabelProvider::addLabel( const QgsPoint &mapPoint, const QString &text, QgsRenderContext &context )
 {
   QgsPoint geom = mapPoint;
-  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( { text }, mFormat );
+  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( text.split( "\n" ), mFormat );
   QgsTextDocumentMetrics documentMetrics = QgsTextDocumentMetrics::calculateMetrics( doc, mFormat, context );
   const QSizeF size = documentMetrics.documentSize( Qgis::TextLayoutMode::Point, Qgis::TextOrientation::Horizontal );
 
@@ -239,7 +239,8 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
 
   iterator.startRasterRead( mBandNumber, subRegionWidth, subRegionHeight, rasterSubRegion, feedback );
 
-  const QgsNumericFormatContext numericContext;
+  QgsNumericFormatContext numericContext;
+  numericContext.setExpressionContext( context.expressionContext() );
   QgsNumericFormat *numericFormat = mNumericFormat.get();
 
   int iterLeft = 0;

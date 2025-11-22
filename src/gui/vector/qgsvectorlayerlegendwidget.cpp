@@ -115,7 +115,7 @@ void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
 
-  QgsDefaultVectorLayerLegend *legend = qobject_cast<QgsDefaultVectorLayerLegend *>( layer->legend() );
+  QgsDefaultVectorLayerLegend *legend = layer ? qobject_cast<QgsDefaultVectorLayerLegend *>( layer->legend() ) : nullptr;
   if ( !legend )
     return;
 
@@ -124,10 +124,7 @@ void QgsVectorLayerLegendWidget::setLayer( QgsVectorLayer *layer )
   mTextOnSymbolGroupBox->setChecked( legend->textOnSymbolEnabled() );
   mTextOnSymbolFormatButton->setTextFormat( legend->textOnSymbolTextFormat() );
   populateLegendTreeView( legend->textOnSymbolContent() );
-  if ( mLayer )
-  {
-    mImageSourceLineEdit->setSource( mLayer->legendPlaceholderImage() );
-  }
+  mImageSourceLineEdit->setSource( mLayer->legendPlaceholderImage() );
 }
 
 void QgsVectorLayerLegendWidget::populateLabelLegendTreeWidget()

@@ -458,7 +458,7 @@ void QgsProjectStyleSettings::loadStyleAtPath( const QString &path )
   if ( fileInfo.suffix().compare( QLatin1String( "xml" ), Qt::CaseInsensitive ) == 0 )
   {
     style->createMemoryDatabase();
-    style->importXml( path );
+    ( void )style->importXml( path );
     style->setFileName( path );
     style->setReadOnly( true );
   }

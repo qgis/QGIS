@@ -297,8 +297,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
 QStringList QgsGeometrySelfIntersectionCheck::resolutionMethods() const
 {
   static const QStringList methods = QStringList()
-                                     << tr( "Split feature into a multi-object feature" )
-                                     << tr( "Split feature into multiple single-object features" )
+                                     << tr( "Split feature into a multi-part feature" )
+                                     << tr( "Split feature into multiple single-part features" )
                                      << tr( "No action" );
   return methods;
 }

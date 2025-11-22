@@ -158,12 +158,6 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
         request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
 
       std::unique_ptr<QgsGeometryEngine> engine;
-      if ( !intersects.isEmpty() )
-      {
-        // use prepared geometries for faster intersection tests
-        engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
-        engine->prepareGeometry();
-      }
 
       QVector<QgsGeometry> geometriesB;
       QgsFeature featB;
@@ -173,6 +167,12 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
         if ( feedback->isCanceled() )
           break;
 
+        if ( !engine )
+        {
+          // use prepared geometries for faster intersection tests
+          engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
+          engine->prepareGeometry();
+        }
         if ( engine->intersects( featB.geometry().constGet() ) )
           geometriesB << featB.geometry();
       }

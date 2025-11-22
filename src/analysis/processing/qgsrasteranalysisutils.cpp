@@ -57,11 +57,10 @@ void QgsRasterAnalysisUtils::cellInfoForBBox( const QgsRectangle &rasterBBox, co
 
 void QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( QgsRasterInterface *rasterInterface, int rasterBand, const QgsGeometry &poly, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, const std::function<void( double, const QgsPointXY & )> &addValue, bool skipNodata )
 {
-  auto polyEngine = std::make_unique<QgsGeos>( poly.constGet() );
-  if ( !polyEngine )
-  {
+  if ( !poly.constGet() )
     return;
-  }
+
+  auto polyEngine = std::make_unique<QgsGeos>( poly.constGet() );
   polyEngine->prepareGeometry();
 
   QgsRasterIterator iter( rasterInterface );

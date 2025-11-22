@@ -273,11 +273,9 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     /**
      * Entry point called from QgsLegendRenderer to do the rendering.
-     *  Default implementation calls drawSymbol() and drawSymbolText() methods.
-     *
-     *  If ctx is NULLPTR, this is just first stage when preparing layout - without actual rendering.
+     * Default implementation calls drawSymbol() and drawSymbolText() methods.
      */
-    virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
+    virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext &ctx );
 
     /**
      * Entry point called from QgsLegendRenderer to do the rendering in a
@@ -797,7 +795,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
 
     QVariant data( int role ) const override;
 
-    ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx ) override;
+    ItemMetrics draw( const QgsLegendSettings &settings, ItemContext &ctx ) override;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

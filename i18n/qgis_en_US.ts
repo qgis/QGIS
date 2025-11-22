@@ -97651,12 +97651,12 @@ Change the name of the script and save to allow QGIS to auto load on startup.</t
     <message>
         <location filename="../src/gui/vector/qgsfieldcalculator.cpp" line="228"/>
         <source>Read-only layer</source>
-        <translation type="unfinished"/>
+        <translation>Read-only layer</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsfieldcalculator.cpp" line="228"/>
         <source>The layer was marked read-only in the project properties and cannot be edited.</source>
-        <translation type="unfinished"/>
+        <translation>The layer was marked read-only in the project properties and cannot be edited.</translation>
     </message>
     <message>
         <location filename="../src/gui/vector/qgsfieldcalculator.cpp" line="264"/>
@@ -161008,12 +161008,12 @@ please provide a new name:</translation>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="789"/>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="795"/>
         <source>Paste Label Settings</source>
-        <translation type="unfinished"/>
+        <translation>Paste Label Settings</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="795"/>
         <source>A label setting with the name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation type="unfinished"/>
+        <translation>A label setting with the name &apos;%1&apos; already exists. Overwrite?</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="816"/>

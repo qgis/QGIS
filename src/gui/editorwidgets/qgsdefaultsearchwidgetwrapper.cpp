@@ -22,6 +22,7 @@
 #include "qgsfieldvalueslineedit.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"
+#include "qgsdoublevalidator.h"
 
 #include <QHBoxLayout>
 
@@ -55,21 +56,30 @@ void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
 
 void QgsDefaultSearchWidgetWrapper::setExpression( const QString &expression )
 {
-  const QMetaType::Type fldType = layer()->fields().at( mFieldIdx ).type();
-  const bool numeric = ( fldType == QMetaType::Type::Int || fldType == QMetaType::Type::Double || fldType == QMetaType::Type::LongLong );
-
-  QString exp = expression;
   const QString nullValue = QgsApplication::nullRepresentation();
   const QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
-  if ( exp == nullValue )
+  if ( expression == nullValue )
   {
     str = QStringLiteral( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
   }
   else
   {
+    QString exp = expression;
+    const QMetaType::Type fldType = layer()->fields().at( mFieldIdx ).type();
+    const bool isNumeric = QgsVariantUtils::isNumericType( fldType );
+
+    if ( isNumeric )
+    {
+      bool ok = false;
+      const double doubleValue = QgsDoubleValidator::toDouble( exp, &ok );
+      if ( ok )
+      {
+        exp = QString::number( doubleValue );
+      }
+    }
     str = QStringLiteral( "%1 %2 '%3'" )
-            .arg( QgsExpression::quotedColumnRef( fieldName ), numeric ? QStringLiteral( "=" ) : mCaseString, numeric ? exp.replace( '\'', QLatin1String( "''" ) ) : '%' + exp.replace( '\'', QLatin1String( "''" ) ) + '%' ); // escape quotes
+            .arg( QgsExpression::quotedColumnRef( fieldName ), isNumeric ? QStringLiteral( "=" ) : mCaseString, isNumeric ? exp.replace( '\'', QLatin1String( "''" ) ) : '%' + exp.replace( '\'', QLatin1String( "''" ) ) + '%' ); // escape quotes
   }
   mExpression = str;
 }
@@ -152,6 +162,19 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
   if ( flags & IsNotNull )
     return fieldName + " IS NOT NULL";
 
+  QString text = mLineEdit->text();
+
+  if ( QgsVariantUtils::isNumericType( fldType ) )
+  {
+    bool ok = false;
+    const double doubleValue = QgsDoubleValidator::toDouble( text, &ok );
+    if ( ok )
+    {
+      text = QString::number( doubleValue );
+      ;
+    }
+  }
+
   switch ( fldType )
   {
     case QMetaType::Type::Int:
@@ -161,17 +184,17 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
     case QMetaType::Type::ULongLong:
     {
       if ( flags & EqualTo )
-        return fieldName + '=' + mLineEdit->text();
+        return fieldName + '=' + text;
       else if ( flags & NotEqualTo )
-        return fieldName + "<>" + mLineEdit->text();
+        return fieldName + "<>" + text;
       else if ( flags & GreaterThan )
-        return fieldName + '>' + mLineEdit->text();
+        return fieldName + '>' + text;
       else if ( flags & LessThan )
-        return fieldName + '<' + mLineEdit->text();
+        return fieldName + '<' + text;
       else if ( flags & GreaterThanOrEqualTo )
-        return fieldName + ">=" + mLineEdit->text();
+        return fieldName + ">=" + text;
       else if ( flags & LessThanOrEqualTo )
-        return fieldName + "<=" + mLineEdit->text();
+        return fieldName + "<=" + text;
       break;
     }
 
@@ -180,17 +203,17 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
     case QMetaType::Type::QTime:
     {
       if ( flags & EqualTo )
-        return fieldName + "='" + mLineEdit->text() + '\'';
+        return fieldName + "='" + text + '\'';
       else if ( flags & NotEqualTo )
-        return fieldName + "<>'" + mLineEdit->text() + '\'';
+        return fieldName + "<>'" + text + '\'';
       else if ( flags & GreaterThan )
-        return fieldName + ">'" + mLineEdit->text() + '\'';
+        return fieldName + ">'" + text + '\'';
       else if ( flags & LessThan )
-        return fieldName + "<'" + mLineEdit->text() + '\'';
+        return fieldName + "<'" + text + '\'';
       else if ( flags & GreaterThanOrEqualTo )
-        return fieldName + ">='" + mLineEdit->text() + '\'';
+        return fieldName + ">='" + text + '\'';
       else if ( flags & LessThanOrEqualTo )
-        return fieldName + "<='" + mLineEdit->text() + '\'';
+        return fieldName + "<='" + text + '\'';
       break;
     }
 

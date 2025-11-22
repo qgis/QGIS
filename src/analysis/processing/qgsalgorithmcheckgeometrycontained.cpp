@@ -64,7 +64,7 @@ QString QgsGeometryCheckContainedAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckContainedAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckContainedAlgorithm *QgsGeometryCheckContainedAlgorithm::createInstance() const
@@ -76,7 +76,6 @@ void QgsGeometryCheckContainedAlgorithm::initAlgorithm( const QVariantMap &confi
 {
   Q_UNUSED( configuration )
 
-  // inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
     QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint )
@@ -90,7 +89,6 @@ void QgsGeometryCheckContainedAlgorithm::initAlgorithm( const QVariantMap &confi
     QStringLiteral( "POLYGONS" ), QObject::tr( "Polygon layers" ), Qgis::ProcessingSourceType::VectorPolygon
   ) );
 
-  // outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "Errors from contained features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
@@ -139,7 +137,6 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
   if ( polygonLayers.isEmpty() )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "POLYGONS" ) ) );
 
-
   const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
   const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
@@ -163,9 +160,7 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
-  const QgsProject *project = QgsProject::instance();
-
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project(), uniqueIdFieldIdx );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
@@ -194,7 +189,19 @@ QVariantMap QgsGeometryCheckContainedAlgorithm::processAlgorithm( const QVariant
 
   multiStepFeedback.setCurrentStep( 2 );
   feedback->setProgressText( QObject::tr( "Collecting errors…" ) );
-  check.collectErrors( checkerFeaturePools, checkErrors, messages, feedback );
+  QgsGeometryCheck::Result res = check.collectErrors( checkerFeaturePools, checkErrors, messages, feedback );
+  if ( res == QgsGeometryCheck::Result::Success )
+  {
+    feedback->pushInfo( QObject::tr( "Errors collected successfully." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::Canceled )
+  {
+    throw QgsProcessingException( QObject::tr( "Operation was canceled." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::DuplicatedUniqueId )
+  {
+    throw QgsProcessingException( QObject::tr( "Field '%1' contains non-unique values and can not be used as unique ID." ).arg( uniqueIdFieldName ) );
+  }
 
   multiStepFeedback.setCurrentStep( 3 );
   feedback->setProgressText( QObject::tr( "Exporting errors…" ) );

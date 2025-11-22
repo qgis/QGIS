@@ -69,7 +69,6 @@ void QgsFixGeometryDuplicateNodesAlgorithm::initAlgorithm( const QVariantMap &co
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
   ) );
@@ -96,7 +95,6 @@ void QgsFixGeometryDuplicateNodesAlgorithm::initAlgorithm( const QVariantMap &co
     Qgis::ProcessingFieldParameterDataType::Numeric
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "Fixed duplicate vertices layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
   ) );
@@ -143,7 +141,7 @@ QVariantMap QgsFixGeometryDuplicateNodesAlgorithm::processAlgorithm( const QVari
   if ( inputIdFieldIndex == -1 )
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not exist in input layer." ).arg( featIdFieldName ) );
 
-  QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
+  const QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
   if ( inputFeatIdField.type() != errors->fields().at( errors->fields().indexFromName( featIdFieldName ) ).type() )
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
@@ -164,8 +162,7 @@ QVariantMap QgsFixGeometryDuplicateNodesAlgorithm::processAlgorithm( const QVari
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
-  const QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
   QStringList messages;
 
   const QgsGeometryDuplicateNodesCheck check( &checkContext, QVariantMap() );
@@ -270,7 +267,7 @@ bool QgsFixGeometryDuplicateNodesAlgorithm::prepareAlgorithm( const QVariantMap 
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryDuplicateNodesAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

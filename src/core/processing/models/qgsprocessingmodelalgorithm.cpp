@@ -363,7 +363,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QVariantMap finalResults;
 
   bool executedAlg = true;
-  int previousHtmlLogLength = feedback->htmlLog().length();
+  int previousHtmlLogLength = feedback ? feedback->htmlLog().length() : 0;
   int countExecuted = 0;
   while ( executedAlg && countExecuted < toExecute.count() )
   {
@@ -696,8 +696,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       }
 
       // trim out just the portion of the overall log which relates to this child
-      const QString thisAlgorithmHtmlLog = feedback->htmlLog().mid( previousHtmlLogLength );
-      previousHtmlLogLength = feedback->htmlLog().length();
+      const QString thisAlgorithmHtmlLog = feedback ? feedback->htmlLog().mid( previousHtmlLogLength ) : QString();
+      previousHtmlLogLength = feedback ? feedback->htmlLog().length() : 0;
 
       if ( !runResult )
       {

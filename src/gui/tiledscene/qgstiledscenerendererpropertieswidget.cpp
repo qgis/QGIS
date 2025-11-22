@@ -150,7 +150,10 @@ void QgsTiledSceneRendererPropertiesWidget::apply()
   else if ( !cboRenderers->currentData().toString().isEmpty() )
   {
     QDomElement elem;
-    mLayer->setRenderer( QgsApplication::tiledSceneRendererRegistry()->rendererMetadata( cboRenderers->currentData().toString() )->createRenderer( elem, QgsReadWriteContext() ) );
+    if ( QgsTiledSceneRendererAbstractMetadata *metadata = QgsApplication::tiledSceneRendererRegistry()->rendererMetadata( cboRenderers->currentData().toString() ) )
+    {
+      mLayer->setRenderer( metadata->createRenderer( elem, QgsReadWriteContext() ) );
+    }
   }
 
   mLayer->renderer()->setMaximumScreenError( mMaxErrorSpinBox->value() );

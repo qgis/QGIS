@@ -17527,7 +17527,7 @@ Shift+O, aby przekształcić odcinki w linie proste lub krzywe.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>Pans the map canvas to selected features</source>
-        <translation type="unfinished"/>
+        <translation>Przesuwa widok mapy do zaznaczonych obiektów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
@@ -22600,7 +22600,7 @@ Odległość jest określona w jednostkach warstwy, a orientacja w stopniach lic
     <message>
         <location filename="../src/core/expression/qgsexpressionutils.cpp" line="172"/>
         <source>Cannot convert &apos;%1&apos; to CRS</source>
-        <translation type="unfinished"/>
+        <translation>Nie można przekonwertować &apos;%1&apos; na układ współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/core/expression/qgsexpressionutils.cpp" line="368"/>
@@ -48207,7 +48207,7 @@ Podzbiór jest definiowany losowo, przy użyciu wartości procentowej lub liczni
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandomextract.cpp" line="171"/>
         <source>Adding selected features</source>
-        <translation type="unfinished"/>
+        <translation>Dodanie zaznaczonych obiektów</translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmrandompointsextent.cpp" line="34"/>
@@ -49544,7 +49544,7 @@ Uwzględniane są zarówno kodowanie określone w opcjonalnym pliku .cpg, jak i 
     <message numerus="yes">
         <location filename="../src/analysis/processing/qgsalgorithmsnapgeometries.cpp" line="171"/>
         <source>Snapped %n geometries.</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation><numerusform>Dociągnięto %n geometrię.</numerusform><numerusform>Dociągnięto %n geometrii.</numerusform><numerusform>Dociągnięto %n geometrii.</numerusform><numerusform>Dociągnięto %n geometrii.</numerusform></translation>
     </message>
     <message>
         <location filename="../src/analysis/processing/qgsalgorithmexporttopostgresql.cpp" line="38"/>
@@ -51241,7 +51241,7 @@ Usuń je przed jego usunięciem.</translation>
     <message>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="935"/>
         <source>Run Selected Steps…</source>
-        <translation type="unfinished"/>
+        <translation>Uruchom wybrane kroki…</translation>
     </message>
     <message>
         <location filename="../src/gui/processing/models/qgsmodelcomponentgraphicitem.cpp" line="940"/>
@@ -58986,7 +58986,7 @@ Prosimy o kontakt z autorami.
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="8659"/>
         <source>%n feature(s) on layer &quot;%1&quot;, </source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation><numerusform>%n obiekt na warstwie &quot;%1&quot;,</numerusform><numerusform>%n obiektów na warstwie &quot;%1&quot;,</numerusform><numerusform>%n obiektów na warstwie &quot;%1&quot;,</numerusform><numerusform>%n obiektów na warstwie &quot;%1&quot;,</numerusform></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8679"/>
@@ -71639,7 +71639,7 @@ Description: %3</source>
     <message>
         <location filename="../src/ui/auth/qgsauthserverseditor.ui"/>
         <source>Edit selected server certificate configuration</source>
-        <translation type="unfinished"/>
+        <translation>Edytuj wybraną konfigurację serwera uwierzytelnianiającego</translation>
     </message>
     <message>
         <location filename="../src/ui/auth/qgsauthserverseditor.ui"/>
@@ -77661,7 +77661,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
         <source>Selected features only</source>
-        <translation type="unfinished"/>
+        <translation>Tylko zaznaczone obiekty</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
@@ -77726,7 +77726,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
         <source>Delete selected field</source>
-        <translation type="unfinished"/>
+        <translation>Usuń zaznaczone pole</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
@@ -77736,7 +77736,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
         <source>Move selected field up</source>
-        <translation type="unfinished"/>
+        <translation>Przesuń wybrane pole wyżej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
@@ -77746,7 +77746,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
         <source>Move selected field down</source>
-        <translation type="unfinished"/>
+        <translation>Przesuń wybrane pole niżej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbimportvectorlayerdialog.ui"/>
@@ -104726,7 +104726,7 @@ w wierszu %2 kolumnie %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmoduleinput.cpp" line="1247"/>
         <source>geometry type not selected</source>
-        <translation type="unfinished"/>
+        <translation>nie wybrano typu geometrii</translation>
     </message>
 </context>
 <context>

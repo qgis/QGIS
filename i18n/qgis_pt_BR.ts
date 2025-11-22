@@ -16479,7 +16479,7 @@ Please, check that GRASS is correctly installed and available on your system.</s
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>Add Delimited Text Layer</source>
-        <translation>Adicionar uma Camada de Texto Delimitado</translation>
+        <translation>Adicionar Camada de Texto Delimitado</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
@@ -17438,7 +17438,7 @@ Mostra as localizações para etiquetas que não puderam ser mostradas, p.ex., e
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>Add MS SQL Server Layer…</source>
-        <translation>Adicionar camada MS SQL Server</translation>
+        <translation>Adicionar camada MS SQL Server...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
@@ -17575,7 +17575,7 @@ Shift+click on existing inner ring to fill.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>
         <source>Add GPX Layer...</source>
-        <translation>Adicionar Camada GPX</translation>
+        <translation>Adicionar Camada GPX...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui"/>

@@ -59799,7 +59799,7 @@ Delete these features?</source>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="8677"/>
         <source>&lt;b&gt;%n&lt;/b&gt; selected feature(s) are about to be deleted. Would you like to continue?</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation><numerusform>Olet poistamassa &lt;b&gt;%n&lt;/b&gt; valittua kohdetta. Haluatko jatkaa?</numerusform><numerusform>Olet poistamassa &lt;b&gt;%n&lt;/b&gt; valittua kohdetta. Haluatko jatkaa?</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="8697"/>

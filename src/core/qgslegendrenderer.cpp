@@ -960,7 +960,7 @@ QgsLegendRenderer::LegendComponent QgsLegendRenderer::drawSymbolItem( QgsLayerTr
 
   ctx.patchSize = symbolItem->userPatchSize();
 
-  QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, &ctx );
+  QgsLayerTreeModelLegendNode::ItemMetrics im = symbolItem->draw( mSettings, ctx );
 
   if ( symbolScope )
     delete context.expressionContext().popScope();

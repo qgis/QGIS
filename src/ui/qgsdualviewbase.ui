@@ -390,7 +390,7 @@
    </action>
    <action name="mActionPreviewColumnsMenu">
     <property name="text">
-     <string>Column Preview</string>
+     <string>Columns</string>
     </property>
    </action>
   </widget>

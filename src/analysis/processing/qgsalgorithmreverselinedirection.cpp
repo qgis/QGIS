@@ -105,9 +105,8 @@ QgsFeatureList QgsReverseLineDirectionAlgorithm ::processFeature( const QgsFeatu
     }
     else
     {
-      std::unique_ptr<QgsAbstractGeometry> dest( geom.constGet()->createEmptyWithSameType() );
-      const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom.constGet() );
-      QgsGeometryCollection *destCollection = qgsgeometry_cast<QgsGeometryCollection *>( dest.get() );
+      const QgsGeometryCollection *collection = qgis::down_cast<const QgsGeometryCollection *>( geom.constGet() );
+      std::unique_ptr<QgsGeometryCollection> destCollection( collection->createEmptyWithSameType() );
       destCollection->reserve( collection->numGeometries() );
       for ( int i = 0; i < collection->numGeometries(); ++i )
       {
@@ -123,7 +122,7 @@ QgsFeatureList QgsReverseLineDirectionAlgorithm ::processFeature( const QgsFeatu
           destCollection->addGeometry( reversed.release() );
         }
       }
-      const QgsGeometry outGeom( std::move( dest ) );
+      const QgsGeometry outGeom( std::move( destCollection ) );
       feature.setGeometry( outGeom );
     }
   }

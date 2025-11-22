@@ -125246,7 +125246,7 @@ Rasterizing map is recommended for proper rendering.</source>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="188"/>
         <source>Reshape</source>
-        <translation>再形成する</translation>
+        <translation>変形</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="200"/>
@@ -125256,7 +125256,7 @@ Rasterizing map is recommended for proper rendering.</source>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="208"/>
         <source>The feature cannot be reshaped because the resulting geometry is empty</source>
-        <translation>結果のジオメトリが空であるため地物を再形成できません</translation>
+        <translation>結果のジオメトリが空であるため地物を変形できません</translation>
     </message>
 </context>
 <context>
@@ -161541,12 +161541,12 @@ please provide a new name:</source>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="789"/>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="795"/>
         <source>Paste Label Settings</source>
-        <translation type="unfinished"/>
+        <translation>ラベル設定を貼り付け</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="795"/>
         <source>A label setting with the name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation type="unfinished"/>
+        <translation>%1 というラベル設定は存在します。上書きしますか？</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology/qgsstylemanagerdialog.cpp" line="816"/>

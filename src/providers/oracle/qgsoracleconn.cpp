@@ -212,7 +212,7 @@ void QgsOracleConn::reconnect()
   if ( mDatabase.isOpen() )
   {
     mDatabase.close();
-    mDatabase.open();
+    ( void ) mDatabase.open();
   }
 }
 

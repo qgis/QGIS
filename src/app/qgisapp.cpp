@@ -11313,6 +11313,9 @@ void QgisApp::updateLayerModifiedActions()
 
 QList<QgsMapLayer *> QgisApp::editableLayers( bool modified, bool ignoreLayersWhichCannotBeToggled ) const
 {
+  if ( !mLayerTreeView )
+    return {};
+
   QList<QgsMapLayer *> editLayers;
   // use legend layers (instead of registry) so QList mirrors its order
   const auto constFindLayers = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();
@@ -14730,7 +14733,7 @@ void QgisApp::selectionChanged( const QgsFeatureIds &, const QgsFeatureIds &, bo
             request.setFlags( request.flags() | Qgis::FeatureRequestFlag::NoGeometry );
 
           QgsFeature feat;
-          QgsFeatureIterator featureIt = vlayer->getSelectedFeatures( request );
+          QgsFeatureIterator featureIt = vlayer->getSelectedFeatures( std::move( request ) );
           while ( featureIt.nextFeature( feat ) )
           {
             context.setFeature( feat );

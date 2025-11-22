@@ -238,7 +238,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
       }
     }
 
-    if ( !sql.isEmpty() )
+    if ( !sql.isEmpty() && mConn )
     {
       mOrderByCompiled = true;
 
@@ -628,7 +628,7 @@ void QgsOgrFeatureIterator::resetReading()
   {
     return;
   }
-  if ( !mSource->mCanDriverShareSameDatasetAmongLayers )
+  if ( mConn && !mSource->mCanDriverShareSameDatasetAmongLayers )
   {
     GDALDatasetResetReading( mConn->ds );
   }

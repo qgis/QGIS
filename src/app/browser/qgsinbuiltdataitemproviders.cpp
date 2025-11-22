@@ -1895,7 +1895,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
 
-        QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( conn2.get() );
+        QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( conn2.release() );
 
         if ( dlg->exec() == QDialog::Accepted )
         {
@@ -2614,7 +2614,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
           QPointer<QgsDataItem> itemWeakPointer( item );
 
-          connect( deleteRelationshipAction, &QAction::triggered, this, [relation, md, connectionUri, itemWeakPointer, context] {
+          connect( deleteRelationshipAction, &QAction::triggered, this, [relation, md, connectionUri, itemWeakPointer = std::move( itemWeakPointer ), context] {
             if ( QMessageBox::question( nullptr, tr( "Delete Relationship" ), tr( "Are you sure you want to delete the %1 relationship?" ).arg( relation.name() ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
             {
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };

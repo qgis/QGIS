@@ -241,27 +241,30 @@ void QgsAttributeFormEditorWidget::updateWidgets()
       // for this field.
       // if the field is always read only regardless of the feature, no need to dig further. But otherwise
       // we may need to test editability for the actual selected features...
-      const int fieldIndex = mEditorWidget->fieldIdx();
-      shouldShowMultiEditButton = !QgsVectorLayerUtils::fieldIsReadOnly( layer(), fieldIndex );
-      if ( shouldShowMultiEditButton )
+      if ( mEditorWidget )
       {
-        // depending on the field type, the editability of the field may vary feature by feature (e.g. for joined
-        // fields coming from joins without the upsert on edit capabilities).
-        // But this feature-by-feature check is EXPENSIVE!!! (see https://github.com/qgis/QGIS/issues/41366), so
-        // avoid it whenever we can...
-        const bool fieldEditabilityDependsOnFeature = QgsVectorLayerUtils::fieldEditabilityDependsOnFeature( layer(), fieldIndex );
-        if ( fieldEditabilityDependsOnFeature )
+        const int fieldIndex = mEditorWidget->fieldIdx();
+        shouldShowMultiEditButton = !QgsVectorLayerUtils::fieldIsReadOnly( layer(), fieldIndex );
+        if ( shouldShowMultiEditButton )
         {
-          QgsFeature feature;
-          QgsFeatureIterator it = layer()->getSelectedFeatures();
-          while ( it.nextFeature( feature ) )
+          // depending on the field type, the editability of the field may vary feature by feature (e.g. for joined
+          // fields coming from joins without the upsert on edit capabilities).
+          // But this feature-by-feature check is EXPENSIVE!!! (see https://github.com/qgis/QGIS/issues/41366), so
+          // avoid it whenever we can...
+          const bool fieldEditabilityDependsOnFeature = QgsVectorLayerUtils::fieldEditabilityDependsOnFeature( layer(), fieldIndex );
+          if ( fieldEditabilityDependsOnFeature )
           {
-            const bool isEditable = QgsVectorLayerUtils::fieldIsEditable( layer(), fieldIndex, feature );
-            if ( !isEditable )
+            QgsFeature feature;
+            QgsFeatureIterator it = layer()->getSelectedFeatures();
+            while ( it.nextFeature( feature ) )
             {
-              // as soon as we find one read-only feature for the field, we can break early...
-              shouldShowMultiEditButton = false;
-              break;
+              const bool isEditable = QgsVectorLayerUtils::fieldIsEditable( layer(), fieldIndex, feature );
+              if ( !isEditable )
+              {
+                // as soon as we find one read-only feature for the field, we can break early...
+                shouldShowMultiEditButton = false;
+                break;
+              }
             }
           }
         }

@@ -227,10 +227,11 @@ bool QgsStyle::addSymbol( const QString &name, QgsSymbol *symbol, bool update )
     return false;
 
   // delete previous symbol (if any)
-  if ( mSymbols.contains( name ) )
+  auto it = mSymbols.constFind( name );
+  if ( it != mSymbols.constEnd() )
   {
     // TODO remove groups and tags?
-    delete mSymbols.value( name );
+    delete it.value();
     mSymbols.insert( name, symbol );
     if ( update )
       updateSymbol( SymbolEntity, name );
@@ -349,10 +350,11 @@ bool QgsStyle::addColorRamp( const QString &name, QgsColorRamp *colorRamp, bool 
     return false;
 
   // delete previous color ramps (if any)
-  if ( mColorRamps.contains( name ) )
+  auto it = mColorRamps.constFind( name );
+  if ( it != mColorRamps.constEnd() )
   {
     // TODO remove groups and tags?
-    delete mColorRamps.value( name );
+    delete it.value();
     mColorRamps.insert( name, colorRamp );
     if ( update )
       updateSymbol( ColorrampEntity, name );
@@ -370,10 +372,11 @@ bool QgsStyle::addColorRamp( const QString &name, QgsColorRamp *colorRamp, bool 
 bool QgsStyle::addTextFormat( const QString &name, const QgsTextFormat &format, bool update )
 {
   // delete previous text format (if any)
-  if ( mTextFormats.contains( name ) )
+  auto it = mTextFormats.find( name );
+  if ( it != mTextFormats.end() )
   {
     // TODO remove groups and tags?
-    mTextFormats.remove( name );
+    mTextFormats.erase( it );
     mTextFormats.insert( name, format );
     if ( update )
       updateSymbol( TextFormatEntity, name );
@@ -391,10 +394,11 @@ bool QgsStyle::addTextFormat( const QString &name, const QgsTextFormat &format, 
 bool QgsStyle::addLabelSettings( const QString &name, const QgsPalLayerSettings &settings, bool update )
 {
   // delete previous label settings (if any)
-  if ( mLabelSettings.contains( name ) )
+  auto it = mLabelSettings.find( name );
+  if ( it != mLabelSettings.end() )
   {
     // TODO remove groups and tags?
-    mLabelSettings.remove( name );
+    mLabelSettings.erase( it );
     mLabelSettings.insert( name, settings );
     if ( update )
       updateSymbol( LabelSettingsEntity, name );
@@ -412,10 +416,11 @@ bool QgsStyle::addLabelSettings( const QString &name, const QgsPalLayerSettings 
 bool QgsStyle::addLegendPatchShape( const QString &name, const QgsLegendPatchShape &shape, bool update )
 {
   // delete previous legend patch shape (if any)
-  if ( mLegendPatchShapes.contains( name ) )
+  auto it = mLegendPatchShapes.find( name );
+  if ( it != mLegendPatchShapes.end() )
   {
     // TODO remove groups and tags?
-    mLegendPatchShapes.remove( name );
+    mLegendPatchShapes.erase( it );
     mLegendPatchShapes.insert( name, shape );
     if ( update )
       updateSymbol( LegendPatchShapeEntity, name );
@@ -433,10 +438,11 @@ bool QgsStyle::addLegendPatchShape( const QString &name, const QgsLegendPatchSha
 bool QgsStyle::addSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol, bool update )
 {
   // delete previous symbol (if any)
-  if ( m3dSymbols.contains( name ) )
+  auto it = m3dSymbols.constFind( name );
+  if ( it != m3dSymbols.constEnd() )
   {
     // TODO remove groups and tags?
-    delete m3dSymbols.take( name );
+    delete it.value();
     m3dSymbols.insert( name, symbol );
     if ( update )
       updateSymbol( Symbol3DEntity, name );
@@ -1192,8 +1198,9 @@ QgsLegendPatchShape QgsStyle::defaultPatch( Qgis::SymbolType type, QSizeF size )
   if ( type == Qgis::SymbolType::Hybrid )
     return QgsLegendPatchShape();
 
-  if ( mDefaultPatchCache[ static_cast< int >( type ) ].contains( size ) )
-    return mDefaultPatchCache[ static_cast< int >( type ) ].value( size );
+  auto it = mDefaultPatchCache[ static_cast< int >( type ) ].constFind( size );
+  if ( it != mDefaultPatchCache[ static_cast< int >( type ) ].constEnd() )
+    return it.value();
 
   QgsGeometry geom;
   switch ( type )
@@ -1234,8 +1241,9 @@ QList<QList<QPolygonF> > QgsStyle::defaultPatchAsQPolygonF( Qgis::SymbolType typ
   if ( type == Qgis::SymbolType::Hybrid )
     return QList<QList<QPolygonF> >();
 
-  if ( mDefaultPatchQPolygonFCache[ static_cast< int >( type ) ].contains( size ) )
-    return mDefaultPatchQPolygonFCache[ static_cast< int >( type ) ].value( size );
+  auto it = mDefaultPatchQPolygonFCache[ static_cast< int >( type ) ].constFind( size );
+  if ( it != mDefaultPatchQPolygonFCache[ static_cast< int >( type ) ].constEnd() )
+    return it.value();
 
   QList<QList<QPolygonF> > res = defaultPatch( type, size ).toQPolygonF( type, size );
   mDefaultPatchQPolygonFCache[ static_cast< int >( type ) ][size ] = res;
@@ -1568,28 +1576,31 @@ bool QgsStyle::removeEntityByName( QgsStyle::StyleEntity type, const QString &na
 
     case QgsStyle::TextFormatEntity:
     {
-      if ( !mTextFormats.contains( name ) )
+      auto it = mTextFormats.find( name );
+      if ( it == mTextFormats.end() )
         return false;
 
-      mTextFormats.remove( name );
+      mTextFormats.erase( it );
       break;
     }
 
     case QgsStyle::LabelSettingsEntity:
     {
-      if ( !mLabelSettings.contains( name ) )
+      auto it = mLabelSettings.find( name );
+      if ( it == mLabelSettings.end() )
         return false;
 
-      mLabelSettings.remove( name );
+      mLabelSettings.erase( it );
       break;
     }
 
     case QgsStyle::LegendPatchShapeEntity:
     {
-      if ( !mLegendPatchShapes.contains( name ) )
+      auto it = mLegendPatchShapes.find( name );
+      if ( it == mLegendPatchShapes.end() )
         return false;
 
-      mLegendPatchShapes.remove( name );
+      mLegendPatchShapes.erase( it );
       break;
     }
   }
@@ -1950,9 +1961,12 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
       return QStringList();
 
     default:
-      if ( mCachedTags[ type ].contains( symbol ) )
-        return mCachedTags[ type ].value( symbol );
+    {
+      auto it = mCachedTags[ type ].constFind( symbol );
+      if ( it != mCachedTags[ type ].constEnd() )
+        return it.value();
       break;
+    }
   }
 
   if ( !mCurrentDB )
@@ -2007,9 +2021,12 @@ bool QgsStyle::isFavorite( QgsStyle::StyleEntity type, const QString &name )
       return false;
 
     default:
-      if ( mCachedFavorites[ type ].contains( name ) )
-        return mCachedFavorites[ type ].value( name );
+    {
+      auto it = mCachedFavorites[ type ].constFind( name );
+      if ( it != mCachedFavorites[ type ].constEnd() )
+        return it.value();
       break;
+    }
   }
 
   const QStringList names = allNames( type );
@@ -2187,15 +2204,19 @@ int QgsStyle::legendPatchShapesCount() const
 
 Qgis::SymbolType QgsStyle::legendPatchShapeSymbolType( const QString &name ) const
 {
-  if ( !mLegendPatchShapes.contains( name ) )
+  auto it = mLegendPatchShapes.constFind( name );
+  if ( it == mLegendPatchShapes.constEnd() )
     return Qgis::SymbolType::Hybrid;
 
-  return mLegendPatchShapes.value( name ).symbolType();
+  return it.value().symbolType();
 }
 
 QgsAbstract3DSymbol *QgsStyle::symbol3D( const QString &name ) const
 {
-  return m3dSymbols.contains( name ) ? m3dSymbols.value( name )->clone() : nullptr;
+  auto it = m3dSymbols.constFind( name );
+  if ( it != m3dSymbols.constEnd( ) )
+    return it.value()->clone();
+  return nullptr;
 }
 
 int QgsStyle::symbol3DCount() const
@@ -2205,18 +2226,20 @@ int QgsStyle::symbol3DCount() const
 
 QList<Qgis::GeometryType> QgsStyle::symbol3DCompatibleGeometryTypes( const QString &name ) const
 {
-  if ( !m3dSymbols.contains( name ) )
+  auto it = m3dSymbols.constFind( name );
+  if ( it == m3dSymbols.constEnd() )
     return QList<Qgis::GeometryType>();
 
-  return m3dSymbols.value( name )->compatibleGeometryTypes();
+  return it.value()->compatibleGeometryTypes();
 }
 
 Qgis::GeometryType QgsStyle::labelSettingsLayerType( const QString &name ) const
 {
-  if ( !mLabelSettings.contains( name ) )
+  auto it = mLabelSettings.constFind( name );
+  if ( it == mLabelSettings.constEnd() )
     return Qgis::GeometryType::Unknown;
 
-  return mLabelSettings.value( name ).layerType;
+  return it.value().layerType;
 }
 
 int QgsStyle::labelSettingsCount() const

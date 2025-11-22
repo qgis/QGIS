@@ -790,6 +790,9 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeItem::rootItem() const
 void QgsMeshDatasetGroupTreeItem::freeAsDependency()
 {
   QgsMeshDatasetGroupTreeItem *root = rootItem();
+  if ( !root )
+    return;
+
   for ( const int index : mDatasetGroupDependentOn )
   {
     QgsMeshDatasetGroupTreeItem *item = root->childFromDatasetGroupIndex( index );

@@ -253,7 +253,7 @@ void QgsLayoutMouseHandles::moveItem( QGraphicsItem *item, double deltaX, double
 
 void QgsLayoutMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
 {
-  QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+  QgsLayoutItem *layoutItem = qgis::down_cast<QgsLayoutItem *>( item );
   layoutItem->attemptSetSceneRect( rect, true );
 }
 

@@ -17,6 +17,7 @@
 #include "moc_qgsrangeconfigdlg.cpp"
 
 #include "qgsvectorlayer.h"
+#include "qgsrangewidgetwrapper.h"
 
 QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -159,7 +160,10 @@ void QgsRangeConfigDlg::setConfig( const QVariantMap &config )
   rangeWidget->setCurrentIndex( rangeWidget->findData( config.value( QStringLiteral( "Style" ), "SpinBox" ) ) );
   suffixLineEdit->setText( config.value( QStringLiteral( "Suffix" ) ).toString() );
   allowNullCheckBox->setChecked( config.value( QStringLiteral( "AllowNull" ), true ).toBool() );
-  precisionSpinBox->setValue( config.value( QStringLiteral( "Precision" ), layer()->fields().at( field() ).precision() ).toInt() );
+
+  const QgsField layerField = layer()->fields().at( field() );
+  const int fieldPrecision = QgsRangeWidgetWrapper::defaultFieldPrecision( layerField );
+  precisionSpinBox->setValue( config.value( QStringLiteral( "Precision" ), fieldPrecision ).toInt() );
 }
 
 void QgsRangeConfigDlg::rangeWidgetChanged( int index )

@@ -9,6 +9,23 @@ QgsGeometryCheck.ChangeChanged = QgsGeometryCheck.ChangeType.ChangeChanged
 QgsGeometryCheck.FeatureNodeCheck = QgsGeometryCheck.CheckType.FeatureNodeCheck
 QgsGeometryCheck.FeatureCheck = QgsGeometryCheck.CheckType.FeatureCheck
 QgsGeometryCheck.LayerCheck = QgsGeometryCheck.CheckType.LayerCheck
+# monkey patching scoped based enum
+QgsGeometryCheck.Result.Success.__doc__ = "Operation completed successfully"
+QgsGeometryCheck.Result.Canceled.__doc__ = "User canceled calculation"
+QgsGeometryCheck.Result.DuplicatedUniqueId.__doc__ = "Found duplicated unique ID value"
+QgsGeometryCheck.Result.InvalidReferenceLayer.__doc__ = "Missed or invalid reference layer"
+QgsGeometryCheck.Result.GeometryOverlayError.__doc__ = "Error performing geometry overlay operation"
+QgsGeometryCheck.Result.__doc__ = """
+.. versionadded:: 4.0
+
+* ``Success``: Operation completed successfully
+* ``Canceled``: User canceled calculation
+* ``DuplicatedUniqueId``: Found duplicated unique ID value
+* ``InvalidReferenceLayer``: Missed or invalid reference layer
+* ``GeometryOverlayError``: Error performing geometry overlay operation
+
+"""
+# --
 QgsGeometryCheck.AvailableInValidation = QgsGeometryCheck.Flag.AvailableInValidation
 QgsGeometryCheck.Flags = lambda flags=0: QgsGeometryCheck.Flag(flags)
 QgsGeometryCheck.Flags.baseClass = QgsGeometryCheck
@@ -23,8 +40,8 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsGeometryCheck.__virtual_methods__ = ['prepare', 'isCompatible', 'flags', 'availableResolutionMethods', 'resolutionMethods']
-    QgsGeometryCheck.__abstract_methods__ = ['compatibleGeometryTypes', 'collectErrors', 'description', 'id', 'checkType']
+    QgsGeometryCheck.__virtual_methods__ = ['prepare', 'isCompatible', 'flags', 'collectErrors', 'availableResolutionMethods', 'resolutionMethods']
+    QgsGeometryCheck.__abstract_methods__ = ['compatibleGeometryTypes', 'description', 'id', 'checkType']
     QgsGeometryCheck.__group__ = ['vector', 'geometry_checker']
 except (NameError, AttributeError):
     pass

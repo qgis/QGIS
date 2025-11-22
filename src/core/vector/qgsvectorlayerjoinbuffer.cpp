@@ -86,12 +86,15 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )
     connectJoinedLayer( vl );
   }
 
-  locker.unlock();
-  mLayer->updateFields();
-  locker.relock();
+  if ( mLayer )
+  {
+    locker.unlock();
+    mLayer->updateFields();
+    locker.relock();
+  }
 
   //cache joined layer to virtual memory if specified by user
-  if ( joinInfo.isUsingMemoryCache() )
+  if ( mLayer && joinInfo.isUsingMemoryCache() )
   {
     cacheJoinLayer( mVectorJoins.last() );
   }

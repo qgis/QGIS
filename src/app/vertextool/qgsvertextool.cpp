@@ -2379,11 +2379,50 @@ void QgsVertexTool::addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, 
     else
       point = QgsPoint( toLayerCoordinates( topo.layer, mapPoint ) );
 
+    const int vid = topo.vertexId + 1;
+
     QgsPoint pt( point );
     if ( QgsWkbTypes::hasZ( topo.layer->wkbType() ) )
-      pt.addZValue( defaultZValue() );
+    {
+      // try to linearly interpolate z from adjacent vertices
+      const QgsPoint pointBefore = topoGeom.vertexAt( topo.vertexId );
+      const QgsPoint pointAfter = topoGeom.vertexAt( vid );
+      // we can only do this if the adjacent vertices HAVE valid z values
+      if ( !std::isnan( pointBefore.z() ) && !std::isnan( pointAfter.z() ) )
+      {
+        const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
+        const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
+        if ( !qgsDoubleNear( newDistanceBetweenOriginalAdjacentVertices, 0 ) )
+        {
+          pt.addZValue( pointBefore.z() + ( pointAfter.z() - pointBefore.z() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
+        }
+      }
+      else
+      {
+        pt.addZValue( defaultZValue() );
+      }
+    }
+    if ( QgsWkbTypes::hasM( topo.layer->wkbType() ) )
+    {
+      // try to linearly interpolate m from adjacent vertices
+      const QgsPoint pointBefore = topoGeom.vertexAt( topo.vertexId );
+      const QgsPoint pointAfter = topoGeom.vertexAt( vid );
+      // we can only do this if the adjacent vertices HAVE valid m values
+      if ( !std::isnan( pointBefore.m() ) && !std::isnan( pointAfter.m() ) )
+      {
+        const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
+        const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
+        if ( !qgsDoubleNear( newDistanceBetweenOriginalAdjacentVertices, 0 ) )
+        {
+          pt.addMValue( pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
+        }
+      }
+      else
+      {
+        pt.addMValue( defaultMValue() );
+      }
+    }
 
-    const int vid = topo.vertexId + 1;
     if ( !topoGeom.insertVertex( pt, vid ) )
     {
       QgsDebugError( QStringLiteral( "[topo] segment insert vertex failed!" ) );

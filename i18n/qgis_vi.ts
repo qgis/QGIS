@@ -748,15 +748,15 @@ Mở hộp thoại kết quả để kiểm tra.</translation>
     </message>
     <message>
         <source>This file format is unknown and cannot be opened as batch parameters.</source>
-        <translation type="unfinished"/>
+        <translation>Không rõ định dạng tập tin này và không thể mở dưới dạng các tham số nhóm.</translation>
     </message>
     <message>
         <source>Opening older QGIS batch Processing files from an untrusted source can harm your computer. Only continue if you trust the source of the file. Continue?</source>
-        <translation type="unfinished"/>
+        <translation>Việc mở các tập tin xử lý theo nhóm GIS cũ từ nguồn không đáng tin cậy có thể làm hại máy tính của bạn. Chỉ tiếp tục nếu bạn tin tưởng nguồn của tập tin. Có tiếp tục không?</translation>
     </message>
     <message>
         <source>An error occurred while reading the batch parameters file.</source>
-        <translation type="unfinished"/>
+        <translation>Xảy ra một lỗi khi đang đọc tập tin các tham số nhóm.</translation>
     </message>
     <message>
         <source>Wrong or missing parameter value: {0} (row {1})</source>
@@ -768,7 +768,7 @@ Mở hộp thoại kết quả để kiểm tra.</translation>
     </message>
     <message>
         <source>Save Batch</source>
-        <translation type="unfinished"/>
+        <translation>Lưu Nhóm</translation>
     </message>
 </context>
 <context>
@@ -1000,7 +1000,7 @@ Mở hộp thoại kết quả để kiểm tra.</translation>
     </message>
     <message>
         <source>Assign a specified NoData value to output bands</source>
-        <translation type="unfinished"/>
+        <translation>Gán một giá trị NoData được chỉ định vào các băng đầu ra</translation>
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
@@ -1091,7 +1091,7 @@ Mở hộp thoại kết quả để kiểm tra.</translation>
     </message>
     <message>
         <source>Assign a specified NoData value to output bands</source>
-        <translation type="unfinished"/>
+        <translation>Gán một giá trị NoData được chỉ định vào các băng đầu ra</translation>
     </message>
     <message>
         <source>Int8 data type requires GDAL version 3.7 or later</source>
@@ -2009,7 +2009,7 @@ Truy vấn:
     </message>
     <message>
         <source>&lt;warning&gt; Not connected</source>
-        <translation type="unfinished"/>
+        <translation>&lt;warning&gt; Không được kết nối</translation>
     </message>
     <message>
         <source>&lt;warning&gt; Version of installed scripts doesn't match version of released scripts!
@@ -3606,31 +3606,31 @@ các cột</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished"/>
+        <translation>Điểm</translation>
     </message>
     <message>
         <source>LineString</source>
-        <translation type="unfinished"/>
+        <translation>Đường đơn</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished"/>
+        <translation>Vùng</translation>
     </message>
     <message>
         <source>MultiPoint</source>
-        <translation type="unfinished"/>
+        <translation>Điểm đa</translation>
     </message>
     <message>
         <source>MultiLineString</source>
-        <translation type="unfinished"/>
+        <translation>Đường đa</translation>
     </message>
     <message>
         <source>MultiPolygon</source>
-        <translation type="unfinished"/>
+        <translation>Vùng đa</translation>
     </message>
     <message>
         <source>Input data sources (called input1, .., inputN in the query)</source>
-        <translation type="unfinished"/>
+        <translation>Các nguồn dữ liệu đầu vào (gọi là input1, ..., inputN trong truy vấn)</translation>
     </message>
 </context>
 <context>
@@ -4114,7 +4114,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     </message>
     <message>
         <source>Choose GeoPackage file</source>
-        <translation type="unfinished"/>
+        <translation>Chọn tập tin GeoPackage</translation>
     </message>
 </context>
 <context>
@@ -4275,92 +4275,93 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <name>GrassAlgorithm</name>
     <message>
         <source>Could not open GRASS GIS algorithm: {0}</source>
-        <translation type="unfinished"/>
+        <translation>Không thể mở thuật toán GRASS GIS:  {0}</translation>
     </message>
     <message>
         <source>Processing</source>
-        <translation type="unfinished"/>
+        <translation>Đang xử lý</translation>
     </message>
     <message>
         <source>Failed to load: {0}
 {1}</source>
-        <translation type="unfinished"/>
+        <translation>Thất bại khi nạp: {0}
+{1}</translation>
     </message>
     <message>
         <source>GRASS GIS region extent</source>
-        <translation type="unfinished"/>
+        <translation>Phạm vi vùng GRASS GIS</translation>
     </message>
     <message>
         <source>GRASS GIS region cellsize (leave 0 for default)</source>
-        <translation type="unfinished"/>
+        <translation>Kích thước ô của vùng trong GRASS GIS (nhập 0 để lấy trị mặc định)</translation>
     </message>
     <message>
         <source>Output Rasters format options (createopt)</source>
-        <translation type="unfinished"/>
+        <translation>Các tùy chọn định dạng Raster đầu ra (createopt)</translation>
     </message>
     <message>
         <source>Creation options should be comma separated</source>
-        <translation type="unfinished"/>
+        <translation>Các tùy chọn phép tạo cần phải cách nhau bởi dấu phẩy</translation>
     </message>
     <message>
         <source>Output Rasters format metadata options (metaopt)</source>
-        <translation type="unfinished"/>
+        <translation>Các tùy chọn đặc tả dữ liệu định dạng Raster đầu ra (metaopt)</translation>
     </message>
     <message>
         <source>Metadata options should be comma separated</source>
-        <translation type="unfinished"/>
+        <translation>Các tùy chọn đặc tả dữ liệu phải cách nhau bởi dấu phẩy</translation>
     </message>
     <message>
         <source>v.in.ogr snap tolerance (-1 = no snap)</source>
-        <translation type="unfinished"/>
+        <translation>ngưỡng bắt điểm của v.in.ogr (-1 = không bắt dính)</translation>
     </message>
     <message>
         <source>v.in.ogr min area</source>
-        <translation type="unfinished"/>
+        <translation>Vùng tối thiểu của v.in.ogr</translation>
     </message>
     <message>
         <source>v.out.ogr output type</source>
-        <translation type="unfinished"/>
+        <translation>Kiểu đầu ra của v.out.ogr</translation>
     </message>
     <message>
         <source>v.out.ogr output data source options (dsco)</source>
-        <translation type="unfinished"/>
+        <translation>Các tùy chọn nguồn dữ liệu đầu ra của v.out.ogr (dsco)</translation>
     </message>
     <message>
         <source>v.out.ogr output layer options (lco)</source>
-        <translation type="unfinished"/>
+        <translation>Các tùy chọn lớp đầu ra của v.out.ogr (lco)</translation>
     </message>
     <message>
         <source>Also export features without category (not labeled). Otherwise only features with category are exported</source>
-        <translation type="unfinished"/>
+        <translation>Xuất cả các đối tượng không có phạm trù (không nhãn). Nếu không chọn, chỉ các đối tượng có phạm trù được xuất.</translation>
     </message>
     <message>
         <source>GRASS GIS folder is not configured. Please configure it before running GRASS GIS algorithms.</source>
-        <translation type="unfinished"/>
+        <translation>Thư mục GRASS GIS không được cấu hình. Vui lòng cấu hình thư mục đó trước khi chạy các thuật toán GRASS GIS.</translation>
     </message>
     <message>
         <source>GRASS GIS execution commands</source>
-        <translation type="unfinished"/>
+        <translation>Các lệnh thực thi GRASS GIS</translation>
     </message>
     <message>
         <source>processInputs end. Commands: {}</source>
-        <translation type="unfinished"/>
+        <translation>processInputs kết thúc. Lệnh: {}</translation>
     </message>
     <message>
         <source>processCommands end. Commands: {}</source>
-        <translation type="unfinished"/>
+        <translation>processCommands kết thúc. Lệnh: {}</translation>
     </message>
     <message>
         <source>Attempting to use v.external for direct layer read</source>
-        <translation type="unfinished"/>
+        <translation>Cố gắng dùng v.external để đọc trực tiếp lớp</translation>
     </message>
     <message>
         <source>Cannot use v.external: layer does not support random read</source>
-        <translation type="unfinished"/>
+        <translation>Không thể dùng v.external: lớp không hỗ trợ đọc ngẫu nhiên</translation>
     </message>
     <message>
         <source>Cannot use v.external: error reading layer</source>
-        <translation type="unfinished"/>
+        <translation>Không thể dùng v.external: lỗi khi đọc lớp</translation>
     </message>
     <message>
         <source>Name of input elevation raster map [m a.s.l.]</source>
@@ -4370,7 +4371,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of input raster map(s) for view no.3</source>
         <extracomment>r.out.mpeg</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của (các) bản đồ raster đầu vào cho phép xem no.3</translation>
     </message>
     <message>
         <source>Use raster values as categories instead of unique sequence</source>
@@ -4575,7 +4576,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Raster values to use for mask. Format: 1 2 3 thru 7 *</source>
         <extracomment>r.mask.rast</extracomment>
-        <translation type="unfinished"/>
+        <translation>Các giá trị raster dùng để làm mặt nạ. Định dạng: 1 2 3 đến 7 *</translation>
     </message>
     <message>
         <source>Store only the coordinates, throw away categories</source>
@@ -4650,7 +4651,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Threshold for double pulse in region growing</source>
         <extracomment>v.lidar.growing</extracomment>
-        <translation type="unfinished"/>
+        <translation>Ngưỡng dùng cho xung kép trong vùng đang phát triển</translation>
     </message>
     <message>
         <source>Randomly generate a 2D/3D vector points map.</source>
@@ -4695,12 +4696,12 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Percent of disturbed land, for USLE</source>
         <extracomment>r.watershed</extracomment>
-        <translation type="unfinished"/>
+        <translation>Phần trăm đất bị xáo trộn, dùng cho USLE</translation>
     </message>
     <message>
         <source>Minimal difference of z values</source>
         <extracomment>v.decimate</extracomment>
-        <translation type="unfinished"/>
+        <translation>Sai biệt tối thiểu của các giá trị z</translation>
     </message>
     <message>
         <source>Generates statistics for i.maxlik from raster map.</source>
@@ -4795,7 +4796,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Vector map to be queried</source>
         <extracomment>v.what.vect</extracomment>
-        <translation type="unfinished"/>
+        <translation>Bản đồ vector cần truy vấn</translation>
     </message>
     <message>
         <source>Vertical scale</source>
@@ -4820,7 +4821,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Output is radiance (W/m2)</source>
         <extracomment>i.aster.toar</extracomment>
-        <translation type="unfinished"/>
+        <translation>Đầu ra là cường độ bức xạ (W/m2)</translation>
     </message>
     <message>
         <source>Smooth corners of area features</source>
@@ -4890,7 +4891,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Integer range: min,max</source>
         <extracomment>r.quant</extracomment>
-        <translation type="unfinished"/>
+        <translation>Phạm vi số nguyên: min,max</translation>
     </message>
     <message>
         <source>Tangential curvature raster</source>
@@ -4955,7 +4956,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Do not build topology for the output vector</source>
         <extracomment>v.clean</extracomment>
-        <translation type="unfinished"/>
+        <translation>Không xây dựng tô pô cho véc tớ đầu ra</translation>
     </message>
     <message>
         <source>Number of levels to be used for &lt;red&gt;</source>
@@ -4985,7 +4986,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of QC type to extract</source>
         <extracomment>i.modis.qc</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên kiểu QC cần trích xuất</translation>
     </message>
     <message>
         <source>Input raster layer with data gaps to fill</source>
@@ -5085,7 +5086,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Number of walkers</source>
         <extracomment>r.sim.sediment</extracomment>
-        <translation type="unfinished"/>
+        <translation>Số lượng người đi bộ</translation>
     </message>
     <message>
         <source>Performs Landsat TM/ETM+ Automatic Cloud Cover Assessment (ACCA).</source>
@@ -5460,12 +5461,12 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Statistics File</source>
         <extracomment>r.stats.quantile.out</extracomment>
-        <translation type="unfinished"/>
+        <translation>Các tập tin Thống kê</translation>
     </message>
     <message>
         <source>Raster map to be sampled</source>
         <extracomment>v.what.rast</extracomment>
-        <translation type="unfinished"/>
+        <translation>Bản đồ raster cần lấy mẫu</translation>
     </message>
     <message>
         <source>Name of column with walk lengths</source>
@@ -5505,7 +5506,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>i.eb.hsebal01.coords - Computes sensible heat flux iteration SEBAL 01. Inline coordinates</source>
         <extracomment>i.eb.hsebal01</extracomment>
-        <translation type="unfinished"/>
+        <translation>i.eb.hsebal01.coords - Tính toán dòng nhiệt hợp lýSEBAL 01. Tọa độ trực tiếp</translation>
     </message>
     <message>
         <source>Layer to clean</source>
@@ -5610,7 +5611,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Do not build vector topology</source>
         <extracomment>r.to.vect</extracomment>
-        <translation type="unfinished"/>
+        <translation>Đừng xây dựng tô pô vector</translation>
     </message>
     <message>
         <source>Standard deviation</source>
@@ -5750,12 +5751,12 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Coincidence report</source>
         <extracomment>r.coin</extracomment>
-        <translation type="unfinished"/>
+        <translation>Báo cáo sự trùng lặp</translation>
     </message>
     <message>
         <source>Name of input E00 file</source>
         <extracomment>v.in.e00</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của tập tin E00</translation>
     </message>
     <message>
         <source>Cost allocation map</source>
@@ -5775,7 +5776,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Minimum distance between points (to remove almost identical points)</source>
         <extracomment>v.surf.rst</extracomment>
-        <translation type="unfinished"/>
+        <translation>Khoảng cách tối thiểu giữa các điểm (để loại bỏ các điểm giống nhau nhất)</translation>
     </message>
     <message>
         <source>Final Report File</source>
@@ -5805,7 +5806,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of output betweenness centrality column</source>
         <extracomment>v.net.centrality</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của cột độ trung tâm nằm giữa đầu ra</translation>
     </message>
     <message>
         <source>Elevation layer [meters]</source>
@@ -5855,7 +5856,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Output format is invisible = NULL, else current elev - viewpoint_elev</source>
         <extracomment>r.viewshed</extracomment>
-        <translation type="unfinished"/>
+        <translation>Định dạng đầu ra không nhìn thấy = NULL, không thì là giá tri ele - viewpoint_elev hiện tại</translation>
     </message>
     <message>
         <source>Morphometric parameter</source>
@@ -5950,7 +5951,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Amount of overland flow per cell</source>
         <extracomment>r.watershed</extracomment>
-        <translation type="unfinished"/>
+        <translation>Lượng chảy tràn trên một ô</translation>
     </message>
     <message>
         <source>Print types/names of table columns for specified layer instead of info</source>
@@ -6015,7 +6016,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Maximum visibility radius. By default infinity (-1)</source>
         <extracomment>r.viewshed</extracomment>
-        <translation type="unfinished"/>
+        <translation>Bán kính nhìn thấy tối đa. Mặc định là vô cực (-1)</translation>
     </message>
     <message>
         <source>Name of input DXF file</source>
@@ -6200,7 +6201,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Cumulative error tolerance for eigenvector centrality</source>
         <extracomment>v.net.centrality</extracomment>
-        <translation type="unfinished"/>
+        <translation>Ngưỡng lỗi tích lũy dùng cho độ trung tâm vector đặc trưng</translation>
     </message>
     <message>
         <source>Set1 Category values</source>
@@ -6210,7 +6211,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Raster layers to be patched together</source>
         <extracomment>r.patch</extracomment>
-        <translation type="unfinished"/>
+        <translation>Các lớp raster cần ghép lại với nhau</translation>
     </message>
     <message>
         <source>v.net.nreport - Reports nodes information of a network</source>
@@ -6225,7 +6226,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Disable wrapping to -180,180 for latlon output</source>
         <extracomment>v.proj</extracomment>
-        <translation type="unfinished"/>
+        <translation>Bất hoạt cuộn thành -180,180 đối với đầu ra latlon</translation>
     </message>
     <message>
         <source>Print category labels</source>
@@ -6515,7 +6516,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Groundwater sources and sinks in [m^3/s]</source>
         <extracomment>r.solute.transport</extracomment>
-        <translation type="unfinished"/>
+        <translation>Các nguồn nước ngầm và các hố sụt [m^3/s]</translation>
     </message>
     <message>
         <source>Angle range for same direction detection</source>
@@ -6585,7 +6586,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Routing using SFD (D8) direction</source>
         <extracomment>r.terraflow</extracomment>
-        <translation type="unfinished"/>
+        <translation>Định tuyến bằng hướng SFD (D8)</translation>
     </message>
     <message>
         <source>A simple utility for converting bearing and distance measurements to coordinates and vice versa. It assumes a Cartesian coordinate system</source>
@@ -6725,7 +6726,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>r.li.mpa.ascii - Calculates mean pixel attribute index on a raster map</source>
         <extracomment>r.li.mpa.ascii</extracomment>
-        <translation type="unfinished"/>
+        <translation>r.li.mpa.ascii - Tính toán chỉ số thuộc tính điểm ảnh trung bình trên một bản đồ raster</translation>
     </message>
     <message>
         <source>Cross Validation Errors</source>
@@ -6745,7 +6746,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>The coordinate of the center (east,north)</source>
         <extracomment>r.circle</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tọa độ của tậm (đông,bắc)</translation>
     </message>
     <message>
         <source>Outputs basic information about a user-specified vector map.</source>
@@ -6965,7 +6966,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Sampling point position for each output map (comma separated list)</source>
         <extracomment>r.series.interp</extracomment>
-        <translation type="unfinished"/>
+        <translation>Vị trí điểm lấy mẫu dùng cho mỗi bản đồ đầu ra (danh sách cách nhau bởi dấu phẩy)</translation>
     </message>
     <message>
         <source>Slope tolerance that defines a &apos;flat&apos; surface (degrees)</source>
@@ -7040,7 +7041,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Round floating point data</source>
         <extracomment>r.quant</extracomment>
-        <translation type="unfinished"/>
+        <translation>Làm tròn dữ liệu điểm dạng dấu chấm động</translation>
     </message>
     <message>
         <source>Transport limited erosion-deposition [kg/m2s]</source>
@@ -7140,7 +7141,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Multiplier for z-values</source>
         <extracomment>r.resamp.rst</extracomment>
-        <translation type="unfinished"/>
+        <translation>Hệ số dùng cho các giá trị z</translation>
     </message>
     <message>
         <source>Calculates Simpson&apos;s diversity index on a raster map</source>
@@ -7295,7 +7296,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Count cell numbers along the path</source>
         <extracomment>r.path</extracomment>
-        <translation type="unfinished"/>
+        <translation>Đếm số ô dọc theo đường đi</translation>
     </message>
     <message>
         <source>Value of the height independent friction velocity (u*) [m/s]</source>
@@ -7460,7 +7461,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Sampling method</source>
         <extracomment>v.drape</extracomment>
-        <translation type="unfinished"/>
+        <translation>Phương pháp lấy mẫu</translation>
     </message>
     <message>
         <source>Normality</source>
@@ -7630,12 +7631,12 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>v.build.check - Checks for topological errors.</source>
         <extracomment>v.build.check</extracomment>
-        <translation type="unfinished"/>
+        <translation>v.build.check - Kiểm tra các lỗi tô pô.</translation>
     </message>
     <message>
         <source>Erosion-deposition [kg/m2s]</source>
         <extracomment>r.sim.sediment</extracomment>
-        <translation type="unfinished"/>
+        <translation>Xói mòn-lắng tụ [kg/m2s]</translation>
     </message>
     <message>
         <source>Swap coordinates x, z and then apply other parameters</source>
@@ -7680,7 +7681,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Maximum number of iteration used to solver the linear equation system</source>
         <extracomment>r.gwflow</extracomment>
-        <translation type="unfinished"/>
+        <translation>Số lần lặp tối đa để giải hệ phương trình tuyến tính</translation>
     </message>
     <message>
         <source>Red</source>
@@ -7720,7 +7721,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Minimum z height for 3D output</source>
         <extracomment>v.random</extracomment>
-        <translation type="unfinished"/>
+        <translation>Chiều cao tối thiểu z dùng cho đầu ra 3D</translation>
     </message>
     <message>
         <source>Name of TOPMODEL parameters file</source>
@@ -7775,7 +7776,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Aggregate operation</source>
         <extracomment>r.series</extracomment>
-        <translation type="unfinished"/>
+        <translation>Lệnh gộp</translation>
     </message>
     <message>
         <source>To WHERE conditions of SQL statement without &apos;where&apos; keyword</source>
@@ -7815,7 +7816,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Input raster map containing smoothing</source>
         <extracomment>r.resamp.rst</extracomment>
-        <translation type="unfinished"/>
+        <translation>Bản đồ raster đầu vào chứa làm trơn</translation>
     </message>
     <message>
         <source>File containing recode rules</source>
@@ -8120,7 +8121,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Maximum distance or -1.0 for no limit</source>
         <extracomment>v.distance</extracomment>
-        <translation type="unfinished"/>
+        <translation>Khoảng cách tối đa hoặc -1,0 dùng cho không giới hạn</translation>
     </message>
     <message>
         <source>Name of attribute column with object heights</source>
@@ -8470,7 +8471,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Output format is invisible = 0, visible = 1</source>
         <extracomment>r.viewshed</extracomment>
-        <translation type="unfinished"/>
+        <translation>Định dạng đầu ra không nhìn thấy được = 0, nhìn thấy được = 1</translation>
     </message>
     <message>
         <source>Multiply the density result by this number</source>
@@ -8650,7 +8651,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of input elevation raster map</source>
         <extracomment>r.walk.rast</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của bản đồ raster độ cao đầu vào</translation>
     </message>
     <message>
         <source>Tests for normality for points.</source>
@@ -8735,7 +8736,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Desired east-west resolution</source>
         <extracomment>r.resamp.rst</extracomment>
-        <translation type="unfinished"/>
+        <translation>Độ phân giải đông-tây mong muốn</translation>
     </message>
     <message>
         <source>Simulates TOPMODEL which is a physically based hydrologic model.</source>
@@ -8765,7 +8766,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Where to place the grid</source>
         <extracomment>v.mkgrid</extracomment>
-        <translation type="unfinished"/>
+        <translation>Vị trí đặt lưới</translation>
     </message>
     <message>
         <source>Name of altitude corrected surface temperature raster map [K]</source>
@@ -9065,7 +9066,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of MODIS product type</source>
         <extracomment>i.modis.qc</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của kiểu sản phẩm MODIS</translation>
     </message>
     <message>
         <source>Builds polylines from lines or boundaries.</source>
@@ -9185,7 +9186,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Interpolated RST</source>
         <extracomment>v.surf.rst</extracomment>
-        <translation type="unfinished"/>
+        <translation>RST được nội suy</translation>
     </message>
     <message>
         <source>Diffusion increase constant</source>
@@ -9330,7 +9331,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>r.quantile.plain - Compute quantiles using two passes and save them as plain text.</source>
         <extracomment>r.quantile.plain</extracomment>
-        <translation type="unfinished"/>
+        <translation>r.quantile.plain - Tính toán các điểm phân vị dùng phép chạy hai lần và lưu chúng thành văn bản trơn.</translation>
     </message>
     <message>
         <source>Converts vector polygons or points to lines.</source>
@@ -9380,7 +9381,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>r.li.cwed.ascii - Calculates contrast weighted edge density index on a raster map</source>
         <extracomment>r.li.cwed.ascii</extracomment>
-        <translation type="unfinished"/>
+        <translation>r.li.cwed.ascii - Tính toán hệ số mật độ mép có trọng số tương phản trên một bản đồ raster</translation>
     </message>
     <message>
         <source>Saturation</source>
@@ -9475,7 +9476,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Elevation units (overrides scale factor)</source>
         <extracomment>r.relief</extracomment>
-        <translation type="unfinished"/>
+        <translation>Đơn vị độ cao (ghi đè hệ số tỷ lệ)</translation>
     </message>
     <message>
         <source>Input vector</source>
@@ -9575,7 +9576,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Transformed</source>
         <extracomment>v.transform</extracomment>
-        <translation type="unfinished"/>
+        <translation>Được chuyển đổi</translation>
     </message>
     <message>
         <source>Name of input file with control points</source>
@@ -9760,7 +9761,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Input polygons layer</source>
         <extracomment>v.voronoi.skeleton</extracomment>
-        <translation type="unfinished"/>
+        <translation>Lớp kiểu vùng đầu vào</translation>
     </message>
     <message>
         <source>Name of input file containing coordinate pairs</source>
@@ -9800,7 +9801,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of raster map containing slope (degree)</source>
         <extracomment>r.ros</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của bản đồ raster chứa độ dốc (độ)</translation>
     </message>
     <message>
         <source>Exports a vector map layer to PostGIS feature table. </source>
@@ -9860,7 +9861,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of input vector map</source>
         <extracomment>v.univar</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên bản đồ vector đầu vào</translation>
     </message>
     <message>
         <source>Only one point per cat in grid cell</source>
@@ -10020,7 +10021,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Canonical components analysis (CCA) program for image processing.</source>
         <extracomment>i.cca</extracomment>
-        <translation type="unfinished"/>
+        <translation>Chương trình phân tích thành phần chính tắc (CCA) dùng cho xử lý ảnh.</translation>
     </message>
     <message>
         <source>Direction in which you want to know the horizon height</source>
@@ -10220,7 +10221,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Number of classes in the cloud temperature histogram</source>
         <extracomment>i.landsat.acca</extracomment>
-        <translation type="unfinished"/>
+        <translation>Số lớp trong biểu đồ tần suất nhiệt độ mây</translation>
     </message>
     <message>
         <source>Buffer distance in map units</source>
@@ -10300,7 +10301,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>DTM from contours</source>
         <extracomment>r.surf.contour</extracomment>
-        <translation type="unfinished"/>
+        <translation>DMT từ đường bình độ</translation>
     </message>
     <message>
         <source>Raster map from which to copy category table</source>
@@ -10385,7 +10386,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Extrudes flat vector object to 3D with defined height.</source>
         <extracomment>v.extrude</extracomment>
-        <translation type="unfinished"/>
+        <translation>Làm lồi đối tượng vector phẳng thành 3D với chiều cao xác định</translation>
     </message>
     <message>
         <source>Value to write for &quot;grown&quot; cells</source>
@@ -10425,7 +10426,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Sort output by distance</source>
         <extracomment>r.distance</extracomment>
-        <translation type="unfinished"/>
+        <translation>Phân loại đầu ra theo khoảng cách</translation>
     </message>
     <message>
         <source>Name of rainfall and potential evapotranspiration data file</source>
@@ -10535,7 +10536,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of input raster maps</source>
         <extracomment>i.albedo</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên các bản đồ raster đầu vào</translation>
     </message>
     <message>
         <source>VNIR is Low Gain 1</source>
@@ -10690,7 +10691,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>X scale</source>
         <extracomment>v.transform</extracomment>
-        <translation type="unfinished"/>
+        <translation>Thang X</translation>
     </message>
     <message>
         <source>Transforms raster maps from RGB (Red-Green-Blue) color space to HIS (Hue-Intensity-Saturation) color space.</source>
@@ -10840,7 +10841,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Preserve relative colors, adjust brightness only</source>
         <extracomment>i.colors.enhance</extracomment>
-        <translation type="unfinished"/>
+        <translation>Giữ màu tương đối, chỉ điều chỉnh độ sáng</translation>
     </message>
     <message>
         <source>Name of column with route ids</source>
@@ -10895,7 +10896,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Destination projection</source>
         <extracomment>r.tileset</extracomment>
-        <translation type="unfinished"/>
+        <translation>Phép chiếu đích</translation>
     </message>
     <message>
         <source>Skip earlier feature IDs and start downloading at this one</source>
@@ -11025,7 +11026,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Do not skip features without category</source>
         <extracomment>v.select</extracomment>
-        <translation type="unfinished"/>
+        <translation>Đừng bỏ qua các đối tượng không có phạm trù</translation>
     </message>
     <message>
         <source>Random seed (SEED_MIN &gt;= value &gt;= SEED_MAX)</source>
@@ -11045,7 +11046,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Low threshold for terrain to object reclassification</source>
         <extracomment>v.lidar.correction</extracomment>
-        <translation type="unfinished"/>
+        <translation>Ngưỡng thấp dùng cho mặt bằng để phân loại lại đối tượng</translation>
     </message>
     <message>
         <source>Clumps</source>
@@ -11090,7 +11091,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Regularization weight in reclassification evaluation</source>
         <extracomment>v.lidar.correction</extracomment>
-        <translation type="unfinished"/>
+        <translation>Trọng số chính quy trong phép đánh giá phân loại lại</translation>
     </message>
     <message>
         <source>Scale factor for elevation</source>
@@ -11180,7 +11181,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>r.what.coords - Queries raster maps on their category values and category labels on a point.</source>
         <extracomment>r.what.coords</extracomment>
-        <translation type="unfinished"/>
+        <translation>r.what.coords - Truy vấn các bản đồ raster về các giá trị phạm trù và các nhãn phạm trên một điểm.</translation>
     </message>
     <message>
         <source>Input text file with category numbers/number ranges to be extracted</source>
@@ -11210,7 +11211,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Input raster layer</source>
         <extracomment>r.to.vect</extracomment>
-        <translation type="unfinished"/>
+        <translation>Lớp raster đầu vào</translation>
     </message>
     <message>
         <source>Flatness threshold (degrees)</source>
@@ -11325,12 +11326,12 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>coordinate</source>
         <extracomment>r.spreadpath</extracomment>
-        <translation type="unfinished"/>
+        <translation>tọa độ</translation>
     </message>
     <message>
         <source>One cell (range) per line</source>
         <extracomment>r.stats</extracomment>
-        <translation type="unfinished"/>
+        <translation>Một ô (phạm vi) trên một dòng</translation>
     </message>
     <message>
         <source>Color Table</source>
@@ -11390,7 +11391,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Length of each spline step in the north-south direction</source>
         <extracomment>v.surf.bspline</extracomment>
-        <translation type="unfinished"/>
+        <translation>Chiều dài của mỗi bước của đường cong trơn theo hướng bắc-nam</translation>
     </message>
     <message>
         <source>Aggregation method</source>
@@ -11465,7 +11466,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of input bounding/constraining raster map</source>
         <extracomment>i.segment</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của bản đồ raster biên/giới hạn</translation>
     </message>
     <message>
         <source>Classifies attribute data, e.g. for thematic mapping.</source>
@@ -11560,7 +11561,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Keep null values in output raster layer</source>
         <extracomment>r.walk.rast</extracomment>
-        <translation type="unfinished"/>
+        <translation>Giữ các giá trị rỗng trong lớp raster đầu ra</translation>
     </message>
     <message>
         <source>Size of processing window (odd number only, max: 499)</source>
@@ -11600,7 +11601,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of raster map to which apply the mask</source>
         <extracomment>r.mask.vect</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của bản đồ raster dùng làm mặt nạ</translation>
     </message>
     <message>
         <source>Name of aerodynamic resistance to heat momentum raster map [s/m]</source>
@@ -11625,7 +11626,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of existing 3d raster map</source>
         <extracomment>nviz</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên bản đồ raster 3d hiện có</translation>
     </message>
     <message>
         <source>Calculates coefficient of variation of patch area on a raster map</source>
@@ -11650,7 +11651,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Consider spotting effect (for wildfires)</source>
         <extracomment>r.spread</extracomment>
-        <translation type="unfinished"/>
+        <translation>Xem xét hiệu ứng phát hiện (dùng cho cháy rừng)</translation>
     </message>
     <message>
         <source>Input vector layer (v.lidar.growing output)</source>
@@ -11705,7 +11706,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Do not copy attribute table</source>
         <extracomment>v.to.3d</extracomment>
-        <translation type="unfinished"/>
+        <translation>Không sao chép bảng thuộc tính</translation>
     </message>
     <message>
         <source>Raster map containing the 10-hour fuel moisture (%)</source>
@@ -11720,7 +11721,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Column value of the wet pixel</source>
         <extracomment>i.eb.hsebal01</extracomment>
-        <translation type="unfinished"/>
+        <translation>Giá trị cột của điểm ảnh ướt</translation>
     </message>
     <message>
         <source>Use scale dependent tension</source>
@@ -11745,7 +11746,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Operate on toolboxes instead of single modules (experimental)</source>
         <extracomment>g.extension.manage</extracomment>
-        <translation type="unfinished"/>
+        <translation>Thực thi trên các hộp công cụ thay vì các mô đun riêng lẻ (thử nghiệm)</translation>
     </message>
     <message>
         <source>Input layer (B)</source>
@@ -12070,7 +12071,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Maximal tolerance value</source>
         <extracomment>v.generalize</extracomment>
-        <translation type="unfinished"/>
+        <translation>Giá trị ngưỡng lớn nhất</translation>
     </message>
     <message>
         <source>Name of attribute column to be updated with the query result</source>
@@ -12115,7 +12116,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of attribute column(s), comma separated</source>
         <extracomment>v.db.select</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của (các) cột thuộc tính, cách nhau bởi dấu phẩy</translation>
     </message>
     <message>
         <source>Maximum segment length in meters in output vector map</source>
@@ -12140,7 +12141,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Y scale</source>
         <extracomment>v.transform</extracomment>
-        <translation type="unfinished"/>
+        <translation>Thang Y</translation>
     </message>
     <message>
         <source>Visualization and animation tool for GRASS data.</source>
@@ -12205,7 +12206,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of column used to dissolve common boundaries</source>
         <extracomment>v.dissolve</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên cột được dùng để gộp các ranh giới chung</translation>
     </message>
     <message>
         <source>Name of first raster map</source>
@@ -12375,7 +12376,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Tangential curvature</source>
         <extracomment>v.surf.rst</extracomment>
-        <translation type="unfinished"/>
+        <translation>Đường cong tiếp tuyến</translation>
     </message>
     <message>
         <source>Regularization weight in residual evaluation</source>
@@ -12415,7 +12416,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Suppress page headers</source>
         <extracomment>r.report</extracomment>
-        <translation type="unfinished"/>
+        <translation>Chặn các đầu trang</translation>
     </message>
     <message>
         <source>Mean curvature raster</source>
@@ -12490,7 +12491,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Difference threshold between 0 and 1</source>
         <extracomment>i.segment</extracomment>
-        <translation type="unfinished"/>
+        <translation>Ngưỡng khác biệt giữa 0 và 1</translation>
     </message>
     <message>
         <source>Raster map used for zoning, must be of type CELL</source>
@@ -12500,7 +12501,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Histogram equalization</source>
         <extracomment>r.colors</extracomment>
-        <translation type="unfinished"/>
+        <translation>Phép cân bằng biểu đồ tần suất</translation>
     </message>
     <message>
         <source>Threshold to identify similar cells</source>
@@ -12555,7 +12556,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Net Radiation</source>
         <extracomment>i.eb.netrad</extracomment>
-        <translation type="unfinished"/>
+        <translation>Sự phát xạ thực</translation>
     </message>
     <message>
         <source>Profile curvature</source>
@@ -12740,7 +12741,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Fills lake at given point to given level.</source>
         <extracomment>r.lake</extracomment>
-        <translation type="unfinished"/>
+        <translation>Làm đầy hồ tại một điểm cho trước tới một mực cho trước</translation>
     </message>
     <message>
         <source>Maximum z height for 3D output</source>
@@ -12755,7 +12756,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Direction ROS</source>
         <extracomment>r.ros</extracomment>
-        <translation type="unfinished"/>
+        <translation>Hướng ROS</translation>
     </message>
     <message>
         <source>Use the Courant-Friedrichs-Lewy criteria for time step calculation</source>
@@ -12765,7 +12766,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Input vector from points layer (from)</source>
         <extracomment>v.net.distance</extracomment>
-        <translation type="unfinished"/>
+        <translation>Vector đầu vào từ lớp điểm (from)</translation>
     </message>
     <message>
         <source>Unique label for each watershed basin</source>
@@ -12775,7 +12776,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Computes degree, centrality, betweenness, closeness and eigenvector centrality measures in the network.</source>
         <extracomment>v.net.centrality</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tính toán các số đo độ, độ trung tâm, độ ở giữa, độ gần và độ trung tâm vector đặc thù trong mạng lưới.</translation>
     </message>
     <message>
         <source>Goodness_of_fit</source>
@@ -12800,7 +12801,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of input direction</source>
         <extracomment>r.path</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của hướng đầu vào</translation>
     </message>
     <message>
         <source>Name of input net solar radiation raster map [MJ/m2/h]</source>
@@ -12840,7 +12841,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of input raster map(s) for view no.2</source>
         <extracomment>r.out.mpeg</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của (các) bản đồ raster đầu vào cho phép xem no.2</translation>
     </message>
     <message>
         <source>Network_Iso</source>
@@ -12905,7 +12906,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Imaginary part arrays</source>
         <extracomment>i.fft</extracomment>
-        <translation type="unfinished"/>
+        <translation>Các mảng thành phần của ảnh</translation>
     </message>
     <message>
         <source>Layer number or name with walking connections</source>
@@ -12925,7 +12926,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Amount of memory to use in MB</source>
         <extracomment>r.viewshed</extracomment>
-        <translation type="unfinished"/>
+        <translation>Lượng bộ nhớ dùng tính theo MB</translation>
     </message>
     <message>
         <source>Apply grid-based decimation</source>
@@ -13030,7 +13031,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Map for y coefficient</source>
         <extracomment>r.regression.multi</extracomment>
-        <translation type="unfinished"/>
+        <translation>Bản đồ dùng cho hệ số y</translation>
     </message>
     <message>
         <source>Inner search radius</source>
@@ -13065,7 +13066,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Compute upslope flowlines instead of default downhill flowlines</source>
         <extracomment>r.flow</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tính toán các đường chảy lên dốc thay vì đường chảy xuống đồi mặc định</translation>
     </message>
     <message>
         <source>Remove existing color table</source>
@@ -13075,7 +13076,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Resampled RST</source>
         <extracomment>r.resamp.rst</extracomment>
-        <translation type="unfinished"/>
+        <translation>RST được lấy mẫu lại</translation>
     </message>
     <message>
         <source>Name of Net Radiation raster map [W/m2]</source>
@@ -13205,7 +13206,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Only import points of selected return type Options: first, last, mid</source>
         <extracomment>r.in.lidar</extracomment>
-        <translation type="unfinished"/>
+        <translation>Chỉ nhập các điểm có kiểu trả về được cho. Các tùy chọn: first, last, mid</translation>
     </message>
     <message>
         <source>Name of starting raster points map</source>
@@ -13230,7 +13231,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Quantized raster(s)</source>
         <extracomment>r.quant</extracomment>
-        <translation type="unfinished"/>
+        <translation>(Các) raster được lượng tử hóa</translation>
     </message>
     <message>
         <source>Soil Heat Flux</source>
@@ -13275,7 +13276,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of output eigenvector centrality column</source>
         <extracomment>v.net.centrality</extracomment>
-        <translation type="unfinished"/>
+        <translation>Tên của cột trung tâm vector đặc trưng đầu ra</translation>
     </message>
     <message>
         <source>Names of satellite ETa raster maps [mm/d or cm/d]</source>
@@ -13370,7 +13371,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Width of tiles (columns)</source>
         <extracomment>r.tile</extracomment>
-        <translation type="unfinished"/>
+        <translation>Chiều rộng của mảnh ghép (các cột)</translation>
     </message>
     <message>
         <source>Surface interpolation from vector point data by Inverse Distance Squared Weighting.</source>
@@ -13465,7 +13466,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Type of solver which should solve the symmetric linear equation system</source>
         <extracomment>v.surf.bspline</extracomment>
-        <translation type="unfinished"/>
+        <translation>Kiểu bộ giải nào giải được hệ phương trình tuyến tính đối xứng</translation>
     </message>
     <message>
         <source>Tykhonov regularization weight</source>
@@ -13505,7 +13506,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>The distance between two samples (&gt;= 1)</source>
         <extracomment>r.texture</extracomment>
-        <translation type="unfinished"/>
+        <translation>Khoảng cách giữa hai mẫu (&gt;=1)</translation>
     </message>
     <message>
         <source>Set1 WHERE conditions of SQL statement without &apos;where&apos; keyword</source>
@@ -13715,12 +13716,12 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Name of the emissivity map [-]</source>
         <extracomment>i.eb.netrad</extracomment>
-        <translation type="unfinished"/>
+        <translation>Ttên của bản đồ phát xạ [-]</translation>
     </message>
     <message>
         <source>Top surface of the aquifer in [m]</source>
         <extracomment>r.solute.transport</extracomment>
-        <translation type="unfinished"/>
+        <translation>Bề mặt trên của tầng nước ngầm tính theo [m]</translation>
     </message>
     <message>
         <source>No flat areas allowed in flow direction</source>
@@ -13885,12 +13886,12 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Boundary condition status, 0-inactive, 1-active, 2-dirichlet</source>
         <extracomment>r.gwflow</extracomment>
-        <translation type="unfinished"/>
+        <translation>Trạng thái điều kiện biên, 0-không_kích_hoạt, 1-kích_hoạt, 2-dirichlet</translation>
     </message>
     <message>
         <source>Perturbed</source>
         <extracomment>v.perturb</extracomment>
-        <translation type="unfinished"/>
+        <translation>Bị xáo trộn</translation>
     </message>
     <message>
         <source>Estimates Map</source>
@@ -14035,7 +14036,7 @@ Khối mã trường không trả về biến &apos;{0}&apos;! Vui lòng khai b�
     <message>
         <source>Cleaning tool</source>
         <extracomment>v.clean</extracomment>
-        <translation type="unfinished"/>
+        <translation>Công cụ làm sạch</translation>
     </message>
     <message>
         <source>Value of water availability raster map [0.0-1.0]</source>

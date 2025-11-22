@@ -54,7 +54,7 @@ class QgsGeometryByExpressionAlgorithm : public QgsProcessingFeatureBasedAlgorit
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    Qgis::WkbType mWkbType;
+    Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
     QgsExpression mExpression;
     QgsExpressionContext mExpressionContext;
 };

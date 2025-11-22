@@ -247,10 +247,16 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
         tempDir.path();
         const QString tempFilePath{ tempDir.path() + QDir::separator() + filename };
         QFile tempFile{ tempFilePath };
-        tempFile.open( QIODevice::WriteOnly );
-        tempFile.write( replyData );
-        tempFile.close();
-        QDesktopServices::openUrl( QUrl::fromLocalFile( tempFilePath ) );
+        if ( tempFile.open( QIODevice::WriteOnly ) )
+        {
+          tempFile.write( replyData );
+          tempFile.close();
+          QDesktopServices::openUrl( QUrl::fromLocalFile( tempFilePath ) );
+        }
+        else
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Could not open temporary file for writing" ), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
+        }
       }
       else
       {

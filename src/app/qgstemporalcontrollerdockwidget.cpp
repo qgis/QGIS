@@ -59,7 +59,7 @@ bool QgsTemporalControllerDockWidget::eventFilter( QObject *object, QEvent *even
 {
   if ( event->type() == QEvent::Wheel )
   {
-    QWheelEvent *wheelEvent = dynamic_cast<QWheelEvent *>( event );
+    QWheelEvent *wheelEvent = qgis::down_cast<QWheelEvent *>( event );
     // handle horizontal wheel events by scrubbing timeline
     if ( wheelEvent->angleDelta().x() != 0 )
     {
@@ -80,6 +80,7 @@ void QgsTemporalControllerDockWidget::exportAnimation()
 
     const QgsDateTimeRange animationRange = dlg->animationRange();
     const QgsInterval frameDuration = dlg->frameInterval();
+    const bool temporalRangeCumulative = dlg->temporalRangeCumulative();
     const QString outputDir = dlg->outputDirectory();
     const QString fileNameExpression = dlg->fileNameExpression();
 
@@ -107,6 +108,7 @@ void QgsTemporalControllerDockWidget::exportAnimation()
 
     QgsTemporalUtils::AnimationExportSettings animationSettings;
     animationSettings.frameDuration = frameDuration;
+    animationSettings.temporalRangeCumulative = temporalRangeCumulative;
     animationSettings.animationRange = animationRange;
     animationSettings.outputDirectory = outputDir;
     animationSettings.fileNameTemplate = fileNameExpression;

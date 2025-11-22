@@ -156,13 +156,13 @@ bool QgsAdvancedDigitizingFloater::eventFilter( QObject *obj, QEvent *event )
     if ( event->type() == QEvent::MouseMove )
     {
       // We update the position when mouse moves
-      QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>( event );
+      QMouseEvent *mouseEvent = qgis::down_cast<QMouseEvent *>( event );
       updatePos( mouseEvent->pos() );
     }
     else if ( event->type() == QEvent::Enter )
     {
       // We show the widget when mouse enters
-      QEnterEvent *enterEvent = dynamic_cast<QEnterEvent *>( event );
+      QEnterEvent *enterEvent = qgis::down_cast<QEnterEvent *>( event );
       updatePos( enterEvent->pos() );
       setVisible( true );
     }

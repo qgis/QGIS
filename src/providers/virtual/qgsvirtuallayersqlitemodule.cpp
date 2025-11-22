@@ -347,6 +347,12 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
     returnStrError( err );
     return SQLITE_ERROR;
   }
+  if ( argc > 6 )
+  {
+    const QString err( QStringLiteral( "Too many arguments, expected <= 6, got %1" ).arg( argc ) );
+    returnStrError( err );
+    return SQLITE_ERROR;
+  }
 
   std::unique_ptr<VTable> newVtab;
 
@@ -374,7 +380,7 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
     }
     newVtab.reset( new VTable( sql, qobject_cast<QgsVectorLayer *>( l ) ) );
   }
-  else if ( argc == 5 || argc == 6 )
+  else
   {
     // CREATE VIRTUAL TABLE vtab USING QgsVLayer(provider,source[,encoding])
     // vtab = argv[2]

@@ -183,7 +183,7 @@ bool QgsMeshDatasetGroupTreeModel::isEnabled( const QModelIndex &index ) const
 
 void QgsMeshDatasetGroupTreeModel::resetDefault( QgsMeshLayer *meshLayer )
 {
-  if ( !meshLayer && !mRootItem )
+  if ( !meshLayer )
     return;
 
   beginResetModel();

@@ -98,6 +98,12 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
                   if ( elevationProperties->respectLayerSymbology() )
                   {
+                    if ( !symbol )
+                    {
+                      // just use default layer icon
+                      return QgsLayerTreeModel::data( index, role );
+                    }
+
                     if ( QgsSingleSymbolRenderer *renderer = dynamic_cast<QgsSingleSymbolRenderer *>( qobject_cast<QgsVectorLayer *>( layer )->renderer() ) )
                     {
                       if ( renderer->symbol()->type() == symbol->type() )

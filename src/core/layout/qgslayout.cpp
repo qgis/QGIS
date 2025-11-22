@@ -1142,15 +1142,17 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
           addMultiFrame( html );
           if ( item->isGroupMember() )
           {
-            QgsLayoutItemGroup *group = item->parentGroup();
-            QList<QgsLayoutItem *> groupItems = group->items();
-            groupItems.removeAll( item.get() );
-            group->removeItems();
-            for ( QgsLayoutItem *groupItem : std::as_const( groupItems ) )
+            if ( QgsLayoutItemGroup *group = item->parentGroup() )
             {
-              group->addItem( groupItem );
+              QList<QgsLayoutItem *> groupItems = group->items();
+              groupItems.removeAll( item.get() );
+              group->removeItems();
+              for ( QgsLayoutItem *groupItem : std::as_const( groupItems ) )
+              {
+                group->addItem( groupItem );
+              }
+              group->addItem( html->frame( 0 ) );
             }
-            group->addItem( html->frame( 0 ) );
           }
           newMultiFrames << html;
           continue;

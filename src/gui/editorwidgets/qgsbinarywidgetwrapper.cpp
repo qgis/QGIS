@@ -153,12 +153,18 @@ void QgsBinaryWidgetWrapper::saveContent()
   s.setValue( QStringLiteral( "/UI/lastBinaryDir" ), fi.absolutePath() );
 
   QFile fileOut( file );
-  fileOut.open( QIODevice::WriteOnly );
-  fileOut.write( mValue );
-  fileOut.close();
+  if ( fileOut.open( QIODevice::WriteOnly ) )
+  {
+    fileOut.write( mValue );
+    fileOut.close();
 
-  if ( mMessageBar )
-    mMessageBar->pushSuccess( QString(), tr( "Saved content to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ) );
+    if ( mMessageBar )
+      mMessageBar->pushSuccess( QString(), tr( "Saved content to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ) );
+  }
+  else if ( mMessageBar )
+  {
+    mMessageBar->pushMessage( QString(), tr( "Error opening %1 for write" ).arg( QDir::toNativeSeparators( file ) ), Qgis::MessageLevel::Critical );
+  }
 }
 
 void QgsBinaryWidgetWrapper::setContent()

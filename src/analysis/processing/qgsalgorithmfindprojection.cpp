@@ -157,7 +157,9 @@ QVariantMap QgsFindProjectionAlgorithm::processAlgorithm( const QVariantMap &par
         feedback->pushInfo( QObject::tr( "Found candidate CRS: %1." ).arg( candidateCrs.authid() ) );
         QgsFeature f = QgsFeature( fields );
         f.setAttributes( QgsAttributes() << candidateCrs.authid() );
-        sink->addFeature( f, QgsFeatureSink::Flag::FastInsert );
+        if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+
         foundResults++;
       }
     }

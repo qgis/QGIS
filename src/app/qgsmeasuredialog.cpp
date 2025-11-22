@@ -738,7 +738,16 @@ void QgsMeasureDialog::updateUi()
       firstPoint = false;
     }
 
-    mTotal = mDa.measureLine( mTool->points() );
+    try
+    {
+      mTotal = mDa.measureLine( mTool->points() );
+    }
+    catch ( QgsCsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Coordinate transform error while calculating line length: %1" ).arg( e.what() ) );
+      mTotal = 0;
+    }
+
     mTable->show(); // Show the table with items
     mSpacer->changeSize( 40, 5, QSizePolicy::Fixed, QSizePolicy::Maximum );
     editTotal->setText( formatDistance( mTotal, mConvertToDisplayUnits ) );

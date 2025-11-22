@@ -72,11 +72,11 @@ QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer 
   ok = true;
   if ( !selectedOnly )
   {
-    return layer->getFeatures( request );
+    return layer->getFeatures( std::move( request ) );
   }
   else
   {
-    return layer->getSelectedFeatures( request );
+    return layer->getSelectedFeatures( std::move( request ) );
   }
 }
 

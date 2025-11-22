@@ -2383,9 +2383,12 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
   else if ( category == QLatin1String( "favorite" ) )
   {
     enableGroupInputs( false );
-    mModel->setTagId( -1 );
-    mModel->setSmartGroupId( -1 );
-    mModel->setFavoritesOnly( true );
+    if ( mModel )
+    {
+      mModel->setTagId( -1 );
+      mModel->setSmartGroupId( -1 );
+      mModel->setFavoritesOnly( true );
+    }
   }
   else if ( index.parent().data( Qt::UserRole + 1 ) == "smartgroups" )
   {

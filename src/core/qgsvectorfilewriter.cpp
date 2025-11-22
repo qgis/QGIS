@@ -3323,8 +3323,13 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
     FieldValueConverter *fieldValueConverter,
     QString *newLayer )
 {
+  if ( !layer )
+  {
+    return QgsVectorFileWriter::WriterError::ErrInvalidLayer;
+  }
+
   QgsCoordinateTransform ct;
-  if ( destCRS.isValid() && layer )
+  if ( destCRS.isValid() )
   {
     ct = QgsCoordinateTransform( layer->crs(), destCRS, layer->transformContext() );
   }

@@ -30,23 +30,35 @@ QgsGeometryMissingVertexCheck::QgsGeometryMissingVertexCheck( const QgsGeometryC
 
 {}
 
-void QgsGeometryMissingVertexCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryMissingVertexCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
   if ( feedback )
     feedback->setProgress( feedback->progress() + 1.0 );
 
+  QMap<QString, QSet<QVariant>> uniqueIds;
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
-
   QgsFeaturePool *featurePool = featurePools.value( featureIds.firstKey() );
-
+  if ( !featurePool )
+  {
+    QgsDebugError( QStringLiteral( "Could not retrieve feature pool for %1" ).arg( featureIds.firstKey() ) );
+    return QgsGeometryCheck::Result::Canceled;
+  }
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );
-
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     if ( feedback && feedback->isCanceled() )
     {
-      break;
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
+    if ( context()->uniqueIdFieldIndex != -1 )
+    {
+      QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );
+      if ( result != QgsGeometryCheck::Result::Success )
+      {
+        return result;
+      }
     }
 
     const QgsGeometry geometry = layerFeature.geometry();
@@ -68,6 +80,7 @@ void QgsGeometryMissingVertexCheck::collectErrors( const QMap<QString, QgsFeatur
       }
     }
   }
+  return QgsGeometryCheck::Result::Success;
 }
 
 void QgsGeometryMissingVertexCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const

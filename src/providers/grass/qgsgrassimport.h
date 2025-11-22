@@ -115,8 +115,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
 {
     Q_OBJECT
   public:
-    // takes pipe ownership
-    QgsGrassRasterImport( QgsRasterPipe *pipe, const QgsGrassObject &grassObject, const QgsRectangle &extent, int xSize, int ySize );
+    QgsGrassRasterImport( std::unique_ptr< QgsRasterPipe > pipe, const QgsGrassObject &grassObject, const QgsRectangle &extent, int xSize, int ySize );
     ~QgsGrassRasterImport() override;
     bool import() override;
     QString srcDescription() const override;
@@ -126,7 +125,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
     QStringList names() const override;
 
   private:
-    QgsRasterPipe *mPipe = nullptr;
+    std::unique_ptr< QgsRasterPipe > mPipe;
     QgsRectangle mExtent;
     int mXSize;
     int mYSize;

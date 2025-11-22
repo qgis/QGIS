@@ -31,6 +31,27 @@ QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer *layer, int fieldId
 {
 }
 
+int QgsRangeWidgetWrapper::defaultFieldPrecision( const QgsField &field )
+{
+  constexpr int DEFAULT_PRECISION_DOUBLE = 4;
+  const int fieldPrecision = field.precision();
+  switch ( field.type() )
+  {
+    case QMetaType::Type::Float:
+    case QMetaType::Type::Double:
+      return fieldPrecision > 0 ? fieldPrecision : DEFAULT_PRECISION_DOUBLE;
+
+    // we use the double spin box for long long fields in order to get sufficient range of min/max values
+    case QMetaType::Type::LongLong:
+      return 0;
+
+    default:
+      break;
+  }
+
+  return fieldPrecision;
+}
+
 QWidget *QgsRangeWidgetWrapper::createWidget( QWidget *parent )
 {
   QWidget *editor = nullptr;
@@ -102,9 +123,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     const double maxval = max.isValid() ? max.toDouble() : std::numeric_limits<double>::max();
 
     const QgsField field = layer()->fields().at( fieldIdx() );
-    // we use the double spin box for long long fields in order to get sufficient range of min/max values
-    const int precisionval = field.type() == QMetaType::Type::LongLong ? 0 : ( precision.isValid() ? precision.toInt() : field.precision() );
-
+    const int precisionval = precision.isValid() ? precision.toInt() : defaultFieldPrecision( field );
     mDoubleSpinBox->setDecimals( precisionval );
 
     QgsDoubleSpinBox *qgsWidget = qobject_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );

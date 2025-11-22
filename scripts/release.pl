@@ -197,7 +197,7 @@ unless( defined $dopoint ) {
 } else {
 	if($newpatch == 1) {
 		run( "cp -v images/splash/splash-${newmajor}.${newminor}.png images/splash/splash.png", "splash png switch failed" );
-	} elsif($newpatch == 4) {	# TODO handle EPRs
+	} elsif($newpatch == 8) {	# TODO handle EPRs
 		if( system("git tag -l | grep -q '^ltr-${newmajor}_${newminor}'") == 0) {
 			run( "cp -v images/splash/splash-${newmajor}.${newminor}ltr.png images/splash/splash.png", "splash png switch failed" );
 		}

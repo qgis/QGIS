@@ -163546,7 +163546,7 @@ Válasszon ki egy csoportot vagy intelligens csoportot, amit törölni akar.</tr
     <message>
         <location filename="../src/ui/editorwidgets/qgstexteditconfigdlg.ui"/>
         <source>Multiline</source>
-        <translation>Többrészes vonal</translation>
+        <translation>Többsoros szöveg</translation>
     </message>
     <message>
         <location filename="../src/ui/editorwidgets/qgstexteditconfigdlg.ui"/>

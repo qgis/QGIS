@@ -1,3 +1,1003 @@
+Jürgen E. Fischer <jef@norbit.de>	2025-11-21
+
+    translation update for 3.44.5 from transifex
+
+Jean Felder <jean.felder@oslandia.com>	2025-09-12
+
+    testqgs3dexporter: Remove unused terrain_scene_export test
+
+    This test was never activated because the obj file was too big.
+
+Jean Felder <jean.felder@oslandia.com>	2025-09-12
+
+    tests(3d): Factor out the exporter tests
+
+    Move it to a dedicated file.
+
+Jean Felder <jean.felder@oslandia.com>	2025-09-11
+
+    qgs3dsceneexporter: Fix terrain export
+
+    In the different terrain cases, the generated tiles have an origin at
+    0 unlike other objects which have their origin correctly set. Fix the
+    issue by setting the correct origin. This is the same logic that is
+    applied in `Qgs3DMapScene::createTerrainDeferred` when a new terrain
+    entity is created.
+
+    Fixes: b0e038559dc8627ba5d8bfe0bd419634f9cfc3af
+
+Merge: d35f9c39b1e e0efaae6238
+Matthias Kuhn <matthias@opengis.ch>	2025-11-20
+
+    Merge pull request #63988 from Xpirix/backport-63917-to-release-3_44
+
+    [Backport release-3_44] Override nix libspatialindex to use version 2.0.0
+
+Merge: a6a8355b697 82b41344c5e
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-20
+
+    Merge pull request #63977 from qgis/backport-63095-to-release-3_44
+
+    [Backport release-3_44] Don't add undo step when model algorithm was not modified
+
+Xpirix <lova@kartoza.com>	2025-11-13
+
+    Override nix libspatialindex to use version 2.0.0
+
+viperminiq <viperminiq@gmail.com>	2025-11-17
+
+    check correct renderer type before down casting
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-17
+
+    Fix range widget defaults to zero precision for GPKG real fields
+
+    The range widget was incorrectly interpreting a double/real field
+    of 0 as "no decimal places", where it explicitly means "not
+    applicable to this field" (as taken from the documentation for
+    QgsField::precision)
+
+    This meant that applying a range widget to a GPKG real field
+    would result in the widget showing ZERO decimal places by default,
+    which was a confusing mess for users.
+
+    Now, correctly handle 0 precision double fields as "not applicable"
+    and default to a reasonable number of decimals for the range widget
+    (currently hardcoded to 4)
+
+Stefanos Natsis <uclaros@gmail.com>	2025-10-14
+
+    Skip undo step if dialog did not modify the algorithm
+
+Stefanos Natsis <uclaros@gmail.com>	2025-09-03
+
+    Don't add undo step when algorithm was not modified
+
+Merge: 948a26c42a0 472389b6e40
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-19
+
+    Merge pull request #63958 from qgis/backport-63919-to-release-3_44
+
+    [Backport release-3_44] fix: create default processing output directory only when needed
+
+David Signer <david@opengis.ch>	2025-11-06
+
+    set english locale to unittest
+
+David Signer <david@opengis.ch>	2025-10-28
+
+    introduce method to remove locale formatting to be able to use a formatted string in the filter expressions
+
+    use QgsDoubleValidator::toDouble to convert locale formatting (as well as c-locale) to a valid numeric expression value
+
+    make use of existing isNumericType function and improve code
+
+    fixes #63712
+
+David Signer <david@opengis.ch>	2025-10-28
+
+    tests for locale formatting in QgsDefaultSearchWidgetWrapper::setExpression
+
+David Signer <david@opengis.ch>	2025-10-28
+
+    Remove local number formatting from the value used in the expression.
+
+Benoit D.-M. - oslandia <64401067+benoitdm-oslandia@users.noreply.github.com>	2025-11-17
+
+    Apply suggestion from @alexbruy
+
+    Co-authored-by: Alexander Bruy <alexander.bruy@gmail.com>
+
+bdm-oslandia <benoit.de.mezzo@oslandia.com>	2025-11-13
+
+    fix: create default processing output directory only when needed
+
+    This avoids systematic creation of default processing output directory into the user home
+    directory. If the user has already set the "Processing/Configuration/OUTPUTS_FOLDER"
+    setting, there is no need to create the defaut directory.
+
+    Ref #61965
+
+Merge: fb0c18bc371 93a3923c59b
+David Signer <david@opengis.ch>	2025-11-17
+
+    Merge pull request #63950 from qgis/backport-63922-to-release-3_44
+
+    [Backport release-3_44] Don't update default values while initializing multi edit form
+
+Joonalai <joona.laine@cofactor.fi>	2025-11-13
+
+    Don't update form when setting multi edit features
+
+Stefanos Natsis <uclaros@gmail.com>	2025-11-16
+
+    avoid leak if transform throws
+
+qgis-bot <bot@qgis.org>	2025-11-16
+
+    auto sipify 🍺
+
+Merge: 013e7a5d24a 0c38b1e885c
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-16
+
+    Merge pull request #63924 from nyalldawson/backport_63861
+
+    When rendering text-on-line annotations, don't truncate text (backport)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-13
+
+    Test mask
+
+    (cherry picked from commit 906c8416c88c7c820cce6ca60f2e9c19a8a0beab)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-10
+
+    When rendering text-on-line annotations, don't truncate text
+
+    Instead extend the final portion of the line to fit the whole text
+
+    Aside from being a more user-friendly behavior, this also avoids
+    issues where final characters in a string may unpredictably
+    show or hide depending on the map scale, if they only JUST fit
+    with the line length.
+
+    (cherry picked from commit 23dc094fe27bb9738b1dd1ac694475d7f8449307)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-10
+
+    [api] Add flag for extending curved line to fit whole string
+
+    Instead of truncating the text, this allows the curve to be
+    automatically extended to fit the whole text string
+
+    (cherry picked from commit 20f6b09e687c47b888c3d133ee99e0bca28647a8)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-10
+
+    Expose caller control over curved text flags
+
+    (cherry picked from commit 0274a72cf448a649655a1a7ca1114bda8d731478)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-10
+
+    Move curved text flags to Qgis
+
+    (cherry picked from commit 1e835d598e34a280f6a7a4b1f37de65c0662d47c)
+
+Merge: 73410256123 d12f6838fa8
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-12
+
+    Merge pull request #63882 from qgis/backport-63845-to-release-3_44
+
+    [Backport release-3_44] [raster][labels] Fix absence of expression context when using an expression based format for labels
+
+Merge: 73bab05e0b4 809e78c1538
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-12
+
+    Merge pull request #63892 from qgis/backport-63873-to-release-3_44
+
+    [Backport release-3_44] Fix copying min elevation from profile dock to layout item
+
+Merge: d9bab044e5f a90807eac05
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-12
+
+    Merge pull request #63897 from qgis/backport-63885-to-release-3_44
+
+    [Backport release-3_44] [dual view] Fix broken display name preview button logic, make it clear we're dealing with the display name
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-11
+
+    [dual view] Fix broken display name preview button logic, make it clear we're dealing with the display name
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-11
+
+    Fix copying min elevation from profile dock to layout item
+
+    Use the min elevation, not min distance
+
+Merge: fc85e7e9e6b 347d96f622d
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-11
+
+    Merge pull request #63872 from qgis/backport-63860-to-release-3_44
+
+    [Backport release-3_44] Coverity fixes (final set!)
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-11
+
+    Add tolerance mask
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-11
+
+    Fix bad commit
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-10
+
+    Address review, add test
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-08
+
+    [raster][labels] Fix \n characters not resulting in multiline labels
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-08
+
+    [raster][labels] Fix absence of expression context when using an expression based format for labels
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-04
+
+    Remove unused variable
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-04
+
+    Avoid some unused return value warnings
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-04
+
+    Show error message when writing to file fails
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-04
+
+    Check result of statement before retrieving value
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-04
+
+    Catch possible exception when migrating old settings
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-04
+
+    Remove dead code
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-04
+
+    Catch possible transform error when retrieving project full extent
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-04
+
+    Fix some uninitialized variables
+
+    (cherry picked from commit 7e6fdd41f8217ba09c80a22b434ed84ed1cbc58d)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-04
+
+    Fix some nullptr dereference warnings
+
+    (cherry picked from commit 4e9bc679d150efce2efff4823e9e9e319bd4ab81)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-04
+
+    Avoid overflow when calculating gpu memory size
+
+    (cherry picked from commit 9db13ca1c05ccf5565747462ea8cff07fe08b5e1)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-10
+
+    Fix coverity unchecked dynamic cast warnings
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-10
+
+    Gracefully handle some more possible exceptions
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-08
+
+    Fix potential nullptr derefence
+
+    (cherry picked from commit 07e4bc81edf5c2a55d51509db489fb1f058f5607)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-08
+
+    Check result of fetching query row before fetching values
+
+    (cherry picked from commit d19cf77579221de96a1f8816fb7d275e247755c4)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-08
+
+    Fix potential nullptr derefence
+
+    (cherry picked from commit 2dacdb1edf0cd817f154cbde770e5fdd647cf020)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-08
+
+    Initialize member variable
+
+    (cherry picked from commit 442e88658850b22da0872b896c04730f35b92375)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-08
+
+    Fix some potential nullptr dereference warnings
+
+    (cherry picked from commit 7911d25f5b412a2775311cf272d88fffc5b9768a)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-08
+
+    Gracefully handle some uncaught exceptions
+
+    (cherry picked from commit 46e4f1ab84dfbd0bbf7ca124c80ecea48b1e0824)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-08
+
+    Remove logically dead code
+
+    (cherry picked from commit f2cb0908006f1696e2c3941dd75f1dd7bac31ce3)
+
+qgis-bot <bot@qgis.org>	2025-11-10
+
+    auto sipify 🍺
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-08
+
+    [temporal][ui] Fix missing cumulative range checkbox to get exported animation matching temporal controller preview
+
+Ivan Barsukov <i.barsukov@protonmail.com>	2025-11-06
+
+    Update empty script warning message in Python console
+
+Ivan Barsukov <i.barsukov@protonmail.com>	2025-11-01
+
+    Fix temporary file check
+
+Andrea Giudiceandrea <andreaerdna@libero.it>	2025-11-09
+
+    A couple typo fixes
+
+    Co-authored-by: Even Rouault <even.rouault@spatialys.com>
+
+qgis-bot <bot@qgis.org>	2025-11-08
+
+    auto sipify 🍺
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-04
+
+    Fix clang-tidy warning
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Throw exception when we can't open file for writing
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Catch hana exception while closing iterators
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Log error if we can't open files during copy operation
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Remove dead code
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Initialize some members
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Check that row retrieval is successful before retrieving value
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Log error if we can't truncate the code editor history
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Catch possible exception from backwardCompatibility
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Remove dead code
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Initialize members
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Correctly abort when feature write error occurs
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Check that row retrieval was successful before retrieving value
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Remove dead code
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Fix some nullptr dereference warnings
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Intentionally ignore some return values
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Move large object
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Fix some uninitialized member warnings
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Remove dead code
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Make memory management cleaner
+
+qgis-bot <bot@qgis.org>	2025-11-06
+
+    auto sipify 🍺
+
+Merge: 11ea5957ecb e34500cfbe6
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-06
+
+    Merge pull request #63795 from nyalldawson/backport_63697
+
+    Coverity fixes backport
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Fix coverity dereference null return value warnings
+
+    (cherry picked from commit 4dc74c45a3d002b85807d2d78d1b5071729c29a7)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Fix build
+
+    (cherry picked from commit f7ebb314cbc2567011041aafa50076e4e07bed9f)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    ctx is never nullptr, so use a reference instead of a pointer
+
+    Cleans up api and code considerably
+
+    (cherry picked from commit b1551237924077a0c30575bce477843eca10f829)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Use correct render context to avoid nullptr dereference
+
+    (cherry picked from commit 76498cdb0fac2a072e064ab406dadcad704429ba)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Remove redundant nullptr checks
+
+    These objects can never be null
+
+    (cherry picked from commit 4b6c37350c420daf774dfaed12f55b2d080b3324)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Add nullptr checks to fix coverity nullptr deference issues
+
+    (cherry picked from commit 53b271730591a641f1e89326ec1b9e3e42299092)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Ensure QgsReadWriteContext always has a valid project translator
+
+    And avoid redundant nullptr checks
+
+    (cherry picked from commit 5e833af11c1607a4568fd0e9d135a92217b52cc7)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Fix coverity big parameter passed by value warning
+
+    (cherry picked from commit ce0c60f2e25e85ae3993b4a5267c497278568d5a)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Avoid coverity argument cannot be negative warning
+
+    (cherry picked from commit 22bc0871c0111aab703366bdac6537d6e82a5080)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Make API more sensible, pass floats instead of pointers
+
+    (cherry picked from commit 2c5368bd1c23af995bd03e4993ab9f7307dbcccc)
+
+qgis-bot <bot@qgis.org>	2025-11-05
+
+    auto sipify 🍺
+
+Merge: ff4d7671a5b 196d7ffc9e6
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-05
+
+    Merge pull request #63798 from nyalldawson/backport_63771
+
+    Coverity fixes (backport)
+
+Stefanos Natsis <uclaros@gmail.com>	2025-10-30
+
+    Reload current style on double click
+
+Even Rouault <even.rouault@spatialys.com>	2025-11-04
+
+    src/core/pal/priorityqueue.cpp: add missing inclusion
+
+Even Rouault <even.rouault@spatialys.com>	2025-11-04
+
+    CMakeLists.txt: make USE_PRECOMPILED_HEADERS an option that can be disabled
+
+Greg Troxel <gdt@lexort.com>	2025-11-03
+
+    qgsrasterattributetable: Add std:: to bare isnan()
+
+Merge: a32fb499de2 5275cd418ef
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-04
+
+    Merge pull request #63791 from qgis/backport-63775-to-release-3_44
+
+    [Backport release-3_44] Coverity fixes
+
+Merge: 4b439e8148b 9b0e30cb136
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-04
+
+    Merge pull request #63793 from qgis/backport-63774-to-release-3_44
+
+    [Backport release-3_44] Fix Z/m logic in translate algorithm
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Add const
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Silence false-positive cppcheck warning
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix incorrectly double-owned task in hana provider
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Remove dead code
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix debug message level call
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix memory management in cesium provider a little clearer
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Gracefully handle failures to copy master db when creating user profiles
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix build
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix a leak
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Gracefully handle null return values from geos point on surface
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Gracefully handle case where we can't open file for writing
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix some possible divide by zero issues
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Remove some dead code
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix some uninitialized scalars
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix some coverity nullptr dereference warnings
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix integer overflows
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix leaks in QgsUserProfileManager callers
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix some coverity nullptr dereference warnings
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Fix coverity variable copied when could be moved warnings
+
+    (cherry picked from commit 74ecc1655408710860f0cf94437ebe8ce2b9fbd3)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Remove dead code
+
+    (cherry picked from commit 6d25036571e32db8c0fc0097e230902d650eaf7a)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Fix Z/m logic in translate algorithm
+
+    When promoting from non z/m geometries to z/m geometries, we still
+    need to ensure the output geometry has z/m values even if we
+    aren't directly translating those (ie. translation is zero).
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Report actual error message from sink when available
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-02
+
+    Add sink addFeatures checks to more algorithms
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Fix possible error condition in OMBB implementation
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Remove some dead code
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Fix some unchecked dynamic cast warnings
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Fix check which would always be true
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Fix some uncaught QgsCsException instances
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-11-03
+
+    Remove dead code
+
+Mathieu Pellerin <nirvn.asia@gmail.com>	2025-11-03
+
+    [core] Reset the QgsApplication message log member _last_ in case other members throw log messages during destruction
+
+Merge: c89f639e593 9c99b48a39a
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-02
+
+    Merge pull request #63719 from nyalldawson/backport_63681
+
+    Coverity scan fixes
+
+Merge: 348be09a8ae a1c97740606
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-02
+
+    Merge pull request #63721 from nyalldawson/backport_63705
+
+    Fix some coverity explicit null dereferenced warnings (manual backport)
+
+Harrissou Sant-anna <delazj@gmail.com>	2025-10-30
+
+    Adjust test case
+
+Harrissou Sant-anna <delazj@gmail.com>	2025-10-30
+
+    Reword fix methods in "Split self-intersecting geometries" algorithm
+
+Merge: 3e9e1c59a6f fb1443ef008
+Alexander Bruy <alexander.bruy@gmail.com>	2025-11-01
+
+    Merge pull request #63753 from qgis/backport-63736-to-release-3_44
+
+    [Backport release-3_44] [vertextool] Also interpolate Z/M for topo layers when adding vertex
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-30
+
+    [vertextool] Also interpolate Z/M for topo layers when adding vertex
+
+    Follow up #63055 -- ensure that matching topological layers also
+    have the Z/M values for newly added vertices interpolated from
+    neighbouring vertices.
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Protect against some divide by zero issues
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-29
+
+    Fix completely broken return value logic for QgsAuthManager::masterPasswordRowsInDb
+
+    This method should be returning false only when the quering failed
+    completely, not when the query was successful but no rows exist
+
+    (This worked before the parent cleanup commit because then we were
+    incorrectly returning true whenever the int* pointer was non-null,
+    i.e. we were always returning true)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Fix incorrect return value from masterPasswordRowsInDb, cleanup api
+
+    We were incorrectly comparing the int* pointer to 0, not its value
+
+    Just side step the whole issue by cleaning up the API and using an int& argument instead
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-30
+
+    Add test mask
+
+Merge: 1af3f584476 cc322376731
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-30
+
+    Merge pull request #63723 from qgis/backport-63706-to-release-3_44
+
+    [Backport release-3_44] Remove incorrect early exit path
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    [afs] Fix validation of unset objectid fields
+
+    Fixes #63272
+
+qgis-bot <bot@qgis.org>	2025-10-29
+
+    auto sipify 🍺
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Apply suggestion
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Cleanup and avoid cast
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Fix some coverity unchecked dynamic_cast warnings
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Use qgis::down_cast instead of dynamic_cast when we expect a class
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Make QgsPointCloud3DSymbol clone return concrete types
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Return unique_ptr, fix leak from PyQGIS
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Remove incorrect early exit path
+
+    The value returned by featureCount() is allowed to be negative,
+    which represents an unknown feature count. We must still attempt
+    to iterate the layer in this situation, as there may be
+    features in the layer still.
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Rework logic for readability, avoid coverity null dereferenced warning
+
+    (cherry picked from commit 66110f19d3522ae7c3bcc39865ee20ad2419bd59)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Avoid coverity null dereferenced warnings
+
+    And make things more efficient by avoiding double-lookups in
+    hashes/maps
+
+    (cherry picked from commit fa9ab0e151a7fb0661c4b611e1d47826f11a4c9c)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Fix some coverity explicit null dereferenced issues
+
+    (cherry picked from commit 0932cda80f972a900253e82050f601f89027d311)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-28
+
+    Fix some coverity explicit null dereferenced warnings
+
+    (cherry picked from commit 9f7a6632eb1e5f4dd36cbae3077b63263e71f25f)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Fix use after free warning
+
+    And use unique_ptr for memory safety
+
+    (cherry picked from commit 8803fe33940c734f5f04153766b1398c4fe0a0e5)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Fix possible overflow in band statistics std dev calculation
+
+    (cherry picked from commit 253276e30afa5ed0b4e47fde01bd20df69c4a723)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Fix uninitialized member warning
+
+    (cherry picked from commit 36b4b67587161ad11e06896677392386d4602a3a)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Fix possible divide by zero
+
+    (cherry picked from commit 251cecce95e3b065633f9723179b068d07903ab8)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Fix some coverity unchecked results warnings
+
+    (cherry picked from commit 070b7b03214899770a097ab53f4c9681e67aa6de)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Fix coverity variable copied when could be moved warnings
+
+    (cherry picked from commit 02769b784b7793ce0a9dd1dafa6eb89f88b67774)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Fix some coverity nullptr dereference warnings
+
+    (cherry picked from commit 46dcba47ab58ecedddbcfe07d747684f0992bb7b)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-26
+
+    Fix crash in postgres browser menu
+
+    The dialog takes ownership of the connection, so we end up
+    with double-ownership
+
+    (cherry picked from commit c5080f0848754010f8d0884187fee4e417ff341e)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-26
+
+    Fix variable copied when could be moved warning
+
+    (cherry picked from commit 578072908a53b868579cd1eb7c5af605a343ba51)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-26
+
+    Fix some more unchecked dynamic cast warnings
+
+    (cherry picked from commit e84a7341c41a22dd8acd44722d7dffc5cf2de88d)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-26
+
+    Fix big parameter passsed by value warning
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-26
+
+    Fix unchecked return value warnings
+
+    (cherry picked from commit 3749b0604bae91659170e6acf82f23358a58bffe)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-26
+
+    Fix dereference after free warning
+
+    (cherry picked from commit a787a6468cec9f5e1ff29e1794c51eaf42b87ce3)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-26
+
+    Fix different smart pointers managing same raw pointer warning
+
+    (cherry picked from commit 1d9f5e4838dbd6035ab8d8689cc094c4db7af590)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-26
+
+    Fix layer validity check
+
+    The unique_ptr will never be null, we need to instead check the validity of the result
+
+    (cherry picked from commit 3efee3f0367030a4c66e5d0b9f6179f261c1d9f6)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-26
+
+    Fix coverity deference null checks/unchecked cast warnings
+
+    (cherry picked from commit bb4c2b4f1e031dd05fa29d2361f9461e88f36d6d)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Fix copy/paste error in QgsPalLayerSettings::calculateLabelSize for rotation based orientation text size
+
+Jürgen E. Fischer <jef@norbit.de>	2025-10-28
+
+    fix 5146792ce5 (reverts splash update from 108203c541; fixes #63692)
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-27
+
+    Disable macos build on 3.44
+
+    This has been broken for some time, and always fails
+
+qgis-bot <bot@qgis.org>	2025-10-27
+
+    auto sipify 🍺
+
+Merge: d1abda64735 48c0e05e0f0
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-27
+
+    Merge pull request #63635 from alexbruy/backport-63304-to-release-3_44
+
+    [Backport release-3_44] fixes for Processing geometry checker algorithms
+
+Ștefan Talpalaru <stefantalpalaru@yahoo.com>	2025-06-20
+
+    fix compilation with GCC-15
+
+Merge: 7d208c2fd70 b4f69b22403
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-26
+
+    Merge pull request #63677 from qgis/backport-63657-to-release-3_44
+
+    [Backport release-3_44] Fix tooltip for low crs accuracy warning for EPSG:25832
+
+Merge: 108203c541e a057db617fd
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-25
+
+    Merge pull request #63675 from qgis/backport-63668-to-release-3_44
+
+    [Backport release-3_44] Make output parameter required in r.cost.txt
+
+Nyall Dawson <nyall.dawson@gmail.com>	2025-10-23
+
+    Fix tooltip for low crs accuracy warning for EPSG:25832
+
+    The order of the checks should match those from
+    QgsLayerTreeViewLowAccuracyIndicatorProvider::acceptLayer, so
+    that the tooltip accurately reflects why the warning is being
+    shown.
+
+    (Otherwise we get the ensemble accuracy tooltip when the indicator
+    is actually being shown because of the dynamic-crs-without-epoch
+    trigger)
+
+Alister Hood <alister.hood@gmail.com>	2025-10-24
+
+    Make output parameter required in r.cost.txt
+
+    Fixes #60389
+
+Jürgen E. Fischer <jef@norbit.de>	2025-10-24
+
+    Release of 3.44.4
+
 Jürgen E. Fischer <jef@norbit.de>	2025-10-24
 
     translation update for 3.44.4 from transifex
@@ -19,6 +1019,81 @@ Alexander Bruy <alexander.bruy@gmail.com>	2025-10-20
 Alexander Bruy <alexander.bruy@gmail.com>	2025-10-20
 
     fix mixup in the outputs of the small gaps geometry check algorithm (fix #63614)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-02
+
+    add documentation
+
+    (cherry picked from commit 4256f9d93a9db1ecb0b3078a3383eeb64d7ed9d4)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-02
+
+    address review
+
+    (cherry picked from commit 109f58439848ecccbb7b565075bcfda0a86a2395)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-02
+
+    remove comment
+
+    (cherry picked from commit dd35b1b7df9b8cebba35528b145f35e506138b7b)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-01
+
+    make small gaps check/fix work without QgsProject::instance()
+
+    (cherry picked from commit 19a8599ca68a5c76be5aaeebb8ac3a3adb01f062)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-01
+
+    do not use QgsProject::instance() in the majority of the geometry
+    checker algorithms
+
+    The small gaps check still rely on QgsProject::instance() as well
+    as corresponding fixer.
+
+    (cherry picked from commit 75f5f57c105d7a639181b9d51c846b5fd1601193)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-01
+
+    mark geometry checker algorithms as requiring project
+
+    (cherry picked from commit adfcf666edd470537448a5ec2860d1d620eab127)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-10-01
+
+    add cancellation support in more places
+
+    (cherry picked from commit 0ba6216859ba816c3d314750d50c9af24f44f558)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-09-30
+
+    more const
+
+    (cherry picked from commit 26c7fa0930386d9001c92699818e2f68da56518c)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-09-30
+
+    add cancellation support for collecting errors in geometry checks
+
+    (cherry picked from commit 22d17abd584778c101f76b9c28bbadaf90e44239)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-09-30
+
+    add tests
+
+    (cherry picked from commit c10951d1d3fc2751adf6fb67a38503e33fdff5ee)
+
+Alexander Bruy <alexander.bruy@gmail.com>	2025-09-30
+
+    optionally check for duplicated unique IDs when performing geometry
+    checks
+
+    If the uniqueIdFieldIndex in QgsGeometryCheckerContext is a valid field
+    index, check that there are no duplicated values in that field and fail
+    if this is the case.
+
+    (cherry picked from commit 6038a4a84ce91a33eafb186aa8489596964e01e4)
 
 Jean Felder <jean.felder@oslandia.com>	2025-10-16
 

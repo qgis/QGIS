@@ -28,6 +28,7 @@
  */
 
 #include <cstdio>
+#include <memory>
 
 #include "internalexception.h"
 #include "priorityqueue.h"
