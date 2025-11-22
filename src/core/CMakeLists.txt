@@ -2561,6 +2561,7 @@ target_include_directories(qgis_core PUBLIC
   maprenderer
   mesh
   metadata
+  multimedia
   network
   numericformats
   painting
