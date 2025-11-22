@@ -80,6 +80,7 @@ class TestQgsVectorLayer : public QgsTest
     void testFieldExpression();
     void testFieldAggregateExpression();
     void testAddFeatureExtentUpdated();
+    void testSelectByIdsValidation();
 };
 
 void TestQgsVectorLayer::initTestCase()
@@ -540,6 +541,65 @@ void TestQgsVectorLayer::testAddFeatureExtentUpdated()
   QCOMPARE( spyDeleted.at( 0 ).at( 0 ), QVariant( lineF1.id() ) );
 
   delete layerLine;
+}
+
+void TestQgsVectorLayer::testSelectByIdsValidation()
+{
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=id:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature f1( layer->fields() );
+  f1.setAttribute( 0, 1 );
+  QgsFeature f2( layer->fields() );
+  f2.setAttribute( 0, 2 );
+  QgsFeature f3( layer->fields() );
+  f3.setAttribute( 0, 3 );
+  QgsFeature f4( layer->fields() );
+  f4.setAttribute( 0, 4 );
+  QgsFeature f5( layer->fields() );
+  f5.setAttribute( 0, 5 );
+
+  layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 << f5 );
+  QCOMPARE( layer->featureCount(), 5L );
+
+  QgsFeatureIds testIds = { 1, 2, 99, 100, 3 };
+  layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, false );
+  QCOMPARE( layer->selectedFeatureCount(), 5 );
+  QCOMPARE( layer->selectedFeatureIds().size(), 3 );
+  QVERIFY( layer->selectedFeatureIds().contains( 1 ) );
+  QVERIFY( layer->selectedFeatureIds().contains( 2 ) );
+  QVERIFY( layer->selectedFeatureIds().contains( 3 ) );
+
+  layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
+  QCOMPARE( layer->selectedFeatureCount(), 3 );
+  QCOMPARE( layer->selectedFeatureIds().size(), 3 );
+  QVERIFY( layer->selectedFeatureIds().contains( 1 ) );
+  QVERIFY( layer->selectedFeatureIds().contains( 2 ) );
+  QVERIFY( layer->selectedFeatureIds().contains( 3 ) );
+
+  testIds = { 99, 100, 200 };
+  layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
+  QCOMPARE( layer->selectedFeatureCount(), 0 );
+  QVERIFY( layer->selectedFeatureIds().isEmpty() );
+
+
+  testIds = { 1, 2, 3, 4, 5 };
+  layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
+  QCOMPARE( layer->selectedFeatureCount(), 5 );
+  QCOMPARE( layer->selectedFeatureIds().size(), 5 );
+
+
+  testIds = { 1, 2 };
+  layer->selectByIds( testIds, Qgis::SelectBehavior::SetSelection, true );
+  QCOMPARE( layer->selectedFeatureCount(), 2 );
+
+  testIds = { 3, 99 };
+  layer->selectByIds( testIds, Qgis::SelectBehavior::AddToSelection, true );
+  QCOMPARE( layer->selectedFeatureCount(), 3 ); // Should have 1, 2, 3
+  QVERIFY( layer->selectedFeatureIds().contains( 1 ) );
+  QVERIFY( layer->selectedFeatureIds().contains( 2 ) );
+  QVERIFY( layer->selectedFeatureIds().contains( 3 ) );
+  QVERIFY( !layer->selectedFeatureIds().contains( 99 ) );
 }
 
 
