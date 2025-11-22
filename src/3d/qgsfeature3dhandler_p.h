@@ -32,6 +32,7 @@
 class QgsFeature;
 
 #include "qgs3drendercontext.h"
+#include "qgsbox3d.h"
 
 #define SIP_NO_FILE
 
@@ -49,7 +50,7 @@ class QgsFeature3DHandler
      * Called before feature iteration starts to initialize, get required attributes.
      * \returns TRUE on success (on FALSE the handler failed to initialize and processFeature() / finalize() should not be called
      */
-    virtual bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) = 0;
+    virtual bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent ) = 0;
 
     /**
      * Called for every feature to extract information out of it into some
@@ -88,6 +89,13 @@ class QgsFeature3DHandler
     float mZMin = std::numeric_limits<float>::max();
     float mZMax = std::numeric_limits<float>::lowest();
     int mFeatureCount = 0;
+
+    //! origin (in the map coordinates) for output geometries - it is kind of arbitrary, but it should be
+    //! picked so that the coordinates are relatively small to avoid numerical precision issues (e.g. at the center of the chunk)
+    QgsVector3D mChunkOrigin;
+
+    //! bounding box of the chunk
+    QgsBox3D mChunkExtent;
 };
 
 

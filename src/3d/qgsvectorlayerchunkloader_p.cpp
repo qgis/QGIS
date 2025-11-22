@@ -70,25 +70,21 @@ void QgsVectorLayerChunkLoader::start()
   }
   mHandler.reset( handler );
 
-  // only a subset of data to be queried
-  const QgsRectangle rect = node->box3D().toRectangle();
-  // origin for coordinates of the chunk - it is kind of arbitrary, but it should be
-  // picked so that the coordinates are relatively small to avoid numerical precision issues
-  QgsVector3D chunkOrigin( rect.center().x(), rect.center().y(), 0 );
-
   QgsExpressionContext exprContext;
   exprContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   exprContext.setFields( layer->fields() );
   mRenderContext.setExpressionContext( exprContext );
 
   QSet<QString> attributeNames;
-  if ( !mHandler->prepare( mRenderContext, attributeNames, chunkOrigin ) )
+  if ( !mHandler->prepare( mRenderContext, attributeNames, node->box3D() ) )
   {
     QgsDebugError( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
     return;
   }
 
   // build the feature request
+  // only a subset of data to be queried
+  const QgsRectangle rect = node->box3D().toRectangle();
   QgsFeatureRequest req;
   req.setCoordinateTransform(
     QgsCoordinateTransform( layer->crs3D(), mRenderContext.crs(), mRenderContext.transformContext() )
