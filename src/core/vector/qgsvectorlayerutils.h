@@ -454,13 +454,14 @@ class CORE_EXPORT QgsVectorLayerUtils
 
     /**
      * Filters a set of feature IDs to only include those that exist in the layer.
+     *
      * This method can be used to validate feature IDs before selection operations to ensure
      * accurate selection counts. It performs a minimal query (no geometry or attributes) for efficiency.
      * \param layer vector layer to check feature IDs against
      * \param featureIds set of feature IDs to filter
      * \returns subset of featureIds containing only IDs that exist in the layer
      * \see QgsVectorLayer::selectByIds()
-     * \since QGIS 3.40
+     * \since QGIS 4.0
      */
     static QgsFeatureIds filterValidFeatureIds( const QgsVectorLayer *layer, const QgsFeatureIds &featureIds );
 

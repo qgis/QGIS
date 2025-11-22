@@ -1437,7 +1437,10 @@ QByteArray QgsVectorLayerUtils::fieldToDataArray( const QgsFields &fields, const
 
 QgsFeatureIds QgsVectorLayerUtils::filterValidFeatureIds( const QgsVectorLayer *layer, const QgsFeatureIds &featureIds )
 {
-  if ( !layer || featureIds.isEmpty() )
+  if ( !layer )
+    return QgsFeatureIds();
+
+  if ( featureIds.isEmpty() )
     return featureIds;
 
   // build up an optimised feature request

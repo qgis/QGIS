@@ -822,12 +822,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param ids feature IDs to select
      * \param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
-     * \param validateIds if TRUE, filters out invalid feature IDs before selection.
-     * Set to FALSE (default) for best performance. Enable validation when calling
-     * from Python or when ID validity is uncertain to avoid incorrect selection counts.
+     * \param validateIds (since QGIS 4.0) if set to TRUE, filters out invalid feature IDs before selection.
+     * Leave as FALSE (default) for best performance. Enable validation when calling
+     * from Python or when no-valid IDs may be present in the list to avoid incorrect selection counts.
      * \see selectByRect()
      * \see selectByExpression()
-     * \since QGIS 3.40 (validateIds parameter)
      */
     Q_INVOKABLE void selectByIds( const QgsFeatureIds &ids, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection, bool validateIds = false );
 
