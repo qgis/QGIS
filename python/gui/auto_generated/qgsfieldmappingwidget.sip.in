@@ -117,6 +117,16 @@ initial values for the expressions can be optionally specified through
 corresponding expression.
 %End
 
+    void appendDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+%Docstring
+Appends destination fields from ``destinationFields`` to the existing
+fields in the underlying model, initial values for the expressions can
+be optionally specified through ``expressions`` which is a map from the
+original field name to the corresponding expression.
+
+.. versionadded:: 3.42
+%End
+
     void setNativeTypes( const QList< QgsVectorDataProvider::NativeType > &nativeTypes );
 %Docstring
 Sets the list of ``nativeTypes`` supported by a data provider.

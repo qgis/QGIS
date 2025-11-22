@@ -399,6 +399,49 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
   endResetModel();
 }
 
+void QgsFieldMappingModel::appendDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions )
+{
+  QStringList usedFields;
+  for ( const Field &existingField : mMapping )
+  {
+    const QgsExpression exp { existingField.expression };
+    if ( exp.isField() && mSourceFields.names().contains( qgis::setToList( exp.referencedColumns() ).constFirst() ) )
+    {
+      usedFields.push_back( qgis::setToList( exp.referencedColumns() ).constFirst() );
+    }
+  }
+
+  const int startRow = mMapping.count();
+  beginInsertRows( QModelIndex(), startRow, startRow + destinationFields.count() - 1 );
+
+  for ( const QgsField &df : destinationFields )
+  {
+    Field f;
+    f.field = df;
+    f.field.setTypeName( qgsFieldToTypeName( df ) );
+    f.originalName = df.name();
+    if ( expressions.contains( f.field.name() ) )
+    {
+      f.expression = expressions.value( f.field.name() );
+      const QgsExpression exp { f.expression };
+
+      if ( exp.isField() && mSourceFields.names().contains( qgis::setToList( exp.referencedColumns() ).constFirst() ) )
+      {
+        usedFields.push_back( qgis::setToList( exp.referencedColumns() ).constFirst() );
+      }
+    }
+    else
+    {
+      const QString expression { findExpressionForDestinationField( f, usedFields ) };
+      if ( !expression.isEmpty() )
+        f.expression = expression;
+    }
+    mMapping.push_back( f );
+  }
+
+  endInsertRows();
+}
+
 bool QgsFieldMappingModel::destinationEditable() const
 {
   return mDestinationEditable;
