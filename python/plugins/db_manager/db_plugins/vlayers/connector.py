@@ -217,7 +217,7 @@ class VLayerConnector(DBConnector):
 
                 if not l.isValid():
                     continue
-                
+
                 lname = l.name()
                 # if there is already a layer with this name, use the layer id
                 # as name
