@@ -9,7 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 import os
 import tempfile
 
-from qgis.PyQt.QtCore import QSize, QUrl
+from qgis.PyQt.QtCore import QSize, QUrl, QT_VERSION
 from qgis.PyQt.QtMultimedia import QMediaFormat, QMediaPlayer, QVideoSink
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsVideoExporter
@@ -25,6 +25,7 @@ class TestQgsVideoExporter(QgisTestCase):
     def control_path_prefix(cls):
         return "video"
 
+    @unittest.skipIf(QT_VERSION < 0x060800, "Requires Qt 6.8+")
     def testSimple(self):
         exporter = QgsVideoExporter("test.avi", QSize(1080, 600), 30)
         exporter.setInputFiles(["frame1.png", "frame2.png"])
@@ -36,6 +37,7 @@ class TestQgsVideoExporter(QgisTestCase):
         exporter.setVideoCodec(QMediaFormat.VideoCodec.MPEG4)
         self.assertEqual(exporter.videoCodec(), QMediaFormat.VideoCodec.MPEG4)
 
+    @unittest.skipIf(QT_VERSION < 0x060800, "Requires Qt 6.8+")
     def test_write(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             export_file = os.path.join(temp_dir, "my_video.mp4")
