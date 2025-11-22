@@ -29,6 +29,7 @@
 #include <QIcon>
 #include <QItemDelegate>
 #include <QString>
+#include <QPointer>
 
 class QgsProxyProgressTask;
 class QgisApp;
@@ -142,7 +143,7 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
     QString mConnectionInfo;
     // A thread for detecting geometry types
     std::unique_ptr<QgsHanaColumnTypeThread> mColumnTypeThread;
-    std::unique_ptr<QgsProxyProgressTask> mColumnTypeTask;
+    QPointer<QgsProxyProgressTask> mColumnTypeTask;
     QStringList mSelectedTables;
     //! Model that acts as datasource for mTableTreeWidget
     QgsHanaTableModel *mTableModel = nullptr;

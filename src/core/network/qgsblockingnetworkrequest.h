@@ -272,7 +272,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     Method mMethod = Get;
 
     //! payload data used in PUT/POST request
-    QIODevice *mPayloadData;
+    QIODevice *mPayloadData = nullptr;
 
     //! Authentication configuration ID
     QString mAuthCfg;

@@ -2032,7 +2032,8 @@ void QgsMapToolEditMeshFrame::prepareSelection()
     if ( !mZValueWidget )
       createZValueWidget();
 
-    mZValueWidget->setZValue( vertexZValue );
+    if ( mZValueWidget )
+      mZValueWidget->setZValue( vertexZValue );
   }
   else
   {

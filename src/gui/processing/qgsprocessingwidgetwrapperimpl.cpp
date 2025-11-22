@@ -2578,6 +2578,9 @@ QgsProcessingFileWidgetWrapper::QgsProcessingFileWidgetWrapper( const QgsProcess
 QWidget *QgsProcessingFileWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterFile *fileParam = dynamic_cast<const QgsProcessingParameterFile *>( parameterDefinition() );
+  if ( !fileParam )
+    return nullptr;
+
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -2824,6 +2827,9 @@ QgsProcessingExpressionWidgetWrapper::QgsProcessingExpressionWidgetWrapper( cons
 QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( parameterDefinition() );
+  if ( !expParam )
+    return nullptr;
+
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -2953,6 +2959,9 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   QVariant val = parentWrapper->parameterValue();
 
   const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( parameterDefinition() );
+  if ( !expParam )
+    return;
+
   switch ( expParam->expressionType() )
   {
     case Qgis::ExpressionType::Qgis:
@@ -3445,6 +3454,9 @@ QgsProcessingEnumWidgetWrapper::QgsProcessingEnumWidgetWrapper( const QgsProcess
 QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterEnum *expParam = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() );
+  if ( !expParam )
+    return nullptr;
+
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -3512,8 +3524,7 @@ void QgsProcessingEnumWidgetWrapper::setWidgetValue( const QVariant &value, QgsP
       mComboBox->setCurrentIndex( mComboBox->findData( QVariant() ) );
     else
     {
-      const QgsProcessingParameterEnum *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() );
-      if ( enumDef->usesStaticStrings() )
+      if ( auto *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() ); enumDef && enumDef->usesStaticStrings() )
       {
         const QString v = QgsProcessingParameters::parameterAsEnumString( parameterDefinition(), value, context );
         mComboBox->setCurrentIndex( mComboBox->findData( v ) );
@@ -3530,8 +3541,7 @@ void QgsProcessingEnumWidgetWrapper::setWidgetValue( const QVariant &value, QgsP
     QVariantList opts;
     if ( value.isValid() )
     {
-      const QgsProcessingParameterEnum *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() );
-      if ( enumDef->usesStaticStrings() )
+      if ( auto *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() ); enumDef && enumDef->usesStaticStrings() )
       {
         const QStringList v = QgsProcessingParameters::parameterAsEnumStrings( parameterDefinition(), value, context );
         opts.reserve( v.size() );
@@ -3613,6 +3623,9 @@ QgsProcessingLayoutWidgetWrapper::QgsProcessingLayoutWidgetWrapper( const QgsPro
 QWidget *QgsProcessingLayoutWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterLayout *layoutParam = dynamic_cast<const QgsProcessingParameterLayout *>( parameterDefinition() );
+  if ( !layoutParam )
+    return nullptr;
+
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -3788,6 +3801,9 @@ QgsProcessingLayoutItemWidgetWrapper::QgsProcessingLayoutItemWidgetWrapper( cons
 QWidget *QgsProcessingLayoutItemWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterLayoutItem *layoutParam = dynamic_cast<const QgsProcessingParameterLayoutItem *>( parameterDefinition() );
+  if ( !layoutParam )
+    return nullptr;
+
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -4217,6 +4233,9 @@ QgsProcessingPointWidgetWrapper::QgsProcessingPointWidgetWrapper( const QgsProce
 QWidget *QgsProcessingPointWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterPoint *pointParam = dynamic_cast<const QgsProcessingParameterPoint *>( parameterDefinition() );
+  if ( !pointParam )
+    return nullptr;
+
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -4526,6 +4545,9 @@ QgsProcessingColorWidgetWrapper::QgsProcessingColorWidgetWrapper( const QgsProce
 QWidget *QgsProcessingColorWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterColor *colorParam = dynamic_cast<const QgsProcessingParameterColor *>( parameterDefinition() );
+  if ( !colorParam )
+    return nullptr;
+
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -4721,6 +4743,9 @@ QgsProcessingCoordinateOperationWidgetWrapper::QgsProcessingCoordinateOperationW
 QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterCoordinateOperation *coordParam = dynamic_cast<const QgsProcessingParameterCoordinateOperation *>( parameterDefinition() );
+  if ( !coordParam )
+    return nullptr;
+
   QgsProcessingContext c;
   mSourceCrs = QgsProcessingUtils::variantToCrs( coordParam->sourceCrs(), c );
   mDestCrs = QgsProcessingUtils::variantToCrs( coordParam->destinationCrs(), c );
@@ -5179,6 +5204,9 @@ QgsProcessingFieldWidgetWrapper::QgsProcessingFieldWidgetWrapper( const QgsProce
 QWidget *QgsProcessingFieldWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( parameterDefinition() );
+  if ( !fieldParam )
+    return nullptr;
+
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -5591,6 +5619,8 @@ QgsProcessingMapThemeWidgetWrapper::QgsProcessingMapThemeWidgetWrapper( const Qg
 QWidget *QgsProcessingMapThemeWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterMapTheme *themeParam = dynamic_cast<const QgsProcessingParameterMapTheme *>( parameterDefinition() );
+  if ( !themeParam )
+    return nullptr;
 
   mComboBox = new QComboBox();
 
@@ -5729,6 +5759,8 @@ QgsProcessingDateTimeWidgetWrapper::QgsProcessingDateTimeWidgetWrapper( const Qg
 QWidget *QgsProcessingDateTimeWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDateTime *dateTimeParam = dynamic_cast<const QgsProcessingParameterDateTime *>( parameterDefinition() );
+  if ( !dateTimeParam )
+    return nullptr;
 
   QgsDateTimeEdit *widget = nullptr;
   switch ( dateTimeParam->dataType() )
@@ -5748,6 +5780,8 @@ QWidget *QgsProcessingDateTimeWidgetWrapper::createWidget()
       widget = mTimeEdit;
       break;
   }
+  if ( !widget )
+    return nullptr;
 
   if ( dateTimeParam->flags() & Qgis::ProcessingParameterFlag::Optional )
   {
@@ -5914,6 +5948,8 @@ QgsProcessingProviderConnectionWidgetWrapper::QgsProcessingProviderConnectionWid
 QWidget *QgsProcessingProviderConnectionWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterProviderConnection *connectionParam = dynamic_cast<const QgsProcessingParameterProviderConnection *>( parameterDefinition() );
+  if ( !connectionParam )
+    return nullptr;
 
   mProviderComboBox = new QgsProviderConnectionComboBox( connectionParam->providerId() );
   if ( connectionParam->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -6093,6 +6129,8 @@ QgsProcessingDatabaseSchemaWidgetWrapper::QgsProcessingDatabaseSchemaWidgetWrapp
 QWidget *QgsProcessingDatabaseSchemaWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDatabaseSchema *schemaParam = dynamic_cast<const QgsProcessingParameterDatabaseSchema *>( parameterDefinition() );
+  if ( !schemaParam )
+    return nullptr;
 
   mSchemaComboBox = new QgsDatabaseSchemaComboBox( QString(), QString() );
   if ( schemaParam->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -6345,6 +6383,8 @@ QgsProcessingDatabaseTableWidgetWrapper::QgsProcessingDatabaseTableWidgetWrapper
 QWidget *QgsProcessingDatabaseTableWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterDatabaseTable *tableParam = dynamic_cast<const QgsProcessingParameterDatabaseTable *>( parameterDefinition() );
+  if ( !tableParam )
+    return nullptr;
 
   mTableComboBox = new QgsDatabaseTableComboBox( QString(), QString() );
   if ( tableParam->flags() & Qgis::ProcessingParameterFlag::Optional )
@@ -6574,6 +6614,9 @@ QgsProcessingExtentWidgetWrapper::QgsProcessingExtentWidgetWrapper( const QgsPro
 QWidget *QgsProcessingExtentWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterExtent *extentParam = dynamic_cast<const QgsProcessingParameterExtent *>( parameterDefinition() );
+  if ( !extentParam )
+    return nullptr;
+
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -7352,6 +7395,9 @@ QgsProcessingBandWidgetWrapper::QgsProcessingBandWidgetWrapper( const QgsProcess
 QWidget *QgsProcessingBandWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterBand *bandParam = dynamic_cast<const QgsProcessingParameterBand *>( parameterDefinition() );
+  if ( !bandParam )
+    return nullptr;
+
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -8384,6 +8430,9 @@ QgsProcessingPointCloudAttributeWidgetWrapper::QgsProcessingPointCloudAttributeW
 QWidget *QgsProcessingPointCloudAttributeWidgetWrapper::createWidget()
 {
   const QgsProcessingParameterPointCloudAttribute *attrParam = dynamic_cast<const QgsProcessingParameterPointCloudAttribute *>( parameterDefinition() );
+  if ( !attrParam )
+    return nullptr;
+
   switch ( type() )
   {
     case QgsProcessingGui::Standard:

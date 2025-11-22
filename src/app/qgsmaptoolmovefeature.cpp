@@ -252,7 +252,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
           if ( QgsProject::instance()->topologicalEditing() )
           {
-            if ( mSnapIndicator && ( mSnapIndicator->match().layer() ) )
+            if ( mSnapIndicator->match().layer() )
             {
               mSnapIndicator->match().layer()->addTopologicalPoints( vlayer->getGeometry( id ) );
             }

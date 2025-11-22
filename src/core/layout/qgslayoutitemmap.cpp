@@ -2948,7 +2948,10 @@ void QgsLayoutItemMap::updateAtlasFeature()
       //scale newExtent to match original scale of map
       //this is required for geographic coordinate systems, where the scale varies by extent
       double newScale = calc.calculate( newExtent, rect().width() );
-      newExtent.scale( originalScale / newScale );
+      if ( qgsDoubleNear( newScale, 0 ) )
+      {
+        newExtent.scale( originalScale / newScale );
+      }
     }
     else if ( mAtlasScalingMode == Predefined && !qgsDoubleNear( originalScale, 0 ) )
     {

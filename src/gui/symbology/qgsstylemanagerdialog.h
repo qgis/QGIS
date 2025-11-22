@@ -383,7 +383,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     struct ItemDetails
     {
         QgsStyle::StyleEntity entityType;
-        Qgis::SymbolType symbolType;
+        Qgis::SymbolType symbolType = Qgis::SymbolType::Hybrid;
         QString name;
     };
 

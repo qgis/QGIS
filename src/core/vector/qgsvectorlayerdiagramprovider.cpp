@@ -120,6 +120,9 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
 #endif
 
   QgsDiagramLabelFeature *dlf = dynamic_cast<QgsDiagramLabelFeature *>( label->getFeaturePart()->feature() );
+  if ( !dlf )
+    return;
+
   const QgsFeature feature = dlf->feature();
 
   // at time of drawing labels the expression context won't contain a layer scope -- so we manually add it here so that

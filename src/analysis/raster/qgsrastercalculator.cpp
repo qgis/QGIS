@@ -735,7 +735,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
 
   auto uniqueRasterBandIdentifier = [&]( QgsRasterCalculatorEntry &entry ) -> bool {
     unsigned int i( 1 );
-    entry.ref = QStringLiteral( "%1@%2" ).arg( entry.raster->name() ).arg( entry.bandNumber );
+    entry.ref = QStringLiteral( "%1@%2" ).arg( entry.raster ? entry.raster->name() : QString() ).arg( entry.bandNumber );
     while ( true )
     {
       bool unique( true );

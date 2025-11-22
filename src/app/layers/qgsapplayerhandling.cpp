@@ -457,16 +457,6 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addOgrVectorLayers( const QStringList 
             break;
         };
       }
-      else if ( detailsAreIncomplete )
-      {
-        // requery sublayers, resolving geometry types
-        sublayers = QgsProviderRegistry::instance()->querySublayers( uri, Qgis::SublayerQueryFlag::ResolveGeometryType );
-        // filter out non-vector sublayers
-        sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), []( const QgsProviderSublayerDetails &sublayer ) {
-                           return sublayer.type() != Qgis::LayerType::Vector;
-                         } ),
-                         sublayers.end() );
-      }
 
       // now add sublayers
       if ( !sublayers.empty() )
@@ -643,15 +633,6 @@ bool QgsAppLayerHandling::askUserForZipItemLayers( const QString &path, const QL
         sublayers.clear(); // don't add any sublayers
         break;
     };
-  }
-  else if ( detailsAreIncomplete )
-  {
-    // requery sublayers, resolving geometry types
-    sublayers = QgsProviderRegistry::instance()->querySublayers( path, Qgis::SublayerQueryFlag::ResolveGeometryType );
-    sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [acceptableTypes]( const QgsProviderSublayerDetails &sublayer ) {
-                       return !acceptableTypes.empty() && !acceptableTypes.contains( sublayer.type() );
-                     } ),
-                     sublayers.end() );
   }
 
   // now add sublayers
@@ -1255,7 +1236,7 @@ void QgsAppLayerHandling::openLayerDefinition( const QString &filename, const Qg
       shownMessages.append( message );
     }
   }
-  else if ( !loaded || !errorMessage.isEmpty() )
+  else if ( !errorMessage.isEmpty() )
   {
     QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Error loading layer definition" ), errorMessage, Qgis::MessageLevel::Warning );
   }
@@ -1385,8 +1366,7 @@ QList<T *> QgsAppLayerHandling::addLayerPrivate( Qgis::LayerType type, const QSt
   if ( canQuerySublayers )
   {
     // query sublayers
-    QList<QgsProviderSublayerDetails> sublayers = providerMetadata ? providerMetadata->querySublayers( updatedUri, Qgis::SublayerQueryFlag::IncludeSystemTables )
-                                                                   : QgsProviderRegistry::instance()->querySublayers( updatedUri );
+    QList<QgsProviderSublayerDetails> sublayers = providerMetadata->querySublayers( updatedUri, Qgis::SublayerQueryFlag::IncludeSystemTables );
 
     // filter out non-matching sublayers
     sublayers.erase( std::remove_if( sublayers.begin(), sublayers.end(), [type]( const QgsProviderSublayerDetails &sublayer ) {

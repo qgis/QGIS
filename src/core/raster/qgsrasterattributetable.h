@@ -463,7 +463,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     Qgis::RasterAttributeTableType mType = Qgis::RasterAttributeTableType::Thematic;
     QList<Field> mFields;
     QList<QVariantList> mData;
-    bool mIsDirty;
+    bool mIsDirty = false;
     QString mFilePath;
 
     // Set type from fields.

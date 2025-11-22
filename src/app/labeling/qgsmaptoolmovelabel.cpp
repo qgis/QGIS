@@ -473,12 +473,14 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           double lineAnchorPercent = 0.0;
           if ( feature.geometry().type() == Qgis::GeometryType::Polygon )
           {
-            QgsGeometry boundary( feature.geometry().constGet()->boundary() );
-            lineAnchorPercent = boundary.lineLocatePoint( releaseCoordsGeometry ) / boundary.length();
+            const QgsGeometry boundary( feature.geometry().constGet()->boundary() );
+            const double boundaryLength = boundary.length();
+            lineAnchorPercent = boundaryLength > 0 ? boundary.lineLocatePoint( releaseCoordsGeometry ) / boundaryLength : 0.5;
           }
           else
           {
-            lineAnchorPercent = feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / feature.geometry().length();
+            const double length = feature.geometry().length();
+            lineAnchorPercent = length > 0 ? feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / length : 0.5;
           }
 
           vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
@@ -873,6 +875,8 @@ bool QgsMapToolMoveLabel::currentCalloutDataDefinedPosition( double &x, bool &xS
 QgsPointXY QgsMapToolMoveLabel::snapCalloutPointToCommonAngle( const QgsPointXY &mapPoint, bool showStatusMessage ) const
 {
   const int index = mCurrentCalloutMoveOrigin ? 0 : 1;
+  if ( !mCalloutMoveRubberBand )
+    return mapPoint;
 
   const QgsPointXY start = *mCalloutMoveRubberBand->getPoint( 0, index == 0 ? 1 : 0 );
   const double cursorDistance = start.distance( mapPoint );

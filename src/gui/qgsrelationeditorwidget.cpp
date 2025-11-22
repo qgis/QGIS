@@ -609,8 +609,14 @@ QgsFeatureIds QgsRelationEditorWidget::selectedChildFeatureIds() const
     }
     return featureIds;
   }
-  else
+  else if ( mFeatureSelectionMgr )
+  {
     return mFeatureSelectionMgr->selectedFeatureIds();
+  }
+  else
+  {
+    return {};
+  }
 }
 
 void QgsRelationEditorWidget::updateUiSingleEdit()
@@ -647,7 +653,7 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
       nmRequest.setFilterExpression( filters.join( QStringLiteral( " OR " ) ) );
     }
 
-    request = nmRequest;
+    request = std::move( nmRequest );
     layer = mNmRelation.referencedLayer();
   }
   else if ( mRelation.referencingLayer() )

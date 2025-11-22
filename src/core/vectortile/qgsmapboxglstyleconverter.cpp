@@ -225,13 +225,13 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
   if ( hasRendererBackgroundStyle )
     rendererStyles.prepend( rendererBackgroundStyle );
 
-  mRenderer = std::make_unique< QgsVectorTileBasicRenderer >();
-  QgsVectorTileBasicRenderer *renderer = dynamic_cast< QgsVectorTileBasicRenderer *>( mRenderer.get() );
+  auto renderer = std::make_unique< QgsVectorTileBasicRenderer >();
   renderer->setStyles( rendererStyles );
+  mRenderer = std::move( renderer );
 
-  mLabeling = std::make_unique< QgsVectorTileBasicLabeling >();
-  QgsVectorTileBasicLabeling *labeling = dynamic_cast< QgsVectorTileBasicLabeling * >( mLabeling.get() );
+  auto labeling = std::make_unique< QgsVectorTileBasicLabeling >();
   labeling->setStyles( labelingStyles );
+  mLabeling = std::move( labeling );
 }
 
 bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style, QgsMapBoxGlStyleConversionContext &context, bool isBackgroundStyle )

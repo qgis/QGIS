@@ -1773,7 +1773,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case Qgis::WkbType::MultiLineString:
       case Qgis::WkbType::GeometryCollection:
       {
-        const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( processedGeometry );
+        const QgsGeometryCollection *geomCollection = qgis::down_cast<const QgsGeometryCollection *>( processedGeometry );
 
         const unsigned int num = geomCollection->numGeometries();
         for ( unsigned int i = 0; i < num; ++i )
@@ -1797,7 +1797,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         QPolygonF pts;
 
-        const QgsGeometryCollection *geomCollection = dynamic_cast<const QgsGeometryCollection *>( processedGeometry );
+        const QgsGeometryCollection *geomCollection = qgis::down_cast<const QgsGeometryCollection *>( processedGeometry );
         const unsigned int num = geomCollection->numGeometries();
 
         // Sort components by approximate area (probably a bit faster than using
@@ -1828,7 +1828,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       case Qgis::WkbType::PolyhedralSurface:
       case Qgis::WkbType::TIN:
       {
-        const QgsPolyhedralSurface *polySurface = qgsgeometry_cast<const QgsPolyhedralSurface *>( processedGeometry );
+        const QgsPolyhedralSurface *polySurface = qgis::down_cast<const QgsPolyhedralSurface *>( processedGeometry );
 
         const int num = polySurface->numPatches();
         for ( int i = 0; i < num; ++i )
@@ -2207,7 +2207,14 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         z = 0.0;
         if ( ct.isValid() )
         {
-          ct.transformInPlace( x, y, z );
+          try
+          {
+            ct.transformInPlace( x, y, z );
+          }
+          catch ( QgsCsException & )
+          {
+            continue;
+          }
         }
         mapPoint.setX( x );
         mapPoint.setY( y );

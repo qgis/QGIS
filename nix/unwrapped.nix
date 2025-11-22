@@ -15,6 +15,7 @@
 , draco
 , exiv2
 , fcgi
+, fetchFromGitHub
 , flex
 , geos
 , grass
@@ -49,6 +50,20 @@
 }:
 
 let
+  # Override libspatialindex to use version 2.0.0
+  # See https://github.com/libspatialindex/libspatialindex/issues/276
+  # An alternative would be to make this available/downgrade the version
+  # from the nixpkgs side.
+  libspatialindex_2_0 = libspatialindex.overrideAttrs (oldAttrs: rec {
+    version = "2.0.0";
+    src = fetchFromGitHub {
+      owner = "libspatialindex";
+      repo = "libspatialindex";
+      rev = version;
+      sha256 = "sha256-hZyAXz1ddRStjZeqDf4lYkV/g0JLqLy7+GrSUh75k20=";
+    };
+  });
+
   versionSourceFiles = lib.fileset.toSource {
     root = ../.;
     fileset = ../CMakeLists.txt;
@@ -144,13 +159,13 @@ mkDerivation
     geos
     gsl
     hdf5
-    libspatialindex
+    libpq
+    libspatialindex_2_0
     libspatialite
     libzip
     netcdf
     openssl
     pdal
-    libpq
     proj
     protobuf
     qca-qt5
@@ -207,7 +222,7 @@ mkDerivation
   dontWrapGApps = true; # wrapper params passed below
 
   postFixup = lib.optionalString withGrass ''
-    # GRASS has to be availble on the command line even though we baked in
+    # GRASS has to be available on the command line even though we baked in
     # the path at build time using GRASS_PREFIX.
     # Using wrapGAppsHook also prevents file dialogs from crashing the program
     # on non-NixOS.

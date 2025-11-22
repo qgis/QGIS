@@ -974,7 +974,7 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
         case QgsVectorFileWriter::Hidden:
         {
           QgsVectorFileWriter::HiddenOption *opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
-          if ( !opt->mValue.isEmpty() )
+          if ( opt && !opt->mValue.isEmpty() )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;
         }
@@ -1005,7 +1005,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
       {
         case QgsVectorFileWriter::Int:
         {
-          QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( *it );
+          QgsVectorFileWriter::IntOption *opt = qgis::down_cast<QgsVectorFileWriter::IntOption *>( *it );
           QSpinBox *sb = mLayerOptionsGroupBox->findChild<QSpinBox *>( it.key() );
           if ( opt && sb && sb->value() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key() ).arg( sb->value() );
@@ -1014,7 +1014,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
         case QgsVectorFileWriter::Set:
         {
-          QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( *it );
+          QgsVectorFileWriter::SetOption *opt = qgis::down_cast<QgsVectorFileWriter::SetOption *>( *it );
           QComboBox *cb = mLayerOptionsGroupBox->findChild<QComboBox *>( it.key() );
           if ( opt && cb && cb->itemData( cb->currentIndex() ) != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), cb->currentText() );
@@ -1023,7 +1023,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
         case QgsVectorFileWriter::String:
         {
-          QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( *it );
+          QgsVectorFileWriter::StringOption *opt = qgis::down_cast<QgsVectorFileWriter::StringOption *>( *it );
           QLineEdit *le = mLayerOptionsGroupBox->findChild<QLineEdit *>( it.key() );
           if ( opt && le && le->text() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), le->text() );
@@ -1032,7 +1032,7 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
 
         case QgsVectorFileWriter::Hidden:
         {
-          QgsVectorFileWriter::HiddenOption *opt = dynamic_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
+          QgsVectorFileWriter::HiddenOption *opt = qgis::down_cast<QgsVectorFileWriter::HiddenOption *>( it.value() );
           if ( !opt->mValue.isEmpty() )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), opt->mValue );
           break;

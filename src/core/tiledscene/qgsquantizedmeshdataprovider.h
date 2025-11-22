@@ -58,8 +58,8 @@ class CORE_EXPORT QgsQuantizedMeshMetadata
     QVector<QVector<QgsTileRange>> mAvailableTiles;
     QgsCoordinateReferenceSystem mCrs;
     QString mTileScheme;
-    uint8_t mMinZoom;
-    uint8_t mMaxZoom;
+    uint8_t mMinZoom = 0;
+    uint8_t mMaxZoom = 10;
     std::vector<QString> mTileUrls;
     QgsTileMatrix mTileMatrix;
 

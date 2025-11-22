@@ -232,7 +232,14 @@ void QgsApplication::init( QString profileFolder )
   if ( platform() == QLatin1String( "desktop" ) )
   {
     instance()->mApplicationMembers = new ApplicationMembers();
-    instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    try
+    {
+      instance()->mApplicationMembers->mSettingsRegistryCore->migrateOldSettings();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Error migrating old settings: %1" ).arg( e.what() ) );
+    }
   }
 
   if ( profileFolder.isEmpty() )
@@ -557,7 +564,16 @@ void QgsApplication::installTranslators()
 QgsApplication::~QgsApplication()
 {
   if ( mApplicationMembers )
-    mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
+  {
+    try
+    {
+      mApplicationMembers->mSettingsRegistryCore->backwardCompatibility();
+    }
+    catch ( QgsSettingsException &e )
+    {
+      QgsDebugError( QStringLiteral( "An error occurred while performing backwards compatibility for settings: %1" ).arg( e.what() ) );
+    }
+  }
 
   delete mDataItemProviderRegistry;
   delete mApplicationMembers;
