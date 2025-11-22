@@ -39,7 +39,6 @@ class TestQgsVideoExporter(QgisTestCase):
     def test_write(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             export_file = os.path.join(temp_dir, "my_video.mp4")
-            export_file = "/home/nyall/test.mp4"
 
             exporter = QgsVideoExporter(export_file, QSize(1280, 720), 1)
             exporter.setInputFiles(
