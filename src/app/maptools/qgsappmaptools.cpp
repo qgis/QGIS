@@ -16,6 +16,7 @@
 #include "qgsappmaptools.h"
 #include "qgisapp.h"
 #include "qgsmaptool.h"
+#include "qgsmaptooldistributefeature.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolidentifyaction.h"
 #include "qgsmaptooladdfeature.h"
@@ -75,6 +76,7 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::AddFeature, new QgsMapToolAddFeature( canvas, cadDock, QgsMapToolCapture::CaptureNone ) );
   mTools.insert( Tool::MoveFeature, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::Move ) );
   mTools.insert( Tool::MoveFeatureCopy, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::CopyMove ) );
+  mTools.insert( Tool::DistributeFeature, new QgsMapToolDistributeFeature( canvas ) );
   mTools.insert( Tool::RotateFeature, new QgsMapToolRotateFeature( canvas ) );
   mTools.insert( Tool::ScaleFeature, new QgsMapToolScaleFeature( canvas ) );
   mTools.insert( Tool::OffsetCurve, new QgsMapToolOffsetCurve( canvas ) );
