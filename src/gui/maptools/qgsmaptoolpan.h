@@ -53,6 +53,13 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
      */
     bool isDragging() const { return mDragging; }
 
+    /**
+     * Returns TRUE if a pinch operation is in progress.
+     *
+     * \since QGIS 4.0
+     */
+    bool isPinching() const { return mPinching; }
+
   signals:
 
     /**

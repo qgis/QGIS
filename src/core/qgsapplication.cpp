@@ -1253,10 +1253,6 @@ QString QgsApplication::contributorsFilePath()
 {
   return pkgDataPath() + QStringLiteral( "/doc/CONTRIBUTORS" );
 }
-QString QgsApplication::developersMapFilePath()
-{
-  return pkgDataPath() + QStringLiteral( "/doc/developersmap.html" );
-}
 
 QString QgsApplication::sponsorsFilePath()
 {
