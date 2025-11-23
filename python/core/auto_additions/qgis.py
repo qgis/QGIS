@@ -11739,6 +11739,25 @@ Qgis.DevToolsNodeRole.__doc__ = """Dev tools node custom data roles.
 """
 # --
 Qgis.DevToolsNodeRole.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ExtrusionFace.NoFace.__doc__ = ""
+Qgis.ExtrusionFace.Walls.__doc__ = ""
+Qgis.ExtrusionFace.Roof.__doc__ = ""
+Qgis.ExtrusionFace.Floor.__doc__ = ""
+Qgis.ExtrusionFace.__doc__ = """Extrusion face types for the :py:class:`QgsTessellator`.
+
+.. versionadded:: 4.0
+
+* ``NoFace``: 
+* ``Walls``: 
+* ``Roof``: 
+* ``Floor``: 
+
+"""
+# --
+Qgis.ExtrusionFace.baseClass = Qgis
+Qgis.ExtrusionFaces.baseClass = Qgis
+ExtrusionFaces = Qgis  # dirty hack since SIP seems to introduce the flags in module
 from enum import Enum
 
 

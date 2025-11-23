@@ -44,7 +44,7 @@ QgsAbstract3DSymbol *QgsPolygon3DSymbol::clone() const
   result->mCullingMode = mCullingMode;
   result->mInvertNormals = mInvertNormals;
   result->mAddBackFaces = mAddBackFaces;
-  result->mRenderedFacade = mRenderedFacade;
+  result->mExtrusionFaces = mExtrusionFaces;
   result->mEdgesEnabled = mEdgesEnabled;
   result->mEdgeWidth = mEdgeWidth;
   result->mEdgeColor = mEdgeColor;
@@ -66,7 +66,7 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   elemDataProperties.setAttribute( QStringLiteral( "culling-mode" ), Qgs3DUtils::cullingModeToString( mCullingMode ) );
   elemDataProperties.setAttribute( QStringLiteral( "invert-normals" ), mInvertNormals ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemDataProperties.setAttribute( QStringLiteral( "add-back-faces" ), mAddBackFaces ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  elemDataProperties.setAttribute( QStringLiteral( "rendered-facade" ), mRenderedFacade );
+  elemDataProperties.setAttribute( QStringLiteral( "rendered-facade" ), qgsEnumValueToKey( mExtrusionFaces ) );
   elem.appendChild( elemDataProperties );
 
   elem.setAttribute( QStringLiteral( "material_type" ), mMaterialSettings->type() );
@@ -97,7 +97,7 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   mCullingMode = Qgs3DUtils::cullingModeFromString( elemDataProperties.attribute( QStringLiteral( "culling-mode" ) ) );
   mInvertNormals = elemDataProperties.attribute( QStringLiteral( "invert-normals" ) ).toInt();
   mAddBackFaces = elemDataProperties.attribute( QStringLiteral( "add-back-faces" ) ).toInt();
-  mRenderedFacade = elemDataProperties.attribute( QStringLiteral( "rendered-facade" ), "3" ).toInt();
+  mExtrusionFaces = qgsEnumKeyToValue( elemDataProperties.attribute( QStringLiteral( "rendered-facade" ) ), Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
 
   const QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   const QString materialType = elem.attribute( QStringLiteral( "material_type" ), QStringLiteral( "phong" ) );
@@ -206,4 +206,44 @@ bool QgsPolygon3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCor
     }
     return out;
   }
+}
+
+void QgsPolygon3DSymbol::setRenderedFacade( int side )
+{
+  switch ( side )
+  {
+    case 0:
+      mExtrusionFaces = Qgis::ExtrusionFace::NoFace;
+      break;
+    case 1:
+      mExtrusionFaces = Qgis::ExtrusionFace::Walls;
+      break;
+    case 2:
+      mExtrusionFaces = Qgis::ExtrusionFace::Roof;
+      break;
+    case 3:
+      mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
+      break;
+    case 7:
+      mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof | Qgis::ExtrusionFace::Floor;
+      break;
+    default:
+      break;
+  }
+}
+
+int QgsPolygon3DSymbol::renderedFacade()
+{
+  const int flags = static_cast<int>( mExtrusionFaces );
+
+  if ( flags == static_cast<int>( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof | Qgis::ExtrusionFace::Floor ) )
+    return 7;
+  else if ( flags == static_cast<int>( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof ) )
+    return 3;
+  else if ( flags == static_cast<int>( Qgis::ExtrusionFace::Roof ) )
+    return 2;
+  else if ( flags == static_cast<int>( Qgis::ExtrusionFace::Walls ) )
+    return 1;
+  else
+    return 0;
 }

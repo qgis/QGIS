@@ -106,8 +106,24 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
 
   const float textureRotation = texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0;
   const bool requiresTextureCoordinates = texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false;
-  mLineDataNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
-  mLineDataSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true, false, false, false, requiresTextureCoordinates, 3, textureRotation ) );
+  
+  auto lineDataNormalTessellator = std::make_unique<QgsTessellator>();
+  lineDataNormalTessellator->setOrigin( chunkOrigin );
+  lineDataNormalTessellator->setAddNormals( true );
+  lineDataNormalTessellator->setAddTextureUVs( requiresTextureCoordinates );
+  lineDataNormalTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
+  lineDataNormalTessellator->setTextureRotation( textureRotation );
+
+  mLineDataNormal.tessellator = std::move( lineDataNormalTessellator );
+
+  auto lineDataSelectedTessellator = std::make_unique<QgsTessellator>();
+  lineDataSelectedTessellator->setOrigin( chunkOrigin );
+  lineDataSelectedTessellator->setAddNormals( true );
+  lineDataSelectedTessellator->setAddTextureUVs( requiresTextureCoordinates );
+  lineDataSelectedTessellator->setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
+  lineDataSelectedTessellator->setTextureRotation( textureRotation );
+
+  mLineDataSelected.tessellator = std::move( lineDataSelectedTessellator );
 
   mLineDataNormal.tessellator->setOutputZUp( true );
   mLineDataSelected.tessellator->setOutputZUp( true );

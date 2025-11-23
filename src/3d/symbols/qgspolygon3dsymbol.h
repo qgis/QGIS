@@ -166,16 +166,30 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     void setEdgeColor( const QColor &color ) { mEdgeColor = color; }
 
     /**
-     * Sets which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
+     * Sets which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roof, 3 for WallsAndRoof)
      * \since QGIS 3.16
+     * \deprecated QGIS 4.0 Use setExtrusionFaces() instead.
      */
-    void setRenderedFacade( int side ) { mRenderedFacade = side; }
+    Q_DECL_DEPRECATED void setRenderedFacade( int side ) SIP_DEPRECATED;
 
     /**
-     * Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
-     * \since QGIS 3.16
+     * Sets the building extrusion sides to be rendered.
+     * \since QGIS 4.0
      */
-    int renderedFacade() const { return mRenderedFacade; }
+    void setExtrusionFaces( Qgis::ExtrusionFaces side ) { mExtrusionFaces = side; }
+
+    /**
+     * Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roof, 3 for WallsAndRoof)
+     * \since QGIS 3.16
+     * \deprecated QGIS 4.0 Use extrusionFaces() instead.
+     */
+    Q_DECL_DEPRECATED int renderedFacade() SIP_DEPRECATED;
+
+    /**
+     * Returns the building extrusion sides to be rendered.
+     * \since QGIS 4.0
+     */
+    Qgis::ExtrusionFaces extrusionFaces() const { return mExtrusionFaces; }
 
     /**
      * Exports the geometries contained within the hierarchy of entity.
@@ -196,7 +210,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;   //!< Front/back culling mode
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
-    int mRenderedFacade = 3;
+    Qgis::ExtrusionFaces mExtrusionFaces = Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof;
 
     bool mEdgesEnabled = false;    //!< Whether to highlight edges
     float mEdgeWidth = 1.f;        //!< Width of edges in pixels
