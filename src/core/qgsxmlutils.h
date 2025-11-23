@@ -96,6 +96,7 @@ class CORE_EXPORT QgsXmlUtils
      * - QVariant::Int
      * - QVariant::Double
      * - QVariant::String
+     * - QVariant::Rect (since QGIS 4.0)
      * - QgsProperty (since QGIS 3.4)
      * - QgsCoordinateReferenceSystem (since QGIS 3.4)
      */
