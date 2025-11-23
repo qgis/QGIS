@@ -59,12 +59,7 @@
 #include "qgstransaction.h"
 #include "qgsthreadingutils.h"
 #include "qgsapplication.h"
-#include <mutex>
-#include <QTextStream>
-#include <QFile>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <QStringConverter>
-#endif
+#include "qgsunaccentrules.h"
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsunittypes.h"
@@ -2695,164 +2690,6 @@ static QVariant fcnStrpos( const QVariantList &values, const QgsExpressionContex
 {
   QString string = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
   return string.indexOf( QgsExpressionUtils::getStringValue( values.at( 1 ), parent ) ) + 1;
-}
-
-
-// ============================================================================
-// PostgreSQL-style unaccent support (rules loaded from resources/unaccent.rules)
-// ============================================================================
-namespace
-{
-  class QgsUnaccentRules
-  {
-    public:
-      static QgsUnaccentRules &instance()
-      {
-        static QgsUnaccentRules inst;
-        return inst;
-      }
-
-      QString transform( const QString &in )
-      {
-        ensureLoaded();
-        if ( !m_loaded || in.isEmpty() )
-          return in;
-
-        QString out;
-        out.reserve( in.size() );
-
-        int i = 0;
-        const int n = in.size();
-        while ( i < n )
-        {
-          bool applied = false;
-          const int maxTry = std::min( m_maxLen, n - i );
-          for ( int L = maxTry; L >= 1 && !applied; --L )
-          {
-            const QStringView probe = QStringView( in ).mid( i, L );
-            const auto bucket = m_rulesByLen.constFind( L );
-            if ( bucket == m_rulesByLen.constEnd() )
-              continue;
-            for ( const auto &rule : *bucket )
-            {
-              if ( probe == rule.first )
-              {
-                out += rule.second;
-                i += L;
-                applied = true;
-                break;
-              }
-            }
-          }
-          if ( !applied )
-          {
-            out += in.at( i );
-            ++i;
-          }
-        }
-
-        return out;
-      }
-
-    private:
-      QgsUnaccentRules() = default;
-
-      void ensureLoaded()
-      {
-        std::call_once( m_once, [this]
-        {
-          const QString path = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/unaccent.rules" );
-          QFile f( path );
-          if ( !f.open( QIODevice::ReadOnly | QIODevice::Text ) )
-            return;
-
-          QTextStream ts( &f );
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-          ts.setEncoding( QStringConverter::Utf8 );
-#else
-          ts.setCodec( "UTF-8" );
-#endif
-
-          static const QRegularExpression wsRe( QStringLiteral( "\\s+" ) );
-          QVector<QPair<QString, QString>> parsed;
-          parsed.reserve( 1024 );
-          // -----------------------------------------------------------------------------
-          // The following unaccent.rules parsing logic is derived from PostgreSQL's
-          // unaccent extension, which is licensed under the PostgreSQL License
-          // Original source:
-          //   https://github.com/postgres/postgres/blob/master/contrib/unaccent/unaccent.c
-          // -----------------------------------------------------------------------------
-
-          while ( !ts.atEnd() )
-          {
-            QString line = ts.readLine();
-            if ( line.isEmpty() ) continue;
-
-            int hash = line.indexOf( '#' );
-            if ( hash == 0 ) continue;
-            if ( hash > 0 ) line.truncate( hash );
-            line = line.trimmed();
-            if ( line.isEmpty() ) continue;
-
-            int firstWs = -1;
-            {
-              QRegularExpressionMatch m = wsRe.match( line );
-              firstWs = m.hasMatch() ? m.capturedStart() : -1;
-            }
-
-            QString from, to;
-            if ( firstWs < 0 )
-            {
-              from = line;      // single token => delete
-              to = QString();
-            }
-            else
-            {
-              from = line.left( firstWs );
-              QString rest = line.mid( firstWs ).trimmed();
-
-              if ( rest.startsWith( '"' ) )
-              {
-                // Quoted RHS with "" escape
-                QString out;
-                bool closed = false;
-                for ( int i = 1; i < rest.size(); ++i )
-                {
-                  const QChar c = rest.at( i );
-                  if ( c == '"' )
-                  {
-                    if ( i + 1 < rest.size() && rest.at( i + 1 ) == '"' )
-                    {
-                      out += '"'; ++i;
-                    }
-                    else { closed = true; break; }
-                  }
-                  else out += c;
-                }
-                if ( !closed ) return; // skip malformed
-                to = out;
-              }
-              else
-              {
-                const QStringList parts = rest.split( wsRe, Qt::SkipEmptyParts );
-                to = parts.isEmpty() ? QString() : parts.first();
-              }
-            }
-
-            if ( from.isEmpty() ) continue;
-            if ( from.size() > m_maxLen ) m_maxLen = from.size();
-            m_rulesByLen[from.size()].append( qMakePair( from, to ) );
-          }
-
-          m_loaded = true;
-        } );
-      }
-
-      std::once_flag m_once;
-      bool m_loaded = false;
-      int m_maxLen = 0;
-      QHash<int, QVector<QPair<QString, QString>>> m_rulesByLen;
-  };
 }
 
 static QVariant fcnUnaccent( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -10293,3 +10130,4 @@ void QgsWithVariableExpressionFunction::appendTemporaryVariable( const QgsExpres
   QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
   updatedContext->appendScope( scope );
 }
+
