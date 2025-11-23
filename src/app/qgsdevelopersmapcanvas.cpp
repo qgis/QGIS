@@ -154,7 +154,6 @@ QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
   mDevelopersMapBaseLayer = std::make_unique<QgsRasterLayer>( QStringLiteral( "type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857" ), QStringLiteral( "OpenStreetMap" ), QLatin1String( "wms" ) );
   mDevelopersMapLayer = std::make_unique<QgsVectorLayer>( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" ), tr( "Contributors" ), QLatin1String( "ogr" ) );
   bool ok = false;
-  qDebug() << ( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors_map.qml" ) );
   mDevelopersMapLayer->loadNamedStyle( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors_map.qml" ), ok );
 
   QgsCoordinateTransform transform( mDevelopersMapLayer->crs(), mDevelopersMapBaseLayer->crs(), QgsProject::instance()->transformContext() );
@@ -170,10 +169,14 @@ QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
   }
   extent.scale( 1.05 );
 
+  mapSettings().setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, true );
+  mapSettings().setFlag( Qgis::MapSettingsFlag::RenderPartialOutput, true );
   mapSettings().setLayers( QList<QgsMapLayer *>() << mDevelopersMapLayer.get() << mDevelopersMapBaseLayer.get() );
   mapSettings().setDestinationCrs( mDevelopersMapBaseLayer->crs() );
   mapSettings().setExtent( extent );
 
+  setParallelRenderingEnabled( true );
+  setPreviewJobsEnabled( true );
   setCanvasColor( palette().color( QPalette::Window ) );
   refresh();
 
