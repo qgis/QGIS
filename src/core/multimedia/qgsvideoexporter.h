@@ -1,0 +1,147 @@
+/***************************************************************************
+                             qgsvideoexporter.h
+                             --------------------------
+    begin                : November 2025
+    copyright            : (C) 2025 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#ifndef QGSVIDEOEXPORTER_H
+#define QGSVIDEOEXPORTER_H
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QSize>
+#include <QObject>
+#include <QtMultimedia/QMediaFormat>
+#include <QtMultimedia/QMediaRecorder>
+
+class QMediaCaptureSession;
+class QVideoFrameInput;
+
+/**
+ * \ingroup core
+ * \brief Handles exports of sequential image files to video formats.
+ *
+ * Video export functionality is not available on all systems. The
+ * isAvailable() function can be used to test whether video
+ * export is available on the current system.
+ *
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsVideoExporter : public QObject
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Returns TRUE if the video export functionality is available on the current system.
+     */
+    static bool isAvailable();
+
+    /**
+     * Constructor for QgsVideoExporter.
+     *
+     * \param filename destination video file name
+     * \param size output video frame size
+     * \param framesPerSecond output video frames per second
+     */
+    QgsVideoExporter( const QString &filename, QSize size, double framesPerSecond );
+    ~QgsVideoExporter() override;
+
+    /**
+     * Sets the list of input image \a files.
+     *
+     * The list must be an ordered list of existing image file paths, which will form
+     * the output video frames.
+     *
+     * \see inputFiles()
+     */
+    void setInputFiles( const QStringList &files );
+
+    /**
+     * Returns the list of input image \a files.
+     *
+     * \see setInputFiles()
+     */
+    QStringList inputFiles() const;
+
+    /**
+     * Sets the output file \a format.
+     *
+     * \see fileFormat()
+     */
+    void setFileFormat( QMediaFormat::FileFormat format );
+
+    /**
+     * Returns the output file format.
+     *
+     * \see setFileFormat()
+     */
+    QMediaFormat::FileFormat fileFormat() const;
+
+    /**
+     * Sets the output video \a codec.
+     *
+     * \see videoCodec()
+     */
+    void setVideoCodec( QMediaFormat::VideoCodec codec );
+
+    /**
+     * Returns the output video codec.
+     *
+     * \see setVideoCodec()
+     */
+    QMediaFormat::VideoCodec videoCodec() const;
+
+  public slots:
+
+    /**
+     * Starts the video export operation.
+     *
+     * The finished() signal will be emitted when the operation is complete.
+     *
+     * \throws QgsNotSupportedException if writing video is not supported on the current system.
+     */
+    void writeVideo() SIP_THROW( QgsNotSupportedException );
+
+  signals:
+
+    /**
+     * Emitted when the video export finishes.
+     */
+    void finished();
+
+  private slots:
+
+    void feedFrames();
+    void checkStatus( QMediaRecorder::RecorderState state );
+    void handleError( QMediaRecorder::Error error, const QString &errorString );
+
+  private:
+
+    QString mFileName;
+    QSize mSize;
+    double mFramesPerSecond = 10;
+    qint64 mFrameDurationUs = 100000;
+    QStringList mInputFiles;
+    QMediaFormat::FileFormat mFormat = QMediaFormat::FileFormat::MPEG4;
+    QMediaFormat::VideoCodec mCodec = QMediaFormat::VideoCodec::H264;
+    int mCurrentFrameIndex = 0;
+
+    std::unique_ptr< QMediaCaptureSession > mSession;
+    std::unique_ptr< QMediaRecorder > mRecorder;
+    std::unique_ptr< QVideoFrameInput > mVideoInput;
+
+};
+
+
+#endif // QGSVIDEOEXPORTER_H
