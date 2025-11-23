@@ -41,6 +41,9 @@
 #include "qgslayertreefiltersettings.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterrenderer.h"
+#include "qgsmeshlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
