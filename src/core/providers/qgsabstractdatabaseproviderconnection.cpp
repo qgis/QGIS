@@ -1404,6 +1404,16 @@ void QgsAbstractDatabaseProviderConnection::addFieldDomain( const QgsFieldDomain
   checkCapability( Capability::AddFieldDomain );
 }
 
+void QgsAbstractDatabaseProviderConnection::updateFieldDomain( QgsFieldDomain *, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::EditFieldDomain );
+}
+
+void QgsAbstractDatabaseProviderConnection::deleteFieldDomain( const QString &, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain );
+}
+
 void QgsAbstractDatabaseProviderConnection::setFieldAlias( const QString &, const QString &, const QString &, const QString & ) const
 {
   checkCapability( Qgis::DatabaseProviderConnectionCapability2::SetFieldAlias );

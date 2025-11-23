@@ -10600,6 +10600,8 @@ Qgis.PostgresRelKind.baseClass = Qgis
 Qgis.DatabaseProviderConnectionCapability2.SetFieldComment.__doc__ = "Can set comments for fields via setFieldComment()"
 Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__ = "Can set aliases for fields via setFieldAlias()"
 Qgis.DatabaseProviderConnectionCapability2.SetTableComment.__doc__ = "Can set comments for tables via setTableComment() \n.. versionadded:: 3.44"
+Qgis.DatabaseProviderConnectionCapability2.EditFieldDomain.__doc__ = "Can edit existing field domain \n.. versionadded:: 4.0"
+Qgis.DatabaseProviderConnectionCapability2.DeleteFieldDomain.__doc__ = "Can delete existing field domain \n.. versionadded:: 4.0"
 Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum represents the extended operations supported by the connection.
 
 .. versionadded:: 3.32
@@ -10609,6 +10611,14 @@ Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum repr
 * ``SetTableComment``: Can set comments for tables via setTableComment()
 
   .. versionadded:: 3.44
+
+* ``EditFieldDomain``: Can edit existing field domain
+
+  .. versionadded:: 4.0
+
+* ``DeleteFieldDomain``: Can delete existing field domain
+
+  .. versionadded:: 4.0
 
 
 """
