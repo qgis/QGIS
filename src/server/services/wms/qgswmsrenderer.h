@@ -41,6 +41,7 @@ class QgsMapRendererTask;
 class QgsMapSettings;
 class QgsPointXY;
 class QgsRasterLayer;
+class QgsMeshLayer;
 class QgsRectangle;
 class QgsRenderContext;
 class QgsVectorLayer;
@@ -68,6 +69,7 @@ namespace QgsWms
   class QgsRenderer
   {
     public:
+
       /**
        * Constructor for QgsRenderer.
        * \param context The rendering context.
@@ -278,6 +280,8 @@ namespace QgsWms
        */
       void writeVectorLayerAttribute( int attributeIndex, QgsVectorLayer *layer, const QgsFields &fields, QgsAttributes &featureAttributes, QDomDocument &doc, QDomElement &featureElem, QgsRenderContext &renderContext, QStringList *attributes = nullptr ) const;
 
+      //! Appends feature info xml for the layer to the layer element of the dom document
+      bool featureInfoFromMeshLayer( QgsMeshLayer *layer, const QgsMapSettings &mapSettings, const QgsPointXY *infoPoint, const QgsRenderContext &renderContext, QDomDocument &infoDocument, QDomElement &layerElement, const QString &version ) const;
       //! Appends feature info xml for the layer to the layer element of the dom document
       bool featureInfoFromRasterLayer( QgsRasterLayer *layer, const QgsMapSettings &mapSettings, const QgsPointXY *infoPoint, const QgsRenderContext &renderContext, QDomDocument &infoDocument, QDomElement &layerElement, const QString &version ) const;
 
