@@ -847,12 +847,43 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
     return;
   }
 
-  QAction *copyContentAction = menu->addAction( tr( "Copy Cell Content" ) );
-  menu->addAction( copyContentAction );
-  connect( copyContentAction, &QAction::triggered, this, [masterIndex, this] {
-    const QVariant var = mMasterModel->data( masterIndex, Qt::DisplayRole );
-    QApplication::clipboard()->setText( var.toString() );
-  } );
+  const QVariant displayValue = mMasterModel->data( masterIndex, Qt::DisplayRole );
+
+  if ( displayValue.isValid() )
+  {
+    // get values for preview in menu
+    QString previewDisplayValue = displayValue.toString();
+    if ( previewDisplayValue.length() > 12 )
+    {
+      previewDisplayValue.truncate( 12 );
+      previewDisplayValue.append( QStringLiteral( "…" ) );
+    }
+
+
+    QAction *copyContentAction = menu->addAction( tr( "Copy Cell Content (%1)" ).arg( previewDisplayValue ) );
+    menu->addAction( copyContentAction );
+    connect( copyContentAction, &QAction::triggered, this, [displayValue] {
+      QApplication::clipboard()->setText( displayValue.toString() );
+    } );
+  }
+
+  const QVariant rawValue = mMasterModel->data( masterIndex, Qt::EditRole );
+  if ( rawValue.isValid() )
+  {
+    // get values for preview in menu
+    QString previewRawValue = rawValue.toString();
+    if ( previewRawValue.length() > 12 )
+    {
+      previewRawValue.truncate( 12 );
+      previewRawValue.append( QStringLiteral( "…" ) );
+    }
+
+    QAction *copyRawContentAction = menu->addAction( tr( "Copy Raw Value (%1)" ).arg( previewRawValue ) );
+    menu->addAction( copyRawContentAction );
+    connect( copyRawContentAction, &QAction::triggered, this, [rawValue] {
+      QApplication::clipboard()->setText( rawValue.toString() );
+    } );
+  }
 
   QgsVectorLayer *vl = mFilterModel->layer();
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();

@@ -61,11 +61,12 @@ class TestQgsIdentify : public QObject
     void identifyRasterFloat32(); // test pixel identification and decimal precision
     void identifyRasterFloat64(); // test pixel identification and decimal precision
     void identifyRasterTemporal();
-    void identifyRasterDerivedAttributes(); // test derived pixel attributes
-    void identifyMesh();                    // test identification for mesh layer
-    void identifyVectorTile();              // test identification for vector tile layer
-    void identifyInvalidPolygons();         // test selecting invalid polygons
-    void clickxy();                         // test if click_x and click_y variables are propagated
+    void identifyRasterDerivedAttributes();      // test derived pixel attributes
+    void identifyMesh();                         // test identification for mesh layer
+    void identifyVectorTile();                   // test identification for vector tile layer
+    void identifyInvalidPolygons();              // test selecting invalid polygons
+    void identifyFeatureWithRepresentedValues(); // test locale representations values (and raw values)
+    void clickxy();                              // test if click_x and click_y variables are propagated
     void closestPoint();
     void testRelations();
     void testPointZ();
@@ -136,6 +137,9 @@ void TestQgsIdentify::cleanupTestCase()
 void TestQgsIdentify::init()
 {
   canvas = new QgsMapCanvas();
+  // enforce C locale because the tests expect it
+  // (decimal separators / thousand separators)
+  QLocale::setDefault( QLocale::c() );
 }
 
 void TestQgsIdentify::cleanup()
@@ -304,6 +308,7 @@ void TestQgsIdentify::closestPoint()
   QVERIFY( urlAttributeItem );
   // urlAttributeItem has a delegate widget, but we should still be able to retrieve the raw field value from it
   QCOMPARE( dlg->retrieveAttribute( urlAttributeItem ).toString(), QStringLiteral( "home: http://qgis.org" ) );
+  QCOMPARE( dlg->retrieveAttribute( urlAttributeItem, true ).toString(), QStringLiteral( "home: http://qgis.org" ) );
 
   // polygons
   //create a temporary layer
@@ -982,6 +987,51 @@ void TestQgsIdentify::identifyInvalidPolygons()
   identified = testIdentifyVector( memoryLayer.get(), 6, 4 );
   QCOMPARE( identified.length(), 1 );
   QCOMPARE( identified[0].mFeature.attribute( "pk" ), QVariant( 1 ) );
+}
+
+void TestQgsIdentify::identifyFeatureWithRepresentedValues()
+{
+  QLocale::setDefault( QLocale( QLocale::German, QLocale::Germany ) );
+
+  //create a temporary layer
+  QgsVectorLayer *layerA = new QgsVectorLayer( QStringLiteral( "Point?field=pk:int&field=doubleval:double" ), QStringLiteral( "layerA" ), QStringLiteral( "memory" ) );
+  QVERIFY( layerA->isValid() );
+  QgsFeature f1( layerA->dataProvider()->fields(), 1 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1000 );
+  f1.setAttribute( QStringLiteral( "doubleval" ), 1000.5 );
+  layerA->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  auto dialog = std::make_unique<QgsIdentifyResultsDialog>( canvas );
+  dialog->addFeature( layerA, f1, QMap<QString, QString>() );
+
+  QCOMPARE( dialog->lstResults->topLevelItemCount(), 1 );
+  QTreeWidgetItem *topLevelItem = dialog->lstResults->topLevelItem( 0 );
+  QCOMPARE( topLevelItem->childCount(), 1 );
+
+  QgsIdentifyResultsFeatureItem *featureItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( topLevelItem->child( 0 ) );
+  QVERIFY( featureItem );
+
+  QTreeWidgetItem *pkAttributeItem = nullptr;
+  QTreeWidgetItem *doublevalAttributeItem = nullptr;
+  for ( int row = 0; row < featureItem->childCount(); ++row )
+  {
+    if ( featureItem->child( row )->text( 0 ) == tr( "pk" ) )
+    {
+      pkAttributeItem = featureItem->child( row );
+    }
+    else if ( featureItem->child( row )->text( 0 ) == tr( "doubleval" ) )
+    {
+      doublevalAttributeItem = featureItem->child( row );
+    }
+  }
+  QVERIFY( pkAttributeItem );
+  QCOMPARE( pkAttributeItem->text( 1 ), QStringLiteral( "1.000" ) );
+  QCOMPARE( dialog->retrieveAttribute( pkAttributeItem ).toString(), QStringLiteral( "1.000" ) );
+  QCOMPARE( dialog->retrieveAttribute( pkAttributeItem, true ).toString(), QStringLiteral( "1000" ) );
+  QVERIFY( doublevalAttributeItem );
+  QCOMPARE( doublevalAttributeItem->text( 1 ), QStringLiteral( "1.000,50000" ) );
+  QCOMPARE( dialog->retrieveAttribute( doublevalAttributeItem ).toString(), QStringLiteral( "1.000,50000" ) );
+  QCOMPARE( dialog->retrieveAttribute( doublevalAttributeItem, true ).toString(), QStringLiteral( "1000.5" ) );
 }
 
 void TestQgsIdentify::testRelations()
