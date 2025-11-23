@@ -147,6 +147,13 @@ QgsMeshLayer *QgsMeshLayer::clone() const
   }
   layer->setLabelsEnabled( labelsEnabled() );
 
+  for ( const QString &extraDataset : mExtraDatasetUri )
+  {
+    layer->addDatasets( extraDataset );
+  }
+
+  layer->setRendererSettings( mRendererSettings );
+
   return layer;
 }
 
