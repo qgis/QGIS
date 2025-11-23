@@ -71,6 +71,13 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      */
     void clearCachedData( QgsLayerTreeNode *node ) const;
 
+    /**
+     * Determines whether the legend requires filtering because of renderer settings (UpdatedCanvas on raster or mesh layers).
+     *
+     * \since QGIS 4.0
+     */
+    bool requiresFilteringBecauseOfRendererSetting();
+
   signals:
 
     /**

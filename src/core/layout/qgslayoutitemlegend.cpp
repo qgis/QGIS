@@ -1257,7 +1257,8 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
 
   const bool hasValidFilter = filterByExpression
                               || ( mLegendFilterByMap && ( mMap || !mFilterByMapItems.empty() ) )
-                              || mInAtlas;
+                              || mInAtlas
+                              || mLegendModel->requiresFilteringBecauseOfRendererSetting();
 
   if ( hasValidFilter )
   {
@@ -1485,7 +1486,6 @@ bool QgsLayoutItemLegend::isRefreshing() const
   return mLegendModel->hitTestInProgress();
 }
 
-
 // -------------------------------------------------------------------------
 
 QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent, QgsLayoutItemLegend *layout )
@@ -1574,4 +1574,40 @@ void QgsLegendModel::clearCachedData( QgsLayerTreeNode *node ) const
 void QgsLegendModel::forceRefresh()
 {
   emit refreshLegend();
+}
+
+bool QgsLegendModel::requiresFilteringBecauseOfRendererSetting()
+{
+  const QList<QgsLayerTreeLayer *> layers = rootGroup()->findLayers();
+
+  for ( QgsLayerTreeLayer *layerTreeLayer : layers )
+  {
+    QgsMapLayer *mapLayer = layerTreeLayer->layer();
+
+    if ( !mapLayer || !mapLayer->isValid() )
+      continue;
+    if ( QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( mapLayer ) )
+    {
+      if ( rl->renderer()->minMaxOrigin().extent() == Qgis::RasterRangeExtent::UpdatedCanvas )
+      {
+        return true;
+      }
+    }
+    else if ( QgsMeshLayer *ml = qobject_cast<QgsMeshLayer *>( mapLayer ) )
+    {
+      const QgsMeshDatasetIndex activeDatasetIndex = ml->staticScalarDatasetIndex();
+
+      if ( activeDatasetIndex.isValid() )
+      {
+        QgsMeshRendererScalarSettings scalarRendererSettings = ml->rendererSettings().scalarSettings( activeDatasetIndex.group() );
+
+        if ( scalarRendererSettings.extent() == Qgis::MeshRangeExtent::UpdatedCanvas )
+        {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
 }

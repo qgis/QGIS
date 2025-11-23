@@ -47,6 +47,14 @@ Clears any previously cached data for the specified ``node``.
 .. versionadded:: 3.14
 %End
 
+    bool requiresFilteringBecauseOfRendererSetting();
+%Docstring
+Determines whether the legend requires filtering because of renderer
+settings (UpdatedCanvas on raster or mesh layers).
+
+.. versionadded:: 4.0
+%End
+
   signals:
 
     void refreshLegend();
