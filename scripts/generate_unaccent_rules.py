@@ -164,12 +164,20 @@ def generate_cpp_code(rules, input_filename):
         print(f"    // {label} character mappings ({len(rule_list)} rules)")
 
         for source, target in rule_list:
+            source_esc = escape_cpp_string(source)
+            target_esc = escape_cpp_string(target)
+
+            if target_esc == "":
+                target_cpp = "QString()"  # use QString() to make CI happy
+            else:
+                target_cpp = f'QStringLiteral( "{target_esc}" )'
+
             print(
-                f'    map.insert( QStringLiteral( "{escape_cpp_string(source)}" ), '
-                f'QStringLiteral( "{escape_cpp_string(target)}" ) );'
+                f'    map.insert( QStringLiteral( "{source_esc}" ), {target_cpp} );'
             )
 
         print()
+
 
     print("    return map;")
     print("  }();\n")
