@@ -48,7 +48,16 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
 {
   const QgsSettings settings;
   const bool useCurrentViewExtent = settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool();
-  mUri = QgsWFSDataSourceURI::build( uri.uri( false ), featureType, crsString, QString(), QString(), useCurrentViewExtent );
+
+  const QStringList detailsParameters = { QStringLiteral( "wfs" ), parent->name() };
+  QString featureFormat = QgsOwsConnection::settingsDefaultFeatureFormat->value( detailsParameters );
+  if ( featureFormat.isEmpty() )
+  {
+    // Read from global default setting
+    featureFormat = QgsSettings().value( QStringLiteral( "qgis/lastFeatureFormatEncoding" ), QString() ).toString();
+  }
+
+  mUri = QgsWFSDataSourceURI::build( uri.uri( false ), featureType, crsString, QString(), QString(), useCurrentViewExtent, featureFormat );
   setState( Qgis::BrowserItemState::Populated );
   mIconName = QStringLiteral( "mIconWfs.svg" );
   mBaseUri = uri.param( QStringLiteral( "url" ) );

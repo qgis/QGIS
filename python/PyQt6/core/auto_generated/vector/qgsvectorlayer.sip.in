@@ -148,6 +148,8 @@ following parameters (note that parameter keys are case sensitive):
 - InvertAxisOrientation=1: to invert axis order
 - hideDownloadProgressDialog=1: to hide the download progress dialog
 - featureMode=default/simpleFeatures/complexFeatures (QGIS >= 3.44)
+- outputformat=string: output format. Can be set for example to GML3 for
+  some WFS 1.0 servers that can support GML3.
 
 The ‘filter’ key value can either be a QGIS expression or an OGC XML
 filter. If the value is set to a QGIS expression the driver will turn it
@@ -188,6 +190,10 @@ class with the following parameters:
 - maxNumFeatures=number: maximum number of features to retrieve
   (possibly across several multiple paging requests)
 - hideDownloadProgressDialog=1: to hide the download progress dialog.
+- outputformat=string: output format as a MIME type to ask the server to
+  return features. e.g "application/geo+json", "application/flatgeobuf",
+  "application/fg+json", etc. Assumes there is a GDAL driver for the
+  requested format. (QGIS >= 4)
 
 Delimited text file data provider (delimitedtext)
 -------------------------------------------------

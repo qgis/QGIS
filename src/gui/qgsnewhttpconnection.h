@@ -192,6 +192,18 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     QComboBox *wfsVersionComboBox() SIP_SKIP;
 
     /**
+     * Returns the "Feature format detect" button.
+     * \since QGIS 4.0
+     */
+    QPushButton *featureFormatDetectButton() SIP_SKIP;
+
+    /**
+     * Returns the "Feature format" combobox.
+     * \since QGIS 4.0
+     */
+    QComboBox *featureFormatComboBox() SIP_SKIP;
+
+    /**
      * Returns the "WFS paging" combobox
      * \since QGIS 3.36
      */

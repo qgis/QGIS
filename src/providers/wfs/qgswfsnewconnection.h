@@ -20,6 +20,7 @@
 #include "qgswfsgetcapabilities.h"
 #include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifapirequest.h"
+#include "qgsoapifcollection.h"
 
 class QgsWFSNewConnection : public QgsNewHttpConnection
 {
@@ -32,18 +33,26 @@ class QgsWFSNewConnection : public QgsNewHttpConnection
 
   private slots:
     void versionDetectButton();
+    void detectFormat();
     void capabilitiesReplyFinished();
     void oapifLandingPageReplyFinished();
     void oapifApiReplyFinished();
+    void oapifCollectionsReplyFinished();
 
   private:
     QgsDataSourceUri createUri();
+    void startCapabilitiesRequest();
     void startOapifLandingPageRequest();
     void startOapifApiRequest();
+    void startOapifCollectionsRequest();
 
     std::unique_ptr<QgsWfsGetCapabilitiesRequest> mCapabilities;
     std::unique_ptr<QgsOapifLandingPageRequest> mOAPIFLandingPage;
     std::unique_ptr<QgsOapifApiRequest> mOAPIFApi;
+    std::unique_ptr<QgsOapifCollectionsRequest> mOAPIFCollectionsRequest;
+    QString mOAPIFCollectionsUrl;
+    QString mOAPIFApiUrl;
+    bool mDetectFormatInProgress = false;
 };
 
 #endif //QGSWFSNEWCONNECTION_H

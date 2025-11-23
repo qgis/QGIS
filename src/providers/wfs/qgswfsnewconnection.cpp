@@ -15,6 +15,7 @@
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsowsconnection.h"
 #include "qgswfsnewconnection.h"
 #include "moc_qgswfsnewconnection.cpp"
 #include "qgswfsguiutils.h"
@@ -23,18 +24,87 @@
 
 #include <algorithm>
 
+static QString translatedImageFormatFromMediaType( const QString &type )
+{
+  if ( type == QLatin1String( "application/geo+json" ) )
+  {
+    return QObject::tr( "GeoJSON" );
+  }
+  else if ( type == QLatin1String( "application/flatgeobuf" ) )
+  {
+    return QObject::tr( "FlatGeoBuf" );
+  }
+  else if ( type == QLatin1String( "application/fg+json" ) )
+  {
+    return QObject::tr( "JSON-FG" );
+  }
+  else if ( type == QLatin1String( "default" ) )
+  {
+    return QObject::tr( "Default" );
+  }
+  else
+  {
+    return type;
+  }
+}
+
 QgsWFSNewConnection::QgsWFSNewConnection( QWidget *parent, const QString &connName )
   : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWfs, QStringLiteral( "WFS" ), connName )
 {
   connect( wfsVersionDetectButton(), &QPushButton::clicked, this, &QgsWFSNewConnection::versionDetectButton );
+  connect( featureFormatDetectButton(), &QPushButton::clicked, this, &QgsWFSNewConnection::detectFormat );
+
+  const QStringList detailsParameters = { QStringLiteral( "wfs" ), originalConnectionName() };
+  QString featureFormat = QgsOwsConnection::settingsDefaultFeatureFormat->value( detailsParameters );
+
+  if ( featureFormat.isEmpty() )
+  {
+    // Read from global default setting
+    featureFormat = QgsSettings().value( QStringLiteral( "qgis/lastFeatureFormatEncoding" ), QString() ).toString();
+  }
+
+  // Check the settings for available formats
+  const QStringList availableFormats = QgsOwsConnection::settingsAvailableFeatureFormats->value( detailsParameters );
+  featureFormatComboBox()->clear();
+  if ( availableFormats.empty() )
+  {
+    featureFormatComboBox()->addItem( translatedImageFormatFromMediaType( QStringLiteral( "default" ) ), QStringLiteral( "default" ) );
+  }
+  else
+  {
+    int itemCount = 0;
+    for ( const QString &format : availableFormats )
+    {
+      featureFormatComboBox()->addItem( translatedImageFormatFromMediaType( format ), format );
+      if ( format == featureFormat )
+      {
+        featureFormatComboBox()->setCurrentIndex( itemCount );
+      }
+      ++itemCount;
+    }
+  }
 }
 
 QgsWFSNewConnection::~QgsWFSNewConnection()
 {
-  if ( mCapabilities || mOAPIFLandingPage || mOAPIFApi )
+  if ( mCapabilities || mOAPIFLandingPage || mOAPIFApi || mOAPIFCollectionsRequest )
   {
     QApplication::restoreOverrideCursor();
   }
+}
+
+void QgsWFSNewConnection::detectFormat()
+{
+  mDetectFormatInProgress = true;
+  if ( mOAPIFCollectionsUrl.isEmpty() )
+  {
+    if ( wfsVersionComboBox()->currentIndex() == WFS_VERSION_MAX )
+      startCapabilitiesRequest();
+    else
+      startOapifLandingPageRequest();
+  }
+  else
+    startOapifCollectionsRequest();
 }
 
 QgsDataSourceUri QgsWFSNewConnection::createUri()
@@ -56,6 +126,11 @@ QgsDataSourceUri QgsWFSNewConnection::createUri()
 
 void QgsWFSNewConnection::versionDetectButton()
 {
+  startCapabilitiesRequest();
+}
+
+void QgsWFSNewConnection::startCapabilitiesRequest()
+{
   mCapabilities.reset( new QgsWfsGetCapabilitiesRequest( createUri().uri( false ) ) );
   connect( mCapabilities.get(), &QgsWfsGetCapabilitiesRequest::gotCapabilities, this, &QgsWFSNewConnection::capabilitiesReplyFinished );
   const bool synchronous = false;
@@ -67,11 +142,11 @@ void QgsWFSNewConnection::versionDetectButton()
   }
   else
   {
+    mDetectFormatInProgress = false;
     QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Error" ), tr( "Could not get capabilities" ), QMessageBox::Ok, this );
     box->setAttribute( Qt::WA_DeleteOnClose );
     box->setModal( true );
     box->open();
-
     mCapabilities.reset();
   }
 }
@@ -89,6 +164,8 @@ void QgsWFSNewConnection::capabilitiesReplyFinished()
     startOapifLandingPageRequest();
     return;
   }
+
+  mDetectFormatInProgress = false;
 
   const QgsWfsCapabilities &caps = mCapabilities->capabilities();
   int versionIdx = WFS_VERSION_MAX;
@@ -157,24 +234,34 @@ void QgsWFSNewConnection::oapifLandingPageReplyFinished()
       QgsMessageLog::logMessage( mCapabilities->errorMessage(), tr( "WFS" ) );
       QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( mCapabilities.get(), this );
     }
+    mDetectFormatInProgress = false;
     mCapabilities.reset();
     mOAPIFLandingPage.reset();
     return;
   }
+
+  mOAPIFApiUrl = mOAPIFLandingPage->apiUrl();
+  mOAPIFCollectionsUrl = mOAPIFLandingPage->collectionsUrl();
+  mOAPIFLandingPage.reset();
 
   wfsVersionComboBox()->setCurrentIndex( WFS_VERSION_API_FEATURES_1_0 );
   wfsPagingComboBox()->setCurrentIndex( static_cast<int>( QgsNewHttpConnection::WfsFeaturePagingIndex::ENABLED ) );
 
   mCapabilities.reset();
 
-  startOapifApiRequest();
+  if ( mDetectFormatInProgress )
+  {
+    startOapifCollectionsRequest();
+  }
+  else
+  {
+    startOapifApiRequest();
+  }
 }
 
 void QgsWFSNewConnection::startOapifApiRequest()
 {
-  Q_ASSERT( mOAPIFLandingPage );
-  mOAPIFApi.reset( new QgsOapifApiRequest( createUri(), mOAPIFLandingPage->apiUrl() ) );
-  mOAPIFLandingPage.reset();
+  mOAPIFApi = std::make_unique<QgsOapifApiRequest>( createUri(), mOAPIFApiUrl );
 
   connect( mOAPIFApi.get(), &QgsOapifApiRequest::gotResponse, this, &QgsWFSNewConnection::oapifApiReplyFinished );
   const bool synchronous = false;
@@ -221,4 +308,77 @@ void QgsWFSNewConnection::oapifApiReplyFinished()
     wfsPageSizeLineEdit()->setText( QString::number( mOAPIFApi->maxLimit() ) );
 
   mOAPIFApi.reset();
+}
+
+void QgsWFSNewConnection::startOapifCollectionsRequest()
+{
+  mOAPIFCollectionsRequest = std::make_unique<QgsOapifCollectionsRequest>( createUri(), mOAPIFCollectionsUrl );
+
+  connect( mOAPIFCollectionsRequest.get(), &QgsOapifCollectionsRequest::gotResponse, this, &QgsWFSNewConnection::oapifCollectionsReplyFinished );
+  const bool synchronous = false;
+  const bool forceRefresh = true;
+  if ( mOAPIFCollectionsRequest->request( synchronous, forceRefresh ) )
+  {
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+  }
+  else
+  {
+    mDetectFormatInProgress = false;
+    QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Error" ), tr( "Could not get collections" ), QMessageBox::Ok, this );
+    box->setAttribute( Qt::WA_DeleteOnClose );
+    box->setModal( true );
+    box->open();
+    mOAPIFCollectionsRequest.reset();
+  }
+}
+
+void QgsWFSNewConnection::oapifCollectionsReplyFinished()
+{
+  if ( !mOAPIFCollectionsRequest )
+    return;
+
+  mDetectFormatInProgress = false;
+
+  QApplication::restoreOverrideCursor();
+
+  if ( mOAPIFCollectionsRequest->errorCode() != QgsBaseNetworkRequest::NoError )
+  {
+    QMessageBox *box = new QMessageBox( QMessageBox::Critical, QObject::tr( "Invalid response" ), mOAPIFCollectionsRequest->errorMessage(), QMessageBox::Ok, this );
+    box->setAttribute( Qt::WA_DeleteOnClose );
+    box->setModal( true );
+    box->open();
+
+    mOAPIFCollectionsRequest.reset();
+    return;
+  }
+
+  const QStringList detailsParameters = { QStringLiteral( "wfs" ), originalConnectionName() };
+
+  // Store current format value
+  QString currentFormat { featureFormatComboBox()->currentData().toString() };
+  if ( currentFormat.isEmpty() )
+  {
+    currentFormat = QgsSettings().value( QStringLiteral( "qgis/lastFeatureFormatEncoding" ), QString() ).toString();
+  }
+
+  featureFormatComboBox()->clear();
+  featureFormatComboBox()->addItem( translatedImageFormatFromMediaType( QStringLiteral( "default" ) ), QStringLiteral( "default" ) );
+  int itemCount = 1;
+  QStringList featureFormats;
+  featureFormats << QStringLiteral( "default" );
+  for ( const QString &format : mOAPIFCollectionsRequest->featureFormats() )
+  {
+    featureFormatComboBox()->addItem( translatedImageFormatFromMediaType( format ), format );
+    if ( format == currentFormat )
+    {
+      featureFormatComboBox()->setCurrentIndex( itemCount );
+    }
+    featureFormats << format;
+    itemCount++;
+  }
+
+  // Update the connection list of available formats
+  QgsOwsConnection::settingsAvailableFeatureFormats->setValue( featureFormats, detailsParameters );
+
+  mOAPIFCollectionsRequest.reset();
 }

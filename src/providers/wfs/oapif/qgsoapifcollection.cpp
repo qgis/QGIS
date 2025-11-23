@@ -77,6 +77,15 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
     if ( link.length > 0 )
       mdLink.size = QString::number( link.length );
     mLayerMetadata.addLink( mdLink );
+
+    if ( link.rel == QLatin1String( "items" ) )
+    {
+      if ( link.type == QLatin1String( "application/geo+json" ) || link.type == QLatin1String( "application/flatgeobuf" ) || link.type == QLatin1String( "application/fg+json" ) )
+      {
+        mFeatureFormats << link.type;
+        mMapFeatureFormatToUrl[link.type] = link.href;
+      }
+    }
   }
 
   if ( j.contains( "title" ) )
@@ -471,6 +480,13 @@ void QgsOapifCollectionsRequest::processReply()
               // use the one from the collection set.
               collection.mLayerMetadata.setLicenses( licenses );
             }
+
+            // Create a merged map of feature formats
+            for ( const QString &format : collection.mFeatureFormats )
+            {
+              mFeatureFormats << format;
+            }
+
             mCollections.emplace_back( collection );
           }
         }

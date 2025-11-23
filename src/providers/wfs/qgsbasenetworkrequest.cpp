@@ -375,6 +375,40 @@ bool QgsBaseNetworkRequest::issueRequest( QNetworkRequest &request, const QByteA
   return success;
 }
 
+void QgsBaseNetworkRequest::extractResponseHeadersForUnitTests()
+{
+  if ( mFakeResponseHasHeaders )
+  {
+    // Expect the file content to be formatted like:
+    // header1: value1\r\n
+    // headerN: valueN\r\n
+    // \r\n
+    // content
+    int from = 0;
+    while ( true )
+    {
+      const int pos = static_cast<int>( mResponse.indexOf( QByteArray( "\r\n" ), from ) );
+      if ( pos < 0 )
+      {
+        break;
+      }
+      QByteArray line = mResponse.mid( from, pos - from );
+      const int posColon = static_cast<int>( line.indexOf( QByteArray( ":" ) ) );
+      if ( posColon > 0 )
+      {
+        mResponseHeaders.append( QNetworkReply::RawHeaderPair( line.mid( 0, posColon ), line.mid( posColon + 1 ).trimmed() ) );
+      }
+      from = pos + 2;
+      if ( from + 2 < mResponse.size() && mResponse[from] == '\r' && mResponse[from] == '\n' )
+      {
+        from += 2;
+        break;
+      }
+    }
+    mResponse = mResponse.mid( from );
+  }
+}
+
 bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteArray &verb, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders )
 {
   abort(); // cancel previous
@@ -401,36 +435,7 @@ bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteAr
     }
     bool ret = sendGET( modifiedUrl, QString(), true, true, false, extraHeadersModified );
 
-    if ( mFakeResponseHasHeaders )
-    {
-      // Expect the file content to be formatted like:
-      // header1: value1\r\n
-      // headerN: valueN\r\n
-      // \r\n
-      // content
-      int from = 0;
-      while ( true )
-      {
-        int pos = mResponse.indexOf( QByteArray( "\r\n" ), from );
-        if ( pos < 0 )
-        {
-          break;
-        }
-        QByteArray line = mResponse.mid( from, pos - from );
-        int posColon = line.indexOf( QByteArray( ":" ) );
-        if ( posColon > 0 )
-        {
-          mResponseHeaders.append( QNetworkReply::RawHeaderPair( line.mid( 0, posColon ), line.mid( posColon + 1 ).trimmed() ) );
-        }
-        from = pos + 2;
-        if ( from + 2 < mResponse.size() && mResponse[from] == '\r' && mResponse[from] == '\n' )
-        {
-          from += 2;
-          break;
-        }
-      }
-      mResponse = mResponse.mid( from );
-    }
+    extractResponseHeadersForUnitTests();
     return ret;
   }
 
@@ -708,6 +713,8 @@ void QgsBaseNetworkRequest::replyFinished()
 
         mResponse = mReply->readAll();
 
+        extractResponseHeadersForUnitTests();
+
         if ( mResponse.isEmpty() && !mGotNonEmptyResponse && !mEmptyResponseIsValid )
         {
           mErrorMessage = tr( "empty response: %1" ).arg( mReply->errorString() );
@@ -742,7 +749,8 @@ void QgsBaseNetworkRequest::replyFinished()
 
   if ( mReply )
   {
-    mResponseHeaders = mReply->rawHeaderPairs();
+    if ( !mFakeResponseHasHeaders )
+      mResponseHeaders = mReply->rawHeaderPairs();
 
     mReply->deleteLater();
     mReply = nullptr;

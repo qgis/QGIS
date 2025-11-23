@@ -69,6 +69,8 @@ const QgsSettingsEntryEnumFlag<Qgis::TilePixelRatio> *QgsOwsConnection::settings
 const QgsSettingsEntryString *QgsOwsConnection::settingsMaxNumFeatures = new QgsSettingsEntryString( QStringLiteral( "max-num-features" ), sTreeOwsConnections ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsPagesize = new QgsSettingsEntryString( QStringLiteral( "page-size" ), sTreeOwsConnections ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsPagingEnabled = new QgsSettingsEntryString( QStringLiteral( "paging-enabled" ), sTreeOwsConnections, QString( "default" ) ) ;
+const QgsSettingsEntryString *QgsOwsConnection::settingsDefaultFeatureFormat = new QgsSettingsEntryString( QStringLiteral( "default-feature-format" ), sTreeOwsConnections, QString( ) ) ;
+const QgsSettingsEntryStringList *QgsOwsConnection::settingsAvailableFeatureFormats = new QgsSettingsEntryStringList( QStringLiteral( "available-feature-formats" ), sTreeOwsConnections, {} ) ;
 const QgsSettingsEntryString *QgsOwsConnection::settingsWfsFeatureMode = new QgsSettingsEntryString( QStringLiteral( "feature-mode" ), sTreeOwsConnections, QString( "default" ) ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsPreferCoordinatesForWfsT11 = new QgsSettingsEntryBool( QStringLiteral( "prefer-coordinates-for-wfs-T11" ), sTreeOwsConnections, false ) ;
 const QgsSettingsEntryBool *QgsOwsConnection::settingsWfsForceInitialGetFeature = new QgsSettingsEntryBool( QStringLiteral( "force-initial-get-feature" ), sTreeOwsConnections, false ) ;

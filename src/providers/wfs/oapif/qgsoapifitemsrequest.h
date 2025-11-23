@@ -31,7 +31,7 @@ class QgsOapifItemsRequest : public QgsBaseNetworkRequest
 {
     Q_OBJECT
   public:
-    explicit QgsOapifItemsRequest( const QgsDataSourceUri &uri, const QString &url );
+    explicit QgsOapifItemsRequest( const QgsDataSourceUri &uri, const QString &url, const QString &featureFormat );
 
     //! Ask to compute the bbox of the returned items.
     void setComputeBbox() { mComputeBbox = true; }
@@ -85,7 +85,9 @@ class QgsOapifItemsRequest : public QgsBaseNetworkRequest
     QString errorMessageWithReason( const QString &reason ) override;
 
   private:
-    QString mUrl;
+    const QString mUrl;
+
+    const QString mFeatureFormat;
 
     bool mComputeBbox = false;
 
