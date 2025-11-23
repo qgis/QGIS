@@ -626,7 +626,7 @@ set(QGIS_CORE_SRCS
   qgstrackedvectorlayertools.cpp
   qgstransaction.cpp
   qgstransactiongroup.cpp
-  qgsunaccentrules.cpp
+  qgsunaccent_generated_rules.cpp
   qgsunittypes.cpp
   qgsvariantutils.cpp
   qgsvector.cpp

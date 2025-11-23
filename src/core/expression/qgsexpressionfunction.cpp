@@ -59,7 +59,6 @@
 #include "qgstransaction.h"
 #include "qgsthreadingutils.h"
 #include "qgsapplication.h"
-#include "qgsunaccentrules.h"
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsunittypes.h"
@@ -2692,10 +2691,18 @@ static QVariant fcnStrpos( const QVariantList &values, const QgsExpressionContex
   return string.indexOf( QgsExpressionUtils::getStringValue( values.at( 1 ), parent ) ) + 1;
 }
 
-static QVariant fcnUnaccent( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+static QVariant fcnUnaccent( const QVariantList &values,
+                             const QgsExpressionContext *,
+                             QgsExpression *parent,
+                             const QgsExpressionNodeFunction * )
 {
-  const QString in = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  return QgsUnaccentRules::instance().transform( in );
+  if ( values.isEmpty() )
+    return QVariant();
+
+  const QString input =
+    QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+
+  return QgsStringUtils::unaccent( input );
 }
 
 static QVariant fcnRight( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

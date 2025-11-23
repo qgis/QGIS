@@ -328,6 +328,14 @@ class CORE_EXPORT QgsStringUtils
      */
     static bool containsByWord( const QString &candidate, const QString &words, Qt::CaseSensitivity sensitivity = Qt::CaseInsensitive );
 
+    /**
+     * Returns a "unaccented" version of the input \a string, using rules derived
+     * from PostgreSQL's unaccent extension.
+     *
+     * \since QGIS 4.0
+     */
+    static QString unaccent( const QString &string );
+
 };
 
 #endif //QGSSTRINGUTILS_H
