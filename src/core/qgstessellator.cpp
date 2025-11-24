@@ -309,7 +309,7 @@ static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeig
   }
 }
 
-static QVector3D _calculateNormal( const QgsLineString *curve, double originX, double originY, double originZ, bool invertNormal, float extrusionHeight )
+static QVector3D calculateNormal( const QgsLineString *curve, double originX, double originY, double originZ, bool invertNormal, float extrusionHeight )
 {
   if ( !QgsWkbTypes::hasZ( curve->wkbType() ) )
   {
@@ -671,7 +671,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   if ( !exterior )
     return;
 
-  const QVector3D pNormal = !mInputZValueIgnored ? _calculateNormal( exterior, mOrigin.x(), mOrigin.y(), mOrigin.z(), mInvertNormals, extrusionHeight ) : QVector3D();
+  const QVector3D pNormal = !mInputZValueIgnored ? calculateNormal( exterior, mOrigin.x(), mOrigin.y(), mOrigin.z(), mInvertNormals, extrusionHeight ) : QVector3D();
   const int pCount = exterior->numPoints();
   if ( pCount == 0 )
     return;
