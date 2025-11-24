@@ -30,7 +30,7 @@ QString QgsPdalTileAlgorithm::name() const
 
 QString QgsPdalTileAlgorithm::displayName() const
 {
-  return QObject::tr( "Create tile from point cloud" );
+  return QObject::tr( "Create tiles from point cloud" );
 }
 
 QString QgsPdalTileAlgorithm::group() const
