@@ -286,7 +286,6 @@ class CORE_EXPORT QgsThreadingUtils
  * Temporarily overrides the current thread name.
  *
  * \warning This class is not supported on all platforms.
- * \warning This class has no impact on non-debug enabled builds.
  *
  * \note Not available in Python bindings
  * \since QGIS 4.0
@@ -300,11 +299,9 @@ class QgsScopedThreadName
      */
     QgsScopedThreadName( const QString &name )
     {
-#ifdef QGISDEBUG
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
       mOldName = getCurrentThreadName();
       setCurrentThreadName( name );
-#else
-      ( void )name;
 #endif
     }
 
@@ -313,14 +310,14 @@ class QgsScopedThreadName
      */
     ~QgsScopedThreadName()
     {
-#ifdef QGISDEBUG
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
       setCurrentThreadName( mOldName );
 #endif
     }
 
   private:
 
-#ifdef QGISDEBUG
+#if defined(Q_OS_LINUX) && !defined(QT_LINUXBASE)
     QString mOldName;
 
     static QString getCurrentThreadName()
@@ -343,7 +340,6 @@ class QgsScopedThreadName
 #endif
     }
 #endif
-
 };
 
 
