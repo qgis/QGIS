@@ -16,6 +16,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsfeatureid.h"
 #include "qgsmaptooleditblanksegments.h"
+#include "moc_qgsmaptooleditblanksegments.cpp"
 
 #include "line_p.h"
 #include "qgsmapcanvas.h"
