@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>385</width>
-    <height>535</height>
+    <height>678</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,13 +23,6 @@
    <property name="bottomMargin">
     <number>1</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QLabel" name="mPlacementLabel">
-     <property name="text">
-      <string>Hash placement</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0" colspan="3">
     <layout class="QGridLayout" name="gridLayout_3">
      <property name="leftMargin">
@@ -162,39 +155,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="3" column="1" colspan="2">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="2">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="1">
-    <widget class="QgsPropertyOverrideButton" name="mPlacementDDBtn">
-     <property name="text">
-      <string>…</string>
-     </property>
-    </widget>
    </item>
    <item row="2" column="0" colspan="3">
     <layout class="QGridLayout" name="gridLayout">
@@ -487,6 +447,106 @@
      </item>
     </layout>
    </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Blank segments</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <spacer name="horizontalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QToolButton" name="mEditBlankSegmentsBtn">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionRemoveAllFromOverview.svg</normaloff>:/images/themes/default/mActionRemoveAllFromOverview.svg</iconset>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsUnitSelectionWidget" name="mBlankSegmentsUnitWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::TabFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsPropertyOverrideButton" name="mBlankSegmentsDDButton">
+          <property name="text">
+           <string>…</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsPropertyOverrideButton" name="mPlacementDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="mPlacementLabel">
+     <property name="text">
+      <string>Hash placement</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -537,6 +597,8 @@
   <tabstop>mLineOffsetDDBtn</tabstop>
   <tabstop>mRingFilterComboBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1715,6 +1715,45 @@ class TestQgsMarkerLineSymbolLayer(QgisTestCase):
             )
         )
 
+    def testBlankSegmentsOnCircularString(self):
+        """
+        Test using blank area on circular string with vertex placements
+        """
+
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        sl = QgsMarkerLineSymbolLayer()
+        sl.setPlacements(
+            Qgis.MarkerLinePlacements(
+                Qgis.MarkerLinePlacement.Vertex | Qgis.MarkerLinePlacement.CurvePoint
+            )
+        )
+
+        markerSl = sl.subSymbol().symbolLayers()[0]
+        self.assertTrue(markerSl)
+        markerSl.setShape(Qgis.MarkerShape.HalfSquare)
+        markerSl.setStrokeStyle(Qt.PenStyle.NoPen)
+        s.appendSymbolLayer(sl)
+
+        g = QgsGeometry.fromWkt("""CircularString (0 0, 3 7, 10 10)""")
+
+        sl.setDataDefinedProperty(
+            QgsSymbolLayer.Property.BlankSegments,
+            QgsProperty.fromExpression("'(((3 8)))'"),
+        )
+
+        rendered_image = self.renderGeometry(s, g)
+        self.assertTrue(
+            self.image_check(
+                "markerline_blanksegments_circularstring",
+                "markerline_blanksegments_circularstring",
+                rendered_image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
         f.setGeometry(geom)
