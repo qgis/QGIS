@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "line_p.h"
+#include "qgsgeometryutils.h"
 #include "qgslinesymbollayer.h"
 
 #include <algorithm>
@@ -1185,71 +1187,6 @@ double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRend
   return -offset; //direction seems to be inverse to symbology offset
 }
 
-/////////
-
-///@cond PRIVATE
-
-class MyLine
-{
-  public:
-    MyLine( QPointF p1, QPointF p2 )
-    {
-      if ( p1 == p2 )
-        return; // invalid
-
-      // tangent and direction
-      if ( qgsDoubleNear( p1.x(), p2.x() ) )
-      {
-        // vertical line - tangent undefined
-        mVertical = true;
-        mIncreasing = ( p2.y() > p1.y() );
-      }
-      else
-      {
-        mVertical = false;
-        mT = ( p2.y() - p1.y() ) / ( p2.x() - p1.x() );
-        mIncreasing = ( p2.x() > p1.x() );
-      }
-
-      // length
-      double x = ( p2.x() - p1.x() );
-      double y = ( p2.y() - p1.y() );
-      mLength = std::sqrt( x * x + y * y );
-    }
-
-    // return angle in radians
-    double angle()
-    {
-      double a = ( mVertical ? M_PI_2 : std::atan( mT ) );
-
-      if ( !mIncreasing )
-        a += M_PI;
-      return a;
-    }
-
-    // return difference for x,y when going along the line with specified interval
-    QPointF diffForInterval( double interval ) const
-    {
-      if ( mVertical )
-        return ( mIncreasing ? QPointF( 0, interval ) : QPointF( 0, -interval ) );
-
-      double alpha = std::atan( mT );
-      double dx = std::cos( alpha ) * interval;
-      double dy = std::sin( alpha ) * interval;
-      return ( mIncreasing ? QPointF( dx, dy ) : QPointF( -dx, -dy ) );
-    }
-
-    double length() const { return mLength; }
-
-  protected:
-    bool mVertical = false;
-    bool mIncreasing = false;
-    double mT = 0.0;
-    double mLength = 0.0;
-};
-
-///@endcond
-
 //
 // QgsTemplatedLineSymbolLayerBase
 //
@@ -1928,7 +1865,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
       const QPointF startPt = angleStartPoints[i];
       const QPointF endPt = angleEndPoints[i];
 
-      MyLine l( startPt, endPt );
+      Line l( startPt, endPt );
       // rotate marker (if desired)
       if ( rotateSymbols() )
       {
@@ -1957,7 +1894,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
         continue;
 
       // for each line, find out dx and dy, and length
-      MyLine l( lastPt, pt );
+      Line l( lastPt, pt );
       QPointF diff = l.diffForInterval( painterUnitInterval );
 
       // if there's some length left from previous line
@@ -1999,8 +1936,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
 static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
 {
   // calc average angle between the previous and next point
-  double a1 = MyLine( prevPt, pt ).angle();
-  double a2 = MyLine( pt, nextPt ).angle();
+  double a1 = Line( prevPt, pt ).angle();
+  double a2 = Line( pt, nextPt ).angle();
   double unitX = std::cos( a1 ) + std::cos( a2 ), unitY = std::sin( a1 ) + std::sin( a2 );
 
   return std::atan2( unitY, unitX );
@@ -2270,7 +2207,7 @@ double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bo
         const QPointF &nextPt = points[vertex + 1];
         if ( pt != nextPt )
         {
-          angle = MyLine( pt, nextPt ).angle();
+          angle = Line( pt, nextPt ).angle();
           return angle;
         }
         ++vertex;
@@ -2284,7 +2221,7 @@ double QgsTemplatedLineSymbolLayerBase::markerAngle( const QPolygonF &points, bo
         const QPointF &prevPt = points[vertex - 1];
         if ( pt != prevPt )
         {
-          angle = MyLine( prevPt, pt ).angle();
+          angle = Line( prevPt, pt ).angle();
           return angle;
         }
         --vertex;
@@ -2333,7 +2270,7 @@ void QgsTemplatedLineSymbolLayerBase::renderOffsetVertexAlongLine( const QPolygo
       continue;
 
     // create line segment
-    MyLine l( previousPoint, pt );
+    Line l( previousPoint, pt );
 
     if ( distanceLeft < l.length() )
     {
@@ -2388,7 +2325,7 @@ void QgsTemplatedLineSymbolLayerBase::collectOffsetPoints( const QVector<QPointF
       if ( lastPt == pt ) // must not be equal!
         continue;
 
-      MyLine l( lastPt, pt );
+      Line l( lastPt, pt );
       initialLagLeft += l.length();
       lastPt = pt;
 
@@ -2428,7 +2365,7 @@ void QgsTemplatedLineSymbolLayerBase::collectOffsetPoints( const QVector<QPointF
     }
 
     // for each line, find out dx and dy, and length
-    MyLine l( lastPt, pt );
+    Line l( lastPt, pt );
     QPointF diff = l.diffForInterval( intervalPainterUnits );
 
     // if there's some length left from previous line
@@ -2511,7 +2448,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
       collectOffsetPoints( points, angleEndPoints, midPoint, midPoint - averageAngleOver, nullptr, 0, 2 );
 
       pt = symbolPoints.at( 1 );
-      MyLine l( angleStartPoints.at( 1 ), angleEndPoints.at( 1 ) );
+      Line l( angleStartPoints.at( 1 ), angleEndPoints.at( 1 ) );
       thisSymbolAngle = l.angle();
     }
     else
@@ -2533,7 +2470,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
       }
 
       // find out the central point on segment
-      MyLine l( last, next ); // for line angle
+      Line l( last, next ); // for line angle
       qreal k = ( length * 0.5 - last_at ) / ( next_at - last_at );
       pt = last + ( next - last ) * k;
       thisSymbolAngle = l.angle();
