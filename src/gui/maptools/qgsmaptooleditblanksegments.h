@@ -151,7 +151,7 @@ class GUI_EXPORT QgsMapToolEditBlankSegmentsBase : public QgsMapTool
 
 /**
  * \ingroup gui
- * \brief This class specialize the map tool to edit blank segments given the targeted symbol
+ * \brief Specializes the map tool to edit blank segments given the targeted symbol
  * layer type (QgsMarkerLineSymbolLayer and QgsHashedLineSymbolLayer).
  * \since QGIS 4.0
 */
@@ -159,6 +159,13 @@ template<class T>
 class GUI_EXPORT QgsMapToolEditBlankSegments : public QgsMapToolEditBlankSegmentsBase
 {
   public:
+    /**
+     * Constructor
+     * \param canvas map canvas where the edit take place
+     * \param layer layer to be edited
+     * \param symbolLayer symbol layer affected by the blank segments
+     * \param blankSegmentFieldIndex index of the field containing the digitized blank segments
+     */
     QgsMapToolEditBlankSegments<T>( QgsMapCanvas *canvas, QgsVectorLayer *layer, QgsLineSymbolLayer *symbolLayer, int blankSegmentFieldIndex )
       : QgsMapToolEditBlankSegmentsBase( canvas, layer, symbolLayer, blankSegmentFieldIndex )
     {
