@@ -203,8 +203,11 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DRende
     return;
   }
 
-  const QgsBox3D rootBox3D( context.extent(), zMin, zMax );
-  const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) );
+  QgsBox3D rootBox3D( context.extent(), zMin, zMax );
+  // add small padding to avoid clipping of point features located at the edge of the bounding box
+  rootBox3D.grow( 1.0 );
+  // We are quite arbitrarily setting the root error to be 1/100th of the bbox's largest side
+  const float rootError = static_cast<float>( std::max<double>( rootBox3D.width(), rootBox3D.height() ) / 100 );
   setupQuadtree( rootBox3D, rootError );
 }
 
@@ -231,7 +234,7 @@ QVector<QgsChunkNode *> QgsRuleBasedChunkLoaderFactory::createChildren( QgsChunk
 ///////////////
 
 QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule )
-  : QgsChunkedEntity( map, tilingSettings.maximumScreenError(), new QgsRuleBasedChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, rootRule, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
+  : QgsChunkedEntity( map, 3, new QgsRuleBasedChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), vl, rootRule, zMin, zMax, tilingSettings.maximumChunkFeatures() ), true )
 {
   mTransform = new Qt3DCore::QTransform;
   if ( applyTerrainOffset() )
