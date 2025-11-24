@@ -56,24 +56,6 @@ Returns whether to display bounding boxes of entity's tiles (for
 debugging)
 %End
 
-    double maximumScreenError() const;
-%Docstring
-Returns the maximum allowed screen space error. This is the maximum
-number of pixels required for rendering a tile's largest side before
-using its children, ie the next quad tree level.
-
-.. versionadded:: 4.0
-%End
-
-    void setMaximumScreenError( double value );
-%Docstring
-Sets the maximum allowed screen space error. This is the maximum number
-of pixels required for rendering a tile's largest side before using its
-children, ie the next quad tree level.
-
-.. versionadded:: 4.0
-%End
-
     int maximumChunkFeatures() const;
 %Docstring
 Returns the maximum number of features that will be fetched in any

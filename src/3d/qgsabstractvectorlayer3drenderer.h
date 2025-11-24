@@ -55,22 +55,6 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
     bool showBoundingBoxes() const { return mShowBoundingBoxes; }
 
     /**
-     * Returns the maximum allowed screen space error.
-     * This is the maximum number of pixels required for rendering a tile's largest side
-     * before using its children, ie the next quad tree level.
-     * \since QGIS 4.0
-     */
-    double maximumScreenError() const { return mMaxScreenError; }
-
-    /**
-     * Sets the maximum allowed screen space error.
-     * This is the maximum number of pixels required for rendering a tile's largest side
-     * before using its children, ie the next quad tree level.
-     * \since QGIS 4.0
-     */
-    void setMaximumScreenError( double value ) { mMaxScreenError = value; }
-
-    /**
      * Returns the maximum number of features that will be fetched in any chunk.
      * \since QGIS 4.0
      */
@@ -90,7 +74,6 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
   private:
     int mZoomLevelsCount = 3;
     bool mShowBoundingBoxes = false;
-    double mMaxScreenError = 100;
     int mMaxChunkFeatures = 1000;
 };
 
