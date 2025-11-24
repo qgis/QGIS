@@ -20380,11 +20380,11 @@ QgsWmsUtils: src/core/qgswmsutils.h#L29
 QgsXmlUtils.readBox3D: src/core/qgsxmlutils.h#L58
 QgsXmlUtils.readMapUnits: src/core/qgsxmlutils.h#L48
 QgsXmlUtils.readRectangle: src/core/qgsxmlutils.h#L50
-QgsXmlUtils.readVariant: src/core/qgsxmlutils.h#L107
+QgsXmlUtils.readVariant: src/core/qgsxmlutils.h#L108
 QgsXmlUtils.writeBox3D: src/core/qgsxmlutils.h#L79
 QgsXmlUtils.writeMapUnits: src/core/qgsxmlutils.h#L69
 QgsXmlUtils.writeRectangle: src/core/qgsxmlutils.h#L88
-QgsXmlUtils.writeVariant: src/core/qgsxmlutils.h#L102
+QgsXmlUtils.writeVariant: src/core/qgsxmlutils.h#L103
 QgsXmlUtils: src/core/qgsxmlutils.h#L36
 QgsXyPlotSeries.append: src/core/plot/qgsplot.h#L276
 QgsXyPlotSeries.clear: src/core/plot/qgsplot.h#L281
