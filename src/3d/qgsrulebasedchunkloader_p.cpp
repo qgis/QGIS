@@ -117,7 +117,10 @@ void QgsRuleBasedChunkLoader::start()
     if ( !featureLimitReached )
     {
       QgsDebugMsgLevel( QStringLiteral( "All features fetched for node: %1" ).arg( mNode->tileId().text() ), 3 );
-      mNodeIsLeaf = true;
+      // we want to avoid having huge leaf nodes so we don't have float precision issues
+      constexpr int MAX_LEAF_SIZE = 500'000;
+      if ( fc == 0 || std::max<double>( mNode->box3D().width(), mNode->box3D().height() ) < MAX_LEAF_SIZE )
+        mNodeIsLeaf = true;
     }
   } );
 

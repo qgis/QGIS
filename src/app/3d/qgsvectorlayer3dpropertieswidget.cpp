@@ -24,12 +24,12 @@ QgsVectorLayer3DPropertiesWidget::QgsVectorLayer3DPropertiesWidget( QWidget *par
   setupUi( this );
 
   constexpr double maxError = 100.;
-  constexpr int maxFeatures = 1000;
+  constexpr int MAX_CHUNK_FEATURES = 1'000;
   mMaxErrorSpinBox->setValue( maxError );
   mMaxErrorSpinBox->setClearValue( maxError );
   mMaxErrorSpinBox->setToolTip( tr( "This is the maximum size of a node in pixels before its child nodes are fetched." ) );
-  mMaxFeaturesSpinBox->setValue( maxFeatures );
-  mMaxFeaturesSpinBox->setClearValue( maxFeatures );
+  mMaxFeaturesSpinBox->setValue( MAX_CHUNK_FEATURES );
+  mMaxFeaturesSpinBox->setClearValue( MAX_CHUNK_FEATURES );
   mMaxFeaturesSpinBox->setToolTip( tr( "This is the maximum number of features that any node will attempt to load.\nFeatures beyond that number will be fetched by child nodes when Maximum Screen Space Error is reached." ) );
 
   groupLayerRendering->setCollapsed( true );
