@@ -358,6 +358,14 @@ their order.
 .. versionadded:: 3.42
 %End
 
+    static QString unaccent( const QString &string );
+%Docstring
+Returns a "unaccented" version of the input ``string``, using rules
+derived from PostgreSQL's unaccent extension.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 /************************************************************************
