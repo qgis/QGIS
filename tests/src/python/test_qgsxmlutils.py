@@ -10,7 +10,7 @@ __author__ = "Matthias Kuhn"
 __date__ = "18/11/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
-from qgis.PyQt.QtCore import QDate, QDateTime, QRect, QRectF, QTime, QVariant
+from qgis.PyQt.QtCore import QDate, QDateTime, QRect, QTime, QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
