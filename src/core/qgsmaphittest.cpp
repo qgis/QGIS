@@ -350,6 +350,7 @@ void QgsMapHitTest::runHitTestRasterSource( QgsRasterDataProvider *provider,
       break;
     }
     case Qgis::RasterRangeExtent::WholeRaster:
+      break;
     case Qgis::RasterRangeExtent::FixedCanvas:
       break;
   }
@@ -396,6 +397,7 @@ void QgsMapHitTest::runHitTestMeshSource( QgsMeshLayer *layer,
         }
       }
       case Qgis::MeshRangeExtent::WholeMesh:
+        break;
       case Qgis::MeshRangeExtent::FixedCanvas:
         break;
     }
