@@ -19,5 +19,6 @@ try:
     QgsStringUtils.qRegExpEscape = staticmethod(QgsStringUtils.qRegExpEscape)
     QgsStringUtils.truncateMiddleOfString = staticmethod(QgsStringUtils.truncateMiddleOfString)
     QgsStringUtils.containsByWord = staticmethod(QgsStringUtils.containsByWord)
+    QgsStringUtils.unaccent = staticmethod(QgsStringUtils.unaccent)
 except (NameError, AttributeError):
     pass
