@@ -341,7 +341,17 @@ void QgsMapHitTest::runHitTestRasterSource( QgsRasterDataProvider *provider,
   {
     case Qgis::RasterRangeExtent::UpdatedCanvas:
     {
-      QgsRectangle transformedExtent = transform.transformBoundingBox( context.extent() );
+
+      QgsRectangle transformedExtent = context.extent();
+      try
+      {
+        QgsRectangle transformedExtent = transform.transformBoundingBox( context.extent() );
+      }
+      catch ( const QgsCsException &cse )
+      {
+        QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+      }
+
       if ( provider->extent().intersects( transformedExtent ) )
       {
         QgsRasterLayerUtils::computeMinMax( provider, band, minMaxOrigin, rangeLimit,
@@ -388,7 +398,16 @@ void QgsMapHitTest::runHitTestMeshSource( QgsMeshLayer *layer,
         {
           case Qgis::MeshRangeLimit::MinimumMaximum:
           {
-            QgsRectangle transformedExtent = transform.transform( context.extent() );
+            QgsRectangle transformedExtent = context.extent();
+            try
+            {
+              QgsRectangle transformedExtent = transform.transformBoundingBox( context.extent() );
+            }
+            catch ( const QgsCsException &cse )
+            {
+              QgsDebugError( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+            }
+
             found  = layer->minimumMaximumActiveScalarDataset( transformedExtent, datasetIndex, min, max );
             break;
           }
