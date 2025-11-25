@@ -3456,7 +3456,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Copy and Distribute Feature</string>
    </property>
    <property name="toolTip">
-    <string>Copy a Feature and Distribute Copies Along a Reference Line</string>
+    <string>Copies a feature and distributes the copies at regular intervals along a reference line</string>
    </property>
   </action>
  </widget>
