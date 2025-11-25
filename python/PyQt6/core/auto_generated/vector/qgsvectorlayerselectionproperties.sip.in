@@ -94,6 +94,11 @@ Ownership of ``symbol`` is transferred to the plot. If ``symbol`` is
 .. seealso:: :py:func:`selectionSymbol`
 %End
 
+  signals:
+    void selectionRenderingModeChanged();
+    void selectionColorChanged();
+    void selectionSymbolChanged();
+
 };
 
 /************************************************************************

@@ -38,6 +38,8 @@ class QgsSymbol;
 class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectionProperties
 {
     Q_OBJECT
+    Q_PROPERTY( Qgis::SelectionRenderingMode selectionRenderingMode READ selectionRenderingMode WRITE setSelectionRenderingMode NOTIFY selectionRenderingModeChanged )
+    Q_PROPERTY( QColor selectionColor READ selectionColor WRITE setSelectionColor NOTIFY selectionColorChanged )
 
   public:
 
@@ -103,6 +105,11 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
      * \see selectionSymbol()
      */
     void setSelectionSymbol( QgsSymbol *symbol SIP_TRANSFER );
+
+  signals:
+    void selectionRenderingModeChanged();
+    void selectionColorChanged();
+    void selectionSymbolChanged();
 
   private:
 
