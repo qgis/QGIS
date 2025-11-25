@@ -467,7 +467,7 @@ namespace
         break;
     }
 
-    throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to Arrow type '%2'" ).arg( QMetaType::typeName( v.metaType().id() ) ).arg( ArrowTypeString( columnTypeView.type ) ) );
+    throw QgsException( QStringLiteral( "Can't convert variant of type '%1' to Arrow type '%2'" ).arg( v.typeName() ).arg( ArrowTypeString( columnTypeView.type ) ) );
   }
 
 } //namespace
