@@ -656,6 +656,7 @@ void QgsMapToolEditBlankSegmentsBase::setCurrentBlankSegment( int currentBlankSe
   }
 
   mCurrentBlankSegmentIndex = currentBlankSegmentIndex;
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( mCurrentBlankSegmentIndex > -1 && mCurrentBlankSegmentIndex < static_cast<int>( mBlankSegments.size() ) )
   {
     mBlankSegments.at( mCurrentBlankSegmentIndex )->setVisible( false );
@@ -665,6 +666,7 @@ void QgsMapToolEditBlankSegmentsBase::setCurrentBlankSegment( int currentBlankSe
   {
     mEditedBlankSegment->setVisible( false );
   }
+  // NOLINTEND(bugprone-branch-clone)
 
   updateStartEndRubberBand();
 }
