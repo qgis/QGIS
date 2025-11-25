@@ -448,7 +448,7 @@
     </layout>
    </item>
    <item row="3" column="0" colspan="3">
-    <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+    <widget class="QgsCollapsibleGroupBoxBasic" name="mBlankSegmentsGrpBox">
      <property name="title">
       <string>Blank segments</string>
      </property>
