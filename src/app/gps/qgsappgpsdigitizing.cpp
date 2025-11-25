@@ -335,11 +335,7 @@ void QgsAppGpsDigitizing::createFeature()
         {
           if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
           {
-            if (!QgisApp::instance()->isLayerChangesCommittingAllowed(vlayer))
-            {
-              QgisApp::instance()->displayWarningForLockedLayer(vlayer);
-              break;
-            }
+            QgisApp::instance()->tryCommitChanges(vlayer);
 
             // should canvas->isDrawing() be checked?
             if ( !vlayer->commitChanges() ) //assumed to be vector layer and is editable and is in editing mode (preconditions have been tested)
@@ -382,10 +378,7 @@ void QgsAppGpsDigitizing::createFeature()
         {
           if ( QgsProject::instance()->gpsSettings()->automaticallyCommitFeatures() )
           {
-            if (!QgisApp::instance()->isLayerChangesCommittingAllowed(vlayer))
-            {
-              QgisApp::instance()->displayWarningForLockedLayer(vlayer);
-            }
+            QgisApp::instance()->tryCommitChanges(vlayer);
 
             if ( !vlayer->commitChanges() )
             {

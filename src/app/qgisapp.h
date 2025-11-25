@@ -336,8 +336,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * committing changes using the messagebar.
      *
     **/
-    void displayWarningForLockedLayer( QgsMapLayer* layer );
-    ;
 
     /**
      * Opens the message log dock widget, and optionally activates a specific tab by name.
@@ -536,6 +534,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Overloaded function used to sort menu entries alphabetically
     QMenu *createPopupMenu() override;
+
+    /**
+     * Tries to commit changes to a \a layer
+     */
+    bool tryCommitChanges( QgsMapLayer * layer );
 
     /**
      * Access the vector layer tools. This will be an instance of {\see QgsGuiVectorLayerTools}
@@ -879,8 +882,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \see registerLayerChangesCommitBlocker()
     */
     void unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker );
-
-    bool isLayerChangesCommittingAllowed( QgsMapLayer* layer );
 
     /**
      * Register a new application map tool \a handler, which can be used to automatically setup all connections

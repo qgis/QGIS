@@ -478,7 +478,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
       }
     }
     if ( allErrors.empty()
-         && QgisApp::instance()->isLayerChangesCommittingAllowed(layer)
+         && QgisApp::instance()->tryCommitChanges(layer)
          && mLayerChecks[layer].singleFeatureCheckErrors.empty()
          && mLayerChecks[layer].commitPending )
     {

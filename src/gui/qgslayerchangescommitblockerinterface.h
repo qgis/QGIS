@@ -1,4 +1,3 @@
-
 /***************************************************************************
     qgslayerchangescommitblockerinterface.h
     ---------------------
@@ -16,6 +15,9 @@
 
 #ifndef QGSLAYERCHANGESCOMMITBLOCKERINTERFACE_H
 #define QGSLAYERCHANGESCOMMITBLOCKERINTERFACE_H
+
+#include "qgis_gui.h"
+#include "qgsmaplayer.h"
 
 /**
  * \ingroup gui
@@ -48,8 +50,6 @@
  *
  * \since QGIS 4.0
  */
-#include "qgis_gui.h"
-#include "qgsmaplayer.h"
 
 class GUI_EXPORT QgsLayerChangesCommitBlockerInterface
 {
