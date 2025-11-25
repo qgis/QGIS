@@ -93,7 +93,7 @@ const struct ArrowSchema *QgsArrowSchema::schema() const
   return &mSchema;
 }
 
-unsigned long long QgsArrowSchema::cSchemaAddress()
+unsigned long long QgsArrowSchema::cSchemaAddress() const
 {
   return reinterpret_cast<unsigned long long>( &mSchema );
 }
@@ -151,7 +151,7 @@ const struct ArrowArray *QgsArrowArray::array() const
   return &mArray;
 }
 
-unsigned long long QgsArrowArray::cArrayAddress()
+unsigned long long QgsArrowArray::cArrayAddress() const
 {
   return reinterpret_cast<unsigned long long>( &mArray );
 }
@@ -203,7 +203,9 @@ namespace
     }
 
     const QByteArray wkb = feature.geometry().asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons );
-    struct ArrowBufferView v { { wkb.data() }, static_cast<int64_t>( wkb.size() ) };
+    struct ArrowBufferView v;
+    v.data.data = wkb.data();
+    v.size_bytes = static_cast<int64_t>( wkb.size() );
     QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, v ) );
   }
 
@@ -339,8 +341,10 @@ namespace
       {
         if ( v.canConvert( QMetaType::QString ) )
         {
-          const QString string = v.toString();
-          struct ArrowBufferView bytesView { { string.toUtf8().constData() }, static_cast<int64_t>( string.size() ) };
+          const QByteArray string = v.toString().toUtf8();
+          struct ArrowBufferView bytesView;
+          bytesView.data.data = string.constData();
+          bytesView.size_bytes = static_cast<int64_t>( string.size() );
           QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, bytesView ) );
           return;
         }

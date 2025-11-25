@@ -166,7 +166,7 @@ class CORE_EXPORT QgsArrowSchema
      *
      * \warning This is intended for advanced usage and may cause a crash if used incorrectly.
      */
-    unsigned long long cSchemaAddress();
+    unsigned long long cSchemaAddress() const;
 
     /**
      * Export this array to the address of an empty ArrowSchema for export across boundaries
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsArrowSchema
     void setGeometryColumnIndex( int geometryColumnIndex );
 
   private:
-    struct ArrowSchema mSchema;
+    struct ArrowSchema mSchema {};
     int mGeometryColumnIndex = -1;
 };
 
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsArrowArray
      *
      * \warning This is intended for advanced usage and may cause a crash if used incorrectly.
      */
-    unsigned long long cArrayAddress();
+    unsigned long long cArrayAddress() const;
 
     /**
      * Export this array to the address of an empty ArrowArray for export across boundaries
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsArrowIterator
     QgsArrowIterator() = default;
 
     //! Construct iterator from an existing feature iterator
-    QgsArrowIterator( QgsFeatureIterator featureIterator );
+    explicit QgsArrowIterator( QgsFeatureIterator featureIterator );
 
     /**
      * Set the ArrowSchema for the output of all future batches
