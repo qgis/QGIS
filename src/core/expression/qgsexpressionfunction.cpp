@@ -2691,19 +2691,22 @@ static QVariant fcnStrpos( const QVariantList &values, const QgsExpressionContex
   return string.indexOf( QgsExpressionUtils::getStringValue( values.at( 1 ), parent ) ) + 1;
 }
 
-static QVariant fcnUnaccent( const QVariantList &values,
-                             const QgsExpressionContext *,
-                             QgsExpression *parent,
-                             const QgsExpressionNodeFunction * )
+static QVariant fcnUnaccent(
+  const QVariantList &values,
+  const QgsExpressionContext *context,
+  QgsExpression *,
+  const QgsExpressionNodeFunction *node
+)
 {
-  if ( values.isEmpty() )
+  Q_UNUSED( context )
+  Q_UNUSED( node )
+
+  if ( values.isEmpty() || values[0].isNull() )
     return QVariant();
 
-  const QString input =
-    QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-
-  return QgsStringUtils::unaccent( input );
+  return QgsStringUtils::unaccent( values[0].toString() );
 }
+
 
 static QVariant fcnRight( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {

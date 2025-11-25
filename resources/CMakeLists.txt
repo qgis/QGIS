@@ -13,7 +13,6 @@ set(RESOURCES_FILES
   symbology-style.xml
   spatialite.db
   customization.xml
-  unaccent.rules
   2to3migration.txt
   qgis_global_settings.ini
   ${CPT_CITY_QGIS_MIN_FILES}
