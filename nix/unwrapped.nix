@@ -4,7 +4,6 @@
 , fetchFromGitHub
 , makeWrapper
 , replaceVars
-, runCommand
 , wrapGAppsHook3
 , wrapQtAppsHook
 
@@ -65,11 +64,6 @@ let
     };
   });
 
-  versionSourceFiles = lib.fileset.toSource {
-    root = ../.;
-    fileset = ../CMakeLists.txt;
-  };
-
   qgisSourceFiles =
     lib.fileset.difference
       (lib.fileset.gitTracked ../.)
@@ -90,21 +84,19 @@ let
 
   # Version parsing taken from
   # https://github.com/qgis/QGIS/blob/1f0328cff6a8b4cf8a4f8d44a4304b9d9706aa72/rpm/buildrpms.sh#L118
+  cmakeListsFile = lib.readFile ../CMakeLists.txt;
+  extractVersion = pattern:
+    let
+      matches = lib.match ".*[sS][eE][tT]\\(${pattern}[[:space:]]+\"([0-9]+)\".*" cmakeListsFile;
+    in
+      if matches != null then lib.head matches else "0";
   qgisVersion =
-    lib.replaceStrings [ "\n" ] [ "" ]
-      (lib.readFile (
-        runCommand "qgis-version" { } ''
-          major=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_MAJOR' ${versionSourceFiles}/CMakeLists.txt |
-            sed -r 's/.*\"([0-9]+)\".*/\1/g')
-          minor=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_MINOR' ${versionSourceFiles}/CMakeLists.txt |
-            sed -r 's/.*\"([0-9]+)\".*/\1/g')
-          patch=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_PATCH' ${versionSourceFiles}/CMakeLists.txt |
-            sed -r 's/.*\"([0-9]+)\".*/\1/g')
-
-          version=$major.$minor.$patch
-          echo $version > $out
-        ''
-      ));
+    let
+      major = extractVersion "CPACK_PACKAGE_VERSION_MAJOR";
+      minor = extractVersion "CPACK_PACKAGE_VERSION_MINOR";
+      patch = extractVersion "CPACK_PACKAGE_VERSION_PATCH";
+    in
+      "${major}.${minor}.${patch}";
 
   py = python3.override {
     self = py;
@@ -143,7 +135,7 @@ in
 stdenv.mkDerivation
 {
   pname = "qgis-unwrapped";
-  version = qgisVersion;  # this is a "Import from derivation (IFD)" !
+  version = qgisVersion;
   src = lib.fileset.toSource {
     root = ../.;
     fileset = qgisSourceFiles;
