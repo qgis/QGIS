@@ -37,6 +37,7 @@
 #include "qgsmaplayerdependency.h"
 #include "qgslayermetadata.h"
 #include "qgsmaplayerserverproperties.h"
+#include "qgsmaplayerselectionproperties.h"
 #include "qgsreadwritecontext.h"
 #include "qgsdataprovider.h"
 #include "qgis.h"
@@ -53,7 +54,6 @@ class QgsProviderMetadata;
 class QgsStyleEntityVisitorInterface;
 class QgsMapLayerTemporalProperties;
 class QgsMapLayerElevationProperties;
-class QgsMapLayerSelectionProperties;
 class QgsSldExportContext;
 
 class QDomDocument;
@@ -90,6 +90,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
     Q_PROPERTY( bool mapTipsEnabled READ mapTipsEnabled WRITE setMapTipsEnabled NOTIFY mapTipsEnabledChanged )
+    Q_PROPERTY( QgsMapLayerSelectionProperties *selectionProperties READ selectionProperties )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
