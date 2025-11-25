@@ -97,6 +97,9 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   cmbVersion->addItem( tr( "OGC API - Features" ) );
   connect( cmbVersion, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::wfsVersionCurrentIndexChanged );
 
+  mFeatureFormatComboBox->clear();
+  mFeatureFormatComboBox->addItem( tr( "Default" ), QStringLiteral( "default" ) );
+
   mComboWfsFeatureMode->clear();
   mComboWfsFeatureMode->addItem( tr( "Default" ), QStringLiteral( "default" ) );
   mComboWfsFeatureMode->addItem( tr( "Simple Features" ), QStringLiteral( "simpleFeatures" ) );
@@ -211,6 +214,9 @@ void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
   cbxWfsIgnoreAxisOrientation->setEnabled( index != WFS_VERSION_1_0 && index != WFS_VERSION_API_FEATURES_1_0 );
   cbxWfsInvertAxisOrientation->setEnabled( index != WFS_VERSION_API_FEATURES_1_0 );
   wfsUseGml2EncodingForTransactions()->setEnabled( index == WFS_VERSION_1_1 );
+
+  featureFormatComboBox()->setEnabled( index == WFS_VERSION_MAX || index == WFS_VERSION_API_FEATURES_1_0 );
+  featureFormatDetectButton()->setEnabled( index == WFS_VERSION_MAX || index == WFS_VERSION_API_FEATURES_1_0 );
 }
 
 void QgsNewHttpConnection::wfsFeaturePagingCurrentIndexChanged( int index )
@@ -314,6 +320,16 @@ QPushButton *QgsNewHttpConnection::wfsVersionDetectButton()
 QComboBox *QgsNewHttpConnection::wfsVersionComboBox()
 {
   return cmbVersion;
+}
+
+QPushButton *QgsNewHttpConnection::featureFormatDetectButton()
+{
+  return mFeatureFormatDetectButton;
+}
+
+QComboBox *QgsNewHttpConnection::featureFormatComboBox()
+{
+  return mFeatureFormatComboBox;
 }
 
 QComboBox *QgsNewHttpConnection::wfsPagingComboBox()
@@ -469,6 +485,17 @@ void QgsNewHttpConnection::accept()
     QgsOwsConnection::settingsInvertAxisOrientation->setValue( cbxWfsInvertAxisOrientation->isChecked(), detailsParameters );
     QgsOwsConnection::settingsPreferCoordinatesForWfsT11->setValue( cbxWfsUseGml2EncodingForTransactions->isChecked(), detailsParameters );
     QgsOwsConnection::settingsWfsForceInitialGetFeature->setValue( cbxWfsForceInitialGetFeature->isChecked(), detailsParameters );
+
+    // Get all values from the combo
+    QStringList availableFormats;
+    for ( int i = 0; i < mFeatureFormatComboBox->count(); ++i )
+    {
+      availableFormats.append( mFeatureFormatComboBox->itemData( i ).toString() );
+    }
+    QString format = mFeatureFormatComboBox->currentData().toString();
+    QgsOwsConnection::settingsDefaultFeatureFormat->setValue( format, detailsParameters );
+    settings.setValue( QStringLiteral( "/qgis/lastFeatureFormatEncoding" ), format );
+    QgsOwsConnection::settingsAvailableFeatureFormats->setValue( availableFormats, detailsParameters );
   }
   if ( mTypes & ConnectionWms || mTypes & ConnectionWcs )
   {
