@@ -20,213 +20,123 @@ __author__ = "Tudor Bărăscu"
 __date__ = "November 2025"
 __copyright__ = "(C) 2025, Tudor Bărăscu"
 
-import sys
-import os
-import argparse
+from pathlib import Path
 import re
-from collections import defaultdict
-from datetime import datetime
-import unicodedata
+import sys
 
 
-def escape_cpp_string(s):
-    """Escape string for C++ QStringLiteral."""
-    s = s.replace('\\', '\\\\')
-    s = s.replace('"', '\\"')
-    s = s.replace('\n', '\\n')
-    s = s.replace('\r', '\\r')
-    s = s.replace('\t', '\\t')
-    s = s.replace('\0', '\\0')
-    return s
+ROOT = Path(__file__).resolve().parent.parent
+RULES_FILE = ROOT / "resources" / "unaccent.rules"
+OUT_FILE = ROOT / "src" / "core" / "qgsunaccent_generated_rules.cpp"
 
 
-def is_combining(ch: str) -> bool:
-    """Return True if character is a Unicode combining mark (Mn, Mc, Me)."""
-    return unicodedata.category(ch) in ("Mn", "Mc", "Me")
-
-
-def parse_unaccent_rules(filename):
+def decode_quoted(dst: str) -> str:
     """
-    Parse PostgreSQL-style unaccent.rules like in
-    https://raw.githubusercontent.com/postgres/postgres/refs/heads/master/contrib/unaccent/generate_unaccent_rules.py:
-
-    - Unicode whitespace separates the 2 fields (not only tabs)
-    - Surrounding quotes are stripped
+    PostgreSQL unaccent quoted-string rules:
+      - Surrounding quotes removed
+      - Inside: "" → "
     """
+    inner = dst[1:-1]
+    result = []
 
-    rules = defaultdict(list)
-    line_count = 0
-    rule_count = 0
+    i = 0
+    n = len(inner)
+    while i < n:
+        ch = inner[i]
+        if ch == '"' and i + 1 < n and inner[i + 1] == '"':
+            result.append('"')
+            i += 2
+        else:
+            result.append(ch)
+            i += 1
 
-    try:
-        with open(filename, "r", encoding="utf-8") as f:
-            for line_num, raw_line in enumerate(f, 1):
-                line_count += 1
-                line = raw_line
+    return "".join(result)
 
-                if line.lstrip().startswith("#"):
-                    continue
 
-                # Remove newline characters
-                line = line.rstrip("\n\r")
+def parse_rules(path: Path):
+    rules = []
 
-                # Skip if visually empty
-                if not line.strip():
-                    continue
+    with path.open(encoding="utf-8") as f:
+        for lineno, raw in enumerate(f, 1):
+            line = raw.strip()
 
-                # Split on ANY unicode whitespace
-                parts = re.split(r"\s+", line, maxsplit=1)
+            if not line or line.startswith("#"):
+                continue
 
-                if len(parts) == 2:
-                    source, target = parts[0], parts[1]
+            parts = line.split()
 
-                    # Strip surrounding quotes
-                    if source.startswith('"') and source.endswith('"'):
-                        source = source[1:-1]
-                    if target.startswith('"') and target.endswith('"'):
-                        target = target[1:-1]
+            # If it's just a source token empty the destination
+            if len(parts) == 1:
+                src = parts[0]
+                dst = ""
+                rules.append((src, dst))
+                continue
 
-                    if source == "":
-                        print(
-                            f"Warning: Line {line_num} has empty source, skipping",
-                            file=sys.stderr,
-                        )
-                        continue
+            # Source + destination
+            src = parts[0]
+            dst_raw = " ".join(parts[1:])
 
-                    rules[len(source)].append((source, target))
-                    rule_count += 1
-                    continue
+            # Handle quoted DST
+            if dst_raw.startswith('"') and dst_raw.endswith('"') and len(dst_raw) >= 2:
+                dst = decode_quoted(dst_raw)
+            else:
+                dst = dst_raw
 
-                if len(parts) == 1:
-                    source = parts[0]
+            rules.append((src, dst))
 
-                    if len(source) == 1 and is_combining(source):
-                        # Delete combining mark → target = ""
-                        rules[1].append((source, ""))
-                        rule_count += 1
-                        continue
-
-                    print(
-                        f"Warning: Line {line_num} has fewer than 2 fields, skipping: {source}",
-                        file=sys.stderr,
-                    )
-                    continue
-
-    except FileNotFoundError:
-        print(f"Error: File '{filename}' not found", file=sys.stderr)
-        sys.exit(1)
-
-    except Exception as e:
-        print(f"Error reading file: {e}", file=sys.stderr)
-        sys.exit(1)
-
-    # Sort for nice output
-    for length in rules:
-        rules[length].sort(key=lambda x: x[0])
-
-    print(
-        f"Processed {line_count} lines, generated {rule_count} rules",
-        file=sys.stderr
-    )
     return rules
 
 
-def generate_cpp_code(rules, input_filename):
-    """Generate the static C++ file containing sUnaccentMap and QgsStringUtils::unaccent."""
+def cpp_escape(s: str) -> str:
+    return s.replace("\\", "\\\\").replace('"', '\\"')
 
-    max_length = max(rules.keys()) if rules else 0
-    total_rules = sum(len(v) for v in rules.values())
 
-    print("/***************************************************************************")
-    print("  qgsunaccent_generated_rules.cpp")
-    print("  --------------------------------------")
-    print(f"  Date                 : {datetime.now().strftime('%B %Y')}")
-    print(" ***************************************************************************/\n")
+def write_cpp(path: Path, rules):
+    with path.open("w", encoding="utf-8", newline="\n") as f:
+        f.write(
+            "/*\n"
+            " * AUTO-GENERATED FILE - DO NOT EDIT\n"
+            " * Generated by scripts/generate_unaccent_rules.py\n"
+            " * from resources/unaccent.rules\n"
+            " */\n\n"
+        )
 
-    print("// AUTO-GENERATED FILE - DO NOT EDIT")
-    print(f"// Generated from: {os.path.basename(input_filename)}")
-    print(f"// Total rules: {total_rules}")
-    print(f"// Max source length: {max_length}\n")
+        f.write('#include "qgsstringutils.h"\n\n')
+        f.write("#include <QHash>\n")
+        f.write("#include <QString>\n\n")
 
-    print('#include "qgsstringutils.h"')
-    print("#include <QMap>")
-    print("#include <QString>\n")
+        f.write("QHash<QString, QString> QgsStringUtils::createUnaccentMap()\n")
+        f.write("{\n")
+        f.write("  QHash<QString, QString> map;\n\n")
 
-    print("namespace")
-    print("{\n")
-    print("  static const QMap<QString, QString> sUnaccentMap = []() -> QMap<QString, QString>")
-    print("  {")
-    print("    QMap<QString, QString> map;\n")
+        for src, dst in rules:
+            esc_src = cpp_escape(src)
 
-    for length in sorted(rules.keys()):
-        rule_list = rules[length]
-        label = "Single" if length == 1 else f"{length}"
-        print(f"    // {label} character mappings ({len(rule_list)} rules)")
-
-        for source, target in rule_list:
-            source_esc = escape_cpp_string(source)
-            target_esc = escape_cpp_string(target)
-
-            if target_esc == "":
-                target_cpp = "QString()"  # use QString() to make CI happy
+            if dst == "":
+                f.write(
+                    f'  map.insert( QStringLiteral( "{esc_src}" ), QString() );\n'
+                )
             else:
-                target_cpp = f'QStringLiteral( "{target_esc}" )'
+                esc_dst = cpp_escape(dst)
+                f.write(
+                    f'  map.insert( QStringLiteral( "{esc_src}" ), '
+                    f'QStringLiteral( "{esc_dst}" ) );\n'
+                )
 
-            print(
-                f'    map.insert( QStringLiteral( "{source_esc}" ), {target_cpp} );'
-            )
-
-        print()
-
-
-    print("    return map;")
-    print("  }();\n")
-    print("} // namespace\n")
-
-    print("QString QgsStringUtils::unaccent( const QString &string )")
-    print("{")
-    print("  if ( string.isEmpty() )")
-    print("    return string;\n")
-    print("  // PostgreSQL-compatible Unicode normalization (NFKD)")
-    print("  const QString normalized = string.normalized( QString::NormalizationForm_KD );\n")
-    print("  QString result;")
-    print("  result.reserve( normalized.length() );\n")
-    print("  for ( const QChar &ch : normalized )")
-    print("  {")
-    print("    const QString key( ch );")
-    print("    result.append( sUnaccentMap.value( key, key ) );")
-    print("  }\n")
-    print("  return result;")
-    print("}\n")
+        f.write("\n  return map;\n")
+        f.write("}\n")
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Generate PostgreSQL-compatible unaccent C++ rules",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="Example:\n  %(prog)s unaccent.rules > qgsunaccent_generated_rules.cpp",
-    )
+    if not RULES_FILE.exists():
+        print(f"ERROR: rules file not found: {RULES_FILE}", file=sys.stderr)
+        sys.exit(1)
 
-    parser.add_argument("input_file", help="Path to unaccent.rules")
-    parser.add_argument("--stats", "-s", action="store_true", help="Print rule statistics")
-    args = parser.parse_args()
+    rules = parse_rules(RULES_FILE)
+    write_cpp(OUT_FILE, rules)
 
-    rules = parse_unaccent_rules(args.input_file)
-
-    if args.stats:
-        total_rules = sum(len(v) for v in rules.values())
-        max_length = max(rules.keys()) if rules else 0
-        print(f"\nRules: {total_rules}")
-        print(f"Max source length: {max_length}\n")
-
-        for length in sorted(rules.keys()):
-            print(f"Length {length}: {len(rules[length])} rules")
-            for s, t in rules[length][:3]:
-                print(f"  {s!r} → {t!r}")
-            if len(rules[length]) > 3:
-                print(f"  ... and {len(rules[length]) - 3} more\n")
-    else:
-        generate_cpp_code(rules, args.input_file)
+    print(f"✓ Generated: {OUT_FILE}")
+    print(f"✓ Total rules: {len(rules)}")
 
 
 if __name__ == "__main__":
