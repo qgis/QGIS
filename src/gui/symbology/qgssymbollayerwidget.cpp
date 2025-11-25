@@ -1916,8 +1916,6 @@ QgsTemplatedLineSymbolLayerWidget::QgsTemplatedLineSymbolLayerWidget( TemplatedS
   mHashRotationSpinBox->setClearValue( 0 );
   mSpinAverageAngleLength->setClearValue( 4.0 );
 
-  mBlankSegmentsGrpBox->setCollapsed( true );
-
   connect( spinInterval, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTemplatedLineSymbolLayerWidget::setInterval );
   connect( mSpinOffsetAlongLine, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTemplatedLineSymbolLayerWidget::setOffsetAlongLine );
   connect( mSpinHashLength, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTemplatedLineSymbolLayerWidget::setHashLength );
