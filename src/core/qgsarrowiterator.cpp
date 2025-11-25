@@ -359,7 +359,9 @@ namespace
         if ( v.canConvert( QMetaType::QByteArray ) )
         {
           const QByteArray bytes = v.toByteArray();
-          struct ArrowBufferView bytesView { { bytes.data() }, static_cast<int64_t>( bytes.size() ) };
+          struct ArrowBufferView bytesView;
+          bytesView.data.data = bytes.data();
+          bytesView.size_bytes = static_cast<int64_t>( bytes.size() );
           QGIS_NANOARROW_THROW_NOT_OK( ArrowArrayAppendBytes( col, bytesView ) );
           return;
         }
