@@ -107,8 +107,23 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
     void setSelectionSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
   signals:
+
+    /**
+     * Emitted whenever the selection rendering mode changes.
+     * \since QGIS 4.0
+     */
     void selectionRenderingModeChanged();
+
+    /**
+     * Emitted whenever the selection color changes.
+     * \since QGIS 4.0
+     */
     void selectionColorChanged();
+
+    /**
+     * Emitted whenever the selection symbol changes.
+     * \since QGIS 4.0
+     */
     void selectionSymbolChanged();
 
   private:
