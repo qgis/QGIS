@@ -2292,7 +2292,18 @@ void QgsTemplatedLineSymbolLayerWidget::toggleMapToolEditBlankSegments( bool tog
 void QgsTemplatedLineSymbolLayerWidget::updateBlankSegmentsWidget()
 {
   mEditBlankSegmentsBtn->setEnabled( blankSegmentsFieldIndex() > -1 );
-  QString tooltip = tr( "Tool to create blank segments where marker lines won't be displayed" );
+  QString tooltip;
+  switch ( mSymbolType )
+  {
+    case TemplatedSymbolType::Hash:
+      tooltip = tr( "Tool to create blank segments where hashed lines won't be displayed" );
+      break;
+
+    case TemplatedSymbolType::Marker:
+      tooltip = tr( "Tool to create blank segments where marker lines won't be displayed" );
+      break;
+  }
+
   if ( !mEditBlankSegmentsBtn->isEnabled() )
   {
     tooltip += QStringLiteral( "<br/><br/>" ) + tr( "This tool is disabled because no valid field property has been set" );
