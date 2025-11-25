@@ -338,9 +338,9 @@ QgsDistributeFeatureUserWidget::QgsDistributeFeatureUserWidget( QWidget *parent 
 {
   setupUi( this );
 
-  mModeComboBox->addItem( tr( "Feature count" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureCount ) );
+  mModeComboBox->addItem( tr( "Feature Count" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureCount ) );
   mModeComboBox->addItem( tr( "Spacing" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureSpacing ) );
-  mModeComboBox->addItem( tr( "Spacing and feature count" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing ) );
+  mModeComboBox->addItem( tr( "Spacing and Feature Count" ), QVariant::fromValue( QgsMapToolDistributeFeature::DistributeMode::FeatureCountAndSpacing ) );
 
   updateUi();
 
@@ -352,7 +352,7 @@ QgsDistributeFeatureUserWidget::QgsDistributeFeatureUserWidget( QWidget *parent 
 
 void QgsDistributeFeatureUserWidget::updateUi()
 {
-  const QgsMapToolDistributeFeature::DistributeMode currentMode = mModeComboBox->currentData().value<QgsMapToolDistributeFeature::DistributeMode>();
+  const QgsMapToolDistributeFeature::DistributeMode currentMode = mode();
 
   mFeatureCountLabel->setVisible(
     currentMode == QgsMapToolDistributeFeature::DistributeMode::FeatureCount
