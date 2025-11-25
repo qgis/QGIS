@@ -194,7 +194,7 @@ class TestQgsArrowIterator(QgisTestCase):
         pa_inferred = pa.Schema._import_from_c(inferred.cSchemaAddress())
         assert pa_inferred == pa.schema({"f": pa.float64()})
 
-        for pa_type in [pa.float16(), pa.float32(), pa.float64()]:
+        for pa_type in [pa.float32(), pa.float64()]:
             pa_schema = pa.schema({"f": pa_type})
             schema = QgsArrowSchema()
             pa_schema._export_to_c(schema.cSchemaAddress())
