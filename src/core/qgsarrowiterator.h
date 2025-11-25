@@ -224,8 +224,10 @@ class CORE_EXPORT QgsArrowArray
     ~QgsArrowArray();
 
 #ifndef SIP_RUN
+    //! Access the underlying ArrowArray from C++
     struct ArrowArray *array();
 
+    //! Access the underlying ArrowArray immutably from C++
     const struct ArrowArray *array() const;
 #endif
 
