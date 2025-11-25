@@ -4822,12 +4822,6 @@ QgsMessageBar *QgisApp::messageBar()
   return mInfoBar;
 }
 
-void QgisApp::displayWarningForLockedLayer( QgsMapLayer* layer )
-{
-  messageBar()->pushWarning( tr("Committing changes to the layer is blocked"), 
-  tr("The ability to commit changes to the '%1' layer has been blocked by a plugin or script").arg(layer->name()).toUtf8().constData() );
-}
-
 void QgisApp::toggleLogMessageIcon( bool hasLogMessage )
 {
   if ( hasLogMessage && !mLogDock->isVisible() )
@@ -10774,10 +10768,7 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
       {
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
-        if (!isLayerChangesCommittingAllowed(vlayer)) {
-          displayWarningForLockedLayer( vlayer );
-          break;
-        }
+        QgisApp::instance()->tryCommitChanges(vlayer);
 
         QStringList commitErrors;
         if ( !QgsProject::instance()->commitChanges( commitErrors, true, vlayer ) )
@@ -11018,10 +11009,7 @@ bool QgisApp::toggleEditingPointCloudLayer( QgsPointCloudLayer *pclayer, bool al
         QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
         QgsCanvasRefreshBlocker refreshBlocker;
         
-        if (!isLayerChangesCommittingAllowed(pclayer)) {
-          displayWarningForLockedLayer( pclayer );
-          break;
-        }
+        QgisApp::instance()->tryCommitChanges(pclayer);
 
         if ( !pclayer->commitChanges( true ) )
         {
@@ -11107,10 +11095,7 @@ void QgisApp::saveVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
 
   QStringList commitErrors;
 
-  if (!isLayerChangesCommittingAllowed(vlayer)) {
-    displayWarningForLockedLayer(vlayer);
-    return;
-  }
+  QgisApp::instance()->tryCommitChanges(vlayer);
 
   if ( !QgsProject::instance()->commitChanges( commitErrors, !leaveEditable, vlayer ) )
   {
@@ -11159,10 +11144,7 @@ void QgisApp::savePointCloudLayerEdits( QgsMapLayer *layer, bool leaveEditable, 
 
   QgsCanvasRefreshBlocker refreshBlocker;
 
-  if (!isLayerChangesCommittingAllowed(pclayer)) {
-    displayWarningForLockedLayer( pclayer );
-    return;
-  }
+  QgisApp::instance()->tryCommitChanges(pclayer);
 
   if ( !pclayer->commitChanges( !leaveEditable ) )
     visibleMessageBar()->pushWarning(
@@ -13048,15 +13030,6 @@ void QgisApp::unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterfa
 void QgisApp::unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker )
 {
   mLayerChangesCommitBlockers.removeAll( blocker );
-}
-
-bool QgisApp::isLayerChangesCommittingAllowed( QgsMapLayer* layer )
-{
-  for(QgsLayerChangesCommitBlockerInterface* blocker: mLayerChangesCommitBlockers) {
-    if (!blocker->allowCommit(layer))
-      return false;
-  }
-  return true;
 }
 
 void QgisApp::registerMapToolHandler( QgsAbstractMapToolHandler *handler )
@@ -17137,6 +17110,19 @@ QMenu *QgisApp::createPopupMenu()
   return menu;
 }
 
+bool QgisApp::tryCommitChanges( QgsMapLayer * layer )
+{
+  for(QgsLayerChangesCommitBlockerInterface* blocker: mLayerChangesCommitBlockers) 
+   {
+     if (!blocker->allowCommit(layer) )
+      {
+        messageBar()->pushWarning( tr("Committing changes to the layer is blocked"), 
+        tr("The ability to commit changes to the '%1' layer has been blocked by a plugin or script").arg( layer->name() ));
+        return false;
+      }
+   }
+  return true;
+}
 
 void QgisApp::showSystemNotification( const QString &title, const QString &message, bool replaceExisting )
 {

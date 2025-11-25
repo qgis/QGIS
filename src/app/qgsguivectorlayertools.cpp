@@ -86,11 +86,7 @@ bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer *layer ) const
 
   if ( layer->isModified() )
   {
-    if (!QgisApp::instance()->isLayerChangesCommittingAllowed(layer))
-    {
-      QgisApp::instance()->displayWarningForLockedLayer(layer);
-      res = false;
-    }
+    QgisApp::instance()->tryCommitChanges(layer);
 
     if ( !layer->commitChanges() )
     {
@@ -126,11 +122,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
         break;
 
       case QMessageBox::Save:
-        if (!QgisApp::instance()->isLayerChangesCommittingAllowed(layer))
-        {
-          QgisApp::instance()->displayWarningForLockedLayer(layer);
-          res = false;
-        }
+        QgisApp::instance()->tryCommitChanges(layer);
 
         if ( !layer->commitChanges() )
         {
