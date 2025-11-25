@@ -1591,7 +1591,7 @@ bool QgsLegendModel::requiresFilteringBecauseOfRendererSetting()
       continue;
     if ( QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( mapLayer ) )
     {
-      if ( rl->renderer()->minMaxOrigin().extent() == Qgis::RasterRangeExtent::UpdatedCanvas )
+      if ( rl->renderer() && rl->renderer()->minMaxOrigin().extent() == Qgis::RasterRangeExtent::UpdatedCanvas )
       {
         return true;
       }
