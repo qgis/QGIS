@@ -356,7 +356,7 @@ void QgsMapHitTest::runHitTestRasterSource( QgsRasterDataProvider *provider,
 
   if ( found )
   {
-    mHitTestRenderersUpdatedCanvas.insert( layerId, QPair<double, double>( min, max ) );
+    mHitTestRenderersUpdatedCanvas.insert( layerId, std::pair<double, double>( min, max ) );
   }
 }
 
@@ -404,7 +404,7 @@ void QgsMapHitTest::runHitTestMeshSource( QgsMeshLayer *layer,
 
   if ( found )
   {
-    mHitTestRenderersUpdatedCanvas.insert( layerId, QPair<double, double>( min, max ) );
+    mHitTestRenderersUpdatedCanvas.insert( layerId, std::pair<double, double>( min, max ) );
   }
 }
 
