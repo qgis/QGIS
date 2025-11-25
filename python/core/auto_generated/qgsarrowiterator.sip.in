@@ -85,7 +85,7 @@ Copy constructor
     ~QgsArrowSchema();
 
 
-    unsigned long long cSchemaAddress();
+    unsigned long long cSchemaAddress() const;
 %Docstring
 Returns the address of the underlying ArrowSchema for import or export
 across boundaries
@@ -153,7 +153,7 @@ Construct invalid array holder
     ~QgsArrowArray();
 
 
-    unsigned long long cArrayAddress();
+    unsigned long long cArrayAddress() const;
 %Docstring
 Returns the address of the underlying ArrowArray for import or export
 across boundaries
@@ -200,7 +200,7 @@ vector layer.
 Construct invalid iterator
 %End
 
-    QgsArrowIterator( QgsFeatureIterator featureIterator );
+    explicit QgsArrowIterator( QgsFeatureIterator featureIterator );
 %Docstring
 Construct iterator from an existing feature iterator
 %End
