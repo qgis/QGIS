@@ -194,7 +194,7 @@ double Qgs3DUtils::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity )
   for ( Qt3DRender::QTexture2D *tex : entity->findChildren<Qt3DRender::QTexture2D *>() )
   {
     // TODO : lift the assumption that the texture is RGBA
-    usedGpuMemory += tex->width() * tex->height() * 4;
+    usedGpuMemory += static_cast< long long >( tex->width() ) * static_cast< long long >( tex->height() ) * 4;
   }
   return usedGpuMemory / 1024.0 / 1024.0;
 }

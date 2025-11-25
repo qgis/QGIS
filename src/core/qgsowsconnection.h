@@ -34,6 +34,7 @@ class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;
 class QgsSettingsEntryInteger;
 class QgsSettingsEntryString;
+class QgsSettingsEntryStringList;
 class QgsSettingsEntryVariantMap;
 template<class T> class QgsSettingsEntryEnumFlag;
 
@@ -111,6 +112,8 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     static const QgsSettingsEntryString *settingsPagingEnabled;
     static const QgsSettingsEntryString *settingsWfsFeatureMode;
     static const QgsSettingsEntryBool *settingsWfsForceInitialGetFeature;
+    static const QgsSettingsEntryString *settingsDefaultImageFormat;
+    static const QgsSettingsEntryStringList *settingsAvailableImageFormats;
     static const QgsSettingsEntryBool *settingsPreferCoordinatesForWfsT11;
     static const QgsSettingsEntryBool *settingsIgnoreAxisOrientation;
     static const QgsSettingsEntryBool *settingsInvertAxisOrientation;

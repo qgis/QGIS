@@ -209,7 +209,7 @@ class QgsGrassModuleMultiParam : public QgsGrassModuleGroupBoxItem
     virtual void removeRow() {}
 
   protected:
-    QVBoxLayout *paramsLayout() { return mParamsLayout; }
+    QVBoxLayout *paramsLayout() const { return mParamsLayout; }
 
     void showAddRemoveButtons();
 
@@ -275,10 +275,10 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     QStringList options() override;
 
     //! True if this option is output
-    bool isOutput() { return mIsOutput; }
+    bool isOutput() const { return mIsOutput; }
 
     //! Returns output type
-    int outputType() { return mOutputType; }
+    int outputType() const { return mOutputType; }
 
     //! If output, check if current output exists
     // Returns emppty string or name of existing output
@@ -292,7 +292,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     //! Does this options causes use of region?
     //  Raster input/output uses region by default
     //  Use of region can be forced by 'region' attribute in qgm
-    bool usesRegion() { return mUsesRegion; }
+    bool usesRegion() const { return mUsesRegion; }
 
     //! Check min/max version and set error if cannot parse
     static bool checkVersion( const QString &version_min, const QString &version_max, QStringList &errors );

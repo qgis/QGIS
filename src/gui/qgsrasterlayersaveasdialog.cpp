@@ -174,7 +174,10 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsRasterLayerSaveAsDialog::reject );
 
   mExtentGroupBox->setOutputCrs( outputCrs() );
-  mExtentGroupBox->setOriginalExtent( mDataProvider->extent(), mLayerCrs );
+  if ( mDataProvider )
+  {
+    mExtentGroupBox->setOriginalExtent( mDataProvider->extent(), mLayerCrs );
+  }
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   mExtentGroupBox->setOutputExtentFromOriginal();
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );

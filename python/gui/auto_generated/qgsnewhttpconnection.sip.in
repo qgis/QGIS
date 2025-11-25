@@ -64,6 +64,13 @@ Returns the current connection name.
 Returns the current connection url.
 %End
 
+    QString originalConnectionName() const;
+%Docstring
+Returns the original connection name (might be empty)
+
+.. versionadded:: 4.0
+%End
+
   public slots:
 
     virtual void accept();
@@ -91,6 +98,23 @@ settings are not valid and the dialog should not be acceptable.
 Returns the "test connection" button.
 %End
 
+
+
+
+    bool ignoreAxisOrientation() const;
+%Docstring
+Returns the ignore axis orientation checkbox status.
+
+.. versionadded:: 4.0
+%End
+
+
+    bool invertAxisOrientation() const;
+%Docstring
+Returns the invert axis orientation checkbox status.
+
+.. versionadded:: 4.0
+%End
 
 
 

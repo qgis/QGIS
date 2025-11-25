@@ -32,7 +32,7 @@ Set the title of the panel when shown in the interface.
 :param panelTitle: The panel title.
 %End
 
-    QString panelTitle();
+    QString panelTitle() const;
 %Docstring
 The title of the panel.
 
@@ -80,7 +80,7 @@ The default behavior is to return ``False``.
 .. versionadded:: 3.20
 %End
 
-    bool dockMode();
+    bool dockMode() const;
 %Docstring
 Returns the dock mode state.
 
@@ -98,7 +98,7 @@ deleted.
 :param autoDelete: Enable or disable auto delete on the panel.
 %End
 
-    bool autoDelete();
+    bool autoDelete() const;
 %Docstring
 The the auto delete property on the widget. ``True`` by default. When
 auto delete is enabled when a panel is removed from the stack it will be

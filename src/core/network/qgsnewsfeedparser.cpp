@@ -122,7 +122,14 @@ void QgsNewsFeedParser::dismissEntry( int key )
   if ( beforeSize == mEntries.size() )
     return; // didn't find matching entry
 
-  sTreeNewsFeedEntries->deleteItem( QString::number( key ), {mFeedKey} );
+  try
+  {
+    sTreeNewsFeedEntries->deleteItem( QString::number( key ), {mFeedKey} );
+  }
+  catch ( QgsSettingsException &e )
+  {
+    QgsDebugError( QStringLiteral( "Could not dismiss news feed entry: %1" ).arg( e.what( ) ) );
+  }
 
   // also remove preview image, if it exists
   if ( !dismissed.imageUrl.isEmpty() )
@@ -263,7 +270,16 @@ void QgsNewsFeedParser::onFetch( const QString &content )
 
 void QgsNewsFeedParser::readStoredEntries()
 {
-  QStringList existing = sTreeNewsFeedEntries->items( {mFeedKey} );
+  QStringList existing;
+  try
+  {
+    existing = sTreeNewsFeedEntries->items( {mFeedKey} );
+  }
+  catch ( QgsSettingsException &e )
+  {
+    QgsDebugError( QStringLiteral( "Could not read news feed entries: %1" ).arg( e.what( ) ) );
+  }
+
   std::sort( existing.begin(), existing.end(), []( const QString & a, const QString & b )
   {
     return a.toInt() < b.toInt();

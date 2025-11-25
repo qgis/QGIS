@@ -547,7 +547,7 @@ QFont QgsMapToolLabel::currentLabelFont()
   return font;
 }
 
-bool QgsMapToolLabel::currentLabelPreserveRotation()
+bool QgsMapToolLabel::currentLabelPreserveRotation() const
 {
   if ( mCurrentLabel.valid )
   {

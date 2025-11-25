@@ -21,6 +21,7 @@
 #include "qgis_sip.h"
 #include "ui_qgsnewhttpconnectionbase.h"
 #include "qgsguiutils.h"
+#include "qgsauthorizationsettings.h"
 #include "qgis_gui.h"
 #include "qgssettingstree.h"
 
@@ -89,6 +90,12 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      */
     QString url() const;
 
+    /**
+     * Returns the original connection name (might be empty)
+     * \since QGIS 4.0
+     */
+    QString originalConnectionName() const;
+
   public slots:
 
     void accept() override;
@@ -134,10 +141,43 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     QPushButton *testConnectButton();
 
     /**
+     * Returns the WMS Format Detect Button
+     * \since QGIS 4.0
+     */
+    QPushButton *wmsFormatDetectButton() SIP_SKIP;
+
+    /**
      * Returns the current authentication settings widget.
+     * \note Not available in Python bindings
      * \since QGIS 3.8
      */
     QgsAuthSettingsWidget *authSettingsWidget() SIP_SKIP;
+
+    /**
+     * Returns the authorization settings.
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    QgsAuthorizationSettings authorizationSettings() const SIP_SKIP;
+
+    /**
+     * Returns the ignore axis orientation checkbox status.
+     * \since QGIS 4.0
+     */
+    bool ignoreAxisOrientation() const;
+
+    /**
+     * Returns the "WMS preferred format" combobox.
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    QComboBox *wmsPreferredFormatCombo() const SIP_SKIP;
+
+    /**
+     * Returns the invert axis orientation checkbox status.
+     * \since QGIS 4.0
+     */
+    bool invertAxisOrientation() const;
 
     /**
      * Returns the "WFS version detect" button.
@@ -207,7 +247,6 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
 
   private:
     ConnectionTypes mTypes = ConnectionWms;
-
     QString mServiceName;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();

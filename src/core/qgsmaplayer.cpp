@@ -847,6 +847,9 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
   const QString categoriesKeys( metaEnum.valueToKeys( static_cast<int>( categories ) ) );
   layerElement.setAttribute( QStringLiteral( "styleCategories" ), categoriesKeys );
 
+  // Store layer type
+  layerElement.setAttribute( QStringLiteral( "layerType" ), qgsEnumValueToKey( type() ) );
+
   if ( categories.testFlag( Rendering ) )
   {
     // use scale dependent visibility flag
@@ -3259,8 +3262,9 @@ QString QgsMapLayer::generalHtmlMetadata() const
     }
     if ( uriComponents.contains( QStringLiteral( "url" ) ) )
     {
-      const QString url = uriComponents[QStringLiteral( "url" )].toString();
-      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), url ) ) + QStringLiteral( "</td></tr>\n" );
+      QUrl decodedUri = QUrl::fromPercentEncoding( uriComponents[QStringLiteral( "url" )].toString().toLocal8Bit() );
+      const QString url = decodedUri.toString();
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( url, url ) ) + QStringLiteral( "</td></tr>\n" );
     }
   }
 

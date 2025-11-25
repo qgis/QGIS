@@ -392,7 +392,7 @@ void TestQgs3DUtils::testExportToObj()
 
 
     QFile file( myTmpDir + "all_faces.obj" );
-    file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
+    QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
     QTextStream out( &file );
 
     out << "o " << object.name() << "\n";
@@ -431,7 +431,7 @@ void TestQgs3DUtils::testExportToObj()
     QCOMPARE( object.normals().size(), normalsData.size() );
 
     QFile file( myTmpDir + "sparse_faces.obj" );
-    file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
+    QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
     QTextStream out( &file );
     out << "o " << object.name() << "\n";
     object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );

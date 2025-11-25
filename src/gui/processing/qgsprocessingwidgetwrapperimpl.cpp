@@ -3343,8 +3343,7 @@ void QgsProcessingEnumWidgetWrapper::setWidgetValue( const QVariant &value, QgsP
       mComboBox->setCurrentIndex( mComboBox->findData( QVariant() ) );
     else
     {
-      const QgsProcessingParameterEnum *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() );
-      if ( enumDef->usesStaticStrings() )
+      if ( auto *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() ); enumDef && enumDef->usesStaticStrings() )
       {
         const QString v = QgsProcessingParameters::parameterAsEnumString( parameterDefinition(), value, context );
         mComboBox->setCurrentIndex( mComboBox->findData( v ) );
@@ -3361,7 +3360,7 @@ void QgsProcessingEnumWidgetWrapper::setWidgetValue( const QVariant &value, QgsP
     QVariantList opts;
     if ( value.isValid() )
     {
-      if ( const QgsProcessingParameterEnum *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() ); enumDef && enumDef->usesStaticStrings() )
+      if ( auto *enumDef = dynamic_cast<const QgsProcessingParameterEnum *>( parameterDefinition() ); enumDef && enumDef->usesStaticStrings() )
       {
         const QStringList v = QgsProcessingParameters::parameterAsEnumStrings( parameterDefinition(), value, context );
         opts.reserve( v.size() );

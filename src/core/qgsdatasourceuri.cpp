@@ -701,17 +701,17 @@ QByteArray QgsDataSourceUri::encodedUri() const
   QUrlQuery url;
   for ( auto it = mParams.constBegin(); it != mParams.constEnd(); ++it )
   {
-    url.addQueryItem( it.key(), it.value() );
+    url.addQueryItem( it.key(), QUrl::toPercentEncoding( it.value() ) );
   }
 
   if ( !mUsername.isEmpty() )
-    url.addQueryItem( QStringLiteral( "username" ), mUsername );
+    url.addQueryItem( QStringLiteral( "username" ), QUrl::toPercentEncoding( mUsername ) );
 
   if ( !mPassword.isEmpty() )
-    url.addQueryItem( QStringLiteral( "password" ), mPassword );
+    url.addQueryItem( QStringLiteral( "password" ), QUrl::toPercentEncoding( mPassword ) );
 
   if ( !mAuthConfigId.isEmpty() )
-    url.addQueryItem( QStringLiteral( "authcfg" ), mAuthConfigId );
+    url.addQueryItem( QStringLiteral( "authcfg" ), QUrl::toPercentEncoding( mAuthConfigId ) );
 
   mHttpHeaders.updateUrlQuery( url );
 
@@ -731,7 +731,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
 
   mHttpHeaders.setFromUrlQuery( query );
 
-  const auto constQueryItems = query.queryItems();
+  const auto constQueryItems = query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded );
   for ( const QPair<QString, QString> &item : constQueryItems )
   {
     if ( !item.first.startsWith( QgsHttpHeaders::PARAM_PREFIX ) && item.first != QgsHttpHeaders::KEY_REFERER )

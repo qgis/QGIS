@@ -111,10 +111,10 @@ void TestQgsWcsProvider::read()
   identifiers << QStringLiteral( "band3_float32_noct_epsg4326" );
 
   // How to reasonably log multiple fails within this loop?
-  QTemporaryFile *tmpFile = new QTemporaryFile( QStringLiteral( "qgis-wcs-test-XXXXXX.tif" ) );
-  tmpFile->open();
-  const QString tmpFilePath = tmpFile->fileName();
-  delete tmpFile; // removes the file
+  QTemporaryFile tmpFile( QStringLiteral( "qgis-wcs-test-XXXXXX.tif" ) );
+  QVERIFY( tmpFile.open() );
+  const QString tmpFilePath = tmpFile.fileName();
+  tmpFile.close(); // removes the file
   for ( const QString &version : versions )
   {
     for ( const QString &identifier : identifiers )

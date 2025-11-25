@@ -91,9 +91,9 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   viewRules->addAction( mDeleteAction );
 
   mRefineMenu = new QMenu( tr( "Refine Current Rule" ), btnRefineRule );
-  mRefineMenu->addAction( tr( "Add Scales to Rule" ), this, SLOT( refineRuleScales() ) );
-  mRefineMenu->addAction( tr( "Add Categories to Rule" ), this, SLOT( refineRuleCategories() ) );
-  mRefineMenu->addAction( tr( "Add Ranges to Rule" ), this, SLOT( refineRuleRanges() ) );
+  mRefineMenu->addAction( tr( "Add Scales to Rule" ), this, &QgsRuleBasedRendererWidget::refineRuleScales );
+  mRefineMenu->addAction( tr( "Add Categories to Rule" ), this, &QgsRuleBasedRendererWidget::refineRuleCategories );
+  mRefineMenu->addAction( tr( "Add Ranges to Rule" ), this, &QgsRuleBasedRendererWidget::refineRuleRanges );
   btnRefineRule->setMenu( mRefineMenu );
 
   btnAddRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );

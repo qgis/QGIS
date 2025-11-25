@@ -408,7 +408,7 @@ void QgsSpatiaLiteSourceSelect::btnConnect_clicked()
   cbxAllowGeometrylessTables->setEnabled( true );
 }
 
-QStringList QgsSpatiaLiteSourceSelect::selectedTables()
+QStringList QgsSpatiaLiteSourceSelect::selectedTables() const
 {
   return m_selectedTables;
 }
@@ -489,11 +489,6 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
     else
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
   }
-}
-
-void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString &regexp )
-{
-  Q_UNUSED( regexp )
 }
 
 void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )

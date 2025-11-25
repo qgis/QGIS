@@ -32,7 +32,7 @@ Returns a string describing the chosen encoding
 %Docstring
 Adds a 'Cancel All' button for the user to click
 %End
-    bool cancelAll();
+    bool cancelAll() const;
 %Docstring
 Returns ``True`` if the user clicked 'Cancel All'
 %End

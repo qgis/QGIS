@@ -139,7 +139,7 @@ void QgsLabelingGui::showObstacleSettings()
   QgsLabelObstacleSettingsWidget *widget = new QgsLabelObstacleSettingsWidget( nullptr, vLayer );
   widget->setDataDefinedProperties( mDataDefinedProperties );
   widget->setSettings( mObstacleSettings );
-  widget->setGeometryType( vLayer ? vLayer->geometryType() : Qgis::GeometryType::Unknown );
+  widget->setGeometryType( vLayer->geometryType() );
   widget->setContext( symbolContext );
 
   auto applySettings = [this, widget] {

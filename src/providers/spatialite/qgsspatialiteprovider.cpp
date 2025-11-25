@@ -5693,8 +5693,10 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
     sqlite3_statement_unique_ptr stmt { slPtr.prepare( QStringLiteral( "SELECT COUNT(1) FROM %2" ).arg( mQuery ), resultCode ) };
     if ( resultCode == SQLITE_OK )
     {
-      stmt.step();
-      mNumberFeatures = sqlite3_column_int64( stmt.get(), 0 );
+      if ( stmt.step() == SQLITE_ROW )
+      {
+        mNumberFeatures = sqlite3_column_int64( stmt.get(), 0 );
+      }
     }
     // Note: the pointer handle is owned by the provider, releasing it
     slPtr.release();
