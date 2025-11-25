@@ -209,7 +209,6 @@ MACRO(BUILD_SIP_PYTHON_MODULE MODULE_NAME SIP_FILES EXTRA_OBJECTS)
     ADD_CUSTOM_COMMAND(TARGET ${_logical_name} POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E echo "Copying extension ${_child_module_name}"
       COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:${_logical_name}>" "${_runtime_output}/${_child_module_name}.pyd"
-      DEPENDS ${_logical_name}
       )
   ENDIF(WIN32)
 
