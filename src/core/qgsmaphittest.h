@@ -264,7 +264,7 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
      *
      * \since QGIS 4.0
      */
-    QMap<QString, QPair<double, double>> resultsRenderersUpdatedCanvas() const SIP_SKIP { return mResultsRenderersUpdatedCanvas; };
+    QMap<QString, std::pair<double, double>> resultsRenderersUpdatedCanvas() const SIP_SKIP { return mResultsRenderersUpdatedCanvas; };
 
 #ifdef SIP_RUN
     /**
@@ -341,7 +341,7 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
 
     QMap<QString, QSet<QString>> mResults;
 
-    QMap<QString, QPair<double, double>> mResultsRenderersUpdatedCanvas;
+    QMap<QString, std::pair<double, double>> mResultsRenderersUpdatedCanvas;
 
     std::unique_ptr< QgsFeedback > mFeedback;
 };
