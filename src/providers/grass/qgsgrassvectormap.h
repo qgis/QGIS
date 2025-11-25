@@ -69,7 +69,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     int numLines();
     int numAreas();
     // 3D map with z coordinates
-    bool is3d() { return mIs3d; }
+    bool is3d() const { return mIs3d; }
 
     // Lock open / close
     void lockOpenClose();
@@ -150,7 +150,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     bool attributesOutdated();
 
     //! Map description for debugging
-    QString toString();
+    QString toString() const;
 
     /**
      * Gets topology symbol code

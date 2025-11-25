@@ -20,6 +20,8 @@
 #include "qgsbox3d.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
+
+#include "qgsgeometryutils_base.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
@@ -1129,24 +1131,23 @@ void QgsCircularString::transform( const QgsCoordinateTransform &ct, Qgis::Trans
 {
   clearCache();
 
-  double *zArray = mZ.data();
-
+  double *zArray = nullptr;
   bool hasZ = is3D();
   int nPoints = numPoints();
-  bool useDummyZ = !hasZ || !transformZ;
-  if ( useDummyZ )
+
+  // it's possible that transformCoords will throw an exception - so we need to use
+  // a smart pointer for the dummy z values in order to ensure that they always get cleaned up
+  std::unique_ptr< double[] > dummyZ;
+  if ( !hasZ || !transformZ )
   {
-    zArray = new double[nPoints];
-    for ( int i = 0; i < nPoints; ++i )
-    {
-      zArray[i] = 0;
-    }
+    dummyZ.reset( new double[nPoints]() );
+    zArray = dummyZ.get();
+  }
+  else
+  {
+    zArray = mZ.data();
   }
   ct.transformCoords( nPoints, mX.data(), mY.data(), zArray, d );
-  if ( useDummyZ )
-  {
-    delete[] zArray;
-  }
 }
 
 void QgsCircularString::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
@@ -1577,11 +1578,11 @@ double QgsCircularString::vertexAngle( QgsVertexId vId ) const
 
 double QgsCircularString::segmentLength( QgsVertexId startVertex ) const
 {
-  if ( startVertex.vertex < 0 || startVertex.vertex >= mX.count() - 2 )
-    return 0.0;
-
   if ( startVertex.vertex % 2 == 1 )
     return 0.0; // curve point?
+
+  if ( startVertex.vertex < 0 || startVertex.vertex >= mX.count() - 2 )
+    return 0.0;
 
   double x1 = mX.at( startVertex.vertex );
   double y1 = mY.at( startVertex.vertex );
@@ -1591,6 +1592,120 @@ double QgsCircularString::segmentLength( QgsVertexId startVertex ) const
   double y3 = mY.at( startVertex.vertex + 2 );
   return QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
 }
+
+double QgsCircularString::distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const
+{
+  // Ensure fromVertex < toVertex for simplicity
+  if ( fromVertex.vertex > toVertex.vertex )
+  {
+    return distanceBetweenVertices( toVertex, fromVertex );
+  }
+
+  // Convert QgsVertexId to simple vertex numbers for curves (single ring, single part)
+  if ( fromVertex.part != 0 || fromVertex.ring != 0 || toVertex.part != 0 || toVertex.ring != 0 )
+    return -1.0;
+
+  const int fromVertexNumber = fromVertex.vertex;
+  const int toVertexNumber = toVertex.vertex;
+
+  const int nPoints = numPoints();
+  if ( fromVertexNumber < 0 || fromVertexNumber >= nPoints || toVertexNumber < 0 || toVertexNumber >= nPoints )
+    return -1.0;
+
+  if ( fromVertexNumber == toVertexNumber )
+    return 0.0;
+
+  const double *xData = mX.constData();
+  const double *yData = mY.constData();
+  double totalDistance = 0.0;
+
+  // Start iteration from the arc containing fromVertex
+  // Each arc starts at an even index (0, 2, 4, ...) and spans 3 vertices
+  const int startArc = ( fromVertexNumber / 2 ) * 2;
+
+  // Iterate through the arcs, accumulating distance between fromVertex and toVertex
+  for ( int i = startArc; i < nPoints - 2; i += 2 )
+  {
+    // Arc segment from i to i+2, with curve point at i+1
+    double x1 = xData[i];     // Start point
+    double y1 = yData[i];
+    double x2 = xData[i + 1]; // Curve point
+    double y2 = yData[i + 1];
+    double x3 = xData[i + 2]; // End point
+    double y3 = yData[i + 2];
+
+    // Check if both vertices are in this arc segment
+    if ( fromVertexNumber >= i && toVertexNumber <= i + 2 )
+    {
+      if ( fromVertexNumber == i && toVertexNumber == i + 2 )
+      {
+        // Full arc from start to end
+        return QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
+      }
+      else if ( fromVertexNumber == i && toVertexNumber == i + 1 )
+      {
+        // Arc from start point to curve point
+        double centerX, centerY, radius;
+        QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
+        // Calculate arc length from vertex 0 to vertex 1
+        return QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 0, 1 );
+      }
+      else if ( fromVertexNumber == i + 1 && toVertexNumber == i + 2 )
+      {
+        // Arc from curve point to end point
+        double centerX, centerY, radius;
+        QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
+        // Calculate arc length from vertex 1 to vertex 2
+        return QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 1, 2 );
+      }
+      else if ( fromVertexNumber == i + 1 && toVertexNumber == i + 1 )
+      {
+        return 0.0; // Same point
+      }
+    }
+
+    // Handle cases where vertices span multiple segments
+    bool startInThisSegment = ( fromVertexNumber >= i && fromVertexNumber <= i + 2 );
+    bool endInThisSegment = ( toVertexNumber >= i && toVertexNumber <= i + 2 );
+    bool segmentInRange = ( fromVertexNumber < i && toVertexNumber > i + 2 );
+
+    if ( startInThisSegment && !endInThisSegment )
+    {
+      // fromVertex is in this segment, toVertex is beyond
+      if ( fromVertexNumber == i )
+        totalDistance += QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
+      else if ( fromVertexNumber == i + 1 )
+      {
+        // From curve point to end of segment
+        double centerX, centerY, radius;
+        QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
+        totalDistance += QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 1, 2 );
+      }
+    }
+    else if ( !startInThisSegment && endInThisSegment )
+    {
+      // fromVertex is before this segment, toVertex is in this segment
+      if ( toVertexNumber == i + 1 )
+      {
+        // From start of segment to curve point
+        double centerX, centerY, radius;
+        QgsGeometryUtilsBase::circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
+        totalDistance += QgsGeometryUtilsBase::calculateArcLength( centerX, centerY, radius, x1, y1, x2, y2, x3, y3, 0, 1 );
+      }
+      else if ( toVertexNumber == i + 2 )
+        totalDistance += QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
+      break;
+    }
+    else if ( segmentInRange )
+    {
+      // This entire segment is between fromVertex and toVertex
+      totalDistance += QgsGeometryUtilsBase::circleLength( x1, y1, x2, y2, x3, y3 );
+    }
+  }
+
+  return totalDistance;
+}
+
 
 QgsCircularString *QgsCircularString::reversed() const
 {

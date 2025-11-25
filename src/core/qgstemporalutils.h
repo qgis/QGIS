@@ -99,7 +99,7 @@ class CORE_EXPORT QgsTimeDuration
     /**
      * Adds this duration to a starting \a dateTime value.
      */
-    QDateTime addToDateTime( const QDateTime &dateTime );
+    QDateTime addToDateTime( const QDateTime &dateTime ) const;
 
     /**
      * Creates a QgsTimeDuration from a \a string value.
@@ -151,6 +151,13 @@ class CORE_EXPORT QgsTemporalUtils
 
       //! Duration of individual export frames
       QgsInterval frameDuration;
+
+      /**
+       * The animation temporal range cumulative settings.
+       *
+       * \since QGIS 4.0
+       */
+      bool temporalRangeCumulative = false;
 
       //! Destination directory for created image files.
       QString outputDirectory;

@@ -25,6 +25,7 @@
 #include "qgswmsdimensiondialog.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
+#include "qgsattributetableconfig.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsdiagramwidget.h"
 #include "qgssourcefieldsproperties.h"
@@ -166,13 +167,18 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mDisplayExpressionWidget->registerExpressionContextGenerator( this );
   initMapTipPreview();
 
+  mFeaturesSortOrderExpressionWidget->setLayer( lyr );
+  mFeaturesSortOrderExpressionWidget->registerExpressionContextGenerator( this );
+  connect( mFeaturesSortOrderDirectionButton, &QAbstractButton::clicked, this, [this]() {
+    mFeaturesSortOrderDirectionButton->setArrowType( mFeaturesSortOrderDirectionButton->arrowType() == Qt::UpArrow ? Qt::DownArrow : Qt::UpArrow );
+  } );
+
   connect( mMapTipInsertFieldButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertField );
   connect( mMapTipInsertExpressionButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertOrEditExpression );
 
   if ( !mLayer )
     return;
 
-  connect( mEnableMapTips, &QAbstractButton::toggled, mHtmlMapTipGroupBox, &QWidget::setEnabled );
   mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
 
   QVBoxLayout *layout = nullptr;
@@ -539,6 +545,9 @@ void QgsVectorLayerProperties::syncToLayer()
   mEnableMapTips->setChecked( mLayer->mapTipsEnabled() );
   mMapTipWidget->setText( mLayer->mapTipTemplate() );
 
+  mFeaturesSortOrderExpressionWidget->setField( mLayer->attributeTableConfig().sortExpression() );
+  mFeaturesSortOrderDirectionButton->setArrowType( mLayer->attributeTableConfig().sortOrder() == Qt::AscendingOrder ? Qt::UpArrow : Qt::DownArrow );
+
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
   mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
@@ -713,6 +722,11 @@ void QgsVectorLayerProperties::apply()
   mLayer->setDisplayExpression( mDisplayExpressionWidget->asExpression() );
   mLayer->setMapTipsEnabled( mEnableMapTips->isChecked() );
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
+
+  QgsAttributeTableConfig config = mLayer->attributeTableConfig();
+  config.setSortExpression( mFeaturesSortOrderExpressionWidget->asExpression() );
+  config.setSortOrder( mFeaturesSortOrderDirectionButton->arrowType() == Qt::UpArrow ? Qt::AscendingOrder : Qt::DescendingOrder );
+  mLayer->setAttributeTableConfig( config );
 
   mLayer->actions()->clearActions();
   const auto constActions = mActionDialog->actions();
@@ -1870,6 +1884,7 @@ void QgsVectorLayerProperties::initMapTipPreview()
   // Note: there's quite a bit of overlap between this and the code in QgsMapTip::showMapTip
   // Create the WebView
   mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
+  mMapTipPreviewLayout->addWidget( mMapTipPreview );
 
 #if WITH_QTWEBKIT
   mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks ); //Handle link clicks by yourself

@@ -64,7 +64,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
      * Returns whether the text edit widget contains Invalid JSON
      * \since QGIS 3.12
      */
-    bool isInvalidJSON();
+    bool isInvalidJSON() const;
 
     /**
      * Add a hint text on the widget

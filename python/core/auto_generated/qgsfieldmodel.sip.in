@@ -63,7 +63,7 @@ Sets whether custom expressions are accepted and displayed in the model.
 .. seealso:: :py:func:`setExpression`
 %End
 
-    bool allowExpression();
+    bool allowExpression() const;
 %Docstring
 Returns ``True`` if the model allows custom expressions to be created
 and displayed.

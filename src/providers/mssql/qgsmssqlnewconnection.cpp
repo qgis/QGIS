@@ -118,7 +118,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   groupBoxSchemasFilter->setCollapsed( !groupBoxSchemasFilter->isChecked() );
 }
 
-//! Autoconnected SLOTS
+//! Autoconnected slots
 void QgsMssqlNewConnection::accept()
 {
   QgsSettings settings;
@@ -200,7 +200,7 @@ void QgsMssqlNewConnection::cb_trustedConnection_clicked()
   }
 }
 
-//! End  Autoconnected SLOTS
+//! End  Autoconnected slots
 
 bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
 {

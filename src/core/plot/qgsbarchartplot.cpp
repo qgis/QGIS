@@ -89,7 +89,7 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
     }
     symbol->startRender( context );
 
-    const double barStartAdjustement = -( barsWidth / 2 ) + barWidth * seriesIndex;
+    const double barStartAdjustment = -( barsWidth / 2 ) + barWidth * seriesIndex;
     if ( const QgsXyPlotSeries *xySeries = dynamic_cast<const QgsXyPlotSeries *>( series ) )
     {
       const QList<std::pair<double, double>> data = xySeries->data();
@@ -103,12 +103,12 @@ void QgsBarChartPlot::renderContent( QgsRenderContext &context, QgsPlotRenderCon
             {
               continue;
             }
-            x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustement;
+            x = ( categoriesWidth * pair.first ) + ( categoriesWidth / 2 ) + barStartAdjustment;
             chartScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "chart_category" ), categories[pair.first], true ) );
             break;
 
           case Qgis::PlotAxisType::Interval:
-            x = ( pair.first - minX ) * xScale + barStartAdjustement;
+            x = ( pair.first - minX ) * xScale + barStartAdjustment;
             break;
         }
 

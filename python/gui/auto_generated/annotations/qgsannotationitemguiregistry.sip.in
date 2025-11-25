@@ -205,7 +205,7 @@ added (e.g. due to duplicate id value).
 .. seealso:: :py:func:`itemGroup`
 %End
 
-    const QgsAnnotationItemGuiGroup &itemGroup( const QString &id );
+    const QgsAnnotationItemGuiGroup &itemGroup( const QString &id ) const;
 %Docstring
 Returns a reference to the item group with matching ``id``.
 

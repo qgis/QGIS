@@ -191,7 +191,12 @@ void QgsFetchedContent::taskCompleted()
 
       mFile = std::make_unique<QTemporaryFile>( extension.isEmpty() ? QString( "XXXXXX" ) :
               QString( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), extension ) );
-      mFile->open();
+      if ( !mFile->open() )
+      {
+        QgsDebugError( QStringLiteral( "Can't open temporary file %1" ).arg( mFile->fileName() ) );
+        mStatus = QgsFetchedContent::Failed;
+        return;
+      }
       mFile->write( reply->readAll() );
       // Qt docs notes that on some system if fileName is not called before close, file might get deleted
       mFilePath = mFile->fileName();

@@ -42,6 +42,7 @@
 #include "qgssettingsentryimpl.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
+#include "qgsthreadingutils.h"
 
 #include <QPicture>
 #include <QTimer>
@@ -236,6 +237,8 @@ Qgis::MapLayerRendererFlags QgsVectorLayerRenderer::flags() const
 
 bool QgsVectorLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+
   if ( mGeometryType == Qgis::GeometryType::Null || mGeometryType == Qgis::GeometryType::Unknown )
   {
     mReadyToCompose = true;

@@ -80,6 +80,7 @@ void QgsTemporalControllerDockWidget::exportAnimation()
 
     const QgsDateTimeRange animationRange = dlg->animationRange();
     const QgsInterval frameDuration = dlg->frameInterval();
+    const bool temporalRangeCumulative = dlg->temporalRangeCumulative();
     const QString outputDir = dlg->outputDirectory();
     const QString fileNameExpression = dlg->fileNameExpression();
 
@@ -107,6 +108,7 @@ void QgsTemporalControllerDockWidget::exportAnimation()
 
     QgsTemporalUtils::AnimationExportSettings animationSettings;
     animationSettings.frameDuration = frameDuration;
+    animationSettings.temporalRangeCumulative = temporalRangeCumulative;
     animationSettings.animationRange = animationRange;
     animationSettings.outputDirectory = outputDir;
     animationSettings.fileNameTemplate = fileNameExpression;

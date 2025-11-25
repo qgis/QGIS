@@ -34,6 +34,7 @@
 #include "qgstextrenderer.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
+#include "qgsthreadingutils.h"
 
 #include <QMatrix4x4>
 #include <qglobal.h>
@@ -76,6 +77,8 @@ QgsTiledSceneLayerRenderer::~QgsTiledSceneLayerRenderer() = default;
 
 bool QgsTiledSceneLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+
   if ( !mIndex.isValid() )
     return false;
 

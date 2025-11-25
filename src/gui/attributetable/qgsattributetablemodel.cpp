@@ -735,6 +735,10 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     {
       const WidgetData &widgetData = getWidgetData( index.column() );
       QString tooltip = widgetData.fieldFormatter->representValue( mLayer, fieldId, widgetData.config, widgetData.cache, val );
+      if ( tooltip != val.toString() )
+      {
+        tooltip = tr( "%1 (%2)" ).arg( tooltip, val.toString() );
+      }
       if ( val.userType() == QMetaType::Type::QString && QgsStringUtils::isUrl( val.toString() ) )
       {
         tooltip = tr( "%1 (Ctrl+click to open)" ).arg( tooltip );

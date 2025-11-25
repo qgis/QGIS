@@ -38,7 +38,7 @@ class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
      * Constructor for QgsTiledSceneTextureRenderer.
      */
     QgsTiledSceneTextureRenderer();
-    ~QgsTiledSceneTextureRenderer();
+    ~QgsTiledSceneTextureRenderer() override;
 
     QString type() const override;
     QgsTiledSceneRenderer *clone() const override;

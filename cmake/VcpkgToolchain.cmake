@@ -16,6 +16,9 @@ if(WITH_ORACLE)
 endif()
 if(WITH_QTWEBENGINE)
   list(APPEND VCPKG_MANIFEST_FEATURES "qtwebengine")
+  endif()
+if(WITH_SFCGAL)
+  list(APPEND VCPKG_MANIFEST_FEATURES "sfcgal")
 endif()
 
 # Binarycache can only be used on Windows or if mono is available.

@@ -1901,7 +1901,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             if ( qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
               item->parent()->refresh();
 
-            if ( !qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() ) )
+            if ( !item->parent() || !qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() ) )
               return;
 
             QgsDataItemGuiProviderUtils::refreshChildWithName( item->parent()->parent(), dlg->selectedSchema() );
@@ -2750,7 +2750,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
           QPointer<QgsDataItem> itemWeakPointer( item );
 
-          connect( editRelationshipAction, &QAction::triggered, this, [md, itemWeakPointer, relation, connectionUri, context] {
+          connect( editRelationshipAction, &QAction::triggered, this, [md, itemWeakPointer = std::move( itemWeakPointer ), relation, connectionUri, context] {
             std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
 
             QgsDbRelationDialog dialog( conn.release(), QgisApp::instance() );

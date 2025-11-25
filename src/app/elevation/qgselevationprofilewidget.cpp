@@ -526,6 +526,7 @@ QgsElevationProfileWidget::QgsElevationProfileWidget( QgsElevationProfile *profi
 
   // initially populate layer tree with project layers and registered sources
   mLayerTreeView->populateInitialSources( QgsProject::instance() );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, mLayerTreeView, [this] { mLayerTreeView->populateMissingLayers( QgsProject::instance() ); } );
 
   connect( mProfile->layerTree(), &QgsLayerTree::layerOrderChanged, this, [this] {
     updateCanvasSources();
@@ -590,6 +591,12 @@ QgsElevationProfileWidget::~QgsElevationProfileWidget()
 
   if ( mMapPointRubberBand )
     mMapPointRubberBand.reset();
+
+  // must be deleted BEFORE the dockable widget helper, or we get a crash
+  // when a queued event triggered by the dockable widget helper cleanup
+  // tries to repaint the layer tree view, which is then in an undefined state... :o
+  delete mLayerTreeView;
+  mLayerTreeView = nullptr;
 
   delete mDockableWidgetHelper;
 }
@@ -1195,7 +1202,7 @@ void QgsElevationProfileWidget::showSubsectionsTriggered()
 
   if ( showSubSections )
   {
-    mCanvas->setSubsectionsSymbol( mSubsectionsSymbol->clone() );
+    mCanvas->setSubsectionsSymbol( mSubsectionsSymbol ? mSubsectionsSymbol->clone() : nullptr );
   }
   else
   {
@@ -1410,6 +1417,7 @@ void QgsAppElevationProfileLayerTreeView::contextMenuEvent( QContextMenuEvent *e
     if ( QgsLayerTree::isGroup( node ) )
     {
       menu->addAction( defaultActions()->actionRenameGroupOrLayer( menu ) );
+      menu->addAction( defaultActions()->actionRemoveGroupPromoteLayers( menu ) );
     }
   }
 

@@ -2981,6 +2981,27 @@ class CORE_EXPORT Qgis
     Q_ENUM( TextCharacterVerticalAlignment )
 
     /**
+     * Flags controlling behavior of curved text generation.
+     *
+     * \since QGIS 4.0. Prior to QGIS 4.0 this was available as QgsTextRendererUtils::CurvedTextFlag
+     */
+    enum class CurvedTextFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRendererUtils, CurvedTextFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      TruncateStringWhenLineIsTooShort = 1 << 0, //!< When a string is too long for the line, truncate characters instead of aborting the placement
+      UseBaselinePlacement = 1 << 1, //!< Generate placement based on the character baselines instead of centers
+      UprightCharactersOnly = 1 << 2, //!< Permit upright characters only. If not present then upside down text placement is permitted.
+      ExtendLineToFitText = 1 << 3, //!< When a string is too long for the line, extend the line's final segment to fit the entire string. \since QGIS 4.0
+    };
+    Q_ENUM( CurvedTextFlag )
+
+    /**
+     * Flags controlling behavior of curved text generation.
+     *
+     * \since QGIS 4.0. Prior to QGIS 4.0 this was available as QgsTextRendererUtils::CurvedTextFlags
+     */
+    Q_DECLARE_FLAGS( CurvedTextFlags, CurvedTextFlag )SIP_MONKEYPATCH_FLAGS_UNNEST( QgsTextRendererUtils, CurvedTextFlags )
+
+    /**
      * Simplification algorithms for vector features.
      *
      * \note Prior to QGIS 3.38 this was available as QgsVectorSimplifyMethod::SimplifyAlgorithm
@@ -6249,6 +6270,21 @@ class CORE_EXPORT Qgis
     static QString geosVersion();
 
     /**
+     * Returns TRUE if the QGIS build contains SFCGAL.
+     *
+     * \since QGIS 4.0
+     */
+    static bool hasSfcgal();
+
+    /**
+     * Returns the version of the SFCGAL library if QGIS is built with SFCGAL. Else throws an exception.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based without SFCGAL.
+     * \since QGIS 4.0
+     */
+    static int sfcgalVersionInt();
+
+    /**
      * Returns TRUE if the QGIS build contains QtWebkit.
      *
      * \since QGIS 4.0
@@ -6387,6 +6423,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapCanvasFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayoutRenderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerLegendFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CurvedTextFlags )
+
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 

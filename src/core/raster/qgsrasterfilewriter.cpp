@@ -812,7 +812,7 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataP
 
   // TODO progress report
   // TODO test mTiledMode - not tested b/c segfault at line # 289
-  // connect( provider, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
+  // connect( provider, &FIXME::progressUpdate, mPyramidProgress, &FIXME::setValue );
   QList< QgsRasterPyramid> myPyramidList;
   if ( ! mPyramidsList.isEmpty() )
     myPyramidList = destProvider->buildPyramidList( mPyramidsList );

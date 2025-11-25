@@ -164,7 +164,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   voteSlider->hide();
   voteSubmit->hide();
 #ifndef WITH_QTWEBKIT
-  connect( voteSubmit, SIGNAL( clicked() ), this, SLOT( submitVote() ) );
+  connect( voteSubmit, &QPushButton::clicked, this, &QgsPluginManager::submitVote );
 #endif
 
   // Init the message bar instance
@@ -1297,7 +1297,7 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &reposi
 }
 
 
-// SLOTS ///////////////////////////////////////////////////////////////////
+// Slots ///////////////////////////////////////////////////////////////////
 
 
 // "Close" button clicked

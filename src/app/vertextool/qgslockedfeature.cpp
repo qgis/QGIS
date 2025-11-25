@@ -215,7 +215,7 @@ void QgsLockedFeature::deleteVertexMap()
   mVertexMap.clear();
 }
 
-bool QgsLockedFeature::isSelected( int vertexNr )
+bool QgsLockedFeature::isSelected( int vertexNr ) const
 {
   return mVertexMap.at( vertexNr )->isSelected();
 }
@@ -311,7 +311,7 @@ void QgsLockedFeature::invertVertexSelection( const QVector<int> &vertexIndices 
   emit selectionChanged();
 }
 
-QgsFeatureId QgsLockedFeature::featureId()
+QgsFeatureId QgsLockedFeature::featureId() const
 {
   return mFeatureId;
 }

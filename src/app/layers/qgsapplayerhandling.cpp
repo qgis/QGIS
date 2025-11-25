@@ -1245,7 +1245,7 @@ void QgsAppLayerHandling::openLayerDefinition( const QString &filename, const Qg
       shownMessages.append( message );
     }
   }
-  else if ( !loaded || !errorMessage.isEmpty() )
+  else if ( !errorMessage.isEmpty() )
   {
     QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Error loading layer definition" ), errorMessage, Qgis::MessageLevel::Warning );
   }

@@ -68,7 +68,7 @@ void TestQgsVectorTileUtils::test_urlsFromStyle()
 {
   QString dataDir( TEST_DATA_DIR );
   QFile style1File( dataDir + "/vector_tile/styles/style1.json" );
-  style1File.open( QIODevice::Text | QIODevice::ReadOnly );
+  QVERIFY( style1File.open( QIODevice::Text | QIODevice::ReadOnly ) );
   QString style1Content = style1File.readAll();
   style1File.close();
   style1Content.replace( QString( "_TILE_SOURCE_TEST_PATH_" ), "file://" + dataDir + "/vector_tile/styles" );

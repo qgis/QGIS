@@ -68,6 +68,8 @@ QgsDockableWidgetHelper::~QgsDockableWidgetHelper()
 
     mDock->setWidget( nullptr );
     mWidget->setParent( nullptr );
+    // TODO -- potentially "deleteLater" would be safer here, see eg note
+    // in QgsElevationProfileWidget destructor
     delete mDock.data();
     mDock = nullptr;
   }

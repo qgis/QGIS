@@ -42,7 +42,7 @@ QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcf
   updateValidityStyle( validate() );
 }
 
-const QString QgsAuthConfigIdEdit::configId()
+QString QgsAuthConfigIdEdit::configId()
 {
   if ( validate() )
   {

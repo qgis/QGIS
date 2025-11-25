@@ -759,14 +759,14 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     // data provider has been deleted by the pipe
     mDataProvider = nullptr;
-    appendError( ERR( tr( "Could not insert provider into layer pipe (provider: %1, URI: %2" ).arg( mProviderKey, mDataSource ) ) );
+    appendError( ERR( tr( "Could not insert provider into layer pipe (provider: %1, URI: %2)" ).arg( mProviderKey, mDataSource ) ) );
     return;
   }
 
   if ( !mDataProvider->isValid() )
   {
     setError( mDataProvider->error() );
-    appendError( ERR( tr( "Provider is not valid (provider: %1, URI: %2" ).arg( mProviderKey, mDataSource ) ) );
+    appendError( ERR( tr( "Provider is not valid (provider: %1, URI: %2)" ).arg( mProviderKey, mDataSource ) ) );
     return;
   }
 

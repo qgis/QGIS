@@ -46,7 +46,7 @@ class GRASS_LIB_EXPORT QgsGrassImportProgress : public QObject
     QgsGrassImportProgress( QProcess *process, QObject *parent = nullptr );
 
     void setProcess( QProcess *process );
-    QString progressHtml() { return mProgressHtml; }
+    QString progressHtml() const { return mProgressHtml; }
 
     void append( const QString &html );
     void setRange( int min, int max );
@@ -81,7 +81,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     // source description for error message purposes (maybe uri or something similar)
     virtual QString srcDescription() const = 0;
     // get error if import failed
-    QString error();
+    QString error() const;
     virtual QStringList names() const;
     bool isCanceled() const;
     QgsGrassImportProgress *progress() { return mProgress; }
