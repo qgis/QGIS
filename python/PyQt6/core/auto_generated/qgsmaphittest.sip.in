@@ -66,7 +66,7 @@ symbol legend keys.
 
 
 
-    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const /PyName=resultsRenderersUpdatedCanvas/;
+    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const /PyName=resultsRenderersUpdatedCanvas,TypeHint="Dict[str, Tuple[float, float]]"/;
 %Docstring
 Returns the hit test results, for layers with UpdatedCanvas renderers
 (raster/mesh layers). Results are given as QMap of layer IDs to pairs of
@@ -141,7 +141,7 @@ symbol legend keys.
     virtual void cancel();
 
 
-    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const /PyName=resultsRenderersUpdatedCanvas/;
+    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const /PyName=resultsRenderersUpdatedCanvas,TypeHint="Dict[str, Tuple[float, float]]"/;
 %Docstring
 Returns the hit test results, for layers with UpdatedCanvas renderers
 (raster/mesh layers). Results are given as QMap of layer IDs to pairs of

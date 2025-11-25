@@ -109,7 +109,7 @@ class CORE_EXPORT QgsMapHitTest
      *
      * \since QGIS 4.0
      */
-    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const SIP_PYNAME( resultsRenderersUpdatedCanvas );
+    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const SIP_PYNAME( resultsRenderersUpdatedCanvas ) SIP_TYPEHINT( Dict[str, Tuple[float, float]] );
     % MethodCode
     QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
     sipRes = PyDict_New();
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
      *
      * \since QGIS 4.0
      */
-    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const SIP_PYNAME( resultsRenderersUpdatedCanvas );
+    SIP_PYOBJECT resultsRenderersUpdatedCanvasPy() const SIP_PYNAME( resultsRenderersUpdatedCanvas ) SIP_TYPEHINT( Dict[str, Tuple[float, float]] );
     % MethodCode
     QMap<QString, std::pair<double, double>> results = sipCpp->resultsRenderersUpdatedCanvas();
     sipRes = PyDict_New();
