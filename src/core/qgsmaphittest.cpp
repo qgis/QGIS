@@ -104,7 +104,7 @@ void QgsMapHitTest::run()
     }
     else if ( QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer ) )
     {
-      if ( !rl || !rl->renderer() )
+      if ( !rl || !rl->renderer() || !rl->dataProvider() )
         continue;
 
       QgsRasterMinMaxOrigin minMaxOrigin = rl->renderer()->minMaxOrigin();
@@ -341,7 +341,7 @@ void QgsMapHitTest::runHitTestRasterSource( QgsRasterDataProvider *provider,
   {
     case Qgis::RasterRangeExtent::UpdatedCanvas:
     {
-      QgsRectangle transformedExtent = transform.transform( context.extent() );
+      QgsRectangle transformedExtent = transform.transformBoundingBox( context.extent() );
       if ( provider->extent().intersects( transformedExtent ) )
       {
         QgsRasterLayerUtils::computeMinMax( provider, band, minMaxOrigin, rangeLimit,
