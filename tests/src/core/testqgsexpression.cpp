@@ -1862,6 +1862,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "unaccent vulgar fraction" ) << "unaccent('1½')" << false << QVariant( "1 1/2" );
       QTest::newRow( "unaccent quotation mark variant" ) << "unaccent('〝')" << false << QVariant( "\"" );
       QTest::newRow( "unaccent blackletter H" ) << "unaccent('ℌ')" << false << QVariant( "H" );
+      QTest::newRow( "unaccent fullwidth number sign FE5F" ) << "unaccent('﹟')" << false << QVariant( "#" );
+      QTest::newRow( "unaccent fullwidth hash FF03" ) << "unaccent('＃')" << false << QVariant( "#" );
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
       QTest::newRow( "substr named parameters" ) << "substr(string:='HeLLo',start:=3,length:=2)" << false << QVariant( "LL" );
       QTest::newRow( "substr negative start" ) << "substr('HeLLo', -4)" << false << QVariant( "eLLo" );
