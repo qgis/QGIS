@@ -1,6 +1,6 @@
 /***************************************************************************
-    qgswfsfeatureiterator.h
-    ---------------------
+    qgswfsdownloaderimpl.h
+    ----------------------
     begin                : January 2013
     copyright            : (C) 2013 by Marco Hugentobler
                            (C) 2016 by Even Rouault
@@ -14,48 +14,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSWFSFEATUREITERATOR_H
-#define QGSWFSFEATUREITERATOR_H
+#ifndef QGSWFSDOWNLOADERIMPL_H
+#define QGSWFSDOWNLOADERIMPL_H
 
-#include "qgsfeatureiterator.h"
+#include "qgsbackgroundcachedfeatureiterator.h" // QgsFeatureDownloaderImpl
 #include "qgswfsrequest.h"
-#include "qgsgml.h"
-
-#include "qgsbackgroundcachedfeatureiterator.h"
+#include "qgswfsfeaturehitsasyncrequest.h"
 
 #include <memory>
-#include <QMutex>
-#include <QWaitCondition>
 
-class QgsWFSProvider;
 class QgsWFSSharedData;
-class QgsVectorDataProvider;
-
-//! Utility class to issue a GetFeature resultType=hits request
-class QgsWFSFeatureHitsAsyncRequest final : public QgsWfsRequest
-{
-    Q_OBJECT
-  public:
-    explicit QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri );
-
-    void launchGet( const QUrl &url );
-    void launchPost( const QUrl &url, const QByteArray &data );
-
-    //! Returns result of request, or -1 if not known/error
-    int numberMatched() const { return mNumberMatched; }
-
-  signals:
-    void gotHitsResponse();
-
-  private slots:
-    void hitsReplyFinished();
-
-  protected:
-    QString errorMessageWithReason( const QString &reason ) override;
-
-  private:
-    int mNumberMatched;
-};
 
 /**
  * This class runs one (or several if paging is needed) GetFeature request,
@@ -116,4 +84,4 @@ class QgsWFSFeatureDownloaderImpl final : public QgsWfsRequest, public QgsFeatur
 };
 
 
-#endif // QGSWFSFEATUREITERATOR_H
+#endif // QGSWFSDOWNLOADERIMPL_H

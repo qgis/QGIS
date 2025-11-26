@@ -29,7 +29,7 @@
 #include "qgsogrutils.h"
 #include "qgssqliteutils.h"
 #include "qgswfsconstants.h"
-#include "qgswfsfeatureiterator.h"
+#include "qgswfsfeaturedownloaderimpl.h"
 #include "qgswfsprovider.h"
 #include "moc_qgswfsprovider.cpp"
 #include "qgswfscapabilities.h"

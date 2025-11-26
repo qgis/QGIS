@@ -15,7 +15,9 @@
 
 #include "qgswfsshareddata.h"
 #include "moc_qgswfsshareddata.cpp"
+#include "qgswfsfeaturedownloaderimpl.h"
 #include "qgswfsprovider.h"
+#include "qgsgml.h"
 #include "qgsogcutils.h"
 #include "qgsexpression.h"
 #include "qgsmessagelog.h"

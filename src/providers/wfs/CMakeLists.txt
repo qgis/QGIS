@@ -7,7 +7,8 @@ set(WFS_SRCS
   qgswfsprovidermetadata.cpp
   qgswfscapabilities.cpp
   qgswfsdataitems.cpp
-  qgswfsfeatureiterator.cpp
+  qgswfsfeaturehitsasyncrequest.cpp
+  qgswfsfeaturedownloaderimpl.cpp
   qgswfsgetcapabilities.cpp
   qgswfsgetfeature.cpp
   qgswfsrequest.cpp
