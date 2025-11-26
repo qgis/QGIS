@@ -249,6 +249,7 @@
 #include "qgscustomdrophandler.h"
 #include "qgscustomprojectopenhandler.h"
 #include "qgscustomization.h"
+#include "qgscustomizationdialog.h"
 #include "qgscustomlayerorderwidget.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsdataitemguiproviderregistry.h"
@@ -1657,11 +1658,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsProjectDataItemProvider() );
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsStacDataItemProvider() );
 
-  // now when all data item providers are registered, customize both browsers
-  QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget );
-  QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget2 );
-
-
   // populate annotation toolbar with initial items...
   const QList<int> itemMetadataIds = QgsGui::annotationItemGuiRegistry()->itemMetadataIds();
   for ( int id : itemMetadataIds )
@@ -1774,11 +1770,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   qApp->processEvents();
   startProfile( tr( "Restore window state" ) );
   restoreWindowState();
-  endProfile();
-
-  // do main window customization - after window state has been restored, before the window is shown
-  startProfile( tr( "Update customization on main window" ) );
-  QgsCustomization::instance()->updateMainWindow( mToolbarMenu, mPanelMenu );
   endProfile();
 
   mSplash->showMessage( tr( "Populate saved styles" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
@@ -2196,11 +2187,19 @@ QgisApp::~QgisApp()
   }
 
   // these may have references to map layers which need to be cleaned up
-  mBrowserWidget->close(); // close first, to trigger save of state
-  delete mBrowserWidget;
-  mBrowserWidget = nullptr;
-  delete mBrowserWidget2;
-  mBrowserWidget2 = nullptr;
+  if ( mBrowserWidget )
+  {
+    mBrowserWidget->close(); // close first, to trigger save of state
+    delete mBrowserWidget;
+    mBrowserWidget = nullptr;
+  }
+
+  if ( mBrowserWidget2 )
+  {
+    delete mBrowserWidget2;
+    mBrowserWidget2 = nullptr;
+  }
+
   delete mBrowserModel;
   mBrowserModel = nullptr;
   delete mGeometryValidationDock;
@@ -3578,7 +3577,8 @@ void QgisApp::createToolBars()
   // sort actions in toolbar menu
   std::sort( toolbarMenuActions.begin(), toolbarMenuActions.end(), cmpByText_ );
 
-  mToolbarMenu->addActions( toolbarMenuActions );
+  if ( mToolbarMenu )
+    mToolbarMenu->addActions( toolbarMenuActions );
 
   // advanced selection tool button
   QToolButton *bt = new QToolButton( mSelectionToolBar );
@@ -3852,7 +3852,8 @@ void QgisApp::createToolBars()
   showVertexEditorAction->setCheckable( true );
   showVertexEditorAction->setProperty( "no_default_action", true );
   vertexToolButton->addAction( showVertexEditorAction );
-  mVertexEditorDock->setToggleVisibilityAction( showVertexEditorAction );
+  if ( mVertexEditorDock )
+    mVertexEditorDock->setToggleVisibilityAction( showVertexEditorAction );
 
   vertexToolButton->setDefaultAction( defActionVertexTool );
   QAction *actionVertexTool = mDigitizeToolBar->insertWidget( mActionMultiEditAttributes, vertexToolButton );
@@ -4638,7 +4639,8 @@ void QgisApp::addToolBar( QToolBar *toolBar, Qt::ToolBarArea area )
 {
   QMainWindow::addToolBar( area, toolBar );
   // add to the Toolbar submenu
-  mToolbarMenu->addAction( toolBar->toggleViewAction() );
+  if ( mToolbarMenu )
+    mToolbarMenu->addAction( toolBar->toggleViewAction() );
 }
 
 QgsLayerTreeView *QgisApp::layerTreeView()
@@ -5676,6 +5678,14 @@ QString QgisApp::getVersionString()
 
   versionString += "</tr></table>"_L1;
   return versionString;
+}
+
+void QgisApp::setCustomization( std::unique_ptr<QgsCustomization> customization )
+{
+  mCustomization = std::move( customization );
+  mCustomization->setQgisApp( this );
+
+  mCustomizationDialog.reset();
 }
 
 QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QStringList &supportedCrs, const QStringList &supportedFormats ) const
@@ -12504,7 +12514,18 @@ void QgisApp::configureShortcuts()
 
 void QgisApp::customize()
 {
-  QgsCustomization::instance()->openDialog( this );
+  if ( !mCustomization )
+  {
+    QgsDebugError( "Missing customization object" );
+    return;
+  }
+
+  if ( !mCustomizationDialog )
+  {
+    mCustomizationDialog.reset( new QgsCustomizationDialog( mCustomization.get(), this ) );
+  }
+
+  mCustomizationDialog->show();
 }
 
 void QgisApp::options()
