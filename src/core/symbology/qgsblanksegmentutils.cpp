@@ -1,5 +1,5 @@
 /***************************************************************************
-    blanksegmentutils_p.cpp
+    blanksegmentutils.cpp
     ---------------------
     begin                : 2025/11/05
     copyright            : (C) 2025 by Julien Cabieces
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsblanksegmentutils_p.h"
+#include "qgsblanksegmentutils.h"
 #include "qgsrendercontext.h"
 
 QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, QString &error )
