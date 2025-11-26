@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsbackgroundcachedfeatureiterator.h"
+#include "qgsbackgroundcachedfeaturesource.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"

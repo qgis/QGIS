@@ -21,6 +21,7 @@ using namespace nlohmann;
 #include "moc_qgsoapifitemsrequest.cpp"
 #include "qgsoapifutils.h"
 #include "qgsproviderregistry.h"
+#include "qgsvectordataprovider.h"
 
 #include "cpl_vsi.h"
 
