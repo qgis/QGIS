@@ -93,7 +93,7 @@ void QgsFeatureDownloaderImpl::createProgressTask( long long numberMatched )
   QgsApplication::taskManager()->addTask( mProgressTask );
 }
 
-void QgsFeatureDownloaderImpl::endOfRun( bool serializeFeatures, bool success, int totalDownloadedFeatureCount, bool truncatedResponse, bool interrupted, const QString &errorMessage )
+void QgsFeatureDownloaderImpl::endOfRun( bool serializeFeatures, bool success, long long totalDownloadedFeatureCount, bool truncatedResponse, bool interrupted, const QString &errorMessage )
 {
   {
     QMutexLocker locker( &mMutexCreateProgressTask );
