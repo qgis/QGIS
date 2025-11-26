@@ -18,7 +18,7 @@
 #include "qgsabout.h"
 #include "moc_qgsabout.cpp"
 #include "qgsapplication.h"
-#include "qgsdevelopersmapcanvas.h"
+#include "qgscontributorsmapcanvas.h"
 #include "qgsauthmethodregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"

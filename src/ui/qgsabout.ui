@@ -368,7 +368,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="developersMap">
+         <widget class="QWidget" name="contributorsMap">
           <layout class="QGridLayout" name="gridLayout_2">
            <property name="leftMargin">
             <number>0</number>
@@ -383,7 +383,7 @@
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <widget class="QgsDevelopersMapCanvas" name="developersMapCanvas" native="true">
+            <widget class="QgsContributorsMapCanvas" name="contributorsMapCanvas" native="true">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>

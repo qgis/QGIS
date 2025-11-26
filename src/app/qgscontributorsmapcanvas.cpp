@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsdevelopersmapcanvas.cpp
+                          qgscontributorsmapcanvas.cpp
                              -------------------
     begin                : November 2025
     copyright            : (C) 2025 by Mathieu Pellerin
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "moc_qgsdevelopersmapcanvas.cpp"
-#include "qgsdevelopersmapcanvas.h"
+#include "moc_qgscontributorsmapcanvas.cpp"
+#include "qgscontributorsmapcanvas.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapmouseevent.h"
@@ -26,18 +26,18 @@
 #include <QFrame>
 #include <QVBoxLayout>
 
-QgsDevelopersMapTool::QgsDevelopersMapTool( QgsMapCanvas *canvas, QgsVectorLayer *layer )
+QgsContributorsMapTool::QgsContributorsMapTool( QgsMapCanvas *canvas, QgsVectorLayer *layer )
   : QgsMapToolPan( canvas )
-  , mDevelopersMapLayer( layer )
+  , mContributorsMapLayer( layer )
 {
-  mDevelopersMapFloatingPanel = new QgsDevelopersMapFloatingPanel( canvas );
-  mDevelopersMapFloatingPanel->setAnchorWidget( canvas );
-  mDevelopersMapFloatingPanel->setAnchorWidgetPoint( QgsFloatingWidget::BottomRight );
-  mDevelopersMapFloatingPanel->setAnchorPoint( QgsFloatingWidget::BottomRight );
-  mDevelopersMapFloatingPanel->hide();
+  mContributorsMapFloatingPanel = new QgsContributorsMapFloatingPanel( canvas );
+  mContributorsMapFloatingPanel->setAnchorWidget( canvas );
+  mContributorsMapFloatingPanel->setAnchorWidgetPoint( QgsFloatingWidget::BottomRight );
+  mContributorsMapFloatingPanel->setAnchorPoint( QgsFloatingWidget::BottomRight );
+  mContributorsMapFloatingPanel->hide();
 }
 
-void QgsDevelopersMapTool::canvasMoveEvent( QgsMapMouseEvent *e )
+void QgsContributorsMapTool::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !isPinching() && !( e->buttons() & Qt::LeftButton ) )
   {
@@ -46,7 +46,7 @@ void QgsDevelopersMapTool::canvasMoveEvent( QgsMapMouseEvent *e )
     featureRequest.setLimit( 1 );
     featureRequest.setNoAttributes();
     featureRequest.setFlags( Qgis::Qgis::FeatureRequestFlag::NoGeometry );
-    QgsFeatureIterator fit = mDevelopersMapLayer->getFeatures( featureRequest );
+    QgsFeatureIterator fit = mContributorsMapLayer->getFeatures( featureRequest );
     QgsFeature f;
     if ( fit.nextFeature( f ) )
     {
@@ -63,14 +63,14 @@ void QgsDevelopersMapTool::canvasMoveEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsContributorsMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !isPinching() && !isDragging() )
   {
     QgsFeatureRequest featureRequest;
     featureRequest.setFilterRect( filterRectForMouseEvent( e ) );
     featureRequest.setFlags( Qgis::Qgis::FeatureRequestFlag::NoGeometry );
-    QgsFeatureIterator fit = mDevelopersMapLayer->getFeatures( featureRequest );
+    QgsFeatureIterator fit = mContributorsMapLayer->getFeatures( featureRequest );
     QgsFeature f;
     int featureCount = 0;
     while ( fit.nextFeature( f ) )
@@ -94,8 +94,8 @@ void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
         details += QStringLiteral( "\n\n%1" ).arg( tr( "Committer" ) );
       }
 
-      mDevelopersMapFloatingPanel->setText( details );
-      mDevelopersMapFloatingPanel->show();
+      mContributorsMapFloatingPanel->setText( details );
+      mContributorsMapFloatingPanel->show();
     }
     else
     {
@@ -103,7 +103,7 @@ void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
       {
         mCanvas->zoomWithCenter( e->x(), e->y(), true );
       }
-      mDevelopersMapFloatingPanel->hide();
+      mContributorsMapFloatingPanel->hide();
     }
   }
   else
@@ -112,17 +112,17 @@ void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-QgsRectangle QgsDevelopersMapTool::filterRectForMouseEvent( QgsMapMouseEvent *e )
+QgsRectangle QgsContributorsMapTool::filterRectForMouseEvent( QgsMapMouseEvent *e )
 {
   const QgsMapSettings mapSettings = mCanvas->mapSettings();
   const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   double searchRadius = context.convertToMapUnits( 3.5, Qgis::RenderUnit::Millimeters );
   const QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
-  return toLayerCoordinates( mDevelopersMapLayer, QgsRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius ) );
+  return toLayerCoordinates( mContributorsMapLayer, QgsRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius ) );
 }
 
 
-QgsDevelopersMapFloatingPanel::QgsDevelopersMapFloatingPanel( QWidget *parent )
+QgsContributorsMapFloatingPanel::QgsContributorsMapFloatingPanel( QWidget *parent )
   : QgsFloatingWidget( parent )
 {
   QVBoxLayout *layout = new QVBoxLayout( this );
@@ -141,21 +141,21 @@ QgsDevelopersMapFloatingPanel::QgsDevelopersMapFloatingPanel( QWidget *parent )
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 }
 
-void QgsDevelopersMapFloatingPanel::setText( const QString &text )
+void QgsContributorsMapFloatingPanel::setText( const QString &text )
 {
   mLabel->setText( text );
 }
 
-QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
+QgsContributorsMapCanvas::QgsContributorsMapCanvas( QWidget *parent )
   : QgsMapCanvas( parent )
 {
-  mDevelopersMapBaseLayer = std::make_unique<QgsRasterLayer>( QStringLiteral( "type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857" ), QStringLiteral( "OpenStreetMap" ), QLatin1String( "wms" ) );
-  mDevelopersMapLayer = std::make_unique<QgsVectorLayer>( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" ), tr( "Contributors" ), QLatin1String( "ogr" ) );
+  mContributorsMapBaseLayer = std::make_unique<QgsRasterLayer>( QStringLiteral( "type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857" ), QStringLiteral( "OpenStreetMap" ), QLatin1String( "wms" ) );
+  mContributorsMapLayer = std::make_unique<QgsVectorLayer>( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" ), tr( "Contributors" ), QLatin1String( "ogr" ) );
   bool ok = false;
-  mDevelopersMapLayer->loadNamedStyle( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors_map.qml" ), ok );
+  mContributorsMapLayer->loadNamedStyle( QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors_map.qml" ), ok );
 
-  QgsCoordinateTransform transform( mDevelopersMapLayer->crs(), mDevelopersMapBaseLayer->crs(), QgsProject::instance()->transformContext() );
-  QgsRectangle extent = mDevelopersMapLayer->extent();
+  QgsCoordinateTransform transform( mContributorsMapLayer->crs(), mContributorsMapBaseLayer->crs(), QgsProject::instance()->transformContext() );
+  QgsRectangle extent = mContributorsMapLayer->extent();
   try
   {
     extent = transform.transformBoundingBox( extent );
@@ -163,14 +163,14 @@ QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
   catch ( const QgsException &e )
   {
     Q_UNUSED( e )
-    extent = mDevelopersMapBaseLayer->extent();
+    extent = mContributorsMapBaseLayer->extent();
   }
   extent.scale( 1.05 );
 
   mapSettings().setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, true );
   mapSettings().setFlag( Qgis::MapSettingsFlag::RenderPartialOutput, true );
-  mapSettings().setLayers( QList<QgsMapLayer *>() << mDevelopersMapLayer.get() << mDevelopersMapBaseLayer.get() );
-  mapSettings().setDestinationCrs( mDevelopersMapBaseLayer->crs() );
+  mapSettings().setLayers( QList<QgsMapLayer *>() << mContributorsMapLayer.get() << mContributorsMapBaseLayer.get() );
+  mapSettings().setDestinationCrs( mContributorsMapBaseLayer->crs() );
   mapSettings().setExtent( extent );
 
   setParallelRenderingEnabled( true );
@@ -178,6 +178,6 @@ QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
   setCanvasColor( palette().color( QPalette::Window ) );
   refresh();
 
-  mDevelopersMapTool = std::make_unique<QgsDevelopersMapTool>( this, mDevelopersMapLayer.get() );
-  setMapTool( mDevelopersMapTool.get() );
+  mContributorsMapTool = std::make_unique<QgsContributorsMapTool>( this, mContributorsMapLayer.get() );
+  setMapTool( mContributorsMapTool.get() );
 }

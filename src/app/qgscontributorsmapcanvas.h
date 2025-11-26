@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsdevelopersmapcanvas.h
+                          qgscontributorsmapcanvas.h
                              -------------------
     begin                : November 2025
     copyright            : (C) 2025 by Mathieu Pellerin
@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSDEVELOPERSMAPCANVAS_H
-#define QGSDEVELOPERSMAPCANVAS_H
+#ifndef QGSCONTRIBUTORSMAPCANVAS_H
+#define QGSCONTRIBUTORSMAPCANVAS_H
 
 #include "qgis_app.h"
 #include "qgsfloatingwidget.h"
@@ -27,11 +27,11 @@
 #include <QLabel>
 
 
-class APP_EXPORT QgsDevelopersMapFloatingPanel : public QgsFloatingWidget
+class APP_EXPORT QgsContributorsMapFloatingPanel : public QgsFloatingWidget
 {
     Q_OBJECT
   public:
-    QgsDevelopersMapFloatingPanel( QWidget *parent = nullptr );
+    QgsContributorsMapFloatingPanel( QWidget *parent = nullptr );
 
     void setText( const QString &text );
 
@@ -40,12 +40,12 @@ class APP_EXPORT QgsDevelopersMapFloatingPanel : public QgsFloatingWidget
 };
 
 
-class APP_EXPORT QgsDevelopersMapTool : public QgsMapToolPan
+class APP_EXPORT QgsContributorsMapTool : public QgsMapToolPan
 {
     Q_OBJECT
   public:
-    QgsDevelopersMapTool( QgsMapCanvas *canvas, QgsVectorLayer *layer );
-    ~QgsDevelopersMapTool() override = default;
+    QgsContributorsMapTool( QgsMapCanvas *canvas, QgsVectorLayer *layer );
+    ~QgsContributorsMapTool() override = default;
 
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
@@ -53,22 +53,22 @@ class APP_EXPORT QgsDevelopersMapTool : public QgsMapToolPan
   private:
     QgsRectangle filterRectForMouseEvent( QgsMapMouseEvent *e );
 
-    QgsVectorLayer *mDevelopersMapLayer = nullptr;
-    QgsDevelopersMapFloatingPanel *mDevelopersMapFloatingPanel = nullptr;
+    QgsVectorLayer *mContributorsMapLayer = nullptr;
+    QgsContributorsMapFloatingPanel *mContributorsMapFloatingPanel = nullptr;
 };
 
 
-class APP_EXPORT QgsDevelopersMapCanvas : public QgsMapCanvas
+class APP_EXPORT QgsContributorsMapCanvas : public QgsMapCanvas
 {
     Q_OBJECT
   public:
-    QgsDevelopersMapCanvas( QWidget *parent = nullptr );
-    ~QgsDevelopersMapCanvas() override = default;
+    QgsContributorsMapCanvas( QWidget *parent = nullptr );
+    ~QgsContributorsMapCanvas() override = default;
 
   private:
-    std::unique_ptr<QgsRasterLayer> mDevelopersMapBaseLayer;
-    std::unique_ptr<QgsVectorLayer> mDevelopersMapLayer;
-    std::unique_ptr<QgsDevelopersMapTool> mDevelopersMapTool;
+    std::unique_ptr<QgsRasterLayer> mContributorsMapBaseLayer;
+    std::unique_ptr<QgsVectorLayer> mContributorsMapLayer;
+    std::unique_ptr<QgsContributorsMapTool> mContributorsMapTool;
 };
 
-#endif // QGSDEVELOPERSMAPCANVAS_H
+#endif // QGSCONTRIBUTORSMAPCANVAS_H
