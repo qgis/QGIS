@@ -29,13 +29,12 @@
 // sfcgal namespace
 // ===================================
 
-thread_local sfcgal::ErrorHandler _sfcgalErrorHandler;
+thread_local sfcgal::ErrorHandler sSfcgalErrorHandler;
 
 sfcgal::ErrorHandler *sfcgal::errorHandler()
 {
-  return &_sfcgalErrorHandler;
+  return &sSfcgalErrorHandler;
 }
-
 
 void sfcgal::GeometryDeleter::operator()( sfcgal::geometry *geom ) const
 {
