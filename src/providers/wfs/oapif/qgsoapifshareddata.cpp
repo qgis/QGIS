@@ -44,7 +44,7 @@ QString QgsOapifSharedData::appendExtraQueryParameters( const QString &url ) con
 {
   if ( mExtraQueryParameters.isEmpty() || url.indexOf( mExtraQueryParameters ) > 0 )
     return url;
-  const int nPos = url.indexOf( '?' );
+  const int nPos = static_cast<int>( url.indexOf( '?' ) );
   if ( nPos < 0 )
     return url + '?' + mExtraQueryParameters;
   return url + '&' + mExtraQueryParameters;
@@ -226,7 +226,7 @@ QString QgsOapifSharedData::compileExpressionNodeUsingPart1(
     if ( removeMe )
     {
       hasTranslatedParts = true;
-      topAndNodes.erase( topAndNodes.begin() + i );
+      topAndNodes.erase( topAndNodes.begin() + static_cast<int>( i ) );
     }
     else
       ++i;

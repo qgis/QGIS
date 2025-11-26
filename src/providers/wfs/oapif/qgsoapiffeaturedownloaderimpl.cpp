@@ -212,7 +212,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
       CREATE_PROGRESS_TASK( QgsOapifFeatureDownloaderImpl );
     }
 
-    totalDownloadedFeatureCount += itemsRequest.features().size();
+    totalDownloadedFeatureCount += static_cast<long long>( itemsRequest.features().size() );
     if ( !mStop )
     {
       emit updateProgress( totalDownloadedFeatureCount );

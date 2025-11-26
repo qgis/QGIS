@@ -103,7 +103,7 @@ class QgsFeatureDownloaderImpl
 
     void setStopFlag();
 
-    void endOfRun( bool serializeFeatures, bool success, int totalDownloadedFeatureCount, bool truncatedResponse, bool interrupted, const QString &errorMessage );
+    void endOfRun( bool serializeFeatures, bool success, long long totalDownloadedFeatureCount, bool truncatedResponse, bool interrupted, const QString &errorMessage );
 
     void connectSignals( QObject *obj, bool requestMadeFromMainThread );
 
