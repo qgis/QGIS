@@ -59,6 +59,9 @@ class _3D_EXPORT QgsRayCastHit
     //! Sets the point cloud point \a attributes, empty map if hit was not on a point cloud point
     void setProperties( const QVariantMap &attributes );
 
+    //! Adds a property to the hit
+    void addProperty( const QString &key, const QVariant &value );
+
   private:
     double mDistance = -1.;  //!< Distance from ray's origin
     QgsVector3D mPos;        //!< Hit position in 3d map coordinates
