@@ -24,6 +24,7 @@
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgsrectangle.h"
+#include "qgsthreadingutils.h"
 
 int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   QgsRasterLayer *layer,
@@ -182,6 +183,8 @@ void QgsRasterLayerUtils::computeMinMax( QgsRasterDataProvider *provider,
     double &min SIP_OUT,
     double &max SIP_OUT )
 {
+  QGIS_CHECK_QOBJECT_THREAD_EQUALITY( provider );
+
   min = std::numeric_limits<double>::quiet_NaN();
   max = std::numeric_limits<double>::quiet_NaN();
   if ( !provider )
