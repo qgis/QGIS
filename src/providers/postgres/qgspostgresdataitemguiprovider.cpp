@@ -1100,7 +1100,7 @@ void QgsPostgresDataItemGuiProvider::setProjectComment( QgsPGProjectItem *projec
     else
     {
       notify( tr( "Set Project Comment" ), tr( "Comment updated for project '%1'" ).arg( projectItem->name() ), context, Qgis::MessageLevel::Success );
-      projectItem->parent()->refresh();
+      projectItem->refresh();
     }
   }
 
