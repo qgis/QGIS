@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     generate_unaccent_rules.py
@@ -128,25 +129,36 @@ def write_cpp(path: Path, rules):
         f.write("#include <QHash>\n")
         f.write("#include <QString>\n\n")
 
-        f.write("QHash<QString, QString> QgsStringUtils::createUnaccentMap()\n")
+        # anonymous namespace for clang-tidy
+        f.write("namespace\n")
         f.write("{\n")
-        f.write("  QHash<QString, QString> map;\n\n")
+        f.write("  QHash<QString, QString> buildUnaccentMap()\n")
+        f.write("  {\n")
+        f.write("    QHash<QString, QString> map;\n\n")
 
+        # Generate map contents
         for src, dst in rules:
             esc_src = cpp_escape(src)
 
             if dst == "":
                 f.write(
-                    f'  map.insert( QStringLiteral( "{esc_src}" ), QString() );\n'
+                    f'    map.insert( QStringLiteral( "{esc_src}" ), QString() );\n'
                 )
             else:
                 esc_dst = cpp_escape(dst)
                 f.write(
-                    f'  map.insert( QStringLiteral( "{esc_src}" ), '
+                    f'    map.insert( QStringLiteral( "{esc_src}" ), '
                     f'QStringLiteral( "{esc_dst}" ) );\n'
                 )
 
-        f.write("\n  return map;\n")
+        f.write("\n    return map;\n")
+        f.write("  }\n")
+        f.write("} // end anonymous namespace\n\n")
+
+        # Public method
+        f.write("QHash<QString, QString> QgsStringUtils::createUnaccentMap()\n")
+        f.write("{\n")
+        f.write("  return buildUnaccentMap();\n")
         f.write("}\n")
 
 

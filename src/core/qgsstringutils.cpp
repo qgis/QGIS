@@ -21,47 +21,6 @@
 #include <QRegularExpression>
 #include <cstdlib> // for std::abs
 
-QHash<QString, QString> QgsStringUtils::UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
-
-QString QgsStringUtils::unaccent( const QString &input )
-{
-  // Normalize input to NFC so that Unicode characters composed of base +
-  // combining marks are converted to their canonical composed form.
-  // This ensures lookups match the keys in UNACCENT_MAP, which are stored
-  // in NFC (e.g. "e" + U+0301 becomes "é", as PostgreSQL does it.).
-  const QString in = input.normalized( QString::NormalizationForm_C );
-  QString out;
-  out.reserve( in.size() );
-
-  int i = 0;
-  const int n = in.size();
-
-  while ( i < n )
-  {
-    const QChar c = in.at( i );
-    int len = 1;
-
-    // Detect surrogate pair (non-BMP)
-    if ( c.isHighSurrogate() && i + 1 < n )
-    {
-      const QChar c2 = in.at( i + 1 );
-      if ( c2.isLowSurrogate() )
-        len = 2;
-    }
-
-    const QString key = in.mid( i, len ).normalized( QString::NormalizationForm_C );
-
-    auto it = UNACCENT_MAP.constFind( key );
-    if ( it != UNACCENT_MAP.constEnd() )
-      out.append( it.value() );
-    else
-      out.append( key );
-
-    i += len;
-  }
-
-  return out;
-}
 
 QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization capitalization )
 {
@@ -890,4 +849,52 @@ void QgsStringReplacementCollection::readXml( const QDomElement &elem )
     mReplacements << QgsStringReplacement::fromProperties( props );
   }
 
+}
+
+QHash<QString, QString> QgsStringUtils::UNACCENT_MAP = QgsStringUtils::createUnaccentMap();
+
+QString QgsStringUtils::unaccent( const QString &input )
+{
+  // Normalize input to NFC so that Unicode characters composed of base +
+  // combining marks are converted to their canonical composed form.
+  // This ensures lookups match the keys in UNACCENT_MAP, which are stored
+  // in NFC (e.g. "e" + U+0301 becomes "é", as PostgreSQL does it).
+  const QString in = input.normalized( QString::NormalizationForm_C );
+  QString out;
+  out.reserve( in.size() );
+
+  int i = 0;
+  const int n = in.size();
+
+  while ( i < n )
+  {
+    const QChar c = in.at( i );
+    int len = 1;
+
+    // Detect surrogate pair (non-BMP)
+    if ( c.isHighSurrogate() && i + 1 < n )
+    {
+      const QChar c2 = in.at( i + 1 );
+      if ( c2.isLowSurrogate() )
+      {
+        len = 2;
+      }
+    }
+
+    const QString key = in.mid( i, len ).normalized( QString::NormalizationForm_C );
+
+    auto it = UNACCENT_MAP.constFind( key );
+    if ( it != UNACCENT_MAP.constEnd() )
+    {
+      out.append( it.value() );
+    }
+    else
+    {
+      out.append( key );
+    }
+
+    i += len;
+  }
+
+  return out;
 }
