@@ -41,7 +41,7 @@ Example
        my_blocker = MyPluginCommitBlocker()
        iface.registerApplicationExitBlocker(my_blocker)
 
-.. versionadded:: 3.44
+.. versionadded:: 4.0
 %End
 
 %TypeHeaderCode
