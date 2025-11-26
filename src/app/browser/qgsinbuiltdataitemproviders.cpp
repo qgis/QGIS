@@ -2413,24 +2413,15 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     QString providerKey;
     QString connectionUri;
 
-    QgsFieldDomainsItem *fieldDomainsItem = nullptr;
-
-    // this is for field domain item (currently only used on GPKG) where the field domains item is a parent
-    // this is used to extract providerKey and connectionUri which is not hold on field domain item itself
-    // this may need to extended further if more databases support field domains
-    if ( qobject_cast<QgsFieldDomainItem *>( item ) )
-    {
-      fieldDomainsItem = qobject_cast<QgsFieldDomainsItem *>( item->parent() );
-    }
-    else
-    {
-      fieldDomainsItem = qobject_cast<QgsFieldDomainsItem *>( item );
-    }
-
-    if ( fieldDomainsItem )
+    if ( QgsFieldDomainsItem *fieldDomainsItem = qobject_cast<QgsFieldDomainsItem *>( item ) )
     {
       providerKey = fieldDomainsItem->providerKey();
       connectionUri = fieldDomainsItem->connectionUri();
+    }
+    if ( QgsFieldDomainItem *fieldDomainItem = qobject_cast<QgsFieldDomainItem *>( item ) )
+    {
+      providerKey = fieldDomainItem->providerKey();
+      connectionUri = fieldDomainItem->connectionUri();
     }
     else if ( QgsGeoPackageCollectionItem *gpkgItem = qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
     {
