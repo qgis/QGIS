@@ -1056,6 +1056,10 @@ if (WITH_INTERNAL_POLY2TRI)
   include_directories(${CMAKE_SOURCE_DIR}/external/poly2tri)
 endif ()
 
+if(WITH_INTERNAL_EARCUT)
+  include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/external/earcut)
+endif()
+
 if(NOT LIBRARY_TYPE EQUAL STATIC)
   win32_version_info("QGIS Core Library" "qgis_core" QGIS_CORE_SRCS)
 endif()
@@ -2695,6 +2699,10 @@ endif()
 
 if (NOT WITH_INTERNAL_POLY2TRI)
    target_link_libraries(qgis_core poly2tri::poly2tri)
+endif()
+
+if (NOT WITH_INTERNAL_EARCUT)
+  target_link_libraries(qgis_core earcut::earcut)
 endif()
 
 if(HAVE_OPENCL)
