@@ -30,7 +30,7 @@ QgsDevelopersMapTool::QgsDevelopersMapTool( QgsMapCanvas *canvas, QgsVectorLayer
   : QgsMapToolPan( canvas )
   , mDevelopersMapLayer( layer )
 {
-  mDevelopersMapFloatingPanel = std::make_unique<QgsDevelopersMapFloatingPanel>( canvas );
+  mDevelopersMapFloatingPanel = new QgsDevelopersMapFloatingPanel( canvas );
   mDevelopersMapFloatingPanel->setAnchorWidget( canvas );
   mDevelopersMapFloatingPanel->setAnchorWidgetPoint( QgsFloatingWidget::BottomRight );
   mDevelopersMapFloatingPanel->setAnchorPoint( QgsFloatingWidget::BottomRight );
@@ -41,14 +41,9 @@ void QgsDevelopersMapTool::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !isPinching() && !( e->buttons() & Qt::LeftButton ) )
   {
-    const QgsMapSettings mapSettings = mCanvas->mapSettings();
-    const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-    double searchRadius = context.convertToMapUnits( 3.5, Qgis::RenderUnit::Millimeters );
-
-    const QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
-    QgsRectangle rect = toLayerCoordinates( mDevelopersMapLayer, QgsRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius ) );
     QgsFeatureRequest featureRequest;
-    featureRequest.setFilterRect( rect );
+    featureRequest.setFilterRect( filterRectForMouseEvent( e ) );
+    featureRequest.setLimit( 1 );
     featureRequest.setNoAttributes();
     featureRequest.setFlags( Qgis::Qgis::FeatureRequestFlag::NoGeometry );
     QgsFeatureIterator fit = mDevelopersMapLayer->getFeatures( featureRequest );
@@ -72,14 +67,8 @@ void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !isPinching() && !isDragging() )
   {
-    const QgsMapSettings mapSettings = mCanvas->mapSettings();
-    const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-    double searchRadius = context.convertToMapUnits( 3.5, Qgis::RenderUnit::Millimeters );
-
-    const QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
-    QgsRectangle rect = toLayerCoordinates( mDevelopersMapLayer, QgsRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius ) );
     QgsFeatureRequest featureRequest;
-    featureRequest.setFilterRect( rect );
+    featureRequest.setFilterRect( filterRectForMouseEvent( e ) );
     featureRequest.setFlags( Qgis::Qgis::FeatureRequestFlag::NoGeometry );
     QgsFeatureIterator fit = mDevelopersMapLayer->getFeatures( featureRequest );
     QgsFeature f;
@@ -123,6 +112,15 @@ void QgsDevelopersMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
+QgsRectangle QgsDevelopersMapTool::filterRectForMouseEvent( QgsMapMouseEvent *e )
+{
+  const QgsMapSettings mapSettings = mCanvas->mapSettings();
+  const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  double searchRadius = context.convertToMapUnits( 3.5, Qgis::RenderUnit::Millimeters );
+  const QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+  return toLayerCoordinates( mDevelopersMapLayer, QgsRectangle( point.x() - searchRadius, point.y() - searchRadius, point.x() + searchRadius, point.y() + searchRadius ) );
+}
+
 
 QgsDevelopersMapFloatingPanel::QgsDevelopersMapFloatingPanel( QWidget *parent )
   : QgsFloatingWidget( parent )
@@ -160,7 +158,7 @@ QgsDevelopersMapCanvas::QgsDevelopersMapCanvas( QWidget *parent )
   QgsRectangle extent = mDevelopersMapLayer->extent();
   try
   {
-    extent = transform.transform( extent );
+    extent = transform.transformBoundingBox( extent );
   }
   catch ( const QgsException &e )
   {

@@ -36,7 +36,7 @@ class APP_EXPORT QgsDevelopersMapFloatingPanel : public QgsFloatingWidget
     void setText( const QString &text );
 
   private:
-    QLabel *mLabel;
+    QLabel *mLabel = nullptr;
 };
 
 
@@ -51,8 +51,10 @@ class APP_EXPORT QgsDevelopersMapTool : public QgsMapToolPan
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   private:
+    QgsRectangle filterRectForMouseEvent( QgsMapMouseEvent *e );
+
     QgsVectorLayer *mDevelopersMapLayer = nullptr;
-    std::unique_ptr<QgsDevelopersMapFloatingPanel> mDevelopersMapFloatingPanel;
+    QgsDevelopersMapFloatingPanel *mDevelopersMapFloatingPanel = nullptr;
 };
 
 
