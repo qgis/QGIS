@@ -165,6 +165,8 @@ class QgsAppGpsSettingsMenu;
 class Qgs3DMapScene;
 class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
+class QgsCustomization;
+class QgsCustomizationDialog;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -179,6 +181,7 @@ class QgsAppCanvasFiltering;
 #include "qgsmaptoolselect.h"
 #include "qgsmasterlayoutinterface.h"
 #include "qgsmimedatautils.h"
+#include "qobjectuniqueptr.h"
 #include "qgsoptionsutils.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgspointxy.h"
@@ -980,6 +983,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QString getVersionString();
 
+    void setCustomization( std::unique_ptr<QgsCustomization> customization );
+
   public slots:
     //! save current vector layer
     QString saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false, bool defaultToAddToMap = true );
@@ -1352,6 +1357,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void refreshActionFeatureAction();
 
     QMenu *panelMenu() { return mPanelMenu; }
+
+    QMenu *toolBarMenu() { return mToolbarMenu; }
+
+    QgsBrowserDockWidget *browserWidget() { return mBrowserWidget; }
+
+    QgsBrowserDockWidget *browserWidget2() { return mBrowserWidget2; }
+
 
     void renameView();
 
@@ -2848,6 +2860,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     int mFreezeCount = 0;
 
     QgsAbout *mAboutDialog = nullptr;
+    std::unique_ptr<QgsCustomization> mCustomization;
+    QObjectUniquePtr<QgsCustomizationDialog> mCustomizationDialog;
 
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;
@@ -2855,6 +2869,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     friend class TestQgisAppPython;
     friend class TestQgisApp;
     friend class TestQgsProjectExpressions;
+    friend class TestQgsCustomization;
     friend class QgisAppInterface;
     friend class QgsAppScreenShots;
 };
