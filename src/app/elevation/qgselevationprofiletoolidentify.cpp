@@ -148,3 +148,13 @@ void QgsElevationProfileToolIdentify::plotMoveEvent( QgsPlotMouseEvent *event )
 
   mRubberBand->update( movePoint, Qt::KeyboardModifiers() );
 }
+
+void QgsElevationProfileToolIdentify::deactivate()
+{
+  if ( mMarquee )
+  {
+    mMarquee = false;
+    mRubberBand->finish();
+  }
+  QgsPlotTool::deactivate();
+}
