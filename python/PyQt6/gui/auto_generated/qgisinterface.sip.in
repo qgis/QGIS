@@ -1655,6 +1655,8 @@ specified layer
    be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterLayerChangesCommitBlocker`
+
+.. versionadded:: 4.0
 %End
 
     virtual void unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) = 0;
@@ -1662,6 +1664,8 @@ specified layer
 Unregister a previously registered commit layer changes ``blocker``.
 
 .. seealso:: :py:func:`registerLayerChangesCommitBlocker`
+
+.. versionadded:: 4.0
 %End
 
     virtual void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
