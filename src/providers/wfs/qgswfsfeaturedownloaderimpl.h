@@ -17,7 +17,7 @@
 #ifndef QGSWFSDOWNLOADERIMPL_H
 #define QGSWFSDOWNLOADERIMPL_H
 
-#include "qgsbackgroundcachedfeatureiterator.h" // QgsFeatureDownloaderImpl
+#include "qgsfeaturedownloaderimpl.h"
 #include "qgswfsrequest.h"
 #include "qgswfsfeaturehitsasyncrequest.h"
 

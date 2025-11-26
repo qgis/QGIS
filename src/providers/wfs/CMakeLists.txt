@@ -20,9 +20,14 @@ set(WFS_SRCS
   qgswfstransactionrequest.cpp
   qgswfsutils.cpp
   qgsbackgroundcachedfeatureiterator.cpp
+  qgsbackgroundcachedfeaturesource.cpp
   qgsbackgroundcachedshareddata.cpp
   qgscachedirectorymanager.cpp
   qgsbasenetworkrequest.cpp
+  qgsfeaturedownloader.cpp
+  qgsfeaturedownloaderimpl.cpp
+  qgsfeaturedownloaderprogresstask.cpp
+  qgsthreadedfeaturedownloader.cpp
 
   oapif/qgsoapiflandingpagerequest.cpp
   oapif/qgsoapifapirequest.cpp
