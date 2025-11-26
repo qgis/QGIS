@@ -297,6 +297,7 @@ QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<Q
   QList<QgsRayCastHit> result;
 
   float minDist = -1;
+  QVector3D facePoints[3];
   QVector3D intersectionPoint;
   QgsFeatureId nearestFid = FID_NULL;
 
@@ -344,7 +345,11 @@ QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<Q
           {
             minDist = dist;
             intersectionPoint = nodeIntPoint;
-            nearestFid = polygonGeom->triangleIndexToFeatureId( triangleIndex );
+            nearestFid = polygonGeom->triangleIndexToFeatureId( triangleIndex, &facePoints );
+
+            facePoints[0] = fullTransformMatrix * facePoints[0];
+            facePoints[1] = fullTransformMatrix * facePoints[1];
+            facePoints[2] = fullTransformMatrix * facePoints[2];
           }
         }
       }
@@ -355,7 +360,16 @@ QList<QgsRayCastHit> QgsVectorLayerChunkedEntity::rayIntersection( const QList<Q
     QgsRayCastHit hit;
     hit.setDistance( minDist );
     hit.setMapCoordinates( Qgs3DUtils::worldToMapCoordinates( intersectionPoint, origin ) );
-    hit.setProperties( { { QStringLiteral( "fid" ), nearestFid } } );
+    hit.addProperty( QStringLiteral( "fid" ), nearestFid );
+
+    std::sort( facePoints, facePoints + 3,                                             //
+               [intersectionPoint]( const QVector3D &a, const QVector3D &b ) -> bool { //
+                 return intersectionPoint.distanceToPoint( a ) < intersectionPoint.distanceToPoint( b );
+               } );
+    hit.addProperty( QStringLiteral( "facePoint0" ), facePoints[0] );
+    hit.addProperty( QStringLiteral( "facePoint1" ), facePoints[1] );
+    hit.addProperty( QStringLiteral( "facePoint2" ), facePoints[2] );
+
     result.append( hit );
   }
   QgsDebugMsgLevel( QStringLiteral( "Active Nodes: %1, checked nodes: %2, hits found: %3, incompatible geometries: %4" ).arg( nodesAll ).arg( nodeUsed ).arg( hits ).arg( ignoredGeometries ), 2 );
