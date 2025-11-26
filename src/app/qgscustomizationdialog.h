@@ -112,6 +112,31 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
      */
     void enableCustomization( bool checked );
 
+    /**
+     * Add a child item (UserMenu or UserToolBar) on current item in the item visibility treeview
+     */
+    void addUserItem();
+
+    /**
+     * Delete currently selected items in the item visibility treeview
+     */
+    void deleteSelectedItems();
+
+    /**
+     * Called whenever we need to update both splitter parts size according to "List actions" button
+     */
+    void updateSplitterSizes();
+
+    /**
+     * Called whenever current item from the item visibility treeview has changed
+     */
+    void currentItemChanged();
+
+    /**
+     * Called whenever selected items from the item visibility treeview has changed
+     */
+    void selectedItemsChanged();
+
   private:
     /**
      * find QAction associated to \a toolbutton
@@ -149,6 +174,20 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
         QModelIndex parent( const QModelIndex &index ) const override;
         int rowCount( const QModelIndex &parent = {} ) const override;
         int columnCount( const QModelIndex &parent = {} ) const override;
+        QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+        bool canDropMimeData( const QMimeData *data, Qt::DropAction action, int, int, const QModelIndex & ) const override;
+        bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex &parent ) override;
+
+        /**
+         * Add a user item (either a UserMenu or UserToolBar) on \a parent
+         * Returns created item model index. Invalid model index is returned if it was not possible
+         */
+        QModelIndex addUserItem( const QModelIndex &parent );
+
+        /**
+         * Delete user items at \a indexes location
+         */
+        void deleteUserItems( const QModelIndexList &indexes );
 
         /**
        * Initialize (or reinitialize if already initialized) model
@@ -187,6 +226,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
 
     QgisApp *mQgisApp = nullptr;
     QgsCustomizationModel *mItemsVisibilityModel = nullptr;
+    QgsCustomizationModel *mActionsModel = nullptr;
 
     friend class TestQgsCustomization;
 };
