@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgsfeatureiterator.h"
+#include "qgsvectorlayer.h"
 
 #ifndef ARROW_C_DATA_INTERFACE
 #define ARROW_C_DATA_INTERFACE
