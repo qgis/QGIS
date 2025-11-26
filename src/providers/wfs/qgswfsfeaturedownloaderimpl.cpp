@@ -23,8 +23,8 @@
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgsogcutils.h"
-#include "qgswfsfeatureiterator.h"
-#include "moc_qgswfsfeatureiterator.cpp"
+#include "qgswfsfeaturedownloaderimpl.h"
+#include "moc_qgswfsfeaturedownloaderimpl.cpp"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
 #include "qgslogger.h"
@@ -35,54 +35,6 @@
 #include <QTimer>
 #include <QUrlQuery>
 #include <QTransform>
-
-QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
-  : QgsWfsRequest( uri )
-  , mNumberMatched( -1 )
-{
-  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished );
-}
-
-void QgsWFSFeatureHitsAsyncRequest::launchGet( const QUrl &url )
-{
-  sendGET( url,
-           QString(), // content-type
-           false,     /* synchronous */
-           true,      /* forceRefresh */
-           false /* cache */ );
-}
-
-void QgsWFSFeatureHitsAsyncRequest::launchPost( const QUrl &url, const QByteArray &data )
-{
-  sendPOST( url, QStringLiteral( "application/xml; charset=utf-8" ), data, false, /* synchronous */
-            { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } } );
-}
-
-void QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished()
-{
-  if ( mErrorCode == NoError )
-  {
-    QByteArray data = response();
-    QgsGmlStreamingParser gmlParser( ( QString() ), ( QString() ), QgsFields() );
-    QString errorMsg;
-    if ( gmlParser.processData( data, true, errorMsg ) )
-    {
-      mNumberMatched = ( gmlParser.numberMatched() >= 0 ) ? gmlParser.numberMatched() : gmlParser.numberReturned();
-    }
-    else
-    {
-      QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
-    }
-  }
-  emit gotHitsResponse();
-}
-
-QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString &reason )
-{
-  return tr( "Download of feature count failed: %1" ).arg( reason );
-}
-
-// -------------------------
 
 QgsWFSFeatureDownloaderImpl::QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
   : QgsWfsRequest( shared->mURI )
