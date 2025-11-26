@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeaturedownloaderimpl.h"
 #include "qgslayermetadata.h"
 #include "qgsvectordataprovider.h"
 #include "qgsbackgroundcachedshareddata.h"
