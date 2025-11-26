@@ -1820,7 +1820,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     painterUnitInterval = std::min( std::max( rc.convertToPainterUnits( interval, Qgis::RenderUnit::Millimeters ), 10.0 ), 100.0 );
   }
 
-  if ( painterUnitInterval < 0 )
+  if ( painterUnitInterval < 0 || qgsDoubleNear( painterUnitInterval, 0 ) )
     return;
 
   double painterUnitOffsetAlongLine = 0;
