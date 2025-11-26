@@ -79,35 +79,7 @@ class TestQgsCustomization : public QgsTest
 
 QgsCustomization::Item *TestQgsCustomization::getItem( const std::unique_ptr<QgsCustomization> &customization, const QString &path ) const
 {
-  QStringList pathElems = path.split( "/" );
-  if ( pathElems.isEmpty() )
-    return nullptr;
-
-  const QHash<QString, QgsCustomization::Item *> rootItems = {
-    { "Menus", customization->menus().get() },
-    { "ToolBars", customization->toolBars().get() },
-    { "Docks", customization->docks().get() },
-    { "BrowserItems", customization->browserItems().get() },
-    { "StatusBarWidgets", customization->statusBarWidgets().get() }
-  };
-
-  QgsCustomization::Item *currentItem = nullptr;
-  for ( const QString &pathElem : pathElems )
-  {
-    if ( currentItem )
-    {
-      currentItem = currentItem->getChild( pathElem );
-    }
-    else
-    {
-      currentItem = rootItems.value( pathElem );
-    }
-
-    if ( !currentItem )
-      return nullptr;
-  }
-
-  return currentItem;
+  return customization->getItem( path );
 }
 
 QWidget *TestQgsCustomization::findQWidget( const QString &path )
