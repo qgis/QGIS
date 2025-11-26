@@ -750,7 +750,7 @@ Updates parameter value
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface()  const;
+    std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface() const;
 %Docstring
 Converts the current primitive to geometry. Works only with primitives.
 
