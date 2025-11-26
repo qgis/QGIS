@@ -62,7 +62,7 @@ QVector<QgsDataItem *> QgsFieldDomainsItem::createChildren()
           try
           {
             std::unique_ptr< QgsFieldDomain > domain( conn->fieldDomain( name ) );
-            QgsFieldDomainItem *fieldDomainItem { new QgsFieldDomainItem( this, domain.release(), connectionUri(), providerKey() ) };
+            QgsFieldDomainItem *fieldDomainItem { new QgsFieldDomainItem( this, domain.release(), connectionUri() ) };
             children.push_back( fieldDomainItem );
           }
           catch ( QgsProviderConnectionException &ex )
@@ -99,9 +99,9 @@ QString QgsFieldDomainsItem::connectionUri() const
 // QgsFieldDomainItem
 //
 
-QgsFieldDomainItem::QgsFieldDomainItem( QgsDataItem *parent, QgsFieldDomain *domain, const QString &connectionUri, const QString &providerKey )
+QgsFieldDomainItem::QgsFieldDomainItem( QgsDataItem *parent, QgsFieldDomain *domain, const QString &connectionUri )
   : QgsDataItem( Qgis::BrowserItemType::Custom, parent, domain->name(), parent->path() + '/' + domain->name(), parent->providerKey() )
-  , mDomain( domain ), mProviderKey( providerKey ), mConnectionUri( connectionUri )
+  , mDomain( domain ),  mConnectionUri( connectionUri )
 {
   // Precondition
   Q_ASSERT( dynamic_cast<QgsFieldDomainsItem *>( parent ) );
