@@ -90,6 +90,39 @@ struct TriangleCoords
       return !operator==( other );
     }
 
+    bool operator<( const TriangleCoords &other ) const
+    {
+      const double eps = 1e-6;
+
+      for ( int i = 0; i < 3; ++i )
+      {
+        if ( !qgsVectorNear( pts[i], other.pts[i], eps ) )
+        {
+          if ( !qgsDoubleNear( pts[i].x(), other.pts[i].x(), eps ) )
+            return pts[i].x() < other.pts[i].x();
+          if ( !qgsDoubleNear( pts[i].y(), other.pts[i].y(), eps ) )
+            return pts[i].y() < other.pts[i].y();
+          if ( !qgsDoubleNear( pts[i].z(), other.pts[i].z(), eps ) )
+            return pts[i].z() < other.pts[i].z();
+        }
+      }
+
+      for ( int i = 0; i < 3; ++i )
+      {
+        if ( !qgsVectorNear( normals[i], other.normals[i], eps ) )
+        {
+          if ( !qgsDoubleNear( normals[i].x(), other.normals[i].x(), eps ) )
+            return normals[i].x() < other.normals[i].x();
+          if ( !qgsDoubleNear( normals[i].y(), other.normals[i].y(), eps ) )
+            return normals[i].y() < other.normals[i].y();
+          if ( !qgsDoubleNear( normals[i].z(), other.normals[i].z(), eps ) )
+            return normals[i].z() < other.normals[i].z();
+        }
+      }
+
+      return false;
+    }
+
     void dump() const
     {
       qDebug() << pts[0] << pts[1] << pts[2] << normals[0] << normals[1] << normals[2];
@@ -109,12 +142,24 @@ bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QL
     return false;
   }
 
-  // TODO: allow arbitrary order of triangles in output
+  QList<TriangleCoords> sortedExpected = expected;
+  std::sort( sortedExpected.begin(), sortedExpected.end() );
+
+  QList<TriangleCoords> sortedOutput;
   const float *dataRaw = data.constData();
   for ( int i = 0; i < expected.count(); ++i )
   {
-    const TriangleCoords &exp = expected.at( i );
     const TriangleCoords out( dataRaw, withNormals );
+    sortedOutput.append( out );
+    dataRaw += withNormals ? 18 : 9;
+  }
+  std::sort( sortedOutput.begin(), sortedOutput.end() );
+
+  for ( int i = 0; i < expected.count(); ++i )
+  {
+    const TriangleCoords &exp = sortedExpected.at( i );
+    const TriangleCoords &out = sortedOutput.at( i );
+
     if ( exp != out )
     {
       qDebug() << i;
@@ -124,10 +169,9 @@ bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QL
       out.dump();
       return false;
     }
-    dataRaw += withNormals ? 18 : 9;
   }
   return true;
-}
+};
 
 
 /**
@@ -185,95 +229,174 @@ void TestQgsTessellator::testBasic()
   QgsPolygon polygonZ;
   polygonZ.fromWkt( "POLYGONZ((1 1 3, 2 1 3, 3 2 3, 1 2 3, 1 1 3))" );
 
-  QList<TriangleCoords> tc;
-  tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
-  tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ) );
+  QList<TriangleCoords> trianglesCD;
+  trianglesCD << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
+  trianglesCD << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ) );
 
-  QList<TriangleCoords> tcZ;
-  tcZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ) );
-  tcZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ) );
+  QList<TriangleCoords> trianglesZCD;
+  trianglesZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ) );
+  trianglesZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ) );
+
+  QList<TriangleCoords> trianglesEarcut;
+  trianglesEarcut << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ) );
+  trianglesEarcut << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
+
+  QList<TriangleCoords> trianglesZEarcut;
+  trianglesZEarcut << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ) );
+  trianglesZEarcut << TriangleCoords( QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ) );
 
   const QVector3D up( 0, 0, 1 ); // surface normal pointing straight up
-  QList<TriangleCoords> tcNormals;
-  tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
-  tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
+  QList<TriangleCoords> trianglesNormalsCD;
+  trianglesNormalsCD << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
+  trianglesNormalsCD << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
 
-  QList<TriangleCoords> tcNormalsZ;
-  tcNormalsZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ), up, up, up );
-  tcNormalsZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), up, up, up );
+  QList<TriangleCoords> trianglesNormalsZCD;
+  trianglesNormalsZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ), up, up, up );
+  trianglesNormalsZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), up, up, up );
 
+  QList<TriangleCoords> trianglesNormalsEarcut;
+  trianglesNormalsEarcut << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), up, up, up );
+  trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
+
+  QList<TriangleCoords> trianglesNormalsZEarcut;
+  trianglesNormalsZEarcut << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), up, up, up );
+  trianglesNormalsZEarcut << TriangleCoords( QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ), up, up, up );
   // without normals
 
-  QgsTessellator t;
-  t.setOrigin( QgsVector3D( 0, 0, 0 ) );
-  t.setAddNormals( false );
+  QgsTessellator tesCD;
+  tesCD.setOrigin( QgsVector3D( 0, 0, 0 ) );
+  tesCD.setAddNormals( false );
+  tesCD.setOutputZUp( true );
+  tesCD.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesCD.data(), false, trianglesCD ) );
 
-  t.setOutputZUp( true );
-  t.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
+  QCOMPARE( tesCD.zMinimum(), 0 );
+  QCOMPARE( tesCD.zMaximum(), 0 );
 
-  QCOMPARE( t.zMinimum(), 0 );
-  QCOMPARE( t.zMaximum(), 0 );
+  QgsTessellator tesZCD;
+  tesZCD.setAddNormals( false );
+  tesZCD.setOutputZUp( true );
+  tesZCD.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesZCD.data(), false, trianglesZCD ) );
 
-  QgsTessellator tZ;
-  tZ.setAddNormals( false );
-  tZ.setOutputZUp( true );
-  tZ.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tZ.data(), false, tcZ ) );
+  QgsTessellator tesEarcut;
+  tesEarcut.setOrigin( QgsVector3D( 0, 0, 0 ) );
+  tesEarcut.setAddNormals( false );
+  tesEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesEarcut.setOutputZUp( true );
+  tesEarcut.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesEarcut.data(), false, trianglesEarcut ) );
 
-  QCOMPARE( tZ.zMinimum(), 3 );
-  QCOMPARE( tZ.zMaximum(), 3 );
+  QCOMPARE( tesEarcut.zMinimum(), 0 );
+  QCOMPARE( tesEarcut.zMaximum(), 0 );
 
+  QgsTessellator tesZEarcut;
+  tesZEarcut.setAddNormals( false );
+  tesZEarcut.setOutputZUp( true );
+  tesZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesZEarcut.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesZEarcut.data(), false, trianglesZEarcut ) );
+
+  QCOMPARE( tesZEarcut.zMinimum(), 3 );
+  QCOMPARE( tesZEarcut.zMaximum(), 3 );
   // with normals
 
-  QgsTessellator tN;
-  tN.setAddNormals( true );
-  tN.setOutputZUp( true );
-  tN.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );
+  QgsTessellator tesNormalsCD;
+  tesNormalsCD.setAddNormals( true );
+  tesNormalsCD.setOutputZUp( true );
+  tesNormalsCD.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesNormalsCD.data(), true, trianglesNormalsCD ) );
+  QCOMPARE( tesNormalsCD.zMinimum(), 0 );
+  QCOMPARE( tesNormalsCD.zMaximum(), 0 );
 
-  QCOMPARE( tN.zMinimum(), 0 );
-  QCOMPARE( tN.zMaximum(), 0 );
+  QgsTessellator tesNormalsZCD;
+  tesNormalsZCD.setAddNormals( true );
+  tesNormalsZCD.setOutputZUp( true );
+  tesNormalsZCD.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesNormalsZCD.data(), true, trianglesNormalsZCD ) );
 
-  QgsTessellator tNZ;
-  tNZ.setAddNormals( true );
-  tNZ.setOutputZUp( true );
-  tNZ.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tNZ.data(), true, tcNormalsZ ) );
+  QCOMPARE( tesNormalsZCD.zMinimum(), 3 );
+  QCOMPARE( tesNormalsZCD.zMaximum(), 3 );
 
-  QCOMPARE( tNZ.zMinimum(), 3 );
-  QCOMPARE( tNZ.zMaximum(), 3 );
+  QgsTessellator tesNormalsEarcut;
+  tesNormalsEarcut.setAddNormals( true );
+  tesNormalsEarcut.setOutputZUp( true );
+  tesNormalsEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesNormalsEarcut.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesNormalsEarcut.data(), true, trianglesNormalsEarcut ) );
 
+  QCOMPARE( tesNormalsEarcut.zMinimum(), 0 );
+  QCOMPARE( tesNormalsEarcut.zMaximum(), 0 );
+
+  QgsTessellator tesNormalsZEarcut;
+  tesNormalsZEarcut.setAddNormals( true );
+  tesNormalsZEarcut.setOutputZUp( true );
+  tesNormalsZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesNormalsZEarcut.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesNormalsZEarcut.data(), true, trianglesNormalsZEarcut ) );
+
+  QCOMPARE( tesNormalsZEarcut.zMinimum(), 3 );
+  QCOMPARE( tesNormalsZEarcut.zMaximum(), 3 );
   // with invert normals enabled, normals point down and triangles are reversed to clockwise
   const QVector3D down( 0, 0, -1 ); // surface normal pointing straight down
-  QList<TriangleCoords> tcInvertedNormals;
-  tcInvertedNormals << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
-  tcInvertedNormals << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
+  QList<TriangleCoords> trianglesInvertedNormalsCD;
+  trianglesInvertedNormalsCD << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
+  trianglesInvertedNormalsCD << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
 
-  QList<TriangleCoords> tcInvertedNormalsZ;
-  tcInvertedNormalsZ << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
-  tcInvertedNormalsZ << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
+  QList<TriangleCoords> trianglesInvertedNormalsZCD;
+  trianglesInvertedNormalsZCD << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
+  trianglesInvertedNormalsZCD << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
 
-  QgsTessellator tIN;
-  tIN.setAddNormals( true );
-  tIN.setInvertNormals( true );
-  tIN.setOutputZUp( true );
-  tIN.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tIN.data(), true, tcInvertedNormals ) );
+  QList<TriangleCoords> trianglesInvertedNormalsEarcut;
+  trianglesInvertedNormalsEarcut << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
+  trianglesInvertedNormalsEarcut << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), down, down, down );
 
-  QCOMPARE( tIN.zMinimum(), 0 );
-  QCOMPARE( tIN.zMaximum(), 0 );
+  QList<TriangleCoords> trianglesInvertedNormalsZEarcut;
+  trianglesInvertedNormalsZEarcut << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), down, down, down );
+  trianglesInvertedNormalsZEarcut << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
 
-  QgsTessellator tINZ;
-  tINZ.setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
-  tINZ.setAddNormals( true );
-  tINZ.setInvertNormals( true );
-  tINZ.setOutputZUp( true );
-  tINZ.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tINZ.data(), true, tcInvertedNormalsZ ) );
+  QgsTessellator tesInvertedNormalsCD;
+  tesInvertedNormalsCD.setAddNormals( true );
+  tesInvertedNormalsCD.setInvertNormals( true );
+  tesInvertedNormalsCD.setOutputZUp( true );
+  tesInvertedNormalsCD.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesInvertedNormalsCD.data(), true, trianglesInvertedNormalsCD ) );
 
-  QCOMPARE( tINZ.zMinimum(), 3 );
-  QCOMPARE( tINZ.zMaximum(), 3 );
+  QCOMPARE( tesInvertedNormalsCD.zMinimum(), 0 );
+  QCOMPARE( tesInvertedNormalsCD.zMaximum(), 0 );
+
+  QgsTessellator tesInvertedNormalsZCD;
+  tesInvertedNormalsZCD.setExtrusionFaces( Qgis::ExtrusionFace::Walls | Qgis::ExtrusionFace::Roof );
+  tesInvertedNormalsZCD.setAddNormals( true );
+  tesInvertedNormalsZCD.setInvertNormals( true );
+  tesInvertedNormalsZCD.setOutputZUp( true );
+  tesInvertedNormalsZCD.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesInvertedNormalsZCD.data(), true, trianglesInvertedNormalsZCD ) );
+
+  QCOMPARE( tesInvertedNormalsZCD.zMinimum(), 3 );
+  QCOMPARE( tesInvertedNormalsZCD.zMaximum(), 3 );
+
+  QgsTessellator tesInvertedNormalsEarcut;
+  tesInvertedNormalsEarcut.setAddNormals( true );
+  tesInvertedNormalsEarcut.setInvertNormals( true );
+  tesInvertedNormalsEarcut.setOutputZUp( true );
+  tesInvertedNormalsEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesInvertedNormalsEarcut.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesInvertedNormalsEarcut.data(), true, trianglesInvertedNormalsEarcut ) );
+
+  QCOMPARE( tesInvertedNormalsEarcut.zMinimum(), 0 );
+  QCOMPARE( tesInvertedNormalsEarcut.zMaximum(), 0 );
+
+  QgsTessellator tesInvertedNormalsZEarcut;
+  tesInvertedNormalsZEarcut.setAddNormals( true );
+  tesInvertedNormalsZEarcut.setInvertNormals( true );
+  tesInvertedNormalsZEarcut.setOutputZUp( true );
+  tesInvertedNormalsZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesInvertedNormalsZEarcut.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesInvertedNormalsZEarcut.data(), true, trianglesInvertedNormalsZEarcut ) );
+
+  QCOMPARE( tesInvertedNormalsZEarcut.zMinimum(), 3 );
+  QCOMPARE( tesInvertedNormalsZEarcut.zMaximum(), 3 );
 }
 
 void TestQgsTessellator::testBasicClockwise()
@@ -286,89 +409,155 @@ void TestQgsTessellator::testBasicClockwise()
   QgsPolygon polygonZ;
   polygonZ.fromWkt( "POLYGONZ((1 1 3, 1 2 3, 3 2 3, 2 1 3, 1 1 3))" );
 
-  QList<TriangleCoords> tc;
-  tc << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ) );
-  tc << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ) );
+  QList<TriangleCoords> trianglesCD;
+  trianglesCD << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ) );
+  trianglesCD << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ) );
 
-  QList<TriangleCoords> tcZ;
-  tcZ << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ) );
-  tcZ << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 2, 3 ) );
+  QList<TriangleCoords> trianglesZCD;
+  trianglesZCD << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ) );
+  trianglesZCD << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 2, 3 ) );
+
+  QList<TriangleCoords> trianglesEarcut;
+  trianglesEarcut << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ) );
+  trianglesEarcut << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), QVector3D( 3, 2, 0 ) );
+
+  QList<TriangleCoords> trianglesZEarcut;
+  trianglesZEarcut << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ) );
+  trianglesZEarcut << TriangleCoords( QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ), QVector3D( 3, 2, 3 ) );
 
   const QVector3D down( 0, 0, -1 ); // surface normal pointing straight down
-  QList<TriangleCoords> tcNormals;
-  tcNormals << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
-  tcNormals << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
+  QList<TriangleCoords> trianglesNormalsCD;
+  trianglesNormalsCD << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
+  trianglesNormalsCD << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), down, down, down );
 
-  QList<TriangleCoords> tcNormalsZ;
-  tcNormalsZ << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
-  tcNormalsZ << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
+  QList<TriangleCoords> trianglesNormalsZCD;
+  trianglesNormalsZCD << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
+  trianglesNormalsZCD << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 2, 3 ), down, down, down );
+
+  QList<TriangleCoords> trianglesNormalsEarcut;
+  trianglesNormalsEarcut << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 0 ), down, down, down );
+  trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 0 ), QVector3D( 3, 2, 0 ), down, down, down );
+
+  QList<TriangleCoords> trianglesNormalsZEarcut;
+  trianglesNormalsZEarcut << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 1, 1, 3 ), down, down, down );
+  trianglesNormalsZEarcut << TriangleCoords( QVector3D( 1, 1, 3 ), QVector3D( 1, 2, 3 ), QVector3D( 3, 2, 3 ), down, down, down );
 
   // without normals
 
-  QgsTessellator t;
-  t.setOutputZUp( true );
-  t.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
+  QgsTessellator tesCD;
+  tesCD.setOutputZUp( true );
+  tesCD.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesCD.data(), false, trianglesCD ) );
 
-  QCOMPARE( t.zMinimum(), 0 );
-  QCOMPARE( t.zMaximum(), 0 );
+  QCOMPARE( tesCD.zMinimum(), 0 );
+  QCOMPARE( tesCD.zMaximum(), 0 );
 
-  QgsTessellator tZ;
-  tZ.setOutputZUp( true );
-  tZ.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tZ.data(), false, tcZ ) );
+  QgsTessellator tesZCD;
+  tesZCD.setOutputZUp( true );
+  tesZCD.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesZCD.data(), false, trianglesZCD ) );
 
-  QCOMPARE( tZ.zMinimum(), 3 );
-  QCOMPARE( tZ.zMaximum(), 3 );
-
+  QCOMPARE( tesZCD.zMinimum(), 3 );
+  QCOMPARE( tesZCD.zMaximum(), 3 );
   // with normals
 
-  QgsTessellator tN;
-  tN.setAddNormals( true );
-  tN.setOutputZUp( true );
-  tN.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );
+  QgsTessellator tesN;
+  tesN.setAddNormals( true );
+  tesN.setOutputZUp( true );
+  tesN.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesN.data(), true, trianglesNormalsCD ) );
 
-  QCOMPARE( tN.zMinimum(), 0 );
-  QCOMPARE( tN.zMaximum(), 0 );
+  QCOMPARE( tesN.zMinimum(), 0 );
+  QCOMPARE( tesN.zMaximum(), 0 );
 
-  QgsTessellator tNZ;
-  tNZ.setAddNormals( true );
-  tNZ.setOutputZUp( true );
-  tNZ.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tNZ.data(), true, tcNormalsZ ) );
+  QgsTessellator tesNZ;
+  tesNZ.setAddNormals( true );
+  tesNZ.setOutputZUp( true );
+  tesNZ.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesNZ.data(), true, trianglesNormalsZCD ) );
 
-  QCOMPARE( tNZ.zMinimum(), 3 );
-  QCOMPARE( tNZ.zMaximum(), 3 );
+  QCOMPARE( tesNZ.zMinimum(), 3 );
+  QCOMPARE( tesNZ.zMaximum(), 3 );
+
+  QgsTessellator tesEarcut;
+  tesEarcut.setAddNormals( true );
+  tesEarcut.setOutputZUp( true );
+  tesEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesEarcut.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesEarcut.data(), true, trianglesNormalsEarcut ) );
+
+  QCOMPARE( tesEarcut.zMinimum(), 0 );
+  QCOMPARE( tesEarcut.zMaximum(), 0 );
+
+  QgsTessellator tesZEarcut;
+  tesZEarcut.setAddNormals( true );
+  tesZEarcut.setOutputZUp( true );
+  tesZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesZEarcut.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesZEarcut.data(), true, trianglesNormalsZEarcut ) );
+
+  QCOMPARE( tesZEarcut.zMinimum(), 3 );
+  QCOMPARE( tesZEarcut.zMaximum(), 3 );
 
   // with invert normals enabled, normals point up and triangles are reversed to counter clockwise
   const QVector3D up( 0, 0, 1 ); // surface normal pointing straight up
-  QList<TriangleCoords> tcInvertedNormals;
-  tcInvertedNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
-  tcInvertedNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
+  QList<TriangleCoords> trianglesInvertedNormalsCD;
+  trianglesInvertedNormalsCD << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
+  trianglesInvertedNormalsCD << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
 
-  QList<TriangleCoords> tcInvertedNormalsZ;
-  tcInvertedNormalsZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ), up, up, up );
-  tcInvertedNormalsZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), up, up, up );
-  QgsTessellator tIN;
-  tIN.setAddNormals( true );
-  tIN.setInvertNormals( true );
-  tIN.setOutputZUp( true );
-  tIN.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( tIN.data(), true, tcInvertedNormals ) );
+  QList<TriangleCoords> trianglesInvertedNormalsZCD;
+  trianglesInvertedNormalsZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ), up, up, up );
+  trianglesInvertedNormalsZCD << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), up, up, up );
 
-  QCOMPARE( tIN.zMinimum(), 0 );
-  QCOMPARE( tIN.zMaximum(), 0 );
+  QList<TriangleCoords> trianglesInvertedNormalsEarcut;
+  trianglesInvertedNormalsEarcut << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), QVector3D( 1, 2, 0 ), up, up, up );
+  trianglesInvertedNormalsEarcut << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
 
-  QgsTessellator tINZ;
-  tINZ.setAddNormals( true );
-  tINZ.setInvertNormals( true );
-  tINZ.setOutputZUp( true );
-  tINZ.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tINZ.data(), true, tcInvertedNormalsZ ) );
+  QList<TriangleCoords> trianglesInvertedNormalsZEarcut;
+  trianglesInvertedNormalsZEarcut << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ), up, up, up );
+  trianglesInvertedNormalsZEarcut << TriangleCoords( QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ), QVector3D( 1, 2, 3 ), up, up, up );
 
-  QCOMPARE( tINZ.zMinimum(), 3 );
-  QCOMPARE( tINZ.zMaximum(), 3 );
+  QgsTessellator tesInvertedNormalsCD;
+  tesInvertedNormalsCD.setAddNormals( true );
+  tesInvertedNormalsCD.setInvertNormals( true );
+  tesInvertedNormalsCD.setOutputZUp( true );
+  tesInvertedNormalsCD.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesInvertedNormalsCD.data(), true, trianglesInvertedNormalsCD ) );
+
+  QCOMPARE( tesInvertedNormalsCD.zMinimum(), 0 );
+  QCOMPARE( tesInvertedNormalsCD.zMaximum(), 0 );
+
+  QgsTessellator tesInvertedNormalsZCD;
+  tesInvertedNormalsZCD.setAddNormals( true );
+  tesInvertedNormalsZCD.setInvertNormals( true );
+  tesInvertedNormalsZCD.setOutputZUp( true );
+  tesInvertedNormalsZCD.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesInvertedNormalsZCD.data(), true, trianglesInvertedNormalsZCD ) );
+
+  QCOMPARE( tesInvertedNormalsZCD.zMinimum(), 3 );
+  QCOMPARE( tesInvertedNormalsZCD.zMaximum(), 3 );
+
+  QgsTessellator tesInvertedNormalsEarcut;
+  tesInvertedNormalsEarcut.setAddNormals( true );
+  tesInvertedNormalsEarcut.setInvertNormals( true );
+  tesInvertedNormalsEarcut.setOutputZUp( true );
+  tesInvertedNormalsEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesInvertedNormalsEarcut.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesInvertedNormalsEarcut.data(), true, trianglesInvertedNormalsEarcut ) );
+
+  QCOMPARE( tesInvertedNormalsEarcut.zMinimum(), 0 );
+  QCOMPARE( tesInvertedNormalsEarcut.zMaximum(), 0 );
+
+  QgsTessellator tesInvertedNormalsZEarcut;
+  tesInvertedNormalsZEarcut.setAddNormals( true );
+  tesInvertedNormalsZEarcut.setInvertNormals( true );
+  tesInvertedNormalsZEarcut.setOutputZUp( true );
+  tesInvertedNormalsZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesInvertedNormalsZEarcut.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesInvertedNormalsZEarcut.data(), true, trianglesInvertedNormalsZEarcut ) );
+
+  QCOMPARE( tesInvertedNormalsZEarcut.zMinimum(), 3 );
+  QCOMPARE( tesInvertedNormalsZEarcut.zMaximum(), 3 );
 }
 
 void TestQgsTessellator::testWalls()
@@ -480,41 +669,65 @@ void TestQgsTessellator::test2DTriangle()
 
   {
     // NO extrusion
-    QList<TriangleCoords> tcNormals;
-    tcNormals << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), up, up, up );
+    QList<TriangleCoords> trianglesNormalsCD;
+    trianglesNormalsCD << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), up, up, up );
 
-    QgsTessellator tN;
-    tN.setAddNormals( true );
-    tN.setOutputZUp( true );
-    tN.addPolygon( polygon, 0 );
-    QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );
+    QgsTessellator tessellatorNormalsCD;
+    tessellatorNormalsCD.setAddNormals( true );
+    tessellatorNormalsCD.setOutputZUp( true );
+    tessellatorNormalsCD.addPolygon( polygon, 0 );
+    QVERIFY( checkTriangleOutput( tessellatorNormalsCD.data(), true, trianglesNormalsCD ) );
 
-    QCOMPARE( tN.zMinimum(), 0 );
-    QCOMPARE( tN.zMaximum(), 0 );
+    QCOMPARE( tessellatorNormalsCD.zMinimum(), 0 );
+    QCOMPARE( tessellatorNormalsCD.zMaximum(), 0 );
+
+    QList<TriangleCoords> trianglesNormalsEarcut;
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), up, up, up );
+
+    QgsTessellator tessellatorNormalsEarcut;
+    tessellatorNormalsEarcut.setAddNormals( true );
+    tessellatorNormalsEarcut.setOutputZUp( true );
+    tessellatorNormalsEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+    tessellatorNormalsEarcut.addPolygon( polygon, 0 );
+    QVERIFY( checkTriangleOutput( tessellatorNormalsEarcut.data(), true, trianglesNormalsEarcut ) );
+
+    QCOMPARE( tessellatorNormalsEarcut.zMinimum(), 0 );
+    QCOMPARE( tessellatorNormalsEarcut.zMaximum(), 0 );
   }
 
   {
     // WITH extrusion
-    QList<TriangleCoords> tcNormals;
-    tcNormals << TriangleCoords( QVector3D( 1, 1, 7 ), QVector3D( 2, 1, 7 ), QVector3D( 1, 2, 7 ), up, up, up );
+    QList<TriangleCoords> trianglesNormalsCD;
+    trianglesNormalsCD << TriangleCoords( QVector3D( 1, 1, 7 ), QVector3D( 2, 1, 7 ), QVector3D( 1, 2, 7 ), up, up, up );
 
-    tcNormals << TriangleCoords( QVector3D( 1, 1, 7 ), QVector3D( 1, 2, 7 ), QVector3D( 1, 1, 0 ), left, left, left );
-    tcNormals << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 7 ), QVector3D( 1, 2, 0 ), left, left, left );
+    trianglesNormalsCD << TriangleCoords( QVector3D( 1, 1, 7 ), QVector3D( 1, 2, 7 ), QVector3D( 1, 1, 0 ), left, left, left );
+    trianglesNormalsCD << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 7 ), QVector3D( 1, 2, 0 ), left, left, left );
+    trianglesNormalsCD << TriangleCoords( QVector3D( 1, 2, 7 ), QVector3D( 2, 1, 7 ), QVector3D( 1, 2, 0 ), ne, ne, ne );
+    trianglesNormalsCD << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 7 ), QVector3D( 2, 1, 0 ), ne, ne, ne );
 
-    tcNormals << TriangleCoords( QVector3D( 1, 2, 7 ), QVector3D( 2, 1, 7 ), QVector3D( 1, 2, 0 ), ne, ne, ne );
-    tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 7 ), QVector3D( 2, 1, 0 ), ne, ne, ne );
+    trianglesNormalsCD << TriangleCoords( QVector3D( 2, 1, 7 ), QVector3D( 1, 1, 7 ), QVector3D( 2, 1, 0 ), bt, bt, bt );
+    trianglesNormalsCD << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 7 ), QVector3D( 1, 1, 0 ), bt, bt, bt );
 
-    tcNormals << TriangleCoords( QVector3D( 2, 1, 7 ), QVector3D( 1, 1, 7 ), QVector3D( 2, 1, 0 ), bt, bt, bt );
-    tcNormals << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 7 ), QVector3D( 1, 1, 0 ), bt, bt, bt );
+    QList<TriangleCoords> trianglesNormalsEarcut;
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 1, 7 ), QVector3D( 2, 1, 7 ), QVector3D( 1, 2, 7 ), up, up, up );
 
-    QgsTessellator tN;
-    tN.setAddNormals( true );
-    tN.setOutputZUp( true );
-    tN.addPolygon( polygon, 7 );
-    QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 1, 7 ), QVector3D( 1, 2, 7 ), QVector3D( 1, 1, 0 ), left, left, left );
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 1, 2, 7 ), QVector3D( 1, 2, 0 ), left, left, left );
 
-    QCOMPARE( tN.zMinimum(), 0 );
-    QCOMPARE( tN.zMaximum(), 7 );
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 2, 7 ), QVector3D( 2, 1, 7 ), QVector3D( 1, 2, 0 ), ne, ne, ne );
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 7 ), QVector3D( 2, 1, 0 ), ne, ne, ne );
+
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 2, 1, 7 ), QVector3D( 1, 1, 7 ), QVector3D( 2, 1, 0 ), bt, bt, bt );
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 2, 1, 0 ), QVector3D( 1, 1, 7 ), QVector3D( 1, 1, 0 ), bt, bt, bt );
+
+    QgsTessellator tesNormalsCD;
+    tesNormalsCD.setAddNormals( true );
+    tesNormalsCD.setOutputZUp( true );
+    tesNormalsCD.addPolygon( polygon, 7 );
+    QVERIFY( checkTriangleOutput( tesNormalsCD.data(), true, trianglesNormalsCD ) );
+
+    QCOMPARE( tesNormalsCD.zMinimum(), 0 );
+    QCOMPARE( tesNormalsCD.zMaximum(), 7 );
   }
 }
 
@@ -545,26 +758,39 @@ void TestQgsTessellator::test3DTriangle()
 
   {
     // WITH extrusion
-    QList<TriangleCoords> tcNormals;
-    tcNormals << TriangleCoords( QVector3D( 1, 1, 5 + 7 ), QVector3D( 2, 1, 5 + 7 ), QVector3D( 1, 2, 5 + 7 ), up, up, up );
+    QList<TriangleCoords> trianglesNormals;
+    trianglesNormals << TriangleCoords( QVector3D( 1, 1, 5 + 7 ), QVector3D( 2, 1, 5 + 7 ), QVector3D( 1, 2, 5 + 7 ), up, up, up );
 
-    tcNormals << TriangleCoords( QVector3D( 1, 1, 5 + 7 ), QVector3D( 1, 2, 5 + 7 ), QVector3D( 1, 1, 5 ), left, left, left );
-    tcNormals << TriangleCoords( QVector3D( 1, 1, 5 ), QVector3D( 1, 2, 5 + 7 ), QVector3D( 1, 2, 5 ), left, left, left );
+    trianglesNormals << TriangleCoords( QVector3D( 1, 1, 5 + 7 ), QVector3D( 1, 2, 5 + 7 ), QVector3D( 1, 1, 5 ), left, left, left );
+    trianglesNormals << TriangleCoords( QVector3D( 1, 1, 5 ), QVector3D( 1, 2, 5 + 7 ), QVector3D( 1, 2, 5 ), left, left, left );
 
-    tcNormals << TriangleCoords( QVector3D( 1, 2, 5 + 7 ), QVector3D( 2, 1, 5 + 7 ), QVector3D( 1, 2, 5 ), ne, ne, ne );
-    tcNormals << TriangleCoords( QVector3D( 1, 2, 5 ), QVector3D( 2, 1, 5 + 7 ), QVector3D( 2, 1, 5 ), ne, ne, ne );
+    trianglesNormals << TriangleCoords( QVector3D( 1, 2, 5 + 7 ), QVector3D( 2, 1, 5 + 7 ), QVector3D( 1, 2, 5 ), ne, ne, ne );
+    trianglesNormals << TriangleCoords( QVector3D( 1, 2, 5 ), QVector3D( 2, 1, 5 + 7 ), QVector3D( 2, 1, 5 ), ne, ne, ne );
 
-    tcNormals << TriangleCoords( QVector3D( 2, 1, 5 + 7 ), QVector3D( 1, 1, 5 + 7 ), QVector3D( 2, 1, 5 ), bt, bt, bt );
-    tcNormals << TriangleCoords( QVector3D( 2, 1, 5 ), QVector3D( 1, 1, 5 + 7 ), QVector3D( 1, 1, 5 ), bt, bt, bt );
+    trianglesNormals << TriangleCoords( QVector3D( 2, 1, 5 + 7 ), QVector3D( 1, 1, 5 + 7 ), QVector3D( 2, 1, 5 ), bt, bt, bt );
+    trianglesNormals << TriangleCoords( QVector3D( 2, 1, 5 ), QVector3D( 1, 1, 5 + 7 ), QVector3D( 1, 1, 5 ), bt, bt, bt );
 
-    QgsTessellator tN;
-    tN.setAddNormals( true );
-    tN.setOutputZUp( true );
-    tN.addPolygon( polygon, 7 );
-    QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );
+    QList<TriangleCoords> trianglesNormalsEarcut;
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 1, 5 + 7 ), QVector3D( 2, 1, 5 + 7 ), QVector3D( 1, 2, 5 + 7 ), up, up, up );
 
-    QCOMPARE( tN.zMinimum(), 5 );
-    QCOMPARE( tN.zMaximum(), 5 + 7 );
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 1, 5 + 7 ), QVector3D( 1, 2, 5 + 7 ), QVector3D( 1, 1, 5 ), left, left, left );
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 1, 5 ), QVector3D( 1, 2, 5 + 7 ), QVector3D( 1, 2, 5 ), left, left, left );
+
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 2, 5 + 7 ), QVector3D( 2, 1, 5 + 7 ), QVector3D( 1, 2, 5 ), ne, ne, ne );
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 1, 2, 5 ), QVector3D( 2, 1, 5 + 7 ), QVector3D( 2, 1, 5 ), ne, ne, ne );
+
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 2, 1, 5 + 7 ), QVector3D( 1, 1, 5 + 7 ), QVector3D( 2, 1, 5 ), bt, bt, bt );
+    trianglesNormalsEarcut << TriangleCoords( QVector3D( 2, 1, 5 ), QVector3D( 1, 1, 5 + 7 ), QVector3D( 1, 1, 5 ), bt, bt, bt );
+
+    QgsTessellator tesNormalsEarcut;
+    tesNormalsEarcut.setAddNormals( true );
+    tesNormalsEarcut.setOutputZUp( true );
+    tesNormalsEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+    tesNormalsEarcut.addPolygon( polygon, 7 );
+    QVERIFY( checkTriangleOutput( tesNormalsEarcut.data(), true, trianglesNormalsEarcut ) );
+
+    QCOMPARE( tesNormalsEarcut.zMinimum(), 5 );
+    QCOMPARE( tesNormalsEarcut.zMaximum(), 5 + 7 );
   }
 }
 
@@ -591,37 +817,64 @@ void TestQgsTessellator::testBadCoordinates()
 {
   // check with a vertical "wall" polygon - if the Z coordinates are ignored,
   // the polygon may be incorrectly considered as having close/repeated coordinates
-  QList<TriangleCoords> tcZ;
-  tcZ << TriangleCoords( QVector3D( 1, 2, 2 ), QVector3D( 2, 1, 1 ), QVector3D( 2, 1, 2 ) );
-  tcZ << TriangleCoords( QVector3D( 1, 2, 2 ), QVector3D( 1, 2, 1 ), QVector3D( 2, 1, 1 ) );
-
   QgsPolygon polygonZ;
   polygonZ.fromWkt( "POLYGONZ((1 2 1, 2 1 1, 2 1 2, 1 2 2, 1 2 1))" );
 
-  QgsTessellator tZ;
-  tZ.setOutputZUp( true );
-  tZ.addPolygon( polygonZ, 0 );
-  QVERIFY( checkTriangleOutput( tZ.data(), false, tcZ ) );
+  QList<TriangleCoords> trianglesZCD;
+  trianglesZCD << TriangleCoords( QVector3D( 1, 2, 2 ), QVector3D( 2, 1, 1 ), QVector3D( 2, 1, 2 ) );
+  trianglesZCD << TriangleCoords( QVector3D( 1, 2, 2 ), QVector3D( 1, 2, 1 ), QVector3D( 2, 1, 1 ) );
 
-  QCOMPARE( tZ.zMinimum(), 1.0f );
-  QCOMPARE( tZ.zMaximum(), 2.0f );
+  QList<TriangleCoords> trianglesZEarcut;
+  trianglesZEarcut << TriangleCoords( QVector3D( 2, 1, 2 ), QVector3D( 1, 2, 2 ), QVector3D( 1, 2, 1 ) );
+  trianglesZEarcut << TriangleCoords( QVector3D( 1, 2, 1 ), QVector3D( 2, 1, 1 ), QVector3D( 2, 1, 2 ) );
+
+  QgsTessellator tesZCD;
+  tesZCD.setOutputZUp( true );
+  tesZCD.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tesZCD.data(), false, trianglesZCD ) );
+
+  QCOMPARE( tesZCD.zMinimum(), 1.0f );
+  QCOMPARE( tesZCD.zMaximum(), 2.0f );
+
+  QgsTessellator tesZEarcut;
+  tesZEarcut.setOutputZUp( true );
+  tesZEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesZEarcut.addPolygon( polygonZ, 0 );
+
+  QVERIFY( checkTriangleOutput( tesZEarcut.data(), false, trianglesZEarcut ) );
+
+  QCOMPARE( tesZEarcut.zMinimum(), 1.0f );
+  QCOMPARE( tesZEarcut.zMaximum(), 2.0f );
 
   // triangulation would crash for me with this polygon if there is no simplification
   // to remove the coordinates that are very close to each other
   QgsPolygon polygon;
   polygon.fromWkt( "POLYGON((1 1, 2 1, 2.0000001 1.0000001, 2.0000002 1.0000001, 2.0000001 1.0000002, 2.0000002 1.0000002, 3 2, 1 2, 1 1))" );
 
-  QList<TriangleCoords> tc;
-  tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
-  tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ) );
+  QList<TriangleCoords> trianglesCD;
+  trianglesCD << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
+  trianglesCD << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ) );
 
-  QgsTessellator t;
-  t.setOutputZUp( true );
-  t.addPolygon( polygon, 0 );
-  QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
+  QList<TriangleCoords> trianglesEarcut;
+  trianglesEarcut << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ) );
+  trianglesEarcut << TriangleCoords( QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
 
-  QCOMPARE( t.zMinimum(), 0 );
-  QCOMPARE( t.zMaximum(), 0 );
+  QgsTessellator tesCD;
+  tesCD.setOutputZUp( true );
+  tesCD.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesCD.data(), false, trianglesCD ) );
+
+  QCOMPARE( tesCD.zMinimum(), 0 );
+  QCOMPARE( tesCD.zMaximum(), 0 );
+
+  QgsTessellator tesEarcut;
+  tesEarcut.setOutputZUp( true );
+  tesEarcut.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  tesEarcut.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tesEarcut.data(), false, trianglesEarcut ) );
+
+  QCOMPARE( tesEarcut.zMinimum(), 0 );
+  QCOMPARE( tesEarcut.zMaximum(), 0 );
 }
 
 void TestQgsTessellator::testIssue17745()
@@ -636,6 +889,10 @@ void TestQgsTessellator::testIssue17745()
   QVERIFY( resWktRead );
 
   t.addPolygon( p, 0 ); // must not crash - that's all we test here
+
+  // we also test earcut not crashing
+  t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  t.addPolygon( p, 0 );
 }
 
 void TestQgsTessellator::testCrashSelfIntersection()
@@ -651,6 +908,10 @@ void TestQgsTessellator::testCrashSelfIntersection()
   QVERIFY( resWktRead );
 
   t.addPolygon( p, 0 ); // must not crash - that's all we test here
+
+  // we also test earcut not crashing
+  t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  t.addPolygon( p, 0 );
 }
 
 void TestQgsTessellator::testCrashEmptyPolygon()
@@ -724,6 +985,10 @@ void TestQgsTessellator::testTriangulationDoesNotCrash()
   t.setAddNormals( true );
   t.setOutputZUp( true );
   t.addPolygon( polygon, 0 );
+
+  // let's also test earcut here
+  t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  t.addPolygon( polygon, 0 );
 }
 
 void TestQgsTessellator::testCrash2DTriangle()
@@ -736,6 +1001,10 @@ void TestQgsTessellator::testCrash2DTriangle()
   t.setAddNormals( true );
   t.setOutputZUp( true );
   t.addPolygon( polygon, 0 ); // must not crash - that's all we test here
+
+  // let's also test earcut here
+  t.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
+  t.addPolygon( polygon, 0 );
 }
 
 void TestQgsTessellator::narrowPolygon()
