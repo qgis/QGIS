@@ -121,7 +121,6 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
   private:
 
     std::unique_ptr< QgsFieldDomain > mDomain;
-    QString mProviderKey;
     QString mConnectionUri;
 };
 
