@@ -104,6 +104,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setTextureRotation( texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0.f );
   tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
   tessellator->setOutputZUp( true );
+  tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   outNormal.tessellator = std::move( tessellator );
 
@@ -117,6 +118,7 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   tessellator->setTextureRotation( texturedMaterialSettings ? static_cast<float>( texturedMaterialSettings->textureRotation() ) : 0.f );
   tessellator->setAddTextureUVs( texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
   tessellator->setOutputZUp( true );
+  tessellator->setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
 
   outSelected.tessellator = std::move( tessellator );
 
