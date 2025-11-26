@@ -1141,6 +1141,21 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
   pgProjectUri.schemaName = schemaItem->name();
   pgProjectUri.projectName = project->title().isEmpty() ? project->baseName() : project->title();
 
+  if ( pgProjectUri.projectName.isEmpty() )
+  {
+    bool ok;
+    const QString projectName = QInputDialog::getText( nullptr, tr( "Set Project Name" ), tr( "Name" ), QLineEdit::Normal, tr( "New Project" ), &ok );
+    if ( ok && !projectName.isEmpty() )
+    {
+      pgProjectUri.projectName = projectName;
+    }
+    else
+    {
+      notify( tr( "Save Project" ), tr( "Unable to save project without name to database." ), context, Qgis::MessageLevel::Warning );
+      return;
+    }
+  }
+
   QString projectUri = QgsPostgresProjectStorage::encodeUri( pgProjectUri );
   const QString sqlProjectExist = QStringLiteral( "SELECT EXISTS( SELECT 1 FROM %1.qgis_projects WHERE name = %2);" )
                                     .arg( QgsPostgresConn::quotedIdentifier( schemaItem->name() ), QgsPostgresConn::quotedValue( pgProjectUri.projectName ) );
