@@ -315,15 +315,6 @@ QIcon QgsGeoPackageProviderConnection::icon() const
 
 void QgsGeoPackageProviderConnection::setDefaultCapabilities()
 {
-
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,12,0)
-  mCapabilities2 =
-  {
-    Qgis::DatabaseProviderConnectionCapability2::EditFieldDomain,
-    Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain
-  };
-#endif
-
   mCapabilities =
   {
     Capability::Tables,
