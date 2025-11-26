@@ -1,6 +1,6 @@
 /***************************************************************************
-    qgsoapifutils.h
-    ---------------------
+    qgsoapiffiltertranslationstate.h
+    --------------------------------
     begin                : October 2019
     copyright            : (C) 2019 by Even Rouault
     email                : even.rouault at spatialys.com
@@ -13,38 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSOAPIFUTILS_H
-#define QGSOAPIFUTILS_H
+#ifndef QGSOAPIFFILTERTRANSLATIONSTATE_H
+#define QGSOAPIFFILTERTRANSLATIONSTATE_H
 
-#include <nlohmann/json.hpp>
-using namespace nlohmann;
-
-#include <QString>
-#include <QStringList>
-
-/**
- * Utility class
-*/
-class QgsOAPIFJson
+enum class QgsOapifFilterTranslationState
 {
-  public:
-    //! A OAPIF Link
-    struct Link
-    {
-        QString href;
-        QString rel;
-        QString type;
-        QString title;
-        qint64 length = -1;
-    };
-
-    //! Parses the "link" property of jParent
-    static std::vector<Link> parseLinks( const json &jParent );
-
-    //! Find among links the one that matches rel, by using an optional list of preferable types.
-    static QString findLink( const std::vector<Link> &links, const QString &rel, const QStringList &preferableTypes = QStringList() );
+  FULLY_CLIENT,
+  PARTIAL,
+  FULLY_SERVER
 };
 
-extern const QString OAPIF_PROVIDER_DEFAULT_CRS;
-
-#endif // QGSOAPIFUTILS_H
+#endif
