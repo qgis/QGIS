@@ -92,7 +92,9 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
      * \note parent item must be a QgsFieldDomainsItem.
      */
     QgsFieldDomainItem( QgsDataItem *parent SIP_TRANSFERTHIS,
-                        QgsFieldDomain *domain SIP_TRANSFER );
+                        QgsFieldDomain *domain SIP_TRANSFER,
+                        const QString &connectionUri,
+                        const QString &providerKey );
 
     ~QgsFieldDomainItem() override;
 
@@ -111,10 +113,16 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
      */
     const QgsFieldDomain *fieldDomain();
 
+    /**
+     * Returns the connection URI
+     */
+    QString connectionUri() const;
+
   private:
 
     std::unique_ptr< QgsFieldDomain > mDomain;
-
+    QString mProviderKey;
+    QString mConnectionUri;
 };
 
 #endif // QGSFIELDDOMAINSITEM_H
