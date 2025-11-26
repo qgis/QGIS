@@ -20,7 +20,7 @@ using namespace nlohmann;
 #include "qgsjsonutils.h"
 #include "qgsoapifputfeaturerequest.h"
 #include "moc_qgsoapifputfeaturerequest.cpp"
-#include "qgsoapifprovider.h"
+#include "qgsoapifshareddata.h"
 
 QgsOapifPutFeatureRequest::QgsOapifPutFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
