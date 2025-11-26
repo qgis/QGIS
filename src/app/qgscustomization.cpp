@@ -151,11 +151,38 @@ unsigned long QgsCustomization::Item::childrenCount() const
   return mChildItemList.size();
 }
 
+void QgsCustomization::Item::insertItem( int position, std::unique_ptr<Item> item )
+{
+  if ( position < 0 && position >= static_cast<int>( mChildItemList.size() ) )
+  {
+    QgsDebugError( u"Insert item impossible, invalid position"_s );
+    return;
+  }
+
+  mChildItemList.insert( std::next( mChildItemList.cbegin(), position ), std::move( item ) );
+  Item *pitem = mChildItemList.at( position ).get();
+  mChildItems[pitem->name()] = pitem;
+}
+
+void QgsCustomization::Item::deleteItem( int position )
+{
+  if ( position < 0 && position >= static_cast<int>( mChildItemList.size() ) )
+  {
+    QgsDebugError( u"Delete item impossible, invalid position"_s );
+    return;
+  }
+
+  mChildItems.take( mChildItemList.at( position )->name() );
+  mChildItemList.erase( std::next( mChildItemList.cbegin(), position ) );
+}
+
 void QgsCustomization::Item::writeXml( QDomDocument &doc, QDomElement &parent ) const
 {
   QDomElement itemElem = doc.createElement( xmlTag() );
   itemElem.setAttribute( u"name"_s, mName );
   itemElem.setAttribute( u"visible"_s, mVisible );
+
+  writeXmlItem( itemElem );
 
   for ( const std::unique_ptr<Item> &childItem : mChildItemList )
   {
@@ -173,6 +200,8 @@ QString QgsCustomization::Item::readXml( const QDomElement &elem )
   {
     return QObject::tr( "Invalid XML file : empty name for tag '%1'" ).arg( elem.tagName() );
   }
+
+  readXmlItem( elem );
 
   for ( QDomElement childElem = elem.firstChildElement(); !childElem.isNull(); childElem = childElem.nextSiblingElement() )
   {
@@ -192,6 +221,11 @@ QString QgsCustomization::Item::readXml( const QDomElement &elem )
   return QString();
 }
 
+bool QgsCustomization::Item::hasCapability( QgsCustomization::Item::ItemCapability pcapability ) const
+{
+  return static_cast<int>( capabilities() ) & static_cast<int>( pcapability );
+}
+
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::Item::createChildItem( const QDomElement & )
 {
   return nullptr;
@@ -207,6 +241,17 @@ void QgsCustomization::Item::copyItemAttributes( const QgsCustomization::Item *o
   {
     addItem( otherChildItem->clone( this ) );
   }
+}
+
+void QgsCustomization::Item::writeXmlItem( QDomElement & ) const {
+};
+
+void QgsCustomization::Item::readXmlItem( const QDomElement & ) {
+};
+
+QgsCustomization::Item::ItemCapability QgsCustomization::Item::capabilities() const
+{
+  return ItemCapability::None;
 }
 
 ////////////////
@@ -242,6 +287,19 @@ qsizetype QgsCustomization::Action::qActionIndex() const
   return mQActionIndex;
 }
 
+QString QgsCustomization::Action::path() const
+{
+  QString path = name();
+
+  Item const *currentItem = this;
+  while ( ( currentItem = currentItem->parent() ) )
+  {
+    path.prepend( currentItem->name() + "/" );
+  }
+
+  return path;
+}
+
 std::unique_ptr<QgsCustomization::Item> QgsCustomization::Action::clone( QgsCustomization::Item *parent ) const
 {
   auto clone = std::make_unique<QgsCustomization::Action>( parent );
@@ -265,6 +323,70 @@ void QgsCustomization::Action::copyItemAttributes( const Item *other )
   {
     mQAction = action->mQAction;
     mQActionIndex = action->mQActionIndex;
+  }
+}
+
+QgsCustomization::Item::ItemCapability QgsCustomization::Action::capabilities() const
+{
+  return static_cast<ItemCapability>(
+    static_cast<int>( ItemCapability::Drag )
+  );
+}
+
+////////////////
+
+QgsCustomization::ActionRef::ActionRef( Item *parent )
+  : Action( parent ) {}
+
+QgsCustomization::ActionRef::ActionRef( const QString &name, const QString &title, const QString &path, Item *parent )
+  : Action( name, title, parent )
+  , mPath( path ) {}
+
+const QString &QgsCustomization::ActionRef::path() const
+{
+  return mPath;
+}
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::ActionRef::clone( QgsCustomization::Item *parent ) const
+{
+  auto clone = std::make_unique<QgsCustomization::ActionRef>( parent );
+  clone->copyItemAttributes( this );
+  return clone;
+}
+
+QString QgsCustomization::ActionRef::xmlTag() const
+{
+  return u"ActionRef"_s;
+};
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::ActionRef::createChildItem( const QDomElement & )
+{
+  return nullptr;
+}
+
+void QgsCustomization::ActionRef::readXmlItem( const QDomElement &elem )
+{
+  mPath = elem.attribute( u"path"_s );
+};
+
+void QgsCustomization::ActionRef::writeXmlItem( QDomElement &elem ) const
+{
+  elem.setAttribute( u"path"_s, mPath );
+}
+
+QgsCustomization::Item::ItemCapability QgsCustomization::ActionRef::capabilities() const
+{
+  return static_cast<ItemCapability>(
+    static_cast<int>( ItemCapability::Delete )
+  );
+};
+
+void QgsCustomization::ActionRef::copyItemAttributes( const Item *other )
+{
+  Action::copyItemAttributes( other );
+  if ( const ActionRef *action = dynamic_cast<const ActionRef *>( other ) )
+  {
+    mPath = action->mPath;
   }
 }
 
@@ -295,6 +417,63 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menu::createChildItem(
     return std::make_unique<QgsCustomization::Action>( this );
   else if ( childElem.tagName() == "Menu"_L1 )
     return std::make_unique<QgsCustomization::Menu>( this );
+  else
+    return nullptr;
+}
+
+QgsCustomization::Item::ItemCapability QgsCustomization::Menu::capabilities() const
+{
+  return static_cast<ItemCapability>( ItemCapability::None );
+}
+
+////////////////
+
+QgsCustomization::UserMenu::UserMenu( Item *parent )
+  : Menu( parent )
+{}
+
+QgsCustomization::UserMenu::UserMenu( const QString &name, const QString &title, Item *parent )
+  : Menu( name, title, parent )
+{}
+
+QgsCustomization::Item::ItemCapability QgsCustomization::UserMenu::capabilities() const
+{
+  return static_cast<ItemCapability>(
+    static_cast<int>( ItemCapability::ActionRefChild )
+    | static_cast<int>( ItemCapability::UserMenuChild )
+    | static_cast<int>( ItemCapability::Rename )
+    | static_cast<int>( ItemCapability::Delete )
+  );
+}
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::UserMenu::clone( QgsCustomization::Item *parent ) const
+{
+  auto clone = std::make_unique<QgsCustomization::UserMenu>( parent );
+  clone->copyItemAttributes( this );
+  return clone;
+}
+
+QString QgsCustomization::UserMenu::xmlTag() const
+{
+  return u"UserMenu"_s;
+}
+
+void QgsCustomization::UserMenu::writeXmlItem( QDomElement &elem ) const
+{
+  elem.setAttribute( u"title"_s, title() );
+};
+
+void QgsCustomization::UserMenu::readXmlItem( const QDomElement &elem )
+{
+  setTitle( elem.attribute( u"title"_s ) );
+};
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::UserMenu::createChildItem( const QDomElement &childElem )
+{
+  if ( childElem.tagName() == "ActionRef"_L1 )
+    return std::make_unique<ActionRef>( this );
+  else if ( childElem.tagName() == "UserMenu"_L1 )
+    return std::make_unique<UserMenu>( this );
   else
     return nullptr;
 }
@@ -351,6 +530,55 @@ void QgsCustomization::ToolBar::copyItemAttributes( const Item *other )
 
 ////////////////
 
+QgsCustomization::UserToolBar::UserToolBar( Item *parent )
+  : ToolBar( parent )
+{}
+
+QgsCustomization::UserToolBar::UserToolBar( const QString &name, const QString &title, Item *parent )
+  : ToolBar( name, title, parent )
+{}
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::UserToolBar::clone( QgsCustomization::Item *parent ) const
+{
+  auto clone = std::make_unique<QgsCustomization::UserToolBar>( parent );
+  clone->copyItemAttributes( this );
+  return clone;
+}
+
+QString QgsCustomization::UserToolBar::xmlTag() const
+{
+  return u"UserToolBar"_s;
+}
+
+void QgsCustomization::UserToolBar::writeXmlItem( QDomElement &elem ) const
+{
+  elem.setAttribute( u"title"_s, title() );
+};
+
+void QgsCustomization::UserToolBar::readXmlItem( const QDomElement &elem )
+{
+  setTitle( elem.attribute( u"title"_s ) );
+};
+
+std::unique_ptr<QgsCustomization::Item> QgsCustomization::UserToolBar::createChildItem( const QDomElement &childElem )
+{
+  if ( childElem.tagName() == "ActionRef"_L1 )
+    return std::make_unique<ActionRef>( this );
+  else
+    return nullptr;
+}
+
+QgsCustomization::Item::ItemCapability QgsCustomization::UserToolBar::capabilities() const
+{
+  return static_cast<ItemCapability>(
+    static_cast<int>( ItemCapability::ActionRefChild )
+    | static_cast<int>( ItemCapability::Rename )
+    | static_cast<int>( ItemCapability::Delete )
+  );
+}
+
+////////////////
+
 QgsCustomization::ToolBars::ToolBars()
   : Item()
 {
@@ -374,8 +602,17 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::ToolBars::createChildI
 {
   if ( childElem.tagName() == "ToolBar"_L1 )
     return std::make_unique<ToolBar>( this );
+  else if ( childElem.tagName() == "UserToolBar"_L1 )
+    return std::make_unique<UserToolBar>( this );
   else
     return nullptr;
+}
+
+QgsCustomization::Item::ItemCapability QgsCustomization::ToolBars::capabilities() const
+{
+  return static_cast<ItemCapability>(
+    static_cast<int>( ItemCapability::UserToolBarChild )
+  );
 }
 
 ////////////////
@@ -403,8 +640,17 @@ std::unique_ptr<QgsCustomization::Item> QgsCustomization::Menus::createChildItem
 {
   if ( childElem.tagName() == "Menu"_L1 )
     return std::make_unique<Menu>( this );
+  else if ( childElem.tagName() == "UserMenu"_L1 )
+    return std::make_unique<UserMenu>( this );
   else
     return nullptr;
+}
+
+QgsCustomization::Item::ItemCapability QgsCustomization::Menus::capabilities() const
+{
+  return static_cast<ItemCapability>(
+    static_cast<int>( ItemCapability::UserMenuChild )
+  );
 }
 
 ////////////////
@@ -981,6 +1227,110 @@ QgsCustomization::QWidgetIterator::Iterator QgsCustomization::QWidgetIterator::e
   return Iterator( mWidget, mWidget->actions().count() );
 }
 
+QWidget *QgsCustomization::findQWidget( const QString &path )
+{
+  QStringList pathElems = path.split( "/" );
+  if ( pathElems.isEmpty() )
+    return nullptr;
+
+  const QHash<QString, QWidget *> rootWidgets = { { "Menus", QgisApp::instance()->menuBar() }, { "ToolBars", QgisApp::instance() }, { "Docks", QgisApp::instance() }, { "StatusBarWidgets", QgisApp::instance()->statusBarIface() } };
+
+  const QString rootElem = pathElems.takeFirst();
+  QWidget *currentWidget = rootWidgets.value( rootElem );
+  if ( !currentWidget )
+    return nullptr;
+
+  for ( const QString &pathElem : pathElems )
+  {
+    if ( dynamic_cast<QToolBar *>( currentWidget )
+         || dynamic_cast<QMenu *>( currentWidget )
+         || dynamic_cast<QMenuBar *>( currentWidget ) )
+    {
+      QgsCustomization::QWidgetIterator widgetIterator( currentWidget );
+      currentWidget = nullptr;
+      for ( QgsCustomization::QWidgetIterator::Info it : widgetIterator )
+      {
+        if ( it.name == pathElem )
+        {
+          currentWidget = it.widget;
+          break;
+        }
+      }
+    }
+    else
+    {
+      QList<QObject *> children = currentWidget->children();
+      QList<QObject *>::const_iterator it = std::find_if( children.cbegin(), children.cend(), [&pathElem]( QObject *obj ) { return dynamic_cast<QWidget *>( obj ) && obj->objectName() == pathElem; } );
+      currentWidget = dynamic_cast<QWidget *>( *it );
+    }
+
+    if ( !currentWidget )
+      return nullptr;
+  }
+
+  return currentWidget;
+}
+
+QAction *QgsCustomization::findQAction( const QString &path )
+{
+  QStringList pathElems = path.split( "/" );
+  if ( pathElems.isEmpty() )
+    return nullptr;
+
+  qsizetype lastSlashIndex = path.lastIndexOf( "/" );
+  if ( lastSlashIndex < 0 )
+    return nullptr;
+
+  QWidget *currentWidget = findQWidget( path.first( lastSlashIndex ) );
+  if ( !currentWidget )
+    return nullptr;
+
+  const QString actionName = path.mid( lastSlashIndex + 1 );
+
+  const QList<QAction *> actions = currentWidget->actions();
+  const QList<QAction *>::const_iterator actionIt = std::find_if( actions.cbegin(), actions.cend(), [&actionName]( QAction *action ) { return action->objectName() == actionName; } );
+  return actionIt != actions.cend() ? *actionIt : nullptr;
+}
+
+template<class WidgetType>
+void QgsCustomization::updateMenuActionVisibility( QgsCustomization::Item *parentItem, WidgetType *parentWidget )
+{
+  // clear all user menu
+  const QList<QAction *> widgetActions = parentWidget->actions();
+  for ( QAction *action : widgetActions )
+  {
+    const QMenu *menu = action->menu();
+    if ( menu && menu->property( "__usermenu__" ).toBool() )
+    {
+      parentWidget->removeAction( action );
+    }
+  }
+
+  // update non-user menu visibility
+  updateActionVisibility( parentItem, parentWidget );
+
+  // add user menu
+  for ( const std::unique_ptr<QgsCustomization::Item> &childItem : parentItem->childItemList() )
+  {
+    if ( QgsCustomization::UserMenu *userMenu = dynamic_cast<QgsCustomization::UserMenu *>( childItem.get() ) )
+    {
+      QMenu *menu = new QMenu( userMenu->title(), parentWidget );
+      menu->setProperty( "__usermenu__", true );
+      menu->setObjectName( userMenu->name() );
+      parentWidget->addMenu( menu );
+
+      updateMenuActionVisibility( userMenu, menu );
+    }
+    else if ( QgsCustomization::ActionRef *actionRef = dynamic_cast<QgsCustomization::ActionRef *>( childItem.get() ) )
+    {
+      if ( QAction *action = findQAction( actionRef->path() ) )
+      {
+        parentWidget->addAction( action );
+      }
+    }
+  }
+}
+
 void QgsCustomization::updateActionVisibility( QgsCustomization::Item *item, QWidget *widget )
 {
   if ( !item || !widget )
@@ -998,7 +1348,10 @@ void QgsCustomization::updateActionVisibility( QgsCustomization::Item *item, QWi
         widget->removeAction( it.action );
       }
 
-      updateActionVisibility( childItem, it.widget );
+      if ( QMenu *menu = dynamic_cast<QMenu *>( it.widget ) )
+        updateMenuActionVisibility( childItem, menu );
+      else
+        updateActionVisibility( childItem, it.widget );
     }
   }
 
@@ -1037,7 +1390,7 @@ void QgsCustomization::applyToMenus() const
     return;
 
   QMenuBar *menuBar = mQgisApp->menuBar();
-  updateActionVisibility( mMenus.get(), menuBar );
+  updateMenuActionVisibility( mMenus.get(), menuBar );
 }
 
 void QgsCustomization::applyToStatusBarWidgets() const
@@ -1065,15 +1418,45 @@ void QgsCustomization::applyToToolBars() const
   if ( !mQgisApp )
     return;
 
-  const auto toolBars = mQgisApp->findChildren<QToolBar *>( QString(), Qt::FindDirectChildrenOnly );
-  for ( QToolBar *tb : toolBars )
+  const auto toolBarWidgets = mQgisApp->findChildren<QToolBar *>( QString(), Qt::FindDirectChildrenOnly );
+  for ( QToolBar *tb : toolBarWidgets )
   {
     const QString name = tb->objectName();
-    if ( ToolBar *t = mToolBars->getChild<ToolBar>( name ) )
+    if ( tb && tb->property( "__usertoolbar__" ).toBool() )
+    {
+      // delete old toolbar, will recreate it later
+      QgisApp::instance()->removeToolBar( tb );
+      delete tb;
+    }
+    else if ( ToolBar *t = mToolBars->getChild<ToolBar>( name ) )
     {
       tb->setVisible( t->wasVisible() && t->isVisible() );
       tb->toggleViewAction()->setVisible( t->isVisible() );
       updateActionVisibility( t, tb );
+    }
+  }
+
+  for ( const std::unique_ptr<QgsCustomization::Item> &childItem : toolBars()->childItemList() )
+  {
+    if ( QgsCustomization::UserToolBar *userToolBar = dynamic_cast<QgsCustomization::UserToolBar *>( childItem.get() ) )
+    {
+      QToolBar *toolBar = new QToolBar( userToolBar->title(), QgisApp::instance() );
+      toolBar->setProperty( "__usertoolBar__", true );
+      toolBar->setObjectName( userToolBar->name() );
+      QgisApp::instance()->addToolBar( toolBar );
+
+      for ( const std::unique_ptr<QgsCustomization::Item> &actionRefItem : userToolBar->childItemList() )
+      {
+        if ( QgsCustomization::ActionRef *actionRef = dynamic_cast<QgsCustomization::ActionRef *>( actionRefItem.get() ) )
+        {
+          if ( QAction *action = findQAction( actionRef->path() ) )
+          {
+            toolBar->addAction( action );
+          }
+        }
+      }
+
+      updateActionVisibility( userToolBar, toolBar );
     }
   }
 }
@@ -1329,4 +1712,84 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
   }
 
   settings.endGroup();
+}
+
+int maxSuffixNum( const QgsCustomization::Item *item, const QString &baseName )
+{
+  int max = 0;
+
+  if ( item->name().startsWith( baseName ) )
+  {
+    bool ok = false;
+    const int suffixNum = item->name().mid( baseName.length() ).toInt( &ok );
+    if ( ok )
+      max = suffixNum;
+  }
+
+  for ( const std::unique_ptr<QgsCustomization::Item> &childItem : item->childItemList() )
+  {
+    const int childSuffixNum = maxSuffixNum( childItem.get(), baseName );
+    max = std::max( childSuffixNum, max );
+  }
+
+  return max;
+}
+
+QString QgsCustomization::uniqueItemName( const QString &baseName ) const
+{
+  // Now, we can only create only new child item for Menus and ToolBars
+  // We could have the same name in Menus and ToolBars but it's cleaner to have unique name within the 2
+
+  int suffixNum = maxSuffixNum( mMenus.get(), baseName );
+  suffixNum = std::max( suffixNum, maxSuffixNum( mToolBars.get(), baseName ) );
+
+  return QString( "%1%2" ).arg( baseName ).arg( ++suffixNum );
+}
+
+QString QgsCustomization::uniqueMenuName() const
+{
+  return uniqueItemName( u"UserMenu_"_s );
+}
+
+QString QgsCustomization::uniqueToolBarName() const
+{
+  return uniqueItemName( u"UserToolBar_"_s );
+}
+
+QString QgsCustomization::uniqueActionName( const QString &originalActionName ) const
+{
+  return uniqueItemName( u"ActionRef_"_s + originalActionName + "_" );
+}
+
+QgsCustomization::Item *QgsCustomization::getItem( const QString &path ) const
+{
+  QStringList pathElems = path.split( "/" );
+  if ( pathElems.isEmpty() )
+    return nullptr;
+
+  const QHash<QString, QgsCustomization::Item *> rootItems = {
+    { "Menus", menus().get() },
+    { "ToolBars", toolBars().get() },
+    { "Docks", docks().get() },
+    { "BrowserItems", browserItems().get() },
+    { "StatusBarWidgets", statusBarWidgets().get() }
+  };
+
+  QgsCustomization::Item *currentItem = nullptr;
+  for ( const QString &pathElem : pathElems )
+  {
+    if ( currentItem )
+    {
+      currentItem = currentItem->getChild( pathElem );
+    }
+    else
+    {
+      currentItem = rootItems.value( pathElem );
+    }
+
+    if ( !currentItem )
+      return nullptr;
+  }
+
+  return currentItem;
 }
