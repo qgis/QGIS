@@ -34,12 +34,6 @@
   "homepage": "https://qgis.org",
   "dependencies": [
     "duckdb",
-    {
-      "name": "exiv2",
-      "features": [
-        "xmp"
-      ]
-    },
     "expat",
     {
       "name": "gdal",
@@ -149,6 +143,18 @@
         "py-six",
         "py-urllib3",
         "python3"
+      ]
+    },
+
+    "exiv2": {
+      "description": "Determines whether EXIV2 should be built",
+      "dependencies": [
+        {
+          "name": "exiv2",
+          "features": [
+            "xmp"
+          ]
+        }
       ]
     },
     "gui": {
