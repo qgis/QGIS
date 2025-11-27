@@ -74,8 +74,7 @@ A browser item representing a field domain.
   public:
 
     QgsFieldDomainItem( QgsDataItem *parent /TransferThis/,
-                        QgsFieldDomain *domain /Transfer/,
-                        const QString &connectionUri );
+                        QgsFieldDomain *domain /Transfer/ );
 %Docstring
 Constructor for QgsFieldDomainItem, with the specified ``parent`` item
 and ``domain``.
@@ -105,7 +104,9 @@ Returns the associated field domain.
 
     QString connectionUri() const;
 %Docstring
-Returns the connection URI
+Returns the connection URI.
+
+.. versionadded:: 4.0
 %End
 
 };
