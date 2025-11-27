@@ -67,6 +67,23 @@ Sets the list of input image ``files``.
 The list must be an ordered list of existing image file paths, which
 will form the output video frames.
 
+.. seealso:: :py:func:`setInputFilesByPattern`
+
+.. seealso:: :py:func:`inputFiles`
+%End
+
+    void setInputFilesByPattern( const QString &directory, const QString &pattern );
+%Docstring
+Sets the input image files by searching a ``directory`` for files
+matching a ``pattern``.
+
+E.g. setting ``pattern`` to "*.png" will find all PNG files in the
+``directory`` and use them as input frames.
+
+The frames will be sorted alphabetically by filename.
+
+.. seealso:: :py:func:`setInputFiles`
+
 .. seealso:: :py:func:`inputFiles`
 %End
 
