@@ -120,6 +120,20 @@ class CORE_EXPORT QgsVideoExporter : public QObject
      */
     QMediaFormat::VideoCodec videoCodec() const;
 
+    /**
+     * Returns the last error received while writing the video.
+     *
+     * \see errorString()
+     */
+    QMediaRecorder::Error error() const;
+
+    /**
+     * Returns the string describing the last error received while writing the video.
+     *
+     * \see error()
+     */
+    QString errorString() const;
+
   public slots:
 
     /**
@@ -155,6 +169,9 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     QMediaFormat::VideoCodec mCodec = QMediaFormat::VideoCodec::H264;
     int mCurrentFrameIndex = 0;
     QPointer< QgsFeedback > mFeedback;
+
+    QMediaRecorder::Error mError = QMediaRecorder::Error::NoError;
+    QString mErrorString;
 
     std::unique_ptr< QMediaCaptureSession > mSession;
     std::unique_ptr< QMediaRecorder > mRecorder;
