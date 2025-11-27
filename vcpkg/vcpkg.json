@@ -55,6 +55,7 @@
     "geos",
     "gsl",
     "jhasse-poly2tri",
+    "earcut-hpp",
     "libpq",
     "libspatialindex",
     "libspatialite",
