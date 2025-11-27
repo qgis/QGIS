@@ -31,6 +31,7 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   connect( mWidget, &QgsExtentWidget::extentChanged, this, &QgsExtentGroupBox::widgetExtentChanged );
   connect( mWidget, &QgsExtentWidget::validationChanged, this, &QgsExtentGroupBox::validationChanged );
   connect( mWidget, &QgsExtentWidget::extentLayerChanged, this, &QgsExtentGroupBox::extentLayerChanged );
+  connect( mWidget, &QgsExtentWidget::snapToGridChanged, this, &QgsExtentGroupBox::snapToGridChanged );
 
   connect( mWidget, &QgsExtentWidget::toggleDialogVisibility, this, [this]( bool visible ) {
     QWidget *w = window();
@@ -134,6 +135,18 @@ void QgsExtentGroupBox::setRatio( QSize ratio )
   mWidget->setRatio( ratio );
 }
 
+void QgsExtentGroupBox::setSnapToGrid( bool snapToGrid, double rasterXRes, double rasterYRes, double rasterMinX, double rasterMinY )
+{
+  // Store new snap-to-grid configuration
+  mSnapToGrid = snapToGrid;
+  mRasterXRes = rasterXRes;
+  mRasterYRes = rasterYRes;
+  mRasterMinX = rasterMinX;
+  mRasterMinY = rasterMinY;
+
+  mWidget->setSnapToGridAvailable( true, snapToGrid, rasterXRes, rasterYRes, rasterMinX, rasterMinY );
+}
+
 void QgsExtentGroupBox::groupBoxClicked()
 {
   if ( !isCheckable() )
@@ -168,6 +181,7 @@ QgsRectangle QgsExtentGroupBox::outputExtent() const
   if ( isCheckable() && !isChecked() )
     return QgsRectangle();
 
+  // The snap-to-grid logic is handled by QgsExtentWidget::outputExtent()
   return mWidget->outputExtent();
 }
 
