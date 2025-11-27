@@ -10,9 +10,14 @@ import os
 import tempfile
 
 from qgis.PyQt.QtCore import QSize, QUrl, QT_VERSION
-from qgis.PyQt.QtMultimedia import QMediaFormat, QMediaPlayer, QVideoSink
+from qgis.PyQt.QtMultimedia import (
+    QMediaFormat,
+    QMediaPlayer,
+    QVideoSink,
+    QMediaRecorder,
+)
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.core import QgsVideoExporter
+from qgis.core import QgsVideoExporter, QgsFeedback
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -61,9 +66,14 @@ class TestQgsVideoExporter(QgisTestCase):
             exporter.setFileFormat(QMediaFormat.FileFormat.MPEG4)
             exporter.setVideoCodec(QMediaFormat.VideoCodec.H264)
 
+            feedback = QgsFeedback()
+            exporter.setFeedback(feedback)
+
             spy = QSignalSpy(exporter.finished)
             exporter.writeVideo()
             spy.wait()
+            self.assertFalse(exporter.errorString())
+            self.assertEqual(exporter.error(), QMediaRecorder.Error.NoError)
 
             self.assertEqual(len(spy), 1)
 
@@ -83,6 +93,7 @@ class TestQgsVideoExporter(QgisTestCase):
             self.assertEqual(player.error(), QMediaPlayer.Error.NoError)
             self.assertEqual(player.duration(), 3000)
             self.assertTrue(player.hasVideo())
+            self.assertEqual(feedback.progress(), 100)
 
             frame_images = []
 
@@ -102,6 +113,37 @@ class TestQgsVideoExporter(QgisTestCase):
             self.assertTrue(self.image_check("frame2", "frame2", frame_images[1]))
 
             self.assertTrue(self.image_check("frame3", "frame3", frame_images[2]))
+
+    @unittest.skipIf(QT_VERSION < 0x060800, "Requires Qt 6.8+")
+    def test_failure(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            export_file = os.path.join(temp_dir, "my_video.mp4")
+
+            # use an invalid size to trigger an error
+            exporter = QgsVideoExporter(export_file, QSize(0, 0), 1)
+            exporter.setInputFiles(
+                [
+                    self.get_test_data_path(
+                        "control_images/video/expected_frame1/expected_frame1.png"
+                    ).as_posix(),
+                    self.get_test_data_path(
+                        "control_images/video/expected_frame2/expected_frame2.png"
+                    ).as_posix(),
+                    self.get_test_data_path(
+                        "control_images/video/expected_frame3/expected_frame3.png"
+                    ).as_posix(),
+                ]
+            )
+            # use an old format/codec so we don't have to worry about patents and widespread
+            # availability of encoder
+            exporter.setFileFormat(QMediaFormat.FileFormat.MPEG4)
+            exporter.setVideoCodec(QMediaFormat.VideoCodec.H264)
+
+            spy = QSignalSpy(exporter.finished)
+            exporter.writeVideo()
+            spy.wait()
+            self.assertEqual(exporter.errorString(), "Could not initialize encoder")
+            self.assertEqual(exporter.error(), QMediaRecorder.Error.ResourceError)
 
 
 if __name__ == "__main__":
