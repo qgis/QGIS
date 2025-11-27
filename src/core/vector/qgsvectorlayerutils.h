@@ -467,7 +467,6 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QString guessFriendlyIdentifierField( const QgsFields &fields );
 #endif
 
-
 #ifndef SIP_RUN
     /**
      * Converts field values from an iterator to an array of data.
@@ -482,6 +481,21 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \since QGIS 4.0
      */
     static QByteArray fieldToDataArray( const QgsFields &fields, const QString &fieldName, QgsFeatureIterator &it, const QVariant &nullValue );
+
+    /**
+    * Converts field values from an iterator to an array of data.
+    *
+    * \param fields layer fields
+    * \param fieldNames list of field names to source values from
+    * \param it feature iterator for features to include
+    * \param nullValue value to use when original field value is a null. Must be of the same data type as the source field.
+    *
+    * \warning Only numeric field types are supported.
+    *
+    * \since QGIS 4.0
+    */
+    static std::pair<QByteArray, long long> fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue );
+
 #else
 
     /**
@@ -536,6 +550,59 @@ class CORE_EXPORT QgsVectorLayerUtils
           sipIsErr = 1;
         }
       }
+    }
+    % End
+
+    /**
+    * Converts field values from an iterator to an array of data.
+    *
+    * Returns a tuple of (data, count) where data is the byte array and count is the number of features processed.
+    *
+    * \param fields layer fields
+    * \param fieldNames list of field names to source values from
+    * \param it feature iterator for features to include
+    * \param nullValue value to use when original field value is a null. Must be of the same data type as the source field.
+    *
+    * \warning Only numeric field types are supported.
+    *
+    * \throws KeyError if any field name is not found
+    * \throws TypeError if any field is of a non-supported type
+    *
+    * \since QGIS 4.0
+    */
+    static SIP_PYOBJECT fieldsToDataArray( const QgsFields &fields, const QList<QString> &fieldNames, QgsFeatureIterator &it, const QVariant &nullValue ) SIP_TYPEHINT( Tuple[QByteArray, int] );
+    % MethodCode
+    // Validate that all field names exist and are numeric
+    for ( const QString &fieldName : *a1 )
+    {
+      int fieldIdx = a0->lookupField( fieldName );
+      if ( fieldIdx == -1 )
+      {
+        PyErr_SetString( PyExc_KeyError, QStringLiteral( "Field %1 does not exist." ).arg( fieldName ).toUtf8().constData() );
+        sipIsErr = 1;
+        break;
+      }
+
+      QgsField field = a0->at( fieldIdx );
+      if ( !field.isNumeric() )
+      {
+        PyErr_SetString( PyExc_TypeError, QStringLiteral( "Field type (%1) cannot be converted to a data array." ).arg( QMetaType::typeName( field.type() ) ).toUtf8().constData() );
+        sipIsErr = 1;
+        break;
+      }
+    }
+
+    if ( sipIsErr == 0 )
+    {
+      std::pair<QByteArray, long long> result;
+      Py_BEGIN_ALLOW_THREADS
+      result = QgsVectorLayerUtils::fieldsToDataArray( *a0, *a1, *a2, *a3 );
+      Py_END_ALLOW_THREADS
+
+      // Convert std::pair to Python tuple
+      sipRes = PyTuple_New( 2 );
+      PyTuple_SET_ITEM( sipRes, 0, sipConvertFromNewType( new QByteArray( result.first ), sipType_QByteArray, Py_None ) );
+      PyTuple_SET_ITEM( sipRes, 1, PyLong_FromLong( result.second ) );
     }
     % End
 
