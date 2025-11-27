@@ -237,7 +237,6 @@ class TestQgsMapHitTest(QgisTestCase):
 
         # renderers
         renderer = dem_layer_1.renderer().clone()
-        print(type(renderer))
         min_max_origin = renderer.minMaxOrigin()
         min_max_origin.setExtent(Qgis.RasterRangeExtent.UpdatedCanvas)
         renderer.setMinMaxOrigin(min_max_origin)
