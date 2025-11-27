@@ -81,9 +81,23 @@ class CORE_EXPORT QgsVideoExporter : public QObject
      * The list must be an ordered list of existing image file paths, which will form
      * the output video frames.
      *
+     * \see setInputFilesByPattern()
      * \see inputFiles()
      */
     void setInputFiles( const QStringList &files );
+
+    /**
+     * Sets the input image files by searching a \a directory for files matching a \a pattern.
+     *
+     * E.g. setting \a pattern to "*.png" will find all PNG files in the \a directory and use them
+     * as input frames.
+     *
+     * The frames will be sorted alphabetically by filename.
+     *
+     * \see setInputFiles()
+     * \see inputFiles()
+     */
+    void setInputFilesByPattern( const QString &directory, const QString &pattern );
 
     /**
      * Returns the list of input image \a files.

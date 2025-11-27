@@ -42,6 +42,35 @@ class TestQgsVideoExporter(QgisTestCase):
         exporter.setVideoCodec(QMediaFormat.VideoCodec.MPEG4)
         self.assertEqual(exporter.videoCodec(), QMediaFormat.VideoCodec.MPEG4)
 
+    def test_set_input_files_by_pattern(self):
+        exporter = QgsVideoExporter("test.mp4", QSize(1280, 720), 1)
+        exporter.setInputFilesByPattern(
+            self.get_test_data_path("raster/osm_tiles/6/34/").as_posix(), "*.png"
+        )
+        self.assertEqual(
+            exporter.inputFiles(),
+            [
+                self.get_test_data_path("raster/osm_tiles/6/34/19.png").as_posix(),
+                self.get_test_data_path("raster/osm_tiles/6/34/20.png").as_posix(),
+                self.get_test_data_path("raster/osm_tiles/6/34/21.png").as_posix(),
+                self.get_test_data_path("raster/osm_tiles/6/34/22.png").as_posix(),
+                self.get_test_data_path("raster/osm_tiles/6/34/23.png").as_posix(),
+            ],
+        )
+
+        exporter.setInputFilesByPattern(
+            self.get_test_data_path("raster/osm_tiles/6/34/").as_posix(), "2*.png"
+        )
+        self.assertEqual(
+            exporter.inputFiles(),
+            [
+                self.get_test_data_path("raster/osm_tiles/6/34/20.png").as_posix(),
+                self.get_test_data_path("raster/osm_tiles/6/34/21.png").as_posix(),
+                self.get_test_data_path("raster/osm_tiles/6/34/22.png").as_posix(),
+                self.get_test_data_path("raster/osm_tiles/6/34/23.png").as_posix(),
+            ],
+        )
+
     @unittest.skipIf(QT_VERSION < 0x060800, "Requires Qt 6.8+")
     def test_write(self):
         with tempfile.TemporaryDirectory() as temp_dir:

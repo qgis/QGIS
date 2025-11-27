@@ -16,6 +16,7 @@
 #include "qgsvideoexporter.h"
 #include "qgsfeedback.h"
 #include "moc_qgsvideoexporter.cpp"
+#include <QDirIterator>
 #include <QUrl>
 #include <QtMultimedia/QMediaCaptureSession>
 #include <QtMultimedia/QVideoFrameInput>
@@ -56,6 +57,19 @@ QgsFeedback *QgsVideoExporter::feedback()
 void QgsVideoExporter::setInputFiles( const QStringList &files )
 {
   mInputFiles = files;
+}
+
+void QgsVideoExporter::setInputFilesByPattern( const QString &directory, const QString &pattern )
+{
+  QDirIterator it( directory, pattern.isEmpty() ? QStringList() : QStringList{ pattern }, QDir::AllEntries | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags );
+  mInputFiles.clear();
+  while ( it.hasNext() )
+  {
+    const QString fullPath = it.next();
+    mInputFiles << fullPath;
+  }
+
+  std::sort( mInputFiles.begin(), mInputFiles.end() );
 }
 
 QStringList QgsVideoExporter::inputFiles() const
