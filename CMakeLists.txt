@@ -336,8 +336,8 @@ if(WITH_CORE)
   set (WITH_INTERNAL_POLY2TRI ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
   set (WITH_INTERNAL_MESHOPTIMIZER ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether MESHOPTIMIZER should be built from internal copy")
 
-  # try yo configure and build EARCUT support
-  set (WITH_INTERNAL_EARCUT ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether EARCUT should be built from interanl copy")
+  # try to configure and build EARCUT support
+  set (WITH_INTERNAL_EARCUT ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether EARCUT should be built from internal copy")
 
   # try to configure and build POSTGRESQL support
   set (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
