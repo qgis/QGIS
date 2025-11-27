@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>482</width>
-    <height>627</height>
+    <height>660</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <widget class="QWidget" name="wdgInput" native="true">
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="lblInput">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -94,7 +94,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="lblSchema">
         <property name="text">
          <string>Schema</string>
         </property>
@@ -111,7 +111,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="lblTable">
         <property name="text">
          <string>Table</string>
         </property>
@@ -135,9 +135,9 @@
       </item>
      </layout>
      <zorder>cboTable</zorder>
-     <zorder>label_2</zorder>
+     <zorder>lblSchema</zorder>
      <zorder>cboSchema</zorder>
-     <zorder>label_3</zorder>
+     <zorder>lblTable</zorder>
     </widget>
    </item>
    <item>
@@ -230,14 +230,14 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QgsProjectionSelectionWidget" name="widgetTargetSrid" native="true">
+       <widget class="QgsProjectionSelectionWidget" name="widgetTargetSrid">
         <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QgsProjectionSelectionWidget" name="widgetSourceSrid" native="true">
+       <widget class="QgsProjectionSelectionWidget" name="widgetSourceSrid">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -287,7 +287,7 @@
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
-   <header>qgis.gui</header>
+   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -302,13 +302,17 @@
   <tabstop>chkGeomColumn</tabstop>
   <tabstop>editGeomColumn</tabstop>
   <tabstop>chkSourceSrid</tabstop>
+  <tabstop>widgetSourceSrid</tabstop>
   <tabstop>chkTargetSrid</tabstop>
+  <tabstop>widgetTargetSrid</tabstop>
   <tabstop>chkEncoding</tabstop>
   <tabstop>cboEncoding</tabstop>
   <tabstop>chkDropTable</tabstop>
   <tabstop>chkSinglePart</tabstop>
   <tabstop>chkLowercaseFieldNames</tabstop>
   <tabstop>chkSpatialIndex</tabstop>
+  <tabstop>chkCom</tabstop>
+  <tabstop>editCom</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -437,7 +441,6 @@
     <hint type="destinationlabel">
      <x>211</x>
      <y>553</y>
-
     </hint>
    </hints>
   </connection>
