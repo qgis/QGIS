@@ -4768,7 +4768,8 @@ QgsMapToolPan.deactivate: src/gui/maptools/qgsmaptoolpan.h#L40
 QgsMapToolPan.flags: src/gui/maptools/qgsmaptoolpan.h#L42
 QgsMapToolPan.gestureEvent: src/gui/maptools/qgsmaptoolpan.h#L47
 QgsMapToolPan.isDragging: src/gui/maptools/qgsmaptoolpan.h#L54
-QgsMapToolPan.panDistanceBearingChanged: src/gui/maptools/qgsmaptoolpan.h#L68
+QgsMapToolPan.isPinching: src/gui/maptools/qgsmaptoolpan.h#L61
+QgsMapToolPan.panDistanceBearingChanged: src/gui/maptools/qgsmaptoolpan.h#L75
 QgsMapToolPan: src/gui/maptools/qgsmaptoolpan.h#L30
 QgsMapToolZoom.canvasMoveEvent: src/gui/maptools/qgsmaptoolzoom.h#L40
 QgsMapToolZoom.canvasPressEvent: src/gui/maptools/qgsmaptoolzoom.h#L41
