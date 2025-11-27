@@ -836,6 +836,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       try
       {
         std::vector<QVector3D> trianglePoints;
+        // NOLINTBEGIN(bugprone-branch-clone)
         switch ( mTriangulationAlgorithm )
         {
           case Qgis::TriangulationAlgorithm::ConstrainedDelaunay:
@@ -847,6 +848,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           default:
             break;
         }
+        // NOLINTEND(bugprone-branch-clone)
 
         if ( trianglePoints.empty() )
         {
