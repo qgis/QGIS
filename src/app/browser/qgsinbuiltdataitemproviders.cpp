@@ -2418,7 +2418,7 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
       providerKey = fieldDomainsItem->providerKey();
       connectionUri = fieldDomainsItem->connectionUri();
     }
-    if ( QgsFieldDomainItem *fieldDomainItem = qobject_cast<QgsFieldDomainItem *>( item ) )
+    else if ( QgsFieldDomainItem *fieldDomainItem = qobject_cast<QgsFieldDomainItem *>( item ) )
     {
       providerKey = fieldDomainItem->providerKey();
       connectionUri = fieldDomainItem->connectionUri();
@@ -2510,7 +2510,7 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
 
           if ( fieldDomain )
           {
-            QAction *editFieldDomainAction = new QAction( QObject::tr( "Edit Field Domain…" ) );
+            QAction *editFieldDomainAction = new QAction( QObject::tr( "Edit Field Domain…" ), menu );
             menu->addAction( editFieldDomainAction );
 
             connect( editFieldDomainAction, &QAction::triggered, this, [context, item, md, connectionUri, fieldDomainLambda = std::move( fieldDomain )] {
