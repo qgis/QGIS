@@ -520,15 +520,12 @@ void QgsMapHitTestTask::prepare()
         continue;
 
       PreparedMeshData meshData;
+      meshData.layer = std::unique_ptr< QgsMeshLayer >( ml->clone() );
+      meshData.layer->moveToThread( nullptr );
+
       meshData.layerId = ml->id();
-      meshData.name = ml->name();
-      meshData.source = ml->source();
-      meshData.providerKey = ml->dataProvider()->name();
-      meshData.crs = ml->crs();
       meshData.datasetIndex = ml->activeScalarDatasetIndex( context );
       meshData.transform = QgsCoordinateTransform( mapSettings.destinationCrs(), ml->crs(), mapSettings.transformContext() );
-      meshData.rendererSettings = ml->rendererSettings();
-      meshData.extraDatasetUris = ml->extraDatasetUris();
 
       mPreparedMeshData.emplace_back( std::move( meshData ) );
     }
@@ -617,19 +614,10 @@ bool QgsMapHitTestTask::run()
     if ( mFeedback->isCanceled() )
       break;
 
-    auto meshLayer = std::make_unique<QgsMeshLayer>( meshData.source,
-                     meshData.name,
-                     meshData.providerKey,
-                     QgsMeshLayer::LayerOptions() );
-    meshLayer->setCrs( meshData.crs );
-    meshLayer->setRendererSettings( meshData.rendererSettings );
-    for ( QString extraDatasetUri : meshData.extraDatasetUris )
-    {
-      meshLayer->addDatasets( extraDatasetUri );
-    }
-    meshLayer->updateTriangularMesh();
+    meshData.layer->moveToThread( QThread:: currentThread() );
+    meshData.layer->updateTriangularMesh();
 
-    hitTest->runHitTestMeshSource( meshLayer.get(),
+    hitTest->runHitTestMeshSource( meshData.layer.get(),
                                    meshData.layerId,
                                    meshData.datasetIndex,
                                    meshData.transform,

@@ -320,13 +320,8 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
 
     struct PreparedMeshData
     {
+      std::unique_ptr< QgsMeshLayer > layer;
       QString layerId;
-      QString name;
-      QString source;
-      QStringList extraDatasetUris;
-      QgsMeshRendererSettings rendererSettings;
-      QString providerKey;
-      QgsCoordinateReferenceSystem crs;
       QgsMeshDatasetIndex datasetIndex;
       QgsCoordinateTransform transform;
     };
