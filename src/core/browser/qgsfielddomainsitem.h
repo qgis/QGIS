@@ -92,8 +92,7 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
      * \note parent item must be a QgsFieldDomainsItem.
      */
     QgsFieldDomainItem( QgsDataItem *parent SIP_TRANSFERTHIS,
-                        QgsFieldDomain *domain SIP_TRANSFER,
-                        const QString &connectionUri );
+                        QgsFieldDomain *domain SIP_TRANSFER );
 
     ~QgsFieldDomainItem() override;
 

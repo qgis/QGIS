@@ -62,7 +62,7 @@ QVector<QgsDataItem *> QgsFieldDomainsItem::createChildren()
           try
           {
             std::unique_ptr< QgsFieldDomain > domain( conn->fieldDomain( name ) );
-            QgsFieldDomainItem *fieldDomainItem { new QgsFieldDomainItem( this, domain.release(), connectionUri() ) };
+            QgsFieldDomainItem *fieldDomainItem { new QgsFieldDomainItem( this, domain.release() ) };
             children.push_back( fieldDomainItem );
           }
           catch ( QgsProviderConnectionException &ex )
@@ -99,14 +99,16 @@ QString QgsFieldDomainsItem::connectionUri() const
 // QgsFieldDomainItem
 //
 
-QgsFieldDomainItem::QgsFieldDomainItem( QgsDataItem *parent, QgsFieldDomain *domain, const QString &connectionUri )
+QgsFieldDomainItem::QgsFieldDomainItem( QgsDataItem *parent, QgsFieldDomain *domain )
   : QgsDataItem( Qgis::BrowserItemType::Custom, parent, domain->name(), parent->path() + '/' + domain->name(), parent->providerKey() )
-  , mDomain( domain ),  mConnectionUri( connectionUri )
+  , mDomain( domain )
 {
   // Precondition
   Q_ASSERT( dynamic_cast<QgsFieldDomainsItem *>( parent ) );
   setState( Qgis::BrowserItemState::Populated );
   setToolTip( domain->description().isEmpty() ? domain->name() : domain->description() );
+  QgsFieldDomainsItem *domainsItem = qobject_cast<QgsFieldDomainsItem *>( parent );
+  mConnectionUri = domainsItem->connectionUri();
 }
 
 QIcon QgsFieldDomainItem::icon()
