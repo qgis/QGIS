@@ -25,6 +25,7 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslayerchangescommitblockerinterface.h"
 #include "qgslayertreeregistrybridge.h"
 
 class QAction;
@@ -44,6 +45,7 @@ class QgsCustomProjectOpenHandler;
 class QgsLayoutCustomDropHandler;
 class QgsFeature;
 class QgsGpsToolsInterface;
+class QgsLayerChangesCommitBlockerInterface;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayerTreeGroup;
@@ -1332,6 +1334,25 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.16
     */
     virtual void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
+
+    /**
+     * Register a new application commit layer changes blocker, which can be used to prevent the QGIS application
+     * from committing changes to a specified layer
+     *
+     * \note Ownership of \a blocker is not transferred, and the blocker must
+     *       be unregistered when plugin is unloaded.
+     *
+     * \see unregisterLayerChangesCommitBlocker()
+     * \since QGIS 4.0
+     */
+    virtual void registerLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) = 0;
+
+    /**
+     * Unregister a previously registered commit layer changes \a blocker.
+     * \see registerLayerChangesCommitBlocker()
+     * \since QGIS 4.0
+    */
+    virtual void unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker ) = 0;
 
     /**
      * Register a new application map tool \a handler, which can be used to automatically setup all connections
