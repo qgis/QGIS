@@ -20,6 +20,7 @@ endif()
 set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
 
+  ${CMAKE_SOURCE_DIR}/external/nanoarrow/src/nanoarrow.c
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/info.c
@@ -436,6 +437,7 @@ set(QGIS_CORE_SRCS
   qgsapplication.cpp
   qgsaggregatecalculator.cpp
   qgsanimatedicon.cpp
+  qgsarrowiterator.cpp
   qgspostgresstringutils.cpp
   qgsattributes.cpp
   qgsattributetableconfig.cpp
@@ -1131,6 +1133,7 @@ set(QGIS_CORE_HDRS
   qgsanimatedicon.h
   qgsapplication.h
   qgsarchive.h
+  qgsarrowiterator.h
   qgsattributes.h
   qgsattributetableconfig.h
   qgsauxiliarystorage.h
@@ -2591,6 +2594,7 @@ target_include_directories(qgis_core PUBLIC
   web
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
+  ${CMAKE_SOURCE_DIR}/external/nanoarrow/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/tinygltf
