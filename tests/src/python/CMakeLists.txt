@@ -26,6 +26,7 @@ ADD_PYTHON_TEST(PyQgsAnnotationRectangleTextItem test_qgsannotationrecttextitem.
 ADD_PYTHON_TEST(PyQgsApplication test_qgsapplication.py)
 ADD_PYTHON_TEST(PyQgsArcGisPortalUtils test_qgsarcgisportalutils.py)
 ADD_PYTHON_TEST(PyQgsArcGisRestUtils test_qgsarcgisrestutils.py)
+ADD_PYTHON_TEST(PyQgsArrowIterator test_qgsarrowiterator.py)
 ADD_PYTHON_TEST(PyQgsArrowSymbolLayer test_qgsarrowsymbollayer.py)
 ADD_PYTHON_TEST(PyQgsAttributeEditorAction test_qgsattributeeditoraction.py)
 ADD_PYTHON_TEST(PyQgsAttributeTableConfig test_qgsattributetableconfig.py)
