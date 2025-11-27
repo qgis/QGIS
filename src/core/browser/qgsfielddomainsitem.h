@@ -113,7 +113,9 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
     const QgsFieldDomain *fieldDomain();
 
     /**
-     * Returns the connection URI
+     * Returns the connection URI.
+     *
+     * \since QGIS 4.0
      */
     QString connectionUri() const;
 
