@@ -9,7 +9,6 @@ set(QGIS_DOC_FILES
   ../NEWS.md
   NEWS.html
   index.html
-  developersmap.html
   nohelp.html
   favicon.ico
   style.css
