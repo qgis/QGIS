@@ -105,6 +105,21 @@ Returns the output video codec.
 .. seealso:: :py:func:`setVideoCodec`
 %End
 
+    QMediaRecorder::Error error() const;
+%Docstring
+Returns the last error received while writing the video.
+
+.. seealso:: :py:func:`errorString`
+%End
+
+    QString errorString() const;
+%Docstring
+Returns the string describing the last error received while writing the
+video.
+
+.. seealso:: :py:func:`error`
+%End
+
   public slots:
 
     void writeVideo();

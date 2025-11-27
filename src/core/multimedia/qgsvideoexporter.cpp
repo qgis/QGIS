@@ -83,6 +83,16 @@ QMediaFormat::VideoCodec QgsVideoExporter::videoCodec() const
   return mCodec;
 }
 
+QMediaRecorder::Error QgsVideoExporter::error() const
+{
+  return mError;
+}
+
+QString QgsVideoExporter::errorString() const
+{
+  return mErrorString;
+}
+
 void QgsVideoExporter::writeVideo()
 {
 #if QT_VERSION < QT_VERSION_CHECK( 6, 8, 0 )
@@ -183,5 +193,6 @@ void QgsVideoExporter::checkStatus( QMediaRecorder::RecorderState state )
 
 void QgsVideoExporter::handleError( QMediaRecorder::Error error, const QString &errorString )
 {
-
+  mError = error;
+  mErrorString = errorString;
 }
