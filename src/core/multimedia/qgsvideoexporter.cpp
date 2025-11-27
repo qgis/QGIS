@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvideoexporter.h"
+#include "qgsfeedback.h"
 #include "moc_qgsvideoexporter.cpp"
 #include <QUrl>
 #include <QtMultimedia/QMediaCaptureSession>
@@ -40,6 +41,16 @@ QgsVideoExporter::QgsVideoExporter( const QString &filename, QSize size, double 
 
 QgsVideoExporter::~QgsVideoExporter()
 {
+}
+
+void QgsVideoExporter::setFeedback( QgsFeedback *feedback )
+{
+  mFeedback = feedback;
+}
+
+QgsFeedback *QgsVideoExporter::feedback()
+{
+  return mFeedback;
 }
 
 void QgsVideoExporter::setInputFiles( const QStringList &files )
@@ -102,6 +113,11 @@ void QgsVideoExporter::writeVideo()
   QObject::connect( mRecorder.get(), &QMediaRecorder::errorOccurred, this, &QgsVideoExporter::handleError );
 
   mRecorder->record();
+
+  if ( mFeedback )
+  {
+    mFeedback->setProgress( 0 );
+  }
   feedFrames();
 #endif
 }
@@ -127,7 +143,16 @@ void QgsVideoExporter::feedFrames()
       return;
 
     mCurrentFrameIndex++;
-// TODO feedback!
+
+    if ( mFeedback )
+    {
+      mFeedback->setProgress( 100.0 * static_cast< double >( mCurrentFrameIndex ) / static_cast< double >( mInputFiles.count() ) );
+      if ( mFeedback->isCanceled() )
+      {
+        mRecorder->stop();
+        return;
+      }
+    }
   }
 
   if ( mCurrentFrameIndex >= mInputFiles.count() )
