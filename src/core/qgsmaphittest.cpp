@@ -341,7 +341,7 @@ void QgsMapHitTest::runHitTestRasterSource( QgsRasterDataProvider *provider,
     case Qgis::RasterRangeExtent::UpdatedCanvas:
     {
 
-      QgsRectangle transformedExtent = context.extent();
+      QgsRectangle transformedExtent( context.extent() );
       try
       {
         transformedExtent = transform.transformBoundingBox( context.extent() );
@@ -397,7 +397,7 @@ void QgsMapHitTest::runHitTestMeshSource( QgsMeshLayer *layer,
         {
           case Qgis::MeshRangeLimit::MinimumMaximum:
           {
-            QgsRectangle transformedExtent = context.extent();
+            QgsRectangle transformedExtent( context.extent() );
             try
             {
               transformedExtent = transform.transformBoundingBox( context.extent() );
