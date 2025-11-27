@@ -109,6 +109,8 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   // Specific code for testing
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
+    mIsSimulatedMode = true;
+
     // Just for testing with local files instead of http:// resources
     QString modifiedUrlString;
 
@@ -423,6 +425,7 @@ bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteAr
 
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
@@ -494,6 +497,8 @@ QStringList QgsBaseNetworkRequest::sendOPTIONS( const QUrl &url )
   QByteArray allowValue;
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
+
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
@@ -554,6 +559,8 @@ bool QgsBaseNetworkRequest::sendDELETE( const QUrl &url )
 
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
+
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
@@ -713,7 +720,8 @@ void QgsBaseNetworkRequest::replyFinished()
 
         mResponse = mReply->readAll();
 
-        extractResponseHeadersForUnitTests();
+        if ( mIsSimulatedMode )
+          extractResponseHeadersForUnitTests();
 
         if ( mResponse.isEmpty() && !mGotNonEmptyResponse && !mEmptyResponseIsValid )
         {
@@ -749,7 +757,7 @@ void QgsBaseNetworkRequest::replyFinished()
 
   if ( mReply )
   {
-    if ( !mFakeResponseHasHeaders )
+    if ( !mIsSimulatedMode )
       mResponseHeaders = mReply->rawHeaderPairs();
 
     mReply->deleteLater();

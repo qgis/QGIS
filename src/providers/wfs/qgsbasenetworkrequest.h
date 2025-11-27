@@ -130,6 +130,9 @@ class QgsBaseNetworkRequest : public QObject
     //! Whether to log error messages
     bool mLogErrors = true;
 
+    //! Whether this is simulated HTTP mode (for unit tests)
+    bool mIsSimulatedMode = false;
+
     //! Whether in simulated HTTP mode, the response read in the file has HTTP headers
     bool mFakeResponseHasHeaders = false;
 
