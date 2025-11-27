@@ -259,6 +259,8 @@ class TestQgsMapHitTest(QgisTestCase):
         filter_settings = QgsLayerTreeFilterSettings(map_settings)
         map_hit_test_task = QgsMapHitTestTask(filter_settings)
 
+        TestQgsMapHitTest.resultsRenderersUpdatedCanvas = None
+
         def catch_results():
             TestQgsMapHitTest.resultsRenderersUpdatedCanvas = (
                 map_hit_test_task.resultsRenderersUpdatedCanvas()
@@ -393,6 +395,8 @@ class TestQgsMapHitTest(QgisTestCase):
         # hit test task
         filter_settings = QgsLayerTreeFilterSettings(map_settings)
         map_hit_test_task = QgsMapHitTestTask(filter_settings)
+
+        TestQgsMapHitTest.resultsRenderersUpdatedCanvas = None
 
         def catch_results():
             TestQgsMapHitTest.resultsRenderersUpdatedCanvas = (
