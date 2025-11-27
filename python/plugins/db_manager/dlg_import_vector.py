@@ -254,6 +254,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
     def hideSchemas(self):
         self.cboSchema.setEnabled(False)
+        self.lblSchema.setEnabled(False)
 
     def populateTables(self):
         if not self.db:
