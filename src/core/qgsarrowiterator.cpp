@@ -43,11 +43,11 @@
 
 
 QgsArrowInferSchemaOptions::QgsArrowInferSchemaOptions()
-  : mGeometryColumnName( "" ) {}
+  {}
 
 void QgsArrowInferSchemaOptions::setGeometryColumnName( const QString &geometryColumnName )
 {
-  mGeometryColumnName = std::move( geometryColumnName );
+  mGeometryColumnName = geometryColumnName;
 }
 
 QString QgsArrowInferSchemaOptions::geometryColumnName() const
@@ -268,7 +268,6 @@ namespace
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col, NANOARROW_TYPE_LIST ) );
         QGIS_NANOARROW_THROW_NOT_OK( ArrowSchemaSetType( col->children[0], NANOARROW_TYPE_STRING ) );
         return;
-        ;
       default:
         throw QgsException( QStringLiteral( "QgsArrowIterator can't infer field type '%1' for field '%2'" ).arg( QMetaType::typeName( metaType ) ).arg( fieldName ) );
     }
@@ -631,7 +630,7 @@ QgsArrowSchema QgsArrowIterator::inferSchema( const QgsFields &fields, bool hasG
     QString geometryColumnName = options.geometryColumnName();
     if ( geometryColumnName.isEmpty() )
     {
-      geometryColumnName = QString( "geometry" );
+      geometryColumnName = QStringLiteral( "geometry" );
     }
 
     inferGeometry( out.schema()->children[fields.count()], geometryColumnName, crs );

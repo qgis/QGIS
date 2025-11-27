@@ -281,7 +281,7 @@ class CORE_EXPORT QgsArrowIterator
     /**
      * Build an ArrowArray using the next n features (or fewer depending on the number of features remaining)
      *
-     * If no features remain, the returned array will be invalid (i.e., isValid() will return false).
+     * If no features remain, the returned array will be invalid (i.e., isValid() will return FALSE).
      *
      * \throws QgsException if a feature's attribute cannot be appended to an ArrowArray of the
      * requested type or on internal error when building the array.
