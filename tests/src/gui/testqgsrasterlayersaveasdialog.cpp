@@ -113,7 +113,11 @@ QString TestQgsRasterLayerSaveAsDialog::prepareDb()
   // Preparation: make a test gpk DB with a vector layer in it
   QTemporaryFile tmpFile( QDir::tempPath() + QStringLiteral( "/test_qgsrasterlayersavesdialog_XXXXXX.gpkg" ) );
   tmpFile.setAutoRemove( false );
-  tmpFile.open();
+  if ( !tmpFile.open() )
+  {
+    Q_ASSERT( false );
+    return QString();
+  }
   const QString fileName( tmpFile.fileName() );
   QgsVectorLayer vl( QStringLiteral( "Point?field=firstfield:string(1024)" ), "test_vector_layer", "memory" );
 

@@ -41,6 +41,7 @@
 #include "qgsrasternuller.h"
 #include "qgsrenderedlayerstatistics.h"
 #include "qgsrasterlabeling.h"
+#include "qgsthreadingutils.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
@@ -385,7 +386,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
           const QgsInterval &scale = temporalProperties->temporalRepresentationScale();
           const double adjustedLower = static_cast< double >( offset.msecsTo( rendererContext.temporalRange().begin() ) ) * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, scale.originalUnit() ) / scale.originalDuration();
           const double adjustedUpper = static_cast< double >( offset.msecsTo( rendererContext.temporalRange().end() ) ) * QgsUnitTypes::fromUnitToUnitFactor( Qgis::TemporalUnit::Milliseconds, scale.originalUnit() ) / scale.originalDuration();
-          transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( std::numeric_limits<double>::lowest(), adjustedLower, 0, true, !rendererContext.zRange().includeLower() ) );
+          if ( !temporalProperties->accumulatePixels() )
+          {
+            transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( std::numeric_limits<double>::lowest(), adjustedLower, 0, true, !rendererContext.zRange().includeLower() ) );
+          }
           transparentPixels.append( QgsRasterTransparency::TransparentSingleValuePixel( adjustedUpper, std::numeric_limits<double>::max(), 0, !rendererContext.zRange().includeUpper(), true ) );
 
           transparency->setTransparentSingleValuePixelList( transparentPixels );
@@ -507,6 +511,8 @@ QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
 
 bool QgsRasterLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( mEnableProfile )
   {

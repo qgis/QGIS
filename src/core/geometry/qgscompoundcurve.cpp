@@ -1414,3 +1414,95 @@ void QgsCompoundCurve::swapXy()
   }
   clearCache();
 }
+
+double QgsCompoundCurve::distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const
+{
+  // Ensure fromVertex < toVertex for simplicity
+  if ( fromVertex.vertex > toVertex.vertex )
+  {
+    return distanceBetweenVertices( toVertex, fromVertex );
+  }
+
+  // Convert QgsVertexId to simple vertex numbers for compound curves (single ring, single part)
+  if ( fromVertex.part != 0 || fromVertex.ring != 0 || toVertex.part != 0 || toVertex.ring != 0 )
+    return -1.0;
+
+  const int fromVertexNumber = fromVertex.vertex;
+  const int toVertexNumber = toVertex.vertex;
+
+  const int totalVertices = numPoints();
+  if ( fromVertexNumber < 0 || fromVertexNumber >= totalVertices || toVertexNumber < 0 || toVertexNumber >= totalVertices )
+    return -1.0;
+
+  if ( fromVertexNumber == toVertexNumber )
+    return 0.0;
+
+  double totalDistance = 0.0;
+
+  // Find which curves contain our vertices and accumulate distances
+  int currentVertexId = 0;
+  int fromCurve = -1, toCurve = -1;
+  int fromCurveVertex = -1, toCurveVertex = -1;
+
+  // First pass: find which curves contain from and to vertices
+  for ( int j = 0; j < mCurves.size(); ++j )
+  {
+    int nCurvePoints = mCurves.at( j )->numPoints();
+
+    // Check if fromVertex is in this curve
+    if ( fromCurve == -1 && fromVertexNumber >= currentVertexId && fromVertexNumber < currentVertexId + nCurvePoints )
+    {
+      fromCurve = j;
+      fromCurveVertex = fromVertexNumber - currentVertexId;
+    }
+
+    // Check if toVertex is in this curve
+    if ( toCurve == -1 && toVertexNumber >= currentVertexId && toVertexNumber < currentVertexId + nCurvePoints )
+    {
+      toCurve = j;
+      toCurveVertex = toVertexNumber - currentVertexId;
+      break;
+    }
+
+    currentVertexId += ( nCurvePoints - 1 ); // Subtract 1 because curves share endpoints
+  }
+
+  if ( fromCurve == -1 || toCurve == -1 )
+    return -1.0; // Invalid vertex IDs
+
+  if ( fromCurve == toCurve )
+  {
+    // Both vertices are on the same curve
+    QgsVertexId fromId( 0, 0, fromCurveVertex );
+    QgsVertexId toId( 0, 0, toCurveVertex );
+    return mCurves.at( fromCurve )->distanceBetweenVertices( fromId, toId );
+  }
+  else
+  {
+    // Vertices are on different curves - accumulate distances across multiple curves
+
+    // Distance from fromVertex to end of its curve
+    if ( fromCurveVertex < mCurves.at( fromCurve )->numPoints() - 1 )
+    {
+      QgsVertexId fromId( 0, 0, fromCurveVertex );
+      QgsVertexId endId( 0, 0, mCurves.at( fromCurve )->numPoints() - 1 );
+      totalDistance += mCurves.at( fromCurve )->distanceBetweenVertices( fromId, endId );
+    }
+
+    // Distance of complete intermediate curves
+    for ( int j = fromCurve + 1; j < toCurve; ++j )
+    {
+      totalDistance += mCurves.at( j )->length();
+    }
+
+    // Distance from start of toCurve to toVertex
+    if ( toCurveVertex > 0 )
+    {
+      QgsVertexId startId( 0, 0, 0 );
+      QgsVertexId toId( 0, 0, toCurveVertex );
+      totalDistance += mCurves.at( toCurve )->distanceBetweenVertices( startId, toId );
+    }
+  }
+
+  return totalDistance;
+}

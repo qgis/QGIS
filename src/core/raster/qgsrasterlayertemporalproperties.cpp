@@ -313,6 +313,16 @@ void QgsRasterLayerTemporalProperties::setTemporalRepresentationOffset( const QD
   mTemporalRepresentationOffset = offset;
 }
 
+bool QgsRasterLayerTemporalProperties::accumulatePixels() const
+{
+  return mAccumulatePixels;
+}
+
+void QgsRasterLayerTemporalProperties::setAccumulatePixels( bool accumulate )
+{
+  mAccumulatePixels = accumulate;
+}
+
 const QgsInterval &QgsRasterLayerTemporalProperties::temporalRepresentationScale() const
 {
   return mTemporalRepresentationScale;
@@ -387,6 +397,7 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
     case Qgis::RasterTemporalMode::RepresentsTemporalValues:
     {
       mTemporalRepresentationOffset = QDateTime::fromString( temporalNode.attribute( QStringLiteral( "temporalRepresentationOffset" ) ), Qt::ISODate );
+      mAccumulatePixels = temporalNode.attribute( QStringLiteral( "accumulate" ), QStringLiteral( "0" ) ).toInt();
       mTemporalRepresentationScale = QgsInterval( temporalNode.attribute( QStringLiteral( "temporalRepresentationScale" ), QStringLiteral( "1" ) ).toDouble(),
                                      static_cast< Qgis::TemporalUnit >( temporalNode.attribute( QStringLiteral( "temporalRepresentationScaleUnit" ), QStringLiteral( "4" ) ).toInt() ) );
       break;
@@ -463,6 +474,7 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
     case Qgis::RasterTemporalMode::RepresentsTemporalValues:
     {
       temporalElement.setAttribute( QStringLiteral( "temporalRepresentationOffset" ), mTemporalRepresentationOffset.toString( Qt::ISODate ) );
+      temporalElement.setAttribute( QStringLiteral( "accumulate" ), mAccumulatePixels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
       temporalElement.setAttribute( QStringLiteral( "temporalRepresentationScale" ), QString::number( mTemporalRepresentationScale.originalDuration() ) );
       temporalElement.setAttribute( QStringLiteral( "temporalRepresentationScaleUnit" ), QString::number( static_cast< int >( mTemporalRepresentationScale.originalUnit() ) ) );
       break;

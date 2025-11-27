@@ -47,7 +47,7 @@ A widget for selecting a file or a folder.
 QgsFileWidget creates a widget for selecting a file or a folder.
 %End
 
-    QString filePath();
+    QString filePath() const;
 %Docstring
 Returns the current file path(s).
 

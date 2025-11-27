@@ -521,7 +521,7 @@ int QgsGrassVectorMap::numAreas()
   return ( Vect_get_num_areas( mMap ) );
 }
 
-QString QgsGrassVectorMap::toString()
+QString QgsGrassVectorMap::toString() const
 {
   return mGrassObject.mapsetPath() + "/" + mGrassObject.name();
 }

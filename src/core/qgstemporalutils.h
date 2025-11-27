@@ -99,7 +99,7 @@ class CORE_EXPORT QgsTimeDuration
     /**
      * Adds this duration to a starting \a dateTime value.
      */
-    QDateTime addToDateTime( const QDateTime &dateTime );
+    QDateTime addToDateTime( const QDateTime &dateTime ) const;
 
     /**
      * Creates a QgsTimeDuration from a \a string value.

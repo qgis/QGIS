@@ -444,7 +444,7 @@ QgsFields QgsGrassProvider::fields() const
   return QgsFields();
 }
 
-int QgsGrassProvider::keyField()
+int QgsGrassProvider::keyField() const
 {
   return mLayer ? mLayer->keyColumn() : -1;
 }
@@ -481,7 +481,7 @@ QgsCoordinateReferenceSystem QgsGrassProvider::crs() const
   return QgsGrass::crs( mGrassObject.gisdbase(), mGrassObject.location(), error );
 }
 
-int QgsGrassProvider::grassLayer()
+int QgsGrassProvider::grassLayer() const
 {
   return mLayerField;
 }

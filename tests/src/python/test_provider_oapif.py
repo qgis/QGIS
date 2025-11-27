@@ -17,7 +17,7 @@ import os
 import shutil
 import tempfile
 
-from osgeo import gdal
+from osgeo import gdal, ogr
 
 from qgis.PyQt.QtCore import QCoreApplication, QDateTime, QMetaType, Qt, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
@@ -3078,6 +3078,115 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             QgsWkbTypes.Type.MultiPolygon,
             "MULTIPOLYGON (((2 49, 2 50, 3 50, 3 49, 2 49)))",
         )
+
+    def testFlatgeobufOutputFormat(self):
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_testFlatgeobufOutputFormat"
+        )
+        collectionLinks = [
+            {
+                "type": "application/flatgeobuf",
+                "rel": "items",
+                "title": "Items in FlatGeoBuf forma",
+                "href": "http://" + endpoint + "/collections/mycollection/items?f=fgb",
+            }
+        ]
+        create_landing_page_api_collection(
+            endpoint,
+            collectionLinks=collectionLinks,
+        )
+
+        ds = gdal.GetDriverByName("FlatGeoBuf").Create(
+            "/vsimem/tmp.fgb", 0, 0, 0, gdal.GDT_Unknown
+        )
+        lyr = ds.CreateLayer("tmp")
+        lyr.CreateField(ogr.FieldDefn("id", ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f["id"] = "my_id"
+        f.SetGeometry(ogr.CreateGeometryFromWkt("POINT (-70.5 66.5)"))
+        lyr.CreateFeature(f)
+        del ds
+
+        f = gdal.VSIFOpenL("/vsimem/tmp.fgb", "rb")
+        self.assertNotEqual(f, None)
+        length = gdal.VSIStatL("/vsimem/tmp.fgb").size
+        data = gdal.VSIFReadL(length, 1, f)
+        gdal.VSIFCloseL(f)
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=fgb&limit=10&Accept=application/flatgeobuf",
+            ),
+            "wb",
+        ) as f:
+            f.write(data)
+        with open(
+            sanitize(endpoint, "/collections/mycollection/items?f=fgb&VERB=OPTIONS"),
+            "wb",
+        ) as f:
+            f.write(b"HEAD, GET")
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' outputformat='application/flatgeobuf'",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=fgb&limit=1000&Accept=application/flatgeobuf",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                (
+                    "OGC-NumberMatched: 2\r\nLink: <http://"
+                    + endpoint
+                    + '/collections/mycollection/items?f=fgb&offset=next_offset>; rel="next"; type="application/flatgeobuf"\r\n\r\n'
+                ).encode("utf-8")
+                + data
+            )
+
+        ds = gdal.GetDriverByName("FlatGeoBuf").Create(
+            "/vsimem/tmp.fgb", 0, 0, 0, gdal.GDT_Unknown
+        )
+        lyr = ds.CreateLayer("tmp")
+        lyr.CreateField(ogr.FieldDefn("id", ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f["id"] = "my_id2"
+        f.SetGeometry(ogr.CreateGeometryFromWkt("POINT (-70.25 66.25)"))
+        lyr.CreateFeature(f)
+        del ds
+
+        f = gdal.VSIFOpenL("/vsimem/tmp.fgb", "rb")
+        self.assertNotEqual(f, None)
+        length = gdal.VSIStatL("/vsimem/tmp.fgb").size
+        data = gdal.VSIFReadL(length, 1, f)
+        gdal.VSIFCloseL(f)
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=fgb&offset=next_offset&Accept=application/flatgeobuf",
+            ),
+            "wb",
+        ) as f:
+            f.write((b"\r\n") + data)
+
+        it = vl.getFeatures()
+        f = next(it)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(f.geometry().asWkt().upper(), "POINT (-70.5 66.5)")
+
+        f = next(it)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(f.geometry().asWkt().upper(), "POINT (-70.25 66.25)")
 
 
 if __name__ == "__main__":

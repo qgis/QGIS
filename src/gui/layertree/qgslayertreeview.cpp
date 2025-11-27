@@ -44,7 +44,11 @@
 
 QgsLayerTreeViewBase::QgsLayerTreeViewBase( QWidget *parent )
   : QTreeView( parent )
+  , mBlockDoubleClickTimer( new QTimer( this ) )
 {
+  mBlockDoubleClickTimer->setSingleShot( true );
+  mBlockDoubleClickTimer->setInterval( QApplication::doubleClickInterval() );
+
   setHeaderHidden( true );
 
   setDragEnabled( true );
@@ -69,6 +73,15 @@ QgsLayerTreeViewBase::QgsLayerTreeViewBase( QWidget *parent )
 
 QgsLayerTreeViewBase::~QgsLayerTreeViewBase()
 {
+  delete mBlockDoubleClickTimer;
+}
+
+void QgsLayerTreeViewBase::mouseDoubleClickEvent( QMouseEvent *event )
+{
+  if ( mBlockDoubleClickTimer->isActive() )
+    event->accept();
+  else
+    QTreeView::mouseDoubleClickEvent( event );
 }
 
 void QgsLayerTreeViewBase::setLayerTreeModel( QgsLayerTreeModel *model )
@@ -80,6 +93,7 @@ void QgsLayerTreeViewBase::setLayerTreeModel( QgsLayerTreeModel *model )
   connect( mLayerTreeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeViewBase::onExpandedChanged );
 
   connect( mLayerTreeModel, &QAbstractItemModel::modelReset, this, &QgsLayerTreeViewBase::onModelReset );
+  connect( mLayerTreeModel, &QAbstractItemModel::dataChanged, this, &QgsLayerTreeViewBase::onDataChanged );
 
   updateExpandedStateFromNode( mLayerTreeModel->rootGroup() );
 }
@@ -165,6 +179,11 @@ void QgsLayerTreeViewBase::onModelReset()
     return;
   updateExpandedStateFromNode( mLayerTreeModel->rootGroup() );
   //checkModel();
+}
+
+void QgsLayerTreeViewBase::onDataChanged( const QModelIndex &, const QModelIndex &, const QVector<int> & )
+{
+  mBlockDoubleClickTimer->start();
 }
 
 QgsLayerTreeNode *QgsLayerTreeViewBase::index2node( const QModelIndex &index ) const
@@ -446,12 +465,7 @@ QgsLayerTreeViewDefaultActions *QgsLayerTreeViewBase::defaultActions()
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   : QgsLayerTreeViewBase( parent )
-  , mBlockDoubleClickTimer( new QTimer( this ) )
-
 {
-  mBlockDoubleClickTimer->setSingleShot( true );
-  mBlockDoubleClickTimer->setInterval( QApplication::doubleClickInterval() );
-
   // we need a custom item delegate in order to draw indicators
   setItemDelegate( new QgsLayerTreeViewItemDelegate( this ) );
   setStyle( new QgsLayerTreeViewProxyStyle( this ) );
@@ -464,7 +478,6 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
 QgsLayerTreeView::~QgsLayerTreeView()
 {
   delete mMenuProvider;
-  delete mBlockDoubleClickTimer;
 }
 
 void QgsLayerTreeView::setModel( QAbstractItemModel *model )
@@ -765,14 +778,6 @@ bool QgsLayerTreeView::hideValidLayers() const
   return mHideValidLayers;
 }
 
-void QgsLayerTreeView::mouseDoubleClickEvent( QMouseEvent *event )
-{
-  if ( mBlockDoubleClickTimer->isActive() )
-    event->accept();
-  else
-    QTreeView::mouseDoubleClickEvent( event );
-}
-
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
   QgsLayerTreeModel *layerModel = layerTreeModel();
@@ -909,7 +914,6 @@ void QgsLayerTreeView::onDataChanged( const QModelIndex &topLeft, const QModelIn
   if ( roles.contains( Qt::SizeHintRole ) )
     viewport()->update();
 
-  mBlockDoubleClickTimer->start();
   //checkModel();
 }
 

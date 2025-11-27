@@ -346,7 +346,7 @@ class CORE_EXPORT QgsImageOperation
           , mColorizeStrength( colorizeStrength )
         {  }
 
-        void operator()( QRgb &rgb, int x, int y );
+        void operator()( QRgb &rgb, int x, int y ) const;
 
       private:
         double mSaturation; // [0, 2], 1 = no change
@@ -365,7 +365,7 @@ class CORE_EXPORT QgsImageOperation
           : mFactor( factor )
         { }
 
-        void operator()( QRgb &rgb, int x, int y );
+        void operator()( QRgb &rgb, int x, int y ) const;
 
       private:
         double mFactor;

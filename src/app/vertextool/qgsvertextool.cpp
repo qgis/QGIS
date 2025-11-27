@@ -430,7 +430,6 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( mSelectionMethod == SelectionRange )
   {
-    rangeMethodPressEvent( e );
     return;
   }
 
@@ -1888,8 +1887,7 @@ QgsPointLocator::MatchList QgsVertexTool::layerVerticesSnappedToPoint( QgsVector
 {
   MatchCollectingFilter myfilter( this );
   QgsPointLocator *loc = canvas()->snappingUtils()->locatorForLayer( layer );
-  double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
-  return loc->verticesInRect( mapPoint, tol, &myfilter, true );
+  return loc->verticesInRect( mapPoint, 1e-8, &myfilter, true );
 }
 
 QgsPointLocator::MatchList QgsVertexTool::layerSegmentsSnappedToSegment( QgsVectorLayer *layer, const QgsPointXY &mapPoint1, const QgsPointXY &mapPoint2 )
@@ -3116,12 +3114,6 @@ QList<Vertex> QgsVertexTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureI
     }
   }
   return lst;
-}
-
-void QgsVertexTool::rangeMethodPressEvent( QgsMapMouseEvent *e )
-{
-  // nothing to do here for now...
-  Q_UNUSED( e )
 }
 
 void QgsVertexTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )

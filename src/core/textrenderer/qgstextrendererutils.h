@@ -142,25 +142,6 @@ class CORE_EXPORT QgsTextRendererUtils
     };
 
     /**
-     * Flags controlling behavior of curved text generation.
-     *
-     * \since QGIS 3.2
-     */
-    enum class CurvedTextFlag : int
-    {
-      TruncateStringWhenLineIsTooShort = 1 << 0, //!< When a string is too long for the line, truncate characters instead of aborting the placement
-      UseBaselinePlacement = 1 << 1, //!< Generate placement based on the character baselines instead of centers
-      UprightCharactersOnly = 1 << 2, //!< Permit upright characters only. If not present then upside down text placement is permitted.
-    };
-
-    /**
-     * Flags controlling behavior of curved text generation.
-     *
-     * \since QGIS 3.2
-     */
-    Q_DECLARE_FLAGS( CurvedTextFlags, CurvedTextFlag )
-
-    /**
      * Calculates curved text placement properties.
      *
      * \param metrics precalculated text metrics for text to render
@@ -174,7 +155,7 @@ class CORE_EXPORT QgsTextRendererUtils
      * \returns calculated placement properties, or NULLPTR if placement could not be calculated. Caller takes ownership of the returned placement.
      * \since QGIS 3.20
      */
-    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QPolygonF &line, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, CurvedTextFlags flags = CurvedTextFlags() ) SIP_SKIP;
+    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QPolygonF &line, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlags() ) SIP_SKIP;
 
     /**
      * Calculates curved text placement properties.
@@ -193,24 +174,21 @@ class CORE_EXPORT QgsTextRendererUtils
      * \returns calculated placement properties, or NULLPTR if placement could not be calculated. Caller takes ownership of the returned placement.
      * \since QGIS 3.20
      */
-    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, CurvedTextFlags flags = CurvedTextFlags() ) SIP_SKIP;
+    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, Qgis::CurvedTextFlags flags = Qgis::CurvedTextFlags() ) SIP_SKIP;
 #endif
 
   private:
 
-    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, CurvedTextFlags flags, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool isSecondAttempt = false ) SIP_SKIP;
+    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, Qgis::CurvedTextFlags flags, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool isSecondAttempt = false ) SIP_SKIP;
 
     //! Returns TRUE if the next char position is found. The referenced parameters are updated.
     static bool nextCharPosition( double charWidth, double segmentLength, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment,
-                                  double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY );
+                                  double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY, Qgis::CurvedTextFlags flags );
 
     static void findLineCircleIntersection( double cx, double cy, double radius,
                                             double x1, double y1, double x2, double y2,
                                             double &xRes, double &yRes );
 };
-#ifndef SIP_RUN
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsTextRendererUtils::CurvedTextFlags );
-#endif
 
 
 #endif // QGSTEXTRENDERERUTILS_H

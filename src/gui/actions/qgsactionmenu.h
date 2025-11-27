@@ -113,7 +113,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      *
      * \since QGIS 3.12
      */
-    QList<QgsAction> menuActions();
+    QList<QgsAction> menuActions() const;
 
     /**
      * Returns TRUE if the menu has no valid actions.

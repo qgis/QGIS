@@ -160,9 +160,13 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   connect( mLayer, &QgsVectorLayer::afterCommitChanges, this, [this] { mFeatureListView->setCurrentFeatureEdited( false ); } );
 
   if ( mFeatureListPreviewButton->defaultAction() )
+  {
     mFeatureListView->setDisplayExpression( mDisplayExpression );
+  }
   else
+  {
     columnBoxInit();
+  }
 
   // This slows down load of the attribute table heaps and uses loads of memory.
   //mTableView->resizeColumnsToContents();
@@ -217,12 +221,12 @@ void QgsDualView::columnBoxInit()
 {
   // load fields
   const QList<QgsField> fields = mLayer->fields().toList();
-
-  const QString defaultField;
+  const QString displayExpression = mLayer->displayExpression();
 
   mFeatureListPreviewButton->addAction( mActionExpressionPreview );
   mFeatureListPreviewButton->addAction( mActionPreviewColumnsMenu );
 
+  QAction *defaultFieldAction = nullptr;
   const auto constFields = fields;
   for ( const QgsField &field : constFields )
   {
@@ -241,9 +245,9 @@ void QgsDualView::columnBoxInit()
       connect( previewAction, &QAction::triggered, this, [this, previewAction, fieldName] { previewColumnChanged( previewAction, fieldName ); } );
       mPreviewColumnsMenu->addAction( previewAction );
 
-      if ( text == defaultField )
+      if ( text == displayExpression || QStringLiteral( "COALESCE( \"%1\", '<NULL>' )" ).arg( text ) == displayExpression || QStringLiteral( "\"%1\"" ).arg( text ) == displayExpression )
       {
-        mFeatureListPreviewButton->setDefaultAction( previewAction );
+        defaultFieldAction = previewAction;
       }
     }
   }
@@ -252,12 +256,12 @@ void QgsDualView::columnBoxInit()
   QAction *sortMenuAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "Sort…" ), this );
   sortMenuAction->setMenu( sortMenu );
 
-  QAction *sortByPreviewExpressionAsc = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "By Preview Expression (ascending)" ), this );
+  QAction *sortByPreviewExpressionAsc = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort.svg" ) ), tr( "By Display Name (Ascending)" ), this );
   connect( sortByPreviewExpressionAsc, &QAction::triggered, this, [this]() {
     mFeatureListModel->setSortByDisplayExpression( true, Qt::AscendingOrder );
   } );
   sortMenu->addAction( sortByPreviewExpressionAsc );
-  QAction *sortByPreviewExpressionDesc = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort-reverse.svg" ) ), tr( "By Preview Expression (descending)" ), this );
+  QAction *sortByPreviewExpressionDesc = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "sort-reverse.svg" ) ), tr( "By Display Name (Descending)" ), this );
   connect( sortByPreviewExpressionDesc, &QAction::triggered, this, [this]() {
     mFeatureListModel->setSortByDisplayExpression( true, Qt::DescendingOrder );
   } );
@@ -276,17 +280,18 @@ void QgsDualView::columnBoxInit()
   mFeatureListPreviewButton->addAction( separator );
   restoreRecentDisplayExpressions();
 
-  // If there is no single field found as preview
-  if ( !mFeatureListPreviewButton->defaultAction() )
+  if ( defaultFieldAction )
   {
-    mFeatureListView->setDisplayExpression( mLayer->displayExpression() );
-    mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
-    const QString displayExpression = mFeatureListView->displayExpression();
-    setDisplayExpression( displayExpression.isEmpty() ? tr( "'[Please define preview text]'" ) : displayExpression );
+    mFeatureListPreviewButton->setDefaultAction( defaultFieldAction );
+    mFeatureListPreviewButton->defaultAction()->trigger();
   }
   else
   {
-    mFeatureListPreviewButton->defaultAction()->trigger();
+    mActionExpressionPreview->setText( displayExpression );
+    mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
+
+    mFeatureListView->setDisplayExpression( displayExpression );
+    setDisplayExpression( displayExpression.isEmpty() ? tr( "'[Please define preview text]'" ) : displayExpression );
   }
 }
 
@@ -526,13 +531,17 @@ void QgsDualView::insertRecentlyUsedDisplayExpression( const QString &expression
       if ( action->text() == expression || i >= 9 )
       {
         if ( action == mLastDisplayExpressionAction )
+        {
           mLastDisplayExpressionAction = nullptr;
+        }
         mFeatureListPreviewButton->removeAction( action );
       }
       else
       {
         if ( !mLastDisplayExpressionAction )
+        {
           mLastDisplayExpressionAction = action;
+        }
       }
     }
   }
@@ -755,6 +764,8 @@ void QgsDualView::previewExpressionBuilder()
   if ( dlg.exec() == QDialog::Accepted )
   {
     mFeatureListView->setDisplayExpression( dlg.expressionText() );
+    mActionExpressionPreview->setText( dlg.expressionText() );
+
     mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
     mFeatureListPreviewButton->setPopupMode( QToolButton::MenuButtonPopup );
   }
@@ -766,10 +777,11 @@ void QgsDualView::previewColumnChanged( QAction *previewAction, const QString &e
 {
   if ( !mFeatureListView->setDisplayExpression( QStringLiteral( "COALESCE( \"%1\", '<NULL>' )" ).arg( expression ) ) )
   {
-    QMessageBox::warning( this, tr( "Column Preview" ), tr( "Could not set column '%1' as preview column.\nParser error:\n%2" ).arg( previewAction->text(), mFeatureListView->parserErrorString() ) );
+    QMessageBox::warning( this, tr( "Column Display Name" ), tr( "Could not set column '%1' as display name.\nParser error:\n%2" ).arg( previewAction->text(), mFeatureListView->parserErrorString() ) );
   }
   else
   {
+    mActionExpressionPreview->setText( tr( "Expression" ) );
     mFeatureListPreviewButton->setText( previewAction->text() );
     mFeatureListPreviewButton->setIcon( previewAction->icon() );
     mFeatureListPreviewButton->setPopupMode( QToolButton::InstantPopup );
@@ -835,12 +847,43 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &maste
     return;
   }
 
-  QAction *copyContentAction = menu->addAction( tr( "Copy Cell Content" ) );
-  menu->addAction( copyContentAction );
-  connect( copyContentAction, &QAction::triggered, this, [masterIndex, this] {
-    const QVariant var = mMasterModel->data( masterIndex, Qt::DisplayRole );
-    QApplication::clipboard()->setText( var.toString() );
-  } );
+  const QVariant displayValue = mMasterModel->data( masterIndex, Qt::DisplayRole );
+
+  if ( displayValue.isValid() )
+  {
+    // get values for preview in menu
+    QString previewDisplayValue = displayValue.toString();
+    if ( previewDisplayValue.length() > 12 )
+    {
+      previewDisplayValue.truncate( 12 );
+      previewDisplayValue.append( QStringLiteral( "…" ) );
+    }
+
+
+    QAction *copyContentAction = menu->addAction( tr( "Copy Cell Content (%1)" ).arg( previewDisplayValue ) );
+    menu->addAction( copyContentAction );
+    connect( copyContentAction, &QAction::triggered, this, [displayValue] {
+      QApplication::clipboard()->setText( displayValue.toString() );
+    } );
+  }
+
+  const QVariant rawValue = mMasterModel->data( masterIndex, Qt::EditRole );
+  if ( rawValue.isValid() )
+  {
+    // get values for preview in menu
+    QString previewRawValue = rawValue.toString();
+    if ( previewRawValue.length() > 12 )
+    {
+      previewRawValue.truncate( 12 );
+      previewRawValue.append( QStringLiteral( "…" ) );
+    }
+
+    QAction *copyRawContentAction = menu->addAction( tr( "Copy Raw Value (%1)" ).arg( previewRawValue ) );
+    menu->addAction( copyRawContentAction );
+    connect( copyRawContentAction, &QAction::triggered, this, [rawValue] {
+      QApplication::clipboard()->setText( rawValue.toString() );
+    } );
+  }
 
   QgsVectorLayer *vl = mFilterModel->layer();
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();

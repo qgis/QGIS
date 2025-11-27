@@ -19,7 +19,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgssymbollayer.h"
-#include "qgsblanksegmentutils_p.h"
+#include "qgsblanksegmentutils.h"
 
 #include <QPen>
 #include <QVector>

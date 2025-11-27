@@ -47,7 +47,7 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
   public:
 
     QgsSettingsRegistryCore();
-    virtual ~QgsSettingsRegistryCore();
+    ~QgsSettingsRegistryCore() override;
 
 #ifndef SIP_RUN
     //! Settings entry digitizing stream tolerance

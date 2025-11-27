@@ -29,7 +29,7 @@ QString QgsPdalExportRasterAlgorithm::name() const
 
 QString QgsPdalExportRasterAlgorithm::displayName() const
 {
-  return QObject::tr( "Export to raster" );
+  return QObject::tr( "Export point cloud to raster" );
 }
 
 QString QgsPdalExportRasterAlgorithm::group() const

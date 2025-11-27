@@ -369,12 +369,12 @@ void QgsHanaSourceSelect::populateConnectionList()
   cmbConnections->setDisabled( cmbConnections->count() == 0 );
 }
 
-QStringList QgsHanaSourceSelect::selectedTables()
+QStringList QgsHanaSourceSelect::selectedTables() const
 {
   return mSelectedTables;
 }
 
-QString QgsHanaSourceSelect::connectionInfo()
+QString QgsHanaSourceSelect::connectionInfo() const
 {
   return mConnectionInfo;
 }
@@ -533,11 +533,6 @@ void QgsHanaSourceSelect::setConnectionListPosition()
   cmbConnections->setCurrentIndex( cmbConnections->findText( selectedConnName ) );
   if ( cmbConnections->currentIndex() < 0 )
     cmbConnections->setCurrentIndex( selectedConnName.isNull() ? 0 : cmbConnections->count() - 1 );
-}
-
-void QgsHanaSourceSelect::setSearchExpression( const QString &regexp )
-{
-  Q_UNUSED( regexp )
 }
 
 void QgsHanaSourceSelect::treeWidgetSelectionChanged(

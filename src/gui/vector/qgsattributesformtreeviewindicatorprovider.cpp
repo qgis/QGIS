@@ -99,7 +99,7 @@ void QgsAttributesFormTreeViewIndicatorProvider::removeItemIndicator( QgsAttribu
   }
 }
 
-bool QgsAttributesFormTreeViewIndicatorProvider::isEnabled()
+bool QgsAttributesFormTreeViewIndicatorProvider::isEnabled() const
 {
   return mEnabled;
 }

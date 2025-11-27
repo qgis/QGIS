@@ -119,22 +119,22 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
 
     //! determines if the form of the related feature will be shown
-    bool embedForm() { return mEmbedForm; }
+    bool embedForm() const { return mEmbedForm; }
     void setEmbedForm( bool display );
 
     //! determines if the drop-down is enabled
-    bool readOnlySelector() { return mReadOnlySelector; }
+    bool readOnlySelector() const { return mReadOnlySelector; }
     void setReadOnlySelector( bool readOnly );
 
     //! determines if the widget offers the possibility to select the related feature on the map (using a dedicated map tool)
-    bool allowMapIdentification() { return mAllowMapIdentification; }
+    bool allowMapIdentification() const { return mAllowMapIdentification; }
     void setAllowMapIdentification( bool allowMapIdentification );
 
     //! Sets the fields for which filter comboboxes will be created
     void setFilterFields( const QStringList &filterFields );
 
     //! determines the open form button is visible in the widget
-    bool openFormButtonVisible() { return mOpenFormButtonVisible; }
+    bool openFormButtonVisible() const { return mOpenFormButtonVisible; }
     void setOpenFormButtonVisible( bool openFormButtonVisible );
 
     /**

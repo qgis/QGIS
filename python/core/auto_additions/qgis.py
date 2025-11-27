@@ -5495,6 +5495,36 @@ of text.
 """
 # --
 Qgis.TextCharacterVerticalAlignment.baseClass = Qgis
+QgsTextRendererUtils.CurvedTextFlag = Qgis.CurvedTextFlag
+# monkey patching scoped based enum
+QgsTextRendererUtils.TruncateStringWhenLineIsTooShort = Qgis.CurvedTextFlag.TruncateStringWhenLineIsTooShort
+QgsTextRendererUtils.TruncateStringWhenLineIsTooShort.is_monkey_patched = True
+QgsTextRendererUtils.TruncateStringWhenLineIsTooShort.__doc__ = "When a string is too long for the line, truncate characters instead of aborting the placement"
+QgsTextRendererUtils.UseBaselinePlacement = Qgis.CurvedTextFlag.UseBaselinePlacement
+QgsTextRendererUtils.UseBaselinePlacement.is_monkey_patched = True
+QgsTextRendererUtils.UseBaselinePlacement.__doc__ = "Generate placement based on the character baselines instead of centers"
+QgsTextRendererUtils.UprightCharactersOnly = Qgis.CurvedTextFlag.UprightCharactersOnly
+QgsTextRendererUtils.UprightCharactersOnly.is_monkey_patched = True
+QgsTextRendererUtils.UprightCharactersOnly.__doc__ = "Permit upright characters only. If not present then upside down text placement is permitted."
+QgsTextRendererUtils.ExtendLineToFitText = Qgis.CurvedTextFlag.ExtendLineToFitText
+QgsTextRendererUtils.ExtendLineToFitText.is_monkey_patched = True
+QgsTextRendererUtils.ExtendLineToFitText.__doc__ = "When a string is too long for the line, extend the line's final segment to fit the entire string. \n.. versionadded:: 4.0"
+Qgis.CurvedTextFlag.__doc__ = """Flags controlling behavior of curved text generation.
+
+.. versionadded:: 4.0.
+
+* ``TruncateStringWhenLineIsTooShort``: When a string is too long for the line, truncate characters instead of aborting the placement
+* ``UseBaselinePlacement``: Generate placement based on the character baselines instead of centers
+* ``UprightCharactersOnly``: Permit upright characters only. If not present then upside down text placement is permitted.
+* ``ExtendLineToFitText``: When a string is too long for the line, extend the line's final segment to fit the entire string.
+
+  .. versionadded:: 4.0
+
+
+"""
+# --
+Qgis.CurvedTextFlag.baseClass = Qgis
+QgsTextRendererUtils.CurvedTextFlags = Qgis.CurvedTextFlags
 QgsVectorSimplifyMethod.SimplifyAlgorithm = Qgis.VectorSimplificationAlgorithm
 # monkey patching scoped based enum
 QgsVectorSimplifyMethod.Distance = Qgis.VectorSimplificationAlgorithm.Distance
@@ -11709,6 +11739,25 @@ Qgis.DevToolsNodeRole.__doc__ = """Dev tools node custom data roles.
 """
 # --
 Qgis.DevToolsNodeRole.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ExtrusionFace.NoFace.__doc__ = ""
+Qgis.ExtrusionFace.Walls.__doc__ = ""
+Qgis.ExtrusionFace.Roof.__doc__ = ""
+Qgis.ExtrusionFace.Floor.__doc__ = ""
+Qgis.ExtrusionFace.__doc__ = """Extrusion face types for the :py:class:`QgsTessellator`.
+
+.. versionadded:: 4.0
+
+* ``NoFace``: 
+* ``Walls``: 
+* ``Roof``: 
+* ``Floor``: 
+
+"""
+# --
+Qgis.ExtrusionFace.baseClass = Qgis
+Qgis.ExtrusionFaces.baseClass = Qgis
+ExtrusionFaces = Qgis  # dirty hack since SIP seems to introduce the flags in module
 from enum import Enum
 
 
@@ -11743,6 +11792,7 @@ Qgis.VectorRenderingSimplificationFlag.__or__ = lambda flag1, flag2: Qgis.Vector
 Qgis.DataProviderReadFlag.__or__ = lambda flag1, flag2: Qgis.DataProviderReadFlags(_force_int(flag1) | _force_int(flag2))
 Qgis.VectorProviderCapability.__or__ = lambda flag1, flag2: Qgis.VectorProviderCapabilities(_force_int(flag1) | _force_int(flag2))
 Qgis.LayoutRenderFlag.__or__ = lambda flag1, flag2: Qgis.LayoutRenderFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.CurvedTextFlag.__or__ = lambda flag1, flag2: Qgis.CurvedTextFlags(_force_int(flag1) | _force_int(flag2))
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 4.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
     Qgis.__annotations__ = {'QGIS_DEV_VERSION': str, 'DEFAULT_SEARCH_RADIUS_MM': float, 'DEFAULT_MAPTOPIXEL_THRESHOLD': float, 'DEFAULT_HIGHLIGHT_COLOR': 'QColor', 'DEFAULT_HIGHLIGHT_BUFFER_MM': float, 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': float, 'SCALE_PRECISION': float, 'DEFAULT_Z_COORDINATE': float, 'DEFAULT_M_COORDINATE': float, 'UI_SCALE_FACTOR': float, 'DEFAULT_SNAP_TOLERANCE': float, 'DEFAULT_SNAP_UNITS': 'Qgis.MapToolUnit', 'USER_CRS_START_ID': int, 'DEFAULT_POINT_SIZE': float, 'DEFAULT_LINE_WIDTH': float, 'DEFAULT_SEGMENT_EPSILON': float}
@@ -11756,6 +11806,8 @@ try:
     Qgis.geosVersionMinor = staticmethod(Qgis.geosVersionMinor)
     Qgis.geosVersionPatch = staticmethod(Qgis.geosVersionPatch)
     Qgis.geosVersion = staticmethod(Qgis.geosVersion)
+    Qgis.hasSfcgal = staticmethod(Qgis.hasSfcgal)
+    Qgis.sfcgalVersionInt = staticmethod(Qgis.sfcgalVersionInt)
     Qgis.hasQtWebkit = staticmethod(Qgis.hasQtWebkit)
     Qgis.geoNone = staticmethod(Qgis.geoNone)
     Qgis.geographicCrsAuthId = staticmethod(Qgis.geographicCrsAuthId)

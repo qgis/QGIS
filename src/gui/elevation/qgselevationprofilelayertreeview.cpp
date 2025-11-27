@@ -448,7 +448,7 @@ QgsElevationProfileLayerTreeView::QgsElevationProfileLayerTreeView( QgsLayerTree
   setLayerTreeModel( mModel );
 }
 
-void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *project )
+void QgsElevationProfileLayerTreeView::populateMissingLayers( QgsProject *project )
 {
   const QList<QgsMapLayer *> layers = project->layers<QgsMapLayer *>().toList();
 
@@ -485,7 +485,7 @@ void QgsElevationProfileLayerTreeView::populateInitialSources( QgsProject *proje
     addNodeForRegisteredSource( source->profileSourceId(), source->profileSourceName() );
   }
 
-  populateInitialLayers( project );
+  populateMissingLayers( project );
 }
 
 void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName )

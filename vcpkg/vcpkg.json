@@ -2,13 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "0e39c10736341cc8135b560438229bbda3d3219a",
+      "baseline": "edffab1bcd2cb5b8c17d6ba34d5651ea0bf82979",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "945f8fd57e754cb9fcc4187fc0ec90e83eb847f4",
+        "baseline": "4e73518faee954f3469342cd8c28389ea9a97de3",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -16,6 +16,7 @@
           "gdal",
           "vcpkg-python-scripts",
           "vcpkg-tool-mercurial",
+          "vcpkg-tool-rust",
           "pybind11"
         ]
       }
@@ -108,19 +109,27 @@
             "python"
           ]
         },
+        "py-attrs",
         "py-autopep8",
+        "py-beautifulsoup4",
         "py-dateutil",
         "py-duckdb",
         "py-isort",
         "py-jinja2",
+        {
+          "name": "py-jsonschema",
+          "platform": "!windows"
+        },
         "py-lxml",
         "py-markupsafe",
+        "py-networkx",
         "py-numpy",
         "py-owslib",
         "py-pip",
         "py-psycopg",
         "py-psycopg2",
         "py-pydantic",
+        "py-pyproj",
         {
           "name": "py-pyqt6",
           "features": [
@@ -130,11 +139,15 @@
             "qtdeclarative"
           ]
         },
+        "py-pysal",
         "py-pytz",
         "py-pyyaml",
         "py-qscintilla",
+        "py-rasterio",
         "py-requests",
+        "py-shapely",
         "py-six",
+        "py-urllib3",
         "python3"
       ]
     },
