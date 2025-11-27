@@ -19,6 +19,7 @@ on:
     - 'external/**'
     - 'CMakeLists.txt'
     - '.github/workflows/ogc.yml'
+    - '.ci/ogc/**'
   pull_request:
     branches:
       - master
@@ -32,6 +33,7 @@ on:
     - 'external/**'
     - 'CMakeLists.txt'
     - '.github/workflows/ogc.yml'
+    - '.ci/ogc/**'
 
 permissions:
   contents: read
