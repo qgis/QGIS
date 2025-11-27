@@ -268,6 +268,9 @@ bool QgsOapifProvider::init()
   else
     tenFeaturesRequestUrl += QLatin1Char( '&' );
   tenFeaturesRequestUrl += QStringLiteral( "limit=10" );
+  if ( mShared->mSourceCrs
+       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+    tenFeaturesRequestUrl += QStringLiteral( "&crs=%1" ).arg( mShared->mSourceCrs.toOgcUri() );
 
   QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( tenFeaturesRequestUrl ), mShared->mFeatureFormat );
   if ( mShared->mCapabilityExtent.isNull() )

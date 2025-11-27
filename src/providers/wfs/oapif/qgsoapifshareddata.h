@@ -70,9 +70,6 @@ class QgsOapifSharedData final : public QObject, public QgsBackgroundCachedShare
     //! Datasource URI
     QgsWFSDataSourceURI mURI;
 
-    //! Geometry type of the features in this layer
-    Qgis::WkbType mWKBType = Qgis::WkbType::Unknown;
-
     //! Page size. 0 = disabled
     long long mPageSize = 0;
 
