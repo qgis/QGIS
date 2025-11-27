@@ -345,7 +345,7 @@ void QgsMapHitTest::runHitTestRasterSource( QgsRasterDataProvider *provider,
       QgsRectangle transformedExtent = context.extent();
       try
       {
-        QgsRectangle transformedExtent = transform.transformBoundingBox( context.extent() );
+        transformedExtent = transform.transformBoundingBox( context.extent() );
       }
       catch ( const QgsCsException &cse )
       {
@@ -401,7 +401,7 @@ void QgsMapHitTest::runHitTestMeshSource( QgsMeshLayer *layer,
             QgsRectangle transformedExtent = context.extent();
             try
             {
-              QgsRectangle transformedExtent = transform.transformBoundingBox( context.extent() );
+              transformedExtent = transform.transformBoundingBox( context.extent() );
             }
             catch ( const QgsCsException &cse )
             {
