@@ -127,6 +127,11 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
         PROVIDER_ERROR( QString( "Layer %1 is not a vector layer" ).arg( layer.reference() ) );
         return false;
       }
+      if ( !l->isValid() )
+      {
+        PROVIDER_ERROR( QString( "Layer %1 is invalid" ).arg( layer.reference() ) );
+        return false;
+      }
       // add the layer to the list
       QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
       mLayers << SourceLayer( vl, layer.name() );
