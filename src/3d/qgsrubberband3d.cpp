@@ -459,10 +459,9 @@ void QgsRubberBand3D::updateGeometry()
   {
     if ( const QgsPolygon *polygon = qgsgeometry_cast<const QgsPolygon *>( mGeometry.constGet() ) )
     {
-      // TODO: tessellator should handle origins with non-zero Z to make
-      // things work well in large scenes
-      const QgsVector3D polygonOrigin( mMapSettings->origin().x(), mMapSettings->origin().y(), 0 );
-      QgsTessellator tessellator( polygonOrigin.x(), polygonOrigin.y(), true );
+      QgsTessellator tessellator;
+      tessellator.setOrigin( mMapSettings->origin() );
+      tessellator.setAddNormals( true );
       tessellator.setOutputZUp( true );
       tessellator.addPolygon( *polygon, 0 );
       if ( !tessellator.error().isEmpty() )
@@ -473,7 +472,7 @@ void QgsRubberBand3D::updateGeometry()
       const QByteArray data( reinterpret_cast<const char *>( tessellator.data().constData() ), static_cast<int>( tessellator.data().count() * sizeof( float ) ) );
       const int vertexCount = data.count() / tessellator.stride();
       mPolygonGeometry->setData( data, vertexCount, QVector<QgsFeatureId>(), QVector<uint>() );
-      mPolygonTransform->setGeoTranslation( polygonOrigin );
+      mPolygonTransform->setGeoTranslation( mMapSettings->origin() );
     }
     else
     {

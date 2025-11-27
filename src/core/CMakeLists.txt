@@ -97,6 +97,7 @@ set(QGIS_CORE_SRCS
 
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
+  symbology/qgsblanksegmentutils.cpp
   symbology/qgscategorizedsymbolrenderer.cpp
   symbology/qgscolorbrewerpalette.cpp
   symbology/qgscombinedstylemodel.cpp
@@ -2019,7 +2020,8 @@ set(QGIS_CORE_HDRS
 
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
-  symbology/qgsblanksegmentutils.cpp
+
+  symbology/qgsblanksegmentutils.h
   symbology/qgscategorizedsymbolrenderer.h
   symbology/qgscolorbrewerpalette.h
   symbology/qgscombinedstylemodel.h
@@ -2202,8 +2204,6 @@ set(QGIS_CORE_PRIVATE_HDRS
   proj/qgscoordinatereferencesystem_legacy_p.h
 
   providers/ogr/qgscplerrorhandler_p.h
-
-  symbology/qgsblanksegmentutils_p.h
 
   textrenderer/qgstextrenderer_p.h
 )

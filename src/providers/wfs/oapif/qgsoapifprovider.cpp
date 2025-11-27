@@ -200,8 +200,9 @@ bool QgsOapifProvider::init()
   }
   else if ( implementsPart2 && mLayerMetadata.crs().isValid() )
   {
-    // WORKAROUND: Recreate a CRS object with fromOgcWmsCrs because when copying the
-    // CRS his mPj pointer gets deleted and it is impossible to create a transform
+    // Recreate a CRS object with fromOgcWmsCrs  because its mPj pointer got
+    // deleted because it got acquired by a thread that has now disappeared
+    // and without it, it is impossible to create a transform
     mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mLayerMetadata.crs().authid() );
     mShared->mSourceCrs.setCoordinateEpoch( mLayerMetadata.crs().coordinateEpoch() );
   }
@@ -216,7 +217,13 @@ bool QgsOapifProvider::init()
   // Reproject extent of /collection request to the layer CRS
   if ( !mShared->mCapabilityExtent.isNull() && collectionDesc.mBboxCrs != mShared->mSourceCrs )
   {
-    QgsCoordinateTransform ct( collectionDesc.mBboxCrs, mShared->mSourceCrs, transformContext() );
+    // Recreate a CRS object with fromOgcWmsCrs because its mPj pointer got
+    // deleted because it got acquired by a thread that has now disappeared
+    // and without it, it is impossible to create a transform
+    QgsCoordinateReferenceSystem bboxCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( collectionDesc.mBboxCrs.authid() );
+    bboxCrs.setCoordinateEpoch( collectionDesc.mBboxCrs.coordinateEpoch() );
+
+    QgsCoordinateTransform ct( bboxCrs, mShared->mSourceCrs, transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
     QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
     try
@@ -243,7 +250,28 @@ bool QgsOapifProvider::init()
 
   mShared->mItemsUrl = mShared->mCollectionUrl + QStringLiteral( "/items" );
 
-  QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mItemsUrl + QStringLiteral( "?limit=10" ) ) );
+  mShared->mFeatureFormat = mShared->mURI.outputFormat();
+  if ( !mShared->mFeatureFormat.isEmpty() )
+  {
+    auto it = collectionDesc.mMapFeatureFormatToUrl.find( mShared->mFeatureFormat );
+    if ( it != collectionDesc.mMapFeatureFormatToUrl.end() )
+    {
+      mShared->mItemsUrl = *it;
+    }
+    else
+    {
+      mShared->mFeatureFormat.clear();
+    }
+  }
+
+  QString tenFeaturesRequestUrl = mShared->mItemsUrl;
+  if ( tenFeaturesRequestUrl.indexOf( QLatin1Char( '?' ) ) < 0 )
+    tenFeaturesRequestUrl += QLatin1Char( '?' );
+  else
+    tenFeaturesRequestUrl += QLatin1Char( '&' );
+  tenFeaturesRequestUrl += QStringLiteral( "limit=10" );
+
+  QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( tenFeaturesRequestUrl ), mShared->mFeatureFormat );
   if ( mShared->mCapabilityExtent.isNull() )
   {
     itemsRequest.setComputeBbox();
@@ -358,7 +386,11 @@ long long QgsOapifProvider::featureCount() const
     }
 
     QString url = mShared->mItemsUrl;
-    url += QLatin1String( "?limit=1" );
+    if ( url.indexOf( QLatin1Char( '?' ) ) < 0 )
+      url += QLatin1Char( '?' );
+    else
+      url += QLatin1Char( '&' );
+    url += QLatin1String( "limit=1" );
     url = mShared->appendExtraQueryParameters( url );
 
     if ( !mShared->mServerFilter.isEmpty() )
@@ -367,7 +399,7 @@ long long QgsOapifProvider::featureCount() const
       url += mShared->mServerFilter;
     }
 
-    QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), url );
+    QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), url, mShared->mFeatureFormat );
     if ( !itemsRequest.request( true, false ) )
       return -1;
     if ( itemsRequest.errorCode() != QgsBaseNetworkRequest::NoError )
@@ -915,6 +947,7 @@ QgsOapifSharedData *QgsOapifSharedData::clone() const
   copy->mExtraQueryParameters = mExtraQueryParameters;
   copy->mCollectionUrl = mCollectionUrl;
   copy->mItemsUrl = mItemsUrl;
+  copy->mFeatureFormat = mFeatureFormat;
   copy->mServerFilter = mServerFilter;
   copy->mFoundIdTopLevel = mFoundIdTopLevel;
   copy->mFoundIdInProperties = mFoundIdInProperties;
@@ -1287,10 +1320,11 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     }
   }
   url = mShared->mItemsUrl;
-  bool hasQueryParam = false;
+  bool hasQueryParam = url.indexOf( QLatin1Char( '?' ) ) > 0;
   if ( maxFeaturesThisRequest > 0 )
   {
-    url += QStringLiteral( "?limit=%1" ).arg( maxFeaturesThisRequest );
+    url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
+    url += QStringLiteral( "limit=%1" ).arg( maxFeaturesThisRequest );
     hasQueryParam = true;
   }
 
@@ -1298,7 +1332,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
   // mServerExpression comes from the translation of a getFeatures() expression
   if ( !mShared->mServerFilter.isEmpty() )
   {
-    url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
+    url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
     if ( !mShared->mServerExpression.isEmpty() )
     {
       // Combine mServerFilter and mServerExpression
@@ -1336,7 +1370,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
   }
   else if ( !mShared->mServerExpression.isEmpty() )
   {
-    url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
+    url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
     url += mShared->mServerExpression;
     hasQueryParam = true;
   }
@@ -1364,7 +1398,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
 
     if ( !rect.isNull() )
     {
-      url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
+      url += ( hasQueryParam ? QLatin1Char( '&' ) : QLatin1Char( '?' ) );
       url += QStringLiteral( "bbox=%1,%2,%3,%4" )
                .arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( rect.yMinimum() ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( rect.yMaximum() ) );
 
@@ -1387,7 +1421,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
       break;
     }
 
-    QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), url );
+    QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), url, mShared->mFeatureFormat );
     connect( &itemsRequest, &QgsOapifItemsRequest::gotResponse, &loop, &QEventLoop::quit );
     itemsRequest.request( false /* synchronous*/, true /* forceRefresh */ );
     loop.exec( QEventLoop::ExcludeUserInputEvents );

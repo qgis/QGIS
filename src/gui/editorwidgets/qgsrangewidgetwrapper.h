@@ -61,6 +61,15 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
      */
     explicit QgsRangeWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent = nullptr );
 
+    /**
+     * Returns the default field precision to use for a \a field.
+     *
+     * This precision will be used by the widget if the user has not manually set a precision.
+     *
+     * \since QGIS 4.0
+     */
+    static int defaultFieldPrecision( const QgsField &field );
+
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value() const override;

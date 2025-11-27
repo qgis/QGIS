@@ -1467,7 +1467,8 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
       else
       {
         const QgsRectangle bounds = clampedPolygon->boundingBox();
-        QgsTessellator t( bounds, false, false, false, false );
+        QgsTessellator t;
+        t.setBounds( bounds );
         t.setOutputZUp( true );
         t.addPolygon( *clampedPolygon, 0 );
 

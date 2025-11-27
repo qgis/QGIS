@@ -120,6 +120,66 @@ QList<QVariant> QgsVectorLayerUtils::getValues( const QgsVectorLayer *layer, con
   return values;
 }
 
+QList<QVariant> QgsVectorLayerUtils::uniqueValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly, int limit, QgsFeedback *feedback )
+{
+  QSet<QVariant> uniqueValues;
+  ok = false;
+
+  const int attrNum = layer->fields().lookupField( fieldOrExpression );
+  if ( attrNum != -1 && !selectedOnly )
+  {
+    // attribute case, not selected only
+    // optimized case: directly call QgsVectorLayer::uniqueValues
+    uniqueValues = layer->uniqueValues( attrNum, limit );
+    // remove null value if necessary
+    uniqueValues.remove( QVariant() );
+    ok = true;
+  }
+  else
+  {
+    // expression or attribute - use an iterator
+    QgsFeatureIterator fit = getValuesIterator( layer, fieldOrExpression, ok, selectedOnly );
+    if ( ok )
+    {
+      std::unique_ptr<QgsExpression> expression;
+      QgsExpressionContext context;
+      if ( attrNum == -1 )
+      {
+        // use expression, already validated in the getValuesIterator() function
+        expression.reset( new QgsExpression( fieldOrExpression ) );
+        context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+      }
+      QgsFeature feature;
+      while ( fit.nextFeature( feature ) && ( limit < 0 || uniqueValues.size() < limit ) )
+      {
+        QVariant newValue;
+        if ( expression )
+        {
+          context.setFeature( feature );
+          newValue = expression->evaluate( &context );
+        }
+        else
+        {
+          newValue = feature.attribute( attrNum );
+        }
+
+        if ( !newValue.isNull() )
+        {
+          uniqueValues.insert( newValue );
+        }
+
+        if ( feedback && feedback->isCanceled() )
+        {
+          ok = false;
+          break;
+        }
+      }
+    }
+  }
+
+  return qgis::setToList( uniqueValues );
+}
+
 QList<double> QgsVectorLayerUtils::getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly, int *nullCount, QgsFeedback *feedback )
 {
   QList<double> values;
