@@ -292,13 +292,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     */
     static QString contributorsFilePath();
 
-    /**
-     * Returns the path to the developers map file.
-     * The developers map was created by using leaflet framework,
-     * it shows the contributors.json file.
-    */
-    static QString developersMapFilePath();
-
     //! Returns the path to the sponsors file.
     static QString sponsorsFilePath();
 
