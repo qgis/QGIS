@@ -405,9 +405,13 @@ void QgsFieldMappingModel::appendDestinationFields( const QgsFields &destination
   for ( const Field &existingField : mMapping )
   {
     const QgsExpression exp { existingField.expression };
-    if ( exp.isField() && mSourceFields.names().contains( qgis::setToList( exp.referencedColumns() ).constFirst() ) )
+    if ( exp.isField() )
     {
-      usedFields.push_back( qgis::setToList( exp.referencedColumns() ).constFirst() );
+      const QStringList referencedCols = qgis::setToList( exp.referencedColumns() );
+      if ( !referencedCols.isEmpty() && mSourceFields.names().contains( referencedCols.constFirst() ) )
+      {
+        usedFields.push_back( referencedCols.constFirst() );
+      }
     }
   }
 
@@ -424,10 +428,13 @@ void QgsFieldMappingModel::appendDestinationFields( const QgsFields &destination
     {
       f.expression = expressions.value( f.field.name() );
       const QgsExpression exp { f.expression };
-
-      if ( exp.isField() && mSourceFields.names().contains( qgis::setToList( exp.referencedColumns() ).constFirst() ) )
+      if ( exp.isField() )
       {
-        usedFields.push_back( qgis::setToList( exp.referencedColumns() ).constFirst() );
+        const QStringList referencedCols = qgis::setToList( exp.referencedColumns() );
+        if ( !referencedCols.isEmpty() && mSourceFields.names().contains( referencedCols.constFirst() ) )
+        {
+          usedFields.push_back( referencedCols.constFirst() );
+        }
       }
     }
     else
