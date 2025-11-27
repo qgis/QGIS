@@ -42,6 +42,24 @@ Constructor for QgsVideoExporter.
 %End
     ~QgsVideoExporter();
 
+    void setFeedback( QgsFeedback *feedback );
+%Docstring
+Sets an optional ``feedback`` object, for progress reports and
+cancellation support.
+
+The object must exist for the lifetime of the export, ownership is not
+transferred.
+
+.. seealso:: :py:func:`feedback`
+%End
+
+    QgsFeedback *feedback();
+%Docstring
+Returns the optional feedback object.
+
+.. seealso:: :py:func:`setFeedback`
+%End
+
     void setInputFiles( const QStringList &files );
 %Docstring
 Sets the list of input image ``files``.
