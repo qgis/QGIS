@@ -20,9 +20,11 @@
 
 #include <QSize>
 #include <QObject>
+#include <QPointer>
 #include <QtMultimedia/QMediaFormat>
 #include <QtMultimedia/QMediaRecorder>
 
+class QgsFeedback;
 class QMediaCaptureSession;
 class QVideoFrameInput;
 
@@ -56,6 +58,22 @@ class CORE_EXPORT QgsVideoExporter : public QObject
      */
     QgsVideoExporter( const QString &filename, QSize size, double framesPerSecond );
     ~QgsVideoExporter() override;
+
+    /**
+     * Sets an optional \a feedback object, for progress reports and cancellation support.
+     *
+     * The object must exist for the lifetime of the export, ownership is not transferred.
+     *
+     * \see feedback()
+     */
+    void setFeedback( QgsFeedback *feedback );
+
+    /**
+     * Returns the optional feedback object.
+     *
+     * \see setFeedback()
+     */
+    QgsFeedback *feedback();
 
     /**
      * Sets the list of input image \a files.
@@ -136,6 +154,7 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     QMediaFormat::FileFormat mFormat = QMediaFormat::FileFormat::MPEG4;
     QMediaFormat::VideoCodec mCodec = QMediaFormat::VideoCodec::H264;
     int mCurrentFrameIndex = 0;
+    QPointer< QgsFeedback > mFeedback;
 
     std::unique_ptr< QMediaCaptureSession > mSession;
     std::unique_ptr< QMediaRecorder > mRecorder;
