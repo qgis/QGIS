@@ -43,7 +43,7 @@
 
 
 QgsArrowInferSchemaOptions::QgsArrowInferSchemaOptions()
-  {}
+{}
 
 void QgsArrowInferSchemaOptions::setGeometryColumnName( const QString &geometryColumnName )
 {
@@ -491,12 +491,12 @@ QgsArrowArray QgsArrowIterator::nextFeatures( int n )
 {
   if ( n < 1 )
   {
-    throw QgsException( "QgsArrowIterator can't iterate over less than one feature" );
+    throw QgsException( QStringLiteral( "QgsArrowIterator can't iterate over less than one feature" ) );
   }
 
   if ( !mSchema.isValid() )
   {
-    throw QgsException( "QgsArrowIterator schema not set" );
+    throw QgsException( QStringLiteral( "QgsArrowIterator schema not set" ) );
   }
 
   // Check the schema and cache a few things about it before we loop over features.
