@@ -501,7 +501,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -918,6 +920,15 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             sanitize(endpoint, "/collections/mycollection?" + ACCEPT_COLLECTION), "wb"
         ) as f:
             f.write(json.dumps(collection).encode("UTF-8"))
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4258&"
+                + ACCEPT_ITEMS,
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(first_items).encode("UTF-8"))
 
         vl = QgsVectorLayer(
             "url='http://"
@@ -1466,7 +1477,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
 
         filename = sanitize(
-            endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+            endpoint,
+            "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4258&"
+            + ACCEPT_ITEMS,
         )
         with open(filename, "wb") as f:
             f.write(json.dumps(items).encode("UTF-8"))
@@ -1891,7 +1904,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         # first items
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/2056&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -1914,6 +1929,15 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         source = vl.dataProvider()
 
         self.assertEqual(source.sourceCrs().authid(), "EPSG:2056")
+
+        # first items
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(items).encode("UTF-8"))
 
         # Test srsname parameter overrides default CRS
         vl = QgsVectorLayer(
@@ -1967,7 +1991,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         # first items
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/2056&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -2071,6 +2097,70 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         source = vl.dataProvider()
 
         self.assertEqual(source.featureCount(), 123456789012345)
+
+    def testZGeometries(self):
+
+        # On Windows we must make sure that any backslash in the path is
+        # replaced by a forward slash so that QUrl can process it
+        basetestpath = tempfile.mkdtemp().replace("\\", "/")
+        endpoint = basetestpath + "/fake_qgis_http_endpoint_testZGeometries"
+
+        create_landing_page_api_collection(
+            endpoint,
+            storageCrs="http://www.opengis.net/def/crs/EPSG/0/4979",
+            bbox=[1, 48, 0, 3, 50, 200],
+        )
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {"type": "Point", "coordinates": [49, 2, 100]},
+                }
+            ],
+        }
+
+        # first items
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4979&"
+                + ACCEPT_ITEMS,
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        # Create test layer
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'", "test", "OAPIF"
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.PointZ)
+
+        source = vl.dataProvider()
+
+        app_log = QgsApplication.messageLog()
+        # signals should be emitted by application log
+        app_spy = QSignalSpy(app_log.messageReceived)
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?limit=1000&crs=http://www.opengis.net/def/crs/EPSG/0/4979&"
+                + ACCEPT_ITEMS,
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        self.assertEqual(len(app_spy), 0, list(app_spy))
 
     def testFeatureInsertionDeletion(self):
 
@@ -2275,7 +2365,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -2425,7 +2517,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -2512,7 +2606,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:

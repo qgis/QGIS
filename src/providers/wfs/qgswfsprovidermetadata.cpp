@@ -19,6 +19,7 @@
 
 #include "qgis.h"
 #include "qgsfeedback.h"
+#include "qgsgml.h"
 #include "qgslogger.h"
 #include "qgsogcutils.h"
 #include "qgsoapifprovider.h"

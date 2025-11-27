@@ -597,11 +597,11 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
     {
       auto provider = dynamic_cast<QgsOapifProvider *>( vlayer.dataProvider() );
       Q_ASSERT( provider );
-      if ( provider->filterTranslatedState() == QgsOapifProvider::FilterTranslationState::FULLY_CLIENT )
+      if ( provider->filterTranslatedState() == QgsOapifFilterTranslationState::FULLY_CLIENT )
       {
         QMessageBox::information( nullptr, tr( "Filter" ), tr( "Whole filter will be evaluated on client side." ) );
       }
-      else if ( provider->filterTranslatedState() == QgsOapifProvider::FilterTranslationState::PARTIAL )
+      else if ( provider->filterTranslatedState() == QgsOapifFilterTranslationState::PARTIAL )
       {
         if ( provider->clientSideFilterExpression().isEmpty() )
         {
