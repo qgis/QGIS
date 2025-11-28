@@ -23,6 +23,9 @@ endif()
 if(WITH_AUTH)
   list(APPEND VCPKG_MANIFEST_FEATURES "auth")
 endif()
+if(WITH_QTPOSITIONING)
+  list(APPEND VCPKG_MANIFEST_FEATURES "qtpositioning")
+endif()
 
 # Binarycache can only be used on Windows or if mono is available.
 find_program(_VCPKG_MONO mono)
