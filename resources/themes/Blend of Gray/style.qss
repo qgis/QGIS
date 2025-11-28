@@ -3,6 +3,11 @@ QWidget
     background: transparent;
 }
 
+QWidget[autoFillBackground=true]
+{
+    background-color: @background;
+}
+
 QLabel, QCheckBox, QRadioButton, QMenu::item
 {
     color: @text;
