@@ -1843,7 +1843,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         rl_1.setRenderer(renderer)
 
         # project and layout setup
-        p = QgsProject.instance()
+        p = QgsProject()
         p.addMapLayer(rl_1)
 
         l = QgsLayout(p)
