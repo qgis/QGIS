@@ -102,6 +102,7 @@
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
+#include "qgsmaptoolselectannotation.h"
 #include "qgsmaptoolmodifyannotation.h"
 #include "qgsannotationlayer.h"
 #include "qgsdockablewidgethelper.h"
@@ -3195,6 +3196,7 @@ void QgisApp::createActions()
   connect( mActionDiagramProperties, &QAction::triggered, this, &QgisApp::diagramProperties );
 
   connect( mActionCreateAnnotationLayer, &QAction::triggered, this, &QgisApp::createAnnotationLayer );
+  connect( mActionSelectAnnotation, &QAction::triggered, this, [this] { mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AnnotationSelect ) ); } );
   connect( mActionModifyAnnotation, &QAction::triggered, this, [this] { mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ); } );
   connect( mMainAnnotationLayerProperties, &QAction::triggered, this, [this] {
     showLayerProperties( QgsProject::instance()->mainAnnotationLayer() );
@@ -3331,6 +3333,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionChangeLabelProperties );
   mMapToolGroup->addAction( mActionReverseLine );
   mMapToolGroup->addAction( mActionTrimExtendFeature );
+  mMapToolGroup->addAction( mActionSelectAnnotation );
   mMapToolGroup->addAction( mActionModifyAnnotation );
 
   //
@@ -4555,6 +4558,7 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::MoveLabel )->setAction( mActionMoveLabel );
   mMapTools->mapTool( QgsAppMapTools::RotateLabel )->setAction( mActionRotateLabel );
   mMapTools->mapTool( QgsAppMapTools::ChangeLabelProperties )->setAction( mActionChangeLabelProperties );
+  mMapTools->mapTool( QgsAppMapTools::AnnotationSelect )->setAction( mActionSelectAnnotation );
   mMapTools->mapTool( QgsAppMapTools::AnnotationEdit )->setAction( mActionModifyAnnotation );
 
   //ensure that non edit tool is initialized or we will get crashes in some situations

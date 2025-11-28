@@ -281,6 +281,8 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     //! Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)
     Qt::CursorShape cursorForPosition( QPointF itemCoordPos );
+
+    friend class QgsMapToolSelectAnnotation;
 };
 
 ///@endcond PRIVATE

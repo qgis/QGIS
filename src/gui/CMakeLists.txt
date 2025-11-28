@@ -127,6 +127,8 @@ set(QGIS_GUI_SRCS
   annotations/qgscreateannotationitemmaptool.cpp
   annotations/qgscreateannotationitemmaptool_impl.cpp
   annotations/qgsmaptoolmodifyannotation.cpp
+  annotations/qgsmaptoolselectannotation.cpp
+  annotations/qgsmaptoolselectannotationmousehandles.cpp
 
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
@@ -1110,6 +1112,8 @@ set(QGIS_GUI_HDRS
   annotations/qgscreateannotationitemmaptool.h
   annotations/qgscreateannotationitemmaptool_impl.h
   annotations/qgsmaptoolmodifyannotation.h
+  annotations/qgsmaptoolselectannotation.h
+  annotations/qgsmaptoolselectannotationmousehandles.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
   attributeformconfig/qgsattributetypedialog.h
