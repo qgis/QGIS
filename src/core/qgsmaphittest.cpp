@@ -506,6 +506,8 @@ void QgsMapHitTestTask::prepare()
 
       PreparedRasterData rasterData;
       rasterData.provider = std::unique_ptr< QgsRasterDataProvider >( rl->dataProvider()->clone() );
+      rasterData.provider->moveToThread( nullptr );
+
       rasterData.layerId = rl->id();
       rasterData.band = rl->renderer()->inputBand();
       rasterData.minMaxOrigin = minMaxOrigin;
@@ -592,6 +594,8 @@ bool QgsMapHitTestTask::run()
   layerIdx = 0;
   for ( auto &rasterData : mPreparedRasterData )
   {
+    rasterData.provider->moveToThread( QThread:: currentThread() );
+
     mFeedback->setProgress( ( static_cast<double>( mPreparedData.size() ) + static_cast< double >( layerIdx ) ) / static_cast< double >( totalCount ) * 100.0 );
     if ( mFeedback->isCanceled() )
       break;
