@@ -508,7 +508,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \param featureIds set of feature IDs to filter
      * \returns subset of featureIds containing only IDs that exist in the layer
      * \see QgsVectorLayer::selectByIds()
-     * \since QGIS 4.0
+     * \since QGIS 3.40
      */
     static QgsFeatureIds filterValidFeatureIds( const QgsVectorLayer *layer, const QgsFeatureIds &featureIds );
 

@@ -457,7 +457,9 @@ first available.
     static QgsFeatureIds filterValidFeatureIds( const QgsVectorLayer *layer, const QgsFeatureIds &featureIds );
 %Docstring
 Filters a set of feature IDs to only include those that exist in the
-layer. This method can be used to validate feature IDs before selection
+layer.
+
+This method can be used to validate feature IDs before selection
 operations to ensure accurate selection counts. It performs a minimal
 query (no geometry or attributes) for efficiency.
 
