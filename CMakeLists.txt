@@ -336,9 +336,6 @@ if(WITH_CORE)
   set (WITH_INTERNAL_POLY2TRI ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
   set (WITH_INTERNAL_MESHOPTIMIZER ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether MESHOPTIMIZER should be built from internal copy")
 
-  # try to configure and build EARCUT support
-  set (WITH_INTERNAL_EARCUT ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether EARCUT should be built from internal copy")
-
   # try to configure and build POSTGRESQL support
   set (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
   if (WITH_POSTGRESQL)
@@ -531,10 +528,6 @@ if(WITH_CORE)
 
   if (NOT WITH_INTERNAL_POLY2TRI)
     find_package(poly2tri REQUIRED)
-  endif()
-
-  if (NOT WITH_INTERNAL_EARCUT)
-    find_package(earcut REQUIRED)
   endif()
 
   if (WITH_SPATIALITE)
