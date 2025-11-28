@@ -146,6 +146,8 @@ void TestQgsVectorLayerUtils::testGetFeatureSource()
   thread2->quit();
 }
 
+}
+
 void TestQgsVectorLayerUtils::testGetValues()
 {
   const QString pointFileName = mTestDataDir + "points.shp";
