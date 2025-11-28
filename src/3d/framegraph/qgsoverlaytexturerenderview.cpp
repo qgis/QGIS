@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdebugtexturerenderview.cpp
+  qgsoverlaytexturerenderview.cpp
   --------------------------------------
   Date                 : June 2024
   Copyright            : (C) 2024 by Benoit De Mezzo
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdebugtexturerenderview.h"
+#include "qgsoverlaytexturerenderview.h"
 #include <Qt3DRender/QLayerFilter>
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/qsubtreeenabler.h>
@@ -22,7 +22,7 @@
 #include <Qt3DRender/QCullFace>
 
 
-QgsDebugTextureRenderView::QgsDebugTextureRenderView( const QString &viewName )
+QgsOverlayTextureRenderView::QgsOverlayTextureRenderView( const QString &viewName )
   : QgsAbstractRenderView( viewName )
 {
   mLayer = new Qt3DRender::QLayer;
@@ -33,12 +33,12 @@ QgsDebugTextureRenderView::QgsDebugTextureRenderView( const QString &viewName )
   buildRenderPass();
 }
 
-Qt3DRender::QLayer *QgsDebugTextureRenderView::debugLayer() const
+Qt3DRender::QLayer *QgsOverlayTextureRenderView::overlayLayer() const
 {
   return mLayer;
 }
 
-void QgsDebugTextureRenderView::buildRenderPass()
+void QgsOverlayTextureRenderView::buildRenderPass()
 {
   Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( mRendererEnabler );
   layerFilter->addLayer( mLayer );
