@@ -75,19 +75,21 @@ QgsMapOverlayEntity::~QgsMapOverlayEntity()
   delete mTextureGenerator;
 }
 
-void QgsMapOverlayEntity::update( const QgsRectangle &extent, double rotationDegrees )
+void QgsMapOverlayEntity::update( const QgsRectangle &extent, const QVector<QgsPointXY> &frustumExtent, double rotationDegrees, bool showFrustum )
 {
   if ( !extent.isEmpty() )
   {
     mExtent = extent;
+    mFrustumExtent = frustumExtent;
     mRotation = rotationDegrees;
-    mTextureGenerator->render( extent, rotationDegrees );
+    mShowFrustum = showFrustum;
+    mTextureGenerator->render( extent, frustumExtent, rotationDegrees, showFrustum );
   }
 }
 
 void QgsMapOverlayEntity::invalidateMapImage()
 {
-  update( mExtent, mRotation );
+  update( mExtent, mFrustumExtent, mRotation, mShowFrustum );
 }
 
 void QgsMapOverlayEntity::onLayersChanged()

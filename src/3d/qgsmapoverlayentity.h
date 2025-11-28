@@ -56,7 +56,7 @@ class QgsMapOverlayEntity : public QgsOverlayTextureEntity
 
     ~QgsMapOverlayEntity() override;
 
-    void update( const QgsRectangle &extent, double rotationDegrees );
+    void update( const QgsRectangle &extent, const QVector<QgsPointXY> &frustumExtent, double rotationDegrees, bool showFrustum = false );
 
   private slots:
 
@@ -90,7 +90,9 @@ class QgsMapOverlayEntity : public QgsOverlayTextureEntity
     QList<QgsMapLayer *> mLayers;
 
     QgsRectangle mExtent;
+    QVector<QgsPointXY> mFrustumExtent;
     double mRotation;
+    bool mShowFrustum = false;
 };
 
 /// @endcond
