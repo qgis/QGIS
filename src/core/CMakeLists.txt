@@ -1036,40 +1036,6 @@ set(QGIS_CORE_SRCS
   qgsuserprofilemanager.cpp
 )
 
-if(WITH_AUTH)
-  list(APPEND QGIS_CORE_SRCS
-    auth/qgsauthcertutils.cpp
-    auth/qgsauthconfig.cpp
-    auth/qgsauthcrypto.cpp
-    auth/qgsauthconfigurationstorage.cpp
-    auth/qgsauthconfigurationstorageregistry.cpp
-    auth/qgsauthmanager.cpp
-    auth/qgsauthmethod.cpp
-    auth/qgsauthmethodmetadata.cpp
-    auth/qgsauthmethodregistry.cpp
-    auth/qgsauthorizationsettings.cpp
-
-    auth/qgsauthconfigurationstoragesqlite.cpp
-    auth/qgsauthconfigurationstoragedb.cpp
-  )
-
-  list(APPEND QGIS_CORE_HDRS
-    auth/qgsauthcertutils.h
-    auth/qgsauthconfig.h
-    auth/qgsauthcrypto.h
-    auth/qgsauthconfigurationstorage.h
-    auth/qgsauthconfigurationstorageregistry.h
-    auth/qgsauthmanager.h
-    auth/qgsauthmethod.h
-    auth/qgsauthmethodmetadata.h
-    auth/qgsauthmethodregistry.h
-    auth/qgsauthorizationsettings.h
-
-    auth/qgsauthconfigurationstoragesqlite.h
-    auth/qgsauthconfigurationstoragedb.h
-  )
-endif()
-
 if (WITH_INTERNAL_POLY2TRI)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     ${CMAKE_SOURCE_DIR}/external/poly2tri/common/shapes.cc
@@ -2185,6 +2151,40 @@ set(QGIS_CORE_HDRS
   vectortile/qgsvtpkvectortiledataprovider.h
   vectortile/qgsxyzvectortiledataprovider.h
 )
+
+if(WITH_AUTH)
+  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    auth/qgsauthcertutils.cpp
+    auth/qgsauthconfig.cpp
+    auth/qgsauthcrypto.cpp
+    auth/qgsauthconfigurationstorage.cpp
+    auth/qgsauthconfigurationstorageregistry.cpp
+    auth/qgsauthmanager.cpp
+    auth/qgsauthmethod.cpp
+    auth/qgsauthmethodmetadata.cpp
+    auth/qgsauthmethodregistry.cpp
+    auth/qgsauthorizationsettings.cpp
+
+    auth/qgsauthconfigurationstoragesqlite.cpp
+    auth/qgsauthconfigurationstoragedb.cpp
+  )
+
+  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+    auth/qgsauthcertutils.h
+    auth/qgsauthconfig.h
+    auth/qgsauthcrypto.h
+    auth/qgsauthconfigurationstorage.h
+    auth/qgsauthconfigurationstorageregistry.h
+    auth/qgsauthmanager.h
+    auth/qgsauthmethod.h
+    auth/qgsauthmethodmetadata.h
+    auth/qgsauthmethodregistry.h
+    auth/qgsauthorizationsettings.h
+
+    auth/qgsauthconfigurationstoragesqlite.h
+    auth/qgsauthconfigurationstoragedb.h
+  )
+endif()
 
 set(QGIS_CORE_PRIVATE_HDRS
   qgsexpressionsorter_p.h
