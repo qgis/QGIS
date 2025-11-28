@@ -215,20 +215,6 @@ set(QGIS_CORE_SRCS
   numericformats/qgspercentagenumericformat.cpp
   numericformats/qgsscientificnumericformat.cpp
 
-  auth/qgsauthcertutils.cpp
-  auth/qgsauthconfig.cpp
-  auth/qgsauthcrypto.cpp
-  auth/qgsauthconfigurationstorage.cpp
-  auth/qgsauthconfigurationstorageregistry.cpp
-  auth/qgsauthmanager.cpp
-  auth/qgsauthmethod.cpp
-  auth/qgsauthmethodmetadata.cpp
-  auth/qgsauthmethodregistry.cpp
-  auth/qgsauthorizationsettings.cpp
-
-  auth/qgsauthconfigurationstoragesqlite.cpp
-  auth/qgsauthconfigurationstoragedb.cpp
-
   annotations/qgsannotation.cpp
   annotations/qgsannotationitem.cpp
   annotations/qgsannotationitemeditoperation.cpp
@@ -1050,8 +1036,41 @@ set(QGIS_CORE_SRCS
 
   qgsuserprofile.cpp
   qgsuserprofilemanager.cpp
-
 )
+
+if(WITH_AUTH)
+  list(APPEND QGIS_CORE_SRCS
+    auth/qgsauthcertutils.cpp
+    auth/qgsauthconfig.cpp
+    auth/qgsauthcrypto.cpp
+    auth/qgsauthconfigurationstorage.cpp
+    auth/qgsauthconfigurationstorageregistry.cpp
+    auth/qgsauthmanager.cpp
+    auth/qgsauthmethod.cpp
+    auth/qgsauthmethodmetadata.cpp
+    auth/qgsauthmethodregistry.cpp
+    auth/qgsauthorizationsettings.cpp
+
+    auth/qgsauthconfigurationstoragesqlite.cpp
+    auth/qgsauthconfigurationstoragedb.cpp
+  )
+
+  list(APPEND QGIS_CORE_HDRS
+    auth/qgsauthcertutils.h
+    auth/qgsauthconfig.h
+    auth/qgsauthcrypto.h
+    auth/qgsauthconfigurationstorage.h
+    auth/qgsauthconfigurationstorageregistry.h
+    auth/qgsauthmanager.h
+    auth/qgsauthmethod.h
+    auth/qgsauthmethodmetadata.h
+    auth/qgsauthmethodregistry.h
+    auth/qgsauthorizationsettings.h
+
+    auth/qgsauthconfigurationstoragesqlite.h
+    auth/qgsauthconfigurationstoragedb.h
+  )
+endif()
 
 if (WITH_INTERNAL_POLY2TRI)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -1409,20 +1428,6 @@ set(QGIS_CORE_HDRS
   annotations/qgsrenderedannotationitemdetails.h
   annotations/qgssvgannotation.h
   annotations/qgstextannotation.h
-
-  auth/qgsauthcertutils.h
-  auth/qgsauthconfig.h
-  auth/qgsauthcrypto.h
-  auth/qgsauthconfigurationstorage.h
-  auth/qgsauthconfigurationstorageregistry.h
-  auth/qgsauthmanager.h
-  auth/qgsauthmethod.h
-  auth/qgsauthmethodmetadata.h
-  auth/qgsauthmethodregistry.h
-  auth/qgsauthorizationsettings.h
-
-  auth/qgsauthconfigurationstoragesqlite.h
-  auth/qgsauthconfigurationstoragedb.h
 
   browser/qgsbrowsermodel.h
   browser/qgsbrowserproxymodel.h
@@ -2530,10 +2535,14 @@ endif()
 target_include_directories(qgis_core SYSTEM PUBLIC
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
-  ${QCA_INCLUDE_DIR}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
 )
+if(WITH_AUTH)
+  target_include_directories(qgis_core SYSTEM PUBLIC
+    ${QCA_INCLUDE_DIR}
+  )
+endif()
 
 target_include_directories(qgis_core PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -2684,7 +2693,6 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Positioning
   ${QT_VERSION_BASE}::Multimedia
   ${OPTIONAL_QTWEBKIT}
-  ${QCA_LIBRARY}
   GEOS::geos_c
   GDAL::GDAL
   EXPAT::EXPAT
@@ -2699,6 +2707,12 @@ target_link_libraries(qgis_core
 if(WITH_EXIV2)
   target_link_libraries(qgis_core
     exiv2lib
+  )
+endif()
+
+if(WITH_AUTH)
+  target_link_libraries(qgis_core
+    ${QCA_LIBRARY}
   )
 endif()
 
