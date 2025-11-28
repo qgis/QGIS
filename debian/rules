@@ -257,9 +257,9 @@ else
 endif
 
 ifneq (,$(filter sfcgal,$(CONTROL_EXPRESSIONS)))
-	CMAKE_OPTS += -DWITH_SFCGAL=TRUE
+	QT6_CMAKE_OPTS += -DWITH_SFCGAL=TRUE
 else
-	CMAKE_OPTS += -DWITH_SFCGAL=FALSE
+	QT6_CMAKE_OPTS += -DWITH_SFCGAL=FALSE
 endif
 
 ifneq (,$(filter oracle,$(DEB_BUILD_OPTIONS)))
@@ -420,11 +420,6 @@ endif
 ifneq (,$(filter qt6,$(CONTROL_EXPRESSIONS)))
 	DESTDIR=$(CURDIR)/debian/tmp ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR)-qt6 install
 endif
-
-	# replace leaflet and jquery urls
-	perl -i -p \
-		-e 's#http://.*/leaflet.css#leaflet/leaflet.css#;s#http://.*/leaflet.js#leaflet/leaflet.js#;s#http://.*/jquery-.*.min.js#jquery-min.js#' \
-		$(CURDIR)/debian/tmp/usr/share/qgis/doc/developersmap.html
 
 	# remove extra license files
 	-find $(CURDIR)/debian/tmp/usr/share/qgis*/resources/cpt-city-qgis-min/ -name COPYING.xml -delete
