@@ -1176,7 +1176,7 @@ bool Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
     QString message = tr( "The following layers were not exported:" ) + "\n";
     for ( const QString &layerName : notParsedLayers )
       message += layerName + "\n";
-    QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, QgsMessageOutput::MessageText );
+    QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, Qgis::StringFormat::PlainText );
   }
 
   return true;
