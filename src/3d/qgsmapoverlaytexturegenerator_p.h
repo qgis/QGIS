@@ -61,7 +61,7 @@ class QgsMapOverlayTextureGenerator : public QObject
      * Starts async rendering of a map for the given extent.
      * Returns job ID. The class will emit ImageReady() signal with the job ID when rendering is done.
      */
-    int render( const QgsRectangle &extent, double azimuthDegrees );
+    int render( const QgsRectangle &extent, const QVector<QgsPointXY> &frustumExtent, double azimuthDegrees, bool showFrustum = false );
 
     //! Cancels active rendering job
     void cancelActiveJob();
@@ -84,6 +84,8 @@ class QgsMapOverlayTextureGenerator : public QObject
     QgsMapRendererParallelJob *mActiveJob = nullptr;
     QgsRectangle mExtent;
     double mRotation = 0.;
+    QVector<QgsPointXY> mFrustumExtent;
+    bool mShowFrustum = false;
     int mLastJobId = 0;
 };
 

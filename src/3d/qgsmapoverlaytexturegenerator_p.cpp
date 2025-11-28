@@ -40,7 +40,7 @@ QgsMapOverlayTextureGenerator::~QgsMapOverlayTextureGenerator()
   cancelActiveJob();
 }
 
-int QgsMapOverlayTextureGenerator::render( const QgsRectangle &extent, double azimuthDegrees )
+int QgsMapOverlayTextureGenerator::render( const QgsRectangle &extent, const QVector<QgsPointXY> &frustumExtent, double azimuthDegrees, bool showFrustum )
 {
   cancelActiveJob();
   QgsMapSettings mapSettings( baseMapSettings() );
@@ -48,6 +48,8 @@ int QgsMapOverlayTextureGenerator::render( const QgsRectangle &extent, double az
 
   mExtent = extent;
   mRotation = azimuthDegrees;
+  mFrustumExtent = frustumExtent;
+  mShowFrustum = showFrustum;
   mLastJobId++;
   QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"Texture"_s, QString::number( mLastJobId ) );
 
@@ -104,6 +106,24 @@ void QgsMapOverlayTextureGenerator::onRenderingFinished()
   // Qt applies rotation in a clockwise direction with the Y-axis points downward
   painter.rotate( -mRotation );
   painter.drawPolygon( arrow );
+
+  if ( mShowFrustum )
+  {
+    // go back to the original position to draw the frustum
+    painter.rotate( mRotation );
+    painter.translate( -center );
+    painter.setBrush( QColor::fromRgba( qRgba( 0, 0, 255, 50 ) ) );
+    QPolygonF frustum;
+    double sizeX = mSize.width() / mExtent.width();
+    double sizeY = mSize.height() / mExtent.height();
+    for ( const QgsPointXY &frustumPoint : mFrustumExtent )
+    {
+      frustum << QPointF( ( frustumPoint.x() - mExtent.xMinimum() ) * sizeX, mSize.height() - ( frustumPoint.y() - mExtent.yMinimum() ) * sizeY );
+    }
+
+    painter.drawPolygon( frustum );
+  }
+
   painter.end();
 
   mActiveJob->deleteLater();

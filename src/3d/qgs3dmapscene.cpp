@@ -595,7 +595,7 @@ void Qgs3DMapScene::update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoi
   const double adjustedHalfExtent = std::min( 3.0 * ( minHalfExtent + smoothFactor * maxHalfExtent ), sceneHalfExtent );
 
   const QgsRectangle overviewExtent = QgsRectangle::fromCenterAndSize( extentCenter2D, adjustedHalfExtent, adjustedHalfExtent );
-  mMapOverlayEntity->update( overviewExtent, mCameraController->yaw() );
+  mMapOverlayEntity->update( overviewExtent, extent2DAsPoints, mCameraController->yaw() );
 }
 
 void Qgs3DMapScene::createTerrain()

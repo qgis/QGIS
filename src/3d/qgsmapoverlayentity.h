@@ -59,9 +59,11 @@ class QgsMapOverlayEntity : public QgsOverlayTextureEntity
     /**
      * Updates the overlay texture.
      * \param extent map extent to render in the 3D view CRS
+     * \param frustumExtent polygon representing the camera frustum footprint in map coordinates
      * \param rotationDegrees camera heading in degrees
+     * \param showFrustum whether to display the frustum footprint on the overlay
      */
-    void update( const QgsRectangle &extent, double rotationDegrees );
+    void update( const QgsRectangle &extent, const QVector<QgsPointXY> &frustumExtent, double rotationDegrees, bool showFrustum = false );
 
   private slots:
 
@@ -95,7 +97,9 @@ class QgsMapOverlayEntity : public QgsOverlayTextureEntity
     QList<QgsMapLayer *> mLayers;
 
     QgsRectangle mExtent;
+    QVector<QgsPointXY> mFrustumExtent;
     double mRotation;
+    bool mShowFrustum = false;
 };
 
 /// @endcond
