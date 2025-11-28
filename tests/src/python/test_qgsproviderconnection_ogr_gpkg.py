@@ -539,6 +539,184 @@ class TestPyQgsProviderConnectionGpkg(
         self.assertEqual(options, {"layerName": "new_layer"})
         self.assertEqual(res, self.uri)
 
+    def test_ogr_CreateSqlVectorLayer_complex_queries(self):
+        """
+        Test createSqlVectorLayer with complex queries (bug #42132)
+        """
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+
+        # Test selecting all columns
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT * FROM cdb_lines"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 6)
+        self.assertTrue(vl.isSpatial())
+
+        # Test a query plus a filter
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT * FROM cdb_lines"
+        options.filter = "name = 'Sülfeld'"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 6)
+        self.assertTrue(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["name"], "Sülfeld")
+
+        # Test a query with a where
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT * FROM cdb_lines WHERE name LIKE 'Sülfeld'"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 6)
+        self.assertTrue(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["name"], "Sülfeld")
+
+        # Test a query with a where without the name field
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = (
+            "SELECT id, ortsrat, geom FROM cdb_lines WHERE name LIKE 'Sülfeld'"
+        )
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 2)
+        self.assertTrue(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["ortsrat"], "Fallersleben/Sülfeld")
+
+        # Test a query with a where without the name field and the geom
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT id, ortsrat FROM cdb_lines WHERE name LIKE 'Sülfeld'"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 2)
+        self.assertFalse(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["ortsrat"], "Fallersleben/Sülfeld")
+
+        # Test a query with with a where without the name field and and additional filter
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT id, ortsrat, geom FROM cdb_lines WHERE name LIKE 'S%'"
+        options.filter = "ortsrat = 'Fallersleben/Sülfeld'"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 2)
+        self.assertTrue(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["ortsrat"], "Fallersleben/Sülfeld")
+
+        # Check that the filter and sql have been merged
+        uris_parts = md.decodeUri(vl.publicSource())
+        self.assertEqual(
+            uris_parts["subset"],
+            "SELECT id, ortsrat, geom FROM cdb_lines WHERE ( name LIKE 'S%' ) AND ( ortsrat = 'Fallersleben/Sülfeld' )",
+        )
+        self.assertIsNone(uris_parts["layerName"])
+        self.assertIsNone(uris_parts["layerId"])
+
+        # Test a query with OR and an additional filter
+        options = QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions()
+        options.sql = "SELECT id, name, geom FROM cdb_lines WHERE ortsrat = 'Mitte-West' OR ortsrat = 'Fallersleben/Sülfeld'"
+        options.filter = "name LIKE 'Sülfeld'"
+        vl = conn.createSqlVectorLayer(options)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 2)
+        self.assertTrue(vl.isSpatial())
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0]["name"], "Sülfeld")
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 12, 0),
+        "GDAL 3.12 required",
+    )
+    def test_gpkg_field_domain_update(self):
+        """
+        Test update field domains
+        """
+        gpkg_domains_original_path = f"{TEST_DATA_DIR}/domains.gpkg"
+        temp_domains_path = f"{self.temp_dir.path()}/domains_delete.gpkg"
+        shutil.copy(gpkg_domains_original_path, temp_domains_path)
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(temp_domains_path, {})
+
+        domain = QgsRangeFieldDomain(
+            "my new domain", "my new domain desc", QVariant.Int, 5, True, 15, True
+        )
+        conn.addFieldDomain(domain, "")
+
+        # try retrieving result
+        del conn
+        conn = md.createConnection(temp_domains_path, {})
+
+        # get domain for modification
+        read_domain = conn.fieldDomain("my new domain")
+
+        # modify the field domain
+        read_domain.setMinimum(7.5)
+        read_domain.setMaximum(12.5)
+        read_domain.setDescription("my updated domain desc")
+
+        # update the field domain
+        conn.updateFieldDomain(read_domain, "")
+
+        # get the updated domain
+        read_domain = conn.fieldDomain("my new domain")
+
+        self.assertEqual(read_domain.type(), Qgis.FieldDomainType.Range)
+        self.assertEqual(read_domain.name(), "my new domain")
+        self.assertEqual(read_domain.description(), "my updated domain desc")
+
+        self.assertEqual(read_domain.minimum(), 7.5)
+        self.assertEqual(read_domain.maximum(), 12.5)
+
+        # rename the domain
+        read_domain.setName("my renamed domain")
+
+        # try updating domain that does not exist, should fail
+        with self.assertRaises(QgsProviderConnectionException) as e:
+            conn.updateFieldDomain(read_domain, "")
+        self.assertEqual(
+            str(e.exception),
+            "Could not update field domain: The domain should already exist to be updated",
+        )
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 12, 0),
+        "GDAL 3.12 required",
+    )
+    def test_gpkg_field_domain_delete(self):
+        """
+        Test delete field domains
+        """
+        temp_domains_path = f"{self.temp_dir.path()}/domains_delete.gpkg"
+        shutil.copy(self.gpkg_domains_path, temp_domains_path)
+
+        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        conn = md.createConnection(temp_domains_path, {})
+
+        # delete the field domain
+        conn.deleteFieldDomain("enum_domain", "")
+        conn.deleteFieldDomain("glob_domain", "")
+
+        # try updating domain that does not exist, should fail
+        with self.assertRaises(QgsProviderConnectionException) as e:
+            conn.deleteFieldDomain("non_existing_field_domain", "")
+        self.assertEqual(
+            str(e.exception),
+            "Could not delete field domain: Domain does not exist",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

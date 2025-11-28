@@ -40,8 +40,6 @@ project instance
 
     ~QgsRelationContext();
 
-    QgsRelationContext( const QgsRelationContext &other );
-
 };
 
 

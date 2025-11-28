@@ -48,8 +48,10 @@ class CORE_EXPORT QgsTextFormat
     QgsTextFormat();
 
     QgsTextFormat( const QgsTextFormat &other );
+    SIP_SKIP QgsTextFormat( QgsTextFormat &&other );
 
     QgsTextFormat &operator=( const QgsTextFormat &other );
+    QgsTextFormat &operator=( QgsTextFormat &&other );
 
     ~QgsTextFormat();
 

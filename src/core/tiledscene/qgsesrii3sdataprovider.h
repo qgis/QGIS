@@ -88,7 +88,11 @@ class QgsEsriI3SProviderMetadata : public QgsProviderMetadata
     QString filters( Qgis::FileFilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
     QList< Qgis::LayerType > supportedLayerTypes() const override;
-
+    QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
+    QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const override;
+    int priorityForUri( const QString &uri ) const override;
 };
 
 ///@endcond

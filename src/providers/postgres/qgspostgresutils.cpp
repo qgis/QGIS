@@ -479,16 +479,39 @@ bool QgsPostgresUtils::deleteSchema( const QString &schema, const QgsDataSourceU
   return true;
 }
 
-bool QgsPostgresUtils::tableExists( QgsPostgresConn *conn, const QString &name )
+bool QgsPostgresUtils::tableExists( QgsPostgresConn *conn, const QString &schema, const QString &table )
 {
-  QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "tableExists" ), "SELECT EXISTS ( SELECT oid FROM pg_catalog.pg_class WHERE relname=" + QgsPostgresConn::quotedValue( name ) + ")" ) );
-  return res.PQgetvalue( 0, 0 ).startsWith( 't' );
+  QString sql;
+
+  if ( schema.isEmpty() )
+  {
+    sql = QStringLiteral( "SELECT EXISTS ( SELECT oid FROM pg_catalog.pg_class WHERE relname= %1)" ).arg( QgsPostgresConn::quotedValue( table ) );
+  }
+  else
+  {
+    sql = QStringLiteral( "SELECT EXISTS ( SELECT 1 FROM information_schema.tables WHERE table_name = %1 AND table_schema = %2)" )
+            .arg( QgsPostgresConn::quotedValue( table ), QgsPostgresConn::quotedValue( schema ) );
+  }
+
+  QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "tableExists" ), sql ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( QStringLiteral( "t" ) );
 }
 
-bool QgsPostgresUtils::columnExists( QgsPostgresConn *conn, const QString &table, const QString &column )
+bool QgsPostgresUtils::columnExists( QgsPostgresConn *conn, const QString &schema, const QString &table, const QString &column )
 {
-  QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "columnExists" ), "SELECT COUNT(*) FROM information_schema.columns WHERE table_name=" + QgsPostgresConn::quotedValue( table ) + " and column_name=" + QgsPostgresConn::quotedValue( column ) ) );
-  return res.PQgetvalue( 0, 0 ).toInt() > 0;
+  QString sqlWhereClause = QStringLiteral( "table_name = %1 AND column_name = %3" ).arg( QgsPostgresConn::quotedValue( table ), QgsPostgresConn::quotedValue( column ) );
+
+  if ( !schema.isEmpty() )
+  {
+    sqlWhereClause.append( QStringLiteral( " AND table_schema = %1" ).arg( QgsPostgresConn::quotedValue( schema ) ) );
+  }
+
+  const QString sql = QStringLiteral( "SELECT EXISTS( SELECT 1 FROM information_schema.columns "
+                                      "WHERE %1)" )
+                        .arg( sqlWhereClause );
+
+  QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "columnExists" ), sql ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( QStringLiteral( "t" ) );
 }
 
 bool QgsPostgresUtils::createStylesTable( QgsPostgresConn *conn, QString loggedClass )
@@ -517,7 +540,7 @@ bool QgsPostgresUtils::createStylesTable( QgsPostgresConn *conn, QString loggedC
 bool QgsPostgresUtils::createProjectsTable( QgsPostgresConn *conn, const QString &schemaName )
 {
   // try to create projects table
-  const QString sql = QStringLiteral( "CREATE TABLE %1.qgis_projects(name TEXT PRIMARY KEY, metadata JSONB, content BYTEA)" )
+  const QString sql = QStringLiteral( "CREATE TABLE IF NOT EXISTS %1.qgis_projects(name TEXT PRIMARY KEY, metadata JSONB, content BYTEA, comment TEXT DEFAULT '')" )
                         .arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
 
   QgsPostgresResult res( conn->PQexec( sql ) );
@@ -561,6 +584,41 @@ bool QgsPostgresUtils::projectsTableExists( QgsPostgresConn *conn, const QString
   return res.PQgetvalue( 0, 0 ).toInt() > 0;
 }
 
+bool QgsPostgresUtils::copyProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema )
+{
+  //copy from one schema to another
+  const QString sql = QStringLiteral( "INSERT INTO %1.qgis_projects SELECT * FROM %2.qgis_projects WHERE name=%3;" )
+                        .arg( QgsPostgresConn::quotedIdentifier( targetSchema ) )
+                        .arg( QgsPostgresConn::quotedIdentifier( originalSchema ) )
+                        .arg( QgsPostgresConn::quotedValue( projectName ) );
+
+  QgsPostgresResult result( conn->PQexec( sql ) );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsPostgresUtils::moveProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema )
+{
+  conn->begin();
+
+  if ( !QgsPostgresUtils::copyProjectToSchema( conn, originalSchema, projectName, targetSchema ) )
+  {
+    return false;
+  }
+
+  if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectName, originalSchema ) )
+  {
+    return false;
+  }
+
+  conn->commit();
+  return true;
+}
+
 QString QgsPostgresUtils::variantMapToHtml( const QVariantMap &variantMap, const QString &title )
 {
   QString result;
@@ -599,4 +657,37 @@ QString QgsPostgresUtils::variantMapToHtml( const QVariantMap &variantMap, const
     }
   }
   return result;
+}
+
+bool QgsPostgresUtils::setProjectComment( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName, const QString &comment )
+{
+  const QString sql = QStringLiteral( "ALTER TABLE %1.qgis_projects ADD COLUMN IF NOT EXISTS comment TEXT DEFAULT '';"
+                                      "UPDATE %1.qgis_projects SET comment = %3 WHERE name = %2" )
+                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ), QgsPostgresConn::quotedValue( projectName ), QgsPostgresConn::quotedValue( comment ) );
+
+  QgsPostgresResult res( conn->PQexec( sql ) );
+  return res.PQresultStatus() == PGRES_COMMAND_OK;
+}
+
+QString QgsPostgresUtils::projectComment( QgsPostgresConn *conn, const QString &schemaName, const QString &projectName )
+{
+  const QString sql = QStringLiteral( "SELECT comment FROM %1.qgis_projects WHERE name = %2" )
+                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ), QgsPostgresConn::quotedValue( projectName ) );
+
+  QgsPostgresResult res( conn->PQexec( sql ) );
+  if ( res.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    return QString();
+  }
+
+  return res.PQgetvalue( 0, 0 );
+}
+
+bool QgsPostgresUtils::addCommentColumnToProjectsTable( QgsPostgresConn *conn, const QString &schemaName )
+{
+  const QString sqlAddColumn = QStringLiteral( "ALTER TABLE %1.qgis_projects ADD COLUMN IF NOT EXISTS comment TEXT DEFAULT ''" )
+                                 .arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
+
+  QgsPostgresResult resAddColumn( conn->PQexec( sqlAddColumn ) );
+  return resAddColumn.PQresultStatus() == PGRES_COMMAND_OK;
 }

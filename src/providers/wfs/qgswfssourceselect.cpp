@@ -517,6 +517,14 @@ void QgsWFSSourceSelect::addButtonClicked()
   if ( gbCRS->isEnabled() )
     pCrsString = labelCoordRefSys->text();
 
+  const QStringList detailsParameters = { QStringLiteral( "wfs" ), cmbConnections->currentText() };
+  QString featureFormat = QgsOwsConnection::settingsDefaultFeatureFormat->value( detailsParameters );
+  if ( featureFormat.isEmpty() )
+  {
+    // Read from global default setting
+    featureFormat = QgsSettings().value( QStringLiteral( "qgis/lastFeatureFormatEncoding" ), QString() ).toString();
+  }
+
   //create layers that user selected from this WFS source
   QModelIndexList list = treeView->selectionModel()->selectedRows();
   for ( int i = 0; i < list.size(); i++ )
@@ -533,7 +541,7 @@ void QgsWFSSourceSelect::addButtonClicked()
     QString layerName = typeName;
     QgsDebugMsgLevel( "Layer " + typeName + " SQL is " + sql, 3 );
 
-    mUri = QgsWFSDataSourceURI::build( connection.uri().uri( false ), typeName, pCrsString, isOapif() ? QString() : sql, isOapif() ? sql : QString(), cbxFeatureCurrentViewExtent->isChecked() );
+    mUri = QgsWFSDataSourceURI::build( connection.uri().uri( false ), typeName, pCrsString, isOapif() ? QString() : sql, isOapif() ? sql : QString(), cbxFeatureCurrentViewExtent->isChecked(), featureFormat );
 
     Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( mUri, layerName, isOapif() ? QgsOapifProvider::OAPIF_PROVIDER_KEY : QgsWFSProvider::WFS_PROVIDER_KEY );
@@ -589,11 +597,11 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
     {
       auto provider = dynamic_cast<QgsOapifProvider *>( vlayer.dataProvider() );
       Q_ASSERT( provider );
-      if ( provider->filterTranslatedState() == QgsOapifProvider::FilterTranslationState::FULLY_CLIENT )
+      if ( provider->filterTranslatedState() == QgsOapifFilterTranslationState::FULLY_CLIENT )
       {
         QMessageBox::information( nullptr, tr( "Filter" ), tr( "Whole filter will be evaluated on client side." ) );
       }
-      else if ( provider->filterTranslatedState() == QgsOapifProvider::FilterTranslationState::PARTIAL )
+      else if ( provider->filterTranslatedState() == QgsOapifFilterTranslationState::PARTIAL )
       {
         if ( provider->clientSideFilterExpression().isEmpty() )
         {

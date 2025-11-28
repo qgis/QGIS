@@ -218,6 +218,7 @@ class CORE_EXPORT QgsSymbolLayer
       LineClipping SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineClipping ), //!< Line clipping mode \since QGIS 3.24
       SkipMultiples, //!< Skip multiples of \since QGIS 3.40
       ShowMarker, //!< Show markers \since QGIS 3.40
+      BlankSegments, //!< String list of distance to define blank segments along line for templated line symbol layers. \since QGIS 4.0
     };
     // *INDENT-ON*
 
@@ -463,6 +464,21 @@ class CORE_EXPORT QgsSymbolLayer
 
     //! Returns if the layer can be used below the specified symbol
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
+
+    /**
+     * Returns TRUE if this symbol layer will always render identically
+     * to an \a other symbol layer.
+     *
+     * \note This method is pessimistic, in that it will return FALSE in circumstances
+     * where it is not possible to guarantee that in 100% of cases the layer will
+     * render pixel-identically to the other layer. For instance, calling
+     * rendersIdenticallyTo() with the same symbol layer as \a other may
+     * return FALSE if the symbol layer contains data-defined overrides, such
+     * as those using feature attributes or expression variables.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool rendersIdenticallyTo( const QgsSymbolLayer *other ) const;
 
     /**
      * Returns TRUE if the symbol layer rendering can cause visible artifacts across a single feature

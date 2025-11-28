@@ -90,6 +90,8 @@ class QgsMapViewsManager;
 class QgsProjectElevationProperties;
 class QgsProjectGpsSettings;
 class QgsSensorManager;
+class QgsObjectEntityVisitorInterface;
+class QgsObjectVisitorContext;
 
 /**
  * \ingroup core
@@ -108,6 +110,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
+    Q_PROPERTY( QString title READ title WRITE setTitle  NOTIFY titleChanged )
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath WRITE setPresetHomePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
@@ -756,7 +759,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The optional \a flags argument can be used to control layer reading behavior.
      *
      */
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
+    std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 
     //! Convenience function to set topological editing
     void setTopologicalEditing( bool enabled );
@@ -1778,6 +1781,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
     /**
+     * Accepts the specified object entity \a visitor, causing it to visit all object entities associated
+     * with the project.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 4.0
+     */
+    bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
+
+    /**
      * Returns the elevation shading renderer used for map shading
      *
      * \since QGIS 3.30
@@ -1809,7 +1823,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       * \since QGIS 3.40
       */
     void cleanFunctionsFromProject() SIP_SKIP;
-
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -1921,6 +1934,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \deprecated QGIS 3.4
      */
     Q_DECL_DEPRECATED void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+
+    /**
+     * Emitted when the title of the project changes.
+     * \since QGIS 4.0
+     */
+    void titleChanged();
 
     //! Emitted when the file name of the project changes
     void fileNameChanged();

@@ -170,7 +170,7 @@ class SymbolLayerItem : public QStandardItem
     }
 
     int type() const override { return SYMBOL_LAYER_ITEM_TYPE; }
-    bool isLayer() { return mIsLayer; }
+    bool isLayer() const { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol
     QgsSymbol *symbol()

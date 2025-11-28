@@ -206,7 +206,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     return;
   }
 
-  connect( mEnableMapTips, &QAbstractButton::toggled, mHtmlMapTipGroupBox, &QWidget::setEnabled );
   mEnableMapTips->setChecked( mRasterLayer->mapTipsEnabled() );
 
   updateRasterAttributeTableOptionsPage();
@@ -1168,7 +1167,7 @@ void QgsRasterLayerProperties::initializeDataDefinedButton( QgsPropertyOverrideB
 
 void QgsRasterLayerProperties::updateDataDefinedButtons()
 {
-  const auto propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
+  const QList<QgsPropertyOverrideButton *> propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
   for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
   {
     updateDataDefinedButton( button );
@@ -1386,6 +1385,7 @@ void QgsRasterLayerProperties::initMapTipPreview()
   // Note: there's quite a bit of overlap between this and the code in QgsMapTip::showMapTip
   // Create the WebView
   mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
+  mMapTipPreviewLayout->addWidget( mMapTipPreview );
 
 #if WITH_QTWEBKIT
   mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks ); //Handle link clicks by yourself

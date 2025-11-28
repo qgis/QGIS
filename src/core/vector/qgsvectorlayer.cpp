@@ -87,6 +87,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgsthreadingutils.h"
 #include "qgssldexportcontext.h"
+#include "qgsobjectvisitor.h"
+#include "qgsnetworkcontentfetcherregistry.h"
 
 #include <QDir>
 #include <QFile>
@@ -1894,6 +1896,96 @@ bool QgsVectorLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
   if ( mLabeling )
     if ( !mLabeling->accept( visitor ) )
       return false;
+
+  return true;
+}
+
+bool QgsVectorLayer::accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mActions )
+  {
+    const QList<QgsAction> actions = mActions->actions();
+    for ( const QgsAction &action : actions )
+    {
+      if ( action.command().isEmpty() )
+      {
+        continue;
+      }
+
+      switch ( action.type() )
+      {
+        case Qgis::AttributeActionType::GenericPython:
+        case Qgis::AttributeActionType::Mac:
+        case Qgis::AttributeActionType::Windows:
+        case Qgis::AttributeActionType::Unix:
+        {
+          QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::Action, tr( "%1: Action ’%2’" ).arg( name(), action.name() ), action.command() );
+          if ( !visitor->visitEmbeddedScript( entity, context ) )
+          {
+            return false;
+          }
+          break;
+        }
+
+        case Qgis::AttributeActionType::Generic:
+        case Qgis::AttributeActionType::OpenUrl:
+        case Qgis::AttributeActionType::SubmitUrlEncoded:
+        case Qgis::AttributeActionType::SubmitUrlMultipart:
+        {
+          break;
+        }
+      }
+    }
+  }
+
+  QString initCode;
+  switch ( mEditFormConfig.initCodeSource() )
+  {
+    case Qgis::AttributeFormPythonInitCodeSource::Dialog:
+    {
+      initCode = QStringLiteral( "# Calling function ’%1’\n\n%2" ).arg( mEditFormConfig.initFunction(), mEditFormConfig.initCode() );
+      break;
+    }
+
+    case Qgis::AttributeFormPythonInitCodeSource::File:
+    {
+      QFile *inputFile = QgsApplication::networkContentFetcherRegistry()->localFile( mEditFormConfig.initFilePath() );
+      if ( inputFile && inputFile->open( QFile::ReadOnly ) )
+      {
+        // Read it into a string
+        QTextStream inf( inputFile );
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+        inf.setCodec( "UTF-8" );
+#endif
+        initCode = inf.readAll();
+        inputFile->close();
+        initCode = QStringLiteral( "# Calling function ’%1’\n# From file %2\n\n" ).arg( mEditFormConfig.initFunction(), mEditFormConfig.initFilePath() ) + initCode;
+      }
+      break;
+    }
+
+    case Qgis::AttributeFormPythonInitCodeSource::Environment:
+    {
+      initCode = QStringLiteral( "# Calling function ’%1’\n# From environment\n\n" ).arg( mEditFormConfig.initFunction() );
+      break;
+    }
+
+    case Qgis::AttributeFormPythonInitCodeSource::NoSource:
+    {
+      break;
+    }
+  }
+
+  if ( !initCode.isEmpty() )
+  {
+    QgsEmbeddedScriptEntity entity( Qgis::EmbeddedScriptType::FormInitCode, tr( "%1: Attribute form init code" ).arg( name() ), initCode );
+    if ( !visitor->visitEmbeddedScript( entity, context ) )
+    {
+      return false;
+    }
+  }
 
   return true;
 }
@@ -5173,7 +5265,7 @@ void QgsVectorLayer::createEditBuffer()
   // forward signals
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::invalidateSymbolCountedFlag );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::layerModified ); // TODO[MD]: necessary?
-  //connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( triggerRepaint() ) ); // TODO[MD]: works well?
+  //connect( mEditBuffer, &QgsVectorLayerEditBuffer::layerModified, this, &QgsVectorLayer::triggerRepaint ); // TODO[MD]: works well?
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureAdded, this, &QgsVectorLayer::onFeatureAdded );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::featureDeleted, this, &QgsVectorLayer::onFeatureDeleted );
   connect( mEditBuffer, &QgsVectorLayerEditBuffer::geometryChanged, this, &QgsVectorLayer::geometryChanged );

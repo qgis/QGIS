@@ -134,6 +134,9 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateR
 
 QgsCoordinateReferenceSystem &QgsCoordinateReferenceSystem::operator=( const QgsCoordinateReferenceSystem &srs )  //NOLINT
 {
+  if ( &srs == this )
+    return *this;
+
   d = srs.d;
   mValidationHint = srs.mValidationHint;
   mNativeFormat = srs.mNativeFormat;
@@ -1362,6 +1365,27 @@ QString QgsCoordinateReferenceSystem::toProj() const
   }
   // Stray spaces at the end?
   return d->mProj4.trimmed();
+}
+
+std::string QgsCoordinateReferenceSystem::toJsonString( bool multiline, int indentationWidth, const QString &schema ) const
+{
+  if ( !d->mIsValid )
+    return {};
+
+  if ( PJ *obj = d->threadLocalProjObject() )
+  {
+    const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
+    const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
+    const QByteArray schemaOption = QStringLiteral( "SCHEMA=%1" ).arg( schema ).toLocal8Bit();
+    const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), schemaOption.constData(), nullptr};
+
+    const char *json = proj_as_projjson( QgsProjContext::get(), obj, options );
+    return json ? std::string{ json } : std::string{};
+  }
+  else
+  {
+    return {};
+  }
 }
 
 Qgis::CrsType QgsCoordinateReferenceSystem::type() const

@@ -16,6 +16,7 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QTimer>
 
 #include "qgsapplication.h"
 #include "qgsmarkersymbollayer.h"
@@ -73,6 +74,8 @@ class TestQgsProject : public QObject
     void testSymlinks5ProjectFile();
     void testSymlinks6ProjectFolder();
     void regression60100();
+    //! Test issue GH #63007 (autorefresh timer not started after loading the project file)
+    void testAutorefreshModeRestore();
 };
 
 void TestQgsProject::init()
@@ -173,7 +176,7 @@ void TestQgsProject::testPathResolver()
 
   // test older style relative path - file must exist for this to work
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until we open the file
+  QVERIFY( tmpFile.open() ); // fileName is not available until we open the file
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
   const QgsPathResolver tempRel( tmpName );
@@ -560,7 +563,7 @@ void TestQgsProject::testEmbeddedLayerGroupFromQgz()
 
   QgsProject p1;
   p1.createEmbeddedLayer( points->id(), p0.fileName(), brokenNodes );
-  p1.createEmbeddedGroup( "group1", p0.fileName(), QStringList() );
+  std::unique_ptr< QgsLayerTreeGroup > group = p1.createEmbeddedGroup( "group1", p0.fileName(), QStringList() );
 
   QCOMPARE( p1.layerIsEmbedded( points->id() ), path );
   QCOMPARE( p1.layerIsEmbedded( polys->id() ), path );
@@ -814,7 +817,7 @@ void TestQgsProject::testAttachmentsQgs()
   // Verify that attachment is exists after re-reading project
   {
     QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgs" ) );
-    projFile.open();
+    QVERIFY( projFile.open() );
 
     QgsProject p;
     QFile file;
@@ -843,12 +846,12 @@ void TestQgsProject::testAttachmentsQgs()
   // Verify that attachment paths can be used as layer filenames
   {
     QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgs" ) );
-    projFile.open();
+    QVERIFY( projFile.open() );
 
     QgsProject p;
     const QString fileName = p.createAttachedFile( "testlayer.gpx" );
     QFile file( fileName );
-    file.open( QIODevice::WriteOnly );
+    QVERIFY( file.open( QIODevice::WriteOnly ) );
     file.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
     file.write( "<gpx version=\"1.0\">" );
     file.write( "<name>Example gpx</name>" );
@@ -901,7 +904,7 @@ void TestQgsProject::testAttachmentsQgz()
   // Verify that attachment is exists after re-reading project
   {
     QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
-    projFile.open();
+    QVERIFY( projFile.open() );
 
     QgsProject p;
     QFile file;
@@ -926,12 +929,12 @@ void TestQgsProject::testAttachmentsQgz()
   // Verify that attachment paths can be used as layer filenames
   {
     QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
-    projFile.open();
+    QVERIFY( projFile.open() );
 
     QgsProject p;
     const QString fileName = p.createAttachedFile( "testlayer.gpx" );
     QFile file( fileName );
-    file.open( QIODevice::WriteOnly );
+    QVERIFY( file.open( QIODevice::WriteOnly ) );
     file.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
     file.write( "<gpx version=\"1.0\">" );
     file.write( "<name>Example gpx</name>" );
@@ -965,7 +968,7 @@ void TestQgsProject::testAttachmentIdentifier()
   // Verify attachment identifiers
   {
     QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
-    projFile.open();
+    QVERIFY( projFile.open() );
 
     QgsProject p;
     const QString attachmentFileName = p.createAttachedFile( "test.jpg" );
@@ -1094,7 +1097,7 @@ void TestQgsProject::testAsynchronousLayerLoading()
   QCOMPARE( project->mapLayers( false ).count(), layersCount );
 
   QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgs" ) );
-  projFile.open();
+  QVERIFY( projFile.open() );
   QVERIFY( project->write( projFile.fileName() ) );
 
   project = std::make_unique<QgsProject>();
@@ -1614,6 +1617,23 @@ void TestQgsProject::regression60100()
     QCOMPARE( layerSource, QStringLiteral( "./points.geojson" ) );
     layerElem = layerElem.nextSiblingElement();
   }
+}
+
+void TestQgsProject::testAutorefreshModeRestore()
+{
+  QgsVectorLayer vl( QStringLiteral( "Point?field=fldtxt:string" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer vl2( QStringLiteral( "Point?field=fldtxt:string" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  QDomDocument doc( QStringLiteral( "testdoc" ) );
+  QDomElement elem = doc.createElement( QStringLiteral( "maplayer" ) );
+  vl.setAutoRefreshInterval( 123 );
+  vl.setAutoRefreshMode( Qgis::AutoRefreshMode::RedrawOnly );
+  QgsReadWriteContext ctx;
+  vl.writeLayerXml( elem, doc, ctx );
+
+  vl2.readLayerXml( elem, ctx );
+  QCOMPARE( vl2.autoRefreshInterval(), 123 );
+  QCOMPARE( vl2.autoRefreshMode(), Qgis::AutoRefreshMode::RedrawOnly );
+  QVERIFY( vl2.mRefreshTimer->isActive() );
 }
 
 QGSTEST_MAIN( TestQgsProject )

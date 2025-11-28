@@ -60,6 +60,7 @@ class QgsElevationProfileManagerDialog : public QDialog, private Ui::QgsElevatio
 
     void removeClicked();
     void showClicked();
+    void duplicateClicked();
     void renameClicked();
     void itemDoubleClicked( const QModelIndex &index );
 };

@@ -240,6 +240,13 @@ class GUI_EXPORT QgsFieldDomainWidget : public QWidget, private Ui_QgsFieldDomai
      */
     bool isValid() const;
 
+    /**
+     * Sets if name of the field domain is editable.
+     *
+     * \since QGIS 4.0
+     */
+    void setNameEditable( bool editable );
+
   signals:
 
     /**
@@ -285,6 +292,13 @@ class GUI_EXPORT QgsFieldDomainDialog : public QDialog
      * \see setFieldDomain()
      */
     QgsFieldDomain *createFieldDomain() const SIP_FACTORY;
+
+    /**
+     * Sets if name of the field domain is editable
+     *
+     * \since QGIS 4.0
+     */
+    void setNameEditable( bool editable );
 
   public slots:
 

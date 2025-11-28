@@ -1326,10 +1326,10 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
 
   if ( !layerTreeElem.isNull() )
   {
-    QgsLayerTree *tree( QgsLayerTree::readXml( layerTreeElem, context ) );
+    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem, context ) );
     if ( project )
       tree->resolveReferences( project, true );
-    layoutItem->setCustomLayerTree( tree );
+    layoutItem->setCustomLayerTree( tree.release() );
   }
   else
   {

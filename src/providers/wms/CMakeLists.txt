@@ -14,6 +14,7 @@ if (WITH_GUI)
     qgswmstsettingswidget.cpp
     qgstilescalewidget.cpp
     qgswmtsdimensions.cpp
+    qgswmsnewconnection.cpp
     qgsxyzconnectiondialog.cpp
     qgsxyzsourceselect.cpp
     qgsxyzsourcewidget.cpp

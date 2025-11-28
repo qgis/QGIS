@@ -287,7 +287,7 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
       );
       enableBinding = false; // not used in absolute mode
 
-      if ( QgsWkbTypes::hasZ( mLayer->wkbType() ) )
+      if ( mLayer && QgsWkbTypes::hasZ( mLayer->wkbType() ) )
       {
         mOffsetLabel->setText( tr( "Offset" ) );
       }
@@ -427,7 +427,7 @@ void QgsVectorElevationPropertiesWidget::initializeDataDefinedButton( QgsPropert
 
 void QgsVectorElevationPropertiesWidget::updateDataDefinedButtons()
 {
-  const auto propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
+  const QList<QgsPropertyOverrideButton *> propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
   for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
   {
     updateDataDefinedButton( button );

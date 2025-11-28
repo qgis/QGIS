@@ -140,6 +140,31 @@ class CORE_EXPORT QgsGeometryUtilsBase
     //! Length of a circular string segment defined by pt1, pt2, pt3
     static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL;
 
+    /**
+     * Calculates the precise arc length between two vertices on a circular arc.
+     *
+     * This method calculates the exact distance along the arc between any two vertices
+     * on a circle defined by three points. The arc follows the geometric path of the circle.
+     *
+     * \param centerX X coordinate of the circle center
+     * \param centerY Y coordinate of the circle center
+     * \param radius radius of the circle
+     * \param x1 X coordinate of the first point defining the arc
+     * \param y1 Y coordinate of the first point defining the arc
+     * \param x2 X coordinate of the second point defining the arc
+     * \param y2 Y coordinate of the second point defining the arc
+     * \param x3 X coordinate of the third point defining the arc
+     * \param y3 Y coordinate of the third point defining the arc
+     * \param fromVertex vertex index to start from (0, 1, or 2)
+     * \param toVertex vertex index to end at (0, 1, or 2)
+     * \returns precise arc length between the vertices, or 0 if vertices are the same
+     *
+     * \since QGIS 4.00
+     */
+    static double calculateArcLength( double centerX, double centerY, double radius,
+                                      double x1, double y1, double x2, double y2,
+                                      double x3, double y3, int fromVertex, int toVertex ) SIP_HOLDGIL;
+
     //! Calculates angle of a circular string part defined by pt1, pt2, pt3
     static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL;
 
@@ -556,6 +581,26 @@ class CORE_EXPORT QgsGeometryUtilsBase
 
       return sum < squaredEpsilon;
     }
+
+    /**
+     * Calculates the maximum allowed fillet radius for the given segment configuration.
+     *
+     * \param segment1StartX x-coordinate of first segment start point
+     * \param segment1StartY y-coordinate of first segment start point
+     * \param segment1EndX x-coordinate of first segment end point
+     * \param segment1EndY y-coordinate of first segment end point
+     * \param segment2StartX x-coordinate of second segment start point
+     * \param segment2StartY y-coordinate of second segment start point
+     * \param segment2EndX x-coordinate of second segment end point
+     * \param segment2EndY y-coordinate of second segment end point
+     * \param epsilon tolerance for intersection and angle calculations
+     * \returns Maximum fillet radius that can be applied, or -1.0 if no fillet is possible
+     *
+     * \since QGIS 4.0
+     */
+    static double maxFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+                                   const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
+                                   double epsilon = 1e-8 ) SIP_HOLDGIL;
 
     /**
      * Creates a chamfer (angled corner) between two line segments.

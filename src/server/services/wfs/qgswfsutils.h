@@ -51,11 +51,6 @@ namespace QgsWfs
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings );
 
   /**
-   * Returns typename from vector layer
-   */
-  QString layerTypeName( const QgsMapLayer *layer );
-
-  /**
    * Retrieve a layer by typename
    */
   QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName );

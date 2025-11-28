@@ -128,7 +128,7 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     Q_OBJECT
   public:
     QgsQuadtreeChunkLoaderFactory();
-    virtual ~QgsQuadtreeChunkLoaderFactory();
+    ~QgsQuadtreeChunkLoaderFactory() override;
 
     //! Initializes the root node setup (bounding box and error) and tree depth
     void setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel, const QgsBox3D &clippingBox3D = QgsBox3D() );

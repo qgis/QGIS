@@ -127,8 +127,9 @@ QgsNumericFormatWidget *QgsNumericFormatGuiRegistry::formatConfigurationWidget( 
   if ( !format )
     return nullptr;
 
-  if ( !mFormatConfigurationWidgetFactories.contains( format->id() ) )
+  auto it = mFormatConfigurationWidgetFactories.constFind( format->id() );
+  if ( it == mFormatConfigurationWidgetFactories.constEnd() )
     return nullptr;
 
-  return mFormatConfigurationWidgetFactories.value( format->id() )->create( format );
+  return it.value()->create( format );
 }

@@ -16,10 +16,10 @@
 #ifndef QGSBACKGROUNDCACHEDSHAREDDATA_H
 #define QGSBACKGROUNDCACHEDSHAREDDATA_H
 
-#include "qgsbackgroundcachedfeatureiterator.h"
 #include "qgsrectangle.h"
-#include "qgsspatialiteutils.h"
 #include "qgscachedirectorymanager.h"
+#include "qgsfeaturedownloadcommon.h"
+#include "qgsspatialindex.h"
 
 #include <QSet>
 

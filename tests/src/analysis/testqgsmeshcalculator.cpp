@@ -221,7 +221,7 @@ void TestQgsMeshCalculator::calcWithVertexLayers()
   const QgsRectangle extent( 1000.000, 1000.000, 3000.000, 3000.000 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -239,7 +239,7 @@ void TestQgsMeshCalculator::calcWithFaceLayers()
   const QgsRectangle extent( 1000.000, 1000.000, 3000.000, 3000.000 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -257,7 +257,7 @@ void TestQgsMeshCalculator::calcWithMixedLayers()
   const QgsRectangle extent( 1000.000, 1000.000, 3000.000, 3000.000 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 

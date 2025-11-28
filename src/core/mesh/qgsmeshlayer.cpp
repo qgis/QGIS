@@ -147,6 +147,13 @@ QgsMeshLayer *QgsMeshLayer::clone() const
   }
   layer->setLabelsEnabled( labelsEnabled() );
 
+  for ( const QString &extraDataset : mExtraDatasetUri )
+  {
+    layer->addDatasets( extraDataset );
+  }
+
+  layer->setRendererSettings( mRendererSettings );
+
   return layer;
 }
 
@@ -306,7 +313,7 @@ bool QgsMeshLayer::addDatasets( QgsMeshDatasetGroup *datasetGroup )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mDatasetGroupStore->addDatasetGroup( datasetGroup ) )
+  if ( mDatasetGroupStore->addDatasetGroup( std::unique_ptr< QgsMeshDatasetGroup >( datasetGroup ) ) )
   {
     emit dataChanged();
     return true;
@@ -1168,9 +1175,7 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform, Q
   mExtraDatasetUri.clear();
   mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
 
-  std::unique_ptr<QgsMeshDatasetGroup> zValueDatasetGroup( mMeshEditor->createZValueDatasetGroup() );
-  if ( mDatasetGroupStore->addDatasetGroup( zValueDatasetGroup.get() ) )
-    zValueDatasetGroup.release();
+  mDatasetGroupStore->addDatasetGroup( mMeshEditor->createZValueDatasetGroup() );
 
   resetDatasetGroupTreeItem();
 

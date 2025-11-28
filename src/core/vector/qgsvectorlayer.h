@@ -83,6 +83,8 @@ class QgsVectorLayerSelectionProperties;
 class QgsVectorLayerTemporalProperties;
 class QgsFeatureRendererGenerator;
 class QgsVectorLayerElevationProperties;
+class QgsObjectEntityVisitorInterface;
+class QgsObjectVisitorContext;
 
 #ifndef SIP_RUN
 template<class T>
@@ -204,6 +206,7 @@ typedef QSet<int> QgsAttributeIds;
  * - InvertAxisOrientation=1: to invert axis order
  * - hideDownloadProgressDialog=1: to hide the download progress dialog
  * - featureMode=default/simpleFeatures/complexFeatures (QGIS >= 3.44)
+ * - outputformat=string: output format. Can be set for example to GML3 for some WFS 1.0 servers that can support GML3.
  *
  * The ‘filter’ key value can either be a QGIS expression
  * or an OGC XML filter. If the value is set to a QGIS expression the driver will
@@ -237,6 +240,7 @@ typedef QSet<int> QgsAttributeIds;
  * - pageSize=number: number of features to retrieve in a single request
  * - maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
  * - hideDownloadProgressDialog=1: to hide the download progress dialog.
+ * - outputformat=string: output format as a MIME type to ask the server to return features. e.g "application/geo+json", "application/flatgeobuf", "application/fg+json", etc. Assumes there is a GDAL driver for the requested format. (QGIS >= 4)
  *
  * \subsection delimitedtext Delimited text file data provider (delimitedtext)
  *
@@ -1214,7 +1218,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see changeGeometry()
      * \see changeAttributeValue()
     */
-    bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
+    Q_INVOKABLE bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 
     /**
      * Inserts a new vertex before the given vertex number,
@@ -1710,7 +1714,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \return FALSE if the layer is read only or the data provider has no editing capabilities
      * \since QGIS 3.18
      */
-    bool supportsEditing() const override;
+    Q_INVOKABLE bool supportsEditing() const override;
 
     /**
      * Changes a feature's \a geometry within the layer's edit buffer
@@ -1732,7 +1736,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see changeAttributeValue()
      * \see updateFeature()
      */
-    bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
+    Q_INVOKABLE bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
 
     /**
      * Changes an attribute value for a feature (but does not immediately commit the changes).
@@ -1815,19 +1819,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    bool addAttribute( const QgsField &field );
+    Q_INVOKABLE bool addAttribute( const QgsField &field );
 
     /**
      * Sets an alias (a display name) for attributes to display in dialogs
      *
      */
-    void setFieldAlias( int index, const QString &aliasString );
+    Q_INVOKABLE void setFieldAlias( int index, const QString &aliasString );
 
     /**
      * Removes an alias (a display name) for attributes to display in dialogs
      *
      */
-    void removeFieldAlias( int index );
+    Q_INVOKABLE void removeFieldAlias( int index );
 
     /**
      * Renames an attribute field  (but does not commit it).
@@ -1838,7 +1842,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    bool renameAttribute( int index, const QString &newName );
+    Q_INVOKABLE bool renameAttribute( int index, const QString &newName );
 
     /**
      * Returns the alias of an attribute name or a null string if there is no alias.
@@ -1846,10 +1850,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see {attributeDisplayName( int attributeIndex )} which returns the field name
      *      if no alias is defined.
      */
-    QString attributeAlias( int index ) const;
+    Q_INVOKABLE QString attributeAlias( int index ) const;
 
     //! Convenience function that returns the attribute alias if defined or the field name else
-    QString attributeDisplayName( int index ) const;
+    Q_INVOKABLE QString attributeDisplayName( int index ) const;
 
     //! Returns a map of field name to attribute alias
     QgsStringMap attributeAliases() const;
@@ -1971,7 +1975,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    virtual bool deleteAttribute( int attr );
+    Q_INVOKABLE  virtual bool deleteAttribute( int attr );
 
     /**
      * Deletes a list of attribute fields (but does not commit it)
@@ -1980,7 +1984,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns TRUE if at least one attribute has been deleted
      *
      */
-    bool deleteAttributes( const QList<int> &attrs );
+    Q_INVOKABLE bool deleteAttributes( const QList<int> &attrs );
 
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) FINAL;
 
@@ -2588,6 +2592,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+
+    bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const override;
 
   signals:
 

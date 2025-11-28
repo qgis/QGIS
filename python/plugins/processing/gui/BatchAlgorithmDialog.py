@@ -19,7 +19,6 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-import codecs
 import time
 
 from qgis.core import (
@@ -132,7 +131,7 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
             return
 
         outputFile = getTempFilename("html")
-        with codecs.open(outputFile, "w", encoding="utf-8") as f:
+        with open(outputFile, "w", encoding="utf-8") as f:
             if createTable:
                 for i, res in enumerate(algorithm_results):
                     results = res["results"]

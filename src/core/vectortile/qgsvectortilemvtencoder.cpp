@@ -75,7 +75,7 @@ struct MVTGeometryWriter
     cursor = pt;
   }
 
-  QPoint mapToTileCoordinates( double x, double y )
+  QPoint mapToTileCoordinates( double x, double y ) const
   {
     return QPoint( static_cast<int>( round( ( x - tileXMin ) * resolution / tileDX ) ),
                    static_cast<int>( round( ( tileYMax - y ) * resolution / tileDY ) ) );
@@ -203,14 +203,14 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feed
   }
 
   vector_tile::Tile_Layer *tileLayer = tile.add_layers();
-  tileLayer->set_name( layerName.toUtf8() );
+  tileLayer->set_name( layerName.toUtf8().constData() );
   tileLayer->set_version( 2 );  // 2 means MVT spec version 2.1
   tileLayer->set_extent( static_cast<::google::protobuf::uint32>( mResolution ) );
 
   const QgsFields fields = layer->fields();
   for ( int i = 0; i < fields.count(); ++i )
   {
-    tileLayer->add_keys( fields[i].name().toUtf8() );
+    tileLayer->add_keys( fields[i].name().toUtf8().constData() );
   }
 
   do

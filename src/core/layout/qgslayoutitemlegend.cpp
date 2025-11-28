@@ -424,7 +424,7 @@ void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
           QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( child );
           if ( QgsMapLayer *mapLayer = layer->layer() )
           {
-            if ( QgsMapLayerLegend *layerLegend = mapLayer->legend(); layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+            if ( QgsMapLayerLegend *layerLegend = mapLayer->legend(); layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
             {
               group->removeChildNode( child );
             }

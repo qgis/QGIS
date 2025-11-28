@@ -45,4 +45,6 @@ class QgsOAPIFJson
     static QString findLink( const std::vector<Link> &links, const QString &rel, const QStringList &preferableTypes = QStringList() );
 };
 
+extern const QString OAPIF_PROVIDER_DEFAULT_CRS;
+
 #endif // QGSOAPIFUTILS_H

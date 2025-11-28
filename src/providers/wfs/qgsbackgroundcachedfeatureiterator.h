@@ -1,6 +1,6 @@
 /***************************************************************************
     qgsbackgroundcachedfeatureiterator.h
-    ---------------------
+    ------------------------------------
     begin                : October 2019
     copyright            : (C) 2016-2019 by Even Rouault
     email                : even.rouault at spatialys.com
@@ -15,299 +15,21 @@
 #ifndef QGSBACKGROUNDCACHEDFEATUREITERATOR_H
 #define QGSBACKGROUNDCACHEDFEATUREITERATOR_H
 
+#include "qgsfeaturedownloadcommon.h"
+#include "qgsfeaturedownloaderprogresstask.h"
 #include "qgsfeatureiterator.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsspatialindex.h"
-#include "qgsvectordataprovider.h"
 #include "qgscoordinatetransform.h"
-#include "qgstaskmanager.h"
 
 class QDataStream;
 class QFile;
-class QPushButton;
+
 #include <QMutex>
-#include <QThread>
 #include <QWaitCondition>
-#include <QTimer>
-
-struct QgsBackgroundCachedFeatureIteratorConstants
-{
-    // Special fields of the cache
-    static const QString FIELD_GEN_COUNTER;
-    static const QString FIELD_UNIQUE_ID;
-    static const QString FIELD_HEXWKB_GEOM;
-    static const QString FIELD_MD5;
-};
-
-//! Type that associate a QgsFeature to a (hopefully) unique id across requests
-typedef QPair<QgsFeature, QString> QgsFeatureUniqueIdPair;
-
-class QgsFeatureDownloader;
-
-class QgsFeatureDownloaderProgressTask : public QgsTask
-{
-    Q_OBJECT
-
-  public:
-    QgsFeatureDownloaderProgressTask( const QString &description, long long totalCount );
-
-    bool run() override;
-
-    void cancel() override;
-
-  public slots:
-
-    void finalize();
-    void setDownloaded( long long count );
-
-  signals:
-
-    void canceled();
-
-  private:
-    long long mTotalCount = 0;
-    QWaitCondition mNotFinishedWaitCondition;
-    QMutex mNotFinishedMutex;
-    bool mAlreadyFinished = false;
-};
 
 class QgsBackgroundCachedSharedData;
-
-/**
- * This class is an abstract class that must
- * be subclassed and whose main role is to download features, through one or
- * several requests (GetFeature in the case of WFS), process the results as
- * soon as they arrived and notify them to the serializer to fill the case,
- * and to the iterator that subscribed
- * Instances of this class may be run in a dedicated thread (QgsThreadedFeatureDownloader)
- *
- * This class is somewhat technical and in an ideal world would have been
- * merged in QgsFeatureDownloader. This is not possible since QgsFeatureDownloader
- * derives from QObject to emit signals, but the implementation of run() might
- * also use custom signals, and should derive again from QObject, which is not
- * possible regarding QT/MOC constraints.
- */
-class QgsFeatureDownloaderImpl
-{
-  public:
-    QgsFeatureDownloaderImpl( QgsBackgroundCachedSharedData *shared, QgsFeatureDownloader *downloader );
-    virtual ~QgsFeatureDownloaderImpl();
-
-    /**
-     * Start the download.
-     * \param serializeFeatures whether to notify the sharedData serializer.
-     * \param maxFeatures user-defined limit of features to download. Overrides
-     *                    the one defined in the URI. Typically by the QgsWFSProvider,
-     *                    when it cannot guess the geometry type.
-     */
-    virtual void run( bool serializeFeatures, long long maxFeatures ) = 0;
-
-    //! To interrupt the download. Must be thread-safe
-    void stop();
-
-    //! Emit doStop() signal
-    virtual void emitDoStop() = 0;
-
-    // To be used when new features have been received
-    void emitFeatureReceived( QVector<QgsFeatureUniqueIdPair> features );
-
-    // To be used when new features have been received
-    void emitFeatureReceived( long long featureCount );
-
-    // To be used when the download is finished (successful or not)
-    void emitEndOfDownload( bool success );
-
-    // To be used when QgsNetworkAccessManager emit signals that require
-    // QgsBackgroundCachedFeatureIterator to process (authentication) events,
-    // if it was started from the main thread.
-    void emitResumeMainThread();
-
-#if 0
-    // NOTE: implementations should copy & paste the below block
-  signals:
-    /* Used internally by the stop() method */
-    void doStop();
-
-    /* Emitted with the total accumulated number of features downloaded. */
-    void updateProgress( int totalFeatureCount );
-#endif
-
-  protected:
-    QgsFeatureDownloaderProgressTask *mProgressTask = nullptr;
-
-    //! Whether the download should stop
-    bool mStop = false;
-
-    /**
-     * If the progress dialog should be shown immediately, or if it should be
-     * let to QProgressDialog logic to decide when to show it.
-    */
-    bool mProgressDialogShowImmediately = false;
-
-    QTimer *mTimer = nullptr;
-
-    void createProgressTask( long long numberMatched );
-
-    void setStopFlag();
-
-    void endOfRun( bool serializeFeatures, bool success, int totalDownloadedFeatureCount, bool truncatedResponse, bool interrupted, const QString &errorMessage );
-
-    void connectSignals( QObject *obj, bool requestMadeFromMainThread );
-
-  private:
-    QgsBackgroundCachedSharedData *mSharedBase;
-    QgsFeatureDownloader *mDownloader;
-    QMutex mMutexCreateProgressTask;
-};
-
-// Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derive from QObject
-#define QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS_BASE( requestMadeFromMainThread )                                                                               \
-  do                                                                                                                                                                \
-  {                                                                                                                                                                 \
-    if ( requestMadeFromMainThread )                                                                                                                                \
-    {                                                                                                                                                               \
-      auto resumeMainThread = [this]() {                                                                                                                            \
-        emitResumeMainThread();                                                                                                                                     \
-      };                                                                                                                                                            \
-      QObject::connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authRequestOccurred, this, resumeMainThread, Qt::DirectConnection );         \
-      QObject::connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired, this, resumeMainThread, Qt::DirectConnection ); \
-    }                                                                                                                                                               \
-  } while ( false )
-
-#ifndef QT_NO_SSL
-#define QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS( requestMadeFromMainThread )                                                                          \
-  do                                                                                                                                                      \
-  {                                                                                                                                                       \
-    QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS_BASE( requestMadeFromMainThread );                                                                        \
-    if ( requestMadeFromMainThread )                                                                                                                      \
-    {                                                                                                                                                     \
-      auto resumeMainThread = [this]() {                                                                                                                  \
-        emitResumeMainThread();                                                                                                                           \
-      };                                                                                                                                                  \
-      QObject::connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrorsOccurred, this, resumeMainThread, Qt::DirectConnection ); \
-    }                                                                                                                                                     \
-  } while ( false )
-#else
-#define QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS( requestMadeFromMainThread ) \
-  QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS_BASE( requestMadeFromMainThread )
-#endif
-
-// Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derive from QObject
-#define CONNECT_PROGRESS_TASK( actual_downloader_impl_class )                                                                                      \
-  do                                                                                                                                               \
-  {                                                                                                                                                \
-    connect( mProgressTask, &QgsFeatureDownloaderProgressTask::canceled, this, &actual_downloader_impl_class::setStopFlag, Qt::DirectConnection ); \
-    connect( mProgressTask, &QgsFeatureDownloaderProgressTask::canceled, this, &actual_downloader_impl_class::stop );                              \
-                                                                                                                                                   \
-    /* Make sure the progress task has not been deleted by another thread */                                                                       \
-    if ( mProgressTask )                                                                                                                           \
-    {                                                                                                                                              \
-      connect( this, &actual_downloader_impl_class::updateProgress, mProgressTask, &QgsFeatureDownloaderProgressTask::setDownloaded );             \
-    }                                                                                                                                              \
-  } while ( 0 )
-
-// Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derive from QObject
-#define DEFINE_FEATURE_DOWNLOADER_IMPL_SLOTS                      \
-protected:                                                        \
-  void emitDoStop() override { emit doStop(); }                   \
-  void setStopFlag() { QgsFeatureDownloaderImpl::setStopFlag(); } \
-  void stop() { QgsFeatureDownloaderImpl::stop(); }
-
-#define CREATE_PROGRESS_TASK( actual_downloader_impl_class )                                                            \
-  do                                                                                                                    \
-  {                                                                                                                     \
-    /* This is a bit tricky. We want the createProgressTask() */                                                        \
-    /* method to be run into the GUI thread */                                                                          \
-    mTimer = new QTimer();                                                                                              \
-    mTimer->setSingleShot( true );                                                                                      \
-                                                                                                                        \
-    /* Direct connection, since we want createProgressTask() */                                                         \
-    /* to be invoked from the same thread as timer, and not in the */                                                   \
-    /* thread of this */                                                                                                \
-    connect( mTimer, &QTimer::timeout, this, &actual_downloader_impl_class::createProgressTask, Qt::DirectConnection ); \
-                                                                                                                        \
-    mTimer->moveToThread( qApp->thread() );                                                                             \
-    QMetaObject::invokeMethod( mTimer, "start", Qt::QueuedConnection );                                                 \
-  } while ( 0 )
-
-/**
- * Interface of the downloader, typically called by QgsThreadedFeatureDownloader.
- * The real work is done by the implementation passed to setImpl().
-*/
-class QgsFeatureDownloader : public QObject
-{
-    Q_OBJECT
-  public:
-    explicit QgsFeatureDownloader() = default;
-
-    //! Set the implementation. This method must be called before calling any other method
-    void setImpl( std::unique_ptr<QgsFeatureDownloaderImpl> &&impl ) { mImpl = std::move( impl ); }
-
-    /**
-     * Start the download.
-     * \param serializeFeatures whether to notify the sharedData serializer.
-     * \param maxFeatures user-defined limit of features to download. Overrides
-     *                    the one defined in the URI. Typically by the QgsWFSProvider,
-     *                    when it cannot guess the geometry type.
-     */
-    void run( bool serializeFeatures, long long maxFeatures );
-
-    //! To interrupt the download.
-    void stop();
-
-  signals:
-    //! Emitted when new features have been received
-    void featureReceived( QVector<QgsFeatureUniqueIdPair> );
-
-    //! Emitted when new features have been received
-    void featureReceived( long long featureCount );
-
-    //! Emitted when the download is finished (successful or not)
-    void endOfDownload( bool success );
-
-    // Emitted when QgsNetworkAccessManager emit signals that require
-    // QgsBackgroundCachedFeatureIterator to process (authentication) events,
-    // if it was started from the main thread.
-    void resumeMainThread();
-
-  private:
-    std::unique_ptr<QgsFeatureDownloaderImpl> mImpl;
-};
-
-class QgsBackgroundCachedSharedData;
-
-//! Downloader thread
-class QgsThreadedFeatureDownloader : public QThread
-{
-    Q_OBJECT
-  public:
-    explicit QgsThreadedFeatureDownloader( QgsBackgroundCachedSharedData *shared );
-    ~QgsThreadedFeatureDownloader() override;
-
-    //! Returns downloader object
-    QgsFeatureDownloader *downloader() { return mDownloader; }
-
-    //! Starts thread and wait for it to be started
-    void startAndWait();
-
-    //! Stops (synchronously) the download
-    void stop();
-
-  protected:
-    //! Inherited from QThread. Starts the download
-    void run() override;
-
-  private:
-    QgsBackgroundCachedSharedData *mShared; //!< Mutable data shared between provider and feature sources
-    QgsFeatureDownloader *mDownloader = nullptr;
-    QWaitCondition mWaitCond;
-    QMutex mWaitMutex;
-    bool mRequestMadeFromMainThread = false;
-};
-
-
 class QgsBackgroundCachedFeatureSource;
+class QgsFeatureDownloader;
 
 /**
  * Feature iterator. The iterator will internally both subscribe to a live
@@ -335,6 +57,15 @@ class QgsBackgroundCachedFeatureIterator final : public QObject,
 
     //! Used by QgsBackgroundCachedSharedData::registerToCache()
     void connectSignals( QgsFeatureDownloader *downloader );
+
+    struct Constants
+    {
+        // Special fields of the cache
+        static const QString FIELD_GEN_COUNTER;
+        static const QString FIELD_UNIQUE_ID;
+        static const QString FIELD_HEXWKB_GEOM;
+        static const QString FIELD_MD5;
+    };
 
   private slots:
     void featureReceivedSynchronous( const QVector<QgsFeatureUniqueIdPair> &list );
@@ -398,19 +129,6 @@ class QgsBackgroundCachedFeatureIterator final : public QObject,
     void copyFeature( const QgsFeature &srcFeature, QgsFeature &dstFeature, bool srcIsCache );
 
     void cleanupReaderStreamAndFile();
-};
-
-
-//! Feature source
-class QgsBackgroundCachedFeatureSource final : public QgsAbstractFeatureSource
-{
-  public:
-    explicit QgsBackgroundCachedFeatureSource( std::shared_ptr<QgsBackgroundCachedSharedData> shared );
-
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
-
-  private:
-    std::shared_ptr<QgsBackgroundCachedSharedData> mShared; //!< Mutable data shared between provider and feature sources
 };
 
 #endif // QGSBACKGROUNDCACHEDFEATUREITERATOR_H

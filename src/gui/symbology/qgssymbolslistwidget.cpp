@@ -125,10 +125,16 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   connect( mSymbolUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSymbolsListWidget::mSymbolUnitWidget_changed );
   connect( mSymbolColorButton, &QgsColorButton::colorChanged, this, &QgsSymbolsListWidget::setSymbolColor );
 
-  registerSymbolDataDefinedButton( opacityDDBtn, QgsSymbol::Property::Opacity );
+  if ( opacityDDBtn )
+  {
+    registerSymbolDataDefinedButton( opacityDDBtn, QgsSymbol::Property::Opacity );
+  }
 
   connect( this, &QgsSymbolsListWidget::changed, this, &QgsSymbolsListWidget::updateAssistantSymbol );
-  updateAssistantSymbol();
+  if ( mSymbol )
+  {
+    updateAssistantSymbol();
+  }
 
   mSymbolColorButton->setAllowOpacity( true );
   mSymbolColorButton->setColorDialogTitle( tr( "Select Color" ) );
@@ -583,7 +589,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 {
   updateSymbolColor();
 
-  const auto overrideButtons { findChildren<QgsPropertyOverrideButton *>() };
+  const QList<QgsPropertyOverrideButton *> overrideButtons { findChildren<QgsPropertyOverrideButton *>() };
   for ( QgsPropertyOverrideButton *button : overrideButtons )
   {
     button->registerExpressionContextGenerator( this );

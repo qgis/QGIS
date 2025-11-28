@@ -171,21 +171,21 @@ std::string XMLFile::toString( const xmlChar *xmlString ) const
   return ret;
 }
 
-double XMLFile::queryDoubleAttribute( xmlNodePtr elem, std::string name ) const
+double XMLFile::queryDoubleAttribute( xmlNodePtr elem, const std::string &name ) const
 {
   std::string valStr = attribute( elem, name );
   double val = MDAL::toDouble( valStr );
   return val;
 }
 
-size_t XMLFile::querySizeTAttribute( xmlNodePtr elem, std::string name ) const
+size_t XMLFile::querySizeTAttribute( xmlNodePtr elem, const std::string &name ) const
 {
   std::string valStr = attribute( elem, name );
   size_t val = MDAL::toSizeT( valStr );
   return val;
 }
 
-std::string XMLFile::attribute( xmlNodePtr node, std::string name ) const
+std::string XMLFile::attribute( xmlNodePtr node, const std::string &name ) const
 {
   std::string ret;
   assert( node );

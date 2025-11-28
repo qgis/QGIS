@@ -760,6 +760,7 @@ set(QGIS_GUI_SRCS
   qgsprovidersourcewidgetproviderregistry.cpp
   qgsprovidersublayersdialog.cpp
   qgsprojectstorageguiregistry.cpp
+  qgsprojecttrustdialog.cpp
   qgsproviderconnectioncombobox.cpp
   qgsproxystyle.cpp
   qgsquerybuilder.cpp
@@ -1026,6 +1027,7 @@ set(QGIS_GUI_HDRS
   qgsprevieweffect.h
   qgsprojectstorageguiprovider.h
   qgsprojectstorageguiregistry.h
+  qgsprojecttrustdialog.h
   qgspropertyassistantwidget.h
   qgspropertyoverridebutton.h
   qgsproviderconnectioncombobox.h

@@ -160,7 +160,7 @@ namespace QgsWfs
         continue;
       }
 
-      QString name = layerTypeName( layer );
+      QString name = layer->serverProperties()->wfsTypeName();
 
       if ( typeNameList.contains( name ) )
       {
@@ -665,9 +665,7 @@ namespace QgsWfs
         }
 
         query.serverFids = fidsMapIt.value();
-        QgsFeatureRequest featureRequest;
-
-        query.featureRequest = featureRequest;
+        query.featureRequest = QgsFeatureRequest();
         request.queries.append( query );
         ++fidsMapIt;
       }
@@ -838,7 +836,6 @@ namespace QgsWfs
         getFeatureQuery &query = *qIt;
         query.featureRequest.setFilterRect( extent ).setFlags( query.featureRequest.flags() | Qgis::FeatureRequestFlag::ExactIntersect );
       }
-      return request;
     }
     else if ( paramContainsFilters )
     {
@@ -875,7 +872,6 @@ namespace QgsWfs
           ++filterIt;
         }
       }
-      return request;
     }
 
     QStringList sortByList = mWfsParameters.sortBy();
@@ -1041,7 +1037,7 @@ namespace QgsWfs
     getFeatureQuery query;
     query.typeName = typeName;
     query.srsName = srsName;
-    query.featureRequest = featureRequest;
+    query.featureRequest = std::move( featureRequest );
     query.serverFids = serverFids;
     query.propertyList = propertyList;
     return query;

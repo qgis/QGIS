@@ -163,6 +163,9 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o 
 
 QgsCoordinateTransform &QgsCoordinateTransform::operator=( const QgsCoordinateTransform &o )  //NOLINT
 {
+  if ( &o == this )
+    return *this;
+
   d = o.d;
 #ifdef QGISDEBUG
   mHasContext = o.mHasContext;

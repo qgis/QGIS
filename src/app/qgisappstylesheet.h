@@ -64,7 +64,7 @@ class APP_EXPORT QgisAppStyleSheet : public QObject
     void saveToSettings( const QMap<QString, QVariant> &opts );
 
     //! Gets reference font for initial qApp
-    QFont defaultFont() { return mDefaultFont; }
+    QFont defaultFont() const { return mDefaultFont; }
 
     /**
      * Returns the user set font size override value, or -1 if not set and the Qt default font size should be used.

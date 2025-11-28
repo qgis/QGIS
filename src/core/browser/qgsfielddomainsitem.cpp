@@ -107,6 +107,8 @@ QgsFieldDomainItem::QgsFieldDomainItem( QgsDataItem *parent, QgsFieldDomain *dom
   Q_ASSERT( dynamic_cast<QgsFieldDomainsItem *>( parent ) );
   setState( Qgis::BrowserItemState::Populated );
   setToolTip( domain->description().isEmpty() ? domain->name() : domain->description() );
+  QgsFieldDomainsItem *domainsItem = qobject_cast<QgsFieldDomainsItem *>( parent );
+  mConnectionUri = domainsItem->connectionUri();
 }
 
 QIcon QgsFieldDomainItem::icon()
@@ -130,3 +132,7 @@ const QgsFieldDomain *QgsFieldDomainItem::fieldDomain()
 
 QgsFieldDomainItem::~QgsFieldDomainItem() = default;
 
+QString QgsFieldDomainItem::connectionUri() const
+{
+  return mConnectionUri;
+}

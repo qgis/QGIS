@@ -186,7 +186,10 @@ namespace QgsWcs
     }
 
     QTemporaryFile tempFile;
-    tempFile.open();
+    if ( !tempFile.open() )
+    {
+      throw QgsRequestNotWellFormedException( QStringLiteral( "Cannot open temporary file" ) );
+    }
     QgsRasterFileWriter fileWriter( tempFile.fileName() );
 
     // clone pipe/provider

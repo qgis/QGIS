@@ -648,7 +648,7 @@ void TestQgsDxfExport::testMTextEscapeLineBreaks()
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
-  dxfFile.open( QIODevice::ReadOnly );
+  QVERIFY( dxfFile.open( QIODevice::ReadOnly ) );
   const QString fileContent = QTextStream( &dxfFile ).readAll();
   dxfFile.close();
   QVERIFY( fileContent.contains( "A\\~text\\~with\\~\\Pline\\~break" ) );

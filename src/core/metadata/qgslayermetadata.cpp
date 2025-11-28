@@ -162,11 +162,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement, cons
   {
     mnl = rightsNodeList.at( i );
     mne = mnl.toElement();
-    QString right = mne.text();
-    if ( context.projectTranslator() )
-    {
-      right = context.projectTranslator()->translate( "metadata", right );
-    }
+    const QString right = context.projectTranslator()->translate( "metadata", mne.text() );
     rightsList.append( right );
   }
   setRights( rightsList );

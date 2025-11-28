@@ -435,17 +435,17 @@ void ProjectorData::calcSrcRowsCols()
 }
 
 
-inline void ProjectorData::destPointOnCPMatrix( int row, int col, double *theX, double *theY )
+inline void ProjectorData::destPointOnCPMatrix( int row, int col, double *theX, double *theY ) const
 {
   *theX = mDestExtent.xMinimum() + col * mDestExtent.width() / ( mCPCols - 1 );
   *theY = mDestExtent.yMaximum() - row * mDestExtent.height() / ( mCPRows - 1 );
 }
 
-inline int ProjectorData::matrixRow( int destRow )
+inline int ProjectorData::matrixRow( int destRow ) const
 {
   return static_cast< int >( std::floor( ( destRow + 0.5 ) / mDestRowsPerMatrixRow ) );
 }
-inline int ProjectorData::matrixCol( int destCol )
+inline int ProjectorData::matrixCol( int destCol ) const
 {
   return static_cast< int >( std::floor( ( destCol + 0.5 ) / mDestColsPerMatrixCol ) );
 }
@@ -701,7 +701,7 @@ bool ProjectorData::calcCol( int col, const QgsCoordinateTransform &ct )
   return true;
 }
 
-bool ProjectorData::checkCols( const QgsCoordinateTransform &ct )
+bool ProjectorData::checkCols( const QgsCoordinateTransform &ct ) const
 {
   if ( !ct.isValid() )
   {
@@ -746,7 +746,7 @@ bool ProjectorData::checkCols( const QgsCoordinateTransform &ct )
   return true;
 }
 
-bool ProjectorData::checkRows( const QgsCoordinateTransform &ct )
+bool ProjectorData::checkRows( const QgsCoordinateTransform &ct ) const
 {
   if ( !ct.isValid() )
   {

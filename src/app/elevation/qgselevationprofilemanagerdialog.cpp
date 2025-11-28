@@ -38,6 +38,7 @@ QgsElevationProfileManagerDialog::QgsElevationProfileManagerDialog( QWidget *par
 {
   setupUi( this );
 
+  setObjectName( "QgsElevationProfileManagerDialog" );
   QgsGui::enableAutoGeometryRestore( this );
 
   mModel = new QgsElevationProfileManagerModel( QgsProject::instance()->elevationProfileManager(), this );
@@ -55,6 +56,7 @@ QgsElevationProfileManagerDialog::QgsElevationProfileManagerDialog( QWidget *par
   connect( mProfileListView, &QListView::doubleClicked, this, &QgsElevationProfileManagerDialog::itemDoubleClicked );
 
   connect( mShowButton, &QAbstractButton::clicked, this, &QgsElevationProfileManagerDialog::showClicked );
+  connect( mDuplicateButton, &QAbstractButton::clicked, this, &QgsElevationProfileManagerDialog::duplicateClicked );
   connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsElevationProfileManagerDialog::removeClicked );
   connect( mRenameButton, &QAbstractButton::clicked, this, &QgsElevationProfileManagerDialog::renameClicked );
 
@@ -75,6 +77,7 @@ void QgsElevationProfileManagerDialog::toggleButtons()
     mShowButton->setEnabled( false );
     mRemoveButton->setEnabled( false );
     mRenameButton->setEnabled( false );
+    mDuplicateButton->setEnabled( false );
   }
   // toggle everything if one profile is selected
   else if ( mProfileListView->selectionModel()->selectedRows().count() == 1 )
@@ -82,6 +85,7 @@ void QgsElevationProfileManagerDialog::toggleButtons()
     mShowButton->setEnabled( true );
     mRemoveButton->setEnabled( true );
     mRenameButton->setEnabled( true );
+    mDuplicateButton->setEnabled( true );
   }
   // toggle only show and remove buttons in other cases
   else
@@ -89,6 +93,7 @@ void QgsElevationProfileManagerDialog::toggleButtons()
     mShowButton->setEnabled( true );
     mRemoveButton->setEnabled( true );
     mRenameButton->setEnabled( false );
+    mDuplicateButton->setEnabled( false );
   }
 }
 
@@ -231,10 +236,41 @@ void QgsElevationProfileManagerDialog::showClicked()
   const QModelIndexList profileItems = mProfileListView->selectionModel()->selectedRows();
   for ( const QModelIndex &index : profileItems )
   {
-    if ( QgsElevationProfile *l = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
+    if ( QgsElevationProfile *profile = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
     {
-      Q_UNUSED( l );
+      QgisApp::instance()->openElevationProfile( profile );
     }
+  }
+}
+
+void QgsElevationProfileManagerDialog::duplicateClicked()
+{
+  if ( mProfileListView->selectionModel()->selectedRows().isEmpty() )
+  {
+    return;
+  }
+
+  QgsElevationProfile *currentProfile = mModel->profileFromIndex( mProxyModel->mapToSource( mProfileListView->selectionModel()->selectedRows().at( 0 ) ) );
+  if ( !currentProfile )
+    return;
+  QString currentTitle = currentProfile->name();
+
+  QString newTitle;
+  if ( !uniqueProfileTitle( this, newTitle, tr( "%1 copy" ).arg( currentTitle ) ) )
+  {
+    return;
+  }
+
+  auto newProfile = std::make_unique< QgsElevationProfile >( QgsProject::instance() );
+  QDomDocument doc;
+  const QDomElement profileElem = currentProfile->writeXml( doc, QgsReadWriteContext() );
+  newProfile->readXml( profileElem, doc, QgsReadWriteContext() );
+  newProfile->resolveReferences( QgsProject::instance() );
+  newProfile->setName( newTitle );
+  QgsElevationProfile *newProfileRef = newProfile.get();
+  if ( QgsProject::instance()->elevationProfileManager()->addProfile( newProfile.release() ) )
+  {
+    QgisApp::instance()->openElevationProfile( newProfileRef );
   }
 }
 
@@ -260,8 +296,8 @@ void QgsElevationProfileManagerDialog::renameClicked()
 
 void QgsElevationProfileManagerDialog::itemDoubleClicked( const QModelIndex &index )
 {
-  if ( QgsElevationProfile *l = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
+  if ( QgsElevationProfile *profile = mModel->profileFromIndex( mProxyModel->mapToSource( index ) ) )
   {
-    Q_UNUSED( l );
+    QgisApp::instance()->openElevationProfile( profile );
   }
 }

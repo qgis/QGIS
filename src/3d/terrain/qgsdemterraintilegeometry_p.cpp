@@ -35,7 +35,9 @@ typedef Qt3DCore::QAbstractFunctor Qt3DQAbstractFunctor;
 #endif
 #include <limits>
 #include <cmath>
-#include "qgsraycastingutils_p.h"
+#include "qgsraycastingutils.h"
+#include "qgsray3d.h"
+#include "qgsraycastcontext.h"
 #include "qgis.h"
 
 ///@cond PRIVATE
@@ -316,7 +318,7 @@ DemTerrainTileGeometry::DemTerrainTileGeometry( int resolution, float side, floa
   init();
 }
 
-static bool intersectionDemTriangles( const QByteArray &vertexBuf, const QByteArray &indexBuf, const QgsRayCastingUtils::Ray3D &r, const QMatrix4x4 &worldTransform, QVector3D &intPt )
+static bool intersectionDemTriangles( const QByteArray &vertexBuf, const QByteArray &indexBuf, const QgsRay3D &r, const QgsRayCastContext &context, const QMatrix4x4 &worldTransform, QVector3D &intPt )
 {
   // WARNING! this code is specific to how vertex buffers are built for DEM tiles,
   // it is not usable for any mesh...
@@ -348,9 +350,9 @@ static bool intersectionDemTriangles( const QByteArray &vertexBuf, const QByteAr
 
     QVector3D uvw;
     float t = 0;
-    if ( QgsRayCastingUtils::rayTriangleIntersection( r, tA, tB, tC, uvw, t ) )
+    if ( QgsRayCastingUtils::rayTriangleIntersection( r, context.maximumDistance(), tA, tB, tC, uvw, t ) )
     {
-      intersectionPt = r.point( t * r.distance() );
+      intersectionPt = r.point( t * context.maximumDistance() );
       distance = r.projectedDistance( intersectionPt );
 
       // we only want the first intersection of the ray with the mesh (closest to the ray origin)
@@ -371,9 +373,9 @@ static bool intersectionDemTriangles( const QByteArray &vertexBuf, const QByteAr
     return false;
 }
 
-bool DemTerrainTileGeometry::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint )
+bool DemTerrainTileGeometry::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint )
 {
-  return intersectionDemTriangles( mVertexBuffer->data(), mIndexBuffer->data(), ray, worldTransform, intersectionPoint );
+  return intersectionDemTriangles( mVertexBuffer->data(), mIndexBuffer->data(), ray, context, worldTransform, intersectionPoint );
 }
 
 void DemTerrainTileGeometry::init()

@@ -87,6 +87,26 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     return children;
   }
 
+  const QString defaultImageFormat = QgsOwsConnection::settingsDefaultImageFormat->value( { QStringLiteral( "wms" ), name() } );
+
+  // Make sure the format is in the capabilities formats, otherwise use first available
+  int imageFormatIndex { 0 };
+  const QStringList supportedFormats { caps.supportedImageEncodings() };
+  for ( int i = 0; i < supportedFormats.size(); ++i )
+  {
+    const QString &format = supportedFormats.at( i );
+    if ( format.contains( defaultImageFormat, Qt::CaseInsensitive ) )
+    {
+      imageFormatIndex = i;
+      break;
+    }
+  }
+
+  if ( !supportedFormats.empty() )
+    uri.setParam( QStringLiteral( "format" ), supportedFormats.at( imageFormatIndex ) );
+
+  int layerIndex { 0 };
+
   // Attention: supportedLayers() gives tree leafs, not top level
   QVector<QgsWmsLayerProperty> layerProperties = caps.supportedLayers();
   if ( !layerProperties.isEmpty() )
@@ -102,9 +122,20 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
       QgsDataItem *layer = nullptr;
 
       if ( layerProperty.name.isEmpty() || !layerProperty.layer.isEmpty() )
+      {
         layer = new QgsWMSLayerCollectionItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
+      }
       else
+      {
         layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
+      }
+
+      layer->setSortKey( layerIndex++ );
+
+      if ( !layerProperty.abstract.isEmpty() )
+      {
+        layer->setToolTip( layerProperty.abstract );
+      }
 
       children.append( layer );
     }
@@ -318,6 +349,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
 
                 QgsDataItem *tileLayerItem = new QgsWMTSLayerItem( linkItem, name, linkItem->path() + '/' + name, uri, l.identifier, dimensionId, dimensionValue, format, style.identifier, setLink.tileMatrixSet, tileMatrixSets[setLink.tileMatrixSet].crs, title );
                 tileLayerItem->setToolTip( name );
+                tileLayerItem->setSortKey( ++layerIndex );
 
 
                 if ( hasTimeDimension )
@@ -429,33 +461,6 @@ QString QgsWMSItemBase::createUri( bool withStyle )
     mDataSourceUri.setParam( QLatin1String( "allowTemporalUpdates" ), QLatin1String( "true" ) );
   }
 
-  QString format;
-  bool first = true;
-  const QString defaultEncoding = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), "image/png" ).toString();
-  const QVector<QgsWmsSupportedFormat> formats( QgsWmsProvider::supportedFormats() );
-  QStringList supportedFormats;
-  supportedFormats.reserve( formats.size() );
-  for ( const QgsWmsSupportedFormat &f : formats )
-  {
-    supportedFormats.append( f.format );
-  }
-
-  for ( const QString &f : mCapabilitiesProperty.capability.request.getMap.format )
-  {
-    if ( !supportedFormats.contains( f ) )
-    {
-      QgsDebugError( QStringLiteral( "encoding %1 not supported." ).arg( f ) );
-      continue;
-    }
-
-    if ( first || f == defaultEncoding )
-    {
-      format = f;
-      first = false;
-    }
-  }
-  mDataSourceUri.setParam( QStringLiteral( "format" ), format );
-
   const QString projectCrs = QgsProject::instance()->crs().authid();
   QString crs;
   // if project CRS is supported then use it, otherwise use first available CRS
@@ -500,8 +505,9 @@ QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QStri
   , QgsWMSItemBase( capabilitiesProperty, dataSourceUri, layerProperty )
 {
   mIconName = QStringLiteral( "mIconWms.svg" );
-  // For collection items we want the default style (empty) so let's strip it
   mUri = createUri( /* withStyle */ false );
+
+  int layerIndex { 0 };
 
   // Populate everything, it costs nothing, all info about layers is collected
   for ( const QgsWmsLayerProperty &layerProperty : std::as_const( mLayerProperty.layer ) )
@@ -517,6 +523,12 @@ QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QStri
     else
       layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
 
+    if ( !layerProperty.abstract.isEmpty() )
+    {
+      layer->setToolTip( layerProperty.abstract );
+    }
+
+    layer->setSortKey( layerIndex++ );
     addChildItem( layer );
   }
 

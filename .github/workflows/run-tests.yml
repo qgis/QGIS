@@ -43,7 +43,7 @@ jobs:
       matrix:
         include:
           - distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             qt-version: 6
             run-tests: true
             with-3d: ON
@@ -205,7 +205,7 @@ jobs:
         if: ${{ matrix.run-tests }}
         run: tar --exclude='*.o' -cvzf build.tgz build
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: ${{ matrix.run-tests }}
         with:
           name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
@@ -268,7 +268,7 @@ jobs:
         include:
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             docker-target: binary-only
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             test-batch: ALL_BUT_PROVIDERS
@@ -282,28 +282,28 @@ jobs:
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             test-batch: POSTGRES
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             test-batch: HANA
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             test-batch: SQLSERVER
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-only
 
           - qt-version: 6
             distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             test-batch: ORACLE
             test-blocklist-file: .ci/test_blocklist_qt6_ubuntu.txt
             docker-target: binary-for-oracle
@@ -369,7 +369,7 @@ jobs:
           sudo df -h
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
           path: .
@@ -422,7 +422,7 @@ jobs:
 
       - name: Archive test results report
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-${{ matrix.distro }}-qt${{ matrix.qt-version }}-${{ matrix.test-batch }}
           path: qgis_test_report
@@ -436,7 +436,7 @@ jobs:
       matrix:
         include:
           - distro: ubuntu
-            distro-version: '25.04'
+            distro-version: '25.10'
             qt-version: 6
 
     steps:
@@ -477,7 +477,7 @@ jobs:
         run: docker tag ${{ steps.docker-build.outputs.imageid }} qgis3-build-deps-binary-image
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: build-${{ matrix.distro }}-qt${{ matrix.qt-version }}.tgz
           path: .

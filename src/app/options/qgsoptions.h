@@ -251,6 +251,10 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void moveLocalizedDataPathUp();
     void moveLocalizedDataPathDown();
     void alwaysUseDecimalPointChanged( bool checked );
+    void addTrustedProject();
+    void removeTrustedProject();
+    void addUntrustedProject();
+    void removeUntrustedProject();
 
   private:
     QgsSettings *mSettings = nullptr;

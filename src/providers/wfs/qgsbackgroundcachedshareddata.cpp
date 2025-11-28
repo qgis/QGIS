@@ -20,6 +20,8 @@
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsspatialiteutils.h"
+#include "qgsthreadedfeaturedownloader.h"
+#include "qgsvectordataprovider.h"
 #include "qgswfsutils.h" // for isCompatibleType()
 
 #include <QCryptographicHash>
@@ -206,11 +208,11 @@ bool QgsBackgroundCachedSharedData::createCache()
     cacheFields.append( QgsField( sqliteFieldName, type, field.typeName() ) );
   }
   // Add some field for our internal use
-  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_GEN_COUNTER, QMetaType::Type::Int, QStringLiteral( "int" ) ) );
-  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_UNIQUE_ID, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
-  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_HEXWKB_GEOM, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_GEN_COUNTER, QMetaType::Type::Int, QStringLiteral( "int" ) ) );
+  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+  cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_HEXWKB_GEOM, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
   if ( mDistinctSelect )
-    cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
+    cacheFields.append( QgsField( QgsBackgroundCachedFeatureIterator::Constants::FIELD_MD5, QMetaType::Type::QString, QStringLiteral( "string" ) ) );
 
   const auto logMessageWithReason = [this]( const QString &reason ) {
     QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( QObject::tr( "Cannot create temporary SpatiaLite cache." ) ).arg( reason ), mComponentTranslated );
@@ -323,7 +325,7 @@ bool QgsBackgroundCachedSharedData::createCache()
 
     // We need an index on the uniqueId, since we will check for duplicates, particularly
     // useful in the case we do overlapping BBOX requests
-    sql = QStringLiteral( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsBackgroundCachedFeatureIteratorConstants::FIELD_UNIQUE_ID );
+    sql = QStringLiteral( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID );
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
@@ -335,7 +337,7 @@ bool QgsBackgroundCachedSharedData::createCache()
 
     if ( mDistinctSelect )
     {
-      sql = QStringLiteral( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5 );
+      sql = QStringLiteral( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsBackgroundCachedFeatureIterator::Constants::FIELD_MD5 );
       rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
@@ -382,7 +384,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     return false;
   }
 
-  // The id_cache should be generated once for the lifetime of QgsBackgroundCachedFeatureIteratorConstants
+  // The id_cache should be generated once for the lifetime of QgsBackgroundCachedFeatureIterator::Constants
   // to ensure consistency of the ids returned to the user.
   if ( mCacheIdDbname.isEmpty() )
   {
@@ -543,13 +545,13 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
 
   QgsFeatureList featureListToCache;
   QgsFields dataProviderFields = mCacheDataProvider->fields();
-  int uniqueIdIdx = dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIteratorConstants::FIELD_UNIQUE_ID );
+  int uniqueIdIdx = dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID );
   Q_ASSERT( uniqueIdIdx >= 0 );
-  int genCounterIdx = dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIteratorConstants::FIELD_GEN_COUNTER );
+  int genCounterIdx = dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIterator::Constants::FIELD_GEN_COUNTER );
   Q_ASSERT( genCounterIdx >= 0 );
-  int hexwkbGeomIdx = dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIteratorConstants::FIELD_HEXWKB_GEOM );
+  int hexwkbGeomIdx = dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIterator::Constants::FIELD_HEXWKB_GEOM );
   Q_ASSERT( hexwkbGeomIdx >= 0 );
-  int md5Idx = ( mDistinctSelect ) ? dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5 ) : -1;
+  int md5Idx = ( mDistinctSelect ) ? dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIterator::Constants::FIELD_MD5 ) : -1;
 
   QSet<QString> existingUniqueIds;
   QSet<QString> existingMD5s;
@@ -871,7 +873,7 @@ QSet<QString> QgsBackgroundCachedSharedData::getExistingCachedUniqueIds( const Q
   QSet<QString> setExistingUniqueIds;
 
   QgsFields dataProviderFields = mCacheDataProvider->fields();
-  const int uniqueIdIdx = dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIteratorConstants::FIELD_UNIQUE_ID );
+  const int uniqueIdIdx = dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID );
 
   // To avoid excessive memory consumption in expression building, do not
   // query more than 1000 ids at a time.
@@ -881,7 +883,7 @@ QSet<QString> QgsBackgroundCachedSharedData::getExistingCachedUniqueIds( const Q
       expr += ',';
     else
     {
-      expr = QgsBackgroundCachedFeatureIteratorConstants::FIELD_UNIQUE_ID + QStringLiteral( " IN (" );
+      expr = QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID + QStringLiteral( " IN (" );
       first = false;
     }
     expr += '\'';
@@ -921,7 +923,7 @@ QSet<QString> QgsBackgroundCachedSharedData::getExistingCachedMD5( const QVector
   QSet<QString> setExistingMD5;
 
   QgsFields dataProviderFields = mCacheDataProvider->fields();
-  const int md5Idx = dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5 );
+  const int md5Idx = dataProviderFields.indexFromName( QgsBackgroundCachedFeatureIterator::Constants::FIELD_MD5 );
 
   // To avoid excessive memory consumption in expression building, do not
   // query more than 1000 ids at a time.
@@ -931,7 +933,7 @@ QSet<QString> QgsBackgroundCachedSharedData::getExistingCachedMD5( const QVector
       expr += QLatin1Char( ',' );
     else
     {
-      expr = QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5 + " IN (";
+      expr = QgsBackgroundCachedFeatureIterator::Constants::FIELD_MD5 + " IN (";
       first = false;
     }
     expr += QLatin1Char( '\'' );
@@ -1045,7 +1047,7 @@ bool QgsBackgroundCachedSharedData::changeGeometryValues( const QgsGeometryMap &
   // We need to replace the geometry by its bounding box and issue a attribute
   // values change with the real geometry serialized as hexwkb.
 
-  int idx = mCacheDataProvider->fields().indexFromName( QgsBackgroundCachedFeatureIteratorConstants::FIELD_HEXWKB_GEOM );
+  int idx = mCacheDataProvider->fields().indexFromName( QgsBackgroundCachedFeatureIterator::Constants::FIELD_HEXWKB_GEOM );
   Q_ASSERT( idx >= 0 );
 
   QgsGeometryMap newGeometryMap;

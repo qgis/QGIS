@@ -73,6 +73,12 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void endUndoCommand();
 
     /**
+     * Aborts pending undo command, turning last call to beginUndoCommand obsolete
+     * \since QGIS 4.0
+     */
+    void abortUndoCommand();
+
+    /**
      * Returns the model shown in the dialog.
      */
     QgsProcessingModelAlgorithm *model();

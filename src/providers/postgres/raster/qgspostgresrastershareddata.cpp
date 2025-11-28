@@ -27,13 +27,7 @@
 #include "qgspolygon.h"
 #include "qgslogger.h"
 
-QgsPostgresRasterSharedData::~QgsPostgresRasterSharedData()
-{
-  for ( const auto &idx : mSpatialIndexes )
-  {
-    delete idx.second;
-  }
-}
+QgsPostgresRasterSharedData::~QgsPostgresRasterSharedData() = default;
 
 QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( const QgsPostgresRasterSharedData::TilesRequest &request )
 {
@@ -47,7 +41,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
   if ( mSpatialIndexes.find( cacheKey ) == mSpatialIndexes.end() )
   {
     // Create the index
-    mSpatialIndexes.emplace( cacheKey, new QgsGenericSpatialIndex<Tile>() );
+    mSpatialIndexes.emplace( cacheKey, std::make_unique< QgsGenericSpatialIndex<Tile> >() );
     mTiles.emplace( cacheKey, std::map<TileIdType, std::unique_ptr<Tile>>() );
     mLoadedIndexBounds[cacheKey] = QgsGeometry();
   }

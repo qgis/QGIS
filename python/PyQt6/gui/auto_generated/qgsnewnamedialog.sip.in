@@ -174,7 +174,7 @@ Emitted when the name is changed in the dialog.
 
   protected:
 
-    QString highlightText( const QString &text );
+    static QString highlightText( const QString &text );
 %Docstring
 List of names with extensions
 %End

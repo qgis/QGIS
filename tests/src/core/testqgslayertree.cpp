@@ -713,7 +713,7 @@ void TestQgsLayerTree::testEmbeddedGroup()
   //
 
   QgsProject projectMaster;
-  QgsLayerTreeGroup *embeddedGroup = projectMaster.createEmbeddedGroup( grp->name(), projectFilename, QStringList() );
+  std::unique_ptr< QgsLayerTreeGroup > embeddedGroup = projectMaster.createEmbeddedGroup( grp->name(), projectFilename, QStringList() );
   QVERIFY( embeddedGroup );
   QCOMPARE( embeddedGroup->children().size(), 3 );
 
@@ -721,7 +721,7 @@ void TestQgsLayerTree::testEmbeddedGroup()
   {
     QVERIFY( QgsLayerTree::toLayer( child )->layer() );
   }
-  projectMaster.layerTreeRoot()->addChildNode( embeddedGroup );
+  projectMaster.layerTreeRoot()->addChildNode( embeddedGroup.release() );
 
   const QString projectMasterFilename = dirPath + QStringLiteral( "/projectMaster.qgs" );
   projectMaster.write( projectMasterFilename );

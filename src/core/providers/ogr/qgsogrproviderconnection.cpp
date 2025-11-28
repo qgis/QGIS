@@ -24,6 +24,7 @@
 #include "qgsogrutils.h"
 #include "qgsfielddomain.h"
 #include "qgsogrproviderutils.h"
+#include "qgssqlstatement.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
 #include "qgsprovidersublayerdetails.h"
@@ -292,7 +293,36 @@ QgsVectorLayer *QgsOgrProviderConnection::createSqlVectorLayer( const QgsAbstrac
   QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   Q_ASSERT( providerMetadata );
   QMap<QString, QVariant> decoded = providerMetadata->decodeUri( uri() );
-  decoded[ QStringLiteral( "subset" ) ] = sanitizeSqlForQueryLayer( options.sql ) ;
+
+  QString where;
+  QStringList columns;
+  QStringList tables;
+
+  QgsAbstractDatabaseProviderConnection::splitSimpleQuery( options.sql, columns, tables, where );
+
+  // We have two options here: if the original SQL is a plain SELECT * FROM table [WHERE ...] statement,
+  // we could turn this into a normal layer with a subset filter but this would be a bit inconsistent from a UX
+  // perspective because the SQL update menu would not be available, let's keep it a SQL layer always.
+
+  if ( !options.filter.isEmpty() )
+  {
+    if ( ! where.isEmpty() )
+    {
+      QString sql {  sanitizeSqlForQueryLayer( options.sql ) };
+      const thread_local QRegularExpression whereRegExp( R"sql(\s+WHERE\s+.+$)sql", QRegularExpression::CaseInsensitiveOption );
+      sql.remove( whereRegExp );
+      decoded[ QStringLiteral( "subset" ) ] = QStringLiteral( R"sql(%1 WHERE ( %2 ) AND ( %3 ))sql" ).arg( sql, where, options.filter );
+    }
+    else
+    {
+      decoded[ QStringLiteral( "subset" ) ] = QStringLiteral( R"sql(%1 WHERE ( %2 ))sql" ).arg( sanitizeSqlForQueryLayer( options.sql ), options.filter );
+    }
+  }
+  else
+  {
+    decoded[ QStringLiteral( "subset" ) ] = sanitizeSqlForQueryLayer( options.sql );
+  }
+
   return new QgsVectorLayer( providerMetadata->encodeUri( decoded ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey() );
 }
 
@@ -512,6 +542,16 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
 
       if ( GDALDatasetTestCapability( hDS.get(), ODsCDeleteLayer ) )
         mCapabilities |= DropVectorTable;
+    }
+
+    if ( GDALDatasetTestCapability( hDS.get(), ODsCUpdateFieldDomain ) )
+    {
+      mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::EditFieldDomain;
+    }
+
+    if ( GDALDatasetTestCapability( hDS.get(), ODsCDeleteFieldDomain ) )
+    {
+      mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain;
     }
   }
 
@@ -1000,6 +1040,77 @@ void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, con
 #endif
 }
 
+void QgsOgrProviderConnection::updateFieldDomain( QgsFieldDomain *domain, const QString &schema ) const
+{
+  if ( !schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
+  }
+
+  if ( GDALDatasetTestCapability( hDS.get(), ODsCUpdateFieldDomain ) )
+  {
+    OGRFieldDomainH ogrDomain = QgsOgrUtils::convertFieldDomain( domain );
+    if ( !ogrDomain )
+    {
+      throw QgsProviderConnectionException( QObject::tr( "Could not update field domain" ) );
+    }
+
+    char *failureReason = nullptr;
+    const bool success = GDALDatasetUpdateFieldDomain( hDS.get(), ogrDomain, &failureReason );
+
+    if ( !success )
+    {
+      const QString error( failureReason );
+      CPLFree( failureReason );
+      OGR_FldDomain_Destroy( ogrDomain );
+      throw QgsProviderConnectionException( QObject::tr( "Could not update field domain: %1" ).arg( error ) );
+    }
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Updating field domains is not supported by the current dataset" ) );
+  }
+}
+
+void QgsOgrProviderConnection::deleteFieldDomain( const QString &name, const QString &schema ) const
+{
+  if ( !schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
+  }
+
+  if ( GDALDatasetTestCapability( hDS.get(), ODsCDeleteFieldDomain ) )
+  {
+    char *failureReason = nullptr;
+    const bool success = GDALDatasetDeleteFieldDomain( hDS.get(), name.toUtf8().constData(), &failureReason );
+
+    if ( !success )
+    {
+      const QString error( failureReason );
+      CPLFree( failureReason );
+      throw QgsProviderConnectionException( QObject::tr( "Could not delete field domain: %1" ).arg( error ) );
+    }
+
+    CPLFree( failureReason );
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Deleting field domains is not supported by the current dataset" ) );
+  }
+}
+
 void QgsOgrProviderConnection::renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameField );
@@ -1133,13 +1244,26 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOgrProviderConne
   QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) };
   Q_ASSERT( providerMetadata );
   QMap<QString, QVariant> decoded = providerMetadata->decodeUri( layerSource );
-  if ( decoded.contains( QStringLiteral( "subset" ) ) )
+
+  const QString subset { decoded.value( QStringLiteral( "subset" ), QString() ).toString() };
+  const QString layerName { decoded.value( QStringLiteral( "layerName" ), QString() ).toString() };
+
+  if ( !subset.isEmpty() && subset.contains( QLatin1String( "SELECT" ), Qt::CaseSensitivity::CaseInsensitive ) )
   {
-    options.sql = decoded[ QStringLiteral( "subset" ) ].toString();
+    options.sql = subset;
   }
-  else if ( decoded.contains( QStringLiteral( "layerName" ) ) )
+  else
   {
-    options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( decoded[ QStringLiteral( "layerName" ) ].toString() ) );
+    if ( !layerName.isEmpty() )
+    {
+      options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( layerName ) );
+    }
+    else if ( mSingleTableDataset && !decoded.value( QStringLiteral( "path" ), QString() ).toString().isEmpty() )
+    {
+      const QFileInfo fileInfo( decoded[ QStringLiteral( "path" ) ].toString() );
+      options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( fileInfo.baseName() ) );
+    }
+    options.filter = subset;
   }
   return options;
 }

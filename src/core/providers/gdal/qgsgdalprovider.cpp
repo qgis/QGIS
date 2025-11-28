@@ -3686,7 +3686,8 @@ void QgsGdalProvider::initBaseDataset()
               || mGeoTransform[4] != 0.0
               || mGeoTransform[5] > 0.0 ) )
        || GDALGetGCPCount( mGdalBaseDataset ) > 0
-       || GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
+       || GDALGetMetadata( mGdalBaseDataset, "RPC" )
+       || GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Creating Warped VRT." ), 2 );
 
@@ -3697,14 +3698,15 @@ void QgsGdalProvider::initBaseDataset()
     // when the raster is rotated). For example, this fixes the issue for RGB rasters
     // (with no alpha channel) or single-band raster without "no data" value set.
 
-    // South-up oriented raster without any rotation, GCP or RPC doesn't need alpha band
+    // South-up oriented raster without any rotation, GCP, RPC or GEOLOCATION doesn't need alpha band
     const bool isSouthUpWithoutRotationGcpOrRPC = ( hasGeoTransform
         && ( mGeoTransform[1] > 0.0
              && mGeoTransform[2] == 0.0
              && mGeoTransform[4] == 0.0
              && mGeoTransform[5] > 0.0 ) )
         && GDALGetGCPCount( mGdalBaseDataset ) == 0
-        && !GDALGetMetadata( mGdalBaseDataset, "RPC" );
+        && !GDALGetMetadata( mGdalBaseDataset, "RPC" )
+        && !GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" );
 
     if ( !isSouthUpWithoutRotationGcpOrRPC && GDALGetMaskFlags( GDALGetRasterBand( mGdalBaseDataset, 1 ) ) == GMF_ALL_VALID )
     {
@@ -3803,23 +3805,35 @@ void QgsGdalProvider::initBaseDataset()
       crsWkt = QgsOgrUtils::OGRSpatialReferenceToWkt( spatialRefSys );
     }
   }
+
+  // silence clang-tidy, RPC and GEOLOCATION are distinct cases and a duplicate branch should not matter
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( !crsWkt.isEmpty() )
   {
     mCrs = QgsCoordinateReferenceSystem::fromWkt( crsWkt );
   }
-  else
+  else if ( mGdalBaseDataset != mGdalDataset &&
+            GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
   {
-    if ( mGdalBaseDataset != mGdalDataset &&
-         GDALGetMetadata( mGdalBaseDataset, "RPC" ) )
+    // Warped VRT of RPC is in EPSG:4326
+    mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+  }
+  else if ( mGdalBaseDataset != mGdalDataset &&
+            GDALGetMetadata( mGdalBaseDataset, "GEOLOCATION" ) )
+  {
+    // Warped VRT of GEOLOCATION is not always in EPSG:4326, it may have a SRS defined
+    crsWkt = GDALGetMetadataItem( mGdalBaseDataset, "SRS", "GEOLOCATION" );
+    mCrs = QgsCoordinateReferenceSystem::fromWkt( crsWkt );
+    if ( !mCrs.isValid() )
     {
-      // Warped VRT of RPC is in EPSG:4326
       mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
     }
-    else
-    {
-      QgsDebugMsgLevel( QStringLiteral( "No valid CRS identified" ), 2 );
-    }
   }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "No valid CRS identified" ), 2 );
+  }
+  // NOLINTEND(bugprone-branch-clone)
 
   //set up the coordinat transform - in the case of raster this is mainly used to convert
   //the inverese projection of the map extents of the canvas when zooming in etc. so

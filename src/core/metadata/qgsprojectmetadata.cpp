@@ -29,12 +29,7 @@ bool QgsProjectMetadata::readMetadataXml( const QDomElement &metadataElement, co
 
   // set author
   mnl = metadataElement.namedItem( QStringLiteral( "author" ) );
-  mAuthor = mnl.toElement().text();
-
-  if ( context.projectTranslator() )
-  {
-    mAuthor = context.projectTranslator()->translate( "metadata", mAuthor );
-  }
+  mAuthor = context.projectTranslator()->translate( "metadata", mnl.toElement().text() );
 
   if ( !mDates.contains( Qgis::MetadataDateType::Created ) )
   {

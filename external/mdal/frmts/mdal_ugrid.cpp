@@ -375,7 +375,7 @@ void MDAL::DriverUgrid::populateFaces( MDAL::Faces &faces )
         idxs.push_back( static_cast<size_t>( val - startIndex ) );
       }
     }
-    faces[i] = idxs;
+    faces[i] = std::move( idxs );
   }
 
   if ( faces.size() == 1 && faces.at( 0 ).size() == 0 )
@@ -567,7 +567,7 @@ void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid,
       }
       else
       {
-        name = standardName;
+        name = std::move( standardName );
       }
     }
   }
@@ -658,7 +658,7 @@ void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid,
     }
     else
     {
-      name = longName;
+      name = std::move( longName );
     }
   }
 }
@@ -750,7 +750,7 @@ void MDAL::DriverUgrid::save( const std::string &fileName, const std::string &me
   {
     MDAL::Log::error( error, name(), "could not save file " + fileName );
   }
-  catch ( MDAL::Error err )
+  catch ( MDAL::Error &err )
   {
     MDAL::Log::error( err, name() );
   }
@@ -959,7 +959,7 @@ bool MDAL::DriverUgrid::persist( MDAL::DatasetGroup *group )
 
     return writeDatasetGroup( group, fileName, meshName );
   }
-  catch ( MDAL::Error err )
+  catch ( MDAL::Error &err )
   {
     MDAL::Log::error( err, name() );
     return true;

@@ -371,7 +371,7 @@ void QgsWfs3CollectionsHandler::handleRequest( const QgsServerApiContext &contex
                                         } } }
             },
             { "links", {
-                         { { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) ) }, { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) }, { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) }, { "title", title + " as GeoJSON" } }, { { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) ) }, { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) }, { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) }, { "title", title + " as HTML" } } /* TODO: not sure what these "concepts" are about, neither if they are mandatory
+                         { { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) ) }, { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) }, { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) }, { "title", title + " as GeoJSON" } }, { { "href", href( context, QStringLiteral( "/%1/items" ).arg( shortName ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::HTML ) ) }, { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) }, { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::HTML ) }, { "title", title + " as HTML" } } /* TODO: not sure what these "concepts" are about, neither if they are mandatory
             {
               { "href", href( api, context.request(), QStringLiteral( "/%1/concepts" ).arg( shortName ) )  },
               { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::item ) },
@@ -442,9 +442,10 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   const std::string title { mapLayer->serverProperties()->wfsTitle().isEmpty() ? mapLayer->name().toStdString() : mapLayer->serverProperties()->wfsTitle().toStdString() };
   const std::string itemsTitle { title + " items" };
   const QString shortName { mapLayer->serverProperties()->shortName().isEmpty() ? mapLayer->name() : mapLayer->serverProperties()->shortName() };
+  const QString typeName { mapLayer->serverProperties()->wfsTypeName() };
   json linksList = links( context );
   linksList.push_back(
-    { { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::JSON ) ) },
+    { { "href", href( context, QStringLiteral( "/items" ), QgsServerOgcApi::contentTypeToExtension( QgsServerOgcApi::ContentType::GEOJSON ) ) },
       { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::items ) },
       { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::GEOJSON ) },
       { "title", itemsTitle + " as " + QgsServerOgcApi::contentTypeToStdString( QgsServerOgcApi::ContentType::GEOJSON ) }
@@ -460,7 +461,7 @@ void QgsWfs3DescribeCollectionHandler::handleRequest( const QgsServerApiContext 
   );
 
   linksList.push_back(
-    { { "href", parentLink( context.request()->url(), 3 ).toStdString() + "?request=DescribeFeatureType&typenames=" + QUrlQuery( shortName ).toString( QUrl::EncodeSpaces ).toStdString() + "&service=WFS&version=2.0"
+    { { "href", parentLink( context.request()->url(), 3 ).toStdString() + "?request=DescribeFeatureType&typename=" + QUrlQuery( typeName ).toString( QUrl::EncodeSpaces ).toStdString() + "&service=WFS&version=2.0"
       },
       { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::describedBy ) },
       { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::XML ) },

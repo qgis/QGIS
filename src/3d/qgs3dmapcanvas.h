@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgsrange.h"
+#include "qgsraycastresult.h"
 
 #include <QtGui/QWindow>
 
@@ -67,6 +68,7 @@ class Qgs3DMapSettings;
 class QgsFeature;
 class QgsMapLayer;
 class QgsRubberBand3D;
+class QgsRayCastContext;
 
 
 /**
@@ -94,6 +96,57 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     //! Returns access to the view's camera controller. Returns NULLPTR if the scene has not been initialized yet with setMapSettings()
     QgsCameraController *cameraController();
+
+    /**
+     * Sets the active map \a tool that will receive events from the 3D canvas. Does not transfer ownership.
+     * If the tool is NULLPTR, events will be used for camera manipulation.
+     * \since QGIS 4.0
+     */
+    void setMapTool( Qgs3DMapTool *tool );
+
+    /**
+     * Returns the active map tool that will receive events from the 3D canvas.
+     * If the tool is NULLPTR, events will be used for camera manipulation.
+     * \since QGIS 4.0
+     */
+    Qgs3DMapTool *mapTool() const { return mMapTool; }
+
+    /**
+     * Casts a ray towards the 3d scene and returns information about the intersected 3d entities.
+     * \param screenPoint The ray starts from the current camera center and goes through this point (in pixel coordinates, originating at top left corner).
+     * \param context A context object defining parameters for the ray casting.
+     * \since QGIS 4.0
+     */
+    QgsRayCastResult castRay( const QPoint &screenPoint, QgsRayCastContext context );
+
+    /**
+     * Enables cross section mode for the 3D map canvas.
+     * The 3D scene will be clipped by four clipping planes, defined by a cross section line segment from \a startPoint to \a endPoint and
+     * two parallel segments at distance \a tolerance to each side.
+     *
+     * \param startPoint The start point of the cross section line in 3D map coordinates.
+     * \param endPoint The end point of the cross section line in 3D map coordinates.
+     * \param tolerance The distance in meters between the cross section line and the left and right clipping planes.
+     * \param setSideView When TRUE, the camera will be moved to look at the scene from the right side of the cross section line.
+     * \see disableCrossSection()
+     * \since QGIS 4.0
+     */
+    void enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double tolerance, bool setSideView = true );
+
+    /**
+     * \brief disableCrossSection Disables the cross section mode and removes the scene's clipping planes
+     * \see enableCrossSection()
+     * \since QGIS 4.0
+     */
+    void disableCrossSection();
+
+    /**
+     * Returns TRUE if the cross section mode is enabled or the 3d scene has other clipping planes applied
+     *
+     * \see enableCrossSection()
+     * \since QGIS 4.0
+     */
+    bool crossSectionEnabled() const;
 
 #ifndef SIP_RUN
 
@@ -133,18 +186,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     //! Saves the current scene as an image
     void saveAsImage( const QString &fileName, const QString &fileFormat );
-
-    /**
-     * Sets the active map \a tool that will receive events from the 3D canvas. Does not transfer ownership.
-     * If the tool is NULLPTR, events will be used for camera manipulation.
-     */
-    void setMapTool( Qgs3DMapTool *tool );
-
-    /**
-     * Returns the active map tool that will receive events from the 3D canvas.
-     * If the tool is NULLPTR, events will be used for camera manipulation.
-     */
-    Qgs3DMapTool *mapTool() const { return mMapTool; }
 
     /**
      * Returns the 3D engine.
@@ -197,6 +238,12 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void cameraNavigationSpeedChanged( double speed );
 
 #endif
+    /**
+     *  Emitted when the cross section mode is enabled or disabled
+     *  \see enableCrossSection()
+     *  \since QGIS 4.0
+     */
+    void crossSectionEnabledChanged( bool enabled );
 
   private slots:
     void captureDepthBuffer();

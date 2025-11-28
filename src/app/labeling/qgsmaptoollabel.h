@@ -185,7 +185,7 @@ class APP_EXPORT QgsMapToolLabel : public QgsMapToolAdvancedDigitizing
     QVariant evaluateDataDefinedProperty( QgsPalLayerSettings::Property property, const QgsPalLayerSettings &labelSettings, const QgsFeature &feature, const QVariant &defaultValue ) const;
 
     //! Returns whether to preserve predefined rotation data during label pin/unpin operations
-    bool currentLabelPreserveRotation();
+    bool currentLabelPreserveRotation() const;
 
     /**
      * Gets data defined position of current label

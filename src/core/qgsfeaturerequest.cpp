@@ -56,12 +56,69 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsExpression &expr, const QgsExpres
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
+//****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  : mFilter( rh.mFilter )
+  , mSpatialFilter( rh.mSpatialFilter )
+  , mFilterRect( rh.mFilterRect )
+  , mReferenceGeometry( rh.mReferenceGeometry )
+  , mReferenceGeometryEngine( rh.mReferenceGeometryEngine )
+  , mDistanceWithin( rh.mDistanceWithin )
+  , mFilterFid( rh.mFilterFid )
+  , mFilterFids( rh.mFilterFids )
+  , mFilterExpression( rh.mFilterExpression ? new QgsExpression( *rh.mFilterExpression ) : nullptr )
+  , mExpressionContext( rh.mExpressionContext )
+  , mFlags( rh.mFlags )
+  , mAttrs( rh.mAttrs )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
+  , mSimplifyMethod( rh.mSimplifyMethod )
+  , mLimit( rh.mLimit )
+  , mOrderBy( rh.mOrderBy )
+  , mInvalidGeometryFilter( rh.mInvalidGeometryFilter )
+  , mInvalidGeometryCallback( rh.mInvalidGeometryCallback )
+  , mTransformErrorCallback( rh.mTransformErrorCallback )
+  , mTransform( rh.mTransform )
+  , mCrs( rh.mCrs )
+  , mTransformContext( rh.mTransformContext )
+  , mTimeout( rh.mTimeout )
+  , mRequestMayBeNested( rh.mRequestMayBeNested )
+  , mFeedback( rh.mFeedback )
+    //****** IMPORTANT! editing this? make sure you update the move constructor too! *****
 {
-  operator=( rh );
+
+}
+
+QgsFeatureRequest::QgsFeatureRequest( QgsFeatureRequest &&rh )
+  : mFilter( rh.mFilter )
+  , mSpatialFilter( rh.mSpatialFilter )
+  , mFilterRect( std::move( rh.mFilterRect ) )
+  , mReferenceGeometry( std::move( rh.mReferenceGeometry ) )
+  , mReferenceGeometryEngine( std::move( rh.mReferenceGeometryEngine ) )
+  , mDistanceWithin( rh.mDistanceWithin )
+  , mFilterFid( rh.mFilterFid )
+  , mFilterFids( std::move( rh.mFilterFids ) )
+  , mFilterExpression( std::move( rh.mFilterExpression ) )
+  , mExpressionContext( std::move( rh.mExpressionContext ) )
+  , mFlags( rh.mFlags )
+  , mAttrs( std::move( rh.mAttrs ) )
+  , mSimplifyMethod( std::move( rh.mSimplifyMethod ) )
+  , mLimit( rh.mLimit )
+  , mOrderBy( std::move( rh.mOrderBy ) )
+  , mInvalidGeometryFilter( rh.mInvalidGeometryFilter )
+  , mInvalidGeometryCallback( std::move( rh.mInvalidGeometryCallback ) )
+  , mTransformErrorCallback( std::move( rh.mTransformErrorCallback ) )
+  , mTransform( std::move( rh.mTransform ) )
+  , mCrs( std::move( rh.mCrs ) )
+  , mTransformContext( std::move( rh.mTransformContext ) )
+  , mTimeout( rh.mTimeout )
+  , mRequestMayBeNested( rh.mRequestMayBeNested )
+  , mFeedback( rh.mFeedback )
+{
+
 }
 
 QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
 {
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   if ( &rh == this )
     return *this;
 
@@ -82,6 +139,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   {
     mFilterExpression.reset( nullptr );
   }
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
   mInvalidGeometryFilter = rh.mInvalidGeometryFilter;
   mInvalidGeometryCallback = rh.mInvalidGeometryCallback;
   mExpressionContext = rh.mExpressionContext;
@@ -93,6 +151,40 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mCrs = rh.mCrs;
   mTransformContext = rh.mTransformContext;
   mTransformErrorCallback = rh.mTransformErrorCallback;
+  mTimeout = rh.mTimeout;
+  mRequestMayBeNested = rh.mRequestMayBeNested;
+  mFeedback = rh.mFeedback;
+  return *this;
+  //****** IMPORTANT! editing this? make sure you update the move assignment operator too! *****
+}
+
+
+QgsFeatureRequest &QgsFeatureRequest::operator=( QgsFeatureRequest &&rh )
+{
+  if ( &rh == this )
+    return *this;
+
+  mFlags = rh.mFlags;
+  mFilter = rh.mFilter;
+  mSpatialFilter = rh.mSpatialFilter;
+  mFilterRect = std::move( rh.mFilterRect );
+  mReferenceGeometry = std::move( rh.mReferenceGeometry );
+  mReferenceGeometryEngine = std::move( rh.mReferenceGeometryEngine );
+  mDistanceWithin = rh.mDistanceWithin;
+  mFilterFid = rh.mFilterFid;
+  mFilterFids = std::move( rh.mFilterFids );
+  mFilterExpression = std::move( rh.mFilterExpression );
+  mInvalidGeometryFilter = std::move( rh.mInvalidGeometryFilter );
+  mInvalidGeometryCallback = std::move( rh.mInvalidGeometryCallback );
+  mExpressionContext = std::move( rh.mExpressionContext );
+  mAttrs = std::move( rh.mAttrs );
+  mSimplifyMethod = std::move( rh.mSimplifyMethod );
+  mLimit = rh.mLimit;
+  mOrderBy = std::move( rh.mOrderBy );
+  mTransform = std::move( rh.mTransform );
+  mCrs = std::move( rh.mCrs );
+  mTransformContext = std::move( rh.mTransformContext );
+  mTransformErrorCallback = std::move( rh.mTransformErrorCallback );
   mTimeout = rh.mTimeout;
   mRequestMayBeNested = rh.mRequestMayBeNested;
   mFeedback = rh.mFeedback;

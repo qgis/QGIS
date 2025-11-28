@@ -53,10 +53,8 @@ namespace Qt3DCore
 } // namespace Qt3DCore
 #endif
 
-namespace QgsRayCastingUtils
-{
-  class Ray3D;
-}
+class QgsRay3D;
+class QgsRayCastContext;
 
 /**
  * \ingroup qgis_3d
@@ -77,7 +75,7 @@ class DemTerrainTileGeometry : public Qt3DCore::QGeometry
      */
     explicit DemTerrainTileGeometry( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap, QNode *parent = nullptr );
 
-    bool rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint );
+    bool rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint );
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     Qt3DRender::QAttribute *positionAttribute() { return mPositionAttribute; }

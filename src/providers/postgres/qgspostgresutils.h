@@ -97,9 +97,9 @@ class QgsPostgresUtils
 
     static bool createStylesTable( QgsPostgresConn *conn, QString loggedClass );
 
-    static bool columnExists( QgsPostgresConn *conn, const QString &table, const QString &column );
+    static bool columnExists( QgsPostgresConn *conn, const QString &schema, const QString &table, const QString &column );
 
-    static bool tableExists( QgsPostgresConn *conn, const QString &name );
+    static bool tableExists( QgsPostgresConn *conn, const QString &schema, const QString &table );
 
     /*
     * Check if projects table exists in the specified schema
@@ -129,11 +129,56 @@ class QgsPostgresUtils
     static bool deleteProjectFromSchema( QgsPostgresConn *conn, const QString &projectName, const QString &schemaName );
 
     /*
+    * Copies project from project's table in the original schema to target schema
+    *
+    * \returns true on success
+    *
+    * \since QGIS 4.0
+    */
+    static bool copyProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema );
+
+    /*
+    * Moves project from project's table in the original schema to target schema
+    *
+    * \returns true on success
+    *
+    * \since QGIS 4.0
+    */
+    static bool moveProjectToSchema( QgsPostgresConn *conn, const QString &originalSchema, const QString &projectName, const QString &targetSchema );
+
+    /*
     * Turns variant map into HTML code.
     *
     * \since QGIS 4.0
     */
     static QString variantMapToHtml( const QVariantMap &variantMap, const QString &title = QString() );
+
+    /*
+    * Set comment for a project 
+    *
+    * \returns true on success
+    *
+    * \since QGIS 4.0
+    */
+    static bool setProjectComment( QgsPostgresConn *conn, const QString &schemaName, const QString &projectName, const QString &comment );
+
+    /*
+    * Comment for a project from the specified schema
+    *
+    * \returns project comment or empty string if not found
+    *
+    * \since QGIS 4.0
+    */
+    static QString projectComment( QgsPostgresConn *conn, const QString &schemaName, const QString &projectName );
+
+    /*
+    * Adds a comment column to the projects table in the specified schema
+    *
+    * \returns true on success
+    *
+    * \since QGIS 4.0
+    */
+    static bool addCommentColumnToProjectsTable( QgsPostgresConn *conn, const QString &schemaName );
 };
 
 #endif

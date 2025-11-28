@@ -71,7 +71,6 @@ void QgsFixGeometryMultipartAlgorithm::initAlgorithm( const QVariantMap &configu
 {
   Q_UNUSED( configuration )
 
-  // Inputs
   addParameter( new QgsProcessingParameterFeatureSource(
     QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
   ) );
@@ -83,7 +82,6 @@ void QgsFixGeometryMultipartAlgorithm::initAlgorithm( const QVariantMap &configu
     QStringLiteral( "id" ), QStringLiteral( "ERRORS" )
   ) );
 
-  // Outputs
   addParameter( new QgsProcessingParameterFeatureSink(
     QStringLiteral( "OUTPUT" ), QObject::tr( "Strictly-multipart layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry
   ) );
@@ -121,7 +119,7 @@ QVariantMap QgsFixGeometryMultipartAlgorithm::processAlgorithm( const QVariantMa
   if ( inputIdFieldIndex == -1 )
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not exist in input layer." ).arg( featIdFieldName ) );
 
-  QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
+  const QgsField inputFeatIdField = input->fields().at( inputIdFieldIndex );
   if ( inputFeatIdField.type() != errors->fields().at( errors->fields().indexFromName( featIdFieldName ) ).type() )
     throw QgsProcessingException( QObject::tr( "Field \"%1\" does not have the same type as in the error layer." ).arg( featIdFieldName ) );
 
@@ -142,8 +140,7 @@ QVariantMap QgsFixGeometryMultipartAlgorithm::processAlgorithm( const QVariantMa
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
-  const QgsProject *project = QgsProject::instance();
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project() );
 
   const QgsGeometryMultipartCheck check( &checkContext, QVariantMap() );
 
@@ -243,7 +240,7 @@ bool QgsFixGeometryMultipartAlgorithm::prepareAlgorithm( const QVariantMap &para
 
 Qgis::ProcessingAlgorithmFlags QgsFixGeometryMultipartAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 ///@endcond

@@ -978,6 +978,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module, QgsGrassModule
     {
       QgsGrassModuleInput *mapInput = dynamic_cast<QgsGrassModuleInput *>( item );
 
+      // FIXME: updateQgisLayers() is a method of QgsGrassModuleGdalInput not QgsGrassModuleInput
       connect( mapInput, SIGNAL( valueChanged() ), this, SLOT( updateQgisLayers() ) );
     }
   }

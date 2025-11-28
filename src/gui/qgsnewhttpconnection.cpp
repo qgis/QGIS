@@ -65,7 +65,15 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   {
     connectionType = QStringLiteral( "WMS/WMTS" );
   }
-  setWindowTitle( tr( "Create a New %1 Connection" ).arg( connectionType ) );
+
+  if ( connectionName.isEmpty() )
+  {
+    setWindowTitle( tr( "Create a New %1 Connection" ).arg( connectionType ) );
+  }
+  else
+  {
+    setWindowTitle( tr( "Edit %1 Connection \"%2\"" ).arg( connectionType, connectionName ) );
+  }
 
   txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( "[^\\/]+" ), txtName ) );
 
@@ -88,6 +96,9 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   cmbVersion->addItem( tr( "2.0" ) );
   cmbVersion->addItem( tr( "OGC API - Features" ) );
   connect( cmbVersion, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::wfsVersionCurrentIndexChanged );
+
+  mFeatureFormatComboBox->clear();
+  mFeatureFormatComboBox->addItem( tr( "Default" ), QStringLiteral( "default" ) );
 
   mComboWfsFeatureMode->clear();
   mComboWfsFeatureMode->addItem( tr( "Default" ), QStringLiteral( "default" ) );
@@ -123,6 +134,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     mAuthSettings->setPassword( QgsOwsConnection::settingsPassword->value( detailParameters ) );
     mAuthSettings->setConfigId( QgsOwsConnection::settingsAuthCfg->value( detailParameters ) );
   }
+
   mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
 
   if ( !( mTypes & ConnectionWms ) && !( mTypes & ConnectionWcs ) )
@@ -179,6 +191,8 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     mGroupBox->layout()->removeWidget( mAuthGroupBox );
   }
 
+  mWmsFormatDetectButton->setDisabled( txtUrl->text().isEmpty() );
+
   connect( txtName, &QLineEdit::textChanged, this, &QgsNewHttpConnection::nameChanged );
   connect( txtUrl, &QLineEdit::textChanged, this, &QgsNewHttpConnection::urlChanged );
 
@@ -200,6 +214,9 @@ void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
   cbxWfsIgnoreAxisOrientation->setEnabled( index != WFS_VERSION_1_0 && index != WFS_VERSION_API_FEATURES_1_0 );
   cbxWfsInvertAxisOrientation->setEnabled( index != WFS_VERSION_API_FEATURES_1_0 );
   wfsUseGml2EncodingForTransactions()->setEnabled( index == WFS_VERSION_1_1 );
+
+  featureFormatComboBox()->setEnabled( index == WFS_VERSION_MAX || index == WFS_VERSION_API_FEATURES_1_0 );
+  featureFormatDetectButton()->setEnabled( index == WFS_VERSION_MAX || index == WFS_VERSION_API_FEATURES_1_0 );
 }
 
 void QgsNewHttpConnection::wfsFeaturePagingCurrentIndexChanged( int index )
@@ -230,6 +247,7 @@ void QgsNewHttpConnection::urlChanged( const QString &text )
   Q_UNUSED( text )
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
   mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
+  mWmsFormatDetectButton->setDisabled( txtUrl->text().isEmpty() );
 }
 
 void QgsNewHttpConnection::updateOkButtonState()
@@ -263,10 +281,36 @@ QPushButton *QgsNewHttpConnection::testConnectButton()
   return mTestConnectionButton;
 }
 
+QPushButton *QgsNewHttpConnection::wmsFormatDetectButton()
+{
+  return mWmsFormatDetectButton;
+}
+
 QgsAuthSettingsWidget *QgsNewHttpConnection::authSettingsWidget()
 {
   return mAuthSettings;
 }
+
+QgsAuthorizationSettings QgsNewHttpConnection::authorizationSettings() const
+{
+  return QgsAuthorizationSettings( mAuthSettings->username(), mAuthSettings->password(), mHttpHeaders->httpHeaders(), mAuthSettings->configId() );
+}
+
+bool QgsNewHttpConnection::ignoreAxisOrientation() const
+{
+  return cbxWmsIgnoreAxisOrientation->isChecked();
+}
+
+QComboBox *QgsNewHttpConnection::wmsPreferredFormatCombo() const
+{
+  return mWmsPreferredFormatCombo;
+}
+
+bool QgsNewHttpConnection::invertAxisOrientation() const
+{
+  return cbxWmsInvertAxisOrientation->isChecked();
+}
+
 
 QPushButton *QgsNewHttpConnection::wfsVersionDetectButton()
 {
@@ -276,6 +320,16 @@ QPushButton *QgsNewHttpConnection::wfsVersionDetectButton()
 QComboBox *QgsNewHttpConnection::wfsVersionComboBox()
 {
   return cmbVersion;
+}
+
+QPushButton *QgsNewHttpConnection::featureFormatDetectButton()
+{
+  return mFeatureFormatDetectButton;
+}
+
+QComboBox *QgsNewHttpConnection::featureFormatComboBox()
+{
+  return mFeatureFormatComboBox;
 }
 
 QComboBox *QgsNewHttpConnection::wfsPagingComboBox()
@@ -326,6 +380,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 
   Qgis::DpiMode dpiMode = QgsOwsConnection::settingsDpiMode->value( detailsParameters );
   cmbDpiMode->setCurrentIndex( cmbDpiMode->findData( static_cast<int>( dpiMode ) ) );
+
   Qgis::TilePixelRatio tilePixelRatio = QgsOwsConnection::settingsTilePixelRatio->value( detailsParameters );
   cmbTilePixelRatio->setCurrentIndex( cmbTilePixelRatio->findData( static_cast<int>( tilePixelRatio ) ) );
 
@@ -369,6 +424,11 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 void QgsNewHttpConnection::showEvent( QShowEvent *event )
 {
   QDialog::showEvent( event );
+}
+
+QString QgsNewHttpConnection::originalConnectionName() const
+{
+  return mOriginalConnName;
 }
 
 QUrl QgsNewHttpConnection::urlTrimmed() const
@@ -425,6 +485,17 @@ void QgsNewHttpConnection::accept()
     QgsOwsConnection::settingsInvertAxisOrientation->setValue( cbxWfsInvertAxisOrientation->isChecked(), detailsParameters );
     QgsOwsConnection::settingsPreferCoordinatesForWfsT11->setValue( cbxWfsUseGml2EncodingForTransactions->isChecked(), detailsParameters );
     QgsOwsConnection::settingsWfsForceInitialGetFeature->setValue( cbxWfsForceInitialGetFeature->isChecked(), detailsParameters );
+
+    // Get all values from the combo
+    QStringList availableFormats;
+    for ( int i = 0; i < mFeatureFormatComboBox->count(); ++i )
+    {
+      availableFormats.append( mFeatureFormatComboBox->itemData( i ).toString() );
+    }
+    QString format = mFeatureFormatComboBox->currentData().toString();
+    QgsOwsConnection::settingsDefaultFeatureFormat->setValue( format, detailsParameters );
+    settings.setValue( QStringLiteral( "/qgis/lastFeatureFormatEncoding" ), format );
+    QgsOwsConnection::settingsAvailableFeatureFormats->setValue( availableFormats, detailsParameters );
   }
   if ( mTypes & ConnectionWms || mTypes & ConnectionWcs )
   {
@@ -437,6 +508,14 @@ void QgsNewHttpConnection::accept()
 
     Qgis::DpiMode dpiMode = cmbDpiMode->currentData().value<Qgis::DpiMode>();
     QgsOwsConnection::settingsDpiMode->setValue( dpiMode, detailsParameters );
+    // Get all values from the combo
+    QStringList availableFormats;
+    for ( int i = 0; i < mWmsPreferredFormatCombo->count(); ++i )
+    {
+      availableFormats.append( mWmsPreferredFormatCombo->itemData( i ).toString() );
+    }
+    QgsOwsConnection::settingsDefaultImageFormat->setValue( mWmsPreferredFormatCombo->currentData().toString(), detailsParameters );
+    QgsOwsConnection::settingsAvailableImageFormats->setValue( availableFormats, detailsParameters );
     Qgis::TilePixelRatio tilePixelRatio = cmbTilePixelRatio->currentData().value<Qgis::TilePixelRatio>();
     QgsOwsConnection::settingsTilePixelRatio->setValue( tilePixelRatio, detailsParameters );
 

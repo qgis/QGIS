@@ -139,9 +139,9 @@ QgsFeatureList QgsTranslateAlgorithm::processFeature( const QgsFeature &feature,
     if ( mDynamicDeltaM )
       deltaM = mDeltaMProperty.valueAsDouble( context.expressionContext(), deltaM );
 
-    if ( deltaZ != 0.0 && !geometry.constGet()->is3D() )
+    if ( QgsWkbTypes::hasZ( mOutputWkbType ) && !geometry.constGet()->is3D() )
       geometry.get()->addZValue( 0 );
-    if ( deltaM != 0.0 && !geometry.constGet()->isMeasure() )
+    if ( QgsWkbTypes::hasM( mOutputWkbType ) && !geometry.constGet()->isMeasure() )
       geometry.get()->addMValue( 0 );
 
     geometry.translate( deltaX, deltaY, deltaZ, deltaM );
@@ -152,12 +152,12 @@ QgsFeatureList QgsTranslateAlgorithm::processFeature( const QgsFeature &feature,
 
 Qgis::WkbType QgsTranslateAlgorithm::outputWkbType( Qgis::WkbType inputWkbType ) const
 {
-  Qgis::WkbType wkb = inputWkbType;
+  mOutputWkbType = inputWkbType;
   if ( mDynamicDeltaZ || mDeltaZ != 0.0 )
-    wkb = QgsWkbTypes::addZ( wkb );
+    mOutputWkbType = QgsWkbTypes::addZ( mOutputWkbType );
   if ( mDynamicDeltaM || mDeltaM != 0.0 )
-    wkb = QgsWkbTypes::addM( wkb );
-  return wkb;
+    mOutputWkbType = QgsWkbTypes::addM( mOutputWkbType );
+  return mOutputWkbType;
 }
 
 bool QgsTranslateAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const

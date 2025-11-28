@@ -1,5 +1,5 @@
 
-ARG DISTRO_VERSION=25.04
+ARG DISTRO_VERSION=25.10
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
@@ -83,6 +83,7 @@ RUN  apt-get update \
     python3-pyqt6.qtwebengine \
     python3-requests \
     python3-shapely  \
+    python3-geopandas \
     python3-sphinx \
     python3-six \
     python3-termcolor \
@@ -106,7 +107,8 @@ RUN  apt-get update \
 RUN  pip3 install --break-system-packages \
     future \
     capturer \
-    hdbcli
+    hdbcli \
+    pyarrow
 RUN  apt-get clean
 
 # Node.js and Yarn for server landingpage webapp
@@ -144,7 +146,7 @@ RUN  apt-get update \
      libgdal-dev \
      libproj-dev
 
-RUN 
+RUN
 FROM binary-for-oracle AS binary-only
 
 RUN  apt-get update \

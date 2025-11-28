@@ -549,5 +549,5 @@ void QgsQueryBuilder::layerSubsetStringChanged()
 {
   if ( mIgnoreLayerSubsetStringChangedSignal )
     return;
-  mUseUnfilteredLayer->setDisabled( mLayer->subsetString().isEmpty() );
+  mUseUnfilteredLayer->setDisabled( mLayer->subsetString().isEmpty() || mLayer->isSqlQuery() );
 }

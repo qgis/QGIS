@@ -345,6 +345,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mView, &QgsModelGraphicsView::commandEnded, this, [this] {
     endUndoCommand();
   } );
+  connect( mView, &QgsModelGraphicsView::commandAborted, this, [this] {
+    abortUndoCommand();
+  } );
   connect( mView, &QgsModelGraphicsView::deleteSelectedItems, this, [this] {
     deleteSelected();
   } );
@@ -427,6 +430,12 @@ void QgsModelDesignerDialog::endUndoCommand()
   mUndoStack->push( mActiveCommand.release() );
   mIgnoreUndoStackChanges--;
   setDirty( true );
+}
+
+void QgsModelDesignerDialog::abortUndoCommand()
+{
+  if ( mActiveCommand )
+    mActiveCommand->setObsolete( true );
 }
 
 QgsProcessingModelAlgorithm *QgsModelDesignerDialog::model()

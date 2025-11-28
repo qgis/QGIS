@@ -62,7 +62,8 @@ QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkN
     const double chZMax = box3D.zMaximum();
     const QgsBox3D childBox3D( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax );
 
-    if ( mClippingBox3D.isEmpty() || childBox3D.intersects( mClippingBox3D ) )
+    // When there's a clipping box defined, only keep intersecting children. Note that a QgsBox3D.isEmpty() == true when is2d() == true
+    if ( mClippingBox3D.isNull() || childBox3D.intersects( mClippingBox3D ) )
       children << new QgsChunkNode( childId, childBox3D, childError, node );
   }
   return children;

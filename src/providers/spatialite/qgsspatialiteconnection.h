@@ -36,7 +36,7 @@ class QgsSpatiaLiteConnection : public QObject
     //! Construct a connection. Name can be either stored connection name or a path to the database file
     explicit QgsSpatiaLiteConnection( const QString &name );
 
-    QString path() { return mPath; }
+    QString path() const { return mPath; }
 
     static QStringList connectionList();
     static QString connectionPath( const QString &name );
@@ -72,10 +72,10 @@ class QgsSpatiaLiteConnection : public QObject
     Error fetchTables( bool loadGeometrylessTables );
 
     //! Returns list of tables. fetchTables() function has to be called before
-    QList<TableEntry> tables() { return mTables; }
+    QList<TableEntry> tables() const { return mTables; }
 
     //! Returns additional error message (if an error occurred before)
-    QString errorMessage() { return mErrorMsg; }
+    QString errorMessage() const { return mErrorMsg; }
 
     //! Updates the Internal Statistics
     bool updateStatistics();

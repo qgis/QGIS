@@ -15,7 +15,6 @@
 
 #include "qgstessellatedpolygongeometry.h"
 #include "moc_qgstessellatedpolygongeometry.cpp"
-#include "qgsraycastingutils_p.h"
 #include "qgsmessagelog.h"
 
 #include <QMatrix4x4>
@@ -44,7 +43,9 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
 {
   mVertexBuffer = new Qt3DQBuffer( this );
 
-  const QgsTessellator tmpTess( 0, 0, mWithNormals, false, false, false, mAddTextureCoords );
+  QgsTessellator tmpTess;
+  tmpTess.setAddNormals( mWithNormals );
+  tmpTess.setAddTextureUVs( mAddTextureCoords );
   const int stride = tmpTess.stride();
 
   mPositionAttribute = new Qt3DQAttribute( this );

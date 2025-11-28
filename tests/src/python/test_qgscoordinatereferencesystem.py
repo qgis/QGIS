@@ -12,6 +12,7 @@ __author__ = "(C) 2022 by Nyall Dawson"
 __date__ = "06/04/2022"
 __copyright__ = "Copyright 2022, The QGIS Project"
 
+import json
 
 from qgis.core import Qgis, QgsCoordinateReferenceSystem
 import unittest
@@ -177,6 +178,39 @@ class TestQgsCoordinateReferenceSystem(QgisTestCase):
             float(crs.ellipsoidAcronym().split(":")[2]), 6356078.962818189, -1
         )
         self.assertEqual(crs.celestialBodyName(), "Earth")
+
+    def test_to_json_string(self):
+        self.assertFalse(QgsCoordinateReferenceSystem().toJsonString())
+        proj_json = json.loads(QgsCoordinateReferenceSystem("EPSG:3111").toJsonString())
+        # don't check the whole json, we want this test to be tolerant to changes
+        # in proj library!
+        self.assertEqual(
+            proj_json["type"],
+            "ProjectedCRS",
+        )
+        self.assertEqual(
+            proj_json["name"],
+            "GDA94 / Vicgrid",
+        )
+
+        self.assertNotIn(
+            "\n",
+            QgsCoordinateReferenceSystem("EPSG:3111").toJsonString(multiline=False),
+        )
+        self.assertIn(
+            "\n", QgsCoordinateReferenceSystem("EPSG:3111").toJsonString(multiline=True)
+        )
+        self.assertIn(
+            " " * 30,
+            QgsCoordinateReferenceSystem("EPSG:3111").toJsonString(
+                multiline=True, indentationWidth=30
+            ),
+        )
+
+        proj_json = json.loads(
+            QgsCoordinateReferenceSystem("EPSG:3111").toJsonString(schema="xxx")
+        )
+        self.assertEqual(proj_json["$schema"], "xxx")
 
 
 if __name__ == "__main__":

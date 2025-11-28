@@ -33,6 +33,9 @@ QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext &ot
 
 QgsSymbolWidgetContext &QgsSymbolWidgetContext::operator=( const QgsSymbolWidgetContext &other )
 {
+  if ( &other == this )
+    return *this;
+
   mMapCanvas = other.mMapCanvas;
   mMessageBar = other.mMessageBar;
   mAdditionalScopes = other.mAdditionalScopes;

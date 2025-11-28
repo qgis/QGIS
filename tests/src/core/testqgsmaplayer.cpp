@@ -33,6 +33,7 @@
 #include "qgsmaplayerstore.h"
 #include "qgsproject.h"
 #include "qgsxmlutils.h"
+#include "qgsvectortilelayer.h"
 
 /**
  * \ingroup UnitTests
@@ -54,6 +55,8 @@ class TestQgsMapLayer : public QObject
     void isValid();
     void testId();
     void formatName();
+
+    void generalHtmlMetadata();
 
     void setBlendMode();
 
@@ -151,6 +154,33 @@ void TestQgsMapLayer::testId()
   QVERIFY( !layer3->setId( QStringLiteral( "aaa" ) ) );
   QCOMPARE( layer3->id(), QStringLiteral( "my forced id" ) );
   QCOMPARE( spy3.count(), 1 );
+}
+
+void TestQgsMapLayer::generalHtmlMetadata()
+{
+  {
+    QgsDataSourceUri ds;
+    ds.setParam( QStringLiteral( "type" ), "xyz" );
+    ds.setParam( QStringLiteral( "zmax" ), "1" );
+    ds.setParam( QStringLiteral( "url" ), "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" );
+    std::unique_ptr<QgsVectorTileLayer> vl( new QgsVectorTileLayer( ds.encodedUri(), QStringLiteral( "testLayer" ) ) );
+    QVERIFY( vl->dataProvider() );
+    QVERIFY( vl->dataProvider()->isValid() );
+    QCOMPARE( ds.param( QStringLiteral( "url" ) ), "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" );
+    QVERIFY( vl->generalHtmlMetadata().contains( "URL</td><td><a href=\"https://s3.amazonaws.com/elevation-tiles-prod/terrarium/%7Bz%7D/%7Bx%7D/%7By%7D.png" ) );
+  }
+
+  {
+    QgsDataSourceUri ds;
+    ds.setParam( QStringLiteral( "type" ), "mbtiles" );
+    ds.setParam( QStringLiteral( "zmax" ), "1" );
+    ds.setParam( QStringLiteral( "url" ), QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+    std::unique_ptr<QgsVectorTileLayer> vl( new QgsVectorTileLayer( ds.encodedUri(), QStringLiteral( "testLayer" ) ) );
+    QVERIFY( vl->dataProvider() );
+    QVERIFY( vl->dataProvider()->isValid() );
+    QCOMPARE( ds.param( QStringLiteral( "url" ) ), QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+    QVERIFY( vl->generalHtmlMetadata().contains( QStringLiteral( "Path</td><td><a href=\"file://%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ) );
+  }
 }
 
 void TestQgsMapLayer::formatName()

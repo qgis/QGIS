@@ -257,6 +257,11 @@ class CORE_EXPORT QgsMesh3DDataBlock
     QgsMesh3DDataBlock();
     ~QgsMesh3DDataBlock();
 
+    QgsMesh3DDataBlock( const QgsMesh3DDataBlock &other );
+    SIP_SKIP QgsMesh3DDataBlock( QgsMesh3DDataBlock &&other );
+    QgsMesh3DDataBlock &operator=( const QgsMesh3DDataBlock &other );
+    QgsMesh3DDataBlock &operator=( QgsMesh3DDataBlock &&other );
+
     //! Constructs a new block for count faces
     QgsMesh3DDataBlock( int count, bool isVector );
 

@@ -225,3 +225,41 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::uni
 
   QgsApplication::taskManager()->addTask( exportTask.release() );
 }
+
+void QgsDataItemGuiProviderUtils::addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, const QString &subMenuName )
+{
+  // this action should sit in the Manage menu. If one does not exist, create it now
+  bool foundExistingManageMenu = false;
+  const QList<QAction *> actions = mainMenu->actions();
+  for ( QAction *action : actions )
+  {
+    if ( action->text() == subMenuName )
+    {
+      action->menu()->addAction( actionToAdd );
+      foundExistingManageMenu = true;
+      break;
+    }
+  }
+  if ( !foundExistingManageMenu )
+  {
+    QMenu *addSubMenu = new QMenu( subMenuName, mainMenu );
+    addSubMenu->addAction( actionToAdd );
+    mainMenu->addMenu( addSubMenu );
+  }
+}
+
+void QgsDataItemGuiProviderUtils::refreshChildWithName( QgsDataItem *item, const QString &name )
+{
+  const QVector<QgsDataItem *> constChildren { item->children() };
+  for ( QgsDataItem *c : constChildren )
+  {
+    if ( c->name() == name )
+    {
+      if ( c->state() != Qgis::BrowserItemState::NotPopulated )
+      {
+        c->refresh();
+      }
+      break;
+    }
+  }
+}

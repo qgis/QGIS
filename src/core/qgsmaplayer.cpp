@@ -30,6 +30,7 @@
 #include "moc_qgsmaplayer.cpp"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsobjectvisitor.h"
 #include "qgspathresolver.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsproject.h"
@@ -845,6 +846,9 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
   const QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::StyleCategories>();
   const QString categoriesKeys( metaEnum.valueToKeys( static_cast<int>( categories ) ) );
   layerElement.setAttribute( QStringLiteral( "styleCategories" ), categoriesKeys );
+
+  // Store layer type
+  layerElement.setAttribute( QStringLiteral( "layerType" ), qgsEnumValueToKey( type() ) );
 
   if ( categories.testFlag( Rendering ) )
   {
@@ -1763,8 +1767,9 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
     }
   }
 
+  // Pass the intersection between the desired categories and those that are really in the document
   QgsReadWriteContext context = QgsReadWriteContext();
-  return readSymbology( myRoot, myErrorMessage, context, categories ); // TODO: support relative paths in QML?
+  return readSymbology( myRoot, myErrorMessage, context, categories & sourceCategories ); // TODO: support relative paths in QML?
 }
 
 void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const
@@ -2513,8 +2518,8 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
     }
     if ( layerElement.hasAttribute( QStringLiteral( "autoRefreshMode" ) ) )
     {
-      setAutoRefreshMode( qgsEnumKeyToValue( layerElement.attribute( QStringLiteral( "autoRefreshMode" ) ), Qgis::AutoRefreshMode::Disabled ) );
       setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ) ).toInt() );
+      setAutoRefreshMode( qgsEnumKeyToValue( layerElement.attribute( QStringLiteral( "autoRefreshMode" ) ), Qgis::AutoRefreshMode::Disabled ) );
     }
   }
 
@@ -2970,6 +2975,13 @@ bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const
   return true;
 }
 
+bool QgsMapLayer::accept( QgsObjectEntityVisitorInterface *, const QgsObjectVisitorContext & ) const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return true;
+}
+
 bool QgsMapLayer::hasMapTips() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -3250,8 +3262,9 @@ QString QgsMapLayer::generalHtmlMetadata() const
     }
     if ( uriComponents.contains( QStringLiteral( "url" ) ) )
     {
-      const QString url = uriComponents[QStringLiteral( "url" )].toString();
-      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), url ) ) + QStringLiteral( "</td></tr>\n" );
+      QUrl decodedUri = QUrl::fromPercentEncoding( uriComponents[QStringLiteral( "url" )].toString().toLocal8Bit() );
+      const QString url = decodedUri.toString();
+      metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( url, url ) ) + QStringLiteral( "</td></tr>\n" );
     }
   }
 

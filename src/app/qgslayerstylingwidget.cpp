@@ -236,7 +236,8 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       labelItem->setToolTip( tr( "Labels" ) );
       mOptionsListWidget->addItem( labelItem );
 
-      if ( static_cast<QgsRasterLayer *>( layer )->dataProvider() && static_cast<QgsRasterLayer *>( layer )->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size )
+      QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( layer->dataProvider() );
+      if ( provider && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
       {
         QListWidgetItem *histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/histogram.svg" ) ), QString() );
         histogramItem->setData( Qt::UserRole, RasterHistogram );
@@ -377,12 +378,14 @@ void QgsLayerStylingWidget::apply()
   {
     widget->apply();
     styleWasChanged = true;
+    triggerRepaint = true;
     undoName = QStringLiteral( "Label Change" );
   }
   else if ( QgsDiagramWidget *widget = qobject_cast<QgsDiagramWidget *>( current ) )
   {
     widget->apply();
     styleWasChanged = true;
+    triggerRepaint = true;
     undoName = QStringLiteral( "Diagram Change" );
   }
   else if ( QgsMapLayerConfigWidget *widget = qobject_cast<QgsMapLayerConfigWidget *>( current ) )
@@ -666,7 +669,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
           case 3: // Histogram
           {
-            if ( rlayer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size )
+            QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( rlayer->dataProvider() );
+            if ( provider && ( provider->capabilities() & Qgis::RasterInterfaceCapability::Size ) )
             {
               if ( !mRasterStyleWidget )
               {

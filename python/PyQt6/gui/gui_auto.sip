@@ -171,6 +171,7 @@
 %Include auto_generated/qgsprevieweffect.sip
 %Include auto_generated/qgsprojectstorageguiprovider.sip
 %Include auto_generated/qgsprojectstorageguiregistry.sip
+%Include auto_generated/qgsprojecttrustdialog.sip
 %Include auto_generated/qgspropertyassistantwidget.sip
 %Include auto_generated/qgspropertyoverridebutton.sip
 %Include auto_generated/qgsproviderconnectioncombobox.sip
