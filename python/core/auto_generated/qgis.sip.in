@@ -2366,6 +2366,12 @@ The development version
       Always,
     };
 
+    enum class Export3DSceneFormat
+    {
+      Obj,
+      StlAscii
+    };
+
     enum class ProfileSurfaceSymbology
     {
       Line,
