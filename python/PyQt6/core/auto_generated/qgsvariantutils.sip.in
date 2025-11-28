@@ -68,6 +68,23 @@ Returns ``True`` if the specified ``metaType`` is a numeric type.
 
 
 
+    static QString displayString( const QVariant &variant, int precision = -1 );
+%Docstring
+Returns a localized representation of ``value`` with the given
+``precision``, if precision is -1 then precision is guessed from the
+default QVariant.toString output.
+
+The current localization settings are applied.
+
+For strings, the input text is returned unchanged. For lists, a single
+string is generated with elements separated by ‘;’.
+
+.. note::
+
+   Precision is ignored for integers.
+
+.. versionadded:: 4.0
+%End
 };
 
 /************************************************************************
