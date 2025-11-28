@@ -1056,10 +1056,6 @@ if (WITH_INTERNAL_POLY2TRI)
   include_directories(${CMAKE_SOURCE_DIR}/external/poly2tri)
 endif ()
 
-if(WITH_INTERNAL_EARCUT)
-  include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/external/earcut)
-endif()
-
 if(NOT LIBRARY_TYPE EQUAL STATIC)
   win32_version_info("QGIS Core Library" "qgis_core" QGIS_CORE_SRCS)
 endif()
@@ -2659,6 +2655,7 @@ target_include_directories(qgis_core PUBLIC
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/tinygltf
+  ${CMAKE_SOURCE_DIR}/external/earcut
 )
 
 if (WITH_PDF4QT)
@@ -2699,10 +2696,6 @@ endif()
 
 if (NOT WITH_INTERNAL_POLY2TRI)
    target_link_libraries(qgis_core poly2tri::poly2tri)
-endif()
-
-if (NOT WITH_INTERNAL_EARCUT)
-  target_link_libraries(qgis_core earcut::earcut)
 endif()
 
 if(HAVE_OPENCL)
