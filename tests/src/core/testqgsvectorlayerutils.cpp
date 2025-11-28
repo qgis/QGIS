@@ -194,6 +194,8 @@ void TestQgsVectorLayerUtils::testFilterValidFeatureIds()
   QVERIFY( result.contains( 2 ) );
   QVERIFY( !result.contains( -1 ) );
   QVERIFY( !result.contains( -5 ) );
+}
+
 void TestQgsVectorLayerUtils::testGetValues()
 {
   const QString pointFileName = mTestDataDir + "points.shp";
