@@ -78,7 +78,8 @@ class QgsAppMapTools
       ReverseLine,
       TrimExtendFeature,
       EditMeshFrame,
-      AnnotationEdit
+      AnnotationEdit,
+      AnnotationSelect
     };
 
     QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );

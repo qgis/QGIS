@@ -562,7 +562,7 @@ Qgis::MouseHandlesAction QgsGraphicsViewMouseHandles::mouseActionForScenePos( QP
 
 bool QgsGraphicsViewMouseHandles::shouldBlockEvent( QInputEvent * ) const
 {
-  return mIsDragging || mIsResizing;
+  return mIsDragging || mIsResizing || mIsRotating;
 }
 
 void QgsGraphicsViewMouseHandles::startMove( QPointF sceneCoordPos )
@@ -730,7 +730,10 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
 
   // Mouse may have been grabbed from the QgsLayoutViewSelectTool, so we need to release it explicitly
   // otherwise, hover events will not be received
-  ungrabMouse();
+  if ( mView->scene()->mouseGrabberItem() == this )
+  {
+    ungrabMouse();
+  }
 
   QPointF mouseMoveStopPoint = event->lastScenePos();
   double diffX = mouseMoveStopPoint.x() - mMouseMoveStartPos.x();
@@ -921,6 +924,7 @@ void QgsGraphicsViewMouseHandles::updateHandles()
     //no items selected, hide handles
     hide();
   }
+
   //force redraw
   update();
 }
