@@ -74,7 +74,6 @@
     "qtdeclarative",
     "qtimageformats",
     "qtkeychain-qt6",
-    "qtlocation",
     "qtquickcontrols2",
     "qtsvg",
     "qttools",
@@ -179,6 +178,12 @@
       "description": "Build with oracle support",
       "dependencies": [
         "oracle-instantclient"
+      ]
+    },
+    "qtpositioning": {
+      "description": "Determines whether QGIS should be built with support for QtPositioning",
+      "dependencies": [
+        "qtlocation"
       ]
     },
     "server": {
