@@ -7186,22 +7186,6 @@ typedef unsigned long long qgssize;
 #endif
 #endif
 
-#if __cplusplus >= 201703L
-#define MAYBE_UNUSED [[maybe_unused]]
-#elif defined(__clang__)
-#define MAYBE_UNUSED [[maybe_unused]]
-#elif defined(_MSC_VER)
-#define MAYBE_UNUSED // no support
-#elif defined(__has_cpp_attribute)
-#if __has_cpp_attribute(gnu::unused)
-#define MAYBE_UNUSED [[gnu::unused]]
-#else
-#define MAYBE_UNUSED
-#endif
-#else
-#define MAYBE_UNUSED
-#endif
-
 #ifndef FINAL
 #define FINAL final
 #endif
