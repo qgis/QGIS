@@ -98,6 +98,9 @@ Returns the list of input image ``files``.
 %Docstring
 Sets the output file ``format``.
 
+The Qt QMediaFormat.supportedFileFormats() method can be used to
+retrieve a list of formats supported by the system.
+
 .. seealso:: :py:func:`fileFormat`
 %End
 
@@ -111,6 +114,9 @@ Returns the output file format.
     void setVideoCodec( QMediaFormat::VideoCodec codec );
 %Docstring
 Sets the output video ``codec``.
+
+The Qt QMediaFormat.supportedVideoCodecs() method can be used to
+retrieve a list of video codecs supported by the system.
 
 .. seealso:: :py:func:`videoCodec`
 %End

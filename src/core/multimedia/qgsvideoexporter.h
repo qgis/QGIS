@@ -109,6 +109,9 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     /**
      * Sets the output file \a format.
      *
+     * The Qt QMediaFormat::supportedFileFormats() method can be used to retrieve a list of formats supported
+     * by the system.
+     *
      * \see fileFormat()
      */
     void setFileFormat( QMediaFormat::FileFormat format );
@@ -122,6 +125,9 @@ class CORE_EXPORT QgsVideoExporter : public QObject
 
     /**
      * Sets the output video \a codec.
+     *
+     * The Qt QMediaFormat::supportedVideoCodecs() method can be used to retrieve a list of video codecs supported
+     * by the system.
      *
      * \see videoCodec()
      */
