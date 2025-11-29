@@ -503,7 +503,7 @@ int main( int argc, char *argv[] )
         return 1;
       }
     }
-    QgsDebugMsgLevel( QStringLiteral( "hints: %1" ).arg( hints ), 1 );
+    QgsDebugMsgLevel( QStringLiteral( "hints: %1" ).arg( static_cast<int>( hints ) ), 1 );
     qbench->setRenderHints( hints );
   }
 

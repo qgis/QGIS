@@ -101,7 +101,7 @@ bool QgsRasterInterface::hasStatistics( int bandNo,
                                         const QgsRectangle &extent,
                                         int sampleSize )
 {
-  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 stats = %2 sampleSize = %3" ).arg( bandNo ).arg( stats ).arg( sampleSize ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 stats = %2 sampleSize = %3" ).arg( bandNo ).arg( static_cast<int>( stats ) ).arg( sampleSize ), 4 );
   if ( mStatistics.isEmpty() ) return false;
 
   QgsRasterBandStats myRasterBandStats;
@@ -124,7 +124,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
     const QgsRectangle &extent,
     int sampleSize, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 stats = %2 sampleSize = %3" ).arg( bandNo ).arg( stats ).arg( sampleSize ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 stats = %2 sampleSize = %3" ).arg( bandNo ).arg( static_cast<int>( stats ) ).arg( sampleSize ), 4 );
 
   // TODO: null values set on raster layer!!!
 
