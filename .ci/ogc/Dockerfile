@@ -19,7 +19,7 @@ RUN apt-get update \
   libdraco-dev \
   libqt5svg5-dev \
   libqt5serialport5-dev \
-  libqt5multimedia5-dev \
+  qtmultimedia5-dev \
   qttools5-dev \
   protobuf-compiler \
   qt5-qmake \
