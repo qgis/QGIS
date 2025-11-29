@@ -7186,10 +7186,6 @@ typedef unsigned long long qgssize;
 #endif
 #endif
 
-#ifndef FINAL
-#define FINAL final
-#endif
-
 #ifndef SIP_RUN
 #ifdef _MSC_VER
 #define BUILTIN_UNREACHABLE \

@@ -39,15 +39,15 @@ class APP_EXPORT QgsAnnotationLayerProperties : public QgsLayerPropertiesDialog,
     ~QgsAnnotationLayerProperties() override;
 
   private slots:
-    void apply() FINAL;
-    void rollback() FINAL;
+    void apply() final;
+    void rollback() final;
 
     void aboutToShowStyleMenu();
     void showHelp();
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
   private:
-    void syncToLayer() FINAL;
+    void syncToLayer() final;
 
   private:
     QgsAnnotationLayer *mLayer = nullptr;
