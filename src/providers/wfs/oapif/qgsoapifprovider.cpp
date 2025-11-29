@@ -37,6 +37,8 @@
 #include "qgsoapifsingleitemrequest.h"
 #include "qgsoapifutils.h"
 #include "qgswfsconstants.h"
+#include "qgswfsdescribefeaturetype.h"
+#include "qgsxmlschemaanalyzer.h"
 
 #include <QIcon>
 
@@ -258,6 +260,15 @@ bool QgsOapifProvider::init()
     if ( it != collectionDesc.mMapFeatureFormatToUrl.end() )
     {
       mShared->mItemsUrl = *it;
+
+      if ( mShared->mFeatureFormat.startsWith( QLatin1String( "application/gml+xml" ) ) )
+      {
+        auto it2 = collectionDesc.mMapFeatureFormatToBulkDownloadUrl.find( mShared->mFeatureFormat );
+        if ( it2 != collectionDesc.mMapFeatureFormatToBulkDownloadUrl.end() )
+        {
+          mShared->mBulkDownloadGmlUrl = *it2;
+        }
+      }
     }
     else
     {
@@ -322,11 +333,59 @@ bool QgsOapifProvider::init()
   }
 
   mShared->mFields = itemsRequest.fields();
+  mShared->mGeometryAttribute = itemsRequest.geometryColumnName();
   mShared->mWKBType = itemsRequest.wkbType();
   mShared->mFoundIdTopLevel = itemsRequest.foundIdTopLevel();
   mShared->mFoundIdInProperties = itemsRequest.foundIdInProperties();
 
-  if ( implementsSchemas )
+  computeCapabilities( itemsRequest );
+
+  bool trySchemasLink = true;
+
+  // If we got a link to an XML schema and that the feature format is GML,
+  // try to analyze this XML schema to get the fields
+  if ( !collectionDesc.mXmlSchemaUrl.isEmpty() && mShared->mFeatureFormat.startsWith( QLatin1String( "application/gml+xml" ) ) )
+  {
+    QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
+    if ( !describeFeatureType.sendGET( collectionDesc.mXmlSchemaUrl, QString(), true, false ) )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Network request to get XML schema failed for url %1: %2" ).arg( collectionDesc.mXmlSchemaUrl, describeFeatureType.errorMessage() ), QObject::tr( "OAPIF" ) );
+    }
+    else
+    {
+      QByteArray response = describeFeatureType.response();
+      QDomDocument describeFeatureDocument;
+      bool geometryMaybeMissing = false;
+      bool metadataRetrievalCanceled = false;
+      QString errorMsg;
+      const bool hasZ = QgsWkbTypes::hasZ( mShared->mWKBType );
+      if ( !describeFeatureDocument.setContent( response, true, &errorMsg ) )
+      {
+        QgsDebugMsgLevel( response, 4 );
+        QgsMessageLog::logMessage( QObject::tr( "Cannot parse XML schema for url %1: %2" ).arg( collectionDesc.mXmlSchemaUrl, errorMsg ), QObject::tr( "OAPIF" ) );
+      }
+      else if ( !QgsXmlSchemaAnalyzer::readAttributesFromSchema(
+                  QObject::tr( "OAPIF" ), mShared.get(), mCapabilities,
+                  describeFeatureDocument, response, /* singleLayerContext = */ true,
+                  mShared->mURI.typeName(), mShared->mGeometryAttribute,
+                  mShared->mFields, mShared->mWKBType, geometryMaybeMissing,
+                  errorMsg, metadataRetrievalCanceled
+                ) )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Analysis of XML schema failed for url %1: %2" ).arg( collectionDesc.mXmlSchemaUrl, errorMsg ), QObject::tr( "OAPIF" ) );
+      }
+      else
+      {
+        // GML schema analysis cannot infer if Z is used. So if the sampling
+        // of the initial features has detected Z, add it back.
+        if ( hasZ )
+          mShared->mWKBType = QgsWkbTypes::addZ( mShared->mWKBType );
+        trySchemasLink = false;
+      }
+    }
+  }
+
+  if ( implementsSchemas && trySchemasLink )
   {
     QString schemaUrl;
     // Find a link for rel=http://www.opengis.net/def/rel/ogc/1.0/schema (or [ogc-rel:schema])
@@ -353,8 +412,6 @@ bool QgsOapifProvider::init()
       handleGetSchemaRequest( schemaUrl );
     }
   }
-
-  computeCapabilities( itemsRequest );
 
   return true;
 }
@@ -547,7 +604,7 @@ bool QgsOapifProvider::empty() const
   return !getFeatures( request ).nextFeature( f );
 };
 
-QString QgsOapifProvider::geometryColumnName() const { return mShared->mGeometryColumnName; }
+QString QgsOapifProvider::geometryColumnName() const { return mShared->mGeometryAttribute; }
 
 bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatureCount )
 {
@@ -636,7 +693,7 @@ void QgsOapifProvider::handleGetSchemaRequest( const QString &schemaUrl )
   if ( schemaRequest.errorCode() == QgsBaseNetworkRequest::NoError )
   {
     mShared->mFields = schema.mFields;
-    mShared->mGeometryColumnName = schema.mGeometryColumnName;
+    mShared->mGeometryAttribute = schema.mGeometryColumnName;
     if ( schema.mWKBType != Qgis::WkbType::Unknown )
       mShared->mWKBType = schema.mWKBType;
   }

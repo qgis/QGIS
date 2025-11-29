@@ -41,9 +41,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Returns srsName
     QString srsName() const;
 
-    //! Return provider geometry attribute name
-    const QString &geometryAttribute() const { return mGeometryAttribute; }
-
     //! Return list of layer properties.
     const QList<QgsOgcUtils::LayerProperties> &layerProperties() const { return mLayerPropertiesList; }
 
@@ -103,9 +100,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! WFS version to use. Comes from GetCapabilities response
     QString mWFSVersion;
 
-    //! Name of geometry attribute
-    QString mGeometryAttribute;
-
     //! Layer properties
     QList<QgsOgcUtils::LayerProperties> mLayerPropertiesList;
 
@@ -120,9 +114,6 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     //! Server capabilities
     QgsWfsCapabilities mCaps;
-
-    //! If we have already issued a warning about missing feature ids
-    bool mHasWarnedAboutMissingFeatureId = false;
 
     /**
      * If the server (typically MapServer WFS 1.1) honours EPSG axis order, but returns
