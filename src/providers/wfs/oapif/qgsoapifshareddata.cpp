@@ -28,8 +28,7 @@
 #include "moc_qgsoapifshareddata.cpp"
 
 QgsOapifSharedData::QgsOapifSharedData( const QString &uri )
-  : QgsBackgroundCachedSharedData( "oapif", tr( "OAPIF" ) )
-  , mURI( uri )
+  : QgsBackgroundCachedSharedData( uri, "oapif", tr( "OAPIF" ) )
 {
   mHideProgressDialog = mURI.hideDownloadProgressDialog();
 }

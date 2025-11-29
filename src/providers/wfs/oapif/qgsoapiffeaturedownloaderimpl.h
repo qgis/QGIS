@@ -16,12 +16,13 @@
 #ifndef QGSOAPIFFILTERDOWNLOADERIMPL_H
 #define QGSOAPIFFILTERDOWNLOADERIMPL_H
 
+#include "qgsbasenetworkrequest.h"
 #include "qgsfeaturedownloaderimpl.h"
 
 class QgsFeatureDownloader;
 class QgsOapifSharedData;
 
-class QgsOapifFeatureDownloaderImpl final : public QObject, public QgsFeatureDownloaderImpl
+class QgsOapifFeatureDownloaderImpl final : public QgsBaseNetworkRequest, public QgsFeatureDownloaderImpl
 {
     Q_OBJECT
 
@@ -40,6 +41,9 @@ class QgsOapifFeatureDownloaderImpl final : public QObject, public QgsFeatureDow
 
     void run( bool serializeFeatures, long long maxFeatures ) override;
 
+  protected:
+    QString errorMessageWithReason( const QString &reason ) override;
+
   private slots:
     void createProgressTask();
 
@@ -47,7 +51,11 @@ class QgsOapifFeatureDownloaderImpl final : public QObject, public QgsFeatureDow
     //! Mutable data shared between provider, feature sources and downloader.
     QgsOapifSharedData *mShared = nullptr;
 
-    int mNumberMatched = -1;
+    long long mNumberMatched = -1;
+
+    void runGmlDownload( QEventLoop &loop, QString url, bool serializeFeatures, long long maxTotalFeatures, bool useProgressDialog );
+
+    void runGenericDownload( QEventLoop &loop, QString url, bool serializeFeatures, long long maxTotalFeatures, bool useProgressDialog );
 };
 
 #endif

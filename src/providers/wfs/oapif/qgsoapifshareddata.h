@@ -79,14 +79,15 @@ class QgsOapifSharedData final : public QObject, public QgsBackgroundCachedShare
     //! Url to /collections/{collectionId}/items
     QString mItemsUrl;
 
+    //! Url to a GML bulk download link (without paging), if it exists (empty otherwise)
+    // typically /collections/{collectionId}/items?bulk=true
+    QString mBulkDownloadGmlUrl;
+
     //! Media type of feature format requests to /items. May be empty for default
     QString mFeatureFormat;
 
     //! Server filter
     QString mServerFilter;
-
-    //! Geometry column name
-    QString mGeometryColumnName;
 
     //! Translation state of filter to server-side filter.
     QgsOapifFilterTranslationState mFilterTranslationState = QgsOapifFilterTranslationState::FULLY_CLIENT;
