@@ -151,6 +151,10 @@ void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
   {
     widgetBaseProperties->load( static_cast<QgsAbstractVectorLayer3DRenderer *>( r ) );
   }
+  else
+  {
+    widgetBaseProperties->reset();
+  }
 }
 
 void QgsVectorLayer3DRendererWidget::setDockMode( bool dockMode )
