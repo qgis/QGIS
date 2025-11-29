@@ -81,7 +81,7 @@ Append a message to the context
 .. versionadded:: 3.2
 %End
 
-QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const /PyName=_enterCategory/;
+    MAYBE_UNUSED [[nodiscard]] QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const /PyName=_enterCategory/;
 %Docstring
 Push a category to the stack
 
@@ -101,6 +101,7 @@ Push a category to the stack
 
 .. versionadded:: 3.2
 %End
+
 
     QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();
 %Docstring
