@@ -2760,7 +2760,9 @@ def process_misc_keywords():
     )
     CONTEXT.current_line = re.sub(r"\s*\bextern \b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\bMAYBE_UNUSED \b", "", CONTEXT.current_line)
-    CONTEXT.current_line = re.sub(r"\s*\bNODISCARD \b", "", CONTEXT.current_line)
+    CONTEXT.current_line = re.sub(
+        r"^(\s*)?\[\[nodiscard\]\](\s*)?", r"\1\2", CONTEXT.current_line
+    )
     CONTEXT.current_line = re.sub(r"\s*\bQ_DECL_DEPRECATED\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(
         r"^(\s*)?(const |virtual |static )*inline ", r"\1\2", CONTEXT.current_line
