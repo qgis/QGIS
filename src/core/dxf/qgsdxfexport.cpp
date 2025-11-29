@@ -773,7 +773,17 @@ void QgsDxfExport::writeEntities()
     QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setExpressionContext( job->renderContext.expressionContext() );
     QgsCoordinateTransform extentTransform = ct;
     extentTransform.setBallparkTransformsAreAppropriate( true );
-    request.setFilterRect( extentTransform.transformBoundingBox( mMapSettings.extent(), Qgis::TransformDirection::Reverse ) );
+
+    try
+    {
+      request.setFilterRect( extentTransform.transformBoundingBox( mMapSettings.extent(), Qgis::TransformDirection::Reverse ) );
+    }
+    catch ( QgsCsException &e )
+    {
+      QgsDebugError( QStringLiteral( "Error transforming DXF layer extent: %1" ).arg( e.what() ) );
+      continue;
+    }
+
     if ( mFlags & FlagOnlySelectedFeatures )
     {
       request.setFilterFids( job->selectedFeatureIds );
