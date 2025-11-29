@@ -2755,9 +2755,6 @@ def process_misc_keywords():
     )
     CONTEXT.current_line = re.sub(r"\s*\boverride\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(r"\s*\bSIP_MAKE_PRIVATE\b", "", CONTEXT.current_line)
-    CONTEXT.current_line = re.sub(
-        r"\s*\bFINAL\b", " ${SIP_FINAL}", CONTEXT.current_line
-    )
     CONTEXT.current_line = re.sub(r"\s*\bextern \b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(
         r"^(\s*)?\[\[maybe_unused\]\](\s*)?", r"\1\2", CONTEXT.current_line
