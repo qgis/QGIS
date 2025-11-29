@@ -2336,7 +2336,7 @@ Qgis::RasterInterfaceCapabilities QgsWmsProvider::capabilities() const
     capability |= Qgis::RasterInterfaceCapability::Prefetch;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( capability ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( static_cast<int>( capability ) ), 2 );
   return capability;
 }
 
