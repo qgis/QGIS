@@ -617,10 +617,31 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
           value = QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) );
         else
         {
-          QDateTime dt = QDateTime( QDate( year, month, day ),
-                                    QTime( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) ) );
-          setQTTimeZoneFromOGRTZFlag( dt, tzf );
-          value = dt;
+          const QDate date( year, month, day );
+          const QTime time( hour, minute, static_cast< int >( secondsPart ), static_cast< int >( std::round( 1000 * millisecondPart ) ) );
+          if ( tzf == 0 )
+          {
+            // unknown time zone
+            value = QDateTime( date, time, QTimeZone() );
+          }
+          else if ( tzf == 1 )
+          {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            value = QDateTime( date, time, Qt::LocalTime );
+#else
+            value = QDateTime( date, time, QTimeZone( QTimeZone::LocalTime ) );
+#endif
+          }
+          else if ( tzf == 100 )
+          {
+            value = QDateTime( date, time, QTimeZone::utc() );
+          }
+          else
+          {
+            // TZFlag = 101 ==> UTC+00:15
+            // TZFlag = 99 ==> UTC-00:15
+            value = QDateTime( date, time, QTimeZone( static_cast< int >( ( tzf - 100 ) * 15 * 60 ) ) );
+          }
         }
       }
       break;
