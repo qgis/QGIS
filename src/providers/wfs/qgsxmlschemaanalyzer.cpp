@@ -448,6 +448,13 @@ bool QgsXmlSchemaAnalyzer::readAttributesFromSchemaWithGMLAS(
   }
   OGR_L_SetAttributeFilter( hLayersMetadata, ( "layer_xpath = " + QgsSqliteUtils::quotedString( prefixedTypename ).toStdString() ).c_str() );
   gdal::ogr_feature_unique_ptr hFeatureLayersMD( OGR_L_GetNextFeature( hLayersMetadata ) );
+  if ( !hFeatureLayersMD && !prefixedTypename.contains( QLatin1Char( ':' ) ) )
+  {
+    // In OAPIF use case, we don't have a typename prefixed with a namespace prefix
+    OGR_L_SetAttributeFilter( hLayersMetadata, ( "layer_xpath LIKE " + QgsSqliteUtils::quotedString( QStringLiteral( "%:" ) + prefixedTypename ).toStdString() ).c_str() );
+    OGR_L_ResetReading( hLayersMetadata );
+    hFeatureLayersMD.reset( OGR_L_GetNextFeature( hLayersMetadata ) );
+  }
   if ( !hFeatureLayersMD )
   {
     QgsDebugMsgLevel(

@@ -22,6 +22,7 @@
 #include "qgsfeaturedownloadcommon.h"
 #include "qgsrectangle.h"
 #include "qgsspatialindex.h"
+#include "qgswfsdatasourceuri.h"
 
 #include <QSet>
 
@@ -58,7 +59,7 @@ class QgsThreadedFeatureDownloader;
 class QgsBackgroundCachedSharedData
 {
   public:
-    QgsBackgroundCachedSharedData( const QString &providerName, const QString &componentTranslated );
+    QgsBackgroundCachedSharedData( const QString &uri, const QString &providerName, const QString &componentTranslated );
     virtual ~QgsBackgroundCachedSharedData();
 
     //////////// Methods to be used by provider
@@ -179,6 +180,9 @@ class QgsBackgroundCachedSharedData
     //! Return whether the GetFeature request should include the request bounding box.
     virtual bool isRestrictedToRequestBBOX() const = 0;
 
+    //! Return provider geometry attribute name
+    const QString &geometryAttribute() const { return mGeometryAttribute; }
+
     //! Return whether the layer has a geometry field
     virtual bool hasGeometry() const = 0;
 
@@ -240,6 +244,12 @@ class QgsBackgroundCachedSharedData
 
     //! Namespace URL of the server (comes from DescribeFeatureDocument)
     QString mApplicationNamespace;
+
+    //! If we have already issued a warning about missing feature ids
+    bool mHasWarnedAboutMissingFeatureId = false;
+
+    //! Name of geometry attribute
+    QString mGeometryAttribute;
 
     //////////// Methods
 
