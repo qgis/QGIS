@@ -94,6 +94,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   mErrorCode = QgsBaseNetworkRequest::NoError;
   mForceRefresh = forceRefresh;
   mResponse.clear();
+  mResponseHeaders.clear();
 
   if ( synchronous )
   {
@@ -424,6 +425,7 @@ bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteAr
   mErrorCode = QgsBaseNetworkRequest::NoError;
   mForceRefresh = true;
   mResponse.clear();
+  mResponseHeaders.clear();
 
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
@@ -495,6 +497,7 @@ QStringList QgsBaseNetworkRequest::sendOPTIONS( const QUrl &url )
   mErrorCode = QgsBaseNetworkRequest::NoError;
   mForceRefresh = true;
   mResponse.clear();
+  mResponseHeaders.clear();
 
   QByteArray allowValue;
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
@@ -558,6 +561,7 @@ bool QgsBaseNetworkRequest::sendDELETE( const QUrl &url )
   mErrorCode = QgsBaseNetworkRequest::NoError;
   mForceRefresh = true;
   mResponse.clear();
+  mResponseHeaders.clear();
 
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
@@ -619,6 +623,9 @@ void QgsBaseNetworkRequest::replyProgress( qint64 bytesReceived, qint64 bytesTot
         return;
       }
     }
+
+    if ( !mIsSimulatedMode && mResponseHeaders.empty() )
+      mResponseHeaders = mReply->rawHeaderPairs();
   }
 
   emit downloadProgress( bytesReceived, bytesTotal );
@@ -759,7 +766,7 @@ void QgsBaseNetworkRequest::replyFinished()
 
   if ( mReply )
   {
-    if ( !mIsSimulatedMode )
+    if ( !mIsSimulatedMode && mResponseHeaders.empty() )
       mResponseHeaders = mReply->rawHeaderPairs();
 
     mReply->deleteLater();
