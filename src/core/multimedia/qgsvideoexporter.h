@@ -106,6 +106,9 @@ class CORE_EXPORT QgsVideoExporter : public QObject
      */
     QStringList inputFiles() const;
 
+#ifndef SIP_RUN
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
+
     /**
      * Sets the output file \a format.
      *
@@ -146,6 +149,52 @@ class CORE_EXPORT QgsVideoExporter : public QObject
      * \see errorString()
      */
     QMediaRecorder::Error error() const;
+#endif
+#endif
+
+#ifdef SIP_PYQT6_RUN
+
+    /**
+     * Sets the output file \a format.
+     *
+     * The Qt QMediaFormat::supportedFileFormats() method can be used to retrieve a list of formats supported
+     * by the system.
+     *
+     * \see fileFormat()
+     */
+    void setFileFormat( QMediaFormat::FileFormat format );
+
+    /**
+     * Returns the output file format.
+     *
+     * \see setFileFormat()
+     */
+    QMediaFormat::FileFormat fileFormat() const;
+
+    /**
+     * Sets the output video \a codec.
+     *
+     * The Qt QMediaFormat::supportedVideoCodecs() method can be used to retrieve a list of video codecs supported
+     * by the system.
+     *
+     * \see videoCodec()
+     */
+    void setVideoCodec( QMediaFormat::VideoCodec codec );
+
+    /**
+     * Returns the output video codec.
+     *
+     * \see setVideoCodec()
+     */
+    QMediaFormat::VideoCodec videoCodec() const;
+
+    /**
+     * Returns the last error received while writing the video.
+     *
+     * \see errorString()
+     */
+    QMediaRecorder::Error error() const;
+#endif
 
     /**
      * Returns the string describing the last error received while writing the video.
@@ -185,12 +234,14 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     double mFramesPerSecond = 10;
     qint64 mFrameDurationUs = 100000;
     QStringList mInputFiles;
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     QMediaFormat::FileFormat mFormat = QMediaFormat::FileFormat::MPEG4;
     QMediaFormat::VideoCodec mCodec = QMediaFormat::VideoCodec::H264;
+    QMediaRecorder::Error mError = QMediaRecorder::Error::NoError;
+#endif
     int mCurrentFrameIndex = 0;
     QPointer< QgsFeedback > mFeedback;
 
-    QMediaRecorder::Error mError = QMediaRecorder::Error::NoError;
     QString mErrorString;
 
     std::unique_ptr< QMediaCaptureSession > mSession;
