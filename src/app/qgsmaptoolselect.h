@@ -51,7 +51,7 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
     void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;
     void deactivate() override;
-    Flags flags() const override;
+    [[nodiscard]] Flags flags() const override;
 
     bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event ) override;
 

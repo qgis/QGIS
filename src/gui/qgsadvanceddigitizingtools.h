@@ -49,12 +49,12 @@ class GUI_EXPORT QgsAdvancedDigitizingTool : public QObject
     /**
      * Returns the map canvas associated with the tool.
      */
-    QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
+    [[nodiscard]] QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
 
     /**
      * Returns the advanced digitizing widget associated with the tool.
      */
-    QgsAdvancedDigitizingDockWidget *cadDockWidget() const { return mCadDockWidget.data(); }
+    [[nodiscard]] QgsAdvancedDigitizingDockWidget *cadDockWidget() const { return mCadDockWidget.data(); }
 
     /**
      * Returns a widget to control the tool.

@@ -71,7 +71,7 @@ class TestQgsMapSettings : public QObject
     void testDeprecatedFlagsRasterizePolicy();
 
   private:
-    QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
+    [[nodiscard]] QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
 };
 
 void TestQgsMapSettings::initTestCase()

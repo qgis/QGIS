@@ -46,7 +46,7 @@ class GUI_EXPORT QgsSymbolLayerSelectionWidget : public QWidget
     void setLayer( const QgsVectorLayer *layer );
 
     //! Returns current symbol layer selection
-    QSet<QString> selection() const;
+    [[nodiscard]] QSet<QString> selection() const;
 
     //! Sets the symbol layer selection
     void setSelection( const QSet<QString> &sel );

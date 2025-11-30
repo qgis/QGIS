@@ -55,9 +55,9 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface SIP_SKIP
                               const QSize &size );
     ~QgsMeshLayerInterpolator() override;
 
-    QgsRasterInterface *clone() const override;
-    Qgis::DataType dataType( int ) const override;
-    int bandCount() const override;
+    [[nodiscard]] QgsRasterInterface *clone() const override;
+    [[nodiscard]] Qgis::DataType dataType( int ) const override;
+    [[nodiscard]] int bandCount() const override;
     QgsRasterBlock *block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     void setSpatialIndexActive( bool active );

@@ -42,7 +42,7 @@ class CORE_EXPORT QgsCheckBoxFieldFormatter : public QgsFieldFormatter
 
     QgsCheckBoxFieldFormatter() = default;
 
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 
     QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 };

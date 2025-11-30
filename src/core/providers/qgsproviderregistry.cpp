@@ -149,7 +149,7 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
 class PdalUnusableUriHandlerInterface : public QgsProviderRegistry::UnusableUriHandlerInterface
 {
   public:
-    bool matchesUri( const QString &uri ) const override
+    [[nodiscard]] bool matchesUri( const QString &uri ) const override
     {
       const QFileInfo fi( uri );
       if ( fi.suffix().compare( QLatin1String( "las" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "laz" ), Qt::CaseInsensitive ) == 0 )
@@ -158,7 +158,7 @@ class PdalUnusableUriHandlerInterface : public QgsProviderRegistry::UnusableUriH
       return false;
     }
 
-    QgsProviderRegistry::UnusableUriDetails details( const QString &uri ) const override
+    [[nodiscard]] QgsProviderRegistry::UnusableUriDetails details( const QString &uri ) const override
     {
       QgsProviderRegistry::UnusableUriDetails res = QgsProviderRegistry::UnusableUriDetails( uri,
           QObject::tr( "LAS and LAZ files cannot be opened by this QGIS install." ),

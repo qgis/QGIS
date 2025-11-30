@@ -51,26 +51,26 @@ class GUI_EXPORT QgsMapLayerLoadStyleDialog : public QDialog, private Ui::QgsVec
     /**
      * Returns the list of selected style categories the user has opted to load.
      */
-    QgsMapLayer::StyleCategories styleCategories() const;
+    [[nodiscard]] QgsMapLayer::StyleCategories styleCategories() const;
 
     /**
      * Returns the selected style type.
      */
-    QgsLayerPropertiesDialog::StyleType currentStyleType() const;
+    [[nodiscard]] QgsLayerPropertiesDialog::StyleType currentStyleType() const;
 
     /**
      * Returns the file extension for the selected layer style source file.
      *
      * \see filePath()
      */
-    QString fileExtension() const;
+    [[nodiscard]] QString fileExtension() const;
 
     /**
      * Returns the full path to the selected layer style source file.
      *
      * \see fileExtension()
      */
-    QString filePath() const;
+    [[nodiscard]] QString filePath() const;
 
     /**
      * Initialize list of database stored styles.

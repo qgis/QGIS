@@ -49,7 +49,7 @@ class QgsMapToolTest : public QgsMapTool // clazy:exclude=missing-qobject-macro
       mGotTooltipEvent = true;
       return true;
     }
-    bool gotTooltipEvent() const
+    [[nodiscard]] bool gotTooltipEvent() const
     {
       return mGotTooltipEvent;
     }
@@ -457,7 +457,7 @@ class TestNoDropHandler : public QgsCustomDropHandler
     Q_OBJECT
 
   public:
-    QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
+    [[nodiscard]] QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
     bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) override { return false; }
     bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) const override { return false; }
 };
@@ -467,7 +467,7 @@ class TestYesDropHandler : public QgsCustomDropHandler
     Q_OBJECT
 
   public:
-    QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
+    [[nodiscard]] QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
     bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) override { return true; }
     bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) const override { return true; }
 };

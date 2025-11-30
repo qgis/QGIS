@@ -46,7 +46,7 @@ class QgsElevationProfileImageExportDialog : public QDialog, private Ui::QgsElev
     void updatePlotSettings( Qgs2DXyPlot &plot );
 
     void setImageSize( const QSize &size );
-    QSize imageSize() const;
+    [[nodiscard]] QSize imageSize() const;
 
   private:
     QgsElevationProfileExportSettingsWidget *mProfileSettingsWidget = nullptr;

@@ -73,7 +73,7 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
      * \see setCenter()
      * \since QGIS 3.18
      */
-    QgsPointXY center() const { return mCenter; }
+    [[nodiscard]] QgsPointXY center() const { return mCenter; }
 
     void setIconType( int iconType );
 
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
      * \see setColor()
      * \see fillColor()
      */
-    QColor color() const { return mColor; }
+    [[nodiscard]] QColor color() const { return mColor; }
 
     /**
      * Sets the fill \a color for the marker. This setting only
@@ -107,13 +107,13 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
      * \see setFillColor()
      * \see color()
      */
-    QColor fillColor() const { return mFillColor; }
+    [[nodiscard]] QColor fillColor() const { return mFillColor; }
 
     void setPenWidth( int width );
 
     void paint( QPainter *p ) override;
 
-    QRectF boundingRect() const override;
+    [[nodiscard]] QRectF boundingRect() const override;
 
     void updatePosition() override;
 

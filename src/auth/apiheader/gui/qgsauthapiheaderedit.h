@@ -33,7 +33,7 @@ class QgsAuthApiHeaderEdit : public QgsAuthMethodEdit, private Ui::QgsAuthApiHea
 
     bool validateConfig() override;
 
-    QgsStringMap configMap() const override;
+    [[nodiscard]] QgsStringMap configMap() const override;
 
   public slots:
     void loadConfig( const QgsStringMap &configmap ) override;
@@ -63,7 +63,7 @@ class QgsAuthApiHeaderEdit : public QgsAuthMethodEdit, private Ui::QgsAuthApiHea
 
     void addHeaderPairRow( const QString &key, const QString &val );
 
-    QgsStringMap headerPairs() const;
+    [[nodiscard]] QgsStringMap headerPairs() const;
 };
 
 #endif // QGSAUTHAPIHEADEREDIT_H

@@ -50,29 +50,29 @@ class CORE_EXPORT QgsPointCloudBlock
      * Caller takes ownership of the returned object.
      * \since QGIS 3.36
      */
-    QgsPointCloudBlock *clone() const SIP_FACTORY;
+    [[nodiscard]] QgsPointCloudBlock *clone() const SIP_FACTORY;
 
     //! Returns raw pointer to data
-    const char *data() const;
+    [[nodiscard]] const char *data() const;
 
     //! Returns number of points that are stored in the block
-    int pointCount() const;
+    [[nodiscard]] int pointCount() const;
 
     /**
      * Returns the total size of each individual point record.
      *
      * \since QGIS 3.26
      */
-    int pointRecordSize() const { return mRecordSize; }
+    [[nodiscard]] int pointRecordSize() const { return mRecordSize; }
 
     //! Returns the attributes that are stored in the data block, along with their size
-    QgsPointCloudAttributeCollection attributes() const;
+    [[nodiscard]] QgsPointCloudAttributeCollection attributes() const;
 
     //! Returns the custom scale of the block.
-    QgsVector3D scale() const;
+    [[nodiscard]] QgsVector3D scale() const;
 
     //! Returns the custom offset of the block.
-    QgsVector3D offset() const;
+    [[nodiscard]] QgsVector3D offset() const;
 
     /**
      * Changes the number of points in the block.

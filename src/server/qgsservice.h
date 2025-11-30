@@ -48,12 +48,12 @@ class SERVER_EXPORT QgsService
     /**
      * Returns the name of the service.
      */
-    virtual QString name() const = 0;
+    [[nodiscard]] virtual QString name() const = 0;
 
     /**
      * Returns the version of the service.
      */
-    virtual QString version() const = 0;
+    [[nodiscard]] virtual QString version() const = 0;
 
     /**
      * Executes the requests and sets result in QgsServerRequest.

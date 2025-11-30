@@ -66,16 +66,16 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
                                       QgsGeocoderInterface *geocoder,
                                       const QgsRectangle &boundingBox = QgsRectangle() );
 
-    QString name() const override;
-    QString displayName() const override;
-    QString prefix() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QString prefix() const override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
 
     /**
      * Returns the geocoder attached to the filter.
      */
-    QgsGeocoderInterface *geocoder() const;
+    [[nodiscard]] QgsGeocoderInterface *geocoder() const;
 
     /**
      * Returns the WGS84 bounding box attached to the filter.
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
      *
      * \see geocoderResultToLocatorResult()
      */
-    QgsGeocoderResult locatorResultToGeocoderResult( const QgsLocatorResult &result ) const;
+    [[nodiscard]] QgsGeocoderResult locatorResultToGeocoderResult( const QgsLocatorResult &result ) const;
 
     /**
      * Converts a geocoder \a result to a locator result.

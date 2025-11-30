@@ -52,12 +52,12 @@ class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::Qgs
      * Returns the current item position defined by the dialog.
      * \see setItemPosition()
      */
-    QgsLayoutPoint itemPosition() const;
+    [[nodiscard]] QgsLayoutPoint itemPosition() const;
 
     /**
      * Returns the page number for the new item.
      */
-    int page() const;
+    [[nodiscard]] int page() const;
 
     /**
      * Sets the item \a size to show in the dialog.
@@ -69,13 +69,13 @@ class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::Qgs
      * Returns the item size defined by the dialog.
      * \see setItemSize()
      */
-    QgsLayoutSize itemSize() const;
+    [[nodiscard]] QgsLayoutSize itemSize() const;
 
     /**
      * Returns the item reference point defined by the dialog.
      * \see setReferencePoint()
      */
-    QgsLayoutItem::ReferencePoint referencePoint() const;
+    [[nodiscard]] QgsLayoutItem::ReferencePoint referencePoint() const;
 
     /**
      * Sets the item reference \a point defined to show in the dialog.

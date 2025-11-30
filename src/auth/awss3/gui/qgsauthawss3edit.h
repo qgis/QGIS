@@ -32,7 +32,7 @@ class QgsAuthAwsS3Edit : public QgsAuthMethodEdit, private Ui::QgsAuthAwsS3Edit
 
     bool validateConfig() override;
 
-    QgsStringMap configMap() const override;
+    [[nodiscard]] QgsStringMap configMap() const override;
 
   public slots:
     void loadConfig( const QgsStringMap &configmap ) override;

@@ -90,12 +90,12 @@ class CORE_EXPORT QgsAbstractProviderConnection
     /**
      * Returns an icon representing the connection.
      */
-    virtual QIcon icon() const;
+    [[nodiscard]] virtual QIcon icon() const;
 
     /**
      * Returns the connection data source URI string representation
      */
-    QString uri() const;
+    [[nodiscard]] QString uri() const;
 
     /**
      * Sets the connection data source URI to \a uri
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsAbstractProviderConnection
     /**
      * Returns the connection configuration parameters
      */
-    QVariantMap configuration() const;
+    [[nodiscard]] QVariantMap configuration() const;
 
     /**
      * Sets the connection \a configuration

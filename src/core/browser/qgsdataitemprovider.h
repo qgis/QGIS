@@ -56,10 +56,10 @@ class CORE_EXPORT QgsDataItemProvider
      *
      * \since QGIS 3.14
      */
-    virtual QString dataProviderKey() const { return QString(); };
+    [[nodiscard]] virtual QString dataProviderKey() const { return QString(); };
 
     //! Returns combination of flags from QgsDataProvider::DataCapabilities
-    virtual Qgis::DataItemProviderCapabilities capabilities() const = 0;
+    [[nodiscard]] virtual Qgis::DataItemProviderCapabilities capabilities() const = 0;
 
     /**
      * Create a new instance of QgsDataItem (or NULLPTR) for given path and parent item.

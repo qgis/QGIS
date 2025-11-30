@@ -29,12 +29,12 @@ class CORE_EXPORT QgsClassificationEqualInterval : public QgsClassificationMetho
   public:
     QgsClassificationEqualInterval();
 
-    QString name() const override;
-    QString id() const override;
-    std::unique_ptr< QgsClassificationMethod > clone() const override;
-    QIcon icon() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] std::unique_ptr< QgsClassificationMethod > clone() const override;
+    [[nodiscard]] QIcon icon() const override;
 
-    bool valuesRequired() const override { return false; }
+    [[nodiscard]] bool valuesRequired() const override { return false; }
 
     static const QString METHOD_ID;
 

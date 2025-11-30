@@ -44,7 +44,7 @@ class CORE_EXPORT QgsLayoutMeasurement
      * Returns the length of the measurement.
      * \see setLength()
     */
-    double length() const { return mLength; }
+    [[nodiscard]] double length() const { return mLength; }
 
     /**
      * Sets the \a length of the measurement.
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsLayoutMeasurement
      * Returns the units for the measurement.
      * \see setUnits()
     */
-    Qgis::LayoutUnit units() const { return mUnits; }
+    [[nodiscard]] Qgis::LayoutUnit units() const { return mUnits; }
 
     /**
      * Sets the \a units for the measurement. Does not alter the stored length,
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLayoutMeasurement
      * Encodes the layout measurement to a string
      * \see decodeMeasurement()
     */
-    QString encodeMeasurement() const;
+    [[nodiscard]] QString encodeMeasurement() const;
 
     /**
      * Decodes a measurement from a \a string.

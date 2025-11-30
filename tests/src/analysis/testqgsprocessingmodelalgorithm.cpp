@@ -37,12 +37,12 @@ class DummyAlgorithm2 : public QgsProcessingAlgorithm
       addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "raster_dest" ) ) );
       addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "sink" ) ) );
     }
-    QString name() const override { return mName; }
-    QString displayName() const override { return mName; }
+    [[nodiscard]] QString name() const override { return mName; }
+    [[nodiscard]] QString displayName() const override { return mName; }
     QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
 
-    Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
-    DummyAlgorithm2 *createInstance() const override { return new DummyAlgorithm2( name() ); }
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
+    [[nodiscard]] DummyAlgorithm2 *createInstance() const override { return new DummyAlgorithm2( name() ); }
 
     QString mName;
 
@@ -60,12 +60,12 @@ class DummySecurityRiskAlgorithm : public QgsProcessingAlgorithm
     {
       addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "vector_dest" ) ) );
     }
-    QString name() const override { return mName; }
-    QString displayName() const override { return mName; }
+    [[nodiscard]] QString name() const override { return mName; }
+    [[nodiscard]] QString displayName() const override { return mName; }
     QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
 
-    Qgis::ProcessingAlgorithmFlags flags() const override { return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::SecurityRisk; }
-    DummySecurityRiskAlgorithm *createInstance() const override { return new DummySecurityRiskAlgorithm( name() ); }
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override { return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::SecurityRisk; }
+    [[nodiscard]] DummySecurityRiskAlgorithm *createInstance() const override { return new DummySecurityRiskAlgorithm( name() ); }
 
     QString mName;
 };
@@ -88,8 +88,8 @@ class DummyRaiseExceptionAlgorithm : public QgsProcessingAlgorithm
     void initAlgorithm( const QVariantMap & = QVariantMap() ) override
     {
     }
-    QString name() const override { return mName; }
-    QString displayName() const override { return mName; }
+    [[nodiscard]] QString name() const override { return mName; }
+    [[nodiscard]] QString displayName() const override { return mName; }
     QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override
     {
       throw QgsProcessingException( QStringLiteral( "something bad happened" ) );
@@ -101,8 +101,8 @@ class DummyRaiseExceptionAlgorithm : public QgsProcessingAlgorithm
       return QVariantMap();
     }
 
-    Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
-    DummyRaiseExceptionAlgorithm *createInstance() const override { return new DummyRaiseExceptionAlgorithm( name() ); }
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override { return mFlags; }
+    [[nodiscard]] DummyRaiseExceptionAlgorithm *createInstance() const override { return new DummyRaiseExceptionAlgorithm( name() ); }
 
     QString mName;
 
@@ -115,20 +115,20 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
 {
   public:
     DummyProvider4() = default;
-    QString id() const override { return QStringLiteral( "dummy4" ); }
-    QString name() const override { return QStringLiteral( "dummy4" ); }
+    [[nodiscard]] QString id() const override { return QStringLiteral( "dummy4" ); }
+    [[nodiscard]] QString name() const override { return QStringLiteral( "dummy4" ); }
 
-    bool supportsNonFileBasedOutput() const override
+    [[nodiscard]] bool supportsNonFileBasedOutput() const override
     {
       return false;
     }
 
-    QStringList supportedOutputVectorLayerExtensions() const override
+    [[nodiscard]] QStringList supportedOutputVectorLayerExtensions() const override
     {
       return QStringList() << QStringLiteral( "mif" );
     }
 
-    QStringList supportedOutputRasterLayerExtensions() const override
+    [[nodiscard]] QStringList supportedOutputRasterLayerExtensions() const override
     {
       return QStringList() << QStringLiteral( "mig" );
     }

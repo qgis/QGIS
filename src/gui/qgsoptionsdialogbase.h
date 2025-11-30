@@ -52,9 +52,9 @@ class GUI_EXPORT QgsOptionsProxyModel : public QSortFilterProxyModel
     QgsOptionsProxyModel( QObject *parent );
 
     void setPageHidden( int page, bool hidden );
-    QModelIndex pageNumberToSourceIndex( int page ) const;
-    int sourceIndexToPageNumber( const QModelIndex &index ) const;
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] QModelIndex pageNumberToSourceIndex( int page ) const;
+    [[nodiscard]] int sourceIndexToPageNumber( const QModelIndex &index ) const;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
     QMap<int, bool> mHiddenPages;
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     /**
      * Determine if the options list is in icon only mode
      */
-    bool iconOnly() const { return mIconOnly; }
+    [[nodiscard]] bool iconOnly() const { return mIconOnly; }
 
     /**
      * Sets the dialog \a page (by object name) to show.

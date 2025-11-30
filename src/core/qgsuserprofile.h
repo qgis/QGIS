@@ -46,17 +46,17 @@ class CORE_EXPORT QgsUserProfile
     /**
      * The base folder for the user profile.
      */
-    const QString folder() const;
+    [[nodiscard]] const QString folder() const;
 
     /**
      * Check of the profile is in a valid state.
      */
-    QgsError validate() const;
+    [[nodiscard]] QgsError validate() const;
 
     /**
      * The name for the user profile.
      */
-    const QString name() const;
+    [[nodiscard]] const QString name() const;
 
     /**
      * Init the settings from the user folder.
@@ -67,23 +67,23 @@ class CORE_EXPORT QgsUserProfile
      * Returns the alias for the user profile.
      * \return If no alias is set name() is returned.
      */
-    const QString alias() const;
+    [[nodiscard]] const QString alias() const;
 
     /**
      * Set the alias of the profile. The alias is a user friendly name.
      * \param alias A user friendly name for the profile.
      * \return TRUE of setting the alias was successful.
      */
-    QgsError setAlias( const QString &alias ) const;
+    [[nodiscard]] QgsError setAlias( const QString &alias ) const;
 
     /**
      * The icon for the user profile.
      * \return A QIcon for the users
      */
-    const QIcon icon() const;
+    [[nodiscard]] const QIcon icon() const;
 
   private:
-    QString qgisDB() const;
+    [[nodiscard]] QString qgisDB() const;
     QString mProfileFolder;
 };
 

@@ -37,9 +37,9 @@ class APP_EXPORT QgsScaleMagnetWidget : public QWidget
     explicit QgsScaleMagnetWidget( const QString &label = QString(), QWidget *parent = nullptr );
 
     void setScale( double scale );
-    double scale() const;
+    [[nodiscard]] double scale() const;
 
-    QgsDoubleSpinBox *editor() const { return mScaleSpinBox; }
+    [[nodiscard]] QgsDoubleSpinBox *editor() const { return mScaleSpinBox; }
 
   signals:
     void scaleChanged( double scale );

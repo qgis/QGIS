@@ -52,16 +52,16 @@ namespace QgsVirtualLayerQueryParser
         , mWkbType( Qgis::WkbType::NoGeometry )
       {}
 
-      QString name() const { return mName; }
+      [[nodiscard]] QString name() const { return mName; }
       void setName( const QString &name ) { mName = name; }
 
-      bool isGeometry() const { return mType == QMetaType::Type::User; }
+      [[nodiscard]] bool isGeometry() const { return mType == QMetaType::Type::User; }
       void setGeometry( Qgis::WkbType wkbType )
       {
         mType = QMetaType::Type::User;
         mWkbType = wkbType;
       }
-      long srid() const { return mSrid; }
+      [[nodiscard]] long srid() const { return mSrid; }
       void setSrid( long srid ) { mSrid = srid; }
 
       void setScalarType( QMetaType::Type t )
@@ -69,8 +69,8 @@ namespace QgsVirtualLayerQueryParser
         mType = t;
         mWkbType = Qgis::WkbType::NoGeometry;
       }
-      QMetaType::Type scalarType() const { return mType; }
-      Qgis::WkbType wkbType() const { return mWkbType; }
+      [[nodiscard]] QMetaType::Type scalarType() const { return mType; }
+      [[nodiscard]] Qgis::WkbType wkbType() const { return mWkbType; }
 
     private:
       QString mName;

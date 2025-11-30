@@ -40,13 +40,13 @@ class QgsLayerTreeOpacityWidget : public QWidget
   public:
     QgsLayerTreeOpacityWidget( QgsMapLayer *layer );
 
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
     class Provider : public QgsLayerTreeEmbeddedWidgetProvider
     {
       public:
-        QString id() const override;
-        QString name() const override;
+        [[nodiscard]] QString id() const override;
+        [[nodiscard]] QString name() const override;
         QgsLayerTreeOpacityWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) override;
         bool supportsLayer( QgsMapLayer *layer ) override;
     };

@@ -52,23 +52,23 @@ class CORE_EXPORT QgsStringReplacement
                           bool wholeWordOnly = false );
 
     //! Returns the string matched by this object
-    QString match() const { return mMatch; }
+    [[nodiscard]] QString match() const { return mMatch; }
 
     //! Returns the string to replace matches with
-    QString replacement() const { return mReplacement; }
+    [[nodiscard]] QString replacement() const { return mReplacement; }
 
     //! Returns TRUE if match is case sensitive
-    bool caseSensitive() const { return mCaseSensitive; }
+    [[nodiscard]] bool caseSensitive() const { return mCaseSensitive; }
 
     //! Returns TRUE if match only applies to whole words, or FALSE if partial word matches are permitted
-    bool wholeWordOnly() const { return mWholeWordOnly; }
+    [[nodiscard]] bool wholeWordOnly() const { return mWholeWordOnly; }
 
     /**
      * Processes a given input string, applying any valid replacements which should be made.
      * \param input input string
      * \returns input string with any matches replaced by replacement string
      */
-    QString process( const QString &input ) const;
+    [[nodiscard]] QString process( const QString &input ) const;
 
     bool operator==( const QgsStringReplacement &other ) const
     {
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsStringReplacement
      * Returns a map of the replacement properties.
      * \see fromProperties()
      */
-    QgsStringMap properties() const;
+    [[nodiscard]] QgsStringMap properties() const;
 
     /**
      * Creates a new QgsStringReplacement from an encoded properties map.
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsStringReplacementCollection
      * Returns the list of string replacements in this collection.
      * \see setReplacements()
      */
-    QList< QgsStringReplacement > replacements() const { return mReplacements; }
+    [[nodiscard]] QList< QgsStringReplacement > replacements() const { return mReplacements; }
 
     /**
      * Sets the list of string replacements in this collection.
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsStringReplacementCollection
      * \param input input string
      * \returns input string with any matches replaced by replacement string
      */
-    QString process( const QString &input ) const;
+    [[nodiscard]] QString process( const QString &input ) const;
 
     /**
      * Writes the collection state to an XML element.

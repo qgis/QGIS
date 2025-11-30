@@ -86,25 +86,25 @@ class CORE_EXPORT QgsMapLayerRenderer
      *
      * \since QGIS 3.18
      */
-    virtual bool forceRasterRender() const;
+    [[nodiscard]] virtual bool forceRasterRender() const;
 
     /**
      * Returns flags which control how the map layer rendering behaves.
      *
      * \since QGIS 3.34
      */
-    virtual Qgis::MapLayerRendererFlags flags() const;
+    [[nodiscard]] virtual Qgis::MapLayerRendererFlags flags() const;
 
     /**
      * Access to feedback object of the layer renderer (may be NULLPTR)
      */
-    virtual QgsFeedback *feedback() const;
+    [[nodiscard]] virtual QgsFeedback *feedback() const;
 
     //! Returns list of errors (problems) that happened during the rendering
-    QStringList errors() const { return mErrors; }
+    [[nodiscard]] QStringList errors() const { return mErrors; }
 
     //! Gets access to the ID of the layer rendered by this class
-    QString layerId() const { return mLayerID; }
+    [[nodiscard]] QString layerId() const { return mLayerID; }
 
     /**
      * Returns the render context associated with the renderer.
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsMapLayerRenderer
      * \note Not available in Python bindings
      * \since QGIS 3.18
      */
-    const QgsRenderContext *renderContext() const SIP_SKIP { return mContext; }
+    [[nodiscard]] const QgsRenderContext *renderContext() const SIP_SKIP { return mContext; }
 
     /**
      * Returns whether the renderer has already drawn (at
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsMapLayerRenderer
      *
      * \since QGIS 3.18
      */
-    bool isReadyToCompose() const { return mReadyToCompose; }
+    [[nodiscard]] bool isReadyToCompose() const { return mReadyToCompose; }
 
     /**
      * Sets approximate render \a time (in ms) for the layer to render.

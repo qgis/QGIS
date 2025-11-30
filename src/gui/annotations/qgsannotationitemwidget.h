@@ -94,7 +94,7 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget : public QgsPanelWidget
      * \see setItemId()
      * \since QGIS 3.40
      */
-    QString itemId() const;
+    [[nodiscard]] QString itemId() const;
 
     /**
      * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget : public QgsPanelWidget
      * Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
   public slots:
 

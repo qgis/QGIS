@@ -64,7 +64,7 @@ class GUI_EXPORT QgsLoadRasterAttributeTableDialog : public QDialog, private Ui:
     /**
      * Returns TRUE if the option to open the newly created attribute table is checked.
      */
-    bool openWhenDone() const;
+    [[nodiscard]] bool openWhenDone() const;
 
     /**
      * Returns the raster band associated to the raster attribute table.
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsLoadRasterAttributeTableDialog : public QDialog, private Ui:
     /**
      * Returns the file path to VAT.DBF.
      */
-    QString filePath() const;
+    [[nodiscard]] QString filePath() const;
 
     // QDialog interface
   public slots:

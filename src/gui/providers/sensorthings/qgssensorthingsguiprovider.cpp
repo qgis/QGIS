@@ -118,7 +118,7 @@ QList<QgsDataItemGuiProvider *> QgsSensorThingsProviderGuiMetadata::dataItemGuiP
 class QgsSensorThingsSubsetStringEditorProvider : public QgsSubsetStringEditorProvider
 {
   public:
-    QString providerKey() const override { return QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY; }
+    [[nodiscard]] QString providerKey() const override { return QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY; }
 
     bool canHandleLayer( QgsVectorLayer *layer ) const override
     {

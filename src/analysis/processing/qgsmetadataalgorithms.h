@@ -32,15 +32,15 @@ class QgsCopyLayerMetadataAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsCopyLayerMetadataAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QgsCopyLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QgsCopyLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -57,15 +57,15 @@ class QgsApplyLayerMetadataAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsApplyLayerMetadataAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QgsApplyLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QgsApplyLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -82,15 +82,15 @@ class QgsExportLayerMetadataAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsExportLayerMetadataAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QgsExportLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QgsExportLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
@@ -106,15 +106,15 @@ class QgsAddHistoryMetadataAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsAddHistoryMetadataAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QgsAddHistoryMetadataAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QgsAddHistoryMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -131,15 +131,15 @@ class QgsUpdateLayerMetadataAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsUpdateLayerMetadataAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QgsUpdateLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QgsUpdateLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -157,15 +157,15 @@ class QgsSetMetadataFieldsAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsSetMetadataFieldsAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QgsSetMetadataFieldsAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QgsSetMetadataFieldsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

@@ -83,7 +83,7 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
     QgsRectangle mMaxBounds;
     bool mUseScale = false;
 
-    std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
+    [[nodiscard]] std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
     {
       if ( mUseScale )
         return

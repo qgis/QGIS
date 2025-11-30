@@ -73,19 +73,19 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
      * Returns the filters controlling displayed fields.
      * \see setFilters()
      */
-    const Filters &filters() const { return mFilters; }
+    [[nodiscard]] const Filters &filters() const { return mFilters; }
 
   private:
     Filters mFilters;
     QgsFieldModel *mModel = nullptr;
 
     //! Returns TRUE if the specified index represents a read only field
-    bool isReadOnly( const QModelIndex &index ) const;
+    [[nodiscard]] bool isReadOnly( const QModelIndex &index ) const;
 
     // QSortFilterProxyModel interface
   public:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFieldProxyModel::Filters )

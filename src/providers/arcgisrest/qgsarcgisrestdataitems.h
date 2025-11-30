@@ -32,7 +32,7 @@ class QgsArcGisRestRootItem : public QgsConnectionsRootItem
     QgsArcGisRestRootItem( QgsDataItem *parent, const QString &name, const QString &path );
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 13; }
+    [[nodiscard]] QVariant sortKey() const override { return 13; }
 
 #ifdef HAVE_GUI
     QWidget *paramWidget() override;
@@ -58,7 +58,7 @@ class QgsArcGisRestConnectionItem : public QgsDataCollectionItem
     QgsArcGisRestConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &connectionName );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
-    QString url() const;
+    [[nodiscard]] QString url() const;
 
   private:
     QString mConnName;
@@ -263,7 +263,7 @@ class QgsArcGisRestLayerItem : public QgsLayerItem
     /**
      * Returns the CRS for the layer.
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
   private:
     QgsCoordinateReferenceSystem mCrs;
@@ -292,7 +292,7 @@ class QgsArcGisMapServiceLayerItem : public QgsArcGisRestLayerItem
   public:
     QgsArcGisMapServiceLayerItem( QgsDataItem *parent, const QString &url, const QString &id, const QString &title, const QgsCoordinateReferenceSystem &crs, const QString &format, const QString &authcfg, const QgsHttpHeaders &headers, const QString &urlPrefix );
     void setSupportedFormats( const QString &formats ) { mSupportedFormats = formats; }
-    QString supportedFormats() const { return mSupportedFormats; }
+    [[nodiscard]] QString supportedFormats() const { return mSupportedFormats; }
 
   private:
     QString mSupportedFormats;
@@ -316,7 +316,7 @@ class QgsArcGisRestDataItemProvider : public QgsDataItemProvider
     QgsArcGisRestDataItemProvider();
 
     QString name() override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 

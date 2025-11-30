@@ -95,7 +95,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
          * Spatial extents of the resource.
          * \see setSpatialExtents()
          */
-        QList< QgsLayerMetadata::SpatialExtent > spatialExtents() const;
+        [[nodiscard]] QList< QgsLayerMetadata::SpatialExtent > spatialExtents() const;
 
         /**
          * Sets the spatial \a extents of the resource.
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
          * is considered to be indeterminate and continuous.
          * \see setTemporalExtents()
          */
-        QList< QgsDateTimeRange > temporalExtents() const;
+        [[nodiscard]] QList< QgsDateTimeRange > temporalExtents() const;
 
         /**
          * Sets the temporal \a extents of the resource.
@@ -169,14 +169,14 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
     QgsLayerMetadata() = default;
 
 
-    QgsLayerMetadata *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsLayerMetadata *clone() const override SIP_FACTORY;
 
     /**
      * Returns any fees associated with using the resource.
      * An empty string will be returned if no fees are set.
      * \see setFees()
      */
-    QString fees() const;
+    [[nodiscard]] QString fees() const;
 
     /**
      * Sets the \a fees associated with using the resource.
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      * Returns a list of constraints associated with using the resource.
      * \see setConstraints()
      */
-    QgsLayerMetadata::ConstraintList constraints() const;
+    [[nodiscard]] QgsLayerMetadata::ConstraintList constraints() const;
 
     /**
      * Adds an individual constraint to the existing constraints.
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      * Returns a list of attribution or copyright strings associated with the resource.
      * \see setRights()
      */
-    QStringList rights() const;
+    [[nodiscard]] QStringList rights() const;
 
     /**
      * Sets a list of \a rights (attribution or copyright strings) associated with the resource.
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      * Returns a list of licenses associated with the resource (examples: http://opendefinition.org/licenses/).
      * \see setLicenses()
      */
-    QStringList licenses() const;
+    [[nodiscard]] QStringList licenses() const;
 
     /**
      * Sets a list of \a licenses associated with the resource.
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      * Returns the character encoding of the data in the resource. An empty string will be returned if no encoding is set.
      * \see setEncoding()
      */
-    QString encoding() const;
+    [[nodiscard]] QString encoding() const;
 
     /**
      * Sets the character \a encoding of the data in the resource. Use an empty string if no encoding is set.
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      * Returns the spatial and temporal extents associated with the resource.
      * \see setExtent()
      */
-    SIP_SKIP const QgsLayerMetadata::Extent &extent() const;
+    SIP_SKIP [[nodiscard]] const QgsLayerMetadata::Extent &extent() const;
 
     /**
      * Returns the spatial and temporal extents associated with the resource.
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      *
      * \see setCrs()
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets the coordinate reference system for the layer's metadata.
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      *
      * \since QGIS 3.28
      */
-    bool contains( const QString &searchString ) const;
+    [[nodiscard]] bool contains( const QString &searchString ) const;
 
     /**
      * Returns TRUE if the metadata identifier, title, abstract, keywords or categories
@@ -336,7 +336,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      *
      * \since QGIS 3.28
      */
-    bool matches( const QVector<QRegularExpression> &searchReList ) const;
+    [[nodiscard]] bool matches( const QVector<QRegularExpression> &searchReList ) const;
 
   private:
 

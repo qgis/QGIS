@@ -103,7 +103,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     /**
      * Returns the currently active layer for the widget
      */
-    QgsVectorLayer *layer() const { return mLayer; }
+    [[nodiscard]] QgsVectorLayer *layer() const { return mLayer; }
 
   public slots:
 
@@ -138,7 +138,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     void updateDateTimeStatistics();
     void addRow( int row, const QString &name, const QString &value, bool showValue );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
     void refreshStatisticsMenu();
     void manageSyncLayer( bool checked );

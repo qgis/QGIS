@@ -65,12 +65,12 @@ class CORE_EXPORT QgsNewsFeedModel : public QAbstractItemModel
      */
     QgsNewsFeedModel( QgsNewsFeedParser *parser, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    QVariant data( const QModelIndex &index, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
   private slots:
 
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsNewsFeedProxyModel : public QSortFilterProxyModel
     explicit QgsNewsFeedProxyModel( QgsNewsFeedParser *parser, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
   protected:
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
 

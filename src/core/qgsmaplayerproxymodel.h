@@ -50,7 +50,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     /**
      * \brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
      */
-    QgsMapLayerModel *sourceLayerModel() const { return mModel; }
+    [[nodiscard]] QgsMapLayerModel *sourceLayerModel() const { return mModel; }
 
     /**
      * Sets \a filter flags which affect how layers are filtered within the model.
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * \see setFilters()
      *
      */
-    const Qgis::LayerFilters &filters() const { return mFilters; }
+    [[nodiscard]] const Qgis::LayerFilters &filters() const { return mFilters; }
 
     /**
      * Sets the \a project from which map layers are shown.
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * \see setExceptedLayerIds()
      * \see exceptedLayerList()
      */
-    QStringList exceptedLayerIds() const;
+    [[nodiscard]] QStringList exceptedLayerIds() const;
 
     /**
      * Sets a blocklist of data providers which should be excluded from the model.
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * Returns the blocklist of data providers which are excluded from the model.
      * \see setExcludedProviders()
      */
-    QStringList excludedProviders() const { return mExcludedProviders; }
+    [[nodiscard]] QStringList excludedProviders() const { return mExcludedProviders; }
 
     /**
      * Returns the current filter string, if set.
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      * \see setFilterString()
      * \since QGIS 3.4
      */
-    QString filterString() const { return mFilterString; }
+    [[nodiscard]] QString filterString() const { return mFilterString; }
 
     /**
      * Returns TRUE if the proxy model accepts the specified map \a layer.
@@ -198,8 +198,8 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      */
     bool acceptsLayer( QgsMapLayer *layer ) const;
 
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   public slots:
 

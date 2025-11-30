@@ -36,9 +36,9 @@ class ANALYSIS_EXPORT QgsRasterBooleanLogicAlgorithmBase : public QgsProcessingA
     QgsRasterBooleanLogicAlgorithmBase() = default;
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -68,11 +68,11 @@ class ANALYSIS_EXPORT QgsRasterLogicalOrAlgorithm : public QgsRasterBooleanLogic
   public:
     QgsRasterLogicalOrAlgorithm();
 
-    QString name() const override;
-    QString displayName() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRasterLogicalOrAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRasterLogicalOrAlgorithm *createInstance() const override SIP_FACTORY;
 };
 
 /**
@@ -83,11 +83,11 @@ class ANALYSIS_EXPORT QgsRasterLogicalAndAlgorithm : public QgsRasterBooleanLogi
   public:
     QgsRasterLogicalAndAlgorithm();
 
-    QString name() const override;
-    QString displayName() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRasterLogicalAndAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRasterLogicalAndAlgorithm *createInstance() const override SIP_FACTORY;
 };
 
 ///@endcond PRIVATE

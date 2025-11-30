@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      *
      * \since QGIS 3.28
      */
-    Qgis::RasterTemporalCapabilityFlags flags() const;
+    [[nodiscard]] Qgis::RasterTemporalCapabilityFlags flags() const;
 
     /**
      * Sets the capability flags for the provider.
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      *
      *\see setIntervalHandlingMethod()
     */
-    Qgis::TemporalIntervalMatchMethod intervalHandlingMethod() const;
+    [[nodiscard]] Qgis::TemporalIntervalMatchMethod intervalHandlingMethod() const;
 
     /**
      * Sets the desired \a method to use when resolving a temporal interval to matching
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      *
      * \see setAvailableTemporalRange()
     */
-    const QgsDateTimeRange &availableTemporalRange() const;
+    [[nodiscard]] const QgsDateTimeRange &availableTemporalRange() const;
 
     /**
      * Sets a list of all valid datetime \a ranges for which temporal data is available from the provider.
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      * \see availableTemporalRange()
      * \since QGIS 3.20
     */
-    QList< QgsDateTimeRange > allAvailableTemporalRanges() const;
+    [[nodiscard]] QList< QgsDateTimeRange > allAvailableTemporalRanges() const;
 
     /**
      * Sets the available reference datetime \a range. This is to be used for
@@ -128,13 +128,13 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      *
      * \see setAvailableReferenceTemporalRange()
     */
-    const QgsDateTimeRange &availableReferenceTemporalRange() const;
+    [[nodiscard]] const QgsDateTimeRange &availableReferenceTemporalRange() const;
 
     /**
      * Returns the requested temporal range.
      * Intended to be used by the provider in fetching data.
     */
-    const QgsDateTimeRange &requestedTemporalRange() const;
+    [[nodiscard]] const QgsDateTimeRange &requestedTemporalRange() const;
 
     /**
      * Returns the default time step interval corresponding to the available
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      * \see setDefaultInterval()
      * \since QGIS 3.20
      */
-    QgsInterval defaultInterval() const;
+    [[nodiscard]] QgsInterval defaultInterval() const;
 
     /**
      * Sets the default time step \a interval corresponding to the available

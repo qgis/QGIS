@@ -50,7 +50,7 @@ class CORE_EXPORT QgsTiledSceneBoundingVolume
      * The optional \a transform and \a direction arguments should be used whenever the volume needs
      * to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
      */
-    QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    [[nodiscard]] QgsBox3D bounds( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
 
     /**
      * Returns a new geometry representing the 2-dimensional X/Y center slice of the volume.
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsTiledSceneBoundingVolume
      * The optional \a transform and \a direction arguments should be used whenever the volume needs
      * to be transformed into a specific destination CRS, in order to correctly handle 3D coordinate transforms.
      */
-    QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_FACTORY;
+    [[nodiscard]] QgsAbstractGeometry *as2DGeometry( const QgsCoordinateTransform &transform = QgsCoordinateTransform(), Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const SIP_FACTORY;
 
     /**
      * Applies a \a transform to the bounding volume.
@@ -70,12 +70,12 @@ class CORE_EXPORT QgsTiledSceneBoundingVolume
     /**
      * Returns TRUE if this bounds intersects the specified \a box.
      */
-    bool intersects( const QgsOrientedBox3D &box ) const;
+    [[nodiscard]] bool intersects( const QgsOrientedBox3D &box ) const;
 
     /**
      * Returns the volume's oriented box.
      */
-    QgsOrientedBox3D box() const { return mBox; }
+    [[nodiscard]] QgsOrientedBox3D box() const { return mBox; }
 
   private:
 

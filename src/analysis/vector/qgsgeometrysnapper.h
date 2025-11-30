@@ -157,7 +157,7 @@ class ANALYSIS_EXPORT QgsInternalGeometrySnapper
     /**
      * Returns a QgsGeometryMap of all feature geometries snapped by this object.
      */
-    QgsGeometryMap snappedGeometries() const { return mProcessedGeometries; }
+    [[nodiscard]] QgsGeometryMap snappedGeometries() const { return mProcessedGeometries; }
 
   private:
     bool mFirstFeature = true;
@@ -179,7 +179,7 @@ class QgsSnapIndex
           : geom( _geom )
           , vidx( _vidx )
         {}
-        QgsPoint point() const { return geom->vertexAt( vidx ); }
+        [[nodiscard]] QgsPoint point() const { return geom->vertexAt( vidx ); }
 
         const QgsAbstractGeometry *geom = nullptr;
         QgsVertexId vidx;
@@ -197,7 +197,7 @@ class QgsSnapIndex
       public:
         virtual ~SnapItem() = default;
         SnapType type;
-        virtual QgsPoint getSnapPoint( const QgsPoint &p ) const = 0;
+        [[nodiscard]] virtual QgsPoint getSnapPoint( const QgsPoint &p ) const = 0;
 
       protected:
         explicit SnapItem( SnapType _type )
@@ -208,7 +208,7 @@ class QgsSnapIndex
     {
       public:
         explicit PointSnapItem( const CoordIdx *_idx, bool isEndPoint );
-        QgsPoint getSnapPoint( const QgsPoint & /*p*/ ) const override;
+        [[nodiscard]] QgsPoint getSnapPoint( const QgsPoint & /*p*/ ) const override;
         const CoordIdx *idx = nullptr;
     };
 
@@ -216,7 +216,7 @@ class QgsSnapIndex
     {
       public:
         SegmentSnapItem( const CoordIdx *_idxFrom, const CoordIdx *_idxTo );
-        QgsPoint getSnapPoint( const QgsPoint &p ) const override;
+        [[nodiscard]] QgsPoint getSnapPoint( const QgsPoint &p ) const override;
         bool getIntersection( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &inter ) const;
         bool getProjection( const QgsPoint &p, QgsPoint &pProj ) const;
         bool withinSquaredDistance( const QgsPoint &p, const double squaredDistance );

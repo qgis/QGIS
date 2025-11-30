@@ -64,7 +64,7 @@ class CORE_EXPORT QgsFieldDomainsItem : public QgsDataItem
     /**
      * Returns the connection URI
      */
-    QString connectionUri() const;
+    [[nodiscard]] QString connectionUri() const;
 
   private:
 
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
      *
      * \since QGIS 4.0
      */
-    QString connectionUri() const;
+    [[nodiscard]] QString connectionUri() const;
 
   private:
 

@@ -79,16 +79,16 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     // Implementation of virtual functions from QAbstractItemModel
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::DropActions supportedDropActions() const override;
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] Qt::DropActions supportedDropActions() const override;
+    [[nodiscard]] QStringList mimeTypes() const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
@@ -118,15 +118,15 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Enable or disable a model flag
     void setFlag( Flag f, bool on = true );
     //! Returns OR-ed combination of model flags
-    Flags flags() const;
+    [[nodiscard]] Flags flags() const;
     //! Check whether a flag is enabled
-    bool testFlag( Flag f ) const;
+    [[nodiscard]] bool testFlag( Flag f ) const;
 
     /**
      * Returns layer tree node for given index. Returns root node for invalid index.
      * Returns NULLPTR if index does not refer to a layer tree node (e.g. it is a legend node)
      */
-    QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
+    [[nodiscard]] QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
     //! Returns index for a given node. If the node does not belong to the layer tree, the result is undefined
     QModelIndex node2index( QgsLayerTreeNode *node ) const;
 
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * Indices that do not represent layer tree nodes are skipped.
      * If \a skipInternal is TRUE, a node is included in the output list only if no parent node is in the list.
      */
-    QList<QgsLayerTreeNode *> indexes2nodes( const QModelIndexList &list, bool skipInternal = false ) const;
+    [[nodiscard]] QList<QgsLayerTreeNode *> indexes2nodes( const QModelIndexList &list, bool skipInternal = false ) const;
 
     /**
      * Returns legend node for given index. Returns NULLPTR for invalid index
@@ -174,10 +174,10 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * \param ruleKey legend node rule key
      * \returns QgsLayerTreeModelLegendNode if found
      */
-    QgsLayerTreeModelLegendNode *findLegendNode( const QString &layerId, const QString &ruleKey ) const;
+    [[nodiscard]] QgsLayerTreeModelLegendNode *findLegendNode( const QString &layerId, const QString &ruleKey ) const;
 
     //! Returns pointer to the root node of the layer tree. Always a non NULLPTR value.
-    QgsLayerTree *rootGroup() const;
+    [[nodiscard]] QgsLayerTree *rootGroup() const;
 
     /**
      * Reset the model and use a new root group node
@@ -191,19 +191,19 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void refreshLayerLegend( QgsLayerTreeLayer *nodeLayer );
 
     //! Gets index of the item marked as current. Item marked as current is underlined.
-    QModelIndex currentIndex() const;
+    [[nodiscard]] QModelIndex currentIndex() const;
     //! Sets index of the current item. May be used by view. Item marked as current is underlined.
     void setCurrentIndex( const QModelIndex &currentIndex );
 
     //! Sets font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode::NodeType enumeration
     void setLayerTreeNodeFont( int nodeType, const QFont &font );
     //! Gets font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode::NodeType enumeration
-    QFont layerTreeNodeFont( int nodeType ) const;
+    [[nodiscard]] QFont layerTreeNodeFont( int nodeType ) const;
 
     //! Sets at what number of legend nodes the layer node should be collapsed. Setting -1 disables the auto-collapse (default).
     void setAutoCollapseLegendNodes( int nodeCount ) { mAutoCollapseLegendNodesCount = nodeCount; }
     //! Returns at what number of legend nodes the layer node should be collapsed. -1 means no auto-collapse (default).
-    int autoCollapseLegendNodes() const { return mAutoCollapseLegendNodesCount; }
+    [[nodiscard]] int autoCollapseLegendNodes() const { return mAutoCollapseLegendNodesCount; }
 
     /**
      * Force only display of legend nodes which are valid for a given \a scale.
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * A scale <= 0 indicates that no scale filtering is being performed.
      * \see setLegendFilterByScale()
      */
-    double legendFilterByScale() const { return mLegendFilterByScale; }
+    [[nodiscard]] double legendFilterByScale() const { return mLegendFilterByScale; }
 
     /**
      * Force only display of legend nodes which are valid for given map settings.
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     /**
      * Returns the current map settings used for the current legend filter (or NULLPTR if none is enabled)
      */
-    const QgsMapSettings *legendFilterMapSettings() const;
+    [[nodiscard]] const QgsMapSettings *legendFilterMapSettings() const;
 
     /**
      * Sets the filter \a settings to use to filter legend nodes.
@@ -262,7 +262,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      *
      * \since QGIS 3.32
      */
-    const QgsLayerTreeFilterSettings *filterSettings() const;
+    [[nodiscard]] const QgsLayerTreeFilterSettings *filterSettings() const;
 
     /**
      * Give the layer tree model hints about the currently associated map view
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     /**
      * Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
      */
-    QMap<QString, QString> layerStyleOverrides() const;
+    [[nodiscard]] QMap<QString, QString> layerStyleOverrides() const;
 
     /**
      * Sets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * \see addTargetScreenProperties()
      * \since QGIS 3.32
      */
-    QSet< QgsScreenProperties > targetScreenProperties() const;
+    [[nodiscard]] QSet< QgsScreenProperties > targetScreenProperties() const;
 
     /**
      * Scales an layer tree model icon size to compensate for display pixel density, making the icon
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      *
      * \since QGIS 3.32
      */
-    bool hitTestInProgress() const;
+    [[nodiscard]] bool hitTestInProgress() const;
 
   signals:
 
@@ -450,7 +450,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      *
      * \note Note available in Python bindings.
      */
-    QgsRenderContext *createTemporaryRenderContext() const SIP_SKIP;
+    [[nodiscard]] QgsRenderContext *createTemporaryRenderContext() const SIP_SKIP;
 
     //! Pointer to the root node of the layer tree. Not owned by the model
     QgsLayerTree *mRootNode = nullptr;

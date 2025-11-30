@@ -55,12 +55,12 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     explicit QgsPhongTexturedMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsPhongTexturedMaterial() override;
 
-    QColor ambient() const;
-    Qt3DRender::QAbstractTexture *diffuseTexture() const;
-    float diffuseTextureScale() const;
-    QColor specular() const;
-    float shininess() const;
-    float opacity() const;
+    [[nodiscard]] QColor ambient() const;
+    [[nodiscard]] Qt3DRender::QAbstractTexture *diffuseTexture() const;
+    [[nodiscard]] float diffuseTextureScale() const;
+    [[nodiscard]] QColor specular() const;
+    [[nodiscard]] float shininess() const;
+    [[nodiscard]] float opacity() const;
 
   public slots:
     void setAmbient( const QColor &ambient );

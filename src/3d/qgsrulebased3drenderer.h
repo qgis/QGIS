@@ -91,37 +91,37 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
         /**
          * Returns the labeling settings. May return NULLPTR.
          */
-        QgsAbstract3DSymbol *symbol() const { return mSymbol.get(); }
+        [[nodiscard]] QgsAbstract3DSymbol *symbol() const { return mSymbol.get(); }
 
         /**
          * A filter that will check if this rule applies
          * \returns An expression
          */
-        QString filterExpression() const { return mFilterExp; }
+        [[nodiscard]] QString filterExpression() const { return mFilterExp; }
 
         /**
          * A human readable description for this rule
          *
          * \returns Description
          */
-        QString description() const { return mDescription; }
+        [[nodiscard]] QString description() const { return mDescription; }
 
         /**
          * Returns if this rule is active
          *
          * \returns TRUE if the rule is active
          */
-        bool active() const { return mIsActive; }
+        [[nodiscard]] bool active() const { return mIsActive; }
 
         /**
          * Check if this rule is an ELSE rule
          *
          * \returns TRUE if this rule is an else rule
          */
-        bool isElse() const { return mElseRule; }
+        [[nodiscard]] bool isElse() const { return mElseRule; }
 
         //! Unique rule identifier (for identification of rule within labeling, used as provider ID)
-        QString ruleKey() const { return mRuleKey; }
+        [[nodiscard]] QString ruleKey() const { return mRuleKey; }
 
         //! Sets new symbol (or NULLPTR). Deletes old symbol if any.
         void setSymbol( QgsAbstract3DSymbol *symbol SIP_TRANSFER );
@@ -168,7 +168,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          *
          * \returns A list of rules
          */
-        const QgsRuleBased3DRenderer::RuleList &children() const { return mChildren; }
+        [[nodiscard]] const QgsRuleBased3DRenderer::RuleList &children() const { return mChildren; }
 
         /**
          * Returns all children rules of this rule
@@ -182,14 +182,14 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          *
          * \returns A list of descendant rules
          */
-        QgsRuleBased3DRenderer::RuleList descendants() const;
+        [[nodiscard]] QgsRuleBased3DRenderer::RuleList descendants() const;
 
         /**
          * The parent rule
          *
          * \returns Parent rule
          */
-        const QgsRuleBased3DRenderer::Rule *parent() const SIP_SKIP { return mParent; }
+        [[nodiscard]] const QgsRuleBased3DRenderer::Rule *parent() const SIP_SKIP { return mParent; }
 
         /**
          * The parent rule
@@ -208,7 +208,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
         void removeChildAt( int i );
 
         //! Try to find a rule given its unique key
-        const QgsRuleBased3DRenderer::Rule *findRuleByKey( const QString &key ) const;
+        [[nodiscard]] const QgsRuleBased3DRenderer::Rule *findRuleByKey( const QString &key ) const;
 
         /**
          * Find a rule thanks to its key.
@@ -218,7 +218,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
         QgsRuleBased3DRenderer::Rule *findRuleByKey( const QString &key ) SIP_SKIP;
 
         //! clone this rule, return new instance
-        QgsRuleBased3DRenderer::Rule *clone() const SIP_FACTORY;
+        [[nodiscard]] QgsRuleBased3DRenderer::Rule *clone() const SIP_FACTORY;
 
         // load / save
 
@@ -300,10 +300,10 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
     //! Returns pointer to the root rule
     QgsRuleBased3DRenderer::Rule *rootRule() { return mRootRule; }
     //! Returns pointer to the root rule
-    const Rule *rootRule() const SIP_SKIP { return mRootRule; }
+    [[nodiscard]] const Rule *rootRule() const SIP_SKIP { return mRootRule; }
 
-    QString type() const override { return "rulebased"; }
-    QgsRuleBased3DRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override { return "rulebased"; }
+    [[nodiscard]] QgsRuleBased3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;

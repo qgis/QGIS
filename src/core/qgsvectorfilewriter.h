@@ -240,7 +240,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         /**
          * Creates a clone of the FieldValueConverter.
          */
-        virtual QgsVectorFileWriter::FieldValueConverter *clone() const SIP_FACTORY;
+        [[nodiscard]] virtual QgsVectorFileWriter::FieldValueConverter *clone() const SIP_FACTORY;
     };
 
     /**

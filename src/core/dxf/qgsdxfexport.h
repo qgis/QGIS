@@ -85,14 +85,14 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
         {}
 
         //! Returns the layer
-        QgsVectorLayer *layer() const {return mLayer;}
+        [[nodiscard]] QgsVectorLayer *layer() const {return mLayer;}
 
         /**
          * Returns the attribute index used to split into multiple layers.
          * The attribute value is used for layer names.
          * \see splitLayerAttribute
          */
-        int layerOutputAttributeIndex() const {return mLayerOutputAttributeIndex;}
+        [[nodiscard]] int layerOutputAttributeIndex() const {return mLayerOutputAttributeIndex;}
 
         /**
          * If the split layer attribute is set, the vector layer
@@ -100,27 +100,27 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
          * unique value.
          * \since QGIS 3.12
          */
-        QString splitLayerAttribute() const;
+        [[nodiscard]] QString splitLayerAttribute() const;
 
         /**
          * \brief Flag if data defined point block symbols should be created. Default is false
          * \return True if data defined point block symbols should be created
          * \since QGIS 3.38
          */
-        bool buildDataDefinedBlocks() const { return mBuildDDBlocks; }
+        [[nodiscard]] bool buildDataDefinedBlocks() const { return mBuildDDBlocks; }
 
         /**
          * \brief Returns the maximum number of data defined symbol classes for which blocks are created. Returns -1 if there is no such limitation
          * \return
          * \since QGIS 3.38
          */
-        int dataDefinedBlocksMaximumNumberOfClasses() const { return mDDBlocksMaxNumberOfClasses; }
+        [[nodiscard]] int dataDefinedBlocksMaximumNumberOfClasses() const { return mDDBlocksMaxNumberOfClasses; }
 
         /**
         * \brief Returns the overridden layer name to be used in the exported DXF.
         * \since QGIS 3.38
         */
-        QString overriddenName() const { return mOverriddenName; }
+        [[nodiscard]] QString overriddenName() const { return mOverriddenName; }
 
       private:
         QgsVectorLayer *mLayer = nullptr;

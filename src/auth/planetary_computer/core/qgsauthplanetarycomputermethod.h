@@ -36,11 +36,11 @@ class QgsAuthPlanetaryComputerMethod : public QgsAuthMethod
     explicit QgsAuthPlanetaryComputerMethod();
 
     // QgsAuthMethod interface
-    QString key() const override;
+    [[nodiscard]] QString key() const override;
 
-    QString description() const override;
+    [[nodiscard]] QString description() const override;
 
-    QString displayDescription() const override;
+    [[nodiscard]] QString displayDescription() const override;
 
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
@@ -56,7 +56,7 @@ class QgsAuthPlanetaryComputerMethod : public QgsAuthMethod
   private:
     struct SasToken
     {
-        bool isValid() const { return !token.isEmpty() && !( expiry < QDateTime::currentDateTimeUtc().addSecs( 300 ) ); }
+        [[nodiscard]] bool isValid() const { return !token.isEmpty() && !( expiry < QDateTime::currentDateTimeUtc().addSecs( 300 ) ); }
         QDateTime expiry;
         QString token;
     };
@@ -91,7 +91,7 @@ class QgsAuthPlanetaryComputerMethodMetadata : public QgsAuthMethodMetadata
     QgsAuthPlanetaryComputerMethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthPlanetaryComputerMethod::AUTH_METHOD_KEY, QgsAuthPlanetaryComputerMethod::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthPlanetaryComputerMethod *createAuthMethod() const override { return new QgsAuthPlanetaryComputerMethod; }
+    [[nodiscard]] QgsAuthPlanetaryComputerMethod *createAuthMethod() const override { return new QgsAuthPlanetaryComputerMethod; }
 };
 
 #endif // QGSAUTHPLANETARYCOMPUTERMETHOD_H

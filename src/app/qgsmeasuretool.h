@@ -37,13 +37,13 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     ~QgsMeasureTool() override;
 
-    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    [[nodiscard]] Flags flags() const override { return QgsMapTool::AllowZoomRect; }
 
     //! returns whether measuring distance or area
-    bool measureArea() const { return mMeasureArea; }
+    [[nodiscard]] bool measureArea() const { return mMeasureArea; }
 
     //! When we have added our last point, and not following
-    bool done() const { return mDone; }
+    [[nodiscard]] bool done() const { return mDone; }
 
     //! Reset and start new
     void restart();
@@ -52,7 +52,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void addPoint( const QgsPointXY &point );
 
     //! Returns reference to array of the points
-    QVector<QgsPointXY> points() const;
+    [[nodiscard]] QVector<QgsPointXY> points() const;
 
     // Inherited from QgsMapTool
 

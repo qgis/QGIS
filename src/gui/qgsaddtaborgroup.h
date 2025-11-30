@@ -56,17 +56,17 @@ class GUI_EXPORT QgsAddAttributeFormContainerDialog : public QDialog, private Ui
      * Will be an invalid index when a new tab is created.
      * \since QGIS 3.44
      */
-    QModelIndex parentContainerItem() const;
+    [[nodiscard]] QModelIndex parentContainerItem() const;
 
     //! Returns the column count
-    int columnCount() const;
+    [[nodiscard]] int columnCount() const;
 
     /**
      * Returns the container type.
      *
      * \since QGIS 3.32
      */
-    Qgis::AttributeEditorContainerType containerType() const;
+    [[nodiscard]] Qgis::AttributeEditorContainerType containerType() const;
 
     //! Accepts the dialog
     void accept() override;

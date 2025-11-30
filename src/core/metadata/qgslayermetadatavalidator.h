@@ -67,7 +67,7 @@ class CORE_EXPORT QgsAbstractMetadataBaseValidator
          * will be set to the list index of the failed metadata
          * item.
          */
-        QVariant identifier() const SIP_PYNAME( _identifier ) { return mIdentifier; }
+        [[nodiscard]] QVariant identifier() const SIP_PYNAME( _identifier ) { return mIdentifier; }
 
         /**
          * Sets the optional \a identifier for the failed metadata item.

@@ -56,14 +56,14 @@ class CORE_EXPORT QgsRenderedItemDetails
     /**
      * Returns the layer ID of the associated map layer.
      */
-    QString layerId() const { return mLayerId; }
+    [[nodiscard]] QString layerId() const { return mLayerId; }
 
     /**
      * Returns the bounding box of the item (in map units).
      *
      * \see setBoundingBox()
      */
-    QgsRectangle boundingBox() const { return mBounds; }
+    [[nodiscard]] QgsRectangle boundingBox() const { return mBounds; }
 
     /**
      * Sets the bounding box of the item (in map units).

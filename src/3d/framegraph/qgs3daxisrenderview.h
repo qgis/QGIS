@@ -68,19 +68,19 @@ class _3D_EXPORT Qgs3DAxisRenderView : public QgsAbstractRenderView
                          Qgs3DAxis *axis3D );
 
     //! Returns the viewport associated to this renderview
-    Qt3DRender::QViewport *viewport() const;
+    [[nodiscard]] Qt3DRender::QViewport *viewport() const;
 
     //! Returns the layer to be used by entities to be included in the label renderpass
-    Qt3DRender::QLayer *labelLayer() const;
+    [[nodiscard]] Qt3DRender::QLayer *labelLayer() const;
 
     //! Returns main object layer
-    Qt3DRender::QLayer *objectLayer() const;
+    [[nodiscard]] Qt3DRender::QLayer *objectLayer() const;
 
     //! Returns main object camera (used for axis or cube)
-    Qt3DRender::QCamera *objectCamera() const;
+    [[nodiscard]] Qt3DRender::QCamera *objectCamera() const;
 
     //! Returns camera used for billboarded labels
-    Qt3DRender::QCamera *labelCamera() const;
+    [[nodiscard]] Qt3DRender::QCamera *labelCamera() const;
 
     void updateWindowResize( int width, int height ) override;
 

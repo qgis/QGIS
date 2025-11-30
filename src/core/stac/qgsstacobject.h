@@ -69,43 +69,43 @@ class CORE_EXPORT QgsStacObject
     virtual ~QgsStacObject() = default;
 
     //! Returns the \a Type of the STAC object
-    virtual Qgis::StacObjectType type() const = 0;
+    [[nodiscard]] virtual Qgis::StacObjectType type() const = 0;
 
     //! Returns an HTML representation of the STAC object
-    virtual QString toHtml() const = 0;
+    [[nodiscard]] virtual QString toHtml() const = 0;
 
     //! Returns the STAC version the object implements
-    QString stacVersion() const;
+    [[nodiscard]] QString stacVersion() const;
 
     //! Sets the STAC version the object implements
     void setStacVersion( const QString &stacVersion );
 
     //! Returns the list of extensions the STAC object implements
-    QStringList stacExtensions() const;
+    [[nodiscard]] QStringList stacExtensions() const;
 
     //! Sets the list of \a stacExtensions the object implements
     void setStacExtensions( const QStringList &stacExtensions );
 
     //! Id of the STAC object
-    QString id() const;
+    [[nodiscard]] QString id() const;
 
     //! Sets the \a id for the STAC object
     void setId( const QString &id );
 
     //! Returns the STAC links included in the object
-    QVector< QgsStacLink > links() const;
+    [[nodiscard]] QVector< QgsStacLink > links() const;
 
     //! Sets the STAC links included in the object
     void setLinks( const QVector< QgsStacLink > &links );
 
     //! Return the url stored in the object's "self" link
-    QString url() const;
+    [[nodiscard]] QString url() const;
 
     //! Return the url stored in the object's "root" link
-    QString rootUrl() const;
+    [[nodiscard]] QString rootUrl() const;
 
     //! Return the url stored in the object's "parent" link
-    QString parentUrl() const;
+    [[nodiscard]] QString parentUrl() const;
 
 
   protected:

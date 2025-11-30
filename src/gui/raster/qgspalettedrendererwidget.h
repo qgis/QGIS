@@ -62,9 +62,9 @@ class QgsPalettedRendererClassGatherer : public QThread
     }
 
     //! Returns TRUE if collection was canceled before completion
-    bool wasCanceled() const { return mWasCanceled; }
+    [[nodiscard]] bool wasCanceled() const { return mWasCanceled; }
 
-    QgsPalettedRasterRenderer::ClassData classes() const { return mClasses; }
+    [[nodiscard]] QgsPalettedRasterRenderer::ClassData classes() const { return mClasses; }
 
   signals:
 
@@ -106,22 +106,22 @@ class QgsPalettedRendererModel : public QAbstractItemModel
 
     void setClassData( const QgsPalettedRasterRenderer::ClassData &data );
 
-    QgsPalettedRasterRenderer::ClassData classData() const { return mData; }
-    QgsPalettedRasterRenderer::Class classAtIndex( const QModelIndex &index ) const { return mData.at( index.row() ); }
+    [[nodiscard]] QgsPalettedRasterRenderer::ClassData classData() const { return mData; }
+    [[nodiscard]] QgsPalettedRasterRenderer::Class classAtIndex( const QModelIndex &index ) const { return mData.at( index.row() ); }
 
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    Qt::DropActions supportedDropActions() const override;
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] Qt::DropActions supportedDropActions() const override;
+    [[nodiscard]] QStringList mimeTypes() const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
     QModelIndex addEntry( const QColor &color );
@@ -149,10 +149,10 @@ class QgsPalettedRendererProxyModel : public QSortFilterProxyModel
     }
 
     //! Return sorted class data
-    QgsPalettedRasterRenderer::ClassData classData() const;
+    [[nodiscard]] QgsPalettedRasterRenderer::ClassData classData() const;
 
   protected:
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override
     {
       const QModelIndex lv { left.model()->index( left.row(), static_cast<int>( QgsPalettedRendererModel::Column::ValueColumn ), left.parent() ) };
       const QModelIndex rv { right.model()->index( right.row(), static_cast<int>( QgsPalettedRendererModel::Column::ValueColumn ), right.parent() ) };

@@ -46,12 +46,12 @@ class TopologyRule
     QList<Qgis::GeometryType> layer1SupportedTypes;
     QList<Qgis::GeometryType> layer2SupportedTypes;
 
-    bool layer1AcceptsType( Qgis::GeometryType type ) const
+    [[nodiscard]] bool layer1AcceptsType( Qgis::GeometryType type ) const
     {
       return layer1SupportedTypes.contains( type );
     }
 
-    bool layer2AcceptsType( Qgis::GeometryType type ) const
+    [[nodiscard]] bool layer2AcceptsType( Qgis::GeometryType type ) const
     {
       return layer2SupportedTypes.contains( type );
     }
@@ -104,7 +104,7 @@ class topolTest : public QObject
     /**
      * Returns copy of the test map
      */
-    QMap<QString, TopologyRule> testMap() const { return mTopologyRuleMap; }
+    [[nodiscard]] QMap<QString, TopologyRule> testMap() const { return mTopologyRuleMap; }
 
     /**
      * Runs the test and returns all found errors

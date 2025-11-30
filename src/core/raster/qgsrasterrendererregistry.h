@@ -118,21 +118,21 @@ class CORE_EXPORT QgsRasterRendererRegistry
     /**
      * Returns a list of the names of registered renderers.
      */
-    QStringList renderersList() const;
+    [[nodiscard]] QStringList renderersList() const;
 
     /**
      * Returns the list of registered renderers.
      *
      * \note Not available in Python bindings
      */
-    QList< QgsRasterRendererRegistryEntry > entries() const SIP_SKIP;
+    [[nodiscard]] QList< QgsRasterRendererRegistryEntry > entries() const SIP_SKIP;
 
     /**
      * Returns the capabilities for the renderer with the specified name.
      *
      * \since QGIS 3.38
      */
-    Qgis::RasterRendererCapabilities rendererCapabilities( const QString &rendererName ) const;
+    [[nodiscard]] Qgis::RasterRendererCapabilities rendererCapabilities( const QString &rendererName ) const;
 
     /**
      * Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).

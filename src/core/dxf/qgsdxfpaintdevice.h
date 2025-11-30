@@ -42,21 +42,21 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
     QgsDxfPaintDevice( QgsDxfExport *dxf );
     ~QgsDxfPaintDevice() override;
 
-    QPaintEngine *paintEngine() const override;
+    [[nodiscard]] QPaintEngine *paintEngine() const override;
 
     void setDrawingSize( QSizeF size ) { mDrawingSize = size; }
     void setOutputSize( const QRectF &r ) { mRectangle = r; }
 
     //! Returns scale factor for line width
-    double widthScaleFactor() const;
+    [[nodiscard]] double widthScaleFactor() const;
 
     //! Converts a point from device coordinates to dxf coordinates
-    QPointF dxfCoordinates( QPointF pt ) const;
+    [[nodiscard]] QPointF dxfCoordinates( QPointF pt ) const;
 
     /*int height() const { return mDrawingSize.height(); }
     int width() const { return mDrawingSize.width(); }*/
 
-    int metric( PaintDeviceMetric metric ) const override;
+    [[nodiscard]] int metric( PaintDeviceMetric metric ) const override;
 
     void setLayer( const QString &layer );
 

@@ -63,12 +63,12 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
      * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
     /**
      * Returns the vector layer associated with the widget.
      */
-    const QgsVectorLayer *layer() const { return mLayer; }
+    [[nodiscard]] const QgsVectorLayer *layer() const { return mLayer; }
 
   public slots:
 
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateSymbolInfo();
     QgsSymbolWidgetContext mContext;
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 };
 

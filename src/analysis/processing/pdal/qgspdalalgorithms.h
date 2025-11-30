@@ -39,16 +39,16 @@ class ANALYSIS_EXPORT QgsPdalAlgorithms : public QgsProcessingProvider
      */
     QgsPdalAlgorithms( QObject *parent = nullptr );
 
-    QIcon icon() const override;
-    QString svgIconPath() const override;
-    QString id() const override;
-    QString helpId() const override;
-    QString name() const override;
-    bool supportsNonFileBasedOutput() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QString svgIconPath() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString helpId() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] bool supportsNonFileBasedOutput() const override;
 
-    QStringList supportedOutputVectorLayerExtensions() const override;
-    QStringList supportedOutputRasterLayerExtensions() const override;
-    QStringList supportedOutputPointCloudLayerExtensions() const override;
+    [[nodiscard]] QStringList supportedOutputVectorLayerExtensions() const override;
+    [[nodiscard]] QStringList supportedOutputRasterLayerExtensions() const override;
+    [[nodiscard]] QStringList supportedOutputPointCloudLayerExtensions() const override;
 
   protected:
     void loadAlgorithms() override;

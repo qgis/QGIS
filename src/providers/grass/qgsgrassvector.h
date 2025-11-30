@@ -31,26 +31,26 @@ class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
 
     QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject *parent = nullptr );
 
-    QgsGrassObject grassObject() const { return mGrassObject; }
+    [[nodiscard]] QgsGrassObject grassObject() const { return mGrassObject; }
 
     //! Layer number (field)
-    int number() const { return mNumber; }
+    [[nodiscard]] int number() const { return mNumber; }
 
     //! Sets number of elements of given type.
     void setTypeCount( int type, int count ) { mTypeCounts[type] = count; }
 
     //! Gets number of elements of given type. Types may be combined by bitwise or)
-    int typeCount( int type ) const;
+    [[nodiscard]] int typeCount( int type ) const;
 
     //! Gets all types in the layer (combined by bitwise or)
-    int type() const;
+    [[nodiscard]] int type() const;
 
     //! Gets all types in the layer as list
-    QList<int> types() const;
+    [[nodiscard]] QList<int> types() const;
 
     QgsFields fields();
 
-    QString error() const { return mError; }
+    [[nodiscard]] QString error() const { return mError; }
 
   private:
     QgsGrassObject mGrassObject;
@@ -84,28 +84,28 @@ class GRASS_LIB_EXPORT QgsGrassVector : public QObject
     bool openHead();
 
     //! Gets list of layers. The layers exist until the vector is deleted or reloaded
-    QList<QgsGrassVectorLayer *> layers() const { return mLayers; }
+    [[nodiscard]] QList<QgsGrassVectorLayer *> layers() const { return mLayers; }
 
     /**
      * Gets numbers of primitives
      * \returns type/count pairs
     */
-    QMap<int, int> typeCounts() const { return mTypeCounts; }
+    [[nodiscard]] QMap<int, int> typeCounts() const { return mTypeCounts; }
 
     //! Gets total number of primitives of given type. Types may be combined by bitwise or)
-    int typeCount( int type ) const;
+    [[nodiscard]] int typeCount( int type ) const;
 
     /**
      * Maximum layer number (field).
      * \returns max layer number or 0 if no layer exists
     */
-    int maxLayerNumber() const;
+    [[nodiscard]] int maxLayerNumber() const;
 
     //! Gets number of nodes
-    int nodeCount() const { return mNodeCount; }
+    [[nodiscard]] int nodeCount() const { return mNodeCount; }
 
     //! Returns error message
-    QString error() const { return mError; }
+    [[nodiscard]] QString error() const { return mError; }
 
   signals:
 

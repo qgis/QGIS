@@ -37,32 +37,32 @@ class CORE_EXPORT QgsVectorSimplifyMethod
     //! Sets the simplification hints of the vector layer managed
     void setSimplifyHints( Qgis::VectorRenderingSimplificationFlags simplifyHints ) { mSimplifyHints = simplifyHints; }
     //! Gets the simplification hints of the vector layer managed
-    inline Qgis::VectorRenderingSimplificationFlags simplifyHints() const { return mSimplifyHints; }
+    [[nodiscard]] inline Qgis::VectorRenderingSimplificationFlags simplifyHints() const { return mSimplifyHints; }
 
     //! Sets the local simplification algorithm of the vector layer managed
     void setSimplifyAlgorithm( Qgis::VectorSimplificationAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
     //! Gets the local simplification algorithm of the vector layer managed
-    inline Qgis::VectorSimplificationAlgorithm simplifyAlgorithm() const { return mSimplifyAlgorithm; }
+    [[nodiscard]] inline Qgis::VectorSimplificationAlgorithm simplifyAlgorithm() const { return mSimplifyAlgorithm; }
 
     //! Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal
     void setTolerance( double tolerance ) { mTolerance = tolerance; }
     //! Gets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal
-    inline double tolerance() const { return mTolerance; }
+    [[nodiscard]] inline double tolerance() const { return mTolerance; }
 
     //! Sets the simplification threshold of the vector layer managed
     void setThreshold( float threshold ) { mThreshold = threshold; }
     //! Gets the simplification threshold of the vector layer managed
-    inline float threshold() const { return mThreshold; }
+    [[nodiscard]] inline float threshold() const { return mThreshold; }
 
     //! Sets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries
     void setForceLocalOptimization( bool localOptimization ) { mLocalOptimization = localOptimization; }
     //! Gets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries
-    inline bool forceLocalOptimization() const { return mLocalOptimization; }
+    [[nodiscard]] inline bool forceLocalOptimization() const { return mLocalOptimization; }
 
     //! Sets the maximum scale at which the layer should be simplified
     void setMaximumScale( float maximumScale ) { mMaximumScale = maximumScale; }
     //! Gets the maximum scale at which the layer should be simplified
-    inline float maximumScale() const { return mMaximumScale; }
+    [[nodiscard]] inline float maximumScale() const { return mMaximumScale; }
 
   private:
     //! Simplification hints for fast rendering of features of the vector layer managed

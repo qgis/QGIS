@@ -102,14 +102,14 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
      * \see setRange()
      * \see rangeChanged()
      */
-    QgsDoubleRange range() const;
+    [[nodiscard]] QgsDoubleRange range() const;
 
     /**
      * Returns the limits of the elevation range which can be selected by the widget.
      *
      * \see rangeLimits()
      */
-    QgsDoubleRange rangeLimits() const;
+    [[nodiscard]] QgsDoubleRange rangeLimits() const;
 
     /**
      * Returns a reference to the slider component of the widget.
@@ -130,7 +130,7 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
      *
      * \see setFixedRangeSize()
      */
-    double fixedRangeSize() const;
+    [[nodiscard]] double fixedRangeSize() const;
 
   public slots:
 

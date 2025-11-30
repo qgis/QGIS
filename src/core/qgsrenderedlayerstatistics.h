@@ -81,25 +81,25 @@ class CORE_EXPORT QgsRenderedLayerStatistics: public QgsRenderedItemDetails
      * Returns the minimum values of the computed statistics.
      * \see setMinimum()
      */
-    QList<double> minimum() const;
+    [[nodiscard]] QList<double> minimum() const;
 
     /**
      * Returns the minimum value of the computed statistics at \a index.
      * \see setMinimum()
      */
-    double minimum( int index ) const;
+    [[nodiscard]] double minimum( int index ) const;
 
     /**
      * Returns the maximum values of the computed statistics.
      * \see setMaximum()
      */
-    QList<double> maximum() const;
+    [[nodiscard]] QList<double> maximum() const;
 
     /**
       * Returns the maximum values of the computed statistics at \a index.
       * \see setMaximum()
       */
-    double maximum( int index ) const;
+    [[nodiscard]] double maximum( int index ) const;
 
     /**
      * Sets the minimum values of the computed statistics.

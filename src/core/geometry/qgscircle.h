@@ -273,8 +273,8 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      */
     int innerTangents( const QgsCircle &other, QgsPointXY &line1P1 SIP_OUT, QgsPointXY &line1P2 SIP_OUT, QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT ) const;
 
-    double area() const override SIP_HOLDGIL;
-    double perimeter() const override SIP_HOLDGIL;
+    [[nodiscard]] double area() const override SIP_HOLDGIL;
+    [[nodiscard]] double perimeter() const override SIP_HOLDGIL;
 
     //inherited
     // void setAzimuth(const double azimuth);
@@ -296,7 +296,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     void setSemiMinorAxis( double semiMinorAxis ) override SIP_HOLDGIL;
 
     //! Returns the radius of the circle
-    double radius() const SIP_HOLDGIL { return mSemiMajorAxis; }
+    [[nodiscard]] double radius() const SIP_HOLDGIL { return mSemiMajorAxis; }
     //! Sets the radius of the circle
     void setRadius( double radius ) SIP_HOLDGIL
     {
@@ -310,20 +310,20 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \return quadrants defined by four points.
      * \see quadrant()
      */
-    QVector<QgsPoint> northQuadrant() const SIP_FACTORY;
+    [[nodiscard]] QVector<QgsPoint> northQuadrant() const SIP_FACTORY;
 
     /**
      * Returns a circular string from the circle.
      * \param oriented If oriented is TRUE the start point is from azimuth instead from north.
      */
-    QgsCircularString *toCircularString( bool oriented = false ) const;
+    [[nodiscard]] QgsCircularString *toCircularString( bool oriented = false ) const;
 
     //! Returns TRUE if the circle contains the \a point.
-    bool contains( const QgsPoint &point, double epsilon = 1E-8 ) const;
+    [[nodiscard]] bool contains( const QgsPoint &point, double epsilon = 1E-8 ) const;
 
-    QgsRectangle boundingBox() const override;
+    [[nodiscard]] QgsRectangle boundingBox() const override;
 
-    QString toString( int pointPrecision = 17, int radiusPrecision = 17, int azimuthPrecision = 2 ) const override;
+    [[nodiscard]] QString toString( int pointPrecision = 17, int radiusPrecision = 17, int azimuthPrecision = 2 ) const override;
 
     /**
      * Returns a GML2 representation of the geometry.

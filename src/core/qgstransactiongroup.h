@@ -51,29 +51,29 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
      *
      * \returns Layer set
      */
-    QSet<QgsVectorLayer *> layers() const;
+    [[nodiscard]] QSet<QgsVectorLayer *> layers() const;
 
     /**
      * Returns TRUE if any of the layers in this group reports a modification.
      */
-    bool modified() const;
+    [[nodiscard]] bool modified() const;
 
     /**
      * Returns the connection string used by this transaction group.
      * Layers need be compatible when added.
      */
-    QString connString() const;
+    [[nodiscard]] QString connString() const;
 
     /**
      * Returns the provider key used by this transaction group.
      * Layers need be compatible when added.
      */
-    QString providerKey() const;
+    [[nodiscard]] QString providerKey() const;
 
     /**
      * Returns TRUE if there are no layers in this transaction group.
      */
-    bool isEmpty() const;
+    [[nodiscard]] bool isEmpty() const;
 
   signals:
 

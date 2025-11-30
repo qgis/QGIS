@@ -36,22 +36,22 @@ class CORE_EXPORT QgsProjOperation
      * Returns TRUE if the body is a valid object, or FALSE if it is a null/invalid
      * object.
      */
-    bool isValid() const { return mValid; }
+    [[nodiscard]] bool isValid() const { return mValid; }
 
     /**
      * ID of operation.
      */
-    QString id() const { return mId; }
+    [[nodiscard]] QString id() const { return mId; }
 
     /**
      * Description.
      */
-    QString description() const { return mDescription; }
+    [[nodiscard]] QString description() const { return mDescription; }
 
     /**
      * Additional details.
      */
-    QString details() const { return mDetails; }
+    [[nodiscard]] QString details() const { return mDetails; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

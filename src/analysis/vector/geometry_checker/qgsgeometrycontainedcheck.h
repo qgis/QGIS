@@ -60,13 +60,13 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
 
     explicit QgsGeometryContainedCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration ) {}
-    QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    [[nodiscard]] QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
-    QString id() const override { return factoryId(); }
-    QString description() const override { return factoryDescription(); }
-    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+    [[nodiscard]] QString id() const override { return factoryId(); }
+    [[nodiscard]] QString description() const override { return factoryDescription(); }
+    [[nodiscard]] QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }

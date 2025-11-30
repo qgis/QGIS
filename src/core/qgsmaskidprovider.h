@@ -54,12 +54,12 @@ class CORE_EXPORT QgsMaskIdProvider
      * Returns the mask id associated with a label layer and its optional label rule.
      * Returns -1 if not found.
      */
-    int maskId( const QString &labelLayerId = QString(), const QString &labelRuleId = QString() ) const;
+    [[nodiscard]] int maskId( const QString &labelLayerId = QString(), const QString &labelRuleId = QString() ) const;
 
     /**
      * Returns the number of identifiers allocated.
      */
-    int size() const;
+    [[nodiscard]] int size() const;
 
   private:
 

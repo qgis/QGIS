@@ -50,16 +50,16 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QgsGrassVectorMap( const QgsGrassObject &grassObject );
     ~QgsGrassVectorMap() override;
 
-    QgsGrassObject grassObject() const { return mGrassObject; }
+    [[nodiscard]] QgsGrassObject grassObject() const { return mGrassObject; }
     struct Map_info *map() { return mMap; }
-    bool isValid() const { return mValid; }
-    bool isFrozen() const { return mFrozen; }
-    bool isEdited() const { return mIsEdited; }
-    bool isOpen() const { return mOpen; }
-    int version() const { return mVersion; }
-    int oldNumLines() const { return mOldNumLines; }
+    [[nodiscard]] bool isValid() const { return mValid; }
+    [[nodiscard]] bool isFrozen() const { return mFrozen; }
+    [[nodiscard]] bool isEdited() const { return mIsEdited; }
+    [[nodiscard]] bool isOpen() const { return mOpen; }
+    [[nodiscard]] int version() const { return mVersion; }
+    [[nodiscard]] int oldNumLines() const { return mOldNumLines; }
     // number of instances using this map
-    int userCount() const;
+    [[nodiscard]] int userCount() const;
 
     /**
      * Gets current number of lines.
@@ -68,7 +68,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     int numLines();
     int numAreas();
     // 3D map with z coordinates
-    bool is3d() const { return mIs3d; }
+    [[nodiscard]] bool is3d() const { return mIs3d; }
 
     // Lock open / close
     void lockOpenClose();
@@ -149,7 +149,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     bool attributesOutdated();
 
     //! Map description for debugging
-    QString toString() const;
+    [[nodiscard]] QString toString() const;
 
     /**
      * Gets topology symbol code

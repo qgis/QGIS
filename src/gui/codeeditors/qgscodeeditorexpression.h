@@ -42,8 +42,8 @@ class GUI_EXPORT QgsCodeEditorExpression : public QgsCodeEditor
     //! Constructor for QgsCodeEditorExpression
     QgsCodeEditorExpression( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    Qgis::ScriptLanguage language() const override;
-    Qgis::ScriptLanguageCapabilities languageCapabilities() const override;
+    [[nodiscard]] Qgis::ScriptLanguage language() const override;
+    [[nodiscard]] Qgis::ScriptLanguageCapabilities languageCapabilities() const override;
 
     /**
      * Variables and functions from this expression context will be added to
@@ -93,11 +93,11 @@ class QgsLexerExpression : public QsciLexerSQL
     //! Constructor
     explicit QgsLexerExpression( QObject *parent = nullptr );
 
-    const char *language() const override;
+    [[nodiscard]] const char *language() const override;
 
-    bool caseSensitive() const override;
+    [[nodiscard]] bool caseSensitive() const override;
 
-    const char *wordCharacters() const override;
+    [[nodiscard]] const char *wordCharacters() const override;
 };
 
 class QgsSciApisExpression : public QsciAPIs

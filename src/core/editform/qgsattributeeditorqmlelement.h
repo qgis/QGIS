@@ -46,7 +46,7 @@ class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElemen
      *
      * \since QGIS 3.4
      */
-    QString qmlCode() const;
+    [[nodiscard]] QString qmlCode() const;
 
     /**
      * Sets the QML code that will be represented within this widget to \a qmlCode.
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElemen
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
     void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
-    QString typeIdentifier() const override;
+    [[nodiscard]] QString typeIdentifier() const override;
     QString mQmlCode;
 };
 

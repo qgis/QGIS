@@ -62,7 +62,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * input box).
      * \see setHintString()
      */
-    QString hintString() const;
+    [[nodiscard]] QString hintString() const;
 
     /**
      * Sets whether users are permitted to overwrite existing names. If TRUE, then
@@ -77,7 +77,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \see setOverwriteEnabled()
      * \see setShowExistingNamesCompleter()
      */
-    bool overwriteEnabled() const { return mOverwriteEnabled; }
+    [[nodiscard]] bool overwriteEnabled() const { return mOverwriteEnabled; }
 
     /**
      * Sets whether users are permitted to leave the widget empty.
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \see setAllowEmptyName()
      * \since QGIS 3.14
      */
-    bool allowEmptyName() const { return mAllowEmptyName; }
+    [[nodiscard]] bool allowEmptyName() const { return mAllowEmptyName; }
 
     /**
      * Sets the string used for warning users if a conflicting name exists.
@@ -105,7 +105,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * Returns the string used for warning users if a conflicting name exists.
      * \see setConflictingNameWarning()
      */
-    QString conflictingNameWarning() const { return mConflictingNameWarning; }
+    [[nodiscard]] QString conflictingNameWarning() const { return mConflictingNameWarning; }
 
     /**
      * Sets a regular \a expression to use for validating user-entered names in the dialog.
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \returns new name
      * \see newNameChanged()
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Test if name or name with at least one extension exists.

@@ -109,10 +109,10 @@ class QgsWmsInterpretationConverter
     virtual void convert( const QRgb &color, float *converted ) const = 0;
 
     //! Returns the output datatype of this converter
-    virtual Qgis::DataType dataType() const;
+    [[nodiscard]] [[nodiscard]] virtual Qgis::DataType dataType() const;
 
     //! Returns TRUE if the interpretation represents elevation values
-    virtual bool representsElevation() const;
+    [[nodiscard]] [[nodiscard]] virtual bool representsElevation() const;
 
     //! Returns statistics related to converted values
     virtual QgsRasterBandStats statistics( int bandNo, int stats = static_cast<int>( Qgis::RasterBandStatistic::All ), const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) const = 0;
@@ -135,7 +135,7 @@ class QgsWmsInterpretationConverterMapTilerTerrainRGB : public QgsWmsInterpretat
 
     QgsRasterHistogram histogram( int bandNo, int binCount = 0, double minimum = std::numeric_limits<double>::quiet_NaN(), double maximum = std::numeric_limits<double>::quiet_NaN(), const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr ) const override;
 
-    bool representsElevation() const override;
+    [[nodiscard]] [[nodiscard]] bool representsElevation() const override;
 
     static QString displayName() { return QObject::tr( "MapTiler Terrain RGB" ); }
     static QString interpretationKey() { return QStringLiteral( "maptilerterrain" ); }
@@ -151,7 +151,7 @@ class QgsWmsInterpretationConverterTerrariumRGB : public QgsWmsInterpretationCon
 
     QgsRasterHistogram histogram( int bandNo, int binCount = 0, double minimum = std::numeric_limits<double>::quiet_NaN(), double maximum = std::numeric_limits<double>::quiet_NaN(), const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr ) const override;
 
-    bool representsElevation() const override;
+    [[nodiscard]] [[nodiscard]] bool representsElevation() const override;
 
     static QString displayName() { return QObject::tr( "Terrarium Terrain RGB" ); }
     static QString interpretationKey() { return QStringLiteral( "terrariumterrain" ); }
@@ -631,10 +631,10 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 
     void downloadBlocking();
 
-    QString error() const;
+    [[nodiscard]] [[nodiscard]] QString error() const;
 
-    QgsRectangle effectiveViewExtent() const;
-    double sourceResolution() const;
+    [[nodiscard]] [[nodiscard]] QgsRectangle effectiveViewExtent() const;
+    [[nodiscard]] [[nodiscard]] double sourceResolution() const;
 
   protected slots:
     void tileReplyFinished();
@@ -703,23 +703,23 @@ class QgsWmsProviderMetadata final : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsWmsProviderMetadata();
-    QIcon icon() const override;
-    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
+    [[nodiscard]] [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] [[nodiscard]] QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
 
     QgsWmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    ProviderCapabilities providerCapabilities() const override;
+    [[nodiscard]] [[nodiscard]] ProviderCapabilities providerCapabilities() const override;
 
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] [[nodiscard]] QList<QgsDataItemProvider *> dataItemProviders() const override;
+    [[nodiscard]] [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
 
     QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
-    int priorityForUri( const QString &uri ) const override;
-    QList<Qgis::LayerType> validLayerTypesForUri( const QString &uri ) const override;
+    [[nodiscard]] [[nodiscard]] int priorityForUri( const QString &uri ) const override;
+    [[nodiscard]] [[nodiscard]] QList<Qgis::LayerType> validLayerTypesForUri( const QString &uri ) const override;
 
-    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] [[nodiscard]] QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] [[nodiscard]] QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif

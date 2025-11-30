@@ -56,12 +56,12 @@ class CORE_EXPORT QgsAnnotationMetadata
     /**
      * Returns the annotation type.
      */
-    QString type() const { return mTypeName; }
+    [[nodiscard]] QString type() const { return mTypeName; }
 
     /**
      * Creates a new annotation of the associated type.
      */
-    QgsAnnotation *createAnnotation() const { return mCreateFunc ? mCreateFunc() : nullptr ; }
+    [[nodiscard]] QgsAnnotation *createAnnotation() const { return mCreateFunc ? mCreateFunc() : nullptr ; }
 
   private:
 
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsAnnotationRegistry
      * Creates a new annotation of the specified type. Returns NULLPTR if no
      * matching annotations types were found.
      */
-    QgsAnnotation *create( const QString &typeName ) const
+    [[nodiscard]] QgsAnnotation *create( const QString &typeName ) const
     {
       if ( !mMetadata.contains( typeName ) )
         return nullptr;

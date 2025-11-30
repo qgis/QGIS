@@ -27,7 +27,7 @@ class QgsValidatedDoubleSpinBox : public QDoubleSpinBox
     QgsValidatedDoubleSpinBox( QWidget *widget );
 
     QValidator::State validate( QString &input, int &pos ) const override;
-    StepEnabled stepEnabled() const override;
+    [[nodiscard]] StepEnabled stepEnabled() const override;
 };
 
 #endif

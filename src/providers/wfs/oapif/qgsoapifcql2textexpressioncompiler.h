@@ -55,21 +55,21 @@ class QgsOapifCql2TextExpressionCompiler
     /**
      * Returns the compiled expression string for use by the provider.
      */
-    QString result() const { return mResult; }
+    [[nodiscard]] QString result() const { return mResult; }
 
     /**
      * Returns whether a geometry literal has been used (which might require filter-crs to be emitted)
      */
-    bool geometryLiteralUsed() const { return mGeometryLiteralUsed; }
+    [[nodiscard]] bool geometryLiteralUsed() const { return mGeometryLiteralUsed; }
 
   private:
     Result compileNode( const QgsExpressionNode *node, QString &result );
 
     Result compileNodeFunction( const QgsExpressionNodeFunction *n, QString &result );
 
-    QString literalValue( const QVariant &value ) const;
+    [[nodiscard]] QString literalValue( const QVariant &value ) const;
 
-    QString quotedIdentifier( const QString &identifier ) const;
+    [[nodiscard]] QString quotedIdentifier( const QString &identifier ) const;
 
     // Input
     const QMap<QString, QgsOapifQueryablesRequest::Queryable> &mQueryables;

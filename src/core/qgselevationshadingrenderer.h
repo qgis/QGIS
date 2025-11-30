@@ -59,20 +59,20 @@ class CORE_EXPORT QgsElevationShadingRenderer
     void setActive( bool active );
 
     //! Returns whether this shading renderer is active.
-    bool isActive() const;
+    [[nodiscard]] bool isActive() const;
 
     //! Sets active the eye-dome lighting shading method.
     void setActiveEyeDomeLighting( bool active );
 
     //! Returns whether eye-dome lighting shading method is active
-    bool isActiveEyeDomeLighting() const;
+    [[nodiscard]] bool isActiveEyeDomeLighting() const;
 
     /**
      * Returns the strength of the eye dome lighting method.
      *
      * \see setEyeDomeLightingStrength()
      */
-    double eyeDomeLightingStrength() const;
+    [[nodiscard]] double eyeDomeLightingStrength() const;
 
     /**
      * Sets the \a strength of the eye dome lighting method.
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsElevationShadingRenderer
      *
      * \see setEyeDomeLightingDistance()
      */
-    double eyeDomeLightingDistance() const;
+    [[nodiscard]] double eyeDomeLightingDistance() const;
 
     /**
      * Sets the distance of the eye dome lighting method, that is the distance where the
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsElevationShadingRenderer
      *
      * \see setEyeDomeLightingDistanceUnit()
      */
-    Qgis::RenderUnit eyeDomeLightingDistanceUnit() const;
+    [[nodiscard]] Qgis::RenderUnit eyeDomeLightingDistanceUnit() const;
 
     /**
      * Sets the \a unit of the distance of the eye dome lighting method set by setEyeDomeLightingDistance().
@@ -115,14 +115,14 @@ class CORE_EXPORT QgsElevationShadingRenderer
     void setActiveHillshading( bool active );
 
     //! Returns whether the hillshading is active
-    bool isActiveHillshading() const;
+    [[nodiscard]] bool isActiveHillshading() const;
 
     /**
      * Returns the z factor used by the hill shading method.
      *
      * \see setHillshadingZFactor()
      */
-    double hillshadingZFactor() const;
+    [[nodiscard]] double hillshadingZFactor() const;
 
     /**
      * Sets the z factor used by the hill shading method.
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsElevationShadingRenderer
      *
      * \see setHillshadingMultidirectional()
      */
-    bool isHillshadingMultidirectional() const;
+    [[nodiscard]] bool isHillshadingMultidirectional() const;
 
     /**
      * Sets whether the hill shading method is multidirectional.
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsElevationShadingRenderer
      *
      * \see setLightAltitude()
      */
-    double lightAltitude() const;
+    [[nodiscard]] double lightAltitude() const;
 
     /**
      * Sets the altitude of the light (degree) that can be used by some methods (e.g. hill shading).
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsElevationShadingRenderer
      *
      * \see setLightAltitude()
      */
-    double lightAzimuth() const;
+    [[nodiscard]] double lightAzimuth() const;
 
     /**
      * Sets the azimuth of the light (degree) that can be used by some methods (e.g. hill shading).
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsElevationShadingRenderer
      *
      * \see setCombinedElevationMethod()
      */
-    Qgis::ElevationMapCombineMethod combinedElevationMethod() const;
+    [[nodiscard]] Qgis::ElevationMapCombineMethod combinedElevationMethod() const;
 
     /**
      * Sets the \a method used when conbining different elevation sources.

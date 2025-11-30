@@ -52,7 +52,7 @@ class APP_EXPORT QgsDecorationTitle : public QgsDecorationItem
      * \see setTextFormat()
      * \see labelExtents()
      */
-    QgsTextFormat textFormat() const { return mTextFormat; }
+    [[nodiscard]] QgsTextFormat textFormat() const { return mTextFormat; }
 
     /**
      * Sets the title text \a format.

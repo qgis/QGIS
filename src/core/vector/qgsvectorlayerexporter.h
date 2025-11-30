@@ -311,32 +311,32 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      * \see errorMessage()
      * \see errorCount()
      */
-    Qgis::VectorExportResult errorCode() const;
+    [[nodiscard]] Qgis::VectorExportResult errorCode() const;
 
     /**
      * Returns any error message encountered during the export.
      * \see errorCount()
      * \see errorCode()
      */
-    QString errorMessage() const;
+    [[nodiscard]] QString errorMessage() const;
 
     /**
      * Returns the number of error messages encountered during the export.
      * \see errorMessage()
      * \see errorCode()
      */
-    int errorCount() const { return mErrorCount; }
+    [[nodiscard]] int errorCount() const { return mErrorCount; }
 
     /**
      * Returns the attribute capabilities of the exporter.
      *
      * \since QGIS 3.32
      */
-    Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const;
+    [[nodiscard]] Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const;
 
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
-    QString lastError() const override;
+    [[nodiscard]] QString lastError() const override;
 
     /**
      * Finalizes the export and closes the new created layer.

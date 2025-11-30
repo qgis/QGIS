@@ -70,12 +70,12 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     void handleSceneUpdate( const SceneContext &sceneContext ) override;
 
     //! Returns number of jobs pending for this entity until it is fully loaded/updated in the current view
-    int pendingJobsCount() const override;
+    [[nodiscard]] int pendingJobsCount() const override;
 
     //! Returns whether the entity needs update of active nodes
-    bool needsUpdate() const override { return mNeedsUpdate; }
+    [[nodiscard]] bool needsUpdate() const override { return mNeedsUpdate; }
 
-    QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const override;
+    [[nodiscard]] QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const override;
 
     //! Determines whether bounding boxes of tiles should be shown (for debugging)
     void setShowBoundingBoxes( bool enabled );
@@ -84,9 +84,9 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     void updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunkQueueJobFactory *updateJobFactory );
 
     //! Returns list of active nodes - i.e. nodes that are get rendered
-    QList<QgsChunkNode *> activeNodes() const { return mActiveNodes; }
+    [[nodiscard]] QList<QgsChunkNode *> activeNodes() const { return mActiveNodes; }
     //! Returns the root node of the whole quadtree hierarchy of nodes
-    QgsChunkNode *rootNode() const { return mRootNode; }
+    [[nodiscard]] QgsChunkNode *rootNode() const { return mRootNode; }
 
     /**
      * Checks if \a ray intersects the entity by using the specified parameters in \a context and returns information about the hits.
@@ -97,7 +97,7 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
      * \note The ray uses World coordinates.
      * \since QGIS 3.32
      */
-    virtual QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const;
+    [[nodiscard]] virtual QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const;
 
   protected:
     //! Cancels the background job that is currently in progress

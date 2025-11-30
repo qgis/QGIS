@@ -371,11 +371,11 @@ the specified render ``context``.
 %End
 
     double calculateTileScaleForMap( double actualMapScale,
-                                     const QgsCoordinateReferenceSystem &mapCrs,
-                                     const QgsRectangle &mapExtent,
-                                     const QSize mapSize,
-                                     const double mapDpi
-                                   ) const;
+        const QgsCoordinateReferenceSystem &mapCrs,
+        const QgsRectangle &mapExtent,
+        const QSize mapSize,
+        const double mapDpi
+                                                 ) const;
 %Docstring
 Calculates the correct scale to use for the tiles when rendered using
 the specified map properties.

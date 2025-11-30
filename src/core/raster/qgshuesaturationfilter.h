@@ -43,18 +43,18 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
     QgsHueSaturationFilter( QgsRasterInterface *input = nullptr );
 
-    QgsHueSaturationFilter *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsHueSaturationFilter *clone() const override SIP_FACTORY;
 
-    int bandCount() const override;
+    [[nodiscard]] int bandCount() const override;
 
-    Qgis::DataType dataType( int bandNo ) const override;
+    [[nodiscard]] Qgis::DataType dataType( int bandNo ) const override;
 
     bool setInput( QgsRasterInterface *input ) override;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     void setSaturation( int saturation );
-    int saturation() const { return mSaturation; }
+    [[nodiscard]] int saturation() const { return mSaturation; }
 
     /**
      * Sets whether the filter will invert colors.
@@ -67,17 +67,17 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
      * Returns TRUE if the filter inverts colors.
      * \since QGIS 3.22
      */
-    bool invertColors() const { return mInvertColors; }
+    [[nodiscard]] bool invertColors() const { return mInvertColors; }
 
     void setGrayscaleMode( QgsHueSaturationFilter::GrayscaleMode grayscaleMode ) { mGrayscaleMode = grayscaleMode; }
-    QgsHueSaturationFilter::GrayscaleMode grayscaleMode() const { return mGrayscaleMode; }
+    [[nodiscard]] QgsHueSaturationFilter::GrayscaleMode grayscaleMode() const { return mGrayscaleMode; }
 
     void setColorizeOn( bool colorizeOn ) { mColorizeOn = colorizeOn; }
-    bool colorizeOn() const { return mColorizeOn; }
+    [[nodiscard]] bool colorizeOn() const { return mColorizeOn; }
     void setColorizeColor( const QColor &colorizeColor );
-    QColor colorizeColor() const { return mColorizeColor; }
+    [[nodiscard]] QColor colorizeColor() const { return mColorizeColor; }
     void setColorizeStrength( int colorizeStrength ) { mColorizeStrength = colorizeStrength; }
-    int colorizeStrength() const { return mColorizeStrength; }
+    [[nodiscard]] int colorizeStrength() const { return mColorizeStrength; }
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 

@@ -40,14 +40,14 @@ class CORE_EXPORT QgsMeshSimplificationSettings
 {
   public:
     //! Returns if the overview is active
-    bool isEnabled() const;
+    [[nodiscard]] bool isEnabled() const;
     //! Sets if the overview is active
     void setEnabled( bool isEnabled );
 
     /**
      * Returns the reduction factor used to build simplified mesh.
      */
-    double reductionFactor() const;
+    [[nodiscard]] double reductionFactor() const;
 
     /**
      * Sets the reduction factor used to build simplified mesh.
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMeshSimplificationSettings
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     //! Returns the mesh resolution i.e., the minimum size (average) of triangles in pixels
-    int meshResolution() const;
+    [[nodiscard]] int meshResolution() const;
 
     /**
      * Sets the mesh resolution i.e., the minimum size (average) of triangles in pixels

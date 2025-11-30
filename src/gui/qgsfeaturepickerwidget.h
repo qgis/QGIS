@@ -61,7 +61,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     /**
      * The layer from which features should be listed.
      */
-    QgsVectorLayer *layer() const;
+    [[nodiscard]] QgsVectorLayer *layer() const;
 
     /**
      * The layer from which features should be listed.
@@ -76,13 +76,13 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     /**
      * Returns the current feature
      */
-    QgsFeature feature() const;
+    [[nodiscard]] QgsFeature feature() const;
 
     /**
      * The display expression will be used to display features as well as
      * the value to match the typed text against.
      */
-    QString displayExpression() const;
+    [[nodiscard]] QString displayExpression() const;
 
     /**
      * The display expression will be used to display features as well as
@@ -94,13 +94,13 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
      * An additional expression to further restrict the available features.
      * This can be used to integrate additional spatial or other constraints.
      */
-    QString filterExpression() const;
+    [[nodiscard]] QString filterExpression() const;
 
     /**
      * Returns the current index of the NULL value, or -1 if NULL values are
      * not allowed.
      */
-    int nullIndex() const;
+    [[nodiscard]] int nullIndex() const;
 
     /**
      * An additional expression to further restrict the available features.
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     /**
      * Determines if a NULL value should be available in the list.
      */
-    bool allowNull() const;
+    [[nodiscard]] bool allowNull() const;
 
     /**
      * Determines if a NULL value should be available in the list.
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     /**
      * Returns if the geometry is fetched
      */
-    bool fetchGeometry() const;
+    [[nodiscard]] bool fetchGeometry() const;
 
     /**
      * Defines if the geometry will be fetched
@@ -131,7 +131,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     /**
      * Returns the feature request fetch limit
      */
-    int fetchLimit() const;
+    [[nodiscard]] int fetchLimit() const;
 
     /**
      * Defines the feature request fetch limit
@@ -142,7 +142,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     /**
      * Returns if the browsing buttons are shown
      */
-    bool showBrowserButtons() const;
+    [[nodiscard]] bool showBrowserButtons() const;
 
     /**
      * Defines if the browsing buttons are shown
@@ -154,7 +154,7 @@ class GUI_EXPORT QgsFeaturePickerWidget : public QWidget
     /**
      * The index of the currently selected item.
      */
-    QModelIndex currentModelIndex() const;
+    [[nodiscard]] QModelIndex currentModelIndex() const;
 
     void focusOutEvent( QFocusEvent *event ) override;
 

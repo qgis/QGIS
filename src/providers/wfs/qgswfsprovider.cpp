@@ -305,9 +305,9 @@ class QgsWFSProviderSQLFunctionValidator : public QgsSQLStatement::RecursiveVisi
       const QList<QgsWfsCapabilities::Function> &functionList
     );
 
-    bool hasError() const { return mError; }
+    [[nodiscard]] bool hasError() const { return mError; }
 
-    const QString &errorMessage() const { return mErrorMessage; }
+    [[nodiscard]] const QString &errorMessage() const { return mErrorMessage; }
 
   protected:
     void visit( const QgsSQLStatement::NodeFunction &n ) override;
@@ -369,9 +369,9 @@ class QgsWFSProviderSQLColumnRefValidator : public QgsSQLStatement::RecursiveVis
       const QMap<QString, QString> &mapTypenameToGeometryAttribute
     );
 
-    bool hasError() const { return mError; }
+    [[nodiscard]] bool hasError() const { return mError; }
 
-    const QString &errorMessage() const { return mErrorMessage; }
+    [[nodiscard]] const QString &errorMessage() const { return mErrorMessage; }
 
   protected:
     void visit( const QgsSQLStatement::NodeColumnRef &n ) override;

@@ -40,15 +40,15 @@ class CORE_EXPORT QgsWebDavExternalStorage : public QgsExternalStorage
 {
   public:
 
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
 
-    QString displayName() const override;
+    [[nodiscard]] QString displayName() const override;
 
   protected:
 
-    QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override;
+    [[nodiscard]] QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override;
 
-    QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authConfig = QString() ) const override;
+    [[nodiscard]] QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authConfig = QString() ) const override;
 };
 
 /**
@@ -60,15 +60,15 @@ class CORE_EXPORT QgsAwsS3ExternalStorage : public QgsExternalStorage
 {
   public:
 
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
 
-    QString displayName() const override;
+    [[nodiscard]] QString displayName() const override;
 
   protected:
 
-    QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override;
+    [[nodiscard]] QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override;
 
-    QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authConfig = QString() ) const override;
+    [[nodiscard]] QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authConfig = QString() ) const override;
 };
 
 /**
@@ -86,7 +86,7 @@ class QgsHttpExternalStorageStoredContent  : public QgsExternalStorageStoredCont
 
     void cancel() override;
 
-    QString url() const override;
+    [[nodiscard]] QString url() const override;
 
     void store() override;
 
@@ -112,7 +112,7 @@ class QgsHttpExternalStorageFetchedContent : public QgsExternalStorageFetchedCon
 
     QgsHttpExternalStorageFetchedContent( QgsFetchedContent *fetchedContent );
 
-    QString filePath() const override;
+    [[nodiscard]] QString filePath() const override;
 
     void cancel() override;
 

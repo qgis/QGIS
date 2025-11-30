@@ -65,14 +65,14 @@ class GUI_EXPORT QgsProcessingRasterSourceOptionsWidget : public QgsPanelWidget,
      *
      * \see setReferenceScale()
      */
-    double referenceScale() const;
+    [[nodiscard]] double referenceScale() const;
 
     /**
      * Resolution of the raster source (e.g., a WMS server).
      *
      * \see setDpi()
      */
-    int dpi() const;
+    [[nodiscard]] int dpi() const;
 
     /**
      * Sets the supported \a capabilities of the raster layer parameter and updates control visibility based on them.
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsProcessingRasterSourceOptionsWidget : public QgsPanelWidget,
      * Returns flags containing the supported capabilities of the raster layer parameter.
      * \since QGIS 4.0
      */
-    Qgis::RasterProcessingParameterCapabilities widgetParameterCapabilities() const;
+    [[nodiscard]] Qgis::RasterProcessingParameterCapabilities widgetParameterCapabilities() const;
 
   private:
     void updateControlVisibility();

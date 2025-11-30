@@ -136,10 +136,10 @@ class CORE_EXPORT QgsSnappingConfig
         IndividualLayerSettings() = default;
 
         //! Returns if settings are valid
-        bool valid() const;
+        [[nodiscard]] bool valid() const;
 
         //! Returns if snapping is enabled
-        bool enabled() const;
+        [[nodiscard]] bool enabled() const;
 
         //! enables the snapping
         void setEnabled( bool enabled );
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsSnappingConfig
          * Returns the flags type (vertices | segments | area | centroid | middle)
          * \since QGIS 3.12
          */
-        Qgis::SnappingTypes typeFlag() const;
+        [[nodiscard]] Qgis::SnappingTypes typeFlag() const;
 
         /**
          * Returns the flags type (vertices | segments | area | centroid | middle)
@@ -169,13 +169,13 @@ class CORE_EXPORT QgsSnappingConfig
         void setTypeFlag( Qgis::SnappingTypes type );
 
         //! Returns the tolerance
-        double tolerance() const;
+        [[nodiscard]] double tolerance() const;
 
         //! Sets the tolerance
         void setTolerance( double tolerance );
 
         //! Returns the type of units
-        Qgis::MapToolUnit units() const;
+        [[nodiscard]] Qgis::MapToolUnit units() const;
 
         //! Sets the type of units
         void setUnits( Qgis::MapToolUnit units );
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsSnappingConfig
          * Returns minimum scale on which snapping is limited
          * \since QGIS 3.14
          */
-        double minimumScale() const;
+        [[nodiscard]] double minimumScale() const;
 
         /**
          * Sets the min scale value on which snapping is used, 0.0 disable scale limit
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsSnappingConfig
          * Returns max scale on which snapping is limited
          * \since QGIS 3.14
          */
-        double maximumScale() const;
+        [[nodiscard]] double maximumScale() const;
 
         /**
          * Sets the max scale value on which snapping is used, 0.0 disable scale limit
@@ -230,13 +230,13 @@ class CORE_EXPORT QgsSnappingConfig
     void reset();
 
     //! Returns if snapping is enabled
-    bool enabled() const;
+    [[nodiscard]] bool enabled() const;
 
     //! enables the snapping
     void setEnabled( bool enabled );
 
     //! Returns the mode (all layers, active layer, per layer settings)
-    Qgis::SnappingMode mode() const;
+    [[nodiscard]] Qgis::SnappingMode mode() const;
 
     //! define the mode of snapping
     void setMode( Qgis::SnappingMode mode );
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsSnappingConfig
      * Returns the flags type (vertices | segments | area | centroid | middle)
      * \since QGIS 3.12
      */
-    Qgis::SnappingTypes typeFlag() const;
+    [[nodiscard]] Qgis::SnappingTypes typeFlag() const;
 
     /**
      * Returns the flags type (vertices | segments | area | centroid | middle)
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsSnappingConfig
     void setTypeFlag( Qgis::SnappingTypes type );
 
     //! Returns the tolerance
-    double tolerance() const;
+    [[nodiscard]] double tolerance() const;
 
     //! Sets the tolerance
     void setTolerance( double tolerance );
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsSnappingConfig
      * Returns the min scale (i.e. most \"zoomed out\" scale)
      * \since QGIS 3.14
      */
-    double minimumScale() const;
+    [[nodiscard]] double minimumScale() const;
 
     /**
      * Sets the min scale on which snapping is enabled, 0.0 disable scale limit
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsSnappingConfig
      * Returns the max scale (i.e. most \"zoomed in\" scale)
      * \since QGIS 3.14
      */
-    double maximumScale() const;
+    [[nodiscard]] double maximumScale() const;
 
     /**
      * Set the max scale on which snapping is enabled, 0.0 disable scale limit
@@ -305,16 +305,16 @@ class CORE_EXPORT QgsSnappingConfig
      * Returns the scale dependency mode
      * \since QGIS 3.14
      */
-    ScaleDependencyMode scaleDependencyMode() const;
+    [[nodiscard]] ScaleDependencyMode scaleDependencyMode() const;
 
     //! Returns the type of units
-    Qgis::MapToolUnit units() const;
+    [[nodiscard]] Qgis::MapToolUnit units() const;
 
     //! Sets the type of units
     void setUnits( Qgis::MapToolUnit units );
 
     //! Returns if the snapping on intersection is enabled
-    bool intersectionSnapping() const;
+    [[nodiscard]] bool intersectionSnapping() const;
 
     //! Sets if the snapping on intersection is enabled
     void setIntersectionSnapping( bool enabled );
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsSnappingConfig
      *
      * \since QGIS 3.14
      */
-    bool selfSnapping() const;
+    [[nodiscard]] bool selfSnapping() const;
 
     /**
      * Sets if self snapping (snapping to the currently digitized feature) is enabled
@@ -335,7 +335,7 @@ class CORE_EXPORT QgsSnappingConfig
 
     //! Returns individual snapping settings for all layers
 #ifndef SIP_RUN
-    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
+    [[nodiscard]] QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
 #else
     SIP_PYDICT individualLayerSettings() const;
     % MethodCode
@@ -432,7 +432,7 @@ class CORE_EXPORT QgsSnappingConfig
      * The project from which the snapped layers should be retrieved
      *
      */
-    QgsProject *project() const;
+    [[nodiscard]] QgsProject *project() const;
 
     /**
      * The project from which the snapped layers should be retrieved

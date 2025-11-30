@@ -66,12 +66,12 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
     /**
      * Returns a copy of the terrain settings.
      */
-    virtual QgsAbstractTerrainSettings *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractTerrainSettings *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns the unique type name for the terrain generator.
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     /**
      * Returns TRUE if this settings is exactly equal to another \a other settings.
@@ -109,7 +109,7 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
      *
      * \note Not available in Python bindings
      */
-    virtual std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const = 0 SIP_SKIP;
+    [[nodiscard]] virtual std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const = 0 SIP_SKIP;
 
     // common settings
 
@@ -129,7 +129,7 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
      *
      * \see setVerticalScale()
      */
-    double verticalScale() const { return mTerrainVerticalScale; }
+    [[nodiscard]] double verticalScale() const { return mTerrainVerticalScale; }
 
     /**
      * Sets the \a resolution (in pixels) of the texture of a terrain tile
@@ -144,7 +144,7 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
      *
      * \see setMapTileResolution()
      */
-    int mapTileResolution() const { return mMapTileResolution; }
+    [[nodiscard]] int mapTileResolution() const { return mMapTileResolution; }
 
     /**
      * Sets the maximum allowed screen \a error of terrain tiles in pixels.
@@ -163,7 +163,7 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
      *
      * see setMaximumScreenError()
      */
-    double maximumScreenError() const { return mMaxTerrainScreenError; }
+    [[nodiscard]] double maximumScreenError() const { return mMaxTerrainScreenError; }
 
     /**
      * Sets the maximum ground \a error of terrain tiles in world units.
@@ -181,7 +181,7 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
      *
      * \see setMaximumGroundError()
      */
-    double maximumGroundError() const { return mMaxTerrainGroundError; }
+    [[nodiscard]] double maximumGroundError() const { return mMaxTerrainGroundError; }
 
     /**
      * Sets the terrain elevation \a offset (used to move the terrain up or down).
@@ -195,7 +195,7 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
      *
      * \see setElevationOffset()
      */
-    double elevationOffset() const { return mTerrainElevationOffset; }
+    [[nodiscard]] double elevationOffset() const { return mTerrainElevationOffset; }
 
   protected:
     /**

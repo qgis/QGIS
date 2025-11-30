@@ -48,7 +48,7 @@ class QgsAttributesFormTreeViewIndicatorProvider : public QObject
     explicit QgsAttributesFormTreeViewIndicatorProvider( QgsAttributesFormBaseView *view );
 
     //! Returns whether the provider is enabled or not.
-    bool isEnabled() const;
+    [[nodiscard]] bool isEnabled() const;
 
     /**
      * Enables or disables the provider.

@@ -46,13 +46,13 @@ class CORE_EXPORT QgsScaleBarRendererRegistry
     /**
      * Returns a list of the renderer ids currently contained in the registry.
      */
-    QStringList renderers() const;
+    [[nodiscard]] QStringList renderers() const;
 
     /**
      * Returns a list of the renderer ids currently contained in the registry,
      * sorted in an order respecting the renderer's sort keys and display strings.
      */
-    QStringList sortedRendererList() const;
+    [[nodiscard]] QStringList sortedRendererList() const;
 
     /**
      * Adds a new \a renderer to the registry.
@@ -72,17 +72,17 @@ class CORE_EXPORT QgsScaleBarRendererRegistry
      *
      * The caller takes ownership of the returned object.
      */
-    QgsScaleBarRenderer *renderer( const QString &id ) const SIP_TRANSFERBACK;
+    [[nodiscard]] QgsScaleBarRenderer *renderer( const QString &id ) const SIP_TRANSFERBACK;
 
     /**
      * Returns the translated, user-visible name for the renderer with matching \a id.
      */
-    QString visibleName( const QString &id ) const;
+    [[nodiscard]] QString visibleName( const QString &id ) const;
 
     /**
      * Returns the sorting key for the renderer with matching \a id.
      */
-    int sortKey( const QString &id ) const;
+    [[nodiscard]] int sortKey( const QString &id ) const;
 
   private:
     QHash<QString, QgsScaleBarRenderer *> mRenderers;

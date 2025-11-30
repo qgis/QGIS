@@ -59,7 +59,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      *
      * \see setAnimationState()
      */
-    Qgis::AnimationState animationState() const;
+    [[nodiscard]] Qgis::AnimationState animationState() const;
 
     /**
      * Sets the temporal navigation \a mode.
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      *
      * \see setNavigationMode()
      */
-    Qgis::TemporalNavigationMode navigationMode() const { return mNavigationMode; }
+    [[nodiscard]] Qgis::TemporalNavigationMode navigationMode() const { return mNavigationMode; }
 
     /**
      * Sets the navigation temporal \a extents, which dictate the earliest
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      *
      * \see setTemporalExtents()
      */
-    QgsDateTimeRange temporalExtents() const;
+    [[nodiscard]] QgsDateTimeRange temporalExtents() const;
 
     /**
      * Sets the list of all available temporal \a ranges which have data available.
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      * \see setAvailableTemporalRanges()
      * \since QGIS 3.20
      */
-    QList< QgsDateTimeRange > availableTemporalRanges() const;
+    [[nodiscard]] QList< QgsDateTimeRange > availableTemporalRanges() const;
 
     /**
      * Sets the current animation \a frame number.
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      *
      * \see setCurrentFrameNumber()
      */
-    long long currentFrameNumber() const;
+    [[nodiscard]] long long currentFrameNumber() const;
 
     /**
      * Sets the frame \a duration, which dictates the temporal length of each frame in the animation.
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      *
      * \see setFrameDuration()
      */
-    QgsInterval frameDuration() const;
+    [[nodiscard]] QgsInterval frameDuration() const;
 
     /**
      * Calculates the temporal range associated with a particular animation \a frame.
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      * This is calculated from the navigation start time (taken from temporalExtents()),
      * the specified \a frame number, and the frame duration (see frameDuration()).
      */
-    QgsDateTimeRange dateTimeRangeForFrameNumber( long long frame ) const;
+    [[nodiscard]] QgsDateTimeRange dateTimeRangeForFrameNumber( long long frame ) const;
 
     /**
      * Sets the animation frame \a rate, in frames per second.
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      *
      * \see setFramesPerSecond()
      */
-    double framesPerSecond() const;
+    [[nodiscard]] double framesPerSecond() const;
 
     /**
      * Sets the animation temporal range as cumulative.
@@ -188,19 +188,19 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      *
      * \see setTemporalRangeCumulative()
      */
-    bool temporalRangeCumulative() const;
+    [[nodiscard]] bool temporalRangeCumulative() const;
 
     /**
      * Returns the total number of frames for the navigation.
      */
-    long long totalFrameCount() const;
+    [[nodiscard]] long long totalFrameCount() const;
 
     /**
      * Returns TRUE if the animation should loop after hitting the end or start frame.
      *
      * \see setLooping()
      */
-    bool isLooping() const;
+    [[nodiscard]] bool isLooping() const;
 
     /**
      * Sets whether the animation should \a loop after hitting the end or start frame.
@@ -212,9 +212,9 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     /**
      * Returns the best suited frame number for the specified datetime, based on the start of the corresponding temporal range.
      */
-    long long findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const;
+    [[nodiscard]] long long findBestFrameNumberForFrameStart( const QDateTime &frameStart ) const;
 
-    QgsExpressionContextScope *createExpressionContextScope() const override SIP_FACTORY;
+    [[nodiscard]] QgsExpressionContextScope *createExpressionContextScope() const override SIP_FACTORY;
 
     /**
      * Returns the total number of frames for the movie.
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      *
      * \since QGIS 3.36
      */
-    long long totalMovieFrames() const;
+    [[nodiscard]] long long totalMovieFrames() const;
 
     /**
      * Sets the total number of \a frames for the movie.

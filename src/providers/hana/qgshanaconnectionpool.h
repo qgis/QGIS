@@ -103,7 +103,7 @@ class QgsHanaConnectionRef
 
     ~QgsHanaConnectionRef();
 
-    bool isNull() const { return mConnection.get() == nullptr; }
+    [[nodiscard]] bool isNull() const { return mConnection.get() == nullptr; }
     QgsHanaConnection &operator*() { return *mConnection; }
     QgsHanaConnection *operator->() { return mConnection.get(); }
 

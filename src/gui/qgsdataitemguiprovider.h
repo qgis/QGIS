@@ -52,7 +52,7 @@ class GUI_EXPORT QgsDataItemGuiContext
      *
      * \see setMessageBar()
      */
-    QgsMessageBar *messageBar() const;
+    [[nodiscard]] QgsMessageBar *messageBar() const;
 
     /**
      * Sets the associated message \a bar.
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsDataItemGuiContext
      * \see setMapCanvas()
      * \since QGIS 3.44
      */
-    QgsMapCanvas *mapCanvas() const;
+    [[nodiscard]] QgsMapCanvas *mapCanvas() const;
 
     /**
      * Returns the associated view.
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsDataItemGuiContext
      * \see setView()
      * \since QGIS 3.28
      */
-    QgsBrowserTreeView *view() const;
+    [[nodiscard]] QgsBrowserTreeView *view() const;
 
     /**
      * Sets the associated \a view.
@@ -165,7 +165,7 @@ class GUI_EXPORT QgsDataItemGuiProvider
      *
      * \since QGIS 3.22
      */
-    virtual int precedenceWhenPopulatingMenus() const;
+    [[nodiscard]] virtual int precedenceWhenPopulatingMenus() const;
 
     /**
      * Sets a new \a name for the item, and returns TRUE if the item was successfully renamed.

@@ -103,7 +103,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Returns a list of tabs for EditorLayout::TabLayout obtained from the invisible root container.
      */
-    QList< QgsAttributeEditorElement * > tabs() const;
+    [[nodiscard]] QList< QgsAttributeEditorElement * > tabs() const;
 
     /**
      * Clears all the tabs for the attribute editor form with EditorLayout::TabLayout.
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsEditFormConfig
     QgsAttributeEditorContainer *invisibleRootContainer();
 
     //! Gets the active layout style for the attribute editor for this layer
-    Qgis::AttributeFormLayout layout() const;
+    [[nodiscard]] Qgis::AttributeFormLayout layout() const;
 
     //! Sets the active layout style for the attribute editor for this layer
     void setLayout( Qgis::AttributeFormLayout editorLayout );
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Returns the path or URL to the .ui form. Only meaningful with EditorLayout::UiFileLayout
      */
-    QString uiForm() const;
+    [[nodiscard]] QString uiForm() const;
 
     /**
      * Set path to the .ui form.
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * \returns The configuration for the editor widget or an empty config if the field does not exist
      */
-    QVariantMap widgetConfig( const QString &widgetName ) const;
+    [[nodiscard]] QVariantMap widgetConfig( const QString &widgetName ) const;
 
     /**
      * Remove the configuration for the editor widget with the given name
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsEditFormConfig
      * This returns TRUE if the field is manually set to read only or if the field
      * does not support editing like joins or virtual fields.
      */
-    bool readOnly( int idx ) const;
+    [[nodiscard]] bool readOnly( int idx ) const;
 
     /**
      * If set to FALSE, the widget at the given index will be read-only.
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsEditFormConfig
      * while if it returns FALSE, the widget will receive its label on the left hand side.
      * Labeling on top leaves more horizontal space for the widget itself.
      */
-    bool labelOnTop( int idx ) const;
+    [[nodiscard]] bool labelOnTop( int idx ) const;
 
     /**
      * If this is set to TRUE, the widget at the given index will receive its label on
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsEditFormConfig
      * \see setReuseLastValuePolicy()
      * \since QGIS 4.0
      */
-    Qgis::AttributeFormReuseLastValuePolicy reuseLastValuePolicy( int index ) const;
+    [[nodiscard]] Qgis::AttributeFormReuseLastValuePolicy reuseLastValuePolicy( int index ) const;
 
     /**
      * Sets the reuse of last value policy for an attribute \a index.
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsEditFormConfig
      * includes a module name or if it's a pure function name it will searched
      * in the Python code set with setInitCode().
      */
-    QString initFunction() const;
+    [[nodiscard]] QString initFunction() const;
 
     /**
      * Set Python function for edit form initialization.
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Gets Python code for edit form initialization.
      */
-    QString initCode() const;
+    [[nodiscard]] QString initCode() const;
 
     /**
      * Set Python code for edit form initialization.
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Gets Python external file path for edit form initialization.
      */
-    QString initFilePath() const;
+    [[nodiscard]] QString initFilePath() const;
 
     /**
      * Set Python external file path for edit form initialization.
@@ -285,13 +285,13 @@ class CORE_EXPORT QgsEditFormConfig
      *  (if it shall be loaded from a file, read from the
      *  provided dialog editor or inherited from the environment)
      */
-    Qgis::AttributeFormPythonInitCodeSource initCodeSource() const;
+    [[nodiscard]] Qgis::AttributeFormPythonInitCodeSource initCodeSource() const;
 
     //! Sets if Python code shall be used for edit form initialization and its origin
     void setInitCodeSource( Qgis::AttributeFormPythonInitCodeSource initCodeSource );
 
     //! Type of feature form pop-up suppression after feature creation (overrides app setting)
-    Qgis::AttributeFormSuppression suppress() const;
+    [[nodiscard]] Qgis::AttributeFormSuppression suppress() const;
     //! Sets type of feature form pop-up suppression after feature creation (overrides app setting)
     void setSuppress( Qgis::AttributeFormSuppression s );
 
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Returns data defined properties for \a fieldName
      * \since QGIS 3.14
      */
-    QgsPropertyCollection dataDefinedFieldProperties( const QString &fieldName ) const;
+    [[nodiscard]] QgsPropertyCollection dataDefinedFieldProperties( const QString &fieldName ) const;
 
     /**
      * Returns data defined property definitions.

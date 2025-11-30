@@ -95,13 +95,13 @@ struct QgsPostgresLayerProperty
     QString tableComment;
 
     // TODO: rename this !
-    int size() const
+    [[nodiscard]] int size() const
     {
       Q_ASSERT( types.size() == srids.size() );
       return types.size();
     }
 
-    QString defaultName() const
+    [[nodiscard]] QString defaultName() const
     {
       QString n = tableName;
       if ( nSpCols > 1 )
@@ -109,7 +109,7 @@ struct QgsPostgresLayerProperty
       return n;
     }
 
-    QgsPostgresLayerProperty at( int i ) const
+    [[nodiscard]] QgsPostgresLayerProperty at( int i ) const
     {
       QgsPostgresLayerProperty property;
 
@@ -132,7 +132,7 @@ struct QgsPostgresLayerProperty
     }
 
 #ifdef QGISDEBUG
-    QString toString() const
+    [[nodiscard]] QString toString() const
     {
       QString typeString;
       const auto constTypes = types;
@@ -185,7 +185,7 @@ class QgsPostgresResult
     int PQftablecol( int col );
     Oid PQoidValue();
 
-    PGresult *result() const { return mRes; }
+    [[nodiscard]] PGresult *result() const { return mRes; }
 
   private:
     PGresult *mRes = nullptr;
@@ -197,7 +197,7 @@ struct PGException
       : mWhat( r.PQresultErrorMessage() )
     {}
 
-    QString errorMessage() const
+    [[nodiscard]] QString errorMessage() const
     {
       return mWhat;
     }
@@ -216,7 +216,7 @@ class QgsPoolPostgresConn
     QgsPoolPostgresConn( const QString &connInfo );
     ~QgsPoolPostgresConn();
 
-    class QgsPostgresConn *get() const { return mPgConn; }
+    [[nodiscard]] class QgsPostgresConn *get() const { return mPgConn; }
 };
 
 #include "qgsconfig.h"

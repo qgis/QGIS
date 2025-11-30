@@ -60,14 +60,14 @@ class GUI_EXPORT QgsDbRelationWidget : public QWidget, private Ui_QgsDbRelations
      *
      * \see setRelationship()
      */
-    QgsWeakRelation relationship() const;
+    [[nodiscard]] QgsWeakRelation relationship() const;
 
     /**
      * Returns TRUE if the widget currently represents a valid relationship configuration.
      *
      * \see validityChanged()
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
   signals:
 
@@ -116,7 +116,7 @@ class GUI_EXPORT QgsDbRelationDialog : public QDialog
      *
      * \see setRelationship()
      */
-    QgsWeakRelation relationship() const;
+    [[nodiscard]] QgsWeakRelation relationship() const;
 
   public slots:
 

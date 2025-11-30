@@ -63,22 +63,22 @@ class GUI_EXPORT QgsLayoutAddPagesDialog : public QDialog, private Ui::QgsLayout
     /**
      * Returns the number of pages to insert.
      */
-    int numberPages() const;
+    [[nodiscard]] int numberPages() const;
 
     /**
      * Returns the position at which to insert the new pages.
      */
-    PagePosition pagePosition() const;
+    [[nodiscard]] PagePosition pagePosition() const;
 
     /**
      * Returns the page number for which new pages should be inserted before/after.
      */
-    int beforePage() const;
+    [[nodiscard]] int beforePage() const;
 
     /**
      * Returns the desired page size.
      */
-    QgsLayoutSize pageSize() const;
+    [[nodiscard]] QgsLayoutSize pageSize() const;
 
   private slots:
 

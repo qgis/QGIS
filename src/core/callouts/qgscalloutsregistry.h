@@ -60,19 +60,19 @@ class CORE_EXPORT QgsCalloutAbstractMetadata
      * Returns the unique name of the callout type. This value is not translated.
      * \see visibleName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Returns a friendly display name of the callout type. This value is translated.
      * \see name()
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /**
      * Returns an icon representing the callout.
      * \see setIcon()
      */
-    QIcon icon() const { return mIcon; }
+    [[nodiscard]] QIcon icon() const { return mIcon; }
 
     /**
      * Sets an \a icon representing the callout.
@@ -123,9 +123,9 @@ class CORE_EXPORT QgsCalloutMetadata : public QgsCalloutAbstractMetadata
     {}
 
     //! \note not available in Python bindings
-    QgsCalloutCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
+    [[nodiscard]] QgsCalloutCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
     //! \note not available in Python bindings
-    QgsCalloutWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
+    [[nodiscard]] QgsCalloutWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
 
     //! \note not available in Python bindings
     void setWidgetFunction( QgsCalloutWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsCalloutRegistry
     /**
      * Returns the metadata for specified the specified callout \a type. Returns NULLPTR if no matching callout style was found.
      */
-    QgsCalloutAbstractMetadata *calloutMetadata( const QString &type ) const;
+    [[nodiscard]] QgsCalloutAbstractMetadata *calloutMetadata( const QString &type ) const;
 
     /**
      * Registers a new callout type.
@@ -180,19 +180,19 @@ class CORE_EXPORT QgsCalloutRegistry
      *
      * The caller takes ownership of the callout.
      */
-    QgsCallout *createCallout( const QString &type, const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) const SIP_FACTORY;
+    [[nodiscard]] QgsCallout *createCallout( const QString &type, const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) const SIP_FACTORY;
 
     /**
      * Creates a new instance of a callout of the specified \a type, using the properties from a DOM \a element.
      *
      * The caller takes ownership of the callout.
      */
-    QgsCallout *createCallout( const QString &type, const QDomElement &element, const QgsReadWriteContext &context ) const SIP_FACTORY;
+    [[nodiscard]] QgsCallout *createCallout( const QString &type, const QDomElement &element, const QgsReadWriteContext &context ) const SIP_FACTORY;
 
     /**
      * Returns a list of all available callout types.
      */
-    QStringList calloutTypes() const;
+    [[nodiscard]] QStringList calloutTypes() const;
 
     /**
      * Create a new instance of a callout with default settings.

@@ -53,8 +53,8 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     QStringList getZipFileList();
 
-    bool hasDragEnabled() const override;
-    QgsMimeDataUtils::UriList mimeUris() const override;
+    [[nodiscard]] bool hasDragEnabled() const override;
+    [[nodiscard]] QgsMimeDataUtils::UriList mimeUris() const override;
 
     //! \note not available via Python bindings
     static QVector<dataItem_t *> sDataItemPtr SIP_SKIP;

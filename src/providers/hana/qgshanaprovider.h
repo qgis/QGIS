@@ -180,7 +180,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
 
   public:
     QgsHanaProviderMetadata();
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
 
     void cleanupProvider() override;
 
@@ -198,7 +198,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
       QString &createdLayerUri
     ) override;
 
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    [[nodiscard]] QList<QgsDataItemProvider *> dataItemProviders() const override;
 
     // Connections API
     QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
@@ -208,9 +208,9 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
     void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
 
     // Data source URI API
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif // QGSHANAPROVIDER_H

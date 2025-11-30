@@ -40,7 +40,7 @@ class GUI_EXPORT QgsSubsetStringEditorInterface : public QDialog
     QgsSubsetStringEditorInterface( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     //! Returns the subset string entered in the dialog.
-    virtual QString subsetString() const = 0;
+    [[nodiscard]] virtual QString subsetString() const = 0;
 
     //! Sets a subset string into the dialog.
     virtual void setSubsetString( const QString &subsetString ) = 0;

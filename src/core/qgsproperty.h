@@ -134,7 +134,7 @@ class CORE_EXPORT QgsPropertyDefinition
     /**
      * Returns the name of the property. This is used internally and should be a unique, alphanumeric string.
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Sets the name of the property
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsPropertyDefinition
      * origin set to "labeling" while a diagram property has an origin set to
      * "diagram".
      */
-    QString origin() const { return mOrigin; }
+    [[nodiscard]] QString origin() const { return mOrigin; }
 
     /**
      * Sets the origin of the property. For example, a PAL property has an
@@ -158,12 +158,12 @@ class CORE_EXPORT QgsPropertyDefinition
     /**
      * Descriptive name of the property.
      */
-    QString description() const { return mDescription; }
+    [[nodiscard]] QString description() const { return mDescription; }
 
     /**
      * Returns the comment of the property
      */
-    QString comment() const { return mComment; }
+    [[nodiscard]] QString comment() const { return mComment; }
 
     /**
      * Sets comment of the property
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsPropertyDefinition
     /**
      * Helper text for using the property, including a description of the valid values for the property.
      */
-    QString helpText() const { return mHelpText; }
+    [[nodiscard]] QString helpText() const { return mHelpText; }
 
     /**
      * Sets the data type
@@ -183,19 +183,19 @@ class CORE_EXPORT QgsPropertyDefinition
     /**
      * Returns the allowable field/value data type for the property.
      */
-    DataType dataType() const { return mTypes; }
+    [[nodiscard]] DataType dataType() const { return mTypes; }
 
     /**
      * Returns the property's standard template, if applicable. Non standard
      * types will return the Custom template.
      */
-    StandardPropertyTemplate standardTemplate() const { return mStandardType; }
+    [[nodiscard]] StandardPropertyTemplate standardTemplate() const { return mStandardType; }
 
     /**
      * Returns TRUE if the property is of a type which is compatible with property
      * override assistants.
      */
-    bool supportsAssistant() const;
+    [[nodiscard]] bool supportsAssistant() const;
 
   private:
 

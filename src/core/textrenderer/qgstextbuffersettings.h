@@ -59,7 +59,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * Returns whether the buffer is enabled.
      * \see setEnabled()
      */
-    bool enabled() const;
+    [[nodiscard]] bool enabled() const;
 
     /**
      * Sets whether the text buffer will be drawn.
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * \see sizeUnit()
      * \see setSize()
      */
-    double size() const;
+    [[nodiscard]] double size() const;
 
     /**
      * Sets the size of the buffer. The size units are specified using setSizeUnit().
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * \see size()
      * \see setSizeUnit()
      */
-    Qgis::RenderUnit sizeUnit() const;
+    [[nodiscard]] Qgis::RenderUnit sizeUnit() const;
 
     /**
      * Sets the units used for the buffer size.
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * \see setSizeMapUnitScale()
      * \see sizeUnit()
      */
-    QgsMapUnitScale sizeMapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale sizeMapUnitScale() const;
 
     /**
      * Sets the map unit scale object for the buffer size. This is only used if the
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * Returns the color of the buffer.
      * \see setColor()
      */
-    QColor color() const;
+    [[nodiscard]] QColor color() const;
 
     /**
      * Sets the color for the buffer.
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * semi-transparent text.
      * \see setFillBufferInterior()
      */
-    bool fillBufferInterior() const;
+    [[nodiscard]] bool fillBufferInterior() const;
 
     /**
      * Sets whether the interior of the buffer will be filled in.
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * opaque).
      * \see setOpacity()
      */
-    double opacity() const;
+    [[nodiscard]] double opacity() const;
 
     /**
      * Sets the buffer opacity.
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * Returns the buffer join style.
      * \see setJoinStyle
      */
-    Qt::PenJoinStyle joinStyle() const;
+    [[nodiscard]] Qt::PenJoinStyle joinStyle() const;
 
     /**
      * Sets the join style used for drawing the buffer.
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * Returns the blending mode used for drawing the buffer.
      * \see setBlendMode()
      */
-    QPainter::CompositionMode blendMode() const;
+    [[nodiscard]] QPainter::CompositionMode blendMode() const;
 
     /**
      * Sets the blending mode used for drawing the buffer.
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * \returns paint effect
      * \see setPaintEffect()
      */
-    const QgsPaintEffect *paintEffect() const;
+    [[nodiscard]] const QgsPaintEffect *paintEffect() const;
 
     /**
      * Sets the current paint \a effect for the buffer.
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * Returns all field names referenced by the configuration (e.g. from data defined properties).
      * \since QGIS 3.14
      */
-    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+    [[nodiscard]] QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 
   private:
 

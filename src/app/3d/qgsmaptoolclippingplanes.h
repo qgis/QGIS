@@ -37,7 +37,7 @@ class QgsMapToolClippingPlanes : public QgsMapTool
   public:
     QgsMapToolClippingPlanes( QgsMapCanvas *canvas, Qgs3DMapCanvasWidget *mapCanvas );
 
-    Flags flags() const override { return AllowZoomRect; }
+    [[nodiscard]] Flags flags() const override { return AllowZoomRect; }
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
@@ -50,7 +50,7 @@ class QgsMapToolClippingPlanes : public QgsMapTool
     //! Removes the tool's rubber band from canvas, which highlights the cross-section.
     void clearHighLightedArea() const;
     //! Returns the Geometry of clipped area
-    QgsGeometry clippedPolygon() const;
+    [[nodiscard]] QgsGeometry clippedPolygon() const;
 
   signals:
     void finishedSuccessfully();

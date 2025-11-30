@@ -51,7 +51,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setProviderKey()
      */
-    QString providerKey() const { return mProviderKey; }
+    [[nodiscard]] QString providerKey() const { return mProviderKey; }
 
     /**
      * Sets the associated data provider key.
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setType()
      */
-    Qgis::LayerType type() const { return mType; }
+    [[nodiscard]] Qgis::LayerType type() const { return mType; }
 
     /**
      * Sets the layer \a type.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setUri()
      */
-    QString uri() const { return mUri; }
+    [[nodiscard]] QString uri() const { return mUri; }
 
     /**
      * Sets the layer's \a uri.
@@ -127,14 +127,14 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * Caller takes ownership of the returned layer.
      */
-    QgsMapLayer *toLayer( const LayerOptions &options ) const SIP_FACTORY;
+    [[nodiscard]] QgsMapLayer *toLayer( const LayerOptions &options ) const SIP_FACTORY;
 
     /**
      * Returns the layer's name.
      *
      * \see setName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Sets the layer's \a name.
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setDescription()
      */
-    QString description() const { return mDescription; }
+    [[nodiscard]] QString description() const { return mDescription; }
 
     /**
      * Sets the layer's \a description.
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setFlags()
      */
-    Qgis::SublayerFlags flags() const { return mFlags; }
+    [[nodiscard]] Qgis::SublayerFlags flags() const { return mFlags; }
 
     /**
      * Sets the layer's \a flags, which indicate properties of the layer.
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setDriverName()
      */
-    QString driverName() const { return mDriverName; }
+    [[nodiscard]] QString driverName() const { return mDriverName; }
 
     /**
      * Sets the layer's \a driver name.
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setPath()
      */
-    QStringList path() const { return mPath; }
+    [[nodiscard]] QStringList path() const { return mPath; }
 
     /**
      * Sets the \a path to the sublayer.
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setFeatureCount()
      */
-    long long featureCount() const { return mFeatureCount; }
+    [[nodiscard]] long long featureCount() const { return mFeatureCount; }
 
     /**
      * Sets the layer's feature \a count.
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setWkbType()
      */
-    Qgis::WkbType wkbType() const { return mWkbType; }
+    [[nodiscard]] Qgis::WkbType wkbType() const { return mWkbType; }
 
     /**
      * Set the layer's WKB \a type.
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setGeometryColumnName()
      */
-    QString geometryColumnName() const { return mGeometryColumnName; }
+    [[nodiscard]] QString geometryColumnName() const { return mGeometryColumnName; }
 
     /**
      * Sets the layer's geometry column \a name.
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setLayerNumber()
      */
-    int layerNumber() const { return mLayerNumber; }
+    [[nodiscard]] int layerNumber() const { return mLayerNumber; }
 
     /**
      * Sets the associated layer \a number, for providers which order sublayers.
@@ -293,14 +293,14 @@ class CORE_EXPORT QgsProviderSublayerDetails
      *
      * \see setSkippedContainerScan()
      */
-    bool skippedContainerScan() const { return mSkippedContainerScan; }
+    [[nodiscard]] bool skippedContainerScan() const { return mSkippedContainerScan; }
 
     /**
      * Converts the sublayer details to a QgsMimeDataUtils::Uri representing the sublayer.
      *
      * \since QGIS 3.28
      */
-    QgsMimeDataUtils::Uri toMimeUri() const;
+    [[nodiscard]] QgsMimeDataUtils::Uri toMimeUri() const;
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsProviderSublayerDetails &other ) const;

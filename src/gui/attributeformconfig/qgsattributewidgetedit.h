@@ -53,7 +53,7 @@ class GUI_EXPORT QgsAttributeWidgetEdit : public QgsCollapsibleGroupBox, private
      *
      * \since QGIS 3.44
      */
-    QgsAttributesFormData::RelationEditorConfiguration updatedRelationConfiguration() const;
+    [[nodiscard]] QgsAttributesFormData::RelationEditorConfiguration updatedRelationConfiguration() const;
 
     // Methods to update widget status
     void setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle );
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsAttributeWidgetRelationEditWidget : public QWidget, private 
 
     void setRelationEditorConfiguration( const QgsAttributesFormData::RelationEditorConfiguration &config, const QString &relationId );
 
-    QgsAttributesFormData::RelationEditorConfiguration relationEditorConfiguration() const;
+    [[nodiscard]] QgsAttributesFormData::RelationEditorConfiguration relationEditorConfiguration() const;
 
     static QString title() { return tr( "Relation" ); }
 

@@ -41,13 +41,13 @@ class QgsOapifSingleItemRequest : public QgsBaseNetworkRequest
     };
 
     //! Returns application level error
-    ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
+    [[nodiscard]] ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
 
     //! Return fields.
-    const QgsFields &fields() const { return mFields; }
+    [[nodiscard]] const QgsFields &fields() const { return mFields; }
 
     //! Return feature.
-    const QgsFeature &feature() const { return mFeature; }
+    [[nodiscard]] const QgsFeature &feature() const { return mFeature; }
 
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred

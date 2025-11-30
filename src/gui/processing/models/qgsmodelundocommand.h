@@ -43,7 +43,7 @@ class GUI_EXPORT QgsModelUndoCommand : public QUndoCommand
      */
     void saveAfterState();
 
-    int id() const override;
+    [[nodiscard]] int id() const override;
     void undo() override;
     void redo() override;
     bool mergeWith( const QUndoCommand *other ) override;

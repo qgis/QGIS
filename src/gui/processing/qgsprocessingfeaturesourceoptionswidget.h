@@ -75,28 +75,28 @@ class GUI_EXPORT QgsProcessingFeatureSourceOptionsWidget : public QgsPanelWidget
      * \see isOverridingInvalidGeometryCheck()
      * \see setGeometryCheckMethod()
      */
-    Qgis::InvalidGeometryCheck geometryCheckMethod() const;
+    [[nodiscard]] Qgis::InvalidGeometryCheck geometryCheckMethod() const;
 
     /**
      * Returns TRUE if the default geometry check method is being overridden.
      * \see geometryCheckMethod()
      * \see setGeometryCheckMethod()
      */
-    bool isOverridingInvalidGeometryCheck() const;
+    [[nodiscard]] bool isOverridingInvalidGeometryCheck() const;
 
     /**
      * Returns the feature limit set in the widget, or -1 if no limit is set.
      *
      * \see setFeatureLimit()
      */
-    int featureLimit() const;
+    [[nodiscard]] int featureLimit() const;
 
     /**
      * Returns the expression filter set in the widget, or an empty string if no filter is set.
      *
      * \see setFilterExpression()
      */
-    QString filterExpression() const;
+    [[nodiscard]] QString filterExpression() const;
 };
 
 ///@endcond

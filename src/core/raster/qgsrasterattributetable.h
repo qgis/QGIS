@@ -105,12 +105,12 @@ class CORE_EXPORT QgsRasterAttributeTable
         /**
          * Returns TRUE if the field carries a color component (Red, Green, Blue and optionally Alpha) information.
          */
-        bool isColor( ) const;
+        [[nodiscard]] bool isColor( ) const;
 
         /**
          * Returns TRUE if the field carries a color ramp component information (RedMin/RedMax, GreenMin/GreenMax, BlueMin/BlueMax and optionally AlphaMin/AlphaMax) information.
          */
-        bool isRamp( ) const;
+        [[nodiscard]] bool isRamp( ) const;
 
         QString name;
         Qgis::RasterAttributeTableFieldUsage usage;
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Returns the Raster Attribute Table type.
      */
-    Qgis::RasterAttributeTableType type() const;
+    [[nodiscard]] Qgis::RasterAttributeTableType type() const;
 
     /**
      * Returns TRUE if the Raster Attribute Table has color RGBA information.
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsRasterAttributeTable
      * \see setRamp()
      * \see ramp()
      */
-    bool hasColor() const;
+    [[nodiscard]] bool hasColor() const;
 
     /**
      * Sets the color for the row at \a rowIndex to \a color.
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsRasterAttributeTable
      * \see hasColor()
      * \see setColor()
      */
-    bool hasRamp() const;
+    [[nodiscard]] bool hasRamp() const;
 
     /**
      * Sets the color ramp for the row at \a rowIndex to \a colorMin and \a colorMax.
@@ -180,14 +180,14 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Returns the list of field usages.
      */
-    QList<Qgis::RasterAttributeTableFieldUsage> usages( ) const SIP_SKIP;
+    [[nodiscard]] QList<Qgis::RasterAttributeTableFieldUsage> usages( ) const SIP_SKIP;
 
 ///@cond PRIVATE
 
     /**
      * Returns the list of field usages.
      */
-    QList<int> intUsages( ) const SIP_PYNAME( usages );
+    [[nodiscard]] QList<int> intUsages( ) const SIP_PYNAME( usages );
 
 ///@endcond PRIVATE
 
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsRasterAttributeTable
      * \see setRamp()
      * \see ramp()
      */
-    QColor color( int row ) const;
+    [[nodiscard]] QColor color( int row ) const;
 
     /**
      * Returns the gradient color ramp of the rat \a row or a default constructed gradient if row does not exist or if there is no color ramp definition.
@@ -209,29 +209,29 @@ class CORE_EXPORT QgsRasterAttributeTable
      * \see setColor()
      * \see color()
      */
-    QgsGradientColorRamp ramp( int row ) const;
+    [[nodiscard]] QgsGradientColorRamp ramp( int row ) const;
 
     /**
      * Returns the Raster Attribute Table fields.
      * \see qgisFields()
      */
-    QList<QgsRasterAttributeTable::Field> fields() const;
+    [[nodiscard]] QList<QgsRasterAttributeTable::Field> fields() const;
 
     /**
      * Returns the Raster Attribute Table fields as QgsFields.
      * \see fields()
      */
-    QgsFields qgisFields() const;
+    [[nodiscard]] QgsFields qgisFields() const;
 
     /**
      * Returns the Raster Attribute Table rows as a list of QgsFeature.
      */
-    QgsFeatureList qgisFeatures( ) const;
+    [[nodiscard]] QgsFeatureList qgisFeatures( ) const;
 
     /**
      * Returns TRUE if the Raster Attribute Table was modified from its last reading from the storage.
      */
-    bool isDirty() const;
+    [[nodiscard]] bool isDirty() const;
 
     /**
      * Sets the Raster Attribute Table dirty state to \a isDirty;
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Returns the Raster Attribute Table rows.
      */
-    const QList<QList<QVariant>> data() const;
+    [[nodiscard]] const QList<QList<QVariant>> data() const;
 
     /**
      * Returns a field by name or a default constructed field with empty name if the field is not found.
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Returns the list of fields matching \a fieldUsage.
      */
-    const QList<QgsRasterAttributeTable::Field> fieldsByUsage( const Qgis::RasterAttributeTableFieldUsage fieldUsage ) const;
+    [[nodiscard]] const QList<QgsRasterAttributeTable::Field> fieldsByUsage( const Qgis::RasterAttributeTableFieldUsage fieldUsage ) const;
 
     /**
      * Sets the \a value for \a row and \a column.
@@ -351,30 +351,30 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Returns the \a value for \a row and \a column.
      */
-    QVariant value( const int row, const int column ) const;
+    [[nodiscard]] QVariant value( const int row, const int column ) const;
 
     /**
      * Returns the minimum value of the MinMax (thematic) or Min (athematic) column, returns NaN on errors.
      */
-    double minimumValue( ) const;
+    [[nodiscard]] double minimumValue( ) const;
 
     /**
      * Returns the maximum value of the MinMax (thematic) or Max (athematic) column, returns NaN on errors.
      */
-    double maximumValue( ) const;
+    [[nodiscard]] double maximumValue( ) const;
 
     /**
      * Returns a row of data for the given \a matchValue or and empty row
      * if there is not match.
      */
-    QVariantList row( const double matchValue ) const;
+    [[nodiscard]] QVariantList row( const double matchValue ) const;
 
     /**
      * Returns the classes for a thematic Raster Attribute Table, classified
      * by \a classificationColumn, the default value of -1 makes the method guess
      * the classification column based on the field usage.
      */
-    QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses( const int classificationColumn  = -1 ) const;
+    [[nodiscard]] QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses( const int classificationColumn  = -1 ) const;
 
     /**
      * Returns the color ramp for an athematic Raster Attribute Table
@@ -401,7 +401,7 @@ class CORE_EXPORT QgsRasterAttributeTable
      * If the attribute table does not have any value field (and hence is not valid),
      * the current data are returned without any change.
      */
-    QList<QList<QVariant>> orderedRows( ) const;
+    [[nodiscard]] QList<QList<QVariant>> orderedRows( ) const;
 
     /**
      * Try to determine the field usage from its \a name and \a type.
@@ -419,7 +419,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     * \see writeToFile()
     * \see readFromFile()
     */
-    QString filePath() const;
+    [[nodiscard]] QString filePath() const;
 
     /**
      * Returns the translated human readable name of \a fieldUsage.

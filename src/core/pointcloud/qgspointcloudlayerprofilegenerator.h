@@ -92,11 +92,11 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     QColor pointColor;
     bool opacityByDistanceEffect = false;
 
-    QString type() const override;
-    QMap< double, double > distanceToHeightMap() const override;
-    QgsDoubleRange zRange() const override;
-    QgsPointSequence sampledPoints() const override;
-    QVector< QgsGeometry > asGeometries() const override;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QMap< double, double > distanceToHeightMap() const override;
+    [[nodiscard]] QgsDoubleRange zRange() const override;
+    [[nodiscard]] QgsPointSequence sampledPoints() const override;
+    [[nodiscard]] QVector< QgsGeometry > asGeometries() const override;
     QVector<  QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     void renderResults( QgsProfileRenderContext &context ) override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;

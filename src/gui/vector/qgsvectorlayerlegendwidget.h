@@ -53,7 +53,7 @@ class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
     void setMapCanvas( QgsMapCanvas *canvas );
 
     //! Returns pointer to map canvas
-    QgsMapCanvas *mapCanvas() const { return mCanvas; }
+    [[nodiscard]] QgsMapCanvas *mapCanvas() const { return mCanvas; }
 
     //! Initialize widget with a map layer
     void setLayer( QgsVectorLayer *layer );

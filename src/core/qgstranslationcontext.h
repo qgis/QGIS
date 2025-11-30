@@ -54,7 +54,7 @@ class CORE_EXPORT QgsTranslationContext
      * Returns the project
      * \see setProject()
      */
-    QgsProject *project() const;
+    [[nodiscard]] QgsProject *project() const;
 
     /**
      * Sets the \a project being translated.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsTranslationContext
      * Returns the TS fileName
      * \see setFileName()
      */
-    QString fileName() const;
+    [[nodiscard]] QString fileName() const;
 
     /**
      * Sets the \a fileName of the TS file

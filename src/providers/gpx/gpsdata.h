@@ -158,19 +158,19 @@ class QgsGpsData
      * which is the bounding box for this dataset. You'll have to deallocate it
      * yourself.
     */
-    QgsRectangle getExtent() const;
+    [[nodiscard]] QgsRectangle getExtent() const;
 
     //! Sets a default sensible extent. Only applies when there are no actual data.
     void setNoDataExtent();
 
     //! Returns the number of waypoints in this dataset.
-    int getNumberOfWaypoints() const;
+    [[nodiscard]] int getNumberOfWaypoints() const;
 
     //! Returns the number of waypoints in this dataset.
-    int getNumberOfRoutes() const;
+    [[nodiscard]] int getNumberOfRoutes() const;
 
     //! Returns the number of waypoints in this dataset.
-    int getNumberOfTracks() const;
+    [[nodiscard]] int getNumberOfTracks() const;
 
     //! This function returns an iterator that points to the first waypoint.
     WaypointIterator waypointsBegin();

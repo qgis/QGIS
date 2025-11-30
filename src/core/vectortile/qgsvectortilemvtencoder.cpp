@@ -74,7 +74,7 @@ struct MVTGeometryWriter
     cursor = pt;
   }
 
-  QPoint mapToTileCoordinates( double x, double y ) const
+  [[nodiscard]] QPoint mapToTileCoordinates( double x, double y ) const
   {
     return QPoint( static_cast<int>( round( ( x - tileXMin ) * resolution / tileDX ) ),
                    static_cast<int>( round( ( tileYMax - y ) * resolution / tileDY ) ) );

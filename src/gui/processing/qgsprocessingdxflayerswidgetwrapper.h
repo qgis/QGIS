@@ -80,7 +80,7 @@ class GUI_EXPORT QgsProcessingDxfLayersWidget : public QWidget
   public:
     QgsProcessingDxfLayersWidget( QWidget *parent = nullptr );
 
-    QVariant value() const { return mValue; }
+    [[nodiscard]] QVariant value() const { return mValue; }
     void setValue( const QVariant &value );
 
     void setProject( QgsProject *project );
@@ -115,7 +115,7 @@ class GUI_EXPORT QgsProcessingDxfLayersWidgetWrapper : public QgsAbstractProcess
     QgsProcessingDxfLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
 
     // QgsProcessingParameterWidgetFactoryInterface
-    QString parameterType() const override;
+    [[nodiscard]] QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
 
     // QgsProcessingParameterWidgetWrapper interface
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsProcessingDxfLayersWidgetWrapper : public QgsAbstractProcess
 
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
-    QVariant widgetValue() const override;
+    [[nodiscard]] QVariant widgetValue() const override;
 
   private:
     QgsProcessingDxfLayersWidget *mPanel = nullptr;

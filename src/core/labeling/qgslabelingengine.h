@@ -139,57 +139,57 @@ class CORE_EXPORT QgsAbstractLabelProvider
     virtual QList<QgsAbstractLabelProvider *> subProviders() { return QList<QgsAbstractLabelProvider *>(); }
 
     //! Name of the layer (for statistics, debugging etc.) - does not need to be unique
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     //! Returns ID of associated layer, or empty string if no layer is associated with the provider.
-    QString layerId() const { return mLayerId; }
+    [[nodiscard]] QString layerId() const { return mLayerId; }
 
     /**
      * Returns the associated layer, or NULLPTR if no layer is associated with the provider.
      *
      * \warning Accessing the layer is not thread safe, and this should never be called while the labeling engine is running from a background thread!
      */
-    QgsMapLayer *layer() const { return mLayer.data(); }
+    [[nodiscard]] QgsMapLayer *layer() const { return mLayer.data(); }
 
     /**
      * Returns provider ID - useful in case there is more than one label provider within a layer
      * (e.g. in case of rule-based labeling - provider ID = rule's key). May be empty string if
      * layer ID is sufficient for identification of provider's configuration.
      */
-    QString providerId() const { return mProviderId; }
+    [[nodiscard]] QString providerId() const { return mProviderId; }
 
     //! Flags associated with the provider
-    Flags flags() const { return mFlags; }
+    [[nodiscard]] Flags flags() const { return mFlags; }
 
     //! What placement strategy to use for the labels
-    Qgis::LabelPlacement placement() const { return mPlacement; }
+    [[nodiscard]] Qgis::LabelPlacement placement() const { return mPlacement; }
 
     /**
      * Default priority of labels (may be overridden by individual labels).
      *
      * This is a value between 0 to 1, where 0 = highest priority and 1 = lowest priority. The default is 0.5.
      */
-    double priority() const { return mPriority; }
+    [[nodiscard]] double priority() const { return mPriority; }
 
     //! How the feature geometries will work as obstacles
-    QgsLabelObstacleSettings::ObstacleType obstacleType() const { return mObstacleType; }
+    [[nodiscard]] QgsLabelObstacleSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
     //! How to handle labels that would be upside down
-    Qgis::UpsideDownLabelHandling upsidedownLabels() const { return mUpsidedownLabels; }
+    [[nodiscard]] Qgis::UpsideDownLabelHandling upsidedownLabels() const { return mUpsidedownLabels; }
 
     /**
      * Returns the expression context scope created from the layer associated with this provider.
      *
      * \since QGIS 3.22
      */
-    QgsExpressionContextScope *layerExpressionContextScope() const;
+    [[nodiscard]] QgsExpressionContextScope *layerExpressionContextScope() const;
 
     /**
      * Returns the symbology reference scale of the layer associated with this provider.
      *
      * \since QGIS 3.22
      */
-    double layerReferenceScale() const { return mLayerReferenceScale; }
+    [[nodiscard]] double layerReferenceScale() const { return mLayerReferenceScale; }
 
   protected:
     //! Associated labeling engine

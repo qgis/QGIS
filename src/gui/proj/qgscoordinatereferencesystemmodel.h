@@ -53,7 +53,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelNode
     /**
      * Returns the node's type.
      */
-    virtual NodeType nodeType() const = 0;
+    [[nodiscard]] virtual NodeType nodeType() const = 0;
 
     /**
      * Returns the node's parent. If the node's parent is NULLPTR, then the node is a root node.
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelNode
     /**
      * Returns a list of children belonging to the node.
      */
-    QList<QgsCoordinateReferenceSystemModelNode *> children() const { return mChildren; }
+    [[nodiscard]] QList<QgsCoordinateReferenceSystemModelNode *> children() const { return mChildren; }
 
     /**
     * Removes the specified \a node from this node's children, and gives
@@ -118,19 +118,19 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelGroupNode : public QgsCoordina
     /**
     * Returns the group's ID, which is non-translated.
     */
-    QString id() const { return mId; }
+    [[nodiscard]] QString id() const { return mId; }
 
     /**
      * Returns the group's name, which is translated and user-visible.
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Returns the group's icon.
      */
-    QIcon icon() const { return mIcon; }
+    [[nodiscard]] QIcon icon() const { return mIcon; }
 
-    NodeType nodeType() const override { return NodeGroup; }
+    [[nodiscard]] NodeType nodeType() const override { return NodeGroup; }
 
   private:
     QString mId;
@@ -153,12 +153,12 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelCrsNode : public QgsCoordinate
      */
     QgsCoordinateReferenceSystemModelCrsNode( const QgsCrsDbRecord &record );
 
-    NodeType nodeType() const override { return NodeCrs; }
+    [[nodiscard]] NodeType nodeType() const override { return NodeCrs; }
 
     /**
      * Returns the record associated with this node.
      */
-    const QgsCrsDbRecord &record() const { return mRecord; }
+    [[nodiscard]] const QgsCrsDbRecord &record() const { return mRecord; }
 
     /**
      * Sets the \a wkt representation of the CRS.
@@ -176,7 +176,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelCrsNode : public QgsCoordinate
      *
      * \see setWkt()
      */
-    QString wkt() const { return mWkt; }
+    [[nodiscard]] QString wkt() const { return mWkt; }
 
     /**
      * Sets the \a proj representation of the CRS.
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelCrsNode : public QgsCoordinate
      *
      * \see setProj()
      */
-    QString proj() const { return mProj; }
+    [[nodiscard]] QString proj() const { return mProj; }
 
     /**
      * Sets the CRS's group name.
@@ -210,7 +210,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelCrsNode : public QgsCoordinate
      * \see setGroup()
      * \since QGIS 3.42
      */
-    QString group() const { return mGroup; }
+    [[nodiscard]] QString group() const { return mGroup; }
 
     /**
      * Sets the CRS's projection name.
@@ -226,7 +226,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelCrsNode : public QgsCoordinate
      * \see setProjection()
      * \since QGIS 3.42
      */
-    QString projection() const { return mProjection; }
+    [[nodiscard]] QString projection() const { return mProjection; }
 
   private:
     const QgsCrsDbRecord mRecord;
@@ -279,13 +279,13 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
      */
     QgsCoordinateReferenceSystemModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex & = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
 
     /**
      * Adds a custom \a crs to the model.
@@ -300,7 +300,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
      *
      * Returns an invalid index if the CRS was not found.
      */
-    QModelIndex authIdToIndex( const QString &authId ) const;
+    [[nodiscard]] QModelIndex authIdToIndex( const QString &authId ) const;
 
   private slots:
 
@@ -312,7 +312,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
   private:
     QgsCoordinateReferenceSystemModelCrsNode *addRecord( const QgsCrsDbRecord &record );
 
-    QgsCoordinateReferenceSystemModelNode *index2node( const QModelIndex &index ) const;
+    [[nodiscard]] QgsCoordinateReferenceSystemModelNode *index2node( const QModelIndex &index ) const;
     QModelIndex node2index( QgsCoordinateReferenceSystemModelNode *node ) const;
     QModelIndex indexOfParentTreeNode( QgsCoordinateReferenceSystemModelNode *parentNode ) const;
 
@@ -358,7 +358,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel : public QSortFilterProx
      * Returns the underlying source model.
      * \note Not available in Python bindings
      */
-    const QgsCoordinateReferenceSystemModel *coordinateReferenceSystemModel() const SIP_SKIP;
+    [[nodiscard]] const QgsCoordinateReferenceSystemModel *coordinateReferenceSystemModel() const SIP_SKIP;
 
     /**
      * Set \a filters that affect how CRS are filtered.
@@ -370,7 +370,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel : public QSortFilterProx
      * Returns any filters that affect how CRS are filtered.
      * \see setFilters()
      */
-    Filters filters() const { return mFilters; }
+    [[nodiscard]] Filters filters() const { return mFilters; }
 
     /**
      * Sets a \a filter string, such that only coordinate reference systems matching the
@@ -385,7 +385,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel : public QSortFilterProx
      *
      * \see setFilterString()
      */
-    QString filterString() const { return mFilterString; }
+    [[nodiscard]] QString filterString() const { return mFilterString; }
 
     /**
      * Sets a \a filter list of CRS auth ID strings, such that only coordinate reference systems matching the
@@ -400,7 +400,7 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel : public QSortFilterProx
      *
      * \see setFilterString()
      */
-    QSet<QString> filterAuthIds() const { return mFilterAuthIds; }
+    [[nodiscard]] QSet<QString> filterAuthIds() const { return mFilterAuthIds; }
 
     /**
      * Sets whether deprecated CRS should be filtered from the results.
@@ -414,10 +414,10 @@ class GUI_EXPORT QgsCoordinateReferenceSystemProxyModel : public QSortFilterProx
      *
      * \see setFilterDeprecated()
      */
-    bool filterDeprecated() const { return mFilterDeprecated; }
+    [[nodiscard]] bool filterDeprecated() const { return mFilterDeprecated; }
 
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
     QgsCoordinateReferenceSystemModel *mModel = nullptr;

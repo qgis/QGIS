@@ -32,7 +32,7 @@ class QgsDmsAndDdDelegate : public QStyledItemDelegate
     void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
   private:
-    double dmsToDD( const QString &dms ) const;
+    [[nodiscard]] double dmsToDD( const QString &dms ) const;
 };
 
 class QgsCoordDelegate : public QStyledItemDelegate

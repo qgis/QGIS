@@ -32,8 +32,8 @@
 class QgsFuzzifyRasterAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
-    QString group() const final;
-    QString groupId() const final;
+    [[nodiscard]] QString group() const final;
+    [[nodiscard]] QString groupId() const final;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) final;
 
   protected:
@@ -79,14 +79,14 @@ class QgsFuzzifyRasterLinearMembershipAlgorithm : public QgsFuzzifyRasterAlgorit
 {
   public:
     QgsFuzzifyRasterLinearMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLinear.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLinear.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortDescription() const override;
-    QString shortHelpString() const override;
-    QgsFuzzifyRasterLinearMembershipAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLinear.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLinear.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QgsFuzzifyRasterLinearMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() override;
@@ -103,14 +103,14 @@ class QgsFuzzifyRasterPowerMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
 {
   public:
     QgsFuzzifyRasterPowerMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyPower.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyPower.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortDescription() const override;
-    QString shortHelpString() const override;
-    QgsFuzzifyRasterPowerMembershipAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyPower.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyPower.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QgsFuzzifyRasterPowerMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() override;
@@ -128,14 +128,14 @@ class QgsFuzzifyRasterLargeMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
 {
   public:
     QgsFuzzifyRasterLargeMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLarge.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLarge.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsFuzzifyRasterLargeMembershipAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLarge.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLarge.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsFuzzifyRasterLargeMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() override;
@@ -152,14 +152,14 @@ class QgsFuzzifyRasterSmallMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
 {
   public:
     QgsFuzzifyRasterSmallMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifySmall.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifySmall.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsFuzzifyRasterSmallMembershipAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifySmall.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifySmall.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsFuzzifyRasterSmallMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() override;
@@ -176,14 +176,14 @@ class QgsFuzzifyRasterGaussianMembershipAlgorithm : public QgsFuzzifyRasterAlgor
 {
   public:
     QgsFuzzifyRasterGaussianMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyGaussian.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyGaussian.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsFuzzifyRasterGaussianMembershipAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyGaussian.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyGaussian.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsFuzzifyRasterGaussianMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() override;
@@ -200,14 +200,14 @@ class QgsFuzzifyRasterNearMembershipAlgorithm : public QgsFuzzifyRasterAlgorithm
 {
   public:
     QgsFuzzifyRasterNearMembershipAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyNear.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyNear.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsFuzzifyRasterNearMembershipAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyNear.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmFuzzifyNear.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsFuzzifyRasterNearMembershipAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() override;

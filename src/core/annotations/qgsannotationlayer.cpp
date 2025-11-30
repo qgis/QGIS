@@ -102,7 +102,7 @@ class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
     }
 
   private:
-    std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
+    [[nodiscard]] std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
     {
       return
       {

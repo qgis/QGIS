@@ -50,7 +50,7 @@ class CORE_EXPORT QgsSldExportContext
     /**
      * Returns the export options
      */
-    Qgis::SldExportOptions exportOptions() const;
+    [[nodiscard]] Qgis::SldExportOptions exportOptions() const;
 
     /**
      * Set export options to \a exportOptions
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsSldExportContext
     /**
      * Returns the vendor extension enabled for the SLD export
      */
-    Qgis::SldExportVendorExtension vendorExtensions() const;
+    [[nodiscard]] Qgis::SldExportVendorExtension vendorExtensions() const;
 
     /**
      * Sets the vendor extensions to \a vendorExtension
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsSldExportContext
     /**
      * Returns the export file path for the SLD
      */
-    QString exportFilePath() const;
+    [[nodiscard]] QString exportFilePath() const;
 
     /**
      * Sets the export file path for the SLD to \a exportFilePath
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsSldExportContext
      * \see warnings()
      * \since QGIS 3.44
      */
-    QStringList errors() const { return mErrors; }
+    [[nodiscard]] QStringList errors() const { return mErrors; }
 
     /**
      * Pushes a \a error message generated during the conversion.
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsSldExportContext
      * \see errors()
      * \since QGIS 3.44
      */
-    QStringList warnings() const { return mWarnings; }
+    [[nodiscard]] QStringList warnings() const { return mWarnings; }
 
     /**
      * Pushes a \a warning message generated during the conversion.
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsSldExportContext
      * \see setExtraProperties()
      * \since QGIS 3.44
      */
-    QVariantMap extraProperties() const;
+    [[nodiscard]] QVariantMap extraProperties() const;
 
     /**
      * Sets the open ended set of properties that can drive/inform the SLD encoding.

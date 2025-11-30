@@ -158,12 +158,12 @@ class CORE_EXPORT QgsContrastEnhancement
     static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString );
 
     //! Returns the maximum value for the contrast enhancement range.
-    double maximumValue() const { return mMaximumValue; }
+    [[nodiscard]] double maximumValue() const { return mMaximumValue; }
 
     //! Returns the minimum value for the contrast enhancement range.
-    double minimumValue() const { return mMinimumValue; }
+    [[nodiscard]] double minimumValue() const { return mMinimumValue; }
 
-    ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
+    [[nodiscard]] ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
 
     /**
      * Applies the contrast enhancement to a \a value. Return values are 0 - 255, -1 means the pixel was clipped and should not be displayed.

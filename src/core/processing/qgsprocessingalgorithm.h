@@ -112,7 +112,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * \see initAlgorithm()
      */
-    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const SIP_THROW( QgsProcessingException ) SIP_TRANSFERBACK;
+    [[nodiscard]] QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const SIP_THROW( QgsProcessingException ) SIP_TRANSFERBACK;
 
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see group()
      * \see tags()
     */
-    virtual QString name() const = 0 SIP_HOLDGIL;
+    [[nodiscard]] virtual QString name() const = 0 SIP_HOLDGIL;
 
     /**
      * Returns the unique ID for the algorithm, which is a combination of the algorithm
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see name()
      * \see provider()
      */
-    QString id() const SIP_HOLDGIL;
+    [[nodiscard]] QString id() const SIP_HOLDGIL;
 
     /**
      * Returns the translated algorithm name, which should be used for any user-visible display
@@ -143,20 +143,20 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see name()
      * \see shortDescription()
      */
-    virtual QString displayName() const = 0 SIP_HOLDGIL;
+    [[nodiscard]] virtual QString displayName() const = 0 SIP_HOLDGIL;
 
     /**
      * Returns an optional translated short description of the algorithm. This should be
      * at most a single sentence, e.g. "Converts 2D features to 3D by sampling a DEM raster."
      * \since QGIS 3.2
      */
-    virtual QString shortDescription() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QString shortDescription() const SIP_HOLDGIL;
 
     /**
      * Returns a list of tags which relate to the algorithm, and are used to assist users in searching
      * for suitable algorithms. These tags should be localised.
     */
-    virtual QStringList tags() const SIP_HOLDGIL { return QStringList(); }
+    [[nodiscard]] virtual QStringList tags() const SIP_HOLDGIL { return QStringList(); }
 
     /**
      * Returns a localised short helper string for the algorithm. This string should provide a basic description
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see helpString()
      * \see helpUrl()
      */
-    virtual QString shortHelpString() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QString shortHelpString() const SIP_HOLDGIL;
 
     /**
      * Returns a localised help string for the algorithm. Algorithm subclasses should implement either
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see helpString()
      * \see shortHelpString()
      */
-    virtual QString helpUrl() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QString helpUrl() const SIP_HOLDGIL;
 
     /**
      * Returns the flags describing algorithm behavior for documentation purposes.
@@ -189,19 +189,19 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * \since QGIS 3.40
      */
-    virtual Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const SIP_HOLDGIL;
+    [[nodiscard]] virtual Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const SIP_HOLDGIL;
 
     /**
      * Returns an icon for the algorithm.
      * \see svgIconPath()
     */
-    virtual QIcon icon() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QIcon icon() const SIP_HOLDGIL;
 
     /**
      * Returns a path to an SVG version of the algorithm's icon.
      * \see icon()
      */
-    virtual QString svgIconPath() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QString svgIconPath() const SIP_HOLDGIL;
 
     /**
      * Returns the name of the group this algorithm belongs to. This string
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see groupId()
      * \see tags()
     */
-    virtual QString group() const SIP_HOLDGIL { return QString(); }
+    [[nodiscard]] virtual QString group() const SIP_HOLDGIL { return QString(); }
 
     /**
      * Returns the unique ID of the group this algorithm belongs to. This string
@@ -218,13 +218,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * alphanumeric characters only and no spaces or other formatting characters.
      * \see group()
      */
-    virtual QString groupId() const SIP_HOLDGIL { return QString(); }
+    [[nodiscard]] virtual QString groupId() const SIP_HOLDGIL { return QString(); }
 
     /**
      * Returns the flags indicating how and when the algorithm operates and should be exposed to users.
      * Default flags are FlagSupportsBatch and FlagCanCancel.
      */
-    virtual Qgis::ProcessingAlgorithmFlags flags() const SIP_HOLDGIL;
+    [[nodiscard]] virtual Qgis::ProcessingAlgorithmFlags flags() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the algorithm can execute. Algorithm subclasses can return FALSE
@@ -271,12 +271,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * \since QGIS 3.44
      */
-    virtual QVariantMap autogenerateParameterValues( const QVariantMap &existingParameters, const QString &changedParameter, Qgis::ProcessingMode mode ) const;
+    [[nodiscard]] virtual QVariantMap autogenerateParameterValues( const QVariantMap &existingParameters, const QString &changedParameter, Qgis::ProcessingMode mode ) const;
 
     /**
      * Returns the provider to which this algorithm belongs.
      */
-    QgsProcessingProvider *provider() const SIP_HOLDGIL;
+    [[nodiscard]] QgsProcessingProvider *provider() const SIP_HOLDGIL;
 
     /**
      * Returns an ordered list of parameter definitions utilized by the algorithm.
@@ -284,46 +284,46 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see parameterDefinition()
      * \see destinationParameterDefinitions()
      */
-    QgsProcessingParameterDefinitions parameterDefinitions() const SIP_HOLDGIL { return mParameters; }
+    [[nodiscard]] QgsProcessingParameterDefinitions parameterDefinitions() const SIP_HOLDGIL { return mParameters; }
 
     /**
      * Returns a matching parameter by \a name. Matching is done in a case-insensitive
      * manner, but exact case matches will be preferred.
      * \see parameterDefinitions()
      */
-    const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const SIP_HOLDGIL;
+    [[nodiscard]] const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const SIP_HOLDGIL;
 
     /**
      * Returns the number of visible (non-hidden) parameters defined by this
      * algorithm.
      */
-    int countVisibleParameters() const SIP_HOLDGIL;
+    [[nodiscard]] int countVisibleParameters() const SIP_HOLDGIL;
 
     /**
      * Returns a list of destination parameters definitions utilized by the algorithm.
      * \see QgsProcessingParameterDefinition::isDestination()
      * \see parameterDefinitions()
      */
-    QgsProcessingParameterDefinitions destinationParameterDefinitions() const SIP_HOLDGIL;
+    [[nodiscard]] QgsProcessingParameterDefinitions destinationParameterDefinitions() const SIP_HOLDGIL;
 
     /**
      * Returns an ordered list of output definitions utilized by the algorithm.
      * \see addOutput()
      * \see outputDefinition()
      */
-    QgsProcessingOutputDefinitions outputDefinitions() const SIP_HOLDGIL { return mOutputs; }
+    [[nodiscard]] QgsProcessingOutputDefinitions outputDefinitions() const SIP_HOLDGIL { return mOutputs; }
 
     /**
      * Returns a matching output by \a name. Matching is done in a case-insensitive
      * manner.
      * \see outputDefinitions()
      */
-    const QgsProcessingOutputDefinition *outputDefinition( const QString &name ) const SIP_HOLDGIL;
+    [[nodiscard]] const QgsProcessingOutputDefinition *outputDefinition( const QString &name ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if this algorithm generates HTML outputs.
      */
-    bool hasHtmlOutputs() const SIP_HOLDGIL;
+    [[nodiscard]] bool hasHtmlOutputs() const SIP_HOLDGIL;
 
 
     /**
@@ -507,7 +507,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This method should return a 'pristine' instance of the algorithm class.
      */
-    virtual QgsProcessingAlgorithm *createInstance() const = 0 SIP_FACTORY SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+    [[nodiscard]] virtual QgsProcessingAlgorithm *createInstance() const = 0 SIP_FACTORY SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Initializes the algorithm using the specified \a configuration.
@@ -676,61 +676,61 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Evaluates the parameter with matching \a name to a static string value.
      */
-    QString parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+    [[nodiscard]] QString parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to an expression.
      */
-    QString parameterAsExpression( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+    [[nodiscard]] QString parameterAsExpression( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a static double value.
      */
-    double parameterAsDouble( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+    [[nodiscard]] double parameterAsDouble( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a static integer value.
      */
-    int parameterAsInt( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+    [[nodiscard]] int parameterAsInt( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a list of integer values.
      * \since QGIS 3.4
      */
-    QList<int> parameterAsInts( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+    [[nodiscard]] QList<int> parameterAsInts( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a enum value.
      */
-    int parameterAsEnum( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+    [[nodiscard]] int parameterAsEnum( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to list of enum values.
      */
-    QList<int> parameterAsEnums( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+    [[nodiscard]] QList<int> parameterAsEnums( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a static enum string.
      * \since QGIS 3.18
      */
-    QString parameterAsEnumString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+    [[nodiscard]] QString parameterAsEnumString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to list of static enum strings.
      * \since QGIS 3.18
      */
-    QStringList parameterAsEnumStrings( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+    [[nodiscard]] QStringList parameterAsEnumStrings( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a static boolean value.
      */
-    bool parameterAsBool( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+    [[nodiscard]] bool parameterAsBool( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a static boolean value.
      * \since QGIS 3.8
      */
-    bool parameterAsBoolean( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+    [[nodiscard]] bool parameterAsBoolean( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a feature sink.
@@ -1187,7 +1187,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
 
     QgsProcessingFeatureBasedAlgorithm() = default;
 
-    Qgis::ProcessingAlgorithmFlags flags() const override SIP_HOLDGIL;
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override SIP_HOLDGIL;
 
     /**
      * Processes an individual input \a feature from the source. Algorithms should implement their
@@ -1231,7 +1231,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      *
      * \since QGIS 3.12
      */
-    virtual QString inputParameterName() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QString inputParameterName() const SIP_HOLDGIL;
 
     /**
      * Returns the translated description of the parameter corresponding to the input layer.
@@ -1240,7 +1240,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      *
      * \since QGIS 3.12
      */
-    virtual QString inputParameterDescription() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QString inputParameterDescription() const SIP_HOLDGIL;
 
   protected:
 
@@ -1251,32 +1251,32 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * This name will be used as the default name when loading the resultant layer into a
      * QGIS project.
      */
-    virtual QString outputName() const = 0 SIP_HOLDGIL;
+    [[nodiscard]] virtual QString outputName() const = 0 SIP_HOLDGIL;
 
     /**
      * Returns the valid input layer types for the source layer for this algorithm.
      * By default vector layers with any geometry types (excluding non-spatial, geometryless layers)
      * are accepted.
      */
-    virtual QList<int> inputLayerTypes() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QList<int> inputLayerTypes() const SIP_HOLDGIL;
 
     /**
      * Returns the layer type for layers generated by this algorithm, if
      * this is possible to determine in advance.
      */
-    virtual Qgis::ProcessingSourceType outputLayerType() const SIP_HOLDGIL;
+    [[nodiscard]] virtual Qgis::ProcessingSourceType outputLayerType() const SIP_HOLDGIL;
 
     /**
      * Returns the processing feature source flags to be used in the algorithm.
      */
-    virtual Qgis::ProcessingFeatureSourceFlags sourceFlags() const SIP_HOLDGIL;
+    [[nodiscard]] virtual Qgis::ProcessingFeatureSourceFlags sourceFlags() const SIP_HOLDGIL;
 
     /**
      * Returns the feature sink flags to be used for the output.
      *
      * \since QGIS 3.4.1
      */
-    virtual QgsFeatureSink::SinkFlags sinkFlags() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QgsFeatureSink::SinkFlags sinkFlags() const SIP_HOLDGIL;
 
     /**
      * Maps the input WKB geometry type (\a inputWkbType) to the corresponding
@@ -1285,7 +1285,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * This is called once by the base class when creating the output sink for the algorithm (i.e. it is
      * not called once per feature processed).
      */
-    virtual Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const SIP_HOLDGIL;
+    [[nodiscard]] virtual Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const SIP_HOLDGIL;
 
     /**
      * Maps the input source fields (\a inputFields) to corresponding
@@ -1297,7 +1297,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * This is called once by the base class when creating the output sink for the algorithm (i.e. it is
      * not called once per feature processed).
      */
-    virtual QgsFields outputFields( const QgsFields &inputFields ) const SIP_HOLDGIL;
+    [[nodiscard]] virtual QgsFields outputFields( const QgsFields &inputFields ) const SIP_HOLDGIL;
 
     /**
      * Maps the input source coordinate reference system (\a inputCrs) to a corresponding
@@ -1307,7 +1307,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * This is called once by the base class when creating the output sink for the algorithm (i.e. it is
      * not called once per feature processed).
      */
-    virtual QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const SIP_HOLDGIL;
+    [[nodiscard]] virtual QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const SIP_HOLDGIL;
 
     /**
      * Initializes any extra parameters added by the algorithm subclass. There is no need
@@ -1320,7 +1320,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * Returns the source's coordinate reference system. This will only return a valid CRS when
      * called from a subclasses' processFeature() implementation.
      */
-    QgsCoordinateReferenceSystem sourceCrs() const SIP_HOLDGIL;
+    [[nodiscard]] QgsCoordinateReferenceSystem sourceCrs() const SIP_HOLDGIL;
 
 
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override SIP_THROW( QgsProcessingException );
@@ -1329,7 +1329,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * Returns the feature request used for fetching features to process from the
      * source layer. The default implementation requests all attributes and geometry.
      */
-    virtual QgsFeatureRequest request() const;
+    [[nodiscard]] virtual QgsFeatureRequest request() const;
 
     /**
      * Read the source from \a parameters and \a context and set it

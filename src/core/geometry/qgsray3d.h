@@ -41,20 +41,20 @@ class CORE_EXPORT QgsRay3D
      * Returns the origin of the ray
      * \see setOrigin()
      */
-    QVector3D origin() const { return mOrigin; }
+    [[nodiscard]] QVector3D origin() const { return mOrigin; }
 
     /**
      * Returns the direction of the ray
      * see setDirection()
      */
-    QVector3D direction() const { return mDirection; }
+    [[nodiscard]] QVector3D direction() const { return mDirection; }
 
     /**
      * Returns a vector with the direction components inversed ( 1/x, 1/y, 1/z)
      * This can be used as an optimization when used in intersection logic.
      * see direction()
      */
-    QVector3D directionInversed() const { return mDirectionInversed; }
+    [[nodiscard]] QVector3D directionInversed() const { return mDirectionInversed; }
 
     /**
      * Sets the origin of the ray
@@ -73,20 +73,20 @@ class CORE_EXPORT QgsRay3D
      * Returns the projection of the point on the ray
      * (which is the closest point of the ray to \a point)
      */
-    QVector3D projectedPoint( const QVector3D &point ) const;
+    [[nodiscard]] QVector3D projectedPoint( const QVector3D &point ) const;
 
     /**
      * Returns the distance of the projection of a point to the ray
      */
-    float projectedDistance( const QVector3D &point ) const;
+    [[nodiscard]] float projectedDistance( const QVector3D &point ) const;
 
     //! Checks whether the point is in front of the ray
-    bool isInFront( const QVector3D &point ) const;
+    [[nodiscard]] bool isInFront( const QVector3D &point ) const;
     //! Returns the angle between the ray and the vector from the ray's origin and the point \a point
-    double angleToPoint( const QVector3D &point ) const;
+    [[nodiscard]] double angleToPoint( const QVector3D &point ) const;
 
     //! Returns the point along the ray with the specified \a distance from the ray's origin
-    QVector3D point( float distance ) const;
+    [[nodiscard]] QVector3D point( float distance ) const;
 
   private:
     QVector3D mOrigin;

@@ -40,7 +40,7 @@ class QgsCodeEditorOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsC
     QgsCodeEditorOptionsWidget( QWidget *parent );
     ~QgsCodeEditorOptionsWidget() override;
 
-    QString helpKey() const override;
+    [[nodiscard]] QString helpKey() const override;
 
     void apply() override;
 
@@ -62,10 +62,10 @@ class QgsCodeEditorOptionsFactory : public QgsOptionsWidgetFactory
   public:
     QgsCodeEditorOptionsFactory();
 
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
-    QStringList path() const override;
-    QString pagePositionHint() const override;
+    [[nodiscard]] QStringList path() const override;
+    [[nodiscard]] QString pagePositionHint() const override;
 };
 
 

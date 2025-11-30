@@ -61,7 +61,7 @@ class CORE_EXPORT QgsPointCloudNodeId
     QgsPointCloudNodeId( int _d, int _x, int _y, int _z );
 
     //! Returns whether node is valid
-    bool isValid() const { return mD >= 0; }
+    [[nodiscard]] bool isValid() const { return mD >= 0; }
 
     // TODO c++20 - replace with = default
 
@@ -74,25 +74,25 @@ class CORE_EXPORT QgsPointCloudNodeId
      * Returns the parent of the node
      * \since QGIS 3.20
      */
-    QgsPointCloudNodeId parentNode() const;
+    [[nodiscard]] QgsPointCloudNodeId parentNode() const;
 
     //! Creates node from string
     static QgsPointCloudNodeId fromString( const QString &str );
 
     //! Encode node to string
-    QString toString() const;
+    [[nodiscard]] QString toString() const;
 
     //! Returns d
-    int d() const;
+    [[nodiscard]] int d() const;
 
     //! Returns x
-    int x() const;
+    [[nodiscard]] int x() const;
 
     //! Returns y
-    int y() const;
+    [[nodiscard]] int y() const;
 
     //! Returns z
-    int z() const;
+    [[nodiscard]] int z() const;
 
   private:
     int mD = -1, mX = -1, mY = -1, mZ = -1;
@@ -123,16 +123,16 @@ class CORE_EXPORT QgsPointCloudCacheKey
     bool operator==( const QgsPointCloudCacheKey &other ) const;
 
     //! Returns the key's QgsPointCloudNodeId
-    QgsPointCloudNodeId node() const { return mNode; }
+    [[nodiscard]] QgsPointCloudNodeId node() const { return mNode; }
 
     //! Returns the key's uri
-    QString uri() const { return mUri; }
+    [[nodiscard]] QString uri() const { return mUri; }
 
     //! Returns the key's QgsPointCloudRequest
-    QgsPointCloudRequest request() const { return mRequest; }
+    [[nodiscard]] QgsPointCloudRequest request() const { return mRequest; }
 
     //! Returns the key's subset string. This is used in the point cloud index as a filter expression
-    QString subsetString() const { return mSubsetString; }
+    [[nodiscard]] QString subsetString() const { return mSubsetString; }
 
   private:
     QgsPointCloudNodeId mNode;
@@ -176,15 +176,15 @@ class CORE_EXPORT QgsPointCloudNode
     {
     }
     //! Returns node's ID (unique in index)
-    QgsPointCloudNodeId id() const { return mId; }
+    [[nodiscard]] QgsPointCloudNodeId id() const { return mId; }
     //! Returns number of points contained in node data
-    qint64 pointCount() const { return mPointCount; }
+    [[nodiscard]] qint64 pointCount() const { return mPointCount; }
     //! Returns IDs of child nodes
-    QList<QgsPointCloudNodeId> children() const { return mChildIds; }
+    [[nodiscard]] QList<QgsPointCloudNodeId> children() const { return mChildIds; }
     //! Returns node's error in map units (used to determine in whether the node has enough detail for the current view)
-    float error() const;
+    [[nodiscard]] float error() const;
     //! Returns node's bounding cube in CRS coords
-    QgsBox3D bounds() const;
+    [[nodiscard]] QgsBox3D bounds() const;
 
     //! Returns bounding box of specific node
     static QgsBox3D bounds( QgsBox3D rootBounds, QgsPointCloudNodeId id );
@@ -432,14 +432,14 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     *
     * \see QgsAbstractPointCloudIndex::isValid
     */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
     * Returns the error that occurred during the loading of the index.
     *
     * \see QgsAbstractPointCloudIndex::error
     */
-    QString error() const;
+    [[nodiscard]] QString error() const;
 
     /**
      * Returns the access type of the data
@@ -449,35 +449,35 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     *
     * \see QgsAbstractPointCloudIndex::accessType
      */
-    Qgis::PointCloudAccessType accessType() const;
+    [[nodiscard]] Qgis::PointCloudAccessType accessType() const;
 
     /**
     * Returns the coordinate reference system of the point cloud index
     *
     * \see QgsAbstractPointCloudIndex::crs
     */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
     * Returns the number of points in the point cloud
     *
     * \see QgsAbstractPointCloudIndex::pointCount
     */
-    qint64 pointCount() const;
+    [[nodiscard]] qint64 pointCount() const;
 
     /**
     * Returns the original metadata map
     *
     * \see QgsAbstractPointCloudIndex::originalMetadata
     */
-    QVariantMap originalMetadata() const;
+    [[nodiscard]] QVariantMap originalMetadata() const;
 
     /**
      * Returns the object containing the statistics metadata extracted from the dataset
     *
     * \see QgsAbstractPointCloudIndex::metadataStatistics
      */
-    QgsPointCloudStatistics metadataStatistics() const;
+    [[nodiscard]] QgsPointCloudStatistics metadataStatistics() const;
 
     /**
      * Writes the statistics object \a stats into the backing file, if possible.
@@ -492,28 +492,28 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     *
     * \see QgsAbstractPointCloudIndex::root
     */
-    QgsPointCloudNodeId root() const;
+    [[nodiscard]] QgsPointCloudNodeId root() const;
 
     /**
     * Returns whether the octree contain given node
     *
     * \see QgsAbstractPointCloudIndex::hasNode
     */
-    bool hasNode( const QgsPointCloudNodeId &id ) const;
+    [[nodiscard]] bool hasNode( const QgsPointCloudNodeId &id ) const;
 
     /**
     * Returns object for a given node
     *
     * \see QgsAbstractPointCloudIndex::getNode
     */
-    QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const;
+    [[nodiscard]] QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const;
 
     /**
     * Returns all attributes that are stored in the file
     *
     * \see QgsAbstractPointCloudIndex::attributes
     */
-    QgsPointCloudAttributeCollection attributes() const;
+    [[nodiscard]] QgsPointCloudAttributeCollection attributes() const;
 
     /**
      * Returns node data block.
@@ -553,49 +553,49 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     *
     * \see QgsAbstractPointCloudIndex::extent
     */
-    QgsRectangle extent() const;
+    [[nodiscard]] QgsRectangle extent() const;
 
     /**
     * Returns z min
     *
     * \see QgsAbstractPointCloudIndex::zMin
     */
-    double zMin() const;
+    [[nodiscard]] double zMin() const;
 
     /**
     * Returns z max
     *
     * \see QgsAbstractPointCloudIndex::zMax
     */
-    double zMax() const;
+    [[nodiscard]] double zMax() const;
 
     /**
     * Returns bounding box of root node in CRS coords
     *
     * \see QgsAbstractPointCloudIndex::rootNodeBounds
     */
-    QgsBox3D rootNodeBounds() const;
+    [[nodiscard]] QgsBox3D rootNodeBounds() const;
 
     /**
     * Returns scale of data relative to CRS
     *
     * \see QgsAbstractPointCloudIndex::scale
     */
-    QgsVector3D scale() const;
+    [[nodiscard]] QgsVector3D scale() const;
 
     /**
     * Returns offset of data from CRS
     *
     * \see QgsAbstractPointCloudIndex::offset
     */
-    QgsVector3D offset() const;
+    [[nodiscard]] QgsVector3D offset() const;
 
     /**
      * Returns the number of points in one direction in a single node.
      *
      * \see QgsAbstractPointCloudIndex::span
      */
-    int span() const;
+    [[nodiscard]] int span() const;
 
     /**
      * Sets the string used to define a subset of the point cloud.
@@ -612,7 +612,7 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
      *
      * \see QgsAbstractPointCloudIndex::subsetString
      */
-    QString subsetString() const;
+    [[nodiscard]] QString subsetString() const;
 
     /**
      * Fetches the requested node data from the cache for the specified \a node and \a request.
@@ -636,7 +636,7 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
      *
      * \see QgsAbstractPointCloudIndex::extraMetadata
      */
-    QVariantMap extraMetadata() const;
+    [[nodiscard]] QVariantMap extraMetadata() const;
 
     /**
      * Tries to store pending changes to the data provider.
@@ -647,10 +647,10 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     bool commitChanges( QString *errorMessage SIP_OUT = nullptr );
 
     //! Returns TRUE if there are uncommitted changes, FALSE otherwise
-    bool isModified() const;
+    [[nodiscard]] bool isModified() const;
 
     //! Returns a list of node IDs that have been modified
-    QList<QgsPointCloudNodeId> updatedNodes() const;
+    [[nodiscard]] QList<QgsPointCloudNodeId> updatedNodes() const;
 
   private:
     std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;

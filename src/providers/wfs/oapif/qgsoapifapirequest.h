@@ -41,16 +41,16 @@ class QgsOapifApiRequest : public QgsBaseNetworkRequest
     };
 
     //! Returns application level error
-    ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
+    [[nodiscard]] ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
 
     //! Return the maximum number of features that can be requested at once (-1 if unknown)
-    int maxLimit() const { return mMaxLimit; }
+    [[nodiscard]] int maxLimit() const { return mMaxLimit; }
 
     //! Return the default number of features that are requested at once (-1 if unknown)
-    int defaultLimit() const { return mDefaultLimit; }
+    [[nodiscard]] int defaultLimit() const { return mDefaultLimit; }
 
     //! Return metadata (mostly contact info)
-    const QgsAbstractMetadataBase &metadata() const { return mMetadata; }
+    [[nodiscard]] const QgsAbstractMetadataBase &metadata() const { return mMetadata; }
 
     //! Describes a simple queryable parameter.
     struct SimpleQueryable
@@ -67,7 +67,7 @@ class QgsOapifApiRequest : public QgsBaseNetworkRequest
     };
 
     //! Get collection properties. The key of the map is a collection name.
-    const QMap<QString, CollectionProperties> &collectionProperties() const { return mCollectionProperties; }
+    [[nodiscard]] const QMap<QString, CollectionProperties> &collectionProperties() const { return mCollectionProperties; }
 
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred */

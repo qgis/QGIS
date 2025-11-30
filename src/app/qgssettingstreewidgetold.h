@@ -69,7 +69,7 @@ class QgsSettingsTreeWidgetOld : public QTreeWidget
 
     explicit QgsSettingsTreeWidgetOld( QWidget *parent = nullptr );
 
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
     void setSettingsMap( QMap<QString, QStringList> &map ) { mSettingsMap = map; }
     QString itemKey( QTreeWidgetItem *item );

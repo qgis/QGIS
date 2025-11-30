@@ -71,7 +71,7 @@ class CORE_EXPORT QgsTessellator
      * Returns the origin point of the map.
      * \since QGIS 4.0
      */
-    QgsVector3D origin() const { return mOrigin; }
+    [[nodiscard]] QgsVector3D origin() const { return mOrigin; }
 
     /**
      * Sets scaling and the bounds of the input geometry coordinates.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsTessellator
      * Returns whether Z values from the input geometries are ignored (TRUE) or not (FALSE).
      * \since QGIS 4.0
      */
-    bool isZValueIgnored() const { return mInputZValueIgnored; }
+    [[nodiscard]] bool isZValueIgnored() const { return mInputZValueIgnored; }
 
     /**
      * Sets which faces should be generated during extrusion.
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsTessellator
      * Returns which faces are generated during extrusion.
      * \since QGIS 4.0
      */
-    Qgis::ExtrusionFaces extrusionFaces() const { return mExtrusionFaces; }
+    [[nodiscard]] Qgis::ExtrusionFaces extrusionFaces() const { return mExtrusionFaces; }
 
     /**
      * Sets the rotation of texture UV coordinates (in degrees).
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsTessellator
      * Returns the rotation of texture UV coordinates (in degrees).
      * \since QGIS 4.0
      */
-    float textureRotation() const { return mTextureRotation; }
+    [[nodiscard]] float textureRotation() const { return mTextureRotation; }
 
     /**
      * Sets whether texture UV coordinates should be added to the output data (TRUE) or not (FALSE).
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsTessellator
      * Returns whether texture UV coordinates are being added to the output data (TRUE) or not (FALSE).
      * \since QGIS 4.0
      */
-    bool hasTextureUVs() const { return mAddTextureCoords; }
+    [[nodiscard]] bool hasTextureUVs() const { return mAddTextureCoords; }
 
     /**
      * Sets whether normals should be added to the output data (TRUE) or not (FALSE).
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsTessellator
      * Returns whether normals are being added to the output data (TRUE) or not (FALSE).
      * \since QGIS 4.0
      */
-    bool hasNormals() const { return mAddNormals; }
+    [[nodiscard]] bool hasNormals() const { return mAddNormals; }
 
     /**
      * Sets whether back faces should be added to the output data (TRUE) or not (FALSE).
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsTessellator
      * Returns whether back faces are being added to the output data (TRUE) or not (FALSE).
      * \since QGIS 4.0
      */
-    bool hasBackFacesEnabled() const { return mAddBackFaces; }
+    [[nodiscard]] bool hasBackFacesEnabled() const { return mAddBackFaces; }
 
     /**
      * Sets whether normals should be inverted (TRUE) or not (FALSE).
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsTessellator
      * Returns whether normals are inverted (TRUE) or not (FALSE).
      * \since QGIS 4.0
      */
-    bool hasInvertedNormals() const { return mInvertNormals; }
+    [[nodiscard]] bool hasInvertedNormals() const { return mInvertNormals; }
 
     /**
      * Sets whether the "up" direction should be the Z axis on output (TRUE),
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsTessellator
      * value is FALSE (to keep compatibility for existing tessellator use cases).
      * \since QGIS 3.42
      */
-    bool isOutputZUp() const { return mOutputZUp; }
+    [[nodiscard]] bool isOutputZUp() const { return mOutputZUp; }
 
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
@@ -188,37 +188,37 @@ class CORE_EXPORT QgsTessellator
      *
      * Vertice coordinates are stored as (x, z, -y)
      */
-    QVector<float> data() const { return mData; }
+    [[nodiscard]] QVector<float> data() const { return mData; }
 
     //! Returns the number of vertices stored in the output data array
-    int dataVerticesCount() const;
+    [[nodiscard]] int dataVerticesCount() const;
 
     //! Returns size of one vertex entry in bytes
-    int stride() const { return mStride; }
+    [[nodiscard]] int stride() const { return mStride; }
 
     /**
      * Returns the triangulation as a multipolygon geometry.
      */
-    std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const SIP_SKIP;
+    [[nodiscard]] std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const SIP_SKIP;
 
     /**
      * Returns minimal Z value of the data (in world coordinates)
      * \since QGIS 3.12
      */
-    float zMinimum() const { return mZMin; }
+    [[nodiscard]] float zMinimum() const { return mZMin; }
 
     /**
      * Returns maximal Z value of the data (in world coordinates)
      * \since QGIS 3.12
      */
-    float zMaximum() const { return mZMax; }
+    [[nodiscard]] float zMaximum() const { return mZMax; }
 
     /**
      * Returns a descriptive error string if the tessellation failed.
      *
      * \since QGIS 3.34
      */
-    QString error() const { return mError; }
+    [[nodiscard]] QString error() const { return mError; }
 
   private:
     void updateStride();

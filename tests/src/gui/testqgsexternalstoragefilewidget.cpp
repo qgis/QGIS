@@ -96,7 +96,7 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
       emit stored();
     }
 
-    QString url() const override
+    [[nodiscard]] QString url() const override
     {
       return mUrl;
     }
@@ -108,21 +108,21 @@ class QgsTestExternalStorageStoredContent : public QgsExternalStorageStoredConte
 class QgsTestExternalStorage : public QgsExternalStorage
 {
   public:
-    QString type() const override { return QStringLiteral( "test" ); }
+    [[nodiscard]] QString type() const override { return QStringLiteral( "test" ); }
 
-    QString displayName() const override { return QStringLiteral( "Test" ); }
+    [[nodiscard]] QString displayName() const override { return QStringLiteral( "Test" ); }
 
     static QPointer<QgsTestExternalStorageStoredContent> sCurrentStoredContent;
 
   protected:
-    QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override
+    [[nodiscard]] QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authcfg = QString() ) const override
     {
       Q_UNUSED( authcfg );
       sCurrentStoredContent = new QgsTestExternalStorageStoredContent( filePath, url );
       return sCurrentStoredContent;
     }
 
-    QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authcfg = QString() ) const override
+    [[nodiscard]] QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authcfg = QString() ) const override
     {
       Q_UNUSED( url );
       Q_UNUSED( authcfg );

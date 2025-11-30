@@ -115,7 +115,7 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      * \see setFilters()
      * \since QGIS 3.8
      */
-    QgsProcessingToolboxProxyModel::Filters filters() const;
+    [[nodiscard]] QgsProcessingToolboxProxyModel::Filters filters() const;
 
     /**
      * Sets the vector \a layer for the in-place algorithms

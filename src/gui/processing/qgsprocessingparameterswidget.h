@@ -45,7 +45,7 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
      */
     QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    const QgsProcessingAlgorithm *algorithm() const;
+    [[nodiscard]] const QgsProcessingAlgorithm *algorithm() const;
 
   protected:
     virtual void initWidgets();

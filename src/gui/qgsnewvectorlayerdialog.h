@@ -74,20 +74,20 @@ class GUI_EXPORT QgsNewVectorLayerDialog : public QDialog, private Ui::QgsNewVec
      */
     QgsNewVectorLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     //! Returns the selected geometry type
-    Qgis::WkbType selectedType() const;
+    [[nodiscard]] Qgis::WkbType selectedType() const;
     //! Appends the chosen attribute names and types to at
     void attributes( QList<QPair<QString, QString>> &at ) const;
     //! Returns the file format for storage
-    QString selectedFileFormat() const;
+    [[nodiscard]] QString selectedFileFormat() const;
     //! Returns the file format for storage
-    QString selectedFileEncoding() const;
+    [[nodiscard]] QString selectedFileEncoding() const;
 
     /**
      * Returns the name for the new layer
      *
      * \see setFilename()
      */
-    QString filename() const;
+    [[nodiscard]] QString filename() const;
 
     /**
      * Sets the initial file name to show in the dialog.
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog : public QDialog, private Ui::QgsNewVec
      * Returns the selected CRS for the new layer.
      * \see setCrs()
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets the \a crs value for the new layer in the dialog.

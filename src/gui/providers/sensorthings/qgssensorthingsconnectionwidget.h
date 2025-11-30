@@ -32,23 +32,23 @@ class QgsSensorThingsConnectionWidget : public QWidget, private Ui::QgsSensorThi
     QgsSensorThingsConnectionWidget( QWidget *parent = nullptr );
 
     void setSourceUri( const QString &uri );
-    QString sourceUri() const;
+    [[nodiscard]] QString sourceUri() const;
 
     void setUrl( const QString &url );
-    QString url() const;
+    [[nodiscard]] QString url() const;
 
     void setUsername( const QString &username );
     void setPassword( const QString &password );
     void setAuthCfg( const QString &id );
 
-    QString username() const;
-    QString password() const;
-    QString authcfg() const;
+    [[nodiscard]] QString username() const;
+    [[nodiscard]] QString password() const;
+    [[nodiscard]] QString authcfg() const;
 
     void setReferer( const QString &referer );
-    QString referer() const;
+    [[nodiscard]] QString referer() const;
 
-    bool isValid() const { return mIsValid; }
+    [[nodiscard]] bool isValid() const { return mIsValid; }
 
   signals:
 

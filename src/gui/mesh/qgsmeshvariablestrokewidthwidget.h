@@ -77,7 +77,7 @@ class QgsMeshVariableStrokeWidthWidget : public QgsPanelWidget, public Ui::QgsMe
     void setVariableStrokeWidth( const QgsInterpolatedLineWidth &variableStrokeWidth );
 
     //! Returns the variable stroke width
-    QgsInterpolatedLineWidth variableStrokeWidth() const;
+    [[nodiscard]] QgsInterpolatedLineWidth variableStrokeWidth() const;
 
   private slots:
     void defaultMinMax();

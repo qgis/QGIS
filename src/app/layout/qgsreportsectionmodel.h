@@ -36,15 +36,15 @@ class QgsReportSectionModel : public QAbstractItemModel
      */
     QgsReportSectionModel( QgsReport *report, QObject *parent );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex & = QModelIndex() ) const override;
 
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     void addSection( const QModelIndex &parent, std::unique_ptr<QgsAbstractReportSection> section );
@@ -52,7 +52,7 @@ class QgsReportSectionModel : public QAbstractItemModel
     /**
      * Returns the report section for the given \a index.
      */
-    QgsAbstractReportSection *sectionForIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsAbstractReportSection *sectionForIndex( const QModelIndex &index ) const;
 
     QModelIndex indexForSection( QgsAbstractReportSection *section ) const;
 

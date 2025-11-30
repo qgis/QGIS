@@ -51,7 +51,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog : public QDialog, private Ui::QgsNe
     /**
      * Returns the database path
      */
-    QString databasePath() const { return mFileName->filePath(); }
+    [[nodiscard]] QString databasePath() const { return mFileName->filePath(); }
 
     /**
      * Sets the initial database \a path

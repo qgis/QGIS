@@ -57,7 +57,7 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
      * Returns the list of substitutions currently defined by the widget.
      * \see setSubstitutions()
      */
-    QgsStringReplacementCollection substitutions() const;
+    [[nodiscard]] QgsStringReplacementCollection substitutions() const;
 
   signals:
 
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
      * Returns the list of substitutions currently defined by the dialog.
      * \see setSubstitutions()
      */
-    QgsStringReplacementCollection substitutions() const;
+    [[nodiscard]] QgsStringReplacementCollection substitutions() const;
 
 
   private:

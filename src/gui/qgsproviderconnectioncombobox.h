@@ -33,7 +33,7 @@ class GUI_EXPORT QgsProviderConnectionComboBoxSortModel : public QSortFilterProx
     explicit QgsProviderConnectionComboBoxSortModel( QObject *parent = nullptr );
 
   protected:
-    bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
 };
 #endif
 ///@endcond
@@ -85,17 +85,17 @@ class GUI_EXPORT QgsProviderConnectionComboBox : public QComboBox
      * Returns TRUE if the combobox allows the empty connection ("not set") choice.
      * \see setAllowEmptyConnection()
      */
-    bool allowEmptyConnection() const;
+    [[nodiscard]] bool allowEmptyConnection() const;
 
     /**
      * Returns the name of the current connection selected in the combo box.
      */
-    QString currentConnection() const;
+    [[nodiscard]] QString currentConnection() const;
 
     /**
      * Returns the uri of the current connection selected in the combo box.
      */
-    QString currentConnectionUri() const;
+    [[nodiscard]] QString currentConnectionUri() const;
 
   public slots:
 

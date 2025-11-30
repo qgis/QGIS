@@ -76,24 +76,24 @@ class CORE_EXPORT QgsFieldDomain
     /**
      * Clones the field domain.
      */
-    virtual QgsFieldDomain *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsFieldDomain *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns the type of field domain.
      */
-    virtual Qgis::FieldDomainType type() const = 0;
+    [[nodiscard]] virtual Qgis::FieldDomainType type() const = 0;
 
     /**
      * Returns a translated name of the field domain type.
      */
-    virtual QString typeName() const = 0;
+    [[nodiscard]] virtual QString typeName() const = 0;
 
     /**
      * Returns the name of the field domain.
      *
      * \see setName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Sets the \a name of the field domain.
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsFieldDomain
      *
      * \see setDescription()
      */
-    QString description() const { return mDescription; }
+    [[nodiscard]] QString description() const { return mDescription; }
 
     /**
      * Sets the \a description of the field domain.
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsFieldDomain
      *
      * \see setFieldType()
      */
-    QMetaType::Type fieldType() const { return mFieldType; }
+    [[nodiscard]] QMetaType::Type fieldType() const { return mFieldType; }
 
     /**
      * Sets the associated field \a type.
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsFieldDomain
      *
      * \see setSplitPolicy()
      */
-    Qgis::FieldDomainSplitPolicy splitPolicy() const { return mSplitPolicy; }
+    [[nodiscard]] Qgis::FieldDomainSplitPolicy splitPolicy() const { return mSplitPolicy; }
 
     /**
      * Sets the split \a policy.
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsFieldDomain
      *
      * \see setMergePolicy()
      */
-    Qgis::FieldDomainMergePolicy mergePolicy() const { return mMergePolicy; }
+    [[nodiscard]] Qgis::FieldDomainMergePolicy mergePolicy() const { return mMergePolicy; }
 
     /**
      * Sets the merge \a policy.
@@ -202,13 +202,13 @@ class CORE_EXPORT QgsCodedValue
      * Returns the associated code, which is the underlying
      * value stored in fields.
      */
-    QVariant code() const { return mCode; }
+    [[nodiscard]] QVariant code() const { return mCode; }
 
     /**
      * Returns the associated value, which is the user-friendly
      * string representation.
      */
-    QString value() const { return mValue; }
+    [[nodiscard]] QString value() const { return mValue; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -273,16 +273,16 @@ class CORE_EXPORT QgsCodedFieldDomain : public QgsFieldDomain
     QgsCodedFieldDomain &operator= ( const QgsCodedFieldDomain & ) = delete;
 #endif
 
-    Qgis::FieldDomainType type() const override;
-    QString typeName() const override;
-    QgsCodedFieldDomain *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::FieldDomainType type() const override;
+    [[nodiscard]] QString typeName() const override;
+    [[nodiscard]] QgsCodedFieldDomain *clone() const override SIP_FACTORY;
 
     /**
      * Returns the enumeration as QgsCodedValue values.
      *
      * \see setValues()
      */
-    QList< QgsCodedValue> values() const { return mValues; }
+    [[nodiscard]] QList< QgsCodedValue> values() const { return mValues; }
 
     /**
      * Sets the enumeration as QgsCodedValue \a values.
@@ -354,9 +354,9 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
     QgsRangeFieldDomain &operator= ( const QgsRangeFieldDomain & ) = delete;
 #endif
 
-    Qgis::FieldDomainType type() const override;
-    QString typeName() const override;
-    QgsRangeFieldDomain *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::FieldDomainType type() const override;
+    [[nodiscard]] QString typeName() const override;
+    [[nodiscard]] QgsRangeFieldDomain *clone() const override SIP_FACTORY;
 
     /**
      * Returns the minimum value.
@@ -366,7 +366,7 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
      * \see minimumIsInclusive()
      * \see setMinimum()
      */
-    QVariant minimum() const { return mMin; }
+    [[nodiscard]] QVariant minimum() const { return mMin; }
 
     /**
      * Sets the \a minimum allowed value.
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
      * \see minimum()
      * \see setMinimumIsInclusive()
      */
-    bool minimumIsInclusive() const { return mMinIsInclusive; }
+    [[nodiscard]] bool minimumIsInclusive() const { return mMinIsInclusive; }
 
     /**
      * Sets whether the minimum value is \a inclusive.
@@ -402,7 +402,7 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
      * \see maximumIsInclusive()
      * \see setMaximum()
      */
-    QVariant maximum() const { return mMax; }
+    [[nodiscard]] QVariant maximum() const { return mMax; }
 
     /**
      * Sets the \a maximum allowed value.
@@ -420,7 +420,7 @@ class CORE_EXPORT QgsRangeFieldDomain : public QgsFieldDomain
      * \see maximum()
      * \see setMaximumIsInclusive()
      */
-    bool maximumIsInclusive() const { return mMaxIsInclusive; }
+    [[nodiscard]] bool maximumIsInclusive() const { return mMaxIsInclusive; }
 
     /**
      * Sets whether the maximum value is \a inclusive.
@@ -496,9 +496,9 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
     QgsGlobFieldDomain &operator= ( const QgsGlobFieldDomain & ) = delete;
 #endif
 
-    Qgis::FieldDomainType type() const override;
-    QString typeName() const override;
-    QgsGlobFieldDomain *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::FieldDomainType type() const override;
+    [[nodiscard]] QString typeName() const override;
+    [[nodiscard]] QgsGlobFieldDomain *clone() const override SIP_FACTORY;
 
     /**
      * Returns the glob expression.
@@ -507,7 +507,7 @@ class CORE_EXPORT QgsGlobFieldDomain : public QgsFieldDomain
      *
      * \see setGlob()
      */
-    QString glob() const { return mGlob; }
+    [[nodiscard]] QString glob() const { return mGlob; }
 
     /**
      * Sets the \a glob expression.

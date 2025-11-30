@@ -40,7 +40,7 @@ class QgsAuthPkcs12Edit : public QgsAuthMethodEdit, private Ui::QgsAuthPkcs12Edi
 
     bool validateConfig() override;
 
-    QgsStringMap configMap() const override;
+    [[nodiscard]] QgsStringMap configMap() const override;
 
   public slots:
     void loadConfig( const QgsStringMap &configmap ) override;

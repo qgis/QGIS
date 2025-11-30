@@ -4001,10 +4001,10 @@ QString QgsOracleProviderMetadata::getStyleById( const QString &uri, const QStri
 class QgsOracleSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "oracle" ); }
-    QString text() const override { return QObject::tr( "Oracle" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 40; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOracleLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QStringLiteral( "oracle" ); }
+    [[nodiscard]] QString text() const override { return QObject::tr( "Oracle" ); }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 40; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOracleLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsOracleSourceSelect( parent, fl, widgetMode );

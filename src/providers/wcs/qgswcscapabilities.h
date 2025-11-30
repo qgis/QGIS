@@ -131,7 +131,7 @@ class QgsWcsCapabilities : public QObject
 
     void setUri( QgsDataSourceUri const &uri );
 
-    const QgsWcsCapabilitiesProperty &capabilities() const;
+    [[nodiscard]] [[nodiscard]] const QgsWcsCapabilitiesProperty &capabilities() const;
 
     /**
      * \brief   Returns a list of the supported layers of the WCS server
@@ -152,7 +152,7 @@ class QgsWcsCapabilities : public QObject
     QgsWcsCoverageSummary coverage( QString const &identifier );
 
     //! Gets list of all coverage summaries
-    QList<QgsWcsCoverageSummary> coverages() const;
+    [[nodiscard]] [[nodiscard]] QList<QgsWcsCoverageSummary> coverages() const;
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value
@@ -165,16 +165,16 @@ class QgsWcsCapabilities : public QObject
      * \brief Returns the GetCoverage full url
      *  \param version optional version, e.g. 1.0.0 or 1.1.0
     */
-    QString getCapabilitiesUrl( const QString &version ) const;
+    [[nodiscard]] [[nodiscard]] QString getCapabilitiesUrl( const QString &version ) const;
 
     //! \brief Returns the GetCoverage full url using current version
-    QString getCapabilitiesUrl() const;
+    [[nodiscard]] [[nodiscard]] QString getCapabilitiesUrl() const;
 
     //! \brief Returns the GetCoverage full full url using current version
-    QString getDescribeCoverageUrl( QString const &identifier ) const;
+    [[nodiscard]] [[nodiscard]] QString getDescribeCoverageUrl( QString const &identifier ) const;
 
     //! Returns the GetCoverage base url
-    QString getCoverageUrl() const;
+    [[nodiscard]] [[nodiscard]] QString getCoverageUrl() const;
 
     //! Send request to server
     bool sendRequest( QString const &url );
@@ -195,7 +195,7 @@ class QgsWcsCapabilities : public QObject
     //! Sets authorization reply
     bool setAuthorizationReply( QNetworkReply *reply ) const;
 
-    QString version() const { return mCapabilities.version; }
+    [[nodiscard]] [[nodiscard]] QString version() const { return mCapabilities.version; }
 
     /**
      * \brief   Returns the caption error text for the last error in this provider

@@ -109,10 +109,10 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \see values()
      */
-    virtual QRegularExpression path() const = 0;
+    [[nodiscard]] virtual QRegularExpression path() const = 0;
 
     //! Returns the operation id for template file names and other internal references
-    virtual std::string operationId() const = 0;
+    [[nodiscard]] virtual std::string operationId() const = 0;
 
     /**
      * Returns a list of query string parameters.
@@ -120,7 +120,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * Depending on the handler, it may be dynamic (per-request) or static.
      * \param context the request context
      */
-    virtual QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const
+    [[nodiscard]] virtual QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const
     {
       Q_UNUSED( context );
       return {};
@@ -130,19 +130,19 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     // METADATA Sections (informative)
 
     //! Summary
-    virtual std::string summary() const = 0;
+    [[nodiscard]] virtual std::string summary() const = 0;
 
     //! Description
-    virtual std::string description() const = 0;
+    [[nodiscard]] virtual std::string description() const = 0;
 
     //! Title for the handler link
-    virtual std::string linkTitle() const = 0;
+    [[nodiscard]] virtual std::string linkTitle() const = 0;
 
     //! Main role for the resource link
-    virtual QgsServerOgcApi::Rel linkType() const = 0;
+    [[nodiscard]] virtual QgsServerOgcApi::Rel linkType() const = 0;
 
     //! Tags
-    virtual QStringList tags() const { return {}; }
+    [[nodiscard]] virtual QStringList tags() const { return {}; }
 
     /**
      * Returns the default response content type in case the client did not specifically
@@ -150,7 +150,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * The default implementation returns the first content type returned by
      * contentTypes() or JSON if that list is empty.
      */
-    virtual QgsServerOgcApi::ContentType defaultContentType() const;
+    [[nodiscard]] virtual QgsServerOgcApi::ContentType defaultContentType() const;
 
     /**
      * Returns the list of content types this handler can serve, default to JSON and HTML.
@@ -158,7 +158,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * the generic type (such as JSON) should not be listed.
      * \note not available in Python bindings
      */
-    QList<QgsServerOgcApi::ContentType> contentTypes() const SIP_SKIP;
+    [[nodiscard]] QList<QgsServerOgcApi::ContentType> contentTypes() const SIP_SKIP;
 
     /**
      * Handles the request within its \a context
@@ -189,13 +189,13 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * \see parameters()
      * \throws QgsServerApiBadRequestError if validation fails
      */
-    virtual QVariantMap values( const QgsServerApiContext &context ) const SIP_THROW( QgsServerApiBadRequestException );
+    [[nodiscard]] virtual QVariantMap values( const QgsServerApiContext &context ) const SIP_THROW( QgsServerApiBadRequestException );
 
     /**
      * Looks for the first ContentType match in the accept header and returns its mime type,
      * returns an empty string if there are not matches.
      */
-    QString contentTypeForAccept( const QString &accept ) const;
+    [[nodiscard]] QString contentTypeForAccept( const QString &accept ) const;
 
     // /////////////////////////////////////////////////////
     // Utility methods: override should not be required
@@ -251,7 +251,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * \note requires a valid project to be present in the context
      * \note not available in Python bindings
      */
-    virtual json schema( const QgsServerApiContext &context ) const;
+    [[nodiscard]] virtual json schema( const QgsServerApiContext &context ) const;
 
     /**
      * Builds and returns a link to the resource.
@@ -262,7 +262,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * \param title title of the link
      * \note not available in Python bindings
      */
-    json link( const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self, const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON, const std::string &title = "" ) const;
+    [[nodiscard]] json link( const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self, const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON, const std::string &title = "" ) const;
 
     /**
      * Returns all the links for the given request \a context.
@@ -272,7 +272,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \note not available in Python bindings
      */
-    json links( const QgsServerApiContext &context ) const;
+    [[nodiscard]] json links( const QgsServerApiContext &context ) const;
 
 
     /**
@@ -284,7 +284,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * \throws QgsServerApiNotFoundError if the layer could not be found
      * \throws QgsServerApiImproperlyConfiguredException if project is not set
      */
-    QgsVectorLayer *layerFromContext( const QgsServerApiContext &context ) const;
+    [[nodiscard]] QgsVectorLayer *layerFromContext( const QgsServerApiContext &context ) const;
 
 #endif // SIP skipped
 
@@ -320,7 +320,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * \param extraPath an optional extra path that will be appended to the calculated URL
      * \param extension optional file extension to add (the dot will be added automatically).
      */
-    std::string href( const QgsServerApiContext &context, const QString &extraPath = QString(), const QString &extension = QString() ) const;
+    [[nodiscard]] std::string href( const QgsServerApiContext &context, const QString &extraPath = QString(), const QString &extension = QString() ) const;
 
     /**
      * Returns the HTML template path for the handler in the given \a context
@@ -330,14 +330,14 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * e.g. for an API with root path "/wfs3" and an handler with operationId "collectionItems", the path
      * will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
      */
-    virtual const QString templatePath( const QgsServerApiContext &context ) const;
+    [[nodiscard]] virtual const QString templatePath( const QgsServerApiContext &context ) const;
 
     /**
      * Returns the absolute path to the base directory where static resources for
      * this handler are stored in the given \a context.
      *
      */
-    virtual const QString staticPath( const QgsServerApiContext &context ) const;
+    [[nodiscard]] virtual const QString staticPath( const QgsServerApiContext &context ) const;
 
     /**
      * Returns the content type from the \a request.
@@ -375,7 +375,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \note not available in Python bindings
      */
-    json jsonTags() const SIP_SKIP;
+    [[nodiscard]] json jsonTags() const SIP_SKIP;
 
   protected:
     /**

@@ -59,19 +59,19 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! called on changed extent or resize event to update position of the item
     virtual void updatePosition();
 
-    QRectF boundingRect() const override;
+    [[nodiscard]] QRectF boundingRect() const override;
 
     //! returns canvas item rectangle in map units
-    QgsRectangle rect() const;
+    [[nodiscard]] QgsRectangle rect() const;
 
     //! sets canvas item rectangle in map units
     void setRect( const QgsRectangle &r, bool resetRotation = true );
 
     //! transformation from screen coordinates to map coordinates
-    QgsPointXY toMapCoordinates( QPoint point ) const;
+    [[nodiscard]] QgsPointXY toMapCoordinates( QPoint point ) const;
 
     //! transformation from map coordinates to screen coordinates
-    QPointF toCanvasCoordinates( const QgsPointXY &point ) const;
+    [[nodiscard]] QPointF toCanvasCoordinates( const QgsPointXY &point ) const;
 
   protected:
     //! pointer to map canvas

@@ -43,7 +43,7 @@ class CORE_EXPORT QgsAbstractLayoutUndoCommand: public QUndoCommand
 
     void undo() override;
     void redo() override;
-    int id() const override { return mId; }
+    [[nodiscard]] int id() const override { return mId; }
 
     /**
      * Saves current layout state as before state.
@@ -64,19 +64,19 @@ class CORE_EXPORT QgsAbstractLayoutUndoCommand: public QUndoCommand
      * \see saveBeforeState()
      * \see afterState()
      */
-    QDomDocument beforeState() const { return mBeforeState.cloneNode().toDocument(); }
+    [[nodiscard]] QDomDocument beforeState() const { return mBeforeState.cloneNode().toDocument(); }
 
     /**
      * Returns the after state for the layout.
      * \see saveAfterState()
      * \see beforeState()
      */
-    QDomDocument afterState() const { return mAfterState.cloneNode().toDocument(); }
+    [[nodiscard]] QDomDocument afterState() const { return mAfterState.cloneNode().toDocument(); }
 
     /**
      * Returns TRUE if both the before and after states are valid and different.
      */
-    virtual bool containsChange() const;
+    [[nodiscard]] virtual bool containsChange() const;
 
   protected:
 

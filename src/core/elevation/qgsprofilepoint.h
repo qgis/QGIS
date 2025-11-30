@@ -72,7 +72,7 @@ class CORE_EXPORT QgsProfilePoint
      *
      * \see setDistance()
      */
-    double distance() const SIP_HOLDGIL
+    [[nodiscard]] double distance() const SIP_HOLDGIL
     {
       return mDistance;
     }
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsProfilePoint
      *
      * \see setElevation()
      */
-    double elevation() const SIP_HOLDGIL
+    [[nodiscard]] double elevation() const SIP_HOLDGIL
     {
       return mElevation;
     }
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsProfilePoint
      *
      * A QgsProfilePoint is considered empty when the coordinates have not been explicitly filled in.
      */
-    bool isEmpty() const SIP_HOLDGIL { return mIsEmpty; }
+    [[nodiscard]] bool isEmpty() const SIP_HOLDGIL { return mIsEmpty; }
 
     bool operator==( const QgsProfilePoint &other ) SIP_HOLDGIL
     {

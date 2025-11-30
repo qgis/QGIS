@@ -40,14 +40,14 @@ class CORE_EXPORT QgsProcessingModelParameter : public QgsProcessingModelCompone
      */
     QgsProcessingModelParameter( const QString &parameterName = QString() );
 
-    QgsProcessingModelParameter *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsProcessingModelParameter *clone() const override SIP_FACTORY;
 
     /**
      * Returns the associated parameter name. The parameter name should match one of the
      * parameters from the parent model.
      * \see parameterName()
      */
-    QString parameterName() const { return mParameterName; }
+    [[nodiscard]] QString parameterName() const { return mParameterName; }
 
     /**
      * Sets the associated parameter name. The parameter name should match one of the
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsProcessingModelParameter : public QgsProcessingModelCompone
      * Saves this parameter to a QVariant.
      * \see loadVariant()
      */
-    QVariant toVariant() const;
+    [[nodiscard]] QVariant toVariant() const;
 
     /**
      * Loads this parameter from a QVariantMap.
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsProcessingModelParameter : public QgsProcessingModelCompone
      */
     bool loadVariant( const QVariantMap &map );
 
-    SIP_SKIP const QgsProcessingModelComment *comment() const override { return &mComment; }
+    SIP_SKIP [[nodiscard]] const QgsProcessingModelComment *comment() const override { return &mComment; }
     QgsProcessingModelComment *comment() override { return &mComment; }
     void setComment( const QgsProcessingModelComment &comment ) override { mComment = comment; }
 

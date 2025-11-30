@@ -63,43 +63,43 @@ class GUI_EXPORT QgsSettingsTreeModelNodeData : public QObject
     void applyChanges();
 
     //! Returns if the node is the root node
-    bool isRoot() const { return !mParent; }
+    [[nodiscard]] bool isRoot() const { return !mParent; }
 
     //! Returns the dynamic key parts of the named list parent tree nodes
-    QStringList namedParentNodes() const { return mNamedParentNodes; }
+    [[nodiscard]] QStringList namedParentNodes() const { return mNamedParentNodes; }
 
     //! Returns the children nodes of the node (setting or tree node)
-    QList<QgsSettingsTreeModelNodeData *> children() const { return mChildren; }
+    [[nodiscard]] QList<QgsSettingsTreeModelNodeData *> children() const { return mChildren; }
 
     //! Returns the parent of the node
-    QgsSettingsTreeModelNodeData *parent() const { return mParent; }
+    [[nodiscard]] QgsSettingsTreeModelNodeData *parent() const { return mParent; }
 
     //! Returns the type of the node (setting or tree node)
-    Type type() const { return mType; }
+    [[nodiscard]] Type type() const { return mType; }
 
     //! Returns the name of the node (setting or tree node)
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     //! Returns the value of the node (setting or tree node)
-    QVariant value() const { return mValue; }
+    [[nodiscard]] QVariant value() const { return mValue; }
 
     //! Returns the value of the node (setting or tree node)
-    QVariant originalValue() const { return mOriginalValue; }
+    [[nodiscard]] QVariant originalValue() const { return mOriginalValue; }
 
     //! Sets the \a value of the setting node
     bool setValue( const QVariant &value );
 
     //! Returns if the setting exists (value is set)
-    bool exists() const { return mExists; }
+    [[nodiscard]] bool exists() const { return mExists; }
 
     //! Returns if the setting is edited
-    bool isEdited() const { return mIsEdited; }
+    [[nodiscard]] bool isEdited() const { return mIsEdited; }
 
     /**
      * Returns a pointer to the setting of the node or NULLPTR if the
      * setting does not exist.
      */
-    const QgsSettingsEntryBase *setting() const { return mSetting; }
+    [[nodiscard]] const QgsSettingsEntryBase *setting() const { return mSetting; }
 
   private:
     //! Private constructor, use createRootNodeData() instead
@@ -186,19 +186,19 @@ class GUI_EXPORT QgsSettingsTreeModel : public QAbstractItemModel
     /**
      * Returns settings tree node for given \a index or the root node if the index is invalid.
      */
-    QgsSettingsTreeModelNodeData *index2node( const QModelIndex &index ) const SIP_SKIP;
+    [[nodiscard]] QgsSettingsTreeModelNodeData *index2node( const QModelIndex &index ) const SIP_SKIP;
 
     //! Returns the index from the settings tree node
     QModelIndex node2index( QgsSettingsTreeModelNodeData *node ) const SIP_SKIP;
 
 
-    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    int rowCount( const QModelIndex &parent ) const override;
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
   private:
@@ -234,7 +234,7 @@ class GUI_EXPORT QgsSettingsTreeProxyModel : public QSortFilterProxyModel
 
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
     QgsSettingsTreeModel *mSourceModel = nullptr;

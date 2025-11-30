@@ -75,7 +75,7 @@ class ANALYSIS_EXPORT QgsGcpGeometryTransformer : public QgsAbstractGeometryTran
      *
      * \see setGcpTransformer()
      */
-    QgsGcpTransformerInterface *gcpTransformer() const;
+    [[nodiscard]] QgsGcpTransformerInterface *gcpTransformer() const;
 
     /**
      * Sets the underlying GCP \a transformer used to transform geometries.

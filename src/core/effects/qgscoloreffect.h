@@ -46,11 +46,11 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     QgsColorEffect();
 
-    Qgis::PaintEffectFlags flags() const override;
-    QString type() const override { return QStringLiteral( "color" ); }
-    QVariantMap properties() const override;
+    [[nodiscard]] Qgis::PaintEffectFlags flags() const override;
+    [[nodiscard]] QString type() const override { return QStringLiteral( "color" ); }
+    [[nodiscard]] QVariantMap properties() const override;
     void readProperties( const QVariantMap &props ) override;
-    QgsColorEffect *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsColorEffect *clone() const override SIP_FACTORY;
 
     /**
      * Sets the brightness modification for the effect.
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * lightening
      * \see setBrightness
      */
-    int brightness() const { return mBrightness; }
+    [[nodiscard]] int brightness() const { return mBrightness; }
 
     /**
      * Sets the contrast modification for the effect.
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * greater contrast
      * \see setContrast
      */
-    int contrast() const { return mContrast; }
+    [[nodiscard]] int contrast() const { return mContrast; }
 
     /**
      * Sets the saturation modification for the effect.
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * greater saturation
      * \see setSaturation
      */
-    double saturation() const { return mSaturation; }
+    [[nodiscard]] double saturation() const { return mSaturation; }
 
     /**
      * Sets whether the effect should convert a picture to grayscale.
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \returns method for grayscale conversion
      * \see setGrayscaleMode
      */
-    QgsImageOperation::GrayscaleMode grayscaleMode() const { return mGrayscaleMode; }
+    [[nodiscard]] QgsImageOperation::GrayscaleMode grayscaleMode() const { return mGrayscaleMode; }
 
     /**
      * Sets whether the effect should colorize a picture.
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see colorizeColor
      * \see colorizeStrength
      */
-    bool colorizeOn() const { return mColorizeOn; }
+    [[nodiscard]] bool colorizeOn() const { return mColorizeOn; }
 
     /**
      * Sets the color used for colorizing a picture. This is only used if
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see colorizeOn
      * \see colorizeStrength
      */
-    QColor colorizeColor() const { return mColorizeColor; }
+    [[nodiscard]] QColor colorizeColor() const { return mColorizeColor; }
 
     /**
      * Sets the strength for colorizing a picture. This is only used if
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see colorizeOn
      * \see colorizeColor
      */
-    int colorizeStrength() const { return mColorizeStrength; }
+    [[nodiscard]] int colorizeStrength() const { return mColorizeStrength; }
 
     /**
      * Sets the \a opacity for the effect.
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * and 1 is fully opaque.
      * \see setOpacity()
      */
-    double opacity() const { return mOpacity; }
+    [[nodiscard]] double opacity() const { return mOpacity; }
 
     /**
      * Sets the blend mode for the effect
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * paint device
      * \see setBlendMode
      */
-    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+    [[nodiscard]] QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
   protected:
 

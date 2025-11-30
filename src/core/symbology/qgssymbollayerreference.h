@@ -80,12 +80,12 @@ class CORE_EXPORT QgsSymbolLayerId
     /**
      * Returns the key associated to the symbol
      */
-    QString symbolKey() const { return mSymbolKey; }
+    [[nodiscard]] QString symbolKey() const { return mSymbolKey; }
 
     /**
      * Returns the symbol layer index path inside the symbol
      */
-    QVector<int> symbolLayerIndexPath() const { return mIndexPath; }
+    [[nodiscard]] QVector<int> symbolLayerIndexPath() const { return mIndexPath; }
 
     // TODO c++20 - replace with = default
 
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsSymbolLayerReference
     /**
      * The referenced vector layer / feature renderer
      */
-    QString layerId() const { return mLayerId; }
+    [[nodiscard]] QString layerId() const { return mLayerId; }
 
     /**
      * The symbol layer's id
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsSymbolLayerReference
      * The symbol layer's id
      * \since QGIS 3.30
      */
-    QString symbolLayerIdV2() const { return mSymbolLayerId; }
+    [[nodiscard]] QString symbolLayerIdV2() const { return mSymbolLayerId; }
 
     bool operator==( const QgsSymbolLayerReference &other ) const
     {

@@ -55,7 +55,7 @@ class GUI_EXPORT QgsFormLabelFormatWidget : public QWidget, private Ui::QgsFormL
     /**
      * Returns the current label style from the wiget.
      */
-    QgsAttributeEditorElement::LabelStyle labelStyle() const;
+    [[nodiscard]] QgsAttributeEditorElement::LabelStyle labelStyle() const;
 };
 
 /// @endcond private

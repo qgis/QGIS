@@ -46,8 +46,8 @@ namespace QgsWcs
         : mServerIface( serverIface )
       {}
 
-      QString name() const override { return QStringLiteral( "WCS" ); }
-      QString version() const override { return implementationVersion(); }
+      [[nodiscard]] QString name() const override { return QStringLiteral( "WCS" ); }
+      [[nodiscard]] QString version() const override { return implementationVersion(); }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
       {

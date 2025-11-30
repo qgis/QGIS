@@ -29,11 +29,11 @@ class QgsHanaExpressionCompiler : public QgsSqlExpressionCompiler
   protected:
     QString quotedIdentifier( const QString &identifier ) override;
     QString quotedValue( const QVariant &value, bool &ok ) override;
-    QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
-    QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const override;
-    QString castToReal( const QString &value ) const override;
-    QString castToInt( const QString &value ) const override;
-    QString castToText( const QString &value ) const override;
+    [[nodiscard]] QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
+    [[nodiscard]] QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const override;
+    [[nodiscard]] QString castToReal( const QString &value ) const override;
+    [[nodiscard]] QString castToInt( const QString &value ) const override;
+    [[nodiscard]] QString castToText( const QString &value ) const override;
     Result compileNode( const QgsExpressionNode *node, QString &str ) override;
 
   private:

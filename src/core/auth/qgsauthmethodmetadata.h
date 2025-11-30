@@ -64,27 +64,27 @@ class CORE_EXPORT QgsAuthMethodMetadata
      *
      * This key string is used for the associative container in QgsAtuhMethodRegistry
      */
-    QString key() const;
+    [[nodiscard]] QString key() const;
 
     /**
      * Returns descriptive text for the method.
      *
      * This is used to provide a descriptive list of available data methods.
      */
-    QString description() const;
+    [[nodiscard]] QString description() const;
 
     /**
      * Returns the library file name.
      *
      * This is used to QLibrary calls to load the method.
      */
-    QString library() const;
+    [[nodiscard]] QString library() const;
 
     /**
      * Class factory to return a pointer to a newly created QgsDataProvider object
      * \since QGIS 3.22
      */
-    virtual QgsAuthMethod *createAuthMethod() const SIP_FACTORY; // TODO QGIS 4 = 0
+    [[nodiscard]] virtual QgsAuthMethod *createAuthMethod() const SIP_FACTORY; // TODO QGIS 4 = 0
 
     //virtual QStringList supportedDataProviders() const; // TODO QGIS 4 = 0;
 

@@ -101,7 +101,7 @@ class QgsAppMapTools
     /**
      * Returns a list of all QgsMapToolCapture derived tools.
      */
-    QList<QgsMapToolCapture *> captureTools() const;
+    [[nodiscard]] QList<QgsMapToolCapture *> captureTools() const;
 
   private:
     QHash<Tool, QPointer<QgsMapTool>> mTools;

@@ -46,8 +46,8 @@ class QgsCheckableStyleModel : public QgsStyleProxyModel
     void setCheckable( bool checkable );
     void setCheckTag( const QString &tag );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
   private:
@@ -377,9 +377,9 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     /**
      * Returns TRUE if the "All" tab is selected.
      */
-    bool allTypesSelected() const;
+    [[nodiscard]] bool allTypesSelected() const;
 
-    bool isReadOnly() const;
+    [[nodiscard]] bool isReadOnly() const;
 
     struct ItemDetails
     {

@@ -28,7 +28,7 @@ class TestQgsGeometryUtils : public QObject
 {
     Q_OBJECT
   public:
-    QString elemToString( const QDomElement &elem ) const;
+    [[nodiscard]] QString elemToString( const QDomElement &elem ) const;
 
   private slots:
     void testExtractLinestrings();

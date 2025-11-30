@@ -35,8 +35,8 @@ class QgsTiledSceneProviderMetadata : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsTiledSceneProviderMetadata();
-    QIcon icon() const override;
-    QList< QgsDataItemProvider * > dataItemProviders() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QList< QgsDataItemProvider * > dataItemProviders() const override;
 
     // handling of stored connections
 
@@ -45,7 +45,7 @@ class QgsTiledSceneProviderMetadata : public QgsProviderMetadata
     void deleteConnection( const QString &name ) override;
     void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
 
-    ProviderCapabilities providerCapabilities() const override;
+    [[nodiscard]] ProviderCapabilities providerCapabilities() const override;
 };
 
 ///@endcond

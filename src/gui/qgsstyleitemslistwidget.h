@@ -39,8 +39,8 @@ class QgsReadOnlyStyleModel : public QgsStyleProxyModel
     explicit QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent = nullptr );
     explicit QgsReadOnlyStyleModel( QgsCombinedStyleModel *style, QObject *parent = nullptr );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
 };
 
 /**
@@ -60,7 +60,7 @@ class QgsStyleModelDelegate : public QStyledItemDelegate
      */
     QgsStyleModelDelegate( QObject *parent );
 
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    [[nodiscard]] QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
     /**
      * Returns the current tag filter set for the widget, if any is set.
      */
-    QString currentTagFilter() const;
+    [[nodiscard]] QString currentTagFilter() const;
 
 #ifndef SIP_RUN
 
@@ -159,13 +159,13 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
      * Returns the name of the item currently selected in the widget.
      * \see currentEntityType()
      */
-    QString currentItemName() const;
+    [[nodiscard]] QString currentItemName() const;
 
     /**
      * Returns the type of the item currently selected in the widget.
      * \see currentItemName()
      */
-    QgsStyle::StyleEntity currentEntityType() const;
+    [[nodiscard]] QgsStyle::StyleEntity currentEntityType() const;
 
   protected:
     void showEvent( QShowEvent *event ) override;

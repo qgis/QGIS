@@ -44,7 +44,7 @@ class GUI_EXPORT QgsTabBarProxyStyle : public QgsProxyStyle
 
     void addStyle( int tabIndex, const QgsAttributeEditorElement::LabelStyle &style );
 
-    const QMap<int, QgsAttributeEditorElement::LabelStyle> &tabStyles() const;
+    [[nodiscard]] const QMap<int, QgsAttributeEditorElement::LabelStyle> &tabStyles() const;
 
   private:
     QMap<int, QgsAttributeEditorElement::LabelStyle> mTabStyles;
@@ -71,7 +71,7 @@ class QgsTabBar : public QTabBar
     void setTabBarStyle( QgsTabBarProxyStyle *tabStyle );
 
   protected:
-    QSize tabSizeHint( int index ) const override;
+    [[nodiscard]] QSize tabSizeHint( int index ) const override;
 
   private:
     QgsTabBarProxyStyle *mTabBarStyle = nullptr;

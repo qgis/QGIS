@@ -209,22 +209,22 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns the x maximum value (right side of rectangle).
      */
-    double xMaximum() const SIP_HOLDGIL { return mXmax; }
+    [[nodiscard]] double xMaximum() const SIP_HOLDGIL { return mXmax; }
 
     /**
      * Returns the x minimum value (left side of rectangle).
      */
-    double xMinimum() const SIP_HOLDGIL { return mXmin; }
+    [[nodiscard]] double xMinimum() const SIP_HOLDGIL { return mXmin; }
 
     /**
      * Returns the y maximum value (top side of rectangle).
      */
-    double yMaximum() const SIP_HOLDGIL { return mYmax; }
+    [[nodiscard]] double yMaximum() const SIP_HOLDGIL { return mYmax; }
 
     /**
      * Returns the y minimum value (bottom side of rectangle).
      */
-    double yMinimum() const SIP_HOLDGIL { return mYmin; }
+    [[nodiscard]] double yMinimum() const SIP_HOLDGIL { return mYmin; }
 
     /**
      * Normalize the rectangle so it has non-negative width/height.
@@ -249,14 +249,14 @@ class CORE_EXPORT QgsRectangle
      * \see height()
      * \see area()
      */
-    double width() const SIP_HOLDGIL { return mXmax - mXmin; }
+    [[nodiscard]] double width() const SIP_HOLDGIL { return mXmax - mXmin; }
 
     /**
      * Returns the height of the rectangle.
      * \see width()
      * \see area()
      */
-    double height() const SIP_HOLDGIL { return mYmax - mYmin; }
+    [[nodiscard]] double height() const SIP_HOLDGIL { return mYmax - mYmin; }
 
     /**
      * Returns the area of the rectangle.
@@ -264,18 +264,18 @@ class CORE_EXPORT QgsRectangle
      * \see height()
      * \see perimeter()
      */
-    double area() const SIP_HOLDGIL { return ( mXmax - mXmin ) * ( mYmax - mYmin ); }
+    [[nodiscard]] double area() const SIP_HOLDGIL { return ( mXmax - mXmin ) * ( mYmax - mYmin ); }
 
     /**
      * Returns the perimeter of the rectangle.
      * \see area()
      */
-    double perimeter() const SIP_HOLDGIL { return 2 * ( mXmax - mXmin ) + 2 * ( mYmax - mYmin ); }
+    [[nodiscard]] double perimeter() const SIP_HOLDGIL { return 2 * ( mXmax - mXmin ) + 2 * ( mYmax - mYmin ); }
 
     /**
      * Returns the center point of the rectangle.
      */
-    QgsPointXY center() const SIP_HOLDGIL { return QgsPointXY( mXmax * 0.5 + mXmin * 0.5, mYmin * 0.5 + mYmax * 0.5 ); }
+    [[nodiscard]] QgsPointXY center() const SIP_HOLDGIL { return QgsPointXY( mXmax * 0.5 + mXmin * 0.5, mYmin * 0.5 + mYmax * 0.5 ); }
 
     /**
      * Scale the rectangle around its center point.
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsRectangle
      * \note In earlier QGIS releases this method was named buffer().
      * \see grow()
     */
-    QgsRectangle buffered( double width ) const
+    [[nodiscard]] QgsRectangle buffered( double width ) const
     {
       if ( isNull() )
         return QgsRectangle();
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns the intersection with the given rectangle.
      */
-    QgsRectangle intersect( const QgsRectangle &rect ) const
+    [[nodiscard]] QgsRectangle intersect( const QgsRectangle &rect ) const
     {
       QgsRectangle intersection = QgsRectangle();
       if ( intersects( rect ) )
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns TRUE when rectangle intersects with other rectangle.
      */
-    bool intersects( const QgsRectangle &rect ) const SIP_HOLDGIL
+    [[nodiscard]] bool intersects( const QgsRectangle &rect ) const SIP_HOLDGIL
     {
       if ( isNull() || rect.isNull() )
       {
@@ -403,7 +403,7 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns TRUE when rectangle contains other rectangle.
      */
-    bool contains( const QgsRectangle &rect ) const SIP_HOLDGIL
+    [[nodiscard]] bool contains( const QgsRectangle &rect ) const SIP_HOLDGIL
     {
       return ( rect.mXmin >= mXmin && rect.mXmax <= mXmax && rect.mYmin >= mYmin && rect.mYmax <= mYmax );
     }
@@ -411,7 +411,7 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns TRUE when rectangle contains a point.
      */
-    bool contains( const QgsPointXY &p ) const SIP_HOLDGIL
+    [[nodiscard]] bool contains( const QgsPointXY &p ) const SIP_HOLDGIL
     {
       return mXmin <= p.x() && p.x() <= mXmax &&
              mYmin <= p.y() && p.y() <= mYmax;
@@ -422,7 +422,7 @@ class CORE_EXPORT QgsRectangle
      *
      * \since QGIS 3.20
      */
-    bool contains( double x, double y ) const SIP_HOLDGIL
+    [[nodiscard]] bool contains( double x, double y ) const SIP_HOLDGIL
     {
       return mXmin <= x && x <= mXmax &&
              mYmin <= y && y <= mYmax;
@@ -474,7 +474,7 @@ class CORE_EXPORT QgsRectangle
      * Returns the distance from \a point to the nearest point on the boundary of the rectangle.
      * \since QGIS 3.14
      */
-    double distance( const QgsPointXY &point ) const
+    [[nodiscard]] double distance( const QgsPointXY &point ) const
     {
       const double dx = std::max( std::max( mXmin - point.x(), 0.0 ), point.x() - mXmax );
       const double dy = std::max( std::max( mYmin - point.y(), 0.0 ), point.y() - mYmax );
@@ -510,7 +510,7 @@ class CORE_EXPORT QgsRectangle
      *
      * \see isNull()
      */
-    bool isEmpty() const
+    [[nodiscard]] bool isEmpty() const
     {
       return isNull() || mXmax <= mXmin || mYmax <= mYmin || qgsDoubleNear( mXmax, mXmin ) || qgsDoubleNear( mYmax, mYmin );
     }
@@ -525,7 +525,7 @@ class CORE_EXPORT QgsRectangle
      * \see setNull()
      *
      */
-    bool isNull() const
+    [[nodiscard]] bool isNull() const
     {
       // rectangle created QgsRectangle() or with rect.setNull() or
       // otherwise having NaN ordinates
@@ -543,7 +543,7 @@ class CORE_EXPORT QgsRectangle
      * \see isNull()
      * \since QGIS 4.0
      */
-    bool isValid() const
+    [[nodiscard]] bool isValid() const
     {
       if ( ( !isFinite() ) || ( mXmax <= mXmin ) || ( mYmax <= mYmin ) )
       {
@@ -564,7 +564,7 @@ class CORE_EXPORT QgsRectangle
      *
      * \since QGIS 3.44
      */
-    bool isMaximal() const
+    [[nodiscard]] bool isMaximal() const
     {
       return ( std::isinf( mXmin ) || mXmin == std::numeric_limits<double>::lowest() )
              && ( std::isinf( mYmin ) || mYmin == std::numeric_limits<double>::lowest() )
@@ -575,17 +575,17 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns a string representation of the rectangle in WKT format.
      */
-    Q_INVOKABLE QString asWktCoordinates() const;
+    Q_INVOKABLE [[nodiscard]] QString asWktCoordinates() const;
 
     /**
      * Returns a string representation of the rectangle as a WKT Polygon.
      */
-    Q_INVOKABLE QString asWktPolygon() const;
+    Q_INVOKABLE [[nodiscard]] QString asWktPolygon() const;
 
     /**
      * Returns a QRectF with same coordinates as the rectangle.
      */
-    QRectF toRectF() const
+    [[nodiscard]] QRectF toRectF() const
     {
       return QRectF( static_cast< qreal >( mXmin ), static_cast< qreal >( mYmin ), static_cast< qreal >( mXmax - mXmin ), static_cast< qreal >( mYmax - mYmin ) );
     }
@@ -595,12 +595,12 @@ class CORE_EXPORT QgsRectangle
      * Coordinates will be truncated to the specified precision.
      * If the specified precision is less than 0, a suitable minimum precision is used.
      */
-    Q_INVOKABLE QString toString( int precision = 16 ) const;
+    Q_INVOKABLE [[nodiscard]] QString toString( int precision = 16 ) const;
 
     /**
      * Returns the rectangle as a polygon.
      */
-    QString asPolygon() const;
+    [[nodiscard]] QString asPolygon() const;
 
     bool operator==( const QgsRectangle &r1 ) const
     {
@@ -638,7 +638,7 @@ class CORE_EXPORT QgsRectangle
      * \see isNull()
      * \see isEmpty()
      */
-    bool isFinite() const
+    [[nodiscard]] bool isFinite() const
     {
       if ( std::isinf( mXmin ) || std::isinf( mYmin ) || std::isinf( mXmax ) || std::isinf( mYmax ) )
       {
@@ -664,7 +664,7 @@ class CORE_EXPORT QgsRectangle
      * Converts the rectangle to a 3D box, with the specified
      * \a zMin and \a zMax z values.
      */
-    QgsBox3D toBox3d( double zMin, double zMax ) const;
+    [[nodiscard]] QgsBox3D toBox3d( double zMin, double zMax ) const;
 
     //! Allows direct construction of QVariants from rectangles.
     operator QVariant() const
@@ -678,7 +678,7 @@ class CORE_EXPORT QgsRectangle
      *
      * \since QGIS 3.4
      */
-    QgsRectangle snappedToGrid( double spacing ) const;
+    [[nodiscard]] QgsRectangle snappedToGrid( double spacing ) const;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

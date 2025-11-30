@@ -34,8 +34,8 @@ class QgsRecentCoordinateReferenceSystemTableModel : public QgsRecentCoordinateR
     Q_OBJECT
   public:
     QgsRecentCoordinateReferenceSystemTableModel( QObject *parent );
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
 };
 
 class RemoveRecentCrsDelegate : public QStyledItemDelegate SIP_SKIP
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * Returns the CRS currently selected in the widget.
      * \see setCrs()
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets whether a "no/invalid" projection option should be shown. If this
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
      * \see setShowNoProjection()
      */
-    bool showNoProjection() const;
+    [[nodiscard]] bool showNoProjection() const;
 
     /**
      * Sets the text to show for the not set option. Note that this option is not shown
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * Returns whether the bounds preview map is shown.
      * \see setShowBoundsMap()
      */
-    bool showBoundsMap() const;
+    [[nodiscard]] bool showBoundsMap() const;
 
     /**
      * Returns TRUE if the current selection in the widget is a valid choice. Valid
@@ -132,13 +132,13 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * (if setShowNoProjection() was called). Invalid selections are the group
      * headers (such as "Geographic Coordinate Systems")
      */
-    bool hasValidSelection() const;
+    [[nodiscard]] bool hasValidSelection() const;
 
     /**
      * The initial "preview" rectangle for the bounds overview map.
      * \see previewRect()
      */
-    QgsRectangle previewRect() const;
+    [[nodiscard]] QgsRectangle previewRect() const;
 
     /**
      * Returns the filters set on the available CRS.
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * \see setFilters()
      * \since QGIS 3.34
      */
-    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+    [[nodiscard]] QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
 
     /**
      * Sets \a filters for the available CRS.

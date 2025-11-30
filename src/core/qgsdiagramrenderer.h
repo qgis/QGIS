@@ -482,7 +482,7 @@ class CORE_EXPORT QgsDiagramSettings
      *
      * \since QGIS 3.12
      */
-    double spacing() const { return mSpacing; }
+    [[nodiscard]] double spacing() const { return mSpacing; }
 
     /**
      * Sets the \a spacing between diagram contents.
@@ -514,7 +514,7 @@ class CORE_EXPORT QgsDiagramSettings
      * \see spacingMapUnitScale()
      * \since QGIS 3.12
     */
-    Qgis::RenderUnit spacingUnit() const { return mSpacingUnit; }
+    [[nodiscard]] Qgis::RenderUnit spacingUnit() const { return mSpacingUnit; }
 
     /**
      * Sets the map unit \a scale for the content spacing.
@@ -534,7 +534,7 @@ class CORE_EXPORT QgsDiagramSettings
      *
      * \since QGIS 3.12
     */
-    const QgsMapUnitScale &spacingMapUnitScale() const { return mSpacingMapUnitScale; }
+    [[nodiscard]] const QgsMapUnitScale &spacingMapUnitScale() const { return mSpacingMapUnitScale; }
 
     /**
      * Returns the spacing between subdiagrams in a stacked diagram.
@@ -547,7 +547,7 @@ class CORE_EXPORT QgsDiagramSettings
      *
      * \since QGIS 3.40
      */
-    double stackedDiagramSpacing() const { return mStackedDiagramSpacing; }
+    [[nodiscard]] double stackedDiagramSpacing() const { return mStackedDiagramSpacing; }
 
     /**
      * Sets the \a spacing between subdiagrams in a stacked diagram.
@@ -580,7 +580,7 @@ class CORE_EXPORT QgsDiagramSettings
      *
      * \since QGIS 3.40
     */
-    Qgis::RenderUnit stackedDiagramSpacingUnit() const { return mStackedDiagramSpacingUnit; }
+    [[nodiscard]] Qgis::RenderUnit stackedDiagramSpacingUnit() const { return mStackedDiagramSpacingUnit; }
 
     /**
      * Sets the map unit \a scale for the spacing between subdiagrams in a stacked diagram.
@@ -600,7 +600,7 @@ class CORE_EXPORT QgsDiagramSettings
      *
      * \since QGIS 3.40
     */
-    const QgsMapUnitScale &stackedDiagramSpacingMapUnitScale() const { return mStackedDiagramSpacingMapUnitScale; }
+    [[nodiscard]] const QgsMapUnitScale &stackedDiagramSpacingMapUnitScale() const { return mStackedDiagramSpacingMapUnitScale; }
 
     /**
      * Returns the chart's angular direction.
@@ -608,7 +608,7 @@ class CORE_EXPORT QgsDiagramSettings
      * \see setDirection()
      * \since QGIS 3.12
      */
-    Direction direction() const;
+    [[nodiscard]] Direction direction() const;
 
     /**
      * Sets the chart's angular \a direction.
@@ -637,7 +637,7 @@ class CORE_EXPORT QgsDiagramSettings
      *
      * \since QGIS 3.12
      */
-    QgsLineSymbol *axisLineSymbol() const;
+    [[nodiscard]] QgsLineSymbol *axisLineSymbol() const;
 
     /**
      * Sets the line \a symbol to use for rendering axis in diagrams.
@@ -659,7 +659,7 @@ class CORE_EXPORT QgsDiagramSettings
      *
      * \since QGIS 3.12
      */
-    bool showAxis() const;
+    [[nodiscard]] bool showAxis() const;
 
     /**
      * Sets whether the diagram axis should be shown.
@@ -678,7 +678,7 @@ class CORE_EXPORT QgsDiagramSettings
      *
      * \since QGIS 3.12
      */
-    QgsPaintEffect *paintEffect() const;
+    [[nodiscard]] QgsPaintEffect *paintEffect() const;
 
     /**
      * Sets the paint \a effect to use while rendering diagrams.
@@ -760,21 +760,21 @@ class CORE_EXPORT QgsDiagramRenderer
     /**
      * Returns new instance that is equivalent to this one
     */
-    virtual QgsDiagramRenderer *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsDiagramRenderer *clone() const = 0 SIP_FACTORY;
 
     //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
-    virtual QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const;
+    [[nodiscard]] virtual QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const;
 
-    virtual QString rendererName() const = 0;
+    [[nodiscard]] virtual QString rendererName() const = 0;
 
     //! Returns attribute indices needed for diagram rendering
-    virtual QList<QString> diagramAttributes() const = 0;
+    [[nodiscard]] virtual QList<QString> diagramAttributes() const = 0;
 
     /**
      * Returns the set of any fields required for diagram rendering
      * \param context expression context the diagrams will be drawn using
      */
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
+    [[nodiscard]] virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     /**
      * Renders the diagram for a specified feature at a specific position in the passed render context.
@@ -782,10 +782,10 @@ class CORE_EXPORT QgsDiagramRenderer
     virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const;
 
     void setDiagram( QgsDiagram *d SIP_TRANSFER );
-    QgsDiagram *diagram() const { return mDiagram.get(); }
+    [[nodiscard]] QgsDiagram *diagram() const { return mDiagram.get(); }
 
     //! Returns list with all diagram settings in the renderer
-    virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
+    [[nodiscard]] virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
 
     /**
      * Reads diagram state from a DOM element. Subclasses should ensure that _readXml() is called
@@ -811,7 +811,7 @@ class CORE_EXPORT QgsDiagramRenderer
      * Returns TRUE if renderer will show legend items for diagram attributes.
      * \see setAttributeLegend()
      */
-    bool attributeLegend() const { return mShowAttributeLegend; }
+    [[nodiscard]] bool attributeLegend() const { return mShowAttributeLegend; }
 
     /**
      * Sets whether the renderer will show legend items for diagram attributes.
@@ -837,7 +837,7 @@ class CORE_EXPORT QgsDiagramRenderer
      * \param feature the feature
      * \param c render context
      */
-    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c ) const = 0;
+    [[nodiscard]] virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c ) const = 0;
 
     //! Converts size from mm to map units
     void convertSizeToMapUnits( QSizeF &size, const QgsRenderContext &context ) const;
@@ -879,15 +879,15 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 
     QgsSingleCategoryDiagramRenderer() = default;
 
-    QgsSingleCategoryDiagramRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsSingleCategoryDiagramRenderer *clone() const override SIP_FACTORY;
 
-    QString rendererName() const override { return QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY; }
+    [[nodiscard]] QString rendererName() const override { return QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY; }
 
-    QList<QString> diagramAttributes() const override { return mSettings.categoryAttributes; }
+    [[nodiscard]] QList<QString> diagramAttributes() const override { return mSettings.categoryAttributes; }
 
     void setDiagramSettings( const QgsDiagramSettings &s ) { mSettings = s; }
 
-    QList<QgsDiagramSettings> diagramSettings() const override;
+    [[nodiscard]] QList<QgsDiagramSettings> diagramSettings() const override;
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
@@ -897,7 +897,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;
 
-    QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
+    [[nodiscard]] QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
 
   private:
     QgsDiagramSettings mSettings;
@@ -919,36 +919,36 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QgsLinearlyInterpolatedDiagramRenderer &operator=( const QgsLinearlyInterpolatedDiagramRenderer &other );
 
-    QgsLinearlyInterpolatedDiagramRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsLinearlyInterpolatedDiagramRenderer *clone() const override SIP_FACTORY;
 
     //! Returns list with all diagram settings in the renderer
-    QList<QgsDiagramSettings> diagramSettings() const override;
+    [[nodiscard]] QList<QgsDiagramSettings> diagramSettings() const override;
 
     void setDiagramSettings( const QgsDiagramSettings &s ) { mSettings = s; }
 
-    QList<QString> diagramAttributes() const override;
+    [[nodiscard]] QList<QString> diagramAttributes() const override;
 
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    [[nodiscard]] QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
-    QString rendererName() const override { return QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED; }
+    [[nodiscard]] QString rendererName() const override { return QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED; }
 
     void setLowerValue( double val ) { mInterpolationSettings.lowerValue = val; }
-    double lowerValue() const { return mInterpolationSettings.lowerValue; }
+    [[nodiscard]] double lowerValue() const { return mInterpolationSettings.lowerValue; }
 
     void setUpperValue( double val ) { mInterpolationSettings.upperValue = val; }
-    double upperValue() const { return mInterpolationSettings.upperValue; }
+    [[nodiscard]] double upperValue() const { return mInterpolationSettings.upperValue; }
 
     void setLowerSize( QSizeF s ) { mInterpolationSettings.lowerSize = s; }
-    QSizeF lowerSize() const { return mInterpolationSettings.lowerSize; }
+    [[nodiscard]] QSizeF lowerSize() const { return mInterpolationSettings.lowerSize; }
 
     void setUpperSize( QSizeF s ) { mInterpolationSettings.upperSize = s; }
-    QSizeF upperSize() const { return mInterpolationSettings.upperSize; }
+    [[nodiscard]] QSizeF upperSize() const { return mInterpolationSettings.upperSize; }
 
     /**
      * Returns the field name used for interpolating the diagram size.
      * \see setClassificationField()
      */
-    QString classificationField() const { return mInterpolationSettings.classificationField; }
+    [[nodiscard]] QString classificationField() const { return mInterpolationSettings.classificationField; }
 
     /**
      * Sets the field name used for interpolating the diagram size.
@@ -956,10 +956,10 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
      */
     void setClassificationField( const QString &field ) { mInterpolationSettings.classificationField = field; }
 
-    QString classificationAttributeExpression() const { return mInterpolationSettings.classificationAttributeExpression; }
+    [[nodiscard]] QString classificationAttributeExpression() const { return mInterpolationSettings.classificationAttributeExpression; }
     void setClassificationAttributeExpression( const QString &expression ) { mInterpolationSettings.classificationAttributeExpression = expression; }
 
-    bool classificationAttributeIsExpression() const { return mInterpolationSettings.classificationAttributeIsExpression; }
+    [[nodiscard]] bool classificationAttributeIsExpression() const { return mInterpolationSettings.classificationAttributeIsExpression; }
     void setClassificationAttributeIsExpression( bool isExpression ) { mInterpolationSettings.classificationAttributeIsExpression = isExpression; }
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
@@ -975,12 +975,12 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     /**
      * Returns configuration of appearance of legend. Will return NULLPTR if no configuration has been set.
      */
-    QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
+    [[nodiscard]] QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;
 
-    QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
+    [[nodiscard]] QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
 
   private:
     QgsDiagramSettings mSettings;
@@ -1011,10 +1011,10 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 
     QgsStackedDiagramRenderer &operator=( const QgsStackedDiagramRenderer &other );
 
-    QgsStackedDiagramRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsStackedDiagramRenderer *clone() const override SIP_FACTORY;
 
     //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
-    QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const override;
+    [[nodiscard]] QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const override;
 
     /**
      * Renders the diagram for a specified feature at a specific position in the
@@ -1024,13 +1024,13 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
     void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const override;
 
     //! Returns list with all diagram settings in the renderer
-    QList<QgsDiagramSettings> diagramSettings() const override;
+    [[nodiscard]] QList<QgsDiagramSettings> diagramSettings() const override;
 
     void setDiagramSettings( const QgsDiagramSettings &s ) { mSettings = s; }
 
-    QList<QString> diagramAttributes() const override;
+    [[nodiscard]] QList<QString> diagramAttributes() const override;
 
-    QString rendererName() const override { return QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED; }
+    [[nodiscard]] QString rendererName() const override { return QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED; }
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
@@ -1055,7 +1055,7 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
      *
      * \param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
      */
-    QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
+    [[nodiscard]] QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
 
     /**
      * Adds a renderer to the stacked renderer object. Takes ownership.
@@ -1072,14 +1072,14 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
      *
      * \param index index of the desired renderer in the stacked renderer
      */
-    const QgsDiagramRenderer *renderer( const int index ) const;
+    [[nodiscard]] const QgsDiagramRenderer *renderer( const int index ) const;
 
     //! Returns the number of sub renderers in the stacked diagram renderer
-    int rendererCount() const;
+    [[nodiscard]] int rendererCount() const;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;
-    QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
+    [[nodiscard]] QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
 
   private:
     QgsDiagramSettings mSettings;

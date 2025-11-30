@@ -49,8 +49,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     QgsGlowEffect( const QgsGlowEffect &other );
     ~QgsGlowEffect() override;
 
-    Qgis::PaintEffectFlags flags() const override;
-    QVariantMap properties() const override;
+    [[nodiscard]] Qgis::PaintEffectFlags flags() const override;
+    [[nodiscard]] QVariantMap properties() const override;
     void readProperties( const QVariantMap &props ) override;
 
     /**
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see spreadUnit
      * \see spreadMapUnitScale
      */
-    double spread() const { return mSpread; }
+    [[nodiscard]] double spread() const { return mSpread; }
 
     /**
      * Sets the units used for the glow spread distance.
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see spread
      * \see spreadMapUnitScale
      */
-    Qgis::RenderUnit spreadUnit() const { return mSpreadUnit; }
+    [[nodiscard]] Qgis::RenderUnit spreadUnit() const { return mSpreadUnit; }
 
     /**
      * Sets the map unit scale used for the spread distance.
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see spread
      * \see spreadUnit
      */
-    const QgsMapUnitScale &spreadMapUnitScale() const { return mSpreadMapUnitScale; }
+    [[nodiscard]] const QgsMapUnitScale &spreadMapUnitScale() const { return mSpreadMapUnitScale; }
 
     /**
      * Sets blur level (radius) for the glow. This can be used to smooth the
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see blurUnit
      * \see blurMapUnitScale
      */
-    double blurLevel() const { return mBlurLevel; }
+    [[nodiscard]] double blurLevel() const { return mBlurLevel; }
 
     /**
      * Sets the units used for the glow blur level (radius).
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see blurMapUnitScale
      * \since QGIS 3.4.9
      */
-    Qgis::RenderUnit blurUnit() const { return mBlurUnit; }
+    [[nodiscard]] Qgis::RenderUnit blurUnit() const { return mBlurUnit; }
 
     /**
      * Sets the map unit scale used for the glow blur strength (radius).
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see blurUnit
      * \since QGIS 3.4.9
      */
-    const QgsMapUnitScale &blurMapUnitScale() const { return mBlurMapUnitScale; }
+    [[nodiscard]] const QgsMapUnitScale &blurMapUnitScale() const { return mBlurMapUnitScale; }
 
     /**
      * Sets the \a opacity for the effect.
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * and 1 is fully opaque
      * \see setOpacity().
      */
-    double opacity() const { return mOpacity; }
+    [[nodiscard]] double opacity() const { return mOpacity; }
 
     /**
      * Sets the color for the glow. This only applies if the colorType()
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see setColor
      * \see colorType
      */
-    QColor color() const { return mColor; }
+    [[nodiscard]] QColor color() const { return mColor; }
 
     /**
      * Sets the color ramp for the glow. This only applies if the colorType()
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see setRamp
      * \see colorType
      */
-    QgsColorRamp *ramp() const { return mRamp; }
+    [[nodiscard]] QgsColorRamp *ramp() const { return mRamp; }
 
     /**
      * Sets the blend mode for the effect
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * paint device
      * \see setBlendMode
      */
-    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+    [[nodiscard]] QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
     /**
      * Sets the color mode to use for the glow. The glow can either be drawn using a QgsColorRamp
@@ -255,13 +255,13 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see color
      * \see ramp
      */
-    GlowColorType colorType() const { return mColorType; }
+    [[nodiscard]] GlowColorType colorType() const { return mColorType; }
 
     QgsGlowEffect &operator=( const QgsGlowEffect &rhs );
 
   protected:
 
-    QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
+    [[nodiscard]] QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
     void draw( QgsRenderContext &context ) override;
 
     /**
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \returns TRUE if glow is to be drawn outside the picture, or FALSE
      * to draw glow within the picture
      */
-    virtual bool shadeExterior() const = 0;
+    [[nodiscard]] virtual bool shadeExterior() const = 0;
 
     double mSpread = 2.0;
     Qgis::RenderUnit mSpreadUnit = Qgis::RenderUnit::Millimeters;
@@ -308,12 +308,12 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
 
     QgsOuterGlowEffect();
 
-    QString type() const override { return QStringLiteral( "outerGlow" ); }
-    QgsOuterGlowEffect *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override { return QStringLiteral( "outerGlow" ); }
+    [[nodiscard]] QgsOuterGlowEffect *clone() const override SIP_FACTORY;
 
   protected:
 
-    bool shadeExterior() const override { return true; }
+    [[nodiscard]] bool shadeExterior() const override { return true; }
 
 };
 
@@ -339,12 +339,12 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
 
     QgsInnerGlowEffect();
 
-    QString type() const override { return QStringLiteral( "innerGlow" ); }
-    QgsInnerGlowEffect *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override { return QStringLiteral( "innerGlow" ); }
+    [[nodiscard]] QgsInnerGlowEffect *clone() const override SIP_FACTORY;
 
   protected:
 
-    bool shadeExterior() const override { return false; }
+    [[nodiscard]] bool shadeExterior() const override { return false; }
 
 };
 

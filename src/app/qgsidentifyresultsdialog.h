@@ -62,7 +62,7 @@ class APP_EXPORT QgsIdentifyResultsWebView : public QgsWebView
     Q_OBJECT
   public:
     QgsIdentifyResultsWebView( QWidget *parent = nullptr );
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
   public slots:
     void print();
     void downloadRequested( const QNetworkRequest &request );
@@ -80,9 +80,9 @@ class APP_EXPORT QgsIdentifyResultsFeatureItem : public QTreeWidgetItem
 {
   public:
     QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList &strings = QStringList() );
-    const QgsFields &fields() const { return mFields; }
-    const QgsFeature &feature() const { return mFeature; }
-    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+    [[nodiscard]] const QgsFields &fields() const { return mFields; }
+    [[nodiscard]] const QgsFeature &feature() const { return mFeature; }
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
   private:
     QgsFields mFields;

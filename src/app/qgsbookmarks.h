@@ -40,7 +40,7 @@ class QgsDoubleSpinBoxBookmarksDelegate : public QStyledItemDelegate
   public:
     explicit QgsDoubleSpinBoxBookmarksDelegate( QObject *parent = nullptr, int decimals = -1 );
 
-    QString displayText( const QVariant &value, const QLocale &locale ) const override;
+    [[nodiscard]] QString displayText( const QVariant &value, const QLocale &locale ) const override;
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 

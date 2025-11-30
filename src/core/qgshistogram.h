@@ -64,7 +64,7 @@ class CORE_EXPORT QgsHistogram
      * \see optimalNumberBins
      * \note values must first be specified using setValues()
      */
-    double optimalBinWidth() const;
+    [[nodiscard]] double optimalBinWidth() const;
 
     /**
      * Returns the optimal number of bins for the source values, calculated using the
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsHistogram
      * \see optimalBinWidth
      * \note values must first be specified using setValues()
      */
-    int optimalNumberBins() const;
+    [[nodiscard]] int optimalNumberBins() const;
 
     /**
      * Returns a list of edges for the histogram for a specified number of bins. This list
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsHistogram
      * \returns list of bin edges
      * \note values must first be specified using setValues()
      */
-    QList<double> binEdges( int bins ) const;
+    [[nodiscard]] QList<double> binEdges( int bins ) const;
 
     /**
      * Returns the calculated list of the counts for the histogram bins.
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsHistogram
      * \returns list of histogram counts
      * \note values must first be specified using setValues()
      */
-    QList<int> counts( int bins ) const;
+    [[nodiscard]] QList<int> counts( int bins ) const;
 
   private:
 

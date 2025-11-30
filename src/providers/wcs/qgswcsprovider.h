@@ -398,12 +398,12 @@ class QgsWcsProviderMetadata final : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsWcsProviderMetadata();
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsWcsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] QList<QgsDataItemProvider *> dataItemProviders() const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif

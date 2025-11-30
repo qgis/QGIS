@@ -34,7 +34,7 @@ class GUI_EXPORT QgsDatabaseTableComboBoxSortModel : public QSortFilterProxyMode
     explicit QgsDatabaseTableComboBoxSortModel( QObject *parent = nullptr );
 
   protected:
-    bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
 };
 #endif
 ///@endcond
@@ -82,17 +82,17 @@ class GUI_EXPORT QgsDatabaseTableComboBox : public QWidget
      * Returns TRUE if the combobox allows the empty table ("not set") choice.
      * \see setAllowEmptyTable()
      */
-    bool allowEmptyTable() const;
+    [[nodiscard]] bool allowEmptyTable() const;
 
     /**
      * Returns the name of the current table selected in the combo box.
      */
-    QString currentTable() const;
+    [[nodiscard]] QString currentTable() const;
 
     /**
      * Returns the schema of the current table selected in the combo box.
      */
-    QString currentSchema() const;
+    [[nodiscard]] QString currentSchema() const;
 
     /**
      * Returns the combobox portion of the widget.

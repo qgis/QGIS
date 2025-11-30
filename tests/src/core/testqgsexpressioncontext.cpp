@@ -76,7 +76,7 @@ class TestQgsExpressionContext : public QObject
           return 42;
         }
 
-        QgsScopedExpressionFunction *clone() const override
+        [[nodiscard]] QgsScopedExpressionFunction *clone() const override
         {
           return new GetTestValueFunction();
         }
@@ -93,7 +93,7 @@ class TestQgsExpressionContext : public QObject
           return 43;
         }
 
-        QgsScopedExpressionFunction *clone() const override
+        [[nodiscard]] QgsScopedExpressionFunction *clone() const override
         {
           return new GetTestValueFunction2();
         }
@@ -115,7 +115,7 @@ class TestQgsExpressionContext : public QObject
           return ++( *mVal );
         }
 
-        QgsScopedExpressionFunction *clone() const override
+        [[nodiscard]] QgsScopedExpressionFunction *clone() const override
         {
           return new ModifiableFunction( mVal );
         }

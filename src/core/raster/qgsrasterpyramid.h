@@ -40,7 +40,7 @@ class CORE_EXPORT QgsRasterPyramid
      *
      * \since QGIS 3.20
      */
-    int getLevel() const { return mLevel; }
+    [[nodiscard]] int getLevel() const { return mLevel; }
 
     /**
      * Sets the pyramid \a level.
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsRasterPyramid
      *
      * \since QGIS 3.20
      */
-    int getXDim() const { return mXDim; }
+    [[nodiscard]] int getXDim() const { return mXDim; }
 
 #ifdef SIP_RUN
     SIP_PROPERTY( name = xDim, get = getXDim, set = setXDim )
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsRasterPyramid
      *
      * \since QGIS 3.20
      */
-    int getYDim() const { return mYDim; }
+    [[nodiscard]] int getYDim() const { return mYDim; }
 
 #ifdef SIP_RUN
     SIP_PROPERTY( name = yDim, get = getYDim, set = setYDim )
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsRasterPyramid
      *
      * \since QGIS 3.20
      */
-    bool getExists() const { return mExists; }
+    [[nodiscard]] bool getExists() const { return mExists; }
 
     /**
      * Sets whether the pyramid layer currently exists.
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsRasterPyramid
      *
      * \since QGIS 3.20
      */
-    bool getBuild() const { return mBuild; }
+    [[nodiscard]] bool getBuild() const { return mBuild; }
 
     /**
      * Sets whether the pyramid layer will be built.

@@ -34,20 +34,20 @@ class CORE_EXPORT QgsCurrencyNumericFormat : public QgsBasicNumericFormat
       */
     QgsCurrencyNumericFormat();
 
-    QString id() const override;
-    QString visibleName() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString visibleName() const override;
     int sortKey() override;
-    double suggestSampleValue() const override;
-    QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
-    QgsNumericFormat *clone() const override SIP_FACTORY;
-    QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
-    QVariantMap configuration( const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] double suggestSampleValue() const override;
+    [[nodiscard]] QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
+    [[nodiscard]] QgsNumericFormat *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
+    [[nodiscard]] QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
      * Returns the currency prefix, e.g. "$".
      * \see setPrefix()
      */
-    QString prefix() const;
+    [[nodiscard]] QString prefix() const;
 
     /**
      * Sets the currency \a prefix, e.g. "$".
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsCurrencyNumericFormat : public QgsBasicNumericFormat
      * Returns the currency suffix, e.g. "AUD".
      * \see setSuffix()
      */
-    QString suffix() const;
+    [[nodiscard]] QString suffix() const;
 
     /**
      * Sets the currency \a suffix, e.g. "AUD".

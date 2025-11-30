@@ -82,7 +82,7 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
     /**
      * Returns path to the pdal_wrench executable binary.
      */
-    QString wrenchExecutableBinary() const;
+    [[nodiscard]] QString wrenchExecutableBinary() const;
 
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

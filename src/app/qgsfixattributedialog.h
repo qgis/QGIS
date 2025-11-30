@@ -56,12 +56,12 @@ class APP_EXPORT QgsFixAttributeDialog : public QDialog
     /**
      * Returns fixed features
      */
-    QgsFeatureList fixedFeatures() const { return mFixedFeatures; }
+    [[nodiscard]] QgsFeatureList fixedFeatures() const { return mFixedFeatures; }
 
     /**
      * Returns unfixed features (canceled or not handled)
      */
-    QgsFeatureList unfixedFeatures() const { return mUnfixedFeatures; }
+    [[nodiscard]] QgsFeatureList unfixedFeatures() const { return mUnfixedFeatures; }
 
   public slots:
     void accept() override;

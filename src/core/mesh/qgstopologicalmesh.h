@@ -65,7 +65,7 @@ class CORE_EXPORT QgsTopologicalMesh
          * Returns faces.
          * \note Not available in Python bindings.
          */
-        SIP_SKIP QVector<QgsMeshFace>  meshFaces() const {return mFaces;}
+        SIP_SKIP [[nodiscard]] QVector<QgsMeshFace>  meshFaces() const {return mFaces;}
 
         //! Clears all data contained in the instance.
         void clear();
@@ -75,10 +75,10 @@ class CORE_EXPORT QgsTopologicalMesh
          *
          * \note Not available in Python bindings.
          */
-        SIP_SKIP QVector<FaceNeighbors> facesNeighborhood() const;
+        SIP_SKIP [[nodiscard]] QVector<FaceNeighbors> facesNeighborhood() const;
 
         //! Returns a face linked to the vertices with index \a vertexIndex
-        int vertexToFace( int vertexIndex ) const;
+        [[nodiscard]] int vertexToFace( int vertexIndex ) const;
 
       private:
         QVector<QgsMeshFace> mFaces; // the faces containing the vertices indexes in the mesh
@@ -107,45 +107,45 @@ class CORE_EXPORT QgsTopologicalMesh
          *
          * \note Not available in Python bindings.
          */
-        SIP_SKIP QVector<QgsMeshFace> addedFaces() const;
+        SIP_SKIP [[nodiscard]] QVector<QgsMeshFace> addedFaces() const;
 
         /**
          * Returns the faces that are removed with this changes.
          *
          * \note Not available in Python bindings.
          */
-        SIP_SKIP QVector<QgsMeshFace> removedFaces() const;
+        SIP_SKIP [[nodiscard]] QVector<QgsMeshFace> removedFaces() const;
 
         //! Returns the indexes of the faces that are removed with this changes
-        QList<int> removedFaceIndexes() const;
+        [[nodiscard]] QList<int> removedFaceIndexes() const;
 
         //! Returns the added vertices with this changes
 #ifndef SIP_RUN
-        QVector<QgsMeshVertex> addedVertices() const;
+        [[nodiscard]] QVector<QgsMeshVertex> addedVertices() const;
 #else
         QVector<QgsPoint> addedVertices() const;
 #endif
 
         //! Returns the indexes of vertices to remove
-        QList<int> verticesToRemoveIndexes() const;
+        [[nodiscard]] QList<int> verticesToRemoveIndexes() const;
 
         //! Returns the indexes of vertices that have changed coordinates
-        QList<int> changedCoordinatesVerticesIndexes() const;
+        [[nodiscard]] QList<int> changedCoordinatesVerticesIndexes() const;
 
         //! Returns the new Z values of vertices that have changed their coordinates
-        QList<double> newVerticesZValues() const;
+        [[nodiscard]] QList<double> newVerticesZValues() const;
 
         //! Returns the new (X,Y) values of vertices that have changed their coordinates
-        QList<QgsPointXY> newVerticesXYValues() const;
+        [[nodiscard]] QList<QgsPointXY> newVerticesXYValues() const;
 
         //! Returns the old (X,Y) values of vertices that have changed their coordinates
-        QList<QgsPointXY> oldVerticesXYValues() const;
+        [[nodiscard]] QList<QgsPointXY> oldVerticesXYValues() const;
 
         //! Returns a list of the native face indexes that have a geometry changed
-        QList<int> nativeFacesIndexesGeometryChanged() const;
+        [[nodiscard]] QList<int> nativeFacesIndexesGeometryChanged() const;
 
         //! Returns whether changes are empty, that there is nothing to change
-        bool isEmpty() const;
+        [[nodiscard]] bool isEmpty() const;
 
       protected:
         int mAddedFacesFirstIndex = 0;
@@ -174,8 +174,8 @@ class CORE_EXPORT QgsTopologicalMesh
         void clearChanges();
 
       private:
-        int addedFaceIndexInMesh( int internalIndex ) const;
-        int removedFaceIndexInMesh( int internalIndex ) const;
+        [[nodiscard]] int addedFaceIndexInMesh( int internalIndex ) const;
+        [[nodiscard]] int removedFaceIndexInMesh( int internalIndex ) const;
 
         friend class QgsTopologicalMesh;
     };
@@ -196,37 +196,37 @@ class CORE_EXPORT QgsTopologicalMesh
     //----------- access element methods
 
     //! Returns the indexes of neighbor faces of the face with index \a faceIndex
-    QVector<int> neighborsOfFace( int faceIndex ) const;
+    [[nodiscard]] QVector<int> neighborsOfFace( int faceIndex ) const;
 
     //! Returns the indexes of faces that are around the vertex with index \a vertexIndex
-    QList<int> facesAroundVertex( int vertexIndex ) const;
+    [[nodiscard]] QList<int> facesAroundVertex( int vertexIndex ) const;
 
     //! Returns a pointer to the wrapped mesh
-    QgsMesh *mesh() const;
+    [[nodiscard]] QgsMesh *mesh() const;
 
     //! Returns the index of the first face linked, returns -1 if it is a free vertex or out of range index
-    int firstFaceLinked( int vertexIndex ) const;
+    [[nodiscard]] int firstFaceLinked( int vertexIndex ) const;
 
     //! Returns whether the vertex is on a boundary
-    bool isVertexOnBoundary( int vertexIndex ) const;
+    [[nodiscard]] bool isVertexOnBoundary( int vertexIndex ) const;
 
     //! Returns whether the vertex is a free vertex
-    bool isVertexFree( int vertexIndex ) const;
+    [[nodiscard]] bool isVertexFree( int vertexIndex ) const;
 
     //! Returns a list of vertices are not linked to any faces
-    QList<int> freeVerticesIndexes() const;
+    [[nodiscard]] QList<int> freeVerticesIndexes() const;
 
     /**
      * Returns a vertex circulator linked to this mesh around the vertex with index \a vertexIndex.
      *
      * \note Not available in Python bindings
      */
-    SIP_SKIP QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const;
+    SIP_SKIP [[nodiscard]] QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const;
 
     //----------- editing methods
 
     //! Returns whether the faces can be added to the mesh
-    QgsMeshEditingError facesCanBeAdded( const TopologicalFaces &topologicalFaces ) const;
+    [[nodiscard]] QgsMeshEditingError facesCanBeAdded( const TopologicalFaces &topologicalFaces ) const;
 
     /**
      * Adds faces \a topologicFaces to the topologic mesh.
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsTopologicalMesh
     /**
      * Returns TRUE if the edge can be flipped (only available for edge shared by two faces with 3 vertices)
      */
-    bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
+    [[nodiscard]] bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
 
     /**
      * Flips edge (\a vertexIndex1, \a vertexIndex2)
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsTopologicalMesh
     /**
      * Returns TRUE if faces separated by vertices with indexes \a vertexIndex1 and \a vertexIndex2 can be merged
      */
-    bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
+    [[nodiscard]] bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
 
     /**
      * Merges faces separated by vertices with indexes \a vertexIndex1 and \a vertexIndex2
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsTopologicalMesh
     /**
      * Returns TRUE if face with index \a faceIndex can be split
      */
-    bool canBeSplit( int faceIndex ) const;
+    [[nodiscard]] bool canBeSplit( int faceIndex ) const;
 
     /**
      * Splits face with index \a faceIndex
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsTopologicalMesh
     bool renumber();
 
     //! Checks the consistency of the topological mesh and return FALSE if there is a consistency issue
-    QgsMeshEditingError checkConsistency() const;
+    [[nodiscard]] QgsMeshEditingError checkConsistency() const;
 
     //! Checks the topology of the mesh \a mesh, if error occurs, this mesh can't be edited
     static QgsMeshEditingError checkTopology( const QgsMesh &mesh, int maxVerticesPerFace );
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsTopologicalMesh
       bool allowUniqueSharedVertex );
 
     //! Returns all faces indexes that are concerned by the face with index in \a faceIndex, that is sharing a least one vertex or one edge
-    QSet<int> concernedFacesBy( const QList<int> &faceIndexes ) const;
+    [[nodiscard]] QSet<int> concernedFacesBy( const QList<int> &faceIndexes ) const;
 
     //! References the vertex as a free vertex to be able to access to all free vertices
     void referenceAsFreeVertex( int vertexIndex );

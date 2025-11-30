@@ -47,7 +47,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      * This id of the type of settings it handles
      * \note This mostly correspond to the content of Qgis::SettingsType but it's a string since custom Python implementation are possible.
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     //! Creates a new instance of the editor wrapper so it can be configured for a widget and a setting
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const = 0 SIP_FACTORY;
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      * Returns the value from the widget as a variant
      * The wrapper must be configured before calling this medthod
      */
-    virtual QVariant variantValueFromWidget() const = 0;
+    [[nodiscard]] virtual QVariant variantValueFromWidget() const = 0;
 
     /**
      * Sets the \a value of the widget
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      * Returns the dynamic key parts
      * \since QGIS 3.40
      */
-    QStringList dynamicKeyPartList() const { return mDynamicKeyPartList; }
+    [[nodiscard]] QStringList dynamicKeyPartList() const { return mDynamicKeyPartList; }
 
 
   protected:

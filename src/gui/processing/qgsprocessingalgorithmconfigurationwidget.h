@@ -51,7 +51,7 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget, pub
     /**
      * Read the current configuration from this widget.
      */
-    virtual QVariantMap configuration() const = 0;
+    [[nodiscard]] virtual QVariantMap configuration() const = 0;
 
     /**
      * Set the configuration which this widget should represent.
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget, pub
      * \see setWidgetContext()
      * \since QGIS 3.6
      */
-    const QgsProcessingParameterWidgetContext &widgetContext() const;
+    [[nodiscard]] const QgsProcessingParameterWidgetContext &widgetContext() const;
 
     /**
      * Sets the algorithm instance associated with the widget.
@@ -94,7 +94,7 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget, pub
      * \see setAlgorithm()
      * \since QGIS 3.6
      */
-    const QgsProcessingAlgorithm *algorithm() const { return mAlgorithm; }
+    [[nodiscard]] const QgsProcessingAlgorithm *algorithm() const { return mAlgorithm; }
 
     /**
      * Registers a Processing context \a generator class that will be used to retrieve
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget, pub
      */
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   private:
     QgsProcessingContextGenerator *mContextGenerator = nullptr;

@@ -39,13 +39,13 @@ class CORE_EXPORT QgsProcessingModelGroupBox : public QgsProcessingModelComponen
      */
     QgsProcessingModelGroupBox( const QString &description = QString() );
 
-    QgsProcessingModelGroupBox *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsProcessingModelGroupBox *clone() const override SIP_FACTORY;
 
     /**
      * Saves this group box to a QVariant.
      * \see loadVariant()
      */
-    QVariant toVariant() const;
+    [[nodiscard]] QVariant toVariant() const;
 
     /**
      * Loads this group box from a QVariantMap.
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsProcessingModelGroupBox : public QgsProcessingModelComponen
     /**
      * Returns the unique ID associated with this group box.
      */
-    QString uuid() const;
+    [[nodiscard]] QString uuid() const;
 
   private:
 

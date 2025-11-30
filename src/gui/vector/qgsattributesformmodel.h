@@ -133,7 +133,7 @@ class GUI_EXPORT QgsAttributesFormData
         operator QVariant() { return QVariant::fromValue<AttributeFormItemData>( *this ); }
 
         //! Returns the number of columns in a container.
-        int columnCount() const { return mColumnCount; }
+        [[nodiscard]] int columnCount() const { return mColumnCount; }
 
         //! Sets the number of columns for a container.
         void setColumnCount( int count ) { mColumnCount = count; }
@@ -144,7 +144,7 @@ class GUI_EXPORT QgsAttributesFormData
          * \see setContainerType()
          * \since QGIS 3.32
          */
-        Qgis::AttributeEditorContainerType containerType() const;
+        [[nodiscard]] Qgis::AttributeEditorContainerType containerType() const;
 
         /**
          * Sets the container type.
@@ -162,7 +162,7 @@ class GUI_EXPORT QgsAttributesFormData
          * \see setCollapsed()
          * \since QGIS 3.26
          */
-        bool collapsed() const { return mCollapsed; };
+        [[nodiscard]] bool collapsed() const { return mCollapsed; };
 
         /**
          * For group box containers  sets if this group box is \a collapsed.
@@ -178,7 +178,7 @@ class GUI_EXPORT QgsAttributesFormData
          * \see setLabelStyle()
          * \since QGIS 3.26
          */
-        const QgsAttributeEditorElement::LabelStyle labelStyle() const;
+        [[nodiscard]] const QgsAttributeEditorElement::LabelStyle labelStyle() const;
 
         /**
          * Sets the label style to \a labelStyle.
@@ -188,7 +188,7 @@ class GUI_EXPORT QgsAttributesFormData
         void setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle );
 
         //! Returns whether the widget's label is to be shown.
-        bool showLabel() const;
+        [[nodiscard]] bool showLabel() const;
 
         //! Sets whether the label for the widget should be shown.
         void setShowLabel( bool showLabel );
@@ -201,7 +201,7 @@ class GUI_EXPORT QgsAttributesFormData
          *
          * \since QGIS 3.32
          */
-        int horizontalStretch() const { return mHorizontalStretch; }
+        [[nodiscard]] int horizontalStretch() const { return mHorizontalStretch; }
 
         /**
          * Sets the horizontal \a stretch factor for the element.
@@ -221,7 +221,7 @@ class GUI_EXPORT QgsAttributesFormData
          *
          * \since QGIS 3.32
          */
-        int verticalStretch() const { return mVerticalStretch; }
+        [[nodiscard]] int verticalStretch() const { return mVerticalStretch; }
 
         /**
          * Sets the vertical \a stretch factor for the element.
@@ -238,7 +238,7 @@ class GUI_EXPORT QgsAttributesFormData
          *
          * \see setVisibilityExpression()
          */
-        QgsOptionalExpression visibilityExpression() const;
+        [[nodiscard]] QgsOptionalExpression visibilityExpression() const;
 
         /**
          * Sets the optional \a visibilityExpression that dynamically controls the visibility status of a container.
@@ -256,7 +256,7 @@ class GUI_EXPORT QgsAttributesFormData
          * \see setCollapsedExpression()
          * \since QGIS 3.26
          */
-        QgsOptionalExpression collapsedExpression() const;
+        [[nodiscard]] QgsOptionalExpression collapsedExpression() const;
 
         /**
          * Sets the optional \a collapsedExpression that dynamically controls the collapsed status of a group box container.
@@ -273,7 +273,7 @@ class GUI_EXPORT QgsAttributesFormData
          *
          * \see setRelationEditorConfiguration()
          */
-        RelationEditorConfiguration relationEditorConfiguration() const;
+        [[nodiscard]] RelationEditorConfiguration relationEditorConfiguration() const;
 
         /**
          * Sets the relation editor configuration.
@@ -287,7 +287,7 @@ class GUI_EXPORT QgsAttributesFormData
          *
          * \see setQmlElementEditorConfiguration()
          */
-        QmlElementEditorConfiguration qmlElementEditorConfiguration() const;
+        [[nodiscard]] QmlElementEditorConfiguration qmlElementEditorConfiguration() const;
 
         /**
          * Sets the QML editor configuration.
@@ -301,7 +301,7 @@ class GUI_EXPORT QgsAttributesFormData
          *
          * \see setHtmlElementEditorConfiguration()
          */
-        HtmlElementEditorConfiguration htmlElementEditorConfiguration() const;
+        [[nodiscard]] HtmlElementEditorConfiguration htmlElementEditorConfiguration() const;
 
         /**
          * Sets the HTML editor configuration.
@@ -314,7 +314,7 @@ class GUI_EXPORT QgsAttributesFormData
          * Returns the spacer element configuration
          * \since QGIS 3.30
          */
-        SpacerElementEditorConfiguration spacerElementEditorConfiguration() const;
+        [[nodiscard]] SpacerElementEditorConfiguration spacerElementEditorConfiguration() const;
 
         /**
          * Sets the the spacer element configuration to \a spacerElementEditorConfiguration
@@ -327,7 +327,7 @@ class GUI_EXPORT QgsAttributesFormData
          *
          * \see setBackgroundColor()
          */
-        QColor backgroundColor() const;
+        [[nodiscard]] QColor backgroundColor() const;
 
         /**
          * Sets the background color of a container.
@@ -340,7 +340,7 @@ class GUI_EXPORT QgsAttributesFormData
          * Returns the editor configuration for text element.
          * \since QGIS 3.30
          */
-        TextElementEditorConfiguration textElementEditorConfiguration() const;
+        [[nodiscard]] TextElementEditorConfiguration textElementEditorConfiguration() const;
 
         /**
          * Sets the editor configuration for text element to \a textElementEditorConfiguration.
@@ -577,11 +577,11 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
 
     ~QgsAttributesFormModel() override;
 
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
@@ -590,21 +590,21 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      *
      * If there is no matching top-level model index an invalid index is returned.
      */
-    QModelIndex firstTopMatchingModelIndex( const QgsAttributesFormData::AttributesFormItemType &itemType, const QString &itemId ) const;
+    [[nodiscard]] QModelIndex firstTopMatchingModelIndex( const QgsAttributesFormData::AttributesFormItemType &itemType, const QString &itemId ) const;
 
     /**
      * Returns the first model index that matches the given \a itemType and \a itemId, recursively.
      *
      * If there is no matching model index in the whole hierarchy an invalid index is returned.
      */
-    QModelIndex firstRecursiveMatchingModelIndex( const QgsAttributesFormData::AttributesFormItemType &itemType, const QString &itemId ) const;
+    [[nodiscard]] QModelIndex firstRecursiveMatchingModelIndex( const QgsAttributesFormData::AttributesFormItemType &itemType, const QString &itemId ) const;
 
     /**
      * Returns whether field aliases are preferred over field names as item text.
      *
      * \see setShowAliases()
      */
-    bool showAliases() const;
+    [[nodiscard]] bool showAliases() const;
 
     /**
      * Sets whether field aliases should be preferred over field names as item text.
@@ -618,14 +618,14 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      *
      * If the given \a index is not valid the root item is returned.
      */
-    QgsAttributesFormItem *itemForIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsAttributesFormItem *itemForIndex( const QModelIndex &index ) const;
 
     /**
      * Returns the root item in this model.
      *
      * \since QGIS 4.0
      */
-    QgsAttributesFormItem *rootItem() const;
+    [[nodiscard]] QgsAttributesFormItem *rootItem() const;
 
   public slots:
 
@@ -655,7 +655,7 @@ class GUI_EXPORT QgsAttributesFormModel : public QAbstractItemModel
      *
      * \see rootToLeafPath()
      */
-    bool indexLessThan( const QModelIndex &a, const QModelIndex &b ) const;
+    [[nodiscard]] bool indexLessThan( const QModelIndex &a, const QModelIndex &b ) const;
 
     /**
      * Returns a QVector of iterative positions from root item to the given \a item.
@@ -702,40 +702,40 @@ class GUI_EXPORT QgsAttributesAvailableWidgetsModel : public QgsAttributesFormMo
      */
     explicit QgsAttributesAvailableWidgetsModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent = nullptr );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
-    Qt::DropActions supportedDragActions() const override;
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] Qt::DropActions supportedDragActions() const override;
+    [[nodiscard]] QStringList mimeTypes() const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
 
     /**
      * Returns the field container in this model, expected to be placed at the first top-level row.
      *
      * If there is no field container set, an invalid index is returned.
      */
-    QModelIndex fieldContainer() const;
+    [[nodiscard]] QModelIndex fieldContainer() const;
 
     /**
      * Returns the relation container in this model, expected to be placed at the second top-level row.
      *
      * If there is no relation container set, an invalid index is returned.
      */
-    QModelIndex relationContainer() const;
+    [[nodiscard]] QModelIndex relationContainer() const;
 
     /**
      * Returns the action container in this model, expected to be placed at the third top-level row.
      *
      * If there is no action container set, an invalid index is returned.
      */
-    QModelIndex actionContainer() const;
+    [[nodiscard]] QModelIndex actionContainer() const;
 
     /**
      * Returns the model index that corresponds to the field with the given \a fieldName.
      */
-    QModelIndex fieldModelIndex( const QString &fieldName ) const;
+    [[nodiscard]] QModelIndex fieldModelIndex( const QString &fieldName ) const;
 
   public slots:
     void populate() override;
@@ -777,20 +777,20 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      */
     explicit QgsAttributesFormLayoutModel( QgsVectorLayer *layer, QgsProject *project, QObject *parent = nullptr );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
     /**
      * Removes the index located at \a row within the given \a parent.
      */
     bool removeRow( int row, const QModelIndex &parent = QModelIndex() );
 
-    Qt::DropActions supportedDragActions() const override;
-    Qt::DropActions supportedDropActions() const override;
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] Qt::DropActions supportedDragActions() const override;
+    [[nodiscard]] Qt::DropActions supportedDropActions() const override;
+    [[nodiscard]] QStringList mimeTypes() const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
@@ -802,7 +802,7 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
     /**
      * Returns a list of containers stored in the model, structured as pairs (name, container model index).
      */
-    QList< QgsAddAttributeFormContainerDialog::ContainerPair > listOfContainers() const;
+    [[nodiscard]] QList< QgsAddAttributeFormContainerDialog::ContainerPair > listOfContainers() const;
 
     /**
      * Adds a new container to \a parent.
@@ -864,7 +864,7 @@ class GUI_EXPORT QgsAttributesFormLayoutModel : public QgsAttributesFormModel
      *
      * \param indexes Input list of indexes, potentially with redundant indexes.
      */
-    QModelIndexList curateIndexesForMimeData( const QModelIndexList &indexes ) const;
+    [[nodiscard]] QModelIndexList curateIndexesForMimeData( const QModelIndexList &indexes ) const;
 };
 
 
@@ -893,21 +893,21 @@ class GUI_EXPORT QgsAttributesFormProxyModel : public QSortFilterProxyModel
     /**
      * Returns the text used to filter source model items.
      */
-    const QString filterText() const;
+    [[nodiscard]] const QString filterText() const;
 
     /**
      * Returns the source model.
      *
      * \since QGIS 4.0
      */
-    QgsAttributesFormModel *sourceAttributesFormModel() const;
+    [[nodiscard]] QgsAttributesFormModel *sourceAttributesFormModel() const;
 
   public slots:
     //! Sets the filter text
     void setFilterText( const QString &filterText = QString() );
 
   protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
     QgsAttributesFormModel *mModel = nullptr;

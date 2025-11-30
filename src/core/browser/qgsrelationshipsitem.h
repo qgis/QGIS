@@ -69,21 +69,21 @@ class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
     /**
      * Returns the connection URI
      */
-    QString connectionUri() const;
+    [[nodiscard]] QString connectionUri() const;
 
     /**
      * Returns the schema for filtering relationships, if set.
      *
      * \see tableName()
      */
-    QString schema() const { return mSchema; }
+    [[nodiscard]] QString schema() const { return mSchema; }
 
     /**
      * Returns the table name for filtering relationships, if set.
      *
      * \see schema()
      */
-    QString tableName() const {return mTableName;}
+    [[nodiscard]] QString tableName() const {return mTableName;}
 
   private:
 
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsRelationshipItem : public QgsDataItem
     /**
      * Returns the associated relationship.
      */
-    const QgsWeakRelation &relation() const;
+    [[nodiscard]] const QgsWeakRelation &relation() const;
 
   private:
 

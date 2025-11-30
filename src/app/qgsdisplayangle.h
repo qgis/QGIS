@@ -44,12 +44,12 @@ class APP_EXPORT QgsDisplayAngle : public QDialog, private Ui::QgsDisplayAngleBa
     /**
      * Returns the current angular value (in radians)
      */
-    double value() const { return mValue; }
+    [[nodiscard]] double value() const { return mValue; }
 
     /**
      * Returns the current value, as a string.
      */
-    QString text() const { return mAngleLineEdit->text(); }
+    [[nodiscard]] QString text() const { return mAngleLineEdit->text(); }
 
   private:
     //! The value we're showing

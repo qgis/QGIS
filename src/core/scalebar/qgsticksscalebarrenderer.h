@@ -42,11 +42,11 @@ class CORE_EXPORT QgsTicksScaleBarRenderer: public QgsScaleBarRenderer
      */
     QgsTicksScaleBarRenderer( TickPosition position = TicksMiddle );
 
-    QString id() const override;
-    QString visibleName() const override;
-    int sortKey() const override;
-    Flags flags() const override;
-    QgsTicksScaleBarRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString visibleName() const override;
+    [[nodiscard]] int sortKey() const override;
+    [[nodiscard]] Flags flags() const override;
+    [[nodiscard]] QgsTicksScaleBarRenderer *clone() const override SIP_FACTORY;
 
     void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsTicksScaleBarRenderer: public QgsScaleBarRenderer
      * Returns the position for tick marks in the scalebar.
      * \see setTickPosition()
      */
-    TickPosition tickPosition() const { return mTickPosition; }
+    [[nodiscard]] TickPosition tickPosition() const { return mTickPosition; }
 
   private:
 

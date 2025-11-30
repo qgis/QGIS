@@ -35,11 +35,12 @@ Returns the format's name.
 Returns the format's capabilities.
 %End
 
-    virtual QStringList importCommand( const QString &babel,
-                                       Qgis::GpsFeatureType featureType,
-                                       const QString &input,
-                                       const QString &output,
-                                       Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
+    virtual QStringList importCommand(
+      const QString &babel,
+      Qgis::GpsFeatureType featureType,
+      const QString &input,
+      const QString &output,
+      Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 %Docstring
 Generates a command for importing data into a GPS format using babel.
 
@@ -54,10 +55,10 @@ Returns an empty list if the format does not support imports (see
 %End
 
     virtual QStringList exportCommand( const QString &babel,
-                                       Qgis::GpsFeatureType featureType,
-                                       const QString &input,
-                                       const QString &output,
-                                       Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
+        Qgis::GpsFeatureType featureType,
+        const QString &input,
+        const QString &output,
+        Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 %Docstring
 Generates a command for exporting GPS data into a different format using
 babel.
@@ -129,11 +130,9 @@ Returns the friendly description for the format.
 Returns the list of known extensions for the format, e.g. "csv", "txt".
 %End
 
-     virtual QStringList importCommand( const QString &babel,
-                               Qgis::GpsFeatureType featureType,
-                               const QString &input,
-                               const QString &output,
-                               Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
+    virtual QStringList importCommand( const QString &babel, Qgis::GpsFeatureType featureType, const QString &input, const QString &output, Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
+
+
 };
 
 /************************************************************************

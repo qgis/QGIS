@@ -49,14 +49,14 @@ class GUI_EXPORT QgsExtentBufferWidget : public QgsPanelWidget, public QgsExpres
      *
      * \returns extent buffer value
      */
-    double extentBuffer() const;
+    [[nodiscard]] double extentBuffer() const;
 
     /**
      * Returns the data defined property currently set in the widget.
      *
      * \returns property
      */
-    QgsProperty dataDefinedProperty() const;
+    [[nodiscard]] QgsProperty dataDefinedProperty() const;
 
     /**
      * Sets the context in which widget is shown, e.g., the associated map canvas and expression contexts.
@@ -69,20 +69,20 @@ class GUI_EXPORT QgsExtentBufferWidget : public QgsPanelWidget, public QgsExpres
      * Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
     /**
      * Returns the extent buffer unit currently set in the widget.
      * \see setContext()
      */
-    Qgis::RenderUnit sizeUnit() const;
+    [[nodiscard]] Qgis::RenderUnit sizeUnit() const;
 
   private:
     QgsSymbol *mSymbol = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsSymbolWidgetContext mContext;
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
     /**
      * Registers a data defined override button. Handles setting up connections
@@ -108,12 +108,12 @@ class GUI_EXPORT QgsExtentBufferDialog : public QDialog
     /**
      * Returns the extent buffer value currently set in the widget.
      */
-    double extentBuffer() const;
+    [[nodiscard]] double extentBuffer() const;
 
     /**
      * Returns the extent buffer unit currently set in the widget.
      */
-    Qgis::RenderUnit sizeUnit() const;
+    [[nodiscard]] Qgis::RenderUnit sizeUnit() const;
 
     /**
      * Returns the extent buffer value currently set in the widget.
@@ -122,7 +122,7 @@ class GUI_EXPORT QgsExtentBufferDialog : public QDialog
      *
      * \returns extent buffer value
      */
-    QgsProperty dataDefinedProperty() const;
+    [[nodiscard]] QgsProperty dataDefinedProperty() const;
 
     /**
      * Returns the data defined property currently set in the widget.
@@ -131,7 +131,7 @@ class GUI_EXPORT QgsExtentBufferDialog : public QDialog
      *
      * \returns property
     */
-    QgsExtentBufferWidget *widget() const;
+    [[nodiscard]] QgsExtentBufferWidget *widget() const;
 
     /**
      * Sets the context in which widget is shown, e.g., the associated map canvas and expression contexts.

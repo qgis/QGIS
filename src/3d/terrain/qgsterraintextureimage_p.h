@@ -49,19 +49,19 @@ class QgsTerrainTextureImage : public Qt3DRender::QAbstractTextureImage
     //! Constructs the object with given image and map extent
     QgsTerrainTextureImage( const QImage &image, const QgsRectangle &extent, const QString &debugText, Qt3DCore::QNode *parent = nullptr );
 
-    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override;
+    [[nodiscard]] Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override;
 
     //! Clears the current map image and emits signal that data generator has changed
     void invalidate();
     //! Stores a new map image and emits signal that data generator has changed
     void setImage( const QImage &image );
     //! Returns the stored image
-    QImage getImage() const { return mImage; }
+    [[nodiscard]] QImage getImage() const { return mImage; }
 
     //! Returns extent of the image in map coordinates
-    QgsRectangle imageExtent() const { return mExtent; }
+    [[nodiscard]] QgsRectangle imageExtent() const { return mExtent; }
     //! Returns debug information (normally map tile coordinates)
-    QString imageDebugText() const { return mDebugText; }
+    [[nodiscard]] QString imageDebugText() const { return mDebugText; }
 
   private:
     QgsRectangle mExtent;

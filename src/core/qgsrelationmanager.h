@@ -47,7 +47,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     /**
      * Gets the relation context
      */
-    QgsRelationContext context() const;
+    [[nodiscard]] QgsRelationContext context() const;
 
     /**
      * Will set the specified relations and remove any relation currently set.
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * \returns A QMap where the key is the relation id, the value the relation object.
      */
-    QMap<QString, QgsRelation> relations() const;
+    [[nodiscard]] QMap<QString, QgsRelation> relations() const;
 
     /**
      * Add a relation.
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * \returns A relation. Invalid if not found.
      * \see relationsByName()
      */
-    Q_INVOKABLE QgsRelation relation( const QString &id ) const;
+    Q_INVOKABLE [[nodiscard]] QgsRelation relation( const QString &id ) const;
 
     /**
      * Returns a list of relations with matching names.
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      * \returns a list of matching relations
      * \see relation()
      */
-    QList<QgsRelation> relationsByName( const QString &name ) const;
+    [[nodiscard]] QList<QgsRelation> relationsByName( const QString &name ) const;
 
     /**
      * Remove any relation managed by this class.
@@ -140,12 +140,12 @@ class CORE_EXPORT QgsRelationManager : public QObject
     /**
      * Returns all the polymorphic relations
      */
-    QMap<QString, QgsPolymorphicRelation> polymorphicRelations() const;
+    [[nodiscard]] QMap<QString, QgsPolymorphicRelation> polymorphicRelations() const;
 
     /**
      * Returns the list of relations associated with a polymorphic relation
      */
-    QgsPolymorphicRelation polymorphicRelation( const QString &polymorphicRelationId ) const;
+    [[nodiscard]] QgsPolymorphicRelation polymorphicRelation( const QString &polymorphicRelationId ) const;
 
     /**
      * Adds a new polymorphic relation. The generated relations are not available, they will be created automatically.

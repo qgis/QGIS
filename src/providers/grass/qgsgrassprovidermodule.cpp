@@ -1241,7 +1241,7 @@ class QgsGrassDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override { return QStringLiteral( "GRASS" ); }
 
-    Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::Directories; }
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::Directories; }
 
     QgsDataItem *createDataItem( const QString &dirPath, QgsDataItem *parentItem ) override
     {

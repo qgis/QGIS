@@ -114,7 +114,7 @@ class CORE_EXPORT QgsRasterFileWriter
     /**
      * Returns the output URL (filename) for the raster.
      */
-    QString outputUrl() const { return mOutputUrl; }
+    [[nodiscard]] QString outputUrl() const { return mOutputUrl; }
 
     /**
      * Sets the output \a format.
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see setOutputFormat()
      */
-    QString outputFormat() const { return mOutputFormat; }
+    [[nodiscard]] QString outputFormat() const { return mOutputFormat; }
 
     /**
      * Sets the name of the data provider for the raster output.
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see setOutputProviderKey()
      */
-    QString outputProviderKey() const { return mOutputProviderKey; }
+    [[nodiscard]] QString outputProviderKey() const { return mOutputProviderKey; }
 
     /**
      * Sets whether the output should be tiled.
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see setTiledMode()
      */
-    bool tiledMode() const { return mTiledMode; }
+    [[nodiscard]] bool tiledMode() const { return mTiledMode; }
 
     /**
      * Sets the maximum tile width (in pixels) for tiled outputs.
@@ -183,14 +183,14 @@ class CORE_EXPORT QgsRasterFileWriter
      * \see setMaxTileWidth()
      * \see tiledMode()
      */
-    int maxTileWidth() const { return mMaxTileWidth; }
+    [[nodiscard]] int maxTileWidth() const { return mMaxTileWidth; }
 
     /**
      * Returns the pyramid building option.
      *
      * \see setBuildPyramidsFlag()
      */
-    Qgis::RasterBuildPyramidOption buildPyramidsFlag() const { return mBuildPyramidsFlag; }
+    [[nodiscard]] Qgis::RasterBuildPyramidOption buildPyramidsFlag() const { return mBuildPyramidsFlag; }
 
     /**
      * Sets the pyramid building option.
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see setPyramidsList()
      */
-    QList< int > pyramidsList() const { return mPyramidsList; }
+    [[nodiscard]] QList< int > pyramidsList() const { return mPyramidsList; }
 
     /**
      * Sets the \a list of pyramids which will be created for the output file.
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     void setPyramidsList( const QList< int > &list ) { mPyramidsList = list; }
 
-    QString pyramidsResampling() const { return mPyramidsResampling; }
+    [[nodiscard]] QString pyramidsResampling() const { return mPyramidsResampling; }
     void setPyramidsResampling( const QString &str ) { mPyramidsResampling = str; }
 
     /**
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see setPyramidsFormat()
      */
-    Qgis::RasterPyramidFormat pyramidsFormat() const { return mPyramidsFormat; }
+    [[nodiscard]] Qgis::RasterPyramidFormat pyramidsFormat() const { return mPyramidsFormat; }
 
     /**
      * Sets the raster pyramid format.
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * \see setMaxTileHeight()
      * \see tiledMode()
      */
-    int maxTileHeight() const { return mMaxTileHeight; }
+    [[nodiscard]] int maxTileHeight() const { return mMaxTileHeight; }
 
     // TODO QGIS 4.0: rename list to options to have more semantic argument name
 
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * \see setCreationOptions()
      * \since QGIS 3.44
      */
-    QStringList creationOptions() const { return mCreationOptions; }
+    [[nodiscard]] QStringList creationOptions() const { return mCreationOptions; }
 
     /**
      * Sets a list of data source creation options to use when
@@ -302,7 +302,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see setPyramidsConfigOptions()
      */
-    QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
+    [[nodiscard]] QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
 
     //! Creates a filter for an GDAL driver key
     static QString filterForDriver( const QString &driverName );

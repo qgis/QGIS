@@ -93,7 +93,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
      * \returns the parameter value or an invalid QVariant if not found (and not required)
      * \throws QgsServerApiBadRequestError if validation fails
      */
-    virtual QVariant value( const QgsServerApiContext &context ) const;
+    [[nodiscard]] virtual QVariant value( const QgsServerApiContext &context ) const;
 
 #ifndef SIP_RUN
 
@@ -109,14 +109,14 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     /**
      * Returns the handler information as a JSON object.
      */
-    json data() const;
+    [[nodiscard]] json data() const;
 
 #endif
 
     /**
      * Returns parameter description
      */
-    QString description() const;
+    [[nodiscard]] QString description() const;
 
     /**
      * Returns the name of the \a type
@@ -126,7 +126,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     /**
      * Returns the name of the parameter
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Sets validator \a description
@@ -141,7 +141,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
      *
      * \since QGIS 3.28
      */
-    bool hidden() const;
+    [[nodiscard]] bool hidden() const;
 
     /**
      * Set the parameter's \a hidden status, parameters are not hidden by default.

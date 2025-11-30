@@ -90,7 +90,7 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
     void updatePath();
 
   private:
-    QPointF bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming, bool hasSpecificDirectionalFlow ) const;
+    [[nodiscard]] QPointF bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming, bool hasSpecificDirectionalFlow ) const;
 
     void drawArrowHead( QPainter *painter, const QPointF &point, const QPointF &vector );
 

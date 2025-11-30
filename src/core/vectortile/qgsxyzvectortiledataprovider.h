@@ -111,13 +111,13 @@ class QgsXyzVectorTileDataProviderMetadata : public QgsProviderMetadata
   public:
     QgsXyzVectorTileDataProviderMetadata();
     QgsXyzVectorTileDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QIcon icon() const override;
-    ProviderCapabilities providerCapabilities() const override;
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] ProviderCapabilities providerCapabilities() const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 

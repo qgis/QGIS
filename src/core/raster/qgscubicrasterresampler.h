@@ -34,7 +34,7 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResamplerV2
   public:
 
     QgsCubicRasterResampler() = default;
-    QgsCubicRasterResampler *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsCubicRasterResampler *clone() const override SIP_FACTORY;
 
     QImage resampleV2( const QImage &source, const QSize &size ) override;
 
@@ -42,8 +42,8 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResamplerV2
      * \deprecated QGIS 3.12. Use resampleV2() instead.
      */
     Q_DECL_DEPRECATED void resample( const QImage &srcImage, QImage &dstImage ) override SIP_DEPRECATED;
-    QString type() const override;
-    int tileBufferPixels() const override;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] int tileBufferPixels() const override;
 };
 
 #endif // QGSCUBICRASTERRESAMPLER_H

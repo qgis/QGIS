@@ -61,7 +61,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
         QgsFeature feature;
 
         //! Base symbol for rendering feature
-        QgsMarkerSymbol *symbol() const { return mSymbol.get(); }
+        [[nodiscard]] QgsMarkerSymbol *symbol() const { return mSymbol.get(); }
 
         //! True if feature is selected and should be rendered in a selected state
         bool isSelected;

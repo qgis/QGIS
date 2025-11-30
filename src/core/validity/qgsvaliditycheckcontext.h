@@ -56,7 +56,7 @@ class CORE_EXPORT QgsValidityCheckContext
     /**
      * Returns the context type.
      */
-    virtual int type() const = 0;
+    [[nodiscard]] virtual int type() const = 0;
 
     virtual ~QgsValidityCheckContext() = default;
 
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsLayoutValidityCheckContext : public QgsValidityCheckContext
       : layout( layout )
     {}
 
-    int type() const override { return TypeLayoutContext; }
+    [[nodiscard]] int type() const override { return TypeLayoutContext; }
 
     /**
      * Pointer to the layout which the check is being run against.

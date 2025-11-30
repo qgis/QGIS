@@ -85,14 +85,14 @@ class GUI_EXPORT QgsScrollBarHighlightController
     /**
      * Returns the associated scroll bar.
      */
-    QScrollBar *scrollBar() const;
+    [[nodiscard]] QScrollBar *scrollBar() const;
 
     /**
      * Returns the associated scroll area.
      *
      * \see setScrollArea()
      */
-    QAbstractScrollArea *scrollArea() const;
+    [[nodiscard]] QAbstractScrollArea *scrollArea() const;
 
     /**
      * Sets the associated scroll bar.
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsScrollBarHighlightController
      *
      * \see setLineHeight()
      */
-    double lineHeight() const;
+    [[nodiscard]] double lineHeight() const;
 
     /**
      * Sets the line \a height for text associated with the scroll area.
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsScrollBarHighlightController
      *
      * \see setVisibleRange()
      */
-    double visibleRange() const;
+    [[nodiscard]] double visibleRange() const;
 
     /**
      * Sets the visible range of the scroll area (i.e. the viewport's height).
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsScrollBarHighlightController
      *
      * \see setMargin()
      */
-    double margin() const;
+    [[nodiscard]] double margin() const;
 
     /**
      * Sets the document \a margin for the associated viewport.
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsScrollBarHighlightController
      *
      * \note Not available in Python bindings
      */
-    QHash<int, QVector<QgsScrollBarHighlight>> highlights() const SIP_SKIP;
+    [[nodiscard]] QHash<int, QVector<QgsScrollBarHighlight>> highlights() const SIP_SKIP;
 
     /**
      * Adds a \a highlight to the scrollbar.
@@ -194,13 +194,13 @@ class QgsScrollBarHighlightOverlay : public QWidget
   private:
     void drawHighlights( QPainter *painter, int docStart, int docSize, double docSizeToHandleSizeRatio, int handleOffset, const QRect &viewport );
     void updateCache();
-    QRect overlayRect() const;
-    QRect handleRect() const;
+    [[nodiscard]] QRect overlayRect() const;
+    [[nodiscard]] QRect handleRect() const;
 
     // line start to line end
     QMap<QgsScrollBarHighlight::Priority, QMap<QRgb, QMap<int, int>>> mHighlightCache;
 
-    inline QScrollBar *scrollBar() const { return mHighlightController->scrollBar(); }
+    [[nodiscard]] inline QScrollBar *scrollBar() const { return mHighlightController->scrollBar(); }
     QgsScrollBarHighlightController *mHighlightController = nullptr;
     bool mIsCacheUpdateScheduled = true;
 };

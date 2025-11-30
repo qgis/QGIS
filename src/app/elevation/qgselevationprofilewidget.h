@@ -79,7 +79,7 @@ class QgsElevationProfileLayersDialog : public QDialog, private Ui::QgsElevation
     QgsElevationProfileLayersDialog( QWidget *parent = nullptr );
     void setVisibleLayers( const QList<QgsMapLayer *> &layers );
     void setHiddenLayers( const QList<QgsMapLayer *> &layers );
-    QList<QgsMapLayer *> selectedLayers() const;
+    [[nodiscard]] QList<QgsMapLayer *> selectedLayers() const;
 
   private slots:
 

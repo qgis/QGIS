@@ -52,7 +52,7 @@ class SERVER_EXPORT QgsServerException
     /**
      * Returns the return HTTP response code associated with this exception.
      */
-    int responseCode() const { return mResponseCode; }
+    [[nodiscard]] int responseCode() const { return mResponseCode; }
 
     /**
      * Formats the exception for sending to client
@@ -89,16 +89,16 @@ class SERVER_EXPORT QgsOgcServiceException
     QgsOgcServiceException( const QString &code, const QString &message, const QString &locator = QString(), int responseCode = 200, const QString &version = QStringLiteral( "1.3.0" ) );
 
     //! Returns the exception message
-    QString message() const { return mMessage; }
+    [[nodiscard]] QString message() const { return mMessage; }
 
     //! Returns the exception code
-    QString code() const { return mCode; }
+    [[nodiscard]] QString code() const { return mCode; }
 
     //! Returns the locator
-    QString locator() const { return mLocator; }
+    [[nodiscard]] QString locator() const { return mLocator; }
 
     //! Returns the exception version
-    QString version() const { return mVersion; }
+    [[nodiscard]] QString version() const { return mVersion; }
 
     QByteArray formatResponse( QString &responseFormat SIP_OUT ) const override;
 

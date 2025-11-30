@@ -98,7 +98,7 @@ class SERVER_EXPORT QgsServiceRegistry
      * Searches the API register for an API matching the \a request and returns a (possibly NULL) pointer to it.
      * \since QGIS 3.10
      */
-    QgsServerApi *apiForRequest( const QgsServerRequest &request ) const SIP_SKIP;
+    [[nodiscard]] QgsServerApi *apiForRequest( const QgsServerRequest &request ) const SIP_SKIP;
 
     /**
      * Retrieves an API from its name

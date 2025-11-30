@@ -32,7 +32,7 @@ class QgsWFSFeatureHitsAsyncRequest final : public QgsWfsRequest
     void launchPost( const QUrl &url, const QByteArray &data );
 
     //! Returns result of request, or -1 if not known/error
-    int numberMatched() const { return mNumberMatched; }
+    [[nodiscard]] int numberMatched() const { return mNumberMatched; }
 
   signals:
     void gotHitsResponse();

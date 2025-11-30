@@ -52,17 +52,17 @@ class GUI_EXPORT QgsSensorAbstractGuiMetadata
     /**
      * Returns the unique type code for the sensor class.
      */
-    QString type() const { return mType; }
+    [[nodiscard]] QString type() const { return mType; }
 
     /**
      * Returns a translated, user visible name identifying the corresponding sensor.
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /**
      * Returns an icon representing creation of the sensor type.
      */
-    virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mSensor.svg" ) ); }
+    [[nodiscard]] virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mSensor.svg" ) ); }
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsSensorGuiMetadata : public QgsSensorAbstractGuiMetadata
      * Returns the classes' configuration widget creation function.
      * \see setWidgetFunction()
      */
-    QgsSensorWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    [[nodiscard]] QgsSensorWidgetFunc widgetFunction() const { return mWidgetFunc; }
 
     /**
      * Sets the classes' sensor configuration widget creation \a function.
@@ -144,7 +144,7 @@ class GUI_EXPORT QgsSensorGuiMetadata : public QgsSensorAbstractGuiMetadata
      * Returns the classes' sensor creation function.
      * \see setSensorCreationFunction()
      */
-    QgsSensorCreateFunc sensorCreationFunction() const { return mCreateFunc; }
+    [[nodiscard]] QgsSensorCreateFunc sensorCreationFunction() const { return mCreateFunc; }
 
     /**
      * Sets the classes' sensor creation \a function.
@@ -152,7 +152,7 @@ class GUI_EXPORT QgsSensorGuiMetadata : public QgsSensorAbstractGuiMetadata
      */
     void setSensorCreationFunction( const QgsSensorCreateFunc &function ) { mCreateFunc = function; }
 
-    QIcon creationIcon() const override { return mIcon.isNull() ? QgsSensorAbstractGuiMetadata::creationIcon() : mIcon; }
+    [[nodiscard]] QIcon creationIcon() const override { return mIcon.isNull() ? QgsSensorAbstractGuiMetadata::creationIcon() : mIcon; }
     QgsAbstractSensorWidget *createSensorWidget( QgsAbstractSensor *sensor ) override { return mWidgetFunc ? mWidgetFunc( sensor ) : nullptr; }
     QgsAbstractSensor *createSensor( QObject *parent ) override { return mCreateFunc ? mCreateFunc( parent ) : nullptr; }
 
@@ -204,7 +204,7 @@ class GUI_EXPORT QgsSensorGuiRegistry : public QObject
      * Returns the metadata for the specified sensor \a type. Returns NULLPTR if
      * a corresponding sensor type was not found in the registry.
      */
-    QgsSensorAbstractGuiMetadata *sensorMetadata( const QString &type ) const;
+    [[nodiscard]] QgsSensorAbstractGuiMetadata *sensorMetadata( const QString &type ) const;
 
     /**
      * Registers the GUI metadata for a new sensor type. Takes ownership of the metadata instance.
@@ -242,7 +242,7 @@ class GUI_EXPORT QgsSensorGuiRegistry : public QObject
     /**
      * Returns a list of sensor types handled by the registry.
      */
-    QMap<QString, QString> sensorTypes() const;
+    [[nodiscard]] QMap<QString, QString> sensorTypes() const;
 
   signals:
 

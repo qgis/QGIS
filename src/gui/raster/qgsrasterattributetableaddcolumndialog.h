@@ -48,32 +48,32 @@ class GUI_EXPORT QgsRasterAttributeTableAddColumnDialog : public QDialog, privat
     /**
      * Returns the position where the new column (before) will be inserted.
      */
-    int position() const;
+    [[nodiscard]] int position() const;
 
     /**
      * Returns TRUE if the add color column option was checked.
      */
-    bool isColor() const;
+    [[nodiscard]] bool isColor() const;
 
     /**
      * Returns TRUE if the add color ramp column option was checked.
      */
-    bool isRamp() const;
+    [[nodiscard]] bool isRamp() const;
 
     /**
      * Returns the new column name.
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Returns the new column name.
      */
-    Qgis::RasterAttributeTableFieldUsage usage() const;
+    [[nodiscard]] Qgis::RasterAttributeTableFieldUsage usage() const;
 
     /**
      * Returns the new column type.
      */
-    QMetaType::Type type() const;
+    [[nodiscard]] QMetaType::Type type() const;
 
 
   private:

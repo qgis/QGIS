@@ -38,7 +38,7 @@ class QgsHanaRootItem : public QgsConnectionsRootItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 3; }
+    [[nodiscard]] QVariant sortKey() const override { return 3; }
 
   public slots:
     void onConnectionsChanged();
@@ -53,7 +53,7 @@ class QgsHanaConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
-    QgsDataSourceUri connectionUri() const;
+    [[nodiscard]] QgsDataSourceUri connectionUri() const;
 
   private:
     void updateToolTip( const QString &userName, const QString &dbmsVersion );
@@ -72,10 +72,10 @@ class QgsHanaSchemaItem : public QgsDatabaseSchemaItem
   public:
     QgsHanaSchemaItem( QgsDataItem *parent, const QString &connectionName, const QString &name, const QString &path );
 
-    const QString &connectionName() const { return mConnectionName; }
+    [[nodiscard]] const QString &connectionName() const { return mConnectionName; }
     QVector<QgsDataItem *> createChildren() override;
     // QgsDataItem interface
-    bool layerCollection() const override { return true; }
+    [[nodiscard]] bool layerCollection() const override { return true; }
 
   private:
     QgsHanaLayerItem *createLayer( const QgsHanaLayerProperty &layerProperty );
@@ -93,11 +93,11 @@ class QgsHanaLayerItem : public QgsLayerItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QString createUri() const;
+    [[nodiscard]] QString createUri() const;
 
-    QString comments() const override;
+    [[nodiscard]] QString comments() const override;
 
-    const QgsHanaLayerProperty &layerInfo() const { return mLayerProperty; }
+    [[nodiscard]] const QgsHanaLayerProperty &layerInfo() const { return mLayerProperty; }
 
   private:
     QgsHanaLayerProperty mLayerProperty;
@@ -108,8 +108,8 @@ class QgsHanaDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "SAP HANA" ); }
-    QString dataProviderKey() const override { return QStringLiteral( "hana" ); }
-    Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::Databases; }
+    [[nodiscard]] QString dataProviderKey() const override { return QStringLiteral( "hana" ); }
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::Databases; }
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 

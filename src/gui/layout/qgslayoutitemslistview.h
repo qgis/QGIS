@@ -47,17 +47,17 @@ class GUI_EXPORT QgsLayoutItemsListViewModel : public QSortFilterProxyModel
     QgsLayoutItemsListViewModel( QgsLayoutModel *model, QObject *parent );
 
     //! Returns the layout item listed at the specified index
-    QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
     //! Returns the model index matching the specified layout item
     QModelIndex indexForItem( QgsLayoutItem *item, const int column = 0 ) const;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
   public slots:
     //! Sets the selected index
     void setSelected( const QModelIndex &index );
 
   protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
     QgsLayoutModel *mModel = nullptr;

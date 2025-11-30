@@ -51,13 +51,13 @@ class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpre
     /**
      * Returns the help text
      */
-    QString helpText() const;
+    [[nodiscard]] QString helpText() const;
 
     /**
      * Returns whether the label text was modified either manually by the user,
      * or automatically because it contained slashes or leading/trailing whitespace characters
      */
-    bool isLabelModified() const SIP_SKIP
+    [[nodiscard]] bool isLabelModified() const SIP_SKIP
     {
       return mLabel->text() != mOriginalLabel;
     }

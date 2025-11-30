@@ -63,13 +63,13 @@ class CORE_EXPORT QgsRasterRange
      * Returns the minimum value for the range.
      * \see setMin()
      */
-    double min() const { return mMin; }
+    [[nodiscard]] double min() const { return mMin; }
 
     /**
      * Returns the maximum value for the range.
      * \see setMax()
      */
-    double max() const { return mMax; }
+    [[nodiscard]] double max() const { return mMax; }
 
     /**
      * Returns the bounds type for the range, which specifies
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsRasterRange
      * \see setBounds()
      * \since QGIS 3.2
      */
-    BoundsType bounds() const { return mType; }
+    [[nodiscard]] BoundsType bounds() const { return mType; }
 
     /**
      * Sets the minimum value for the range.
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsRasterRange
      * Returns TRUE if this range contains the specified \a value.
      * \since QGIS 3.2
      */
-    bool contains( double value ) const
+    [[nodiscard]] bool contains( double value ) const
     {
       return ( value > mMin
                || ( !std::isnan( mMin ) && qgsDoubleNear( value, mMin ) && ( mType == IncludeMinAndMax || mType == IncludeMin ) )
@@ -145,13 +145,13 @@ class CORE_EXPORT QgsRasterRange
      * Returns TRUE if this range overlaps another range.
      * \since QGIS 3.2
      */
-    bool overlaps( const QgsRasterRange &other ) const;
+    [[nodiscard]] bool overlaps( const QgsRasterRange &other ) const;
 
     /**
      * Returns a text representation of the range.
      * \since QGIS 3.2
      */
-    QString asText() const;
+    [[nodiscard]] QString asText() const;
 
   private:
     double mMin = std::numeric_limits<double>::quiet_NaN();

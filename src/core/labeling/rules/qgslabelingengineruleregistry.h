@@ -54,12 +54,12 @@ class CORE_EXPORT QgsLabelingEngineRuleRegistry
     /**
      * Returns a list of the rule IDs for rules present in the registry.
      */
-    QStringList ruleIds() const;
+    [[nodiscard]] QStringList ruleIds() const;
 
     /**
      * Returns a user-friendly, translated string representing the rule type with matching \a id.
      */
-    QString displayType( const QString &id ) const;
+    [[nodiscard]] QString displayType( const QString &id ) const;
 
     /**
      * Returns TRUE if the rule is with matching \a id is available for use within the current QGIS environment.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsLabelingEngineRuleRegistry
      * Rules can return FALSE if required dependencies are not available, e.g. if a library version
      * is too old for the rule.
      */
-    bool isAvailable( const QString &id ) const;
+    [[nodiscard]] bool isAvailable( const QString &id ) const;
 
     /**
      * Creates a new rule from the type with matching \a id.
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsLabelingEngineRuleRegistry
      *
      * The caller takes ownership of the returned object.
      */
-    QgsAbstractLabelingEngineRule *create( const QString &id ) const SIP_TRANSFERBACK;
+    [[nodiscard]] QgsAbstractLabelingEngineRule *create( const QString &id ) const SIP_TRANSFERBACK;
 
     /**
      * Adds a new \a rule type to the registry.

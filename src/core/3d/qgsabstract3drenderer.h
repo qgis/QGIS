@@ -50,9 +50,9 @@ class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
     virtual ~QgsAbstract3DRenderer() = default;
 
     //! Returns unique identifier of the renderer class (used to identify subclass)
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
     //! Returns a cloned instance
-    virtual QgsAbstract3DRenderer *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstract3DRenderer *clone() const = 0 SIP_FACTORY;
     //! Returns a 3D entity that will be used to show renderer's data in 3D scene
     virtual Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const = 0 SIP_SKIP;
 

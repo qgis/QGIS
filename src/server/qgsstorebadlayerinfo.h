@@ -47,13 +47,13 @@ class SERVER_EXPORT QgsStoreBadLayerInfo : public QgsProjectBadLayerHandler
      * \brief badLayers
      * \returns ids of bad layers
      */
-    QStringList badLayers() const { return mBadLayerIds; }
+    [[nodiscard]] QStringList badLayers() const { return mBadLayerIds; }
 
     /**
      * Returns names of bad layers with ids.
      * \since QGIS 3.12
      */
-    QMap<QString, QString> badLayerNames() const { return mBadLayerNames; }
+    [[nodiscard]] QMap<QString, QString> badLayerNames() const { return mBadLayerNames; }
 
   private:
     QStringList mBadLayerIds;

@@ -50,7 +50,7 @@ class CORE_EXPORT QgsProfileSourceRegistry : public QObject
     /**
      * Returns a list of registered profile sources.
      */
-    QList< QgsAbstractProfileSource * > profileSources() const;
+    [[nodiscard]] QList< QgsAbstractProfileSource * > profileSources() const;
 
     /**
      * Registers a profile \a source and takes ownership of it.
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsProfileSourceRegistry : public QObject
      * \param sourceId  Id of the source to be found in the registry.
      * \since QGIS 4.0
      */
-    QgsAbstractProfileSource *findSourceById( const QString &sourceId ) const;
+    [[nodiscard]] QgsAbstractProfileSource *findSourceById( const QString &sourceId ) const;
 
   signals:
 

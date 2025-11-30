@@ -111,7 +111,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QList<Qgs3DMapCanvas *> mapCanvases3D() override;
     Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name, Qgis::SceneMode sceneMode = Qgis::SceneMode::Local ) override;
     void closeMapCanvas3D( const QString &name ) override;
-    QSize iconSize( bool dockedToolbar = false ) const override;
+    [[nodiscard]] QSize iconSize( bool dockedToolbar = false ) const override;
     QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() override;
     QWidget *mainWindow() override;
     QgsMessageBar *messageBar() override;
@@ -310,7 +310,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsAttributeDialog *getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature ) override;
     QgsVectorLayerTools *vectorLayerTools() override;
     void preloadForm( const QString &uifile ) override;
-    QList<QgsMapLayer *> editableLayers( bool modified = false ) const override;
+    [[nodiscard]] QList<QgsMapLayer *> editableLayers( bool modified = false ) const override;
     int messageTimeout() override;
     QgsStatusBar *statusBarIface() override;
     void locatorSearch( const QString &searchText ) override;

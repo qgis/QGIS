@@ -77,7 +77,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine ) SIP_SKIP;
 
     //! Returns camera controller
-    QgsCameraController *cameraController() const { return mCameraController; }
+    [[nodiscard]] QgsCameraController *cameraController() const { return mCameraController; }
 
     /**
      * Returns terrain entity (may be NULLPTR if using globe scene,
@@ -109,13 +109,13 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      *
      * \since QGIS 3.26
      */
-    QVector<QgsPointXY> viewFrustum2DExtent() const;
+    [[nodiscard]] QVector<QgsPointXY> viewFrustum2DExtent() const;
 
     /**
      * Returns number of pending jobs for all chunked entities
      * \since QGIS 3.12
      */
-    int totalPendingJobsCount() const;
+    [[nodiscard]] int totalPendingJobsCount() const;
 
     //! Enumeration of possible states of the 3D scene
     enum SceneState
@@ -125,13 +125,13 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     };
 
     //! Returns the current state of the scene
-    SceneState sceneState() const { return mSceneState; }
+    [[nodiscard]] SceneState sceneState() const { return mSceneState; }
 
     /**
      * Given screen error (in pixels) and distance from camera (in 3D world coordinates), this function
      * estimates the error in world space. Takes into account camera's field of view and the screen (3D view) size.
      */
-    double worldSpaceError( double epsilon, double distance ) const;
+    [[nodiscard]] double worldSpaceError( double epsilon, double distance ) const;
 
     /**
      * Exports the scene according to the scene export settings
@@ -151,7 +151,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      *
      * \since QGIS 3.32
      */
-    QList<QgsMapLayer *> layers() const SIP_SKIP { return mLayerEntities.keys(); }
+    [[nodiscard]] QList<QgsMapLayer *> layers() const SIP_SKIP { return mLayerEntities.keys(); }
 
     /**
      * Returns the entity belonging to \a layer
@@ -165,7 +165,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      *
      * \since QGIS 3.20
      */
-    QgsRectangle sceneExtent() const;
+    [[nodiscard]] QgsRectangle sceneExtent() const;
 
     /**
      * Returns the scene's elevation range
@@ -173,28 +173,28 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * \param ignoreTerrain indicates whether the calculation will ignore terrain
      * \since QGIS 3.30
      */
-    QgsDoubleRange elevationRange( bool ignoreTerrain = false ) const;
+    [[nodiscard]] QgsDoubleRange elevationRange( bool ignoreTerrain = false ) const;
 
     /**
      * Returns the 3D axis object
      *
      * \since QGIS 3.26
      */
-    Qgs3DAxis *get3DAxis() const SIP_SKIP { return m3DAxis; }
+    [[nodiscard]] Qgs3DAxis *get3DAxis() const SIP_SKIP { return m3DAxis; }
 
     /**
      * Returns the abstract 3D engine
      *
      * \since QGIS 3.26
      */
-    QgsAbstract3DEngine *engine() const SIP_SKIP { return mEngine; }
+    [[nodiscard]] QgsAbstract3DEngine *engine() const SIP_SKIP { return mEngine; }
 
     /**
      * Returns the 3D map settings.
      *
      * \since QGIS 3.30
      */
-    Qgs3DMapSettings *mapSettings() const { return &mMap; }
+    [[nodiscard]] Qgs3DMapSettings *mapSettings() const { return &mMap; }
 
     /**
      * Returns whether updates of the 3D scene's entities are allowed.
@@ -203,7 +203,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      *
      * \since QGIS 3.40
      */
-    bool hasSceneUpdatesEnabled() const { return mSceneUpdatesEnabled; }
+    [[nodiscard]] bool hasSceneUpdatesEnabled() const { return mSceneUpdatesEnabled; }
 
     /**
      * Sets whether updates of the 3D scene's entities are allowed.
@@ -228,7 +228,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      *
      * \since QGIS 3.44
      */
-    bool hasSceneOriginShiftEnabled() const { return mSceneOriginShiftEnabled; }
+    [[nodiscard]] bool hasSceneOriginShiftEnabled() const { return mSceneOriginShiftEnabled; }
 
     /**
      * Returns whether the 3D scene is allowed to automatically move the scene's
@@ -301,7 +301,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      *
      * \since QGIS 3.44
      */
-    QList<QVector4D> clipPlaneEquations() const { return mClipPlanesEquations; };
+    [[nodiscard]] QList<QVector4D> clipPlaneEquations() const { return mClipPlanesEquations; };
 
 #ifndef SIP_RUN
     //! Static function for returning open 3D map scenes
@@ -384,7 +384,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     //! \returns whether at least one node was told to update
     bool updateScene( bool forceUpdate = false );
     void finalizeNewEntity( Qt3DCore::QEntity *newEntity );
-    int maximumTextureSize() const;
+    [[nodiscard]] int maximumTextureSize() const;
 
     void handleClippingOnEntity( QEntity *entity ) const;
     void handleClippingOnAllEntities() const;

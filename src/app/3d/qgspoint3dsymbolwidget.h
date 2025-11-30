@@ -34,7 +34,7 @@ class QgsPoint3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Point3DSymb
 
     void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) final;
     QgsAbstract3DSymbol *symbol() final;
-    QString symbolType() const final;
+    [[nodiscard]] QString symbolType() const final;
 
   private slots:
     void onShapeChanged();

@@ -141,7 +141,7 @@ class QgsAnnotationLayerChunkedEntity : public QgsChunkedEntity
   private:
     Qt3DCore::QTransform *mTransform = nullptr;
 
-    bool applyTerrainOffset() const;
+    [[nodiscard]] bool applyTerrainOffset() const;
 
     friend class TestQgsChunkedEntity;
 };

@@ -73,7 +73,7 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
      *
      * May return an empty point if the event cannot be converted to a map point.
      */
-    QgsPoint mapPoint() const;
+    [[nodiscard]] QgsPoint mapPoint() const;
 
     /**
      * Returns the point snapped to the plot, if possible.

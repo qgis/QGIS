@@ -40,17 +40,17 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
       double max;
     };
 
-    QgsRasterNuller *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsRasterNuller *clone() const override SIP_FACTORY;
 
-    int bandCount() const override;
+    [[nodiscard]] int bandCount() const override;
 
-    Qgis::DataType dataType( int bandNo ) const override;
+    [[nodiscard]] Qgis::DataType dataType( int bandNo ) const override;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     void setNoData( int bandNo, const QgsRasterRangeList &noData );
 
-    QgsRasterRangeList noData( int bandNo ) const { return mNoData.value( bandNo - 1 ); }
+    [[nodiscard]] QgsRasterRangeList noData( int bandNo ) const { return mNoData.value( bandNo - 1 ); }
 
     //! Sets the output no data value.
     void setOutputNoDataValue( int bandNo, double noData );

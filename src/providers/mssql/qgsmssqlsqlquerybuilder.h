@@ -23,8 +23,8 @@ email                : nyall dot dawson at gmail dot com
 class QgsMsSqlSqlQueryBuilder : public QgsProviderSqlQueryBuilder
 {
   public:
-    QString createLimitQueryForTable( const QString &schema, const QString &name, int limit = 10 ) const override;
-    QString quoteIdentifier( const QString &identifier ) const override;
+    [[nodiscard]] QString createLimitQueryForTable( const QString &schema, const QString &name, int limit = 10 ) const override;
+    [[nodiscard]] QString quoteIdentifier( const QString &identifier ) const override;
 };
 
 #endif // QGSMSSQLSQLQUERYBUILDER_H

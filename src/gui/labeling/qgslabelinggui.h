@@ -153,12 +153,12 @@ class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
   public:
     QgsLabelSettingsDialog( const QgsPalLayerSettings &settings, QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
 
-    QgsPalLayerSettings settings() const { return mWidget->layerSettings(); }
+    [[nodiscard]] QgsPalLayerSettings settings() const { return mWidget->layerSettings(); }
 
     /**
      * Returns a reference to the dialog's button box.
      */
-    QDialogButtonBox *buttonBox() const;
+    [[nodiscard]] QDialogButtonBox *buttonBox() const;
 
   private:
     QgsLabelingGui *mWidget = nullptr;

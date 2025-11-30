@@ -45,26 +45,26 @@ class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
     //! Reimplement for parent class
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     //! Reimplement for parent class
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    [[nodiscard]] QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
     void setVerticalSpacing( int value );
 
-    int verticalSpacing() const;
+    [[nodiscard]] int verticalSpacing() const;
 
     void setHorizontalSpacing( int value );
 
-    int horizontalSpacing() const;
+    [[nodiscard]] int horizontalSpacing() const;
 
   private:
-    QFont detailFont( const QStyleOptionViewItem &option ) const;
-    QFont categoryFont( const QStyleOptionViewItem &option ) const;
-    QFont titleFont( const QStyleOptionViewItem &option ) const;
+    [[nodiscard]] QFont detailFont( const QStyleOptionViewItem &option ) const;
+    [[nodiscard]] QFont categoryFont( const QStyleOptionViewItem &option ) const;
+    [[nodiscard]] QFont titleFont( const QStyleOptionViewItem &option ) const;
     void drawHighlight( const QStyleOptionViewItem &option, QPainter *thepPainter, int height ) const;
 
-    QStringList wordWrap( const QString &string, const QFontMetrics &metrics, int width ) const;
+    [[nodiscard]] QStringList wordWrap( const QString &string, const QFontMetrics &metrics, int width ) const;
     void paintManually( QPainter *painter, const QStyleOptionViewItem &option, const QgsDetailedItemData &data ) const;
     void paintAsWidget( QPainter *painter, const QStyleOptionViewItem &option, const QgsDetailedItemData &data ) const;
-    int height( const QStyleOptionViewItem &option, const QgsDetailedItemData &data ) const;
+    [[nodiscard]] int height( const QStyleOptionViewItem &option, const QgsDetailedItemData &data ) const;
     QgsDetailedItemWidget *mpWidget = nullptr;
     QCheckBox *mpCheckBox = nullptr;
     int mVerticalSpacing;

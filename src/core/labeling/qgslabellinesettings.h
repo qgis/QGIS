@@ -94,7 +94,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \see setPlacementFlags()
      */
-    Qgis::LabelLinePlacementFlags placementFlags() const { return mPlacementFlags; }
+    [[nodiscard]] Qgis::LabelLinePlacementFlags placementFlags() const { return mPlacementFlags; }
 
     /**
      * Returns the line placement \a flags, which dictate how line labels can be placed
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \see setMergeLines()
      */
-    bool mergeLines() const { return mMergeLines; }
+    [[nodiscard]] bool mergeLines() const { return mMergeLines; }
 
     /**
      * Sets whether connected line features with identical label text should be merged
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see directionSymbolPlacement()
      * \see reverseDirectionSymbol()
      */
-    bool addDirectionSymbol() const { return mAddDirectionSymbol; }
+    [[nodiscard]] bool addDirectionSymbol() const { return mAddDirectionSymbol; }
 
     /**
      * Sets whether '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see addDirectionSymbol()
      * \see rightDirectionSymbol()
      */
-    QString leftDirectionSymbol() const { return mLeftDirectionSymbol; }
+    [[nodiscard]] QString leftDirectionSymbol() const { return mLeftDirectionSymbol; }
 
     /**
      * Sets the string to use for left direction arrows.
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see addDirectionSymbol()
      * \see leftDirectionSymbol()
      */
-    QString rightDirectionSymbol() const { return mRightDirectionSymbol; }
+    [[nodiscard]] QString rightDirectionSymbol() const { return mRightDirectionSymbol; }
 
     /**
      * Sets the string to use for right direction arrows.
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \see setReverseDirectionSymbol()
      */
-    bool reverseDirectionSymbol() const { return mReverseDirectionSymbol; }
+    [[nodiscard]] bool reverseDirectionSymbol() const { return mReverseDirectionSymbol; }
 
     /**
      * Sets whether the direction symbols should be \a reversed.
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see setDirectionSymbolPlacement()
      * \see addDirectionSymbol()
      */
-    DirectionSymbolPlacement directionSymbolPlacement() const { return mPlaceDirectionSymbol; }
+    [[nodiscard]] DirectionSymbolPlacement directionSymbolPlacement() const { return mPlaceDirectionSymbol; }
 
     /**
      * Sets the \a placement for direction symbols.
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see overrunDistanceUnit()
      * \see overrunDistanceMapUnitScale()
      */
-    double overrunDistance() const { return mOverrunDistance; }
+    [[nodiscard]] double overrunDistance() const { return mOverrunDistance; }
 
     /**
      * Sets the \a distance which labels are allowed to overrun past the start or end of line features.
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see overrunDistance()
      * \see overrunDistanceMapUnitScale()
      */
-    Qgis::RenderUnit overrunDistanceUnit() const {return mOverrunDistanceUnit; }
+    [[nodiscard]] Qgis::RenderUnit overrunDistanceUnit() const {return mOverrunDistanceUnit; }
 
     /**
      * Sets the \a unit for label overrun distance.
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see overrunDistance()
      * \see overrunDistanceUnit()
      */
-    QgsMapUnitScale overrunDistanceMapUnitScale() const { return mOverrunDistanceMapUnitScale; }
+    [[nodiscard]] QgsMapUnitScale overrunDistanceMapUnitScale() const { return mOverrunDistanceMapUnitScale; }
 
     /**
      * Sets the map unit \a scale for label overrun distance.
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see anchorType()
      * \see anchorClipping()
      */
-    double lineAnchorPercent() const { return mLineAnchorPercent; }
+    [[nodiscard]] double lineAnchorPercent() const { return mLineAnchorPercent; }
 
     /**
      * Sets the \a percent along the line at which labels should be placed.
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see lineAnchorPercent()
      * \see anchorClipping()
      */
-    AnchorType anchorType() const { return mAnchorType; }
+    [[nodiscard]] AnchorType anchorType() const { return mAnchorType; }
 
     /**
      * Sets the line anchor \a type, which dictates how the lineAnchorPercent() setting is
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \since QGIS 3.20
      */
-    AnchorClipping anchorClipping() const { return mAnchorClipping; }
+    [[nodiscard]] AnchorClipping anchorClipping() const { return mAnchorClipping; }
 
     /**
      * Sets the line anchor \a clipping mode, which dictates how line strings are clipped
@@ -352,7 +352,7 @@ class CORE_EXPORT QgsLabelLineSettings
      *
      * \since QGIS 3.26
      */
-    AnchorTextPoint anchorTextPoint() const { return mAnchorTextPoint; }
+    [[nodiscard]] AnchorTextPoint anchorTextPoint() const { return mAnchorTextPoint; }
 
     /**
      * Sets the line anchor text \a point, which dictates which part of the label text

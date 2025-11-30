@@ -60,7 +60,7 @@ class NATIVE_EXPORT QgsNative : public QObject
     /**
      * Returns the native interface's capabilities.
      */
-    virtual Capabilities capabilities() const;
+    [[nodiscard]] virtual Capabilities capabilities() const;
 
     /**
      * Initializes the native interface, using the specified \a window.

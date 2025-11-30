@@ -58,7 +58,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      * If the widget allows setting null date/time.
      * \see setAllowNull
      */
-    bool allowNull() const { return mAllowNull; }
+    [[nodiscard]] bool allowNull() const { return mAllowNull; }
 
     /**
      * \brief Set the date time in the widget and handles null date times.
@@ -71,19 +71,19 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      * \note Before QGIS 3.10, you mustn't call date() or time() because they can't return a NULL value.
      * \note Since QDateTimeEdit::dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
      */
-    QDateTime dateTime() const;
+    [[nodiscard]] QDateTime dateTime() const;
 
     /**
      * \brief Returns the time which can be a null time.
      * \since QGIS 3.10
      */
-    QTime time() const;
+    [[nodiscard]] QTime time() const;
 
     /**
      * \brief Returns the date which can be a null date.
      * \since QGIS 3.10
      */
-    QDate date() const;
+    [[nodiscard]] QDate date() const;
 
     /**
      * Set the current date as NULL.
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      * \see setNullRepresentation()
      * \since QGIS 3.14
      */
-    QString nullRepresentation() const;
+    [[nodiscard]] QString nullRepresentation() const;
 
     /**
      * Sets the widget's \a null representation, which defaults
@@ -167,7 +167,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     /**
      * Returns TRUE if the widget is currently set to a null value
      */
-    bool isNull() const;
+    [[nodiscard]] bool isNull() const;
 
   protected slots:
 #ifndef SIP_RUN

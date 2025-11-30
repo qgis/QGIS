@@ -45,7 +45,7 @@ class GUI_EXPORT QgsExpressionAddFunctionFileDialog : public QDialog, private Ui
     /**
      * Returns whether user has selected to create project functions
      */
-    bool createProjectFunctions() const;
+    [[nodiscard]] bool createProjectFunctions() const;
 
     /**
      * Returns the new file name

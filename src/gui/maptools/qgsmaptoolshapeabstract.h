@@ -64,7 +64,7 @@ class GUI_EXPORT QgsMapToolShapeAbstract
     ~QgsMapToolShapeAbstract() override;
 
     //! Returns the id of the shape tool (equivalent to the one from the metadata)
-    QString id() const { return mId; }
+    [[nodiscard]] QString id() const { return mId; }
 
     /**
      * Called for a mouse release event

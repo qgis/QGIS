@@ -83,20 +83,20 @@ class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
      * Returns the view associated with the rubber band.
      * \see layout()
      */
-    QgsLayoutView *view() const;
+    [[nodiscard]] QgsLayoutView *view() const;
 
     /**
      * Returns the layout associated with the rubber band.
      * \see view()
      */
-    QgsLayout *layout() const;
+    [[nodiscard]] QgsLayout *layout() const;
 
     /**
      * Returns the brush used for drawing the rubber band.
      * \see setBrush()
      * \see pen()
      */
-    QBrush brush() const;
+    [[nodiscard]] QBrush brush() const;
 
     /**
      * Sets the \a brush used for drawing the rubber band.
@@ -110,7 +110,7 @@ class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
      * \see setPen()
      * \see brush()
      */
-    QPen pen() const;
+    [[nodiscard]] QPen pen() const;
 
     /**
      * Sets the \a pen used for drawing the rubber band.

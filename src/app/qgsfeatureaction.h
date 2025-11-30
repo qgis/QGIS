@@ -78,7 +78,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
     /**
      * Returns the added feature or invalid feature in case addFeature() was not successful.
      */
-    QgsFeature feature() const;
+    [[nodiscard]] QgsFeature feature() const;
 
   signals:
 

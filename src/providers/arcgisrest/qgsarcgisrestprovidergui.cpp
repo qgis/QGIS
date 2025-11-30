@@ -29,10 +29,10 @@
 class QgsArcGisRestSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QgsAfsProvider::AFS_PROVIDER_KEY; }
-    QString text() const override { return QObject::tr( "ArcGIS REST Server" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QgsAfsProvider::AFS_PROVIDER_KEY; }
+    [[nodiscard]] QString text() const override { return QObject::tr( "ArcGIS REST Server" ); }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsArcGisRestSourceSelect( parent, fl, widgetMode );
@@ -44,7 +44,7 @@ class QgsArcGisRestSourceWidgetProvider : public QgsProviderSourceWidgetProvider
   public:
     QgsArcGisRestSourceWidgetProvider()
       : QgsProviderSourceWidgetProvider() {}
-    QString providerKey() const override
+    [[nodiscard]] QString providerKey() const override
     {
       return QgsAfsProvider::AFS_PROVIDER_KEY;
     }

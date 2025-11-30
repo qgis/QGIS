@@ -46,7 +46,7 @@ class CORE_EXPORT QgsRenderedAnnotationItemDetails : public QgsRenderedItemDetai
     /**
      * Returns the item ID of the associated annotation item.
      */
-    QString itemId() const { return mItemId; }
+    [[nodiscard]] QString itemId() const { return mItemId; }
 
   private:
 

@@ -44,9 +44,9 @@ class _3D_EXPORT QgsShadowSettings
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
     //! Returns whether shadow rendering is enabled
-    bool renderShadows() const { return mRenderShadows; }
+    [[nodiscard]] bool renderShadows() const { return mRenderShadows; }
     //! Returns the selected direcctional light used to cast shadows
-    int selectedDirectionalLight() const { return mSelectedDirectionalLight; }
+    [[nodiscard]] int selectedDirectionalLight() const { return mSelectedDirectionalLight; }
 
     /**
      * Returns the maximum shadow rendering distance accounted for when rendering shadows
@@ -54,20 +54,20 @@ class _3D_EXPORT QgsShadowSettings
      * This helps with producing a reasonable shadow resolution when looking at a large area or up to the sky
      * \since QGIS 3.16
      */
-    double maximumShadowRenderingDistance() const { return mMaximumShadowRenderingDistance; }
+    [[nodiscard]] double maximumShadowRenderingDistance() const { return mMaximumShadowRenderingDistance; }
 
     /**
      * Returns the shadow bias used to correct the numerical imprecision of shadows (for the depth test)
      * This helps with reducing the self shadowing artifact
      * \since QGIS 3.16
      */
-    double shadowBias() const { return mShadowBias; }
+    [[nodiscard]] double shadowBias() const { return mShadowBias; }
 
     /**
      * Returns the resolution of the shadow map texture used to generate the shadows
      * \since QGIS 3.16
      */
-    int shadowMapResolution() const { return mShadowMapResolution; }
+    [[nodiscard]] int shadowMapResolution() const { return mShadowMapResolution; }
 
     //! Sets whether shadow rendering is enabled
     void setRenderShadows( bool enabled ) { mRenderShadows = enabled; }

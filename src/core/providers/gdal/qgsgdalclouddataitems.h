@@ -31,7 +31,7 @@ class CORE_EXPORT QgsGdalCloudRootItem : public QgsConnectionsRootItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 8; }
+    [[nodiscard]] QVariant sortKey() const override { return 8; }
 
 };
 
@@ -42,7 +42,7 @@ class CORE_EXPORT QgsGdalCloudProviderItem : public QgsDataCollectionItem
   public:
     QgsGdalCloudProviderItem( QgsDataItem *parent, const QgsGdalUtils::VsiNetworkFileSystemDetails &handler );
     QVector<QgsDataItem *> createChildren() override;
-    const QgsGdalUtils::VsiNetworkFileSystemDetails &vsiHandler() const { return mVsiHandler; }
+    [[nodiscard]] const QgsGdalUtils::VsiNetworkFileSystemDetails &vsiHandler() const { return mVsiHandler; }
 
   private:
     QgsGdalUtils::VsiNetworkFileSystemDetails mVsiHandler;
@@ -79,8 +79,8 @@ class QgsGdalCloudDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    QString dataProviderKey() const override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] QString dataProviderKey() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 

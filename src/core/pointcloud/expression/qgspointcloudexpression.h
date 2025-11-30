@@ -94,29 +94,29 @@ class CORE_EXPORT QgsPointCloudExpression
      * Checks if this expression is valid.
      * A valid expression could be parsed but does not necessarily evaluate properly.
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Returns TRUE if an error occurred when parsing the input expression
      */
-    bool hasParserError() const;
+    [[nodiscard]] bool hasParserError() const;
 
     /**
      * Returns parser error
      */
-    QString parserErrorString() const;
+    [[nodiscard]] QString parserErrorString() const;
 
     /**
      * Returns parser error details including location of error.
      */
-    QList<QgsExpression::ParserError> parserErrors() const;
+    [[nodiscard]] QList<QgsExpression::ParserError> parserErrors() const;
 
     /**
      * Returns the root node of the expression.
      *
      * The root node is NULLPTR if parsing has failed.
      */
-    const QgsPointCloudExpressionNode *rootNode() const;
+    [[nodiscard]] const QgsPointCloudExpressionNode *rootNode() const;
 
     /**
      * Gets the expression ready for evaluation.
@@ -127,12 +127,12 @@ class CORE_EXPORT QgsPointCloudExpression
     /**
      * Gets list of attributes referenced by the expression.
      */
-    QSet<QString> referencedAttributes() const;
+    [[nodiscard]] QSet<QString> referencedAttributes() const;
 
     /**
      * Returns a list of all nodes which are used in this expression
      */
-    QList<const QgsPointCloudExpressionNode *> nodes( ) const;
+    [[nodiscard]] QList<const QgsPointCloudExpressionNode *> nodes( ) const;
 
     /**
      * Returns a list of all nodes of the given class which are used in this expression
@@ -164,12 +164,12 @@ class CORE_EXPORT QgsPointCloudExpression
     /**
      * Returns TRUE if an error occurred when evaluating last input
      */
-    bool hasEvalError() const;
+    [[nodiscard]] bool hasEvalError() const;
 
     /**
      * Returns evaluation error
      */
-    QString evalErrorString() const;
+    [[nodiscard]] QString evalErrorString() const;
 
     /**
      * Sets evaluation error (used internally by evaluation functions)
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsPointCloudExpression
      * If there was none supplied because it was constructed by sole
      * API calls, dump() will be used to create one instead.
      */
-    QString expression() const;
+    [[nodiscard]] QString expression() const;
 
     /**
      * Returns an expression string, constructed from the internal
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsPointCloudExpression
      * formatting or comments. In general it is preferable to use
      * expression() instead.
      */
-    QString dump() const;
+    [[nodiscard]] QString dump() const;
 
     /**
      * Tests whether a string is a valid expression.
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsPointCloudExpression
      *
      * \since QGIS 3.32
      */
-    QString asPdalExpression() const;
+    [[nodiscard]] QString asPdalExpression() const;
 
   private:
 

@@ -78,29 +78,29 @@ class GUI_EXPORT CharacterWidget : public QWidget
      */
     CharacterWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
     /**
      * Returns the number of columns of characters shown in the widget.
      */
-    int columns() const { return mColumns; }
+    [[nodiscard]] int columns() const { return mColumns; }
 
     /**
      * Returns the size (in pixels) of the square used to render each character preview.
      */
-    int squareSize() const { return mSquareSize; }
+    [[nodiscard]] int squareSize() const { return mSquareSize; }
 
     /**
      * Returns the currently selected character in the widget.
      * \see setCharacter()
      */
-    QChar character() const { return QChar( mLastKey ); }
+    [[nodiscard]] QChar character() const { return QChar( mLastKey ); }
 
     /**
      * Returns the font shown in the widget
      * \see setFont()
      */
-    QFont font() const { return mDisplayFont; }
+    [[nodiscard]] QFont font() const { return mDisplayFont; }
 
   public slots:
 

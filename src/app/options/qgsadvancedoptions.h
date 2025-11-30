@@ -46,7 +46,7 @@ class QgsAdvancedSettingsWidget : public QgsOptionsPageWidget, private Ui::QgsAd
      */
     QgsAdvancedSettingsWidget( QWidget *parent );
     ~QgsAdvancedSettingsWidget() override;
-    QString helpKey() const override;
+    [[nodiscard]] QString helpKey() const override;
     void apply() override;
 
   private:
@@ -64,7 +64,7 @@ class QgsAdvancedSettingsOptionsFactory : public QgsOptionsWidgetFactory
   public:
     QgsAdvancedSettingsOptionsFactory();
 
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
 };
 

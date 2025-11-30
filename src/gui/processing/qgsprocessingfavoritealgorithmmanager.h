@@ -49,7 +49,7 @@ class GUI_EXPORT QgsProcessingFavoriteAlgorithmManager : public QObject
     /**
      * Returns a list of the IDs of favorite Processing algorithms.
      */
-    QStringList favoriteAlgorithmIds() const;
+    [[nodiscard]] QStringList favoriteAlgorithmIds() const;
 
     /**
      * Adds the algorithm with matching \a id to the favorite algorithms list.
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsProcessingFavoriteAlgorithmManager : public QObject
     /**
      * Returns TRUE if the algorithm with matching \a id is in a favorite list.
      */
-    bool isFavorite( const QString &id ) const;
+    [[nodiscard]] bool isFavorite( const QString &id ) const;
 
 #ifndef SIP_RUN
     //! Settings entry favorite algorithms

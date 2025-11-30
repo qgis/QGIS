@@ -73,7 +73,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     /**
      * Returns TRUE if the search bar is visible.
      */
-    bool isSearchBarVisible() const;
+    [[nodiscard]] bool isSearchBarVisible() const;
 
     /**
      * Returns the message bar associated with the widget, to use for user feedback.
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
      * \see setFilePath()
      * \see filePathChanged()
      */
-    QString filePath() const { return mFilePath; }
+    [[nodiscard]] QString filePath() const { return mFilePath; }
 
     /**
      * Saves the code editor content into the file \a path.
@@ -241,7 +241,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
   private:
     void clearSearchHighlights();
     void addSearchHighlights();
-    int searchFlags() const;
+    [[nodiscard]] int searchFlags() const;
     bool findText( bool forward, bool findFirst );
     void updateHighlightController();
     void searchMatchCountChanged( int matchCount );

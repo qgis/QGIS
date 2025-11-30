@@ -62,9 +62,9 @@ class QgsMeshLayer3DRendererWidgetFactory : public QObject, public QgsMapLayerCo
     explicit QgsMeshLayer3DRendererWidgetFactory( QObject *parent = nullptr );
 
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
-    bool supportLayerPropertiesDialog() const override;
+    [[nodiscard]] bool supportLayerPropertiesDialog() const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
-    QString layerPropertiesPagePositionHint() const override;
+    [[nodiscard]] QString layerPropertiesPagePositionHint() const override;
 };
 
 #endif // QGSMESHLAYER3DRENDERERWIDGET_H

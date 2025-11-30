@@ -54,11 +54,11 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     QgsBlurEffect() = default;
 
-    Qgis::PaintEffectFlags flags() const override;
-    QString type() const override { return QStringLiteral( "blur" ); }
-    QVariantMap properties() const override;
+    [[nodiscard]] Qgis::PaintEffectFlags flags() const override;
+    [[nodiscard]] QString type() const override { return QStringLiteral( "blur" ); }
+    [[nodiscard]] QVariantMap properties() const override;
     void readProperties( const QVariantMap &props ) override;
-    QgsBlurEffect *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsBlurEffect *clone() const override SIP_FACTORY;
 
     /**
      * Sets blur level (radius)
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see blurMapUnitScale
      * \see blurMethod
      */
-    double blurLevel() const { return mBlurLevel; }
+    [[nodiscard]] double blurLevel() const { return mBlurLevel; }
 
     /**
      * Sets the units used for the blur level (radius).
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see blurMapUnitScale
      * \since QGIS 3.4.9
      */
-    Qgis::RenderUnit blurUnit() const { return mBlurUnit; }
+    [[nodiscard]] Qgis::RenderUnit blurUnit() const { return mBlurUnit; }
 
     /**
      * Sets the map unit scale used for the blur strength (radius).
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see blurUnit
      * \since QGIS 3.4.9
      */
-    const QgsMapUnitScale &blurMapUnitScale() const { return mBlurMapUnitScale; }
+    [[nodiscard]] const QgsMapUnitScale &blurMapUnitScale() const { return mBlurMapUnitScale; }
 
     /**
      * Sets the blur method (algorithm) to use for performing the blur.
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \returns blur method
      * \see setBlurMethod
      */
-    BlurMethod blurMethod() const { return mBlurMethod; }
+    [[nodiscard]] BlurMethod blurMethod() const { return mBlurMethod; }
 
     /**
      * Sets the \a opacity for the effect.
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * and 1 is fully opaque
      * \see setOpacity()
      */
-    double opacity() const { return mOpacity; }
+    [[nodiscard]] double opacity() const { return mOpacity; }
 
     /**
      * Sets the blend mode for the effect
@@ -166,12 +166,12 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * paint device
      * \see setBlendMode
      */
-    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+    [[nodiscard]] QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
   protected:
 
     void draw( QgsRenderContext &context ) override;
-    QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
+    [[nodiscard]] QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
 
   private:
 

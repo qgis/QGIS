@@ -72,7 +72,7 @@ class CORE_EXPORT QgsOgrProviderUtils
     //! Identifies a dataset by name, updateMode and options
     class DatasetIdentification
     {
-        QString toString() const;
+        [[nodiscard]] QString toString() const;
 
       public:
         QString dsName;
@@ -419,13 +419,13 @@ class QgsOgrLayer
     QString driverName();
 
     //! Returns current dataset name
-    const QString &datasetName() const { return ident.dsName; }
+    [[nodiscard]] const QString &datasetName() const { return ident.dsName; }
 
     //! Returns dataset open mode
-    bool updateMode() const { return ident.updateMode; }
+    [[nodiscard]] bool updateMode() const { return ident.updateMode; }
 
     //! Returns dataset open options
-    const QStringList &options() const { return ident.options; }
+    [[nodiscard]] const QStringList &options() const { return ident.options; }
 
     //! Returns layer name
     QByteArray name();
@@ -461,7 +461,7 @@ class QgsOgrLayer
     GIntBig GetApproxFeatureCount();
 
     //! Return an total feature count based on meta data from package container
-    GIntBig GetTotalFeatureCountFromMetaData() const;
+    [[nodiscard]] GIntBig GetTotalFeatureCountFromMetaData() const;
 
     //! Wrapper of OGR_L_GetExtent
     OGRErr GetExtent( OGREnvelope *psExtent, bool bForce );

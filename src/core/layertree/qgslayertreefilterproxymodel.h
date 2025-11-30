@@ -52,13 +52,13 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
     void setCheckedLayers( const QList<QgsMapLayer *> layers );
 
     //! Returns the checked layers
-    QList<QgsMapLayer *> checkedLayers() const {return mCheckedLayers;}
+    [[nodiscard]] QList<QgsMapLayer *> checkedLayers() const {return mCheckedLayers;}
 
     //! Returns the map layer at a given index
-    QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
+    [[nodiscard]] QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
 
     //! Rerturns the layer tree model
-    QgsLayerTreeModel *layerTreeModel() const;
+    [[nodiscard]] QgsLayerTreeModel *layerTreeModel() const;
     //! Sets the layer tree model
     void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
 
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
      *
      * \since QGIS 3.40
      */
-    bool showPrivateLayers() const;
+    [[nodiscard]] bool showPrivateLayers() const;
 
     /**
      * Determines if private layers are shown.
@@ -86,12 +86,12 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
      */
     void setFilters( Qgis::LayerFilters filters );
 
-    int columnCount( const QModelIndex &parent ) const override;
-    Qt::ItemFlags flags( const QModelIndex &idx ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    QModelIndex sibling( int row, int column, const QModelIndex &idx ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &idx ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] QModelIndex sibling( int row, int column, const QModelIndex &idx ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
     /**
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
     //! This will set if the layer is checked or not
     virtual void setLayerChecked( QgsMapLayer *layer, bool checked );
 
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
 

@@ -63,7 +63,7 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
     /**
      * Returns an instance that is equivalent to this one
     */
-    virtual QgsDiagram *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsDiagram *clone() const = 0 SIP_FACTORY;
 
     void clearCache();
 
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
     /**
      * Gets a descriptive name for this diagram type.
      */
-    virtual QString diagramName() const = 0;
+    [[nodiscard]] virtual QString diagramName() const = 0;
     //! Returns the size in map units the diagram will use to render.
     virtual QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) = 0;
     //! Returns the size in map units the diagram will use to render. Interpolate size
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
      * \param s diagram settings
      * \param interpolationSettings interpolation settings
      */
-    virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) const = 0;
+    [[nodiscard]] virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) const = 0;
 
   protected:
 
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
      * \param s diagram settings
      * \param interpolationSettings interpolation settings
      */
-    QSizeF sizeForValue( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) const;
+    [[nodiscard]] QSizeF sizeForValue( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) const;
 
   private:
     QMap<QString, QgsExpression *> mExpressions;

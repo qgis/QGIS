@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMapInfoSymbolConversionContext
     /**
      * Returns a list of warning messages generated during the conversion.
      */
-    QStringList warnings() const { return mWarnings; }
+    [[nodiscard]] QStringList warnings() const { return mWarnings; }
 
     /**
      * Clears the list of warning messages.

@@ -79,9 +79,9 @@ class CORE_EXPORT QgsRelation
           : QPair< QString, QString >( referencingField, referencedField ) {}
 
         //! Gets the name of the referencing (child) field
-        QString referencingField() const { return first; }
+        [[nodiscard]] QString referencingField() const { return first; }
         //! Gets the name of the referenced (parent) field
-        QString referencedField() const { return second; }
+        [[nodiscard]] QString referencedField() const { return second; }
 
         bool operator==( const FieldPair &other ) const { return first == other.first && second == other.second; }
     };

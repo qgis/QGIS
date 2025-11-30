@@ -170,7 +170,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 
         SLException &operator=( const SLException &other ) = delete;
 
-        QString errorMessage() const
+        [[nodiscard]] QString errorMessage() const
         {
           return !errMsg.isEmpty() ? errMsg : QStringLiteral( "unknown cause" );
         }
@@ -396,7 +396,7 @@ class QgsSpatiaLiteProviderMetadata final : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsSpatiaLiteProviderMetadata();
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
 
     void cleanupProvider() override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
@@ -405,17 +405,17 @@ class QgsSpatiaLiteProviderMetadata final : public QgsProviderMetadata
     QString loadStyle( const QString &uri, QString &errCause ) override;
     QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    ProviderCapabilities providerCapabilities() const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] ProviderCapabilities providerCapabilities() const override;
     QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
 
     Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri ) override;
     bool createDb( const QString &dbPath, QString &errCause ) override;
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    [[nodiscard]] QList<QgsDataItemProvider *> dataItemProviders() const override;
 
     // QgsProviderMetadata interface
   public:

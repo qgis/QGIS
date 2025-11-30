@@ -32,8 +32,8 @@
 class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
-    QString group() const final;
-    QString groupId() const final;
+    [[nodiscard]] QString group() const final;
+    [[nodiscard]] QString groupId() const final;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) final;
 
   protected:
@@ -82,12 +82,12 @@ class QgsReclassifyByLayerAlgorithm : public QgsReclassifyAlgorithmBase
 {
   public:
     QgsReclassifyByLayerAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsReclassifyByLayerAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsReclassifyByLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() override;
@@ -111,12 +111,12 @@ class QgsReclassifyByTableAlgorithm : public QgsReclassifyAlgorithmBase
 {
   public:
     QgsReclassifyByTableAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsReclassifyByTableAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsReclassifyByTableAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() override;

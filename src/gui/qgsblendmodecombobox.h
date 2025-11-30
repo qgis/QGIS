@@ -70,7 +70,7 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
      * \see setShowClippingModes()
      * \since QGIS 3.24
      */
-    bool showClippingModes() const;
+    [[nodiscard]] bool showClippingModes() const;
 
   private:
     bool mShowClipModes = false;

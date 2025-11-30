@@ -71,7 +71,7 @@ class CORE_EXPORT QgsDataProviderTemporalCapabilities
      *
      * \see setHasTemporalCapabilities()
      */
-    bool hasTemporalCapabilities() const { return mHasTemporalCapabilities; }
+    [[nodiscard]] bool hasTemporalCapabilities() const { return mHasTemporalCapabilities; }
 
     /**
      * Sets whether the provider has temporal capabilities \a available.

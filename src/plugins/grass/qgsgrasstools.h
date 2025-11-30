@@ -154,19 +154,19 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
     QString mFilter;            // filter string provided
     QRegularExpression mRegExp; // regular expression constructed from filter string
 
-    bool filterAcceptsString( const QString &value ) const;
+    [[nodiscard]] bool filterAcceptsString( const QString &value ) const;
 
     // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
     // returns true if at least one ancestor is accepted by filter
-    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
+    [[nodiscard]] bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
 
     // returns true if at least one descendant s accepted by filter
-    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
+    [[nodiscard]] bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
 
     // filter accepts item name
-    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
+    [[nodiscard]] bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
 };
 
 #endif // QGSGRASSTOOLS_H

@@ -90,7 +90,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     /**
      * Returns the ordered list of selected options.
      */
-    QVariantList selectedOptions() const;
+    [[nodiscard]] QVariantList selectedOptions() const;
 
     /**
      * Returns the widget's button box.
@@ -116,7 +116,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false );
 
     //! Returns pointer to the list view
-    QListView *listView() const { return mSelectionList; }
+    [[nodiscard]] QListView *listView() const { return mSelectionList; }
 
     //! Dialog list model
     QStandardItemModel *mModel = nullptr;
@@ -208,7 +208,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog
     /**
      * Returns the ordered list of selected options.
      */
-    QVariantList selectedOptions() const;
+    [[nodiscard]] QVariantList selectedOptions() const;
 
   private:
     QgsProcessingMultipleSelectionPanelWidget *mWidget = nullptr;
@@ -290,7 +290,7 @@ class GUI_EXPORT QgsProcessingMultipleInputDialog : public QDialog
     /**
      * Returns the ordered list of selected options.
      */
-    QVariantList selectedOptions() const;
+    [[nodiscard]] QVariantList selectedOptions() const;
 
     /**
      * Sets the project associated with the dialog.

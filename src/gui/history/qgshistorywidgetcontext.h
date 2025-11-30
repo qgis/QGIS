@@ -45,7 +45,7 @@ class GUI_EXPORT QgsHistoryWidgetContext
      * Returns the message bar associated with the widget.
      * \see setMessageBar()
      */
-    QgsMessageBar *messageBar() const;
+    [[nodiscard]] QgsMessageBar *messageBar() const;
 
     /**
      * Sets the parent history \a widget.
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsHistoryWidgetContext
      * \see setHistoryWidget()
      * \since QGIS 3.44
      */
-    QgsHistoryWidget *historyWidget() const;
+    [[nodiscard]] QgsHistoryWidget *historyWidget() const;
 
   private:
     QgsMessageBar *mMessageBar = nullptr;

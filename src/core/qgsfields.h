@@ -168,10 +168,10 @@ class CORE_EXPORT QgsFields
     void extend( const QgsFields &other ) SIP_HOLDGIL;
 
     //! Checks whether the container is empty
-    bool isEmpty() const SIP_HOLDGIL;
+    [[nodiscard]] bool isEmpty() const SIP_HOLDGIL;
 
     //! Returns number of items
-    int count() const SIP_HOLDGIL;
+    [[nodiscard]] int count() const SIP_HOLDGIL;
 
 #ifdef SIP_RUN
     int __len__() const SIP_HOLDGIL;
@@ -187,19 +187,19 @@ class CORE_EXPORT QgsFields
 #endif
 
     //! Returns number of items
-    int size() const SIP_HOLDGIL;
+    [[nodiscard]] int size() const SIP_HOLDGIL;
 
     /**
      * Returns a list with field names
      */
-    QStringList names() const SIP_HOLDGIL;
+    [[nodiscard]] QStringList names() const SIP_HOLDGIL;
 
     /**
      * Returns if a field index is valid
      * \param i  Index of the field which needs to be checked
      * \returns   TRUE if the field exists
      */
-    Q_INVOKABLE bool exists( int i ) const SIP_HOLDGIL;
+    Q_INVOKABLE [[nodiscard]] bool exists( int i ) const SIP_HOLDGIL;
 
 #ifndef SIP_RUN
     //! Gets field at particular index (must be in range 0..N-1)
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsFields
     /**
      * Returns the field at particular index (must be in range 0..N-1).
      */
-    QgsField at( int i ) const SIP_FACTORY;
+    [[nodiscard]] QgsField at( int i ) const SIP_FACTORY;
 #else
 
     /**
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsFields
     /**
      * Returns the field at particular index (must be in range 0..N-1).
      */
-    QgsField field( int fieldIdx ) const SIP_FACTORY;
+    [[nodiscard]] QgsField field( int fieldIdx ) const SIP_FACTORY;
 #else
 
     /**
@@ -291,7 +291,7 @@ class CORE_EXPORT QgsFields
     /**
      * Returns the field with matching name.
      */
-    QgsField field( const QString &name ) const SIP_FACTORY;
+    [[nodiscard]] QgsField field( const QString &name ) const SIP_FACTORY;
 #else
 
     /**
@@ -318,7 +318,7 @@ class CORE_EXPORT QgsFields
     /**
      * Returns the field's origin (value from an enumeration).
      */
-    Qgis::FieldOrigin fieldOrigin( int fieldIdx ) const;
+    [[nodiscard]] Qgis::FieldOrigin fieldOrigin( int fieldIdx ) const;
 #else
 
     /**
@@ -349,7 +349,7 @@ class CORE_EXPORT QgsFields
      * - Qgis::FieldOrigin::Join: The field's originIndex / 1000 = index of the join, originIndex % 1000 = index within the join
      * - Qgis::FieldOrigin::Edit: The originIndex is the index in the list of added attributes
      */
-    int fieldOriginIndex( int fieldIdx ) const;
+    [[nodiscard]] int fieldOriginIndex( int fieldIdx ) const;
 #else
 
     /**
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsFields
      * \returns The field index if found or -1 in case it cannot be found.
      * \see lookupField For a more tolerant alternative.
      */
-    Q_INVOKABLE int indexFromName( const QString &fieldName ) const SIP_HOLDGIL;
+    Q_INVOKABLE [[nodiscard]] int indexFromName( const QString &fieldName ) const SIP_HOLDGIL;
 
     /**
      * Gets the field index from the field name.
@@ -401,7 +401,7 @@ class CORE_EXPORT QgsFields
      * \returns The field index if found or -1 in case it cannot be found.
      * \see lookupField For a more tolerant alternative.
      */
-    Q_INVOKABLE int indexOf( const QString &fieldName ) const SIP_HOLDGIL;
+    Q_INVOKABLE [[nodiscard]] int indexOf( const QString &fieldName ) const SIP_HOLDGIL;
 
     /**
      * Looks up field's index from the field name.
@@ -416,15 +416,15 @@ class CORE_EXPORT QgsFields
      * \returns The field index if found or -1 in case it cannot be found.
      * \see indexFromName For a more performant and precise but less tolerant alternative.
      */
-    Q_INVOKABLE  int lookupField( const QString &fieldName ) const SIP_HOLDGIL;
+    Q_INVOKABLE  [[nodiscard]] int lookupField( const QString &fieldName ) const SIP_HOLDGIL;
 
     /**
      * Utility function to get list of attribute indexes
      */
-    QgsAttributeList allAttributesList() const SIP_HOLDGIL;
+    [[nodiscard]] QgsAttributeList allAttributesList() const SIP_HOLDGIL;
 
     //! Utility function to return a list of QgsField instances
-    QList<QgsField> toList() const SIP_HOLDGIL;
+    [[nodiscard]] QList<QgsField> toList() const SIP_HOLDGIL;
 
     bool operator==( const QgsFields &other ) const SIP_HOLDGIL;
     bool operator!=( const QgsFields &other ) const  SIP_HOLDGIL { return !( *this == other ); }
@@ -436,7 +436,7 @@ class CORE_EXPORT QgsFields
      * \param fieldIdx the field index
      * \param considerOrigin if TRUE the icon will the origin of the field
      */
-    QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const SIP_FACTORY;
+    [[nodiscard]] QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const SIP_FACTORY;
 #else
 
     /**
@@ -588,28 +588,28 @@ class CORE_EXPORT QgsFields
      *
      * \note not available in Python bindings
      */
-    const_iterator constBegin() const noexcept;
+    [[nodiscard]] const_iterator constBegin() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
      *
      * \note not available in Python bindings
      */
-    const_iterator constEnd() const noexcept;
+    [[nodiscard]] const_iterator constEnd() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the first item in the list.
      *
      * \note not available in Python bindings
      */
-    const_iterator begin() const noexcept;
+    [[nodiscard]] const_iterator begin() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
      *
      * \note not available in Python bindings
      */
-    const_iterator end() const noexcept;
+    [[nodiscard]] const_iterator end() const noexcept;
 
     /**
      * Returns an STL-style iterator pointing to the first item in the list.

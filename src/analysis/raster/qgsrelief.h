@@ -63,12 +63,12 @@ class ANALYSIS_EXPORT QgsRelief
     */
     int processRaster( QgsFeedback *feedback = nullptr );
 
-    double zFactor() const { return mZFactor; }
+    [[nodiscard]] double zFactor() const { return mZFactor; }
     void setZFactor( double factor ) { mZFactor = factor; }
 
     void clearReliefColors();
     void addReliefColorClass( const QgsRelief::ReliefColor &color );
-    QList<QgsRelief::ReliefColor> reliefColors() const { return mReliefColors; }
+    [[nodiscard]] QList<QgsRelief::ReliefColor> reliefColors() const { return mReliefColors; }
     void setReliefColors( const QList<QgsRelief::ReliefColor> &c ) { mReliefColors = c; }
 
     /**

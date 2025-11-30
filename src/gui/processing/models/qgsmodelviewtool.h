@@ -59,7 +59,7 @@ class GUI_EXPORT QgsModelViewTool : public QObject
      * Returns the current combination of flags set for the tool.
      * \see setFlags()
      */
-    QgsModelViewTool::Flags flags() const;
+    [[nodiscard]] QgsModelViewTool::Flags flags() const;
 
     /**
      * Mouse move event for overriding. Default implementation does nothing.
@@ -144,19 +144,19 @@ class GUI_EXPORT QgsModelViewTool : public QObject
     /**
      * Returns a user-visible, translated name for the tool.
      */
-    QString toolName() const { return mToolName; }
+    [[nodiscard]] QString toolName() const { return mToolName; }
 
     /**
      * Returns the view associated with the tool.
      * \see scene()
      */
-    QgsModelGraphicsView *view() const;
+    [[nodiscard]] QgsModelGraphicsView *view() const;
 
     /**
      * Returns the scene associated with the tool.
      * \see view()
      */
-    QgsModelGraphicsScene *scene() const;
+    [[nodiscard]] QgsModelGraphicsScene *scene() const;
 
   signals:
 
@@ -195,7 +195,7 @@ class GUI_EXPORT QgsModelViewTool : public QObject
      * a "click and drag". If FALSE is returned, the operation should be
      * instead treated as just a click on \a startViewPoint.
      */
-    bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
+    [[nodiscard]] bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
 
   private:
     //! Pointer to model view.

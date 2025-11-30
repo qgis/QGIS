@@ -53,7 +53,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
      * Returns a color ramp representing the current settings from the dialog.
      * \see setRamp()
      */
-    QgsGradientColorRamp ramp() const { return mRamp; }
+    [[nodiscard]] QgsGradientColorRamp ramp() const { return mRamp; }
 
     /**
      * Sets the color ramp to show in the dialog.
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
      * Returns a reference to the dialog's button box.
      * \since QGIS 3.10
      */
-    QDialogButtonBox *buttonBox() const;
+    [[nodiscard]] QDialogButtonBox *buttonBox() const;
 
   signals:
 
@@ -149,7 +149,7 @@ class GUI_EXPORT QgsGradientPlotEventFilter : public QObject
 
   private:
     QwtPlot *mPlot = nullptr;
-    QPointF mapPoint( QPointF point ) const;
+    [[nodiscard]] QPointF mapPoint( QPointF point ) const;
 };
 ///@endcond
 #endif

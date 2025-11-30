@@ -714,27 +714,27 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      * An optional \a request can be used to optimise the returned
      * iterator, eg by restricting the returned attributes or geometry.
      */
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Qgis::ProcessingFeatureSourceFlags flags ) const;
+    [[nodiscard]] QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Qgis::ProcessingFeatureSourceFlags flags ) const;
 
-    Qgis::FeatureAvailability hasFeatures() const override;
+    [[nodiscard]] Qgis::FeatureAvailability hasFeatures() const override;
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
-    QgsCoordinateReferenceSystem sourceCrs() const override;
-    QgsFields fields() const override;
-    Qgis::WkbType wkbType() const override;
-    long long featureCount() const override;
-    QString sourceName() const override;
-    QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const override;
-    QVariant minimumValue( int fieldIndex ) const override;
-    QVariant maximumValue( int fieldIndex ) const override;
-    QgsRectangle sourceExtent() const override;
-    QgsFeatureIds allFeatureIds() const override;
-    Qgis::SpatialIndexPresence hasSpatialIndex() const override;
+    [[nodiscard]] QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
+    [[nodiscard]] QgsCoordinateReferenceSystem sourceCrs() const override;
+    [[nodiscard]] QgsFields fields() const override;
+    [[nodiscard]] Qgis::WkbType wkbType() const override;
+    [[nodiscard]] long long featureCount() const override;
+    [[nodiscard]] QString sourceName() const override;
+    [[nodiscard]] QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const override;
+    [[nodiscard]] QVariant minimumValue( int fieldIndex ) const override;
+    [[nodiscard]] QVariant maximumValue( int fieldIndex ) const override;
+    [[nodiscard]] QgsRectangle sourceExtent() const override;
+    [[nodiscard]] QgsFeatureIds allFeatureIds() const override;
+    [[nodiscard]] Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
      * Returns an expression context scope suitable for this source.
      */
-    QgsExpressionContextScope *createExpressionContextScope() const SIP_FACTORY;
+    [[nodiscard]] QgsExpressionContextScope *createExpressionContextScope() const SIP_FACTORY;
 
     /**
      * Overrides the default geometry check method for the source.
@@ -750,7 +750,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      * \see setInvalidGeometryCheck()
      * \since QGIS 3.36
      */
-    Qgis::InvalidGeometryCheck invalidGeometryCheck() const;
+    [[nodiscard]] Qgis::InvalidGeometryCheck invalidGeometryCheck() const;
 
   private:
 

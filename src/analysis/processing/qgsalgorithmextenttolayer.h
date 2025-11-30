@@ -33,14 +33,14 @@ class QgsExtentToLayerAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsExtentToLayerAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QString name() const override;
-    QString displayName() const override { return QObject::tr( "Create layer from extent" ); }
-    QStringList tags() const override { return QObject::tr( "extent,layer,polygon,create,new" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector creation" ); }
-    QString groupId() const override { return QStringLiteral( "vectorcreation" ); }
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsExtentToLayerAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override { return QObject::tr( "Create layer from extent" ); }
+    [[nodiscard]] QStringList tags() const override { return QObject::tr( "extent,layer,polygon,create,new" ).split( ',' ); }
+    [[nodiscard]] QString group() const override { return QObject::tr( "Vector creation" ); }
+    [[nodiscard]] QString groupId() const override { return QStringLiteral( "vectorcreation" ); }
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsExtentToLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

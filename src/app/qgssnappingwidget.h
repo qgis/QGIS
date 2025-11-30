@@ -67,7 +67,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     /**
      * The snapping configuration is what is managed by this widget.
      */
-    QgsSnappingConfig config() const;
+    [[nodiscard]] QgsSnappingConfig config() const;
 
     /**
      * The snapping configuration is what is managed by this widget.

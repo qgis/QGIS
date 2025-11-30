@@ -59,7 +59,7 @@ class _3D_EXPORT Qgs3DMapTool : public QObject
     virtual void deactivate();
 
     //! Mouse cursor to be used when the tool is active
-    virtual QCursor cursor() const;
+    [[nodiscard]] virtual QCursor cursor() const;
 
     //! Returns the parent Qgs3DMapCanvas
     Qgs3DMapCanvas *canvas();

@@ -53,7 +53,7 @@ class QgsVectorLayerDigitizingPropertiesFactory : public QObject, public QgsMapL
     explicit QgsVectorLayerDigitizingPropertiesFactory( QObject *parent = nullptr );
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
 
-    bool supportLayerPropertiesDialog() const override { return true; }
+    [[nodiscard]] bool supportLayerPropertiesDialog() const override { return true; }
 
     bool supportsLayer( QgsMapLayer *layer ) const override;
 };

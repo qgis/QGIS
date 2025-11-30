@@ -60,7 +60,7 @@ class GUI_EXPORT QgsPointClusterRendererWidget : public QgsRendererWidget, priva
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   private:
     std::unique_ptr<QgsPointClusterRenderer> mRenderer;

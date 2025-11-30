@@ -54,7 +54,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
      *
      * \see setEnabled()
      */
-    bool enabled() const;
+    [[nodiscard]] bool enabled() const;
 
     /**
      * Sets whether the map content should be clipped to the current atlas feature.
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
      *
      * \see setFeatureClippingType()
      */
-    QgsMapClippingRegion::FeatureClippingType featureClippingType() const;
+    [[nodiscard]] QgsMapClippingRegion::FeatureClippingType featureClippingType() const;
 
     /**
      * Sets the feature clipping \a type to apply when clipping to the current atlas feature.
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
      *
      * \see setForceLabelsInsideFeature()
      */
-    bool forceLabelsInsideFeature() const;
+    [[nodiscard]] bool forceLabelsInsideFeature() const;
 
     /**
      * Sets whether labels should only be placed inside the atlas feature geometry.
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
      * \see setClipItemShape()
      * \since QGIS 4.0
      */
-    bool clipItemShape() const;
+    [[nodiscard]] bool clipItemShape() const;
 
     /**
      * Sets whether the map item shape will be clipped to the atlas feature geometry.
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
      * \see layersToClip()
      * \see setRestrictToLayers()
      */
-    bool restrictToLayers() const;
+    [[nodiscard]] bool restrictToLayers() const;
 
     /**
      * Sets whether clipping should be restricted to a subset of layers.
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
      * \see restrictToLayers()
      * \see setLayersToClip()
      */
-    QList< QgsMapLayer * > layersToClip() const;
+    [[nodiscard]] QList< QgsMapLayer * > layersToClip() const;
 
     /**
      * Sets the list of map \a layers to clip to the atlas feature.
@@ -202,14 +202,14 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
      * \see enabled()
      * \see sourceItem()
      */
-    bool isActive() const;
+    [[nodiscard]] bool isActive() const;
 
     /**
      * Returns TRUE if the map content should be clipped to the associated item.
      *
      * \see setEnabled()
      */
-    bool enabled() const;
+    [[nodiscard]] bool enabled() const;
 
     /**
      * Sets whether the map content should be clipped to the associated item.
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
      *
      * \see clipPathInMapItemCoordinates()
      */
-    QgsGeometry clippedMapExtent() const;
+    [[nodiscard]] QgsGeometry clippedMapExtent() const;
 
     /**
      * Returns the clipping path geometry, in the map item's coordinate space.
@@ -234,12 +234,12 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
      *
      * \see clippedMapExtent()
      */
-    QgsGeometry clipPathInMapItemCoordinates() const;
+    [[nodiscard]] QgsGeometry clipPathInMapItemCoordinates() const;
 
     /**
      * Returns the clip path as a map clipping region.
      */
-    QgsMapClippingRegion toMapClippingRegion() const;
+    [[nodiscard]] QgsMapClippingRegion toMapClippingRegion() const;
 
     /**
      * Sets the source \a item which will provide the clipping path for the map.
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
      *
      * \see setFeatureClippingType()
      */
-    QgsMapClippingRegion::FeatureClippingType featureClippingType() const;
+    [[nodiscard]] QgsMapClippingRegion::FeatureClippingType featureClippingType() const;
 
     /**
      * Sets the feature clipping \a type to apply when clipping to the associated item.
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsLayoutItemMapItemClipPathSettings : public QObject
      *
      * \see setForceLabelsInsideClipPath()
      */
-    bool forceLabelsInsideClipPath() const;
+    [[nodiscard]] bool forceLabelsInsideClipPath() const;
 
     /**
      * Sets whether labels should only be placed inside the clip path geometry.

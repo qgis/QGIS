@@ -42,12 +42,12 @@ class _3D_EXPORT QgsFlatTerrainSettings : public QgsAbstractTerrainSettings
      */
     static QgsAbstractTerrainSettings *create() SIP_FACTORY;
 
-    QgsFlatTerrainSettings *clone() const final SIP_FACTORY;
-    QString type() const final;
+    [[nodiscard]] QgsFlatTerrainSettings *clone() const final SIP_FACTORY;
+    [[nodiscard]] QString type() const final;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
     bool equals( const QgsAbstractTerrainSettings *other ) const final;
-    std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const override SIP_SKIP;
+    [[nodiscard]] std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const override SIP_SKIP;
 };
 
 

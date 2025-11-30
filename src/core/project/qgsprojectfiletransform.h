@@ -75,7 +75,7 @@ class CORE_EXPORT QgsProjectFileTransform
      *
      * \since QGIS 3.12
      */
-    QgsProjectVersion currentVersion() const;
+    [[nodiscard]] QgsProjectVersion currentVersion() const;
 
     /**
      * QgsSymbolLayerReference uses QgsSymbolLayer unique uuid identifier since QGIS 3.30, instead of the symbol

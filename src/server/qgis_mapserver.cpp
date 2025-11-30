@@ -112,7 +112,7 @@ class HttpException : public std::exception
     /**
      * Returns the exception message.
      */
-    QString message() const
+    [[nodiscard]] QString message() const
     {
       return mMessage;
     }
@@ -346,7 +346,7 @@ class TcpServerWorker : public QObject
       mTcpServer.close();
     }
 
-    bool isListening() const
+    [[nodiscard]] bool isListening() const
     {
       return mIsListening;
     }

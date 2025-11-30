@@ -90,7 +90,7 @@ class CORE_EXPORT QgsRasterLayerLabelProvider final : public QgsAbstractLabelPro
      *
      * \see setBand()
      */
-    int band() const { return mBandNumber; }
+    [[nodiscard]] int band() const { return mBandNumber; }
 
     /**
      * Sest the raster \a band to use for label values.
@@ -193,10 +193,10 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
     static QgsAbstractRasterLayerLabeling *defaultLabelingForLayer( QgsRasterLayer *layer ) SIP_FACTORY;
 
     //! Unique type string of the labeling configuration implementation
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     //! Returns a new copy of the object
-    virtual QgsAbstractRasterLayerLabeling *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractRasterLayerLabeling *clone() const = 0 SIP_FACTORY;
 
     /**
      * Creates a raster label provider corresponding to this object's configuration.
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
      * modes, which could prevent it being used as an isolated cached image
      * or exported to a vector format.
      */
-    virtual bool requiresAdvancedEffects() const = 0;
+    [[nodiscard]] virtual bool requiresAdvancedEffects() const = 0;
 
     /**
      * Returns TRUE the labeling requires a non-default composition mode.
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
      *
      * \since QGIS 3.44
      */
-    virtual bool hasNonDefaultCompositionMode() const = 0;
+    [[nodiscard]] virtual bool hasNonDefaultCompositionMode() const = 0;
 
     /**
      * Multiply opacity by \a opacityFactor.
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsAbstractRasterLayerLabeling SIP_ABSTRACT
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \returns TRUE if the labels are visible at the given scale.
      */
-    virtual bool isInScaleRange( double scale ) const;
+    [[nodiscard]] virtual bool isInScaleRange( double scale ) const;
 
     // static stuff
 
@@ -290,13 +290,13 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
     explicit QgsRasterLayerSimpleLabeling();
     ~QgsRasterLayerSimpleLabeling() override;
 
-    QString type() const override;
-    QgsRasterLayerSimpleLabeling *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsRasterLayerSimpleLabeling *clone() const override SIP_FACTORY;
     std::unique_ptr< QgsRasterLayerLabelProvider > provider( QgsRasterLayer *layer ) const override SIP_SKIP;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
-    bool requiresAdvancedEffects() const override;
-    bool hasNonDefaultCompositionMode() const override;
+    [[nodiscard]] bool requiresAdvancedEffects() const override;
+    [[nodiscard]] bool hasNonDefaultCompositionMode() const override;
     void multiplyOpacity( double opacityFactor ) override;
 
     //! Creates a QgsRasterLayerSimpleLabeling from a DOM element with saved configuration
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      *
      * \see setTextFormat()
      */
-    QgsTextFormat textFormat() const;
+    [[nodiscard]] QgsTextFormat textFormat() const;
 
     /**
      * Sets the text \a format used for rendering the labels.
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      *
      * \see setNumericFormat()
      */
-    const QgsNumericFormat *numericFormat() const;
+    [[nodiscard]] const QgsNumericFormat *numericFormat() const;
 
     /**
      * Sets the numeric \a format used for the labels.
@@ -337,7 +337,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      *
      * \see setBand()
      */
-    int band() const { return mBandNumber; }
+    [[nodiscard]] int band() const { return mBandNumber; }
 
     /**
      * Sest the raster \a band to use for label values.
@@ -355,7 +355,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      *
      * \see setPriority()
      */
-    double priority() const { return mPriority; }
+    [[nodiscard]] double priority() const { return mPriority; }
 
     /**
      * Sets the \a priority of labels.
@@ -371,7 +371,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * \see setPlacementSettings()
      * \note Not available in Python bindings
      */
-    const QgsLabelPlacementSettings &placementSettings() const { return mPlacementSettings; } SIP_SKIP
+    [[nodiscard]] const QgsLabelPlacementSettings &placementSettings() const { return mPlacementSettings; } SIP_SKIP
 
     /**
      * Returns the label placement settings.
@@ -390,7 +390,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * \see setThinningSettings()
      * \note Not available in Python bindings
      */
-    const QgsLabelThinningSettings &thinningSettings() const { return mThinningSettings; } SIP_SKIP
+    [[nodiscard]] const QgsLabelThinningSettings &thinningSettings() const { return mThinningSettings; } SIP_SKIP
 
     /**
     * Returns the label thinning settings.
@@ -411,7 +411,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      *
      * \see setZIndex()
      */
-    double zIndex() const;
+    [[nodiscard]] double zIndex() const;
 
     /**
      * Sets the Z-Index of the labels.
@@ -434,7 +434,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * \see minimumScale()
      * \see hasScaleBasedVisibility()
     */
-    double maximumScale() const;
+    [[nodiscard]] double maximumScale() const;
 
     /**
      * Sets the maximum map \a scale (i.e. most "zoomed in" scale) at which the labels will be visible.
@@ -462,7 +462,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * \see maximumScale()
      * \see hasScaleBasedVisibility()
     */
-    double minimumScale() const;
+    [[nodiscard]] double minimumScale() const;
 
     /**
      * Sets the minimum map \a scale (i.e. most "zoomed out" scale) at which the labels will be visible.
@@ -493,9 +493,9 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * \see maximumScale()
      * \see setScaleBasedVisibility()
      */
-    bool hasScaleBasedVisibility() const;
+    [[nodiscard]] bool hasScaleBasedVisibility() const;
 
-    bool isInScaleRange( double scale ) const override;
+    [[nodiscard]] bool isInScaleRange( double scale ) const override;
 
     /**
      * Returns the resampling method used when the raster labels are being
@@ -504,7 +504,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * \see setResampleMethod()
      * \see resampleOver()
      */
-    Qgis::RasterResamplingMethod resampleMethod() const;
+    [[nodiscard]] Qgis::RasterResamplingMethod resampleMethod() const;
 
     /**
      * Sets the resampling \a method to use when the raster labels are being
@@ -522,7 +522,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * \see setResampleOver()
      * \see resampleMethod()
      */
-    int resampleOver() const;
+    [[nodiscard]] int resampleOver() const;
 
     /**
      * Sets the number of neighboring \a pixels to resample over, when labels are

@@ -70,7 +70,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setValid()
      * \since QGIS 3.16
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Sets the format to a valid state, without changing any of the default format settings.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsTextFormat
      * Returns a reference to the text buffer settings.
      * \see setBuffer()
      */
-    SIP_SKIP QgsTextBufferSettings buffer() const { return mBufferSettings; }
+    SIP_SKIP [[nodiscard]] QgsTextBufferSettings buffer() const { return mBufferSettings; }
 
     /**
      * Sets the text's buffer settings.
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsTextFormat
      * Returns a reference to the text background settings.
      * \see setBackground()
      */
-    SIP_SKIP QgsTextBackgroundSettings background() const { return mBackgroundSettings; }
+    SIP_SKIP [[nodiscard]] QgsTextBackgroundSettings background() const { return mBackgroundSettings; }
 
     /**
      * Sets the text's background settings.q
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsTextFormat
      * Returns a reference to the text drop shadow settings.
      * \see setShadow()
      */
-    SIP_SKIP QgsTextShadowSettings shadow() const { return mShadowSettings; }
+    SIP_SKIP [[nodiscard]] QgsTextShadowSettings shadow() const { return mShadowSettings; }
 
     /**
      * Sets the text's drop shadow settings.
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setMask()
      * \since QGIS 3.12
      */
-    SIP_SKIP QgsTextMaskSettings mask() const { return mMaskSettings; }
+    SIP_SKIP [[nodiscard]] QgsTextMaskSettings mask() const { return mMaskSettings; }
 
     /**
      * Sets the text's masking settings.
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsTextFormat
      * \see namedStyle()
      * \see toQFont()
      */
-    QFont font() const;
+    [[nodiscard]] QFont font() const;
 
     /**
      * Returns a font with the size scaled to match the format's size settings (including
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setNamedStyle()
      * \see font()
      */
-    QString namedStyle() const;
+    [[nodiscard]] QString namedStyle() const;
 
     /**
      * Sets the named style for the font used for rendering text.
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setForcedBold()
      * \since QGIS 3.26
      */
-    bool forcedBold() const;
+    [[nodiscard]] bool forcedBold() const;
 
     /**
      * Sets whether the format is set to force a bold style.
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setForcedItalic()
      * \since QGIS 3.26
      */
-    bool forcedItalic() const;
+    [[nodiscard]] bool forcedItalic() const;
 
     /**
      * Sets whether the format is set to force an italic style.
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setFamilies()
      * \since QGIS 3.20
      */
-    QStringList families() const;
+    [[nodiscard]] QStringList families() const;
 
     /**
      * Sets a list of font \a families to use for the text format, in order of precedence.
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setSize()
      * \see sizeUnit()
      */
-    double size() const;
+    [[nodiscard]] double size() const;
 
     /**
      * Sets the size for rendered text.
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setSizeUnit()
      * \see sizeMapUnitScale()
      */
-    Qgis::RenderUnit sizeUnit() const;
+    [[nodiscard]] Qgis::RenderUnit sizeUnit() const;
 
     /**
      * Sets the units for the size of rendered text.
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setSizeMapUnitScale()
      * \see sizeUnit()
      */
-    QgsMapUnitScale sizeMapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale sizeMapUnitScale() const;
 
     /**
      * Sets the map unit scale object for the size. This is only used if the
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsTextFormat
      * Returns the color that text will be rendered in.
      * \see setColor()
      */
-    QColor color() const;
+    [[nodiscard]] QColor color() const;
 
     /**
      * Sets the color that text will be rendered in.
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsTextFormat
      * opaque).
      * \see setOpacity()
      */
-    double opacity() const;
+    [[nodiscard]] double opacity() const;
 
     /**
      * Multiply opacity by \a opacityFactor.
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setStretchFactor()
      * \since QGIS 3.24
      */
-    int stretchFactor() const;
+    [[nodiscard]] int stretchFactor() const;
 
     /**
      * Sets the text's stretch \a factor.
@@ -408,7 +408,7 @@ class CORE_EXPORT QgsTextFormat
      * Returns the blending mode used for drawing the text.
      * \see setBlendMode()
      */
-    QPainter::CompositionMode blendMode() const;
+    [[nodiscard]] QPainter::CompositionMode blendMode() const;
 
     /**
      * Sets the blending mode used for drawing the text.
@@ -427,7 +427,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setLineHeight()
      * \see lineHeightUnit()
      */
-    double lineHeight() const;
+    [[nodiscard]] double lineHeight() const;
 
     /**
      * Sets the line height for text.
@@ -449,7 +449,7 @@ class CORE_EXPORT QgsTextFormat
      *
      * \since QGIS 3.28
      */
-    Qgis::RenderUnit lineHeightUnit() const;
+    [[nodiscard]] Qgis::RenderUnit lineHeightUnit() const;
 
     /**
      * Sets the \a unit for the line height for text.
@@ -472,7 +472,7 @@ class CORE_EXPORT QgsTextFormat
      *
      * \since QGIS 3.38
      */
-    double tabStopDistance() const;
+    [[nodiscard]] double tabStopDistance() const;
 
     /**
      * Sets the \a distance for tab stops.
@@ -515,7 +515,7 @@ class CORE_EXPORT QgsTextFormat
          *
          * \see setPosition()
          */
-        double position() const { return mPosition; }
+        [[nodiscard]] double position() const { return mPosition; }
 
         bool operator==( const QgsTextFormat::Tab &other ) const
         {
@@ -550,7 +550,7 @@ class CORE_EXPORT QgsTextFormat
      *
      * \since QGIS 3.42
      */
-    QList< QgsTextFormat::Tab > tabPositions() const;
+    [[nodiscard]] QList< QgsTextFormat::Tab > tabPositions() const;
 
     /**
      * Sets the list of tab \a positions for tab stops.
@@ -576,7 +576,7 @@ class CORE_EXPORT QgsTextFormat
      *
      * \since QGIS 3.38
      */
-    Qgis::RenderUnit tabStopDistanceUnit() const;
+    [[nodiscard]] Qgis::RenderUnit tabStopDistanceUnit() const;
 
     /**
      * Sets the \a unit used for the tab stop distance.
@@ -598,7 +598,7 @@ class CORE_EXPORT QgsTextFormat
      *
      * \since QGIS 3.38
      */
-    QgsMapUnitScale tabStopDistanceMapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale tabStopDistanceMapUnitScale() const;
 
     /**
      * Sets the map unit \a scale object for the tab stop distance. This is only used if the
@@ -616,7 +616,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setOrientation()
      * \since QGIS 3.10
      */
-    Qgis::TextOrientation orientation() const;
+    [[nodiscard]] Qgis::TextOrientation orientation() const;
 
     /**
      * Sets the \a orientation for the text.
@@ -631,7 +631,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setCapitalization()
      * \since QGIS 3.16
      */
-    Qgis::Capitalization capitalization() const;
+    [[nodiscard]] Qgis::Capitalization capitalization() const;
 
     /**
      * Sets the text \a capitalization style.
@@ -655,7 +655,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setAllowHtmlFormatting()
      * \since QGIS 3.14
      */
-    bool allowHtmlFormatting() const;
+    [[nodiscard]] bool allowHtmlFormatting() const;
 
     /**
      * Sets whether text should be treated as a HTML document and HTML tags should be used for formatting
@@ -678,7 +678,7 @@ class CORE_EXPORT QgsTextFormat
      * \see setPreviewBackgroundColor()
      * \since QGIS 3.10
      */
-    QColor previewBackgroundColor() const;
+    [[nodiscard]] QColor previewBackgroundColor() const;
 
     /**
      * Sets the background \a color that text will be rendered on for previews.
@@ -710,7 +710,7 @@ class CORE_EXPORT QgsTextFormat
      * Caller takes responsibility for deleting the returned object.
      * \see fromMimeData()
      */
-    QMimeData *toMimeData() const SIP_FACTORY;
+    [[nodiscard]] QMimeData *toMimeData() const SIP_FACTORY;
 
     /**
      * Returns a text format matching the settings from an input \a font.
@@ -728,7 +728,7 @@ class CORE_EXPORT QgsTextFormat
      * \see fromQFont()
      * \since QGIS 3.2
      */
-    QFont toQFont() const;
+    [[nodiscard]] QFont toQFont() const;
 
     /**
      * Attempts to parse the provided mime \a data as a QgsTextFormat.
@@ -741,7 +741,7 @@ class CORE_EXPORT QgsTextFormat
      * Returns TRUE if any component of the font format requires advanced effects
      * such as blend modes, which require output in raster formats to be fully respected.
      */
-    bool containsAdvancedEffects() const;
+    [[nodiscard]] bool containsAdvancedEffects() const;
 
     /**
      * Returns TRUE if any component of the font format requires a non-default composition mode.
@@ -750,14 +750,14 @@ class CORE_EXPORT QgsTextFormat
      *
      * \since QGIS 3.44
      */
-    bool hasNonDefaultCompositionMode() const;
+    [[nodiscard]] bool hasNonDefaultCompositionMode() const;
 
     /**
      * Returns TRUE if the specified font was found on the system, or FALSE
      * if the font was not found and a replacement was used instead.
      * \see resolvedFontFamily()
      */
-    bool fontFound() const { return mTextFontFound; }
+    [[nodiscard]] bool fontFound() const { return mTextFontFound; }
 
     /**
      * Returns the family for the resolved font, ie if the specified font
@@ -765,7 +765,7 @@ class CORE_EXPORT QgsTextFormat
      * font.
      * \see fontFound()
      */
-    QString resolvedFontFamily() const { return mTextFontFamily; }
+    [[nodiscard]] QString resolvedFontFamily() const { return mTextFontFamily; }
 
     /**
      * Returns a reference to the format's property collection, used for data defined overrides.
@@ -780,13 +780,13 @@ class CORE_EXPORT QgsTextFormat
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP;
+    [[nodiscard]] const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP;
 
     /**
      * Returns all field names referenced by the configuration (e.g. from data defined properties).
      * \since QGIS 3.14
      */
-    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+    [[nodiscard]] QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 
     /**
      * Sets the format's property collection, used for data defined overrides.
@@ -822,7 +822,7 @@ class CORE_EXPORT QgsTextFormat
      * \returns partial CSS string, e.g., "line-height: 120%;"
      * \since QGIS 3.34
      */
-    QString asCSS( double pointToPixelMultiplier = 1.0 ) const;
+    [[nodiscard]] QString asCSS( double pointToPixelMultiplier = 1.0 ) const;
 
   private:
 

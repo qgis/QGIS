@@ -71,7 +71,7 @@ class CORE_EXPORT QgsMapViewsManager : public QObject
      *
      * \note Not available in Python bindings
      */
-    QDomElement get3DViewSettings( const QString &name ) const SIP_SKIP;
+    [[nodiscard]] QDomElement get3DViewSettings( const QString &name ) const SIP_SKIP;
 
     /**
      * Adds a new 3D view named \a name to the manager with the configuration DOM \a dom
@@ -85,14 +85,14 @@ class CORE_EXPORT QgsMapViewsManager : public QObject
      *
      * \note Not available in Python bindings
      */
-    QStringList get3DViewsNames() const SIP_SKIP;
+    [[nodiscard]] QStringList get3DViewsNames() const SIP_SKIP;
 
     /**
      * Returns the list of configurations of 3D views added to the manager
      *
      * \note Not available in Python bindings
      */
-    QList<QDomElement> get3DViews() const SIP_SKIP;
+    [[nodiscard]] QList<QDomElement> get3DViews() const SIP_SKIP;
 
     //! Removes the configuration of the 3D view named \a name
     void remove3DView( const QString &name );

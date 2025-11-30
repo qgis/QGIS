@@ -44,38 +44,38 @@ class CORE_EXPORT QgsLayerMetadataFormatter
      * Formats the "Access" section according to a \a metadata object.
      * This will return a HTML table.
      */
-    QString accessSectionHtml() const;
+    [[nodiscard]] QString accessSectionHtml() const;
 
     /**
      * Formats the "Contacts" section according to a \a metadata object.
      * This will return a HTML table.
      */
-    QString contactsSectionHtml() const;
+    [[nodiscard]] QString contactsSectionHtml() const;
 
     /**
      * Formats the "Extents" section according to a \a metadata object (extent and temporal).
      * This will return a HTML table.
      * \param showSpatialExtent flag if the spatial extent needs to be displayed. Default to TRUE.
      */
-    QString extentSectionHtml( const bool showSpatialExtent = true ) const;
+    [[nodiscard]] QString extentSectionHtml( const bool showSpatialExtent = true ) const;
 
     /**
      * Formats the "Identification" section according to a \a metadata object.
      * This will return a HTML table.
      */
-    QString identificationSectionHtml() const;
+    [[nodiscard]] QString identificationSectionHtml() const;
 
     /**
      * Formats the "History" section according to a \a metadata object.
      * This will return a HTML table.
      */
-    QString historySectionHtml() const;
+    [[nodiscard]] QString historySectionHtml() const;
 
     /**
      * Formats the "Links" section according to a \a metadata object.
      * This will return a HTML table.
      */
-    QString linksSectionHtml() const;
+    [[nodiscard]] QString linksSectionHtml() const;
 
   private:
     QgsLayerMetadata mMetadata;

@@ -37,7 +37,7 @@ class QgsGeoPackageRasterWriter
 
     QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri &sourceUri, const QString &destinationPath );
     WriterError writeRaster( QgsFeedback *feedback, QString *errorMessage );
-    const QString outputUrl() const { return mOutputUrl; }
+    [[nodiscard]] const QString outputUrl() const { return mOutputUrl; }
 
   private:
     QgsMimeDataUtils::Uri mSourceUri;

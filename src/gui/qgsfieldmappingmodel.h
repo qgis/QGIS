@@ -94,7 +94,7 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
     void setNativeTypes( const QList< QgsVectorDataProvider::NativeType > &nativeTypes );
 
     //! Returns TRUE if the destination fields are editable
-    bool destinationEditable() const;
+    [[nodiscard]] bool destinationEditable() const;
 
     //! Sets the destination fields editable state to \a editable
     void setDestinationEditable( bool editable );
@@ -112,10 +112,10 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
     static const QList<QgsVectorDataProvider::NativeType> supportedDataTypes();
 
     //! Returns a list of source fields
-    QgsFields sourceFields() const;
+    [[nodiscard]] QgsFields sourceFields() const;
 
     //! Returns a list of Field objects representing the current status of the model
-    QList<QgsFieldMappingModel::Field> mapping() const;
+    [[nodiscard]] QList<QgsFieldMappingModel::Field> mapping() const;
 
     /**
      * Returns a map of destination field name to QgsProperty definition for field value,
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
      *
      * \see setFieldPropertyMap()
      */
-    QMap<QString, QgsProperty> fieldPropertyMap() const;
+    [[nodiscard]] QMap<QString, QgsProperty> fieldPropertyMap() const;
 
     /**
      * Sets a map of destination field name to QgsProperty definition for field value.
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
     void setSourceFields( const QgsFields &sourceFields );
 
     //! Returns the context generator with the source fields
-    QgsExpressionContextGenerator *contextGenerator() const;
+    [[nodiscard]] QgsExpressionContextGenerator *contextGenerator() const;
 
     /**
      * Sets the base expression context \a generator, which will generate the expression
@@ -165,11 +165,11 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
 
 
     // QAbstractItemModel interface
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
   private:
@@ -179,7 +179,7 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
         ExpressionContextGenerator( const QgsFields &sourceFields );
 
         // QgsExpressionContextGenerator interface
-        QgsExpressionContext createExpressionContext() const override;
+        [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
         void setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
         void setSourceFields( const QgsFields &fields );
 
@@ -190,13 +190,13 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
     };
 
 
-    QgsFieldConstraints::Constraints fieldConstraints( const QgsField &field ) const;
+    [[nodiscard]] QgsFieldConstraints::Constraints fieldConstraints( const QgsField &field ) const;
 
     /**
      * Returns the field type name matching the \a field settings.
      * \since QGIS 3.24
      */
-    QString qgsFieldToTypeName( const QgsField &field ) const;
+    [[nodiscard]] QString qgsFieldToTypeName( const QgsField &field ) const;
 
     /**
      * Sets the \a field type and subtype based on the type \a name provided.

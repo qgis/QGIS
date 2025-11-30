@@ -35,7 +35,7 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
     virtual bool validateConfig() = 0;
 
     //! The configuration key-vale map of subclasses
-    virtual QgsStringMap configMap() const = 0;
+    [[nodiscard]] virtual QgsStringMap configMap() const = 0;
 
   signals:
     //! Emitted when the configuration validatity changes

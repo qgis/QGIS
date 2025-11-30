@@ -81,13 +81,13 @@ class QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 
     explicit QgsMeshDatasetGroupTreeModel( QObject *parent = nullptr );
 
-    QVariant data( const QModelIndex &index, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     //! Synchronizes groups to the model from mesh layer
     void syncToLayer( QgsMeshLayer *layer );
@@ -102,7 +102,7 @@ class QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
     QgsMeshDatasetGroupTreeItem *datasetGroupTreeItem( QModelIndex index );
 
     //! Returns whether the dataset groups related to the QModelIndex is set as enabled
-    bool isEnabled( const QModelIndex &index ) const;
+    [[nodiscard]] bool isEnabled( const QModelIndex &index ) const;
 
     //! Resets all groups with default state from the mesh layer
     void resetDefault( QgsMeshLayer *meshLayer );
@@ -132,15 +132,15 @@ class QgsMeshAvailableDatasetGroupTreeModel : public QgsMeshDatasetGroupTreeMode
   public:
     QgsMeshAvailableDatasetGroupTreeModel( QObject *parent = nullptr );
 
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
   private:
-    QString textDisplayed( const QModelIndex &index ) const;
-    QColor backGroundColor( const QModelIndex &index ) const;
+    [[nodiscard]] QString textDisplayed( const QModelIndex &index ) const;
+    [[nodiscard]] QColor backGroundColor( const QModelIndex &index ) const;
 };
 
 /**
@@ -154,17 +154,17 @@ class QgsMeshDatasetGroupProxyModel : public QSortFilterProxyModel
   public:
     QgsMeshDatasetGroupProxyModel( QAbstractItemModel *sourceModel );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
 
     //! Returns index of active group for contours
-    int activeScalarGroup() const;
+    [[nodiscard]] int activeScalarGroup() const;
 
     //! Sets active group for contours
     void setActiveScalarGroup( int group );
 
     //! Returns index of active group for vectors
-    int activeVectorGroup() const;
+    [[nodiscard]] int activeVectorGroup() const;
 
     //! Sets active vector group
     void setActiveVectorGroup( int group );
@@ -173,7 +173,7 @@ class QgsMeshDatasetGroupProxyModel : public QSortFilterProxyModel
     void syncToLayer( QgsMeshLayer *layer );
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
     int mActiveScalarGroupIndex = -1;
@@ -195,9 +195,9 @@ class QgsMeshDatasetGroupTreeItemDelegate : public QStyledItemDelegate
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
     //! Icon rectangle for given item rectangle
-    QRect iconRect( const QRect &rect, bool isVector ) const;
+    [[nodiscard]] QRect iconRect( const QRect &rect, bool isVector ) const;
 
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    [[nodiscard]] QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
   private:
     const QPixmap mScalarSelectedPixmap;
@@ -205,7 +205,7 @@ class QgsMeshDatasetGroupTreeItemDelegate : public QStyledItemDelegate
     const QPixmap mVectorSelectedPixmap;
     const QPixmap mVectorDeselectedPixmap;
 
-    QRect iconRect( const QRect &rect, int pos ) const;
+    [[nodiscard]] QRect iconRect( const QRect &rect, int pos ) const;
 };
 
 /**
@@ -266,10 +266,10 @@ class GUI_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
     void setLayer( QgsMeshLayer *layer );
 
     //! Returns index of active group for contours
-    int activeScalarGroup() const;
+    [[nodiscard]] int activeScalarGroup() const;
 
     //! Returns index of active group for vectors
-    int activeVectorGroup() const;
+    [[nodiscard]] int activeVectorGroup() const;
 
     //! Synchronize widgets state with associated mesh layer
     void syncToLayer();
@@ -312,12 +312,12 @@ class GUI_EXPORT QgsMeshDatasetGroupListModel : public QAbstractListModel
     //! Add groups to the model from mesh layer
     void syncToLayer( QgsMeshLayer *layer );
 
-    int rowCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
 
     void setDisplayProviderName( bool displayProviderName );
 
-    QStringList variableNames() const;
+    [[nodiscard]] QStringList variableNames() const;
 
   private:
     QgsMeshDatasetGroupTreeItem *mRootItem = nullptr;

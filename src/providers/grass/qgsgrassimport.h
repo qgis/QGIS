@@ -45,7 +45,7 @@ class GRASS_LIB_EXPORT QgsGrassImportProgress : public QObject
     QgsGrassImportProgress( QProcess *process, QObject *parent = nullptr );
 
     void setProcess( QProcess *process );
-    QString progressHtml() const { return mProgressHtml; }
+    [[nodiscard]] QString progressHtml() const { return mProgressHtml; }
 
     void append( const QString &html );
     void setRange( int min, int max );
@@ -74,15 +74,15 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
   public:
     QgsGrassImport( const QgsGrassObject &grassObject );
     ~QgsGrassImport() override;
-    QgsGrassObject grassObject() const { return mGrassObject; }
+    [[nodiscard]] QgsGrassObject grassObject() const { return mGrassObject; }
     virtual void importInThread();
     virtual bool import() = 0;
     // source description for error message purposes (maybe uri or something similar)
-    virtual QString srcDescription() const = 0;
+    [[nodiscard]] virtual QString srcDescription() const = 0;
     // get error if import failed
-    QString error() const;
-    virtual QStringList names() const;
-    bool isCanceled() const;
+    [[nodiscard]] QString error() const;
+    [[nodiscard]] virtual QStringList names() const;
+    [[nodiscard]] bool isCanceled() const;
     QgsGrassImportProgress *progress() { return mProgress; }
   public slots:
     void onFinished();
@@ -117,11 +117,11 @@ class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
     QgsGrassRasterImport( std::unique_ptr< QgsRasterPipe > pipe, const QgsGrassObject &grassObject, const QgsRectangle &extent, int xSize, int ySize );
     ~QgsGrassRasterImport() override;
     bool import() override;
-    QString srcDescription() const override;
+    [[nodiscard]] QString srcDescription() const override;
     // get list of extensions (for bands)
     static QStringList extensions( QgsRasterDataProvider *provider );
     // get list of all output names (basename + extension for each band)
-    QStringList names() const override;
+    [[nodiscard]] QStringList names() const override;
 
   private:
     std::unique_ptr< QgsRasterPipe > mPipe;
@@ -138,7 +138,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorImport : public QgsGrassImport
     QgsGrassVectorImport( QgsVectorDataProvider *provider, const QgsGrassObject &grassObject );
     ~QgsGrassVectorImport() override;
     bool import() override;
-    QString srcDescription() const override;
+    [[nodiscard]] QString srcDescription() const override;
 
   private:
     QgsVectorDataProvider *mProvider = nullptr;
@@ -151,7 +151,7 @@ class GRASS_LIB_EXPORT QgsGrassCopy : public QgsGrassImport
     // takes provider ownership
     QgsGrassCopy( const QgsGrassObject &srcObject, const QgsGrassObject &destObject );
     bool import() override;
-    QString srcDescription() const override;
+    [[nodiscard]] QString srcDescription() const override;
 
   private:
     QgsGrassObject mSrcObject;
@@ -165,7 +165,7 @@ class GRASS_LIB_EXPORT QgsGrassExternal : public QgsGrassImport
     // takes provider ownership
     QgsGrassExternal( const QString &gdalSource, const QgsGrassObject &destObject );
     bool import() override;
-    QString srcDescription() const override;
+    [[nodiscard]] QString srcDescription() const override;
 
   private:
     QString mSource;

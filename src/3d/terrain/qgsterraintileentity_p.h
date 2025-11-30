@@ -51,7 +51,7 @@ class QgsTerrainTileEntity : public Qt3DCore::QEntity
     }
 
     //! Returns coordinates of the tile
-    QgsChunkNodeId tileId() const { return mTileId; }
+    [[nodiscard]] QgsChunkNodeId tileId() const { return mTileId; }
 
     /**
      * Assigns texture image. Should be called when the class is being initialized.

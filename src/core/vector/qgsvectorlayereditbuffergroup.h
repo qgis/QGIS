@@ -68,14 +68,14 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
      *
      * \returns Layer set
      */
-    QSet<QgsVectorLayer *> layers() const;
+    [[nodiscard]] QSet<QgsVectorLayer *> layers() const;
 
     /**
      * Gets the set of modified layers currently managed by this edit buffer group.
      *
      * \returns Layer set
      */
-    QSet<QgsVectorLayer *> modifiedLayers() const;
+    [[nodiscard]] QSet<QgsVectorLayer *> modifiedLayers() const;
 
     /**
      * Start editing
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
     /**
      * Returns TRUE if the layers are in editing mode
      */
-    bool isEditing() const;
+    [[nodiscard]] bool isEditing() const;
 
   private:
 

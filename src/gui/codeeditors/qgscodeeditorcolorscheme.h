@@ -87,19 +87,19 @@ class GUI_EXPORT QgsCodeEditorColorScheme
     /**
      * Returns the ID of the color scheme, which is a unique, non-translated identifier for the scheme.
      */
-    QString id() const { return mId; }
+    [[nodiscard]] QString id() const { return mId; }
 
     /**
      * Returns the name of the color scheme, which is the translated, user-visible name of the scheme.
      */
-    QString name() const { return mThemeName; }
+    [[nodiscard]] QString name() const { return mThemeName; }
 
     /**
      * Returns the color to use in the editor for the specified \a role.
      *
      * \see setColor()
      */
-    QColor color( ColorRole role ) const;
+    [[nodiscard]] QColor color( ColorRole role ) const;
 
     /**
      * Sets the \a color to use in the editor for the specified \a role.

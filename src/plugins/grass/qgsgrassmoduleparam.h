@@ -93,25 +93,25 @@ class QgsGrassModuleParam
     virtual ~QgsGrassModuleParam() = default;
 
     //! Is the item hidden
-    bool hidden() const;
+    [[nodiscard]] bool hidden() const;
 
     //! Returns list of options which will be passed to module
     virtual QStringList options();
 
     //! Item's key
-    QString key() const { return mKey; }
+    [[nodiscard]] QString key() const { return mKey; }
 
     //! Multiple values
-    bool multiple() const { return mMultiple; }
+    [[nodiscard]] bool multiple() const { return mMultiple; }
 
     //! Item's id
-    QString id() const { return mId; }
+    [[nodiscard]] QString id() const { return mId; }
 
     //! Check if option is ready
     //  Returns empty string or error message
     virtual QString ready() { return QString(); }
 
-    QStringList errors() const { return mErrors; }
+    [[nodiscard]] QStringList errors() const { return mErrors; }
 
     /**
      * Gets gisprompt attribute
@@ -209,7 +209,7 @@ class QgsGrassModuleMultiParam : public QgsGrassModuleGroupBoxItem
     virtual void removeRow() {}
 
   protected:
-    QVBoxLayout *paramsLayout() const { return mParamsLayout; }
+    [[nodiscard]] QVBoxLayout *paramsLayout() const { return mParamsLayout; }
 
     void showAddRemoveButtons();
 
@@ -275,10 +275,10 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     QStringList options() override;
 
     //! True if this option is output
-    bool isOutput() const { return mIsOutput; }
+    [[nodiscard]] bool isOutput() const { return mIsOutput; }
 
     //! Returns output type
-    int outputType() const { return mOutputType; }
+    [[nodiscard]] int outputType() const { return mOutputType; }
 
     //! If output, check if current output exists
     // Returns emppty string or name of existing output
@@ -292,7 +292,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     //! Does this options causes use of region?
     //  Raster input/output uses region by default
     //  Use of region can be forced by 'region' attribute in qgm
-    bool usesRegion() const { return mUsesRegion; }
+    [[nodiscard]] bool usesRegion() const { return mUsesRegion; }
 
     //! Check min/max version and set error if cannot parse
     static bool checkVersion( const QString &version_min, const QString &version_max, QStringList &errors );
@@ -470,7 +470,7 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
     QStringList options() override;
 
     void setLayerInput( QgsGrassModuleInput *layerInput ) { mLayerInput = layerInput; }
-    QgsGrassModuleInput *layerInput() const { return mLayerInput; }
+    [[nodiscard]] QgsGrassModuleInput *layerInput() const { return mLayerInput; }
 
   public slots:
     //! Fill combobox with currently available maps in QGIS canvas

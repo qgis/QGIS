@@ -51,8 +51,8 @@ class QgsPointCloud3DSymbolHandler
 
     void triangulate( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D );
 
-    float zMinimum() const { return mZMin; }
-    float zMaximum() const { return mZMax; }
+    [[nodiscard]] float zMinimum() const { return mZMin; }
+    [[nodiscard]] float zMaximum() const { return mZMax; }
 
     //! temporary data we will pass to the tessellator
     struct PointData

@@ -48,14 +48,14 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      */
     QgsLayoutAtlas( QgsLayout *layout SIP_TRANSFERTHIS );
 
-    QString stringType() const override;
+    [[nodiscard]] QString stringType() const override;
     QgsLayout *layout() override;
 
     /**
      * Returns the atlas' layout.
      * \note Not available in Python bindings.
      */
-    const QgsLayout *layout() const SIP_SKIP;  // cppcheck-suppress duplInheritedMember
+    [[nodiscard]] const QgsLayout *layout() const SIP_SKIP;  // cppcheck-suppress duplInheritedMember
 
     bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * Returns whether the atlas generation is enabled
      * \see setEnabled()
      */
-    bool enabled() const { return mEnabled; }
+    [[nodiscard]] bool enabled() const { return mEnabled; }
 
     /**
      * Sets whether the atlas is \a enabled.
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * Returns TRUE if the atlas is set to hide the coverage layer.
      * \see setHideCoverage()
      */
-    bool hideCoverage() const { return mHideCoverage; }
+    [[nodiscard]] bool hideCoverage() const { return mHideCoverage; }
 
     /**
      * Sets whether the coverage layer should be hidden in map items in the layouts.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see setHideCoverage()
      * \since QGIS 4.0
      */
-    bool limitCoverageLayerRenderToCurrentFeature() const { return mLimitCoverageLayerRenderToCurrentFeature; }
+    [[nodiscard]] bool limitCoverageLayerRenderToCurrentFeature() const { return mLimitCoverageLayerRenderToCurrentFeature; }
 
     /**
      * Sets whether the rendering of the coverage layer should be limited to the
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see setFilenameExpression()
      * \see currentFilename()
      */
-    QString filenameExpression() const { return mFilenameExpressionString; }
+    [[nodiscard]] QString filenameExpression() const { return mFilenameExpressionString; }
 
     /**
      * Sets the filename \a expression used for generating output filenames for each
@@ -123,13 +123,13 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see filenameExpression()
      * \see setFilenameExpression()
      */
-    QString currentFilename() const;
+    [[nodiscard]] QString currentFilename() const;
 
     /**
      * Returns the coverage layer used for the atlas features.
      * \see setCoverageLayer()
      */
-    QgsVectorLayer *coverageLayer() const { return mCoverageLayer.get(); }
+    [[nodiscard]] QgsVectorLayer *coverageLayer() const { return mCoverageLayer.get(); }
 
     /**
      * Sets the coverage \a layer to use for the atlas features.
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see setPageNameExpression()
      * \see nameForPage()
      */
-    QString pageNameExpression() const { return mPageNameExpression; }
+    [[nodiscard]] QString pageNameExpression() const { return mPageNameExpression; }
 
     /**
      * Sets the \a expression (or field name) used for calculating the page name.
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * Returns the calculated name for a specified atlas \a page number. Page numbers start at 0.
      * \see pageNameExpression()
      */
-    QString nameForPage( int page ) const;
+    [[nodiscard]] QString nameForPage( int page ) const;
 
     /**
      * Returns TRUE if features should be sorted in the atlas.
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see sortAscending()
      * \see sortExpression()
      */
-    bool sortFeatures() const { return mSortFeatures; }
+    [[nodiscard]] bool sortFeatures() const { return mSortFeatures; }
 
     /**
      * Sets whether features should be sorted in the atlas.
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see setSortAscending()
      * \see sortExpression()
      */
-    bool sortAscending() const { return mSortAscending; }
+    [[nodiscard]] bool sortAscending() const { return mSortAscending; }
 
     /**
      * Sets whether features should be sorted in an ascending order.
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see sortAscending()
      * \see setSortExpression()
      */
-    QString sortExpression() const { return mSortExpression; }
+    [[nodiscard]] QString sortExpression() const { return mSortExpression; }
 
     /**
      * Sets the \a expression (or field name) to use for sorting features.
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see filterExpression()
      * \see setFilterExpression()
      */
-    bool filterFeatures() const { return mFilterFeatures; }
+    [[nodiscard]] bool filterFeatures() const { return mFilterFeatures; }
 
     /**
      * Sets whether features should be \a filtered in the coverage layer.
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see setFilterExpression()
      * \see filterFeatures()
      */
-    QString filterExpression() const { return mFilterExpression; }
+    [[nodiscard]] QString filterExpression() const { return mFilterExpression; }
 
     /**
      * Sets the \a expression used for filtering features in the coverage layer.
@@ -261,15 +261,15 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
 
     bool beginRender() override;
     bool endRender() override;
-    int count() const override;
+    [[nodiscard]] int count() const override;
     QString filePath( const QString &baseFilePath, const QString &extension ) override;
 
     /**
      * Returns the current feature number, where a value of 0 corresponds to the first feature.
      */
-    int currentFeatureNumber() const { return mCurrentFeatureNo; }
+    [[nodiscard]] int currentFeatureNumber() const { return mCurrentFeatureNo; }
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   public slots:
 

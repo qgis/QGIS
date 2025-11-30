@@ -71,7 +71,7 @@ class QgsGrassModule : public QWidget, private Ui::QgsGrassModuleBase
     QgisInterface *qgisIface();
 
     //! Options widget
-    QgsGrassModuleOptions *options() const { return mOptions; }
+    [[nodiscard]] QgsGrassModuleOptions *options() const { return mOptions; }
 
     /**
      * Get executable + arguments. Executable is returned as first string.
@@ -84,7 +84,7 @@ class QgsGrassModule : public QWidget, private Ui::QgsGrassModuleBase
     static QProcessEnvironment processEnvironment( bool direct );
 
     //! Returns true if module is direct
-    bool isDirect() const { return mDirect; }
+    [[nodiscard]] bool isDirect() const { return mDirect; }
 
     //! Gets name of library path environment variable
     static QString libraryPathVariable();
@@ -92,7 +92,7 @@ class QgsGrassModule : public QWidget, private Ui::QgsGrassModuleBase
     //! Sets LD_LIBRARY_PATH or equivalent to GRASS Direct library
     static void setDirectLibraryPath( QProcessEnvironment &environment );
 
-    QStringList errors() const { return mErrors; }
+    [[nodiscard]] QStringList errors() const { return mErrors; }
 
   signals:
     //! emitted when the module started

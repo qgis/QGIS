@@ -240,7 +240,7 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
     /**
      * Returns the number of items in the stack.
      */
-    int size() const { return mItems.size(); }
+    [[nodiscard]] int size() const { return mItems.size(); }
 
     /**
      * Stores the state of the item stack in a DOM node, where \a element is the DOM element corresponding to a 'LayoutMap' tag.
@@ -279,19 +279,19 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
      * Returns whether any items within the stack contain advanced effects,
      * such as blending modes.
      */
-    bool containsAdvancedEffects() const;
+    [[nodiscard]] bool containsAdvancedEffects() const;
 
     /**
      * Returns TRUE if the stack has any currently enabled items.
      *
      * \since QGIS 3.10
      */
-    bool hasEnabledItems() const;
+    [[nodiscard]] bool hasEnabledItems() const;
 
     /**
      * Returns a reference to the item at the specified \a index within the stack.
      */
-    QgsLayoutItemMapItem *item( int index ) const;
+    [[nodiscard]] QgsLayoutItemMapItem *item( int index ) const;
 
   protected:
 
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
     /**
      * Returns a reference to an item which matching \a itemId within the stack.
      */
-    QgsLayoutItemMapItem *item( const QString &itemId ) const;
+    [[nodiscard]] QgsLayoutItemMapItem *item( const QString &itemId ) const;
 
     /**
      * Returns a reference to an item at the specified \a index within the stack.
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
     /**
      * Returns a list of QgsLayoutItemMapItems contained by the stack.
      */
-    QList< QgsLayoutItemMapItem * > asList() const;
+    [[nodiscard]] QList< QgsLayoutItemMapItem * > asList() const;
 
   protected:
 

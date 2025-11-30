@@ -186,7 +186,7 @@ class QgsGrassVectorLayerItem : public QgsGrassObjectItem
   public:
     QgsGrassVectorLayerItem( QgsDataItem *parent, const QgsGrassObject &vector, const QString &layerName, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, bool singleLayer );
 
-    QString layerName() const override;
+    [[nodiscard]] QString layerName() const override;
     bool equal( const QgsDataItem *other ) override;
 
   private:
@@ -275,11 +275,11 @@ class QgsGrassProviderMetadata : public QgsProviderMetadata
 
   public:
     QgsGrassProviderMetadata();
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    [[nodiscard]] QList<QgsDataItemProvider *> dataItemProviders() const override;
     void initProvider() override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

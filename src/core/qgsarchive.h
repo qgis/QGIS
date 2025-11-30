@@ -82,18 +82,18 @@ class CORE_EXPORT QgsArchive
     /**
      * Returns the list of files within this archive
      */
-    QStringList files() const;
+    [[nodiscard]] QStringList files() const;
 
     /**
      * Returns the current temporary directory.
      */
-    QString dir() const;
+    [[nodiscard]] QString dir() const;
 
     /**
      * Returns TRUE if the archive exists on the filesystem, FALSE otherwise.
      * \since QGIS 3.20
      */
-    bool exists() const;
+    [[nodiscard]] bool exists() const;
 
   private:
     // content of the archive
@@ -124,7 +124,7 @@ class  CORE_EXPORT QgsProjectArchive : public QgsArchive
     /**
      * Returns the current .qgs project file or an empty string if there's none
      */
-    QString projectFile() const;
+    [[nodiscard]] QString projectFile() const;
 
     /**
      * Remove the current .qgs project file from the temporary directory.
@@ -136,7 +136,7 @@ class  CORE_EXPORT QgsProjectArchive : public QgsArchive
      * Returns the current .qgd auxiliary storage file or an empty string if
      * there's none
      */
-    QString auxiliaryStorageFile() const;
+    [[nodiscard]] QString auxiliaryStorageFile() const;
 };
 
 #endif

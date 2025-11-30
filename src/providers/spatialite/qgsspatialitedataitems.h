@@ -42,14 +42,14 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
-    QString databasePath() const { return mDbPath; }
+    [[nodiscard]] QString databasePath() const { return mDbPath; }
 
   protected:
     QString mDbPath;
 
     // QgsDataItem interface
   public:
-    bool layerCollection() const override;
+    [[nodiscard]] bool layerCollection() const override;
 };
 
 class QgsSLRootItem : public QgsConnectionsRootItem
@@ -60,7 +60,7 @@ class QgsSLRootItem : public QgsConnectionsRootItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 2; }
+    [[nodiscard]] QVariant sortKey() const override { return 2; }
 
 #ifdef HAVE_GUI
     QWidget *paramWidget() override;
@@ -83,8 +83,8 @@ class QgsSpatiaLiteDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    QString dataProviderKey() const override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] QString dataProviderKey() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 

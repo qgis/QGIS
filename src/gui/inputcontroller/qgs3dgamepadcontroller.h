@@ -67,8 +67,8 @@ class GUI_EXPORT QgsGamepad3DMapController : public QgsAbstract3DMapController
      */
     QgsGamepad3DMapController( int gamepadDeviceId, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    QgsGamepad3DMapController *clone() const override SIP_FACTORY;
-    QString deviceId() const override;
+    [[nodiscard]] QgsGamepad3DMapController *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString deviceId() const override;
 
     // proxy QGamepad signals and properties here, as QGamepad isn't accessible from Python.
     // Ideally we would share these with QgsGamepad3DMapController, but that would create a diamond
@@ -77,132 +77,132 @@ class GUI_EXPORT QgsGamepad3DMapController : public QgsAbstract3DMapController
     /**
      * Returns TRUE if the gamepad is connected.
      */
-    bool isConnected() const;
+    [[nodiscard]] bool isConnected() const;
 
     /**
      * Returns the reported name of the gamepad if one is available.
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Returns the value of the left thumbstick's X axis. The axis values range from -1.0 to 1.0.
      */
-    double axisLeftX() const;
+    [[nodiscard]] double axisLeftX() const;
 
     /**
      * Returns the value of the left thumbstick's Y axis. The axis values range from -1.0 to 1.0.
      */
-    double axisLeftY() const;
+    [[nodiscard]] double axisLeftY() const;
 
     /**
      * Returns the value of the right thumbstick's X axis. The axis values range from -1.0 to 1.0.
      */
-    double axisRightX() const;
+    [[nodiscard]] double axisRightX() const;
 
     /**
      * Returns the value of the right thumbstick's Y axis. The axis values range from -1.0 to 1.0.
      */
-    double axisRightY() const;
+    [[nodiscard]] double axisRightY() const;
 
     /**
      * Returns the state of the A button. The value is TRUE when pressed, and FALSE when not pressed.
      */
-    bool buttonA() const;
+    [[nodiscard]] bool buttonA() const;
 
     /**
      * Returns the state of the B button. The value is TRUE when pressed, and FALSE when not pressed.
      */
-    bool buttonB() const;
+    [[nodiscard]] bool buttonB() const;
 
     /**
      * Returns the state of the X button. The value is TRUE when pressed, and FALSE when not pressed.
      */
-    bool buttonX() const;
+    [[nodiscard]] bool buttonX() const;
 
     /**
      * Returns the state of the Y button. The value is TRUE when pressed, and FALSE when not pressed.
      */
-    bool buttonY() const;
+    [[nodiscard]] bool buttonY() const;
 
     /**
      * Returns the state of the left shoulder button. The value is TRUE when pressed, and FALSE when not pressed.
      */
-    bool buttonL1() const;
+    [[nodiscard]] bool buttonL1() const;
 
     /**
      * Returns the state of the right shoulder button. The value is TRUE when pressed, and FALSE when not pressed.
      */
-    bool buttonR1() const;
+    [[nodiscard]] bool buttonR1() const;
 
     /**
      * Returns the value of the left trigger button. This trigger value ranges from 0.0 when not pressed to 1.0 when pressed completely.
      */
-    double buttonL2() const;
+    [[nodiscard]] double buttonL2() const;
 
     /**
      * Returns the value of the right trigger button. This trigger value ranges from 0.0 when not pressed to 1.0 when pressed completely.
      */
-    double buttonR2() const;
+    [[nodiscard]] double buttonR2() const;
 
     /**
      * Returns the state of the select button. The value is TRUE when pressed, and FALSE when not pressed.
      *
      * This button can sometimes be labeled as the Back button on some gamepads.
      */
-    bool buttonSelect() const;
+    [[nodiscard]] bool buttonSelect() const;
 
     /**
      * Returns the state of the start button. The value is TRUE when pressed, and FALSE when not pressed.
      *
      * This button can sometimes be labeled as the Forward button on some gamepads.
      */
-    bool buttonStart() const;
+    [[nodiscard]] bool buttonStart() const;
 
     /**
      * Returns the state of the left stick button. The value is TRUE when pressed, and FALSE when not pressed.
      *
      * This button is usually triggered by pressing the left joystick itself.
      */
-    bool buttonL3() const;
+    [[nodiscard]] bool buttonL3() const;
 
     /**
      * Returns the state of the right stick button. The value is TRUE when pressed, and FALSE when not pressed.
      *
      * This button is usually triggered by pressing the right joystick itself.
      */
-    bool buttonR3() const;
+    [[nodiscard]] bool buttonR3() const;
 
     /**
      * Returns the state of the direction pad up button. The value is TRUE when pressed, and FALSE when not pressed.
      */
-    bool buttonUp() const;
+    [[nodiscard]] bool buttonUp() const;
 
     /**
      * Returns the state of the direction pad down button. The value is TRUE when pressed, and FALSE when not pressed.
      */
-    bool buttonDown() const;
+    [[nodiscard]] bool buttonDown() const;
 
     /**
      * Returns the state of the direction pad left button. The value is TRUE when pressed, and FALSE when not pressed.
      */
-    bool buttonLeft() const;
+    [[nodiscard]] bool buttonLeft() const;
 
     /**
      * Returns the state of the direction pad right button. The value is TRUE when pressed, and FALSE when not pressed.
      */
-    bool buttonRight() const;
+    [[nodiscard]] bool buttonRight() const;
 
     /**
      * Returns the state of the center button. The value is TRUE when pressed, and FALSE when not pressed.
      */
-    bool buttonCenter() const;
+    [[nodiscard]] bool buttonCenter() const;
 
     /**
      * Returns the state of the center button. The value is TRUE when pressed, and FALSE when not pressed.
      *
      * This button is typically the one in the center of the gamepad with a logo. Not all gamepads have a guide button.
      */
-    bool buttonGuide() const;
+    [[nodiscard]] bool buttonGuide() const;
 
 
   signals:

@@ -137,17 +137,17 @@ class APP_EXPORT QgsCustomization : public QObject
 
     // make sure to enable/disable before creating QgisApp in order to get it customized (or not)
     void setEnabled( bool enabled ) { mEnabled = enabled; }
-    bool isEnabled() const { return mEnabled; }
+    [[nodiscard]] bool isEnabled() const { return mEnabled; }
 
     void setSettings( QSettings *settings ) { mSettings = settings; }
 
     // Returns the path to the splash screen
-    QString splashPath() const;
+    [[nodiscard]] QString splashPath() const;
 
     // Loads and sets default customization
     void loadDefault();
 
-    QString statusPath() const { return mStatusPath; }
+    [[nodiscard]] QString statusPath() const { return mStatusPath; }
 
   public slots:
     void preNotify( QObject *receiver, QEvent *event, bool *done );

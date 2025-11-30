@@ -42,14 +42,14 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
     /**
      * Returns the index of the field.
      */
-    int idx() const { return mIdx; }
+    [[nodiscard]] int idx() const { return mIdx; }
 
     QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
     void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
-    QString typeIdentifier() const override;
+    [[nodiscard]] QString typeIdentifier() const override;
     int mIdx;
 };
 

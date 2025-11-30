@@ -51,7 +51,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     void setFilters( QgsFieldProxyModel::Filters filters );
 
     //! currently used filter on list of fields
-    QgsFieldProxyModel::Filters filters() const { return mFieldProxyModel->filters(); }
+    [[nodiscard]] QgsFieldProxyModel::Filters filters() const { return mFieldProxyModel->filters(); }
 
     /**
      * Sets whether an optional empty field ("not set") option is shown in the combo box.
@@ -63,16 +63,16 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      * Returns TRUE if the combo box allows the empty field ("not set") choice.
      * \see setAllowEmptyFieldName()
      */
-    bool allowEmptyFieldName() const;
+    [[nodiscard]] bool allowEmptyFieldName() const;
 
     //! Returns the currently selected field
-    QString currentField() const;
+    [[nodiscard]] QString currentField() const;
 
     /**
      * Returns the layer currently associated with the combobox.
      * \see setLayer()
      */
-    QgsVectorLayer *layer() const;
+    [[nodiscard]] QgsVectorLayer *layer() const;
 
     /**
      * Manually sets the \a fields to use for the combo box.
@@ -94,7 +94,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      *
      * \since QGIS 3.14
      */
-    QgsFields fields() const;
+    [[nodiscard]] QgsFields fields() const;
 
   signals:
     //! Emitted when the currently selected field changes.

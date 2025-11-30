@@ -72,8 +72,8 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
     std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
     bool mShowMarkerSymbolInSurfacePlots = false;
 
-    QString type() const override;
-    QVector< QgsGeometry > asGeometries() const override;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QVector< QgsGeometry > asGeometries() const override;
     QVector< QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;

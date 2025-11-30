@@ -148,13 +148,13 @@ class GUI_EXPORT QgsDoubleValidator : public QRegularExpressionValidator
      * Returns top range limit
      * \see setBottom
      */
-    double bottom() const { return mMinimum; }
+    [[nodiscard]] double bottom() const { return mMinimum; }
 
     /**
      * Returns top range limit
      * \see setTop
      */
-    double top() const { return mMaximum; }
+    [[nodiscard]] double top() const { return mMaximum; }
 
   private:
     // Disables copy constructing

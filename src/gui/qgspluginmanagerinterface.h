@@ -46,7 +46,7 @@ class GUI_EXPORT QgsPluginManagerInterface : public QObject
     virtual void reloadModel() = 0;
 
     //! Returns given plugin metadata
-    virtual const QMap<QString, QString> *pluginMetadata( const QString &key ) const = 0;
+    [[nodiscard]] virtual const QMap<QString, QString> *pluginMetadata( const QString &key ) const = 0;
 
     //! clear the repository listWidget
     virtual void clearRepositoryList() = 0;

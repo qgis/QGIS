@@ -75,23 +75,23 @@ class CORE_EXPORT QgsMasterLayoutInterface
      * Creates a clone of the layout. Ownership of the returned layout
      * is transferred to the caller.
      */
-    virtual QgsMasterLayoutInterface *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsMasterLayoutInterface *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns the master layout type.
      */
-    virtual QgsMasterLayoutInterface::Type layoutType() const = 0;
+    [[nodiscard]] virtual QgsMasterLayoutInterface::Type layoutType() const = 0;
 
     /**
      * Returns the layout's name.
      * \see setName()
      */
-    virtual QString name() const = 0;
+    [[nodiscard]] virtual QString name() const = 0;
 
     /**
      * Returns an icon for the layout.
      */
-    virtual QIcon icon() const = 0;
+    [[nodiscard]] virtual QIcon icon() const = 0;
 
     /**
      * Sets the layout's name.
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsMasterLayoutInterface
      * The project associated with the layout. Used to get access to layers, map themes,
      * relations and various other bits. It is never NULLPTR.
      */
-    virtual QgsProject *layoutProject() const = 0;
+    [[nodiscard]] virtual QgsProject *layoutProject() const = 0;
 
     /**
      * Returns the layout's state encapsulated in a DOM element.

@@ -119,7 +119,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
     virtual void layerSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 
   private:
-    QModelIndexList expandIndexToRow( const QModelIndex &index ) const;
+    [[nodiscard]] QModelIndexList expandIndexToRow( const QModelIndex &index ) const;
 
   private:
     QgsFeatureModel *mFeatureModel = nullptr;

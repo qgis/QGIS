@@ -50,23 +50,23 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
     ~QgsTileDownloadManagerReply() override;
 
     //! Returns whether the reply has already finished (with success/failure)
-    bool hasFinished() const { return mHasFinished; }
+    [[nodiscard]] bool hasFinished() const { return mHasFinished; }
     //! Returns binary data returned in the reply (only valid when already finished)
-    QByteArray data() const { return mData; }
+    [[nodiscard]] QByteArray data() const { return mData; }
     //! Returns the reply URL
-    QUrl url() const { return mUrl; }
+    [[nodiscard]] QUrl url() const { return mUrl; }
     //! Returns the attribute associated with the \a code
     QVariant attribute( QNetworkRequest::Attribute code );
     //! Returns the value of the known header \a header.
     QVariant header( QNetworkRequest::KnownHeaders header );
     //! Returns a list of raw header pairs
-    const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs() const { return mRawHeaderPairs; }
+    [[nodiscard]] const QList<QNetworkReply::RawHeaderPair> rawHeaderPairs() const { return mRawHeaderPairs; }
     //! Returns error code (only valid when already finished)
-    QNetworkReply::NetworkError error() const { return mError; }
+    [[nodiscard]] QNetworkReply::NetworkError error() const { return mError; }
     //! Returns error string (only valid when already finished)
-    QString errorString() const { return mErrorString; }
+    [[nodiscard]] QString errorString() const { return mErrorString; }
     //! Returns the original request for this reply object
-    QNetworkRequest request() const { return mRequest; }
+    [[nodiscard]] QNetworkRequest request() const { return mRequest; }
 
   signals:
     //! Emitted when the reply has finished (either with a success or with a failure)
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsTileDownloadManager
     class QueueEntry
     {
       public:
-        bool isValid() const { return !request.url().isEmpty(); }
+        [[nodiscard]] bool isValid() const { return !request.url().isEmpty(); }
 
         //! The actual original Qt network request
         QNetworkRequest request;

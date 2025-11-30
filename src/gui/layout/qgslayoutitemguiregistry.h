@@ -75,32 +75,32 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     /**
      * Returns the unique item type code for the layout item class.
      */
-    int type() const { return mType; }
+    [[nodiscard]] int type() const { return mType; }
 
     /**
      * Returns item flags.
      */
-    Flags flags() const { return mFlags; }
+    [[nodiscard]] Flags flags() const { return mFlags; }
 
     /**
      * Returns the item group ID, if set.
      */
-    QString groupId() const { return mGroupId; }
+    [[nodiscard]] QString groupId() const { return mGroupId; }
 
     /**
      * Returns TRUE if the associated item is a node based item.
      */
-    bool isNodeBased() const { return mIsNodeBased; }
+    [[nodiscard]] bool isNodeBased() const { return mIsNodeBased; }
 
     /**
      * Returns a translated, user visible name identifying the corresponding layout item.
      */
-    QString visibleName() const { return mName; }
+    [[nodiscard]] QString visibleName() const { return mName; }
 
     /**
      * Returns an icon representing creation of the layout item type.
      */
-    virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
+    [[nodiscard]] virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -218,7 +218,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * Returns the classes' configuration widget creation function.
      * \see setWidgetFunction()
      */
-    QgsLayoutItemWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    [[nodiscard]] QgsLayoutItemWidgetFunc widgetFunction() const { return mWidgetFunc; }
 
     /**
      * Sets the classes' configuration widget creation \a function.
@@ -230,7 +230,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * Returns the classes' rubber band creation function.
      * \see setRubberBandCreationFunction()
      */
-    QgsLayoutItemRubberBandFunc rubberBandCreationFunction() const { return mRubberBandFunc; }
+    [[nodiscard]] QgsLayoutItemRubberBandFunc rubberBandCreationFunction() const { return mRubberBandFunc; }
 
     /**
      * Sets the classes' rubber band creation \a function.
@@ -242,7 +242,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * Returns the classes' node based rubber band creation function.
      * \see setNodeRubberBandCreationFunction()
      */
-    QgsLayoutNodeItemRubberBandFunc nodeRubberBandCreationFunction() const { return mNodeRubberBandFunc; }
+    [[nodiscard]] QgsLayoutNodeItemRubberBandFunc nodeRubberBandCreationFunction() const { return mNodeRubberBandFunc; }
 
     /**
      * Sets the classes' node based rubber band creation \a function.
@@ -254,7 +254,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * Returns the classes' item creation function.
      * \see setItemCreationFunction()
      */
-    QgsLayoutItemCreateFunc itemCreationFunction() const { return mCreateFunc; }
+    [[nodiscard]] QgsLayoutItemCreateFunc itemCreationFunction() const { return mCreateFunc; }
 
     /**
      * Sets the classes' item creation \a function.
@@ -266,7 +266,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * Returns the classes' item added to layout function.
      * \see setItemAddedToLayoutFunction()
      */
-    QgsLayoutItemAddedToLayoutFunc itemAddToLayoutFunction() const { return mAddedToLayoutFunc; }
+    [[nodiscard]] QgsLayoutItemAddedToLayoutFunc itemAddToLayoutFunction() const { return mAddedToLayoutFunc; }
 
     /**
      * Sets the classes' item creation \a function.
@@ -278,7 +278,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * Returns the classes' item double clicked function.
      * \see setItemAddedToLayoutFunction()
      */
-    QgsLayoutItemDoubleClickedFunc itemDoubleClickedFunction() const { return mDoubleClickedFunc; }
+    [[nodiscard]] QgsLayoutItemDoubleClickedFunc itemDoubleClickedFunction() const { return mDoubleClickedFunc; }
 
     /**
      * Sets the classes' item double clicked \a function.
@@ -288,7 +288,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
 
     void handleDoubleClick( QgsLayoutItem *item, Qgis::MouseHandlesAction action ) override;
 
-    QIcon creationIcon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractGuiMetadata::creationIcon() : mIcon; }
+    [[nodiscard]] QIcon creationIcon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractGuiMetadata::creationIcon() : mIcon; }
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) override { return mWidgetFunc ? mWidgetFunc( item ) : nullptr; }
     QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) override { return mRubberBandFunc ? mRubberBandFunc( view ) : nullptr; }
     QGraphicsItem *createNodeRubberBand( QgsLayoutView *view ) override { return mNodeRubberBandFunc ? mNodeRubberBandFunc( view ) : nullptr; }
@@ -395,7 +395,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      * Returns the metadata for the specified item \a metadataId. Returns NULLPTR if
      * a corresponding \a metadataId was not found in the registry.
      */
-    QgsLayoutItemAbstractGuiMetadata *itemMetadata( int metadataId ) const;
+    [[nodiscard]] QgsLayoutItemAbstractGuiMetadata *itemMetadata( int metadataId ) const;
 
     /**
      * Returns the GUI item metadata ID which corresponds to the specified layout item \a type.
@@ -407,7 +407,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      *
      * \since QGIS 3.18
      */
-    int metadataIdForItemType( int type ) const;
+    [[nodiscard]] int metadataIdForItemType( int type ) const;
 
     /**
      * Registers the GUI metadata for a new layout item type. Takes ownership of the metadata instance.
@@ -526,7 +526,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     /**
      * Returns a list of available item metadata ids handled by the registry.
      */
-    QList<int> itemMetadataIds() const;
+    [[nodiscard]] QList<int> itemMetadataIds() const;
 
   signals:
 

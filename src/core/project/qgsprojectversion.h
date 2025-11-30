@@ -53,27 +53,27 @@ class CORE_EXPORT QgsProjectVersion
     /**
      * Returns the major version number.
      */
-    int majorVersion() const { return mMajor;}
+    [[nodiscard]] int majorVersion() const { return mMajor;}
 
     /**
      * Returns the minor version number.
      */
-    int minorVersion() const { return mMinor;}
+    [[nodiscard]] int minorVersion() const { return mMinor;}
 
     /**
      * Returns the sub version number.
      */
-    int subVersion() const { return mSub;}
+    [[nodiscard]] int subVersion() const { return mSub;}
 
     /**
      * Returns a string representation of the version.
      */
-    QString text() const;
+    [[nodiscard]] QString text() const;
 
     /**
      * Returns TRUE if this is a NULL project version.
      */
-    bool isNull() const;
+    [[nodiscard]] bool isNull() const;
 
     bool operator==( const QgsProjectVersion &other ) const;
     bool operator!=( const QgsProjectVersion &other ) const;

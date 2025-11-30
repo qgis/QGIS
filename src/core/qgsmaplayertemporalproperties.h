@@ -95,7 +95,7 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
     /**
      * Returns TRUE if the layer should be visible and rendered for the specified time \a range.
      */
-    virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
+    [[nodiscard]] virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
 
     /**
      * Sets the layers temporal settings to appropriate defaults based on

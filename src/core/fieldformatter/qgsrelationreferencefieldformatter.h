@@ -36,7 +36,7 @@ class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
       */
     QgsRelationReferenceFieldFormatter();
 
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 
     QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
@@ -44,9 +44,9 @@ class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
 
     QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const override;
 
-    QList<QgsVectorLayerRef> layerDependencies( const QVariantMap &config ) const override SIP_SKIP;
+    [[nodiscard]] QList<QgsVectorLayerRef> layerDependencies( const QVariantMap &config ) const override SIP_SKIP;
 
-    QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const override;
+    [[nodiscard]] QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const override;
 
     //friend class TestQgsRelationReferenceFieldFormatter;
 

@@ -70,13 +70,13 @@ class QgsMssqlDatabase
     ~QgsMssqlDatabase();
 
     //! Returns true if we were successful to open the database (and so we can use the database connection)
-    bool isValid() const { return mDB.isOpen(); }
+    [[nodiscard]] bool isValid() const { return mDB.isOpen(); }
     //! Returns error text for the error if database failed to open
-    QString errorText() const { return mDB.lastError().text(); }
+    [[nodiscard]] QString errorText() const { return mDB.lastError().text(); }
     //! Returns reference to the internal database connection
     QSqlDatabase &db() { return mDB; }
     //! Returns whether this connection is used in a transaction
-    bool hasTransaction() const { return mTransaction; }
+    [[nodiscard]] bool hasTransaction() const { return mTransaction; }
 
     QSqlQuery createQuery();
 

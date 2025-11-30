@@ -51,14 +51,14 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
 
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
-    QgsVectorLayerSelectionProperties *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsVectorLayerSelectionProperties *clone() const override SIP_FACTORY;
 
     /**
      * Returns the selection rendering mode to use for selected features in the layer.
      *
      * \see setSelectionRenderingMode()
      */
-    Qgis::SelectionRenderingMode selectionRenderingMode() const;
+    [[nodiscard]] Qgis::SelectionRenderingMode selectionRenderingMode() const;
 
     /**
      * Sets the selection rendering \a mode to use for selected features in the layer.
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
      *
      * \see setSelectionColor()
      */
-    QColor selectionColor() const;
+    [[nodiscard]] QColor selectionColor() const;
 
     /**
      * Sets the \a color to use for rendering selected features in the layer.
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
      *
      * \see setSelectionSymbol()
      */
-    QgsSymbol *selectionSymbol() const;
+    [[nodiscard]] QgsSymbol *selectionSymbol() const;
 
     /**
      * Sets the \a symbol used to render selected features in the layer.

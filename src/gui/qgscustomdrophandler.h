@@ -55,7 +55,7 @@ class GUI_EXPORT QgsCustomDropHandler : public QObject
      *
      * \see handleCustomUriDrop()
      */
-    virtual QString customUriProviderKey() const;
+    [[nodiscard]] virtual QString customUriProviderKey() const;
 
     /**
      * Called from QGIS after a drop event with custom URI known by the handler.

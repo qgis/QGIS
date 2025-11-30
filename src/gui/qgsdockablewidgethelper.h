@@ -104,7 +104,7 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
      * Returns if the widget is docked
      * \since QGIS 3.42
      */
-    bool isDocked() const { return mIsDocked; }
+    [[nodiscard]] bool isDocked() const { return mIsDocked; }
 
     //! Reads the dimensions of both the dock widget and the top level window
     void writeXml( QDomElement &viewDom );
@@ -123,18 +123,18 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     //! Sets the displayed title of the dialog and the dock widget
     void setWindowTitle( const QString &title );
     //! Returns the displayed title of the dialog and the dock widget
-    QString windowTitle() const { return mWindowTitle; }
+    [[nodiscard]] QString windowTitle() const { return mWindowTitle; }
 
     //! Sets the object name of the dock widget
     void setDockObjectName( const QString &name );
     //! Returns the object name of the dock widget
-    QString dockObjectName() const;
+    [[nodiscard]] QString dockObjectName() const;
 
     /**
      * Returns TRUE if the widget is a visible dialog or a user-visible
      * dock widget.
      */
-    bool isUserVisible() const;
+    [[nodiscard]] bool isUserVisible() const;
 
     /**
      * Create a tool button for docking/undocking the widget

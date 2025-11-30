@@ -137,7 +137,7 @@ except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterDistance.typeName = staticmethod(QgsProcessingParameterDistance.typeName)
-    QgsProcessingParameterDistance.__overridden_methods__ = ['userFriendlyString', 'clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'toVariantMap', 'fromVariantMap']
+    QgsProcessingParameterDistance.__overridden_methods__ = ['clone', 'type', 'dependsOnOtherParameters', 'asPythonString', 'userFriendlyString', 'toVariantMap', 'fromVariantMap']
     QgsProcessingParameterDistance.__group__ = ['processing']
 except (NameError, AttributeError):
     pass

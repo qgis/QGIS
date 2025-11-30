@@ -110,9 +110,9 @@ class QgsMemoryProviderMetadata final: public QgsProviderMetadata
 
   public:
     QgsMemoryProviderMetadata();
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    [[nodiscard]] QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 ///@endcond

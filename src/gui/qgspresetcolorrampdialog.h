@@ -49,7 +49,7 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
      * Returns a color ramp representing the current settings from the dialog.
      * \see setRamp()
      */
-    QgsPresetSchemeColorRamp ramp() const;
+    [[nodiscard]] QgsPresetSchemeColorRamp ramp() const;
 
     /**
      * Sets the color ramp to show in the dialog.
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
      * Returns a color ramp representing the current settings from the dialog.
      * \see setRamp()
      */
-    QgsPresetSchemeColorRamp ramp() const { return mWidget->ramp(); }
+    [[nodiscard]] QgsPresetSchemeColorRamp ramp() const { return mWidget->ramp(); }
 
     /**
      * Sets the color ramp to show in the dialog.
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
      * Returns a reference to the dialog's button box.
      * \since QGIS 3.10
      */
-    QDialogButtonBox *buttonBox() const;
+    [[nodiscard]] QDialogButtonBox *buttonBox() const;
 
   signals:
 

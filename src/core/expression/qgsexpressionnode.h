@@ -132,7 +132,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         /**
          * Returns the number of nodes in the list.
          */
-        int count() const { return mList.count(); }
+        [[nodiscard]] int count() const { return mList.count(); }
 
         /**
          * Reserves size for the node list.
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         /**
          * Returns TRUE if list contains any named nodes
          */
-        bool hasNamedNodes() const { return mHasNamedNodes; }
+        [[nodiscard]] bool hasNamedNodes() const { return mHasNamedNodes; }
 
         /**
          * Gets a list of all the nodes.
@@ -160,15 +160,15 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         /**
          * Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
          */
-        QStringList names() const { return mNameList; }
+        [[nodiscard]] QStringList names() const { return mNameList; }
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller
-        QgsExpressionNode::NodeList *clone() const SIP_FACTORY;
+        [[nodiscard]] QgsExpressionNode::NodeList *clone() const SIP_FACTORY;
 
         /**
          * Returns a string dump of the expression node.
          */
-        virtual QString dump() const;
+        [[nodiscard]] virtual QString dump() const;
 
       private:
         QList<QgsExpressionNode *> mList;

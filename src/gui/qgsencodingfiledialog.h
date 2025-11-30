@@ -37,11 +37,11 @@ class GUI_EXPORT QgsEncodingFileDialog : public QFileDialog
      */
     QgsEncodingFileDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &caption = QString(), const QString &directory = QString(), const QString &filter = QString(), const QString &encoding = QString() );
     //! Returns a string describing the chosen encoding
-    QString encoding() const;
+    [[nodiscard]] QString encoding() const;
     //! Adds a 'Cancel All' button for the user to click
     void addCancelAll();
     //! Returns TRUE if the user clicked 'Cancel All'
-    bool cancelAll() const;
+    [[nodiscard]] bool cancelAll() const;
 
   public slots:
     void saveUsedEncoding();
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsEncodingSelectionDialog : public QDialog
      * Returns the encoding selected within the dialog.
      * \see setEncoding()
      */
-    QString encoding() const;
+    [[nodiscard]] QString encoding() const;
 
     /**
      * Sets the \a encoding selected within the dialog.

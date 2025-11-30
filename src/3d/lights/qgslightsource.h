@@ -51,12 +51,12 @@ class _3D_EXPORT QgsLightSource SIP_ABSTRACT
     /**
      * Returns the light source type.
      */
-    virtual Qgis::LightSourceType type() const = 0;
+    [[nodiscard]] virtual Qgis::LightSourceType type() const = 0;
 
     /**
      * Returns a copy of the light source.
      */
-    virtual QgsLightSource *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsLightSource *clone() const = 0 SIP_FACTORY;
 
     /**
      * Creates an entity representing the light source.

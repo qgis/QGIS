@@ -48,7 +48,7 @@ class GUI_EXPORT QgsBrowserGuiModel : public QgsBrowserModel
      */
     explicit QgsBrowserGuiModel( QObject *parent = nullptr );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     //! Sets message bar that will be passed in QgsDataItemGuiContext to data items
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsBrowserGuiModel : public QgsBrowserModel
     void setMapCanvas( QgsMapCanvas *canvas );
 
   private:
-    QgsDataItemGuiContext createDataItemContext() const;
+    [[nodiscard]] QgsDataItemGuiContext createDataItemContext() const;
     QgsMessageBar *mMessageBar = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
 };

@@ -38,7 +38,7 @@ class GUI_EXPORT QgsDashSpaceWidget : public QgsPanelWidget, private Ui::QgsDash
     QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Returns the dash pattern as a list of numbers
-    QVector<qreal> dashDotVector() const;
+    [[nodiscard]] QVector<qreal> dashDotVector() const;
 
     /**
      * Sets the unit type used for the dash space pattern (used to update interface labels)
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsDashSpaceDialog : public QDialog
     QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
     //! Returns the dash pattern as a list of numbers
-    QVector<qreal> dashDotVector() const;
+    [[nodiscard]] QVector<qreal> dashDotVector() const;
 
     /**
      * Sets the unit type used for the dash space pattern (used to update interface labels)

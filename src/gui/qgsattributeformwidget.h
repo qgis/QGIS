@@ -67,7 +67,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      * Creates an expression matching the current search filter value and
      * search properties represented in the widget.
      */
-    virtual QString currentFilterExpression() const;
+    [[nodiscard]] virtual QString currentFilterExpression() const;
 
 
     /**
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      * Returns the current mode for the widget.
      * \see setMode()
      */
-    Mode mode() const { return mMode; }
+    [[nodiscard]] Mode mode() const { return mMode; }
 
     /**
      * The layer for which this widget and its form is shown.
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
     /**
      * The form on which this widget is shown.
      */
-    QgsAttributeForm *form() const;
+    [[nodiscard]] QgsAttributeForm *form() const;
 
     /**
      * Returns the widget which should be used as a parent during construction
@@ -137,7 +137,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      * The visibility of the search widget tool button, that allows (de)activating
      * this search widgte or defines the comparison operator to use.
      */
-    bool searchWidgetToolButtonVisible() const;
+    [[nodiscard]] bool searchWidgetToolButtonVisible() const;
 
     /**
      * The visibility of the search widget tool button, that allows (de)activating
@@ -152,7 +152,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      * stable API
      * \note not available in Python bindings
      */
-    QWidget *editPage() const SIP_SKIP;
+    [[nodiscard]] QWidget *editPage() const SIP_SKIP;
 
     /**
      * Returns a pointer to the stacked widget managing edit and search page.
@@ -160,7 +160,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      * stable API
      * \note not available in Python bindings
      */
-    QStackedWidget *stack() const SIP_SKIP;
+    [[nodiscard]] QStackedWidget *stack() const SIP_SKIP;
 
     /**
      * Returns a pointer to the search page widget.
@@ -168,7 +168,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      * stable API
      * \note not available in Python bindings
      */
-    QWidget *searchPage() const SIP_SKIP;
+    [[nodiscard]] QWidget *searchPage() const SIP_SKIP;
 
     /**
      * Sets the visible page in the widget to the page matching the specified \a mode.

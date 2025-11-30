@@ -132,20 +132,20 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      *
      * \returns The name for this element
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * The type of this element
      *
      * \returns The type
      */
-    Qgis::AttributeEditorType type() const { return mType; }
+    [[nodiscard]] Qgis::AttributeEditorType type() const { return mType; }
 
     /**
      * Gets the parent of this element.
      *
      */
-    QgsAttributeEditorElement *parent() const { return mParent; }
+    [[nodiscard]] QgsAttributeEditorElement *parent() const { return mParent; }
 
     /**
      * Gets the XML Dom element to save this element.
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * Controls if this element should be labeled with a title (field, relation or groupname).
      *
      */
-    bool showLabel() const;
+    [[nodiscard]] bool showLabel() const;
 
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      *
      * \since QGIS 3.32
      */
-    int horizontalStretch() const { return mHorizontalStretch; }
+    [[nodiscard]] int horizontalStretch() const { return mHorizontalStretch; }
 
     /**
      * Sets the horizontal \a stretch factor for the element.
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      *
      * \since QGIS 3.32
      */
-    int verticalStretch() const { return mVerticalStretch; }
+    [[nodiscard]] int verticalStretch() const { return mVerticalStretch; }
 
     /**
      * Sets the vertical \a stretch factor for the element.
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * \see setLabelStyle()
      * \since QGIS 3.26
      */
-    LabelStyle labelStyle() const;
+    [[nodiscard]] LabelStyle labelStyle() const;
 
     /**
      * Sets the \a labelStyle.
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * Needs to be XML key compatible.
      *
      */
-    virtual QString typeIdentifier() const = 0;
+    [[nodiscard]] virtual QString typeIdentifier() const = 0;
 
 };
 

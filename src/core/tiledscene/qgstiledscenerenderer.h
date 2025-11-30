@@ -54,21 +54,21 @@ class CORE_EXPORT QgsTiledSceneRenderContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
+    [[nodiscard]] const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
 
     /**
      * Returns the feedback object used to cancel rendering
      *
      * \since QGIS 3.20
      */
-    QgsFeedback *feedback() const { return mFeedback; }
+    [[nodiscard]] QgsFeedback *feedback() const { return mFeedback; }
 
     /**
      * Returns the current texture image.
      *
      * \see setTextureImage()
      */
-    QImage textureImage() const;
+    [[nodiscard]] QImage textureImage() const;
 
     /**
      * Sets the current texture \a image.
@@ -141,13 +141,13 @@ class CORE_EXPORT QgsTiledSceneRenderer
     /**
      * Returns the identifier of the renderer type.
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     /**
      * Create a deep copy of this renderer. Should be implemented by all subclasses
      * and generate a proper subclass.
      */
-    virtual QgsTiledSceneRenderer *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsTiledSceneRenderer *clone() const = 0 SIP_FACTORY;
 
     //! QgsTiledSceneRenderer cannot be copied -- use clone() instead
     QgsTiledSceneRenderer( const QgsTiledSceneRenderer &other ) = delete;
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsTiledSceneRenderer
     /**
      * Returns flags which control how the renderer behaves.
      */
-    virtual Qgis::TiledSceneRendererFlags flags() const;
+    [[nodiscard]] virtual Qgis::TiledSceneRendererFlags flags() const;
 
     /**
      * Creates a renderer from an XML \a element.
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsTiledSceneRenderer
      * \see setMaximumScreenError()
      * \see maximumScreenErrorUnit()
      */
-    double maximumScreenError() const;
+    [[nodiscard]] double maximumScreenError() const;
 
     /**
      * Sets the maximum screen \a error allowed when rendering the tiled scene.
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsTiledSceneRenderer
      * \see maximumScreenError()
      * \see setMaximumScreenErrorUnit()
      */
-    Qgis::RenderUnit maximumScreenErrorUnit() const;
+    [[nodiscard]] Qgis::RenderUnit maximumScreenErrorUnit() const;
 
     /**
      * Sets the \a unit for the maximum screen error allowed when rendering the tiled scene.
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsTiledSceneRenderer
      *
      * see setTileBorderRenderingEnabled()
      */
-    bool isTileBorderRenderingEnabled() const { return mTileBorderRendering; }
+    [[nodiscard]] bool isTileBorderRenderingEnabled() const { return mTileBorderRendering; }
 
     /**
      * Must be called when a new render cycle is started. A call to startRender() must always
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsTiledSceneRenderer
     /**
      * Returns a list of all rule keys for legend nodes created by the renderer.
      */
-    virtual QStringList legendRuleKeys() const;
+    [[nodiscard]] virtual QStringList legendRuleKeys() const;
 
     /**
      * Renders a \a triangle.

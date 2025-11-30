@@ -37,7 +37,7 @@ class CORE_EXPORT QgsSelectionContext
      *
      * \see setScale()
      */
-    double scale() const;
+    [[nodiscard]] double scale() const;
 
     /**
      * Sets the map \a scale at which the selection should occur.

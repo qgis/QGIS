@@ -38,25 +38,25 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
      */
     QgsRasterCalcDialog( QgsRasterLayer *rasterLayer = nullptr, QgsMapCanvas *canvas = nullptr, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
-    QString formulaString() const;
-    QString outputFile() const;
-    QString outputFormat() const;
-    QgsCoordinateReferenceSystem outputCrs() const;
-    bool addLayerToProject() const;
+    [[nodiscard]] QString formulaString() const;
+    [[nodiscard]] QString outputFile() const;
+    [[nodiscard]] QString outputFormat() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem outputCrs() const;
+    [[nodiscard]] bool addLayerToProject() const;
     //! True if Virtual is checked
-    bool useVirtualProvider() const;
+    [[nodiscard]] bool useVirtualProvider() const;
     //! Return the name written in the qlineedit
-    QString virtualLayerName() const;
+    [[nodiscard]] QString virtualLayerName() const;
 
     //! Bounding box for output raster
-    QgsRectangle outputRectangle() const;
+    [[nodiscard]] QgsRectangle outputRectangle() const;
     //! Number of pixels in x-direction
-    int numberOfColumns() const;
+    [[nodiscard]] int numberOfColumns() const;
     //! Number of pixels in y-direction
-    int numberOfRows() const;
+    [[nodiscard]] int numberOfRows() const;
 
     //! Raster creation options
-    QStringList creationOptions() const;
+    [[nodiscard]] QStringList creationOptions() const;
 
     /**
      * Extract raster layer information from the current project
@@ -117,14 +117,14 @@ class APP_EXPORT QgsRasterCalcDialog : public QDialog, private Ui::QgsRasterCalc
     void insertAvailableRasterBands();
 
     //! Returns true if raster calculator expression has valid syntax
-    bool expressionValid() const;
+    [[nodiscard]] bool expressionValid() const;
     //! Returns true if output file directory exists
-    bool filePathValid() const;
+    [[nodiscard]] bool filePathValid() const;
 
     static QString quoteBandEntry( const QString &layerName );
 
     //! Returns true if the output layer already exists.
-    bool outputLayerExists() const;
+    [[nodiscard]] bool outputLayerExists() const;
 
     //! Stores relation between driver name and extension
     QMap<QString, QString> mDriverExtensionMap;

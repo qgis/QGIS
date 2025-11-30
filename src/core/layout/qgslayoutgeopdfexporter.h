@@ -61,7 +61,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
      *
      * \see layerTreeGroupOrder()
      */
-    QMap< QString, QString > customLayerTreeGroups() const { return mCustomLayerTreeGroups; }
+    [[nodiscard]] QMap< QString, QString > customLayerTreeGroups() const { return mCustomLayerTreeGroups; }
 
     /**
      * Optional map of map layer ID to initial visibility state. If a layer ID is not present in this,
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
      *
      * \since QGIS 3.14
      */
-    QMap< QString, bool > initialLayerVisibility() const { return mInitialLayerVisibility; }
+    [[nodiscard]] QMap< QString, bool > initialLayerVisibility() const { return mInitialLayerVisibility; }
 
     /**
      * Optional list of map layer IDs in the order they should be shown in the generated geospatial PDF layer tree.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
      * \see layerTreeGroupOrder()
      * \since QGIS 3.14
      */
-    QStringList layerOrder() const { return mLayerOrder; }
+    [[nodiscard]] QStringList layerOrder() const { return mLayerOrder; }
 
     /**
      * Specifies the ordering of layer tree groups in the generated geospatial PDF file.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
      *
      * \since QGIS 3.38
      */
-    QStringList layerTreeGroupOrder() const { return mLayerTreeGroupOrder; }
+    [[nodiscard]] QStringList layerTreeGroupOrder() const { return mLayerTreeGroupOrder; }
 
   private:
 

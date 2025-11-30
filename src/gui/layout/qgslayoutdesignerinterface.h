@@ -129,7 +129,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface : public QObject
      * \see setAtlasPreviewEnabled()
      * \since QGIS 3.4
      */
-    virtual bool atlasPreviewEnabled() const = 0;
+    [[nodiscard]] virtual bool atlasPreviewEnabled() const = 0;
 
     /**
      * Sets the specified feature as the current atlas feature
@@ -378,7 +378,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface : public QObject
      *
      * \since QGIS 3.20
      */
-    virtual QgsLayoutDesignerInterface::ExportResults *lastExportResults() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsLayoutDesignerInterface::ExportResults *lastExportResults() const = 0 SIP_FACTORY;
 
   public slots:
 

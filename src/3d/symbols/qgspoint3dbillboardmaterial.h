@@ -63,12 +63,12 @@ class _3D_EXPORT QgsPoint3DBillboardMaterial : public QgsMaterial
     //! Set the billboard size.
     void setSize( const QSizeF size );
     //! Returns the billboard size.
-    QSizeF size() const;
+    [[nodiscard]] QSizeF size() const;
 
     //! Set the size of the view port.
     void setViewportSize( const QSizeF size );
     //! Returns the size of the view port.
-    QSizeF windowSize() const;
+    [[nodiscard]] QSizeF windowSize() const;
 
     //! Set default symbol for the texture with \a context and \a selected parameter for rendering.
     void useDefaultSymbol( const Qgs3DRenderContext &context, bool selected = false );

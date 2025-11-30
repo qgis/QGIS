@@ -80,7 +80,7 @@ class ANALYSIS_EXPORT QgsTriangulation
     virtual bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) = 0;
 
     //! Returns a pointer to the point with number i.
-    virtual QgsPoint *point( int i ) const = 0;
+    [[nodiscard]] virtual QgsPoint *point( int i ) const = 0;
 
     /**
      * Finds out in which triangle the point with coordinates x and y is and
@@ -100,19 +100,19 @@ class ANALYSIS_EXPORT QgsTriangulation
     virtual int oppositePoint( int p1, int p2 ) = 0;
 
     //! Returns the largest x-coordinate value of the bounding box
-    virtual double xMax() const = 0;
+    [[nodiscard]] virtual double xMax() const = 0;
 
     //! Returns the smallest x-coordinate value of the bounding box
-    virtual double xMin() const = 0;
+    [[nodiscard]] virtual double xMin() const = 0;
 
     //! Returns the largest y-coordinate value of the bounding box
-    virtual double yMax() const = 0;
+    [[nodiscard]] virtual double yMax() const = 0;
 
     //! Returns the smallest x-coordinate value of the bounding box
-    virtual double yMin() const = 0;
+    [[nodiscard]] virtual double yMin() const = 0;
 
     //! Returns the number of points
-    virtual int pointsCount() const = 0;
+    [[nodiscard]] virtual int pointsCount() const = 0;
 
     /**
      * Returns a value list with the information of the triangles surrounding (counterclockwise) a point.

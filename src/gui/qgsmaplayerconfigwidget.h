@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetContext
      *
      * \see setAnnotationId()
      */
-    QString annotationId() const { return mAnnotationId; }
+    [[nodiscard]] QString annotationId() const { return mAnnotationId; }
 
     /**
      * Sets the item \a id of the target annotation, when modifying
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetContext
      * Returns the map canvas associated with the widget.
      * \see setMapCanvas()
      */
-    QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
+    [[nodiscard]] QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
 
     /**
      * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
@@ -77,7 +77,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetContext
      * Returns the message bar associated with the widget.
      * \see setMessageBar()
      */
-    QgsMessageBar *messageBar() const { return mMessageBar; }
+    [[nodiscard]] QgsMessageBar *messageBar() const { return mMessageBar; }
 
     /**
      * Sets the layer tree \a group associated with the widget.
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetContext
      * \see setLayerTreeGroup()
      * \since QGIS 3.24
      */
-    QgsLayerTreeGroup *layerTreeGroup() const;
+    [[nodiscard]] QgsLayerTreeGroup *layerTreeGroup() const;
 
   private:
     QString mAnnotationId;
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
      * (for example 3D rendering config) do not need layer repaint as they do not modify 2D map rendering.
      * \since QGIS 3.8
      */
-    virtual bool shouldTriggerLayerRepaint() const { return true; }
+    [[nodiscard]] virtual bool shouldTriggerLayerRepaint() const { return true; }
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push

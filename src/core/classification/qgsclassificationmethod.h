@@ -56,12 +56,12 @@ class CORE_EXPORT QgsClassificationRange
       , mUpperBound( upperBound )
     {}
     //! Returns the lower bound
-    double lowerBound() const {return mLowerBound;}
+    [[nodiscard]] double lowerBound() const {return mLowerBound;}
     //! Returns the upper bound
-    double upperBound() const {return mUpperBound;}
+    [[nodiscard]] double upperBound() const {return mUpperBound;}
 
     //! Returns the lower bound
-    QString label() const {return mLabel;}
+    [[nodiscard]] QString label() const {return mLabel;}
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -141,28 +141,28 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * Returns a clone of the method.
      * Implementation can take advantage of copyBase method which copies the parameters of the base class
      */
-    virtual std::unique_ptr< QgsClassificationMethod > clone() const = 0;
+    [[nodiscard]] virtual std::unique_ptr< QgsClassificationMethod > clone() const = 0;
 
     //! The readable and translate name of the method
-    virtual QString name() const = 0;
+    [[nodiscard]] virtual QString name() const = 0;
 
     //! The id of the method as saved in the project, must be unique in registry
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     //! The icon of the method
-    virtual QIcon icon() const {return QIcon();}
+    [[nodiscard]] virtual QIcon icon() const {return QIcon();}
 
     /**
      * Returns the classification flags.
      *
      * \since QGIS 3.26
      */
-    QgsClassificationMethod::MethodProperties flags() const { return mFlags; }
+    [[nodiscard]] QgsClassificationMethod::MethodProperties flags() const { return mFlags; }
 
     /**
      * Returns the label for a range
      */
-    virtual QString labelForRange( double lowerValue, double upperValue, ClassPosition position = Inner ) const;
+    [[nodiscard]] virtual QString labelForRange( double lowerValue, double upperValue, ClassPosition position = Inner ) const;
 
 
     //! Writes extra information about the method
@@ -174,35 +174,35 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * Returns if the method requires values to calculate the classes
      * If not, bounds are sufficient
      */
-    virtual bool valuesRequired() const {return true;}
+    [[nodiscard]] virtual bool valuesRequired() const {return true;}
 
 
     // *******************
     // non-virtual methods
 
     //! Code complexity as the exponent in Big O notation
-    int codeComplexity() const {return mCodeComplexity;}
+    [[nodiscard]] int codeComplexity() const {return mCodeComplexity;}
 
     /**
      * Returns if the method supports symmetric calculation
      */
-    bool symmetricModeAvailable() const {return mFlags.testFlag( SymmetricModeAvailable );}
+    [[nodiscard]] bool symmetricModeAvailable() const {return mFlags.testFlag( SymmetricModeAvailable );}
 
     /**
      * Returns if the symmetric mode is enabled
      */
-    bool symmetricModeEnabled() const {return symmetricModeAvailable() && mSymmetricEnabled;}
+    [[nodiscard]] bool symmetricModeEnabled() const {return symmetricModeAvailable() && mSymmetricEnabled;}
 
     /**
      * Returns the symmetry point for symmetric mode
      */
-    double symmetryPoint() const {return mSymmetryPoint;}
+    [[nodiscard]] double symmetryPoint() const {return mSymmetryPoint;}
 
     /**
      * Returns if the symmetric mode is astride
      * if TRUE, it will remove the symmetry point break so that the 2 classes form only one
      */
-    bool symmetryAstride() const {return mSymmetryAstride;}
+    [[nodiscard]] bool symmetryAstride() const {return mSymmetryAstride;}
 
     /**
      * Defines if the symmetric mode is enables and configures its parameters.
@@ -215,15 +215,15 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
 
     // Label properties
     //! Returns the format of the label for the classes
-    QString labelFormat() const { return mLabelFormat; }
+    [[nodiscard]] QString labelFormat() const { return mLabelFormat; }
     //! Defines the format of the labels for the classes, using %1 and %2 for the bounds
     void setLabelFormat( const QString &format ) { mLabelFormat = format; }
     //! Returns the precision for the formatting of the labels
-    int labelPrecision() const { return mLabelPrecision; }
+    [[nodiscard]] int labelPrecision() const { return mLabelPrecision; }
     //! Defines the precision for the formatting of the labels
     void setLabelPrecision( int labelPrecision );
     //! Returns if the trailing 0 are trimmed in the label
-    bool labelTrimTrailingZeroes() const { return mLabelTrimTrailingZeroes; }
+    [[nodiscard]] bool labelTrimTrailingZeroes() const { return mLabelTrimTrailingZeroes; }
     //! Defines if the trailing 0 are trimmed in the label
     void setLabelTrimTrailingZeroes( bool trimTrailingZeroes ) { mLabelTrimTrailingZeroes = trimTrailingZeroes; }
 
@@ -296,19 +296,19 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     /**
      * Returns the label for a range
      */
-    QString labelForRange( const QgsRendererRange &range, ClassPosition position = Inner ) const;
+    [[nodiscard]] QString labelForRange( const QgsRendererRange &range, ClassPosition position = Inner ) const;
 
     /**
      * Returns the parameter from its name
      * \since QGIS 3.12
      */
-    const QgsProcessingParameterDefinition *parameterDefinition( const QString &parameterName ) const;
+    [[nodiscard]] const QgsProcessingParameterDefinition *parameterDefinition( const QString &parameterName ) const;
 
     /**
      * Returns the list of parameters
      * \since QGIS 3.12
      */
-    QgsProcessingParameterDefinitions parameterDefinitions() const {return mParameters;}
+    [[nodiscard]] QgsProcessingParameterDefinitions parameterDefinitions() const {return mParameters;}
 
     /**
      * Defines the values of the additional parameters
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * One could use QgsProcessingParameters::parameterAsXxxx to retrieve the actual value of a parameter.
      * \since QGIS 3.12
      */
-    QVariantMap parameterValues() const {return mParameterValues;}
+    [[nodiscard]] QVariantMap parameterValues() const {return mParameterValues;}
 
     static const int MAX_PRECISION;
     static const int MIN_PRECISION;
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     void copyBase( QgsClassificationMethod *c ) const;
 
     //! Format the number according to label properties
-    QString formatNumber( double value ) const;
+    [[nodiscard]] QString formatNumber( double value ) const;
 
     /**
      * Add a parameter to the method.
@@ -354,10 +354,10 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
                                            const QList<double> &values, int nclasses, QString &error ) = 0;
 
     //! This is called after calculating the breaks or restoring from XML, so it can rely on private variables
-    virtual QString valueToLabel( double value ) const {return formatNumber( value );}
+    [[nodiscard]] virtual QString valueToLabel( double value ) const {return formatNumber( value );}
 
     //! Create a list of ranges from a list of classes
-    QList<QgsClassificationRange> breaksToClasses( const QList<double> &breaks ) const;
+    [[nodiscard]] QList<QgsClassificationRange> breaksToClasses( const QList<double> &breaks ) const;
 
     // implementation properties (set by initialization)
     MethodProperties mFlags = MethodProperties();

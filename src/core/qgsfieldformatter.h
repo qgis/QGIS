@@ -40,7 +40,7 @@ class CORE_EXPORT QgsFieldFormatterContext
      * Returns the project used in field formatter
      * \see setProject()
      */
-    QgsProject *project() const { return mProject; }
+    [[nodiscard]] QgsProject *project() const { return mProject; }
 
     /**
      * Sets the \a project used in field formatter
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsFieldFormatter
      *
      * This id matches the id of a QgsEditorWidgetFactory.
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     /**
      * Create a pretty String representation of the value.
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsFieldFormatter
      * \note not available in Python bindings
      * \since QGIS 3.12
      */
-    virtual QList< QgsVectorLayerRef > layerDependencies( const QVariantMap &config ) const SIP_SKIP;
+    [[nodiscard]] virtual QList< QgsVectorLayerRef > layerDependencies( const QVariantMap &config ) const SIP_SKIP;
 
     /**
      * Returns a list of the values that would be possible to select with this widget type
@@ -149,14 +149,14 @@ class CORE_EXPORT QgsFieldFormatter
      * according to the settings in the \a config
      * \since QGIS 3.12
      */
-    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
+    [[nodiscard]] virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
 
     /**
      * Returns the flags
      *
      * \since QGIS 3.12
      */
-    Flags flags() const { return mFlags; }
+    [[nodiscard]] Flags flags() const { return mFlags; }
 
     /**
      * Sets the \a flags

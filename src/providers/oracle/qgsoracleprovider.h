@@ -360,7 +360,7 @@ class QgsOracleProvider final : public QgsVectorDataProvider
         ~OracleException()
           = default;
 
-        QString errorMessage() const
+        [[nodiscard]] QString errorMessage() const
         {
           return mWhat;
         }
@@ -441,7 +441,7 @@ class QgsOracleProviderMetadata final : public QgsProviderMetadata
 
   public:
     QgsOracleProviderMetadata();
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
@@ -453,7 +453,7 @@ class QgsOracleProviderMetadata final : public QgsProviderMetadata
     Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri ) override;
 
     QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    [[nodiscard]] QList<QgsDataItemProvider *> dataItemProviders() const override;
 
     QgsTransaction *createTransaction( const QString &connString ) override;
     QMap<QString, QgsAbstractProviderConnection *> connections( bool cached = true ) override;
@@ -462,9 +462,9 @@ class QgsOracleProviderMetadata final : public QgsProviderMetadata
     void deleteConnection( const QString &name ) override;
     void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
 
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
 
   private:
     // helper method to check if LAYER_STYLES table exists

@@ -29,7 +29,7 @@ class QgsMbtilesVectorTileSourceWidgetProvider : public QgsProviderSourceWidgetP
 {
   public:
     QgsMbtilesVectorTileSourceWidgetProvider();
-    QString providerKey() const override;
+    [[nodiscard]] QString providerKey() const override;
     bool canHandleLayer( QgsMapLayer *layer ) const override;
     QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override;
 };

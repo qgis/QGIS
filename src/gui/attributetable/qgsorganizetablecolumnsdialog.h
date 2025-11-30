@@ -60,7 +60,7 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
     /**
      * Gets the updated configuration
      */
-    QgsAttributeTableConfig config() const;
+    [[nodiscard]] QgsAttributeTableConfig config() const;
 
   public slots:
 

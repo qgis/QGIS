@@ -239,13 +239,13 @@ class CORE_EXPORT QgsRasterTransparency
      * Returns the transparent single value pixel list.
      * \see setTransparentSingleValuePixelList()
      */
-    QVector<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
+    [[nodiscard]] QVector<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
 
     /**
      * Returns the transparent three value pixel list.
      * \see setTransparentThreeValuePixelList()
      */
-    QVector<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
+    [[nodiscard]] QVector<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
 
     /**
      * Resets the transparency list to a single \a value.
@@ -290,7 +290,7 @@ class CORE_EXPORT QgsRasterTransparency
      *
      * \since QGIS 3.38
     */
-    double opacityForValue( double value ) const;
+    [[nodiscard]] double opacityForValue( double value ) const;
 
     /**
      * Returns the transparency value for a RGB pixel.
@@ -316,10 +316,10 @@ class CORE_EXPORT QgsRasterTransparency
      *
      * \since QGIS 3.38
     */
-    double opacityForRgbValues( double redValue, double greenValue, double blueValue ) const;
+    [[nodiscard]] double opacityForRgbValues( double redValue, double greenValue, double blueValue ) const;
 
     //! True if there are no entries in the pixel lists except the nodata value
-    bool isEmpty() const;
+    [[nodiscard]] bool isEmpty() const;
 
     /**
      * Writes the transparency information to an XML document.

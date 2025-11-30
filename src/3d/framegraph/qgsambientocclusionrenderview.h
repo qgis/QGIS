@@ -70,7 +70,7 @@ class QgsAmbientOcclusionRenderView : public QgsAbstractRenderView
     void setThreshold( float threshold );
 
     //! Returns blur pass texture
-    Qt3DRender::QTexture2D *blurredFactorMapTexture() const;
+    [[nodiscard]] Qt3DRender::QTexture2D *blurredFactorMapTexture() const;
 
     void updateWindowResize( int width, int height ) override;
     void setEnabled( bool enable ) override;

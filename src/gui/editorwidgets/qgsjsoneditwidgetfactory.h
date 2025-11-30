@@ -44,7 +44,7 @@ class GUI_EXPORT QgsJsonEditWidgetFactory : public QgsEditorWidgetFactory
 
     unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 
-    bool isReadOnly() const override;
+    [[nodiscard]] bool isReadOnly() const override;
 };
 
 #endif // QGSJSONEDITWIDGETFACTORY_H

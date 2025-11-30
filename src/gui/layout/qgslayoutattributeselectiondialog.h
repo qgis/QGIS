@@ -86,21 +86,21 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModelBase : public QAbstractTableM
     QgsLayoutAttributeTableColumnModelBase( QgsLayoutItemAttributeTable *table, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     //! To be reimplemented to provide the display or the sort columns
-    virtual QVector<QgsLayoutTableColumn> &columns() const = 0;
+    [[nodiscard]] virtual QVector<QgsLayoutTableColumn> &columns() const = 0;
 
     //! To be reimplemented to choose which column should be used by the model
-    virtual QList<Column> displayedColumns() const = 0;
+    [[nodiscard]] virtual QList<Column> displayedColumns() const = 0;
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
 
     /**
      * Moves the specified row up or down in the model. Used for rearranging the attribute tables
@@ -136,9 +136,9 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel : public QgsLayoutAttributeT
       : QgsLayoutAttributeTableColumnModelBase( table, parent )
     {}
 
-    QVector<QgsLayoutTableColumn> &columns() const override;
+    [[nodiscard]] QVector<QgsLayoutTableColumn> &columns() const override;
 
-    QList<Column> displayedColumns() const override
+    [[nodiscard]] QList<Column> displayedColumns() const override
     {
       return { Attribute, Heading, Alignment, Width };
     }
@@ -171,9 +171,9 @@ class GUI_EXPORT QgsLayoutTableSortModel : public QgsLayoutAttributeTableColumnM
       : QgsLayoutAttributeTableColumnModelBase( table, parent )
     {}
 
-    QVector<QgsLayoutTableColumn> &columns() const override;
+    [[nodiscard]] QVector<QgsLayoutTableColumn> &columns() const override;
 
-    QList<Column> displayedColumns() const override
+    [[nodiscard]] QList<Column> displayedColumns() const override
     {
       return { Attribute, SortOrder };
     }
@@ -230,7 +230,7 @@ class GUI_EXPORT QgsLayoutColumnSourceDelegate : public QItemDelegate, private Q
     QgsVectorLayer *mVectorLayer = nullptr;
     const QgsLayoutObject *mLayoutObject = nullptr;
     bool mForceExpressions = false;
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 };
 
 /**

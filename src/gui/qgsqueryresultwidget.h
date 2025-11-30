@@ -53,7 +53,7 @@ class GUI_EXPORT QgsQueryResultItemDelegate : public QStyledItemDelegate
   public:
     explicit QgsQueryResultItemDelegate( QObject *parent = nullptr );
 
-    QString displayText( const QVariant &value, const QLocale &locale ) const override;
+    [[nodiscard]] QString displayText( const QVariant &value, const QLocale &locale ) const override;
 };
 
 /**

@@ -29,7 +29,7 @@ class APP_EXPORT QgsMapToolFormAnnotation : public QgsMapToolAnnotation
     QgsMapToolFormAnnotation( QgsMapCanvas *canvas );
 
   protected:
-    QgsAnnotation *createItem() const override;
+    [[nodiscard]] QgsAnnotation *createItem() const override;
 };
 
 #endif // QGSMAPTOOLFORMANNOTATION_H

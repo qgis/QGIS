@@ -42,13 +42,13 @@ class CORE_EXPORT QgsExternalStorage
     /**
      * Unique identifier of the external storage type.
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     /**
      * Returns the translated external storage name, which should be used for any
      * user-visible display of the external storage name.
      */
-    virtual QString displayName() const = 0;
+    [[nodiscard]] virtual QString displayName() const = 0;
 
     /**
      * Stores file \a filePath to the \a url for this project external storage.
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsExternalStorage
      *
      * Caller takes ownership of the returned symbol.
      */
-    QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ActionStart storingMode = Qgis::ActionStart::Deferred ) const SIP_FACTORY;
+    [[nodiscard]] QgsExternalStorageStoredContent *store( const QString &filePath, const QString &url, const QString &authCfg = QString(), Qgis::ActionStart storingMode = Qgis::ActionStart::Deferred ) const SIP_FACTORY;
 
     /**
      * Fetches file from \a url for this project external storage.
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsExternalStorage
      *
      * It's possible to give \a authCfg authentication configuration id in case its needed.
      */
-    QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authCfg = QString(), Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred ) const SIP_FACTORY;
+    [[nodiscard]] QgsExternalStorageFetchedContent *fetch( const QString &url, const QString &authCfg = QString(), Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred ) const SIP_FACTORY;
 
   protected:
 
@@ -90,13 +90,13 @@ class CORE_EXPORT QgsExternalStorage
      * Stores file \a filePath to the \a url using \a authCfg authentication for this project external storage.
      * \see QgsExternalStorage::store()
      */
-    virtual QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authCfg = QString() ) const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsExternalStorageStoredContent *doStore( const QString &filePath, const QString &url, const QString &authCfg = QString() ) const = 0 SIP_FACTORY;
 
     /**
      * Fetches file from \a url using \a authCfg for this project external storage.
      * \see QgsExternalStorage::fetch()
      */
-    virtual QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authCfg = QString() ) const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsExternalStorageFetchedContent *doFetch( const QString &url, const QString &authCfg = QString() ) const = 0 SIP_FACTORY;
 };
 
 /**
@@ -114,12 +114,12 @@ class CORE_EXPORT QgsExternalStorageContent : public QObject
     /**
      * Returns content status
      */
-    Qgis::ContentStatus status() const;
+    [[nodiscard]] Qgis::ContentStatus status() const;
 
     /**
      * Returns error textual description if an error occurred and status() returns Failed
      */
-    const QString &errorString() const;
+    [[nodiscard]] const QString &errorString() const;
 
   public slots:
 
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsExternalStorageFetchedContent : public QgsExternalStorageCo
     /**
      * Returns fetched resource file path
      */
-    virtual QString filePath() const = 0;
+    [[nodiscard]] virtual QString filePath() const = 0;
 
     /**
      * Starts fetching
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsExternalStorageStoredContent : public QgsExternalStorageCon
     /**
      * Returns stored resource URL
      */
-    virtual QString url() const = 0;
+    [[nodiscard]] virtual QString url() const = 0;
 
     /**
      * Starts storing

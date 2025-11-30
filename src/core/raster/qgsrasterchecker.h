@@ -36,7 +36,7 @@ class CORE_EXPORT QgsRasterChecker
 
     QgsRasterChecker();
 
-    QString report() const { return mReport; }
+    [[nodiscard]] QString report() const { return mReport; }
 
     /**
      * Test using renderer to generate the image to be compared.

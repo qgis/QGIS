@@ -39,14 +39,14 @@ class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
      */
     QgsTextAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    QgsTextAnnotation *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsTextAnnotation *clone() const override SIP_FACTORY;
 
     /**
      * Returns the text document which will be rendered
      * within the annotation.
      * \see setDocument()
      */
-    const QTextDocument *document() const;
+    [[nodiscard]] const QTextDocument *document() const;
 
     /**
      * Sets the text document which will be rendered

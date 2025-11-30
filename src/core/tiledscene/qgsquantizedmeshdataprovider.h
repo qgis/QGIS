@@ -48,8 +48,8 @@ class CORE_EXPORT QgsQuantizedMeshMetadata
                               const QgsCoordinateTransformContext &transformContext,
                               QgsError &error );
 
-    bool containsTile( QgsTileXYZ tile ) const;
-    double geometricErrorAtZoom( int zoom ) const;
+    [[nodiscard]] bool containsTile( QgsTileXYZ tile ) const;
+    [[nodiscard]] double geometricErrorAtZoom( int zoom ) const;
 
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;

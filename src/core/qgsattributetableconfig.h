@@ -83,21 +83,21 @@ class CORE_EXPORT QgsAttributeTableConfig
      * Gets the list with all columns and their configuration.
      * The list order defines the order of appearance.
      */
-    QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
+    [[nodiscard]] QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
 
     /**
      * Returns TRUE if the configuration is empty, ie it contains no columns.
      *
      * \see size()
      */
-    bool isEmpty() const;
+    [[nodiscard]] bool isEmpty() const;
 
     /**
      * Returns the number of columns in the configuration.
      *
      * \since QGIS 3.22
      */
-    int size() const;
+    [[nodiscard]] int size() const;
 
 #ifdef SIP_RUN
     int __len__() const;
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      * \param visibleColumn index of visible column
      * \returns corresponding index when hidden columns are considered
      */
-    int mapVisibleColumnToIndex( int visibleColumn ) const;
+    [[nodiscard]] int mapVisibleColumnToIndex( int visibleColumn ) const;
 
     /**
      * Set the list of columns visible in the attribute table.
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     /**
      * Returns TRUE if the action widget is visible
      */
-    bool actionWidgetVisible() const;
+    [[nodiscard]] bool actionWidgetVisible() const;
 
     /**
      * Set if the action widget is visible
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     /**
      * Gets the style of the action widget
      */
-    ActionWidgetStyle actionWidgetStyle() const;
+    [[nodiscard]] ActionWidgetStyle actionWidgetStyle() const;
 
     /**
      * Set the style of the action widget
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     /**
      * Gets the expression used for sorting.
      */
-    QString sortExpression() const;
+    [[nodiscard]] QString sortExpression() const;
 
     /**
      * Set the sort expression used for sorting.
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      * \param column column index
      * \see setColumnWidth()
      */
-    int columnWidth( int column ) const;
+    [[nodiscard]] int columnWidth( int column ) const;
 #else
 
     /**
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      * \param column column index
      * \see setColumnHidden()
      */
-    bool columnHidden( int column ) const;
+    [[nodiscard]] bool columnHidden( int column ) const;
 #else
 
     /**
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     /**
      * Gets the sort order
      */
-    Qt::SortOrder sortOrder() const;
+    [[nodiscard]] Qt::SortOrder sortOrder() const;
 
     /**
      * Set the sort order
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsAttributeTableConfig
      * Compare this configuration's columns name, type, and order to \a other.
      * The column's width is not considered.
      */
-    bool hasSameColumns( const QgsAttributeTableConfig &other ) const;
+    [[nodiscard]] bool hasSameColumns( const QgsAttributeTableConfig &other ) const;
 
     bool operator!= ( const QgsAttributeTableConfig &other ) const;
 

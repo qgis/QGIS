@@ -40,9 +40,9 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
      */
     QgsHtmlAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    QgsHtmlAnnotation *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsHtmlAnnotation *clone() const override SIP_FACTORY;
 
-    QSizeF minimumFrameSize() const override;
+    [[nodiscard]] QSizeF minimumFrameSize() const override;
 
     /**
      * Sets the file path for the source HTML file.
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
      * Returns the file path for the source HTML file.
      * \see setSourceFile()
      */
-    QString sourceFile() const { return mHtmlFile; }
+    [[nodiscard]] QString sourceFile() const { return mHtmlFile; }
 
     /**
      * Sets the html source directly (not coming from a file)
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     /**
      * Returns html source text
      */
-    QString htmlSource() const { return mHtmlSource; }
+    [[nodiscard]] QString htmlSource() const { return mHtmlSource; }
 
     void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context ) override;

@@ -66,9 +66,9 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
 
     // QgsDataItem interface
   public:
-    bool layerCollection() const override;
-    bool hasDragEnabled() const override;
-    QgsMimeDataUtils::UriList mimeUris() const override;
+    [[nodiscard]] bool layerCollection() const override;
+    [[nodiscard]] bool hasDragEnabled() const override;
+    [[nodiscard]] QgsMimeDataUtils::UriList mimeUris() const override;
 };
 
 
@@ -84,10 +84,10 @@ class CORE_EXPORT QgsGeoPackageAbstractLayerItem : public QgsLayerItem
     /**
      * Returns a list of all table names for the geopackage
      */
-    QStringList tableNames() const;
+    [[nodiscard]] QStringList tableNames() const;
 
     //! Checks if the data source has any layer in the current project returns them
-    QList<QgsMapLayer *> layersInProject() const;
+    [[nodiscard]] QList<QgsMapLayer *> layersInProject() const;
 
     /**
      * Deletes a layer.
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsGeoPackageAbstractLayerItem : public QgsLayerItem
      * Returns the parent collection item
      * \since QGIS 3.10
      */
-    QgsGeoPackageCollectionItem *collection() const;
+    [[nodiscard]] QgsGeoPackageCollectionItem *collection() const;
 
   protected:
     QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey );
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsGeoPackageRootItem final: public QgsConnectionsRootItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 1; }
+    [[nodiscard]] QVariant sortKey() const override { return 1; }
     QWidget *paramWidget() override;
   public slots:
     void newConnection();
@@ -170,8 +170,8 @@ class QgsGeoPackageDataItemProvider final: public QgsDataItemProvider
 {
   public:
     QString name() override;
-    QString dataProviderKey() const override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] QString dataProviderKey() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 

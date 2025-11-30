@@ -64,29 +64,29 @@ class GUI_EXPORT QgsMapLayerSaveStyleDialog : public QDialog, private Ui::QgsMap
     /**
      * Returns the database settings for saving the style in the DB.
      */
-    SaveToDbSettings saveToDbSettings() const;
+    [[nodiscard]] SaveToDbSettings saveToDbSettings() const;
 
     /**
      * Returns the selected file output path.
      */
-    QString outputFilePath() const;
+    [[nodiscard]] QString outputFilePath() const;
 
     /**
      * Returns the available style categories.
      */
-    QgsMapLayer::StyleCategories styleCategories() const;
+    [[nodiscard]] QgsMapLayer::StyleCategories styleCategories() const;
 
     /**
      * Returns the selected style storage type.
      */
-    QgsLayerPropertiesDialog::StyleType currentStyleType() const;
+    [[nodiscard]] QgsLayerPropertiesDialog::StyleType currentStyleType() const;
 
     /**
      * Returns whether the user only allowed to save the current style.
      *
      * \see setSaveOnlyCurrentStyle()
      */
-    bool saveOnlyCurrentStyle() const;
+    [[nodiscard]] bool saveOnlyCurrentStyle() const;
 
     /**
      * Sets whether the user only allowed to save the current style.
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsMapLayerSaveStyleDialog : public QDialog, private Ui::QgsMap
      * Returns the SLD export options.
      * \since QGIS 3.30
      */
-    Qgis::SldExportOptions sldExportOptions() const;
+    [[nodiscard]] Qgis::SldExportOptions sldExportOptions() const;
 
   public slots:
     void accept() override;

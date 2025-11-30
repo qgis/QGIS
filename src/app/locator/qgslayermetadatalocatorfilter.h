@@ -27,13 +27,13 @@ class APP_EXPORT QgsLayerMetadataLocatorFilter : public QgsLocatorFilter
 
     // QgsLocatorFilter interface
   public:
-    QgsLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "layermetadata" ); };
-    QString displayName() const override { return tr( "Search Layer Metadata" ); };
+    [[nodiscard]] QgsLocatorFilter *clone() const override;
+    [[nodiscard]] QString name() const override { return QStringLiteral( "layermetadata" ); };
+    [[nodiscard]] QString displayName() const override { return tr( "Search Layer Metadata" ); };
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
-    Priority priority() const override { return Medium; }
-    QString prefix() const override { return QStringLiteral( "lmd" ); }
+    [[nodiscard]] Priority priority() const override { return Medium; }
+    [[nodiscard]] QString prefix() const override { return QStringLiteral( "lmd" ); }
 };
 
 #endif // QGSLAYERMETADATALOCATORFILTER_H

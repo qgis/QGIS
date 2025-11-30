@@ -71,7 +71,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget : public QgsRasterRendererWidge
       return mGrayBandComboBox->currentBand();
     }
 
-    QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const override;
+    [[nodiscard]] QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const override;
     void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm ) override;
 
     void doComputations() override;

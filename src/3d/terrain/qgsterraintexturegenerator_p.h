@@ -72,7 +72,7 @@ class QgsTerrainTextureGenerator : public QObject
     void waitForFinished();
 
     //! Returns the generated texture size (in pixel)
-    QSize textureSize() const { return mTextureSize; }
+    [[nodiscard]] QSize textureSize() const { return mTextureSize; }
     //! Sets the generated textures size (in pixel)
     void setTextureSize( QSize textureSize ) { mTextureSize = textureSize; }
 

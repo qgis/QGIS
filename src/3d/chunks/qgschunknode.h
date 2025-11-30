@@ -82,7 +82,7 @@ struct QgsChunkNodeId
     long long uniqueId = -1;
 
     //! Returns textual representation of the node ID in form of "Z/X/Y"
-    QString text() const
+    [[nodiscard]] QString text() const
     {
       if ( uniqueId != -1 )
         return QString::number( uniqueId );
@@ -157,38 +157,38 @@ class QgsChunkNode
     };
 
     //! Returns 3D bounding box (in map coordinates) of the chunk
-    QgsBox3D box3D() const { return mBox3D; }
+    [[nodiscard]] QgsBox3D box3D() const { return mBox3D; }
     //! Returns measure geometric/texture error of the chunk (in world coordinates)
-    float error() const { return mError; }
+    [[nodiscard]] float error() const { return mError; }
     //! Returns chunk tile coordinates of the tiling scheme
-    QgsChunkNodeId tileId() const { return mNodeId; }
+    [[nodiscard]] QgsChunkNodeId tileId() const { return mNodeId; }
     //! Returns pointer to the parent node. Parent is NULLPTR in the root node
-    QgsChunkNode *parent() const { return mParent; }
+    [[nodiscard]] QgsChunkNode *parent() const { return mParent; }
     //! Returns number of children of the node (returns -1 if the node has not yet been populated with populateChildren())
-    int childCount() const { return mChildren.count(); }
+    [[nodiscard]] int childCount() const { return mChildren.count(); }
     //! Returns array of the four children. Children may be NULLPTR if they were not created yet
-    QgsChunkNode *const *children() const { return mChildren.constData(); }
+    [[nodiscard]] QgsChunkNode *const *children() const { return mChildren.constData(); }
     //! Returns how the chunked entity should behave when it is going to activate node's children
-    Qgis::TileRefinementProcess refinementProcess() const { return mRefinementProcess; }
+    [[nodiscard]] Qgis::TileRefinementProcess refinementProcess() const { return mRefinementProcess; }
     //! Returns current state of the node
-    State state() const { return mState; }
+    [[nodiscard]] State state() const { return mState; }
 
     //! Returns node's entry in the loader queue. Not NULLPTR only when in QueuedForLoad / QueuedForUpdate state
-    QgsChunkListEntry *loaderQueueEntry() const { return mLoaderQueueEntry; }
+    [[nodiscard]] QgsChunkListEntry *loaderQueueEntry() const { return mLoaderQueueEntry; }
     //! Returns node's entry in the replacement queue. Not NULLPTR only when in Loaded / QueuedForUpdate / Updating state
-    QgsChunkListEntry *replacementQueueEntry() const { return mReplacementQueueEntry; }
+    [[nodiscard]] QgsChunkListEntry *replacementQueueEntry() const { return mReplacementQueueEntry; }
     //! Returns loader of the node. Not NULLPTR only when in Loading state
-    QgsChunkLoader *loader() const { return mLoader; }
+    [[nodiscard]] QgsChunkLoader *loader() const { return mLoader; }
     //! Returns associated entity (3D object). Not NULLPTR only when Loaded / QueuedForUpdate / Updating state
-    Qt3DCore::QEntity *entity() const { return mEntity; }
+    [[nodiscard]] Qt3DCore::QEntity *entity() const { return mEntity; }
     //! Returns updater job. Not NULLPTR only when in Updating state
-    QgsChunkQueueJob *updater() const { return mUpdater; }
+    [[nodiscard]] QgsChunkQueueJob *updater() const { return mUpdater; }
 
     //! Returns TRUE if all child chunks are available and thus this node could be swapped to the child nodes
-    bool allChildChunksResident( QTime currentTime ) const;
+    [[nodiscard]] bool allChildChunksResident( QTime currentTime ) const;
 
     //! Returns whether the child nodes have been populated already
-    bool hasChildrenPopulated() const { return mChildrenPopulated; }
+    [[nodiscard]] bool hasChildrenPopulated() const { return mChildrenPopulated; }
 
     //! Sets child nodes of this node. Takes ownership of all objects. Must be only called once.
     void populateChildren( const QVector<QgsChunkNode *> &children );
@@ -197,7 +197,7 @@ class QgsChunkNode
     void setRefinementProcess( Qgis::TileRefinementProcess refinementProcess ) { mRefinementProcess = refinementProcess; }
 
     //! how deep is the node in the tree (zero means root node, every level adds one)
-    int level() const;
+    [[nodiscard]] int level() const;
 
     //! Returns list of all descendants (recursive, not just direct children)
     QList<QgsChunkNode *> descendants();
@@ -257,7 +257,7 @@ class QgsChunkNode
     //! Sets whether the node has any data to be displayed. Can be used to set to FALSE after load returned no data
     void setHasData( bool hasData ) { mHasData = hasData; }
     //! Returns whether the node has any data to be displayed. If not, it will be kept as a skeleton node and will not get loaded anymore
-    bool hasData() const { return mHasData; }
+    [[nodiscard]] bool hasData() const { return mHasData; }
 
   private:
     QgsBox3D mBox3D; //!< Bounding box in map coordinates

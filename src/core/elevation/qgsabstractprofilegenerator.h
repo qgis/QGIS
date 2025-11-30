@@ -165,14 +165,14 @@ class CORE_EXPORT QgsProfileIdentifyResults
     /**
      * Returns the associated map layer.
      */
-    QgsMapLayer *layer() const { return mLayer; }
+    [[nodiscard]] QgsMapLayer *layer() const { return mLayer; }
 
     /**
      * Returns a list of custom attributes representing the identify results.
      *
      * The interpretation of these is dependent on the QgsAbstractProfileResults subclass which generated the results.
      */
-    QVector<QVariantMap> results() const { return mResults; }
+    [[nodiscard]] QVector<QVariantMap> results() const { return mResults; }
 
   private:
 
@@ -212,23 +212,23 @@ class CORE_EXPORT QgsAbstractProfileResults
     /**
      * Returns the unique string identifier for the results type.
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     /**
      * Returns the map of distance (chainage) to height.
      */
-    virtual QMap< double, double > distanceToHeightMap() const = 0;
+    [[nodiscard]] virtual QMap< double, double > distanceToHeightMap() const = 0;
 
     /**
      * Returns a list of sampled points, with their calculated elevation
      * as the point z value.
      */
-    virtual QgsPointSequence sampledPoints() const = 0;
+    [[nodiscard]] virtual QgsPointSequence sampledPoints() const = 0;
 
     /**
      * Returns a list of geometries representing the calculated elevation results.
      */
-    virtual QVector< QgsGeometry > asGeometries() const = 0;
+    [[nodiscard]] virtual QVector< QgsGeometry > asGeometries() const = 0;
 
     /**
      * Returns a list of features representing the calculated elevation results.
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsAbstractProfileResults
     /**
      * Returns the range of the retrieved elevation values
      */
-    virtual QgsDoubleRange zRange() const = 0;
+    [[nodiscard]] virtual QgsDoubleRange zRange() const = 0;
 
     /**
      * Snaps a \a point to the generated elevation profile.
@@ -293,7 +293,7 @@ class CORE_EXPORT QgsProfileGenerationContext
      *
      * \see setMaximumErrorMapUnits()
      */
-    double maximumErrorMapUnits() const { return mMaxErrorMapUnits; }
+    [[nodiscard]] double maximumErrorMapUnits() const { return mMaxErrorMapUnits; }
 
     /**
      * Sets the maximum allowed \a error in the generated result, in profile curve map units.
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsProfileGenerationContext
      *
      * \see setMapUnitsPerDistancePixel()
      */
-    double mapUnitsPerDistancePixel() const { return mMapUnitsPerDistancePixel; }
+    [[nodiscard]] double mapUnitsPerDistancePixel() const { return mMapUnitsPerDistancePixel; }
 
     /**
      * Sets the number of map \a units per pixel in the distance dimension.
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsProfileGenerationContext
      *
      * \see setDistanceRange()
      */
-    QgsDoubleRange distanceRange() const { return mDistanceRange; }
+    [[nodiscard]] QgsDoubleRange distanceRange() const { return mDistanceRange; }
 
     /**
      * Sets the \a range of distances to include in the generation.
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsProfileGenerationContext
      *
      * \see setElevationRange()
      */
-    QgsDoubleRange elevationRange() const { return mElevationRange; }
+    [[nodiscard]] QgsDoubleRange elevationRange() const { return mElevationRange; }
 
     /**
      * Sets the \a range of elevations to include in the generation.
@@ -367,12 +367,12 @@ class CORE_EXPORT QgsProfileGenerationContext
      *
      * \see setDpi()
      */
-    double dpi() const { return mDpi; }
+    [[nodiscard]] double dpi() const { return mDpi; }
 
     /**
      * Converts a distance size from the specified units to pixels.
      */
-    double convertDistanceToPixels( double size, Qgis::RenderUnit unit ) const;
+    [[nodiscard]] double convertDistanceToPixels( double size, Qgis::RenderUnit unit ) const;
 
     bool operator==( const QgsProfileGenerationContext &other ) const;
     bool operator!=( const QgsProfileGenerationContext &other ) const;
@@ -424,12 +424,12 @@ class CORE_EXPORT QgsAbstractProfileGenerator
      * For generators associated with a map layer the source ID will match the layer's QgsMapLayer::id(). Other (non-map-layer) sources
      * will have a different unique ID with its own custom interpretation.gen
      */
-    virtual QString sourceId() const = 0;
+    [[nodiscard]] virtual QString sourceId() const = 0;
 
     /**
      * Returns flags which reflect how the profile generator operates.
      */
-    virtual Qgis::ProfileGeneratorFlags flags() const;
+    [[nodiscard]] virtual Qgis::ProfileGeneratorFlags flags() const;
 
     /**
      * Generate the profile (based on data stored in the class).
@@ -442,7 +442,7 @@ class CORE_EXPORT QgsAbstractProfileGenerator
     /**
      * Access to feedback object of the generator (may be NULLPTR)
      */
-    virtual QgsFeedback *feedback() const = 0;
+    [[nodiscard]] virtual QgsFeedback *feedback() const = 0;
 
     /**
      * Takes results from the generator.

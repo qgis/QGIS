@@ -32,10 +32,10 @@
 class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "wms" ); }
-    QString text() const override { return QStringLiteral( "WMS/WMTS" ); } // untranslatable string as acronym for this particular case. Use QObject::tr() otherwise
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 10; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QStringLiteral( "wms" ); }
+    [[nodiscard]] QString text() const override { return QStringLiteral( "WMS/WMTS" ); } // untranslatable string as acronym for this particular case. Use QObject::tr() otherwise
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 10; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsWMSSourceSelect( parent, fl, widgetMode );
@@ -45,10 +45,10 @@ class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
 class QgsXyzSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "xyz" ); }
-    QString text() const override { return QStringLiteral( "XYZ" ); } // untranslatable string as acronym for this particular case. Use QObject::tr() otherwise
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddXyzLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QStringLiteral( "xyz" ); }
+    [[nodiscard]] QString text() const override { return QStringLiteral( "XYZ" ); } // untranslatable string as acronym for this particular case. Use QObject::tr() otherwise
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddXyzLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsXyzSourceSelect( parent, fl, widgetMode );
@@ -60,7 +60,7 @@ class QgsXyzSourceWidgetProvider : public QgsProviderSourceWidgetProvider
   public:
     QgsXyzSourceWidgetProvider()
       : QgsProviderSourceWidgetProvider() {}
-    QString providerKey() const override
+    [[nodiscard]] QString providerKey() const override
     {
       return QStringLiteral( "xyz" );
     }

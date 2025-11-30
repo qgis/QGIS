@@ -55,7 +55,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * are always calculated (e.g., count).
      * \see setStatistics
      */
-    Qgis::StringStatistics statistics() const { return mStatistics; }
+    [[nodiscard]] Qgis::StringStatistics statistics() const { return mStatistics; }
 
     /**
      * Sets flags which specify which statistics will be calculated. Some statistics
@@ -130,54 +130,54 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * \param stat statistic to return
      * \returns calculated value of statistic
      */
-    QVariant statistic( Qgis::StringStatistic stat ) const;
+    [[nodiscard]] QVariant statistic( Qgis::StringStatistic stat ) const;
 
     /**
      * Returns the calculated count of values.
      */
-    int count() const { return mCount; }
+    [[nodiscard]] int count() const { return mCount; }
 
     /**
      * Returns the number of distinct string values.
      * \see distinctValues()
      */
-    int countDistinct() const { return mValues.count(); }
+    [[nodiscard]] int countDistinct() const { return mValues.count(); }
 
     /**
      * Returns the set of distinct string values.
      * \see countDistinct()
      */
-    QSet< QString > distinctValues() const;
+    [[nodiscard]] QSet< QString > distinctValues() const;
 
     /**
      * Returns the number of missing (null) string values.
      */
-    int countMissing() const { return mCountMissing; }
+    [[nodiscard]] int countMissing() const { return mCountMissing; }
 
     /**
      * Returns the minimum (non-null) string value.
      */
-    QString min() const { return mMin; }
+    [[nodiscard]] QString min() const { return mMin; }
 
     /**
      * Returns the maximum (non-null) string value.
      */
-    QString max() const { return mMax; }
+    [[nodiscard]] QString max() const { return mMax; }
 
     /**
      * Returns the minimum length of strings.
      */
-    int minLength() const { return mMinLength; }
+    [[nodiscard]] int minLength() const { return mMinLength; }
 
     /**
      * Returns the maximum length of strings.
      */
-    int maxLength() const { return mMaxLength; }
+    [[nodiscard]] int maxLength() const { return mMaxLength; }
 
     /**
       * Returns the mean length of strings.
       */
-    double meanLength() const { return mMeanLength; }
+    [[nodiscard]] double meanLength() const { return mMeanLength; }
 
     /**
      * Returns the least common string. The minority is the value with least occurrences in the list
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * \see majority
      * \since QGIS 3.14
      */
-    QString minority() const { return mMinority; }
+    [[nodiscard]] QString minority() const { return mMinority; }
 
     /**
      * Returns the most common string. The majority is the value with most occurrences in the list
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * \see minority
      * \since QGIS 3.14
      */
-    QString majority() const { return mMajority; }
+    [[nodiscard]] QString majority() const { return mMajority; }
 
     /**
      * Returns the friendly display name for a statistic

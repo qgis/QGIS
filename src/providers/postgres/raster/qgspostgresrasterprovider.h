@@ -257,13 +257,13 @@ class QgsPostgresRasterProviderMetadata : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsPostgresRasterProviderMetadata();
-    QIcon icon() const override;
-    QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
     QgsPostgresRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) override;
-    QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
+    [[nodiscard]] QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
 
     // These functions are very similar to functions in QgsPostgresProviderMetadata with some minor adjustments
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;

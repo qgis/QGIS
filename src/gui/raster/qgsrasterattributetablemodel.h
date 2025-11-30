@@ -41,7 +41,7 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     /**
      * Returns true if the Raster Attribute Table is editable.
      */
-    bool editable() const;
+    [[nodiscard]] bool editable() const;
 
     /**
      * Sets the Raster Attribute Table editable state to \a editable.
@@ -51,22 +51,22 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     /**
      * Returns TRUE if the Raster Attribute Table has color information.
      */
-    bool hasColor() const;
+    [[nodiscard]] bool hasColor() const;
 
     /**
      * Returns TRUE if the Raster Attribute Table has ramp information.
      */
-    bool hasRamp() const;
+    [[nodiscard]] bool hasRamp() const;
 
     /**
      * Returns all the header names, including the "virtual" color header if the Raster Attribute Table has color or ramp.
      */
-    QStringList headerNames() const;
+    [[nodiscard]] QStringList headerNames() const;
 
     /**
      * Returns the tooltip for the given \a section.
      */
-    QString headerTooltip( const int section ) const;
+    [[nodiscard]] QString headerTooltip( const int section ) const;
 
     /**
      * Checks if the Raster Attribute Table is valid, optionally returns validation errors in \a errorMessage.
@@ -140,16 +140,16 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     // Checks for rat not nullptr and editable state
     bool editChecks( QString *errorMessage = nullptr );
 
-    QString ratColorHeaderName() const;
+    [[nodiscard]] QString ratColorHeaderName() const;
 
     // QAbstractItemModel interface
   public:
-    int rowCount( const QModelIndex &parent ) const override;
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 };
 
 #endif // QGSRASTERATTRIBUTETABLEMODEL_H

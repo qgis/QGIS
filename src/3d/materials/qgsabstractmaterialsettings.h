@@ -76,7 +76,7 @@ class _3D_EXPORT QgsMaterialContext
      *
      * \see setIsSelected()
      */
-    bool isSelected() const { return mIsSelected; }
+    [[nodiscard]] bool isSelected() const { return mIsSelected; }
 
     /**
      * Sets whether the material should represent a selected state.
@@ -90,7 +90,7 @@ class _3D_EXPORT QgsMaterialContext
      *
      * \see setSelectionColor()
      */
-    QColor selectionColor() const { return mSelectedColor; }
+    [[nodiscard]] QColor selectionColor() const { return mSelectedColor; }
 
     /**
      * Sets the color for representing materials in a selected state.

@@ -53,9 +53,9 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog : public QDialog, private Ui::QgsNe
 
   private:
     //! Returns the selected geometry type
-    QString selectedType() const;
+    [[nodiscard]] QString selectedType() const;
     //! Returns the selected Z dimension and/or M measurement
-    QString selectedZM() const;
+    [[nodiscard]] QString selectedZM() const;
 
     //! Create a new database
     bool createDb();

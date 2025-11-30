@@ -46,7 +46,7 @@ class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
      * Gets the role by which the items should be sorted.
      * By default this will be Qt::DisplayRole
      */
-    int sortRole() const;
+    [[nodiscard]] int sortRole() const;
 
     bool operator<( const QTableWidgetItem &other ) const override;
 

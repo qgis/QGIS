@@ -49,24 +49,24 @@ class ANALYSIS_EXPORT QgsGraphEdge
      * Returns edge cost calculated using specified strategy
      * \param strategyIndex strategy index
      */
-    QVariant cost( int strategyIndex ) const;
+    [[nodiscard]] QVariant cost( int strategyIndex ) const;
 
     /**
      * Returns array of available strategies
      */
-    QVector<QVariant> strategies() const;
+    [[nodiscard]] QVector<QVariant> strategies() const;
 
     /**
      * Returns the index of the vertex at the end of this edge.
      * \see fromVertex()
      */
-    int toVertex() const;
+    [[nodiscard]] int toVertex() const;
 
     /**
      * Returns the index of the vertex at the start of this edge.
      * \see toVertex()
      */
-    int fromVertex() const;
+    [[nodiscard]] int fromVertex() const;
 
   private:
     QVector<QVariant> mStrategies;
@@ -100,18 +100,18 @@ class ANALYSIS_EXPORT QgsGraphVertex
      * Returns the incoming edge ids, i.e. edges which end at this node.
      * \see outgoingEdges()
      */
-    QgsGraphEdgeIds incomingEdges() const;
+    [[nodiscard]] QgsGraphEdgeIds incomingEdges() const;
 
     /**
      * Returns outgoing edge ids, i.e. edges which start at this node.
      * \see incomingEdges()
      */
-    QgsGraphEdgeIds outgoingEdges() const;
+    [[nodiscard]] QgsGraphEdgeIds outgoingEdges() const;
 
     /**
      * Returns point associated with graph vertex.
      */
-    QgsPointXY point() const;
+    [[nodiscard]] QgsPointXY point() const;
 
   private:
     QgsPointXY mCoordinate;
@@ -148,14 +148,14 @@ class ANALYSIS_EXPORT QgsGraph
     /**
      * Returns number of graph vertices
      */
-    int vertexCount() const;
+    [[nodiscard]] int vertexCount() const;
 
 #ifndef SIP_RUN
 
     /**
      * Returns the vertex at the given index.
      */
-    const QgsGraphVertex &vertex( int idx ) const;
+    [[nodiscard]] const QgsGraphVertex &vertex( int idx ) const;
 #else
 
     /**
@@ -214,14 +214,14 @@ class ANALYSIS_EXPORT QgsGraph
     /**
       * Returns number of graph edges
       */
-    int edgeCount() const;
+    [[nodiscard]] int edgeCount() const;
 
 #ifndef SIP_RUN
 
     /**
      * Returns the edge at the given index.
      */
-    const QgsGraphEdge &edge( int idx ) const;
+    [[nodiscard]] const QgsGraphEdge &edge( int idx ) const;
 #else
 
     /**
@@ -284,7 +284,7 @@ class ANALYSIS_EXPORT QgsGraph
      * Find vertex by associated point
      * \returns vertex index
      */
-    int findVertex( const QgsPointXY &pt ) const;
+    [[nodiscard]] int findVertex( const QgsPointXY &pt ) const;
 
 #ifndef SIP_RUN
 
@@ -299,7 +299,7 @@ class ANALYSIS_EXPORT QgsGraph
      *
      * \since QGIS 3.24
     */
-    int findOppositeEdge( int index ) const;
+    [[nodiscard]] int findOppositeEdge( int index ) const;
 #else
 
     /**
@@ -334,14 +334,14 @@ class ANALYSIS_EXPORT QgsGraph
      *
      * \since QGIS 3.24
      */
-    bool hasEdge( int index ) const;
+    [[nodiscard]] bool hasEdge( int index ) const;
 
     /**
      * Returns whether the vertex of the given index exists.
      *
      * \since QGIS 3.24
      */
-    bool hasVertex( int index ) const;
+    [[nodiscard]] bool hasVertex( int index ) const;
 
   protected:
 #ifndef SIP_RUN

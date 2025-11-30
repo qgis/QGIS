@@ -82,7 +82,7 @@ class CORE_EXPORT QgsMeshSpatialIndex
      * \note The intersection test is performed based on the face bounding boxes only, so it is necessary
      * to manually test the returned faces for exact geometry intersection when required.
      */
-    QList<int> intersects( const QgsRectangle &rectangle ) const;
+    [[nodiscard]] QList<int> intersects( const QgsRectangle &rectangle ) const;
 
     /**
      * Returns nearest neighbors to a \a point. The number of neighbours returned is specified
@@ -91,14 +91,14 @@ class CORE_EXPORT QgsMeshSpatialIndex
      * \note The nearest neighbour test is performed based on the face bounding boxes only,
      * so this method is not guaranteed to return the actual closest neighbours.
      */
-    QList<int> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
+    [[nodiscard]] QList<int> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
 
     /**
      * Returns the type of mesh elements that are indexed
      *
      * \since QGIS 3.14
      */
-    QgsMesh::ElementType elementType() const;
+    [[nodiscard]] QgsMesh::ElementType elementType() const;
 
     /**
      * Adds a face with \a faceIndex from the \a mesh in the spatial index

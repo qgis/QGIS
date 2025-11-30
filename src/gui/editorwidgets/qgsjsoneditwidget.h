@@ -71,7 +71,7 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     /**
      * \brief Returns the JSON text.
      */
-    QString jsonText() const;
+    [[nodiscard]] QString jsonText() const;
 
     /**
      * \brief Set the \a view mode.
@@ -116,7 +116,7 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     void refreshTreeViewItem( QTreeWidgetItem *treeWidgetItemParent, const QJsonValue &jsonValue );
     void refreshTreeViewItemValue( QTreeWidgetItem *treeWidgetItem, const QString &jsonValueString, const QColor &textColor );
 
-    QFont monospaceFont() const;
+    [[nodiscard]] QFont monospaceFont() const;
 
     QString mJsonText;
 

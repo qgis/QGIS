@@ -35,7 +35,7 @@ class QgsNullPaintEngine: public QPaintEngine
 
     bool begin( QPaintDevice * ) override { return true; };
     bool end() override { return true; };
-    QPaintEngine::Type type() const override { return QPaintEngine::User; };
+    [[nodiscard]] QPaintEngine::Type type() const override { return QPaintEngine::User; };
     void updateState( const QPaintEngineState & ) override { return; };
 
     void drawRects( const QRect *, int ) override { return; };
@@ -71,9 +71,9 @@ class CORE_EXPORT QgsNullPaintDevice: public QPaintDevice
 
     QgsNullPaintDevice();
 
-    QPaintEngine *paintEngine() const override;
+    [[nodiscard]] QPaintEngine *paintEngine() const override;
 
-    int metric( PaintDeviceMetric metric ) const override;
+    [[nodiscard]] int metric( PaintDeviceMetric metric ) const override;
 
     /**
      * Sets the \a size of the device in pixels.

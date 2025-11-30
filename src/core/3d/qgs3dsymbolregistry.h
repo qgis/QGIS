@@ -55,12 +55,12 @@ class CORE_EXPORT Qgs3DSymbolAbstractMetadata
     /**
      * Returns the unique symbol type string.
      */
-    QString type() const { return mType; }
+    [[nodiscard]] QString type() const { return mType; }
 
     /**
      * Returns the symbol's visible (translated) name.
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /**
      * Creates a new instance of this symbol type.
@@ -137,14 +137,14 @@ class CORE_EXPORT Qgs3DSymbolMetadata : public Qgs3DSymbolAbstractMetadata
     /**
      * Returns the symbol type's creation function.
      */
-    Qgs3DSymbolCreateFunc createFunction() const { return mCreateFunc; }
+    [[nodiscard]] Qgs3DSymbolCreateFunc createFunction() const { return mCreateFunc; }
 
     /**
      * Returns the symbol type's widget creation function.
      *
      * \see setWidgetFunction()
      */
-    Qgs3DSymbolWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    [[nodiscard]] Qgs3DSymbolWidgetFunc widgetFunction() const { return mWidgetFunc; }
 
     /**
      * Sets the symbol type's widget creation \a function.
@@ -191,12 +191,12 @@ class CORE_EXPORT Qgs3DSymbolRegistry
     Qgs3DSymbolRegistry &operator=( const Qgs3DSymbolRegistry &rh ) = delete;
 
     //! Returns metadata for specified symbol \a type. Returns NULLPTR if not found
-    Qgs3DSymbolAbstractMetadata *symbolMetadata( const QString &type ) const;
+    [[nodiscard]] Qgs3DSymbolAbstractMetadata *symbolMetadata( const QString &type ) const;
 
     /**
      * Returns a list of all available symbol types.
      */
-    QStringList symbolTypes() const;
+    [[nodiscard]] QStringList symbolTypes() const;
 
     //! Registers a new symbol type. Takes ownership of the \a metadata instance.
     bool addSymbolType( Qgs3DSymbolAbstractMetadata *metadata SIP_TRANSFER );
@@ -208,7 +208,7 @@ class CORE_EXPORT Qgs3DSymbolRegistry
      *
      * Returns NULLPTR if the specified type is not found in the registry.
      */
-    QgsAbstract3DSymbol *createSymbol( const QString &type ) const SIP_FACTORY;
+    [[nodiscard]] QgsAbstract3DSymbol *createSymbol( const QString &type ) const SIP_FACTORY;
 
     /**
      * Creates a new instance of the default 3D symbol for the specified geometry \a type.

@@ -51,7 +51,7 @@ class QgsLocaleAwareNumericLineEditDelegate : public QStyledItemDelegate
   public:
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
-    QString displayText( const QVariant &value, const QLocale &locale ) const override;
+    [[nodiscard]] QString displayText( const QVariant &value, const QLocale &locale ) const override;
 
     /**
      * Sets data type to \a dataType

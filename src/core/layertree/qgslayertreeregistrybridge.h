@@ -66,10 +66,10 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     void setEnabled( bool enabled ) { mEnabled = enabled; }
-    bool isEnabled() const { return mEnabled; }
+    [[nodiscard]] bool isEnabled() const { return mEnabled; }
 
     void setNewLayersVisible( bool enabled ) { mNewLayersVisible = enabled; }
-    bool newLayersVisible() const { return mNewLayersVisible; }
+    [[nodiscard]] bool newLayersVisible() const { return mNewLayersVisible; }
 
     /**
      * Set where the new layers should be inserted - can be used to follow current selection.
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
      * Returns the insertion point used to add layers to the tree
      * \since QGIS 3.42
      */
-    InsertionPoint layerInsertionPoint() const;
+    [[nodiscard]] InsertionPoint layerInsertionPoint() const;
 
     /**
      * Sets the insertion \a method used to add layers to the tree
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
      * Returns the insertion method used to add layers to the tree
      * \since QGIS 3.30
      */
-    Qgis::LayerTreeInsertionMethod layerInsertionMethod() const { return mInsertionMethod; }
+    [[nodiscard]] Qgis::LayerTreeInsertionMethod layerInsertionMethod() const { return mInsertionMethod; }
 
   signals:
 

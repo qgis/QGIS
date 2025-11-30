@@ -69,7 +69,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     void selectItems( const QList<QgsLayoutItem *> &items ) override;
     void setAtlasPreviewEnabled( bool enabled ) override;
     void setAtlasFeature( const QgsFeature &feature ) override;
-    bool atlasPreviewEnabled() const override;
+    [[nodiscard]] bool atlasPreviewEnabled() const override;
     void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true ) override;
     QMenu *layoutMenu() override;
     QMenu *editMenu() override;
@@ -85,7 +85,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock ) override;
     void removeDockWidget( QDockWidget *dock ) override;
     void activateTool( StandardTool tool ) override;
-    QgsLayoutDesignerInterface::ExportResults *lastExportResults() const override;
+    [[nodiscard]] QgsLayoutDesignerInterface::ExportResults *lastExportResults() const override;
   public slots:
 
     void close() override;
@@ -177,7 +177,7 @@ class QgsLayoutDesignerDialog : public QMainWindow, public Ui::QgsLayoutDesigner
      *
      * \see setAtlasPreviewEnabled()
      */
-    bool atlasPreviewEnabled() const;
+    [[nodiscard]] bool atlasPreviewEnabled() const;
 
     /**
      * Sets the specified feature as the current atlas feature
@@ -210,7 +210,7 @@ class QgsLayoutDesignerDialog : public QMainWindow, public Ui::QgsLayoutDesigner
      *
      * May be NULLPTR if no export has been performed in the designer.
      */
-    std::unique_ptr<QgsLayoutDesignerInterface::ExportResults> lastExportResults() const;
+    [[nodiscard]] std::unique_ptr<QgsLayoutDesignerInterface::ExportResults> lastExportResults() const;
 
     /**
      * Returns the keyboard shortcuts manager
@@ -552,7 +552,7 @@ class QgsLayoutDesignerDialog : public QMainWindow, public Ui::QgsLayoutDesigner
 
     void initializeRegistry();
 
-    bool containsWmsLayers() const;
+    [[nodiscard]] bool containsWmsLayers() const;
 
     //! Displays a warning because of possible min/max size in WMS
     void showWmsPrintingWarning();
@@ -593,7 +593,7 @@ class QgsLayoutDesignerDialog : public QMainWindow, public Ui::QgsLayoutDesigner
     QString reportTypeString();
     void updateActionNames( QgsMasterLayoutInterface::Type type );
 
-    QString defaultExportPath() const;
+    [[nodiscard]] QString defaultExportPath() const;
     void setLastExportPath( const QString &path ) const;
 
     bool checkBeforeExport();

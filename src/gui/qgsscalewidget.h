@@ -56,7 +56,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * Returns whether a button to set the scale from map canvas is shown or not.
      * \see setShowCurrentScaleButton()
      */
-    bool showCurrentScaleButton() const { return mShowCurrentScaleButton; }
+    [[nodiscard]] bool showCurrentScaleButton() const { return mShowCurrentScaleButton; }
 
     /**
      * Set the map \a canvas associated to the current button.
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * Returns the selected scale as a string, e.g. "1:150".
      * \see setScaleString()
      */
-    QString scaleString() const { return mScaleComboBox->scaleString(); }
+    [[nodiscard]] QString scaleString() const { return mScaleComboBox->scaleString(); }
 
     /**
      * Set the selected scale from a \a string, e.g. "1:150".
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see setScale()
      */
-    double scale() const { return mScaleComboBox->scale(); }
+    [[nodiscard]] double scale() const { return mScaleComboBox->scale(); }
 
     /**
      * Returns TRUE if the widget is currently set to a "null" value.
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * \see setNull()
      * \since QGIS 3.8
      */
-    bool isNull() const;
+    [[nodiscard]] bool isNull() const;
 
     /**
      * Returns the minimum scale, or 0 if no minimum scale set.
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * Any scale lower than the minimum scale will automatically be converted to the minimum scale.
      * Except for 0 which is always allowed.
      */
-    double minScale() const { return mScaleComboBox->minScale(); }
+    [[nodiscard]] double minScale() const { return mScaleComboBox->minScale(); }
 
     /**
      * Helper function to convert a \a scale double to scale string.
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * \see setNull()
      * \since QGIS 3.8
      */
-    bool allowNull() const;
+    [[nodiscard]] bool allowNull() const;
 
     /**
      * Sets the list of predefined \a scales to show in the widget. List elements

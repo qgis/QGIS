@@ -33,16 +33,16 @@ class QgsGCPCanvasItem final : public QgsMapCanvasItem
     void paint( QPainter *p ) override;
 
     //! handler for manual updating of position and size
-    QRectF boundingRect() const override;
+    [[nodiscard]] QRectF boundingRect() const override;
 
-    QPainterPath shape() const override;
+    [[nodiscard]] QPainterPath shape() const override;
 
     void updatePosition() override;
 
     //! Calls prepareGeometryChange()
     void checkBoundingRectChange();
 
-    QgsMapCanvas *canvas() const { return mMapCanvas; }
+    [[nodiscard]] QgsMapCanvas *canvas() const { return mMapCanvas; }
 
     void setPointColor( const QColor &color );
 
@@ -59,7 +59,7 @@ class QgsGCPCanvasItem final : public QgsMapCanvasItem
 
     void drawResidualArrow( QPainter *p, const QgsRenderContext &context );
     //! Calculates scale factor for residual display
-    double residualToScreenFactor() const;
+    [[nodiscard]] double residualToScreenFactor() const;
     //! Calculates pixel size for a font point size
     double fontSizePainterUnits( double points, const QgsRenderContext &c );
 };

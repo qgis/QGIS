@@ -48,13 +48,13 @@ class GUI_EXPORT QgsModelSnapper
      * Returns the snap tolerance (in pixels) to use when snapping.
      * \see setSnapTolerance()
      */
-    int snapTolerance() const { return mTolerance; }
+    [[nodiscard]] int snapTolerance() const { return mTolerance; }
 
     /**
      * Returns TRUE if snapping to grid is enabled.
      * \see setSnapToGrid()
      */
-    bool snapToGrid() const { return mSnapToGrid; }
+    [[nodiscard]] bool snapToGrid() const { return mSnapToGrid; }
 
     /**
      * Sets whether snapping to grid is \a enabled.

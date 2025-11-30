@@ -166,12 +166,12 @@ class CORE_EXPORT QgsTiledSceneIndex
     /**
      * Returns TRUE if the index is valid.
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Returns the root tile for the index.
      */
-    QgsTiledSceneTile rootTile() const;
+    [[nodiscard]] QgsTiledSceneTile rootTile() const;
 
     /**
      * Returns the tile with matching \a id, or an invalid tile if the matching tile is not available.
@@ -184,14 +184,14 @@ class CORE_EXPORT QgsTiledSceneIndex
      *
      * \see childTileIds()
      */
-    long long parentTileId( long long id ) const;
+    [[nodiscard]] long long parentTileId( long long id ) const;
 
     /**
      * Returns a list of the tile IDs of any children for the tile with matching \a id.
      *
      * \see parentTileId()
      */
-    QVector< long long > childTileIds( long long id ) const;
+    [[nodiscard]] QVector< long long > childTileIds( long long id ) const;
 
     /**
      * Returns the list of tile IDs which match the given \a request.
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsTiledSceneIndex
      *
      * \see fetchHierarchy()
      */
-    Qgis::TileChildrenAvailability childAvailability( long long id ) const;
+    [[nodiscard]] Qgis::TileChildrenAvailability childAvailability( long long id ) const;
 
     /**
      * Populates the tile with the given \a id by fetching any sub datasets attached to the tile.

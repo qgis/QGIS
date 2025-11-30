@@ -117,7 +117,7 @@ namespace QgsWmts
        * \returns An integer
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      int toInt() const;
+      [[nodiscard]] int toInt() const;
 
       /**
        * Raises an error in case of an invalid conversion.
@@ -188,38 +188,38 @@ namespace QgsWmts
        * Returns VERSION parameter if defined or its default value.
        * \returns version
        */
-      QgsProjectVersion versionAsNumber() const;
+      [[nodiscard]] QgsProjectVersion versionAsNumber() const;
 
       /**
        * Returns LAYER parameter as a string.
        * \returns layer parameter as string
        */
-      QString layer() const;
+      [[nodiscard]] QString layer() const;
 
       /**
        * Returns FORMAT parameter as a string.
        * \returns Format parameter as string
        */
-      QString formatAsString() const;
+      [[nodiscard]] QString formatAsString() const;
 
       /**
        * Returns format. If the FORMAT parameter is not used, then the
        * default value is NONE.
        * \returns format
        */
-      Format format() const;
+      [[nodiscard]] Format format() const;
 
       /**
        * Returns TILEMATRIXSET parameter as a string.
        * \returns tileMatrixSet parameter as string
        */
-      QString tileMatrixSet() const;
+      [[nodiscard]] QString tileMatrixSet() const;
 
       /**
        * Returns TILEMATRIX parameter as a string.
        * \returns tileMatrix parameter as string
        */
-      QString tileMatrix() const;
+      [[nodiscard]] QString tileMatrix() const;
 
       /**
        * Returns TILEMATRIX parameter as an int or its default value if not
@@ -228,13 +228,13 @@ namespace QgsWmts
        * \returns tileMatrix parameter
        * \throws QgsBadRequestException
        */
-      int tileMatrixAsInt() const;
+      [[nodiscard]] int tileMatrixAsInt() const;
 
       /**
        * Returns TILEROW parameter as a string.
        * \returns tileRow parameter as string
        */
-      QString tileRow() const;
+      [[nodiscard]] QString tileRow() const;
 
       /**
        * Returns TILEROW parameter as an int or its default value if not
@@ -243,13 +243,13 @@ namespace QgsWmts
        * \returns tileRow parameter
        * \throws QgsBadRequestException
        */
-      int tileRowAsInt() const;
+      [[nodiscard]] int tileRowAsInt() const;
 
       /**
        * Returns TILECOL parameter as a string.
        * \returns tileCol parameter as string
        */
-      QString tileCol() const;
+      [[nodiscard]] QString tileCol() const;
 
       /**
        * Returns TILECOL parameter as an int or its default value if not
@@ -258,33 +258,33 @@ namespace QgsWmts
        * \returns tileCol parameter
        * \throws QgsBadRequestException
        */
-      int tileColAsInt() const;
+      [[nodiscard]] int tileColAsInt() const;
 
       /**
        * Returns INFO_FORMAT parameter as a string.
        * \returns INFO_FORMAT parameter as string
        */
-      QString infoFormatAsString() const;
+      [[nodiscard]] QString infoFormatAsString() const;
 
       /**
        * Returns infoFormat. If the INFO_FORMAT parameter is not used, then the
        * default value is text/plain.
        * \returns infoFormat
        */
-      Format infoFormat() const;
+      [[nodiscard]] Format infoFormat() const;
 
       /**
        * Returns the infoFormat version for GML. If the INFO_FORMAT is not GML,
        * then the default value is -1.
        * \returns infoFormat version
        */
-      int infoFormatVersion() const;
+      [[nodiscard]] int infoFormatVersion() const;
 
       /**
        * Returns I parameter or an empty string if not defined.
        * \returns i parameter
        */
-      QString i() const;
+      [[nodiscard]] QString i() const;
 
       /**
        * Returns I parameter as an int or its default value if not
@@ -293,13 +293,13 @@ namespace QgsWmts
        * \returns i parameter
        * \throws QgsBadRequestException
        */
-      int iAsInt() const;
+      [[nodiscard]] int iAsInt() const;
 
       /**
        * Returns J parameter or an empty string if not defined.
        * \returns j parameter
        */
-      QString j() const;
+      [[nodiscard]] QString j() const;
 
       /**
        * Returns J parameter as an int or its default value if not
@@ -308,7 +308,7 @@ namespace QgsWmts
        * \returns j parameter
        * \throws QgsBadRequestException
        */
-      int jAsInt() const;
+      [[nodiscard]] int jAsInt() const;
 
     private:
       bool loadParameter( const QString &key, const QString &value ) override;

@@ -104,7 +104,7 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
      */
     QgsTaskManagerStatusBarWidget( QgsTaskManager *manager, QWidget *parent = nullptr );
 
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
   protected:
     void changeEvent( QEvent *event ) override;
@@ -164,19 +164,19 @@ class GUI_EXPORT QgsTaskManagerModel : public QAbstractItemModel
     explicit QgsTaskManagerModel( QgsTaskManager *manager, QObject *parent = nullptr );
 
     //reimplemented QAbstractItemModel methods
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**
      * Returns the task associated with a specified model index, or NULLPTR if no
      * task was found.
      */
-    QgsTask *indexToTask( const QModelIndex &index ) const;
+    [[nodiscard]] QgsTask *indexToTask( const QModelIndex &index ) const;
 
   private slots:
 
@@ -198,8 +198,8 @@ class GUI_EXPORT QgsTaskManagerModel : public QAbstractItemModel
     QList<long> mRowToTaskIdList;
 
 
-    int idToRow( long id ) const;
-    QModelIndex idToIndex( long id, int column ) const;
+    [[nodiscard]] int idToRow( long id ) const;
+    [[nodiscard]] QModelIndex idToIndex( long id, int column ) const;
     static QString createTooltip( QgsTask *task, ToolTipType type );
 
     friend class QgsTaskManagerStatusBarWidget;
@@ -222,7 +222,7 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
     QgsTaskStatusWidget( QWidget *parent = nullptr, QgsTask::TaskStatus status = QgsTask::Queued, bool canCancel = true );
 
 
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
     //bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index ) override;
 

@@ -52,16 +52,16 @@ class CORE_EXPORT QgsLocatorModelBridge : public QObject
     Q_INVOKABLE void performSearch( const QString &text );
 
     //! Returns the locator
-    QgsLocator *locator() const;
+    [[nodiscard]] QgsLocator *locator() const;
 
     //! Returns the proxy model
-    Q_INVOKABLE QgsLocatorProxyModel *proxyModel() const;
+    Q_INVOKABLE [[nodiscard]] QgsLocatorProxyModel *proxyModel() const;
 
     //! Returns TRUE if some text to be search is pending in the queue
-    bool hasQueueRequested() const;
+    [[nodiscard]] bool hasQueueRequested() const;
 
     //! Returns TRUE if the a search is currently running
-    bool isRunning() const;
+    [[nodiscard]] bool isRunning() const;
 
     //! Triggers the result at given \a index and with optional \a actionId if an additional action was triggered
     void triggerResult( const QModelIndex &index,  const int actionId = -1 );
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsLocatorModelBridge : public QObject
      * \see setTransformContext()
      * \since QGIS 3.18
      */
-    QgsCoordinateTransformContext transformContext() const { return mTransformContext; }
+    [[nodiscard]] QgsCoordinateTransformContext transformContext() const { return mTransformContext; }
 
     /**
      * Sets the coordinate transform \a context, which should be used whenever the

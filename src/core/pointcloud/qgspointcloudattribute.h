@@ -60,24 +60,24 @@ class CORE_EXPORT QgsPointCloudAttribute
     QgsPointCloudAttribute( const QString &name, DataType type );
 
     //! Returns name of the attribute
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     //! Returns size of the attribute in bytes
-    int size() const { return mSize; }
+    [[nodiscard]] int size() const { return mSize; }
 
     /**
      * Returns the data type
      *
      * \see variantType()
      */
-    DataType type() const { return mType; }
+    [[nodiscard]] DataType type() const { return mType; }
 
     /**
      * Returns the most suitable equivalent QVariant data type to this attribute type.
      *
      * \see type()
      */
-    QMetaType::Type variantType() const;
+    [[nodiscard]] QMetaType::Type variantType() const;
 
     /**
      * Returns the type to use when displaying this field.
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsPointCloudAttribute
      *
      * \see type()
      */
-    QString displayType() const;
+    [[nodiscard]] QString displayType() const;
 
     /**
      * Returns the attribute's value as a double for data pointed to by \a ptr
@@ -156,17 +156,17 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
     void extend( const QgsPointCloudAttributeCollection &otherCollection, const QSet<QString> &matchingNames );
 
     //! Returns all attributes
-    QVector<QgsPointCloudAttribute> attributes() const;
+    [[nodiscard]] QVector<QgsPointCloudAttribute> attributes() const;
 
     /**
      * Returns the number of attributes present in the collection.
      */
-    int count() const { return mAttributes.size(); }
+    [[nodiscard]] int count() const { return mAttributes.size(); }
 
     /**
      * Returns the attribute at the specified \a index.
      */
-    const QgsPointCloudAttribute &at( int index ) const { return mAttributes.at( index ); }
+    [[nodiscard]] const QgsPointCloudAttribute &at( int index ) const { return mAttributes.at( index ); }
 
     /**
      * Finds the attribute with the name
@@ -180,15 +180,15 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
      *
      * Returns -1 if a matching attribute was not found.
      */
-    int indexOf( const QString &name ) const;
+    [[nodiscard]] int indexOf( const QString &name ) const;
 
     //! Returns total size of record
-    int pointRecordSize() const { return mSize; }
+    [[nodiscard]] int pointRecordSize() const { return mSize; }
 
     /**
      * Converts the attribute collection to an equivalent QgsFields collection.
      */
-    QgsFields toFields() const;
+    [[nodiscard]] QgsFields toFields() const;
 
   private:
     int mSize = 0;

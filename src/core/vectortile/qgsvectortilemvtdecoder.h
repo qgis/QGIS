@@ -49,10 +49,10 @@ class CORE_EXPORT QgsVectorTileMVTDecoder
     bool decode( const QgsVectorTileRawData &rawTileData );
 
     //! Returns a list of sub-layer names in a tile. It can only be called after a successful decode()
-    QStringList layers() const;
+    [[nodiscard]] QStringList layers() const;
 
     //! Returns a list of all field names in a tile. It can only be called after a successful decode()
-    QStringList layerFieldNames( const QString &layerName ) const;
+    [[nodiscard]] QStringList layerFieldNames( const QString &layerName ) const;
 
     /**
      * Returns decoded features grouped by sub-layers. It can only be called after a successful decode()

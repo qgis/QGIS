@@ -79,7 +79,7 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
      * Returns the connection string of the transaction
      * \since QGIS 3.26
      */
-    QString connectionString() const;
+    [[nodiscard]] QString connectionString() const;
 
     /**
      * Add the \a layer to the transaction. The connection string
@@ -155,12 +155,12 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     /**
      * returns savepoints
      */
-    QList< QString > savePoints() const { return QList< QString >::fromVector( mSavepoints ); }
+    [[nodiscard]] QList< QString > savePoints() const { return QList< QString >::fromVector( mSavepoints ); }
 
     /**
      * returns the last created savepoint
      */
-    bool lastSavePointIsDirty() const { return mLastSavePointIsDirty; }
+    [[nodiscard]] bool lastSavePointIsDirty() const { return mLastSavePointIsDirty; }
 
 ///@cond PRIVATE
     // For internal use only, or by QgsTransactionGroup

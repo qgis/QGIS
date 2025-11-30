@@ -106,8 +106,8 @@ struct QgsTracerGraph
     //! coordinates of the edge (including endpoints)
     QVector<QgsPointXY> coords;
 
-    int otherVertex( int v0 ) const { return v1 == v0 ? v2 : v1; }
-    double weight() const { return distance2D( coords ); }
+    [[nodiscard]] int otherVertex( int v0 ) const { return v1 == v0 ? v2 : v1; }
+    [[nodiscard]] double weight() const { return distance2D( coords ); }
   };
 
   struct V

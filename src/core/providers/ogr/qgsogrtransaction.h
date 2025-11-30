@@ -42,7 +42,7 @@ class QgsOgrTransaction : public QgsTransaction
      */
     bool executeSql( const QString &sql, QString &error, bool isDirty = false, const QString &name = QString() ) override;
 
-    QgsOgrDatasetSharedPtr sharedDS() const { return mSharedDS; }
+    [[nodiscard]] QgsOgrDatasetSharedPtr sharedDS() const { return mSharedDS; }
 
   private:
 

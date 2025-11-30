@@ -51,7 +51,7 @@ class CORE_EXPORT QgsNumericFormatRegistry
     /**
      * Returns a list of the format IDs currently contained in the registry.
      */
-    QStringList formats() const;
+    [[nodiscard]] QStringList formats() const;
 
     /**
      * Adds a new \a format to the registry.
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsNumericFormatRegistry
      *
      * The caller takes ownership of the returned object.
      */
-    QgsNumericFormat *format( const QString &id ) const SIP_TRANSFERBACK;
+    [[nodiscard]] QgsNumericFormat *format( const QString &id ) const SIP_TRANSFERBACK;
 
     /**
      * Creates a new numeric format by \a id, using the supplied \a configuration. If there is no such \a id registered,
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsNumericFormatRegistry
      *
      * The caller takes ownership of the returned object.
      */
-    QgsNumericFormat *create( const QString &id, const QVariantMap &configuration, const QgsReadWriteContext &context ) const SIP_TRANSFERBACK;
+    [[nodiscard]] QgsNumericFormat *create( const QString &id, const QVariantMap &configuration, const QgsReadWriteContext &context ) const SIP_TRANSFERBACK;
 
     /**
      * Creates a new numeric format from an XML \a element. If there is no matching format ID registered,
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsNumericFormatRegistry
      *
      * The caller takes ownership of the returned object.
      */
-    QgsNumericFormat *createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) const SIP_TRANSFERBACK;
+    [[nodiscard]] QgsNumericFormat *createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) const SIP_TRANSFERBACK;
 
     /**
      * Returns a basic numeric formatter which can be used
@@ -95,17 +95,17 @@ class CORE_EXPORT QgsNumericFormatRegistry
      *
      * The caller takes ownership of the returned object.
      */
-    QgsNumericFormat *fallbackFormat() const SIP_FACTORY;
+    [[nodiscard]] QgsNumericFormat *fallbackFormat() const SIP_FACTORY;
 
     /**
      * Returns the translated, user-visible name for the format with matching \a id.
      */
-    QString visibleName( const QString &id ) const;
+    [[nodiscard]] QString visibleName( const QString &id ) const;
 
     /**
      * Returns the sorting key for the format with matching \a id.
      */
-    int sortKey( const QString &id ) const;
+    [[nodiscard]] int sortKey( const QString &id ) const;
 
   private:
     QHash<QString, QgsNumericFormat *> mFormats;

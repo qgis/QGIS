@@ -41,7 +41,7 @@ class CORE_EXPORT Qgs3DRendererAbstractMetadata
     /**
      * Returns unique identifier of the 3D renderer class
      */
-    QString type() const;
+    [[nodiscard]] QString type() const;
 
     /**
      * Returns new instance of the renderer given the DOM element. Returns NULLPTR on error.
@@ -89,12 +89,12 @@ class CORE_EXPORT Qgs3DRendererRegistry
     /**
      * Returns metadata for a 3D renderer type (may be used to create a new instance of the type)
      */
-    Qgs3DRendererAbstractMetadata *rendererMetadata( const QString &type ) const;
+    [[nodiscard]] Qgs3DRendererAbstractMetadata *rendererMetadata( const QString &type ) const;
 
     /**
      * Returns a list of all available 3D renderer types.
      */
-    QStringList renderersList() const;
+    [[nodiscard]] QStringList renderersList() const;
 
   private:
     QMap<QString, Qgs3DRendererAbstractMetadata *> mRenderers;

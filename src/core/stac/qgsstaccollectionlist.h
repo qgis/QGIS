@@ -52,7 +52,7 @@ class CORE_EXPORT QgsStacCollectionList
      * Returns the collections
      * Ownership is not transferred
      */
-    QVector< QgsStacCollection * > collections() const;
+    [[nodiscard]] QVector< QgsStacCollection * > collections() const;
 
     /**
      * Returns the collections
@@ -61,33 +61,33 @@ class CORE_EXPORT QgsStacCollectionList
     QVector< QgsStacCollection * > takeCollections();
 
     //! Returns the number of returned collections
-    int numberReturned() const;
+    [[nodiscard]] int numberReturned() const;
 
     /**
      * Returns the total number of available collections
      * If this information was not available by the STAC server, -1 is returned
      */
-    int numberMatched() const;
+    [[nodiscard]] int numberMatched() const;
 
     /**
      * Returns the url of the collections' "self" link
      */
-    QUrl url() const;
+    [[nodiscard]] QUrl url() const;
 
     /**
      * Returns the url of the collections' "root" link
      */
-    QUrl rootUrl() const;
+    [[nodiscard]] QUrl rootUrl() const;
 
     /**
      * Returns the url of the collections' "next" link
      */
-    QUrl nextUrl() const;
+    [[nodiscard]] QUrl nextUrl() const;
 
     /**
      * Returns the url of the collections' "prev" link
      */
-    QUrl prevUrl() const;
+    [[nodiscard]] QUrl prevUrl() const;
 
   private:
     QVector< QgsStacCollection * > mCollections;

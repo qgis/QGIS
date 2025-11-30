@@ -43,7 +43,7 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
     State validate( QString &s SIP_CONSTRAINED SIP_INOUT, int &i SIP_INOUT ) const override;
     void fixup( QString &s SIP_CONSTRAINED ) const override;
 
-    QString dateFormat() const { return mDateFormat; }
+    [[nodiscard]] QString dateFormat() const { return mDateFormat; }
 
   private:
     // Disables copy constructing

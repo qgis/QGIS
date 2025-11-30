@@ -50,7 +50,7 @@ class CORE_EXPORT QgsImageSizeCacheEntry : public QgsAbstractContentCacheEntry
     //! Original image size
     QSize size;
 
-    int dataSize() const override;
+    [[nodiscard]] int dataSize() const override;
     void dump() const override;
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
 
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
      */
     int nextFrameDelay = -1;
 
-    int dataSize() const override;
+    [[nodiscard]] int dataSize() const override;
     void dump() const override;
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
 

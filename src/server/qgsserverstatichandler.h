@@ -40,12 +40,12 @@ class SERVER_EXPORT QgsServerStaticHandler : public QgsServerOgcApiHandler
     void handleRequest( const QgsServerApiContext &context ) const override;
 
     // QgsServerOgcApiHandler interface
-    QRegularExpression path() const override { return mPathRegExp; }
-    std::string operationId() const override { return "static"; }
-    std::string summary() const override { return "Serves static files"; }
-    std::string description() const override { return "Serves static files"; }
-    std::string linkTitle() const override { return "Serves static files"; }
-    QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
+    [[nodiscard]] QRegularExpression path() const override { return mPathRegExp; }
+    [[nodiscard]] std::string operationId() const override { return "static"; }
+    [[nodiscard]] std::string summary() const override { return "Serves static files"; }
+    [[nodiscard]] std::string description() const override { return "Serves static files"; }
+    [[nodiscard]] std::string linkTitle() const override { return "Serves static files"; }
+    [[nodiscard]] QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
 
   private:
     QRegularExpression mPathRegExp;

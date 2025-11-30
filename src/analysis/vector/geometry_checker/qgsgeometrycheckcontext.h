@@ -82,7 +82,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckContext
      *
      * \since QGIS 3.10
      */
-    const QgsProject *project() const;
+    [[nodiscard]] const QgsProject *project() const;
 
   private:
     const QgsProject *mProject;

@@ -62,12 +62,12 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
     /**
      * Returns the node's unique identifier.
      */
-    QString nodeId() const { return mId; };
+    [[nodiscard]] QString nodeId() const { return mId; };
 
     /**
      * Returns the node's name.
      */
-    QString name() const override;
+    [[nodiscard]] QString name() const override;
 
     /**
      * Sets the node's name.
@@ -84,9 +84,9 @@ class CORE_EXPORT QgsLayerTreeCustomNode : public QgsLayerTreeNode
      */
     void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
 
-    QString dump() const override;
+    [[nodiscard]] QString dump() const override;
 
-    QgsLayerTreeCustomNode *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsLayerTreeCustomNode *clone() const override SIP_FACTORY;
 
     void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
 

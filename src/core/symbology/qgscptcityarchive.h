@@ -48,14 +48,14 @@ class CORE_EXPORT QgsCptCityArchive
     QgsCptCityArchive &operator=( const QgsCptCityArchive &rh ) = delete;
 
     // basic dir info
-    QString baseDir() const;
+    [[nodiscard]] QString baseDir() const;
     static QString baseDir( QString archiveName );
     static QString defaultBaseDir();
     void setBaseDir( const QString &dirName ) { mBaseDir = dirName; }
 
     // collection + selection info
-    QString copyingFileName( const QString &dirName ) const;
-    QString descFileName( const QString &dirName ) const;
+    [[nodiscard]] QString copyingFileName( const QString &dirName ) const;
+    [[nodiscard]] QString descFileName( const QString &dirName ) const;
     static QString findFileName( const QString &target, const QString &startDir, const QString &baseDir );
     static QMap< QString, QString > copyingInfo( const QString &fileName );
     static QMap< QString, QString > description( const QString &fileName );
@@ -64,8 +64,8 @@ class CORE_EXPORT QgsCptCityArchive
 
     // archive management
     //! Returns TRUE if archive is empty
-    bool isEmpty() const;
-    QString archiveName() const { return mArchiveName; }
+    [[nodiscard]] bool isEmpty() const;
+    [[nodiscard]] QString archiveName() const { return mArchiveName; }
     static void initArchives( bool loadAll = false );
     static void initArchive( const QString &archiveName, const QString &archiveBaseDir );
     static void initDefaultArchive();
@@ -74,8 +74,8 @@ class CORE_EXPORT QgsCptCityArchive
     static QMap< QString, QgsCptCityArchive * > archiveRegistry();
 
     // items
-    QVector< QgsCptCityDataItem * > rootItems() const { return mRootItems; }
-    QVector< QgsCptCityDataItem * > selectionItems() const { return mSelectionItems; }
+    [[nodiscard]] QVector< QgsCptCityDataItem * > rootItems() const { return mRootItems; }
+    [[nodiscard]] QVector< QgsCptCityDataItem * > selectionItems() const { return mSelectionItems; }
 
   private:
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     /**
      * Returns the total count of "leaf" items (all children which are end nodes).
      */
-    virtual int leafCount() const;
+    [[nodiscard]] virtual int leafCount() const;
 
     //
 
@@ -192,21 +192,21 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 
     // members
 
-    Type type() const { return mType; }
-    QgsCptCityDataItem *parent() const { return mParent; }
+    [[nodiscard]] Type type() const { return mType; }
+    [[nodiscard]] QgsCptCityDataItem *parent() const { return mParent; }
     void setParent( QgsCptCityDataItem *parent ) { mParent = parent; }
-    QVector<QgsCptCityDataItem *> children() const { return mChildren; }
+    [[nodiscard]] QVector<QgsCptCityDataItem *> children() const { return mChildren; }
     virtual QIcon icon() { return mIcon; }
     virtual QIcon icon( QSize size ) { Q_UNUSED( size ) return icon(); }
-    QString name() const { return mName; }
-    QString path() const { return mPath; }
-    QString info() const { return mInfo; }
-    QString shortInfo() const { return mShortInfo; }
+    [[nodiscard]] QString name() const { return mName; }
+    [[nodiscard]] QString path() const { return mPath; }
+    [[nodiscard]] QString info() const { return mInfo; }
+    [[nodiscard]] QString shortInfo() const { return mShortInfo; }
 
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     void setToolTip( const QString &msg ) { mToolTip = msg; }
-    QString toolTip() const { return mToolTip; }
+    [[nodiscard]] QString toolTip() const { return mToolTip; }
 
     bool isValid() { return mValid; }
 
@@ -291,10 +291,10 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
     // --- reimplemented from QgsCptCityDataItem ---
 
     bool equal( const QgsCptCityDataItem *other ) override;
-    int leafCount() const override { return 1; }
+    [[nodiscard]] int leafCount() const override { return 1; }
 
     // --- New virtual methods for layer item derived classes ---
-    const QgsCptCityColorRamp &ramp() const { return mRamp; }
+    [[nodiscard]] const QgsCptCityColorRamp &ramp() const { return mRamp; }
     QIcon icon() override;
     QIcon icon( QSize size ) override;
     void init();
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
 
   protected:
     QMap< QString, QStringList > rampsMap();
-    QStringList dirEntries() const;
+    [[nodiscard]] QStringList dirEntries() const;
     QMap< QString, QStringList > mRampsMap;
 };
 
@@ -366,7 +366,7 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 
     bool equal( const QgsCptCityDataItem *other ) override;
 
-    QStringList selectionsList() const { return mSelectionsList; }
+    [[nodiscard]] QStringList selectionsList() const { return mSelectionsList; }
 
   protected:
     void parseXml();
@@ -414,23 +414,23 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     ~QgsCptCityBrowserModel() override;
 
     // implemented methods from QAbstractItemModel for read-only access
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
 
     QModelIndex findItem( QgsCptCityDataItem *item, QgsCptCityDataItem *parent = nullptr ) const;
 
-    QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
 
     /**
      * Returns the data item corresponding to the given index.
      */
-    QgsCptCityDataItem *dataItem( const QModelIndex &idx ) const;
+    [[nodiscard]] QgsCptCityDataItem *dataItem( const QModelIndex &idx ) const;
 
-    bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
 
     //! Reload the whole model
     void reload();
@@ -446,7 +446,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
 
     void connectItem( QgsCptCityDataItem *item );
 
-    bool canFetchMore( const QModelIndex &parent ) const override;
+    [[nodiscard]] bool canFetchMore( const QModelIndex &parent ) const override;
     void fetchMore( const QModelIndex &parent ) override;
 
   public slots:

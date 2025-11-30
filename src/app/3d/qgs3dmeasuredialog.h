@@ -92,10 +92,10 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     Qgis::DistanceUnit mDisplayedDistanceUnit = Qgis::DistanceUnit::Unknown;
 
     //! Convert from mMapDistanceUnit to mDisplayedDistanceUnit
-    double convertLength( double length, Qgis::DistanceUnit toUnit ) const;
+    [[nodiscard]] double convertLength( double length, Qgis::DistanceUnit toUnit ) const;
 
     //! formats distance to most appropriate units
-    QString formatDistance( double distance ) const;
+    [[nodiscard]] QString formatDistance( double distance ) const;
 
     //! Show the help page of the 3D measurement tool
     void showHelp();

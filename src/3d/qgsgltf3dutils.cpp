@@ -199,7 +199,7 @@ class TinyGltfTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGe
       return mImagePtr;
     }
 
-    qintptr id() const override
+    [[nodiscard]] qintptr id() const override
     {
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<TinyGltfTextureImageDataGenerator>::id );
@@ -242,7 +242,7 @@ class TinyGltfTextureImage : public Qt3DRender::QAbstractTextureImage
       imgDataPtr->setTarget( QOpenGLTexture::Target2D );
     }
 
-    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override
+    [[nodiscard]] Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override
     {
       return Qt3DRender::QTextureImageDataGeneratorPtr( new TinyGltfTextureImageDataGenerator( imgDataPtr ) );
     }

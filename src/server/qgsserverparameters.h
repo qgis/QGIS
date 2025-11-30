@@ -56,18 +56,18 @@ class SERVER_EXPORT QgsServerParameterDefinition
     /**
      * Returns the type of the parameter as a string.
      */
-    QString typeName() const;
+    [[nodiscard]] QString typeName() const;
 
     /**
      * Returns TRUE if the parameter is valid, FALSE otherwise.
      */
-    virtual bool isValid() const;
+    [[nodiscard]] virtual bool isValid() const;
 
     /**
      * Converts the parameter into a string. If \a defaultValue is true
      * and current value is empty, then the default value is returned.
      */
-    QString toString( bool defaultValue = false ) const;
+    [[nodiscard]] QString toString( bool defaultValue = false ) const;
 
     /**
      * Converts the parameter into a list of strings
@@ -75,7 +75,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
      * \param skipEmptyParts To use QString::SkipEmptyParts for splitting
      * \returns A list of strings
      */
-    QStringList toStringList( char delimiter = ',', bool skipEmptyParts = true ) const;
+    [[nodiscard]] QStringList toStringList( char delimiter = ',', bool skipEmptyParts = true ) const;
 
     /**
      * Converts the parameter into a list of integers.
@@ -118,14 +118,14 @@ class SERVER_EXPORT QgsServerParameterDefinition
      * \returns A list of strings
      * \since QGIS 3.24
      */
-    QStringList toOgcFilterList() const;
+    [[nodiscard]] QStringList toOgcFilterList() const;
 
     /**
      * Converts the parameter into a list of QGIS expressions.
      * \returns A list of strings
      * \since QGIS 3.24
      */
-    QStringList toExpressionList() const;
+    [[nodiscard]] QStringList toExpressionList() const;
 
     /**
      * Converts the parameter into a rectangle.
@@ -152,7 +152,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
      * Converts the parameter into a boolean.
      * \returns A boolean
      */
-    bool toBool() const;
+    [[nodiscard]] bool toBool() const;
 
     /**
      * Converts the parameter into a color.
@@ -307,52 +307,52 @@ class SERVER_EXPORT QgsServerParameters
      * Returns the value of a parameter.
      * \param key the name of the parameter
      */
-    QString value( const QString &key ) const;
+    [[nodiscard]] QString value( const QString &key ) const;
 
     /**
      * Returns a url query with underlying parameters.
      */
-    QUrlQuery urlQuery() const;
+    [[nodiscard]] QUrlQuery urlQuery() const;
 
     /**
      * Returns all parameters in a map.
      */
-    QMap<QString, QString> toMap() const;
+    [[nodiscard]] QMap<QString, QString> toMap() const;
 
     /**
      * Returns SERVICE parameter as a string or an empty string if not
      * defined.
      * \returns service
      */
-    QString service() const;
+    [[nodiscard]] QString service() const;
 
     /**
      * Returns REQUEST parameter as a string or an empty string if not
      * defined.
      * \returns request
      */
-    virtual QString request() const;
+    [[nodiscard]] virtual QString request() const;
 
     /**
      * Returns MAP parameter as a string or an empty string if not
      * defined.
      * \returns map
      */
-    QString map() const;
+    [[nodiscard]] QString map() const;
 
     /**
      * Returns  FILE_NAME parameter as a string or an empty string if not
      * defined.
      * \returns filename
      */
-    QString fileName() const;
+    [[nodiscard]] QString fileName() const;
 
     /**
      * Returns VERSION parameter as a string or an empty string if not
      * defined.
      * \returns version
      */
-    virtual QString version() const;
+    [[nodiscard]] virtual QString version() const;
 
   protected:
     /**
@@ -365,7 +365,7 @@ class SERVER_EXPORT QgsServerParameters
 
   private:
     void save( const QgsServerParameter &parameter );
-    QVariant value( QgsServerParameter::Name name ) const;
+    [[nodiscard]] QVariant value( QgsServerParameter::Name name ) const;
 
     QMap<QgsServerParameter::Name, QgsServerParameter> mParameters;
     QUrlQuery mUrlQuery;

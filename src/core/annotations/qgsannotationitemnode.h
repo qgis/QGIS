@@ -58,7 +58,7 @@ class CORE_EXPORT QgsAnnotationItemNode
     /**
      * Returns the ID number of the node, used for uniquely identifying the node in the item.
      */
-    QgsVertexId id() const { return mId; }
+    [[nodiscard]] QgsVertexId id() const { return mId; }
 
     /**
      * Returns the node's position, in geographic coordinates.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsAnnotationItemNode
      *
      * \see setPoint()
      */
-    QgsPointXY point() const { return mPoint; }
+    [[nodiscard]] QgsPointXY point() const { return mPoint; }
 
     /**
      * Sets the node's position, in geographic coordinates.
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsAnnotationItemNode
      *
      * \see setType()
      */
-    Qgis::AnnotationItemNodeType type() const { return mType; }
+    [[nodiscard]] Qgis::AnnotationItemNodeType type() const { return mType; }
 
     /**
      * Sets the node type.
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsAnnotationItemNode
      * \see setCursor()
      * \since QGIS 3.34
      */
-    Qt::CursorShape cursor() const
+    [[nodiscard]] Qt::CursorShape cursor() const
     {
       return mCursor;
     }

@@ -286,24 +286,24 @@ class CORE_EXPORT QgsExpression
      * A valid expression could be parsed but does not necessarily evaluate properly.
      *
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     //! Returns TRUE if an error occurred when parsing the input expression
-    bool hasParserError() const;
+    [[nodiscard]] bool hasParserError() const;
     //! Returns parser error
-    QString parserErrorString() const;
+    [[nodiscard]] QString parserErrorString() const;
 
     /**
      * Returns parser error details including location of error.
      */
-    QList<QgsExpression::ParserError> parserErrors() const;
+    [[nodiscard]] QList<QgsExpression::ParserError> parserErrors() const;
 
     /**
      * Returns the root node of the expression.
      *
      * The root node is NULLPTR if parsing has failed.
      */
-    const QgsExpressionNode *rootNode() const;
+    [[nodiscard]] const QgsExpressionNode *rootNode() const;
 
     /**
      * Gets the expression ready for evaluation - find out column indexes.
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsExpression
      *
      * \see referencedAttributeIndexes()
      */
-    QSet<QString> referencedColumns() const;
+    [[nodiscard]] QSet<QString> referencedColumns() const;
 
     /**
      * Returns a list of all variables which are used in this expression.
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsExpression
      * or QgsExpressionNode::prepare().
      *
      */
-    QSet<QString> referencedVariables() const;
+    [[nodiscard]] QSet<QString> referencedVariables() const;
 
     /**
      * Returns a list of the names of all functions which are used in this expression.
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsExpression
      *
      * \since QGIS 3.2
      */
-    QSet<QString> referencedFunctions() const;
+    [[nodiscard]] QSet<QString> referencedFunctions() const;
 
 #ifndef SIP_RUN
 
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsExpression
      * \note not available in Python bindings
      * \since QGIS 3.2
      */
-    QList<const QgsExpressionNode *> nodes( ) const;
+    [[nodiscard]] QList<const QgsExpressionNode *> nodes( ) const;
 
     /**
      * Returns a list of all nodes of the given class which are used in this expression
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsExpression
      * \since QGIS 3.2
      */
     template <class T>
-    QList<const T *> findNodes( ) const
+    [[nodiscard]] QList<const T *> findNodes( ) const
     {
       QList<const T *> lst;
       const QList<const QgsExpressionNode *> allNodes( nodes() );
@@ -396,10 +396,10 @@ class CORE_EXPORT QgsExpression
      * take care to do this with an unprepared expression.
      *
      */
-    QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
+    [[nodiscard]] QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
 
     //! Returns TRUE if the expression uses feature geometry for some computation
-    bool needsGeometry() const;
+    [[nodiscard]] bool needsGeometry() const;
 
     // evaluation
 
@@ -417,9 +417,9 @@ class CORE_EXPORT QgsExpression
     QVariant evaluate( const QgsExpressionContext *context );
 
     //! Returns TRUE if an error occurred when evaluating last input
-    bool hasEvalError() const;
+    [[nodiscard]] bool hasEvalError() const;
     //! Returns evaluation error
-    QString evalErrorString() const;
+    [[nodiscard]] QString evalErrorString() const;
     //! Sets evaluation error (used internally by evaluation functions)
     void setEvalErrorString( const QString &str );
 
@@ -428,7 +428,7 @@ class CORE_EXPORT QgsExpression
      *
      * \see expressionToLayerFieldIndex()
      */
-    bool isField() const;
+    [[nodiscard]] bool isField() const;
 
     /**
      * Attempts to resolve an expression to a field index from the given \a layer.
@@ -478,7 +478,7 @@ class CORE_EXPORT QgsExpression
      * If there was none supplied because it was constructed by sole
      * API calls, dump() will be used to create one instead.
      */
-    QString expression() const;
+    [[nodiscard]] QString expression() const;
 
     /**
      * Returns an expression string, constructed from the internal
@@ -486,7 +486,7 @@ class CORE_EXPORT QgsExpression
      * formatting or comments. In general it is preferable to use
      * expression() instead.
      */
-    QString dump() const;
+    [[nodiscard]] QString dump() const;
 
     /**
      * Returns calculator used for distance and area calculations
@@ -518,7 +518,7 @@ class CORE_EXPORT QgsExpression
      * \see setDistanceUnits()
      * \see areaUnits()
      */
-    Qgis::DistanceUnit distanceUnits() const;
+    [[nodiscard]] Qgis::DistanceUnit distanceUnits() const;
 
     /**
      * Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
@@ -536,7 +536,7 @@ class CORE_EXPORT QgsExpression
      * \see setAreaUnits()
      * \see distanceUnits()
      */
-    Qgis::AreaUnit areaUnits() const;
+    [[nodiscard]] Qgis::AreaUnit areaUnits() const;
 
     /**
      * Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".

@@ -47,16 +47,16 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, priv
     QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, QWidget *parent = nullptr );
 
     //! Returns the series index
-    int index() const;
+    [[nodiscard]] int index() const;
 
     //! Returns the X-axis expression
-    QString xExpression() const;
+    [[nodiscard]] QString xExpression() const;
 
     //! Returns the Y-axis expression
-    QString yExpression() const;
+    [[nodiscard]] QString yExpression() const;
 
     //! Returns the filter expression
-    QString filterExpression() const;
+    [[nodiscard]] QString filterExpression() const;
 
   private slots:
     void mFilterButton_clicked();

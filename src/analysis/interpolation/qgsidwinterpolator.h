@@ -55,7 +55,7 @@ class ANALYSIS_EXPORT QgsIDWInterpolator : public QgsInterpolator
      *
      * \see setDistanceCoefficient()
     */
-    double distanceCoefficient() const { return mDistanceCoefficient; }
+    [[nodiscard]] double distanceCoefficient() const { return mDistanceCoefficient; }
 
   private:
     QgsIDWInterpolator() = delete;

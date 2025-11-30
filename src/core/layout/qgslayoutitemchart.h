@@ -68,7 +68,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
         /**
          * Returns the series name.
          */
-        QString name() const { return mName; }
+        [[nodiscard]] QString name() const { return mName; }
 
         /**
          * Sets the series name.
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
          * be converted to strings. For Qgis.PlotAxisType.Interval, the generated values will
          * be converted to double.
          */
-        QString xExpression() const { return mXExpression; }
+        [[nodiscard]] QString xExpression() const { return mXExpression; }
 
         /**
          * Sets the expression used to generate X-axis values. If the associated
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
          * Returns the expression used to generate Y-axis values. The generated values will
          * be converted to double.
          */
-        QString yExpression() const { return mYExpression; }
+        [[nodiscard]] QString yExpression() const { return mYExpression; }
 
         /**
          * Sets the expression used to generate Y-axis values. The generated values will
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsLayoutItemChart : public QgsLayoutItem
          * Returns the filter expression used to generate a series against a subset of
          * the source layer.
          */
-        QString filterExpression() const { return mFilterExpression; }
+        [[nodiscard]] QString filterExpression() const { return mFilterExpression; }
 
         /**
          * Sets the filter expression used to generate a series against a subset of

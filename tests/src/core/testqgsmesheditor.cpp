@@ -37,7 +37,7 @@ class TestQgsMeshEditor : public QObject
 
   public:
     TestQgsMeshEditor() = default;
-    QString readFile( const QString &frame ) const;
+    [[nodiscard]] QString readFile( const QString &frame ) const;
 
   private:
     std::unique_ptr<QgsMeshLayer> meshLayerQuadTriangle;

@@ -63,14 +63,14 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
-    QgsTerrainGenerator *clone() const override SIP_FACTORY;
-    Type type() const override;
-    QgsRectangle rootChunkExtent() const override;
+    [[nodiscard]] QgsTerrainGenerator *clone() const override SIP_FACTORY;
+    [[nodiscard]] Type type() const override;
+    [[nodiscard]] QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
     void rootChunkHeightRange( float &hMin, float &hMax ) const override;
 
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) override;
-    QgsCoordinateReferenceSystem crs() const override { return mCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const override { return mCrs; }
 
   private:
     void updateTilingScheme();

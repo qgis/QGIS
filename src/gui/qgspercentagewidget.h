@@ -46,7 +46,7 @@ class GUI_EXPORT QgsPercentageWidget : public QWidget
      * \see setValue()
      * \see valueChanged()
      */
-    double value() const;
+    [[nodiscard]] double value() const;
 
   public slots:
 

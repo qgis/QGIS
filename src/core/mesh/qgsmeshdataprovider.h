@@ -65,29 +65,29 @@ struct CORE_EXPORT QgsMesh
    * Returns whether the mesh contains at mesh elements of given type
    *  \since QGIS 3.14
    */
-  bool contains( const ElementType &type ) const;
+  [[nodiscard]] bool contains( const ElementType &type ) const;
 
   //! Returns number of vertices
-  int vertexCount() const;
+  [[nodiscard]] int vertexCount() const;
   //! Returns number of faces
-  int faceCount() const;
+  [[nodiscard]] int faceCount() const;
 
   /**
    * Returns number of edge
    * \since QGIS 3.14
    */
-  int edgeCount() const;
+  [[nodiscard]] int edgeCount() const;
 
   //! Returns a vertex at the index
-  QgsMeshVertex vertex( int index ) const;
+  [[nodiscard]] QgsMeshVertex vertex( int index ) const;
   //! Returns a face at the index
-  QgsMeshFace face( int index ) const;
+  [[nodiscard]] QgsMeshFace face( int index ) const;
 
   /**
    * Returns an edge at the index
    * \since QGIS 3.14
    */
-  QgsMeshEdge edge( int index ) const;
+  [[nodiscard]] QgsMeshEdge edge( int index ) const;
 
   /**
     * Remove all vertices, edges and faces
@@ -138,19 +138,19 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
      * Returns whether the mesh contains at mesh elements of given type
      *  \since QGIS 3.14
      */
-    bool contains( const QgsMesh::ElementType &type ) const;
+    [[nodiscard]] bool contains( const QgsMesh::ElementType &type ) const;
 
     /**
      * \brief Returns number of vertices in the native mesh
      * \returns Number of vertices in the mesh
      */
-    virtual int vertexCount() const = 0;
+    [[nodiscard]] virtual int vertexCount() const = 0;
 
     /**
      * \brief Returns number of faces in the native mesh
      * \returns Number of faces in the mesh
      */
-    virtual int faceCount() const = 0;
+    [[nodiscard]] virtual int faceCount() const = 0;
 
     /**
      * \brief Returns number of edges in the native mesh
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
      *
      * \since QGIS 3.14
      */
-    virtual int edgeCount() const = 0;
+    [[nodiscard]] virtual int edgeCount() const = 0;
 
     /**
      * \brief Returns the maximum number of vertices per face supported by the current mesh,
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
      *
      * \since QGIS 3.22
      */
-    virtual int maximumVerticesCountPerFace() const {return 0;};
+    [[nodiscard]] virtual int maximumVerticesCountPerFace() const {return 0;};
 
     /**
      * Populates the mesh vertices, edges and faces
@@ -219,37 +219,37 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
     /**
      * Returns list of additional dataset file URIs added using addDataset() calls.
      */
-    virtual QStringList extraDatasets() const = 0;
+    [[nodiscard]] virtual QStringList extraDatasets() const = 0;
 
     /**
      * \brief Returns number of datasets groups loaded
      */
-    virtual int datasetGroupCount( ) const = 0;
+    [[nodiscard]] virtual int datasetGroupCount( ) const = 0;
 
     /**
      * \brief Returns number of datasets loaded in the group
      */
-    virtual int datasetCount( int groupIndex ) const = 0;
+    [[nodiscard]] virtual int datasetCount( int groupIndex ) const = 0;
 
     /**
      * \brief Returns number of datasets loaded in the group
      */
-    int datasetCount( QgsMeshDatasetIndex index ) const;
+    [[nodiscard]] int datasetCount( QgsMeshDatasetIndex index ) const;
 
     /**
      * \brief Returns dataset group metadata
      */
-    virtual QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const = 0;
+    [[nodiscard]] virtual QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const = 0;
 
     /**
      * \brief Returns dataset group metadata
      */
-    QgsMeshDatasetGroupMetadata datasetGroupMetadata( QgsMeshDatasetIndex index ) const;
+    [[nodiscard]] QgsMeshDatasetGroupMetadata datasetGroupMetadata( QgsMeshDatasetIndex index ) const;
 
     /**
      * \brief Returns dataset metadata
      */
-    virtual QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const = 0;
+    [[nodiscard]] virtual QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const = 0;
 
     /**
      * \brief Returns vector/scalar value associated with the index from the dataset
@@ -262,7 +262,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      *
      * \see datasetValues
      */
-    virtual QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const = 0;
+    [[nodiscard]] virtual QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const = 0;
 
     /**
      * \brief Returns N vector/scalar values from the index from the dataset
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      *
      * \since QGIS 3.6
      */
-    virtual QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const = 0;
+    [[nodiscard]] virtual QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const = 0;
 
     /**
      * \brief Returns N vector/scalar values from the face index from the dataset for 3d stacked meshes
@@ -288,7 +288,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      *
      * \since QGIS 3.12
      */
-    virtual QgsMesh3DDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
+    [[nodiscard]] virtual QgsMesh3DDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
 
     /**
      * \brief Returns whether the face is active for particular dataset
@@ -300,14 +300,14 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      *  |   F1  |   F2   | F3  |
      *  V3 ---- V4 ---- V6-----V8
      */
-    virtual bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const = 0;
+    [[nodiscard]] virtual bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const = 0;
 
     /**
      * \brief Returns whether the faces are active for particular dataset
      *
      * \since QGIS 3.6
      */
-    virtual QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
+    [[nodiscard]] virtual QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const = 0;
 
     /**
      * Creates a new dataset group from a data and
@@ -391,10 +391,10 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      *
      * \return the dataset index
      */
-    QgsMeshDatasetIndex datasetIndexAtTime( const QDateTime &referenceTime,
-                                            int groupIndex,
-                                            qint64 time,
-                                            QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
+    [[nodiscard]] QgsMeshDatasetIndex datasetIndexAtTime( const QDateTime &referenceTime,
+        int groupIndex,
+        qint64 time,
+        QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
 
     /**
      * Returns a list of dataset indexes of the dataset in a specific dataset group that are between \a time1 and \a time2 from the \a reference time
@@ -408,7 +408,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      *
      * \since QGIS 3.22
      */
-    QList<QgsMeshDatasetIndex> datasetIndexInTimeInterval( const QDateTime &referenceTime,
+    [[nodiscard]] QList<QgsMeshDatasetIndex> datasetIndexInTimeInterval( const QDateTime &referenceTime,
         int groupIndex,
         qint64 time1,
         qint64 time2 ) const;

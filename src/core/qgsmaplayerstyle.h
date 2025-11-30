@@ -47,13 +47,13 @@ class CORE_EXPORT QgsMapLayerStyle
     explicit QgsMapLayerStyle( const QString &xmlData );
 
     //! Tell whether the style is valid (i.e. there is something stored in it)
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     //! Remove any stored style data (will get invalid)
     void clear();
 
     //! Returns XML content of the style
-    QString xmlData() const;
+    [[nodiscard]] QString xmlData() const;
 
     //! Store layer's active style information in the instance
     void readFromLayer( QgsMapLayer *layer );

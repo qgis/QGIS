@@ -2343,7 +2343,6 @@ Constructor for QgsProcessingParameterMatrix.
 %Docstring
 Returns the type name for the parameter class.
 %End
-
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
@@ -2540,7 +2539,6 @@ Constructor for QgsProcessingParameterNumber.
 %Docstring
 Returns the type name for the parameter class.
 %End
-
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
@@ -2649,9 +2647,6 @@ Constructor for QgsProcessingParameterDistance.
 Returns the type name for the parameter class.
 %End
 
-    virtual QString userFriendlyString( const QVariant &value ) const;
-
-
     virtual QgsProcessingParameterDistance *clone() const /Factory/;
 
 
@@ -2660,6 +2655,8 @@ Returns the type name for the parameter class.
     virtual QStringList dependsOnOtherParameters() const;
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QString userFriendlyString( const QVariant &value ) const;
 
 
     QString parentParameterName() const;
@@ -3015,7 +3012,6 @@ Constructor for QgsProcessingParameterRange.
 %Docstring
 Returns the type name for the parameter class.
 %End
-
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
@@ -4565,7 +4561,6 @@ varying color opacity.
 %Docstring
 Returns the type name for the parameter class.
 %End
-
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;

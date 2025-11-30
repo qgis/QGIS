@@ -48,7 +48,7 @@ class GUI_EXPORT QgsProcessingRecentAlgorithmLog : public QObject
      * Returns a list of the IDs of recently used processing algorithms, where the
      * first item in the list is the most recently used algorithm.
      */
-    QStringList recentAlgorithmIds() const;
+    [[nodiscard]] QStringList recentAlgorithmIds() const;
 
     /**
      * Pushes the algorithm with matching \a id to the top of the recently used

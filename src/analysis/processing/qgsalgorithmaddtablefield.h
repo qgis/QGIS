@@ -32,22 +32,22 @@ class QgsAddTableFieldAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
   public:
     QgsAddTableFieldAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QList<int> inputLayerTypes() const override;
-    QgsAddTableFieldAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QList<int> inputLayerTypes() const override;
+    [[nodiscard]] QgsAddTableFieldAlgorithm *createInstance() const override SIP_FACTORY;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
-    QString outputName() const override;
-    QgsFields outputFields( const QgsFields &inputFields ) const override;
-    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
+    [[nodiscard]] QString outputName() const override;
+    [[nodiscard]] QgsFields outputFields( const QgsFields &inputFields ) const override;
+    [[nodiscard]] Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

@@ -79,7 +79,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * Returns the currently selected CRS for the widget
      * \returns current CRS
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets whether a predefined CRS option should be shown in the widget.
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * Returns whether the specified CRS option is visible in the widget.
      * \see setOptionVisible()
      */
-    bool optionVisible( CrsOption option ) const;
+    [[nodiscard]] bool optionVisible( CrsOption option ) const;
 
     /**
      * Sets the text to show for the not set option. Note that this option is not shown
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * \see setShowAccuracyWarnings()
      * \since QGIS 3.20
      */
-    bool showAccuracyWarnings() const;
+    [[nodiscard]] bool showAccuracyWarnings() const;
 
     /**
      * Sets whether the widget will \a show warnings to users when they select a CRS which has
@@ -154,7 +154,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * \see setSourceEnsemble()
      * \since QGIS 3.20
      */
-    QString sourceEnsemble() const;
+    [[nodiscard]] QString sourceEnsemble() const;
 
     /**
      * Sets the \a title for the CRS selector dialog window.
@@ -168,7 +168,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * \see setDialogTitle()
      * \since QGIS 3.24
      */
-    QString dialogTitle() const;
+    [[nodiscard]] QString dialogTitle() const;
 
     /**
      * Sets a filtered list of CRSes to show in the widget.
@@ -183,7 +183,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * \see setFilters()
      * \since QGIS 3.36
      */
-    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+    [[nodiscard]] QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
 
     /**
      * Sets \a filters for the available CRS.
@@ -278,22 +278,22 @@ class StandardCoordinateReferenceSystemsModel : public QAbstractItemModel SIP_SK
 
     StandardCoordinateReferenceSystemsModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex & = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
 
-    QgsCoordinateReferenceSystem crs( const QModelIndex &index ) const;
-    QgsProjectionSelectionWidget::CrsOption optionForIndex( const QModelIndex &index ) const;
-    QModelIndex indexForOption( QgsProjectionSelectionWidget::CrsOption option ) const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs( const QModelIndex &index ) const;
+    [[nodiscard]] QgsProjectionSelectionWidget::CrsOption optionForIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QModelIndex indexForOption( QgsProjectionSelectionWidget::CrsOption option ) const;
 
     void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
     void setCurrentCrs( const QgsCoordinateReferenceSystem &crs );
     void setNotSetText( const QString &text );
-    QString notSetText() const { return mNotSetText; }
-    QgsCoordinateReferenceSystem currentCrs() const { return mCurrentCrs; }
+    [[nodiscard]] QString notSetText() const { return mNotSetText; }
+    [[nodiscard]] QgsCoordinateReferenceSystem currentCrs() const { return mCurrentCrs; }
 
   private:
     QgsProjectionSelectionWidget::CrsOptions mOptions;
@@ -312,8 +312,8 @@ class CombinedCoordinateReferenceSystemsModel : public QConcatenateTablesProxyMo
   public:
     CombinedCoordinateReferenceSystemsModel( QObject *parent );
     void setNotSetText( const QString &text );
-    QString notSetText() const;
-    QgsCoordinateReferenceSystem currentCrs() const;
+    [[nodiscard]] QString notSetText() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem currentCrs() const;
     StandardCoordinateReferenceSystemsModel *standardModel() { return mStandardModel; }
 
   private:
@@ -327,17 +327,17 @@ class CombinedCoordinateReferenceSystemsProxyModel : public QSortFilterProxyMode
 
   public:
     CombinedCoordinateReferenceSystemsProxyModel( QObject *parent );
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
     void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
     void setCurrentCrs( const QgsCoordinateReferenceSystem &crs );
     void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
-    QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
+    [[nodiscard]] QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
 
     void setFilteredCrs( const QList<QgsCoordinateReferenceSystem> &crses );
-    QList<QgsCoordinateReferenceSystem> filteredCrs() const { return mFilteredCrs; }
+    [[nodiscard]] QList<QgsCoordinateReferenceSystem> filteredCrs() const { return mFilteredCrs; }
 
     void setOption( QgsProjectionSelectionWidget::CrsOption option, bool enabled );
-    CombinedCoordinateReferenceSystemsModel *combinedModel() const { return mModel; }
+    [[nodiscard]] CombinedCoordinateReferenceSystemsModel *combinedModel() const { return mModel; }
 
   private:
     CombinedCoordinateReferenceSystemsModel *mModel = nullptr;

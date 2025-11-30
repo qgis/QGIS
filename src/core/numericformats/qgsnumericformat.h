@@ -314,12 +314,12 @@ class CORE_EXPORT QgsNumericFormat
      *
      * This id is used to identify this numeric format in the registry with QgsNumericFormatRegistry::format().
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     /**
      * Returns the translated, user-visible name for this format.
      */
-    virtual QString visibleName() const = 0;
+    [[nodiscard]] virtual QString visibleName() const = 0;
 
     /**
      * Returns a sorting key value, where formats with a lower sort key will be shown earlier in lists.
@@ -331,32 +331,32 @@ class CORE_EXPORT QgsNumericFormat
     /**
      * Returns a suggested sample value which nicely represents the current format configuration.
      */
-    virtual double suggestSampleValue() const;
+    [[nodiscard]] virtual double suggestSampleValue() const;
 
     /**
      * Returns a formatted string representation of a numeric double value.
      */
-    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const = 0;
+    [[nodiscard]] virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const = 0;
 
     /**
      * Clones the format, returning a new object.
      *
      * The caller takes ownership of the returned object.
      */
-    virtual QgsNumericFormat *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsNumericFormat *clone() const = 0 SIP_FACTORY;
 
     /**
      * Creates a new copy of the format, using the supplied \a configuration.
      *
      * The caller takes ownership of the returned object.
      */
-    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const = 0 SIP_FACTORY;
 
     /**
      * Returns the current configuration of the formatter. This value can be used in a call to create()
      * in order to recreate this formatter in its current state.
      */
-    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const = 0;
+    [[nodiscard]] virtual QVariantMap configuration( const QgsReadWriteContext &context ) const = 0;
 
     /**
      * Writes the format to an XML \a element.

@@ -29,10 +29,10 @@
 class QgsSensorThingsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const final;
-    QString text() const final;
-    QIcon icon() const final;
-    int ordering() const final;
+    [[nodiscard]] QString providerKey() const final;
+    [[nodiscard]] QString text() const final;
+    [[nodiscard]] QIcon icon() const final;
+    [[nodiscard]] int ordering() const final;
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const final;
 };
 
@@ -40,7 +40,7 @@ class QgsSensorThingsSourceWidgetProvider : public QgsProviderSourceWidgetProvid
 {
   public:
     QgsSensorThingsSourceWidgetProvider();
-    QString providerKey() const override;
+    [[nodiscard]] QString providerKey() const override;
     bool canHandleLayer( QgsMapLayer *layer ) const override;
     QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override;
 };

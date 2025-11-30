@@ -63,7 +63,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      *
      * \see setDefaultViewExtent()
      */
-    QgsReferencedRectangle defaultViewExtent() const;
+    [[nodiscard]] QgsReferencedRectangle defaultViewExtent() const;
 
     /**
      * Sets the default view \a extent, which should be used as the initial map extent
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      *
      * \since QGIS 3.18
      */
-    QgsReferencedRectangle presetFullExtent() const;
+    [[nodiscard]] QgsReferencedRectangle presetFullExtent() const;
 
     /**
      * Sets the project's preset full \a extent.
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      * \see presetFullExtent()
      * \see setPresetFullExtent()
      */
-    QgsReferencedRectangle fullExtent() const;
+    [[nodiscard]] QgsReferencedRectangle fullExtent() const;
 
     /**
      * Sets the list of custom project map \a scales.
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      * \see setMapScales()
      * \see mapScalesChanged()
      */
-    QVector<double> mapScales() const;
+    [[nodiscard]] QVector<double> mapScales() const;
 
     /**
      * Sets whether project mapScales() are \a enabled.
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      * \see setUseProjectScales()
      * \see mapScales()
      */
-    bool useProjectScales() const;
+    [[nodiscard]] bool useProjectScales() const;
 
     /**
      * Returns the default map rotation (in clockwise degrees) for maps in the project.
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      * \see setDefaultRotation()
      * \since QGIS 3.28
      */
-    double defaultRotation() const;
+    [[nodiscard]] double defaultRotation() const;
 
     /**
      * Set the default \a rotation of maps in the project, in clockwise degrees.

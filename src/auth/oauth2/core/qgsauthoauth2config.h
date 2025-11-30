@@ -99,64 +99,64 @@ class QgsAuthOAuth2Config : public QObject
     explicit QgsAuthOAuth2Config( QObject *parent = nullptr );
 
     //! Unique ID
-    QString id() const { return mId; }
+    [[nodiscard]] QString id() const { return mId; }
 
     //! Increment this if method is significantly updated, allow updater code to be written
-    int version() const { return mVersion; }
+    [[nodiscard]] int version() const { return mVersion; }
 
     //! Configuration type
-    ConfigType configType() const { return mConfigType; }
+    [[nodiscard]] ConfigType configType() const { return mConfigType; }
 
     //! Authorization flow
-    GrantFlow grantFlow() const { return mGrantFlow; }
+    [[nodiscard]] GrantFlow grantFlow() const { return mGrantFlow; }
 
     //! Configuration name
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     //! Configuration description
-    QString description() const { return mDescription; }
+    [[nodiscard]] QString description() const { return mDescription; }
 
     //! Request url
-    QString requestUrl() const { return mRequestUrl; }
+    [[nodiscard]] QString requestUrl() const { return mRequestUrl; }
 
     //! Token url
-    QString tokenUrl() const { return mTokenUrl; }
+    [[nodiscard]] QString tokenUrl() const { return mTokenUrl; }
 
     //! Refresh token url
-    QString refreshTokenUrl() const { return mRefreshTokenUrl; }
+    [[nodiscard]] QString refreshTokenUrl() const { return mRefreshTokenUrl; }
 
     //! Returns the redirect host
-    QString redirectHost() const { return mRedirectHost; }
+    [[nodiscard]] QString redirectHost() const { return mRedirectHost; }
 
     //! Redirect url
-    QString redirectUrl() const { return mRedirectURL; }
+    [[nodiscard]] QString redirectUrl() const { return mRedirectURL; }
 
     //! Redirect port
-    int redirectPort() const { return mRedirectPort; }
+    [[nodiscard]] int redirectPort() const { return mRedirectPort; }
 
     //! Client id
-    QString clientId() const { return mClientId; }
+    [[nodiscard]] QString clientId() const { return mClientId; }
 
     //! Client secret
-    QString clientSecret() const { return mClientSecret; }
+    [[nodiscard]] QString clientSecret() const { return mClientSecret; }
 
     //! Resource owner username
-    QString username() const { return mUsername; }
+    [[nodiscard]] QString username() const { return mUsername; }
 
     //! Resource owner password
-    QString password() const { return mPassword; }
+    [[nodiscard]] QString password() const { return mPassword; }
 
     //! Scope of authentication
-    QString scope() const { return mScope; }
+    [[nodiscard]] QString scope() const { return mScope; }
 
     //! API key
-    QString apiKey() const { return mApiKey; }
+    [[nodiscard]] QString apiKey() const { return mApiKey; }
 
     //! Returns TRUE if the token is persistent
-    bool persistToken() const { return mPersistToken; }
+    [[nodiscard]] bool persistToken() const { return mPersistToken; }
 
     //! Access method
-    AccessMethod accessMethod() const { return mAccessMethod; }
+    [[nodiscard]] AccessMethod accessMethod() const { return mAccessMethod; }
 
     /**
      * Custom header for header access methods.
@@ -165,7 +165,7 @@ class QgsAuthOAuth2Config : public QObject
      *
      * \since QGIS 3.18
      */
-    QString customHeader() const { return mCustomHeader; }
+    [[nodiscard]] QString customHeader() const { return mCustomHeader; }
 
     /**
      * Returns the extra tokens that will be added into the header for header access methods.
@@ -175,13 +175,13 @@ class QgsAuthOAuth2Config : public QObject
      *
      * \since QGIS 3.44
      */
-    QVariantMap extraTokens() const { return mExtraTokens; }
+    [[nodiscard]] QVariantMap extraTokens() const { return mExtraTokens; }
 
     //! Request timeout
-    int requestTimeout() const { return mRequestTimeout; }
+    [[nodiscard]] int requestTimeout() const { return mRequestTimeout; }
 
     //! Query pairs
-    QVariantMap queryPairs() const { return mQueryPairs; }
+    [[nodiscard]] QVariantMap queryPairs() const { return mQueryPairs; }
 
     //! Operator used to compare configs' equality
     bool operator==( const QgsAuthOAuth2Config &other ) const;
@@ -190,7 +190,7 @@ class QgsAuthOAuth2Config : public QObject
     bool operator!=( const QgsAuthOAuth2Config &other ) const;
 
     //! Check whether config is valid, then return it
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     //! \see http://tools.ietf.org/html/rfc6749 for required data per flow
     void validateConfigId( bool needsId = false );
@@ -202,7 +202,7 @@ class QgsAuthOAuth2Config : public QObject
     QByteArray saveConfigTxt( ConfigFormat format = ConfigFormat::JSON, bool pretty = false, bool *ok = nullptr ) const;
 
     //! Configuration as a QVariant map
-    QVariantMap mappedProperties() const;
+    [[nodiscard]] QVariantMap mappedProperties() const;
 
     /**
      * Serialize the configuration \a variant according to \a format

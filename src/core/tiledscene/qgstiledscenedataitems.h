@@ -31,7 +31,7 @@ class CORE_EXPORT QgsTiledSceneRootItem : public QgsConnectionsRootItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 8; }
+    [[nodiscard]] QVariant sortKey() const override { return 8; }
 
 };
 
@@ -50,8 +50,8 @@ class QgsTiledSceneDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    QString dataProviderKey() const override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] QString dataProviderKey() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 

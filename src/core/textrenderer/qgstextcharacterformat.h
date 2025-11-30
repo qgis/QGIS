@@ -80,7 +80,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      *
      * \see setTextColor()
      */
-    QColor textColor() const;
+    [[nodiscard]] QColor textColor() const;
 
     /**
      * Sets the character's text \a color.
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * \see setFontPointSize()
      * \since QGIS 3.28
      */
-    double fontPointSize() const;
+    [[nodiscard]] double fontPointSize() const;
 
     /**
      * Sets the font point \a size.
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * \see setFontPercentageSize()
      * \since QGIS 3.40
      */
-    double fontPercentageSize() const;
+    [[nodiscard]] double fontPercentageSize() const;
 
     /**
      * Sets  the font percentage \a size (as fraction of inherited font size).
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * \see setFamily()
      * \since QGIS 3.28
      */
-    QString family() const;
+    [[nodiscard]] QString family() const;
 
     /**
      * Sets the font \a family name.
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * \see setFontWeight()
      * \since QGIS 3.28
      */
-    int fontWeight() const;
+    [[nodiscard]] int fontWeight() const;
 
     /**
      * Sets the font \a weight.
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * \see setWordSpacing()
      * \since QGIS 3.40
      */
-    double wordSpacing() const;
+    [[nodiscard]] double wordSpacing() const;
 
     /**
      * Sets the font word \a spacing, in points, or NaN if word spacing is not set and should be inherited.
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * \see setItalic()
      * \since QGIS 3.28
      */
-    BooleanValue italic() const;
+    [[nodiscard]] BooleanValue italic() const;
 
     /**
      * Sets whether the format has italic \a enabled.
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      *
      * \see setStrikeOut()
      */
-    BooleanValue strikeOut() const;
+    [[nodiscard]] BooleanValue strikeOut() const;
 
     /**
      * Sets whether the format has strikethrough \a enabled.
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      *
      * \see setUnderline()
      */
-    BooleanValue underline() const;
+    [[nodiscard]] BooleanValue underline() const;
 
     /**
      * Sets whether the format has underline \a enabled.
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      *
      * \see setUnderline()
      */
-    BooleanValue overline() const;
+    [[nodiscard]] BooleanValue overline() const;
 
     /**
      * Sets whether the format has overline \a enabled.
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      *
      * \since QGIS 3.40
      */
-    QString imagePath() const;
+    [[nodiscard]] QString imagePath() const;
 
     /**
      * Sets the \a path to the image to render, if the format applies to a document image fragment.
@@ -288,7 +288,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      *
      * \since QGIS 3.40
      */
-    QSizeF imageSize() const;
+    [[nodiscard]] QSizeF imageSize() const;
 
     /**
      * Sets the image \a size, if the format applies to a document image fragment.
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      *
      * \since QGIS 3.30
      */
-    bool hasVerticalAlignmentSet() const { return mHasVerticalAlignSet; }
+    [[nodiscard]] bool hasVerticalAlignmentSet() const { return mHasVerticalAlignSet; }
 
     /**
      * Sets whether the format has an explicit vertical alignment \a set.
@@ -337,7 +337,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      *
      * \since QGIS 3.30
      */
-    Qgis::TextCharacterVerticalAlignment verticalAlignment() const { return mVerticalAlign; }
+    [[nodiscard]] Qgis::TextCharacterVerticalAlignment verticalAlignment() const { return mVerticalAlign; }
 
     /**
      * Sets the format vertical \a alignment.
@@ -357,7 +357,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * \see backgroundBrush()
      * \since QGIS 3.42
      */
-    bool hasBackground() const;
+    [[nodiscard]] bool hasBackground() const;
 
     /**
      * Returns the brush used for rendering the background of the fragment.
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * \see setBackgroundBrush()
      * \since QGIS 3.42
      */
-    QBrush backgroundBrush() const;
+    [[nodiscard]] QBrush backgroundBrush() const;
 
     /**
      * Sets the \a brush used for rendering the background of the fragment.
@@ -389,7 +389,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * \see setBackgroundImagePath()
      * \since QGIS 3.42
      */
-    QString backgroundImagePath() const;
+    [[nodiscard]] QString backgroundImagePath() const;
 
     /**
      * Sets the \a path for the image to be used for rendering the background of the fragment.

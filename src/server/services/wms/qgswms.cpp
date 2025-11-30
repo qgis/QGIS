@@ -61,8 +61,8 @@ namespace QgsWms
         , mServerIface( serverIface )
       {}
 
-      QString name() const override { return QStringLiteral( "WMS" ); }
-      QString version() const override { return mVersion; }
+      [[nodiscard]] QString name() const override { return QStringLiteral( "WMS" ); }
+      [[nodiscard]] QString version() const override { return mVersion; }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
       {

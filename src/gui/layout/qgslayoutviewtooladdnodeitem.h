@@ -40,7 +40,7 @@ class GUI_EXPORT QgsLayoutViewToolAddNodeItem : public QgsLayoutViewTool
      * Returns the item metadata id for items created by the tool.
      * \see setItemMetadataId()
      */
-    int itemMetadataId() const;
+    [[nodiscard]] int itemMetadataId() const;
 
     /**
      * Sets the item metadata \a metadataId for items created by the tool.

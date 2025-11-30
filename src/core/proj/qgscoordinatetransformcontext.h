@@ -110,7 +110,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \since QGIS 3.8
      */
-    QMap< QPair< QString, QString>, QString > coordinateOperations() const;
+    [[nodiscard]] QMap< QPair< QString, QString>, QString > coordinateOperations() const;
 
     /**
      * Adds a new \a sourceTransform and \a destinationTransform to use when projecting coordinates
@@ -182,8 +182,8 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * when transforming from the specified \a source CRS to \a destination CRS.
      * \note source and destination are reversible.
      */
-    bool hasTransform( const QgsCoordinateReferenceSystem &source,
-                       const QgsCoordinateReferenceSystem &destination ) const;
+    [[nodiscard]] bool hasTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination ) const;
 
     /**
      * Returns the pair of source and destination datum transforms to use
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \since QGIS 3.8
      */
-    QString calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
+    [[nodiscard]] QString calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 
     /**
      * Returns TRUE if approximate "ballpark" transforms may be used when transforming
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \since QGIS 3.12
      */
-    bool allowFallbackTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
+    [[nodiscard]] bool allowFallbackTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 
     /**
      * Returns TRUE if the coordinate operation returned by calculateCoordinateOperation() for the \a source to \a destination pair
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \since QGIS 3.10.2
      */
-    bool mustReverseCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
+    [[nodiscard]] bool mustReverseCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 
     // TODO QGIS 4.0 - remove missingTransforms, not used for Proj >= 6.0 builds
 

@@ -208,7 +208,7 @@ namespace QgsWms
       /**
        * Returns TRUE if the parameter is valid, FALSE otherwise.
        */
-      bool isValid() const override;
+      [[nodiscard]] bool isValid() const override;
 
       /**
        * Converts the parameter into a list of strings and keeps empty parts
@@ -218,7 +218,7 @@ namespace QgsWms
        * \returns A list of strings
        * \since QGIS 3.8
        */
-      QStringList toStyleList( const char delimiter = ',', bool skipEmptyParts = false ) const;
+      [[nodiscard]] QStringList toStyleList( const char delimiter = ',', bool skipEmptyParts = false ) const;
 
       /**
        * Converts the parameter into a list of geometries.
@@ -227,7 +227,7 @@ namespace QgsWms
        * \returns A list of geometries
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QList<QgsGeometry> toGeomList( const char delimiter = ',', bool skipEmptyParts = true ) const;
+      [[nodiscard]] QList<QgsGeometry> toGeomList( const char delimiter = ',', bool skipEmptyParts = true ) const;
 
       /**
        * Converts the parameter into a list of integers.
@@ -236,7 +236,7 @@ namespace QgsWms
        * \returns A list of integers
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QList<int> toIntList( const char delimiter = ',', bool skipEmptyParts = true ) const;
+      [[nodiscard]] QList<int> toIntList( const char delimiter = ',', bool skipEmptyParts = true ) const;
 
       /**
        * Converts the parameter into a list of doubles.
@@ -245,7 +245,7 @@ namespace QgsWms
        * \returns A list of doubles
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QList<double> toDoubleList( const char delimiter = ',', bool skipEmptyParts = true ) const;
+      [[nodiscard]] QList<double> toDoubleList( const char delimiter = ',', bool skipEmptyParts = true ) const;
 
       /**
        * Converts the parameter into a list of colors.
@@ -254,35 +254,35 @@ namespace QgsWms
        * \returns A list of colors
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QList<QColor> toColorList( const char delimiter = ',', bool skipEmptyParts = true ) const;
+      [[nodiscard]] QList<QColor> toColorList( const char delimiter = ',', bool skipEmptyParts = true ) const;
 
       /**
        * Converts the parameter into a rectangle.
        * \returns A rectangle
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QgsRectangle toRectangle() const;
+      [[nodiscard]] QgsRectangle toRectangle() const;
 
       /**
        * Converts the parameter into an integer.
        * \returns An integer
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      int toInt() const;
+      [[nodiscard]] int toInt() const;
 
       /**
        * Converts the parameter into a double.
        * \returns A double
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      double toDouble() const;
+      [[nodiscard]] double toDouble() const;
 
       /**
        * Converts the parameter into a color.
        * \returns A color
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QColor toColor() const;
+      [[nodiscard]] QColor toColor() const;
 
       /**
        * Converts the parameter into an url.
@@ -290,7 +290,7 @@ namespace QgsWms
        * \throws QgsBadRequestException Invalid parameter exception
        * \since QGIS 3.4
        */
-      QUrl toUrl() const;
+      [[nodiscard]] QUrl toUrl() const;
 
       /**
        * Loads the data associated to the parameter converted into an url.
@@ -298,7 +298,7 @@ namespace QgsWms
        * \throws QgsBadRequestException Invalid parameter exception
        * \since QGIS 3.4
        */
-      QString loadUrl() const;
+      [[nodiscard]] QString loadUrl() const;
 
       /**
        * Raises an error in case of an invalid conversion.
@@ -310,7 +310,7 @@ namespace QgsWms
        * Returns the name of the parameter.
        * \since QGIS 3.8
        */
-      QString name() const;
+      [[nodiscard]] QString name() const;
 
       /**
        * Converts a parameter's name into its string representation.
@@ -422,13 +422,13 @@ namespace QgsWms
        * Returns CRS or an empty string if none is defined.
        * \returns crs parameter as string
        */
-      QString crs() const;
+      [[nodiscard]] QString crs() const;
 
       /**
        * Returns WIDTH parameter or an empty string if not defined.
        * \returns width parameter
        */
-      QString width() const;
+      [[nodiscard]] QString width() const;
 
       /**
        * Returns WIDTH parameter as an int or its default value if not
@@ -437,13 +437,13 @@ namespace QgsWms
        * \returns width parameter
        * \throws QgsBadRequestException
        */
-      int widthAsInt() const;
+      [[nodiscard]] int widthAsInt() const;
 
       /**
        * Returns HEIGHT parameter or an empty string if not defined.
        * \returns height parameter
        */
-      QString height() const;
+      [[nodiscard]] QString height() const;
 
       /**
        * Returns HEIGHT parameter as an int or its default value if not
@@ -452,21 +452,21 @@ namespace QgsWms
        * \returns height parameter
        * \throws QgsBadRequestException
        */
-      int heightAsInt() const;
+      [[nodiscard]] int heightAsInt() const;
 
       /**
        * Returns SHOWRULEDETAILS as a bool. An exception is raised if an invalid
        * parameter is found.
        * \since QGIS 3.36
        */
-      bool showRuleDetailsAsBool() const;
+      [[nodiscard]] bool showRuleDetailsAsBool() const;
 
       /**
        * Returns SRCWIDTH parameter or an empty string if not defined.
        * \returns srcWidth parameter
        * \since QGIS 3.8
        */
-      QString srcWidth() const;
+      [[nodiscard]] QString srcWidth() const;
 
       /**
        * Returns SRCWIDTH parameter as an int or its default value if not
@@ -476,14 +476,14 @@ namespace QgsWms
        * \throws QgsBadRequestException
        * \since QGIS 3.8
        */
-      int srcWidthAsInt() const;
+      [[nodiscard]] int srcWidthAsInt() const;
 
       /**
        * Returns SRCHEIGHT parameter or an empty string if not defined.
        * \returns srcHeight parameter
        * \since QGIS 3.8
        */
-      QString srcHeight() const;
+      [[nodiscard]] QString srcHeight() const;
 
       /**
        * Returns SRCHEIGHT parameter as an int or its default value if not
@@ -493,25 +493,25 @@ namespace QgsWms
        * \throws QgsBadRequestException
        * \since QGIS 3.8
        */
-      int srcHeightAsInt() const;
+      [[nodiscard]] int srcHeightAsInt() const;
 
       /**
        * Returns VERSION parameter if defined or its default value.
        * \returns version
        */
-      QgsProjectVersion versionAsNumber() const;
+      [[nodiscard]] QgsProjectVersion versionAsNumber() const;
 
       /**
        * Returns TRUE if \a version is valid, FALSE otherwise.
        * \since QGIS 3.4
        */
-      bool versionIsValid( const QString version ) const;
+      [[nodiscard]] bool versionIsValid( const QString version ) const;
 
       /**
        * Returns BBOX if defined or an empty string.
        * \returns bbox parameter
        */
-      QString bbox() const;
+      [[nodiscard]] QString bbox() const;
 
       /**
        * Returns BBOX as a rectangle if defined and valid. An exception is
@@ -519,37 +519,37 @@ namespace QgsWms
        * \returns bbox as rectangle
        * \throws QgsBadRequestException
        */
-      QgsRectangle bboxAsRectangle() const;
+      [[nodiscard]] QgsRectangle bboxAsRectangle() const;
 
       /**
        * Returns SLD_body if defined or an empty string.
        * \returns sld body
        */
-      QString sldBody() const;
+      [[nodiscard]] QString sldBody() const;
 
       /**
        * Returns the list of feature selection found in SELECTION parameter.
        * \returns the list of selection
        */
-      QStringList selections() const;
+      [[nodiscard]] QStringList selections() const;
 
       /**
        * Returns the list of filters found in FILTER parameter.
        * \returns the list of filter
        */
-      QStringList filters() const;
+      [[nodiscard]] QStringList filters() const;
 
       /**
        * Returns the filter geometry found in FILTER_GEOM parameter.
        * \returns the filter geometry as Well Known Text.
        */
-      QString filterGeom() const;
+      [[nodiscard]] QString filterGeom() const;
 
       /**
        * Returns the list of opacities found in OPACITIES parameter.
        * \returns the list of opacities in string
        */
-      QStringList opacities() const;
+      [[nodiscard]] QStringList opacities() const;
 
       /**
        * Returns the list of opacities found in OPACITIES parameter as
@@ -558,79 +558,79 @@ namespace QgsWms
        * \returns a list of opacities as integers
        * \throws QgsBadRequestException
        */
-      QList<int> opacitiesAsInt() const;
+      [[nodiscard]] QList<int> opacitiesAsInt() const;
 
       /**
        * Returns nickname of layers found in LAYER and LAYERS parameters.
        * \returns nickname of layers
        */
-      QStringList allLayersNickname() const;
+      [[nodiscard]] QStringList allLayersNickname() const;
 
       /**
        * Returns nickname of layers found in QUERY_LAYERS parameter.
        * \returns nickname of layers
        */
-      QStringList queryLayersNickname() const;
+      [[nodiscard]] QStringList queryLayersNickname() const;
 
       /**
        * Returns styles found in STYLE and STYLES parameters.
        * \returns name of styles
        */
-      QStringList allStyles() const;
+      [[nodiscard]] QStringList allStyles() const;
 
       /**
        * Returns parameters for each layer found in LAYER/LAYERS.
        * \returns layer parameters
        */
-      QList<QgsWmsParametersLayer> layersParameters() const;
+      [[nodiscard]] QList<QgsWmsParametersLayer> layersParameters() const;
 
       /**
        * Returns FI_POLYGON_TOLERANCE parameter or an empty string if not
        * defined.
        * \since QGIS 3.4
        */
-      QString polygonTolerance() const;
+      [[nodiscard]] QString polygonTolerance() const;
 
       /**
        * Returns FI_LINE_TOLERANCE parameter or an empty string if not
        * defined.
        * \since QGIS 3.4
        */
-      QString lineTolerance() const;
+      [[nodiscard]] QString lineTolerance() const;
 
       /**
        * Returns FI_POINT_TOLERANCE parameter or an empty string if not
        * defined.
        * \since QGIS 3.4
        */
-      QString pointTolerance() const;
+      [[nodiscard]] QString pointTolerance() const;
 
       /**
        * Returns FI_POLYGON_TOLERANCE parameter as an integer.
        * \throws QgsBadRequestException
        * \since QGIS 3.4
        */
-      int polygonToleranceAsInt() const;
+      [[nodiscard]] int polygonToleranceAsInt() const;
 
       /**
        * Returns FI_LINE_TOLERANCE parameter as an integer.
        * \throws QgsBadRequestException
        * \since QGIS 3.4
        */
-      int lineToleranceAsInt() const;
+      [[nodiscard]] int lineToleranceAsInt() const;
 
       /**
        * Returns FI_POINT_TOLERANCE parameter as an integer.
        * \throws QgsBadRequestException
        * \since QGIS 3.4
        */
-      int pointToleranceAsInt() const;
+      [[nodiscard]] int pointToleranceAsInt() const;
 
       /**
        * Returns FORMAT parameter as a string.
        * \returns FORMAT parameter as string
        */
-      QString formatAsString() const;
+      [[nodiscard]] QString formatAsString() const;
 
       /**
        * Returns format parameter as a string.
@@ -643,72 +643,72 @@ namespace QgsWms
        * default value is PNG.
        * \returns format
        */
-      Format format() const;
+      [[nodiscard]] Format format() const;
 
       /**
        * Returns INFO_FORMAT parameter as a string.
        * \returns INFO_FORMAT parameter as string
        */
-      QString infoFormatAsString() const;
+      [[nodiscard]] QString infoFormatAsString() const;
 
       /**
        * Checks if INFO_FORMAT parameter is one of the image formats (PNG, JPG).
        * \returns TRUE if the INFO_FORMAT is an image format
        */
-      bool infoFormatIsImage() const;
+      [[nodiscard]] bool infoFormatIsImage() const;
 
       /**
        * Returns IMAGE_QUALITY parameter or an empty string if not
        * defined.
        * \since QGIS 3.4
        */
-      QString imageQuality() const;
+      [[nodiscard]] QString imageQuality() const;
 
       /**
        * Returns IMAGE_QUALITY parameter as an integer.
        * \throws QgsBadRequestException
        * \since QGIS 3.4
        */
-      int imageQualityAsInt() const;
+      [[nodiscard]] int imageQualityAsInt() const;
 
       /**
        * Returns TILED parameter or an empty string if not
        * defined.
        * \since QGIS 3.10
        */
-      QString tiled() const;
+      [[nodiscard]] QString tiled() const;
 
       /**
        * Returns TILED parameter as a boolean.
        * \throws QgsBadRequestException
        * \since QGIS 3.10
        */
-      bool tiledAsBool() const;
+      [[nodiscard]] bool tiledAsBool() const;
 
       /**
        * Returns true if layer groups shall be added to GetLegendGraphic results
        */
-      bool addLayerGroups() const;
+      [[nodiscard]] bool addLayerGroups() const;
 
       /**
        * Returns infoFormat. If the INFO_FORMAT parameter is not used, then the
        * default value is text/plain.
        * \returns infoFormat
        */
-      Format infoFormat() const;
+      [[nodiscard]] Format infoFormat() const;
 
       /**
        * Returns the infoFormat version for GML. If the INFO_FORMAT is not GML,
        * then the default value is -1.
        * \returns infoFormat version
        */
-      int infoFormatVersion() const;
+      [[nodiscard]] int infoFormatVersion() const;
 
       /**
        * Returns I parameter or an empty string if not defined.
        * \returns i parameter
        */
-      QString i() const;
+      [[nodiscard]] QString i() const;
 
       /**
        * Returns I parameter as an int or its default value if not
@@ -717,13 +717,13 @@ namespace QgsWms
        * \returns i parameter
        * \throws QgsBadRequestException
        */
-      int iAsInt() const;
+      [[nodiscard]] int iAsInt() const;
 
       /**
        * Returns J parameter or an empty string if not defined.
        * \returns j parameter
        */
-      QString j() const;
+      [[nodiscard]] QString j() const;
 
       /**
        * Returns J parameter as an int or its default value if not
@@ -732,13 +732,13 @@ namespace QgsWms
        * \returns j parameter
        * \throws QgsBadRequestException
        */
-      int jAsInt() const;
+      [[nodiscard]] int jAsInt() const;
 
       /**
        * Returns X parameter or an empty string if not defined.
        * \returns x parameter
        */
-      QString x() const;
+      [[nodiscard]] QString x() const;
 
       /**
        * Returns X parameter as an int or its default value if not
@@ -747,13 +747,13 @@ namespace QgsWms
        * \returns x parameter
        * \throws QgsBadRequestException
        */
-      int xAsInt() const;
+      [[nodiscard]] int xAsInt() const;
 
       /**
        * Returns Y parameter or an empty string if not defined.
        * \returns y parameter
        */
-      QString y() const;
+      [[nodiscard]] QString y() const;
 
       /**
        * Returns Y parameter as an int or its default value if not
@@ -762,19 +762,19 @@ namespace QgsWms
        * \returns j parameter
        * \throws QgsBadRequestException
        */
-      int yAsInt() const;
+      [[nodiscard]] int yAsInt() const;
 
       /**
        * Returns RULE parameter or an empty string if none is defined
        * \returns RULE parameter or an empty string if none is defined
        */
-      QString rule() const;
+      [[nodiscard]] QString rule() const;
 
       /**
        * Returns RULELABEL parameter or an empty string if none is defined
        * \returns RULELABEL parameter or an empty string if none is defined
        */
-      QString ruleLabel() const;
+      [[nodiscard]] QString ruleLabel() const;
 
       /**
        * Returns RULELABEL as a bool. An exception is raised if an invalid
@@ -782,13 +782,13 @@ namespace QgsWms
        * \returns ruleLabel
        * \throws QgsBadRequestException
        */
-      bool ruleLabelAsBool() const;
+      [[nodiscard]] bool ruleLabelAsBool() const;
 
       /**
        * Returns SHOWFEATURECOUNT parameter or an empty string if none is defined
        * \returns SHOWFEATURECOUNT parameter or an empty string if none is defined
        */
-      QString showFeatureCount() const;
+      [[nodiscard]] QString showFeatureCount() const;
 
       /**
        * Returns SHOWFEATURECOUNT as a bool. An exception is raised if an invalid
@@ -796,13 +796,13 @@ namespace QgsWms
        * \returns showFeatureCount
        * \throws QgsBadRequestException
        */
-      bool showFeatureCountAsBool() const;
+      [[nodiscard]] bool showFeatureCountAsBool() const;
 
       /**
        * Returns FEATURE_COUNT parameter or an empty string if none is defined
        * \returns FEATURE_COUNT parameter or an empty string if none is defined
        */
-      QString featureCount() const;
+      [[nodiscard]] QString featureCount() const;
 
       /**
        * Returns FEATURE_COUNT as an integer. An exception is raised if an invalid
@@ -810,13 +810,13 @@ namespace QgsWms
        * \returns FeatureCount
        * \throws QgsBadRequestException
        */
-      int featureCountAsInt() const;
+      [[nodiscard]] int featureCountAsInt() const;
 
       /**
        * Returns SCALE parameter or an empty string if none is defined
        * \returns SCALE parameter or an empty string if none is defined
        */
-      QString scale() const;
+      [[nodiscard]] QString scale() const;
 
       /**
        * Returns SCALE as a double. An exception is raised if an invalid
@@ -824,13 +824,13 @@ namespace QgsWms
        * \returns scale
        * \throws QgsBadRequestException
        */
-      double scaleAsDouble() const;
+      [[nodiscard]] double scaleAsDouble() const;
 
       /**
        * Returns BOXSPACE parameter or an empty string if not defined.
        * \returns BOXSPACE parameter or an empty string if not defined.
        */
-      QString boxSpace() const;
+      [[nodiscard]] QString boxSpace() const;
 
       /**
        * Returns BOXSPACE as a double or its default value if not defined.
@@ -838,13 +838,13 @@ namespace QgsWms
        * \returns boxSpace
        * \throws QgsBadRequestException
        */
-      double boxSpaceAsDouble() const;
+      [[nodiscard]] double boxSpaceAsDouble() const;
 
       /**
        * Returns LAYERSPACE parameter or an empty string if not defined.
        * \returns LAYERSPACE parameter or an empty string if not defined.
        */
-      QString layerSpace() const;
+      [[nodiscard]] QString layerSpace() const;
 
       /**
        * Returns LAYERSPACE as a double or its default value if not defined.
@@ -852,13 +852,13 @@ namespace QgsWms
        * \returns layerSpace
        * \throws QgsBadRequestException
        */
-      double layerSpaceAsDouble() const;
+      [[nodiscard]] double layerSpaceAsDouble() const;
 
       /**
        * Returns LAYERTITLESPACE parameter or an empty string if not defined.
        * \returns LAYERTITLESPACE parameter or an empty string if not defined.
        */
-      QString layerTitleSpace() const;
+      [[nodiscard]] QString layerTitleSpace() const;
 
       /**
        * Returns LAYERTITLESPACE as a double. An exception is raised if an invalid
@@ -866,13 +866,13 @@ namespace QgsWms
        * \returns layerTitleSpace
        * \throws QgsBadRequestException
        */
-      double layerTitleSpaceAsDouble() const;
+      [[nodiscard]] double layerTitleSpaceAsDouble() const;
 
       /**
        * Returns SYMBOLSPACE parameter or an empty string if not defined.
        * \returns SYMBOLSPACE parameter or an empty string if not defined.
        */
-      QString symbolSpace() const;
+      [[nodiscard]] QString symbolSpace() const;
 
       /**
        * Returns SYMBOLSPACE as a double or its default value if not defined.
@@ -880,13 +880,13 @@ namespace QgsWms
        * \returns symbolSpace
        * \throws QgsBadRequestException
        */
-      double symbolSpaceAsDouble() const;
+      [[nodiscard]] double symbolSpaceAsDouble() const;
 
       /**
        * Returns ICONLABELSPACE parameter or an empty string if not defined.
        * \returns ICONLABELSPACE parameter or an empty string if not defined.
        */
-      QString iconLabelSpace() const;
+      [[nodiscard]] QString iconLabelSpace() const;
 
       /**
        * Returns ICONLABELSPACE as a double or its default value if not
@@ -894,13 +894,13 @@ namespace QgsWms
        * \returns iconLabelSpace
        * \throws QgsBadRequestException
        */
-      double iconLabelSpaceAsDouble() const;
+      [[nodiscard]] double iconLabelSpaceAsDouble() const;
 
       /**
        * Returns SYMBOLWIDTH parameter or an empty string if not defined.
        * \returns SYMBOLWIDTH parameter or an empty string if not defined.
        */
-      QString symbolWidth() const;
+      [[nodiscard]] QString symbolWidth() const;
 
       /**
        * Returns SYMBOLWIDTH as a double or its default value if not defined.
@@ -908,13 +908,13 @@ namespace QgsWms
        * \returns symbolWidth
        * \throws QgsBadRequestException
        */
-      double symbolWidthAsDouble() const;
+      [[nodiscard]] double symbolWidthAsDouble() const;
 
       /**
        * Returns SYMBOLHEIGHT parameter or an empty string if not defined.
        * \returns SYMBOLHEIGHT parameter or an empty string if not defined.
        */
-      QString symbolHeight() const;
+      [[nodiscard]] QString symbolHeight() const;
 
       /**
        * Returns SYMBOLHEIGHT as a double or its default value if not defined.
@@ -922,26 +922,26 @@ namespace QgsWms
        * \returns symbolHeight
        * \throws QgsBadRequestException
        */
-      double symbolHeightAsDouble() const;
+      [[nodiscard]] double symbolHeightAsDouble() const;
 
       /**
        * Returns the layer font (built thanks to the LAYERFONTFAMILY,
        * LAYERFONTSIZE, LAYERFONTBOLD, ... parameters).
        * \returns layerFont
        */
-      QFont layerFont() const;
+      [[nodiscard]] QFont layerFont() const;
 
       /**
        * Returns LAYERFONTFAMILY parameter or an empty string if not defined.
        * \returns LAYERFONTFAMILY parameter or an empty string if not defined.
        */
-      QString layerFontFamily() const;
+      [[nodiscard]] QString layerFontFamily() const;
 
       /**
        * Returns LAYERFONTBOLD parameter or an empty string if not defined.
        * \returns LAYERFONTBOLD parameter or an empty string if not defined.
        */
-      QString layerFontBold() const;
+      [[nodiscard]] QString layerFontBold() const;
 
       /**
        * Returns LAYERFONTBOLD as a boolean or its default value if not
@@ -949,13 +949,13 @@ namespace QgsWms
        * \returns layerFontBold
        * \throws QgsBadRequestException
        */
-      bool layerFontBoldAsBool() const;
+      [[nodiscard]] bool layerFontBoldAsBool() const;
 
       /**
        * Returns LAYERFONTITALIC parameter or an empty string if not defined.
        * \returns LAYERFONTITALIC parameter or an empty string if not defined.
        */
-      QString layerFontItalic() const;
+      [[nodiscard]] QString layerFontItalic() const;
 
       /**
        * Returns LAYERFONTITALIC as a boolean or its default value if not
@@ -963,13 +963,13 @@ namespace QgsWms
        * \returns layerFontItalic
        * \throws QgsBadRequestException
        */
-      bool layerFontItalicAsBool() const;
+      [[nodiscard]] bool layerFontItalicAsBool() const;
 
       /**
        * Returns LAYERFONTSIZE parameter or an empty string if not defined.
        * \returns LAYERFONTSIZE parameter or an empty string if not defined.
        */
-      QString layerFontSize() const;
+      [[nodiscard]] QString layerFontSize() const;
 
       /**
        * Returns LAYERFONTSIZE as a double. An exception is raised if an invalid
@@ -977,13 +977,13 @@ namespace QgsWms
        * \returns layerFontSize
        * \throws QgsBadRequestException
        */
-      double layerFontSizeAsDouble() const;
+      [[nodiscard]] double layerFontSizeAsDouble() const;
 
       /**
        * Returns LAYERFONTCOLOR parameter or an empty string if not defined.
        * \returns LAYERFONTCOLOR parameter or an empty string if not defined.
        */
-      QString layerFontColor() const;
+      [[nodiscard]] QString layerFontColor() const;
 
       /**
        * Returns LAYERFONTCOLOR as a color or its defined value if not
@@ -991,26 +991,26 @@ namespace QgsWms
        * \returns layerFontColor
        * \throws QgsBadRequestException
        */
-      QColor layerFontColorAsColor() const;
+      [[nodiscard]] QColor layerFontColorAsColor() const;
 
       /**
        * Returns the item font (built thanks to the ITEMFONTFAMILY,
        * ITEMFONTSIZE, ITEMFONTBOLD, ... parameters).
        * \returns itemFont
        */
-      QFont itemFont() const;
+      [[nodiscard]] QFont itemFont() const;
 
       /**
        * Returns ITEMFONTFAMILY parameter or an empty string if not defined.
        * \returns ITEMFONTFAMILY parameter or an empty string if not defined.
        */
-      QString itemFontFamily() const;
+      [[nodiscard]] QString itemFontFamily() const;
 
       /**
        * Returns ITEMFONTBOLD parameter or an empty string if not defined.
        * \returns ITEMFONTBOLD parameter or an empty string if not defined.
        */
-      QString itemFontBold() const;
+      [[nodiscard]] QString itemFontBold() const;
 
       /**
        * Returns ITEMFONTBOLD as a boolean or its default value if not
@@ -1018,13 +1018,13 @@ namespace QgsWms
        * \returns itemFontBold
        * \throws QgsBadRequestException
        */
-      bool itemFontBoldAsBool() const;
+      [[nodiscard]] bool itemFontBoldAsBool() const;
 
       /**
        * Returns ITEMFONTITALIC parameter or an empty string if not defined.
        * \returns ITEMFONTITALIC parameter or an empty string if not defined.
        */
-      QString itemFontItalic() const;
+      [[nodiscard]] QString itemFontItalic() const;
 
       /**
        * Returns ITEMFONTITALIC as a boolean or its default value if not
@@ -1032,13 +1032,13 @@ namespace QgsWms
        * \returns itemFontItalic
        * \throws QgsBadRequestException
        */
-      bool itemFontItalicAsBool() const;
+      [[nodiscard]] bool itemFontItalicAsBool() const;
 
       /**
        * Returns ITEMFONTSIZE parameter or an empty string if not defined.
        * \returns ITEMFONTSIZE parameter or an empty string if not defined.
        */
-      QString itemFontSize() const;
+      [[nodiscard]] QString itemFontSize() const;
 
       /**
        * Returns ITEMFONTSIZE as a double. An exception is raised if an
@@ -1046,13 +1046,13 @@ namespace QgsWms
        * \returns itemFontSize
        * \throws QgsBadRequestException
        */
-      double itemFontSizeAsDouble() const;
+      [[nodiscard]] double itemFontSizeAsDouble() const;
 
       /**
        * Returns ITEMFONTCOLOR parameter or an empty string if not defined.
        * \returns ITEMFONTCOLOR parameter or an empty string if not defined.
        */
-      QString itemFontColor() const;
+      [[nodiscard]] QString itemFontColor() const;
 
       /**
        * Returns ITEMFONTCOLOR as a color. An exception is raised if an
@@ -1060,13 +1060,13 @@ namespace QgsWms
        * \returns itemFontColor
        * \throws QgsBadRequestException
        */
-      QColor itemFontColorAsColor() const;
+      [[nodiscard]] QColor itemFontColorAsColor() const;
 
       /**
        * Returns LAYERTITLE parameter or an empty string if not defined.
        * \returns LAYERTITLE parameter or an empty string if not defined.
        */
-      QString layerTitle() const;
+      [[nodiscard]] QString layerTitle() const;
 
       /**
        * Returns LAYERTITLE as a bool or its default value if not defined. An
@@ -1074,31 +1074,31 @@ namespace QgsWms
        * \returns layerTitle
        * \throws QgsBadRequestException
        */
-      bool layerTitleAsBool() const;
+      [[nodiscard]] bool layerTitleAsBool() const;
 
       /**
        * Returns legend settings
        * \returns legend settings
        */
-      QgsLegendSettings legendSettings() const;
+      [[nodiscard]] QgsLegendSettings legendSettings() const;
 
       /**
        * Returns parameters for each highlight layer.
        * \returns parameters for each highlight layer
        */
-      QList<QgsWmsParametersHighlightLayer> highlightLayersParameters() const;
+      [[nodiscard]] QList<QgsWmsParametersHighlightLayer> highlightLayersParameters() const;
 
       /**
        * Returns parameters for each external layer.
        * \since QGIS 3.8
        */
-      QList<QgsWmsParametersExternalLayer> externalLayersParameters() const;
+      [[nodiscard]] QList<QgsWmsParametersExternalLayer> externalLayersParameters() const;
 
       /**
        * Returns HIGHLIGHT_GEOM as a list of string in WKT.
        * \returns highlight geometries
        */
-      QStringList highlightGeom() const;
+      [[nodiscard]] QStringList highlightGeom() const;
 
       /**
        * Returns HIGHLIGHT_GEOM as a list of geometries. An exception is
@@ -1106,25 +1106,25 @@ namespace QgsWms
        * \returns highlight geometries
        * \throws QgsBadRequestException
        */
-      QList<QgsGeometry> highlightGeomAsGeom() const;
+      [[nodiscard]] QList<QgsGeometry> highlightGeomAsGeom() const;
 
       /**
        * Returns HIGHLIGHT_SYMBOL as a list of string.
        * \returns highlight sld symbols
        */
-      QStringList highlightSymbol() const;
+      [[nodiscard]] QStringList highlightSymbol() const;
 
       /**
        * Returns HIGHLIGHT_LABELSTRING as a list of string.
        * \returns highlight label string
        */
-      QStringList highlightLabelString() const;
+      [[nodiscard]] QStringList highlightLabelString() const;
 
       /**
        * Returns HIGHLIGHT_LABELCOLOR as a list of string.
        * \returns highlight label color
        */
-      QStringList highlightLabelColor() const;
+      [[nodiscard]] QStringList highlightLabelColor() const;
 
       /**
        * Returns HIGHLIGHT_LABELCOLOR as a list of color. An exception is
@@ -1132,13 +1132,13 @@ namespace QgsWms
        * \returns highlight label color
        * \throws QgsBadRequestException
        */
-      QList<QColor> highlightLabelColorAsColor() const;
+      [[nodiscard]] QList<QColor> highlightLabelColorAsColor() const;
 
       /**
        * Returns HIGHLIGHT_LABELSIZE as a list of string.
        * \returns highlight label size
        */
-      QStringList highlightLabelSize() const;
+      [[nodiscard]] QStringList highlightLabelSize() const;
 
       /**
        * Returns HIGHLIGHT_LABELSIZE as a list of int An exception is raised
@@ -1146,13 +1146,13 @@ namespace QgsWms
        * \returns highlight label size
        * \throws QgsBadRequestException
        */
-      QList<int> highlightLabelSizeAsInt() const;
+      [[nodiscard]] QList<int> highlightLabelSizeAsInt() const;
 
       /**
        * Returns HIGHLIGHT_LABELWEIGHT as a list of string.
        * \returns highlight label weight
        */
-      QStringList highlightLabelWeight() const;
+      [[nodiscard]] QStringList highlightLabelWeight() const;
 
       /**
        * Returns HIGHLIGHT_LABELWEIGHT as a list of int. An exception is
@@ -1160,19 +1160,19 @@ namespace QgsWms
        * \returns highlight label weight
        * \throws QgsBadRequestException
        */
-      QList<int> highlightLabelWeightAsInt() const;
+      [[nodiscard]] QList<int> highlightLabelWeightAsInt() const;
 
       /**
        * Returns HIGHLIGHT_LABELFONT
        * \returns highlight label font
        */
-      QStringList highlightLabelFont() const;
+      [[nodiscard]] QStringList highlightLabelFont() const;
 
       /**
        * Returns HIGHLIGHT_LABELBUFFERSIZE
        * \returns highlight label buffer size
        */
-      QStringList highlightLabelBufferSize() const;
+      [[nodiscard]] QStringList highlightLabelBufferSize() const;
 
       /**
        * Returns HIGHLIGHT_LABELBUFFERSIZE as a list of float. An exception is
@@ -1180,13 +1180,13 @@ namespace QgsWms
        * \returns highlight label buffer size
        * \throws QgsBadRequestException
        */
-      QList<double> highlightLabelBufferSizeAsFloat() const;
+      [[nodiscard]] QList<double> highlightLabelBufferSizeAsFloat() const;
 
       /**
        * Returns HIGHLIGHT_LABELBUFFERCOLOR as a list of string.
        * \returns highlight label buffer color
        */
-      QStringList highlightLabelBufferColor() const;
+      [[nodiscard]] QStringList highlightLabelBufferColor() const;
 
       /**
        * Returns HIGHLIGHT_LABELBUFFERCOLOR as a list of colors. An axception
@@ -1194,37 +1194,37 @@ namespace QgsWms
        * \returns highlight label buffer color
        * \throws QgsBadRequestException
        */
-      QList<QColor> highlightLabelBufferColorAsColor() const;
+      [[nodiscard]] QList<QColor> highlightLabelBufferColorAsColor() const;
 
       /**
        * Returns HIGHLIGHT_LABEL_ROTATION as a list of double.
        * \returns highlight label rotation
        */
-      QList<double> highlightLabelRotation() const;
+      [[nodiscard]] QList<double> highlightLabelRotation() const;
 
       /**
        * Returns HIGHLIGHT_LABEL_DISTANCE as a list of double.
        * \returns highlight label distance
        */
-      QList<double> highlightLabelDistance() const;
+      [[nodiscard]] QList<double> highlightLabelDistance() const;
 
       /**
        * Returns HIGHLIGHT_LABEL_HORIZONTAL_ALIGNMENT as a list of string.
        * \returns highlight label horizontal alignment strings
        */
-      QStringList highlightLabelHorizontalAlignment() const;
+      [[nodiscard]] QStringList highlightLabelHorizontalAlignment() const;
 
       /**
        * Returns HIGHLIGHT_LABEL_VERTICAL_ALIGNMENT as a list of string.
        * \returns highlight label vertical alignment strings
        */
-      QStringList highlightLabelVerticalAlignment() const;
+      [[nodiscard]] QStringList highlightLabelVerticalAlignment() const;
 
       /**
        * Returns WMS_PRECISION parameter or an empty string if not defined.
        * \returns wms precision parameter
        */
-      QString wmsPrecision() const;
+      [[nodiscard]] QString wmsPrecision() const;
 
       /**
        * Returns WMS_PRECISION parameter as an int or its default value if not
@@ -1233,13 +1233,13 @@ namespace QgsWms
        * \returns wms precision parameter
        * \throws QgsBadRequestException
        */
-      int wmsPrecisionAsInt() const;
+      [[nodiscard]] int wmsPrecisionAsInt() const;
 
       /**
        * Returns TRANSPARENT parameter or an empty string if not defined.
        * \returns TRANSPARENT parameter
        */
-      QString transparent() const;
+      [[nodiscard]] QString transparent() const;
 
       /**
        * Returns TRANSPARENT parameter as a bool or its default value if not
@@ -1248,13 +1248,13 @@ namespace QgsWms
        * \returns transparent parameter
        * \throws QgsBadRequestException
        */
-      bool transparentAsBool() const;
+      [[nodiscard]] bool transparentAsBool() const;
 
       /**
        * Returns BGCOLOR parameter or an empty string if not defined.
        * \returns BGCOLOR parameter
        */
-      QString backgroundColor() const;
+      [[nodiscard]] QString backgroundColor() const;
 
       /**
        * Returns BGCOLOR parameter as a QColor or its default value if not
@@ -1263,13 +1263,13 @@ namespace QgsWms
        * \returns background color parameter
        * \throws QgsBadRequestException
        */
-      QColor backgroundColorAsColor() const;
+      [[nodiscard]] QColor backgroundColorAsColor() const;
 
       /**
        * Returns DPI parameter or an empty string if not defined.
        * \returns DPI parameter
        */
-      QString dpi() const;
+      [[nodiscard]] QString dpi() const;
 
       /**
        * Returns DPI parameter as an int or its default value if not
@@ -1278,13 +1278,13 @@ namespace QgsWms
        * \returns dpi parameter
        * \throws QgsBadRequestException
        */
-      double dpiAsDouble() const;
+      [[nodiscard]] double dpiAsDouble() const;
 
       /**
        * Returns TEMPLATE parameter or an empty string if not defined.
        * \returns TEMPLATE parameter
        */
-      QString composerTemplate() const;
+      [[nodiscard]] QString composerTemplate() const;
 
       /**
        * Returns the requested parameters for a composer map parameter.
@@ -1295,33 +1295,33 @@ namespace QgsWms
        * \returns parameters for the composer map.
        * \throws QgsBadRequestException
        */
-      QgsWmsParametersComposerMap composerMapParameters( int mapId ) const;
+      [[nodiscard]] QgsWmsParametersComposerMap composerMapParameters( int mapId ) const;
 
       /**
        * Returns the external WMS uri
        * \param id the id of the external wms
        * \return uri string or an empty string if the external wms id does not exist
        */
-      QString externalWMSUri( const QString &id ) const;
+      [[nodiscard]] QString externalWMSUri( const QString &id ) const;
 
       /**
        * Returns if the client wants the feature info response with geometry information
        * \returns TRUE if geometry information is requested for feature info response
        */
-      bool withGeometry() const;
+      [[nodiscard]] bool withGeometry() const;
 
       /**
        * \brief withMapTipAsString
        * \returns WITH_MAPTIP parameter as string
        * \since QGIS 3.36
        */
-      QString withMapTipAsString() const;
+      [[nodiscard]] QString withMapTipAsString() const;
 
       /**
        * \brief withMapTip
        * \returns TRUE if maptip information is requested for feature info response
        */
-      bool withMapTip() const;
+      [[nodiscard]] bool withMapTip() const;
 
       /**
        * Returns TRUE if only maptip information is requested for HTML
@@ -1329,20 +1329,20 @@ namespace QgsWms
        * \returns htmlInfoOnlyMapTip
        * \since QGIS 3.36
        */
-      bool htmlInfoOnlyMapTip() const;
+      [[nodiscard]] bool htmlInfoOnlyMapTip() const;
 
       /**
        * \brief withDisplayName
        * \returns TRUE if the display name is requested for feature info response
        * \since QGIS 3.32
        */
-      bool withDisplayName() const;
+      [[nodiscard]] bool withDisplayName() const;
 
       /**
        * Returns WMTVER parameter or an empty string if not defined.
        * \since QGIS 3.4
        */
-      QString wmtver() const;
+      [[nodiscard]] QString wmtver() const;
 
       /**
        * Returns a layout parameter thanks to its \a id.
@@ -1358,43 +1358,43 @@ namespace QgsWms
        * \returns The ATLAS_PK parameter
        * \since QGIS 3.6
       */
-      QStringList atlasPk() const;
+      [[nodiscard]] QStringList atlasPk() const;
 
       /**
        * Returns the DXF LAYERATTRIBUTES parameter.
        * \since QGIS 3.8
        */
-      QStringList dxfLayerAttributes() const;
+      [[nodiscard]] QStringList dxfLayerAttributes() const;
 
       /**
        * Returns the DXF USE_TITLE_AS_LAYERNAME parameter.
        * \since QGIS 3.8
        */
-      bool dxfUseLayerTitleAsName() const;
+      [[nodiscard]] bool dxfUseLayerTitleAsName() const;
 
       /**
        * Returns the DXF SCALE parameter.
        * \since QGIS 3.8
        */
-      double dxfScale() const;
+      [[nodiscard]] double dxfScale() const;
 
       /**
        * Returns the DXF MODE parameter.
        * \since QGIS 3.8
        */
-      Qgis::FeatureSymbologyExport dxfMode() const;
+      [[nodiscard]] Qgis::FeatureSymbologyExport dxfMode() const;
 
       /**
        * Returns the DXF CODEC parameter.
        * \since QGIS 3.8
        */
-      QString dxfCodec() const;
+      [[nodiscard]] QString dxfCodec() const;
 
       /**
        * Returns the dimensions parameter.
        * \since QGIS 3.10
        */
-      QMap<QString, QString> dimensionValues() const;
+      [[nodiscard]] QMap<QString, QString> dimensionValues() const;
 
       /**
        * \returns true if the FORCE_MTEXT parameter is set and the DXF should
@@ -1402,7 +1402,7 @@ namespace QgsWms
        *
        * \since QGIS 3.12
        */
-      bool noMText() const;
+      [[nodiscard]] bool noMText() const;
 
       /**
        * \returns true if the FORCE_2D parameter is set and the DXF should
@@ -1410,68 +1410,68 @@ namespace QgsWms
        *
        * \since QGIS 3.12
        */
-      bool isForce2D() const;
+      [[nodiscard]] bool isForce2D() const;
 
       /**
        * \returns true if the lines are export to dxf with minimal (hairline) width
        *
        * \since QGIS 3.38
        */
-      bool exportLinesWithZeroWidth() const;
+      [[nodiscard]] bool exportLinesWithZeroWidth() const;
 
       /**
        * Returns if a geospatial PDF shall be exported
        * \since QGIS 3.32
        */
-      bool writeGeospatialPdf() const;
+      [[nodiscard]] bool writeGeospatialPdf() const;
 
       /**
        * Returns if pdf should be exported as vector
        * \since QGIS 3.32
        */
-      bool pdfForceVectorOutput() const;
+      [[nodiscard]] bool pdfForceVectorOutput() const;
 
       /**
        * Returns true if georeference info shall be added to the pdf
        * \since QGIS 3.32
        */
-      bool pdfAppendGeoreference() const;
+      [[nodiscard]] bool pdfAppendGeoreference() const;
 
       /**
        * Returns if geometries shall to be simplified
        * \since QGIS 3.32
        */
-      bool pdfSimplifyGeometries() const;
+      [[nodiscard]] bool pdfSimplifyGeometries() const;
 
       /**
        * Returns true if metadata shall be added to the pdf
        * \since QGIS 3.32
        */
-      bool pdfExportMetadata() const;
+      [[nodiscard]] bool pdfExportMetadata() const;
 
       /**
        * Returns text render format for pdf export
        * \since QGIS 3.32
        */
-      Qgis::TextRenderFormat pdfTextRenderFormat() const;
+      [[nodiscard]] Qgis::TextRenderFormat pdfTextRenderFormat() const;
 
       /**
        * Returns true if images embedded in pdf must be compressed using a lossless algorithm
        * \since QGIS 3.32
        */
-      bool pdfLosslessImageCompression() const;
+      [[nodiscard]] bool pdfLosslessImageCompression() const;
 
       /**
        * Returns true if rasters shall be untiled in the pdf
        * \since QGIS 3.32
        */
-      bool pdfDisableTiledRasterRendering() const;
+      [[nodiscard]] bool pdfDisableTiledRasterRendering() const;
 
       /**
        * Returns true, if Iso32000 georeferencing shall be used
        * \since QGIS 3.32
        */
-      bool pdfUseIso32000ExtensionFormatGeoreferencing() const;
+      [[nodiscard]] bool pdfUseIso32000ExtensionFormatGeoreferencing() const;
 
       /**
        * Returns true if OGC best practice georeferencing shall be used
@@ -1484,24 +1484,24 @@ namespace QgsWms
        * Returns map themes for geospatial PDF export
        * \since QGIS 3.32
        */
-      QStringList pdfExportMapThemes() const;
+      [[nodiscard]] QStringList pdfExportMapThemes() const;
 
       /**
        * Returns list of map scales
        * \since QGIS 3.32
        */
-      QVector<qreal> pdfPredefinedMapScales() const;
+      [[nodiscard]] QVector<qreal> pdfPredefinedMapScales() const;
 
-      QString version() const override;
+      [[nodiscard]] QString version() const override;
 
-      QString request() const override;
+      [[nodiscard]] QString request() const override;
 
       /**
        * Returns the format options for an output format. Possible template types are QgsWmsParameters::PdfFormatOption or QgsWmsParameters::DxfFormatOption
        * \returns a key-value map
        * \since QGIS 3.32
        */
-      template<typename T> QMap<T, QString> formatOptions() const
+      template<typename T> [[nodiscard]] QMap<T, QString> formatOptions() const
       {
         QMap<T, QString> options;
         const QMetaEnum metaEnum( QMetaEnum::fromType<T>() );
@@ -1533,14 +1533,14 @@ namespace QgsWms
 
       void save( const QgsWmsParameter &parameter, bool multi = false );
 
-      QgsWmsParameter idParameter( QgsWmsParameter::Name name, int id ) const;
+      [[nodiscard]] QgsWmsParameter idParameter( QgsWmsParameter::Name name, int id ) const;
 
       void raiseError( const QString &msg ) const;
       void log( const QString &msg, const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() ) const;
 
-      QgsWmsParametersExternalLayer externalLayerParameter( const QString &name ) const;
+      [[nodiscard]] QgsWmsParametersExternalLayer externalLayerParameter( const QString &name ) const;
 
-      QMultiMap<QString, QgsWmsParametersFilter> layerFilters( const QStringList &layers ) const;
+      [[nodiscard]] QMultiMap<QString, QgsWmsParametersFilter> layerFilters( const QStringList &layers ) const;
 
 
       QMultiMap<QgsWmsParameter::Name, QgsWmsParameter> mWmsParameters;

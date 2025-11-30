@@ -149,14 +149,14 @@ class CORE_EXPORT QgsGeometryPaintDevice: public QPaintDevice
      */
     void setSimplificationTolerance( double tolerance );
 
-    QPaintEngine *paintEngine() const override;
+    [[nodiscard]] QPaintEngine *paintEngine() const override;
 
-    int metric( PaintDeviceMetric metric ) const override;
+    [[nodiscard]] int metric( PaintDeviceMetric metric ) const override;
 
     /**
      * Returns the rendered geometry.
      */
-    const QgsAbstractGeometry &geometry() const;
+    [[nodiscard]] const QgsAbstractGeometry &geometry() const;
 
     /**
      * Converts a painter \a path to a QgsGeometry.

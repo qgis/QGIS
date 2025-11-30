@@ -68,7 +68,7 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
      * Returns the filter for the item types to show in the combo box.
      * \see setItemType()
      */
-    QgsLayoutItemRegistry::ItemType itemType() const;
+    [[nodiscard]] QgsLayoutItemRegistry::ItemType itemType() const;
 
     /**
      * Sets a list of specific items to exclude from the combo box.
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
      * Returns the list of specific items excluded from the combo box.
      * \see setExceptedItemList()
      */
-    QList<QgsLayoutItem *> exceptedItemList() const;
+    [[nodiscard]] QList<QgsLayoutItem *> exceptedItemList() const;
 
     /**
      * Sets whether an optional empty layout item is present in the combobox.
@@ -94,7 +94,7 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
      * \see setAllowEmptyItem()
      * \since QGIS 3.8
      */
-    bool allowEmptyItem() const;
+    [[nodiscard]] bool allowEmptyItem() const;
 
     /**
      * Sets layout item flags to use for filtering the available items.
@@ -114,18 +114,18 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
      * \see setItemFlags()
      * \since QGIS 3.16
      */
-    QgsLayoutItem::Flags itemFlags() const;
+    [[nodiscard]] QgsLayoutItem::Flags itemFlags() const;
 
     /**
      * Returns the item currently shown at the specified \a index within the combo box.
      * \see currentItem()
      */
-    QgsLayoutItem *item( int index ) const;
+    [[nodiscard]] QgsLayoutItem *item( int index ) const;
 
     /**
      * Returns the item currently selected in the combo box.
      */
-    QgsLayoutItem *currentItem() const;
+    [[nodiscard]] QgsLayoutItem *currentItem() const;
 
   public slots:
 

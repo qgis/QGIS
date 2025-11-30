@@ -40,7 +40,7 @@ class GUI_EXPORT QgsAttributeFormRelationEditorWidget : public QgsAttributeFormW
     explicit QgsAttributeFormRelationEditorWidget( QgsRelationWidgetWrapper *wrapper, QgsAttributeForm *form );
 
     void createSearchWidgetWrappers( const QgsAttributeEditorContext &context = QgsAttributeEditorContext() ) override;
-    QString currentFilterExpression() const override;
+    [[nodiscard]] QString currentFilterExpression() const override;
 
     /**
      * Set multiple feature to edit simultaneously.

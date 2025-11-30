@@ -393,7 +393,7 @@ void TestQgsLegendRenderer::testMultiline()
 
   QgsLayerTreeModel legendModel( mRoot );
 
-  legendModel.findLegendNode( mVL1->id(), QString() );
+  ( void ) legendModel.findLegendNode( mVL1->id(), QString() );
 
   QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL1 );
   layer->setCustomProperty( QStringLiteral( "legend/title-label" ), QStringLiteral( "some legend text\nwith newline\ncharacters in it" ) );
@@ -413,7 +413,7 @@ void TestQgsLegendRenderer::testOverrideSize()
 
   QgsLayerTreeModel legendModel( mRoot );
 
-  legendModel.findLegendNode( mVL1->id(), QString() );
+  ( void ) legendModel.findLegendNode( mVL1->id(), QString() );
 
   QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL1 );
   layer->setPatchSize( QSizeF( 30, 0 ) );
@@ -446,7 +446,7 @@ void TestQgsLegendRenderer::testOverrideSizeSmall()
 
   QgsLayerTreeModel legendModel( mRoot );
 
-  legendModel.findLegendNode( mVL1->id(), QString() );
+  ( void ) legendModel.findLegendNode( mVL1->id(), QString() );
 
   QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL1 );
   layer->setPatchSize( QSizeF( 30, 0 ) );

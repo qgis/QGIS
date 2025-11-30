@@ -43,7 +43,7 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommand : public QgsVectorLayerUn
     /**
      * Returns error status
      */
-    bool hasError() const { return mHasError; }
+    [[nodiscard]] bool hasError() const { return mHasError; }
 
   protected:
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommand : public QgsVectorLayerUn
      * Returns the error message or an empty string if there's none.
      *
      */
-    QString errorMessage() const;
+    [[nodiscard]] QString errorMessage() const;
 
   private:
     QString mError;
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandAddFeatures : public QgsVe
     /**
      * List of features (added feaures can be modified by default values from database)
      */
-    QgsFeatureList features() const { return mFeatures; }
+    [[nodiscard]] QgsFeatureList features() const { return mFeatures; }
 
   private:
     QgsFeatureList mFeatures;

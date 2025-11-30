@@ -39,12 +39,12 @@ class QgsHanaException final : public QException
 
     void raise() const override { throw *this; }
 
-    QgsHanaException *clone() const override
+    [[nodiscard]] QgsHanaException *clone() const override
     {
       return new QgsHanaException( *this );
     }
 
-    char const *what() const noexcept override
+    [[nodiscard]] char const *what() const noexcept override
     {
       return mMessage.c_str();
     }

@@ -50,12 +50,12 @@ class CORE_EXPORT QgsValidityCheckRegistry
     /**
      * Returns the list of available checks.
      */
-    QList<const QgsAbstractValidityCheck *> checks() const;
+    [[nodiscard]] QList<const QgsAbstractValidityCheck *> checks() const;
 
     /**
      * Returns the list of all available checks of the matching \a type.
      */
-    QList<const QgsAbstractValidityCheck *> checks( int type ) const;
+    [[nodiscard]] QList<const QgsAbstractValidityCheck *> checks( int type ) const;
 
     /**
      * Adds a \a check to the registry. Ownership of the check
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsValidityCheckRegistry
     /**
      * Returns a list containing new copies of all available checks of the matching \a type.
      */
-    std::vector<std::unique_ptr< QgsAbstractValidityCheck > > createChecks( int type ) const SIP_FACTORY;
+    [[nodiscard]] std::vector<std::unique_ptr< QgsAbstractValidityCheck > > createChecks( int type ) const SIP_FACTORY;
 
     //! Available checks, owned by this class
     QList< QgsAbstractValidityCheck * > mChecks;

@@ -49,7 +49,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      * \see setFieldMap()
      * \see addMappedField()
      */
-    QMap< QString, QgsProperty > fieldMap() const { return mFieldMap; }
+    [[nodiscard]] QMap< QString, QgsProperty > fieldMap() const { return mFieldMap; }
 
     /**
      * Sets the field mapping, which defines how to map the values from incoming features to destination
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      *
      * \see setSourceCrs()
      */
-    QgsCoordinateReferenceSystem sourceCrs() const { return mSourceCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem sourceCrs() const { return mSourceCrs; }
 
     /**
      * Sets the \a source crs used for reprojecting incoming features to the sink's destination CRS.
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      *
      * \see setDestinationCrs()
      */
-    QgsCoordinateReferenceSystem destinationCrs() const { return mDestinationCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem destinationCrs() const { return mDestinationCrs; }
 
     /**
      * Sets the \a destination crs used for reprojecting incoming features to the sink's destination CRS.
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      *
      * \see setDestinationWkbType()
      */
-    Qgis::WkbType destinationWkbType() const { return mDestinationWkbType; }
+    [[nodiscard]] Qgis::WkbType destinationWkbType() const { return mDestinationWkbType; }
 
     /**
      * Sets the WKB geometry \a type for the destination.
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      *
      * \see setDestinationFields()
      */
-    QgsFields destinationFields() const { return mDestinationFields; }
+    [[nodiscard]] QgsFields destinationFields() const { return mDestinationFields; }
 
     /**
      * Sets the \a fields for the destination sink.
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      * \see loadVariant()
      */
-    QVariant toVariant() const;
+    [[nodiscard]] QVariant toVariant() const;
 
     /**
      * Loads this remapping definition from a QVariantMap, wrapped in a QVariant.

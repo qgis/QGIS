@@ -66,7 +66,7 @@ class CORE_EXPORT QgsTextMaskSettings
     /**
      * Returns whether the mask is enabled.
      */
-    bool enabled() const;
+    [[nodiscard]] bool enabled() const;
 
     /**
      * Returns whether the mask is enabled.
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsTextMaskSettings
      * Returns the type of mask shape.
      * \see setType()
      */
-    MaskType type() const;
+    [[nodiscard]] MaskType type() const;
 
     /**
      * Sets the type of mask shape.
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsTextMaskSettings
      * \see sizeUnit()
      * \see setSize()
      */
-    double size() const;
+    [[nodiscard]] double size() const;
 
     /**
      * Sets the size of the buffer. The size units are specified using setSizeUnit().
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsTextMaskSettings
      * \see size()
      * \see setSizeUnit()
      */
-    Qgis::RenderUnit sizeUnit() const;
+    [[nodiscard]] Qgis::RenderUnit sizeUnit() const;
 
     /**
      * Sets the units used for the buffer size.
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsTextMaskSettings
      * \see setSizeMapUnitScale()
      * \see sizeUnit()
      */
-    QgsMapUnitScale sizeMapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale sizeMapUnitScale() const;
 
     /**
      * Sets the map unit scale object for the buffer size. This is only used if the
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsTextMaskSettings
      * Returns the buffer join style.
      * \see setJoinStyle
      */
-    Qt::PenJoinStyle joinStyle() const;
+    [[nodiscard]] Qt::PenJoinStyle joinStyle() const;
 
     /**
      * Sets the join style used for drawing the buffer.
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsTextMaskSettings
      * opaque).
      * \see setOpacity()
      */
-    double opacity() const;
+    [[nodiscard]] double opacity() const;
 
     /**
      * Sets the mask's opacity.
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsTextMaskSettings
      * \returns paint effect
      * \see setPaintEffect()
      */
-    QgsPaintEffect *paintEffect() const;
+    [[nodiscard]] QgsPaintEffect *paintEffect() const;
 
     /**
      * Sets the current paint \a effect for the mask.
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsTextMaskSettings
      * \returns a list of references to masked symbol layers
      * \see setMaskedSymbolLayers()
      */
-    QList<QgsSymbolLayerReference> maskedSymbolLayers() const;
+    [[nodiscard]] QList<QgsSymbolLayerReference> maskedSymbolLayers() const;
 
     /**
      * Sets the symbol layers that will be masked by this buffer.
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsTextMaskSettings
      * Returns all field names referenced by the configuration (e.g. from data defined properties).
      * \since QGIS 3.14
      */
-    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+    [[nodiscard]] QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 
   private:
 

@@ -90,49 +90,49 @@ class GUI_EXPORT QgsDetailedItemData
      * Returns the item's title.
      * \see setTitle()
      */
-    QString title() const;
+    [[nodiscard]] QString title() const;
 
     /**
      * Returns the detailed description for the item.
      * \see setDetail()
      */
-    QString detail() const;
+    [[nodiscard]] QString detail() const;
 
     /**
      * Returns the item's category.
      * \see setCategory()
      */
-    QString category() const;
+    [[nodiscard]] QString category() const;
 
     /**
      * Returns the item's icon.
      * \see setIcon()
      */
-    QPixmap icon() const;
+    [[nodiscard]] QPixmap icon() const;
 
     /**
      * Returns TRUE if the item is checkable.
      * \see setCheckable()
      */
-    bool isCheckable() const;
+    [[nodiscard]] bool isCheckable() const;
 
     /**
      * Returns TRUE if the item is checked.
      * \see setChecked()
      */
-    bool isChecked() const;
+    [[nodiscard]] bool isChecked() const;
 
     /**
      * Returns TRUE if the item is enabled.
      * \see setEnabled()
      */
-    bool isEnabled() const;
+    [[nodiscard]] bool isEnabled() const;
 
     /**
      * Returns TRUE if the item will be rendered using a widget.
      * \see setRenderAsWidget()
      */
-    bool isRenderedAsWidget() const;
+    [[nodiscard]] bool isRenderedAsWidget() const;
 
   private:
     QString mTitle;

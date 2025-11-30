@@ -284,7 +284,7 @@ class QgsMssqlProviderMetadata final : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsMssqlProviderMetadata();
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
@@ -304,7 +304,7 @@ class QgsMssqlProviderMetadata final : public QgsProviderMetadata
       QString &createdLayerUri
     ) override;
     QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    [[nodiscard]] QList<QgsDataItemProvider *> dataItemProviders() const override;
     QgsTransaction *createTransaction( const QString &connString ) override;
 
     // Connections API
@@ -315,9 +315,9 @@ class QgsMssqlProviderMetadata final : public QgsProviderMetadata
     void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
 
     // Data source URI API
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
 
 
   private:

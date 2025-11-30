@@ -43,7 +43,7 @@ struct QgsHanaLayerProperty
     bool isValid = false;
     QString errorMessage;
 
-    QString defaultName() const
+    [[nodiscard]] QString defaultName() const
     {
       QString ret = tableName;
       if ( !isUnique && !geometryColName.isEmpty() )
@@ -51,7 +51,7 @@ struct QgsHanaLayerProperty
       return ret;
     }
 
-    bool isGeometryValid() const { return type != Qgis::WkbType::Unknown && srid >= 0; }
+    [[nodiscard]] bool isGeometryValid() const { return type != Qgis::WkbType::Unknown && srid >= 0; }
 };
 
 class QIcon;
@@ -68,9 +68,9 @@ class QgsHanaTableModel : public QgsAbstractDbTableModel
   public:
     QgsHanaTableModel( QObject *parent = nullptr );
 
-    QStringList columns() const override;
-    int defaultSearchColumn() const override;
-    bool searchableColumn( int column ) const override;
+    [[nodiscard]] QStringList columns() const override;
+    [[nodiscard]] int defaultSearchColumn() const override;
+    [[nodiscard]] bool searchableColumn( int column ) const override;
 
     //! Adds entry for one database table to the model
     void addTableEntry( const QString &connName, const QgsHanaLayerProperty &property );
@@ -79,7 +79,7 @@ class QgsHanaTableModel : public QgsAbstractDbTableModel
     void setSql( const QModelIndex &index, const QString &sql ) override;
 
     //! Returns the number of tables in the model
-    int tableCount() const { return mTableCount; }
+    [[nodiscard]] int tableCount() const { return mTableCount; }
 
     enum Columns
     {

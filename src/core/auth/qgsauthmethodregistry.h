@@ -61,10 +61,10 @@ class CORE_EXPORT QgsAuthMethodRegistry
     Q_DECL_DEPRECATED QString library( const QString &authMethodKey ) const SIP_DEPRECATED;
 
     //! Returns list of auth method plugins found
-    QString pluginList( bool asHtml = false ) const;
+    [[nodiscard]] QString pluginList( bool asHtml = false ) const;
 
     //! Returns library directory where plugins are found
-    QDir libraryDirectory() const;
+    [[nodiscard]] QDir libraryDirectory() const;
 
     //! Sets library directory where to search for plugins
     void setLibraryDirectory( const QDir &path );
@@ -93,10 +93,10 @@ class CORE_EXPORT QgsAuthMethodRegistry
     QWidget *editWidget( const QString &authMethodKey, QWidget *parent = nullptr );
 
     //! Returns list of available auth methods by their keys
-    QStringList authMethodList() const;
+    [[nodiscard]] QStringList authMethodList() const;
 
     //! Returns metadata of the auth method or NULLPTR if not found
-    const QgsAuthMethodMetadata *authMethodMetadata( const QString &authMethodKey ) const;
+    [[nodiscard]] const QgsAuthMethodMetadata *authMethodMetadata( const QString &authMethodKey ) const;
 
     //! Type for auth method metadata associative container
     typedef std::map<QString, QgsAuthMethodMetadata *> AuthMethods;

@@ -58,18 +58,18 @@ class QgsOgrDbSourceSelect : public QgsAbstractDbSourceSelect
     void dbChanged();
 
     //! Returns the QSettings key name
-    QString ogrDriverName() const { return mOgrDriverName; }
+    [[nodiscard]] QString ogrDriverName() const { return mOgrDriverName; }
 
     //! Returns the name of the managed layers, needs to be translatable
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     //! Returns the extensions of the managed layers, needs to be translatable
-    QString extension() const { return mExtension; }
+    [[nodiscard]] QString extension() const { return mExtension; }
 
     //! Open file selector to add new connection
     static bool newConnection( QWidget *parent );
 
-    QString settingPath() const override;
+    [[nodiscard]] QString settingPath() const override;
 
   public slots:
 

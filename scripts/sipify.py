@@ -2763,7 +2763,7 @@ def process_misc_keywords():
         r"^(\s*)?\[\[maybe_unused\]\](\s*)?", r"\1\2", CONTEXT.current_line
     )
     CONTEXT.current_line = re.sub(
-        r"^(\s*)?\[\[nodiscard\]\](\s*)?", r"\1\2", CONTEXT.current_line
+        r"(.*?)\[\[nodiscard\]\]\s*", r"\1", CONTEXT.current_line
     )
     CONTEXT.current_line = re.sub(r"\s*\bQ_DECL_DEPRECATED\b", "", CONTEXT.current_line)
     CONTEXT.current_line = re.sub(

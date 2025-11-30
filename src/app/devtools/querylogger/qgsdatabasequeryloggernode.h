@@ -37,14 +37,14 @@ class QgsDatabaseQueryLoggerRootNode final : public QgsDevToolsModelGroup
 {
   public:
     QgsDatabaseQueryLoggerRootNode();
-    QVariant data( int role = Qt::DisplayRole ) const final;
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const final;
 
     /**
      * Removes a \a row from the root group.
      */
     void removeRow( int row );
 
-    QVariant toVariant() const override;
+    [[nodiscard]] QVariant toVariant() const override;
 };
 
 
@@ -78,9 +78,9 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
      * specified \a query details.
      */
     QgsDatabaseQueryLoggerQueryGroup( const QgsDatabaseQueryLogEntry &query );
-    QVariant data( int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const override;
     QList<QAction *> actions( QObject *parent ) final;
-    QVariant toVariant() const override;
+    [[nodiscard]] QVariant toVariant() const override;
 
     /**
      * Called when the \a query is finished.
@@ -92,7 +92,7 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
     /**
      * Returns the query's status.
      */
-    Status status() const { return mStatus; }
+    [[nodiscard]] Status status() const { return mStatus; }
 
     /**
      * Set the query \a status
@@ -112,7 +112,7 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
     /**
      * Returns the group SQL.
      */
-    const QString &sql() const;
+    [[nodiscard]] const QString &sql() const;
 
   private:
     QString mSql;

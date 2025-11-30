@@ -76,9 +76,9 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     void resolveReferences( QgsProject *project );
 
     //! Quick way to test if there is any join at all
-    bool containsJoins() const { return !mVectorJoins.isEmpty(); }
+    [[nodiscard]] bool containsJoins() const { return !mVectorJoins.isEmpty(); }
 
-    const QgsVectorJoinList &vectorJoins() const { return mVectorJoins; }
+    [[nodiscard]] const QgsVectorJoinList &vectorJoins() const { return mVectorJoins; }
 
     /**
      * Finds the vector join for a layer field index.
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * \param field the field of a target layer
      * \returns a list of vector joins
      */
-    QList<const QgsVectorLayerJoinInfo *> joinsWhereFieldIsId( const QgsField &field ) const;
+    [[nodiscard]] QList<const QgsVectorLayerJoinInfo *> joinsWhereFieldIsId( const QgsField &field ) const;
 
     /**
      * Returns the joined feature corresponding to the feature.
@@ -134,12 +134,12 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      * \returns TRUE if the join information is about auxiliary layer, FALSE otherwise
      *
      */
-    bool isAuxiliaryJoin( const QgsVectorLayerJoinInfo &info ) const;
+    [[nodiscard]] bool isAuxiliaryJoin( const QgsVectorLayerJoinInfo &info ) const;
 
     /**
      * Create a copy of the join buffer
      */
-    QgsVectorLayerJoinBuffer *clone() const SIP_FACTORY;
+    [[nodiscard]] QgsVectorLayerJoinBuffer *clone() const SIP_FACTORY;
 
     /**
      * Adds a list of features in joined layers. Features given in parameter

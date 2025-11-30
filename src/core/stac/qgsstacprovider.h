@@ -46,20 +46,20 @@ class CORE_EXPORT QgsStacProvider
     QgsStacProvider( const QString &name, const QString &description, const QStringList &roles, const QString &url );
 
     //! Returns the name of the organization or the individual.
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Returns a multi-line description to add further provider information such as processing details
      * for processors and producers, hosting details for hosts or basic contact information.
      * CommonMark 0.29 syntax MAY be used for rich text representation.
      */
-    QString description() const;
+    [[nodiscard]] QString description() const;
 
     //! Returns the roles of the provider. Any of licensor, producer, processor or host.
-    QStringList roles() const;
+    [[nodiscard]] QStringList roles() const;
 
     //! Returns the url of a homepage on which the provider describes the dataset and publishes contact information.
-    QString url() const;
+    [[nodiscard]] QString url() const;
 
   private:
     QString mName;

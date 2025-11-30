@@ -43,7 +43,7 @@ class GUI_EXPORT QgsLayoutLabelWidget : public QgsLayoutItemBaseWidget, public Q
     //! constructor
     explicit QgsLayoutLabelWidget( QgsLayoutItemLabel *label );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
     /**
      * Populates the specified \a menu with actions reflecting dynamic text expressions applicable for a \a layout.

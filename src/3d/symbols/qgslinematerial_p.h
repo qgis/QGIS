@@ -59,13 +59,13 @@ class QgsLineMaterial : public QgsMaterial
     QgsLineMaterial();
 
     void setLineColor( const QColor &color );
-    QColor lineColor() const;
+    [[nodiscard]] QColor lineColor() const;
 
     void setUseVertexColors( bool enabled );
-    bool useVertexColors() const;
+    [[nodiscard]] bool useVertexColors() const;
 
     void setLineWidth( float width );
-    float lineWidth() const;
+    [[nodiscard]] float lineWidth() const;
 
     Q_INVOKABLE void setViewportSize( const QSizeF &viewportSize );
 

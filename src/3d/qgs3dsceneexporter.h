@@ -81,36 +81,36 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
      * Saves the scene to a .obj file
      * Returns FALSE if the operation failed
      */
-    bool save( const QString &sceneName, const QString &sceneFolderPath, int precision = 6 ) const;
+    [[nodiscard]] bool save( const QString &sceneName, const QString &sceneFolderPath, int precision = 6 ) const;
 
     //! Sets whether the triangles will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
     //! Returns whether the triangles will look smooth
-    bool smoothEdges() const { return mSmoothEdges; }
+    [[nodiscard]] bool smoothEdges() const { return mSmoothEdges; }
 
     //! Sets whether the normals will be exported
     void setExportNormals( bool exportNormals ) { mExportNormals = exportNormals; }
     //! Returns whether the normals will be exported
-    bool exportNormals() const { return mExportNormals; }
+    [[nodiscard]] bool exportNormals() const { return mExportNormals; }
 
     //! Sets whether the textures will be exported
     void setExportTextures( bool exportTextures ) { mExportTextures = exportTextures; }
     //! Returns whether the textures will be exported
-    bool exportTextures() const { return mExportTextures; }
+    [[nodiscard]] bool exportTextures() const { return mExportTextures; }
 
     //! Sets the terrain resolution
     void setTerrainResolution( int resolution ) { mTerrainResolution = resolution; }
     //! Returns the terrain resolution
-    int terrainResolution() const { return mTerrainResolution; }
+    [[nodiscard]] int terrainResolution() const { return mTerrainResolution; }
 
     //! Sets the terrain texture resolution
     void setTerrainTextureResolution( int resolution ) { mTerrainTextureResolution = resolution; }
     //! Returns the terrain resolution
-    int terrainTextureResolution() const { return mTerrainTextureResolution; }
+    [[nodiscard]] int terrainTextureResolution() const { return mTerrainTextureResolution; }
     //! Sets the scale of the exported 3D model
     void setScale( float scale ) { mScale = scale; }
     //! Returns the scale of the exported 3D model
-    float scale() const { return mScale; }
+    [[nodiscard]] float scale() const { return mScale; }
 
   private:
     //! Constructs Qgs3DExportObject from instanced point geometry

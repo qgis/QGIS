@@ -48,10 +48,10 @@ class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
     };
 
     QgsPointCloudAttributeStatisticsModel( QgsPointCloudLayer *layer, QObject *parent );
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
   private:
     QgsPointCloudLayer *mLayer = nullptr;
@@ -72,10 +72,10 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     };
 
     QgsPointCloudClassificationStatisticsModel( QgsPointCloudLayer *layer, const QString &attribute, QObject *parent );
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
   private:
     QgsPointCloudLayer *mLayer = nullptr;

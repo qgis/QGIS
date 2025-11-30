@@ -38,11 +38,11 @@ class QgsAuthBasicMethod : public QgsAuthMethod
     explicit QgsAuthBasicMethod();
 
     // QgsAuthMethod interface
-    QString key() const override;
+    [[nodiscard]] QString key() const override;
 
-    QString description() const override;
+    [[nodiscard]] QString description() const override;
 
-    QString displayDescription() const override;
+    [[nodiscard]] QString displayDescription() const override;
 
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
@@ -66,7 +66,7 @@ class QgsAuthBasicMethod : public QgsAuthMethod
 
     void removeMethodConfig( const QString &authcfg );
 
-    QString escapeUserPass( const QString &val, QChar delim = '\'' ) const;
+    [[nodiscard]] QString escapeUserPass( const QString &val, QChar delim = '\'' ) const;
 
     static QMap<QString, QgsAuthMethodConfig> sAuthConfigCache;
 };
@@ -77,7 +77,7 @@ class QgsAuthBasicMethodMetadata : public QgsAuthMethodMetadata
     QgsAuthBasicMethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthBasicMethod::AUTH_METHOD_KEY, QgsAuthBasicMethod::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthBasicMethod *createAuthMethod() const override { return new QgsAuthBasicMethod; }
+    [[nodiscard]] QgsAuthBasicMethod *createAuthMethod() const override { return new QgsAuthBasicMethod; }
     //QStringList supportedDataProviders() const override;
 };
 

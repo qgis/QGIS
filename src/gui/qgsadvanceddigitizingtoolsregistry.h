@@ -50,13 +50,13 @@ class GUI_EXPORT QgsAdvancedDigitizingToolAbstractMetadata
     virtual ~QgsAdvancedDigitizingToolAbstractMetadata() = default;
 
     //! Returns the tool's unique name
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     //! Returns the tool's translatable user-friendly name
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     //! Returns the tool's icon
-    QIcon icon() const { return mIcon; }
+    [[nodiscard]] QIcon icon() const { return mIcon; }
 
     //! Returns new tool of this type. Return NULLPTR on error
     virtual QgsAdvancedDigitizingTool *createTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) SIP_FACTORY;
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsAdvancedDigitizingToolMetadata : public QgsAdvancedDigitizin
     {}
 
     //! Returns the tool creation function
-    QgsAdvancedDigitizingToolFunc toolFunction() const { return mToolFunc; }
+    [[nodiscard]] QgsAdvancedDigitizingToolFunc toolFunction() const { return mToolFunc; }
 
     //! Sets the tool creation \a function.
     void setToolFunction( const QgsAdvancedDigitizingToolFunc &function ) { mToolFunc = function; }
@@ -139,7 +139,7 @@ class GUI_EXPORT QgsAdvancedDigitizingToolsRegistry
     QgsAdvancedDigitizingToolAbstractMetadata *toolMetadata( const QString &name );
 
     //! Returns the list of registered tool names
-    const QStringList toolMetadataNames() const;
+    [[nodiscard]] const QStringList toolMetadataNames() const;
 
   private:
 #ifdef SIP_RUN

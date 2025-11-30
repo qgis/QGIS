@@ -52,7 +52,7 @@ class GUI_EXPORT QgsFieldCalculator : public QDialog, private Ui::QgsFieldCalcul
      *
      * \returns The field index if attribute values were calculated or -1, e.g. in case of geometry changes.
      */
-    int changedAttributeId() const { return mAttributeId; }
+    [[nodiscard]] int changedAttributeId() const { return mAttributeId; }
 
   public slots:
     void accept() override;

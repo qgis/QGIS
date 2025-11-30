@@ -202,52 +202,52 @@ class CORE_EXPORT QgsPointLocator : public QObject
           }
         }
 
-        QgsPointLocator::Type type() const { return mType; }
+        [[nodiscard]] QgsPointLocator::Type type() const { return mType; }
 
-        bool isValid() const { return mType != Invalid; }
+        [[nodiscard]] bool isValid() const { return mType != Invalid; }
         //! Returns TRUE if the Match is a vertex
-        bool hasVertex() const { return mType == Vertex; }
+        [[nodiscard]] bool hasVertex() const { return mType == Vertex; }
         //! Returns TRUE if the Match is an edge
-        bool hasEdge() const { return mType == Edge; }
+        [[nodiscard]] bool hasEdge() const { return mType == Edge; }
         //! Returns TRUE if the Match is a centroid
-        bool hasCentroid() const { return mType == Centroid; }
+        [[nodiscard]] bool hasCentroid() const { return mType == Centroid; }
         //! Returns TRUE if the Match is an area
-        bool hasArea() const { return mType == Area; }
+        [[nodiscard]] bool hasArea() const { return mType == Area; }
         //! Returns TRUE if the Match is the middle of a segment
-        bool hasMiddleSegment() const { return mType == MiddleOfSegment; }
+        [[nodiscard]] bool hasMiddleSegment() const { return mType == MiddleOfSegment; }
 
         /**
          * Returns TRUE if the Match is a line endpoint (start or end vertex).
          *
          * \since QGIS 3.20
          */
-        bool hasLineEndpoint() const { return mType == LineEndpoint; }
+        [[nodiscard]] bool hasLineEndpoint() const { return mType == LineEndpoint; }
 
         /**
          * for vertex / edge match
          * units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
          */
-        double distance() const { return mDist; }
+        [[nodiscard]] double distance() const { return mDist; }
 
         /**
          * for vertex / edge match
          * coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
          */
-        QgsPointXY point() const { return mPoint; }
+        [[nodiscard]] QgsPointXY point() const { return mPoint; }
 
         //! for vertex / edge match (first vertex of the edge)
-        int vertexIndex() const { return mVertexIndex; }
+        [[nodiscard]] int vertexIndex() const { return mVertexIndex; }
 
         /**
          * The vector layer where the snap occurred.
          * Will be NULLPTR if the snap happened on an intersection.
          */
-        QgsVectorLayer *layer() const { return mLayer; }
+        [[nodiscard]] QgsVectorLayer *layer() const { return mLayer; }
 
         /**
          * The id of the feature to which the snapped geometry belongs.
          */
-        QgsFeatureId featureId() const { return mFid; }
+        [[nodiscard]] QgsFeatureId featureId() const { return mFid; }
 
         //! Only for a valid edge match - obtain endpoints of the edge
         void edgePoints( QgsPointXY &pt1 SIP_OUT, QgsPointXY &pt2 SIP_OUT ) const
@@ -262,7 +262,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
          * The parameter \a destinationCrs depends of where the instance of this Match is created (geom.cache: layer CRS, map canvas snapper: dest CRS)
          * \since QGIS 3.10
          */
-        QgsPoint interpolatedPoint( const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem() ) const
+        [[nodiscard]] QgsPoint interpolatedPoint( const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem() ) const
         {
           QgsPoint point;
 

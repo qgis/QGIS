@@ -56,16 +56,16 @@ class CORE_EXPORT QgsProviderSublayerItem final: public QgsLayerItem
      * \param filePath path to file (for sublayer items which directly represent a file)
      */
     QgsProviderSublayerItem( QgsDataItem *parent, const QString &name, const QgsProviderSublayerDetails &details, const QString &filePath );
-    QString layerName() const override;
+    [[nodiscard]] QString layerName() const override;
     QVector<QgsDataItem *> createChildren() override;
-    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
+    [[nodiscard]] QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
     /**
      * Returns the sublayer details for the item.
      *
      * \since QGIS 3.28
      */
-    QgsProviderSublayerDetails sublayerDetails() const;
+    [[nodiscard]] QgsProviderSublayerDetails sublayerDetails() const;
 
   private:
 
@@ -100,8 +100,8 @@ class CORE_EXPORT QgsFileDataCollectionGroupItem final: public QgsDataCollection
      */
     void appendSublayer( const QgsProviderSublayerDetails &sublayer );
 
-    bool hasDragEnabled() const override;
-    QgsMimeDataUtils::UriList mimeUris() const override;
+    [[nodiscard]] bool hasDragEnabled() const override;
+    [[nodiscard]] QgsMimeDataUtils::UriList mimeUris() const override;
 
   private:
 
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsFileBasedDataItemProvider : public QgsDataItemProvider
   public:
 
     QString name() override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override SIP_FACTORY;
 
     /**

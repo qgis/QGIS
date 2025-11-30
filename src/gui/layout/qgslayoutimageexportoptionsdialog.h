@@ -58,7 +58,7 @@ class GUI_EXPORT QgsLayoutImageExportOptionsDialog : public QDialog, private Ui:
      * \returns image resolution in DPI
      * \see setResolution()
      */
-    double resolution() const;
+    [[nodiscard]] double resolution() const;
 
     /**
      * Sets the target image size. This is used to calculate the default size in pixels
@@ -71,13 +71,13 @@ class GUI_EXPORT QgsLayoutImageExportOptionsDialog : public QDialog, private Ui:
      * Returns the user-set image width in pixels.
      * \see imageHeight
      */
-    int imageWidth() const;
+    [[nodiscard]] int imageWidth() const;
 
     /**
      * Returns the user-set image height in pixels.
      * \see imageWidth
      */
-    int imageHeight() const;
+    [[nodiscard]] int imageHeight() const;
 
     /**
      * Sets whether the crop to contents option should be checked in the dialog
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsLayoutImageExportOptionsDialog : public QDialog, private Ui:
      * Returns whether the crop to contents option is checked in the dialog.
      * \see setCropToContents()
      */
-    bool cropToContents() const;
+    [[nodiscard]] bool cropToContents() const;
 
     /**
      * Sets whether the generate world file option should be checked.
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsLayoutImageExportOptionsDialog : public QDialog, private Ui:
      * Returns whether the generate world file option is checked in the dialog.
      * \see setGenerateWorldFile()
      */
-    bool generateWorldFile() const;
+    [[nodiscard]] bool generateWorldFile() const;
 
     /**
      * Sets whether antialiasing should be used in the export.
@@ -114,7 +114,7 @@ class GUI_EXPORT QgsLayoutImageExportOptionsDialog : public QDialog, private Ui:
      * Returns whether antialiasing should be used in the export.
      * \see setAntialiasing()
      */
-    bool antialiasing() const;
+    [[nodiscard]] bool antialiasing() const;
 
     /**
      * Fetches the current crop to contents margin values, in pixels.
@@ -137,13 +137,13 @@ class GUI_EXPORT QgsLayoutImageExportOptionsDialog : public QDialog, private Ui:
     //! Sets whether to open the pdf after exporting it
     void setOpenAfterExporting( bool enabled );
     //! Returns whether the pdf should be opened after exporting it
-    bool openAfterExporting() const;
+    [[nodiscard]] bool openAfterExporting() const;
 
 
     //! Sets the image quality (for JPEG)
     void setQuality( int quality );
     //! Returns the image quality
-    int quality() const;
+    [[nodiscard]] int quality() const;
 
   private slots:
 
@@ -154,7 +154,7 @@ class GUI_EXPORT QgsLayoutImageExportOptionsDialog : public QDialog, private Ui:
     void showHelp();
 
   private:
-    bool shouldShowQuality() const;
+    [[nodiscard]] bool shouldShowQuality() const;
     QSizeF mImageSize;
     QString mFileExtension;
 };

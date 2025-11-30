@@ -102,13 +102,13 @@ class CORE_EXPORT QgsAbstractProjectStoredObjectManager : public QgsProjectStore
     /**
      * Returns the list of objects contained within the manager.
      */
-    QList< T * > objects() const;
+    [[nodiscard]] QList< T * > objects() const;
 
     /**
      * Returns the object with a matching name, or NULLPTR if no matching objects
      * were found.
      */
-    T *objectByName( const QString &name ) const;
+    [[nodiscard]] T *objectByName( const QString &name ) const;
 
   protected:
 

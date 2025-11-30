@@ -55,7 +55,7 @@ class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
      * Gets the helper over all the registered access control filters
      * \returns the access control helper
      */
-    QgsAccessControl *accessControls() const override { return mAccessControls; }
+    [[nodiscard]] QgsAccessControl *accessControls() const override { return mAccessControls; }
 
 
     /**
@@ -71,9 +71,9 @@ class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
      * \returns the server cache helper
      * \since QGIS 3.4
      */
-    QgsServerCacheManager *cacheManager() const override;
+    [[nodiscard]] QgsServerCacheManager *cacheManager() const override;
 
-    QString getEnv( const QString &name ) const override;
+    [[nodiscard]] QString getEnv( const QString &name ) const override;
     QString configFilePath() override { return mConfigFilePath; }
     void setConfigFilePath( const QString &configFilePath ) override;
     void setFilters( QgsServerFiltersMap *filters ) override;

@@ -34,8 +34,8 @@ Constructor for QgsCombinedStyleModel with the specified ``parent``
 object.
 %End
 
-     virtual QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const;
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
 
     void addStyle( QgsStyle *style );
 %Docstring

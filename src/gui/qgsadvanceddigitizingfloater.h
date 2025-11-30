@@ -81,7 +81,7 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     * \param item floater item
     * \since QGIS 3.32
     */
-    bool itemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item ) const;
+    [[nodiscard]] bool itemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item ) const;
 
   public slots:
 

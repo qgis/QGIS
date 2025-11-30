@@ -58,7 +58,7 @@ class CORE_EXPORT QgsTemporalRangeObject
      *
      * \see setIsTemporal()
     */
-    bool isTemporal() const;
+    [[nodiscard]] bool isTemporal() const;
 
     /**
      * Sets the temporal \a range for the object.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsTemporalRangeObject
      *
      * \see setTemporalRange()
     */
-    const QgsDateTimeRange &temporalRange() const;
+    [[nodiscard]] const QgsDateTimeRange &temporalRange() const;
 
   private:
 

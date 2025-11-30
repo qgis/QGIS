@@ -87,7 +87,7 @@ class APP_EXPORT QgsClipboard : public QObject
     /**
      * Returns a copy of features on the internal clipboard.
      */
-    QgsFeatureList copyOf( const QgsFields &fields = QgsFields() ) const;
+    [[nodiscard]] QgsFeatureList copyOf( const QgsFields &fields = QgsFields() ) const;
 
     /**
      * Clears the internal clipboard.
@@ -102,18 +102,18 @@ class APP_EXPORT QgsClipboard : public QObject
     /**
      * Returns TRUE if the internal clipboard is empty, else FALSE.
      */
-    bool isEmpty() const;
+    [[nodiscard]] bool isEmpty() const;
 
     /**
      * Returns a copy of features on the internal clipboard, transformed
      * from the clipboard CRS to the destCRS.
      */
-    QgsFeatureList transformedCopyOf( const QgsCoordinateReferenceSystem &destCRS, const QgsFields &fields = QgsFields() ) const;
+    [[nodiscard]] QgsFeatureList transformedCopyOf( const QgsCoordinateReferenceSystem &destCRS, const QgsFields &fields = QgsFields() ) const;
 
     /**
      * Get the clipboard CRS
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Stores a MimeData together with a text into the system clipboard
@@ -129,20 +129,20 @@ class APP_EXPORT QgsClipboard : public QObject
      * Proxy to QMimeData::hasFormat
      * Tests whether the system clipboard contains data of a given MIME type
      */
-    bool hasFormat( const QString &mimeType ) const;
+    [[nodiscard]] bool hasFormat( const QString &mimeType ) const;
 
     /**
      * Retrieve data from the system clipboard.
      * No copy is involved, since the return QByteArray is implicitly shared
      */
-    QByteArray data( const QString &mimeType ) const;
+    [[nodiscard]] QByteArray data( const QString &mimeType ) const;
 
     /**
      * Source fields
      */
-    QgsFields fields() const;
+    [[nodiscard]] QgsFields fields() const;
 
-    QgsMapLayer *layer() const;
+    [[nodiscard]] QgsMapLayer *layer() const;
 
     /**
      * Pastes clipboard features to a new memory layer.
@@ -179,14 +179,14 @@ class APP_EXPORT QgsClipboard : public QObject
      * \param fields fields for resultant features
      * \returns list of features if conversion was successful
      */
-    QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields ) const;
+    [[nodiscard]] QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields ) const;
 
     /**
      * Attempts to parse the clipboard contents and return a QgsFields object representing the fields
      * present in the clipboard.
      * \note Only valid for text based clipboard contents
      */
-    QgsFields retrieveFields() const;
+    [[nodiscard]] QgsFields retrieveFields() const;
 
     /**
      * QGIS-internal vector feature clipboard.

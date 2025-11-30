@@ -38,7 +38,7 @@ class APP_EXPORT QgsMeshSelectByExpressionDialog : public QDialog, private Ui::Q
     QgsMeshSelectByExpressionDialog( QWidget *parent = nullptr );
 
     //! Returns the text expression defined in the dialog
-    QString expression() const;
+    [[nodiscard]] QString expression() const;
 
   signals:
     //! Emitted when one of the select tool button is clicked
@@ -57,7 +57,7 @@ class APP_EXPORT QgsMeshSelectByExpressionDialog : public QDialog, private Ui::Q
     QAction *mActionAddToSelection = nullptr;
     QAction *mActionRemoveFromSelection = nullptr;
 
-    QgsMesh::ElementType currentElementType() const;
+    [[nodiscard]] QgsMesh::ElementType currentElementType() const;
 };
 
 #endif // QGSMESHSELECTBYEXPRESSIONDIALOG_H

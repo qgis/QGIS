@@ -151,23 +151,23 @@ class CORE_EXPORT QgsLayerDefinition
         explicit DependencySorter( const QString &fileName );
 
         //! Gets the layer nodes in an order where they can be loaded incrementally without dependency break
-        QVector<QDomNode> sortedLayerNodes() const { return mSortedLayerNodes; }
+        [[nodiscard]] QVector<QDomNode> sortedLayerNodes() const { return mSortedLayerNodes; }
 
         //! Gets the layer IDs in an order where they can be loaded incrementally without dependency break
-        QStringList sortedLayerIds() const { return mSortedLayerIds; }
+        [[nodiscard]] QStringList sortedLayerIds() const { return mSortedLayerIds; }
 
         //! Whether some cyclic dependency has been detected
-        bool hasCycle() const { return mHasCycle; }
+        [[nodiscard]] bool hasCycle() const { return mHasCycle; }
 
         //! Whether some dependency is missing
-        bool hasMissingDependency() const { return mHasMissingDependency; }
+        [[nodiscard]] bool hasMissingDependency() const { return mHasMissingDependency; }
 
         /**
          * Returns whether the layer associated with the\a layerId is dependent from another layer
          *
          * \since QGIS 3.32
          */
-        bool isLayerDependent( const QString &layerId ) const;
+        [[nodiscard]] bool isLayerDependent( const QString &layerId ) const;
 
       private:
         QVector<QDomNode> mSortedLayerNodes;

@@ -70,17 +70,17 @@ namespace QgsWms
       /**
        * Returns WMS parameters.
        */
-      QgsWmsParameters parameters() const;
+      [[nodiscard]] QgsWmsParameters parameters() const;
 
       /**
        * Returns settings of the server.
        */
-      const QgsServerSettings &settings() const;
+      [[nodiscard]] const QgsServerSettings &settings() const;
 
       /**
        * Returns the project.
        */
-      const QgsProject *project() const;
+      [[nodiscard]] const QgsProject *project() const;
 
       /**
        * Sets or unsets a rendering flag according to the \a on value.
@@ -92,36 +92,36 @@ namespace QgsWms
        * \param flag The flag to test
        * \returns true if the rendering option is activated, false otherwise
        */
-      bool testFlag( Flag flag ) const;
+      [[nodiscard]] bool testFlag( Flag flag ) const;
 
       /**
        * Returns a list of all layers read from the project.
        */
-      QList<QgsMapLayer *> layers() const;
+      [[nodiscard]] QList<QgsMapLayer *> layers() const;
 
       /**
        * Returns a list of all layers to actually render according to the
        * current configuration.
        */
-      QList<QgsMapLayer *> layersToRender() const;
+      [[nodiscard]] QList<QgsMapLayer *> layersToRender() const;
 
       /**
        * Returns a SLD document for a specific layer. An empty document is
        * returned if not available.
        */
-      QDomElement sld( const QgsMapLayer &layer ) const;
+      [[nodiscard]] QDomElement sld( const QgsMapLayer &layer ) const;
 
       /**
        * Returns a style's name for a specific layer. An empty string is
        * returned if not available.
        */
-      QString style( const QgsMapLayer &layer ) const;
+      [[nodiscard]] QString style( const QgsMapLayer &layer ) const;
 
       /**
        * Returns the scale denominator to use for rendering according to the
        * current configuration.
        */
-      double scaleDenominator() const;
+      [[nodiscard]] double scaleDenominator() const;
 
       /**
        * Sets a custom scale denominator. In this case, layers to render are
@@ -133,26 +133,26 @@ namespace QgsWms
        * Returns true if the extent has to be updated before the rendering,
        * false otherwise.
        */
-      bool updateExtent() const;
+      [[nodiscard]] bool updateExtent() const;
 
       /**
        * Returns WMS parameters for a specific layer. An empty instance is
        * returned if not available.
        */
-      QgsWmsParametersLayer parameters( const QgsMapLayer &layer ) const;
+      [[nodiscard]] QgsWmsParametersLayer parameters( const QgsMapLayer &layer ) const;
 
       /**
        * Returns the image quality to use for rendering according to the
        * current configuration.
        */
-      int imageQuality() const;
+      [[nodiscard]] int imageQuality() const;
 
       /**
        * Returns the tile buffer value to use for rendering according to the
        * current configuration.
        * \since QGIS 3.10
        */
-      int tileBuffer() const;
+      [[nodiscard]] int tileBuffer() const;
 
       /**
        * Returns TRUE if WMS requests should use the QgsMapSettings::RenderMapTile flag,
@@ -163,85 +163,85 @@ namespace QgsWms
        *
        * \since QGIS 3.18
        */
-      bool renderMapTiles() const;
+      [[nodiscard]] bool renderMapTiles() const;
 
       /**
        * Returns the precision to use according to the current configuration.
        */
-      int precision() const;
+      [[nodiscard]] int precision() const;
 
       /**
        * Returns the nickname (short name, id or name) of the layer according
        * to the current configuration.
        */
-      QString layerNickname( const QgsMapLayer &layer ) const;
+      [[nodiscard]] QString layerNickname( const QgsMapLayer &layer ) const;
 
       /**
        * Returns the layer corresponding to the nickname, or a nullptr if not
        * found or if the layer do not need to be rendered.
        */
-      QgsMapLayer *layer( const QString &nickname ) const;
+      [[nodiscard]] QgsMapLayer *layer( const QString &nickname ) const;
 
       /**
        * Returns true if the layer has to be rendered, false otherwise.
        */
-      bool isValidLayer( const QString &nickname ) const;
+      [[nodiscard]] bool isValidLayer( const QString &nickname ) const;
 
       /**
        * Returns the group's layers list corresponding to the nickname, or
        * an empty list if not found.
        */
-      QList<QgsMapLayer *> layersFromGroup( const QString &nickname ) const;
+      [[nodiscard]] QList<QgsMapLayer *> layersFromGroup( const QString &nickname ) const;
 
       /**
        * Returns true if \a name is a group.
        */
-      bool isValidGroup( const QString &name ) const;
+      [[nodiscard]] bool isValidGroup( const QString &name ) const;
 
       /**
        * Returns default dots per mm according to the current configuration.
        */
-      qreal dotsPerMm() const;
+      [[nodiscard]] qreal dotsPerMm() const;
 
       /**
        * Returns a list of query layer names where group names are replaced by the names of their layer components.
        * \since QGIS 3.8
        */
-      QStringList flattenedQueryLayers( const QStringList &layerNames ) const;
+      [[nodiscard]] QStringList flattenedQueryLayers( const QStringList &layerNames ) const;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
       /**
        * Returns the access control interface.
        */
-      QgsAccessControl *accessControl() const;
+      [[nodiscard]] QgsAccessControl *accessControl() const;
 #endif
 
       /**
        * Returns a map having layer group names as keys and a list of layers as values.
        * \since QGIS 3.8
        */
-      QMap<QString, QList<QgsMapLayer *>> layerGroups() const;
+      [[nodiscard]] QMap<QString, QList<QgsMapLayer *>> layerGroups() const;
 
       /**
        * Returns the tile buffer in geographical units for the given map width in pixels.
        * \since QGIS 3.10
        */
-      double mapTileBuffer( int mapWidth ) const;
+      [[nodiscard]] double mapTileBuffer( int mapWidth ) const;
 
       /**
        * Returns the size (in pixels) of the map to render, according to width
        * and height WMS parameters as well as the \a aspectRatio option.
        * \since QGIS 3.8
        */
-      QSize mapSize( bool aspectRatio = true ) const;
+      [[nodiscard]] QSize mapSize( bool aspectRatio = true ) const;
 
       /**
        * Returns true if width and height are valid according to the maximum
        * values defined within the project, false otherwise.
        * \since QGIS 3.8
        */
-      bool isValidWidthHeight() const;
+      [[nodiscard]] bool isValidWidthHeight() const;
 
       /**
        * Returns true if width and height are valid according to the maximum image width/height
@@ -249,23 +249,23 @@ namespace QgsWms
        * \param height the image height in pixels
        * \since QGIS 3.22
        */
-      bool isValidWidthHeight( int width, int height ) const;
+      [[nodiscard]] bool isValidWidthHeight( int width, int height ) const;
 
       /**
        * Returns WIDTH or SRCWIDTH according to \a UseSrcWidthHeight flag.
        */
-      int mapWidth() const;
+      [[nodiscard]] int mapWidth() const;
 
       /**
        * Returns HEIGHT or SRCHEIGHT according to \a UseSrcWidthHeight flag.
        */
-      int mapHeight() const;
+      [[nodiscard]] int mapHeight() const;
 
       /**
        * Returns true if the layer is an external layer, false otherwise.
        * \since QGIS 3.16
        */
-      bool isExternalLayer( const QString &name ) const;
+      [[nodiscard]] bool isExternalLayer( const QString &name ) const;
 
       /**
        * Sets the response feedback.
@@ -277,7 +277,7 @@ namespace QgsWms
        * Returns the response feedback if any
        * \since QGIS 3.36
        */
-      QgsFeedback *socketFeedback() const;
+      [[nodiscard]] QgsFeedback *socketFeedback() const;
 
     private:
       void initNicknameLayers();
@@ -301,7 +301,7 @@ namespace QgsWms
        */
       bool checkLayerReadPermissions( QgsMapLayer *layer ) const;
 
-      bool layerScaleVisibility( const QString &name ) const;
+      [[nodiscard]] bool layerScaleVisibility( const QString &name ) const;
 
       const QgsProject *mProject = nullptr;
       QgsServerInterface *mInterface = nullptr;

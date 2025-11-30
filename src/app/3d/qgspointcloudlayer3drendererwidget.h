@@ -59,10 +59,10 @@ class QgsPointCloudLayer3DRendererWidgetFactory : public QObject, public QgsMapL
     explicit QgsPointCloudLayer3DRendererWidgetFactory( QObject *parent = nullptr );
 
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
-    bool supportLayerPropertiesDialog() const override;
+    [[nodiscard]] bool supportLayerPropertiesDialog() const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
-    QString layerPropertiesPagePositionHint() const override;
-    bool supportsStyleDock() const override;
+    [[nodiscard]] QString layerPropertiesPagePositionHint() const override;
+    [[nodiscard]] bool supportsStyleDock() const override;
 };
 
 #endif // QGSPOINTCLOUDLAYER3DRENDERERWIDGET_H

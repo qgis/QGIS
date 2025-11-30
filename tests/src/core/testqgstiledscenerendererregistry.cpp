@@ -27,8 +27,8 @@ class DummyRenderer : public QgsTiledSceneRenderer
 {
   public:
     DummyRenderer() = default;
-    QString type() const override { return QStringLiteral( "dummy" ); }
-    QgsTiledSceneRenderer *clone() const override { return new DummyRenderer(); }
+    [[nodiscard]] QString type() const override { return QStringLiteral( "dummy" ); }
+    [[nodiscard]] QgsTiledSceneRenderer *clone() const override { return new DummyRenderer(); }
     static QgsTiledSceneRenderer *create( QDomElement &, const QgsReadWriteContext & ) { return new DummyRenderer(); }
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext & ) const override { return doc.createElement( QStringLiteral( "test" ) ); }
     void renderTriangle( QgsTiledSceneRenderContext &, const QPolygonF & ) override {};

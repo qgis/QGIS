@@ -158,7 +158,7 @@ class CORE_EXPORT QgsGpsInformation
      *
      * \since QGIS 3.30
      */
-    QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > constellationFixStatus() const { return mConstellationFixStatus; }
+    [[nodiscard]] QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > constellationFixStatus() const { return mConstellationFixStatus; }
 
     /**
      * Returns the best fix status and corresponding constellation.
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsGpsInformation
      *
      * \since QGIS 3.38
      */
-    Qgis::GpsNavigationStatus navigationStatus() const { return mNavigationStatus; }
+    [[nodiscard]] Qgis::GpsNavigationStatus navigationStatus() const { return mNavigationStatus; }
 
     /**
      * Sets the navigation \a status.
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsGpsInformation
      * Returns whether the connection information is valid
      * \since QGIS 3.10
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Returns the fix status
@@ -237,14 +237,14 @@ class CORE_EXPORT QgsGpsInformation
      *
      * \since QGIS 3.16
      */
-    QString qualityDescription() const;
+    [[nodiscard]] QString qualityDescription() const;
 
     /**
      * Returns the value of the corresponding GPS information \a component.
      *
      * \since QGIS 3.30
      */
-    QVariant componentValue( Qgis::GpsInformationComponent component ) const;
+    [[nodiscard]] QVariant componentValue( Qgis::GpsInformationComponent component ) const;
 
   private:
 

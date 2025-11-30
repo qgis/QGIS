@@ -140,7 +140,7 @@ class CORE_EXPORT QgsQuadrilateral
      * \param other the QgsQuadrilateral to compare
      * \param epsilon the maximum difference allowed / tolerance
      */
-    bool equals( const QgsQuadrilateral &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL;
+    [[nodiscard]] bool equals( const QgsQuadrilateral &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL;
     bool operator==( const QgsQuadrilateral &other ) const SIP_HOLDGIL;
     bool operator!=( const QgsQuadrilateral &other ) const SIP_HOLDGIL;
 
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsQuadrilateral
      * A QgsQuadrilateral must be simple (not self-intersecting) and
      * cannot have collinear points.
      */
-    bool isValid() const SIP_HOLDGIL;
+    [[nodiscard]] bool isValid() const SIP_HOLDGIL;
 
     /**
      * Simple enumeration to ensure indices in setPoint
@@ -183,33 +183,33 @@ class CORE_EXPORT QgsQuadrilateral
     /**
      * Returns a list including the vertices of the quadrilateral.
      */
-    QgsPointSequence points() const;
+    [[nodiscard]] QgsPointSequence points() const;
 
     /**
      * Returns the quadrilateral as a new polygon. Ownership is transferred to the caller.
      */
-    QgsPolygon *toPolygon( bool force2D = false ) const SIP_FACTORY;
+    [[nodiscard]] QgsPolygon *toPolygon( bool force2D = false ) const SIP_FACTORY;
 
     /**
      * Returns the quadrilateral as a new linestring. Ownership is transferred to the caller.
      */
-    QgsLineString *toLineString( bool force2D = false ) const SIP_FACTORY;
+    [[nodiscard]] QgsLineString *toLineString( bool force2D = false ) const SIP_FACTORY;
 
     /**
      * Returns a string representation of the quadrilateral.
      * Members will be truncated to the specified precision.
      */
-    QString toString( int pointPrecision = 17 ) const;
+    [[nodiscard]] QString toString( int pointPrecision = 17 ) const;
 
     /**
      * Returns the area of the quadrilateral, or 0 if the quadrilateral is empty.
      */
-    double area() const SIP_HOLDGIL;
+    [[nodiscard]] double area() const SIP_HOLDGIL;
 
     /**
      * Returns the perimeter of the quadrilateral, or 0 if the quadrilateral is empty.
      */
-    double perimeter() const SIP_HOLDGIL;
+    [[nodiscard]] double perimeter() const SIP_HOLDGIL;
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode

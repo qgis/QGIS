@@ -35,7 +35,7 @@ class NATIVE_EXPORT QgsLinuxNative : public QgsNative
     Q_OBJECT
 
   public:
-    QgsNative::Capabilities capabilities() const override;
+    [[nodiscard]] QgsNative::Capabilities capabilities() const override;
     void initializeMainWindow( QWindow *window, const QString &applicationName, const QString &organizationName, const QString &version ) override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
     void showFileProperties( const QString &path ) override;

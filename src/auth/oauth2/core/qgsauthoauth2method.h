@@ -93,12 +93,12 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     ~QgsAuthOAuth2Method() override;
 
     //! OAuth2 method key
-    QString key() const override;
+    [[nodiscard]] QString key() const override;
 
     //! OAuth2 method description
-    QString description() const override;
+    [[nodiscard]] QString description() const override;
 
-    QString displayDescription() const override;
+    [[nodiscard]] QString displayDescription() const override;
 
     //! Update network \a request with given \a authcfg and optional \a dataprovider
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
@@ -176,7 +176,7 @@ class QgsAuthOAuth2MethodMetadata : public QgsAuthMethodMetadata
     QgsAuthOAuth2MethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthOAuth2Method::AUTH_METHOD_KEY, QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthOAuth2Method *createAuthMethod() const override { return new QgsAuthOAuth2Method; }
+    [[nodiscard]] QgsAuthOAuth2Method *createAuthMethod() const override { return new QgsAuthOAuth2Method; }
     //QStringList supportedDataProviders() const override;
 };
 

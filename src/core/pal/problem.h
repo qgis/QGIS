@@ -100,17 +100,17 @@ namespace pal
       /**
        * Returns the total number of features considered during the labeling problem.
        */
-      std::size_t featureCount() const { return mFeatureCount; }
+      [[nodiscard]] std::size_t featureCount() const { return mFeatureCount; }
 
       /**
        * Returns the number of candidates generated for the \a feature at the specified index.
        */
-      int featureCandidateCount( int feature ) const { return mCandidateCountForFeature[feature]; }
+      [[nodiscard]] int featureCandidateCount( int feature ) const { return mCandidateCountForFeature[feature]; }
 
       /**
        * Returns the candidate corresponding to the specified \a feature and \a candidate index.
        */
-      LabelPosition *featureCandidate( int feature, int candidate ) const { return mLabelPositions[ mFirstCandidateIndexForFeature[feature] + candidate ].get(); }
+      [[nodiscard]] LabelPosition *featureCandidate( int feature, int candidate ) const { return mLabelPositions[ mFirstCandidateIndexForFeature[feature] + candidate ].get(); }
 
       /**
        * Gets called AFTER extractProblem.

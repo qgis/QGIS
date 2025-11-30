@@ -59,7 +59,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     ~QgsGrassNewMapset() override;
 
     //! Next page
-    int nextId() const override;
+    [[nodiscard]] int nextId() const override;
 
   public slots:
 
@@ -164,7 +164,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
 
   private:
     //! Gets current gisdbase
-    QString gisdbase() const;
+    [[nodiscard]] QString gisdbase() const;
 
     //! Test if current gisdbase directory exists
     bool gisdbaseExists();

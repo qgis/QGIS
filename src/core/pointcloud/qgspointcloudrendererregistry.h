@@ -66,19 +66,19 @@ class CORE_EXPORT QgsPointCloudRendererAbstractMetadata
      * Returns the unique name of the renderer. This value is not translated.
      * \see visibleName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Returns a friendly display name of the renderer. This value is translated.
      * \see name()
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /**
      * Returns an icon representing the renderer.
      * \see setIcon()
      */
-    QIcon icon() const { return mIcon; }
+    [[nodiscard]] QIcon icon() const { return mIcon; }
 
     /**
      * Sets an \a icon representing the renderer.
@@ -151,9 +151,9 @@ class CORE_EXPORT QgsPointCloudRendererMetadata : public QgsPointCloudRendererAb
 #endif
 
     //! \note not available in Python bindings
-    QgsPointCloudRendererCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
+    [[nodiscard]] QgsPointCloudRendererCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
     //! \note not available in Python bindings
-    QgsPointCloudRendererWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
+    [[nodiscard]] QgsPointCloudRendererWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
 
     //! \note not available in Python bindings
     void setWidgetFunction( QgsPointCloudRendererWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsPointCloudRendererRegistry
     /**
      * Returns a list of available renderers.
      */
-    QStringList renderersList() const;
+    [[nodiscard]] QStringList renderersList() const;
 
     /**
      * Returns a new default point cloud renderer for a specified \a layer.

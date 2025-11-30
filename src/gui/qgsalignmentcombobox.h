@@ -52,7 +52,7 @@ class GUI_EXPORT QgsAlignmentComboBox : public QComboBox
      *
      * \see setCurrentAlignment()
      */
-    Qt::Alignment currentAlignment() const;
+    [[nodiscard]] Qt::Alignment currentAlignment() const;
 
     /**
      * Sets the current \a alignment choice.

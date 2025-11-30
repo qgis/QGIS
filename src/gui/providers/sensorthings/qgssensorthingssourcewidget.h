@@ -52,20 +52,20 @@ class QgsSensorThingsExpansionsModel : public QAbstractItemModel
     };
 
     QgsSensorThingsExpansionsModel( QObject *parent );
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     bool insertRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
-    bool canRemoveRow( int row ) const;
+    [[nodiscard]] bool canRemoveRow( int row ) const;
     bool removeRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
 
     void setExpansions( const QList<QgsSensorThingsExpansionDefinition> &expansions );
-    QList<QgsSensorThingsExpansionDefinition> expansions() const { return mExpansions; }
+    [[nodiscard]] QList<QgsSensorThingsExpansionDefinition> expansions() const { return mExpansions; }
 
   private:
     QList<QgsSensorThingsExpansionDefinition> mExpansions;
@@ -78,7 +78,7 @@ class QgsSensorThingsFilterWidget : public QWidget
   public:
     QgsSensorThingsFilterWidget( QWidget *parent, Qgis::SensorThingsEntity entity );
     void setFilter( const QString &filter );
-    QString filter() const;
+    [[nodiscard]] QString filter() const;
 
   signals:
     void filterChanged();
@@ -138,17 +138,17 @@ class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui
     ~QgsSensorThingsSourceWidget() override;
 
     void setSourceUri( const QString &uri ) override;
-    QString sourceUri() const override;
-    QString groupTitle() const override;
+    [[nodiscard]] QString sourceUri() const override;
+    [[nodiscard]] QString groupTitle() const override;
     void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
-    Qgis::SensorThingsEntity currentEntityType() const;
+    [[nodiscard]] Qgis::SensorThingsEntity currentEntityType() const;
 
     /**
      * Updates a connection uri with the layer specific URI settings defined in the widget.
      */
-    QString updateUriFromGui( const QString &connectionUri ) const;
+    [[nodiscard]] QString updateUriFromGui( const QString &connectionUri ) const;
 
-    bool isValid() const { return mIsValid; }
+    [[nodiscard]] bool isValid() const { return mIsValid; }
 
   private slots:
 

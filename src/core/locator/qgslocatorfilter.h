@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLocatorResult
      *
      * \since QGIS 3.18
      */
-    QVariant userData() const SIP_PYNAME( _userData );
+    [[nodiscard]] QVariant userData() const SIP_PYNAME( _userData );
 
     /**
      * Set \a userData for the locator result
@@ -210,36 +210,36 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * Creates a clone of the filter. New requests are always executed in a
      * clone of the original filter.
      */
-    virtual QgsLocatorFilter *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsLocatorFilter *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns the unique name for the filter. This should be an untranslated string identifying the filter.
      * \see displayName()
      */
-    virtual QString name() const = 0;
+    [[nodiscard]] virtual QString name() const = 0;
 
     /**
      * Returns a translated, user-friendly name for the filter.
      * \see name()
      */
-    virtual QString displayName() const = 0;
+    [[nodiscard]] virtual QString displayName() const = 0;
 
     /**
      * Returns a translated, description for the filter.
      * \since QGIS 3.20
      */
-    virtual QString description() const { return QString(); }
+    [[nodiscard]] virtual QString description() const { return QString(); }
 
     /**
      * Returns flags which specify the filter's behavior.
      */
-    virtual QgsLocatorFilter::Flags flags() const;
+    [[nodiscard]] virtual QgsLocatorFilter::Flags flags() const;
 
     /**
      * Returns the priority for the filter, which controls how results are
      * ordered in the locator.
      */
-    virtual Priority priority() const { return Medium; }
+    [[nodiscard]] virtual Priority priority() const { return Medium; }
 
     /**
      * Returns the search prefix character(s) for this filter. Prefix a search
@@ -252,7 +252,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * \note Prefixes might be overridden by user preferences.
      * \see activePrefix()
      */
-    virtual QString prefix() const { return QString(); }
+    [[nodiscard]] virtual QString prefix() const { return QString(); }
 
     /**
      * Prepares the filter instance for an upcoming search for the specified \a string. This method is always called
@@ -329,7 +329,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * is entered.
      * \see setUseWithoutPrefix()
      */
-    bool useWithoutPrefix() const;
+    [[nodiscard]] bool useWithoutPrefix() const;
 
     /**
      * Sets whether the filter should be used when no prefix
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * \see setActivePrefix()
      * \since QGIS 3.2
      */
-    QString activePrefix() const;
+    [[nodiscard]] QString activePrefix() const;
 
     /**
      * Sets the prefix as being used by the locator
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * Returns TRUE if the filter is enabled.
      * \see setEnabled()
      */
-    bool enabled() const;
+    [[nodiscard]] bool enabled() const;
 
     /**
      * Sets whether the filter is \a enabled.
@@ -385,7 +385,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * Should return TRUE if the filter has a configuration widget.
      * \see openConfigWidget()
      */
-    virtual bool hasConfigWidget() const;
+    [[nodiscard]] virtual bool hasConfigWidget() const;
 
     /**
      * Opens the configuration widget for the filter (if it has one), with the specified \a parent widget.
@@ -408,7 +408,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * \see setFetchResultsDelay()
      * \since QGIS 3.18
      */
-    int fetchResultsDelay() const { return mFetchResultsDelay; }
+    [[nodiscard]] int fetchResultsDelay() const { return mFetchResultsDelay; }
 
     /**
      * Sets a \a delay (in milliseconds) for the filter to wait prior to fetching results.

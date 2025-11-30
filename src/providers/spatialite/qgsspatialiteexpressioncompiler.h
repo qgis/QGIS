@@ -26,7 +26,7 @@ class QgsSpatialiteExpressionCompiler : public QgsSQLiteExpressionCompiler
     explicit QgsSpatialiteExpressionCompiler( const QgsFields &fields, bool ignoreStaticNodes = false );
 
   protected:
-    QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
+    [[nodiscard]] QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
 };
 
 #endif // QGSSPATIALITEEXPRESSIONCOMPILER_H

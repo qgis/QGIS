@@ -46,7 +46,7 @@ class GUI_EXPORT QgsScaleMethodWidget : public QWidget
      * \see setScaleMethod()
      * \see methodChanged()
      */
-    Qgis::ScaleCalculationMethod scaleMethod() const;
+    [[nodiscard]] Qgis::ScaleCalculationMethod scaleMethod() const;
 
     /**
      * Sets the selected blend mode.

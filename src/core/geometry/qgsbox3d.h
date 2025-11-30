@@ -192,14 +192,14 @@ class CORE_EXPORT QgsBox3D
      * \see setXMinimum()
      * \see xMaximum()
      */
-    double xMinimum() const SIP_HOLDGIL { return mBounds2d.xMinimum(); }
+    [[nodiscard]] double xMinimum() const SIP_HOLDGIL { return mBounds2d.xMinimum(); }
 
     /**
      * Returns the maximum x value.
      * \see setXMaximum()
      * \see xMinimum()
      */
-    double xMaximum() const SIP_HOLDGIL { return mBounds2d.xMaximum(); }
+    [[nodiscard]] double xMaximum() const SIP_HOLDGIL { return mBounds2d.xMaximum(); }
 
     /**
      * Sets the minimum \a y value.
@@ -220,14 +220,14 @@ class CORE_EXPORT QgsBox3D
      * \see setYMinimum()
      * \see yMaximum()
      */
-    double yMinimum() const SIP_HOLDGIL { return mBounds2d.yMinimum(); }
+    [[nodiscard]] double yMinimum() const SIP_HOLDGIL { return mBounds2d.yMinimum(); }
 
     /**
      * Returns the maximum y value.
      * \see setYMaximum()
      * \see yMinimum()
      */
-    double yMaximum() const SIP_HOLDGIL { return mBounds2d.yMaximum(); }
+    [[nodiscard]] double yMaximum() const SIP_HOLDGIL { return mBounds2d.yMaximum(); }
 
     /**
      * Sets the minimum \a z value.
@@ -248,14 +248,14 @@ class CORE_EXPORT QgsBox3D
      * \see setZMinimum()
      * \see zMaximum()
      */
-    double zMinimum() const SIP_HOLDGIL { return mZmin; }
+    [[nodiscard]] double zMinimum() const SIP_HOLDGIL { return mZmin; }
 
     /**
      * Returns the maximum z value.
      * \see setZMaximum()
      * \see zMinimum()
      */
-    double zMaximum() const SIP_HOLDGIL { return mZmax; }
+    [[nodiscard]] double zMaximum() const SIP_HOLDGIL { return mZmax; }
 
     /**
      * Mark a box as being null (holding no spatial information).
@@ -274,51 +274,51 @@ class CORE_EXPORT QgsBox3D
      * \see height()
      * \see depth()
      */
-    double width() const SIP_HOLDGIL { return mBounds2d.width(); }
+    [[nodiscard]] double width() const SIP_HOLDGIL { return mBounds2d.width(); }
 
     /**
      * Returns the height of the box.
      * \see width()
      * \see depth()
      */
-    double height() const SIP_HOLDGIL { return mBounds2d.height(); }
+    [[nodiscard]] double height() const SIP_HOLDGIL { return mBounds2d.height(); }
 
     /**
      * Returns the depth of the box.
      * \see width()
      * \see height()
      */
-    double depth() const SIP_HOLDGIL { return mZmax - mZmin; }
+    [[nodiscard]] double depth() const SIP_HOLDGIL { return mZmax - mZmin; }
 
     /**
      * Returns the center of the box as a vector.
      *
      * \since QGIS 3.34
      */
-    QgsVector3D center() const SIP_HOLDGIL;
+    [[nodiscard]] QgsVector3D center() const SIP_HOLDGIL;
 
     /**
      * Returns the area of the box.
      *
      * \since QGIS 3.40
      */
-    double area() const SIP_HOLDGIL { return mBounds2d.area(); }
+    [[nodiscard]] double area() const SIP_HOLDGIL { return mBounds2d.area(); }
 
     /**
      * Returns the volume of the box.
      */
-    double volume() const SIP_HOLDGIL { return mBounds2d.area() * ( mZmax - mZmin ); }
+    [[nodiscard]] double volume() const SIP_HOLDGIL { return mBounds2d.area() * ( mZmax - mZmin ); }
 
     /**
      * Returns the intersection of this box and another 3D box.
      */
-    QgsBox3D intersect( const QgsBox3D &other ) const SIP_HOLDGIL;
+    [[nodiscard]] QgsBox3D intersect( const QgsBox3D &other ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the box can be considered a 2-dimensional box, i.e.
      * it has equal minimum and maximum z values.
      */
-    bool is2d() const SIP_HOLDGIL;
+    [[nodiscard]] bool is2d() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the box can be considered a 3-dimensional box, i.e.
@@ -327,17 +327,17 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.34
      */
-    bool is3D() const SIP_HOLDGIL;
+    [[nodiscard]] bool is3D() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if box intersects with another box.
      */
-    bool intersects( const QgsBox3D &other ) const SIP_HOLDGIL;
+    [[nodiscard]] bool intersects( const QgsBox3D &other ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE when box contains other box.
      */
-    bool contains( const QgsBox3D &other ) const SIP_HOLDGIL;
+    [[nodiscard]] bool contains( const QgsBox3D &other ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE when box contains a \a point.
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsBox3D
      * If the point is a 2D point (no z-coordinate), then the containment test
      * will be performed on the x/y extent of the box only.
      */
-    bool contains( const QgsPoint &point ) const SIP_HOLDGIL;
+    [[nodiscard]] bool contains( const QgsPoint &point ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE when box contains a point (\a x, \a y, \a z).
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.34
      */
-    bool contains( double x, double y, double z ) const SIP_HOLDGIL;
+    [[nodiscard]] bool contains( double x, double y, double z ) const SIP_HOLDGIL;
 
     /**
      * Expands the bbox so that it covers both the original rectangle and the given rectangle.
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsBox3D
     /**
      * Converts the box to a 2D rectangle.
      */
-    QgsRectangle toRectangle() const SIP_HOLDGIL { return mBounds2d; }
+    [[nodiscard]] QgsRectangle toRectangle() const SIP_HOLDGIL { return mBounds2d; }
 
     /**
      * Returns the smallest distance between the box and the point \a point
@@ -392,7 +392,7 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.42
      */
-    double distanceTo( const QgsVector3D &point ) const SIP_HOLDGIL;
+    [[nodiscard]] double distanceTo( const QgsVector3D &point ) const SIP_HOLDGIL;
 
     bool operator==( const QgsBox3D &other ) const SIP_HOLDGIL;
 
@@ -427,7 +427,7 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.34
      */
-    bool isNull() const SIP_HOLDGIL;
+    [[nodiscard]] bool isNull() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the box is empty.
@@ -437,7 +437,7 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.34
      */
-    bool isEmpty() const SIP_HOLDGIL;
+    [[nodiscard]] bool isEmpty() const SIP_HOLDGIL;
 
     /**
      * Returns a string representation of form xmin,ymin,zmin : xmax,ymax,zmax
@@ -446,12 +446,12 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.34
      */
-    QString toString( int precision = 16 ) const SIP_HOLDGIL;
+    [[nodiscard]] QString toString( int precision = 16 ) const SIP_HOLDGIL;
 
     /**
      * Returns an array of all box corners as 3D vectors.
      */
-    QVector< QgsVector3D > corners() const SIP_HOLDGIL;
+    [[nodiscard]] QVector< QgsVector3D > corners() const SIP_HOLDGIL;
 
     /**
      * Returns a box offset from this one in the direction of the reversed vector.

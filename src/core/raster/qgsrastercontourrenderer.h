@@ -39,8 +39,8 @@ class CORE_EXPORT QgsRasterContourRenderer : public QgsRasterRenderer
     //! QgsRasterContourRenderer cannot be copied. Use clone() instead.
     const QgsRasterContourRenderer &operator=( const QgsRasterContourRenderer & ) = delete;
 
-    QgsRasterContourRenderer *clone() const override SIP_FACTORY;
-    Qgis::RasterRendererFlags flags() const override;
+    [[nodiscard]] QgsRasterContourRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::RasterRendererFlags flags() const override;
 
     //! Creates an instance of the renderer based on definition from XML (used by renderer registry)
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
@@ -49,28 +49,28 @@ class CORE_EXPORT QgsRasterContourRenderer : public QgsRasterRenderer
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
-    QList<int> usesBands() const override;
+    [[nodiscard]] QList<int> usesBands() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
-    int inputBand() const override;
+    [[nodiscard]] int inputBand() const override;
     bool setInputBand( int band ) override;
 
     //! Returns the interval of contour lines generation
-    double contourInterval() const { return mContourInterval; }
+    [[nodiscard]] double contourInterval() const { return mContourInterval; }
     //! Sets the interval of contour lines generation
     void setContourInterval( double interval ) { mContourInterval = interval; }
 
     //! Returns the symbol used for contour lines
-    QgsLineSymbol *contourSymbol() const { return mContourSymbol.get(); }
+    [[nodiscard]] QgsLineSymbol *contourSymbol() const { return mContourSymbol.get(); }
     //! Sets the symbol used for contour lines. Takes ownership of the passed symbol
     void setContourSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
     //! Returns the interval of index contour lines (index contour lines are typical further apart and with a wider line symbol)
-    double contourIndexInterval() const { return mContourIndexInterval; }
+    [[nodiscard]] double contourIndexInterval() const { return mContourIndexInterval; }
     //! Sets the interval of index contour lines (index contour lines are typical further apart and with a wider line symbol)
     void setContourIndexInterval( double interval ) { mContourIndexInterval = interval; }
 
     //! Returns the symbol of index contour lines
-    QgsLineSymbol *contourIndexSymbol() const { return mContourIndexSymbol.get(); }
+    [[nodiscard]] QgsLineSymbol *contourIndexSymbol() const { return mContourIndexSymbol.get(); }
     //! Sets the symbol of index contour lines
     void setContourIndexSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsRasterContourRenderer : public QgsRasterRenderer
      * Higher downscale makes contour lines more simplified (at the expense of losing some detail).
      * The value of one means there will be no downscaling.
      */
-    double downscale() const { return mDownscale; }
+    [[nodiscard]] double downscale() const { return mDownscale; }
 
     /**
      * Sets by how much the renderer will scale down the request to the data provider.

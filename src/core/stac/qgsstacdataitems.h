@@ -41,12 +41,12 @@ class CORE_EXPORT QgsStacAssetItem : public QgsDataItem
   public:
     QgsStacAssetItem( QgsDataItem *parent, const QString &name, const QgsStacAsset *asset );
 
-    bool hasDragEnabled() const override;
-    QgsMimeDataUtils::UriList mimeUris() const override;
+    [[nodiscard]] bool hasDragEnabled() const override;
+    [[nodiscard]] QgsMimeDataUtils::UriList mimeUris() const override;
     bool equal( const QgsDataItem *other ) override;
-    QVariant sortKey() const override { return QStringLiteral( "4 %1" ).arg( mName ); }
+    [[nodiscard]] QVariant sortKey() const override { return QStringLiteral( "4 %1" ).arg( mName ); }
     void updateToolTip();
-    const QgsStacAsset *stacAsset() const { return mStacAsset; }
+    [[nodiscard]] const QgsStacAsset *stacAsset() const { return mStacAsset; }
 
   private:
     const QgsStacAsset *mStacAsset;
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsStacFetchMoreItem : public QgsDataItem
     QgsStacFetchMoreItem( QgsDataItem *parent, const QString &name );
 
     bool handleDoubleClick() override;
-    QVariant sortKey() const override { return QStringLiteral( "3" ); }
+    [[nodiscard]] QVariant sortKey() const override { return QStringLiteral( "3" ); }
 
 };
 
@@ -79,19 +79,19 @@ class CORE_EXPORT QgsStacItemItem : public QgsDataItem
     QgsStacItemItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
-    bool hasDragEnabled() const override;
-    QgsMimeDataUtils::UriList mimeUris() const override;
+    [[nodiscard]] bool hasDragEnabled() const override;
+    [[nodiscard]] QgsMimeDataUtils::UriList mimeUris() const override;
     bool equal( const QgsDataItem *other ) override;
-    QVariant sortKey() const override { return QStringLiteral( "2 %1" ).arg( mName ); }
+    [[nodiscard]] QVariant sortKey() const override { return QStringLiteral( "2 %1" ).arg( mName ); }
 
     void updateToolTip();
-    QgsStacController *stacController() const;
+    [[nodiscard]] QgsStacController *stacController() const;
 
     //! takes ownership
     void setStacItem( std::unique_ptr< QgsStacItem > item );
 
     //! does not transfer ownership
-    QgsStacItem *stacItem() const;
+    [[nodiscard]] QgsStacItem *stacItem() const;
 
   public slots:
     void itemRequestFinished( int requestId, QString error );
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
-    QVariant sortKey() const override { return QStringLiteral( "1 %1" ).arg( mName ); }
+    [[nodiscard]] QVariant sortKey() const override { return QStringLiteral( "1 %1" ).arg( mName ); }
 
     void updateToolTip();
 
@@ -122,15 +122,15 @@ class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
     void setStacCatalog( std::unique_ptr< QgsStacCatalog > object );
 
     //! does not transfer ownership
-    QgsStacCatalog *stacCatalog() const;
+    [[nodiscard]] QgsStacCatalog *stacCatalog() const;
 
     void fetchMoreChildren();
 
-    bool isCatalog() const;
-    bool isCollection() const;
-    QgsStacController *stacController() const;
-    QgsStacCatalog *rootCatalog() const;
-    QgsStacFetchMoreItem *fetchMoreItem() const;
+    [[nodiscard]] bool isCatalog() const;
+    [[nodiscard]] bool isCollection() const;
+    [[nodiscard]] QgsStacController *stacController() const;
+    [[nodiscard]] QgsStacCatalog *rootCatalog() const;
+    [[nodiscard]] QgsStacFetchMoreItem *fetchMoreItem() const;
 
   public slots:
     void childrenCreated() override;
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsStacConnectionItem : public QgsStacCatalogItem
   public:
     QgsStacConnectionItem( QgsDataItem *parent, const QString &connectionName );
 
-    QgsStacController *controller() const;
+    [[nodiscard]] QgsStacController *controller() const;
 
   private:
     //! The URI
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsStacRootItem : public QgsConnectionsRootItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 3; }
+    [[nodiscard]] QVariant sortKey() const override { return 3; }
 
   public slots:
     void onConnectionsChanged();
@@ -196,8 +196,8 @@ class CORE_EXPORT QgsStacDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    QString dataProviderKey() const override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] QString dataProviderKey() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 

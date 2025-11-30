@@ -64,13 +64,13 @@ class _3D_EXPORT QgsAbstractRenderView
     virtual void updateWindowResize( int width, int height );
 
     //! Returns the top node of this render view branch. Will be used to register the render view.
-    QPointer<Qt3DRender::QFrameGraphNode> topGraphNode() const;
+    [[nodiscard]] QPointer<Qt3DRender::QFrameGraphNode> topGraphNode() const;
 
     //! Enable or disable via \a enable the render view sub tree
     virtual void setEnabled( bool enable );
 
     //! Returns true if render view is enabled
-    virtual bool isEnabled() const;
+    [[nodiscard]] virtual bool isEnabled() const;
 
   protected:
     QString mViewName;

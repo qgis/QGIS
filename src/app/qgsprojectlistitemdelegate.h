@@ -27,9 +27,9 @@ class QgsProjectPreviewImage
 
     void loadImageFromFile( const QString &path );
     void setImage( const QImage &image );
-    QPixmap pixmap() const;
+    [[nodiscard]] QPixmap pixmap() const;
 
-    bool isNull() const;
+    [[nodiscard]] bool isNull() const;
 
   private:
     QImage mImage;
@@ -52,9 +52,9 @@ class QgsProjectListItemDelegate : public QStyledItemDelegate
 
     explicit QgsProjectListItemDelegate( QObject *parent = nullptr );
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    [[nodiscard]] QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
-    bool showPath() const;
+    [[nodiscard]] bool showPath() const;
     void setShowPath( bool value );
 
   private:

@@ -40,7 +40,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
     /**
      * Path to a movie, e.g. animated GIF
      */
-    QString iconPath() const;
+    [[nodiscard]] QString iconPath() const;
 
     /**
      * Path to a movie, e.g. animated GIF
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
      * This will need to be called repeatedly, whenever a frameChanged()
      * signal is emitted.
      */
-    QIcon icon() const;
+    [[nodiscard]] QIcon icon() const;
 
 #ifndef SIP_RUN
 
@@ -113,13 +113,13 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
      * The native width of the icon.
      *
      */
-    int width() const;
+    [[nodiscard]] int width() const;
 
     /**
      * The native height of the icon.
      *
      */
-    int height() const;
+    [[nodiscard]] int height() const;
 
   signals:
 

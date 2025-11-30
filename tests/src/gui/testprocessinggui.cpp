@@ -120,14 +120,14 @@ class TestParamDefinition : public QgsProcessingParameterDefinition
     {}
     QString mType;
 
-    QgsProcessingParameterDefinition *clone() const override
+    [[nodiscard]] QgsProcessingParameterDefinition *clone() const override
     {
       return new TestParamDefinition( mType, name() );
     }
 
-    QString type() const override { return mType; }
+    [[nodiscard]] QString type() const override { return mType; }
     QString valueAsPythonString( const QVariant &, QgsProcessingContext & ) const override { return QString(); }
-    QString asScriptCode() const override { return QString(); }
+    [[nodiscard]] QString asScriptCode() const override { return QString(); }
 };
 
 
@@ -140,31 +140,31 @@ class TestParameterType : public QgsProcessingParameterType
     {}
     QString mType;
 
-    QgsProcessingParameterDefinition *create( const QString &name ) const override
+    [[nodiscard]] QgsProcessingParameterDefinition *create( const QString &name ) const override
     {
       return new QgsProcessingParameterString( name );
     }
 
-    QString description() const override
+    [[nodiscard]] QString description() const override
     {
       return QStringLiteral( "Dummy Parameter Description" );
     }
 
-    QString name() const override
+    [[nodiscard]] QString name() const override
     {
       return QStringLiteral( "Dummy Parameter Type" );
     }
 
-    QString id() const override
+    [[nodiscard]] QString id() const override
     {
       return mType;
     }
 
-    QStringList acceptedParameterTypes() const override
+    [[nodiscard]] QStringList acceptedParameterTypes() const override
     {
       return QStringList();
     }
-    QStringList acceptedOutputTypes() const override
+    [[nodiscard]] QStringList acceptedOutputTypes() const override
     {
       return QStringList();
     }
@@ -192,7 +192,7 @@ class TestWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper // 
     {
     }
 
-    QVariant widgetValue() const override
+    [[nodiscard]] QVariant widgetValue() const override
     {
       return QVariant();
     }
@@ -207,7 +207,7 @@ class TestWidgetFactory : public QgsProcessingParameterWidgetFactoryInterface
 
     QString type;
 
-    QString parameterType() const override
+    [[nodiscard]] QString parameterType() const override
     {
       return type;
     }
@@ -683,7 +683,7 @@ class TestLayerWrapper : public QgsAbstractProcessingParameterWidgetWrapper // c
     {}
     QWidget *createWidget() override { return nullptr; }
     void setWidgetValue( const QVariant &val, QgsProcessingContext & ) override { v = val; }
-    QVariant widgetValue() const override { return v; }
+    [[nodiscard]] QVariant widgetValue() const override { return v; }
 
     QVariant v;
 };

@@ -43,7 +43,7 @@ class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
      */
     QgsBusyIndicatorDialog( const QString &message = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    QString message() const { return mMessage; }
+    [[nodiscard]] QString message() const { return mMessage; }
     void setMessage( const QString &message );
 
   private:

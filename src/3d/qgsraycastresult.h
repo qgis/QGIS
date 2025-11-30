@@ -40,25 +40,25 @@ class _3D_EXPORT QgsRayCastResult
     QgsRayCastResult();
 
     //! Returns TRUE is ray did not intersect any layer or terrain entity
-    bool isEmpty() const;
+    [[nodiscard]] bool isEmpty() const;
 
     //! Returns TRUE is ray hit at least one entity from a layer
-    bool hasLayerHits() const;
+    [[nodiscard]] bool hasLayerHits() const;
 
     //! Returns pointers to the map layers of entities that were intersected by the ray
-    QList<QgsMapLayer *> layers() const;
+    [[nodiscard]] QList<QgsMapLayer *> layers() const;
 
     //! Returns all hits from entities of the specific \a layer
     QList<QgsRayCastHit> layerHits( QgsMapLayer *layer ) const;
 
     //! Returns TRUE is the ray intersected the terrain
-    bool hasTerrainHits() const;
+    [[nodiscard]] bool hasTerrainHits() const;
 
     //! Returns all terrain intersection hits
-    QList<QgsRayCastHit> terrainHits() const;
+    [[nodiscard]] QList<QgsRayCastHit> terrainHits() const;
 
     //! Returns all the hits from both layer and terrain intersections
-    QList<QgsRayCastHit> allHits() const;
+    [[nodiscard]] QList<QgsRayCastHit> allHits() const;
 
     //! Adds all \a hits from \a layer to the result
     void addLayerHits( QgsMapLayer *layer, const QList<QgsRayCastHit> &hits );

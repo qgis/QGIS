@@ -91,7 +91,7 @@ class QgisPlugin
     virtual ~QgisPlugin() = default;
 
     //! Gets the name of the plugin
-    QString const &name() const
+    [[nodiscard]] QString const &name() const
     {
       return mName;
     }
@@ -102,7 +102,7 @@ class QgisPlugin
     }
 
     //! Version of the plugin
-    QString const &version() const
+    [[nodiscard]] QString const &version() const
     {
       return mVersion;
     }
@@ -114,7 +114,7 @@ class QgisPlugin
     }
 
     //! A brief description of the plugin
-    QString const &description() const
+    [[nodiscard]] QString const &description() const
     {
       return mDescription;
     }
@@ -126,7 +126,7 @@ class QgisPlugin
     }
 
     //! Plugin category
-    QString const &category() const
+    [[nodiscard]] QString const &category() const
     {
       return mCategory;
     }
@@ -138,7 +138,7 @@ class QgisPlugin
     }
 
     //! Plugin type, either UI or map layer
-    QgisPlugin::PluginType const &type() const
+    [[nodiscard]] QgisPlugin::PluginType const &type() const
     {
       return mType;
     }

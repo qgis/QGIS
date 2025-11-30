@@ -39,7 +39,7 @@ class QgsSensorThingsSubsetEditor : public QgsSubsetStringEditorInterface, prote
 
   public:
     QgsSensorThingsSubsetEditor( QgsVectorLayer *layer = nullptr, const QgsFields &fields = QgsFields(), QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    QString subsetString() const override;
+    [[nodiscard]] QString subsetString() const override;
     void setSubsetString( const QString &subsetString ) override;
 
   private slots:

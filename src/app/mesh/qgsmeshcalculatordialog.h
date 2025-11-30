@@ -40,10 +40,10 @@ class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCa
     ~QgsMeshCalculatorDialog() override;
 
     //! Returns new mesh calculator created from dialog options
-    std::unique_ptr<QgsMeshCalculator> calculator() const;
+    [[nodiscard]] std::unique_ptr<QgsMeshCalculator> calculator() const;
 
-    QString outputFile() const;
-    bool addLayerToProject() const;
+    [[nodiscard]] QString outputFile() const;
+    [[nodiscard]] bool addLayerToProject() const;
 
   private slots:
     void datasetGroupEntry( const QModelIndex &index );
@@ -82,18 +82,18 @@ class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCa
     void mNoDataButton_clicked();
 
   private:
-    QString formulaString() const;
-    QgsMeshLayer *meshLayer() const;
+    [[nodiscard]] QString formulaString() const;
+    [[nodiscard]] QgsMeshLayer *meshLayer() const;
 
-    QgsRectangle outputExtent() const;
-    QgsGeometry maskGeometry() const;
-    QString driver() const;
-    QString groupName() const;
+    [[nodiscard]] QgsRectangle outputExtent() const;
+    [[nodiscard]] QgsGeometry maskGeometry() const;
+    [[nodiscard]] QString driver() const;
+    [[nodiscard]] QString groupName() const;
 
-    double startTime() const;
-    double endTime() const;
+    [[nodiscard]] double startTime() const;
+    [[nodiscard]] double endTime() const;
 
-    QString datasetGroupName( const QModelIndex &index ) const;
+    [[nodiscard]] QString datasetGroupName( const QModelIndex &index ) const;
 
     //! Combines geometries from selected vector layer to create mask filter geometry
     QgsGeometry maskGeometry( QgsVectorLayer *layer ) const;
@@ -105,7 +105,7 @@ class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCa
     void useAllTimesFromLayer();
 
     //! Returns name of the selected dataset group
-    QString currentDatasetGroup() const;
+    [[nodiscard]] QString currentDatasetGroup() const;
 
     //! Sets time combos from selected group
     void setTimesByDatasetGroupName( const QString group );
@@ -117,10 +117,10 @@ class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCa
     QString quoteDatasetGroupEntry( const QString group );
 
     //! Add file suffix if not present
-    QString controlSuffix( const QString &fileName ) const;
+    [[nodiscard]] QString controlSuffix( const QString &fileName ) const;
 
     //! Returns the current output suffix
-    QString currentOutputSuffix() const;
+    [[nodiscard]] QString currentOutputSuffix() const;
 
     //! Gets all mesh drivers that can persist datasets
     void getMeshDrivers();

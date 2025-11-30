@@ -55,17 +55,17 @@ class SERVER_EXPORT QgsBufferServerResponse : public QgsServerResponse
     /**
      * Returns the header value
      */
-    QString header( const QString &key ) const override;
+    [[nodiscard]] QString header( const QString &key ) const override;
 
     /**
      * Returns all the headers
      */
-    QMap<QString, QString> headers() const override { return mHeaders; }
+    [[nodiscard]] QMap<QString, QString> headers() const override { return mHeaders; }
 
     /**
      * Returns TRUE if the headers have already been sent
      */
-    bool headersSent() const override;
+    [[nodiscard]] bool headersSent() const override;
 
     /**
      * Set the http status code
@@ -76,7 +76,7 @@ class SERVER_EXPORT QgsBufferServerResponse : public QgsServerResponse
     /**
      * Returns the http status code
      */
-    int statusCode() const override { return mStatusCode; }
+    [[nodiscard]] int statusCode() const override { return mStatusCode; }
 
     /**
      * Send error
@@ -121,7 +121,7 @@ class SERVER_EXPORT QgsBufferServerResponse : public QgsServerResponse
      * Note that each call to 'flush' may empty the buffer and in case
      * of streaming process you may get partial content
      */
-    QByteArray data() const override;
+    [[nodiscard]] QByteArray data() const override;
 
     /**
      * Truncate data
@@ -133,7 +133,7 @@ class SERVER_EXPORT QgsBufferServerResponse : public QgsServerResponse
     /**
      * Returns body
      */
-    QByteArray body() const { return mBody; }
+    [[nodiscard]] QByteArray body() const { return mBody; }
 
 
   private:

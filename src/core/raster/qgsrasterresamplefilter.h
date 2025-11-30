@@ -34,11 +34,11 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
   public:
     QgsRasterResampleFilter( QgsRasterInterface *input = nullptr );
 
-    QgsRasterResampleFilter *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsRasterResampleFilter *clone() const override SIP_FACTORY;
 
-    int bandCount() const override;
+    [[nodiscard]] int bandCount() const override;
 
-    Qgis::DataType dataType( int bandNo ) const override;
+    [[nodiscard]] Qgis::DataType dataType( int bandNo ) const override;
 
     bool setInput( QgsRasterInterface *input ) override;
 
@@ -46,14 +46,14 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
     //! Sets resampler for zoomed in scales. Takes ownership of the object
     void setZoomedInResampler( QgsRasterResampler *r SIP_TRANSFER );
-    const QgsRasterResampler *zoomedInResampler() const { return mZoomedInResampler.get(); }
+    [[nodiscard]] const QgsRasterResampler *zoomedInResampler() const { return mZoomedInResampler.get(); }
 
     //! Sets resampler for zoomed out scales. Takes ownership of the object
     void setZoomedOutResampler( QgsRasterResampler *r SIP_TRANSFER );
-    const QgsRasterResampler *zoomedOutResampler() const { return mZoomedOutResampler.get(); }
+    [[nodiscard]] const QgsRasterResampler *zoomedOutResampler() const { return mZoomedOutResampler.get(); }
 
     void setMaxOversampling( double os ) { mMaxOversampling = os; }
-    double maxOversampling() const { return mMaxOversampling; }
+    [[nodiscard]] double maxOversampling() const { return mMaxOversampling; }
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 

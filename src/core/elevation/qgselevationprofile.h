@@ -59,7 +59,7 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      * \see setName()
      * \see nameChanged()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Returns the profiles's state encapsulated in a DOM element.
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsElevationProfile : public QObject
     /**
      * Returns the icon to use for the elevation profile.
      */
-    QIcon icon() const;
+    [[nodiscard]] QIcon icon() const;
 
     /**
      * Returns the layer tree used by the profile.
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      *
      * \see setCrs()
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets the profile \a curve.
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      *
      * \see setProfileCurve()
      */
-    QgsCurve *profileCurve() const;
+    [[nodiscard]] QgsCurve *profileCurve() const;
 
     /**
      * Returns the tolerance of the profile (in crs() units).
@@ -130,21 +130,21 @@ class CORE_EXPORT QgsElevationProfile : public QObject
      *
      * \see setTolerance()
      */
-    double tolerance() const;
+    [[nodiscard]] double tolerance() const;
 
     /**
      * Returns TRUE if the distance and elevation scales are locked to each other.
      *
      * \see setLockAxisScales()
      */
-    bool lockAxisScales() const;
+    [[nodiscard]] bool lockAxisScales() const;
 
     /**
      * Returns the distance unit used by the profile.
      *
      * \see setDistanceUnit()
      */
-    Qgis::DistanceUnit distanceUnit() const;
+    [[nodiscard]] Qgis::DistanceUnit distanceUnit() const;
 
     /**
      * Returns the symbol used to draw the subsections.

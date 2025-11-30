@@ -63,7 +63,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      * preview result and for populating the list of available functions and variables.
      * \see setExpressionContext
      */
-    QgsExpressionContext expressionContext() const;
+    [[nodiscard]] QgsExpressionContext expressionContext() const;
 
     /**
      * Sets the expression context for the dialog. The context is used for the expression
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      * provide an expression context of which we are sure it's completely populated.
      *
      */
-    bool allowEvalErrors() const;
+    [[nodiscard]] bool allowEvalErrors() const;
 
     /**
      * Allow accepting expressions with evaluation errors. This can be useful when we are not able to

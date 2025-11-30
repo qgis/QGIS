@@ -101,12 +101,12 @@ class CORE_EXPORT QgsAbstractAnnotationItemEditOperation
     /**
      * Returns the operation type.
      */
-    virtual Type type() const = 0;
+    [[nodiscard]] virtual Type type() const = 0;
 
     /**
      * Returns the associated item ID.
      */
-    QString itemId() const { return mItemId; }
+    [[nodiscard]] QString itemId() const { return mItemId; }
 
   protected:
 
@@ -132,26 +132,26 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
     QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after,
                                             double translatePixelsX = 0, double translatePixelsY = 0 );
 
-    Type type() const override;
+    [[nodiscard]] Type type() const override;
 
     /**
      * Returns the associated node ID.
      */
-    QgsVertexId nodeId() const { return mNodeId; }
+    [[nodiscard]] QgsVertexId nodeId() const { return mNodeId; }
 
     /**
      * Returns the node position before the move occurred (in layer coordinates).
      *
      * \see after()
      */
-    QgsPoint before() const { return mBefore; }
+    [[nodiscard]] QgsPoint before() const { return mBefore; }
 
     /**
      * Returns the node position after the move occurred (in layer coordinates).
      *
      * \see before()
      */
-    QgsPoint after() const { return mAfter; }
+    [[nodiscard]] QgsPoint after() const { return mAfter; }
 
     /**
      * Returns the x-axis translation, in pixels.
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
      * \since translationYPixels()
      * \since QGIS 3.40
      */
-    double translationXPixels() const { return mTranslatePixelsX; }
+    [[nodiscard]] double translationXPixels() const { return mTranslatePixelsX; }
 
     /**
      * Returns the y-axis translation, in pixels.
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationMoveNode : public QgsAbstractAnn
      * \since translationXPixels()
      * \since QGIS 3.40
      */
-    double translationYPixels() const { return mTranslatePixelsY; }
+    [[nodiscard]] double translationYPixels() const { return mTranslatePixelsY; }
 
   private:
 
@@ -195,17 +195,17 @@ class CORE_EXPORT QgsAnnotationItemEditOperationDeleteNode : public QgsAbstractA
      */
     QgsAnnotationItemEditOperationDeleteNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before );
 
-    Type type() const override;
+    [[nodiscard]] Type type() const override;
 
     /**
      * Returns the deleted node ID.
      */
-    QgsVertexId nodeId() const { return mNodeId; }
+    [[nodiscard]] QgsVertexId nodeId() const { return mNodeId; }
 
     /**
      * Returns the node position before the delete occurred (in layer coordinates).
      */
-    QgsPoint before() const { return mBefore; }
+    [[nodiscard]] QgsPoint before() const { return mBefore; }
 
   private:
 
@@ -228,12 +228,12 @@ class CORE_EXPORT QgsAnnotationItemEditOperationAddNode : public QgsAbstractAnno
      */
     QgsAnnotationItemEditOperationAddNode( const QString &itemId, const QgsPoint &point );
 
-    Type type() const override;
+    [[nodiscard]] Type type() const override;
 
     /**
      * Returns the node position (in layer coordinates).
      */
-    QgsPoint point() const { return mPoint; }
+    [[nodiscard]] QgsPoint point() const { return mPoint; }
 
   private:
 
@@ -260,26 +260,26 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstra
     QgsAnnotationItemEditOperationTranslateItem( const QString &itemId, double translateX, double translateY,
         double translatePixelsX = 0, double translatePixelsY = 0 );
 
-    Type type() const override;
+    [[nodiscard]] Type type() const override;
 
     /**
      * Returns the deleted node ID.
      */
-    QgsVertexId nodeId() const { return mNodeId; }
+    [[nodiscard]] QgsVertexId nodeId() const { return mNodeId; }
 
     /**
      * Returns the x-axis translation, in layer units.
      *
      * \since translationY()
      */
-    double translationX() const { return mTranslateX; }
+    [[nodiscard]] double translationX() const { return mTranslateX; }
 
     /**
      * Returns the y-axis translation, in layer units.
      *
      * \since translationX()
      */
-    double translationY() const { return mTranslateY; }
+    [[nodiscard]] double translationY() const { return mTranslateY; }
 
     /**
      * Returns the x-axis translation, in pixels.
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstra
      * \since translationYPixels()
      * \since QGIS 3.40
      */
-    double translationXPixels() const { return mTranslatePixelsX; }
+    [[nodiscard]] double translationXPixels() const { return mTranslatePixelsX; }
 
     /**
      * Returns the y-axis translation, in pixels.
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstra
      * \since translationXPixels()
      * \since QGIS 3.40
      */
-    double translationYPixels() const { return mTranslatePixelsY; }
+    [[nodiscard]] double translationYPixels() const { return mTranslatePixelsY; }
 
   private:
 

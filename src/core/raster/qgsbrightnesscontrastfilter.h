@@ -34,13 +34,13 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     QgsBrightnessContrastFilter( QgsRasterInterface *input = nullptr );
 
     //! Clone itself, create deep copy
-    QgsBrightnessContrastFilter *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsBrightnessContrastFilter *clone() const override SIP_FACTORY;
 
     //! Gets number of bands
-    int bandCount() const override;
+    [[nodiscard]] int bandCount() const override;
 
     //! Returns data type for the band specified by number
-    Qgis::DataType dataType( int bandNo ) const override;
+    [[nodiscard]] Qgis::DataType dataType( int bandNo ) const override;
 
     /**
      * Set input.
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
      * Returns current brightness level.
      * \see setBrightness()
      */
-    int brightness() const { return mBrightness; }
+    [[nodiscard]] int brightness() const { return mBrightness; }
 
     /**
      * Set contrast level. Acceptable value range is -100…100
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
      * Returns current contrast level.
      * \see setContrast()
      */
-    int contrast() const { return mContrast; }
+    [[nodiscard]] int contrast() const { return mContrast; }
 
     /**
      * Set gamma value. Acceptable value range is -0.1…10
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
      *
      * \since QGIS 3.16
      */
-    double gamma() const { return mGamma; }
+    [[nodiscard]] double gamma() const { return mGamma; }
 
     //! Write base class members to xml.
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 
   private:
     //! Adjusts a color component by the specified brightness, contrast factor and gamma correction
-    int  adjustColorComponent( int colorComponent, int alpha, int brightness, double contrastFactor, double gammaCorrection ) const;
+    [[nodiscard]] int  adjustColorComponent( int colorComponent, int alpha, int brightness, double contrastFactor, double gammaCorrection ) const;
 
     //! Current brightness coefficient value. Default: 0. Range: -255...255
     int mBrightness = 0;

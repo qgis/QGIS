@@ -103,7 +103,7 @@ class LocalizedDoubleDelegate : public QgsLocaleAwareNumericLineEditDelegate
       : QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType::Float64, parent ) {};
 
     // QStyledItemDelegate interface
-    QString displayText( const QVariant &value, const QLocale &locale ) const override;
+    [[nodiscard]] QString displayText( const QVariant &value, const QLocale &locale ) const override;
 };
 
 
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QgsPanelWidget, private 
     /**
      * Returns TRUE if the associated raster attribute table is dirty
      */
-    bool isDirty() const;
+    [[nodiscard]] bool isDirty() const;
 
     /**
      * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages

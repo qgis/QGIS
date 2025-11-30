@@ -46,7 +46,7 @@ class CORE_EXPORT QgsAttributeEditorHtmlElement : public QgsAttributeEditorEleme
      *
      * \since QGIS 3.4
      */
-    QString htmlCode() const;
+    [[nodiscard]] QString htmlCode() const;
 
     /**
      * Sets the HTML code that will be represented within this widget to \a htmlCode.
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsAttributeEditorHtmlElement : public QgsAttributeEditorEleme
   private:
     void saveConfiguration( QDomElement &elem, QDomDocument &doc ) const override;
     void loadConfiguration( const QDomElement &element,  const QString &layerId, const QgsReadWriteContext &context, const QgsFields &fields ) override;
-    QString typeIdentifier() const override;
+    [[nodiscard]] QString typeIdentifier() const override;
     QString mHtmlCode;
 };
 

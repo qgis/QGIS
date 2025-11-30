@@ -51,7 +51,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog : public QDialog, private Ui::QgsNewMem
     QgsNewMemoryLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     //! Returns the selected geometry type
-    Qgis::WkbType selectedType() const;
+    [[nodiscard]] Qgis::WkbType selectedType() const;
 
     /**
      * Sets the \a crs value for the new layer in the dialog.
@@ -63,16 +63,16 @@ class GUI_EXPORT QgsNewMemoryLayerDialog : public QDialog, private Ui::QgsNewMem
      * Returns the selected CRS for the new layer.
      * \see setCrs()
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     //! Returns the layer name
-    QString layerName() const;
+    [[nodiscard]] QString layerName() const;
 
     /**
      * Returns attributes for the new layer.
      * \since QGIS 3.14
      */
-    QgsFields fields() const;
+    [[nodiscard]] QgsFields fields() const;
 
     void accept() override;
 

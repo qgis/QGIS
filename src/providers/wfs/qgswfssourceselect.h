@@ -42,7 +42,7 @@ class QgsWFSItemDelegate : public QItemDelegate
     explicit QgsWFSItemDelegate( QObject *parent = nullptr )
       : QItemDelegate( parent ) {}
 
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    [[nodiscard]] QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 class QgsWFSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWFSSourceSelectBase
@@ -86,7 +86,7 @@ class QgsWFSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWF
      *
      * \returns the authority id of the crs or an empty string in case of error
     */
-    QString getPreferredCrs( const QList<QString> &crsList ) const;
+    [[nodiscard]] QString getPreferredCrs( const QList<QString> &crsList ) const;
 
     void showHelp();
 
@@ -121,7 +121,7 @@ class QgsWFSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWF
     void startOapifLandingPageRequest();
     void startOapifCollectionsRequest( const QString &url );
     void resizeTreeViewAfterModelFill();
-    bool isOapif() const { return mVersion == QLatin1String( "OGC_API_FEATURES" ); }
+    [[nodiscard]] bool isOapif() const { return mVersion == QLatin1String( "OGC_API_FEATURES" ); }
 };
 
 #endif

@@ -52,7 +52,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      * Returns the current ramp created by the editor.
      * \see setGradientRamp()
      */
-    QgsGradientColorRamp gradientRamp() const { return mGradient; }
+    [[nodiscard]] QgsGradientColorRamp gradientRamp() const { return mGradient; }
 
     /**
      * Sets the currently selected stop.
@@ -65,9 +65,9 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      * Returns details about the currently selected stop.
      * \see selectStop()
      */
-    QgsGradientStop selectedStop() const;
+    [[nodiscard]] QgsGradientStop selectedStop() const;
 
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
     void paintEvent( QPaintEvent *event ) override;
 
   public slots:
@@ -176,16 +176,16 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     void drawStopMarker( QPainter &painter, QPoint topMiddle, const QColor &color, bool selected = false );
 
     //! Converts an x-coordinate in the widget's coordinate system to a relative ramp position
-    double pointToRelativePosition( int x ) const;
+    [[nodiscard]] double pointToRelativePosition( int x ) const;
 
     //! Converts a relative ramp position to a x-coordinate in the widget's coordinate system
-    int relativePositionToPoint( double position ) const;
+    [[nodiscard]] int relativePositionToPoint( double position ) const;
 
     //! Returns TRUE if the selected stop is movable and deletable
-    bool selectedStopIsMovable() const;
+    [[nodiscard]] bool selectedStopIsMovable() const;
 
     //! Returns the closest stop to a mouse x position, or -1 if no stops within tolerance
-    int findClosestStop( int x, int threshold = -1 ) const;
+    [[nodiscard]] int findClosestStop( int x, int threshold = -1 ) const;
 
     QgsGradientColorRamp mGradient;
 

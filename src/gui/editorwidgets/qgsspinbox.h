@@ -84,7 +84,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * Returns whether the widget is showing a clear button.
      * \see setShowClearButton()
      */
-    bool showClearButton() const { return mShowClearButton; }
+    [[nodiscard]] bool showClearButton() const { return mShowClearButton; }
 
     /**
      * Sets if the widget will allow entry of simple expressions, which are
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * evaluated and then discarded.
      * \returns TRUE if spin box allows expression entry
      */
-    bool expressionsEnabled() const { return mExpressionsEnabled; }
+    [[nodiscard]] bool expressionsEnabled() const { return mExpressionsEnabled; }
 
     //! Sets the current value to the value defined by the clear value.
     void clear() override;
@@ -122,7 +122,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * Returns the value used when clear() is called.
      * \see setClearValue()
      */
-    int clearValue() const;
+    [[nodiscard]] int clearValue() const;
 
     /**
      * Set alignment in the embedded line edit widget
@@ -137,7 +137,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      */
     void setSpecialValueText( const QString &txt );
 
-    int valueFromText( const QString &text ) const override;
+    [[nodiscard]] int valueFromText( const QString &text ) const override;
     QValidator::State validate( QString &input, int &pos ) const override;
     void stepBy( int steps ) override;
 
@@ -149,7 +149,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      *
      * \since QGIS 3.42
      */
-    int editingTimeoutInterval() const;
+    [[nodiscard]] int editingTimeoutInterval() const;
 
   public slots:
 
@@ -208,8 +208,8 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     void onLastEditTimeout();
 
   private:
-    int frameWidth() const;
-    bool shouldShowClearForValue( int value ) const;
+    [[nodiscard]] int frameWidth() const;
+    [[nodiscard]] bool shouldShowClearForValue( int value ) const;
 
     QgsSpinBoxLineEdit *mLineEdit = nullptr;
 
@@ -223,7 +223,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     bool mHasEmittedEditTimeout = false;
     int mLastEditTimeoutValue = 0;
 
-    QString stripped( const QString &originalText ) const;
+    [[nodiscard]] QString stripped( const QString &originalText ) const;
 
     friend class TestQgsRangeWidgetWrapper;
 };

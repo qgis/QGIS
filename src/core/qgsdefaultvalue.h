@@ -75,7 +75,7 @@ class CORE_EXPORT QgsDefaultValue
      * The expression will be evaluated whenever a default value needs
      * to be calculated for a field.
      */
-    QString expression() const;
+    [[nodiscard]] QString expression() const;
 
     /**
      * The expression will be evaluated whenever a default value needs
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsDefaultValue
      * The applyOnUpdate flag determines if this expression should also be
      * applied when a feature is updated or only when it's created.
      */
-    bool applyOnUpdate() const;
+    [[nodiscard]] bool applyOnUpdate() const;
 
     /**
      * The applyOnUpdate flag determines if this expression should also be
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsDefaultValue
      * Returns if this default value should be applied.
      * \returns FALSE if the expression is a null string.
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Checks if a default value is set. Alias for isValid().

@@ -113,7 +113,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *
      * \note All vertices related to this face must be already in the mesh.
      */
-    bool faceCanBeAdded( const QgsMeshFace &face ) const;
+    [[nodiscard]] bool faceCanBeAdded( const QgsMeshFace &face ) const;
 
     /**
      * Returns TRUE if a face formed by some vertices can be added to the mesh.
@@ -123,13 +123,13 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *
      * \since QGIS 3.30
      */
-    bool faceCanBeAddedWithNewVertices( const QList<int> &verticesIndex, const QList<QgsMeshVertex> &newVertices ) const; SIP_SKIP
+    [[nodiscard]] bool faceCanBeAddedWithNewVertices( const QList<int> &verticesIndex, const QList<QgsMeshVertex> &newVertices ) const; SIP_SKIP
 
     /**
      * Returns TRUE if the face does not intersect or contains any other elements (faces or vertices)
      * The topological compatibility is not checked
      */
-    bool isFaceGeometricallyCompatible( const QgsMeshFace &face ) const;
+    [[nodiscard]] bool isFaceGeometricallyCompatible( const QgsMeshFace &face ) const;
 
     //! Adds faces \a faces to the mesh, returns topological errors if this operation fails (operation is not realized)
     QgsMeshEditingError addFaces( const QVector<QgsMeshFace> &faces ); SIP_SKIP
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsMeshEditingError removeFaces( const QList<int> &facesToRemove );
 
     //! Returns TRUE if the edge can be flipped (only available for edge shared by two faces with 3 vertices)
-    bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
+    [[nodiscard]] bool edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const;
 
     //! Flips edge (\a vertexIndex1, \a vertexIndex2)
     void flipEdge( int vertexIndex1, int vertexIndex2 );
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     /**
      * Returns TRUE if faces separated by vertices with indexes \a vertexIndex1 and \a vertexIndex2 can be merged
      */
-    bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
+    [[nodiscard]] bool canBeMerged( int vertexIndex1, int vertexIndex2 ) const;
 
     //! Merges faces separated by vertices with indexes \a vertexIndex1 and \a vertexIndex2
     void merge( int vertexIndex1, int vertexIndex2 );
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     /**
      * Returns TRUE if face with index \a faceIndex can be split
      */
-    bool faceCanBeSplit( int faceIndex ) const;
+    [[nodiscard]] bool faceCanBeSplit( int faceIndex ) const;
 
     /**
      * Splits faces with index \a faceIndexes. Only faces that can be split are split.
@@ -252,10 +252,10 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     void stopEditing();
 
     //! Returns the extent of the edited mesh
-    QgsRectangle extent() const;
+    [[nodiscard]] QgsRectangle extent() const;
 
     //! Returns whether the mesh has been modified
-    bool isModified() const;
+    [[nodiscard]] bool isModified() const;
 
     /**
      * Reindexes the mesh, that is remove unusued index of face and vertices, this operation void the undo/redo stack.
@@ -269,13 +269,13 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //----------- access element methods
 
     //! Returns all the free vertices indexes
-    QList<int> freeVerticesIndexes() const;
+    [[nodiscard]] QList<int> freeVerticesIndexes() const;
 
     //! Returns whether the vertex with index \a vertexIndex is on a boundary
-    bool isVertexOnBoundary( int vertexIndex ) const;
+    [[nodiscard]] bool isVertexOnBoundary( int vertexIndex ) const;
 
     //! Returns whether the vertex with index \a vertexIndex is a free vertex
-    bool isVertexFree( int vertexIndex ) const;
+    [[nodiscard]] bool isVertexFree( int vertexIndex ) const;
 
     /**
      *  Returns a vertex circulator linked to this mesh around the vertex with index \a vertexIndex.
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *  It is recommended to destruct all circulator created before calling any edit methods or stopEditing() to save memory usage.
      *  Calling initialize() allows creation of new circulator after stopEditing() is called.
      */
-    QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const; SIP_SKIP
+    [[nodiscard]] QgsMeshVertexCirculator vertexCirculator( int vertexIndex ) const; SIP_SKIP
 
     //! Returns a reference to the topological mesh
     QgsTopologicalMesh &topologicalMesh(); SIP_SKIP
@@ -302,13 +302,13 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     bool edgeIsClose( QgsPointXY point, double tolerance, int &faceIndex, int &edgePosition );
 
     //! Returns the count of valid faces, that is non void faces in the mesh
-    int validFacesCount() const;
+    [[nodiscard]] int validFacesCount() const;
 
     //! Returns the count of valid vertices, that is non void vertices in the mesh
-    int validVerticesCount() const;
+    [[nodiscard]] int validVerticesCount() const;
 
     //! Returns the maximum count of vertices per face that the mesh can support
-    int maximumVerticesPerFace() const;
+    [[nodiscard]] int maximumVerticesPerFace() const;
 
     /**
      * Add a vertex in a face with Delaunay refinement of neighboring faces
@@ -333,7 +333,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     QVector<QgsMeshFace> prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error ) const;
     QList<int> prepareFaceWithNewVertices( const QList<int> &vertices, const QList<QgsMeshVertex> &newVertices, QgsMeshEditingError &error ) const;
-    bool isFaceGeometricallyCompatible( const QList<int> &vertexIndex, const QList<QgsMeshVertex> &vertices ) const;
+    [[nodiscard]] bool isFaceGeometricallyCompatible( const QList<int> &vertexIndex, const QList<QgsMeshVertex> &vertices ) const;
 
     //! undo/redo stuff
     QUndoStack *mUndoStack = nullptr;

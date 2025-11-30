@@ -79,7 +79,7 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      * \see setAutomaticallyAddTrackVertices()
      * \see automaticallyAddTrackVerticesChanged()
      */
-    bool automaticallyAddTrackVertices() const;
+    [[nodiscard]] bool automaticallyAddTrackVertices() const;
 
     /**
      * Returns TRUE if features created from GPS locations should be
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      * \see setAutomaticallyCommitFeatures()
      * \see automaticallyCommitFeaturesChanged()
      */
-    bool automaticallyCommitFeatures() const;
+    [[nodiscard]] bool automaticallyCommitFeatures() const;
 
     /**
      * Returns TRUE if the destination layer for storing features digitized from GPS
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      * \see setDestinationFollowsActiveLayer()
      * \see destinationFollowsActiveLayerChanged()
      */
-    bool destinationFollowsActiveLayer() const;
+    [[nodiscard]] bool destinationFollowsActiveLayer() const;
 
     /**
      * Returns the destination layer to be used for storing features digitized from GPS.
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      * \see setDestinationLayer()
      * \see destinationLayerChanged()
      */
-    QgsVectorLayer *destinationLayer() const;
+    [[nodiscard]] QgsVectorLayer *destinationLayer() const;
 
     /**
      * Returns the map of destination layer ID to target time stamp field name.
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      * \see setDestinationTimeStampField()
      * \see setDestinationTimeStampField()
      */
-    QMap< QString, QString > destinationTimeStampFields() const;
+    [[nodiscard]] QMap< QString, QString > destinationTimeStampFields() const;
 
     /**
      * Returns the destination time stamp field name for the current destinationLayer(),
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsProjectGpsSettings : public QObject
      * \see destinationTimeStampFields()
      * \see setDestinationTimeStampField()
      */
-    QString destinationTimeStampField() const;
+    [[nodiscard]] QString destinationTimeStampField() const;
 
   public slots:
 

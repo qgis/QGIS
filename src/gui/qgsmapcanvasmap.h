@@ -39,13 +39,13 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
 
     void setContent( const QImage &image, const QgsRectangle &rect );
 
-    QImage contentImage() const { return mImage; }
+    [[nodiscard]] QImage contentImage() const { return mImage; }
 
     void paint( QPainter *painter ) override;
 
     void addPreviewImage( const QImage &image, const QPolygonF &visiblePolygon );
 
-    QRectF boundingRect() const override;
+    [[nodiscard]] QRectF boundingRect() const override;
 
   private:
     QImage mImage;

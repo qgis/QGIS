@@ -55,10 +55,10 @@ class GUI_EXPORT QgsMapToolShapeRegistry
     void removeMapTool( const QString &id );
 
     //! Returns the list of map tools
-    QList<QgsMapToolShapeMetadata *> mapToolMetadatas() const { return mMapTools; }
+    [[nodiscard]] QList<QgsMapToolShapeMetadata *> mapToolMetadatas() const { return mMapTools; }
 
     //! Returns the map tool metadata for the given \a id
-    QgsMapToolShapeMetadata *mapToolMetadata( const QString &id ) const;
+    [[nodiscard]] QgsMapToolShapeMetadata *mapToolMetadata( const QString &id ) const;
 
     /**
      * Constructs the map tool at the given \a id for the given \a parentTool
@@ -83,16 +83,16 @@ class GUI_EXPORT QgsMapToolShapeMetadata
     virtual ~QgsMapToolShapeMetadata() = default;
 
     //! Unique ID for the shape map tool
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     //! Translated readable name
-    virtual QString name() const = 0;
+    [[nodiscard]] virtual QString name() const = 0;
 
     //! Icon to be displayed in the toolbar
-    virtual QIcon icon() const = 0;
+    [[nodiscard]] virtual QIcon icon() const = 0;
 
     //! Returns the shape category of the tool
-    virtual QgsMapToolShapeAbstract::ShapeCategory category() const = 0;
+    [[nodiscard]] virtual QgsMapToolShapeAbstract::ShapeCategory category() const = 0;
 
     /**
      * Creates the shape map tool for the given \a parentTool

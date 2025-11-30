@@ -517,7 +517,7 @@ class CORE_EXPORT QgsFeature
      * Returns the feature ID for this feature.
      * \see setId()
      */
-    QgsFeatureId id() const SIP_HOLDGIL;
+    [[nodiscard]] QgsFeatureId id() const SIP_HOLDGIL;
 
     /**
      * Sets the feature \a id for this feature.
@@ -545,7 +545,7 @@ class CORE_EXPORT QgsFeature
      * \see setAttributes()
      * \see attributeMap()
      */
-    QgsAttributes attributes() const SIP_HOLDGIL;
+    [[nodiscard]] QgsAttributes attributes() const SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 
@@ -558,7 +558,7 @@ class CORE_EXPORT QgsFeature
      * \see setAttributes()
      * \since QGIS 3.22.2
      */
-    QVariantMap attributeMap() const;
+    [[nodiscard]] QVariantMap attributeMap() const;
 #else
 
     /**
@@ -599,7 +599,7 @@ class CORE_EXPORT QgsFeature
      * Returns the number of attributes attached to the feature.
      * \since QGIS 3.18
      */
-    int attributeCount() const SIP_HOLDGIL;
+    [[nodiscard]] int attributeCount() const SIP_HOLDGIL;
 
     /**
      * Sets the feature's attributes.
@@ -801,7 +801,7 @@ class CORE_EXPORT QgsFeature
      *
      * \see setValid()
      */
-    bool isValid() const SIP_HOLDGIL;
+    [[nodiscard]] bool isValid() const SIP_HOLDGIL;
 
     /**
      * Sets the validity of the feature.
@@ -816,7 +816,7 @@ class CORE_EXPORT QgsFeature
      * Returns TRUE if the feature has an associated geometry.
      * \see geometry()
      */
-    bool hasGeometry() const SIP_HOLDGIL;
+    [[nodiscard]] bool hasGeometry() const SIP_HOLDGIL;
 
     /**
      * Returns the geometry associated with this feature. If the feature has no geometry,
@@ -824,7 +824,7 @@ class CORE_EXPORT QgsFeature
      * \see hasGeometry()
      * \see setGeometry()
      */
-    QgsGeometry geometry() const SIP_HOLDGIL;
+    [[nodiscard]] QgsGeometry geometry() const SIP_HOLDGIL;
 
     /**
      * Set the feature's geometry.
@@ -895,7 +895,7 @@ class CORE_EXPORT QgsFeature
      * Returns the field map associated with the feature.
      * \see setFields()
      */
-    QgsFields fields() const SIP_HOLDGIL;
+    [[nodiscard]] QgsFields fields() const SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 
@@ -1061,7 +1061,7 @@ class CORE_EXPORT QgsFeature
      * \returns The value of the attribute, or an invalid/null variant if no such name exists
      * \see setFields
      */
-    Q_INVOKABLE QVariant attribute( const QString &name ) const;
+    Q_INVOKABLE [[nodiscard]] QVariant attribute( const QString &name ) const;
 #else
 
     /**
@@ -1114,7 +1114,7 @@ class CORE_EXPORT QgsFeature
      * \returns The value of the attribute, or an invalid/null variant if no such name exists
      * \see setFields()
      */
-    QVariant attribute( int fieldIdx ) const;
+    [[nodiscard]] QVariant attribute( int fieldIdx ) const;
 #else
 
     /**
@@ -1167,7 +1167,7 @@ class CORE_EXPORT QgsFeature
      * \see QgsUnsetAttributeValue
      * \since QGIS 3.28
      */
-    bool isUnsetValue( int fieldIdx ) const;
+    [[nodiscard]] bool isUnsetValue( int fieldIdx ) const;
 #else
 
     /**
@@ -1198,7 +1198,7 @@ class CORE_EXPORT QgsFeature
      *
      * \since QGIS 3.20
      */
-    const QgsSymbol *embeddedSymbol() const SIP_HOLDGIL;
+    [[nodiscard]] const QgsSymbol *embeddedSymbol() const SIP_HOLDGIL;
 
     /**
      * Sets the feature's embedded \a symbol.
@@ -1218,7 +1218,7 @@ class CORE_EXPORT QgsFeature
      * \returns -1 if field does not exist or field map is not associated.
      * \see setFields()
      */
-    int fieldNameIndex( const QString &fieldName ) const SIP_HOLDGIL;
+    [[nodiscard]] int fieldNameIndex( const QString &fieldName ) const SIP_HOLDGIL;
 
     /**
      * Returns the approximate RAM usage of the feature, in bytes.
@@ -1229,7 +1229,7 @@ class CORE_EXPORT QgsFeature
      *
      * \since QGIS 3.16
      */
-    int approximateMemoryUsage() const;
+    [[nodiscard]] int approximateMemoryUsage() const;
 
     //! Allows direct construction of QVariants from features.
     operator QVariant() const

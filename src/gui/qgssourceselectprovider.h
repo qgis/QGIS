@@ -63,7 +63,7 @@ class GUI_EXPORT QgsSourceSelectProvider
       = default;
 
     //! Data Provider key
-    virtual QString providerKey() const = 0;
+    [[nodiscard]] virtual QString providerKey() const = 0;
 
     /**
      * Source select provider name, this is useful to retrieve
@@ -72,26 +72,26 @@ class GUI_EXPORT QgsSourceSelectProvider
      *
      * The default implementation returns the providerKey()
      */
-    virtual QString name() const { return providerKey(); }
+    [[nodiscard]] virtual QString name() const { return providerKey(); }
 
     //! Text for the menu item entry, it will be visible to the user so make sure it's translatable
-    virtual QString text() const = 0;
+    [[nodiscard]] virtual QString text() const = 0;
 
     /**
      * Text for the tooltip menu item entry, it will be visible to the user so make sure it's translatable
      *
      * The default implementation returns an empty string.
      */
-    virtual QString toolTip() const { return QString(); }
+    [[nodiscard]] virtual QString toolTip() const { return QString(); }
 
     //! Creates a new instance of an QIcon for the menu item entry
-    virtual QIcon icon() const = 0;
+    [[nodiscard]] virtual QIcon icon() const = 0;
 
     /**
      * Ordering: the source select provider registry will be able to sort
      * the source selects (ascending) using this integer value
      */
-    virtual int ordering() const { return OrderOtherProvider; }
+    [[nodiscard]] virtual int ordering() const { return OrderOtherProvider; }
 
     /**
      * Create a new instance of QgsAbstractDataSourceWidget (or NULLPTR).

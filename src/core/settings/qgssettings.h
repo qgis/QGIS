@@ -173,16 +173,16 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see endGroup()
      * \since QGIS 3.6
      */
-    QString group() const;
+    [[nodiscard]] QString group() const;
 
     //! Returns a list of all keys, including subkeys, that can be read using the QSettings object.
-    QStringList allKeys() const;
+    [[nodiscard]] QStringList allKeys() const;
     //! Returns a list of all top-level keys that can be read using the QSettings object.
-    QStringList childKeys() const;
+    [[nodiscard]] QStringList childKeys() const;
     //! Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
-    QStringList childGroups( Qgis::SettingsOrigin origin = Qgis::SettingsOrigin::Any ) const;
+    [[nodiscard]] QStringList childGroups( Qgis::SettingsOrigin origin = Qgis::SettingsOrigin::Any ) const;
     //! Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
-    QStringList globalChildGroups() const;
+    [[nodiscard]] QStringList globalChildGroups() const;
     //! Returns the path to the Global Settings QSettings storage file
     static QString globalSettingsPath();
     //! Sets the Global Settings QSettings storage file
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * \note it will return Qgis::SettingsOrigin::Any if the key doesn't exist
      * \since QGIS 3.30
      */
-    Qgis::SettingsOrigin origin( const QString &key ) const;
+    [[nodiscard]] Qgis::SettingsOrigin origin( const QString &key ) const;
 
     /**
      * Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
@@ -225,8 +225,8 @@ class CORE_EXPORT QgsSettings : public QObject
      * An optional Section argument can be used to get a value from a specific Section.
      */
 #ifndef SIP_RUN
-    QVariant value( const QString &key, const QVariant &defaultValue = QVariant(),
-                    Section section = NoSection ) const;
+    [[nodiscard]] QVariant value( const QString &key, const QVariant &defaultValue = QVariant(),
+                                  Section section = NoSection ) const;
 #else
     SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
                         SIP_PYOBJECT type = 0,
@@ -423,9 +423,9 @@ class CORE_EXPORT QgsSettings : public QObject
      * Returns TRUE if there exists a setting called key; returns FALSE otherwise.
      * If a group is set using beginGroup(), key is taken to be relative to that group.
      */
-    bool contains( const QString &key, QgsSettings::Section section = QgsSettings::NoSection ) const;
+    [[nodiscard]] bool contains( const QString &key, QgsSettings::Section section = QgsSettings::NoSection ) const;
     //! Returns the path where settings written using this QSettings object are stored.
-    QString fileName() const;
+    [[nodiscard]] QString fileName() const;
 
     /**
      * Writes any unsaved changes to permanent storage, and reloads any settings that have been
@@ -437,7 +437,7 @@ class CORE_EXPORT QgsSettings : public QObject
     //! Removes the setting key and any sub-settings of key in a section.
     void remove( const QString &key, QgsSettings::Section section = QgsSettings::NoSection );
     //! Returns the sanitized and prefixed key
-    QString prefixedKey( const QString &key, QgsSettings::Section section ) const;
+    [[nodiscard]] QString prefixedKey( const QString &key, QgsSettings::Section section ) const;
     //! Removes all entries in the user settings
     void clear();
 
@@ -494,7 +494,7 @@ class CORE_EXPORT QgsSettings : public QObject
 
   private:
     void init();
-    QString sanitizeKey( const QString &key ) const;
+    [[nodiscard]] QString sanitizeKey( const QString &key ) const;
     std::unique_ptr<QSettings> mUserSettings;
     std::unique_ptr<QSettings> mGlobalSettings;
     bool mUsingGlobalArray = false;

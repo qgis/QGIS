@@ -56,17 +56,17 @@ class _3D_EXPORT QgsMaterialSettingsAbstractMetadata
     /**
      * Returns the unique material type string.
      */
-    QString type() const { return mType; }
+    [[nodiscard]] QString type() const { return mType; }
 
     /**
      * Returns the material's visible (translated) name.
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /**
      * Returns an icon representing the material type, if available.
      */
-    QIcon icon() const { return mIcon; }
+    [[nodiscard]] QIcon icon() const { return mIcon; }
 
     /**
      * Creates a new instance of this material settings type.
@@ -78,7 +78,7 @@ class _3D_EXPORT QgsMaterialSettingsAbstractMetadata
     /**
      * Returns TRUE if the material type supports the specified rendering \a technique.
      */
-    virtual bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique ) const = 0;
+    [[nodiscard]] virtual bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique ) const = 0;
 
 #ifndef SIP_RUN
 
@@ -138,14 +138,14 @@ class _3D_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstrac
     /**
      * Returns the material setting's creation function.
      */
-    QgsMaterialSettingsCreateFunc createFunction() const { return mCreateFunc; }
+    [[nodiscard]] QgsMaterialSettingsCreateFunc createFunction() const { return mCreateFunc; }
 
     /**
      * Returns the material settings's widget creation function.
      *
      * \see setWidgetFunction()
      */
-    QgsMaterialSettingsWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    [[nodiscard]] QgsMaterialSettingsWidgetFunc widgetFunction() const { return mWidgetFunc; }
 
     /**
      * Sets the material settings's widget creation \a function.
@@ -155,7 +155,7 @@ class _3D_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstrac
     void setWidgetFunction( QgsMaterialSettingsWidgetFunc function ) { mWidgetFunc = function; }
 
     QgsAbstractMaterialSettings *create() override SIP_FACTORY { return mCreateFunc ? mCreateFunc() : nullptr; }
-    bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique ) const override { return mSupportsTechniqueFunc ? mSupportsTechniqueFunc( technique ) : true; }
+    [[nodiscard]] bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique ) const override { return mSupportsTechniqueFunc ? mSupportsTechniqueFunc( technique ) : true; }
     QgsMaterialSettingsWidget *createWidget() override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc() : nullptr; }
 
   private:
@@ -185,12 +185,12 @@ class _3D_EXPORT QgsMaterialRegistry
     QgsMaterialRegistry &operator=( const QgsMaterialRegistry &rh ) = delete;
 
     //! Returns metadata for specified material settings \a type. Returns NULLPTR if not found
-    QgsMaterialSettingsAbstractMetadata *materialSettingsMetadata( const QString &type ) const;
+    [[nodiscard]] QgsMaterialSettingsAbstractMetadata *materialSettingsMetadata( const QString &type ) const;
 
     /**
      * Returns a list of all available material settings types.
      */
-    QStringList materialSettingsTypes() const;
+    [[nodiscard]] QStringList materialSettingsTypes() const;
 
     //! Registers a new material settings type. Takes ownership of the \a metadata instance.
     bool addMaterialSettingsType( QgsMaterialSettingsAbstractMetadata *metadata SIP_TRANSFER );
@@ -202,7 +202,7 @@ class _3D_EXPORT QgsMaterialRegistry
      *
      * Returns NULLPTR if the specified type is not found in the registry.
      */
-    QgsAbstractMaterialSettings *createMaterialSettings( const QString &type ) const SIP_FACTORY;
+    [[nodiscard]] QgsAbstractMaterialSettings *createMaterialSettings( const QString &type ) const SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN

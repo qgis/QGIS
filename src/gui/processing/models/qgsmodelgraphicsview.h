@@ -71,7 +71,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * Returns the scene associated with the tool.
      * \see view()
      */
-    QgsModelGraphicsScene *modelScene() const;
+    [[nodiscard]] QgsModelGraphicsScene *modelScene() const;
 
     /**
      * Returns the currently active tool for the view.

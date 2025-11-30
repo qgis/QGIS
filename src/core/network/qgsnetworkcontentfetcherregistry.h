@@ -70,22 +70,22 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
 #ifndef SIP_RUN
     //! Returns a pointer to the local file, or NULLPTR if the file is not accessible yet.
-    QFile *file() const {return mFile.get();}
+    [[nodiscard]] QFile *file() const {return mFile.get();}
 #endif
 
     //! Returns the path to the local file, an empty string if the file is not accessible yet.
-    const QString filePath() const {return mFilePath;}
+    [[nodiscard]] const QString filePath() const {return mFilePath;}
 
     //! Returns the status of the download
-    ContentStatus status() const {return mStatus;}
+    [[nodiscard]] ContentStatus status() const {return mStatus;}
 
     //! Returns the potential error of the download
-    QNetworkReply::NetworkError error() const {return mError;}
+    [[nodiscard]] QNetworkReply::NetworkError error() const {return mError;}
 
     /**
      * Returns the authentication configuration id use for this fetched content
      */
-    QString authConfig() const {return mAuthConfig;}
+    [[nodiscard]] QString authConfig() const {return mAuthConfig;}
 
   public slots:
 

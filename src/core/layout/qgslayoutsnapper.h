@@ -43,7 +43,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      */
     QgsLayoutSnapper( QgsLayout *layout );
 
-    QString stringType() const override { return QStringLiteral( "LayoutSnapper" ); }
+    [[nodiscard]] QString stringType() const override { return QStringLiteral( "LayoutSnapper" ); }
     QgsLayout *layout() override;
 
     /**
@@ -56,13 +56,13 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      * Returns the snap tolerance (in pixels) to use when snapping.
      * \see setSnapTolerance()
      */
-    int snapTolerance() const { return mTolerance; }
+    [[nodiscard]] int snapTolerance() const { return mTolerance; }
 
     /**
      * Returns TRUE if snapping to grid is enabled.
      * \see setSnapToGrid()
      */
-    bool snapToGrid() const { return mSnapToGrid; }
+    [[nodiscard]] bool snapToGrid() const { return mSnapToGrid; }
 
     /**
      * Sets whether snapping to grid is \a enabled.
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      * Returns TRUE if snapping to guides is enabled.
      * \see setSnapToGuides()
      */
-    bool snapToGuides() const { return mSnapToGuides; }
+    [[nodiscard]] bool snapToGuides() const { return mSnapToGuides; }
 
     /**
      * Sets whether snapping to guides is \a enabled.
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      * Returns TRUE if snapping to items is enabled.
      * \see setSnapToItems()
      */
-    bool snapToItems() const { return mSnapToItems; }
+    [[nodiscard]] bool snapToItems() const { return mSnapToItems; }
 
     /**
      * Sets whether snapping to items is \a enabled.

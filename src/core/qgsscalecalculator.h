@@ -53,7 +53,7 @@ class CORE_EXPORT QgsScaleCalculator
      * \see setMethod()
      * \since QGIS 3.44
      */
-    Qgis::ScaleCalculationMethod method() const { return mMethod; }
+    [[nodiscard]] Qgis::ScaleCalculationMethod method() const { return mMethod; }
 
     /**
      * Sets the \a method to use for map scale calculations.
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsScaleCalculator
      * Returns the DPI (dots per inch) used in scale calculations.
      * \see setDpi()
      */
-    double dpi() const;
+    [[nodiscard]] double dpi() const;
 
     /**
      * Set the map units.
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsScaleCalculator
      *
      * \see setMapUnits()
      */
-    Qgis::DistanceUnit mapUnits() const;
+    [[nodiscard]] Qgis::DistanceUnit mapUnits() const;
 
     /**
      * Calculate the scale denominator.
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsScaleCalculator
      *
      * \returns scale denominator of current map view, e.g. 1000.0 for a 1:1000 map.
      */
-    double calculate( const QgsRectangle &mapExtent, double canvasWidth ) const;
+    [[nodiscard]] double calculate( const QgsRectangle &mapExtent, double canvasWidth ) const;
 
     /**
      * Calculate the image size in pixel (physical) units.
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsScaleCalculator
      * \returns image size
      * \since QGIS 3.24
      */
-    QSizeF calculateImageSize( const QgsRectangle &mapExtent, double scale ) const;
+    [[nodiscard]] QSizeF calculateImageSize( const QgsRectangle &mapExtent, double scale ) const;
 
     /**
      * Calculate the distance in meters, horizontally across the specified map extent (in geographic coordinates).
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsScaleCalculator
      * \param mapExtent the map extent, in geographic (degrees) coordinates
      * \returns distance in meters across the map extent
      */
-    double calculateGeographicDistance( const QgsRectangle &mapExtent ) const;
+    [[nodiscard]] double calculateGeographicDistance( const QgsRectangle &mapExtent ) const;
 
     /**
      * Calculate the distance in meters, horizontally between two longitudes at a specified \a latitude.
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsScaleCalculator
      *
      * \since QGIS 3.44
      */
-    double calculateGeographicDistanceAtLatitude( double latitude, double longitude1, double longitude2 ) const;
+    [[nodiscard]] double calculateGeographicDistanceAtLatitude( double latitude, double longitude1, double longitude2 ) const;
 
   private:
 

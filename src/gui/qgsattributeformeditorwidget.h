@@ -72,12 +72,12 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      * Returns TRUE if the widget's value has been changed since it was initialized.
      * \see initialize()
      */
-    bool hasChanged() const { return mIsChanged; }
+    [[nodiscard]] bool hasChanged() const { return mIsChanged; }
 
     /**
      * Returns the current value of the attached editor widget.
      */
-    QVariant currentValue() const;
+    [[nodiscard]] QVariant currentValue() const;
 
     /**
      * Set the constraint status for this widget.
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      * Returns the editor widget wrapper
      * \since QGIS 3.10
      */
-    QgsEditorWidgetWrapper *editorWidget() const;
+    [[nodiscard]] QgsEditorWidgetWrapper *editorWidget() const;
 
   public slots:
 

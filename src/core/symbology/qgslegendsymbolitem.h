@@ -49,40 +49,40 @@ class CORE_EXPORT QgsLegendSymbolItem
     QgsLegendSymbolItem &operator=( const QgsLegendSymbolItem &other );
 
     //! Returns associated symbol. May be NULLPTR.
-    QgsSymbol *symbol() const { return mSymbol.get(); }
+    [[nodiscard]] QgsSymbol *symbol() const { return mSymbol.get(); }
     //! Returns text label
-    QString label() const { return mLabel; }
+    [[nodiscard]] QString label() const { return mLabel; }
     //! Returns unique identifier of the rule for identification of the item within renderer
-    QString ruleKey() const { return mKey; }
+    [[nodiscard]] QString ruleKey() const { return mKey; }
     //! Returns whether the item is user-checkable - whether renderer supports enabling/disabling it
-    bool isCheckable() const { return mCheckable; }
+    [[nodiscard]] bool isCheckable() const { return mCheckable; }
 
     //! Used for older code that identifies legend entries from symbol pointer within renderer
-    QgsSymbol *legacyRuleKey() const { return mOriginalSymbolPointer; }
+    [[nodiscard]] QgsSymbol *legacyRuleKey() const { return mOriginalSymbolPointer; }
 
     //! Determine whether given scale is within the scale range. Returns TRUE if scale or scale range is invalid (value <= 0)
-    bool isScaleOK( double scale ) const;
+    [[nodiscard]] bool isScaleOK( double scale ) const;
 
     /**
      * Min scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 1000.
      * Value <= 0 means the range is unbounded on this side
      */
-    int scaleMinDenom() const { return mScaleMinDenom; }
+    [[nodiscard]] int scaleMinDenom() const { return mScaleMinDenom; }
 
     /**
      * Max scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 2000.
      * Value <= 0 means the range is unbounded on this side
      */
-    int scaleMaxDenom() const { return mScaleMaxDenom; }
+    [[nodiscard]] int scaleMaxDenom() const { return mScaleMaxDenom; }
 
     //! Indentation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
-    int level() const { return mLevel; }
+    [[nodiscard]] int level() const { return mLevel; }
 
     /**
      * Key of the parent legend node. For legends with tree hierarchy
      * \note Parameter parentRuleKey added in QGIS 2.8
      */
-    QString parentRuleKey() const { return mParentKey; }
+    [[nodiscard]] QString parentRuleKey() const { return mParentKey; }
 
     /**
      * Sets the symbol of the item.
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     /**
      * Returns extra information for data-defined size legend rendering. Normally it returns NULLPTR.
      */
-    QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
+    [[nodiscard]] QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
 
     /**
      * Adds a \a key - \a value pair to the item's user data.
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsLegendSymbolItem
      * \see setUserData()
      * \since QGIS 3.38
      */
-    QVariant userData( int key ) const;
+    [[nodiscard]] QVariant userData( int key ) const;
 
   private:
     //! Legend symbol -- may be NULLPTR.

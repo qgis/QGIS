@@ -64,7 +64,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
     QgsTessellatedPolygonGeometry( bool _withNormals = true, bool invertNormals = false, bool addBackFaces = false, bool addTextureCoords = false, QNode *parent = nullptr );
 
     //! Returns whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
-    bool invertNormals() const { return mInvertNormals; }
+    [[nodiscard]] bool invertNormals() const { return mInvertNormals; }
     //! Sets whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
     void setInvertNormals( bool invert ) { mInvertNormals = invert; }
 
@@ -72,7 +72,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
      * Returns whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
      * \since QGIS 3.2
      */
-    bool addBackFaces() const { return mAddBackFaces; }
+    [[nodiscard]] bool addBackFaces() const { return mAddBackFaces; }
 
     /**
      * Sets whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
@@ -97,13 +97,13 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
      * Returns ID of the feature to which given triangle index belongs (used for picking).
      * In case such triangle index does not match any feature, FID_NULL is returned.
      */
-    QgsFeatureId triangleIndexToFeatureId( uint triangleIndex ) const;
+    [[nodiscard]] QgsFeatureId triangleIndexToFeatureId( uint triangleIndex ) const;
 
     //! Returns included feature ids
-    QVector<QgsFeatureId> featureIds() const { return mTriangleIndexFids; }
+    [[nodiscard]] QVector<QgsFeatureId> featureIds() const { return mTriangleIndexFids; }
 
     //! Returns triangle index for features. For a feature featureIds()[i], matching triangles start at triangleIndexStartingIndices()[i]
-    QVector<uint> triangleIndexStartingIndices() const { return mTriangleIndexStartingIndices; }
+    [[nodiscard]] QVector<uint> triangleIndexStartingIndices() const { return mTriangleIndexStartingIndices; }
 
     friend class Qgs3DSceneExporter;
 

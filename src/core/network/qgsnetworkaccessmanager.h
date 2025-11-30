@@ -70,7 +70,7 @@ class CORE_EXPORT QgsNetworkRequestParameters
     /**
      * Returns the request operation, e.g. GET or POST.
      */
-    QNetworkAccessManager::Operation operation() const { return mOperation; }
+    [[nodiscard]] QNetworkAccessManager::Operation operation() const { return mOperation; }
 
     /**
      * Returns the network request.
@@ -78,23 +78,23 @@ class CORE_EXPORT QgsNetworkRequestParameters
      * This is the original network request sent to QgsNetworkAccessManager, but with QGIS specific
      * configuration options such as proxy handling and SSL exceptions applied.
      */
-    QNetworkRequest request() const { return mRequest; }
+    [[nodiscard]] QNetworkRequest request() const { return mRequest; }
 
     /**
      * Returns a string identifying the thread which the request originated from.
      */
-    QString originatingThreadId() const { return mOriginatingThreadId; }
+    [[nodiscard]] QString originatingThreadId() const { return mOriginatingThreadId; }
 
     /**
      * Returns a unique ID identifying the request.
      */
-    int requestId() const { return mRequestId; }
+    [[nodiscard]] int requestId() const { return mRequestId; }
 
     /**
      * Returns the request's content. This is only used for POST or PUT operation
      * requests.
      */
-    QByteArray content() const { return mContent; }
+    [[nodiscard]] QByteArray content() const { return mContent; }
 
     /**
      * Returns the class name of the object which initiated this request.
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsNetworkRequestParameters
      *
      * \see initiatorRequestId()
      */
-    QString initiatorClassName() const { return mInitiatorClass; }
+    [[nodiscard]] QString initiatorClassName() const { return mInitiatorClass; }
 
     /**
      * Returns the internal ID used by the object which initiated this request to identify
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsNetworkRequestParameters
      *
      * \see initiatorClassName()
      */
-    QVariant initiatorRequestId() const { return mInitiatorRequestId; }
+    [[nodiscard]] QVariant initiatorRequestId() const { return mInitiatorRequestId; }
 
   private:
 
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \see insertProxyFactory()
      * \see proxyFactories()
      */
-    const QList<QNetworkProxyFactory *> proxyFactories() const;
+    [[nodiscard]] const QList<QNetworkProxyFactory *> proxyFactories() const;
 
     /**
      * Returns the fallback proxy used by the manager.
@@ -355,7 +355,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \see proxyFactories()
      * \see setFallbackProxyAndExcludes()
      */
-    const QNetworkProxy &fallbackProxy() const;
+    [[nodiscard]] const QNetworkProxy &fallbackProxy() const;
 
     /**
      * Returns the proxy exclude list.
@@ -366,7 +366,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \see fallbackProxy()
      * \see setFallbackProxyAndExcludes()
      */
-    QStringList excludeList() const;
+    [[nodiscard]] QStringList excludeList() const;
 
     /**
      * Returns the no proxy list.
@@ -377,7 +377,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \see fallbackProxy()
      * \see setFallbackProxyAndExcludes()
      */
-    QStringList noProxyList() const;
+    [[nodiscard]] QStringList noProxyList() const;
 
     /**
      * Sets the fallback \a proxy and URLs which shouldn't use it.
@@ -424,7 +424,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \note Not available in Python bindings.
      * \since QGIS 3.18
      */
-    bool cacheDisabled() const { return mCacheDisabled; }
+    [[nodiscard]] bool cacheDisabled() const { return mCacheDisabled; }
 
     /**
      * Sets whether all network caching should be disabled.
@@ -442,7 +442,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     /**
      * Returns whether the system proxy should be used.
      */
-    bool useSystemProxy() const { return mUseSystemProxy; }
+    [[nodiscard]] bool useSystemProxy() const { return mUseSystemProxy; }
 
     /**
      * Returns the network timeout length, in milliseconds.

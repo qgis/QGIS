@@ -31,7 +31,7 @@ class QgsPointCloudElevationPropertiesWidget : public QgsMapLayerConfigWidget, p
     QgsPointCloudElevationPropertiesWidget( QgsPointCloudLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
 
     void syncToLayer( QgsMapLayer *layer ) final;
-    bool shouldTriggerLayerRepaint() const override { return false; }
+    [[nodiscard]] bool shouldTriggerLayerRepaint() const override { return false; }
 
   public slots:
     void apply() override;
@@ -56,10 +56,10 @@ class QgsPointCloudElevationPropertiesWidgetFactory : public QObject, public Qgs
     explicit QgsPointCloudElevationPropertiesWidgetFactory( QObject *parent = nullptr );
 
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
-    bool supportLayerPropertiesDialog() const override;
-    bool supportsStyleDock() const override;
+    [[nodiscard]] bool supportLayerPropertiesDialog() const override;
+    [[nodiscard]] bool supportsStyleDock() const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
-    QString layerPropertiesPagePositionHint() const override;
+    [[nodiscard]] QString layerPropertiesPagePositionHint() const override;
 };
 
 

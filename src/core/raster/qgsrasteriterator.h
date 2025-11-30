@@ -70,7 +70,7 @@ class CORE_EXPORT QgsRasterIterator
      * \see setSnapToPixelFactor()
      * \since QGIS 3.42
      */
-    int snapToPixelFactor() const { return mSnapToPixelFactor; }
+    [[nodiscard]] int snapToPixelFactor() const { return mSnapToPixelFactor; }
 
     /**
      * Given an overall raster extent and width and height in pixels, calculates the sub region
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsRasterIterator
     /**
      * Returns the input raster interface which is being iterated over.
      */
-    const QgsRasterInterface *input() const { return mInput; }
+    [[nodiscard]] const QgsRasterInterface *input() const { return mInput; }
 
     /**
      * Sets the maximum tile width returned during iteration.
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsRasterIterator
      * \see setMaximumTileWidth()
      * \see maximumTileHeight()
      */
-    int maximumTileWidth() const { return mMaximumTileWidth; }
+    [[nodiscard]] int maximumTileWidth() const { return mMaximumTileWidth; }
 
     /**
      * Sets the minimum tile height returned during iteration.
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsRasterIterator
      * \see setMaximumTileHeight()
      * \see maximumTileWidth()
      */
-    int maximumTileHeight() const { return mMaximumTileHeight; }
+    [[nodiscard]] int maximumTileHeight() const { return mMaximumTileHeight; }
 
     /**
      * Returns the total number of blocks which cover the width of the input raster.
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsRasterIterator
      * \see blockCountHeight()
      * \since QGIS 3.42
      */
-    int blockCountWidth() const { return mNumberBlocksWidth; }
+    [[nodiscard]] int blockCountWidth() const { return mNumberBlocksWidth; }
 
     /**
      * Returns the total number of blocks which cover the height of the input raster.
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsRasterIterator
      * \see blockCountWidth()
      * \since QGIS 3.42
      */
-    int blockCountHeight() const { return mNumberBlocksHeight; }
+    [[nodiscard]] int blockCountHeight() const { return mNumberBlocksHeight; }
 
     /**
      * Returns the total number of blocks required to iterate over the input raster.
@@ -226,14 +226,14 @@ class CORE_EXPORT QgsRasterIterator
      * \see blockCountHeight()
      * \since QGIS 3.42
      */
-    qgssize blockCount() const { return static_cast< qgssize >( mNumberBlocksHeight ) * mNumberBlocksWidth; }
+    [[nodiscard]] qgssize blockCount() const { return static_cast< qgssize >( mNumberBlocksHeight ) * mNumberBlocksWidth; }
 
     /**
      * Returns the raster iteration progress as a fraction from 0 to 1.0, for the specified \a bandNumber.
      *
      * \since QGIS 3.42
      */
-    double progress( int bandNumber ) const;
+    [[nodiscard]] double progress( int bandNumber ) const;
 
     //! Default maximum tile width
     static const int DEFAULT_MAXIMUM_TILE_WIDTH = 2000;

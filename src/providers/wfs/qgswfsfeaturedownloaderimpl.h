@@ -68,8 +68,8 @@ class QgsWFSFeatureDownloaderImpl final : public QgsWfsRequest, public QgsFeatur
 
     void pushError( const QString &errorMsg );
     QString sanitizeFilter( QString filter );
-    std::pair<QString, QString> determineTypeNames() const;
-    bool useInvertedAxis() const;
+    [[nodiscard]] std::pair<QString, QString> determineTypeNames() const;
+    [[nodiscard]] bool useInvertedAxis() const;
 
     //! Mutable data shared between provider, feature sources and downloader.
     QgsWFSSharedData *mShared = nullptr;

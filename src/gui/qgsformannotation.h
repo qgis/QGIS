@@ -39,11 +39,11 @@ class GUI_EXPORT QgsFormAnnotation : public QgsAnnotation
      */
     QgsFormAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    QgsFormAnnotation *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsFormAnnotation *clone() const override SIP_FACTORY;
 
-    QSizeF minimumFrameSize() const override;
+    [[nodiscard]] QSizeF minimumFrameSize() const override;
     //! Returns the optimal frame size
-    QSizeF preferredFrameSize() const;
+    [[nodiscard]] QSizeF preferredFrameSize() const;
 
     /**
      * Sets the path to the Qt Designer UI file to show in the annotation.
@@ -55,7 +55,7 @@ class GUI_EXPORT QgsFormAnnotation : public QgsAnnotation
      * Returns the path to the Qt Designer UI file to show in the annotation.
      * \see setDesignerForm()
      */
-    QString designerForm() const { return mDesignerForm; }
+    [[nodiscard]] QString designerForm() const { return mDesignerForm; }
 
     void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context ) override;

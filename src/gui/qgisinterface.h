@@ -181,14 +181,14 @@ class GUI_EXPORT QgisInterface : public QObject
      * Returns the toolbar icon size. If \a dockedToolbar is TRUE, the icon size
      * for toolbars contained within docks is returned.
      */
-    virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
+    [[nodiscard]] virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
 
     /**
      * Returns vector layers in edit mode
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list
     */
-    virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
+    [[nodiscard]] virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
 
     //! Returns a pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer() = 0;

@@ -37,7 +37,7 @@ class GUI_EXPORT QgsCodeEditorJavascript : public QgsCodeEditor
   public:
     //! Constructor for QgsCodeEditorJavascript
     QgsCodeEditorJavascript( QWidget *parent SIP_TRANSFERTHIS = nullptr );
-    Qgis::ScriptLanguage language() const override;
+    [[nodiscard]] Qgis::ScriptLanguage language() const override;
 
   protected:
     void initializeLexer() override;

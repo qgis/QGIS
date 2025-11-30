@@ -44,7 +44,7 @@ class GUI_EXPORT QgsHighlightableLineEdit : public QgsFilterLineEdit
      * Returns TRUE if the line edit is currently highlighted.
      * \see setHighlighted()
      */
-    bool isHighlighted() const { return mHighlight; }
+    [[nodiscard]] bool isHighlighted() const { return mHighlight; }
 
     /**
      * Sets whether the line edit is currently \a highlighted.

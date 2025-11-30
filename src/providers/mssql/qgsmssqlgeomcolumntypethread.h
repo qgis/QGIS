@@ -36,7 +36,7 @@ class QgsMssqlGeomColumnTypeThread : public QThread
     /**
      * Returns the results of the run.
      */
-    QList<QgsMssqlLayerProperty> results() const { return layerProperties; }
+    [[nodiscard]] QList<QgsMssqlLayerProperty> results() const { return layerProperties; }
 
   signals:
     void setLayerType( const QgsMssqlLayerProperty &layerProperty );

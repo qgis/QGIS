@@ -26,10 +26,10 @@
 class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "spatialite" ); }
-    QString text() const override { return QObject::tr( "SpatiaLite" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 10; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QStringLiteral( "spatialite" ); }
+    [[nodiscard]] QString text() const override { return QObject::tr( "SpatiaLite" ); }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 10; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsSpatiaLiteSourceSelect( parent, fl, widgetMode );

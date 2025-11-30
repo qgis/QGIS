@@ -127,7 +127,7 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      *
      * \see setTableContents()
      */
-    QgsTableContents tableContents() const;
+    [[nodiscard]] QgsTableContents tableContents() const;
 
     /**
      * Sets the numeric \a format to use for the currently selected cells.
@@ -287,26 +287,26 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      *
      * \see setTableHeaders()
      */
-    QVariantList tableHeaders() const;
+    [[nodiscard]] QVariantList tableHeaders() const;
 
     /**
      * Returns TRUE if any header cells are selected.
      */
-    bool isHeaderCellSelected() const;
+    [[nodiscard]] bool isHeaderCellSelected() const;
 
     /**
      * Returns TRUE if a selection has been made which can be merged.
      *
      * \since QGIS 3.40
      */
-    bool canMergeSelection() const;
+    [[nodiscard]] bool canMergeSelection() const;
 
     /**
      * Returns TRUE if a selection has been made which can be split.
      *
      * \since QGIS 3.40
      */
-    bool canSplitSelection() const;
+    [[nodiscard]] bool canSplitSelection() const;
 
   public slots:
 
@@ -502,10 +502,10 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
 
     bool collectConsecutiveRowRange( const QModelIndexList &list, int &minRow, int &maxRow ) const;
     bool collectConsecutiveColumnRange( const QModelIndexList &list, int &minColumn, int &maxColumn ) const;
-    QList<int> collectUniqueRows( const QModelIndexList &list ) const;
-    QList<int> collectUniqueColumns( const QModelIndexList &list ) const;
-    bool isRectangularSelection( const QModelIndexList &list ) const;
-    bool hasMergedCells( const QModelIndexList &list ) const;
+    [[nodiscard]] QList<int> collectUniqueRows( const QModelIndexList &list ) const;
+    [[nodiscard]] QList<int> collectUniqueColumns( const QModelIndexList &list ) const;
+    [[nodiscard]] bool isRectangularSelection( const QModelIndexList &list ) const;
+    [[nodiscard]] bool hasMergedCells( const QModelIndexList &list ) const;
 
     int mBlockSignals = 0;
     QHash<QTableWidgetItem *, QgsNumericFormat *> mNumericFormats;

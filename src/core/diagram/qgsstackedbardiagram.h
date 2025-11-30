@@ -46,14 +46,14 @@ class CORE_EXPORT QgsStackedBarDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 
     QgsStackedBarDiagram();
 
-    QgsStackedBarDiagram *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsStackedBarDiagram *clone() const override SIP_FACTORY;
 
     void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) override;
 
     QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) override;
     QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) override;
-    double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) const override;
-    QString diagramName() const override;
+    [[nodiscard]] double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &interpolationSettings ) const override;
+    [[nodiscard]] QString diagramName() const override;
 
   private:
     QBrush mCategoryBrush;

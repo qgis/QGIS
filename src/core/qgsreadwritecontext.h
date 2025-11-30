@@ -48,13 +48,13 @@ class CORE_EXPORT QgsReadWriteContext
         {}
 
         //! Returns the message string
-        QString message() const {return mMessage;}
+        [[nodiscard]] QString message() const {return mMessage;}
 
         //! Returns the message level
-        Qgis::MessageLevel level() const {return mLevel;}
+        [[nodiscard]] Qgis::MessageLevel level() const {return mLevel;}
 
         //! Returns the stack of categories of the message
-        QStringList categories() const {return mCategories;}
+        [[nodiscard]] QStringList categories() const {return mCategories;}
 
         // TODO c++20 - replace with = default
 

@@ -52,17 +52,17 @@ class CORE_EXPORT QgsRasterShader
      * \see setMaximumValue()
      * \see minimumValue()
      */
-    double maximumValue() const { return mMaximumValue; }
+    [[nodiscard]] double maximumValue() const { return mMaximumValue; }
 
     /**
      * Returns the minimum value for the raster shader.
      * \see setMinimumValue()
      * \see maximumValue()
      */
-    double minimumValue() const { return mMinimumValue; }
+    [[nodiscard]] double minimumValue() const { return mMinimumValue; }
 
     QgsRasterShaderFunction *rasterShaderFunction() { return mRasterShaderFunction.get(); }
-    const QgsRasterShaderFunction *rasterShaderFunction() const SIP_SKIP { return mRasterShaderFunction.get(); }
+    [[nodiscard]] const QgsRasterShaderFunction *rasterShaderFunction() const SIP_SKIP { return mRasterShaderFunction.get(); }
 
     /*
      *

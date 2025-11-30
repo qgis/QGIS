@@ -69,16 +69,16 @@ class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialDriver : public QSqlDriver
     explicit QOCISpatialDriver( QObject *parent = nullptr );
     QOCISpatialDriver( OCIEnv *env, OCISvcCtx *ctx, QObject *parent = nullptr );
     ~QOCISpatialDriver() override;
-    bool hasFeature( DriverFeature f ) const override;
+    [[nodiscard]] bool hasFeature( DriverFeature f ) const override;
     bool open( const QString &db, const QString &user, const QString &password, const QString &host, int port, const QString &connOpts ) override;
     void close() override;
-    QSqlResult *createResult() const override;
-    QStringList tables( QSql::TableType ) const override;
-    QSqlRecord record( const QString &tablename ) const override;
-    QSqlIndex primaryIndex( const QString &tablename ) const override;
-    QString formatValue( const QSqlField &field, bool trimStrings ) const override;
-    QVariant handle() const override;
-    QString escapeIdentifier( const QString &identifier, IdentifierType ) const override;
+    [[nodiscard]] QSqlResult *createResult() const override;
+    [[nodiscard]] QStringList tables( QSql::TableType ) const override;
+    [[nodiscard]] QSqlRecord record( const QString &tablename ) const override;
+    [[nodiscard]] QSqlIndex primaryIndex( const QString &tablename ) const override;
+    [[nodiscard]] QString formatValue( const QSqlField &field, bool trimStrings ) const override;
+    [[nodiscard]] QVariant handle() const override;
+    [[nodiscard]] QString escapeIdentifier( const QString &identifier, IdentifierType ) const override;
 
   protected:
     bool beginTransaction() override;

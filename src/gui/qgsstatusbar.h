@@ -81,7 +81,7 @@ class GUI_EXPORT QgsStatusBar : public QWidget
      * Returns the current message shown in the status bar.
      * \see showMessage()
      */
-    QString currentMessage() const;
+    [[nodiscard]] QString currentMessage() const;
 
   public slots:
 

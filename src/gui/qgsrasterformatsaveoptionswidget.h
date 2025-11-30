@@ -79,7 +79,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget : public QWidget, private Ui::
      * Returns list of selected options
      * \see setOptions()
      */
-    QStringList options() const;
+    [[nodiscard]] QStringList options() const;
 
     /**
      * Populate widget with user-defined options. String should contain
@@ -157,16 +157,16 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget : public QWidget, private Ui::
     Qgis::RasterPyramidFormat mPyramidsFormat = Qgis::RasterPyramidFormat::GeoTiff;
     int mBlockOptionUpdates = 0;
 
-    QString settingsKey( QString profile ) const SIP_FORCE;
-    QString currentProfileKey() const SIP_FORCE;
-    QString creationOptions( const QString &profile ) const SIP_FORCE;
+    [[nodiscard]] QString settingsKey( QString profile ) const SIP_FORCE;
+    [[nodiscard]] QString currentProfileKey() const SIP_FORCE;
+    [[nodiscard]] QString creationOptions( const QString &profile ) const SIP_FORCE;
     void deleteCreationOptions( const QString &profile ) SIP_FORCE;
     void setCreationOptions() SIP_FORCE;
     void setCreationOptions( const QString &profile, const QString &options ) SIP_FORCE;
     void setCreationOptions( const QString &profile, const QStringList &options ) SIP_FORCE;
-    QStringList profiles() const SIP_FORCE;
+    [[nodiscard]] QStringList profiles() const SIP_FORCE;
     bool eventFilter( QObject *obj, QEvent *event ) override SIP_FORCE;
-    QString pseudoFormat() const SIP_FORCE;
+    [[nodiscard]] QString pseudoFormat() const SIP_FORCE;
 };
 
 // clazy:excludeall=qstring-allocations

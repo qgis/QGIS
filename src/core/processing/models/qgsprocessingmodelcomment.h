@@ -39,13 +39,13 @@ class CORE_EXPORT QgsProcessingModelComment : public QgsProcessingModelComponent
      */
     QgsProcessingModelComment( const QString &description = QString() );
 
-    QgsProcessingModelComment *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsProcessingModelComment *clone() const override SIP_FACTORY;
 
     /**
      * Saves this comment to a QVariant.
      * \see loadVariant()
      */
-    QVariant toVariant() const;
+    [[nodiscard]] QVariant toVariant() const;
 
     /**
      * Loads this comment from a QVariantMap.

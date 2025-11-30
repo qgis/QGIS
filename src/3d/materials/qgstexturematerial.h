@@ -55,7 +55,7 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
     explicit QgsTextureMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsTextureMaterial() override;
 
-    Qt3DRender::QAbstractTexture *texture() const;
+    [[nodiscard]] Qt3DRender::QAbstractTexture *texture() const;
 
   public slots:
 

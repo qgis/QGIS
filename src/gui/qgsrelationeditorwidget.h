@@ -323,9 +323,9 @@ class GUI_EXPORT QgsRelationEditorWidgetFactory : public QgsAbstractRelationEdit
   public:
     QgsRelationEditorWidgetFactory();
 
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
 
-    QString name() const override;
+    [[nodiscard]] QString name() const override;
 
     QgsAbstractRelationEditorWidget *create( const QVariantMap &config, QWidget *parent = nullptr ) const override;
 

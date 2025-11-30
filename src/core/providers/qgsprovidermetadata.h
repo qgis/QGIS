@@ -115,36 +115,36 @@ class CORE_EXPORT QgsMeshDriverMetadata
     /**
      * Returns the capabilities for this driver.
      */
-    MeshDriverCapabilities capabilities() const;
+    [[nodiscard]] MeshDriverCapabilities capabilities() const;
 
     /**
      * Returns the name (key) for this driver.
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Returns the description for this driver.
      */
-    QString description() const;
+    [[nodiscard]] QString description() const;
 
     /**
      * Returns the suffix used to write datasets on file
      */
-    QString writeDatasetOnFileSuffix() const;
+    [[nodiscard]] QString writeDatasetOnFileSuffix() const;
 
     /**
      * Returns the suffix used to write mesh on file
      *
      * \since QGIS 3.22
      */
-    QString writeMeshFrameOnFileSuffix() const;
+    [[nodiscard]] QString writeMeshFrameOnFileSuffix() const;
 
     /**
      * Returns the maximum number of vertices per face supported by the driver
      *
      * \since QGIS 3.22
      */
-    int maximumVerticesCountPerFace() const;
+    [[nodiscard]] int maximumVerticesCountPerFace() const;
 
   private:
     QString mName;
@@ -234,35 +234,35 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * This key string is used for the associative container in QgsProviderRegistry
      */
-    QString key() const;
+    [[nodiscard]] QString key() const;
 
     /**
      * This returns descriptive text for the provider
      *
      * This is used to provide a descriptive list of available data providers.
      */
-    QString description() const;
+    [[nodiscard]] QString description() const;
 
     /**
      * Returns an icon representing the provider.
      *
      * \since QGIS 3.26
      */
-    virtual QIcon icon() const;
+    [[nodiscard]] virtual QIcon icon() const;
 
     /**
      * Returns the provider metadata capabilities.
      *
      * \since QGIS 3.18
      */
-    virtual QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const;
+    [[nodiscard]] virtual QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const;
 
     /**
      * Returns the provider's capabilities.
      *
      * \since QGIS 3.18.1
      */
-    virtual QgsProviderMetadata::ProviderCapabilities providerCapabilities() const;
+    [[nodiscard]] virtual QgsProviderMetadata::ProviderCapabilities providerCapabilities() const;
 
     /**
      * Returns a list of the map layer types supported by the provider.
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.26
      */
 #ifndef SIP_RUN
-    virtual QList< Qgis::LayerType > supportedLayerTypes() const;
+    [[nodiscard]] virtual QList< Qgis::LayerType > supportedLayerTypes() const;
 #else
     SIP_PYOBJECT supportedLayerTypes() const SIP_TYPEHINT( List[Qgis.LayerType] );
     % MethodCode
@@ -369,7 +369,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * \since QGIS 3.18
      */
-    virtual int priorityForUri( const QString &uri ) const;
+    [[nodiscard]] virtual int priorityForUri( const QString &uri ) const;
 
     /**
      * Returns a list of valid layer types which the provider can be used with when
@@ -381,7 +381,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * \since QGIS 3.18
      */
-    virtual QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const;
+    [[nodiscard]] virtual QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const;
 
     /**
      * Returns TRUE if the specified \a uri is known by this provider to be something which should
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * \since QGIS 3.18
      */
-    virtual bool uriIsBlocklisted( const QString &uri ) const;
+    [[nodiscard]] virtual bool uriIsBlocklisted( const QString &uri ) const;
 
     /**
      * Given a \a uri, returns any sidecar files which are associated with the URI and this
@@ -422,7 +422,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * \since QGIS 3.22
      */
-    virtual QStringList sidecarFilesForUri( const QString &uri ) const;
+    [[nodiscard]] virtual QStringList sidecarFilesForUri( const QString &uri ) const;
 
     /**
      * Queries the specified \a uri and returns a list of any valid sublayers found in the dataset which can be handled by this provider.
@@ -448,7 +448,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * \since QGIS 3.30
     */
-    virtual QString suggestGroupNameForUri( const QString &uri ) const;
+    [[nodiscard]] virtual QString suggestGroupNameForUri( const QString &uri ) const;
 
     /**
      * Class factory to return a pointer to a newly created QgsDataProvider object
@@ -585,7 +585,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \note this function may not be supported by all providers, an empty map will be returned in such case
      * \since QGIS 3.10
      */
-    virtual QVariantMap decodeUri( const QString &uri ) const;
+    [[nodiscard]] virtual QVariantMap decodeUri( const QString &uri ) const;
 
     /**
      * Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
@@ -595,7 +595,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \see decodeUri()
      * \since QGIS 3.12
      */
-    virtual QString encodeUri( const QVariantMap &parts ) const;
+    [[nodiscard]] virtual QString encodeUri( const QVariantMap &parts ) const;
 
     /**
      * Converts absolute path(s) to relative path(s) in the given provider-specific URI. and
@@ -608,7 +608,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \see relativeToAbsoluteUri()
      * \since QGIS 3.30
      */
-    virtual QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const;
+    [[nodiscard]] virtual QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const;
 
     /**
      * Converts relative path(s) to absolute path(s) in the given provider-specific URI. and
@@ -621,14 +621,14 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \see absoluteToRelativeUri()
      * \since QGIS 3.30
      */
-    virtual QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const;
+    [[nodiscard]] virtual QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const;
 
     /**
      * Cleans a layer \a uri, e.g. to remove or hide sensitive information from the URI.
      *
      * \since QGIS 3.42
      */
-    virtual QString cleanUri( const QString &uri, Qgis::UriCleaningFlags flags = Qgis::UriCleaningFlag::RemoveCredentials ) const;
+    [[nodiscard]] virtual QString cleanUri( const QString &uri, Qgis::UriCleaningFlags flags = Qgis::UriCleaningFlag::RemoveCredentials ) const;
 
     /**
      * Returns data item providers. Caller is responsible for ownership of the item providers
@@ -636,7 +636,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \note Ownership of created data item providers is passed to the caller.
      * \since QGIS 3.10
      */
-    virtual QList< QgsDataItemProvider * > dataItemProviders() const SIP_FACTORY;
+    [[nodiscard]] virtual QList< QgsDataItemProvider * > dataItemProviders() const SIP_FACTORY;
 
     /**
      * Lists stored layer styles in the provider defined by \a uri

@@ -45,7 +45,7 @@ class CORE_EXPORT QgsVectorLayerTemporalContext
      *
      * \see setLayer()
      */
-    QgsVectorLayer *layer() const;
+    [[nodiscard]] QgsVectorLayer *layer() const;
 
     /**
      * Sets the associated \a layer.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      */
     QgsVectorLayerTemporalProperties( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enabled = false );
 
-    bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const override;
+    [[nodiscard]] bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const override;
     QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const override SIP_SKIP;
 
     /**
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      *
      *\see setMode()
     */
-    Qgis::VectorTemporalMode mode() const;
+    [[nodiscard]] Qgis::VectorTemporalMode mode() const;
 
     /**
      * Sets the temporal properties \a mode.
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setLimitMode()
      * \since QGIS 3.22
     */
-    Qgis::VectorTemporalLimitMode limitMode() const;
+    [[nodiscard]] Qgis::VectorTemporalLimitMode limitMode() const;
 
     /**
      * Sets the temporal \a limit mode (to include or exclude begin/end limits).
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
     /**
      * Returns flags associated to the temporal property.
      */
-    QgsTemporalProperty::Flags flags() const override;
+    [[nodiscard]] QgsTemporalProperty::Flags flags() const override;
 
     /**
      * Sets a temporal \a range to apply to the whole layer. All features from
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      *
      * \see setFixedTemporalRange()
     */
-    const QgsDateTimeRange &fixedTemporalRange() const;
+    [[nodiscard]] const QgsDateTimeRange &fixedTemporalRange() const;
 
     /**
      * Returns the name of the start datetime field, which
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setStartField()
      * \see endField()
      */
-    QString startField() const;
+    [[nodiscard]] QString startField() const;
 
     /**
      * Sets the name of the start datetime \a field, which
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setEndField()
      * \see startField()
      */
-    QString endField() const;
+    [[nodiscard]] QString endField() const;
 
     /**
      * Sets the name of the end datetime \a field, which
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setStartExpression()
      * \see endExpression()
      */
-    QString startExpression() const;
+    [[nodiscard]] QString startExpression() const;
 
     /**
      * Sets the \a expression to use for the start time for the feature's time spans.
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setEndExpression()
      * \see startExpression()
      */
-    QString endExpression() const;
+    [[nodiscard]] QString endExpression() const;
 
     /**
      * Sets the \a expression to use for the end time for the feature's time spans.
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setDurationField()
      * \see durationUnits()
      */
-    QString durationField() const;
+    [[nodiscard]] QString durationField() const;
 
     /**
      * Sets the name of the duration \a field, which
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      *
      * \see setDurationUnits()
      */
-    Qgis::TemporalUnit durationUnits() const;
+    [[nodiscard]] Qgis::TemporalUnit durationUnits() const;
 
     /**
      * Sets the \a units of the event's duration.
@@ -278,7 +278,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setFixedDuration()
      * \see durationUnits()
      */
-    double fixedDuration() const;
+    [[nodiscard]] double fixedDuration() const;
 
     /**
      * Sets the fixed event \a duration, which contains the duration of the event.
@@ -302,7 +302,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      *
      * \see setAccumulateFeatures()
      */
-    bool accumulateFeatures() const;
+    [[nodiscard]] bool accumulateFeatures() const;
 
     /**
      * Sets whether features will be accumulated over time (i.e. all features which
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * isVisibleInTemporalRange() when testing whether features from a layer set to the
      * ModeFixedTemporalRange should ALL be filtered out.
      */
-    QString createFilterString( const QgsVectorLayerTemporalContext &context, const QgsDateTimeRange &range ) const;
+    [[nodiscard]] QString createFilterString( const QgsVectorLayerTemporalContext &context, const QgsDateTimeRange &range ) const;
 
     /**
      * Attempts to setup the temporal properties by scanning a set of \a fields

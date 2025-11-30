@@ -73,7 +73,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         }
 
         //! Returns map layer or NULLPTR if the layer does not exist anymore
-        QgsMapLayer *layer() const { return mLayer; }
+        [[nodiscard]] QgsMapLayer *layer() const { return mLayer; }
 
         //! Sets the map layer for this record
         void setLayer( QgsMapLayer *layer );
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         }
 
         //! Returns a list of records for all visible layer belonging to the theme.
-        QList<QgsMapThemeCollection::MapThemeLayerRecord> layerRecords() const { return mLayerRecords; }
+        [[nodiscard]] QList<QgsMapThemeCollection::MapThemeLayerRecord> layerRecords() const { return mLayerRecords; }
 
         //! Sets layer records for the theme.
         void setLayerRecords( const QList<QgsMapThemeCollection::MapThemeLayerRecord> &records ) { mLayerRecords = records; }
@@ -146,21 +146,21 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         /**
          * Returns set with only records for valid layers
          */
-        QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> validLayerRecords() const SIP_SKIP;
+        [[nodiscard]] QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> validLayerRecords() const SIP_SKIP;
 
         /**
          * Returns whether information about expanded/collapsed state of nodes has been recorded
          * and thus whether expandedGroupNodes() and expandedLegendItems + expandedLayerNode from layer records are valid.
          * \since QGIS 3.2
          */
-        bool hasExpandedStateInfo() const { return mHasExpandedStateInfo; }
+        [[nodiscard]] bool hasExpandedStateInfo() const { return mHasExpandedStateInfo; }
 
         /**
          * Returns whether information about checked/unchecked state of groups has been recorded
          * and thus whether checkedGroupNodes() is valid.
          * \since QGIS 3.10.1
          */
-        bool hasCheckedStateInfo() const { return mHasCheckedStateInfo; };
+        [[nodiscard]] bool hasCheckedStateInfo() const { return mHasCheckedStateInfo; };
 
         /**
          * Sets whether the map theme contains valid expanded/collapsed state of nodes
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
          * and a forward slash, e.g. "level1/level2"
          * \since QGIS 3.2
          */
-        QSet<QString> expandedGroupNodes() const { return mExpandedGroupNodes; }
+        [[nodiscard]] QSet<QString> expandedGroupNodes() const { return mExpandedGroupNodes; }
 
         /**
          * Returns a set of group identifiers for group nodes that should have checked state (other group nodes should be unchecked).
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
          * and a forward slash, e.g. "level1/level2"
          * \since QGIS 3.10.1
          */
-        QSet<QString> checkedGroupNodes() const { return mCheckedGroupNodes; }
+        [[nodiscard]] QSet<QString> checkedGroupNodes() const { return mCheckedGroupNodes; }
 
         /**
          * Sets a set of group identifiers for group nodes that should have expanded state. See expandedGroupNodes().
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     /**
      * Returns whether a map theme with a matching name exists.
      */
-    bool hasMapTheme( const QString &name ) const;
+    [[nodiscard]] bool hasMapTheme( const QString &name ) const;
 
     /**
      * Inserts a new map theme to the collection.
@@ -288,12 +288,12 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     /**
      * Returns a list of existing map theme names.
      */
-    QStringList mapThemes() const;
+    [[nodiscard]] QStringList mapThemes() const;
 
     /**
      * Returns the recorded state of a map theme.
      */
-    QgsMapThemeCollection::MapThemeRecord mapThemeState( const QString &name ) const { return mMapThemes[name]; }
+    [[nodiscard]] QgsMapThemeCollection::MapThemeRecord mapThemeState( const QString &name ) const { return mMapThemes[name]; }
 
     /**
      * Returns the list of layer IDs that are visible for the specified map theme.
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * \note The order of the returned list is not guaranteed to reflect the order of layers
      * in the canvas.
      */
-    QStringList mapThemeVisibleLayerIds( const QString &name ) const;
+    [[nodiscard]] QStringList mapThemeVisibleLayerIds( const QString &name ) const;
 
     /**
      * Returns the list of layers that are visible for the specified map theme.
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * \note The order of the returned list is not guaranteed to reflect the order of layers
      * in the canvas.
      */
-    QList<QgsMapLayer *> mapThemeVisibleLayers( const QString &name ) const;
+    [[nodiscard]] QList<QgsMapLayer *> mapThemeVisibleLayers( const QString &name ) const;
 
     /**
      * Gets layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * All map themes will maintain the same layer order as the master layer order.
      * \see masterVisibleLayers()
      */
-    QList< QgsMapLayer * > masterLayerOrder() const;
+    [[nodiscard]] QList< QgsMapLayer * > masterLayerOrder() const;
 
     /**
      * Returns the master list of visible layers. The order of returned layers will always match those
@@ -371,7 +371,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * in the project's layer tree.
      * \see masterLayerOrder()
      */
-    QList< QgsMapLayer * > masterVisibleLayers() const;
+    [[nodiscard]] QList< QgsMapLayer * > masterVisibleLayers() const;
 
   signals:
 

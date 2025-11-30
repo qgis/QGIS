@@ -73,12 +73,12 @@ class CORE_EXPORT QgsSymbolLevelItem
     /**
      * The symbol of this symbol level
      */
-    QgsSymbol *symbol() const;
+    [[nodiscard]] QgsSymbol *symbol() const;
 
     /**
      * The layer of this symbol level
      */
-    int layer() const;
+    [[nodiscard]] int layer() const;
 
     // TODO QGIS 4.0 -> make private
   protected:

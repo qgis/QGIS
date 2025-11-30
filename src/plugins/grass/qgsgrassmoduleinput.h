@@ -61,7 +61,7 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     //! Gets singleton instance of this class.
     static QgsGrassModuleInputModel *instance();
 
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
 
   public slots:
@@ -104,8 +104,8 @@ class QgsGrassModuleInputProxy : public QSortFilterProxyModel
     explicit QgsGrassModuleInputProxy( QgsGrassModuleInputModel *sourceModel, QgsGrassObject::Type type, QObject *parent = nullptr );
 
   protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
     QgsGrassModuleInputModel *mSourceModel = nullptr;
@@ -137,20 +137,20 @@ class QgsGrassModuleInputCompleterProxy : public QAbstractProxyModel
   public:
     explicit QgsGrassModuleInputCompleterProxy( QObject *parent = nullptr );
 
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override
     {
       Q_UNUSED( parent )
       return 1;
     }
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
 
 
     void setSourceModel( QAbstractItemModel *sourceModel ) override;
 
-    QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
-    QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
+    [[nodiscard]] QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
+    [[nodiscard]] QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
 
   private:
     void refreshMapping();
@@ -269,15 +269,15 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     //! Does this options causes use of region?
     //  Raster input/output uses region by default
     //  Use of region can be forced by 'region' attribute in qgm
-    bool usesRegion() const { return mUsesRegion; }
+    [[nodiscard]] bool usesRegion() const { return mUsesRegion; }
 
     //! Should be used region of this input
     bool useRegion();
 
-    QgsGrassObject::Type type() const { return mType; }
+    [[nodiscard]] QgsGrassObject::Type type() const { return mType; }
 
     void setGeometryTypeOption( const QString &optionName ) { mGeometryTypeOption = optionName; }
-    QString geometryTypeOption() const { return mGeometryTypeOption; }
+    [[nodiscard]] QString geometryTypeOption() const { return mGeometryTypeOption; }
 
     // list of selected layers in <field>_<type> form, used by QgsGrassModuleSelection
     QStringList currentLayerCodes();

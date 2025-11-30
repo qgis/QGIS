@@ -56,40 +56,40 @@ class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
     void loadRaster( const QString &fileRaster );
 
     //! \returns Whether has image already has existing georeference
-    bool hasExistingGeoreference() const { return mRasterChangeCoords.hasExistingGeoreference(); }
+    [[nodiscard]] bool hasExistingGeoreference() const { return mRasterChangeCoords.hasExistingGeoreference(); }
 
     /**
      * Returns the pixel coordinate from the source image given a layer coordinate from the source image.
      * \see toSourceCoordinate()
      */
-    QgsPointXY toSourcePixel( const QgsPointXY &pntMap ) const { return mRasterChangeCoords.toColumnLine( pntMap ); }
+    [[nodiscard]] QgsPointXY toSourcePixel( const QgsPointXY &pntMap ) const { return mRasterChangeCoords.toColumnLine( pntMap ); }
 
     /**
      * Returns the layer coordinate from the source image given a pixel coordinate from the source image.
      * \see toSourcePixel()
      */
-    QgsPointXY toSourceCoordinate( const QgsPointXY &pixel ) const;
+    [[nodiscard]] QgsPointXY toSourceCoordinate( const QgsPointXY &pixel ) const;
 
     /**
      * Transforms a bounding box of the source image from source coordinates to source pixels or vice versa.
      */
-    QgsRectangle transformSourceExtent( const QgsRectangle &rect, bool toPixel ) const { return mRasterChangeCoords.transformExtent( rect, toPixel ); }
+    [[nodiscard]] QgsRectangle transformSourceExtent( const QgsRectangle &rect, bool toPixel ) const { return mRasterChangeCoords.transformExtent( rect, toPixel ); }
 
     //! \brief The transform parametrisation currently in use.
-    TransformMethod transformParametrisation() const;
+    [[nodiscard]] TransformMethod transformParametrisation() const;
 
     //! True for linear, Helmert, first order polynomial
-    bool providesAccurateInverseTransformation() const;
+    [[nodiscard]] bool providesAccurateInverseTransformation() const;
 
     //! \returns whether the parameters of this transform have been initialized by \ref updateParametersFromGCPs
-    bool parametersInitialized() const;
+    [[nodiscard]] bool parametersInitialized() const;
 
-    QgsGcpTransformerInterface *clone() const override;
+    [[nodiscard]] QgsGcpTransformerInterface *clone() const override;
     bool updateParametersFromGcps( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, bool invertYAxis = false ) override;
-    int minimumGcpCount() const override;
-    TransformMethod method() const override;
-    GDALTransformerFunc GDALTransformer() const override;
-    void *GDALTransformerArgs() const override;
+    [[nodiscard]] int minimumGcpCount() const override;
+    [[nodiscard]] TransformMethod method() const override;
+    [[nodiscard]] GDALTransformerFunc GDALTransformer() const override;
+    [[nodiscard]] void *GDALTransformerArgs() const override;
 
     /**
      * \brief Transform from pixel coordinates to georeferenced coordinates.

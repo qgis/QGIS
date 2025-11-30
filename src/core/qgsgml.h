@@ -132,31 +132,31 @@ class CORE_EXPORT QgsGmlStreamingParser
     QVector<QgsGmlFeaturePtrGmlIdPair> getAndStealReadyFeatures();
 
     //! Returns the EPSG code, or 0 if unknown
-    int getEPSGCode() const { return mEpsg; }
+    [[nodiscard]] int getEPSGCode() const { return mEpsg; }
 
     //! Returns the value of the srsName attribute
-    QString srsName() const { return mSrsName; }
+    [[nodiscard]] QString srsName() const { return mSrsName; }
 
     //! Returns layer bounding box
-    const QgsRectangle &layerExtent() const { return mLayerExtent; }
+    [[nodiscard]] const QgsRectangle &layerExtent() const { return mLayerExtent; }
 
     //! Returns the geometry type
-    Qgis::WkbType wkbType() const { return mWkbType; }
+    [[nodiscard]] Qgis::WkbType wkbType() const { return mWkbType; }
 
     //! Returns WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found
-    int numberMatched() const { return mNumberMatched; }
+    [[nodiscard]] int numberMatched() const { return mNumberMatched; }
 
     //! Returns WFS 2.0 "numberReturned" or WFS 1.1 "numberOfFeatures" attribute, or -1 if invalid/not found
-    int numberReturned() const { return mNumberReturned; }
+    [[nodiscard]] int numberReturned() const { return mNumberReturned; }
 
     //! Returns whether the document parser is a OGC exception
-    bool isException() const { return mIsException; }
+    [[nodiscard]] bool isException() const { return mIsException; }
 
     //! Returns the exception text.
-    QString exceptionText() const { return mExceptionText; }
+    [[nodiscard]] QString exceptionText() const { return mExceptionText; }
 
     //! Returns whether a "truncatedResponse" element is found
-    bool isTruncatedResponse() const { return mTruncatedResponse; }
+    [[nodiscard]] bool isTruncatedResponse() const { return mTruncatedResponse; }
 
   private:
 
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     int createPolygonFromFragments();
     int createMultiPolygonFromFragments();
     //! Adds all the integers contained in mCurrentWKBFragmentSizes
-    int totalWKBFragmentSize() const;
+    [[nodiscard]] int totalWKBFragmentSize() const;
 
     //! Gets safely (if empty) top from mode stack
     ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? None : mParseModeStack.top(); }
@@ -421,15 +421,15 @@ class CORE_EXPORT QgsGml : public QObject
     int getFeatures( const QByteArray &data, Qgis::WkbType *wkbType, QgsRectangle *extent = nullptr );
 
     //! Gets parsed features for given type name
-    QMap<QgsFeatureId, QgsFeature * > featuresMap() const { return mFeatures; }
+    [[nodiscard]] QMap<QgsFeatureId, QgsFeature * > featuresMap() const { return mFeatures; }
 
     //! Gets feature ids map
-    QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
+    [[nodiscard]] QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
 
     /**
      * Returns the spatial reference system for features.
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
   signals:
 

@@ -41,16 +41,16 @@ class CORE_EXPORT QgsClassificationLogarithmic : public QgsClassificationMethod
     };
 
     QgsClassificationLogarithmic();
-    std::unique_ptr< QgsClassificationMethod > clone() const override;
-    QString name() const override;
-    QString id() const override;
-    QIcon icon() const override;
-    QString labelForRange( double lowerValue, double upperValue, ClassPosition position ) const override;
-    bool valuesRequired() const override;
+    [[nodiscard]] std::unique_ptr< QgsClassificationMethod > clone() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QString labelForRange( double lowerValue, double upperValue, ClassPosition position ) const override;
+    [[nodiscard]] bool valuesRequired() const override;
 
   private:
     QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error ) override;
-    QString valueToLabel( double value ) const override;
+    [[nodiscard]] QString valueToLabel( double value ) const override;
 
 
 };

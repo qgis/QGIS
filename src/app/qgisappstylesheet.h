@@ -65,29 +65,29 @@ class APP_EXPORT QgisAppStyleSheet : public QObject
     void saveToSettings( const QMap<QString, QVariant> &opts );
 
     //! Gets reference font for initial qApp
-    QFont defaultFont() const { return mDefaultFont; }
+    [[nodiscard]] QFont defaultFont() const { return mDefaultFont; }
 
     /**
      * Returns the user set font size override value, or -1 if not set and the Qt default font size should be used.
      */
-    double userFontSize() const { return mUserFontSize; }
+    [[nodiscard]] double userFontSize() const { return mUserFontSize; }
 
     /**
      * Returns the user set font family override value, or an empty if not set and the Qt default font family should be used.
      */
-    QString userFontFamily() const { return mUserFontFamily; }
+    [[nodiscard]] QString userFontFamily() const { return mUserFontFamily; }
 
     /**
      * Returns the application font size to use. This will match userFontSize() if the user
      * has set a custom font size, or the defaultFont() font size otherwise.
      */
-    double fontSize() const { return mUserFontSize > 0 ? mUserFontSize : mDefaultFont.pointSizeF(); }
+    [[nodiscard]] double fontSize() const { return mUserFontSize > 0 ? mUserFontSize : mDefaultFont.pointSizeF(); }
 
     /**
      * Returns the application font family. This will match userFontFamily() if the user
      * has set a custom font, or the defaultFont() family otherwise.
      */
-    QString fontFamily() const { return !mUserFontFamily.isEmpty() ? mUserFontFamily : mDefaultFont.family(); }
+    [[nodiscard]] QString fontFamily() const { return !mUserFontFamily.isEmpty() ? mUserFontFamily : mDefaultFont.family(); }
 
   signals:
 

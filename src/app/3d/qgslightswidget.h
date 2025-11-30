@@ -41,15 +41,15 @@ class QgsLightsModel : public QAbstractListModel
 
     explicit QgsLightsModel( QObject *parent = nullptr );
 
-    int rowCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     void setPointLights( const QList<QgsPointLightSettings> &lights );
     void setDirectionalLights( const QList<QgsDirectionalLightSettings> &lights );
 
-    QList<QgsPointLightSettings> pointLights() const;
-    QList<QgsDirectionalLightSettings> directionalLights() const;
+    [[nodiscard]] QList<QgsPointLightSettings> pointLights() const;
+    [[nodiscard]] QList<QgsDirectionalLightSettings> directionalLights() const;
 
     void setPointLightSettings( int index, const QgsPointLightSettings &light );
     void setDirectionalLightSettings( int index, const QgsDirectionalLightSettings &light );
@@ -76,8 +76,8 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
 
     QList<QgsLightSource *> lightSources();
 
-    int directionalLightCount() const;
-    int lightSourceCount() const;
+    [[nodiscard]] int directionalLightCount() const;
+    [[nodiscard]] int lightSourceCount() const;
 
     void setPointLightCrs( const QgsCoordinateReferenceSystem &crs );
 

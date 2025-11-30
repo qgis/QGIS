@@ -247,7 +247,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Returns and adjusted uri for the layer based on current and available CRS as well as the last selected image format
      */
-    QString crsAndFormatAdjustedLayerUri( const QString &uri, const QStringList &supportedCrs, const QStringList &supportedFormats ) const;
+    [[nodiscard]] QString crsAndFormatAdjustedLayerUri( const QString &uri, const QStringList &supportedCrs, const QStringList &supportedFormats ) const;
 
     //! Sets the extents of the map canvas
     void setExtent( const QgsRectangle &rect );
@@ -425,7 +425,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Returns the active layout designers.
      */
-    QSet<QgsLayoutDesignerDialog *> layoutDesigners() const { return mLayoutDesignerDialogs; }
+    [[nodiscard]] QSet<QgsLayoutDesignerDialog *> layoutDesigners() const { return mLayoutDesignerDialogs; }
 
     /**
      * Gets a unique title from user for new and duplicate layouts.
@@ -785,7 +785,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list
     */
-    QList<QgsMapLayer *> editableLayers( bool modified = false, bool ignoreLayersWhichCannotBeToggled = false ) const;
+    [[nodiscard]] QList<QgsMapLayer *> editableLayers( bool modified = false, bool ignoreLayersWhichCannotBeToggled = false ) const;
 
     //! emit initializationCompleted signal
     void completeInitialization();
@@ -894,7 +894,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler );
 
     //! Returns a list of registered custom drop handlers.
-    QVector<QPointer<QgsCustomDropHandler>> customDropHandlers() const;
+    [[nodiscard]] QVector<QPointer<QgsCustomDropHandler>> customDropHandlers() const;
 
     //! Register a new custom layout drop handler.
     void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler );
@@ -903,7 +903,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler );
 
     //! Returns a list of registered custom layout drop handlers.
-    QVector<QPointer<QgsLayoutCustomDropHandler>> customLayoutDropHandlers() const;
+    [[nodiscard]] QVector<QPointer<QgsLayoutCustomDropHandler>> customLayoutDropHandlers() const;
 
     //! Returns the active map layer.
     QgsMapLayer *activeLayer();
@@ -912,7 +912,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Returns the toolbar icon size. If \a dockedToolbar is TRUE, the icon size
      * for toolbars contained within docks is returned.
      */
-    QSize iconSize( bool dockedToolbar = false ) const;
+    [[nodiscard]] QSize iconSize( bool dockedToolbar = false ) const;
 
     /**
       * Checks available datum transforms and ask user if several are available and none
@@ -927,7 +927,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomToBookmarkIndex( const QModelIndex & );
 
     //! Returns pointer to the identify map tool - used by identify tool in 3D view
-    QgsMapToolIdentifyAction *identifyMapTool() const;
+    [[nodiscard]] QgsMapToolIdentifyAction *identifyMapTool() const;
 
     QgsMapLayerActionContext createMapLayerActionContext();
 
@@ -941,7 +941,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
 
-    QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() const;
+    [[nodiscard]] QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() const;
 
     /**
      * Sets a GPS \a connection to use within the GPS Panel widget.
@@ -2413,7 +2413,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void write3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomDocument &doc, QDomElement &elem3DMap );
 #endif
 
-    QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
 
     //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
     void populateProjectStorageMenu( QMenu *menu, bool saving );

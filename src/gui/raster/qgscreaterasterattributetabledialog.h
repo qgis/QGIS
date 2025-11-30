@@ -52,17 +52,17 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
     /**
      * Returns the file path in case of VAT.DBF save option.
      */
-    QString filePath() const;
+    [[nodiscard]] QString filePath() const;
 
     /**
      * Returns TRUE if the option to save to a file is selected.
      */
-    bool saveToFile() const;
+    [[nodiscard]] bool saveToFile() const;
 
     /**
      * Returns TRUE if the option to open the newly created attribute table is checked.
      */
-    bool openWhenDone() const;
+    [[nodiscard]] bool openWhenDone() const;
 
     /**
      * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages

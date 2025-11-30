@@ -73,17 +73,17 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     Qgis::MouseHandlesAction mouseActionForScenePos( QPointF sceneCoordPos );
 
     //! Returns TRUE is user is currently dragging the handles
-    bool isDragging() const { return mIsDragging; }
+    [[nodiscard]] bool isDragging() const { return mIsDragging; }
 
     //! Returns TRUE is user is currently resizing with the handles
-    bool isResizing() const { return mIsResizing; }
+    [[nodiscard]] bool isResizing() const { return mIsResizing; }
 
     /**
      * Returns TRUE is user is currently rotating with the handles.
      *
      * \since QGIS 4.0
      */
-    bool isRotating() const { return mIsRotating; }
+    [[nodiscard]] bool isRotating() const { return mIsRotating; }
 
     bool shouldBlockEvent( QInputEvent *event ) const;
 
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
      *
      * \since QGIS 4.0
      */
-    bool isRotationEnabled() const { return mRotationEnabled; }
+    [[nodiscard]] bool isRotationEnabled() const { return mRotationEnabled; }
 
     /**
      * Sets whether rotation functionality is enabled.
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     virtual void setViewportCursor( Qt::CursorShape cursor ) = 0;
 
     virtual QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) = 0;
-    virtual QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const = 0;
+    [[nodiscard]] virtual QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const = 0;
     virtual bool itemIsLocked( QGraphicsItem *item )
     {
       Q_UNUSED( item );
@@ -198,7 +198,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     QSizeF calcCursorEdgeOffset( QPointF cursorPos );
 
     //! Returns the mouse handle bounds of current selection
-    QRectF selectionBounds() const;
+    [[nodiscard]] QRectF selectionBounds() const;
 
     /**
      * Resizes a QRectF relative to a resized bounding rectangle.
@@ -277,7 +277,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
      * Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
      * item border for resizing.
     */
-    double rectHandlerBorderTolerance() const;
+    [[nodiscard]] double rectHandlerBorderTolerance() const;
 
     //! Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)
     Qt::CursorShape cursorForPosition( QPointF itemCoordPos );

@@ -202,7 +202,7 @@ namespace QgsWms
        * \returns a non null pointer
        * may throw an exception
        */
-      QImage *createImage( const QSize &size ) const;
+      [[nodiscard]] QImage *createImage( const QSize &size ) const;
 
       /**
        * Configures map settings according to WMS parameters.
@@ -291,7 +291,7 @@ namespace QgsWms
        * Tests if a filter sql string is allowed (safe)
        * \returns true in case of success, false if string seems unsafe
       */
-      bool testFilterStringSafety( const QString &filter ) const;
+      [[nodiscard]] bool testFilterStringSafety( const QString &filter ) const;
       //! Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes
       static void groupStringList( QStringList &list, const QString &groupString );
 
@@ -299,13 +299,13 @@ namespace QgsWms
       void convertFeatureInfoToSia2045( QDomDocument &doc ) const;
 
       //! Converts a feature info xml document to HTML
-      QByteArray convertFeatureInfoToHtml( const QDomDocument &doc ) const;
+      [[nodiscard]] QByteArray convertFeatureInfoToHtml( const QDomDocument &doc ) const;
 
       //! Converts a feature info xml document to Text
-      QByteArray convertFeatureInfoToText( const QDomDocument &doc ) const;
+      [[nodiscard]] QByteArray convertFeatureInfoToText( const QDomDocument &doc ) const;
 
       //! Converts a feature info xml document to json
-      QByteArray convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc, const QgsCoordinateReferenceSystem &destCRS ) const;
+      [[nodiscard]] QByteArray convertFeatureInfoToJson( const QList<QgsMapLayer *> &layers, const QDomDocument &doc, const QgsCoordinateReferenceSystem &destCRS ) const;
 
       QDomElement createFeatureGML(
         const QgsFeature *feat,

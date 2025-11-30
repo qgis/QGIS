@@ -53,7 +53,7 @@ class APP_EXPORT QgsZValueWidget : public QWidget
     QgsZValueWidget( const QString &label, QWidget *parent = nullptr );
 
     //! Returns the current \a z value
-    double zValue() const;
+    [[nodiscard]] double zValue() const;
 
     //! Sets the current value \a z of the widget
     void setZValue( double z );
@@ -71,7 +71,7 @@ class APP_EXPORT QgsZValueWidget : public QWidget
      */
     double getDefaultValue();
 
-    QWidget *keyboardEntryWidget() const;
+    [[nodiscard]] QWidget *keyboardEntryWidget() const;
 
   signals:
     void applyZValuesFromProjectElevation();
@@ -100,16 +100,16 @@ class QgsMeshEditForceByLineAction : public QWidgetAction
     void setMapCanvas( QgsMapCanvas *canvas );
 
     //! Returns the interpolation mode
-    IntepolationMode interpolationMode() const;
+    [[nodiscard]] IntepolationMode interpolationMode() const;
 
     //! Returns whether vertices will be added on edge intersection
-    bool newVertexOnIntersectingEdge() const;
+    [[nodiscard]] bool newVertexOnIntersectingEdge() const;
 
     //! Returns the tolerance value
-    double toleranceValue() const;
+    [[nodiscard]] double toleranceValue() const;
 
     //! Returns the tolerance unit
-    Qgis::RenderUnit toleranceUnit() const;
+    [[nodiscard]] Qgis::RenderUnit toleranceUnit() const;
 
   private slots:
     void updateSettings();
@@ -138,10 +138,10 @@ class QgsMeshEditDigitizingAction : public QWidgetAction
     QgsMeshEditDigitizingAction( QObject *parent = nullptr );
 
     //! Returns type of z value obtaining
-    QgsMeshEditDigitizingAction::ZValueSource zValueSourceType() const;
+    [[nodiscard]] QgsMeshEditDigitizingAction::ZValueSource zValueSourceType() const;
 
     //! Returns if neighboring faces should be refined when adding vertex inside mesh
-    bool refineNeighboringFaces() const;
+    [[nodiscard]] bool refineNeighboringFaces() const;
 
     void setZValueType( QgsMeshEditDigitizingAction::ZValueSource zValueSource );
 
@@ -164,22 +164,22 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     ~QgsMapToolEditMeshFrame() override;
 
     QList<QAction *> mapToolActions();
-    QAction *digitizeAction() const;
-    QList<QAction *> selectActions() const;
-    QAction *defaultSelectActions() const;
-    QAction *transformAction() const;
-    QList<QAction *> forceByLinesActions() const;
-    QAction *defaultForceAction() const;
-    QWidgetAction *forceByLineWidgetActionSettings() const;
-    QWidgetAction *digitizingWidgetActionSettings() const;
-    QAction *reindexAction() const;
+    [[nodiscard]] QAction *digitizeAction() const;
+    [[nodiscard]] QList<QAction *> selectActions() const;
+    [[nodiscard]] QAction *defaultSelectActions() const;
+    [[nodiscard]] QAction *transformAction() const;
+    [[nodiscard]] QList<QAction *> forceByLinesActions() const;
+    [[nodiscard]] QAction *defaultForceAction() const;
+    [[nodiscard]] QWidgetAction *forceByLineWidgetActionSettings() const;
+    [[nodiscard]] QWidgetAction *digitizingWidgetActionSettings() const;
+    [[nodiscard]] QAction *reindexAction() const;
 
     void setActionsEnable( bool enable );
 
     void deactivate() override;
     void activate() override;
     bool populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event ) override;
-    Flags flags() const override;
+    [[nodiscard]] Flags flags() const override;
 
   signals:
     void selectionChange( QgsMeshLayer *meshLayer, const QList<int> verticesIndex );
@@ -229,9 +229,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void initialize();
     void activateWithState( State state );
     void backToDigitizing();
-    const QgsMeshVertex mapVertex( int index ) const;
-    const QgsPointXY mapVertexXY( int index ) const;
-    const QgsMeshFace nativeFace( int index ) const;
+    [[nodiscard]] const QgsMeshVertex mapVertex( int index ) const;
+    [[nodiscard]] const QgsPointXY mapVertexXY( int index ) const;
+    [[nodiscard]] const QgsMeshFace nativeFace( int index ) const;
 
     double currentZValue();
 
@@ -241,8 +241,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void highlightCurrentHoveredFace( const QgsPointXY &mapPoint );
     void highlightCloseEdge( const QgsPointXY &mapPoint );
     void highlightCloseVertex( const QgsPointXY &mapPoint );
-    bool edgeCanBeInteractive( int vertexIndex1, int vertexIndex2 ) const;
-    bool faceCanBeInteractive( int faceIndex ) const;
+    [[nodiscard]] bool edgeCanBeInteractive( int vertexIndex1, int vertexIndex2 ) const;
+    [[nodiscard]] bool faceCanBeInteractive( int faceIndex ) const;
 
     void createZValueWidget();
     void deleteZValueWidget();
@@ -256,17 +256,17 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void updateFreeVertices();
 
     //! Checks if we are closed to a vertex, if yes return the index of the vertex;
-    int closeVertex( const QgsPointXY &point ) const;
+    [[nodiscard]] int closeVertex( const QgsPointXY &point ) const;
 
-    QgsPointSequence nativeFaceGeometry( int faceIndex ) const;
-    QVector<QgsPointXY> edgeGeometry( const Edge &edge ) const;
-    QVector<int> edgeVertices( const Edge &edge ) const;
+    [[nodiscard]] QgsPointSequence nativeFaceGeometry( int faceIndex ) const;
+    [[nodiscard]] QVector<QgsPointXY> edgeGeometry( const Edge &edge ) const;
+    [[nodiscard]] QVector<int> edgeVertices( const Edge &edge ) const;
 
     QgsPointXY newFaceMarkerPosition( int vertexIndex );
 
     void addVertexToFaceCanditate( int vertexIndex ); //for existing vertex
     void addVertexToFaceCanditate( const QgsPointXY &vertexPosition );
-    bool testNewVertexInFaceCanditate( bool testLast, int vertexIndex, const QgsPointXY &mapPoint ) const;
+    [[nodiscard]] bool testNewVertexInFaceCanditate( bool testLast, int vertexIndex, const QgsPointXY &mapPoint ) const;
 
     // selection methods
     void select( const QgsPointXY &mapPoint, Qt::KeyboardModifiers modifiers, double tolerance );

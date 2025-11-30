@@ -39,7 +39,7 @@ class GUI_EXPORT QgsSubsetStringEditorProvider
     virtual ~QgsSubsetStringEditorProvider();
 
     //! Provider key
-    virtual QString providerKey() const = 0;
+    [[nodiscard]] virtual QString providerKey() const = 0;
 
     /**
      * Subset string editor provider name, this is useful to retrieve
@@ -48,7 +48,7 @@ class GUI_EXPORT QgsSubsetStringEditorProvider
      *
      * The default implementation returns the providerKey()
      */
-    virtual QString name() const { return providerKey(); }
+    [[nodiscard]] virtual QString name() const { return providerKey(); }
 
     //! Returns true if the provider can handle the layer
     virtual bool canHandleLayer( QgsVectorLayer *layer ) const = 0;

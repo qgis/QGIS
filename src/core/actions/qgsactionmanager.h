@@ -114,10 +114,10 @@ class CORE_EXPORT QgsActionManager: public QObject
      * If no action scope is provided, all actions will be returned.
      *
      */
-    QList<QgsAction> actions( const QString &actionScope = QString() ) const;
+    [[nodiscard]] QList<QgsAction> actions( const QString &actionScope = QString() ) const;
 
     //! Returns the layer
-    QgsVectorLayer *layer() const { return mLayer; }
+    [[nodiscard]] QgsVectorLayer *layer() const { return mLayer; }
 
     //! Writes the actions out in XML format
     bool writeXml( QDomNode &layer_node ) const;
@@ -129,14 +129,14 @@ class CORE_EXPORT QgsActionManager: public QObject
      * Gets an action by its \a id.
      *
      */
-    QgsAction action( QUuid id ) const;
+    [[nodiscard]] QgsAction action( QUuid id ) const;
 
     /**
      * Gets an action by its \a id.
      *
      * \since QGIS 3.28
      */
-    QgsAction action( const QString &id ) const;
+    [[nodiscard]] QgsAction action( const QString &id ) const;
 
     /**
      * Each scope can have a default action. This will be saved in the project
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsActionManager: public QObject
 
     bool mOnNotifyConnected = false;
 
-    QgsExpressionContext createExpressionContext() const;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const;
 
   private slots:
     void onNotifyRunActions( const QString &message );

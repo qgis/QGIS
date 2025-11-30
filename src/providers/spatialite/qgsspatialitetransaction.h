@@ -43,7 +43,7 @@ class QgsSpatiaLiteTransaction : public QgsTransaction
     /**
      * Returns the (possibly NULL) sqlite handle
      */
-    sqlite3 *sqliteHandle() const;
+    [[nodiscard]] sqlite3 *sqliteHandle() const;
 
   private:
     QgsSqliteHandle *mSharedHandle = nullptr;

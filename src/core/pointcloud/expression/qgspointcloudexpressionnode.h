@@ -68,7 +68,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode
         /**
          * Returns the number of nodes in the list.
          */
-        int count() const { return mList.count(); }
+        [[nodiscard]] int count() const { return mList.count(); }
 
         /**
          * Gets a list of all the nodes.
@@ -83,15 +83,15 @@ class CORE_EXPORT QgsPointCloudExpressionNode
         /**
          * Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
          */
-        QStringList names() const { return mNameList; }
+        [[nodiscard]] QStringList names() const { return mNameList; }
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller
-        QgsPointCloudExpressionNode::NodeList *clone() const;
+        [[nodiscard]] QgsPointCloudExpressionNode::NodeList *clone() const;
 
         /**
          * Returns a string dump of the expression node.
          */
-        virtual QString dump() const;
+        [[nodiscard]] virtual QString dump() const;
 
       private:
         QList<QgsPointCloudExpressionNode *> mList;

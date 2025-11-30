@@ -82,17 +82,17 @@ class QgsEsriI3SProviderMetadata : public QgsProviderMetadata
 
   public:
     QgsEsriI3SProviderMetadata();
-    QIcon icon() const override;
-    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QgsEsriI3SDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QString filters( Qgis::FileFilterType type ) override;
-    ProviderCapabilities providerCapabilities() const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
-    QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] ProviderCapabilities providerCapabilities() const override;
+    [[nodiscard]] QList< Qgis::LayerType > supportedLayerTypes() const override;
+    [[nodiscard]] QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
     QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags, QgsFeedback *feedback ) const override;
-    int priorityForUri( const QString &uri ) const override;
+    [[nodiscard]] int priorityForUri( const QString &uri ) const override;
 };
 
 ///@endcond

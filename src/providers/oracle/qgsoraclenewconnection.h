@@ -33,8 +33,8 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
     //! Constructor
     QgsOracleNewConnection( QWidget *parent = nullptr, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    QString originalConnName() const { return mOriginalConnName; }
-    QString connName() const { return txtName->text(); }
+    [[nodiscard]] QString originalConnName() const { return mOriginalConnName; }
+    [[nodiscard]] QString connName() const { return txtName->text(); }
 
   public slots:
     void accept() override;

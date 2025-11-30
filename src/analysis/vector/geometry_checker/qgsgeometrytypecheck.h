@@ -60,13 +60,13 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsSingleGeometryCheck
       : QgsSingleGeometryCheck( context, configuration )
       , mAllowedTypes( allowedTypes )
     {}
-    QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
-    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
+    [[nodiscard]] QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    [[nodiscard]] QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
-    QString description() const override;
-    QString id() const override;
-    QgsGeometryCheck::CheckType checkType() const override;
+    [[nodiscard]] QString description() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QgsGeometryCheck::CheckType checkType() const override;
 
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP { return { Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }

@@ -31,8 +31,8 @@
 class QgsRandomRasterAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
-    QString group() const final;
-    QString groupId() const final;
+    [[nodiscard]] QString group() const final;
+    [[nodiscard]] QString groupId() const final;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) final;
 
   protected:
@@ -73,14 +73,14 @@ class QgsRandomUniformRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomUniformRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomRaster.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRandomUniformRasterAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomRaster.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomRaster.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRandomUniformRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() final;
@@ -100,14 +100,14 @@ class QgsRandomBinomialRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomBinomialRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomNormalRaster.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRandomBinomialRasterAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomNormalRaster.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRandomBinomialRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() final;
@@ -124,14 +124,14 @@ class QgsRandomExponentialRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomExponentialRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRandomExponentialRasterAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRandomExponentialRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() final;
@@ -149,14 +149,14 @@ class QgsRandomGammaRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomGammaRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomGammaRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomGammaRaster.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRandomGammaRasterAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomGammaRaster.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomGammaRaster.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRandomGammaRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() final;
@@ -173,14 +173,14 @@ class QgsRandomGeometricRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomGeometricRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRandomGeometricRasterAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomExponentialRaster.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRandomGeometricRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() override;
@@ -198,14 +198,14 @@ class QgsRandomNegativeBinomialRasterAlgorithm : public QgsRandomRasterAlgorithm
 {
   public:
     QgsRandomNegativeBinomialRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRandomNegativeBinomialRasterAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRandomNegativeBinomialRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() final;
@@ -222,14 +222,14 @@ class QgsRandomNormalRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomNormalRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRandomNormalRasterAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNormalRaster.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRandomNormalRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() final;
@@ -246,14 +246,14 @@ class QgsRandomPoissonRasterAlgorithm : public QgsRandomRasterAlgorithmBase
 {
   public:
     QgsRandomPoissonRasterAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomPoissonRaster.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomPoissonRaster.svg" ) ); }
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRandomPoissonRasterAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomPoissonRaster.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomPoissonRaster.svg" ) ); }
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRandomPoissonRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() final;

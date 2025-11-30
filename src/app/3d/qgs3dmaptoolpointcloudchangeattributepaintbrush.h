@@ -32,7 +32,7 @@ class Qgs3DMapToolPointCloudChangeAttributePaintbrush : public Qgs3DMapToolPoint
 
     void deactivate() override;
 
-    QCursor cursor() const override;
+    [[nodiscard]] QCursor cursor() const override;
 
     void restart() override;
 

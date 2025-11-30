@@ -30,9 +30,9 @@ class QgsGeoPackageProjectStorageDialog : public QDialog, private Ui::QgsGeoPack
   public:
     explicit QgsGeoPackageProjectStorageDialog( bool saving, QWidget *parent = nullptr );
 
-    QString connectionName() const;
-    QString schemaName() const;
-    QString projectName() const;
+    [[nodiscard]] QString connectionName() const;
+    [[nodiscard]] QString schemaName() const;
+    [[nodiscard]] QString projectName() const;
 
     QString currentProjectUri();
 

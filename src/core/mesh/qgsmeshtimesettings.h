@@ -60,12 +60,12 @@ class CORE_EXPORT QgsMeshTimeSettings
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     //! Returns format used for relative time
-    QString relativeTimeFormat() const;
+    [[nodiscard]] QString relativeTimeFormat() const;
     //! Sets format used for relative time
     void setRelativeTimeFormat( const QString &relativeTimeFormat );
 
     //! Returns format used for absolute time
-    QString absoluteTimeFormat() const;
+    [[nodiscard]] QString absoluteTimeFormat() const;
     //! Sets format used for absolute time
     void setAbsoluteTimeFormat( const QString &absoluteTimeFormat );
 

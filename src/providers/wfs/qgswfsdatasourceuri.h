@@ -38,28 +38,28 @@ class QgsWFSDataSourceURI
     QgsWFSDataSourceURI( const QgsWFSDataSourceURI &other );
 
     //! Returns whether the URI is a valid one
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     //! Returns the URI, optionally with the authentication configuration expanded
-    QString uri( bool expandAuthConfig = false ) const;
+    [[nodiscard]] QString uri( bool expandAuthConfig = false ) const;
 
     //! Returns base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true)
-    QUrl baseURL( bool bIncludeServiceWFS = true ) const;
+    [[nodiscard]] QUrl baseURL( bool bIncludeServiceWFS = true ) const;
 
     //! Returns request URL (with SERVICE=WFS parameter)
-    QUrl requestUrl( const QString &request, Qgis::HttpMethod method = Qgis::HttpMethod::Get ) const;
+    [[nodiscard]] QUrl requestUrl( const QString &request, Qgis::HttpMethod method = Qgis::HttpMethod::Get ) const;
 
     //! Gets WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0.
-    QString version() const;
+    [[nodiscard]] QString version() const;
 
     //! Returns user defined limit of features to download. 0=no limitation
-    long long maxNumFeatures() const;
+    [[nodiscard]] long long maxNumFeatures() const;
 
     //! Sets user defined limit of features to download
     void setMaxNumFeatures( long long maxNumFeatures );
 
     //! Returns user defined limit page size. 0=server udefault
-    long long pageSize() const;
+    [[nodiscard]] long long pageSize() const;
 
     //! Whether paging is enabled
     enum class PagingStatus
@@ -70,16 +70,16 @@ class QgsWFSDataSourceURI
     };
 
     //! Returns whether paging is enabled.
-    PagingStatus pagingStatus() const;
+    [[nodiscard]] PagingStatus pagingStatus() const;
 
     //! Gets typename (with prefix)
-    QString typeName() const;
+    [[nodiscard]] QString typeName() const;
 
     //! Sets typename (with prefix)
     void setTypeName( const QString &typeName );
 
     //! Gets SRS name (in the normalized form EPSG:xxxx)
-    QString SRSName() const;
+    [[nodiscard]] QString SRSName() const;
 
     //! Sets SRS name (in the normalized form EPSG:xxxx)
     void setSRSName( const QString &crsString );
@@ -88,55 +88,55 @@ class QgsWFSDataSourceURI
     void setVersion( const QString &versionString );
 
     //! Gets OGC filter xml or a QGIS expression
-    QString filter() const;
+    [[nodiscard]] QString filter() const;
 
     //! Sets OGC filter xml or a QGIS expression
     void setFilter( const QString &filterIn );
 
     //! Returns TRUE if an initial get features should always be issued.
-    bool forceInitialGetFeature() const;
+    [[nodiscard]] bool forceInitialGetFeature() const;
 
     //! Returns whether there is a geometry type filter.
-    bool hasGeometryTypeFilter() const;
+    [[nodiscard]] bool hasGeometryTypeFilter() const;
 
     //! Gets the geometry type filter.
-    Qgis::WkbType geometryTypeFilter() const;
+    [[nodiscard]] Qgis::WkbType geometryTypeFilter() const;
 
     //! Gets SQL query
-    QString sql() const;
+    [[nodiscard]] QString sql() const;
 
     //! Sets SQL query
     void setSql( const QString &sql );
 
     //! Gets GetFeature output format
-    QString outputFormat() const;
+    [[nodiscard]] QString outputFormat() const;
 
     //! Sets GetFeature output format
     void setOutputFormat( const QString &outputFormat );
 
     //! Returns the preferred HTTP method for requests
-    Qgis::HttpMethod httpMethod() const;
+    [[nodiscard]] Qgis::HttpMethod httpMethod() const;
 
     //! Returns whether GetFeature request should include the request bounding box. Defaults to false
-    bool isRestrictedToRequestBBOX() const;
+    [[nodiscard]] bool isRestrictedToRequestBBOX() const;
 
     //! Returns whether axis orientation should be ignored (for WFS >= 1.1). Defaults to false
-    bool ignoreAxisOrientation() const;
+    [[nodiscard]] bool ignoreAxisOrientation() const;
 
     //! Returns whether axis orientation should be inverted. Defaults to false
-    bool invertAxisOrientation() const;
+    [[nodiscard]] bool invertAxisOrientation() const;
 
     //! For debug purposes. Checks that functions used in sql match functions declared by the server. Defaults to false
-    bool validateSqlFunctions() const;
+    [[nodiscard]] bool validateSqlFunctions() const;
 
     //! Whether to hide download progress dialog in QGIS main app. Defaults to false
-    bool hideDownloadProgressDialog() const;
+    [[nodiscard]] bool hideDownloadProgressDialog() const;
 
     //! Whether to use "coordinates" instead of "pos" and "posList" for WFS-T 1.1 transactions (ESRI mapserver)
-    bool preferCoordinatesForWfst11() const;
+    [[nodiscard]] bool preferCoordinatesForWfst11() const;
 
     //! Returns authorization parameters
-    const QgsAuthorizationSettings &auth() const { return mAuth; }
+    [[nodiscard]] const QgsAuthorizationSettings &auth() const { return mAuth; }
 
     //! How to analyze DescribeFeatureType response
     enum class FeatureMode
@@ -147,7 +147,7 @@ class QgsWFSDataSourceURI
     };
 
     //! Returns how to analyze DescribeFeatureType response.
-    FeatureMode featureMode() const;
+    [[nodiscard]] FeatureMode featureMode() const;
 
     //! Builds a derived uri from a base uri
     static QString build( const QString &uri, const QString &typeName, const QString &crsString, const QString &sql, const QString &filter, bool restrictToCurrentViewExtent, const QString &featureFormat );
@@ -159,10 +159,10 @@ class QgsWFSDataSourceURI
     void setPostEndpoints( const QgsStringMap &map );
 
     //! Return set of unknown parameter keys in the URI.
-    QSet<QString> unknownParamKeys() const;
+    [[nodiscard]] QSet<QString> unknownParamKeys() const;
 
     //! Whether the initial GetFeature request, used to determine if gml:description/name/identifiers are used, should be skipped
-    bool skipInitialGetFeature() const;
+    [[nodiscard]] bool skipInitialGetFeature() const;
 
     //! Assignment operator
     QgsWFSDataSourceURI &operator=( const QgsWFSDataSourceURI &other );

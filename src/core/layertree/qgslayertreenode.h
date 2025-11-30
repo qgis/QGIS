@@ -151,13 +151,13 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 #endif
 
     //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
-    NodeType nodeType() const { return mNodeType; }
+    [[nodiscard]] NodeType nodeType() const { return mNodeType; }
     //! Gets pointer to the parent. If parent is NULLPTR, the node is a root node
     QgsLayerTreeNode *parent() { return mParent; }
     //! Gets list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode *> children() { return mChildren; }
     //! Gets list of children of the node. Children are owned by the parent
-    QList<QgsLayerTreeNode *> children() const SIP_SKIP { return mChildren; }
+    [[nodiscard]] QList<QgsLayerTreeNode *> children() const SIP_SKIP { return mChildren; }
 
     /**
      * Removes the children, disconnect all the forwarded and external signals and sets their parent to NULLPTR
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     /**
      * Returns name of the node
      */
-    virtual QString name() const = 0;
+    [[nodiscard]] virtual QString name() const = 0;
 
     /**
      * Set name of the node. Emits nameChanged signal.
@@ -192,10 +192,10 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) = 0;
 
     //! Returns string with layer tree structure. For debug purposes only
-    virtual QString dump() const = 0;
+    [[nodiscard]] virtual QString dump() const = 0;
 
     //! Create a copy of the node. Returns new instance
-    virtual QgsLayerTreeNode *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsLayerTreeNode *clone() const = 0 SIP_FACTORY;
 
     /**
      * Turn textual references to layers into map layer object from project.
@@ -210,12 +210,12 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     /**
      * Returns whether a node is really visible (ie checked and all its ancestors checked as well)
      */
-    bool isVisible() const;
+    [[nodiscard]] bool isVisible() const;
 
     /**
      * Returns whether a node is checked (independently of its ancestors or children)
      */
-    bool itemVisibilityChecked() const { return mChecked; }
+    [[nodiscard]] bool itemVisibilityChecked() const { return mChecked; }
 
     /**
      * Check or uncheck a node (independently of its ancestors or children)
@@ -238,38 +238,38 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     /**
      * Returns whether this node is checked and all its children.
      */
-    bool isItemVisibilityCheckedRecursive() const;
+    [[nodiscard]] bool isItemVisibilityCheckedRecursive() const;
 
     /**
      * Returns whether this node is unchecked and all its children.
      */
-    bool isItemVisibilityUncheckedRecursive() const;
+    [[nodiscard]] bool isItemVisibilityUncheckedRecursive() const;
 
     /**
      * Returns a list of any checked layers which belong to this node or its
      * children.
      */
-    QList< QgsMapLayer * > checkedLayers() const;
+    [[nodiscard]] QList< QgsMapLayer * > checkedLayers() const;
 
     /**
      * Returns the depth of this node, i.e. the number of its ancestors
      * \since QGIS 3.14
      */
-    int depth() const;
+    [[nodiscard]] int depth() const;
 
     //! Returns whether the node should be shown as expanded or collapsed in GUI
-    bool isExpanded() const;
+    [[nodiscard]] bool isExpanded() const;
     //! Sets whether the node should be shown as expanded or collapsed in GUI
     void setExpanded( bool expanded );
 
     //! Sets a custom property for the node. Properties are stored in a map and saved in project file.
     void setCustomProperty( const QString &key, const QVariant &value );
     //! Read a custom property from layer. Properties are stored in a map and saved in project file.
-    QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+    [[nodiscard]] QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
     //! Remove a custom property from layer. Properties are stored in a map and saved in project file.
     void removeCustomProperty( const QString &key );
     //! Returns list of keys stored in custom properties
-    QStringList customProperties() const;
+    [[nodiscard]] QStringList customProperties() const;
     //! Remove a child from a node
     bool takeChild( QgsLayerTreeNode *node );
 

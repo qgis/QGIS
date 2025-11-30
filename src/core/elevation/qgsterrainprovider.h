@@ -92,14 +92,14 @@ class CORE_EXPORT QgsAbstractTerrainProvider
     /**
      * Returns the unique type ID string for the provider.
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     /**
      * Creates a clone of the provider and returns the new object.
      *
      * Ownership is transferred to the caller.
      */
-    virtual QgsAbstractTerrainProvider *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractTerrainProvider *clone() const = 0 SIP_FACTORY;
 
     /**
      * Called on the main thread prior to accessing the provider from a background thread.
@@ -112,14 +112,14 @@ class CORE_EXPORT QgsAbstractTerrainProvider
     /**
      * Returns the native coordinate reference system of the terrain provider.
      */
-    virtual QgsCoordinateReferenceSystem crs() const = 0;
+    [[nodiscard]] virtual QgsCoordinateReferenceSystem crs() const = 0;
 
     /**
      * Returns the height at the point (x,y) in the terrain provider's native crs().
      *
      * Returns NaN if the height could not be obtained at the specified point.
      */
-    virtual double heightAt( double x, double y ) const = 0;
+    [[nodiscard]] virtual double heightAt( double x, double y ) const = 0;
 
     /**
      * Returns the vertical scale factor, which can be used to exaggerate vertical heights.
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsAbstractTerrainProvider
      * \see setScale()
      * \see offset()
     */
-    double scale() const { return mScale; }
+    [[nodiscard]] double scale() const { return mScale; }
 
     /**
      * Sets the vertical \a scale factor, which can be used to exaggerate vertical heights.
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsAbstractTerrainProvider
      * \see setOffset()
      * \see scale()
     */
-    double offset() const { return mOffset; }
+    [[nodiscard]] double offset() const { return mOffset; }
 
     /**
      * Returns the vertical \a offset value, used for adjusting the heights from the terrain provider
@@ -198,12 +198,12 @@ class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractTerrainProvider
 
     QgsFlatTerrainProvider() = default;
 
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    QgsCoordinateReferenceSystem crs() const override;
-    double heightAt( double x, double y ) const override;
-    QgsFlatTerrainProvider *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const override;
+    [[nodiscard]] double heightAt( double x, double y ) const override;
+    [[nodiscard]] QgsFlatTerrainProvider *clone() const override SIP_FACTORY;
     void prepare() override;
     bool equals( const QgsAbstractTerrainProvider *other ) const override;
 };
@@ -224,13 +224,13 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
     const QgsRasterDemTerrainProvider *operator=( const QgsRasterDemTerrainProvider &other ) = delete;
 #endif
 
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
     void resolveReferences( const QgsProject *project ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    QgsCoordinateReferenceSystem crs() const override;
-    double heightAt( double x, double y ) const override;
-    QgsRasterDemTerrainProvider *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const override;
+    [[nodiscard]] double heightAt( double x, double y ) const override;
+    [[nodiscard]] QgsRasterDemTerrainProvider *clone() const override SIP_FACTORY;
     bool equals( const QgsAbstractTerrainProvider *other ) const override;
     void prepare() override;
 
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
      *
      * \see layer()
      */
-    QgsRasterLayer *layer() const;
+    [[nodiscard]] QgsRasterLayer *layer() const;
 
 
   private:

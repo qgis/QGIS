@@ -52,28 +52,28 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
     QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QList<QgsMapDecoration *> &decorations = QList<QgsMapDecoration *>(), const QList<QgsAnnotation *> &annotations = QList<QgsAnnotation *>(), DialogType type = Image );
 
     //! returns extent rectangle
-    QgsRectangle extent() const;
+    [[nodiscard]] QgsRectangle extent() const;
 
     //! returns the numerical value of the dpi spin box
-    int dpi() const;
+    [[nodiscard]] int dpi() const;
 
     //! returns the output size
-    QSize size() const;
+    [[nodiscard]] QSize size() const;
 
     //! returns whether the draw annotations element is checked
-    bool drawAnnotations() const;
+    [[nodiscard]] bool drawAnnotations() const;
 
     //! returns whether the draw decorations element is checked
-    bool drawDecorations() const;
+    [[nodiscard]] bool drawDecorations() const;
 
     //! returns whether the resulting image will be georeferenced (embedded or via world file)
-    bool saveWorldFile() const;
+    [[nodiscard]] bool saveWorldFile() const;
 
     //! returns whether metadata such as title and subject will be exported whenever possible
-    bool exportMetadata() const;
+    [[nodiscard]] bool exportMetadata() const;
 
     //! returns whether the map will be rasterized
-    bool saveAsRaster() const;
+    [[nodiscard]] bool saveAsRaster() const;
 
     //! configure a map settings object
     void applyMapSettings( QgsMapSettings &mapSettings );

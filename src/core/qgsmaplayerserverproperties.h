@@ -87,7 +87,7 @@ class CORE_EXPORT QgsServerMetadataUrlProperties
      * \returns the list of metadata URLs
      * \see setMetadataUrls()
      */
-    QList<QgsServerMetadataUrlProperties::MetadataUrl> metadataUrls() const { return mMetadataUrls; };
+    [[nodiscard]] QList<QgsServerMetadataUrlProperties::MetadataUrl> metadataUrls() const { return mMetadataUrls; };
 
     /**
      * Sets a the list of metadata URL for the layer
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsServerMetadataUrlProperties
     void addMetadataUrl( const QgsServerMetadataUrlProperties::MetadataUrl &metaUrl ) { mMetadataUrls << metaUrl; };
 
     //! Gets the parent layer
-    virtual const QgsMapLayer *layer() const = 0;
+    [[nodiscard]] virtual const QgsMapLayer *layer() const = 0;
 
     // TODO c++20 - replace with = default
 
@@ -244,10 +244,10 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
      * Returns the QGIS Server WMS Dimension list.
      * \since QGIS 3.10
      */
-    const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> wmsDimensions() const;
+    [[nodiscard]] const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> wmsDimensions() const;
 
     //! Gets the parent layer
-    virtual const QgsMapLayer *layer() const = 0;
+    [[nodiscard]] virtual const QgsMapLayer *layer() const = 0;
 
   protected:
 
@@ -343,13 +343,13 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \since QGIS 3.38
      */
-    QString shortName() const { return mShortName; }
+    [[nodiscard]] QString shortName() const { return mShortName; }
 
     /**
      * Returns WFS typename for the layer
      * \since QGIS 4.0.0
      */
-    QString wfsTypeName() const;
+    [[nodiscard]] QString wfsTypeName() const;
 
     /**
      * Sets the \a title of the layer used by QGIS Server in GetCapabilities request.
@@ -376,7 +376,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \since QGIS 3.38
      */
-    QString title() const { return mTitle; }
+    [[nodiscard]] QString title() const { return mTitle; }
 
     /**
      * Returns the optional WFS title if set or the title of the layer used by
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \since QGIS 3.40
      */
-    QString wfsTitle() const { return mWfsTitle.isEmpty() ? mTitle : mWfsTitle; }
+    [[nodiscard]] QString wfsTitle() const { return mWfsTitle.isEmpty() ? mTitle : mWfsTitle; }
 
     /**
      * Sets the \a abstract of the layer used by QGIS Server in GetCapabilities request.
@@ -404,7 +404,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \since QGIS 3.38
      */
-    QString abstract() const { return mAbstract; }
+    [[nodiscard]] QString abstract() const { return mAbstract; }
 
     /**
      * Sets the \a keywords  list of the layerused by QGIS Server in GetCapabilities request.
@@ -422,7 +422,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \since QGIS 3.38
      */
-    QString keywordList() const { return mKeywordList; }
+    [[nodiscard]] QString keywordList() const { return mKeywordList; }
 
     /**
      * Sets the DataUrl of the layer used by QGIS Server in GetCapabilities request.
@@ -444,7 +444,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \since QGIS 3.38
      */
-    QString dataUrl() const { return mDataUrl; }
+    [[nodiscard]] QString dataUrl() const { return mDataUrl; }
 
     /**
      * Sets the DataUrl \a format of the layerused by QGIS Server in GetCapabilities request.
@@ -466,7 +466,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \since QGIS 3.38
      */
-    QString dataUrlFormat() const { return mDataUrlFormat; }
+    [[nodiscard]] QString dataUrlFormat() const { return mDataUrlFormat; }
 
     /**
      * Sets the \a attribution of the layer used by QGIS Server in GetCapabilities request.
@@ -488,7 +488,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \since QGIS 3.38
      */
-    QString attribution() const { return mAttribution; }
+    [[nodiscard]] QString attribution() const { return mAttribution; }
 
     /**
      * Sets the attribution \a url of the layer used by QGIS Server in GetCapabilities request.
@@ -510,7 +510,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \since QGIS 3.38
      */
-    QString attributionUrl() const { return mAttributionUrl; }
+    [[nodiscard]] QString attributionUrl() const { return mAttributionUrl; }
 
     /**
      * Sets the URL for the layer's legend.
@@ -524,7 +524,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \since QGIS 3.44
      */
-    QString legendUrl() const { return mLegendUrl; }
+    [[nodiscard]] QString legendUrl() const { return mLegendUrl; }
 
     /**
      * Sets the format for a URL based layer legend.
@@ -538,10 +538,10 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      *
      * \since QGIS 3.44
      */
-    QString legendUrlFormat() const { return mLegendUrlFormat; }
+    [[nodiscard]] QString legendUrlFormat() const { return mLegendUrlFormat; }
 
     //! Gets the parent layer
-    const QgsMapLayer *layer() const override { return mLayer; };
+    [[nodiscard]] const QgsMapLayer *layer() const override { return mLayer; };
 
   private:
     QgsMapLayer *mLayer = nullptr;

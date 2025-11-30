@@ -54,7 +54,7 @@ class QgsChunkBoundsEntity : public Qt3DCore::QEntity
     void setBoxes( const QList<QgsBox3D> &bboxes );
 
     //! Returns origin of vertex data used in this entity
-    QgsVector3D vertexDataOrigin() const { return mVertexDataOrigin; }
+    [[nodiscard]] QgsVector3D vertexDataOrigin() const { return mVertexDataOrigin; }
 
   private:
     QgsVector3D mVertexDataOrigin;

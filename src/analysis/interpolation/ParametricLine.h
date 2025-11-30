@@ -60,10 +60,10 @@ class ANALYSIS_EXPORT ParametricLine
     virtual void calcPoint( float t, QgsPoint *p SIP_OUT ) = 0;
     virtual void changeDirection() = 0;
     //virtual void draw(QPainter* p);
-    virtual const QgsPoint *getControlPoint( int number ) const = 0;
-    virtual const QVector<QgsPoint *> *getControlPoly() const = 0;
-    virtual int getDegree() const = 0;
-    virtual ParametricLine *getParent() const = 0;
+    [[nodiscard]] virtual const QgsPoint *getControlPoint( int number ) const = 0;
+    [[nodiscard]] virtual const QVector<QgsPoint *> *getControlPoly() const = 0;
+    [[nodiscard]] virtual int getDegree() const = 0;
+    [[nodiscard]] virtual ParametricLine *getParent() const = 0;
     //virtual bool intersects(ParametricLine* pal);
     virtual void remove( int i ) = 0;
     virtual void setControlPoly( QVector<QgsPoint *> *cp ) = 0;

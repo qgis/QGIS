@@ -49,14 +49,14 @@ class CORE_EXPORT QgsMapDecoration
      * Returns the map decoration display name.
      * \since QGIS 3.14
      */
-    const QString displayName() const { return mDisplayName; }
+    [[nodiscard]] const QString displayName() const { return mDisplayName; }
 
     /**
      * Returns TRUE if the decoration is attached to a fixed map position (e.g grid, layout extent), or
      * FALSE if the annotation uses a position relative to the map canvas (e.g. title, copyright...)
      * \since QGIS 3.34
      */
-    virtual bool hasFixedMapPosition() const { return false; }
+    [[nodiscard]] virtual bool hasFixedMapPosition() const { return false; }
 
   protected:
 

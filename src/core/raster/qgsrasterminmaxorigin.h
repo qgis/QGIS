@@ -52,22 +52,22 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     //////// Getter methods /////////////////////
 
     //! Returns the raster limits.
-    Qgis::RasterRangeLimit limits() const { return mLimits; }
+    [[nodiscard]] Qgis::RasterRangeLimit limits() const { return mLimits; }
 
     //! Returns the raster extent.
-    Qgis::RasterRangeExtent extent() const { return mExtent; }
+    [[nodiscard]] Qgis::RasterRangeExtent extent() const { return mExtent; }
 
     //! Returns the raster statistic accuracy.
-    Qgis::RasterRangeAccuracy statAccuracy() const { return mAccuracy; }
+    [[nodiscard]] Qgis::RasterRangeAccuracy statAccuracy() const { return mAccuracy; }
 
     //! Returns the lower bound of cumulative cut method (between 0 and 1).
-    double cumulativeCutLower() const { return mCumulativeCutLower; }
+    [[nodiscard]] double cumulativeCutLower() const { return mCumulativeCutLower; }
 
     //! Returns the upper bound of cumulative cut method (between 0 and 1).
-    double cumulativeCutUpper() const { return mCumulativeCutUpper; }
+    [[nodiscard]] double cumulativeCutUpper() const { return mCumulativeCutUpper; }
 
     //! Returns the factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
-    double stdDevFactor() const { return mStdDevFactor; }
+    [[nodiscard]] double stdDevFactor() const { return mStdDevFactor; }
 
     //////// Setter methods /////////////////////
 

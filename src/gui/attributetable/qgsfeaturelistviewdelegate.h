@@ -61,7 +61,7 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     void editButtonClicked( QModelIndex &index );
 
   protected:
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    [[nodiscard]] QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
   private:

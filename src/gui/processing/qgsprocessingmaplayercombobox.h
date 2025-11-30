@@ -91,7 +91,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
      *
      * \see setValue()
      */
-    QVariant value() const;
+    [[nodiscard]] QVariant value() const;
 
     /**
      * Sets the \a context in which the widget is shown.
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
      * \see setEditable()
      * \since QGIS 3.14
      */
-    bool isEditable() const;
+    [[nodiscard]] bool isEditable() const;
 
   signals:
 

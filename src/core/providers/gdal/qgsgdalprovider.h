@@ -385,13 +385,13 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsGdalProviderMetadata();
-    QIcon icon() const override;
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QString cleanUri( const QString &uri, Qgis::UriCleaningFlags flags = Qgis::UriCleaningFlag::RemoveCredentials ) const override;
-    bool uriIsBlocklisted( const QString &uri ) const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] QString cleanUri( const QString &uri, Qgis::UriCleaningFlags flags = Qgis::UriCleaningFlag::RemoveCredentials ) const override;
+    [[nodiscard]] bool uriIsBlocklisted( const QString &uri ) const override;
     QgsGdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QgsGdalProvider *createRasterDataProvider(
       const QString &uri,
@@ -405,13 +405,13 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
       const QStringList &creationOptions ) override;
     QString filters( Qgis::FileFilterType type ) override;
     QList<QPair<QString, QString> > pyramidResamplingMethods() override;
-    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
-    ProviderCapabilities providerCapabilities() const override;
+    [[nodiscard]] QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
+    [[nodiscard]] ProviderCapabilities providerCapabilities() const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
-    QStringList sidecarFilesForUri( const QString &uri ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    [[nodiscard]] QStringList sidecarFilesForUri( const QString &uri ) const override;
+    [[nodiscard]] QList< Qgis::LayerType > supportedLayerTypes() const override;
 
-    QList< QgsDataItemProvider * > dataItemProviders() const override;
+    [[nodiscard]] QList< QgsDataItemProvider * > dataItemProviders() const override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                     QStringList &descriptions, QString &errCause ) override;
     bool styleExists( const QString &uri, const QString &styleId, QString &errCause SIP_OUT ) override;

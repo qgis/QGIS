@@ -73,7 +73,7 @@ class CORE_EXPORT QgsLayoutPoint
      * \see setX()
      * \see y()
     */
-    double x() const { return mX; }
+    [[nodiscard]] double x() const { return mX; }
 
     /**
      * Sets the x coordinate of point.
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsLayoutPoint
      * \see setY()
      * \see x()
     */
-    double y() const { return mY; }
+    [[nodiscard]] double y() const { return mY; }
 
     /**
      * Sets y coordinate of point.
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsLayoutPoint
      * Returns the units for the point.
      * \see setUnits()
     */
-    Qgis::LayoutUnit units() const { return mUnits; }
+    [[nodiscard]] Qgis::LayoutUnit units() const { return mUnits; }
 
     /**
      * Sets the \a units for the point. Does not alter the stored coordinates,
@@ -126,20 +126,20 @@ class CORE_EXPORT QgsLayoutPoint
      * are zero.
      * \returns TRUE if point is null
     */
-    bool isNull() const;
+    [[nodiscard]] bool isNull() const;
 
     /**
      * Converts the layout point to a QPointF. The unit information is discarded
      * during this operation.
      * \returns QPointF with same x and y coordinates as layout point
     */
-    QPointF toQPointF() const;
+    [[nodiscard]] QPointF toQPointF() const;
 
     /**
      * Encodes the layout point to a string
      * \see decodePoint()
     */
-    QString encodePoint() const;
+    [[nodiscard]] QString encodePoint() const;
 
     /**
      * Decodes a point from a \a string.

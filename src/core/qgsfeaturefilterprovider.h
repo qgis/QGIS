@@ -94,7 +94,7 @@ class CORE_EXPORT QgsFeatureFilterProvider
      * Create a clone of the feature filter provider
      * \returns a new clone
      */
-    virtual QgsFeatureFilterProvider *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsFeatureFilterProvider *clone() const = 0 SIP_FACTORY;
 };
 
 #endif

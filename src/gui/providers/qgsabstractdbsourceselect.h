@@ -54,7 +54,7 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
      * \note Might be pure virtual in QGIS 5.x
      * \since QGIS 3.44
      */
-    virtual QString settingPath() const { return QString(); }
+    [[nodiscard]] virtual QString settingPath() const { return QString(); }
 
   protected:
     //! Sets the source model for the table and optionally a delegate

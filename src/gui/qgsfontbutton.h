@@ -70,14 +70,14 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      */
     QgsFontButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
 
-    QSize minimumSizeHint() const override;
-    QSize sizeHint() const override;
+    [[nodiscard]] QSize minimumSizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
 
     /**
      * Returns the current button mode.
      * \see setMode()
      */
-    QgsFontButton::Mode mode() const;
+    [[nodiscard]] QgsFontButton::Mode mode() const;
 
     /**
      * Sets the current button \a mode. This can be used to toggle between
@@ -98,13 +98,13 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      * Returns the title for the text settings dialog window.
      * \see setDialogTitle()
      */
-    QString dialogTitle() const;
+    [[nodiscard]] QString dialogTitle() const;
 
     /**
      * Returns the map canvas associated with the widget.
      * \see setMapCanvas()
      */
-    QgsMapCanvas *mapCanvas() const;
+    [[nodiscard]] QgsMapCanvas *mapCanvas() const;
 
     /**
      * Sets a map \a canvas to associate with the widget. This allows the
@@ -126,28 +126,28 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      * \see setMessageBar()
      * \since QGIS 3.10
      */
-    QgsMessageBar *messageBar() const;
+    [[nodiscard]] QgsMessageBar *messageBar() const;
 
     /**
      * Returns the current text formatting set by the widget.
      * This is only used when mode() is ModeTextRenderer.
      * \see setTextFormat()
      */
-    QgsTextFormat textFormat() const { return mFormat; }
+    [[nodiscard]] QgsTextFormat textFormat() const { return mFormat; }
 
     /**
      * Returns the current QFont set by the widget.
      * This is only used when mode() is ModeQFont.
      * \see setCurrentFont()
      */
-    QFont currentFont() const;
+    [[nodiscard]] QFont currentFont() const;
 
     /**
      * Returns the layer associated with the widget.
      * \see setLayer()
      * \since QGIS 3.10
      */
-    QgsVectorLayer *layer() const;
+    [[nodiscard]] QgsVectorLayer *layer() const;
 
     /**
      * Sets a \a layer to associate with the widget. This allows the
@@ -202,7 +202,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      * \see setShowNullFormat()
      * \since QGIS 3.16
      */
-    bool showNullFormat() const { return mShowNoFormat; }
+    [[nodiscard]] bool showNullFormat() const { return mShowNoFormat; }
 
   public slots:
 
@@ -366,7 +366,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     /**
      * Create a \a color icon for display in the drop-down menu.
      */
-    QPixmap createColorIcon( const QColor &color ) const;
+    [[nodiscard]] QPixmap createColorIcon( const QColor &color ) const;
 
     /**
      * Creates a drag icon showing the current font style.

@@ -50,7 +50,7 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint *>
     /**
      * Returns the count of currently enabled data points.
      */
-    int countEnabledPoints() const;
+    [[nodiscard]] int countEnabledPoints() const;
 
     /**
      * Updates the stored residual sizes for points in the list.
@@ -65,7 +65,7 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint *>
     /**
      * Returns the container as a list of GCP points.
      */
-    QList<QgsGcpPoint> asPoints() const;
+    [[nodiscard]] QList<QgsGcpPoint> asPoints() const;
 
     /**
      * Saves the GCPs to a text file.

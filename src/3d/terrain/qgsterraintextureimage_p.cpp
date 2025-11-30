@@ -47,7 +47,7 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
       return dataPtr;
     }
 
-    qintptr id() const override
+    [[nodiscard]] qintptr id() const override
     {
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<TerrainTextureImageDataGenerator>::id );

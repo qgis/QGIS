@@ -111,7 +111,7 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
      * \see setHasTimeDimension()
      * \since QGIS 3.44
      */
-    bool hasTimeDimension() const;
+    [[nodiscard]] bool hasTimeDimension() const;
 
     /**
      * Returns QGIS Server Properties for the layer tree group
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMS
      * Returns QGIS Server Properties const for the layer tree group
      * \since QGIS 3.44
      */
-    const QgsMapLayerServerProperties *serverProperties() const SIP_SKIP;
+    [[nodiscard]] const QgsMapLayerServerProperties *serverProperties() const SIP_SKIP;
 
     void accept() override;
 

@@ -44,7 +44,7 @@ class GUI_EXPORT QgsHighlightableComboBox : public QComboBox
      * Returns TRUE if the combo box is currently highlighted.
      * \see setHighlighted()
      */
-    bool isHighlighted() const { return mHighlight; }
+    [[nodiscard]] bool isHighlighted() const { return mHighlight; }
 
     /**
      * Sets whether the combo box is currently \a highlighted.

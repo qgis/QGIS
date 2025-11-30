@@ -51,7 +51,7 @@ class CORE_EXPORT QgsSpatialIndexKDBushData
     /**
      * Returns the indexed point.
      */
-    QgsPointXY point() const
+    [[nodiscard]] QgsPointXY point() const
     {
       return QgsPointXY( coords.first, coords.second );
     }

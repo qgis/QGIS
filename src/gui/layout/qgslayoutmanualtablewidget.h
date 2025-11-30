@@ -47,7 +47,7 @@ class GUI_EXPORT QgsLayoutManualTableWidget : public QgsLayoutItemBaseWidget, pu
     QgsLayoutManualTableWidget( QgsLayoutFrame *frame );
 
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
     //! Creates and open the table editor dialog
     static void openTableDesigner( QgsLayoutFrame *frame, QWidget *parent = nullptr );

@@ -55,21 +55,21 @@ class GUI_EXPORT QgsPlotToolZoom : public QgsPlotTool
      *
      * \note Not available in Python bindings
      */
-    virtual QPointF constrainStartPoint( QPointF scenePoint ) const SIP_SKIP;
+    [[nodiscard]] virtual QPointF constrainStartPoint( QPointF scenePoint ) const SIP_SKIP;
 
     /**
      * Applies constraints to a move point of the zoom rubber band.
      *
      * \note Not available in Python bindings
      */
-    virtual QPointF constrainMovePoint( QPointF scenePoint ) const SIP_SKIP;
+    [[nodiscard]] virtual QPointF constrainMovePoint( QPointF scenePoint ) const SIP_SKIP;
 
     /**
      * Applies constraints to the overall bounds of the rubber band.
      *
      * \note Not available in Python bindings
      */
-    virtual QRectF constrainBounds( const QRectF &sceneBounds ) const SIP_SKIP;
+    [[nodiscard]] virtual QRectF constrainBounds( const QRectF &sceneBounds ) const SIP_SKIP;
 
     /**
      * Handles a zoom out click on the given point.

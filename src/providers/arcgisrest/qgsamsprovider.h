@@ -36,12 +36,12 @@ class QgsAmsLegendFetcher : public QgsImageFetcher
   public:
     QgsAmsLegendFetcher( QgsAmsProvider *provider, const QImage &fetchedImage );
     void start() override;
-    bool haveImage() const { return mLegendImage.isNull(); }
-    QImage getImage() const { return mLegendImage; }
+    [[nodiscard]] bool haveImage() const { return mLegendImage.isNull(); }
+    [[nodiscard]] QImage getImage() const { return mLegendImage; }
     void setImage( const QImage &image ) { mLegendImage = image; }
     void clear() { mLegendImage = QImage(); }
-    const QString &errorTitle() const { return mErrorTitle; }
-    const QString &errorMessage() const { return mError; }
+    [[nodiscard]] const QString &errorTitle() const { return mErrorTitle; }
+    [[nodiscard]] const QString &errorMessage() const { return mError; }
 
   signals:
 
@@ -224,11 +224,11 @@ class QgsAmsProviderMetadata : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsAmsProviderMetadata();
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsAmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif // QGSMAPSERVERPROVIDER_H

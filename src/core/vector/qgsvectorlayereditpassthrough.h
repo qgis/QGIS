@@ -48,7 +48,7 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
     Q_OBJECT
   public:
     QgsVectorLayerEditPassthrough( QgsVectorLayer *layer );
-    bool isModified() const override;
+    [[nodiscard]] bool isModified() const override;
     bool addFeature( QgsFeature &f ) override;
     bool addFeatures( QgsFeatureList &features ) override;
     bool deleteFeature( QgsFeatureId fid ) override;

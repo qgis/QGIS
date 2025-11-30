@@ -72,7 +72,7 @@ class GUI_EXPORT QgsRasterRendererWidget : public QWidget
      *
      * \see setRasterLayer()
      */
-    const QgsRasterLayer *rasterLayer() const { return mRasterLayer; }
+    [[nodiscard]] const QgsRasterLayer *rasterLayer() const { return mRasterLayer; }
 
     /**
      * Sets the map canvas associated with the widget. This allows the widget to retrieve the current
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsRasterRendererWidget : public QWidget
      * Returns the contrast enhancement \a algorithm to be used by the raster renderer.
      * \since QGIS 3.26
      */
-    virtual QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return QgsContrastEnhancement::NoEnhancement; }
+    [[nodiscard]] virtual QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return QgsContrastEnhancement::NoEnhancement; }
 
     /**
      * Sets the contrast enhancement \a algorithm to be used by the raster renderer.

@@ -46,35 +46,35 @@ class APP_EXPORT QgsAnimationExportDialog : public QDialog, private Ui::QgsAnima
     QgsAnimationExportDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QList<QgsMapDecoration *> &decorations = QList<QgsMapDecoration *>() );
 
     //! Returns extent rectangle
-    QgsRectangle extent() const;
+    [[nodiscard]] QgsRectangle extent() const;
 
     //! Returns the output size
-    QSize size() const;
+    [[nodiscard]] QSize size() const;
 
     //! Returns output directory for frames
-    QString outputDirectory() const;
+    [[nodiscard]] QString outputDirectory() const;
 
     //! Returns filename template for frames
-    QString fileNameExpression() const;
+    [[nodiscard]] QString fileNameExpression() const;
 
     //! Returns the overall animation range
-    QgsDateTimeRange animationRange() const;
+    [[nodiscard]] QgsDateTimeRange animationRange() const;
 
     //! Returns the duration of each individual frame
-    QgsInterval frameInterval() const;
+    [[nodiscard]] QgsInterval frameInterval() const;
 
     /**
      * Returns the animation temporal range cumulative settings.
      *
      * \since QGIS 4.0
      */
-    bool temporalRangeCumulative() const;
+    [[nodiscard]] bool temporalRangeCumulative() const;
 
     //! configure a map settings object
     void applyMapSettings( QgsMapSettings &mapSettings );
 
     //! returns whether the draw decorations element is checked
-    bool drawDecorations() const;
+    [[nodiscard]] bool drawDecorations() const;
 
   signals:
 

@@ -65,7 +65,7 @@ class CORE_EXPORT QgsRangeRequestCache
     void setCacheSize( qint64 maxBytes );
 
     //! Returns the last error that occurred when manipulating the cache.
-    QString error() const { return mError; }
+    [[nodiscard]] QString error() const { return mError; }
 
     friend class TestQgsCopcProvider;
   private:
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsRangeRequestCache
     QString mCacheDir;
     qint64 mMaxDataSize = 256 * 1024 * 1024;
 
-    QString rangeFileName( const QNetworkRequest &request ) const;
+    [[nodiscard]] QString rangeFileName( const QNetworkRequest &request ) const;
 
     QByteArray readFile( const QString &fileName );
     bool writeFile( const QString &fileName, QByteArray data );

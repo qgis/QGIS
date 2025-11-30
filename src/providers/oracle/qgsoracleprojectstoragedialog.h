@@ -25,9 +25,9 @@ class QgsOracleProjectStorageDialog : public QDialog, private Ui::QgsOracleProje
   public:
     explicit QgsOracleProjectStorageDialog( bool saving, QWidget *parent = nullptr );
 
-    QString connectionName() const;
-    QString schemaName() const;
-    QString projectName() const;
+    [[nodiscard]] QString connectionName() const;
+    [[nodiscard]] QString schemaName() const;
+    [[nodiscard]] QString projectName() const;
 
     QString currentProjectUri( bool ownerOnly = false );
 

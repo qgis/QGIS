@@ -48,7 +48,7 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     QString configId();
 
     //! Whether to allow no ID to be set
-    bool allowEmptyId() const { return mAllowEmpty; }
+    [[nodiscard]] bool allowEmptyId() const { return mAllowEmpty; }
 
     //! Validate the widget state and ID
     bool validate();

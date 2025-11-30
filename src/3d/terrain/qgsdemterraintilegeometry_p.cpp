@@ -237,7 +237,7 @@ class PlaneVertexBufferFunctor : public Qt3DQAbstractFunctor
       return createPlaneVertexData( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap );
     }
 
-    qintptr id() const override
+    [[nodiscard]] qintptr id() const override
     {
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<PlaneVertexBufferFunctor>::id );
@@ -281,7 +281,7 @@ class PlaneIndexBufferFunctor : public Qt3DQAbstractFunctor
       return createPlaneIndexData( mResolution, mHeightMap );
     }
 
-    qintptr id() const override
+    [[nodiscard]] qintptr id() const override
     {
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<PlaneIndexBufferFunctor>::id );

@@ -38,7 +38,7 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
     void activate() override;
     void deactivate() override;
 
-    QCursor cursor() const override;
+    [[nodiscard]] QCursor cursor() const override;
   signals:
     void mouseReleased( QMouseEvent *event );
 

@@ -50,14 +50,14 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
     QgsSymbolLevelsWidget( const QgsLegendSymbolList &symbols, bool usingSymbolLevels, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Returns whether the level ordering is enabled
-    bool usingLevels() const;
+    [[nodiscard]] bool usingLevels() const;
 
     /**
      * Returns the current legend symbols with rendering passes set, as defined in the widget.
      *
      * \since QGIS 3.20
      */
-    QgsLegendSymbolList symbolLevels() const;
+    [[nodiscard]] QgsLegendSymbolList symbolLevels() const;
 
     /**
      * Sets whether the level ordering is always forced on and hide the checkbox (used by rule-based renderer)
@@ -115,14 +115,14 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog
      *
      * \since QGIS 3.20
      */
-    bool usingLevels() const;
+    [[nodiscard]] bool usingLevels() const;
 
     /**
      * Returns the current legend symbols with rendering passes set, as defined in the widget.
      *
      * \since QGIS 3.20
      */
-    QgsLegendSymbolList symbolLevels() const;
+    [[nodiscard]] QgsLegendSymbolList symbolLevels() const;
 
   private:
     QgsSymbolLevelsWidget *mWidget = nullptr;

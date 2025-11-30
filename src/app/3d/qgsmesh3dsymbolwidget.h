@@ -33,10 +33,10 @@ class QgsMesh3DSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
   public:
     explicit QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *parent = nullptr );
 
-    std::unique_ptr<QgsMesh3DSymbol> symbol() const;
+    [[nodiscard]] std::unique_ptr<QgsMesh3DSymbol> symbol() const;
 
     void setLayer( QgsMeshLayer *meshLayer, bool updateSymbol = true );
-    QgsMeshLayer *meshLayer() const;
+    [[nodiscard]] QgsMeshLayer *meshLayer() const;
     void setSymbol( const QgsMesh3DSymbol *symbol );
 
     void configureForTerrain();

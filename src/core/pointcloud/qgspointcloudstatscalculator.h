@@ -58,7 +58,7 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
     bool calculateStats( QgsFeedback *feedback, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit = -1 );
 
     //! Returns the object containing the calculated statistics
-    QgsPointCloudStatistics statistics() const { return mStats; }
+    [[nodiscard]] QgsPointCloudStatistics statistics() const { return mStats; }
 
   private:
     QgsPointCloudIndex mIndex;

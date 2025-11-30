@@ -69,13 +69,13 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables
-    QStringList selectedTables() const;
+    [[nodiscard]] QStringList selectedTables() const;
     //! Connection info (database, host, user, password)
-    QString connectionInfo() const;
+    [[nodiscard]] QString connectionInfo() const;
 
     void reset() override;
 
-    QString settingPath() const override;
+    [[nodiscard]] QString settingPath() const override;
 
   signals:
     void addGeometryColumn( const QgsMssqlLayerProperty & );

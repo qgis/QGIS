@@ -41,14 +41,14 @@ class CORE_EXPORT QgsVector3D
       : mX( v.x() ), mY( v.y() ), mZ( v.z() ) {}
 
     //! Returns TRUE if all three coordinates are zero
-    bool isNull() const SIP_HOLDGIL { return mX == 0 && mY == 0 && mZ == 0; }
+    [[nodiscard]] bool isNull() const SIP_HOLDGIL { return mX == 0 && mY == 0 && mZ == 0; }
 
     //! Returns X coordinate
-    double x() const SIP_HOLDGIL { return mX; }
+    [[nodiscard]] double x() const SIP_HOLDGIL { return mX; }
     //! Returns Y coordinate
-    double y() const SIP_HOLDGIL { return mY; }
+    [[nodiscard]] double y() const SIP_HOLDGIL { return mY; }
     //! Returns Z coordinate
-    double z() const SIP_HOLDGIL { return mZ; }
+    [[nodiscard]] double z() const SIP_HOLDGIL { return mZ; }
 
     /**
      * Sets X coordinate
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsVector3D
      * Returns the length of the vector.
      * \see lengthSquared()
      */
-    double length() const SIP_HOLDGIL
+    [[nodiscard]] double length() const SIP_HOLDGIL
     {
       return sqrt( mX * mX + mY * mY + mZ * mZ );
     }
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsVector3D
      *
      * \since QGIS 4.0
      */
-    double lengthSquared() const SIP_HOLDGIL
+    [[nodiscard]] double lengthSquared() const SIP_HOLDGIL
     {
       return mX * mX + mY * mY + mZ * mZ;
     }
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsVector3D
     }
 
     //! Returns the distance with the \a other QgsVector3D
-    double distance( const QgsVector3D &other ) const SIP_HOLDGIL
+    [[nodiscard]] double distance( const QgsVector3D &other ) const SIP_HOLDGIL
     {
       return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) +
                         ( mY - other.y() ) * ( mY - other.y() ) +
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsVector3D
      * Returns a string representation of the 3D vector.
      * Members will be truncated to the specified \a precision.
      */
-    QString toString( int precision = 17 ) const SIP_HOLDGIL
+    [[nodiscard]] QString toString( int precision = 17 ) const SIP_HOLDGIL
     {
       QString str = "Vector3D (";
       str += qgsDoubleToString( mX, precision );
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsVector3D
      * \warning the conversion may decrease the accuracy (double to float values conversion)
      * \since QGIS 3.24
      */
-    QVector3D toVector3D() const SIP_HOLDGIL { return QVector3D( static_cast< float >( mX ), static_cast< float >( mY ), static_cast< float >( mZ ) ); }
+    [[nodiscard]] QVector3D toVector3D() const SIP_HOLDGIL { return QVector3D( static_cast< float >( mX ), static_cast< float >( mY ), static_cast< float >( mZ ) ); }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();

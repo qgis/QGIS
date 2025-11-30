@@ -82,7 +82,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns item flags.
      */
-    virtual Flags flags() const;
+    [[nodiscard]] virtual Flags flags() const;
 
     /**
      * Returns the model component associated with this item.
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns the model component associated with this item.
      */
-    const QgsProcessingModelComponent *component() const SIP_SKIP;
+    [[nodiscard]] const QgsProcessingModelComponent *component() const SIP_SKIP;
 
     /**
      * Returns the model associated with this item.
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns the model associated with this item.
      */
-    const QgsProcessingModelAlgorithm *model() const SIP_SKIP;
+    [[nodiscard]] const QgsProcessingModelAlgorithm *model() const SIP_SKIP;
 
     /**
      * Returns the associated view.
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Returns the font used to render text in the item.
      * \see setFont()
      */
-    QFont font() const;
+    [[nodiscard]] QFont font() const;
 
     /**
      * Sets the \a font used to render text in the item.
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      *
      * \since QGIS 4.0
      */
-    virtual QColor linkColor( Qt::Edge edge, int index ) const;
+    [[nodiscard]] virtual QColor linkColor( Qt::Edge edge, int index ) const;
 
     /**
      * Shows a preview of setting a new \a rect for the item.
@@ -182,21 +182,21 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
     QVariant itemChange( GraphicsItemChange change, const QVariant &value ) override;
-    QRectF boundingRect() const override;
-    bool contains( const QPointF &point ) const override;
+    [[nodiscard]] QRectF boundingRect() const override;
+    [[nodiscard]] bool contains( const QPointF &point ) const override;
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
     /**
      * Returns the rectangle representing the body of the item.
      */
-    QRectF itemRect( bool storedRect = false ) const;
+    [[nodiscard]] QRectF itemRect( bool storedRect = false ) const;
 
     /**
      * Returns the item's label text.
      *
      * \see setLabel()
      */
-    QString label() const;
+    [[nodiscard]] QString label() const;
 
     /**
      * Returns the item's \a label text.
@@ -208,22 +208,22 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns the item's current state.
      */
-    State state() const;
+    [[nodiscard]] State state() const;
 
     /**
      * Returns the number of link points associated with the component on the specified \a edge.
      */
-    virtual int linkPointCount( Qt::Edge edge ) const;
+    [[nodiscard]] virtual int linkPointCount( Qt::Edge edge ) const;
 
     /**
      * Returns the text to use for the link point with the specified \a index on the specified \a edge.
      */
-    virtual QString linkPointText( Qt::Edge edge, int index ) const;
+    [[nodiscard]] virtual QString linkPointText( Qt::Edge edge, int index ) const;
 
     /**
      * Returns the location of the link point with the specified \a index on the specified \a edge.
      */
-    QPointF linkPoint( Qt::Edge edge, int index, bool incoming ) const;
+    [[nodiscard]] QPointF linkPoint( Qt::Edge edge, int index, bool incoming ) const;
 
     /**
      * Returns the best link point to use for a link originating at a specified \a other item.
@@ -249,7 +249,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * May return NULLPTR if no corresponding output socket exists.
      * \since QGIS 3.44
      */
-    QgsModelDesignerSocketGraphicItem *outSocketAt( int index ) const;
+    [[nodiscard]] QgsModelDesignerSocketGraphicItem *outSocketAt( int index ) const;
 
 
     /**
@@ -324,42 +324,42 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Truncates a \a text string so that it fits nicely within the item's width,
      * accounting for margins and interactive buttons.
      */
-    QString truncatedTextForItem( const QString &text ) const;
+    [[nodiscard]] QString truncatedTextForItem( const QString &text ) const;
 
     /**
      * Returns the fill color for the item for the specified \a state.
      */
-    virtual QColor fillColor( State state ) const = 0;
+    [[nodiscard]] virtual QColor fillColor( State state ) const = 0;
 
     /**
      * Returns the stroke color for the item for the specified \a state.
      */
-    virtual QColor strokeColor( State state ) const = 0;
+    [[nodiscard]] virtual QColor strokeColor( State state ) const = 0;
 
     /**
      * Returns the label text color for the item for the specified \a state.
      */
-    virtual QColor textColor( State state ) const = 0;
+    [[nodiscard]] virtual QColor textColor( State state ) const = 0;
 
     /**
      * Returns the stroke style to use while rendering the outline of the item.
      */
-    virtual Qt::PenStyle strokeStyle( State state ) const;
+    [[nodiscard]] virtual Qt::PenStyle strokeStyle( State state ) const;
 
     /**
      * Returns the title alignment
      */
-    virtual Qt::Alignment titleAlignment() const;
+    [[nodiscard]] virtual Qt::Alignment titleAlignment() const;
 
     /**
      * Returns a QPicture version of the item's icon, if available.
      */
-    virtual QPicture iconPicture() const;
+    [[nodiscard]] virtual QPicture iconPicture() const;
 
     /**
      * Returns a QPixmap version of the item's icon, if available.
      */
-    virtual QPixmap iconPixmap() const;
+    [[nodiscard]] virtual QPixmap iconPixmap() const;
 
     /**
      * Updates the position and size stored in the model for the associated comment
@@ -379,7 +379,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     SIP_SKIP static constexpr QColor FALLBACK_COLOR = QColor( 128, 128, 128 ); /* mid gray */
 
   private:
-    QSizeF itemSize() const;
+    [[nodiscard]] QSizeF itemSize() const;
 
     void updateToolTip( const QPointF &pos );
 
@@ -442,16 +442,16 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
 
-    QColor linkColor( Qt::Edge edge, int index ) const override;
+    [[nodiscard]] QColor linkColor( Qt::Edge edge, int index ) const override;
 
   protected:
-    QColor fillColor( State state ) const override;
-    QColor strokeColor( State state ) const override;
-    QColor textColor( State state ) const override;
-    QPicture iconPicture() const override;
+    [[nodiscard]] QColor fillColor( State state ) const override;
+    [[nodiscard]] QColor strokeColor( State state ) const override;
+    [[nodiscard]] QColor textColor( State state ) const override;
+    [[nodiscard]] QPicture iconPicture() const override;
 
-    int linkPointCount( Qt::Edge edge ) const override;
-    QString linkPointText( Qt::Edge edge, int index ) const override;
+    [[nodiscard]] int linkPointCount( Qt::Edge edge ) const override;
+    [[nodiscard]] QString linkPointText( Qt::Edge edge, int index ) const override;
     void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
@@ -521,14 +521,14 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void showLog();
 
   protected:
-    QColor fillColor( State state ) const override;
-    QColor strokeColor( State state ) const override;
-    QColor textColor( State state ) const override;
-    QPixmap iconPixmap() const override;
-    QPicture iconPicture() const override;
+    [[nodiscard]] QColor fillColor( State state ) const override;
+    [[nodiscard]] QColor strokeColor( State state ) const override;
+    [[nodiscard]] QColor textColor( State state ) const override;
+    [[nodiscard]] QPixmap iconPixmap() const override;
+    [[nodiscard]] QPicture iconPicture() const override;
 
-    int linkPointCount( Qt::Edge edge ) const override;
-    QString linkPointText( Qt::Edge edge, int index ) const override;
+    [[nodiscard]] int linkPointCount( Qt::Edge edge ) const override;
+    [[nodiscard]] QString linkPointText( Qt::Edge edge, int index ) const override;
     void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
@@ -571,10 +571,10 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     bool canDeleteComponent() override;
 
   protected:
-    QColor fillColor( State state ) const override;
-    QColor strokeColor( State state ) const override;
-    QColor textColor( State state ) const override;
-    QPicture iconPicture() const override;
+    [[nodiscard]] QColor fillColor( State state ) const override;
+    [[nodiscard]] QColor strokeColor( State state ) const override;
+    [[nodiscard]] QColor textColor( State state ) const override;
+    [[nodiscard]] QPicture iconPicture() const override;
     void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
@@ -613,13 +613,13 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
     /**
      * Returns the parent model component item.
      */
-    QgsModelComponentGraphicItem *parentComponentItem() const;
+    [[nodiscard]] QgsModelComponentGraphicItem *parentComponentItem() const;
 
   protected:
-    QColor fillColor( State state ) const override;
-    QColor strokeColor( State state ) const override;
-    QColor textColor( State state ) const override;
-    Qt::PenStyle strokeStyle( State state ) const override;
+    [[nodiscard]] QColor fillColor( State state ) const override;
+    [[nodiscard]] QColor strokeColor( State state ) const override;
+    [[nodiscard]] QColor textColor( State state ) const override;
+    [[nodiscard]] Qt::PenStyle strokeStyle( State state ) const override;
     void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
@@ -660,11 +660,11 @@ class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicIt
     bool canDeleteComponent() override;
 
   protected:
-    QColor fillColor( State state ) const override;
-    QColor strokeColor( State state ) const override;
-    QColor textColor( State state ) const override;
-    Qt::PenStyle strokeStyle( State state ) const override;
-    Qt::Alignment titleAlignment() const override;
+    [[nodiscard]] QColor fillColor( State state ) const override;
+    [[nodiscard]] QColor strokeColor( State state ) const override;
+    [[nodiscard]] QColor textColor( State state ) const override;
+    [[nodiscard]] Qt::PenStyle strokeStyle( State state ) const override;
+    [[nodiscard]] Qt::Alignment titleAlignment() const override;
     void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:

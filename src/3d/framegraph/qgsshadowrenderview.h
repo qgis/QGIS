@@ -77,10 +77,10 @@ class QgsShadowRenderView : public QgsAbstractRenderView
     Qt3DRender::QCamera *lightCamera() { return mLightCamera; }
 
     //! Returns shadow depth texture
-    Qt3DRender::QTexture2D *mapTexture() const;
+    [[nodiscard]] Qt3DRender::QTexture2D *mapTexture() const;
 
     //! Returns the layer to be used by entities to be included in this renderview
-    Qt3DRender::QLayer *entityCastingShadowsLayer() const;
+    [[nodiscard]] Qt3DRender::QLayer *entityCastingShadowsLayer() const;
 
     //! Update shadow depth texture size
     void setMapSize( int width, int height );

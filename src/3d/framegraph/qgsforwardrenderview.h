@@ -60,7 +60,7 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     void setClearColor( const QColor &clearColor );
 
     //! Returns whether frustum culling is enabled
-    bool isFrustumCullingEnabled() const { return mFrustumCullingEnabled; }
+    [[nodiscard]] bool isFrustumCullingEnabled() const { return mFrustumCullingEnabled; }
     //! Sets whether frustum culling is enabled
     void setFrustumCullingEnabled( bool enabled );
 
@@ -73,10 +73,10 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     void updateWindowResize( int width, int height ) override;
 
     //! Returns forward depth texture
-    Qt3DRender::QTexture2D *depthTexture() const;
+    [[nodiscard]] Qt3DRender::QTexture2D *depthTexture() const;
 
     //! Returns forward color texture
-    Qt3DRender::QTexture2D *colorTexture() const;
+    [[nodiscard]] Qt3DRender::QTexture2D *colorTexture() const;
 
     /**
      * Setups \a nrClipPlanes clip planes in the forward pass to enable OpenGL clipping.

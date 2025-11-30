@@ -51,11 +51,11 @@ class CORE_EXPORT QgsErrorMessage
      */
     QgsErrorMessage( const QString &message, const QString &tag = QString(), const QString &file = QString(), const QString &function = QString(), int line = 0 );
 
-    QString message() const { return mMessage; }
-    QString tag() const { return mTag; }
-    QString file() const { return mFile; }
-    QString function() const { return mFunction; }
-    int line() const { return mLine; }
+    [[nodiscard]] QString message() const { return mMessage; }
+    [[nodiscard]] QString tag() const { return mTag; }
+    [[nodiscard]] QString file() const { return mFile; }
+    [[nodiscard]] QString function() const { return mFunction; }
+    [[nodiscard]] int line() const { return mLine; }
 
   private:
     //! Error messages
@@ -107,20 +107,20 @@ class CORE_EXPORT QgsError
      * Test if no error is set.
      *  \returns FALSE if contains error
      */
-    bool isEmpty() const { return mMessageList.isEmpty(); }
+    [[nodiscard]] bool isEmpty() const { return mMessageList.isEmpty(); }
 
     /**
      * Full error messages description
      *  \param format output format
      *  \returns error report
      */
-    QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;
+    [[nodiscard]] QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;
 
     /**
      * Short error description, usually the first error in chain, the real error.
      *  \returns error description
      */
-    QString summary() const;
+    [[nodiscard]] QString summary() const;
 
     //! Clear error messages
     void clear() { mMessageList.clear(); }
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsError
      * \brief messageList return the list of current error messages
      * \return current list of error messages
      */
-    QList<QgsErrorMessage> messageList() const { return mMessageList; }
+    [[nodiscard]] QList<QgsErrorMessage> messageList() const { return mMessageList; }
 
 
 #ifdef SIP_RUN

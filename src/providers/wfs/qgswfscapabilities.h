@@ -99,12 +99,12 @@ class QgsWfsCapabilities
     QSet<QString> setAmbiguousUnprefixedTypename;
 
     void clear();
-    QString addPrefixIfNeeded( const QString &name ) const;
-    QString getNamespaceForTypename( const QString &name ) const;
-    QString getNamespaceParameterValue( const QString &WFSVersion, const QString &typeName ) const;
+    [[nodiscard]] QString addPrefixIfNeeded( const QString &name ) const;
+    [[nodiscard]] QString getNamespaceForTypename( const QString &name ) const;
+    [[nodiscard]] QString getNamespaceParameterValue( const QString &WFSVersion, const QString &typeName ) const;
 
     //! Returns whether the server supports IsPoint, IsCurve and IsSurface functions
-    bool supportsGeometryTypeFilters() const;
+    [[nodiscard]] bool supportsGeometryTypeFilters() const;
 };
 
 #endif // QGSWFSCAPABILITIES_H

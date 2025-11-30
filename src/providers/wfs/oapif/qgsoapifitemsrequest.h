@@ -48,31 +48,31 @@ class QgsOapifItemsRequest : public QgsBaseNetworkRequest
     };
 
     //! Returns application level error
-    ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
+    [[nodiscard]] ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
 
     //! Return fields.
-    const QgsFields &fields() const { return mFields; }
+    [[nodiscard]] const QgsFields &fields() const { return mFields; }
 
     //! Return geometry type.
-    Qgis::WkbType wkbType() const { return mWKBType; }
+    [[nodiscard]] Qgis::WkbType wkbType() const { return mWKBType; }
 
     //! Return features.
-    const std::vector<QgsFeatureUniqueIdPair> &features() const { return mFeatures; }
+    [[nodiscard]] const std::vector<QgsFeatureUniqueIdPair> &features() const { return mFeatures; }
 
     //! Return features bounding box
-    const QgsRectangle &bbox() const { return mBbox; }
+    [[nodiscard]] const QgsRectangle &bbox() const { return mBbox; }
 
     //! Return number of matched features, or -1 if unknown.
-    int numberMatched() const { return mNumberMatched; }
+    [[nodiscard]] int numberMatched() const { return mNumberMatched; }
 
     //! Return the url of the next page
-    const QString &nextUrl() const { return mNextUrl; }
+    [[nodiscard]] const QString &nextUrl() const { return mNextUrl; }
 
     //! Return if an "id" is present at top level of features
-    bool foundIdTopLevel() const { return mFoundIdTopLevel; }
+    [[nodiscard]] bool foundIdTopLevel() const { return mFoundIdTopLevel; }
 
     //! Return if an "id" is present in the "properties" object of features
-    bool foundIdInProperties() const { return mFoundIdInProperties; }
+    [[nodiscard]] bool foundIdInProperties() const { return mFoundIdInProperties; }
 
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred

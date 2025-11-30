@@ -346,10 +346,10 @@ class CORE_EXPORT QgsFeatureIterator
      * \see isClosed to check if the iterator successfully completed and returned all the features.
      *
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     //! find out whether the iterator is still valid or closed already
-    bool isClosed() const;
+    [[nodiscard]] bool isClosed() const;
 
     /**
      * Attach an object that can be queried regularly by the iterator to check
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsFeatureIterator
     /**
      * Returns the status of expression compilation for filter expression requests.
      */
-    QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }
+    [[nodiscard]] QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }
 
     /**
      * Indicator if there was an error when sending the compiled query to the server.
@@ -371,7 +371,7 @@ class CORE_EXPORT QgsFeatureIterator
      *
      * \since QGIS 3.2
      */
-    bool compileFailed() const { return mIter->compileFailed(); }
+    [[nodiscard]] bool compileFailed() const { return mIter->compileFailed(); }
 
     friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
     friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;

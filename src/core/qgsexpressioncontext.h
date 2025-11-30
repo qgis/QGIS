@@ -85,7 +85,7 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
     /**
      * Returns a clone of the function.
      */
-    virtual QgsScopedExpressionFunction *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsScopedExpressionFunction *clone() const = 0 SIP_FACTORY;
 
     bool usesGeometry( const QgsExpressionNodeFunction *node ) const override;
 

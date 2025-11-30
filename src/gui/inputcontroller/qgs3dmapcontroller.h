@@ -38,7 +38,7 @@ class GUI_EXPORT QgsAbstract3DMapController : public QgsAbstractInputController
      */
     QgsAbstract3DMapController( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    Qgis::InputControllerType type() const override;
+    [[nodiscard]] Qgis::InputControllerType type() const override;
 
   signals:
 #if 0

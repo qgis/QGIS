@@ -37,11 +37,11 @@ class SERVER_EXPORT QgsFeatureFilter : public QgsFeatureFilterProvider
     //! Constructor
     QgsFeatureFilter() = default;
 
-    bool isFilterThreadSafe() const override { return false; }
+    [[nodiscard]] bool isFilterThreadSafe() const override { return false; }
 
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
-    QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
 
     /**
      * Set a filter for the given layer.

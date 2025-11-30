@@ -52,7 +52,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
 
     ~QgsLayoutPageCollection() override;
 
-    QString stringType() const override { return QStringLiteral( "LayoutPageCollection" ); }
+    [[nodiscard]] QString stringType() const override { return QStringLiteral( "LayoutPageCollection" ); }
     QgsLayout *layout() override;
 
     /**
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * Returns the number of pages in the collection.
      * \see pages()
      */
-    int pageCount() const;
+    [[nodiscard]] int pageCount() const;
 
     /**
      * Returns a specific page (by \a pageNumber) from the collection.
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * \see pages()
      * \note Not available in Python bindings.
      */
-    const QgsLayoutItemPage *page( int pageNumber ) const SIP_SKIP;
+    [[nodiscard]] const QgsLayoutItemPage *page( int pageNumber ) const SIP_SKIP;
 
     /**
      * Returns the page number for the specified \a page, or -1 if the page
@@ -98,26 +98,26 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * \a region (in layout coordinates).
      * \see visiblePageNumbers()
      */
-    QList< QgsLayoutItemPage * > visiblePages( const QRectF &region ) const;
+    [[nodiscard]] QList< QgsLayoutItemPage * > visiblePages( const QRectF &region ) const;
 
     /**
      * Returns a list of the page numbers which are visible within the specified
      * \a region (in layout coordinates).
      * \see visiblePages()
      */
-    QList< int > visiblePageNumbers( const QRectF &region ) const;
+    [[nodiscard]] QList< int > visiblePageNumbers( const QRectF &region ) const;
 
     /**
      * Returns whether a given \a page index is empty, ie, it contains no items except for the background
      * paper item.
      * \see shouldExportPage()
      */
-    bool pageIsEmpty( int page ) const;
+    [[nodiscard]] bool pageIsEmpty( int page ) const;
 
     /**
      * Returns a list of layout items on the specified \a page index.
      */
-    QList< QgsLayoutItem *> itemsOnPage( int page ) const;
+    [[nodiscard]] QList< QgsLayoutItem *> itemsOnPage( int page ) const;
 
     /**
      * Returns layout items of a specific type on a specified \a page.
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      *
      * \see pageIsEmpty()
      */
-    bool shouldExportPage( int page ) const;
+    [[nodiscard]] bool shouldExportPage( int page ) const;
 
     /**
      * Adds a \a page to the collection. Ownership of the \a page is transferred
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      *
      * \see maximumPageSize()
      */
-    double maximumPageWidth() const;
+    [[nodiscard]] double maximumPageWidth() const;
 
     /**
      * Returns the maximum size of any page in the collection, by area. The returned value
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      *
      * \see maximumPageWidth()
      */
-    QSizeF maximumPageSize() const;
+    [[nodiscard]] QSizeF maximumPageSize() const;
 
     /**
      * Returns TRUE if the layout has uniform page sizes, e.g. all pages are the same size.
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * This method does not consider differing units as non-uniform sizes, only the actual
      * physical size of the pages.
      */
-    bool hasUniformPageSizes() const;
+    [[nodiscard]] bool hasUniformPageSizes() const;
 
     /**
      * Returns the page number corresponding to a \a point in the layout (in layout units).
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * \see pageAtPoint()
      * \see positionOnPage()
      */
-    int pageNumberForPoint( QPointF point ) const;
+    [[nodiscard]] int pageNumberForPoint( QPointF point ) const;
 
     /**
      * Returns the theoretical page number corresponding to a \a point in the layout (in layout units),
@@ -315,7 +315,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * \see pageAtPoint()
      * \see positionOnPage()
      */
-    int predictPageNumberForPoint( QPointF point ) const;
+    [[nodiscard]] int predictPageNumberForPoint( QPointF point ) const;
 
     /**
      * Returns the page at a specified \a point (in layout coordinates).
@@ -327,36 +327,36 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      *
      * \see pageNumberForPoint()
      */
-    QgsLayoutItemPage *pageAtPoint( QPointF point ) const;
+    [[nodiscard]] QgsLayoutItemPage *pageAtPoint( QPointF point ) const;
 
     /**
      * Converts a \a position on a \a page to an absolute position in layout coordinates.\
      * \see pagePositionToAbsolute()
      */
-    QPointF pagePositionToLayoutPosition( int page, const QgsLayoutPoint &position ) const;
+    [[nodiscard]] QPointF pagePositionToLayoutPosition( int page, const QgsLayoutPoint &position ) const;
 
     /**
      * Converts a \a position on a \a page to an absolute position in (maintaining the units from the input \a position).
      * \see pagePositionToLayoutPosition()
      */
-    QgsLayoutPoint pagePositionToAbsolute( int page, const QgsLayoutPoint &position ) const;
+    [[nodiscard]] QgsLayoutPoint pagePositionToAbsolute( int page, const QgsLayoutPoint &position ) const;
 
     /**
      * Returns the position within a page of a \a point in the layout (in layout units).
      *
      * \see pageNumberForPoint()
      */
-    QPointF positionOnPage( QPointF point ) const;
+    [[nodiscard]] QPointF positionOnPage( QPointF point ) const;
 
     /**
      * Returns the space between pages, in layout units.
      */
-    double spaceBetweenPages() const;
+    [[nodiscard]] double spaceBetweenPages() const;
 
     /**
      * Returns the size of the page shadow, in layout units.
      */
-    double pageShadowWidth() const;
+    [[nodiscard]] double pageShadowWidth() const;
 
     /**
      * Resizes the layout to a single page which fits the current contents of the layout.
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     /**
      * Returns a reference to the collection's guide collection, which manages page snap guides.
      */
-    SIP_SKIP const QgsLayoutGuideCollection &guides() const;
+    SIP_SKIP [[nodiscard]] const QgsLayoutGuideCollection &guides() const;
 
     /**
      * Apply the source page properties (size & background color) to all other pages

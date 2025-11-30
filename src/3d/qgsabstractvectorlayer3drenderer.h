@@ -43,7 +43,7 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
      * recommended to keep the number of zoom levels low to prevent excessive number
      * of tiles.
      */
-    int zoomLevelsCount() const { return mZoomLevelsCount; }
+    [[nodiscard]] int zoomLevelsCount() const { return mZoomLevelsCount; }
 
     /**
      * Sets number of zoom levels. See zoomLevelsCount() documentation for more details.
@@ -53,7 +53,7 @@ class _3D_EXPORT QgsVectorLayer3DTilingSettings
     //! Sets whether to display bounding boxes of entity's tiles (for debugging)
     void setShowBoundingBoxes( bool enabled ) { mShowBoundingBoxes = enabled; }
     //! Returns whether to display bounding boxes of entity's tiles (for debugging)
-    bool showBoundingBoxes() const { return mShowBoundingBoxes; }
+    [[nodiscard]] bool showBoundingBoxes() const { return mShowBoundingBoxes; }
 
     //! Writes content of the object to XML
     void writeXml( QDomElement &elem ) const;
@@ -80,12 +80,12 @@ class _3D_EXPORT QgsAbstractVectorLayer3DRenderer : public QgsAbstract3DRenderer
     //! Sets vector layer associated with the renderer
     void setLayer( QgsVectorLayer *layer );
     //! Returns vector layer associated with the renderer
-    QgsVectorLayer *layer() const;
+    [[nodiscard]] QgsVectorLayer *layer() const;
 
     //! Sets tiling settings of the renderer
     void setTilingSettings( const QgsVectorLayer3DTilingSettings &settings ) { mTilingSettings = settings; }
     //! Returns tiling settings of the renderer
-    QgsVectorLayer3DTilingSettings tilingSettings() const { return mTilingSettings; }
+    [[nodiscard]] QgsVectorLayer3DTilingSettings tilingSettings() const { return mTilingSettings; }
 
     void resolveReferences( const QgsProject &project ) override;
 

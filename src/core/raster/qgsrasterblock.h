@@ -67,7 +67,7 @@ class CORE_EXPORT QgsRasterBlock
      *  An empty block may still be valid (if zero size block was requested).
      *  If the block is not valid, error may be retrieved by error() method.
      */
-    bool isValid() const SIP_HOLDGIL { return mValid; }
+    [[nodiscard]] bool isValid() const SIP_HOLDGIL { return mValid; }
 
     //! \brief Mark block as valid or invalid
     void setValid( bool valid ) SIP_HOLDGIL { mValid = valid; }
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsRasterBlock
      *  This method does not return TRUE if size is not zero and all values are
      *  'no data' (null).
      */
-    bool isEmpty() const;
+    [[nodiscard]] bool isEmpty() const;
 
     /**
      * Returns the size in bytes for the specified \a dataType.
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * Data type size in bytes.
      */
-    int dataTypeSize() const SIP_HOLDGIL
+    [[nodiscard]] int dataTypeSize() const SIP_HOLDGIL
     {
       return typeSize( mDataType );
     }
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsRasterBlock
     static bool typeIsColor( Qgis::DataType type );
 
     //! Returns data type
-    Qgis::DataType dataType() const  SIP_HOLDGIL { return mDataType; }
+    [[nodiscard]] Qgis::DataType dataType() const  SIP_HOLDGIL { return mDataType; }
 
     //! For given data type returns wider type and sets no data value
     static Qgis::DataType typeWithNoDataValue( Qgis::DataType dataType, double *noDataValue );
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsRasterBlock
      * \see setNoDataValue()
      * \see resetNoDataValue()
      */
-    bool hasNoDataValue() const SIP_HOLDGIL { return mHasNoDataValue; }
+    [[nodiscard]] bool hasNoDataValue() const SIP_HOLDGIL { return mHasNoDataValue; }
 
     /**
      * Returns TRUE if the block may contain no data. It does not guarantee
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsRasterBlock
      * Not the difference between this method and hasNoDataValue().
      * \returns TRUE if the block may contain no data
     */
-    bool hasNoData() const SIP_HOLDGIL
+    [[nodiscard]] bool hasNoData() const SIP_HOLDGIL
     {
       return mHasNoDataValue || mNoDataBitmap;
     }
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsRasterBlock
      * \see setNoDataValue()
      * \see resetNoDataValue()
      */
-    double noDataValue() const SIP_HOLDGIL { return mNoDataValue; }
+    [[nodiscard]] double noDataValue() const SIP_HOLDGIL { return mNoDataValue; }
 
     /**
      * Gets byte array representing a value.
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsRasterBlock
      * \returns value
      * \see valueAndNoData()
     */
-    double value( int row, int column ) const SIP_HOLDGIL
+    [[nodiscard]] double value( int row, int column ) const SIP_HOLDGIL
     {
       return value( static_cast< qgssize >( row ) * mWidth + column );
     }
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsRasterBlock
      * \returns value
      * \see valueAndNoData()
     */
-    inline double value( qgssize index ) const SIP_HOLDGIL;
+    [[nodiscard]] inline double value( qgssize index ) const SIP_HOLDGIL;
 
     /**
      * Reads a single value from the pixel at the specified data matrix \a index, if type of block is numeric. If type is color,
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsRasterBlock
      * \note not available in Python bindings
      * \since QGIS 3.4
      */
-    const quint8 *byteData() const SIP_SKIP
+    [[nodiscard]] const quint8 *byteData() const SIP_SKIP
     {
       if ( mDataType != Qgis::DataType::Byte )
         return nullptr;
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsRasterBlock
      *  \param column column index
      *  \returns color
     */
-    QRgb color( int row, int column ) const SIP_HOLDGIL
+    [[nodiscard]] QRgb color( int row, int column ) const SIP_HOLDGIL
     {
       if ( !mImage ) return NO_DATA_COLOR;
 
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsRasterBlock
      *  \param index data matrix index (long type in Python)
      *  \returns color
     */
-    QRgb color( qgssize index ) const SIP_HOLDGIL
+    [[nodiscard]] QRgb color( qgssize index ) const SIP_HOLDGIL
     {
       const int row = static_cast< int >( std::floor( static_cast< double >( index ) / mWidth ) );
       const int column = index % mWidth;
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsRasterBlock
      * \returns TRUE if value is no data
      * \see valueAndNoData()
     */
-    bool isNoData( int row, int column ) const SIP_HOLDGIL
+    [[nodiscard]] bool isNoData( int row, int column ) const SIP_HOLDGIL
     {
       return isNoData( static_cast< qgssize >( row ) * mWidth + column );
     }
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsRasterBlock
      * \returns TRUE if value is no data
      * \see valueAndNoData()
     */
-    bool isNoData( qgssize row, qgssize column ) const SIP_HOLDGIL
+    [[nodiscard]] bool isNoData( qgssize row, qgssize column ) const SIP_HOLDGIL
     {
       return isNoData( row * static_cast< qgssize >( mWidth ) + column );
     }
@@ -335,7 +335,7 @@ class CORE_EXPORT QgsRasterBlock
      * \returns TRUE if value is no data
      * \see valueAndNoData()
     */
-    bool isNoData( qgssize index ) const SIP_HOLDGIL
+    [[nodiscard]] bool isNoData( qgssize index ) const SIP_HOLDGIL
     {
       if ( !mHasNoDataValue && !mNoDataBitmap )
         return false;
@@ -601,7 +601,7 @@ class CORE_EXPORT QgsRasterBlock
      * a deep copy of the data will be made and only the local copy will be modified.
      * \note in Python the method returns ordinary bytes object as the
      */
-    QByteArray data() const;
+    [[nodiscard]] QByteArray data() const;
 
     /**
      * Rewrite raw pixel data.
@@ -647,7 +647,7 @@ class CORE_EXPORT QgsRasterBlock
      * \see bits()
      * \since QGIS 3.38
      */
-    const char *constBits( qgssize index ) const SIP_SKIP;
+    [[nodiscard]] const char *constBits( qgssize index ) const SIP_SKIP;
 
     /**
      * Returns a const pointer to block data.
@@ -656,7 +656,7 @@ class CORE_EXPORT QgsRasterBlock
      * \see bits()
      * \since QGIS 3.38
      */
-    const char *constBits() const SIP_SKIP;
+    [[nodiscard]] const char *constBits() const SIP_SKIP;
 
     /**
      * \brief Print double value with all necessary significant digits.
@@ -687,7 +687,7 @@ class CORE_EXPORT QgsRasterBlock
     /**
      * Returns an image containing the block data, if the block's data type is color.
      */
-    QImage image() const;
+    [[nodiscard]] QImage image() const;
 
     /**
      * Sets the block data via an \a image.
@@ -709,12 +709,12 @@ class CORE_EXPORT QgsRasterBlock
     void applyScaleOffset( double scale, double offset );
 
     //! Returns the last error
-    QgsError error() const { return mError; }
+    [[nodiscard]] QgsError error() const { return mError; }
 
     //! Sets the last error
     void setError( const QgsError &error ) { mError = error;}
 
-    QString toString() const;
+    [[nodiscard]] QString toString() const;
 
     /**
      * \brief For extent and width, height find rectangle covered by subextent.
@@ -732,13 +732,13 @@ class CORE_EXPORT QgsRasterBlock
      * Returns the width (number of columns) of the raster block.
      * \see height
      */
-    int width() const SIP_HOLDGIL { return mWidth; }
+    [[nodiscard]] int width() const SIP_HOLDGIL { return mWidth; }
 
     /**
      * Returns the height (number of rows) of the raster block.
      * \see width
      */
-    int height() const SIP_HOLDGIL { return mHeight; }
+    [[nodiscard]] int height() const SIP_HOLDGIL { return mHeight; }
 
     /**
      * Returns the minimum value present in the raster block.
@@ -826,7 +826,7 @@ class CORE_EXPORT QgsRasterBlock
      * \param value tested value
      * \returns TRUE if value is nodata
     */
-    inline bool isNoDataValue( double value ) const;
+    [[nodiscard]] inline bool isNoDataValue( double value ) const;
 
     /**
      * Allocate no data bitmap

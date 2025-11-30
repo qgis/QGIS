@@ -55,7 +55,7 @@ class CORE_EXPORT QgsStacItemCollection
      * Returns the items in the collection
      * Ownership is not transferred
      */
-    QVector< QgsStacItem * > items() const;
+    [[nodiscard]] QVector< QgsStacItem * > items() const;
 
     /**
      * Returns the items in the collection
@@ -66,36 +66,36 @@ class CORE_EXPORT QgsStacItemCollection
     /**
      * Returns the url of the item collection's "self" link
      */
-    QUrl url() const;
+    [[nodiscard]] QUrl url() const;
 
     /**
      * Returns the url of the item collection's "root" link
      */
-    QUrl rootUrl() const;
+    [[nodiscard]] QUrl rootUrl() const;
 
     /**
      * Returns the url of the item collection's "parent" link
      */
-    QUrl parentUrl() const;
+    [[nodiscard]] QUrl parentUrl() const;
 
     /**
      * Returns the url of the item collection's "collection" link
      */
-    QUrl collectionUrl() const;
+    [[nodiscard]] QUrl collectionUrl() const;
 
     /**
      * Returns the url of the item collection's "next" link
      */
-    QUrl nextUrl() const;
+    [[nodiscard]] QUrl nextUrl() const;
 
     //! Returns the number of items in the collection
-    int numberReturned() const;
+    [[nodiscard]] int numberReturned() const;
 
     /**
      * Returns the total number of items in the parent collection
      * If this information was not available by the STAC server, -1 is returned
      */
-    int numberMatched() const;
+    [[nodiscard]] int numberMatched() const;
 
   private:
 #ifdef SIP_RUN

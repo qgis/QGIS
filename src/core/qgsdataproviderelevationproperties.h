@@ -61,7 +61,7 @@ class CORE_EXPORT QgsDataProviderElevationProperties
      * \see setContainsElevationData()
      * \since QGIS 3.36
      */
-    virtual bool containsElevationData() const;
+    [[nodiscard]] virtual bool containsElevationData() const;
 
     /**
      * Sets whether the data provider definitely contains elevation related data.

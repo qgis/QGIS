@@ -83,9 +83,9 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables
-    QStringList selectedTables() const;
+    [[nodiscard]] QStringList selectedTables() const;
     //! Connection info (database, host, user, password)
-    QString connectionInfo() const;
+    [[nodiscard]] QString connectionInfo() const;
 
   public slots:
 

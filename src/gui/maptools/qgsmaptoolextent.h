@@ -37,7 +37,7 @@ class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
     //! constructor
     QgsMapToolExtent( QgsMapCanvas *canvas );
 
-    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    [[nodiscard]] Flags flags() const override { return QgsMapTool::AllowZoomRect; }
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
@@ -55,12 +55,12 @@ class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
      * Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
      * If the aspect ratio isn't fixed, the width and height will be set to zero.
      */
-    QSize ratio() const { return mRatio; }
+    [[nodiscard]] QSize ratio() const { return mRatio; }
 
     /**
      * Returns the current extent drawn onto the canvas.
      */
-    QgsRectangle extent() const;
+    [[nodiscard]] QgsRectangle extent() const;
 
     /**
      * Removes the tool's rubber band from the canvas.

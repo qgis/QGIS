@@ -52,7 +52,7 @@ class CORE_EXPORT QgsTiledSceneRequest
      *
      * \see setFlags()
      */
-    Qgis::TiledSceneRequestFlags flags() const { return mFlags; }
+    [[nodiscard]] Qgis::TiledSceneRequestFlags flags() const { return mFlags; }
 
     /**
     * Returns the box from which data will be taken.
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsTiledSceneRequest
     *
     * \see setFilterBox()
     */
-    QgsOrientedBox3D filterBox() const { return mFilterBox; }
+    [[nodiscard]] QgsOrientedBox3D filterBox() const { return mFilterBox; }
 
     /**
      * Sets the \a box from which data will be taken.
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsTiledSceneRequest
      *
      * \see setRequiredGeometricError()
      */
-    double requiredGeometricError() const { return mRequiredGeometricError; }
+    [[nodiscard]] double requiredGeometricError() const { return mRequiredGeometricError; }
 
     /**
      * Sets the required geometric \a error threshold for the returned tiles,
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsTiledSceneRequest
      *
      * \see setFeedback()
      */
-    QgsFeedback *feedback() const;
+    [[nodiscard]] QgsFeedback *feedback() const;
 
     /**
      * Returns the parent tile ID, if filtering is limited to children of a specific tile.
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsTiledSceneRequest
      *
      * \see setParentTileId()
      */
-    long long parentTileId() const { return mParentTileId; }
+    [[nodiscard]] long long parentTileId() const { return mParentTileId; }
 
     /**
      * Sets the parent tile \a id, if filtering is to be limited to children of a specific tile.

@@ -56,7 +56,7 @@ class APP_EXPORT QgsRelationManagerDialog : public QWidget, private Ui::QgsRelat
 
     QgsRelationManager *mRelationManager = nullptr;
     QList<QgsVectorLayer *> mLayers;
-    QString getUniqueId( const QString &idTmpl, const QString &ids ) const;
+    [[nodiscard]] QString getUniqueId( const QString &idTmpl, const QString &ids ) const;
 };
 
 class RelationNameEditorDelegate : public QStyledItemDelegate

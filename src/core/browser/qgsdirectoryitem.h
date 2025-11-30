@@ -84,7 +84,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     /**
      * Returns the full path to the directory the item represents.
      */
-    QString dirPath() const { return mDirPath; }
+    [[nodiscard]] QString dirPath() const { return mDirPath; }
 
     bool equal( const QgsDataItem *other ) override;
     QIcon icon() override;
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * \see setIconColor()
      * \since QGIS 3.20
      */
-    QColor iconColor() const;
+    [[nodiscard]] QColor iconColor() const;
 
     /**
      * Sets the directory's icon \a color.
@@ -125,8 +125,8 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * \deprecated QGIS 3.20
      */
     Q_DECL_DEPRECATED QWidget *paramWidget() override SIP_FACTORY SIP_DEPRECATED;
-    bool hasDragEnabled() const override { return true; }
-    QgsMimeDataUtils::UriList mimeUris() const override;
+    [[nodiscard]] bool hasDragEnabled() const override { return true; }
+    [[nodiscard]] QgsMimeDataUtils::UriList mimeUris() const override;
 
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      *
      * \since QGIS 3.20
      */
-    bool isMonitored() const { return mMonitored; }
+    [[nodiscard]] bool isMonitored() const { return mMonitored; }
 
     /**
      * Returns the monitoring setting for this directory item.
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * \see setMonitoring()
      * \since QGIS 3.20
      */
-    Qgis::BrowserDirectoryMonitoring monitoring() const;
+    [[nodiscard]] Qgis::BrowserDirectoryMonitoring monitoring() const;
 
     /**
      * Sets the \a monitoring setting for this directory.
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
     QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
     QIcon icon() override;
-    QVariant sortKey() const override;
+    [[nodiscard]] QVariant sortKey() const override;
 
 };
 

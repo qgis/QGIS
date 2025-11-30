@@ -118,7 +118,7 @@ class SERVER_EXPORT QgsServerInterface
     virtual void registerAccessControl( QgsAccessControlFilter *accessControl SIP_TRANSFER, int priority = 0 ) = 0;
 
     //! Gets the registered access control filters
-    virtual QgsAccessControl *accessControls() const = 0;
+    [[nodiscard]] virtual QgsAccessControl *accessControls() const = 0;
 
     /**
      * Register a server cache filter
@@ -132,10 +132,10 @@ class SERVER_EXPORT QgsServerInterface
      * Gets the registered server cache filters
      * \since QGIS 3.4
      */
-    virtual QgsServerCacheManager *cacheManager() const = 0;
+    [[nodiscard]] virtual QgsServerCacheManager *cacheManager() const = 0;
 
     //! Returns an enrironment variable, used to pass  environment variables to Python
-    virtual QString getEnv( const QString &name ) const = 0;
+    [[nodiscard]] virtual QString getEnv( const QString &name ) const = 0;
 
     /**
      * Returns the configuration file path

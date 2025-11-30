@@ -46,7 +46,7 @@ class GUI_EXPORT QgsTableWidgetBase : public QWidget, protected Ui::QgsTableWidg
      * \see setReadOnly()
      * \since QGIS 3.38
      */
-    bool isReadOnly() const { return mReadOnly; }
+    [[nodiscard]] bool isReadOnly() const { return mReadOnly; }
 
   public slots:
 

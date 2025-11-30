@@ -38,7 +38,7 @@ class CORE_EXPORT QgsFeatureRendererGenerator
     /**
      * Returns a unique ID string identifying the renderer generator.
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     /**
      * Returns a double value which dictates the stacking or z order level associated with
@@ -60,14 +60,14 @@ class CORE_EXPORT QgsFeatureRendererGenerator
      * \note If two QgsFeatureRendererGenerator implementations return the same level() value, then their
      * ordering will be unpredictable.
      */
-    virtual double level() const;
+    [[nodiscard]] virtual double level() const;
 
     /**
      * Creates a new feature renderer to use when rendering a vector layer.
      *
      * Caller takes ownership of the returned renderer.
      */
-    virtual QgsFeatureRenderer *createRenderer() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsFeatureRenderer *createRenderer() const = 0 SIP_FACTORY;
 };
 
 #endif // QGSFEATURERENDERERGENERATOR_H

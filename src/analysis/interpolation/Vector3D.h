@@ -53,13 +53,13 @@ class ANALYSIS_EXPORT Vector3D
     bool operator==( const Vector3D &v ) const;
     bool operator!=( const Vector3D &v ) const;
     //! Returns the x-component of the vector
-    double getX() const;
+    [[nodiscard]] double getX() const;
     //! Returns the y-component of the vector
-    double getY() const;
+    [[nodiscard]] double getY() const;
     //! Returns the z-component of the vector
-    double getZ() const;
+    [[nodiscard]] double getZ() const;
     //! Returns the length of the vector
-    double getLength() const;
+    [[nodiscard]] double getLength() const;
     //! Sets the x-component of the vector
     void setX( double x );
     //! Sets the y-component of the vector

@@ -44,24 +44,24 @@ class CORE_EXPORT QgsLabelingResults
      *
      * \since QGIS 3.20
      */
-    QList< QgsLabelPosition > allLabels() const;
+    [[nodiscard]] QList< QgsLabelPosition > allLabels() const;
 
     /**
      * Returns the details of any labels placed at the specified point (in map coordinates).
      */
-    QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
+    [[nodiscard]] QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
 
     /**
      * Returns the details of any labels placed within the specified rectangle (in map coordinates).
      */
-    QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
+    [[nodiscard]] QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 
     /**
      * Returns a list of all label positions sharing the same group ID (i.e. positions for individual characters in a curved label).
      *
      * \since QGIS 3.26
      */
-    QList<QgsLabelPosition> groupedLabelPositions( long long groupId ) const;
+    [[nodiscard]] QList<QgsLabelPosition> groupedLabelPositions( long long groupId ) const;
 
     /**
      * Returns a list of callouts with origins or destinations inside the given \a rectangle.
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsLabelingResults
      *
      * \since QGIS 3.20
      */
-    QList<QgsCalloutPosition> calloutsWithinRectangle( const QgsRectangle &rectangle ) const;
+    [[nodiscard]] QList<QgsCalloutPosition> calloutsWithinRectangle( const QgsRectangle &rectangle ) const;
 
     /**
      * Sets the map \a settings associated with the labeling run.

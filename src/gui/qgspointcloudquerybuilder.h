@@ -55,7 +55,7 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 
     void showEvent( QShowEvent *event ) override;
 
-    QString subsetString() const override { return mTxtSql->text(); }
+    [[nodiscard]] QString subsetString() const override { return mTxtSql->text(); }
     void setSubsetString( const QString &subsetString ) override { mTxtSql->setText( subsetString ); }
 
 

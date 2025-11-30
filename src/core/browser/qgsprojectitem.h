@@ -47,9 +47,9 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
     % End
 #endif
 
-    bool hasDragEnabled() const override { return true; }
+    [[nodiscard]] bool hasDragEnabled() const override { return true; }
 
-    QgsMimeDataUtils::UriList mimeUris() const override;
+    [[nodiscard]] QgsMimeDataUtils::UriList mimeUris() const override;
 
 };
 

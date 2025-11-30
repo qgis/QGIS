@@ -144,7 +144,7 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     *
     *  \param id                id of the expression as identification
     */
-    QgsStoredExpression storedExpression( const QString &id ) const;
+    [[nodiscard]] QgsStoredExpression storedExpression( const QString &id ) const;
 
     /**
     * Returns an expression according to the \a expression text
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsStoredExpressionManager : public QObject
     *  \param expression        id of the expression as identification
     *  \param tag               category of the expression use case - default all
     */
-    QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All ) const;
+    [[nodiscard]] QgsStoredExpression findStoredExpressionByExpression( const QString &expression, const  QgsStoredExpression::Category &tag = QgsStoredExpression::Category::All ) const;
 
     //! Clears list of stored expressions
     void clearStoredExpressions();

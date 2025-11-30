@@ -31,8 +31,8 @@ class QgsTiledSceneConnectionDialog : public QDialog, public Ui::QgsTiledSceneCo
 
     void setConnection( const QString &name, const QString &uri );
 
-    QString connectionUri() const;
-    QString connectionName() const;
+    [[nodiscard]] QString connectionUri() const;
+    [[nodiscard]] QString connectionName() const;
 
     void accept() override;
 

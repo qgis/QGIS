@@ -179,12 +179,12 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         /**
          * The first feature to start iterating.
          */
-        iterator begin() const;
+        [[nodiscard]] iterator begin() const;
 
         /**
          * One after the last feature to stop iterating.
          */
-        iterator end() const;
+        [[nodiscard]] iterator end() const;
 
 #endif
 

@@ -33,16 +33,16 @@ class SchemaModel : public QAbstractListModel
   public:
     SchemaModel( QObject *parent = nullptr );
 
-    int rowCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     //! Returns the unchecked schemas
-    QStringList uncheckedSchemas() const;
+    [[nodiscard]] QStringList uncheckedSchemas() const;
 
     //! Returns the database name represented by the model
-    QString dataBaseName() const;
+    [[nodiscard]] QString dataBaseName() const;
 
     //! Sets the database nale represented by the model
     void setDataBaseName( const QString &dataBaseName );
@@ -102,11 +102,11 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     QVariantMap mSchemaSettings; //store the schema settings edited during this QDialog life time
     SchemaModel mSchemaModel;
 
-    std::shared_ptr<QgsMssqlDatabase> getDatabase( const QString &name = QString() ) const;
+    [[nodiscard]] std::shared_ptr<QgsMssqlDatabase> getDatabase( const QString &name = QString() ) const;
 
-    bool testExtentInGeometryColumns() const;
+    [[nodiscard]] bool testExtentInGeometryColumns() const;
 
-    bool testPrimaryKeyInGeometryColumns() const;
+    [[nodiscard]] bool testPrimaryKeyInGeometryColumns() const;
 };
 
 #endif //  QGSMSSQLNEWCONNECTION_H

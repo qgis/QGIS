@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMbTiles
     bool open();
 
     //! Returns whether the MBTiles file is currently opened
-    bool isOpen() const;
+    [[nodiscard]] bool isOpen() const;
 
     /**
      * Creates a new MBTiles file and initializes it with metadata and tiles tables.
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsMbTiles
     bool create();
 
     //! Requests metadata value for the given key
-    QString metadataValue( const QString &key ) const;
+    [[nodiscard]] QString metadataValue( const QString &key ) const;
 
     /**
      * Sets metadata value for the given key. Does not overwrite existing entries.
@@ -64,13 +64,13 @@ class CORE_EXPORT QgsMbTiles
     void setMetadataValue( const QString &key, const QString &value ) const;
 
     //! Returns bounding box from metadata, given in WGS 84 (if available)
-    QgsRectangle extent() const;
+    [[nodiscard]] QgsRectangle extent() const;
 
     //! Returns raw tile data for given tile
-    QByteArray tileData( int z, int x, int y ) const;
+    [[nodiscard]] QByteArray tileData( int z, int x, int y ) const;
 
     //! Returns tile decoded as a raster image (if stored in a known format like JPG or PNG)
-    QImage tileDataAsImage( int z, int x, int y ) const;
+    [[nodiscard]] QImage tileDataAsImage( int z, int x, int y ) const;
 
     /**
      * Adds tile data for the given tile coordinates. Does not overwrite existing entries.

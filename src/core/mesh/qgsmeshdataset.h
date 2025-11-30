@@ -55,11 +55,11 @@ class CORE_EXPORT QgsMeshDatasetIndex
     //! Creates an index. -1 represents invalid group/dataset
     QgsMeshDatasetIndex( int group = -1, int dataset = -1 );
     //! Returns a group index
-    int group() const;
+    [[nodiscard]] int group() const;
     //! Returns a dataset index within group()
-    int dataset() const;
+    [[nodiscard]] int dataset() const;
     //! Returns whether index is valid, ie at least groups is set
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     bool operator == ( QgsMeshDatasetIndex other ) const;
     bool operator != ( QgsMeshDatasetIndex other ) const;
@@ -104,13 +104,13 @@ class CORE_EXPORT QgsMeshDatasetValue
     void setY( double y ) ;
 
     //! Returns magnitude of vector for vector data or scalar value for scalar data
-    double scalar() const;
+    [[nodiscard]] double scalar() const;
 
     //! Returns x value
-    double x() const;
+    [[nodiscard]] double x() const;
 
     //! Returns y value
-    double y() const;
+    [[nodiscard]] double y() const;
 
     bool operator==( QgsMeshDatasetValue other ) const;
 
@@ -156,25 +156,25 @@ class CORE_EXPORT QgsMeshDataBlock
     QgsMeshDataBlock( DataType type, int count );
 
     //! Type of data stored in the block
-    DataType type() const;
+    [[nodiscard]] DataType type() const;
 
     //! Number of items stored in the block
-    int count() const;
+    [[nodiscard]] int count() const;
 
     //! Whether the block is valid
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Returns a value represented by the index
      * For active flag the behavior is undefined
      */
-    QgsMeshDatasetValue value( int index ) const;
+    [[nodiscard]] QgsMeshDatasetValue value( int index ) const;
 
     /**
      * Returns a value for active flag by the index
      * For scalar and vector 2d the behavior is undefined
      */
-    bool active( int index ) const;
+    [[nodiscard]] bool active( int index ) const;
 
     /**
      * Sets active flag values.
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsMeshDataBlock
      *
      * \since QGIS 3.12
      */
-    QVector<int> active() const;
+    [[nodiscard]] QVector<int> active() const;
 
     /**
      * Returns buffer to the array with values
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsMeshDataBlock
      *
      * \since QGIS 3.12
      */
-    QVector<double> values() const;
+    [[nodiscard]] QVector<double> values() const;
 
     /**
      * Sets values
@@ -269,27 +269,27 @@ class CORE_EXPORT QgsMesh3DDataBlock
     void setValid( bool valid );
 
     //! Whether the block is valid
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     //! Whether we store vector values
-    bool isVector() const;
+    [[nodiscard]] bool isVector() const;
 
     //! Number of 2d faces for which the volume data is stored in the block
-    int count() const;
+    [[nodiscard]] int count() const;
 
     //! Index of the first volume stored in the buffer (absolute)
-    int firstVolumeIndex() const;
+    [[nodiscard]] int firstVolumeIndex() const;
 
     //! Index of the last volume stored in the buffer (absolute)
-    int lastVolumeIndex() const;
+    [[nodiscard]] int lastVolumeIndex() const;
 
     //! Returns number of volumes stored in the buffer
-    int volumesCount() const;
+    [[nodiscard]] int volumesCount() const;
 
     /**
      * Returns number of vertical level above 2d faces
      */
-    QVector<int> verticalLevelsCount() const;
+    [[nodiscard]] QVector<int> verticalLevelsCount() const;
 
     /**
      * Sets the vertical level counts
@@ -299,7 +299,7 @@ class CORE_EXPORT QgsMesh3DDataBlock
     /**
      * Returns the vertical levels height
      */
-    QVector<double> verticalLevels() const;
+    [[nodiscard]] QVector<double> verticalLevels() const;
 
     /**
      * Sets the vertical levels height
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsMesh3DDataBlock
     /**
      * Returns the indexing between faces and volumes
      */
-    QVector<int> faceToVolumeIndex() const;
+    [[nodiscard]] QVector<int> faceToVolumeIndex() const;
 
     /**
      * Sets the indexing between faces and volumes
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsMesh3DDataBlock
      *
      * For vector datasets the number of values is doubled (x1, y1, x2, y2, ... )
      */
-    QVector<double> values() const;
+    [[nodiscard]] QVector<double> values() const;
 
     /**
      * Returns the value at volume centers
@@ -329,7 +329,7 @@ class CORE_EXPORT QgsMesh3DDataBlock
      * \param volumeIndex volume index relative to firstVolumeIndex()
      * \returns value (scalar or vector)
      */
-    QgsMeshDatasetValue value( int volumeIndex ) const;
+    [[nodiscard]] QgsMeshDatasetValue value( int volumeIndex ) const;
 
     /**
      * Sets the values at volume centers
@@ -402,7 +402,7 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
     /**
      * Returns name of the dataset group
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Returns the name of the dataset's parent quantity, if available.
@@ -412,65 +412,65 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
      *
      * \since QGIS 3.38
      */
-    QString parentQuantityName() const;
+    [[nodiscard]] QString parentQuantityName() const;
 
     /**
      * Returns the uri of the source
      *
      * \since QGIS 3.16
      */
-    QString uri() const;
+    [[nodiscard]] QString uri() const;
 
     /**
      * Returns extra metadata options, for example description
      */
-    QMap<QString, QString> extraOptions() const;
+    [[nodiscard]] QMap<QString, QString> extraOptions() const;
 
     /**
      * \brief Returns whether dataset group has vector data
      */
-    bool isVector() const;
+    [[nodiscard]] bool isVector() const;
 
     /**
      * \brief Returns whether dataset group has scalar data
      */
-    bool isScalar() const;
+    [[nodiscard]] bool isScalar() const;
 
     /**
      * \brief Returns whether the dataset group is temporal (contains time-related dataset)
      */
-    bool isTemporal() const;
+    [[nodiscard]] bool isTemporal() const;
 
     /**
      * Returns whether dataset group data is defined on vertices or faces or volumes
      *
      * \since QGIS 3.12
      */
-    DataType dataType() const;
+    [[nodiscard]] DataType dataType() const;
 
     /**
      * \brief Returns minimum scalar value/vector magnitude present for whole dataset group
      */
-    double minimum() const;
+    [[nodiscard]] double minimum() const;
 
     /**
      * \brief Returns maximum scalar value/vector magnitude present for whole dataset group
      */
-    double maximum() const;
+    [[nodiscard]] double maximum() const;
 
     /**
      * Returns maximum number of vertical levels for 3d stacked meshes
      *
      * \since QGIS 3.12
      */
-    int maximumVerticalLevelsCount() const;
+    [[nodiscard]] int maximumVerticalLevelsCount() const;
 
     /**
      * Returns the reference time
      *
      * \since QGIS 3.12
      */
-    QDateTime referenceTime() const;
+    [[nodiscard]] QDateTime referenceTime() const;
 
   private:
     QString mName;
@@ -520,29 +520,29 @@ class CORE_EXPORT QgsMeshDatasetMetadata
     /**
      * Returns the time value for this dataset
      */
-    double time() const;
+    [[nodiscard]] double time() const;
 
     /**
      * Returns whether dataset is valid
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Returns minimum scalar value/vector magnitude present for the dataset
      */
-    double minimum() const;
+    [[nodiscard]] double minimum() const;
 
     /**
      * Returns maximum scalar value/vector magnitude present for the dataset
      */
-    double maximum() const;
+    [[nodiscard]] double maximum() const;
 
     /**
      * Returns maximum number of vertical levels for 3d stacked meshes
      *
      * \since QGIS 3.12
      */
-    int maximumVerticalLevelsCount() const;
+    [[nodiscard]] int maximumVerticalLevelsCount() const;
 
   private:
     double mTime = std::numeric_limits<double>::quiet_NaN();
@@ -569,22 +569,22 @@ class CORE_EXPORT QgsMeshDataset
     virtual ~QgsMeshDataset() = default;
 
     //! Returns the value with index \a valueIndex
-    virtual QgsMeshDatasetValue datasetValue( int valueIndex ) const = 0;
+    [[nodiscard]] virtual QgsMeshDatasetValue datasetValue( int valueIndex ) const = 0;
 
     //! Returns \a count values from \a valueIndex
-    virtual QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const = 0;
+    [[nodiscard]] virtual QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const = 0;
 
     //! Returns whether faces are active
-    virtual QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const = 0;
+    [[nodiscard]] virtual QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const = 0;
 
     //! Returns whether the face is active
-    virtual bool isActive( int faceIndex ) const = 0;
+    [[nodiscard]] virtual bool isActive( int faceIndex ) const = 0;
 
     //! Returns the metadata of the dataset
-    virtual QgsMeshDatasetMetadata metadata() const = 0;
+    [[nodiscard]] virtual QgsMeshDatasetMetadata metadata() const = 0;
 
     //! Returns the values count
-    virtual int valuesCount() const = 0;
+    [[nodiscard]] virtual int valuesCount() const = 0;
 };
 
 /**
@@ -725,12 +725,12 @@ class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
 
     QgsMeshMemoryDataset() = default;
 
-    QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
-    QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const override;
-    QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const override;
-    QgsMeshDatasetMetadata metadata() const override;
-    bool isActive( int faceIndex ) const override;
-    int valuesCount() const override;
+    [[nodiscard]] QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
+    [[nodiscard]] QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const override;
+    [[nodiscard]] QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const override;
+    [[nodiscard]] QgsMeshDatasetMetadata metadata() const override;
+    [[nodiscard]] bool isActive( int faceIndex ) const override;
+    [[nodiscard]] int valuesCount() const override;
 
     //! Calculates the minimum and the maximum of this group
     void calculateMinMax();
@@ -797,12 +797,12 @@ class QgsMeshVerticesElevationDataset: public QgsMeshDataset
     //! Constructor
     QgsMeshVerticesElevationDataset( QgsMesh *mesh );
 
-    QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
-    QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const override;;
-    QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const override;;
-    bool isActive( int ) const override {return true;};
-    QgsMeshDatasetMetadata metadata() const override;;
-    int valuesCount() const override;
+    [[nodiscard]] QgsMeshDatasetValue datasetValue( int valueIndex ) const override;
+    [[nodiscard]] QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const override;;
+    [[nodiscard]] QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const override;;
+    [[nodiscard]] bool isActive( int ) const override {return true;};
+    [[nodiscard]] QgsMeshDatasetMetadata metadata() const override;;
+    [[nodiscard]] int valuesCount() const override;
   private:
     QgsMesh *mMesh;
 };
@@ -903,7 +903,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      *
      * \return the cloned item
      */
-    QgsMeshDatasetGroupTreeItem *clone() const SIP_FACTORY;
+    [[nodiscard]] QgsMeshDatasetGroupTreeItem *clone() const SIP_FACTORY;
 
     /**
      * Appends a child \a item.
@@ -925,7 +925,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      * \param row the position of the child
      * \return the item at the position \a row
      */
-    QgsMeshDatasetGroupTreeItem *child( int row ) const;
+    [[nodiscard]] QgsMeshDatasetGroupTreeItem *child( int row ) const;
 
     /**
      * Returns the child with dataset group \a index
@@ -940,13 +940,13 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      * Returns the count of children
      * \return the children's count
      */
-    int childCount() const;
+    [[nodiscard]] int childCount() const;
 
     /**
     * Returns the total count of children, that is included deeper children and disabled items
     * \return the total children's count
     */
-    int totalChildCount() const;
+    [[nodiscard]] int totalChildCount() const;
 
     /**
      * Returns a list of enabled dataset group indexes, included deeper children
@@ -954,26 +954,26 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      *
      * \since QGIS 3.16.3
      */
-    QList<int> enabledDatasetGroupIndexes() const;
+    [[nodiscard]] QList<int> enabledDatasetGroupIndexes() const;
 
     /**
      * Returns the parent item, nullptr if it is root item
      * \return the parent item
      */
-    QgsMeshDatasetGroupTreeItem *parentItem() const;
+    [[nodiscard]] QgsMeshDatasetGroupTreeItem *parentItem() const;
 
     /**
      * Returns the position of the item in the parent
      * \return tow position of the item
      */
-    int row() const;
+    [[nodiscard]] int row() const;
 
     /**
      * Returns the name of the item
      * This name is the default name if the name has not been overridden (\see setName())
      * \return the name to display
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Overrides the default name with the name to display.
@@ -990,22 +990,22 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      *
      * \since QGIS 3.16
      */
-    QString providerName() const;
+    [[nodiscard]] QString providerName() const;
 
     /**
      * Return TRUE if the dataset group is vector.
      */
-    bool isVector() const;
+    [[nodiscard]] bool isVector() const;
 
     /**
      * Returns the dataset group index.
      */
-    int datasetGroupIndex() const;
+    [[nodiscard]] int datasetGroupIndex() const;
 
     /**
      * Returns TRUE if the item is enabled, i.e. if it is displayed in view.
      */
-    bool isEnabled() const;
+    [[nodiscard]] bool isEnabled() const;
 
     /**
      * Sets whether the item is enabled, that is if it is displayed in view
@@ -1016,14 +1016,14 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     /**
      * Returns the default name.
      */
-    QString defaultName() const;
+    [[nodiscard]] QString defaultName() const;
 
     /**
      * Returns the dataset group type.
      *
      * \since QGIS 3.16
      */
-    QgsMeshDatasetGroup::Type datasetGroupType() const;
+    [[nodiscard]] QgsMeshDatasetGroup::Type datasetGroupType() const;
 
     /**
      * Returns a list of group index corresponding to dataset group that depends on the dataset group represented by this item
@@ -1031,14 +1031,14 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
      * \return list of group index
      *
      */
-    QList<int> groupIndexDependencies() const;
+    [[nodiscard]] QList<int> groupIndexDependencies() const;
 
     /**
      * Returns description about the dataset group (URI, formula,...)
      *
      * \since QGIS 3.16
      */
-    QString description() const;
+    [[nodiscard]] QString description() const;
 
     /**
      * Set parameters of the item in accordance with the dataset group
@@ -1085,8 +1085,8 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     QList<int> mDatasetGroupDependencies;
     QList<int> mDatasetGroupDependentOn;
 
-    QgsMeshDatasetGroupTreeItem *searchItemBySourceName( const QString &sourceName ) const;
-    QgsMeshDatasetGroupTreeItem *rootItem() const;
+    [[nodiscard]] QgsMeshDatasetGroupTreeItem *searchItemBySourceName( const QString &sourceName ) const;
+    [[nodiscard]] QgsMeshDatasetGroupTreeItem *rootItem() const;
     void freeAsDependency(); // cppcheck-suppress functionConst
     void freeFromDependencies(); // cppcheck-suppress functionConst
 };

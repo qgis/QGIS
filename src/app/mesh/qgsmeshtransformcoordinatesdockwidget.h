@@ -37,16 +37,16 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget : public QgsDockWidget, p
     //! Constructor
     QgsMeshTransformCoordinatesDockWidget( QWidget *parent );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
     //! Returns the vertex with index \a vertexIndex after calculation
     QgsMeshVertex transformedVertex( int vertexIndex );
 
     //! Returns whether the result of transformation is a valid mesh
-    bool isResultValid() const;
+    [[nodiscard]] bool isResultValid() const;
 
     //! Returns whether the calculation has been done
-    bool isCalculated() const;
+    [[nodiscard]] bool isCalculated() const;
 
   signals:
     //! Emitted when the calculation of the transform is done

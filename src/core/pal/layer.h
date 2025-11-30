@@ -89,13 +89,13 @@ namespace pal
       /**
        * Returns the number of features in layer.
        */
-      int featureCount() const { return mHashtable.size(); }
+      [[nodiscard]] int featureCount() const { return mHashtable.size(); }
 
       /**
        * Returns the maximum number of point label candidates to generate for features
        * in this layer.
        */
-      std::size_t maximumPointLabelCandidates() const
+      [[nodiscard]] std::size_t maximumPointLabelCandidates() const
       {
         // when an extreme number of features exist in the layer, we limit the number of candidates
         // to avoid the engine processing endlessly...
@@ -116,7 +116,7 @@ namespace pal
        * Returns the maximum number of line label candidates to generate for features
        * in this layer.
        */
-      std::size_t maximumLineLabelCandidates() const
+      [[nodiscard]] std::size_t maximumLineLabelCandidates() const
       {
         // when an extreme number of features exist in the layer, we limit the number of candidates
         // to avoid the engine processing endlessly...
@@ -137,7 +137,7 @@ namespace pal
        * Returns the maximum number of polygon label candidates to generate for features
        * in this layer.
        */
-      std::size_t maximumPolygonLabelCandidates() const
+      [[nodiscard]] std::size_t maximumPolygonLabelCandidates() const
       {
         // when an extreme number of features exist in the layer, we limit the number of candidates
         // to avoid the engine processing endlessly...
@@ -155,23 +155,23 @@ namespace pal
       }
 
       //! Returns pointer to the associated provider
-      QgsAbstractLabelProvider *provider() const { return mProvider; }
+      [[nodiscard]] QgsAbstractLabelProvider *provider() const { return mProvider; }
 
       /**
        * Returns the layer's name.
        */
-      QString name() const { return mName; }
+      [[nodiscard]] QString name() const { return mName; }
 
       /**
        * Returns the layer's arrangement policy.
        * \see setArrangement
        */
-      Qgis::LabelPlacement arrangement() const { return mArrangement; }
+      [[nodiscard]] Qgis::LabelPlacement arrangement() const { return mArrangement; }
 
       /**
        * Returns TRUE if the layer has curved labels
        */
-      bool isCurved() const { return mArrangement == Qgis::LabelPlacement::Curved || mArrangement == Qgis::LabelPlacement::PerimeterCurved; }
+      [[nodiscard]] bool isCurved() const { return mArrangement == Qgis::LabelPlacement::Curved || mArrangement == Qgis::LabelPlacement::PerimeterCurved; }
 
       /**
        * Sets the layer's arrangement policy.
@@ -196,7 +196,7 @@ namespace pal
        * Returns whether the layer is currently active.
        * \see setActive
        */
-      bool active() const { return mActive; }
+      [[nodiscard]] bool active() const { return mActive; }
 
       /**
        * Sets whether the layer will be labeled.
@@ -211,14 +211,14 @@ namespace pal
        * Returns whether the layer will be labeled or not.
        * \see setLabelLayer
        */
-      bool labelLayer() const { return mLabelLayer; }
+      [[nodiscard]] bool labelLayer() const { return mLabelLayer; }
 
       /**
        * Returns the obstacle type, which controls how features within the layer
        * act as obstacles for labels.
        * \see setObstacleType
        */
-      QgsLabelObstacleSettings::ObstacleType obstacleType() const { return mObstacleType; }
+      [[nodiscard]] QgsLabelObstacleSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
       /**
        * Sets the obstacle type, which controls how features within the layer
@@ -241,7 +241,7 @@ namespace pal
        * 1 to lowest priority.
        * \see setPriority
        */
-      double priority() const { return mDefaultPriority; }
+      [[nodiscard]] double priority() const { return mDefaultPriority; }
 
       /**
        * Sets whether connected lines should be merged before labeling
@@ -254,7 +254,7 @@ namespace pal
        * Returns whether connected lines will be merged before labeling.
        * \see setMergeConnectedLines
        */
-      bool mergeConnectedLines() const { return mMergeLines; }
+      [[nodiscard]] bool mergeConnectedLines() const { return mMergeLines; }
 
       /**
        * Sets how upside down labels will be handled within the layer.
@@ -267,7 +267,7 @@ namespace pal
        * Returns how upside down labels are handled within the layer.
        * \see setUpsidedownLabels
        */
-      Qgis::UpsideDownLabelHandling upsidedownLabels() const { return mUpsidedownLabels; }
+      [[nodiscard]] Qgis::UpsideDownLabelHandling upsidedownLabels() const { return mUpsidedownLabels; }
 
       /**
        * Sets whether labels placed at the centroid of features within the layer
@@ -283,7 +283,7 @@ namespace pal
        * are forced to be placed inside the feature's geometry.
        * \see setCentroidInside
        */
-      bool centroidInside() const { return mCentroidInside; }
+      [[nodiscard]] bool centroidInside() const { return mCentroidInside; }
 
       /**
        * Register a feature in the layer.
@@ -304,7 +304,7 @@ namespace pal
        * which have been joined as a result of joinConnectedFeatures()
        * \returns connected feature ID, or -1 if feature was not joined
        */
-      int connectedFeatureId( QgsFeatureId featureId ) const;
+      [[nodiscard]] int connectedFeatureId( QgsFeatureId featureId ) const;
 
       //! Chop layer features at the repeat distance
       void chopFeaturesAtRepeatDistance();

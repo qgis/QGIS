@@ -44,12 +44,12 @@ class CORE_EXPORT QgsVectorTileRendererData
     {}
 
     //! Returns coordinates of the tile
-    QgsTileXYZ id() const { return mId; }
+    [[nodiscard]] QgsTileXYZ id() const { return mId; }
 
     //! Sets polygon of the tile
     void setTilePolygon( QPolygon polygon ) { mTilePolygon = polygon; }
     //! Returns polygon (made out of four corners of the tile) in screen coordinates calculated from render context
-    QPolygon tilePolygon() const { return mTilePolygon; }
+    [[nodiscard]] QPolygon tilePolygon() const { return mTilePolygon; }
 
     /**
      * Sets the zoom level corresponding to the target render.
@@ -71,21 +71,21 @@ class CORE_EXPORT QgsVectorTileRendererData
      * \see setRenderZoomLevel()
      * \since QGIS 3.32
      */
-    int renderZoomLevel() const { return mRenderZoomLevel; }
+    [[nodiscard]] int renderZoomLevel() const { return mRenderZoomLevel; }
 
     //! Sets per-layer fields
     void setFields( const QMap<QString, QgsFields> &fields ) { mFields = fields; }
     //! Returns per-layer fields
-    QMap<QString, QgsFields> fields() const { return mFields; }
+    [[nodiscard]] QMap<QString, QgsFields> fields() const { return mFields; }
 
     //! Sets features of the tile
     void setFeatures( const QgsVectorTileFeatures &features ) SIP_SKIP { mFeatures = features; }
     //! Returns features of the tile grouped by sub-layer names
-    QgsVectorTileFeatures features() const SIP_SKIP { return mFeatures; }
+    [[nodiscard]] QgsVectorTileFeatures features() const SIP_SKIP { return mFeatures; }
     //! Returns list of layer names present in the tile
-    QStringList layers() const { return mFeatures.keys(); }
+    [[nodiscard]] QStringList layers() const { return mFeatures.keys(); }
     //! Returns list of all features within a single sub-layer
-    QVector<QgsFeature> layerFeatures( const QString &layerName ) const { return mFeatures[layerName]; }
+    [[nodiscard]] QVector<QgsFeature> layerFeatures( const QString &layerName ) const { return mFeatures[layerName]; }
 
   private:
     //! Position of the tile in the tile matrix set
@@ -136,10 +136,10 @@ class CORE_EXPORT QgsVectorTileRenderer
     virtual ~QgsVectorTileRenderer() = default;
 
     //! Returns unique type name of the renderer implementation
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     //! Returns a clone of the renderer
-    virtual QgsVectorTileRenderer *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsVectorTileRenderer *clone() const = 0 SIP_FACTORY;
 
     //! Initializes rendering. It should be paired with a stopRender() call.
     virtual void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange ) = 0;

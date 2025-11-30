@@ -57,7 +57,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * \brief The icon that will be shown in the UI for the panel.
      * \returns A QIcon for the panel icon.
      */
-    virtual QIcon icon() const { return mIcon; }
+    [[nodiscard]] virtual QIcon icon() const { return mIcon; }
 
     /**
      * Set the icon for the factory object.
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * \returns Title of the panel
      * \note This may or may not be shown to the user.
      */
-    virtual QString title() const { return mTitle; }
+    [[nodiscard]] virtual QString title() const { return mTitle; }
 
     /**
      * Set the title for the interface
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * The default implementation returns FALSE.
      * \returns TRUE if supported
      */
-    virtual bool supportsStyleDock() const { return false; }
+    [[nodiscard]] virtual bool supportsStyleDock() const { return false; }
 
     /**
      * Set support flag for style dock
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * The default implementation returns FALSE.
      * \returns TRUE if supported
      */
-    virtual bool supportLayerPropertiesDialog() const { return false; }
+    [[nodiscard]] virtual bool supportLayerPropertiesDialog() const { return false; }
 
     /**
      * Returns a tab name hinting at where this page should be inserted into the
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      *
      * \since QGIS 3.14
      */
-    virtual QString layerPropertiesPagePositionHint() const;
+    [[nodiscard]] virtual QString layerPropertiesPagePositionHint() const;
 
     /**
      * Set support flag for style dock
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      *
      * \since QGIS 3.20
      */
-    virtual ParentPage parentPage() const;
+    [[nodiscard]] virtual ParentPage parentPage() const;
 
     /**
      * \brief Factory function to create the widget on demand as needed by the dock.

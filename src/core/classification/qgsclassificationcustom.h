@@ -28,11 +28,11 @@ class CORE_EXPORT QgsClassificationCustom : public QgsClassificationMethod
   public:
     QgsClassificationCustom();
 
-    std::unique_ptr< QgsClassificationMethod > clone() const override;
-    QString name() const override;
-    QString id() const override;
+    [[nodiscard]] std::unique_ptr< QgsClassificationMethod > clone() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString id() const override;
 
-    bool valuesRequired() const override {return false;}
+    [[nodiscard]] bool valuesRequired() const override {return false;}
 
     static const QString METHOD_ID;
 

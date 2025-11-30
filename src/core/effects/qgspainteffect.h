@@ -118,20 +118,20 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * Returns the effect type.
      * \returns unique string representation of the effect type
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     /**
      * Duplicates an effect by creating a deep copy of the effect
      * \returns clone of paint effect
      */
-    virtual QgsPaintEffect *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsPaintEffect *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns flags which specify how the paint effect behaves.
      *
      * \since QGIS 3.44
      */
-    virtual Qgis::PaintEffectFlags flags() const;
+    [[nodiscard]] virtual Qgis::PaintEffectFlags flags() const;
 
     /**
      * Returns the properties describing the paint effect encoded in a
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * \see readProperties
      * \see saveProperties
      */
-    virtual QVariantMap properties() const = 0;
+    [[nodiscard]] virtual QVariantMap properties() const = 0;
 
     /**
      * Reads a string map of an effect's properties and restores the effect
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * \returns TRUE if effect is enabled
      * \see setEnabled
      */
-    bool enabled() const { return mEnabled; }
+    [[nodiscard]] bool enabled() const { return mEnabled; }
 
     /**
      * Sets whether the effect is enabled
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * \returns draw mode for effect
      * \see setDrawMode
      */
-    DrawMode drawMode() const { return mDrawMode; }
+    [[nodiscard]] DrawMode drawMode() const { return mDrawMode; }
 
     /**
      * Sets the draw mode for the effect. This property only has an
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * \see drawSource
      * \see sourceAsImage
      */
-    const QPicture &source() const { return mPicture; }
+    [[nodiscard]] const QPicture &source() const { return mPicture; }
 
     /**
      * Returns the source QPicture rendered to a new QImage. The draw() member can
@@ -278,7 +278,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * \returns point offset for image top left corner
      * \see sourceAsImage
      */
-    QPointF imageOffset( const QgsRenderContext &context ) const;
+    [[nodiscard]] QPointF imageOffset( const QgsRenderContext &context ) const;
 
     /**
      * Returns the bounding rect required for drawing the effect. This method can be used
@@ -289,7 +289,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      * \returns modified bounding rect
      * \see sourceAsImage
      */
-    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
+    [[nodiscard]] virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
 
     /**
      * Applies a workaround to a QPainter to avoid an issue with incorrect scaling
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
     std::unique_ptr< QPainter > mEffectPainter;
     std::unique_ptr< QPicture > mTempPicture;
 
-    QRectF imageBoundingRect( const QgsRenderContext &context ) const;
+    [[nodiscard]] QRectF imageBoundingRect( const QgsRenderContext &context ) const;
 
     friend class QgsEffectStack;
 
@@ -343,10 +343,10 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      */
     static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
-    Qgis::PaintEffectFlags flags() const override;
-    QString type() const override { return QStringLiteral( "drawSource" ); }
-    QgsDrawSourceEffect *clone() const override SIP_FACTORY;
-    QVariantMap properties() const override;
+    [[nodiscard]] Qgis::PaintEffectFlags flags() const override;
+    [[nodiscard]] QString type() const override { return QStringLiteral( "drawSource" ); }
+    [[nodiscard]] QgsDrawSourceEffect *clone() const override SIP_FACTORY;
+    [[nodiscard]] QVariantMap properties() const override;
     void readProperties( const QVariantMap &props ) override;
 
     /**
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * and 1 is fully opaque
      * \see setOpacity()
      */
-    double opacity() const { return mOpacity; }
+    [[nodiscard]] double opacity() const { return mOpacity; }
 
     /**
      * Sets the blend mode for the effect
@@ -379,7 +379,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * paint device
      * \see setBlendMode
      */
-    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+    [[nodiscard]] QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
   protected:
 

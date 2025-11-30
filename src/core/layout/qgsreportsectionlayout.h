@@ -40,9 +40,9 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
      */
     QgsReportSectionLayout( QgsAbstractReportSection *parentSection = nullptr );
 
-    QString type() const override { return QStringLiteral( "SectionLayout" ); }
-    QString description() const override { return QObject::tr( "Section" ); }
-    QIcon icon() const override;
+    [[nodiscard]] QString type() const override { return QStringLiteral( "SectionLayout" ); }
+    [[nodiscard]] QString description() const override { return QObject::tr( "Section" ); }
+    [[nodiscard]] QIcon icon() const override;
 
     /**
      * Returns the body layout for the section.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
      * \see body()
      * \see setBody()
      */
-    bool bodyEnabled() const { return mBodyEnabled; }
+    [[nodiscard]] bool bodyEnabled() const { return mBodyEnabled; }
 
     /**
      * Sets whether the body for the section is \a enabled.
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
      */
     void setBodyEnabled( bool enabled ) { mBodyEnabled = enabled; }
 
-    QgsReportSectionLayout *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsReportSectionLayout *clone() const override SIP_FACTORY;
     bool beginRender() override;
     QgsLayout *nextBody( bool &ok ) override;
     void reloadSettings() override;

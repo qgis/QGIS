@@ -75,7 +75,7 @@ class CORE_EXPORT QgsLayoutManagerModel : public QgsProjectStoredObjectManagerMo
      * Returns the layout at the corresponding \a index.
      * \see indexFromLayout()
      */
-    QgsMasterLayoutInterface *layoutFromIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsMasterLayoutInterface *layoutFromIndex( const QModelIndex &index ) const;
 
     /**
      * Returns the model index corresponding to a \a layout.
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsLayoutManagerModel : public QgsProjectStoredObjectManagerMo
      * Returns TRUE if the model allows the empty layout ("not set") choice.
      * \see setAllowEmptyLayout()
      */
-    bool allowEmptyLayout() const { return allowEmptyObject(); }
+    [[nodiscard]] bool allowEmptyLayout() const { return allowEmptyObject(); }
 
 };
 
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsLayoutManagerProxyModel : public QgsProjectStoredObjectMana
      *
      * \see setFilters()
      */
-    QgsLayoutManagerProxyModel::Filters filters() const;
+    [[nodiscard]] QgsLayoutManagerProxyModel::Filters filters() const;
 
     /**
      * Sets the current \a filters used for filtering available layouts.
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsLayoutManagerProxyModel : public QgsProjectStoredObjectMana
 
   protected:
 
-    bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRowInternal( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
 

@@ -103,7 +103,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void addPluginMetadata( const QString &key, const QMap<QString, QString> &metadata );
 
     //! Returns the metadata of given plugin
-    const QMap<QString, QString> *pluginMetadata( const QString &key ) const;
+    [[nodiscard]] const QMap<QString, QString> *pluginMetadata( const QString &key ) const;
 
     //! Select one of the vertical tabs programmatically
     void selectTabItem( int idx );

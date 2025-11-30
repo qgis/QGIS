@@ -104,7 +104,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * \see setItemsCanBeReordered()
      * \since QGIS 3.14
      */
-    bool itemsCanBeReordered() const;
+    [[nodiscard]] bool itemsCanBeReordered() const;
 
     /**
      * \brief checkAll changes the checkstate for all the layers
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * Returns TRUE if the model allows the empty layer ("not set") choice.
      * \see setAllowEmptyLayer()
      */
-    bool allowEmptyLayer() const { return mAllowEmpty; }
+    [[nodiscard]] bool allowEmptyLayer() const { return mAllowEmpty; }
 
     /**
      * Sets whether the CRS of layers is also included in the model's display role.
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * Returns TRUE if the model includes layer's CRS in the display role.
      * \see setShowCrs()
      */
-    bool showCrs() const { return mShowCrs; }
+    [[nodiscard]] bool showCrs() const { return mShowCrs; }
 
     /**
      * \brief Returns the list of layers which are checked (or unchecked)
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setLayersChecked( const QList< QgsMapLayer * > &layers );
 
     //! Returns whether the items can be checked or not
-    bool itemsCheckable() const { return mItemCheckable; }
+    [[nodiscard]] bool itemsCheckable() const { return mItemCheckable; }
 
     /**
      * \brief indexFromLayer returns the model index for a given layer
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * Returns the map layer corresponding to the specified \a index.
      * \see indexFromLayer()
      */
-    QgsMapLayer *layerFromIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsMapLayer *layerFromIndex( const QModelIndex &index ) const;
 
     /**
      * Sets a list of additional (non map layer) items to include at the end of the model.
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * Returns the list of additional (non map layer) items included at the end of the model.
      * \see setAdditionalItems()
      */
-    QStringList additionalItems() const { return mAdditionalItems; }
+    [[nodiscard]] QStringList additionalItems() const { return mAdditionalItems; }
 
     /**
      * Sets a list of additional \a layers to include in the model.
@@ -194,30 +194,30 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * \see setAdditionalLayers()
      * \since QGIS 3.22
      */
-    QList< QgsMapLayer * > additionalLayers() const;
+    [[nodiscard]] QList< QgsMapLayer * > additionalLayers() const;
 
     // QAbstractItemModel interface
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    QStringList mimeTypes() const override;
+    [[nodiscard]] QStringList mimeTypes() const override;
     bool canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
-    Qt::DropActions supportedDropActions() const override;
+    [[nodiscard]] Qt::DropActions supportedDropActions() const override;
 
     /**
      * Returns strings for all roles supported by this model.
      *
      * \note Available only with Qt5 (Python and c++)
      */
-    QHash<int, QByteArray> roleNames() const override SIP_SKIP;
+    [[nodiscard]] QHash<int, QByteArray> roleNames() const override SIP_SKIP;
 
     /**
      * Returns the icon corresponding to a specified map \a layer.

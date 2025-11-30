@@ -36,11 +36,11 @@ class QgsAuthApiHeaderMethod : public QgsAuthMethod
     explicit QgsAuthApiHeaderMethod();
 
     // QgsAuthMethod interface
-    QString key() const override;
+    [[nodiscard]] QString key() const override;
 
-    QString description() const override;
+    [[nodiscard]] QString description() const override;
 
-    QString displayDescription() const override;
+    [[nodiscard]] QString displayDescription() const override;
 
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
@@ -68,7 +68,7 @@ class QgsAuthApiHeaderMethodMetadata : public QgsAuthMethodMetadata
     QgsAuthApiHeaderMethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthApiHeaderMethod::AUTH_METHOD_KEY, QgsAuthApiHeaderMethod::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthApiHeaderMethod *createAuthMethod() const override { return new QgsAuthApiHeaderMethod; }
+    [[nodiscard]] QgsAuthApiHeaderMethod *createAuthMethod() const override { return new QgsAuthApiHeaderMethod; }
     //QStringList supportedDataProviders() const override;
 };
 

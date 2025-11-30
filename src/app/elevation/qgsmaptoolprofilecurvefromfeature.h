@@ -27,7 +27,7 @@ class QgsMapToolProfileCurveFromFeature : public QgsMapTool
 
   public:
     QgsMapToolProfileCurveFromFeature( QgsMapCanvas *canvas );
-    Flags flags() const override;
+    [[nodiscard]] Flags flags() const override;
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
   signals:

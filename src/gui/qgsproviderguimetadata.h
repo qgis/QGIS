@@ -94,7 +94,7 @@ class GUI_EXPORT QgsProviderGuiMetadata
     virtual QList<const QgsMapLayerConfigWidgetFactory *> mapLayerConfigWidgetFactories();
 
     //! Returns unique provider key
-    QString key() const;
+    [[nodiscard]] QString key() const;
 
   private:
     //! unique key for data provider

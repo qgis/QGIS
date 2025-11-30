@@ -141,9 +141,9 @@ class QgsOapifProviderMetadata final : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsOapifProviderMetadata();
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsOapifProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif /* QGSOAPIFPROVIDER_H */

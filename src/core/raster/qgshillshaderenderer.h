@@ -45,8 +45,8 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      */
     QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAltitude );
 
-    QgsHillshadeRenderer *clone() const override SIP_FACTORY;
-    Qgis::RasterRendererFlags flags() const override;
+    [[nodiscard]] QgsHillshadeRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::RasterRendererFlags flags() const override;
 
     /**
      * \brief Factory method to create a new renderer
@@ -60,8 +60,8 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
-    QList<int> usesBands() const override;
-    int inputBand() const override;
+    [[nodiscard]] QList<int> usesBands() const override;
+    [[nodiscard]] int inputBand() const override;
 
     Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
     bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
@@ -86,25 +86,25 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      * Returns the direction of the light over the raster between 0-360.
      * \see setAzimuth()
      */
-    double azimuth() const { return mLightAzimuth; }
+    [[nodiscard]] double azimuth() const { return mLightAzimuth; }
 
     /**
      * Returns the angle of the light source over the raster.
      * \see setAltitude()
      */
-    double altitude()  const { return mLightAngle; }
+    [[nodiscard]] double altitude()  const { return mLightAngle; }
 
     /**
      * Returns the Z scaling factor.
      * \see setZFactor()
      */
-    double zFactor()  const { return mZFactor; }
+    [[nodiscard]] double zFactor()  const { return mZFactor; }
 
     /**
      * Returns TRUE if the renderer is using multi-directional hillshading.
      * \see setMultiDirectional()
      */
-    bool multiDirectional() const { return mMultiDirectional; }
+    [[nodiscard]] bool multiDirectional() const { return mMultiDirectional; }
 
     /**
      * \brief Set the azimuth of the light source.

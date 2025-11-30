@@ -56,21 +56,21 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     //! Constructor for QgsRasterLayerSaveAsDialog
     QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer, QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
-    Mode mode() const;
-    int nColumns() const;
-    int nRows() const;
-    double xResolution() const;
-    double yResolution() const;
-    int maximumTileSizeX() const;
-    int maximumTileSizeY() const;
-    bool tileMode() const;
+    [[nodiscard]] Mode mode() const;
+    [[nodiscard]] int nColumns() const;
+    [[nodiscard]] int nRows() const;
+    [[nodiscard]] double xResolution() const;
+    [[nodiscard]] double yResolution() const;
+    [[nodiscard]] int maximumTileSizeX() const;
+    [[nodiscard]] int maximumTileSizeY() const;
+    [[nodiscard]] bool tileMode() const;
 
     /**
      * Returns TRUE if the "add to canvas" checkbox is checked.
      *
      * \see setAddToCanvas()
      */
-    bool addToCanvas() const;
+    [[nodiscard]] bool addToCanvas() const;
 
     /**
      * Sets whether the  "add to canvas" checkbox should be \a checked.
@@ -80,14 +80,14 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
      */
     void setAddToCanvas( bool checked );
 
-    QString outputFileName() const;
+    [[nodiscard]] QString outputFileName() const;
 
     /**
      * Name of the output layer within GeoPackage file
      * \since QGIS 3.4
      */
-    QString outputLayerName() const;
-    QString outputFormat() const;
+    [[nodiscard]] QString outputLayerName() const;
+    [[nodiscard]] QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs();
 
     /**
@@ -99,25 +99,25 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
      * Raster creation options set for the output layer.
      * \since QGIS 3.44
      */
-    QStringList creationOptions() const;
-    QgsRectangle outputRectangle() const;
-    QgsRasterRangeList noData() const;
+    [[nodiscard]] QStringList creationOptions() const;
+    [[nodiscard]] QgsRectangle outputRectangle() const;
+    [[nodiscard]] QgsRasterRangeList noData() const;
 
-    QList<int> pyramidsList() const;
+    [[nodiscard]] QList<int> pyramidsList() const;
 
     /**
      * Returns the pyramid building option.
      */
-    Qgis::RasterBuildPyramidOption buildPyramidsFlag() const;
+    [[nodiscard]] Qgis::RasterBuildPyramidOption buildPyramidsFlag() const;
 
-    QString pyramidsResamplingMethod() const { return mPyramidsOptionsWidget->resamplingMethod(); }
+    [[nodiscard]] QString pyramidsResamplingMethod() const { return mPyramidsOptionsWidget->resamplingMethod(); }
 
     /**
      * Returns the selected pyramid format.
      */
-    Qgis::RasterPyramidFormat pyramidsFormat() const { return mPyramidsOptionsWidget->pyramidsFormat(); }
+    [[nodiscard]] Qgis::RasterPyramidFormat pyramidsFormat() const { return mPyramidsOptionsWidget->pyramidsFormat(); }
 
-    QStringList pyramidsConfigOptions() const { return mPyramidsOptionsWidget->configOptions(); }
+    [[nodiscard]] QStringList pyramidsConfigOptions() const { return mPyramidsOptionsWidget->configOptions(); }
 
     void hideFormat();
     void hideOutput();
@@ -187,11 +187,11 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
 
     void addNoDataRow( double min, double max );
     void setNoDataToEdited( int row );
-    double noDataCellValue( int row, int column ) const;
+    [[nodiscard]] double noDataCellValue( int row, int column ) const;
     void adjustNoDataCellWidth( int row, int column );
-    bool validate() const;
+    [[nodiscard]] bool validate() const;
     // Returns true if the output layer already exists.
-    bool outputLayerExists() const;
+    [[nodiscard]] bool outputLayerExists() const;
 
     void insertAvailableOutputFormats();
 

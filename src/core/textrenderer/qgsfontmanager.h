@@ -60,29 +60,29 @@ class CORE_EXPORT QgsFontDownloadDetails
     /**
      * Returns TRUE if the details represent a valid downloadable font.
      */
-    bool isValid() const { return !mFontUrls.empty(); }
+    [[nodiscard]] bool isValid() const { return !mFontUrls.empty(); }
 
     /**
      * Returns the font family.
      *
      * \see standardizedFamily()
      */
-    QString family() const { return mFamily; }
+    [[nodiscard]] QString family() const { return mFamily; }
 
     /**
      * Returns the cleaned, standardized font family name.
      */
-    QString standardizedFamily() const { return mStandardizedFamily; }
+    [[nodiscard]] QString standardizedFamily() const { return mStandardizedFamily; }
 
     /**
      * Returns a list of download URLs for all files associated with the font family.
      */
-    QStringList fontUrls() const { return mFontUrls; }
+    [[nodiscard]] QStringList fontUrls() const { return mFontUrls; }
 
     /**
      * Returns the optional URL for downloading the font license details.
      */
-    QString licenseUrl() const { return mLicenseUrl; }
+    [[nodiscard]] QString licenseUrl() const { return mLicenseUrl; }
 
   private:
 

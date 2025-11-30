@@ -40,11 +40,11 @@ class SERVER_EXPORT QgsDimensionFilter : public QgsFeatureFilterProvider
      */
     QgsDimensionFilter( const QHash<const QgsVectorLayer *, QStringList> dimensionFilter );
 
-    bool isFilterThreadSafe() const override { return false; }
+    [[nodiscard]] bool isFilterThreadSafe() const override { return false; }
 
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
-    QgsDimensionFilter *clone() const override;
+    [[nodiscard]] QgsDimensionFilter *clone() const override;
 
   private:
     QHash<const QgsVectorLayer *, QStringList> mDimensionFilter;

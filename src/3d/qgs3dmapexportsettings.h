@@ -37,21 +37,21 @@ class _3D_EXPORT Qgs3DMapExportSettings
     ~Qgs3DMapExportSettings();
 
     //! Returns the scene name
-    QString sceneName() const { return mSceneName; }
+    [[nodiscard]] QString sceneName() const { return mSceneName; }
     //! Returns the scene folder path
-    QString sceneFolderPath() const { return mSceneFolderPath; }
+    [[nodiscard]] QString sceneFolderPath() const { return mSceneFolderPath; }
     //! Returns the terrain resolution
-    int terrrainResolution() const { return mTerrainResolution; }
+    [[nodiscard]] int terrrainResolution() const { return mTerrainResolution; }
     //! Returns whether triangles edges will look smooth
-    bool smoothEdges() const { return mSmoothEdges; }
+    [[nodiscard]] bool smoothEdges() const { return mSmoothEdges; }
     //! Returns whether normals will be exported
-    bool exportNormals() const { return mExportNormals; }
+    [[nodiscard]] bool exportNormals() const { return mExportNormals; }
     //! Returns whether textures will be exported
-    bool exportTextures() const { return mExportTextures; }
+    [[nodiscard]] bool exportTextures() const { return mExportTextures; }
     //! Returns the terrain texture resolution
-    int terrainTextureResolution() const { return mTerrainTextureResolution; }
+    [[nodiscard]] int terrainTextureResolution() const { return mTerrainTextureResolution; }
     //! Returns the scale of the exported model
-    float scale() const { return mScale; }
+    [[nodiscard]] float scale() const { return mScale; }
 
     //! Sets the scene name
     void setSceneName( const QString &sceneName ) { mSceneName = sceneName; }

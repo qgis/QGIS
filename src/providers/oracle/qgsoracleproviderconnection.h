@@ -48,25 +48,25 @@ class QgsOracleProviderConnection : public QgsAbstractDatabaseProviderConnection
 
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
     QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
-    QString tableUri( const QString &schema, const QString &name ) const override;
+    [[nodiscard]] QString tableUri( const QString &schema, const QString &name ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
 
     QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
     void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const override;
-    bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
+    [[nodiscard]] bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
-    QStringList schemas() const override;
+    [[nodiscard]] QStringList schemas() const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema, const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
-    QIcon icon() const override;
-    QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
-    QString defaultGeometryColumnName() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
+    [[nodiscard]] QString defaultGeometryColumnName() const override;
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
-    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
-    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
-    QString defaultPrimaryKeyColumnName() const override;
+    [[nodiscard]] QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
+    [[nodiscard]] Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
+    [[nodiscard]] QString defaultPrimaryKeyColumnName() const override;
 
   private:
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;

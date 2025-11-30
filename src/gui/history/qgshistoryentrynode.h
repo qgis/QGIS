@@ -57,12 +57,12 @@ class GUI_EXPORT QgsHistoryEntryNode
     /**
      * Returns the node's data for the specified model \a role.
      */
-    virtual QVariant data( int role = Qt::DisplayRole ) const = 0;
+    [[nodiscard]] virtual QVariant data( int role = Qt::DisplayRole ) const = 0;
 
     /**
      * Returns the number of child nodes owned by this node.
      */
-    virtual int childCount() const;
+    [[nodiscard]] virtual int childCount() const;
 
     /**
      * Returns a HTML formatted text string which should be shown to a user when
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsHistoryEntryNode
      *
      * \see createWidget()
      */
-    virtual QString html( const QgsHistoryWidgetContext &context ) const;
+    [[nodiscard]] virtual QString html( const QgsHistoryWidgetContext &context ) const;
 
     /**
      * Returns a new widget which should be shown to users when selecting the node.
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsHistoryEntryNode
      * The default implementation returns TRUE if the string is contained
      * within the node's DisplayRole.
      */
-    virtual bool matchesString( const QString &searchString ) const;
+    [[nodiscard]] virtual bool matchesString( const QString &searchString ) const;
 
   private:
 #ifdef SIP_RUN
@@ -170,7 +170,7 @@ class GUI_EXPORT QgsHistoryEntryGroup : public QgsHistoryEntryNode
      */
     void clear();
 
-    int childCount() const final;
+    [[nodiscard]] int childCount() const final;
 
   protected:
     std::deque<std::unique_ptr<QgsHistoryEntryNode>> mChildren SIP_SKIP;

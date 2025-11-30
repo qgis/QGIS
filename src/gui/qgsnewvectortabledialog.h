@@ -80,32 +80,32 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
     /**
      * Returns the CRS
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Returns the table name
      */
-    QString tableName() const;
+    [[nodiscard]] QString tableName() const;
 
     /**
      * Returns the schema name
      */
-    QString schemaName() const;
+    [[nodiscard]] QString schemaName() const;
 
     /**
      * Returns the geometry column name
      */
-    QString geometryColumnName() const;
+    [[nodiscard]] QString geometryColumnName() const;
 
     /**
      * Returns the fields
      */
-    QgsFields fields() const;
+    [[nodiscard]] QgsFields fields() const;
 
     /**
      * Returns the geometry type
      */
-    Qgis::WkbType geometryType() const;
+    [[nodiscard]] Qgis::WkbType geometryType() const;
 
     /**
      * Sets the fields to \a fields
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
     /**
      * Returns the validation errors or an empty list if the dialog is valid
      */
-    QStringList validationErrors() const;
+    [[nodiscard]] QStringList validationErrors() const;
 
   private:
     QgsAbstractDatabaseProviderConnection *mConnection = nullptr;
@@ -183,20 +183,20 @@ class QgsNewVectorTableFieldModel : public QgsFieldModel
     QgsNewVectorTableFieldModel( const QList<QgsVectorDataProvider::NativeType> &nativeTypes, QObject *parent = nullptr );
 
     // QAbstractItemModel interface
-    int columnCount( const QModelIndex & ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex & ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
-    QList<QgsVectorDataProvider::NativeType> nativeTypes() const;
-    QgsVectorDataProvider::NativeType nativeType( const QString &typeName ) const;
-    QgsVectorDataProvider::NativeType nativeType( int row ) const;
+    [[nodiscard]] QList<QgsVectorDataProvider::NativeType> nativeTypes() const;
+    [[nodiscard]] QgsVectorDataProvider::NativeType nativeType( const QString &typeName ) const;
+    [[nodiscard]] QgsVectorDataProvider::NativeType nativeType( int row ) const;
 
   private:
     const QList<QgsVectorDataProvider::NativeType> mNativeTypes;
-    QString typeDesc( const QString &typeName ) const;
-    QMetaType::Type type( const QString &typeName ) const;
+    [[nodiscard]] QString typeDesc( const QString &typeName ) const;
+    [[nodiscard]] QMetaType::Type type( const QString &typeName ) const;
 };
 
 

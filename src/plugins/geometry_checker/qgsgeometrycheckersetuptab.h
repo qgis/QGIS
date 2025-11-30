@@ -37,7 +37,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
      * Indicates whether the geometry checker is currently running its checks in the background.
      * Useful to figure out whether it is safe to close the dialog and thus destroy the checker.
      */
-    bool isRunningInBackground() const { return mIsRunningInBackground; }
+    [[nodiscard]] bool isRunningInBackground() const { return mIsRunningInBackground; }
 
   signals:
     void checkerStarted( QgsGeometryChecker *checker );

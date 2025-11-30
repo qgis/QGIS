@@ -100,7 +100,7 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
      *
      * \since QGIS 3.38
      */
-    QgsDoubleRange elevationRange() const { return mElevationRange; }
+    [[nodiscard]] QgsDoubleRange elevationRange() const { return mElevationRange; }
 
     /**
      * Returns the fixed size for elevation range filtering in the project, used when interactively filtering by elevation.
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
      *
      * \since QGIS 3.38
      */
-    double elevationFilterRangeSize() const { return mElevationFilterRangeSize; }
+    [[nodiscard]] double elevationFilterRangeSize() const { return mElevationFilterRangeSize; }
 
     /**
      * Returns TRUE if the elevation range filter slider should be inverted for this project.
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsProjectElevationProperties : public QObject
      *
      * \since QGIS 3.38
      */
-    bool invertElevationFilter() const { return mInvertElevationFilter; }
+    [[nodiscard]] bool invertElevationFilter() const { return mInvertElevationFilter; }
 
   public slots:
 

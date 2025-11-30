@@ -49,12 +49,12 @@ class QgsLabelingEngineRulesModel : public QAbstractItemModel
     ~QgsLabelingEngineRulesModel() override;
 
     // QAbstractItemModel interface
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
@@ -73,7 +73,7 @@ class QgsLabelingEngineRulesModel : public QAbstractItemModel
     /**
      * Returns the rule at the specified model \a index.
      */
-    QgsAbstractLabelingEngineRule *ruleAtIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsAbstractLabelingEngineRule *ruleAtIndex( const QModelIndex &index ) const;
 
     /**
      * Swaps the rule at the specified \a index for a new \a rule.
@@ -85,7 +85,7 @@ class QgsLabelingEngineRulesModel : public QAbstractItemModel
      *
      * The caller takes ownership of all returned rules.
      */
-    QList<QgsAbstractLabelingEngineRule *> rules() const;
+    [[nodiscard]] QList<QgsAbstractLabelingEngineRule *> rules() const;
 
   private:
     std::vector<std::unique_ptr<QgsAbstractLabelingEngineRule>> mRules;
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsLabelingEngineRulesWidget : public QgsPanelWidget, private U
      *
      * The caller takes ownership of all returned rules.
      */
-    QList<QgsAbstractLabelingEngineRule *> rules() const SIP_TRANSFERBACK;
+    [[nodiscard]] QList<QgsAbstractLabelingEngineRule *> rules() const SIP_TRANSFERBACK;
 
   signals:
 
@@ -186,7 +186,7 @@ class GUI_EXPORT QgsLabelingEngineRulesDialog : public QDialog
      *
      * The caller takes ownership of all returned rules.
      */
-    QList<QgsAbstractLabelingEngineRule *> rules() const SIP_TRANSFERBACK;
+    [[nodiscard]] QList<QgsAbstractLabelingEngineRule *> rules() const SIP_TRANSFERBACK;
 
   private:
     QgsLabelingEngineRulesWidget *mWidget = nullptr;

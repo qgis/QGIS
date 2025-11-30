@@ -34,9 +34,9 @@ class GUI_EXPORT QgsLayoutScaleBarValidityCheck : public QgsAbstractValidityChec
 {
   public:
     //! constructor
-    QgsLayoutScaleBarValidityCheck *create() const override;
-    QString id() const override;
-    int checkType() const override;
+    [[nodiscard]] QgsLayoutScaleBarValidityCheck *create() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] int checkType() const override;
     bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
     QList<QgsValidityCheckResult> runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
 
@@ -56,9 +56,9 @@ class GUI_EXPORT QgsLayoutNorthArrowValidityCheck : public QgsAbstractValidityCh
 {
   public:
     //! constructor
-    QgsLayoutNorthArrowValidityCheck *create() const override;
-    QString id() const override;
-    int checkType() const override;
+    [[nodiscard]] QgsLayoutNorthArrowValidityCheck *create() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] int checkType() const override;
     bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
     QList<QgsValidityCheckResult> runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
 
@@ -78,9 +78,9 @@ class GUI_EXPORT QgsLayoutOverviewValidityCheck : public QgsAbstractValidityChec
 {
   public:
     //! constructor
-    QgsLayoutOverviewValidityCheck *create() const override;
-    QString id() const override;
-    int checkType() const override;
+    [[nodiscard]] QgsLayoutOverviewValidityCheck *create() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] int checkType() const override;
     bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
     QList<QgsValidityCheckResult> runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
 
@@ -100,9 +100,9 @@ class GUI_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidit
 {
   public:
     //! constructor
-    QgsLayoutPictureSourceValidityCheck *create() const override;
-    QString id() const override;
-    int checkType() const override;
+    [[nodiscard]] QgsLayoutPictureSourceValidityCheck *create() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] int checkType() const override;
     bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
     QList<QgsValidityCheckResult> runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
 

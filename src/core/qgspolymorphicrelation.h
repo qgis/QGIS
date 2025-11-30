@@ -149,14 +149,14 @@ class CORE_EXPORT QgsPolymorphicRelation
      *
      * \returns A name
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * A (project-wide) unique id for this relation
      *
      * \returns The id
      */
-    QString id() const;
+    [[nodiscard]] QString id() const;
 
     /**
      * Generate a (project-wide) unique id for this relation
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsPolymorphicRelation
      *
      * \returns The id of the referencing layer
      */
-    QString referencingLayerId() const;
+    [[nodiscard]] QString referencingLayerId() const;
 
     /**
      * Access the referencing (child) layer
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsPolymorphicRelation
      *
      * \returns The referencing layer
      */
-    QgsVectorLayer *referencingLayer() const;
+    [[nodiscard]] QgsVectorLayer *referencingLayer() const;
 
     /**
      * Returns the field pairs which form this relation
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsPolymorphicRelation
      * \returns The fields forming the relation
      */
 #ifndef SIP_RUN
-    QList< QgsRelation::FieldPair > fieldPairs() const;
+    [[nodiscard]] QList< QgsRelation::FieldPair > fieldPairs() const;
 #else
     QMap< QString, QString > fieldPairs() const;
     % MethodCode
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsPolymorphicRelation
      *
      * \returns A list of attributes
      */
-    QgsAttributeList referencedFields( const QString &layerId ) const;
+    [[nodiscard]] QgsAttributeList referencedFields( const QString &layerId ) const;
 
     /**
      * Returns a list of attributes used to form the referencing fields
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsPolymorphicRelation
      *
      * \returns A list of attributes
      */
-    QgsAttributeList referencingFields() const;
+    [[nodiscard]] QgsAttributeList referencingFields() const;
 
     /**
      * Returns the validity of this relation. Don't use the information if it's not valid.
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsPolymorphicRelation
      *
      * \returns TRUE if the relation is valid
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Compares the two QgsRelation, ignoring the name and the ID.
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsPolymorphicRelation
      * \param other The other relation
      * \returns TRUE if they are similar
      */
-    bool hasEqualDefinition( const QgsPolymorphicRelation &other ) const;
+    [[nodiscard]] bool hasEqualDefinition( const QgsPolymorphicRelation &other ) const;
 
     /**
      * Updates the validity status of this relation.
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsPolymorphicRelation
     /**
      * Returns the field in the referencing layer where the referenced layer identifier is stored
      */
-    QString referencedLayerField() const;
+    [[nodiscard]] QString referencedLayerField() const;
 
     /**
       * Sets the \a expression to identify the parent layer
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsPolymorphicRelation
     /**
       * Returns the expression to identify the parent layer
       */
-    QString referencedLayerExpression() const;
+    [[nodiscard]] QString referencedLayerExpression() const;
 
     /**
      * Sets a list of layer ids to be used as potential referenced layers
@@ -266,12 +266,12 @@ class CORE_EXPORT QgsPolymorphicRelation
     /**
      * Returns a list of layer ids to be used as potential referenced layers
      */
-    QStringList referencedLayerIds() const;
+    [[nodiscard]] QStringList referencedLayerIds() const;
 
     /**
      * Returns a list of generated relations, based on the currently set referencedLayerIds()
      */
-    QList<QgsRelation> generateRelations() const;
+    [[nodiscard]] QList<QgsRelation> generateRelations() const;
 
     /**
      * Returns layer representation as evaluated string
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsPolymorphicRelation
     /**
      * Returns the relation strength for all the generated normal relations
      */
-    Qgis::RelationshipStrength strength() const;
+    [[nodiscard]] Qgis::RelationshipStrength strength() const;
 
     /**
      * Sets the relation strength for all the generated normal relations
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsPolymorphicRelation
     friend class QgsRelationManager;
 
     //! Upgrades a relation ID to a stabler ID former if generated using QGIS < 3.38
-    QString upgradeGeneratedRelationId( const QString &oldRelationId ) const;
+    [[nodiscard]] QString upgradeGeneratedRelationId( const QString &oldRelationId ) const;
 
     QExplicitlySharedDataPointer<QgsPolymorphicRelationPrivate> d;
 

@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
     bool calcNormVec( double x, double y, QgsPoint &result SIP_OUT ) override;
     bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Returns a pointer to the current Triangulation object
-    virtual QgsDualEdgeTriangulation *getTriangulation() const;
+    [[nodiscard]] virtual QgsDualEdgeTriangulation *getTriangulation() const;
     //! Sets a Triangulation
     virtual void setTriangulation( QgsDualEdgeTriangulation *tin );
 

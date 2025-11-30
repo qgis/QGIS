@@ -83,7 +83,7 @@ class CORE_EXPORT QgsLayoutSize
      * \see setWidth()
      * \see height()
     */
-    double width() const { return mWidth; }
+    [[nodiscard]] double width() const { return mWidth; }
 
     /**
      * Sets the \a width for the size.
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsLayoutSize
      * \see setHeight()
      * \see width()
     */
-    double height() const { return mHeight; }
+    [[nodiscard]] double height() const { return mHeight; }
 
     /**
      * Sets the \a height for the size.
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsLayoutSize
      * Returns the units for the size.
      * \see setUnits()
     */
-    Qgis::LayoutUnit units() const { return mUnits; }
+    [[nodiscard]] Qgis::LayoutUnit units() const { return mUnits; }
 
     /**
      * Sets the \a units for the size. Does not alter the stored width or height,
@@ -136,20 +136,20 @@ class CORE_EXPORT QgsLayoutSize
      * are zero.
      * \returns TRUE if size is empty
     */
-    bool isEmpty() const;
+    [[nodiscard]] bool isEmpty() const;
 
     /**
      * Converts the layout size to a QSizeF. The unit information is discarded
      * during this operation.
      * \returns QSizeF with same dimensions as layout size
     */
-    QSizeF toQSizeF() const;
+    [[nodiscard]] QSizeF toQSizeF() const;
 
     /**
      * Encodes the layout size to a string
      * \see decodeSize()
     */
-    QString encodeSize() const;
+    [[nodiscard]] QString encodeSize() const;
 
     /**
      * Decodes a size from a \a string.

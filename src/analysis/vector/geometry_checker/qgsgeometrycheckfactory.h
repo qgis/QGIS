@@ -57,12 +57,12 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
     /**
      * The unique id for this geometry check.
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     /**
      * A human readable description for this check.
      */
-    virtual QString description() const = 0;
+    [[nodiscard]] virtual QString description() const = 0;
 
     /**
      * Checks if this check should be made available for \a layer.
@@ -72,12 +72,12 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
     /**
      * Flags for this check.
      */
-    virtual QgsGeometryCheck::Flags flags() const = 0;
+    [[nodiscard]] virtual QgsGeometryCheck::Flags flags() const = 0;
 
     /**
      * The type of this check.
      */
-    virtual QgsGeometryCheck::CheckType checkType() const = 0;
+    [[nodiscard]] virtual QgsGeometryCheck::CheckType checkType() const = 0;
 };
 
 /**
@@ -95,12 +95,12 @@ class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
       return new T( context, configuration );
     }
 
-    QString description() const override
+    [[nodiscard]] QString description() const override
     {
       return T::factoryDescription();
     }
 
-    QString id() const override
+    [[nodiscard]] QString id() const override
     {
       return T::factoryId();
     }
@@ -110,12 +110,12 @@ class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
       return T::factoryIsCompatible( layer );
     }
 
-    QgsGeometryCheck::Flags flags() const override
+    [[nodiscard]] QgsGeometryCheck::Flags flags() const override
     {
       return T::factoryFlags();
     }
 
-    QgsGeometryCheck::CheckType checkType() const override
+    [[nodiscard]] QgsGeometryCheck::CheckType checkType() const override
     {
       return T::factoryCheckType();
     }

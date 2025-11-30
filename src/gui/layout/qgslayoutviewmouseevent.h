@@ -64,20 +64,20 @@ class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
     /**
      * Returns the event point location in layout coordinates.
      */
-    QPointF layoutPoint() const;
+    [[nodiscard]] QPointF layoutPoint() const;
 
     /**
      * Returns the snapped event point location in layout coordinates. The snapped point will consider
      * all possible snapping methods, such as snapping to grid or guide lines.
      * \see isSnapped()
      */
-    QPointF snappedPoint() const { return mSnappedPoint; }
+    [[nodiscard]] QPointF snappedPoint() const { return mSnappedPoint; }
 
     /**
      * Returns TRUE if point was snapped, e.g. to grid or guide lines.
      * \see snappedPoint()
      */
-    bool isSnapped() const { return mSnapped; }
+    [[nodiscard]] bool isSnapped() const { return mSnapped; }
 
   private:
     //! The view in which the event was triggered.

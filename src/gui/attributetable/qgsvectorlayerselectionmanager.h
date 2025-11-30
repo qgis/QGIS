@@ -40,12 +40,12 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
     void select( const QgsFeatureIds &ids ) override;
     void deselect( const QgsFeatureIds &ids ) override;
     void setSelectedFeatures( const QgsFeatureIds &ids ) override;
-    const QgsFeatureIds &selectedFeatureIds() const override;
+    [[nodiscard]] const QgsFeatureIds &selectedFeatureIds() const override;
 
     /**
      * Returns the vector layer
      */
-    QgsVectorLayer *layer() const;
+    [[nodiscard]] QgsVectorLayer *layer() const;
 
   private slots:
 

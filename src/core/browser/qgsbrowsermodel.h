@@ -87,19 +87,19 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     // implemented methods from QAbstractItemModel for read-only access
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] QStringList mimeTypes() const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
-    bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
-    bool canFetchMore( const QModelIndex &parent ) const override;
+    [[nodiscard]] bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] bool canFetchMore( const QModelIndex &parent ) const override;
     void fetchMore( const QModelIndex &parent ) override;
 
     /**
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * Returns the data item at the specified index, or NULLPTR if no item
      * exists at the index.
      */
-    QgsDataItem *dataItem( const QModelIndex &idx ) const;
+    [[nodiscard]] QgsDataItem *dataItem( const QModelIndex &idx ) const;
 
     //! Refresh item specified by path
     void refresh( const QString &path );
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      *
      * \see initialize()
      */
-    bool initialized() const { return mInitialized;  }
+    [[nodiscard]] bool initialized() const { return mInitialized;  }
 
     /**
      * Returns a map of the root drive items shown in the browser.
@@ -168,14 +168,14 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      *
      * \since QGIS 3.6
      */
-    QMap<QString, QgsDirectoryItem *> driveItems() const;
+    [[nodiscard]] QMap<QString, QgsDirectoryItem *> driveItems() const;
 
     /**
      * Returns the root items for the model.
      *
      * \since QGIS 3.28
      */
-    QVector<QgsDataItem *> rootItems() const { return mRootItems; }
+    [[nodiscard]] QVector<QgsDataItem *> rootItems() const { return mRootItems; }
 
   signals:
 

@@ -68,7 +68,7 @@ class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget, public QgsExpre
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   signals:
 
@@ -371,7 +371,7 @@ class GUI_EXPORT QgsExpressionBasedNumericFormatWidget : public QgsNumericFormat
     QgsExpressionBasedNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsExpressionBasedNumericFormatWidget() override;
 
-    QgsExpressionContext createExpressionContext() const final;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const final;
 
     void setFormat( QgsNumericFormat *format ) final;
 

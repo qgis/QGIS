@@ -70,12 +70,12 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
+    [[nodiscard]] const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
 
     /**
      * Returns the scale of the layer's int32 coordinates compared to CRS coords.
      */
-    QgsVector3D scale() const { return mScale; }
+    [[nodiscard]] QgsVector3D scale() const { return mScale; }
 
     /**
      * Sets the scale of the layer's int32 coordinates compared to CRS coords.
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     /**
      * Returns the offset of the layer's int32 coordinates compared to CRS coords.
      */
-    QgsVector3D offset() const { return mOffset; }
+    [[nodiscard]] QgsVector3D offset() const { return mOffset; }
 
     /**
      * Sets the offset of the layer's int32 coordinates compared to CRS coords.
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     /**
      * Returns the total number of points rendered.
      */
-    long pointsRendered() const;
+    [[nodiscard]] long pointsRendered() const;
 
     /**
      * Increments the count of points rendered by the specified amount.
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      *
      * \see setAttributes()
      */
-    QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
+    [[nodiscard]] QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
 
     /**
      * Sets the \a attributes associated with the rendered block.
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     /**
      * Returns the size of a single point record.
      */
-    int pointRecordSize() const { return mPointRecordSize; }
+    [[nodiscard]] int pointRecordSize() const { return mPointRecordSize; }
 
     /**
      * Returns the offset for the x value in a point record.
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * \see yOffset()
      * \see zOffset()
      */
-    int xOffset() const { return mXOffset; }
+    [[nodiscard]] int xOffset() const { return mXOffset; }
 
     /**
      * Returns the offset for the y value in a point record.
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * \see xOffset()
      * \see zOffset()
      */
-    int yOffset() const { return mYOffset; }
+    [[nodiscard]] int yOffset() const { return mYOffset; }
 
     /**
      * Returns the offset for the y value in a point record.
@@ -148,28 +148,28 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * \see xOffset()
      * \see yOffset()
      */
-    int zOffset() const { return mZOffset; }
+    [[nodiscard]] int zOffset() const { return mZOffset; }
 
     /**
      * Returns any constant scaling factor which must be applied to z values taken from the point cloud index.
      *
      * \note Scaling of z values should be applied before the zValueFixedOffset().
      */
-    double zValueScale() const { return mZValueScale; }
+    [[nodiscard]] double zValueScale() const { return mZValueScale; }
 
     /**
      * Returns any constant offset which must be applied to z values taken from the point cloud index.
      *
      * \note Scaling of z values via zValueScale() should be applied before the zValueFixedOffset().
      */
-    double zValueFixedOffset() const { return mZValueFixedOffset; }
+    [[nodiscard]] double zValueFixedOffset() const { return mZValueFixedOffset; }
 
     /**
      * Returns the feedback object used to cancel rendering
      *
      * \since QGIS 3.20
      */
-    QgsFeedback *feedback() const { return mFeedback; }
+    [[nodiscard]] QgsFeedback *feedback() const { return mFeedback; }
 
 #ifndef SIP_RUN
 
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsPreparedPointCloudRendererData
     /**
      * Returns the set of attributes used by the prepared point cloud renderer.
      */
-    virtual QSet< QString > usedAttributes() const = 0;
+    [[nodiscard]] virtual QSet< QString > usedAttributes() const = 0;
 
     /**
      * Prepares the renderer for using the specified \a block.
@@ -347,13 +347,13 @@ class CORE_EXPORT QgsPointCloudRenderer
     /**
      * Returns the identifier of the renderer type.
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     /**
      * Create a deep copy of this renderer. Should be implemented by all subclasses
      * and generate a proper subclass.
      */
-    virtual QgsPointCloudRenderer *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsPointCloudRenderer *clone() const = 0 SIP_FACTORY;
 
     //! QgsPointCloudRenderer cannot be copied -- use clone() instead
     QgsPointCloudRenderer( const QgsPointCloudRenderer &other ) = delete;
@@ -410,7 +410,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \note the "X" and "Y" attributes will always be fetched and do not need to be explicitly
      * returned here.
      */
-    virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
+    [[nodiscard]] virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
 
     /**
      * Returns prepared data container for bulk point color retrieval.
@@ -474,7 +474,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see pointSizeUnit()
      * \see pointSizeMapUnitScale()
      */
-    double pointSize() const { return mPointSize; }
+    [[nodiscard]] double pointSize() const { return mPointSize; }
 
     /**
      * Sets the \a units used for the point size.
@@ -491,7 +491,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see pointSize()
      * \see pointSizeMapUnitScale()
      */
-    Qgis::RenderUnit pointSizeUnit() const { return mPointSizeUnit; }
+    [[nodiscard]] Qgis::RenderUnit pointSizeUnit() const { return mPointSizeUnit; }
 
     /**
      * Sets the map unit \a scale used for the point size.
@@ -507,7 +507,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see pointSizeUnit()
      * \see pointSize()
      */
-    const QgsMapUnitScale &pointSizeMapUnitScale() const { return mPointSizeMapUnitScale; }
+    [[nodiscard]] const QgsMapUnitScale &pointSizeMapUnitScale() const { return mPointSizeMapUnitScale; }
 
     /**
      * Returns the drawing order used by the renderer for drawing points.
@@ -515,7 +515,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see setDrawOrder2d()
      * \since QGIS 3.24
      */
-    Qgis::PointCloudDrawOrder drawOrder2d() const;
+    [[nodiscard]] Qgis::PointCloudDrawOrder drawOrder2d() const;
 
     /**
      * Sets the drawing \a order used by the renderer for drawing points.
@@ -530,7 +530,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      *
      * \see setPointSymbol()
      */
-    Qgis::PointCloudSymbol pointSymbol() const;
+    [[nodiscard]] Qgis::PointCloudSymbol pointSymbol() const;
 
     /**
      * Sets the \a symbol used by the renderer for drawing points.
@@ -549,7 +549,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see setMaximumScreenError()
      * \see maximumScreenErrorUnit()
      */
-    double maximumScreenError() const;
+    [[nodiscard]] double maximumScreenError() const;
 
     /**
      * Sets the maximum screen \a error allowed when rendering the point cloud.
@@ -569,7 +569,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see maximumScreenError()
      * \see setMaximumScreenErrorUnit()
      */
-    Qgis::RenderUnit maximumScreenErrorUnit() const;
+    [[nodiscard]] Qgis::RenderUnit maximumScreenErrorUnit() const;
 
     /**
      * Sets the \a unit for the maximum screen error allowed when rendering the point cloud.
@@ -584,7 +584,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      *
      * \since QGIS 3.36
      */
-    bool renderAsTriangles() const { return mRenderAsTriangles; }
+    [[nodiscard]] bool renderAsTriangles() const { return mRenderAsTriangles; }
 
     /**
      * Sets whether points are triangulated to render solid surface
@@ -603,7 +603,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see setHorizontalTriangleFilter()
      * \since QGIS 3.36
      */
-    bool horizontalTriangleFilter() const { return mHorizontalTriangleFilter; }
+    [[nodiscard]] bool horizontalTriangleFilter() const { return mHorizontalTriangleFilter; }
 
     /**
      * Sets whether large triangles will get rendered. This only applies when renderAsTriangles()
@@ -628,7 +628,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see setHorizontalTriangleFilterThreshold()
      * \since QGIS 3.36
      */
-    double horizontalTriangleFilterThreshold() const { return mHorizontalTriangleFilterThreshold; }
+    [[nodiscard]] double horizontalTriangleFilterThreshold() const { return mHorizontalTriangleFilterThreshold; }
 
     /**
      * Sets threshold for filtering of triangles. This only applies when renderAsTriangles() and
@@ -652,7 +652,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \see setHorizontalTriangleFilterUnit()
      * \since QGIS 3.36
      */
-    Qgis::RenderUnit horizontalTriangleFilterUnit() const { return mHorizontalTriangleFilterUnit; }
+    [[nodiscard]] Qgis::RenderUnit horizontalTriangleFilterUnit() const { return mHorizontalTriangleFilterUnit; }
 
     /**
      * Sets units of the threshold for filtering of triangles. This only applies when renderAsTriangles() and
@@ -673,7 +673,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     /**
      * Returns a list of all rule keys for legend nodes created by the renderer.
      */
-    virtual QStringList legendRuleKeys() const;
+    [[nodiscard]] virtual QStringList legendRuleKeys() const;
 
     /**
      * Set whether the renderer should also render file labels inside extent
@@ -686,7 +686,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * rectangle
      * \since QGIS 3.42
      */
-    bool showLabels() const { return mShowLabels; }
+    [[nodiscard]] bool showLabels() const { return mShowLabels; }
 
     /**
        * Sets the text format renderers should use for rendering labels
@@ -698,7 +698,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * Returns the text format renderer is using for rendering labels
      * \since QGIS 3.42
      */
-    QgsTextFormat labelTextFormat() const { return mLabelTextFormat; }
+    [[nodiscard]] QgsTextFormat labelTextFormat() const { return mLabelTextFormat; }
 
     /**
      * Sets the renderer behavior when zoomed out
@@ -710,7 +710,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * Returns the renderer behavior when zoomed out
      * \since QGIS 3.42
      */
-    Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
+    [[nodiscard]] Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
 
   protected:
 

@@ -56,10 +56,10 @@ class CORE_EXPORT QgsLazInfo
     QgsLazInfo();
 
     //! Returns whether the LAZ header data passed to this class is from a valid LAZ file
-    bool isValid() const { return mIsValid; }
+    [[nodiscard]] bool isValid() const { return mIsValid; }
 
     //! Returns an error string detailing what went wrong with reading the LAZ info
-    QString error() const { return mError; }
+    [[nodiscard]] QString error() const { return mError; }
 
     //! Parses the raw header data loaded from a LAZ file
     void parseRawHeader( char *data, uint64_t length );
@@ -68,62 +68,62 @@ class CORE_EXPORT QgsLazInfo
     void parseRawVlrEntries( char *data, uint64_t length );
 
     //! Returns the number of points contained in the LAZ file
-    uint64_t pointCount() const
+    [[nodiscard]] uint64_t pointCount() const
     {
       return mHeader.version.major == 1 && mHeader.version.minor == 4 ? mHeader.point_count_14 : mHeader.point_count;
     }
     //! Returns the scale of the points coordinates
-    QgsVector3D scale() const { return mScale; }
+    [[nodiscard]] QgsVector3D scale() const { return mScale; }
     //! Returns the offset of the points coordinates
-    QgsVector3D offset() const { return mOffset; }
+    [[nodiscard]] QgsVector3D offset() const { return mOffset; }
     //! Returns the pair ( creation_year, creation_day ) extracted from the LAZ file public header block
-    QPair<uint16_t, uint16_t> creationYearDay() const { return mCreationYearDay; }
+    [[nodiscard]] QPair<uint16_t, uint16_t> creationYearDay() const { return mCreationYearDay; }
     //! Returns the LAZ specification version of the LAZ file
-    QPair<uint8_t, uint8_t> version() const { return mVersion; }
+    [[nodiscard]] QPair<uint8_t, uint8_t> version() const { return mVersion; }
     //! Returns the point format of the point records contained in the LAZ file
-    int pointFormat() const { return mPointFormat; }
+    [[nodiscard]] int pointFormat() const { return mPointFormat; }
     //! Returns the project identifier contained in the LAZ file public header block (Optional field)
-    QString projectId() const { return mProjectId; }
+    [[nodiscard]] QString projectId() const { return mProjectId; }
     //! Returns the system identifier contained in the LAZ file public header block
-    QString systemId() const { return mSystemId; }
+    [[nodiscard]] QString systemId() const { return mSystemId; }
     //! Returns the identifier of the software used to generate the LAZ file public header block
-    QString softwareId() const { return mSoftwareId; }
+    [[nodiscard]] QString softwareId() const { return mSoftwareId; }
     //! Returns the minimum coordinate across X, Y and Z axis
-    QgsVector3D minCoords() const { return mMinCoords; }
+    [[nodiscard]] QgsVector3D minCoords() const { return mMinCoords; }
     //! Returns the maximum coordinate across X, Y and Z axis
-    QgsVector3D maxCoords() const { return mMaxCoords; }
+    [[nodiscard]] QgsVector3D maxCoords() const { return mMaxCoords; }
     //! Returns the absolute offset to the first point record in the LAZ file
-    uint32_t firstPointRecordOffset() const { return mHeader.point_offset; }
+    [[nodiscard]] uint32_t firstPointRecordOffset() const { return mHeader.point_offset; }
     //! Returns the absolute offset to the first variable length record in the LAZ file
-    uint32_t firstVariableLengthRecord() const;
+    [[nodiscard]] uint32_t firstVariableLengthRecord() const;
     //! Returns the length of each point record in bytes
-    int pointRecordLength() const { return mHeader.point_record_length; }
+    [[nodiscard]] int pointRecordLength() const { return mHeader.point_record_length; }
     //! Returns the number of extrabytes contained in the LAZ dataset
-    int extrabytesCount() const { return mHeader.ebCount(); }
+    [[nodiscard]] int extrabytesCount() const { return mHeader.ebCount(); }
 
     //! Returns the absolute offset to the first extended point record in the LAZ file
-    uint64_t firstEvlrOffset() const { return mHeader.evlr_offset; }
+    [[nodiscard]] uint64_t firstEvlrOffset() const { return mHeader.evlr_offset; }
     //! Returns the absolute offset to the first variable length record in the LAZ file
-    uint32_t evlrCount() const { return mHeader.evlr_count; }
+    [[nodiscard]] uint32_t evlrCount() const { return mHeader.evlr_count; }
 
     //! Returns the coordinate system stored in the LAZ file
-    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
     //! Returns a map containing various metadata extracted from the LAZ file
-    QVariantMap toMetadata() const;
+    [[nodiscard]] QVariantMap toMetadata() const;
 
     //! Returns the binary data of the variable length record with the user identifier \a userId and record identifier \a recordId
     QByteArray vlrData( QString userId, int recordId );
 
     //! Returns the list of attributes contained in the LAZ file
-    QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
+    [[nodiscard]] QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
 
     //! Returns the list of extrabytes contained in the LAZ file
-    QVector<ExtraBytesAttributeDetails> extrabytes() const { return mExtrabyteAttributes; }
+    [[nodiscard]] QVector<ExtraBytesAttributeDetails> extrabytes() const { return mExtrabyteAttributes; }
 
 #ifndef SIP_RUN
     //! Returns the LAZPERF header object
-    lazperf::header14 header() const { return mHeader; }
+    [[nodiscard]] lazperf::header14 header() const { return mHeader; }
 #endif
 
     //! Static function to parse the raw extrabytes VLR into a list of recognizable extrabyte attributes

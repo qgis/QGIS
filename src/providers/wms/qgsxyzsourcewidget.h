@@ -33,33 +33,33 @@ class QgsXyzSourceWidget : public QgsProviderSourceWidget, private Ui::QgsXyzSou
     QgsXyzSourceWidget( QWidget *parent = nullptr );
 
     void setSourceUri( const QString &uri ) override;
-    QString sourceUri() const override;
+    [[nodiscard]] QString sourceUri() const override;
 
     void setUrl( const QString &url );
-    QString url() const;
+    [[nodiscard]] QString url() const;
 
     void setZMin( int zMin );
-    int zMin() const;
+    [[nodiscard]] int zMin() const;
 
     void setZMax( int zMax );
-    int zMax() const;
+    [[nodiscard]] int zMax() const;
 
     void setUsername( const QString &username );
     void setPassword( const QString &password );
     void setAuthCfg( const QString &id );
 
-    QString username() const;
-    QString password() const;
-    QString authcfg() const;
+    [[nodiscard]] QString username() const;
+    [[nodiscard]] QString password() const;
+    [[nodiscard]] QString authcfg() const;
 
     void setReferer( const QString &referer );
-    QString referer() const;
+    [[nodiscard]] QString referer() const;
 
     void setTilePixelRatio( int ratio );
-    int tilePixelRatio() const;
+    [[nodiscard]] int tilePixelRatio() const;
 
     void setInterpretation( const QString &interpretation );
-    QString interpretation() const;
+    [[nodiscard]] QString interpretation() const;
 
   private slots:
 

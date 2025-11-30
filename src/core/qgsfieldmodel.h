@@ -90,7 +90,7 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
      * Returns TRUE if the model allows custom expressions to be created and displayed.
      * \see setAllowExpression()
      */
-    bool allowExpression() const { return mAllowExpression; }
+    [[nodiscard]] bool allowExpression() const { return mAllowExpression; }
 
     /**
      * Sets whether an optional empty field ("not set") option is present in the model.
@@ -102,13 +102,13 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
      * Returns TRUE if the model allows the empty field ("not set") choice.
      * \see setAllowEmptyFieldName()
      */
-    bool allowEmptyFieldName() const { return mAllowEmpty; }
+    [[nodiscard]] bool allowEmptyFieldName() const { return mAllowEmpty; }
 
     /**
      * Returns TRUE if a string represents a field reference, or FALSE if it is an
      * expression consisting of more than direct field reference.
      */
-    bool isField( const QString &expression ) const;
+    [[nodiscard]] bool isField( const QString &expression ) const;
 
     /**
      * Sets a single expression to be added after the fields at the end of the model.
@@ -132,11 +132,11 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
     QgsVectorLayer *layer() { return mLayer; }
 
     // QAbstractItemModel interface
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
 
     /**
      * Returns a HTML formatted tooltip string for a \a field, containing details
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
      *
      * \since QGIS 3.14
      */
-    QgsFields fields() const;
+    [[nodiscard]] QgsFields fields() const;
 
   public slots:
 

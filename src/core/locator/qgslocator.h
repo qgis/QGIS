@@ -141,7 +141,7 @@ class CORE_EXPORT QgsLocator : public QObject
     /**
      * Returns TRUE if a query is currently being executed by the locator.
      */
-    bool isRunning() const;
+    [[nodiscard]] bool isRunning() const;
 
     /**
      * Will call clearPreviousResults on all filters
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsLocator : public QObject
      * This list is updated when preparing the search
      * \since QGIS 3.16
      */
-    QStringList completionList() const {return mAutocompletionList;}
+    [[nodiscard]] QStringList completionList() const {return mAutocompletionList;}
 
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNamedListNode *sTreeLocatorFilters = QgsSettingsTree::treeRoot()->createNamedListNode( QStringLiteral( "locator-filters" ) );

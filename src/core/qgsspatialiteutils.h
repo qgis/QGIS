@@ -87,7 +87,7 @@ class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr< sqlit
     /**
      * Returns the most recent error message encountered by the database.
      */
-    QString errorMessage() const;
+    [[nodiscard]] QString errorMessage() const;
 
     /**
      * Prepares a \a sql statement, returning the result. The \a resultCode

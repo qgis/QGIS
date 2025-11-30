@@ -52,13 +52,13 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
      * Indicates if successfully parsed
      * \returns TRUE if successfully parsed
     */
-    bool isValid() const { return mValid; }
+    [[nodiscard]] bool isValid() const { return mValid; }
 
     /**
      * Gets number of parts
      * \returns number of parts
     */
-    int parts() const { return mHeaders.size(); }
+    [[nodiscard]] int parts() const { return mHeaders.size(); }
 
     /**
      * Gets part header
@@ -66,23 +66,23 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
      * \param headerName header name
      * \returns raw header
     */
-    QByteArray rawHeader( int part, const QByteArray &headerName ) const { return mHeaders.value( part ).value( headerName ); }
+    [[nodiscard]] QByteArray rawHeader( int part, const QByteArray &headerName ) const { return mHeaders.value( part ).value( headerName ); }
 
     //! Gets headers
-    QList< RawHeaderMap > headers() const { return mHeaders; }
+    [[nodiscard]] QList< RawHeaderMap > headers() const { return mHeaders; }
 
     /**
      * Gets part part body
      * \param part part index
      * \returns part body
     */
-    QByteArray body( int part ) const { return mBodies.value( part ); }
+    [[nodiscard]] QByteArray body( int part ) const { return mBodies.value( part ); }
 
     //! Gets bodies
-    QList<QByteArray> bodies() const { return mBodies; }
+    [[nodiscard]] QList<QByteArray> bodies() const { return mBodies; }
 
     //! Parsing error
-    QString error() const { return mError; }
+    [[nodiscard]] QString error() const { return mError; }
 
     /**
      * Test if reply is multipart.

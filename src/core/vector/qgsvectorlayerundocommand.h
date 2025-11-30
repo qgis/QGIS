@@ -51,7 +51,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
     //! Returns the layer associated with the undo command
     inline QgsVectorLayer *layer() { return mBuffer->L; }
 
-    int id() const override { return -1; }
+    [[nodiscard]] int id() const override { return -1; }
     bool mergeWith( const QUndoCommand * ) override { return false; }
 
   protected:

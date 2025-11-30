@@ -43,7 +43,7 @@ class CORE_EXPORT QgsProjectStorageRegistry
     QgsProjectStorage *projectStorageFromUri( const QString &uri );
 
     //! Returns a list of registered project storage implementations
-    QList<QgsProjectStorage *> projectStorages() const;
+    [[nodiscard]] QList<QgsProjectStorage *> projectStorages() const;
 
     //! Registers a storage backend and takes ownership of it
     void registerProjectStorage( QgsProjectStorage *storage SIP_TRANSFER );

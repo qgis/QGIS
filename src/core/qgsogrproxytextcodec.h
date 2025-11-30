@@ -41,9 +41,9 @@ class CORE_EXPORT QgsOgrProxyTextCodec: public QTextCodec
 
     QString convertToUnicode( const char *in, int length, ConverterState *state ) const override;
     QByteArray convertFromUnicode( const QChar *in, int length, ConverterState *state ) const override;
-    QByteArray name() const override;
-    QList<QByteArray> aliases() const override;
-    int mibEnum() const override;
+    [[nodiscard]] QByteArray name() const override;
+    [[nodiscard]] QList<QByteArray> aliases() const override;
+    [[nodiscard]] int mibEnum() const override;
 
     /**
      * Returns a list of supported text codecs.

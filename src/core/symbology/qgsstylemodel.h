@@ -72,7 +72,7 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
      *
      * \see setIconSizes()
      */
-    QList< QSize > iconSizes() const;
+    [[nodiscard]] QList< QSize > iconSizes() const;
 
     /**
      * Sets the target screen \a properties to use when generating icons.
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
      * \see setTargetScreenProperties()
      * \since QGIS 3.32
      */
-    QSet< QgsScreenProperties > targetScreenProperties() const;
+    [[nodiscard]] QSet< QgsScreenProperties > targetScreenProperties() const;
 
   signals:
 
@@ -302,7 +302,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      *
      * \see setFilterString()
      */
-    QString filterString() const { return mFilterString; }
+    [[nodiscard]] QString filterString() const { return mFilterString; }
 
     /**
      * Returns the style entity type filter.
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      * \note This filter is only active if entityFilterEnabled() is TRUE.
      * \see setEntityFilter()
      */
-    QgsStyle::StyleEntity entityFilter() const;
+    [[nodiscard]] QgsStyle::StyleEntity entityFilter() const;
 
     /**
      * Sets the style entity type \a filter.
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      * \see setEntityFilterEnabled()
      * \see entityFilter()
      */
-    bool entityFilterEnabled() const;
+    [[nodiscard]] bool entityFilterEnabled() const;
 
     /**
      * Sets whether filtering by entity type is \a enabled.
@@ -359,7 +359,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      *
      * \see setSymbolType()
      */
-    Qgis::SymbolType symbolType() const;
+    [[nodiscard]] Qgis::SymbolType symbolType() const;
 
     /**
      * Sets the symbol \a type filter.
@@ -376,7 +376,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      * \see setSymbolTypeFilterEnabled()
      * \see Qgis::SymbolType()
      */
-    bool symbolTypeFilterEnabled() const;
+    [[nodiscard]] bool symbolTypeFilterEnabled() const;
 
     /**
      * Sets whether filtering by symbol type is \a enabled.
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      *
      * \see setLayerType()
      */
-    Qgis::GeometryType layerType() const;
+    [[nodiscard]] Qgis::GeometryType layerType() const;
 
     /**
      * Sets the layer \a type filter. Set \a type to Qgis::GeometryType::Unknown if no
@@ -429,7 +429,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      *
      * \see setTagId()
      */
-    int tagId() const;
+    [[nodiscard]] int tagId() const;
 
     /**
      * Sets a \a tag to filter style entities by. Only entities with the given
@@ -450,7 +450,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      * \see setTagString()
      * \since QGIS 3.26
      */
-    QString tagString() const;
+    [[nodiscard]] QString tagString() const;
 
     /**
      * Sets a smart group \a id to filter style entities by. Only entities within the given
@@ -473,17 +473,17 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      *
      * \see setSmartGroupId()
      */
-    int smartGroupId() const;
+    [[nodiscard]] int smartGroupId() const;
 
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
     /**
      * Returns TRUE if the model is showing only favorited entities.
      *
      * \see setFavoritesOnly()
      */
-    bool favoritesOnly() const;
+    [[nodiscard]] bool favoritesOnly() const;
 
     /**
      * Sets whether the model should show only favorited entities.

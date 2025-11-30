@@ -39,7 +39,7 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     void activate() override;
     void deactivate() override;
 
-    Flags flags() const override;
+    [[nodiscard]] Flags flags() const override;
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
@@ -51,14 +51,14 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
      *
      * \since QGIS 3.12
      */
-    bool isDragging() const { return mDragging; }
+    [[nodiscard]] bool isDragging() const { return mDragging; }
 
     /**
      * Returns TRUE if a pinch operation is in progress.
      *
      * \since QGIS 4.0
      */
-    bool isPinching() const { return mPinching; }
+    [[nodiscard]] bool isPinching() const { return mPinching; }
 
   signals:
 

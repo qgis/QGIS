@@ -56,7 +56,7 @@ class GUI_EXPORT QgsHistoryEntry
      *
      * \since QGIS 3.32
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Entry ID.

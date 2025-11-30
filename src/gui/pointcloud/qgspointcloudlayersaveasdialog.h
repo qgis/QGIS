@@ -52,22 +52,22 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
      * The format in which the export should be written.
      * \see QgsVectorFileWriter::filterForDriver()
      */
-    QgsPointCloudLayerExporter::ExportFormat exportFormat() const;
+    [[nodiscard]] QgsPointCloudLayerExporter::ExportFormat exportFormat() const;
 
     /**
      * Returns the target filename.
      */
-    QString filename() const;
+    [[nodiscard]] QString filename() const;
 
     /**
      * Returns the target layer name
      */
-    QString layername() const;
+    [[nodiscard]] QString layername() const;
 
     /**
      * Returns the CRS chosen for export
      */
-    QgsCoordinateReferenceSystem crsObject() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crsObject() const;
 
     /**
      * Sets a map \a canvas to associate with the dialog.
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
      *
      * \see setAddToCanvas()
      */
-    bool addToCanvas() const;
+    [[nodiscard]] bool addToCanvas() const;
 
     /**
      * Sets whether the  "add to canvas" checkbox should be \a checked.
@@ -92,66 +92,66 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
      * Determines if filtering the export by an extent is activated.
      * \see filterExtent()
      */
-    bool hasFilterExtent() const;
+    [[nodiscard]] bool hasFilterExtent() const;
 
     /**
      * Determines the extent to be exported.
      * \see hasFilterExtent()
      */
-    QgsRectangle filterExtent() const;
+    [[nodiscard]] QgsRectangle filterExtent() const;
 
     /**
      * Determines if points will be spatially filtered by a layer's features.
      */
-    bool hasFilterLayer() const;
+    [[nodiscard]] bool hasFilterLayer() const;
 
     /**
      * Returns the layer responsible for spatially filtering points.
      */
-    QgsMapLayer *filterLayer() const;
+    [[nodiscard]] QgsMapLayer *filterLayer() const;
 
     /**
      * Determines if only the selected features from the filterLayer will be used for spatial filtering.
      */
-    bool filterLayerSelectedOnly() const;
+    [[nodiscard]] bool filterLayerSelectedOnly() const;
 
     /**
      * Determines if attributes will be exported as fields.
      * \see attributes()
      */
-    bool hasAttributes() const;
+    [[nodiscard]] bool hasAttributes() const;
 
     /**
      * Returns a list of attributes which are selected for saving.
      */
-    QStringList attributes() const;
+    [[nodiscard]] QStringList attributes() const;
 
     /**
      * Determines if filtering by Z values is activated.
      * \see zRange()
      */
-    bool hasZRange() const;
+    [[nodiscard]] bool hasZRange() const;
 
     /**
      * Determines the Z range of points to be exported.
      * \see hasZRange()
      */
-    QgsDoubleRange zRange() const;
+    [[nodiscard]] QgsDoubleRange zRange() const;
 
     /**
      * Determines if limiting the number of exported points is enabled.
      * \see pointsLimit()
      */
-    bool hasPointsLimit() const;
+    [[nodiscard]] bool hasPointsLimit() const;
 
     /**
      * Determines the limit to the total number of points.
      * \see hasPointsLimit()
      */
-    int pointsLimit() const;
+    [[nodiscard]] int pointsLimit() const;
 
     //! Returns creation action
-    QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
+    [[nodiscard]] QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
 
   private slots:
 

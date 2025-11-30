@@ -26,13 +26,13 @@
 class QgsHanaSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QgsHanaProvider::HANA_KEY; }
+    [[nodiscard]] QString providerKey() const override { return QgsHanaProvider::HANA_KEY; }
 
-    QString text() const override { return QObject::tr( "SAP HANA" ); }
+    [[nodiscard]] QString text() const override { return QObject::tr( "SAP HANA" ); }
 
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 70; }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 70; }
 
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHanaLayer.svg" ) ); }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHanaLayer.svg" ) ); }
 
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {

@@ -53,7 +53,7 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
     /**
      * Returns TRUE if the GPS device is currently connected.
      */
-    bool isConnected() const;
+    [[nodiscard]] bool isConnected() const;
 
     /**
      * Sets a GPS \a connection to use within QGIS app.
@@ -66,12 +66,12 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
     /**
      * Returns the last recorded GPS position.
      */
-    QgsPoint lastValidLocation() const;
+    [[nodiscard]] QgsPoint lastValidLocation() const;
 
     /**
      * Returns the last received GPS information.
      */
-    QgsGpsInformation lastInformation() const;
+    [[nodiscard]] QgsGpsInformation lastInformation() const;
 
   public slots:
 

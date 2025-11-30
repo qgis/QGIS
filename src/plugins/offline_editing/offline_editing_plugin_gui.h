@@ -31,8 +31,8 @@ class QgsSelectLayerTreeModel : public QgsLayerTreeModel
     Q_OBJECT
   public:
     QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 };
 
 class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditingPluginGuiBase
@@ -43,11 +43,11 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     QgsOfflineEditingPluginGui( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsOfflineEditingPluginGui() override;
 
-    QString offlineDataPath() const;
-    QString offlineDbFile() const;
-    QStringList selectedLayerIds() const;
-    bool onlySelected() const;
-    QgsOfflineEditing::ContainerType dbContainerType() const;
+    [[nodiscard]] QString offlineDataPath() const;
+    [[nodiscard]] QString offlineDbFile() const;
+    [[nodiscard]] QStringList selectedLayerIds() const;
+    [[nodiscard]] bool onlySelected() const;
+    [[nodiscard]] QgsOfflineEditing::ContainerType dbContainerType() const;
 
   public slots:
     //! Change the selection of layers in the list

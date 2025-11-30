@@ -83,7 +83,7 @@ class CORE_EXPORT QgsOptional
      * Check if this optional is enabled
      *
      */
-    bool enabled() const
+    [[nodiscard]] bool enabled() const
     {
       return mEnabled;
     }
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsOptional
      * Access the payload data
      *
      */
-    T data() const
+    [[nodiscard]] T data() const
     {
       return mData;
     }

@@ -47,15 +47,15 @@ class ANALYSIS_EXPORT HalfEdge
     HalfEdge( int dual, int next, int point, bool mbreak, bool forced );
 
     //! Returns the number of the dual HalfEdge
-    int getDual() const;
+    [[nodiscard]] int getDual() const;
     //! Returns the number of the next HalfEdge
-    int getNext() const;
+    [[nodiscard]] int getNext() const;
     //! Returns the number of the point at which this HalfEdge points
-    int getPoint() const;
+    [[nodiscard]] int getPoint() const;
     //! Returns, whether the HalfEdge belongs to a break line or not
-    bool getBreak() const;
+    [[nodiscard]] bool getBreak() const;
     //! Returns, whether the HalfEdge belongs to a constrained edge or not
-    bool getForced() const;
+    [[nodiscard]] bool getForced() const;
     //! Sets the number of the dual HalfEdge
     void setDual( int d );
     //! Sets the number of the next HalfEdge

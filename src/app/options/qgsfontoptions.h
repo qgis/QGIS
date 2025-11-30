@@ -36,7 +36,7 @@ class QgsFontOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsFontOpt
      * Constructor for QgsFontOptionsWidget with the specified \a parent widget.
      */
     QgsFontOptionsWidget( QWidget *parent );
-    QString helpKey() const override;
+    [[nodiscard]] QString helpKey() const override;
     void apply() override;
 };
 
@@ -48,9 +48,9 @@ class QgsFontOptionsFactory : public QgsOptionsWidgetFactory
   public:
     QgsFontOptionsFactory();
 
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
-    QString pagePositionHint() const override;
+    [[nodiscard]] QString pagePositionHint() const override;
 };
 
 

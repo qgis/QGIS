@@ -127,7 +127,7 @@ class PalRtree : public RTree<T *, float, 2, float>
     double mXRes = 1;
     double mYRes = 1;
     const QgsRectangle mMaxBounds;
-    std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
+    [[nodiscard]] std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
     {
       return
       {

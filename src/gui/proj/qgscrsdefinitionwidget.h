@@ -44,7 +44,7 @@ class GUI_EXPORT QgsCrsDefinitionWidget : public QWidget, private Ui::QgsCrsDefi
      *
      * \see setCrs()
      */
-    QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Sets the current \a crs to display in the widget.
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsCrsDefinitionWidget : public QWidget, private Ui::QgsCrsDefi
      *
      * \see setFormat()
      */
-    Qgis::CrsDefinitionFormat format() const;
+    [[nodiscard]] Qgis::CrsDefinitionFormat format() const;
 
     /**
      * Sets the CRS \a format.
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsCrsDefinitionWidget : public QWidget, private Ui::QgsCrsDefi
      *
      * \see setDefinitionString()
      */
-    QString definitionString() const;
+    [[nodiscard]] QString definitionString() const;
 
     /**
      * Sets the current \a definition string.

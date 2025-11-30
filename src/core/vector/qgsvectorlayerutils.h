@@ -64,7 +64,7 @@ class CORE_EXPORT QgsVectorLayerUtils
         /**
          * Returns all the layers on which features have been duplicated
          */
-        QList<QgsVectorLayer *> layers() const;
+        [[nodiscard]] QList<QgsVectorLayer *> layers() const;
 
         /**
          * Returns the duplicated features in the given layer

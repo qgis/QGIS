@@ -41,7 +41,7 @@ class QgsEmbeddedLayerTreeModel : public QgsLayerTreeModel
      */
     explicit QgsEmbeddedLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
 
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 };
 
 /**
@@ -73,12 +73,12 @@ class APP_EXPORT QgsProjectLayerGroupDialog : public QDialog, private Ui::QgsPro
 
     ~QgsProjectLayerGroupDialog() override;
 
-    QStringList selectedGroups() const;
-    QStringList selectedLayerIds() const;
-    QStringList selectedLayerNames() const;
-    QString selectedProjectFile() const;
+    [[nodiscard]] QStringList selectedGroups() const;
+    [[nodiscard]] QStringList selectedLayerIds() const;
+    [[nodiscard]] QStringList selectedLayerNames() const;
+    [[nodiscard]] QString selectedProjectFile() const;
 
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
   private slots:
     void onTreeViewSelectionChanged();

@@ -38,10 +38,10 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
     virtual ~QgsLayerTreeEmbeddedWidgetProvider() = default;
 
     //! Unique name of the provider (among other providers)
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     //! Human readable name - may be translatable with tr()
-    virtual QString name() const = 0;
+    [[nodiscard]] virtual QString name() const = 0;
 
     /**
      * Factory to create widgets. The returned widget is owned by the caller.
@@ -84,10 +84,10 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
     QgsLayerTreeEmbeddedWidgetRegistry &operator=( const QgsLayerTreeEmbeddedWidgetRegistry &other ) = delete;
 
     //! Returns list of all registered providers
-    QStringList providers() const;
+    [[nodiscard]] QStringList providers() const;
 
     //! Gets provider object from the provider's ID
-    QgsLayerTreeEmbeddedWidgetProvider *provider( const QString &providerId ) const;
+    [[nodiscard]] QgsLayerTreeEmbeddedWidgetProvider *provider( const QString &providerId ) const;
 
     /**
      * Register a provider, takes ownership of the object.

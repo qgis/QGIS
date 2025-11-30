@@ -28,10 +28,10 @@
 class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    QString providerKey() const override { return QgsWFSProvider::WFS_PROVIDER_KEY; }
-    QString text() const override { return QObject::tr( "WFS / OGC API - Features" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 20; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ); }
+    [[nodiscard]] QString providerKey() const override { return QgsWFSProvider::WFS_PROVIDER_KEY; }
+    [[nodiscard]] QString text() const override { return QObject::tr( "WFS / OGC API - Features" ); }
+    [[nodiscard]] int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 20; }
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsWFSSourceSelect( parent, fl, widgetMode );
@@ -42,7 +42,7 @@ class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
 class QgsWfsSubsetStringEditorProvider : public QgsSubsetStringEditorProvider
 {
   public:
-    QString providerKey() const override { return QgsWFSProvider::WFS_PROVIDER_KEY; }
+    [[nodiscard]] QString providerKey() const override { return QgsWFSProvider::WFS_PROVIDER_KEY; }
 
     bool canHandleLayer( QgsVectorLayer *layer ) const override
     {

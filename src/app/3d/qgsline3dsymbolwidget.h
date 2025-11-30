@@ -35,7 +35,7 @@ class QgsLine3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Line3DSymbol
 
     void setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer ) override;
     QgsAbstract3DSymbol *symbol() override;
-    QString symbolType() const override;
+    [[nodiscard]] QString symbolType() const override;
 
   private slots:
     void updateGuiState();

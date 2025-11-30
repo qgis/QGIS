@@ -27,12 +27,12 @@ class APP_EXPORT QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter
 
   public:
     QgsExpressionCalculatorLocatorFilter( QObject *parent = nullptr );
-    QgsExpressionCalculatorLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "calculator" ); }
-    QString displayName() const override { return tr( "Calculator" ); }
-    Priority priority() const override { return Highest; }
-    QString prefix() const override { return QStringLiteral( "=" ); }
-    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
+    [[nodiscard]] QgsExpressionCalculatorLocatorFilter *clone() const override;
+    [[nodiscard]] QString name() const override { return QStringLiteral( "calculator" ); }
+    [[nodiscard]] QString displayName() const override { return tr( "Calculator" ); }
+    [[nodiscard]] Priority priority() const override { return Highest; }
+    [[nodiscard]] QString prefix() const override { return QStringLiteral( "=" ); }
+    [[nodiscard]] QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;

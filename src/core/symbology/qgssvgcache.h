@@ -83,7 +83,7 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
     bool isMissingImage = false;
 
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
-    int dataSize() const override;
+    [[nodiscard]] int dataSize() const override;
     void dump() const override;
 
 };

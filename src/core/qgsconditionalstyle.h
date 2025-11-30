@@ -58,7 +58,7 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
      *
      * \see setRowStyles()
      */
-    QgsConditionalStyles rowStyles() const;
+    [[nodiscard]] QgsConditionalStyles rowStyles() const;
 
     /**
      * Sets the conditional \a styles that apply to full rows of data in the attribute table.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
      *
      * \see setFieldStyles()
      */
-    QList<QgsConditionalStyle> fieldStyles( const QString &fieldName ) const;
+    [[nodiscard]] QList<QgsConditionalStyle> fieldStyles( const QString &fieldName ) const;
 
     /**
      * Reads the condition styles state from a DOM node.
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
      * Returns TRUE if at least one rule needs geometry.
      * \since QGIS 3.26.3
      */
-    bool rulesNeedGeometry() const;
+    [[nodiscard]] bool rulesNeedGeometry() const;
 
   signals:
 
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsConditionalStyle
      *
      * \returns QPixmap preview of the style
      */
-    QPixmap renderPreview( const QSize &size = QSize() ) const;
+    [[nodiscard]] QPixmap renderPreview( const QSize &size = QSize() ) const;
 
     /**
      * \brief Set the name of the style.  Names are optional but handy for display
@@ -201,71 +201,71 @@ class CORE_EXPORT QgsConditionalStyle
      * \brief The name of the style.
      * \returns The name of the style. Names are optional so might be empty.
      */
-    QString displayText() const;
+    [[nodiscard]] QString displayText() const;
 
     /**
      * \brief The name of the style.
      * \returns The name of the style. Names are optional so might be empty.
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * \brief The icon set for style generated from the set symbol
      * \returns A QPixmap that was set for the icon using the symbol
      */
-    QPixmap icon() const { return mIcon; }
+    [[nodiscard]] QPixmap icon() const { return mIcon; }
 
     /**
      * \brief The symbol used to generate the icon for the style
      * \returns The QgsSymbol used for the icon
      */
-    QgsSymbol *symbol() const { return mSymbol.get(); }
+    [[nodiscard]] QgsSymbol *symbol() const { return mSymbol.get(); }
 
     /**
      * \brief The text color set for style
      * \returns QColor for text color
      */
-    QColor textColor() const { return mTextColor; }
+    [[nodiscard]] QColor textColor() const { return mTextColor; }
 
     /**
      * \brief Check if the text color is valid for render.
      * Valid colors are non invalid QColors and a color with a > 0 alpha
      * \returns TRUE of the color set for text is valid.
      */
-    bool validTextColor() const;
+    [[nodiscard]] bool validTextColor() const;
 
     /**
      * \brief The background color for style
      * \returns QColor for background color
      */
-    QColor backgroundColor() const { return mBackColor; }
+    [[nodiscard]] QColor backgroundColor() const { return mBackColor; }
 
     /**
      * \brief Check if the background color is valid for render.
      * Valid colors are non invalid QColors and a color with a > 0 alpha
      * \returns TRUE of the color set for background is valid.
      */
-    bool validBackgroundColor() const;
+    [[nodiscard]] bool validBackgroundColor() const;
 
     /**
      * \brief The font for the style
      * \returns QFont for the style
      */
-    QFont font() const { return mFont; }
+    [[nodiscard]] QFont font() const { return mFont; }
 
     /**
      * \brief The condition rule set for the style. Rule may contain variable \@value
      * to represent the current value
      * \returns QString of the current set rule
      */
-    QString rule() const { return mRule; }
+    [[nodiscard]] QString rule() const { return mRule; }
 
     /**
      * \brief isValid Check if this rule is valid.  A valid rule has one or more properties
      * set.
      * \returns TRUE if the rule is valid.
      */
-    bool isValid() const { return mValid; }
+    [[nodiscard]] bool isValid() const { return mValid; }
 
     /**
      * \brief Find and return the matching styles for the value and feature.

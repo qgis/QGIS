@@ -128,7 +128,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * \see hasCustomLayerOrder
      *
      */
-    QList<QgsMapLayer *> customLayerOrder() const;
+    [[nodiscard]] QList<QgsMapLayer *> customLayerOrder() const;
 
     /**
      * The order in which layers will be rendered on the canvas.
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * \see customLayerOrder
      * \see layerAndCustomNodeOrder()
      */
-    QList<QgsMapLayer *> layerOrder() const;
+    [[nodiscard]] QList<QgsMapLayer *> layerOrder() const;
 
     /**
      * Determines if the layer order should be derived from the layer tree
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * \see customLayerOrder
      *
      */
-    bool hasCustomLayerOrder() const;
+    [[nodiscard]] bool hasCustomLayerOrder() const;
 
     /**
      * Determines if the layer order should be derived from the layer tree
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * \see layerOrder()
      * \since QGIS 4.0
      */
-    QList<QgsLayerTreeNode *> layerAndCustomNodeOrder() const;
+    [[nodiscard]] QList<QgsLayerTreeNode *> layerAndCustomNodeOrder() const;
 
     /**
      * Load the layer tree from an XML element.
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
 
     void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
 
-    QgsLayerTree *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsLayerTree *clone() const override SIP_FACTORY;
 
     /**
      * Clear any information from this layer tree.

@@ -105,21 +105,21 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
      *
      * May return an invalid CRS if no CRS is associated with the canvas.
      */
-    virtual QgsCoordinateReferenceSystem crs() const;
+    [[nodiscard]] virtual QgsCoordinateReferenceSystem crs() const;
 
     /**
      * Converts a \a point on the canvas to the associated map coordinate.
      *
      * May return an empty point if the canvas point cannot be converted to a map point.
      */
-    virtual QgsPoint toMapCoordinates( const QgsPointXY &point ) const;
+    [[nodiscard]] virtual QgsPoint toMapCoordinates( const QgsPointXY &point ) const;
 
     /**
      * Converts a \a point in map coordinates to the associated canvas point.
      *
      * May return an empty point if the map point cannot be converted to a canvas point.
      */
-    virtual QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const;
+    [[nodiscard]] virtual QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const;
 
     /**
      * Pans the plot contents by \a dx, \a dy in canvas units.

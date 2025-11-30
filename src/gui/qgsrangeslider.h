@@ -51,7 +51,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      * \see setMinimum()
      * \see maximum()
      */
-    int minimum() const;
+    [[nodiscard]] int minimum() const;
 
     /**
      * Returns the maximum value allowed by the widget.
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      * \see setMaximum()
      * \see minimum()
      */
-    int maximum() const;
+    [[nodiscard]] int maximum() const;
 
     /**
      * Returns the lower value for the range selected in the widget.
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      * \see upperValue()
      * \see setLowerValue()
      */
-    int lowerValue() const;
+    [[nodiscard]] int lowerValue() const;
 
     /**
      * Returns the upper value for the range selected in the widget.
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      * \see lowerValue()
      * \see setUpperValue()
      */
-    int upperValue() const;
+    [[nodiscard]] int upperValue() const;
 
     /**
      * Sets the \a position of the tick marks shown in the widget.
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      *
      * \see setTickPosition()
      */
-    QSlider::TickPosition tickPosition() const;
+    [[nodiscard]] QSlider::TickPosition tickPosition() const;
 
     /**
      * Sets the \a interval for tick marks shown in the widget.
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      *
      * \see setTickInterval()
      */
-    int tickInterval() const;
+    [[nodiscard]] int tickInterval() const;
 
     /**
      * Sets the \a orientation of the slider.
@@ -117,7 +117,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      *
      * \see setOrientation()
      */
-    Qt::Orientation orientation() const;
+    [[nodiscard]] Qt::Orientation orientation() const;
 
     /**
      * Returns TRUE if the slider has its values flipped.
@@ -127,7 +127,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      *
      * \see setFlippedDirection()
      */
-    bool flippedDirection() const;
+    [[nodiscard]] bool flippedDirection() const;
 
     /**
      * Sets whether the slider has its values \a flipped.
@@ -145,8 +145,8 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
-    QSize sizeHint() const override;
-    QSize minimumSizeHint() const override;
+    [[nodiscard]] QSize sizeHint() const override;
+    [[nodiscard]] QSize minimumSizeHint() const override;
 
     /**
      * Returns the single step value for the widget.
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      * \see setSingleStep()
      * \see pageStep()
      */
-    int singleStep() const;
+    [[nodiscard]] int singleStep() const;
 
     /**
      * Returns the page step value for the widget.
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      * \see setPageStep()
      * \see singleStep()
      */
-    int pageStep() const;
+    [[nodiscard]] int pageStep() const;
 
     /**
      * Returns the slider's fixed range size, or -1 if not set.
@@ -178,7 +178,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
      * \see setFixedRangeSize()
      * \since QGIS 3.38
      */
-    int fixedRangeSize() const;
+    [[nodiscard]] int fixedRangeSize() const;
 
     /**
      * Sets the slider's fixed range \a size. Set to -1 if no fixed size is desired.
@@ -289,8 +289,8 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     void fixedRangeSizeChanged( int size );
 
   private:
-    int pick( const QPoint &pt ) const;
-    int pixelPosToRangeValue( int pos ) const;
+    [[nodiscard]] int pick( const QPoint &pt ) const;
+    [[nodiscard]] int pixelPosToRangeValue( int pos ) const;
     bool updateHoverControl( const QPoint &pos );
     bool newHoverControl( const QPoint &pos );
     QRect selectedRangeRect();
@@ -315,7 +315,7 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     };
 
     void applyStep( int step );
-    int unFlippedSliderPosition( int value ) const;
+    [[nodiscard]] int unFlippedSliderPosition( int value ) const;
 
     Control mActiveControl = None;
     int mStartDragPos = -1;

@@ -41,21 +41,21 @@ class CORE_EXPORT QgsPercentageNumericFormat : public QgsBasicNumericFormat
       */
     QgsPercentageNumericFormat();
 
-    QString id() const override;
-    QString visibleName() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString visibleName() const override;
     int sortKey() override;
-    double suggestSampleValue() const override;
-    QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
-    QgsNumericFormat *clone() const override SIP_FACTORY;
-    QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
-    QVariantMap configuration( const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] double suggestSampleValue() const override;
+    [[nodiscard]] QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
+    [[nodiscard]] QgsNumericFormat *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
+    [[nodiscard]] QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
      * Returns the format of the incoming values.
      *
      * \see setInputValues()
      */
-    InputValues inputValues() const;
+    [[nodiscard]] InputValues inputValues() const;
 
     /**
      * Sets the \a format of the incoming values.

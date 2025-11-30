@@ -39,9 +39,9 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
           , mFeatureId( fid )
         {}
 
-        QString layerId() const { return mLayerId; }
-        QString layerName() const { return mLayerName; }
-        QgsFeatureId featureId() const { return mFeatureId; }
+        [[nodiscard]] QString layerId() const { return mLayerId; }
+        [[nodiscard]] QString layerName() const { return mLayerName; }
+        [[nodiscard]] QgsFeatureId featureId() const { return mFeatureId; }
         bool operator==( const OverlappedFeature &other ) const { return mLayerId == other.layerId() && mFeatureId == other.featureId(); }
 
       private:
@@ -106,15 +106,15 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
      * Overlapping areas smaller than the reducedTolerance parameter of the \a context are ignored.
      */
     QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
-    QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    [[nodiscard]] QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
 
-    QString description() const override;
-    QString id() const override;
-    QgsGeometryCheck::Flags flags() const override;
-    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+    [[nodiscard]] QString description() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QgsGeometryCheck::Flags flags() const override;
+    [[nodiscard]] QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
     ///@cond private
     static QString factoryDescription() SIP_SKIP;

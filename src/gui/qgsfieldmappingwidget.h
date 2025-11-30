@@ -65,13 +65,13 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     void setDestinationEditable( bool editable );
 
     //! Returns TRUE if the destination fields are editable in the model
-    bool destinationEditable() const;
+    [[nodiscard]] bool destinationEditable() const;
 
     //! Returns the underlying mapping model
-    QgsFieldMappingModel *model() const;
+    [[nodiscard]] QgsFieldMappingModel *model() const;
 
     //! Returns a list of Field objects representing the current status of the underlying mapping model
-    QList<QgsFieldMappingModel::Field> mapping() const;
+    [[nodiscard]] QList<QgsFieldMappingModel::Field> mapping() const;
 
     /**
      * Returns a map of destination field name to QgsProperty definition for field value,
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
      *
      * \see setFieldPropertyMap()
      */
-    QMap<QString, QgsProperty> fieldPropertyMap() const;
+    [[nodiscard]] QMap<QString, QgsProperty> fieldPropertyMap() const;
 
     /**
      * Sets a map of destination field name to QgsProperty definition for field value.

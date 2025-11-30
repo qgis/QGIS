@@ -57,7 +57,7 @@ class QgsMeshRendererVectorSettingsWidget : public QWidget, private Ui::QgsMeshR
     void setActiveDatasetGroup( int groupIndex ) { mActiveDatasetGroup = groupIndex; }
 
     //! Returns vector settings
-    QgsMeshRendererVectorSettings settings() const;
+    [[nodiscard]] QgsMeshRendererVectorSettings settings() const;
 
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();

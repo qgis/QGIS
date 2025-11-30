@@ -36,7 +36,7 @@ class QgsQsciLexerPython : public QsciLexerPython
   public:
     QgsQsciLexerPython( QObject *parent = nullptr );
 
-    const char *keywords( int set ) const override;
+    [[nodiscard]] const char *keywords( int set ) const override;
 };
 ///@endcond
 #endif
@@ -76,8 +76,8 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      */
     QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QString> &filenames = QList<QString>(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
 
-    Qgis::ScriptLanguage language() const override;
-    Qgis::ScriptLanguageCapabilities languageCapabilities() const override;
+    [[nodiscard]] Qgis::ScriptLanguage language() const override;
+    [[nodiscard]] Qgis::ScriptLanguageCapabilities languageCapabilities() const override;
 
     /**
      * Load APIs from one or more files
@@ -95,21 +95,21 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      *
      * \since QGIS 3.30
      */
-    bool isCursorInsideStringLiteralOrComment() const;
+    [[nodiscard]] bool isCursorInsideStringLiteralOrComment() const;
 
     /**
      * Returns the character before the cursor, or an empty string if cursor is set at start
      *
      * \since QGIS 3.30
      */
-    QString characterBeforeCursor() const;
+    [[nodiscard]] QString characterBeforeCursor() const;
 
     /**
      * Returns the character after the cursor, or an empty string if the cursor is set at end
      *
      * \since QGIS 3.30
      */
-    QString characterAfterCursor() const;
+    [[nodiscard]] QString characterAfterCursor() const;
 
     /**
      * Updates the editor capabilities.

@@ -47,8 +47,8 @@ class GUI_EXPORT QgsProviderSublayerDialogModel : public QgsProviderSublayerMode
      */
     QgsProviderSublayerDialogModel( QObject *parent = nullptr );
 
-    QVariant data( const QModelIndex &index, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Sets whether geometry types are resolved.
@@ -85,17 +85,17 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
     /**
      * Returns the list of selected layers.
      */
-    QList<QgsProviderSublayerDetails> selectedLayers() const;
+    [[nodiscard]] QList<QgsProviderSublayerDetails> selectedLayers() const;
 
     /**
      * Returns the list of selected non-layer items (e.g. embedded QGIS project items).
      */
-    QList<QgsProviderSublayerModel::NonLayerItem> selectedNonLayerItems() const;
+    [[nodiscard]] QList<QgsProviderSublayerModel::NonLayerItem> selectedNonLayerItems() const;
 
     /**
      * Returns an appropriate name for the layer group.
      */
-    QString groupName() const;
+    [[nodiscard]] QString groupName() const;
 
     /**
      * Sets an appropriate name for the layer group.

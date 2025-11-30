@@ -93,8 +93,8 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
       t = top;
     }
 
-    qint64 bottom() const { return b; }
-    qint64 top() const { return t; }
+    [[nodiscard]] qint64 bottom() const { return b; }
+    [[nodiscard]] qint64 top() const { return t; }
 
   private:
     Q_DISABLE_COPY( QgsLongLongValidator )

@@ -40,7 +40,7 @@ class QgsLayerNotesDialog : public QDialog
     QgsLayerNotesDialog( QWidget *parent );
 
     void setNotes( const QString &notes );
-    QString notes() const;
+    [[nodiscard]] QString notes() const;
 
   private:
     QgsRichTextEditor *mEditor = nullptr;

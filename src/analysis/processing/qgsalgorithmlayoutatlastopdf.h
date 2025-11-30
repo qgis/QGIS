@@ -36,10 +36,10 @@ class QgsLayoutAtlasToPdfAlgorithmBase : public QgsProcessingAlgorithm
   public:
     QgsLayoutAtlasToPdfAlgorithmBase() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    Qgis::ProcessingAlgorithmFlags flags() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
 
     QgsLayoutAtlas *atlas();
     QgsLayoutExporter exporter();
@@ -61,11 +61,11 @@ class QgsLayoutAtlasToPdfAlgorithm : public QgsLayoutAtlasToPdfAlgorithmBase
   public:
     QgsLayoutAtlasToPdfAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QString name() const override;
-    QString displayName() const override;
-    QString shortDescription() const override;
-    QString shortHelpString() const override;
-    QgsLayoutAtlasToPdfAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QgsLayoutAtlasToPdfAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     QVariantMap exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -79,11 +79,11 @@ class QgsLayoutAtlasToMultiplePdfAlgorithm : public QgsLayoutAtlasToPdfAlgorithm
   public:
     QgsLayoutAtlasToMultiplePdfAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QString name() const override;
-    QString displayName() const override;
-    QString shortDescription() const override;
-    QString shortHelpString() const override;
-    QgsLayoutAtlasToMultiplePdfAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QgsLayoutAtlasToMultiplePdfAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     QVariantMap exportAtlas( QgsLayoutAtlas *atlas, const QgsLayoutExporter &exporter, const QgsLayoutExporter::PdfExportSettings &settings, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

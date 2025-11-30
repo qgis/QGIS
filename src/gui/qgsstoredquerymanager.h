@@ -75,12 +75,12 @@ class GUI_EXPORT QgsStoredQueryManager : public QObject
     /**
      * Returns a list of the names of all stored queries for the specified \a backend.
      */
-    QStringList allQueryNames( Qgis::QueryStorageBackend backend = Qgis::QueryStorageBackend::LocalProfile ) const;
+    [[nodiscard]] QStringList allQueryNames( Qgis::QueryStorageBackend backend = Qgis::QueryStorageBackend::LocalProfile ) const;
 
     /**
      * Returns the query definition with matching \a name, from the specified \a backend.
      */
-    QString query( const QString &name, Qgis::QueryStorageBackend backend = Qgis::QueryStorageBackend::LocalProfile ) const;
+    [[nodiscard]] QString query( const QString &name, Qgis::QueryStorageBackend backend = Qgis::QueryStorageBackend::LocalProfile ) const;
 
     /**
      * \ingroup gui
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsStoredQueryManager : public QObject
      *
      * Queries will be sorted by name.
      */
-    QList< QgsStoredQueryManager::QueryDetails > allQueries() const;
+    [[nodiscard]] QList< QgsStoredQueryManager::QueryDetails > allQueries() const;
 
   signals:
 

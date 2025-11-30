@@ -54,20 +54,20 @@ class CORE_EXPORT QgsGoogleMapsGeocoder : public QgsGeocoderInterface
      */
     QgsGoogleMapsGeocoder( const QString &apiKey, const QString &regionBias = QString() );
 
-    Flags flags() const override;
-    QgsFields appendedFields() const override;
-    Qgis::WkbType wkbType() const override;
+    [[nodiscard]] Flags flags() const override;
+    [[nodiscard]] QgsFields appendedFields() const override;
+    [[nodiscard]] Qgis::WkbType wkbType() const override;
     QList< QgsGeocoderResult > geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback = nullptr ) const override;
 
     /**
      * Returns the URL generated for geocoding the specified \a address.
      */
-    QUrl requestUrl( const QString &address, const QgsRectangle &bounds = QgsRectangle() ) const;
+    [[nodiscard]] QUrl requestUrl( const QString &address, const QgsRectangle &bounds = QgsRectangle() ) const;
 
     /**
      * Converts a JSON result returned from the Google Maps service to a geocoder result object.
      */
-    QgsGeocoderResult jsonToResult( const QVariantMap &json ) const;
+    [[nodiscard]] QgsGeocoderResult jsonToResult( const QVariantMap &json ) const;
 
     /**
      * Sets a specific API \a endpoint to use for requests. This is for internal testing purposes only.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsGoogleMapsGeocoder : public QgsGeocoderInterface
      *
      * \see setApiKey()
      */
-    QString apiKey() const;
+    [[nodiscard]] QString apiKey() const;
 
     /**
      * Sets the API \a key to use when accessing the Google Maps API.
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsGoogleMapsGeocoder : public QgsGeocoderInterface
      *
      * \see setRegion()
      */
-    QString region() const;
+    [[nodiscard]] QString region() const;
 
     /**
      * Sets the optional \a region bias which will be used to prioritize results in a certain region.

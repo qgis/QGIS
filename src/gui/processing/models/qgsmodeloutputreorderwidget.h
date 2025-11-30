@@ -55,12 +55,12 @@ class GUI_EXPORT QgsModelOutputReorderWidget : public QWidget, private Ui::QgsMo
     /**
      * Returns the ordered list of outputs.
      */
-    QStringList outputOrder() const;
+    [[nodiscard]] QStringList outputOrder() const;
 
     /**
      * Returns the destination group name for outputs.
      */
-    QString outputGroup() const;
+    [[nodiscard]] QString outputGroup() const;
 
   private:
     QgsProcessingModelAlgorithm *mModel;
@@ -93,12 +93,12 @@ class GUI_EXPORT QgsModelOutputReorderDialog : public QDialog
     /**
      * Returns the ordered list of outputs (by name).
      */
-    QStringList outputOrder() const;
+    [[nodiscard]] QStringList outputOrder() const;
 
     /**
      * Returns the destination group name for outputs.
      */
-    QString outputGroup() const;
+    [[nodiscard]] QString outputGroup() const;
 
   private:
     QgsModelOutputReorderWidget *mWidget = nullptr;

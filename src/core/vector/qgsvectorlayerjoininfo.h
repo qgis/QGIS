@@ -38,27 +38,27 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     //! Sets weak reference to the joined layer
     void setJoinLayer( QgsVectorLayer *layer ) { mJoinLayerRef = QgsVectorLayerRef( layer ); }
     //! Returns joined layer (may be NULLPTR if the reference was set by layer ID and not resolved yet)
-    QgsVectorLayer *joinLayer() const { return mJoinLayerRef.get(); }
+    [[nodiscard]] QgsVectorLayer *joinLayer() const { return mJoinLayerRef.get(); }
 
     //! Sets ID of the joined layer. It will need to be overwritten by setJoinLayer() to a reference to real layer
     void setJoinLayerId( const QString &layerId ) { mJoinLayerRef = QgsVectorLayerRef( layerId ); }
     //! ID of the joined layer - may be used to resolve reference to the joined layer
-    QString joinLayerId() const { return mJoinLayerRef.layerId; }
+    [[nodiscard]] QString joinLayerId() const { return mJoinLayerRef.layerId; }
 
     //! Sets name of the field of our layer that will be used for join
     void setTargetFieldName( const QString &fieldName ) { mTargetFieldName = fieldName; }
     //! Returns name of the field of our layer that will be used for join
-    QString targetFieldName() const { return mTargetFieldName; }
+    [[nodiscard]] QString targetFieldName() const { return mTargetFieldName; }
 
     //! Sets name of the field of joined layer that will be used for join
     void setJoinFieldName( const QString &fieldName ) { mJoinFieldName = fieldName; }
     //! Returns name of the field of joined layer that will be used for join
-    QString joinFieldName() const { return mJoinFieldName; }
+    [[nodiscard]] QString joinFieldName() const { return mJoinFieldName; }
 
     //! Sets prefix of fields from the joined layer. If NULLPTR, joined layer's name will be used.
     void setPrefix( const QString &prefix ) { mPrefix = prefix; }
     //! Returns prefix of fields from the joined layer. If NULLPTR, joined layer's name will be used.
-    QString prefix() const { return mPrefix; }
+    [[nodiscard]] QString prefix() const { return mPrefix; }
 
     //! Sets whether values from the joined layer should be cached in memory to speed up lookups
     void setUsingMemoryCache( bool enabled );
@@ -67,13 +67,13 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      * Returns whether values from the joined layer should be cached in memory to speed up lookups.
      * Will return FALSE if upsertOnEdit is enabled.
      */
-    bool isUsingMemoryCache() const;
+    [[nodiscard]] bool isUsingMemoryCache() const;
 
     /**
      * Returns whether the form has to be dynamically updated with joined fields
      *  when  a feature is being created in the target layer.
      */
-    bool isDynamicFormEnabled() const { return mDynamicForm; }
+    [[nodiscard]] bool isDynamicFormEnabled() const { return mDynamicForm; }
 
     /**
      * Sets whether the form has to be dynamically updated with joined fields
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      * Returns whether joined fields may be edited through the form of
      *  the target layer.
      */
-    bool isEditable() const { return mEditable; }
+    [[nodiscard]] bool isEditable() const { return mEditable; }
 
     /**
      * Sets whether the form of the target layer allows editing joined fields.
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      * Returns whether a feature created on the target layer has to impact
      *  the joined layer by creating a new feature if necessary.
      */
-    bool hasUpsertOnEdit() const { return mUpsertOnEdit; }
+    [[nodiscard]] bool hasUpsertOnEdit() const { return mUpsertOnEdit; }
 
     /**
      * Sets whether a feature created on the target layer has to impact
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      * Returns whether a feature deleted on the target layer has to impact the
      *  joined layer by deleting the corresponding joined feature.
      */
-    bool hasCascadedDelete() const { return mCascadedDelete; }
+    [[nodiscard]] bool hasCascadedDelete() const { return mCascadedDelete; }
 
     /**
      * Sets whether a feature deleted on the target layer has to impact the
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      * \param field the field
      * \returns the prefixed name of the field
      */
-    QString prefixedFieldName( const QgsField &field ) const;
+    [[nodiscard]] QString prefixedFieldName( const QgsField &field ) const;
 
     /**
      * Extract the join feature from the target feature for the current
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      * \param feature A feature from the target layer
      * \returns the corresponding joined feature
      */
-    QgsFeature extractJoinedFeature( const QgsFeature &feature ) const;
+    [[nodiscard]] QgsFeature extractJoinedFeature( const QgsFeature &feature ) const;
 
     /**
      * Sets a list of fields to ignore whatever happens.
@@ -159,14 +159,14 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      * \see setJoinFieldNamesBlockList()
      * \since QGIS 3.14
      */
-    QStringList joinFieldNamesBlockList() const { return mBlockList; }
+    [[nodiscard]] QStringList joinFieldNamesBlockList() const { return mBlockList; }
 
     /**
      * Returns TRUE if blocklisted fields is not empty or if a subset of names
      * has been set.
      *
      */
-    bool hasSubset( bool blocklisted = true ) const;
+    [[nodiscard]] bool hasSubset( bool blocklisted = true ) const;
 
     /**
      * Returns the list of field names to use for joining considering
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      * \see setJoinFieldNamesSubset()
      *
     */
-    QStringList *joinFieldNamesSubset() const { return mJoinFieldsSubset.get(); }
+    [[nodiscard]] QStringList *joinFieldNamesSubset() const { return mJoinFieldsSubset.get(); }
 
   protected:
     //! Join field in the target layer

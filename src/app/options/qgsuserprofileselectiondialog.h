@@ -46,7 +46,7 @@ class APP_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::Qgs
 
 
     /* Return the selected profile name */
-    QString selectedProfileName() const;
+    [[nodiscard]] QString selectedProfileName() const;
 
   public slots:
     void accept() override;

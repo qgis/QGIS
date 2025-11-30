@@ -59,7 +59,7 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
      * Returns TRUE if a scroll recently occurred within
      * the QScrollArea or its child viewport()
      */
-    bool hasScrolled() const;
+    [[nodiscard]] bool hasScrolled() const;
 
     /**
      * Resets the hasScrolled() flag.

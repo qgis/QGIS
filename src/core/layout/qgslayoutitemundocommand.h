@@ -56,13 +56,13 @@ class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
     /**
      * Returns the layout associated with this command.
      */
-    QgsLayout *layout() const;
+    [[nodiscard]] QgsLayout *layout() const;
 
     /**
      * Returns the associated item's UUID, which uniquely identifies the item
      * within the layout.
      */
-    QString itemUuid() const;
+    [[nodiscard]] QString itemUuid() const;
 
   protected:
 
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsLayoutItemAddItemCommand: public QgsLayoutItemUndoCommand
      * \param parent command
      */
     QgsLayoutItemAddItemCommand( QgsLayoutItem *item, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
-    bool containsChange() const override;
+    [[nodiscard]] bool containsChange() const override;
     bool mergeWith( const QUndoCommand *command ) override;
     void undo() override;
 

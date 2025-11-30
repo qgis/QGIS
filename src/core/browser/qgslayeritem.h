@@ -50,16 +50,16 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     bool equal( const QgsDataItem *other ) override;
 
-    bool hasDragEnabled() const override { return true; }
+    [[nodiscard]] bool hasDragEnabled() const override { return true; }
 
-    QgsMimeDataUtils::UriList mimeUris() const override;
+    [[nodiscard]] QgsMimeDataUtils::UriList mimeUris() const override;
 
     // --- New virtual methods for layer item derived classes ---
 
     /**
      * Returns the associated map layer type.
      */
-    Qgis::LayerType mapLayerType() const;
+    [[nodiscard]] Qgis::LayerType mapLayerType() const;
 
     /**
      * Returns the layer item type corresponding to a QgsMapLayer \a layer.
@@ -68,22 +68,22 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static Qgis::BrowserLayerType typeFromMapLayer( QgsMapLayer *layer );
 
     //! Returns layer uri or empty string if layer cannot be created
-    QString uri() const { return mUri; }
+    [[nodiscard]] QString uri() const { return mUri; }
 
     /**
      * Returns the supported CRS
      */
-    QStringList supportedCrs() const { return mSupportedCRS; }
+    [[nodiscard]] QStringList supportedCrs() const { return mSupportedCRS; }
 
     /**
      * Returns the supported formats
      */
-    QStringList supportedFormats() const { return mSupportFormats; }
+    [[nodiscard]] QStringList supportedFormats() const { return mSupportFormats; }
 
     /**
      * Returns comments of the layer
      */
-    virtual QString comments() const { return QString(); }
+    [[nodiscard]] virtual QString comments() const { return QString(); }
 
     /**
      * Returns the string representation of the given \a layerType
@@ -136,15 +136,15 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     //! Returns icon for point cloud layer
     static QIcon iconPointCloud();
     //! Returns the layer name
-    virtual QString layerName() const { return name(); }
-    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
+    [[nodiscard]] virtual QString layerName() const { return name(); }
+    [[nodiscard]] QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
     /**
      * Returns layer's metadata, it may be a default constructed metadata
      * if metadata is not explicitly set.
      * \since QGIS 3.28
      */
-    const QgsLayerMetadata &layerMetadata() const;
+    [[nodiscard]] const QgsLayerMetadata &layerMetadata() const;
 
     /**
      * Set layer's \a metadata.

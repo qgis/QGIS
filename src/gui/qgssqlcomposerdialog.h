@@ -130,9 +130,9 @@ class GUI_EXPORT QgsSQLComposerDialog : public QgsSubsetStringEditorInterface, p
     void setSql( const QString &sql );
 
     //! Gets the SQL statement
-    QString sql() const;
+    [[nodiscard]] QString sql() const;
 
-    QString subsetString() const override { return sql(); }
+    [[nodiscard]] QString subsetString() const override { return sql(); }
     void setSubsetString( const QString &subsetString ) override { setSql( subsetString ); }
 
     //! add a list of table names

@@ -113,10 +113,10 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     void setDebugOverlayEnabled( bool enabled );
 
     //! Dumps frame graph as string
-    QString dumpFrameGraph() const;
+    [[nodiscard]] QString dumpFrameGraph() const;
 
     //! Dumps scene graph as string
-    QString dumpSceneGraph() const;
+    [[nodiscard]] QString dumpSceneGraph() const;
 
     /**
      * Setups \a nrClipPlanes clip planes in the forward pass to enable OpenGL clipping.

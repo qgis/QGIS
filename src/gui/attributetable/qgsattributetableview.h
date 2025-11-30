@@ -91,7 +91,7 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
      * \returns The selected features in the attribute table in the order sorted by the table.
      * \since QGIS 3.4
      */
-    QList<QgsFeatureId> selectedFeaturesIds() const;
+    [[nodiscard]] QList<QgsFeatureId> selectedFeaturesIds() const;
 
     /**
      * Scroll to a feature with a given \a fid.

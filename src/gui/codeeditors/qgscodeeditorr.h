@@ -52,11 +52,11 @@ class GUI_EXPORT QgsQsciLexerR : public QsciLexer
     };
 
     QgsQsciLexerR( QObject *parent = nullptr );
-    const char *language() const override;
-    const char *lexer() const override;
-    int lexerId() const override;
-    QString description( int style ) const override;
-    const char *keywords( int set ) const override;
+    [[nodiscard]] const char *language() const override;
+    [[nodiscard]] const char *lexer() const override;
+    [[nodiscard]] int lexerId() const override;
+    [[nodiscard]] QString description( int style ) const override;
+    [[nodiscard]] const char *keywords( int set ) const override;
 };
 ///@endcond
 #endif
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsCodeEditorR : public QgsCodeEditor
   public:
     //! Constructor for QgsCodeEditorR
     QgsCodeEditorR( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
-    Qgis::ScriptLanguage language() const override;
+    [[nodiscard]] Qgis::ScriptLanguage language() const override;
 
   protected:
     void initializeLexer() override;

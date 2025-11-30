@@ -50,7 +50,7 @@ class CORE_EXPORT QgsGmlFeatureClass
 
     int fieldIndex( const QString &name );
 
-    QString path() const { return mPath; }
+    [[nodiscard]] QString path() const { return mPath; }
 
     QStringList &geometryAttributes() { return mGeometryAttributes; }
 
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     bool guessSchema( const QByteArray &data );
 
     //! Gets list of dot separated paths to feature classes parsed from GML or XSD
-    QStringList typeNames() const;
+    [[nodiscard]] QStringList typeNames() const;
 
     //! Gets fields for type/class name parsed from GML or XSD
     QList<QgsField> fields( const QString &typeName );
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QStringList geometryAttributes( const QString &typeName );
 
     //! Gets error if parseXSD() or guessSchema() failed
-    QgsError error() const { return mError; }
+    [[nodiscard]] QgsError error() const { return mError; }
 
   private:
 
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QString readAttribute( const QString &attributeName, const XML_Char **attr ) const;
 
     //! Returns pointer to main window or 0 if it does not exist
-    QWidget *findMainWindow() const;
+    [[nodiscard]] QWidget *findMainWindow() const;
 
     //! Gets dom elements by path
     QList<QDomElement> domElements( const QDomElement &element, const QString &path );

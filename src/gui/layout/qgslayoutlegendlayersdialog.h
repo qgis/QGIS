@@ -46,7 +46,7 @@ class GUI_EXPORT QgsLayoutLegendLayersDialog : public QDialog, private Ui::QgsLa
     void setVisibleLayers( const QList<QgsMapLayer *> &layers );
 
     //! Returns the list of selected layers
-    QList<QgsMapLayer *> selectedLayers() const;
+    [[nodiscard]] QList<QgsMapLayer *> selectedLayers() const;
 
   private slots:
 

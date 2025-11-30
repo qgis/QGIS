@@ -46,7 +46,7 @@ class QgsElevationShadingRendererSettingsWidgetFactory : public QObject, public 
     explicit QgsElevationShadingRendererSettingsWidgetFactory( QObject *parent = nullptr );
 
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
-    bool supportsStyleDock() const override { return true; }
+    [[nodiscard]] bool supportsStyleDock() const override { return true; }
 };
 
 #endif // QGSSHADINGRENDERERSETTINGSWIDGET_H

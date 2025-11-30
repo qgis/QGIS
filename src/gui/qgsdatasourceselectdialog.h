@@ -86,7 +86,7 @@ class GUI_EXPORT QgsDataSourceSelectWidget : public QgsPanelWidget, private Ui::
     /**
      * Returns the (possibly invalid) uri of the selected data source
      */
-    QgsMimeDataUtils::Uri uri() const;
+    [[nodiscard]] QgsMimeDataUtils::Uri uri() const;
 
     //! Show/hide filter widget
     void showFilterWidget( bool visible );
@@ -201,7 +201,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog : public QDialog
     /**
      * Returns the (possibly invalid) uri of the selected data source
      */
-    QgsMimeDataUtils::Uri uri() const;
+    [[nodiscard]] QgsMimeDataUtils::Uri uri() const;
 
     //! Show/hide filter widget
     void showFilterWidget( bool visible );

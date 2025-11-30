@@ -74,8 +74,8 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     ~QgsRasterMatrix();
 
     //! Returns TRUE if matrix is 1x1 (=scalar number)
-    bool isNumber() const { return ( mColumns == 1 && mRows == 1 ); }
-    double number() const { return mData[0]; }
+    [[nodiscard]] bool isNumber() const { return ( mColumns == 1 && mRows == 1 ); }
+    [[nodiscard]] double number() const { return mData[0]; }
 
     /**
      * Returns data array (but not ownership)
@@ -91,10 +91,10 @@ class ANALYSIS_EXPORT QgsRasterMatrix
 
     void setData( int cols, int rows, double *data, double nodataValue );
 
-    int nColumns() const { return mColumns; }
-    int nRows() const { return mRows; }
+    [[nodiscard]] int nColumns() const { return mColumns; }
+    [[nodiscard]] int nRows() const { return mRows; }
 
-    double nodataValue() const { return mNodataValue; }
+    [[nodiscard]] double nodataValue() const { return mNodataValue; }
     void setNodataValue( double d ) { mNodataValue = d; }
 
     QgsRasterMatrix &operator=( const QgsRasterMatrix &m );
@@ -154,11 +154,11 @@ class ANALYSIS_EXPORT QgsRasterMatrix
 
     //! +,-,*,/,^,<,>,<=,>=,=,!=, and, or
     bool twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix &other );
-    double calculateTwoArgumentOp( TwoArgOperator op, double arg1, double arg2 ) const;
+    [[nodiscard]] double calculateTwoArgumentOp( TwoArgOperator op, double arg1, double arg2 ) const;
 
     /*sqrt, std::sin, std::cos, tan, asin, acos, atan*/
     bool oneArgumentOperation( OneArgOperator op );
-    bool testPowerValidity( double base, double power ) const;
+    [[nodiscard]] bool testPowerValidity( double base, double power ) const;
 };
 
 #endif // QGSRASTERMATRIX_H

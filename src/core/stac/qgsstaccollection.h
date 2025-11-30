@@ -51,17 +51,17 @@ class CORE_EXPORT QgsStacCollection : public QgsStacCatalog
                        const QString &license,
                        const QgsStacExtent &extent );
 
-    Qgis::StacObjectType type() const override;
-    QString toHtml() const override;
+    [[nodiscard]] Qgis::StacObjectType type() const override;
+    [[nodiscard]] QString toHtml() const override;
 
     //! Returns the list of keywords describing the Collection
-    QStringList keywords() const;
+    [[nodiscard]] QStringList keywords() const;
 
     //! Sets the list of \a keywords describing the Collection
     void setKeywords( const QStringList &keywords );
 
     //! Returns the Collection's license(s), either a SPDX License identifier, various if multiple licenses apply or proprietary for all other cases.
-    QString license() const;
+    [[nodiscard]] QString license() const;
 
     //! Sets the Collection's license(s), either a SPDX License identifier, various if multiple licenses apply or proprietary for all other cases.
     void setLicense( const QString &license );
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsStacCollection : public QgsStacCatalog
      * Returns a list of providers, which may include all organizations capturing or processing the data or the hosting provider.
      * Providers should be listed in chronological order with the most recent provider being the last element of the list.
      */
-    QVector<QgsStacProvider> providers() const;
+    [[nodiscard]] QVector<QgsStacProvider> providers() const;
 
     /**
      * Sets a list of \a providers, which may include all organizations capturing or processing the data or the hosting provider.
@@ -79,19 +79,19 @@ class CORE_EXPORT QgsStacCollection : public QgsStacCatalog
     void setProviders( const QVector<QgsStacProvider> &providers );
 
     //! Returns the collection's spatial and temporal extent
-    QgsStacExtent extent() const;
+    [[nodiscard]] QgsStacExtent extent() const;
 
     //! Sets the collection's spatial and temporal extent
     void setExtent( const QgsStacExtent &extent );
 
     //! Returns a map of property summaries from the collection
-    QVariantMap summaries() const;
+    [[nodiscard]] QVariantMap summaries() const;
 
     //! Sets the map of property summaries to the collection
     void setSummaries( const QVariantMap &summaries );
 
     //! Returns a dictionary of asset objects in the catalog, each with a unique id key.
-    QMap<QString, QgsStacAsset> assets() const;
+    [[nodiscard]] QMap<QString, QgsStacAsset> assets() const;
 
     //! Sets the asset objects in the catalog, each with a unique id key.
     void setAssets( const QMap<QString, QgsStacAsset> &assets );

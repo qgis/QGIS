@@ -35,7 +35,7 @@ class QgsHanaColumnTypeThread : public QThread
     // by emitting the setLayerType() signal.
     void run() override;
 
-    const QString &errorMessage() const { return mErrorMessage; }
+    [[nodiscard]] const QString &errorMessage() const { return mErrorMessage; }
 
   signals:
     void setLayerType( QgsHanaLayerProperty layerProperty );

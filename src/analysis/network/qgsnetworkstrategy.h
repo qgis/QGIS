@@ -60,12 +60,12 @@ class ANALYSIS_EXPORT QgsNetworkStrategy
      * Returns a list of the source layer attributes needed for cost calculation.
      * This is method called by QgsGraphDirector.
      */
-    virtual QSet<int> requiredAttributes() const { return QSet<int>(); }
+    [[nodiscard]] virtual QSet<int> requiredAttributes() const { return QSet<int>(); }
 
     /**
      * Returns edge cost
      */
-    virtual QVariant cost( double distance, const QgsFeature &f ) const = 0;
+    [[nodiscard]] virtual QVariant cost( double distance, const QgsFeature &f ) const = 0;
 };
 
 #endif // QGSNETWORKSTRATERGY_H

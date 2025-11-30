@@ -71,7 +71,7 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
      * method. Subclass implementations must use these properties when crafting a parameter definition which
      * also respects the additional properties specific to the parameter type handled by the widget subclass.
      */
-    virtual QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, Qgis::ProcessingParameterFlags flags ) const = 0 SIP_FACTORY;
 
     /**
      * Sets the \a context in which the Processing definition widget is shown, e.g., the
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
      * \see setWidgetContext()
      * \since QGIS 3.18
      */
-    const QgsProcessingParameterWidgetContext &widgetContext() const;
+    [[nodiscard]] const QgsProcessingParameterWidgetContext &widgetContext() const;
 
     /**
      * Registers a Processing context \a generator class that will be used to retrieve
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
      */
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   private:
     QgsProcessingContextGenerator *mContextGenerator = nullptr;
@@ -144,7 +144,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
      *
      * The \a name parameter specifies the name for the newly created parameter.
      */
-    QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const SIP_FACTORY;
+    [[nodiscard]] QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const SIP_FACTORY;
 
     /**
      * Registers a Processing context \a generator class that will be used to retrieve
@@ -197,7 +197,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog : public QDialog
      *
      * The \a name parameter specifies the name for the newly created parameter.
      */
-    QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const SIP_FACTORY;
+    [[nodiscard]] QgsProcessingParameterDefinition *createParameter( const QString &name = QString() ) const SIP_FACTORY;
 
     /**
      * Sets the comments for the parameter.
@@ -211,7 +211,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog : public QDialog
      * \see setComments()
      * \since QGIS 3.14
      */
-    QString comments() const;
+    [[nodiscard]] QString comments() const;
 
     /**
      * Sets the color for the comments for the parameter.
@@ -225,7 +225,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog : public QDialog
      * \see setCommentColor()
      * \since QGIS 3.14
      */
-    QColor commentColor() const;
+    [[nodiscard]] QColor commentColor() const;
 
     /**
      * Switches the dialog to the comments tab.

@@ -55,7 +55,7 @@ class GUI_EXPORT QgsModelViewMouseHandles : public QgsGraphicsViewMouseHandles
   protected:
     void setViewportCursor( Qt::CursorShape cursor ) override;
     QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) override;
-    QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const override;
+    [[nodiscard]] QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const override;
     QRectF itemRect( QGraphicsItem *item ) const override;
     QRectF storedItemRect( QGraphicsItem *item ) const override;
     void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) override;
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsModelViewMouseHandles : public QgsGraphicsViewMouseHandles
     void selectionChanged();
 
   private:
-    QgsModelGraphicsScene *modelScene() const;
+    [[nodiscard]] QgsModelGraphicsScene *modelScene() const;
 
     QPointer<QgsModelGraphicsView> mView;
 };

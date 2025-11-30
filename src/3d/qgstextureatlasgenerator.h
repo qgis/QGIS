@@ -51,19 +51,19 @@ class _3D_EXPORT QgsTextureAtlas
     /**
      * Returns TRUE if the atlas is valid.
      */
-    bool isValid() const { return mAtlasSize.isValid(); }
+    [[nodiscard]] bool isValid() const { return mAtlasSize.isValid(); }
 
     /**
      * Returns the total size required for the atlas, i.e. the total
      * size for the packed images and rectangles.
      */
-    QSize atlasSize() const { return mAtlasSize; }
+    [[nodiscard]] QSize atlasSize() const { return mAtlasSize; }
 
 #ifndef SIP_RUN
     /**
      * Returns the packed rectangle for the texture with the specified \a index.
      */
-    QRect rect( int index ) const;
+    [[nodiscard]] QRect rect( int index ) const;
 #else
 
     /**
@@ -91,7 +91,7 @@ class _3D_EXPORT QgsTextureAtlas
      *
      * \note This may be a null image if the atlas was created with rectangles alone.
      */
-    QImage renderAtlasTexture() const;
+    [[nodiscard]] QImage renderAtlasTexture() const;
 
     /**
      * Renders a debug texture.
@@ -99,12 +99,12 @@ class _3D_EXPORT QgsTextureAtlas
      * The debug texture renders all packed rectangles with a unique color, and can be used
      * to visualize the solution.
      */
-    QImage renderDebugTexture() const;
+    [[nodiscard]] QImage renderDebugTexture() const;
 
     /**
      * Returns the number of textures in the atlas.
      */
-    int count() const;
+    [[nodiscard]] int count() const;
 
 #ifdef SIP_RUN
     int __len__() const;

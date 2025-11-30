@@ -78,13 +78,13 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      *
      * \returns TRUE if there is a snapped point cached.
      */
-    bool isSnapped() const { return mSnapMatch.isValid(); }
+    [[nodiscard]] bool isSnapped() const { return mSnapMatch.isValid(); }
 
     /**
      * \brief mapPoint returns the point in coordinates
      * \returns the point in map coordinates, after snapping if requested in the event.
      */
-    inline QgsPointXY mapPoint() const { return mMapPoint; }
+    [[nodiscard]] inline QgsPointXY mapPoint() const { return mMapPoint; }
 
     /**
       * Returns the matching data from the most recently snapped point.
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
       * \note This method returns the most recent snap match. It must
       * follow a call to snapPoint() in order to have a recent snap result available.
       */
-    QgsPointLocator::Match mapPointMatch() const { return mSnapMatch; }
+    [[nodiscard]] QgsPointLocator::Match mapPointMatch() const { return mSnapMatch; }
 
     /**
      * Set the (snapped) point this event points to in map coordinates.
@@ -107,14 +107,14 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      *
      * \returns The cursor position in map coordinates.
      */
-    QgsPointXY originalMapPoint() const { return mMapPoint; }
+    [[nodiscard]] QgsPointXY originalMapPoint() const { return mMapPoint; }
 
     /**
      * The snapped mouse cursor in pixel coordinates.
      *
      * \returns The snapped mouse cursor position in pixel coordinates.
      */
-    QPoint pixelPoint() const { return mPixelPoint; }
+    [[nodiscard]] QPoint pixelPoint() const { return mPixelPoint; }
 
     /**
      * The unsnapped, real mouse cursor position in pixel coordinates.
@@ -122,7 +122,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      *
      * \returns Mouse position in pixel coordinates
      */
-    QPoint originalPixelPoint() const { return pos(); }
+    [[nodiscard]] QPoint originalPixelPoint() const { return pos(); }
 
     /**
      * Snaps the mapPoint to a grid with the given \a precision.

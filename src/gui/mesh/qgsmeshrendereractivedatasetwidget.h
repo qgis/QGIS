@@ -55,10 +55,10 @@ class GUI_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     void setLayer( QgsMeshLayer *layer );
 
     //! Returns index of the active scalar dataset group
-    int activeScalarDatasetGroup() const;
+    [[nodiscard]] int activeScalarDatasetGroup() const;
 
     //! Returns index of the active vector dataset group
-    int activeVectorDatasetGroup() const;
+    [[nodiscard]] int activeVectorDatasetGroup() const;
 
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();

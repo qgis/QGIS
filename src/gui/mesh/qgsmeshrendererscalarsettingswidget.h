@@ -54,7 +54,7 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     void setActiveDatasetGroup( int groupIndex );
 
     //! Returns scalar settings
-    QgsMeshRendererScalarSettings settings() const;
+    [[nodiscard]] QgsMeshRendererScalarSettings settings() const;
 
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
@@ -73,14 +73,14 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
 
   private:
     double spinBoxValue( const QgsDoubleSpinBox *spinBox ) const;
-    QgsMeshRendererScalarSettings::DataResamplingMethod dataIntepolationMethod() const;
+    [[nodiscard]] QgsMeshRendererScalarSettings::DataResamplingMethod dataIntepolationMethod() const;
     void mUserDefinedRadioButton_toggled( bool toggled );
     void mMinMaxRadioButton_toggled( bool toggled );
 
     void recalculateMinMax();
 
-    bool dataIsDefinedOnFaces() const;
-    bool dataIsDefinedOnEdges() const;
+    [[nodiscard]] bool dataIsDefinedOnFaces() const;
+    [[nodiscard]] bool dataIsDefinedOnEdges() const;
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
     int mActiveDatasetGroup = -1;

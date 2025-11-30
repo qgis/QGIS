@@ -60,13 +60,13 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \see setTitle()
      */
-    QString title() const { return mTitle; }
+    [[nodiscard]] QString title() const { return mTitle; }
 
     /**
      * Returns the alignment of the legend title.
      * \see setTitleAlignment()
      */
-    Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
+    [[nodiscard]] Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
 
     /**
      * Sets the \a alignment of the legend title.
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \see setStyle()
      */
-    QgsLegendStyle style( Qgis::LegendComponent s ) const { return mStyleMap[ static_cast< int >( s ) ]; }
+    [[nodiscard]] QgsLegendStyle style( Qgis::LegendComponent s ) const { return mStyleMap[ static_cast< int >( s ) ]; }
 
     /**
      * Sets the \a style for a legend component.
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \see setBoxSpace()
      */
-    double boxSpace() const {return mBoxSpace;}
+    [[nodiscard]] double boxSpace() const {return mBoxSpace;}
 
     /**
      * Sets the legend box space (in millimeters), which is the empty margin around the inside of the legend's
@@ -129,14 +129,14 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \see setWrapChar()
      */
-    QString wrapChar() const {return mWrapChar;}
+    [[nodiscard]] QString wrapChar() const {return mWrapChar;}
 
     /**
      * Returns the margin space between adjacent columns (in millimeters).
      *
      * \see setColumnSpace()
      */
-    double columnSpace() const {return mColumnSpace;}
+    [[nodiscard]] double columnSpace() const {return mColumnSpace;}
 
     /**
      * Sets the margin space between adjacent columns (in millimeters).
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \see setColumnCount()
      */
-    int columnCount() const { return mColumnCount; }
+    [[nodiscard]] int columnCount() const { return mColumnCount; }
 
     /**
      * Sets the desired minimum number of columns to show in the legend.
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \see setSplitLayer()
      */
-    bool splitLayer() const { return mSplitLayer; }
+    [[nodiscard]] bool splitLayer() const { return mSplitLayer; }
 
     /**
      * Sets whether layer components can be split over multiple columns.
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \see setEqualColumnWidth()
      */
-    bool equalColumnWidth() const { return mEqualColumnWidth; }
+    [[nodiscard]] bool equalColumnWidth() const { return mEqualColumnWidth; }
 
     /**
      * Sets whether all columns should have equal widths.
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \see setSymbolSize()
      */
-    QSizeF symbolSize() const {return mSymbolSize;}
+    [[nodiscard]] QSizeF symbolSize() const {return mSymbolSize;}
 
     /**
      * Sets the default symbol size (in millimeters) used for legend items.
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsLegendSettings
      * \see setMaximumSymbolSize()
      * \since QGIS 3.16
      */
-    double maximumSymbolSize() const {return mMaxSymbolSize; }
+    [[nodiscard]] double maximumSymbolSize() const {return mMaxSymbolSize; }
 
     /**
      * Set the maximum symbol \a size for symbol (in millimeters).
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsLegendSettings
      * \see setMinimumSymbolSize
      * \since QGIS 3.16
      */
-    double minimumSymbolSize() const {return mMinSymbolSize; }
+    [[nodiscard]] double minimumSymbolSize() const {return mMinSymbolSize; }
 
     /**
      * Set the minimum symbol \a size for symbol (in millimeters).
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsLegendSettings
      * \see setSymbolAlignment()
      * \since QGIS 3.10
      */
-    Qt::AlignmentFlag symbolAlignment() const { return mSymbolAlignment; }
+    [[nodiscard]] Qt::AlignmentFlag symbolAlignment() const { return mSymbolAlignment; }
 
     /**
      * Returns whether a stroke will be drawn around raster symbol items.
@@ -306,7 +306,7 @@ class CORE_EXPORT QgsLegendSettings
      * \see rasterStrokeColor()
      * \see rasterStrokeWidth()
      */
-    bool drawRasterStroke() const { return mRasterSymbolStroke; }
+    [[nodiscard]] bool drawRasterStroke() const { return mRasterSymbolStroke; }
 
     /**
      * Sets whether a stroke will be drawn around raster symbol items.
@@ -324,7 +324,7 @@ class CORE_EXPORT QgsLegendSettings
      * \see drawRasterStroke()
      * \see rasterStrokeWidth()
      */
-    QColor rasterStrokeColor() const { return mRasterStrokeColor; }
+    [[nodiscard]] QColor rasterStrokeColor() const { return mRasterStrokeColor; }
 
     /**
      * Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsLegendSettings
      * \see drawRasterStroke()
      * \see rasterStrokeColor()
      */
-    double rasterStrokeWidth() const { return mRasterStrokeWidth; }
+    [[nodiscard]] double rasterStrokeWidth() const { return mRasterStrokeWidth; }
 
     /**
      * Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \see setWmsLegendSize()
      */
-    QSizeF wmsLegendSize() const {return mWmsLegendSize;}
+    [[nodiscard]] QSizeF wmsLegendSize() const {return mWmsLegendSize;}
 
     /**
      * Sets the desired size (in millimeters) of WMS legend graphics shown in the legend.
@@ -385,7 +385,7 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \since QGIS 3.34
      */
-    bool synchronousLegendRequests() const {return mSynchronousLegendRequests;}
+    [[nodiscard]] bool synchronousLegendRequests() const {return mSynchronousLegendRequests;}
 
     /**
      * Returns the line spacing to use between lines of legend text.
@@ -478,13 +478,13 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \since QGIS 3.6
      */
-    QStringList evaluateItemText( const QString &text, const QgsExpressionContext &context ) const;
+    [[nodiscard]] QStringList evaluateItemText( const QString &text, const QgsExpressionContext &context ) const;
 
     /**
      * Splits a string using the wrap char taking into account handling empty
      * wrap char which means no wrapping
      */
-    QStringList splitStringForWrapping( const QString &stringToSplt ) const;
+    [[nodiscard]] QStringList splitStringForWrapping( const QString &stringToSplt ) const;
 
     /**
      * Draws Text. Takes care about all the composer specific issues (calculation to
@@ -505,28 +505,28 @@ class CORE_EXPORT QgsLegendSettings
     void drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 
     //! Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE
-    QFont scaledFontPixelSize( const QFont &font ) const;
+    [[nodiscard]] QFont scaledFontPixelSize( const QFont &font ) const;
 
     //! Calculates font to from point size to pixel size
-    double pixelFontSize( double pointSize ) const;
+    [[nodiscard]] double pixelFontSize( double pointSize ) const;
 
     //! Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
-    double textWidthMillimeters( const QFont &font, const QString &text ) const;
+    [[nodiscard]] double textWidthMillimeters( const QFont &font, const QString &text ) const;
 
     //! Returns the font height of a character in millimeters
-    double fontHeightCharacterMM( const QFont &font, QChar c ) const;
+    [[nodiscard]] double fontHeightCharacterMM( const QFont &font, QChar c ) const;
 
     //! Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
-    double fontAscentMillimeters( const QFont &font ) const;
+    [[nodiscard]] double fontAscentMillimeters( const QFont &font ) const;
 
     //! Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
-    double fontDescentMillimeters( const QFont &font ) const;
+    [[nodiscard]] double fontDescentMillimeters( const QFont &font ) const;
 
     /**
      * Returns the JSON export flags.
      * \since QGIS 3.36
      */
-    Qgis::LegendJsonRenderFlags jsonRenderFlags() const;
+    [[nodiscard]] Qgis::LegendJsonRenderFlags jsonRenderFlags() const;
 
     /**
      * Sets the JSON export flags to \a jsonRenderFlags.
@@ -544,7 +544,7 @@ class CORE_EXPORT QgsLegendSettings
      *
      * \since QGIS 3.44
      */
-    double autoWrapLinesAfter() const { return mAutoWrapLinesAfter; }
+    [[nodiscard]] double autoWrapLinesAfter() const { return mAutoWrapLinesAfter; }
 
     /**
      * Sets the maximum line \a length (in millimeters) allowed before lines of text in the legend

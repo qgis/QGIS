@@ -40,10 +40,10 @@ class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
     QgsTiledSceneTextureRenderer();
     ~QgsTiledSceneTextureRenderer() override;
 
-    QString type() const override;
-    QgsTiledSceneRenderer *clone() const override;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsTiledSceneRenderer *clone() const override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    Qgis::TiledSceneRendererFlags flags() const override;
+    [[nodiscard]] Qgis::TiledSceneRendererFlags flags() const override;
     void renderTriangle( QgsTiledSceneRenderContext &context, const QPolygonF &triangle ) override;
     void renderLine( QgsTiledSceneRenderContext &context, const QPolygonF &line ) override;
     void startRender( QgsTiledSceneRenderContext &context ) override;
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
      *
      * \see setFillSymbol()
      */
-    QgsFillSymbol *fillSymbol() const;
+    [[nodiscard]] QgsFillSymbol *fillSymbol() const;
 
     /**
      * Sets the fill \a symbol used to render triangles without textures.

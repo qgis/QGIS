@@ -47,7 +47,7 @@ class GUI_EXPORT QgsDataItemGuiProviderRegistry
     /**
      * Returns the list of available providers.
      */
-    QList<QgsDataItemGuiProvider *> providers() const { return mProviders; }
+    [[nodiscard]] QList<QgsDataItemGuiProvider *> providers() const { return mProviders; }
 
     /**
      * Adds a \a provider implementation to the registry. Ownership of the provider

@@ -60,12 +60,12 @@ class ANALYSIS_EXPORT QgsGeometryIsValidCheck : public QgsSingleGeometryCheck
      */
     explicit QgsGeometryIsValidCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 
-    QList<Qgis::GeometryType> compatibleGeometryTypes() const override;
-    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
+    [[nodiscard]] QList<Qgis::GeometryType> compatibleGeometryTypes() const override;
+    [[nodiscard]] QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
-    QString description() const override { return factoryDescription(); }
-    QString id() const override { return factoryId(); }
-    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+    [[nodiscard]] QString description() const override { return factoryDescription(); }
+    [[nodiscard]] QString id() const override { return factoryId(); }
+    [[nodiscard]] QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
     ///@cond private
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;

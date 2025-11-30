@@ -60,7 +60,7 @@ class CORE_EXPORT QgsMargins
     /**
      * Returns \c TRUE if all margins are is 0; otherwise returns FALSE.
      */
-    bool isNull() const
+    [[nodiscard]] bool isNull() const
     {
       return qgsDoubleNear( mLeft, 0.0 ) && qgsDoubleNear( mTop, 0.0 ) && qgsDoubleNear( mRight, 0.0 ) && qgsDoubleNear( mBottom, 0.0 );
     }
@@ -69,25 +69,25 @@ class CORE_EXPORT QgsMargins
      * Returns the left margin.
      * \see setLeft()
      */
-    double left() const { return mLeft; }
+    [[nodiscard]] double left() const { return mLeft; }
 
     /**
      * Returns the top margin.
      * \see setTop()
      */
-    double top() const { return mTop; }
+    [[nodiscard]] double top() const { return mTop; }
 
     /**
      * Returns the right margin.
      * \see setRight()
      */
-    double right() const { return mRight; }
+    [[nodiscard]] double right() const { return mRight; }
 
     /**
      * Returns the bottom margin.
      * \see setBottom()
      */
-    double bottom() const { return mBottom; }
+    [[nodiscard]] double bottom() const { return mBottom; }
 
     /**
      * Sets the left margin to \a left.
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsMargins
      * Returns the margins encoded to a string.
      * \see fromString()
      */
-    QString toString() const;
+    [[nodiscard]] QString toString() const;
 
     /**
      * Returns a QgsMargins object decoded from a string, or a null QgsMargins

@@ -72,7 +72,7 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
     //! Icon for favorites group
     static QIcon iconFavorites();
 
-    QVariant sortKey() const override;
+    [[nodiscard]] QVariant sortKey() const override;
 
   private:
     QVector<QgsDataItem *> createChildren( const QString &directory, const QString &name );

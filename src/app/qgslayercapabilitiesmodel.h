@@ -45,23 +45,23 @@ class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
 
     QgsLayerCapabilitiesModel( QgsProject *project, QObject *parent = nullptr );
 
-    QgsLayerTreeModel *layerTreeModel() const;
+    [[nodiscard]] QgsLayerTreeModel *layerTreeModel() const;
     void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
     bool identifiable( QgsMapLayer *layer ) const;
     bool removable( QgsMapLayer *layer ) const;
     bool privateLayer( QgsMapLayer *layer ) const;
     bool readOnly( QgsMapLayer *layer ) const;
     bool searchable( QgsMapLayer *layer ) const;
-    QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
+    [[nodiscard]] QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
     void setShowSpatialLayersOnly( bool only );
 
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &idx ) const override;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    QModelIndex sibling( int row, int column, const QModelIndex &idx ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &idx ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] QModelIndex sibling( int row, int column, const QModelIndex &idx ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
   public slots:
@@ -69,7 +69,7 @@ class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
     void toggleSelectedItems( const QModelIndexList &checkedIndexes );
 
   protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
     bool nodeShown( QgsLayerTreeNode *node ) const;
