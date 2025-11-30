@@ -6,7 +6,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsHistoryEntryGroup.__virtual_methods__ = ['childCount']
+    QgsHistoryEntryGroup.__overridden_methods__ = ['childCount']
     QgsHistoryEntryGroup.__group__ = ['history']
 except (NameError, AttributeError):
     pass

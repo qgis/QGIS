@@ -64,14 +64,14 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsLayerPropertiesDialog,
     Q_DECL_DEPRECATED void saveStyleAs() SIP_DEPRECATED;
 
   private slots:
-    void apply() FINAL;
+    void apply() final;
 
     void aboutToShowStyleMenu();
     void showHelp();
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
   private:
-    void syncToLayer() FINAL;
+    void syncToLayer() final;
 
   private:
     QgsVectorTileLayer *mLayer = nullptr;

@@ -112,7 +112,8 @@ class CORE_EXPORT QgsReadWriteContext
      * \endcode
      * \since QGIS 3.2
      */
-    MAYBE_UNUSED NODISCARD QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const SIP_PYNAME( _enterCategory );
+    [[maybe_unused]] [[nodiscard]] QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const SIP_PYNAME( _enterCategory );
+
 
     /**
      * Returns the stored messages and remove them
