@@ -93,6 +93,7 @@ set(QGIS_APP_SRCS
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmeasurebearing.cpp
   qgsmaptoolmovefeature.cpp
+  qgsmaptooldistributefeature.cpp
   qgsmaptooloffsetcurve.cpp
   qgsmaptooloffsetpointsymbol.cpp
   qgsmaptoolpointsymbol.cpp
