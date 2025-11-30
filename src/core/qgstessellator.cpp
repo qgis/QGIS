@@ -24,6 +24,7 @@
 #include "qgspolygon.h"
 #include "qgstriangle.h"
 #include "poly2tri.h"
+#include "earcut.hpp"
 
 #include <QtDebug>
 #include <QMatrix4x4>
@@ -274,6 +275,11 @@ void QgsTessellator::setAddTextureUVs( bool addTextureUVs )
 {
   mAddTextureCoords = addTextureUVs;
   updateStride();
+}
+
+void QgsTessellator::setTriangulationAlgorithm( Qgis::TriangulationAlgorithm algorithm )
+{
+  mTriangulationAlgorithm = algorithm;
 }
 
 void QgsTessellator::updateStride()
@@ -622,6 +628,39 @@ void QgsTessellator::addTriangleVertices(
   }
 }
 
+void QgsTessellator::ringToEarcutPoints( const QgsLineString *ring, std::vector<std::array<double, 2>> &polyline, QHash<std::array<double, 2>*, float> *zHash )
+{
+  const int pCount = ring->numPoints();
+
+  polyline.reserve( pCount );
+
+  const double *srcXData = ring->xData();
+  const double *srcYData = ring->yData();
+  const double *srcZData = ring->zData();
+  std::unordered_set<std::pair<float, float>, float_pair_hash> foundPoints;
+
+  for ( int i = 0; i < pCount - 1; ++i )
+  {
+    const float x = static_cast<float>( *srcXData++ );
+    const float y = static_cast<float>( *srcYData++ );
+
+    const auto res = foundPoints.insert( std::make_pair( x, y ) );
+    if ( !res.second )
+    {
+      // already used this point, don't add a second time
+      continue;
+    }
+
+    std::array<double, 2> pt = { x, y };
+    polyline.push_back( pt );
+
+    if ( zHash && srcZData )
+    {
+      ( *zHash )[ &pt ] = *srcZData++;
+    }
+  }
+}
+
 std::vector<QVector3D> QgsTessellator::generateConstrainedDelaunayTriangles( const QgsPolygon *polygonNew )
 {
   QList<std::vector<p2t::Point *>> polylinesToDelete;
@@ -661,6 +700,48 @@ std::vector<QVector3D> QgsTessellator::generateConstrainedDelaunayTriangles( con
 
   for ( int i = 0; i < polylinesToDelete.count(); ++i )
     qDeleteAll( polylinesToDelete[i] );
+
+  return trianglePoints;
+}
+
+std::vector<QVector3D> QgsTessellator::generateEarcutTriangles( const QgsPolygon *polygonNew )
+{
+  QHash<std::array<double, 2>*, float> z;
+  std::vector<std::vector<std::array<double, 2>>> rings;
+  std::vector<std::array<double, 2>> polyline;
+
+  ringToEarcutPoints( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, mInputZValueIgnored ? nullptr : &z );
+  rings.push_back( polyline );
+
+  for ( int i = 0; i < polygonNew->numInteriorRings(); ++i )
+  {
+    std::vector<std::array<double, 2>> holePolyline;
+    ringToEarcutPoints( qgsgeometry_cast<const QgsLineString *>( polygonNew->interiorRing( i ) ), holePolyline, mInputZValueIgnored ? nullptr : &z );
+    rings.push_back( holePolyline );
+  }
+
+  std::vector<std::array<double, 2>> points;
+  for ( const auto &ring : rings )
+  {
+    points.insert( points.end(), ring.begin(), ring.end() );
+  }
+
+  std::vector<uint32_t> indices = mapbox::earcut<uint32_t>( rings );
+  std::vector<QVector3D> trianglePoints;
+  trianglePoints.reserve( points.size() );
+
+  for ( size_t i = 0; i < indices.size(); i++ )
+  {
+    uint32_t vertexIndex = indices[ i ];
+    std::array<double, 2> vertex = points[ vertexIndex ];
+
+    double x = vertex[ 0 ];
+    double y = vertex[ 1 ];
+
+    float zValue = z.value( &vertex, 0.0f );
+
+    trianglePoints.emplace_back( x / mScale, y / mScale, zValue );
+  }
 
   return trianglePoints;
 }
@@ -753,7 +834,26 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       // run triangulation and write vertices to the output data array
       try
       {
-        std::vector<QVector3D> trianglePoints = generateConstrainedDelaunayTriangles( polygonNew.get() );
+        std::vector<QVector3D> trianglePoints;
+        // NOLINTBEGIN(bugprone-branch-clone)
+        switch ( mTriangulationAlgorithm )
+        {
+          case Qgis::TriangulationAlgorithm::ConstrainedDelaunay:
+            trianglePoints = generateConstrainedDelaunayTriangles( polygonNew.get() );
+            break;
+          case Qgis::TriangulationAlgorithm::Earcut:
+            trianglePoints = generateEarcutTriangles( polygonNew.get() );
+            break;
+          default:
+            break;
+        }
+        // NOLINTEND(bugprone-branch-clone)
+
+        if ( trianglePoints.empty() )
+        {
+          mError = QObject::tr( "Failed to triangulate polygon." );
+          return;
+        }
 
         Q_ASSERT( trianglePoints.size() % 3 == 0 );
 
