@@ -122,6 +122,11 @@ void QgsFieldMappingWidget::setDestinationFields( const QgsFields &destinationFi
   model()->setDestinationFields( destinationFields, expressions );
 }
 
+void QgsFieldMappingWidget::appendDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions )
+{
+  model()->appendDestinationFields( destinationFields, expressions );
+}
+
 void QgsFieldMappingWidget::setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes )
 {
   mTypeDelegate->setNativeTypes( nativeTypes );
