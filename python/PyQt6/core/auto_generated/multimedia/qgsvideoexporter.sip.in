@@ -94,6 +94,8 @@ Returns the list of input image ``files``.
 .. seealso:: :py:func:`setInputFiles`
 %End
 
+
+
     void setFileFormat( QMediaFormat::FileFormat format );
 %Docstring
 Sets the output file ``format``.

@@ -16,6 +16,7 @@
 #include "qgsvideoexporter.h"
 #include "qgsfeedback.h"
 #include "moc_qgsvideoexporter.cpp"
+
 #include <QDirIterator>
 #include <QUrl>
 #include <QtMultimedia/QMediaCaptureSession>
@@ -77,6 +78,7 @@ QStringList QgsVideoExporter::inputFiles() const
   return mInputFiles;
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 void QgsVideoExporter::setFileFormat( QMediaFormat::FileFormat format )
 {
   mFormat = format;
@@ -101,6 +103,7 @@ QMediaRecorder::Error QgsVideoExporter::error() const
 {
   return mError;
 }
+#endif
 
 QString QgsVideoExporter::errorString() const
 {
