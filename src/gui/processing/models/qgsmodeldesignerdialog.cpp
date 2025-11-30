@@ -157,6 +157,23 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mReorderInputsButton, &QPushButton::clicked, this, &QgsModelDesignerDialog::reorderInputs );
   connect( mActionRun, &QAction::triggered, this, [this] { run(); } );
   connect( mActionRunSelectedSteps, &QAction::triggered, this, &QgsModelDesignerDialog::runSelectedSteps );
+  connect( mModel, &QgsProcessingModelAlgorithm::changed, this, &QgsModelDesigner::updateWindowTitle );
+
+connect(
+    QgsProject::instance(),
+    &QgsProject::projectClosed,
+    this,
+    &QgsModelDesigner::onProjectClosed
+);
+
+connect(
+    QgsProject::instance(),
+    &QgsProject::cleared,
+    this,
+    &QgsModelDesigner::onProjectClosed
+);
+
+
 
   mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), false ).toBool() );
   connect( mActionSnappingEnabled, &QAction::toggled, this, [this]( bool enabled ) {
@@ -1369,9 +1386,19 @@ void QgsModelChildDependenciesWidget::showDialog()
   }
 }
 
+
 void QgsModelChildDependenciesWidget::updateSummaryText()
 {
   mLineEdit->setText( tr( "%n dependencies selected", nullptr, mValue.count() ) );
+  void QgsModelDesigner::onProjectClosed()
+{
+   
+    setEnabled(false);
+
+   
+    QMetaObject::invokeMethod(this, "close", Qt::QueuedConnection);
+}
+
 }
 
 ///@endcond
