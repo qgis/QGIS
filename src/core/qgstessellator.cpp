@@ -439,7 +439,7 @@ static QVector3D calculateNormal( const QgsLineString *curve, double originX, do
 }
 
 
-static void _normalVectorToXYVectors( const QVector3D &pNormal, QVector3D &pXVector, QVector3D &pYVector )
+static void normalVectorToXYVectors( const QVector3D &pNormal, QVector3D &pXVector, QVector3D &pYVector )
 {
   // Here we define the two perpendicular vectors that define the local
   // 2D space on the plane. They will act as axis for which we will
@@ -471,7 +471,7 @@ struct float_pair_hash
   }
 };
 
-static void _ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *> &polyline, QHash<p2t::Point *, float> *zHash )
+void ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *> &polyline, QHash<p2t::Point *, float> *zHash )
 {
   const int pCount = ring->numPoints();
 
@@ -504,14 +504,14 @@ static void _ringToPoly2tri( const QgsLineString *ring, std::vector<p2t::Point *
 }
 
 
-inline double _round_coord( double x )
+double roundCoord( double x )
 {
   const double exp = 1e10;   // round to 10 decimal digits
   return round( x * exp ) / exp;
 }
 
 
-static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, const float scale )
+static QgsCurve *transformRingToNewBase( const QgsLineString &curve, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, const float scale )
 {
   const int count = curve.numPoints();
   QVector<double> x;
@@ -551,25 +551,25 @@ static QgsCurve *_transform_ring_to_new_base( const QgsLineString &curve, const 
     //    can get problems with this test when points are pretty much on a straight line.
     //    I suggest you round to 10 decimals for stability and you can live with that
     //    precision.
-    *xData++ = _round_coord( v.x() );
-    *yData++ = _round_coord( v.y() );
-    *zData++ = _round_coord( v.z() );
+    *xData++ = roundCoord( v.x() );
+    *yData++ = roundCoord( v.y() );
+    *zData++ = roundCoord( v.z() );
   }
   return new QgsLineString( x, y, z );
 }
 
 
-static QgsPolygon *_transform_polygon_to_new_base( const QgsPolygon &polygon, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, const float scale )
+QgsPolygon *transformPolygonToNewBase( const QgsPolygon &polygon, const QgsPoint &pt0, const QMatrix4x4 *toNewBase, const float scale )
 {
   QgsPolygon *p = new QgsPolygon;
-  p->setExteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() ), pt0, toNewBase, scale ) );
+  p->setExteriorRing( transformRingToNewBase( *qgsgeometry_cast< const QgsLineString * >( polygon.exteriorRing() ), pt0, toNewBase, scale ) );
   for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-    p->addInteriorRing( _transform_ring_to_new_base( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), pt0, toNewBase, scale ) );
+    p->addInteriorRing( transformRingToNewBase( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), pt0, toNewBase, scale ) );
   return p;
 }
 
 
-double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
+double minimumDistanceBetweenCoordinates( const QgsPolygon &polygon )
 {
   double min_d = 1e20;
 
@@ -648,7 +648,7 @@ void QgsTessellator::calculateBaseTransform( const QVector3D &pNormal, QMatrix4x
     // this is not a horizontal plane - need to reproject to a new base so that
     // we can do the triangulation in a plane
     QVector3D pXVector, pYVector;
-    _normalVectorToXYVectors( pNormal, pXVector, pYVector );
+    normalVectorToXYVectors( pNormal, pXVector, pYVector );
 
     // so now we have three orthogonal unit vectors defining new base
     // let's build transform matrix. We actually need just a 3x3 matrix,
@@ -760,7 +760,7 @@ std::vector<QVector3D> QgsTessellator::generateConstrainedDelaunayTriangles( con
 
   // polygon exterior
   std::vector<p2t::Point *> polyline;
-  _ringToPoly2tri( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, mInputZValueIgnored ? nullptr : &z );
+  ringToPoly2tri( qgsgeometry_cast< const QgsLineString * >( polygonNew->exteriorRing() ), polyline, mInputZValueIgnored ? nullptr : &z );
   polylinesToDelete << polyline;
 
   p2t::CDT cdt = p2t::CDT( polyline );
@@ -771,7 +771,7 @@ std::vector<QVector3D> QgsTessellator::generateConstrainedDelaunayTriangles( con
     std::vector<p2t::Point *> holePolyline;
     const QgsLineString *hole = qgsgeometry_cast< const QgsLineString *>( polygonNew->interiorRing( i ) );
 
-    _ringToPoly2tri( hole, holePolyline, mInputZValueIgnored ? nullptr : &z );
+    ringToPoly2tri( hole, holePolyline, mInputZValueIgnored ? nullptr : &z );
 
     cdt.AddHole( holePolyline );
     polylinesToDelete << holePolyline;
@@ -864,7 +864,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   if ( buildFloor || buildRoof )
   {
     calculateBaseTransform( pNormal, &base );
-    polygonNew.reset( _transform_polygon_to_new_base( polygon, extrusionOrigin, &base, mScale ) );
+    polygonNew.reset( transformPolygonToNewBase( polygon, extrusionOrigin, &base, mScale ) );
 
     // our 3x3 matrix is orthogonal, so for inverse we only need to transpose it
     base = base.transposed();
@@ -897,7 +897,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     }
     else  // we need to triangulate the polygon
     {
-      if ( _minimum_distance_between_coordinates( *polygonNew ) < 0.001 )
+      if ( minimumDistanceBetweenCoordinates( *polygonNew ) < 0.001 )
       {
         // when the distances between coordinates of input points are very small,
         // the triangulation likes to crash on numerical errors - when the distances are ~ 1e-5
@@ -910,7 +910,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           return;
         }
         const QgsPolygon *polygonSimplifiedData = qgsgeometry_cast<const QgsPolygon *>( polygonSimplified.constGet() );
-        if ( !polygonSimplifiedData || _minimum_distance_between_coordinates( *polygonSimplifiedData ) < 0.001 )
+        if ( !polygonSimplifiedData || minimumDistanceBetweenCoordinates( *polygonSimplifiedData ) < 0.001 )
         {
           // Failed to fix that. It could be a really tiny geometry... or maybe they gave us
           // geometry in unprojected lat/lon coordinates
