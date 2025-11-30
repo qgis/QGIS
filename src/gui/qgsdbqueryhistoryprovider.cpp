@@ -54,7 +54,7 @@ class DatabaseQueryValueNode : public DatabaseQueryHistoryNode
       , mValue( value )
     {}
 
-    QVariant data( int role = Qt::DisplayRole ) const override
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const override
     {
       switch ( role )
       {
@@ -67,7 +67,7 @@ class DatabaseQueryValueNode : public DatabaseQueryHistoryNode
       }
     }
 
-    QString html( const QgsHistoryWidgetContext & ) const override
+    [[nodiscard]] QString html( const QgsHistoryWidgetContext & ) const override
     {
       return mValue;
     }

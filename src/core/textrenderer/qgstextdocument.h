@@ -143,7 +143,7 @@ class CORE_EXPORT QgsTextDocument
     /**
      * Returns the block at the specified \a index.
      */
-    const QgsTextBlock &at( int index ) const SIP_FACTORY;
+    [[nodiscard]] const QgsTextBlock &at( int index ) const SIP_FACTORY;
 #else
 
     /**
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsTextDocument
     /**
      * Returns the number of blocks in the document.
      */
-    int size() const;
+    [[nodiscard]] int size() const;
 
 #ifdef SIP_RUN
     int __len__() const;
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsTextDocument
     /**
      * Returns a list of plain text lines of text representing the document.
      */
-    QStringList toPlainText() const;
+    [[nodiscard]] QStringList toPlainText() const;
 
     /**
      * Splits lines of text in the document to separate lines, using a specified wrap character (\a wrapCharacter) or newline characters.
@@ -219,12 +219,12 @@ class CORE_EXPORT QgsTextDocument
      *
      * \since QGIS 3.42
      */
-    bool hasBackgrounds() const;
+    [[nodiscard]] bool hasBackgrounds() const;
 
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    QVector< QgsTextBlock >::const_iterator begin() const;
-    QVector< QgsTextBlock >::const_iterator end() const;
+    [[nodiscard]] QVector< QgsTextBlock >::const_iterator begin() const;
+    [[nodiscard]] QVector< QgsTextBlock >::const_iterator end() const;
     ///@endcond
 #endif
 

@@ -47,7 +47,7 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanelWidget : public QgsPanelWidget
     /**
      * Returns the table's contents as a 1 dimensional array.
      */
-    QVariantList table() const;
+    [[nodiscard]] QVariantList table() const;
 
   private slots:
 
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanel : public QWidget
   public:
     QgsProcessingMatrixParameterPanel( QWidget *parent = nullptr, const QgsProcessingParameterMatrix *param = nullptr );
 
-    QVariantList value() const;
+    [[nodiscard]] QVariantList value() const;
 
     void setValue( const QVariantList &value );
 

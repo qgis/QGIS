@@ -55,7 +55,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
      * Returns a color ramp representing the current settings from the dialog.
      * \see setRamp()
      */
-    QgsCptCityColorRamp ramp() const { return mRamp; }
+    [[nodiscard]] QgsCptCityColorRamp ramp() const { return mRamp; }
 
     /**
      * Sets the color ramp to show in the dialog.
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     /**
      * Returns the name of the ramp currently selected in the dialog.
      */
-    QString selectedName() const
+    [[nodiscard]] QString selectedName() const
     {
       return QFileInfo( mRamp.schemeName() ).baseName() + mRamp.variantName();
     }
@@ -75,13 +75,13 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     /**
      * Returns TRUE if the ramp should be converted to a QgsGradientColorRamp.
      */
-    bool saveAsGradientRamp() const;
+    [[nodiscard]] bool saveAsGradientRamp() const;
 
     /**
      * Returns a reference to the dialog's button box.
      * \since QGIS 3.10
      */
-    QDialogButtonBox *buttonBox() const;
+    [[nodiscard]] QDialogButtonBox *buttonBox() const;
 
     bool eventFilter( QObject *obj, QEvent *event ) override;
 
@@ -142,7 +142,7 @@ class TreeFilterProxyModel : public QSortFilterProxyModel
     TreeFilterProxyModel( QObject *parent, QgsCptCityBrowserModel *model );
 
   protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
     // bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
   private:

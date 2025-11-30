@@ -53,7 +53,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
   public:
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
     QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
-    QString tableUri( const QString &schema, const QString &name ) const override;
+    [[nodiscard]] QString tableUri( const QString &schema, const QString &name ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
     void createSchema( const QString &name ) const override;
@@ -63,17 +63,17 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     void renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const override;
-    QStringList schemas() const override;
+    [[nodiscard]] QStringList schemas() const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
-    QIcon icon() const override;
-    QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
-    QgsProviderSqlQueryBuilder *queryBuilder() const override;
-    QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
+    [[nodiscard]] QgsProviderSqlQueryBuilder *queryBuilder() const override;
+    [[nodiscard]] QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     bool validateSqlVectorLayer( const SqlVectorLayerOptions &options, QString &message ) const override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
-    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
-    QString defaultPrimaryKeyColumnName() const override;
+    [[nodiscard]] Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
+    [[nodiscard]] QString defaultPrimaryKeyColumnName() const override;
     void moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const override;
 
   private:

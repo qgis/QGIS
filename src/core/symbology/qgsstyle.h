@@ -1383,7 +1383,7 @@ class CORE_EXPORT QgsStyleEntityInterface
     /**
      * Returns the type of style entity.
      */
-    virtual QgsStyle::StyleEntity type() const = 0;
+    [[nodiscard]] virtual QgsStyle::StyleEntity type() const = 0;
 
 };
 
@@ -1406,12 +1406,12 @@ class CORE_EXPORT QgsStyleSymbolEntity : public QgsStyleEntityInterface
       : mSymbol( symbol )
     {}
 
-    QgsStyle::StyleEntity type() const override;
+    [[nodiscard]] QgsStyle::StyleEntity type() const override;
 
     /**
      * Returns the entity's symbol.
      */
-    QgsSymbol *symbol() const { return mSymbol; }
+    [[nodiscard]] QgsSymbol *symbol() const { return mSymbol; }
 
   private:
 
@@ -1438,12 +1438,12 @@ class CORE_EXPORT QgsStyleColorRampEntity : public QgsStyleEntityInterface
       : mRamp( ramp )
     {}
 
-    QgsStyle::StyleEntity type() const override;
+    [[nodiscard]] QgsStyle::StyleEntity type() const override;
 
     /**
      * Returns the entity's color ramp.
      */
-    QgsColorRamp *ramp() const { return mRamp; }
+    [[nodiscard]] QgsColorRamp *ramp() const { return mRamp; }
 
   private:
 
@@ -1467,12 +1467,12 @@ class CORE_EXPORT QgsStyleTextFormatEntity : public QgsStyleEntityInterface
       : mFormat( format )
     {}
 
-    QgsStyle::StyleEntity type() const override;
+    [[nodiscard]] QgsStyle::StyleEntity type() const override;
 
     /**
      * Returns the entity's text format.
      */
-    QgsTextFormat format() const { return mFormat; }
+    [[nodiscard]] QgsTextFormat format() const { return mFormat; }
 
   private:
 
@@ -1559,12 +1559,12 @@ class CORE_EXPORT QgsStyleSymbol3DEntity : public QgsStyleEntityInterface
       : mSymbol( symbol )
     {}
 
-    QgsStyle::StyleEntity type() const override;
+    [[nodiscard]] QgsStyle::StyleEntity type() const override;
 
     /**
      * Returns the entity's symbol.
      */
-    const QgsAbstract3DSymbol *symbol() const { return mSymbol; }
+    [[nodiscard]] const QgsAbstract3DSymbol *symbol() const { return mSymbol; }
 
   private:
 

@@ -55,7 +55,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * The layer from which features should be listed.
      */
-    QgsVectorLayer *sourceLayer() const;
+    [[nodiscard]] QgsVectorLayer *sourceLayer() const;
 
     /**
      * The layer from which features should be listed.
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * The display expression will be used to display features as well as
      * the value to match the typed text against.
      */
-    QString displayExpression() const;
+    [[nodiscard]] QString displayExpression() const;
 
     /**
      * The display expression will be used to display features as well as
@@ -86,13 +86,13 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      *
      * \since QGIS 3.2
      */
-    int nullIndex() const;
+    [[nodiscard]] int nullIndex() const;
 
     /**
      * An additional expression to further restrict the available features.
      * This can be used to integrate additional spatial or other constraints.
      */
-    QString filterExpression() const;
+    [[nodiscard]] QString filterExpression() const;
 
     /**
      * An additional expression to further restrict the available features.
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * Returns an attribute form feature to be used with the filter expression.
      * \since QGIS 3.42.2
      */
-    QgsFeature formFeature() const;
+    [[nodiscard]] QgsFeature formFeature() const;
 
     /**
      * Sets an attribute form \a feature to be used with the filter expression.
@@ -116,7 +116,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * Returns a parent attribute form feature to be used with the filter expression.
      * \since QGIS 3.42.2
      */
-    QgsFeature parentFormFeature() const;
+    [[nodiscard]] QgsFeature parentFormFeature() const;
 
     /**
      * Sets a parent attribute form \a feature to be used with the filter expression.
@@ -136,7 +136,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * identifierField.
      * \since QGIS 3.10
      */
-    QVariantList identifierValues() const;
+    [[nodiscard]] QVariantList identifierValues() const;
 
 
     /**
@@ -163,12 +163,12 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * Shorthand for getting a feature request to query the currently selected
      * feature.
      */
-    QgsFeatureRequest currentFeatureRequest() const;
+    [[nodiscard]] QgsFeatureRequest currentFeatureRequest() const;
 
     /**
      * Determines if a NULL value should be available in the list.
      */
-    bool allowNull() const;
+    [[nodiscard]] bool allowNull() const;
 
     /**
      * Determines if a NULL value should be available in the list.
@@ -179,7 +179,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * Returns the feature request fetch limit
      * \since QGIS 3.32
      */
-    int fetchLimit() const;
+    [[nodiscard]] int fetchLimit() const;
 
     /**
      * Defines the feature request fetch limit
@@ -200,7 +200,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * Normally the primary key of the layer.
      * \since QGIS 3.10
      */
-    QStringList identifierFields() const;
+    [[nodiscard]] QStringList identifierFields() const;
 
     /**
      * Field name that will be used to uniquely identify the current feature.
@@ -219,7 +219,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     /**
      * The index of the currently selected item.
      */
-    QModelIndex currentModelIndex() const;
+    [[nodiscard]] QModelIndex currentModelIndex() const;
 
     void focusOutEvent( QFocusEvent *event ) override;
 
@@ -229,7 +229,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * The order expression of the model. It is used to evaluate sort values of the combobox.
      * \since QGIS 4.0
      */
-    QString orderExpression() const;
+    [[nodiscard]] QString orderExpression() const;
 
     /**
      * The order expression of the model. It is used to evaluate sort values of the combobox.
@@ -241,7 +241,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * The order direction of the model. It defines the direction on sorting the combobox as ascending or descending.
      * \since QGIS 4.0
      */
-    Qt::SortOrder sortOrder() const;
+    [[nodiscard]] Qt::SortOrder sortOrder() const;
 
     /**
      * The order direction of the model. It defines the direction on sorting the combobox as ascending or descending.

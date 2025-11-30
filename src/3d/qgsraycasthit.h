@@ -37,10 +37,10 @@ class _3D_EXPORT QgsRayCastHit
     QgsRayCastHit() = default;
 
     //! Returns the hit's distance from the ray's origin
-    double distance() const;
+    [[nodiscard]] double distance() const;
 
     //! Returns the hit position in 3d map coordinates
-    QgsVector3D mapCoordinates() const;
+    [[nodiscard]] QgsVector3D mapCoordinates() const;
 
     /**
      * Returns a map with the properties of the intersected entity.
@@ -48,7 +48,7 @@ class _3D_EXPORT QgsRayCastHit
      * For point cloud layer hits, it contains the point attributes keys/values.
      * For tiled scene layer hits, it contains the intersecting node details.
      */
-    QVariantMap properties() const;
+    [[nodiscard]] QVariantMap properties() const;
 
     //! Sets the hit's \a distance from the ray's origin
     void setDistance( double distance );

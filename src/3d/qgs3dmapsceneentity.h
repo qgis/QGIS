@@ -70,13 +70,13 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     virtual void handleSceneUpdate( const SceneContext &sceneContext ) { Q_UNUSED( sceneContext ) }
 
     //! Returns number of jobs pending for this entity until it is fully loaded/updated in the current view
-    virtual int pendingJobsCount() const { return 0; }
+    [[nodiscard]] virtual int pendingJobsCount() const { return 0; }
 
     //! Returns whether the entity needs update of active nodes
-    virtual bool needsUpdate() const { return false; }
+    [[nodiscard]] virtual bool needsUpdate() const { return false; }
 
     //! Returns the near to far plane range for the entity using the specified \a viewMatrix
-    virtual QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const
+    [[nodiscard]] virtual QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const
     {
       Q_UNUSED( viewMatrix )
       return QgsRange<float>( 1e9, 0 );
@@ -93,10 +93,10 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     void setGpuMemoryLimit( double gpuMemoryLimit ) { mGpuMemoryLimit = gpuMemoryLimit; }
 
     //! Returns the limit of the GPU memory used to render the entity in megabytes
-    double gpuMemoryLimit() const { return mGpuMemoryLimit; }
+    [[nodiscard]] double gpuMemoryLimit() const { return mGpuMemoryLimit; }
 
     //! Returns whether the entity has reached GPU memory limit
-    bool hasReachedGpuMemoryLimit() const { return mHasReachedGpuMemoryLimit; }
+    [[nodiscard]] bool hasReachedGpuMemoryLimit() const { return mHasReachedGpuMemoryLimit; }
 
   protected:
     //! Sets whether the GPU memory limit has been reached

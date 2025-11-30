@@ -88,14 +88,14 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     /**
      * Unique output type name.
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     /**
      * Returns the name of the output. This is the internal identifier by which
      * algorithms access this output.
      * \see setName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Sets the \a name of the output. This is the internal identifier by which
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsProcessingOutputDefinition
      * used to identify this output.
      * \see setDescription()
      */
-    QString description() const { return mDescription; }
+    [[nodiscard]] QString description() const { return mDescription; }
 
     /**
      * Sets the \a description for the output. This is the user-visible string
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsProcessingOutputDefinition
      * \see setAutoCreated()
      * \since QGIS 3.14
      */
-    bool autoCreated() const { return mAutoCreated; }
+    [[nodiscard]] bool autoCreated() const { return mAutoCreated; }
 
     /**
      * Returns a string version of the parameter output \a value (if possible).
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefini
      */
     static QString typeName() { return QStringLiteral( "outputLayer" ); }
 
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
 
 };
 
@@ -222,13 +222,13 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputVector" ); }
-    QString type() const override { return typeName(); }
+    [[nodiscard]] QString type() const override { return typeName(); }
 
     /**
      * Returns the layer type for the output layer.
      * \see setDataType()
      */
-    Qgis::ProcessingSourceType dataType() const;
+    [[nodiscard]] Qgis::ProcessingSourceType dataType() const;
 
     /**
      * Sets the layer \a type for the output layer.
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsProcessingOutputRasterLayer : public QgsProcessingOutputDef
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputRaster" ); }
-    QString type() const override { return typeName(); }
+    [[nodiscard]] QString type() const override { return typeName(); }
 };
 
 /**
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsProcessingOutputPointCloudLayer : public QgsProcessingOutpu
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputPointCloud" ); }
-    QString type() const override { return typeName(); }
+    [[nodiscard]] QString type() const override { return typeName(); }
 };
 
 /**
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsProcessingOutputMultipleLayers : public QgsProcessingOutput
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputMultilayer" ); }
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 
 };
@@ -332,7 +332,7 @@ class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputHtml" ); }
-    QString type() const override { return typeName(); }
+    [[nodiscard]] QString type() const override { return typeName(); }
     QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
 
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsProcessingOutputVariant : public QgsProcessingOutputDefinit
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputVariant" ); }
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 
 };
@@ -379,7 +379,7 @@ class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefiniti
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputNumber" ); }
-    QString type() const override { return typeName(); }
+    [[nodiscard]] QString type() const override { return typeName(); }
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 
 };
@@ -402,7 +402,7 @@ class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefiniti
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputString" ); }
-    QString type() const override { return typeName(); }
+    [[nodiscard]] QString type() const override { return typeName(); }
 };
 
 /**
@@ -424,7 +424,7 @@ class CORE_EXPORT QgsProcessingOutputBoolean : public QgsProcessingOutputDefinit
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputBoolean" ); }
-    QString type() const override { return typeName(); }
+    [[nodiscard]] QString type() const override { return typeName(); }
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 };
 
@@ -447,7 +447,7 @@ class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefiniti
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputFolder" ); }
-    QString type() const override { return typeName(); }
+    [[nodiscard]] QString type() const override { return typeName(); }
     QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 
 };
@@ -470,7 +470,7 @@ class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputFile" ); }
-    QString type() const override { return typeName(); }
+    [[nodiscard]] QString type() const override { return typeName(); }
     QString valueAsFormattedString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
 
 };
@@ -495,7 +495,7 @@ class CORE_EXPORT QgsProcessingOutputConditionalBranch : public QgsProcessingOut
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputBranch" ); }
-    QString type() const override { return typeName(); }
+    [[nodiscard]] QString type() const override { return typeName(); }
 };
 
 /**
@@ -517,7 +517,7 @@ class CORE_EXPORT QgsProcessingOutputVectorTileLayer : public QgsProcessingOutpu
      * Returns the type name for the output class.
      */
     static QString typeName() { return QStringLiteral( "outputVectorTile" ); }
-    QString type() const override { return typeName(); }
+    [[nodiscard]] QString type() const override { return typeName(); }
 };
 
 #endif // QGSPROCESSINGOUTPUTS_H

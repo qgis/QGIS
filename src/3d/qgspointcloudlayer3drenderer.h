@@ -240,10 +240,10 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
     //! Sets point cloud layer associated with the renderer
     void setLayer( QgsPointCloudLayer *layer );
     //! Returns point cloud layer associated with the renderer
-    QgsPointCloudLayer *layer() const;
+    [[nodiscard]] QgsPointCloudLayer *layer() const;
 
-    QString type() const override;
-    QgsPointCloudLayer3DRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsPointCloudLayer3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( Qgs3DMapSettings *map ) const override SIP_SKIP;
 
     /**
@@ -253,7 +253,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
       */
     void setSymbol( QgsPointCloud3DSymbol *symbol SIP_TRANSFER );
     //! Returns 3D symbol associated with the renderer
-    const QgsPointCloud3DSymbol *symbol() const { return mSymbol.get(); }
+    [[nodiscard]] const QgsPointCloud3DSymbol *symbol() const { return mSymbol.get(); }
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
@@ -266,7 +266,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
      *
      * \see setMaximumScreenError()
      */
-    double maximumScreenError() const;
+    [[nodiscard]] double maximumScreenError() const;
 
     /**
      * Sets the maximum screen \a error allowed when rendering the point cloud.
@@ -282,7 +282,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
      *
      * \see setShowBoundingBoxes()
      */
-    bool showBoundingBoxes() const;
+    [[nodiscard]] bool showBoundingBoxes() const;
 
     /**
      * Sets whether bounding boxes will be visible when rendering the point cloud.
@@ -294,7 +294,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
     /**
      * Returns the maximum number of points that will be rendered to the scene
      */
-    int pointRenderingBudget() const { return mPointBudget; };
+    [[nodiscard]] int pointRenderingBudget() const { return mPointBudget; };
 
     /**
      * Sets the maximum number of points to be rendered in the scene
@@ -313,7 +313,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
       * Returns the renderer behavior when zoomed out
       * \since QGIS 3.42
       */
-    Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
+    [[nodiscard]] Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from

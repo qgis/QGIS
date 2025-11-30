@@ -89,14 +89,14 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      * \see setOriginalExtent()
      * \see originalCrs()
      */
-    QgsRectangle originalExtent() const { return mOriginalExtent; }
+    [[nodiscard]] QgsRectangle originalExtent() const { return mOriginalExtent; }
 
     /**
      * Returns the original coordinate reference system set for the widget.
      * \see originalExtent()
      * \see setOriginalExtent()
      */
-    QgsCoordinateReferenceSystem originalCrs() const { return mOriginalCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem originalCrs() const { return mOriginalCrs; }
 
     /**
      * Sets the current extent to show in the widget - should be called as part of initialization (or whenever current extent changes).
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      * \see setCurrentExtent()
      * \see currentCrs()
      */
-    QgsRectangle currentExtent() const { return mCurrentExtent; }
+    [[nodiscard]] QgsRectangle currentExtent() const { return mCurrentExtent; }
 
     /**
      * Returns the coordinate reference system for the current extent set for the widget. The current
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      * \see setCurrentExtent()
      * \see currentExtent()
      */
-    QgsCoordinateReferenceSystem currentCrs() const { return mCurrentCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem currentCrs() const { return mCurrentCrs; }
 
     /**
      * Sets the output CRS - may need to be used for transformation from original/current extent.
@@ -133,18 +133,18 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      * Returns the extent shown in the widget - in output CRS coordinates.
      * \see outputCrs
      */
-    QgsRectangle outputExtent() const;
+    [[nodiscard]] QgsRectangle outputExtent() const;
 
     /**
      * Returns the current output CRS, used in the display.
      * \see outputExtent
      */
-    QgsCoordinateReferenceSystem outputCrs() const { return mOutputCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem outputCrs() const { return mOutputCrs; }
 
     /**
      * Returns the currently selected state for the widget's extent.
      */
-    QgsExtentWidget::ExtentState extentState() const { return mExtentState; }
+    [[nodiscard]] QgsExtentWidget::ExtentState extentState() const { return mExtentState; }
 
     /**
      * Sets the map canvas to enable dragging of extent on a canvas.
@@ -157,17 +157,17 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      * Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
      * If the aspect ratio isn't fixed, the width and height will be set to zero.
      */
-    QSize ratio() const { return mRatio; }
+    [[nodiscard]] QSize ratio() const { return mRatio; }
 
     /**
      * Returns the name of the extent layer.
      */
-    QString extentLayerName() const;
+    [[nodiscard]] QString extentLayerName() const;
 
     /**
      * Returns TRUE if the widget is in a valid state, i.e. has an extent set.
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Sets whether the widget can be set to a "not set" (null) state.

@@ -56,7 +56,7 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
      *
      * The caller takes ownership of the returned object.
      */
-    QgsNumericFormat *format() const SIP_TRANSFERBACK;
+    [[nodiscard]] QgsNumericFormat *format() const SIP_TRANSFERBACK;
 
     /**
      * Register an expression context \a generator class that will be used to retrieve
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsNumericFormatSelectorDialog : public QDialog
      *
      * The caller takes ownership of the returned object.
      */
-    QgsNumericFormat *format() const SIP_TRANSFERBACK;
+    [[nodiscard]] QgsNumericFormat *format() const SIP_TRANSFERBACK;
 
     /**
      * Register an expression context \a generator class that will be used to retrieve

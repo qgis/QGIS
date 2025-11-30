@@ -111,14 +111,14 @@ class CORE_EXPORT QgsMesh3DAveragingMethod SIP_ABSTRACT
     virtual bool equals( const QgsMesh3DAveragingMethod *other ) const = 0;
 
     //! Clone the instance
-    virtual QgsMesh3DAveragingMethod *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsMesh3DAveragingMethod *clone() const = 0 SIP_FACTORY;
 
     //! Returns type of averaging method
-    Method method() const;
+    [[nodiscard]] Method method() const;
 
   private:
     //! Returns whether the method is correctly initialized
-    virtual bool hasValidInputs() const = 0;
+    [[nodiscard]] virtual bool hasValidInputs() const = 0;
 
     /**
      * For one face, Calculates average of volume values
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsMeshMultiLevelsAveragingMethod: public QgsMesh3DAveragingMe
     QDomElement writeXml( QDomDocument &doc ) const override;
     void readXml( const QDomElement &elem ) override;
     bool equals( const QgsMesh3DAveragingMethod *other ) const override;
-    QgsMesh3DAveragingMethod *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsMesh3DAveragingMethod *clone() const override SIP_FACTORY;
 
     /**
      * Returns starting vertical level.
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsMeshMultiLevelsAveragingMethod: public QgsMesh3DAveragingMe
      *
      * Always lower or equal than endVerticalLevel()
      */
-    int startVerticalLevel() const;
+    [[nodiscard]] int startVerticalLevel() const;
 
     /**
      * Returns ending vertical level.
@@ -204,20 +204,20 @@ class CORE_EXPORT QgsMeshMultiLevelsAveragingMethod: public QgsMesh3DAveragingMe
      *
      * Always lower or equal than endVerticalLevel()
      */
-    int endVerticalLevel() const;
+    [[nodiscard]] int endVerticalLevel() const;
 
     /**
      * Returns whether the start and end vertical levels are indexed from top (surface) or bottom (bed) level
      */
-    bool countedFromTop() const;
+    [[nodiscard]] bool countedFromTop() const;
 
     /**
      * Returns whether the averaging method selects only a single vertical level
      */
-    bool isSingleLevel() const;
+    [[nodiscard]] bool isSingleLevel() const;
 
   private:
-    bool hasValidInputs() const override;
+    [[nodiscard]] bool hasValidInputs() const override;
     void volumeRangeForFace( double &startVerticalLevel,
                              double &endVerticalLevel,
                              int &singleVerticalIndex,
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsMeshSigmaAveragingMethod: public QgsMesh3DAveragingMethod
     QDomElement writeXml( QDomDocument &doc ) const override;
     void readXml( const QDomElement &elem ) override;
     bool equals( const QgsMesh3DAveragingMethod *other ) const override;
-    QgsMesh3DAveragingMethod *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsMesh3DAveragingMethod *clone() const override SIP_FACTORY;
 
     /**
      * Returns starting fraction.
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsMeshSigmaAveragingMethod: public QgsMesh3DAveragingMethod
      * In range 0-1, where 1 means the surface level and 0 bed level.
      * Always lower or equal than endFraction()
      */
-    double startFraction() const;
+    [[nodiscard]] double startFraction() const;
 
     /**
      * Returns ending fraction.
@@ -271,10 +271,10 @@ class CORE_EXPORT QgsMeshSigmaAveragingMethod: public QgsMesh3DAveragingMethod
      * In range 0-1, where 1 means the surface level and 0 bed level.
      * Always higher or equal than startFraction()
      */
-    double endFraction() const;
+    [[nodiscard]] double endFraction() const;
 
   private:
-    bool hasValidInputs() const override;
+    [[nodiscard]] bool hasValidInputs() const override;
     void volumeRangeForFace( double &startVerticalLevel,
                              double &endVerticalLevel,
                              int &singleVerticalIndex,
@@ -321,29 +321,29 @@ class CORE_EXPORT QgsMeshRelativeHeightAveragingMethod: public QgsMesh3DAveragin
     QDomElement writeXml( QDomDocument &doc ) const override;
     void readXml( const QDomElement &elem ) override;
     bool equals( const QgsMesh3DAveragingMethod *other ) const override;
-    QgsMesh3DAveragingMethod *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsMesh3DAveragingMethod *clone() const override SIP_FACTORY;
 
     /**
      * Returns starting depth/height.
      *
      * Always lower or equal than endLength()
      */
-    double startHeight() const;
+    [[nodiscard]] double startHeight() const;
 
     /**
      * Returns ending depth/height.
      *
      * Always higher or equal than startLength()
      */
-    double endHeight() const;
+    [[nodiscard]] double endHeight() const;
 
     /**
      * Returns whether the start and end vertical levels are relative to top (surface) or bottom (bed) level
      */
-    bool countedFromTop() const;
+    [[nodiscard]] bool countedFromTop() const;
 
   private:
-    bool hasValidInputs() const override;
+    [[nodiscard]] bool hasValidInputs() const override;
     void volumeRangeForFace( double &startVerticalLevel,
                              double &endVerticalLevel,
                              int &singleVerticalIndex,
@@ -382,20 +382,20 @@ class CORE_EXPORT QgsMeshElevationAveragingMethod: public QgsMesh3DAveragingMeth
     QDomElement writeXml( QDomDocument &doc ) const override;
     void readXml( const QDomElement &elem ) override;
     bool equals( const QgsMesh3DAveragingMethod *other ) const override;
-    QgsMesh3DAveragingMethod *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsMesh3DAveragingMethod *clone() const override SIP_FACTORY;
 
     /**
      * Returns start elevation
      */
-    double startElevation() const;
+    [[nodiscard]] double startElevation() const;
 
     /**
      * Returns end elevation
      */
-    double endElevation() const;
+    [[nodiscard]] double endElevation() const;
 
   private:
-    bool hasValidInputs() const override;
+    [[nodiscard]] bool hasValidInputs() const override;
     void volumeRangeForFace( double &startVerticalLevel,
                              double &endVerticalLevel,
                              int &singleVerticalIndex,

@@ -75,7 +75,7 @@ class CORE_EXPORT QgsTiledSceneProviderConnection : public QgsAbstractProviderCo
     /**
      * Returns the data provider associated with the connection.
      */
-    QString providerKey() const { return mProvider; }
+    [[nodiscard]] QString providerKey() const { return mProvider; }
 
     /**
     * \brief Represents decoded data of a tiled scene connection.

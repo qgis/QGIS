@@ -82,7 +82,7 @@ class QgsProcessingVectorTileWriterLayersWidget : public QWidget
   public:
     QgsProcessingVectorTileWriterLayersWidget( QWidget *parent = nullptr );
 
-    QVariant value() const { return mValue; }
+    [[nodiscard]] QVariant value() const { return mValue; }
     void setValue( const QVariant &value );
 
     void setProject( QgsProject *project );
@@ -117,7 +117,7 @@ class QgsProcessingVectorTileWriterLayersWidgetWrapper : public QgsAbstractProce
     QgsProcessingVectorTileWriterLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
 
     // QgsProcessingParameterWidgetFactoryInterface
-    QString parameterType() const override;
+    [[nodiscard]] QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
 
     // QgsProcessingParameterWidgetWrapper interface
@@ -126,7 +126,7 @@ class QgsProcessingVectorTileWriterLayersWidgetWrapper : public QgsAbstractProce
 
   protected:
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
-    QVariant widgetValue() const override;
+    [[nodiscard]] QVariant widgetValue() const override;
 
   private:
     QgsProcessingVectorTileWriterLayersWidget *mPanel = nullptr;

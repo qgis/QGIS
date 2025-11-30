@@ -55,10 +55,10 @@ class CORE_EXPORT QgsMimeDataUtils
       /**
        * Returns whether the object contains valid data
        */
-      bool isValid() const { return !layerType.isEmpty(); }
+      [[nodiscard]] bool isValid() const { return !layerType.isEmpty(); }
 
       //! Returns encoded representation of the object
-      QString data() const;
+      [[nodiscard]] QString data() const;
 
       /**
        * Gets vector layer from uri if possible, otherwise returns NULLPTR and error is set
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * \since QGIS 3.8
        */
-      QgsMapLayer *mapLayer() const;
+      [[nodiscard]] QgsMapLayer *mapLayer() const;
 
       /**
        * Type of URI.

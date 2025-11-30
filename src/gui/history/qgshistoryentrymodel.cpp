@@ -28,7 +28,7 @@
 class QgsHistoryEntryRootNode : public QgsHistoryEntryGroup
 {
   public:
-    QVariant data( int = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( int = Qt::DisplayRole ) const override;
 
     void addEntryNode( const QgsHistoryEntry &entry, QgsHistoryEntryNode *node, QgsHistoryEntryModel *model );
 
@@ -53,7 +53,7 @@ class QgsHistoryEntryDateGroupNode : public QgsHistoryEntryGroup
     {
     }
 
-    QVariant data( int role = Qt::DisplayRole ) const override
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const override
     {
       switch ( role )
       {

@@ -29,15 +29,15 @@ class QgsWfsProviderMetadata final : public QgsProviderMetadata
     Q_OBJECT
   public:
     QgsWfsProviderMetadata();
-    QIcon icon() const override;
-    QList<QgsDataItemProvider *> dataItemProviders() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QList<QgsDataItemProvider *> dataItemProviders() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
-    QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override;
+    [[nodiscard]] QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
-    QString suggestGroupNameForUri( const QString &uri ) const override;
-    QVariantMap decodeUri( const QString &uri ) const override;
-    QString encodeUri( const QVariantMap &parts ) const override;
+    [[nodiscard]] QString suggestGroupNameForUri( const QString &uri ) const override;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const override;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const override;
 };
 
 #endif // QGSWFSPROVIDERMETADATA_H

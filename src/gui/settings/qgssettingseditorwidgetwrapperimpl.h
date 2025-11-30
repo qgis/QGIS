@@ -50,9 +50,9 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
     QgsSettingsEditorWidgetWrapperTemplate( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapper( parent ) {}
 
-    QString id() const override = 0;
+    [[nodiscard]] QString id() const override = 0;
 
-    bool setWidgetFromSetting() const override
+    [[nodiscard]] bool setWidgetFromSetting() const override
     {
       if ( mSetting )
         return setWidgetValue( mSetting->value( mDynamicKeyPartList ) );
@@ -61,29 +61,29 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
       return false;
     }
 
-    bool setSettingFromWidget() const override = 0;
+    [[nodiscard]] bool setSettingFromWidget() const override = 0;
 
-    bool setWidgetFromVariant( const QVariant &value ) const override
+    [[nodiscard]] bool setWidgetFromVariant( const QVariant &value ) const override
     {
       return setWidgetValue( mSetting->convertFromVariant( value ) );
     }
 
     //! Sets the widget value
-    virtual bool setWidgetValue( const U &value ) const = 0;
+    [[nodiscard]] virtual bool setWidgetValue( const U &value ) const = 0;
 
-    QVariant variantValueFromWidget() const override
+    [[nodiscard]] QVariant variantValueFromWidget() const override
     {
       return QVariant::fromValue( valueFromWidget() );
     };
 
     //! Returns the widget value
-    virtual U valueFromWidget() const = 0;
+    [[nodiscard]] virtual U valueFromWidget() const = 0;
 
     //! Returns the editor
-    V *editor() const { return mEditor; }
+    [[nodiscard]] V *editor() const { return mEditor; }
 
     //! Returns the setting
-    const T *setting() const { return mSetting; }
+    [[nodiscard]] const T *setting() const { return mSetting; }
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override = 0;
 
@@ -137,13 +137,13 @@ class GUI_EXPORT QgsSettingsStringLineEditWrapper : public QgsSettingsEditorWidg
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsStringLineEditWrapper( parent ); }
 
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 
-    bool setSettingFromWidget() const override;
+    [[nodiscard]] bool setSettingFromWidget() const override;
 
-    QString valueFromWidget() const override;
+    [[nodiscard]] QString valueFromWidget() const override;
 
-    bool setWidgetValue( const QString &value ) const override;
+    [[nodiscard]] bool setWidgetValue( const QString &value ) const override;
 
     void enableAutomaticUpdatePrivate() override;
 };
@@ -185,13 +185,13 @@ class GUI_EXPORT QgsSettingsStringComboBoxWrapper : public QgsSettingsEditorWidg
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsStringComboBoxWrapper( parent ); }
 
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 
-    bool setSettingFromWidget() const override;
+    [[nodiscard]] bool setSettingFromWidget() const override;
 
-    QString valueFromWidget() const override;
+    [[nodiscard]] QString valueFromWidget() const override;
 
-    bool setWidgetValue( const QString &value ) const override;
+    [[nodiscard]] bool setWidgetValue( const QString &value ) const override;
 
     void enableAutomaticUpdatePrivate() override;
 
@@ -221,13 +221,13 @@ class GUI_EXPORT QgsSettingsBoolCheckBoxWrapper : public QgsSettingsEditorWidget
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsBoolCheckBoxWrapper( parent ); }
 
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 
-    bool setSettingFromWidget() const override;
+    [[nodiscard]] bool setSettingFromWidget() const override;
 
-    bool valueFromWidget() const override;
+    [[nodiscard]] bool valueFromWidget() const override;
 
-    bool setWidgetValue( const bool &value ) const override;
+    [[nodiscard]] bool setWidgetValue( const bool &value ) const override;
 
     void enableAutomaticUpdatePrivate() override;
 };
@@ -252,13 +252,13 @@ class GUI_EXPORT QgsSettingsIntegerSpinBoxWrapper : public QgsSettingsEditorWidg
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsIntegerSpinBoxWrapper( parent ); }
 
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 
-    bool setSettingFromWidget() const override;
+    [[nodiscard]] bool setSettingFromWidget() const override;
 
-    int valueFromWidget() const override;
+    [[nodiscard]] int valueFromWidget() const override;
 
-    bool setWidgetValue( const int &value ) const override;
+    [[nodiscard]] bool setWidgetValue( const int &value ) const override;
 
     void enableAutomaticUpdatePrivate() override;
 };
@@ -284,13 +284,13 @@ class GUI_EXPORT QgsSettingsDoubleSpinBoxWrapper : public QgsSettingsEditorWidge
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsDoubleSpinBoxWrapper( parent ); }
 
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 
-    bool setSettingFromWidget() const override;
+    [[nodiscard]] bool setSettingFromWidget() const override;
 
-    double valueFromWidget() const override;
+    [[nodiscard]] double valueFromWidget() const override;
 
-    bool setWidgetValue( const double &value ) const override;
+    [[nodiscard]] bool setWidgetValue( const double &value ) const override;
 
     void enableAutomaticUpdatePrivate() override;
 };
@@ -316,13 +316,13 @@ class GUI_EXPORT QgsSettingsColorButtonWrapper : public QgsSettingsEditorWidgetW
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsColorButtonWrapper( parent ); }
 
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 
-    bool setSettingFromWidget() const override;
+    [[nodiscard]] bool setSettingFromWidget() const override;
 
-    QColor valueFromWidget() const override;
+    [[nodiscard]] QColor valueFromWidget() const override;
 
-    bool setWidgetValue( const QColor &value ) const override;
+    [[nodiscard]] bool setWidgetValue( const QColor &value ) const override;
 
     void configureEditorPrivateImplementation() override;
 

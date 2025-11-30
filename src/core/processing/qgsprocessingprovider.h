@@ -51,20 +51,20 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Returns an icon for the provider.
      * \see svgIconPath()
      */
-    virtual QIcon icon() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QIcon icon() const SIP_HOLDGIL;
 
     /**
      * Returns a path to an SVG version of the provider's icon.
      * \see icon()
      */
-    virtual QString svgIconPath() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QString svgIconPath() const SIP_HOLDGIL;
 
     /**
      * Returns the flags indicating how and when the provider operates and should be exposed to users.
      * Default is no flags.
      * \since QGIS 3.14
      */
-    virtual Qgis::ProcessingProviderFlags flags() const SIP_HOLDGIL;
+    [[nodiscard]] virtual Qgis::ProcessingProviderFlags flags() const SIP_HOLDGIL;
 
     /**
      * Returns the unique provider id, used for identifying the provider. This string
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see name()
      * \see helpId()
      */
-    virtual QString id() const = 0 SIP_HOLDGIL;
+    [[nodiscard]] virtual QString id() const = 0 SIP_HOLDGIL;
 
     /**
      * Returns the provider help id string, used for creating QgsHelp urls for algorithms
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * no QgsHelp url should be created for the provider's algorithms.
      * \see id()
      */
-    virtual QString helpId() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QString helpId() const SIP_HOLDGIL;
 
     /**
      * Returns the provider name, which is used to describe the provider within the GUI.
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see longName()
      * \see id()
      */
-    virtual QString name() const = 0 SIP_HOLDGIL;
+    [[nodiscard]] virtual QString name() const = 0 SIP_HOLDGIL;
 
     /**
      * Returns the longer version of the provider name, which can include extra details
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see name()
      * \see id()
      */
-    virtual QString longName() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QString longName() const SIP_HOLDGIL;
 
     /**
      * Returns a version information string for the provider, or an empty string if this
@@ -111,14 +111,14 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      *
      * \since QGIS 3.8
      */
-    virtual QString versionInfo() const SIP_HOLDGIL;
+    [[nodiscard]] virtual QString versionInfo() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the provider can be activated, or FALSE if it cannot be activated (e.g. due to
      * missing external dependencies).
      * \see isActive()
      */
-    virtual bool canBeActivated() const { return true; }
+    [[nodiscard]] virtual bool canBeActivated() const { return true; }
 
     /**
      * Returns an optional warning message to show users when running algorithms from this provider.
@@ -130,12 +130,12 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      *
      * \since QGIS 3.10.1
      */
-    virtual QString warningMessage() const { return QString(); }
+    [[nodiscard]] virtual QString warningMessage() const { return QString(); }
 
     /**
      * Returns TRUE if the provider is active and able to run algorithms.
      */
-    virtual bool isActive() const { return true; }
+    [[nodiscard]] virtual bool isActive() const { return true; }
 
     /**
      * Returns a list of the raster format file extensions supported by this provider.
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputPointCloudLayerExtensions()
      * \see supportedOutputVectorTileLayerExtensions()
      */
-    virtual QStringList supportedOutputRasterLayerExtensions() const;
+    [[nodiscard]] virtual QStringList supportedOutputRasterLayerExtensions() const;
 
     /**
      * Returns a list of the vector format file extensions supported by this provider.
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputPointCloudLayerExtensions()
      * \see supportedOutputVectorTileLayerExtensions()
      */
-    virtual QStringList supportedOutputVectorLayerExtensions() const;
+    [[nodiscard]] virtual QStringList supportedOutputVectorLayerExtensions() const;
 
     /**
      * Returns a list of the point cloud format file extensions supported by this provider.
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      *
      * \since QGIS 3.24
      */
-    virtual QStringList supportedOutputPointCloudLayerExtensions() const;
+    [[nodiscard]] virtual QStringList supportedOutputPointCloudLayerExtensions() const;
 
     /**
      * Returns a list of the vector tile format file extensions supported by this provider.
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      *
      * \since QGIS 3.32
      */
-    virtual QStringList supportedOutputVectorTileLayerExtensions() const;
+    [[nodiscard]] virtual QStringList supportedOutputVectorTileLayerExtensions() const;
 
     /**
      * Returns a list of the table (geometry-less vector layers) file extensions supported by this provider.
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      *
      * \since QGIS 3.4.3
      */
-    virtual QStringList supportedOutputTableExtensions() const;
+    [[nodiscard]] virtual QStringList supportedOutputTableExtensions() const;
 
     /**
      * Returns TRUE if the specified \a outputValue is of a supported file format for the given destination \a parameter.
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see defaultPointCloudFileExtension()
      * \see defaultVectorTileFileExtension()
      */
-    virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
+    [[nodiscard]] virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
 
     /**
      * Returns the default file extension to use for raster outputs created by the
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see defaultPointCloudFileExtension()
      * \see defaultVectorTileFileExtension()
      */
-    virtual QString defaultRasterFileExtension() const;
+    [[nodiscard]] virtual QString defaultRasterFileExtension() const;
 
     /**
      * Returns the default file extension to use for point cloud outputs created by the
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      *
      * \since QGIS 3.24
      */
-    virtual QString defaultPointCloudFileExtension() const;
+    [[nodiscard]] virtual QString defaultPointCloudFileExtension() const;
 
     /**
      * Returns the default file extension to use for vector tile outputs created by the
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      *
      * \since QGIS 3.32
      */
-    virtual QString defaultVectorTileFileExtension() const;
+    [[nodiscard]] virtual QString defaultVectorTileFileExtension() const;
 
     /**
      * Returns TRUE if the provider supports non-file based outputs (such as memory layers
@@ -288,7 +288,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      *
      * \see supportedOutputVectorLayerExtensions()
      */
-    virtual bool supportsNonFileBasedOutput() const;
+    [[nodiscard]] virtual bool supportsNonFileBasedOutput() const;
 
     /**
      * Loads the provider. This will be called when the plugin is being loaded, and any general
@@ -316,14 +316,14 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Returns a list of algorithms supplied by this provider.
      * \see algorithm()
      */
-    QList< const QgsProcessingAlgorithm * > algorithms() const;
+    [[nodiscard]] QList< const QgsProcessingAlgorithm * > algorithms() const;
 
     /**
      * Returns the matching algorithm by \a name, or NULLPTR if no matching
      * algorithm is contained by this provider.
      * \see algorithms()
      */
-    const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
+    [[nodiscard]] const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
 
   signals:
 

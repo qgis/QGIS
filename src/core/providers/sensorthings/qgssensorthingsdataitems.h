@@ -31,7 +31,7 @@ class CORE_EXPORT QgsSensorThingsRootItem : public QgsConnectionsRootItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 8; }
+    [[nodiscard]] QVariant sortKey() const override { return 8; }
 
 };
 
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsSensorThingsLayerEntityItem : public QgsLayerItem
     QgsSensorThingsLayerEntityItem( QgsDataItem *parent, const QString &name, const QString &path,
                                     const QVariantMap &uriParts, const QString &provider, Qgis::BrowserLayerType type,
                                     Qgis::SensorThingsEntity entityType, const QString &connectionName );
-    QString layerName() const final;
+    [[nodiscard]] QString layerName() const final;
   private:
     QVariantMap mUriParts;
     Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
@@ -82,8 +82,8 @@ class QgsSensorThingsDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    QString dataProviderKey() const override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] QString dataProviderKey() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };

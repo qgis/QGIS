@@ -552,7 +552,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        * If \a includeAuxiliaryLayers is FALSE then auxiliary layers will not be included in the
        * returned list.
        */
-      QList<QgsVectorLayer *> handledLayers( bool includeAuxiliaryLayers = true ) const;
+      [[nodiscard]] QList<QgsVectorLayer *> handledLayers( bool includeAuxiliaryLayers = true ) const;
 
       /**
        * Returns a list of feature IDs from the specified \a layer affected by the delete operation.

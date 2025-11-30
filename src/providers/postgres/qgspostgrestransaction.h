@@ -40,7 +40,7 @@ class QgsPostgresTransaction : public QgsTransaction
      */
     bool executeSql( const QString &sql, QString &error, bool isDirty = false, const QString &name = QString() ) override;
 
-    QgsPostgresConn *connection() const { return mConn; }
+    [[nodiscard]] QgsPostgresConn *connection() const { return mConn; }
 
 
   private:

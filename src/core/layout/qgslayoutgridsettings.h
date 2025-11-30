@@ -49,7 +49,7 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
      */
     QgsLayoutGridSettings( QgsLayout *layout );
 
-    QString stringType() const override { return QStringLiteral( "LayoutGrid" ); }
+    [[nodiscard]] QString stringType() const override { return QStringLiteral( "LayoutGrid" ); }
     QgsLayout *layout() override;
 
     /**
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
      * \see setResolution()
      * \see offset()
      */
-    QgsLayoutMeasurement resolution() const { return mGridResolution;}
+    [[nodiscard]] QgsLayoutMeasurement resolution() const { return mGridResolution;}
 
     /**
      * Sets the \a offset of the page/snap grid.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
      * \see setOffset()
      * \see resolution()
      */
-    QgsLayoutPoint offset() const { return mGridOffset; }
+    [[nodiscard]] QgsLayoutPoint offset() const { return mGridOffset; }
 
     /**
      * Sets the \a pen used for drawing page/snap grids.
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
      * \see setPen()
      * \see style()
      */
-    QPen pen() const { return mGridPen; }
+    [[nodiscard]] QPen pen() const { return mGridPen; }
 
     /**
      * Sets the \a style used for drawing the page/snap grids.
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
      * \see setStyle()
      * \see pen()
      */
-    Style style() const { return mGridStyle; }
+    [[nodiscard]] Style style() const { return mGridStyle; }
 
     /**
      * Loads grid settings from the application layout settings.

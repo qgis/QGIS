@@ -32,19 +32,19 @@ class QgsForceRHRAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
   public:
     QgsForceRHRAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QList<int> inputLayerTypes() const override;
-    QgsForceRHRAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QList<int> inputLayerTypes() const override;
+    [[nodiscard]] QgsForceRHRAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
-    QString outputName() const override;
+    [[nodiscard]] Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
+    [[nodiscard]] QString outputName() const override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 

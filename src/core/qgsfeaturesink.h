@@ -118,7 +118,7 @@ class CORE_EXPORT QgsFeatureSink
      *
      * \since QGIS 3.16
      */
-    virtual QString lastError() const { return QString(); }
+    [[nodiscard]] virtual QString lastError() const { return QString(); }
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureSink::Flags )

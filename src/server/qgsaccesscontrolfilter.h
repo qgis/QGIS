@@ -69,7 +69,7 @@ class SERVER_EXPORT QgsAccessControlFilter
     };
 
     //! Returns the QgsServerInterface instance
-    const QgsServerInterface *serverInterface() const { return mServerInterface; }
+    [[nodiscard]] const QgsServerInterface *serverInterface() const { return mServerInterface; }
 
     /**
      * Returns an additional expression filter
@@ -112,7 +112,7 @@ class SERVER_EXPORT QgsAccessControlFilter
      * Cache key to used to create the capabilities cache
      * \returns the cache key, "" for no cache
      */
-    virtual QString cacheKey() const;
+    [[nodiscard]] virtual QString cacheKey() const;
 
   private:
     //! The server interface

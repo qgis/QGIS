@@ -49,8 +49,8 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     ~QgsVectorTileLayerRenderer() override;
 
     bool render() override;
-    QgsFeedback *feedback() const override { return mFeedback.get(); }
-    bool forceRasterRender() const override;
+    [[nodiscard]] QgsFeedback *feedback() const override { return mFeedback.get(); }
+    [[nodiscard]] bool forceRasterRender() const override;
 
   private:
     void decodeAndDrawTile( const QgsVectorTileRawData &rawTile );

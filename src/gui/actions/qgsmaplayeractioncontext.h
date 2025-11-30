@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapLayerActionContext
      *
      * \see setAttributeDialog()
      */
-    QgsAttributeDialog *attributeDialog() const;
+    [[nodiscard]] QgsAttributeDialog *attributeDialog() const;
 
     /**
      * Sets the attribute \a dialog associated with the action's execution.
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsMapLayerActionContext
      *
      * \see setMessageBar()
      */
-    QgsMessageBar *messageBar() const;
+    [[nodiscard]] QgsMessageBar *messageBar() const;
 
     /**
      * Sets the message \a bar associated with the action's execution.

@@ -40,16 +40,16 @@ class QgsOapifLandingPageRequest : public QgsBaseNetworkRequest
     };
 
     //! Returns application level error
-    ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
+    [[nodiscard]] ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
 
     //! Return URL of the api endpoint
-    const QString &apiUrl() const { return mApiUrl; }
+    [[nodiscard]] const QString &apiUrl() const { return mApiUrl; }
 
     //! Return URL of the collections endpoint
-    const QString &collectionsUrl() const { return mCollectionsUrl; }
+    [[nodiscard]] const QString &collectionsUrl() const { return mCollectionsUrl; }
 
     //! Return URL of the conformance endpoint
-    const QString &conformanceUrl() const { return mConformanceUrl; }
+    [[nodiscard]] const QString &conformanceUrl() const { return mConformanceUrl; }
 
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred

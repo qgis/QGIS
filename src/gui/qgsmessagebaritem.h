@@ -99,7 +99,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
      *
      * \see setText()
      */
-    QString text() const;
+    [[nodiscard]] QString text() const;
 
     /**
      * Sets the \a title for in the item.
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
      *
      * \see setTitle()
      */
-    QString title() const;
+    [[nodiscard]] QString title() const;
 
     /**
      * Sets the message \a level for the item, which controls how the message bar is styled
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
      *
      * \see setLevel()
      */
-    Qgis::MessageLevel level() const;
+    [[nodiscard]] Qgis::MessageLevel level() const;
 
     /**
      * Sets a custom \a widget to show in the item.
@@ -142,7 +142,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
      *
      * \see setWidget()
      */
-    QWidget *widget() const;
+    [[nodiscard]] QWidget *widget() const;
 
     /**
      * Sets the \a icon associated with the message.
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
      *
      * \see setIcon()
      */
-    QIcon icon() const;
+    [[nodiscard]] QIcon icon() const;
 
     /**
      * Sets the \a duration (in seconds) to show the message for. If \a duration
@@ -175,13 +175,13 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
      *
      * \see setDuration()
      */
-    int duration() const { return mDuration; }
+    [[nodiscard]] int duration() const { return mDuration; }
 
     /**
      * Returns the styleSheet which should be used to style a QgsMessageBar object when
      * this item is displayed.
      */
-    QString getStyleSheet() const { return mStyleSheet; }
+    [[nodiscard]] QString getStyleSheet() const { return mStyleSheet; }
 
   public slots:
 

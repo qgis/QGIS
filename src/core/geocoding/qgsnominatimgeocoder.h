@@ -48,27 +48,27 @@ class CORE_EXPORT QgsNominatimGeocoder : public QgsGeocoderInterface
      */
     QgsNominatimGeocoder( const QString &countryCodes = QString(), const QString &endpoint = QString() );
 
-    Flags flags() const override;
-    QgsFields appendedFields() const override;
-    Qgis::WkbType wkbType() const override;
+    [[nodiscard]] Flags flags() const override;
+    [[nodiscard]] QgsFields appendedFields() const override;
+    [[nodiscard]] Qgis::WkbType wkbType() const override;
     QList< QgsGeocoderResult > geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback = nullptr ) const override;
 
     /**
      * Returns the URL generated for geocoding the specified \a address.
      */
-    QUrl requestUrl( const QString &address, const QgsRectangle &bounds = QgsRectangle() ) const;
+    [[nodiscard]] QUrl requestUrl( const QString &address, const QgsRectangle &bounds = QgsRectangle() ) const;
 
     /**
      * Converts a JSON result returned from the Nominatim service to a geocoder result object.
      */
-    QgsGeocoderResult jsonToResult( const QVariantMap &json ) const;
+    [[nodiscard]] QgsGeocoderResult jsonToResult( const QVariantMap &json ) const;
 
     /**
      * Returns the API endpoint used for requests.
      *
      * \see setEndpoint()
      */
-    QString endpoint() const;
+    [[nodiscard]] QString endpoint() const;
 
     /**
      * Sets a specific API \a endpoint to use for requests. This is for internal testing purposes only.
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsNominatimGeocoder : public QgsGeocoderInterface
      *
      * \see setRequestsPerSecond()
      */
-    double requestsPerSecond() const { return mRequestsPerSecond; }
+    [[nodiscard]] double requestsPerSecond() const { return mRequestsPerSecond; }
 
     /**
      * Sets the \a number of request per seconds to the endpoint.
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsNominatimGeocoder : public QgsGeocoderInterface
      *
      * \see setCountryCodes()
      */
-    QString countryCodes() const;
+    [[nodiscard]] QString countryCodes() const;
 
     /**
      * Sets the optional \a region bias which will be used to prioritize results in a certain region.

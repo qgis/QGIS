@@ -41,7 +41,7 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
      * Returns the store's field list.
      * \see setFields()
      */
-    QgsFields fields() const { return mFields; }
+    [[nodiscard]] QgsFields fields() const { return mFields; }
 
     /**
      * Sets the store's \a fields. Every contained feature's fields will be reset to match \a fields.
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
      * Returns the store's coordinate reference system.
      * \see setCrs()
      */
-    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
     /**
      * Sets the store's \a crs.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
     /**
      * Returns the number of features contained in the store.
      */
-    int count() const { return mFeatures.size(); }
+    [[nodiscard]] int count() const { return mFeatures.size(); }
 
 #ifdef SIP_RUN
 
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
     /**
      * Returns the list of features contained in the store.
      */
-    QgsFeatureList features() const { return mFeatures; }
+    [[nodiscard]] QgsFeatureList features() const { return mFeatures; }
 
     /**
      * Sets a map of optional \a parameters for the store.
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
      * Returns the map of optional parameters.
      * \see setParams()
      */
-    QMap<QString, QVariant> params() const { return mParams; }
+    [[nodiscard]] QMap<QString, QVariant> params() const { return mParams; }
 
   private:
     QgsFields mFields;

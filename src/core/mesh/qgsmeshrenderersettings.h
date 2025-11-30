@@ -40,17 +40,17 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 {
   public:
     //! Returns whether mesh structure rendering is enabled
-    bool isEnabled() const;
+    [[nodiscard]] bool isEnabled() const;
     //! Sets whether mesh structure rendering is enabled
     void setEnabled( bool enabled );
 
     //! Returns line width used for rendering (in millimeters)
-    double lineWidth() const;
+    [[nodiscard]] double lineWidth() const;
     //! Sets line width used for rendering (in millimeters)
     void setLineWidth( double lineWidth );
 
     //! Returns color used for rendering
-    QColor color() const;
+    [[nodiscard]] QColor color() const;
     //! Sets color used for rendering of the mesh
     void setColor( const QColor &color );
 
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
      *
      * \since QGIS 3.14
      */
-    Qgis::RenderUnit lineWidthUnit() const;
+    [[nodiscard]] Qgis::RenderUnit lineWidthUnit() const;
 
     /**
      * Sets units of the width of the mesh frame
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsMeshRendererVectorArrowSettings
     };
 
     //! Returns method used for drawing arrows
-    QgsMeshRendererVectorArrowSettings::ArrowScalingMethod shaftLengthMethod() const;
+    [[nodiscard]] QgsMeshRendererVectorArrowSettings::ArrowScalingMethod shaftLengthMethod() const;
     //! Sets method used for drawing arrows
     void setShaftLengthMethod( ArrowScalingMethod shaftLengthMethod );
 
@@ -267,7 +267,7 @@ class CORE_EXPORT QgsMeshRendererVectorArrowSettings
      *
      * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax
      */
-    double minShaftLength() const;
+    [[nodiscard]] double minShaftLength() const;
 
     /**
      * Sets mininimum shaft length (in millimeters)
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsMeshRendererVectorArrowSettings
      *
      * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax
      */
-    double maxShaftLength() const;
+    [[nodiscard]] double maxShaftLength() const;
 
     /**
      * Sets maximum shaft length (in millimeters)
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsMeshRendererVectorArrowSettings
      *
      * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::Scaled
      */
-    double scaleFactor() const;
+    [[nodiscard]] double scaleFactor() const;
 
     /**
      * Sets scale factor
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsMeshRendererVectorArrowSettings
      *
      * Only for QgsMeshRendererVectorSettings::ArrowScalingMethod::Fixed
      */
-    double fixedShaftLength() const;
+    [[nodiscard]] double fixedShaftLength() const;
 
     /**
      * Sets fixed length  (in millimeters)
@@ -319,12 +319,12 @@ class CORE_EXPORT QgsMeshRendererVectorArrowSettings
     void setFixedShaftLength( double fixedShaftLength );
 
     //! Returns ratio of the head width of the arrow (range 0-1)
-    double arrowHeadWidthRatio() const;
+    [[nodiscard]] double arrowHeadWidthRatio() const;
     //! Sets ratio of the head width of the arrow (range 0-1)
     void setArrowHeadWidthRatio( double arrowHeadWidthRatio );
 
     //! Returns ratio of the head length of the arrow (range 0-1)
-    double arrowHeadLengthRatio() const;
+    [[nodiscard]] double arrowHeadLengthRatio() const;
     //! Sets ratio of the head length of the arrow (range 0-1)
     void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
 
@@ -371,11 +371,11 @@ class CORE_EXPORT QgsMeshRendererVectorStreamlineSettings
     };
 
     //! Returns the method used for seeding start points of strealines
-    SeedingStartPointsMethod seedingMethod() const;
+    [[nodiscard]] SeedingStartPointsMethod seedingMethod() const;
     //! Sets the method used for seeding start points of strealines
     void setSeedingMethod( const SeedingStartPointsMethod &seedingMethod );
     //! Returns the density used for seeding start points
-    double seedingDensity() const;
+    [[nodiscard]] double seedingDensity() const;
     //! Sets the density used for seeding start points
     void setSeedingDensity( double seedingDensity );
     //! Reads configuration from the given DOM element
@@ -403,15 +403,15 @@ class CORE_EXPORT QgsMeshRendererVectorTracesSettings
   public:
 
     //! Returns the maximum tail length
-    double maximumTailLength() const;
+    [[nodiscard]] double maximumTailLength() const;
     //! Sets the maximums tail length
     void setMaximumTailLength( double maximumTailLength );
     //! Returns particles count
-    int particlesCount() const;
+    [[nodiscard]] int particlesCount() const;
     //! Sets particles count
     void setParticlesCount( int value );
     //! Returns the maximum tail length unit
-    Qgis::RenderUnit maximumTailLengthUnit() const;
+    [[nodiscard]] Qgis::RenderUnit maximumTailLengthUnit() const;
     //! Sets the maximum tail length unit
     void setMaximumTailLengthUnit( Qgis::RenderUnit maximumTailLengthUnit );
 
@@ -454,7 +454,7 @@ class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
      * Returns the multiplier for the magnitude to convert it to knots, according to the units set with setMagnitudeUnits()
      * A custom multiplier can be set with setMagnitudeMultiplier() for the case when units are set to OtherUnit
      */
-    double magnitudeMultiplier() const;
+    [[nodiscard]] double magnitudeMultiplier() const;
 
     /**
      * Sets a multiplier for the magnitude to convert it to knots
@@ -464,7 +464,7 @@ class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
     /**
      * Returns the shaft length (in millimeters)
      */
-    double shaftLength() const;
+    [[nodiscard]] double shaftLength() const;
 
     /**
      * Sets the shaft length  (in millimeters)
@@ -476,7 +476,7 @@ class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
      *
      * \see setShaftLengthUnits()
      */
-    Qgis::RenderUnit shaftLengthUnits() const;
+    [[nodiscard]] Qgis::RenderUnit shaftLengthUnits() const;
 
     /**
      * Sets the units for the shaft length.
@@ -488,7 +488,7 @@ class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
     /**
      * Returns the units that the data are in
      */
-    WindSpeedUnit magnitudeUnits() const;
+    [[nodiscard]] WindSpeedUnit magnitudeUnits() const;
 
     /**
      * Sets the units that the data are in
@@ -728,12 +728,12 @@ class CORE_EXPORT QgsMeshRendererSettings
     ~QgsMeshRendererSettings();
 
     //! Returns native mesh renderer settings
-    QgsMeshRendererMeshSettings nativeMeshSettings() const { return mRendererNativeMeshSettings; }
+    [[nodiscard]] QgsMeshRendererMeshSettings nativeMeshSettings() const { return mRendererNativeMeshSettings; }
     //! Sets new native mesh  renderer settings, triggers repaint
     void setNativeMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererNativeMeshSettings = settings; }
 
     //! Returns triangular mesh renderer settings
-    QgsMeshRendererMeshSettings triangularMeshSettings() const { return mRendererTriangularMeshSettings; }
+    [[nodiscard]] QgsMeshRendererMeshSettings triangularMeshSettings() const { return mRendererTriangularMeshSettings; }
     //! Sets new triangular mesh renderer settings
     void setTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererTriangularMeshSettings = settings; }
 
@@ -741,7 +741,7 @@ class CORE_EXPORT QgsMeshRendererSettings
      * Returns edge mesh renderer settings
      * \since QGIS 3.14
      */
-    QgsMeshRendererMeshSettings edgeMeshSettings() const { return mRendererEdgeMeshSettings; }
+    [[nodiscard]] QgsMeshRendererMeshSettings edgeMeshSettings() const { return mRendererEdgeMeshSettings; }
 
     /**
      * Sets new edge mesh renderer settings
@@ -750,7 +750,7 @@ class CORE_EXPORT QgsMeshRendererSettings
     void setEdgeMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererEdgeMeshSettings = settings; }
 
     //! Returns renderer settings
-    QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const { return mRendererScalarSettings.value( groupIndex ); }
+    [[nodiscard]] QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const { return mRendererScalarSettings.value( groupIndex ); }
 
     //! Sets new renderer settings
     void setScalarSettings( int groupIndex, const QgsMeshRendererScalarSettings &settings ) { mRendererScalarSettings[groupIndex] = settings; }
@@ -759,7 +759,7 @@ class CORE_EXPORT QgsMeshRendererSettings
      * Returns whether \a groupIndex has existing scalar settings
      * \since QGIS 3.30.2
      */
-    bool hasScalarSettings( int groupIndex ) const {return mRendererScalarSettings.contains( groupIndex );}
+    [[nodiscard]] bool hasScalarSettings( int groupIndex ) const {return mRendererScalarSettings.contains( groupIndex );}
 
     /**
      * Removes scalar settings with \a groupIndex
@@ -768,7 +768,7 @@ class CORE_EXPORT QgsMeshRendererSettings
     bool removeScalarSettings( int groupIndex )  {return mRendererScalarSettings.remove( groupIndex );}
 
     //! Returns renderer settings
-    QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const { return mRendererVectorSettings.value( groupIndex ); }
+    [[nodiscard]] QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const { return mRendererVectorSettings.value( groupIndex ); }
     //! Sets new renderer settings
     void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings ) { mRendererVectorSettings[groupIndex] = settings; }
 
@@ -776,7 +776,7 @@ class CORE_EXPORT QgsMeshRendererSettings
      * Returns whether \a groupIndex has existing vector settings
      * \since QGIS 3.30.2
      */
-    bool hasVectorSettings( int groupIndex ) const {return mRendererVectorSettings.contains( groupIndex );}
+    [[nodiscard]] bool hasVectorSettings( int groupIndex ) const {return mRendererVectorSettings.contains( groupIndex );}
 
     /**
      * Removes vector settings for \a groupIndex
@@ -789,7 +789,7 @@ class CORE_EXPORT QgsMeshRendererSettings
      *
      * Caller does not own the resulting pointer
      */
-    QgsMesh3DAveragingMethod *averagingMethod() const;
+    [[nodiscard]] QgsMesh3DAveragingMethod *averagingMethod() const;
 
     /**
      * Sets averaging method for conversion of 3d stacked mesh data to 2d data
@@ -807,7 +807,7 @@ class CORE_EXPORT QgsMeshRendererSettings
      * Returns the active scalar dataset group
      * \since QGIS 3.14
      */
-    int activeScalarDatasetGroup() const;
+    [[nodiscard]] int activeScalarDatasetGroup() const;
 
     /**
      * Sets the active scalar dataset group
@@ -819,7 +819,7 @@ class CORE_EXPORT QgsMeshRendererSettings
      * Returns the active vector dataset group
      * \since QGIS 3.14
      */
-    int activeVectorDatasetGroup() const;
+    [[nodiscard]] int activeVectorDatasetGroup() const;
 
     /**
      * Sets the active vector dataset group
@@ -832,7 +832,7 @@ class CORE_EXPORT QgsMeshRendererSettings
     *
     * \since QGIS 3.22
     */
-    bool hasSettings( int datasetGroupIndex ) const;
+    [[nodiscard]] bool hasSettings( int datasetGroupIndex ) const;
 
   private:
     QgsMeshRendererMeshSettings mRendererNativeMeshSettings;

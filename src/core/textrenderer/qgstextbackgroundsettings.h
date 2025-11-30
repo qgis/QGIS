@@ -96,7 +96,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * Returns whether the background is enabled.
      * \see setEnabled()
      */
-    bool enabled() const;
+    [[nodiscard]] bool enabled() const;
 
     /**
      * Sets whether the text background will be drawn.
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * Returns the type of background shape (e.g., square, ellipse, SVG).
      * \see setType()
      */
-    ShapeType type() const;
+    [[nodiscard]] ShapeType type() const;
 
     /**
      * Sets the type of background shape to draw (e.g., square, ellipse, SVG).
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * Returns the absolute path to the background SVG file, if set.
      * \see setSvgFile()
      */
-    QString svgFile() const;
+    [[nodiscard]] QString svgFile() const;
 
     /**
      * Sets the path to the background SVG file. This is only used if type() is set to
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setMarkerSymbol()
      * \since QGIS 3.10
      */
-    QgsMarkerSymbol *markerSymbol() const;
+    [[nodiscard]] QgsMarkerSymbol *markerSymbol() const;
 
     /**
      * Sets the current marker \a symbol for the background shape. Ownership is transferred
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setFillSymbol()
      * \since QGIS 3.20
      */
-    QgsFillSymbol *fillSymbol() const;
+    [[nodiscard]] QgsFillSymbol *fillSymbol() const;
 
     /**
      * Sets the current fill \a symbol for the background shape. Ownership is transferred
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setSizeType()
      * \see size()
      */
-    SizeType sizeType() const;
+    [[nodiscard]] SizeType sizeType() const;
 
     /**
      * Sets the method used to determine the size of the background shape (e.g., fixed size or buffer
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setSize()
      * \see sizeType()
      */
-    QSizeF size() const;
+    [[nodiscard]] QSizeF size() const;
 
     /**
      * Sets the size of the background shape. The meaning of the size depends on the current sizeType(),
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see sizeType()
      * \see size()
      */
-    Qgis::RenderUnit sizeUnit() const;
+    [[nodiscard]] Qgis::RenderUnit sizeUnit() const;
 
     /**
      * Sets the units used for the shape's size. This value has no meaning if the sizeType() is set to
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setSizeMapUnitScale()
      * \see sizeUnit()
      */
-    QgsMapUnitScale sizeMapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale sizeMapUnitScale() const;
 
     /**
      * Sets the map unit scale object for the shape size. This is only used if the
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setRotationType()
      * \see rotation()
      */
-    RotationType rotationType() const;
+    [[nodiscard]] RotationType rotationType() const;
 
     /**
      * Sets the method used for rotating the background shape.
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see rotationType()
      * \see setRotation()
      */
-    double rotation() const;
+    [[nodiscard]] double rotation() const;
 
     /**
      * Sets the \a rotation for the background shape, in degrees clockwise.
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setOffset()
      * \see offsetUnit()
      */
-    QPointF offset() const;
+    [[nodiscard]] QPointF offset() const;
 
     /**
      * Sets the offset used for drawing the background shape. Units are specified using
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setOffsetUnit()
      * \see offset()
      */
-    Qgis::RenderUnit offsetUnit() const;
+    [[nodiscard]] Qgis::RenderUnit offsetUnit() const;
 
     /**
      * Sets the units used for the shape's offset.
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setOffsetMapUnitScale()
      * \see offsetUnit()
      */
-    QgsMapUnitScale offsetMapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale offsetMapUnitScale() const;
 
     /**
      * Sets the map unit scale object for the shape offset. This is only used if the
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setRadii()
      * \see radiiUnit()
      */
-    QSizeF radii() const;
+    [[nodiscard]] QSizeF radii() const;
 
     /**
      * Sets the radii used for rounding the corners of shapes. This is only used if
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setRadiiUnit()
      * \see radii()
      */
-    Qgis::RenderUnit radiiUnit() const;
+    [[nodiscard]] Qgis::RenderUnit radiiUnit() const;
 
     /**
      * Sets the units used for the shape's radii.
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setRadiiMapUnitScale()
      * \see radiiUnit()
      */
-    QgsMapUnitScale radiiMapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale radiiMapUnitScale() const;
 
     /**
      * Sets the map unit scale object for the shape radii. This is only used if the
@@ -379,7 +379,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * opaque).
      * \see setOpacity()
      */
-    double opacity() const;
+    [[nodiscard]] double opacity() const;
 
     /**
      * Sets the background shape's opacity.
@@ -393,7 +393,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * Returns the blending mode used for drawing the background shape.
      * \see setBlendMode()
      */
-    QPainter::CompositionMode blendMode() const;
+    [[nodiscard]] QPainter::CompositionMode blendMode() const;
 
     /**
      * Sets the blending mode used for drawing the background shape.
@@ -409,7 +409,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \note As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
      * other background types should be configured through their symbols.
      */
-    QColor fillColor() const;
+    [[nodiscard]] QColor fillColor() const;
 
     /**
      * Sets the color used for filing the background shape.
@@ -428,7 +428,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \note As of QGIS 3.20, using this function is only recommended for SVG backgrounds, while
      * other background types should be configured through their symbols.
      */
-    QColor strokeColor() const;
+    [[nodiscard]] QColor strokeColor() const;
 
     /**
      * Sets the color used for outlining the background shape.
@@ -444,7 +444,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setStrokeWidth()
      * \see strokeWidthUnit()
      */
-    double strokeWidth() const;
+    [[nodiscard]] double strokeWidth() const;
 
     /**
      * Sets the width of the shape's stroke (stroke). Units are specified through
@@ -461,7 +461,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setStrokeWidthUnit()
      * \see strokeWidth()
      */
-    Qgis::RenderUnit strokeWidthUnit() const;
+    [[nodiscard]] Qgis::RenderUnit strokeWidthUnit() const;
 
     /**
      * Sets the units used for the shape's stroke width.
@@ -479,7 +479,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see setStrokeWidthMapUnitScale()
      * \see strokeWidthUnit()
      */
-    QgsMapUnitScale strokeWidthMapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale strokeWidthMapUnitScale() const;
 
     /**
      * Sets the map unit scale object for the shape stroke width. This is only used if the
@@ -496,7 +496,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * Returns the join style used for drawing the background shape.
      * \see setJoinStyle
      */
-    Qt::PenJoinStyle joinStyle() const;
+    [[nodiscard]] Qt::PenJoinStyle joinStyle() const;
 
     /**
      * Sets the join style used for drawing the background shape.
@@ -512,7 +512,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \returns paint effect
      * \see setPaintEffect()
      */
-    const QgsPaintEffect *paintEffect() const;
+    [[nodiscard]] const QgsPaintEffect *paintEffect() const;
 
     /**
      * Sets the current paint \a effect for the background shape.
@@ -558,7 +558,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * Returns all field names referenced by the configuration (e.g. from data defined properties).
      * \since QGIS 3.14
      */
-    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+    [[nodiscard]] QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 
   private:
 

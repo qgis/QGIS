@@ -228,7 +228,7 @@ class CORE_EXPORT QgsAbstractPlotSeries
     /**
      * Returns the series' name.
      */
-    QString name() const;
+    [[nodiscard]] QString name() const;
 
     /**
      * Sets the series' name.
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsAbstractPlotSeries
     /**
      * Clones the series
      */
-    virtual QgsAbstractPlotSeries *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractPlotSeries *clone() const = 0 SIP_FACTORY;
 
   private:
 
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
     /**
      * Returns the series' list of XY pairs of double.
      */
-    QList<std::pair<double, double>> data() const;
+    [[nodiscard]] QList<std::pair<double, double>> data() const;
 
     /**
      * Sets the series' list of XY pairs of double.
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsXyPlotSeries : public QgsAbstractPlotSeries
      */
     void clear();
 
-    QgsAbstractPlotSeries *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsAbstractPlotSeries *clone() const override SIP_FACTORY;
 
   private:
 
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsPlotData
      * Returns the list of series forming the plot data.
      * \note the series' ownership is retained by this object.
      */
-    QList<QgsAbstractPlotSeries *> series() const;
+    [[nodiscard]] QList<QgsAbstractPlotSeries *> series() const;
 
     /**
      * Adds a series to the plot data.
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsPlotData
     /**
      * Returns the name of the series' categories.
      */
-    QStringList categories() const;
+    [[nodiscard]] QStringList categories() const;
 
     /**
      * Sets the name of the series' \a categories.
@@ -372,7 +372,7 @@ class CORE_EXPORT QgsPlotAxis
      * Returns the axis type.
      * \since QGIS 4.0
      */
-    Qgis::PlotAxisType type() const;
+    [[nodiscard]] Qgis::PlotAxisType type() const;
 
     /**
      * Sets the axis type.
@@ -385,7 +385,7 @@ class CORE_EXPORT QgsPlotAxis
      *
      * \see setGridIntervalMinor()
      */
-    double gridIntervalMinor() const { return mGridIntervalMinor; }
+    [[nodiscard]] double gridIntervalMinor() const { return mGridIntervalMinor; }
 
     /**
      * Sets the \a interval of minor grid lines for the axis.
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsPlotAxis
      *
      * \see setGridIntervalMajor()
      */
-    double gridIntervalMajor() const { return mGridIntervalMajor; }
+    [[nodiscard]] double gridIntervalMajor() const { return mGridIntervalMajor; }
 
     /**
      * Sets the \a interval of major grid lines for the axis.
@@ -413,7 +413,7 @@ class CORE_EXPORT QgsPlotAxis
      *
      * \see setLabelInterval()
      */
-    double labelInterval() const { return mLabelInterval; }
+    [[nodiscard]] double labelInterval() const { return mLabelInterval; }
 
     /**
      * Sets the \a interval of labels for the axis.
@@ -459,7 +459,7 @@ class CORE_EXPORT QgsPlotAxis
      *
      * \see setTextFormat()
      */
-    QgsTextFormat textFormat() const;
+    [[nodiscard]] QgsTextFormat textFormat() const;
 
     /**
      * Sets the text \a format used for the axis labels.
@@ -473,7 +473,7 @@ class CORE_EXPORT QgsPlotAxis
      *
      * \see setNumericFormat()
      */
-    QgsNumericFormat *numericFormat() const;
+    [[nodiscard]] QgsNumericFormat *numericFormat() const;
 
     /**
      * Sets the numeric \a format used for the axis labels.
@@ -492,7 +492,7 @@ class CORE_EXPORT QgsPlotAxis
      *
      * \since QGIS 3.32
      */
-    QString labelSuffix() const;
+    [[nodiscard]] QString labelSuffix() const;
 
     /**
      * Sets the axis label \a suffix. Set to an empty string if no label suffix is to be used.
@@ -512,7 +512,7 @@ class CORE_EXPORT QgsPlotAxis
      *
      * \since QGIS 3.32
      */
-    Qgis::PlotAxisSuffixPlacement labelSuffixPlacement() const;
+    [[nodiscard]] Qgis::PlotAxisSuffixPlacement labelSuffixPlacement() const;
 
     /**
      * Sets the \a placement for the axis label suffixes.

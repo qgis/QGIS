@@ -49,12 +49,12 @@ class CORE_EXPORT QgsPlotAbstractMetadata
     /**
      * Returns the unique type code for the plot class.
      */
-    QString type() const { return mType; }
+    [[nodiscard]] QString type() const { return mType; }
 
     /**
      * Returns a translated, user visible name for the plot class.
      */
-    QString visibleName() const { return mVisibleName; }
+    [[nodiscard]] QString visibleName() const { return mVisibleName; }
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -128,17 +128,17 @@ class CORE_EXPORT QgsPlotMetadata : public QgsPlotAbstractMetadata
     /**
      * Returns the classes' plot creation function.
      */
-    QgsPlotCreateFunc createFunction() const { return mCreateFunc; }
+    [[nodiscard]] QgsPlotCreateFunc createFunction() const { return mCreateFunc; }
 
     /**
      * Returns the classes' plot data gatherer creation function.
      */
-    QgsPlotDataGathererCreateFunc createPlotDataGathererFunction() const { return mDataGathererCreateFunc; }
+    [[nodiscard]] QgsPlotDataGathererCreateFunc createPlotDataGathererFunction() const { return mDataGathererCreateFunc; }
 
     /**
      * Returns the classes' plot widget creation function.
      */
-    QgsPlotWidgetCreateFunc widgetCreateFunction() const { return mWidgetCreateFunc; }
+    [[nodiscard]] QgsPlotWidgetCreateFunc widgetCreateFunction() const { return mWidgetCreateFunc; }
 
     /**
      * Sets the classes' plot widget creation function.
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsPlotRegistry : public QObject
      * Returns the metadata for the specified plot \a type. Returns NULLPTR if
      * a corresponding type was not found in the registry.
      */
-    QgsPlotAbstractMetadata *plotMetadata( const QString &type ) const;
+    [[nodiscard]] QgsPlotAbstractMetadata *plotMetadata( const QString &type ) const;
 
     /**
      * Registers a new plot type.
@@ -229,12 +229,12 @@ class CORE_EXPORT QgsPlotRegistry : public QObject
     /**
      * Creates a new instance of a plot given the \a type.
      */
-    QgsPlot *createPlot( const QString &type ) const SIP_TRANSFERBACK;
+    [[nodiscard]] QgsPlot *createPlot( const QString &type ) const SIP_TRANSFERBACK;
 
     /**
      * Returns a map of available plot types to translated name.
      */
-    QMap<QString, QString> plotTypes() const;
+    [[nodiscard]] QMap<QString, QString> plotTypes() const;
 
   signals:
 

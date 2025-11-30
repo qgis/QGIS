@@ -32,8 +32,8 @@
 class QgsVectorizeAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
-    QString group() const final;
-    QString groupId() const final;
+    [[nodiscard]] QString group() const final;
+    [[nodiscard]] QString groupId() const final;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) final;
 
   protected:
@@ -56,10 +56,10 @@ class QgsVectorizeAlgorithmBase : public QgsProcessingAlgorithm
     bool mUseNoDataForMissingValues = false;
 
   private:
-    virtual QString outputName() const = 0;
-    virtual Qgis::ProcessingSourceType outputType() const = 0;
-    virtual Qgis::WkbType sinkType() const = 0;
-    virtual QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const = 0;
+    [[nodiscard]] virtual QString outputName() const = 0;
+    [[nodiscard]] virtual Qgis::ProcessingSourceType outputType() const = 0;
+    [[nodiscard]] virtual Qgis::WkbType sinkType() const = 0;
+    [[nodiscard]] virtual QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const = 0;
 };
 
 /**
@@ -69,18 +69,18 @@ class QgsRasterPixelsToPolygonsAlgorithm : public QgsVectorizeAlgorithmBase
 {
   public:
     QgsRasterPixelsToPolygonsAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRasterPixelsToPolygonsAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRasterPixelsToPolygonsAlgorithm *createInstance() const override SIP_FACTORY;
 
   private:
-    QString outputName() const override;
-    Qgis::ProcessingSourceType outputType() const override;
-    Qgis::WkbType sinkType() const override;
-    QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const override;
+    [[nodiscard]] QString outputName() const override;
+    [[nodiscard]] Qgis::ProcessingSourceType outputType() const override;
+    [[nodiscard]] Qgis::WkbType sinkType() const override;
+    [[nodiscard]] QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const override;
 };
 
 /**
@@ -90,18 +90,18 @@ class QgsRasterPixelsToPointsAlgorithm : public QgsVectorizeAlgorithmBase
 {
   public:
     QgsRasterPixelsToPointsAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRasterPixelsToPointsAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRasterPixelsToPointsAlgorithm *createInstance() const override SIP_FACTORY;
 
   private:
-    QString outputName() const override;
-    Qgis::ProcessingSourceType outputType() const override;
-    Qgis::WkbType sinkType() const override;
-    QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const override;
+    [[nodiscard]] QString outputName() const override;
+    [[nodiscard]] Qgis::ProcessingSourceType outputType() const override;
+    [[nodiscard]] Qgis::WkbType sinkType() const override;
+    [[nodiscard]] QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const override;
 };
 
 ///@endcond PRIVATE

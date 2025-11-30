@@ -53,18 +53,18 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsFlagsEditorWidgetWrapper<ENUM, FLAGS>( parent ); }
 
-    QString id() const override
+    [[nodiscard]] QString id() const override
     {
       return QStringLiteral( "%1-%2" ).arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<FLAGS>().name() );
     }
 
-    QVariant variantValueFromWidget() const override
+    [[nodiscard]] QVariant variantValueFromWidget() const override
     {
       // enum/flags are stored as text
       return this->mSetting->convertToVariant( valueFromWidget() );
     };
 
-    bool setSettingFromWidget() const override
+    [[nodiscard]] bool setSettingFromWidget() const override
     {
       if ( this->mEditor )
       {
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
       return false;
     }
 
-    FLAGS valueFromWidget() const override
+    [[nodiscard]] FLAGS valueFromWidget() const override
     {
       if ( this->mEditor )
       {
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
       return FLAGS();
     }
 
-    bool setWidgetValue( const FLAGS &value ) const override
+    [[nodiscard]] bool setWidgetValue( const FLAGS &value ) const override
     {
       if ( this->mEditor )
       {
@@ -160,7 +160,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       } );
     }
 
-    QString id() const override
+    [[nodiscard]] QString id() const override
     {
       return QStringLiteral( "%1-%2" ).arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<ENUM>().name() );
     }
@@ -174,13 +174,13 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
 
     QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsEnumEditorWidgetWrapper<ENUM>( parent ); }
 
-    QVariant variantValueFromWidget() const override
+    [[nodiscard]] QVariant variantValueFromWidget() const override
     {
       // enum/flags are stored as text
       return this->mSetting->convertToVariant( valueFromWidget() );
     };
 
-    bool setSettingFromWidget() const override
+    [[nodiscard]] bool setSettingFromWidget() const override
     {
       if ( this->mEditor )
       {
@@ -194,7 +194,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       return false;
     }
 
-    ENUM valueFromWidget() const override
+    [[nodiscard]] ENUM valueFromWidget() const override
     {
       if ( this->mEditor )
       {
@@ -207,7 +207,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       return ENUM();
     }
 
-    bool setWidgetValue( const ENUM &value ) const override
+    [[nodiscard]] bool setWidgetValue( const ENUM &value ) const override
     {
       if ( this->mEditor )
       {

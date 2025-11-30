@@ -46,9 +46,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
   public:
     QgsGrassVectorMapLayer( QgsGrassVectorMap *map, int field );
 
-    int field() const { return mField; }
-    bool isValid() const { return mValid; }
-    QgsGrassVectorMap *map() const { return mMap; }
+    [[nodiscard]] int field() const { return mField; }
+    [[nodiscard]] bool isValid() const { return mValid; }
+    [[nodiscard]] QgsGrassVectorMap *map() const { return mMap; }
 
     //! Category index index
     int cidxFieldIndex();
@@ -61,17 +61,17 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
      * Does not reflect add/delete column.
      * Original fields must be returned by provider fields()
     */
-    const QgsFields &fields() const { return mFields; }
+    [[nodiscard]] const QgsFields &fields() const { return mFields; }
 
     /**
      * Current fields, as modified during editing, it contains cat field, without topo field.
      * This fields are used by layers which are not editied to reflect current state of editing.
     */
-    const QgsFields &tableFields() const { return mTableFields; }
+    [[nodiscard]] const QgsFields &tableFields() const { return mTableFields; }
 
     static QStringList fieldNames( const QgsFields &fields );
 
-    const QMap<int, QList<QVariant>> &attributes() const { return mAttributes; }
+    [[nodiscard]] const QMap<int, QList<QVariant>> &attributes() const { return mAttributes; }
 
     /**
      * Gets attribute for index corresponding to current fields(),
@@ -79,12 +79,12 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     */
     QVariant attribute( int cat, int index );
 
-    bool hasTable() const { return mHasTable; }
-    int keyColumn() const { return mKeyColumn; }
-    QString keyColumnName() const { return mFieldInfo ? mFieldInfo->key : QString(); }
-    QList<QPair<double, double>> minMax() const { return mMinMax; }
+    [[nodiscard]] bool hasTable() const { return mHasTable; }
+    [[nodiscard]] int keyColumn() const { return mKeyColumn; }
+    [[nodiscard]] QString keyColumnName() const { return mFieldInfo ? mFieldInfo->key : QString(); }
+    [[nodiscard]] QList<QPair<double, double>> minMax() const { return mMinMax; }
 
-    int userCount() const { return mUsers; }
+    [[nodiscard]] int userCount() const { return mUsers; }
     void addUser();
     void removeUser();
 

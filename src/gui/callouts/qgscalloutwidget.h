@@ -68,7 +68,7 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
      * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
     /**
      * Returns the vector layer associated with the widget.
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
      *
      * \since QGIS 3.40
      */
-    const QgsMapLayer *layer() const { return mLayer; }
+    [[nodiscard]] const QgsMapLayer *layer() const { return mLayer; }
 
     /**
      * Sets the geometry \a type of the features to customize the widget accordingly.
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
      */
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   private:
     QgsMapLayer *mLayer = nullptr;

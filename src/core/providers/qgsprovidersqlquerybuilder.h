@@ -42,12 +42,12 @@ class CORE_EXPORT QgsProviderSqlQueryBuilder
       *
       * The base class method returns the SQL query "SELECT * FROM table LIMIT 10". Subclasses may return database specific equivalents to this query.
      */
-    virtual QString createLimitQueryForTable( const QString &schema, const QString &name, int limit = 10 ) const;
+    [[nodiscard]] virtual QString createLimitQueryForTable( const QString &schema, const QString &name, int limit = 10 ) const;
 
     /**
      * Returns a properly quoted version of a table/schema \a identifier.
      */
-    virtual QString quoteIdentifier( const QString &identifier ) const;
+    [[nodiscard]] virtual QString quoteIdentifier( const QString &identifier ) const;
 };
 
 #endif // QGSPROVIDERSQLQUERYBUILDER_H

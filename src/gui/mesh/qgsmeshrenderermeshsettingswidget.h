@@ -60,7 +60,7 @@ class QgsMeshRendererMeshSettingsWidget : public QWidget, private Ui::QgsMeshRen
     void setLayer( QgsMeshLayer *layer, MeshType meshType );
 
     //! Returns the mesh rendering settings (native or triangular or edge)
-    QgsMeshRendererMeshSettings settings() const;
+    [[nodiscard]] QgsMeshRendererMeshSettings settings() const;
 
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();

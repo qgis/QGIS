@@ -42,7 +42,7 @@ class CORE_EXPORT QgsProcessingModelComponent
      * Returns the friendly description text for the component.
      * \see setDescription()
      */
-    QString description() const;
+    [[nodiscard]] QString description() const;
 
     /**
      * Sets the friendly \a description text for the component.
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsProcessingModelComponent
      * Returns the position of the model component within the model designer.
      * \see setPosition()
      */
-    QPointF position() const;
+    [[nodiscard]] QPointF position() const;
 
     /**
      * Sets the \a position of the model component within the model designer.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsProcessingModelComponent
      * \see setSize()
      * \since QGIS 3.14
      */
-    QSizeF size() const;
+    [[nodiscard]] QSizeF size() const;
 
     /**
      * Sets the \a size of the model component within the model designer.
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsProcessingModelComponent
      * \see setColor()
      * \since QGIS 3.14
      */
-    QColor color() const;
+    [[nodiscard]] QColor color() const;
 
     /**
      * Sets the \a color of the model component within the model designer. An invalid \a color
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsProcessingModelComponent
      * Returns TRUE if the link points for the specified \a edge should be shown collapsed or not.
      * \see setLinksCollapsed()
      */
-    bool linksCollapsed( Qt::Edge edge ) const;
+    [[nodiscard]] bool linksCollapsed( Qt::Edge edge ) const;
 
     /**
      * Sets whether the link points for the specified \a edge for this component should be shown collapsed
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsProcessingModelComponent
      * Returns the comment attached to this component (may be NULLPTR)
      * \see setComment()
      */
-    SIP_SKIP virtual const QgsProcessingModelComment *comment() const { return nullptr; }
+    SIP_SKIP [[nodiscard]] virtual const QgsProcessingModelComment *comment() const { return nullptr; }
 
     /**
      * Returns the comment attached to this component (may be NULLPTR)
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsProcessingModelComponent
      *
      * Ownership is transferred to the caller.
      */
-    virtual QgsProcessingModelComponent *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsProcessingModelComponent *clone() const = 0 SIP_FACTORY;
 
   protected:
 

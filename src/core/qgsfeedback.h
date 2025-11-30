@@ -50,7 +50,7 @@ class CORE_EXPORT QgsFeedback : public QObject
     {}
 
     //! Tells whether the operation has been canceled already
-    bool isCanceled() const SIP_HOLDGIL { return mCanceled; }
+    [[nodiscard]] bool isCanceled() const SIP_HOLDGIL { return mCanceled; }
 
     /**
      * Sets the current progress for the feedback object. The \a progress
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsFeedback : public QObject
      * \see setProgress()
      * \see progressChanged()
      */
-    double progress() const SIP_HOLDGIL { return mProgress; }
+    [[nodiscard]] double progress() const SIP_HOLDGIL { return mProgress; }
 
     /**
      * Returns the current processed objects count reported by the feedback object. Depending on how the
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsFeedback : public QObject
      * \see processedCountChanged()
      * \since QGIS 3.24
      */
-    unsigned long long processedCount() const SIP_HOLDGIL { return mProcessedCount; }
+    [[nodiscard]] unsigned long long processedCount() const SIP_HOLDGIL { return mProcessedCount; }
 
     /**
      * Sets the current processed objects count for the feedback object. The \a processedCount

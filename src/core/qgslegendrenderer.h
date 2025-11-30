@@ -107,7 +107,7 @@ class CORE_EXPORT QgsLegendRenderer
      * \see minimumSize()
      * \see setLegendSize()
      */
-    QSizeF legendSize() const { return mLegendSize; }
+    [[nodiscard]] QSizeF legendSize() const { return mLegendSize; }
 
     /**
      * Draws the legend with given \a painter. The legend will occupy the area reported in legendSize().

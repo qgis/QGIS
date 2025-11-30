@@ -65,7 +65,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     void deactivate() override;
 
-    QgsAdvancedDigitizingDockWidget *cadDockWidget() const { return mCadDockWidget; }
+    [[nodiscard]] QgsAdvancedDigitizingDockWidget *cadDockWidget() const { return mCadDockWidget; }
 
     /**
      * Returns the layer associated with the map tool.
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      *
      * \since QGIS 3.22
      */
-    virtual QgsMapLayer *layer() const;
+    [[nodiscard]] virtual QgsMapLayer *layer() const;
 
     /**
      * Returns whether functionality of advanced digitizing dock widget is currently allowed.
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      *
      * \see setAdvancedDigitizingAllowed()
      */
-    bool isAdvancedDigitizingAllowed() const { return mAdvancedDigitizingAllowed; }
+    [[nodiscard]] bool isAdvancedDigitizingAllowed() const { return mAdvancedDigitizingAllowed; }
 
     /**
      * Returns whether mouse events (press/move/release) should automatically try to snap mouse position
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      *
      * \see isAutoSnapEnabled()
      */
-    bool isAutoSnapEnabled() const { return mAutoSnapEnabled; }
+    [[nodiscard]] bool isAutoSnapEnabled() const { return mAutoSnapEnabled; }
 
     /**
      * Returns whether the snapping indicator should automatically be used.
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * \see setUseSnappingIndicator()
      * \since QGIS 3.40
      */
-    bool useSnappingIndicator() const;
+    [[nodiscard]] bool useSnappingIndicator() const;
 
   protected:
     /**
@@ -188,7 +188,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      *
      * \since QGIS 3.4
      */
-    bool snapToLayerGridEnabled() const;
+    [[nodiscard]] bool snapToLayerGridEnabled() const;
 
     /**
      * Enables or disables snap to grid of mouse events.

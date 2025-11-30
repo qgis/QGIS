@@ -97,46 +97,46 @@ class GRASS_LIB_EXPORT QgsGrassObject
 
     QgsGrassObject() = default;
     QgsGrassObject( const QString &gisdbase, const QString &location = QString(), const QString &mapset = QString(), const QString &name = QString(), Type type = None );
-    QString gisdbase() const { return mGisdbase; }
+    [[nodiscard]] QString gisdbase() const { return mGisdbase; }
     void setGisdbase( const QString &gisdbase ) { mGisdbase = gisdbase; }
-    QString location() const { return mLocation; }
+    [[nodiscard]] QString location() const { return mLocation; }
     void setLocation( const QString &location ) { mLocation = location; }
-    QString locationPath() const { return mGisdbase + "/" + mLocation; }
-    QString mapset() const { return mMapset; }
+    [[nodiscard]] QString locationPath() const { return mGisdbase + "/" + mLocation; }
+    [[nodiscard]] QString mapset() const { return mMapset; }
     void setMapset( const QString &mapset ) { mMapset = mapset; }
-    QString mapsetPath() const { return mGisdbase + "/" + mLocation + "/" + mMapset; }
-    QString name() const { return mName; }
+    [[nodiscard]] QString mapsetPath() const { return mGisdbase + "/" + mLocation + "/" + mMapset; }
+    [[nodiscard]] QString name() const { return mName; }
     void setName( const QString &name ) { mName = name; }
 
     /**
      * Returns full name (map@mapset)
      * \returns full name or empty string if map name is empty
     */
-    QString fullName() const;
+    [[nodiscard]] QString fullName() const;
 
     /**
      * Parse full name in map@mapset form and set map and mapset. If mapset is not
      * specified, mapset is set to the current mapset.
     */
     void setFullName( const QString &fullName );
-    Type type() const { return mType; }
+    [[nodiscard]] Type type() const { return mType; }
     void setType( Type type ) { mType = type; }
     // set from QGIS layer uri, returns true if set correctly, verifies also if location is a GRASS location
     bool setFromUri( const QString &uri );
     // element name used as modules param, e.g. g.remove element=name
     static QString elementShort( Type type );
-    QString elementShort() const;
+    [[nodiscard]] QString elementShort() const;
     // descriptive full name
-    QString elementName() const;
+    [[nodiscard]] QString elementName() const;
     static QString elementName( Type type );
     // name of directory in GRASS mapset to look for the object (cellhd,vector,window)
-    QString dirName() const;
+    [[nodiscard]] QString dirName() const;
     static QString dirName( Type type );
-    QString toString() const;
+    [[nodiscard]] QString toString() const;
     // returns true if gisdbase and location are the same
-    bool locationIdentical( const QgsGrassObject &other ) const;
+    [[nodiscard]] bool locationIdentical( const QgsGrassObject &other ) const;
     // returns true if gisdbase, location and mapset are the same
-    bool mapsetIdentical( const QgsGrassObject &other ) const;
+    [[nodiscard]] bool mapsetIdentical( const QgsGrassObject &other ) const;
     // get regexp patter for new names, e.g. vectors should not start with number
     static QString newNameRegExp( Type type );
 
@@ -257,7 +257,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * Check if mapset is in search pat set by g.mapsets
      *  \returns true if in search path
      */
-    bool isMapsetInSearchPath( const QString &mapset ) const;
+    [[nodiscard]] bool isMapsetInSearchPath( const QString &mapset ) const;
 
     //! Add mapset to search path of currently open mapset
     void addMapsetToSearchPath( const QString &mapset, QString &error );

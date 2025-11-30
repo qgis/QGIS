@@ -82,7 +82,7 @@ class CORE_EXPORT QgsSettingsTreeNode
 
 
     //! Returns the type of node
-    Qgis::SettingsTreeNodeType type() const {return mType;}
+    [[nodiscard]] Qgis::SettingsTreeNodeType type() const {return mType;}
 
     /**
      * Registers a child setting
@@ -106,28 +106,28 @@ class CORE_EXPORT QgsSettingsTreeNode
     void unregisterChildNode( QgsSettingsTreeNode *node );
 
     //! Returns the children nodes
-    QList<QgsSettingsTreeNode *> childrenNodes() const {return mChildrenNodes;}
+    [[nodiscard]] QList<QgsSettingsTreeNode *> childrenNodes() const {return mChildrenNodes;}
 
     //! Returns the existing child node if it exists at the given \a key
-    QgsSettingsTreeNode *childNode( const QString &key ) const;
+    [[nodiscard]] QgsSettingsTreeNode *childNode( const QString &key ) const;
 
     //! Returns the children settings
-    QList<const QgsSettingsEntryBase *> childrenSettings() const {return mChildrenSettings;}
+    [[nodiscard]] QList<const QgsSettingsEntryBase *> childrenSettings() const {return mChildrenSettings;}
 
     //! Returns the existing child settings if it exists at the given \a key
-    const QgsSettingsEntryBase *childSetting( const QString &key ) const;
+    [[nodiscard]] const QgsSettingsEntryBase *childSetting( const QString &key ) const;
 
     //! Returns the parent of the node or nullptr if it does not exists
-    QgsSettingsTreeNode *parent() const {return mParent;}
+    [[nodiscard]] QgsSettingsTreeNode *parent() const {return mParent;}
 
     //! Returns the key of the node (without its parents)
-    QString key() const {return mKey;}
+    [[nodiscard]] QString key() const {return mKey;}
 
     //! Returns the complete key of the node (including its parents)
-    QString completeKey() const {return mCompleteKey;}
+    [[nodiscard]] QString completeKey() const {return mCompleteKey;}
 
     //! Returns the number of named nodes in the complete key
-    int namedNodesCount() const {return mNamedNodesCount;}
+    [[nodiscard]] int namedNodesCount() const {return mNamedNodesCount;}
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
      * \param parentsNamedItems the list of named items in the parent named list (if any)
      * \throws QgsSettingsException if the number of given parent named items doesn't match the complete key definition
     */
-    QStringList items( const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
+    [[nodiscard]] QStringList items( const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
 
     /**
      *  Returns the list of items
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
      * \param parentsNamedItems the list of named items in the parent named list (if any)
      * \throws QgsSettingsException if the number of given parent named items doesn't match the complete key definition
     */
-    QStringList items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
+    [[nodiscard]] QStringList items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems = QStringList() ) const SIP_THROW( QgsSettingsException );
 
 
     /**
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
     void deleteAllItems( const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
 
     //! Returns the setting used to store the selected item
-    const QgsSettingsEntryString *selectedItemSetting() const {return mSelectedItemSetting.get();}
+    [[nodiscard]] const QgsSettingsEntryString *selectedItemSetting() const {return mSelectedItemSetting.get();}
 
   protected:
     //! Init the nodes with the specific \a options
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
     QgsSettingsTreeNamedListNode( const QgsSettingsTreeNamedListNode &other ) = delete;
 
     //! Returns the key with named items placeholders filled with args
-    QString completeKeyWithNamedItems( const QString &key, const QStringList &namedItems ) const;
+    [[nodiscard]] QString completeKeyWithNamedItems( const QString &key, const QStringList &namedItems ) const;
 
     Qgis::SettingsTreeNodeOptions mOptions;
     std::unique_ptr<const QgsSettingsEntryString> mSelectedItemSetting;

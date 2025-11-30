@@ -71,7 +71,7 @@ class _3D_EXPORT QgsTerrainDownloader
     void setDataSource( const DataSource &ds );
 
     //! Returns currently configured data source
-    DataSource dataSource() const { return mDataSource; }
+    [[nodiscard]] DataSource dataSource() const { return mDataSource; }
 
     /**
      * For given extent and resolution (number of pixels for width/height) in specified CRS, download necessary
@@ -84,7 +84,7 @@ class _3D_EXPORT QgsTerrainDownloader
      * For the requested resolution given as map units per pixel, find out the best native tile resolution
      * (higher resolution = fewer map units per pixel)
      */
-    double findBestTileResolution( double requestedMupp ) const;
+    [[nodiscard]] double findBestTileResolution( double requestedMupp ) const;
 
     /**
      * Given extent and map units per pixels, adjust the extent and resolution

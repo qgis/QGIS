@@ -170,8 +170,8 @@ class SymbolLayerItem : public QStandardItem
         static_cast<SymbolLayerItem *>( lParent )->updatePreview();
     }
 
-    int type() const override { return SYMBOL_LAYER_ITEM_TYPE; }
-    bool isLayer() const { return mIsLayer; }
+    [[nodiscard]] int type() const override { return SYMBOL_LAYER_ITEM_TYPE; }
+    [[nodiscard]] bool isLayer() const { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol
     QgsSymbol *symbol()
@@ -184,7 +184,7 @@ class SymbolLayerItem : public QStandardItem
       return mLayer;
     }
 
-    QVariant data( int role ) const override
+    [[nodiscard]] QVariant data( int role ) const override
     {
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {

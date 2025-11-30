@@ -42,7 +42,7 @@ class QgsMssqlRootItem : public QgsConnectionsRootItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 4; }
+    [[nodiscard]] QVariant sortKey() const override { return 4; }
 
 #ifdef HAVE_GUI
     QWidget *paramWidget() override;
@@ -64,8 +64,8 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
-    QString connectionUri() const { return mConnectionUri; }
-    bool allowGeometrylessTables() const { return mAllowGeometrylessTables; }
+    [[nodiscard]] QString connectionUri() const { return mConnectionUri; }
+    [[nodiscard]] bool allowGeometrylessTables() const { return mAllowGeometrylessTables; }
 
   signals:
     void addGeometryColumn( const QgsMssqlLayerProperty & );
@@ -112,7 +112,7 @@ class QgsMssqlSchemaItem : public QgsDatabaseSchemaItem
     void addLayers( QgsDataItem *newLayers );
 
   public:
-    bool layerCollection() const override;
+    [[nodiscard]] bool layerCollection() const override;
 };
 
 class QgsMssqlLayerItem : public QgsLayerItem
@@ -126,9 +126,9 @@ class QgsMssqlLayerItem : public QgsLayerItem
 
     QgsMssqlLayerItem *createClone();
 
-    bool disableInvalidGeometryHandling() const;
+    [[nodiscard]] bool disableInvalidGeometryHandling() const;
 
-    const QgsMssqlLayerProperty &layerInfo() const { return mLayerProperty; }
+    [[nodiscard]] const QgsMssqlLayerProperty &layerInfo() const { return mLayerProperty; }
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -144,9 +144,9 @@ class QgsMssqlDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override;
 
-    QString dataProviderKey() const override;
+    [[nodiscard]] QString dataProviderKey() const override;
 
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

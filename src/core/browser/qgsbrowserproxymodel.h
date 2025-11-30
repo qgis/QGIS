@@ -65,7 +65,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      * Returns the data item at the specified proxy \a index, or NULLPTR if no item
      * exists at the index.
      */
-    QgsDataItem *dataItem( const QModelIndex &index ) const;
+    [[nodiscard]] QgsDataItem *dataItem( const QModelIndex &index ) const;
 
     /**
      * Sets the filter \a syntax.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      *
      * \see setFilterSyntax()
      */
-    FilterSyntax filterSyntax() const;
+    [[nodiscard]] FilterSyntax filterSyntax() const;
 
     /**
      * Sets the \a filter string to use when filtering items in the model.
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      *
      * \see setFilterString()
      */
-    QString filterString() const;
+    [[nodiscard]] QString filterString() const;
 
     /**
      * Sets whether item filtering should be case sensitive.
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      *
      * \see setFilterCaseSensitivity()
      */
-    Qt::CaseSensitivity caseSensitivity() const;
+    [[nodiscard]] Qt::CaseSensitivity caseSensitivity() const;
 
     /**
      * Returns TRUE if the model is filtered by map layer type.
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      * \see layerType()
      * \see setFilterByLayerType()
      */
-    bool filterByLayerType() const { return mFilterByLayerType; }
+    [[nodiscard]] bool filterByLayerType() const { return mFilterByLayerType; }
 
     /**
      * Sets whether the model is filtered by map layer type.
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      * \see setLayerType()
      * \see filterByLayerType()
      */
-    Qgis::LayerType layerType() const;
+    [[nodiscard]] Qgis::LayerType layerType() const;
 
     /**
      * Sets the layer \a type to filter the model by. This is only used if
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      * \see setShowLayers()
      * \since QGIS 3.14
      */
-    bool showLayers() const;
+    [[nodiscard]] bool showLayers() const;
 
     /**
      * Sets show layers to \a showLayers
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
   protected:
 
     // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
     /**
      * Reference to associated browser model.
@@ -221,28 +221,28 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     void updateFilter();
 
     //! Filter accepts string
-    bool filterAcceptsString( const QString &value ) const;
+    [[nodiscard]] bool filterAcceptsString( const QString &value ) const;
 
     //! Returns TRUE if at least one ancestor is accepted by filter
-    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
+    [[nodiscard]] bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
 
     //! Returns TRUE if at least one descendant is accepted by filter
-    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
+    [[nodiscard]] bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
 
     //! Filter accepts item name
-    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
+    [[nodiscard]] bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
 
     //! Filter accepts provider key.
-    bool filterAcceptsProviderKey( const QModelIndex &sourceIndex ) const;
+    [[nodiscard]] bool filterAcceptsProviderKey( const QModelIndex &sourceIndex ) const;
 
     //! Root item accepts provider key.
-    bool filterRootAcceptsProviderKey( const QModelIndex &sourceIndex ) const;
+    [[nodiscard]] bool filterRootAcceptsProviderKey( const QModelIndex &sourceIndex ) const;
 
 
 
     // QAbstractItemModel interface
   public:
-    bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
 };
 
 #endif // QGSBROWSERPROXYMODEL_H

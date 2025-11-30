@@ -39,13 +39,13 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      */
     QgsProcessingModelOutput( const QString &name = QString(), const QString &description = QString() );
 
-    QgsProcessingModelOutput *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsProcessingModelOutput *clone() const override SIP_FACTORY;
 
     /**
      * Returns the model output name.
      * \see setName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Sets the model output \a name.
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      * \see setDefaultValue()
      * \since QGIS 3.2
      */
-    QVariant defaultValue() const { return mDefaultValue; }
+    [[nodiscard]] QVariant defaultValue() const { return mDefaultValue; }
 
     /**
      * Sets the default value for the model output.
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      * \see setMandatory()
      * \since QGIS 3.2
      */
-    bool isMandatory() const { return mMandatory; }
+    [[nodiscard]] bool isMandatory() const { return mMandatory; }
 
     /**
      * Sets whether the output is \a mandatory. This may override the associated
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      * Returns the child algorithm ID from which this output is generated.
      * \see setChildId()
      */
-    QString childId() const { return mChildId; }
+    [[nodiscard]] QString childId() const { return mChildId; }
 
     /**
      * Sets the child algorithm \a id from which this output is generated.
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      * Returns the child algorithm output name from which this output is generated.
      * \see setOutputName()
      */
-    QString childOutputName() const { return mOutputName; }
+    [[nodiscard]] QString childOutputName() const { return mOutputName; }
 
     /**
      * Sets the child algorithm output \a name from which this output is generated.
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      * Saves this output to a QVariant.
      * \see loadVariant()
      */
-    QVariant toVariant() const;
+    [[nodiscard]] QVariant toVariant() const;
 
     /**
      * Loads this output from a QVariantMap.
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      */
     bool loadVariant( const QVariantMap &map );
 
-    SIP_SKIP const QgsProcessingModelComment *comment() const override { return &mComment; }
+    SIP_SKIP [[nodiscard]] const QgsProcessingModelComment *comment() const override { return &mComment; }
     QgsProcessingModelComment *comment() override { return &mComment; }
     void setComment( const QgsProcessingModelComment &comment ) override { mComment = comment; }
 

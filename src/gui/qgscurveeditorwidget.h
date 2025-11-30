@@ -91,11 +91,11 @@ class QgsHistogramValuesGatherer : public QThread
     }
 
     //! Returns TRUE if collection was canceled before completion
-    bool wasCanceled() const { return mWasCanceled; }
+    [[nodiscard]] bool wasCanceled() const { return mWasCanceled; }
 
-    const QgsHistogram &histogram() const { return mHistogram; }
+    [[nodiscard]] const QgsHistogram &histogram() const { return mHistogram; }
 
-    const QgsVectorLayer *layer() const
+    [[nodiscard]] const QgsVectorLayer *layer() const
     {
       return mLayer;
     }
@@ -104,7 +104,7 @@ class QgsHistogramValuesGatherer : public QThread
       mLayer = const_cast<QgsVectorLayer *>( layer );
     }
 
-    QString expression() const
+    [[nodiscard]] QString expression() const
     {
       return mExpression;
     }
@@ -154,7 +154,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
      * Returns a curve representing the current curve from the widget.
      * \see setCurve()
      */
-    QgsCurveTransform curve() const { return mCurve; }
+    [[nodiscard]] QgsCurveTransform curve() const { return mCurve; }
 
     /**
      * Sets the \a curve to show in the widget.
@@ -176,14 +176,14 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
      * \see maxHistogramValueRange()
      * \see setMinHistogramValueRange()
      */
-    double minHistogramValueRange() const { return mMinValueRange; }
+    [[nodiscard]] double minHistogramValueRange() const { return mMinValueRange; }
 
     /**
      * Returns the maximum expected value for the range of values shown in the histogram.
      * \see minHistogramValueRange()
      * \see setMaxHistogramValueRange()
      */
-    double maxHistogramValueRange() const { return mMaxValueRange; }
+    [[nodiscard]] double maxHistogramValueRange() const { return mMaxValueRange; }
 
   public slots:
 
@@ -237,9 +237,9 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     void addPlotMarker( double x, double y, bool isSelected = false );
     void updateHistogram();
 
-    int findNearestControlPoint( QPointF point ) const;
+    [[nodiscard]] int findNearestControlPoint( QPointF point ) const;
 
-    QwtPlotHistogram *createPlotHistogram( const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
+    [[nodiscard]] QwtPlotHistogram *createPlotHistogram( const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
 };
 
 
@@ -266,7 +266,7 @@ class GUI_EXPORT QgsCurveEditorPlotEventFilter : public QObject
 
   private:
     QwtPlot *mPlot = nullptr;
-    QPointF mapPoint( QPointF point ) const;
+    [[nodiscard]] QPointF mapPoint( QPointF point ) const;
 };
 ///@endcond
 #endif

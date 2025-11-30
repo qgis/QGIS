@@ -37,7 +37,7 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
     void setMap( Qgs3DMapSettings *map );
 
     void setAnimation( const Qgs3DAnimationSettings &animation );
-    Qgs3DAnimationSettings animation() const;
+    [[nodiscard]] Qgs3DAnimationSettings animation() const;
 
     void setDefaultAnimation();
 

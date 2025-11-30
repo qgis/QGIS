@@ -32,7 +32,7 @@ class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
   public:
     QgsPenStyleComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    Qt::PenStyle penStyle() const;
+    [[nodiscard]] Qt::PenStyle penStyle() const;
 
     void setPenStyle( Qt::PenStyle style );
 
@@ -52,7 +52,7 @@ class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
   public:
     QgsPenJoinStyleComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    Qt::PenJoinStyle penJoinStyle() const;
+    [[nodiscard]] Qt::PenJoinStyle penJoinStyle() const;
 
     void setPenJoinStyle( Qt::PenJoinStyle style );
 };
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsPenCapStyleComboBox : public QComboBox
   public:
     QgsPenCapStyleComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    Qt::PenCapStyle penCapStyle() const;
+    [[nodiscard]] Qt::PenCapStyle penCapStyle() const;
 
     void setPenCapStyle( Qt::PenCapStyle style );
 };

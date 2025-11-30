@@ -130,17 +130,17 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     void setSource( QIODevice *source SIP_TRANSFER );
 
     //! Returns the status. Possible state are not connected, connected, data received
-    Status status() const { return mStatus; }
+    [[nodiscard]] Status status() const { return mStatus; }
 
     //! Returns the current gps information (lat, lon, etc.)
-    QgsGpsInformation currentGPSInformation() const { return mLastGPSInformation; }
+    [[nodiscard]] QgsGpsInformation currentGPSInformation() const { return mLastGPSInformation; }
 
     /**
      * Returns the last valid location obtained by the device.
      *
      * \since QGIS 3.30
      */
-    QgsPoint lastValidLocation() const { return mLastLocation; }
+    [[nodiscard]] QgsPoint lastValidLocation() const { return mLastLocation; }
 
   signals:
 

@@ -44,7 +44,7 @@ class GUI_EXPORT QgsLegendPatchShapeWidget : public QgsPanelWidget, private Ui::
      *
      * \see setShape()
      */
-    QgsLegendPatchShape shape() const;
+    [[nodiscard]] QgsLegendPatchShape shape() const;
 
     /**
      * Sets the shape to show in the widget.
@@ -86,12 +86,12 @@ class GUI_EXPORT QgsLegendPatchShapeDialog : public QDialog
     /**
      * Returns the legend patch shape defined by the dialog.
      */
-    QgsLegendPatchShape shape() const { return mWidget->shape(); }
+    [[nodiscard]] QgsLegendPatchShape shape() const { return mWidget->shape(); }
 
     /**
      * Returns a reference to the dialog's button box.
      */
-    QDialogButtonBox *buttonBox() const;
+    [[nodiscard]] QDialogButtonBox *buttonBox() const;
 
   private:
     QgsLegendPatchShapeWidget *mWidget = nullptr;

@@ -68,7 +68,7 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
     void setDockMode( bool dockMode ) override;
 
     //! Only modifies 3D renderer so we do not want layer repaint (which would trigger unnecessary terrain map update)
-    bool shouldTriggerLayerRepaint() const override { return false; }
+    [[nodiscard]] bool shouldTriggerLayerRepaint() const override { return false; }
 
   public slots:
     void apply() override;
@@ -93,9 +93,9 @@ class QgsVectorLayer3DRendererWidgetFactory : public QObject, public QgsMapLayer
     explicit QgsVectorLayer3DRendererWidgetFactory( QObject *parent = nullptr );
 
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
-    bool supportLayerPropertiesDialog() const override;
+    [[nodiscard]] bool supportLayerPropertiesDialog() const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
-    QString layerPropertiesPagePositionHint() const override;
+    [[nodiscard]] QString layerPropertiesPagePositionHint() const override;
 };
 
 

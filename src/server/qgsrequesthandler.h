@@ -63,10 +63,10 @@ class SERVER_EXPORT QgsRequestHandler
     void removeResponseHeader( const QString &name );
 
     //! Retrieve response header value
-    QString responseHeader( const QString &name ) const;
+    [[nodiscard]] QString responseHeader( const QString &name ) const;
 
     //! Returns the response headers
-    QMap<QString, QString> responseHeaders() const;
+    [[nodiscard]] QMap<QString, QString> responseHeaders() const;
 
     //! Sets an HTTP request header
     void setRequestHeader( const QString &name, const QString &value );
@@ -75,10 +75,10 @@ class SERVER_EXPORT QgsRequestHandler
     void removeRequestHeader( const QString &name );
 
     //! Retrieve request header value
-    QString requestHeader( const QString &name ) const;
+    [[nodiscard]] QString requestHeader( const QString &name ) const;
 
     //! Returns the the Request headers
-    QMap<QString, QString> requestHeaders() const;
+    [[nodiscard]] QMap<QString, QString> requestHeaders() const;
 
     //! Clears the response body and headers
     void clear();
@@ -87,31 +87,31 @@ class SERVER_EXPORT QgsRequestHandler
     void appendBody( const QByteArray &body );
 
     //! Pointer to last raised exception
-    bool exceptionRaised() const;
+    [[nodiscard]] bool exceptionRaised() const;
 
     //! Clear response buffer
     void clearBody();
 
     //! Returns the response body data
-    QByteArray body() const;
+    [[nodiscard]] QByteArray body() const;
 
     //! Returns the request POST data (can be null)
-    QByteArray data() const;
+    [[nodiscard]] QByteArray data() const;
 
     //! Returns the request url
-    QString url() const;
+    [[nodiscard]] QString url() const;
 
     /**
      * Returns the path component of the request URL
      * \since QGIS 3.16
      */
-    QString path() const;
+    [[nodiscard]] QString path() const;
 
     //! Sets response http status code
     void setStatusCode( int code );
 
     //! Returns the response http status code
-    int statusCode() const;
+    [[nodiscard]] int statusCode() const;
 
     /**
      * Returns the parsed parameters as a key-value pair.
@@ -119,13 +119,13 @@ class SERVER_EXPORT QgsRequestHandler
      * \see setParameter()
      * \see removeParameter()
      */
-    QMap<QString, QString> parameterMap() const;
+    [[nodiscard]] QMap<QString, QString> parameterMap() const;
 
     //! Sets a request parameter
     void setParameter( const QString &key, const QString &value );
 
     //! Returns a request parameter
-    QString parameter( const QString &key ) const;
+    [[nodiscard]] QString parameter( const QString &key ) const;
 
     //! Remove a request parameter
     void removeParameter( const QString &key );
@@ -137,10 +137,10 @@ class SERVER_EXPORT QgsRequestHandler
     void parseInput() SIP_SKIP;
 
     //! Returns the requested format string
-    QString format() const { return mFormat; }
+    [[nodiscard]] QString format() const { return mFormat; }
 
     //! Returns TRUE if the HTTP headers were already sent to the client
-    bool headersSent() const;
+    [[nodiscard]] bool headersSent() const;
 
   private:
 #ifdef SIP_RUN

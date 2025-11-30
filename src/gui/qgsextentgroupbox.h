@@ -76,14 +76,14 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
      * \see setOriginalExtent()
      * \see originalCrs()
      */
-    QgsRectangle originalExtent() const;
+    [[nodiscard]] QgsRectangle originalExtent() const;
 
     /**
      * Returns the original coordinate reference system set for the widget.
      * \see originalExtent()
      * \see setOriginalExtent()
      */
-    QgsCoordinateReferenceSystem originalCrs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem originalCrs() const;
 
     /**
      * Sets the current extent to show in the widget - should be called as part of initialization (or whenever current extent changes).
@@ -99,7 +99,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
      * \see setCurrentExtent()
      * \see currentCrs()
      */
-    QgsRectangle currentExtent() const;
+    [[nodiscard]] QgsRectangle currentExtent() const;
 
     /**
      * Returns the coordinate reference system for the current extent set for the widget. The current
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
      * \see setCurrentExtent()
      * \see currentExtent()
      */
-    QgsCoordinateReferenceSystem currentCrs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem currentCrs() const;
 
     /**
      * Sets the output CRS - may need to be used for transformation from original/current extent.
@@ -120,18 +120,18 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
      * Returns the extent shown in the widget - in output CRS coordinates.
      * \see outputCrs
      */
-    QgsRectangle outputExtent() const;
+    [[nodiscard]] QgsRectangle outputExtent() const;
 
     /**
      * Returns the current output CRS, used in the display.
      * \see outputExtent
      */
-    QgsCoordinateReferenceSystem outputCrs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem outputCrs() const;
 
     /**
      * Returns the currently selected state for the widget's extent.
      */
-    QgsExtentGroupBox::ExtentState extentState() const;
+    [[nodiscard]] QgsExtentGroupBox::ExtentState extentState() const;
 
     /**
      * Sets the base part of \a title of the group box (will be appended with extent state)
@@ -143,7 +143,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
      * Returns the base part of title of the group box (will be appended with extent state).
      * \see setTitleBase()
      */
-    QString titleBase() const;
+    [[nodiscard]] QString titleBase() const;
 
     /**
      * Sets the map canvas to enable dragging of extent on a canvas.
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
      * Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
      * If the aspect ratio isn't fixed, the width and height will be set to zero.
      */
-    QSize ratio() const;
+    [[nodiscard]] QSize ratio() const;
 
   public slots:
 

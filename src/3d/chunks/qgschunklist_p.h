@@ -72,16 +72,16 @@ class QgsChunkList
     QgsChunkList() = default;
 
     //! Counts the real number of entries by walking the list (for debugging purposes only)
-    int trueCount() const;
+    [[nodiscard]] int trueCount() const;
     //! Returns number of entries in the list
-    int count() const { return mCount; }
+    [[nodiscard]] int count() const { return mCount; }
 
     //! Returns the first entry. Null will be returned if the list is empty.
-    QgsChunkListEntry *first() const { return mHead; }
+    [[nodiscard]] QgsChunkListEntry *first() const { return mHead; }
     //! Returns the last entry. Null will be returned if the list is empty.
-    QgsChunkListEntry *last() const { return mTail; }
+    [[nodiscard]] QgsChunkListEntry *last() const { return mTail; }
     //! Returns whether the list is empty or it contains some entries
-    bool isEmpty() const;
+    [[nodiscard]] bool isEmpty() const;
 
     /**
      * Inserts a new entry before the entry "next".

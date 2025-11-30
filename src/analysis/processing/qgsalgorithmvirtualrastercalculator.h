@@ -34,17 +34,17 @@ class QgsVirtualRasterCalculatorAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsVirtualRasterCalculatorAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRasterCalculator.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRasterCalculator.svg" ) ); }
-    Qgis::ProcessingAlgorithmFlags flags() const override;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsVirtualRasterCalculatorAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRasterCalculator.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRasterCalculator.svg" ) ); }
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsVirtualRasterCalculatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -56,13 +56,13 @@ class QgsVirtualRasterCalculatorModelerAlgorithm : public QgsVirtualRasterCalcul
 {
   public:
     QgsVirtualRasterCalculatorModelerAlgorithm() = default;
-    Qgis::ProcessingAlgorithmFlags flags() const override;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QgsVirtualRasterCalculatorModelerAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QgsVirtualRasterCalculatorModelerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -72,7 +72,7 @@ class QgsVirtualRasterCalculatorModelerAlgorithm : public QgsVirtualRasterCalcul
      * Generates Excel-like names from the number
      * A, B, C, …, Y, Z, AA, AB, AC, …, AZ, BA, BB, BC…
      */
-    QString indexToName( int index ) const;
+    [[nodiscard]] QString indexToName( int index ) const;
 };
 
 ///@endcond PRIVATE

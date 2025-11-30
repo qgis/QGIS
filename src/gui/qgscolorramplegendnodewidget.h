@@ -78,7 +78,7 @@ class GUI_EXPORT QgsColorRampLegendNodeWidget : public QgsPanelWidget, private U
      *
      * \see setSettings()
      */
-    QgsColorRampLegendNodeSettings settings() const;
+    [[nodiscard]] QgsColorRampLegendNodeSettings settings() const;
 
     /**
      * Sets the settings to show in the widget.
@@ -128,12 +128,12 @@ class GUI_EXPORT QgsColorRampLegendNodeDialog : public QDialog
     /**
      * Returns the legend node settings as defined by the dialog.
      */
-    QgsColorRampLegendNodeSettings settings() const;
+    [[nodiscard]] QgsColorRampLegendNodeSettings settings() const;
 
     /**
      * Returns a reference to the dialog's button box.
      */
-    QDialogButtonBox *buttonBox() const;
+    [[nodiscard]] QDialogButtonBox *buttonBox() const;
 
     /**
      * Sets visibility for the "Use Continuous Legend" checkbox in the legend settings dialog to \a visible.

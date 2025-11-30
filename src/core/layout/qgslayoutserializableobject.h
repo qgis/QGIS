@@ -40,7 +40,7 @@ class CORE_EXPORT QgsLayoutSerializableObject : public QgsLayoutUndoObjectInterf
      *
      * This string must be a unique, single word, character only representation of the item type, eg "LayoutScaleBar"
      */
-    virtual QString stringType() const = 0;
+    [[nodiscard]] virtual QString stringType() const = 0;
 
     /**
      * Returns the layout the object belongs to.

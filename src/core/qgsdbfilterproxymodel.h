@@ -48,7 +48,7 @@ class CORE_DEPRECATED_EXPORT QgsDatabaseFilterProxyModel : public QSortFilterPro
     void _setFilterRegExp( const QString &pattern );
 
   protected:
-    bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const override;
 };
 
 #endif

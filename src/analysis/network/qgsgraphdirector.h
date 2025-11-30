@@ -83,7 +83,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     }
 
     //! Returns director name
-    virtual QString name() const = 0;
+    [[nodiscard]] virtual QString name() const = 0;
 
   protected:
     QList<QgsNetworkStrategy *> mStrategies;

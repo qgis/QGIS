@@ -42,12 +42,12 @@ class GUI_EXPORT QgsAttributeFormInterface
     /**
      * Returns the attribute form.
      */
-    QgsAttributeForm *form() const;
+    [[nodiscard]] QgsAttributeForm *form() const;
 
     /**
      * Returns the current feature for the attribute form.
      */
-    const QgsFeature &feature() const;
+    [[nodiscard]] const QgsFeature &feature() const;
 
   private:
     QgsAttributeForm *mForm = nullptr;

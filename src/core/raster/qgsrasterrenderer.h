@@ -58,23 +58,23 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     //! QgsRasterRenderer cannot be copied. Use clone() instead.
     const QgsRasterRenderer &operator=( const QgsRasterRenderer & ) = delete;
 
-    QgsRasterRenderer *clone() const override = 0 SIP_FACTORY;
+    [[nodiscard]] QgsRasterRenderer *clone() const override = 0 SIP_FACTORY;
 
-    int bandCount() const override;
+    [[nodiscard]] int bandCount() const override;
 
-    Qgis::DataType dataType( int bandNo ) const override;
+    [[nodiscard]] Qgis::DataType dataType( int bandNo ) const override;
 
     /**
      * Returns a unique string representation of the renderer type.
      */
-    virtual QString type() const { return mType; }
+    [[nodiscard]] virtual QString type() const { return mType; }
 
     /**
      * Returns flags which dictate renderer behavior.
      *
      * \since QGIS 3.28
      */
-    virtual Qgis::RasterRendererFlags flags() const;
+    [[nodiscard]] virtual Qgis::RasterRendererFlags flags() const;
 
     /**
      * Returns TRUE if the renderer is suitable for attribute table creation.
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      *
      *  \since QGIS 3.30
      */
-    virtual bool canCreateRasterAttributeTable( ) const;
+    [[nodiscard]] virtual bool canCreateRasterAttributeTable( ) const;
 
     bool setInput( QgsRasterInterface *input ) override;
 
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      *
      * \since QGIS 3.38
      */
-    virtual int inputBand() const;
+    [[nodiscard]] virtual int inputBand() const;
 
     /**
      * Attempts to set the input \a band for the renderer.
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
                            int height,
                            QgsRasterBlockFeedback *feedback = nullptr ) override = 0 SIP_FACTORY;
 
-    bool usesTransparency() const;
+    [[nodiscard]] bool usesTransparency() const;
 
     /**
      * Sets the \a opacity for the renderer, where \a opacity is a value between 0 (totally transparent)
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      * and 1.0 (fully opaque).
      * \see setOpacity()
      */
-    double opacity() const { return mOpacity; }
+    [[nodiscard]] double opacity() const { return mOpacity; }
 
     /**
      * Returns the color to use for shading nodata pixels.
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      * \see setNodataColor()
      * \since QGIS 3.12
      */
-    QColor nodataColor() const { return mNodataColor; }
+    [[nodiscard]] QColor nodataColor() const { return mNodataColor; }
 
     /**
      * Sets the \a color to use for shading nodata pixels.
@@ -160,17 +160,17 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     void setNodataColor( const QColor &color ) { mNodataColor = color; }
 
     void setRasterTransparency( QgsRasterTransparency *t SIP_TRANSFER );
-    const QgsRasterTransparency *rasterTransparency() const { return mRasterTransparency.get(); }
+    [[nodiscard]] const QgsRasterTransparency *rasterTransparency() const { return mRasterTransparency.get(); }
 
     void setAlphaBand( int band ) { mAlphaBand = band; }
-    int alphaBand() const { return mAlphaBand; }
+    [[nodiscard]] int alphaBand() const { return mAlphaBand; }
 
     /**
      * Returns symbology items if provided by renderer.
      *
      * \see createLegendNodes()
      */
-    virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
+    [[nodiscard]] virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
     /**
      * Creates a set of legend nodes representing the renderer.
@@ -198,10 +198,10 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      *
      * \see setInputBand()
      */
-    virtual QList<int> usesBands() const { return QList<int>(); }
+    [[nodiscard]] virtual QList<int> usesBands() const { return QList<int>(); }
 
     //! Returns const reference to origin of min/max values
-    const QgsRasterMinMaxOrigin &minMaxOrigin() const { return mMinMaxOrigin; }
+    [[nodiscard]] const QgsRasterMinMaxOrigin &minMaxOrigin() const { return mMinMaxOrigin; }
 
     //! Sets origin of min/max values
     void setMinMaxOrigin( const QgsRasterMinMaxOrigin &origin ) { mMinMaxOrigin = origin; }
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      *
      * \since QGIS 3.42
      */
-    bool needsRefresh( const QgsRectangle &extent ) const SIP_SKIP;
+    [[nodiscard]] bool needsRefresh( const QgsRectangle &extent ) const SIP_SKIP;
 
     /**
      * \brief Refreshes the renderer according to the \a min and \a max values associated with the \a extent.
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      *
      * \since QGIS 3.10
      */
-    QRgb renderColorForNodataPixel() const;
+    [[nodiscard]] QRgb renderColorForNodataPixel() const;
 
     //! To save computations and possible infinite cycle of notifications
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;

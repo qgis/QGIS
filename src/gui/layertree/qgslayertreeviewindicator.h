@@ -41,7 +41,7 @@ class GUI_EXPORT QgsLayerTreeViewIndicator : public QObject
     explicit QgsLayerTreeViewIndicator( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Indicator icon that will be displayed in the layer tree view
-    QIcon icon() const { return mIcon; }
+    [[nodiscard]] QIcon icon() const { return mIcon; }
     //! Sets indicator icon that will be displayed in the layer tree view
     void setIcon( const QIcon &icon )
     {
@@ -50,7 +50,7 @@ class GUI_EXPORT QgsLayerTreeViewIndicator : public QObject
     }
 
     //! Returns tool tip text that will be shown when user hovers mouse over the indicator
-    QString toolTip() const { return mToolTip; }
+    [[nodiscard]] QString toolTip() const { return mToolTip; }
     //! Sets tool tip text
     void setToolTip( const QString &tip ) { mToolTip = tip; }
 

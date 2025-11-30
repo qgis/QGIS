@@ -41,7 +41,7 @@ class CORE_EXPORT QgsLabelThinningSettings
      * \see maximumNumberLabels()
      * \see setLimitNumberLabelsEnabled()
      */
-    bool limitNumberOfLabelsEnabled() const { return mLimitNumLabels; }
+    [[nodiscard]] bool limitNumberOfLabelsEnabled() const { return mLimitNumLabels; }
 
     /**
      * Sets whether the the number of labels drawn for the layer should be limited.
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsLabelThinningSettings
      * \see limitNumberOfLabelsEnabled()
      * \see setMaximumNumberLabels()
      */
-    int maximumNumberLabels() const { return mMaxNumLabels; }
+    [[nodiscard]] int maximumNumberLabels() const { return mMaxNumLabels; }
 
     /**
      * Sets the maximum \a number of labels which should be drawn for this layer.
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsLabelThinningSettings
      * Returns the minimum feature size (in millimeters) for a feature to be labelled.
      * \see setMinimumFeatureSize()
      */
-    double minimumFeatureSize() const { return mMinFeatureSize; }
+    [[nodiscard]] double minimumFeatureSize() const { return mMinFeatureSize; }
 
     /**
      * Sets the minimum feature \a size (in millimeters) for a feature to be labelled.
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsLabelThinningSettings
       *
       * \since QGIS 3.44
       */
-    double labelMarginDistance() const { return mLabelMarginDistance; }
+    [[nodiscard]] double labelMarginDistance() const { return mLabelMarginDistance; }
 
     /**
       * Sets the minimum \a distance to other labels (i.e. the minimum space/margin around labels).
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsLabelThinningSettings
       *
       * \since QGIS 3.44
      */
-    Qgis::RenderUnit labelMarginDistanceUnit() const { return mLabelMarginDistanceUnits; }
+    [[nodiscard]] Qgis::RenderUnit labelMarginDistanceUnit() const { return mLabelMarginDistanceUnits; }
 
     /**
       * Sets the map unit \a scale for the minimum distance to other labels.
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsLabelThinningSettings
       *
       * \since QGIS 3.44
       */
-    const QgsMapUnitScale &labelMarginDistanceMapUnitScale() const { return mLabelMarginDistanceScale; }
+    [[nodiscard]] const QgsMapUnitScale &labelMarginDistanceMapUnitScale() const { return mLabelMarginDistanceScale; }
 
 #ifndef SIP_RUN
     //! Default minimum distance to duplicate labels
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsLabelThinningSettings
      *
      * \since QGIS 3.44
      */
-    double minimumDistanceToDuplicate() const { return mMinDistanceToDuplicate; }
+    [[nodiscard]] double minimumDistanceToDuplicate() const { return mMinDistanceToDuplicate; }
 
     /**
      * Sets the minimum \a distance to labels with duplicate text.
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsLabelThinningSettings
      *
      * \since QGIS 3.44
     */
-    Qgis::RenderUnit minimumDistanceToDuplicateUnit() const { return mMinDistanceToDuplicateUnits; }
+    [[nodiscard]] Qgis::RenderUnit minimumDistanceToDuplicateUnit() const { return mMinDistanceToDuplicateUnits; }
 
     /**
      * Sets the map unit \a scale for the minimum distance to labels with duplicate text.
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsLabelThinningSettings
      *
      * \since QGIS 3.44
      */
-    const QgsMapUnitScale &minimumDistanceToDuplicateMapUnitScale() const { return mMinDistanceToDuplicateScale; }
+    [[nodiscard]] const QgsMapUnitScale &minimumDistanceToDuplicateMapUnitScale() const { return mMinDistanceToDuplicateScale; }
 
     /**
      * Returns whether duplicate label removal is permitted for this layer.
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsLabelThinningSettings
      *
      * \since QGIS 3.44
      */
-    bool allowDuplicateRemoval() const { return mAllowDuplicateRemoval; }
+    [[nodiscard]] bool allowDuplicateRemoval() const { return mAllowDuplicateRemoval; }
 
     /**
      * Sets whether duplicate label removal is permitted for this layer.
@@ -285,7 +285,7 @@ class CORE_EXPORT QgsLabelFeatureThinningSettings
       * feature and other labels.
       * \see setLabelMarginDistance()
       */
-    double labelMarginDistance() const { return mLabelMarginDistance; }
+    [[nodiscard]] double labelMarginDistance() const { return mLabelMarginDistance; }
 
     /**
       * Sets the minimum \a distance (in label units) between labels for this
@@ -299,7 +299,7 @@ class CORE_EXPORT QgsLabelFeatureThinningSettings
      * feature and other labels with the same label text.
      * \see setNoRepeatDistance()
      */
-    double noRepeatDistance() const { return mNoRepeatDistance; }
+    [[nodiscard]] double noRepeatDistance() const { return mNoRepeatDistance; }
 
     /**
      * Sets the minimum \a distance (in label units) between labels for this

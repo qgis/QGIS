@@ -63,12 +63,12 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
      * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      */
-    QgsSymbolWidgetContext context() const;
+    [[nodiscard]] QgsSymbolWidgetContext context() const;
 
     /**
      * Returns the vector layer associated with the widget.
      */
-    const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
+    [[nodiscard]] const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 
   protected:
     /**
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
      */
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;

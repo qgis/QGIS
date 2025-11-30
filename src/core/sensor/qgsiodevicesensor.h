@@ -53,7 +53,7 @@ class CORE_EXPORT QgsIODeviceSensor : public QgsAbstractSensor
     /**
      * Returns the I/O device.
      */
-    QIODevice *iODevice() const;
+    [[nodiscard]] QIODevice *iODevice() const;
 
   protected:
 
@@ -102,12 +102,12 @@ class CORE_EXPORT QgsTcpSocketSensor : public QgsIODeviceSensor
      */
     static QgsTcpSocketSensor *create( QObject *parent ) SIP_FACTORY;
 
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
 
     /**
      * Returns the host name the socket connects to.
      */
-    QString hostName() const;
+    [[nodiscard]] QString hostName() const;
 
     /**
      * Sets the host name the socket connects to.
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsTcpSocketSensor : public QgsIODeviceSensor
     /**
      * Returns the port the socket connects to.
      */
-    int port() const;
+    [[nodiscard]] int port() const;
 
     /**
      * Sets the \a port the socket connects to.
@@ -173,12 +173,12 @@ class CORE_EXPORT QgsUdpSocketSensor : public QgsIODeviceSensor
      */
     static QgsUdpSocketSensor *create( QObject *parent ) SIP_FACTORY;
 
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
 
     /**
      * Returns the host name the socket connects to.
      */
-    QString hostName() const;
+    [[nodiscard]] QString hostName() const;
 
     /**
      * Sets the host name the socket connects to.
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsUdpSocketSensor : public QgsIODeviceSensor
     /**
      * Returns the port the socket connects to.
      */
-    int port() const;
+    [[nodiscard]] int port() const;
 
     /**
      * Sets the \a port the socket connects to.
@@ -248,12 +248,12 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
      */
     static QgsSerialPortSensor *create( QObject *parent ) SIP_FACTORY;
 
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
 
     /**
      * Returns the serial port the sensor connects to.
      */
-    QString portName() const;
+    [[nodiscard]] QString portName() const;
 
     /**
     * Sets the serial port the sensor connects to.
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
      * Returns the baudrate of the serial port the sensor connects to.
      * \since QGIS 3.36
      */
-    QSerialPort::BaudRate baudRate() const;
+    [[nodiscard]] QSerialPort::BaudRate baudRate() const;
 
     /**
      * Sets the baudrate of the serial port the sensor connects to.
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsSerialPortSensor : public QgsIODeviceSensor
      * each serial port data update will be considered a data frame.
      * \since QGIS 3.38
      */
-    QByteArray delimiter() const;
+    [[nodiscard]] QByteArray delimiter() const;
 
     /**
      * Sets the delimiter used to identify data frames out of the data received

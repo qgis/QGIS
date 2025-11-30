@@ -27,7 +27,7 @@ class QgsRenderingOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsRe
 
   public:
     QgsRenderingOptionsWidget( QWidget *parent );
-    QString helpKey() const override;
+    [[nodiscard]] QString helpKey() const override;
     void apply() override;
 };
 
@@ -39,9 +39,9 @@ class QgsRenderingOptionsFactory : public QgsOptionsWidgetFactory
   public:
     QgsRenderingOptionsFactory();
 
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
-    QString pagePositionHint() const override;
+    [[nodiscard]] QString pagePositionHint() const override;
 };
 
 

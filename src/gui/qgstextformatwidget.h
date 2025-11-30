@@ -371,7 +371,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
     /**
      * Returns the current formatting settings defined by the widget.
      */
-    QgsTextFormat format() const;
+    [[nodiscard]] QgsTextFormat format() const;
 
     /**
      * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
@@ -383,7 +383,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      * Returns a reference to the dialog's button box.
      * \since QGIS 3.10
      */
-    QDialogButtonBox *buttonBox() const;
+    [[nodiscard]] QDialogButtonBox *buttonBox() const;
 
   private:
     QgsTextFormatWidget *mFormatWidget = nullptr;
@@ -421,7 +421,7 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
     /**
      * Returns the current formatting settings defined by the widget.
      */
-    QgsTextFormat format() const;
+    [[nodiscard]] QgsTextFormat format() const;
 
     /**
      * Sets the \a format to show in the widget.

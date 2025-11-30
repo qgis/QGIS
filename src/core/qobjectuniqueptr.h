@@ -117,7 +117,7 @@ class QObjectUniquePtr
     /**
      * Returns the raw pointer to the managed QObject.
      */
-    inline T *data() const
+    [[nodiscard]] inline T *data() const
     {
       return static_cast<T *>( mPtr.data() );
     }
@@ -125,7 +125,7 @@ class QObjectUniquePtr
     /**
      * Returns the raw pointer to the managed QObject.
      */
-    inline T *get() const
+    [[nodiscard]] inline T *get() const
     {
       return static_cast<T *>( mPtr.data() );
     }
@@ -157,7 +157,7 @@ class QObjectUniquePtr
     /**
      * Checks if the managed pointer is ``nullptr``.
      */
-    inline bool isNull() const
+    [[nodiscard]] inline bool isNull() const
     {
       return mPtr.isNull();
     }
@@ -371,7 +371,7 @@ class QObjectParentUniquePtr
     /**
      * Returns the raw pointer to the managed QObject.
      */
-    inline T *data() const
+    [[nodiscard]] inline T *data() const
     {
       return static_cast<T *>( mChild );
     }
@@ -379,7 +379,7 @@ class QObjectParentUniquePtr
     /**
      * Returns the raw pointer to the managed child.
      */
-    inline T *get() const
+    [[nodiscard]] inline T *get() const
     {
       return static_cast<T *>( mChild );
     }
@@ -413,7 +413,7 @@ class QObjectParentUniquePtr
     /**
      * Checks if the managed pointer is NULLPTR.
      */
-    inline bool isNull() const
+    [[nodiscard]] inline bool isNull() const
     {
       return !mChild;
     }

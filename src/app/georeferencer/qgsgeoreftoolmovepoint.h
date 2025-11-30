@@ -33,7 +33,7 @@ class QgsGeorefToolMovePoint : public QgsMapTool
 
     bool isCanvas( QgsMapCanvas * ) const;
 
-    QgsPointXY startPoint() const { return mStartPointMapCoords; }
+    [[nodiscard]] QgsPointXY startPoint() const { return mStartPointMapCoords; }
     void setStartPoint( const QgsPointXY &startPoint ) { mStartPointMapCoords = startPoint; }
 
   signals:

@@ -64,17 +64,17 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
     /**
      * Returns the destination schema.
      */
-    QString schema() const;
+    [[nodiscard]] QString schema() const;
 
     /**
      * Returns the destination table name.
      */
-    QString tableName() const;
+    [[nodiscard]] QString tableName() const;
 
     /**
      * Returns the optional comment to use for the new table.
      */
-    QString tableComment() const;
+    [[nodiscard]] QString tableComment() const;
 
     /**
      * Sets a map \a canvas to associate with the dialog.
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsDbImportVectorLayerDialog : public QDialog, private Ui::QgsD
      */
     std::unique_ptr<QgsVectorLayerExporterTask> createExporterTask( const QVariantMap &extraProviderOptions = QVariantMap() );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   private slots:
     void sourceLayerComboChanged();

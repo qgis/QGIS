@@ -42,7 +42,7 @@ class QgsDebugTextureRenderView : public QgsAbstractRenderView
     QgsDebugTextureRenderView( const QString &viewName );
 
     //! Returns layer in which entities must be added in the in order to be processed by this renderview.
-    Qt3DRender::QLayer *debugLayer() const;
+    [[nodiscard]] Qt3DRender::QLayer *debugLayer() const;
 
   private:
     Qt3DRender::QLayer *mLayer = nullptr;

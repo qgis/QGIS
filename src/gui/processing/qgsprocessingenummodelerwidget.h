@@ -47,7 +47,7 @@ class GUI_EXPORT QgsProcessingEnumModelerWidget : public QWidget, private Ui::Qg
     *
     * \see setOptions()
     */
-    QStringList options() const;
+    [[nodiscard]] QStringList options() const;
 
     /**
     * Populate widget with available options.
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsProcessingEnumModelerWidget : public QWidget, private Ui::Qg
     *
     * \see setDefaultOptions()
     */
-    QVariant defaultOptions() const;
+    [[nodiscard]] QVariant defaultOptions() const;
 
     /**
     * Mark default options as checked.
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsProcessingEnumModelerWidget : public QWidget, private Ui::Qg
      * Returns TRUE if the parameter allows multiple selected values.
      * \see setAllowMultiple()
      */
-    bool allowMultiple() const;
+    [[nodiscard]] bool allowMultiple() const;
 
     /**
      * Sets whether the parameter allows multiple selected values.

@@ -48,7 +48,7 @@ class _3D_EXPORT QgsImageTexture : public Qt3DRender::QPaintedTextureImage
     }
 
     //! Returns the image
-    QImage getImage() const { return mImage; }
+    [[nodiscard]] QImage getImage() const { return mImage; }
 
   private:
     QImage mImage;

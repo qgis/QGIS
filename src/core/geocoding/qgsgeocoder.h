@@ -51,7 +51,7 @@ class CORE_EXPORT QgsGeocoderInterface
     /**
      * Returns the geocoder's capability flags.
      */
-    virtual Flags flags() const = 0;
+    [[nodiscard]] virtual Flags flags() const = 0;
 
     /**
      * Geocodes a \a feature.
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsGeocoderInterface
      * These fields will include any extra content returned by the geocoder, such as fields for accuracy of the
      * match or correct attribute values.
      */
-    virtual QgsFields appendedFields() const;
+    [[nodiscard]] virtual QgsFields appendedFields() const;
 
     /**
      * Returns the WKB type of geometries returned by the geocoder.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsGeocoderInterface
      * in the case that a geocoder may return different geometry types depending on the
      * quality of the match).
      */
-    virtual Qgis::WkbType wkbType() const;
+    [[nodiscard]] virtual Qgis::WkbType wkbType() const;
 
     /**
      * Geocodes a \a string.

@@ -151,7 +151,7 @@ class CORE_EXPORT QgsCadUtils
          * \see setCadPoints()
          * \since QGIS 3.22
          */
-        QList< QgsPoint > cadPoints() const { return mCadPointList; } ;
+        [[nodiscard]] QList< QgsPoint > cadPoints() const { return mCadPointList; } ;
 
         /**
          * Sets the list of recent CAD \a points (in map coordinates).
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsCadUtils
          * \see setCadPoint()
          * \since QGIS 3.22
          */
-        QgsPoint cadPoint( int index ) const { return mCadPointList[index]; };
+        [[nodiscard]] QgsPoint cadPoint( int index ) const { return mCadPointList[index]; };
 
         /**
          * Sets the queue of locked vertices.
@@ -193,14 +193,14 @@ class CORE_EXPORT QgsCadUtils
          * \see setLockedSnapVertices()
          * \since QGIS 3.26
          */
-        QQueue< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; } SIP_SKIP;
+        [[nodiscard]] QQueue< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; } SIP_SKIP;
 
 #ifdef SIP_RUN
         SIP_PROPERTY( name = cadPointList, get = _cadPointList, set = _setCadPointList )
 #endif
         ///@cond PRIVATE
         void _setCadPointList( const QList< QgsPointXY > &list ) { mCadPointList.clear(); for ( const auto &pointxy : list ) { mCadPointList.append( QgsPoint( pointxy ) );} }
-        QList< QgsPointXY > _cadPointList() const { QList< QgsPointXY> list; for ( const auto &point : mCadPointList ) { list.append( QgsPointXY( point.x(), point.y() ) ); }; return list; }
+        [[nodiscard]] QList< QgsPointXY > _cadPointList() const { QList< QgsPointXY> list; for ( const auto &point : mCadPointList ) { list.append( QgsPointXY( point.x(), point.y() ) ); }; return list; }
         ///@endcond PRIVATE
 
       private:

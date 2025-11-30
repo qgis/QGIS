@@ -24,7 +24,7 @@ class QgsRasterRenderingOptionsWidget : public QgsOptionsPageWidget, private Ui:
 
   public:
     QgsRasterRenderingOptionsWidget( QWidget *parent );
-    QString helpKey() const override;
+    [[nodiscard]] QString helpKey() const override;
     void apply() override;
 
   private:
@@ -42,9 +42,9 @@ class QgsRasterRenderingOptionsFactory : public QgsOptionsWidgetFactory
   public:
     QgsRasterRenderingOptionsFactory();
 
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
-    QStringList path() const override;
+    [[nodiscard]] QStringList path() const override;
 };
 
 #endif // QGSRASTERRENDERINGOPTIONS_H

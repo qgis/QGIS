@@ -65,7 +65,7 @@ class CORE_EXPORT QgsBabelFormatRegistry
     /**
      * Returns a list of the names of all registered import formats.
      */
-    QStringList importFormatNames() const;
+    [[nodiscard]] QStringList importFormatNames() const;
 
     /**
      * Returns a registered import format by \a name.
@@ -85,12 +85,12 @@ class CORE_EXPORT QgsBabelFormatRegistry
     /**
      * Returns a file filter string representing all registered import formats.
      */
-    QString importFileFilter() const;
+    [[nodiscard]] QString importFileFilter() const;
 
     /**
      * Returns a list of the names of all registered devices.
      */
-    QStringList deviceNames() const;
+    [[nodiscard]] QStringList deviceNames() const;
 
     /**
      * Returns a registered device format by \a name.
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsBabelFormatRegistry
      * \see deviceFormat()
      * \see deviceNames()
      */
-    QMap< QString, QgsBabelGpsDeviceFormat * > devices() const;
+    [[nodiscard]] QMap< QString, QgsBabelGpsDeviceFormat * > devices() const;
 
     /**
      * Reloads the registry's members from the currently stored configuration.

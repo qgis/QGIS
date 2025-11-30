@@ -49,10 +49,10 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
   public:
     QgsAppGpsSettingsMenu( QWidget *parent );
 
-    bool locationMarkerVisible() const;
-    bool bearingLineVisible() const;
-    bool rotateMap() const;
-    Qgis::MapRecenteringMode mapCenteringMode() const;
+    [[nodiscard]] bool locationMarkerVisible() const;
+    [[nodiscard]] bool bearingLineVisible() const;
+    [[nodiscard]] bool rotateMap() const;
+    [[nodiscard]] Qgis::MapRecenteringMode mapCenteringMode() const;
 
   public slots:
 

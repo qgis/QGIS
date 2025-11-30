@@ -214,7 +214,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
     //! Returns the widget mode
-    QgsProviderRegistry::WidgetMode widgetMode() const;
+    [[nodiscard]] QgsProviderRegistry::WidgetMode widgetMode() const;
 
     /**
      * Returns the associated browser model (may be NULLPTR).
@@ -227,7 +227,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     void setupButtons( QDialogButtonBox *buttonBox );
 
     //! Returns the add Button
-    QPushButton *addButton() const { return mAddButton; }
+    [[nodiscard]] QPushButton *addButton() const { return mAddButton; }
 
   private:
     QPushButton *mAddButton = nullptr;

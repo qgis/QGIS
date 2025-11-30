@@ -55,7 +55,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     QWindow *window();
 
     //! Returns the root entity
-    Qt3DCore::QEntity *root() const;
+    [[nodiscard]] Qt3DCore::QEntity *root() const;
 
     void setClearColor( const QColor &color ) override;
     void setFrustumCullingEnabled( bool enabled ) override;
@@ -63,8 +63,8 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
 
     Qt3DRender::QRenderSettings *renderSettings() override;
     Qt3DRender::QCamera *camera() override;
-    QSize size() const override;
-    QSurface *surface() const override;
+    [[nodiscard]] QSize size() const override;
+    [[nodiscard]] QSurface *surface() const override;
 
     void setSize( QSize s ) override;
 

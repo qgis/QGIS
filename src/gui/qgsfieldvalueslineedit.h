@@ -64,7 +64,7 @@ class QgsFieldValuesLineEditValuesGatherer : public QThread
     void stop();
 
     //! Returns TRUE if collection was canceled before completion
-    bool wasCanceled() const { return mWasCanceled; }
+    [[nodiscard]] bool wasCanceled() const { return mWasCanceled; }
 
   signals:
 
@@ -125,7 +125,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit : public QgsFilterLineEdit
      * \see setLayer()
      * \see attributeIndex()
      */
-    QgsVectorLayer *layer() const { return mLayer; }
+    [[nodiscard]] QgsVectorLayer *layer() const { return mLayer; }
 
     /**
      * Sets the attribute index for the field containing values to show in the widget.
@@ -140,7 +140,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit : public QgsFilterLineEdit
      * \see setAttributeIndex()
      * \see layer()
      */
-    int attributeIndex() const { return mAttributeIndex; }
+    [[nodiscard]] int attributeIndex() const { return mAttributeIndex; }
 
   signals:
 

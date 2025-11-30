@@ -42,9 +42,9 @@ class QgsPostgresRasterTemporalSettingsWidget : public QgsMapLayerConfigWidget, 
 class QgsPostgresRasterTemporalSettingsConfigWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
   public:
-    bool supportLayerPropertiesDialog() const override;
+    [[nodiscard]] bool supportLayerPropertiesDialog() const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
-    ParentPage parentPage() const override;
+    [[nodiscard]] ParentPage parentPage() const override;
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent = nullptr ) const override;
 };
 

@@ -38,17 +38,17 @@ class CORE_EXPORT QgsPrintLayout : public QgsLayout, public QgsMasterLayoutInter
      */
     QgsPrintLayout( QgsProject *project );
 
-    QgsPrintLayout *clone() const override SIP_FACTORY;
-    QgsProject *layoutProject() const override;
-    QgsMasterLayoutInterface::Type layoutType() const override;
-    QIcon icon() const override;
+    [[nodiscard]] QgsPrintLayout *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsProject *layoutProject() const override;
+    [[nodiscard]] QgsMasterLayoutInterface::Type layoutType() const override;
+    [[nodiscard]] QIcon icon() const override;
 
     /**
      * Returns the print layout's atlas.
      */
     QgsLayoutAtlas *atlas();
 
-    QString name() const override { return mName; }
+    [[nodiscard]] QString name() const override { return mName; }
     void setName( const QString &name ) override;
 
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsPrintLayout : public QgsLayout, public QgsMasterLayoutInter
     // QgsLayoutInterface
     QDomElement writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
     void updateSettings() override;
 
     bool layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const override;

@@ -98,7 +98,7 @@ class CORE_EXPORT QgsVectorTileLoader : public QObject
     void downloadBlocking();
 
     //! Returns a eventual error that occurred during loading, void if no error.
-    QString error() const;
+    [[nodiscard]] QString error() const;
 
   private:
     void loadFromNetworkAsync( const QgsTileXYZ &id, const QgsTileMatrixSet &tileMatrixSet, const QgsVectorTileDataProvider *provider, Qgis::RendererUsage usage );

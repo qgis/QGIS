@@ -46,8 +46,8 @@ class QgsStacItemListModel : public QAbstractListModel
 
     QgsStacItemListModel( QObject *parent = nullptr );
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
     void clear();
 
@@ -56,7 +56,7 @@ class QgsStacItemListModel : public QAbstractListModel
     //! Add items to the model. Takes ownership
     void addItems( const QVector<QgsStacItem *> &items, const QString &authcfg );
     //! Returns all items in the model. Does not transfer ownership
-    QVector<QgsStacItem *> items() const;
+    [[nodiscard]] QVector<QgsStacItem *> items() const;
 
   private:
     QVector<QgsStacItem *> mItems;
@@ -72,7 +72,7 @@ class QgsStacItemDelegate : public QStyledItemDelegate
   public:
     explicit QgsStacItemDelegate( QObject *parent = nullptr );
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    [[nodiscard]] QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
   private:
     int mRoundedRectSizePixels = 5;

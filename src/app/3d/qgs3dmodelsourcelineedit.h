@@ -42,13 +42,13 @@ class Qgs3DModelSourceLineEdit : public QgsAbstractFileContentSourceLineEdit
   private:
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    QString fileFilter() const override;
-    QString selectFileTitle() const override;
-    QString fileFromUrlTitle() const override;
-    QString fileFromUrlText() const override;
-    QString embedFileTitle() const override;
-    QString extractFileTitle() const override;
-    QString defaultSettingsKey() const override;
+    [[nodiscard]] QString fileFilter() const override;
+    [[nodiscard]] QString selectFileTitle() const override;
+    [[nodiscard]] QString fileFromUrlTitle() const override;
+    [[nodiscard]] QString fileFromUrlText() const override;
+    [[nodiscard]] QString embedFileTitle() const override;
+    [[nodiscard]] QString extractFileTitle() const override;
+    [[nodiscard]] QString defaultSettingsKey() const override;
 ///@endcond
 #endif
 };

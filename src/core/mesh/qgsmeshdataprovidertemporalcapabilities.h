@@ -57,7 +57,7 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
      *
      * \note for non temporal dataset group, \a timeSinceGlobalReference is not used and the unique dataset is returned
      */
-    QgsMeshDatasetIndex datasetIndexClosestBeforeRelativeTime( int group, qint64 timeSinceGlobalReference ) const;
+    [[nodiscard]] QgsMeshDatasetIndex datasetIndexClosestBeforeRelativeTime( int group, qint64 timeSinceGlobalReference ) const;
 
     /**
      * Returns the closest dataset index from the \a timeSinceGlobalReference
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
      *
      * \note for non temporal dataset group, \a timeSinceGlobalReference is not used and the unique dataset is returned
      */
-    QgsMeshDatasetIndex datasetIndexClosestFromRelativeTime( int group, qint64 timeSinceGlobalReference ) const;
+    [[nodiscard]] QgsMeshDatasetIndex datasetIndexClosestFromRelativeTime( int group, qint64 timeSinceGlobalReference ) const;
 
     /**
      * Adds a \a reference date/time from a dataset \a group
@@ -94,24 +94,24 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
     /**
      * Returns whether the reference time is set
      */
-    bool hasReferenceTime() const;
+    [[nodiscard]] bool hasReferenceTime() const;
 
     /**
      * Returns the reference time
      */
-    QDateTime referenceTime() const;
+    [[nodiscard]] QDateTime referenceTime() const;
 
     /**
      * Returns the time extent using the internal reference time
      * and the first and last times available from the all the dataset
      */
-    QgsDateTimeRange timeExtent() const;
+    [[nodiscard]] QgsDateTimeRange timeExtent() const;
 
     /**
      * Returns the time extent using an external \a reference date time
      * and the first and last times available from the all the dataset
      */
-    QgsDateTimeRange timeExtent( const QDateTime &reference ) const;
+    [[nodiscard]] QgsDateTimeRange timeExtent( const QDateTime &reference ) const;
 
     /**
      * Sets the temporal unit (\a temporalUnit) used to read data by the data provider
@@ -123,12 +123,12 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
     /**
      * Returns the temporal unit used to read data by the data provider
      */
-    Qgis::TemporalUnit temporalUnit() const;
+    [[nodiscard]] Qgis::TemporalUnit temporalUnit() const;
 
     /**
     * Returns the relative time in milliseconds of the dataset
     */
-    qint64 datasetTime( const QgsMeshDatasetIndex &index ) const;
+    [[nodiscard]] qint64 datasetTime( const QgsMeshDatasetIndex &index ) const;
 
     /**
     * Clears all stored reference times and dataset times
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
     *
     * The value is -1 if the dataset group is not present or if it contains only one dataset (non temporal dataset)
     */
-    qint64 firstTimeStepDuration( int group ) const;
+    [[nodiscard]] qint64 firstTimeStepDuration( int group ) const;
 
   private:
 

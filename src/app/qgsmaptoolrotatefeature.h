@@ -37,11 +37,11 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
     explicit QgsAngleMagnetWidget( const QString &label = QString(), QWidget *parent = nullptr );
 
     void setAngle( double angle );
-    double angle() const;
+    [[nodiscard]] double angle() const;
     void setMagnet( int magnet );
-    int magnet() const;
+    [[nodiscard]] int magnet() const;
 
-    QgsDoubleSpinBox *editor() const { return mAngleSpinBox; }
+    [[nodiscard]] QgsDoubleSpinBox *editor() const { return mAngleSpinBox; }
 
   signals:
     void angleChanged( double angle );

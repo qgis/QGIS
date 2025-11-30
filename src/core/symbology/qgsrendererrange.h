@@ -71,7 +71,7 @@ class CORE_EXPORT QgsRendererRange
      * Returns the unique identifier for this range.
      * \since QGIS 3.34
      */
-    QString uuid() const;
+    [[nodiscard]] QString uuid() const;
 
     /**
      * Returns the lower bound of the range.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsRendererRange
      * \see setLowerValue()
      * \see upperValue()
      */
-    double lowerValue() const;
+    [[nodiscard]] double lowerValue() const;
 
     /**
      * Returns the upper bound of the range.
@@ -87,21 +87,21 @@ class CORE_EXPORT QgsRendererRange
      * \see setUpperValue()
      * \see lowerValue()
      */
-    double upperValue() const;
+    [[nodiscard]] double upperValue() const;
 
     /**
      * Returns the symbol used for the range.
      *
      * \see setSymbol()
      */
-    QgsSymbol *symbol() const;
+    [[nodiscard]] QgsSymbol *symbol() const;
 
     /**
      * Returns the label used for the range.
      *
      * \see setLabel()
      */
-    QString label() const;
+    [[nodiscard]] QString label() const;
 
     /**
      * Sets the symbol used for the range.
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsRendererRange
      *
      * \see setRenderState()
      */
-    bool renderState() const;
+    [[nodiscard]] bool renderState() const;
 
     /**
      * Sets whether the range should be rendered.
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsRendererRange
     /**
      * Dumps a string representation of the range.
      */
-    QString dump() const;
+    [[nodiscard]] QString dump() const;
 
     /**
      * Creates a DOM element representing the range in SLD format.
@@ -233,21 +233,21 @@ class CORE_DEPRECATED_EXPORT QgsRendererRangeLabelFormat SIP_DEPRECATED
     bool operator==( const QgsRendererRangeLabelFormat &other ) const;
     bool operator!=( const QgsRendererRangeLabelFormat &other ) const;
 
-    QString format() const { return mFormat; }
+    [[nodiscard]] QString format() const { return mFormat; }
     void setFormat( const QString &format ) { mFormat = format; }
 
-    int precision() const { return mPrecision; }
+    [[nodiscard]] int precision() const { return mPrecision; }
     void setPrecision( int precision );
 
-    bool trimTrailingZeroes() const { return mTrimTrailingZeroes; }
+    [[nodiscard]] bool trimTrailingZeroes() const { return mTrimTrailingZeroes; }
     void setTrimTrailingZeroes( bool trimTrailingZeroes ) { mTrimTrailingZeroes = trimTrailingZeroes; }
 
     /**
      * Returns the label to use for a range with the specified \a lower and \a upper bounds.
      */
-    QString labelForRange( double lower, double upper ) const SIP_PYNAME( labelForLowerUpper );
-    QString labelForRange( const QgsRendererRange &range ) const;
-    QString formatNumber( double value ) const;
+    [[nodiscard]] QString labelForRange( double lower, double upper ) const SIP_PYNAME( labelForLowerUpper );
+    [[nodiscard]] QString labelForRange( const QgsRendererRange &range ) const;
+    [[nodiscard]] QString formatNumber( double value ) const;
 
     void setFromDomElement( QDomElement &element );
     void saveToDomElement( QDomElement &element );

@@ -77,7 +77,7 @@ class CORE_EXPORT QgsMapLayerSelectionProperties : public QObject
     /**
      * Creates a clone of the properties.
      */
-    virtual QgsMapLayerSelectionProperties *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsMapLayerSelectionProperties *clone() const = 0 SIP_FACTORY;
 };
 
 #endif // QGSMAPLAYERSELECTIONPROPERTIES_H

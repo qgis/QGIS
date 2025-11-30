@@ -37,7 +37,7 @@ class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox
      * Returns the currently selected draw mode for the combo box
      * \returns current draw mode
      */
-    QgsPaintEffect::DrawMode drawMode() const;
+    [[nodiscard]] QgsPaintEffect::DrawMode drawMode() const;
 
     /**
      * Sets the currently selected draw mode for the combo box

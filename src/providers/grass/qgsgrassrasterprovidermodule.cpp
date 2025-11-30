@@ -35,11 +35,11 @@ class QgsGrassRasterProviderMetadata : public QgsProviderMetadata
       Q_UNUSED( flags );
       return new QgsGrassRasterProvider( uri );
     }
-    QList<Qgis::LayerType> supportedLayerTypes() const override
+    [[nodiscard]] QList<Qgis::LayerType> supportedLayerTypes() const override
     {
       return { Qgis::LayerType::Raster };
     }
-    QIcon icon() const override
+    [[nodiscard]] QIcon icon() const override
     {
       return QgsApplication::getThemeIcon( QStringLiteral( "providerGrass.svg" ) );
     }

@@ -67,7 +67,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     /**
       * Every project has a title
      */
-    QString title() const;
+    [[nodiscard]] QString title() const;
     void title( QString const &title );
 
     /**
@@ -75,7 +75,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void setSelectedCrs( const QgsCoordinateReferenceSystem &crs );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
   public slots:
 
     /**

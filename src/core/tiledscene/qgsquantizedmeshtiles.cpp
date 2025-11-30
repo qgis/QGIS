@@ -44,7 +44,7 @@ class VectorStream
       mOffset += bytes;
       return data;
     }
-    size_t remaining() const
+    [[nodiscard]] size_t remaining() const
     {
       return mVec.size() - mOffset;
     }

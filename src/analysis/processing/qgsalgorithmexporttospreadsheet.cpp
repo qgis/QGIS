@@ -80,7 +80,7 @@ class FieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
       return formatter->representValue( mLayer.data(), i, mConfig.value( i ), cache, value );
     }
 
-    FieldValueConverter *clone() const override
+    [[nodiscard]] FieldValueConverter *clone() const override
     {
       return new FieldValueConverter( *this );
     }

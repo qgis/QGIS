@@ -54,8 +54,8 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
     const QgsMultiBandColorRenderer &operator=( const QgsMultiBandColorRenderer & ) = delete;
 
-    QgsMultiBandColorRenderer *clone() const override SIP_FACTORY;
-    Qgis::RasterRendererFlags flags() const override;
+    [[nodiscard]] QgsMultiBandColorRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::RasterRendererFlags flags() const override;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      *
      * \see setRedBand()
      */
-    int redBand() const { return mRedBand; }
+    [[nodiscard]] int redBand() const { return mRedBand; }
 
     /**
      * Sets the \a band number for the red channel.
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      *
      * \see setRedBand()
      */
-    int greenBand() const { return mGreenBand; }
+    [[nodiscard]] int greenBand() const { return mGreenBand; }
 
     /**
      * Sets the \a band number for the green channel.
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      *
      * \see setRedBand()
      */
-    int blueBand() const { return mBlueBand; }
+    [[nodiscard]] int blueBand() const { return mBlueBand; }
 
     /**
      * Sets the \a band number for the blue channel.
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      * \see greenContrastEnhancement()
      * \see blueContrastEnhancement()
      */
-    const QgsContrastEnhancement *redContrastEnhancement() const;
+    [[nodiscard]] const QgsContrastEnhancement *redContrastEnhancement() const;
 
     /**
      * Sets the contrast enhancement to use for the red channel.
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      * \see redContrastEnhancement()
      * \see blueContrastEnhancement()
      */
-    const QgsContrastEnhancement *greenContrastEnhancement() const;
+    [[nodiscard]] const QgsContrastEnhancement *greenContrastEnhancement() const;
 
     /**
      * Sets the contrast enhancement to use for the green channel.
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
      * \see redContrastEnhancement()
      * \see greenContrastEnhancement()
      */
-    const QgsContrastEnhancement *blueContrastEnhancement() const;
+    [[nodiscard]] const QgsContrastEnhancement *blueContrastEnhancement() const;
 
     /**
      * Sets the contrast enhancement to use for the blue channel.
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    QList<int> usesBands() const override;
+    [[nodiscard]] QList<int> usesBands() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
 
     Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;

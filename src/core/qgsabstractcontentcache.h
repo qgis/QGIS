@@ -96,7 +96,7 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
     /**
      * Returns the memory usage in bytes for the entry.
      */
-    virtual int dataSize() const = 0;
+    [[nodiscard]] virtual int dataSize() const = 0;
 
     /**
      * Dumps debugging strings containing the item's properties. For testing purposes only.

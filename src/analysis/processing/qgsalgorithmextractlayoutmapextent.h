@@ -33,15 +33,15 @@ class QgsLayoutMapExtentToLayerAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsLayoutMapExtentToLayerAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    Qgis::ProcessingAlgorithmFlags flags() const override;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortDescription() const override;
-    QString shortHelpString() const override;
-    QgsLayoutMapExtentToLayerAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QgsLayoutMapExtentToLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

@@ -79,7 +79,7 @@ class CORE_EXPORT QgsArcGisRestContext
      *
      * \see setTimeZone()
      */
-    QTimeZone timeZone() const { return mTimeZone; }
+    [[nodiscard]] QTimeZone timeZone() const { return mTimeZone; }
 
     /**
      * Sets the name of the objectId field.
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsArcGisRestContext
      *
      * \see setObjectIdFieldName()
      */
-    QString objectIdFieldName() const { return mObjectIdFieldName; }
+    [[nodiscard]] QString objectIdFieldName() const { return mObjectIdFieldName; }
 
   private:
 

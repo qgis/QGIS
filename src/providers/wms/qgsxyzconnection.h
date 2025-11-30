@@ -42,7 +42,7 @@ struct QgsXyzConnection
     // Interpretation key related to the converter from color to value, empty if none
     QString interpretation;
 
-    QString encodedUri() const;
+    [[nodiscard]] QString encodedUri() const;
 };
 
 //! Utility class for handling list of connections to XYZ tile layers

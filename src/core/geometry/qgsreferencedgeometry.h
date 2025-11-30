@@ -49,7 +49,7 @@ class CORE_EXPORT QgsReferencedGeometryBase
      * no reference system is set.
      * \see setCrs()
      */
-    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
     /**
      * Sets the associated \a crs. Set to an invalid CRS if

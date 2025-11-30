@@ -47,9 +47,9 @@ class GUI_EXPORT QgsPlotToolXAxisZoom : public QgsPlotToolZoom
     ~QgsPlotToolXAxisZoom() override;
 
   protected:
-    QPointF constrainStartPoint( QPointF scenePoint ) const override;
-    QPointF constrainMovePoint( QPointF scenePoint ) const override;
-    QRectF constrainBounds( const QRectF &sceneBounds ) const override;
+    [[nodiscard]] QPointF constrainStartPoint( QPointF scenePoint ) const override;
+    [[nodiscard]] QPointF constrainMovePoint( QPointF scenePoint ) const override;
+    [[nodiscard]] QRectF constrainBounds( const QRectF &sceneBounds ) const override;
     void zoomOutClickOn( QPointF scenePoint ) override;
     void zoomInClickOn( QPointF scenePoint ) override;
 

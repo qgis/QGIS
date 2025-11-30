@@ -91,7 +91,7 @@ class CORE_EXPORT QgsPointCloudAttributeModel : public QAbstractItemModel
      *
      * \see setAttributes()
      */
-    QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
+    [[nodiscard]] QgsPointCloudAttributeCollection attributes() const { return mAttributes; }
 
     /**
      * Sets whether an optional empty attribute ("not set") option is present in the model.
@@ -108,14 +108,14 @@ class CORE_EXPORT QgsPointCloudAttributeModel : public QAbstractItemModel
      * Returns TRUE if the model allows the empty attribute ("not set") choice.
      * \see setAllowEmptyAttributeName()
      */
-    bool allowEmptyAttributeName() const { return mAllowEmpty; }
+    [[nodiscard]] bool allowEmptyAttributeName() const { return mAllowEmpty; }
 
     // QAbstractItemModel interface
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &child ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &child ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
 
     /**
      * Returns a HTML formatted tooltip string for a \a attribute, containing details
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsPointCloudAttributeProxyModel : public QSortFilterProxyMode
      * Returns the filters controlling displayed attributes.
      * \see setFilters()
      */
-    Filters filters() const { return mFilters; }
+    [[nodiscard]] Filters filters() const { return mFilters; }
 
   private:
 
@@ -192,8 +192,8 @@ class CORE_EXPORT QgsPointCloudAttributeProxyModel : public QSortFilterProxyMode
 
     // QSortFilterProxyModel interface
   public:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsPointCloudAttributeProxyModel::Filters )
 

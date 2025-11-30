@@ -42,7 +42,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     QgsVectorLayerEditBuffer( QgsVectorLayer *layer );
 
     //! Returns TRUE if the provider has been modified since the last commit
-    virtual bool isModified() const;
+    [[nodiscard]] virtual bool isModified() const;
 
     /**
      * Adds a feature
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Returns a map of new features which are not committed.
      * \see isFeatureAdded()
     */
-    QgsFeatureMap addedFeatures() const { return mAddedFeatures; }
+    [[nodiscard]] QgsFeatureMap addedFeatures() const { return mAddedFeatures; }
 
     /**
      * Returns a list of the features IDs for all newly added or edited features
@@ -120,71 +120,71 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      *
      * \since QGIS 3.20
      */
-    QgsFeatureIds allAddedOrEditedFeatures() const;
+    [[nodiscard]] QgsFeatureIds allAddedOrEditedFeatures() const;
 
     /**
      * Returns TRUE if the specified feature ID has been added but not committed.
      * \param id feature ID
      * \see addedFeatures()
      */
-    bool isFeatureAdded( QgsFeatureId id ) const { return mAddedFeatures.contains( id ); }
+    [[nodiscard]] bool isFeatureAdded( QgsFeatureId id ) const { return mAddedFeatures.contains( id ); }
 
     /**
      * Returns a map of features with changed attributes values which are not committed.
      * \see isFeatureAttributesChanged()
     */
-    QgsChangedAttributesMap changedAttributeValues() const { return mChangedAttributeValues; }
+    [[nodiscard]] QgsChangedAttributesMap changedAttributeValues() const { return mChangedAttributeValues; }
 
     /**
      * Returns TRUE if the specified feature ID has had an attribute changed but not committed.
      * \param id feature ID
      * \see changedAttributeValues()
      */
-    bool isFeatureAttributesChanged( QgsFeatureId id ) const { return mChangedAttributeValues.contains( id ); }
+    [[nodiscard]] bool isFeatureAttributesChanged( QgsFeatureId id ) const { return mChangedAttributeValues.contains( id ); }
 
     /**
      * Returns a list of deleted attributes fields which are not committed. The list is kept sorted.
      * \see isAttributeDeleted()
     */
-    QgsAttributeList deletedAttributeIds() const { return mDeletedAttributeIds; }
+    [[nodiscard]] QgsAttributeList deletedAttributeIds() const { return mDeletedAttributeIds; }
 
     /**
      * Returns TRUE if the specified attribute has been deleted but not committed.
      * \param index attribute index
      * \see deletedAttributeIds()
      */
-    bool isAttributeDeleted( int index ) const { return mDeletedAttributeIds.contains( index ); }
+    [[nodiscard]] bool isAttributeDeleted( int index ) const { return mDeletedAttributeIds.contains( index ); }
 
     /**
      * Returns a list of added attributes fields which are not committed.
      */
-    QList<QgsField> addedAttributes() const { return mAddedAttributes; }
+    [[nodiscard]] QList<QgsField> addedAttributes() const { return mAddedAttributes; }
 
     /**
      * Returns a map of features with changed geometries which are not committed.
      * \see isFeatureGeometryChanged()
      */
-    QgsGeometryMap changedGeometries() const { return mChangedGeometries; }
+    [[nodiscard]] QgsGeometryMap changedGeometries() const { return mChangedGeometries; }
 
     /**
      * Returns TRUE if the specified feature ID has had its geometry changed but not committed.
      * \param id feature ID
      * \see changedGeometries()
      */
-    bool isFeatureGeometryChanged( QgsFeatureId id ) const { return mChangedGeometries.contains( id ); }
+    [[nodiscard]] bool isFeatureGeometryChanged( QgsFeatureId id ) const { return mChangedGeometries.contains( id ); }
 
     /**
      * Returns a list of deleted feature IDs which are not committed.
      * \see isFeatureDeleted()
     */
-    QgsFeatureIds deletedFeatureIds() const { return mDeletedFeatureIds; }
+    [[nodiscard]] QgsFeatureIds deletedFeatureIds() const { return mDeletedFeatureIds; }
 
     /**
      * Returns TRUE if the specified feature ID has been deleted but not committed.
      * \param id feature ID
      * \see deletedFeatureIds()
      */
-    bool isFeatureDeleted( QgsFeatureId id ) const { return mDeletedFeatureIds.contains( id ); }
+    [[nodiscard]] bool isFeatureDeleted( QgsFeatureId id ) const { return mDeletedFeatureIds.contains( id ); }
 
     /**
      * Updates \a fields
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
      * Returns the parent edit buffer group for this edit buffer, or nullptr if not part of a group.
      * \since QGIS 3.26
      */
-    QgsVectorLayerEditBufferGroup *editBufferGroup() const;
+    [[nodiscard]] QgsVectorLayerEditBufferGroup *editBufferGroup() const;
 
     /**
      * Set the parent edit buffer group for this edit buffer.

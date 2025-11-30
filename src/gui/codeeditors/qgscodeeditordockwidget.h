@@ -60,7 +60,7 @@ class GUI_EXPORT QgsCodeEditorDockWidget : public QWidget
     /**
      * Returns TRUE if the widget is user visible.
      */
-    bool isUserVisible() const;
+    [[nodiscard]] bool isUserVisible() const;
 
   public slots:
 

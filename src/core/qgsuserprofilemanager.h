@@ -80,7 +80,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * Returns the path to the root profiles location.
      * \return The root path to the profiles folder.
      */
-    QString rootLocation() const { return mRootProfilePath; }
+    [[nodiscard]] QString rootLocation() const { return mRootProfilePath; }
 
     /**
      * Sets whether the manager should watch for the creation of new user profiles and emit
@@ -101,24 +101,24 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      *
      * \see setNewProfileNotificationEnabled()
      */
-    bool isNewProfileNotificationEnabled() const;
+    [[nodiscard]] bool isNewProfileNotificationEnabled() const;
 
     /**
      * Check if the root location has been set for the manager.
      * \return TRUE if the root location has been set.
      */
-    bool rootLocationIsSet() const;
+    [[nodiscard]] bool rootLocationIsSet() const;
 
     /**
      * Returns a list of all found profile names.
      */
-    QStringList allProfiles() const;
+    [[nodiscard]] QStringList allProfiles() const;
 
     /**
      * Check if a profile exists.
      * \return FALSE if the profile can't be found.
      */
-    bool profileExists( const QString &name ) const;
+    [[nodiscard]] bool profileExists( const QString &name ) const;
 
     /**
      * Returns the name of the default profile that has been set in .default.
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \return The name of the default profile.
      * \note Setting overrideLocalProfile in global settings will always ignore profiles.ini
      */
-    QString defaultProfileName() const;
+    [[nodiscard]] QString defaultProfileName() const;
 
     /**
      * Sets the default profile name. The default profile name is used when loading QGIS
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * Returns the name of the most recently closed profile. Empty if it is the first time QGIS is run.
      * \since QGIS 3.32
      */
-    QString lastProfileName() const;
+    [[nodiscard]] QString lastProfileName() const;
 
     /**
      * Updates the last closed profile name. Called when QGIS is closed.
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * Returns the user profile selection policy.
      * \since QGIS 3.32
      */
-    Qgis::UserProfileSelectionPolicy userProfileSelectionPolicy() const;
+    [[nodiscard]] Qgis::UserProfileSelectionPolicy userProfileSelectionPolicy() const;
 
     /**
      * Sets the user profile selection policy.
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \param name The name of the profile to return.
      * \return A QgsUserprofile pointing to the location of the user profile.
      */
-    std::unique_ptr< QgsUserProfile > profileForName( const QString &name ) const;
+    [[nodiscard]] std::unique_ptr< QgsUserProfile > profileForName( const QString &name ) const;
 
     /**
      * Create a user profile given by the name
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
 
     std::unique_ptr<QgsUserProfile> mUserProfile;
 
-    QString settingsFile() const;
+    [[nodiscard]] QString settingsFile() const;
 
     std::unique_ptr< QSettings > mSettings;
 };

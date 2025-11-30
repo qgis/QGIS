@@ -49,7 +49,7 @@ class TestCollectionItem : public QgsDataCollectionItem
       : QgsDataCollectionItem( parent, name, path, providerKey ) {
       };
 
-    bool layerCollection() const override { return true; };
+    [[nodiscard]] bool layerCollection() const override { return true; };
 };
 
 

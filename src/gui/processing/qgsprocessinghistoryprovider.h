@@ -34,7 +34,7 @@ class GUI_EXPORT QgsProcessingHistoryProvider : public QgsAbstractHistoryProvide
   public:
     QgsProcessingHistoryProvider();
 
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 
     /**
      * Ports the old text log to the history framework.
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsProcessingHistoryProvider : public QgsAbstractHistoryProvide
     void emitCreateTest( const QString &command );
 
     //! Returns the path to the old log file
-    QString oldLogPath() const;
+    [[nodiscard]] QString oldLogPath() const;
 
     friend class ProcessingHistoryBaseNode;
 };

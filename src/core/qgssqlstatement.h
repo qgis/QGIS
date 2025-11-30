@@ -49,9 +49,9 @@ class CORE_EXPORT QgsSQLStatement
     virtual ~QgsSQLStatement();
 
     //! Returns TRUE if an error occurred when parsing the input statement
-    bool hasParserError() const;
+    [[nodiscard]] bool hasParserError() const;
     //! Returns parser error
-    QString parserErrorString() const;
+    [[nodiscard]] QString parserErrorString() const;
 
     /**
      * Performs basic validity checks. Basically checking that columns referencing
@@ -66,14 +66,14 @@ class CORE_EXPORT QgsSQLStatement
      * Returns the root node of the statement.
      * The root node is NULLPTR if parsing has failed.
      */
-    const QgsSQLStatement::Node *rootNode() const;
+    [[nodiscard]] const QgsSQLStatement::Node *rootNode() const;
 
     /**
      * Returns the original, unmodified statement string.
      * If there was none supplied because it was constructed by sole
      * API calls, dump() will be used to create one instead.
      */
-    QString statement() const;
+    [[nodiscard]] QString statement() const;
 
     /**
      * Returns the statement string, constructed from the internal
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsSQLStatement
      * formatting or comments. In general it is preferable to use
      * statement() instead.
      */
-    QString dump() const;
+    [[nodiscard]] QString dump() const;
 
     /**
      * Returns a quoted column reference (in double quotes)
@@ -248,14 +248,14 @@ class CORE_EXPORT QgsSQLStatement
          *
          * \returns The type of this node
          */
-        virtual QgsSQLStatement::NodeType nodeType() const = 0;
+        [[nodiscard]] virtual QgsSQLStatement::NodeType nodeType() const = 0;
 
         /**
          * Abstract virtual dump method
          *
          * \returns A statement which represents this node as string
          */
-        virtual QString dump() const = 0;
+        [[nodiscard]] virtual QString dump() const = 0;
 
         /**
          * Generate a clone of this node.
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsSQLStatement
          *
          * \returns a deep copy of this node.
          */
-        virtual QgsSQLStatement::Node *clone() const = 0 SIP_FACTORY;
+        [[nodiscard]] virtual QgsSQLStatement::Node *clone() const = 0 SIP_FACTORY;
 
         /**
          * Support the visitor pattern.
@@ -305,16 +305,16 @@ class CORE_EXPORT QgsSQLStatement
         /**
          * Returns the number of nodes in the list.
          */
-        int count() const { return mList.count(); }
+        [[nodiscard]] int count() const { return mList.count(); }
 
         //! Accept visitor
         void accept( QgsSQLStatement::Visitor &v ) const;
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller
-        QgsSQLStatement::NodeList *clone() const SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::NodeList *clone() const SIP_FACTORY;
 
         //! Dump list
-        virtual QString dump() const;
+        [[nodiscard]] virtual QString dump() const;
 
       protected:
         QList<Node *> mList;
@@ -331,16 +331,16 @@ class CORE_EXPORT QgsSQLStatement
         NodeUnaryOperator( QgsSQLStatement::UnaryOperator op, QgsSQLStatement::Node *operand SIP_TRANSFER ) : mOp( op ), mOperand( operand ) {}
 
         //! Operator
-        QgsSQLStatement::UnaryOperator op() const { return mOp; }
+        [[nodiscard]] QgsSQLStatement::UnaryOperator op() const { return mOp; }
 
         //! Operand
-        QgsSQLStatement::Node *operand() const { return mOperand.get(); }
+        [[nodiscard]] QgsSQLStatement::Node *operand() const { return mOperand.get(); }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntUnaryOperator; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntUnaryOperator; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       private:
 
@@ -371,25 +371,25 @@ class CORE_EXPORT QgsSQLStatement
         {}
 
         //! Operator
-        QgsSQLStatement::BinaryOperator op() const { return mOp; }
+        [[nodiscard]] QgsSQLStatement::BinaryOperator op() const { return mOp; }
 
         //! Left operand
-        QgsSQLStatement::Node *opLeft() const { return mOpLeft.get(); }
+        [[nodiscard]] QgsSQLStatement::Node *opLeft() const { return mOpLeft.get(); }
 
         //! Right operand
-        QgsSQLStatement::Node *opRight() const { return mOpRight.get(); }
+        [[nodiscard]] QgsSQLStatement::Node *opRight() const { return mOpRight.get(); }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntBinaryOperator; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntBinaryOperator; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
         //! Precedence
-        int precedence() const;
+        [[nodiscard]] int precedence() const;
 
         //! Is left associative ?
-        bool leftAssociative() const;
+        [[nodiscard]] bool leftAssociative() const;
 
       private:
 
@@ -418,19 +418,19 @@ class CORE_EXPORT QgsSQLStatement
         NodeInOperator( QgsSQLStatement::Node *node SIP_TRANSFER, QgsSQLStatement::NodeList *list SIP_TRANSFER, bool notin = false ) : mNode( node ), mList( list ), mNotIn( notin ) {}
 
         //! Variable at the left of IN
-        QgsSQLStatement::Node *node() const { return mNode.get(); }
+        [[nodiscard]] QgsSQLStatement::Node *node() const { return mNode.get(); }
 
         //! Whether this is a NOT IN operator
-        bool isNotIn() const { return mNotIn; }
+        [[nodiscard]] bool isNotIn() const { return mNotIn; }
 
         //! Values list
-        QgsSQLStatement::NodeList *list() const { return mList.get(); }
+        [[nodiscard]] QgsSQLStatement::NodeList *list() const { return mList.get(); }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntInOperator; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntInOperator; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       private:
 
@@ -459,22 +459,22 @@ class CORE_EXPORT QgsSQLStatement
           : mNode( node ), mMinVal( minVal ), mMaxVal( maxVal ), mNotBetween( notBetween ) {}
 
         //! Variable at the left of BETWEEN
-        QgsSQLStatement::Node *node() const { return mNode.get(); }
+        [[nodiscard]] QgsSQLStatement::Node *node() const { return mNode.get(); }
 
         //! Whether this is a NOT BETWEEN operator
-        bool isNotBetween() const { return mNotBetween; }
+        [[nodiscard]] bool isNotBetween() const { return mNotBetween; }
 
         //! Minimum bound
-        QgsSQLStatement::Node *minVal() const { return mMinVal.get(); }
+        [[nodiscard]] QgsSQLStatement::Node *minVal() const { return mMinVal.get(); }
 
         //! Maximum bound
-        QgsSQLStatement::Node *maxVal() const { return mMaxVal.get(); }
+        [[nodiscard]] QgsSQLStatement::Node *maxVal() const { return mMaxVal.get(); }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntBetweenOperator; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntBetweenOperator; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       private:
 
@@ -503,16 +503,16 @@ class CORE_EXPORT QgsSQLStatement
         NodeFunction( const QString &name, QgsSQLStatement::NodeList *args  SIP_TRANSFER ) : mName( name ), mArgs( args ) {}
 
         //! Returns function name
-        QString name() const { return mName; }
+        [[nodiscard]] QString name() const { return mName; }
 
         //! Returns arguments
-        QgsSQLStatement::NodeList *args() const { return mArgs.get(); }
+        [[nodiscard]] QgsSQLStatement::NodeList *args() const { return mArgs.get(); }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntFunction; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntFunction; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       private:
 
@@ -540,13 +540,13 @@ class CORE_EXPORT QgsSQLStatement
         NodeLiteral( const QVariant &value ) : mValue( value ) {}
 
         //! The value of the literal.
-        inline QVariant value() const { return mValue; }
+        [[nodiscard]] inline QVariant value() const { return mValue; }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntLiteral; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntLiteral; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       protected:
         QVariant mValue;
@@ -568,24 +568,24 @@ class CORE_EXPORT QgsSQLStatement
         void setDistinct( bool distinct = true ) { mDistinct = distinct; }
 
         //! The name of the table. May be empty.
-        QString tableName() const { return mTableName; }
+        [[nodiscard]] QString tableName() const { return mTableName; }
 
         //! The name of the column.
-        QString name() const { return mName; }
+        [[nodiscard]] QString name() const { return mName; }
 
         //! Whether this is the * column
-        bool star() const { return mStar; }
+        [[nodiscard]] bool star() const { return mStar; }
 
         //! Whether this is prefixed by DISTINCT
-        bool distinct() const { return mDistinct; }
+        [[nodiscard]] bool distinct() const { return mDistinct; }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntColumnRef; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntColumnRef; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
         //! Clone with same type return
-        QgsSQLStatement::NodeColumnRef *cloneThis() const SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::NodeColumnRef *cloneThis() const SIP_FACTORY;
 
       protected:
         QString mTableName;
@@ -608,18 +608,18 @@ class CORE_EXPORT QgsSQLStatement
         void setAlias( const QString &alias ) { mAlias = alias; }
 
         //! Column that is referred to
-        QgsSQLStatement::Node *column() const { return mColumnNode.get(); }
+        [[nodiscard]] QgsSQLStatement::Node *column() const { return mColumnNode.get(); }
 
         //! Alias name
-        QString alias() const { return mAlias; }
+        [[nodiscard]] QString alias() const { return mAlias; }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntSelectedColumn; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntSelectedColumn; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
         //! Clone with same type return
-        QgsSQLStatement::NodeSelectedColumn *cloneThis() const SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::NodeSelectedColumn *cloneThis() const SIP_FACTORY;
 
       private:
 
@@ -646,16 +646,16 @@ class CORE_EXPORT QgsSQLStatement
         NodeCast( QgsSQLStatement::Node *node SIP_TRANSFER, const QString &type ) : mNode( node ), mType( type ) {}
 
         //! Node that is referred to
-        QgsSQLStatement::Node *node() const { return mNode.get(); }
+        [[nodiscard]] QgsSQLStatement::Node *node() const { return mNode.get(); }
 
         //! Type
-        QString type() const { return mType; }
+        [[nodiscard]] QString type() const { return mType; }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntCast; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntCast; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       private:
 
@@ -690,25 +690,25 @@ class CORE_EXPORT QgsSQLStatement
         NodeTableDef( const QString &schema, const QString &name, const QString &alias ) : mName( name ), mSchema( schema ), mAlias( alias ) {}
 
         //! Table name
-        QString name() const { return mName; }
+        [[nodiscard]] QString name() const { return mName; }
 
         /**
          * Returns the schema name.
          *
          * \since QGIS 3.28
          */
-        QString schema() const { return mSchema; }
+        [[nodiscard]] QString schema() const { return mSchema; }
 
         //! Table alias
-        QString alias() const { return mAlias; }
+        [[nodiscard]] QString alias() const { return mAlias; }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntTableDef; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntTableDef; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
         //! Clone with same type return
-        QgsSQLStatement::NodeTableDef *cloneThis() const SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::NodeTableDef *cloneThis() const SIP_FACTORY;
 
       protected:
         QString mName;
@@ -729,24 +729,24 @@ class CORE_EXPORT QgsSQLStatement
         NodeJoin( QgsSQLStatement::NodeTableDef *tabledef SIP_TRANSFER, const QList<QString> &usingColumns, QgsSQLStatement::JoinType type ) : mTableDef( tabledef ), mUsingColumns( usingColumns ), mType( type ) {}
 
         //! Table definition
-        QgsSQLStatement::NodeTableDef *tableDef() const { return mTableDef.get(); }
+        [[nodiscard]] QgsSQLStatement::NodeTableDef *tableDef() const { return mTableDef.get(); }
 
         //! On expression. Will be NULLPTR if usingColumns() is not empty
-        QgsSQLStatement::Node *onExpr() const { return mOnExpr.get(); }
+        [[nodiscard]] QgsSQLStatement::Node *onExpr() const { return mOnExpr.get(); }
 
         //! Columns referenced by USING
-        QList<QString> usingColumns() const { return mUsingColumns; }
+        [[nodiscard]] QList<QString> usingColumns() const { return mUsingColumns; }
 
         //! Join type
-        QgsSQLStatement::JoinType type() const { return mType; }
+        [[nodiscard]] QgsSQLStatement::JoinType type() const { return mType; }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntJoin; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntJoin; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
         //! Clone with same type return
-        QgsSQLStatement::NodeJoin *cloneThis() const SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::NodeJoin *cloneThis() const SIP_FACTORY;
 
       private:
 
@@ -775,18 +775,18 @@ class CORE_EXPORT QgsSQLStatement
         NodeColumnSorted( QgsSQLStatement::NodeColumnRef *column SIP_TRANSFER, bool asc ) : mColumn( column ), mAsc( asc ) {}
 
         //! The name of the column.
-        QgsSQLStatement::NodeColumnRef *column() const { return mColumn.get(); }
+        [[nodiscard]] QgsSQLStatement::NodeColumnRef *column() const { return mColumn.get(); }
 
         //! Whether the column is sorted in ascending order
-        bool ascending() const { return mAsc; }
+        [[nodiscard]] bool ascending() const { return mAsc; }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntColumnSorted; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntColumnSorted; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
         //! Clone with same type return
-        QgsSQLStatement::NodeColumnSorted *cloneThis() const SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::NodeColumnSorted *cloneThis() const SIP_FACTORY;
 
       private:
 
@@ -823,23 +823,23 @@ class CORE_EXPORT QgsSQLStatement
         void setOrderBy( const QList<QgsSQLStatement::NodeColumnSorted *> &orderBy SIP_TRANSFER ) { qDeleteAll( mOrderBy ); mOrderBy = orderBy; }
 
         //! Returns the list of tables
-        QList<QgsSQLStatement::NodeTableDef *> tables() const { return mTableList; }
+        [[nodiscard]] QList<QgsSQLStatement::NodeTableDef *> tables() const { return mTableList; }
         //! Returns the list of columns
-        QList<QgsSQLStatement::NodeSelectedColumn *> columns() const { return mColumns; }
+        [[nodiscard]] QList<QgsSQLStatement::NodeSelectedColumn *> columns() const { return mColumns; }
         //! Returns if the SELECT is DISTINCT
-        bool distinct() const { return mDistinct; }
+        [[nodiscard]] bool distinct() const { return mDistinct; }
         //! Returns the list of joins
-        QList<QgsSQLStatement::NodeJoin *> joins() const { return mJoins; }
+        [[nodiscard]] QList<QgsSQLStatement::NodeJoin *> joins() const { return mJoins; }
         //! Returns the where clause
-        QgsSQLStatement::Node *where() const { return mWhere.get(); }
+        [[nodiscard]] QgsSQLStatement::Node *where() const { return mWhere.get(); }
         //! Returns the list of order by columns
-        QList<QgsSQLStatement::NodeColumnSorted *> orderBy() const { return mOrderBy; }
+        [[nodiscard]] QList<QgsSQLStatement::NodeColumnSorted *> orderBy() const { return mOrderBy; }
 
-        QgsSQLStatement::NodeType nodeType() const override { return ntSelect; }
-        QString dump() const override;
+        [[nodiscard]] QgsSQLStatement::NodeType nodeType() const override { return ntSelect; }
+        [[nodiscard]] QString dump() const override;
 
         void accept( QgsSQLStatement::Visitor &v ) const override { v.visit( *this ); }
-        QgsSQLStatement::Node *clone() const override SIP_FACTORY;
+        [[nodiscard]] QgsSQLStatement::Node *clone() const override SIP_FACTORY;
 
       private:
 

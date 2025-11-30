@@ -78,7 +78,7 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     //! Returns pointer to the engine's camera entity
     virtual Qt3DRender::QCamera *camera() = 0;
     //! Returns size of the engine's rendering area in pixels
-    virtual QSize size() const = 0;
+    [[nodiscard]] virtual QSize size() const = 0;
     //! Sets the size of the rendering area (in pixels)
     virtual void setSize( QSize s ) = 0;
 
@@ -101,7 +101,7 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      *
      * \since QGIS 3.14
      */
-    virtual QSurface *surface() const = 0;
+    [[nodiscard]] virtual QSurface *surface() const = 0;
 
     /**
      * Returns the shadow rendering frame graph object used to render the scene
@@ -116,10 +116,10 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     void dumpFrameGraphToConsole() const;
 
     //! Dump frame graph as string
-    QString dumpFrameGraph() const;
+    [[nodiscard]] QString dumpFrameGraph() const;
 
     //! Dump scene graph as string
-    QString dumpSceneGraph() const;
+    [[nodiscard]] QString dumpSceneGraph() const;
 
   signals:
     //! Emitted after a call to requestCaptureImage() to return the captured image.

@@ -56,7 +56,7 @@ class GUI_EXPORT QgsPreviewEffect : public QGraphicsEffect
      * \returns PreviewMode currently used by the effect
      * \see setMode
      */
-    PreviewMode mode() const { return mMode; }
+    [[nodiscard]] PreviewMode mode() const { return mMode; }
 
   protected:
     void draw( QPainter *painter ) override;

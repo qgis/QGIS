@@ -37,7 +37,7 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
     virtual ~QgsAbstractGeometrySimplifier() = default;
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry simplify( const QgsGeometry &geometry ) const = 0;
+    [[nodiscard]] virtual QgsGeometry simplify( const QgsGeometry &geometry ) const = 0;
 
     /**
      * Returns a simplified version the specified \a geometry.
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySi
      */
     QgsTopologyPreservingSimplifier( double tolerance );
 
-    QgsGeometry simplify( const QgsGeometry &geometry ) const override;
+    [[nodiscard]] QgsGeometry simplify( const QgsGeometry &geometry ) const override;
     QgsAbstractGeometry *simplify( const QgsAbstractGeometry *geometry ) const override SIP_FACTORY;
 
   protected:

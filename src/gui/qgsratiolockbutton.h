@@ -54,7 +54,7 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
      * \returns TRUE if the button state is locked.
      * \see setLocked
      */
-    bool locked() const { return mLocked; }
+    [[nodiscard]] bool locked() const { return mLocked; }
 
     /**
      * Registers a spin box \a widget as the linked "width" spin box.

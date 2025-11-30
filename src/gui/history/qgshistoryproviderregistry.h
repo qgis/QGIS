@@ -88,7 +88,7 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     /**
      * Returns a list of the registered provider IDs.
      */
-    QStringList providerIds() const;
+    [[nodiscard]] QStringList providerIds() const;
 
     /**
      * Contains options for storing history entries.
@@ -170,7 +170,7 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
      *
      * The optional \a providerId and \a backends arguments can be used to filter entries.
      */
-    QList<QgsHistoryEntry> queryEntries( const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(), const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile ) const;
+    [[nodiscard]] QList<QgsHistoryEntry> queryEntries( const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(), const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile ) const;
 
     /**
      * Returns the path to user's local history database.

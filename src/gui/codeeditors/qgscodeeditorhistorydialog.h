@@ -36,7 +36,7 @@ class CodeHistoryModel : public QStringListModel
 
   public:
     CodeHistoryModel( QObject *parent );
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
   private:
     QFont mFont;

@@ -200,7 +200,7 @@ class ProcessingHistoryPythonCommandNode : public ProcessingHistoryBaseNode
       : ProcessingHistoryBaseNode( entry, provider )
     {}
 
-    QVariant data( int role = Qt::DisplayRole ) const override
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const override
     {
       switch ( role )
       {
@@ -247,7 +247,7 @@ class ProcessingHistoryProcessCommandNode : public ProcessingHistoryBaseNode
       : ProcessingHistoryBaseNode( entry, provider )
     {}
 
-    QVariant data( int role = Qt::DisplayRole ) const override
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const override
     {
       switch ( role )
       {
@@ -296,7 +296,7 @@ class ProcessingHistoryJsonNode : public ProcessingHistoryBaseNode
       mJsonSingleLine = QString::fromStdString( QgsJsonUtils::jsonFromVariant( mInputs ).dump() );
     }
 
-    QVariant data( int role = Qt::DisplayRole ) const override
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const override
     {
       switch ( role )
       {

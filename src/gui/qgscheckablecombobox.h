@@ -54,7 +54,7 @@ class QgsCheckableItemModel : public QStandardItemModel
      * (ItemIsUserCheckable).
      * \param index item index
      */
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Returns the data stored under the given role for the item
@@ -62,7 +62,7 @@ class QgsCheckableItemModel : public QStandardItemModel
      * \param index item index
      * \param role data role
      */
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
     /**
      * Sets the role data for the item at index to value.
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      * Returns separator used to separate items in the display text.
      * \see setSeparator()
      */
-    QString separator() const;
+    [[nodiscard]] QString separator() const;
 
     /**
      * Set separator used to separate items in the display text.
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      * when no items selected.
      * \see setDefaultText()
      */
-    QString defaultText() const;
+    [[nodiscard]] QString defaultText() const;
 
     /**
      * Set default text which will be displayed in the widget when
@@ -170,14 +170,14 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      * Returns currently checked items.
      * \see setCheckedItems()
      */
-    QStringList checkedItems() const;
+    [[nodiscard]] QStringList checkedItems() const;
 
     /**
      * Returns userData (stored in the Qt::UserRole) associated with
      * currently checked items.
      * \see checkedItems()
      */
-    QVariantList checkedItemsData() const;
+    [[nodiscard]] QVariantList checkedItemsData() const;
 
     /**
      * Returns the checked state of the item identified by index
@@ -185,7 +185,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      * \see setItemCheckState()
      * \see toggleItemCheckState()
      */
-    Qt::CheckState itemCheckState( int index ) const;
+    [[nodiscard]] Qt::CheckState itemCheckState( int index ) const;
 
     /**
      * Sets the item check state to state
@@ -209,7 +209,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      * \see QgsCheckableItemModel
      * \since QGIS 3.16
      */
-    QgsCheckableItemModel *model() const SIP_SKIP
+    [[nodiscard]] QgsCheckableItemModel *model() const SIP_SKIP
     {
       return mModel;
     }

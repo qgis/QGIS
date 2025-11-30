@@ -44,7 +44,7 @@ class QgsElevationProfilePdfExportDialog : public QDialog, private Ui::QgsElevat
      */
     void updatePlotSettings( Qgs2DXyPlot &plot );
 
-    QgsLayoutSize pageSizeMM() const;
+    [[nodiscard]] QgsLayoutSize pageSizeMM() const;
 
   private slots:
 

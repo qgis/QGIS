@@ -30,10 +30,10 @@ class APP_EXPORT QgsMapToolShapeRectangleCenterMetadata : public QgsMapToolShape
 
     static const QString TOOL_ID;
 
-    QString id() const override;
-    QString name() const override;
-    QIcon icon() const override;
-    QgsMapToolShapeAbstract::ShapeCategory category() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QIcon icon() const override;
+    [[nodiscard]] QgsMapToolShapeAbstract::ShapeCategory category() const override;
     QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentTool ) const override;
 };
 

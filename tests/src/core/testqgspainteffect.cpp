@@ -58,10 +58,10 @@ class DummyPaintEffect : public QgsPaintEffect
       : mProp1( prop1 )
       , mProp2( prop2 )
     {}
-    QString type() const override { return QStringLiteral( "Dummy" ); }
-    QgsPaintEffect *clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
+    [[nodiscard]] QString type() const override { return QStringLiteral( "Dummy" ); }
+    [[nodiscard]] QgsPaintEffect *clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
     static QgsPaintEffect *create( const QVariantMap &props ) { return new DummyPaintEffect( props[QStringLiteral( "testProp" )].toString(), props[QStringLiteral( "testProp2" )].toString() ); }
-    QVariantMap properties() const override
+    [[nodiscard]] QVariantMap properties() const override
     {
       QVariantMap props;
       props[QStringLiteral( "testProp" )] = mProp1;

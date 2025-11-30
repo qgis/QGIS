@@ -36,24 +36,24 @@ class _3D_EXPORT QgsDirectionalLightSettings : public QgsLightSource
     //! Construct a directional light with default values
     QgsDirectionalLightSettings() = default;
 
-    Qgis::LightSourceType type() const override;
-    QgsDirectionalLightSettings *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::LightSourceType type() const override;
+    [[nodiscard]] QgsDirectionalLightSettings *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const override SIP_SKIP;
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() ) override;
 
     //! Returns the direction of the light in degrees
-    QgsVector3D direction() const { return mDirection; }
+    [[nodiscard]] QgsVector3D direction() const { return mDirection; }
     //! Sets the direction of the light in degrees
     void setDirection( const QgsVector3D &direction ) { mDirection = direction; }
 
     //! Returns color of the light
-    QColor color() const { return mColor; }
+    [[nodiscard]] QColor color() const { return mColor; }
     //! Sets color of the light
     void setColor( const QColor &color ) { mColor = color; }
 
     //! Returns intensity of the light
-    float intensity() const { return mIntensity; }
+    [[nodiscard]] float intensity() const { return mIntensity; }
     //! Sets intensity of the light
     void setIntensity( float intensity ) { mIntensity = intensity; }
 

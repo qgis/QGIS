@@ -55,7 +55,7 @@ class GUI_EXPORT QgsMediaWidget : public QWidget
     /**
      * Returns the media path.
      */
-    QString mediaPath() const { return mMediaPath; }
+    [[nodiscard]] QString mediaPath() const { return mMediaPath; }
 
     /**
      * Sets the media \a path.
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsMediaWidget : public QWidget
     /**
      * Returns the media widget mode.
      */
-    Mode mode() const { return mMode; }
+    [[nodiscard]] Mode mode() const { return mMode; }
 
     /**
      * Sets the media widget \a mode.
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsMediaWidget : public QWidget
     /**
      * Returns the video frame height.
      */
-    int videoHeight() const;
+    [[nodiscard]] int videoHeight() const;
 
     /**
      * Sets the video frame height.

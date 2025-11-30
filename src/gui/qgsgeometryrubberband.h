@@ -123,7 +123,7 @@ class GUI_EXPORT QgsGeometryRubberBand : public QgsMapCanvasItem
     void paint( QPainter *painter ) override;
 
     //! Returns which geometry is handled by the rubber band, polygon or line
-    Qgis::GeometryType geometryType() const;
+    [[nodiscard]] Qgis::GeometryType geometryType() const;
 
     //! Sets which geometry is handled by the rubber band, polygon or line
     void setGeometryType( Qgis::GeometryType geometryType );
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsGeometryRubberBand : public QgsMapCanvasItem
     bool mDrawVertices = true;
 
     void drawVertex( QPainter *p, double x, double y );
-    QgsRectangle rubberBandRectangle() const;
+    [[nodiscard]] QgsRectangle rubberBandRectangle() const;
 };
 
 

@@ -49,12 +49,12 @@ class GUI_EXPORT QgsDevToolsModelNode
     /**
      * Returns the node's data for the specified model \a role.
      */
-    virtual QVariant data( int role = Qt::DisplayRole ) const = 0;
+    [[nodiscard]] virtual QVariant data( int role = Qt::DisplayRole ) const = 0;
 
     /**
      * Returns the number of child nodes owned by this node.
      */
-    virtual int childCount() const = 0;
+    [[nodiscard]] virtual int childCount() const = 0;
 
     /**
      * Returns a list of actions relating to the node.
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsDevToolsModelNode
     /**
      * Converts the node's contents to a variant.
      */
-    virtual QVariant toVariant() const;
+    [[nodiscard]] virtual QVariant toVariant() const;
 
   protected:
     QgsDevToolsModelNode();
@@ -122,9 +122,9 @@ class GUI_EXPORT QgsDevToolsModelGroup : public QgsDevToolsModelNode
      */
     void clear();
 
-    int childCount() const final { return mChildren.size(); }
-    QVariant data( int role = Qt::DisplayRole ) const override;
-    QVariant toVariant() const override;
+    [[nodiscard]] int childCount() const final { return mChildren.size(); }
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] QVariant toVariant() const override;
 
   protected:
     /**
@@ -165,15 +165,15 @@ class GUI_EXPORT QgsDevToolsModelValueNode : public QgsDevToolsModelNode
     /**
      * Returns the node's key.
      */
-    QString key() const { return mKey; }
+    [[nodiscard]] QString key() const { return mKey; }
 
     /**
      * Returns the node's value.
      */
-    QString value() const { return mValue; }
+    [[nodiscard]] QString value() const { return mValue; }
 
-    QVariant data( int role = Qt::DisplayRole ) const final;
-    int childCount() const final { return 0; }
+    [[nodiscard]] QVariant data( int role = Qt::DisplayRole ) const final;
+    [[nodiscard]] int childCount() const final { return 0; }
     QList<QAction *> actions( QObject *parent ) final;
 
   private:

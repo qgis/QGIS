@@ -38,12 +38,12 @@ class GUI_EXPORT QgsOverlayWidgetLayout : public QLayout
     QgsOverlayWidgetLayout( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsOverlayWidgetLayout() override;
 
-    int count() const final;
+    [[nodiscard]] int count() const final;
     void addItem( QLayoutItem *item ) final;
-    QLayoutItem *itemAt( int index ) const final;
+    [[nodiscard]] QLayoutItem *itemAt( int index ) const final;
     QLayoutItem *takeAt( int index ) final;
-    QSize sizeHint() const final;
-    QSize minimumSize() const final;
+    [[nodiscard]] QSize sizeHint() const final;
+    [[nodiscard]] QSize minimumSize() const final;
     void setGeometry( const QRect &rect ) final;
 
     /**
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsOverlayWidgetLayout : public QLayout
      *
      * \see setHorizontalSpacing()
      */
-    int horizontalSpacing() const { return mHorizontalSpacing; }
+    [[nodiscard]] int horizontalSpacing() const { return mHorizontalSpacing; }
 
     /**
      * Sets the spacing between widgets that are laid out on top of each other.
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsOverlayWidgetLayout : public QLayout
      *
      * \see setVerticalSpacing()
      */
-    int verticalSpacing() const { return mVerticalSpacing; }
+    [[nodiscard]] int verticalSpacing() const { return mVerticalSpacing; }
 
   private:
     QList<QLayoutItem *> mLeftItems;

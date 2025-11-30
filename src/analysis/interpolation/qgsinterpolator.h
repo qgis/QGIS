@@ -131,7 +131,7 @@ class ANALYSIS_EXPORT QgsInterpolator
     virtual int interpolatePoint( double x, double y, double &result SIP_OUT, QgsFeedback *feedback = nullptr ) = 0;
 
     //! \note not available in Python bindings
-    QList<LayerData> layerData() const SIP_SKIP { return mLayerData; }
+    [[nodiscard]] QList<LayerData> layerData() const SIP_SKIP { return mLayerData; }
 
   protected:
     /**

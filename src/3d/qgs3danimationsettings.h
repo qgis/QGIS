@@ -56,18 +56,18 @@ class _3D_EXPORT Qgs3DAnimationSettings
     //! Configures keyframes of the animation. It is expected that the keyframes are ordered according to their time.
     void setKeyframes( const Keyframes &keyframes ) { mKeyframes = keyframes; }
     //! Returns keyframes of the animation
-    Keyframes keyFrames() const { return mKeyframes; }
+    [[nodiscard]] Keyframes keyFrames() const { return mKeyframes; }
 
     //! Sets the interpolation method for transitions of the camera
     void setEasingCurve( const QEasingCurve &curve ) { mEasingCurve = curve; }
     //! Returns the interpolation method for transitions of the camera
-    QEasingCurve easingCurve() const { return mEasingCurve; }
+    [[nodiscard]] QEasingCurve easingCurve() const { return mEasingCurve; }
 
     //! Returns duration of the whole animation in seconds
-    float duration() const;
+    [[nodiscard]] float duration() const;
 
     //! Interpolates camera position and rotation at the given point in time
-    Keyframe interpolate( float time ) const;
+    [[nodiscard]] Keyframe interpolate( float time ) const;
 
     //! Reads configuration from a DOM element previously written by writeXml()
     void readXml( const QDomElement &elem );

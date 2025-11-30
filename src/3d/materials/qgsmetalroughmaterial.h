@@ -55,12 +55,12 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
     explicit QgsMetalRoughMaterial( Qt3DCore::QNode *parent = nullptr );
     ~QgsMetalRoughMaterial() override;
 
-    QVariant baseColor() const;
-    QVariant metalness() const;
-    QVariant roughness() const;
-    QVariant ambientOcclusion() const;
-    QVariant normal() const;
-    float textureScale() const;
+    [[nodiscard]] QVariant baseColor() const;
+    [[nodiscard]] QVariant metalness() const;
+    [[nodiscard]] QVariant roughness() const;
+    [[nodiscard]] QVariant ambientOcclusion() const;
+    [[nodiscard]] QVariant normal() const;
+    [[nodiscard]] float textureScale() const;
 
     /**
      * When flat shading is enabled, we do not use vertex normals from the geometry,
@@ -69,7 +69,7 @@ class _3D_EXPORT QgsMetalRoughMaterial : public QgsMaterial
      * \note This is especially useful with some GLTF models that do not include normals,
      * and the spec requires the viewer to use flat shading.
      */
-    bool flatShadingEnabled() const;
+    [[nodiscard]] bool flatShadingEnabled() const;
 
   public slots:
     void setBaseColor( const QVariant &baseColor );

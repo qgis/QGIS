@@ -63,7 +63,7 @@ class CORE_EXPORT QgsLayoutTableColumn
      * or 0 if column width is automatically calculated.
      * \see setWidth()
      */
-    double width() const { return mWidth; }
+    [[nodiscard]] double width() const { return mWidth; }
 
     /**
      * Sets the width for a column in mm. Set the \a width to 0 if the column width is to be automatically calculated.
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsLayoutTableColumn
      * header cell.
      * \see setHeading()
      */
-    QString heading() const { return mHeading; }
+    [[nodiscard]] QString heading() const { return mHeading; }
 
     /**
      * Sets the \a heading for a column, which is the value displayed in the column's
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsLayoutTableColumn
      * \see setHAlignment()
      * \see vAlignment()
      */
-    Qt::AlignmentFlag hAlignment() const { return mHAlignment; }
+    [[nodiscard]] Qt::AlignmentFlag hAlignment() const { return mHAlignment; }
 
     /**
      * Sets the horizontal \a alignment for a column, which controls the alignment
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsLayoutTableColumn
      * \see setVAlignment()
      * \see hAlignment()
      */
-    Qt::AlignmentFlag vAlignment() const { return mVAlignment; }
+    [[nodiscard]] Qt::AlignmentFlag vAlignment() const { return mVAlignment; }
 
     /**
      * Sets the vertical \a alignment for a column, which controls the alignment
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsLayoutTableColumn
      * \note only applicable when used in a QgsLayoutItemAttributeTable
      * \see setAttribute()
      */
-    QString attribute() const { return mAttribute; }
+    [[nodiscard]] QString attribute() const { return mAttribute; }
 
     /**
      * Sets the \a attribute name or expression used for the column's values. This property
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsLayoutTableColumn
      * \see setSortOrder()
      * \see sortByRank()
      */
-    Qt::SortOrder sortOrder() const { return mSortOrder; }
+    [[nodiscard]] Qt::SortOrder sortOrder() const { return mSortOrder; }
 
     /**
      * Sets the sort \a order for the column. This property is only used when the column

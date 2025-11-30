@@ -42,39 +42,39 @@ class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
     //! Construct a point light with default values
     QgsPointLightSettings() = default;
 
-    Qgis::LightSourceType type() const override;
-    QgsPointLightSettings *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::LightSourceType type() const override;
+    [[nodiscard]] QgsPointLightSettings *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map, Qt3DCore::QEntity *parent ) const override SIP_SKIP;
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() ) override;
 
     //! Returns position of the light (in 3D map coordinates)
-    QgsVector3D position() const { return mPosition; }
+    [[nodiscard]] QgsVector3D position() const { return mPosition; }
     //! Sets position of the light (in 3D map coordinates)
     void setPosition( const QgsVector3D &pos ) { mPosition = pos; }
 
     //! Returns color of the light
-    QColor color() const { return mColor; }
+    [[nodiscard]] QColor color() const { return mColor; }
     //! Sets color of the light
     void setColor( const QColor &color ) { mColor = color; }
 
     //! Returns intensity of the light
-    float intensity() const { return mIntensity; }
+    [[nodiscard]] float intensity() const { return mIntensity; }
     //! Sets intensity of the light
     void setIntensity( float intensity ) { mIntensity = intensity; }
 
     //! Returns constant attenuation (A_0)
-    float constantAttenuation() const { return mConstantAttenuation; }
+    [[nodiscard]] float constantAttenuation() const { return mConstantAttenuation; }
     //! Sets constant attenuation (A_0)
     void setConstantAttenuation( float value ) { mConstantAttenuation = value; }
 
     //! Returns linear attenuation (A_1)
-    float linearAttenuation() const { return mLinearAttenuation; }
+    [[nodiscard]] float linearAttenuation() const { return mLinearAttenuation; }
     //! Sets linear attenuation (A_1)
     void setLinearAttenuation( float value ) { mLinearAttenuation = value; }
 
     //! Returns quadratic attenuation (A_2)
-    float quadraticAttenuation() const { return mQuadraticAttenuation; }
+    [[nodiscard]] float quadraticAttenuation() const { return mQuadraticAttenuation; }
     //! Sets quadratic attenuation (A_2)
     void setQuadraticAttenuation( float value ) { mQuadraticAttenuation = value; }
 

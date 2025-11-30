@@ -132,7 +132,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * \param fnName expression function name
      * \returns the SQL function name
      */
-    virtual QString sqlFunctionFromFunctionName( const QString &fnName ) const;
+    [[nodiscard]] virtual QString sqlFunctionFromFunctionName( const QString &fnName ) const;
 
     /**
      * Returns the Arguments for SQL function for the expression function.
@@ -141,14 +141,14 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * \param fnArgs arguments from expression
      * \returns the arguments updated for SQL Function
      */
-    virtual QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const;
+    [[nodiscard]] virtual QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const;
 
     /**
      * Casts a value to a real result. Subclasses which indicate the IntegerDivisionResultsInInteger
      * flag must reimplement this to cast a numeric value to a real type value so that division results
      * in a real value result instead of integer.
      */
-    virtual QString castToReal( const QString &value ) const;
+    [[nodiscard]] virtual QString castToReal( const QString &value ) const;
 
     /**
      * Casts a value to a text result. Subclasses that support casting to text may implement this function
@@ -165,13 +165,13 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      *
      * \since QGIS 3.2
      */
-    virtual QString castToText( const QString &value ) const;
+    [[nodiscard]] virtual QString castToText( const QString &value ) const;
 
     /**
      * Casts a value to a integer result. Subclasses must reimplement this to cast a numeric value to a integer
      * type value so that integer division results in a integer value result instead of real.
      */
-    virtual QString castToInt( const QString &value ) const;
+    [[nodiscard]] virtual QString castToInt( const QString &value ) const;
 
     /**
      * Tries to replace a node by its static cached value where possible.

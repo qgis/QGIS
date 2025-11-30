@@ -51,9 +51,9 @@ class QgsMssqlTableModel : public QgsAbstractDbTableModel
   public:
     QgsMssqlTableModel( QObject *parent = nullptr );
 
-    QStringList columns() const override;
-    int defaultSearchColumn() const override;
-    bool searchableColumn( int column ) const override;
+    [[nodiscard]] QStringList columns() const override;
+    [[nodiscard]] int defaultSearchColumn() const override;
+    [[nodiscard]] bool searchableColumn( int column ) const override;
 
     //! Adds entry for one database table to the model
     void addTableEntry( const QgsMssqlLayerProperty &property );
@@ -68,7 +68,7 @@ class QgsMssqlTableModel : public QgsAbstractDbTableModel
     void setGeometryTypesForTable( QgsMssqlLayerProperty layerProperty );
 
     //! Returns the number of tables in the model
-    int tableCount() const { return mTableCount; }
+    [[nodiscard]] int tableCount() const { return mTableCount; }
 
     enum Columns
     {

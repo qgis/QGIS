@@ -48,7 +48,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      */
     QgsRasterLayerTemporalProperties( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enabled = false );
 
-    bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const override;
+    [[nodiscard]] bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const override;
     QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const override SIP_SKIP;
     QList< QgsDateTimeRange > allTemporalRanges( QgsMapLayer *layer ) const override;
 
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      *
      *\see setMode()
     */
-    Qgis::RasterTemporalMode mode() const;
+    [[nodiscard]] Qgis::RasterTemporalMode mode() const;
 
     /**
      * Sets the temporal properties \a mode.
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     /**
      * Returns flags associated to the temporal property.
      */
-    QgsTemporalProperty::Flags flags() const override;
+    [[nodiscard]] QgsTemporalProperty::Flags flags() const override;
 
     /**
      * Returns the desired method to use when resolving a temporal interval to matching
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      *
      *\see setIntervalHandlingMethod()
     */
-    Qgis::TemporalIntervalMatchMethod intervalHandlingMethod() const;
+    [[nodiscard]] Qgis::TemporalIntervalMatchMethod intervalHandlingMethod() const;
 
     /**
      * Sets the desired \a method to use when resolving a temporal interval to matching
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      *
      * \see setFixedTemporalRange()
     */
-    const QgsDateTimeRange &fixedTemporalRange() const;
+    [[nodiscard]] const QgsDateTimeRange &fixedTemporalRange() const;
 
     /**
      * Returns the fixed temporal range for each band.
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setFixedRangePerBand()
      * \since QGIS 3.38
      */
-    QMap<int, QgsDateTimeRange> fixedRangePerBand() const;
+    [[nodiscard]] QMap<int, QgsDateTimeRange> fixedRangePerBand() const;
 
     /**
      * Sets the fixed temporal range for each band.
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setBandNumber()
      * \since QGIS 3.38
      */
-    int bandNumber() const;
+    [[nodiscard]] int bandNumber() const;
 
     /**
      * Sets the band number from which temporal values should be taken.
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setTemporalRepresentationOffset()
      * \since QGIS 3.38
      */
-    QDateTime temporalRepresentationOffset() const;
+    [[nodiscard]] QDateTime temporalRepresentationOffset() const;
 
     /**
      * Sets the temporal offset, which is a fixed datetime which should be added to individual pixel values
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setAccumulatePixels()
      * \since QGIS 4.0
      */
-    bool accumulatePixels() const;
+    [[nodiscard]] bool accumulatePixels() const;
 
     /**
      * Sets whether pixels will be accumulated over time (i.e. all pixels which
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * \see setTemporalRepresentationScale()
      * \since QGIS 3.38
      */
-    const QgsInterval &temporalRepresentationScale() const;
+    [[nodiscard]] const QgsInterval &temporalRepresentationScale() const;
 
     /**
      * Sets the scale, which is an interval factor which should be applied to individual pixel

@@ -30,7 +30,7 @@ class QgsWfsGetCapabilitiesRequest : public QgsWfsRequest
     explicit QgsWfsGetCapabilitiesRequest( const QString &uri, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 
     //! returns request URL
-    QUrl requestUrl() const;
+    [[nodiscard]] QUrl requestUrl() const;
 
     //! start network connection to get capabilities
     bool requestCapabilities( bool synchronous, bool forceRefresh );
@@ -44,10 +44,10 @@ class QgsWfsGetCapabilitiesRequest : public QgsWfsRequest
     };
 
     //! Returns parsed capabilities - requestCapabilities() must be called before
-    const QgsWfsCapabilities &capabilities() const { return mCaps; }
+    [[nodiscard]] const QgsWfsCapabilities &capabilities() const { return mCaps; }
 
     //! Returns application level error
-    ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
+    [[nodiscard]] ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
 
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred */

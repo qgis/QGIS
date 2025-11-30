@@ -34,13 +34,13 @@ class CORE_EXPORT QgsScientificNumericFormat : public QgsBasicNumericFormat
       */
     QgsScientificNumericFormat();
 
-    QString id() const override;
-    QString visibleName() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString visibleName() const override;
     int sortKey() override;
-    QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
-    QgsNumericFormat *clone() const override SIP_FACTORY;
-    QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
-    QVariantMap configuration( const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
+    [[nodiscard]] QgsNumericFormat *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
+    [[nodiscard]] QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
      * Sets the maximum number of decimal \a places to show.

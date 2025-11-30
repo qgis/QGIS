@@ -31,7 +31,7 @@ class APP_EXPORT QgsMapToolAnnotation : public QgsMapTool
   public:
     QgsMapToolAnnotation( QgsMapCanvas *canvas );
 
-    Flags flags() const override;
+    [[nodiscard]] Flags flags() const override;
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
@@ -44,17 +44,17 @@ class APP_EXPORT QgsMapToolAnnotation : public QgsMapTool
     /**
      * Creates a new item. To be implemented by subclasses.
      */
-    virtual QgsAnnotation *createItem() const { return nullptr; }
+    [[nodiscard]] virtual QgsAnnotation *createItem() const { return nullptr; }
 
     //! Creates an editor widget (caller takes ownership)
     QDialog *createItemEditor( QgsMapCanvasAnnotationItem *item );
 
   private:
     //! Returns the topmost annotation item at the position (or 0 if none)
-    QgsMapCanvasAnnotationItem *itemAtPos( QPointF pos ) const;
-    QgsMapCanvasAnnotationItem *selectedItem() const;
+    [[nodiscard]] QgsMapCanvasAnnotationItem *itemAtPos( QPointF pos ) const;
+    [[nodiscard]] QgsMapCanvasAnnotationItem *selectedItem() const;
     //! Returns a list of all annotationitems in the canvas
-    QList<QgsMapCanvasAnnotationItem *> annotationItems() const;
+    [[nodiscard]] QList<QgsMapCanvasAnnotationItem *> annotationItems() const;
 
     QgsPointXY transformCanvasToAnnotation( QgsPointXY p, QgsAnnotation *annotation ) const;
 

@@ -69,17 +69,17 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     explicit QgsLayoutModel( QgsLayout *layout, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     //reimplemented QAbstractItemModel methods
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    QModelIndex parent( const QModelIndex &index ) const override;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QModelIndex parent( const QModelIndex &index ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    Qt::DropActions supportedDropActions() const override;
-    QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::DropActions supportedDropActions() const override;
+    [[nodiscard]] QStringList mimeTypes() const override;
+    [[nodiscard]] QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     /**
      * Returns the size of the z-order list.
      */
-    int zOrderListSize() const;
+    [[nodiscard]] int zOrderListSize() const;
 
     /**
      * Rebuilds the z-order list, based on the current stacking of items in the layout.
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
      * Returns the QgsLayoutItem corresponding to a QModelIndex \a index, if possible.
      * \see indexForItem()
      */
-    QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
 
     /**
      * Returns the QModelIndex corresponding to a QgsLayoutItem \a item and \a column, if possible.
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
      * item type filter is set.
      * \see setFilterType()
      */
-    QgsLayoutItemRegistry::ItemType filterType() const { return mItemTypeFilter; }
+    [[nodiscard]] QgsLayoutItemRegistry::ItemType filterType() const { return mItemTypeFilter; }
 
     /**
      * Sets the item type \a filter. Only matching item types will be shown.
@@ -337,18 +337,18 @@ class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
      * Returns the list of specific items excluded from the model.
      * \see setExceptedItemList()
      */
-    QList< QgsLayoutItem * > exceptedItemList() const { return mExceptedList; }
+    [[nodiscard]] QList< QgsLayoutItem * > exceptedItemList() const { return mExceptedList; }
 
     /**
      * Returns the QgsLayoutModel used in this proxy model.
      */
-    QgsLayoutModel *sourceLayerModel() const { return static_cast< QgsLayoutModel * >( sourceModel() ); }
+    [[nodiscard]] QgsLayoutModel *sourceLayerModel() const { return static_cast< QgsLayoutModel * >( sourceModel() ); }
 
     /**
      * Returns the QgsLayoutItem corresponding to an index from the source
      * QgsLayoutModel model.
      */
-    QgsLayoutItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
+    [[nodiscard]] QgsLayoutItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
 
     /**
      * Returns the associated layout.
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
      * \see setAllowEmptyItem()
      * \since QGIS 3.8
      */
-    bool allowEmptyItem() const;
+    [[nodiscard]] bool allowEmptyItem() const;
 
     /**
      * Sets layout item flags to use for filtering the available items.
@@ -388,11 +388,11 @@ class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
      * \see setItemFlags()
      * \since QGIS 3.16
      */
-    QgsLayoutItem::Flags itemFlags() const;
+    [[nodiscard]] QgsLayoutItem::Flags itemFlags() const;
 
   protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
     QgsLayout *mLayout = nullptr;

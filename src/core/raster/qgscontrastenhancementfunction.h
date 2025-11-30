@@ -68,7 +68,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
      * \see minimumValue()
      * \since QGIS 3.2
      */
-    double maximumValue() const { return mMaximumValue; }
+    [[nodiscard]] double maximumValue() const { return mMaximumValue; }
 
     /**
      * Returns the minimum value.
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
      * \see maximumValue()
      * \since QGIS 3.2
      */
-    double minimumValue() const { return mMinimumValue; }
+    [[nodiscard]] double minimumValue() const { return mMinimumValue; }
 
   protected:
     //! \brief User defineable maximum value for the band, used for enhanceContrasting

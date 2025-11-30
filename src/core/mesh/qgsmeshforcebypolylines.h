@@ -146,8 +146,8 @@ class CORE_EXPORT QgsMeshEditForceByPolylines : public QgsMeshEditForceByLine
 
     QgsMeshEditForceByPolylines() = default;
 
-    QString text() const override;
-    bool isFinished() const override;
+    [[nodiscard]] QString text() const override;
+    [[nodiscard]] bool isFinished() const override;
 
     /**
      * Adds a input forcing line geometry in rendering coordinates

@@ -31,7 +31,7 @@ class CORE_EXPORT QgsFallbackFieldFormatter : public QgsFieldFormatter
   public:
 
     QgsFallbackFieldFormatter() = default;
-    QString id() const override;
+    [[nodiscard]] QString id() const override;
 };
 
 #endif // QGSFALLBACKFIELDKIT_H

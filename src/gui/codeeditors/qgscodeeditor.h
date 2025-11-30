@@ -60,13 +60,13 @@ class GUI_EXPORT QgsCodeInterpreter
      * The actual interpretation of the returned values depend on
      * the interpreter subclass.
      */
-    virtual int currentState() const { return mState; }
+    [[nodiscard]] virtual int currentState() const { return mState; }
 
     /**
      * Returns the interactive prompt string to use for the
      * interpreter, given a \a state.
      */
-    virtual QString promptForState( int state ) const = 0;
+    [[nodiscard]] virtual QString promptForState( int state ) const = 0;
 
   protected:
     /**
@@ -179,14 +179,14 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.30
      */
-    virtual Qgis::ScriptLanguage language() const;
+    [[nodiscard]] virtual Qgis::ScriptLanguage language() const;
 
     /**
      * Returns the associated scripting language capabilities.
      *
      * \since QGIS 3.32
      */
-    virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
+    [[nodiscard]] virtual Qgis::ScriptLanguageCapabilities languageCapabilities() const;
 
     /**
      * Returns a user-friendly, translated name of the specified script \a language.
@@ -224,7 +224,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \see setLineNumbersVisible()
      * \since QGIS 3.16
      */
-    bool lineNumbersVisible() const;
+    [[nodiscard]] bool lineNumbersVisible() const;
 
     /**
      * Set whether the folding controls are visible in the editor.
@@ -319,14 +319,14 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.30
      */
-    QgsCodeEditor::Mode mode() const { return mMode; }
+    [[nodiscard]] QgsCodeEditor::Mode mode() const { return mMode; }
 
     /**
      * Returns TRUE if the cursor is on the last line of the document.
      *
      * \since QGIS 3.28
      */
-    bool isCursorOnLastLine() const;
+    [[nodiscard]] bool isCursorOnLastLine() const;
 
     /**
      * Sets the file path to use for recording and retrieving previously
@@ -345,7 +345,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.30
      */
-    QStringList history() const;
+    [[nodiscard]] QStringList history() const;
 
     /**
      * Returns the attached code interpreter, or NULLPTR if not set.
@@ -353,7 +353,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \see setInterpreter()
      * \since QGIS 3.30
      */
-    QgsCodeInterpreter *interpreter() const;
+    [[nodiscard]] QgsCodeInterpreter *interpreter() const;
 
     /**
      * Sets an attached code interpreter for executing commands when the editor
@@ -369,7 +369,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.36
      */
-    int linearPosition() const;
+    [[nodiscard]] int linearPosition() const;
 
     /**
      * Convenience function to set the cursor position as a linear index
@@ -385,7 +385,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.36
      */
-    int selectionStart() const;
+    [[nodiscard]] int selectionStart() const;
 
     /**
      * Convenience function to return the end of the selection as a linear index
@@ -394,7 +394,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.36
      */
-    int selectionEnd() const;
+    [[nodiscard]] int selectionEnd() const;
 
     /**
      * Convenience function to set the selection using linear indexes
@@ -424,7 +424,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.42
      */
-    int editingTimeoutInterval() const;
+    [[nodiscard]] int editingTimeoutInterval() const;
 
 
   public slots:
@@ -627,14 +627,14 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.16
      */
-    QColor lexerColor( QgsCodeEditorColorScheme::ColorRole role ) const;
+    [[nodiscard]] QColor lexerColor( QgsCodeEditorColorScheme::ColorRole role ) const;
 
     /**
      * Returns the font to use in the lexer.
      *
      * \since QGIS 3.16
      */
-    QFont lexerFont() const;
+    [[nodiscard]] QFont lexerFont() const;
 
     /**
      * Performs tasks which must be run after a lexer has been set for the widget.

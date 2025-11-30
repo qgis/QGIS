@@ -39,7 +39,7 @@ class QgsCustomProjectionOptionsWidget : public QgsOptionsPageWidget, private Ui
   public:
     QgsCustomProjectionOptionsWidget( QWidget *parent = nullptr );
 
-    QString helpKey() const override;
+    [[nodiscard]] QString helpKey() const override;
     bool isValid() override;
     void apply() override;
 
@@ -97,9 +97,9 @@ class QgsCustomProjectionOptionsFactory : public QgsOptionsWidgetFactory
   public:
     QgsCustomProjectionOptionsFactory();
 
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
-    QStringList path() const override;
+    [[nodiscard]] QStringList path() const override;
 };
 
 

@@ -144,7 +144,7 @@ class CORE_EXPORT QgsPointXY
      * Gets the x value of the point
      * \returns x coordinate
      */
-    double x() const SIP_HOLDGIL
+    [[nodiscard]] double x() const SIP_HOLDGIL
     {
       return mX;
     }
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsPointXY
      * Gets the y value of the point
      * \returns y coordinate
      */
-    double y() const SIP_HOLDGIL
+    [[nodiscard]] double y() const SIP_HOLDGIL
     {
       return mY;
     }
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsPointXY
      * Converts a point to a QPointF
      * \returns QPointF with same x and y values
      */
-    QPointF toQPointF() const
+    [[nodiscard]] QPointF toQPointF() const
     {
       return QPointF( mX, mY );
     }
@@ -171,19 +171,19 @@ class CORE_EXPORT QgsPointXY
      * Returns a string representation of the point (x, y) with a preset \a precision.
      * If  \a precision is -1, then a default precision will be used.
      */
-    QString toString( int precision = -1 ) const;
+    [[nodiscard]] QString toString( int precision = -1 ) const;
 
     /**
      * Returns the well known text representation for the point (e.g. "POINT(x y)").
      * The wkt is created without an SRID.
      */
-    QString asWkt() const;
+    [[nodiscard]] QString asWkt() const;
 
     /**
      * Returns the squared distance between this point a specified x, y coordinate.
      * \see distance()
     */
-    double sqrDist( double x, double y ) const SIP_HOLDGIL
+    [[nodiscard]] double sqrDist( double x, double y ) const SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, x, y );
     }
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsPointXY
      * Returns the squared distance between this point another point.
      * \see distance()
     */
-    double sqrDist( const QgsPointXY &other ) const SIP_HOLDGIL
+    [[nodiscard]] double sqrDist( const QgsPointXY &other ) const SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::sqrDistance2D( mX, mY, other.x(), other.y() );
     }
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsPointXY
      * \param y y-coordinate
      * \see sqrDist()
     */
-    double distance( double x, double y ) const SIP_HOLDGIL
+    [[nodiscard]] double distance( double x, double y ) const SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::distance2D( mX, mY, x, y );
     }
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsPointXY
      * \param other other point
      * \see sqrDist()
     */
-    double distance( const QgsPointXY &other ) const SIP_HOLDGIL
+    [[nodiscard]] double distance( const QgsPointXY &other ) const SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::distance2D( mX, mY, other.x(), other.y() );
     }
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsPointXY
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint SIP_OUT, double epsilon = Qgis::DEFAULT_SEGMENT_EPSILON ) const SIP_HOLDGIL;
 
     //! Calculates azimuth between this point and other one (clockwise in degree, starting from north)
-    double azimuth( const QgsPointXY &other ) const SIP_HOLDGIL;
+    [[nodiscard]] double azimuth( const QgsPointXY &other ) const SIP_HOLDGIL;
 
     /**
      * Returns a new point which corresponds to this point projected by a specified distance
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsPointXY
      * \param distance distance to project
      * \param bearing angle to project in, clockwise in degrees starting from north
      */
-    QgsPointXY project( double distance, double bearing ) const SIP_HOLDGIL;
+    [[nodiscard]] QgsPointXY project( double distance, double bearing ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the geometry is empty.
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsPointXY
      * A QgsPointXY is considered empty, when the coordinates have not been explicitly filled in.
      * \since QGIS 3.10
      */
-    bool isEmpty() const SIP_HOLDGIL { return mIsEmpty; }
+    [[nodiscard]] bool isEmpty() const SIP_HOLDGIL { return mIsEmpty; }
 
     /**
      * Compares this point with another point with a fuzzy tolerance
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsPointXY
      * \see distanceCompare
      *
      */
-    bool compare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL
+    [[nodiscard]] bool compare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::fuzzyEqual( epsilon, mX, mY, other.x(), other.y() );
     }
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsPointXY
      *
      * \since QGIS 3.36
      */
-    bool distanceCompare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL
+    [[nodiscard]] bool distanceCompare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, mX, mY, other.x(), other.y() );
     }

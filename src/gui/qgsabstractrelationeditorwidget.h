@@ -429,12 +429,12 @@ class GUI_EXPORT QgsAbstractRelationEditorWidgetFactory
     /**
      * Returns the machine readable identifier name of this widget type
      */
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     /**
      * Returns the human readable identifier name of this widget type
      */
-    virtual QString name() const = 0;
+    [[nodiscard]] virtual QString name() const = 0;
 
     /**
      * Override this in your implementation.
