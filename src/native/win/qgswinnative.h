@@ -18,8 +18,8 @@
 #ifndef QGSWINNATIVE_H
 #define QGSWINNATIVE_H
 
-#include <Windows.h>
 #include <ShlObj.h>
+#include <Windows.h>
 
 #include "qgsnative.h"
 

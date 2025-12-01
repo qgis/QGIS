@@ -15,8 +15,8 @@
 
 #include "qgsdecorationimage.h"
 
-#include <cmath>
 #include <cassert>
+#include <cmath>
 
 #include "qgisapp.h"
 #include "qgscolorutils.h"

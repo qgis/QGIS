@@ -15,8 +15,8 @@
 
 #include "qgspdalindexingtask.h"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "QgisUntwine.hpp"
 #include "qgis.h"

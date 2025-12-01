@@ -12,9 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <gdal.h>
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
-#include <gdal.h>
 
 #include "qgsapplication.h"
 #include "qgsfield.h"

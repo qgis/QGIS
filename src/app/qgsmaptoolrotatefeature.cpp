@@ -15,8 +15,8 @@
 
 #include "qgsmaptoolrotatefeature.h"
 
-#include <limits>
 #include <cmath>
+#include <limits>
 
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"

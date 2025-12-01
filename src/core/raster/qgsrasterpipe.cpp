@@ -17,8 +17,8 @@
 
 #include "qgsrasterpipe.h"
 
-#include <typeinfo>
 #include <mutex>
+#include <typeinfo>
 
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgshuesaturationfilter.h"

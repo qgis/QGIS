@@ -15,8 +15,8 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeos.h"
 
-#include <limits>
 #include <cstdio>
+#include <limits>
 #include <memory>
 
 #include "qgsabstractgeometry.h"

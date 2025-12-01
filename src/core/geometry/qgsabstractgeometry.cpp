@@ -15,8 +15,8 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsabstractgeometry.h"
 
-#include <nlohmann/json.hpp>
 #include <limits>
+#include <nlohmann/json.hpp>
 
 #include "qgsbox3d.h"
 #include "qgscurve.h"

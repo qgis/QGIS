@@ -18,9 +18,9 @@
 #ifndef QGSCOLORRAMPSHADERWIDGET_H
 #define QGSCOLORRAMPSHADERWIDGET_H
 
+#include "qgsconfig.h"
 #include "ui_qgscolorrampshaderwidgetbase.h"
 
-#include "qgsconfig.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgscolorramplegendnodesettings.h"

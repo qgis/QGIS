@@ -18,9 +18,9 @@
 #include "qgscoordinatereferencesystem.h"
 
 #include <cmath>
-#include <sqlite3.h>
 #include <proj.h>
 #include <proj_experimental.h>
+#include <sqlite3.h>
 
 #include "qgis.h"
 #include "qgsapplication.h"

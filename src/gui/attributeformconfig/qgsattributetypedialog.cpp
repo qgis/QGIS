@@ -17,8 +17,8 @@
 
 #include "qgsattributetypedialog.h"
 
-#include <climits>
 #include <cfloat>
+#include <climits>
 
 #include "qgsapplication.h"
 #include "qgseditorwidgetfactory.h"

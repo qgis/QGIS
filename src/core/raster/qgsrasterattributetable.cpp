@@ -16,9 +16,9 @@
 
 #include "qgsrasterattributetable.h"
 
+#include <cmath>
 #include <memory>
 #include <mutex>
-#include <cmath>
 
 #include "qgsfileutils.h"
 #include "qgsogrprovider.h"

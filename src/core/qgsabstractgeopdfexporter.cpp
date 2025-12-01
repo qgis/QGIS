@@ -16,8 +16,8 @@
 
 #include "qgsabstractgeopdfexporter.h"
 
-#include <gdal.h>
 #include <cpl_string.h>
+#include <gdal.h>
 
 #include "qgscoordinatetransformcontext.h"
 #include "qgsfileutils.h"

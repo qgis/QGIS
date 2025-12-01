@@ -16,9 +16,9 @@
 #include "qgsimagewarper.h"
 
 #include <cmath>
-#include <cstdio>
 #include <cpl_conv.h>
 #include <cpl_string.h>
+#include <cstdio>
 #include <gdal.h>
 #include <gdalwarper.h>
 #include <ogr_spatialref.h>

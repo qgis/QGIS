@@ -15,8 +15,8 @@
 
 #include "qgstracer.h"
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"

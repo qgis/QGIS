@@ -17,8 +17,8 @@
 
 #include "qgsellipse.h"
 
-#include <memory>
 #include <limits>
+#include <memory>
 
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"

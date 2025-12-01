@@ -17,8 +17,8 @@
 
 #include "qgsmeshlayerrenderer.h"
 
-#include <memory>
 #include <algorithm>
+#include <memory>
 
 #include "qgsapplication.h"
 #include "qgscolorrampshader.h"

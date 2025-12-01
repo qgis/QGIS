@@ -16,8 +16,8 @@
 
 #include "qgslandingpageutils.h"
 
-#include <nlohmann/json.hpp>
 #include <mutex>
+#include <nlohmann/json.hpp>
 
 #include "qgsapplication.h"
 #include "qgsconfigcache.h"

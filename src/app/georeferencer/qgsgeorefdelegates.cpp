@@ -14,8 +14,8 @@
  ***************************************************************************/
 #include "qgsgeorefdelegates.h"
 
-#include <limits>
 #include <cmath>
+#include <limits>
 
 #include "qgsgeorefvalidators.h"
 

@@ -15,8 +15,8 @@
 #ifndef QGSOGRFEATUREITERATOR_H
 #define QGSOGRFEATUREITERATOR_H
 
-#include <ogr_api.h>
 #include <memory>
+#include <ogr_api.h>
 #include <set>
 
 #include "qgis_sip.h"

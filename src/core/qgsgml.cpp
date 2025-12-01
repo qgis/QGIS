@@ -14,8 +14,8 @@
  ***************************************************************************/
 #include "qgsgml.h"
 
-#include <ogr_api.h>
 #include <limits>
+#include <ogr_api.h>
 
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"

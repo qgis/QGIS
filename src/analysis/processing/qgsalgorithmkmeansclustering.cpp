@@ -17,8 +17,8 @@
 
 #include "qgsalgorithmkmeansclustering.h"
 
-#include <unordered_map>
 #include <random>
+#include <unordered_map>
 
 ///@cond PRIVATE
 

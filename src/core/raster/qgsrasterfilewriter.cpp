@@ -14,11 +14,11 @@
  ***************************************************************************/
 #include "qgsrasterfilewriter.h"
 
-#include <typeinfo>
 #include <cmath>
-#include <gdal.h>
 #include <cpl_string.h>
+#include <gdal.h>
 #include <mutex>
+#include <typeinfo>
 
 #include "qgscontrastenhancement.h"
 #include "qgscoordinatetransform.h"

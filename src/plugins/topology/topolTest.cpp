@@ -18,8 +18,8 @@
 #include "topolTest.h"
 
 #include <cmath>
-#include <set>
 #include <map>
+#include <set>
 
 #include "qgisinterface.h"
 #include "qgsfeature.h"

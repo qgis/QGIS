@@ -15,8 +15,8 @@
 
 #include "qgsmaptoolsimplify.h"
 
-#include <cmath>
 #include <cfloat>
+#include <cmath>
 
 #include "qgisapp.h"
 #include "qgsfeatureiterator.h"

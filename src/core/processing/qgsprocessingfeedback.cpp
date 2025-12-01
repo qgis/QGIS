@@ -17,8 +17,8 @@
 
 #include "qgsprocessingfeedback.h"
 
-#include <ogr_api.h>
 #include <gdal_version.h>
+#include <ogr_api.h>
 #include <proj.h>
 
 #include "qgsgeos.h"

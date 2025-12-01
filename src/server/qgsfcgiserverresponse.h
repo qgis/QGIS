@@ -22,8 +22,8 @@
 #define SIP_NO_FILE
 
 
-#include <thread>
 #include <mutex>
+#include <thread>
 
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"

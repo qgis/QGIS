@@ -18,8 +18,8 @@
 #ifndef QGSMESHCONTOURS_H
 #define QGSMESHCONTOURS_H
 
-#include <memory>
 #include <limits>
+#include <memory>
 
 #include "qgis_analysis.h"
 #include "qgis_sip.h"

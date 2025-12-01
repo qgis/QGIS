@@ -16,8 +16,8 @@
 
 #include "qgscrashhandler.h"
 
-#include <iostream>
 #include <gdal.h>
+#include <iostream>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"

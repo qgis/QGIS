@@ -16,11 +16,11 @@
 
 #include "qgsfractionnumericformat.h"
 
-#include <memory>
+#include <iomanip>
 #include <iostream>
 #include <locale>
+#include <memory>
 #include <sstream>
-#include <iomanip>
 
 #include "qgis.h"
 

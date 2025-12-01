@@ -16,8 +16,8 @@ email                : nyall dot dawson at gmail dot com
 
 #include "qgsogrproviderutils.h"
 
-#include <ogr_srs_api.h>
 #include <cpl_port.h>
+#include <ogr_srs_api.h>
 
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"

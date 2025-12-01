@@ -16,8 +16,8 @@ email                : hugo dot mercier at oslandia dot com
 
 extern "C"
 {
-#include <sqlite3.h>
 #include <spatialite.h>
+#include <sqlite3.h>
 
 }
 

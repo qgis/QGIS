@@ -17,9 +17,9 @@
  ***************************************************************************/
 #include "qgsconfig.h"
 
+#include <cpl_error.h>
 #include <iostream>
 #include <limits>
-#include <cpl_error.h>
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"

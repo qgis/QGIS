@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <memory>
 #include <limits>
+#include <memory>
 
 #include "qgsalgorithmgpsbabeltools.h"
 #include "qgsannotationlayer.h"

@@ -25,8 +25,8 @@ class QgsSpatialIndexKDBushPrivate;
 class QgsRectangle;
 class QgsFeature;
 
-#include <memory>
 #include <functional>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgspointxy.h"

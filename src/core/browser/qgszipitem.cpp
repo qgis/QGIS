@@ -17,8 +17,8 @@
 
 #include "qgszipitem.h"
 
-#include <cpl_vsi.h>
 #include <cpl_string.h>
+#include <cpl_vsi.h>
 #include <mutex>
 
 #include "qgsapplication.h"

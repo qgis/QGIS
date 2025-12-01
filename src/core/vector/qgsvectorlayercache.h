@@ -19,8 +19,8 @@
 #ifndef QgsVectorLayerCache_H
 #define QgsVectorLayerCache_H
 
-#include <unordered_set>
 #include <deque>
+#include <unordered_set>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"

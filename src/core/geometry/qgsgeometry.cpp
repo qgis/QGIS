@@ -15,12 +15,12 @@ email                : morb at ozemail dot com dot au
 
 #include "qgsgeometry.h"
 
-#include <limits>
+#include <cmath>
 #include <cstdarg>
 #include <cstdio>
-#include <cmath>
-#include <nlohmann/json.hpp>
 #include <geos_c.h>
+#include <limits>
+#include <nlohmann/json.hpp>
 
 #include "qgis.h"
 #include "qgsabstractgeometry.h"

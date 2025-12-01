@@ -24,10 +24,10 @@ while QGIS server internal logging is printed to stderr.
  *                                                                         *
  ***************************************************************************/
 
-#include <thread>
-#include <string>
 #include <chrono>
 #include <condition_variable>
+#include <string>
+#include <thread>
 
 //for CMAKE_INSTALL_PREFIX
 #include "qgscommandlineutils.h"

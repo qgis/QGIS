@@ -19,9 +19,9 @@
 //qt includes
 #include "qgsconfig.h"
 
+#include <cstdarg>
 #include <cstdio>
 #include <cstdlib>
-#include <cstdarg>
 
 #include <QBitmap>
 #include <QDir>
