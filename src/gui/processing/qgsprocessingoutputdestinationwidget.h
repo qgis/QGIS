@@ -22,6 +22,7 @@
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingcontext.h"
 #include <QWidget>
+#include <QAction>
 
 class QgsProcessingDestinationParameter;
 class QgsBrowserGuiModel;
@@ -110,7 +111,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
 
     void menuAboutToShow();
     void skipOutput();
-    void saveToTemporary();
+    void saveToTemporary( const QString name = QString() );
     void selectDirectory();
     void selectFile();
     void saveToGeopackage();
@@ -121,6 +122,12 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
 
   private:
     void setAppendDestination( const QString &uri, const QgsFields &destFields );
+
+    /**
+     * Checks if \a value can be used as name for temporary layer. Empty value is a valid case.
+     */
+    bool couldBeTemporaryLayerName( const QString &value ) const;
+    QString memoryProviderLayerName( const QString &value ) const;
 
     QString mimeDataToPath( const QMimeData *data );
 
@@ -138,6 +145,8 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     bool mUseRemapping = false;
 
     QgsProcessingContext *mContext = nullptr;
+
+    QAction *mActionTemporaryOutputIcon = nullptr;
 
     friend class TestProcessingGui;
 };

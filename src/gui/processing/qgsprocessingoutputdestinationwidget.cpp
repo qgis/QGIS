@@ -45,9 +45,17 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
 
   setupUi( this );
 
+  mActionTemporaryOutputIcon = new QAction(
+    QgsApplication::getThemeIcon( QStringLiteral( "/mActionCreateMemory.svg" ) ),
+    tr( "Temporary Output" ),
+    this
+  );
+
   leText->setClearButtonEnabled( false );
+  leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
 
   connect( leText, &QLineEdit::textEdited, this, &QgsProcessingLayerOutputDestinationWidget::textChanged );
+  connect( leText, &QgsHighlightableLineEdit::cleared, this, [this] { leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition ); } );
 
   mMenu = new QMenu( this );
   connect( mMenu, &QMenu::aboutToShow, this, &QgsProcessingLayerOutputDestinationWidget::menuAboutToShow );
@@ -86,12 +94,12 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
 {
   const bool prevSkip = outputIsSkipped();
   mUseRemapping = false;
-  if ( !value.isValid() || ( value.userType() == QMetaType::Type::QString && value.toString().isEmpty() ) )
+  if ( !value.isValid() || ( value.userType() == QMetaType::Type::QString && couldBeTemporaryLayerName( value.toString() ) ) )
   {
     if ( mParameter->flags() & Qgis::ProcessingParameterFlag::Optional )
       skipOutput();
     else
-      saveToTemporary();
+      saveToTemporary( value.toString() );
   }
   else
   {
@@ -104,7 +112,7 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
       const QgsProcessingOutputLayerDefinition def = value.value<QgsProcessingOutputLayerDefinition>();
       if ( def.sink.staticValue().toString() == QLatin1String( "memory:" ) || def.sink.staticValue().toString() == QgsProcessing::TEMPORARY_OUTPUT || def.sink.staticValue().toString().isEmpty() )
       {
-        saveToTemporary();
+        saveToTemporary( def.destinationName );
       }
       else
       {
@@ -195,6 +203,21 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
   value.createOptions.insert( QStringLiteral( "fileEncoding" ), mEncoding );
   if ( mUseRemapping )
     value.setRemappingDefinition( mRemapDefinition );
+
+  // this marks named temporary layer
+  if ( key == QgsProcessing::TEMPORARY_OUTPUT && !leText->text().isEmpty() && couldBeTemporaryLayerName( leText->text() ) )
+  {
+    QString memoryLayerName = memoryProviderLayerName( leText->text() );
+    if ( !memoryLayerName.isEmpty() )
+    {
+      value.destinationName = memoryLayerName;
+    }
+    else
+    {
+      value.destinationName = leText->text();
+    }
+  }
+
   return value;
 }
 
@@ -261,7 +284,7 @@ void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
       actionSaveToTemp = new QAction( tr( "Save to a Temporary File" ), this );
     }
 
-    connect( actionSaveToTemp, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToTemporary );
+    connect( actionSaveToTemp, &QAction::triggered, this, [this]() { saveToTemporary(); } );
     mMenu->addAction( actionSaveToTemp );
   }
 
@@ -325,7 +348,7 @@ void QgsProcessingLayerOutputDestinationWidget::skipOutput()
   emit destinationChanged();
 }
 
-void QgsProcessingLayerOutputDestinationWidget::saveToTemporary()
+void QgsProcessingLayerOutputDestinationWidget::saveToTemporary( const QString name )
 {
   const bool prevSkip = outputIsSkipped();
 
@@ -341,10 +364,14 @@ void QgsProcessingLayerOutputDestinationWidget::saveToTemporary()
   {
     leText->setPlaceholderText( tr( "[Save to temporary file]" ) );
   }
-  leText->clear();
 
-  if ( mUseTemporary )
+  if ( name.isEmpty() )
+    leText->clear();
+
+  if ( mUseTemporary && leText->text() == name )
     return;
+
+  leText->setText( name );
 
   mUseTemporary = true;
   mUseRemapping = false;
@@ -617,6 +644,17 @@ void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text
 {
   mUseTemporary = text.isEmpty();
   mUseRemapping = false;
+
+  if ( couldBeTemporaryLayerName( text ) || text == QLatin1String( "memory:" ) )
+  {
+    leText->addAction( mActionTemporaryOutputIcon, QLineEdit::LeadingPosition );
+    mUseTemporary = true;
+  }
+  else
+  {
+    leText->removeAction( mActionTemporaryOutputIcon );
+  }
+
   emit destinationChanged();
 }
 
@@ -732,6 +770,50 @@ void QgsProcessingLayerOutputDestinationWidget::dropEvent( QDropEvent *event )
     setValue( path );
   }
   leText->setHighlighted( false );
+}
+
+QString QgsProcessingLayerOutputDestinationWidget::memoryProviderLayerName( const QString &value ) const
+{
+  if ( value == QLatin1String( "memory:" ) )
+    return QString();
+
+  QString provider;
+  QString uri;
+  bool hasProviderAndUri = QgsProcessingUtils::decodeProviderKeyAndUri( value, provider, uri );
+
+  if ( hasProviderAndUri && provider == QLatin1String( "memory" ) )
+  {
+    return uri;
+  }
+
+  return QString();
+}
+
+bool QgsProcessingLayerOutputDestinationWidget::couldBeTemporaryLayerName( const QString &value ) const
+{
+  if ( value == QgsProcessing::TEMPORARY_OUTPUT || mParameter->type() != QgsProcessingParameterFeatureSink::typeName() || !mParameter->supportsNonFileBasedOutput() )
+    return false;
+
+  if ( value.isEmpty() )
+    return true;
+
+  if ( value == QLatin1String( "memory:" ) )
+    return false;
+
+  QString provider;
+  QString uri;
+  bool hasProviderAndUri = QgsProcessingUtils::decodeProviderKeyAndUri( value, provider, uri );
+
+  if ( provider == QLatin1String( "memory" ) )
+    return true;
+
+  if ( hasProviderAndUri )
+    return false;
+
+  if ( QFileInfo( value ).isAbsolute() || !QFileInfo( value ).suffix().isEmpty() )
+    return false;
+
+  return true;
 }
 
 ///@endcond
