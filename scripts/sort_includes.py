@@ -134,6 +134,7 @@ NON_STANDARD_NAMED_QGIS_HEADERS = (
     "internalexception.h",
     "palrtree.h",
     "inja/inja.hpp",
+    "qsql_ocispatial.h",
 )
 
 
@@ -183,10 +184,8 @@ def print_sorted_includes(includes: list[str]):
             print(f'#include "{header}"')
     if matching_header:
         print(f'#include "{matching_header}"')
-    if moc_header:
-        print(f'#include "{moc_header}"')
 
-    if qgs_config_include or moc_header or matching_header or ui_includes:
+    if qgs_config_include or matching_header or ui_includes:
         print()
 
     if std_includes:
@@ -202,6 +201,12 @@ def print_sorted_includes(includes: list[str]):
     if qt_includes:
         for header in qt_includes:
             print(f"#include <{header}>")
+        print()
+
+    if moc_header:
+        # moc include should come last -- this may rely on other includes
+        # to resolve forward declared classes
+        print(f'#include "{moc_header}"')
         print()
 
 
