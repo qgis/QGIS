@@ -63,6 +63,15 @@ Returns the optional feedback object.
     double framesPerSecond() const;
 %Docstring
 Returns the output video frames per second.
+
+.. seealso:: :py:func:`frameDuration`
+%End
+
+    double frameDuration() const;
+%Docstring
+Returns the duration of each frame, in micro-seconds.
+
+.. seealso:: :py:func:`framesPerSecond`
 %End
 
     QSize size() const;

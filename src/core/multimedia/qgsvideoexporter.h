@@ -79,8 +79,17 @@ class CORE_EXPORT QgsVideoExporter : public QObject
 
     /**
      * Returns the output video frames per second.
+     *
+     * \see frameDuration()
      */
     double framesPerSecond() const { return mFramesPerSecond; }
+
+    /**
+     * Returns the duration of each frame, in micro-seconds.
+     *
+     * \see framesPerSecond()
+     */
+    double frameDuration() const { return mFrameDurationUs; }
 
     /**
      * Returns the output video frame size.
