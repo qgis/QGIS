@@ -90,7 +90,7 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
      * Constructor for an abstract sensor, bound to the specified \a parent.
      */
     explicit QgsAbstractSensor( QObject *parent SIP_TRANSFERTHIS = nullptr );
-    virtual ~QgsAbstractSensor() = default;
+    ~QgsAbstractSensor() override = default;
 
     /**
      * Returns the sensor ID.

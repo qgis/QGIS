@@ -65,7 +65,7 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     QColor color() const override;
 
-    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
+    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
     // TODO QGIS 4.0 rename to avoid collision with base class member
 

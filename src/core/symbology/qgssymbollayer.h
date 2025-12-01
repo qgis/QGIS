@@ -1010,8 +1010,8 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
-    virtual double dxfAngle( QgsSymbolRenderContext &context ) const override;
+    double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    double dxfAngle( QgsSymbolRenderContext &context ) const override;
 
     /**
      * Returns the approximate bounding box of the marker symbol layer, taking into account

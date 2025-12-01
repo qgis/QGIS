@@ -48,7 +48,7 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
 {
     Q_OBJECT
   public:
-    ~QgsTileDownloadManagerReply();
+    ~QgsTileDownloadManagerReply() override;
 
     //! Returns whether the reply has already finished (with success/failure)
     bool hasFinished() const { return mHasFinished; }

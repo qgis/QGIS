@@ -766,7 +766,7 @@ class CORE_EXPORT QgsMeshMemoryDatasetGroup: public QgsMeshDatasetGroup
     int datasetCount() const override;
     QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;
     QgsMeshDataset *dataset( int index ) const override;
-    virtual QgsMeshDatasetGroup::Type type() const override {return QgsMeshDatasetGroup::Memory;}
+    QgsMeshDatasetGroup::Type type() const override {return QgsMeshDatasetGroup::Memory;}
 
     //! Returns a invalid DOM element
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context )  const override;

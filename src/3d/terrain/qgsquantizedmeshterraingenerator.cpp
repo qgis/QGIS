@@ -59,10 +59,10 @@ class QgsQuantizedMeshTerrainChunkLoader : public QgsTerrainTileLoader
       QgsTerrainEntity *terrain, QgsChunkNode *node, long long tileId, QgsTiledSceneIndex index, const QgsCoordinateTransform &tileCrsToMapCrs
     );
     void start() override;
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   protected:
-    virtual void onTextureLoaded() override;
+    void onTextureLoaded() override;
 
   private:
     QgsTerrainTileEntity *mEntity = nullptr;

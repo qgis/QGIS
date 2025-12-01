@@ -118,7 +118,7 @@ class QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpo
     QgsMeshVectorValueInterpolatorFromVertex( const QgsMeshVectorValueInterpolatorFromVertex &other );
 
     //! Clone the instance
-    virtual QgsMeshVectorValueInterpolatorFromVertex *clone() override;
+    QgsMeshVectorValueInterpolatorFromVertex *clone() override;
 
     QgsMeshVectorValueInterpolatorFromVertex &operator=( const QgsMeshVectorValueInterpolatorFromVertex &other );
 
@@ -151,7 +151,7 @@ class QgsMeshVectorValueInterpolatorFromFace: public QgsMeshVectorValueInterpola
     QgsMeshVectorValueInterpolatorFromFace( const QgsMeshVectorValueInterpolatorFromFace &other );
 
     //! Clone the instance
-    virtual QgsMeshVectorValueInterpolatorFromFace *clone() override;
+    QgsMeshVectorValueInterpolatorFromFace *clone() override;
 
     QgsMeshVectorValueInterpolatorFromFace &operator=( const QgsMeshVectorValueInterpolatorFromFace &other );
 

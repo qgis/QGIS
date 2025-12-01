@@ -512,7 +512,7 @@ class QgsPostgresProviderMetadata final : public QgsProviderMetadata
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
     bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
-    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
+    QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;

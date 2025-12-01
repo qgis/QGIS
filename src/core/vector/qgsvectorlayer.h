@@ -2587,7 +2587,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \since QGIS 3.8
      */
-    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 

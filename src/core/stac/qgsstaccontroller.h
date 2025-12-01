@@ -49,7 +49,7 @@ class CORE_EXPORT QgsStacController : public QObject
     explicit QgsStacController() = default;
 
     //! Default destructor
-    ~QgsStacController();
+    ~QgsStacController() override;
 
     /**
      *  Returns a STAC Catalog by parsing a local file

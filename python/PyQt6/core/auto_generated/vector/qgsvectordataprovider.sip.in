@@ -157,6 +157,7 @@ Returns the fields associated with this data provider.
     virtual QString sourceName() const;
 
     virtual QString dataComment() const;
+
 %Docstring
 Returns a short comment for the data that this provider is providing
 access to (e.g. the comment for postgres table).

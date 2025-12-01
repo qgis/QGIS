@@ -60,6 +60,7 @@ The caller takes responsibility for deleting the returned object.
 %End
 
     virtual int type() const;
+
     virtual QIcon icon() const;
 
 

@@ -150,11 +150,11 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
                               const QVector<double> &times
                             ) override;
 
-    virtual bool persistDatasetGroup( const QString &outputFilePath,
-                                      const QString &outputDriver,
-                                      QgsMeshDatasetSourceInterface *source,
-                                      int datasetGroupIndex
-                                    ) override;
+    bool persistDatasetGroup( const QString &outputFilePath,
+                              const QString &outputDriver,
+                              QgsMeshDatasetSourceInterface *source,
+                              int datasetGroupIndex
+                            ) override;
 
     bool saveMeshFrame( const QgsMesh & ) override {return false;}
 

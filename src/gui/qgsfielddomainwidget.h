@@ -49,7 +49,7 @@ class GUI_EXPORT QgsAbstractFieldDomainWidget : public QWidget
      */
     QgsAbstractFieldDomainWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual ~QgsAbstractFieldDomainWidget();
+    ~QgsAbstractFieldDomainWidget() override;
 
     /**
      * Sets the current field domain to show properties for in the widget.

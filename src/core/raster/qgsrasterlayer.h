@@ -562,7 +562,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      *
      * \since QGIS 3.8
      */
-    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
   signals:
 

@@ -79,7 +79,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
      */
     static QgsLayoutItem3DMap *create( QgsLayout *layout ) SIP_FACTORY;
 
-    virtual int type() const override;
+    int type() const override;
     QIcon icon() const override;
 
     //! Configures camera view

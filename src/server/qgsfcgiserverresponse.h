@@ -77,7 +77,7 @@ class SERVER_EXPORT QgsFcgiServerResponse : public QgsServerResponse
      */
     QgsFcgiServerResponse( QgsServerRequest::Method method = QgsServerRequest::GetMethod );
 
-    virtual ~QgsFcgiServerResponse() override;
+    ~QgsFcgiServerResponse() override;
 
     void setHeader( const QString &key, const QString &value ) override;
 
