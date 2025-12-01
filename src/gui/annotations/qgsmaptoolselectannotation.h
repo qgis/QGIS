@@ -134,6 +134,8 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsMapToolAdvancedDigitizin
     void updateSelectedItem();
 
     QList<QgsAnnotationItemRubberBand *> mSelectedItems;
+    QList<QPair<QString, QString>> mCopiedItems;
+    QgsPointXY mCopiedItemsTopLeft;
 
     bool mRefreshSelectedItemAfterRedraw = false;
 
