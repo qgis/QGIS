@@ -1406,7 +1406,7 @@ file.
 Constructor for QgsRasterLineSymbolLayer, with the specified raster
 image path.
 %End
-    virtual ~QgsRasterLineSymbolLayer();
+    ~QgsRasterLineSymbolLayer();
 
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) /Factory/;
 %Docstring

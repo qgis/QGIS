@@ -137,7 +137,7 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
      */
     QgsQueryResultWidget( QWidget *parent = nullptr, QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER = nullptr );
 
-    virtual ~QgsQueryResultWidget();
+    ~QgsQueryResultWidget() override;
 
     /**
      * Initializes the widget from \a options.

@@ -36,7 +36,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
                     const QgsDataProvider::ProviderOptions &providerOptions,
                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
-    ~QgsEptProvider();
+    ~QgsEptProvider() override;
 
     Qgis::DataProviderFlags flags() const override;
     QgsCoordinateReferenceSystem crs() const override;

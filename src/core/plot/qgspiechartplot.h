@@ -41,7 +41,7 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
   public:
 
     QgsPieChartPlot();
-    ~QgsPieChartPlot() = default;
+    ~QgsPieChartPlot() override = default;
 
     QString type() const override { return QStringLiteral( "pie" ); }
 

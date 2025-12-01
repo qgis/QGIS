@@ -132,7 +132,7 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
-    ~QgsPointCloudLayerChunkedEntity();
+    ~QgsPointCloudLayerChunkedEntity() override;
 
   private slots:
     void updateIndex();

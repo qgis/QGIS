@@ -30,7 +30,7 @@ struct QgsOgrProviderResultIterator: public QgsAbstractDatabaseProviderConnectio
 
     QgsOgrProviderResultIterator( gdal::dataset_unique_ptr hDS, OGRLayerH ogrLayer );
 
-    ~QgsOgrProviderResultIterator();
+    ~QgsOgrProviderResultIterator() override;
 
     void setFields( const QgsFields &fields );
     void setGeometryColumnName( const QString &geometryColumnName );

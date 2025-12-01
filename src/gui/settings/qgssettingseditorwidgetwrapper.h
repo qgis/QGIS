@@ -41,7 +41,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
     //! Constructor
     QgsSettingsEditorWidgetWrapper( QObject *parent = nullptr );
 
-    virtual ~QgsSettingsEditorWidgetWrapper() = default;
+    ~QgsSettingsEditorWidgetWrapper() override = default;
 
     /**
      * This id of the type of settings it handles

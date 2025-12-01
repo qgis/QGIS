@@ -62,7 +62,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
   public:
     Qgs3DSceneExporter() {}
 
-    ~Qgs3DSceneExporter()
+    ~Qgs3DSceneExporter() override
     {
       for ( Qgs3DExportObject *obj : mObjects )
         delete obj;

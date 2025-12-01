@@ -99,7 +99,7 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
       Options options = Options()
     );
 
-    ~QgsDockableWidgetHelper();
+    ~QgsDockableWidgetHelper() override;
 
     //! Returns if the widget is docked
     //! \since 3.42

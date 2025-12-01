@@ -70,7 +70,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
      */
     QgsLayoutItem3DMap( QgsLayout *layout SIP_TRANSFERTHIS );
 
-    ~QgsLayoutItem3DMap();
+    ~QgsLayoutItem3DMap() override;
 
     /**
      * Returns a new 3D map item for the specified \a layout.

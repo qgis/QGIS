@@ -63,7 +63,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
 
     //! Ctor
     explicit QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *layer, QgsRenderContext &context );
-    ~QgsTiledSceneLayerRenderer();
+    ~QgsTiledSceneLayerRenderer() override;
 
     bool render() override;
     Qgis::MapLayerRendererFlags flags() const override;

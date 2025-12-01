@@ -44,7 +44,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
 
   public:
     QgsSourceSelectProviderRegistry();
-    ~QgsSourceSelectProviderRegistry();
+    ~QgsSourceSelectProviderRegistry() override;
 
     QgsSourceSelectProviderRegistry( const QgsSourceSelectProviderRegistry &rh ) = delete;
     QgsSourceSelectProviderRegistry &operator=( const QgsSourceSelectProviderRegistry &rh ) = delete;

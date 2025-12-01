@@ -37,7 +37,7 @@ class GUI_EXPORT QgsDirectionalLightWidget : public QWidget, private Ui::QgsDire
   public:
     //! Constructor
     explicit QgsDirectionalLightWidget( QWidget *parent = nullptr );
-    ~QgsDirectionalLightWidget();
+    ~QgsDirectionalLightWidget() override;
 
     //! Sets the \a azimuth value (degree)
     void setAzimuth( double azimuth );

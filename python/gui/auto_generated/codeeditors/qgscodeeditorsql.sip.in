@@ -33,7 +33,7 @@ Constructor for QgsCodeEditorSQL
     virtual Qgis::ScriptLanguage language() const;
 
 
-    virtual ~QgsCodeEditorSQL();
+    ~QgsCodeEditorSQL();
 
     void setFields( const QgsFields &fields );
 %Docstring

@@ -137,7 +137,7 @@ class QueryCostDelegate : public QStyledItemDelegate
     Q_OBJECT
   public:
     explicit QueryCostDelegate( int sortRole, int totalCostRole, QObject *parent = nullptr );
-    ~QueryCostDelegate();
+    ~QueryCostDelegate() override;
 
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 

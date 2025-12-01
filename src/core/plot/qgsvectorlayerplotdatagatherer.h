@@ -60,7 +60,7 @@ class CORE_EXPORT QgsVectorLayerAbstractPlotDataGatherer : public QgsTask
   public:
 
     QgsVectorLayerAbstractPlotDataGatherer() = default;
-    virtual ~QgsVectorLayerAbstractPlotDataGatherer() = default;
+    ~QgsVectorLayerAbstractPlotDataGatherer() override = default;
 
     //! Returns the plot data.
     virtual QgsPlotData data() const = 0;

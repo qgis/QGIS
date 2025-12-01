@@ -1234,7 +1234,7 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
      * Constructor for QgsRasterLineSymbolLayer, with the specified raster image path.
      */
     QgsRasterLineSymbolLayer( const QString &path = QString() );
-    virtual ~QgsRasterLineSymbolLayer();
+    ~QgsRasterLineSymbolLayer() override;
 
     /**
      * Creates a new QgsRasterLineSymbolLayer, using the settings

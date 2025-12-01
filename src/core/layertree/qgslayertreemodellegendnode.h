@@ -407,7 +407,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * \param parent attach a parent QObject to the legend node.
      */
     QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsSymbolLegendNode();
+    ~QgsSymbolLegendNode() override;
 
     Qt::ItemFlags flags() const override;
     QVariant data( int role ) const override;
