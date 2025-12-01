@@ -24,6 +24,8 @@
 
 #include "testqgsmaptoolutils.h"
 #include "qgsmaptoolreverseline.h"
+
+#include <memory>
 #include "qgsmapmouseevent.h"
 #include "qgssnappingutils.h"
 
@@ -174,11 +176,11 @@ void TestQgsMapToolReverseLine::testReverseMultiLineString()
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mapPoint = mCanvas->getCoordinateTransform()->transform( 110, 110 );
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     QPoint( mapPoint.x(), mapPoint.y() )
-  ) );
+  );
   // trigger mouseRelease handler
   tool->canvasPressEvent( event.get() );
   tool->canvasReleaseEvent( event.get() );

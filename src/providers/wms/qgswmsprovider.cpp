@@ -80,6 +80,7 @@
 #ifdef QGISDEBUG
 #include <QFile>
 #include <QDir>
+#include <memory>
 #endif
 
 #define ERR( message ) QGS_ERROR_MESSAGE( message, "WMS provider" )
@@ -873,7 +874,7 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
 
       // this is an ordinary WMS server, but the user requested tiled approach
       // so we will pretend it is a WMS-C server with just one tile matrix
-      tempTm.reset( new QgsWmtsTileMatrix );
+      tempTm = std::make_unique<QgsWmtsTileMatrix>();
       tempTm->topLeft = QgsPointXY( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
       tempTm->tileWidth = w;
       tempTm->tileHeight = h;
@@ -959,7 +960,7 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     std::unique_ptr<QgsMbTiles> mbtilesReader;
     if ( mSettings.mIsMBTiles )
     {
-      mbtilesReader.reset( new QgsMbTiles( QUrl( mSettings.mBaseUrl ).path() ) );
+      mbtilesReader = std::make_unique<QgsMbTiles>( QUrl( mSettings.mBaseUrl ).path() );
       mbtilesReader->open();
     }
 
@@ -4092,7 +4093,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
     return QImage();
 
   Q_ASSERT( !mLegendGraphicFetcher ); // or we could just remove it instead, hopefully will cancel download
-  mLegendGraphicFetcher.reset( new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url ) );
+  mLegendGraphicFetcher = std::make_unique<QgsWmsLegendDownloadHandler>( *QgsNetworkAccessManager::instance(), mSettings, url );
   if ( !mLegendGraphicFetcher )
     return QImage();
 

@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtoolselect.h"
+
+#include <memory>
 #include "moc_qgsmodelviewtoolselect.cpp"
 #include "qgsmodelviewmouseevent.h"
 #include "qgsmodelgraphicsview.h"
@@ -28,11 +30,11 @@ QgsModelViewToolSelect::QgsModelViewToolSelect( QgsModelGraphicsView *view )
 {
   setCursor( Qt::ArrowCursor );
 
-  mRubberBand.reset( new QgsModelViewRectangularRubberBand( view ) );
+  mRubberBand = std::make_unique<QgsModelViewRectangularRubberBand>( view );
   mRubberBand->setBrush( QBrush( QColor( 224, 178, 76, 63 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 254, 58, 29, 100 ) ), 0, Qt::DotLine ) );
 
-  mLinkTool.reset( new QgsModelViewToolLink( view ) );
+  mLinkTool = std::make_unique<QgsModelViewToolLink>( view );
 }
 
 QgsModelViewToolSelect::~QgsModelViewToolSelect()

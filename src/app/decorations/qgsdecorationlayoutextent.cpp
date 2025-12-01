@@ -33,6 +33,7 @@
 #include "qgsfillsymbol.h"
 
 #include <QPainter>
+#include <memory>
 
 QgsDecorationLayoutExtent::QgsDecorationLayoutExtent( QObject *parent )
   : QgsDecorationItem( parent )
@@ -66,7 +67,7 @@ void QgsDecorationLayoutExtent::projectRead()
   }
   if ( !mSymbol )
   {
-    mSymbol.reset( new QgsFillSymbol() );
+    mSymbol = std::make_unique<QgsFillSymbol>();
     QgsSimpleLineSymbolLayer *layer = new QgsSimpleLineSymbolLayer( QColor( 0, 0, 0, 100 ), 0, Qt::DashLine );
     mSymbol->changeSymbolLayer( 0, layer );
   }

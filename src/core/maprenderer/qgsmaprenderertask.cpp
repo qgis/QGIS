@@ -33,6 +33,7 @@
 #include <QTextStream>
 #include <QTimeZone>
 #include <QPdfWriter>
+#include <memory>
 
 #include "gdal.h"
 #include "cpl_conv.h"
@@ -459,7 +460,7 @@ void QgsMapRendererTask::prepare()
       mMapLayerOrder << layer->id();
     }
 
-    mJob.reset( new QgsMapRendererStagedRenderJob( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer ) );
+    mJob = std::make_unique<QgsMapRendererStagedRenderJob>( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer );
     mJob->start();
     return;
   }
@@ -468,7 +469,7 @@ void QgsMapRendererTask::prepare()
 
   if ( mFileFormat == QLatin1String( "PDF" ) )
   {
-    mPdfWriter.reset( new QPdfWriter( mFileName ) );
+    mPdfWriter = std::make_unique<QPdfWriter>( mFileName );
     mPdfWriter->setPageOrientation( QPageLayout::Orientation::Portrait );
     // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
     const QSizeF outputSize = mMapSettings.outputSize();
@@ -479,7 +480,7 @@ void QgsMapRendererTask::prepare()
 
     if ( !mForceRaster )
     {
-      mTempPainter.reset( new QPainter( mPdfWriter.get() ) );
+      mTempPainter = std::make_unique<QPainter>( mPdfWriter.get() );
       mDestPainter = mTempPainter.get();
     }
   }
@@ -499,7 +500,7 @@ void QgsMapRendererTask::prepare()
     mImage.setDotsPerMeterX( 1000 * mMapSettings.outputDpi() / 25.4 );
     mImage.setDotsPerMeterY( 1000 * mMapSettings.outputDpi() / 25.4 );
 
-    mTempPainter.reset( new QPainter( &mImage ) );
+    mTempPainter = std::make_unique<QPainter>( &mImage );
     mDestPainter = mTempPainter.get();
   }
 
@@ -509,6 +510,6 @@ void QgsMapRendererTask::prepare()
     return;
   }
 
-  mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, mDestPainter ) );
+  mJob = std::make_unique<QgsMapRendererCustomPainterJob>( mMapSettings, mDestPainter );
   static_cast< QgsMapRendererCustomPainterJob *>( mJob.get() )->prepare();
 }

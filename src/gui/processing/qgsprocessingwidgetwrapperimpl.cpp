@@ -83,6 +83,7 @@
 #include <QButtonGroup>
 #include <QMenu>
 #include <QFileDialog>
+#include <memory>
 
 ///@cond PRIVATE
 
@@ -3739,7 +3740,7 @@ QgsProcessingPointMapTool::QgsProcessingPointMapTool( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
-  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+  mSnapIndicator = std::make_unique<QgsSnapIndicator>( canvas );
 }
 
 QgsProcessingPointMapTool::~QgsProcessingPointMapTool() = default;

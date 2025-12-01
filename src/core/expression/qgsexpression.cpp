@@ -29,6 +29,7 @@
 #include "qgscolorrampimpl.h"
 
 #include <QRegularExpression>
+#include <memory>
 
 // from parser
 extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
@@ -353,7 +354,7 @@ void QgsExpression::setGeomCalculator( const QgsDistanceArea *calc )
 {
   detach();
   if ( calc )
-    d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea( *calc ) );
+    d->mCalc = std::make_shared<QgsDistanceArea>( *calc );
   else
     d->mCalc.reset();
 }
@@ -437,7 +438,7 @@ QgsDistanceArea *QgsExpression::geomCalculator()
   if ( !d->mCalc && d->mDaCrs && d->mDaCrs->isValid() && d->mDaTransformContext )
   {
     // calculator IS required, so initialize it now...
-    d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
+    d->mCalc = std::make_shared<QgsDistanceArea>( );
     d->mCalc->setEllipsoid( d->mDaEllipsoid.isEmpty() ? Qgis::geoNone() : d->mDaEllipsoid );
     d->mCalc->setSourceCrs( *d->mDaCrs.get(), *d->mDaTransformContext.get() );
   }

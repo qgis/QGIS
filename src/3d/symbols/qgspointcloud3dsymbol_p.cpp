@@ -55,6 +55,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <QUrl>
 
 #include <delaunator.hpp>
+#include <memory>
 
 // pick a point that we'll use as origin for coordinates for this node's points
 static QgsVector3D originFromNodeBounds( QgsPointCloudIndex &pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context )
@@ -526,7 +527,7 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex &pc, const Qg
   try
   {
     std::vector<double> vertices = getVertices( pc, n, context, box3D );
-    triangulation.reset( new delaunator::Delaunator( vertices ) );
+    triangulation = std::make_unique<delaunator::Delaunator>( vertices );
   }
   catch ( std::exception &e )
   {

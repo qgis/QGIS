@@ -15,6 +15,8 @@
 
 #include "qgsrulebased3drenderer.h"
 
+#include <memory>
+
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
 
@@ -93,7 +95,7 @@ void QgsRuleBased3DRenderer::Rule::initFilter()
   }
   else if ( !mFilterExp.isEmpty() )
   {
-    mFilter.reset( new QgsExpression( mFilterExp ) );
+    mFilter = std::make_unique<QgsExpression>( mFilterExp );
   }
   else
   {

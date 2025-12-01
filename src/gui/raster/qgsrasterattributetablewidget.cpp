@@ -29,6 +29,7 @@
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <memory>
 
 QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, QgsRasterLayer *rasterLayer, const int bandNumber )
   : QgsPanelWidget( parent )
@@ -134,7 +135,7 @@ void QgsRasterAttributeTableWidget::init( int bandNumber )
 
   if ( mAttributeTableBuffer )
   {
-    mModel.reset( new QgsRasterAttributeTableModel( mAttributeTableBuffer.get() ) );
+    mModel = std::make_unique<QgsRasterAttributeTableModel>( mAttributeTableBuffer.get() );
     mModel->setEditable( mEditable );
 
     connect( mModel.get(), &QgsRasterAttributeTableModel::dataChanged, this, [this]( const QModelIndex &, const QModelIndex &, const QVector<int> & ) {

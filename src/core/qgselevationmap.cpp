@@ -20,6 +20,7 @@
 #include <QPainter>
 #include <algorithm>
 #include <cmath>
+#include <memory>
 
 
 static const int ELEVATION_OFFSET = 7900;
@@ -328,7 +329,7 @@ QPainter *QgsElevationMap::painter() const
 {
   if ( !mPainter )
   {
-    mPainter.reset( new QPainter );
+    mPainter = std::make_unique<QPainter>( );
     mPainter->begin( &mElevationImage );
   }
   return mPainter.get();

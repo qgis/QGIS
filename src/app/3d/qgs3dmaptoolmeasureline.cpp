@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <QKeyEvent>
+#include <memory>
 
 #include "qgs3dmaptoolmeasureline.h"
 #include "moc_qgs3dmaptoolmeasureline.cpp"
@@ -43,7 +44,7 @@ Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
 
 void Qgs3DMapToolMeasureLine::activate()
 {
-  mRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity() ) );
+  mRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity() );
 
   restart();
   updateSettings();

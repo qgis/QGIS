@@ -43,6 +43,7 @@
 #include <QDomElement>
 
 #include <cmath>
+#include <memory>
 
 QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double width, Qt::PenStyle penStyle )
   : mPenStyle( penStyle )
@@ -2765,7 +2766,7 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
   {
     QgsSymbolLayerList layers;
     layers.append( l.release() );
-    marker.reset( new QgsMarkerSymbol( layers ) );
+    marker = std::make_unique<QgsMarkerSymbol>( layers );
   }
 
   if ( !marker )

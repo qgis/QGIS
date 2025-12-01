@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QProgressDialog>
+#include <memory>
 
 Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   : QWidget( parent )
@@ -88,7 +89,7 @@ void Qgs3DAnimationWidget::setAnimation( const Qgs3DAnimationSettings &animSetti
 
 void Qgs3DAnimationWidget::initializeController( const Qgs3DAnimationSettings &animSettings )
 {
-  mAnimationSettings.reset( new Qgs3DAnimationSettings( animSettings ) );
+  mAnimationSettings = std::make_unique<Qgs3DAnimationSettings>( animSettings );
 
   sliderTime->setMaximum( animSettings.duration() * 100 );
 }

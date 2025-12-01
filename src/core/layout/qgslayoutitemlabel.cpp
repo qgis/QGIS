@@ -38,11 +38,12 @@
 #include <QDomElement>
 #include <QPainter>
 #include <QTextDocument>
+#include <memory>
 
 QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
-  mDistanceArea.reset( new QgsDistanceArea() );
+  mDistanceArea = std::make_unique<QgsDistanceArea>( );
   mHtmlUnitsToLayoutUnits = htmlUnitsToLayoutUnits();
 
   //get default layout font from settings

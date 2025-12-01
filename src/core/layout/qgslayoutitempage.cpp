@@ -29,6 +29,7 @@
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <memory>
 
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   : QgsLayoutItem( layout, false )
@@ -47,7 +48,7 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   const QFontMetrics fm( font );
   mMaximumShadowWidth = fm.boundingRect( QStringLiteral( "X" ) ).width();
 
-  mGrid.reset( new QgsLayoutItemPageGrid( pos().x(), pos().y(), rect().width(), rect().height(), mLayout ) );
+  mGrid = std::make_unique<QgsLayoutItemPageGrid>( pos().x(), pos().y(), rect().width(), rect().height(), mLayout );
   mGrid->setParentItem( this );
 
   createDefaultPageStyleSymbol();

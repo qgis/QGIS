@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "qgslayout.h"
+
+#include <memory>
 #include "moc_qgslayout.cpp"
 #include "qgslayoutframe.h"
 #include "qgslayoutitem.h"
@@ -54,7 +56,7 @@ QgsLayout::QgsLayout( QgsProject *project )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
-  mItemsModel.reset( new QgsLayoutModel( this ) );
+  mItemsModel = std::make_unique<QgsLayoutModel>( this );
 }
 
 QgsLayout::~QgsLayout()
@@ -583,7 +585,7 @@ void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
   if ( !mUndoStack->isBlocked() )
   {
     mUndoStack->beginMacro( tr( "Delete Items" ) );
-    deleteCommand.reset( new QgsLayoutItemDeleteUndoCommand( item, tr( "Delete Item" ) ) );
+    deleteCommand = std::make_unique<QgsLayoutItemDeleteUndoCommand>( item, tr( "Delete Item" ) );
   }
   removeLayoutItemPrivate( item );
   if ( deleteCommand )

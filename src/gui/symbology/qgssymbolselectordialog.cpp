@@ -48,6 +48,7 @@
 #include <QWidget>
 #include <QFile>
 #include <QStandardItem>
+#include <memory>
 
 /// @cond PRIVATE
 
@@ -566,7 +567,7 @@ void QgsSymbolSelectorWidget::layerChanged()
   if ( currentItem->isLayer() )
   {
     SymbolLayerItem *parent = static_cast<SymbolLayerItem *>( currentItem->parent() );
-    mDataDefineRestorer.reset( new DataDefinedRestorer( parent->symbol(), currentItem->layer() ) );
+    mDataDefineRestorer = std::make_unique<DataDefinedRestorer>( parent->symbol(), currentItem->layer() );
     QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
     layerProp->setDockMode( this->dockMode() );
     layerProp->setContext( mContext );

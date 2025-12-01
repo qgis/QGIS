@@ -35,6 +35,7 @@
 #endif
 
 #include <deque>
+#include <memory>
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
@@ -61,7 +62,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
     }
   }
 
-  mExpressionFieldBuffer.reset( new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer ) );
+  mExpressionFieldBuffer = std::make_unique<QgsExpressionFieldBuffer>( *layer->mExpressionFieldBuffer );
   mCrs = layer->crs();
 
   mHasEditBuffer = layer->editBuffer();

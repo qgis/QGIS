@@ -23,6 +23,7 @@
 #include <QMessageBox>
 
 #include <algorithm>
+#include <memory>
 
 static QString translatedImageFormatFromMediaType( const QString &type )
 {
@@ -131,7 +132,7 @@ void QgsWFSNewConnection::versionDetectButton()
 
 void QgsWFSNewConnection::startCapabilitiesRequest()
 {
-  mCapabilities.reset( new QgsWfsGetCapabilitiesRequest( createUri().uri( false ) ) );
+  mCapabilities = std::make_unique<QgsWfsGetCapabilitiesRequest>( createUri().uri( false ) );
   connect( mCapabilities.get(), &QgsWfsGetCapabilitiesRequest::gotCapabilities, this, &QgsWFSNewConnection::capabilitiesReplyFinished );
   const bool synchronous = false;
   const bool forceRefresh = true;
@@ -194,7 +195,7 @@ void QgsWFSNewConnection::capabilitiesReplyFinished()
 
 void QgsWFSNewConnection::startOapifLandingPageRequest()
 {
-  mOAPIFLandingPage.reset( new QgsOapifLandingPageRequest( createUri() ) );
+  mOAPIFLandingPage = std::make_unique<QgsOapifLandingPageRequest>( createUri() );
   connect( mOAPIFLandingPage.get(), &QgsOapifLandingPageRequest::gotResponse, this, &QgsWFSNewConnection::oapifLandingPageReplyFinished );
   const bool synchronous = false;
   const bool forceRefresh = true;

@@ -21,12 +21,13 @@
 #include "qgsrectangle.h"
 #include "qgsapplication.h"
 #include <QScrollBar>
+#include <memory>
 
 QgsModelViewToolZoom::QgsModelViewToolZoom( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Pan" ) )
 {
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
-  mRubberBand.reset( new QgsModelViewRectangularRubberBand( view ) );
+  mRubberBand = std::make_unique<QgsModelViewRectangularRubberBand>( view );
   mRubberBand->setBrush( QBrush( QColor( 70, 50, 255, 25 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 70, 50, 255, 100 ) ), 0 ) );
 }

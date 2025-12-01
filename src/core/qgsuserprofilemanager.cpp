@@ -25,6 +25,7 @@
 #include <QTextStream>
 #include <QProcess>
 #include <QStandardPaths>
+#include <memory>
 
 
 QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObject *parent )
@@ -61,7 +62,7 @@ void QgsUserProfileManager::setRootLocation( const QString &rootProfileLocation 
   //updates (or removes) profile file watcher for new root location
   setNewProfileNotificationEnabled( mWatchProfiles );
 
-  mSettings.reset( new QSettings( settingsFile(), QSettings::IniFormat ) );
+  mSettings = std::make_unique<QSettings>( settingsFile(), QSettings::IniFormat );
 }
 
 void QgsUserProfileManager::setNewProfileNotificationEnabled( bool enabled )
@@ -69,7 +70,7 @@ void QgsUserProfileManager::setNewProfileNotificationEnabled( bool enabled )
   mWatchProfiles = enabled;
   if ( mWatchProfiles && !mRootProfilePath.isEmpty() && QDir( mRootProfilePath ).exists() )
   {
-    mWatcher.reset( new QFileSystemWatcher() );
+    mWatcher = std::make_unique<QFileSystemWatcher>( );
     mWatcher->addPath( mRootProfilePath );
     connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this]
     {

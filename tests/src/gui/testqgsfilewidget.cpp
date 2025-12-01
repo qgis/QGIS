@@ -105,7 +105,7 @@ void TestQgsFileWidget::testDroppedFiles()
 
   // but dropped files should be fine
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
-  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
 
@@ -116,7 +116,7 @@ void TestQgsFileWidget::testDroppedFiles()
   QgsMimeDataUtils::UriList uriList;
   uriList << uri;
   mime.reset( QgsMimeDataUtils::encodeUriList( uriList ) );
-  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) ) );
 
@@ -125,20 +125,20 @@ void TestQgsFileWidget::testDroppedFiles()
   QgsLayerItem *layerItem = new QgsLayerItem( nullptr, QStringLiteral( "Test" ), QString(), TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.txt" ), Qgis::BrowserLayerType::Mesh, "mdal" );
   m.driveItems().first()->addChild( layerItem );
   mime.reset( m.mimeData( QModelIndexList() << m.findItem( layerItem ) ) );
-  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), QString( QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle.txt" ) ) );
 
   // plain text should also be permitted
   mime = std::make_unique<QMimeData>();
   mime->setText( TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) );
-  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) ) );
 
-  mime.reset( new QMimeData() );
+  mime = std::make_unique<QMimeData>();
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
-  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   // with file filter
   w->setFilter( QStringLiteral( "Data (*.shp)" ) );
   w->setFilePath( QString() );
@@ -147,7 +147,7 @@ void TestQgsFileWidget::testDroppedFiles()
   w->setFilePath( QString() );
   // should be rejected, not compatible with filter
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/encoded_html.html" ) ) );
-  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
   QVERIFY( w->lineEdit()->text().isEmpty() );
   // new filter, should be allowed now
@@ -158,7 +158,7 @@ void TestQgsFileWidget::testDroppedFiles()
   //try with wildcard filter
   w->setFilter( QStringLiteral( "All files (*.*);;Data (*.shp);;HTML (*.HTML)" ) );
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.prj" ) ) );
-  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR + QStringLiteral( "/bug5598.prj" ) ) );
 
@@ -167,13 +167,13 @@ void TestQgsFileWidget::testDroppedFiles()
   w->setFilePath( QString() );
   // dropping a file should accept only the folder containing that file
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/mesh/quad_and_triangle.2dm" ) ) );
-  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), QString( QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh" ) ) );
 
   // but dropping a folder should work
   mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR ) );
-  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR ) );
 
@@ -181,7 +181,7 @@ void TestQgsFileWidget::testDroppedFiles()
   QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR + QStringLiteral( "/mesh" ) );
   m.driveItems().first()->addChild( dirItem );
   mime.reset( m.mimeData( QModelIndexList() << m.findItem( dirItem ) ) );
-  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  event = std::make_unique<QDropEvent>( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier );
   qobject_cast<QgsFileDropEdit *>( w->lineEdit() )->dropEvent( event.get() );
   QCOMPARE( w->lineEdit()->text(), QString( QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh" ) ) );
 }

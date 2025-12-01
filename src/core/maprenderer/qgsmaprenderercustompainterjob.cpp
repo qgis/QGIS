@@ -25,6 +25,7 @@
 #include "qgspainting.h"
 
 #include <QtConcurrentRun>
+#include <memory>
 
 //
 // QgsMapRendererAbstractCustomPainterJob
@@ -100,7 +101,7 @@ void QgsMapRendererCustomPainterJob::startPrivate()
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
-    mLabelingEngineV2.reset( new QgsDefaultLabelingEngine() );
+    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -293,7 +294,7 @@ void QgsMapRendererCustomPainterJob::doRender()
   const QgsElevationShadingRenderer mapShadingRenderer = mSettings.elevationShadingRenderer();
   std::unique_ptr<QgsElevationMap> mainElevationMap;
   if ( mapShadingRenderer.isActive() )
-    mainElevationMap.reset( new QgsElevationMap( mSettings.deviceOutputSize(), mSettings.devicePixelRatio() ) );
+    mainElevationMap = std::make_unique<QgsElevationMap>( mSettings.deviceOutputSize(), mSettings.devicePixelRatio() );
 
   for ( LayerRenderJob &job : mLayerJobs )
   {

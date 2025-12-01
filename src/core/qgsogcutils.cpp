@@ -35,6 +35,7 @@
 #include <QTextStream>
 #include <QObject>
 #include <QRegularExpression>
+#include <memory>
 
 
 #include "ogr_api.h"
@@ -3650,10 +3651,10 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
       {
         oprValue.replace( escape + escape, escape );
       }
-      opRight.reset( new QgsExpressionNodeLiteral( oprValue ) );
+      opRight = std::make_unique<QgsExpressionNodeLiteral>( oprValue );
     }
 
-    expr.reset( new QgsExpressionNodeBinaryOperator( static_cast< QgsExpressionNodeBinaryOperator::BinaryOperator >( op ), expr.release(), opRight.release() ) );
+    expr = std::make_unique<QgsExpressionNodeBinaryOperator>( static_cast< QgsExpressionNodeBinaryOperator::BinaryOperator >( op ), expr.release(), opRight.release() );
   }
 
   if ( expr == leftOp )
@@ -3722,7 +3723,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
   std::unique_ptr<QgsExpressionNode> root;
   if ( !element.hasChildNodes() )
   {
-    root.reset( new QgsExpressionNodeLiteral( QVariant( "" ) ) );
+    root = std::make_unique<QgsExpressionNodeLiteral>( QVariant( "" ) );
     return root.release();
   }
 
@@ -3779,7 +3780,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
           value = d;
       }
 
-      operand.reset( new QgsExpressionNodeLiteral( value ) );
+      operand = std::make_unique<QgsExpressionNodeLiteral>( value );
       if ( !operand )
         continue;
     }
@@ -3791,7 +3792,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
     }
     else
     {
-      root.reset( new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boConcat, root.release(), operand.release() ) );
+      root = std::make_unique<QgsExpressionNodeBinaryOperator>( QgsExpressionNodeBinaryOperator::boConcat, root.release(), operand.release() );
     }
 
     childNode = childNode.nextSibling();

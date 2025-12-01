@@ -44,6 +44,7 @@
 #include <QCheckBox>
 #include <QStackedWidget>
 #include <QMenu>
+#include <memory>
 
 const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( QStringLiteral( "auto-popup-vertex-editor-dock" ), QgsSettingsTree::sTreeDigitizing, true, QStringLiteral( "Whether the auto-popup behavior of the vertex editor dock should be enabled" ) );
 
@@ -463,7 +464,7 @@ void QgsVertexEditorWidget::updateVertexSelection( const QItemSelection &, const
     // create a bounding box of selected vertices
     const QgsPointXY point( mLockedFeature->vertexMap().at( vertexIdx )->point() );
     if ( !bbox )
-      bbox.reset( new QgsRectangle( point, point ) );
+      bbox = std::make_unique<QgsRectangle>( point, point );
     else
       bbox->combineExtentWith( point );
   }

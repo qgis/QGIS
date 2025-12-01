@@ -45,6 +45,7 @@
 #include <QFileDialog>
 #include <QPainter>
 #include <QRegularExpression>
+#include <memory>
 
 enum
 {
@@ -292,7 +293,7 @@ void QgsWFSSourceSelect::resizeTreeViewAfterModelFill()
 void QgsWFSSourceSelect::startOapifLandingPageRequest()
 {
   QgsWfsConnection connection( cmbConnections->currentText() );
-  mOAPIFLandingPage.reset( new QgsOapifLandingPageRequest( connection.uri() ) );
+  mOAPIFLandingPage = std::make_unique<QgsOapifLandingPageRequest>( connection.uri() );
   connect( mOAPIFLandingPage.get(), &QgsOapifLandingPageRequest::gotResponse, this, &QgsWFSSourceSelect::oapifLandingPageReplyFinished );
   const bool synchronous = false;
   const bool forceRefresh = true;
@@ -350,7 +351,7 @@ void QgsWFSSourceSelect::oapifLandingPageReplyFinished()
 void QgsWFSSourceSelect::startOapifCollectionsRequest( const QString &url )
 {
   QgsWfsConnection connection( cmbConnections->currentText() );
-  mOAPIFCollections.reset( new QgsOapifCollectionsRequest( connection.uri(), url ) );
+  mOAPIFCollections = std::make_unique<QgsOapifCollectionsRequest>( connection.uri(), url );
   connect( mOAPIFCollections.get(), &QgsOapifCollectionsRequest::gotResponse, this, &QgsWFSSourceSelect::oapifCollectionsReplyFinished );
   const bool synchronous = false;
   const bool forceRefresh = true;
@@ -484,7 +485,7 @@ void QgsWFSSourceSelect::connectToServer()
   }
   else
   {
-    mCapabilities.reset( new QgsWfsGetCapabilitiesRequest( uri ) );
+    mCapabilities = std::make_unique<QgsWfsGetCapabilitiesRequest>( uri );
     connect( mCapabilities.get(), &QgsWfsGetCapabilitiesRequest::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
     const bool synchronous = false;
     const bool forceRefresh = true;

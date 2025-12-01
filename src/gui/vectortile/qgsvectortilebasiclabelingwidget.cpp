@@ -26,6 +26,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QMenu>
+#include <memory>
 
 ///@cond PRIVATE
 
@@ -388,7 +389,7 @@ void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
   }
   else
   {
-    mLabeling.reset( new QgsVectorTileBasicLabeling() );
+    mLabeling = std::make_unique<QgsVectorTileBasicLabeling>();
     whileBlocking( mLabelModeComboBox )->setCurrentIndex( 1 );
   }
   mOptionsStackedWidget->setCurrentIndex( mLabelModeComboBox->currentIndex() );

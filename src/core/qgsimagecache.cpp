@@ -44,6 +44,7 @@
 #include <QSvgRenderer>
 #include <QTemporaryDir>
 #include <QUuid>
+#include <memory>
 
 ///@cond PRIVATE
 
@@ -93,7 +94,7 @@ void QgsImageCacheEntry::dump() const
 QgsImageCache::QgsImageCache( QObject *parent )
   : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ) )
 {
-  mTemporaryDir.reset( new QTemporaryDir() );
+  mTemporaryDir = std::make_unique<QTemporaryDir>( );
 
   const int bytes = QgsSettings().value( QStringLiteral( "/qgis/maxImageCacheSize" ), 0 ).toInt();
   if ( bytes > 0 )

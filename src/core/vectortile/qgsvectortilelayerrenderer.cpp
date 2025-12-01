@@ -33,6 +33,7 @@
 
 #include <QElapsedTimer>
 #include <QThread>
+#include <memory>
 
 QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -181,7 +182,7 @@ bool QgsVectorTileLayerRenderer::render()
   }
   else
   {
-    asyncLoader.reset( new QgsVectorTileLoader( mDataProvider.get(), mTileMatrixSet, mTileRange, mTileZoomToFetch, viewCenter, mFeedback.get(), renderContext()->rendererUsage() ) );
+    asyncLoader = std::make_unique<QgsVectorTileLoader>( mDataProvider.get(), mTileMatrixSet, mTileRange, mTileZoomToFetch, viewCenter, mFeedback.get(), renderContext()->rendererUsage() );
     QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData & rawTile )
     {
       QgsDebugMsgLevel( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString(), 2 );

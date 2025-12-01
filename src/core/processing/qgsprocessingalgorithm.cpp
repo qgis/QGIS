@@ -32,6 +32,7 @@
 #include "qgsexpressioncontextutils.h"
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <memory>
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -624,7 +625,7 @@ QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, 
     // we proceed safely...
 
     // So first we create a temporary local context with affinity for the current thread
-    mLocalContext.reset( new QgsProcessingContext() );
+    mLocalContext = std::make_unique<QgsProcessingContext>( );
     // copy across everything we can safely do from the passed context
     mLocalContext->copyThreadSafeSettings( context );
 

@@ -30,6 +30,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgsthreadingutils.h"
+#include <memory>
 #include <nlohmann/json.hpp>
 #include "qgsgeometry.h"
 #include "qgsmultipolygon.h"
@@ -53,7 +54,7 @@ QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider(
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
-  mPolygonBounds.reset( new QgsGeometry( new QgsMultiPolygon() ) );
+  mPolygonBounds = std::make_unique<QgsGeometry>( new QgsMultiPolygon() );
 
   parseFile();
 }

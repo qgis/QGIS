@@ -50,6 +50,7 @@
 #include <cassert>
 #include <cstdlib> // size_t
 #include <limits> // std::numeric_limits
+#include <memory>
 
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
@@ -435,7 +436,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       // Those drivers outputs WGS84 geometries, let's align our output CRS to have QGIS take charge of geometry transformation
       QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromEpsgId( 4326 );
-      mCoordinateTransform.reset( new QgsCoordinateTransform( srs, wgs84, transformContext ) );
+      mCoordinateTransform = std::make_unique<QgsCoordinateTransform>( srs, wgs84, transformContext );
       srs = wgs84;
     }
   }

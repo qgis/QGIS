@@ -70,6 +70,7 @@
 #include <QVBoxLayout>
 #include <QWhatsThis>
 #include <QWidgetAction>
+#include <memory>
 #include <mutex>
 #include <QWindow>
 #include <QActionGroup>
@@ -8025,7 +8026,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   if ( d.mode() == QgsRasterLayerSaveAsDialog::RawDataMode )
   {
     QgsDebugMsgLevel( QStringLiteral( "Writing raw data" ), 2 );
-    pipe.reset( new QgsRasterPipe() );
+    pipe = std::make_unique<QgsRasterPipe>();
     if ( !pipe->set( rasterLayer->dataProvider()->clone() ) )
     {
       QgsDebugError( QStringLiteral( "Cannot set pipe provider" ) );
@@ -8059,7 +8060,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   {
     // clone the whole pipe
     QgsDebugMsgLevel( QStringLiteral( "Writing rendered image" ), 2 );
-    pipe.reset( new QgsRasterPipe( *rasterLayer->pipe() ) );
+    pipe = std::make_unique<QgsRasterPipe>( *rasterLayer->pipe() );
     QgsRasterProjector *projector = pipe->projector();
     if ( !projector )
     {
@@ -9251,14 +9252,14 @@ QList<Qgs3DMapCanvasWidget *> QgisApp::get3DMapViews()
 
 void QgisApp::setupDuplicateFeaturesAction()
 {
-  mDuplicateFeatureAction.reset( new QgsMapLayerAction( tr( "Duplicate Feature" ), nullptr, Qgis::MapLayerActionTarget::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ), Qgis::MapLayerActionFlag::EnabledOnlyWhenEditable ) );
+  mDuplicateFeatureAction = std::make_unique<QgsMapLayerAction>( tr( "Duplicate Feature" ), nullptr, Qgis::MapLayerActionTarget::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ), Qgis::MapLayerActionFlag::EnabledOnlyWhenEditable );
 
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureAction.get() );
   connect( mDuplicateFeatureAction.get(), &QgsMapLayerAction::triggeredForFeatureV2, this, [this]( QgsMapLayer *layer, const QgsFeature &feat, const QgsMapLayerActionContext & ) {
     duplicateFeatures( layer, feat );
   } );
 
-  mDuplicateFeatureDigitizeAction.reset( new QgsMapLayerAction( tr( "Duplicate Feature and Digitize" ), nullptr, Qgis::MapLayerActionTarget::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ), Qgis::MapLayerActionFlag::EnabledOnlyWhenEditable | Qgis::MapLayerActionFlag::EnableOnlyWhenHasGeometry ) );
+  mDuplicateFeatureDigitizeAction = std::make_unique<QgsMapLayerAction>( tr( "Duplicate Feature and Digitize" ), nullptr, Qgis::MapLayerActionTarget::SingleFeature, QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ), Qgis::MapLayerActionFlag::EnabledOnlyWhenEditable | Qgis::MapLayerActionFlag::EnableOnlyWhenHasGeometry );
 
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureDigitizeAction.get() );
   connect( mDuplicateFeatureDigitizeAction.get(), &QgsMapLayerAction::triggeredForFeatureV2, this, [this]( QgsMapLayer *layer, const QgsFeature &feat, const QgsMapLayerActionContext & ) {

@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsmeshdatasetgroupstore.h"
+
+#include <memory>
 #include "moc_qgsmeshdatasetgroupstore.cpp"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
@@ -165,7 +167,7 @@ void QgsMeshDatasetGroupStore::reindexDatasetGroups()
 
 void QgsMeshDatasetGroupStore::resetDatasetGroupTreeItem()
 {
-  mDatasetGroupTreeRootItem.reset( new QgsMeshDatasetGroupTreeItem );
+  mDatasetGroupTreeRootItem = std::make_unique<QgsMeshDatasetGroupTreeItem>( );
   createDatasetGroupTreeItems( datasetGroupIndexes() );
   QList<int> groupIndexes = datasetGroupIndexes();
   for ( int groupIndex : groupIndexes )

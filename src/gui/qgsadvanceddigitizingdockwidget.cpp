@@ -44,6 +44,7 @@
 #include "qgsuserinputwidget.h"
 
 #include <QActionGroup>
+#include <memory>
 
 
 const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnappingPriorityPrioritizeFeature = new QgsSettingsEntryBool( QStringLiteral( "cad-snapping-prioritize-feature" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if snapping to features has priority over snapping to common angles." ) );
@@ -63,27 +64,27 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
   mCadPaintItem = new QgsAdvancedDigitizingCanvasItem( canvas, this );
 
-  mAngleConstraint.reset( new CadConstraint( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton, mRepeatingLockAngleButton ) );
+  mAngleConstraint = std::make_unique<CadConstraint>( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton, mRepeatingLockAngleButton );
   mAngleConstraint->setCadConstraintType( Qgis::CadConstraintType::Angle );
   mAngleConstraint->setMapCanvas( mMapCanvas );
-  mDistanceConstraint.reset( new CadConstraint( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton ) );
+  mDistanceConstraint = std::make_unique<CadConstraint>( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton );
   mDistanceConstraint->setCadConstraintType( Qgis::CadConstraintType::Distance );
   mDistanceConstraint->setMapCanvas( mMapCanvas );
-  mXConstraint.reset( new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton ) );
+  mXConstraint = std::make_unique<CadConstraint>( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton );
   mXConstraint->setCadConstraintType( Qgis::CadConstraintType::XCoordinate );
   mXConstraint->setMapCanvas( mMapCanvas );
-  mYConstraint.reset( new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) );
+  mYConstraint = std::make_unique<CadConstraint>( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton );
   mYConstraint->setCadConstraintType( Qgis::CadConstraintType::YCoordinate );
   mYConstraint->setMapCanvas( mMapCanvas );
-  mZConstraint.reset( new CadConstraint( mZLineEdit, mLockZButton, mRelativeZButton, mRepeatingLockZButton ) );
+  mZConstraint = std::make_unique<CadConstraint>( mZLineEdit, mLockZButton, mRelativeZButton, mRepeatingLockZButton );
   mZConstraint->setCadConstraintType( Qgis::CadConstraintType::ZValue );
   mZConstraint->setMapCanvas( mMapCanvas );
-  mMConstraint.reset( new CadConstraint( mMLineEdit, mLockMButton, mRelativeMButton, mRepeatingLockMButton ) );
+  mMConstraint = std::make_unique<CadConstraint>( mMLineEdit, mLockMButton, mRelativeMButton, mRepeatingLockMButton );
   mMConstraint->setCadConstraintType( Qgis::CadConstraintType::MValue );
   mMConstraint->setMapCanvas( mMapCanvas );
 
-  mLineExtensionConstraint.reset( new CadConstraint( new QLineEdit(), new QToolButton() ) );
-  mXyVertexConstraint.reset( new CadConstraint( new QLineEdit(), new QToolButton() ) );
+  mLineExtensionConstraint = std::make_unique<CadConstraint>( new QLineEdit(), new QToolButton() );
+  mXyVertexConstraint = std::make_unique<CadConstraint>( new QLineEdit(), new QToolButton() );
   mXyVertexConstraint->setMapCanvas( mMapCanvas );
 
   mBetweenLineConstraint = Qgis::BetweenLineConstraint::NoConstraint;

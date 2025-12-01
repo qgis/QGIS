@@ -29,6 +29,7 @@
 #include <QJsonDocument>
 #include <QMutex>
 
+#include <memory>
 #include <set>
 
 #include <cpl_vsi.h>
@@ -501,7 +502,7 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
     mMutex.lock();
     mDownloadFinished = false;
     mComputedExtent = QgsRectangle();
-    mDownloader.reset( new QgsThreadedFeatureDownloader( this ) );
+    mDownloader = std::make_unique<QgsThreadedFeatureDownloader>( this );
     mDownloader->startAndWait();
   }
   if ( mDownloadFinished )

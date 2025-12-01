@@ -26,6 +26,7 @@
 
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
+#include <memory>
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )
@@ -59,7 +60,7 @@ void QgsMapRendererParallelJob::startPrivate()
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
-    mLabelingEngineV2.reset( new QgsDefaultLabelingEngine() );
+    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 

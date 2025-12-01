@@ -29,6 +29,7 @@
 #include <QNetworkReply>
 #include <QStandardPaths>
 #include <QRegularExpression>
+#include <memory>
 
 /// @cond PRIVATE
 
@@ -192,7 +193,7 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
 
 QgsTileDownloadManager::QgsTileDownloadManager()
 {
-  mRangesCache.reset( new QgsRangeRequestCache );
+  mRangesCache = std::make_unique<QgsRangeRequestCache>( );
 
   const QgsSettings settings;
   QString cacheDirectory = QgsSettingsRegistryCore::settingsNetworkCacheDirectory->value();

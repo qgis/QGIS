@@ -16,6 +16,7 @@
 #include <cmath>
 #include <QString>
 #include <QObject>
+#include <memory>
 
 #include "qgsdistancearea.h"
 #include "qgis.h"
@@ -899,7 +900,7 @@ void QgsDistanceArea::computeAreaInit() const
     return;
   }
 
-  mGeod.reset( new geod_geodesic() );
+  mGeod = std::make_unique<geod_geodesic>( );
   geod_init( mGeod.get(), mSemiMajor, 1 / mInvFlattening );
 }
 

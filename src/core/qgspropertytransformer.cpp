@@ -15,6 +15,8 @@
 
 #include "qgspropertytransformer.h"
 
+#include <memory>
+
 #include "qgslogger.h"
 #include "qgsexpression.h"
 #include "qgsexpressionnodeimpl.h"
@@ -82,7 +84,7 @@ bool QgsPropertyTransformer::loadVariant( const QVariant &transformer )
 
   if ( !curve.isEmpty() )
   {
-    mCurveTransform.reset( new QgsCurveTransform() );
+    mCurveTransform = std::make_unique<QgsCurveTransform>( );
     mCurveTransform->loadVariant( curve );
   }
 

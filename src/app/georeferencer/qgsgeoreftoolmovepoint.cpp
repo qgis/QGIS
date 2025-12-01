@@ -16,13 +16,15 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsgeoreftoolmovepoint.h"
+
+#include <memory>
 #include "qgssnappingutils.h"
 #include "moc_qgsgeoreftoolmovepoint.cpp"
 
 QgsGeorefToolMovePoint::QgsGeorefToolMovePoint( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+  mSnapIndicator = std::make_unique<QgsSnapIndicator>( canvas );
 }
 
 bool QgsGeorefToolMovePoint::isCanvas( QgsMapCanvas *canvas ) const

@@ -30,6 +30,7 @@
 #include <QObject>
 #include <QTextStream>
 #include <QSqlRecord>
+#include <memory>
 
 
 QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
@@ -465,7 +466,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
     }
 
     // create sql query
-    mQuery.reset( new QgsMssqlQuery( mDatabase ) );
+    mQuery = std::make_unique<QgsMssqlQuery>( mDatabase );
 
     // start selection
     if ( !rewind() )
@@ -622,7 +623,7 @@ bool QgsMssqlFeatureIterator::rewind()
     {
       //try with fallback statement
       sql = mOrderByClause.isEmpty() ? mFallbackStatement : mFallbackStatement + mOrderByClause;
-      logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN ) );
+      logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN );
       result = mQuery->exec( sql );
       if ( result )
       {
@@ -639,7 +640,7 @@ bool QgsMssqlFeatureIterator::rewind()
   if ( !result && !mOrderByClause.isEmpty() )
   {
     //try without order by clause
-    logWrapper.reset( new QgsDatabaseQueryLogWrapper( mStatement, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN ) );
+    logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( mStatement, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN );
     result = mQuery->exec( mStatement );
     if ( result )
     {
@@ -654,7 +655,7 @@ bool QgsMssqlFeatureIterator::rewind()
   if ( !result && !mFallbackStatement.isEmpty() && !mOrderByClause.isEmpty() )
   {
     //try with fallback statement and without order by clause
-    logWrapper.reset( new QgsDatabaseQueryLogWrapper( mFallbackStatement, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN ) );
+    logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( mFallbackStatement, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN );
     result = mQuery->exec( mFallbackStatement );
     if ( result )
     {

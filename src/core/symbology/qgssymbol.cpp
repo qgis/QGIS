@@ -22,6 +22,7 @@
 
 #include <cmath>
 #include <map>
+#include <memory>
 #include <random>
 
 #include "qgssymbol.h"
@@ -959,7 +960,7 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
 
   const Qgis::SymbolRenderHints renderHints = QgsSymbol::renderHints();
 
-  mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, Qgis::RenderUnit::Unknown, mOpacity, false, renderHints, nullptr, fields ) );
+  mSymbolRenderContext = std::make_unique<QgsSymbolRenderContext>( context, Qgis::RenderUnit::Unknown, mOpacity, false, renderHints, nullptr, fields );
 
   // Why do we need a copy here ? Is it to make sure the symbol layer rendering does not mess with the symbol render context ?
   // Or is there another profound reason ?
@@ -1084,7 +1085,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   std::unique_ptr< QgsRenderContext > tempContext;
   if ( !context )
   {
-    tempContext.reset( new QgsRenderContext( QgsRenderContext::fromQPainter( painter ) ) );
+    tempContext = std::make_unique<QgsRenderContext>( QgsRenderContext::fromQPainter( painter ) );
     context = tempContext.get();
     context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
   }

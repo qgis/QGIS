@@ -28,6 +28,7 @@
 #include "testqgsmaptoolutils.h"
 
 #include <QSignalSpy>
+#include <memory>
 
 
 /**
@@ -507,7 +508,7 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
 {
   // prepare vector layer
   std::unique_ptr<QgsVectorLayer> vl;
-  vl.reset( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=name:string(20)" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:4326&field=name:string(20)" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
 
   const QgsGeometry g0 = QgsGeometry::fromWkt( "LineString (0 0, 1 1, 1 2)" );
   QgsFeature f0;

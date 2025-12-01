@@ -25,11 +25,12 @@
 #include "qgsunittypes.h"
 
 #include <cmath>
+#include <memory>
 
 QgsPointClusterRenderer::QgsPointClusterRenderer()
   : QgsPointDistanceRenderer( QStringLiteral( "pointCluster" ) )
 {
-  mClusterSymbol.reset( new QgsMarkerSymbol() );
+  mClusterSymbol = std::make_unique<QgsMarkerSymbol>( );
   mClusterSymbol->setSize( 4 );
   mClusterSymbol->setColor( QColor( 245, 75, 80 ) );
 

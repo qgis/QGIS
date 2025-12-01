@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgstest.h"
 
 #include "qgs3d.h"
@@ -57,7 +59,7 @@ void TestQgsChunkedEntity::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   mLayerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
   QVERIFY( mLayerDtm->isValid() );

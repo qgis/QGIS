@@ -38,6 +38,7 @@
 #include "qgsprofilesnapping.h"
 #include "qgsexpressioncontextutils.h"
 #include <QPolygonF>
+#include <memory>
 
 //
 // QgsVectorLayerProfileResults
@@ -817,7 +818,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileInner( const QgsProfileGener
   mResults->mLayer = mLayer;
   mResults->copyPropertiesFromGenerator( this );
 
-  mProfileCurveEngine.reset( new QgsGeos( mProfileCurve.get() ) );
+  mProfileCurveEngine = std::make_unique<QgsGeos>( mProfileCurve.get() );
   mProfileCurveEngine->prepareGeometry();
 
   if ( tolerance() == 0.0 ) // geos does not handle very well buffer with 0 size
@@ -829,7 +830,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileInner( const QgsProfileGener
     mProfileBufferedCurve = std::unique_ptr<QgsAbstractGeometry>( mProfileCurveEngine->buffer( tolerance(), 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
   }
 
-  mProfileBufferedCurveEngine.reset( new QgsGeos( mProfileBufferedCurve.get() ) );
+  mProfileBufferedCurveEngine = std::make_unique<QgsGeos>( mProfileBufferedCurve.get() );
   mProfileBufferedCurveEngine->prepareGeometry();
 
   mDataDefinedProperties.prepare( mExpressionContext );
@@ -1439,7 +1440,7 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
             *outZ++ = inZ[i];
           }
           std::unique_ptr< QgsPolygon > shiftedPoly;
-          shiftedPoly.reset( new QgsPolygon( new QgsLineString( newX, newY, newZ ) ) );
+          shiftedPoly = std::make_unique<QgsPolygon>( new QgsLineString( newX, newY, newZ ) );
 
           intersection.reset( mProfileBufferedCurveEngine->intersection( shiftedPoly.get(), &error ) );
           if ( intersection )

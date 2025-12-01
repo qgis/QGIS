@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include <QDir>
+#include <memory>
 
 #include "qgstest.h"
 #include "qgisapp.h"
@@ -74,14 +75,14 @@ void TestQgsMapToolEditMesh::initTestCase()
 
 void TestQgsMapToolEditMesh::init()
 {
-  mCanvas.reset( new QgsMapCanvas() );
+  mCanvas = std::make_unique<QgsMapCanvas>();
   mEditMeshMapTool = new QgsMapToolEditMeshFrame( mCanvas.get() );
 }
 
 void TestQgsMapToolEditMesh::hoverElements()
 {
   QString uri = QString( mDataDir + "/simplebox_clm.nc" );
-  meshLayerSimpleBox.reset( new QgsMeshLayer( uri, "Simple box", "mdal" ) );
+  meshLayerSimpleBox = std::make_unique<QgsMeshLayer>( uri, "Simple box", "mdal" );
   QVERIFY( meshLayerSimpleBox->isValid() );
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << meshLayerSimpleBox.get() );
@@ -121,7 +122,7 @@ void TestQgsMapToolEditMesh::hoverElements()
 void TestQgsMapToolEditMesh::editMesh()
 {
   QString uri = QString( mDataDir + "/quad_flower.2dm" );
-  meshLayerQuadFlower.reset( new QgsMeshLayer( uri, "Quad Flower", "mdal" ) );
+  meshLayerQuadFlower = std::make_unique<QgsMeshLayer>( uri, "Quad Flower", "mdal" );
   QVERIFY( meshLayerQuadFlower->isValid() );
   QCOMPARE( meshLayerQuadFlower->datasetGroupCount(), 1 );
 

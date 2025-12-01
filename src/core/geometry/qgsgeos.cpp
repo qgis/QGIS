@@ -29,6 +29,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryutils_base.h"
 #include <limits>
 #include <cstdio>
+#include <memory>
 
 #define DEFAULT_QUADRANT_SEGMENTS 8
 
@@ -1186,7 +1187,7 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
   }
   else if ( type == GEOS_LINESTRING )
   {
-    multiCurve.reset( new QgsMultiCurve() );
+    multiCurve = std::make_unique<QgsMultiCurve>( );
     multiCurve->addGeometry( mGeometry->clone() );
   }
   else

@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsvectorfilewritertask.h"
+
+#include <memory>
 #include "moc_qgsvectorfilewritertask.cpp"
 #include "qgsvectorlayer.h"
 
@@ -34,7 +36,7 @@ QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const Q
   }
   if ( !mOptions.feedback )
   {
-    mOwnedFeedback.reset( new QgsFeedback() );
+    mOwnedFeedback = std::make_unique<QgsFeedback>( );
     mOptions.feedback = mOwnedFeedback.get();
   }
 

@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsaggregatecalculator.h"
+
+#include <memory>
 #include "qgsexpressionutils.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
@@ -74,7 +76,7 @@ QVariant QgsAggregateCalculator::calculate( Qgis::Aggregate aggregate,
     Q_ASSERT( context );
     context->setFields( mLayer->fields() );
     // try to use expression
-    expression.reset( new QgsExpression( fieldOrExpression ) );
+    expression = std::make_unique<QgsExpression>( fieldOrExpression );
 
     if ( expression->hasParserError() || !expression->prepare( context ) )
     {

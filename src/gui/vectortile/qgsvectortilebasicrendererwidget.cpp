@@ -31,6 +31,7 @@
 #include <QMenu>
 #include <QScreen>
 #include <QPointer>
+#include <memory>
 
 
 ///@cond PRIVATE
@@ -381,7 +382,7 @@ void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
   }
   else
   {
-    mRenderer.reset( new QgsVectorTileBasicRenderer() );
+    mRenderer = std::make_unique<QgsVectorTileBasicRenderer>();
   }
 
   mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles, screen() );

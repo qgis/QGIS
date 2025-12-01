@@ -42,6 +42,7 @@
 #include "qgstextdocumentmetrics.h"
 
 #include <QBuffer>
+#include <memory>
 #include <optional>
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
@@ -199,7 +200,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   QgsRenderContext *context = ctx ? ctx->context : nullptr;
   if ( !context )
   {
-    tempContext.reset( new QgsRenderContext( QgsRenderContext::fromQPainter( ctx ? ctx->painter : nullptr ) ) );
+    tempContext = std::make_unique<QgsRenderContext>( QgsRenderContext::fromQPainter( ctx ? ctx->painter : nullptr ) );
     context = tempContext.get();
   }
 
@@ -1583,7 +1584,7 @@ void QgsDataDefinedSizeLegendNode::cacheImage() const
     std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
     if ( !context )
     {
-      context.reset( new QgsRenderContext );
+      context = std::make_unique<QgsRenderContext>( );
       Q_ASSERT( context ); // to make cppcheck happy
       context->setScaleFactor( 96 / 25.4 );
     }

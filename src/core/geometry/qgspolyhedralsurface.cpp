@@ -151,7 +151,7 @@ bool QgsPolyhedralSurface::fromWkb( QgsConstWkbPtr &wkbPtr )
     Qgis::WkbType flatPolygonType = QgsWkbTypes::flatType( polygonType );
     if ( flatPolygonType == Qgis::WkbType::Polygon )
     {
-      currentPatch.reset( new QgsPolygon() );
+      currentPatch = std::make_unique<QgsPolygon>( );
     }
     else
     {

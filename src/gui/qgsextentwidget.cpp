@@ -33,6 +33,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QRegularExpression>
+#include <memory>
 
 QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   : QWidget( parent )
@@ -534,7 +535,7 @@ void QgsExtentWidget::setOutputExtentFromDrawOnCanvas()
     mMapToolPrevious = mCanvas->mapTool();
     if ( !mMapToolExtent )
     {
-      mMapToolExtent.reset( new QgsMapToolExtent( mCanvas ) );
+      mMapToolExtent = std::make_unique<QgsMapToolExtent>( mCanvas );
       connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &QgsExtentWidget::extentDrawn );
       connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, &QgsExtentWidget::mapToolDeactivated );
     }

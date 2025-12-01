@@ -28,6 +28,7 @@
 
 #include <QStandardPaths>
 #include <QUuid>
+#include <memory>
 
 QgsArchive::QgsArchive()
   : mDir( new QTemporaryDir() )
@@ -45,7 +46,7 @@ QgsArchive &QgsArchive::operator=( const QgsArchive &other )
   if ( this != &other )
   {
     mFiles = other.mFiles;
-    mDir.reset( new QTemporaryDir() );
+    mDir = std::make_unique<QTemporaryDir>( );
   }
 
   return *this;
@@ -58,7 +59,7 @@ QString QgsArchive::dir() const
 
 void QgsArchive::clear()
 {
-  mDir.reset( new QTemporaryDir() );
+  mDir = std::make_unique<QTemporaryDir>( );
   mFiles.clear();
 }
 

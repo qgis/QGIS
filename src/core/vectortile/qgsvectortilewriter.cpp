@@ -26,6 +26,7 @@
 #include "qgsvectortileutils.h"
 #include "qgsziputils.h"
 
+#include <memory>
 #include <nlohmann/json.hpp>
 
 #include <QDir>
@@ -84,7 +85,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   }
   else if ( sourceType == QLatin1String( "mbtiles" ) )
   {
-    mbtiles.reset( new QgsMbTiles( sourcePath ) );
+    mbtiles = std::make_unique<QgsMbTiles>( sourcePath );
   }
   else
   {

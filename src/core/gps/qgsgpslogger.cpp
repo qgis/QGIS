@@ -26,6 +26,7 @@
 
 #include <QTimer>
 #include <QTimeZone>
+#include <memory>
 
 
 const QgsSettingsEntryDouble *QgsGpsLogger::settingsDistanceThreshold = new QgsSettingsEntryDouble( QStringLiteral( "distanceThreshold" ), QgsSettingsTree::sTreeGps, 0 );
@@ -48,7 +49,7 @@ QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
   mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
   mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
 
-  mAcquisitionTimer = std::unique_ptr<QTimer>( new QTimer( this ) );
+  mAcquisitionTimer = std::make_unique<QTimer>( this );
   mAcquisitionTimer->setSingleShot( true );
 
   updateGpsSettings();

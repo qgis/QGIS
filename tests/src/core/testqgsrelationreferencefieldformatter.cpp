@@ -15,6 +15,7 @@
 
 #include <QObject>
 #include <QString>
+#include <memory>
 
 #include "qgstest.h"
 #include "qgsapplication.h"
@@ -66,14 +67,14 @@ void TestQgsRelationReferenceFieldFormatter::cleanup()
 void TestQgsRelationReferenceFieldFormatter::init()
 {
   // create layer
-  mLayer1.reset( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) ) );
+  mLayer1 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( mLayer1.get(), false, false );
 
-  mLayer2.reset( new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) ) );
+  mLayer2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?field=pk:int&field=material:string&field=diameter:int&field=raccord:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( mLayer2.get(), false, false );
 
   // create relation
-  mRelation.reset( new QgsRelation() );
+  mRelation = std::make_unique<QgsRelation>();
   mRelation->setId( QStringLiteral( "vl1.vl2" ) );
   mRelation->setName( QStringLiteral( "vl1.vl2" ) );
   mRelation->setReferencingLayer( mLayer1->id() );

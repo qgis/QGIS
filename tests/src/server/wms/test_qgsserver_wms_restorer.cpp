@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
@@ -82,7 +84,7 @@ void TestQgsServerWmsRestorer::restorer_layer()
   {
     // destructor is called once out of scope
     std::unique_ptr<QgsWms::QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWms::QgsWmsRestorer( context ) );
+    restorer = std::make_unique<QgsWms::QgsWmsRestorer>( context );
 
     const QString new_name = "new_name";
     vl->setName( new_name );
