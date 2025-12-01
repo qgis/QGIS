@@ -35,7 +35,7 @@ class QgsDatabaseQueryLoggerRootNode final : public QgsDevToolsModelGroup
 {
   public:
     QgsDatabaseQueryLoggerRootNode();
-    QVariant data( int role = Qt::DisplayRole ) const override final;
+    QVariant data( int role = Qt::DisplayRole ) const final;
 
     /**
      * Removes a \a row from the root group.
@@ -77,7 +77,7 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
      */
     QgsDatabaseQueryLoggerQueryGroup( const QgsDatabaseQueryLogEntry &query );
     QVariant data( int role = Qt::DisplayRole ) const override;
-    QList<QAction *> actions( QObject *parent ) override final;
+    QList<QAction *> actions( QObject *parent ) final;
     QVariant toVariant() const override;
 
     /**
