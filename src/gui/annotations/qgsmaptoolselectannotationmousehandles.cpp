@@ -36,7 +36,7 @@ QgsMapToolSelectAnnotationMouseHandles::QgsMapToolSelectAnnotationMouseHandles( 
 {
   setZValue( 100 );
 
-  connect( mMapTool, &QgsMapToolSelectAnnotation::selectionChanged, this, &QgsMapToolSelectAnnotationMouseHandles::selectionChanged );
+  connect( mMapTool, &QgsMapToolSelectAnnotation::selectedItemsChanged, this, &QgsMapToolSelectAnnotationMouseHandles::selectionChanged );
   connect( mCanvas, &QgsMapCanvas::extentsChanged, this, [this] { updateHandles(); } );
   mCanvas->scene()->addItem( this );
 

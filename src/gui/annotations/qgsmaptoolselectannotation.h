@@ -100,9 +100,19 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsMapToolAdvancedDigitizin
   signals:
 
     /**
-     * Emitted when the selected item has changed;
+     * Emitted when the selected item has changed.
      */
-    void selectionChanged();
+    void selectedItemsChanged();
+
+    /**
+     * Emitted when the selected item is changed.
+     */
+    void itemSelected( QgsAnnotationLayer *layer, const QString &itemId );
+
+    /**
+     * Emitted when the selected item is cleared.
+     */
+    void selectionCleared();
 
   private slots:
     void onCanvasRefreshed();
@@ -116,6 +126,7 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsMapToolAdvancedDigitizin
     void setSelectedItemFromPoint( const QgsPointXY &mapPoint, bool toggleSelection = false );
     void setSelectedItemsFromRect( const QgsRectangle &mapRect, bool toggleSelection = false );
     void clearSelectedItems();
+    void updateSelectedItem();
 
     QList<QgsAnnotationItemRubberBand *> mSelectedItems;
 

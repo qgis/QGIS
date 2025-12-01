@@ -1929,6 +1929,9 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   updateCrsStatusBar();
   endProfile();
 
+  connect( qobject_cast<QgsMapToolSelectAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationSelect ) ), &QgsMapToolSelectAnnotation::itemSelected, mMapStyleWidget, &QgsLayerStylingWidget::setAnnotationItem );
+  connect( qobject_cast<QgsMapToolSelectAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationSelect ) ), &QgsMapToolSelectAnnotation::selectionCleared, mMapStyleWidget, [this] { mMapStyleWidget->setAnnotationItem( nullptr, QString() ); } );
+
   connect( qobject_cast<QgsMapToolModifyAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ), &QgsMapToolModifyAnnotation::itemSelected, mMapStyleWidget, &QgsLayerStylingWidget::setAnnotationItem );
   connect( qobject_cast<QgsMapToolModifyAnnotation *>( mMapTools->mapTool( QgsAppMapTools::AnnotationEdit ) ), &QgsMapToolModifyAnnotation::selectionCleared, mMapStyleWidget, [this] { mMapStyleWidget->setAnnotationItem( nullptr, QString() ); } );
 
