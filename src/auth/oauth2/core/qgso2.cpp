@@ -244,7 +244,7 @@ void QgsO2::link()
   // and we don't use an external web interceptor
   if ( !useExternalWebInterceptor_ )
   {
-    if ( replyServer() == NULL )
+    if ( replyServer() == nullptr )
     {
       O2ReplyServer *replyServer = new O2ReplyServer( this );
       connect( replyServer, &O2ReplyServer::verificationReceived, this, &QgsO2::onVerificationReceived );

@@ -300,7 +300,7 @@ void TestQgsLegendRenderer::init()
   GDALDriverH hGTiffDrv = GDALGetDriverByName( "GTiff" );
   Q_ASSERT( hGTiffDrv );
   const char *tempFileName = "/vsimem/temp.tif";
-  GDALDatasetH hDS = GDALCreate( hGTiffDrv, tempFileName, 2, 2, 1, GDT_Byte, NULL );
+  GDALDatasetH hDS = GDALCreate( hGTiffDrv, tempFileName, 2, 2, 1, GDT_Byte, nullptr );
   Q_ASSERT( hDS );
   CPLErr eErr = GDALRasterIO( GDALGetRasterBand( hDS, 1 ), GF_Write, 0, 0, 2, 2, RASTER_ARRAY, 2, 2, GDT_Byte, 1, 2 );
   QVERIFY( eErr == CE_None );

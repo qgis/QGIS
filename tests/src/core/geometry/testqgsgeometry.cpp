@@ -1051,11 +1051,11 @@ namespace
     std::unique_ptr<QgsAbstractGeometry> created { TestQgsGeometry::createEmpty( geom.get() ) };
     QVERIFY( created->isEmpty() );
 #if defined( __clang__ ) || defined( __GNUG__ )
-    srand( ( unsigned ) time( NULL ) );
+    srand( ( unsigned ) time( nullptr ) );
 
     const std::type_info &ti = typeid( T );
     int status;
-    char *realname = abi::__cxa_demangle( ti.name(), 0, 0, &status );
+    char *realname = abi::__cxa_demangle( ti.name(), nullptr, nullptr, &status );
 
     QString type = realname;
     // remove Qgs prefix

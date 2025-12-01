@@ -142,7 +142,7 @@ class QgsPalettedRendererProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-    QgsPalettedRendererProxyModel( QObject *parent = 0 )
+    QgsPalettedRendererProxyModel( QObject *parent = nullptr )
       : QSortFilterProxyModel( parent )
     {
     }

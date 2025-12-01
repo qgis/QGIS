@@ -456,7 +456,7 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
   }
   else
   {
-    urlQUrl.setQuery( NULL );
+    urlQUrl.setQuery( nullptr );
   }
 
   return urlQUrl.url();
