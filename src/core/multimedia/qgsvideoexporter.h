@@ -256,8 +256,8 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     QSize mSize;
     QStringList mInputFiles;
     double mFramesPerSecond = 10;
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     qint64 mFrameDurationUs = 100000;
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     QMediaFormat::FileFormat mFormat = QMediaFormat::FileFormat::MPEG4;
     QMediaFormat::VideoCodec mCodec = QMediaFormat::VideoCodec::H264;
     QMediaRecorder::Error mError = QMediaRecorder::Error::NoError;
