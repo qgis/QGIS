@@ -176,7 +176,7 @@ Constructor for provider metadata
 %End
 
 
-    ~QgsProviderMetadata();
+    virtual ~QgsProviderMetadata();
 
     QString key() const;
 %Docstring
