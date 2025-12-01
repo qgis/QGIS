@@ -769,7 +769,7 @@ void TestQgsRasterLayer::palettedRendererConstantInt()
   GDALDriverH hGTiffDrv = GDALGetDriverByName( "GTiff" );
   Q_ASSERT( hGTiffDrv );
   const char *tempFileName = "/vsimem/temp.tif";
-  GDALDatasetH hDS = GDALCreate( hGTiffDrv, tempFileName, 1, 1, 1, GDT_Byte, NULL );
+  GDALDatasetH hDS = GDALCreate( hGTiffDrv, tempFileName, 1, 1, 1, GDT_Byte, nullptr );
   Q_ASSERT( hDS );
   GDALFillRaster( GDALGetRasterBand( hDS, 1 ), value, 0 );
   GDALClose( hDS );

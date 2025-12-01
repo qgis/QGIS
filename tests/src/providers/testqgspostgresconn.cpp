@@ -80,7 +80,7 @@ class TestQgsPostgresConn : public QObject
     void initTestCase() // will be called before the first testfunction is executed.
     {
 #ifdef ENABLE_PGTEST
-      this->_connection = 0;
+      this->_connection = nullptr;
 #endif
     }
     void cleanupTestCase() // will be called after the last testfunction was executed.
@@ -134,7 +134,7 @@ class TestQgsPostgresConn : public QObject
       qvlist.append( 123LL );
       shared->insertFid( 1LL, qvlist );
 
-      QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( shared ) ), QString( "\"ts\"='2020-05-07T17:56:00.000' AND \"pk\"=123" ) );
+      QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( shared ) ), QString( "\"ts\"='2020-05-07T17:56:00.000' AND \"pk\"=123" ) );
     }
 
     void quotedValueStringArray()
@@ -167,7 +167,7 @@ class TestQgsPostgresConn : public QObject
       QGSTEST_NEED_PGTEST_DB();
 
       QgsPostgresConn *conn = getConnection();
-      QVERIFY( conn != 0 );
+      QVERIFY( conn != nullptr );
       QVector<QgsPostgresLayerProperty> layers;
       QMap<QString, QgsPostgresLayerProperty> layersMap;
 
@@ -245,7 +245,7 @@ class TestQgsPostgresConn : public QObject
       QGSTEST_NEED_PGTEST_DB();
 
       QgsPostgresConn *conn = getConnection();
-      QVERIFY( conn != 0 );
+      QVERIFY( conn != nullptr );
 
       const QString sql = QStringLiteral( "SELECT SESSION_USER, CURRENT_USER;" );
 
