@@ -68,6 +68,8 @@ void QgsPointCloudLayerChunkLoader::start()
 
   QgsDebugMsgLevel( QStringLiteral( "loading entity %1" ).arg( node->tileId().text() ), 2 );
 
+  // suppress false positive clang tidy warning
+  // NOLINTBEGIN(bugprone-branch-clone)
   if ( mContext.symbol()->symbolType() == QLatin1String( "single-color" ) )
     mHandler = std::make_unique<QgsSingleColorPointCloud3DSymbolHandler>();
   else if ( mContext.symbol()->symbolType() == QLatin1String( "color-ramp" ) )
@@ -80,6 +82,7 @@ void QgsPointCloudLayerChunkLoader::start()
     const QgsClassificationPointCloud3DSymbol *classificationSymbol = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( mContext.symbol() );
     mContext.setFilteredOutCategories( classificationSymbol->getFilteredOutCategories() );
   }
+  // NOLINTEND(bugprone-branch-clone)
 
   //
   // this will be run in a background thread
