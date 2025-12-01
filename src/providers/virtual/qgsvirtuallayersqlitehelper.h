@@ -17,6 +17,9 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYER_SQLITE_UTILS_H
 #define QGSVIRTUALLAYER_SQLITE_UTILS_H
 
+#include <QString>
+#include <QVariant>
+
 extern "C"
 {
 #include <sqlite3.h>
