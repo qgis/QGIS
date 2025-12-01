@@ -40,7 +40,7 @@ class GUI_EXPORT QgsNetworkLoggerRootNode final : public QgsDevToolsModelGroup
 {
   public:
     QgsNetworkLoggerRootNode();
-    QVariant data( int role = Qt::DisplayRole ) const override final;
+    QVariant data( int role = Qt::DisplayRole ) const final;
 
     /**
      * Removes a \a row from the root group.
@@ -99,7 +99,7 @@ class GUI_EXPORT QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGro
      */
     QgsNetworkLoggerRequestGroup( const QgsNetworkRequestParameters &request );
     QVariant data( int role = Qt::DisplayRole ) const override;
-    QList<QAction *> actions( QObject *parent ) override final;
+    QList<QAction *> actions( QObject *parent ) final;
     QVariant toVariant() const override;
 
     /**
