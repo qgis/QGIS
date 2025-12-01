@@ -224,7 +224,7 @@ class TestQgsGrassProvider : public QgsTest
     // compare with tolerance
     bool compare( double expected, double got, bool &ok );
     bool copyRecursively( const QString &srcFilePath, const QString &tgtFilePath, QString *error );
-    bool removeRecursively( const QString &filePath, QString *error = 0 );
+    bool removeRecursively( const QString &filePath, QString *error = nullptr );
     bool copyLocation( QString &tmpGisdbase );
     bool createTmpLocation( QString &tmpGisdbase, QString &tmpLocation, QString &tmpMapset );
     bool equal( QgsFeature feature, QgsFeature expectedFeatures );
@@ -1162,9 +1162,9 @@ void TestQgsGrassProvider::edit()
     // map of expected layers with grass uri as key
     QMap<QString, QgsVectorLayer *> expectedLayers;
 
-    QgsVectorLayer *grassLayer = 0;
-    QgsGrassProvider *grassProvider = 0;
-    QgsVectorLayer *expectedLayer = 0;
+    QgsVectorLayer *grassLayer = nullptr;
+    QgsGrassProvider *grassProvider = nullptr;
+    QgsVectorLayer *expectedLayer = nullptr;
 
     QList<TestQgsGrassCommand> editCommands; // real edit
 
@@ -1597,7 +1597,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   }
   QList<QgsFeature> features = getFeatures( layer );
   delete layer;
-  layer = 0;
+  layer = nullptr;
 
   bool sharedOk = compare( features, expectedFeatures, ok );
   if ( sharedOk )
@@ -1653,7 +1653,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   }
   features = getFeatures( layer );
   delete layer;
-  QgsGrassVectorMapStore::setStore( 0 );
+  QgsGrassVectorMapStore::setStore( nullptr );
   delete mapStore;
 
   independentOk = compare( features, expectedFeatures, ok );

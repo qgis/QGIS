@@ -360,7 +360,7 @@ namespace QgsWms
   {
     if ( !projectRoot )
     {
-      return 0;
+      return nullptr;
     }
 
     auto tree = std::make_unique<QgsLayerTree>();

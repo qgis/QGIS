@@ -49,7 +49,7 @@ class TestQgsPostgresProvider : public QObject
     void initTestCase() // will be called before the first testfunction is executed.
     {
 #ifdef ENABLE_PGTEST
-      this->_connection = 0;
+      this->_connection = nullptr;
 #endif
     }
     void cleanupTestCase() // will be called after the last testfunction was executed.
@@ -252,7 +252,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   // for positive integers, fid  == the value, there is no map.
   sdata->insertFid( 42, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 42, fields, NULL, QgsPostgresPrimaryKeyType::PktInt, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_integer\"=42" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 42, fields, nullptr, QgsPostgresPrimaryKeyType::PktInt, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_integer\"=42" ) );
 
   // 8 byte integer
   f1.setName( "fld_bigint" );
@@ -270,7 +270,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktInt64, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktInt64, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800" ) );
 
   // double
   f2.setName( "fld_double" );
@@ -288,7 +288,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_double\"='3.141592741'" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_double\"='3.141592741'" ) );
 
   // text
   f3.setName( "fld_text" );
@@ -306,7 +306,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_text\"::text='QGIS ''Rocks''!'" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_text\"::text='QGIS ''Rocks''!'" ) );
 
   // Composite bigint + text + int
   pkAttrs.clear();
@@ -328,7 +328,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800 AND \"fld_text\"::text='QGIS ''Rocks''!' AND \"fld_integer\"=42" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800 AND \"fld_text\"::text='QGIS ''Rocks''!' AND \"fld_integer\"=42" ) );
 }
 
 void TestQgsPostgresProvider::testWhereClauseFids()
@@ -385,7 +385,7 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 42, QVariantList() << 42 );
   sdata->insertFid( 43, QVariantList() << 43 );
 
-  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 42 << 43, fields, NULL, QgsPostgresPrimaryKeyType::PktInt, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "42" << "43" );
+  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 42 << 43, fields, nullptr, QgsPostgresPrimaryKeyType::PktInt, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "42" << "43" );
 
   // 8 byte integer -> IN clause
   f1.setName( "fld" );
@@ -402,7 +402,7 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 1LL, QVariantList() << -9223372036854775800LL ); // way outside int4 range
   sdata->insertFid( 2LL, QVariantList() << -9223372036854775801LL );
 
-  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktInt64, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "-9223372036854775800" << "-9223372036854775801" );
+  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktInt64, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "-9223372036854775800" << "-9223372036854775801" );
 
   // double -> OR clause
   f2.setName( "fld" );
@@ -419,7 +419,7 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 1LL, QVariantList() << 3.141592741 );
   sdata->insertFid( 2LL, QVariantList() << 6.141592741 );
 
-  CHECK_OR_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "\"fld\"='3.141592741'" << "\"fld\"='6.141592741'" );
+  CHECK_OR_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "\"fld\"='3.141592741'" << "\"fld\"='6.141592741'" );
 
   // text -> IN clause
   f3.setName( "fld" );
@@ -436,7 +436,7 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 1LL, QVariantList() << QString( "QGIS 'Rocks'!" ) );
   sdata->insertFid( 2LL, QVariantList() << QString( "PostGIS too!" ) );
 
-  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "'PostGIS too!'" << "'QGIS ''Rocks''!'" );
+  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "'PostGIS too!'" << "'QGIS ''Rocks''!'" );
 
   // Composite text + int -> OR clause
   f0.setName( "fld_int" );
@@ -452,8 +452,8 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 1LL, QVariantList() << 42 << QString( "QGIS 'Rocks'!" ) );
   sdata->insertFid( 2LL, QVariantList() << 43 << QString( "PostGIS too!" ) );
 
-  CHECK_OR_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "\"fld_int\"=42 AND \"fld\"::text='QGIS ''Rocks''!'"
-                                                                                                                                                                                                               << "\"fld_int\"=43 AND \"fld\"::text='PostGIS too!'" );
+  CHECK_OR_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "\"fld_int\"=42 AND \"fld\"::text='QGIS ''Rocks''!'"
+                                                                                                                                                                                                                  << "\"fld_int\"=43 AND \"fld\"::text='PostGIS too!'" );
 }
 
 #ifdef ENABLE_PGTEST

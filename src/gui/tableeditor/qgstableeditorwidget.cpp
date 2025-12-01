@@ -1578,9 +1578,9 @@ QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOpti
   QgsTableEditorTextEdit *w = new QgsTableEditorTextEdit( parent );
   w->setWeakEditorMode( mWeakEditorMode );
 
-  if ( !w->style()->styleHint( QStyle::SH_ItemView_DrawDelegateFrame, 0, w ) )
+  if ( !w->style()->styleHint( QStyle::SH_ItemView_DrawDelegateFrame, nullptr, w ) )
     w->setFrameShape( QFrame::NoFrame );
-  if ( !w->style()->styleHint( QStyle::SH_ItemView_ShowDecorationSelected, 0, w ) )
+  if ( !w->style()->styleHint( QStyle::SH_ItemView_ShowDecorationSelected, nullptr, w ) )
     w->setWidgetOwnsGeometry( true );
 
   return w;
