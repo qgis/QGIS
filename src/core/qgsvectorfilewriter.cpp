@@ -19,14 +19,14 @@
 #include "qgsvectorfilewriter.h"
 
 #include <cassert>
+#include <cpl_conv.h>
+#include <cpl_error.h>
+#include <cpl_string.h>
 #include <cstdlib>
+#include <gdal.h>
 #include <limits>
 #include <memory>
 #include <ogr_srs_api.h>
-#include <cpl_error.h>
-#include <cpl_conv.h>
-#include <cpl_string.h>
-#include <gdal.h>
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"

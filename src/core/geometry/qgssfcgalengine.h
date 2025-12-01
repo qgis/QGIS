@@ -22,6 +22,7 @@
 #define SIP_NO_FILE
 
 #include <SFCGAL/capi/sfcgal_c.h>
+#include <source_location>
 
 #include "qgis_core.h"
 #include "qgsexception.h"

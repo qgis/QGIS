@@ -17,9 +17,9 @@
 
 #include "qgswfsprovider.h"
 
+#include <cfloat>
 #include <cpl_string.h>
 #include <gdal.h>
-#include <cfloat>
 
 #include "qgis.h"
 #include "qgsbackgroundcachedfeaturesource.h"

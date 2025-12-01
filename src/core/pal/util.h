@@ -33,8 +33,8 @@
 #define SIP_NO_FILE
 
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include <QLinkedList>
 #include <QList>

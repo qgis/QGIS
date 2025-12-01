@@ -19,8 +19,8 @@
 
 #include <nlohmann/json.hpp>
 #include <pdal/Options.hpp>
-#include <pdal/StageFactory.hpp>
 #include <pdal/Reader.hpp>
+#include <pdal/StageFactory.hpp>
 
 #include "qgis.h"
 #include "qgsapplication.h"

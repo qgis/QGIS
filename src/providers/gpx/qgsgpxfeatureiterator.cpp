@@ -14,8 +14,8 @@
  ***************************************************************************/
 #include "qgsgpxfeatureiterator.h"
 
-#include <limits>
 #include <cstring>
+#include <limits>
 
 #include "qgsapplication.h"
 #include "qgsexception.h"

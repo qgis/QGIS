@@ -16,8 +16,8 @@
  ***************************************************************************/
 #include "qgsdatumtransform.h"
 
-#include <sqlite3.h>
 #include <proj.h>
+#include <sqlite3.h>
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"

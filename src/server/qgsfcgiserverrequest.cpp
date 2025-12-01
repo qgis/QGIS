@@ -19,14 +19,14 @@
 
 #include "qgsfcgiserverrequest.h"
 
-#include <fcgi_stdio.h>
-
 #include "qgis.h"
 #include "qgsmessagelog.h"
 #include "qgsserverlogger.h"
 #include "qgsstringutils.h"
 
 #include <QDebug>
+
+#include <fcgi_stdio.h>
 
 QgsFcgiServerRequest::QgsFcgiServerRequest()
 {

@@ -15,9 +15,9 @@
 #ifndef QGSBASICNUMERICFORMAT_H
 #define QGSBASICNUMERICFORMAT_H
 
-#include <sstream>
 #include <iostream>
 #include <memory>
+#include <sstream>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"

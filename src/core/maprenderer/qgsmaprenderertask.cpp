@@ -17,9 +17,9 @@
 
 #include "qgsmaprenderertask.h"
 
-#include <memory>
-#include <gdal.h>
 #include <cpl_conv.h>
+#include <gdal.h>
+#include <memory>
 
 #include "qgsabstractgeopdfexporter.h"
 #include "qgsannotation.h"

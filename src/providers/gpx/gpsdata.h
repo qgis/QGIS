@@ -18,8 +18,8 @@
 #ifndef GPSDATA_H
 #define GPSDATA_H
 
-#include <limits>
 #include <expat.h>
+#include <limits>
 
 #include "qgsfeatureid.h"
 #include "qgsrectangle.h"

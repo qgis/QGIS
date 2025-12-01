@@ -18,8 +18,8 @@
 #ifndef QGSPROVIDERSUBLAYERMODEL_H
 #define QGSPROVIDERSUBLAYERMODEL_H
 
-#include <memory>
 #include <deque>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"

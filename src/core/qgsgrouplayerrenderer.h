@@ -20,9 +20,9 @@
 
 #define SIP_NO_FILE
 
+#include <memory>
 #include <tuple>
 #include <vector>
-#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"

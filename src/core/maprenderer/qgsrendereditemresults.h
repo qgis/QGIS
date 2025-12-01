@@ -19,8 +19,8 @@
 #define QGSRENDEREDITEMRESULTS_H
 
 #include <memory>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"

@@ -15,8 +15,8 @@
 #ifndef QGSDBQUERYLOGGERNODE_H
 #define QGSDBQUERYLOGGERNODE_H
 
-#include <memory>
 #include <deque>
+#include <memory>
 
 #include "devtools/qgsdevtoolsmodelnode.h"
 #include "qgsdbquerylog.h"

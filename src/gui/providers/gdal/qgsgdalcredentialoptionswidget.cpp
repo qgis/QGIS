@@ -18,8 +18,8 @@
 
 #include "qgsgdalcredentialoptionswidget.h"
 
-#include <gdal.h>
 #include <cpl_minixml.h>
+#include <gdal.h>
 
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"

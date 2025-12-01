@@ -17,9 +17,9 @@
 
 #include "gpsdata.h"
 
+#include <cstring>
 #include <limits>
 #include <stdexcept>
-#include <cstring>
 
 #include "qgslogger.h"
 

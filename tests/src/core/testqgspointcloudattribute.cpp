@@ -12,9 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <ogr_api.h>
 #include <cpl_conv.h>
 #include <cpl_string.h>
+#include <ogr_api.h>
 
 #include "qgsapplication.h"
 #include "qgsfield.h"

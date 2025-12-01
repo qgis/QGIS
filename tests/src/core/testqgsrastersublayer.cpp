@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <gdal.h>
 #include <cpl_conv.h>
+#include <gdal.h>
 
 #include "qgstest.h"
 

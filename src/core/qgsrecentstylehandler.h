@@ -16,8 +16,8 @@
 #ifndef QGSRECENTSTYLEHANDLER_H
 #define QGSRECENTSTYLEHANDLER_H
 
-#include <unordered_map>
 #include <memory>
+#include <unordered_map>
 
 #include "qgis.h"
 #include "qgis_core.h"

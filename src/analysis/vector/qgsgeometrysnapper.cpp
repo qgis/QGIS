@@ -16,8 +16,8 @@
 
 #include "qgsgeometrysnapper.h"
 
-#include <memory>
 #include <geos_c.h>
+#include <memory>
 
 #include "qgscurve.h"
 #include "qgsfeatureiterator.h"

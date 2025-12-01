@@ -22,8 +22,8 @@ class QgsMeshLayer;
 
 #define SIP_NO_FILE
 
-#include <memory>
 #include <limits>
+#include <memory>
 
 #include "qgis.h"
 #include "qgsmapclippingregion.h"

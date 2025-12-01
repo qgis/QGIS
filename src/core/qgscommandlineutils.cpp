@@ -17,10 +17,10 @@
 
 #include "qgscommandlineutils.h"
 
-#include <sqlite3.h>
-#include <ogr_api.h>
 #include <gdal_version.h>
+#include <ogr_api.h>
 #include <proj.h>
+#include <sqlite3.h>
 
 #include "qgsapplication.h"
 #include "qgsgeos.h"

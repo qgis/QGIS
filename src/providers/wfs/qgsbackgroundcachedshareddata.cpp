@@ -15,12 +15,12 @@
 
 #include "qgsbackgroundcachedshareddata.h"
 
-#include <memory>
-#include <set>
-#include <cpl_vsi.h>
 #include <cpl_conv.h>
+#include <cpl_vsi.h>
 #include <gdal.h>
+#include <memory>
 #include <ogr_api.h>
+#include <set>
 #include <sqlite3.h>
 
 #include "qgsbackgroundcachedfeatureiterator.h"

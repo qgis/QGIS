@@ -16,8 +16,8 @@
  ***************************************************************************/
 #include "qgsnewogrconnection.h"
 
-#include <ogr_api.h>
 #include <cpl_error.h>
+#include <ogr_api.h>
 
 #include "qgsapplication.h"
 #include "qgsgdalguiutils.h"

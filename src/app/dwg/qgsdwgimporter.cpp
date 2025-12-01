@@ -17,14 +17,14 @@
 
 #include "qgsdwgimporter.h"
 
-#include <typeinfo>
-#include <cpl_port.h>
 #include <cpl_error.h>
+#include <cpl_port.h>
 #include <cpl_string.h>
 #include <gdal.h>
-#include <ogr_srs_api.h>
 #include <memory>
 #include <mutex>
+#include <ogr_srs_api.h>
+#include <typeinfo>
 
 #include "libdwgr.h"
 #include "libdxfrw.h"

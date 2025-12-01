@@ -15,10 +15,10 @@
 
 #include "qgsgcptransformer.h"
 
+#include <cassert>
+#include <cmath>
 #include <gdal.h>
 #include <gdal_alg.h>
-#include <cmath>
-#include <cassert>
 #include <limits>
 
 #include "qgsleastsquares.h"

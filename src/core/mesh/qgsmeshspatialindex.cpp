@@ -15,8 +15,8 @@
 
 #include "qgsmeshspatialindex.h"
 
-#include <spatialindex/SpatialIndex.h>
 #include <memory>
+#include <spatialindex/SpatialIndex.h>
 
 #include "qgsfeedback.h"
 #include "qgslogger.h"

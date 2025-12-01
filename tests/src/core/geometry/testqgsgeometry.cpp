@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include <cmath>
-#include <memory>
 #include <limits>
+#include <memory>
 
 #include "qgstest.h"
 

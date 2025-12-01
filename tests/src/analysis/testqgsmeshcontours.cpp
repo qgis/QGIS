@@ -12,9 +12,9 @@ Email                : zilolv at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <limits>
 #include <cmath>
 #include <iostream>
+#include <limits>
 
 #include "qgsapplication.h"
 #include "qgsgeometryfactory.h"

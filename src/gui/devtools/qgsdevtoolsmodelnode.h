@@ -17,8 +17,8 @@
 
 #define SIP_NO_FILE
 
-#include <memory>
 #include <deque>
+#include <memory>
 
 #include "qgis_gui.h"
 

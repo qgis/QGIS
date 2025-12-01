@@ -33,9 +33,9 @@
 #define SIP_NO_FILE
 
 
-#include <iostream>
-#include <fstream>
 #include <cmath>
+#include <fstream>
+#include <iostream>
 
 #include "labelposition.h"
 #include "pointset.h"
