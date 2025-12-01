@@ -202,7 +202,7 @@ namespace Sqlite
     return sqlite3_column_int( stmt_, i );
   }
 
-  qint64 Query::columnInt64( int i ) const
+  long long Query::columnInt64( int i ) const
   {
     return sqlite3_column_int64( stmt_, i );
   }

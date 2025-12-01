@@ -17,8 +17,10 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYER_SQLITE_UTILS_H
 #define QGSVIRTUALLAYER_SQLITE_UTILS_H
 
-#include <QString>
-#include <QVariant>
+class QString;
+class QVariant;
+class QByteArray;
+class sqlite3;
 
 extern "C"
 {
@@ -75,7 +77,7 @@ namespace Sqlite
 
       int columnInt( int i ) const;
 
-      qint64 columnInt64( int i ) const;
+      long long columnInt64( int i ) const;
 
       double columnDouble( int i ) const;
 
