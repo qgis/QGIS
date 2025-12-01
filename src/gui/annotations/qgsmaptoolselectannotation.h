@@ -100,17 +100,22 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsMapToolAdvancedDigitizin
   signals:
 
     /**
-     * Emitted when the selected item has changed.
+     * Emitted when the selected items list has changed.
      */
     void selectedItemsChanged();
 
     /**
-     * Emitted when the selected item is changed.
+     * Emitted when the selected items list has changed and a single item is selected.
      */
-    void itemSelected( QgsAnnotationLayer *layer, const QString &itemId );
+    void singleItemSelected( QgsAnnotationLayer *layer, const QString &itemId );
 
     /**
-     * Emitted when the selected item is cleared.
+     * Emitted when the selected items list has changed and multiple items are selected.
+     */
+    void multipleItemsSelected();
+
+    /**
+     * Emitted when the selected items list is cleared.
      */
     void selectionCleared();
 

@@ -632,9 +632,13 @@ void QgsMapToolSelectAnnotation::setSelectedItemFromPoint( const QgsPointXY &map
 
 void QgsMapToolSelectAnnotation::updateSelectedItem()
 {
-  if ( mSelectedItems.size() == 1 )
+  if ( mSelectedItems.size() > 1 )
   {
-    emit itemSelected( mSelectedItems[0]->layer(), mSelectedItems[0]->itemId() );
+    emit multipleItemsSelected();
+  }
+  else if ( mSelectedItems.size() == 1 )
+  {
+    emit singleItemSelected( mSelectedItems[0]->layer(), mSelectedItems[0]->itemId() );
   }
   else
   {
