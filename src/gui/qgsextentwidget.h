@@ -31,7 +31,6 @@
 #include <QRegularExpression>
 
 class QgsBookmarkManagerProxyModel;
-class QgsCoordinateReferenceSystem;
 class QgsMapLayerProxyModel;
 class QgsMapLayer;
 
@@ -178,6 +177,24 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      */
     void setNullValueAllowed( bool allowed, const QString &notSetText = QString() );
 
+    /**
+     * Sets the snap-to-grid functionality and shows/hides the snap-to-grid button.
+     * \param available whether snap-to-grid functionality should be available
+     * \param enabled whether snap-to-grid should be initially enabled
+     * \param rasterXRes X resolution of the reference raster for snapping
+     * \param rasterYRes Y resolution of the reference raster for snapping
+     * \param rasterMinX minimum X coordinate of the reference raster
+     * \param rasterMinY minimum Y coordinate of the reference raster
+     * \since QGIS 3.46
+     */
+    void setSnapToGridAvailable( bool available, bool enabled = false, double rasterXRes = 1.0, double rasterYRes = 1.0, double rasterMinX = 0.0, double rasterMinY = 0.0 );
+
+    /**
+     * Returns whether snap-to-grid is currently enabled.
+     * \since QGIS 3.46
+     */
+    bool snapToGridEnabled() const;
+
   public slots:
 
     /**
@@ -241,6 +258,13 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      */
     void extentLayerChanged( QgsMapLayer *layer );
 
+    /**
+     * Emitted when the snap-to-grid state is changed.
+     * \param enabled whether snap-to-grid is enabled
+     * \since QGIS 3.46
+     */
+    void snapToGridChanged( bool enabled );
+
   protected:
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragLeaveEvent( QDragLeaveEvent *event ) override;
@@ -255,6 +279,8 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
 
     void extentDrawn( const QgsRectangle &extent );
     void mapToolDeactivated();
+    void snapToGridToggled( bool enabled );
+    void applySnapToGrid();
 
   private:
     void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentWidget::ExtentState state );
@@ -301,8 +327,14 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     bool mFirstShow = true;
     bool mBlockDrawOnCanvas = false;
 
-    void setValid( bool valid );
+    // Snap-to-grid functionality
+    bool mSnapToGridEnabled = false;
+    double mRasterXRes = 1.0;
+    double mRasterYRes = 1.0;
+    double mRasterMinX = 0.0;
+    double mRasterMinY = 0.0;
 
+    void setValid( bool valid );
     void setExtentToLayerExtent( const QString &layerId );
 
     QgsMapLayer *mapLayerFromMimeData( const QMimeData *data ) const;

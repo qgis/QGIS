@@ -94,12 +94,15 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   mYMaxLineEdit->setValidator( new QgsDoubleValidator( this ) );
 
   mOriginalExtentButton->setVisible( false );
-  mButtonDrawOnCanvas->setVisible( false );
   mCurrentExtentButton->setVisible( false );
 
   connect( mCurrentExtentButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromCurrent );
   connect( mOriginalExtentButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromOriginal );
-  connect( mButtonDrawOnCanvas, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromDrawOnCanvas );
+
+  // Snap-to-grid button is hidden by default, shown when snap-to-grid is available
+  mSnapToGridButton->setVisible( false );
+  mSnapToGridButton->setCheckable( false );
+  connect( mSnapToGridButton, &QAbstractButton::clicked, this, &QgsExtentWidget::applySnapToGrid );
 
   switch ( style )
   {
@@ -575,7 +578,22 @@ QgsRectangle QgsExtentWidget::outputExtent() const
   if ( !ok )
     return QgsRectangle();
 
-  return QgsRectangle( xmin, ymin, xmax, ymax );
+  QgsRectangle extent( xmin, ymin, xmax, ymax );
+
+  if ( mSnapToGridEnabled && mRasterXRes > 0 && mRasterYRes > 0 )
+  {
+    double snappedXmin = mRasterMinX + std::floor( ( extent.xMinimum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
+    double snappedYmin = mRasterMinY + std::floor( ( extent.yMinimum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
+    double snappedXmax = mRasterMinX + std::ceil( ( extent.xMaximum() - mRasterMinX ) / mRasterXRes ) * mRasterXRes;
+    double snappedYmax = mRasterMinY + std::ceil( ( extent.yMaximum() - mRasterMinY ) / mRasterYRes ) * mRasterYRes;
+
+    extent.setXMinimum( snappedXmin );
+    extent.setYMinimum( snappedYmin );
+    extent.setXMaximum( snappedXmax );
+    extent.setYMaximum( snappedYmax );
+  }
+
+  return extent;
 }
 
 void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOption )
@@ -583,7 +601,6 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOptio
   if ( canvas )
   {
     mCanvas = canvas;
-    mButtonDrawOnCanvas->setVisible( drawOnCanvasOption );
     mCurrentExtentButton->setVisible( true );
 
     mUseCanvasExtentAction->setVisible( true );
@@ -596,7 +613,6 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas, bool drawOnCanvasOptio
   }
   else
   {
-    mButtonDrawOnCanvas->setVisible( false );
     mCurrentExtentButton->setVisible( false );
     mUseCanvasExtentAction->setVisible( false );
     mUseCanvasExtentAction->setVisible( false );
@@ -684,4 +700,48 @@ void QgsExtentWidget::showEvent( QShowEvent * )
     }
     mFirstShow = false;
   }
+}
+
+void QgsExtentWidget::setSnapToGridAvailable( bool available, bool enabled, double rasterXRes, double rasterYRes, double rasterMinX, double rasterMinY )
+{
+  mSnapToGridEnabled = enabled;
+  mRasterXRes = rasterXRes;
+  mRasterYRes = rasterYRes;
+  mRasterMinX = rasterMinX;
+  mRasterMinY = rasterMinY;
+
+  mSnapToGridButton->setVisible( available );
+  // Button is no longer checkable, so no setChecked() needed
+}
+
+bool QgsExtentWidget::snapToGridEnabled() const
+{
+  return mSnapToGridEnabled;
+}
+
+void QgsExtentWidget::snapToGridToggled( bool enabled )
+{
+  mSnapToGridEnabled = enabled;
+  emit snapToGridChanged( enabled );
+  emit extentChanged( outputExtent() );
+}
+
+void QgsExtentWidget::applySnapToGrid()
+{
+  if ( mRasterXRes <= 0 || mRasterYRes <= 0 )
+    return;
+
+  const bool wasEnabled = mSnapToGridEnabled;
+  mSnapToGridEnabled = true;
+
+  // outputExtent() will apply snapping if mSnapToGridEnabled is true
+  const QgsRectangle snappedExtent = outputExtent();
+
+  mSnapToGridEnabled = wasEnabled;
+
+  if ( snappedExtent.isNull() )
+    return;
+
+  // Update the line edits with snapped values
+  setOutputExtentFromUser( snappedExtent, mOutputCrs );
 }

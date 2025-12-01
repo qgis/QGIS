@@ -33,7 +33,8 @@
 #include "qgsgui.h"
 #include "qgsdoublevalidator.h"
 #include "qgsdatums.h"
-
+#include <QPushButton>
+#include <cmath>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
@@ -180,7 +181,24 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   }
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
   mExtentGroupBox->setOutputExtentFromOriginal();
+
+  // Enable snap-to-grid functionality using the built-in extent widget button
+  connect( mExtentGroupBox, &QgsExtentGroupBox::snapToGridChanged, this, &QgsRasterLayerSaveAsDialog::snapToGridChanged );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
+
+  // Initialize snap-to-grid button to make it visible
+  if ( mDataProvider )
+  {
+    double xRes = mDataProvider->xSize() > 0 ? mDataProvider->extent().width() / mDataProvider->xSize() : 1.0;
+    double yRes = mDataProvider->ySize() > 0 ? mDataProvider->extent().height() / mDataProvider->ySize() : 1.0;
+    QgsRectangle providerExtent = mDataProvider->extent();
+    double originX = providerExtent.xMinimum();
+    double originY = providerExtent.yMinimum();
+
+    // Make snap-to-grid button available with normal button appearance
+    mExtentGroupBox->setSnapToGrid( false, xRes, yRes, originX, originY );
+  }
+
 
   recalcResolutionSize();
 
@@ -479,6 +497,7 @@ QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
 {
   return mExtentGroupBox->outputExtent();
 }
+
 
 void QgsRasterLayerSaveAsDialog::hideFormat()
 {
@@ -995,4 +1014,30 @@ void QgsRasterLayerSaveAsDialog::accept()
 void QgsRasterLayerSaveAsDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer" ) );
+}
+
+void QgsRasterLayerSaveAsDialog::snapToGridChanged( bool enabled )
+{
+  if ( !mDataProvider )
+    return;
+
+  if ( enabled )
+  {
+    // Get raster properties for snapping
+    double xRes = mDataProvider->xSize() > 0 ? mDataProvider->extent().width() / mDataProvider->xSize() : 1.0;
+    double yRes = mDataProvider->ySize() > 0 ? mDataProvider->extent().height() / mDataProvider->ySize() : 1.0;
+
+    // Get the origin (bottom-left corner) of the raster
+    QgsRectangle providerExtent = mDataProvider->extent();
+    double originX = providerExtent.xMinimum();
+    double originY = providerExtent.yMinimum();
+
+    // Enable snap-to-grid with raster parameters
+    mExtentGroupBox->setSnapToGrid( true, xRes, yRes, originX, originY );
+  }
+  else
+  {
+    // Disable snap-to-grid
+    mExtentGroupBox->setSnapToGrid( false, 0, 0, 0, 0 );
+  }
 }
