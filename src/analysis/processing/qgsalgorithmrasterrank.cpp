@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterrank.h"
+
+#include <memory>
 #include "qgsrasterfilewriter.h"
 #include "qgsrasterprojector.h"
 
@@ -281,7 +283,7 @@ QVariantMap QgsRasterRankAlgorithm::processAlgorithm( const QVariantMap &paramet
 
     for ( int i = 0; i < mRanks.size(); i++ )
     {
-      outputBlocks[i].reset( new QgsRasterBlock( outputDataType, iterCols, iterRows ) );
+      outputBlocks[i] = std::make_unique<QgsRasterBlock>( outputDataType, iterCols, iterRows );
       outputBlocks[i]->setNoDataValue( outputNoData );
     }
 

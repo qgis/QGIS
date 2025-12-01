@@ -15,6 +15,7 @@
 
 #include <QDialogButtonBox>
 #include <QDomElement>
+#include <memory>
 
 #include "qgslabelingwidget.h"
 #include "moc_qgslabelingwidget.cpp"
@@ -202,7 +203,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
       mSimpleSettings.reset();
       if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
       {
-        mSimpleSettings.reset( new QgsPalLayerSettings( mLayer->labeling()->settings() ) );
+        mSimpleSettings = std::make_unique<QgsPalLayerSettings>( mLayer->labeling()->settings() );
       }
       else if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
       {
@@ -213,7 +214,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
           if ( const QgsRuleBasedLabeling::Rule *firstChild = rootRule->children().value( 0 ) )
           {
             if ( firstChild->settings() )
-              mSimpleSettings.reset( new QgsPalLayerSettings( *firstChild->settings() ) );
+              mSimpleSettings = std::make_unique<QgsPalLayerSettings>( *firstChild->settings() );
           }
         }
       }

@@ -39,16 +39,16 @@ QgsMesh3DAveragingMethod *QgsMesh3DAveragingMethod::createFromXml( const QDomEle
   switch ( method )
   {
     case QgsMesh3DAveragingMethod::MultiLevelsAveragingMethod:
-      ret.reset( new QgsMeshMultiLevelsAveragingMethod() );
+      ret = std::make_unique<QgsMeshMultiLevelsAveragingMethod>( );
       break;
     case QgsMesh3DAveragingMethod::SigmaAveragingMethod:
-      ret.reset( new QgsMeshSigmaAveragingMethod() );
+      ret = std::make_unique<QgsMeshSigmaAveragingMethod>( );
       break;
     case QgsMesh3DAveragingMethod::RelativeHeightAveragingMethod:
-      ret.reset( new QgsMeshRelativeHeightAveragingMethod() );
+      ret = std::make_unique<QgsMeshRelativeHeightAveragingMethod>( );
       break;
     case QgsMesh3DAveragingMethod::ElevationAveragingMethod:
-      ret.reset( new QgsMeshElevationAveragingMethod() );
+      ret = std::make_unique<QgsMeshElevationAveragingMethod>( );
       break;
   }
   ret->readXml( elem );

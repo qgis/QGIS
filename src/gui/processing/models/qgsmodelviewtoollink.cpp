@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtoollink.h"
+
+#include <memory>
 #include "moc_qgsmodelviewtoollink.cpp"
 #include "qgsprocessingmodelerparameterwidget.h"
 #include "qgsprocessingmodelalgorithm.h"
@@ -31,7 +33,7 @@ QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Link Tool" ) )
 {
   setCursor( Qt::PointingHandCursor );
-  mBezierRubberBand.reset( new QgsModelViewBezierRubberBand( view ) );
+  mBezierRubberBand = std::make_unique<QgsModelViewBezierRubberBand>( view );
 
   mBezierRubberBand->setBrush( QBrush( QColor( 0, 0, 0, 63 ) ) );
   mBezierRubberBand->setPen( QPen( QBrush( QColor( 0, 0, 0, 100 ) ), 0, Qt::SolidLine ) );

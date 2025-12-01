@@ -26,6 +26,7 @@
 
 #include <QLocale>
 
+#include <memory>
 #include <mutex>
 #include <cmath>
 
@@ -1515,7 +1516,7 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
     std::unique_ptr<QgsColorRamp> ramp;
     if ( ! hasColor() )
     {
-      ramp.reset( new QgsRandomColorRamp() );
+      ramp = std::make_unique<QgsRandomColorRamp>( );
     }
     const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( this, classificationColumn, ramp.get() );
     if ( classes.isEmpty() )

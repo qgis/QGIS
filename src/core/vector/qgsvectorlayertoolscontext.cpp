@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgsvectorlayertoolscontext.h"
+
+#include <memory>
 #include "qgsexpressioncontextutils.h"
 
 QgsVectorLayerToolsContext::QgsVectorLayerToolsContext( const QgsVectorLayerToolsContext &other )
@@ -23,11 +25,11 @@ QgsVectorLayerToolsContext::QgsVectorLayerToolsContext( const QgsVectorLayerTool
 {
   if ( other.mAdditionalExpressionContextScope )
   {
-    mAdditionalExpressionContextScope.reset( new QgsExpressionContextScope( *other.mAdditionalExpressionContextScope ) );
+    mAdditionalExpressionContextScope = std::make_unique<QgsExpressionContextScope>( *other.mAdditionalExpressionContextScope );
   }
   if ( other.mExpressionContext )
   {
-    mExpressionContext.reset( new QgsExpressionContext( *other.mExpressionContext ) );
+    mExpressionContext = std::make_unique<QgsExpressionContext>( *other.mExpressionContext );
   }
 }
 
@@ -41,11 +43,11 @@ QgsVectorLayerToolsContext &QgsVectorLayerToolsContext::operator=( const QgsVect
   mHideParent = other.mHideParent;
   if ( other.mAdditionalExpressionContextScope )
   {
-    mAdditionalExpressionContextScope.reset( new QgsExpressionContextScope( *other.mAdditionalExpressionContextScope ) );
+    mAdditionalExpressionContextScope = std::make_unique<QgsExpressionContextScope>( *other.mAdditionalExpressionContextScope );
   }
   if ( other.mExpressionContext )
   {
-    mExpressionContext.reset( new QgsExpressionContext( *other.mExpressionContext ) );
+    mExpressionContext = std::make_unique<QgsExpressionContext>( *other.mExpressionContext );
   }
   else
   {
@@ -57,7 +59,7 @@ QgsVectorLayerToolsContext &QgsVectorLayerToolsContext::operator=( const QgsVect
 void QgsVectorLayerToolsContext::setExpressionContext( const QgsExpressionContext *context )
 {
   if ( context )
-    mExpressionContext.reset( new QgsExpressionContext( *context ) );
+    mExpressionContext = std::make_unique<QgsExpressionContext>( *context );
   else
     mExpressionContext.reset();
 }
@@ -70,7 +72,7 @@ QgsExpressionContext *QgsVectorLayerToolsContext::expressionContext() const
 void QgsVectorLayerToolsContext::setAdditionalExpressionContextScope( const QgsExpressionContextScope *scope )
 {
   if ( scope )
-    mAdditionalExpressionContextScope.reset( new QgsExpressionContextScope( *scope ) );
+    mAdditionalExpressionContextScope = std::make_unique<QgsExpressionContextScope>( *scope );
   else
     mAdditionalExpressionContextScope.reset();
 }

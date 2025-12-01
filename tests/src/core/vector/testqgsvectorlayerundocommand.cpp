@@ -15,6 +15,7 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
+#include <memory>
 
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerundocommand.h"
@@ -69,21 +70,21 @@ void TestQgsVectorLayerUndoCommand::changeAttribute()
   std::unique_ptr<QgsVectorLayerUndoCommandChangeAttribute> cmd;
 
   // Should this be allowed at all, when fid is nonexistent ?
-  cmd.reset( new QgsVectorLayerUndoCommandChangeAttribute(
+  cmd = std::make_unique<QgsVectorLayerUndoCommandChangeAttribute>(
     mLayerEditBuffer,
     1, // Positive (not-new) non-existent FID
     0, "newvalue", "oldvalue"
-  ) );
+  );
   QCOMPARE( cmd->layer(), mLayerPoint );
   QCOMPARE( cmd->id(), -1 );
   cmd->undo();
 
   // Test for https://github.com/qgis/QGIS/issues/23243
-  cmd.reset( new QgsVectorLayerUndoCommandChangeAttribute(
+  cmd = std::make_unique<QgsVectorLayerUndoCommandChangeAttribute>(
     mLayerEditBuffer,
     -1, // Negative (new) non-existent FID
     0, "newvalue", "oldvalue"
-  ) );
+  );
   QCOMPARE( cmd->layer(), mLayerPoint );
   QCOMPARE( cmd->id(), -1 );
   cmd->undo();

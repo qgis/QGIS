@@ -41,6 +41,7 @@
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <QPointSize>
+#include <memory>
 
 ///@cond PRIVATE
 
@@ -68,14 +69,14 @@ void QgsPointCloudLayerChunkLoader::start()
   QgsDebugMsgLevel( QStringLiteral( "loading entity %1" ).arg( node->tileId().text() ), 2 );
 
   if ( mContext.symbol()->symbolType() == QLatin1String( "single-color" ) )
-    mHandler.reset( new QgsSingleColorPointCloud3DSymbolHandler() );
+    mHandler = std::make_unique<QgsSingleColorPointCloud3DSymbolHandler>();
   else if ( mContext.symbol()->symbolType() == QLatin1String( "color-ramp" ) )
-    mHandler.reset( new QgsColorRampPointCloud3DSymbolHandler() );
+    mHandler = std::make_unique<QgsColorRampPointCloud3DSymbolHandler>();
   else if ( mContext.symbol()->symbolType() == QLatin1String( "rgb" ) )
-    mHandler.reset( new QgsRGBPointCloud3DSymbolHandler() );
+    mHandler = std::make_unique<QgsRGBPointCloud3DSymbolHandler>();
   else if ( mContext.symbol()->symbolType() == QLatin1String( "classification" ) )
   {
-    mHandler.reset( new QgsClassificationPointCloud3DSymbolHandler() );
+    mHandler = std::make_unique<QgsClassificationPointCloud3DSymbolHandler>();
     const QgsClassificationPointCloud3DSymbol *classificationSymbol = dynamic_cast<const QgsClassificationPointCloud3DSymbol *>( mContext.symbol() );
     mContext.setFilteredOutCategories( classificationSymbol->getFilteredOutCategories() );
   }
@@ -295,7 +296,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettin
     connect( pcl, &QgsPointCloudLayer::editingStarted, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
     connect( pcl, &QgsPointCloudLayer::editingStopped, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
 
-    mChunkUpdaterFactory.reset( new QgsChunkUpdaterFactory( mChunkLoaderFactory ) );
+    mChunkUpdaterFactory = std::make_unique<QgsChunkUpdaterFactory>( mChunkLoaderFactory );
 
     connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QgsPointCloudNodeId &n ) {
       QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode, n );

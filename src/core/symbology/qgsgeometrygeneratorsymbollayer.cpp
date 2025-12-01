@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgsgeometrygeneratorsymbollayer.h"
+
+#include <memory>
 #include "qgsexpressionutils.h"
 #include "qgsgeometry.h"
 #include "qgsmarkersymbol.h"
@@ -279,7 +281,7 @@ void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &c
 
 void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString &exp )
 {
-  mExpression.reset( new QgsExpression( exp ) );
+  mExpression = std::make_unique<QgsExpression>( exp );
 }
 
 QString QgsGeometryGeneratorSymbolLayer::geometryExpression() const

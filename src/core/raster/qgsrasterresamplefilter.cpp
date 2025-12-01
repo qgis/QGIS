@@ -28,6 +28,7 @@
 #include <QDomElement>
 #include <QImage>
 #include <QPainter>
+#include <memory>
 
 QgsRasterResampleFilter::QgsRasterResampleFilter( QgsRasterInterface *input )
   : QgsRasterInterface( input )
@@ -290,20 +291,20 @@ void QgsRasterResampleFilter::readXml( const QDomElement &filterElem )
   const QString zoomedInResamplerType = filterElem.attribute( QStringLiteral( "zoomedInResampler" ) );
   if ( zoomedInResamplerType == QLatin1String( "bilinear" ) )
   {
-    mZoomedInResampler.reset( new QgsBilinearRasterResampler() );
+    mZoomedInResampler = std::make_unique<QgsBilinearRasterResampler>( );
   }
   else if ( zoomedInResamplerType == QLatin1String( "cubic" ) )
   {
-    mZoomedInResampler.reset( new QgsCubicRasterResampler() );
+    mZoomedInResampler = std::make_unique<QgsCubicRasterResampler>( );
   }
 
   const QString zoomedOutResamplerType = filterElem.attribute( QStringLiteral( "zoomedOutResampler" ) );
   if ( zoomedOutResamplerType == QLatin1String( "bilinear" ) )
   {
-    mZoomedOutResampler.reset( new QgsBilinearRasterResampler() );
+    mZoomedOutResampler = std::make_unique<QgsBilinearRasterResampler>( );
   }
   else if ( zoomedOutResamplerType == QLatin1String( "cubic" ) )
   {
-    mZoomedOutResampler.reset( new QgsCubicRasterResampler() );
+    mZoomedOutResampler = std::make_unique<QgsCubicRasterResampler>( );
   }
 }

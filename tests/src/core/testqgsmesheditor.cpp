@@ -16,6 +16,7 @@
 
 #include "qgstest.h"
 #include <QObject>
+#include <memory>
 
 #include "qgis.h"
 #include "qgstriangularmesh.h"
@@ -100,12 +101,12 @@ void TestQgsMeshEditor::init()
   mDataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mDataDir += "/mesh";
   QString uri( mDataDir + "/quad_and_triangle.2dm" );
-  meshLayerQuadTriangle.reset( new QgsMeshLayer( uri, "Triangle and Quad", "mdal" ) );
+  meshLayerQuadTriangle = std::make_unique<QgsMeshLayer>( uri, "Triangle and Quad", "mdal" );
   QVERIFY( meshLayerQuadTriangle );
   QCOMPARE( meshLayerQuadTriangle->datasetGroupCount(), 1 );
 
   uri = QString( mDataDir + "/quad_flower_to_edit.2dm" );
-  meshLayerQuadFlower.reset( new QgsMeshLayer( uri, "Quad Flower", "mdal" ) );
+  meshLayerQuadFlower = std::make_unique<QgsMeshLayer>( uri, "Quad Flower", "mdal" );
   QVERIFY( meshLayerQuadFlower );
   QCOMPARE( meshLayerQuadFlower->datasetGroupCount(), 1 );
 }

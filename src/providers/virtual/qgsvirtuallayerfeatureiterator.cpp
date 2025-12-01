@@ -21,6 +21,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayerblob.h"
 #include "qgsexception.h"
 
+#include <memory>
 #include <stdexcept>
 
 static QString quotedColumn( QString name )
@@ -221,7 +222,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       mSqlQuery += offset;
     }
 
-    mQuery.reset( new Sqlite::Query( mSource->mSqlite, mSqlQuery ) );
+    mQuery = std::make_unique<Sqlite::Query>( mSource->mSqlite, mSqlQuery );
     for ( const QVariant &toBind : binded )
     {
       mQuery->bind( toBind );

@@ -47,6 +47,7 @@
 #include <QSettings> // for legend
 #include <QRegularExpression>
 #include <QUuid>
+#include <memory>
 
 QgsRendererCategory::QgsRendererCategory( const QVariant &value, QgsSymbol *symbol, const QString &label, bool render, const QString &uuid )
   : mValue( value )
@@ -509,7 +510,7 @@ void QgsCategorizedSymbolRenderer::startRender( QgsRenderContext &context, const
   mAttrNum = fields.lookupField( mAttrName );
   if ( mAttrNum == -1 )
   {
-    mExpression.reset( new QgsExpression( mAttrName ) );
+    mExpression = std::make_unique<QgsExpression>( mAttrName );
     mExpression->prepare( &context.expressionContext() );
   }
 
@@ -1434,7 +1435,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
     const QgsGraduatedSymbolRenderer *graduatedSymbolRenderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( renderer );
     if ( graduatedSymbolRenderer )
     {
-      r.reset( new QgsCategorizedSymbolRenderer( QString(), QgsCategoryList() ) );
+      r = std::make_unique<QgsCategorizedSymbolRenderer>( QString(), QgsCategoryList() );
       if ( graduatedSymbolRenderer->sourceSymbol() )
         r->setSourceSymbol( graduatedSymbolRenderer->sourceSymbol()->clone() );
       if ( graduatedSymbolRenderer->sourceColorRamp() )
@@ -1449,7 +1450,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
     const QgsRuleBasedRenderer *ruleBasedSymbolRenderer = dynamic_cast<const QgsRuleBasedRenderer *>( renderer );
     if ( ruleBasedSymbolRenderer )
     {
-      r.reset( new QgsCategorizedSymbolRenderer( QString(), QgsCategoryList() ) );
+      r = std::make_unique<QgsCategorizedSymbolRenderer>( QString(), QgsCategoryList() );
 
       const QList< QgsRuleBasedRenderer::Rule * > rules = const_cast< QgsRuleBasedRenderer * >( ruleBasedSymbolRenderer )->rootRule()->children();
       bool canConvert = true;
@@ -1557,7 +1558,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
         categories.append( QgsRendererCategory( feature.id(), feature.embeddedSymbol()->clone(), QString::number( feature.id() ) ) );
     }
     categories.append( QgsRendererCategory( QVariant(), embeddedRenderer->defaultSymbol()->clone(), QString() ) );
-    r.reset( new QgsCategorizedSymbolRenderer( QStringLiteral( "$id" ), categories ) );
+    r = std::make_unique<QgsCategorizedSymbolRenderer>( QStringLiteral( "$id" ), categories );
   }
 
   // If not one of the specifically handled renderers, then just grab the symbol from the renderer

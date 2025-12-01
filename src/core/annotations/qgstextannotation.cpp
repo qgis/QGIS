@@ -20,6 +20,7 @@ email                : marco dot hugentobler at hugis dot net
 #include "qgsrendercontext.h"
 #include <QDomDocument>
 #include <QPainter>
+#include <memory>
 
 QgsTextAnnotation::QgsTextAnnotation( QObject *parent )
   : QgsAnnotation( parent )
@@ -91,7 +92,7 @@ void QgsTextAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const Qg
 
 void QgsTextAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
-  mDocument.reset( new QTextDocument );
+  mDocument = std::make_unique<QTextDocument>( );
   mDocument->setHtml( itemElem.attribute( QStringLiteral( "document" ), QString() ) );
   const QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )

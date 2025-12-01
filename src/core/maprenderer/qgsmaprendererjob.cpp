@@ -22,6 +22,7 @@
 #include <QtConcurrentMap>
 
 #include <QPicture>
+#include <memory>
 
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
@@ -936,7 +937,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
   }
   else if ( !labelJob.picture && !canUseImage )
   {
-    labelJob.picture.reset( new QPicture() );
+    labelJob.picture = std::make_unique<QPicture>( );
   }
 
   // first we initialize painter and mask painter for all jobs
@@ -1337,7 +1338,7 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings,
   const QgsElevationShadingRenderer mapShadingRenderer = settings.elevationShadingRenderer();
   std::unique_ptr<QgsElevationMap> mainElevationMap;
   if ( mapShadingRenderer.isActive() )
-    mainElevationMap.reset( new QgsElevationMap( settings.deviceOutputSize(), settings.devicePixelRatio() ) );
+    mainElevationMap = std::make_unique<QgsElevationMap>( settings.deviceOutputSize(), settings.devicePixelRatio() );
 
   QPainter painter( &image );
 

@@ -24,6 +24,7 @@
 #include <QMutexLocker>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <memory>
 #include <qnamespace.h>
 
 #include "qgsapplication.h"
@@ -62,7 +63,7 @@ void QgsCopcPointCloudIndex::load( const QString &urlString, const QString &auth
   {
     mAuthCfg = authcfg;
     mAccessType = Qgis::PointCloudAccessType::Remote;
-    mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( url, authcfg ) ) );
+    mLazInfo = std::make_unique<QgsLazInfo>( QgsLazInfo::fromUrl( url, authcfg ) );
     // now store the uri as it might have been updated due to redirects
     mUri = url.toString();
   }
@@ -77,7 +78,7 @@ void QgsCopcPointCloudIndex::load( const QString &urlString, const QString &auth
       mIsValid = false;
       return;
     }
-    mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
+    mLazInfo = std::make_unique<QgsLazInfo>( QgsLazInfo::fromFile( mCopcFile ) );
   }
 
   mIsValid = mLazInfo->isValid() && loadSchema( *mLazInfo.get() ) && loadHierarchy();

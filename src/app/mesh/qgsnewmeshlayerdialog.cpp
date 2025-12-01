@@ -18,6 +18,7 @@
 
 #include <QPushButton>
 #include <QMessageBox>
+#include <memory>
 
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
@@ -125,7 +126,7 @@ void QgsNewMeshLayerDialog::updateSourceMeshframe()
     {
       QgsApplication::setOverrideCursor( Qt::WaitCursor );
       if ( !mMeshFromFileWidget->filePath().isEmpty() )
-        mSourceMeshFromFile.reset( new QgsMeshLayer( mMeshFromFileWidget->filePath(), QString(), QStringLiteral( "mdal" ) ) );
+        mSourceMeshFromFile = std::make_unique<QgsMeshLayer>( mMeshFromFileWidget->filePath(), QString(), QStringLiteral( "mdal" ) );
 
       if ( mSourceMeshFromFile && !mSourceMeshFromFile->isValid() )
         mSourceMeshFromFile.reset();

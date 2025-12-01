@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <QMenu>
 #include <cmath>
+#include <memory>
 
 const int RULER_FONT_SIZE = 8;
 const unsigned int COUNT_VALID_MULTIPLES = 3;
@@ -39,7 +40,7 @@ QgsLayoutRuler::QgsLayoutRuler( QWidget *parent, Qt::Orientation orientation )
 
   //calculate minimum size required for ruler text
   mRulerFont.setPointSize( RULER_FONT_SIZE );
-  mRulerFontMetrics.reset( new QFontMetrics( mRulerFont ) );
+  mRulerFontMetrics = std::make_unique<QFontMetrics>( mRulerFont );
 
   //calculate ruler sizes and marker separations
 
@@ -790,13 +791,13 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
         {
           //mouse is creating a horizontal guide
           const double posOnPage = layout->pageCollection()->positionOnPage( scenePos ).y();
-          guide.reset( new QgsLayoutGuide( Qt::Horizontal, QgsLayoutMeasurement( posOnPage, layout->units() ), page ) );
+          guide = std::make_unique<QgsLayoutGuide>( Qt::Horizontal, QgsLayoutMeasurement( posOnPage, layout->units() ), page );
           break;
         }
         case Qt::Vertical:
         {
           //mouse is creating a vertical guide
-          guide.reset( new QgsLayoutGuide( Qt::Vertical, QgsLayoutMeasurement( scenePos.x(), layout->units() ), page ) );
+          guide = std::make_unique<QgsLayoutGuide>( Qt::Vertical, QgsLayoutMeasurement( scenePos.x(), layout->units() ), page );
           break;
         }
       }

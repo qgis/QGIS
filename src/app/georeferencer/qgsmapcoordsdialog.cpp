@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include <QValidator>
 #include <QPushButton>
+#include <memory>
 
 #include "qgsmapcanvas.h"
 #include "qgsgeorefvalidators.h"
@@ -184,7 +185,7 @@ void QgsMapCoordsDialog::updateSourceCoordinates( const QgsPointXY &sourceCoordi
 QgsGeorefMapToolEmitPoint::QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+  mSnapIndicator = std::make_unique<QgsSnapIndicator>( canvas );
 }
 
 void QgsGeorefMapToolEmitPoint::canvasMoveEvent( QgsMapMouseEvent *e )

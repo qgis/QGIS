@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsafsprovider.h"
+
+#include <memory>
 #include "moc_qgsafsprovider.cpp"
 #include "qgsarcgisrestutils.h"
 #include "qgsarcgisrestquery.h"
@@ -34,7 +36,7 @@
 QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
-  mSharedData.reset( new QgsAfsSharedData( QgsDataSourceUri( uri ) ) );
+  mSharedData = std::make_shared<QgsAfsSharedData>( QgsDataSourceUri( uri ) );
   mSharedData->mGeometryType = Qgis::WkbType::Unknown;
 
   const QString authcfg = mSharedData->mDataSource.authConfigId();

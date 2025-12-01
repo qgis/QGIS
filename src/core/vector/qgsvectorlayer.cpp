@@ -109,6 +109,7 @@
 #include <QTimer>
 
 #include <limits>
+#include <memory>
 #include <optional>
 
 #include "qgssettingsentryenumflag.h"
@@ -4831,7 +4832,7 @@ QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature &feature, Qgs
   if ( !evalContext )
   {
     // no context passed, so we create a default one
-    tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( this ) ) );
+    tempContext = std::make_unique<QgsExpressionContext>( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
     evalContext = tempContext.get();
   }
 

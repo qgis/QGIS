@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmergedfeaturerendererwidget.h"
+
+#include <memory>
 #include "moc_qgsmergedfeaturerendererwidget.cpp"
 #include "qgsmergedfeaturerenderer.h"
 #include "qgsrendererregistry.h"
@@ -60,7 +62,7 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
   if ( !mRenderer )
   {
     // use default embedded renderer
-    mRenderer.reset( new QgsMergedFeatureRenderer( QgsFeatureRenderer::defaultRenderer( type ) ) );
+    mRenderer = std::make_unique<QgsMergedFeatureRenderer>( QgsFeatureRenderer::defaultRenderer( type ) );
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }

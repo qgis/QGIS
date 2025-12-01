@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtoolselect.h"
+
+#include <memory>
 #include "moc_qgslayoutviewtoolselect.cpp"
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutview.h"
@@ -31,7 +33,7 @@ QgsLayoutViewToolSelect::QgsLayoutViewToolSelect( QgsLayoutView *view )
 {
   setCursor( Qt::ArrowCursor );
 
-  mRubberBand.reset( new QgsLayoutViewRectangularRubberBand( view ) );
+  mRubberBand = std::make_unique<QgsLayoutViewRectangularRubberBand>( view );
   mRubberBand->setBrush( QBrush( QColor( 224, 178, 76, 63 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 254, 58, 29, 100 ) ), 0, Qt::DotLine ) );
 }

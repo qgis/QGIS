@@ -52,7 +52,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 {
   mTempRubberBand.setParentOwner( canvas );
 
-  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+  mSnapIndicator = std::make_unique<QgsSnapIndicator>( canvas );
 
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
 

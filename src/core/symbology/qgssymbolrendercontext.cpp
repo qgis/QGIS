@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgssymbolrendercontext.h"
+
+#include <memory>
 #include "qgsrendercontext.h"
 #include "qgslegendpatchshape.h"
 
@@ -82,5 +84,5 @@ const QgsLegendPatchShape *QgsSymbolRenderContext::patchShape() const
 
 void QgsSymbolRenderContext::setPatchShape( const QgsLegendPatchShape &patchShape )
 {
-  mPatchShape.reset( new QgsLegendPatchShape( patchShape ) );
+  mPatchShape = std::make_unique<QgsLegendPatchShape>( patchShape );
 }

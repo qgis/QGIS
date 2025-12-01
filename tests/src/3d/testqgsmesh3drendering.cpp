@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <QObject>
+#include <memory>
 
 #include "qgstest.h"
 
@@ -65,7 +66,7 @@ void TestQgsMesh3DRendering::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   mLayerMeshTerrain = new QgsMeshLayer( testDataPath( "/mesh/quad_flower.2dm" ), "mesh", "mdal" );
   QVERIFY( mLayerMeshTerrain->isValid() );

@@ -15,6 +15,7 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
+#include <memory>
 
 #include "qgsellipse.h"
 #include "qgslinestring.h"
@@ -327,7 +328,7 @@ void TestQgsEllipse::orientedBoundingBox()
 
   QgsLineString *ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( 5, 2 ) << QgsPoint( 5, -2 ) << QgsPoint( -5, -2 ) << QgsPoint( -5, 2 ) );
-  poly1.reset( new QgsPolygon() );
+  poly1 = std::make_unique<QgsPolygon>();
   poly1->setExteriorRing( ext );
 
   QgsEllipse elp( QgsPoint( 0, 0 ), 5, 2 );

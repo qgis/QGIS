@@ -15,6 +15,8 @@
 
 #include "qgsgeometryutils_base.h"
 #include "qgsarrowsymbollayer.h"
+
+#include <memory>
 #include "qgssymbollayerutils.h"
 #include "qgsfillsymbol.h"
 #include "qgsrendercontext.h"
@@ -206,7 +208,7 @@ void QgsArrowSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )
 
 void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  mExpressionScope.reset( new QgsExpressionContextScope() );
+  mExpressionScope = std::make_unique<QgsExpressionContextScope>( );
   mScaledArrowWidth = context.renderContext().convertToPainterUnits( arrowWidth(), arrowWidthUnit(), arrowWidthUnitScale() );
   mScaledArrowStartWidth = context.renderContext().convertToPainterUnits( arrowStartWidth(), arrowStartWidthUnit(), arrowStartWidthUnitScale() );
   mScaledHeadLength = context.renderContext().convertToPainterUnits( headLength(), headLengthUnit(), headLengthUnitScale() );

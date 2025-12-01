@@ -16,6 +16,8 @@
 #include "qgsproject.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerexporter.h"
+
+#include <memory>
 #include "qgsconfig.h"
 
 class TestQgsPointCloudLayerExporter : public QObject
@@ -57,7 +59,7 @@ void TestQgsPointCloudLayerExporter::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::registerOgrDrivers();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
 

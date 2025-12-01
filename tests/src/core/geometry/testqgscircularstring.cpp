@@ -15,6 +15,7 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
+#include <memory>
 
 #include "qgscircularstring.h"
 #include "qgsgeometryutils.h"
@@ -2415,7 +2416,7 @@ void TestQgsCircularString::append()
   QCOMPARE( cs.pointN( 2 ), toAppend->pointN( 2 ) );
 
   //add more points
-  toAppend.reset( new QgsCircularString() );
+  toAppend = std::make_unique<QgsCircularString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( 21, 22 ) << QgsPoint( 41, 42 ) << QgsPoint( 51, 52 ) );
   cs.append( toAppend.get() );
 
@@ -2431,14 +2432,14 @@ void TestQgsCircularString::append()
   //append another line the closes the original geometry.
   //Make sure there are not duplicate points except start and end point
   cs.clear();
-  toAppend.reset( new QgsCircularString() );
+  toAppend = std::make_unique<QgsCircularString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 5, 5 ) << QgsPoint( 10, 1 ) );
   cs.append( toAppend.get() );
 
   QCOMPARE( cs.numPoints(), 3 );
   QCOMPARE( cs.vertexCount(), 3 );
 
-  toAppend.reset( new QgsCircularString() );
+  toAppend = std::make_unique<QgsCircularString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( 10, 1 ) << QgsPoint( 5, 2 ) << QgsPoint( 1, 1 ) );
   cs.append( toAppend.get() );
 
@@ -2472,7 +2473,7 @@ void TestQgsCircularString::appendZM()
   QVERIFY( !cs.is3D() );
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularString );
 
-  toAppend.reset( new QgsCircularString() );
+  toAppend = std::make_unique<QgsCircularString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 51, 52, 33, 34 ) << QgsPoint( Qgis::WkbType::PointZM, 141, 142, 43, 44 ) << QgsPoint( Qgis::WkbType::PointZM, 151, 152, 53, 54 ) );
   cs.append( toAppend.get() );
 
@@ -2491,7 +2492,7 @@ void TestQgsCircularString::appendZM()
   QVERIFY( cs.isMeasure() );
   QCOMPARE( cs.wkbType(), Qgis::WkbType::CircularStringZM );
 
-  toAppend.reset( new QgsCircularString() );
+  toAppend = std::make_unique<QgsCircularString>();
   toAppend->setPoints( QgsPointSequence() << QgsPoint( 51, 52 ) << QgsPoint( 141, 142 ) << QgsPoint( 151, 152 ) );
   cs.append( toAppend.get() );
 

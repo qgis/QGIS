@@ -15,6 +15,7 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
+#include <memory>
 
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
@@ -248,7 +249,7 @@ void TestQgsTriangle::exteriorRing()
   QCOMPARE( *( static_cast<const QgsLineString *>( tr.exteriorRing() ) ), *ext );
 
   //set new ExteriorRing
-  ext.reset( new QgsLineString() );
+  ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 10 ) << QgsPoint( 5, 5 ) << QgsPoint( 10, 10 ) << QgsPoint( 0, 10 ) );
   QVERIFY( ext->isClosed() );
 
@@ -346,14 +347,14 @@ void TestQgsTriangle::invalidExteriorRing()
 
   QVERIFY( tr.isEmpty() );
 
-  ext.reset( new QgsLineString() );
+  ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 0, 0 ) );
   tr.setExteriorRing( ext.release() );
 
   QVERIFY( tr.isEmpty() );
 
   // degenerate case
-  ext.reset( new QgsLineString() );
+  ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 0, 0 ) );
   tr.setExteriorRing( ext.release() );
 
@@ -380,7 +381,7 @@ void TestQgsTriangle::invalidNumberOfPoints()
 
   QVERIFY( tr.isEmpty() );
 
-  ext.reset( new QgsLineString() );
+  ext = std::make_unique<QgsLineString>();
   tr.clear();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 5, 10 ) << QgsPoint( 8, 10 ) );
   tr.setExteriorRing( ext.release() );
@@ -423,7 +424,7 @@ void TestQgsTriangle::conversion()
   tr.setExteriorRing( ext.release() );
 
   QgsPolygon polyExpected;
-  ext.reset( new QgsLineString() );
+  ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 ) );
   polyExpected.setExteriorRing( ext.release() );
 

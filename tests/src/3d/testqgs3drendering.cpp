@@ -67,6 +67,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QSignalSpy>
+#include <memory>
 
 class TestQgs3DRendering : public QgsTest
 {
@@ -176,7 +177,7 @@ void TestQgs3DRendering::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   mLayerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
   QVERIFY( mLayerDtm->isValid() );

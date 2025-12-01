@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssymbolwidgetcontext.h"
+
+#include <memory>
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsproject.h"
@@ -27,7 +29,7 @@ QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext &ot
 {
   if ( other.mExpressionContext )
   {
-    mExpressionContext.reset( new QgsExpressionContext( *other.mExpressionContext ) );
+    mExpressionContext = std::make_unique<QgsExpressionContext>( *other.mExpressionContext );
   }
 }
 
@@ -42,7 +44,7 @@ QgsSymbolWidgetContext &QgsSymbolWidgetContext::operator=( const QgsSymbolWidget
   mSymbolType = other.mSymbolType;
   if ( other.mExpressionContext )
   {
-    mExpressionContext.reset( new QgsExpressionContext( *other.mExpressionContext ) );
+    mExpressionContext = std::make_unique<QgsExpressionContext>( *other.mExpressionContext );
   }
   else
   {
@@ -74,7 +76,7 @@ QgsMessageBar *QgsSymbolWidgetContext::messageBar() const
 void QgsSymbolWidgetContext::setExpressionContext( QgsExpressionContext *context )
 {
   if ( context )
-    mExpressionContext.reset( new QgsExpressionContext( *context ) );
+    mExpressionContext = std::make_unique<QgsExpressionContext>( *context );
   else
     mExpressionContext.reset();
 }

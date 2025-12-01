@@ -25,6 +25,7 @@
 #include <QFile>
 #include <QBuffer>
 #include <QTemporaryDir>
+#include <memory>
 
 ///@cond PRIVATE
 
@@ -58,7 +59,7 @@ void QgsSourceCacheEntry::dump() const
 QgsSourceCache::QgsSourceCache( QObject *parent )
   : QgsAbstractContentCache< QgsSourceCacheEntry >( parent, QObject::tr( "Source" ) )
 {
-  temporaryDir.reset( new QTemporaryDir() );
+  temporaryDir = std::make_unique<QTemporaryDir>( );
 
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsSourceCache::remoteSourceFetched );
 }

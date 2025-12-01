@@ -1061,7 +1061,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   if ( w <= 0 || h <= 0 )
     return;
 
-  mCacheRenderingImage.reset( new QImage( w, h, QImage::Format_ARGB32 ) );
+  mCacheRenderingImage = std::make_unique<QImage>( w, h, QImage::Format_ARGB32 );
 
   // set DPI of the image
   mCacheRenderingImage->setDotsPerMeterX( static_cast< int >( std::round( 1000 * w / widthLayoutUnits ) ) );
@@ -1076,7 +1076,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   }
 
   mCacheInvalidated = false;
-  mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
+  mPainter = std::make_unique<QPainter>( mCacheRenderingImage.get() );
 
   QList< QgsAbstractProfileSource *> sourcesToRender = sources();
   std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top

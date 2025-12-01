@@ -257,7 +257,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   mTrimDistanceEndSpin->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol.reset( new QgsLineSymbol() );
+  mAssistantPreviewSymbol = std::make_shared<QgsLineSymbol>();
 
   if ( vectorLayer() )
     mPenWidthDDBtn->setSymbol( mAssistantPreviewSymbol );
@@ -667,7 +667,7 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   spinAngle->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
+  mAssistantPreviewSymbol = std::make_shared<QgsMarkerSymbol>();
 
   if ( vectorLayer() )
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
@@ -1117,7 +1117,7 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
   spinAngle->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
+  mAssistantPreviewSymbol = std::make_shared<QgsMarkerSymbol>();
 
   if ( vectorLayer() )
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
@@ -2317,7 +2317,7 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
   connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgParametersChanged, this, &QgsSvgMarkerSymbolLayerWidget::setSvgParameters );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
+  mAssistantPreviewSymbol = std::make_shared<QgsMarkerSymbol>();
 
   if ( vectorLayer() )
   {
@@ -2332,6 +2332,7 @@ QgsSvgMarkerSymbolLayerWidget::~QgsSvgMarkerSymbolLayerWidget() = default;
 #include <QAbstractListModel>
 #include <QPixmapCache>
 #include <QStyle>
+#include <memory>
 
 
 void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer, bool skipDefaultColors )
@@ -3374,7 +3375,7 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *
   spinAngle->setClearValue( 0.0 );
 
   //make a temporary symbol for the size assistant preview
-  mAssistantPreviewSymbol.reset( new QgsMarkerSymbol() );
+  mAssistantPreviewSymbol = std::make_shared<QgsMarkerSymbol>();
 
   if ( vectorLayer() )
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );

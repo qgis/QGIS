@@ -27,6 +27,7 @@
 #include <QDomElement>
 #include <QImage>
 #include <QPainter>
+#include <memory>
 
 // See #9101 before any change of NODATA_COLOR!
 const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
@@ -202,7 +203,7 @@ void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
   const QDomElement rasterTransparencyElem = rendererElem.firstChildElement( QStringLiteral( "rasterTransparency" ) );
   if ( !rasterTransparencyElem.isNull() )
   {
-    mRasterTransparency.reset( new QgsRasterTransparency() );
+    mRasterTransparency = std::make_unique<QgsRasterTransparency>( );
 
     mRasterTransparency->readXml( rasterTransparencyElem );
   }

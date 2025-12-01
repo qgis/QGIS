@@ -28,6 +28,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>
+#include <memory>
 
 
 QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
@@ -120,7 +121,7 @@ void QgsExpressionLineEdit::setExpectedOutputFormat( const QString &expected )
 
 void QgsExpressionLineEdit::setGeomCalculator( const QgsDistanceArea &da )
 {
-  mDa.reset( new QgsDistanceArea( da ) );
+  mDa = std::make_unique<QgsDistanceArea>( da );
 }
 
 void QgsExpressionLineEdit::setLayer( QgsVectorLayer *layer )

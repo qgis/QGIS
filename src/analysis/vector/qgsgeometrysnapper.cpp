@@ -26,6 +26,7 @@
 #include "qgscurve.h"
 
 #include <QtConcurrentMap>
+#include <memory>
 #include <geos_c.h>
 
 ///@cond PRIVATE
@@ -522,7 +523,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
               const QgsSnapIndex::CoordIdx *idx = snapSegment->idxFrom;
               subjGeom->insertVertex( QgsVertexId( idx->vidx.part, idx->vidx.ring, idx->vidx.vertex + 1 ), point );
               subjPointFlags[idx->vidx.part][idx->vidx.ring].insert( idx->vidx.vertex + 1, SnappedToRefNode );
-              subjSnapIndex.reset( new QgsSnapIndex() );
+              subjSnapIndex = std::make_unique<QgsSnapIndex>();
               subjSnapIndex->addGeometry( subjGeom );
             }
           }

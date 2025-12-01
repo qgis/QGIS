@@ -24,6 +24,7 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <memory>
 
 QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -68,7 +69,7 @@ QgsMeshLayer3DRenderer *QgsMeshLayer3DRendererWidget::renderer()
 {
   std::unique_ptr<QgsMesh3DSymbol> sym = mWidgetMesh->symbol();
   sym->setEnabled( mChkEnabled->isChecked() );
-  mRenderer.reset( new QgsMeshLayer3DRenderer( sym.release() ) );
+  mRenderer = std::make_unique<QgsMeshLayer3DRenderer>( sym.release() );
   mRenderer->setLayer( qobject_cast<QgsMeshLayer *>( mLayer ) );
   return mRenderer.get();
 }

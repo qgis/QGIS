@@ -25,6 +25,7 @@
 #include "qgsmultilinestring.h"
 
 #include <QMatrix4x4>
+#include <memory>
 
 #define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images
@@ -344,7 +345,7 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
         *gltfLocalTransform = parentTransform * *gltfLocalTransform;
       else
       {
-        gltfLocalTransform.reset( new QMatrix4x4( parentTransform ) );
+        gltfLocalTransform = std::make_unique<QMatrix4x4>( parentTransform );
       }
     }
 

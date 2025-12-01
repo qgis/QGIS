@@ -42,6 +42,7 @@ email                : sherman at mrcc.com
 #include "qgssetrequestinitiator_p.h"
 #include "qgsthreadingutils.h"
 
+#include <memory>
 #include <nlohmann/json.hpp>
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -1378,7 +1379,7 @@ QgsRectangle QgsOgrProvider::extent() const
     QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
     QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-    mExtent2D.reset( new OGREnvelope() );
+    mExtent2D = std::make_unique<OGREnvelope>( );
 
     // get the extent_ (envelope) of the layer
     QgsDebugMsgLevel( QStringLiteral( "Starting computing extent. subset: '%1'" ).arg( mSubsetString ), 3 );
@@ -1480,7 +1481,7 @@ QgsBox3D QgsOgrProvider::extent3D() const
     QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
     QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-    mExtent3D.reset( new OGREnvelope3D() );
+    mExtent3D = std::make_unique<OGREnvelope3D>( );
 
     // get the extent_ (envelope) of the layer
     QgsDebugMsgLevel( QStringLiteral( "Starting computing extent3D. subset: '%1'" ).arg( mSubsetString ), 3 );

@@ -29,6 +29,7 @@
 #include "qgsrendercontext.h"
 #include "qgssettingsentryimpl.h"
 
+#include <memory>
 #include <queue>
 #include <vector>
 
@@ -497,7 +498,7 @@ bool QgsTracer::initGraph()
     if ( !enableInvisibleFeature && mRenderContext && vl->renderer() )
     {
       renderer.reset( vl->renderer()->clone() );
-      ctx.reset( new QgsRenderContext( *mRenderContext.get() ) );
+      ctx = std::make_unique<QgsRenderContext>( *mRenderContext.get() );
       ctx->expressionContext() << QgsExpressionContextUtils::layerScope( vl );
 
       // setup scale for scale dependent visibility (rule based)
@@ -654,7 +655,7 @@ void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, cons
 
 void QgsTracer::setRenderContext( const QgsRenderContext *renderContext )
 {
-  mRenderContext.reset( new QgsRenderContext( *renderContext ) );
+  mRenderContext = std::make_unique<QgsRenderContext>( *renderContext );
   invalidateGraph();
 }
 

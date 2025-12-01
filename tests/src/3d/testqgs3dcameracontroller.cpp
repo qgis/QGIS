@@ -1243,7 +1243,7 @@ void TestQgs3DCameraController::testResetViewPointCloud()
 
 void TestQgs3DCameraController::testChangeNavigationMode()
 {
-  auto canvas3D = std::unique_ptr<Qgs3DMapCanvas>( new Qgs3DMapCanvas() );
+  auto canvas3D = std::make_unique<Qgs3DMapCanvas>();
   canvas3D->show();
   QVERIFY( QTest::qWaitForWindowExposed( canvas3D.get() ) );
 

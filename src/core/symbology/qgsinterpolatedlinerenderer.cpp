@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <QPainter>
+#include <memory>
 
 #include "qgsgeometryutils_base.h"
 #include "qgsinterpolatedlinerenderer.h"
@@ -824,7 +825,7 @@ QgsInterpolatedLineSymbolLayer *QgsInterpolatedLineSymbolLayer::clone() const
 QgsSymbolLayer *QgsInterpolatedLineSymbolLayer::create( const QVariantMap &properties )
 {
   std::unique_ptr<QgsInterpolatedLineSymbolLayer> symbolLayer;
-  symbolLayer.reset( new QgsInterpolatedLineSymbolLayer() );
+  symbolLayer = std::make_unique<QgsInterpolatedLineSymbolLayer>( );
 
   if ( properties.contains( QStringLiteral( "start_width_expression" ) ) )
     symbolLayer->setDataDefinedProperty( QgsSymbolLayer::Property::LineStartWidthValue, QgsProperty::fromExpression( properties.value( QStringLiteral( "start_width_expression" ) ).toString() ) );

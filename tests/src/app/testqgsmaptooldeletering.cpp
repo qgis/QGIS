@@ -19,6 +19,8 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptooldeletering.h"
+
+#include <memory>
 #include "qgsproject.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
@@ -135,12 +137,12 @@ void TestQgsMapToolDeleteRing::click( double x, double y )
     Qt::LeftButton
   ) );
   mCaptureTool->canvasPressEvent( event.get() );
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( x, y ),
     Qt::LeftButton
-  ) );
+  );
   mCaptureTool->canvasReleaseEvent( event.get() );
 }
 

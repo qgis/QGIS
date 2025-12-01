@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgs25drenderer.h"
+
+#include <memory>
 #include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgspainteffect.h"
@@ -65,7 +67,7 @@
 Qgs25DRenderer::Qgs25DRenderer()
   : QgsFeatureRenderer( QStringLiteral( "25dRenderer" ) )
 {
-  mSymbol.reset( new QgsFillSymbol() );
+  mSymbol = std::make_unique<QgsFillSymbol>( );
 
   mSymbol->deleteSymbolLayer( 0 ); // We never asked for the default layer
 

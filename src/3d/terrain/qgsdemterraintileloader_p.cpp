@@ -148,6 +148,7 @@ void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &hei
 #include "qgsrasterprojector.h"
 #include <QtConcurrent/QtConcurrentRun>
 #include <QFutureWatcher>
+#include <memory>
 #include "qgsterraindownloader.h"
 
 QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution, const QgsCoordinateTransformContext &transformContext )
@@ -178,7 +179,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
   std::unique_ptr<QgsRasterProjector> projector;
   if ( provider->crs() != destCrs )
   {
-    projector.reset( new QgsRasterProjector );
+    projector = std::make_unique<QgsRasterProjector>();
     projector->setCrs( provider->crs(), destCrs, provider->transformContext() );
     projector->setInput( provider );
     input = projector.get();

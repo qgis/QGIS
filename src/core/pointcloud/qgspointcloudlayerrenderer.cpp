@@ -40,6 +40,7 @@
 #include "qgsthreadingutils.h"
 
 #include <delaunator.hpp>
+#include <memory>
 
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
@@ -61,7 +62,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   mRenderer.reset( layer->renderer()->clone() );
   if ( !mSubIndexes.isEmpty() )
   {
-    mSubIndexExtentRenderer.reset( new QgsPointCloudExtentRenderer() );
+    mSubIndexExtentRenderer = std::make_unique<QgsPointCloudExtentRenderer>( );
     mSubIndexExtentRenderer->setShowLabels( mRenderer->showLabels() );
     mSubIndexExtentRenderer->setLabelTextFormat( mRenderer->labelTextFormat() );
   }
@@ -733,7 +734,7 @@ void QgsPointCloudLayerRenderer::renderTriangulatedSurface( QgsPointCloudRenderC
   std::unique_ptr<delaunator::Delaunator> delaunator;
   try
   {
-    delaunator.reset( new delaunator::Delaunator( points ) );
+    delaunator = std::make_unique<delaunator::Delaunator>( points );
   }
   catch ( std::exception & )
   {

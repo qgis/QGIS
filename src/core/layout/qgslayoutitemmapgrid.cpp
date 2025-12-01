@@ -44,6 +44,7 @@
 
 #include <QPainter>
 #include <QPen>
+#include <memory>
 
 #define MAX_GRID_LINES 1000 //maximum number of horizontal or vertical grid lines to draw
 
@@ -1466,7 +1467,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
     expressionContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), coord == QgsLayoutItemMapGrid::Longitude ? "x" : "y", true ) );
     if ( !mGridAnnotationExpression )
     {
-      mGridAnnotationExpression.reset( new QgsExpression( mGridAnnotationExpressionString ) );
+      mGridAnnotationExpression = std::make_unique<QgsExpression>( mGridAnnotationExpressionString );
       mGridAnnotationExpression->prepare( &expressionContext );
     }
     return mGridAnnotationExpression->evaluate( &expressionContext ).toString();

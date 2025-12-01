@@ -16,6 +16,7 @@
 
 #include "qgstest.h"
 #include <QSignalSpy>
+#include <memory>
 
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include <qgsapplication.h>
@@ -112,7 +113,7 @@ void TestQgsRelationReferenceWidget::init()
   QgsProject::instance()->addMapLayer( mLayer2 );
 
   // create relation
-  mRelation.reset( new QgsRelation() );
+  mRelation = std::make_unique<QgsRelation>();
   mRelation->setId( QStringLiteral( "vl1.vl2" ) );
   mRelation->setName( QStringLiteral( "vl1.vl2" ) );
   mRelation->setReferencingLayer( mLayer1->id() );

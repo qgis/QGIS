@@ -26,9 +26,9 @@
 #include "qgsgeometrytransformer.h"
 #include "qgsfeedback.h"
 
+#include <memory>
 #include <nlohmann/json.hpp>
 #include <cmath>
-#include <memory>
 #include <QPainter>
 #include <limits>
 #include <QDomDocument>
@@ -1969,7 +1969,7 @@ void QgsLineString::transform( const QgsCoordinateTransform &ct, Qgis::Transform
   std::unique_ptr< double[] > dummyZ;
   if ( !hasZ || !transformZ )
   {
-    dummyZ.reset( new double[nPoints]() );
+    dummyZ = std::make_unique<double[]>( nPoints );
     zArray = dummyZ.get();
   }
   else

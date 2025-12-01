@@ -28,6 +28,7 @@
 #include <QtAlgorithms>
 #include <QTextStream>
 #include <QUrlQuery>
+#include <memory>
 
 QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
@@ -632,7 +633,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   }
   url.setQuery( query );
 
-  mFile.reset( new QgsDelimitedTextFile() );
+  mFile = std::make_unique<QgsDelimitedTextFile>();
   mFile->setFromUrl( url );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()
