@@ -18,6 +18,7 @@
 
 #include "qgis_app.h"
 #include "qgsfeatureid.h"
+#include "qgsgeometry.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgspointxy.h"
 

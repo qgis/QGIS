@@ -20,6 +20,7 @@
 
 #include "qgis_app.h"
 
+#include <QStyledItemDelegate>
 #include <QWidget>
 
 class QgsRelation;
