@@ -60,6 +60,16 @@ Returns the optional feedback object.
 .. seealso:: :py:func:`setFeedback`
 %End
 
+    double framesPerSecond() const;
+%Docstring
+Returns the output video frames per second.
+%End
+
+    QSize size() const;
+%Docstring
+Returns the output video frame size.
+%End
+
     void setInputFiles( const QStringList &files );
 %Docstring
 Sets the list of input image ``files``.
