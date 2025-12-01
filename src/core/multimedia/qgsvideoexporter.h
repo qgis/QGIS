@@ -21,8 +21,10 @@
 #include <QSize>
 #include <QObject>
 #include <QPointer>
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <QtMultimedia/QMediaFormat>
 #include <QtMultimedia/QMediaRecorder>
+#endif
 
 class QgsFeedback;
 class QMediaCaptureSession;
@@ -245,7 +247,9 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     QString mErrorString;
 
     std::unique_ptr< QMediaCaptureSession > mSession;
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     std::unique_ptr< QMediaRecorder > mRecorder;
+#endif
     std::unique_ptr< QVideoFrameInput > mVideoInput;
 
 };
