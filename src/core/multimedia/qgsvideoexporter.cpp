@@ -19,9 +19,11 @@
 
 #include <QDirIterator>
 #include <QUrl>
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <QtMultimedia/QMediaCaptureSession>
 #include <QtMultimedia/QVideoFrameInput>
 #include <QtMultimedia/QVideoFrame>
+#endif
 
 bool QgsVideoExporter::isAvailable()
 {
@@ -189,6 +191,7 @@ void QgsVideoExporter::feedFrames()
 #endif
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 void QgsVideoExporter::checkStatus( QMediaRecorder::RecorderState state )
 {
   switch ( state )
@@ -213,3 +216,4 @@ void QgsVideoExporter::handleError( QMediaRecorder::Error error, const QString &
   mError = error;
   mErrorString = errorString;
 }
+#endif
