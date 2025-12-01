@@ -10772,7 +10772,9 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
       {
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
-        QgisApp::instance()->tryCommitChanges(vlayer);
+        if (!QgisApp::instance()->tryCommitChanges(vlayer)) {
+            break;
+        };
 
         QStringList commitErrors;
         if ( !QgsProject::instance()->commitChanges( commitErrors, true, vlayer ) )
@@ -11013,7 +11015,9 @@ bool QgisApp::toggleEditingPointCloudLayer( QgsPointCloudLayer *pclayer, bool al
         QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
         QgsCanvasRefreshBlocker refreshBlocker;
         
-        QgisApp::instance()->tryCommitChanges(pclayer);
+        if (!QgisApp::instance()->tryCommitChanges(pclayer)) {
+          break;
+        }
 
         if ( !pclayer->commitChanges( true ) )
         {
@@ -11099,7 +11103,10 @@ void QgisApp::saveVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
 
   QStringList commitErrors;
 
-  QgisApp::instance()->tryCommitChanges(vlayer);
+  if (!QgisApp::instance()->tryCommitChanges(vlayer)) {
+    mSaveRollbackInProgress = false;
+    return;
+  }
 
   if ( !QgsProject::instance()->commitChanges( commitErrors, !leaveEditable, vlayer ) )
   {
@@ -11148,7 +11155,9 @@ void QgisApp::savePointCloudLayerEdits( QgsMapLayer *layer, bool leaveEditable, 
 
   QgsCanvasRefreshBlocker refreshBlocker;
 
-  QgisApp::instance()->tryCommitChanges(pclayer);
+  if (!QgisApp::instance()->tryCommitChanges(pclayer)) {
+    return;
+  }
 
   if ( !pclayer->commitChanges( !leaveEditable ) )
     visibleMessageBar()->pushWarning(
