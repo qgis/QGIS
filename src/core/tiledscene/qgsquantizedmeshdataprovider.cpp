@@ -384,11 +384,11 @@ QgsQuantizedMeshIndex::getTiles( const QgsTiledSceneRequest &request )
 
   QVector<long long> ids;
   // We can only filter on X and Y
-  const QgsRectangle extent = request.filterBox().extent().toRectangle();
+  QgsRectangle extent = request.filterBox().extent().toRectangle();
   if ( request.parentTileId() != -1 )
   {
     const QgsTileXYZ parentTile = decodeTileId( request.parentTileId() );
-    extent.intersect( tileMatrix.tileExtent( parentTile ) );
+    extent = extent.intersect( tileMatrix.tileExtent( parentTile ) );
   }
 
   const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( extent );
