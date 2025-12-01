@@ -59,7 +59,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     ~QgsPointCloud3DSymbol() override;
 
     QString type() const override { return "pointcloud"; }
-    virtual QgsPointCloud3DSymbol *clone() const override = 0 SIP_FACTORY;
+    QgsPointCloud3DSymbol *clone() const override = 0 SIP_FACTORY;
 
     /**
      * Returns a unique string identifier of the symbol type.

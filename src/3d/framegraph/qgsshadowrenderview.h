@@ -71,7 +71,7 @@ class QgsShadowRenderView : public QgsAbstractRenderView
     QgsShadowRenderView( const QString &viewName );
 
     //! Enable or disable via \a enable the renderview sub tree
-    virtual void setEnabled( bool enable ) override;
+    void setEnabled( bool enable ) override;
 
     //! Returns the light camera
     Qt3DRender::QCamera *lightCamera() { return mLightCamera; }

@@ -189,7 +189,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void parentFormValueChanged( const QString &attribute, const QVariant &newValue ) override;
 
   protected:
-    virtual void updateUi() override;
+    void updateUi() override;
     void beforeSetRelationFeature( const QgsRelation &newRelation, const QgsFeature &newFeature ) override;
     void afterSetRelationFeature() override;
     void beforeSetRelations( const QgsRelation &newRelation, const QgsRelation &newNmRelation ) override;

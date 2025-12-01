@@ -58,7 +58,7 @@ class QgsLinearReferencingSymbolLayerLabelProvider final : public QgsAbstractLab
       mPriority = 0;
     }
 
-    ~QgsLinearReferencingSymbolLayerLabelProvider()
+    ~QgsLinearReferencingSymbolLayerLabelProvider() override
     {
       qDeleteAll( mLabels );
     }

@@ -48,8 +48,8 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context );
     ~QgsVectorTileLayerRenderer() override;
 
-    virtual bool render() override;
-    virtual QgsFeedback *feedback() const override { return mFeedback.get(); }
+    bool render() override;
+    QgsFeedback *feedback() const override { return mFeedback.get(); }
     bool forceRasterRender() const override;
 
   private:

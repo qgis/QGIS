@@ -420,7 +420,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     bool mWmsHasTimeDimension = false;
 
     //! Sets parent to NULLPTR and disconnects all external and forwarded signals
-    virtual void makeOrphan() override SIP_SKIP;
+    void makeOrphan() override SIP_SKIP;
 
   private:
 

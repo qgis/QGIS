@@ -50,9 +50,9 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
     QgsSettingsEditorWidgetWrapperTemplate( QObject *parent = nullptr )
       : QgsSettingsEditorWidgetWrapper( parent ) {}
 
-    virtual QString id() const override = 0;
+    QString id() const override = 0;
 
-    virtual bool setWidgetFromSetting() const override
+    bool setWidgetFromSetting() const override
     {
       if ( mSetting )
         return setWidgetValue( mSetting->value( mDynamicKeyPartList ) );
@@ -61,7 +61,7 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
       return false;
     }
 
-    virtual bool setSettingFromWidget() const override = 0;
+    bool setSettingFromWidget() const override = 0;
 
     bool setWidgetFromVariant( const QVariant &value ) const override
     {
@@ -85,10 +85,10 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
     //! Returns the setting
     const T *setting() const { return mSetting; }
 
-    virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override = 0;
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override = 0;
 
   protected:
-    virtual QWidget *createEditorPrivate( QWidget *parent = nullptr ) const override
+    QWidget *createEditorPrivate( QWidget *parent = nullptr ) const override
     {
       V *editor = new V( parent );
       editor->setAutoFillBackground( true );

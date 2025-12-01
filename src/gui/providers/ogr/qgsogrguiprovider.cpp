@@ -52,7 +52,7 @@ class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
 class QgsGeoPackageSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-    virtual QString name() const override;
+    QString name() const override;
     QString providerKey() const override { return QStringLiteral( "ogr" ); }
     QString text() const override { return QObject::tr( "GeoPackage" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 45; }

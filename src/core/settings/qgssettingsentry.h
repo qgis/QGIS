@@ -419,7 +419,7 @@ class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase
     {}
 
 
-    virtual Qgis::SettingsType settingsType() const override = 0;
+    Qgis::SettingsType settingsType() const override = 0;
 
     /**
      * Returns settings value.
