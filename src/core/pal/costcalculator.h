@@ -30,6 +30,8 @@ namespace pal
   class Feats;
   class LabelPosition;
   class Pal;
+  class FeaturePart;
+  class PointSet;
 
   /**
    * \ingroup core
