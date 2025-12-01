@@ -226,8 +226,10 @@ class CORE_EXPORT QgsVideoExporter : public QObject
   private slots:
 
     void feedFrames();
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     void checkStatus( QMediaRecorder::RecorderState state );
     void handleError( QMediaRecorder::Error error, const QString &errorString );
+#endif
 
   private:
 
