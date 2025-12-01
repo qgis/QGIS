@@ -23,6 +23,8 @@
 #include "qgsmaplayerserverproperties.h"
 #include "qgsrectangle.h"
 
+class QgsCoordinateReferenceSystem;
+class QgsCoordinateTransformContext;
 class QgsServerInterface;
 class QgsProject;
 

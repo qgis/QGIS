@@ -22,6 +22,7 @@
 #include "qgssnappingconfig.h"
 
 #include <QItemDelegate>
+#include <QMenu>
 #include <QSortFilterProxyModel>
 
 class QgsMapCanvas;
