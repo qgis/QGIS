@@ -1075,7 +1075,6 @@ void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction *act
   if ( !action || !layer )
     return;
 
-  legendLayerActions( layer->type() );
   if ( !mLegendLayerActionMap.contains( layer->type() ) )
     return;
 
