@@ -54,7 +54,8 @@ void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis
 
 void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser, Qgis::StringFormat type )
 {
-  emit messageReceived( message, tag, level, type );
+  emit messageReceived( message, tag, level );
+  emit messageReceivedWithType( message, tag, level, type );
   if ( level != Qgis::MessageLevel::Info && notifyUser && mAdviseBlockCount == 0 )
   {
     emit messageReceived( true );
@@ -64,7 +65,7 @@ void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgi
 QgsMessageLogConsole::QgsMessageLogConsole()
   : QObject( QgsApplication::messageLog() )
 {
-  connect( QgsApplication::messageLog(), static_cast< void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLog::messageReceived ),
+  connect( QgsApplication::messageLog(), static_cast< void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLog::messageReceivedWithType ),
            this, static_cast< void ( QgsMessageLogConsole::* )( const QString &, const QString &, Qgis::MessageLevel, Qgis::StringFormat ) >( &QgsMessageLogConsole::logMessage ) );
 }
 

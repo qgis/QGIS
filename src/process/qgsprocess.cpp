@@ -249,7 +249,7 @@ int QgsProcessingExec::run( const QStringList &args, Qgis::ProcessingLogLevel lo
 {
   mFlags = flags;
 
-  QObject::connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat type )>( &QgsMessageLog::messageReceived ), QgsApplication::instance(), []( const QString &message, const QString &, Qgis::MessageLevel level, Qgis::StringFormat type ) {
+  QObject::connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat type )>( &QgsMessageLog::messageReceivedWithType ), QgsApplication::instance(), []( const QString &message, const QString &, Qgis::MessageLevel level, Qgis::StringFormat type ) {
     Q_UNUSED( type );
     if ( level == Qgis::MessageLevel::Critical )
     {
