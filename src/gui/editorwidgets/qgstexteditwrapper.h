@@ -16,13 +16,13 @@
 #ifndef QGSTEXTEDITWRAPPER_H
 #define QGSTEXTEDITWRAPPER_H
 
+#include "qgis_gui.h"
+#include "qgsattributeform.h"
 #include "qgseditorwidgetwrapper.h"
 
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QTextBrowser>
-#include "qgsattributeform.h"
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 

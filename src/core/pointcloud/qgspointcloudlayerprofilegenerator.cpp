@@ -15,18 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspointcloudlayerprofilegenerator.h"
-#include "qgsprofilerequest.h"
-#include "qgscurve.h"
-#include "qgspointcloudlayer.h"
+
 #include "qgscoordinatetransform.h"
+#include "qgscurve.h"
 #include "qgsgeos.h"
+#include "qgsmessagelog.h"
+#include "qgspointcloudblockrequest.h"
+#include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerelevationproperties.h"
-#include "qgsprofilesnapping.h"
-#include "qgsprofilepoint.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudrequest.h"
-#include "qgspointcloudblockrequest.h"
-#include "qgsmessagelog.h"
+#include "qgsprofilepoint.h"
+#include "qgsprofilerequest.h"
+#include "qgsprofilesnapping.h"
 #include "qgsproject.h"
 
 //

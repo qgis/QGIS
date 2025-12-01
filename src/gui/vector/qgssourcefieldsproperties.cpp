@@ -14,17 +14,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsaddattrdialog.h"
-#include "qgscheckablecombobox.h"
 #include "qgssourcefieldsproperties.h"
-#include "moc_qgssourcefieldsproperties.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
+
+#include "qgsaddattrdialog.h"
 #include "qgsapplication.h"
+#include "qgscheckablecombobox.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
 
+#include "moc_qgssourcefieldsproperties.cpp"
 
 QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )

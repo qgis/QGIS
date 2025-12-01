@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsblanksegmentutils.h"
+
 #include "qgsrendercontext.h"
 
 QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, QString &error )

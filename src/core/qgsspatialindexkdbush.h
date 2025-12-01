@@ -25,12 +25,14 @@ class QgsSpatialIndexKDBushPrivate;
 class QgsRectangle;
 class QgsFeature;
 
-#include "qgis_core.h"
-#include "qgsspatialindexkdbushdata.h"
-#include "qgspointxy.h"
 #include <memory>
-#include <QList>
 #include <functional>
+
+#include "qgis_core.h"
+#include "qgspointxy.h"
+#include "qgsspatialindexkdbushdata.h"
+
+#include <QList>
 
 /**
  * \class QgsSpatialIndexKDBush

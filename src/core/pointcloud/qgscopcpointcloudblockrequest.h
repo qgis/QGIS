@@ -18,10 +18,10 @@
 #ifndef QGSCOPCPOINTCLOUDBLOCKREQUEST_H
 #define QGSCOPCPOINTCLOUDBLOCKREQUEST_H
 
-#include <QObject>
-
-#include "qgspointcloudblockrequest.h"
 #include "qgslazinfo.h"
+#include "qgspointcloudblockrequest.h"
+
+#include <QObject>
 
 #define SIP_NO_FILE
 

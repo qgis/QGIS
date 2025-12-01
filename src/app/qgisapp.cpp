@@ -17,7 +17,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
 #include <QAction>
 #include <QApplication>
 #include <QBitmap>
@@ -30,7 +29,6 @@
 #include <QDialogButtonBox>
 #include <QDir>
 #include <QEvent>
-#include <QUrlQuery>
 #include <QFile>
 #include <QFileInfo>
 #include <QImageWriter>
@@ -41,19 +39,22 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QObject>
 #include <QPainter>
 #include <QPixmap>
 #include <QPoint>
 #include <QProcess>
 #include <QProgressBar>
 #include <QProgressDialog>
+#include <QRegularExpression>
 #include <QScreen>
 #include <QShortcut>
 #include <QSpinBox>
 #include <QSplashScreen>
 #include <QStandardPaths>
 #include <QUrl>
-#include <QRegularExpression>
+#include <QUrlQuery>
+
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
 #endif

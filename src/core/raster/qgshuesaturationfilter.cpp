@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterdataprovider.h"
 #include "qgshuesaturationfilter.h"
+
+#include "qgsrasterdataprovider.h"
 
 #include <QDomDocument>
 #include <QDomElement>
-
 
 QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface *input )
   : QgsRasterInterface( input )

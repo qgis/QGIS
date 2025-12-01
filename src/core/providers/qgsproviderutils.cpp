@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsproviderutils.h"
+
 #include "qgsprovidersublayerdetails.h"
 
 #include <QFileInfo>

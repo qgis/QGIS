@@ -18,10 +18,11 @@
 #ifndef QGSCOORDINATEREFERENCESYSTEMREGISTRY_H
 #define QGSCOORDINATEREFERENCESYSTEMREGISTRY_H
 
-#include <QObject>
-#include <QMap>
-#include <QSet>
 #include "qgscoordinatereferencesystem.h"
+
+#include <QMap>
+#include <QObject>
+#include <QSet>
 
 class QgsCelestialBody;
 class QgsProjOperation;

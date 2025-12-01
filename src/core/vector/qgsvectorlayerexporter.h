@@ -18,15 +18,15 @@
 #ifndef QGSVECTORLAYEREXPORTER_H
 #define QGSVECTORLAYEREXPORTER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsfeature.h"
 #include "qgsfeaturesink.h"
-#include "qgstaskmanager.h"
 #include "qgsfeedback.h"
-#include "qgsvectorlayer.h"
 #include "qgsreferencedgeometry.h"
+#include "qgstaskmanager.h"
+#include "qgsvectorlayer.h"
 
 #include <QPointer>
 

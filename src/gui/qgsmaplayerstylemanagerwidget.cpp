@@ -12,27 +12,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QAction>
-#include <QVBoxLayout>
-#include <QToolBar>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QFileDialog>
-
 #include "qgsmaplayerstylemanagerwidget.h"
-#include "moc_qgsmaplayerstylemanagerwidget.cpp"
+
+#include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectortilelayer.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayerproperties.h"
-#include "qgsvectortilelayerproperties.h"
-#include "qgsrasterlayerproperties.h"
 #include "qgsmeshlayerproperties.h"
+#include "qgsrasterlayerproperties.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerproperties.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortilelayerproperties.h"
+
+#include <QAction>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QToolBar>
+#include <QVBoxLayout>
+
+#include "moc_qgsmaplayerstylemanagerwidget.cpp"
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

@@ -15,16 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscommandlineutils.h"
-#include "qgsgeos.h"
-#include "qgsprojutils.h"
-#include "qgsversion.h"
 
 #include <sqlite3.h>
 #include <ogr_api.h>
 #include <gdal_version.h>
 #include <proj.h>
+
+#include "qgsapplication.h"
+#include "qgsgeos.h"
+#include "qgsprojutils.h"
+#include "qgsversion.h"
+
 #include <QSysInfo>
 
 #ifdef WITH_SFCGAL

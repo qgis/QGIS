@@ -16,14 +16,16 @@
 #include "qgsmodelviewtoolselect.h"
 
 #include <memory>
-#include "moc_qgsmodelviewtoolselect.cpp"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelgraphicsview.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include "qgsmodelgraphicsscene.h"
+
 #include "qgsmodelcomponentgraphicitem.h"
-#include "qgsmodelviewmousehandles.h"
 #include "qgsmodelgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewmousehandles.h"
+#include "qgsprocessingmodelalgorithm.h"
+
+#include "moc_qgsmodelviewtoolselect.cpp"
 
 QgsModelViewToolSelect::QgsModelViewToolSelect( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Select" ) )

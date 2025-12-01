@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgssqlexpressioncompiler.h"
-#include "qgsexpressionnodeimpl.h"
-#include "qgsexpressionfunction.h"
+
 #include "qgsexpression.h"
+#include "qgsexpressionfunction.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsvariantutils.h"
 
 QgsSqlExpressionCompiler::QgsSqlExpressionCompiler( const QgsFields &fields, Flags flags, bool ignoreStaticNodes )

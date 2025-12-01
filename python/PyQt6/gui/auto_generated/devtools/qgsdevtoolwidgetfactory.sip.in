@@ -9,6 +9,7 @@
 
 
 
+
 class QgsDevToolWidgetFactory
 {
 %Docstring(signature="appended")

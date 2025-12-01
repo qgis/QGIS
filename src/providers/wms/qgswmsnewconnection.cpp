@@ -14,14 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswmsnewconnection.h"
-#include "qgsowsconnection.h"
-#include "qgswmsprovider.h"
-#include "moc_qgswmsnewconnection.cpp"
-#include "qgsproject.h"
+
+#include <memory>
+
 #include "qgsguiutils.h"
+#include "qgsowsconnection.h"
+#include "qgsproject.h"
+#include "qgswmsprovider.h"
 
 #include <QMessageBox>
-#include <memory>
+
+#include "moc_qgswmsnewconnection.cpp"
 
 QgsWmsNewConnection::QgsWmsNewConnection( QWidget *parent, const QString &connName )
   : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), connName )

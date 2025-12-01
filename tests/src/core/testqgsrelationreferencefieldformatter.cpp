@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-#include <QString>
 #include <memory>
 
-#include "qgstest.h"
 #include "qgsapplication.h"
+#include "qgsfieldformatterregistry.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgsfieldformatterregistry.h"
+#include "qgstest.h"
 
+#include <QObject>
+#include <QString>
 
 //header for class being tested
 #include "fieldformatter/qgsrelationreferencefieldformatter.h"

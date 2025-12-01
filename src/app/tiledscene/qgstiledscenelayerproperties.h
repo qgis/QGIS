@@ -16,9 +16,10 @@
 #ifndef QGSTILEDSCENELAYERPROPERTIES_H
 #define QGSTILEDSCENELAYERPROPERTIES_H
 
-#include "qgslayerpropertiesdialog.h"
 #include "ui_qgstiledscenelayerpropertiesbase.h"
+
 #include "qgis_app.h"
+#include "qgslayerpropertiesdialog.h"
 
 class QgsTiledSceneLayer;
 class QgsMessageBar;

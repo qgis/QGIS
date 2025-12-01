@@ -13,27 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrendererrasterpropertieswidget.h"
-#include "moc_qgsrendererrasterpropertieswidget.cpp"
 
 #include "qgis.h"
-#include "qgsmapcanvas.h"
+#include "qgsapplication.h"
 #include "qgsbrightnesscontrastfilter.h"
+#include "qgshillshaderendererwidget.h"
 #include "qgshuesaturationfilter.h"
-#include "qgsrastercontourrendererwidget.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterrendererwidget.h"
-#include "qgsrasterrendererregistry.h"
-#include "qgssinglebandgrayrendererwidget.h"
-#include "qgssinglebandpseudocolorrendererwidget.h"
-#include "qgsrastersinglecolorrendererwidget.h"
+#include "qgsmapcanvas.h"
+#include "qgsmultibandcolorrenderer.h"
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgspalettedrendererwidget.h"
-#include "qgshillshaderendererwidget.h"
-#include "qgsmultibandcolorrenderer.h"
-#include "qgssinglebandgrayrenderer.h"
-#include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
+#include "qgsrastercontourrendererwidget.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterrendererregistry.h"
+#include "qgsrasterrendererwidget.h"
+#include "qgsrastersinglecolorrendererwidget.h"
+#include "qgssinglebandgrayrenderer.h"
+#include "qgssinglebandgrayrendererwidget.h"
+#include "qgssinglebandpseudocolorrendererwidget.h"
+
+#include "moc_qgsrendererrasterpropertieswidget.cpp"
 
 void QgsRendererRasterPropertiesWidget::initRendererWidgetFunctions()
 {

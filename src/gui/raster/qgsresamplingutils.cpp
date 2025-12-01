@@ -15,19 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterresampler.h"
-#include "qgsrasterresamplefilter.h"
 #include "qgsresamplingutils.h"
-#include "moc_qgsresamplingutils.cpp"
+
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterresamplefilter.h"
+#include "qgsrasterresampler.h"
 
-#include <QObject>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QDoubleSpinBox>
-#include <QCheckBox>
+#include <QObject>
+
+#include "moc_qgsresamplingutils.cpp"
 
 /// @cond PRIVATE
 

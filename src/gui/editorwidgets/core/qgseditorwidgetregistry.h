@@ -16,13 +16,14 @@
 #ifndef QGSEDITORWIDGETREGISTRY_H
 #define QGSEDITORWIDGETREGISTRY_H
 
-#include <QObject>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QMap>
-#include "qgseditorwidgetfactory.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetautoconf.h"
-#include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
+
+#include <QMap>
+#include <QObject>
 
 class QgsMapLayer;
 class QDomNode;

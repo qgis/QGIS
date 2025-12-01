@@ -17,10 +17,13 @@
  ***************************************************************************/
 
 #include "qgsnetworkcontentfetchertask.h"
-#include "moc_qgsnetworkcontentfetchertask.cpp"
+
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsnetworkreply.h"
+
 #include <QEventLoop>
+
+#include "moc_qgsnetworkcontentfetchertask.cpp"
 
 QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg, QgsTask::Flags flags, const QString &description )
   : QgsNetworkContentFetcherTask( QNetworkRequest( url ), authcfg, flags, description )

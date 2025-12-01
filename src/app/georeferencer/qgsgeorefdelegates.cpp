@@ -12,7 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsgeorefdelegates.h"
+
 #include <limits>
+#include <cmath>
+
+#include "qgsgeorefvalidators.h"
 
 #include <QDoubleSpinBox>
 #include <QLineEdit>
@@ -20,10 +25,7 @@
 #include <QRegularExpressionMatch>
 #include <QRegularExpressionValidator>
 
-#include "qgsgeorefvalidators.h"
-#include "qgsgeorefdelegates.h"
 #include "moc_qgsgeorefdelegates.cpp"
-#include <cmath>
 
 // ------------------------- QgsDmsAndDdDelegate --------------------------- //
 QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget *parent )

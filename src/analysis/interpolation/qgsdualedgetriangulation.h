@@ -17,25 +17,24 @@
 #ifndef DUALEDGETRIANGULATION_H
 #define DUALEDGETRIANGULATION_H
 
-#include <QVector>
-#include <QList>
-#include <QSet>
-#include <QColor>
-#include <QFile>
-#include <QTextStream>
-#include <QMessageBox>
-#include <QBuffer>
-#include <QStringList>
-#include <QCursor>
-
 #include <cfloat>
 
-#include "qgis_sip.h"
-#include "qgis_analysis.h"
-#include "qgspoint.h"
-
-#include "qgstriangulation.h"
 #include "HalfEdge.h"
+#include "qgis_analysis.h"
+#include "qgis_sip.h"
+#include "qgspoint.h"
+#include "qgstriangulation.h"
+
+#include <QBuffer>
+#include <QColor>
+#include <QCursor>
+#include <QFile>
+#include <QList>
+#include <QMessageBox>
+#include <QSet>
+#include <QStringList>
+#include <QTextStream>
+#include <QVector>
 
 #define SIP_NO_FILE
 

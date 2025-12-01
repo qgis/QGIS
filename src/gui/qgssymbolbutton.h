@@ -15,13 +15,14 @@
 #ifndef QGSSYMBOLBUTTON_H
 #define QGSSYMBOLBUTTON_H
 
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
-#include <QToolButton>
 #include <QPointer>
-#include <memory>
+#include <QToolButton>
 
 class QgsMapCanvas;
 class QgsVectorLayer;

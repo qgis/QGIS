@@ -15,19 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrasterinterface.h"
+
 #include <limits>
 #include <typeinfo>
-
-#include <QByteArray>
-#include <QTime>
-#include <QStringList>
 
 #include "qgslogger.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterhistogram.h"
-#include "qgsrasterinterface.h"
-#include "moc_qgsrasterinterface.cpp"
 #include "qgsrectangle.h"
+
+#include <QByteArray>
+#include <QStringList>
+#include <QTime>
+
+#include "moc_qgsrasterinterface.cpp"
 
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface *input )
   : mInput( input )

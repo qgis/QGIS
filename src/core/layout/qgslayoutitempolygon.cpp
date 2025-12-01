@@ -15,18 +15,20 @@
  ***************************************************************************/
 
 #include "qgslayoutitempolygon.h"
-#include "moc_qgslayoutitempolygon.cpp"
-#include "qgslayoutitemregistry.h"
-#include "qgslayoututils.h"
-#include "qgslayout.h"
-#include "qgslayoutrendercontext.h"
-#include "qgsreadwritecontext.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbol.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsfillsymbol.h"
 
 #include <limits>
+
+#include "qgsfillsymbol.h"
+#include "qgslayout.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoututils.h"
+#include "qgsreadwritecontext.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+
+#include "moc_qgslayoutitempolygon.cpp"
 
 QgsLayoutItemPolygon::QgsLayoutItemPolygon( QgsLayout *layout )
   : QgsLayoutNodesItem( layout )

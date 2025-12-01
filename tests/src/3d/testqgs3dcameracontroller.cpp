@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgs3d.h"
 #include "qgs3dmapcanvas.h"
@@ -27,11 +27,9 @@
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrasterlayer.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
-
-#include <memory>
-
 
 class TestQgs3DCameraController : public QgsTest
 {

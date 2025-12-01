@@ -15,11 +15,13 @@
 #ifndef QGSPROFILERPANELWIDGET_H
 #define QGSPROFILERPANELWIDGET_H
 
-#include "qgsdevtoolwidget.h"
 #include "ui_qgsprofilerpanelbase.h"
-#include <QTreeView>
-#include <QStyledItemDelegate>
+
+#include "qgsdevtoolwidget.h"
+
 #include <QSortFilterProxyModel>
+#include <QStyledItemDelegate>
+#include <QTreeView>
 
 class QgsRuntimeProfiler;
 

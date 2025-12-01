@@ -16,18 +16,19 @@
 #include "qgsmodelviewtoollink.h"
 
 #include <memory>
-#include "moc_qgsmodelviewtoollink.cpp"
-#include "qgsprocessingmodelerparameterwidget.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include "qgsprocessingguiregistry.h"
-#include "qgsprocessingmodelchildalgorithm.h"
-#include "qgsmodelgraphicsscene.h"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelviewtoolselect.h"
-#include "qgsmodelgraphicsview.h"
-#include "qgsmodelviewrubberband.h"
-#include "qgsmodelgraphicitem.h"
 
+#include "qgsmodelgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewrubberband.h"
+#include "qgsmodelviewtoolselect.h"
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgsprocessingmodelerparameterwidget.h"
+
+#include "moc_qgsmodelviewtoollink.cpp"
 
 QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Link Tool" ) )

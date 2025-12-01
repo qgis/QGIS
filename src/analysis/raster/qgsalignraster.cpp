@@ -20,12 +20,11 @@
 #include <cpl_conv.h>
 #include <limits>
 
-#include <QPair>
-#include <QString>
-
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 
+#include <QPair>
+#include <QString>
 
 static double ceil_with_tolerance( double value )
 {

@@ -16,14 +16,17 @@
  ***************************************************************************/
 
 #include "qgsdial.h"
+
+#include <cmath>
+
 #include "qgslogger.h"
 #include "qgsvariantutils.h"
-#include "moc_qgsdial.cpp"
 
 #include <QPaintEvent>
 #include <QPainter>
 #include <QRect>
-#include <cmath>
+
+#include "moc_qgsdial.cpp"
 
 QgsDial::QgsDial( QWidget *parent )
   : QDial( parent )

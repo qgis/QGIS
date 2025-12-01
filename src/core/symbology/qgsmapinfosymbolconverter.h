@@ -16,11 +16,12 @@
 #ifndef QGSMAPINFOSYMBOLCONVERTER_H
 #define QGSMAPINFOSYMBOLCONVERTER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
-#include <QStringList>
+
 #include <QColor>
+#include <QStringList>
 
 class QgsLineSymbol;
 class QgsFillSymbol;

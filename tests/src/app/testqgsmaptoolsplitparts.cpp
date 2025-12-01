@@ -13,18 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
-#include "qgsmapcanvas.h"
-#include "qgssettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptoolsplitparts.h"
-
-#include <memory>
 #include "qgsgeometryutils.h"
-
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolsplitparts.h"
+#include "qgssettings.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
 class TestQgsMapToolSplitParts : public QObject

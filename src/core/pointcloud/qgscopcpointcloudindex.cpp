@@ -18,33 +18,33 @@
 #include "qgscopcpointcloudindex.h"
 
 #include <fstream>
-#include <QFile>
-#include <QtDebug>
-#include <QQueue>
-#include <QMutexLocker>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <memory>
-#include <qnamespace.h>
 
+#include "lazperf/vlr.hpp"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsbox3d.h"
 #include "qgscachedpointcloudblockrequest.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgscopcpointcloudblockrequest.h"
 #include "qgseptdecoder.h"
 #include "qgslazdecoder.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgspointcloudblockrequest.h"
-#include "qgspointcloudindex.h"
-#include "qgspointcloudrequest.h"
-#include "qgspointcloudattribute.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
-#include "qgsauthmanager.h"
-
-#include "lazperf/vlr.hpp"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrequest.h"
 #include "qgssetrequestinitiator_p.h"
+
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMutexLocker>
+#include <QQueue>
+#include <QtDebug>
+#include <qnamespace.h>
 
 ///@cond PRIVATE
 

@@ -15,37 +15,40 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswfsconstants.h"
 #include "qgswfssourceselect.h"
-#include "moc_qgswfssourceselect.cpp"
-#include "qgswfsconnection.h"
-#include "qgswfscapabilities.h"
-#include "qgswfsprovider.h"
-#include "qgswfsdatasourceuri.h"
-#include "qgswfsutils.h"
-#include "qgswfsnewconnection.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgsproject.h"
+
+#include <memory>
+
 #include "qgscoordinatereferencesystem.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsoapifprovider.h"
-#include "qgssqlstatement.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsquerybuilder.h"
+#include "qgssettings.h"
+#include "qgssqlstatement.h"
+#include "qgswfscapabilities.h"
+#include "qgswfsconnection.h"
+#include "qgswfsconstants.h"
+#include "qgswfsdatasourceuri.h"
 #include "qgswfsguiutils.h"
+#include "qgswfsnewconnection.h"
+#include "qgswfsprovider.h"
 #include "qgswfssubsetstringeditor.h"
-#include "qgsguiutils.h"
-#include "qgshelp.h"
+#include "qgswfsutils.h"
 
 #include <QDomDocument>
+#include <QFileDialog>
 #include <QListWidgetItem>
 #include <QMessageBox>
-#include <QFileDialog>
 #include <QPainter>
 #include <QRegularExpression>
-#include <memory>
+
+#include "moc_qgswfssourceselect.cpp"
 
 enum
 {

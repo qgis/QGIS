@@ -17,15 +17,15 @@
 #ifndef QGS_FEATUREPOOL_H
 #define QGS_FEATUREPOOL_H
 
+#include "qgis_analysis.h"
+#include "qgsfeature.h"
+#include "qgsfeaturesink.h"
+#include "qgsspatialindex.h"
+#include "qgsvectorlayerfeatureiterator.h"
+
 #include <QCache>
 #include <QMutex>
 #include <QPointer>
-
-#include "qgis_analysis.h"
-#include "qgsfeature.h"
-#include "qgsspatialindex.h"
-#include "qgsfeaturesink.h"
-#include "qgsvectorlayerfeatureiterator.h"
 
 /**
  * \ingroup analysis

@@ -15,41 +15,44 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmap.h"
-#include "moc_qgslayoutitemmap.cpp"
+
+#include <memory>
+
+#include "qgsannotation.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationmanager.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystemregistry.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureexpressionfilterprovider.h"
+#include "qgsgroupedfeaturefilterprovider.h"
+#include "qgslabelingresults.h"
+#include "qgslayertree.h"
 #include "qgslayout.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoututils.h"
-#include "qgslayoutmodel.h"
-#include "qgsmapthemecollection.h"
-#include "qgsannotationmanager.h"
-#include "qgsannotation.h"
-#include "qgsmapsettingsutils.h"
-#include "qgslayertree.h"
-#include "qgsmaplayerref.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsmaplayerref.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressioncontext.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsannotationlayer.h"
-#include "qgscoordinatereferencesystemregistry.h"
+#include "qgsmapsettingsutils.h"
+#include "qgsmapthemecollection.h"
 #include "qgsprojoperation.h"
-#include "qgslabelingresults.h"
-#include "qgsvectortileutils.h"
-#include "qgsunittypes.h"
-#include "qgsfeatureexpressionfilterprovider.h"
-#include "qgsgroupedfeaturefilterprovider.h"
 #include "qgssettingstree.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortileutils.h"
 
 #include <QApplication>
 #include <QPainter>
 #include <QScreen>
 #include <QStyleOptionGraphicsItem>
 #include <QTimer>
-#include <memory>
+
+#include "moc_qgslayoutitemmap.cpp"
 
 const QgsSettingsEntryBool *QgsLayoutItemMap::settingForceRasterMasks = new QgsSettingsEntryBool( QStringLiteral( "force-raster-masks" ), QgsSettingsTree::sTreeLayout, false, QStringLiteral( "Whether to force rasterized clipping masks, regardless of output format." ) );
 

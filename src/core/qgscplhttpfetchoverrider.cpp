@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgscplhttpfetchoverrider.h"
-#include "qgslogger.h"
-#include "qgsblockingnetworkrequest.h"
 
-#include "cpl_http.h"
-#include "gdal.h"
+#include <cpl_http.h>
+#include <gdal.h>
+
+#include "qgsblockingnetworkrequest.h"
+#include "qgslogger.h"
 
 QgsCPLHTTPFetchOverrider::QgsCPLHTTPFetchOverrider( const QString &authCfg, QgsFeedback *feedback )
   : mAuthCfg( authCfg )

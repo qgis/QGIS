@@ -15,16 +15,17 @@
  ***************************************************************************/
 
 #include "qgstextbuffersettings.h"
-#include "qgstextrenderer_p.h"
-#include "qgsvectorlayer.h"
+
+#include "qgsapplication.h"
+#include "qgscolorutils.h"
+#include "qgspainteffectregistry.h"
+#include "qgspainting.h"
 #include "qgspallabeling.h"
 #include "qgssymbollayerutils.h"
-#include "qgspainting.h"
-#include "qgspainteffectregistry.h"
+#include "qgstextrenderer_p.h"
 #include "qgstextrendererutils.h"
-#include "qgsapplication.h"
 #include "qgsunittypes.h"
-#include "qgscolorutils.h"
+#include "qgsvectorlayer.h"
 
 QgsTextBufferSettings::QgsTextBufferSettings()
 {

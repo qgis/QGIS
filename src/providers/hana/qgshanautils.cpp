@@ -14,15 +14,16 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshanautils.h"
+
 #include "qgsdatasourceuri.h"
 #include "qgshanaexception.h"
 #include "qgshanasettings.h"
-#include "qgshanautils.h"
 #include "qgsvariantutils.h"
 
 #include <QDate>
-#include <QTime>
 #include <QDateTime>
+#include <QTime>
 
 using namespace NS_ODBC;
 

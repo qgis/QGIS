@@ -16,14 +16,13 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOMETRYCOLLECTION_H
 #define QGSGEOMETRYCOLLECTION_H
 
-#include <QVector>
-
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
-#include "qgsrectangle.h"
 #include "qgsbox3d.h"
+#include "qgsrectangle.h"
+
+#include <QVector>
 
 class QgsPoint;
 

@@ -18,13 +18,13 @@
 
 #include "qgis_app.h"
 #include "qgscamerapose.h"
-#include "qobjectuniqueptr.h"
 #include "qgsrectangle.h"
 
 #include <QComboBox>
 #include <QMenu>
 #include <QPointer>
 #include <QToolBar>
+#include <qobjectuniqueptr.h>
 
 #define SIP_NO_FILE
 

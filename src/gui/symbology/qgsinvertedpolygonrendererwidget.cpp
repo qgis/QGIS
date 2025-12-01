@@ -15,11 +15,13 @@
 #include "qgsinvertedpolygonrendererwidget.h"
 
 #include <memory>
-#include "moc_qgsinvertedpolygonrendererwidget.cpp"
+
+#include "qgsapplication.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
+
+#include "moc_qgsinvertedpolygonrendererwidget.cpp"
 
 QgsRendererWidget *QgsInvertedPolygonRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

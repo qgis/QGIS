@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsvectortileprovidermetadata.h"
-#include "moc_qgsvectortileprovidermetadata.cpp"
 
-#include "qgsvectortileconnection.h"
-#include "qgsvectortiledataitems.h"
 #include "qgsapplication.h"
 #include "qgsreadwritecontext.h"
+#include "qgsvectortileconnection.h"
+#include "qgsvectortiledataitems.h"
 
 #include <QUrl>
+
+#include "moc_qgsvectortileprovidermetadata.cpp"
 
 ///@cond PRIVATE
 

@@ -16,19 +16,22 @@
  ***************************************************************************/
 
 
-#include "qgsapplication.h"
+#include "qgsprocessingwidgetwrapper.h"
+
 #include "models/qgsprocessingmodelalgorithm.h"
+#include "qgsapplication.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsprocessingmodelerparameterwidget.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingregistry.h"
-#include "qgsprocessingwidgetwrapper.h"
-#include "moc_qgsprocessingwidgetwrapper.cpp"
 #include "qgspropertyoverridebutton.h"
-#include <QLabel>
+
 #include <QHBoxLayout>
+#include <QLabel>
+
+#include "moc_qgsprocessingwidgetwrapper.cpp"
 
 //
 // QgsProcessingParameterWidgetContext

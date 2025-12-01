@@ -16,9 +16,9 @@
 #ifndef QGSNULLMATERIALWIDGET_H
 #define QGSNULLMATERIALWIDGET_H
 
-#include "qgsmaterialsettingswidget.h"
+#include "ui_nullmaterialwidget.h"
 
-#include <ui_nullmaterialwidget.h>
+#include "qgsmaterialsettingswidget.h"
 
 class QgsNullMaterialSettings;
 

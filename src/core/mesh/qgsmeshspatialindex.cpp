@@ -14,15 +14,17 @@
  ***************************************************************************/
 
 #include "qgsmeshspatialindex.h"
-#include "qgsrectangle.h"
-#include "qgsspatialindexutils.h"
-#include "qgslogger.h"
-#include "qgsfeedback.h"
 
 #include <spatialindex/SpatialIndex.h>
+#include <memory>
+
+#include "qgsfeedback.h"
+#include "qgslogger.h"
+#include "qgsrectangle.h"
+#include "qgsspatialindexutils.h"
+
 #include <QMutex>
 #include <QMutexLocker>
-#include <memory>
 
 using namespace SpatialIndex;
 

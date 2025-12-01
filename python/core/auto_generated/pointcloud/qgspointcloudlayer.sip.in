@@ -12,6 +12,7 @@
 
 
 
+
 class QgsPointCloudLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")

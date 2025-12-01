@@ -17,10 +17,10 @@
  ***************************************************************************/
 
 #include "qgsarchive.h"
-#include "qgsziputils.h"
-#include "qgsmessagelog.h"
-#include "qgsauxiliarystorage.h"
 
+#include "qgsauxiliarystorage.h"
+#include "qgsmessagelog.h"
+#include "qgsziputils.h"
 
 #ifdef Q_OS_WIN
 #include <windows.h>

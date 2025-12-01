@@ -17,10 +17,10 @@
 
 
 #include "qgsalgorithmcoveragevalidate.h"
-#include "qgsgeometrycollection.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsgeos.h"
 
+#include "qgsgeometrycollection.h"
+#include "qgsgeos.h"
+#include "qgsprocessingoutputs.h"
 
 ///@cond PRIVATE
 

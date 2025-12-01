@@ -15,21 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QRegularExpression>
-#include <QRegularExpressionValidator>
-#include <QMenu>
-
 #include "qgsmssqlnewconnection.h"
-#include "moc_qgsmssqlnewconnection.cpp"
-#include "qgsmssqlprovider.h"
-#include "qgssettings.h"
+
+#include "qgsgui.h"
 #include "qgsmssqlconnection.h"
 #include "qgsmssqldatabase.h"
-#include "qgsgui.h"
+#include "qgsmssqlprovider.h"
+#include "qgssettings.h"
+
+#include <QInputDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QSqlDatabase>
+#include <QSqlError>
+
+#include "moc_qgsmssqlnewconnection.cpp"
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )

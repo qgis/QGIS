@@ -17,12 +17,14 @@
 
 #include "qgsmaprendererjobproxy.h"
 
-#include "qgsmessagelog.h"
-#include "qgsmaprendererparalleljob.h"
-#include "qgsmaprenderercustompainterjob.h"
-#include "qgsapplication.h"
-#include <QThread>
 #include <memory>
+
+#include "qgsapplication.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmaprendererparalleljob.h"
+#include "qgsmessagelog.h"
+
+#include <QThread>
 
 namespace QgsWms
 {

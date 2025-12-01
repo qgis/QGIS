@@ -31,16 +31,17 @@
 // version without notice, or even be removed.
 //
 
-#include "qgsfeature.h"
-#include "qgsspatialindexkdbushdata.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfeedback.h"
-#include "qgsfeaturesource.h"
 #include <memory>
-#include <QList>
-#include "kdbush.hpp"
 #include <functional>
 
+#include "kdbush.hpp"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturesource.h"
+#include "qgsfeedback.h"
+#include "qgsspatialindexkdbushdata.h"
+
+#include <QList>
 
 class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsSpatialIndexKDBushData, std::size_t >
 {

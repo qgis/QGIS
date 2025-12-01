@@ -15,16 +15,15 @@
 
 #include "qgsarcgisrestprovidergui.h"
 
-#include "qgsapplication.h"
-#include "qgsproviderguimetadata.h"
-#include "qgssourceselectprovider.h"
-
-#include "qgsarcgisrestdataitemguiprovider.h"
 #include "qgsafsprovider.h"
+#include "qgsapplication.h"
+#include "qgsarcgisrestdataitemguiprovider.h"
 #include "qgsarcgisrestsourceselect.h"
 #include "qgsarcgisrestsourcewidget.h"
-#include "qgsprovidersourcewidgetprovider.h"
 #include "qgsmaplayer.h"
+#include "qgsproviderguimetadata.h"
+#include "qgsprovidersourcewidgetprovider.h"
+#include "qgssourceselectprovider.h"
 
 //! Provider for AFS layers source select
 class QgsArcGisRestSourceSelectProvider : public QgsSourceSelectProvider

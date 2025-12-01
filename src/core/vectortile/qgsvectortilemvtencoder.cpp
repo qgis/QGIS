@@ -25,7 +25,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilemvtutils.h"
 
-
 //! Helper class for writing of geometry commands
 struct MVTGeometryWriter
 {

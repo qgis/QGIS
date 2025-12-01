@@ -34,7 +34,6 @@ email                : nyall dot dawson at gmail dot com
  ****************************************************************************/
 
 #include "qgsfields.h"
-
 #include "qgsgeometry.h"
 #include "qgssymbol.h"
 

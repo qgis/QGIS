@@ -13,24 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPushButton>
-
 #include "qgsmaptoolsimplify.h"
-#include "moc_qgsmaptoolsimplify.cpp"
-
-#include "qgsfeatureiterator.h"
-#include "qgsgeometry.h"
-#include "qgsmapcanvas.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgstolerance.h"
-#include "qgisapp.h"
-#include "qgssettings.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
-#include "qgsmapmouseevent.h"
 
 #include <cmath>
 #include <cfloat>
+
+#include "qgisapp.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgsrubberband.h"
+#include "qgssettings.h"
+#include "qgstolerance.h"
+#include "qgsvectorlayer.h"
+
+#include <QPushButton>
+
+#include "moc_qgsmaptoolsimplify.cpp"
 
 QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
   : QWidget( parent )

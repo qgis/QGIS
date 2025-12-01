@@ -17,8 +17,8 @@
 #define QGSTEMPORALUTILS_H
 
 #include "qgis_core.h"
-#include "qgsrange.h"
 #include "qgsinterval.h"
+#include "qgsrange.h"
 
 class QgsProject;
 class QgsMapSettings;

@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgsclassificationprettybreaks.h"
-#include "qgssymbollayerutils.h"
-#include "qgsapplication.h"
 
+#include "qgsapplication.h"
+#include "qgssymbollayerutils.h"
+
+#include <QObject>
 
 QgsClassificationPrettyBreaks::QgsClassificationPrettyBreaks()
   : QgsClassificationMethod( SymmetricModeAvailable )

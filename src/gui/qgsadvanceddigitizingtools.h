@@ -16,15 +16,14 @@
 #ifndef QGSADVANCEDDIGITIZINGTOOLS
 #define QGSADVANCEDDIGITIZINGTOOLS
 
-#include <QWidget>
-#include <QString>
-
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsmapmouseevent.h"
 
 #include <QPointer>
+#include <QString>
+#include <QWidget>
 
 class QgsAdvancedDigitizingDockWidget;
 class QgsDoubleSpinBox;

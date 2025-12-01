@@ -16,22 +16,23 @@
  ***************************************************************************/
 
 #include "qgsmssqlfeatureiterator.h"
+
+#include <memory>
+
+#include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
+#include "qgsexception.h"
+#include "qgsgeometryengine.h"
+#include "qgslogger.h"
+#include "qgsmssqldatabase.h"
 #include "qgsmssqlexpressioncompiler.h"
 #include "qgsmssqlprovider.h"
 #include "qgsmssqltransaction.h"
 #include "qgsmssqlutils.h"
-#include "qgslogger.h"
-#include "qgsdbquerylog.h"
-#include "qgsdbquerylog_p.h"
-#include "qgsexception.h"
-#include "qgsmssqldatabase.h"
-#include "qgsgeometryengine.h"
 
 #include <QObject>
-#include <QTextStream>
 #include <QSqlRecord>
-#include <memory>
-
+#include <QTextStream>
 
 QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>( source, ownSource, request )

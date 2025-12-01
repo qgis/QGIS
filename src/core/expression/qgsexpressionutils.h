@@ -19,19 +19,20 @@
 
 #define SIP_NO_FILE
 
-#include "qgsfeature.h"
+#include <functional>
+
+#include "qgscoordinatereferencesystem.h"
 #include "qgsexpression.h"
-#include "qgsvariantutils.h"
+#include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsreferencedgeometry.h"
-#include "qgscoordinatereferencesystem.h"
+#include "qgsvariantutils.h"
 
 #include <QDate>
 #include <QDateTime>
-#include <QTime>
-#include <QThread>
 #include <QLocale>
-#include <functional>
+#include <QThread>
+#include <QTime>
 
 class QgsMapLayer;
 class QgsGradientColorRamp;

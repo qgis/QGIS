@@ -17,33 +17,35 @@
  ***************************************************************************/
 
 #include "qgslayertreemodellegendnode.h"
-#include "moc_qgslayertreemodellegendnode.cpp"
 
-#include "qgsdatadefinedsizelegend.h"
-#include "qgslayertreemodel.h"
-#include "qgslegendsettings.h"
-#include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsimageoperation.h"
-#include "qgsvectorlayer.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudrenderer.h"
-#include "qgsrasterrenderer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsexpression.h"
-#include "qgstextrenderer.h"
-#include "qgssettings.h"
-#include "qgsfileutils.h"
-#include "qgsmarkersymbol.h"
-#include "qgsvariantutils.h"
-#include "qgslayertreelayer.h"
-#include "qgstextdocument.h"
-#include "qgstextdocumentmetrics.h"
-
-#include <QBuffer>
 #include <memory>
 #include <optional>
+
+#include "qgsdatadefinedsizelegend.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfileutils.h"
+#include "qgsimageoperation.h"
+#include "qgslayertreelayer.h"
+#include "qgslayertreemodel.h"
+#include "qgslegendsettings.h"
+#include "qgsmarkersymbol.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudrenderer.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrenderer.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextdocument.h"
+#include "qgstextdocumentmetrics.h"
+#include "qgstextrenderer.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+
+#include <QBuffer>
+
+#include "moc_qgslayertreemodellegendnode.cpp"
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
   : QObject( parent )

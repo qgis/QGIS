@@ -16,11 +16,11 @@
 #ifndef QGSMAPTOOLSELECTIONHANDLER_H
 #define QGSMAPTOOLSELECTIONHANDLER_H
 
-#include <QObject>
-#include <QWidget>
-#include <QTimer>
-
 #include "qgsgeometry.h"
+
+#include <QObject>
+#include <QTimer>
+#include <QWidget>
 
 class QHBoxLayout;
 class QKeyEvent;

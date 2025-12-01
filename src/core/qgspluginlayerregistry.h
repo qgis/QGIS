@@ -19,11 +19,11 @@
 #ifndef QGSPLUGINLAYERREGSITRY_H
 #define QGSPLUGINLAYERREGSITRY_H
 
-#include <QMap>
-#include "qgis_sip.h"
-#include <QDomNode>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QDomNode>
+#include <QMap>
 
 class QgsPluginLayer;
 

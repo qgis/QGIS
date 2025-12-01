@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgsalgorithmgltftovector.h"
+
+#include <memory>
+
 #include "qgsgltfutils.h"
+#include "qgslinestring.h"
 #include "qgsmatrix4x4.h"
-#include "qgsvector3d.h"
+#include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgsmultilinestring.h"
+#include "qgsvector3d.h"
 
 #include <QMatrix4x4>
-#include <memory>
 
 #define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
 #define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images

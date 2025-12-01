@@ -11,15 +11,17 @@
  ***************************************************************************/
 
 #include "qgsdecorationscalebardialog.h"
-#include "moc_qgsdecorationscalebardialog.cpp"
+
 #include "qgsdecorationscalebar.h"
-#include "qgslogger.h"
-#include "qgshelp.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgslogger.h"
 
 #include <QColorDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
+
+#include "moc_qgsdecorationscalebardialog.cpp"
 
 QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, Qgis::DistanceUnit units, QWidget *parent )
   : QDialog( parent )

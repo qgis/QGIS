@@ -15,15 +15,15 @@
 #ifndef QGSARCGISRESTDATAITEMS_H
 #define QGSARCGISRESTDATAITEMS_H
 
+#include "qgsconfig.h"
+
 #include "qgsconnectionsitem.h"
 #include "qgsdatacollectionitem.h"
-#include "qgsdatasourceuri.h"
-#include "qgswkbtypes.h"
 #include "qgsdataitemprovider.h"
-#include "qgslayeritem.h"
-#include "qgsconfig.h"
+#include "qgsdatasourceuri.h"
 #include "qgshttpheaders.h"
-
+#include "qgslayeritem.h"
+#include "qgswkbtypes.h"
 
 class QgsArcGisRestRootItem : public QgsConnectionsRootItem
 {

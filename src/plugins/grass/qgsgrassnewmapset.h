@@ -17,6 +17,7 @@
 #define QGSGRASSNEWMAPSET_H
 
 #include "ui_qgsgrassnewmapsetbase.h"
+
 #include "qgscoordinatereferencesystem.h"
 
 class QgsGrassPlugin;

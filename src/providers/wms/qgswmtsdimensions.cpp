@@ -15,13 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswmsprovider.h"
 #include "qgswmtsdimensions.h"
-#include "moc_qgswmtsdimensions.cpp"
-#include "qgssettings.h"
+
 #include "qgsgui.h"
+#include "qgssettings.h"
+#include "qgswmsprovider.h"
 
 #include <QComboBox>
+
+#include "moc_qgswmtsdimensions.cpp"
 
 QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

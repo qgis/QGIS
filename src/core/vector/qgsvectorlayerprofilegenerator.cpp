@@ -15,30 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorlayerprofilegenerator.h"
+
+#include <memory>
+
 #include "qgsabstractgeometry.h"
-#include "qgspolyhedralsurface.h"
-#include "qgsprofilerequest.h"
+#include "qgscoordinatetransform.h"
 #include "qgscurve.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeos.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgspolyhedralsurface.h"
+#include "qgsprofilepoint.h"
+#include "qgsprofilerequest.h"
+#include "qgsprofilesnapping.h"
+#include "qgsterrainprovider.h"
+#include "qgstessellator.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
-#include "qgscoordinatetransform.h"
-#include "qgsgeos.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsterrainprovider.h"
-#include "qgspolygon.h"
-#include "qgstessellator.h"
-#include "qgsmultipolygon.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmultipoint.h"
-#include "qgsmultilinestring.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsprofilepoint.h"
-#include "qgsprofilesnapping.h"
-#include "qgsexpressioncontextutils.h"
+
 #include <QPolygonF>
-#include <memory>
 
 //
 // QgsVectorLayerProfileResults

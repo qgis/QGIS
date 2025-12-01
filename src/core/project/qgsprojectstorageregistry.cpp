@@ -17,7 +17,6 @@
 
 #include "qgsprojectstorage.h"
 
-
 QgsProjectStorageRegistry::~QgsProjectStorageRegistry()
 {
   qDeleteAll( mBackends );

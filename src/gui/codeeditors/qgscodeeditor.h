@@ -17,11 +17,12 @@
 #ifndef QGSCODEEDITOR_H
 #define QGSCODEEDITOR_H
 
-#include <QString>
-#include "qgscodeeditorcolorscheme.h"
 #include "qgis.h"
-#include "qgssettingstree.h"
+#include "qgscodeeditorcolorscheme.h"
 #include "qgspanelwidget.h"
+#include "qgssettingstree.h"
+
+#include <QString>
 
 // qscintilla includes
 #include <Qsci/qsciapis.h>

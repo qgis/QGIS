@@ -13,27 +13,29 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <QFont>
+#include "qgsstatusbarcoordinateswidget.h"
+
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystemutils.h"
+#include "qgscoordinateutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
+
 #include <QFileInfo>
+#include <QFont>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QRandomGenerator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QSpacerItem>
 #include <QTimer>
 #include <QToolButton>
-#include <QRegularExpression>
-#include <QRegularExpressionValidator>
-#include <QRandomGenerator>
 
-#include "qgsstatusbarcoordinateswidget.h"
 #include "moc_qgsstatusbarcoordinateswidget.cpp"
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgscoordinateutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerjoininfo.h"
-#include "qgscoordinatereferencesystemutils.h"
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   : QWidget( parent )

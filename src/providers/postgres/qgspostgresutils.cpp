@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgspostgresutils.h"
+
+#include "qgslogger.h"
 #include "qgsstringutils.h"
 
 // ----------

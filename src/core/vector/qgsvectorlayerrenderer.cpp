@@ -15,38 +15,38 @@
 
 #include "qgsvectorlayerrenderer.h"
 
+#include "qgsapplication.h"
+#include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeaturefilterprovider.h"
+#include "qgsfeaturerenderergenerator.h"
+#include "qgslabelsink.h"
+#include "qgslogger.h"
+#include "qgsmapclippingutils.h"
 #include "qgsmessagelog.h"
+#include "qgspainteffect.h"
 #include "qgspallabeling.h"
-#include "qgsrenderer.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsrenderer.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgssinglesymbolrenderer.h"
-#include "qgssymbollayer.h"
 #include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgsthreadingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
-#include "qgspainteffect.h"
-#include "qgsfeaturefilterprovider.h"
-#include "qgsexception.h"
-#include "qgslabelsink.h"
-#include "qgslogger.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgsvectorlayerselectionproperties.h"
 #include "qgsvectorlayertemporalproperties.h"
-#include "qgsmapclippingutils.h"
-#include "qgsfeaturerenderergenerator.h"
-#include "qgssettingsentryimpl.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
-#include "qgsthreadingutils.h"
 
 #include <QPicture>
-#include <QTimer>
 #include <QThread>
+#include <QTimer>
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )

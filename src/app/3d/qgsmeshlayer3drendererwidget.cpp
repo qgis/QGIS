@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsmeshlayer3drendererwidget.h"
-#include "moc_qgsmeshlayer3drendererwidget.cpp"
+
+#include <memory>
 
 #include "qgsmesh3dsymbol.h"
 #include "qgsmesh3dsymbolwidget.h"
+#include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsvscrollarea.h"
-#include "qgsmeshlayer.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
-#include <memory>
+
+#include "moc_qgsmeshlayer3drendererwidget.cpp"
 
 QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

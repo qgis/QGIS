@@ -18,29 +18,29 @@
 
 #include "qgsconfig.h"
 
-#include <QCloseEvent>
-#include <QLabel>
 #include <QAction>
-#include <QTreeWidgetItem>
-#include <QTreeWidgetItemIterator>
-#include <QPixmap>
-#include <QMenu>
+#include <QActionGroup>
 #include <QClipboard>
-#include <QMenuBar>
-#include <QPushButton>
-#include <QDesktopServices>
-#include <QMessageBox>
+#include <QCloseEvent>
 #include <QComboBox>
-#include <QTextDocument>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QFont>
+#include <QLabel>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QPixmap>
+#include <QPushButton>
 #include <QRegExp>
 #include <QScreen>
-#include <QFont>
-#include <QActionGroup>
+#include <QTextDocument>
 #include <QToolButton>
+#include <QTreeWidgetItem>
+#include <QTreeWidgetItemIterator>
 
 #if defined( HAVE_QTPRINTER )
 #include <QPrinter>

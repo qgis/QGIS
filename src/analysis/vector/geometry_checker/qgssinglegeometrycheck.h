@@ -16,14 +16,13 @@ email                : matthias@opengis.ch
 #ifndef QGSSINGLEGEOMETRYCHECK_H
 #define QGSSINGLEGEOMETRYCHECK_H
 
-#include <QList>
-#include <QCoreApplication>
-
+#include "qgis_analysis.h"
 #include "qgsgeometry.h"
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
 
-#include "qgis_analysis.h"
+#include <QCoreApplication>
+#include <QList>
 
 class QgsFeature;
 class QgsSingleGeometryCheck;

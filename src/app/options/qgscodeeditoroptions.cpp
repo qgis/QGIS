@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgscodeeditoroptions.h"
-#include "moc_qgscodeeditoroptions.cpp"
-#include "qgsapplication.h"
-#include "qgssettings.h"
+
 #include "qgis.h"
-#include "qgsgui.h"
+#include "qgsapplication.h"
 #include "qgscodeeditorcolorschemeregistry.h"
 #include "qgscodeeditorshell.h"
+#include "qgsgui.h"
+#include "qgssettings.h"
+
+#include "moc_qgscodeeditoroptions.cpp"
 
 //
 // QgsCodeEditorOptionsWidget

@@ -18,15 +18,15 @@
 #ifndef QGSMAPRENDERERTASK_H
 #define QGSMAPRENDERERTASK_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsabstractgeopdfexporter.h"
 #include "qgsannotation.h"
 #include "qgsannotationmanager.h"
-#include "qgsmapsettings.h"
 #include "qgsmapdecoration.h"
-#include "qgstaskmanager.h"
 #include "qgsmaprenderercustompainterjob.h"
-#include "qgsabstractgeopdfexporter.h"
+#include "qgsmapsettings.h"
+#include "qgstaskmanager.h"
 
 #include <QPainter>
 #include <QPdfWriter>

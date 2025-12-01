@@ -14,22 +14,24 @@
  ***************************************************************************/
 
 #include "qgsexpression.h"
+
+#include <memory>
+
+#include "qgscolorrampimpl.h"
+#include "qgsexpression_p.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionnodeimpl.h"
-#include "qgsfeaturerequest.h"
-#include "qgslogger.h"
-#include "qgsexpressioncontext.h"
-#include "qgsgeometry.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionutils.h"
-#include "qgsexpression_p.h"
-#include "qgsvariantutils.h"
+#include "qgsfeaturerequest.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgsunittypes.h"
-#include "qgscolorrampimpl.h"
+#include "qgsvariantutils.h"
 
 #include <QRegularExpression>
-#include <memory>
 
 // from parser
 extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );

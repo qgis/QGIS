@@ -15,9 +15,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include <QUrl>
+
 #include <QDesktopServices>
 #include <QString>
+#include <QUrl>
 
 #ifdef Q_OS_WIN
 #include <windows.h>

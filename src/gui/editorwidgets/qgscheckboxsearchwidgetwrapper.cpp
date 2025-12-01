@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgscheckboxsearchwidgetwrapper.h"
-#include "moc_qgscheckboxsearchwidgetwrapper.cpp"
 
-#include "qgsfields.h"
 #include "qgscheckboxwidgetfactory.h"
+#include "qgsfields.h"
 #include "qgsvectorlayer.h"
 
-#include <QSettings>
 #include <QCheckBox>
+#include <QSettings>
+
+#include "moc_qgscheckboxsearchwidgetwrapper.cpp"
 
 QgsCheckboxSearchWidgetWrapper::QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )

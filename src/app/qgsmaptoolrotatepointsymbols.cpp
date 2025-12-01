@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgsmaptoolrotatepointsymbols.h"
-#include "moc_qgsmaptoolrotatepointsymbols.cpp"
+
 #include "qgsmapcanvas.h"
-#include "qgspointrotationitem.h"
-#include "qgssymbol.h"
-#include "qgsvectorlayer.h"
-#include "qgsproperty.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmarkersymbol.h"
+#include "qgspointrotationitem.h"
+#include "qgsproperty.h"
+#include "qgssymbol.h"
+#include "qgsvectorlayer.h"
 
 #include <QGraphicsPixmapItem>
 
+#include "moc_qgsmaptoolrotatepointsymbols.cpp"
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )

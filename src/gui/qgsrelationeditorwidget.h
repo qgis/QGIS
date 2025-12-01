@@ -16,21 +16,21 @@
 #ifndef QGSRELATIONEDITORWIDGET_H
 #define QGSRELATIONEDITORWIDGET_H
 
-#include <QWidget>
-#include <QToolButton>
-#include <QButtonGroup>
-#include <QGridLayout>
-#include "qobjectuniqueptr.h"
-
 #include "ui_qgsrelationeditorconfigwidgetbase.h"
 
+#include "qgis_gui.h"
 #include "qgsabstractrelationeditorwidget.h"
-#include "qobjectuniqueptr.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsdualview.h"
 #include "qgsrelation.h"
 #include "qgsvectorlayerselectionmanager.h"
-#include "qgis_gui.h"
+
+#include <QButtonGroup>
+#include <QGridLayout>
+#include <QToolButton>
+#include <QWidget>
+#include <qobjectuniqueptr.h>
+#include <qobjectuniqueptr.h>
 
 class QTreeWidget;
 class QTreeWidgetItem;

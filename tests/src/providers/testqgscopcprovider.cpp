@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include <limits>
+#include <fstream>
 
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
+#include <QQueue>
+#include <QStandardPaths>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <fstream>
-#include <QVector>
 #include <QTest>
-#include <QStandardPaths>
-#include <QQueue>
+#include <QVector>
 
 //qgis includes...
 #include "qgis.h"

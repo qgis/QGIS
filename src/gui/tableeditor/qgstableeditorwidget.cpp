@@ -16,13 +16,16 @@
 // along with CppSheets. If not, see <https://www.gnu.org/licenses/>.
 
 #include "qgstableeditorwidget.h"
-#include "moc_qgstableeditorwidget.cpp"
+
 #include "qgsnumericformat.h"
-#include <QStringList>
-#include <QKeyEvent>
+
 #include <QHeaderView>
+#include <QKeyEvent>
 #include <QMenu>
 #include <QPlainTextEdit>
+#include <QStringList>
+
+#include "moc_qgstableeditorwidget.cpp"
 
 QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   : QTableWidget( parent )

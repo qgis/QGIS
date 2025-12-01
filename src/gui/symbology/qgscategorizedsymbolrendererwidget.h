@@ -15,13 +15,13 @@
 #ifndef QGSCATEGORIZEDSYMBOLRENDERERWIDGET_H
 #define QGSCATEGORIZEDSYMBOLRENDERERWIDGET_H
 
-#include "qgscategorizedsymbolrenderer.h"
 #include "qgis_sip.h"
-#include "qgsrendererwidget.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgsproxystyle.h"
+#include "qgsrendererwidget.h"
+
 #include <QStandardItem>
 #include <QStyledItemDelegate>
-
 
 class QgsCategorizedSymbolRenderer;
 class QgsRendererCategory;

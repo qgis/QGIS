@@ -13,18 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayoutruler.h"
-#include "moc_qgslayoutruler.cpp"
-#include "qgslayout.h"
-#include "qgis.h"
-#include "qgslayoutview.h"
-#include "qgslogger.h"
-#include "qgslayoutpagecollection.h"
-#include <QDragEnterEvent>
-#include <QGraphicsLineItem>
-#include <QPainter>
-#include <QMenu>
+
 #include <cmath>
 #include <memory>
+
+#include "qgis.h"
+#include "qgslayout.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutview.h"
+#include "qgslogger.h"
+
+#include <QDragEnterEvent>
+#include <QGraphicsLineItem>
+#include <QMenu>
+#include <QPainter>
+
+#include "moc_qgslayoutruler.cpp"
 
 const int RULER_FONT_SIZE = 8;
 const unsigned int COUNT_VALID_MULTIPLES = 3;

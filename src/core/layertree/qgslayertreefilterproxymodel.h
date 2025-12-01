@@ -17,11 +17,11 @@
 #ifndef QGSLAYERTREEFILTERPROXYMODEL_H
 #define QGSLAYERTREEFILTERPROXYMODEL_H
 
-#include <QSortFilterProxyModel>
-
 #include "qgis_core.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerproxymodel.h"
+
+#include <QSortFilterProxyModel>
 
 class QgsLayerTreeModel;
 class QgsLayerTreeNode;

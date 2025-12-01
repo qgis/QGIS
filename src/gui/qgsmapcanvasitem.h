@@ -16,10 +16,11 @@
 #ifndef QGSMAPCANVASITEM_H
 #define QGSMAPCANVASITEM_H
 
-#include <QGraphicsItem>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrectangle.h"
-#include "qgis_gui.h"
+
+#include <QGraphicsItem>
 
 class QgsMapCanvas;
 class QgsRenderContext;

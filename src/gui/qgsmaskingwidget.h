@@ -20,13 +20,14 @@
 
 /// @cond PRIVATE
 
-#include <QPointer>
-
-#include "qgspanelwidget.h"
 #include "ui_qgsmaskingwidgetbase.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgspanelwidget.h"
+#include "qgsstyleentityvisitor.h"
+
+#include <QPointer>
 
 class QgsMessageBarItem;
 

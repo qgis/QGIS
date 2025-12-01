@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsmaptooltrimextendfeature.h"
-#include "moc_qgsmaptooltrimextendfeature.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsgeometry.h"
-#include "qgssnappingutils.h"
 #include "qgsgeometryutils.h"
+#include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
+#include "qgssnappingutils.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsmaptooltrimextendfeature.cpp"
 
 class QgsRubberBand;
 

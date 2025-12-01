@@ -16,9 +16,9 @@
 #ifndef QGSABSTRACTSENSOR_H
 #define QGSABSTRACTSENSOR_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 #include <QDateTime>
 #include <QDomElement>

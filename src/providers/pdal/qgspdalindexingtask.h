@@ -16,8 +16,9 @@
 #ifndef QGSPDALINDEXINGTASK_H
 #define QGSPDALINDEXINGTASK_H
 
-#include <QObject>
 #include "qgstaskmanager.h"
+
+#include <QObject>
 
 class QTemporaryDir;
 

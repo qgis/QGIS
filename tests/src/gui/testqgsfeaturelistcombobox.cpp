@@ -14,16 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgsapplication.h"
+#include "qgsfeaturefiltermodel.h"
 #include "qgsfeaturelistcombobox.h"
 #include "qgsfilterlineedit.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeaturefiltermodel.h"
 #include "qgsgui.h"
-
-#include <memory>
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QLineEdit>
 #include <QSignalSpy>

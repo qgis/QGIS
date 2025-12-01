@@ -9,6 +9,7 @@
 
 
 
+
 class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 {
 %Docstring(signature="appended")

@@ -14,11 +14,11 @@
  ***************************************************************************/
 
 #include "qgsstackedwidget.h"
-#include "moc_qgsstackedwidget.cpp"
 
-#include <QStackedWidget>
 #include <QSize>
+#include <QStackedWidget>
 
+#include "moc_qgsstackedwidget.cpp"
 
 QgsStackedWidget::QgsStackedWidget( QWidget *parent )
   : QStackedWidget( parent )

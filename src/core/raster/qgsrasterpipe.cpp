@@ -15,21 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <typeinfo>
-
-#include <QByteArray>
-
-#include "qgslogger.h"
 #include "qgsrasterpipe.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterrenderer.h"
-#include "qgsrasterresamplefilter.h"
+
+#include <typeinfo>
+#include <mutex>
+
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgshuesaturationfilter.h"
-#include "qgsrasterprojector.h"
+#include "qgslogger.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasternuller.h"
+#include "qgsrasterprojector.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterresamplefilter.h"
 
-#include <mutex>
+#include <QByteArray>
 
 QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe &pipe )
 {

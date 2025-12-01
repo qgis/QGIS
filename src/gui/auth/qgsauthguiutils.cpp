@@ -16,19 +16,18 @@
 
 #include "qgsauthguiutils.h"
 
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
+#include "qgsauthmasterpassresetdialog.h"
+#include "qgslogger.h"
+#include "qgsmessagebar.h"
+#include "qgssettings.h"
+
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QTreeWidgetItem>
-
-#include "qgssettings.h"
-#include "qgsauthmanager.h"
-#include "qgsauthmasterpassresetdialog.h"
-#include "qgslogger.h"
-#include "qgsmessagebar.h"
-#include "qgsapplication.h"
-
 
 QColor QgsAuthGuiUtils::greenColor()
 {

@@ -14,17 +14,20 @@
  ***************************************************************************/
 #ifndef QGSQUERYBUILDER_H
 #define QGSQUERYBUILDER_H
+#include "ui_qgsquerybuilderbase.h"
+
 #include <map>
-#include "qgis_sip.h"
 #include <vector>
-#include <QStandardItemModel>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsguiutils.h"
+#include "qgssubsetstringeditorinterface.h"
+
+#include <QModelIndex>
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
-#include <QModelIndex>
-#include "ui_qgsquerybuilderbase.h"
-#include "qgsguiutils.h"
-#include "qgis_gui.h"
-#include "qgssubsetstringeditorinterface.h"
+#include <QStandardItemModel>
 
 class QgsVectorLayer;
 class QgsCodeEditor;

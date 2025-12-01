@@ -20,14 +20,15 @@
 
 class QgsPointCloudLayerRenderer;
 
-#include "qgspointclouddataprovider.h"
-#include "qgsmaplayer.h"
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgsabstractprofilesource.h"
+#include "qgsmaplayer.h"
+#include "qgspointclouddataprovider.h"
 #include "qgspointcloudstatistics.h"
 
 #include <QString>
-#include <memory>
 
 class QgsPointCloudRenderer;
 class QgsPointCloudLayerElevationProperties;

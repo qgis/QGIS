@@ -15,7 +15,6 @@
 
 #include "qgsraycasthit.h"
 
-
 double QgsRayCastHit::distance() const
 {
   return mDistance;

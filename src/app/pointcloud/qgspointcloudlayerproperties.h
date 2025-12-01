@@ -16,14 +16,13 @@
 #ifndef QGSPOINTCLOUDLAYERPROPERTIES_H
 #define QGSPOINTCLOUDLAYERPROPERTIES_H
 
-#include "qgslayerpropertiesdialog.h"
-
 #include "ui_qgspointcloudlayerpropertiesbase.h"
 
-#include <QAbstractTableModel>
-
 #include "qgis_app.h"
+#include "qgslayerpropertiesdialog.h"
 #include "qgspointcloudlayer.h"
+
+#include <QAbstractTableModel>
 
 class QgsMapLayer;
 class QgsMapCanvas;

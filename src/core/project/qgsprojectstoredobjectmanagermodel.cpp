@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgsprojectstoredobjectmanagermodel.h"
-#include "moc_qgsprojectstoredobjectmanagermodel.cpp"
-#include <QMessageBox>
+
 #include <QIcon>
+#include <QMessageBox>
+
+#include "moc_qgsprojectstoredobjectmanagermodel.cpp"
 
 //
 // QgsProjectStoredObjectManagerModelBase

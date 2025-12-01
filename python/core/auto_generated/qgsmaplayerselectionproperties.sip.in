@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMapLayerSelectionProperties : QObject
 {
 %Docstring(signature="appended")

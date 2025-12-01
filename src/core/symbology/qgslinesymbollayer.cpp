@@ -13,37 +13,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometryutils.h"
 #include "qgslinesymbollayer.h"
-#include "qgscurvepolygon.h"
-#include "qgsdxfexport.h"
-#include "qgssymbollayerutils.h"
-#include "qgsrendercontext.h"
-#include "qgslogger.h"
-#include "qgsgeometrysimplifier.h"
-#include "qgsunittypes.h"
-#include "qgsproperty.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsapplication.h"
-#include "qgsimagecache.h"
-#include "qgsfeedback.h"
-#include "qgsimageoperation.h"
-#include "qgscolorrampimpl.h"
-#include "qgsfillsymbol.h"
-#include "qgscolorutils.h"
-#include "qgsgeos.h"
-#include "qgspolygon.h"
-#include "qgsmultipolygon.h"
-#include "qgssldexportcontext.h"
-#include <algorithm>
-#include <QPainter>
-#include <QDomDocument>
-#include <QDomElement>
 
+#include <algorithm>
 #include <cmath>
 #include <memory>
+
+#include "qgsapplication.h"
+#include "qgscolorrampimpl.h"
+#include "qgscolorutils.h"
+#include "qgscurvepolygon.h"
+#include "qgsdxfexport.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeedback.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeometrysimplifier.h"
+#include "qgsgeometryutils.h"
+#include "qgsgeos.h"
+#include "qgsimagecache.h"
+#include "qgsimageoperation.h"
+#include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgsproperty.h"
+#include "qgsrendercontext.h"
+#include "qgssldexportcontext.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
+
+#include <QDomDocument>
+#include <QDomElement>
+#include <QPainter>
 
 QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double width, Qt::PenStyle penStyle )
   : mPenStyle( penStyle )

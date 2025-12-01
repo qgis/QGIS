@@ -16,9 +16,10 @@
 #ifndef QGSCODEEDITORPYTHON_H
 #define QGSCODEEDITORPYTHON_H
 
-#include "qgscodeeditor.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscodeeditor.h"
+
 #include <Qsci/qscilexerpython.h>
 
 class QgsSettingsEntryInteger;

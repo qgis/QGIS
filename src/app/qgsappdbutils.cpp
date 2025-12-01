@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgsappdbutils.h"
-#include "moc_qgsappdbutils.cpp"
+
+#include "browser/qgsinbuiltdataitemproviders.h"
 #include "qgisapp.h"
+#include "qgsdataitemguiproviderregistry.h"
 #include "qgsdbqueryhistoryprovider.h"
-#include "qgshistoryproviderregistry.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsdataitemguiproviderregistry.h"
-#include "browser/qgsinbuiltdataitemproviders.h"
+#include "qgshistoryproviderregistry.h"
 
 #include <QDialogButtonBox>
-#include <QPushButton>
 #include <QMessageBox>
+#include <QPushButton>
 
+#include "moc_qgsappdbutils.cpp"
 
 //
 // QgsQueryHistoryDialog

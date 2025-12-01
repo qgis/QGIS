@@ -18,10 +18,10 @@
 #ifndef QGSDELIMITEDTEXTFILE_H
 #define QGSDELIMITEDTEXTFILE_H
 
-#include <QStringList>
-#include <QRegularExpression>
-#include <QUrl>
 #include <QObject>
+#include <QRegularExpression>
+#include <QStringList>
+#include <QUrl>
 
 class QgsFeature;
 class QgsField;

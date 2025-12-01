@@ -8,6 +8,7 @@
 
 
 
+
 class QgsRasterLayerSaveAsDialog : QDialog
 {
 %Docstring(signature="appended")

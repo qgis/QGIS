@@ -18,8 +18,8 @@
 #define CLOUGHTOCHERINTERPOLATOR_H
 
 #include "TriangleInterpolator.h"
-#include "qgspoint.h"
 #include "qgis_analysis.h"
+#include "qgspoint.h"
 
 class NormVecDecorator;
 

@@ -14,19 +14,19 @@
  *************************************************************************/
 
 #include "qgsgrassmapcalc.h"
-#include "moc_qgsgrassmapcalc.cpp"
-#include "qgsgrassselect.h"
-#include "qgsgrass.h"
-
-#include "qgisinterface.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsgrassplugin.h"
 
 #include <cmath>
 
+#include "qgisinterface.h"
+#include "qgsapplication.h"
+#include "qgsgrass.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrassselect.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+
+#include <QActionGroup>
 #include <QDir>
 #include <QDomDocument>
 #include <QInputDialog>
@@ -34,7 +34,8 @@
 #include <QMouseEvent>
 #include <QTextStream>
 #include <QToolBar>
-#include <QActionGroup>
+
+#include "moc_qgsgrassmapcalc.cpp"
 
 QgsGrassMapcalc::QgsGrassMapcalc(
   QgsGrassTools *tools, QgsGrassModule *module,

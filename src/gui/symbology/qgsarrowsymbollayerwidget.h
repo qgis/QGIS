@@ -16,9 +16,10 @@
 #define QGSARROWSYMBOLLAYERWIDGET_H
 
 #include "ui_qgsarrowsymbollayerwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgssymbollayerwidget.h"
-#include "qgis_gui.h"
 
 class QgsArrowSymbolLayer;
 

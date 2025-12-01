@@ -17,18 +17,18 @@
 #ifndef QGSATTRIBUTETABLEMODEL_H
 #define QGSATTRIBUTETABLEMODEL_H
 
-#include <QAbstractTableModel>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgsconditionalstyle.h"
+#include "qgsmaplayeractionregistry.h"
+
+#include <QAbstractTableModel>
+#include <QHash>
+#include <QMap>
 #include <QModelIndex>
 #include <QObject>
-#include <QHash>
 #include <QQueue>
-#include <QMap>
-
-#include "qgsconditionalstyle.h"
-#include "qgsattributeeditorcontext.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsEditorWidgetFactory;

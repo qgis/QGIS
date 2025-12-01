@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgsmarkersymbol.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgspainteffect.h"
-#include "qgsgeometrypaintdevice.h"
-#include "qgspainting.h"
+
 #include "qgsfillsymbol.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsgeometrypaintdevice.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgspainteffect.h"
+#include "qgspainting.h"
+#include "qgssymbollayerutils.h"
 
 std::unique_ptr< QgsMarkerSymbol > QgsMarkerSymbol::createSimple( const QVariantMap &properties )
 {

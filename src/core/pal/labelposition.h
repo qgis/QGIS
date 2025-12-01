@@ -33,10 +33,11 @@
 #define SIP_NO_FILE
 
 
-#include "qgis_core.h"
-#include "pointset.h"
-#include "palrtree.h"
 #include <fstream>
+
+#include "palrtree.h"
+#include "pointset.h"
+#include "qgis_core.h"
 
 namespace pal
 {

@@ -16,11 +16,12 @@
 #ifndef QGSAPPGPSSETTINGSMENU_H
 #define QGSAPPGPSSETTINGSMENU_H
 
+#include "qgis_app.h"
+#include "qgsgpscanvasbridge.h"
+#include "qgssettingsentryimpl.h"
+
 #include <QMenu>
 #include <QWidgetAction>
-#include "qgis_app.h"
-#include "qgssettingsentryimpl.h"
-#include "qgsgpscanvasbridge.h"
 
 class QRadioButton;
 class QgsFieldProxyModel;

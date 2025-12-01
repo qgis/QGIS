@@ -17,16 +17,15 @@
 
 #include <memory>
 
+#include "qgs3dsymbolregistry.h"
 #include "qgs3dutils.h"
-#include "qgspointcloudlayerchunkloader_p.h"
-
+#include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerchunkloader_p.h"
+#include "qgspointcloudlayerelevationproperties.h"
 #include "qgsvirtualpointcloudentity_p.h"
 #include "qgsxmlutils.h"
-#include "qgs3dsymbolregistry.h"
-#include "qgspointcloud3dsymbol.h"
-#include "qgspointcloudlayerelevationproperties.h"
 
 QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset )
   : Qgs3DRenderContext( context )

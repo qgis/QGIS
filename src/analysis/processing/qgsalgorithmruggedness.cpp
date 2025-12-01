@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmruggedness.h"
+
 #include "qgsrasterfilewriter.h"
 #include "qgsruggednessfilter.h"
 

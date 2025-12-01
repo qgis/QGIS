@@ -18,9 +18,10 @@
 #ifndef QGSTININTERPOLATOR_H
 #define QGSTININTERPOLATOR_H
 
-#include "qgsinterpolator.h"
-#include <QString>
 #include "qgis_analysis.h"
+#include "qgsinterpolator.h"
+
+#include <QString>
 
 class QgsFeatureSink;
 class QgsTriangulation;

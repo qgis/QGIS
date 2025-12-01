@@ -16,35 +16,37 @@
  ***************************************************************************/
 
 #include "qgsimagecache.h"
-#include "moc_qgsimagecache.cpp"
+
+#include <memory>
 
 #include "qgis.h"
+#include "qgsabstractcontentcache_p.h"
 #include "qgsimageoperation.h"
 #include "qgslogger.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgssettings.h"
-#include "qgsabstractcontentcache_p.h"
 
 #include <QApplication>
+#include <QBuffer>
 #include <QCoreApplication>
 #include <QCursor>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
-#include <QImage>
-#include <QPainter>
-#include <QPicture>
 #include <QFileInfo>
+#include <QImage>
+#include <QImageReader>
 #include <QNetworkReply>
 #include <QNetworkRequest>
-#include <QBuffer>
-#include <QImageReader>
+#include <QPainter>
+#include <QPicture>
 #include <QSvgRenderer>
 #include <QTemporaryDir>
 #include <QUuid>
-#include <memory>
+
+#include "moc_qgsimagecache.cpp"
 
 ///@cond PRIVATE
 

@@ -15,14 +15,15 @@
  ***************************************************************************/
 
 #include "qgsgrassselect.h"
-#include "moc_qgsgrassselect.cpp"
-#include "qgsgrass.h"
 
+#include "qgsgrass.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_qgsgrassselect.cpp"
 
 extern "C"
 {

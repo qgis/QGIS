@@ -18,10 +18,11 @@
 #include "qgsgloweffect.h"
 
 #include <memory>
-#include "qgssymbollayerutils.h"
+
+#include "qgscolorrampimpl.h"
 #include "qgscolorutils.h"
 #include "qgsimageoperation.h"
-#include "qgscolorrampimpl.h"
+#include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
 QgsGlowEffect::QgsGlowEffect()

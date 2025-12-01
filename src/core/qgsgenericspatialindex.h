@@ -16,11 +16,12 @@
 #ifndef QGSGENERICSPATIALINDEX_H
 #define QGSGENERICSPATIALINDEX_H
 
-#include "qgis_core.h"
-#include "qgsspatialindexutils.h"
-#include "qgslogger.h"
-
 #include <memory>
+
+#include "qgis_core.h"
+#include "qgslogger.h"
+#include "qgsspatialindexutils.h"
+
 #include <QMutex>
 #include <QString>
 

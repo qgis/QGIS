@@ -15,53 +15,53 @@
  ***************************************************************************/
 
 #include "qgssymbollayerwidget.h"
-#include "moc_qgssymbollayerwidget.cpp"
-
-#include "qgslinesymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsexpressioncontextutils.h"
 
 #include "characterwidget.h"
-#include "qgsdashspacedialog.h"
-#include "qgssvgcache.h"
-#include "qgssymbollayerutils.h"
+#include "qgsapplication.h"
+#include "qgsauxiliarystorage.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
-#include "qgsfontutils.h"
-#include "qgsproperty.h"
-#include "qgsmapcanvas.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgssvgselectorwidget.h"
-#include "qgsnewauxiliarylayerdialog.h"
-#include "qgsnewauxiliaryfielddialog.h"
-#include "qgsauxiliarystorage.h"
-#include "qgsimagecache.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
+#include "qgsdashspacedialog.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsfontutils.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsiconutils.h"
+#include "qgsimagecache.h"
 #include "qgslinearreferencingsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsnewauxiliaryfielddialog.h"
+#include "qgsnewauxiliarylayerdialog.h"
 #include "qgsnumericformatselectorwidget.h"
+#include "qgsproperty.h"
+#include "qgssvgcache.h"
+#include "qgssvgselectorwidget.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QAbstractButton>
+#include <QAction>
+#include <QBuffer>
 #include <QButtonGroup>
 #include <QColorDialog>
 #include <QCursor>
 #include <QDir>
 #include <QFileDialog>
+#include <QInputDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMovie>
 #include <QPainter>
+#include <QRegularExpression>
 #include <QStandardItemModel>
 #include <QSvgRenderer>
-#include <QMessageBox>
-#include <QMenu>
-#include <QAction>
-#include <QInputDialog>
-#include <QBuffer>
-#include <QRegularExpression>
-#include <QMovie>
+
+#include "moc_qgssymbollayerwidget.cpp"
 
 QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 {

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmexportlayersinformation.h"
+
 #include "qgsproviderregistry.h"
 
 ///@cond PRIVATE

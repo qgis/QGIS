@@ -17,9 +17,10 @@
 #ifndef QGSVECTORLAYERDIGITIZINGPROPERTIES_H
 #define QGSVECTORLAYERDIGITIZINGPROPERTIES_H
 
+#include "ui_qgsvectorlayerdigitizingproperties.h"
+
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-#include "ui_qgsvectorlayerdigitizingproperties.h"
 
 class QgsCollapsibleGroupBox;
 class QgsMapLayerComboBox;

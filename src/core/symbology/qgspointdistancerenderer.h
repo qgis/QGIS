@@ -18,10 +18,11 @@
 #ifndef QGSPOINTDISTANCERENDERER_H
 #define QGSPOINTDISTANCERENDERER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsrenderer.h"
+#include "qgis_core.h"
 #include "qgsmapunitscale.h"
+#include "qgsrenderer.h"
+
 #include <QFont>
 
 class QgsSpatialIndex;

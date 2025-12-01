@@ -18,7 +18,8 @@
 
 #include "qgsgeometry.h"
 #include "qgsmaptool.h"
-#include "qobjectuniqueptr.h"
+
+#include <qobjectuniqueptr.h>
 
 class Qgs3DMapCanvasWidget;
 class QgsMapCanvas;

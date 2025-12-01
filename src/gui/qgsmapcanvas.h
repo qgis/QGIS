@@ -19,27 +19,25 @@
 #define QGSMAPCANVAS_H
 
 #include "qgsconfig.h"
-#include "qgis_sip.h"
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscustomdrophandler.h"
+#include "qgsdistancearea.h"
 #include "qgsexpressioncontext.h"
-#include "qgsrectangle.h"
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
-#include "qgscustomdrophandler.h"
 #include "qgsmapcanvasinteractionblocker.h"
-#include "qgsproject.h"
-#include "qgsdistancearea.h"
 #include "qgsmaprendererjob.h"
+#include "qgsmapsettings.h"
+#include "qgsprevieweffect.h"
+#include "qgsproject.h"
+#include "qgsrectangle.h"
 
 #include <QDomDocument>
-#include <QGraphicsView>
-
-#include "qgsmapsettings.h"   // TEMPORARY
-#include "qgsprevieweffect.h" //for QgsPreviewEffect::PreviewMode
-
-#include <QTimer>
 #include <QGestureEvent>
-#include "qgis_gui.h"
+#include <QGraphicsView>
+#include <QTimer>
 
 class QWheelEvent;
 class QPixmap;

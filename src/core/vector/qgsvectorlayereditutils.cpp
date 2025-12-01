@@ -14,24 +14,23 @@
  ***************************************************************************/
 #include "qgsvectorlayereditutils.h"
 
-#include "qgsunsetattributevalue.h"
-#include "qgsvectordataprovider.h"
+#include <limits>
+
+#include "qgis.h"
+#include "qgsabstractgeometry.h"
 #include "qgsfeatureiterator.h"
-#include "qgsvectorlayereditbuffer.h"
+#include "qgsgeometryoptions.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
-#include "qgis.h"
-#include "qgswkbtypes.h"
-#include "qgsvectorlayerutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometryoptions.h"
-#include "qgsabstractgeometry.h"
-#include "qgssettingsregistrycore.h"
 #include "qgssettingsentryimpl.h"
-
-#include <limits>
-
+#include "qgssettingsregistrycore.h"
+#include "qgsunsetattributevalue.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayerutils.h"
+#include "qgswkbtypes.h"
 
 QgsVectorLayerEditUtils::QgsVectorLayerEditUtils( QgsVectorLayer *layer )
   : mLayer( layer )

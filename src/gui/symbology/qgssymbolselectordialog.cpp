@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgssymbolselectordialog.h"
-#include "moc_qgssymbolselectordialog.cpp"
 
+#include "qgsexpressioncontextutils.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
-#include "qgssymbollayerutils.h"
 #include "qgssymbollayerregistry.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgssymbollayerutils.h"
+
+#include "moc_qgssymbolselectordialog.cpp"
 
 // the widgets
 #include "qgssymbolslistwidget.h"

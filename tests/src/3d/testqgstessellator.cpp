@@ -13,15 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgstessellator.h"
 #include "qgstest.h"
 
 #include <QVector3D>
-
-#include "qgspolygon.h"
-#include "qgstessellator.h"
-#include "qgsmultipolygon.h"
-#include "qgslogger.h"
-#include "qgsgeometry.h"
 
 static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps )
 {

@@ -14,36 +14,36 @@
  ***************************************************************************/
 
 #include "qgsmarkersymbollayer.h"
-#include "qgssymbollayerutils.h"
 
+#include <cmath>
+#include <memory>
+
+#include "qgscolorutils.h"
 #include "qgsdxfexport.h"
 #include "qgsdxfpaintdevice.h"
+#include "qgsfillsymbol.h"
+#include "qgsfontmanager.h"
 #include "qgsfontutils.h"
 #include "qgsimagecache.h"
 #include "qgsimageoperation.h"
-#include "qgsrendercontext.h"
 #include "qgslogger.h"
-#include "qgssvgcache.h"
-#include "qgsunittypes.h"
-#include "qgssymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsfontmanager.h"
-#include "qgscolorutils.h"
 #include "qgspainting.h"
+#include "qgsrendercontext.h"
 #include "qgssldexportcontext.h"
+#include "qgssvgcache.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
+#include <QDir>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QFileInfo>
 #include <QMimeDatabase>
 #include <QMimeType>
 #include <QPainter>
 #include <QSvgRenderer>
-#include <QFileInfo>
-#include <QDir>
-#include <QDomDocument>
-#include <QDomElement>
 #include <QUrlQuery>
-
-#include <cmath>
-#include <memory>
 
 static constexpr int MAX_FONT_CHARACTER_SIZE_IN_PIXELS = 500;
 

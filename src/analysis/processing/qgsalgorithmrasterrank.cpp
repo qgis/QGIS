@@ -18,6 +18,7 @@
 #include "qgsalgorithmrasterrank.h"
 
 #include <memory>
+
 #include "qgsrasterfilewriter.h"
 #include "qgsrasterprojector.h"
 

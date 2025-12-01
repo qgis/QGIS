@@ -17,9 +17,10 @@
 
 
 #include "qgsdockwidget.h"
-#include "moc_qgsdockwidget.cpp"
+
 #include <QAction>
 
+#include "moc_qgsdockwidget.cpp"
 
 QgsDockWidget::QgsDockWidget( QWidget *parent, Qt::WindowFlags flags )
   : QDockWidget( parent, flags )

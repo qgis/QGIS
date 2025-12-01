@@ -15,13 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspointcloudsourceselect.h"
+
+#include "qgshelp.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
 #include <QMessageBox>
 
-#include "qgspointcloudsourceselect.h"
 #include "moc_qgspointcloudsourceselect.cpp"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgshelp.h"
 
 ///@cond PRIVATE
 

@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 #include "qgswmsparameters.h"
-#include "moc_qgswmsparameters.cpp"
+
 #include "qgsdatasourceuri.h"
+#include "qgsfontutils.h"
 #include "qgsmaplayerserverproperties.h"
 #include "qgsmessagelog.h"
 #include "qgswmsserviceexception.h"
-#include "qgsfontutils.h"
 
 #include <QRegularExpression>
+
+#include "moc_qgswmsparameters.cpp"
 
 const QString EXTERNAL_LAYER_PREFIX = QStringLiteral( "EXTERNAL_WMS:" );
 

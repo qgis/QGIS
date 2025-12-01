@@ -21,8 +21,8 @@
 #include "ui_qgsanimationexportdialogbase.h"
 
 #include "qgisapp.h"
-#include "qgsrectangle.h"
 #include "qgshelp.h"
+#include "qgsrectangle.h"
 
 #include <QDialog>
 #include <QSize>

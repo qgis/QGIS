@@ -15,6 +15,9 @@
 
 #include "qgsvectortilewriter.h"
 
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsdatasourceuri.h"
 #include "qgsfeedback.h"
 #include "qgsjsonutils.h"
@@ -26,14 +29,10 @@
 #include "qgsvectortileutils.h"
 #include "qgsziputils.h"
 
-#include <memory>
-#include <nlohmann/json.hpp>
-
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QUrl>
-
 
 QgsVectorTileWriter::QgsVectorTileWriter()
 {

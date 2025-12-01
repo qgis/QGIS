@@ -18,11 +18,12 @@
 #ifndef QGSNEWHTTPCONNECTION_H
 #define QGSNEWHTTPCONNECTION_H
 
-#include "qgis_sip.h"
 #include "ui_qgsnewhttpconnectionbase.h"
-#include "qgsguiutils.h"
-#include "qgsauthorizationsettings.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthorizationsettings.h"
+#include "qgsguiutils.h"
 #include "qgssettingstree.h"
 
 class QgsAuthSettingsWidget;

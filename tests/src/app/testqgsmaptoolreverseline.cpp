@@ -13,21 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptooladdfeature.h"
-
-#include "testqgsmaptoolutils.h"
-#include "qgsmaptoolreverseline.h"
-
-#include <memory>
 #include "qgsmapmouseevent.h"
+#include "qgsmaptooladdfeature.h"
+#include "qgsmaptoolreverseline.h"
+#include "qgssettings.h"
 #include "qgssnappingutils.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "testqgsmaptoolutils.h"
 
 class TestQgsMapToolReverseLine : public QObject
 {

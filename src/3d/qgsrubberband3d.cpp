@@ -15,23 +15,23 @@
 
 #include "qgsrubberband3d.h"
 
-#include "qgsbillboardgeometry.h"
-#include "qgspoint3dbillboardmaterial.h"
-#include "qgsmarkersymbol.h"
-#include "qgsabstract3dengine.h"
-#include "qgsgeotransform.h"
-#include "qgslinevertexdata_p.h"
-#include "qgslinematerial_p.h"
-#include "qgsvertexid.h"
-#include "qgssymbollayer.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgsabstract3dengine.h"
+#include "qgsbillboardgeometry.h"
+#include "qgsgeotransform.h"
+#include "qgslinematerial_p.h"
 #include "qgslinestring.h"
+#include "qgslinevertexdata_p.h"
+#include "qgsmarkersymbol.h"
 #include "qgsmessagelog.h"
+#include "qgspoint3dbillboardmaterial.h"
 #include "qgspolygon.h"
+#include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgstessellator.h"
+#include "qgsvertexid.h"
 
 #include <Qt3DCore/QEntity>
 

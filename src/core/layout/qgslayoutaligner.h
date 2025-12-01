@@ -17,6 +17,7 @@
 #define QGSLAYOUTALIGNER_H
 
 #include "qgis_core.h"
+
 #include <QList>
 #include <QRectF>
 

@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsunittypes.h"
-#include "qgslinestring.h"
 #include "qgsellipse.h"
-#include "qgsgeometryutils.h"
 
 #include <memory>
 #include <limits>
+
+#include "qgsgeometryutils.h"
+#include "qgslinestring.h"
+#include "qgsunittypes.h"
 
 void QgsEllipse::normalizeAxis()
 {

@@ -14,7 +14,6 @@
  ***************************************************************************/
 #include <windows.h>
 #include <io.h>
-
 #include <sstream>
 #include <iostream>
 #include <fstream>

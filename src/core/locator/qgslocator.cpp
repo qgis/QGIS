@@ -16,13 +16,16 @@
  ***************************************************************************/
 
 #include "qgslocator.h"
-#include "moc_qgslocator.cpp"
+
+#include <functional>
+#include <memory>
+
 #include "qgsmessagelog.h"
 #include "qgssettingsentryimpl.h"
 
 #include <QtConcurrent>
-#include <functional>
-#include <memory>
+
+#include "moc_qgslocator.cpp"
 
 const QgsSettingsEntryBool *QgsLocator::settingsLocatorFilterEnabled = new QgsSettingsEntryBool( QStringLiteral( "enabled" ), sTreeLocatorFilters, true, QObject::tr( "Locator filter enabled" ) );
 

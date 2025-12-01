@@ -19,7 +19,9 @@
 #define QGSMAPLAYERREFRESHSETTINGSWIDGET_H
 
 #include "ui_qgslayerrefreshwidgetbase.h"
+
 #include "qgis_gui.h"
+
 #include <QPointer>
 
 #define SIP_NO_FILE

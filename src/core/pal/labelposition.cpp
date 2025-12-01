@@ -27,15 +27,17 @@
  *
  */
 
-#include "layer.h"
+#include "labelposition.h"
+
+#include <cmath>
+
 #include "costcalculator.h"
 #include "feature.h"
-#include "labelposition.h"
-#include "qgsgeos.h"
+#include "layer.h"
 #include "qgsgeometryutils_base.h"
+#include "qgsgeos.h"
 #include "qgslabelingenginerule.h"
 #include "qgsmessagelog.h"
-#include <cmath>
 
 using namespace pal;
 

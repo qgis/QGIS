@@ -19,11 +19,12 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsmaptooladvanceddigitizing.h"
-#include "qobjectuniqueptr.h"
-#include "qgspointxy.h"
 #include "qgsannotationitemnode.h"
+#include "qgsmaptooladvanceddigitizing.h"
+#include "qgspointxy.h"
 #include "qgsrectangle.h"
+
+#include <qobjectuniqueptr.h>
 
 class QgsRubberBand;
 class QgsRenderedAnnotationItemDetails;

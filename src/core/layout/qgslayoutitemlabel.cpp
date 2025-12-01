@@ -16,29 +16,32 @@
  ***************************************************************************/
 
 #include "qgslayoutitemlabel.h"
-#include "moc_qgslayoutitemlabel.cpp"
-#include "qgslayoutitemregistry.h"
-#include "qgslayoututils.h"
-#include "qgslayoutmodel.h"
-#include "qgsexpression.h"
-#include "qgsvectorlayer.h"
+
+#include <memory>
+
 #include "qgsdistancearea.h"
-#include "qgsfontutils.h"
-#include "qgstextformat.h"
-#include "qgstextrenderer.h"
+#include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
-#include "qgslayoutitemmap.h"
-#include "qgssettings.h"
+#include "qgsfontutils.h"
 #include "qgslayout.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoututils.h"
+#include "qgssettings.h"
+#include "qgstextformat.h"
+#include "qgstextrenderer.h"
+#include "qgsvectorlayer.h"
 
 #include <QCoreApplication>
 #include <QDate>
 #include <QDomElement>
 #include <QPainter>
 #include <QTextDocument>
-#include <memory>
+
+#include "moc_qgslayoutitemlabel.cpp"
 
 QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   : QgsLayoutItem( layout )

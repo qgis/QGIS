@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgsprojectstoredobjectmanager.h"
-#include "moc_qgsprojectstoredobjectmanager.cpp"
+
 #include "qgsproject.h"
+
+#include "moc_qgsprojectstoredobjectmanager.cpp"
 
 //
 // QgsProjectStoredObjectManagerBase

@@ -9,7 +9,6 @@
 
 
 
-
 class QgsMapCanvasSnappingUtils : QgsSnappingUtils
 {
 %Docstring(signature="appended")

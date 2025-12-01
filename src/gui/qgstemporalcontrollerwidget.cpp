@@ -15,23 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgstemporalcontrollerwidget.h"
-#include "moc_qgstemporalcontrollerwidget.cpp"
+
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsmaplayermodel.h"
-#include "qgsproject.h"
-#include "qgsprojecttimesettings.h"
-#include "qgstemporalmapsettingswidget.h"
-#include "qgstemporalutils.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
+#include "qgsproject.h"
+#include "qgsprojecttimesettings.h"
 #include "qgsrasterlayer.h"
+#include "qgstemporalmapsettingswidget.h"
+#include "qgstemporalutils.h"
 #include "qgsunittypes.h"
 
 #include <QAction>
 #include <QMenu>
 #include <QRegularExpression>
-#include <memory>
+
+#include "moc_qgstemporalcontrollerwidget.cpp"
 
 QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   : QgsPanelWidget( parent )

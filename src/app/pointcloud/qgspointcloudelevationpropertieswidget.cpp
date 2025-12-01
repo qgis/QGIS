@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgspointcloudelevationpropertieswidget.h"
-#include "moc_qgspointcloudelevationpropertieswidget.cpp"
-#include "qgspointcloudrendererpropertieswidget.h"
+
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudrendererpropertieswidget.h"
 #include "qgsprojectionselectionwidget.h"
+
+#include "moc_qgspointcloudelevationpropertieswidget.cpp"
 
 QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( QgsPointCloudLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

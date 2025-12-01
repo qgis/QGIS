@@ -60,27 +60,27 @@
 ****************************************************************************/
 
 
-#include "qgsauthcertificateinfo.h"
-#include "qgsauthsslimportdialog.h"
-#include "moc_qgsauthsslimportdialog.cpp"
-#include "qgsauthsslconfigwidget.h"
 #include "ui_qgsauthsslimporterrors.h"
+#include "qgsauthsslimportdialog.h"
+
+#include "qgsapplication.h"
+#include "qgsauthcertificateinfo.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgsauthsslconfigwidget.h"
+#include "qgslogger.h"
 
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QPushButton>
 #include <QScrollBar>
+#include <QSslCipher>
 #include <QStyle>
 #include <QTimer>
 #include <QToolButton>
-#include <QSslCipher>
 
-#include "qgsauthguiutils.h"
-#include "qgsauthmanager.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-
+#include "moc_qgsauthsslimportdialog.cpp"
 
 QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   : QDialog( parent )

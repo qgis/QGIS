@@ -23,13 +23,12 @@ class QVariant;
 class QHBoxLayout;
 class QgsFileDropEdit;
 
-#include <QWidget>
-#include <QFileDialog>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgshighlightablelineedit.h"
 
+#include <QFileDialog>
+#include <QWidget>
 
 /**
  * \ingroup gui

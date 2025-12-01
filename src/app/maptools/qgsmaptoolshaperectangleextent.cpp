@@ -15,13 +15,16 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperectangleextent.h"
-#include "moc_qgsmaptoolshaperectangleextent.cpp"
+
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include <memory>
-#include "qgsapplication.h"
+#include "qgspoint.h"
+
+#include "moc_qgsmaptoolshaperectangleextent.cpp"
 
 const QString QgsMapToolShapeRectangleExtentMetadata::TOOL_ID = QStringLiteral( "rectangle-from-extent" );
 

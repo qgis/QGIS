@@ -12,22 +12,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QSettings>
-
 #include <ogr_api.h>
-#include "cpl_conv.h"
-#include "cpl_string.h"
+#include <cpl_conv.h>
+#include <cpl_string.h>
 
+#include "qgsapplication.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgsogrutils.h"
-#include "qgsapplication.h"
 #include "qgspoint.h"
 #include "qgspointcloudattribute.h"
+#include "qgstest.h"
+
+#include <QObject>
+#include <QSettings>
+#include <QString>
+#include <QStringList>
 
 class TestQgsPointCloudAttribute : public QObject
 {

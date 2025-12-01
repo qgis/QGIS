@@ -18,9 +18,8 @@
 #ifndef QGSOBJECTVISITOR_H
 #define QGSOBJECTVISITOR_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-
+#include "qgis_core.h"
 
 /**
  * \class QgsEmbeddedScriptEntity

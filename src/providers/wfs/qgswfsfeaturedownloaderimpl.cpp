@@ -15,26 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmessagelog.h"
-#include "qgsgeometry.h"
-#include "qgsgml.h"
-#include "qgsgeometrycollection.h"
-#include "qgsmultipoint.h"
-#include "qgsmultilinestring.h"
-#include "qgsmultipolygon.h"
-#include "qgsogcutils.h"
 #include "qgswfsfeaturedownloaderimpl.h"
-#include "moc_qgswfsfeaturedownloaderimpl.cpp"
-#include "qgswfsshareddata.h"
-#include "qgswfsutils.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
 
 #include <algorithm>
+
+#include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgml.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgsogcutils.h"
+#include "qgssettings.h"
+#include "qgswfsshareddata.h"
+#include "qgswfsutils.h"
+
 #include <QDir>
 #include <QTimer>
-#include <QUrlQuery>
 #include <QTransform>
+#include <QUrlQuery>
+
+#include "moc_qgswfsfeaturedownloaderimpl.cpp"
 
 QgsWFSFeatureDownloaderImpl::QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
   : QgsWfsRequest( shared->mURI )

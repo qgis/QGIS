@@ -22,15 +22,15 @@
 
 ///@cond PRIVATE
 
-#include <QMap>
-#include <QString>
-#include <QStringList>
 #include <memory>
 #include <limits>
 
 #include "qgis_core.h"
-
 #include "qgsmeshcalcutils.h"
+
+#include <QMap>
+#include <QString>
+#include <QStringList>
 
 /**
  * \ingroup core

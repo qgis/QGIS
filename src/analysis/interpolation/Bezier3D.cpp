@@ -15,9 +15,10 @@
  ***************************************************************************/
 
 #include "Bezier3D.h"
-#include "qgslogger.h"
-#include "Vector3D.h"
+
 #include "MathUtils.h"
+#include "Vector3D.h"
+#include "qgslogger.h"
 
 void Bezier3D::calcFirstDer( float t, Vector3D *v )
 {

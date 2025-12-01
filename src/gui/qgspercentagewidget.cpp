@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgspercentagewidget.h"
-#include "moc_qgspercentagewidget.cpp"
-#include "qgsdoublespinbox.h"
+
 #include "qgis.h"
+#include "qgsdoublespinbox.h"
+
 #include <QHBoxLayout>
 #include <QSlider>
+
+#include "moc_qgspercentagewidget.cpp"
 
 QgsPercentageWidget::QgsPercentageWidget( QWidget *parent )
   : QWidget( parent )

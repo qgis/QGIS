@@ -15,21 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <string>
-
 #include "qgsmdalprovider.h"
-#include "moc_qgsmdalprovider.cpp"
-#include "qgslogger.h"
+
+#include <string>
+#include <mutex>
+
 #include "qgsapplication.h"
+#include "qgslogger.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgsreadwritecontext.h"
 
 #include <QFileInfo>
-#include <QRegularExpression>
 #include <QIcon>
-#include <mutex>
+#include <QRegularExpression>
+
+#include "moc_qgsmdalprovider.cpp"
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
 const QString QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION = QStringLiteral( "MDAL provider" );

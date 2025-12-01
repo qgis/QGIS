@@ -16,8 +16,9 @@
 #ifndef QGSPROVIDERUTILS_H
 #define QGSPROVIDERUTILS_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
 #include <QList>
 
 class QgsProviderSublayerDetails;

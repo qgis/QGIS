@@ -16,10 +16,11 @@
 #ifndef QGSMODELVIEWTOOLLINK_H
 #define QGSMODELVIEWTOOLLINK_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgsmodelviewtool.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsmodelviewtool.h"
 
 #define SIP_NO_FILE
 

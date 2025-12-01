@@ -13,21 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgisapp.h"
-
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
-#include "vertextool/qgsvertextool.h"
-#include "qgssnappingconfig.h"
+#include "qgsproject.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssnappingconfig.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
+#include "vertextool/qgsvertextool.h"
 
 #include <QSignalSpy>
 

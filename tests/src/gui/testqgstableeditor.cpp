@@ -14,11 +14,11 @@
  ***************************************************************************/
 
 
+#include "qgsbearingnumericformat.h"
+#include "qgscurrencynumericformat.h"
+#include "qgstableeditorwidget.h"
 #include "qgstest.h"
 
-#include "qgstableeditorwidget.h"
-#include "qgscurrencynumericformat.h"
-#include "qgsbearingnumericformat.h"
 #include <QSignalSpy>
 
 class TestQgsTableEditor : public QObject

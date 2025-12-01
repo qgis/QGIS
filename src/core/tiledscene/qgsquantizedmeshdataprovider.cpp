@@ -17,7 +17,10 @@
  ***************************************************************************/
 
 #include "qgsquantizedmeshdataprovider.h"
-#include "moc_qgsquantizedmeshdataprovider.cpp"
+
+#include <limits>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"
@@ -36,14 +39,15 @@
 #include "qgstiledscenetile.h"
 #include "qgstiles.h"
 #include "qgsvectortileutils.h"
-#include <limits>
-#include <nlohmann/json.hpp>
+
+#include <QUrlQuery>
 #include <qglobal.h>
 #include <qnetworkrequest.h>
 #include <qobject.h>
 #include <qstringliteral.h>
 #include <qvector.h>
-#include <QUrlQuery>
+
+#include "moc_qgsquantizedmeshdataprovider.cpp"
 
 ///@cond PRIVATE
 

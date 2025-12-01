@@ -18,13 +18,13 @@
 #ifndef QGSANNOTATION_H
 #define QGSANNOTATION_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgspointxy.h"
+#include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsmargins.h"
-#include "qgsmaplayer.h"
 #include "qgsfeature.h"
+#include "qgsmaplayer.h"
+#include "qgsmargins.h"
+#include "qgspointxy.h"
 
 #include <QPointer>
 

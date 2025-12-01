@@ -14,19 +14,21 @@
  ***************************************************************************/
 
 #include "qgsellipsoidutils.h"
+
+#include <sqlite3.h>
+#include <proj.h>
+#include <mutex>
+
 #include "qgsapplication.h"
+#include "qgscelestialbody.h"
+#include "qgscoordinatereferencesystemregistry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include <sqlite3.h>
-#include <QCollator>
 #include "qgsprojutils.h"
 #include "qgsreadwritelocker.h"
 #include "qgsruntimeprofiler.h"
-#include "qgscoordinatereferencesystemregistry.h"
-#include "qgscelestialbody.h"
 
-#include <proj.h>
-#include <mutex>
+#include <QCollator>
 
 Q_GLOBAL_STATIC( QReadWriteLock, sEllipsoidCacheLock )
 typedef QHash< QString, QgsEllipsoidUtils::EllipsoidParameters > EllipsoidParamCache;

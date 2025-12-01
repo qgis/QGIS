@@ -17,13 +17,13 @@
 
 #include <functional>
 
-#include <QObject>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QUrl>
-#include <QAuthenticator>
-
 #include "qgsauthorizationsettings.h"
+
+#include <QAuthenticator>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QObject>
+#include <QUrl>
 
 //! Abstract base class for a WFS request.
 class QgsBaseNetworkRequest : public QObject

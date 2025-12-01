@@ -13,27 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
 #include <memory>
 
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsgeometry.h"
-#include "qgsproject.h"
-#include "qgssnappingutils.h"
-#include "qgssnappingconfig.h"
-#include "qgscategorizedsymbolrenderer.h"
-#include "qgssettings.h"
-#include "qgsmapcanvas.h"
-#include "qgsmapmouseevent.h"
-#include "qgsmapcanvassnappingutils.h"
 #include "qgisapp.h"
-
+#include "qgsapplication.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapcanvassnappingutils.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptooltrimextendfeature.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgssnappingconfig.h"
+#include "qgssnappingutils.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
+#include <QObject>
+#include <QString>
 
 class TestQgsMapToolTrimExtendFeature : public QObject
 {

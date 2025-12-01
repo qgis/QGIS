@@ -16,10 +16,12 @@
 #ifndef QGSLEGENDPATCHSHAPEWIDGET_H
 #define QGSLEGENDPATCHSHAPEWIDGET_H
 
+#include "ui_qgslegendpatchshapewidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgslegendpatchshapewidgetbase.h"
 #include "qgslegendpatchshape.h"
+
 #include <QDialog>
 
 class QDialogButtonBox;

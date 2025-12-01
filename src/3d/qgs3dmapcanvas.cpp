@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <Qt3DCore/QAspectEngine>
+
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DCore/QCoreAspect>
 #endif

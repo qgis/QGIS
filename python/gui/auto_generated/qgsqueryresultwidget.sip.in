@@ -12,6 +12,7 @@
 
 
 
+
 class QgsQueryResultWidget : QWidget
 {
 %Docstring(signature="appended")

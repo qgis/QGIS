@@ -18,8 +18,10 @@
 #include "qgsvectorfilewritertask.h"
 
 #include <memory>
-#include "moc_qgsvectorfilewritertask.cpp"
+
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsvectorfilewritertask.cpp"
 
 QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options, QgsFeatureSink::SinkFlags sinkFlags )
   : QgsTask( tr( "Saving %1" ).arg( fileName ), QgsTask::CanCancel )

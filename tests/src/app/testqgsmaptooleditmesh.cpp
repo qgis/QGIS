@@ -14,19 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDir>
 #include <memory>
 
-#include "qgstest.h"
 #include "qgisapp.h"
-#include "testqgsmaptoolutils.h"
 #include "qgsmaptooleditmeshframe.h"
-#include "qgsmeshlayer.h"
 #include "qgsmesheditor.h"
-#include "qgsrasterlayer.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgsterrainprovider.h"
+#include "qgsmeshlayer.h"
 #include "qgsmeshtransformcoordinatesdockwidget.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsrasterlayer.h"
+#include "qgsterrainprovider.h"
+#include "qgstest.h"
+#include "testqgsmaptoolutils.h"
+
+#include <QDir>
 
 class TestQgsMapToolEditMesh : public QgsTest
 {

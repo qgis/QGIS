@@ -15,12 +15,12 @@
  ***************************************************************************/
 #include "qgstranslationcontext.h"
 
-#include <QDir>
-#include <QTextStream>
-#include <QDomElement>
-#include <QDomDocument>
-
 #include "qgssettings.h"
+
+#include <QDir>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QTextStream>
 
 QgsProject *QgsTranslationContext::project() const
 {

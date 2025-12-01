@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsfilewidgetplugin.h"
-#include "moc_qgsfilewidgetplugin.cpp"
+
+#include "qgiscustomwidgets.h"
 #include "qgsfilewidget.h"
 
+#include "moc_qgsfilewidgetplugin.cpp"
 
 QgsFileWidgetPlugin::QgsFileWidgetPlugin( QObject *parent )
   : QObject( parent )

@@ -15,14 +15,15 @@
  ***************************************************************************/
 
 #include "qgsorderbydialog.h"
-#include "moc_qgsorderbydialog.cpp"
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsvectorlayer.h"
 
-#include <QTableWidget>
 #include <QKeyEvent>
+#include <QTableWidget>
+
+#include "moc_qgsorderbydialog.cpp"
 
 QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )

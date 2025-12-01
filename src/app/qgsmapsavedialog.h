@@ -21,9 +21,9 @@
 #include "ui_qgsmapsavedialog.h"
 
 #include "qgisapp.h"
+#include "qgshelp.h"
 #include "qgsmapdecoration.h"
 #include "qgsrectangle.h"
-#include "qgshelp.h"
 
 #include <QDialog>
 #include <QSize>

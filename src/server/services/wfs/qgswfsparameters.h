@@ -18,12 +18,12 @@
 #ifndef QGSWFSPARAMETERS_H
 #define QGSWFSPARAMETERS_H
 
+#include "qgsprojectversion.h"
+#include "qgsrectangle.h"
+#include "qgsserverparameters.h"
+
 #include <QMap>
 #include <QMetaEnum>
-
-#include "qgsrectangle.h"
-#include "qgsprojectversion.h"
-#include "qgsserverparameters.h"
 
 namespace QgsWfs
 {

@@ -16,14 +16,15 @@
 #ifndef QGSSTACCONTROLLER_H
 #define QGSSTACCONTROLLER_H
 
-#include "qgis.h"
-#include <QObject>
 #include <nlohmann/json.hpp>
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgshttpheaders.h"
 #include "qgsnetworkreply.h"
 #include "qgsstacobject.h"
+
+#include <QObject>
 
 class QgsStacObject;
 class QgsStacCatalog;

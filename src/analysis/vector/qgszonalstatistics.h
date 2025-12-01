@@ -18,16 +18,16 @@
 #ifndef QGSZONALSTATISTICS_H
 #define QGSZONALSTATISTICS_H
 
-#include <QString>
-#include <QMap>
-
 #include <limits>
 #include <cfloat>
 
 #include "qgis_analysis.h"
-#include "qgsfeedback.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeedback.h"
 #include "qgsfields.h"
+
+#include <QMap>
+#include <QString>
 
 class QgsGeometry;
 class QgsVectorLayer;

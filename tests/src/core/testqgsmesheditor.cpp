@@ -14,21 +14,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
 #include <memory>
 
 #include "qgis.h"
-#include "qgstriangularmesh.h"
-#include "qgsmeshlayer.h"
-#include "qgsmesheditor.h"
-#include "qgsmeshadvancedediting.h"
-#include "qgstransformeffect.h"
-#include "qgsmeshforcebypolylines.h"
 #include "qgslinestring.h"
+#include "qgsmeshadvancedediting.h"
+#include "qgsmesheditor.h"
+#include "qgsmeshforcebypolylines.h"
+#include "qgsmeshlayer.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgsrasterlayer.h"
 #include "qgsterrainprovider.h"
-#include "qgsprojectelevationproperties.h"
+#include "qgstest.h"
+#include "qgstransformeffect.h"
+#include "qgstriangularmesh.h"
+
+#include <QObject>
 
 class TestQgsMeshEditor : public QObject
 {

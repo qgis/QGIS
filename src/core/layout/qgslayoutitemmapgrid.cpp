@@ -16,35 +16,37 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmapgrid.h"
-#include "moc_qgslayoutitemmapgrid.cpp"
-#include "qgslayoututils.h"
+
+#include <math.h>
+#include <memory>
+
+#include "qgscolorutils.h"
+#include "qgscoordinateformatter.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsexception.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfontutils.h"
 #include "qgsgeometry.h"
+#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoututils.h"
+#include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorutils.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgslogger.h"
-#include "qgsfontutils.h"
-#include "qgsexpressioncontext.h"
-#include "qgsexception.h"
 #include "qgssettings.h"
-#include "qgscoordinateformatter.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
 #include "qgstextrenderer.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgslayout.h"
 #include "qgsunittypes.h"
-#include "qgslayoutrendercontext.h"
-
-#include <QVector2D>
-#include <math.h>
 
 #include <QPainter>
 #include <QPen>
-#include <memory>
+#include <QVector2D>
+
+#include "moc_qgslayoutitemmapgrid.cpp"
 
 #define MAX_GRID_LINES 1000 //maximum number of horizontal or vertical grid lines to draw
 

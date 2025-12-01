@@ -18,12 +18,12 @@
 #ifndef DOCKMODEL_H
 #define DOCKMODEL_H
 
+#include "topolError.h"
+
 #include <QAbstractTableModel>
-#include <QSortFilterProxyModel>
 #include <QModelIndex>
 #include <QObject>
-
-#include "topolError.h"
+#include <QSortFilterProxyModel>
 
 class DockModel : public QAbstractTableModel
 {

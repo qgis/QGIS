@@ -17,9 +17,10 @@
 #define QGSGEOPACKAGEPROJECTSTORAGE_H
 
 #include "qgsconfig.h"
-#include "qgsprojectstorage.h"
-#include "qgsdatasourceuri.h"
+
 #include "qgis_sip.h"
+#include "qgsdatasourceuri.h"
+#include "qgsprojectstorage.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

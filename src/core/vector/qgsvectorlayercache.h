@@ -19,13 +19,15 @@
 #ifndef QgsVectorLayerCache_H
 #define QgsVectorLayerCache_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include "qgsfield.h"
-#include "qgsfeaturerequest.h"
-#include "qgsfeatureiterator.h"
 #include <unordered_set>
 #include <deque>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
+#include "qgsfield.h"
+
 #include <QCache>
 
 class QgsVectorLayer;

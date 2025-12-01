@@ -16,8 +16,9 @@
 #ifndef QGSMSSQLTRANSACTION_H
 #define QGSMSSQLTRANSACTION_H
 
-#include "qgstransaction.h"
 #include <memory>
+
+#include "qgstransaction.h"
 
 class QgsMssqlDatabase;
 

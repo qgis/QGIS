@@ -18,14 +18,16 @@
  ***************************************************************************/
 
 #include "qgssubstitutionlistwidget.h"
-#include "moc_qgssubstitutionlistwidget.cpp"
+
 #include "qgsgui.h"
 
-#include <QDialogButtonBox>
 #include <QCheckBox>
+#include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
+
+#include "moc_qgssubstitutionlistwidget.cpp"
 
 QgsSubstitutionListWidget::QgsSubstitutionListWidget( QWidget *parent )
   : QgsPanelWidget( parent )

@@ -18,43 +18,45 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswmsprovider.h"
-#include "qgis.h" // GEO_EPSG_CRS_ID
+#include "qgswmssourceselect.h"
+
+#include "qgis.h"
+#include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
-#include "qgsprojectionselectiondialog.h"
+#include "qgsgui.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsmessageviewer.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsnewhttpconnection.h"
-#include "qgstreewidgetitem.h"
 #include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsproviderregistry.h"
+#include "qgssettings.h"
+#include "qgstreewidgetitem.h"
+#include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
 #include "qgswmsnewconnection.h"
-#include "qgswmssourceselect.h"
-#include "moc_qgswmssourceselect.cpp"
+#include "qgswmsprovider.h"
 #include "qgswmtsdimensions.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgswmscapabilities.h"
-#include "qgsapplication.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
 
 #include <QButtonGroup>
-#include <QFileDialog>
-#include <QRadioButton>
 #include <QDomDocument>
+#include <QFileDialog>
 #include <QHeaderView>
 #include <QImageReader>
 #include <QInputDialog>
 #include <QMap>
 #include <QMessageBox>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPicture>
+#include <QRadioButton>
 #include <QUrl>
 #include <QValidator>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+
+#include "moc_qgswmssourceselect.cpp"
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )

@@ -18,13 +18,13 @@
 #ifndef QGSWKBTYPES_H
 #define QGSWKBTYPES_H
 
-#include <QObject>
-#include <QMap>
-#include <QString>
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
+#include <QMap>
+#include <QObject>
+#include <QString>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

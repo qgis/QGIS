@@ -18,15 +18,16 @@
 #ifndef QGSPOSTGRESPROVIDER_H
 #define QGSPOSTGRESPROVIDER_H
 
-#include "qgsvectordataprovider.h"
-#include "qgsrectangle.h"
-#include "qgspostgresconn.h"
-#include "qgsfields.h"
-#include "qgsprovidermetadata.h"
-#include "qgsreferencedgeometry.h"
 #include <memory>
 #include <optional>
+
+#include "qgsfields.h"
+#include "qgspostgresconn.h"
 #include "qgspostgresutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsrectangle.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsvectordataprovider.h"
 
 class QgsFeature;
 class QgsField;

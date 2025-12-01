@@ -18,10 +18,10 @@
 #ifndef QGSPOINTCLOUDBLOCKREQUEST_H
 #define QGSPOINTCLOUDBLOCKREQUEST_H
 
-#include <QObject>
-
-#include "qgstiledownloadmanager.h"
 #include "qgspointcloudindex.h"
+#include "qgstiledownloadmanager.h"
+
+#include <QObject>
 
 #define SIP_NO_FILE
 

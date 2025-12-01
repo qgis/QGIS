@@ -18,11 +18,11 @@
 #ifndef QGSGOGRDBSCONNECTION_H
 #define QGSGOGRDBSCONNECTION_H
 
+#include "qgis_sip.h"
 #include "qgsdatasourceuri.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QStringList>
-#include "qgis_sip.h"
-#include "qgssettingsentryimpl.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

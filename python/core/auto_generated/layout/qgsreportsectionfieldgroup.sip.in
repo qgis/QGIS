@@ -9,7 +9,6 @@
 
 
 
-
 class QgsReportSectionFieldGroup : QgsAbstractReportSection
 {
 %Docstring(signature="appended")

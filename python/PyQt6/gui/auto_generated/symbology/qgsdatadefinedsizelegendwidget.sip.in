@@ -12,6 +12,7 @@
 
 
 
+
 class QgsDataDefinedSizeLegendWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

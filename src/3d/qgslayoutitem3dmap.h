@@ -17,10 +17,9 @@
 #define QGSLAYOUTITEM3DMAP_H
 
 #include "qgis_3d.h"
-
+#include "qgscamerapose.h"
 #include "qgslayoutitem.h"
 #include "qgstemporalrangeobject.h"
-#include "qgscamerapose.h"
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile

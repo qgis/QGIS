@@ -13,22 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvectortiledataprovider.h"
 #include "qgsxyzvectortiledataprovider.h"
-#include "moc_qgsxyzvectortiledataprovider.cpp"
-#include "qgsthreadingutils.h"
-#include "qgstiles.h"
-#include "qgsvectortileloader.h"
-#include "qgsvectortileutils.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
+
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
-#include "qgsmessagelog.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgsthreadingutils.h"
+#include "qgstiles.h"
+#include "qgsvectortiledataprovider.h"
+#include "qgsvectortileloader.h"
+#include "qgsvectortileutils.h"
+
 #include <QIcon>
 #include <QNetworkRequest>
+
+#include "moc_qgsxyzvectortiledataprovider.cpp"
 
 ///@cond PRIVATE
 

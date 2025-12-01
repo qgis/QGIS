@@ -19,13 +19,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsabstractprofilegenerator.h"
 #include "qgslinesymbol.h"
 #include "qgsprofilerequest.h"
-#include "qgsabstractprofilegenerator.h"
 #include "qgsrange.h"
 
-#include <QObject>
 #include <QFutureWatcher>
+#include <QObject>
 
 class QgsAbstractProfileSource;
 class QgsAbstractProfileGenerator;

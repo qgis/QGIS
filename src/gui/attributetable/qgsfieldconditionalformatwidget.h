@@ -15,16 +15,17 @@
 #ifndef QGSFIELDCONDITIONALFORMATWIDGET_H
 #define QGSFIELDCONDITIONALFORMATWIDGET_H
 
-#include <QWidget>
-#include <QStandardItemModel>
-#include <QStandardItem>
+#include "ui_qgsfieldconditionalformatwidget.h"
+#include "ui_qgseditconditionalformatrulewidget.h"
+
+#include "qgis_gui.h"
+#include "qgsconditionalstyle.h"
 #include "qgspanelwidget.h"
 #include "qgspanelwidgetstack.h"
 
-#include "ui_qgsfieldconditionalformatwidget.h"
-#include "ui_qgseditconditionalformatrulewidget.h"
-#include "qgsconditionalstyle.h"
-#include "qgis_gui.h"
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QWidget>
 
 /**
  * \ingroup gui

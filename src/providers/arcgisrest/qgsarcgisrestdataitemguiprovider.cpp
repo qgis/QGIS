@@ -14,24 +14,24 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestdataitemguiprovider.h"
-#include "moc_qgsarcgisrestdataitemguiprovider.cpp"
 
+#include "qgsafsprovider.h"
 #include "qgsapplication.h"
 #include "qgsarcgisrestdataitems.h"
+#include "qgsbrowsertreeview.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsguiutils.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsnewarcgisrestconnection.h"
 #include "qgsowsconnection.h"
-#include "qgsafsprovider.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsbrowsertreeview.h"
-#include "qgsguiutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsdataitemguiproviderutils.h"
 
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "moc_qgsarcgisrestdataitemguiprovider.cpp"
 
 void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {

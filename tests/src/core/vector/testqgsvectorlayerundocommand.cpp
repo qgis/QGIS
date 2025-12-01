@@ -12,13 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
 #include <memory>
 
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerundocommand.h"
+
+#include <QObject>
+#include <QString>
 
 class TestQgsVectorLayerUndoCommand : public QObject
 {

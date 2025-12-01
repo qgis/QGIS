@@ -19,10 +19,11 @@
 #define QGSDATUMTRANSFORMDIALOG_H
 
 #include "ui_qgsdatumtransformdialogbase.h"
+
+#include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsguiutils.h"
-#include "qgis_gui.h"
 
 #define SIP_NO_FILE
 

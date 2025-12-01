@@ -13,12 +13,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsdirectionallightwidget.h"
-#include "moc_qgsdirectionallightwidget.cpp"
 #include "ui_qgsdirectionallightwidget.h"
+#include "qgsdirectionallightwidget.h"
 
 #include "qgis.h"
+
 #include <QDebug>
+
+#include "moc_qgsdirectionallightwidget.cpp"
 
 QgsDirectionalLightWidget::QgsDirectionalLightWidget( QWidget *parent )
   : QWidget( parent )

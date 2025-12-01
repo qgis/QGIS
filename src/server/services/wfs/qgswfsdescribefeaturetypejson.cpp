@@ -14,19 +14,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswfsutils.h"
-#include "qgsserverprojectutils.h"
 #include "qgswfsdescribefeaturetypejson.h"
-#include "qgswfsdescribefeaturetype.h"
-#include "qgswfsparameters.h"
+
+#include "qgsdatetimefieldformatter.h"
 #include "qgsjsonutils.h"
 #include "qgsproject.h"
+#include "qgsserverprojectutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsdatetimefieldformatter.h"
+#include "qgswfsdescribefeaturetype.h"
+#include "qgswfsparameters.h"
+#include "qgswfsutils.h"
 
-#include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QJsonObject>
 
 using namespace QgsWfs;
 

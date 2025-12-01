@@ -16,10 +16,11 @@
 #ifndef QGSLAYOUTCOMBOBOX_H
 #define QGSLAYOUTCOMBOBOX_H
 
-#include <QComboBox>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgslayoutmanagermodel.h"
+
+#include <QComboBox>
 
 class QgsLayoutManager;
 

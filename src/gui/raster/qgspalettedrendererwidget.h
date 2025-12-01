@@ -18,16 +18,17 @@
 #ifndef QGSPALETTEDRENDERERWIDGET_H
 #define QGSPALETTEDRENDERERWIDGET_H
 
-#include "qgsrasterrendererwidget.h"
-#include "qgis_sip.h"
-#include "qgspalettedrasterrenderer.h"
-#include "qgscolorschemelist.h"
-#include "qgsrasterlayer.h"
 #include "ui_qgspalettedrendererwidgetbase.h"
-#include "qgis_gui.h"
 
-#include <QThread>
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscolorschemelist.h"
+#include "qgspalettedrasterrenderer.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterrendererwidget.h"
+
 #include <QSortFilterProxyModel>
+#include <QThread>
 
 class QgsRasterLayer;
 class QgsLocaleAwareNumericLineEditDelegate;

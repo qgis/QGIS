@@ -16,9 +16,11 @@
 #ifndef QGSRELATIONMANAGERDIALOG_H
 #define QGSRELATIONMANAGERDIALOG_H
 
-#include <QWidget>
 #include "ui_qgsrelationmanagerdialogbase.h"
+
 #include "qgis_app.h"
+
+#include <QWidget>
 
 class QgsRelation;
 class QgsPolymorphicRelation;

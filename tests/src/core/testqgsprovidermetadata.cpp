@@ -14,10 +14,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgstest.h"
+
 #include <QObject>
-#include <qgsprovidermetadata.h>
-#include <qgsproviderregistry.h>
 
 class TestQgsProviderMetadata : public QObject
 {

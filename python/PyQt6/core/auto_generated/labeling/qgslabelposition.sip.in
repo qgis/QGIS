@@ -9,7 +9,6 @@
 
 
 
-
 class QgsLabelPosition
 {
 %Docstring(signature="appended")

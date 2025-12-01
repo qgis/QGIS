@@ -14,39 +14,41 @@
  ***************************************************************************/
 
 #include "qgsrasterlayerrenderer.h"
-#include "moc_qgsrasterlayerrenderer.cpp"
 
+#include <memory>
+
+#include "qgsapplication.h"
+#include "qgselevationmap.h"
+#include "qgsexception.h"
+#include "qgsgdalutils.h"
+#include "qgsinterval.h"
+#include "qgsmapclippingutils.h"
 #include "qgsmessagelog.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterdrawer.h"
 #include "qgsrasteriterator.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterprojector.h"
-#include "qgsrendercontext.h"
-#include "qgsrasterrenderer.h"
-#include "qgsexception.h"
-#include "qgsrasterlayertemporalproperties.h"
-#include "qgsmapclippingutils.h"
-#include "qgsrasterpipe.h"
-#include "qgselevationmap.h"
-#include "qgsgdalutils.h"
-#include "qgsrasterresamplefilter.h"
-#include "qgsrasterlayerelevationproperties.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
-#include "qgsrastertransparency.h"
-#include "qgsrasterlayerutils.h"
-#include "qgsinterval.h"
-#include "qgsunittypes.h"
-#include "qgsrasternuller.h"
-#include "qgsrenderedlayerstatistics.h"
 #include "qgsrasterlabeling.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsrasterlayerutils.h"
+#include "qgsrasternuller.h"
+#include "qgsrasterpipe.h"
+#include "qgsrasterprojector.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterresamplefilter.h"
+#include "qgsrastertransparency.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderedlayerstatistics.h"
+#include "qgsruntimeprofiler.h"
 #include "qgsthreadingutils.h"
+#include "qgsunittypes.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
 #include <QThread>
-#include <memory>
+
+#include "moc_qgsrasterlayerrenderer.cpp"
 
 ///@cond PRIVATE
 

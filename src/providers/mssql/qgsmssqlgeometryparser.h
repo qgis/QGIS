@@ -19,16 +19,15 @@
 #define QGSMSSQLGEOMETRYPARSER_H
 
 #include "qgsabstractgeometry.h"
-#include "qgsmultilinestring.h"
-#include "qgsmultipolygon.h"
-#include "qgsmultipoint.h"
-#include "qgslinestring.h"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
-#include "qgspolygon.h"
+#include "qgslinestring.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
 #include "qgspoint.h"
-
+#include "qgspolygon.h"
 
 /**
  * \class QgsMssqlGeometryParser

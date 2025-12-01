@@ -13,40 +13,42 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdualview.h"
+
+#include "qgsactionmanager.h"
+#include "qgsactionmenu.h"
+#include "qgsapplication.h"
+#include "qgsattributetablemodel.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeaturelistmodel.h"
+#include "qgsfieldconditionalformatwidget.h"
+#include "qgsgui.h"
+#include "qgsifeatureselectionmanager.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapcanvasutils.h"
+#include "qgsmaplayeraction.h"
+#include "qgsmessagebar.h"
+#include "qgsorganizetablecolumnsdialog.h"
+#include "qgsscrollarea.h"
+#include "qgssettings.h"
+#include "qgsshortcutsmanager.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectorlayereditbuffer.h"
+
 #include <QClipboard>
 #include <QDialog>
+#include <QGroupBox>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
 #include <QProgressDialog>
-#include <QGroupBox>
-#include <QInputDialog>
-#include <QTimer>
 #include <QShortcut>
+#include <QTimer>
 
-#include "qgsapplication.h"
-#include "qgsactionmanager.h"
-#include "qgsattributetablemodel.h"
-#include "qgsdualview.h"
 #include "moc_qgsdualview.cpp"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsfeaturelistmodel.h"
-#include "qgsifeatureselectionmanager.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayeraction.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayercache.h"
-#include "qgsorganizetablecolumnsdialog.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgssettings.h"
-#include "qgsscrollarea.h"
-#include "qgsgui.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsshortcutsmanager.h"
-#include "qgsfieldconditionalformatwidget.h"
-#include "qgsmapcanvasutils.h"
-#include "qgsmessagebar.h"
-#include "qgsvectorlayereditbuffer.h"
-#include "qgsactionmenu.h"
 
 const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::conditionalFormattingSplitterState = std::make_unique<QgsSettingsEntryVariant>( QStringLiteral( "attribute-table-splitter-state" ), QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), QStringLiteral( "State of conditional formatting splitter's layout so it could be restored when opening attribute table view." ) );
 const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::attributeEditorSplitterState = std::make_unique<QgsSettingsEntryVariant>( QStringLiteral( "attribute-editor-splitter-state" ), QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), QStringLiteral( "State of attribute editor splitter's layout so it could be restored when opening attribute editor view." ) );

@@ -14,19 +14,21 @@
  ***************************************************************************/
 
 #include "qgsvectortilebasiclabelingwidget.h"
-#include "moc_qgsvectortilebasiclabelingwidget.cpp"
+
+#include <memory>
 
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgsvectortilebasiclabeling.h"
-#include "qgsvectortilelayer.h"
 #include "qgslabelinggui.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectortileutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilebasiclabeling.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortileutils.h"
 
 #include <QMenu>
-#include <memory>
+
+#include "moc_qgsvectortilebasiclabelingwidget.cpp"
 
 ///@cond PRIVATE
 

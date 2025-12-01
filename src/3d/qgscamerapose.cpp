@@ -17,9 +17,8 @@
 
 #include "qgs3dutils.h"
 
-#include <Qt3DRender/QCamera>
-
 #include <QDomDocument>
+#include <Qt3DRender/QCamera>
 
 QDomElement QgsCameraPose::writeXml( QDomDocument &doc ) const
 {

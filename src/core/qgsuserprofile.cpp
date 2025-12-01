@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgsuserprofile.h"
+
+#include <sqlite3.h>
+
 #include "qgsapplication.h"
 #include "qgssqliteutils.h"
 
 #include <QDir>
 #include <QFileInfo>
-#include <QTextStream>
 #include <QSettings>
-#include <sqlite3.h>
+#include <QTextStream>
 
 QgsUserProfile::QgsUserProfile( const QString &folder )
 {

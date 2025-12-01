@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgsgraduatedhistogramwidget.h"
-#include "moc_qgsgraduatedhistogramwidget.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgsgraduatedsymbolrendererwidget.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
 #include "qgsstatisticalsummary.h"
+#include "qgsvectorlayer.h"
 
-#include <QSettings>
-#include <QObject>
 #include <QMouseEvent>
+#include <QObject>
+#include <QSettings>
+
+#include "moc_qgsgraduatedhistogramwidget.cpp"
 
 // QWT Charting widget
 #include <qwt_global.h>

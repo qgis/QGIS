@@ -19,8 +19,9 @@
 #define QGSNEWAUXILIARYLAYERDIALOG_H
 
 #include "ui_qgsnewauxiliarylayerdialogbase.h"
-#include "qgsguiutils.h"
+
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
 
 class QgsVectorLayer;
 

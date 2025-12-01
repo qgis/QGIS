@@ -14,32 +14,33 @@
  ***************************************************************************/
 
 #include "qgsrulebasedrendererwidget.h"
-#include "moc_qgsrulebasedrendererwidget.cpp"
 
-#include "qgsrulebasedrenderer.h"
-#include "qgsfeatureiterator.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbol.h"
-#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsexpression.h"
-#include "qgssymbolselectordialog.h"
-#include "qgslogger.h"
-#include "qgsreadwritecontext.h"
-#include "qgspanelwidget.h"
-#include "qgsmapcanvas.h"
-#include "qgssettings.h"
+#include "qgsfeatureiterator.h"
 #include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgspanelwidget.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrulebasedrenderer.h"
+#include "qgssettings.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgsvectorlayer.h"
 
+#include <QClipboard>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QMessageBox>
+#include <QPointer>
 #include <QProgressDialog>
+#include <QScreen>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
-#include <QMessageBox>
-#include <QClipboard>
-#include <QPointer>
-#include <QScreen>
+
+#include "moc_qgsrulebasedrendererwidget.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

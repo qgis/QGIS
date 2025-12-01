@@ -18,10 +18,10 @@
 #ifndef QGSREADWRITECONTEXT_H
 #define QGSREADWRITECONTEXT_H
 
-#include "qgspathresolver.h"
 #include "qgis.h"
-#include "qgsprojecttranslator.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgspathresolver.h"
+#include "qgsprojecttranslator.h"
 
 class QgsReadWriteContextCategoryPopper;
 

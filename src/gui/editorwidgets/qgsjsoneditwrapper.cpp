@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsjsoneditwrapper.h"
-#include "moc_qgsjsoneditwrapper.cpp"
 
 #include "qgsjsoneditwidget.h"
+
+#include "moc_qgsjsoneditwrapper.cpp"
 
 QgsJsonEditWrapper::QgsJsonEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
