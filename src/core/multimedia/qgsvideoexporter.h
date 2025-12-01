@@ -78,6 +78,16 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     QgsFeedback *feedback();
 
     /**
+     * Returns the output video frames per second.
+     */
+    double framesPerSecond() const { return mFramesPerSecond; }
+
+    /**
+     * Returns the output video frame size.
+     */
+    QSize size() const { return mSize; }
+
+    /**
      * Sets the list of input image \a files.
      *
      * The list must be an ordered list of existing image file paths, which will form
@@ -235,15 +245,15 @@ class CORE_EXPORT QgsVideoExporter : public QObject
 
     QString mFileName;
     QSize mSize;
-    double mFramesPerSecond = 10;
-    qint64 mFrameDurationUs = 100000;
     QStringList mInputFiles;
+    double mFramesPerSecond = 10;
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
+    qint64 mFrameDurationUs = 100000;
     QMediaFormat::FileFormat mFormat = QMediaFormat::FileFormat::MPEG4;
     QMediaFormat::VideoCodec mCodec = QMediaFormat::VideoCodec::H264;
     QMediaRecorder::Error mError = QMediaRecorder::Error::NoError;
-#endif
     int mCurrentFrameIndex = 0;
+#endif
     QPointer< QgsFeedback > mFeedback;
 
     QString mErrorString;
@@ -251,8 +261,8 @@ class CORE_EXPORT QgsVideoExporter : public QObject
     std::unique_ptr< QMediaCaptureSession > mSession;
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     std::unique_ptr< QMediaRecorder > mRecorder;
-#endif
     std::unique_ptr< QVideoFrameInput > mVideoInput;
+#endif
 
 };
 
