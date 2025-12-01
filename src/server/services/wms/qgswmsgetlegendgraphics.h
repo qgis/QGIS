@@ -21,8 +21,15 @@
 #include "qgslayertreemodel.h"
 #include "qgswmsrendercontext.h"
 
+class QgsServerInterface;
+class QgsProject;
+class QgsServerRequest;
+class QgsServerSettings;
+class QgsServerResponse;
+
 namespace QgsWms
 {
+  class QgsWmsRequest;
 
   /**
    * Output GetLegendGRaphics response
