@@ -49,8 +49,7 @@ QgsAnnotationItemRubberBand::QgsAnnotationItemRubberBand( const QString &layerId
   setColor( QColor( 50, 50, 50, 200 ) );
   setZValue( 10 );
 
-  QgsAnnotationItem *annotationItem = item();
-  mNeedsUpdatedBoundingBox = annotationItem && ( annotationItem->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox );
+  mNeedsUpdatedBoundingBox = true;
 }
 
 QgsAnnotationItemRubberBand::~QgsAnnotationItemRubberBand()
@@ -76,6 +75,8 @@ QgsAnnotationItem *QgsAnnotationItemRubberBand::item() const
 void QgsAnnotationItemRubberBand::updateBoundingBox( const QgsRectangle &boundingBox )
 {
   mBoundingBox = boundingBox;
+  QgsAnnotationItem *annotationItem = item();
+  mNeedsUpdatedBoundingBox = annotationItem && ( annotationItem->flags() & Qgis::AnnotationItemFlag::ScaleDependentBoundingBox );
 
   reset( Qgis::GeometryType::Line );
   addPoint( QgsPointXY( boundingBox.xMinimum(), boundingBox.yMinimum() ) );
@@ -213,6 +214,7 @@ QgsMapToolSelectAnnotation::QgsMapToolSelectAnnotation( QgsMapCanvas *canvas, Qg
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
 {
   connect( QgsMapToolSelectAnnotation::canvas(), &QgsMapCanvas::mapCanvasRefreshed, this, &QgsMapToolSelectAnnotation::onCanvasRefreshed );
+  connect( this, &QgsMapToolSelectAnnotation::selectedItemsChanged, this, &QgsMapToolSelectAnnotation::updateSelectedItem );
 }
 
 QgsMapToolSelectAnnotation::~QgsMapToolSelectAnnotation()
@@ -237,6 +239,9 @@ void QgsMapToolSelectAnnotation::deactivate()
 
   qDeleteAll( mSelectedItems );
   mSelectedItems.clear();
+
+  mCopiedItems.clear();
+  mCopiedItemsTopLeft = QPointF();
 
   QgsMapToolAdvancedDigitizing::deactivate();
 }
@@ -375,7 +380,7 @@ void QgsMapToolSelectAnnotation::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
 
 void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
 {
-  if ( mMouseHandles->isDragging() || mMouseHandles->isResizing() )
+  if ( mMouseHandles->isDragging() || mMouseHandles->isResizing() || mMouseHandles->isRotating() )
   {
     return;
   }
@@ -385,7 +390,48 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
     return;
   }
 
-  if ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete )
+  if ( event->key() == Qt::Key_C || event->key() == Qt::Key_X )
+  {
+    mCopiedItems.clear();
+    mCopiedItemsTopLeft = toMapCoordinates( QPoint( mMouseHandles->sceneBoundingRect().topLeft().x(), mMouseHandles->sceneBoundingRect().topLeft().y() ) );
+    for ( QgsAnnotationItemRubberBand *selectedItem : mSelectedItems )
+    {
+      mCopiedItems << qMakePair( selectedItem->layerId(), selectedItem->itemId() );
+    }
+    if ( event->key() == Qt::Key_C )
+    {
+      event->ignore();
+      return;
+    }
+  }
+  else if ( event->key() == Qt::Key_V )
+  {
+    const QgsPointXY copiedItemsSceneTopLeft = mCanvas->mapSettings().mapToPixel().transform( mCopiedItemsTopLeft );
+    const double deltaX = mLastScenePos.x() - copiedItemsSceneTopLeft.x();
+    const double deltaY = mLastScenePos.y() - copiedItemsSceneTopLeft.y();
+    if ( !mSelectedItems.isEmpty() )
+    {
+      qDeleteAll( mSelectedItems );
+      mSelectedItems.clear();
+    }
+
+    for ( const QPair<QString, QString> &copiedItem : mCopiedItems )
+    {
+      if ( QgsAnnotationItem *annotationItem = annotationItemFromId( copiedItem.first, copiedItem.second ) )
+      {
+        QgsAnnotationLayer *annotationLayer = annotationLayerFromId( copiedItem.first );
+        QString pastedItemId = annotationLayer->addItem( annotationItem->clone() );
+
+        mSelectedItems << new QgsAnnotationItemRubberBand( copiedItem.first, pastedItemId, mCanvas );
+        mSelectedItems.last()->attemptMoveBy( deltaX, deltaY );
+      }
+    }
+    emit selectedItemsChanged();
+    event->ignore();
+    return;
+  }
+
+  if ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete || event->key() == Qt::Key_X )
   {
     while ( !mSelectedItems.isEmpty() )
     {
@@ -570,8 +616,6 @@ void QgsMapToolSelectAnnotation::setSelectedItemsFromRect( const QgsRectangle &m
     }
   }
   emit selectedItemsChanged();
-
-  updateSelectedItem();
 }
 
 void QgsMapToolSelectAnnotation::setSelectedItemFromPoint( const QgsPointXY &mapPoint, bool toggleSelection )
@@ -626,8 +670,6 @@ void QgsMapToolSelectAnnotation::setSelectedItemFromPoint( const QgsPointXY &map
     mSelectedItems << rubberband.release();
   }
   emit selectedItemsChanged();
-
-  updateSelectedItem();
 }
 
 void QgsMapToolSelectAnnotation::updateSelectedItem()
