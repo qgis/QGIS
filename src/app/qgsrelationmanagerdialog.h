@@ -65,7 +65,7 @@ class RelationNameEditorDelegate : public QStyledItemDelegate
       , mEditableColumns( editableColumns )
     {}
 
-    virtual QWidget *createEditor( QWidget *parentWidget, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+    QWidget *createEditor( QWidget *parentWidget, const QStyleOptionViewItem &option, const QModelIndex &index ) const override
     {
       if ( mEditableColumns.contains( index.column() ) )
         return QStyledItemDelegate::createEditor( parentWidget, option, index );

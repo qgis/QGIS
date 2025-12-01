@@ -34,7 +34,7 @@ class QgsVectorLayerDigitizingPropertiesPage : public QgsMapLayerConfigWidget, p
     explicit QgsVectorLayerDigitizingPropertiesPage( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
   public slots:
-    virtual void apply();
+    void apply() override;
 
   private:
     bool mRemoveDuplicateNodesManuallyActivated = false;

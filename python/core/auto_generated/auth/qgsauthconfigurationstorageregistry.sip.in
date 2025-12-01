@@ -35,7 +35,7 @@ created, but rather accessed through
 Creates a new QgsAuthConfigurationStorageRegistry instance.
 %End
 
-    virtual ~QgsAuthConfigurationStorageRegistry();
+    ~QgsAuthConfigurationStorageRegistry();
 
     bool addStorage( QgsAuthConfigurationStorage *storage /Transfer/ );
 %Docstring

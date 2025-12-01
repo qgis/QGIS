@@ -268,7 +268,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     /**
      * Refresh the UI when the widget becomes visible
      */
-    void showEvent( QShowEvent * );
+    void showEvent( QShowEvent * ) override;
 
     /**
      * Updates the title contents to reflect the current state of the widget

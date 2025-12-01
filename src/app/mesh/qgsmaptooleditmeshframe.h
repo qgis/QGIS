@@ -162,7 +162,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
   public:
     //! Constructor
     QgsMapToolEditMeshFrame( QgsMapCanvas *canvas );
-    ~QgsMapToolEditMeshFrame();
+    ~QgsMapToolEditMeshFrame() override;
 
     QList<QAction *> mapToolActions();
     QAction *digitizeAction() const;

@@ -74,7 +74,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     //! Constructor with a specific mesh \a nativeMesh and an associated triangular mesh \a triangularMesh
     QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = nullptr ); SIP_SKIP
-    ~QgsMeshEditor();
+    ~QgsMeshEditor() override;
 
     // TODO QGIS 5.0 -- fix this mess
 

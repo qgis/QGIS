@@ -25,7 +25,7 @@ class DummyFeedback : public QgsProcessingFeedback
     Q_OBJECT
 
   public:
-    void reportError( const QString &error, bool fatalError = false )
+    void reportError( const QString &error, bool fatalError = false ) override
     {
       Q_UNUSED( fatalError );
       mErrors.append( error );

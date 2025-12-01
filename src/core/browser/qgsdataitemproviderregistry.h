@@ -43,7 +43,7 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
 
     QgsDataItemProviderRegistry();
 
-    ~QgsDataItemProviderRegistry();
+    ~QgsDataItemProviderRegistry() override;
 
     QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh ) = delete;
     QgsDataItemProviderRegistry &operator=( const QgsDataItemProviderRegistry &rh ) = delete;

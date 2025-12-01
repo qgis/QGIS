@@ -1141,7 +1141,7 @@ class FunctionThread : public QThread
     std::function<bool()> m_f;
     bool m_result;
 
-    void run()
+    void run() override
     {
       m_result = m_f();
     }

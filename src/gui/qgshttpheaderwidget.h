@@ -43,7 +43,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
      * \param parent parent widget
      */
     explicit QgsHttpHeaderWidget( QWidget *parent = nullptr );
-    ~QgsHttpHeaderWidget();
+    ~QgsHttpHeaderWidget() override;
 
     /**
      * Returns the headers as defined in the widget.

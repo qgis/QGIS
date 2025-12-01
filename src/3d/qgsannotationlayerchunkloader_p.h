@@ -132,7 +132,7 @@ class QgsAnnotationLayerChunkedEntity : public QgsChunkedEntity
   public:
     //! Constructs the entity.
     explicit QgsAnnotationLayerChunkedEntity( Qgs3DMapSettings *map, QgsAnnotationLayer *layer, Qgis::AltitudeClamping clamping, double zOffset, bool showCallouts, const QColor &calloutLineColor, double calloutLineWidth, const QgsTextFormat &textFormat, double zMin, double zMax );
-    ~QgsAnnotationLayerChunkedEntity();
+    ~QgsAnnotationLayerChunkedEntity() override;
 
   private slots:
     void onTerrainElevationOffsetChanged();

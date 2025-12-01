@@ -42,7 +42,7 @@ class APP_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::Qgs
      * \param parent parent widget
      */
     explicit QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent = nullptr );
-    virtual ~QgsUserProfileSelectionDialog();
+    ~QgsUserProfileSelectionDialog() override;
 
 
     /* Return the selected profile name */

@@ -47,7 +47,7 @@ class NATIVE_EXPORT QgsNative : public QObject
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
-    virtual ~QgsNative() = default;
+    ~QgsNative() override = default;
 
     /**
      * Called on QGIS exit, allowing the native interface to gracefully

@@ -30,7 +30,7 @@ class QgsPdalProvider : public QgsPointCloudDataProvider
   public:
     QgsPdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
-    ~QgsPdalProvider();
+    ~QgsPdalProvider() override;
     Qgis::DataProviderFlags flags() const override;
     QgsCoordinateReferenceSystem crs() const override;
     QgsRectangle extent() const override;

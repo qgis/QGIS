@@ -81,7 +81,7 @@ class DummyRaiseExceptionAlgorithm : public QgsProcessingAlgorithm
       hasPostProcessed = false;
     }
     static bool hasPostProcessed;
-    ~DummyRaiseExceptionAlgorithm()
+    ~DummyRaiseExceptionAlgorithm() override
     {
       hasPostProcessed |= mHasPostProcessed;
     }

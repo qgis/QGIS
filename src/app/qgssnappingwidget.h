@@ -189,7 +189,7 @@ class SnapTypeMenu : public QMenu
     SnapTypeMenu( const QString &title, QWidget *parent = nullptr )
       : QMenu( title, parent ) {}
 
-    void mouseReleaseEvent( QMouseEvent *e )
+    void mouseReleaseEvent( QMouseEvent *e ) override
     {
       QAction *action = activeAction();
       if ( action )

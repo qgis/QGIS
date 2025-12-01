@@ -226,7 +226,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     SIP_SKIP Q_DECL_DEPRECATED QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
 
-    virtual ~QgsProviderMetadata();
+    ~QgsProviderMetadata() override;
 
     /**
      * This returns the unique key associated with the provider

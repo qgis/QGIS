@@ -25,7 +25,7 @@ Used for settings introspection and collects all
 %End
   public:
     QgsSettingsRegistryGui();
-    virtual ~QgsSettingsRegistryGui();
+    ~QgsSettingsRegistryGui();
 
 };
 

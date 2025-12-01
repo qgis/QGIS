@@ -64,7 +64,7 @@ class QgsChunkLoaderFactory : public QObject
 {
     Q_OBJECT
   public:
-    virtual ~QgsChunkLoaderFactory() = default;
+    ~QgsChunkLoaderFactory() override = default;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const = 0;

@@ -371,6 +371,7 @@ Convenience function to set the selection using linear indexes
 
     virtual void callTip();
 
+
     int wrapPosition( int line = -1 );
 %Docstring
 Returns the linear position of the start of the last wrapped part for

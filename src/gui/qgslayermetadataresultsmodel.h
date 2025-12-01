@@ -78,7 +78,7 @@ class GUI_EXPORT QgsLayerMetadataResultsModel : public QAbstractTableModel
      */
     explicit QgsLayerMetadataResultsModel( const QgsMetadataSearchContext &searchContext, QObject *parent = nullptr );
 
-    ~QgsLayerMetadataResultsModel();
+    ~QgsLayerMetadataResultsModel() override;
 
 
     // QAbstractTableModel interface

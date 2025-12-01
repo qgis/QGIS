@@ -65,7 +65,7 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
      */
     QgsAuthConfigurationStorage( const QMap<QString, QVariant> &settings );
 
-    virtual ~QgsAuthConfigurationStorage() {}
+    ~QgsAuthConfigurationStorage() override {}
 
     /**
      * Returns a human readable localized short name of the storage implementation (e.g "SQLite").

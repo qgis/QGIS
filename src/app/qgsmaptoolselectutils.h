@@ -131,7 +131,7 @@ namespace QgsMapToolSelectUtils
       */
       QgsMapToolSelectMenuActions( QgsMapCanvas *canvas, QgsVectorLayer *vectorLayer, Qgis::SelectBehavior behavior, const QgsGeometry &selectionGeometry, QObject *parent = nullptr );
 
-      ~QgsMapToolSelectMenuActions();
+      ~QgsMapToolSelectMenuActions() override;
 
       /**
       * Populates the \a menu with "All Feature" action and a empty menu that could contain later the "One Feature" actions

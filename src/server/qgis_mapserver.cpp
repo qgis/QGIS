@@ -341,7 +341,7 @@ class TcpServerWorker : public QObject
       }
     }
 
-    ~TcpServerWorker()
+    ~TcpServerWorker() override
     {
       mTcpServer.close();
     }
@@ -420,7 +420,7 @@ class TcpServerThread : public QThread
         emit responseReady( requestContext ); //#spellok
     }
 
-    void run()
+    void run() override
     {
       const TcpServerWorker worker( mIpAddress, mPort );
       if ( !worker.isListening() )
@@ -451,7 +451,7 @@ class QueueMonitorThread : public QThread
     Q_OBJECT
 
   public:
-    void run()
+    void run() override
     {
       while ( mIsRunning )
       {

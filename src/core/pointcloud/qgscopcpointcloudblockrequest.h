@@ -52,7 +52,7 @@ class CORE_EXPORT QgsCopcPointCloudBlockRequest : public QgsPointCloudBlockReque
                                    uint64_t blockOffset, int32_t blockSize, int pointCount, const QgsLazInfo &lazInfo,
                                    const QString &authcfg = QString() );
 
-    ~QgsCopcPointCloudBlockRequest() = default;
+    ~QgsCopcPointCloudBlockRequest() override = default;
   private:
     uint64_t mBlockOffset;
     int32_t mBlockSize;

@@ -106,7 +106,7 @@ class DockFilterModel : public QSortFilterProxyModel
      */
     DockFilterModel( QObject *parent = nullptr );
 
-    ~DockFilterModel() = default;
+    ~DockFilterModel() override = default;
 
     /**
      * \param errorList reference to the ErrorList where errors will be stored

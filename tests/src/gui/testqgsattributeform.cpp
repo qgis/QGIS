@@ -955,7 +955,7 @@ void TestQgsAttributeForm::testAttributeFormInterface()
       MyInterface( QgsAttributeForm *form )
         : QgsAttributeFormInterface( form ) {}
 
-      virtual void featureChanged()
+      void featureChanged() override
       {
         QgsAttributeForm *f = form();
         QLineEdit *le = f->findChild<QLineEdit *>( "col0" );

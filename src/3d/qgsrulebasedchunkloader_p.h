@@ -124,7 +124,7 @@ class QgsRuleBasedChunkedEntity : public QgsChunkedEntity
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
-    ~QgsRuleBasedChunkedEntity();
+    ~QgsRuleBasedChunkedEntity() override;
   private slots:
     void onTerrainElevationOffsetChanged();
 
