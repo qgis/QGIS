@@ -15,51 +15,50 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsmssqlprovider.h"
-#include "moc_qgsmssqlprovider.cpp"
-#include "qgsmssqlconnection.h"
-#include "qgsmssqldatabase.h"
-#include "qgsmssqlproviderconnection.h"
-#include "qgsmssqlutils.h"
-#include "qgsfeedback.h"
-#include "qgsdbquerylog.h"
-#include "qgsdbquerylog_p.h"
-#include "qgsvariantutils.h"
-#include "qgsthreadingutils.h"
 
-#include <QtGlobal>
-#include <QFileInfo>
-#include <QDataStream>
-#include <QStringList>
-#include <QSettings>
-#include <QRegularExpression>
-#include <QUrl>
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlError>
-#include <QtSql/QSqlRecord>
-#include <QtSql/QSqlField>
-#include <QStringBuilder>
-#include <QWaitCondition>
 #include <memory>
 
-
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
+#include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
 #include "qgsfeature.h"
+#include "qgsfeedback.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsrectangle.h"
-#include "qgis.h"
-
+#include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
 #include "qgsmssqldataitems.h"
 #include "qgsmssqlfeatureiterator.h"
+#include "qgsmssqlproviderconnection.h"
 #include "qgsmssqltransaction.h"
+#include "qgsmssqlutils.h"
+#include "qgsrectangle.h"
+#include "qgsthreadingutils.h"
+#include "qgsvariantutils.h"
 
+#include <QDataStream>
+#include <QFileInfo>
+#include <QRegularExpression>
+#include <QSettings>
+#include <QStringBuilder>
+#include <QStringList>
+#include <QUrl>
+#include <QWaitCondition>
+#include <QtGlobal>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlField>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlRecord>
 
-#include "qgsconfig.h"
+#include "moc_qgsmssqlprovider.cpp"
+
 constexpr int sMssqlConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
 #define LoggedExec( query, sql ) execLogged( query, sql, QString( QString( __FILE__ ).mid( sMssqlConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" ) )
 #define LoggedExecPrepared( query ) execPreparedLogged( query, QString( QString( __FILE__ ).mid( sMssqlConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" ) )

@@ -18,12 +18,12 @@
 #define qgsnewvectorlayerdialog_H
 
 #include "ui_qgsnewvectorlayerdialogbase.h"
-#include "qgsguiutils.h"
-#include "qgshelp.h"
 
-#include "qgswkbtypes.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgswkbtypes.h"
 
 /**
  * \ingroup gui

@@ -16,14 +16,14 @@ email                : jpalmer at linz dot govt dot nz
 #ifndef QGSMAPTOOLSELECTUTILS_H
 #define QGSMAPTOOLSELECTUTILS_H
 
-#include <QRect>
-#include <QPoint>
-#include <QList>
-#include <QFutureWatcher>
-
-#include "qgsvectorlayer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrendercontext.h"
+#include "qgsvectorlayer.h"
+
+#include <QFutureWatcher>
+#include <QList>
+#include <QPoint>
+#include <QRect>
 
 class QMouseEvent;
 class QgsMapCanvas;

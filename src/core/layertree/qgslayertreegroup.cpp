@@ -14,16 +14,16 @@
  ***************************************************************************/
 
 #include "qgslayertreegroup.h"
-#include "moc_qgslayertreegroup.cpp"
 
+#include "qgsgrouplayer.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
-#include "qgsgrouplayer.h"
 
 #include <QDomElement>
 #include <QStringList>
 
+#include "moc_qgslayertreegroup.cpp"
 
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
   : QgsLayerTreeNode( NodeGroup, checked )

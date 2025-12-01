@@ -20,7 +20,6 @@
 #include "qgis_gui.h"
 #include "qgssettingsregistry.h"
 
-
 class QgsSettingsEntryBool;
 
 /**

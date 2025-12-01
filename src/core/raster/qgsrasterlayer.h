@@ -21,22 +21,22 @@
 #ifndef QGSRASTERLAYER_H
 #define QGSRASTERLAYER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis_sip.h"
+#include "qgsabstractprofilesource.h"
+#include "qgscontrastenhancement.h"
+#include "qgsmaplayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterviewport.h"
+
 #include <QColor>
 #include <QDateTime>
 #include <QList>
 #include <QMap>
 #include <QPair>
 #include <QVector>
-
-#include "qgis_sip.h"
-#include "qgis.h"
-#include "qgsmaplayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterviewport.h"
-#include "qgscontrastenhancement.h"
-#include "qgsabstractprofilesource.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;

@@ -14,16 +14,16 @@
  ***************************************************************************/
 
 #include "qgsmaptooldeletepart.h"
-#include "moc_qgsmaptooldeletepart.cpp"
 
 #include "qgsfeatureiterator.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsrubberband.h"
 #include "qgssnappingutils.h"
-#include "qgsmapmouseevent.h"
+#include "qgsvectorlayer.h"
 
+#include "moc_qgsmaptooldeletepart.cpp"
 
 /**
  * A filter to limit the matches to selected features, if a selection is present.

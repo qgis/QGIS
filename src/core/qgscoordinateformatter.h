@@ -18,9 +18,10 @@
 #ifndef QGSCOORDINATEFORMATTER_H
 #define QGSCOORDINATEFORMATTER_H
 
-#include <QString>
 #include "qgis_sip.h"
 #include "qgspointxy.h"
+
+#include <QString>
 
 /**
  * \ingroup core

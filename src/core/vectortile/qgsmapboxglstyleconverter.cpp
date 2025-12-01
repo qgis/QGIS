@@ -19,33 +19,35 @@
  */
 
 #include "qgsmapboxglstyleconverter.h"
-#include "moc_qgsmapboxglstyleconverter.cpp"
-#include "qgsvectortilebasicrenderer.h"
-#include "qgsvectortilebasiclabeling.h"
-#include "qgssymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgslogger.h"
+
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsblureffect.h"
+#include "qgseffectstack.h"
+#include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
-#include "qgslinesymbollayer.h"
+#include "qgsfontmanager.h"
 #include "qgsfontutils.h"
 #include "qgsjsonutils.h"
-#include "qgspainteffect.h"
-#include "qgseffectstack.h"
-#include "qgsblureffect.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgstextbackgroundsettings.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
-#include "qgsapplication.h"
-#include "qgsfontmanager.h"
-#include "qgis.h"
-#include "qgsrasterlayer.h"
+#include "qgslinesymbollayer.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgspainteffect.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterpipe.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextbackgroundsettings.h"
+#include "qgsvectortilebasiclabeling.h"
+#include "qgsvectortilebasicrenderer.h"
 
 #include <QBuffer>
 #include <QRegularExpression>
+
+#include "moc_qgsmapboxglstyleconverter.cpp"
 
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
 {

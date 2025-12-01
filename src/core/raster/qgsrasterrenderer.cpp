@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsrasterrenderer.h"
-#include "qgsrastertransparency.h"
+
+#include <memory>
 
 #include "qgscolorutils.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsrastertransparency.h"
 #include "qgssldexportcontext.h"
 
 #include <QCoreApplication>
@@ -27,7 +29,6 @@
 #include <QDomElement>
 #include <QImage>
 #include <QPainter>
-#include <memory>
 
 // See #9101 before any change of NODATA_COLOR!
 const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );

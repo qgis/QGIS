@@ -16,7 +16,7 @@
 #define QGSBACKGROUNDCACHEDFEATURESOURCE_H
 
 #include "qgsfeatureiterator.h"
-#include "qgsfeaturerequest.h" // QgsFeatureRequest, QgsAbstractFeatureSource
+#include "qgsfeaturerequest.h"
 
 class QgsBackgroundCachedSharedData;
 

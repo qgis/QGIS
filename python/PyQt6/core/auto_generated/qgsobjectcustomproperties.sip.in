@@ -10,6 +10,7 @@
 
 
 
+
 class QgsObjectCustomProperties
 {
 %Docstring(signature="appended")

@@ -18,13 +18,13 @@
 
 #include <memory>
 
-#include <QPointer>
-
 #include "qgis_app.h"
-#include "qgsmaptooladvanceddigitizing.h"
 #include "qgsgeometry.h"
+#include "qgsmaptooladvanceddigitizing.h"
 #include "qgspointlocator.h"
-#include "qobjectuniqueptr.h"
+
+#include <QPointer>
+#include <qobjectuniqueptr.h>
 
 class QRubberBand;
 

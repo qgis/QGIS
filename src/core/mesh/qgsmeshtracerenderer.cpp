@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgsmeshtracerenderer.h"
-#include "qgsmeshlayerrenderer.h"
-#include "qgsrendercontext.h"
+
+#include <memory>
+
 #include "qgslinestring.h"
 #include "qgsmeshlayerinterpolator.h"
+#include "qgsmeshlayerrenderer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsrastershader.h"
+#include "qgsrendercontext.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 
 #include <QPointer>
-#include <memory>
 
 ///@cond PRIVATE
 

@@ -18,12 +18,12 @@
 #ifndef QGSRASTERRENDERERWIDGET_H
 #define QGSRASTERRENDERERWIDGET_H
 
-#include "qgsrectangle.h"
-#include "qgscontrastenhancement.h"
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgscontrastenhancement.h"
+#include "qgsrectangle.h"
 
 #include <QWidget>
-#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsRasterRenderer;

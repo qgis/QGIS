@@ -15,26 +15,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssettings.h"
+#include "qgsconfig.h"
 #include "qgscptcityarchive.h"
-#include "moc_qgscptcityarchive.cpp"
+
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
-#include "qgsconfig.h"
 #include "qgsmimedatautils.h"
-#include "qgsapplication.h"
+#include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 
 #include <QApplication>
 #include <QDateTime>
 #include <QDir>
-#include <QFileInfo>
-#include <QVector>
-#include <QStyle>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QFileInfo>
 #include <QRegularExpression>
+#include <QStyle>
+#include <QVector>
+
+#include "moc_qgscptcityarchive.cpp"
 
 typedef QMap< QString, QgsCptCityArchive * > ArchiveRegistry;
 typedef QMap< QString, QMap< QString, QString > > CopyingInfoMap;

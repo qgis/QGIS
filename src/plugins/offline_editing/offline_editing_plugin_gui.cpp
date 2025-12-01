@@ -17,21 +17,22 @@
  ***************************************************************************/
 
 #include "offline_editing_plugin_gui.h"
-#include "moc_offline_editing_plugin_gui.cpp"
 
+#include "qgsapplication.h"
+#include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsgui.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_offline_editing_plugin_gui.cpp"
 
 QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )

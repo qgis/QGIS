@@ -14,28 +14,29 @@
  ***************************************************************************/
 #include "qgsdiagramrenderer.h"
 
-#include "qgscolorutils.h"
-#include "qgsdatadefinedsizelegend.h"
-#include "diagram/qgstextdiagram.h"
-#include "diagram/qgspiediagram.h"
+#include <memory>
+
 #include "diagram/qgshistogramdiagram.h"
+#include "diagram/qgspiediagram.h"
 #include "diagram/qgsstackedbardiagram.h"
 #include "diagram/qgsstackeddiagram.h"
-#include "qgsrendercontext.h"
-#include "qgslayertreemodellegendnode.h"
-#include "qgsfontutils.h"
-#include "qgssymbollayerutils.h"
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
+#include "diagram/qgstextdiagram.h"
 #include "qgsapplication.h"
+#include "qgscolorutils.h"
+#include "qgsdatadefinedsizelegend.h"
+#include "qgsfontutils.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
-#include "qgsunittypes.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
+#include "qgsrendercontext.h"
 #include "qgsscaleutils.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
 #include <QDomElement>
 #include <QPainter>
-#include <memory>
 
 QgsPropertiesDefinition QgsDiagramLayerSettings::sPropertyDefinitions;
 

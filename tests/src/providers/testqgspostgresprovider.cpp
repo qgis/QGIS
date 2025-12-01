@@ -12,15 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsconfig.h"
+
+#include "qgsfields.h"
+#include "qgspostgresconn.h"
+#include "qgspostgresprovider.h"
 #include "qgstest.h"
-#include "qgsconfig.h" // for ENABLE_PGTEST
+
 #include <QObject>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
-
-#include <qgspostgresprovider.h>
-#include <qgspostgresconn.h>
-#include <qgsfields.h>
 
 class TestQgsPostgresProvider : public QObject
 {

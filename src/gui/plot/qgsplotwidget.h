@@ -18,11 +18,11 @@
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsnumericformat.h"
 #include "qgspanelwidget.h"
 #include "qgsplot.h"
 #include "qgspropertycollection.h"
 #include "qgspropertyoverridebutton.h"
-#include "qgsnumericformat.h"
 
 #include <QWidget>
 

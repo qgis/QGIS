@@ -16,23 +16,23 @@
  ***************************************************************************/
 
 #include "qgsplot.h"
-#include "qgscolorramp.h"
-#include "qgscolorrampimpl.h"
-#include "qgsmarkersymbol.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsfillsymbollayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgstextrenderer.h"
-#include "qgsbasicnumericformat.h"
-#include "qgssymbollayerutils.h"
-#include "qgsapplication.h"
-#include "qgsnumericformatregistry.h"
-#include "qgsexpressioncontextutils.h"
 
 #include <functional>
 
+#include "qgsapplication.h"
+#include "qgsbasicnumericformat.h"
+#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsnumericformatregistry.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextrenderer.h"
 
 QgsPropertiesDefinition QgsPlot::sPropertyDefinitions;
 

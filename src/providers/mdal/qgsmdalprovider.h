@@ -16,15 +16,15 @@
 #ifndef QGSMDALPROVIDER_H
 #define QGSMDALPROVIDER_H
 
-#include <QString>
-#include <QVector>
-#include <QStringList>
-
 #include <mdal.h>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsprovidermetadata.h"
+
+#include <QString>
+#include <QStringList>
+#include <QVector>
 
 class QMutex;
 class QgsCoordinateTransform;

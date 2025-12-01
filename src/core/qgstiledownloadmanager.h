@@ -20,14 +20,13 @@
 
 #define SIP_NO_FILE
 
-#include <QTimer>
-#include <QThread>
-#include <QMutex>
+#include "qgis_core.h"
 
+#include <QMutex>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-
-#include "qgis_core.h"
+#include <QThread>
+#include <QTimer>
 
 class QgsTileDownloadManager;
 class QgsRangeRequestCache;

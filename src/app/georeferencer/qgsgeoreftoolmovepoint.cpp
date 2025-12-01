@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmapcanvas.h"
-#include "qgsmapmouseevent.h"
 #include "qgsgeoreftoolmovepoint.h"
 
 #include <memory>
+
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgssnappingutils.h"
+
 #include "moc_qgsgeoreftoolmovepoint.cpp"
 
 QgsGeorefToolMovePoint::QgsGeorefToolMovePoint( QgsMapCanvas *canvas )

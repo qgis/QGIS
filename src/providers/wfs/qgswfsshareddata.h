@@ -15,12 +15,11 @@
 #ifndef QGSWFSSHAREDDATA_H
 #define QGSWFSSHAREDDATA_H
 
-#include "qgswfsrequest.h"
-#include "qgswfscapabilities.h"
-#include "qgsogcutils.h"
-
-#include "qgsbackgroundcachedshareddata.h"
 #include "qgsbackgroundcachedfeatureiterator.h"
+#include "qgsbackgroundcachedshareddata.h"
+#include "qgsogcutils.h"
+#include "qgswfscapabilities.h"
+#include "qgswfsrequest.h"
 
 class QgsFeatureDownloaderImpl;
 class QgsGmlStreamingParser;

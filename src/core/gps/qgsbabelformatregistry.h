@@ -16,10 +16,10 @@
 #ifndef QGSBABELFORMATREGISTRY_H
 #define QGSBABELFORMATREGISTRY_H
 
-#include "qgis_core.h"
-#include "qgssettingstree.h"
-#include "qgssettingsentryimpl.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
 
 class QgsBabelSimpleImportFormat;
 class QgsBabelGpsDeviceFormat;

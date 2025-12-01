@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgsfeaturedownloaderprogresstask.h"
-#include "moc_qgsfeaturedownloaderprogresstask.cpp"
 
 #include "qgsapplication.h"
 
 #include <QThreadPool>
+
+#include "moc_qgsfeaturedownloaderprogresstask.cpp"
 
 QgsFeatureDownloaderProgressTask::QgsFeatureDownloaderProgressTask( const QString &description, long long totalCount )
   : QgsTask( description, QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )

@@ -15,8 +15,9 @@
 
 #include "qgspointcloudrendererregistry.h"
 #include "qgstest.h"
-#include <QString>
+
 #include <QSignalSpy>
+#include <QString>
 
 //qgis includes...
 #include "qgis.h"

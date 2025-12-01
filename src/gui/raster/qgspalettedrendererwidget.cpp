@@ -16,23 +16,25 @@
  ***************************************************************************/
 
 #include "qgspalettedrendererwidget.h"
-#include "moc_qgspalettedrendererwidget.cpp"
-#include "qgspalettedrasterrenderer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterlayer.h"
+
 #include "qgscolordialog.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
 #include "qgscolorrampimpl.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
+#include "qgspalettedrasterrenderer.h"
+#include "qgsproject.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgssettings.h"
 
 #include <QColorDialog>
-#include <QInputDialog>
 #include <QFileDialog>
-#include <QMessageBox>
+#include <QInputDialog>
 #include <QMenu>
+#include <QMessageBox>
 #include <QMimeData>
 #include <QTextStream>
+
+#include "moc_qgspalettedrendererwidget.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

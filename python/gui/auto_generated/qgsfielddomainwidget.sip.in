@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsFieldDomainWidget : QWidget
 {
 %Docstring(signature="appended")

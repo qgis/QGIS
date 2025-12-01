@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewhttpconnection.h"
-#include "moc_qgsnewhttpconnection.cpp"
-#include "qgsauthsettingswidget.h"
-#include "qgssettings.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
+
 #include "fromencodedcomponenthelper.h"
+#include "qgsauthsettingswidget.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsowsconnection.h"
-#include "qgssettingsentryimpl.h"
+#include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QMessageBox>
-#include <QUrl>
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QUrl>
 #include <QUrlQuery>
+
+#include "moc_qgsnewhttpconnection.cpp"
 
 const QgsSettingsEntryBool *QgsNewHttpConnection::settingsIgnoreReportedLayerExtentsDefault = new QgsSettingsEntryBool( QStringLiteral( "ignore-reported-layer-extents-default" ), sTreeHttpConnectionDialog, false );
 

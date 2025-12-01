@@ -13,31 +13,34 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsoapifprovider.h"
+
+#include <algorithm>
+
 #include "qgsbackgroundcachedfeatureiterator.h"
 #include "qgsbackgroundcachedfeaturesource.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsoapifprovider.h"
-#include "moc_qgsoapifprovider.cpp"
-#include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifapirequest.h"
 #include "qgsoapifcollection.h"
 #include "qgsoapifconformancerequest.h"
 #include "qgsoapifcreatefeaturerequest.h"
 #include "qgsoapifdeletefeaturerequest.h"
+#include "qgsoapifitemsrequest.h"
+#include "qgsoapiflandingpagerequest.h"
+#include "qgsoapifoptionsrequest.h"
 #include "qgsoapifpatchfeaturerequest.h"
 #include "qgsoapifputfeaturerequest.h"
-#include "qgsoapifitemsrequest.h"
-#include "qgsoapifoptionsrequest.h"
 #include "qgsoapifqueryablesrequest.h"
 #include "qgsoapifschemarequest.h"
-#include "qgsoapifsingleitemrequest.h"
 #include "qgsoapifshareddata.h"
+#include "qgsoapifsingleitemrequest.h"
 #include "qgsoapifutils.h"
 #include "qgswfsconstants.h"
 
-#include <algorithm>
 #include <QIcon>
+
+#include "moc_qgsoapifprovider.cpp"
 
 const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = QStringLiteral( "OAPIF" );
 const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = QStringLiteral( "OGC API - Features data provider" );

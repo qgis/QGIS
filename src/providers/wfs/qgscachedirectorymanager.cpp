@@ -13,11 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscachedirectorymanager.h"
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgscachedirectorymanager.h"
-#include "moc_qgscachedirectorymanager.cpp"
 #include "qgssettings.h"
+
+#include "moc_qgscachedirectorymanager.cpp"
 
 // 1 minute
 #define KEEP_ALIVE_DELAY ( 60 * 1000 )

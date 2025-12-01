@@ -14,22 +14,23 @@
  ***************************************************************************/
 
 #include "qgsdecorationtitledialog.h"
-#include "moc_qgsdecorationtitledialog.cpp"
-#include "qgsdecorationtitle.h"
 
 #include "qgisapp.h"
+#include "qgsdecorationtitle.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressionfinder.h"
+#include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
-#include "qgsgui.h"
-#include "qgsexpressionfinder.h"
 
-#include <QColorDialog>
 #include <QColor>
-#include <QFont>
+#include <QColorDialog>
 #include <QDialogButtonBox>
+#include <QFont>
 #include <QPushButton>
+
+#include "moc_qgsdecorationtitledialog.cpp"
 
 QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QWidget *parent )
   : QDialog( parent )

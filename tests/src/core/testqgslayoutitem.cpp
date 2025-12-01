@@ -15,30 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayoutitem.h"
-#include "qgslayoutitemregistry.h"
-#include "qgslayout.h"
-#include "qgstest.h"
-#include "qgsproject.h"
-#include "qgsreadwritecontext.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutitemshape.h"
-#include "qgslayouteffect.h"
-#include "qgsfillsymbollayer.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutundostack.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfillsymbol.h"
-#include "qgslayoutrendercontext.h"
-
-#include <QObject>
-#include <QPainter>
-#include <QImage>
-#include <QtTest/QSignalSpy>
 #include <memory>
 
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslayout.h"
+#include "qgslayouteffect.h"
+#include "qgslayoutitem.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutundostack.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QImage>
+#include <QObject>
+#include <QPainter>
+#include <QtTest/QSignalSpy>
 
 //simple item for testing, since some methods in QgsLayoutItem are pure virtual
 class TestItem : public QgsLayoutItem

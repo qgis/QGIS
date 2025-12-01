@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include "qgsdebugtexturerenderview.h"
-#include <Qt3DRender/QLayerFilter>
-#include <Qt3DRender/QLayer>
-#include <Qt3DRender/qsubtreeenabler.h>
-#include <Qt3DRender/QRenderStateSet>
-#include <Qt3DRender/QDepthTest>
-#include <Qt3DRender/QCullFace>
 
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QLayer>
+#include <Qt3DRender/QLayerFilter>
+#include <Qt3DRender/QRenderStateSet>
+#include <Qt3DRender/qsubtreeenabler.h>
 
 QgsDebugTextureRenderView::QgsDebugTextureRenderView( const QString &viewName )
   : QgsAbstractRenderView( viewName )

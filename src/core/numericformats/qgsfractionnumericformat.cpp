@@ -15,13 +15,16 @@
  ***************************************************************************/
 
 #include "qgsfractionnumericformat.h"
-#include "qgis.h"
-#include <QString>
+
 #include <memory>
 #include <iostream>
 #include <locale>
 #include <sstream>
 #include <iomanip>
+
+#include "qgis.h"
+
+#include <QString>
 
 ///@cond PRIVATE
 

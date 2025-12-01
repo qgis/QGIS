@@ -16,19 +16,20 @@
  ***************************************************************************/
 
 #include "qgsannotationrectitem.h"
-#include "qgsapplication.h"
-#include "qgsgeometry.h"
-#include "qgsrendercontext.h"
-#include "qgsannotationitemnode.h"
+
 #include "qgsannotationitemeditoperation.h"
-#include "qgspainting.h"
-#include "qgsfillsymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgsfillsymbollayer.h"
-#include "qgslinesymbollayer.h"
+#include "qgsannotationitemnode.h"
+#include "qgsapplication.h"
 #include "qgscalloutsregistry.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometry.h"
 #include "qgslinestring.h"
+#include "qgslinesymbollayer.h"
+#include "qgspainting.h"
 #include "qgspolygon.h"
+#include "qgsrendercontext.h"
+#include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
 QgsAnnotationRectItem::QgsAnnotationRectItem( const QgsRectangle &bounds )

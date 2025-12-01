@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmremovepartsbyarea.h"
+
 #include "qgsgeometrycollection.h"
 #include "qgssurface.h"
 

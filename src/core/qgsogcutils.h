@@ -21,9 +21,11 @@ class QDomElement;
 class QDomDocument;
 class QString;
 
+#include <list>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <list>
+
 #include <QVector>
 
 class QgsExpression;

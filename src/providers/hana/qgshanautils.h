@@ -17,14 +17,14 @@
 #ifndef QGSHANAUTILS_H
 #define QGSHANAUTILS_H
 
+#include <odbc/Types.h>
+
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"
 #include "qgswkbtypes.h"
 
 #include <QVariant>
 #include <QVersionNumber>
-
-#include "odbc/Types.h"
 
 class QgsHanaUtils
 {

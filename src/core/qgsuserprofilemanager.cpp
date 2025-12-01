@@ -14,19 +14,21 @@
  ***************************************************************************/
 
 #include "qgsuserprofilemanager.h"
-#include "moc_qgsuserprofilemanager.cpp"
-#include "qgsuserprofile.h"
+
+#include <memory>
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsuserprofile.h"
 
-#include <QFile>
 #include <QDir>
-#include <QTextStream>
+#include <QFile>
 #include <QProcess>
 #include <QStandardPaths>
-#include <memory>
+#include <QTextStream>
 
+#include "moc_qgsuserprofilemanager.cpp"
 
 QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObject *parent )
   : QObject( parent )

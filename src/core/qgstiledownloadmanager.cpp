@@ -16,20 +16,22 @@
  ***************************************************************************/
 
 #include "qgstiledownloadmanager.h"
-#include "moc_qgstiledownloadmanager.cpp"
+
+#include <memory>
 
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrangerequestcache.h"
 #include "qgssettings.h"
-#include "qgssettingsregistrycore.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QElapsedTimer>
 #include <QNetworkReply>
-#include <QStandardPaths>
 #include <QRegularExpression>
-#include <memory>
+#include <QStandardPaths>
+
+#include "moc_qgstiledownloadmanager.cpp"
 
 /// @cond PRIVATE
 

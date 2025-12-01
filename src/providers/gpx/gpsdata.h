@@ -19,16 +19,16 @@
 #define GPSDATA_H
 
 #include <limits>
-
 #include <expat.h>
+
+#include "qgsfeatureid.h"
+#include "qgsrectangle.h"
+
 #include <QDateTime>
+#include <QMutex>
+#include <QStack>
 #include <QString>
 #include <QTextStream>
-#include <QStack>
-#include <QMutex>
-
-#include "qgsrectangle.h"
-#include "qgsfeatureid.h"
 
 // workaround for MSVC compiler which already has defined macro max
 // that interferes with calling std::numeric_limits<int>::max

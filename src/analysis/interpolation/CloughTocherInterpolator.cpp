@@ -15,9 +15,10 @@
  ***************************************************************************/
 
 #include "CloughTocherInterpolator.h"
-#include "qgslogger.h"
+
 #include "MathUtils.h"
 #include "NormVecDecorator.h"
+#include "qgslogger.h"
 
 CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator *tin )
   : mTIN( tin )

@@ -14,13 +14,15 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshanatablemodel.h"
+
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
 #include "qgshanaprimarykeys.h"
-#include "qgshanatablemodel.h"
-#include "moc_qgshanatablemodel.cpp"
 #include "qgshanasettings.h"
 #include "qgslogger.h"
+
+#include "moc_qgshanatablemodel.cpp"
 
 QgsHanaTableModel::QgsHanaTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )

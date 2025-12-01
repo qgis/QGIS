@@ -14,6 +14,7 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsvertexid.h"
+
 #include "qgsabstractgeometry.h"
 
 bool QgsVertexId::isValid( const QgsAbstractGeometry *geom ) const

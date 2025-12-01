@@ -15,10 +15,10 @@
 #ifndef QGSPYTHONRUNNER_H
 #define QGSPYTHONRUNNER_H
 
-#include <QString>
+#include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include "qgis_core.h"
+#include <QString>
 
 /**
  * \ingroup core

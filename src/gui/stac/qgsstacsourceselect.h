@@ -17,14 +17,15 @@
 #define QGSSTACSOURCESELECT_H
 
 #include "ui_qgsstacsourceselectbase.h"
-#include "qgsabstractdatasourcewidget.h"
+
 #include "qgis_gui.h"
+#include "qgsabstractdatasourcewidget.h"
 #include "qgsmimedatautils.h"
-#include "qobjectuniqueptr.h"
 
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
 #include <QUrl>
+#include <qobjectuniqueptr.h>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

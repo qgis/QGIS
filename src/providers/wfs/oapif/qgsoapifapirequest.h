@@ -16,11 +16,11 @@
 #ifndef QGSOAPIFAPIREQUEST_H
 #define QGSOAPIFAPIREQUEST_H
 
-#include <QObject>
-
-#include "qgsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
 #include "qgslayermetadata.h"
+
+#include <QObject>
 
 //! Manages the /api request
 class QgsOapifApiRequest : public QgsBaseNetworkRequest

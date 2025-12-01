@@ -12,18 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QStringList>
-
 #include "qgsmimedatautils.h"
 
 #include "qgslayertree.h"
 #include "qgslogger.h"
-#include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsmeshlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
+#include <QStringList>
 
 static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 

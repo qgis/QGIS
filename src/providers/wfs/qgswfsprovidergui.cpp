@@ -15,13 +15,13 @@
 
 #include "qgswfsprovidergui.h"
 
-#include "qgsquerybuilder.h"
-#include "qgswfsprovider.h"
-#include "qgswfsdataitemguiprovider.h"
-#include "qgswfssourceselect.h"
-#include "qgssourceselectprovider.h"
 #include "qgsproviderguimetadata.h"
+#include "qgsquerybuilder.h"
+#include "qgssourceselectprovider.h"
 #include "qgssubsetstringeditorprovider.h"
+#include "qgswfsdataitemguiprovider.h"
+#include "qgswfsprovider.h"
+#include "qgswfssourceselect.h"
 #include "qgswfssubsetstringeditor.h"
 
 //! Provider for WFS layers source select

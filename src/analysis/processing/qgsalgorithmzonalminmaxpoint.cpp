@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmzonalminmaxpoint.h"
+
 #include "qgszonalstatistics.h"
 
 ///@cond PRIVATE

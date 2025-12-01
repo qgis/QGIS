@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmhubdistance.h"
+
 #include "qgsfeaturerequest.h"
 #include "qgsspatialindex.h"
 

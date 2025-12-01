@@ -9,6 +9,7 @@
 
 
 
+
 class QgsRasterLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")

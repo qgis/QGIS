@@ -17,13 +17,15 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
-#include <QElapsedTimer>
-#include <QVariant>
-#include <QColor>
-#include <QUrl>
 #include <memory>
 #include <deque>
+
+#include "qgis_gui.h"
+
+#include <QColor>
+#include <QElapsedTimer>
+#include <QUrl>
+#include <QVariant>
 
 class QAction;
 class QgsDevToolsModelGroup;

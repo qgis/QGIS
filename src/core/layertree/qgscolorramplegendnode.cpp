@@ -13,20 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscolorramplegendnode.h"
-#include "moc_qgscolorramplegendnode.cpp"
-#include "qgscolorrampimpl.h"
-#include "qgslegendsettings.h"
-#include "qgslayertreemodel.h"
-#include "qgslayertreelayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgstextrenderer.h"
-#include "qgsnumericformat.h"
 
-#include <QPalette>
+#include "qgsapplication.h"
+#include "qgscolorrampimpl.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslayertreelayer.h"
+#include "qgslayertreemodel.h"
+#include "qgslegendsettings.h"
+#include "qgsnumericformat.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextrenderer.h"
+
 #include <QBuffer>
+#include <QPalette>
+
+#include "moc_qgscolorramplegendnode.cpp"
 
 QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp, const QString &minimumLabel, const QString &maximumLabel, QObject *parent, const QString &key, const QString &parentKey )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )

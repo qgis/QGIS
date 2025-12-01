@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsoapifoptionsrequest.h"
+
 #include "moc_qgsoapifoptionsrequest.cpp"
 
 QgsOapifOptionsRequest::QgsOapifOptionsRequest( const QgsDataSourceUri &uri )

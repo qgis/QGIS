@@ -16,18 +16,20 @@
  ***************************************************************************/
 
 #include "qgsmssqldataitems.h"
-#include "moc_qgsmssqldataitems.cpp"
-#include "qgsmssqlconnection.h"
-#include "qgsmssqldatabase.h"
-#include "qgsmssqlutils.h"
-#include "qgsmssqlgeomcolumntypethread.h"
+
+#include "qgsdatasourceuri.h"
+#include "qgsfieldsitem.h"
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
-#include "qgsdatasourceuri.h"
-#include "qgssettings.h"
 #include "qgsmssqlconnection.h"
+#include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
+#include "qgsmssqlgeomcolumntypethread.h"
+#include "qgsmssqlutils.h"
 #include "qgsproject.h"
-#include "qgsfieldsitem.h"
+#include "qgssettings.h"
+
+#include "moc_qgsmssqldataitems.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"

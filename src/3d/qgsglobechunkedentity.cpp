@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsglobechunkedentity.h"
-#include "moc_qgsglobechunkedentity.cpp"
 
 #include <QByteArray>
 #include <QImage>
+
+#include "moc_qgsglobechunkedentity.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>

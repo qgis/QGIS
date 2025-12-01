@@ -15,17 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsmessagebaritem.h"
-#include "moc_qgsmessagebaritem.cpp"
-#include "qgsmessagebar.h"
+
+#include "qgsapplication.h"
 #include "qgsgui.h"
+#include "qgsmessagebar.h"
 #include "qgsnative.h"
+
+#include <QDesktopServices>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTextBrowser>
-#include <QDesktopServices>
-#include <QFileInfo>
+
+#include "moc_qgsmessagebaritem.cpp"
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )

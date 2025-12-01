@@ -16,12 +16,13 @@
 #ifndef QGSLAYERMETADATARESULTSMODEL_H
 #define QGSLAYERMETADATARESULTSMODEL_H
 
-#include <QAbstractTableModel>
-#include <QObject>
-#include <QThread>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsabstractlayermetadataprovider.h"
+
+#include <QAbstractTableModel>
+#include <QObject>
+#include <QThread>
 
 class QgsFeedback;
 

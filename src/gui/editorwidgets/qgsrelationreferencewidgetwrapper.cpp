@@ -15,12 +15,14 @@
 
 
 #include "qgsrelationreferencewidgetwrapper.h"
-#include "moc_qgsrelationreferencewidgetwrapper.cpp"
+
+#include "qgsattributeform.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsrelationreferencewidget.h"
-#include "qgsattributeform.h"
 #include "qgsvaluerelationfieldformatter.h"
+
+#include "moc_qgsrelationreferencewidgetwrapper.cpp"
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )

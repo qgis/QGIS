@@ -17,10 +17,10 @@
 #ifndef QGSELEVATIONPROFILEMANAGERDIALOG_H
 #define QGSELEVATIONPROFILEMANAGERDIALOG_H
 
+#include "ui_qgselevationprofilemanagerbase.h"
+
 #include <QItemDelegate>
 #include <QSortFilterProxyModel>
-
-#include "ui_qgselevationprofilemanagerbase.h"
 
 class QListWidgetItem;
 class QgsElevationProfile;

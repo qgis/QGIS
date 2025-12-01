@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "qgsauthconfigselectplugin.h"
+
 #include "qgiscustomwidgets.h"
 #include "qgsauthconfigselect.h"
-#include "qgsauthconfigselectplugin.h"
-#include "moc_qgsauthconfigselectplugin.cpp"
 
+#include "moc_qgsauthconfigselectplugin.cpp"
 
 QgsAuthConfigSelectPlugin::QgsAuthConfigSelectPlugin( QObject *parent )
   : QObject( parent )

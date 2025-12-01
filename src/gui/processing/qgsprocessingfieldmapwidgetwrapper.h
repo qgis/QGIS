@@ -18,10 +18,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingwidgetwrapper.h"
-#include "qgsprocessingparameterdefinitionwidget.h"
-
 #include "ui_qgsprocessingfieldsmappingpanelbase.h"
+
+#include "qgsprocessingparameterdefinitionwidget.h"
+#include "qgsprocessingwidgetwrapper.h"
 
 class QLineEdit;
 class QToolButton;

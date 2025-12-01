@@ -16,19 +16,22 @@
  ***************************************************************************/
 
 #include "qgsalllayersfeatureslocatorfilter.h"
-#include "moc_qgsalllayersfeatureslocatorfilter.cpp"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
+
+#include <memory>
+
+#include "qgisapp.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeatureaction.h"
 #include "qgsfeedback.h"
 #include "qgsiconutils.h"
-#include "qgisapp.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
 #include <QSpinBox>
-#include <memory>
+
+#include "moc_qgsalllayersfeatureslocatorfilter.cpp"
 
 QgsAllLayersFeaturesLocatorFilter::QgsAllLayersFeaturesLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

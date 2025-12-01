@@ -16,10 +16,10 @@
 #ifndef QGSLINESYMBOLLAYER_H
 #define QGSLINESYMBOLLAYER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgssymbollayer.h"
+#include "qgis_core.h"
 #include "qgsblanksegmentutils.h"
+#include "qgssymbollayer.h"
 
 #include <QPen>
 #include <QVector>

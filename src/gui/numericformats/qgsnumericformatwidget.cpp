@@ -14,18 +14,21 @@
  ***************************************************************************/
 
 #include "qgsnumericformatwidget.h"
-#include "moc_qgsnumericformatwidget.cpp"
-#include "qgsbasicnumericformat.h"
-#include "qgscurrencynumericformat.h"
-#include "qgspercentagenumericformat.h"
-#include "qgsbearingnumericformat.h"
-#include "qgsscientificnumericformat.h"
-#include "qgsfractionnumericformat.h"
-#include "qgscoordinatenumericformat.h"
-#include "qgsexpressionbasednumericformat.h"
-#include "qgsgui.h"
+
 #include "qgis.h"
+#include "qgsbasicnumericformat.h"
+#include "qgsbearingnumericformat.h"
+#include "qgscoordinatenumericformat.h"
+#include "qgscurrencynumericformat.h"
+#include "qgsexpressionbasednumericformat.h"
+#include "qgsfractionnumericformat.h"
+#include "qgsgui.h"
+#include "qgspercentagenumericformat.h"
+#include "qgsscientificnumericformat.h"
+
 #include <QDialogButtonBox>
+
+#include "moc_qgsnumericformatwidget.cpp"
 
 void QgsNumericFormatWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {

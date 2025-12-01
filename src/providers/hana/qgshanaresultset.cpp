@@ -14,19 +14,20 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshanaresultset.h"
+
+#include <odbc/Exception.h>
+#include <odbc/PreparedStatement.h>
+#include <odbc/Statement.h>
+#include <cstring>
+
 #include "qgshanadatatypes.h"
 #include "qgshanaexception.h"
-#include "qgshanaresultset.h"
 #include "qgshanautils.h"
-#include "qgsvariantutils.h"
 #include "qgslogger.h"
+#include "qgsvariantutils.h"
+
 #include <QString>
-
-#include "odbc/Exception.h"
-#include "odbc/PreparedStatement.h"
-#include "odbc/Statement.h"
-
-#include <cstring>
 
 using namespace NS_ODBC;
 

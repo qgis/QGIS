@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtruncatetable.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

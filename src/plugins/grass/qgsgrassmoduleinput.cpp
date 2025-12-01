@@ -14,10 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
+#include "qgsgrass.h"
+#include "qgsgrassmodule.h"
+#include "qgsgrassmoduleparam.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrassvector.h"
+#include "qgslogger.h"
+
 #include <QCompleter>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QHBoxLayout>
+#include <QHeaderView>
 #include <QIcon>
 #include <QLatin1String>
 #include <QMessageBox>
@@ -27,16 +36,6 @@
 #include <QStandardItemModel>
 #include <QTreeView>
 #include <QVBoxLayout>
-#include <QHeaderView>
-
-#include "qgis.h"
-#include "qgslogger.h"
-
-#include "qgsgrass.h"
-#include "qgsgrassmodule.h"
-#include "qgsgrassmoduleparam.h"
-#include "qgsgrassplugin.h"
-#include "qgsgrassvector.h"
 
 extern "C"
 {

@@ -20,10 +20,9 @@
 #include "ui_qgssensorsettingswidgetbase.h"
 
 #include "qgis_app.h"
-#include "qgsdockwidget.h"
 #include "qgsabstractsensor.h"
+#include "qgsdockwidget.h"
 #include "qgspanelwidget.h"
-
 
 class QgsSensorModel;
 class QgsAbstractSensorWidget;

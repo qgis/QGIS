@@ -17,13 +17,12 @@
 
 #include "qgsguiutils.h"
 #include "qgsmapcanvas.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
-#include "qgssettingsentryimpl.h"
 
 #include <QToolTip>
-
 
 QgsSnapIndicator::QgsSnapIndicator( QgsMapCanvas *canvas )
   : mCanvas( canvas )

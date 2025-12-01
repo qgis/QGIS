@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgssourcecache.h"
-#include "moc_qgssourcecache.cpp"
-#include "qgsabstractcontentcache_p.h"
+
+#include <memory>
 
 #include "qgis.h"
+#include "qgsabstractcontentcache_p.h"
 #include "qgslogger.h"
 
-#include <QFile>
 #include <QBuffer>
+#include <QFile>
 #include <QTemporaryDir>
-#include <memory>
+
+#include "moc_qgssourcecache.cpp"
 
 ///@cond PRIVATE
 

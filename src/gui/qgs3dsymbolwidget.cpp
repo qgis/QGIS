@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgs3dsymbolwidget.h"
-#include "moc_qgs3dsymbolwidget.cpp"
-#include "qgsapplication.h"
+
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
+#include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include <QVBoxLayout>
+
 #include <QDialogButtonBox>
+#include <QVBoxLayout>
+
+#include "moc_qgs3dsymbolwidget.cpp"
 
 Qgs3DSymbolWidget::Qgs3DSymbolWidget( QWidget *parent )
   : QWidget( parent )

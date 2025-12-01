@@ -13,6 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdatetimeedit.h"
+
+#include "qgsapplication.h"
+#include "qgsvariantutils.h"
+
 #include <QAction>
 #include <QCalendarWidget>
 #include <QLineEdit>
@@ -20,13 +25,7 @@
 #include <QStyle>
 #include <QStyleOptionSpinBox>
 
-
-#include "qgsdatetimeedit.h"
 #include "moc_qgsdatetimeedit.cpp"
-
-#include "qgsapplication.h"
-#include "qgsvariantutils.h"
-
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )

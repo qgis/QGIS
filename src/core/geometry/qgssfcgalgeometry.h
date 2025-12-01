@@ -26,9 +26,10 @@ SIP_IF_MODULE( HAVE_SFCGAL_SIP )
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
-#include "qgspoint.h"
 #include "qgslinestring.h"
+#include "qgspoint.h"
 #include "qgssfcgalengine.h"
+
 #include <QtGui/qmatrix4x4.h>
 
 /**

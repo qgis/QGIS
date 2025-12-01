@@ -16,16 +16,17 @@
 #ifndef QGSLAYOUTITEMGUIREGISTRY_H
 #define QGSLAYOUTITEMGUIREGISTRY_H
 
+#include <functional>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsapplication.h"
-#include "qgspathresolver.h"
+#include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
-#include <QGraphicsItem> //for QGraphicsItem::UserType
-#include <QIcon>
-#include <functional>
+#include "qgspathresolver.h"
 
-#include "qgslayoutitem.h" // temporary
+#include <QGraphicsItem>
+#include <QIcon>
 
 class QgsLayout;
 class QgsLayoutView;

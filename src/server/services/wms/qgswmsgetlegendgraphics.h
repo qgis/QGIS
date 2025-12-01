@@ -19,7 +19,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayertreemodel.h"
-
 #include "qgswmsrendercontext.h"
 
 namespace QgsWms

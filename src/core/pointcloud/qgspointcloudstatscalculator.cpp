@@ -16,22 +16,20 @@
  ***************************************************************************/
 
 #include "qgspointcloudstatscalculator.h"
-#include "moc_qgspointcloudstatscalculator.cpp"
-
-#include "qgspointcloudstatistics.h"
-
-#include "qgspointcloudindex.h"
-#include "qgsmessagelog.h"
-#include "qgspointcloudattribute.h"
-#include "qgspointcloudrequest.h"
-
-#include "qgspointcloudrenderer.h"
 
 #include "qgsfeedback.h"
+#include "qgsmessagelog.h"
+#include "qgspointcloudattribute.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudrequest.h"
+#include "qgspointcloudstatistics.h"
 
 #include <QQueue>
 #include <QtConcurrent/QtConcurrentMap>
+
+#include "moc_qgspointcloudstatscalculator.cpp"
 
 struct StatsProcessor
 {

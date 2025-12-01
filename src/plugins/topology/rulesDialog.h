@@ -18,12 +18,12 @@
 #ifndef RULESDIALOG_H_
 #define RULESDIALOG_H_
 
+#include "ui_rulesDialog.h"
+
+#include "topolTest.h"
+
 #include <QDialog>
 #include <QMenu>
-
-
-#include "ui_rulesDialog.h"
-#include "topolTest.h"
 
 class QgisInterface;
 class QgsProject;

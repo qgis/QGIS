@@ -16,10 +16,11 @@
 #ifndef QGSMULTIEDITTOOLBUTTON_H
 #define QGSMULTIEDITTOOLBUTTON_H
 
-#include "qgsfields.h"
-#include "qgis_sip.h"
-#include <QToolButton>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsfields.h"
+
+#include <QToolButton>
 
 /**
  * \ingroup gui

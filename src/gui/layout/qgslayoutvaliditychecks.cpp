@@ -15,10 +15,12 @@
  ***************************************************************************/
 
 #include "qgslayoutvaliditychecks.h"
-#include "qgsvaliditycheckcontext.h"
-#include "qgslayoutitemscalebar.h"
+
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgsvaliditycheckcontext.h"
+
 #ifndef WITH_QTWEBKIT
 #include "qgslayoutmultiframe.h"
 #endif

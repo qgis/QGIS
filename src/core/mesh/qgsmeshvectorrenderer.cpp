@@ -16,18 +16,20 @@
  ***************************************************************************/
 
 #include "qgsmeshvectorrenderer.h"
-#include "qgsrendercontext.h"
-#include "qgsmaptopixel.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshtracerenderer.h"
-#include "qgsmeshutils.h"
 
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
-#include <QPen>
-#include <QPainter>
 #include <cmath>
+
+#include "qgsmaptopixel.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmeshtracerenderer.h"
+#include "qgsmeshutils.h"
+#include "qgsrendercontext.h"
+
+#include <QPainter>
+#include <QPen>
 
 ///@cond PRIVATE
 

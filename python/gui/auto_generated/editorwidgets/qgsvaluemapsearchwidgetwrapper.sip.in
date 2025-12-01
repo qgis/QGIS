@@ -9,6 +9,7 @@
 
 
 
+
 class QgsValueMapSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring(signature="appended")

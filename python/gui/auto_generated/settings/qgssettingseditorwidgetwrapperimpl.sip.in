@@ -11,8 +11,6 @@
 
 
 
-
-
 template<T,V,U>
 class QgsSettingsEditorWidgetWrapperTemplate : QgsSettingsEditorWidgetWrapper
 {

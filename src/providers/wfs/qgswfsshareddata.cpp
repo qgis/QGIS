@@ -14,15 +14,18 @@
  ***************************************************************************/
 
 #include "qgswfsshareddata.h"
-#include "moc_qgswfsshareddata.cpp"
+
+#include "qgsexpression.h"
+#include "qgsgml.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsogcutils.h"
 #include "qgswfsfeaturedownloaderimpl.h"
 #include "qgswfsprovider.h"
-#include "qgsgml.h"
-#include "qgsogcutils.h"
-#include "qgsexpression.h"
-#include "qgsmessagelog.h"
-#include "qgslogger.h"
+
 #include <QUrlQuery>
+
+#include "moc_qgswfsshareddata.cpp"
 
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   : QgsBackgroundCachedSharedData( "wfs", tr( "WFS" ) )

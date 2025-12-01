@@ -20,8 +20,9 @@
 #include "qgis_sip.h"
 #include "qgssettingsentryimpl.h"
 #include "qgstaskmanager.h"
-#include <QObject>
+
 #include <QMap>
+#include <QObject>
 #include <QReadWriteLock>
 #include <QSet>
 

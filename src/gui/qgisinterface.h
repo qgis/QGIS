@@ -18,14 +18,15 @@
 #ifndef QGISINTERFACE_H
 #define QGISINTERFACE_H
 
-#include <QObject>
 #include <map>
 
 #include "qgis.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslayertreeregistrybridge.h"
+
+#include <QObject>
 
 class QAction;
 class QDialog;

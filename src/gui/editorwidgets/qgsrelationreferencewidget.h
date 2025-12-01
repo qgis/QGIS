@@ -16,17 +16,17 @@
 #ifndef QGSRELATIONREFERENCEWIDGET_H
 #define QGSRELATIONREFERENCEWIDGET_H
 
-#include "qgsattributeeditorcontext.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgsfeature.h"
-#include "qobjectuniqueptr.h"
 
 #include <QComboBox>
-#include <QToolButton>
-#include <QLineEdit>
 #include <QHBoxLayout>
+#include <QLineEdit>
 #include <QStandardItemModel>
-#include "qgis_gui.h"
+#include <QToolButton>
+#include <qobjectuniqueptr.h>
 
 class QgsAttributeForm;
 class QgsVectorLayerTools;

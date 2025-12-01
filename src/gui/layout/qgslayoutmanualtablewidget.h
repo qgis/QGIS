@@ -22,8 +22,10 @@
 #define SIP_NO_FILE
 
 #include "ui_qgslayoutmanualtablewidgetbase.h"
+
 #include "qgslayoutitemwidget.h"
 #include "qgstableeditordialog.h"
+
 #include <QPointer>
 
 class QgsLayoutItemManualTable;

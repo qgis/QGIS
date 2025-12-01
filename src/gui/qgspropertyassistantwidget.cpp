@@ -19,19 +19,21 @@
 #include "qgspropertyassistantwidget.h"
 
 #include <memory>
-#include "moc_qgspropertyassistantwidget.cpp"
+
+#include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
+#include "qgslayertreelayer.h"
+#include "qgslinesymbol.h"
+#include "qgsmapsettings.h"
+#include "qgsmarkersymbol.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
-#include "qgsmapsettings.h"
-#include "qgsvectorlayer.h"
-#include "qgslayertreelayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsstyle.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
 #include "qgsstringutils.h"
-#include "qgsgui.h"
+#include "qgsstyle.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgspropertyassistantwidget.cpp"
 
 QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent, const QgsPropertyDefinition &definition, const QgsProperty &initialState, const QgsVectorLayer *layer )
   : QgsPanelWidget( parent )

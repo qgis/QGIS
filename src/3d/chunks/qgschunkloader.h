@@ -28,8 +28,8 @@
 //
 
 #include "qgis_3d.h"
-#include "qgschunkqueuejob.h"
 #include "qgsbox3d.h"
+#include "qgschunkqueuejob.h"
 
 #define SIP_NO_FILE
 

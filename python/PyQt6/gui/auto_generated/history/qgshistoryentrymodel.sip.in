@@ -10,6 +10,7 @@
 
 
 
+
 class QgsHistoryEntryModel : QAbstractItemModel
 {
 %Docstring(signature="appended")

@@ -16,13 +16,14 @@
 #include "qgsexpressionutils.h"
 
 #include <memory>
-#include "qgsvectorlayer.h"
+
 #include "qgscolorrampimpl.h"
-#include "qgsproviderregistry.h"
-#include "qgsvariantutils.h"
 #include "qgsproject.h"
-#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsproviderregistry.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 ///@cond PRIVATE
 

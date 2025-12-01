@@ -18,9 +18,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsgrouplayer.h"
 #include "qgslayertreenode.h"
 #include "qgsmaplayerref.h"
-#include "qgsgrouplayer.h"
 
 class QgsMapLayer;
 class QgsLayerTreeLayer;

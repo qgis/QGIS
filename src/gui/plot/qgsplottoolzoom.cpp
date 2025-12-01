@@ -18,11 +18,13 @@
 #include "qgsplottoolzoom.h"
 
 #include <memory>
-#include "moc_qgsplottoolzoom.cpp"
+
 #include "qgsapplication.h"
-#include "qgsplotmouseevent.h"
 #include "qgsplotcanvas.h"
+#include "qgsplotmouseevent.h"
 #include "qgsplotrubberband.h"
+
+#include "moc_qgsplottoolzoom.cpp"
 
 QgsPlotToolZoom::QgsPlotToolZoom( QgsPlotCanvas *canvas )
   : QgsPlotTool( canvas, tr( "Zoom" ) )

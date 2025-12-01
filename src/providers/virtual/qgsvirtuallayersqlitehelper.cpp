@@ -14,13 +14,14 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 
-#include <QString>
-#include <QVariant>
+#include "qgsvirtuallayersqlitehelper.h"
 
 #include <stdexcept>
 
-#include "qgsvirtuallayersqlitehelper.h"
 #include "qgslogger.h"
+
+#include <QString>
+#include <QVariant>
 
 QgsScopedSqlite::QgsScopedSqlite( const QString &path, bool withExtension )
 {

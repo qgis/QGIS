@@ -17,34 +17,36 @@
  ***************************************************************************/
 
 #include "qgsvertexeditor.h"
-#include "moc_qgsvertexeditor.cpp"
+
+#include <memory>
+
+#include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"
+#include "qgsdoublevalidator.h"
+#include "qgsgeometryutils.h"
+#include "qgslockedfeature.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
-#include "qgslockedfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometryutils.h"
-#include "qgsproject.h"
-#include "qgscoordinatetransform.h"
-#include "qgsdoublevalidator.h"
 #include "qgspanelwidgetstack.h"
+#include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgsvectorlayer.h"
 
-
-#include <QClipboard>
-#include <QLabel>
-#include <QTableWidget>
-#include <QHeaderView>
-#include <QVBoxLayout>
-#include <QStyledItemDelegate>
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QVector2D>
 #include <QCheckBox>
-#include <QStackedWidget>
+#include <QClipboard>
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMenu>
-#include <memory>
+#include <QStackedWidget>
+#include <QStyledItemDelegate>
+#include <QTableWidget>
+#include <QVBoxLayout>
+#include <QVector2D>
+
+#include "moc_qgsvertexeditor.cpp"
 
 const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( QStringLiteral( "auto-popup-vertex-editor-dock" ), QgsSettingsTree::sTreeDigitizing, true, QStringLiteral( "Whether the auto-popup behavior of the vertex editor dock should be enabled" ) );
 

@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 #include "qgsvectorelevationpropertieswidget.h"
-#include "moc_qgsvectorelevationpropertieswidget.cpp"
+
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 #include "qgsmaplayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsprojectionselectionwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsprojectionselectionwidget.h"
+
+#include "moc_qgsvectorelevationpropertieswidget.cpp"
 
 QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

@@ -18,20 +18,20 @@
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define DEFAULT_SCALE_METHOD              Qgis::ScaleMethod::ScaleDiameter
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgspropertycollection.h"
 #include "qgssymbolrendercontext.h"
 
 #include <QColor>
-#include <QMap>
-#include <QPointF>
-#include <QSet>
 #include <QDomDocument>
 #include <QDomElement>
-#include <QPainterPath>
 #include <QImage>
+#include <QMap>
+#include <QPainterPath>
+#include <QPointF>
+#include <QSet>
 
 class QPainter;
 class QSize;

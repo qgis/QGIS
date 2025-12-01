@@ -13,30 +13,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cmath>
-#include <QString>
-#include <QObject>
-#include <memory>
-
 #include "qgsdistancearea.h"
+
+#include <cmath>
+#include <memory>
+#include <geodesic.h>
+
 #include "qgis.h"
-#include "qgscurvepolygon.h"
-#include "qgspointxy.h"
-#include "qgscoordinatetransform.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgscurvepolygon.h"
+#include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsmultilinestring.h"
 #include "qgsmultisurface.h"
-#include "qgslinestring.h"
+#include "qgspointxy.h"
 #include "qgspolygon.h"
 #include "qgssurface.h"
 #include "qgsunittypes.h"
-#include "qgsexception.h"
-#include "qgsmultilinestring.h"
 
-#include <geodesic.h>
+#include <QObject>
+#include <QString>
 
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define RAD2DEG(r) (180.0 * (r) / M_PI)

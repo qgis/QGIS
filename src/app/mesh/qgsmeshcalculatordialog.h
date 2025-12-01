@@ -19,8 +19,9 @@
 #define QGSMESHCALCULATORDIALOG_H
 
 #include "ui_qgsmeshcalculatordialogbase.h"
-#include "qgsmeshcalculator.h"
+
 #include "qgis_app.h"
+#include "qgsmeshcalculator.h"
 
 class QgsMapCanvas;
 

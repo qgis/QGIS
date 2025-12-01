@@ -17,12 +17,12 @@
 #ifndef QGSUSERINPUTWIDGET_H
 #define QGSUSERINPUTWIDGET_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsfloatingwidget.h"
 
-#include <QMap>
 #include <QBoxLayout>
+#include <QMap>
 
 class QBoxLayout;
 class QFrame;

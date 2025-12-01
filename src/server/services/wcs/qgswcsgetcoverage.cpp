@@ -17,19 +17,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QTemporaryFile>
-
-#include "qgswcsutils.h"
-#include "qgsserverprojectutils.h"
 #include "qgswcsgetcoverage.h"
 
 #include "qgsproject.h"
-#include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterprojector.h"
-#include "qgsrasterfilewriter.h"
+#include "qgsserverprojectutils.h"
+#include "qgswcsutils.h"
 
+#include <QTemporaryFile>
 
 namespace QgsWcs
 {

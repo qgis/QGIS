@@ -15,16 +15,18 @@
  ***************************************************************************/
 
 #include "qgslayoutitemshape.h"
-#include "moc_qgslayoutitemshape.cpp"
-#include "qgslayout.h"
-#include "qgslayoututils.h"
-#include "qgssymbollayerutils.h"
-#include "qgslayoutmodel.h"
-#include "qgsstyleentityvisitor.h"
+
 #include "qgsfillsymbol.h"
+#include "qgslayout.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutrendercontext.h"
+#include "qgslayoututils.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
+
+#include "moc_qgslayoutitemshape.cpp"
 
 QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   : QgsLayoutItem( layout )

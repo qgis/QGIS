@@ -17,12 +17,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsfcgiserverrequest.h"
-#include "qgsserverlogger.h"
-#include "qgsmessagelog.h"
-#include "qgsstringutils.h"
+
 #include <fcgi_stdio.h>
+
+#include "qgis.h"
+#include "qgsmessagelog.h"
+#include "qgsserverlogger.h"
+#include "qgsstringutils.h"
+
 #include <QDebug>
 
 QgsFcgiServerRequest::QgsFcgiServerRequest()

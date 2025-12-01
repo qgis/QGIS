@@ -10,8 +10,6 @@
 
 
 
-
-
 class QgsAttributeForm : QWidget
 {
 %Docstring(signature="appended")

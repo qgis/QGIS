@@ -14,22 +14,24 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsgeos.h"
+
+#include <limits>
+#include <cstdio>
+#include <memory>
+
 #include "qgsabstractgeometry.h"
 #include "qgsgeometrycollection.h"
+#include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
+#include "qgsgeometryutils_base.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
 #include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
-#include "qgslogger.h"
 #include "qgspolygon.h"
-#include "qgsgeometryeditutils.h"
 #include "qgspolyhedralsurface.h"
-#include "qgsgeometryutils_base.h"
-#include <limits>
-#include <cstdio>
-#include <memory>
 
 #define DEFAULT_QUADRANT_SEGMENTS 8
 

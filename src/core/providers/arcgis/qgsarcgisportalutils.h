@@ -15,13 +15,13 @@
 #ifndef QGSARCGISPORTALUTILS_H
 #define QGSARCGISPORTALUTILS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgshttpheaders.h"
-#include "qgis.h"
 
-#include <QVariantMap>
 #include <QString>
+#include <QVariantMap>
 
 class QgsFeedback;
 

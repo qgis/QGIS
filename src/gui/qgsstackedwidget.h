@@ -18,8 +18,9 @@
 
 #define SIP_NO_FILE
 
-#include <QStackedWidget>
 #include "qgis_gui.h"
+
+#include <QStackedWidget>
 
 class QSize;
 

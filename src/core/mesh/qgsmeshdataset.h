@@ -18,18 +18,18 @@
 #ifndef QGSMESHDATASET_H
 #define QGSMESHDATASET_H
 
-#include <QVector>
-#include <QString>
-#include <QMap>
-#include <QPair>
-#include <QDateTime>
-#include <QDomElement>
-
 #include <limits>
 #include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QDateTime>
+#include <QDomElement>
+#include <QMap>
+#include <QPair>
+#include <QString>
+#include <QVector>
 
 class QgsMeshLayer;
 class QgsMeshDatasetGroup;

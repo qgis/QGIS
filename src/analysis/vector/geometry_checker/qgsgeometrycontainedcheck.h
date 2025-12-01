@@ -19,8 +19,8 @@
 #define QGS_GEOMETRY_COVER_CHECK_H
 
 #include "qgsgeometrycheck.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup analysis

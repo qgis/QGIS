@@ -16,40 +16,41 @@
  ***************************************************************************/
 
 #include "qgslayoutlegendwidget.h"
-#include "moc_qgslayoutlegendwidget.cpp"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutlegendlayersdialog.h"
-#include "qgslayoutitemwidget.h"
-#include "qgslayoutitemmap.h"
-#include "qgsguiutils.h"
-#include "qgslayoutdesignerinterface.h"
 
 #include "qgsapplication.h"
+#include "qgscolorramplegendnode.h"
+#include "qgscolorramplegendnodewidget.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfinder.h"
+#include "qgsguiutils.h"
 #include "qgslayertree.h"
-#include "qgslayertreeutils.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslayertreeutils.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutdesignerinterface.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemwidget.h"
+#include "qgslayoutlegendlayersdialog.h"
+#include "qgslayoutmeasurementconverter.h"
+#include "qgslayoutundostack.h"
 #include "qgslegendrenderer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgslayoutatlas.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutmeasurementconverter.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgscolorramplegendnodewidget.h"
-#include "qgssymbol.h"
-#include "qgslayoutundostack.h"
-#include "qgsexpressionfinder.h"
-#include "qgscolorramplegendnode.h"
 #include "qgspainting.h"
+#include "qgsrenderer.h"
+#include "qgssymbol.h"
+#include "qgsvectorlayer.h"
 
+#include <QActionGroup>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QInputDialog>
-#include <QActionGroup>
+
+#include "moc_qgslayoutlegendwidget.cpp"
 
 ///@cond PRIVATE
 

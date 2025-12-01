@@ -14,15 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QSignalSpy>
-#include <QTemporaryFile>
-
 #include "qgsdataitemguiprovider.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsgui.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
+
+#include <QSignalSpy>
+#include <QTemporaryFile>
 
 /**
  * \ingroup UnitTests

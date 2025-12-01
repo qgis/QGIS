@@ -18,32 +18,33 @@
 
 
 #include "qgsnewgeopackagelayerdialog.h"
-#include "moc_qgsnewgeopackagelayerdialog.cpp"
-
-#include "qgis.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgssettings.h"
-#include "qgshelp.h"
-#include "qgsogrutils.h"
-#include "qgsgui.h"
-#include "qgsproviderconnectionmodel.h"
-#include "qgsiconutils.h"
-#include "qgsvariantutils.h"
-
-#include <QPushButton>
-#include <QLineEdit>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QCompleter>
 
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
 #include <gdal_version.h>
 #include <cpl_error.h>
 #include <cpl_string.h>
+
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsiconutils.h"
+#include "qgsogrutils.h"
+#include "qgsproject.h"
+#include "qgsproviderconnectionmodel.h"
+#include "qgssettings.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+
+#include <QCompleter>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+
+#include "moc_qgsnewgeopackagelayerdialog.cpp"
 
 #define DEFAULT_OGR_FID_COLUMN_TITLE "fid" // default value from OGR
 

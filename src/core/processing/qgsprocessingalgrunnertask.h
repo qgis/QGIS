@@ -18,11 +18,11 @@
 #ifndef QGSPROCESSINGALGRUNNERTASK_H
 #define QGSPROCESSINGALGRUNNERTASK_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgstaskmanager.h"
-#include "qgsprocessingfeedback.h"
+#include "qgis_core.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsprocessingfeedback.h"
+#include "qgstaskmanager.h"
 
 class QgsProcessingContext;
 

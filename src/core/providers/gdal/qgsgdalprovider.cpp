@@ -17,7 +17,9 @@
  ***************************************************************************/
 
 #include "qgsgdalprovider.h"
+
 #include "moc_qgsgdalprovider.cpp"
+
 ///@cond PRIVATE
 
 #include "qgis.h"

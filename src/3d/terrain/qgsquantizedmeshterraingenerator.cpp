@@ -14,11 +14,15 @@
  ***************************************************************************/
 
 #include "qgsquantizedmeshterraingenerator.h"
-#include "moc_qgsquantizedmeshterraingenerator.cpp"
+
+#include "qgs3dmapsettings.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsapplication.h"
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeotransform.h"
+#include "qgsgltf3dutils.h"
 #include "qgslogger.h"
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayerutils.h"
@@ -27,6 +31,7 @@
 #include "qgsquantizedmeshdataprovider.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsrectangle.h"
+#include "qgsterrainentity.h"
 #include "qgsterraintileentity_p.h"
 #include "qgsterraintileloader.h"
 #include "qgstiledsceneindex.h"
@@ -34,20 +39,17 @@
 #include "qgstiledscenetile.h"
 #include "qgstiles.h"
 #include "qgstriangularmesh.h"
-#include "qgsgltf3dutils.h"
-#include "qgsterrainentity.h"
-#include "qgs3dmapsettings.h"
 #include "qgsvector3d.h"
-#include "qgsapplication.h"
-#include "qgsabstractterrainsettings.h"
 
 #include <QComponent>
 #include <QDiffuseSpecularMaterial>
 #include <QEntity>
-#include <QtGlobal>
 #include <QPhongMaterial>
-#include <QtConcurrentRun>
 #include <QTextureMaterial>
+#include <QtConcurrentRun>
+#include <QtGlobal>
+
+#include "moc_qgsquantizedmeshterraingenerator.cpp"
 
 ///@cond PRIVATE
 

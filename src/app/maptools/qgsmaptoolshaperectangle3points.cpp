@@ -15,15 +15,18 @@
 ***************************************************************************/
 
 #include "qgsmaptoolshaperectangle3points.h"
-#include "moc_qgsmaptoolshaperectangle3points.cpp"
+
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
-#include <memory>
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+#include "qgspoint.h"
+
+#include "moc_qgsmaptoolshaperectangle3points.cpp"
 
 const QString QgsMapToolShapeRectangle3PointsMetadata::TOOL_ID_DISTANCE = QStringLiteral( "rectangle-from-3-points-distance" );
 const QString QgsMapToolShapeRectangle3PointsMetadata::TOOL_ID_PROJECTED = QStringLiteral( "rectangle-from-3-points-projected" );

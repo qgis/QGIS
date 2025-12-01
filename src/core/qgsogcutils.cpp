@@ -14,31 +14,30 @@
  ***************************************************************************/
 #include "qgsogcutils.h"
 
-#include "qgsexpression.h"
-#include "qgsexpressionnodeimpl.h"
-#include "qgsexpressionfunction.h"
-#include "qgsexpression_p.h"
-#include "qgsgeometry.h"
-#include "qgswkbptr.h"
+#include <memory>
+#include <ogr_api.h>
+
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrectangle.h"
-#include "qgsvectorlayer.h"
+#include "qgsexpression.h"
+#include "qgsexpression_p.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfunction.h"
+#include "qgsexpressionnodeimpl.h"
+#include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsstringutils.h"
 #include "qgsmultipolygon.h"
-#include "qgspolygon.h"
 #include "qgsogrutils.h"
+#include "qgspolygon.h"
+#include "qgsrectangle.h"
+#include "qgsstringutils.h"
+#include "qgsvectorlayer.h"
+#include "qgswkbptr.h"
 
 #include <QColor>
-#include <QStringList>
-#include <QTextStream>
 #include <QObject>
 #include <QRegularExpression>
-#include <memory>
-
-
-#include "ogr_api.h"
+#include <QStringList>
+#include <QTextStream>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>

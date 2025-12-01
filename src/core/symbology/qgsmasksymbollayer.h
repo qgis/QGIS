@@ -16,8 +16,8 @@
 #ifndef QGSMASKSYMBOLLAYER_H
 #define QGSMASKSYMBOLLAYER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 class QgsPaintEffect;

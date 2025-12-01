@@ -16,11 +16,11 @@
 #ifndef QGSUSERPROFILESELECTIONDIALOG_H
 #define QGSUSERPROFILESELECTIONDIALOG_H
 
-#include <QDialog>
-#include <qgis_app.h>
-
 #include "ui_qgsuserprofileselectiondialog.h"
 
+#include "qgis_app.h"
+
+#include <QDialog>
 
 // Forward declarations
 class QgsUserProfileManager;

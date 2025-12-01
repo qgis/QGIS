@@ -16,12 +16,13 @@
 #ifndef QGSRECENTSTYLEHANDLER_H
 #define QGSRECENTSTYLEHANDLER_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
-#include "qgis.h"
-#include "qgssymbol.h"
 #include <unordered_map>
 #include <memory>
+
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgssymbol.h"
 
 class QgsSymbol;
 

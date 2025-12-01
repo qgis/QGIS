@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmkmeansclustering.h"
+
 #include <unordered_map>
 #include <random>
 

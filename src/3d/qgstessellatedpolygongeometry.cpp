@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgstessellatedpolygongeometry.h"
-#include "moc_qgstessellatedpolygongeometry.cpp"
+
 #include "qgsmessagelog.h"
 
 #include <QMatrix4x4>
+
+#include "moc_qgstessellatedpolygongeometry.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>

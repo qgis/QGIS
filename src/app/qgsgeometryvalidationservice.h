@@ -16,13 +16,13 @@ email                : matthias@opengis.ch
 #ifndef QGSGEOMETRYVALIDATIONSERVICE_H
 #define QGSGEOMETRYVALIDATIONSERVICE_H
 
-#include <QObject>
-#include <QMap>
-#include <QFuture>
-#include <QReadWriteLock>
-
 #include "qgsfeature.h"
 #include "qgsgeometrycheckcontext.h"
+
+#include <QFuture>
+#include <QMap>
+#include <QObject>
+#include <QReadWriteLock>
 
 class QgsProject;
 class QgsMapLayer;

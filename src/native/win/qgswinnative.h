@@ -18,11 +18,13 @@
 #ifndef QGSWINNATIVE_H
 #define QGSWINNATIVE_H
 
-#include "qgsnative.h"
-#include <QAbstractNativeEventFilter>
-
 #include <Windows.h>
 #include <ShlObj.h>
+
+#include "qgsnative.h"
+
+#include <QAbstractNativeEventFilter>
+
 #pragma comment( lib, "Shell32.lib" )
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )

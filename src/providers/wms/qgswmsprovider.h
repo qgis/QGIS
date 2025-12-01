@@ -20,19 +20,19 @@
 #ifndef QGSWMSPROVIDER_H
 #define QGSWMSPROVIDER_H
 
-#include "qgsrasterdataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkreplyparser.h"
-#include "qgswmscapabilities.h"
 #include "qgsprovidermetadata.h"
+#include "qgsrasterdataprovider.h"
+#include "qgswmscapabilities.h"
 
-#include <QString>
-#include <QStringList>
 #include <QDomElement>
 #include <QHash>
 #include <QMap>
-#include <QVector>
+#include <QString>
+#include <QStringList>
 #include <QUrl>
+#include <QVector>
 
 class QgsCoordinateTransform;
 class QgsNetworkAccessManager;

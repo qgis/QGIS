@@ -34,11 +34,11 @@ class QgsMapSettings;
 class QgsProject;
 class QgsRasterLayer;
 
-#include <QObject>
-#include <QSize>
-
 #include "qgschunknode.h"
 #include "qgsrectangle.h"
+
+#include <QObject>
+#include <QSize>
 
 class Qgs3DMapSettings;
 

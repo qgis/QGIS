@@ -14,22 +14,25 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetablewidget.h"
-#include "moc_qgsrasterattributetablewidget.cpp"
-#include "qgsrasterattributetable.h"
-#include "qgsrasterlayer.h"
+
+#include <memory>
+
 #include "qgsapplication.h"
-#include "qgsmessagebar.h"
-#include "qgsrasterattributetableaddcolumndialog.h"
-#include "qgsrasterattributetableaddrowdialog.h"
 #include "qgscolorbutton.h"
 #include "qgsgradientcolorrampdialog.h"
+#include "qgsmessagebar.h"
+#include "qgsrasterattributetable.h"
+#include "qgsrasterattributetableaddcolumndialog.h"
+#include "qgsrasterattributetableaddrowdialog.h"
+#include "qgsrasterlayer.h"
 
-#include <QToolBar>
 #include <QAction>
-#include <QSortFilterProxyModel>
-#include <QMessageBox>
 #include <QFileDialog>
-#include <memory>
+#include <QMessageBox>
+#include <QSortFilterProxyModel>
+#include <QToolBar>
+
+#include "moc_qgsrasterattributetablewidget.cpp"
 
 QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, QgsRasterLayer *rasterLayer, const int bandNumber )
   : QgsPanelWidget( parent )

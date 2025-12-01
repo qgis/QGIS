@@ -14,15 +14,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaptopixelgeometrysimplifier.h"
+
 #include <limits>
 #include <memory>
 
-#include "qgsmaptopixelgeometrysimplifier.h"
-#include "qgsrectangle.h"
 #include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
-#include "qgsgeometrycollection.h"
+#include "qgsrectangle.h"
 #include "qgsvertexid.h"
 
 QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, Qgis::VectorSimplificationAlgorithm simplifyAlgorithm )

@@ -13,22 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssettings.h"
-#include "qgsbrowserguimodel.h"
 #include "qgsbrowsertreeview.h"
-#include "moc_qgsbrowsertreeview.cpp"
-#include "qgslogger.h"
-#include "qgsguiutils.h"
+
+#include "qgsbrowserguimodel.h"
 #include "qgsdataitem.h"
 #include "qgsdirectoryitem.h"
-#include "qgsfileutils.h"
 #include "qgsfavoritesitem.h"
+#include "qgsfileutils.h"
+#include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
 
-#include <QKeyEvent>
-#include <QSortFilterProxyModel>
 #include <QDir>
 #include <QFileInfo>
+#include <QKeyEvent>
 #include <QRegularExpression>
+#include <QSortFilterProxyModel>
+
+#include "moc_qgsbrowsertreeview.cpp"
 
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )

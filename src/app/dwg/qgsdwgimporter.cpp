@@ -17,33 +17,7 @@
 
 #include "qgsdwgimporter.h"
 
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "libdwgr.h"
-#include "libdxfrw.h"
-#include "qgis.h"
-#include "qgspoint.h"
-#include "qgslinestring.h"
-#include "qgscircularstring.h"
-#include "qgscurvepolygon.h"
-#include "qgscompoundcurve.h"
-#include "qgspolygon.h"
-#include "qgsgeometry.h"
-#include "qgsogrutils.h"
-#include "qgscoordinatereferencesystem.h"
-
-#include <QString>
-#include <QStringList>
-#include <QFileInfo>
-#include <QVector>
-#include <QTransform>
-#include <QLabel>
-#include <QTextCodec>
-#include <QRegularExpression>
-#include <QTextStream>
-
 #include <typeinfo>
-
 #include <cpl_port.h>
 #include <cpl_error.h>
 #include <cpl_string.h>
@@ -51,6 +25,31 @@
 #include <ogr_srs_api.h>
 #include <memory>
 #include <mutex>
+
+#include "libdwgr.h"
+#include "libdxfrw.h"
+#include "qgis.h"
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscurvepolygon.h"
+#include "qgsgeometry.h"
+#include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsogrutils.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
+
+#include <QFileInfo>
+#include <QLabel>
+#include <QRegularExpression>
+#include <QString>
+#include <QStringList>
+#include <QTextCodec>
+#include <QTextStream>
+#include <QTransform>
+#include <QVector>
 
 #define LOG( x )                                                     \
   {                                                                  \

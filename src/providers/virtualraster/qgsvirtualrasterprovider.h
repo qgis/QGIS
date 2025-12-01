@@ -15,10 +15,11 @@
 #ifndef QGSVIRTUALRASTERPROVIDER_H
 #define QGSVIRTUALRASTERPROVIDER_H
 
-#include <QObject>
-#include "qgsrasterdataprovider.h"
 #include "qgsprovidermetadata.h"
 #include "qgsrastercalculator.h"
+#include "qgsrasterdataprovider.h"
+
+#include <QObject>
 
 /**
  * The QgsVirtualRasterProvider class implements a raster data provider that enable the use of the raster calculator

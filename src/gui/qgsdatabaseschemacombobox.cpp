@@ -14,12 +14,15 @@
 ***************************************************************************/
 
 #include "qgsdatabaseschemacombobox.h"
-#include "moc_qgsdatabaseschemacombobox.cpp"
-#include "qgsdatabaseschemamodel.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsapplication.h"
+#include "qgsdatabaseschemamodel.h"
+
 #include <QHBoxLayout>
 #include <QToolButton>
+
+#include "moc_qgsdatabaseschemacombobox.cpp"
 
 QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( const QString &provider, const QString &connection, QWidget *parent )
   : QWidget( parent )

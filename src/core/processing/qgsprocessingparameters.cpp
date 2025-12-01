@@ -16,33 +16,35 @@
  ***************************************************************************/
 
 #include "qgsprocessingparameters.h"
-#include "qgsprocessingprovider.h"
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingutils.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsreferencedgeometry.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingparametertype.h"
-#include "qgsrasterfilewriter.h"
-#include "qgsvectorlayer.h"
-#include "qgsmeshlayer.h"
-#include "qgspointcloudlayer.h"
-#include "qgsannotationlayer.h"
-#include "qgsapplication.h"
-#include "qgslayoutmanager.h"
-#include "qgsprintlayout.h"
-#include "qgssettings.h"
-#include "qgssymbollayerutils.h"
-#include "qgsfileutils.h"
-#include "qgsproviderregistry.h"
-#include "qgsvariantutils.h"
-#include "qgsmessagelog.h"
+
 #include <functional>
-#include <QRegularExpression>
 #include <memory>
 
+#include "qgsannotationlayer.h"
+#include "qgsapplication.h"
+#include "qgsfileutils.h"
+#include "qgslayoutmanager.h"
+#include "qgsmeshlayer.h"
+#include "qgsmessagelog.h"
+#include "qgspointcloudlayer.h"
+#include "qgsprintlayout.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparametertype.h"
+#include "qgsprocessingprovider.h"
+#include "qgsprocessingregistry.h"
+#include "qgsprocessingutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsreferencedgeometry.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+
+#include <QRegularExpression>
 
 QVariant QgsProcessingFeatureSourceDefinition::toVariant() const
 {

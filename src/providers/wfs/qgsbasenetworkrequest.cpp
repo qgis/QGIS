@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsbasenetworkrequest.h"
-#include "moc_qgsbasenetworkrequest.cpp"
+
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
@@ -25,11 +25,13 @@
 #include "qgsvariantutils.h"
 
 #include <QCache>
+#include <QCryptographicHash>
 #include <QEventLoop>
-#include <QNetworkCacheMetaData>
-#include <QCryptographicHash> // just for testing file:// fake_qgis_http_endpoint hack
 #include <QFuture>
+#include <QNetworkCacheMetaData>
 #include <QtConcurrent>
+
+#include "moc_qgsbasenetworkrequest.cpp"
 
 static QMutex gMemoryCacheMmutex;
 static QCache<QUrl, std::pair<QDateTime, QByteArray>> gCache( 10 * 1024 * 1024 );

@@ -15,7 +15,6 @@
 
 #include "qgsstacobject.h"
 
-
 QgsStacObject::QgsStacObject( const QString &id, const QString &version, const QVector< QgsStacLink > &links )
   : mId( id )
   , mStacVersion( version )

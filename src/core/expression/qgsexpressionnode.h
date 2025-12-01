@@ -17,11 +17,11 @@
 #ifndef QGSEXPRESSIONNODE_H
 #define QGSEXPRESSIONNODE_H
 
+#include "qgis.h"
+
+#include <QCoreApplication>
 #include <QSet>
 #include <QVariant>
-#include <QCoreApplication>
-
-#include "qgis.h"
 
 class QgsExpression;
 class QgsExpressionContext;

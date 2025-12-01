@@ -16,23 +16,26 @@
  ***************************************************************************/
 
 #include "qgsprocessingalgorithm.h"
+
+#include <memory>
+
 #include "qgsapplication.h"
-#include "qgsprocessingprovider.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsrectangle.h"
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingutils.h"
 #include "qgsexception.h"
-#include "qgsmessagelog.h"
-#include "qgsvectorlayer.h"
-#include "qgsprocessingfeedback.h"
-#include "qgsmeshlayer.h"
-#include "qgspointcloudlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmeshlayer.h"
+#include "qgsmessagelog.h"
+#include "qgspointcloudlayer.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingfeedback.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
+#include "qgsprocessingprovider.h"
+#include "qgsprocessingutils.h"
+#include "qgsrectangle.h"
+#include "qgsvectorlayer.h"
+
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
-#include <memory>
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {

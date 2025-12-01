@@ -12,10 +12,9 @@ Email                : nyall dot dawson at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
+#include "qgstest.h"
 
 #include <QSignalSpy>
 

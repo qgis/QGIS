@@ -16,40 +16,40 @@
  ***************************************************************************/
 
 #include "qgsdelimitedtextprovider.h"
-#include "moc_qgsdelimitedtextprovider.cpp"
 
-#include <QtGlobal>
-#include <QFile>
-#include <QFileInfo>
-#include <QDataStream>
-#include <QTextStream>
-#include <QStringList>
-#include <QSettings>
-#include <QRegularExpression>
-#include <QUrl>
-#include <QUrlQuery>
 #include <memory>
 
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgscoordinateutils.h"
 #include "qgsdataprovider.h"
+#include "qgsdelimitedtextfeatureiterator.h"
+#include "qgsdelimitedtextfile.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
+#include "qgsfeedback.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
-#include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageoutput.h"
 #include "qgsrectangle.h"
 #include "qgsspatialindex.h"
-#include "qgis.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsvariantutils.h"
 
-#include "qgsdelimitedtextfeatureiterator.h"
-#include "qgsdelimitedtextfile.h"
+#include <QDataStream>
+#include <QFile>
+#include <QFileInfo>
+#include <QRegularExpression>
+#include <QSettings>
+#include <QStringList>
+#include <QTextStream>
+#include <QUrl>
+#include <QUrlQuery>
+#include <QtGlobal>
 
+#include "moc_qgsdelimitedtextprovider.cpp"
 
 const QString QgsDelimitedTextProvider::TEXT_PROVIDER_KEY = QStringLiteral( "delimitedtext" );
 const QString QgsDelimitedTextProvider::TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Delimited text data provider" );

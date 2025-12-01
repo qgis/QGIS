@@ -10,7 +10,6 @@
 
 
 
-
 class QgsSingleGeometryCheckError
 {
 %Docstring(signature="appended")

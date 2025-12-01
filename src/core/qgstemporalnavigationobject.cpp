@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgstemporalnavigationobject.h"
-#include "moc_qgstemporalnavigationobject.cpp"
+
 #include "qgis.h"
 #include "qgstemporalutils.h"
 #include "qgsunittypes.h"
+
+#include "moc_qgstemporalnavigationobject.cpp"
 
 QgsTemporalNavigationObject::QgsTemporalNavigationObject( QObject *parent )
   : QgsTemporalController( parent )

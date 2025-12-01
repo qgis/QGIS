@@ -16,11 +16,11 @@
 #ifndef QGS3DANIMATIONWIDGET_H
 #define QGS3DANIMATIONWIDGET_H
 
-#include <QWidget>
-#include <memory>
-
 #include "ui_animation3dwidget.h"
 
+#include <memory>
+
+#include <QWidget>
 
 class Qgs3DAnimationSettings;
 class QgsCameraController;

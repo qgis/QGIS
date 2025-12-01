@@ -18,15 +18,15 @@
 #ifndef QGSCAPABILITIESCACHE_H
 #define QGSCAPABILITIESCACHE_H
 
+#include "qgis_server.h"
+#include "qgsserversettings.h"
+
+#include <QDateTime>
 #include <QDomDocument>
 #include <QFileSystemWatcher>
 #include <QHash>
 #include <QObject>
-#include <QDateTime>
 #include <QTimer>
-
-#include "qgis_server.h"
-#include "qgsserversettings.h"
 
 /**
  * \ingroup server

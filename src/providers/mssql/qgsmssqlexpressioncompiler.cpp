@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmssqlexpressioncompiler.h"
+
 #include "qgsexpressionnodeimpl.h"
 
 QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source, bool ignoreStaticNodes )

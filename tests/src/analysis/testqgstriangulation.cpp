@@ -12,15 +12,13 @@ Email                : vcloarec at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgsdualedgetriangulation.h"
 #include "qgsmeshtriangulation.h"
-#include "qgsvectorlayer.h"
-
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsTriangulation : public QgsTest
 {

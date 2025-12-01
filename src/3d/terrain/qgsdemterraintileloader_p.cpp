@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgsdemterraintileloader_p.h"
-#include "moc_qgsdemterraintileloader_p.cpp"
 
 #include "qgs3dmapsettings.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgschunknode.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterraintilegeometry_p.h"
@@ -24,14 +24,15 @@
 #include "qgsgeotransform.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsterrainentity.h"
+#include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
-#include "qgsterraingenerator.h"
-#include "qgsabstractterrainsettings.h"
 
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DCore/QTransform>
 #include <QMutexLocker>
+#include <Qt3DCore/QTransform>
+#include <Qt3DRender/QGeometryRenderer>
+
+#include "moc_qgsdemterraintileloader_p.cpp"
 
 ///@cond PRIVATE
 

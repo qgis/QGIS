@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterresamplefilter.h"
+
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterresampler.h"
 #include "qgsrastertransparency.h"
 

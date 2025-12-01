@@ -16,14 +16,15 @@
 #ifndef QGSMAPBOXGLSTYLECONVERTER_H
 #define QGSMAPBOXGLSTYLECONVERTER_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
 
-#include <memory>
-#include <QVariantMap>
 #include <QImage>
+#include <QVariantMap>
 
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;

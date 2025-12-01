@@ -24,7 +24,6 @@
 
 #include <QMatrix4x4>
 
-
 class QgsBox3D;
 class QgsGeos;
 class QgsPointCloudLayer;

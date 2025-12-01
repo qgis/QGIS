@@ -19,15 +19,16 @@ email                : even.rouault at spatialys.com
  ***************************************************************************/
 
 #include "qgssqlcomposerdialog.h"
-#include "moc_qgssqlcomposerdialog.cpp"
-#include "qgssqlstatement.h"
+
 #include "qgshelp.h"
+#include "qgssqlstatement.h"
 #include "qgsvectorlayer.h"
 
-#include <QMessageBox>
 #include <QKeyEvent>
-
+#include <QMessageBox>
 #include <Qsci/qscilexer.h>
+
+#include "moc_qgssqlcomposerdialog.cpp"
 
 QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QgsSQLComposerDialog( nullptr, parent, fl )

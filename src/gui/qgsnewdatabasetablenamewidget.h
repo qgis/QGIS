@@ -24,8 +24,8 @@
 #include "qgsbrowserproxymodel.h"
 #include "qgspanelwidget.h"
 
-#include <QWidget>
 #include <QDialog>
+#include <QWidget>
 
 /**
  * \ingroup gui

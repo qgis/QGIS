@@ -17,11 +17,12 @@
 #define QGSGRASSREGION_H
 
 #include "ui_qgsgrassregionbase.h"
+
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmaptool.h"
-#include "qgsrubberband.h"
 #include "qgspointxy.h"
+#include "qgsrubberband.h"
 
 class QgsGrassPlugin;
 class QgsGrassRegionEdit;

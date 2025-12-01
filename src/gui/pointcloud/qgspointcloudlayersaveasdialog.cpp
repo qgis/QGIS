@@ -16,19 +16,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspointcloudlayersaveasdialog.h"
+
+#include "qgsdatums.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayerutils.h"
+#include "qgspointcloudlayer.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsvectorlayer.h"
+
 #include <QMessageBox>
 #include <QRegularExpression>
 
-#include "qgspointcloudlayersaveasdialog.h"
 #include "moc_qgspointcloudlayersaveasdialog.cpp"
-#include "qgsgui.h"
-#include "qgsmapcanvas.h"
-#include "qgsdatums.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidersublayerdetails.h"
-#include "qgspointcloudlayer.h"
-#include "qgsmaplayerutils.h"
-#include "qgsvectorlayer.h"
 
 QgsPointCloudLayerSaveAsDialog::QgsPointCloudLayerSaveAsDialog( QgsPointCloudLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

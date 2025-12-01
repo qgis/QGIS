@@ -15,52 +15,55 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingprovider.h"
-#include "qgsprocessingutils.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingparametertype.h"
-#include "qgsnativealgorithms.h"
 #include "qgsconfig.h"
-#include <QObject>
-#include <QtTest/QSignalSpy>
-#include <QList>
-#include <QFileInfo>
-#include "qgis.h"
-#include "qgstest.h"
-#include "qgsrasterlayer.h"
-#include "qgsmeshlayer.h"
-#include "qgspluginlayer.h"
-#include "qgsproject.h"
-#include "qgspoint.h"
-#include "qgsgeometry.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsexpressioncontext.h"
-#include "qgsreferencedgeometry.h"
-#include "qgssettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsprintlayout.h"
-#include "qgslayoutmanager.h"
-#include "qgslayoutitemlabel.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgsrasterfilewriter.h"
-#include "qgsprocessingparameterfieldmap.h"
-#include "qgsprocessingparameteraggregate.h"
-#include "qgsprocessingparametertininputlayers.h"
-#include "qgsprocessingparameterdxflayers.h"
-#include "qgsprocessingparametermeshdataset.h"
-#include "qgsprocessingparameteralignrasterlayers.h"
-#include "qgsdxfexport.h"
-#include "qgspointcloudlayer.h"
-#include "qgsannotationlayer.h"
-#include "qgsjsonutils.h"
+
 #include <memory>
 #include <nlohmann/json.hpp>
-#include "qgsspatialindex.h"
-#include "qgstiledscenelayer.h"
+
+#include "qgis.h"
 #include "qgsalignrasterdata.h"
+#include "qgsannotationlayer.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsdxfexport.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgeometry.h"
+#include "qgsjsonutils.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutmanager.h"
+#include "qgsmeshlayer.h"
+#include "qgsnativealgorithms.h"
+#include "qgspluginlayer.h"
+#include "qgspoint.h"
+#include "qgspointcloudlayer.h"
+#include "qgsprintlayout.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingparameteraggregate.h"
+#include "qgsprocessingparameteralignrasterlayers.h"
+#include "qgsprocessingparameterdxflayers.h"
+#include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparametermeshdataset.h"
+#include "qgsprocessingparametertininputlayers.h"
+#include "qgsprocessingparametertype.h"
+#include "qgsprocessingprovider.h"
+#include "qgsprocessingregistry.h"
+#include "qgsprocessingutils.h"
+#include "qgsproject.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsrasterlayer.h"
+#include "qgsreferencedgeometry.h"
+#include "qgssettings.h"
+#include "qgsspatialindex.h"
+#include "qgstest.h"
+#include "qgstiledscenelayer.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+
+#include <QFileInfo>
+#include <QList>
+#include <QObject>
+#include <QtTest/QSignalSpy>
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {

@@ -18,15 +18,16 @@
 #ifndef QGSWMSSOURCESELECT_H
 #define QGSWMSSOURCESELECT_H
 #include "ui_qgswmssourceselectbase.h"
+
+#include "qgsabstractdatasourcewidget.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsprovider.h"
-#include "qgsabstractdatasourcewidget.h"
 
-#include <QStringList>
 #include <QPushButton>
+#include <QStringList>
 
 class QButtonGroup;
 class QgsTreeWidgetItem;

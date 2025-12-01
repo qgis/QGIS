@@ -16,13 +16,13 @@
 #ifndef QGSPOSTGRESRASTERPROVIDER_H
 #define QGSPOSTGRESRASTERPROVIDER_H
 
-#include "qgsrasterdataprovider.h"
+#include <exception>
+
 #include "qgscoordinatereferencesystem.h"
-#include "qgsprovidermetadata.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresrastershareddata.h"
-
-#include <exception>
+#include "qgsprovidermetadata.h"
+#include "qgsrasterdataprovider.h"
 
 /**
  * The QgsPostgresRasterProvider class implements a raster data provider for PostGIS

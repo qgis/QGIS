@@ -15,11 +15,13 @@
 #ifndef QGSNUMERICFORMATWIDGET_H
 #define QGSNUMERICFORMATWIDGET_H
 
+#include <memory>
+
 #include "qgis_sip.h"
+#include "qgsexpressioncontextgenerator.h"
 #include "qgsnumericformat.h"
 #include "qgspanelwidget.h"
-#include "qgsexpressioncontextgenerator.h"
-#include <memory>
+
 #include <QDialog>
 
 class QgsFractionNumericFormat;

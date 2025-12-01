@@ -13,14 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfontoptions.h"
-#include "moc_qgsfontoptions.cpp"
 
-#include "qgsbabelgpsdevice.h"
-#include "qgssettings.h"
 #include "qgsapplication.h"
+#include "qgsbabelgpsdevice.h"
 #include "qgsfontmanager.h"
+#include "qgssettings.h"
 
 #include <QDir>
+
+#include "moc_qgsfontoptions.cpp"
 
 //
 // QgsFontOptionsWidget

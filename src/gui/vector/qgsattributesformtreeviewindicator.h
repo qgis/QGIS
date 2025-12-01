@@ -24,7 +24,6 @@
 #include <QIcon>
 #include <QObject>
 
-
 /**
  * \brief Indicator that can be used in an Attributes Form tree view to display icons next to field items.
  *

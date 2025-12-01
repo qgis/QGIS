@@ -26,14 +26,13 @@ class QgsMeshLayer;
 #include <limits>
 
 #include "qgis.h"
-
+#include "qgsmapclippingregion.h"
 #include "qgsmaplayerrenderer.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshtracerenderer.h"
 #include "qgsrasterinterface.h"
 #include "qgstriangularmesh.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsmeshtracerenderer.h"
-#include "qgsmapclippingregion.h"
 
 class QgsRenderContext;
 class QgsMeshLayerLabelProvider;

@@ -14,33 +14,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
 #include "qgsmeshcalculatordialog.h"
-#include "moc_qgsmeshcalculatordialog.cpp"
-#include "qgsproject.h"
-#include "qgsmeshcalcnode.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsproviderregistry.h"
-#include "qgsmeshlayer.h"
-#include "qgssettings.h"
+
+#include <cpl_string.h>
+#include <gdal.h>
+#include <memory>
+
+#include "qgis.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgdalutils.h"
 #include "qgsgui.h"
-#include "qgsvectorlayer.h"
+#include "qgshelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerproxymodel.h"
-#include "qgswkbtypes.h"
-#include "qgsfeatureiterator.h"
+#include "qgsmeshcalcnode.h"
+#include "qgsmeshdataprovider.h"
 #include "qgsmeshdatasetgrouptreeview.h"
-#include "qgshelp.h"
+#include "qgsmeshlayer.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
 
-#include "cpl_string.h"
-#include "gdal.h"
-#include "qgis.h"
-
-#include <QMessageBox>
 #include <QFileDialog>
 #include <QFontDatabase>
 #include <QMap>
-#include <memory>
+#include <QMessageBox>
+
+#include "moc_qgsmeshcalculatordialog.cpp"
 
 QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

@@ -18,14 +18,15 @@
 
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
-#include "qgsserver.h"
-#include "qgsfcgiserverresponse.h"
-#include "qgsfcgiserverrequest.h"
-#include "qgsapplication.h"
-#include "qgscommandlineutils.h"
 
 #include <fcgi_stdio.h>
 #include <cstdlib>
+
+#include "qgsapplication.h"
+#include "qgscommandlineutils.h"
+#include "qgsfcgiserverrequest.h"
+#include "qgsfcgiserverresponse.h"
+#include "qgsserver.h"
 
 #include <QFontDatabase>
 #include <QString>

@@ -13,29 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsmssqlconnection.h"
 #include "qgsmssqldataitemguiprovider.h"
-#include "moc_qgsmssqldataitemguiprovider.cpp"
+
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsapplication.h"
+#include "qgsapplication.h"
+#include "qgsbrowsertreeview.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsdbimportvectorlayerdialog.h"
+#include "qgsmanageconnectionsdialog.h"
+#include "qgsmessageoutput.h"
+#include "qgsmssqlconnection.h"
 #include "qgsmssqldataitems.h"
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlsourceselect.h"
-#include "qgsdataitemguiproviderutils.h"
-#include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsapplication.h"
 #include "qgstaskmanager.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerexporter.h"
-#include "qgsmessageoutput.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsdbimportvectorlayerdialog.h"
-#include "qgsbrowsertreeview.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 
+#include "moc_qgsmssqldataitemguiprovider.cpp"
 
 void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {

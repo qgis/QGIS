@@ -17,6 +17,7 @@
 #define QGSPOINTCLOUD3DSYMBOLWIDGET_H
 
 #include "ui_qgspointcloud3dsymbolwidget.h"
+
 #include "qgspointcloud3dsymbol.h"
 
 class QgsPointCloudLayer;

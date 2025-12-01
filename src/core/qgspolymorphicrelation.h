@@ -16,17 +16,16 @@
 #ifndef QGSPOLYMORPHICRELATION_H
 #define QGSPOLYMORPHICRELATION_H
 
-#include <QList>
-#include <QDomNode>
-#include <QPair>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfields.h"
 #include "qgsreadwritecontext.h"
-#include "qgsrelationcontext.h"
 #include "qgsrelation.h"
+#include "qgsrelationcontext.h"
 
-#include "qgis_sip.h"
+#include <QDomNode>
+#include <QList>
+#include <QPair>
 
 class QgsFeatureIterator;
 class QgsFeature;

@@ -27,13 +27,13 @@
 // version without notice, or even be removed.
 //
 
-#include "qgscoordinatetransform.h"
+#include "qgs3drendercontext.h"
 #include "qgschunkedentity.h"
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
+#include "qgscoordinatetransform.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenetile.h"
-#include "qgs3drendercontext.h"
 
 #include <QFutureWatcher>
 

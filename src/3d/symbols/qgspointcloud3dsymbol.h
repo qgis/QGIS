@@ -17,14 +17,12 @@
 #define QGSPOINTCLOUD3DSYMBOL_H
 
 #include "qgis_3d.h"
-
-
 #include "qgsabstract3dsymbol.h"
 #include "qgscolorrampshader.h"
-#include "qgsmaterial.h"
-#include "qgspointcloudlayer.h"
 #include "qgscontrastenhancement.h"
+#include "qgsmaterial.h"
 #include "qgspointcloudclassifiedrenderer.h"
+#include "qgspointcloudlayer.h"
 
 /**
  * \ingroup qgis_3d

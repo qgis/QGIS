@@ -14,30 +14,31 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsvirtuallayersqlitemodule.h"
+
 #include <cstring>
 #include <iostream>
 #include <cstdint>
 #include <memory>
 #include <stdexcept>
-
-#include <QCoreApplication>
-#include <QBuffer>
-
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsgeometry.h"
-#include "qgsproject.h"
-#include "qgsproviderregistry.h"
-#include "qgsinterval.h"
 #include <sqlite3.h>
 #include <spatialite.h>
 #include <cstdio>
-#include "qgsvirtuallayersqlitemodule.h"
-#include "qgsvirtuallayerblob.h"
-#include "qgsslottofunction.h"
-#include "qgsfeatureiterator.h"
+
+#include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgeometry.h"
+#include "qgsinterval.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
+#include "qgsslottofunction.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvirtuallayerblob.h"
+
+#include <QBuffer>
+#include <QCoreApplication>
 
 /**
  * Create metadata tables if needed

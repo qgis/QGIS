@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgsmaprenderercustompainterjob.h"
-#include "moc_qgsmaprenderercustompainterjob.cpp"
 
+#include <memory>
+
+#include "qgselevationmap.h"
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
-#include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerlistutils_p.h"
-#include "qgselevationmap.h"
+#include "qgsmaplayerrenderer.h"
 #include "qgspainting.h"
 
 #include <QtConcurrentRun>
-#include <memory>
+
+#include "moc_qgsmaprenderercustompainterjob.cpp"
 
 //
 // QgsMapRendererAbstractCustomPainterJob

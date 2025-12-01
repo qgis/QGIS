@@ -16,8 +16,8 @@
 #ifndef QGSTEXTEDITSEARCHWIDGETWRAPPER_H
 #define QGSTEXTEDITSEARCHWIDGETWRAPPER_H
 
-#include "qgsdefaultsearchwidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgsdefaultsearchwidgetwrapper.h"
 
 SIP_NO_FILE
 

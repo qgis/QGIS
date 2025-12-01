@@ -14,16 +14,16 @@
  ***************************************************************************/
 
 #include "qgsterraintexturegenerator_p.h"
-#include "moc_qgsterraintexturegenerator_p.cpp"
 
+#include "qgs3dmapsettings.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgseventtracing.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmapsettings.h"
 #include "qgsmapthemecollection.h"
 #include "qgsproject.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgs3dmapsettings.h"
 
-#include "qgseventtracing.h"
+#include "moc_qgsterraintexturegenerator_p.cpp"
 
 ///@cond PRIVATE
 

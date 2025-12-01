@@ -15,11 +15,13 @@
 #include "qgsembeddedsymbolrendererwidget.h"
 
 #include <memory>
-#include "moc_qgsembeddedsymbolrendererwidget.cpp"
+
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsembeddedsymbolrendererwidget.cpp"
 
 QgsRendererWidget *QgsEmbeddedSymbolRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

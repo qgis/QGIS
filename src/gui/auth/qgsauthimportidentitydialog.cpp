@@ -14,22 +14,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthimportidentitydialog.h"
-#include "moc_qgsauthimportidentitydialog.cpp"
 #include "ui_qgsauthimportidentitydialog.h"
+#include "qgsauthimportidentitydialog.h"
 
-#include <QFile>
-#include <QFileDialog>
-#include <QPushButton>
-
-#include "qgssettings.h"
+#include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthconfig.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
+#include "qgssettings.h"
 
+#include <QFile>
+#include <QFileDialog>
+#include <QPushButton>
+
+#include "moc_qgsauthimportidentitydialog.cpp"
 
 QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent )
   : QDialog( parent )

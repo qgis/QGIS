@@ -12,6 +12,7 @@
 
 
 
+
 class QgsServerFilter
 {
 %Docstring(signature="appended")

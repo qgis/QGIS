@@ -19,12 +19,13 @@
 #ifndef QGSARCHIVE_H
 #define QGSARCHIVE_H
 
+#include <memory>
+
 #include "qgis_core.h"
 
 #include <QStringList>
-#include <QTemporaryFile>
 #include <QTemporaryDir>
-#include <memory>
+#include <QTemporaryFile>
 
 /**
  * \class QgsArchive

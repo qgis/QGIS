@@ -8,6 +8,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include "qgspostgresstringutils.h"
 %End

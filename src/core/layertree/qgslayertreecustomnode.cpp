@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayertreecustomnode.h"
-#include "moc_qgslayertreecustomnode.cpp"
+
 #include "qgslayertreeutils.h"
 
+#include "moc_qgslayertreecustomnode.cpp"
 
 QgsLayerTreeCustomNode::QgsLayerTreeCustomNode( const QString &nodeId, const QString &nodeName, bool checked )
   : QgsLayerTreeNode( NodeCustom, checked )

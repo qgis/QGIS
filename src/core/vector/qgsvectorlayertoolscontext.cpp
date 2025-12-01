@@ -16,6 +16,7 @@
 #include "qgsvectorlayertoolscontext.h"
 
 #include <memory>
+
 #include "qgsexpressioncontextutils.h"
 
 QgsVectorLayerToolsContext::QgsVectorLayerToolsContext( const QgsVectorLayerToolsContext &other )

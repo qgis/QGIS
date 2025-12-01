@@ -17,13 +17,13 @@
 #ifndef QGSSYMBOLLAYERWIDGET_H
 #define QGSSYMBOLLAYERWIDGET_H
 
-#include "qgspropertyoverridebutton.h"
 #include "qgis_sip.h"
-#include "qgssymbolwidgetcontext.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgssymbollayer.h"
+#include "qgssymbolwidgetcontext.h"
 
-#include <QWidget>
 #include <QStandardItemModel>
+#include <QWidget>
 
 class QgsVectorLayer;
 class QgsMarkerSymbol;

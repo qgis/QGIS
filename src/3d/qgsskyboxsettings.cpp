@@ -15,10 +15,10 @@
 
 #include "qgsskyboxsettings.h"
 
-#include <QDomDocument>
-
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
+
+#include <QDomDocument>
 
 QgsSkyboxSettings::QgsSkyboxSettings( const QgsSkyboxSettings &other )
   : mSkyboxType( other.mSkyboxType )

@@ -15,18 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
-#include "qgsscalerangewidget.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsscalerangewidget.h"
+#include "qgstest.h"
 
-#include <QObject>
-#include <QLineEdit>
 #include <QComboBox>
+#include <QLineEdit>
+#include <QObject>
 #include <QtTest/QSignalSpy>
-
-#include <memory>
 
 /**
  * @ingroup UnitTests

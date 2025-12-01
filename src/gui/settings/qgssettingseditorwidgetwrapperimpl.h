@@ -16,21 +16,19 @@
 #ifndef QGSSETTINGSEDITORWIDGETWRAPPERIMPL_H
 #define QGSSETTINGSEDITORWIDGETWRAPPERIMPL_H
 
-#include <QColor>
-
 #include "qgis_gui.h"
-#include "qgssettingseditorwidgetwrapper.h"
-#include "qgslogger.h"
-
-#include "qgssettingsentryimpl.h"
 #include "qgscolorbutton.h"
-#include <QComboBox>
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <QTableWidget>
+#include "qgslogger.h"
+#include "qgssettingseditorwidgetwrapper.h"
+#include "qgssettingsentryimpl.h"
 
+#include <QCheckBox>
+#include <QColor>
+#include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QLineEdit>
+#include <QSpinBox>
+#include <QTableWidget>
 
 //TODO variant map
 

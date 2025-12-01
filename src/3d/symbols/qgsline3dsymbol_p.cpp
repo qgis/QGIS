@@ -15,13 +15,14 @@
 
 #include "qgsline3dsymbol_p.h"
 
+#include "qgs3dmapsettings.h"
 #include "qgsgeotransform.h"
 #include "qgsline3dsymbol.h"
 #include "qgslinematerial_p.h"
 #include "qgslinevertexdata_p.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgstessellator.h"
-#include "qgs3dmapsettings.h"
+
 //#include "qgsterraingenerator.h"
 #include "qgs3dutils.h"
 

@@ -16,9 +16,10 @@
 #ifndef QGSSNAPINDICATOR_H
 #define QGSSNAPINDICATOR_H
 
-#include "qgspointlocator.h"
-#include "qobjectuniqueptr.h"
 #include "qgis_gui.h"
+#include "qgspointlocator.h"
+
+#include <qobjectuniqueptr.h>
 
 class QgsMapCanvas;
 class QgsVertexMarker;

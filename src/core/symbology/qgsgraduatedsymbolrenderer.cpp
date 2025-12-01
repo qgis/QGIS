@@ -13,42 +13,42 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDomDocument>
-#include <QDomElement>
+#include "qgsgraduatedsymbolrenderer.h"
 
 #include <ctime>
 #include <cmath>
 #include <memory>
 
-#include "qgsgraduatedsymbolrenderer.h"
-
+#include "qgsapplication.h"
 #include "qgsattributes.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgsclassificationcustom.h"
+#include "qgsclassificationequalinterval.h"
+#include "qgsclassificationmethod.h"
+#include "qgsclassificationmethodregistry.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampimpl.h"
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
 #include "qgsinvertedpolygonrenderer.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 #include "qgspainteffect.h"
+#include "qgspointdistancerenderer.h"
 #include "qgsproperty.h"
+#include "qgssldexportcontext.h"
+#include "qgsstyleentityvisitor.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsclassificationmethod.h"
-#include "qgsclassificationequalinterval.h"
-#include "qgsapplication.h"
-#include "qgsclassificationmethodregistry.h"
-#include "qgsclassificationcustom.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgspointdistancerenderer.h"
-#include "qgssldexportcontext.h"
+
+#include <QDomDocument>
+#include <QDomElement>
 
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName, const QgsRangeList &ranges )
   : QgsFeatureRenderer( QStringLiteral( "graduatedSymbol" ) )

@@ -15,20 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmeshlayerutils.h"
+
 #include <limits>
-#include <QTime>
+
+#include "qgslogger.h"
+#include "qgsmesh3daveraging.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshtimesettings.h"
+#include "qgstriangularmesh.h"
+
 #include <QDateTime>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
-
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshtimesettings.h"
-#include "qgstriangularmesh.h"
-#include "qgslogger.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsmesh3daveraging.h"
-#include "qgsmeshlayer.h"
-
+#include <QTime>
 
 ///@cond PRIVATE
 

@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgsannotationmarkeritem.h"
+
+#include "qgsannotationitemeditoperation.h"
+#include "qgsannotationitemnode.h"
+#include "qgsmarkersymbol.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgsmarkersymbol.h"
-#include "qgsannotationitemnode.h"
-#include "qgsannotationitemeditoperation.h"
 
 QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   : QgsAnnotationItem()

@@ -15,27 +15,27 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeometryutils.h"
 
-#include "qgscurve.h"
-#include "qgscurvepolygon.h"
-#include "qgsgeometrycollection.h"
 #include <limits>
-#include "qgslinestring.h"
-#include "qgswkbptr.h"
+#include <memory>
+#include <nlohmann/json.hpp>
 
-#include "qgspoint.h"
-#include "qgslinestring.h"
+#include "qgsabstractgeometry.h"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgscurve.h"
-#include "qgsabstractgeometry.h"
-#include "qgsvertexid.h"
+#include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
+#include "qgslinestring.h"
 #include "qgslogger.h"
+#include "qgspoint.h"
+#include "qgsvertexid.h"
+#include "qgswkbptr.h"
 
-#include <memory>
+#include <QRegularExpression>
 #include <QStringList>
 #include <QVector>
-#include <QRegularExpression>
-#include <nlohmann/json.hpp>
 
 QVector<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry *geom )
 {

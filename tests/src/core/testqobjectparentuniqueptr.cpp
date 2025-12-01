@@ -14,10 +14,10 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include "qobjectuniqueptr.h"
-
 #include "qgstest.h"
+
 #include <QPointer>
+#include <qobjectuniqueptr.h>
 
 class TestQObjectChild;
 class TestQObjectOwner : public QObject

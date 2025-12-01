@@ -17,28 +17,26 @@
 
 #include <math.h>
 
-#include <QPolygon>
-#include <QJsonDocument>
-#include <QJsonArray>
-
+#include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
-#include "qgsgeometrycollection.h"
 #include "qgsfields.h"
+#include "qgsgeometrycollection.h"
+#include "qgsjsonutils.h"
 #include "qgslogger.h"
+#include "qgsmapboxglstyleconverter.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
+#include "qgssetrequestinitiator_p.h"
 #include "qgsvectorlayer.h"
-
+#include "qgsvectortileconnection.h"
+#include "qgsvectortilelayer.h"
 #include "qgsvectortileloader.h"
 #include "qgsvectortilemvtdecoder.h"
-#include "qgsvectortilelayer.h"
 #include "qgsvectortilerenderer.h"
-#include "qgsmapboxglstyleconverter.h"
-#include "qgssetrequestinitiator_p.h"
-#include "qgsblockingnetworkrequest.h"
-#include "qgsjsonutils.h"
-#include "qgsvectortileconnection.h"
 
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QPolygon>
 
 void QgsVectorTileUtils::updateUriSources( QString &uri, bool forceUpdate )
 {

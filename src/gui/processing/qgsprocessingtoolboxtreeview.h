@@ -18,8 +18,9 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include <QTreeView>
 #include "qgsprocessingtoolboxmodel.h"
+
+#include <QTreeView>
 
 class QgsProcessingRegistry;
 class QgsProcessingRecentAlgorithmLog;

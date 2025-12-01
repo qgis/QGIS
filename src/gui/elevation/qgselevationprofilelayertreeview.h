@@ -19,9 +19,10 @@
 #define QGSELEVATIONPROFILELAYERTREEVIEW_H
 
 #include "qgsconfig.h"
+
+#include "qgis_gui.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
-#include "qgis_gui.h"
 
 #include <QSortFilterProxyModel>
 #include <QTreeView>

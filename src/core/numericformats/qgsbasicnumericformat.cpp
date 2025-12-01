@@ -15,11 +15,13 @@
  ***************************************************************************/
 
 #include "qgsbasicnumericformat.h"
-#include "qgis.h"
+
 #include <memory>
 #include <iostream>
 #include <locale>
 #include <iomanip>
+
+#include "qgis.h"
 
 namespace QgsBasicNumericFormat_ns
 {

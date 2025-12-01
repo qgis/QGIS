@@ -16,16 +16,17 @@
 #include "qgslayoutitem3dmap.h"
 
 #include <memory>
-#include "moc_qgslayoutitem3dmap.cpp"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
 #include "qgslayout.h"
-#include "qgslayoutmodel.h"
 #include "qgslayoutitemregistry.h"
-#include "qgsoffscreen3dengine.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutrendercontext.h"
+#include "qgsoffscreen3dengine.h"
+
+#include "moc_qgslayoutitem3dmap.cpp"
 
 QgsLayoutItem3DMap::QgsLayoutItem3DMap( QgsLayout *layout )
   : QgsLayoutItem( layout )

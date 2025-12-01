@@ -12,16 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+#include <memory>
 
-#include "qgsvectorlayerutils.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QMetaType>
 #include <QThread>
 #include <QtGlobal>
-
-#include <memory>
 
 /**
  * \ingroup UnitTests

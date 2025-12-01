@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsserverprojectutils.h"
-#include "qgsproject.h"
+
 #include "qgsmessagelog.h"
+#include "qgsproject.h"
 
 double QgsServerProjectUtils::ceilWithPrecision( double number, int places )
 {

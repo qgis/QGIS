@@ -15,25 +15,24 @@
 
 #include <memory>
 
-#include "qgsoffscreen3dengine.h"
-#include "qgstest.h"
-#include "qgsmultirenderchecker.h"
-
-#include "qgsproject.h"
-#include "qgsapplication.h"
 #include "qgs3d.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudextentrenderer.h"
-#include "qgspointcloudattributebyramprenderer.h"
-#include "qgspointcloudrgbrenderer.h"
-#include "qgspointcloudclassifiedrenderer.h"
-#include "qgspointcloudlayer3drenderer.h"
-#include "qgspointcloud3dsymbol.h"
-#include "qgspointlightsettings.h"
-#include "qgsstyle.h"
-#include "qgs3dutils.h"
-#include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
+#include "qgsapplication.h"
+#include "qgsmultirenderchecker.h"
+#include "qgsoffscreen3dengine.h"
+#include "qgspointcloud3dsymbol.h"
+#include "qgspointcloudattributebyramprenderer.h"
+#include "qgspointcloudclassifiedrenderer.h"
+#include "qgspointcloudextentrenderer.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgspointcloudrgbrenderer.h"
+#include "qgspointlightsettings.h"
+#include "qgsproject.h"
+#include "qgsstyle.h"
+#include "qgstest.h"
 
 class TestQgsPointCloud3DRendering : public QgsTest
 {

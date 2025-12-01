@@ -17,8 +17,8 @@
 #define QGSATTRIBUTEEDITORACTION_H
 
 #include "qgis_core.h"
-#include "qgsattributeeditorelement.h"
 #include "qgsaction.h"
+#include "qgsattributeeditorelement.h"
 
 /**
  * \ingroup core

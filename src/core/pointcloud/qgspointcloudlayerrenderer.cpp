@@ -15,9 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QElapsedTimer>
-#include <QPointer>
+#include "qgspointcloudlayerrenderer.h"
 
+#include <memory>
+
+#include "delaunator.hpp"
 #include "qgsapplication.h"
 #include "qgscolorramp.h"
 #include "qgselevationmap.h"
@@ -31,17 +33,15 @@
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerelevationproperties.h"
-#include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudrequest.h"
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsvirtualpointcloudprovider.h"
 #include "qgsthreadingutils.h"
+#include "qgsvirtualpointcloudprovider.h"
 
-#include <delaunator.hpp>
-#include <memory>
-
+#include <QElapsedTimer>
+#include <QPointer>
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )

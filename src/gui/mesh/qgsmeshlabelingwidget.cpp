@@ -13,19 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDialogButtonBox>
-#include <QDomElement>
+#include "qgsmeshlabelingwidget.h"
+
 #include <memory>
 
-#include "qgsmeshlabelingwidget.h"
-#include "moc_qgsmeshlabelingwidget.cpp"
-
+#include "qgsapplication.h"
 #include "qgslabelinggui.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerlabeling.h"
 #include "qgsmeshlayerlabelprovider.h"
 #include "qgsproject.h"
-#include "qgsapplication.h"
+
+#include <QDialogButtonBox>
+#include <QDomElement>
+
+#include "moc_qgsmeshlabelingwidget.cpp"
 
 QgsMeshLabelingWidget::QgsMeshLabelingWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

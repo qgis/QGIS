@@ -17,11 +17,11 @@
 #define QGSLAYERTREENODE_H
 
 #include "qgis_core.h"
-#include <QObject>
-
+#include "qgis_sip.h"
 #include "qgsobjectcustomproperties.h"
 #include "qgsreadwritecontext.h"
-#include "qgis_sip.h"
+
+#include <QObject>
 
 class QDomElement;
 

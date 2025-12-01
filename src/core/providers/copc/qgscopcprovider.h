@@ -18,10 +18,10 @@
 #ifndef QGSCOPCPROVIDER_H
 #define QGSCOPCPROVIDER_H
 
+#include <memory>
+
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
-
-#include <memory>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

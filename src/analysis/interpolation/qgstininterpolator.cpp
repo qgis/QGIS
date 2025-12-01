@@ -16,21 +16,22 @@
  ***************************************************************************/
 
 #include "qgstininterpolator.h"
-#include "qgsfeatureiterator.h"
+
 #include "CloughTocherInterpolator.h"
-#include "qgsdualedgetriangulation.h"
-#include "NormVecDecorator.h"
 #include "LinTriangleInterpolator.h"
-#include "qgspoint.h"
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
-#include "qgsvariantutils.h"
-#include "qgsfeedback.h"
+#include "NormVecDecorator.h"
 #include "qgscurve.h"
-#include "qgsmulticurve.h"
 #include "qgscurvepolygon.h"
+#include "qgsdualedgetriangulation.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeedback.h"
+#include "qgsgeometry.h"
+#include "qgsmulticurve.h"
 #include "qgsmultisurface.h"
+#include "qgspoint.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
 
 QgsTinInterpolator::QgsTinInterpolator( const QList<LayerData> &inputData, QgsTinInterpolator::TinInterpolation interpolation, QgsFeedback *feedback )
   : QgsInterpolator( inputData )

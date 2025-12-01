@@ -14,12 +14,15 @@
  ***************************************************************************/
 
 #include "qgsprocessingmatrixmodelerwidget.h"
-#include "moc_qgsprocessingmatrixmodelerwidget.cpp"
+
 #include "qgsgui.h"
+
 #include <QInputDialog>
-#include <QMessageBox>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QToolButton>
+
+#include "moc_qgsprocessingmatrixmodelerwidget.cpp"
 
 ///@cond NOT_STABLE
 

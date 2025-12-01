@@ -16,11 +16,10 @@
 #ifndef QGSPOINT3DSYMBOL_H
 #define QGSPOINT3DSYMBOL_H
 
-#include "qgis_3d.h"
-
-#include "qgsabstract3dsymbol.h"
-#include "qgs3dtypes.h"
 #include "qgis.h"
+#include "qgis_3d.h"
+#include "qgs3dtypes.h"
+#include "qgsabstract3dsymbol.h"
 
 #include <QMatrix4x4>
 

@@ -17,13 +17,12 @@
 #ifndef QGSAUTHPLANETARYCOMPUTERMETHOD_H
 #define QGSAUTHPLANETARYCOMPUTERMETHOD_H
 
-#include <QObject>
-#include <QMutex>
-
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
 
+#include <QMutex>
+#include <QObject>
 
 class QgsAuthPlanetaryComputerMethod : public QgsAuthMethod
 {

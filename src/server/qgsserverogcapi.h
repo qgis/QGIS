@@ -16,9 +16,8 @@
 #ifndef QGSSERVEROGCAPI_H
 #define QGSSERVEROGCAPI_H
 
-#include "qgsserverapi.h"
 #include "qgis_server.h"
-
+#include "qgsserverapi.h"
 
 class QgsServerOgcApiHandler;
 

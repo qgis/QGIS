@@ -15,9 +15,10 @@
 
 #include "qgschunknode.h"
 
-#include "qgschunkedentity.h" // for ChunkLoader destructor
+#include "qgschunkedentity.h"
 #include "qgschunklist_p.h"
 #include "qgschunkloader.h"
+
 #include <Qt3DCore/QEntity>
 
 ///@cond PRIVATE

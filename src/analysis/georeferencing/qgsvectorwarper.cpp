@@ -14,16 +14,19 @@
  ***************************************************************************/
 
 #include "qgsvectorwarper.h"
-#include "moc_qgsvectorwarper.cpp"
+
+#include <memory>
+
 #include "qgsfeaturesink.h"
 #include "qgsfeedback.h"
 #include "qgsgcpgeometrytransformer.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
-#include <QObject>
 #include <QFileInfo>
-#include <memory>
+#include <QObject>
+
+#include "moc_qgsvectorwarper.cpp"
 
 QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points, const QgsCoordinateReferenceSystem &destinationCrs )
   : mMethod( method )

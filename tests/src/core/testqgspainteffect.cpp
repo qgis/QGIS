@@ -12,40 +12,40 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsblureffect.h"
+#include "qgscolorrampimpl.h"
+#include "qgseffectstack.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgloweffect.h"
+#include "qgslayout.h"
+#include "qgslayoutexporter.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmapsettings.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
+#include "qgsproject.h"
+#include "qgsshadoweffect.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
+#include "qgstransformeffect.h"
+#include "qgsvectorlayer.h"
+
 #include <QApplication>
 #include <QDir>
+#include <QObject>
 #include <QPainter>
 #include <QPicture>
-
-#include "qgspainteffect.h"
-#include "qgsblureffect.h"
-#include "qgsshadoweffect.h"
-#include "qgseffectstack.h"
-#include "qgsgloweffect.h"
-#include "qgstransformeffect.h"
-#include "qgspainteffectregistry.h"
-#include "qgscolorrampimpl.h"
-#include "qgsmapsettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgssymbol.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgslayout.h"
-#include "qgslayoutitempage.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutpagecollection.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgslayoutexporter.h"
+#include <QString>
+#include <QStringList>
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"

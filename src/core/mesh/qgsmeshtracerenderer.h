@@ -19,16 +19,16 @@
 #define QGSMESHTRACERENDERER_H
 
 
-#include <QVector>
-#include <QSize>
-
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgstriangularmesh.h"
+#include "qgis_core.h"
+#include "qgsmaptopixel.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshvectorrenderer.h"
-#include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
+#include "qgstriangularmesh.h"
+
+#include <QSize>
+#include <QVector>
 
 class QgsMeshLayerInterpolator;
 class QgsMeshLayerRendererFeedback;

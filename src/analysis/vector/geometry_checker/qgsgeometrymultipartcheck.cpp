@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrymultipartcheck.h"
+
 #include "qgsfeaturepool.h"
 
 QList<QgsSingleGeometryCheckError *> QgsGeometryMultipartCheck::processGeometry( const QgsGeometry &geometry ) const

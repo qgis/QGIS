@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgsprocessingparameterdxflayers.h"
-#include "qgsvectorlayer.h"
 
+#include "qgsvectorlayer.h"
 
 QgsProcessingParameterDxfLayers::QgsProcessingParameterDxfLayers( const QString &name, const QString &description )
   : QgsProcessingParameterDefinition( name, description, QVariant(), false )

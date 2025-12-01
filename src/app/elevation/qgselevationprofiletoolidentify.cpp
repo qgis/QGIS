@@ -18,20 +18,22 @@
 #include "qgselevationprofiletoolidentify.h"
 
 #include <memory>
-#include "moc_qgselevationprofiletoolidentify.cpp"
-#include "qgsplotcanvas.h"
-#include "qgsplotmouseevent.h"
-#include "qgsapplication.h"
-#include "qgsplotrubberband.h"
-#include "qgselevationprofilecanvas.h"
+
+#include "qgisapp.h"
 #include "qgsabstractprofilegenerator.h"
+#include "qgsapplication.h"
+#include "qgselevationprofilecanvas.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolidentifyaction.h"
-#include "qgisapp.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
+#include "qgsplotcanvas.h"
+#include "qgsplotmouseevent.h"
+#include "qgsplotrubberband.h"
 #include "qgspointcloudlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgselevationprofiletoolidentify.cpp"
 
 QgsElevationProfileToolIdentify::QgsElevationProfileToolIdentify( QgsElevationProfileCanvas *canvas )
   : QgsPlotTool( canvas, tr( "Identify" ) )

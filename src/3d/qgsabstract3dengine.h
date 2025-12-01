@@ -18,8 +18,8 @@
 
 #include "qgis_3d.h"
 
-#include <QObject>
 #include <QElapsedTimer>
+#include <QObject>
 
 #define SIP_NO_FILE
 

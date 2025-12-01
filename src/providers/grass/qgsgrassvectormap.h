@@ -17,13 +17,12 @@
 #ifndef QGSGRASSVECTORMAP_H
 #define QGSGRASSVECTORMAP_H
 
-#include <QDateTime>
-#include <QObject>
-
 #include "qgsabstractgeometry.h"
-
 #include "qgsgrass.h"
 #include "qgsgrassvectormaplayer.h"
+
+#include <QDateTime>
+#include <QObject>
 
 class QgsGrassUndoCommand;
 

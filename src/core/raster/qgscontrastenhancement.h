@@ -21,12 +21,12 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #ifndef QGSCONTRASTENHANCEMENT_H
 #define QGSCONTRASTENHANCEMENT_H
 
-#include "qgis_core.h"
 #include <limits>
+#include <memory>
 
+#include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsraster.h"
-#include <memory>
 
 class QgsContrastEnhancementFunction;
 class QDomDocument;

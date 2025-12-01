@@ -17,14 +17,14 @@
 
 #include "qgsarrowsymbollayer.h"
 #include "qgsellipsesymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
-#include "qgsvectorfieldsymbollayer.h"
-#include "qgsmasksymbollayer.h"
 #include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsinterpolatedlinerenderer.h"
 #include "qgslinearreferencingsymbollayer.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmasksymbollayer.h"
+#include "qgsvectorfieldsymbollayer.h"
 
 QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
 {

@@ -16,10 +16,12 @@
 #ifndef QGSTEXTUREATLASGENERATOR_H
 #define QGSTEXTUREATLASGENERATOR_H
 
-#include "qgis_3d.h"
 #include <vector>
-#include <QRect>
+
+#include "qgis_3d.h"
+
 #include <QImage>
+#include <QRect>
 
 ///@cond PRIVATE
 class QgsTextureRect;

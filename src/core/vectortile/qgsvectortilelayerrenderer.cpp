@@ -14,26 +14,28 @@
  ***************************************************************************/
 
 #include "qgsvectortilelayerrenderer.h"
+
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
-#include "qgslogger.h"
-#include "qgsvectortilemvtdecoder.h"
-#include "qgsvectortilelayer.h"
-#include "qgsvectortileloader.h"
-#include "qgsvectortileutils.h"
 #include "qgslabelingengine.h"
-#include "qgsvectortilelabeling.h"
+#include "qgslogger.h"
 #include "qgsmapclippingutils.h"
 #include "qgsrendercontext.h"
-#include "qgsvectortiledataprovider.h"
-#include "qgstextrenderer.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
+#include "qgstextrenderer.h"
 #include "qgsthreadingutils.h"
+#include "qgsvectortiledataprovider.h"
+#include "qgsvectortilelabeling.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortileloader.h"
+#include "qgsvectortilemvtdecoder.h"
+#include "qgsvectortileutils.h"
 
 #include <QElapsedTimer>
 #include <QThread>
-#include <memory>
 
 QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )

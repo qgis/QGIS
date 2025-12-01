@@ -10,7 +10,6 @@
 
 
 
-
 class QgsTiledSceneLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
 {
 %Docstring(signature="appended")

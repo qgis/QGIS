@@ -19,10 +19,10 @@
 
 #define SIP_NO_FILE
 
-#include <QString>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QString>
 
 class QgsAuthMethod;
 

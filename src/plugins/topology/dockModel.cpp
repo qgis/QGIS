@@ -16,10 +16,13 @@
  ***************************************************************************/
 
 #include "dockModel.h"
-#include "moc_dockModel.cpp"
-#include "topolError.h"
+
 #include "qgsvectorlayer.h"
+#include "topolError.h"
+
 #include <qlogging.h>
+
+#include "moc_dockModel.cpp"
 
 DockModel::DockModel( QObject *parent )
 {

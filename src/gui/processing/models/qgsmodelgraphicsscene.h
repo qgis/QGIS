@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingcontext.h"
+
 #include <QGraphicsScene>
 
 class QgsProcessingModelAlgorithm;

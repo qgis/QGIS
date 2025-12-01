@@ -15,12 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmesh3daveraging.h"
+
 #include <memory>
 
-#include "qgsmesh3daveraging.h"
+#include "qgsfeedback.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
-#include "qgsfeedback.h"
 
 // threshold for length intervals, to avoid division by 0
 static const double eps = 1e-6;

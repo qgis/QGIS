@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayoutchartseriesdetailswidget.h"
-#include "moc_qgslayoutchartseriesdetailswidget.cpp"
+
 #include "qgsexpressionbuilderdialog.h"
+
+#include "moc_qgslayoutchartseriesdetailswidget.cpp"
 
 QgsLayoutChartSeriesDetailsWidget::QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, QWidget *parent )
   : QgsPanelWidget( parent )

@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnativealgorithms.h"
-#include "qgsprocessingregistry.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingregistry.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 

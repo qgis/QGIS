@@ -19,9 +19,9 @@
 
 #include "ui_qgsmeshtransformcoordinatesdockwidgetbase.h"
 
+#include "qgisapp.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsmeshadvancedediting.h"
-#include "qgisapp.h"
 
 class QgsMeshLayer;
 

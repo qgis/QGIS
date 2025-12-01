@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstiledscenetile.h"
+
 #include "qgstiledsceneboundingvolume.h"
 
 QgsTiledSceneTile::QgsTiledSceneTile()

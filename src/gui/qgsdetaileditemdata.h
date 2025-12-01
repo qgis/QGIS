@@ -18,10 +18,11 @@
 #define QGSDETAILEDITEMDATA_H
 
 
-#include <QMetaType>
-#include <QString>
-#include <QPixmap>
 #include "qgis_gui.h"
+
+#include <QMetaType>
+#include <QPixmap>
+#include <QString>
 
 /**
  * \ingroup gui

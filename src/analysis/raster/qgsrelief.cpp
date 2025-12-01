@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
-#include "qgslogger.h"
 #include "qgsrelief.h"
-#include "qgsaspectfilter.h"
-#include "qgshillshadefilter.h"
-#include "qgsslopefilter.h"
-#include "qgsfeedback.h"
-#include "qgis.h"
-#include "cpl_string.h"
-#include "qgsogrutils.h"
+
+#include <cpl_string.h>
 #include <cfloat>
 
-#include <QVector>
+#include "qgis.h"
+#include "qgsaspectfilter.h"
+#include "qgsfeedback.h"
+#include "qgsgdalutils.h"
+#include "qgshillshadefilter.h"
+#include "qgslogger.h"
+#include "qgsogrutils.h"
+#include "qgsslopefilter.h"
+
 #include <QColor>
 #include <QFile>
 #include <QTextStream>
+#include <QVector>
 
 QgsRelief::QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
   : mInputFile( inputFile )

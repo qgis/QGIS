@@ -12,14 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QSettings>
-
 #include "qgsapplication.h"
 #include "qgsfontutils.h"
+#include "qgstest.h"
+
+#include <QObject>
+#include <QSettings>
+#include <QString>
+#include <QStringList>
 
 class TestQgsFontUtils : public QObject
 {

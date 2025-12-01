@@ -16,12 +16,12 @@
 #ifndef QGSABSTRACTDATABASEPROVIDERCONNECTION_H
 #define QGSABSTRACTDATABASEPROVIDERCONNECTION_H
 
+#include "qgis_core.h"
+#include "qgsabstractlayermetadataprovider.h"
 #include "qgsabstractproviderconnection.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
-#include "qgsabstractlayermetadataprovider.h"
 
 #include <QObject>
 

@@ -16,11 +16,11 @@
 #ifndef QGSTEXTRENDERERUTILS_H
 #define QGSTEXTRENDERERUTILS_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgstextbackgroundsettings.h"
-#include "qgstextshadowsettings.h"
 #include "qgstextmetrics.h"
+#include "qgstextshadowsettings.h"
 
 /**
  * \class QgsTextRendererUtils

@@ -18,11 +18,10 @@
 #include <memory>
 
 #include "qgs3dutils.h"
-#include "qgslogger.h"
-#include "qgsrasterlayer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgdalutils.h"
-
+#include "qgslogger.h"
+#include "qgsrasterlayer.h"
 
 QgsTerrainDownloader::QgsTerrainDownloader( const QgsCoordinateTransformContext &transformContext )
 {

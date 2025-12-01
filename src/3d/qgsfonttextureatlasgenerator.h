@@ -16,11 +16,13 @@
 #ifndef QGSFONTTEXTUREATLASGENERATOR_H
 #define QGSFONTTEXTUREATLASGENERATOR_H
 
+#include <vector>
+
 #include "qgis_3d.h"
 #include "qgstextformat.h"
-#include <vector>
-#include <QRect>
+
 #include <QImage>
+#include <QRect>
 
 ///@cond PRIVATE
 class QgsCharTextureRect;

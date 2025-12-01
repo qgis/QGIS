@@ -19,9 +19,10 @@
 #include "qgsservercachemanager.h"
 
 #include <memory>
-#include "qgsserverprojectutils.h"
-#include "qgsmessagelog.h"
+
 #include "qgis.h"
+#include "qgsmessagelog.h"
+#include "qgsserverprojectutils.h"
 
 QgsServerCacheManager::QgsServerCacheManager( const QgsServerSettings &settings )
   : mSettings( settings )

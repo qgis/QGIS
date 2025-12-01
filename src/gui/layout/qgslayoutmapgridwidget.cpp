@@ -16,18 +16,20 @@
  ***************************************************************************/
 
 #include "qgslayoutmapgridwidget.h"
-#include "moc_qgslayoutmapgridwidget.cpp"
+
+#include "qgsexpressionbuilderdialog.h"
+#include "qgslayout.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssymbol.h"
-#include "qgslayoutitemmap.h"
-#include "qgsproject.h"
-#include "qgslayout.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgsvectorlayer.h"
-#include "qgsprojectviewsettings.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgslayoutreportcontext.h"
+
+#include "moc_qgslayoutmapgridwidget.cpp"
 
 QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, QgsLayoutItemMap *map )
   : QgsLayoutItemBaseWidget( nullptr, mapGrid )

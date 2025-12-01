@@ -13,25 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
 #include <memory>
-
-#include "qgstest.h"
 
 #include "qgs3d.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
+#include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayer3drenderer.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshterraingenerator.h"
-#include "qgsmeshlayer3drenderer.h"
-#include "qgsmaplayertemporalproperties.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointlightsettings.h"
 #include "qgsproject.h"
-#include "qgs3drendercontext.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsMesh3DRendering : public QgsTest
 {

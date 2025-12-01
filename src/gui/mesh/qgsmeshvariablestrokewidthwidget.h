@@ -16,10 +16,11 @@
 #ifndef QGSMESHVARIABLESTROKEWIDTHWIDGET_H
 #define QGSMESHVARIABLESTROKEWIDTHWIDGET_H
 
-#include "qgis_gui.h"
 #include "ui_qgsmeshvariablestrokewidthwidgetbase.h"
-#include "qgspanelwidget.h"
+
+#include "qgis_gui.h"
 #include "qgsmeshlayerrenderer.h"
+#include "qgspanelwidget.h"
 
 SIP_NO_FILE
 

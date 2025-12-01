@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsTableEditorDialog : QMainWindow
 {
 %Docstring(signature="appended")

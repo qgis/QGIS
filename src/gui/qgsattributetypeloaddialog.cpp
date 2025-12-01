@@ -16,26 +16,27 @@
  ***************************************************************************/
 
 #include "qgsattributetypeloaddialog.h"
-#include "moc_qgsattributetypeloaddialog.cpp"
 
-#include "qgsmaplayer.h"
 #include "qgsfeatureiterator.h"
-#include "qgsvectordataprovider.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
-#include <QTableWidgetItem>
-#include <QLineEdit>
 #include <QComboBox>
-#include <QLabel>
-#include <QFrame>
 #include <QCompleter>
-#include <QSpinBox>
-#include <QPushButton>
-#include <QHBoxLayout>
 #include <QFileDialog>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QTableWidgetItem>
+
+#include "moc_qgsattributetypeloaddialog.cpp"
 
 QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   : mLayer( vl )

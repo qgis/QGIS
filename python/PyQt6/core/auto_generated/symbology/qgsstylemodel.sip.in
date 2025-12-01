@@ -10,6 +10,7 @@
 
 
 
+
 class QgsStyleModel: QAbstractItemModel
 {
 %Docstring(signature="appended")

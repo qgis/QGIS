@@ -13,26 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
+#include "qgsmaplayer.h"
+#include "qgsmapsettings.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmultirenderchecker.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
-
-#include <qgsmapsettings.h>
-#include <qgsmaplayer.h>
-#include <qgsvectorlayer.h>
-#include <qgsapplication.h>
-#include <qgsproviderregistry.h>
-#include <qgsproject.h>
-#include <qgssymbol.h>
-#include <qgssinglesymbolrenderer.h>
-#include <qgsmarkersymbollayer.h>
-#include "qgsmarkersymbol.h"
-#include "qgsmultirenderchecker.h"
 
 /**
  * \ingroup UnitTests
