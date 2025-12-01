@@ -23,6 +23,8 @@
 #include <QtMultimedia/QMediaCaptureSession>
 #include <QtMultimedia/QVideoFrameInput>
 #include <QtMultimedia/QVideoFrame>
+#else
+#include "qgsexception.h"
 #endif
 
 bool QgsVideoExporter::isAvailable()
