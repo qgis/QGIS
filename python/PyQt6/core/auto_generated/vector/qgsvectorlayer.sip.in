@@ -2807,6 +2807,7 @@ by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
 %Docstring
 Sets the coordinate transform context to ``transformContext``
 

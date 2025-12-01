@@ -50,7 +50,7 @@ class CORE_EXPORT QgsGeoPackageProjectStorage : public QgsProjectStorage
     bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata ) override;
     static QString encodeUri( const QgsGeoPackageProjectUri &postUri );
     static QgsGeoPackageProjectUri decodeUri( const QString &uri );
-    virtual QString filePath( const QString &uri ) override;
+    QString filePath( const QString &uri ) override;
 
   private:
     QString _executeSql( const QString &uri, const QString &sql );

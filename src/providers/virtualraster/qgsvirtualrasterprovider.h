@@ -30,7 +30,7 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
     Q_OBJECT
   public:
     QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
-    virtual ~QgsVirtualRasterProvider() override;
+    ~QgsVirtualRasterProvider() override;
 
     QgsVirtualRasterProvider &operator=( QgsVirtualRasterProvider other ) = delete;
 
@@ -48,27 +48,27 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
 
     // QgsDataProvider interface
     Qgis::DataProviderFlags flags() const override;
-    virtual bool isValid() const override;
-    virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsRectangle extent() const override;
-    virtual QString name() const override;
-    virtual QString description() const override;
+    bool isValid() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsRectangle extent() const override;
+    QString name() const override;
+    QString description() const override;
 
     // QgsRasterInterface interface
-    virtual int xBlockSize() const override;
-    virtual int yBlockSize() const override;
-    virtual int bandCount() const override;
-    virtual QgsVirtualRasterProvider *clone() const override;
-    virtual Qgis::DataType dataType( int bandNo ) const override;
-    virtual Qgis::DataType sourceDataType( int bandNo ) const override;
+    int xBlockSize() const override;
+    int yBlockSize() const override;
+    int bandCount() const override;
+    QgsVirtualRasterProvider *clone() const override;
+    Qgis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType sourceDataType( int bandNo ) const override;
 
     int xSize() const override;
     int ySize() const override;
 
     // QgsRasterDataProvider interface
-    virtual QString htmlMetadata() const override;
-    virtual QString lastErrorTitle() override;
-    virtual QString lastError() override;
+    QString htmlMetadata() const override;
+    QString lastErrorTitle() override;
+    QString lastError() override;
     Qgis::RasterInterfaceCapabilities capabilities() const override;
 
     static QString providerKey();

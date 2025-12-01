@@ -534,6 +534,7 @@ data extent.
     void showStatusMessage( const QString &message );
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
 %Docstring
 Sets the coordinate transform context to ``transformContext``
 

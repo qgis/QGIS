@@ -60,7 +60,7 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
 
     ~QgsTiledSceneChunkLoader();
 
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     const QgsTiledSceneChunkLoaderFactory &mFactory;
@@ -92,12 +92,12 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
       double zValueOffset
     );
 
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
-    virtual QgsChunkNode *createRootNode() const override;
-    virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QgsChunkNode *createRootNode() const override;
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
-    virtual bool canCreateChildren( QgsChunkNode *node ) override;
-    virtual void prepareChildren( QgsChunkNode *node ) override;
+    bool canCreateChildren( QgsChunkNode *node ) override;
+    void prepareChildren( QgsChunkNode *node ) override;
 
     QgsChunkNode *nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const;
     void fetchHierarchyForNode( long long nodeId, QgsChunkNode *origNode );
