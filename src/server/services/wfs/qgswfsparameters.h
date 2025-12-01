@@ -67,7 +67,7 @@ namespace QgsWfs
        */
       QgsWfsParameter( const QgsWfsParameter::Name name = QgsWfsParameter::UNKNOWN, const QMetaType::Type type = QMetaType::Type::QString, const QVariant defaultValue = QVariant( "" ) );
 
-      virtual ~QgsWfsParameter() = default;
+      ~QgsWfsParameter() override = default;
 
       /**
        * Converts the parameter into an integer.
@@ -148,7 +148,7 @@ namespace QgsWfs
        */
       QgsWfsParameters();
 
-      virtual ~QgsWfsParameters() = default;
+      ~QgsWfsParameters() override = default;
 
       /**
        * Dumps parameters.

@@ -41,7 +41,7 @@ class QgsAppWindowManager : public QgsWindowManagerInterface
     };
 
     QgsAppWindowManager() = default;
-    ~QgsAppWindowManager();
+    ~QgsAppWindowManager() override;
 
     QWidget *openStandardDialog( QgsWindowManagerInterface::StandardDialog dialog ) override;
 

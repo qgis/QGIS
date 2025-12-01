@@ -286,7 +286,7 @@ class GUI_EXPORT QgsGui : public QObject
     */
     static QgsGui::HigFlags higFlags();
 
-    ~QgsGui();
+    ~QgsGui() override;
 
     /**
      * Samples the color on screen at the specified global \a point (pixel).

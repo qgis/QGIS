@@ -44,7 +44,7 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
     Q_OBJECT
   public:
     QgsMeshTriangulation();
-    ~QgsMeshTriangulation();
+    ~QgsMeshTriangulation() override;
 
     /**
      * Adds vertices to the triangulation from a feature iterator, return TRUE if successful.

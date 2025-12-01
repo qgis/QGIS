@@ -178,7 +178,7 @@ class GUI_EXPORT QgsSettingsTreeModel : public QAbstractItemModel
     //! Constructor
     QgsSettingsTreeModel( QgsSettingsTreeNode *rootNode = nullptr, QObject *parent = nullptr );
 
-    ~QgsSettingsTreeModel();
+    ~QgsSettingsTreeModel() override;
 
     //! Apply pending changes in the model to the corresponding settings
     void applyChanges();

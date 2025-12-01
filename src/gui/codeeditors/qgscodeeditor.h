@@ -404,7 +404,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void setLinearSelection( int start, int end );
 
     // Override QsciScintilla::callTip to handle wrapping
-    virtual void callTip() override;
+    void callTip() override;
 
     /**
      * Returns the linear position of the start of the last wrapped part for the specified line, or

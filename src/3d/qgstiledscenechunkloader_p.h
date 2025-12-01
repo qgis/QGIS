@@ -58,7 +58,7 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
     QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset );
     void start() override;
 
-    ~QgsTiledSceneChunkLoader();
+    ~QgsTiledSceneChunkLoader() override;
 
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
@@ -130,7 +130,7 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
   public:
     explicit QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset );
 
-    ~QgsTiledSceneLayerChunkedEntity();
+    ~QgsTiledSceneLayerChunkedEntity() override;
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 

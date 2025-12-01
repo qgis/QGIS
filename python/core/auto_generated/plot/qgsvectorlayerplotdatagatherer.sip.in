@@ -40,7 +40,7 @@ An abstract vector layer plot data gatherer base class.
   public:
 
     QgsVectorLayerAbstractPlotDataGatherer();
-    virtual ~QgsVectorLayerAbstractPlotDataGatherer();
+    ~QgsVectorLayerAbstractPlotDataGatherer();
 
     virtual QgsPlotData data() const = 0;
 %Docstring

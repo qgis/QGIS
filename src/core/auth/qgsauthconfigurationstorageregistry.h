@@ -48,7 +48,7 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
      */
     QgsAuthConfigurationStorageRegistry();
 
-    virtual ~QgsAuthConfigurationStorageRegistry();
+    ~QgsAuthConfigurationStorageRegistry() override;
 
     /**
      * Add an authentication configuration storage to the registry.

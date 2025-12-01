@@ -71,7 +71,7 @@ class QgsTabBar : public QTabBar
     void setTabBarStyle( QgsTabBarProxyStyle *tabStyle );
 
   protected:
-    QSize tabSizeHint( int index ) const;
+    QSize tabSizeHint( int index ) const override;
 
   private:
     QgsTabBarProxyStyle *mTabBarStyle = nullptr;

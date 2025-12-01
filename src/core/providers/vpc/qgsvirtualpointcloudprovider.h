@@ -37,7 +37,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
                                   const QgsDataProvider::ProviderOptions &providerOptions,
                                   Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
-    ~QgsVirtualPointCloudProvider();
+    ~QgsVirtualPointCloudProvider() override;
 
     Qgis::DataProviderFlags flags() const override;
     QgsPointCloudDataProvider::Capabilities capabilities() const override;

@@ -40,7 +40,7 @@ class QgsGdalItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
   public:
     QgsGdalItemGuiProvider();
-    ~QgsGdalItemGuiProvider();
+    ~QgsGdalItemGuiProvider() override;
 
     QString name() override;
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;

@@ -37,7 +37,7 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     // TODO QGIS 4 do not inherit QgsSettingsRegistry
   public:
     QgsSettingsRegistryGui();
-    virtual ~QgsSettingsRegistryGui();
+    ~QgsSettingsRegistryGui() override;
 
 #ifndef SIP_RUN
     //! Settings entry respect screen dpi

@@ -34,7 +34,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsNullSymbolRenderer();
-    ~QgsNullSymbolRenderer();
+    ~QgsNullSymbolRenderer() override;
 
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;

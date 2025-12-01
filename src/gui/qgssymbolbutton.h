@@ -53,7 +53,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * Use \a dialogTitle string to define the title to show in the symbol settings dialog.
      */
     QgsSymbolButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
-    ~QgsSymbolButton();
+    ~QgsSymbolButton() override;
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;

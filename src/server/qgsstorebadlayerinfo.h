@@ -40,7 +40,7 @@ class SERVER_EXPORT QgsStoreBadLayerInfo : public QgsProjectBadLayerHandler
      * \brief handleBadLayers
      * \param layers layer nodes
      */
-    void handleBadLayers( const QList<QDomNode> &layers );
+    void handleBadLayers( const QList<QDomNode> &layers ) override;
 
     /**
      * \brief badLayers

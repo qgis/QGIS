@@ -63,7 +63,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     //! Ctor
     explicit QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
-    ~QgsPointCloudLayerRenderer();
+    ~QgsPointCloudLayerRenderer() override;
 
     bool render() override;
     Qgis::MapLayerRendererFlags flags() const override;

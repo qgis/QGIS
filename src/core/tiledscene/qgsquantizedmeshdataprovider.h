@@ -138,7 +138,7 @@ class QgsQuantizedMeshProviderMetadata : public QgsProviderMetadata
     QgsQuantizedMeshProviderMetadata();
     QgsDataProvider *createProvider( const QString &uri,
                                      const QgsDataProvider::ProviderOptions &providerOptions,
-                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+                                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
 };
 
 ///@endcond

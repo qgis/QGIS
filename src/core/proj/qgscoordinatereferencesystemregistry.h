@@ -71,7 +71,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      */
     explicit QgsCoordinateReferenceSystemRegistry( QObject *parent = nullptr );
 
-    ~QgsCoordinateReferenceSystemRegistry();
+    ~QgsCoordinateReferenceSystemRegistry() override;
 
     /**
      * \brief Contains details of a custom (user defined) CRS.

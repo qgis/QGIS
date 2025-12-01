@@ -43,7 +43,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * Must be created on the same thread as \a layer.
      */
     QgsFeaturePool( QgsVectorLayer *layer );
-    virtual ~QgsFeaturePool() = default;
+    ~QgsFeaturePool() override = default;
 
     /**
      * Retrieves the feature with the specified \a id into \a feature.

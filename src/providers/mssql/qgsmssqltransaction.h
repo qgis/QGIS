@@ -27,7 +27,7 @@ class QgsMssqlTransaction : public QgsTransaction
     Q_OBJECT
   public:
     QgsMssqlTransaction( const QString &connString );
-    ~QgsMssqlTransaction();
+    ~QgsMssqlTransaction() override;
 
     bool executeSql( const QString &sql, QString &error, bool isDirty = false, const QString &name = QString() ) override;
 

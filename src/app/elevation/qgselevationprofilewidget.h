@@ -102,7 +102,7 @@ class QgsElevationProfileWidget : public QWidget
     static const QgsSettingsEntryBool *settingShowScaleRatioInToolbar;
 
     QgsElevationProfileWidget( QgsElevationProfile *profile, QgsMapCanvas *canvas );
-    ~QgsElevationProfileWidget();
+    ~QgsElevationProfileWidget() override;
 
     /**
      * Modifies an elevation \a profile to apply default QGIS app settings to it.

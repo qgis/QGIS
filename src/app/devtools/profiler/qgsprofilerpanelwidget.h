@@ -68,7 +68,7 @@ class CostDelegate : public QStyledItemDelegate
     Q_OBJECT
   public:
     explicit CostDelegate( quint32 sortRole, quint32 totalCostRole, QObject *parent = nullptr );
-    ~CostDelegate();
+    ~CostDelegate() override;
 
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 

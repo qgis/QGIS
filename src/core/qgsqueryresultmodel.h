@@ -87,7 +87,7 @@ class CORE_EXPORT QgsQueryResultModel : public QAbstractTableModel
      */
     QgsQueryResultModel( const QgsAbstractDatabaseProviderConnection::QueryResult &queryResult, QObject *parent = nullptr );
 
-    ~QgsQueryResultModel();
+    ~QgsQueryResultModel() override;
 
     // QAbstractItemModel interface
   public:

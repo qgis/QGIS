@@ -41,7 +41,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
 
     Qgis::ScriptLanguage language() const override;
 
-    virtual ~QgsCodeEditorSQL();
+    ~QgsCodeEditorSQL() override;
 
     /**
      * Set field names to be added to the lexer API.

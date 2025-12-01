@@ -36,7 +36,7 @@ class QgsStacSearchParametersDialog : public QDialog, private Ui::QgsStacSearchP
 
   public:
     QgsStacSearchParametersDialog( QgsStacController *stac, QgsMapCanvas *canvas, QWidget *parent = nullptr );
-    ~QgsStacSearchParametersDialog();
+    ~QgsStacSearchParametersDialog() override;
 
     void accept() override;
     void reject() override;

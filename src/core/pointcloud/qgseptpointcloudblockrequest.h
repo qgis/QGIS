@@ -50,7 +50,7 @@ class CORE_EXPORT QgsEptPointCloudBlockRequest : public QgsPointCloudBlockReques
                                   const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect,
                                   const QString &authcfg = QString() );
 
-    ~QgsEptPointCloudBlockRequest() = default;
+    ~QgsEptPointCloudBlockRequest() override = default;
   private:
     QString mDataType;
   private slots:

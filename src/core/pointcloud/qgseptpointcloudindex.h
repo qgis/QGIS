@@ -37,7 +37,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsAbstractPointCloudIndex
   public:
 
     explicit QgsEptPointCloudIndex();
-    ~QgsEptPointCloudIndex();
+    ~QgsEptPointCloudIndex() override;
 
     void load( const QString &urlString, const QString &authcfg = QString() ) override;
 

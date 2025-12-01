@@ -45,7 +45,7 @@ class QgsDelimitedTextFileScanTask : public QgsTask
       , mDataSource( dataSource ) {
       };
 
-    ~QgsDelimitedTextFileScanTask()
+    ~QgsDelimitedTextFileScanTask() override
     {
     }
 

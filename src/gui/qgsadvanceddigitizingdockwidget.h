@@ -254,7 +254,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \param userInputWidget The user input widget on which tools can add widget overlays on top of the map canvas (since QGIS 3.40)
      */
     explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = nullptr, QgsUserInputWidget *userInputWidget = nullptr );
-    ~QgsAdvancedDigitizingDockWidget();
+    ~QgsAdvancedDigitizingDockWidget() override;
 
     /**
      * Filter key events to e.g. toggle construction mode or adapt constraints
