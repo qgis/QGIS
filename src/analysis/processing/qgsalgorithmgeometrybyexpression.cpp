@@ -126,7 +126,8 @@ bool QgsGeometryByExpressionAlgorithm::prepareAlgorithm( const QVariantMap &para
     return false;
   }
 
-  mExpressionContext = createExpressionContext( parameters, context );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  mExpressionContext = createExpressionContext( parameters, context, source.get() );
   mExpression.prepare( &mExpressionContext );
 
   return true;
