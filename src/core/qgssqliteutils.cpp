@@ -17,8 +17,8 @@
 
 #include "qgssqliteutils.h"
 
-#include <sqlite3.h>
 #include <cstdarg>
+#include <sqlite3.h>
 
 #include "qgsvariantutils.h"
 

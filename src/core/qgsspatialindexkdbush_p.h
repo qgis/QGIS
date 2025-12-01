@@ -31,8 +31,8 @@
 // version without notice, or even be removed.
 //
 
-#include <memory>
 #include <functional>
+#include <memory>
 
 #include "kdbush.hpp"
 #include "qgsfeature.h"

@@ -16,10 +16,10 @@
 
 #include "qgsgeoreftransform.h"
 
+#include <cassert>
+#include <cmath>
 #include <gdal.h>
 #include <gdal_alg.h>
-#include <cmath>
-#include <cassert>
 #include <limits>
 
 QgsGeorefTransform::QgsGeorefTransform( const QgsGeorefTransform &other )

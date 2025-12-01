@@ -18,8 +18,8 @@
 
 #include "qgsvectorlayerproperties.h"
 
-#include <memory>
 #include <limits>
+#include <memory>
 
 #include "qgsactionmanager.h"
 #include "qgsapplication.h"

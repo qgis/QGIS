@@ -17,8 +17,8 @@
 
 #include "qgsalgorithmrandomraster.h"
 
-#include <random>
 #include <limits>
+#include <random>
 
 #include "qgsrasterfilewriter.h"
 #include "qgsstringutils.h"

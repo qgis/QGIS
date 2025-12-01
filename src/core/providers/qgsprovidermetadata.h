@@ -20,8 +20,8 @@
 #define QGSPROVIDERMETADATA_H
 
 
-#include <memory>
 #include <functional>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"

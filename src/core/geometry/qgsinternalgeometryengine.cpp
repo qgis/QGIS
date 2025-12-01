@@ -17,9 +17,9 @@
 #include "qgsinternalgeometryengine.h"
 
 #include <functional>
+#include <geos_c.h>
 #include <memory>
 #include <random>
-#include <geos_c.h>
 
 #include "qgscircle.h"
 #include "qgscircularstring.h"

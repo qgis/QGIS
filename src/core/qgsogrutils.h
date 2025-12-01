@@ -18,11 +18,11 @@
 
 #define SIP_NO_FILE
 
-#include <ogr_api.h>
-#include <gdal.h>
-#include <gdalwarper.h>
 #include <cpl_conv.h>
 #include <cpl_string.h>
+#include <gdal.h>
+#include <gdalwarper.h>
+#include <ogr_api.h>
 
 #include "qgis_core.h"
 #include "qgsfeature.h"

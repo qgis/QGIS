@@ -16,8 +16,8 @@
  ***************************************************************************/
 #include "qgshanaproviderconnection.h"
 
-#include <odbc/PreparedStatement.h>
 #include <chrono>
+#include <odbc/PreparedStatement.h>
 
 #include "qgsexception.h"
 #include "qgsfeedback.h"

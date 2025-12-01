@@ -17,8 +17,8 @@
  ***************************************************************************/
 #include "qgsvectorlayersaveasdialog.h"
 
-#include <limits>
 #include <gdal.h>
+#include <limits>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatums.h"

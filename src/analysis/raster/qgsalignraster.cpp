@@ -15,10 +15,10 @@
 
 #include "qgsalignraster.h"
 
-#include <gdalwarper.h>
-#include <ogr_srs_api.h>
 #include <cpl_conv.h>
+#include <gdalwarper.h>
 #include <limits>
+#include <ogr_srs_api.h>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"

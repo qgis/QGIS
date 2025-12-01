@@ -15,8 +15,8 @@
 
 #include "qgsvtpktiles.h"
 
-#include <zip.h>
 #include <iostream>
+#include <zip.h>
 
 #include "qgsarcgisrestutils.h"
 #include "qgsjsonutils.h"

@@ -16,8 +16,8 @@
 
 #include "qgslayoutitemnodeitem.h"
 
-#include <limits>
 #include <cmath>
+#include <limits>
 
 #include "qgslayout.h"
 #include "qgslayoutrendercontext.h"

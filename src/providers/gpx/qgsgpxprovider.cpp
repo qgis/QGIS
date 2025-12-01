@@ -18,9 +18,9 @@
  ***************************************************************************/
 
 #include <algorithm>
-#include <limits>
-#include <cstring>
 #include <cmath>
+#include <cstring>
+#include <limits>
 
 // Changed #include <qapp.h> to <qapplication.h>. Apparently some
 // debian distros do not include the qapp.h wrapper and the compilation

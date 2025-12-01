@@ -15,8 +15,8 @@
 #ifndef QGSRUNTIMEPROFILER_H
 #define QGSRUNTIMEPROFILER_H
 
-#include <memory>
 #include <deque>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"

@@ -15,10 +15,10 @@
 
 #include "qgsrasteranalysisutils.h"
 
+#include <cmath>
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
-#include <cmath>
 
 #include "qgsfeedback.h"
 #include "qgsgeos.h"

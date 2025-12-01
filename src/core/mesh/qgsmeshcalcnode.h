@@ -22,8 +22,8 @@
 
 ///@cond PRIVATE
 
-#include <memory>
 #include <limits>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgsmeshcalcutils.h"

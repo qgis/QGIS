@@ -16,8 +16,8 @@
 
 #include "qgsgeopackageproviderconnection.h"
 
-#include <sqlite3.h>
 #include <chrono>
+#include <sqlite3.h>
 
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"

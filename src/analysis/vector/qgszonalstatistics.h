@@ -18,8 +18,8 @@
 #ifndef QGSZONALSTATISTICS_H
 #define QGSZONALSTATISTICS_H
 
-#include <limits>
 #include <cfloat>
+#include <limits>
 
 #include "qgis_analysis.h"
 #include "qgscoordinatereferencesystem.h"

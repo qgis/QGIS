@@ -15,8 +15,8 @@
 
 #include "costcalculator.h"
 
-#include <cmath>
 #include <cfloat>
+#include <cmath>
 
 #include "feature.h"
 #include "labelposition.h"

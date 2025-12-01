@@ -19,7 +19,6 @@
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 
-#include <fcgi_stdio.h>
 #include <cstdlib>
 
 #include "qgsapplication.h"
@@ -30,6 +29,8 @@
 
 #include <QFontDatabase>
 #include <QString>
+
+#include <fcgi_stdio.h>
 
 int fcgi_accept()
 {

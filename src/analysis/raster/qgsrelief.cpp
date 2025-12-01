@@ -17,8 +17,8 @@
 
 #include "qgsrelief.h"
 
-#include <cpl_string.h>
 #include <cfloat>
+#include <cpl_string.h>
 
 #include "qgis.h"
 #include "qgsaspectfilter.h"

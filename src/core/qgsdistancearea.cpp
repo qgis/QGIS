@@ -16,8 +16,8 @@
 #include "qgsdistancearea.h"
 
 #include <cmath>
-#include <memory>
 #include <geodesic.h>
+#include <memory>
 
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"

@@ -15,9 +15,9 @@
 
 #include "qgsellipsoidutils.h"
 
-#include <sqlite3.h>
-#include <proj.h>
 #include <mutex>
+#include <proj.h>
+#include <sqlite3.h>
 
 #include "qgsapplication.h"
 #include "qgscelestialbody.h"

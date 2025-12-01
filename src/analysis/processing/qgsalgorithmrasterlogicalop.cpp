@@ -17,8 +17,8 @@
 
 #include "qgsalgorithmrasterlogicalop.h"
 
-#include <gdal.h>
 #include <algorithm>
+#include <gdal.h>
 
 #include "qgsrasteranalysisutils.h"
 #include "qgsrasterfilewriter.h"

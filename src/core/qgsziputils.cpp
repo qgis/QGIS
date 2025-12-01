@@ -16,9 +16,9 @@
 #include "qgsziputils.h"
 
 #include <fstream>
+#include <iostream>
 #include <zip.h>
 #include <zlib.h>
-#include <iostream>
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"

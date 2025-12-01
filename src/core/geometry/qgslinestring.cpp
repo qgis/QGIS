@@ -17,10 +17,10 @@
 
 #include "qgslinestring.h"
 
-#include <memory>
-#include <nlohmann/json.hpp>
 #include <cmath>
 #include <limits>
+#include <memory>
+#include <nlohmann/json.hpp>
 
 #include "qgsapplication.h"
 #include "qgsbox3d.h"

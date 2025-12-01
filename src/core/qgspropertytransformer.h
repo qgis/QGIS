@@ -15,8 +15,8 @@
 #ifndef QGSPROPERTYTRANSFORMER_H
 #define QGSPROPERTYTRANSFORMER_H
 
-#include <memory>
 #include <algorithm>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgsexpression.h"

@@ -16,14 +16,14 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "qgsvirtuallayersqlitemodule.h"
 
+#include <cstdint>
+#include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <cstdint>
 #include <memory>
-#include <stdexcept>
-#include <sqlite3.h>
 #include <spatialite.h>
-#include <cstdio>
+#include <sqlite3.h>
+#include <stdexcept>
 
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"

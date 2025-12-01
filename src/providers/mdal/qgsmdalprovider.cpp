@@ -17,8 +17,8 @@
 
 #include "qgsmdalprovider.h"
 
-#include <string>
 #include <mutex>
+#include <string>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"

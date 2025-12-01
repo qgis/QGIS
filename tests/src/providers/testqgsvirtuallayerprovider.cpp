@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
 #include <fstream>
+#include <limits>
 
 #include "qgstest.h"
 

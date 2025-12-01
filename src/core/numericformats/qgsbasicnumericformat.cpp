@@ -16,10 +16,10 @@
 
 #include "qgsbasicnumericformat.h"
 
-#include <memory>
+#include <iomanip>
 #include <iostream>
 #include <locale>
-#include <iomanip>
+#include <memory>
 
 #include "qgis.h"
 

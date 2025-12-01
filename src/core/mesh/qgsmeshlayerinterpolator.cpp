@@ -19,8 +19,8 @@
 
 #include "qgsmeshlayerinterpolator.h"
 
-#include <memory>
 #include <limits>
+#include <memory>
 
 #include "qgis.h"
 #include "qgscoordinatetransform.h"

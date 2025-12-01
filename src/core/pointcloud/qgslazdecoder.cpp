@@ -18,9 +18,9 @@
 #include "qgsconfig.h"
 #include "qgslazdecoder.h"
 
+#include <cstring>
 #include <iostream>
 #include <memory>
-#include <cstring>
 #include <string>
 #include <zstd.h>
 

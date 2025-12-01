@@ -16,8 +16,8 @@
 #ifndef QGSHISTORYENTRYNODE_H
 #define QGSHISTORYENTRYNODE_H
 
-#include <memory>
 #include <deque>
+#include <memory>
 
 #include "qgis.h"
 #include "qgis_gui.h"

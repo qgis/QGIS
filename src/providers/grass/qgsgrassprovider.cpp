@@ -16,9 +16,9 @@
 
 #include "qgsgrassprovider.h"
 
+#include <cfloat>
 #include <cstring>
 #include <vector>
-#include <cfloat>
 
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"

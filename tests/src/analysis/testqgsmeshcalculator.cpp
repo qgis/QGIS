@@ -12,8 +12,8 @@ Email                : zilolv at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <limits>
 #include <cmath>
+#include <limits>
 #include <memory>
 
 #include "qgsapplication.h"

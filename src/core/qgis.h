@@ -20,8 +20,8 @@
 
 
 #include <cfloat>
-#include <memory>
 #include <cmath>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"

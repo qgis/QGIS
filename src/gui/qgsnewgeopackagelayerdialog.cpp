@@ -19,11 +19,11 @@
 
 #include "qgsnewgeopackagelayerdialog.h"
 
-#include <ogr_api.h>
-#include <ogr_srs_api.h>
-#include <gdal_version.h>
 #include <cpl_error.h>
 #include <cpl_string.h>
+#include <gdal_version.h>
+#include <ogr_api.h>
+#include <ogr_srs_api.h>
 
 #include "qgis.h"
 #include "qgsapplication.h"

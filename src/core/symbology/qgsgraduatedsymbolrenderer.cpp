@@ -15,8 +15,8 @@
 
 #include "qgsgraduatedsymbolrenderer.h"
 
-#include <ctime>
 #include <cmath>
+#include <ctime>
 #include <memory>
 
 #include "qgsapplication.h"

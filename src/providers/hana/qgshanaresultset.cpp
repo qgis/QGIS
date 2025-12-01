@@ -16,10 +16,10 @@
  ***************************************************************************/
 #include "qgshanaresultset.h"
 
+#include <cstring>
 #include <odbc/Exception.h>
 #include <odbc/PreparedStatement.h>
 #include <odbc/Statement.h>
-#include <cstring>
 
 #include "qgshanadatatypes.h"
 #include "qgshanaexception.h"
