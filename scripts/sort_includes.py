@@ -137,6 +137,8 @@ NON_STANDARD_NAMED_QGIS_HEADERS = (
     "qsql_ocispatial.h",
 )
 
+SPECIAL_CASE_LAST_INCLUDES = ("fcgi_stdio.h",)
+
 
 def print_sorted_includes(includes: list[str]):
     matching_header = None
@@ -146,6 +148,7 @@ def print_sorted_includes(includes: list[str]):
     std_includes = []
     qt_includes = []
     qgis_includes = []
+    special_case_last_includes = []
 
     for include in includes:
         header_match = re.match(r'^\s*#include [<"](.*)[">]', include)
@@ -158,6 +161,8 @@ def print_sorted_includes(includes: list[str]):
             moc_header = header
         elif header == "qgsconfig.h":
             qgs_config_include = header
+        elif header in SPECIAL_CASE_LAST_INCLUDES:
+            special_case_last_includes.append(header)
         elif (
             re.match(r"^(?:.*/)?qgi?s.*\.h", header, re.IGNORECASE)
             or header in NON_STANDARD_NAMED_QGIS_HEADERS
@@ -174,6 +179,8 @@ def print_sorted_includes(includes: list[str]):
 
     qt_includes = sorted(qt_includes)
     qgis_includes = sorted(qgis_includes)
+    std_includes = sorted(std_includes)
+    special_case_last_includes = sorted(special_case_last_includes)
 
     if qgs_config_include:
         # this header MUST come first, as it defines macros which may
@@ -207,6 +214,11 @@ def print_sorted_includes(includes: list[str]):
         # moc include should come last -- this may rely on other includes
         # to resolve forward declared classes
         print(f'#include "{moc_header}"')
+        print()
+
+    if special_case_last_includes:
+        for header in special_case_last_includes:
+            print(f"#include <{header}>")
         print()
 
 
