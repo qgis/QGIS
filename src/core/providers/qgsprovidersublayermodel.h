@@ -323,7 +323,7 @@ class CORE_EXPORT QgsProviderSublayerModelGroup : public QgsProviderSublayerMode
 
     QgsProviderSublayerModelSublayerNode *findSublayer( const QgsProviderSublayerDetails &sublayer );
 
-    int childCount() const override final { return mChildren.size(); }
+    int childCount() const final { return mChildren.size(); }
     QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
 
     void populateFromSublayers( const QList<QgsProviderSublayerDetails> &sublayers );
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsProviderSublayerModelSublayerNode : public QgsProviderSubla
   public:
 
     QgsProviderSublayerModelSublayerNode( const QgsProviderSublayerDetails &sublayer );
-    int childCount() const override final { return 0; }
+    int childCount() const final { return 0; }
     QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
     QgsProviderSublayerDetails sublayer() const { return mSublayer; }
 
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsProviderSublayerModelNonLayerItemNode : public QgsProviderS
   public:
 
     QgsProviderSublayerModelNonLayerItemNode( const QgsProviderSublayerModel::NonLayerItem &item );
-    int childCount() const override final { return 0; }
+    int childCount() const final { return 0; }
     QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
 
     QgsProviderSublayerModel::NonLayerItem item() const { return mItem; }
