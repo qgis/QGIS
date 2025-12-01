@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <QRegularExpression>
+#include <memory>
 
 #include "qgsexpressioncontext.h"
 #include "qgsfeatureiterator.h"
@@ -47,7 +48,7 @@ QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer 
   if ( attrNum == -1 )
   {
     // try to use expression
-    expression.reset( new QgsExpression( fieldOrExpression ) );
+    expression = std::make_unique<QgsExpression>( fieldOrExpression );
     context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
 
     if ( expression->hasParserError() || !expression->prepare( &context ) )
@@ -93,7 +94,7 @@ QList<QVariant> QgsVectorLayerUtils::getValues( const QgsVectorLayer *layer, con
     if ( attrNum == -1 )
     {
       // use expression, already validated in the getValuesIterator() function
-      expression.reset( new QgsExpression( fieldOrExpression ) );
+      expression = std::make_unique<QgsExpression>( fieldOrExpression );
       context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
     }
 
@@ -146,7 +147,7 @@ QList<QVariant> QgsVectorLayerUtils::uniqueValues( const QgsVectorLayer *layer, 
       if ( attrNum == -1 )
       {
         // use expression, already validated in the getValuesIterator() function
-        expression.reset( new QgsExpression( fieldOrExpression ) );
+        expression = std::make_unique<QgsExpression>( fieldOrExpression );
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
       }
       QgsFeature feature;
@@ -571,7 +572,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
   if ( !evalContext )
   {
     // no context passed, so we create a default one
-    tempContext.reset( new QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) ) );
+    tempContext = std::make_unique<QgsExpressionContext>( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
     evalContext = tempContext.get();
   }
 
@@ -785,7 +786,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSour
 
     if ( lyr )
     {
-      featureSource.reset( new QgsVectorLayerFeatureSource( lyr ) );
+      featureSource = std::make_unique<QgsVectorLayerFeatureSource>( lyr );
     }
   };
 

@@ -79,6 +79,7 @@
 #include <QDir>
 #include <QUrl>
 #include <QXmlStreamReader>
+#include <memory>
 #include <nlohmann/json.hpp>
 
 //for printing
@@ -120,7 +121,7 @@ namespace QgsWms
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -207,7 +208,7 @@ namespace QgsWms
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -225,7 +226,7 @@ namespace QgsWms
     // configure painter
     const qreal dpmm = mContext.dotsPerMm();
     std::unique_ptr<QPainter> painter;
-    painter.reset( new QPainter( image.get() ) );
+    painter = std::make_unique<QPainter>( image.get() );
     painter->setRenderHint( QPainter::Antialiasing, true );
     painter->scale( dpmm, dpmm );
 
@@ -248,7 +249,7 @@ namespace QgsWms
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -268,7 +269,7 @@ namespace QgsWms
   {
     // get layers
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -361,7 +362,7 @@ namespace QgsWms
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QgsMapSettings mapSettings;
@@ -390,7 +391,7 @@ namespace QgsWms
   {
     // init layer restorer before doing anything
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // GetPrint request needs a template parameter
     const QString templateName = mWmsParameters.composerTemplate();
@@ -1060,7 +1061,7 @@ namespace QgsWms
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // configure layers
     QList<QgsMapLayer *> layers = mContext.layersToRender();
@@ -1296,7 +1297,7 @@ namespace QgsWms
 
     // init layer restorer before doing anything
     std::unique_ptr<QgsWmsRestorer> restorer;
-    restorer.reset( new QgsWmsRestorer( mContext ) );
+    restorer = std::make_unique<QgsWmsRestorer>( mContext );
 
     // The CRS parameter is considered as mandatory in configureMapSettings
     // but in the case of filter parameter, CRS parameter has not to be mandatory
@@ -1575,17 +1576,17 @@ namespace QgsWms
 
     if ( i != -1 && j != -1 )
     {
-      infoPoint.reset( new QgsPointXY() );
+      infoPoint = std::make_unique<QgsPointXY>();
       infoPointToMapCoordinates( i, j, infoPoint.get(), mapSettings );
     }
     else if ( filtersDefined )
     {
-      featuresRect.reset( new QgsRectangle() );
+      featuresRect = std::make_unique<QgsRectangle>();
     }
 
     if ( filterGeomDefined )
     {
-      filterGeom.reset( new QgsGeometry( QgsGeometry::fromWkt( mWmsParameters.filterGeom() ) ) );
+      filterGeom = std::make_unique<QgsGeometry>( QgsGeometry::fromWkt( mWmsParameters.filterGeom() ) );
     }
 
     QDomDocument result;
@@ -1827,7 +1828,7 @@ namespace QgsWms
     std::unique_ptr<QgsGeometry> layerFilterGeom;
     if ( filterGeom )
     {
-      layerFilterGeom.reset( new QgsGeometry( *filterGeom ) );
+      layerFilterGeom = std::make_unique<QgsGeometry>( *filterGeom );
       layerFilterGeom->transform( QgsCoordinateTransform( mapSettings.destinationCrs(), layer->crs(), fReq.transformContext() ) );
     }
 

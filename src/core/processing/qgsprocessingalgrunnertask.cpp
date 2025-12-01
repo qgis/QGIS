@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsprocessingalgrunnertask.h"
+
+#include <memory>
 #include "moc_qgsprocessingalgrunnertask.cpp"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingcontext.h"
@@ -33,7 +35,7 @@ QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgor
 {
   if ( !mFeedback )
   {
-    mOwnedFeedback.reset( new QgsProcessingFeedback() );
+    mOwnedFeedback = std::make_unique<QgsProcessingFeedback>( );
     mFeedback = mOwnedFeedback.get();
   }
   try

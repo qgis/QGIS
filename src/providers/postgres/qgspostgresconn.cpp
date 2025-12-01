@@ -39,6 +39,7 @@
 
 #include <climits>
 
+#include <memory>
 #include <nlohmann/json.hpp>
 
 // for htonl
@@ -1566,7 +1567,7 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
   {
     QgsMessageLog::logMessage( tr( "resetting bad connection." ), tr( "PostGIS" ) );
     ::PQreset( mConn );
-    logWrapper.reset( new QgsDatabaseQueryLogWrapper( query, mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin ) );
+    logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( query, mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
     res = PQexec( query, logError, false );
     if ( PQstatus() == CONNECTION_OK )
     {

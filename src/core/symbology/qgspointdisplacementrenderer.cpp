@@ -27,12 +27,13 @@
 
 #include <QPainter>
 #include <cmath>
+#include <memory>
 
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString &labelAttributeName )
   : QgsPointDistanceRenderer( QStringLiteral( "pointDisplacement" ), labelAttributeName )
   , mCircleColor( QColor( 125, 125, 125 ) )
 {
-  mCenterSymbol.reset( new QgsMarkerSymbol() );
+  mCenterSymbol = std::make_unique<QgsMarkerSymbol>( );
 }
 
 Qgis::FeatureRendererFlags QgsPointDisplacementRenderer::flags() const

@@ -41,6 +41,7 @@ email                : sherman at mrcc.com
 #include <QClipboard>
 #include <QVariantAnimation>
 #include <QPropertyAnimation>
+#include <memory>
 
 #include "qgis.h"
 #include "qgssettings.h"
@@ -2354,7 +2355,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
         //mCanvasProperties->dragging = true;
         if ( !e->isAutoRepeat() )
         {
-          mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
+          mTemporaryCursorOverride = std::make_unique<QgsTemporaryCursorOverride>( Qt::ClosedHandCursor );
           mCanvasProperties->panSelectorDown = true;
           panActionStart( mCanvasProperties->mouseLastXY );
         }
@@ -2442,9 +2443,9 @@ void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent *e )
 void QgsMapCanvas::beginZoomRect( QPoint pos )
 {
   mZoomRect.setRect( 0, 0, 0, 0 );
-  mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( mZoomCursor ) );
+  mTemporaryCursorOverride = std::make_unique<QgsTemporaryCursorOverride>( mZoomCursor );
   mZoomDragging = true;
-  mZoomRubberBand.reset( new QgsRubberBand( this, Qgis::GeometryType::Polygon ) );
+  mZoomRubberBand = std::make_unique<QgsRubberBand>( this, Qgis::GeometryType::Polygon );
   QColor color( Qt::blue );
   color.setAlpha( 63 );
   mZoomRubberBand->setColor( color );
@@ -2496,7 +2497,7 @@ void QgsMapCanvas::startPan()
   if ( !mCanvasProperties->panSelectorDown )
   {
     mCanvasProperties->panSelectorDown = true;
-    mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
+    mTemporaryCursorOverride = std::make_unique<QgsTemporaryCursorOverride>( Qt::ClosedHandCursor );
     panActionStart( mCanvasProperties->mouseLastXY );
   }
 }

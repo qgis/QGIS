@@ -26,6 +26,7 @@
 #include <QtDebug>
 #include <QFile>
 #include <QThread>
+#include <memory>
 
 constexpr int sMssqlDatabaseQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
 #define LoggedExec( query, sql ) execLogged( query, sql, QString( QString( __FILE__ ).mid( sMssqlDatabaseQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" ) )
@@ -102,7 +103,7 @@ QgsMssqlDatabase::QgsMssqlDatabase( const QSqlDatabase &db, const QgsDataSourceU
 
   if ( mTransaction )
   {
-    mTransactionMutex.reset( new QRecursiveMutex );
+    mTransactionMutex = std::make_unique<QRecursiveMutex>();
   }
 
   if ( !mDB.isOpen() )

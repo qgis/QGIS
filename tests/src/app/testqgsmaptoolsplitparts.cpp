@@ -21,6 +21,8 @@
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaptoolsplitparts.h"
+
+#include <memory>
 #include "qgsgeometryutils.h"
 
 #include "testqgsmaptoolutils.h"
@@ -109,20 +111,20 @@ void TestQgsMapToolSplitParts::testSplitMultiLineString()
     Qt::LeftButton
   ) );
   mapTool->cadCanvasReleaseEvent( event.get() );
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 4, -1 ),
     Qt::LeftButton
-  ) );
+  );
   mapTool->cadCanvasReleaseEvent( event.get() );
 
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 4, -1 ),
     Qt::RightButton
-  ) );
+  );
   mapTool->cadCanvasReleaseEvent( event.get() );
 
 

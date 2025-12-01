@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include <QFileInfo>
+#include <memory>
 
 QgsVectorWarper::QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points, const QgsCoordinateReferenceSystem &destinationCrs )
   : mMethod( method )
@@ -101,7 +102,7 @@ QgsVectorWarperTask::QgsVectorWarperTask( QgsGcpTransformerInterface::TransformM
   if ( layer )
   {
     mTransformContext = layer->transformContext();
-    mSource.reset( new QgsVectorLayerFeatureSource( layer ) );
+    mSource = std::make_unique<QgsVectorLayerFeatureSource>( layer );
     mFeatureCount = layer->featureCount();
     mFields = layer->fields();
     mWkbType = layer->wkbType();

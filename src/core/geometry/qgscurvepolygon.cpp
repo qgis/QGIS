@@ -139,15 +139,15 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
     Qgis::WkbType flatCurveType = QgsWkbTypes::flatType( curveType );
     if ( flatCurveType == Qgis::WkbType::LineString )
     {
-      currentCurve.reset( new QgsLineString() );
+      currentCurve = std::make_unique<QgsLineString>( );
     }
     else if ( flatCurveType == Qgis::WkbType::CircularString )
     {
-      currentCurve.reset( new QgsCircularString() );
+      currentCurve = std::make_unique<QgsCircularString>( );
     }
     else if ( flatCurveType == Qgis::WkbType::CompoundCurve )
     {
-      currentCurve.reset( new QgsCompoundCurve() );
+      currentCurve = std::make_unique<QgsCompoundCurve>( );
     }
     else
     {

@@ -40,6 +40,7 @@
 #include "qgswfsgetfeature.h"
 
 #include <QRegularExpression>
+#include <memory>
 
 namespace QgsWfs
 {
@@ -1165,7 +1166,7 @@ namespace QgsWfs
           {
             if ( exportGeom.transform( transform ) == Qgis::GeometryOperationResult::Success )
             {
-              transformedRect.reset( new QgsRectangle( exportGeom.boundingBox() ) );
+              transformedRect = std::make_unique<QgsRectangle>( exportGeom.boundingBox() );
               rect = transformedRect.get();
             }
           }

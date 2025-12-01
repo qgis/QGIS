@@ -22,6 +22,7 @@
 #include <QVBoxLayout>
 #include <QMouseEvent>
 #include <algorithm>
+#include <memory>
 
 // QWT Charting widget
 #include <qwt_global.h>
@@ -109,9 +110,9 @@ void QgsCurveEditorWidget::setHistogramSource( const QgsVectorLayer *layer, cons
 {
   if ( !mGatherer )
   {
-    mGatherer.reset( new QgsHistogramValuesGatherer() );
+    mGatherer = std::make_unique<QgsHistogramValuesGatherer>();
     connect( mGatherer.get(), &QgsHistogramValuesGatherer::calculatedHistogram, this, [this] {
-      mHistogram.reset( new QgsHistogram( mGatherer->histogram() ) );
+      mHistogram = std::make_unique<QgsHistogram>( mGatherer->histogram() );
       updateHistogram();
     } );
   }

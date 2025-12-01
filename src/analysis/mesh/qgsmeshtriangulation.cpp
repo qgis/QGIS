@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsmeshtriangulation.h"
+
+#include <memory>
 #include "moc_qgsmeshtriangulation.cpp"
 #include "qgsdualedgetriangulation.h"
 #include "qgscurve.h"
@@ -31,7 +33,7 @@
 QgsMeshTriangulation::QgsMeshTriangulation()
   : QObject()
 {
-  mTriangulation.reset( new QgsDualEdgeTriangulation() );
+  mTriangulation = std::make_unique<QgsDualEdgeTriangulation>();
 }
 
 

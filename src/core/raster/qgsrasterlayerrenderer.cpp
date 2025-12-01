@@ -46,6 +46,7 @@
 #include <QElapsedTimer>
 #include <QPointer>
 #include <QThread>
+#include <memory>
 
 ///@cond PRIVATE
 
@@ -307,7 +308,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   layer->dataProvider()->setDpi( std::floor( dpi * rendererContext.devicePixelRatio() ) );
 
   // copy the whole raster pipe!
-  mPipe.reset( new QgsRasterPipe( *layer->pipe() ) );
+  mPipe = std::make_unique<QgsRasterPipe>( *layer->pipe() );
 
   QObject::connect( mPipe->provider(), &QgsRasterDataProvider::statusChanged, layer, &QgsRasterLayer::statusChanged );
   QgsRasterRenderer *rasterRenderer = mPipe->renderer();
@@ -794,9 +795,9 @@ void QgsRasterLayerRenderer::drawElevationMap()
           QgsGdalUtils::blockToSingleBandMemoryDataset( viewExtentInLayerCoordinate, sourcedata.get() );
 
 
-        elevationBlock.reset( new QgsRasterBlock( dataType,
-                              outputWidth,
-                              outputHeight ) );
+        elevationBlock = std::make_unique<QgsRasterBlock>( dataType,
+                         outputWidth,
+                         outputHeight );
 
         elevationBlock->setNoDataValue( dataProvider->sourceNoDataValue( mElevationBand ) );
 

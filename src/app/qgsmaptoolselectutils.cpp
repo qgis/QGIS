@@ -42,6 +42,7 @@ email                : jpalmer at linz dot govt dot nz
 #include <QApplication>
 #include <QAction>
 #include <QtConcurrent>
+#include <memory>
 
 QgsMapLayer *QgsMapToolSelectUtils::getCurrentTargetLayer( QgsMapCanvas *canvas )
 {
@@ -542,7 +543,7 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::startFeatureSearch()
 
   mJobData = std::make_shared<DataForSearchingJob>();
   mJobData->isCanceled = false;
-  mJobData->source.reset( new QgsVectorLayerFeatureSource( mVectorLayer ) );
+  mJobData->source = std::make_unique<QgsVectorLayerFeatureSource>( mVectorLayer );
   mJobData->selectGeometry = mSelectGeometry;
   mJobData->context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   mJobData->filterString = canvasFilter;

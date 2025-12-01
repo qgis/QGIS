@@ -31,6 +31,7 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QClipboard>
+#include <memory>
 
 //
 // QgsVariableEditorWidget
@@ -103,7 +104,7 @@ void QgsVariableEditorWidget::showEvent( QShowEvent *event )
 
 void QgsVariableEditorWidget::setContext( QgsExpressionContext *context )
 {
-  mContext.reset( new QgsExpressionContext( *context ) );
+  mContext = std::make_unique<QgsExpressionContext>( *context );
   reloadContext();
 }
 

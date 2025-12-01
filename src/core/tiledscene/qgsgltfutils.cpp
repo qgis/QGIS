@@ -26,6 +26,7 @@
 #include <QMatrix4x4>
 #include <QQuaternion>
 #include <QRegularExpression>
+#include <memory>
 
 #define TINYGLTF_IMPLEMENTATION       // should be defined just in one CPP file
 
@@ -192,14 +193,14 @@ std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( const tinygltf::No
   std::unique_ptr<QMatrix4x4> matrix;
   if ( !node.matrix.empty() )
   {
-    matrix.reset( new QMatrix4x4 );
+    matrix = std::make_unique<QMatrix4x4>( );
     float *mdata = matrix->data();
     for ( int i = 0; i < 16; ++i )
       mdata[i] = static_cast< float >( node.matrix[i] );
   }
   else if ( node.translation.size() || node.rotation.size() || node.scale.size() )
   {
-    matrix.reset( new QMatrix4x4 );
+    matrix = std::make_unique<QMatrix4x4>( );
     if ( node.scale.size() )
     {
       matrix->scale( static_cast< float >( node.scale[0] ), static_cast< float >( node.scale[1] ), static_cast< float >( node.scale[2] ) );

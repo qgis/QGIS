@@ -33,6 +33,7 @@
 #include "qgseditorwidgetregistry.h"
 
 #include <QSignalSpy>
+#include <memory>
 
 /**
  * \ingroup UnitTests
@@ -220,7 +221,7 @@ void TestQgsAttributeTable::testNoGeom()
 
   // but if we are requesting only visible features, then geometry must be fetched...
 
-  dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowVisible ) );
+  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowVisible );
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & Qgis::FeatureRequestFlag::NoGeometry ) );
 
@@ -300,7 +301,7 @@ void TestQgsAttributeTable::testSelected()
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
 
   // another test - start with selection when dialog created
-  dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowSelected ) );
+  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowSelected );
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
@@ -339,7 +340,7 @@ void TestQgsAttributeTable::testEdited()
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
 
   // another test - start with edited features when dialog created
-  dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited ) );
+  dlg = std::make_unique<QgsAttributeTableDialog>( tempLayer.get(), QgsAttributeTableFilterModel::ShowEdited );
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), Qgis::FeatureRequestFilterType::Fids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );

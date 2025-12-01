@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsinvertedpolygonrendererwidget.h"
+
+#include <memory>
 #include "moc_qgsinvertedpolygonrendererwidget.cpp"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererregistry.h"
@@ -61,7 +63,7 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   }
   if ( !mRenderer )
   {
-    mRenderer.reset( new QgsInvertedPolygonRenderer() );
+    mRenderer = std::make_unique<QgsInvertedPolygonRenderer>();
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }

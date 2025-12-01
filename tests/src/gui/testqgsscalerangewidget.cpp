@@ -61,7 +61,7 @@ void TestQgsScaleRangeWidget::cleanupTestCase()
 
 void TestQgsScaleRangeWidget::init()
 {
-  widget.reset( new QgsScaleRangeWidget() );
+  widget = std::make_unique<QgsScaleRangeWidget>();
 }
 
 void TestQgsScaleRangeWidget::cleanup()

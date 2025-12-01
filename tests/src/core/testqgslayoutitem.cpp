@@ -37,6 +37,7 @@
 #include <QPainter>
 #include <QImage>
 #include <QtTest/QSignalSpy>
+#include <memory>
 
 
 //simple item for testing, since some methods in QgsLayoutItem are pure virtual
@@ -816,7 +817,7 @@ void TestQgsLayoutItem::referencePoint()
   QCOMPARE( item->positionWithUnits().x(), 3.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
 
-  item.reset( new TestItem( &l ) );
+  item = std::make_unique<TestItem>( &l );
 
   //test that setting item position is done relative to reference point
   l.setUnits( Qgis::LayoutUnit::Millimeters );
@@ -858,7 +859,7 @@ void TestQgsLayoutItem::referencePoint()
   QCOMPARE( item->scenePos().x(), -1.0 );
   QCOMPARE( item->scenePos().y(), -2.0 );
 
-  item.reset( new TestItem( &l ) );
+  item = std::make_unique<TestItem>( &l );
 
   //test that resizing is done relative to reference point
   item->attemptResize( QgsLayoutSize( 2, 4 ) );
@@ -900,7 +901,7 @@ void TestQgsLayoutItem::referencePoint()
   QCOMPARE( item->scenePos().x(), 2.0 );
   QCOMPARE( item->scenePos().y(), 1.0 );
 
-  item.reset( new TestItem( &l ) );
+  item = std::make_unique<TestItem>( &l );
 
   //item with frame
   item->attemptResize( QgsLayoutSize( 2, 4 ) );
@@ -1200,7 +1201,7 @@ void TestQgsLayoutItem::move()
   QCOMPARE( item->scenePos().y(), 12.0 );
 
   //moveBy
-  item.reset( new TestItem( &l ) );
+  item = std::make_unique<TestItem>( &l );
   item->attemptMove( QgsLayoutPoint( 5, 9, Qgis::LayoutUnit::Centimeters ) );
   item->attemptResize( QgsLayoutSize( 4, 6 ) );
   QCOMPARE( item->positionWithUnits().x(), 5.0 );
@@ -1215,7 +1216,7 @@ void TestQgsLayoutItem::move()
   QCOMPARE( item->scenePos().y(), 84.0 );
 
   //item with frame
-  item.reset( new TestItem( &l ) );
+  item = std::make_unique<TestItem>( &l );
   item->attemptResize( QgsLayoutSize( 2, 4 ) );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
   item->setFrameEnabled( true );
@@ -1307,7 +1308,7 @@ void TestQgsLayoutItem::page()
   QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 120 ) );
 
   // second page
-  page.reset( new QgsLayoutItemPage( &l ) );
+  page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 500, 200, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
   QCOMPARE( item->page(), 1 );
@@ -1320,7 +1321,7 @@ void TestQgsLayoutItem::page()
   QCOMPARE( item->pagePos(), QPointF( 5, 240 ) );
   QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 240 ) );
 
-  page.reset( new QgsLayoutItemPage( &l ) );
+  page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 500, 200, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
   QCOMPARE( item->page(), 2 );

@@ -21,6 +21,7 @@
 #include <QTime>
 #include <QApplication>
 #include <QDesktopServices>
+#include <memory>
 
 #include "qgsvectorlayer.h"
 #include "qgsvectorfilewriter.h"
@@ -1107,7 +1108,7 @@ void TestQgsMapRendererJob::testMapShading()
   shadingRenderer.setLightAltitude( 20 );
   shadingRenderer.setLightAzimuth( 60 );
   mapSettings.setElevationShadingRenderer( shadingRenderer );
-  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob = std::make_unique<QgsMapRendererSequentialJob>( mapSettings );
   renderJob->start();
   renderJob->waitForFinished();
   img = renderJob->renderedImage();
@@ -1116,7 +1117,7 @@ void TestQgsMapRendererJob::testMapShading()
   shadingRenderer.setHillshadingMultidirectional( true );
   shadingRenderer.setHillshadingZFactor( 5 );
   mapSettings.setElevationShadingRenderer( shadingRenderer );
-  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob = std::make_unique<QgsMapRendererSequentialJob>( mapSettings );
   renderJob->start();
   renderJob->waitForFinished();
   img = renderJob->renderedImage();
@@ -1126,7 +1127,7 @@ void TestQgsMapRendererJob::testMapShading()
   shadingRenderer.setActiveHillshading( false );
   shadingRenderer.setActiveEyeDomeLighting( true );
   mapSettings.setElevationShadingRenderer( shadingRenderer );
-  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob = std::make_unique<QgsMapRendererSequentialJob>( mapSettings );
   renderJob->start();
   renderJob->waitForFinished();
   img = renderJob->renderedImage();
@@ -1135,7 +1136,7 @@ void TestQgsMapRendererJob::testMapShading()
   shadingRenderer.setEyeDomeLightingDistance( 10 );
   shadingRenderer.setEyeDomeLightingStrength( 4000 );
   mapSettings.setElevationShadingRenderer( shadingRenderer );
-  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob = std::make_unique<QgsMapRendererSequentialJob>( mapSettings );
   renderJob->start();
   renderJob->waitForFinished();
   img = renderJob->renderedImage();
@@ -1149,7 +1150,7 @@ void TestQgsMapRendererJob::testMapShading()
   pointCloudLayer->renderer()->setRenderAsTriangles( true );
   mapSettings.setLayers( QList<QgsMapLayer *>() << pointCloudLayer.get() );
   mapSettings.setElevationShadingRenderer( shadingRenderer2 );
-  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob = std::make_unique<QgsMapRendererSequentialJob>( mapSettings );
   renderJob->start();
   renderJob->waitForFinished();
   img = renderJob->renderedImage();

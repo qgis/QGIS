@@ -18,6 +18,7 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
+#include <memory>
 
 //qgis includes...
 #include "qgsmaplayer.h"
@@ -2170,7 +2171,7 @@ void TestQgsMeshLayer::keepDatasetIndexConsistency()
   QVERIFY( QFile::copy( uri_2, uri ) );
 
   // create a new mesh layer from XML
-  layer.reset( new QgsMeshLayer() );
+  layer = std::make_unique<QgsMeshLayer>();
   layer->readLayerXml( meshLayerElement, readWriteContext );
   QVERIFY( layer->isValid() );
 
@@ -2187,7 +2188,7 @@ void TestQgsMeshLayer::keepDatasetIndexConsistency()
 
   QFile::remove( uri );
   QVERIFY( QFile::copy( uri_1, uri ) );
-  layer.reset( new QgsMeshLayer() );
+  layer = std::make_unique<QgsMeshLayer>();
   layer->readLayerXml( meshLayerElement, readWriteContext );
   QVERIFY( layer->isValid() );
 
@@ -2423,7 +2424,7 @@ void TestQgsMeshLayer::updateTimePropertiesWhenReloading()
   QVERIFY( QFile::copy( uri_2, uri ) );
 
   // create a new mesh layer from XML
-  layer.reset( new QgsMeshLayer() );
+  layer = std::make_unique<QgsMeshLayer>();
   layer->readLayerXml( meshLayerElement, readWriteContext );
   QVERIFY( layer->isValid() );
   QDateTime referenceTime2 = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime();
@@ -2436,7 +2437,7 @@ void TestQgsMeshLayer::updateTimePropertiesWhenReloading()
 
   QFile::remove( uri );
   QVERIFY( QFile::copy( uri_1, uri ) );
-  layer.reset( new QgsMeshLayer() );
+  layer = std::make_unique<QgsMeshLayer>();
   layer->readLayerXml( meshLayerElement, readWriteContext );
   QVERIFY( layer->isValid() );
 

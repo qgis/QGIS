@@ -15,6 +15,7 @@
 
 #include <QDialogButtonBox>
 #include <QDomElement>
+#include <memory>
 
 #include "qgsmeshlabelingwidget.h"
 #include "moc_qgsmeshlabelingwidget.cpp"
@@ -173,7 +174,7 @@ void QgsMeshLabelingWidget::labelModeChanged( int index )
       QgsMeshLayerSimpleLabeling *labeling = dynamic_cast<QgsMeshLayerSimpleLabeling *>( mLayer->labeling() );
       if ( labeling )
       {
-        mSettings.reset( new QgsPalLayerSettings( labeling->settings() ) );
+        mSettings = std::make_unique<QgsPalLayerSettings>( labeling->settings() );
       }
       else
       {

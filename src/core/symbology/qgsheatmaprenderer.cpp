@@ -27,6 +27,7 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <memory>
 
 QgsHeatmapRenderer::QgsHeatmapRenderer()
   : QgsFeatureRenderer( QStringLiteral( "heatmapRenderer" ) )
@@ -64,7 +65,7 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext &context, const QgsFields
   mWeightAttrNum = fields.lookupField( mWeightExpressionString );
   if ( mWeightAttrNum == -1 )
   {
-    mWeightExpression.reset( new QgsExpression( mWeightExpressionString ) );
+    mWeightExpression = std::make_unique<QgsExpression>( mWeightExpressionString );
     mWeightExpression->prepare( &context.expressionContext() );
   }
 

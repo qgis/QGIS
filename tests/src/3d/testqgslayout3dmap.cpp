@@ -24,6 +24,7 @@
 #include "qgslayout.h"
 
 #include <QObject>
+#include <memory>
 #include "qgstest.h"
 
 class TestQgsLayout3DMap : public QgsTest
@@ -52,7 +53,7 @@ void TestQgsLayout3DMap::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   const QString dataDir( TEST_DATA_DIR );
   mLayerDtm = new QgsRasterLayer( dataDir + "/3d/dtm.tif", "rgb", "gdal" );

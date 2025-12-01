@@ -29,6 +29,7 @@
 #include "qgsgeos.h"
 
 #ifdef HAVE_PDAL_QGIS
+#include <memory>
 #include <pdal/StageFactory.hpp>
 #include <pdal/io/BufferReader.hpp>
 #include <pdal/Dimension.hpp>
@@ -86,7 +87,7 @@ bool QgsPointCloudLayerExporter::setFormat( const ExportFormat format )
 
 void QgsPointCloudLayerExporter::setFilterGeometry( const QgsAbstractGeometry *geometry )
 {
-  mFilterGeometryEngine.reset( new QgsGeos( geometry ) );
+  mFilterGeometryEngine = std::make_unique<QgsGeos>( geometry );
   mFilterGeometryEngine->prepareGeometry();
 }
 
@@ -580,7 +581,7 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
     mTable.layout()->registerDim( pdal::Dimension::Id::Infrared );
   }
 
-  mView.reset( new pdal::PointView( mTable ) );
+  mView = std::make_shared<pdal::PointView>( mTable );
 }
 
 void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber )

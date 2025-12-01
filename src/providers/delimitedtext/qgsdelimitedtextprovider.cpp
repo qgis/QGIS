@@ -28,6 +28,7 @@
 #include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
+#include <memory>
 
 #include "qgsapplication.h"
 #include "qgscoordinateutils.h"
@@ -378,7 +379,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes, bool forceFullScan, 
   if ( forceFullScan )
   {
     const QUrl url { mFile->url() };
-    mFile.reset( new QgsDelimitedTextFile() );
+    mFile = std::make_unique<QgsDelimitedTextFile>();
     mFile->setFromUrl( url );
   }
 

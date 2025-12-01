@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgsexpressionutils.h"
+
+#include <memory>
 #include "qgsvectorlayer.h"
 #include "qgscolorrampimpl.h"
 #include "qgsproviderregistry.h"
@@ -358,7 +360,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
   {
     if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
     {
-      featureSource.reset( new QgsVectorLayerFeatureSource( vl ) );
+      featureSource = std::make_unique<QgsVectorLayerFeatureSource>( vl );
     }
   }, foundLayer );
 

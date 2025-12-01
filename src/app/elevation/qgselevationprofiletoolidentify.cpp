@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgselevationprofiletoolidentify.h"
+
+#include <memory>
 #include "moc_qgselevationprofiletoolidentify.cpp"
 #include "qgsplotcanvas.h"
 #include "qgsplotmouseevent.h"
@@ -36,7 +38,7 @@ QgsElevationProfileToolIdentify::QgsElevationProfileToolIdentify( QgsElevationPr
 {
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
 
-  mRubberBand.reset( new QgsPlotRectangularRubberBand( canvas ) );
+  mRubberBand = std::make_unique<QgsPlotRectangularRubberBand>( canvas );
   mRubberBand->setBrush( QBrush( QColor( 254, 178, 76, 63 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 254, 58, 29, 100 ) ), 0 ) );
 }

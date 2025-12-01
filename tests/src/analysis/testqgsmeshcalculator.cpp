@@ -15,6 +15,7 @@ Email                : zilolv at gmail dot com
 #include "qgstest.h"
 #include <limits>
 #include <cmath>
+#include <memory>
 
 #include "qgsmeshcalculator.h"
 #include "qgsmeshcalcnode.h"
@@ -399,7 +400,7 @@ void TestQgsMeshCalculator::test_dataset_group_dependency()
   std::vector<std::unique_ptr<QgsMeshMemoryDatasetGroup>> memoryDatasetGroups( 4 );
   for ( int dsg = 0; dsg < 4; ++dsg )
   {
-    memoryDatasetGroups[dsg].reset( new QgsMeshMemoryDatasetGroup );
+    memoryDatasetGroups[dsg] = std::make_unique<QgsMeshMemoryDatasetGroup>();
     memoryDatasetGroups[dsg]->setDataType( QgsMeshDatasetGroupMetadata::DataOnVertices );
     memoryDatasetGroups[dsg]->setName( QString( "dataset_group_%1" ).arg( dsg ) );
     for ( int i = 0; i < 10; i++ )
@@ -433,7 +434,7 @@ void TestQgsMeshCalculator::test_dataset_group_dependency()
 
   for ( int i = 0; i < formulas.count(); ++i )
   {
-    virtualDatasetGroups[i].reset( new QgsMeshVirtualDatasetGroup( QString( "virtual_%1" ).arg( i ), formulas[i], mpMeshLayer, 0, 100000 ) );
+    virtualDatasetGroups[i] = std::make_unique<QgsMeshVirtualDatasetGroup>( QString( "virtual_%1" ).arg( i ), formulas[i], mpMeshLayer, 0, 100000 );
     virtualDatasetGroups[i]->initialize();
     QCOMPARE( sizes[i], virtualDatasetGroups[i]->datasetCount() );
     mpMeshLayer->addDatasets( virtualDatasetGroups[i].release() );

@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgsoffscreen3dengine.h"
 #include "qgstest.h"
 
@@ -62,7 +64,7 @@ void TestQgsRubberBand3DRendering::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   const QString dataDir( TEST_DATA_DIR );
 

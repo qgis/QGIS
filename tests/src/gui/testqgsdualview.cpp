@@ -30,6 +30,8 @@
 #include "qgsvectordataprovider.h"
 #include <qgsmapcanvas.h>
 #include <qgsfeature.h>
+
+#include <memory>
 #include "qgsgui.h"
 #include "qgsvectorlayercache.h"
 #include "qgstest.h"
@@ -334,7 +336,7 @@ void TestQgsDualView::testNoGeom()
 
   // request with NO geometry, but using filter rect (which should override and request geom)
   req = QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) );
-  dv.reset( new QgsDualView() );
+  dv = std::make_unique<QgsDualView>();
   dv->init( mPointsLayer, mCanvas, req );
   model = dv->masterModel();
   QVERIFY( model->layerCache()->cacheGeometry() );
@@ -342,7 +344,7 @@ void TestQgsDualView::testNoGeom()
 
   // request with NO geometry
   req = QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry );
-  dv.reset( new QgsDualView() );
+  dv = std::make_unique<QgsDualView>();
   dv->init( mPointsLayer, mCanvas, req );
   model = dv->masterModel();
   QVERIFY( !model->layerCache()->cacheGeometry() );
@@ -350,7 +352,7 @@ void TestQgsDualView::testNoGeom()
 
   // request with NO geometry but with an ordering expression which does
   req = QgsFeatureRequest().setFlags( Qgis::FeatureRequestFlag::NoGeometry );
-  dv.reset( new QgsDualView() );
+  dv = std::make_unique<QgsDualView>();
   dv->init( mPointsLayer, mCanvas, req );
   auto config = mPointsLayer->attributeTableConfig();
   config.setSortExpression( "$x" );

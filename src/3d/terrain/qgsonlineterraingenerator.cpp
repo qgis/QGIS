@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgsonlineterraingenerator.h"
+
+#include <memory>
 #include "moc_qgsonlineterraingenerator.cpp"
 
 #include "qgsdemterraintileloader_p.h"
@@ -92,5 +94,5 @@ void QgsOnlineTerrainGenerator::updateGenerator()
     mTerrainTilingScheme = QgsTilingScheme( mExtent, mCrs );
   }
 
-  mHeightMapGenerator.reset( new QgsDemHeightMapGenerator( nullptr, mTerrainTilingScheme, mResolution, mTransformContext ) );
+  mHeightMapGenerator = std::make_unique<QgsDemHeightMapGenerator>( nullptr, mTerrainTilingScheme, mResolution, mTransformContext );
 }

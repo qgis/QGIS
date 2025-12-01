@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetregistry.h"
+
+#include <memory>
 #include "moc_qgseditorwidgetregistry.cpp"
 
 #include "qgsattributeeditorcontext.h"
@@ -47,7 +49,7 @@
 
 QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
 {
-  mFallbackWidgetFactory.reset( new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
+  mFallbackWidgetFactory = std::make_unique<QgsTextEditWidgetFactory>( tr( "Text Edit" ) );
 }
 
 void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBar *messageBar )

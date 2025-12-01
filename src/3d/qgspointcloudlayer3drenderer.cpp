@@ -15,6 +15,8 @@
 
 #include "qgspointcloudlayer3drenderer.h"
 
+#include <memory>
+
 #include "qgs3dutils.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 
@@ -210,13 +212,13 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   mZoomOutBehavior = qgsEnumKeyToValue( elem.attribute( QStringLiteral( "zoom-out-behavior" ) ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
 
   if ( symbolType == QLatin1String( "single-color" ) )
-    mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
+    mSymbol = std::make_unique<QgsSingleColorPointCloud3DSymbol>();
   else if ( symbolType == QLatin1String( "color-ramp" ) )
-    mSymbol.reset( new QgsColorRampPointCloud3DSymbol );
+    mSymbol = std::make_unique<QgsColorRampPointCloud3DSymbol>();
   else if ( symbolType == QLatin1String( "rgb" ) )
-    mSymbol.reset( new QgsRgbPointCloud3DSymbol );
+    mSymbol = std::make_unique<QgsRgbPointCloud3DSymbol>();
   else if ( symbolType == QLatin1String( "classification" ) )
-    mSymbol.reset( new QgsClassificationPointCloud3DSymbol );
+    mSymbol = std::make_unique<QgsClassificationPointCloud3DSymbol>();
   else
     mSymbol.reset();
 

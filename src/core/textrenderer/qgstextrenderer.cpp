@@ -32,6 +32,7 @@
 #include "qgspainting.h"
 #include "qgsapplication.h"
 #include "qgsimagecache.h"
+#include <memory>
 #include <optional>
 
 #include <QTextBoundaryFinder>
@@ -1189,7 +1190,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRe
         renderedSymbol.reset( );
 
         QgsSymbolLayer *symL = QgsSvgMarkerSymbolLayer::create( map );
-        renderedSymbol.reset( new QgsMarkerSymbol( QgsSymbolLayerList() << symL ) );
+        renderedSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList() << symL );
       }
       else
       {

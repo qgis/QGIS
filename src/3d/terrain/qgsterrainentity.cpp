@@ -32,6 +32,7 @@
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometryRenderer>
+#include <memory>
 
 
 ///@cond PRIVATE
@@ -76,7 +77,7 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
 
   mTextureGenerator = new QgsTerrainTextureGenerator( *map );
 
-  mUpdateJobFactory.reset( new TerrainMapUpdateJobFactory( mTextureGenerator ) );
+  mUpdateJobFactory = std::make_unique<TerrainMapUpdateJobFactory>( mTextureGenerator );
 
   mTerrainTransform = new Qt3DCore::QTransform;
   mTerrainTransform->setScale( 1.0f );

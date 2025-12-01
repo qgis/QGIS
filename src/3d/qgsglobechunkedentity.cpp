@@ -41,6 +41,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QTextureImage>
+#include <memory>
 
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
@@ -481,7 +482,7 @@ QgsGlobeEntity::QgsGlobeEntity( Qgs3DMapSettings *mapSettings )
 
   connectToLayersRepaintRequest();
 
-  mUpdateJobFactory.reset( new QgsGlobeMapUpdateJobFactory( mapSettings ) );
+  mUpdateJobFactory = std::make_unique<QgsGlobeMapUpdateJobFactory>( mapSettings );
 }
 
 QgsGlobeEntity::~QgsGlobeEntity()

@@ -17,6 +17,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <cstring>
 #include <iostream>
 #include <cstdint>
+#include <memory>
 #include <stdexcept>
 
 #include <QCoreApplication>
@@ -378,7 +379,7 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
       }
       return SQLITE_ERROR;
     }
-    newVtab.reset( new VTable( sql, qobject_cast<QgsVectorLayer *>( l ) ) );
+    newVtab = std::make_unique<VTable>( sql, qobject_cast<QgsVectorLayer *>( l ) );
   }
   else
   {
@@ -406,7 +407,7 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
     }
     try
     {
-      newVtab.reset( new VTable( sql, provider, source, QString::fromUtf8( argv[2] ), encoding ) );
+      newVtab = std::make_unique<VTable>( sql, provider, source, QString::fromUtf8( argv[2] ), encoding );
     }
     catch ( std::runtime_error &e )
     {

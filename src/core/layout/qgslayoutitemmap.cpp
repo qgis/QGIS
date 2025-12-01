@@ -49,6 +49,7 @@
 #include <QScreen>
 #include <QStyleOptionGraphicsItem>
 #include <QTimer>
+#include <memory>
 
 const QgsSettingsEntryBool *QgsLayoutItemMap::settingForceRasterMasks = new QgsSettingsEntryBool( QStringLiteral( "force-raster-masks" ), QgsSettingsTree::sTreeLayout, false, QStringLiteral( "Whether to force rasterized clipping masks, regardless of output format." ) );
 
@@ -1723,7 +1724,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   if ( w <= 0 || h <= 0 )
     return;
 
-  mCacheRenderingImage.reset( new QImage( w * mPreviewDevicePixelRatio, h * mPreviewDevicePixelRatio, QImage::Format_ARGB32 ) );
+  mCacheRenderingImage = std::make_unique<QImage>( w * mPreviewDevicePixelRatio, h * mPreviewDevicePixelRatio, QImage::Format_ARGB32 );
 
   // set DPI of the image
   mCacheRenderingImage->setDotsPerMeterX( static_cast< int >( std::round( 1000 * w / widthLayoutUnits ) ) );
@@ -1753,7 +1754,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   }
 
   mCacheInvalidated = false;
-  mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
+  mPainter = std::make_unique<QPainter>( mCacheRenderingImage.get() );
   QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheRenderingImage->logicalDpiX(), true ) );
 
   if ( shouldDrawPart( OverviewMapExtent ) )
@@ -1761,7 +1762,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
     settings.setLayers( mOverviewStack->modifyMapLayerList( settings.layers() ) );
   }
 
-  mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
+  mPainterJob = std::make_unique<QgsMapRendererCustomPainterJob>( settings, mPainter.get() );
   if ( mLayout->reportContext().feature().isValid() && mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LimitCoverageLayerRenderToCurrentFeature )
   {
     mPainterJob->setFeatureFilterProvider( mAtlasFeatureFilterProvider.get() );
@@ -3018,7 +3019,7 @@ void QgsLayoutItemMap::updateAtlasFeature()
 
   QgsFeatureExpressionFilterProvider *filter = new QgsFeatureExpressionFilterProvider();
   filter->setFilter( mLayout->reportContext().layer()->id(), QgsExpression( QStringLiteral( "@id = %1" ).arg( mLayout->reportContext().feature().id() ) ) );
-  mAtlasFeatureFilterProvider.reset( new QgsGroupedFeatureFilterProvider() );
+  mAtlasFeatureFilterProvider = std::make_unique<QgsGroupedFeatureFilterProvider>( );
   mAtlasFeatureFilterProvider->addProvider( filter );
 
   if ( !atlasDriven() )

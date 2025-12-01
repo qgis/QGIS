@@ -24,6 +24,7 @@
 #include <QDropEvent>
 #include <QRegularExpression>
 #include <QProgressBar>
+#include <memory>
 
 #include "qgslogger.h"
 #include "qgsapplication.h"
@@ -107,7 +108,7 @@ const QString &QgsExternalStorageFileWidget::storageAuthConfigId() const
 
 void QgsExternalStorageFileWidget::setStorageUrlExpression( const QString &urlExpression )
 {
-  mStorageUrlExpression.reset( new QgsExpression( urlExpression ) );
+  mStorageUrlExpression = std::make_unique<QgsExpression>( urlExpression );
 }
 
 QgsExpression *QgsExternalStorageFileWidget::storageUrlExpression() const

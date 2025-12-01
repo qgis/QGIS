@@ -1140,7 +1140,7 @@ void QgsCircularString::transform( const QgsCoordinateTransform &ct, Qgis::Trans
   std::unique_ptr< double[] > dummyZ;
   if ( !hasZ || !transformZ )
   {
-    dummyZ.reset( new double[nPoints]() );
+    dummyZ = std::make_unique<double[]>( nPoints );
     zArray = dummyZ.get();
   }
   else

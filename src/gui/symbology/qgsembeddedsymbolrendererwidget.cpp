@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsembeddedsymbolrendererwidget.h"
+
+#include <memory>
 #include "moc_qgsembeddedsymbolrendererwidget.cpp"
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgsrendererregistry.h"
@@ -63,7 +65,7 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
   if ( !mRenderer )
   {
     // use default embedded renderer
-    mRenderer.reset( new QgsEmbeddedSymbolRenderer( QgsSymbol::defaultSymbol( type ) ) );
+    mRenderer = std::make_unique<QgsEmbeddedSymbolRenderer>( QgsSymbol::defaultSymbol( type ) );
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }

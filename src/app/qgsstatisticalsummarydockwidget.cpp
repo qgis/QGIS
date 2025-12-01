@@ -32,6 +32,7 @@
 #include <QTableWidget>
 #include <QAction>
 #include <QMenu>
+#include <memory>
 
 typedef QList<Qgis::Statistic> StatsList;
 typedef QList<Qgis::StringStatistic> StringStatsList;
@@ -646,7 +647,7 @@ QgsStatisticsValueGatherer::QgsStatisticsValueGatherer(
   if ( mFieldIndex == -1 )
   {
     // use expression, already validated
-    mExpression.reset( new QgsExpression( mFieldExpression ) );
+    mExpression = std::make_unique<QgsExpression>( mFieldExpression );
     mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   }
 }

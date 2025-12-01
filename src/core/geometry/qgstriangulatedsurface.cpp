@@ -104,7 +104,7 @@ bool QgsTriangulatedSurface::fromWkb( QgsConstWkbPtr &wkbPtr )
     Qgis::WkbType flatTriangleType = QgsWkbTypes::flatType( triangleType );
     if ( flatTriangleType == Qgis::WkbType::Triangle )
     {
-      currentTriangle.reset( new QgsTriangle() );
+      currentTriangle = std::make_unique<QgsTriangle>( );
     }
     else
     {

@@ -18,6 +18,7 @@
 
 #include <ctime>
 #include <cmath>
+#include <memory>
 
 #include "qgsgraduatedsymbolrenderer.h"
 
@@ -64,7 +65,7 @@ QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName,
     mRanges << range;
   }
 
-  mClassificationMethod.reset( new QgsClassificationCustom() );
+  mClassificationMethod = std::make_shared<QgsClassificationCustom>( );
 }
 
 QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
@@ -182,7 +183,7 @@ void QgsGraduatedSymbolRenderer::startRender( QgsRenderContext &context, const Q
 
   if ( mAttrNum == -1 )
   {
-    mExpression.reset( new QgsExpression( mAttrName ) );
+    mExpression = std::make_unique<QgsExpression>( mAttrName );
     mExpression->prepare( &context.expressionContext() );
   }
 

@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <memory>
+
 #include "limits"
 
 #include "qgstest.h"
@@ -2347,7 +2349,7 @@ void TestQgsProcessingAlgsPt2::defineProjection()
   QFile::copy( dataDir + "/points.dbf", tmpPath.filePath( QStringLiteral( "points.dbf" ) ) );
   QFile::copy( dataDir + "/points.qpj", tmpPath.filePath( QStringLiteral( "points.qpj" ) ) );
 
-  layer.reset( new QgsVectorLayer( tmpPath.filePath( QStringLiteral( "points.shp" ) ), QStringLiteral( "input" ), QStringLiteral( "ogr" ) ) );
+  layer = std::make_unique<QgsVectorLayer>( tmpPath.filePath( QStringLiteral( "points.shp" ) ), QStringLiteral( "input" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QVERIFY( !layer->crs().isValid() );
 

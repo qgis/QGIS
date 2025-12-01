@@ -41,6 +41,7 @@
 #include <QtSql/QSqlField>
 #include <QStringBuilder>
 #include <QWaitCondition>
+#include <memory>
 
 
 #include "qgsapplication.h"
@@ -2120,7 +2121,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
             .arg( srid )
             .arg( QgsMssqlUtils::quotedValue( auth_name ), auth_srid, QgsMssqlUtils::quotedValue( srs.toWkt() ), QgsMssqlUtils::quotedValue( srs.toProj() ) );
 
-    logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN ) );
+    logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN );
 
     if ( !q.exec( sql ) )
     {
@@ -2142,7 +2143,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
     sql = QStringLiteral( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) BEGIN DROP TABLE [%1].[%2] DELETE FROM geometry_columns where f_table_schema='%1' and f_table_name='%2' END;" )
             .arg( schemaName, tableName );
 
-    logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN ) );
+    logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN );
 
     if ( !q.exec( sql ) )
     {
@@ -2158,7 +2159,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
     sql = QStringLiteral( "SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')" )
             .arg( schemaName, tableName );
 
-    logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN ) );
+    logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN );
 
     if ( !q.exec( sql ) )
     {
@@ -2196,7 +2197,7 @@ Qgis::VectorExportResult QgsMssqlProvider::createEmptyLayer( const QString &uri,
             .arg( schemaName, tableName, primaryKey );
   }
 
-  logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN ) );
+  logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProvider" ), QGS_QUERY_LOG_ORIGIN );
 
   if ( !q.exec( sql ) )
   {

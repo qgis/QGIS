@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsfieldsitem.h"
+
+#include <memory>
 #include "moc_qgsfieldsitem.cpp"
 #include "qgsiconutils.h"
 #include "qgsproviderregistry.h"
@@ -111,7 +113,7 @@ QgsVectorLayer *QgsFieldsItem::layer()
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
       if ( conn )
       {
-        vl.reset( new QgsVectorLayer( conn->tableUri( mSchema, mTableName ), QStringLiteral( "temp_layer" ), providerKey() ) );
+        vl = std::make_unique<QgsVectorLayer>( conn->tableUri( mSchema, mTableName ), QStringLiteral( "temp_layer" ), providerKey() );
         if ( vl->isValid() )
         {
           return vl.release();

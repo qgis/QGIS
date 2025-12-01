@@ -37,6 +37,7 @@
 #include <QWidget>
 #include <QTextBoundaryFinder>
 #include <QMimeData>
+#include <memory>
 
 #include "qgsfontutils.h"
 #include "qgsexpression.h"
@@ -1601,7 +1602,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   std::unique_ptr< QgsRenderContext > scopedRc;
   if ( !context )
   {
-    scopedRc.reset( new QgsRenderContext() );
+    scopedRc = std::make_unique<QgsRenderContext>( );
     if ( f )
       scopedRc->expressionContext().setFeature( *f );
   }

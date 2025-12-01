@@ -22,6 +22,7 @@
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsapplication.h"
 #include <QThread>
+#include <memory>
 
 namespace QgsWms
 {
@@ -71,7 +72,7 @@ namespace QgsWms
 
         renderJob.waitForFinished();
         *image = renderJob.renderedImage();
-        mPainter.reset( new QPainter( image ) );
+        mPainter = std::make_unique<QPainter>( image );
       }
 
       mErrors = renderJob.errors();
@@ -81,7 +82,7 @@ namespace QgsWms
     }
     else
     {
-      mPainter.reset( new QPainter( image ) );
+      mPainter = std::make_unique<QPainter>( image );
       QgsMapRendererCustomPainterJob renderJob( mapSettings, mPainter.get() );
       if ( feedback )
         QObject::connect( feedback, &QgsFeedback::canceled, &renderJob, &QgsMapRendererCustomPainterJob::cancel );

@@ -19,6 +19,7 @@
 #include "qgsgeometryengine.h"
 
 #include <QStringList>
+#include <memory>
 
 //constants
 const QString QgsFeatureRequest::ALL_ATTRIBUTES = QStringLiteral( "#!allattributes!#" );
@@ -133,7 +134,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mFilterFids = rh.mFilterFids;
   if ( rh.mFilterExpression )
   {
-    mFilterExpression.reset( new QgsExpression( *rh.mFilterExpression ) );
+    mFilterExpression = std::make_unique<QgsExpression>( *rh.mFilterExpression );
   }
   else
   {
@@ -288,7 +289,7 @@ QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( const std::fun
 QgsFeatureRequest &QgsFeatureRequest::setFilterExpression( const QString &expression )
 {
   mFilter = Qgis::FeatureRequestFilterType::Expression;
-  mFilterExpression.reset( new QgsExpression( expression ) );
+  mFilterExpression = std::make_unique<QgsExpression>( expression );
   return *this;
 }
 
