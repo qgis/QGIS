@@ -396,7 +396,7 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
       }
       delete selectedItem;
     }
-    emit selectionChanged();
+    emit selectedItemsChanged();
     event->ignore();
   }
   else if ( event->key() == Qt::Key_Left
@@ -468,7 +468,7 @@ void QgsMapToolSelectAnnotation::onCanvasRefreshed()
 
   if ( needsSelectedItemsUpdate )
   {
-    emit selectionChanged();
+    emit selectedItemsChanged();
   }
 }
 
@@ -569,7 +569,9 @@ void QgsMapToolSelectAnnotation::setSelectedItemsFromRect( const QgsRectangle &m
       mSelectedItems << rubberband.release();
     }
   }
-  emit selectionChanged();
+  emit selectedItemsChanged();
+
+  updateSelectedItem();
 }
 
 void QgsMapToolSelectAnnotation::setSelectedItemFromPoint( const QgsPointXY &mapPoint, bool toggleSelection )
@@ -623,7 +625,21 @@ void QgsMapToolSelectAnnotation::setSelectedItemFromPoint( const QgsPointXY &map
     rubberband->updateBoundingBox( closestItem->boundingBox() );
     mSelectedItems << rubberband.release();
   }
-  emit selectionChanged();
+  emit selectedItemsChanged();
+
+  updateSelectedItem();
+}
+
+void QgsMapToolSelectAnnotation::updateSelectedItem()
+{
+  if ( mSelectedItems.size() == 1 )
+  {
+    emit itemSelected( mSelectedItems[0]->layer(), mSelectedItems[0]->itemId() );
+  }
+  else
+  {
+    emit selectionCleared();
+  }
 }
 
 void QgsMapToolSelectAnnotation::clearSelectedItems()
@@ -633,6 +649,6 @@ void QgsMapToolSelectAnnotation::clearSelectedItems()
   mSelectedItems.clear();
   if ( hadSelection )
   {
-    emit selectionChanged();
+    emit selectedItemsChanged();
   }
 }
