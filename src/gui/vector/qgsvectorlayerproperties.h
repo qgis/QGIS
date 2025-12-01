@@ -19,14 +19,15 @@
 #ifndef QGSVECTORLAYERPROPERTIES
 #define QGSVECTORLAYERPROPERTIES
 
-#include <QStandardItemModel>
-
 #include "ui_qgsvectorlayerpropertiesbase.h"
+
 #include "qgsguiutils.h"
+#include "qgslayerpropertiesdialog.h"
+#include "qgslayertreefilterproxymodel.h"
 #include "qgsmaplayerserverproperties.h"
 #include "qgsvectorlayerjoininfo.h"
-#include "qgslayertreefilterproxymodel.h"
-#include "qgslayerpropertiesdialog.h"
+
+#include <QStandardItemModel>
 
 class QgsMapLayer;
 

@@ -17,9 +17,9 @@
 #define QGSVECTORLAYERUTILS_H
 
 #include "qgis_core.h"
+#include "qgsfeaturesink.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsfeaturesink.h"
 
 class QgsFeatureRenderer;
 class QgsSymbolLayer;

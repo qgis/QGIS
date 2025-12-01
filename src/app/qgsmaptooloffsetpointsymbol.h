@@ -16,9 +16,9 @@
 #ifndef QGSMAPTOOLOFFSETPOINTSYMBOL_H
 #define QGSMAPTOOLOFFSETPOINTSYMBOL_H
 
+#include "qgis_app.h"
 #include "qgsmaptoolpointsymbol.h"
 #include "qgsunittypes.h"
-#include "qgis_app.h"
 
 class QgsMarkerSymbol;
 class QgsMapCanvasMarkerSymbolItem;

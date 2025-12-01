@@ -19,11 +19,12 @@
 
 #define SIP_NO_FILE
 
-#include "qgsgraphicsviewmousehandles.h"
-#include <QPointer>
 #include <memory>
 
 #include "qgis_gui.h"
+#include "qgsgraphicsviewmousehandles.h"
+
+#include <QPointer>
 
 class QgsModelGraphicsView;
 class QgsModelGraphicsScene;

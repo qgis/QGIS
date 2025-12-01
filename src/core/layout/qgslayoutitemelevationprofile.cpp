@@ -16,27 +16,30 @@
  ***************************************************************************/
 
 #include "qgslayoutitemelevationprofile.h"
-#include "moc_qgslayoutitemelevationprofile.cpp"
-#include "qgslayoutitemregistry.h"
-#include "qgslinesymbol.h"
-#include "qgsplot.h"
-#include "qgslayout.h"
-#include "qgsmessagelog.h"
-#include "qgsmaplayerlistutils_p.h"
+
+#include <memory>
+
 #include "qgscurve.h"
-#include "qgsprofilerequest.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgsterrainprovider.h"
-#include "qgsprofilerenderer.h"
-#include "qgslayoututils.h"
-#include "qgsvectorlayer.h"
+#include "qgslayout.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoututils.h"
+#include "qgslinesymbol.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsmessagelog.h"
+#include "qgsplot.h"
+#include "qgsprofilerenderer.h"
+#include "qgsprofilerequest.h"
 #include "qgsprofilesourceregistry.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgssymbollayerutils.h"
+#include "qgsterrainprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QTimer>
-#include <memory>
+
+#include "moc_qgslayoutitemelevationprofile.cpp"
 
 #define CACHE_SIZE_LIMIT 5000
 

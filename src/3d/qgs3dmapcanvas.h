@@ -16,9 +16,8 @@
 #ifndef QGS3DMAPCANVAS_H
 #define QGS3DMAPCANVAS_H
 
-#include "qgis_3d.h"
-
 #include "qgis.h"
+#include "qgis_3d.h"
 #include "qgsrange.h"
 #include "qgsraycastresult.h"
 

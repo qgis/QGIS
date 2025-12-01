@@ -16,11 +16,12 @@
 #ifndef QGSMAPTOOLEXTENT_H
 #define QGSMAPTOOLEXTENT_H
 
+#include "qgis_gui.h"
 #include "qgsmaptool.h"
 #include "qgspointxy.h"
 #include "qgsrubberband.h"
-#include "qgis_gui.h"
-#include "qobjectuniqueptr.h"
+
+#include <qobjectuniqueptr.h>
 
 class QgsMapCanvas;
 

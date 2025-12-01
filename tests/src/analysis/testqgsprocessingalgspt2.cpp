@@ -15,34 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 #include <memory>
+#include <limits>
 
-#include "limits"
-
-#include "qgstest.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingprovider.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsprocessingcontext.h"
-#include "qgsnativealgorithms.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasteranalysisutils.cpp"
-#include "qgsprintlayout.h"
-#include "qgslayertree.h"
-#include "qgslayoutmanager.h"
-#include "qgslayoutitemmap.h"
-#include "qgspallabeling.h"
-#include "qgsfontutils.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsmeshlayer.h"
 #include "qgsalgorithmgpsbabeltools.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
-#include "qgstextformat.h"
-#include "qgsreferencedgeometry.h"
 #include "qgsdxfexport.h"
-#include "qgssinglesymbolrenderer.h"
+#include "qgsfontutils.h"
+#include "qgslayertree.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutmanager.h"
 #include "qgslinesymbol.h"
+#include "qgsmeshlayer.h"
+#include "qgsnativealgorithms.h"
+#include "qgspallabeling.h"
+#include "qgsprintlayout.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingprovider.h"
+#include "qgsprocessingregistry.h"
+#include "qgsreferencedgeometry.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgstest.h"
+#include "qgstextformat.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 
+#include <qgsrasteranalysisutils.cpp>
 
 class TestQgsProcessingAlgsPt2 : public QgsTest
 {

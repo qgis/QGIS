@@ -15,18 +15,16 @@
 
 #include <memory>
 
-#include "qgstest.h"
-
 #include "qgs3d.h"
 #include "qgs3dmapsettings.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsvectorlayerchunkloader_p.h"
-
 
 class TestQgsChunkedEntity : public QgsTest
 {

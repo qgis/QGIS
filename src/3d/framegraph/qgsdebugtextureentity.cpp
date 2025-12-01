@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgsdebugtextureentity.h"
-#include "moc_qgsdebugtextureentity.cpp"
-#include <Qt3DRender/QTexture>
 
-#include <Qt3DRender/QParameter>
 #include <QUrl>
 #include <QVector2D>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTexture>
+
+#include "moc_qgsdebugtextureentity.cpp"
 
 QgsDebugTextureEntity::QgsDebugTextureEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )

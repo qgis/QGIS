@@ -17,14 +17,13 @@
 
 #include <memory>
 
-#include "qgslogger.h"
-#include "qgsexpression.h"
-#include "qgsexpressionnodeimpl.h"
-#include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
 #include "qgscolorutils.h"
+#include "qgsexpression.h"
+#include "qgsexpressionnodeimpl.h"
+#include "qgslogger.h"
 #include "qgspointxy.h"
-
+#include "qgssymbollayerutils.h"
 
 //
 // QgsPropertyTransformer

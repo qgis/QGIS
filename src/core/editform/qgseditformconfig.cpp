@@ -13,22 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgseditformconfig_p.h"
 #include "qgseditformconfig.h"
-#include "moc_qgseditformconfig.cpp"
+
+#include "qgsapplication.h"
+#include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorfield.h"
+#include "qgsattributeeditorrelation.h"
+#include "qgseditformconfig_p.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsnetworkcontentfetcherregistry.h"
 #include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrelationmanager.h"
-#include "qgslogger.h"
 #include "qgsxmlutils.h"
-#include "qgsapplication.h"
-#include "qgsmessagelog.h"
-#include "qgsattributeeditorcontainer.h"
-#include "qgsattributeeditorfield.h"
-#include "qgsattributeeditorrelation.h"
+
 #include <QUrl>
+
+#include "moc_qgseditformconfig.cpp"
 
 QgsEditFormConfig::QgsEditFormConfig()
   : d( new QgsEditFormConfigPrivate() )

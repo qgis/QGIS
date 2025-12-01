@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerfeaturecounter.h"
-#include "moc_qgsvectorlayerfeaturecounter.cpp"
-#include "qgsvectorlayer.h"
+
 #include "qgsfeatureid.h"
 #include "qgsfeedback.h"
 #include "qgsrendercontext.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsvectorlayerfeaturecounter.cpp"
 
 QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context, bool storeSymbolFids )
   : QgsTask( tr( "Counting features in %1" ).arg( layer->name() ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )

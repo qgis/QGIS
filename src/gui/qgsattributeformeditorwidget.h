@@ -16,10 +16,10 @@
 #ifndef QGSATTRIBUTEFORMEDITORWIDGET_H
 #define QGSATTRIBUTEFORMEDITORWIDGET_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-#include "qgseditorwidgetwrapper.h"
+#include "qgis_sip.h"
 #include "qgsattributeformwidget.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QgsEditorWidgetWrapper;
 class QgsMultiEditToolButton;

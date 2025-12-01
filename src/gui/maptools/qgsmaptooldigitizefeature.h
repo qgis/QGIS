@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLDIGITIZEFEATURE_H
 #define QGSMAPTOOLDIGITIZEFEATURE_H
 
-#include "qgsmaptoolcapturelayergeometry.h"
 #include "qgis_gui.h"
+#include "qgsmaptoolcapturelayergeometry.h"
 
 class QgsFeature;
 

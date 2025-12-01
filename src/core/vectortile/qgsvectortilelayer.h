@@ -18,9 +18,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsfeatureid.h"
 #include "qgsmaplayer.h"
 #include "qgsvectortilematrixset.h"
-#include "qgsfeatureid.h"
 
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;

@@ -13,31 +13,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QRegularExpression>
+#include "qgsvectorlayerutils.h"
+
 #include <memory>
 
+#include "qgsauxiliarystorage.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
-#include "qgsvectorlayerutils.h"
-#include "qgsvectordataprovider.h"
+#include "qgsfeedback.h"
+#include "qgspainteffect.h"
+#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgsfeedback.h"
-#include "qgsvectorlayer.h"
+#include "qgsrenderer.h"
+#include "qgsstyle.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerreference.h"
 #include "qgsthreadingutils.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsunsetattributevalue.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgspallabeling.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayer.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsstyle.h"
-#include "qgsauxiliarystorage.h"
-#include "qgssymbollayerreference.h"
-#include "qgspainteffect.h"
-#include "qgsunsetattributevalue.h"
+
+#include <QRegularExpression>
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {

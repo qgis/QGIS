@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgsfeaturedownloader.h"
-#include "moc_qgsfeaturedownloader.cpp"
+
 #include "qgsfeaturedownloaderimpl.h"
+
+#include "moc_qgsfeaturedownloader.cpp"
 
 void QgsFeatureDownloader::run( bool serializeFeatures, long long maxFeatures )
 {

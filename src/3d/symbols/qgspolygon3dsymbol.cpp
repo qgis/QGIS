@@ -15,16 +15,16 @@
 
 #include "qgspolygon3dsymbol.h"
 
-#include <Qt3DCore/QEntity>
-
-#include "qgs3dutils.h"
 #include "qgs3d.h"
+#include "qgs3dsceneexporter.h"
+#include "qgs3dutils.h"
 #include "qgscolorutils.h"
 #include "qgsmaterialregistry.h"
-#include "qgs3dsceneexporter.h"
-#include "qgsvectorlayerelevationproperties.h"
-#include "qgsvectorlayer.h"
 #include "qgstessellatedpolygongeometry.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerelevationproperties.h"
+
+#include <Qt3DCore/QEntity>
 
 QgsPolygon3DSymbol::QgsPolygon3DSymbol()
   : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )

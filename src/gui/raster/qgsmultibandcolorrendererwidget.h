@@ -18,9 +18,10 @@
 #ifndef QGSMULTIBANDCOLORRENDERERWIDGET_H
 #define QGSMULTIBANDCOLORRENDERERWIDGET_H
 
-#include "qgsrasterrendererwidget.h"
 #include "ui_qgsmultibandcolorrendererwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgsrasterrendererwidget.h"
 
 class QgsContrastEnhancement;
 class QgsMultiBandColorRenderer;

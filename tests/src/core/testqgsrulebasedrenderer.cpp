@@ -12,27 +12,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgsembeddedsymbolrenderer.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeometry.h"
+#include "qgsgraduatedsymbolrenderer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmultirenderchecker.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrendererrange.h"
+#include "qgsrulebasedrenderer.h"
+#include "qgssldexportcontext.h"
+#include "qgssymbol.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeaturecounter.h"
+
 #include <QDomDocument>
 #include <QFile>
 #include <QTemporaryFile>
-
-#include "qgsrulebasedrenderer.h"
-#include "qgsapplication.h"
-#include "qgsreadwritecontext.h"
-#include "qgssymbol.h"
-#include "qgsvectorlayer.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsmultirenderchecker.h"
-#include "qgsvectorlayerfeaturecounter.h"
-#include "qgscategorizedsymbolrenderer.h"
-#include "qgsrendererrange.h"
-#include "qgsgraduatedsymbolrenderer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsgeometry.h"
-#include "qgsembeddedsymbolrenderer.h"
-#include "qgssldexportcontext.h"
 
 typedef QgsRuleBasedRenderer::Rule RRule;
 

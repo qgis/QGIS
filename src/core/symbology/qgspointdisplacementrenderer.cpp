@@ -16,18 +16,20 @@
  ***************************************************************************/
 
 #include "qgspointdisplacementrenderer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsfontutils.h"
-#include "qgspointclusterrenderer.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgsmarkersymbol.h"
-#include "qgsunittypes.h"
-#include "qgscolorutils.h"
 
-#include <QPainter>
 #include <cmath>
 #include <memory>
+
+#include "qgscolorutils.h"
+#include "qgsfontutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgspointclusterrenderer.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
+
+#include <QPainter>
 
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString &labelAttributeName )
   : QgsPointDistanceRenderer( QStringLiteral( "pointDisplacement" ), labelAttributeName )

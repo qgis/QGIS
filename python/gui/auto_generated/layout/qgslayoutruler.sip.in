@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsLayoutRuler : QWidget
 {
 %Docstring(signature="appended")

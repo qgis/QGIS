@@ -14,19 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgrassvectormap.h"
+
+#include "qgsgrass.h"
+#include "qgsgrassundocommand.h"
+#include "qgsgrassvectormaplayer.h"
+#include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
+
 #include <QFileInfo>
 #include <QMessageBox>
 
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgspoint.h"
-
-#include "qgslogger.h"
-#include "qgsgrass.h"
-#include "qgsgrassvectormap.h"
 #include "moc_qgsgrassvectormap.cpp"
-#include "qgsgrassvectormaplayer.h"
-#include "qgsgrassundocommand.h"
 
 extern "C"
 {

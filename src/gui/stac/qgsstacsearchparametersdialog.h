@@ -19,6 +19,7 @@
 ///@cond PRIVATE
 #include "qgsrange.h"
 #include "qgsstaccollectionlist.h"
+
 #define SIP_NO_FILE
 
 #include "ui_qgsstacsearchparametersdialog.h"

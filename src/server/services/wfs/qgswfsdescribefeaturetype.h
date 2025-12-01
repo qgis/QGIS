@@ -25,7 +25,6 @@
 #include "qgsserverinterface.h"
 #include "qgswfsparameters.h"
 
-
 namespace QgsWfs
 {
 

@@ -18,6 +18,7 @@
 #include "qgsalgorithmsimplify.h"
 
 #include <memory>
+
 #include "qgsmaptopixelgeometrysimplifier.h"
 
 ///@cond PRIVATE

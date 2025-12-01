@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgsexpressionstoredialog.h"
-#include "moc_qgsexpressionstoredialog.cpp"
+
 #include <QPushButton>
 #include <QStyle>
+
+#include "moc_qgsexpressionstoredialog.cpp"
 
 QgsExpressionStoreDialog::QgsExpressionStoreDialog( const QString &label, const QString &expression, const QString &helpText, const QStringList &existingLabels, QWidget *parent )
   : QDialog( parent )

@@ -17,16 +17,18 @@
  ***************************************************************************/
 
 #include "qgsdatasourceuri.h"
-#include "moc_qgsdatasourceuri.cpp"
+
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 #include "qgswkbtypes.h"
-#include "qgsapplication.h"
 
-#include <QStringList>
 #include <QRegularExpression>
+#include <QStringList>
 #include <QUrl>
 #include <QUrlQuery>
+
+#include "moc_qgsdatasourceuri.cpp"
 
 #define HIDING_TOKEN QStringLiteral( "XXXXXXXX" )
 

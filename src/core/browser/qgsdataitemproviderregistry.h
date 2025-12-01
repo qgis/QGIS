@@ -16,13 +16,12 @@
 #ifndef QGSDATAITEMPROVIDERREGISTRY_H
 #define QGSDATAITEMPROVIDERREGISTRY_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QList>
 #include <QMap>
 #include <QObject>
-
-#include "qgis_sip.h"
-
-#include "qgis_core.h"
 
 class QgsDataItemProvider;
 

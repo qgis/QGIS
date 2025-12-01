@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsstatusbar.h"
-#include "moc_qgsstatusbar.cpp"
+
+#include <QEvent>
 #include <QLayout>
 #include <QLineEdit>
 #include <QPalette>
-#include <QTimer>
-#include <QEvent>
 #include <QStatusBar>
+#include <QTimer>
+
+#include "moc_qgsstatusbar.cpp"
 
 QgsStatusBar::QgsStatusBar( QWidget *parent )
   : QWidget( parent )

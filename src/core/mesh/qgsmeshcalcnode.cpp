@@ -16,9 +16,10 @@
  ***************************************************************************/
 ///@cond PRIVATE
 
+#include "qgsmeshcalcnode.h"
+
 #include <cfloat>
 
-#include "qgsmeshcalcnode.h"
 #include "qgsmeshmemorydataprovider.h"
 
 QgsMeshCalcNode::QgsMeshCalcNode()

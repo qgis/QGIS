@@ -17,6 +17,7 @@
 #define QGSVECTORTILELAYERPROPERTIES_H
 
 #include "ui_qgsvectortilelayerpropertiesbase.h"
+
 #include "qgslayerpropertiesdialog.h"
 
 class QgsMapLayer;

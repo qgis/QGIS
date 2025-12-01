@@ -15,28 +15,30 @@
  ***************************************************************************/
 
 #include "qgslayoutexporter.h"
-#include "qgslayout.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutpagecollection.h"
-#include "qgsogrutils.h"
-#include "qgspaintenginehack.h"
-#include "qgslayoutguidecollection.h"
+
 #include "qgsabstractlayoutiterator.h"
 #include "qgsfeedback.h"
+#include "qgslabelingresults.h"
+#include "qgslayout.h"
 #include "qgslayoutgeopdfexporter.h"
+#include "qgslayoutguidecollection.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutpagecollection.h"
 #include "qgslinestring.h"
 #include "qgsmessagelog.h"
+#include "qgsogrutils.h"
+#include "qgspaintenginehack.h"
 #include "qgsprojectstylesettings.h"
-#include "qgslabelingresults.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 
+#include <QBuffer>
 #include <QImageWriter>
 #include <QSize>
 #include <QSvgGenerator>
-#include <QBuffer>
-#include <QTimeZone>
 #include <QTextStream>
+#include <QTimeZone>
+
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
 #include <QColorSpace>
 #include <QPdfOutputIntent>

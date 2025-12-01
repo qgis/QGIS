@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckerror.h"
+
 #include "qgsapplication.h"
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId, QgsFeatureId featureId, const QgsGeometry &geometry, const QgsPointXY &errorLocation, QgsVertexId vidx, const QVariant &value, ValueType valueType )

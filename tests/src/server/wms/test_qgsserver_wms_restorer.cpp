@@ -15,11 +15,10 @@
 
 #include <memory>
 
+#include "qgsserverinterfaceimpl.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
-
 #include "qgswmsrestorer.h"
-#include "qgsserverinterfaceimpl.h"
 
 /**
  * \ingroup UnitTests

@@ -16,8 +16,8 @@
 #ifndef QGSCUSTOMDROPHANDLER_H
 #define QGSCUSTOMDROPHANDLER_H
 
-#include "qgsmimedatautils.h"
 #include "qgis_gui.h"
+#include "qgsmimedatautils.h"
 
 class QgsMapCanvas;
 

@@ -14,12 +14,13 @@
  ***************************************************************************/
 #include "qgsfeaturerequest.h"
 
+#include <memory>
+
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
 
 #include <QStringList>
-#include <memory>
 
 //constants
 const QString QgsFeatureRequest::ALL_ATTRIBUTES = QStringLiteral( "#!allattributes!#" );

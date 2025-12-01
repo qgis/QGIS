@@ -15,18 +15,16 @@
 #ifndef QGSOGRFEATUREITERATOR_H
 #define QGSOGRFEATUREITERATOR_H
 
-#include "qgsfeatureiterator.h"
-#include "qgsogrconnpool.h"
-#include "qgsfields.h"
-#include "qgsogrutils.h"
-#include "qgscoordinatetransform.h"
-
 #include <ogr_api.h>
-
 #include <memory>
 #include <set>
-#include "qgis_sip.h"
 
+#include "qgis_sip.h"
+#include "qgscoordinatetransform.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
+#include "qgsogrconnpool.h"
+#include "qgsogrutils.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

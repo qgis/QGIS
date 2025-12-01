@@ -13,15 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-
 #include "qgscadutils.h"
 #include "qgsproject.h"
 #include "qgssnappingutils.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QObject>
+#include <QString>
 
 /**
  * \ingroup UnitTests

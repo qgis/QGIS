@@ -15,18 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QQueue>
-#include <QFileInfo>
-#include <QApplication>
-#include <QThread>
-
 #include "qgspointcloudlayerexporter.h"
-#include "moc_qgspointcloudlayerexporter.cpp"
+
+#include "qgsgeos.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgspointcloudrequest.h"
 #include "qgsrectangle.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsgeos.h"
+
+#include <QApplication>
+#include <QFileInfo>
+#include <QQueue>
+#include <QThread>
+
+#include "moc_qgspointcloudlayerexporter.cpp"
 
 #ifdef HAVE_PDAL_QGIS
 #include <memory>

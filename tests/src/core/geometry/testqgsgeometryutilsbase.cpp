@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
 #include "qgsgeometryutils_base.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsGeometryUtilsBase : public QObject
 {

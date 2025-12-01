@@ -19,10 +19,9 @@
 #include "ui_qgsgrassmodulebase.h"
 
 #include "qgis.h"
+#include "qgsgrassmoduleoptions.h"
 
 #include <QProcess>
-
-#include "qgsgrassmoduleoptions.h"
 
 class QDomNode;
 class QDomElement;

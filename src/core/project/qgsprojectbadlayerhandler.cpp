@@ -13,11 +13,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsdatasourceuri.h"
 #include "qgsprojectbadlayerhandler.h"
+
+#include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsapplication.h"
 
 #include <QFileInfo>
 

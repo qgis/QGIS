@@ -20,9 +20,9 @@
 
 #include "qgis_core.h"
 
-#include <QVector>
 #include <QSet>
 #include <QVariant>
+#include <QVector>
 #include <QtMath>
 
 class QgsPointCloudAttribute;

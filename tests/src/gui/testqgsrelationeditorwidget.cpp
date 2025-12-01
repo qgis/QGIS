@@ -13,20 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgstest.h>
+#include <memory>
 
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
-#include <qgsapplication.h>
-#include <qgsattributeform.h>
-#include <qgsgui.h>
-#include <qgsproject.h>
-#include <qgsrelationeditorwidget.h>
-#include <qgsrelationmanager.h>
-#include <qgsrelationreferencewidget.h>
-#include <qgstrackedvectorlayertools.h>
+#include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "qgsapplication.h"
+#include "qgsattributeform.h"
+#include "qgsgui.h"
+#include "qgsproject.h"
+#include "qgsrelationeditorwidget.h"
+#include "qgsrelationmanager.h"
+#include "qgsrelationreferencewidget.h"
+#include "qgstest.h"
+#include "qgstrackedvectorlayertools.h"
 
 #include <QTreeWidgetItem>
-#include <memory>
 
 class TestQgsRelationEditorWidget : public QObject
 {

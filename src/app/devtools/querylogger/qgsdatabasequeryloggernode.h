@@ -15,14 +15,16 @@
 #ifndef QGSDBQUERYLOGGERNODE_H
 #define QGSDBQUERYLOGGERNODE_H
 
-#include <QElapsedTimer>
-#include <QVariant>
-#include <QColor>
-#include <QUrl>
 #include <memory>
 #include <deque>
+
 #include "devtools/qgsdevtoolsmodelnode.h"
 #include "qgsdbquerylog.h"
+
+#include <QColor>
+#include <QElapsedTimer>
+#include <QUrl>
+#include <QVariant>
 
 class QAction;
 

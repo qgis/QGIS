@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgcpgeometrytransformer.h"
+
 #include "qgsgeometry.h"
 
 QgsGcpGeometryTransformer::QgsGcpGeometryTransformer( QgsGcpTransformerInterface *gcpTransformer )

@@ -15,16 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
-#include "qgssettingsregistrycore.h"
 #include "qgsscalecombobox.h"
-#include "moc_qgsscalecombobox.cpp"
-#include "qgssettingsentryimpl.h"
+
+#include "qgis.h"
 #include "qgsmathutils.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QAbstractItemView>
-#include <QLocale>
 #include <QLineEdit>
+#include <QLocale>
+
+#include "moc_qgsscalecombobox.cpp"
 
 QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
   : QComboBox( parent )

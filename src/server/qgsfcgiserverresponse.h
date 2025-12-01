@@ -22,12 +22,13 @@
 #define SIP_NO_FILE
 
 
+#include <thread>
+#include <mutex>
+
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 
 #include <QBuffer>
-#include <thread>
-#include <mutex>
 
 /**
  * \ingroup server

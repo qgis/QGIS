@@ -17,13 +17,12 @@
 #ifndef QGSAUTHHMACSHA256METHOD_H
 #define QGSAUTHHMACSHA256METHOD_H
 
-#include <QObject>
-#include <QMutex>
-
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
 
+#include <QMutex>
+#include <QObject>
 
 class QgsAuthMapTilerHmacSha256Method : public QgsAuthMethod
 {

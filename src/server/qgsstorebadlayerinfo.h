@@ -18,10 +18,11 @@
 #ifndef QGSSTOREBADLAYERINFO_H
 #define QGSSTOREBADLAYERINFO_H
 
-#include "qgsprojectbadlayerhandler.h"
 #include "qgis_server.h"
-#include <QStringList>
+#include "qgsprojectbadlayerhandler.h"
+
 #include <QMap>
+#include <QStringList>
 
 /**
  * \ingroup server

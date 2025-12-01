@@ -18,9 +18,10 @@
 #define QGSMESHLAYERPROPERTIES_H
 
 #include "ui_qgsmeshlayerpropertiesbase.h"
-#include "qgslayerpropertiesdialog.h"
-#include "qgsguiutils.h"
+
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
+#include "qgslayerpropertiesdialog.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;

@@ -15,12 +15,13 @@
 #ifndef QGSBASICNUMERICFORMAT_H
 #define QGSBASICNUMERICFORMAT_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include "qgsnumericformat.h"
 #include <sstream>
 #include <iostream>
 #include <memory>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsnumericformat.h"
 
 /**
  * \ingroup core

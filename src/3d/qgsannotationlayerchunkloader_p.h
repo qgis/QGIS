@@ -27,11 +27,12 @@
 // version without notice, or even be removed.
 //
 
-#include "qgschunkloader.h"
-#include "qgschunkedentity.h"
 #include "qgs3drendercontext.h"
 #include "qgsbillboardgeometry.h"
+#include "qgschunkedentity.h"
+#include "qgschunkloader.h"
 #include "qgstextformat.h"
+
 #include <QImage>
 
 #define SIP_NO_FILE

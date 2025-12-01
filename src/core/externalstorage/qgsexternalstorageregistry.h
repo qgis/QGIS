@@ -19,8 +19,8 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include <QList>
 #include <QHash>
+#include <QList>
 
 class QgsExternalStorage;
 

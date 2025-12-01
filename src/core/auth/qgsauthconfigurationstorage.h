@@ -17,16 +17,15 @@
 #define QGSAUTHCONFIGURATIONSTORAGE_H
 
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsauthconfig.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsauthcertutils.h"
+#include "qgsauthconfig.h"
 #include "qgsexception.h"
 
-#include <QString>
 #include <QObject>
-
+#include <QString>
 
 /**
  * \ingroup core

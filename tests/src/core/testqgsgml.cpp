@@ -15,9 +15,10 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include <QUrl>
+
 #include <QTemporaryFile>
 #include <QTextCodec>
+#include <QUrl>
 
 //qgis includes...
 #include <qgsgeometry.h>

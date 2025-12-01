@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgslayoutmarkerwidget.h"
-#include "moc_qgslayoutmarkerwidget.cpp"
-#include "qgsstyle.h"
-#include "qgslayoutitemmarker.h"
+
 #include "qgslayout.h"
-#include "qgslayoutundostack.h"
-#include "qgsvectorlayer.h"
 #include "qgslayoutitemmap.h"
-#include "qgsmarkersymbol.h"
+#include "qgslayoutitemmarker.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoutundostack.h"
+#include "qgsmarkersymbol.h"
+#include "qgsstyle.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgslayoutmarkerwidget.cpp"
 
 QgsLayoutMarkerWidget::QgsLayoutMarkerWidget( QgsLayoutItemMarker *marker )
   : QgsLayoutItemBaseWidget( nullptr, marker )

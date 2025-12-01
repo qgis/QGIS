@@ -19,8 +19,8 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
-#include "qgssettingsentry.h"
 #include "qgslogger.h"
+#include "qgssettingsentry.h"
 
 /**
  * \class QgsSettingsEntryEnumFlag

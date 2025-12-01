@@ -19,10 +19,11 @@
 #define QGSCUSTOMPROJECTIONOPTIONS_H
 
 #include "ui_qgscustomprojectiondialogbase.h"
-#include "qgsoptionswidgetfactory.h"
-#include "qgshelp.h"
-#include "qgscoordinatereferencesystem.h"
+
 #include "qgis_app.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgshelp.h"
+#include "qgsoptionswidgetfactory.h"
 
 class QDir;
 

@@ -18,12 +18,12 @@
 #ifndef QGSWMTSPARAMETERS_H
 #define QGSWMTSPARAMETERS_H
 
-#include <QMap>
-#include <QObject>
-#include <QMetaEnum>
-
 #include "qgsprojectversion.h"
 #include "qgsserverparameters.h"
+
+#include <QMap>
+#include <QMetaEnum>
+#include <QObject>
 
 namespace QgsWmts
 {

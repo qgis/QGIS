@@ -21,7 +21,6 @@
 
 #include "qgsdataitemguiprovider.h"
 
-
 class QgsTiledSceneDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT

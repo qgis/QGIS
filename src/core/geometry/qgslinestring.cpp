@@ -16,25 +16,26 @@
  ***************************************************************************/
 
 #include "qgslinestring.h"
-#include "qgsapplication.h"
-#include "qgscompoundcurve.h"
-#include "qgscoordinatetransform.h"
-#include "qgsgeometryutils.h"
-#include "qgsgeometryutils_base.h"
-#include "qgswkbptr.h"
-#include "qgslinesegment.h"
-#include "qgsgeometrytransformer.h"
-#include "qgsfeedback.h"
 
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <cmath>
-#include <QPainter>
 #include <limits>
+
+#include "qgsapplication.h"
+#include "qgsbox3d.h"
+#include "qgscompoundcurve.h"
+#include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
+#include "qgsgeometrytransformer.h"
+#include "qgsgeometryutils.h"
+#include "qgsgeometryutils_base.h"
+#include "qgslinesegment.h"
+#include "qgswkbptr.h"
+
 #include <QDomDocument>
 #include <QJsonObject>
-
-#include "qgsbox3d.h"
+#include <QPainter>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

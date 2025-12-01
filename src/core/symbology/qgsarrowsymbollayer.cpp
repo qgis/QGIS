@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometryutils_base.h"
 #include "qgsarrowsymbollayer.h"
 
 #include <memory>
-#include "qgssymbollayerutils.h"
+
 #include "qgsfillsymbol.h"
+#include "qgsgeometryutils_base.h"
 #include "qgsrendercontext.h"
+#include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()

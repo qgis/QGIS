@@ -10,7 +10,6 @@
 
 
 
-
 class QgsPolygon3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 {
 %Docstring(signature="appended")

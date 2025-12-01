@@ -16,21 +16,23 @@
  ***************************************************************************/
 
 #include "qgsabout.h"
-#include "moc_qgsabout.cpp"
+
 #include "qgsapplication.h"
-#include "qgscontributorsmapcanvas.h"
 #include "qgsauthmethodregistry.h"
-#include "qgsproviderregistry.h"
+#include "qgscontributorsmapcanvas.h"
 #include "qgslogger.h"
+#include "qgsproviderregistry.h"
 
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QFile>
-#include <QTextStream>
 #include <QImageReader>
-#include <QSqlDatabase>
-#include <QUrl>
 #include <QRegularExpression>
+#include <QSqlDatabase>
+#include <QTextStream>
+#include <QUrl>
+
+#include "moc_qgsabout.cpp"
 
 #ifdef Q_OS_MACOS
 // Modeless dialog with close button only

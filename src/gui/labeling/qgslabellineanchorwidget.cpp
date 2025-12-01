@@ -15,9 +15,11 @@
 
 
 #include "qgslabellineanchorwidget.h"
-#include "moc_qgslabellineanchorwidget.cpp"
-#include "qgsexpressioncontextutils.h"
+
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
+
+#include "moc_qgslabellineanchorwidget.cpp"
 
 QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLayer *vl )
   : QgsLabelSettingsWidgetBase( parent, vl )

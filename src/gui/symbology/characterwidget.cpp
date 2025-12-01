@@ -44,7 +44,7 @@
 ****************************************************************************/
 
 #include "characterwidget.h"
-#include "moc_characterwidget.cpp"
+
 #include "qgsapplication.h"
 #include "qgsfontutils.h"
 
@@ -57,6 +57,8 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QToolTip>
+
+#include "moc_characterwidget.cpp"
 
 CharacterWidget::CharacterWidget( QWidget *parent )
   : QWidget( parent )

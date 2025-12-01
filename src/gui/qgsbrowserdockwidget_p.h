@@ -32,15 +32,15 @@
 // version without notice, or even be removed.
 //
 
-#include <QSortFilterProxyModel>
-
 #include "ui_qgsbrowserlayerpropertiesbase.h"
 #include "ui_qgsbrowserdirectorypropertiesbase.h"
 #include "ui_qgsbrowserpropertiesdialogbase.h"
 
 #include "qgsbrowsertreeview.h"
-#include "qgsdockwidget.h"
 #include "qgsdataitemguiprovider.h"
+#include "qgsdockwidget.h"
+
+#include <QSortFilterProxyModel>
 
 class QgsBrowserGuiModel;
 class QModelIndex;

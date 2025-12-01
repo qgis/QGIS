@@ -8,6 +8,7 @@
 
 
 
+
 class QgsColorSwatchDelegate : QAbstractItemDelegate
 {
 %Docstring(signature="appended")

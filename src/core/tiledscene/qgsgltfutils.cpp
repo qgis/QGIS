@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsgltfutils.h"
 
+#include <memory>
+
 #include "qgsexception.h"
-#include "qgsmatrix4x4.h"
-#include "qgsconfig.h"
 #include "qgslogger.h"
+#include "qgsmatrix4x4.h"
 #include "qgstiledscenetile.h"
 #include "qgsziputils.h"
 
@@ -26,7 +28,6 @@
 #include <QMatrix4x4>
 #include <QQuaternion>
 #include <QRegularExpression>
-#include <memory>
 
 #define TINYGLTF_IMPLEMENTATION       // should be defined just in one CPP file
 

@@ -15,15 +15,18 @@
  ***************************************************************************/
 
 #include "qgslayoutitemnodeitem.h"
-#include "moc_qgslayoutitemnodeitem.cpp"
-#include "qgssymbol.h"
-#include "qgslayout.h"
-#include "qgsmarkersymbol.h"
-#include "qgslayoutrendercontext.h"
 
 #include <limits>
 #include <cmath>
+
+#include "qgslayout.h"
+#include "qgslayoutrendercontext.h"
+#include "qgsmarkersymbol.h"
+#include "qgssymbol.h"
+
 #include <QStyleOptionGraphicsItem>
+
+#include "moc_qgslayoutitemnodeitem.cpp"
 
 void QgsLayoutNodesItem::setNodes( const QPolygonF &nodes )
 {

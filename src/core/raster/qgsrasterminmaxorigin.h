@@ -18,12 +18,12 @@
 #ifndef QGSRASTERMINMAXORIGIN_H
 #define QGSRASTERMINMAXORIGIN_H
 
-#include <QDomDocument>
-#include "qgis_sip.h"
-#include <QDomElement>
-
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QDomDocument>
+#include <QDomElement>
 
 /**
  * \ingroup core

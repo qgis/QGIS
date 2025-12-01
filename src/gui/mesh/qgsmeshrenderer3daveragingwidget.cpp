@@ -13,21 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <memory>
-#include <QSvgRenderer>
-#include <QPainter>
-#include <QPixmap>
-
 #include "qgsmeshrenderer3daveragingwidget.h"
-#include "moc_qgsmeshrenderer3daveragingwidget.cpp"
+
+#include <memory>
 
 #include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsmesh3daveraging.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshrenderersettings.h"
-#include "qgsmesh3daveraging.h"
-#include "qgsapplication.h"
 #include "qgsscreenhelper.h"
 
+#include <QPainter>
+#include <QPixmap>
+#include <QSvgRenderer>
+
+#include "moc_qgsmeshrenderer3daveragingwidget.cpp"
 
 QgsMeshRenderer3DAveragingWidget::QgsMeshRenderer3DAveragingWidget( QWidget *parent )
   : QWidget( parent )

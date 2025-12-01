@@ -15,11 +15,11 @@
 #ifndef QGSBACKGROUNDCACHEDFEATUREITERATOR_H
 #define QGSBACKGROUNDCACHEDFEATUREITERATOR_H
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgsfeaturedownloadcommon.h"
 #include "qgsfeaturedownloaderprogresstask.h"
 #include "qgsfeatureiterator.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransform.h"
 
 class QDataStream;
 class QFile;

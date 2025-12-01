@@ -21,9 +21,8 @@
 #include "qgis_sip.h"
 #include "qgscolorramp.h"
 #include "qgsfillsymbol.h"
-#include "qgsplot.h"
 #include "qgsnumericformat.h"
-
+#include "qgsplot.h"
 
 class QgsVectorLayerAbstractPlotDataGatherer;
 

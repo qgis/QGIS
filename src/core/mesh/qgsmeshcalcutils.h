@@ -22,19 +22,19 @@
 
 ///@cond PRIVATE
 
-#include <QStringList>
-#include <QMap>
-#include <QVector>
-
 #include <algorithm>
 #include <functional>
 #include <math.h>
 #include <numeric>
 
-#include "qgsrectangle.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshdataprovider.h"
 #include "qgis_core.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgsrectangle.h"
+
+#include <QMap>
+#include <QStringList>
+#include <QVector>
 
 /**
  * \ingroup core

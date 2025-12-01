@@ -16,11 +16,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cmath>
-#include "qgslogger.h"
 #include "qgsscalecalculator.h"
+
+#include <cmath>
+
+#include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsunittypes.h"
+
 #include <QSizeF>
 
 QgsScaleCalculator::QgsScaleCalculator( double dpi, Qgis::DistanceUnit mapUnits )

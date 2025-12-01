@@ -21,7 +21,6 @@
 #include "qgis_app.h"
 #include "qgslocatorfilter.h"
 
-
 class APP_EXPORT QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT

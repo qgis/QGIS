@@ -16,21 +16,22 @@
 #ifndef QGSQUERYRESULTWIDGET_H
 #define QGSQUERYRESULTWIDGET_H
 
-#include "qgis_gui.h"
-#include "qgis_sip.h"
 #include "ui_qgsqueryresultwidgetbase.h"
 #include "ui_qgsqueryresultpanelwidgetbase.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsqueryresultmodel.h"
 #include "qgsfeedback.h"
+#include "qgsqueryresultmodel.h"
 #include "qgssettingstree.h"
 
-#include <QWidget>
-#include <QThread>
-#include <QtConcurrent>
-#include <QStyledItemDelegate>
 #include <QDialog>
 #include <QMainWindow>
+#include <QStyledItemDelegate>
+#include <QThread>
+#include <QWidget>
+#include <QtConcurrent>
 
 class QgsCodeEditorWidget;
 class QgsCodeEditorSQL;

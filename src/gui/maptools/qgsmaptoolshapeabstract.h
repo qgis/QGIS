@@ -23,8 +23,8 @@
 #include "qgsabstractgeometry.h"
 #include "qgsmaptoolcapture.h"
 
-#include <QString>
 #include <QIcon>
+#include <QString>
 
 class QgsMapMouseEvent;
 class QgsVectorLayer;

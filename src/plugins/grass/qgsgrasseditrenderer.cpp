@@ -14,21 +14,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QVBoxLayout>
+#include "qgsgrasseditrenderer.h"
 
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgscategorizedsymbolrendererwidget.h"
 #include "qgsfeature.h"
+#include "qgsgrassvectormap.h"
 #include "qgslinesymbollayer.h"
 #include "qgslogger.h"
+#include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
 #include "qgsrendererregistry.h"
-#include "qgssymbollayer.h"
 #include "qgssymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsgrassvectormap.h"
+#include "qgssymbollayer.h"
 
-#include "qgsgrasseditrenderer.h"
+#include <QVBoxLayout>
+
 #include "moc_qgsgrasseditrenderer.cpp"
 
 QgsGrassEditRenderer::QgsGrassEditRenderer()

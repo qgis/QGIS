@@ -19,13 +19,14 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include "qgsmaplayerrenderer.h"
-#include "qgsannotationitem.h"
 #include <tuple>
 #include <vector>
 #include <memory>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsannotationitem.h"
+#include "qgsmaplayerrenderer.h"
 
 class QgsAnnotationLayer;
 class QgsPaintEffect;

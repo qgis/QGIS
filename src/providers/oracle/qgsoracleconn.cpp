@@ -16,19 +16,21 @@
  ***************************************************************************/
 
 #include "qgsoracleconn.h"
-#include "moc_qgsoracleconn.cpp"
-#include "qgslogger.h"
-#include "qgsdatasourceuri.h"
-#include "qgsmessagelog.h"
-#include "qgscredentials.h"
-#include "qgssettings.h"
-#include "qgsoracleconnpool.h"
-#include "qgsvariantutils.h"
-#include "qgsdbquerylog.h"
 
+#include "qgscredentials.h"
+#include "qgsdatasourceuri.h"
+#include "qgsdbquerylog.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsoracleconnpool.h"
+#include "qgssettings.h"
+#include "qgsvariantutils.h"
+
+#include <QSqlDriver>
 #include <QSqlError>
 #include <QSqlField>
-#include <QSqlDriver>
+
+#include "moc_qgsoracleconn.cpp"
 
 QMap<QPair<QString, QThread *>, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;

@@ -16,8 +16,8 @@
 #define QGSVECTORTILEDATAITEMS_H
 
 #include "qgsconnectionsitem.h"
-#include "qgslayeritem.h"
 #include "qgsdataitemprovider.h"
+#include "qgslayeritem.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

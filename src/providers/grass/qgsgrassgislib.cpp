@@ -14,11 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 //#include <signal.h>
-#include "qgis.h"
 #include <stdio.h>
 #include <stdarg.h>
-#include <qmath.h>
+
+#include "qgis.h"
+
 #include <QtGlobal>
+#include <qmath.h>
 
 // If qgsgrassgislibfunctions.h is included on Linux, symbols defined here
 // cannot be found (undefined symbol error) even if they are present in

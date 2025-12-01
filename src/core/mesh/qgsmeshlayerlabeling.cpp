@@ -16,11 +16,11 @@
  ***************************************************************************/
 #include "qgsmeshlayerlabeling.h"
 
-#include "qgspallabeling.h"
-#include "qgsmeshlayer.h"
 #include "qgis.h"
-#include "qgsstyleentityvisitor.h"
+#include "qgsmeshlayer.h"
 #include "qgsmeshlayerlabelprovider.h"
+#include "qgspallabeling.h"
+#include "qgsstyleentityvisitor.h"
 
 QgsAbstractMeshLayerLabeling *QgsAbstractMeshLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {

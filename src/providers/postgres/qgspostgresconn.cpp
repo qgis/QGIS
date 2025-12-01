@@ -16,31 +16,32 @@
  ***************************************************************************/
 
 #include "qgspostgresconn.h"
-#include "moc_qgspostgresconn.cpp"
-#include "qgslogger.h"
-#include "qgsdatasourceuri.h"
-#include "qgsmessagelog.h"
-#include "qgscredentials.h"
-#include "qgsvectordataprovider.h"
-#include "qgswkbtypes.h"
-#include "qgssettings.h"
-#include "qgsjsonutils.h"
-#include "qgspostgresstringutils.h"
-#include "qgspostgresconnpool.h"
-#include "qgsvariantutils.h"
-#include "qgsdbquerylog.h"
-#include "qgsdbquerylog_p.h"
-#include "qgsapplication.h"
-
-#include <QApplication>
-#include <QStringList>
-#include <QThread>
-#include <QFile>
 
 #include <climits>
-
 #include <memory>
 #include <nlohmann/json.hpp>
+
+#include "qgsapplication.h"
+#include "qgscredentials.h"
+#include "qgsdatasourceuri.h"
+#include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
+#include "qgsjsonutils.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgspostgresconnpool.h"
+#include "qgspostgresstringutils.h"
+#include "qgssettings.h"
+#include "qgsvariantutils.h"
+#include "qgsvectordataprovider.h"
+#include "qgswkbtypes.h"
+
+#include <QApplication>
+#include <QFile>
+#include <QStringList>
+#include <QThread>
+
+#include "moc_qgspostgresconn.cpp"
 
 // for htonl
 #ifdef Q_OS_WIN

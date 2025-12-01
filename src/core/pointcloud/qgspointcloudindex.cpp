@@ -15,11 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscoordinatereferencesystem.h"
 #include "qgspointcloudindex.h"
+
+#include "qgsbox3d.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgslogger.h"
+#include "qgspointcloudeditingindex.h"
+#include "qgspointcloudstatistics.h"
+#include "qgstiledownloadmanager.h"
+
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -27,12 +34,6 @@
 #include <QtDebug>
 #include <qglobal.h>
 #include <qstringliteral.h>
-
-#include "qgsbox3d.h"
-#include "qgstiledownloadmanager.h"
-#include "qgspointcloudstatistics.h"
-#include "qgslogger.h"
-#include "qgspointcloudeditingindex.h"
 
 QgsPointCloudNodeId::QgsPointCloudNodeId():
   mD( -1 ),

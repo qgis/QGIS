@@ -13,23 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QKeyEvent>
+#include "qgs3dmaptoolmeasureline.h"
+
 #include <memory>
 
-#include "qgs3dmaptoolmeasureline.h"
-#include "moc_qgs3dmaptoolmeasureline.cpp"
-#include "qgs3dutils.h"
-#include "qgs3dmapscene.h"
 #include "qgs3dmapcanvas.h"
-#include "qgspoint.h"
-#include "qgsmaplayer.h"
+#include "qgs3dmapscene.h"
 #include "qgs3dmeasuredialog.h"
+#include "qgs3dutils.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsframegraph.h"
+#include "qgsmaplayer.h"
+#include "qgspoint.h"
+#include "qgsraycastcontext.h"
 #include "qgsrubberband3d.h"
 #include "qgswindow3dengine.h"
-#include "qgsframegraph.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgsraycastcontext.h"
 
+#include <QKeyEvent>
+
+#include "moc_qgs3dmaptoolmeasureline.cpp"
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )

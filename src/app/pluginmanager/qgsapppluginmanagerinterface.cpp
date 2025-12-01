@@ -15,10 +15,11 @@
  ***************************************************************************/
 
 #include "qgsapppluginmanagerinterface.h"
-#include "moc_qgsapppluginmanagerinterface.cpp"
-#include "qgspluginmanager.h"
-#include "qgslogger.h"
 
+#include "qgslogger.h"
+#include "qgspluginmanager.h"
+
+#include "moc_qgsapppluginmanagerinterface.cpp"
 
 QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager *pluginManager )
   : mPluginManager( pluginManager )

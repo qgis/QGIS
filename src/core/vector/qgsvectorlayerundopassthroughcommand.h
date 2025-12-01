@@ -16,9 +16,8 @@
 #ifndef QGSVECTORLAYERUNDOPASSTHROUGHCOMMAND_H
 #define QGSVECTORLAYERUNDOPASSTHROUGHCOMMAND_H
 
-#include "qgsvectorlayerundocommand.h"
-
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayerundocommand.h"
 
 class QgsTransaction;
 

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnumericformatguiregistry.h"
+
 #include "qgis.h"
 #include "qgsnumericformatwidget.h"
 

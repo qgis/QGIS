@@ -16,14 +16,14 @@
  ***************************************************************************/
 
 #ifdef WITH_SFCGAL
-#include <SFCGAL/capi/sfcgal_c.h>
-
 #include "qgssfcgalengine.h"
+
+#include <SFCGAL/capi/sfcgal_c.h>
+#include <nlohmann/json.hpp>
+
 #include "qgsgeometry.h"
 #include "qgsgeometryfactory.h"
 #include "qgssfcgalgeometry.h"
-#include <nlohmann/json.hpp>
-
 
 // ===================================
 // sfcgal namespace

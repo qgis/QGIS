@@ -17,11 +17,11 @@
 #define QGSABSTRACTDBSOURCESELECT_H
 
 
-#include "qgis_gui.h"
 #include "ui_qgsdbsourceselectbase.h"
+
+#include "qgis_gui.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgssettingsentryimpl.h"
-
 
 class QSortFilterProxyModel;
 class QgsAbstractDbTableModel;

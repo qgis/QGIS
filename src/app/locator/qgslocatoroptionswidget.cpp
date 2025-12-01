@@ -16,17 +16,17 @@
  ***************************************************************************/
 
 
-#include <QApplication>
-#include <QToolButton>
-#include <QHBoxLayout>
-
 #include "qgslocatoroptionswidget.h"
-#include "moc_qgslocatoroptionswidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgslocatorwidget.h"
 #include "qgssettings.h"
 
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QToolButton>
+
+#include "moc_qgslocatoroptionswidget.cpp"
 
 QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWidget *parent )
   : QTreeView( parent )

@@ -16,27 +16,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgselevationprofilelayertreeview.h"
-#include "moc_qgselevationprofilelayertreeview.cpp"
-#include "qgslayertreenode.h"
-#include "qgslayertree.h"
-#include "qgssymbollayerutils.h"
-#include "qgsvectorlayerelevationproperties.h"
-#include "qgsmeshlayerelevationproperties.h"
-#include "qgsrasterlayerelevationproperties.h"
-#include "qgsvectorlayer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsmaplayerutils.h"
-#include "qgsprofilesourceregistry.h"
 
-#include <QHeaderView>
+#include "qgsapplication.h"
+#include "qgsfillsymbol.h"
+#include "qgslayertree.h"
+#include "qgslayertreenode.h"
+#include "qgsmaplayerutils.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmeshlayerelevationproperties.h"
+#include "qgsprofilesourceregistry.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerelevationproperties.h"
+
 #include <QContextMenuEvent>
+#include <QHeaderView>
 #include <QMenu>
 #include <QMimeData>
 
+#include "moc_qgselevationprofilelayertreeview.cpp"
 
 const QString QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE = QStringLiteral( "elevationProfileRegistry" );
 

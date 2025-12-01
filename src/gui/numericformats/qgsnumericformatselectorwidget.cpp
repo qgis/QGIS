@@ -14,18 +14,21 @@
  ***************************************************************************/
 
 #include "qgsnumericformatselectorwidget.h"
-#include "moc_qgsnumericformatselectorwidget.cpp"
-#include "qgsapplication.h"
-#include "qgsnumericformatregistry.h"
-#include "qgsnumericformat.h"
-#include "qgsnumericformatwidget.h"
+
 #include "qgis.h"
-#include "qgsgui.h"
-#include "qgsnumericformatguiregistry.h"
-#include "qgsreadwritecontext.h"
+#include "qgsapplication.h"
 #include "qgsbasicnumericformat.h"
+#include "qgsgui.h"
+#include "qgsnumericformat.h"
+#include "qgsnumericformatguiregistry.h"
+#include "qgsnumericformatregistry.h"
+#include "qgsnumericformatwidget.h"
+#include "qgsreadwritecontext.h"
+
 #include <QDialogButtonBox>
 #include <QPushButton>
+
+#include "moc_qgsnumericformatselectorwidget.cpp"
 
 QgsNumericFormatSelectorWidget::QgsNumericFormatSelectorWidget( QWidget *parent )
   : QgsPanelWidget( parent )

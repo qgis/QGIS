@@ -15,11 +15,13 @@
 #include "qgsmergedfeaturerendererwidget.h"
 
 #include <memory>
-#include "moc_qgsmergedfeaturerendererwidget.cpp"
+
+#include "qgsapplication.h"
 #include "qgsmergedfeaturerenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
+
+#include "moc_qgsmergedfeaturerendererwidget.cpp"
 
 QgsRendererWidget *QgsMergedFeatureRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

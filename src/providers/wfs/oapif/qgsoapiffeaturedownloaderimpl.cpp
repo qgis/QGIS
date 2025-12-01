@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgsoapiffeaturedownloaderimpl.h"
-#include "moc_qgsoapiffeaturedownloaderimpl.cpp"
 
 #include "qgsfeaturedownloader.h"
 #include "qgsoapifitemsrequest.h"
 #include "qgsoapifshareddata.h"
 #include "qgsoapifutils.h"
 #include "qgsvectordataprovider.h"
-#include "qgswfsutils.h" // isCompatibleType
+#include "qgswfsutils.h"
 
 #include <QEventLoop>
+
+#include "moc_qgsoapiffeaturedownloaderimpl.cpp"
 
 QgsOapifFeatureDownloaderImpl::QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
   : QgsFeatureDownloaderImpl( shared, downloader ), mShared( shared )

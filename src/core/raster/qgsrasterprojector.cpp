@@ -14,14 +14,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsrasterprojector.h"
+
 #include <algorithm>
 
-#include "qgsrasterdataprovider.h"
-#include "qgslogger.h"
-#include "qgsrasterprojector.h"
-#include "moc_qgsrasterprojector.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
+#include "qgsrasterdataprovider.h"
+
+#include "moc_qgsrasterprojector.cpp"
 
 Q_NOWARN_DEPRECATED_PUSH // because of deprecated members
 QgsRasterProjector::QgsRasterProjector()

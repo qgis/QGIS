@@ -17,17 +17,20 @@
  ***************************************************************************/
 #ifndef QGSPLUGINMANAGER_H
 #define QGSPLUGINMANAGER_H
-#include <vector>
-#include <QMap>
-#include <QString>
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QHeaderView>
 #include "ui_qgspluginmanagerbase.h"
-#include "qgsoptionsdialogbase.h"
-#include "qgsguiutils.h"
+
+#include <vector>
+
 #include "qgis.h"
+#include "qgsguiutils.h"
+#include "qgsoptionsdialogbase.h"
 #include "qgssettingstree.h"
+
+#include <QHeaderView>
+#include <QMap>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QString>
 
 class QgsPluginSortFilterProxyModel;
 class QgsPythonUtils;

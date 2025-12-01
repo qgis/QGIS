@@ -12,6 +12,7 @@
 
 
 
+
 class QgsCodeInterpreter
 {
 %Docstring(signature="appended")

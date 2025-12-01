@@ -21,14 +21,14 @@
 
 #define SIP_NO_FILE
 
-#include <QVector>
-#include <QSize>
-
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
-#include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"
 #include "qgspointxy.h"
+#include "qgstriangularmesh.h"
+
+#include <QSize>
+#include <QVector>
 
 class QgsRenderContext;
 class QgsInterpolatedLineColor;

@@ -14,11 +14,11 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshanasourceselect.h"
+
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgui.h"
-#include "qgshanasourceselect.h"
-#include "moc_qgshanasourceselect.cpp"
 #include "qgshanaconnection.h"
 #include "qgshananewconnection.h"
 #include "qgshanatablemodel.h"
@@ -27,8 +27,8 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsquerybuilder.h"
-#include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
 #include <QComboBox>
 #include <QFileDialog>
@@ -37,6 +37,8 @@
 #include <QMessageBox>
 #include <QStringList>
 #include <QStyledItemDelegate>
+
+#include "moc_qgshanasourceselect.cpp"
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsHanaSourceSelectDelegate::createEditor(

@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdatabaseschemaselectiondialog.h"
+
 #include <QApplication>
-#include <QMessageBox>
 #include <QGridLayout>
 #include <QLabel>
+#include <QMessageBox>
 
-#include "qgsdatabaseschemaselectiondialog.h"
 #include "moc_qgsdatabaseschemaselectiondialog.cpp"
 
 QgsDatabaseSchemaSelectionDialog::QgsDatabaseSchemaSelectionDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )

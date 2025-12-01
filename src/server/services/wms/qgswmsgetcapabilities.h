@@ -21,13 +21,12 @@
 #ifndef QGSWMSGETCAPABILITIES_H
 #define QGSWMSGETCAPABILITIES_H
 
-#include "qgslayertreenode.h"
+#include "qgslayertree.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
-#include "qgslayertree.h"
-
-#include "qgswmsrequest.h"
+#include "qgslayertreenode.h"
 #include "qgswmslayerinfos.h"
+#include "qgswmsrequest.h"
 
 namespace QgsWms
 {

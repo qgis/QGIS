@@ -15,13 +15,13 @@
 
 #include "qgselevationmap.h"
 
-#include "qgsrasterblock.h"
-
-#include <QPainter>
 #include <algorithm>
 #include <cmath>
 #include <memory>
 
+#include "qgsrasterblock.h"
+
+#include <QPainter>
 
 static const int ELEVATION_OFFSET = 7900;
 static const int ELEVATION_SCALE = 1000;

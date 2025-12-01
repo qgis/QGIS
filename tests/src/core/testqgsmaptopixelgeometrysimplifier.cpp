@@ -12,22 +12,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
-#include <QVector>
-#include <QPointF>
-#include <QImage>
-#include <QPainter>
-
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
+#include <QImage>
+#include <QObject>
+#include <QPainter>
+#include <QPointF>
+#include <QString>
+#include <QStringList>
+#include <QVector>
 
 /**
  * \ingroup UnitTests

@@ -16,9 +16,10 @@
 #ifndef QGSMAPTOOLZOOM_H
 #define QGSMAPTOOLZOOM_H
 
-#include "qgsmaptool.h"
-#include <QRect>
 #include "qgis_gui.h"
+#include "qgsmaptool.h"
+
+#include <QRect>
 
 class QgsRubberBand;
 

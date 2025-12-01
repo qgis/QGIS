@@ -16,13 +16,15 @@
 #ifndef QGSHISTORYENTRYNODE_H
 #define QGSHISTORYENTRYNODE_H
 
-#include "qgis_gui.h"
-#include "qgis_sip.h"
-#include "qgis.h"
-#include <QString>
-#include <QVariantMap>
 #include <memory>
 #include <deque>
+
+#include "qgis.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QString>
+#include <QVariantMap>
 
 class QWidget;
 class QAction;

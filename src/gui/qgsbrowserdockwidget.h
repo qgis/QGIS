@@ -15,10 +15,10 @@
 #ifndef QGSBROWSERDOCKWIDGET_H
 #define QGSBROWSERDOCKWIDGET_H
 
+#include "qgis_gui.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
 #include "qgsmimedatautils.h"
-#include "qgis_gui.h"
 
 class QgsMessageBar;
 class QgsBrowserWidget;

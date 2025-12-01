@@ -8,6 +8,7 @@
 
 
 
+
 class QgsAbstractHistoryProvider : QObject
 {
 %Docstring(signature="appended")

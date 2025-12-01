@@ -13,17 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswfsnewconnection.h"
+
+#include <algorithm>
+#include <memory>
+
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsowsconnection.h"
-#include "qgswfsnewconnection.h"
-#include "moc_qgswfsnewconnection.cpp"
 #include "qgswfsguiutils.h"
 
 #include <QMessageBox>
 
-#include <algorithm>
-#include <memory>
+#include "moc_qgswfsnewconnection.cpp"
 
 static QString translatedImageFormatFromMediaType( const QString &type )
 {

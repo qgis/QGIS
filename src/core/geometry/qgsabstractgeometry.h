@@ -19,12 +19,13 @@ email                : marco.hugentobler at sourcepole dot com
 #include <array>
 #include <functional>
 #include <type_traits>
-#include <QString>
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgswkbtypes.h"
+#include "qgis_core.h"
 #include "qgswkbptr.h"
+#include "qgswkbtypes.h"
+
+#include <QString>
 
 #ifndef SIP_RUN
 #include <nlohmann/json_fwd.hpp>

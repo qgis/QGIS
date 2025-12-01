@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgstextshadowsettings.h"
-#include "qgstextrenderer_p.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbollayerutils.h"
+
+#include "qgscolorutils.h"
 #include "qgspainting.h"
 #include "qgspallabeling.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextrenderer_p.h"
 #include "qgstextrendererutils.h"
 #include "qgsunittypes.h"
-#include "qgscolorutils.h"
+#include "qgsvectorlayer.h"
 
 QgsTextShadowSettings::QgsTextShadowSettings()
 {

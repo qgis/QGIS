@@ -16,27 +16,29 @@
  ***************************************************************************/
 
 #include "qgsattributetypedialog.h"
-#include "moc_qgsattributetypedialog.cpp"
-#include "qgsproject.h"
-#include "qgslogger.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgsfieldformatter.h"
-#include "qgseditorwidgetfactory.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgsgui.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontextutils.h"
-
-#include <QTableWidgetItem>
-#include <QFile>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QTextStream>
-#include <QScrollBar>
-#include <QStandardItemModel>
 
 #include <climits>
 #include <cfloat>
+
+#include "qgsapplication.h"
+#include "qgseditorwidgetfactory.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
+
+#include <QFile>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QScrollBar>
+#include <QStandardItemModel>
+#include <QTableWidgetItem>
+#include <QTextStream>
+
+#include "moc_qgsattributetypedialog.cpp"
 
 QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QWidget( parent )

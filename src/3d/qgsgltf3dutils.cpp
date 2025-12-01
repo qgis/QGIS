@@ -16,9 +16,9 @@
 
 #include "qgsgltf3dutils.h"
 
-#include "qgsgltfutils.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgltfutils.h"
 #include "qgslogger.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgstexturematerial.h"

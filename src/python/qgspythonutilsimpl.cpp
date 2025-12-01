@@ -20,20 +20,20 @@
 #undef _DEBUG
 #endif
 #endif
+#include "qgspythonutilsimpl.h"
+
 #include <Python.h>
 
 #include "qgis.h"
-#include "qgspythonutilsimpl.h"
-
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include "qgssettings.h"
 
-#include <QStringList>
+#include <QDebug>
 #include <QDir>
 #include <QStandardPaths>
-#include <QDebug>
+#include <QStringList>
 
 PyThreadState *_mainState = nullptr;
 

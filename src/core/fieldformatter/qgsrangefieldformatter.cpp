@@ -14,15 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QLocale>
-
 #include "qgsrangefieldformatter.h"
 
-#include "qgssettings.h"
-#include "qgsfield.h"
-#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
+#include "qgsfield.h"
+#include "qgssettings.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+
+#include <QLocale>
 
 QString QgsRangeFieldFormatter::id() const
 {

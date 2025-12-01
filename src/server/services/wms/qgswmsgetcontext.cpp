@@ -18,19 +18,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmsutils.h"
-#include "qgswmsrequest.h"
 #include "qgswmsgetcontext.h"
-#include "qgsserverprojectutils.h"
 
-#include "qgslayertreenode.h"
+#include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgslayertree.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
-#include "qgslayertree.h"
+#include "qgslayertreenode.h"
 #include "qgsmaplayerstylemanager.h"
-#include "qgscoordinatetransform.h"
-
-#include "qgsexception.h"
+#include "qgsserverprojectutils.h"
+#include "qgswmsrequest.h"
+#include "qgswmsutils.h"
 
 #include <QRegularExpression>
 

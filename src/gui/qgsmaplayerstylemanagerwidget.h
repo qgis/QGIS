@@ -15,12 +15,12 @@
 #ifndef QGSMAPLAYERSTYLEMANAGERWIDGET_H
 #define QGSMAPLAYERSTYLEMANAGERWIDGET_H
 
-#include <QWidget>
+#include "qgis_gui.h"
+#include "qgsmaplayerconfigwidget.h"
+
 #include <QListView>
 #include <QStandardItemModel>
-
-#include "qgsmaplayerconfigwidget.h"
-#include "qgis_gui.h"
+#include <QWidget>
 
 class QgsMapLayer;
 class QgsMapCanvas;

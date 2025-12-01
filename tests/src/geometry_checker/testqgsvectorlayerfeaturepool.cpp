@@ -14,9 +14,8 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include "qgsvectorlayerfeaturepool.h"
 #include "qgsvectorlayer.h"
-
+#include "qgsvectorlayerfeaturepool.h"
 
 class TestQgsVectorLayerFeaturePool : public QObject
 {

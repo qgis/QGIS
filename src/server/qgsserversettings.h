@@ -20,12 +20,12 @@
 #ifndef QGSSERVERSETTINGS_H
 #define QGSSERVERSETTINGS_H
 
-#include <QObject>
-#include <QMetaEnum>
-
-#include "qgsmessagelog.h"
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "qgsmessagelog.h"
+
+#include <QMetaEnum>
+#include <QObject>
 
 /**
  * \ingroup server

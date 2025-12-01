@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgslayout3dmapwidget.h"
-#include "moc_qgslayout3dmapwidget.cpp"
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapcanvaswidget.h"
 #include "qgs3dmapsettings.h"
 #include "qgscameracontroller.h"
+
 #include <QMenu>
-#include "qgs3dmapcanvaswidget.h"
+
+#include "moc_qgslayout3dmapwidget.cpp"
 
 float _normalizedAngle( float x )
 {

@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspointcloudrendererregistry.h"
 #include "qgspointcloudrenderer.h"
-#include "qgsrendercontext.h"
+#include "qgspointcloudrendererregistry.h"
 #include "qgsreadwritecontext.h"
+#include "qgsrendercontext.h"
+#include "qgstest.h"
 
 #include <QObject>
-#include "qgstest.h"
 
 //dummy renderer for testing
 class DummyRenderer : public QgsPointCloudRenderer

@@ -13,15 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "layer.h"
-#include "pal.h"
-#include "feature.h"
-#include "labelposition.h"
-#include "util.h"
 #include "costcalculator.h"
-#include "qgsgeometryutils_base.h"
+
 #include <cmath>
 #include <cfloat>
+
+#include "feature.h"
+#include "labelposition.h"
+#include "layer.h"
+#include "pal.h"
+#include "qgsgeometryutils_base.h"
+#include "util.h"
 
 using namespace pal;
 

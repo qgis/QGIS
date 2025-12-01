@@ -15,31 +15,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterdataprovider.h"
-
 #include "qgscolorrampshaderwidget.h"
-#include "moc_qgscolorrampshaderwidget.cpp"
-#include "qgsrasterdataprovider.h"
-#include "qgstreewidgetitem.h"
-#include "qgssettings.h"
+
+#include "qgscolordialog.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
-#include "qgscolordialog.h"
-#include "qgsrasterrendererutils.h"
+#include "qgscolorramplegendnodewidget.h"
 #include "qgsfileutils.h"
 #include "qgsguiutils.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
-#include "qgscolorramplegendnodewidget.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterrendererutils.h"
+#include "qgssettings.h"
+#include "qgstreewidgetitem.h"
 
 #include <QCursor>
-#include <QPushButton>
-#include <QInputDialog>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QTextStream>
 #include <QTreeView>
 
+#include "moc_qgscolorrampshaderwidget.cpp"
 
 QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   : QWidget( parent )

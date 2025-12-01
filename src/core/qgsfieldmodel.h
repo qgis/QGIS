@@ -16,14 +16,13 @@
 #ifndef QGSFIELDMODEL_H
 #define QGSFIELDMODEL_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsfields.h"
+
 #include <QAbstractItemModel>
 #include <QComboBox>
 #include <QItemSelectionModel>
-
-#include "qgsfields.h"
-#include "qgis_core.h"
-
-#include "qgis_sip.h"
 
 class QgsVectorLayer;
 

@@ -16,21 +16,23 @@
  ***************************************************************************/
 
 #include "qgsrasterlayertemporalpropertieswidget.h"
-#include "moc_qgsrasterlayertemporalpropertieswidget.cpp"
-#include "qgsrasterdataprovidertemporalcapabilities.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterlayertemporalproperties.h"
-#include "qgsmaplayerconfigwidget.h"
+
+#include "qgsapplication.h"
 #include "qgsdatetimeedit.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsunittypes.h"
-#include "qgsapplication.h"
-#include "qgsrasterrendererregistry.h"
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayertemporalproperties.h"
 #include "qgsrasterrenderer.h"
+#include "qgsrasterrendererregistry.h"
+#include "qgsunittypes.h"
 
-#include <QMenu>
 #include <QAction>
+#include <QMenu>
+
+#include "moc_qgsrasterlayertemporalpropertieswidget.cpp"
 
 QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( QWidget *parent, QgsRasterLayer *layer )
   : QWidget( parent )

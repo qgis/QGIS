@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgstemporalutils.h"
-#include "qgsproject.h"
-#include "qgsmaplayertemporalproperties.h"
-#include "qgstemporalnavigationobject.h"
-#include "qgsmapdecoration.h"
-#include "qgsmapsettings.h"
-#include "qgsmaprenderercustompainterjob.h"
+
 #include "qgsexpressioncontextutils.h"
+#include "qgsmapdecoration.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmapsettings.h"
+#include "qgsproject.h"
+#include "qgstemporalnavigationobject.h"
 
 #include <QRegularExpression>
 

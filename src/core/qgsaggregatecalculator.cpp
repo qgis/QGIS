@@ -18,16 +18,16 @@
 #include "qgsaggregatecalculator.h"
 
 #include <memory>
+
+#include "qgsdatetimestatisticalsummary.h"
 #include "qgsexpressionutils.h"
 #include "qgsfeature.h"
-#include "qgsfeaturerequest.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
 #include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
 #include "qgsstatisticalsummary.h"
-#include "qgsdatetimestatisticalsummary.h"
 #include "qgsstringstatisticalsummary.h"
-
+#include "qgsvectorlayer.h"
 
 QgsAggregateCalculator::QgsAggregateCalculator( const QgsVectorLayer *layer )
   : mLayer( layer )

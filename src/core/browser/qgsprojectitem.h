@@ -17,8 +17,8 @@
 #ifndef QGSPROJECTITEM_H
 #define QGSPROJECTITEM_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsdataitem.h"
 
 /**

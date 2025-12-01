@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgssensorthingsconnectiondialog.h"
-#include "moc_qgssensorthingsconnectiondialog.cpp"
-#include "qgssensorthingsconnection.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgssensorthingsconnection.h"
 #include "qgssensorthingsconnectionwidget.h"
 
-#include <QPushButton>
 #include <QMessageBox>
+#include <QPushButton>
+
+#include "moc_qgssensorthingsconnectiondialog.cpp"
 
 ///@cond PRIVATE
 

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMeshLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")

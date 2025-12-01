@@ -20,9 +20,8 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "qgssettingseditorwidgetwrapperimpl.h"
 #include "qgslogger.h"
-
+#include "qgssettingseditorwidgetwrapperimpl.h"
 #include "qgssettingsentryenumflag.h"
 
 #include <QComboBox>

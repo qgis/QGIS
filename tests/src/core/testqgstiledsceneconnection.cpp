@@ -12,12 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgssettings.h"
 #include "qgstest.h"
+#include "qgstiledsceneconnection.h"
+
 #include <QObject>
 #include <QString>
 #include <QtConcurrent>
-#include "qgstiledsceneconnection.h"
-#include "qgssettings.h"
 
 class TestQgsTiledSceneConnection : public QObject
 {

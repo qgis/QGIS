@@ -14,16 +14,16 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-#include <QTemporaryFile>
-
 #include "qgscoordinatetransformcontext.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterlayersaveasdialog.h"
+#include "qgsrasterpipe.h"
+#include "qgstest.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterfilewriter.h"
-#include "qgsrasterpipe.h"
+
+#include <QTemporaryFile>
 
 class TestQgsRasterLayerSaveAsDialog : public QObject
 {

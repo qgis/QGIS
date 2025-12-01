@@ -21,10 +21,11 @@
 #ifndef QGSHTTPHEADERWIDGET_H
 #define QGSHTTPHEADERWIDGET_H
 
-#include <QWidget>
 #include "ui_qgshttpheaderwidget.h"
+
 #include "qgshttpheaders.h"
 
+#include <QWidget>
 
 /**
  * \ingroup gui

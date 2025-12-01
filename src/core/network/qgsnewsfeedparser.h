@@ -19,11 +19,10 @@
 #include "qgis_sip.h"
 #include "qgssettingstree.h"
 
-
-#include <QObject>
-#include <QUrl>
-#include <QPixmap>
 #include <QDateTime>
+#include <QObject>
+#include <QPixmap>
+#include <QUrl>
 
 class QgsNetworkContentFetcher;
 class QgsSettingsEntryBool;

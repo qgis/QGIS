@@ -16,15 +16,15 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgsfontutils.h"
+#include "qgslayout.h"
 #include "qgslayoutitempicture.h"
 #include "qgsproject.h"
 #include "qgsproperty.h"
-#include "qgslayout.h"
-#include "qgsfontutils.h"
-
-#include <QObject>
 #include "qgstest.h"
+
 #include <QColor>
+#include <QObject>
 #include <QPainter>
 
 class TestQgsLayoutPicture : public QgsTest

@@ -16,22 +16,22 @@
  ***************************************************************************/
 
 #include "qgsformannotation.h"
-#include "moc_qgsformannotation.cpp"
+
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfillsymbol.h"
+#include "qgsgui.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsproject.h"
 #include "qgsmaptool.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsgui.h"
-#include "qgsfillsymbol.h"
 
-#include <QDomElement>
 #include <QDir>
+#include <QDomElement>
 #include <QFile>
 #include <QFileInfo>
 #include <QGraphicsProxyWidget>
@@ -39,6 +39,8 @@
 #include <QSettings>
 #include <QUiLoader>
 #include <QWidget>
+
+#include "moc_qgsformannotation.cpp"
 
 QgsFormAnnotation::QgsFormAnnotation( QObject *parent )
   : QgsAnnotation( parent )

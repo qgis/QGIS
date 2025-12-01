@@ -12,28 +12,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+#include <memory>
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsfeatureiterator.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayertemporalproperties.h"
 #include "qgsattributetabledialog.h"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
-#include "qgssettings.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsfeaturelistmodel.h"
 #include "qgsclipboard.h"
-#include "qgsvectorlayercache.h"
-#include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturelistmodel.h"
+#include "qgsgeometry.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectorlayertemporalproperties.h"
 
 #include <QSignalSpy>
-#include <memory>
 
 /**
  * \ingroup UnitTests

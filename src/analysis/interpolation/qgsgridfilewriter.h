@@ -18,10 +18,11 @@
 #ifndef QGSGRIDFILEWRITER_H
 #define QGSGRIDFILEWRITER_H
 
+#include "qgis_analysis.h"
 #include "qgsrectangle.h"
+
 #include <QString>
 #include <QTextStream>
-#include "qgis_analysis.h"
 
 class QgsInterpolator;
 class QgsFeedback;

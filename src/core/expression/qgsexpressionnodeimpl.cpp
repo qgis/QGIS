@@ -14,16 +14,16 @@
  ***************************************************************************/
 
 #include "qgsexpressionnodeimpl.h"
-#include "qgsexpressionutils.h"
-#include "qgsexpression.h"
 
+#include "qgsexpression.h"
+#include "qgsexpressionutils.h"
 #include "qgsstringutils.h"
 #include "qgsvariantutils.h"
 
 #include <QDate>
 #include <QDateTime>
-#include <QTime>
 #include <QRegularExpression>
+#include <QTime>
 
 const char *QgsExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =
 {

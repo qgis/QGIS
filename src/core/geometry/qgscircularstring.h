@@ -18,12 +18,11 @@
 #ifndef QGSCIRCULARSTRING_H
 #define QGSCIRCULARSTRING_H
 
-#include <QVector>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscurve.h"
 
+#include <QVector>
 
 /**
  * \ingroup core

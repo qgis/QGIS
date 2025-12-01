@@ -14,30 +14,28 @@
  ***************************************************************************/
 
 #include "qgsbackgroundcachedshareddata.h"
-#include "qgsbackgroundcachedfeatureiterator.h"
 
+#include <memory>
+#include <set>
+#include <cpl_vsi.h>
+#include <cpl_conv.h>
+#include <gdal.h>
+#include <ogr_api.h>
+#include <sqlite3.h>
+
+#include "qgsbackgroundcachedfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsspatialiteutils.h"
 #include "qgsthreadedfeaturedownloader.h"
 #include "qgsvectordataprovider.h"
-#include "qgswfsutils.h" // for isCompatibleType()
+#include "qgswfsutils.h"
 
 #include <QCryptographicHash>
 #include <QDir>
 #include <QJsonDocument>
 #include <QMutex>
-
-#include <memory>
-#include <set>
-
-#include <cpl_vsi.h>
-#include <cpl_conv.h>
-#include <gdal.h>
-#include <ogr_api.h>
-
-#include <sqlite3.h>
 
 QgsBackgroundCachedSharedData::QgsBackgroundCachedSharedData(
   const QString &providerName, const QString &componentTranslated

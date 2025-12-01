@@ -13,17 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfieldconditionalformatwidget.h"
-#include "moc_qgsfieldconditionalformatwidget.cpp"
 
 #include "qgsexpressionbuilderdialog.h"
-#include "qgssymbol.h"
-#include "qgssymbolselectordialog.h"
-#include "qgssymbollayerutils.h"
-#include "qgsstyle.h"
-#include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsguiutils.h"
 #include "qgsmarkersymbol.h"
+#include "qgsstyle.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsfieldconditionalformatwidget.cpp"
 
 //
 // QgsFieldConditionalFormatWidget

@@ -16,28 +16,30 @@
  ***************************************************************************/
 
 #include "qgslabelinggui.h"
-#include "moc_qgslabelinggui.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgshelp.h"
-#include "qgsstylesavedialog.h"
-#include "qgscallout.h"
-#include "qgsapplication.h"
-#include "qgscalloutsregistry.h"
+
 #include "callouts/qgscalloutwidget.h"
-#include "qgslabelobstaclesettingswidget.h"
-#include "qgslabellineanchorwidget.h"
-#include "qgslabelremoveduplicatesettingswidget.h"
-#include "qgsprojectstylesettings.h"
+#include "qgsapplication.h"
+#include "qgscallout.h"
+#include "qgscalloutsregistry.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgslabellineanchorwidget.h"
+#include "qgslabelobstaclesettingswidget.h"
+#include "qgslabelremoveduplicatesettingswidget.h"
+#include "qgsmapcanvas.h"
 #include "qgsmeshlayer.h"
+#include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
+#include "qgsstylesavedialog.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
+
+#include "moc_qgslabelinggui.cpp"
 
 ///@cond PRIVATE
 

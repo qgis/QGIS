@@ -16,24 +16,26 @@
  ***************************************************************************/
 
 #include "qgspolyhedralsurface.h"
+
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
 #include "qgscurve.h"
 #include "qgsfeedback.h"
 #include "qgsgeometryutils.h"
+#include "qgsgeos.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
+#include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgsmultisurface.h"
 #include "qgspolygon.h"
 #include "qgsvertexid.h"
 #include "qgswkbptr.h"
-#include "qgsmultilinestring.h"
-#include "qgsgeos.h"
 
 #include <QPainter>
 #include <QPainterPath>
-#include <memory>
-#include <nlohmann/json.hpp>
 
 QgsPolyhedralSurface::QgsPolyhedralSurface()
 {

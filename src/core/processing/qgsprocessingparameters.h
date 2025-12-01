@@ -18,16 +18,18 @@
 #ifndef QGSPROCESSINGPARAMETERS_H
 #define QGSPROCESSINGPARAMETERS_H
 
-#include "qgis_core.h"
-#include "qgis.h"
-#include "qgsprocessing.h"
-#include "qgsproperty.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsprocessingutils.h"
-#include "qgsfilefiltergenerator.h"
-#include "qgsremappingproxyfeaturesink.h"
-#include <QMap>
 #include <limits>
+
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsfilefiltergenerator.h"
+#include "qgsprocessing.h"
+#include "qgsprocessingutils.h"
+#include "qgsproperty.h"
+#include "qgsremappingproxyfeaturesink.h"
+
+#include <QMap>
 
 class QgsProcessingContext;
 class QgsProcessingAlgorithm;

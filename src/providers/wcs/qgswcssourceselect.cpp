@@ -16,20 +16,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
-#include "qgslogger.h"
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgsmapcanvas.h"
-
-#include "qgsnetworkaccessmanager.h"
-#include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
-#include "moc_qgswcssourceselect.cpp"
-#include "qgswcscapabilities.h"
+
+#include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgstreewidgetitem.h"
+#include "qgswcscapabilities.h"
+#include "qgswcsprovider.h"
 
 #include <QWidget>
+
+#include "moc_qgswcssourceselect.cpp"
 
 QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, widgetMode )

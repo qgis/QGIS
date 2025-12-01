@@ -17,15 +17,14 @@
 
 #include <memory>
 
-#include "qgsvectorlayer.h"
-#include "qgsxmlutils.h"
-
 #include "qgs3dmapsettings.h"
+#include "qgs3dsymbolregistry.h"
 #include "qgs3dutils.h"
+#include "qgsapplication.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgsrulebasedchunkloader_p.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
+#include "qgsvectorlayer.h"
+#include "qgsxmlutils.h"
 
 QgsRuleBased3DRendererMetadata::QgsRuleBased3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "rulebased" ) )

@@ -15,23 +15,25 @@ email                : matthias@opengis.ch
 
 
 #include "qgsgeometryvalidationservice.h"
-#include "moc_qgsgeometryvalidationservice.cpp"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometryoptions.h"
+
 #include "qgsanalysis.h"
-#include "qgsgeometrycheckregistry.h"
-#include "qgsgeometrycheckfactory.h"
-#include "qgsvectorlayereditbuffer.h"
-#include "qgsvectorlayerfeaturepool.h"
 #include "qgsfeedback.h"
-#include "qgsreadwritelocker.h"
+#include "qgsgeometrycheckfactory.h"
+#include "qgsgeometrycheckregistry.h"
+#include "qgsgeometryoptions.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessagelog.h"
+#include "qgsproject.h"
+#include "qgsreadwritelocker.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayerfeaturepool.h"
 
-#include <QtConcurrent>
 #include <QFutureWatcher>
+#include <QtConcurrent>
+
+#include "moc_qgsgeometryvalidationservice.cpp"
 
 QgsGeometryValidationService::QgsGeometryValidationService( QgsProject *project )
   : mProject( project )

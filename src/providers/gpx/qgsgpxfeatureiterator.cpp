@@ -14,17 +14,15 @@
  ***************************************************************************/
 #include "qgsgpxfeatureiterator.h"
 
-#include "qgsgpxprovider.h"
-
-#include "qgsapplication.h"
-#include "qgsgeometry.h"
-#include "qgslogger.h"
-#include "qgsexception.h"
-#include "qgsgeometryengine.h"
-
 #include <limits>
 #include <cstring>
 
+#include "qgsapplication.h"
+#include "qgsexception.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
+#include "qgsgpxprovider.h"
+#include "qgslogger.h"
 
 QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>( source, ownSource, request )

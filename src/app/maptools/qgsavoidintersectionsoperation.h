@@ -16,12 +16,12 @@
 #ifndef QGSAVOIDINTERSECTIONSOPERATION_H
 #define QGSAVOIDINTERSECTIONSOPERATION_H
 
-#include <QObject>
-
 #include "qgis.h"
 #include "qgis_app.h"
 #include "qgsfeatureid.h"
 #include "qgspoint.h"
+
+#include <QObject>
 
 class QgsVectorLayer;
 class QgsGeometry;

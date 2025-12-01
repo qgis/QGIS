@@ -15,9 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsogrguiprovider.h"
+
 #include <QList>
 
-#include "qgsogrguiprovider.h"
 ///@cond PRIVATE
 
 #include "qgssourceselectprovider.h"

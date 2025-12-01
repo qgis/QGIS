@@ -14,22 +14,24 @@
  ***************************************************************************/
 
 #include "qgsannotationlayerproperties.h"
-#include "moc_qgsannotationlayerproperties.cpp"
-#include "qgshelp.h"
-#include "qgsmaplayerstyleguiutils.h"
-#include "qgsgui.h"
+
 #include "qgsapplication.h"
-#include "qgsmaplayerconfigwidget.h"
 #include "qgsdatumtransformdialog.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgspainteffect.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
 
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QDesktopServices>
 #include <QUrl>
+
+#include "moc_qgsannotationlayerproperties.cpp"
 
 QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
   : QgsLayerPropertiesDialog( layer, canvas, QStringLiteral( "AnnotationLayerProperties" ), parent, flags )

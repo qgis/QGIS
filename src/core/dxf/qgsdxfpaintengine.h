@@ -21,9 +21,10 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
+#include "qgsabstractgeometry.h"
+
 #include <QPaintEngine>
 #include <QPainterPath>
-#include "qgsabstractgeometry.h"
 
 class QgsPoint;
 class QgsDxfExport;

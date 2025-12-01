@@ -18,8 +18,9 @@
 #include "qgspointcloudrgbrenderer.h"
 
 #include <memory>
-#include "qgspointcloudblock.h"
+
 #include "qgscontrastenhancement.h"
+#include "qgspointcloudblock.h"
 
 QgsPointCloudRgbRenderer::QgsPointCloudRgbRenderer()
 {

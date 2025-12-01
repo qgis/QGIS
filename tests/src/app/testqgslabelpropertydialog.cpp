@@ -13,18 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-
 #include "qgisapp.h"
-#include "qgsproject.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgslabelingengine.h"
 #include "qgsauxiliarystorage.h"
+#include "qgslabelingengine.h"
 #include "qgslabelpropertydialog.h"
-#include "qgsvectorlayerlabeling.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include <QObject>
 
 class TestQgsLabelPropertyDialog : public QObject
 {

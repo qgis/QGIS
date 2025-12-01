@@ -14,26 +14,28 @@
  ***************************************************************************/
 
 #include "qgsextentwidget.h"
-#include "moc_qgsextentwidget.cpp"
+
+#include <memory>
 
 #include "qgsapplication.h"
-#include "qgscoordinatetransform.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayerproxymodel.h"
-#include "qgsmaplayermodel.h"
-#include "qgsexception.h"
-#include "qgsproject.h"
-#include "qgsdoublevalidator.h"
-#include "qgslayoutmanager.h"
-#include "qgslayoutitemmap.h"
-#include "qgsprintlayout.h"
 #include "qgsbookmarkmodel.h"
+#include "qgscoordinatetransform.h"
+#include "qgsdoublevalidator.h"
+#include "qgsexception.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutmanager.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayermodel.h"
+#include "qgsmaplayerproxymodel.h"
+#include "qgsprintlayout.h"
+#include "qgsproject.h"
 #include "qgsreferencedgeometry.h"
 
-#include <QMenu>
 #include <QAction>
+#include <QMenu>
 #include <QRegularExpression>
-#include <memory>
+
+#include "moc_qgsextentwidget.cpp"
 
 QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   : QWidget( parent )

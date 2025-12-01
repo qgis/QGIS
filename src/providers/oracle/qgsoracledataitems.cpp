@@ -14,27 +14,28 @@
  ***************************************************************************/
 
 #include "qgsoracledataitems.h"
-#include "moc_qgsoracledataitems.cpp"
 
 #include "qgsapplication.h"
-#include "qgsoraclenewconnection.h"
-#include "qgsoraclecolumntypetask.h"
-#include "qgsoracleprovider.h"
-#include "qgslogger.h"
-#include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
-#include "qgsmessageoutput.h"
-#include "qgsvectorlayer.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsdatasourceuri.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
-#include "qgsvectorlayerexporter.h"
-#include "qgsdataitemguiproviderutils.h"
+#include "qgslogger.h"
+#include "qgsmessageoutput.h"
+#include "qgsoraclecolumntypetask.h"
+#include "qgsoraclenewconnection.h"
+#include "qgsoracleprovider.h"
 #include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerexporter.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QSqlError>
 #include <QStatusBar>
+
+#include "moc_qgsoracledataitems.cpp"
 
 bool deleteLayer( const QString &uri, QString &errCause )
 {

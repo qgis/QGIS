@@ -15,10 +15,11 @@
  ***************************************************************************/
 
 #include "qgspostgresprovidermetadatautils.h"
+
 #include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgspostgresconn.h"
-#include "qgsfeedback.h"
 
 #include <QTextStream>
 

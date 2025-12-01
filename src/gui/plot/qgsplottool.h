@@ -19,12 +19,13 @@
 #define QGSPLOTTOOL_H
 
 #include "qgsconfig.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
-#include <QPointer>
 #include <QCursor>
+#include <QPointer>
 
 class QgsPlotCanvas;
 class QgsPlotMouseEvent;

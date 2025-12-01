@@ -18,12 +18,14 @@
 #include "qgsmeshdatasetgroupstore.h"
 
 #include <memory>
-#include "moc_qgsmeshdatasetgroupstore.cpp"
+
+#include "qgsapplication.h"
+#include "qgslogger.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
-#include "qgsapplication.h"
 #include "qgsmeshvirtualdatasetgroup.h"
-#include "qgslogger.h"
+
+#include "moc_qgsmeshdatasetgroupstore.cpp"
 
 QList<int> QgsMeshDatasetGroupStore::datasetGroupIndexes() const
 {

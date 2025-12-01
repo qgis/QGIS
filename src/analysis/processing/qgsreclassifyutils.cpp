@@ -16,13 +16,13 @@
  ***************************************************************************/
 
 #include "qgsreclassifyutils.h"
-#include "qgsrasterinterface.h"
-#include "qgsrasteriterator.h"
-#include "qgsrasterblock.h"
-#include "qgsprocessingfeedback.h"
-#include "qgsrasterdataprovider.h"
 
 #include "qgis.h"
+#include "qgsprocessingfeedback.h"
+#include "qgsrasterblock.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
+#include "qgsrasteriterator.h"
 
 ///@cond PRIVATE
 

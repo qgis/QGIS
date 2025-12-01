@@ -18,8 +18,8 @@
 #ifndef QGSPROXYPROGRESSTASK_H
 #define QGSPROXYPROGRESSTASK_H
 
-#include "qgsvirtuallayerdefinition.h"
 #include "qgstaskmanager.h"
+#include "qgsvirtuallayerdefinition.h"
 
 #include <QWaitCondition>
 

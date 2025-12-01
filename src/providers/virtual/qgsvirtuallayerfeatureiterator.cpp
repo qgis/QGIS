@@ -16,13 +16,14 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsvirtuallayerfeatureiterator.h"
-#include "qgsmessagelog.h"
-#include "qgsgeometry.h"
-#include "qgsvirtuallayerblob.h"
-#include "qgsexception.h"
 
 #include <memory>
 #include <stdexcept>
+
+#include "qgsexception.h"
+#include "qgsgeometry.h"
+#include "qgsmessagelog.h"
+#include "qgsvirtuallayerblob.h"
 
 static QString quotedColumn( QString name )
 {

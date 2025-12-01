@@ -14,21 +14,22 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsgeometrycollection.h"
-#include "qgsapplication.h"
-#include "qgsbox3d.h"
-#include "qgsgeometryfactory.h"
-#include "qgsgeometryutils.h"
-#include "qgslinestring.h"
-#include "qgsmultilinestring.h"
-#include "qgspoint.h"
-#include "qgsmultipoint.h"
-#include "qgsmultipolygon.h"
-#include "qgswkbptr.h"
-#include "qgsgeos.h"
-#include "qgsfeedback.h"
 
 #include <nlohmann/json.hpp>
 #include <memory>
+
+#include "qgsapplication.h"
+#include "qgsbox3d.h"
+#include "qgsfeedback.h"
+#include "qgsgeometryfactory.h"
+#include "qgsgeometryutils.h"
+#include "qgsgeos.h"
+#include "qgslinestring.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
+#include "qgsmultipolygon.h"
+#include "qgspoint.h"
+#include "qgswkbptr.h"
 
 QgsGeometryCollection::QgsGeometryCollection()
 {

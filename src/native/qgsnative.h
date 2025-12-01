@@ -18,11 +18,13 @@
 #ifndef QGSNATIVE_H
 #define QGSNATIVE_H
 
-#include "qgis_native.h"
-#include <QImage>
-#include <QVariant>
 #include <vector>
+
+#include "qgis_native.h"
+
+#include <QImage>
 #include <QObject>
+#include <QVariant>
 
 class QString;
 class QWindow;

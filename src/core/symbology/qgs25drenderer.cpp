@@ -16,15 +16,16 @@
 #include "qgs25drenderer.h"
 
 #include <memory>
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgspainteffect.h"
+
 #include "qgseffectstack.h"
-#include "qgsgloweffect.h"
-#include "qgsproperty.h"
-#include "qgssymbollayerutils.h"
-#include "qgsstyleentityvisitor.h"
 #include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsgloweffect.h"
+#include "qgspainteffect.h"
+#include "qgsproperty.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
 
 #define ROOF_EXPRESSION \
   "translate(" \

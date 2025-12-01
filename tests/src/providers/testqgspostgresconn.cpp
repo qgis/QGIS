@@ -12,15 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include "qgsconfig.h"
-#include <QObject>
 
-#include "qgspostgresconn.h"
-#include "qgsfields.h"
-#include "qgspostgresprovider.h"
 #include "qgsdatasourceuri.h"
+#include "qgsfields.h"
+#include "qgspostgresconn.h"
+#include "qgspostgresprovider.h"
 #include "qgspostgresutils.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 // Helper function for QCOMPARE
 char *toString( const QgsPostgresGeometryColumnType &t )

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmconcavehullbyfeature.h"
+
 #include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE

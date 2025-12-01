@@ -12,18 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsfeaturelistmodel.h"
+
+#include "qgsapplication.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgsattributetablemodel.h"
 #include "qgsexception.h"
 #include "qgsvectordataprovider.h"
-#include "qgsfeaturelistmodel.h"
-#include "moc_qgsfeaturelistmodel.cpp"
-#include "qgsattributetablemodel.h"
-#include "qgsvectorlayereditbuffer.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsapplication.h"
 #include "qgsvectorlayercache.h"
+#include "qgsvectorlayereditbuffer.h"
 
 #include <QItemSelection>
 #include <QSettings>
+
+#include "moc_qgsfeaturelistmodel.cpp"
 
 QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent )
   : QSortFilterProxyModel( parent )

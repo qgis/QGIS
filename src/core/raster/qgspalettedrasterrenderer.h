@@ -20,10 +20,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QVector>
-
-#include "qgsrasterrenderer.h"
 #include "qgscolorrampshader.h"
+#include "qgsrasterrenderer.h"
+
+#include <QVector>
 
 class QColor;
 class QDomElement;

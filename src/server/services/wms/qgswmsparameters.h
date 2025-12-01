@@ -18,15 +18,15 @@
 #ifndef QGSWMSPARAMETERS_H
 #define QGSWMSPARAMETERS_H
 
+#include "qgslegendsettings.h"
+#include "qgsogcutils.h"
+#include "qgsprojectversion.h"
+#include "qgsrectangle.h"
+#include "qgsserverparameters.h"
+
+#include <QColor>
 #include <QMap>
 #include <QMetaEnum>
-#include <QColor>
-
-#include "qgsrectangle.h"
-#include "qgslegendsettings.h"
-#include "qgsprojectversion.h"
-#include "qgsogcutils.h"
-#include "qgsserverparameters.h"
 
 namespace QgsWms
 {

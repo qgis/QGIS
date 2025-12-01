@@ -18,13 +18,15 @@
 #ifndef QGSRENDEREDITEMRESULTS_H
 #define QGSRENDEREDITEMRESULTS_H
 
+#include <memory>
+#include <vector>
+#include <unordered_map>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrectangle.h"
-#include <memory>
+
 #include <QList>
-#include <vector>
-#include <unordered_map>
 
 class QgsRenderedItemDetails;
 class QgsRenderContext;

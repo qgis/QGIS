@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerelevationproperties.h"
-#include "moc_qgspointcloudlayerelevationproperties.cpp"
-#include "qgspointcloudlayer.h"
+
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorutils.h"
+#include "qgspointcloudlayer.h"
 #include "qgsvirtualpointcloudprovider.h"
+
+#include "moc_qgspointcloudlayerelevationproperties.cpp"
 
 QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )

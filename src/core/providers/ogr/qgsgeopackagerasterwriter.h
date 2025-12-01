@@ -20,8 +20,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgsmimedatautils.h"
 #include "qgsfeedback.h"
+#include "qgsmimedatautils.h"
 
 class QgsGeoPackageRasterWriter
 {

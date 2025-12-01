@@ -17,12 +17,12 @@
 #define QGSSETTINGSTREEMODEL_H
 
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
 #include <QItemDelegate>
+#include <QSortFilterProxyModel>
 
 class QgsSettingsEntryBase;
 class QgsSettingsTreeNode;

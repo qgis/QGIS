@@ -18,8 +18,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgsmaplayerrenderer.h"
 #include "qgsmapclippingregion.h"
+#include "qgsmaplayerrenderer.h"
 
 class QPainter;
 

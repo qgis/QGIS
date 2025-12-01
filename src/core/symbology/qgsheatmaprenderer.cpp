@@ -15,19 +15,19 @@
 
 #include "qgsheatmaprenderer.h"
 
+#include <memory>
+
+#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
+#include "qgscolorramplegendnode.h"
+#include "qgsfeature.h"
+#include "qgsrendercontext.h"
+#include "qgsstyleentityvisitor.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
-#include "qgsfeature.h"
-#include "qgscolorramp.h"
-#include "qgscolorrampimpl.h"
-#include "qgsrendercontext.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgscolorramplegendnode.h"
-
 #include <QDomDocument>
 #include <QDomElement>
-#include <memory>
 
 QgsHeatmapRenderer::QgsHeatmapRenderer()
   : QgsFeatureRenderer( QStringLiteral( "heatmapRenderer" ) )

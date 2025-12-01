@@ -16,17 +16,18 @@
 #include "qgs3dmaptoolpointcloudchangeattributepaintbrush.h"
 
 #include <memory>
-#include "moc_qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp"
-#include "qgsrubberband3d.h"
+
+#include "qgisapp.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
-#include "qgswindow3dengine.h"
 #include "qgsframegraph.h"
 #include "qgsgeometry.h"
 #include "qgsguiutils.h"
 #include "qgslinestring.h"
-#include "qgisapp.h"
+#include "qgsrubberband3d.h"
+#include "qgswindow3dengine.h"
 
+#include "moc_qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp"
 
 class QgsPointCloudAttribute;
 Qgs3DMapToolPointCloudChangeAttributePaintbrush::Qgs3DMapToolPointCloudChangeAttributePaintbrush( Qgs3DMapCanvas *canvas )

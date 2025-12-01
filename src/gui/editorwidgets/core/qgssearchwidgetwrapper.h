@@ -16,9 +16,10 @@
 #ifndef QGSSEARCHWIDGETWRAPPER_H
 #define QGSSEARCHWIDGETWRAPPER_H
 
-#include <QObject>
 #include "qgis_sip.h"
+
 #include <QMap>
+#include <QObject>
 #include <QVariant>
 
 class QgsVectorLayer;

@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsmeshterrainsettings.h"
+
+#include "qgs3drendercontext.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshterraingenerator.h"
-#include "qgs3drendercontext.h"
 
 QgsAbstractTerrainSettings *QgsMeshTerrainSettings::create()
 {

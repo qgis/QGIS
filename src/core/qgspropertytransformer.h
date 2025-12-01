@@ -15,19 +15,21 @@
 #ifndef QGSPROPERTYTRANSFORMER_H
 #define QGSPROPERTYTRANSFORMER_H
 
+#include <memory>
+#include <algorithm>
+
 #include "qgis_core.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgspointxy.h"
-#include <QVariant>
+
+#include <QColor>
+#include <QDomDocument>
+#include <QDomElement>
 #include <QHash>
 #include <QString>
 #include <QStringList>
-#include <QDomElement>
-#include <QDomDocument>
-#include <QColor>
-#include <memory>
-#include <algorithm>
+#include <QVariant>
 
 class QgsColorRamp;
 

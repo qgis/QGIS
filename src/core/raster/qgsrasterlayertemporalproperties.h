@@ -19,12 +19,12 @@
 #ifndef QGSRASTERLAYERTEMPORALPROPERTIES_H
 #define QGSRASTERLAYERTEMPORALPROPERTIES_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsinterval.h"
-#include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsrange.h"
 
 class QgsRasterLayer;
 

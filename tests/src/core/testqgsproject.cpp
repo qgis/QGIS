@@ -12,29 +12,28 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsarchive.h"
+#include "qgslayertree.h"
+#include "qgslayoutmanager.h"
+#include "qgsmaplayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgspathresolver.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbollayerutils.h"
 #include "qgstest.h"
+#include "qgsunittypes.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #include <QObject>
 #include <QSignalSpy>
 #include <QTimer>
-
-#include "qgsapplication.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgspathresolver.h"
-#include "qgsproject.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgslayertree.h"
-#include "qgssettings.h"
-#include "qgsunittypes.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgslayoutmanager.h"
-#include "qgsmarkersymbol.h"
-#include "qgsrasterlayer.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsarchive.h"
 
 class TestQgsProject : public QObject
 {

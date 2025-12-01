@@ -20,10 +20,10 @@
 #include "qgsexpressioncontext.h"
 #include "qgsproperty.h"
 
-#include <QString>
-#include <QVariant>
 #include <QColor>
 #include <QDateTime>
+#include <QString>
+#include <QVariant>
 
 class QDomElement;
 class QDomDocument;

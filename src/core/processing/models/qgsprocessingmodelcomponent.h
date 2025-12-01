@@ -18,11 +18,12 @@
 #ifndef QGSPROCESSINGMODELCOMPONENT_H
 #define QGSPROCESSINGMODELCOMPONENT_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
+#include <QColor>
 #include <QPointF>
 #include <QSizeF>
-#include <QColor>
 
 class QgsProcessingModelComment;
 

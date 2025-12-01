@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 #include "qgspointclusterrendererwidget.h"
-#include "moc_qgspointclusterrendererwidget.cpp"
+
+#include "qgsapplication.h"
+#include "qgsmarkersymbol.h"
 #include "qgspointclusterrenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsstyle.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgsmarkersymbol.h"
+
+#include "moc_qgspointclusterrendererwidget.cpp"
 
 QgsRendererWidget *QgsPointClusterRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

@@ -15,34 +15,30 @@
 
 #include "qgspolygon3dsymbol_p.h"
 
+#include "qgs3drendercontext.h"
+#include "qgs3dutils.h"
+#include "qgsgeotransform.h"
+#include "qgslinematerial_p.h"
+#include "qgslinestring.h"
+#include "qgslinevertexdata_p.h"
+#include "qgsmessagelog.h"
+#include "qgsmultipolygon.h"
+#include "qgsphongtexturedmaterialsettings.h"
+#include "qgspolygon.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgspolyhedralsurface.h"
 #include "qgstessellatedpolygongeometry.h"
-#include "qgs3drendercontext.h"
-#include "qgs3dutils.h"
 #include "qgstessellator.h"
-#include "qgsphongtexturedmaterialsettings.h"
-
-#include <Qt3DExtras/QPhongMaterial>
+#include "qgsvectorlayer.h"
 
 #include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QAbstractTextureImage>
-#include <Qt3DRender/QTexture>
-
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGeometryRenderer>
-
-#include "qgsvectorlayer.h"
-#include "qgslinestring.h"
-#include "qgsmultipolygon.h"
-#include "qgspolygon.h"
-#include "qgsmessagelog.h"
-#include "qgsgeotransform.h"
-
-#include "qgslinevertexdata_p.h"
-#include "qgslinematerial_p.h"
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QTexture>
 
 /// @cond PRIVATE
 

@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
 #include "qgstest.h"
+
+#include <QLocale>
 #include <QObject>
 #include <QString>
 #include <QTemporaryFile>
-#include <QLocale>
-
-#include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
 
 /**
  * \ingroup UnitTests

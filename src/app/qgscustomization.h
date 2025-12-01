@@ -18,12 +18,12 @@
 #define QGSCUSTOMIZATION_H
 
 #include "ui_qgscustomizationdialogbase.h"
+
+#include "qgis_app.h"
 #include "qgshelp.h"
 
 #include <QDialog>
 #include <QDomNode>
-
-#include "qgis_app.h"
 
 class QString;
 class QWidget;

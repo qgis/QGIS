@@ -16,40 +16,41 @@
  ***************************************************************************/
 
 #include "qgsdwgimportdialog.h"
-#include "moc_qgsdwgimportdialog.cpp"
 
-#include <QDialogButtonBox>
-#include <QFileInfo>
-#include <QFileDialog>
-#include <QMessageBox>
-
-#include "qgssettings.h"
 #include "qgisapp.h"
 #include "qgsdwgimporter.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfilewidget.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgslayertree.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertreemodel.h"
+#include "qgslayertreeview.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgslogger.h"
+#include "qgsmaptoolpan.h"
+#include "qgsmessagebar.h"
+#include "qgsnullsymbolrenderer.h"
+#include "qgspallabeling.h"
+#include "qgsproject.h"
+#include "qgsproperty.h"
+#include "qgsrenderer.h"
+#include "qgssettings.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsvectordataprovider.h"
-#include "qgsproject.h"
-#include "qgsfeatureiterator.h"
-#include "qgslayertreeview.h"
-#include "qgslayertreemodel.h"
-#include "qgslayertreegroup.h"
-#include "qgsrenderer.h"
-#include "qgsnullsymbolrenderer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgspallabeling.h"
-#include "qgslogger.h"
-#include "qgsproperty.h"
-#include "qgslayertree.h"
-#include "qgsguiutils.h"
-#include "qgsfilewidget.h"
-#include "qgsmessagebar.h"
-#include "qgsgui.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsmaptoolpan.h"
+
+#include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QMessageBox>
+
+#include "moc_qgsdwgimportdialog.cpp"
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

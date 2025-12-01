@@ -12,16 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <gdal.h>
+
+#include "qgisapp.h"
+#include "qgsmaplayerlegend.h"
+#include "qgsmaplayerstore.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
 #include "qgstest.h"
 
 #include <QApplication>
-#include "gdal.h"
-
-#include "qgisapp.h"
-#include "qgsproject.h"
-#include "qgsrasterlayer.h"
-#include "qgsmaplayerlegend.h"
-#include "qgsmaplayerstore.h"
 
 /**
  * \ingroup UnitTests

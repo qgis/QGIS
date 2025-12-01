@@ -14,18 +14,16 @@
  ***************************************************************************/
 
 #include "qgsgcptransformer.h"
-#include "moc_qgsgcptransformer.cpp"
 
 #include <gdal.h>
 #include <gdal_alg.h>
-
-#include "qgsleastsquares.h"
-
 #include <cmath>
-
 #include <cassert>
 #include <limits>
 
+#include "qgsleastsquares.h"
+
+#include "moc_qgsgcptransformer.cpp"
 
 bool QgsGcpTransformerInterface::transform( double &x, double &y, bool inverseTransform ) const
 {

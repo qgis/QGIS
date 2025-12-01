@@ -26,7 +26,6 @@
 
 #include <QLabel>
 
-
 class APP_EXPORT QgsContributorsMapFloatingPanel : public QgsFloatingWidget
 {
     Q_OBJECT

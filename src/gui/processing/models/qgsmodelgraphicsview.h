@@ -18,10 +18,11 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "qgsprocessingcontext.h"
 #include "qgsmodelsnapper.h"
-#include <QGraphicsView>
+#include "qgsprocessingcontext.h"
+
 #include <QGraphicsRectItem>
+#include <QGraphicsView>
 
 class QgsModelViewTool;
 class QgsModelViewToolTemporaryKeyPan;

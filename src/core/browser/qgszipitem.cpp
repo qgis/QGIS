@@ -16,18 +16,20 @@
  ***************************************************************************/
 
 #include "qgszipitem.h"
-#include "moc_qgszipitem.cpp"
-#include "qgsapplication.h"
-#include "qgsdataitemprovider.h"
-#include "qgsdataitemproviderregistry.h"
-#include "qgssettings.h"
-#include "qgsgdalutils.h"
-
-#include <QFileInfo>
 
 #include <cpl_vsi.h>
 #include <cpl_string.h>
 #include <mutex>
+
+#include "qgsapplication.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataitemproviderregistry.h"
+#include "qgsgdalutils.h"
+#include "qgssettings.h"
+
+#include <QFileInfo>
+
+#include "moc_qgszipitem.cpp"
 
 QIcon QgsZipItem::iconZip()
 {

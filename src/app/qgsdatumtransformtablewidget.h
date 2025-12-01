@@ -16,13 +16,13 @@
 #ifndef QGSDATUMTRANSFORMTABLEWIDGET_H
 #define QGSDATUMTRANSFORMTABLEWIDGET_H
 
-#include <QAbstractTableModel>
-#include <QWidget>
-
 #include "ui_qgsdatumtransformtablewidgetbase.h"
+
 #include "qgis_app.h"
 #include "qgscoordinatetransformcontext.h"
 
+#include <QAbstractTableModel>
+#include <QWidget>
 
 /**
  * The QgsDatumTransformTableModel class is a table model to display and edit

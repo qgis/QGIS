@@ -13,23 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDialogButtonBox>
-#include <QDomElement>
+#include "qgslabelingwidget.h"
+
 #include <memory>
 
-#include "qgslabelingwidget.h"
-#include "moc_qgslabelingwidget.cpp"
-
+#include "qgsapplication.h"
 #include "qgslabelengineconfigdialog.h"
+#include "qgslabelingengineruleswidget.h"
 #include "qgslabelinggui.h"
+#include "qgslabelobstaclesettingswidget.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsrulebasedlabelingwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsproject.h"
-#include "qgsapplication.h"
-#include "qgslabelobstaclesettingswidget.h"
-#include "qgslabelingengineruleswidget.h"
-#include "qgsmapcanvas.h"
+
+#include <QDialogButtonBox>
+#include <QDomElement>
+
+#include "moc_qgslabelingwidget.cpp"
 
 QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

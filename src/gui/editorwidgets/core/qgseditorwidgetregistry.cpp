@@ -16,15 +16,16 @@
 #include "qgseditorwidgetregistry.h"
 
 #include <memory>
-#include "moc_qgseditorwidgetregistry.cpp"
 
+#include "qgsapplication.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgseditorwidgetwrapper.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgseditorwidgetwrapper.h"
 #include "qgssearchwidgetwrapper.h"
-#include "qgsapplication.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgseditorwidgetregistry.cpp"
 
 // Editors
 #include "qgsbinarywidgetfactory.h"

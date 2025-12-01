@@ -14,27 +14,29 @@
  ***************************************************************************/
 
 #include "qgspointlocator.h"
-#include "moc_qgspointlocator.cpp"
 
+#include <spatialindex/SpatialIndex.h>
+
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscurvepolygon.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
-#include "qgswkbptr.h"
-#include "qgis.h"
-#include "qgslogger.h"
-#include "qgsrenderer.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayerfeatureiterator.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgslinestring.h"
-#include "qgscurvepolygon.h"
-#include "qgsrendercontext.h"
+#include "qgslogger.h"
 #include "qgspointlocatorinittask.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderer.h"
 #include "qgsspatialindexutils.h"
-#include <spatialindex/SpatialIndex.h>
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
+#include "qgswkbptr.h"
 
 #include <QLinkedListIterator>
 #include <QtConcurrent>
+
+#include "moc_qgspointlocator.cpp"
 
 using namespace SpatialIndex;
 

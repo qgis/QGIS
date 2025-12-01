@@ -14,24 +14,25 @@
  ***************************************************************************/
 
 #include "qgstracer.h"
-#include "moc_qgstracer.cpp"
 
+#include <vector>
+#include <memory>
 
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeos.h"
 #include "qgslogger.h"
-#include "qgsvectorlayer.h"
-#include "qgsrenderer.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderer.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
 
-#include <memory>
 #include <queue>
-#include <vector>
+
+#include "moc_qgstracer.cpp"
 
 typedef std::pair<int, double> DijkstraQueueItem; // first = vertex index, second = distance
 

@@ -14,19 +14,18 @@
  ***************************************************************************/
 
 #include "qgscustomlayerorderwidget.h"
-#include "moc_qgscustomlayerorderwidget.cpp"
+
+#include "qgslayertree.h"
+#include "qgslayertreemapcanvasbridge.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
 
 #include <QCheckBox>
 #include <QListView>
 #include <QMimeData>
 #include <QVBoxLayout>
 
-#include "qgslayertree.h"
-#include "qgslayertreemapcanvasbridge.h"
-
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
-
+#include "moc_qgscustomlayerorderwidget.cpp"
 
 QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent )
   : QWidget( parent )

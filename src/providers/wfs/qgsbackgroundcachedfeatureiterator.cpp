@@ -14,27 +14,29 @@
  ***************************************************************************/
 
 #include "qgsbackgroundcachedfeatureiterator.h"
-#include "moc_qgsbackgroundcachedfeatureiterator.cpp"
-#include "qgsbackgroundcachedfeaturesource.h"
-#include "qgsbackgroundcachedshareddata.h"
+
+#include <memory>
 
 #include "qgsapplication.h"
-#include "qgsfeedback.h"
+#include "qgsbackgroundcachedfeaturesource.h"
+#include "qgsbackgroundcachedshareddata.h"
 #include "qgsfeaturedownloader.h"
+#include "qgsfeedback.h"
+#include "qgsgeometryengine.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgswfsutils.h" // for isCompatibleType()
-#include "qgsgeometryengine.h"
 #include "qgsvectordataprovider.h"
+#include "qgswfsutils.h"
 
 #include <QDataStream>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFile>
 #include <QJsonDocument>
 #include <QMutex>
 #include <QTimer>
-#include <QElapsedTimer>
-#include <memory>
+
+#include "moc_qgsbackgroundcachedfeatureiterator.cpp"
 
 const QString QgsBackgroundCachedFeatureIterator::Constants::FIELD_GEN_COUNTER( QStringLiteral( "__qgis_gen_counter" ) );
 const QString QgsBackgroundCachedFeatureIterator::Constants::FIELD_UNIQUE_ID( QStringLiteral( "__qgis_unique_id" ) );

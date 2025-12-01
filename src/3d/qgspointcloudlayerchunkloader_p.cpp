@@ -14,24 +14,26 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerchunkloader_p.h"
-#include "moc_qgspointcloudlayerchunkloader_p.cpp"
 
 #include "qgs3dutils.h"
 #include "qgsbox3d.h"
-#include "qgspointcloudlayer3drenderer.h"
 #include "qgschunknode.h"
-#include "qgslogger.h"
-#include "qgspointcloudindex.h"
-#include "qgspointcloudrequest.h"
 #include "qgseventtracing.h"
+#include "qgslogger.h"
+#include "qgspointcloud3dsymbol.h"
+#include "qgspointcloud3dsymbol_p.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgspointcloudrequest.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
 #include "qgsraycastingutils.h"
-#include "qgspointcloud3dsymbol.h"
-#include "qgspointcloudattribute.h"
-#include "qgspointcloud3dsymbol_p.h"
 
 #include <QtConcurrent>
+
+#include "moc_qgspointcloudlayerchunkloader_p.cpp"
+
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #else

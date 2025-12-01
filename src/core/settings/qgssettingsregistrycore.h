@@ -17,10 +17,9 @@
 #ifndef QGSSETTINGSREGISTRYCORE_H
 #define QGSSETTINGSREGISTRYCORE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgssettingsregistry.h"
-
-#include "qgis.h"
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryColor;

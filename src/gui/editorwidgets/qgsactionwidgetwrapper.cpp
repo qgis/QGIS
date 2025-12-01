@@ -14,13 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsactionwidgetwrapper.h"
-#include "moc_qgsactionwidgetwrapper.cpp"
+
 #include "qgsattributeform.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
 #include "qgsmessagebar.h"
 
 #include <QLayout>
+
+#include "moc_qgsactionwidgetwrapper.cpp"
 
 QgsActionWidgetWrapper::QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsWidgetWrapper( layer, editor, parent )

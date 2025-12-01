@@ -15,10 +15,12 @@
  ***************************************************************************/
 
 #include "qgsfieldmappingmodel.h"
-#include "moc_qgsfieldmappingmodel.cpp"
+
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvariantutils.h"
+
+#include "moc_qgsfieldmappingmodel.cpp"
 
 QgsFieldMappingModel::QgsFieldMappingModel( const QgsFields &sourceFields, const QgsFields &destinationFields, const QMap<QString, QString> &expressions, QObject *parent )
   : QAbstractTableModel( parent )

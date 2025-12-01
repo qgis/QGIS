@@ -18,12 +18,12 @@
 #ifndef QGSLOCATORMODELBRIDGE_H
 #define QGSLOCATORMODELBRIDGE_H
 
-#include <QObject>
-
 #include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
+
+#include <QObject>
 
 class QItemSelection;
 

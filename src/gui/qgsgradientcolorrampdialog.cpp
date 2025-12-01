@@ -14,12 +14,11 @@
  ***************************************************************************/
 
 #include "qgsgradientcolorrampdialog.h"
-#include "moc_qgsgradientcolorrampdialog.cpp"
 
-#include "qgsdialog.h"
 #include "qgscptcityarchive.h"
-#include "qgssettings.h"
+#include "qgsdialog.h"
 #include "qgsgui.h"
+#include "qgssettings.h"
 
 #include <QColorDialog>
 #include <QHeaderView>
@@ -27,6 +26,8 @@
 #include <QPainter>
 #include <QTableWidget>
 #include <QTextEdit>
+
+#include "moc_qgsgradientcolorrampdialog.cpp"
 
 // QWT Charting widget
 #include <qwt_global.h>

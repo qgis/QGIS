@@ -16,8 +16,8 @@
 #ifndef QGSFILLSYMBOLLAYER_H
 #define QGSFILLSYMBOLLAYER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 #define DEFAULT_SIMPLEFILL_COLOR        QColor(0,0,255)

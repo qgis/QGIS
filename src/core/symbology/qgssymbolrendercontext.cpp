@@ -16,8 +16,9 @@
 #include "qgssymbolrendercontext.h"
 
 #include <memory>
-#include "qgsrendercontext.h"
+
 #include "qgslegendpatchshape.h"
+#include "qgsrendercontext.h"
 
 QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext &c, Qgis::RenderUnit u, qreal opacity, bool selected, Qgis::SymbolRenderHints renderHints, const QgsFeature *f, const QgsFields &fields, const QgsMapUnitScale &mapUnitScale )
   : mRenderContext( c )

@@ -15,6 +15,12 @@
  *
  ***************************************************************************/
 #include "qgshanaproviderconnection.h"
+
+#include <odbc/PreparedStatement.h>
+#include <chrono>
+
+#include "qgsexception.h"
+#include "qgsfeedback.h"
 #include "qgshanaconnectionpool.h"
 #include "qgshanaexception.h"
 #include "qgshanaprimarykeys.h"
@@ -22,14 +28,8 @@
 #include "qgshanaresultset.h"
 #include "qgshanasettings.h"
 #include "qgshanautils.h"
-#include "qgsexception.h"
-#include "qgsfeedback.h"
 #include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
-
-#include "odbc/PreparedStatement.h"
-
-#include <chrono>
 
 using namespace NS_ODBC;
 

@@ -18,7 +18,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsogrsourceselect.h"
+
 #include "moc_qgsogrsourceselect.cpp"
+
 ///@cond PRIVATE
 
 #include <QMessageBox>
