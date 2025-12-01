@@ -37,7 +37,7 @@ if [[ "$OSTYPE" == *bsd* ]] || [[ "$OSTYPE" =~ darwin* ]]; then
 fi
 
 if test "$1" == "--all"; then
-    MODIFIED=$(find src tests -name "*.h" -o -name "*.cpp")
+    MODIFIED=$(find src "tests/src" -name "*.h" -o -name "*.cpp")
 else
     # determine changed files
     MODIFIED=$(git status --porcelain| ${GP}sed -ne "s/^ *[MA]  *//p" | sort -u)
