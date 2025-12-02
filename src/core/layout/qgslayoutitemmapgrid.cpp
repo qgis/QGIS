@@ -1249,6 +1249,14 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotations( QgsRenderContext &context,
 
     gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_number" ), value, true ) );
     gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), it->coordinateType == QgsLayoutItemMapGrid::Longitude ? "x" : "y", true ) );
+
+    if ( mDrawAnnotationProperty )
+    {
+      bool ok = false;
+      const bool display = mDrawAnnotationProperty->valueAsBool( expressionContext, true, &ok );
+      if ( ok && !display )
+        continue;
+    }
     currentAnnotationString = gridAnnotationString( it->coordinate, it->coordinateType, expressionContext, geographic );
     drawCoordinateAnnotation( context, it->startAnnotation, currentAnnotationString, it->coordinateType, extension );
     drawCoordinateAnnotation( context, it->endAnnotation, currentAnnotationString, it->coordinateType, extension );
@@ -1961,6 +1969,16 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
                     || mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridOffsetY );
 
   mEvaluatedEnabled = mDataDefinedProperties.valueAsBool( QgsLayoutObject::DataDefinedProperty::MapGridEnabled, context, enabled() );
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation ) )
+  {
+    mDrawAnnotationProperty.reset( new QgsProperty( mDataDefinedProperties.property( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation ) ) );
+    mDrawAnnotationProperty->prepare( context );
+  }
+  else
+  {
+    mDrawAnnotationProperty.reset();
+  }
+
   switch ( mGridUnit )
   {
     case MapUnit:
