@@ -67,7 +67,7 @@ Returns the output video frames per second.
 .. seealso:: :py:func:`frameDuration`
 %End
 
-    double frameDuration() const;
+    qint64 frameDuration() const;
 %Docstring
 Returns the duration of each frame, in micro-seconds.
 
