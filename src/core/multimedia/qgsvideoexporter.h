@@ -18,9 +18,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include <QSize>
 #include <QObject>
 #include <QPointer>
+#include <QSize>
+
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <QtMultimedia/QMediaFormat>
 #include <QtMultimedia/QMediaRecorder>

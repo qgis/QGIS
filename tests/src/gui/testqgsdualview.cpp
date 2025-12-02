@@ -14,28 +14,26 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
+#include <memory>
 
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
-#include <attributetable/qgsattributetableview.h>
-#include <attributetable/qgsdualview.h>
-#include <editform/qgsattributeeditorhtmlelement.h>
-#include "qgsattributeform.h"
+#include "attributetable/qgsattributetableview.h"
+#include "attributetable/qgsdualview.h"
+#include "editform/qgsattributeeditorhtmlelement.h"
+#include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "qgsapplication.h"
 #include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorfield.h"
+#include "qgsattributeform.h"
 #include "qgsattributeformeditorwidget.h"
-#include <qgsapplication.h>
+#include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistmodel.h"
-#include <qgsvectorlayer.h>
-#include "qgsvectordataprovider.h"
-#include <qgsmapcanvas.h>
-#include <qgsfeature.h>
-
-#include <memory>
 #include "qgsgui.h"
-#include "qgsvectorlayercache.h"
+#include "qgsmapcanvas.h"
 #include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayercache.h"
 
 class TestQgsDualView : public QObject
 {
