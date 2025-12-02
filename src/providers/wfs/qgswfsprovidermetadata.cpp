@@ -215,7 +215,7 @@ QString QgsWfsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   QgsDataSourceUri dsUri;
   for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
   {
-    if ( it.key() == QStringLiteral( "authcfg" ) )
+    if ( it.key() == QLatin1String( "authcfg" ) )
     {
       dsUri.setAuthConfigId( it.value().toString() );
     }

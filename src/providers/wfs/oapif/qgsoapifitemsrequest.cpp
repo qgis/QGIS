@@ -46,7 +46,7 @@ bool QgsOapifItemsRequest::request( bool synchronous, bool forceRefresh )
   {
     acceptHeader = mFeatureFormat;
   }
-  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == QStringLiteral( "application/geo+json" );
+  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == QLatin1String( "application/geo+json" );
   mFakeResponseHasHeaders = !isGeoJSON;
   QgsDebugMsgLevel( QStringLiteral( " QgsOapifItemsRequest::request() start time: %1" ).arg( time( nullptr ) ), 5 );
   if ( !sendGET( QUrl::fromEncoded( mUrl.toLatin1() ), acceptHeader, synchronous, forceRefresh ) )
@@ -118,7 +118,7 @@ void QgsOapifItemsRequest::processReply()
     return;
   }
 
-  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == QStringLiteral( "application/geo+json" );
+  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == QLatin1String( "application/geo+json" );
 
   if ( isGeoJSON )
   {
@@ -138,7 +138,7 @@ void QgsOapifItemsRequest::processReply()
     QgsDebugMsgLevel( QStringLiteral( "JSON compaction end time: %1" ).arg( time( nullptr ) ), 5 );
   }
 
-  const QString vsimemFilename = mFeatureFormat == QStringLiteral( "application/flatgeobuf" ) ? QStringLiteral( "/vsimem/oaipf_%1.fgb" ).arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) ) : QStringLiteral( "/vsimem/oaipf_%1.json" ).arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
+  const QString vsimemFilename = mFeatureFormat == QLatin1String( "application/flatgeobuf" ) ? QStringLiteral( "/vsimem/oaipf_%1.fgb" ).arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) ) : QStringLiteral( "/vsimem/oaipf_%1.json" ).arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
   VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), const_cast<GByte *>( reinterpret_cast<const GByte *>( buffer.constData() ) ), buffer.size(), false ) );
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
   const QgsDataProvider::ProviderOptions providerOptions;
@@ -169,7 +169,7 @@ void QgsOapifItemsRequest::processReply()
   int idField = -1;
   if ( !isGeoJSON )
   {
-    idField = mFields.indexOf( QStringLiteral( "id" ) );
+    idField = mFields.indexOf( QLatin1String( "id" ) );
     // If no "id" field, then use the first field if it contains "id" in it.
     if ( idField < 0 && mFields.size() >= 1 && mFields[0].name().indexOf( QLatin1String( "id" ), 0, Qt::CaseInsensitive ) )
     {
