@@ -15,10 +15,10 @@
 #ifndef QGSFIELDDOMAINWIDGET_H
 #define QGSFIELDDOMAINWIDGET_H
 
-#include "ui_qgsrangedomainwidgetbase.h"
-#include "ui_qgscodedvaluedomainwidgetbase.h"
 #include "ui_qgsfielddomainwidgetbase.h"
+#include "ui_qgscodedvaluedomainwidgetbase.h"
 #include "ui_qgsglobdomainwidgetbase.h"
+#include "ui_qgsrangedomainwidgetbase.h"
 
 #include "qgis.h"
 #include "qgis_gui.h"

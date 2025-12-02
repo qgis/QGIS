@@ -20,13 +20,13 @@
 #include "qgis_sip.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsfeature.h"
+#include "qobjectuniqueptr.h"
 
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QStandardItemModel>
 #include <QToolButton>
-#include <qobjectuniqueptr.h>
 
 class QgsAttributeForm;
 class QgsVectorLayerTools;

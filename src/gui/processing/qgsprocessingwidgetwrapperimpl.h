@@ -28,9 +28,9 @@
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsprocessingwidgetwrapper.h"
+#include "qobjectuniqueptr.h"
 
 #include <QAbstractButton>
-#include <qobjectuniqueptr.h>
 
 class QCheckBox;
 class QComboBox;

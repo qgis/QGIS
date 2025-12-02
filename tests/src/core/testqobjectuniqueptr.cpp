@@ -14,8 +14,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-
-#include <qobjectuniqueptr.h>
+#include "qobjectuniqueptr.h"
 
 class TestQObjectUniquePtr : public QObject
 {
