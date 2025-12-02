@@ -166,7 +166,6 @@ class CORE_EXPORT QgsStringReplacementCollection
     void readXml( const QDomElement &elem );
 
   private:
-    static QHash<QString, QString> UNACCENT_MAP;
     QList< QgsStringReplacement > mReplacements;
 
 
