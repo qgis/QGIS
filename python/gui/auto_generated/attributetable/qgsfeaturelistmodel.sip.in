@@ -10,7 +10,6 @@
 
 
 
-
 class QgsFeatureListModel : QSortFilterProxyModel, QgsFeatureModel
 {
 %Docstring(signature="appended")
