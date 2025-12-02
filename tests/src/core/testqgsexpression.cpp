@@ -1196,6 +1196,36 @@ class TestQgsExpression : public QObject
       QTest::newRow( "degree minute second string to decimal" ) << "to_decimal('6°21′16.45″N')" << false << QVariant( 6.35456944444 );
       QTest::newRow( "wrong degree minute second string to decimal" ) << "to_decimal('qgis')" << false << QVariant();
 
+      QTest::newRow( "extract degrees positive int" ) << "extract_degrees(135)" << false << QVariant( 135 );
+      QTest::newRow( "extract degrees negative int" ) << "extract_degrees(-135)" << false << QVariant( -135 );
+      // make sure these aren't rounding, but should instead truncate towards zero
+      QTest::newRow( "extract degrees positive float low" ) << "extract_degrees(135.112341)" << false << QVariant( 135 );
+      QTest::newRow( "extract degrees negative float low" ) << "extract_degrees(-135.11234)" << false << QVariant( -135 );
+      QTest::newRow( "extract degrees positive float high" ) << "extract_degrees(135.78785)" << false << QVariant( 135 );
+      QTest::newRow( "extract degrees negative float high" ) << "extract_degrees(-135.7878)" << false << QVariant( -135 );
+
+      QTest::newRow( "extract minutes positive int" ) << "extract_minutes(135)" << false << QVariant( 0 );
+      QTest::newRow( "extract minutes negative int" ) << "extract_minutes(-135)" << false << QVariant( 0 );
+      QTest::newRow( "extract minutes positive round minutes" ) << "extract_minutes(135 + 45/60)" << false << QVariant( 45 );
+      QTest::newRow( "extract minutes negative round minutes" ) << "extract_minutes(-135 - 45/60)" << false << QVariant( 45 );
+      QTest::newRow( "extract minutes positive with low seconds" ) << "extract_minutes(135 + 45.123/60)" << false << QVariant( 45 );
+      QTest::newRow( "extract minutes negative with low seconds" ) << "extract_minutes(-135 - 45.123/60)" << false << QVariant( 45 );
+      QTest::newRow( "extract minutes positive with high seconds" ) << "extract_minutes(135 + 45.888/60)" << false << QVariant( 45 );
+      QTest::newRow( "extract minutes negative with high seconds" ) << "extract_minutes(-135 - 45.888/60)" << false << QVariant( 45 );
+
+      QTest::newRow( "extract seconds positive int" ) << "extract_seconds(135)" << false << QVariant( 0.0 );
+      QTest::newRow( "extract seconds negative int" ) << "extract_seconds(-135)" << false << QVariant( 0.0 );
+      QTest::newRow( "extract seconds positive round minutes" ) << "extract_seconds(135 + 45/60)" << false << QVariant( 0.0 );
+      QTest::newRow( "extract seconds negative round minutes" ) << "extract_seconds(-135 - 45/60)" << false << QVariant( 0.0 );
+      QTest::newRow( "extract seconds positive with round low seconds" ) << "extract_seconds(135 + 45/60 + 12/3600)" << false << QVariant( 12.0 );
+      QTest::newRow( "extract seconds negative with round low seconds" ) << "extract_seconds(-135 - 45/60 - 12/3600)" << false << QVariant( 12.0 );
+      QTest::newRow( "extract seconds positive with round high seconds" ) << "extract_seconds(135 + 45/60 + 58/3600)" << false << QVariant( 58.0 );
+      QTest::newRow( "extract seconds negative with round high seconds" ) << "extract_seconds(-135 - 45/60 - 58/3600)" << false << QVariant( 58.0 );
+      QTest::newRow( "extract seconds positive with decimal low seconds" ) << "round(extract_seconds(135 + 45/60 + 12.222/3600), 3)" << false << QVariant( 12.222 );
+      QTest::newRow( "extract seconds negative with decimal low seconds" ) << "round(extract_seconds(-135 - 45/60 - 12.222/3600), 3)" << false << QVariant( 12.222 );
+      QTest::newRow( "extract seconds positive with decimal high seconds" ) << "round(extract_seconds(135 + 45/60 + 58.222/3600), 3)" << false << QVariant( 58.222 );
+      QTest::newRow( "extract seconds negative with decimal high seconds" ) << "round(extract_seconds(-135 - 45/60 - 58.222/3600), 3)" << false << QVariant( 58.222 );
+
       // geometry functions
       QTest::newRow( "geom_to_wkb" ) << "geom_to_wkt(geom_from_wkb(geom_to_wkb(make_point(4,5))))" << false << QVariant( "Point (4 5)" );
       QTest::newRow( "geom_to_wkb not geom" ) << "geom_to_wkt(geom_from_wkb(geom_to_wkb('a')))" << true << QVariant();
