@@ -21,7 +21,6 @@
 #include "qgscoordinatetransform.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgspoint.h"
-#include "qgspoint.h"
 
 #include <QObject>
 

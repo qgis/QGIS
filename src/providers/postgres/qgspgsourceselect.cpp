@@ -33,7 +33,6 @@ email                : sherman at mrcc.com
 #include "qgsproxyprogresstask.h"
 #include "qgsquerybuilder.h"
 #include "qgssettings.h"
-#include "qgssettings.h"
 #include "qgsvectorlayer.h"
 
 #include <QFileDialog>

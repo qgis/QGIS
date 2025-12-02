@@ -20,7 +20,6 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturepool.h"
 #include "qgsfeedback.h"
-#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
 #include "qgspolygon.h"

@@ -16,8 +16,8 @@
 #ifndef QGSSENSORTABLEWIDGET_H
 #define QGSSENSORTABLEWIDGET_H
 
-#include "ui_qgssensortablewidgetbase.h"
 #include "ui_qgssensorsettingswidgetbase.h"
+#include "ui_qgssensortablewidgetbase.h"
 
 #include "qgis_app.h"
 #include "qgsabstractsensor.h"

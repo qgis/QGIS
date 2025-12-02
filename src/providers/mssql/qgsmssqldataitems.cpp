@@ -22,7 +22,6 @@
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
 #include "qgsmssqlconnection.h"
-#include "qgsmssqlconnection.h"
 #include "qgsmssqldatabase.h"
 #include "qgsmssqlgeomcolumntypethread.h"
 #include "qgsmssqlutils.h"

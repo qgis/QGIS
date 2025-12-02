@@ -79,6 +79,9 @@ while True:
     # TODO: handle headers in conditional #if blocks
     break
 
+# de-dupe includes
+include_lines = list(set(include_lines))
+
 NON_STANDARD_NAMED_QGIS_HEADERS = (
     "gpsdata.h",
     "fromencodedcomponenthelper.h",

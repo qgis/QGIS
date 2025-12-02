@@ -16,8 +16,8 @@
 #ifndef QGSQUERYRESULTWIDGET_H
 #define QGSQUERYRESULTWIDGET_H
 
-#include "ui_qgsqueryresultwidgetbase.h"
 #include "ui_qgsqueryresultpanelwidgetbase.h"
+#include "ui_qgsqueryresultwidgetbase.h"
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"

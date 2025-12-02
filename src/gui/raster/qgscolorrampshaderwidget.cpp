@@ -25,7 +25,6 @@
 #include "qgsguiutils.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
 #include "qgsrasterdataprovider.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterrendererutils.h"
 #include "qgssettings.h"
 #include "qgstreewidgetitem.h"

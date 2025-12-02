@@ -17,7 +17,6 @@
 
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsapplication.h"
-#include "qgsapplication.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdataitemguiproviderutils.h"
 #include "qgsdbimportvectorlayerdialog.h"

@@ -31,7 +31,6 @@
 #include "qgslayoutatlas.h"
 #include "qgslayoutdesignerinterface.h"
 #include "qgslayoutitemlegend.h"
-#include "qgslayoutitemlegend.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutlegendlayersdialog.h"

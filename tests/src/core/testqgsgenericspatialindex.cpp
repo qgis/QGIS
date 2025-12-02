@@ -17,7 +17,6 @@
 #include "qgsgenericspatialindex.h"
 #include "qgslabelposition.h"
 #include "qgstest.h"
-#include "qgstest.h"
 
 #include <QLocale>
 #include <QObject>

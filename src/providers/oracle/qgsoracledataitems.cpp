@@ -16,7 +16,6 @@
 #include "qgsoracledataitems.h"
 
 #include "qgsapplication.h"
-#include "qgsapplication.h"
 #include "qgsdataitemguiproviderutils.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdbquerylog.h"

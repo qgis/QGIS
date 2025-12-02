@@ -18,7 +18,6 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgsrasterlayer.h"
-#include "qgsrasterlayer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgstest.h"
 #include "qgswmsprovider.h"
