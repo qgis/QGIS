@@ -622,7 +622,10 @@ if(WITH_CORE)
 
   find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
   if (BUILD_WITH_QT6)
-    find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat SqlPrivate REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
+    if(Qt6Core_VERSION VERSION_GREATER_EQUAL 6.9)
+      find_package(${QT_VERSION_BASE} COMPONENTS SqlPrivate REQUIRED)
+    endif()
   endif()
 
   if (NOT IOS)
