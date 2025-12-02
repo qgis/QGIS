@@ -217,7 +217,7 @@ void QgsWMSSourceSelect::btnNew_clicked()
 
 void QgsWMSSourceSelect::btnEdit_clicked()
 {
-  std::unique_ptr<QgsWmsNewConnection> nc = std::make_unique<QgsWmsNewConnection>( this, cmbConnections->currentText() );
+  auto nc = std::make_unique<QgsWmsNewConnection>( this, cmbConnections->currentText() );
 
   if ( nc->exec() )
   {
