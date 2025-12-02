@@ -267,7 +267,7 @@ bool QgsOapifProvider::init()
     tenFeaturesRequestUrl += QLatin1Char( '?' );
   else
     tenFeaturesRequestUrl += QLatin1Char( '&' );
-  tenFeaturesRequestUrl += QStringLiteral( "limit=10" );
+  tenFeaturesRequestUrl += QLatin1String( "limit=10" );
 
   QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( tenFeaturesRequestUrl ), mShared->mFeatureFormat );
   if ( mShared->mCapabilityExtent.isNull() )
