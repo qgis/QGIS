@@ -22,9 +22,9 @@
 #include "qgis_sip.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsrelation.h"
+#include "qobjectuniqueptr.h"
 
 #include <QWidget>
-#include <qobjectuniqueptr.h>
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile

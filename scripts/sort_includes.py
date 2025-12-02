@@ -139,6 +139,7 @@ NON_STANDARD_NAMED_QGIS_HEADERS = (
     "palrtree.h",
     "inja/inja.hpp",
     "qsql_ocispatial.h",
+    "qobjectuniqueptr.h",
 )
 
 SPATIALITE_HEADERS = ("spatialite.h", "spatialite/gaiageo.h")

@@ -22,10 +22,10 @@
 #include "qgsgeometry.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgspointlocator.h"
+#include "qobjectuniqueptr.h"
 
 #include <QList>
 #include <QPoint>
-#include <qobjectuniqueptr.h>
 
 class QgsRubberBand;
 class QgsSnapIndicator;

@@ -22,9 +22,9 @@
 #include "qgsgeometry.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgspointlocator.h"
+#include "qobjectuniqueptr.h"
 
 #include <QPointer>
-#include <qobjectuniqueptr.h>
 
 class QRubberBand;
 

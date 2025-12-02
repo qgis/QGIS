@@ -18,8 +18,8 @@
 #ifndef QGSPROPERTYASSISTANTWIDGET_H
 #define QGSPROPERTYASSISTANTWIDGET_H
 
-#include "ui_qgspropertycolorassistantwidget.h"
 #include "ui_qgspropertysizeassistantwidget.h"
+#include "ui_qgspropertycolorassistantwidget.h"
 #include "ui_qgspropertygenericnumericassistantwidget.h"
 #include "ui_qgspropertyassistantwidgetbase.h"
 

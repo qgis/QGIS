@@ -20,8 +20,7 @@
 
 #include "qgis_app.h"
 #include "qgsmaptoollabel.h"
-
-#include <qobjectuniqueptr.h>
+#include "qobjectuniqueptr.h"
 
 class QgsPointRotationItem;
 

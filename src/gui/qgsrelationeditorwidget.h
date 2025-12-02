@@ -24,12 +24,12 @@
 #include "qgsdualview.h"
 #include "qgsrelation.h"
 #include "qgsvectorlayerselectionmanager.h"
+#include "qobjectuniqueptr.h"
 
 #include <QButtonGroup>
 #include <QGridLayout>
 #include <QToolButton>
 #include <QWidget>
-#include <qobjectuniqueptr.h>
 
 class QTreeWidget;
 class QTreeWidgetItem;

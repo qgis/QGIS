@@ -23,13 +23,13 @@
 #include "qgsdockwidget.h"
 #include "qgselevationprofilelayertreeview.h"
 #include "qgsgeometry.h"
+#include "qobjectuniqueptr.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
 #include <QTimer>
 #include <QWidgetAction>
 #include <qmenu.h>
-#include <qobjectuniqueptr.h>
 
 class QgsElevationProfile;
 class QgsDockableWidgetHelper;
