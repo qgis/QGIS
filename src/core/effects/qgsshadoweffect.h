@@ -37,8 +37,8 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     QgsShadowEffect();
 
-    Qgis::PaintEffectFlags flags() const override;
-    QVariantMap properties() const override;
+    [[nodiscard]] Qgis::PaintEffectFlags flags() const override;
+    [[nodiscard]] QVariantMap properties() const override;
     void readProperties( const QVariantMap &props ) override;
 
     /**
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see blurUnit
      * \see blurMapUnitScale
      */
-    double blurLevel() const { return mBlurLevel; }
+    [[nodiscard]] double blurLevel() const { return mBlurLevel; }
 
     /**
      * Sets the units used for the shadow blur level (radius).
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see blurMapUnitScale
      * \since QGIS 3.4.9
      */
-    Qgis::RenderUnit blurUnit() const { return mBlurUnit; }
+    [[nodiscard]] Qgis::RenderUnit blurUnit() const { return mBlurUnit; }
 
     /**
      * Sets the map unit scale used for the shadow blur strength (radius).
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see blurUnit
      * \since QGIS 3.4.9
      */
-    const QgsMapUnitScale &blurMapUnitScale() const { return mBlurMapUnitScale; }
+    [[nodiscard]] const QgsMapUnitScale &blurMapUnitScale() const { return mBlurMapUnitScale; }
 
     /**
      * Sets the angle for offsetting the shadow.
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see setOffsetAngle
      * \see offsetDistance
      */
-    int offsetAngle() const { return mOffsetAngle; }
+    [[nodiscard]] int offsetAngle() const { return mOffsetAngle; }
 
     /**
      * Sets the distance for offsetting the shadow.
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see offsetUnit
      * \see offsetMapUnitScale
      */
-    double offsetDistance() const { return mOffsetDist; }
+    [[nodiscard]] double offsetDistance() const { return mOffsetDist; }
 
     /**
      * Sets the units used for the shadow offset distance.
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see offsetDistance
      * \see offsetMapUnitScale
      */
-    Qgis::RenderUnit offsetUnit() const { return mOffsetUnit; }
+    [[nodiscard]] Qgis::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
     /**
      * Sets the map unit scale used for the shadow offset distance.
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \see offsetDistance
      * \see offsetUnit
      */
-    const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
+    [[nodiscard]] const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     /**
      * Sets the color for the shadow.
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \returns shadow color
      * \see setColor
      */
-    QColor color() const { return mColor; }
+    [[nodiscard]] QColor color() const { return mColor; }
 
     /**
      * Sets the \a opacity for the effect.
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * and 1 is fully opaque
      * \see setOpacity()
      */
-    double opacity() const { return mOpacity; }
+    [[nodiscard]] double opacity() const { return mOpacity; }
 
     /**
      * Sets the blend mode for the effect
@@ -215,11 +215,11 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * paint device
      * \see setBlendMode
      */
-    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+    [[nodiscard]] QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
   protected:
 
-    QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
+    [[nodiscard]] QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
     void draw( QgsRenderContext &context ) override;
 
     /**
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
      * \returns TRUE if shadow is to be drawn outside the picture, or FALSE
      * to draw shadow within the picture
      */
-    virtual bool exteriorShadow() const = 0;
+    [[nodiscard]] virtual bool exteriorShadow() const = 0;
 
     double mBlurLevel = 2.645;
     Qgis::RenderUnit mBlurUnit = Qgis::RenderUnit::Millimeters;
@@ -264,12 +264,12 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTOR
 
     QgsDropShadowEffect();
 
-    QString type() const override;
-    QgsDropShadowEffect *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsDropShadowEffect *clone() const override SIP_FACTORY;
 
   protected:
 
-    bool exteriorShadow() const override;
+    [[nodiscard]] bool exteriorShadow() const override;
 
 };
 
@@ -294,12 +294,12 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTO
 
     QgsInnerShadowEffect();
 
-    QString type() const override;
-    QgsInnerShadowEffect *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsInnerShadowEffect *clone() const override SIP_FACTORY;
 
   protected:
 
-    bool exteriorShadow() const override;
+    [[nodiscard]] bool exteriorShadow() const override;
 
 };
 

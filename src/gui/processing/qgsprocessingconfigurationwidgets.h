@@ -35,7 +35,7 @@ class QgsFilterAlgorithmConfigurationWidget : public QgsProcessingAlgorithmConfi
   public:
     QgsFilterAlgorithmConfigurationWidget( QWidget *parent = nullptr );
 
-    QVariantMap configuration() const override;
+    [[nodiscard]] QVariantMap configuration() const override;
 
     void setConfiguration( const QVariantMap &configuration ) override;
 
@@ -62,7 +62,7 @@ class QgsConditionalBranchAlgorithmConfigurationWidget : public QgsProcessingAlg
   public:
     QgsConditionalBranchAlgorithmConfigurationWidget( QWidget *parent = nullptr );
 
-    QVariantMap configuration() const override;
+    [[nodiscard]] QVariantMap configuration() const override;
 
     void setConfiguration( const QVariantMap &configuration ) override;
 

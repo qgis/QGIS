@@ -51,46 +51,46 @@ class _3D_EXPORT QgsAABB
     }
 
     //! Returns box width in X axis
-    float xExtent() const { return xMax - xMin; }
+    [[nodiscard]] float xExtent() const { return xMax - xMin; }
     //! Returns box width in Y axis
-    float yExtent() const { return yMax - yMin; }
+    [[nodiscard]] float yExtent() const { return yMax - yMin; }
     //! Returns box width in Z axis
-    float zExtent() const { return zMax - zMin; }
+    [[nodiscard]] float zExtent() const { return zMax - zMin; }
 
     //! Returns center in X axis
-    float xCenter() const { return ( xMax + xMin ) / 2; }
+    [[nodiscard]] float xCenter() const { return ( xMax + xMin ) / 2; }
     //! Returns center in Y axis
-    float yCenter() const { return ( yMax + yMin ) / 2; }
+    [[nodiscard]] float yCenter() const { return ( yMax + yMin ) / 2; }
     //! Returns center in Z axis
-    float zCenter() const { return ( zMax + zMin ) / 2; }
+    [[nodiscard]] float zCenter() const { return ( zMax + zMin ) / 2; }
 
     //! Returns coordinates of the center of the box
-    QVector3D center() const { return QVector3D( xCenter(), yCenter(), zCenter() ); }
+    [[nodiscard]] QVector3D center() const { return QVector3D( xCenter(), yCenter(), zCenter() ); }
     //! Returns corner of the box with minimal coordinates
-    QVector3D minimum() const { return QVector3D( xMin, yMin, zMin ); }
+    [[nodiscard]] QVector3D minimum() const { return QVector3D( xMin, yMin, zMin ); }
     //! Returns corner of the box with maximal coordinates
-    QVector3D maximum() const { return QVector3D( xMax, yMax, zMax ); }
+    [[nodiscard]] QVector3D maximum() const { return QVector3D( xMax, yMax, zMax ); }
 
     //! Determines whether the box intersects some other axis aligned box
-    bool intersects( const QgsAABB &other ) const;
+    [[nodiscard]] bool intersects( const QgsAABB &other ) const;
 
     //! Determines whether given coordinate is inside the box
-    bool intersects( float x, float y, float z ) const;
+    [[nodiscard]] bool intersects( float x, float y, float z ) const;
 
     //! Returns shortest distance from the box to a point
-    float distanceFromPoint( float x, float y, float z ) const;
+    [[nodiscard]] float distanceFromPoint( float x, float y, float z ) const;
 
     //! Returns shortest distance from the box to a point
-    float distanceFromPoint( QVector3D v ) const;
+    [[nodiscard]] float distanceFromPoint( QVector3D v ) const;
 
     //! Returns a list of pairs of vertices (useful for display of bounding boxes)
-    QList<QVector3D> verticesForLines() const;
+    [[nodiscard]] QList<QVector3D> verticesForLines() const;
 
     //! Returns text representation of the bounding box
-    QString toString() const;
+    [[nodiscard]] QString toString() const;
 
     //! Returns true if xExtent(), yExtent() and zExtent() are all zero, false otherwise
-    bool isEmpty() const
+    [[nodiscard]] bool isEmpty() const
     {
       return xMin == xMax && yMin == yMax && zMin == zMax;
     }

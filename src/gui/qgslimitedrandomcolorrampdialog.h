@@ -47,7 +47,7 @@ class GUI_EXPORT QgsLimitedRandomColorRampWidget : public QgsPanelWidget, privat
      * Returns a color ramp representing the current settings from the dialog.
      * \see setRamp()
      */
-    QgsLimitedRandomColorRamp ramp() const { return mRamp; }
+    [[nodiscard]] QgsLimitedRandomColorRamp ramp() const { return mRamp; }
 
     /**
      * Sets the color ramp to show in the dialog.
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
      * Returns a color ramp representing the current settings from the dialog.
      * \see setRamp()
      */
-    QgsLimitedRandomColorRamp ramp() const { return mWidget->ramp(); }
+    [[nodiscard]] QgsLimitedRandomColorRamp ramp() const { return mWidget->ramp(); }
 
     /**
      * Sets the color ramp to show in the dialog.
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
      * Returns a reference to the dialog's button box.
      * \since QGIS 3.10
      */
-    QDialogButtonBox *buttonBox() const;
+    [[nodiscard]] QDialogButtonBox *buttonBox() const;
 
   signals:
 

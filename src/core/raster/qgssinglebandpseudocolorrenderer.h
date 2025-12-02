@@ -44,8 +44,8 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & ) = delete;
 
-    QgsSingleBandPseudoColorRenderer *clone() const override SIP_FACTORY;
-    Qgis::RasterRendererFlags flags() const override;
+    [[nodiscard]] QgsSingleBandPseudoColorRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::RasterRendererFlags flags() const override;
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
@@ -57,9 +57,9 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     QgsRasterShader *shader() { return mShader.get(); }
 
     //! Returns the raster shader
-    const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
+    [[nodiscard]] const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
 
-    bool canCreateRasterAttributeTable( ) const override;
+    [[nodiscard]] bool canCreateRasterAttributeTable( ) const override;
 
     /**
      * Creates a color ramp shader
@@ -78,9 +78,9 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
                        const QgsRectangle &extent = QgsRectangle() );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
-    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
+    [[nodiscard]] QList< QPair< QString, QColor > > legendSymbologyItems() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
-    QList<int> usesBands() const override;
+    [[nodiscard]] QList<int> usesBands() const override;
     Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
     bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
@@ -100,11 +100,11 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
      */
     Q_DECL_DEPRECATED void setBand( int bandNo ) SIP_DEPRECATED;
 
-    int inputBand() const override;
+    [[nodiscard]] int inputBand() const override;
     bool setInputBand( int band ) override;
 
-    double classificationMin() const { return mClassificationMin; }
-    double classificationMax() const { return mClassificationMax; }
+    [[nodiscard]] double classificationMin() const { return mClassificationMin; }
+    [[nodiscard]] double classificationMax() const { return mClassificationMax; }
     void setClassificationMin( double min );
     void setClassificationMax( double max );
 

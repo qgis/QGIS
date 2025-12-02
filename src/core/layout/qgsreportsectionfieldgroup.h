@@ -53,9 +53,9 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      */
     QgsReportSectionFieldGroup( QgsAbstractReportSection *parentSection = nullptr );
 
-    QString type() const override { return QStringLiteral( "SectionFieldGroup" ); }
-    QString description() const override;
-    QIcon icon() const override;
+    [[nodiscard]] QString type() const override { return QStringLiteral( "SectionFieldGroup" ); }
+    [[nodiscard]] QString description() const override;
+    [[nodiscard]] QIcon icon() const override;
 
     /**
      * Returns the body layout for the section.
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      * \see body()
      * \see setBody()
      */
-    bool bodyEnabled() const { return mBodyEnabled; }
+    [[nodiscard]] bool bodyEnabled() const { return mBodyEnabled; }
 
     /**
      * Sets whether the body for the section is \a enabled.
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      * Returns the field associated with this section.
      * \see setField()
      */
-    QString field() const { return mField; }
+    [[nodiscard]] QString field() const { return mField; }
 
     /**
      * Sets the \a field associated with this section.
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      * or FALSE for descending sort.
      * \see setSortAscending()
      */
-    bool sortAscending() const;
+    [[nodiscard]] bool sortAscending() const;
 
     /**
      * Sets whether the field values should be sorted ascending. Set to TRUE to sort
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      * Returns the header visibility mode.
      * \see setHeaderVisibility()
      */
-    SectionVisibility headerVisibility() const { return mHeaderVisibility; }
+    [[nodiscard]] SectionVisibility headerVisibility() const { return mHeaderVisibility; }
 
     /**
      * Sets the visibility mode for the header.
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      * Returns the footer visibility mode.
      * \see setFooterVisibility()
      */
-    SectionVisibility footerVisibility() const { return mFooterVisibility; }
+    [[nodiscard]] SectionVisibility footerVisibility() const { return mFooterVisibility; }
 
     /**
      * Sets the visibility mode for the footer.
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      */
     void setFooterVisibility( SectionVisibility visibility ) { mFooterVisibility = visibility; }
 
-    QgsReportSectionFieldGroup *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsReportSectionFieldGroup *clone() const override SIP_FACTORY;
     bool beginRender() override;
     bool prepareHeader() override;
     bool prepareFooter() override;
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     bool mBodyEnabled = false;
     std::unique_ptr< QgsLayout > mBody;
 
-    QgsFeatureRequest buildFeatureRequest() const;
+    [[nodiscard]] QgsFeatureRequest buildFeatureRequest() const;
 
     QgsFeature getNextFeature();
     void updateChildContexts( const QgsFeature &feature );

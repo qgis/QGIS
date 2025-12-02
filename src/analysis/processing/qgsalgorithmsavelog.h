@@ -34,15 +34,15 @@ class QgsSaveLogToFileAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsSaveLogToFileAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    Qgis::ProcessingAlgorithmFlags flags() const override;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsSaveLogToFileAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsSaveLogToFileAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;

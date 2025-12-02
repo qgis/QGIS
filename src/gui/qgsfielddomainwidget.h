@@ -65,12 +65,12 @@ class GUI_EXPORT QgsAbstractFieldDomainWidget : public QWidget
      *
      * \see setFieldDomain()
      */
-    virtual QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const = 0 SIP_FACTORY;
 
     /**
      * Returns TRUE if the widget currently represents a valid field domain configuration.
      */
-    virtual bool isValid() const = 0;
+    [[nodiscard]] virtual bool isValid() const = 0;
 
   signals:
 
@@ -100,8 +100,8 @@ class GUI_EXPORT QgsRangeDomainWidget : public QgsAbstractFieldDomainWidget, pri
     QgsRangeDomainWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void setFieldDomain( const QgsFieldDomain *domain ) override;
-    QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
-    bool isValid() const override;
+    [[nodiscard]] QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
+    [[nodiscard]] bool isValid() const override;
 };
 
 /**
@@ -124,8 +124,8 @@ class GUI_EXPORT QgsGlobDomainWidget : public QgsAbstractFieldDomainWidget, priv
     QgsGlobDomainWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void setFieldDomain( const QgsFieldDomain *domain ) override;
-    QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
-    bool isValid() const override;
+    [[nodiscard]] QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
+    [[nodiscard]] bool isValid() const override;
 };
 
 /**
@@ -145,12 +145,12 @@ class GUI_EXPORT QgsCodedValueTableModel : public QAbstractTableModel
      */
     QgsCodedValueTableModel( QObject *parent );
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    [[nodiscard]] QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    [[nodiscard]] Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    [[nodiscard]] QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsCodedValueTableModel : public QAbstractTableModel
      *
      * \see setValues()
      */
-    QList<QgsCodedValue> values() const { return mValues; }
+    [[nodiscard]] QList<QgsCodedValue> values() const { return mValues; }
 
   private:
     QList<QgsCodedValue> mValues;
@@ -193,8 +193,8 @@ class GUI_EXPORT QgsCodedFieldDomainWidget : public QgsAbstractFieldDomainWidget
     QgsCodedFieldDomainWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void setFieldDomain( const QgsFieldDomain *domain ) override;
-    QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
-    bool isValid() const override;
+    [[nodiscard]] QgsFieldDomain *createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const override SIP_FACTORY;
+    [[nodiscard]] bool isValid() const override;
 
   private:
     QgsCodedValueTableModel *mModel = nullptr;
@@ -231,14 +231,14 @@ class GUI_EXPORT QgsFieldDomainWidget : public QWidget, private Ui_QgsFieldDomai
      *
      * \see setFieldDomain()
      */
-    QgsFieldDomain *createFieldDomain() const SIP_FACTORY;
+    [[nodiscard]] QgsFieldDomain *createFieldDomain() const SIP_FACTORY;
 
     /**
      * Returns TRUE if the widget currently represents a valid field domain configuration.
      *
      * \see validityChanged()
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Sets if name of the field domain is editable.
@@ -291,7 +291,7 @@ class GUI_EXPORT QgsFieldDomainDialog : public QDialog
      *
      * \see setFieldDomain()
      */
-    QgsFieldDomain *createFieldDomain() const SIP_FACTORY;
+    [[nodiscard]] QgsFieldDomain *createFieldDomain() const SIP_FACTORY;
 
     /**
      * Sets if name of the field domain is editable

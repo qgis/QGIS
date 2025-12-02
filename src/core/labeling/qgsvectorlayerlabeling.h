@@ -58,10 +58,10 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     virtual ~QgsAbstractVectorLayerLabeling() = default;
 
     //! Unique type string of the labeling configuration implementation
-    virtual QString type() const = 0;
+    [[nodiscard]] virtual QString type() const = 0;
 
     //! Returns a new copy of the object
-    virtual QgsAbstractVectorLayerLabeling *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractVectorLayerLabeling *clone() const = 0 SIP_FACTORY;
 
     /**
      * Factory for label provider implementation
@@ -73,13 +73,13 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
 
     //! Gets list of sub-providers within the layer's labeling.
-    virtual QStringList subProviders() const { return QStringList( QString() ); }
+    [[nodiscard]] virtual QStringList subProviders() const { return QStringList( QString() ); }
 
     /**
      * Gets associated label settings. In case of multiple sub-providers with different settings,
      * they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
      */
-    virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
+    [[nodiscard]] virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
 
     /**
      * Set pal settings for a specific provider (takes ownership).
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      * modes, which could prevent it being used as an isolated cached image
      * or exported to a vector format.
      */
-    virtual bool requiresAdvancedEffects() const = 0;
+    [[nodiscard]] virtual bool requiresAdvancedEffects() const = 0;
 
     /**
      * Returns TRUE the labeling requires a non-default composition mode.
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      *
      * \since QGIS 3.44
      */
-    virtual bool hasNonDefaultCompositionMode() const = 0;
+    [[nodiscard]] virtual bool hasNonDefaultCompositionMode() const = 0;
 
     /**
      * Multiply opacity by \a opacityFactor.
@@ -200,12 +200,12 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     //! Constructs simple labeling configuration with given initial settings
     explicit QgsVectorLayerSimpleLabeling( const QgsPalLayerSettings &settings );
 
-    QString type() const override;
-    QgsAbstractVectorLayerLabeling *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsAbstractVectorLayerLabeling *clone() const override SIP_FACTORY;
     //! \note not available in Python bindings
     QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+    [[nodiscard]] QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
@@ -217,8 +217,8 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
      */
     void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
 
-    bool requiresAdvancedEffects() const override;
-    bool hasNonDefaultCompositionMode() const override;
+    [[nodiscard]] bool requiresAdvancedEffects() const override;
+    [[nodiscard]] bool hasNonDefaultCompositionMode() const override;
     Q_DECL_DEPRECATED void toSld( QDomNode &parent, const QVariantMap &props ) const override SIP_DEPRECATED;
     bool toSld( QDomNode &parent, QgsSldExportContext &context ) const override;
     void multiplyOpacity( double opacityFactor ) override;

@@ -120,7 +120,7 @@ class CORE_EXPORT QgsArrowInferSchemaOptions
      * If empty, the geometry column should be derived from the layer or be named
      * geometry if the layer does not declare a geometry column name.
      */
-    QString geometryColumnName() const;
+    [[nodiscard]] QString geometryColumnName() const;
 
   private:
     QString mGeometryColumnName;
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsArrowSchema
     struct ArrowSchema *schema();
 
     //! Access the underlying ArrowSchema immutably from C++
-    const struct ArrowSchema *schema() const;
+    [[nodiscard]] const struct ArrowSchema *schema() const;
 #endif
 
     /**
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsArrowSchema
      *
      * \warning This is intended for advanced usage and may cause a crash if used incorrectly.
      */
-    unsigned long long cSchemaAddress() const;
+    [[nodiscard]] unsigned long long cSchemaAddress() const;
 
     /**
      * Export this array to the address of an empty ArrowSchema for export across boundaries
@@ -177,14 +177,14 @@ class CORE_EXPORT QgsArrowSchema
     void exportToAddress( unsigned long long otherAddress );
 
     //! Returns TRUE if this wrapper object holds a valid ArrowSchema
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Returns the index of the column in this schema that should be populated with a feature geometry
      *
      * Returns -1 if this value has not been specified.
      */
-    int geometryColumnIndex() const;
+    [[nodiscard]] int geometryColumnIndex() const;
 
     //! Set the index of the column in this schema that should be populated with a feature geometry
     void setGeometryColumnIndex( int geometryColumnIndex );
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsArrowArray
     struct ArrowArray *array();
 
     //! Access the underlying ArrowArray immutably from C++
-    const struct ArrowArray *array() const;
+    [[nodiscard]] const struct ArrowArray *array() const;
 #endif
 
     /**
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsArrowArray
      *
      * \warning This is intended for advanced usage and may cause a crash if used incorrectly.
      */
-    unsigned long long cArrayAddress() const;
+    [[nodiscard]] unsigned long long cArrayAddress() const;
 
     /**
      * Export this array to the address of an empty ArrowArray for export across boundaries
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsArrowArray
     void exportToAddress( unsigned long long otherAddress );
 
     //! Returns TRUE if this wrapper object holds a valid ArrowArray
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
   private:
     struct ArrowArray mArray {};

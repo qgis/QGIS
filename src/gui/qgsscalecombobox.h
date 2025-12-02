@@ -56,7 +56,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      * Returns the selected scale as a string, e.g. "1:150".
      * \see setScaleString()
      */
-    QString scaleString() const;
+    [[nodiscard]] QString scaleString() const;
 
     /**
      * Set the selected scale from a \a string, e.g. "1:150".
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see setScale()
      */
-    double scale() const;
+    [[nodiscard]] double scale() const;
 
     /**
      * Returns TRUE if the combo box is currently set to a "null" value.
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      * \see setNull()
      * \since QGIS 3.8
      */
-    bool isNull() const;
+    [[nodiscard]] bool isNull() const;
 
     /**
      * Returns the minimum scale, or 0 if no minimum scale set.
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      * Any scale lower than the minimum scale will automatically be converted to the minimum scale.
      * Except for 0 which is always allowed.
      */
-    double minScale() const { return mMinScale; }
+    [[nodiscard]] double minScale() const { return mMinScale; }
 
     /**
      * Helper function to convert a \a scale double to scale string.
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      * \see setNull()
      * \since QGIS 3.8
      */
-    bool allowNull() const;
+    [[nodiscard]] bool allowNull() const;
 
     /**
      * Sets the list of predefined \a scales to show in the combobox. List elements
@@ -142,7 +142,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      * \see setRatioMode()
      * \since QGIS 4.0
      */
-    QgsScaleComboBox::RatioMode ratioMode() const;
+    [[nodiscard]] QgsScaleComboBox::RatioMode ratioMode() const;
 
   signals:
 

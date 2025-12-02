@@ -102,11 +102,11 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
 
-    QString description() const override;
-    QString id() const override;
-    QList<Qgis::GeometryType> compatibleGeometryTypes() const override;
-    QgsGeometryCheck::Flags flags() const override;
-    QgsGeometryCheck::CheckType checkType() const override;
+    [[nodiscard]] QString description() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QList<Qgis::GeometryType> compatibleGeometryTypes() const override;
+    [[nodiscard]] QgsGeometryCheck::Flags flags() const override;
+    [[nodiscard]] QgsGeometryCheck::CheckType checkType() const override;
 
     ///@cond private
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;

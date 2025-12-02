@@ -45,7 +45,7 @@ class GUI_EXPORT QgsNewAuxiliaryFieldDialog : public QDialog, private Ui::QgsNew
     /**
      * Returns the underlying property definition.
      */
-    QgsPropertyDefinition propertyDefinition() const;
+    [[nodiscard]] QgsPropertyDefinition propertyDefinition() const;
 
   protected:
     void accept() override;

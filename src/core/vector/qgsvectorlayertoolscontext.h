@@ -50,7 +50,7 @@ class CORE_EXPORT QgsVectorLayerToolsContext
      * \see setExpressionContext()
      * \see additionalExpressionContextScope()
      */
-    QgsExpressionContext *expressionContext() const;
+    [[nodiscard]] QgsExpressionContext *expressionContext() const;
 
     /**
      * Sets an additional expression context scope to be made available when calculating expressions.
@@ -63,12 +63,12 @@ class CORE_EXPORT QgsVectorLayerToolsContext
      * Returns an additional expression context scope to be made available when calculating expressions.
      * \see setAdditionalExpressionContextScope()
      */
-    const QgsExpressionContextScope *additionalExpressionContextScope() const;
+    [[nodiscard]] const QgsExpressionContextScope *additionalExpressionContextScope() const;
 
     /**
      * Returns the widget which should be parented to tools dialogues.
      */
-    QWidget *parentWidget() const { return mParentWidget; }
+    [[nodiscard]] QWidget *parentWidget() const { return mParentWidget; }
 
     /**
      * Sets the widget which should be parented to tools' dialogues.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsVectorLayerToolsContext
     /**
      * Returns whether tools' dialogues should be modal.
      */
-    bool showModal() const { return mShowModal; }
+    [[nodiscard]] bool showModal() const { return mShowModal; }
 
     /**
      * Sets whether tools' dialogues should be modal.
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsVectorLayerToolsContext
     /**
      * Returns whether the parent widget should be hidden when showing tools' dialogues.
      */
-    bool hideParent() const { return mHideParent; }
+    [[nodiscard]] bool hideParent() const { return mHideParent; }
 
     /**
      * Sets whether the parent widget should be hidden when showing tools' dialogues.

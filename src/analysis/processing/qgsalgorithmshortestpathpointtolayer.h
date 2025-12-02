@@ -33,13 +33,13 @@ class QgsShortestPathPointToLayerAlgorithm : public QgsNetworkAnalysisAlgorithmB
   public:
     QgsShortestPathPointToLayerAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
-    QgsShortestPathPointToLayerAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
+    [[nodiscard]] QgsShortestPathPointToLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

@@ -49,7 +49,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     QgsProcessingModelChildAlgorithm( const QgsProcessingModelChildAlgorithm &other );
     QgsProcessingModelChildAlgorithm &operator=( const QgsProcessingModelChildAlgorithm &other );
 
-    QgsProcessingModelChildAlgorithm *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsProcessingModelChildAlgorithm *clone() const override SIP_FACTORY;
 
     /**
      * Copies all non-specific definition properties from the the matching component from a \a model.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * \see setChildId()
      * \see generateChildId()
      */
-    QString childId() const { return mId; }
+    [[nodiscard]] QString childId() const { return mId; }
 
     /**
      * Sets the child algorithm's unique \a id string, used the identify
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * \see algorithm()
      * \see setAlgorithmId()
      */
-    QString algorithmId() const { return mAlgorithmId; }
+    [[nodiscard]] QString algorithmId() const { return mAlgorithmId; }
 
     /**
      * Sets the underlying child algorithm's ID. This
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      *
      * \see setConfiguration()
      */
-    QVariantMap configuration() const;
+    [[nodiscard]] QVariantMap configuration() const;
 
     /**
      * Sets the child algorithm's \a configuration map.
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * \see reattach()
      * \see algorithmId()
      */
-    const QgsProcessingAlgorithm *algorithm() const;
+    [[nodiscard]] const QgsProcessingAlgorithm *algorithm() const;
 
     /**
      * Returns a map of parameter sources. The keys are the child algorithm
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * \see setParameterSources()
      * \see addParameterSources()
      */
-    QMap< QString, QList< QgsProcessingModelChildParameterSource > > parameterSources() const { return mParams; }
+    [[nodiscard]] QMap< QString, QList< QgsProcessingModelChildParameterSource > > parameterSources() const { return mParams; }
 
     /**
      * Sets the map of parameter \a sources. The keys are the child algorithm
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * Returns TRUE if the child algorithm is active.
      * \see setActive()
      */
-    bool isActive() const { return mActive; }
+    [[nodiscard]] bool isActive() const { return mActive; }
 
     /**
      * Sets whether the child algorithm is active.
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * algorithm is dependent.
      * \see setDependencies()
      */
-    QList< QgsProcessingModelChildDependency > dependencies() const { return mDependencies; }
+    [[nodiscard]] QList< QgsProcessingModelChildDependency > dependencies() const { return mDependencies; }
 
     /**
      * Sets the list of child algorithms from the parent model on which this
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * \see setModelOutputs()
      * \see modelOutput()
      */
-    QMap<QString, QgsProcessingModelOutput> modelOutputs() const { return mModelOutputs; }
+    [[nodiscard]] QMap<QString, QgsProcessingModelOutput> modelOutputs() const { return mModelOutputs; }
 
     /**
      * Returns the final model output with matching \a name. If no output
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      * Saves this child to a QVariant.
      * \see loadVariant()
      */
-    QVariant toVariant() const;
+    [[nodiscard]] QVariant toVariant() const;
 
     /**
      * Loads this child from a QVariant.
@@ -267,10 +267,10 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
      *
      * The \a friendlyChildNames argument gives a map of child id to a friendly algorithm name, to be used in the code to identify that algorithm instead of the raw child id.
      */
-    QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize,
-                              const QMap<QString, QString> &friendlyChildNames, const QMap<QString, QString> &friendlyOutputNames ) const;
+    [[nodiscard]] QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize,
+                                            const QMap<QString, QString> &friendlyChildNames, const QMap<QString, QString> &friendlyOutputNames ) const;
 
-    SIP_SKIP const QgsProcessingModelComment *comment() const override { return &mComment; }
+    SIP_SKIP [[nodiscard]] const QgsProcessingModelComment *comment() const override { return &mComment; }
     QgsProcessingModelComment *comment() override { return &mComment; }
     void setComment( const QgsProcessingModelComment &comment ) override { mComment = comment; }
 

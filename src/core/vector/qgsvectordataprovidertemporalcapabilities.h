@@ -50,7 +50,7 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
      *
      *\see setMode()
     */
-    Qgis::VectorDataProviderTemporalMode mode() const;
+    [[nodiscard]] Qgis::VectorDataProviderTemporalMode mode() const;
 
     /**
      * Sets the temporal properties \a mode.
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
      *
      * \see setAvailableTemporalRange()
     */
-    const QgsDateTimeRange &availableTemporalRange() const;
+    [[nodiscard]] const QgsDateTimeRange &availableTemporalRange() const;
 
     /**
      * Returns the name of the start datetime field, which contains the start time for the feature's time spans.
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
      * \see setStartField()
      * \see endField()
      */
-    QString startField() const;
+    [[nodiscard]] QString startField() const;
 
     /**
      * Sets the name of the start datetime \a field, which stores the start time for the feature's time spans.
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
      * \see setEndField()
      * \see startField()
      */
-    QString endField() const;
+    [[nodiscard]] QString endField() const;
 
     /**
      * Sets the name of the end datetime \a field, which stores the end time for the feature's time spans.

@@ -64,7 +64,7 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
      * \see setTextFormat()
      * \since QGIS 3.16
      */
-    QgsTextFormat textFormat() const;
+    [[nodiscard]] QgsTextFormat textFormat() const;
 
     /**
      * Sets the cell background \a color to show in the widget.
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   signals:
 

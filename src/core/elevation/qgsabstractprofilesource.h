@@ -56,7 +56,7 @@ class CORE_EXPORT QgsAbstractProfileSource
      *
      * \since QGIS 4.0.0
      */
-    virtual QString profileSourceId() const { return mSourceId; }; // TODO QGIS 5.0: Make it pure virtual
+    [[nodiscard]] virtual QString profileSourceId() const { return mSourceId; }; // TODO QGIS 5.0: Make it pure virtual
 
     /**
      * Returns a name for displaying this profile source in the elevation profile layer tree.
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsAbstractProfileSource
      *
      * \since QGIS 4.0.0
      */
-    virtual QString profileSourceName() const { return QString(); }; // TODO QGIS 5.0: Make it pure virtual
+    [[nodiscard]] virtual QString profileSourceName() const { return QString(); }; // TODO QGIS 5.0: Make it pure virtual
 
   private:
     QString mSourceId = QUuid::createUuid().toString(); // Support legacy sources with a uuid

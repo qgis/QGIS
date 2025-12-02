@@ -71,16 +71,16 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     ~QgsEffectStack() override;
 
-    Qgis::PaintEffectFlags flags() const override;
-    QString type() const override { return QStringLiteral( "effectStack" ); }
-    QgsEffectStack *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::PaintEffectFlags flags() const override;
+    [[nodiscard]] QString type() const override { return QStringLiteral( "effectStack" ); }
+    [[nodiscard]] QgsEffectStack *clone() const override SIP_FACTORY;
     bool saveProperties( QDomDocument &doc, QDomElement &element ) const override;
     bool readProperties( const QDomElement &element ) override;
 
     /**
      * Unused for QgsEffectStack, will always return an empty string map
      */
-    QVariantMap properties() const override;
+    [[nodiscard]] QVariantMap properties() const override;
 
     /**
      * Unused for QgsEffectStack, props parameter will be ignored
@@ -129,14 +129,14 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
      * Returns count of effects contained by the stack
      * \returns count of effects
      */
-    int count() const { return mEffectList.count(); }
+    [[nodiscard]] int count() const { return mEffectList.count(); }
 
     /**
      * Returns a pointer to the effect at a specified index within the stack
      * \param index position of effect to return
      * \returns QgsPaintEffect at specified position
      */
-    QgsPaintEffect *effect( int index ) const;
+    [[nodiscard]] QgsPaintEffect *effect( int index ) const;
 
     QgsEffectStack &operator=( const QgsEffectStack &rhs );
 

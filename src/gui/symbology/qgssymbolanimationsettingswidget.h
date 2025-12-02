@@ -51,7 +51,7 @@ class GUI_EXPORT QgsSymbolAnimationSettingsWidget : public QgsPanelWidget, priva
      *
      * \see setAnimationSettings()
      */
-    QgsSymbolAnimationSettings animationSettings() const;
+    [[nodiscard]] QgsSymbolAnimationSettings animationSettings() const;
 
   private:
     bool mBlockUpdates = false;
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsSymbolAnimationSettingsDialog : public QDialog
      *
      * \see setAnimationSettings()
      */
-    QgsSymbolAnimationSettings animationSettings() const;
+    [[nodiscard]] QgsSymbolAnimationSettings animationSettings() const;
 
   private:
     QgsSymbolAnimationSettingsWidget *mWidget = nullptr;

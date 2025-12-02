@@ -80,7 +80,7 @@ class CORE_EXPORT QgsTextBlockFormat
      * \see setHasHorizontalAlignmentSet()
      * \see horizontalAlignment()
      */
-    bool hasHorizontalAlignmentSet() const { return mHasHorizontalAlignSet; }
+    [[nodiscard]] bool hasHorizontalAlignmentSet() const { return mHasHorizontalAlignSet; }
 
     /**
      * Sets whether the format has an explicit horizontal alignment \a set.
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsTextBlockFormat
      * \see hasHorizontalAlignmentSet()
      * \see setHorizontalAlignment()
      */
-    Qgis::TextHorizontalAlignment horizontalAlignment() const { return mHorizontalAlign; }
+    [[nodiscard]] Qgis::TextHorizontalAlignment horizontalAlignment() const { return mHorizontalAlign; }
 
     /**
      * Sets the format horizontal \a alignment.
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsTextBlockFormat
      *
      * \since QGIS 3.42
      */
-    double lineHeight() const;
+    [[nodiscard]] double lineHeight() const;
 
     /**
      * Sets the font line \a height, in points.
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsTextBlockFormat
      *
      * \since QGIS 3.42
      */
-    double lineHeightPercentage() const;
+    [[nodiscard]] double lineHeightPercentage() const;
 
     /**
      * Sets the line height percentage \a height (as fraction of font size from 0.0 to 1.0).
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsTextBlockFormat
      * \see setMargins()
      * \since QGIS 3.42
      */
-    QgsMargins margins() const { return mMargins; }
+    [[nodiscard]] QgsMargins margins() const { return mMargins; }
 
     /**
      * Sets the block margins, in points.
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsTextBlockFormat
      * \see backgroundBrush()
      * \since QGIS 3.42
      */
-    bool hasBackground() const;
+    [[nodiscard]] bool hasBackground() const;
 
     /**
      * Returns the brush used for rendering the background of the block.
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsTextBlockFormat
      * \see setBackgroundBrush()
      * \since QGIS 3.42
      */
-    QBrush backgroundBrush() const;
+    [[nodiscard]] QBrush backgroundBrush() const;
 
     /**
      * Sets the \a brush used for rendering the background of the block.
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsTextBlockFormat
      * \see setBackgroundImagePath()
      * \since QGIS 3.42
      */
-    QString backgroundImagePath() const;
+    [[nodiscard]] QString backgroundImagePath() const;
 
     /**
      * Sets the \a path for the image to be used for rendering the background of the fragment.

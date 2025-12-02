@@ -48,8 +48,8 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     //! QgsSingleBandGrayRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandGrayRenderer &operator=( const QgsSingleBandGrayRenderer & ) = delete;
 
-    QgsSingleBandGrayRenderer *clone() const override SIP_FACTORY;
-    Qgis::RasterRendererFlags flags() const override;
+    [[nodiscard]] QgsSingleBandGrayRenderer *clone() const override SIP_FACTORY;
+    [[nodiscard]] Qgis::RasterRendererFlags flags() const override;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
@@ -65,22 +65,22 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
      */
     Q_DECL_DEPRECATED void setGrayBand( int band ) SIP_DEPRECATED;
 
-    int inputBand() const override;
+    [[nodiscard]] int inputBand() const override;
     bool setInputBand( int band ) override;
 
-    const QgsContrastEnhancement *contrastEnhancement() const { return mContrastEnhancement.get(); }
+    [[nodiscard]] const QgsContrastEnhancement *contrastEnhancement() const { return mContrastEnhancement.get(); }
     //! Takes ownership
     void setContrastEnhancement( QgsContrastEnhancement *ce SIP_TRANSFER );
 
     void setGradient( Gradient gradient ) { mGradient = gradient; }
-    Gradient gradient() const { return mGradient; }
+    [[nodiscard]] Gradient gradient() const { return mGradient; }
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
+    [[nodiscard]] QList< QPair< QString, QColor > > legendSymbologyItems() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
 
-    QList<int> usesBands() const override;
+    [[nodiscard]] QList<int> usesBands() const override;
 
     Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
     bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
      * \see setLegendSettings()
      * \since QGIS 3.18
      */
-    const QgsColorRampLegendNodeSettings *legendSettings() const;
+    [[nodiscard]] const QgsColorRampLegendNodeSettings *legendSettings() const;
 
     /**
      * Sets the color ramp shader legend \a settings.

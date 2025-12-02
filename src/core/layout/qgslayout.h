@@ -86,7 +86,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Creates a clone of the layout. Ownership of the return layout
      * is transferred to the caller.
      */
-    QgsLayout *clone() const SIP_FACTORY;
+    [[nodiscard]] QgsLayout *clone() const SIP_FACTORY;
 
     /**
      * Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * relations and various other bits. It is never NULLPTR.
      *
      */
-    QgsProject *project() const;
+    [[nodiscard]] QgsProject *project() const;
 
     /**
      * Returns the items model attached to the layout.
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see multiFrameByUuid()
      * \see itemById()
      */
-    QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
+    [[nodiscard]] QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 
     /**
      * Returns the layout item with matching template \a uuid unique identifier, or NULLPTR
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see multiFrameByUuid()
      * \see itemById()
      */
-    QgsLayoutItem *itemByTemplateUuid( const QString &uuid ) const;
+    [[nodiscard]] QgsLayoutItem *itemByTemplateUuid( const QString &uuid ) const;
 
     /**
      * Returns a layout item given its \a id.
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * item found.
      * \see itemByUuid()
      */
-    QgsLayoutItem *itemById( const QString &id ) const;
+    [[nodiscard]] QgsLayoutItem *itemById( const QString &id ) const;
 
     /**
      * Returns the layout multiframe with matching \a uuid unique identifier, or NULLPTR
@@ -297,14 +297,14 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      *
      * \see itemByUuid()
      */
-    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
+    [[nodiscard]] QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 
     /**
      * Returns the topmost layout item at a specified \a position. Ignores paper items.
      * If \a ignoreLocked is set to TRUE any locked items will be ignored.
      * Since QGIS 3.34 the \a searchTolerance parameter was added, which can be used to specify a search tolerance in layout units.
      */
-    QgsLayoutItem *layoutItemAt( QPointF position, bool ignoreLocked = false, double searchTolerance = 0 ) const;
+    [[nodiscard]] QgsLayoutItem *layoutItemAt( QPointF position, bool ignoreLocked = false, double searchTolerance = 0 ) const;
 
     /**
      * Returns the topmost layout item at a specified \a position which is below a specified \a item. Ignores paper items.
@@ -326,7 +326,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see setUnits()
      * \see convertToLayoutUnits()
     */
-    Qgis::LayoutUnit units() const { return mUnits; }
+    [[nodiscard]] Qgis::LayoutUnit units() const { return mUnits; }
 
     /**
      * Converts a measurement into the layout's native units.
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertFromLayoutUnits()
      * \see units()
     */
-    double convertToLayoutUnits( QgsLayoutMeasurement measurement ) const;
+    [[nodiscard]] double convertToLayoutUnits( QgsLayoutMeasurement measurement ) const;
 
     /**
      * Converts a size into the layout's native units.
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertFromLayoutUnits()
      * \see units()
     */
-    QSizeF convertToLayoutUnits( const QgsLayoutSize &size ) const;
+    [[nodiscard]] QSizeF convertToLayoutUnits( const QgsLayoutSize &size ) const;
 
     /**
      * Converts a \a point into the layout's native units.
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertFromLayoutUnits()
      * \see units()
      */
-    QPointF convertToLayoutUnits( const QgsLayoutPoint &point ) const;
+    [[nodiscard]] QPointF convertToLayoutUnits( const QgsLayoutPoint &point ) const;
 
     /**
      * Converts a \a length measurement from the layout's native units to a specified target \a unit.
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertToLayoutUnits()
      * \see units()
     */
-    QgsLayoutMeasurement convertFromLayoutUnits( double length, Qgis::LayoutUnit unit ) const;
+    [[nodiscard]] QgsLayoutMeasurement convertFromLayoutUnits( double length, Qgis::LayoutUnit unit ) const;
 
     /**
      * Converts a \a size from the layout's native units to a specified target \a unit.
@@ -366,7 +366,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertToLayoutUnits()
      * \see units()
     */
-    QgsLayoutSize convertFromLayoutUnits( QSizeF size, Qgis::LayoutUnit unit ) const;
+    [[nodiscard]] QgsLayoutSize convertFromLayoutUnits( QSizeF size, Qgis::LayoutUnit unit ) const;
 
     /**
      * Converts a \a point from the layout's native units to a specified target \a unit.
@@ -374,7 +374,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertToLayoutUnits()
      * \see units()
     */
-    QgsLayoutPoint convertFromLayoutUnits( QPointF point, Qgis::LayoutUnit unit ) const;
+    [[nodiscard]] QgsLayoutPoint convertFromLayoutUnits( QPointF point, Qgis::LayoutUnit unit ) const;
 
     /**
      * Returns a reference to the layout's render context, which stores information relating to the
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns a reference to the layout's render context, which stores information relating to the
      * current rendering settings for the layout.
      */
-    SIP_SKIP const QgsLayoutRenderContext &renderContext() const;
+    SIP_SKIP [[nodiscard]] const QgsLayoutRenderContext &renderContext() const;
 
     /**
      * Returns a reference to the layout's report context, which stores information relating to the
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns a reference to the layout's report context, which stores information relating to the
      * current reporting context for the layout.
      */
-    SIP_SKIP const QgsLayoutReportContext &reportContext() const;
+    SIP_SKIP [[nodiscard]] const QgsLayoutReportContext &reportContext() const;
 
     /**
      * Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
@@ -410,7 +410,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
      * and snapping points to the nearest matching point.
      */
-    SIP_SKIP const QgsLayoutSnapper &snapper() const { return mSnapper; }
+    SIP_SKIP [[nodiscard]] const QgsLayoutSnapper &snapper() const { return mSnapper; }
 
     /**
      * Returns a reference to the layout's grid settings, which stores settings relating
@@ -422,7 +422,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns a reference to the layout's grid settings, which stores settings relating
      * to grid appearance, spacing and offsets.
      */
-    SIP_SKIP const QgsLayoutGridSettings &gridSettings() const { return mGridSettings; }
+    SIP_SKIP [[nodiscard]] const QgsLayoutGridSettings &gridSettings() const { return mGridSettings; }
 
     /**
      * Refreshes the layout when global layout related options change.
@@ -437,13 +437,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     /**
      * Returns a reference to the layout's guide collection, which manages page snap guides.
      */
-    SIP_SKIP const QgsLayoutGuideCollection &guides() const;
+    SIP_SKIP [[nodiscard]] const QgsLayoutGuideCollection &guides() const;
 
     /**
      * Creates an expression context relating to the layout's current state. The context includes
      * scopes for global, project, layout and layout context properties.
      */
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
     /**
      * Set a custom property for the layout.
@@ -464,7 +464,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see removeCustomProperty()
      * \see customProperties()
      */
-    QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+    [[nodiscard]] QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 
     /**
      * Remove a custom property from the layout.
@@ -481,7 +481,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see customProperty()
      * \see removeCustomProperty()
      */
-    QStringList customProperties() const;
+    [[nodiscard]] QStringList customProperties() const;
 
     /**
      * Returns the map item which will be used to generate corresponding world files when the
@@ -489,7 +489,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * map in the layout will be returned (or NULLPTR if there are no maps in the layout).
      * \see setReferenceMap()
      */
-    QgsLayoutItemMap *referenceMap() const;
+    [[nodiscard]] QgsLayoutItemMap *referenceMap() const;
 
     /**
      * Sets the \a map item which will be used to generate corresponding world files when the
@@ -508,7 +508,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns a pointer to the layout's page collection, which stores and manages
      * page items in the layout.
      */
-    SIP_SKIP const QgsLayoutPageCollection *pageCollection() const;
+    SIP_SKIP [[nodiscard]] const QgsLayoutPageCollection *pageCollection() const;
 
     /**
      * Calculates the bounds of all non-gui items in the layout. Ignores snap lines, mouse handles
@@ -519,7 +519,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      *
      * \see pageItemBounds()
      */
-    QRectF layoutBounds( bool ignorePages = false, double margin = 0.0 ) const;
+    [[nodiscard]] QRectF layoutBounds( bool ignorePages = false, double margin = 0.0 ) const;
 
     /**
      * Returns the bounding box of the items contained on a specified \a page.
@@ -531,7 +531,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      *
      * \see layoutBounds()
      */
-    QRectF pageItemBounds( int page, bool visibleOnly = false ) const;
+    [[nodiscard]] QRectF pageItemBounds( int page, bool visibleOnly = false ) const;
 
     /**
      * Adds an \a item to the layout. This should be called instead of the base class addItem()
@@ -565,14 +565,14 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see addMultiFrame()
      * \see removeMultiFrame()
      */
-    QList< QgsLayoutMultiFrame * > multiFrames() const;
+    [[nodiscard]] QList< QgsLayoutMultiFrame * > multiFrames() const;
 
     /**
      * Saves the layout as a template at the given file \a path.
      * Returns TRUE if save was successful.
      * \see loadFromTemplate()
      */
-    bool saveAsTemplate( const QString &path, const QgsReadWriteContext &context ) const;
+    [[nodiscard]] bool saveAsTemplate( const QString &path, const QgsReadWriteContext &context ) const;
 
     /**
      * Load a layout template \a document.
@@ -625,7 +625,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns a pointer to the layout's undo stack, which manages undo/redo states for the layout
      * and it's associated objects.
      */
-    SIP_SKIP const QgsLayoutUndoStack *undoStack() const;
+    SIP_SKIP [[nodiscard]] const QgsLayoutUndoStack *undoStack() const;
 
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = nullptr ) SIP_FACTORY override;
 
@@ -765,7 +765,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void deleteAndRemoveMultiFrames();
 
     //! Calculates the item minimum position from an XML element
-    QPointF minPointFromXml( const QDomElement &elem ) const;
+    [[nodiscard]] QPointF minPointFromXml( const QDomElement &elem ) const;
 
     QgsLayout( const QgsLayout & ) = delete;
     QgsLayout &operator=( const QgsLayout & ) = delete;

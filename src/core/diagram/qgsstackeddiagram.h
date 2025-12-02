@@ -39,7 +39,7 @@ class CORE_EXPORT QgsStackedDiagram : public QgsDiagram SIP_NODEFAULTCTORS
 
     QgsStackedDiagram();
 
-    QgsStackedDiagram *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsStackedDiagram *clone() const override SIP_FACTORY;
 
     /**
      * Calculates the position for the next subdiagram, updating the \a newPos object.
@@ -54,8 +54,8 @@ class CORE_EXPORT QgsStackedDiagram : public QgsDiagram SIP_NODEFAULTCTORS
 
     QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) override;
     QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) override;
-    double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const override;
-    QString diagramName() const override;
+    [[nodiscard]] double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const override;
+    [[nodiscard]] QString diagramName() const override;
 };
 
 #endif // QGSSTACKEDDIAGRAM_H

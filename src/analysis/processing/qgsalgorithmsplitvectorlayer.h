@@ -34,16 +34,16 @@ class QgsSplitVectorLayerAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsSplitVectorLayerAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSplitLayer.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSplitLayer.svg" ) ); }
-    QgsSplitVectorLayerAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSplitLayer.svg" ) ); }
+    [[nodiscard]] QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSplitLayer.svg" ) ); }
+    [[nodiscard]] QgsSplitVectorLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

@@ -63,7 +63,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
+    [[nodiscard]] const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
 
     /**
      * Sets the original value variable value for data defined symbology
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \returns opacity value between 0 (fully transparent) and 1 (fully opaque)
      * \see setOpacity()
      */
-    qreal opacity() const { return mOpacity; }
+    [[nodiscard]] qreal opacity() const { return mOpacity; }
 
     /**
      * Sets the \a opacity for the symbol.
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * Returns TRUE if symbols should be rendered using the selected symbol coloring and style.
      * \see setSelected()
      */
-    bool selected() const { return mSelected; }
+    [[nodiscard]] bool selected() const { return mSelected; }
 
     /**
      * Sets whether symbols should be rendered using the selected symbol coloring and style.
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * Returns the rendering hint flags for the symbol.
      * \see setRenderHints()
      */
-    Qgis::SymbolRenderHints renderHints() const { return mRenderHints; }
+    [[nodiscard]] Qgis::SymbolRenderHints renderHints() const { return mRenderHints; }
 
     /**
      * Returns TRUE if symbol must be rendered using vector methods, and optimisations
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      *
      * \since QGIS 3.40
      */
-    bool forceVectorRendering() const;
+    [[nodiscard]] bool forceVectorRendering() const;
 
     /**
      * Sets rendering hint flags for the symbol.
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     /**
      * Returns the current feature being rendered. This may be NULLPTR.
      */
-    const QgsFeature *feature() const { return mFeature; }
+    [[nodiscard]] const QgsFeature *feature() const { return mFeature; }
 
     /**
      * Sets the geometry type for the original feature geometry being rendered.
@@ -168,19 +168,19 @@ class CORE_EXPORT QgsSymbolRenderContext
      * (a closed buffer) vs a line feature (an unclosed offset line).
      * \see originalGeometryType()
      */
-    Qgis::GeometryType originalGeometryType() const { return mOriginalGeometryType; }
+    [[nodiscard]] Qgis::GeometryType originalGeometryType() const { return mOriginalGeometryType; }
 
     /**
      * Fields of the layer. Currently only available in startRender() calls
      * to allow symbols with data-defined properties prepare the expressions
      * (other times fields() returns an empty QgsFields object).
      */
-    QgsFields fields() const { return mFields; }
+    [[nodiscard]] QgsFields fields() const { return mFields; }
 
     /**
      * Part count of current geometry
      */
-    int geometryPartCount() const { return mGeometryPartCount; }
+    [[nodiscard]] int geometryPartCount() const { return mGeometryPartCount; }
 
     /**
      * Sets the part count of current geometry
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     /**
      * Part number of current geometry
      */
-    int geometryPartNum() const { return mGeometryPartNum; }
+    [[nodiscard]] int geometryPartNum() const { return mGeometryPartNum; }
 
     /**
      * Sets the part number of current geometry
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \see setPatchShape()
      * \since QGIS 3.14
      */
-    const QgsLegendPatchShape *patchShape() const;
+    [[nodiscard]] const QgsLegendPatchShape *patchShape() const;
 
     /**
      * Sets the symbol patch \a shape, to use if rendering symbol preview icons.

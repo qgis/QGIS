@@ -60,17 +60,17 @@ class SERVER_EXPORT QgsServerResponse
     /**
      * Returns the header value
      */
-    virtual QString header( const QString &key ) const = 0;
+    [[nodiscard]] virtual QString header( const QString &key ) const = 0;
 
     /**
      * Returns the header value
      */
-    virtual QMap<QString, QString> headers() const = 0;
+    [[nodiscard]] virtual QMap<QString, QString> headers() const = 0;
 
     /**
      * Returns TRUE if the headers have already been sent
      */
-    virtual bool headersSent() const = 0;
+    [[nodiscard]] virtual bool headersSent() const = 0;
 
 
     /**
@@ -82,7 +82,7 @@ class SERVER_EXPORT QgsServerResponse
     /**
      * Returns the http status code
      */
-    virtual int statusCode() const = 0;
+    [[nodiscard]] virtual int statusCode() const = 0;
 
     /**
      * Send error
@@ -181,7 +181,7 @@ class SERVER_EXPORT QgsServerResponse
      * Note that each call to 'flush' may empty the buffer and in case
      * of streaming process you may get partial content
      */
-    virtual QByteArray data() const = 0;
+    [[nodiscard]] virtual QByteArray data() const = 0;
 
     /**
      * Truncate data
@@ -194,7 +194,7 @@ class SERVER_EXPORT QgsServerResponse
      * Returns the socket feedback if any
      * \since QGIS 3.36
      */
-    virtual QgsFeedback *feedback() const;
+    [[nodiscard]] virtual QgsFeedback *feedback() const;
 };
 
 #endif

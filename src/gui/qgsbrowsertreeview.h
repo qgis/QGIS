@@ -61,7 +61,7 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
     void hideEvent( QHideEvent *e ) override;
 
     // returns true if at least one descendat is expanded, used in refresh
-    bool hasExpandedDescendant( const QModelIndex &index ) const;
+    [[nodiscard]] bool hasExpandedDescendant( const QModelIndex &index ) const;
 
     // Set section where to store settings (because we have 2 browser dock widgets)
     void setSettingsSection( const QString &section ) { mSettingsSection = section; }
@@ -99,7 +99,7 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
     void saveState();
     void restoreState();
 
-    QString expandedPathsKey() const;
+    [[nodiscard]] QString expandedPathsKey() const;
 
     // Get list of expanded items paths recursively
     QStringList expandedPathsList( const QModelIndex &index );

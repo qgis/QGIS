@@ -57,7 +57,7 @@ class GUI_EXPORT QgsScreenHelper : public QObject
      *
      * \see screenDpiChanged()
      */
-    double screenDpi() const { return mScreenDpi; }
+    [[nodiscard]] double screenDpi() const { return mScreenDpi; }
 
     /**
      * Returns the current screen available geometry in pixels.
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsScreenHelper : public QObject
      *
      * \see availableGeometryChanged()
      */
-    QRect availableGeometry() const { return mAvailableGeometry; }
+    [[nodiscard]] QRect availableGeometry() const { return mAvailableGeometry; }
 
   signals:
 

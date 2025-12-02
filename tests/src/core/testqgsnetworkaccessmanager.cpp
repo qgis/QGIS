@@ -1132,7 +1132,7 @@ class FunctionThread : public QThread
   public:
     FunctionThread( const std::function<bool()> &f )
       : m_f( f ), m_result( false ) {}
-    bool getResult() const
+    [[nodiscard]] bool getResult() const
     {
       return m_result;
     }

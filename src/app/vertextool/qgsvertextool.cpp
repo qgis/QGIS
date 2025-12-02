@@ -229,8 +229,8 @@ class SelectedMatchFilter : public QgsPointLocator::MatchFilter
       return true;
     }
 
-    bool hasSelectedMatch() const { return mBestSelectedMatch.isValid(); }
-    QgsPointLocator::Match bestSelectedMatch() const { return mBestSelectedMatch; }
+    [[nodiscard]] bool hasSelectedMatch() const { return mBestSelectedMatch.isValid(); }
+    [[nodiscard]] QgsPointLocator::Match bestSelectedMatch() const { return mBestSelectedMatch; }
 
   private:
     double mTolerance;

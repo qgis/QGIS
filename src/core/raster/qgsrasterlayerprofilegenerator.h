@@ -47,7 +47,7 @@ class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileSurfac
 
   public:
 
-    QString type() const override;
+    [[nodiscard]] QString type() const override;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
 
   private:
@@ -76,11 +76,11 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurf
 
     ~QgsRasterLayerProfileGenerator() override;
 
-    QString sourceId() const override;
-    Qgis::ProfileGeneratorFlags flags() const override;
+    [[nodiscard]] QString sourceId() const override;
+    [[nodiscard]] Qgis::ProfileGeneratorFlags flags() const override;
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
-    QgsFeedback *feedback() const override;
+    [[nodiscard]] QgsFeedback *feedback() const override;
 
   private:
     QString mId;

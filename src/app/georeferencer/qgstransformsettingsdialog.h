@@ -40,12 +40,12 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     /**
      * Returns the selected target CRS.
      */
-    QgsCoordinateReferenceSystem targetCrs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem targetCrs() const;
 
     /**
      * Returns TRUE if the create world file only option is set.
      */
-    bool createWorldFileOnly() const;
+    [[nodiscard]] bool createWorldFileOnly() const;
 
     /**
      * Sets whether the create world file only option should be set.
@@ -55,7 +55,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     /**
      * Returns the selected transform method.
      */
-    QgsGcpTransformerInterface::TransformMethod transformMethod() const;
+    [[nodiscard]] QgsGcpTransformerInterface::TransformMethod transformMethod() const;
 
     /**
      * Sets the selected transform method.
@@ -65,7 +65,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     /**
      * Returns the selected resampling method.
      */
-    QgsImageWarper::ResamplingMethod resamplingMethod() const;
+    [[nodiscard]] QgsImageWarper::ResamplingMethod resamplingMethod() const;
 
     /**
      * Sets the selected resampling method.
@@ -75,7 +75,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     /**
      * Returns raster creation options.
      */
-    QStringList creationOptions() const;
+    [[nodiscard]] QStringList creationOptions() const;
 
     /**
      * Sets raster creation options.
@@ -85,12 +85,12 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     /**
      * Returns the destination filename.
      */
-    QString destinationFilename() const;
+    [[nodiscard]] QString destinationFilename() const;
 
     /**
      * Returns the filename for the PDF report.
      */
-    QString pdfReportFilename() const;
+    [[nodiscard]] QString pdfReportFilename() const;
 
     /**
      * Sets the \a filename for the PDF report.
@@ -100,7 +100,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     /**
      * Returns the filename for the PDF map.
      */
-    QString pdfMapFilename() const;
+    [[nodiscard]] QString pdfMapFilename() const;
 
     /**
      * Sets the \a filename for the PDF map.
@@ -110,7 +110,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     /**
      * Returns TRUE if GCP points should be automatically saved.
      */
-    bool saveGcpPoints() const;
+    [[nodiscard]] bool saveGcpPoints() const;
 
     /**
      * Sets whether GCP points should be automatically saved.
@@ -120,7 +120,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     /**
      * Returns TRUE if the use zero for transparent option is checked.
      */
-    bool useZeroForTransparent() const;
+    [[nodiscard]] bool useZeroForTransparent() const;
 
     /**
      * Sets whether the use zero for transparent option is checked.
@@ -130,7 +130,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     /**
      * Returns TRUE if the load result in project option is checked.
      */
-    bool loadInProject() const;
+    [[nodiscard]] bool loadInProject() const;
 
     /**
      * Sets whether the load result in project option is checked.

@@ -56,7 +56,7 @@ class GUI_EXPORT QgsPointCloudAttributeComboBox : public QComboBox
      * Returns the current filters used for filtering available attributes.
      * \see setFilters()
      */
-    QgsPointCloudAttributeProxyModel::Filters filters() const { return mProxyModel->filters(); }
+    [[nodiscard]] QgsPointCloudAttributeProxyModel::Filters filters() const { return mProxyModel->filters(); }
 
     /**
      * Sets whether an optional empty attribute ("not set") option is shown in the combo box.
@@ -68,16 +68,16 @@ class GUI_EXPORT QgsPointCloudAttributeComboBox : public QComboBox
      * Returns TRUE if the combo box allows the empty field ("not set") choice.
      * \see setAllowEmptyAttributeName()
      */
-    bool allowEmptyAttributeName() const;
+    [[nodiscard]] bool allowEmptyAttributeName() const;
 
     //! Returns the currently selected attribute
-    QString currentAttribute() const;
+    [[nodiscard]] QString currentAttribute() const;
 
     /**
      * Returns the layer currently associated with the combobox.
      * \see setLayer()
      */
-    QgsPointCloudLayer *layer() const;
+    [[nodiscard]] QgsPointCloudLayer *layer() const;
 
     /**
      * Manually sets the \a attributes to use for the combo box.
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsPointCloudAttributeComboBox : public QComboBox
      * This will either be attributes from the associated layer() or the attributes
      * manually set by a call to setAttributes().
      */
-    QgsPointCloudAttributeCollection attributes() const;
+    [[nodiscard]] QgsPointCloudAttributeCollection attributes() const;
 
   signals:
     //! Emitted when the currently selected attribute changes.

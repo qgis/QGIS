@@ -64,12 +64,12 @@ class QgsTiledSceneNode
     /**
      * Returns the parent of this node.
      */
-    QgsTiledSceneNode *parentNode() const { return mParent; }
+    [[nodiscard]] QgsTiledSceneNode *parentNode() const { return mParent; }
 
     /**
      * Returns this node's children.
      */
-    QList< QgsTiledSceneNode * > children() const { return mChildren; }
+    [[nodiscard]] QList< QgsTiledSceneNode * > children() const { return mChildren; }
 
   private:
 

@@ -48,25 +48,25 @@ class _3D_EXPORT QgsAmbientOcclusionSettings
     void setEnabled( bool enabled ) { mEnabled = enabled; }
 
     //! Returns whether ambient occlusion effect is enabled
-    bool isEnabled() const { return mEnabled; }
+    [[nodiscard]] bool isEnabled() const { return mEnabled; }
 
     //! Sets the shading factor of the ambient occlusion effect
     void setIntensity( float factor ) { mIntensity = factor; }
 
     //! Returns the shading factor of the ambient occlusion effect
-    float intensity() const { return mIntensity; }
+    [[nodiscard]] float intensity() const { return mIntensity; }
 
     //! Sets the radius parameter of the ambient occlusion effect
     void setRadius( float radius ) { mRadius = radius; }
 
     //! Returns the radius parameter of the ambient occlusion effect
-    float radius() const { return mRadius; }
+    [[nodiscard]] float radius() const { return mRadius; }
 
     //! Sets at what amount of occlusion the effect will kick in
     void setThreshold( float threshold ) { mThreshold = threshold; }
 
     //! Returns at what amount of occlusion the effect will kick in
-    float threshold() const { return mThreshold; }
+    [[nodiscard]] float threshold() const { return mThreshold; }
 
   private:
     bool mEnabled = false;

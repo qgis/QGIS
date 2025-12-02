@@ -154,7 +154,7 @@ class GUI_EXPORT QgsEditConditionalFormatRuleWidget : public QgsPanelWidget, pri
      *
      * \see loadStyle()
      */
-    QgsConditionalStyle currentStyle() const;
+    [[nodiscard]] QgsConditionalStyle currentStyle() const;
 
     /**
      * Sets the current expression \a rule to show in the widget.

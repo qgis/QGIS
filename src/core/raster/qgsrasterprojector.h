@@ -66,11 +66,11 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     QgsRasterProjector();
 
-    QgsRasterProjector *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsRasterProjector *clone() const override SIP_FACTORY;
 
-    int bandCount() const override;
+    [[nodiscard]] int bandCount() const override;
 
-    Qgis::DataType dataType( int bandNo ) const override;
+    [[nodiscard]] Qgis::DataType dataType( int bandNo ) const override;
 
     /**
      * Sets the source and destination CRS
@@ -87,12 +87,12 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
                  QgsCoordinateTransformContext transformContext );
 
     //! Returns the source CRS
-    QgsCoordinateReferenceSystem sourceCrs() const { return mSrcCRS; }
+    [[nodiscard]] QgsCoordinateReferenceSystem sourceCrs() const { return mSrcCRS; }
 
     //! Returns the destination CRS
-    QgsCoordinateReferenceSystem destinationCrs() const { return mDestCRS; }
+    [[nodiscard]] QgsCoordinateReferenceSystem destinationCrs() const { return mDestCRS; }
 
-    Precision precision() const { return mPrecision; }
+    [[nodiscard]] Precision precision() const { return mPrecision; }
     void setPrecision( Precision precision ) { mPrecision = precision; }
     // Translated precision mode, for use in ComboBox etc.
     static QString precisionLabel( Precision precision );

@@ -49,7 +49,7 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
      *
      * \since QGIS 3.4
      */
-    bool removeDuplicateNodes() const;
+    [[nodiscard]] bool removeDuplicateNodes() const;
 
     /**
      * Automatically remove duplicate nodes on all geometries which are edited on this layer.
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
      *
      * \since QGIS 3.4
      */
-    double geometryPrecision() const;
+    [[nodiscard]] double geometryPrecision() const;
 
     /**
      * The precision in which geometries on this layer should be saved.
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
      *
      * \since QGIS 3.4
      */
-    bool isActive() const;
+    [[nodiscard]] bool isActive() const;
 
     /**
      * Apply any fixes configured on this class to \a geometry.
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
      *
      * \since QGIS 3.4
      */
-    QStringList geometryChecks() const;
+    [[nodiscard]] QStringList geometryChecks() const;
 
     /**
      * A list of activated geometry checks.
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsGeometryOptions : public QObject
      *
      * \since QGIS 3.4
      */
-    QVariantMap checkConfiguration( const QString &checkId ) const;
+    [[nodiscard]] QVariantMap checkConfiguration( const QString &checkId ) const;
 
     /**
      * Set the configuration for the check \a checkId.

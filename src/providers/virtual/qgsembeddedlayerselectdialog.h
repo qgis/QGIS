@@ -32,7 +32,7 @@ class QgsEmbeddedLayerSelectDialog : public QDialog, private Ui::QgsEmbeddedLaye
     QgsEmbeddedLayerSelectDialog( QWidget *parent );
 
     //! Returns the list of layer ids selected
-    QStringList layers() const;
+    [[nodiscard]] QStringList layers() const;
 
   private:
     QgsMapLayerProxyModel *mLayerProxyModel = nullptr;

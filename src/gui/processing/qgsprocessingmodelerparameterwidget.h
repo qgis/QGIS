@@ -119,7 +119,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     /**
      * Returns the parameter definition associated with this wrapper.
      */
-    const QgsProcessingParameterDefinition *parameterDefinition() const;
+    [[nodiscard]] const QgsProcessingParameterDefinition *parameterDefinition() const;
 
     /**
      * Creates a label for use identifying the associated parameter.
@@ -159,7 +159,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * \see modelOutputName()
      * \since QGIS 3.14
      */
-    bool isModelOutput() const;
+    [[nodiscard]] bool isModelOutput() const;
 
     /**
      * Returns the model output name, if isModelOutput() is TRUE.
@@ -168,14 +168,14 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * \see isModelOutput()
      * \since QGIS 3.14
      */
-    QString modelOutputName() const;
+    [[nodiscard]] QString modelOutputName() const;
 
     /**
      * Returns the current value of the parameter.
      *
      * \see setWidgetValue()
      */
-    virtual QVariant value() const;
+    [[nodiscard]] virtual QVariant value() const;
 
     /**
      * Sets the parent \a dialog in which the widget is shown.
@@ -184,7 +184,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      */
     void setDialog( QDialog *dialog );
 
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
     /**
      * Sets the current source \a type for the parameter.
@@ -209,7 +209,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
       ModelOutput = 4,
     };
 
-    SourceType currentSourceType() const;
+    [[nodiscard]] SourceType currentSourceType() const;
 
     void updateUi();
 

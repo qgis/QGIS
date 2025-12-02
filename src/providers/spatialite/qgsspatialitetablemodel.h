@@ -36,9 +36,9 @@ class QgsSpatiaLiteTableModel : public QgsAbstractDbTableModel
 
     QgsSpatiaLiteTableModel( QObject *parent = nullptr );
 
-    QStringList columns() const override;
-    int defaultSearchColumn() const override;
-    bool searchableColumn( int column ) const override;
+    [[nodiscard]] QStringList columns() const override;
+    [[nodiscard]] int defaultSearchColumn() const override;
+    [[nodiscard]] bool searchableColumn( int column ) const override;
 
     //! Adds entry for one database table to the model
     void addTableEntry( const QString &type, const QString &tableName, const QString &geometryColName, const QString &sql );
@@ -51,7 +51,7 @@ class QgsSpatiaLiteTableModel : public QgsAbstractDbTableModel
     */
     void setGeometryTypesForTable( const QString &table, const QString &attribute, const QString &type );
     //! Returns the number of tables in the model
-    int tableCount() const
+    [[nodiscard]] int tableCount() const
     {
       return mTableCount;
     }
@@ -67,10 +67,10 @@ class QgsSpatiaLiteTableModel : public QgsAbstractDbTableModel
     QString mSqliteDb;
     QStringList mColumns;
 
-    QIcon iconForType( Qgis::WkbType type ) const;
-    QString displayStringForType( Qgis::WkbType type ) const;
+    [[nodiscard]] QIcon iconForType( Qgis::WkbType type ) const;
+    [[nodiscard]] QString displayStringForType( Qgis::WkbType type ) const;
     //! Returns qgis wkbtype from database typename
-    Qgis::WkbType qgisTypeFromDbType( const QString &dbType ) const;
+    [[nodiscard]] Qgis::WkbType qgisTypeFromDbType( const QString &dbType ) const;
 };
 
 #endif // QGSSPATIALITETABLEMODEL_H

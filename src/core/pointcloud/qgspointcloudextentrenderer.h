@@ -43,8 +43,8 @@ class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
     QgsPointCloudExtentRenderer( QgsFillSymbol *symbol SIP_TRANSFER = nullptr );
     ~QgsPointCloudExtentRenderer() override;
 
-    QString type() const override;
-    QgsPointCloudRenderer *clone() const override;
+    [[nodiscard]] QString type() const override;
+    [[nodiscard]] QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
      *
      * \see setFillSymbol()
      */
-    QgsFillSymbol *fillSymbol() const;
+    [[nodiscard]] QgsFillSymbol *fillSymbol() const;
 
     /**
      * Sets the \a symbol used to render the cloud's extent.

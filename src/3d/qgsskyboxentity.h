@@ -57,7 +57,7 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
     QgsSkyboxEntity( QNode *parent = nullptr );
 
     //! Returns the type of the current skybox
-    virtual SkyboxType type() const = 0;
+    [[nodiscard]] virtual SkyboxType type() const = 0;
 
   protected:
     Qt3DRender::QEffect *mEffect = nullptr;
@@ -85,9 +85,9 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
     QgsPanoramicSkyboxEntity( const QString &texturePath, Qt3DCore::QNode *parent = nullptr );
 
     //! Returns the path of the current texture in use
-    QString texturePath() const { return mTexturePath; }
+    [[nodiscard]] QString texturePath() const { return mTexturePath; }
     //! Returns the type of the current skybox
-    SkyboxType type() const override { return SkyboxType::PanoramicSkybox; }
+    [[nodiscard]] SkyboxType type() const override { return SkyboxType::PanoramicSkybox; }
 
   private:
     void reloadTexture();
@@ -113,7 +113,7 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
     QgsCubeFacesSkyboxEntity( const QString &posX, const QString &posY, const QString &posZ, const QString &negX, const QString &negY, const QString &negZ, Qt3DCore::QNode *parent = nullptr );
 
     //! Returns the type of the current skybox
-    SkyboxType type() const override { return SkyboxType::DistinctTexturesSkybox; }
+    [[nodiscard]] SkyboxType type() const override { return SkyboxType::DistinctTexturesSkybox; }
 
   private:
     void init();

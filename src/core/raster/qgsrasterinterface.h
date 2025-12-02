@@ -207,7 +207,7 @@ class CORE_EXPORT QgsRasterInterface
     virtual ~QgsRasterInterface() = default;
 
     //! Clone itself, create deep copy
-    virtual QgsRasterInterface *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsRasterInterface *clone() const = 0 SIP_FACTORY;
 
     // TODO QGIS 4.0 -- rename to interfaceCapabilities, to avoid confusion with QgsRasterDataProvider::providerCapabilities
     // (which inherits this class)
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsRasterInterface
     /**
      * Returns the capabilities supported by the interface.
      */
-    virtual Qgis::RasterInterfaceCapabilities capabilities() const;
+    [[nodiscard]] virtual Qgis::RasterInterfaceCapabilities capabilities() const;
 
     /**
      * Returns the raster interface capabilities in friendly format.
@@ -225,38 +225,38 @@ class CORE_EXPORT QgsRasterInterface
     Q_DECL_DEPRECATED QString capabilitiesString() const SIP_DEPRECATED;
 
     //! Returns data type for the band specified by number
-    virtual Qgis::DataType dataType( int bandNo ) const = 0;
+    [[nodiscard]] virtual Qgis::DataType dataType( int bandNo ) const = 0;
 
     /**
      * Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
     */
-    virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::DataType::UnknownDataType; }
+    [[nodiscard]] virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::DataType::UnknownDataType; }
 
     /**
      * Gets the extent of the interface.
      * \returns QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() const { return mInput ? mInput->extent() : QgsRectangle(); }
+    [[nodiscard]] virtual QgsRectangle extent() const { return mInput ? mInput->extent() : QgsRectangle(); }
 
     /**
      * Returns the size (in bytes) for the data type for the specified band.
      */
-    int dataTypeSize( int bandNo ) const { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
+    [[nodiscard]] int dataTypeSize( int bandNo ) const { return QgsRasterBlock::typeSize( dataType( bandNo ) ); }
 
     //! Gets number of bands
-    virtual int bandCount() const = 0;
+    [[nodiscard]] virtual int bandCount() const = 0;
 
     //! Gets block size
-    virtual int xBlockSize() const { return mInput ? mInput->xBlockSize() : 0; }
-    virtual int yBlockSize() const { return mInput ? mInput->yBlockSize() : 0; }
+    [[nodiscard]] virtual int xBlockSize() const { return mInput ? mInput->xBlockSize() : 0; }
+    [[nodiscard]] virtual int yBlockSize() const { return mInput ? mInput->yBlockSize() : 0; }
 
     //! Gets raster size
-    virtual int xSize() const { return mInput ? mInput->xSize() : 0; }
-    virtual int ySize() const { return mInput ? mInput->ySize() : 0; }
+    [[nodiscard]] virtual int xSize() const { return mInput ? mInput->xSize() : 0; }
+    [[nodiscard]] virtual int ySize() const { return mInput ? mInput->ySize() : 0; }
 
     //! \brief helper function to create zero padded band names
-    virtual QString generateBandName( int bandNumber ) const;
+    [[nodiscard]] virtual QString generateBandName( int bandNumber ) const;
 
     /**
      * Returns the name of the color interpretation for the specified \a bandNumber.
@@ -264,14 +264,14 @@ class CORE_EXPORT QgsRasterInterface
      *
      * \since QGIS 3.18
      */
-    virtual QString colorInterpretationName( int bandNumber ) const;
+    [[nodiscard]] virtual QString colorInterpretationName( int bandNumber ) const;
 
     /**
      * Generates a friendly, descriptive name for the specified \a bandNumber.
      *
      * \since QGIS 3.18
      */
-    QString displayBandName( int bandNumber ) const;
+    [[nodiscard]] QString displayBandName( int bandNumber ) const;
 
     /**
      * Read block of data using given extent and size.
@@ -292,10 +292,10 @@ class CORE_EXPORT QgsRasterInterface
     virtual bool setInput( QgsRasterInterface *input ) { mInput = input; return true; }
 
     //! Current input
-    virtual QgsRasterInterface *input() const { return mInput; }
+    [[nodiscard]] virtual QgsRasterInterface *input() const { return mInput; }
 
     //! Returns whether the interface is on or off
-    virtual bool on() const { return mOn; }
+    [[nodiscard]] virtual bool on() const { return mOn; }
 
     //! Sets whether the interface is on or off
     virtual void setOn( bool on ) { mOn = on; }
@@ -306,7 +306,7 @@ class CORE_EXPORT QgsRasterInterface
      *  resampling etc.
      * \note not available in Python bindings.
      */
-    virtual const QgsRasterInterface *sourceInput() const SIP_SKIP
+    [[nodiscard]] virtual const QgsRasterInterface *sourceInput() const SIP_SKIP
     {
       QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
       return mInput ? mInput->sourceInput() : this;

@@ -45,7 +45,7 @@ class GUI_EXPORT QgsOpacityWidget : public QWidget
      * \see setOpacity()
      * \see opacityChanged()
      */
-    double opacity() const;
+    [[nodiscard]] double opacity() const;
 
   public slots:
 

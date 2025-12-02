@@ -74,7 +74,7 @@ namespace QgsWfs
        * \returns An integer
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      int toInt() const;
+      [[nodiscard]] int toInt() const;
 
       /**
        * Converts the parameter into a list of string.
@@ -82,14 +82,14 @@ namespace QgsWfs
        * \returns A list of strings
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QStringList toStringListWithExp( const QString &exp = "\\(([^()]+)\\)" ) const;
+      [[nodiscard]] QStringList toStringListWithExp( const QString &exp = "\\(([^()]+)\\)" ) const;
 
       /**
        * Converts the parameter into a rectangle.
        * \returns A rectangle
        * \throws QgsBadRequestException Invalid parameter exception
        */
-      QgsRectangle toRectangle() const;
+      [[nodiscard]] QgsRectangle toRectangle() const;
 
       /**
        * Raises an error in case of an invalid conversion.
@@ -159,45 +159,45 @@ namespace QgsWfs
        * Returns VERSION parameter if defined or its default value.
        * \returns version
        */
-      QgsProjectVersion versionAsNumber() const;
+      [[nodiscard]] QgsProjectVersion versionAsNumber() const;
 
       /**
        * Returns OUTPUTFORMAT parameter as a string.
        * \returns outputFormat parameter as string
        */
-      QString outputFormatAsString() const;
+      [[nodiscard]] QString outputFormatAsString() const;
 
       /**
        * Returns format. If the OUTPUTFORMAT parameter is not used, then the
        * default value is GML2 or GML3.
        * \returns format
        */
-      Format outputFormat() const;
+      [[nodiscard]] Format outputFormat() const;
 
       /**
        * Returns RESULTTYPE parameter as a string.
        * \returns resultType parameter as string
        */
-      QString resultTypeAsString() const;
+      [[nodiscard]] QString resultTypeAsString() const;
 
       /**
        * Returns resultType. If the RESULTTYPE parameter is not used, then the
        * default value is RESULTS.
        * \returns resultType
        */
-      ResultType resultType() const;
+      [[nodiscard]] ResultType resultType() const;
 
       /**
        * Returns PROPERTYNAME parameter as list.
        * \returns propertyName parameter as list
        */
-      QStringList propertyNames() const;
+      [[nodiscard]] QStringList propertyNames() const;
 
       /**
        * Returns MAXFEATURES parameter as a string.
        * \returns maxFeatures parameter as string
        */
-      QString maxFeatures() const;
+      [[nodiscard]] QString maxFeatures() const;
 
       /**
        * Returns MAXFEATURES parameter as an int or its default value if not
@@ -206,13 +206,13 @@ namespace QgsWfs
        * \returns maxFeatures parameter
        * \throws QgsBadRequestException
        */
-      int maxFeaturesAsInt() const;
+      [[nodiscard]] int maxFeaturesAsInt() const;
 
       /**
        * Returns STARTINDEX parameter as a string.
        * \returns startIndex parameter as string
        */
-      QString startIndex() const;
+      [[nodiscard]] QString startIndex() const;
 
       /**
        * Returns STARTINDEX parameter as an int or its default value if not
@@ -221,37 +221,37 @@ namespace QgsWfs
        * \returns startIndex parameter
        * \throws QgsBadRequestException
        */
-      int startIndexAsInt() const;
+      [[nodiscard]] int startIndexAsInt() const;
 
       /**
        * Returns SRSNAME parameter as a string.
        * \returns srsName parameter as string
        */
-      QString srsName() const;
+      [[nodiscard]] QString srsName() const;
 
       /**
        * Returns TYPENAME parameter as list.
        * \returns typeName parameter as list
        */
-      QStringList typeNames() const;
+      [[nodiscard]] QStringList typeNames() const;
 
       /**
        * Returns FEATUREID parameter as list.
        * \returns featureId parameter as list
        */
-      QStringList featureIds() const;
+      [[nodiscard]] QStringList featureIds() const;
 
       /**
        * Returns FILTER parameter as list.
        * \returns filter parameter as list
        */
-      QStringList filters() const;
+      [[nodiscard]] QStringList filters() const;
 
       /**
        * Returns BBOX if defined or an empty string.
        * \returns bbox parameter
        */
-      QString bbox() const;
+      [[nodiscard]] QString bbox() const;
 
       /**
        * Returns BBOX as a rectangle if defined and valid. An exception is
@@ -259,25 +259,25 @@ namespace QgsWfs
        * \returns bbox as rectangle
        * \throws QgsBadRequestException
        */
-      QgsRectangle bboxAsRectangle() const;
+      [[nodiscard]] QgsRectangle bboxAsRectangle() const;
 
       /**
        * Returns SORTBY parameter as list.
        * \returns sortBy parameter as list
        */
-      QStringList sortBy() const;
+      [[nodiscard]] QStringList sortBy() const;
 
       /**
        * Returns EXP_FILTER parameter as list.
        * \returns expFilters parameter as list
        */
-      QStringList expFilters() const;
+      [[nodiscard]] QStringList expFilters() const;
 
       /**
        * Returns GEOMETRYNAME parameter as a string.
        * \returns geometryName parameter as string
        */
-      QString geometryNameAsString() const;
+      [[nodiscard]] QString geometryNameAsString() const;
 
     private:
       bool loadParameter( const QString &key, const QString &value ) override;

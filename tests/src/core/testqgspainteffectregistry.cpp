@@ -28,10 +28,10 @@ class DummyPaintEffect : public QgsPaintEffect
 {
   public:
     DummyPaintEffect() = default;
-    QString type() const override { return QStringLiteral( "Dummy" ); }
-    QgsPaintEffect *clone() const override { return new DummyPaintEffect(); }
+    [[nodiscard]] QString type() const override { return QStringLiteral( "Dummy" ); }
+    [[nodiscard]] QgsPaintEffect *clone() const override { return new DummyPaintEffect(); }
     static QgsPaintEffect *create( const QVariantMap & ) { return new DummyPaintEffect(); }
-    QVariantMap properties() const override { return QVariantMap(); }
+    [[nodiscard]] QVariantMap properties() const override { return QVariantMap(); }
     void readProperties( const QVariantMap &props ) override { Q_UNUSED( props ); }
 
   protected:

@@ -64,7 +64,7 @@ class QgsCrashReport
      * Returns the stack trace for this report.
      * \return A string list for each line in the stack trace.
      */
-    QgsStackTrace *StackTrace() const { return mStackTrace; }
+    [[nodiscard]] QgsStackTrace *StackTrace() const { return mStackTrace; }
 
     /**
      * Set the flags to mark which features are included in this crash report.
@@ -76,19 +76,19 @@ class QgsCrashReport
      * Returns the include flags that have been set for this report.
      * \return The flags marking what details are included in this report.
      */
-    Flags flags() const { return mFlags; }
+    [[nodiscard]] Flags flags() const { return mFlags; }
 
     /**
      * Generate a string version of the report.
      * \return A formatted string including all the information from the report.
      */
-    const QString toHtml() const;
+    [[nodiscard]] const QString toHtml() const;
 
     /**
      * Generates a crash ID for the crash report.
      * \return
      */
-    const QString crashID() const;
+    [[nodiscard]] const QString crashID() const;
 
     void exportToCrashFolder();
 
@@ -109,7 +109,7 @@ class QgsCrashReport
         QString filePath;
     };
 
-    PythonFault pythonFault() const { return mPythonFault; }
+    [[nodiscard]] PythonFault pythonFault() const { return mPythonFault; }
 
     /**
      * convert htmlToMarkdown (copied from QgsStringUtils::htmlToMarkdown)

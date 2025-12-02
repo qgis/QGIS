@@ -46,7 +46,7 @@ class SERVER_EXPORT QgsAbstractCacheStrategy
 {
   public:
     //! The name of the strategy
-    virtual QString name() const = 0;
+    [[nodiscard]] virtual QString name() const = 0;
 
     /**
      * Called when an entry is removed from cache.
@@ -111,13 +111,13 @@ class SERVER_EXPORT QgsConfigCache : public QObject
      * Returns the name of the current strategy
      * \since QGIS 3.26
      */
-    QString strategyName() const { return mStrategy->name(); }
+    [[nodiscard]] QString strategyName() const { return mStrategy->name(); }
 
     /**
      * Returns projects currently in cache.
      * \since QGIS 3.30
      */
-    QList<QgsProject *> projects() const;
+    [[nodiscard]] QList<QgsProject *> projects() const;
 
   public:
     //! Initialize from settings
@@ -176,7 +176,7 @@ class SERVER_EXPORT QgsFileSystemCacheStrategy : public QgsAbstractCacheStrategy
     QgsFileSystemCacheStrategy();
 
     //! The name of the strategy
-    QString name() const override { return QStringLiteral( "filesystem" ); };
+    [[nodiscard]] QString name() const override { return QStringLiteral( "filesystem" ); };
 
     //! Attach cache to this strategy
     void attach( QgsConfigCache *cache ) override;
@@ -214,7 +214,7 @@ class SERVER_EXPORT QgsPeriodicCacheStrategy : public QgsAbstractCacheStrategy
     QgsPeriodicCacheStrategy( int interval = 3000 );
 
     //! The name of the strategy
-    QString name() const override { return QStringLiteral( "periodic" ); };
+    [[nodiscard]] QString name() const override { return QStringLiteral( "periodic" ); };
 
     /**
      * Sets the invalidation check interval for PeriodicStrategy
@@ -225,7 +225,7 @@ class SERVER_EXPORT QgsPeriodicCacheStrategy : public QgsAbstractCacheStrategy
     void setCheckInterval( int msec );
 
     //! Returns the invalidation check interval
-    int checkInterval() const { return mInterval; }
+    [[nodiscard]] int checkInterval() const { return mInterval; }
 
     //! Attaches cache to this strategy
     void attach( QgsConfigCache *owner ) override;
@@ -264,7 +264,7 @@ class SERVER_EXPORT QgsNullCacheStrategy : public QgsAbstractCacheStrategy
     QgsNullCacheStrategy() = default;
 
     //! The name of the strategy
-    QString name() const override { return QStringLiteral( "off" ); };
+    [[nodiscard]] QString name() const override { return QStringLiteral( "off" ); };
 
     //! Attaches cache to this strategy
     void attach( QgsConfigCache *owner ) override;

@@ -38,12 +38,12 @@ class _3D_EXPORT QgsOnlineDemTerrainSettings : public QgsAbstractTerrainSettings
      */
     static QgsAbstractTerrainSettings *create() SIP_FACTORY;
 
-    QgsOnlineDemTerrainSettings *clone() const final SIP_FACTORY;
-    QString type() const final;
+    [[nodiscard]] QgsOnlineDemTerrainSettings *clone() const final SIP_FACTORY;
+    [[nodiscard]] QString type() const final;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
     bool equals( const QgsAbstractTerrainSettings *other ) const final;
-    std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const override SIP_SKIP;
+    [[nodiscard]] std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const override SIP_SKIP;
 
     /**
      * Sets the \a resolution of the terrain (how many elevation samples are taken on one side of a terrain tile).
@@ -57,7 +57,7 @@ class _3D_EXPORT QgsOnlineDemTerrainSettings : public QgsAbstractTerrainSettings
      *
      * \see resolution()
      */
-    int resolution() const { return mResolution; }
+    [[nodiscard]] int resolution() const { return mResolution; }
 
     /**
      * Sets the skirt \a height (in world units).
@@ -75,7 +75,7 @@ class _3D_EXPORT QgsOnlineDemTerrainSettings : public QgsAbstractTerrainSettings
      *
      * \see setSkirtHeight()
      */
-    double skirtHeight() const { return mSkirtHeight; }
+    [[nodiscard]] double skirtHeight() const { return mSkirtHeight; }
 
   private:
     //! how many vertices to place on one side of the tile

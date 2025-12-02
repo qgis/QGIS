@@ -225,7 +225,7 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     /**
      * Generates the window title for the dialog.
      */
-    QString generateDialogTitle() const;
+    [[nodiscard]] QString generateDialogTitle() const;
 
     QPointer<QgsMapLayer> mLayer;
 

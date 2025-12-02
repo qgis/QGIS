@@ -50,7 +50,7 @@ class DummySourceWidget : public QgsProviderSourceWidget
 
     void setSourceUri( const QString &uri ) override { Q_UNUSED( uri ); }
 
-    QString sourceUri() const override
+    [[nodiscard]] QString sourceUri() const override
     {
       return newSource;
     }

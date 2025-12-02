@@ -107,7 +107,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     /**
      * Returns a list of existing entries in the feed.
      */
-    QList< QgsNewsFeedParser::Entry > entries() const;
+    [[nodiscard]] QList< QgsNewsFeedParser::Entry > entries() const;
 
     /**
      * Dismisses an entry with matching \a key.
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     /**
      * Returns the authentication configuration for the parser.
      */
-    QString authcfg() const;
+    [[nodiscard]] QString authcfg() const;
 
     /**
      * Returns the settings key used for a feed with the given \a baseUrl.

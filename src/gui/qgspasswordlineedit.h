@@ -51,7 +51,7 @@ class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
     /**
      * Returns if a lock icon shall be shown on the left of the widget
      */
-    bool showLockIcon() const { return mLockIconVisible; }
+    [[nodiscard]] bool showLockIcon() const { return mLockIconVisible; }
 
     /**
      * Set state of the password's visibility

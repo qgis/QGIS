@@ -117,7 +117,7 @@ class CORE_EXPORT QgsInterval
      *
      * \see setYears()
      */
-    double years() const;
+    [[nodiscard]] double years() const;
 
     /**
      * Sets the interval duration in years.
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsInterval
      *
      * \see setMonths()
      */
-    double months() const;
+    [[nodiscard]] double months() const;
 
     /**
      * Sets the interval duration in months.
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsInterval
      *
      * \see setWeeks()
      */
-    double weeks() const;
+    [[nodiscard]] double weeks() const;
 
     /**
      * Sets the interval duration in weeks.
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsInterval
      *
      * \see setDays()
      */
-    double days() const;
+    [[nodiscard]] double days() const;
 
     /**
      * Sets the interval duration in days.
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsInterval
      *
      * \see setHours()
      */
-    double hours() const;
+    [[nodiscard]] double hours() const;
 
     /**
      * Sets the interval duration in hours.
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsInterval
      *
      * \see setMinutes()
      */
-    double minutes() const;
+    [[nodiscard]] double minutes() const;
 
     /**
      * Sets the interval duration in minutes.
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsInterval
      * Returns the interval duration in seconds.
      * \see setSeconds()
      */
-    double seconds() const { return mSeconds; }
+    [[nodiscard]] double seconds() const { return mSeconds; }
 
     /**
      * Sets the interval duration in seconds.
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsInterval
      * Returns TRUE if the interval is valid.
      * \see setValid()
      */
-    bool isValid() const { return mValid; }
+    [[nodiscard]] bool isValid() const { return mValid; }
 
     /**
      * Sets whether the interval is valid.
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsInterval
      *
      * \since QGIS 3.18
      */
-    double originalDuration() const { return mOriginalDuration; }
+    [[nodiscard]] double originalDuration() const { return mOriginalDuration; }
 
     /**
      * Returns the original interval temporal unit.
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsInterval
      *
      * \since QGIS 3.18
      */
-    Qgis::TemporalUnit originalUnit() const { return mOriginalUnit; }
+    [[nodiscard]] Qgis::TemporalUnit originalUnit() const { return mOriginalUnit; }
 
     bool operator==( QgsInterval other ) const
     {

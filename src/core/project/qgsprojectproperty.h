@@ -64,14 +64,14 @@ class CORE_EXPORT QgsProjectProperty
      * \see isValue()
      * \see isLeaf()
      */
-    virtual bool isKey() const = 0;
+    [[nodiscard]] virtual bool isKey() const = 0;
 
     /**
      * Returns TRUE if the property is a QgsProjectPropertyValue.
      * \see isKey()
      * \see isLeaf()
      */
-    virtual bool isValue() const = 0;
+    [[nodiscard]] virtual bool isValue() const = 0;
 
     /**
      * Returns TRUE if property is a leaf node.
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsProjectProperty
      *
      * This is used for entryList() and subkeyList() implementation.
      */
-    virtual bool isLeaf() const = 0;
+    [[nodiscard]] virtual bool isLeaf() const = 0;
 
     /**
      * Restores the property hierarchy from a specified DOM node.
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsProjectProperty
      * name, "foo", in its QHash of QProperties.
      *
      */
-    virtual QVariant value() const = 0;
+    [[nodiscard]] virtual QVariant value() const = 0;
 
 };
 
@@ -136,12 +136,12 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
       : mValue( value )
     {}
 
-    bool isKey() const override { return false; }
-    bool isValue() const override { return true; }
-    QVariant value() const override { return mValue; }
+    [[nodiscard]] bool isKey() const override { return false; }
+    [[nodiscard]] bool isValue() const override { return true; }
+    [[nodiscard]] QVariant value() const override { return mValue; }
 
     //value nodes can also be qualified as leaf nodes even though we only count key nodes.
-    bool isLeaf() const override { return true; }
+    [[nodiscard]] bool isLeaf() const override { return true; }
 
     void dump( int tabs = 0 ) const override;
     bool readXml( const QDomNode &keyNode ) override;
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
      * The name of the property is used as identifier.
      * \see setName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * The name of the property is used as identifier.
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
      * If this key has a value, it will be stored by its name in its
      * properties
      */
-    QVariant value() const override;
+    [[nodiscard]] QVariant value() const override;
 
     /**
      * Adds the specified property key as a sub-key.
@@ -264,16 +264,16 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * Returns the number of sub-keys contained by this property.
      */
-    int count() const { return mProperties.count(); }
+    [[nodiscard]] int count() const { return mProperties.count(); }
 
     /**
      * Returns TRUE if this property contains no sub-keys.
      */
-    bool isEmpty() const { return mProperties.isEmpty(); }
+    [[nodiscard]] bool isEmpty() const { return mProperties.isEmpty(); }
 
-    bool isKey() const override { return true; }
-    bool isValue() const override { return false; }
-    bool isLeaf() const override;
+    [[nodiscard]] bool isKey() const override { return true; }
+    [[nodiscard]] bool isValue() const override { return false; }
+    [[nodiscard]] bool isLeaf() const override;
 
     /**
      * Returns any sub-keys contained by this property that do not contain other keys.
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * Attempts to find a property with a matching sub-key name.
      */
-    QgsProjectProperty *find( const QString &propertyName ) const
+    [[nodiscard]] QgsProjectProperty *find( const QString &propertyName ) const
     {
       return mProperties.value( propertyName );
     }

@@ -42,7 +42,7 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
     QgsOWSSourceWidget( const QString &providerKey, QWidget *parent = nullptr );
 
     void setSourceUri( const QString &uri ) override;
-    QString sourceUri() const override;
+    [[nodiscard]] QString sourceUri() const override;
 
     /**
      * Sets the spatial extent in the widget extent box.
@@ -56,7 +56,7 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
      *
      * \since QGIS 3.26
      */
-    QgsRectangle extent() const;
+    [[nodiscard]] QgsRectangle extent() const;
 
 
     void setMapCanvas( QgsMapCanvas *canvas ) override;

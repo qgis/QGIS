@@ -42,7 +42,7 @@ class QgsPGRootItem : public QgsConnectionsRootItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 3; }
+    [[nodiscard]] QVariant sortKey() const override { return 3; }
 
   public slots:
     void onConnectionsChanged();
@@ -56,7 +56,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
-    QgsDataSourceUri connectionUri() const;
+    [[nodiscard]] QgsDataSourceUri connectionUri() const;
 
   signals:
     void addGeometryColumn( const QgsPostgresLayerProperty & );
@@ -75,7 +75,7 @@ class QgsPGSchemaItem : public QgsDatabaseSchemaItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QString connectionName() const { return mConnectionName; }
+    [[nodiscard]] QString connectionName() const { return mConnectionName; }
 
   private:
     QgsPGLayerItem *createLayer( QgsPostgresLayerProperty layerProperty );
@@ -84,7 +84,7 @@ class QgsPGSchemaItem : public QgsDatabaseSchemaItem
 
     // QgsDataItem interface
   public:
-    bool layerCollection() const override;
+    [[nodiscard]] bool layerCollection() const override;
 };
 
 class QgsPGLayerItem : public QgsLayerItem
@@ -96,9 +96,9 @@ class QgsPGLayerItem : public QgsLayerItem
 
     QString createUri();
 
-    QString comments() const override;
+    [[nodiscard]] QString comments() const override;
 
-    const QgsPostgresLayerProperty &layerInfo() const { return mLayerProperty; }
+    [[nodiscard]] const QgsPostgresLayerProperty &layerInfo() const { return mLayerProperty; }
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -113,9 +113,9 @@ class QgsPostgresDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override;
 
-    QString dataProviderKey() const override;
+    [[nodiscard]] QString dataProviderKey() const override;
 
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
@@ -131,8 +131,8 @@ class QgsPGProjectItem : public QgsProjectItem
   public:
     QgsPGProjectItem( QgsDataItem *parent, const QString name, const QgsPostgresProjectUri &postgresProjectUri, const QString &connectionName );
 
-    QString schemaName() const { return mProjectUri.schemaName; }
-    QgsPostgresProjectUri postgresProjectUri() const { return mProjectUri; }
+    [[nodiscard]] QString schemaName() const { return mProjectUri.schemaName; }
+    [[nodiscard]] QgsPostgresProjectUri postgresProjectUri() const { return mProjectUri; }
 
     QString uriWithNewName( const QString &newProjectName );
 
@@ -141,7 +141,7 @@ class QgsPGProjectItem : public QgsProjectItem
     *
     * \since QGIS 4.0
     */
-    QString connectionName() const { return mConnectionName; }
+    [[nodiscard]] QString connectionName() const { return mConnectionName; }
 
 
   private:

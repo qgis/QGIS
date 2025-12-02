@@ -53,7 +53,7 @@ class CORE_EXPORT QgsProcessingModelChildDependency
      * Saves this dependency to a QVariant.
      * \see loadVariant()
      */
-    QVariant toVariant() const
+    [[nodiscard]] QVariant toVariant() const
     {
       QVariantMap res;
       res.insert( QStringLiteral( "child_id" ), childId );

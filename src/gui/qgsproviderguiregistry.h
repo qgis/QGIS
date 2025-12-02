@@ -59,10 +59,10 @@ class GUI_EXPORT QgsProviderGuiRegistry
     virtual ~QgsProviderGuiRegistry();
 
     //! Returns list of available providers by their keys
-    QStringList providerList() const;
+    [[nodiscard]] QStringList providerList() const;
 
     //! Returns metadata of the provider or NULLPTR if not found
-    const QgsProviderGuiMetadata *providerMetadata( const QString &providerKey ) const;
+    [[nodiscard]] const QgsProviderGuiMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
      * Called during GUI initialization - allows providers to do its internal initialization

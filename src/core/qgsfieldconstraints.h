@@ -78,14 +78,14 @@ class CORE_EXPORT QgsFieldConstraints
      * \see setConstraint()
      * \see constraintOrigin()
      */
-    Constraints constraints() const { return mConstraints; }
+    [[nodiscard]] Constraints constraints() const { return mConstraints; }
 
     /**
      * Returns the origin of a field constraint, or ConstraintOriginNotSet if the constraint
      * is not present on this field.
      * \see constraints()
      */
-    ConstraintOrigin constraintOrigin( Constraint constraint ) const;
+    [[nodiscard]] ConstraintOrigin constraintOrigin( Constraint constraint ) const;
 
     /**
      * Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsFieldConstraints
      * \see constraints()
      * \see setConstraintStrength()
      */
-    ConstraintStrength constraintStrength( Constraint constraint ) const;
+    [[nodiscard]] ConstraintStrength constraintStrength( Constraint constraint ) const;
 
     /**
      * Sets the strength of a constraint. Constraints default to ConstraintStrengthHard unless
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsFieldConstraints
      * \see constraintDescription()
      * \see setConstraintExpression()
      */
-    QString constraintExpression() const;
+    [[nodiscard]] QString constraintExpression() const;
 
     /**
      * Returns the descriptive name for the constraint expression.
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsFieldConstraints
      * \see constraintExpression()
      * \see setConstraintExpression()
      */
-    QString constraintDescription() const { return mExpressionConstraintDescription; }
+    [[nodiscard]] QString constraintDescription() const { return mExpressionConstraintDescription; }
 
     /**
      * Set the constraint expression for the field. An optional descriptive name for the constraint
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsFieldConstraints
      * \see setDomainName()
      * \since QGIS 3.26
      */
-    QString domainName() const { return mDomainName; }
+    [[nodiscard]] QString domainName() const { return mDomainName; }
 
     /**
      * Sets the associated field \a domain name, for providers which support field domains.

@@ -65,7 +65,7 @@ class APP_EXPORT QgsMapCanvasSymbolItem : public QgsMapCanvasItem
      * Returns the feature used for rendering the symbol.
      * \see setFeature()
      */
-    QgsFeature feature() const { return mFeature; }
+    [[nodiscard]] QgsFeature feature() const { return mFeature; }
 
     /**
      * Sets the \a opacity for the item.
@@ -81,7 +81,7 @@ class APP_EXPORT QgsMapCanvasSymbolItem : public QgsMapCanvasItem
      * and 1 is fully opaque
      * \see setOpacity()
      */
-    double opacity() const;
+    [[nodiscard]] double opacity() const;
 
   protected:
     virtual void renderSymbol( QgsRenderContext &context, const QgsFeature &feature ) = 0;
@@ -117,7 +117,7 @@ class APP_EXPORT QgsMapCanvasMarkerSymbolItem : public QgsMapCanvasSymbolItem
     void updateSize();
 
     void renderSymbol( QgsRenderContext &context, const QgsFeature &feature ) override;
-    QRectF boundingRect() const override;
+    [[nodiscard]] QRectF boundingRect() const override;
     void updatePosition() override;
 
   private:
@@ -148,7 +148,7 @@ class APP_EXPORT QgsMapCanvasLineSymbolItem : public QgsMapCanvasSymbolItem
     */
     void setLine( const QLineF &line );
 
-    QRectF boundingRect() const override;
+    [[nodiscard]] QRectF boundingRect() const override;
 
     void renderSymbol( QgsRenderContext &context, const QgsFeature &feature ) override;
 

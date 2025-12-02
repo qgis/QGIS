@@ -30,15 +30,15 @@ class QgsGeometryCheckMultipartAlgorithm : public QgsProcessingAlgorithm
   public:
     QgsGeometryCheckMultipartAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QString name() const override;
-    QString displayName() const override;
-    QString shortDescription() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    Qgis::ProcessingAlgorithmFlags flags() const override;
-    QgsGeometryCheckMultipartAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] Qgis::ProcessingAlgorithmFlags flags() const override;
+    [[nodiscard]] QgsGeometryCheckMultipartAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

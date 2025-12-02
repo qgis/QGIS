@@ -61,7 +61,7 @@ class CORE_EXPORT QgsCPLHTTPFetchOverrider
      *
      * \since QGIS 3.32
      */
-    QThread *thread() const;
+    [[nodiscard]] QThread *thread() const;
 
   private:
 

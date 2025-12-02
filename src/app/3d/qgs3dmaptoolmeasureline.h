@@ -35,7 +35,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     ~Qgs3DMapToolMeasureLine() override;
 
     //! When we have added our last point, and not following
-    bool done() const { return mDone; }
+    [[nodiscard]] bool done() const { return mDone; }
 
     //! Reset and start new
     void restart();
@@ -47,7 +47,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     void undo();
 
     //! Returns reference to array of the points
-    QVector<QgsPoint> points() const;
+    [[nodiscard]] QVector<QgsPoint> points() const;
 
     //! Update values from settings
     void updateSettings();
@@ -55,7 +55,7 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
     void activate() override;
     void deactivate() override;
 
-    QCursor cursor() const override;
+    [[nodiscard]] QCursor cursor() const override;
 
   private slots:
     void handleClick( const QPoint &screenPos );

@@ -63,7 +63,7 @@ class CORE_EXPORT QgsTextBlock
      *
      * \since QGIS 3.16
      */
-    QString toPlainText() const;
+    [[nodiscard]] QString toPlainText() const;
 
     /**
      * Reserves the specified \a count of fragments for optimised fragment appending.
@@ -127,12 +127,12 @@ class CORE_EXPORT QgsTextBlock
     /**
      * Returns TRUE if the block is empty.
      */
-    bool empty() const;
+    [[nodiscard]] bool empty() const;
 
     /**
      * Returns the number of fragments in the block.
      */
-    int size() const;
+    [[nodiscard]] int size() const;
 
     /**
      * Returns the block formatting for the fragment.
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsTextBlock
      *
      * \since QGIS 3.40
      */
-    const QgsTextBlockFormat &blockFormat() const { return mBlockFormat; }
+    [[nodiscard]] const QgsTextBlockFormat &blockFormat() const { return mBlockFormat; }
 
     /**
      * Sets the block \a format for the fragment.
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsTextBlock
      *
      * \since QGIS 3.42
      */
-    bool hasBackgrounds() const;
+    [[nodiscard]] bool hasBackgrounds() const;
 
 #ifdef SIP_RUN
     int __len__() const;
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsTextBlock
     /**
      * Returns the fragment at the specified \a index.
      */
-    const QgsTextFragment &at( int index ) const SIP_FACTORY;
+    [[nodiscard]] const QgsTextFragment &at( int index ) const SIP_FACTORY;
 #else
 
     /**
@@ -216,8 +216,8 @@ class CORE_EXPORT QgsTextBlock
 
 #ifndef SIP_RUN
     ///@cond PRIVATE
-    QVector< QgsTextFragment >::const_iterator begin() const;
-    QVector< QgsTextFragment >::const_iterator end() const;
+    [[nodiscard]] QVector< QgsTextFragment >::const_iterator begin() const;
+    [[nodiscard]] QVector< QgsTextFragment >::const_iterator end() const;
     ///@endcond
 #endif
 

@@ -39,7 +39,7 @@ class CORE_EXPORT QgsFileFilterGenerator
      * This method needs to be reimplemented in all classes which implement this interface
      * and return a file filter.
      */
-    virtual QString createFileFilter() const = 0;
+    [[nodiscard]] virtual QString createFileFilter() const = 0;
 
 };
 

@@ -76,7 +76,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * Returns TRUE if the widget's clear button is visible.
      * \see setShowClearButton()
      */
-    bool showClearButton() const { return mClearButtonVisible; }
+    [[nodiscard]] bool showClearButton() const { return mClearButtonVisible; }
 
     /**
      * Sets whether the widget's clear button is visible.
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * widget when its value is cleared. This defaults to ClearToNull.
      * \see setClearMode()
      */
-    ClearMode clearMode() const { return mClearMode; }
+    [[nodiscard]] ClearMode clearMode() const { return mClearMode; }
 
     /**
      * Sets the clear mode for the widget. The clear mode defines the behavior of the
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \see setNullValue()
      * \see isNull()
      */
-    QString nullValue() const { return mNullValue; }
+    [[nodiscard]] QString nullValue() const { return mNullValue; }
 
     /**
      * Define if a search icon shall be shown on the left of the image
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * Returns if a search icon shall be shown on the left of the image
      * when no text is entered
      */
-    bool showSearchIcon() const { return static_cast<bool>( mSearchAction ); }
+    [[nodiscard]] bool showSearchIcon() const { return static_cast<bool>( mSearchAction ); }
 
     /**
      * Sets the default value for the widget. The default value is a value
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \see setDefaultValue()
      * \see clearMode()
      */
-    QString defaultValue() const { return mDefaultValue; }
+    [[nodiscard]] QString defaultValue() const { return mDefaultValue; }
 
     /**
      * Sets the current text for the widget with support for handling null values.
@@ -164,7 +164,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \returns Current text (or null string if it matches the nullValue() property )
      * \see setValue()
      */
-    QString value() const { return isNull() ? QString() : text(); }
+    [[nodiscard]] QString value() const { return isNull() ? QString() : text(); }
 
     /**
      * Determine if the current text represents null.
@@ -172,14 +172,14 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \returns TRUE if the widget's value is null.
      * \see nullValue()
      */
-    inline bool isNull() const { return text() == mNullValue; }
+    [[nodiscard]] inline bool isNull() const { return text() == mNullValue; }
 
     /**
      * Show a spinner icon. This can be used for search boxes to indicate that
      * something is going on in the background.
      *
      */
-    bool showSpinner() const;
+    [[nodiscard]] bool showSpinner() const;
 
     /**
      * Show a spinner icon. This can be used for search boxes to indicate that
@@ -192,7 +192,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * Will select all text when this widget receives the focus.
      *
      */
-    bool selectOnFocus() const;
+    [[nodiscard]] bool selectOnFocus() const;
 
     /**
      * Will select all text when this widget receives the focus.
@@ -211,7 +211,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * Returns if a state is already saved
      * \since QGIS 3.14
      */
-    bool hasStateStored() const { return mLineEditState.hasStateStored; }
+    [[nodiscard]] bool hasStateStored() const { return mLineEditState.hasStateStored; }
 
   public slots:
 
@@ -302,7 +302,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QgsAnimatedIcon *mBusySpinnerAnimatedIcon = nullptr;
 
     //! Returns TRUE if clear button should be shown
-    bool shouldShowClear() const;
+    [[nodiscard]] bool shouldShowClear() const;
 
     friend class TestQgsFeatureListComboBox;
 };

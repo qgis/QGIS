@@ -430,7 +430,7 @@ class CORE_EXPORT QgsImageOperation
 
         typedef void result_type;
 
-        LineOperationDirection direction() const { return mDirection; }
+        [[nodiscard]] LineOperationDirection direction() const { return mDirection; }
 
         void operator()( QRgb *startRef, int lineLength, int bytesPerLine )
         {
@@ -515,7 +515,7 @@ class CORE_EXPORT QgsImageOperation
 
         typedef void result_type;
 
-        LineOperationDirection direction() const { return mDirection; }
+        [[nodiscard]] LineOperationDirection direction() const { return mDirection; }
 
         void operator()( QRgb *startRef, int lineLength, int bytesPerLine ) const;
 

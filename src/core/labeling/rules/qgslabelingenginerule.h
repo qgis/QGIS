@@ -166,17 +166,17 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
      *
      * The caller takes ownership of the returned object.
      */
-    virtual QgsAbstractLabelingEngineRule *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractLabelingEngineRule *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns a string uniquely identifying the rule subclass.
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     /**
      * Returns a user-friendly, translated string representing the rule type.
      */
-    virtual QString displayType() const = 0;
+    [[nodiscard]] virtual QString displayType() const = 0;
 
     /**
      * Returns TRUE if the rule is available for use within the current QGIS environment.
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
      * Rules can return FALSE if required dependencies are not available, e.g. if a library version
      * is too old for the rule.
      */
-    virtual bool isAvailable() const;
+    [[nodiscard]] virtual bool isAvailable() const;
 
     /**
      * Returns a user-friendly description of the rule.
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
      *
      * The returned string may contain HTML formatting.
      */
-    virtual QString description() const;
+    [[nodiscard]] virtual QString description() const;
 
     /**
      * Returns the name for this instance of the rule.
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
      *
      * \see setName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Sets the \a name for this instance of the rule.
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
      *
      * \see setActive()
      */
-    bool active() const;
+    [[nodiscard]] bool active() const;
 
     /**
      * Sets whether the rule is \a active.
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
      *
      * The default implementation returns the same bounds.
      */
-    virtual QgsRectangle modifyCandidateConflictSearchBoundingBox( const QgsRectangle &candidateBounds ) const SIP_SKIP;
+    [[nodiscard]] virtual QgsRectangle modifyCandidateConflictSearchBoundingBox( const QgsRectangle &candidateBounds ) const SIP_SKIP;
 
     /**
      * Returns TRUE if a labeling \a candidate violates the rule and should be eliminated.

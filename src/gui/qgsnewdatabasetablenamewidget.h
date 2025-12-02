@@ -66,33 +66,33 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QgsPanelWidget, private 
     /**
      * Returns the currently selected schema or file path (in case of filesystem-based DBs like spatialite or GPKG) for the new table
      */
-    QString schema() const;
+    [[nodiscard]] QString schema() const;
 
     /**
      * Returns the (possibly blank) string representation of the new table data source URI.
      * The URI might be invalid in case the widget is not in a valid state.
      */
-    QString uri() const;
+    [[nodiscard]] QString uri() const;
 
     /**
      * Returns the current name of the new table
      */
-    QString table() const;
+    [[nodiscard]] QString table() const;
 
     /**
      * Returns the currently selected data item provider key
      */
-    QString dataProviderKey() const;
+    [[nodiscard]] QString dataProviderKey() const;
 
     /**
      * Returns TRUE if the widget contains a valid new table name
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Returns the validation error or an empty string is the widget status is valid
      */
-    QString validationError() const;
+    [[nodiscard]] QString validationError() const;
 
     //! Scroll to last selected index and expand it's children
     void showEvent( QShowEvent *e ) override;
@@ -200,33 +200,33 @@ class GUI_EXPORT QgsNewDatabaseTableNameDialog : public QDialog
     /**
      * Returns the currently selected schema or file path (in case of filesystem-based DBs like spatialite or GPKG) for the new table
      */
-    QString schema() const;
+    [[nodiscard]] QString schema() const;
 
     /**
      * Returns the (possibly blank) string representation of the new table data source URI.
      * The URI might be invalid in case the widget is not in a valid state.
      */
-    QString uri() const;
+    [[nodiscard]] QString uri() const;
 
     /**
      * Returns the current name of the new table
      */
-    QString table() const;
+    [[nodiscard]] QString table() const;
 
     /**
      * Returns the currently selected data item provider key
      */
-    QString dataProviderKey() const;
+    [[nodiscard]] QString dataProviderKey() const;
 
     /**
      * Returns TRUE if the widget contains a valid new table name
      */
-    bool isValid() const;
+    [[nodiscard]] bool isValid() const;
 
     /**
      * Returns the validation error or an empty string is the widget status is valid
      */
-    QString validationError() const;
+    [[nodiscard]] QString validationError() const;
 
   private:
     QgsNewDatabaseTableNameWidget *mWidget = nullptr;

@@ -95,7 +95,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      * \see setFilePath()
      * \see splitFilePaths()
      */
-    QString filePath() const;
+    [[nodiscard]] QString filePath() const;
 
     /**
      * \brief Split the the quoted and space separated \a path and returns a list of strings.
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      *
      * \see setDialogTitle()
      */
-    QString dialogTitle() const;
+    [[nodiscard]] QString dialogTitle() const;
 
     /**
      * \brief Sets the \a title to use for the open file dialog.
@@ -133,7 +133,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     void setDialogTitle( const QString &title );
 
     //! returns the filters used for QDialog::getOpenFileName
-    QString filter() const;
+    [[nodiscard]] QString filter() const;
 
     /**
      * \brief setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      *
      * \since QGIS 3.14
      */
-    QFileDialog::Options options() const;
+    [[nodiscard]] QFileDialog::Options options() const;
 
     /**
      * \brief Set additional options used for QFileDialog.
@@ -174,7 +174,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      *
      * \see setSelectedFilter()
      */
-    QString selectedFilter() const { return mSelectedFilter; }
+    [[nodiscard]] QString selectedFilter() const { return mSelectedFilter; }
 
     /**
      * Sets whether a confirmation to overwrite an existing file will appear.
@@ -192,14 +192,14 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      *
      * \see setConfirmOverwrite()
      */
-    bool confirmOverwrite() const { return mConfirmOverwrite; }
+    [[nodiscard]] bool confirmOverwrite() const { return mConfirmOverwrite; }
 
     /**
      * Returns TRUE if the tool button is shown.
      *
      * \see setFileWidgetButtonVisible()
      */
-    bool fileWidgetButtonVisible() const;
+    [[nodiscard]] bool fileWidgetButtonVisible() const;
 
     /**
      * Sets whether the tool button is \a visible.
@@ -213,7 +213,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      *
      * \see setUseLink()
      */
-    bool useLink() const;
+    [[nodiscard]] bool useLink() const;
 
     /**
      * Sets whether the file path will be shown as a link.
@@ -227,7 +227,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      *
      * \see setFullUrl()
      */
-    bool fullUrl() const;
+    [[nodiscard]] bool fullUrl() const;
 
     /**
      * Sets whether links shown use the full path.
@@ -241,7 +241,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      *
      * \see setDefaultRoot()
      */
-    QString defaultRoot() const;
+    [[nodiscard]] QString defaultRoot() const;
 
     /**
      * Returns the default root path used as the first shown location when picking a file and used if the RelativeStorage is RelativeDefaultPath.
@@ -255,7 +255,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      *
      * \see setStorageMode()
      */
-    QgsFileWidget::StorageMode storageMode() const;
+    [[nodiscard]] QgsFileWidget::StorageMode storageMode() const;
 
     /**
      * Sets the widget's storage mode (i.e. file or directory).
@@ -269,7 +269,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      *
      * \see setRelativeStorage()
      */
-    QgsFileWidget::RelativeStorage relativeStorage() const;
+    [[nodiscard]] QgsFileWidget::RelativeStorage relativeStorage() const;
 
     /**
      * Sets whether the relative path is with respect to the project path or the default path.
@@ -340,14 +340,14 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QHBoxLayout *mLayout = nullptr;
 
     //! returns a HTML code with a link to the given file path
-    QString toUrl( const QString &path ) const;
+    [[nodiscard]] QString toUrl( const QString &path ) const;
 
     //! Returns a filePath with relative path options applied (or not) !
-    QString relativePath( const QString &filePath, bool removeRelative ) const;
+    [[nodiscard]] QString relativePath( const QString &filePath, bool removeRelative ) const;
 
     // QWidget interface
   public:
-    QSize minimumSizeHint() const override;
+    [[nodiscard]] QSize minimumSizeHint() const override;
 
     friend class TestQgsFileWidget;
     friend class TestQgsExternalStorageFileWidget;

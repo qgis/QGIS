@@ -69,14 +69,14 @@ class GUI_EXPORT QgsPlotRubberBand : public QObject
     /**
      * Returns the canvas associated with the rubber band.
      */
-    QgsPlotCanvas *canvas() const;
+    [[nodiscard]] QgsPlotCanvas *canvas() const;
 
     /**
      * Returns the brush used for drawing the rubber band.
      * \see setBrush()
      * \see pen()
      */
-    QBrush brush() const;
+    [[nodiscard]] QBrush brush() const;
 
     /**
      * Sets the \a brush used for drawing the rubber band.
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsPlotRubberBand : public QObject
      * \see setPen()
      * \see brush()
      */
-    QPen pen() const;
+    [[nodiscard]] QPen pen() const;
 
     /**
      * Sets the \a pen used for drawing the rubber band.

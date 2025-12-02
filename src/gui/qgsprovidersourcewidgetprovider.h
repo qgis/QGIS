@@ -40,7 +40,7 @@ class GUI_EXPORT QgsProviderSourceWidgetProvider
     virtual ~QgsProviderSourceWidgetProvider();
 
     //! Provider key
-    virtual QString providerKey() const = 0;
+    [[nodiscard]] virtual QString providerKey() const = 0;
 
     /**
      * Source widget provider name, this is useful to retrieve
@@ -49,7 +49,7 @@ class GUI_EXPORT QgsProviderSourceWidgetProvider
      *
      * The default implementation returns the providerKey()
      */
-    virtual QString name() const { return providerKey(); }
+    [[nodiscard]] virtual QString name() const { return providerKey(); }
 
     //! Returns TRUE if the provider can handle the specified \a layer.
     virtual bool canHandleLayer( QgsMapLayer *layer ) const = 0;

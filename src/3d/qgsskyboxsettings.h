@@ -46,12 +46,12 @@ class _3D_EXPORT QgsSkyboxSettings
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
     //! Returns the type of the skybox
-    QgsSkyboxEntity::SkyboxType skyboxType() const { return mSkyboxType; }
+    [[nodiscard]] QgsSkyboxEntity::SkyboxType skyboxType() const { return mSkyboxType; }
     //! Sets the type of the skybox
     void setSkyboxType( QgsSkyboxEntity::SkyboxType type ) { mSkyboxType = type; }
 
     //! Returns the panoramic texture path of a skybox of type "Panormaic skybox"
-    QString panoramicTexturePath() const { return mPanoramicTexturePath; }
+    [[nodiscard]] QString panoramicTexturePath() const { return mPanoramicTexturePath; }
     //! Sets the panoramic texture path of a skybox of type "Panoramic skybox"
     void setPanoramicTexturePath( const QString &texturePath ) { mPanoramicTexturePath = texturePath; }
 
@@ -59,7 +59,7 @@ class _3D_EXPORT QgsSkyboxSettings
      * Returns a map containing the path of each texture specified by the user.
      * The map will contain the following keys corresponding to each face "posX", "posY", "posZ", "negX", "negY", "negZ".
      */
-    QMap<QString, QString> cubeMapFacesPaths() const { return mCubeMapFacesPaths; }
+    [[nodiscard]] QMap<QString, QString> cubeMapFacesPaths() const { return mCubeMapFacesPaths; }
 
     /**
      * Sets a face of one of the skybox 6 textures

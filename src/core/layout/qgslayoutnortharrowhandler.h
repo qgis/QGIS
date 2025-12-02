@@ -49,7 +49,7 @@ class CORE_EXPORT QgsLayoutNorthArrowHandler: public QObject
     /**
      * Returns the rotation to be used for the arrow, in degrees clockwise.
      */
-    double arrowRotation() const { return mArrowRotation; }
+    [[nodiscard]] double arrowRotation() const { return mArrowRotation; }
 
     /**
      * Sets the linked \a map item.
@@ -64,14 +64,14 @@ class CORE_EXPORT QgsLayoutNorthArrowHandler: public QObject
      *
      * \see setLinkedMap()
      */
-    QgsLayoutItemMap *linkedMap() const;
+    [[nodiscard]] QgsLayoutItemMap *linkedMap() const;
 
     /**
      * Returns the mode used to calculate the arrow rotation.
      * \see setNorthMode()
      * \see northOffset()
      */
-    NorthMode northMode() const { return mNorthMode; }
+    [[nodiscard]] NorthMode northMode() const { return mNorthMode; }
 
     /**
      * Sets the \a mode used to calculate the arrow rotation.
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsLayoutNorthArrowHandler: public QObject
      * \see setNorthOffset()
      * \see northMode()
      */
-    double northOffset() const { return mNorthOffset; }
+    [[nodiscard]] double northOffset() const { return mNorthOffset; }
 
     /**
      * Sets the \a offset added to the arrows's rotation from a map's North.

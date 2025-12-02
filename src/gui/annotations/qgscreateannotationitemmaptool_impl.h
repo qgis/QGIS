@@ -69,7 +69,7 @@ class GUI_EXPORT QgsCreatePointTextItemMapTool : public QgsMapToolAdvancedDigiti
     ~QgsCreatePointTextItemMapTool() override;
 
     void cadCanvasPressEvent( QgsMapMouseEvent *event ) override;
-    QgsCreateAnnotationItemMapToolHandler *handler() const override;
+    [[nodiscard]] QgsCreateAnnotationItemMapToolHandler *handler() const override;
     QgsMapTool *mapTool() override;
 
   private:
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsCreateRectangleTextItemMapTool : public QgsMapToolAdvancedDi
     void cadCanvasMoveEvent( QgsMapMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
-    QgsCreateAnnotationItemMapToolHandler *handler() const override;
+    [[nodiscard]] QgsCreateAnnotationItemMapToolHandler *handler() const override;
     QgsMapTool *mapTool() override;
 
   private:
@@ -190,7 +190,7 @@ class GUI_EXPORT QgsCreatePictureItemMapTool : public QgsMapToolAdvancedDigitizi
     void cadCanvasMoveEvent( QgsMapMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
-    QgsCreateAnnotationItemMapToolHandler *handler() const override;
+    [[nodiscard]] QgsCreateAnnotationItemMapToolHandler *handler() const override;
     QgsMapTool *mapTool() override;
 
   private:

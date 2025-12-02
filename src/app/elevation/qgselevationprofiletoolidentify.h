@@ -32,7 +32,7 @@ class QgsElevationProfileToolIdentify : public QgsPlotTool
     QgsElevationProfileToolIdentify( QgsElevationProfileCanvas *canvas );
     ~QgsElevationProfileToolIdentify() override;
 
-    Qgis::PlotToolFlags flags() const override;
+    [[nodiscard]] Qgis::PlotToolFlags flags() const override;
     void plotPressEvent( QgsPlotMouseEvent *event ) override;
     void plotReleaseEvent( QgsPlotMouseEvent *event ) override;
     void plotMoveEvent( QgsPlotMouseEvent *event ) override;

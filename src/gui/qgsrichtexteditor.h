@@ -84,7 +84,7 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
      *
      * \since QGIS 3.40
      */
-    Mode mode() const { return mMode; }
+    [[nodiscard]] Mode mode() const { return mMode; }
 
     /**
      * Sets the widget's \a mode, which defines which formatting options are exposed in the widget.
@@ -100,14 +100,14 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
      *
      * \see toHtml()
      */
-    QString toPlainText() const;
+    [[nodiscard]] QString toPlainText() const;
 
     /**
      * Returns the widget's content as a HTML string.
      *
      * \see toPlainText()
      */
-    QString toHtml() const;
+    [[nodiscard]] QString toHtml() const;
 
     /**
      * Returns the widget's QTextEditor control.
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
      *
      * \see setTextCursor()
      */
-    QTextCursor textCursor() const { return mTextEdit->textCursor(); }
+    [[nodiscard]] QTextCursor textCursor() const { return mTextEdit->textCursor(); }
 
     /**
      * Sets the current text \a cursor.

@@ -188,7 +188,7 @@ class TestDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "test" ); }
-    Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::NetworkSources; }
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::NetworkSources; }
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
     {
       if ( path.isEmpty() )

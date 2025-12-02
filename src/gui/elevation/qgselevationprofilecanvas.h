@@ -55,9 +55,9 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsElevationProfileCanvas( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsElevationProfileCanvas() override;
-    QgsCoordinateReferenceSystem crs() const override;
-    QgsPoint toMapCoordinates( const QgsPointXY &point ) const override;
-    QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const override;
+    [[nodiscard]] QgsCoordinateReferenceSystem crs() const override;
+    [[nodiscard]] QgsPoint toMapCoordinates( const QgsPointXY &point ) const override;
+    [[nodiscard]] QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const override;
     void resizeEvent( QResizeEvent *event ) override;
     void paintEvent( QPaintEvent *event ) override;
     void cancelJobs() override SIP_SKIP;
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     /**
      * Returns the interior rectangle representing the surface of the plot, in canvas coordinates.
      */
-    QRectF plotArea() const;
+    [[nodiscard]] QRectF plotArea() const;
 
     /**
      * Triggers a complete regeneration of the profile, causing the profile extraction to perform in the
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      *
      * \see setLayers()
      */
-    QList<QgsMapLayer *> layers() const;
+    [[nodiscard]] QList<QgsMapLayer *> layers() const;
 
     /**
      * Sets the list of \a sources to include in the profile.
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      *
      * \see setSources()
      */
-    QList<QgsAbstractProfileSource *> sources() const;
+    [[nodiscard]] QList<QgsAbstractProfileSource *> sources() const;
 
     /**
      * Sets the \a crs associated with the canvas' map coordinates.
@@ -155,7 +155,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      *
      * \see setProfileCurve()
      */
-    QgsCurve *profileCurve() const;
+    [[nodiscard]] QgsCurve *profileCurve() const;
 
     /**
      * Sets the profile tolerance (in crs() units).
@@ -177,7 +177,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      *
      * \see setTolerance()
      */
-    double tolerance() const { return mTolerance; }
+    [[nodiscard]] double tolerance() const { return mTolerance; }
 
     /**
      * Sets the visible area of the plot.
@@ -193,7 +193,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      * \see visibleElevationRange()
      * \see setVisiblePlotRange()
      */
-    QgsDoubleRange visibleDistanceRange() const;
+    [[nodiscard]] QgsDoubleRange visibleDistanceRange() const;
 
     /**
      * Returns the elevation range currently visible in the plot.
@@ -201,14 +201,14 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      * \see visibleDistanceRange()
      * \see setVisiblePlotRange()
      */
-    QgsDoubleRange visibleElevationRange() const;
+    [[nodiscard]] QgsDoubleRange visibleElevationRange() const;
 
     /**
      * Returns a reference to the 2D plot used by the widget.
      *
      * \note Not available in Python bindings
      */
-    const Qgs2DXyPlot &plot() const SIP_SKIP;
+    [[nodiscard]] const Qgs2DXyPlot &plot() const SIP_SKIP;
 
     /**
      * Renders a portion of the profile using the specified render \a context.
@@ -230,14 +230,14 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      *
      * \see plotPointToCanvasPoint()
      */
-    QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
+    [[nodiscard]] QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
 
     /**
      * Converts a plot point to the equivalent canvas point.
      *
      * \see canvasPointToPlotPoint()
      */
-    QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
+    [[nodiscard]] QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
 
     /**
      * Returns TRUE if the distance and elevation scales are locked to each other.
@@ -245,7 +245,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      * \see setLockAxisScales()
      * \since QGIS 3.32
      */
-    bool lockAxisScales() const;
+    [[nodiscard]] bool lockAxisScales() const;
 
     /**
      * Sets whether the distance and elevation scales are locked to each other.
@@ -262,7 +262,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      * \see setAxisScaleRatio()
      * \since QGIS 4.0
      */
-    double axisScaleRatio() const;
+    [[nodiscard]] double axisScaleRatio() const;
 
     /**
      * Sets the ratio of horizontal (distance) to vertical (elevation) scale for the plot.
@@ -284,7 +284,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      * \see setDistanceUnit()
      * \since QGIS 3.32
      */
-    Qgis::DistanceUnit distanceUnit() const;
+    [[nodiscard]] Qgis::DistanceUnit distanceUnit() const;
 
     /**
      * Sets the distance \a unit used by the canvas.
@@ -377,8 +377,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
   private:
     void updateChartFromPalette();
-    QgsProfileSnapContext snapContext() const;
-    QgsProfileIdentifyContext identifyContext() const;
+    [[nodiscard]] QgsProfileSnapContext snapContext() const;
+    [[nodiscard]] QgsProfileIdentifyContext identifyContext() const;
 
     void setupLayerConnections( QgsMapLayer *layer, bool isDisconnect );
 

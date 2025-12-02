@@ -275,13 +275,13 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * Clones the metadata object.
      * \since QGIS 3.2
      */
-    virtual QgsAbstractMetadataBase *clone() const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractMetadataBase *clone() const = 0 SIP_FACTORY;
 
     /**
      * A reference, URI, URL or some other mechanism to identify the resource.
      * \see setIdentifier()
      */
-    QString identifier() const;
+    [[nodiscard]] QString identifier() const;
 
     /**
      * Sets the reference, URI, URL or some other mechanism to identify the resource.
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * Returns an empty string if no parent identifier is set.
      * \see setParentIdentifier()
      */
-    QString parentIdentifier() const;
+    [[nodiscard]] QString parentIdentifier() const;
 
     /**
      * Sets a reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * values.
      * \see setLanguage()
      */
-    QString language() const;
+    [[nodiscard]] QString language() const;
 
     /**
      * Sets the human \a language associated with the resource. While a formal vocabulary is not imposed,
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
      * \see setType()
      */
-    QString type() const;
+    [[nodiscard]] QString type() const;
 
     /**
      * Sets the \a type (nature) of the resource.  While a formal vocabulary is not imposed, it is advised
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * Returns the human readable name of the resource, typically displayed in search results.
      * \see setTitle()
      */
-    QString title() const;
+    [[nodiscard]] QString title() const;
 
     /**
      * Sets the human readable \a title (name) of the resource, typically displayed in search results.
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * Returns a free-form description of the resource.
      * \see setAbstract()
      */
-    QString abstract() const;
+    [[nodiscard]] QString abstract() const;
 
     /**
      * Sets a free-form \a abstract (description) of the resource.
@@ -362,7 +362,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * Returns a freeform description of the history or lineage of the resource.
      * \see setHistory()
      */
-    QStringList history() const;
+    [[nodiscard]] QStringList history() const;
 
     /**
      * Sets the freeform description of the \a history or lineage of the resource.
@@ -390,7 +390,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * \see setKeywords()
      * \see keywordVocabularies()
      */
-    QgsAbstractMetadataBase::KeywordMap keywords() const;
+    [[nodiscard]] QgsAbstractMetadataBase::KeywordMap keywords() const;
 
     /**
      * Sets the \a keywords map, which is a set of descriptive keywords associated with the resource.
@@ -434,7 +434,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      *
      * \see keywords()
      */
-    QStringList keywordVocabularies() const;
+    [[nodiscard]] QStringList keywordVocabularies() const;
 
     /**
      * Returns a list of keywords for the specified \a vocabulary.
@@ -446,7 +446,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      *
      * \see keywordVocabularies()
      */
-    QStringList keywords( const QString &vocabulary ) const;
+    [[nodiscard]] QStringList keywords( const QString &vocabulary ) const;
 
     /**
      * Returns categories of the resource.
@@ -454,7 +454,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      *
      * \see keywords()
      */
-    QStringList categories() const;
+    [[nodiscard]] QStringList categories() const;
 
     /**
      * Sets categories of the resource.
@@ -468,7 +468,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * Returns a list of contact persons or entities associated with the resource.
      * \see setContacts()
      */
-    QgsAbstractMetadataBase::ContactList contacts() const;
+    [[nodiscard]] QgsAbstractMetadataBase::ContactList contacts() const;
 
     /**
      * Sets the list of \a contacts or entities associated with the resource. Any existing contacts
@@ -489,7 +489,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * Returns a list of online resources associated with the resource.
      * \see setLinks()
      */
-    QgsAbstractMetadataBase::LinkList links() const;
+    [[nodiscard]] QgsAbstractMetadataBase::LinkList links() const;
 
     /**
      * Sets the list of online resources associated with the resource. Any existing links
@@ -512,7 +512,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * \see setDateTime()
      * \since QGIS 3.30
      */
-    QDateTime dateTime( Qgis::MetadataDateType type ) const;
+    [[nodiscard]] QDateTime dateTime( Qgis::MetadataDateType type ) const;
 
     /**
      * Sets a date value for the specified date \a type.
@@ -621,7 +621,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      *
      * \since QGIS 3.2
      */
-    bool equals( const QgsAbstractMetadataBase &other ) const;
+    [[nodiscard]] bool equals( const QgsAbstractMetadataBase &other ) const;
 
 };
 

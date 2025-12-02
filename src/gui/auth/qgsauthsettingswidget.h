@@ -86,7 +86,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief username
      * \return basic authentication username
      */
-    QString username() const;
+    [[nodiscard]] QString username() const;
 
     /**
      * \brief setUsername set the username
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief password
      * \return basic authentication password
      */
-    QString password() const;
+    [[nodiscard]] QString password() const;
 
     /**
      * \brief setPassword set the password
@@ -110,7 +110,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief configId
      * \return authentication configuration id
      */
-    QString configId() const;
+    [[nodiscard]] QString configId() const;
 
     /**
      * \brief setConfigId set the authentication configuration id
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief dataprovider
      * \return the data provider key used to filter compatible authentication configurations
      */
-    QString dataprovider() const;
+    [[nodiscard]] QString dataprovider() const;
 
     /**
      * \brief warning text message based upon where credentials are stored
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief convertButtonEnabled, mainly useful for unit tests
      * \return TRUE if the convert button is enabled
      */
-    bool btnConvertToEncryptedIsEnabled() const;
+    [[nodiscard]] bool btnConvertToEncryptedIsEnabled() const;
 
     /**
      * \brief showStoreCheckboxes show the "Store" checkboxes for basic auth.
@@ -170,13 +170,13 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \brief storePassword
      * \return TRUE if "Store" checkbox for the password is checked
      */
-    bool storePasswordIsChecked() const;
+    [[nodiscard]] bool storePasswordIsChecked() const;
 
     /**
      * \brief storeUsername
      * \return TRUE if "Store" checkbox for the username is checked
      */
-    bool storeUsernameIsChecked() const;
+    [[nodiscard]] bool storeUsernameIsChecked() const;
 
     /**
      * \brief configurationTabIsSelected

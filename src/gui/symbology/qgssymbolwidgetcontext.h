@@ -50,7 +50,7 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
      * Returns the map canvas associated with the widget.
      * \see setMapCanvas()
      */
-    QgsMapCanvas *mapCanvas() const;
+    [[nodiscard]] QgsMapCanvas *mapCanvas() const;
 
     /**
      * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
      * \see setMessageBar()
      * \since QGIS 3.6
      */
-    QgsMessageBar *messageBar() const;
+    [[nodiscard]] QgsMessageBar *messageBar() const;
 
     /**
      * Sets the optional expression context used for the widget. This expression context is used for
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
      * the layer widget.
      * \see setExpressionContext()
      */
-    QgsExpressionContext *expressionContext() const;
+    [[nodiscard]] QgsExpressionContext *expressionContext() const;
 
     /**
      * Sets a list of additional expression context scopes to show as available within the layer.
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
      * Returns the list of additional expression context scopes to show as available within the layer.
      * \see setAdditionalExpressionContextScopes()
      */
-    QList<QgsExpressionContextScope> additionalExpressionContextScopes() const;
+    [[nodiscard]] QList<QgsExpressionContextScope> additionalExpressionContextScopes() const;
 
     /**
      * Returns list of scopes: global, project, atlas, map, layer.
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
      * \see setSymbolType()
      * \since QGIS 3.18
      */
-    Qgis::SymbolType symbolType() const;
+    [[nodiscard]] Qgis::SymbolType symbolType() const;
 
     /**
      * Sets the associated symbol \a type, if the widget is being shown as a subcomponent

@@ -33,8 +33,8 @@ class QgsRasterFrequencyByComparisonOperatorBase : public QgsProcessingAlgorithm
   public:
     QgsRasterFrequencyByComparisonOperatorBase() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QString group() const override;
-    QString groupId() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -59,12 +59,12 @@ class QgsRasterFrequencyByEqualOperatorAlgorithm : public QgsRasterFrequencyByCo
 {
   public:
     QgsRasterFrequencyByEqualOperatorAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRasterFrequencyByEqualOperatorAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRasterFrequencyByEqualOperatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     int applyComparisonOperator( double searchValue, std::vector<double> cellValueStack ) override;
@@ -74,12 +74,12 @@ class QgsRasterFrequencyByGreaterThanOperatorAlgorithm : public QgsRasterFrequen
 {
   public:
     QgsRasterFrequencyByGreaterThanOperatorAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRasterFrequencyByGreaterThanOperatorAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRasterFrequencyByGreaterThanOperatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     int applyComparisonOperator( double value, std::vector<double> cellValueStack ) override;
@@ -89,12 +89,12 @@ class QgsRasterFrequencyByLessThanOperatorAlgorithm : public QgsRasterFrequencyB
 {
   public:
     QgsRasterFrequencyByLessThanOperatorAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    QgsRasterFrequencyByLessThanOperatorAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] QgsRasterFrequencyByLessThanOperatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     int applyComparisonOperator( double value, std::vector<double> cellValueStack ) override;

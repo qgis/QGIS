@@ -33,7 +33,7 @@ class QgsWcsSourceWidgetProvider : public QgsProviderSourceWidgetProvider
 {
   public:
     QgsWcsSourceWidgetProvider();
-    QString providerKey() const override;
+    [[nodiscard]] QString providerKey() const override;
     bool canHandleLayer( QgsMapLayer *layer ) const override;
     QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override;
 };

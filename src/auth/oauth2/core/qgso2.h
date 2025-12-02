@@ -42,7 +42,7 @@ class QgsO2 : public O2
     ~QgsO2() override;
 
     //! Authentication configuration id
-    QString authcfg() const { return mAuthcfg; }
+    [[nodiscard]] QString authcfg() const { return mAuthcfg; }
 
     //! OAuth2 configuration
     QgsAuthOAuth2Config *oauth2config() { return mOAuth2Config; }
@@ -50,7 +50,7 @@ class QgsO2 : public O2
     Q_PROPERTY( QString state READ state WRITE setState NOTIFY stateChanged )
 
     //! Retrieve oauth2 state
-    QString state() const { return state_; }
+    [[nodiscard]] QString state() const { return state_; }
 
     //! Store oauth2 state to a random value when called
     void setState( const QString &value );
@@ -68,7 +68,7 @@ class QgsO2 : public O2
      * Returns expiration delay.
      * May be 0 if it is unknown
      */
-    int expirationDelay() const { return mExpirationDelay; }
+    [[nodiscard]] int expirationDelay() const { return mExpirationDelay; }
 
   public slots:
 
@@ -109,7 +109,7 @@ class QgsO2 : public O2
 
     void setVerificationResponseContent();
 
-    bool isLocalHost( const QUrl redirectUrl ) const;
+    [[nodiscard]] bool isLocalHost( const QUrl redirectUrl ) const;
 
     // Activate a timer to automatically refresh the token
     void startRefreshTimer();

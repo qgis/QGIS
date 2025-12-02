@@ -47,14 +47,14 @@ class CORE_EXPORT QgsGeographicCoordinateNumericFormat : public QgsBasicNumericF
       */
     QgsGeographicCoordinateNumericFormat();
 
-    QString id() const override;
-    QString visibleName() const override;
+    [[nodiscard]] QString id() const override;
+    [[nodiscard]] QString visibleName() const override;
     int sortKey() override;
-    double suggestSampleValue() const override;
-    QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
-    QgsGeographicCoordinateNumericFormat *clone() const override SIP_FACTORY;
-    QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
-    QVariantMap configuration( const QgsReadWriteContext &context ) const override;
+    [[nodiscard]] double suggestSampleValue() const override;
+    [[nodiscard]] QString formatDouble( double value, const QgsNumericFormatContext &context ) const override;
+    [[nodiscard]] QgsGeographicCoordinateNumericFormat *clone() const override SIP_FACTORY;
+    [[nodiscard]] QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const override SIP_FACTORY;
+    [[nodiscard]] QVariantMap configuration( const QgsReadWriteContext &context ) const override;
 
     /**
      * Returns the angle format, which controls how bearing the angles are formatted
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsGeographicCoordinateNumericFormat : public QgsBasicNumericF
      *
      * \see setAngleFormat()
      */
-    AngleFormat angleFormat() const;
+    [[nodiscard]] AngleFormat angleFormat() const;
 
     /**
      * Sets the directional formatting option, which controls how bearing the angles are formatted
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsGeographicCoordinateNumericFormat : public QgsBasicNumericF
      *
      * \see setShowLeadingZeros()
      */
-    bool showLeadingZeros() const;
+    [[nodiscard]] bool showLeadingZeros() const;
 
     /**
      * Sets whether leading zeros in the minutes or seconds values should be shown.
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsGeographicCoordinateNumericFormat : public QgsBasicNumericF
      *
      * \see setShowDegreeLeadingZeros()
      */
-    bool showDegreeLeadingZeros() const;
+    [[nodiscard]] bool showDegreeLeadingZeros() const;
 
     /**
      * Sets whether leading zeros for the degree values should be shown.
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsGeographicCoordinateNumericFormat : public QgsBasicNumericF
      *
      * \see setShowDirectionalSuffix()
      */
-    bool showDirectionalSuffix() const;
+    [[nodiscard]] bool showDirectionalSuffix() const;
 
     /**
      * Sets whether directional suffixes (e.g. "N") should be included.

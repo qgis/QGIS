@@ -53,7 +53,7 @@ class CORE_EXPORT QgsLabelPointSettings
      *
      * \see setQuadrant()
     */
-    Qgis::LabelQuadrantPosition quadrant() const { return mQuadrant; }
+    [[nodiscard]] Qgis::LabelQuadrantPosition quadrant() const { return mQuadrant; }
 
     /**
      * Sets the \a quadrant in which to offset labels from the point.
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsLabelPointSettings
      *
      * \see setPredefinedPositionOrder()
     */
-    QVector< Qgis::LabelPredefinedPointPosition > predefinedPositionOrder() const { return mPredefinedPositionOrder; }
+    [[nodiscard]] QVector< Qgis::LabelPredefinedPointPosition > predefinedPositionOrder() const { return mPredefinedPositionOrder; }
 
     /**
      * Sets the ordered list of predefined label positions for points.
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsLabelPointSettings
      * \see maximumDistanceUnit()
      * \see maximumDistanceMapUnitScale()
      */
-    double maximumDistance() const { return mMaximumDistance; }
+    [[nodiscard]] double maximumDistance() const { return mMaximumDistance; }
 
     /**
      * Sets the maximum \a distance which labels are allowed to be from their corresponding points.
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsLabelPointSettings
      * \see maximumDistance()
      * \see maximumDistanceMapUnitScale()
      */
-    Qgis::RenderUnit maximumDistanceUnit() const { return mMaximumDistanceUnit; }
+    [[nodiscard]] Qgis::RenderUnit maximumDistanceUnit() const { return mMaximumDistanceUnit; }
 
     /**
      * Sets the \a unit for label maximum distance.
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsLabelPointSettings
      * \see maximumDistance()
      * \see maximumDistanceUnit()
      */
-    QgsMapUnitScale maximumDistanceMapUnitScale() const { return mMaximumDistanceMapUnitScale; }
+    [[nodiscard]] QgsMapUnitScale maximumDistanceMapUnitScale() const { return mMaximumDistanceMapUnitScale; }
 
     /**
      * Sets the map unit \a scale for label maximum distance.

@@ -158,7 +158,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * Returns a description of the last error encountered.
      * \since QGIS 3.4
      */
-    QString lastError() const;
+    [[nodiscard]] QString lastError() const;
 
     /**
      * Sets a list of data source creation options to use when creating the output raster file.
@@ -174,7 +174,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \see setCreationOptions()
      * \since QGIS 3.44
      */
-    QStringList creationOptions() const { return mCreationOptions; }
+    [[nodiscard]] QStringList creationOptions() const { return mCreationOptions; }
 
     /**
      * Set no data value for output file.
@@ -190,7 +190,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \see setNoDataValue()
      * \since QGIS 3.44
      */
-    double noDataValue() const { return mNoDataValue; }
+    [[nodiscard]] double noDataValue() const { return mNoDataValue; }
 
   private:
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory

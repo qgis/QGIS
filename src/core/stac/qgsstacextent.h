@@ -51,7 +51,7 @@ class CORE_EXPORT QgsStacExtent
     void addDetailedSpatialExtent( QgsRectangle extent );
 
     //! Returns the overall spatial extent
-    QgsBox3D spatialExtent() const;
+    [[nodiscard]] QgsBox3D spatialExtent() const;
 
     //! Sets the overall temporal extent to \a extent
     void setTemporalExtent( QgsDateTimeRange extent );
@@ -60,19 +60,19 @@ class CORE_EXPORT QgsStacExtent
     void addDetailedTemporalExtent( QgsDateTimeRange extent );
 
     //! Returns the overall temporal extent
-    QgsDateTimeRange temporalExtent() const;
+    [[nodiscard]] QgsDateTimeRange temporalExtent() const;
 
     //! Returns all detailed spatial sub extents defined
-    QVector< QgsBox3D > detailedSpatialExtents() const;
+    [[nodiscard]] QVector< QgsBox3D > detailedSpatialExtents() const;
 
     //! Returns all detailed temporal sub extents defined
-    QVector< QgsDateTimeRange > detailedTemporalExtents() const;
+    [[nodiscard]] QVector< QgsDateTimeRange > detailedTemporalExtents() const;
 
     //! Returns TRUE if there are detailed spatial sub extents defined
-    bool hasDetailedSpatialExtents() const;
+    [[nodiscard]] bool hasDetailedSpatialExtents() const;
 
     //! Returns TRUE if there are detailed temporal sub extents defined
-    bool hasDetailedTemporalExtents() const;
+    [[nodiscard]] bool hasDetailedTemporalExtents() const;
 
   private:
     QgsBox3D mSpatialExtent;

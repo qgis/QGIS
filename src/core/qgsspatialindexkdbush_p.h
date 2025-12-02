@@ -94,7 +94,7 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsSpati
       sortKD( 0, size - 1, 0 );
     }
 
-    std::size_t size() const
+    [[nodiscard]] std::size_t size() const
     {
       return points.size();
     }

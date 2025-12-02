@@ -179,7 +179,7 @@ class CORE_EXPORT QgsLayerMetadataSearchResults
     /**
      * Returns the list of metadata results.
      */
-    QList<QgsLayerMetadataProviderResult> metadata() const;
+    [[nodiscard]] QList<QgsLayerMetadataProviderResult> metadata() const;
 
     /**
      * Adds a \a Metadata record to the list of results.
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsLayerMetadataSearchResults
     /**
      * Returns the list of errors occurred during a metadata search.
      */
-    QStringList errors() const;
+    [[nodiscard]] QStringList errors() const;
 
     /**
      * Adds a \a error to the list of errors.
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsAbstractLayerMetadataProvider
      * Returns the id of the layer metadata provider implementation, usually the name of the data provider
      * but it may be another unique identifier.
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     /**
      * Searches for metadata optionally filtering by search string and geographic extent.

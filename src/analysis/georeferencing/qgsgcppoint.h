@@ -54,7 +54,7 @@ class ANALYSIS_EXPORT QgsGcpPoint
      *
      * \see setSourcePoint()
      */
-    QgsPointXY sourcePoint() const { return mSourcePoint; }
+    [[nodiscard]] QgsPointXY sourcePoint() const { return mSourcePoint; }
 
     /**
      * Sets the source coordinates.
@@ -70,7 +70,7 @@ class ANALYSIS_EXPORT QgsGcpPoint
      *
      * \see setDestinationPoint()
      */
-    QgsPointXY destinationPoint() const { return mDestinationPoint; }
+    [[nodiscard]] QgsPointXY destinationPoint() const { return mDestinationPoint; }
 
     /**
      * Sets the destination coordinates.
@@ -84,7 +84,7 @@ class ANALYSIS_EXPORT QgsGcpPoint
      *
      * \see setDestinationPointCrs()
      */
-    QgsCoordinateReferenceSystem destinationPointCrs() const;
+    [[nodiscard]] QgsCoordinateReferenceSystem destinationPointCrs() const;
 
     /**
      * Sets the \a crs of the destination point.
@@ -96,14 +96,14 @@ class ANALYSIS_EXPORT QgsGcpPoint
     /**
      * Returns the destinationPoint() transformed to the given target CRS.
      */
-    QgsPointXY transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
+    [[nodiscard]] QgsPointXY transformedDestinationPoint( const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
 
     /**
      * Returns TRUE if the point is currently enabled.
      *
      * \see setEnabled()
      */
-    bool isEnabled() const { return mEnabled; }
+    [[nodiscard]] bool isEnabled() const { return mEnabled; }
 
     /**
      * Sets whether the point is currently enabled.

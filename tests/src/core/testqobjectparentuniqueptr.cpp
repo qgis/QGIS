@@ -56,7 +56,7 @@ class TestQObjectChild
     }
 
     void setValue( int value ) { mValue = value; }
-    int value() const { return mValue; }
+    [[nodiscard]] int value() const { return mValue; }
 
   private:
     TestQObjectOwner *mParent = nullptr;

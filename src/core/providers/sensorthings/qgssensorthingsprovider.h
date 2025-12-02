@@ -85,12 +85,12 @@ class QgsSensorThingsProviderMetadata final: public QgsProviderMetadata
 
   public:
     QgsSensorThingsProviderMetadata();
-    QIcon icon() const final;
-    QList<QgsDataItemProvider *> dataItemProviders() const final;
-    QVariantMap decodeUri( const QString &uri ) const final;
-    QString encodeUri( const QVariantMap &parts ) const final;
+    [[nodiscard]] QIcon icon() const final;
+    [[nodiscard]] QList<QgsDataItemProvider *> dataItemProviders() const final;
+    [[nodiscard]] QVariantMap decodeUri( const QString &uri ) const final;
+    [[nodiscard]] QString encodeUri( const QVariantMap &parts ) const final;
     QgsSensorThingsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) final;
-    QList< Qgis::LayerType > supportedLayerTypes() const final;
+    [[nodiscard]] QList< Qgis::LayerType > supportedLayerTypes() const final;
 
     // handling of stored connections
 

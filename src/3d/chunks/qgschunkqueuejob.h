@@ -84,7 +84,7 @@ class QgsChunkQueueJob : public QObject
      * A job is initialized as not finished and will be set to finished, once the `finished` signal
      * has been emitted.
      */
-    bool isFinished() const;
+    [[nodiscard]] bool isFinished() const;
 
   signals:
     //! Emitted when the asynchronous job has finished. Not emitted if the job got canceled.

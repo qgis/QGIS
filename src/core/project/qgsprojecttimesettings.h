@@ -60,7 +60,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      * \see setTemporalRange()
      * \see temporalRangeChanged()
      */
-    QgsDateTimeRange temporalRange() const;
+    [[nodiscard]] QgsDateTimeRange temporalRange() const;
 
     /**
      * Sets the project's temporal \a range, which indicates the earliest
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      * \see setTimeStepUnit()
      * \see timeStep()
      */
-    Qgis::TemporalUnit timeStepUnit() const;
+    [[nodiscard]] Qgis::TemporalUnit timeStepUnit() const;
 
     /**
      * Sets the project's time step (length of one animation frame) \a unit, which is used as the default value when
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      * \see setTimeStep()
      * \see timeStepUnit()
      */
-    double timeStep() const;
+    [[nodiscard]] double timeStep() const;
 
     /**
      * Sets the project's time \a step (length of one animation frame), which is used as the default value when
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      *
      * \see setFramesPerSecond()
      */
-    double framesPerSecond() const;
+    [[nodiscard]] double framesPerSecond() const;
 
     /**
      * Sets the project's temporal range as cumulative in animation settings.
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      *
      * \see setIsTemporalRangeCumulative()
      */
-    bool isTemporalRangeCumulative() const;
+    [[nodiscard]] bool isTemporalRangeCumulative() const;
 
     /**
      * Returns the total number of frames for the project's movie.
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      *
      * \since QGIS 3.36
      */
-    long long totalMovieFrames() const;
+    [[nodiscard]] long long totalMovieFrames() const;
 
     /**
      * Sets the total number of \a frames for the movie.

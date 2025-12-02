@@ -44,10 +44,10 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
       : QToolButton( parent )
     {}
 
-    bool altDown() const { return mAltDown; }
+    [[nodiscard]] bool altDown() const { return mAltDown; }
     void setAltDown( bool updown ) { mAltDown = updown; }
 
-    bool shiftDown() const { return mShiftDown; }
+    [[nodiscard]] bool shiftDown() const { return mShiftDown; }
     void setShiftDown( bool shiftdown ) { mShiftDown = shiftdown; }
 
   protected:
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     /**
      * Returns the current collapsed state of this group box
      */
-    bool isCollapsed() const { return mCollapsed; }
+    [[nodiscard]] bool isCollapsed() const { return mCollapsed; }
 
     /**
      * Collapse or uncollapse this groupbox
@@ -114,7 +114,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     /**
      * Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
      */
-    QString syncGroup() const { return mSyncGroup; }
+    [[nodiscard]] QString syncGroup() const { return mSyncGroup; }
 
     /**
      * Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
@@ -125,7 +125,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
 
     //! If this is set to FALSE the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
-    bool scrollOnExpand() const { return mScrollOnExpand; }
+    [[nodiscard]] bool scrollOnExpand() const { return mScrollOnExpand; }
 
   signals:
     //! Signal emitted when groupbox collapsed/expanded state is changed, and when first shown
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     void changeEvent( QEvent *event ) override;
 
     void updateStyle();
-    QRect titleRect() const;
+    [[nodiscard]] QRect titleRect() const;
     void clearModifiers();
 
     bool mCollapsed;
@@ -227,17 +227,17 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     /**
      * Returns whether the collapsed state of this group box is saved and loaded persistently in QgsSettings
      */
-    bool saveCollapsedState() const { return mSaveCollapsedState; }
+    [[nodiscard]] bool saveCollapsedState() const { return mSaveCollapsedState; }
 
     /**
      * Returns whether the checked state of this group box is saved and loaded persistently in QgsSettings
      */
-    bool saveCheckedState() const { return mSaveCheckedState; }
+    [[nodiscard]] bool saveCheckedState() const { return mSaveCheckedState; }
 
     //! Sets this to a defined string to share save/restore states across different parent dialogs
     void setSettingGroup( const QString &group ) { mSettingGroup = group; }
     //! Returns the name of the setting group in which the collapsed state will be saved
-    QString settingGroup() const { return mSettingGroup; }
+    [[nodiscard]] QString settingGroup() const { return mSettingGroup; }
 
   protected slots:
 
@@ -263,7 +263,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
 
   protected:
     void showEvent( QShowEvent *event ) override;
-    QString saveKey() const;
+    [[nodiscard]] QString saveKey() const;
 
   private:
     void init();

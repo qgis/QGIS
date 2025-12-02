@@ -53,11 +53,11 @@ class CORE_EXPORT QgsProcessingParameterDxfLayers : public QgsProcessingParamete
     //! Constructor for QgsProcessingParameterDxfLayers.
     QgsProcessingParameterDxfLayers( const QString &name, const QString &description = QString() );
 
-    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
-    QString type() const override;
+    [[nodiscard]] QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
-    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
+    [[nodiscard]] QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
     QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
     QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
 
@@ -84,37 +84,37 @@ class CORE_EXPORT QgsProcessingParameterDxfLayers : public QgsProcessingParamete
 class CORE_EXPORT QgsProcessingParameterTypeDxfLayers : public QgsProcessingParameterType
 {
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    [[nodiscard]] QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
       return new QgsProcessingParameterDxfLayers( name );
     }
 
-    QString description() const override
+    [[nodiscard]] QString description() const override
     {
       return QCoreApplication::translate( "Processing", "An input allowing selection of multiple layers for export to DXF file." );
     }
 
-    QString name() const override
+    [[nodiscard]] QString name() const override
     {
       return QCoreApplication::translate( "Processing", "DXF Layers" );
     }
 
-    QString id() const override
+    [[nodiscard]] QString id() const override
     {
       return QgsProcessingParameterDxfLayers::typeName();
     }
 
-    QString pythonImportString() const override
+    [[nodiscard]] QString pythonImportString() const override
     {
       return QStringLiteral( "from qgis.core import QgsProcessingParameterDxfLayers" );
     }
 
-    QString className() const override
+    [[nodiscard]] QString className() const override
     {
       return QStringLiteral( "QgsProcessingParameterDxfLayers" );
     }
 
-    QStringList acceptedPythonTypes() const override
+    [[nodiscard]] QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterDxfLayers docs" )
              << QObject::tr( "list[str]: list of layer IDs" )
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDxfLayers : public QgsProcessingPara
              << QStringLiteral( "QgsVectorLayer" );
     }
 
-    QStringList acceptedParameterTypes() const override
+    [[nodiscard]] QStringList acceptedParameterTypes() const override
     {
       return QStringList()
              << QgsProcessingParameterMultipleLayers::typeName()
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDxfLayers : public QgsProcessingPara
              << QgsProcessingParameterString::typeName();
     }
 
-    QStringList acceptedOutputTypes() const override
+    [[nodiscard]] QStringList acceptedOutputTypes() const override
     {
       return QStringList()
              << QgsProcessingOutputString::typeName()

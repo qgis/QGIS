@@ -53,7 +53,7 @@ class CORE_EXPORT QgsNetworkReplyContent
      *
      * \see attributes()
      */
-    QVariant attribute( QNetworkRequest::Attribute code ) const;
+    [[nodiscard]] QVariant attribute( QNetworkRequest::Attribute code ) const;
 
 #ifndef SIP_RUN
 
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsNetworkReplyContent
      * \see attribute()
      * \note Not available in Python bindings
      */
-    QMap< QNetworkRequest::Attribute, QVariant > attributes() const { return mAttributes; }
+    [[nodiscard]] QMap< QNetworkRequest::Attribute, QVariant > attributes() const { return mAttributes; }
 #endif
 
     /**
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsNetworkReplyContent
      *
      * \see errorString()
      */
-    QNetworkReply::NetworkError error() const
+    [[nodiscard]] QNetworkReply::NetworkError error() const
     {
       return mError;
     }
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsNetworkReplyContent
      *
      * \see error()
      */
-    QString errorString() const
+    [[nodiscard]] QString errorString() const
     {
       return mErrorString;
     }
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsNetworkReplyContent
      * \see rawHeader()
      * \note Not available in Python bindings
      */
-    const QList<RawHeaderPair> &rawHeaderPairs() const
+    [[nodiscard]] const QList<RawHeaderPair> &rawHeaderPairs() const
     {
       return mRawHeaderPairs;
     }
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsNetworkReplyContent
      * \see rawHeaderList()
      * \see rawHeader()
      */
-    bool hasRawHeader( const QByteArray &headerName ) const;
+    [[nodiscard]] bool hasRawHeader( const QByteArray &headerName ) const;
 
     /**
      * Returns a list of raw header names contained within the reply.
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsNetworkReplyContent
      * \see hasRawHeader()
      * \see rawHeader()
      */
-    QList<QByteArray> rawHeaderList() const;
+    [[nodiscard]] QList<QByteArray> rawHeaderList() const;
 
     /**
      * Returns the content of the header with the specified \a headerName, or an
@@ -127,17 +127,17 @@ class CORE_EXPORT QgsNetworkReplyContent
      * \see hasRawHeader()
      * \see rawHeaderList()
      */
-    QByteArray rawHeader( const QByteArray &headerName ) const;
+    [[nodiscard]] QByteArray rawHeader( const QByteArray &headerName ) const;
 
     /**
      * Returns the unique ID identifying the original request which this response was formed from.
      */
-    int requestId() const { return mRequestId; }
+    [[nodiscard]] int requestId() const { return mRequestId; }
 
     /**
      * Returns the original network request.
      */
-    QNetworkRequest request() const { return mRequest; }
+    [[nodiscard]] QNetworkRequest request() const { return mRequest; }
 
     /**
      * Sets the reply content. This is not done by default, as reading network reply content
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsNetworkReplyContent
      *
      * \see setContent()
      */
-    QByteArray content() const { return mContent; }
+    [[nodiscard]] QByteArray content() const { return mContent; }
 
     /**
      * Extracts the filename component of the content disposition header from a network \a reply.

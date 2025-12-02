@@ -110,7 +110,7 @@ class GetLayoutItemVariables : public QgsScopedExpressionFunction
       return c.variablesToMap();
     }
 
-    QgsScopedExpressionFunction *clone() const override
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override
     {
       return new GetLayoutItemVariables( mLayout );
     }
@@ -192,7 +192,7 @@ class GetLayoutMapLayerCredits : public QgsScopedExpressionFunction
       return res;
     }
 
-    QgsScopedExpressionFunction *clone() const override
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override
     {
       return new GetLayoutMapLayerCredits( mLayout );
     }
@@ -221,7 +221,7 @@ class GetCurrentFormFieldValue : public QgsScopedExpressionFunction
       return feat.attribute( fieldName ) ;
     }
 
-    QgsScopedExpressionFunction *clone() const override
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override
     {
       return new GetCurrentFormFieldValue( );
     }
@@ -251,7 +251,7 @@ class GetCurrentParentFormFieldValue : public QgsScopedExpressionFunction
       return feat.attribute( fieldName ) ;
     }
 
-    QgsScopedExpressionFunction *clone() const override
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override
     {
       return new GetCurrentParentFormFieldValue( );
     }
@@ -277,7 +277,7 @@ class GetProcessingParameterValue : public QgsScopedExpressionFunction
       return mParams.value( values.at( 0 ).toString() );
     }
 
-    QgsScopedExpressionFunction *clone() const override
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override
     {
       return new GetProcessingParameterValue( mParams );
     }
@@ -1100,7 +1100,7 @@ class CurrentVertexZValueExpressionFunction: public QgsScopedExpressionFunction
                                    QStringLiteral( "Meshes" ) )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexZValueExpressionFunction();}
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override {return new CurrentVertexZValueExpressionFunction();}
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
@@ -1133,7 +1133,7 @@ class CurrentVertexXValueExpressionFunction: public QgsScopedExpressionFunction
                                    QStringLiteral( "Meshes" ) )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexXValueExpressionFunction();}
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override {return new CurrentVertexXValueExpressionFunction();}
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
@@ -1166,7 +1166,7 @@ class CurrentVertexYValueExpressionFunction: public QgsScopedExpressionFunction
                                    QStringLiteral( "Meshes" ) )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexYValueExpressionFunction();}
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override {return new CurrentVertexYValueExpressionFunction();}
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
@@ -1199,7 +1199,7 @@ class CurrentVertexExpressionFunction: public QgsScopedExpressionFunction
                                    QStringLiteral( "Meshes" ) )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexExpressionFunction();}
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override {return new CurrentVertexExpressionFunction();}
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
@@ -1232,7 +1232,7 @@ class CurrentVertexIndexExpressionFunction: public QgsScopedExpressionFunction
                                    QStringLiteral( "Meshes" ) )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentVertexIndexExpressionFunction();}
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override {return new CurrentVertexIndexExpressionFunction();}
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
@@ -1261,7 +1261,7 @@ class CurrentFaceAreaExpressionFunction: public QgsScopedExpressionFunction
                                    QStringLiteral( "Meshes" ) )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentFaceAreaExpressionFunction();}
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override {return new CurrentFaceAreaExpressionFunction();}
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * ) override
     {
@@ -1315,7 +1315,7 @@ class CurrentFaceIndexExpressionFunction: public QgsScopedExpressionFunction
                                    QStringLiteral( "Meshes" ) )
     {}
 
-    QgsScopedExpressionFunction *clone() const override {return new CurrentFaceIndexExpressionFunction();}
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override {return new CurrentFaceIndexExpressionFunction();}
 
     QVariant func( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {

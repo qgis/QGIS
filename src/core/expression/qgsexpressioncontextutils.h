@@ -336,7 +336,7 @@ class CORE_EXPORT QgsExpressionContextUtils
       public:
         GetLayerVisibility( const QList<QgsMapLayer *> &layers, double scale = 0 );
         QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
-        QgsScopedExpressionFunction *clone() const override;
+        [[nodiscard]] QgsScopedExpressionFunction *clone() const override;
 
       private:
         GetLayerVisibility();
@@ -363,7 +363,7 @@ class LoadLayerFunction : public QgsScopedExpressionFunction
     QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * ) override;
     bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
-    QgsScopedExpressionFunction *clone() const override;
+    [[nodiscard]] QgsScopedExpressionFunction *clone() const override;
 
 };
 #endif

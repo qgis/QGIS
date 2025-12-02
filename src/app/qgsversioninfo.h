@@ -25,19 +25,19 @@ class QgsVersionInfo : public QObject
   public:
     explicit QgsVersionInfo( QObject *parent = nullptr );
 
-    QString html() const { return mAdditionalHtml; }
+    [[nodiscard]] QString html() const { return mAdditionalHtml; }
 
-    QString downloadInfo() const { return mDownloadInfo; }
+    [[nodiscard]] QString downloadInfo() const { return mDownloadInfo; }
 
-    int latestVersionCode() const { return mLatestVersion; }
+    [[nodiscard]] int latestVersionCode() const { return mLatestVersion; }
 
-    bool newVersionAvailable() const;
+    [[nodiscard]] bool newVersionAvailable() const;
 
-    bool isDevelopmentVersion() const;
+    [[nodiscard]] bool isDevelopmentVersion() const;
 
-    QNetworkReply::NetworkError error() const { return mError; }
+    [[nodiscard]] QNetworkReply::NetworkError error() const { return mError; }
 
-    QString errorString() const { return mErrorString; }
+    [[nodiscard]] QString errorString() const { return mErrorString; }
 
   public slots:
 

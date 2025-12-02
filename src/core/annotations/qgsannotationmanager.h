@@ -86,7 +86,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * Returns a list of all annotations contained in the manager.
      * \see cloneAnnotations()
      */
-    QList< QgsAnnotation * > annotations() const;
+    [[nodiscard]] QList< QgsAnnotation * > annotations() const;
 
     /**
      * Returns a list containing clones of all annotations contained
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * all returned annotations.
      * \see annotations()
      */
-    QList< QgsAnnotation * > cloneAnnotations() const SIP_FACTORY;
+    [[nodiscard]] QList< QgsAnnotation * > cloneAnnotations() const SIP_FACTORY;
 
     /**
      * Reads the manager's state from a DOM element, restoring all annotations

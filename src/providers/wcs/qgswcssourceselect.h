@@ -59,8 +59,8 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
   private:
     QgsWcsCapabilities mCapabilities;
 
-    QString selectedIdentifier() const;
-    QString selectedTitle() const;
+    [[nodiscard]] QString selectedIdentifier() const;
+    [[nodiscard]] QString selectedTitle() const;
 
     // QgsWcsCapabilities virtual methods
     void populateLayerList() override;

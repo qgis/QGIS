@@ -190,7 +190,7 @@ struct QgsWmsDimensionProperty
     bool current = false;
 
     //! Parse the dimension extent to QgsDateTimeRange instance
-    QgsDateTimeRange parseExtent() const
+    [[nodiscard]] [[nodiscard]] QgsDateTimeRange parseExtent() const
     {
       if ( extent.contains( '/' ) )
       {
@@ -346,7 +346,7 @@ struct QgsWmsLayerProperty
     int fixedHeight;
 
     // TODO need to expand this to cover more of layer properties
-    bool equal( const QgsWmsLayerProperty &layerProperty ) const
+    [[nodiscard]] [[nodiscard]] bool equal( const QgsWmsLayerProperty &layerProperty ) const
     {
       if ( !( name == layerProperty.name ) )
         return false;
@@ -363,7 +363,7 @@ struct QgsWmsLayerProperty
     /**
    * Returns true if it the struct has the dimension with the passed name
    */
-    bool hasDimension( QString dimensionName ) const
+    [[nodiscard]] [[nodiscard]] bool hasDimension( QString dimensionName ) const
     {
       if ( dimensions.isEmpty() )
         return false;
@@ -382,7 +382,7 @@ struct QgsWmsLayerProperty
    *
    * Prioritizes the first listed CRS, unless it's a block listed value.
    */
-    QString preferredAvailableCrs() const
+    [[nodiscard]] [[nodiscard]] QString preferredAvailableCrs() const
     {
       static QSet<QString> sSkipList { QStringLiteral( "EPSG:900913" ) };
       for ( const QString &candidate : crs )
@@ -482,13 +482,13 @@ struct QgsWmtsTileMatrix
    * Returns extent of a tile in map coordinates.
    * (same function as tileBBox() but returns QRectF instead of QgsRectangle)
    */
-    QRectF tileRect( int col, int row ) const;
+    [[nodiscard]] [[nodiscard]] QRectF tileRect( int col, int row ) const;
 
     /**
    * Returns extent of a tile in map coordinates
    * (same function as tileRect() but returns QgsRectangle instead of QRectF)
    */
-    QgsRectangle tileBBox( int col, int row ) const;
+    [[nodiscard]] [[nodiscard]] QgsRectangle tileBBox( int col, int row ) const;
 
     /**
    * Returns range of tiles that intersects with the view extent
@@ -509,10 +509,10 @@ struct QgsWmtsTileMatrixSet
     QMap<double, QgsWmtsTileMatrix> tileMatrices;
 
     //! Returns closest tile resolution to the requested one. (resolution = width [map units] / with [pixels])
-    const QgsWmtsTileMatrix *findNearestResolution( double vres ) const;
+    [[nodiscard]] [[nodiscard]] const QgsWmtsTileMatrix *findNearestResolution( double vres ) const;
 
     //! Returns the tile matrix for other near resolution from given tres (positive offset = lower resolution tiles)
-    const QgsWmtsTileMatrix *findOtherResolution( double tres, int offset ) const;
+    [[nodiscard]] [[nodiscard]] const QgsWmtsTileMatrix *findOtherResolution( double tres, int offset ) const;
 };
 
 enum QgsTileMode
@@ -694,10 +694,10 @@ class QgsWmsSettings
   public:
     bool parseUri( const QString &uriString );
 
-    QString baseUrl() const { return mBaseUrl; }
-    QgsAuthorizationSettings authorization() const { return mAuth; }
+    [[nodiscard]] [[nodiscard]] QString baseUrl() const { return mBaseUrl; }
+    [[nodiscard]] [[nodiscard]] QgsAuthorizationSettings authorization() const { return mAuth; }
 
-    QgsWmsParserSettings parserSettings() const { return mParserSettings; }
+    [[nodiscard]] [[nodiscard]] QgsWmsParserSettings parserSettings() const { return mParserSettings; }
 
     /**
      * Parse the given string extent into a well defined dates and resolution structures.
@@ -721,7 +721,7 @@ class QgsWmsSettings
      * \see setTimeDimensionExtent()
      * \since QGIS 3.14
      */
-    QgsWmstDimensionExtent timeDimensionExtent() const;
+    [[nodiscard]] [[nodiscard]] QgsWmstDimensionExtent timeDimensionExtent() const;
 
     /**
      * Parse the given string item into a resolution structure.
@@ -752,7 +752,7 @@ class QgsWmsSettings
      *
      * \since QGIS 3.14
      */
-    QDateTime findLeastClosestDateTime( const QDateTime &dateTime, bool dateOnly = false ) const;
+    [[nodiscard]] [[nodiscard]] QDateTime findLeastClosestDateTime( const QDateTime &dateTime, bool dateOnly = false ) const;
 
   protected:
     QgsWmsParserSettings mParserSettings;
@@ -868,14 +868,14 @@ class QgsWmsCapabilities
      */
     QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext(), const QString &baseUrl = QString() );
 
-    bool isValid() const { return mValid; }
+    [[nodiscard]] [[nodiscard]] bool isValid() const { return mValid; }
 
     bool parseResponse( const QByteArray &response, QgsWmsParserSettings settings );
 
-    QString lastError() const { return mError; }
-    QString lastErrorFormat() const { return mErrorFormat; }
+    [[nodiscard]] [[nodiscard]] QString lastError() const { return mError; }
+    [[nodiscard]] [[nodiscard]] QString lastErrorFormat() const { return mErrorFormat; }
 
-    QgsWmsCapabilitiesProperty capabilitiesProperty() const { return mCapabilities; }
+    [[nodiscard]] [[nodiscard]] QgsWmsCapabilitiesProperty capabilitiesProperty() const { return mCapabilities; }
 
     /**
      * \brief   Returns a list of the supported layers of the WMS server
@@ -884,10 +884,10 @@ class QgsWmsCapabilities
      *
      * \todo Document this better
      */
-    QVector<QgsWmsLayerProperty> supportedLayers() const { return mLayersSupported; }
+    [[nodiscard]] [[nodiscard]] QVector<QgsWmsLayerProperty> supportedLayers() const { return mLayersSupported; }
 
     //! Gets raster image encodings supported by the WMS, expressed as MIME types
-    QStringList supportedImageEncodings() const { return mCapabilities.capability.request.getMap.format; }
+    [[nodiscard]] [[nodiscard]] QStringList supportedImageEncodings() const { return mCapabilities.capability.request.getMap.format; }
 
     /**
      * \brief   Returns a map for the hierarchy of layers
@@ -903,18 +903,18 @@ class QgsWmsCapabilities
      *
      * \returns The list of tile sets will be placed here.
      */
-    QList<QgsWmtsTileLayer> supportedTileLayers() const { return mTileLayersSupported; }
+    [[nodiscard]] [[nodiscard]] QList<QgsWmtsTileLayer> supportedTileLayers() const { return mTileLayersSupported; }
 
     /**
      * \brief   Returns a list of the available tile matrix sets
      */
-    QHash<QString, QgsWmtsTileMatrixSet> supportedTileMatrixSets() const { return mTileMatrixSets; }
+    [[nodiscard]] [[nodiscard]] QHash<QString, QgsWmtsTileMatrixSet> supportedTileMatrixSets() const { return mTileMatrixSets; }
 
     //! Find out whether to invert axis orientation when parsing/writing coordinates
     bool shouldInvertAxisOrientation( const QString &ogcCrs );
 
     //! Find out identify capabilities
-    Qgis::RasterInterfaceCapabilities identifyCapabilities() const;
+    [[nodiscard]] [[nodiscard]] Qgis::RasterInterfaceCapabilities identifyCapabilities() const;
 
   protected:
     bool parseCapabilitiesDom( const QByteArray &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty );
@@ -1056,9 +1056,9 @@ class QgsWmsCapabilitiesDownload : public QObject
      */
     void setForceRefresh( bool forceRefresh );
 
-    QString lastError() const { return mError; }
+    [[nodiscard]] [[nodiscard]] QString lastError() const { return mError; }
 
-    QByteArray response() const { return mHttpCapabilitiesResponse; }
+    [[nodiscard]] [[nodiscard]] QByteArray response() const { return mHttpCapabilitiesResponse; }
 
     //! Abort network request immediately
     void abort();

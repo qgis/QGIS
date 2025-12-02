@@ -75,7 +75,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 
     void findClosestRange( double value, int &closestRangeIndex, int &pixelDistance ) const;
 
-    QwtPlotHistogram *createPlotHistogram( const QString &title, const QColor &color ) const;
+    [[nodiscard]] QwtPlotHistogram *createPlotHistogram( const QString &title, const QColor &color ) const;
 };
 
 
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsGraduatedHistogramEventFilter : public QObject
 
   private:
     QwtPlot *mPlot = nullptr;
-    double posToValue( QPointF point ) const;
+    [[nodiscard]] double posToValue( QPointF point ) const;
 };
 ///@endcond
 #endif

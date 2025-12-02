@@ -81,12 +81,12 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     //! Sets how the legend should be rendered
     void setLegendType( LegendType type ) { mType = type; }
     //! Returns how the legend should be rendered
-    LegendType legendType() const { return mType; }
+    [[nodiscard]] LegendType legendType() const { return mType; }
 
     //! Sets marker symbol that will be used to draw markers in legend
     void setSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
     //! Returns marker symbol that will be used to draw markers in legend
-    QgsMarkerSymbol *symbol() const;
+    [[nodiscard]] QgsMarkerSymbol *symbol() const;
 
     /**
      * Sets the line \a symbol that will be used to draw callout lines in legend.
@@ -103,42 +103,42 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     * \see setLineSymbol()
     * \since QGIS 3.14
     */
-    QgsLineSymbol *lineSymbol() const;
+    [[nodiscard]] QgsLineSymbol *lineSymbol() const;
 
     //! Sets transformer for scaling of symbol sizes. Takes ownership of the object. Accepts NULLPTR to set no transformer.
     void setSizeScaleTransformer( QgsSizeScaleTransformer *transformer SIP_TRANSFER );
     //! Returns transformer for scaling of symbol sizes. Returns NULLPTR if no transformer is defined.
-    QgsSizeScaleTransformer *sizeScaleTransformer() const;
+    [[nodiscard]] QgsSizeScaleTransformer *sizeScaleTransformer() const;
 
     //! Sets list of classes: each class is a pair of symbol size (in units used by the symbol) and label
     void setClasses( const QList< QgsDataDefinedSizeLegend::SizeClass > &classes ) { mSizeClasses = classes; }
     //! Returns list of classes: each class is a pair of symbol size (in units used by the symbol) and label
-    QList< QgsDataDefinedSizeLegend::SizeClass > classes() const { return mSizeClasses; }
+    [[nodiscard]] QList< QgsDataDefinedSizeLegend::SizeClass > classes() const { return mSizeClasses; }
 
     //! Sets title label for data-defined size legend
     void setTitle( const QString &title ) { mTitleLabel = title; }
     //! Returns title label for data-defined size legend
-    QString title() const { return mTitleLabel; }
+    [[nodiscard]] QString title() const { return mTitleLabel; }
 
     //! Sets vertical alignment of symbols - only valid for collapsed legend
     void setVerticalAlignment( VerticalAlignment vAlign ) { mVAlign = vAlign; }
     //! Returns vertical alignment of symbols - only valid for collapsed legend
-    VerticalAlignment verticalAlignment() const { return mVAlign; }
+    [[nodiscard]] VerticalAlignment verticalAlignment() const { return mVAlign; }
 
     //! Sets font used for rendering of labels - only valid for collapsed legend
     void setFont( const QFont &font ) { mFont = font; }
     //! Returns font used for rendering of labels - only valid for collapsed legend
-    QFont font() const { return mFont; }
+    [[nodiscard]] QFont font() const { return mFont; }
 
     //! Sets text color for rendering of labels - only valid for collapsed legend
     void setTextColor( const QColor &color ) { mTextColor = color; }
     //! Returns text color for rendering of labels - only valid for collapsed legend
-    QColor textColor() const { return mTextColor; }
+    [[nodiscard]] QColor textColor() const { return mTextColor; }
 
     //! Sets horizontal text alignment for rendering of labels - only valid for collapsed legend
     void setTextAlignment( Qt::AlignmentFlag flag ) { mTextAlignment = flag; }
     //! Returns horizontal text alignment for rendering of labels - only valid for collapsed legend
-    Qt::AlignmentFlag textAlignment() const { return mTextAlignment; }
+    [[nodiscard]] Qt::AlignmentFlag textAlignment() const { return mTextAlignment; }
 
     //
 
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     void updateFromSymbolAndProperty( const QgsMarkerSymbol *symbol, const QgsProperty &ddSize );
 
     //! Generates legend symbol items according to the configuration
-    QgsLegendSymbolList legendSymbolList() const;
+    [[nodiscard]] QgsLegendSymbolList legendSymbolList() const;
 
     /**
      * Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).

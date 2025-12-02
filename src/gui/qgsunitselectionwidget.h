@@ -59,7 +59,7 @@ class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsM
      * \see setMapUnitScale()
      * \see mapUnitScaleChanged()
      */
-    QgsMapUnitScale mapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale mapUnitScale() const;
 
     /**
      * Updates the widget to reflect the settings from the specified
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog
      * dialog.
      * \see setMapUnitScale()
      */
-    QgsMapUnitScale getMapUnitScale() const;
+    [[nodiscard]] QgsMapUnitScale getMapUnitScale() const;
 
     /**
      * Updates the dialog to reflect the settings from the specified
@@ -183,13 +183,13 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
     void setUnits( const QgsUnitTypes::RenderUnitList &units );
 
     //! Gets the selected unit index
-    int getUnit() const { return mUnitCombo->currentIndex(); }
+    [[nodiscard]] int getUnit() const { return mUnitCombo->currentIndex(); }
 
     /**
      * Returns the current predefined selected unit (if applicable).
      * \returns selected output unit, or QgsUnitTypes::RenderUnknownUnit if the widget was populated with custom unit types
      */
-    Qgis::RenderUnit unit() const;
+    [[nodiscard]] Qgis::RenderUnit unit() const;
 
     /**
      * Sets the selected unit index
@@ -205,7 +205,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
     void setUnit( Qgis::RenderUnit unit );
 
     //! Returns the map unit scale
-    QgsMapUnitScale getMapUnitScale() const { return mMapUnitScale; }
+    [[nodiscard]] QgsMapUnitScale getMapUnitScale() const { return mMapUnitScale; }
 
     //! Sets the map unit scale
     void setMapUnitScale( const QgsMapUnitScale &scale ) { mMapUnitScale = scale; }
@@ -223,7 +223,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
      * \see setShowMapScaleButton()
      * \since QGIS 3.22
      */
-    bool showMapScaleButton() const;
+    [[nodiscard]] bool showMapScaleButton() const;
 
     /**
      * Sets whether the widget can show the map scale button when the Map Units option is selected.

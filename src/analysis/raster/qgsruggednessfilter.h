@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsRuggednessFilter : public QgsNineCellFilter
   private:
     QgsRuggednessFilter();
 
-    const QString openClProgramBaseName() const override
+    [[nodiscard]] const QString openClProgramBaseName() const override
     {
       return QStringLiteral( "ruggedness" );
     }

@@ -30,7 +30,7 @@ class QgsAfsFeatureSource : public QgsAbstractFeatureSource
     QgsAfsFeatureSource( const std::shared_ptr<QgsAfsSharedData> &sharedData );
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-    QgsAfsSharedData *sharedData() const;
+    [[nodiscard]] QgsAfsSharedData *sharedData() const;
 
   protected:
     std::shared_ptr<QgsAfsSharedData> mSharedData;

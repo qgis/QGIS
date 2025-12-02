@@ -73,7 +73,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
      */
     static QIcon iconDataCollection();
 
-    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
+    [[nodiscard]] QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
   protected:
 

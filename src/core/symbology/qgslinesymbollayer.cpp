@@ -1230,7 +1230,7 @@ class MyLine
     }
 
     // return difference for x,y when going along the line with specified interval
-    QPointF diffForInterval( double interval ) const
+    [[nodiscard]] QPointF diffForInterval( double interval ) const
     {
       if ( mVertical )
         return ( mIncreasing ? QPointF( 0, interval ) : QPointF( 0, -interval ) );
@@ -1241,7 +1241,7 @@ class MyLine
       return ( mIncreasing ? QPointF( dx, dy ) : QPointF( -dx, -dy ) );
     }
 
-    double length() const { return mLength; }
+    [[nodiscard]] double length() const { return mLength; }
 
   protected:
     bool mVertical;

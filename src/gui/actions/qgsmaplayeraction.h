@@ -62,7 +62,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     /**
      * Layer behavior flags.
      */
-    Qgis::MapLayerActionFlags flags() const;
+    [[nodiscard]] Qgis::MapLayerActionFlags flags() const;
 
     /**
      * Returns TRUE if the action can run using the specified layer.
@@ -125,12 +125,12 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     //! Define the targets of the action
     void setTargets( Qgis::MapLayerActionTargets targets ) { mTargets = targets; }
     //! Returns availibity of action
-    Qgis::MapLayerActionTargets targets() const { return mTargets; }
+    [[nodiscard]] Qgis::MapLayerActionTargets targets() const { return mTargets; }
 
     /**
      * Returns TRUE if the action is only enabled for layers in editable mode.
      */
-    bool isEnabledOnlyWhenEditable() const;
+    [[nodiscard]] bool isEnabledOnlyWhenEditable() const;
 
   signals:
 

@@ -317,7 +317,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       update();
     }
 
-    QRectF boundingRect() const override
+    [[nodiscard]] QRectF boundingRect() const override
     {
       return mRect;
     }

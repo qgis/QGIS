@@ -39,7 +39,7 @@ class CORE_EXPORT QgsLabelPlacementSettings
      * Returns the technique used to handle overlapping labels.
      * \see setOverlapHandling()
      */
-    Qgis::LabelOverlapHandling overlapHandling() const { return mOverlapHandling; }
+    [[nodiscard]] Qgis::LabelOverlapHandling overlapHandling() const { return mOverlapHandling; }
 
     /**
      * Sets the technique used to handle overlapping labels.
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsLabelPlacementSettings
      *
      * \see setAllowDegradedPlacement()
      */
-    bool allowDegradedPlacement() const { return mAllowDegradedPlacement; }
+    [[nodiscard]] bool allowDegradedPlacement() const { return mAllowDegradedPlacement; }
 
     /**
      * Sets whether labels can be placed in inferior fallback positions if they cannot otherwise
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsLabelPlacementSettings
      *
      * \since QGIS 3.38
      */
-    Qgis::LabelPrioritization prioritization() const { return mPrioritization; }
+    [[nodiscard]] Qgis::LabelPrioritization prioritization() const { return mPrioritization; }
 
     /**
      * Sets the technique used to prioritize labels.

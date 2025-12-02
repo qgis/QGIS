@@ -95,9 +95,9 @@ class QgsWMSLayerCollectionItem : public QgsDataCollectionItem, public QgsWMSIte
 
     bool equal( const QgsDataItem *other ) override;
 
-    bool hasDragEnabled() const override;
+    [[nodiscard]] bool hasDragEnabled() const override;
 
-    QgsMimeDataUtils::UriList mimeUris() const override;
+    [[nodiscard]] QgsMimeDataUtils::UriList mimeUris() const override;
 
   protected:
     //! The URI
@@ -105,7 +105,7 @@ class QgsWMSLayerCollectionItem : public QgsDataCollectionItem, public QgsWMSIte
 
     // QgsDataItem interface
   public:
-    bool layerCollection() const override;
+    [[nodiscard]] bool layerCollection() const override;
 };
 
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
@@ -126,7 +126,7 @@ class QgsWMTSLayerItem : public QgsLayerItem
     QgsWMTSLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QgsDataSourceUri &dataSourceUri, const QString &id, const QString &dimension, const QString &dimensionValue, const QString &format, const QString &style, const QString &tileMatrixSet, const QString &crs, const QString &title );
 
     QString createUri();
-    QString layerName() const override { return mTitle; }
+    [[nodiscard]] QString layerName() const override { return mTitle; }
 
   private:
     QgsDataSourceUri mDataSourceUri;
@@ -148,7 +148,7 @@ class QgsWMSRootItem : public QgsConnectionsRootItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 7; }
+    [[nodiscard]] QVariant sortKey() const override { return 7; }
 
   public slots:
 };
@@ -168,8 +168,8 @@ class QgsWmsDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "WMS" ); }
-    QString dataProviderKey() const override;
-    Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::NetworkSources; }
+    [[nodiscard]] QString dataProviderKey() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::NetworkSources; }
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
@@ -183,7 +183,7 @@ class QgsXyzTileRootItem : public QgsConnectionsRootItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    QVariant sortKey() const override { return 8; }
+    [[nodiscard]] QVariant sortKey() const override { return 8; }
 };
 
 //! Item implementation for XYZ tile layers
@@ -200,8 +200,8 @@ class QgsXyzTileDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-    QString dataProviderKey() const override;
-    Qgis::DataItemProviderCapabilities capabilities() const override;
+    [[nodiscard]] QString dataProviderKey() const override;
+    [[nodiscard]] Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 

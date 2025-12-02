@@ -70,7 +70,7 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
     /**
      * Returns if private layers are shown.
      */
-    bool showPrivateLayers() const;
+    [[nodiscard]] bool showPrivateLayers() const;
 
     /**
      * Determines if private layers are shown.
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
      * \see setHideValidLayers()
      * \since QGIS 3.38
      */
-    bool hideValidLayers() const;
+    [[nodiscard]] bool hideValidLayers() const;
 
     /**
      * Sets whether valid layers should be hidden (i.e. only invalid layers are shown).
@@ -94,7 +94,7 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
     void setHideValidLayers( bool hideValid );
 
   protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+    [[nodiscard]] bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
     /**
      * Returns TRUE if the specified \a node should be shown.
@@ -151,7 +151,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      * Returns the associated layer tree model.
      * \see setLayerTreeModel()
      */
-    QgsLayerTreeModel *layerTreeModel() const;
+    [[nodiscard]] QgsLayerTreeModel *layerTreeModel() const;
 
     /**
      * Returns the layer tree node for given view \a index.
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      * \see node2index()
      * \since QGIS 3.18
      */
-    QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
+    [[nodiscard]] QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
 
     /**
      * Returns the view model index for a given \a node.
@@ -204,14 +204,14 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      *
      * \since QGIS 3.18
      */
-    QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
+    [[nodiscard]] QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
 
     /**
      * Returns the current node.
      *
      * May be NULLPTR.
      */
-    QgsLayerTreeNode *currentNode() const;
+    [[nodiscard]] QgsLayerTreeNode *currentNode() const;
 
     /**
      * Returns the list of selected layer tree nodes.
@@ -222,14 +222,14 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      * \see selectedLegendNodes()
      * \see selectedLayers()
      */
-    QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
+    [[nodiscard]] QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
 
     /**
      * Returns the currently selected layer, or NULLPTR if no layers is selected.
      *
      * \see setCurrentLayer()
      */
-    QgsMapLayer *currentLayer() const;
+    [[nodiscard]] QgsMapLayer *currentLayer() const;
 
     /**
      * Returns the map layer corresponding to a view \a index.
@@ -238,7 +238,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      *
      * Returns NULLPTR if the index does not correspond to a map layer.
      */
-    QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
 
     /**
      * Returns the current group node.
@@ -247,7 +247,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      *
      * May be NULLPTR.
      */
-    QgsLayerTreeGroup *currentGroupNode() const;
+    [[nodiscard]] QgsLayerTreeGroup *currentGroupNode() const;
 
     /**
      * Returns the list of selected nodes filtered to just layer nodes (QgsLayerTreeLayer).
@@ -256,7 +256,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      * \see selectedLayers()
      * \see selectedLegendNodes()
      */
-    QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
+    [[nodiscard]] QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 
     /**
      * Returns the list of selected layers.
@@ -265,7 +265,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      * \see selectedLayerNodes()
      * \see selectedLegendNodes()
      */
-    QList<QgsMapLayer *> selectedLayers() const;
+    [[nodiscard]] QList<QgsMapLayer *> selectedLayers() const;
 
     /**
      * Returns the view index for a given legend node.
@@ -319,7 +319,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
     /**
      * Gets current legend node. May be NULLPTR if current node is not a legend node.
      */
-    QgsLayerTreeModelLegendNode *currentLegendNode() const;
+    [[nodiscard]] QgsLayerTreeModelLegendNode *currentLegendNode() const;
 
     /**
      * Returns the list of selected legend nodes.
@@ -329,7 +329,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      *
      * \since QGIS 3.32
      */
-    QList<QgsLayerTreeModelLegendNode *> selectedLegendNodes() const;
+    [[nodiscard]] QList<QgsLayerTreeModelLegendNode *> selectedLegendNodes() const;
 
     /**
      * Gets list of selected layers, including those that are not directly selected, but their
@@ -337,7 +337,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      * node is selected, this method returns L1 and L2, while selectedLayers() returns an empty list.
      * \since QGIS 3.4
      */
-    QList<QgsMapLayer *> selectedLayersRecursive() const;
+    [[nodiscard]] QList<QgsMapLayer *> selectedLayersRecursive() const;
 
     //! Gets access to the default actions that may be used with the tree view
     QgsLayerTreeViewDefaultActions *defaultActions();
@@ -367,7 +367,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      *
      * \see layerTreeModelIndexToViewIndex()
      */
-    QModelIndex viewIndexToLayerTreeModelIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QModelIndex viewIndexToLayerTreeModelIndex( const QModelIndex &index ) const;
 
     /**
      * Returns the layer tree model index corresponding with a view \a index.
@@ -376,7 +376,7 @@ class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
      *
      * \see viewIndexToLayerTreeModelIndex()
      */
-    QModelIndex layerTreeModelIndexToViewIndex( const QModelIndex &index ) const;
+    [[nodiscard]] QModelIndex layerTreeModelIndexToViewIndex( const QModelIndex &index ) const;
 
     //! helper class with default actions. Lazily initialized.
     QgsLayerTreeViewDefaultActions *mDefaultActions = nullptr;
@@ -463,12 +463,12 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
      *
      * \since QGIS 3.18
      */
-    QgsLayerTreeProxyModel *proxyModel() const;
+    [[nodiscard]] QgsLayerTreeProxyModel *proxyModel() const;
 
     //! Sets provider for context menu. Takes ownership of the instance
     void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider SIP_TRANSFER );
     //! Returns pointer to the context menu provider. May be NULLPTR
-    QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
+    [[nodiscard]] QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
     /**
      * Convenience methods which sets the visible state of the specified map \a layer.
@@ -511,7 +511,7 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
      * \see setLayerMarkWidth
      * \since QGIS 3.8
      */
-    int layerMarkWidth() const { return mLayerMarkWidth; }
+    [[nodiscard]] int layerMarkWidth() const { return mLayerMarkWidth; }
 
     ///@cond PRIVATE
 
@@ -532,7 +532,7 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
      * Returns the show private layers status
      * \since QGIS 3.18
      */
-    bool showPrivateLayers() const;
+    [[nodiscard]] bool showPrivateLayers() const;
 
     /**
      * Returns if valid layers should be hidden (i.e. only invalid layers are shown).
@@ -540,7 +540,7 @@ class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
      * \see setHideValidLayers()
      * \since QGIS 3.38
      */
-    bool hideValidLayers() const;
+    [[nodiscard]] bool hideValidLayers() const;
 
   public slots:
     //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model

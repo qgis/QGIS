@@ -37,7 +37,7 @@ class CORE_EXPORT QgsProcessingParameterType
     /**
      * Creates a new parameter of this type.
      */
-    virtual QgsProcessingParameterDefinition *create( const QString &name ) const = 0 SIP_FACTORY;
+    [[nodiscard]] virtual QgsProcessingParameterDefinition *create( const QString &name ) const = 0 SIP_FACTORY;
 
     virtual ~QgsProcessingParameterType() = default;
 
@@ -46,13 +46,13 @@ class CORE_EXPORT QgsProcessingParameterType
      * This can be a longer description suitable for tooltips and other elements
      * that give the user context for a given parameter.
      */
-    virtual QString description() const = 0;
+    [[nodiscard]] virtual QString description() const = 0;
 
     /**
      * A human readable and translatable short name for this parameter type.
      * This will be used in comboboxes and list widgets.
      */
-    virtual QString name() const = 0;
+    [[nodiscard]] virtual QString name() const = 0;
 
     // TODO QGIS 4.0 -- make pure virtual
 
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsProcessingParameterType
      * \see className()
      * \since QGIS 3.6
      */
-    virtual QString pythonImportString() const { return QString(); }
+    [[nodiscard]] virtual QString pythonImportString() const { return QString(); }
 
     // TODO QGIS 4.0 -- make pure virtual
 
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsProcessingParameterType
      * \see pythonImportString()
      * \since QGIS 3.6
      */
-    virtual QString className() const
+    [[nodiscard]] virtual QString className() const
     {
       return name(); // this is wrong, but it's better than nothing for subclasses which don't implement this method
     }
@@ -81,19 +81,19 @@ class CORE_EXPORT QgsProcessingParameterType
     /**
      * A static id for this type which will be used for storing this parameter type.
      */
-    virtual QString id() const = 0;
+    [[nodiscard]] virtual QString id() const = 0;
 
     /**
      * Determines if this parameter is available in the modeler.
      * The default implementation returns TRUE.
      */
-    virtual Qgis::ProcessingParameterTypeFlags flags() const;
+    [[nodiscard]] virtual Qgis::ProcessingParameterTypeFlags flags() const;
 
     /**
      * Metadata for this parameter type. Can be used for example to define custom widgets.
      * The default implementation returns an empty map.
      */
-    virtual QVariantMap metadata() const;
+    [[nodiscard]] virtual QVariantMap metadata() const;
 
     /**
      * Returns a list of the Python data types accepted as values for the parameter.
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsProcessingParameterType
      *
      * \see acceptedStringValues()
      */
-    virtual QStringList acceptedPythonTypes() const;
+    [[nodiscard]] virtual QStringList acceptedPythonTypes() const;
 
     /**
      * Returns a descriptive list of the possible string values acceptable for the parameter.
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsProcessingParameterType
      * \see acceptedPythonTypes()
      * \since QGIS 3.8
      */
-    virtual QStringList acceptedStringValues() const;
+    [[nodiscard]] virtual QStringList acceptedStringValues() const;
 
     /**
      * Returns a list of compatible Processing parameter types for inputs
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsProcessingParameterType
      * \see acceptedDataTypes()
      * \since QGIS 3.44
      */
-    virtual QStringList acceptedParameterTypes() const = 0;
+    [[nodiscard]] virtual QStringList acceptedParameterTypes() const = 0;
 
     /**
      * Returns a list of compatible Processing output types for inputs
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsProcessingParameterType
      * \see acceptedDataTypes()
      * \since QGIS 3.44
      */
-    virtual QStringList acceptedOutputTypes() const = 0;
+    [[nodiscard]] virtual QStringList acceptedOutputTypes() const = 0;
 
     /**
      * Returns a list of compatible Processing data types for inputs

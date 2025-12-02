@@ -59,15 +59,15 @@ class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsSingleGeometr
 
     explicit QgsGeometrySelfIntersectionCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration = QVariantMap() )
       : QgsSingleGeometryCheck( context, configuration ) {}
-    QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    [[nodiscard]] QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
-    QString description() const override { return factoryDescription(); }
-    QString id() const override { return factoryId(); }
-    QgsGeometryCheck::Flags flags() const override { return factoryFlags(); }
-    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+    [[nodiscard]] QString description() const override { return factoryDescription(); }
+    [[nodiscard]] QString id() const override { return factoryId(); }
+    [[nodiscard]] QgsGeometryCheck::Flags flags() const override { return factoryFlags(); }
+    [[nodiscard]] QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
-    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
+    [[nodiscard]] QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
 
     ///@cond private
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;

@@ -92,7 +92,7 @@ class ArrowsGridTexture : public Qt3DRender::QAbstractTextureImage
     ArrowsGridTexture( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength );
 
   protected:
-    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override;
+    [[nodiscard]] Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override;
 
   private:
     const QVector<QgsVector> mVectors;

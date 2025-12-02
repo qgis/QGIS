@@ -63,7 +63,7 @@ class CORE_EXPORT QgsScreenProperties
     /**
      * Returns TRUE if the properties are valid.
      */
-    bool isValid() const { return mValid; }
+    [[nodiscard]] bool isValid() const { return mValid; }
 
     /**
      * Returns the ratio between physical pixels and device-independent pixels for the screen.
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsScreenProperties
      *
      * \see setDevicePixelRatio()
      */
-    double devicePixelRatio() const { return mDevicePixelRatio; }
+    [[nodiscard]] double devicePixelRatio() const { return mDevicePixelRatio; }
 
     /**
      * Sets the \a ratio between physical pixels and device-independent pixels for the screen.
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsScreenProperties
      *
      * \see setPhysicalDpi()
      */
-    double physicalDpi() const { return mPhysicalDpi; }
+    [[nodiscard]] double physicalDpi() const { return mPhysicalDpi; }
 
     /**
      * Sets number of physical dots or pixels per inch.

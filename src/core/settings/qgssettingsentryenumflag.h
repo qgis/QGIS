@@ -158,12 +158,12 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
         return false;
     }
 
-    Qgis::SettingsType settingsType() const override
+    [[nodiscard]] Qgis::SettingsType settingsType() const override
     {
       return Qgis::SettingsType::EnumFlag;
     }
 
-    QString typeId() const override
+    [[nodiscard]] QString typeId() const override
     {
       return QStringLiteral( "%1-%2" ).arg( this->QgsSettingsEntryBase::typeId(), QMetaEnum::fromType<T>().name() );
     }

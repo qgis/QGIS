@@ -58,15 +58,15 @@ class QgsFilterResponseDecorator : public QgsServerResponse
 
     void removeHeader( const QString &key ) override { mResponse.removeHeader( key ); }
 
-    QString header( const QString &key ) const override { return mResponse.header( key ); }
+    [[nodiscard]] QString header( const QString &key ) const override { return mResponse.header( key ); }
 
-    QMap<QString, QString> headers() const override { return mResponse.headers(); }
+    [[nodiscard]] QMap<QString, QString> headers() const override { return mResponse.headers(); }
 
-    bool headersSent() const override { return mResponse.headersSent(); }
+    [[nodiscard]] bool headersSent() const override { return mResponse.headersSent(); }
 
     void setStatusCode( int code ) override { mResponse.setStatusCode( code ); }
 
-    int statusCode() const override { return mResponse.statusCode(); }
+    [[nodiscard]] int statusCode() const override { return mResponse.statusCode(); }
 
     void sendError( int code, const QString &message ) override { mResponse.sendError( code, message ); }
 
@@ -78,11 +78,11 @@ class QgsFilterResponseDecorator : public QgsServerResponse
 
     void clear() override { mResponse.clear(); }
 
-    QByteArray data() const override { return mResponse.data(); }
+    [[nodiscard]] QByteArray data() const override { return mResponse.data(); }
 
     void truncate() override { mResponse.truncate(); }
 
-    QgsFeedback *feedback() const override { return mResponse.feedback(); }
+    [[nodiscard]] QgsFeedback *feedback() const override { return mResponse.feedback(); }
 
   private:
     QgsServerFiltersMap mFilters;

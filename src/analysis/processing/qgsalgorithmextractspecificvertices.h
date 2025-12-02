@@ -33,24 +33,24 @@ class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingFeatureBasedAlgo
 {
   public:
     QgsExtractSpecificVerticesAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QString shortDescription() const override;
-    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
+    [[nodiscard]] QString name() const override;
+    [[nodiscard]] QString displayName() const override;
+    [[nodiscard]] QStringList tags() const override;
+    [[nodiscard]] QString group() const override;
+    [[nodiscard]] QString groupId() const override;
+    [[nodiscard]] QString shortHelpString() const override;
+    [[nodiscard]] QString shortDescription() const override;
+    [[nodiscard]] Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
-    QgsExtractSpecificVerticesAlgorithm *createInstance() const override SIP_FACTORY;
+    [[nodiscard]] QgsExtractSpecificVerticesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QString outputName() const override;
-    QgsFields outputFields( const QgsFields &inputFields ) const override;
-    Qgis::ProcessingSourceType outputLayerType() const override;
-    Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
-    Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
-    QgsFeatureSink::SinkFlags sinkFlags() const override;
+    [[nodiscard]] QString outputName() const override;
+    [[nodiscard]] QgsFields outputFields( const QgsFields &inputFields ) const override;
+    [[nodiscard]] Qgis::ProcessingSourceType outputLayerType() const override;
+    [[nodiscard]] Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
+    [[nodiscard]] Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
+    [[nodiscard]] QgsFeatureSink::SinkFlags sinkFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;

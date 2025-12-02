@@ -53,7 +53,7 @@ class GUI_EXPORT QgsAggregateToolButton : public QToolButton
     /**
      * Based on the \a type of underlying data, some aggregates will be available or not.
      */
-    QMetaType::Type type() const;
+    [[nodiscard]] QMetaType::Type type() const;
 
     /**
      * When this flag is FALSE, the aggregate will be deactivated. I.e. no aggregate is chosen.
@@ -63,12 +63,12 @@ class GUI_EXPORT QgsAggregateToolButton : public QToolButton
     /**
      * When this flag is FALSE, the aggregate will be deactivated. I.e. no aggregate is chosen.
      */
-    bool active() const;
+    [[nodiscard]] bool active() const;
 
     /**
      * The function name of the selected aggregate or a Null String if none is chosen.
      */
-    QString aggregate() const;
+    [[nodiscard]] QString aggregate() const;
 
     /**
      * The function name of the selected aggregate or a Null String if none is chosen.

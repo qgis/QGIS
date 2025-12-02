@@ -53,7 +53,7 @@ class GUI_EXPORT QgsEmbeddedSymbolRendererWidget : public QgsRendererWidget, pri
 
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;
-    QgsExpressionContext createExpressionContext() const override;
+    [[nodiscard]] QgsExpressionContext createExpressionContext() const override;
 
   private:
     //! The renderer

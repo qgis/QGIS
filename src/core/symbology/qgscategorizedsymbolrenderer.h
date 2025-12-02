@@ -61,7 +61,7 @@ class CORE_EXPORT QgsRendererCategory
      * Returns the unique identifier for this category.
      * \since QGIS 3.34
      */
-    QString uuid() const;
+    [[nodiscard]] QString uuid() const;
 
     /**
      * Returns the value corresponding to this category.
@@ -70,20 +70,20 @@ class CORE_EXPORT QgsRendererCategory
      *
      * \see setValue()
      */
-    QVariant value() const;
+    [[nodiscard]] QVariant value() const;
 
     /**
      * Returns the symbol which will be used to render this category.
      * \see setSymbol()
      */
-    QgsSymbol *symbol() const;
+    [[nodiscard]] QgsSymbol *symbol() const;
 
     /**
      * Returns the label for this category, which is used to represent the category within
      * legends and the layer tree.
      * \see setLabel()
      */
-    QString label() const;
+    [[nodiscard]] QString label() const;
 
     /**
      * Sets the \a value corresponding to this category.
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsRendererCategory
      * Returns TRUE if the category is currently enabled and should be rendered.
      * \see setRenderState()
      */
-    bool renderState() const;
+    [[nodiscard]] bool renderState() const;
 
     /**
      * Sets whether the category is currently enabled and should be rendered.
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsRendererCategory
     /**
      * Returns a string representing the categories settings, used for debugging purposes only.
      */
-    QString dump() const;
+    [[nodiscard]] QString dump() const;
 
     /**
      * Converts the category to a matching SLD rule, within the specified DOM document and \a element.

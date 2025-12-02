@@ -41,7 +41,7 @@ class CORE_EXPORT QgsMaskRenderSettings
      *
      * \see setSimplificationTolerance()
      */
-    double simplifyTolerance() const { return mSimplifyTolerance; }
+    [[nodiscard]] double simplifyTolerance() const { return mSimplifyTolerance; }
 
     /**
      * Sets a simplification tolerance (in painter units) to use for on-the-fly simplification of mask paths while rendering.

@@ -67,7 +67,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      * \returns A list of selected QgsFeatureId
      * \see setSelectedFeatures()
      */
-    virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
+    [[nodiscard]] virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
 
   signals:
 

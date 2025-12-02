@@ -61,7 +61,7 @@ class CORE_EXPORT QgsSymbolAnimationSettings
      *
      * \see setIsAnimated()
      */
-    bool isAnimated() const { return mIsAnimated; }
+    [[nodiscard]] bool isAnimated() const { return mIsAnimated; }
 
     /**
      * Sets the symbol animation frame \a rate (in frames per second).
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsSymbolAnimationSettings
      *
      * \see setFrameRate()
      */
-    double frameRate() const { return mFrameRate; }
+    [[nodiscard]] double frameRate() const { return mFrameRate; }
 
   private:
 
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsSymbolBufferSettings
      * Returns whether the buffer is enabled.
      * \see setEnabled()
      */
-    bool enabled() const { return mEnabled; }
+    [[nodiscard]] bool enabled() const { return mEnabled; }
 
     /**
      * Sets whether the symbol buffer will be drawn.
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsSymbolBufferSettings
      * \see sizeUnit()
      * \see setSize()
      */
-    double size() const { return mSize; }
+    [[nodiscard]] double size() const { return mSize; }
 
     /**
      * Sets the \a size of the buffer.
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsSymbolBufferSettings
      * \see size()
      * \see setSizeUnit()
      */
-    Qgis::RenderUnit sizeUnit() const { return mSizeUnit; }
+    [[nodiscard]] Qgis::RenderUnit sizeUnit() const { return mSizeUnit; }
 
     /**
      * Sets the \a unit used for the buffer size.
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsSymbolBufferSettings
      * \see setSizeMapUnitScale()
      * \see sizeUnit()
      */
-    QgsMapUnitScale sizeMapUnitScale() const { return mSizeMapUnitScale; }
+    [[nodiscard]] QgsMapUnitScale sizeMapUnitScale() const { return mSizeMapUnitScale; }
 
     /**
      * Sets the map unit \a scale object for the buffer size.
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsSymbolBufferSettings
      * Returns the buffer join style.
      * \see setJoinStyle
      */
-    Qt::PenJoinStyle joinStyle() const { return mJoinStyle; }
+    [[nodiscard]] Qt::PenJoinStyle joinStyle() const { return mJoinStyle; }
 
     /**
      * Sets the join \a style used for drawing the buffer.
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsSymbolBufferSettings
      *
      * \see setFillSymbol()
      */
-    QgsFillSymbol *fillSymbol() const;
+    [[nodiscard]] QgsFillSymbol *fillSymbol() const;
 
     /**
      * Sets the fill \a symbol used to render the buffer. Ownership of \a symbol is

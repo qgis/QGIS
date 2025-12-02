@@ -88,7 +88,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
 
     void setCanvasName( const QString &name );
-    QString canvasName() const { return mCanvasName; }
+    [[nodiscard]] QString canvasName() const { return mCanvasName; }
 
     void showAnimationWidget() { mActionAnim->trigger(); }
 

@@ -50,23 +50,23 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
         QSet<int> supportedDataType = QSet<int>(),
         bool optional = false );
 
-    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
-    QString type() const override;
+    [[nodiscard]] QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
-    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
-    QStringList dependsOnOtherParameters() const override;
-    QVariantMap toVariantMap() const override;
+    [[nodiscard]] QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
+    [[nodiscard]] QStringList dependsOnOtherParameters() const override;
+    [[nodiscard]] QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
     //! Returns the type name for the parameter class.
     static QString typeName() { return QStringLiteral( "meshdatasetgroups" ); }
 
     //! Returns the name of the mesh layer parameter
-    QString meshLayerParameterName() const;
+    [[nodiscard]] QString meshLayerParameterName() const;
 
     //! Returns whether the data type is supported by the parameter
-    bool isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataType dataType ) const;
+    [[nodiscard]] bool isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataType dataType ) const;
 
     //! Returns the \a value as a list if dataset group indexes
     static QList<int> valueAsDatasetGroup( const QVariant &value );
@@ -90,49 +90,49 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
 class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProcessingParameterType
 {
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    [[nodiscard]] QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
       return new QgsProcessingParameterMeshDatasetGroups( name );
     }
 
-    QString description() const override
+    [[nodiscard]] QString description() const override
     {
       return QCoreApplication::translate( "Processing", "An input allowing selection dataset groups from a mesh layer" );
     }
 
-    QString name() const override
+    [[nodiscard]] QString name() const override
     {
       return QCoreApplication::translate( "Processing", "Mesh Dataset Groups" );
     }
 
-    QString id() const override
+    [[nodiscard]] QString id() const override
     {
       return QgsProcessingParameterMeshDatasetGroups::typeName();
     }
 
-    QString pythonImportString() const override
+    [[nodiscard]] QString pythonImportString() const override
     {
       return QStringLiteral( "from qgis.core import QgsProcessingParameterMeshDatasetGroups" );
     }
 
-    QString className() const override
+    [[nodiscard]] QString className() const override
     {
       return QStringLiteral( "QgsProcessingParameterMeshDatasetGroups" );
     }
 
-    QStringList acceptedPythonTypes() const override
+    [[nodiscard]] QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "list[int]: list of dataset group indexes, see QgsProcessingParameterMeshDatasetGroups docs" );
     }
 
-    QStringList acceptedParameterTypes() const override
+    [[nodiscard]] QStringList acceptedParameterTypes() const override
     {
       return QStringList() << QgsProcessingParameterMeshDatasetGroups::typeName()
              << QgsProcessingParameterString::typeName()
              << QgsProcessingParameterNumber::typeName();
     }
 
-    QStringList acceptedOutputTypes() const override
+    [[nodiscard]] QStringList acceptedOutputTypes() const override
     {
       return QStringList() << QgsProcessingOutputString::typeName()
              << QgsProcessingOutputNumber::typeName();
@@ -173,23 +173,23 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingPa
       const QString &meshLayerParameterName = QString(),
       const QString &datasetGroupParameterName = QString() );
 
-    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
-    QString type() const override;
+    [[nodiscard]] QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    [[nodiscard]] QString type() const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
-    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
-    QStringList dependsOnOtherParameters() const override;
-    QVariantMap toVariantMap() const override;
+    [[nodiscard]] QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
+    [[nodiscard]] QStringList dependsOnOtherParameters() const override;
+    [[nodiscard]] QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
     //! Returns the type name for the parameter class.
     static QString typeName() { return QStringLiteral( "meshdatasettime" ); }
 
     //! Returns the name of the mesh layer parameter
-    QString meshLayerParameterName() const;
+    [[nodiscard]] QString meshLayerParameterName() const;
 
     //! Returns the name of the dataset groups parameter
-    QString datasetGroupParameterName() const;
+    [[nodiscard]] QString datasetGroupParameterName() const;
 
     /**
      * Returns the \a dataset value time type as a string :
@@ -235,42 +235,42 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingPa
 class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessingParameterType
 {
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    [[nodiscard]] QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
       return new QgsProcessingParameterMeshDatasetTime( name );
     }
 
-    QString description() const override
+    [[nodiscard]] QString description() const override
     {
       return QCoreApplication::translate( "Processing", "An input allowing selection of dataset index from a mesh layer by time setting" );
     }
 
-    QString name() const override
+    [[nodiscard]] QString name() const override
     {
       return QCoreApplication::translate( "Processing", "Mesh Dataset Time" );
     }
 
-    QString id() const override
+    [[nodiscard]] QString id() const override
     {
       return QgsProcessingParameterMeshDatasetTime::typeName();
     }
 
-    QString pythonImportString() const override
+    [[nodiscard]] QString pythonImportString() const override
     {
       return QStringLiteral( "from qgis.core import QgsProcessingParameterMeshDatasetTime" );
     }
 
-    QString className() const override
+    [[nodiscard]] QString className() const override
     {
       return QStringLiteral( "QgsProcessingParameterMeshDatasetTime" );
     }
 
-    QStringList acceptedPythonTypes() const override
+    [[nodiscard]] QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "dict{}: dictionary, see QgsProcessingParameterMeshDatasetTime docs" );
     }
 
-    QStringList acceptedParameterTypes() const override
+    [[nodiscard]] QStringList acceptedParameterTypes() const override
     {
       return QStringList()
              << QgsProcessingParameterMeshDatasetTime::typeName()
@@ -278,7 +278,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessin
              << QgsProcessingParameterDateTime::typeName();
     }
 
-    QStringList acceptedOutputTypes() const override
+    [[nodiscard]] QStringList acceptedOutputTypes() const override
     {
       return QStringList()
              << QgsProcessingOutputString::typeName();

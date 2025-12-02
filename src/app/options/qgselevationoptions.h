@@ -34,7 +34,7 @@ class QgsElevationOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsEl
      * Constructor for QgsElevationOptionsWidget with the specified \a parent widget.
      */
     QgsElevationOptionsWidget( QWidget *parent );
-    QString helpKey() const override;
+    [[nodiscard]] QString helpKey() const override;
     void apply() override;
 };
 
@@ -46,9 +46,9 @@ class QgsElevationOptionsFactory : public QgsOptionsWidgetFactory
   public:
     QgsElevationOptionsFactory();
 
-    QIcon icon() const override;
+    [[nodiscard]] QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
-    QString pagePositionHint() const override;
+    [[nodiscard]] QString pagePositionHint() const override;
 };
 
 

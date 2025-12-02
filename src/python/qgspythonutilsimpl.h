@@ -56,7 +56,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     /**
      * Returns the path where QGIS Python related files are located.
      */
-    QString pythonPath() const;
+    [[nodiscard]] QString pythonPath() const;
 
     /**
      * Returns an object's type name as a string
@@ -68,22 +68,22 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     /**
      * Returns the current path for Python plugins
      */
-    QString pluginsPath() const;
+    [[nodiscard]] QString pluginsPath() const;
 
     /**
      * Returns the current path for Python in home directory.
      */
-    QString homePythonPath() const;
+    [[nodiscard]] QString homePythonPath() const;
 
     /**
      * Returns the current path for home directory Python plugins.
      */
-    QString homePluginsPath() const;
+    [[nodiscard]] QString homePluginsPath() const;
 
     /**
      * Returns a list of extra plugins paths passed with QGIS_PLUGINPATH environment variable.
      */
-    QStringList extraPluginsPaths() const;
+    [[nodiscard]] QStringList extraPluginsPaths() const;
 
     QStringList pluginList() final;
     bool isPluginLoaded( const QString &packageName ) final;
@@ -96,7 +96,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     bool pluginHasProcessingProvider( const QString &pluginName ) final;
     bool canUninstallPlugin( const QString &packageName ) final;
     bool unloadPlugin( const QString &packageName ) final;
-    bool isPluginEnabled( const QString &packageName ) const final;
+    [[nodiscard]] bool isPluginEnabled( const QString &packageName ) const final;
     void initGDAL() final;
 
   protected:

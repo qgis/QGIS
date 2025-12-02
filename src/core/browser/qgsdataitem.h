@@ -102,19 +102,19 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Returns whether this item has children.
      */
-    bool hasChildren() const;
+    [[nodiscard]] bool hasChildren() const;
 
     /**
      * Returns TRUE if the data item is a collection of layers
      * The default implementation returns FALSE, subclasses must implement this method if their children are layers.
      * \since QGIS 3.14
      */
-    virtual bool layerCollection() const;
+    [[nodiscard]] virtual bool layerCollection() const;
 
     /**
      * Returns the number of rows of this item
      */
-    int rowCount() const;
+    [[nodiscard]] int rowCount() const;
 
     /**
      * Create children. Children are not expected to have parent set.
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     SIP_END
 #endif
 
-    Qgis::BrowserItemState state() const;
+    [[nodiscard]] Qgis::BrowserItemState state() const;
 
     /**
      * Set item state. It also take care about starting/stopping loading icon animation.
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * A draggable item has to implement mimeUris() that will be used to pass data.
      * \see mimeUris()
      */
-    virtual bool hasDragEnabled() const { return false; }
+    [[nodiscard]] virtual bool hasDragEnabled() const { return false; }
 
     /**
      * Returns mime URI for the data item.
@@ -267,7 +267,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
      * \since QGIS 3.18
      */
-    virtual QgsMimeDataUtils::UriList mimeUris() const;
+    [[nodiscard]] virtual QgsMimeDataUtils::UriList mimeUris() const;
 
     /**
      * Writes the selected crs into data source. The original data source will be modified when calling this
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * \see setCapabilities()
      */
-    virtual Qgis::BrowserItemCapabilities capabilities2() const { return mCapabilities; }
+    [[nodiscard]] virtual Qgis::BrowserItemCapabilities capabilities2() const { return mCapabilities; }
 
     /**
      * Sets the capabilities for the data item.
@@ -340,20 +340,20 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // members
 
-    Qgis::BrowserItemType type() const { return mType; }
+    [[nodiscard]] Qgis::BrowserItemType type() const { return mType; }
 
     /**
      * Gets item parent. QgsDataItem maintains its own items hierarchy, it does not use
      * QObject hierarchy.
     */
-    QgsDataItem *parent() const { return mParent; }
+    [[nodiscard]] QgsDataItem *parent() const { return mParent; }
 
     /**
      * Set item parent and connect / disconnect parent to / from item signals.
      * It does not add itself to parents children (mChildren)
     */
     void setParent( QgsDataItem *parent );
-    QVector<QgsDataItem *> children() const { return mChildren; }
+    [[nodiscard]] QVector<QgsDataItem *> children() const { return mChildren; }
     virtual QIcon icon();
 
     /**
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * \see setName()
      */
-    QString name() const { return mName; }
+    [[nodiscard]] QString name() const { return mName; }
 
     /**
      * Sets the \a name of the item (the displayed text for the item).
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     void setName( const QString &name );
 
-    QString path() const { return mPath; }
+    [[nodiscard]] QString path() const { return mPath; }
     void setPath( const QString &path ) { mPath = path; }
 
     /**
@@ -381,7 +381,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * \since QGIS 3.12
      */
-    QString providerKey() const;
+    [[nodiscard]] QString providerKey() const;
 
     /**
      * Sets the provider key that created this item (e.g. "PostGIS")
@@ -405,7 +405,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * \see setSortKey()
      */
-    virtual QVariant sortKey() const;
+    [[nodiscard]] virtual QVariant sortKey() const;
 
     /**
      * Sets a custom sorting \a key for the item.
@@ -421,7 +421,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     void setIconName( const QString &iconName ) { mIconName = iconName; }
 
     void setToolTip( const QString &msg ) { mToolTip = msg; }
-    QString toolTip() const { return mToolTip; }
+    [[nodiscard]] QString toolTip() const { return mToolTip; }
 
     // deleteLater() items and clear the vector
     static void deleteLater( QVector<QgsDataItem *> &items );
@@ -438,7 +438,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      *
      * \since QGIS 3.16
      */
-    virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const SIP_FACTORY;
+    [[nodiscard]] virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const SIP_FACTORY;
 
   protected:
     virtual void populate( const QVector<QgsDataItem *> &children );
@@ -458,7 +458,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * check during createChildren() if deferredDelete() returns TRUE and return from
      * createChildren() immediately because result will be useless.
     */
-    bool deferredDelete() const { return mDeferredDelete; }
+    [[nodiscard]] bool deferredDelete() const { return mDeferredDelete; }
 
     Qgis::BrowserItemType mType;
     Qgis::BrowserItemCapabilities mCapabilities = Qgis::BrowserItemCapability::NoCapabilities;

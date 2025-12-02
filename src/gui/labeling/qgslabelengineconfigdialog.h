@@ -42,7 +42,7 @@ class GUI_EXPORT QgsLabelEngineConfigWidget : public QgsPanelWidget, private Ui:
     QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     QMenu *menuButtonMenu() override;
-    QString menuButtonTooltip() const override;
+    [[nodiscard]] QString menuButtonTooltip() const override;
 
   public slots:
     //! Applies the changes

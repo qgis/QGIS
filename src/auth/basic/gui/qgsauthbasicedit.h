@@ -34,7 +34,7 @@ class QgsAuthBasicEdit : public QgsAuthMethodEdit, private Ui::QgsAuthBasicEdit
 
     bool validateConfig() override;
 
-    QgsStringMap configMap() const override;
+    [[nodiscard]] QgsStringMap configMap() const override;
 
   public slots:
     void loadConfig( const QgsStringMap &configmap ) override;
