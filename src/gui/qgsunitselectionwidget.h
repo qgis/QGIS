@@ -18,8 +18,8 @@
 #ifndef QGSUNITSELECTIONWIDGET_H
 #define QGSUNITSELECTIONWIDGET_H
 
-#include "ui_qgsunitselectionwidget.h"
 #include "ui_qgsmapunitscalewidgetbase.h"
+#include "ui_qgsunitselectionwidget.h"
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"

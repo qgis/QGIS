@@ -18,8 +18,7 @@
 
 #include "qgis_gui.h"
 #include "qgspointlocator.h"
-
-#include <qobjectuniqueptr.h>
+#include "qobjectuniqueptr.h"
 
 class QgsMapCanvas;
 class QgsVertexMarker;

@@ -20,8 +20,7 @@
 #include "qgsmaptool.h"
 #include "qgspointxy.h"
 #include "qgsrubberband.h"
-
-#include <qobjectuniqueptr.h>
+#include "qobjectuniqueptr.h"
 
 class QgsMapCanvas;
 

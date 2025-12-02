@@ -23,8 +23,7 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
-
-#include <qobjectuniqueptr.h>
+#include "qobjectuniqueptr.h"
 
 class QgsRubberBand;
 class QgsRenderedAnnotationItemDetails;
