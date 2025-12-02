@@ -20,7 +20,7 @@ email                : hugo dot mercier at oslandia dot com
 class QString;
 class QVariant;
 class QByteArray;
-class sqlite3;
+struct sqlite3;
 
 extern "C"
 {
