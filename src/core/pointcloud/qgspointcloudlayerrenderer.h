@@ -29,7 +29,6 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgspointcloudextentrenderer.h"
 #include "qgspointcloudindex.h"
-#include "qgspointcloudindex.h"
 #include "qgspointcloudrenderer.h"
 #include "qgsrasterinterface.h"
 #include "qgsreadwritecontext.h"

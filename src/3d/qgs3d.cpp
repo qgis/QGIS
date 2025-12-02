@@ -18,7 +18,6 @@
 #include "qgs3d.h"
 
 #include "qgs3drendererregistry.h"
-#include "qgs3drendererregistry.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgs3dterrainregistry.h"
 #include "qgsabstract3drenderer.h"

@@ -17,8 +17,6 @@
 #include "qgsapplication.h"
 #include "qgsfield.h"
 #include "qgsreferencedgeometry.h"
-#include "qgsreferencedgeometry.h"
-#include "qgstest.h"
 #include "qgstest.h"
 #include "qgsunsetattributevalue.h"
 

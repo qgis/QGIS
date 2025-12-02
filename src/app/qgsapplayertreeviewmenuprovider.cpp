@@ -49,7 +49,6 @@
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
-#include "qgssymbollayerutils.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"

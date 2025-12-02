@@ -37,7 +37,6 @@
 #include "qgspostgreslistener.h"
 #include "qgspostgresprojectstorage.h"
 #include "qgspostgresproviderconnection.h"
-#include "qgspostgresproviderconnection.h"
 #include "qgspostgresprovidermetadatautils.h"
 #include "qgspostgrestransaction.h"
 #include "qgspostgresutils.h"
