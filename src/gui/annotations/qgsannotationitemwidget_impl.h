@@ -15,11 +15,11 @@
 #ifndef QGSANNOTATIONITEMWIDGETIMPL_H
 #define QGSANNOTATIONITEMWIDGETIMPL_H
 
-#include "ui_qgsannotationpointtextwidgetbase.h"
-#include "ui_qgsannotationsymbolwidgetbase.h"
-#include "ui_qgsannotationlinetextwidgetbase.h"
 #include "ui_qgsannotationrectangulartextwidgetbase.h"
+#include "ui_qgsannotationsymbolwidgetbase.h"
 #include "ui_qgsannotationpicturewidgetbase.h"
+#include "ui_qgsannotationpointtextwidgetbase.h"
+#include "ui_qgsannotationlinetextwidgetbase.h"
 
 #include <memory>
 

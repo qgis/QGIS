@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include "qgstest.h"
 
 #include <QPointer>
 #include <qobjectuniqueptr.h>

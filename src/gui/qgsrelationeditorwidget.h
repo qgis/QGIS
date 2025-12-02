@@ -30,7 +30,6 @@
 #include <QToolButton>
 #include <QWidget>
 #include <qobjectuniqueptr.h>
-#include <qobjectuniqueptr.h>
 
 class QTreeWidget;
 class QTreeWidgetItem;

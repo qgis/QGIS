@@ -18,7 +18,6 @@
 #include "qgshanadataitemguiprovider.h"
 
 #include "qgsapplication.h"
-#include "qgsapplication.h"
 #include "qgsdataitemguiproviderutils.h"
 #include "qgsdbimportvectorlayerdialog.h"
 #include "qgshanadataitems.h"

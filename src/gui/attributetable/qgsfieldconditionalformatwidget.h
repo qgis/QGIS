@@ -15,8 +15,8 @@
 #ifndef QGSFIELDCONDITIONALFORMATWIDGET_H
 #define QGSFIELDCONDITIONALFORMATWIDGET_H
 
-#include "ui_qgsfieldconditionalformatwidget.h"
 #include "ui_qgseditconditionalformatrulewidget.h"
+#include "ui_qgsfieldconditionalformatwidget.h"
 
 #include "qgis_gui.h"
 #include "qgsconditionalstyle.h"

@@ -24,7 +24,6 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis_sip.h"
 #include "qgsabstractprofilesource.h"
 #include "qgscontrastenhancement.h"
 #include "qgsmaplayer.h"

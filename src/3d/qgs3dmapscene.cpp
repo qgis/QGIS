@@ -48,7 +48,6 @@
 #include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspointcloudlayer.h"
-#include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspostprocessingentity.h"
 #include "qgsrulebased3drenderer.h"
