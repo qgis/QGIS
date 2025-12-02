@@ -144,6 +144,7 @@ NON_STANDARD_NAMED_QGIS_HEADERS = (
 
 SPATIALITE_HEADERS = ("spatialite.h", "spatialite/gaiageo.h")
 
+SPECIAL_CASE_FIRST_INCLUDES = ("Python.h",)
 SPECIAL_CASE_LAST_INCLUDES = ("fcgi_stdio.h",)
 
 
@@ -172,6 +173,7 @@ def print_sorted_includes(includes: list[str]):
     std_includes = []
     qt_includes = []
     qgis_includes = []
+    special_case_first_includes = []
     special_case_last_includes = []
 
     for include in includes:
@@ -185,6 +187,8 @@ def print_sorted_includes(includes: list[str]):
             moc_header = header
         elif header == "qgsconfig.h":
             qgs_config_include = header
+        elif header in SPECIAL_CASE_FIRST_INCLUDES:
+            special_case_first_includes.append(header)
         elif header in SPECIAL_CASE_LAST_INCLUDES:
             special_case_last_includes.append(header)
         elif (
@@ -205,7 +209,13 @@ def print_sorted_includes(includes: list[str]):
     qgis_includes = sorted(qgis_includes)
     ui_includes = sorted(ui_includes)
     std_includes = sort_standard_includes(std_includes)
+    special_case_first_includes = sorted(special_case_first_includes)
     special_case_last_includes = sorted(special_case_last_includes)
+
+    if special_case_first_includes:
+        for header in special_case_first_includes:
+            print(f"#include <{header}>")
+        print()
 
     if qgs_config_include:
         # this header MUST come first, as it defines macros which may
