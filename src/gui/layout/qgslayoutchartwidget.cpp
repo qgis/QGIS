@@ -176,13 +176,12 @@ void QgsLayoutChartWidget::mChartPropertiesButton_clicked()
 
   const QString plotType = mChartTypeComboBox->currentData().toString();
   QgsPlotAbstractMetadata *abstractMetadata = QgsApplication::instance()->plotRegistry()->plotMetadata( plotType );
-  QgsPlotMetadata *metadata = dynamic_cast<QgsPlotMetadata *>( abstractMetadata );
   if ( !abstractMetadata )
   {
     return;
   }
 
-  QgsPlotWidget *widget = metadata->createPlotWidget( this );
+  QgsPlotWidget *widget = abstractMetadata->createPlotWidget( this );
   if ( !widget )
   {
     return;

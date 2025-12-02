@@ -467,12 +467,12 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRendererWidget::renderer()
   return renderer.release();
 }
 
-QgsPointCloudCategoryList QgsPointCloudClassifiedRendererWidget::categoriesList()
+QgsPointCloudCategoryList QgsPointCloudClassifiedRendererWidget::categoriesList() const
 {
   return mModel->categories();
 }
 
-QString QgsPointCloudClassifiedRendererWidget::attribute()
+QString QgsPointCloudClassifiedRendererWidget::attribute() const
 {
   return mAttributeComboBox->currentAttribute();
 }

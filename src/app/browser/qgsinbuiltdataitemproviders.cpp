@@ -537,7 +537,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     {
       const QgsProviderSublayerDetails &sublayer { sublayers.first() };
       openDataSourceManagerAction = new QAction( tr( "Open with Data Source Manager…" ), menu );
-      connect( openDataSourceManagerAction, &QAction::triggered, this, [sublayer, layerItem] {
+      connect( openDataSourceManagerAction, &QAction::triggered, this, [sublayer] {
         QString pageName { sublayer.providerKey() };
         // GPKG special handling
         if ( sublayer.driverName() == QLatin1String( "GeoPackage" ) )
@@ -548,7 +548,7 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
         {
           pageName = QStringLiteral( "Spatialite" );
         }
-        QgisApp::instance()->dataSourceManager( pageName, layerItem->uri() );
+        QgisApp::instance()->dataSourceManager( pageName, sublayer.uri() );
       } );
     }
   }
@@ -1847,80 +1847,107 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     const bool isTable = qobject_cast<QgsLayerItem *>( item );
     if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::MoveTableToSchema ) )
     {
-      QAction *moveToSchemaAction = new QAction( tr( "Move to Another Schema…" ), menu );
-
-      QgsDataItemGuiProviderUtils::addToSubMenu( menu, moveToSchemaAction, tr( "Manage" ) );
-
       const QString connectionUri = conn->uri();
       const QString providerKey = conn->providerKey();
 
-      connect( moveToSchemaAction, &QAction::triggered, moveToSchemaAction, [item, context, connectionUri, providerKey] {
+      bool allMovableLayers = true;
+      bool allSameDatabase = true;
+
+      if ( selectedItems.count() > 1 )
+      {
+        allMovableLayers = std::all_of( selectedItems.begin(), selectedItems.end(), []( QgsDataItem *item ) {
+          QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+          if ( layerItem == nullptr )
+          {
+            return false;
+          }
+          return layerItem->mapLayerType() == Qgis::LayerType::Vector || layerItem->mapLayerType() == Qgis::LayerType::Raster;
+        } );
+
+        allSameDatabase = std::all_of( selectedItems.begin(), selectedItems.end(), [connectionUri]( QgsDataItem *item ) {
+          QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+          if ( layerItem == nullptr )
+          {
+            return false;
+          }
+          QgsDataSourceUri layerUri( layerItem->uri() );
+          QgsDataSourceUri mainUri( connectionUri );
+
+          return layerUri.host() == mainUri.host() && layerUri.database() == mainUri.database();
+        } );
+      }
+
+      QAction *moveToSchemaAction = new QAction( tr( "Move to Another Schema…" ), menu );
+
+      connect( moveToSchemaAction, &QAction::triggered, this, [this, item, selectedItems, context, connectionUri, providerKey] {
         QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
         if ( !md )
           return;
 
         std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
 
-        QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( conn2.get() );
+        QgsDatabaseSchemaSelectionDialog *dlg = new QgsDatabaseSchemaSelectionDialog( conn2.release() );
 
         if ( dlg->exec() == QDialog::Accepted )
         {
-          const QString originalSchemaName = item->parent()->name();
-          const QString tableName = item->name();
-
-          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
-
-          QString errCause;
-          if ( conn3 )
+          if ( selectedItems.count() == 1 )
           {
-            try
-            {
-              QgsTemporaryCursorOverride override( Qt::WaitCursor );
-              conn3->moveTableToSchema( originalSchemaName, tableName, dlg->selectedSchema() );
-            }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              errCause = ex.what();
-            }
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+            bool success = moveTableToSchema( std::move( conn3 ), item->parent()->name(), item->name(), dlg->selectedSchema(), context, true );
+            if ( !success )
+              return;
+
+            // refresh parent item (schema)
+            if ( qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
+              item->parent()->refresh();
+
+            if ( !item->parent() || !qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() ) )
+              return;
+
+            QgsDataItemGuiProviderUtils::refreshChildWithName( item->parent()->parent(), dlg->selectedSchema() );
           }
           else
           {
-            errCause = QObject::tr( "There was an error retrieving the connection to %1" ).arg( connectionUri );
-          }
-
-          if ( !errCause.isEmpty() )
-          {
-            notify( tr( "Cannot move %1 to schema %2" ).arg( tableName, dlg->selectedSchema() ), errCause, context, Qgis::MessageLevel::Critical );
-            return;
-          }
-          else if ( context.messageBar() )
-          {
-            context.messageBar()->pushMessage( tr( "Moved %1 to schema %2" ).arg( tableName, dlg->selectedSchema() ), Qgis::MessageLevel::Success );
-          }
-
-          // refresh parent item (schema) and also the schema that table was moved to if it was populated
-          if ( !item->parent() )
-            return;
-
-          item->parent()->refresh();
-
-          if ( !item->parent()->parent() )
-            return;
-
-          const QVector<QgsDataItem *> constChildren { item->parent()->parent()->children() };
-          for ( QgsDataItem *c : constChildren )
-          {
-            if ( c->name() == dlg->selectedSchema() )
+            int numberImported = 0;
+            QSet<QString> schemasToRefresh;
+            for ( const QgsDataItem *selectedItem : selectedItems )
             {
-              if ( c->state() != Qgis::BrowserItemState::NotPopulated )
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn3( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+              bool success = moveTableToSchema( std::move( conn3 ), selectedItem->parent()->name(), selectedItem->name(), dlg->selectedSchema(), context, false );
+
+              if ( success )
               {
-                c->refresh();
+                numberImported++;
+
+                if ( selectedItem->parent() && qobject_cast<QgsDatabaseSchemaItem *>( selectedItem->parent() ) )
+                  schemasToRefresh.insert( selectedItem->parent()->name() );
               }
-              break;
             }
+
+            if ( !qobject_cast<QgsDatabaseSchemaItem *>( item->parent() ) )
+              return;
+
+            QgsDataCollectionItem *dbItem = qobject_cast<QgsDataCollectionItem *>( item->parent()->parent() );
+            if ( !dbItem )
+              return;
+
+            // add target schema to schemas to refresh
+            schemasToRefresh.insert( dlg->selectedSchema() );
+
+            for ( const QString &schema : schemasToRefresh )
+            {
+              QgsDataItemGuiProviderUtils::refreshChildWithName( dbItem, schema );
+            }
+
+            notify( tr( "Move Tables" ), tr( "%1 tables moved to schema %2" ).arg( numberImported ).arg( dlg->selectedSchema() ), context, Qgis::MessageLevel::Success );
           }
         }
       } );
+
+      if ( allMovableLayers && allSameDatabase )
+      {
+        QgsDataItemGuiProviderUtils::addToSubMenu( menu, moveToSchemaAction, tr( "Manage" ) );
+      }
     }
 
     if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteSpatialIndex ) )
@@ -2070,6 +2097,36 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       } );
     }
   }
+}
+
+bool QgsDatabaseItemGuiProvider::moveTableToSchema( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notifyUser )
+{
+  QString errCause;
+
+  try
+  {
+    QgsTemporaryCursorOverride override( Qt::WaitCursor );
+    conn->moveTableToSchema( originalSchema, table, targetSchema );
+  }
+  catch ( QgsProviderConnectionException &ex )
+  {
+    errCause = ex.what();
+  }
+
+  if ( !errCause.isEmpty() )
+  {
+    if ( notifyUser )
+    {
+      notify( tr( "Cannot move %1 to schema %2" ).arg( table, targetSchema ), errCause, context, Qgis::MessageLevel::Critical );
+    }
+    return false;
+  }
+  else if ( context.messageBar() && notifyUser )
+  {
+    context.messageBar()->pushMessage( tr( "Moved %1 to schema %2" ).arg( table, targetSchema ), Qgis::MessageLevel::Success );
+  }
+
+  return true;
 }
 
 bool QgsDatabaseItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiContext )
@@ -2350,7 +2407,8 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
 {
   if ( qobject_cast<QgsFieldDomainsItem *>( item )
        || qobject_cast<QgsGeoPackageCollectionItem *>( item )
-       || qobject_cast<QgsFileDataCollectionItem *>( item ) )
+       || qobject_cast<QgsFileDataCollectionItem *>( item )
+       || qobject_cast<QgsFieldDomainItem *>( item ) )
   {
     QString providerKey;
     QString connectionUri;
@@ -2359,6 +2417,11 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     {
       providerKey = fieldDomainsItem->providerKey();
       connectionUri = fieldDomainsItem->connectionUri();
+    }
+    else if ( QgsFieldDomainItem *fieldDomainItem = qobject_cast<QgsFieldDomainItem *>( item ) )
+    {
+      providerKey = fieldDomainItem->providerKey();
+      connectionUri = fieldDomainItem->connectionUri();
     }
     else if ( QgsGeoPackageCollectionItem *gpkgItem = qobject_cast<QgsGeoPackageCollectionItem *>( item ) )
     {
@@ -2376,60 +2439,134 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     if ( md )
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddFieldDomain ) )
-      {
-        QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
-        menu->addMenu( createFieldDomainMenu );
 
-        auto createDomain = [context, itemWeakPointer = QPointer<QgsDataItem>( item ), md, connectionUri]( Qgis::FieldDomainType type ) {
-          QgsFieldDomainDialog dialog( type, QgisApp::instance() );
-          dialog.setWindowTitle( tr( "New Field Domain" ) );
-          if ( dialog.exec() )
-          {
-            std::unique_ptr<QgsFieldDomain> newDomain( dialog.createFieldDomain() );
-            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
-            try
+      // for every object besides field domain item the menu actions are creation of field domain (different types)
+      if ( !qobject_cast<QgsFieldDomainItem *>( item ) )
+      {
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddFieldDomain ) )
+        {
+          QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
+          menu->addMenu( createFieldDomainMenu );
+
+          auto createDomain = [context, itemWeakPointer = QPointer<QgsDataItem>( item ), md, connectionUri]( Qgis::FieldDomainType type ) {
+            QgsFieldDomainDialog dialog( type, QgisApp::instance() );
+            dialog.setWindowTitle( tr( "New Field Domain" ) );
+            if ( dialog.exec() )
             {
-              conn->addFieldDomain( *newDomain, QString() );
-              notify( QObject::tr( "New Field Domain Created" ), QObject::tr( "Field domain '%1' was created successfully." ).arg( newDomain->name() ), context, Qgis::MessageLevel::Success );
-              if ( itemWeakPointer )
+              std::unique_ptr<QgsFieldDomain> newDomain( dialog.createFieldDomain() );
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+              try
               {
-                itemWeakPointer->refresh();
+                conn->addFieldDomain( *newDomain, QString() );
+                notify( QObject::tr( "New Field Domain Created" ), QObject::tr( "Field domain '%1' was created successfully." ).arg( newDomain->name() ), context, Qgis::MessageLevel::Success );
+                if ( itemWeakPointer )
+                {
+                  itemWeakPointer->refresh();
+                }
+              }
+              catch ( QgsProviderConnectionException &ex )
+              {
+                notify( QObject::tr( "Field Domain Creation Error" ), QObject::tr( "Error creating new field domain '%1': %2" ).arg( newDomain->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
               }
             }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              notify( QObject::tr( "Field Domain Creation Error" ), QObject::tr( "Error creating new field domain '%1': %2" ).arg( newDomain->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
-            }
+          };
+
+          const QList<Qgis::FieldDomainType> supportedDomainTypes = conn->supportedFieldDomainTypes();
+
+          if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Range ) )
+          {
+            QAction *rangeDomainAction = new QAction( QObject::tr( "New Range Domain…" ) );
+            createFieldDomainMenu->addAction( rangeDomainAction );
+            connect( rangeDomainAction, &QAction::triggered, this, [createDomain] {
+              createDomain( Qgis::FieldDomainType::Range );
+            } );
           }
-        };
 
-        const QList<Qgis::FieldDomainType> supportedDomainTypes = conn->supportedFieldDomainTypes();
+          if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Coded ) )
+          {
+            QAction *codedDomainAction = new QAction( QObject::tr( "New Coded Values Domain…" ) );
+            createFieldDomainMenu->addAction( codedDomainAction );
+            connect( codedDomainAction, &QAction::triggered, this, [createDomain] {
+              createDomain( Qgis::FieldDomainType::Coded );
+            } );
+          }
 
-        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Range ) )
+          if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Glob ) )
+          {
+            QAction *globDomainAction = new QAction( QObject::tr( "New Glob Domain…" ) );
+            createFieldDomainMenu->addAction( globDomainAction );
+            connect( globDomainAction, &QAction::triggered, this, [createDomain] {
+              createDomain( Qgis::FieldDomainType::Glob );
+            } );
+          }
+        }
+      }
+      // for field domain item the menu actions are edit and delete
+      else
+      {
+        if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::EditFieldDomain ) )
         {
-          QAction *rangeDomainAction = new QAction( QObject::tr( "New Range Domain…" ) );
-          createFieldDomainMenu->addAction( rangeDomainAction );
-          connect( rangeDomainAction, &QAction::triggered, this, [createDomain] {
-            createDomain( Qgis::FieldDomainType::Range );
-          } );
+          std::unique_ptr<QgsFieldDomain> fieldDomain( conn->fieldDomain( item->name() ) );
+
+          if ( fieldDomain )
+          {
+            QAction *editFieldDomainAction = new QAction( QObject::tr( "Edit Field Domain…" ), menu );
+            menu->addAction( editFieldDomainAction );
+
+            connect( editFieldDomainAction, &QAction::triggered, this, [context, item, md, connectionUri, fieldDomainLambda = std::move( fieldDomain )] {
+              QgsFieldDomainDialog dialog( fieldDomainLambda->type(), QgisApp::instance() );
+              dialog.setWindowTitle( tr( "Edit Field Domain" ) );
+              dialog.setFieldDomain( fieldDomainLambda.get() );
+              dialog.setNameEditable( false );
+
+              if ( dialog.exec() )
+              {
+                std::unique_ptr<QgsFieldDomain> updatedDomain( dialog.createFieldDomain() );
+                std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+                try
+                {
+                  conn->updateFieldDomain( updatedDomain.get(), QString() );
+                  notify( QObject::tr( "Field Domain Updated" ), QObject::tr( "Field domain '%1' was updated successfully." ).arg( updatedDomain->name() ), context, Qgis::MessageLevel::Success );
+                  if ( item )
+                  {
+                    item->refresh();
+                  }
+                }
+                catch ( QgsProviderConnectionException &ex )
+                {
+                  notify( QObject::tr( "Field Domain Update Error" ), QObject::tr( "Error updating field domain '%1': %2" ).arg( updatedDomain->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+                }
+              }
+            } );
+          }
         }
 
-        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Coded ) )
+        if ( conn && conn->capabilities2().testFlag( Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain ) )
         {
-          QAction *codedDomainAction = new QAction( QObject::tr( "New Coded Values Domain…" ) );
-          createFieldDomainMenu->addAction( codedDomainAction );
-          connect( codedDomainAction, &QAction::triggered, this, [createDomain] {
-            createDomain( Qgis::FieldDomainType::Coded );
-          } );
-        }
+          QAction *deleteFieldDomainAction = new QAction( tr( "Delete Field Domain…" ), menu );
+          menu->addAction( deleteFieldDomainAction );
 
-        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Glob ) )
-        {
-          QAction *globDomainAction = new QAction( QObject::tr( "New Glob Domain…" ) );
-          createFieldDomainMenu->addAction( globDomainAction );
-          connect( globDomainAction, &QAction::triggered, this, [createDomain] {
-            createDomain( Qgis::FieldDomainType::Glob );
+          connect( deleteFieldDomainAction, &QAction::triggered, this, [md, item, connectionUri, context] {
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+
+            QMessageBox msgbox { QMessageBox::Icon::Question, tr( "Delete Field Domain" ), tr( "Delete field domain %1" ).arg( item->name() ), QMessageBox::Ok | QMessageBox::Cancel };
+
+            if ( msgbox.exec() == QMessageBox::Ok )
+            {
+              try
+              {
+                conn->deleteFieldDomain( item->name(), QString() );
+                notify( QObject::tr( "Delete Field Domain" ), QObject::tr( "Field domain '%1' was deleted successfully." ).arg( item->name() ), context, Qgis::MessageLevel::Success );
+                if ( item->parent() )
+                {
+                  item->parent()->refresh();
+                }
+              }
+              catch ( QgsProviderConnectionException &ex )
+              {
+                notify( QObject::tr( "Delete Field Domain Error" ), QObject::tr( "Error deleting field domain '%1': %2" ).arg( item->name(), ex.what() ), context, Qgis::MessageLevel::Critical );
+              }
+            }
           } );
         }
       }
@@ -2693,7 +2830,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
           QPointer<QgsDataItem> itemWeakPointer( item );
 
-          connect( editRelationshipAction, &QAction::triggered, this, [md, itemWeakPointer, relation, connectionUri, context] {
+          connect( editRelationshipAction, &QAction::triggered, this, [md, itemWeakPointer = std::move( itemWeakPointer ), relation, connectionUri, context] {
             std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
 
             QgsDbRelationDialog dialog( conn.release(), QgisApp::instance() );
@@ -2727,7 +2864,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
           QPointer<QgsDataItem> itemWeakPointer( item );
 
-          connect( deleteRelationshipAction, &QAction::triggered, this, [relation, md, connectionUri, itemWeakPointer, context] {
+          connect( deleteRelationshipAction, &QAction::triggered, this, [relation, md, connectionUri, itemWeakPointer = std::move( itemWeakPointer ), context] {
             if ( QMessageBox::question( nullptr, tr( "Delete Relationship" ), tr( "Are you sure you want to delete the %1 relationship?" ).arg( relation.name() ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
             {
               std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };

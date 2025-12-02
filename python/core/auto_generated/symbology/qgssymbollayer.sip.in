@@ -176,6 +176,7 @@ Abstract base class for symbol layers.
       LineClipping,
       SkipMultiples,
       ShowMarker,
+      BlankSegments,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -461,6 +462,23 @@ Sets layer's subsymbol. takes ownership of the passed symbol
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 %Docstring
 Returns if the layer can be used below the specified symbol
+%End
+
+    virtual bool rendersIdenticallyTo( const QgsSymbolLayer *other ) const;
+%Docstring
+Returns ``True`` if this symbol layer will always render identically to
+an ``other`` symbol layer.
+
+.. note::
+
+   This method is pessimistic, in that it will return ``False`` in circumstances
+   where it is not possible to guarantee that in 100% of cases the layer will
+   render pixel-identically to the other layer. For instance, calling
+   :py:func:`~QgsSymbolLayer.rendersIdenticallyTo` with the same symbol layer as ``other`` may
+   return ``False`` if the symbol layer contains data-defined overrides, such
+   as those using feature attributes or expression variables.
+
+.. versionadded:: 4.0
 %End
 
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;

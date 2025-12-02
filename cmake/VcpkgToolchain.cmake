@@ -14,6 +14,12 @@ endif()
 if(WITH_ORACLE)
   list(APPEND VCPKG_MANIFEST_FEATURES "oracle")
 endif()
+if(WITH_SFCGAL)
+  list(APPEND VCPKG_MANIFEST_FEATURES "sfcgal")
+endif()
+if(WITH_EXIV2)
+  list(APPEND VCPKG_MANIFEST_FEATURES "exiv2")
+endif()
 
 # Binarycache can only be used on Windows or if mono is available.
 find_program(_VCPKG_MONO mono)

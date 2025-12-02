@@ -29,6 +29,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgscodeeditorwidget.h"
 #include "qgsfileutils.h"
+#include "qgshelp.h"
 #include "qgsstoredquerymanager.h"
 #include "qgsproject.h"
 #include "qgsnewnamedialog.h"
@@ -36,6 +37,7 @@
 #include "qgsdbqueryhistoryprovider.h"
 
 #include <QClipboard>
+#include <QDialogButtonBox>
 #include <QShortcut>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -702,9 +704,8 @@ QgsQueryResultWidget::QgsQueryResultWidget( QWidget *parent, QgsAbstractDatabase
   connect( mActionShowHistory, &QAction::toggled, this, &QgsQueryResultWidget::showHistoryPanel );
 
   connect( mActionClear, &QAction::triggered, this, [this] {
-    mQueryWidget->sqlEditor()->setText( QString() );
-    mActionUndo->setEnabled( false );
-    mActionRedo->setEnabled( false );
+    // Cannot use setText() because it resets the undo/redo buffer.
+    mQueryWidget->sqlEditor()->SendScintilla( QsciScintilla::SCI_SETTEXT, "" );
   } );
 
   connect( mQueryWidget->sqlEditor(), &QgsCodeEditorSQL::textChanged, this, &QgsQueryResultWidget::updateButtons );
@@ -1218,8 +1219,16 @@ QgsQueryResultDialog::QgsQueryResultDialog( QgsAbstractDatabaseProviderConnectio
 
   mWidget = new QgsQueryResultWidget( this, connection );
   QVBoxLayout *l = new QVBoxLayout();
-  l->setContentsMargins( 0, 0, 0, 0 );
+  l->setContentsMargins( 6, 6, 6, 6 );
+
+  QDialogButtonBox *mButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::close );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#execute-sql" ) );
+  } );
   l->addWidget( mWidget );
+  l->addWidget( mButtonBox );
+
   setLayout( l );
 }
 
@@ -1248,6 +1257,7 @@ QgsQueryResultMainWindow::QgsQueryResultMainWindow( QgsAbstractDatabaseProviderC
 
   mWidget = new QgsQueryResultWidget( nullptr, connection );
   setCentralWidget( mWidget );
+  mWidget->layout()->setContentsMargins( 6, 6, 6, 6 );
 
   connect( mWidget, &QgsQueryResultWidget::requestDialogTitleUpdate, this, &QgsQueryResultMainWindow::updateWindowTitle );
 

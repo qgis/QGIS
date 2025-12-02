@@ -232,6 +232,19 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     };
 
     /**
+     * Splits a simple query in the form "SELECT column(s) FROM table(s) [WHERE ...]" into its components
+     * \param sql the SQL query
+     * \param columns output list of columns
+     * \param tables output list of tables
+     * \param where output where clause (without the "WHERE" keyword)
+     * \return TRUE in case of success
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static bool splitSimpleQuery( const QString &sql, QStringList &columns, QStringList &tables, QString &where ) SIP_SKIP;
+
+
+    /**
      * \brief The SqlVectorLayerOptions stores all information required to create a SQL (query) layer.
      * \see createSqlVectorLayer()
      *
@@ -456,7 +469,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
         //! Name of the geometry column
         QString                       mGeometryColumn;
         //! The number of geometry columns in the table
-        int                           mGeometryColumnCount;
+        int                           mGeometryColumnCount = 0;
         //! PK columns
         QStringList                   mPkColumns;
         TableFlags                    mFlags;
@@ -1009,6 +1022,30 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.26
      */
     virtual void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Update an existing field \a domain in the database, the domain is identified by name.
+     *
+     * \param domain field domain to update
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 4.0
+     */
+    virtual void updateFieldDomain( QgsFieldDomain *domain, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Deletes the field domain with the specified \a name from the provider.
+     *
+     * \param name name of the field domain to be deleted
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     *
+     * \see fieldDomainNames()
+     * \since QGIS 4.0
+     */
+    virtual void deleteFieldDomain( const QString &name, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Sets the \a alias for the existing field with the specified name.

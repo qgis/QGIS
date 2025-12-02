@@ -19,15 +19,18 @@ using namespace nlohmann;
 #include "qgslogger.h"
 #include "qgsoapifitemsrequest.h"
 #include "moc_qgsoapifitemsrequest.cpp"
+#include "qgsoapifshareddata.h"
 #include "qgsoapifutils.h"
 #include "qgsproviderregistry.h"
+#include "qgsvectordataprovider.h"
 
 #include "cpl_vsi.h"
 
+#include <QRegularExpression>
 #include <QTextCodec>
 
-QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, const QString &url )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )
+QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, const QString &url, const QString &featureFormat )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url ), mFeatureFormat( featureFormat )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -38,8 +41,15 @@ QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, con
 
 bool QgsOapifItemsRequest::request( bool synchronous, bool forceRefresh )
 {
+  QString acceptHeader = QStringLiteral( "application/geo+json, application/json" );
+  if ( !mFeatureFormat.isEmpty() )
+  {
+    acceptHeader = mFeatureFormat;
+  }
+  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == QStringLiteral( "application/geo+json" );
+  mFakeResponseHasHeaders = !isGeoJSON;
   QgsDebugMsgLevel( QStringLiteral( " QgsOapifItemsRequest::request() start time: %1" ).arg( time( nullptr ) ), 5 );
-  if ( !sendGET( QUrl::fromEncoded( mUrl.toLatin1() ), QString( "application/geo+json, application/json" ), synchronous, forceRefresh ) )
+  if ( !sendGET( QUrl::fromEncoded( mUrl.toLatin1() ), acceptHeader, synchronous, forceRefresh ) )
   {
     emit gotResponse();
     return false;
@@ -108,22 +118,27 @@ void QgsOapifItemsRequest::processReply()
     return;
   }
 
-  if ( buffer.size() <= 200 )
+  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == QStringLiteral( "application/geo+json" );
+
+  if ( isGeoJSON )
   {
-    QgsDebugMsgLevel( QStringLiteral( "parsing items response: " ) + buffer, 4 );
-  }
-  else
-  {
-    QgsDebugMsgLevel( QStringLiteral( "parsing items response: " ) + buffer.left( 100 ) + QStringLiteral( "[... snip ...]" ) + buffer.right( 100 ), 4 );
+    if ( buffer.size() <= 200 )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "parsing items response: " ) + buffer, 4 );
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "parsing items response: " ) + buffer.left( 100 ) + QStringLiteral( "[... snip ...]" ) + buffer.right( 100 ), 4 );
+    }
+
+    // Remove extraneous indentation spaces from the string. This helps a bit
+    // improving JSON parsing performance afterwards
+    QgsDebugMsgLevel( QStringLiteral( "JSON compaction start time: %1" ).arg( time( nullptr ) ), 5 );
+    removeUselessSpacesFromJSONBuffer( buffer );
+    QgsDebugMsgLevel( QStringLiteral( "JSON compaction end time: %1" ).arg( time( nullptr ) ), 5 );
   }
 
-  // Remove extraneous indentation spaces from the string. This helps a bit
-  // improving JSON parsing performance afterwards
-  QgsDebugMsgLevel( QStringLiteral( "JSON compaction start time: %1" ).arg( time( nullptr ) ), 5 );
-  removeUselessSpacesFromJSONBuffer( buffer );
-  QgsDebugMsgLevel( QStringLiteral( "JSON compaction end time: %1" ).arg( time( nullptr ) ), 5 );
-
-  const QString vsimemFilename = QStringLiteral( "/vsimem/oaipf_%1.json" ).arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
+  const QString vsimemFilename = mFeatureFormat == QStringLiteral( "application/flatgeobuf" ) ? QStringLiteral( "/vsimem/oaipf_%1.fgb" ).arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) ) : QStringLiteral( "/vsimem/oaipf_%1.json" ).arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
   VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), const_cast<GByte *>( reinterpret_cast<const GByte *>( buffer.constData() ) ), buffer.size(), false ) );
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
   const QgsDataProvider::ProviderOptions providerOptions;
@@ -150,74 +165,160 @@ void QgsOapifItemsRequest::processReply()
   }
   QgsDebugMsgLevel( QStringLiteral( "OGR feature iteration start time: %1" ).arg( time( nullptr ) ), 5 );
   auto iter = vectorProvider->getFeatures();
+
+  int idField = -1;
+  if ( !isGeoJSON )
+  {
+    idField = mFields.indexOf( QStringLiteral( "id" ) );
+    // If no "id" field, then use the first field if it contains "id" in it.
+    if ( idField < 0 && mFields.size() >= 1 && mFields[0].name().indexOf( QLatin1String( "id" ), 0, Qt::CaseInsensitive ) )
+    {
+      idField = 0;
+    }
+  }
+
   while ( true )
   {
     QgsFeature f;
     if ( !iter.nextFeature( f ) )
       break;
-    mFeatures.push_back( QgsFeatureUniqueIdPair( f, QString() ) );
+    QString id;
+    if ( idField >= 0 )
+    {
+      id = f.attribute( idField ).toString();
+    }
+    mFeatures.push_back( QgsFeatureUniqueIdPair( f, id ) );
   }
   QgsDebugMsgLevel( QStringLiteral( "OGR feature iteration end time: %1" ).arg( time( nullptr ) ), 5 );
   vectorProvider.reset();
   VSIUnlink( vsimemFilename.toUtf8().constData() );
 
-  try
+  if ( isGeoJSON )
   {
-    QgsDebugMsgLevel( QStringLiteral( "json::parse() start time: %1" ).arg( time( nullptr ) ), 5 );
-    const json j = json::parse( buffer.constData(), buffer.constData() + buffer.size() );
-    QgsDebugMsgLevel( QStringLiteral( "json::parse() end time: %1" ).arg( time( nullptr ) ), 5 );
-    if ( j.is_object() && j.contains( "features" ) )
+    try
     {
-      const json &features = j["features"];
-      if ( features.is_array() && features.size() == mFeatures.size() )
+      QgsDebugMsgLevel( QStringLiteral( "json::parse() start time: %1" ).arg( time( nullptr ) ), 5 );
+      const json j = json::parse( buffer.constData(), buffer.constData() + buffer.size() );
+      QgsDebugMsgLevel( QStringLiteral( "json::parse() end time: %1" ).arg( time( nullptr ) ), 5 );
+      if ( j.is_object() && j.contains( "features" ) )
       {
-        for ( size_t i = 0; i < features.size(); i++ )
+        const json &features = j["features"];
+        if ( features.is_array() && features.size() == mFeatures.size() )
         {
-          const json &jFeature = features[i];
-          if ( jFeature.is_object() && jFeature.contains( "id" ) )
+          for ( size_t i = 0; i < features.size(); i++ )
           {
-            const json &id = jFeature["id"];
-            mFoundIdTopLevel = true;
-            if ( id.is_string() )
+            const json &jFeature = features[i];
+            if ( jFeature.is_object() && jFeature.contains( "id" ) )
             {
-              mFeatures[i].second = QString::fromStdString( id.get<std::string>() );
+              const json &id = jFeature["id"];
+              mFoundIdTopLevel = true;
+              if ( id.is_string() )
+              {
+                mFeatures[i].second = QString::fromStdString( id.get<std::string>() );
+              }
+              else if ( id.is_number_integer() )
+              {
+                mFeatures[i].second = QString::number( id.get<qint64>() );
+              }
             }
-            else if ( id.is_number_integer() )
+            if ( jFeature.is_object() && jFeature.contains( "properties" ) )
             {
-              mFeatures[i].second = QString::number( id.get<qint64>() );
-            }
-          }
-          if ( jFeature.is_object() && jFeature.contains( "properties" ) )
-          {
-            const json &properties = jFeature["properties"];
-            if ( properties.is_object() && properties.contains( "id" ) )
-            {
-              mFoundIdInProperties = true;
+              const json &properties = jFeature["properties"];
+              if ( properties.is_object() && properties.contains( "id" ) )
+              {
+                mFoundIdInProperties = true;
+              }
             }
           }
         }
       }
-    }
 
-    const auto links = QgsOAPIFJson::parseLinks( j );
-    mNextUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "next" ), { QStringLiteral( "application/geo+json" ) } );
+      const auto links = QgsOAPIFJson::parseLinks( j );
+      mNextUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "next" ), { QStringLiteral( "application/geo+json" ) } );
 
-    if ( j.is_object() && j.contains( "numberMatched" ) )
-    {
-      const auto numberMatched = j["numberMatched"];
-      if ( numberMatched.is_number_integer() )
+      if ( j.is_object() && j.contains( "numberMatched" ) )
       {
-        mNumberMatched = numberMatched.get<int>();
+        const auto numberMatched = j["numberMatched"];
+        if ( numberMatched.is_number_integer() )
+        {
+          mNumberMatched = numberMatched.get<int>();
+        }
       }
     }
+    catch ( const json::parse_error &ex )
+    {
+      mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
+      mAppLevelError = ApplicationLevelError::JsonError;
+      mErrorMessage = errorMessageWithReason( tr( "Cannot decode JSON document: %1" ).arg( QString::fromStdString( ex.what() ) ) );
+      emit gotResponse();
+      return;
+    }
   }
-  catch ( const json::parse_error &ex )
+  else
   {
-    mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
-    mAppLevelError = ApplicationLevelError::JsonError;
-    mErrorMessage = errorMessageWithReason( tr( "Cannot decode JSON document: %1" ).arg( QString::fromStdString( ex.what() ) ) );
-    emit gotResponse();
-    return;
+    // Get numberMatched and next link from HTTP response headers
+    for ( const auto &headerKeyValue : mResponseHeaders )
+    {
+      if ( headerKeyValue.first.compare( QByteArray( "OGC-NumberMatched" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+      {
+        bool ok = false;
+        const int val = QString::fromUtf8( headerKeyValue.second ).toInt( &ok );
+        if ( ok )
+          mNumberMatched = val;
+      }
+      else if ( headerKeyValue.first.compare( QByteArray( "Link" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+      {
+        // Parse stuff like:
+        //  <https://ogc-api.nrw.de/lika/v1/collections/flurstueck/items?f=html>; rel="alternate"; title="This document as HTML"; type="text/html", <https://ogc-api.nrw.de/lika/v1/collections/flurstueck/items?f=fgb&offset=10>; rel="next"; title="Next page"; type="application/flatgeobuf"
+
+        // Split on commas, except when they are in double quotes or between <...>, and skip padding space before/after separator
+        const thread_local QRegularExpression splitOnComma( R"(\s*,\s*(?=(?:[^"<]|"[^"]*"|<[^>]*>)*$))" );
+        const QStringList links = QString::fromUtf8( headerKeyValue.second ).split( splitOnComma );
+        for ( const QString &link : std::as_const( links ) )
+        {
+          if ( link.isEmpty() || link[0] != QLatin1Char( '<' ) )
+            continue;
+          const int idxClosingBracket = static_cast<int>( link.indexOf( QLatin1Char( '>' ) ) );
+          if ( idxClosingBracket < 0 )
+            continue;
+          const QString href = link.mid( 1, idxClosingBracket - 1 );
+          const int idxSemiColon = static_cast<int>( link.indexOf( QLatin1Char( ';' ), idxClosingBracket ) );
+          if ( idxSemiColon < 0 )
+            continue;
+          // Split on semi-colon, except when they are in double quotes, and skip padding space before/after separator
+          const thread_local QRegularExpression splitOnSemiColon( R"(\s*;\s*(?=(?:[^"]*"[^"]*")*[^"]*$))" );
+          const QStringList linkParts = link.mid( idxSemiColon + 1 ).split( splitOnSemiColon );
+          QString rel, type;
+          for ( const QString &linkPart : std::as_const( linkParts ) )
+          {
+            // Split on equal, except when they are in double quotes, and skip padding space before/after separator
+            const thread_local QRegularExpression splitOnEqual( R"(\s*\=\s*(?=(?:[^"]*"[^"]*")*[^"]*$))" );
+            const QStringList keyValue = linkPart.split( splitOnEqual );
+            if ( keyValue.size() == 2 )
+            {
+              const QString key = keyValue[0].trimmed();
+              QString value = keyValue[1].trimmed();
+              if ( !value.isEmpty() && value[0] == QLatin1Char( '"' ) && value.back() == QLatin1Char( '"' ) )
+              {
+                value = value.mid( 1, value.size() - 2 );
+              }
+              if ( key == QLatin1String( "rel" ) )
+              {
+                rel = value;
+              }
+              else if ( key == QLatin1String( "type" ) )
+              {
+                type = value;
+              }
+            }
+          }
+          if ( rel == QLatin1String( "next" ) && type == mFeatureFormat )
+          {
+            mNextUrl = href;
+          }
+        }
+      }
+    }
   }
 
   QgsDebugMsgLevel( QStringLiteral( "processReply end time: %1" ).arg( time( nullptr ) ), 5 );

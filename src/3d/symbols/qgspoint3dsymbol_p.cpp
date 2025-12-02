@@ -249,8 +249,15 @@ QgsMaterial *QgsInstancedPoint3DSymbolHandler::material( const QgsPoint3DSymbol 
   technique->graphicsApiFilter()->setMajorVersion( 3 );
   technique->graphicsApiFilter()->setMinorVersion( 2 );
 
-  const QMatrix4x4 transformMatrix = symbol->transform();
-  QMatrix3x3 normalMatrix = transformMatrix.normalMatrix(); // transponed inverse of 3x3 sub-matrix
+  const QMatrix4x4 tempTransformMatrix = symbol->transform();
+  // our built-in 3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
+  // let's rotate them by default so that their Z axis goes "up" (like the rest of the scene)
+  QMatrix4x4 id;
+  id.rotate( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) );
+  const QMatrix4x4 transformMatrix = tempTransformMatrix * id;
+
+  // transponed inverse of 3x3 sub-matrix
+  QMatrix3x3 normalMatrix = transformMatrix.normalMatrix();
 
   // QMatrix3x3 is not supported for passing to shaders, so we pass QMatrix4x4
   float *n = normalMatrix.data();
@@ -501,11 +508,11 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent )
 {
   Q_UNUSED( context );
-  for ( const QVector3D &position : positions )
+  const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
+  // if the source is remote, the Qgs3DMapScene will take care of refreshing this 3D symbol when the source is fetched
+  if ( !source.isEmpty() )
   {
-    const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
-    // if the source is remote, the Qgs3DMapScene will take care of refreshing this 3D symbol when the source is fetched
-    if ( !source.isEmpty() )
+    for ( const QVector3D &position : positions )
     {
       // build the entity
       Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
@@ -522,6 +529,10 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &c
       // cppcheck-suppress memleak
     }
   }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "File '%1' is not accessible!" ).arg( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() ), 1 );
+  }
 }
 
 void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected )
@@ -529,22 +540,23 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &co
   if ( positions.empty() )
     return;
 
-  // build the default material
-  QgsMaterialContext materialContext;
-  materialContext.setIsSelected( are_selected );
-  materialContext.setSelectionColor( context.selectionColor() );
-  QgsMaterial *mat = symbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
-
-  // get nodes
-  for ( const QVector3D &position : positions )
+  const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
+  if ( !source.isEmpty() )
   {
-    const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
-    if ( !source.isEmpty() )
+    // build the default material
+    QgsMaterialContext materialContext;
+    materialContext.setIsSelected( are_selected );
+    materialContext.setSelectionColor( context.selectionColor() );
+    QgsMaterial *mat = symbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
+
+    const QUrl url = QUrl::fromLocalFile( source );
+
+    // get nodes
+    for ( const QVector3D &position : positions )
     {
       // build the entity
       Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
-      const QUrl url = QUrl::fromLocalFile( source );
       Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
       mesh->setSource( url );
 
@@ -556,6 +568,10 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &co
       // cppcheck wrongly believes entity will leak
       // cppcheck-suppress memleak
     }
+  }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "File '%1' is not accessible!" ).arg( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() ), 1 );
   }
 }
 

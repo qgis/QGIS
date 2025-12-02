@@ -6,6 +6,7 @@
 %Include auto_generated/qgsanimatedicon.sip
 %Include auto_generated/qgsapplication.sip
 %Include auto_generated/qgsarchive.sip
+%Include auto_generated/qgsarrowiterator.sip
 %Include auto_generated/qgsattributes.sip
 %Include auto_generated/qgsattributetableconfig.sip
 %Include auto_generated/qgsauxiliarystorage.sip
@@ -131,6 +132,7 @@
 %Include auto_generated/qgsmimedatautils.sip
 %Include auto_generated/qgsmultirenderchecker.sip
 %Include auto_generated/qgsobjectcustomproperties.sip
+%Include auto_generated/qgsobjectvisitor.sip
 %Include auto_generated/qgsofflineediting.sip
 %Include auto_generated/qgsogcutils.sip
 %Include auto_generated/qgsoptional.sip

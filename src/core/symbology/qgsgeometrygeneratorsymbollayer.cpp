@@ -178,6 +178,15 @@ QgsMapUnitScale QgsGeometryGeneratorSymbolLayer::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
+bool QgsGeometryGeneratorSymbolLayer::rendersIdenticallyTo( const QgsSymbolLayer * ) const
+{
+  // since rendersIdenticallyTo must be pessimistic, we always return FALSE here as it's
+  // non-trivial to determine if a QGIS expression will always return the same result
+  // TODO: we could potentially investigate the actual expression and catch cases where we
+  // are CERTAIN that the result will always be the same
+  return false;
+}
+
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
 {
   QgsGeometryGeneratorSymbolLayer *clone = new QgsGeometryGeneratorSymbolLayer( mExpression->expression() );
@@ -476,7 +485,15 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
       {
         // convert feature geometry to painter units
         QgsGeometry transformed = f.geometry();
-        transformed.transform( context.renderContext().coordinateTransform() );
+
+        try
+        {
+          transformed.transform( context.renderContext().coordinateTransform() );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugError( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
+        }
         const QTransform mapToPixel = context.renderContext().mapToPixel().transform();
         transformed.transform( mapToPixel );
 

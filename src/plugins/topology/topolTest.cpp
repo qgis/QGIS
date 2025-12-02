@@ -186,7 +186,7 @@ ErrorList topolTest::checkDanglingLines( QgsVectorLayer *layer1, QgsVectorLayer 
 
       FeatureLayer ftrLayer1;
       //need to fetch attributes?? being safe side by fetching..
-      layer1->getFeatures( QgsFeatureRequest().setFilterFid( k ) ).nextFeature( feat );
+      ( void ) layer1->getFeatures( QgsFeatureRequest().setFilterFid( k ).setLimit( 1 ) ).nextFeature( feat );
       ftrLayer1.feature = feat;
       ftrLayer1.layer = layer1;
 

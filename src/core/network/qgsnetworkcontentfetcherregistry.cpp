@@ -92,9 +92,10 @@ QString QgsNetworkContentFetcherRegistry::localPath( const QString &filePathOrUr
 
   if ( !QUrl::fromUserInput( filePathOrUrl ).isLocalFile() )
   {
-    if ( mFileRegistry.contains( path ) )
+    auto it = mFileRegistry.constFind( path );
+    if ( it != mFileRegistry.constEnd() )
     {
-      const QgsFetchedContent *content = mFileRegistry.value( path );
+      const QgsFetchedContent *content = it.value();
       if ( content->status() == QgsFetchedContent::Finished && !content->filePath().isEmpty() )
       {
         path = content->filePath();
@@ -190,7 +191,12 @@ void QgsFetchedContent::taskCompleted()
 
       mFile = std::make_unique<QTemporaryFile>( extension.isEmpty() ? QString( "XXXXXX" ) :
               QString( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), extension ) );
-      mFile->open();
+      if ( !mFile->open() )
+      {
+        QgsDebugError( QStringLiteral( "Can't open temporary file %1" ).arg( mFile->fileName() ) );
+        mStatus = QgsFetchedContent::Failed;
+        return;
+      }
       mFile->write( reply->readAll() );
       // Qt docs notes that on some system if fileName is not called before close, file might get deleted
       mFilePath = mFile->fileName();

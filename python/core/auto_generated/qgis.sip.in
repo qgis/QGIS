@@ -287,19 +287,29 @@ The development version
     typedef QFlags<Qgis::VectorLayerTypeFlag> VectorLayerTypeFlags;
 
 
-    enum class PythonEmbeddedMode
+    enum class EmbeddedScriptMode
       {
       Never,
       Ask,
       SessionOnly,
       Always,
       NotForThisSession,
+      NeverAsk,
     };
 
-    enum class PythonEmbeddedType
+    enum class EmbeddedScriptType
     {
       Macro,
       ExpressionFunction,
+      Action,
+      FormInitCode,
+    };
+
+    enum class ProjectTrustStatus
+    {
+      Undetermined,
+      Trusted,
+      Untrusted,
     };
 
     enum class DataProviderReadFlag
@@ -1720,6 +1730,17 @@ The development version
       SubScript,
     };
 
+    enum class CurvedTextFlag
+    {
+      TruncateStringWhenLineIsTooShort,
+      UseBaselinePlacement,
+      UprightCharactersOnly,
+      ExtendLineToFitText,
+    };
+
+    typedef QFlags<Qgis::CurvedTextFlag> CurvedTextFlags;
+
+
     enum class VectorSimplificationAlgorithm
       {
       Distance,
@@ -3026,6 +3047,8 @@ The development version
       SetFieldComment,
       SetFieldAlias,
       SetTableComment,
+      EditFieldDomain,
+      DeleteFieldDomain,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 
@@ -3094,6 +3117,13 @@ The development version
       File,
       Dialog,
       Environment
+    };
+
+    enum class AttributeFormReuseLastValuePolicy
+    {
+      NotAllowed,
+      AllowedDefaultOn,
+      AllowedDefaultOff,
     };
 
     enum class ExpressionType
@@ -3456,6 +3486,17 @@ The development version
       Sort,
     };
 
+    enum class ExtrusionFace
+    {
+      NoFace,
+      Walls,
+      Roof,
+      Floor
+    };
+
+    typedef QFlags<Qgis::ExtrusionFace> ExtrusionFaces;
+
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -3528,6 +3569,23 @@ GEOS Patch version number linked
 GEOS string version linked
 
 .. versionadded:: 3.20
+%End
+
+    static bool hasSfcgal();
+%Docstring
+Returns ``True`` if the QGIS build contains SFCGAL.
+
+.. versionadded:: 4.0
+%End
+
+    static int sfcgalVersionInt();
+%Docstring
+Returns the version of the SFCGAL library if QGIS is built with SFCGAL.
+Else throws an exception.
+
+:raises QgsNotSupportedException: on QGIS builds based without SFCGAL.
+
+.. versionadded:: 4.0
 %End
 
     static bool hasQtWebkit();
@@ -3746,6 +3804,10 @@ QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCa
 QFlags<Qgis::LayoutRenderFlag> operator|(Qgis::LayoutRenderFlag f1, QFlags<Qgis::LayoutRenderFlag> f2);
 
 QFlags<Qgis::MapLayerLegendFlag> operator|(Qgis::MapLayerLegendFlag f1, QFlags<Qgis::MapLayerLegendFlag> f2);
+
+QFlags<Qgis::CurvedTextFlag> operator|(Qgis::CurvedTextFlag f1, QFlags<Qgis::CurvedTextFlag> f2);
+
+QFlags<Qgis::ExtrusionFace> operator|(Qgis::ExtrusionFace f1, QFlags<Qgis::ExtrusionFace> f2);
 
 
 

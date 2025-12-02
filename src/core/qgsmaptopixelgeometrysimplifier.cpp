@@ -378,12 +378,12 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
     const QgsPolygon &srcPolygon = dynamic_cast<const QgsPolygon &>( geometry );
     auto polygon = std::make_unique<QgsPolygon>();
     std::unique_ptr<QgsAbstractGeometry> extRing = simplifyGeometry( simplifyFlags, simplifyAlgorithm, *srcPolygon.exteriorRing(), map2pixelTol, true );
-    polygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( extRing.release() ) );
+    polygon->setExteriorRing( qgis::down_cast<QgsCurve *>( extRing.release() ) );
     for ( int i = 0; i < srcPolygon.numInteriorRings(); ++i )
     {
       const QgsCurve *sub = srcPolygon.interiorRing( i );
       std::unique_ptr< QgsAbstractGeometry > ring = simplifyGeometry( simplifyFlags, simplifyAlgorithm, *sub, map2pixelTol, true );
-      polygon->addInteriorRing( qgsgeometry_cast<QgsCurve *>( ring.release() ) );
+      polygon->addInteriorRing( qgis::down_cast<QgsCurve *>( ring.release() ) );
     }
     return std::move( polygon );
   }

@@ -121,8 +121,10 @@ class CORE_EXPORT QgsDiagramLayerSettings
     QgsDiagramLayerSettings();
 
     QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh );
+    SIP_SKIP QgsDiagramLayerSettings( QgsDiagramLayerSettings &&rh );
 
     QgsDiagramLayerSettings &operator=( const QgsDiagramLayerSettings &rh );
+    QgsDiagramLayerSettings &operator=( QgsDiagramLayerSettings &&rh );
 
     ~QgsDiagramLayerSettings();
 

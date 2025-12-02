@@ -65,7 +65,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     ~QgsRenderContext() override;
 
     QgsRenderContext( const QgsRenderContext &rh );
+    SIP_SKIP QgsRenderContext( QgsRenderContext &&rh );
     QgsRenderContext &operator=( const QgsRenderContext &rh );
+    QgsRenderContext &operator=( QgsRenderContext &&rh );
 
     /**
      * Set combination of flags that will be used for rendering.

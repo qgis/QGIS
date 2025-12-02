@@ -18,7 +18,9 @@
 #include "qgis.h"
 #include "qgscplhttpfetchoverrider.h"
 #include "qgssetrequestinitiator_p.h"
+#include "qgsbackgroundcachedfeaturesource.h"
 #include "qgsfeature.h"
+#include "qgsfeaturedownloader.h"
 #include "qgsfeedback.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
@@ -29,7 +31,7 @@
 #include "qgsogrutils.h"
 #include "qgssqliteutils.h"
 #include "qgswfsconstants.h"
-#include "qgswfsfeatureiterator.h"
+#include "qgswfsfeaturedownloaderimpl.h"
 #include "qgswfsprovider.h"
 #include "moc_qgswfsprovider.cpp"
 #include "qgswfscapabilities.h"
@@ -984,10 +986,7 @@ bool QgsWFSProvider::supportsSubsetString() const
 
 QgsAbstractFeatureSource *QgsWFSProvider::featureSource() const
 {
-  auto fs = new QgsBackgroundCachedFeatureSource( mShared );
-  /*connect( fs, SIGNAL( extentRequested( const QgsRectangle & ) ),
-           this, SLOT( extendExtent( const QgsRectangle & ) ) );*/
-  return fs;
+  return new QgsBackgroundCachedFeatureSource( mShared );
 }
 
 void QgsWFSProvider::reloadProviderData()

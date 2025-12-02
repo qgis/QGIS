@@ -768,6 +768,12 @@ QgsLineString *doDensify( const QgsLineString *ring, int extraNodesPerSegment = 
 
 QgsAbstractGeometry *densifyGeometry( const QgsAbstractGeometry *geom, int extraNodesPerSegment = 1, double distance = 1 )
 {
+  if ( extraNodesPerSegment < 0 && qgsDoubleNear( distance, 0 ) )
+  {
+    // no change
+    return geom->clone();
+  }
+
   std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
   if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
   {
@@ -1229,8 +1235,9 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
 {
   // step 1 - tessellate the polygon to triangles
   QgsRectangle bounds = geometry->boundingBox();
-  QgsTessellator t( bounds, false, false, false, true );
-  t.setOutputZUp( true );
+  QgsTessellator t;
+  t.setBounds( bounds );
+  t.setInputZValueIgnored( true );
 
   if ( const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( geometry ) )
   {
@@ -1820,7 +1827,11 @@ QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area,
   QgsPoint pt1;
   QgsPoint pt2;
   // get first point
-  hull->nextVertex( vertexId, pt0 );
+  if ( !hull->nextVertex( vertexId, pt0 ) )
+  {
+    return QgsGeometry();
+  }
+
   pt1 = pt0;
   double totalRotation = 0;
   while ( hull->nextVertex( vertexId, pt2 ) )
@@ -2492,14 +2503,7 @@ std::unique_ptr< QgsLineString > roundWavesAlongLine( const QgsLineString *line,
       const double sinAngle = std::sin( segmentAngleRadians + M_PI_2 );
       const double cosAngle = std::cos( segmentAngleRadians + M_PI_2 );
 
-      if ( bufferIndex == 0 )
-      {
-        xOutBuffer[0] = pX + side * amplitude * sinAngle;
-        yOutBuffer[0] = pY + side * amplitude * cosAngle;
-        bufferIndex = 1;
-        distanceToNextPointFromStartOfSegment += wavelength / 4;
-      }
-      else if ( bufferIndex == 1 && isFirstPart )
+      if ( bufferIndex == 1 && isFirstPart )
       {
         xOutBuffer[1] = ( xOutBuffer[0] + pX - side * amplitude * sinAngle ) * 0.5;
         yOutBuffer[1] = ( yOutBuffer[0] + pY - side * amplitude * cosAngle ) * 0.5;
@@ -2621,14 +2625,7 @@ std::unique_ptr< QgsLineString > roundWavesRandomizedAlongLine( const QgsLineStr
       const double sinAngle = std::sin( segmentAngleRadians + M_PI_2 );
       const double cosAngle = std::cos( segmentAngleRadians + M_PI_2 );
 
-      if ( bufferIndex == 0 )
-      {
-        xOutBuffer[0] = pX + side * amplitude * sinAngle;
-        yOutBuffer[0] = pY + side * amplitude * cosAngle;
-        bufferIndex = 1;
-        distanceToNextPointFromStartOfSegment += wavelength / 4;
-      }
-      else if ( bufferIndex == 1 && isFirstPart )
+      if ( bufferIndex == 1 && isFirstPart )
       {
         xOutBuffer[1] = ( xOutBuffer[0] + pX - side * amplitude * sinAngle ) * 0.5;
         yOutBuffer[1] = ( yOutBuffer[0] + pY - side * amplitude * cosAngle ) * 0.5;

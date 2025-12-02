@@ -214,12 +214,6 @@ Returns the path to the contributors file. Contributors are people who
 have submitted patches but don't have commit access.
 %End
 
-    static QString developersMapFilePath();
-%Docstring
-Returns the path to the developers map file. The developers map was
-created by using leaflet framework, it shows the contributors.json file.
-%End
-
     static QString sponsorsFilePath();
 %Docstring
 Returns the path to the sponsors file.
@@ -1113,6 +1107,38 @@ generated variables (like system name, user name etc.)
     static void setCustomVariable( const QString &name, const QVariant &value );
 %Docstring
 Set a single custom expression variable.
+%End
+
+    static QStringList temporarilyTrustedProjectsFolders();
+%Docstring
+Returns the list of projects and folders that have been temporarily
+determined as trusted by the user.
+
+.. versionadded:: 4.0
+%End
+
+    static void setTemporarilyTrustedProjectsFolders( const QStringList &trustedProjectsFolders );
+%Docstring
+Sets the list of projects and folders that have been temporarily
+determined as trusted by the user.
+
+.. versionadded:: 4.0
+%End
+
+    static QStringList temporarilyUntrustedProjectsFolders();
+%Docstring
+Returns the list of projects and folders that have been temporarily
+determined as untrusted by the user.
+
+.. versionadded:: 4.0
+%End
+
+    static void setTemporarilyUntrustedProjectsFolders( const QStringList &untrustedProjectsFolders );
+%Docstring
+Sets the list of projects and folders that have been temporarily
+determined as untrusted by the user.
+
+.. versionadded:: 4.0
 %End
 
     static int scaleIconSize( int standardSize, bool applyDevicePixelRatio = false );

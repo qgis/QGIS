@@ -430,7 +430,6 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( mSelectionMethod == SelectionRange )
   {
-    rangeMethodPressEvent( e );
     return;
   }
 
@@ -1888,8 +1887,7 @@ QgsPointLocator::MatchList QgsVertexTool::layerVerticesSnappedToPoint( QgsVector
 {
   MatchCollectingFilter myfilter( this );
   QgsPointLocator *loc = canvas()->snappingUtils()->locatorForLayer( layer );
-  double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
-  return loc->verticesInRect( mapPoint, tol, &myfilter, true );
+  return loc->verticesInRect( mapPoint, 1e-8, &myfilter, true );
 }
 
 QgsPointLocator::MatchList QgsVertexTool::layerSegmentsSnappedToSegment( QgsVectorLayer *layer, const QgsPointXY &mapPoint1, const QgsPointXY &mapPoint2 )
@@ -2379,11 +2377,50 @@ void QgsVertexTool::addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, 
     else
       point = QgsPoint( toLayerCoordinates( topo.layer, mapPoint ) );
 
+    const int vid = topo.vertexId + 1;
+
     QgsPoint pt( point );
     if ( QgsWkbTypes::hasZ( topo.layer->wkbType() ) )
-      pt.addZValue( defaultZValue() );
+    {
+      // try to linearly interpolate z from adjacent vertices
+      const QgsPoint pointBefore = topoGeom.vertexAt( topo.vertexId );
+      const QgsPoint pointAfter = topoGeom.vertexAt( vid );
+      // we can only do this if the adjacent vertices HAVE valid z values
+      if ( !std::isnan( pointBefore.z() ) && !std::isnan( pointAfter.z() ) )
+      {
+        const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
+        const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
+        if ( !qgsDoubleNear( newDistanceBetweenOriginalAdjacentVertices, 0 ) )
+        {
+          pt.addZValue( pointBefore.z() + ( pointAfter.z() - pointBefore.z() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
+        }
+      }
+      else
+      {
+        pt.addZValue( defaultZValue() );
+      }
+    }
+    if ( QgsWkbTypes::hasM( topo.layer->wkbType() ) )
+    {
+      // try to linearly interpolate m from adjacent vertices
+      const QgsPoint pointBefore = topoGeom.vertexAt( topo.vertexId );
+      const QgsPoint pointAfter = topoGeom.vertexAt( vid );
+      // we can only do this if the adjacent vertices HAVE valid m values
+      if ( !std::isnan( pointBefore.m() ) && !std::isnan( pointAfter.m() ) )
+      {
+        const double distanceFromFirstVertexToNewVertex = pointBefore.distance( pt );
+        const double newDistanceBetweenOriginalAdjacentVertices = distanceFromFirstVertexToNewVertex + pt.distance( pointAfter );
+        if ( !qgsDoubleNear( newDistanceBetweenOriginalAdjacentVertices, 0 ) )
+        {
+          pt.addMValue( pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distanceFromFirstVertexToNewVertex / newDistanceBetweenOriginalAdjacentVertices );
+        }
+      }
+      else
+      {
+        pt.addMValue( defaultMValue() );
+      }
+    }
 
-    const int vid = topo.vertexId + 1;
     if ( !topoGeom.insertVertex( pt, vid ) )
     {
       QgsDebugError( QStringLiteral( "[topo] segment insert vertex failed!" ) );
@@ -3077,12 +3114,6 @@ QList<Vertex> QgsVertexTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureI
     }
   }
   return lst;
-}
-
-void QgsVertexTool::rangeMethodPressEvent( QgsMapMouseEvent *e )
-{
-  // nothing to do here for now...
-  Q_UNUSED( e )
 }
 
 void QgsVertexTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )

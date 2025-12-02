@@ -43,6 +43,11 @@ class CORE_EXPORT QgsTextDocument
   public:
 
     QgsTextDocument();
+    QgsTextDocument( const QgsTextDocument &other );
+    SIP_SKIP QgsTextDocument( QgsTextDocument &&other );
+    QgsTextDocument &operator=( const QgsTextDocument &other );
+    QgsTextDocument &operator=( QgsTextDocument &&other );
+
     ~QgsTextDocument();
 
     /**

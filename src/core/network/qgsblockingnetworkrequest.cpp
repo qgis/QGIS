@@ -74,7 +74,9 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRe
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::post( QNetworkRequest &request, QIODevice *data, bool forceRefresh, QgsFeedback *feedback )
 {
   mPayloadData = data;
-  return doRequest( Qgis::HttpMethod::Post, request, forceRefresh, feedback );
+  const QgsBlockingNetworkRequest::ErrorCode res = doRequest( Qgis::HttpMethod::Post, request, forceRefresh, feedback );
+  mPayloadData = nullptr;
+  return res;
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::head( QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback )
@@ -93,7 +95,9 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkReq
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::put( QNetworkRequest &request, QIODevice *data, QgsFeedback *feedback )
 {
   mPayloadData = data;
-  return doRequest( Qgis::HttpMethod::Put, request, true, feedback );
+  const QgsBlockingNetworkRequest::ErrorCode res = doRequest( Qgis::HttpMethod::Put, request, true, feedback );
+  mPayloadData = nullptr;
+  return res;
 }
 
 QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::deleteResource( QNetworkRequest &request, QgsFeedback *feedback )

@@ -261,6 +261,9 @@ QgsProperty::QgsProperty( const QgsProperty &other ) //NOLINT
 
 QgsProperty &QgsProperty::operator=( const QgsProperty &other )  //NOLINT
 {
+  if ( &other == this )
+    return *this;
+
   d = other.d;
   return *this;
 }

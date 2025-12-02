@@ -292,13 +292,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     */
     static QString contributorsFilePath();
 
-    /**
-     * Returns the path to the developers map file.
-     * The developers map was created by using leaflet framework,
-     * it shows the contributors.json file.
-    */
-    static QString developersMapFilePath();
-
     //! Returns the path to the sponsors file.
     static QString sponsorsFilePath();
 
@@ -1047,6 +1040,34 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void setCustomVariable( const QString &name, const QVariant &value );
 
     /**
+     * Returns the list of projects and folders that have been temporarily determined as trusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static QStringList temporarilyTrustedProjectsFolders();
+
+    /**
+     * Sets the list of projects and folders that have been temporarily determined as trusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static void setTemporarilyTrustedProjectsFolders( const QStringList &trustedProjectsFolders );
+
+    /**
+     * Returns the list of projects and folders that have been temporarily determined as untrusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static QStringList temporarilyUntrustedProjectsFolders();
+
+    /**
+     * Sets the list of projects and folders that have been temporarily determined as untrusted by the user.
+     *
+     * \since QGIS 4.0
+     */
+    static void setTemporarilyUntrustedProjectsFolders( const QStringList &untrustedProjectsFolders );
+
+    /**
      * Scales an icon size to compensate for display pixel density, making the icon
      * size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
      * displays.
@@ -1187,6 +1208,9 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.22
     */
     void installTranslators() SIP_SKIP;
+
+    QStringList mTemporarilyTrustedProjectFolders;
+    QStringList mTemporarilyUntrustedProjectFolders;
 
     friend class TestQgsApplication;
 };

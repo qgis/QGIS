@@ -150,7 +150,7 @@ void QgsGrassImport::setError( const QString &error )
   mError = error;
 }
 
-QString QgsGrassImport::error()
+QString QgsGrassImport::error() const
 {
   return mError;
 }
@@ -191,9 +191,9 @@ void QgsGrassImport::cancel()
 }
 
 //------------------------------ QgsGrassRasterImport ------------------------------------
-QgsGrassRasterImport::QgsGrassRasterImport( QgsRasterPipe *pipe, const QgsGrassObject &grassObject, const QgsRectangle &extent, int xSize, int ySize )
+QgsGrassRasterImport::QgsGrassRasterImport( std::unique_ptr<QgsRasterPipe> pipe, const QgsGrassObject &grassObject, const QgsRectangle &extent, int xSize, int ySize )
   : QgsGrassImport( grassObject )
-  , mPipe( pipe )
+  , mPipe( std::move( pipe ) )
   , mExtent( extent )
   , mXSize( xSize )
   , mYSize( ySize )
@@ -207,7 +207,6 @@ QgsGrassRasterImport::~QgsGrassRasterImport()
     QgsDebugMsgLevel( "mFutureWatcher not finished -> waitForFinished()", 3 );
     mFutureWatcher->waitForFinished();
   }
-  delete mPipe;
 }
 
 bool QgsGrassRasterImport::import()

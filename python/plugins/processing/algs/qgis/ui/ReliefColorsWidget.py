@@ -20,7 +20,6 @@ __date__ = "December 2016"
 __copyright__ = "(C) 2016, Alexander Bruy"
 
 import os
-import codecs
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSlot, QDir
@@ -107,7 +106,7 @@ class ReliefColorsWidget(BASE, WIDGET):
             return
 
         doc = QDomDocument()
-        with codecs.open(fileName, "r", encoding="utf-8") as f:
+        with open(fileName, encoding="utf-8") as f:
             content = f.read()
 
         if not doc.setContent(content):
@@ -166,7 +165,7 @@ class ReliefColorsWidget(BASE, WIDGET):
             elem.setAttribute("blue", str(c.color.blue()))
             colorsElem.appendChild(elem)
 
-        with codecs.open(fileName, "w", encoding="utf-8") as f:
+        with open(fileName, "w", encoding="utf-8") as f:
             f.write(doc.toString(2))
 
     @pyqtSlot()

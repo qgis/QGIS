@@ -354,44 +354,38 @@ void QgsGpsToolBar::destinationLayerChanged( QgsVectorLayer *vlayer )
   QString buttonLabel = tr( "Create Feature" );
   QString buttonToolTip = tr( "Create Feature" );
   QString icon = QStringLiteral( "mActionCaptureLine.svg" );
-  ;
-  if ( vlayer )
+
+  const Qgis::GeometryType layerGeometryType = vlayer->geometryType();
+  bool enable = true;
+
+  switch ( layerGeometryType )
   {
-    const Qgis::GeometryType layerGeometryType = vlayer->geometryType();
-    bool enable = true;
+    case Qgis::GeometryType::Point:
+      buttonLabel = tr( "Create Point Feature at Location" );
+      buttonToolTip = tr( "Create a new point feature at the current GPS location" );
+      icon = QStringLiteral( "mActionCapturePoint.svg" );
+      break;
 
-    switch ( layerGeometryType )
-    {
-      case Qgis::GeometryType::Point:
-        buttonLabel = tr( "Create Point Feature at Location" );
-        buttonToolTip = tr( "Create a new point feature at the current GPS location" );
-        icon = QStringLiteral( "mActionCapturePoint.svg" );
-        break;
+    case Qgis::GeometryType::Line:
+      buttonLabel = tr( "Create Line Feature from Track" );
+      buttonToolTip = tr( "Create a new line feature using the current GPS track" );
+      icon = QStringLiteral( "mActionCaptureLine.svg" );
+      break;
 
-      case Qgis::GeometryType::Line:
-        buttonLabel = tr( "Create Line Feature from Track" );
-        buttonToolTip = tr( "Create a new line feature using the current GPS track" );
-        icon = QStringLiteral( "mActionCaptureLine.svg" );
-        break;
+    case Qgis::GeometryType::Polygon:
+      buttonLabel = tr( "Create Polygon Feature from Track" );
+      buttonToolTip = tr( "Create a new polygon feature using the current GPS track" );
+      icon = QStringLiteral( "mActionCapturePolygon.svg" );
+      break;
 
-      case Qgis::GeometryType::Polygon:
-        buttonLabel = tr( "Create Polygon Feature from Track" );
-        buttonToolTip = tr( "Create a new polygon feature using the current GPS track" );
-        icon = QStringLiteral( "mActionCapturePolygon.svg" );
-        break;
-
-      case Qgis::GeometryType::Unknown:
-      case Qgis::GeometryType::Null:
-        enable = false;
-        break;
-    }
-
-    mCreateFeatureAction->setEnabled( enable );
+    case Qgis::GeometryType::Unknown:
+    case Qgis::GeometryType::Null:
+      enable = false;
+      break;
   }
-  else
-  {
-    mCreateFeatureAction->setEnabled( false );
-  }
+
+  mCreateFeatureAction->setEnabled( enable );
+
   mCreateFeatureAction->setText( buttonLabel );
   mCreateFeatureAction->setIcon( QgsApplication::getThemeIcon( icon ) );
   mCreateFeatureAction->setToolTip( buttonToolTip );

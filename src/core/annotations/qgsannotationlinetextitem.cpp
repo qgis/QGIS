@@ -85,7 +85,7 @@ void QgsAnnotationLineTextItem::render( QgsRenderContext &context, QgsFeedback *
 
   const double offsetFromLine = context.convertToPainterUnits( mOffsetFromLineDistance, mOffsetFromLineUnit, mOffsetFromLineScale );
 
-  QgsTextRenderer::drawTextOnLine( pts, displayText, context, mTextFormat, 0, offsetFromLine );
+  QgsTextRenderer::drawTextOnLine( pts, displayText, context, mTextFormat, 0, offsetFromLine, Qgis::CurvedTextFlag::UseBaselinePlacement | Qgis::CurvedTextFlag::ExtendLineToFitText );
 }
 
 bool QgsAnnotationLineTextItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -167,7 +167,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineTextItem::trans
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
       std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
       if ( modifiedCurve->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
       {

@@ -61,9 +61,6 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   QAction *loadDefaultAction = toolbar->addAction( tr( "Restore Default" ) );
   connect( loadDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadDefault );
 
-  //broken connect - not sure what the purpose of this was?
-  //  connect( canvas, &QgsMapCanvas::mapCanvasRefreshed, this, SLOT( updateCurrent() ) );
-
   connect( mStyleList, &QAbstractItemView::clicked, this, &QgsMapLayerStyleManagerWidget::styleClicked );
 
   setLayout( new QVBoxLayout() );

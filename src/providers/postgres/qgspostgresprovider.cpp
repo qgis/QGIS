@@ -2227,6 +2227,13 @@ bool QgsPostgresProvider::getTopoLayerInfo()
 /* private */
 void QgsPostgresProvider::dropOrphanedTopoGeoms()
 {
+  QgsPostgresConn *conn = connectionRW();
+  if ( !conn )
+  {
+    QgsDebugError( QStringLiteral( "Cannot drop orphaned topo geoms from invalid provider" ) );
+    return;
+  }
+
   QString sql = QString( "DELETE FROM %1.relation WHERE layer_id = %2 AND "
                          "topogeo_id NOT IN ( SELECT id(%3) FROM %4.%5 )" )
                   .arg( quotedIdentifier( mTopoLayerInfo.topologyName ) )
@@ -2235,7 +2242,7 @@ void QgsPostgresProvider::dropOrphanedTopoGeoms()
 
   QgsDebugMsgLevel( "TopoGeom orphans cleanup query: " + sql, 2 );
 
-  connectionRW()->LoggedPQexecNR( "QgsPostgresProvider", sql );
+  conn->LoggedPQexecNR( "QgsPostgresProvider", sql );
 }
 
 QString QgsPostgresProvider::geomParam( int offset ) const
@@ -5180,6 +5187,9 @@ bool QgsPostgresProvider::hasMetadata() const
 
 QString QgsPostgresProvider::htmlMetadata() const
 {
+  if ( !mValid )
+    return QString();
+
   // construct multiple temporary tables to be used with PostgreSQL WITH statement
   // that build one on another and are then used to create single SQL query to get the additional metadata
 

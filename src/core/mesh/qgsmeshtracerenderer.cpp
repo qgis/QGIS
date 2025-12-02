@@ -66,6 +66,9 @@ QgsVector QgsMeshVectorValueInterpolator::vectorValue( const QgsPointXY &point )
 
 QgsMeshVectorValueInterpolator &QgsMeshVectorValueInterpolator::operator=( const QgsMeshVectorValueInterpolator &other )
 {
+  if ( &other == this )
+    return *this;
+
   mTriangularMesh = other.mTriangularMesh;
   mDatasetValues = other.mDatasetValues;
   mActiveFaceFlagValues = other.mActiveFaceFlagValues;
@@ -919,6 +922,9 @@ void QgsMeshStreamField::setMinimizeFieldSize( bool minimizeFieldSize )
 
 QgsMeshStreamField &QgsMeshStreamField::operator=( const QgsMeshStreamField &other )
 {
+  if ( &other == this )
+    return *this;
+
   mFieldSize = other.mFieldSize ;
   mFieldResolution = other.mFieldResolution;
   mPen = other.mPen;
@@ -1298,6 +1304,9 @@ void QgsMeshParticleTracesField::setParticlesColor( const QColor &c )
 
 QgsMeshParticleTracesField &QgsMeshParticleTracesField::operator=( const QgsMeshParticleTracesField &other )
 {
+  if ( &other == this )
+    return *this;
+
   QgsMeshStreamField::operator=( other );
   mTimeField = other.mTimeField;
   mMagnitudeField = other.mMagnitudeField;

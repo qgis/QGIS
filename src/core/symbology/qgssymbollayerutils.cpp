@@ -5384,7 +5384,7 @@ double QgsSymbolLayerUtils::rendererFrameRate( const QgsFeatureRenderer *rendere
   return visitor.refreshRate;
 }
 
-QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok )
+std::unique_ptr< QgsSymbol > QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok )
 {
   if ( !s || !context )
   {
@@ -5444,7 +5444,7 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
 
   if ( markerSymbol )
   {
-    QgsMarkerSymbol *ms = dynamic_cast<QgsMarkerSymbol *>( s->clone() );
+    std::unique_ptr< QgsMarkerSymbol > ms( markerSymbol->clone() );
     ms->setSize( size );
     ms->setSizeUnit( Qgis::RenderUnit::Millimeters );
     width = size;
@@ -5453,7 +5453,7 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   else if ( lineSymbol )
   {
-    QgsLineSymbol *ls = dynamic_cast<QgsLineSymbol *>( s->clone() );
+    std::unique_ptr< QgsLineSymbol > ls( lineSymbol->clone() );
     ls->setWidth( size );
     ls->setWidthUnit( Qgis::RenderUnit::Millimeters );
     height = size;

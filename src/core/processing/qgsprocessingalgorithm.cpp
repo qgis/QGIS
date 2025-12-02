@@ -1049,10 +1049,21 @@ QString QgsProcessingAlgorithm::writeFeatureError( QgsFeatureSink *sink, const Q
 {
   Q_UNUSED( sink );
   Q_UNUSED( parameters );
-  if ( !name.isEmpty() )
-    return QObject::tr( "Could not write feature into %1" ).arg( name );
+  const QString lastError = sink->lastError();
+  if ( !lastError.isEmpty() )
+  {
+    if ( !name.isEmpty() )
+      return QObject::tr( "Could not write feature into %1: %2" ).arg( name, lastError );
+    else
+      return QObject::tr( "Could not write feature: %1" ).arg( lastError );
+  }
   else
-    return QObject::tr( "Could not write feature" );
+  {
+    if ( !name.isEmpty() )
+      return QObject::tr( "Could not write feature into %1" ).arg( name );
+    else
+      return QObject::tr( "Could not write feature" );
+  }
 }
 
 bool QgsProcessingAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
@@ -1196,7 +1207,12 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
     context.expressionContext().setFeature( f );
     const QgsFeatureList transformed = processFeature( f, context, feedback );
     for ( QgsFeature transformedFeature : transformed )
-      sink->addFeature( transformedFeature, QgsFeatureSink::FastInsert );
+    {
+      if ( !sink->addFeature( transformedFeature, QgsFeatureSink::FastInsert ) )
+      {
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QString() ) );
+      }
+    }
 
     feedback->setProgress( current * step );
     current++;

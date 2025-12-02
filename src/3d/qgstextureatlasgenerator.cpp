@@ -130,7 +130,7 @@ QgsTextureAtlas QgsTextureAtlasGenerator::createFromRects( const QVector<QRect> 
   {
     rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, rect.width(), rect.height() ), index++ ) );
   }
-  return generateAtlas( rects, maxSide );
+  return generateAtlas( std::move( rects ), maxSide );
 }
 
 QgsTextureAtlas QgsTextureAtlasGenerator::createFromImages( const QVector<QImage> &images, int maxSide )
@@ -142,10 +142,10 @@ QgsTextureAtlas QgsTextureAtlasGenerator::createFromImages( const QVector<QImage
   {
     rects.emplace_back( QgsTextureRect( rectpack2D::rect_xywh( 0, 0, image.width(), image.height() ), index++, image ) );
   }
-  return generateAtlas( rects, maxSide );
+  return generateAtlas( std::move( rects ), maxSide );
 }
 
-QgsTextureAtlas QgsTextureAtlasGenerator::generateAtlas( std::vector< QgsTextureRect > &rects, int maxSide )
+QgsTextureAtlas QgsTextureAtlasGenerator::generateAtlas( std::vector< QgsTextureRect > rects, int maxSide )
 {
   using spacesType = rectpack2D::empty_spaces<false, rectpack2D::default_empty_spaces>;
 
@@ -181,7 +181,7 @@ QgsTextureAtlas QgsTextureAtlasGenerator::generateAtlas( std::vector< QgsTexture
     return QgsTextureAtlas();
 
   // rectpack2D::find_best_packing will have rearranged rects. Sort it back to the original order
-  // so that we can retreive the results by their original indices.
+  // so that we can retrieve the results by their original indices.
   std::sort( rects.begin(), rects.end(), []( const QgsTextureRect &a, const QgsTextureRect &b ) {
     return a.id < b.id;
   } );

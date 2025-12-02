@@ -2480,13 +2480,17 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   mIsAborted = false;
 
   QString url = mBaseUrl;
+
+
   if ( !QgsWmsProvider::isUrlForWMTS( url ) )
   {
     url += QLatin1String( "SERVICE=WMS&REQUEST=GetCapabilities" );
   }
+
   QgsDebugMsgLevel( QStringLiteral( "url = %1" ).arg( url ), 2 );
 
   mError.clear();
+
 
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsWmsCapabilitiesDownload" ) );

@@ -67,7 +67,7 @@ static void runTest( QString testName, bool skirt, double skirtDepth, bool texCo
   }
 
   QFile sampleFile( sampleFilePath );
-  sampleFile.open( QIODevice::ReadOnly );
+  QVERIFY( sampleFile.open( QIODevice::ReadOnly ) );
   auto sampleData = sampleFile.readAll();
 
   auto tile = QgsQuantizedMeshTile( sampleData );
@@ -91,7 +91,7 @@ static void runTest( QString testName, bool skirt, double skirtDepth, bool texCo
   if ( checkOutput )
   {
     QFile correctOutFile( QStringLiteral( TEST_DATA_DIR ) + "/quantized_mesh.terrain." + testName + ".gltf" );
-    correctOutFile.open( QIODevice::ReadOnly );
+    QVERIFY( correctOutFile.open( QIODevice::ReadOnly ) );
     auto correctOutput = correctOutFile.readAll();
     std::ostringstream newOutputStream;
     gltfLoader.WriteGltfSceneToStream( &model, newOutputStream, true, false );

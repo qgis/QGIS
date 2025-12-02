@@ -302,7 +302,9 @@ class CORE_EXPORT QgsFeatureRequest
     //! construct a request with a filter expression
     explicit QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context = QgsExpressionContext() );
     QgsFeatureRequest( const QgsFeatureRequest &rh );
+    SIP_SKIP QgsFeatureRequest( QgsFeatureRequest &&rh );
     QgsFeatureRequest &operator=( const QgsFeatureRequest &rh );
+    QgsFeatureRequest &operator=( QgsFeatureRequest &&rh );
 
     /**
      * Compare two requests for equality, ignoring Expression Context, Transform Error Callback, Feedback and Invalid Geometry Callback

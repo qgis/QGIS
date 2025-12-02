@@ -29,6 +29,7 @@
 #include <QIcon>
 #include <QItemDelegate>
 #include <QString>
+#include <QPointer>
 
 class QgsProxyProgressTask;
 class QgisApp;
@@ -82,9 +83,9 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables
-    QStringList selectedTables();
+    QStringList selectedTables() const;
     //! Connection info (database, host, user, password)
-    QString connectionInfo();
+    QString connectionInfo() const;
 
   public slots:
 
@@ -114,8 +115,6 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
     void cmbConnections_activated( int );
     void setLayerType( const QgsHanaLayerProperty &layerProperty );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-    //!Sets a new regular expression to the model
-    void setSearchExpression( const QString &regexp );
 
     void columnThreadFinished();
 
@@ -142,7 +141,7 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
     QString mConnectionInfo;
     // A thread for detecting geometry types
     std::unique_ptr<QgsHanaColumnTypeThread> mColumnTypeThread;
-    std::unique_ptr<QgsProxyProgressTask> mColumnTypeTask;
+    QPointer<QgsProxyProgressTask> mColumnTypeTask;
     QStringList mSelectedTables;
     //! Model that acts as datasource for mTableTreeWidget
     QgsHanaTableModel *mTableModel = nullptr;

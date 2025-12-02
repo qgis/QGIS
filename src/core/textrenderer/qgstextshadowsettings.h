@@ -49,8 +49,10 @@ class CORE_EXPORT QgsTextShadowSettings
 
     QgsTextShadowSettings();
     QgsTextShadowSettings( const QgsTextShadowSettings &other );
+    SIP_SKIP QgsTextShadowSettings( QgsTextShadowSettings &&other );
 
     QgsTextShadowSettings &operator=( const QgsTextShadowSettings &other );
+    QgsTextShadowSettings &operator=( QgsTextShadowSettings &&other );
 
     ~QgsTextShadowSettings();
 

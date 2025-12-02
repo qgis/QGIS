@@ -99,6 +99,7 @@ done:
 %Feature HAVE_WEBENGINE_SIP
 %Feature PYQT6
 %Feature HAVE_SFCGAL_SIP
+%Feature MOVABLE_MAPPED_TYPE
 
 %Import QtXml/QtXmlmod.sip
 %Import QtNetwork/QtNetworkmod.sip

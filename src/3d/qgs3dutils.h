@@ -67,10 +67,18 @@ class _3D_EXPORT Qgs3DUtils
     static QImage captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
     /**
-     * Waits for a frame to be rendered. Useful to trigger once-per-frame updates
+     * Waits for a frame to be rendered. Useful to trigger once-per-frame updates.
+     * \warning Not to be used outside of tests!
      * \since QGIS 3.42
      */
     static void waitForFrame( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
+
+    /**
+     * Waits for all entities in the scene to be loaded.
+     * \warning Not to be used outside of tests!
+     * \since QGIS 4.0
+     */
+    static void waitForEntitiesLoaded( Qgs3DMapScene *scene );
 
     /**
      * Captures the depth buffer of the current 3D scene of a 3D engine. The function waits
@@ -206,6 +214,10 @@ class _3D_EXPORT Qgs3DUtils
 
     /**
      * Converts the clicked mouse position to the corresponding 3D world coordinates
+     * \param screenPoint point on screen in pixel from top-left corner
+     * \param depth value from depth buffer in [0.0, 1.0] interval
+     * \param screenSize size of screen in pixels
+     * \param camera camera whose view/projection matrices are used
      * \since QGIS 3.24
      */
     static QVector3D screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera );

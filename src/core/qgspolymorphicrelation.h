@@ -79,6 +79,7 @@ class CORE_EXPORT QgsPolymorphicRelation
      * changed.
      */
     QgsPolymorphicRelation( const QgsPolymorphicRelation &other );
+    SIP_SKIP QgsPolymorphicRelation( QgsPolymorphicRelation &&other );
 
     /**
      * Copies a relation.
@@ -86,6 +87,7 @@ class CORE_EXPORT QgsPolymorphicRelation
      * changed.
      */
     QgsPolymorphicRelation &operator=( const QgsPolymorphicRelation &other );
+    QgsPolymorphicRelation &operator=( QgsPolymorphicRelation &&other );
 
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.

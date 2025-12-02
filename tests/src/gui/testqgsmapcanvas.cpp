@@ -161,7 +161,7 @@ void TestQgsMapCanvas::testMagnification()
 
   QTemporaryFile tmpFile;
   tmpFile.setAutoRemove( false );
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 

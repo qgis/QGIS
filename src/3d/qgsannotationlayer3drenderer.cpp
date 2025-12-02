@@ -17,6 +17,7 @@
 #include "qgsannotationlayer.h"
 #include "qgsannotationlayerchunkloader_p.h"
 #include "qgis.h"
+#include "qgsstyle.h"
 
 //
 // QgsAnnotationLayer3DRendererMetadata
@@ -39,7 +40,12 @@ QgsAbstract3DRenderer *QgsAnnotationLayer3DRendererMetadata::createRenderer( QDo
 // QgsAnnotationLayer3DRenderer
 //
 
-QgsAnnotationLayer3DRenderer::QgsAnnotationLayer3DRenderer() = default;
+QgsAnnotationLayer3DRenderer::QgsAnnotationLayer3DRenderer()
+{
+  mTextFormat = QgsStyle::defaultStyle()->defaultTextFormat();
+  mTextFormat.setNamedStyle( QStringLiteral( "Bold" ) );
+  mTextFormat.setSize( 20 );
+}
 
 void QgsAnnotationLayer3DRenderer::setLayer( QgsAnnotationLayer *layer )
 {
@@ -86,6 +92,16 @@ double QgsAnnotationLayer3DRenderer::calloutLineWidth() const
   return mCalloutLineWidth;
 }
 
+QgsTextFormat QgsAnnotationLayer3DRenderer::textFormat() const
+{
+  return mTextFormat;
+}
+
+void QgsAnnotationLayer3DRenderer::setTextFormat( const QgsTextFormat &format )
+{
+  mTextFormat = format;
+}
+
 QString QgsAnnotationLayer3DRenderer::type() const
 {
   return "annotation";
@@ -100,6 +116,7 @@ QgsAnnotationLayer3DRenderer *QgsAnnotationLayer3DRenderer::clone() const
   r->mShowCalloutLines = mShowCalloutLines;
   r->mCalloutLineColor = mCalloutLineColor;
   r->mCalloutLineWidth = mCalloutLineWidth;
+  r->mTextFormat = mTextFormat;
   return r.release();
 }
 
@@ -132,10 +149,10 @@ Qt3DCore::QEntity *QgsAnnotationLayer3DRenderer::createEntity( Qgs3DMapSettings 
       break;
   }
 
-  return new QgsAnnotationLayerChunkedEntity( map, l, mAltClamping, mZOffset, mShowCalloutLines, mCalloutLineColor, mCalloutLineWidth, minimumZ, maximumZ );
+  return new QgsAnnotationLayerChunkedEntity( map, l, mAltClamping, mZOffset, mShowCalloutLines, mCalloutLineColor, mCalloutLineWidth, mTextFormat, minimumZ, maximumZ );
 }
 
-void QgsAnnotationLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext & ) const
+void QgsAnnotationLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();
 
@@ -144,12 +161,22 @@ void QgsAnnotationLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
   elem.setAttribute( QStringLiteral( "offset" ), mZOffset );
   if ( mShowCalloutLines )
     elem.setAttribute( QStringLiteral( "callouts" ), QStringLiteral( "1" ) );
+
+  if ( mTextFormat.isValid() )
+  {
+    elem.appendChild( mTextFormat.writeXml( doc, context ) );
+  }
 }
 
-void QgsAnnotationLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext & )
+void QgsAnnotationLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
   mAltClamping = qgsEnumKeyToValue( elem.attribute( QStringLiteral( "clamping" ) ), Qgis::AltitudeClamping::Relative );
   mZOffset = elem.attribute( QStringLiteral( "offset" ), QString::number( DEFAULT_Z_OFFSET ) ).toDouble();
   mShowCalloutLines = elem.attribute( QStringLiteral( "callouts" ), QStringLiteral( "0" ) ).toInt();
+  if ( !elem.firstChildElement( QStringLiteral( "text-style" ) ).isNull() )
+  {
+    mTextFormat = QgsTextFormat();
+    mTextFormat.readXml( elem.firstChildElement( QStringLiteral( "text-style" ) ), context );
+  }
 }

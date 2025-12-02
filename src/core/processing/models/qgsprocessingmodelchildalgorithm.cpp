@@ -42,6 +42,9 @@ QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QgsPro
 
 QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( const QgsProcessingModelChildAlgorithm &other )
 {
+  if ( &other == this )
+    return *this;
+
   QgsProcessingModelComponent::operator =( other );
   mId = other.mId;
   mConfiguration = other.mConfiguration;

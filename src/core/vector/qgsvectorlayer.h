@@ -83,6 +83,8 @@ class QgsVectorLayerSelectionProperties;
 class QgsVectorLayerTemporalProperties;
 class QgsFeatureRendererGenerator;
 class QgsVectorLayerElevationProperties;
+class QgsObjectEntityVisitorInterface;
+class QgsObjectVisitorContext;
 
 #ifndef SIP_RUN
 template<class T>
@@ -204,6 +206,7 @@ typedef QSet<int> QgsAttributeIds;
  * - InvertAxisOrientation=1: to invert axis order
  * - hideDownloadProgressDialog=1: to hide the download progress dialog
  * - featureMode=default/simpleFeatures/complexFeatures (QGIS >= 3.44)
+ * - outputformat=string: output format. Can be set for example to GML3 for some WFS 1.0 servers that can support GML3.
  *
  * The ‘filter’ key value can either be a QGIS expression
  * or an OGC XML filter. If the value is set to a QGIS expression the driver will
@@ -237,6 +240,7 @@ typedef QSet<int> QgsAttributeIds;
  * - pageSize=number: number of features to retrieve in a single request
  * - maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
  * - hideDownloadProgressDialog=1: to hide the download progress dialog.
+ * - outputformat=string: output format as a MIME type to ask the server to return features. e.g "application/geo+json", "application/flatgeobuf", "application/fg+json", etc. Assumes there is a GDAL driver for the requested format. (QGIS >= 4)
  *
  * \subsection delimitedtext Delimited text file data provider (delimitedtext)
  *
@@ -1214,7 +1218,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see changeGeometry()
      * \see changeAttributeValue()
     */
-    bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
+    Q_INVOKABLE bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 
     /**
      * Inserts a new vertex before the given vertex number,
@@ -2588,6 +2592,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
+
+    bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const override;
 
   signals:
 

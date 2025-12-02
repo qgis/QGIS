@@ -57,7 +57,7 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
 
     Qt3DRender::QAbstractTexture *texture() const;
 
-  public Q_SLOTS:
+  public slots:
 
     /**
      * Sets the diffuse component of the material.
@@ -65,7 +65,7 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
      */
     void setTexture( Qt3DRender::QAbstractTexture *texture );
 
-  Q_SIGNALS:
+  signals:
     void textureChanged( Qt3DRender::QAbstractTexture *texture );
 
   private:

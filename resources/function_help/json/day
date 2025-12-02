@@ -13,7 +13,10 @@
     "examples": [{
       "expression": "day('2012-05-12')",
       "returns": "12"
-    }]
+    },{
+      "expression": "day(now())",
+      "returns": "the current day of the month"
+     }]
   }, {
     "variant": "Interval variant",
     "variant_description": "Calculates the length in days of an interval.",

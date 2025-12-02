@@ -719,6 +719,12 @@ class CORE_EXPORT QgsMeshRendererSettings
      * Constructs renderer with default single layer averaging method
      */
     QgsMeshRendererSettings();
+    QgsMeshRendererSettings( const QgsMeshRendererSettings &other );
+    SIP_SKIP QgsMeshRendererSettings( QgsMeshRendererSettings &&other );
+
+    QgsMeshRendererSettings &operator=( const QgsMeshRendererSettings &other );
+    QgsMeshRendererSettings &operator=( QgsMeshRendererSettings &&other );
+
     ~QgsMeshRendererSettings();
 
     //! Returns native mesh renderer settings
