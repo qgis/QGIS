@@ -435,7 +435,7 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
             || event->key() == Qt::Key_Up
             || event->key() == Qt::Key_Down )
   {
-    const int pixels = event->modifiers() & Qt::ShiftModifier ? 1 : 50;
+    const int pixels = ( event->modifiers() & Qt::ShiftModifier ) ? 1 : 50;
     int deltaX = 0;
     int deltaY = 0;
     if ( event->key() == Qt::Key_Up )
@@ -489,7 +489,7 @@ void QgsMapToolSelectAnnotation::onCanvasRefreshed()
     {
       needsSelectedItemsUpdate = true;
 
-      auto it = std::find_if( items.begin(), items.end(), [this, &selectedItem]( const QgsRenderedItemDetails *item ) {
+      auto it = std::find_if( items.begin(), items.end(), [&selectedItem]( const QgsRenderedItemDetails *item ) {
         if ( const QgsRenderedAnnotationItemDetails *annotationItem = dynamic_cast<const QgsRenderedAnnotationItemDetails *>( item ) )
         {
           if ( annotationItem->itemId() == selectedItem->itemId() && annotationItem->layerId() == selectedItem->layerId() )
