@@ -35,6 +35,7 @@
 QHash<QString, QString> QgsStringUtils::createUnaccentMap()
 {
   QHash<QString, QString> map;
+  map.reserve( 2661 );
 
   map.insert( QStringLiteral( "¡" ), QStringLiteral( "!" ) );
   map.insert( QStringLiteral( "©" ), QStringLiteral( "(C)" ) );
