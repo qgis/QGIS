@@ -52,10 +52,6 @@ QgsAnnotationItemRubberBand::QgsAnnotationItemRubberBand( const QString &layerId
   mNeedsUpdatedBoundingBox = true;
 }
 
-QgsAnnotationItemRubberBand::~QgsAnnotationItemRubberBand()
-{
-}
-
 QgsAnnotationLayer *QgsAnnotationItemRubberBand::layer() const
 {
   QgsAnnotationLayer *lyr = qobject_cast<QgsAnnotationLayer *>( QgsProject::instance()->mapLayer( mLayerId ) );
@@ -203,12 +199,6 @@ void QgsAnnotationItemRubberBand::attemptSetSceneRect( const QRectF &rect )
     }
   }
 }
-
-bool QgsAnnotationItemRubberBand::operator==( const QgsAnnotationItemRubberBand &other ) const
-{
-  return mLayerId == other.mLayerId && mItemId == other.mItemId;
-}
-
 
 QgsMapToolSelectAnnotation::QgsMapToolSelectAnnotation( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
