@@ -268,6 +268,8 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     }
   }
 
+  mProjectVersioningActive = QgsPostgresUtils::qgisProjectVersioningActive( conn, mName );
+
   QgsPostgresConnPool::instance()->releaseConnection( conn );
 
   QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( "postgresql" );
