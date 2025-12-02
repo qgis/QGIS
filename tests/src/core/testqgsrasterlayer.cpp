@@ -1125,7 +1125,7 @@ void TestQgsRasterLayer::forceRasterRender()
 
   QgsRenderContext context( QgsRenderContext::fromMapSettings( *mMapSettings ) );
   std::unique_ptr<QgsMapLayerRenderer> layerRenderer( mpLandsatRasterLayer->createMapRenderer( context ) );
-  layerRenderer->forceRasterRender(); // this should not crash
+  ( void ) layerRenderer->forceRasterRender(); // this should not crash
 }
 
 QGSTEST_MAIN( TestQgsRasterLayer )
