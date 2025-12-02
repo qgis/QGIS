@@ -1202,6 +1202,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double mEvaluatedAnnotationFrameDistance = 0;
     double mEvaluatedCrossLength = 0;
     double mEvaluatedGridFrameLineThickness = 0;
+    std::unique_ptr< QgsProperty > mDrawAnnotationProperty;
     DisplayMode mEvaluatedLeftGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
     DisplayMode mEvaluatedRightGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
     DisplayMode mEvaluatedTopGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;

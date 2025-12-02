@@ -201,6 +201,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapGridFrameDivisionsRight, //!< Map frame division display right
       MapGridFrameDivisionsTop, //!< Map frame division display top
       MapGridFrameDivisionsBottom, //!< Map frame division display bottom
+      MapGridDrawAnnotation, //!< Map annotation visibility (for individual annotations) \since QGIS 4.0
       MapCrs, //!< Map CRS
       StartDateTime, //!< Temporal range's start DateTime
       EndDateTime, //!< Temporal range's end DateTime

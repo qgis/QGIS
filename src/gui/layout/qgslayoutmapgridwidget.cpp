@@ -196,6 +196,7 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   registerDataDefinedButton( mFrameDivisionsRightDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsRight );
   registerDataDefinedButton( mFrameDivisionsTopDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsTop );
   registerDataDefinedButton( mFrameDivisionsBottomDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridFrameDivisionsBottom );
+  registerDataDefinedButton( mDrawAnnotationDDBtn, QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation );
 
   // call to initially populate mAnnotationFormatComboBox
   onCrsChanged();
