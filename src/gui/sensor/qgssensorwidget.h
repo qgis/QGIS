@@ -16,8 +16,8 @@
 #define QGSSENSORWIDGET_H
 
 #include "qgsconfig.h"
-#include "ui_widget_tcpsocketsensor.h"
 #include "ui_widget_serialportsensor.h"
+#include "ui_widget_tcpsocketsensor.h"
 #include "ui_widget_udpsocketsensor.h"
 
 #include "qgis_gui.h"
