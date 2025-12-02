@@ -62,13 +62,13 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      * Sets the widget value from the setting value
      * The wrapper must be configured before calling this medthod
      */
-    [[nodiscard]] virtual bool setWidgetFromSetting() const = 0;
+    virtual bool setWidgetFromSetting() const = 0;
 
     /**
      * Sets the setting value from the widget value
      * The wrapper must be configured before calling this medthod
      */
-    [[nodiscard]] virtual bool setSettingFromWidget() const = 0;
+    virtual bool setSettingFromWidget() const = 0;
 
     /**
      * Returns the value from the widget as a variant
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      * Sets the \a value of the widget
      * The wrapper must be configured before calling this medthod
      */
-    [[nodiscard]] virtual bool setWidgetFromVariant( const QVariant &value ) const = 0;
+    virtual bool setWidgetFromVariant( const QVariant &value ) const = 0;
 
     /**
      * Configure the settings update behavior when a widget value is changed.

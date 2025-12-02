@@ -52,7 +52,7 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
 
     [[nodiscard]] QString id() const override = 0;
 
-    [[nodiscard]] bool setWidgetFromSetting() const override
+    bool setWidgetFromSetting() const override
     {
       if ( mSetting )
         return setWidgetValue( mSetting->value( mDynamicKeyPartList ) );
@@ -61,9 +61,9 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
       return false;
     }
 
-    [[nodiscard]] bool setSettingFromWidget() const override = 0;
+    bool setSettingFromWidget() const override = 0;
 
-    [[nodiscard]] bool setWidgetFromVariant( const QVariant &value ) const override
+    bool setWidgetFromVariant( const QVariant &value ) const override
     {
       return setWidgetValue( mSetting->convertFromVariant( value ) );
     }
