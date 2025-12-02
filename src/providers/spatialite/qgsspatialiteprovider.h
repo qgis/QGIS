@@ -23,7 +23,6 @@ extern "C"
 #include <sys/types.h>
 #include <spatialite.h>
 #include <spatialite/gaiageo.h>
-
 }
 
 #include "qgsvectordataprovider.h"
