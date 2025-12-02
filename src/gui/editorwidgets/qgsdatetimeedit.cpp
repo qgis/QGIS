@@ -189,7 +189,9 @@ void QgsDateTimeEdit::focusOutEvent( QFocusEvent *event )
 {
   if ( mAllowNull && mIsNull && !mCurrentPressEvent )
   {
-    QAbstractSpinBox::focusOutEvent( event );
+    // should this be QDateTimeEdit::focusOutEvent?? It was always QAbstractSpinBox,
+    // and there's no clue if that was intentional...
+    QAbstractSpinBox::focusOutEvent( event ); // clazy:exclude=skipped-base-method
     if ( lineEdit()->text() != mNullRepresentation )
     {
       displayNull();
