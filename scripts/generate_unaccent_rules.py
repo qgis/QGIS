@@ -130,7 +130,8 @@ def write_cpp(path: Path, rules):
 
         f.write("QHash<QString, QString> QgsStringUtils::createUnaccentMap()\n")
         f.write("{\n")
-        f.write("  QHash<QString, QString> map;\n\n")
+        f.write("  QHash<QString, QString> map;\n")
+        f.write(f"  map.reserve( {len(rules)} );\n\n")
 
         for src, dst in rules:
             esc_src = cpp_escape(src)
