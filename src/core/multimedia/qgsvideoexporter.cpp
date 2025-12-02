@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgsvideoexporter.h"
+
 #include "qgsfeedback.h"
-#include "moc_qgsvideoexporter.cpp"
 
 #include <QDirIterator>
 #include <QUrl>
+
+#include "moc_qgsvideoexporter.cpp"
+
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <QtMultimedia/QMediaCaptureSession>
 #include <QtMultimedia/QVideoFrameInput>
