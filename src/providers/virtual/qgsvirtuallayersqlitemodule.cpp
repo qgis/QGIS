@@ -21,9 +21,9 @@ email                : hugo dot mercier at oslandia dot com
 #include <cstring>
 #include <iostream>
 #include <memory>
-#include <spatialite.h>
 #include <sqlite3.h>
 #include <stdexcept>
+#include <spatialite.h>
 
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"

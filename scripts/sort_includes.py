@@ -38,6 +38,7 @@
 import re
 import sys
 
+from functools import cmp_to_key
 from pathlib import Path
 
 input_file = Path(sys.argv[1])
@@ -137,7 +138,26 @@ NON_STANDARD_NAMED_QGIS_HEADERS = (
     "qsql_ocispatial.h",
 )
 
+SPATIALITE_HEADERS = ("spatialite.h", "spatialite/gaiageo.h")
+
 SPECIAL_CASE_LAST_INCLUDES = ("fcgi_stdio.h",)
+
+
+def sort_standard_includes(includes: list[str]) -> list[str]:
+    def compare(item1, item2):
+        # spatialite headers must be last
+        if item1 in SPATIALITE_HEADERS and not item2 in SPATIALITE_HEADERS:
+            return 1
+        elif item2 in SPATIALITE_HEADERS and not item1 in SPATIALITE_HEADERS:
+            return -1
+        elif item1 < item2:
+            return -1
+        elif item1 > item2:
+            return 1
+        else:
+            return 0
+
+    return sorted(includes, key=cmp_to_key(compare))
 
 
 def print_sorted_includes(includes: list[str]):
@@ -179,7 +199,7 @@ def print_sorted_includes(includes: list[str]):
 
     qt_includes = sorted(qt_includes)
     qgis_includes = sorted(qgis_includes)
-    std_includes = sorted(std_includes)
+    std_includes = sort_standard_includes(std_includes)
     special_case_last_includes = sorted(special_case_last_includes)
 
     if qgs_config_include:
