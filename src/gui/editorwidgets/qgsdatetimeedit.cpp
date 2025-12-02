@@ -208,7 +208,9 @@ void QgsDateTimeEdit::focusInEvent( QFocusEvent *event )
 {
   if ( mAllowNull && mIsNull && !mCurrentPressEvent )
   {
-    QAbstractSpinBox::focusInEvent( event );
+    // should this be QDateTimeEdit::focusOutEvent?? It was always QAbstractSpinBox,
+    // and there's no clue if that was intentional...
+    QAbstractSpinBox::focusInEvent( event ); // clazy:exclude=skipped-base-method
 
     displayCurrentDate();
   }
