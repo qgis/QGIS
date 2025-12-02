@@ -17,8 +17,8 @@
 #ifndef QGSAUTHEDITORWIDGETS_H
 #define QGSAUTHEDITORWIDGETS_H
 
-#include "ui_qgsauthmethodplugins.h"
 #include "ui_qgsautheditorwidgets.h"
+#include "ui_qgsauthmethodplugins.h"
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"

@@ -15,8 +15,8 @@
 #ifndef QGSFIELDDOMAINWIDGET_H
 #define QGSFIELDDOMAINWIDGET_H
 
-#include "ui_qgsfielddomainwidgetbase.h"
 #include "ui_qgscodedvaluedomainwidgetbase.h"
+#include "ui_qgsfielddomainwidgetbase.h"
 #include "ui_qgsglobdomainwidgetbase.h"
 #include "ui_qgsrangedomainwidgetbase.h"
 
