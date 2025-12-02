@@ -36,8 +36,8 @@ QString QgsStringUtils::unaccent( const QString &input )
   QString out;
   out.reserve( in.size() );
 
-  int i = 0;
-  const int n = in.size();
+  qsizetype i = 0;
+  const qsizetype n = in.size();
 
   while ( i < n )
   {
