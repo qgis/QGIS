@@ -203,6 +203,7 @@ def print_sorted_includes(includes: list[str]):
 
     qt_includes = sorted(qt_includes)
     qgis_includes = sorted(qgis_includes)
+    ui_includes = sorted(ui_includes)
     std_includes = sort_standard_includes(std_includes)
     special_case_last_includes = sorted(special_case_last_includes)
 

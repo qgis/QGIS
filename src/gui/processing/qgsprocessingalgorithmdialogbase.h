@@ -16,9 +16,9 @@
 #ifndef QGSPROCESSINGALGORITHMDIALOGBASE_H
 #define QGSPROCESSINGALGORITHMDIALOGBASE_H
 
-#include "ui_qgsprocessingcontextoptionsbase.h"
 #include "ui_qgsprocessingalgorithmdialogbase.h"
 #include "ui_qgsprocessingalgorithmprogressdialogbase.h"
+#include "ui_qgsprocessingcontextoptionsbase.h"
 
 #include "qgis.h"
 #include "qgis_gui.h"

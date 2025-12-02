@@ -21,8 +21,8 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "ui_qgslayoutlegendwidgetbase.h"
 #include "ui_qgslayoutlegendmapfilteringwidgetbase.h"
+#include "ui_qgslayoutlegendwidgetbase.h"
 
 #include "qgis_gui.h"
 #include "qgslayoutitemlegend.h"

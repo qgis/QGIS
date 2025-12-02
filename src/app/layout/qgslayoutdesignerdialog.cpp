@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "ui_qgssvgexportoptions.h"
 #include "ui_defaults.h"
+#include "ui_qgssvgexportoptions.h"
 #include "qgslayoutdesignerdialog.h"
 
 #include "qgisapp.h"

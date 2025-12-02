@@ -32,9 +32,9 @@
 // version without notice, or even be removed.
 //
 
-#include "ui_qgsbrowserpropertiesdialogbase.h"
 #include "ui_qgsbrowserdirectorypropertiesbase.h"
 #include "ui_qgsbrowserlayerpropertiesbase.h"
+#include "ui_qgsbrowserpropertiesdialogbase.h"
 
 #include "qgsbrowsertreeview.h"
 #include "qgsdataitemguiprovider.h"
