@@ -17,7 +17,7 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUAL_SQLITE_LAYER_MODULE_H
 #define QGSVIRTUAL_SQLITE_LAYER_MODULE_H
 
-class sqlite3;
+struct sqlite3;
 struct sqlite3_vtab;
 struct sqlite3_vtab_cursor;
 struct sqlite3_value;
