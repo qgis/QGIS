@@ -20,9 +20,9 @@
 #undef _DEBUG
 #endif
 #endif
-#include "qgspythonutilsimpl.h"
-
 #include <Python.h>
+
+#include "qgspythonutilsimpl.h"
 
 #include "qgis.h"
 #include "qgsapplication.h"
