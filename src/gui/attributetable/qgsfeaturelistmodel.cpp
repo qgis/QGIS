@@ -232,7 +232,7 @@ bool QgsFeatureListModel::setDisplayExpression( const QString &expression )
 
   if ( mSortByDisplayExpression )
   {
-    masterModel()->prefetchSortData( expression, 1 );
+    masterModel()->prefetchSortData( expression, QGSFEATURELISTMODEL_CACHE_INDEX );
   }
 
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
@@ -297,7 +297,7 @@ void QgsFeatureListModel::setSortByDisplayExpression( bool sortByDisplayExpressi
 {
   if ( !mSortByDisplayExpression && sortByDisplayExpression )
   {
-    masterModel()->prefetchSortData( mDisplayExpression.expression(), 1 );
+    masterModel()->prefetchSortData( mDisplayExpression.expression(), QGSFEATURELISTMODEL_CACHE_INDEX );
   }
 
   mSortByDisplayExpression = sortByDisplayExpression;
