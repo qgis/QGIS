@@ -95,7 +95,7 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsMapToolAdvancedDigitizin
     void cadCanvasReleaseEvent( QgsMapMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
-    QList<QgsAnnotationItemRubberBand *> selectedItems() const { return mSelectedItems; };
+    QList<QgsAnnotationItemRubberBand *> selectedItems() const;
 
   signals:
 
@@ -126,14 +126,14 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsMapToolAdvancedDigitizin
     const QgsRenderedAnnotationItemDetails *findClosestItemToPoint( const QgsPointXY &mapPoint, const QList<const QgsRenderedAnnotationItemDetails *> &items, QgsRectangle &bounds );
     QgsAnnotationLayer *annotationLayerFromId( const QString &layerId );
     QgsAnnotationItem *annotationItemFromId( const QString &layerId, const QString &itemId );
-    QgsAnnotationItemRubberBand *annotationItemRubberBandFromId( const QString &layerId, const QString &itemId );
+    qsizetype annotationItemRubberBandIndexFromId( const QString &layerId, const QString &itemId );
 
     void setSelectedItemFromPoint( const QgsPointXY &mapPoint, bool toggleSelection = false );
     void setSelectedItemsFromRect( const QgsRectangle &mapRect, bool toggleSelection = false );
     void clearSelectedItems();
     void updateSelectedItem();
 
-    QList<QgsAnnotationItemRubberBand *> mSelectedItems;
+    std::vector<std::unique_ptr<QgsAnnotationItemRubberBand>> mSelectedItems;
     QList<QPair<QString, QString>> mCopiedItems;
     QgsPointXY mCopiedItemsTopLeft;
 
