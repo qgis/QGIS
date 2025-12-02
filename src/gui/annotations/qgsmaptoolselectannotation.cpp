@@ -221,8 +221,6 @@ QgsMapToolSelectAnnotation::~QgsMapToolSelectAnnotation()
 {
   mSelectionRubberBand.reset();
   mMouseHandles.reset();
-
-  qDeleteAll( mSelectedItems );
 }
 
 void QgsMapToolSelectAnnotation::activate()
@@ -237,7 +235,6 @@ void QgsMapToolSelectAnnotation::deactivate()
   mSelectionRubberBand.reset();
   mMouseHandles.reset();
 
-  qDeleteAll( mSelectedItems );
   mSelectedItems.clear();
 
   mCopiedItems.clear();
@@ -313,7 +310,7 @@ void QgsMapToolSelectAnnotation::cadCanvasPressEvent( QgsMapMouseEvent *event )
 
   QPointF scenePos = mCanvas->mapToScene( event->pos() );
 
-  if ( !mSelectedItems.isEmpty() && mMouseHandles->sceneBoundingRect().contains( scenePos ) )
+  if ( !mSelectedItems.empty() && mMouseHandles->sceneBoundingRect().contains( scenePos ) )
   {
     QGraphicsSceneMouseEvent forwardedEvent( QEvent::GraphicsSceneMousePress );
     forwardedEvent.setPos( mMouseHandles->mapFromScene( scenePos ) );
@@ -374,7 +371,7 @@ void QgsMapToolSelectAnnotation::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
       setSelectedItemFromPoint( event->mapPoint(), ( event->modifiers() & Qt::ShiftModifier ) );
     }
 
-    mMouseHandles->setSelected( !mSelectedItems.isEmpty() );
+    mMouseHandles->setSelected( !mSelectedItems.empty() );
   }
 }
 
@@ -385,7 +382,7 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
     return;
   }
 
-  if ( mSelectedItems.isEmpty() )
+  if ( mSelectedItems.empty() )
   {
     return;
   }
@@ -394,7 +391,7 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
   {
     mCopiedItems.clear();
     mCopiedItemsTopLeft = toMapCoordinates( QPoint( mMouseHandles->sceneBoundingRect().topLeft().x(), mMouseHandles->sceneBoundingRect().topLeft().y() ) );
-    for ( QgsAnnotationItemRubberBand *selectedItem : mSelectedItems )
+    for ( auto &selectedItem : mSelectedItems )
     {
       mCopiedItems << qMakePair( selectedItem->layerId(), selectedItem->itemId() );
     }
@@ -409,9 +406,8 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
     const QgsPointXY copiedItemsSceneTopLeft = mCanvas->mapSettings().mapToPixel().transform( mCopiedItemsTopLeft );
     const double deltaX = mLastScenePos.x() - copiedItemsSceneTopLeft.x();
     const double deltaY = mLastScenePos.y() - copiedItemsSceneTopLeft.y();
-    if ( !mSelectedItems.isEmpty() )
+    if ( !mSelectedItems.empty() )
     {
-      qDeleteAll( mSelectedItems );
       mSelectedItems.clear();
     }
 
@@ -422,8 +418,8 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
         QgsAnnotationLayer *annotationLayer = annotationLayerFromId( copiedItem.first );
         QString pastedItemId = annotationLayer->addItem( annotationItem->clone() );
 
-        mSelectedItems << new QgsAnnotationItemRubberBand( copiedItem.first, pastedItemId, mCanvas );
-        mSelectedItems.last()->attemptMoveBy( deltaX, deltaY );
+        mSelectedItems.push_back( std::make_unique<QgsAnnotationItemRubberBand>( copiedItem.first, pastedItemId, mCanvas ) );
+        mSelectedItems.back()->attemptMoveBy( deltaX, deltaY );
       }
     }
     emit selectedItemsChanged();
@@ -433,14 +429,13 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
 
   if ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete || event->key() == Qt::Key_X )
   {
-    while ( !mSelectedItems.isEmpty() )
+    while ( !mSelectedItems.empty() )
     {
-      QgsAnnotationItemRubberBand *selectedItem = mSelectedItems.takeLast();
-      if ( QgsAnnotationLayer *annotationLayer = selectedItem->layer() )
+      if ( QgsAnnotationLayer *annotationLayer = mSelectedItems.back()->layer() )
       {
-        annotationLayer->removeItem( selectedItem->itemId() );
+        annotationLayer->removeItem( mSelectedItems.back()->itemId() );
       }
-      delete selectedItem;
+      mSelectedItems.pop_back();
     }
     emit selectedItemsChanged();
     event->ignore();
@@ -470,12 +465,22 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
       deltaX = pixels;
     }
 
-    for ( QgsAnnotationItemRubberBand *selectedItem : mSelectedItems )
+    for ( auto &selectedItem : mSelectedItems )
     {
       selectedItem->attemptMoveBy( deltaX, deltaY );
     }
     event->ignore();
   }
+}
+
+QList<QgsAnnotationItemRubberBand *> QgsMapToolSelectAnnotation::selectedItems() const
+{
+  QList<QgsAnnotationItemRubberBand *> items;
+  for ( auto &selectedItem : mSelectedItems )
+  {
+    items << selectedItem.get();
+  }
+  return items;
 }
 
 void QgsMapToolSelectAnnotation::onCanvasRefreshed()
@@ -488,13 +493,13 @@ void QgsMapToolSelectAnnotation::onCanvasRefreshed()
 
   const QList<QgsRenderedItemDetails *> items = renderedItemResults->renderedItems();
   bool needsSelectedItemsUpdate = false;
-  for ( QgsAnnotationItemRubberBand *selectedItem : mSelectedItems )
+  for ( auto &selectedItem : mSelectedItems )
   {
     if ( selectedItem->needsUpdatedBoundingBox() )
     {
       needsSelectedItemsUpdate = true;
 
-      auto it = std::find_if( items.begin(), items.end(), [this, selectedItem]( const QgsRenderedItemDetails *item ) {
+      auto it = std::find_if( items.begin(), items.end(), [this, &selectedItem]( const QgsRenderedItemDetails *item ) {
         if ( const QgsRenderedAnnotationItemDetails *annotationItem = dynamic_cast<const QgsRenderedAnnotationItemDetails *>( item ) )
         {
           if ( annotationItem->itemId() == selectedItem->itemId() && annotationItem->layerId() == selectedItem->layerId() )
@@ -559,15 +564,15 @@ QgsAnnotationItem *QgsMapToolSelectAnnotation::annotationItemFromId( const QStri
   return layer ? layer->item( itemId ) : nullptr;
 }
 
-QgsAnnotationItemRubberBand *QgsMapToolSelectAnnotation::annotationItemRubberBandFromId( const QString &layerId, const QString &itemId )
+qsizetype QgsMapToolSelectAnnotation::annotationItemRubberBandIndexFromId( const QString &layerId, const QString &itemId )
 {
-  if ( mSelectedItems.isEmpty() )
+  if ( mSelectedItems.empty() )
   {
-    return nullptr;
+    return -1;
   }
 
-  auto it = std::find_if( mSelectedItems.begin(), mSelectedItems.end(), [&layerId, &itemId]( QgsAnnotationItemRubberBand *item ) { return item->layerId() == layerId && item->itemId() == itemId; } );
-  return it != mSelectedItems.end() ? *it : nullptr;
+  auto it = std::find_if( mSelectedItems.begin(), mSelectedItems.end(), [&layerId, &itemId]( auto &item ) { return item->layerId() == layerId && item->itemId() == itemId; } );
+  return it != mSelectedItems.end() ? std::distance( mSelectedItems.begin(), it ) : -1;
 }
 
 void QgsMapToolSelectAnnotation::setSelectedItemsFromRect( const QgsRectangle &mapRect, bool toggleSelection )
@@ -594,7 +599,6 @@ void QgsMapToolSelectAnnotation::setSelectedItemsFromRect( const QgsRectangle &m
 
   if ( !toggleSelection )
   {
-    qDeleteAll( mSelectedItems );
     mSelectedItems.clear();
   }
   for ( const QgsRenderedAnnotationItemDetails *item : items )
@@ -604,15 +608,15 @@ void QgsMapToolSelectAnnotation::setSelectedItemsFromRect( const QgsRectangle &m
     {
       if ( toggleSelection )
       {
-        if ( QgsAnnotationItemRubberBand *preexistingItem = annotationItemRubberBandFromId( item->layerId(), item->itemId() ) )
+        qsizetype index = annotationItemRubberBandIndexFromId( item->layerId(), item->itemId() );
+        if ( index >= 0 )
         {
-          delete mSelectedItems.takeAt( mSelectedItems.indexOf( preexistingItem ) );
+          mSelectedItems.erase( mSelectedItems.begin() + index );
           continue;
         }
       }
-      std::unique_ptr<QgsAnnotationItemRubberBand> rubberband = std::make_unique<QgsAnnotationItemRubberBand>( item->layerId(), item->itemId(), mCanvas );
-      rubberband->updateBoundingBox( item->boundingBox() );
-      mSelectedItems << rubberband.release();
+      mSelectedItems.push_back( std::make_unique<QgsAnnotationItemRubberBand>( item->layerId(), item->itemId(), mCanvas ) );
+      mSelectedItems.back()->updateBoundingBox( item->boundingBox() );
     }
   }
   emit selectedItemsChanged();
@@ -651,23 +655,23 @@ void QgsMapToolSelectAnnotation::setSelectedItemFromPoint( const QgsPointXY &map
     return;
   }
 
-  if ( QgsAnnotationItemRubberBand *preexistingItem = annotationItemRubberBandFromId( closestItem->layerId(), closestItem->itemId() ) )
+  qsizetype index = annotationItemRubberBandIndexFromId( closestItem->layerId(), closestItem->itemId() );
+  if ( index >= 0 )
   {
     if ( toggleSelection )
     {
-      delete mSelectedItems.takeAt( mSelectedItems.indexOf( preexistingItem ) );
+      mSelectedItems.erase( mSelectedItems.begin() + index );
     }
   }
   else
   {
     if ( !toggleSelection )
     {
-      qDeleteAll( mSelectedItems );
       mSelectedItems.clear();
     }
-    std::unique_ptr<QgsAnnotationItemRubberBand> rubberband = std::make_unique<QgsAnnotationItemRubberBand>( closestItem->layerId(), closestItem->itemId(), mCanvas );
-    rubberband->updateBoundingBox( closestItem->boundingBox() );
-    mSelectedItems << rubberband.release();
+
+    mSelectedItems.push_back( std::make_unique<QgsAnnotationItemRubberBand>( closestItem->layerId(), closestItem->itemId(), mCanvas ) );
+    mSelectedItems.back()->updateBoundingBox( closestItem->boundingBox() );
   }
   emit selectedItemsChanged();
 }
@@ -690,9 +694,9 @@ void QgsMapToolSelectAnnotation::updateSelectedItem()
 
 void QgsMapToolSelectAnnotation::clearSelectedItems()
 {
-  const bool hadSelection = !mSelectedItems.isEmpty();
-  qDeleteAll( mSelectedItems );
+  const bool hadSelection = !mSelectedItems.empty();
   mSelectedItems.clear();
+
   if ( hadSelection )
   {
     emit selectedItemsChanged();

@@ -65,7 +65,7 @@ QList<QGraphicsItem *> QgsMapToolSelectAnnotationMouseHandles::sceneItemsAtPoint
 {
   QList<QGraphicsItem *> graphicsItems;
   const QList<QgsAnnotationItemRubberBand *> items = mMapTool->selectedItems();
-  for ( QgsAnnotationItemRubberBand *item : items )
+  for ( auto item : items )
   {
     if ( item->sceneBoundingRect().contains( scenePoint ) )
     {
@@ -79,7 +79,7 @@ QList<QGraphicsItem *> QgsMapToolSelectAnnotationMouseHandles::selectedSceneItem
 {
   QList<QGraphicsItem *> graphicsItems;
   const QList<QgsAnnotationItemRubberBand *> items = mMapTool->selectedItems();
-  for ( QgsAnnotationItemRubberBand *item : items )
+  for ( auto item : items )
   {
     graphicsItems << item;
   }
