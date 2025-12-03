@@ -67,21 +67,6 @@ if ! type -p flip >/dev/null; then
 	fi
 fi
 
-if ! type -p autopep8 >/dev/null; then
-	echo "autopep8 not found" >&2
-	echo "Try:"
-	if [[ -f /etc/fedora-release ]]; then
-		echo "  dnf install python3-autopep8";
-	elif [[ -f /etc/debian_version ]]; then
-		echo "  apt install python3-autopep8";
-	else
-		echo "  installing python3-autopep8 from your package manager";
-	fi
-	autopep8() {
-		:
-	}
-fi
-
 ASTYLEOPTS=$(dirname "$0")/astyle.options
 # when using `qgisstyle` built alongside QGIS (on windows),
 # convert path to options file
@@ -121,16 +106,6 @@ for f in "$@"; do
 
 		*.ui|*.qgm|*.txt)
 			cmd=:
-			;;
-
-		*.py)
-			#cmd="autopep8 --in-place --ignore=E111,E128,E201,E202,E203,E211,E221,E222,E225,E226,E227,E231,E241,E261,E265,E272,E302,E303,E501,E701"
-			echo -ne "Formatting $f $elcr"
-			cmd="autopep8 --in-place --ignore=E261,E265,E402,E501"
-			;;
-
-		*.sip)
-			cmd="perl -i.prepare -pe 's/[\\r\\t ]+$//; s#^(\\s*)/\\*[*!]\\s*([^\\s*].*)\\s*\$#\$1/** \\u\$2\\n#;'"
 			;;
 
 		*)
