@@ -20,6 +20,7 @@
 extern "C"
 {
 #include <grass/gis.h>
+
 }
 
 #include <stdexcept>

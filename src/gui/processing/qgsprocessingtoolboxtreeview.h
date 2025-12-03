@@ -40,6 +40,7 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingToolboxTreeView, with the specified \a parent widget.
      *
@@ -90,16 +91,16 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
     /**
      * Returns the model parameter at the specified tree view \a index, or NULLPTR
      * if the index does not correspond to a model parameter.
-     * 
-     * \since 3.44
+     *
+     * \since QGIS 3.44
      */
     const QgsProcessingParameterType *parameterTypeForIndex( const QModelIndex &index );
 
     /**
      * Returns the currently selected model parameter in the tree view, or NULLPTR
      * if no model parameter is currently selected.
-     * 
-     * \since 3.44
+     *
+     * \since QGIS 3.44
      */
     const QgsProcessingParameterType *selectedParameterType();
 

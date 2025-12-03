@@ -31,6 +31,7 @@ class QgsReportSectionModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsReportSectionModel, for the specified \a report.
      */

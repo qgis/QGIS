@@ -34,6 +34,7 @@ class QgsMessageBar;
 class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor for QgsRelationReferenceFactory, where \a name is a human-readable
      * name for the factory and \a icon provides a visual representation of this widget type.

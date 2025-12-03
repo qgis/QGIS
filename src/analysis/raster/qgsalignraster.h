@@ -115,6 +115,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Helper struct to be sub-classed for progress reporting
     struct ProgressHandler
     {
+
         /**
        * Method to be overridden for progress reporting.
        * \param complete Overall progress of the alignment operation

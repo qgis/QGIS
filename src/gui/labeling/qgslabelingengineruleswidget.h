@@ -42,6 +42,7 @@ class QgsLabelingEngineRulesModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingEngineRulesModel.
      */
@@ -111,6 +112,7 @@ class GUI_EXPORT QgsLabelingEngineRulesWidget : public QgsPanelWidget, private U
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingEngineRulesWidget.
      */
@@ -167,6 +169,7 @@ class GUI_EXPORT QgsLabelingEngineRulesDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelingEngineRulesDialog.
      * \param parent parent widget

@@ -34,6 +34,7 @@ class GUI_EXPORT QgsLabelObstacleSettingsWidget : public QgsLabelSettingsWidgetB
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelObstacleSettingsWidget.
      * \param parent parent widget

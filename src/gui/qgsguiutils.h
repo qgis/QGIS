@@ -214,6 +214,7 @@ namespace QgsGuiUtils
 class GUI_EXPORT QWidgetUpdateBlocker
 {
   public:
+
     /**
      * Constructor for QWidgetUpdateBlocker. Blocks updates for the specified \a widget.
      *
@@ -247,6 +248,7 @@ class GUI_EXPORT QWidgetUpdateBlocker
 class GUI_EXPORT QgsTemporaryCursorOverride
 {
   public:
+
     /**
      * Constructor for QgsTemporaryCursorOverride. Sets the application override
      * cursor to \a cursor.
@@ -276,6 +278,7 @@ class GUI_EXPORT QgsTemporaryCursorOverride
 class GUI_EXPORT QgsTemporaryCursorRestoreOverride
 {
   public:
+
     /**
      * Constructor for QgsTemporaryCursorRestoreOverride. Removes all application override
      * cursors.

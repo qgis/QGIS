@@ -40,6 +40,7 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanelWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingMatrixParameterDialog.
      */

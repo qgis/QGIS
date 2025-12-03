@@ -29,6 +29,7 @@ class GUI_EXPORT QgsTemporalMapSettingsWidget : public QgsPanelWidget, private U
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsTemporalMapSettingsWidget, with the specified \a parent widget.
       */

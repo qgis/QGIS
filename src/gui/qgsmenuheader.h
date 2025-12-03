@@ -34,6 +34,7 @@ class GUI_EXPORT QgsMenuHeader : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsMenuHeader, showing the specified \a text.
      */
@@ -63,6 +64,7 @@ class GUI_EXPORT QgsMenuHeaderWidgetAction : public QWidgetAction
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsMenuHeaderWidgetAction, showing the specified \a text.
      */

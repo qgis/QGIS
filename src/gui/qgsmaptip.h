@@ -53,6 +53,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Default constructor
      */

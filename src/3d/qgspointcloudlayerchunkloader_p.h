@@ -60,6 +60,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     Q_OBJECT
 
   public:
+
     /**
      * Constructs the factory
      * The factory takes ownership over the passed \a symbol
@@ -96,6 +97,7 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
     Q_OBJECT
 
   public:
+
     /**
      * Constructs the loader
      * QgsPointCloudLayerChunkLoader takes ownership over symbol

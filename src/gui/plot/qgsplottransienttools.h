@@ -34,6 +34,7 @@ class GUI_EXPORT QgsPlotToolTemporaryKeyPan : public QgsPlotTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolTemporaryKeyPan.
      */
@@ -58,6 +59,7 @@ class GUI_EXPORT QgsPlotToolTemporaryMousePan : public QgsPlotTool
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolTemporaryMousePan.
      */
@@ -82,6 +84,7 @@ class GUI_EXPORT QgsPlotToolTemporaryKeyZoom : public QgsPlotToolZoom
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolTemporaryKeyZoom.
      */

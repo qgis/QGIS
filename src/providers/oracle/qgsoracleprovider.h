@@ -209,6 +209,7 @@ class QgsOracleProvider final : public QgsVectorDataProvider
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 
   private:
+
     /**
      * \returns relation kind
      */

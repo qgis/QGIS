@@ -181,6 +181,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     Q_DECL_DEPRECATED static void styleHighlight( QgsHighlight *highlight ) SIP_DEPRECATED;
 
   signals:
+
     /**
      * Emitted when a \a message should be shown to the user in the application message bar.
      *

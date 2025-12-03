@@ -39,6 +39,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
 {
     Q_OBJECT
   public:
+
     /**
       * A stack widget to manage panels in the interface. Handles the open and close events
       * for added panels.

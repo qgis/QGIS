@@ -27,6 +27,7 @@ filter from a geocoder.
 #include "qgsgeocoderlocatorfilter.h"
 %End
   public:
+
     QgsGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas, const QgsRectangle &boundingBox = QgsRectangle() );
 %Docstring
 Constructor for QgsGeocoderLocatorFilter.
@@ -55,6 +56,7 @@ WGS84, covered by the filter.
 
 
   protected:
+
 
 };
 

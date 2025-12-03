@@ -239,6 +239,7 @@ class QgsPostgresProvider final : public QgsVectorDataProvider
     void handlePostCloneOperations( QgsVectorDataProvider *source ) override;
 
   private:
+
     /**
      * \returns relation kind
      */

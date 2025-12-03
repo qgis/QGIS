@@ -60,6 +60,7 @@ class QgsChunkQueueJobFactory;
  */
 struct QgsChunkNodeId
 {
+
     /**
    * Constructs node ID from depth, x, y and z.
    */

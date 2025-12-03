@@ -39,6 +39,7 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsMaterial, with the specified \a parent node.
      */

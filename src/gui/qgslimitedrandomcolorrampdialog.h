@@ -38,6 +38,7 @@ class GUI_EXPORT QgsLimitedRandomColorRampWidget : public QgsPanelWidget, privat
     Q_PROPERTY( QgsLimitedRandomColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
     /**
      * Constructor for QgsLimitedRandomColorRampWidget.
      * \param ramp initial ramp to show in dialog
@@ -99,6 +100,7 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
     Q_PROPERTY( QgsLimitedRandomColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
     /**
      * Constructor for QgsLimitedRandomColorRampDialog.
      * \param ramp initial ramp to show in dialog

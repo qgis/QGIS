@@ -32,6 +32,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsOptionsPageWidget.
      */
@@ -86,6 +87,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
     virtual void cancel() { return; }
 
   protected:
+
     /**
      * Register a highlight widget to be used to search and highlight text in
      * options dialogs. This can be used to provide a custom implementation of

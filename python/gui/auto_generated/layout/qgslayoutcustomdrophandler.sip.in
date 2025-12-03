@@ -21,6 +21,7 @@ to be dropped or pasted in QGIS layouts.
 #include "qgslayoutcustomdrophandler.h"
 %End
   public:
+
     QgsLayoutCustomDropHandler( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayoutCustomDropHandler.

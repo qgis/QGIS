@@ -100,6 +100,7 @@ class GUI_EXPORT QgsDevToolsModelGroup : public QgsDevToolsModelNode
     QgsDevToolsModelGroup &operator=( QgsDevToolsModelGroup &&other ) noexcept = default;
 
   public:
+
     /**
      * Adds a \a child node to this node.
      *
@@ -129,6 +130,7 @@ class GUI_EXPORT QgsDevToolsModelGroup : public QgsDevToolsModelNode
     QVariant toVariant() const override;
 
   protected:
+
     /**
      * Constructor for a QgsDevToolsModelGroup, with the specified \a title.
      */
@@ -159,6 +161,7 @@ class GUI_EXPORT QgsDevToolsModelGroup : public QgsDevToolsModelNode
 class GUI_EXPORT QgsDevToolsModelValueNode : public QgsDevToolsModelNode
 {
   public:
+
     /**
      * Constructor for QgsDevToolsModelValueNode, with the specified \a key (usually translated) and \a value.
      */

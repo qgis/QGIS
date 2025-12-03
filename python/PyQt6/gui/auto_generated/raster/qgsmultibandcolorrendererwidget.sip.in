@@ -21,6 +21,7 @@ A widget for configuring a :py:class:`QgsMultiBandColorRenderer`.
 #include "qgsmultibandcolorrendererwidget.h"
 %End
   public:
+
     QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
 Constructor for QgsMultiBandColorRendererWidget.

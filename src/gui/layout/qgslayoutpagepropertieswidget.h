@@ -44,6 +44,7 @@ class GUI_EXPORT QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget,
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutPagePropertiesWidget.
      */

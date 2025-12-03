@@ -33,6 +33,7 @@ class GUI_EXPORT QgsAbstract3DMapController : public QgsAbstractInputController
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAbstract3DMapController, with the specified \a parent object.
      */

@@ -35,6 +35,7 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsDecorationLayoutExtent.
     */

@@ -49,6 +49,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     Q_PROPERTY( QString dialogTitle READ dialogTitle WRITE setDialogTitle )
 
   public:
+
     /**
      * Construct a new symbol button.
      * Use \a dialogTitle string to define the title to show in the symbol settings dialog.
@@ -200,7 +201,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     /**
      * Returns TRUE if the widget adopts fixed size constraints.
-     * 
+     *
      * \since QGIS 4.0
      */
     bool fixedSizeConstraints() const;
@@ -278,7 +279,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     /**
      * Sets whether the widget adopts fixed size constraints.
-     * 
+     *
      * \since QGIS 4.0
      */
     void setFixedSizeConstraints( bool fixedSizeConstraints );

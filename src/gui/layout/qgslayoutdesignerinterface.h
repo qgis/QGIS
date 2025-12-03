@@ -358,6 +358,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface : public QObject
     class ExportResults
     {
       public:
+
         /**
          * Result/error code of export.
          */

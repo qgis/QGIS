@@ -162,6 +162,7 @@ class APP_EXPORT QgsClipboard : public QObject
     void changed();
 
   private:
+
     /**
      * Set system clipboard from previously set features.
      */

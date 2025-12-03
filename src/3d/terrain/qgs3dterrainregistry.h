@@ -42,6 +42,7 @@ class QgsRectangle;
 class _3D_EXPORT Qgs3DTerrainAbstractMetadata
 {
   public:
+
     /**
      * Constructor for Qgs3DTerrainAbstractMetadata, with the specified \a type and \a visibleName.
      *
@@ -110,6 +111,7 @@ SIP_SKIP typedef QgsTerrainGenerator *( *QgsTerrainGeneratorCreateFunc )();
 class _3D_EXPORT Qgs3DTerrainMetadata : public Qgs3DTerrainAbstractMetadata
 {
   public:
+
     /**
      * Constructor for Qgs3DTerrainMetadata, with the specified \a type and \a visibleName.
      *

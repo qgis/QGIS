@@ -33,6 +33,7 @@ class QgsDatabaseQueryLoggerTreeView : public QTreeView
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsDatabaseQueryLoggerTreeView, attached to the specified \a logger.
      */
@@ -68,6 +69,7 @@ class QgsDatabaseQueryLoggerPanelWidget : public QgsDevToolWidget, private Ui::Q
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDatabaseQueryLoggerPanelWidget, linked with the specified \a logger.
      */

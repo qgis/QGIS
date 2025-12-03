@@ -48,6 +48,7 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new QgsProcessingAbstractParameterDefinitionWidget, with the specified \a parent widget.
      *
@@ -121,6 +122,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsProcessingParameterDefinitionWidget, for a parameter of the
      * specified \a type.
@@ -174,6 +176,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsProcessingParameterDefinitionDialog, for a parameter of the
      * specified \a type.

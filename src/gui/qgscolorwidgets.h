@@ -45,6 +45,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Specifies the color component which the widget alters
      */
@@ -304,6 +305,7 @@ class GUI_EXPORT QgsColorWidgetAction : public QWidgetAction
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color widget action.
      * \param colorWidget QgsColorWidget to show in action
@@ -379,6 +381,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructs a new color wheel widget.
      * \param parent parent QWidget for the widget
@@ -472,6 +475,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color box widget.
      * \param parent parent QWidget for the widget
@@ -568,6 +572,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Specifies the orientation of a color ramp
      */
@@ -698,6 +703,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color slider widget.
      * \param parent parent QWidget for the widget
@@ -766,6 +772,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Specifies the display format for a color
      */
@@ -837,6 +844,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color preview widget.
      * \param parent parent QWidget for the widget
