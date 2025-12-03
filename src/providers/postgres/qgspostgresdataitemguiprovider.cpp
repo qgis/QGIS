@@ -1151,7 +1151,7 @@ void QgsPostgresDataItemGuiProvider::saveCurrentProject( QgsPGSchemaItem *schema
     }
     else
     {
-      notify( tr( "Save Project" ), tr( "Unable to save project without name to database." ), context, Qgis::MessageLevel::Warning );
+      notify( tr( "Save Project" ), tr( "An unnamed project cannot be saved to the database." ), context, Qgis::MessageLevel::Warning );
       return;
     }
   }
