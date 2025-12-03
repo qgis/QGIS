@@ -177,7 +177,7 @@ void TestQgsStac::testParseLocalItem()
   QCOMPARE( uris.size(), 4 );
   QCOMPARE( uris.at( 0 ).uri, QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "20201211_223832_CS2_analytic.tif" ) ) );
   QCOMPARE( uris.at( 0 ).name, QStringLiteral( "4-Band Analytic" ) );
-  QCOMPARE( uris.at( 1 ).uri, QStringLiteral( "/vsicurl/https://example.com/data.parquet" ) );
+  QCOMPARE( uris.at( 1 ).uri, QStringLiteral( "/vsicurl/https://github.com/opengeospatial/geoparquet/raw/refs/heads/main/examples/example.parquet" ) );
   QCOMPARE( uris.at( 1 ).name, QStringLiteral( "GeoParquet File" ) );
   QCOMPARE( uris.at( 2 ).uri, QStringLiteral( "/vsicurl/https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.tif" ) );
   QCOMPARE( uris.at( 2 ).name, QStringLiteral( "3-Band Visual" ) );

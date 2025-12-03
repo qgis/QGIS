@@ -131,7 +131,7 @@
       ]
     },
     "geoparquet-file": {
-      "href": "https://data.source.coop/severo/apache-parquet-testing/data/geospatial/crs-default.parquet",
+      "href": "https://github.com/opengeospatial/geoparquet/raw/refs/heads/main/examples/example.parquet",
       "title": "GeoParquet File",
       "type": "application/vnd.apache.parquet",
       "roles": [
