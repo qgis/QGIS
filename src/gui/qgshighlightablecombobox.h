@@ -35,6 +35,7 @@ class GUI_EXPORT QgsHighlightableComboBox : public QComboBox
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsHighlightableComboBox with the specified parent widget.
      */

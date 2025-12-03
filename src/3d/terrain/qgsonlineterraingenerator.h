@@ -36,6 +36,7 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
+
     /**
      * Creates a new instance of a QgsOnlineTerrainGenerator object.
      */

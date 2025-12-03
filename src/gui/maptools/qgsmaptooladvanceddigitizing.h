@@ -41,6 +41,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 {
     Q_OBJECT
   public:
+
     /**
      * Creates an advanced digitizing maptool
      * \param canvas         The map canvas on which the tool works
@@ -117,6 +118,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     bool useSnappingIndicator() const;
 
   protected:
+
     /**
      * Sets whether functionality of advanced digitizing dock widget is currently allowed.
      * This method is protected because it should be a decision of the map tool and not from elsewhere.
@@ -151,6 +153,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
 
   public:
+
     /**
      * Override this method when subclassing this class.
      * This will receive adapted events from the cad system whenever a

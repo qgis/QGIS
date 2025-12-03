@@ -36,6 +36,7 @@ class GUI_EXPORT QgsGeocoderLocatorFilter : public QgsAbstractGeocoderLocatorFil
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGeocoderLocatorFilter.
      *
@@ -60,6 +61,7 @@ class GUI_EXPORT QgsGeocoderLocatorFilter : public QgsAbstractGeocoderLocatorFil
     QgsLocatorFilter *clone() const override SIP_FACTORY;
 
   protected:
+
     /**
      * Associated map canvas
      */

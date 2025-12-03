@@ -34,6 +34,7 @@
 class GUI_EXPORT QgsHistoryEntry
 {
   public:
+
     /**
      * Constructor for an invalid entry.
      */

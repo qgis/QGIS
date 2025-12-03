@@ -194,6 +194,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget, public QgsExpression
     void updateDataDefinedProperty();
 
   private:
+
     /**
      * This will be called whenever the renderer is set on a layer.
      * This can be overwritten in subclasses.
@@ -223,6 +224,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param symbolList must not be empty
@@ -253,6 +255,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     void dataDefinedChanged();
 
   protected:
+
     /**
      * Should be called in the constructor of child classes.
      *

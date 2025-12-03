@@ -34,6 +34,7 @@ class ANALYSIS_EXPORT QgsPdalAlgorithms : public QgsProcessingProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPdalAlgorithms.
      */

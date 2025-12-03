@@ -38,6 +38,7 @@ class GUI_EXPORT QgsCalloutPanelWidget : public QgsPanelWidget, private Ui::QgsC
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCalloutPanelWidget, with the specified \a parent widget
      *

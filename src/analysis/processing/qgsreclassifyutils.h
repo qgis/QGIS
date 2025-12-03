@@ -41,6 +41,7 @@ class QgsRectangle;
 class ANALYSIS_EXPORT QgsReclassifyUtils
 {
   public:
+
     /**
      * Represents a single class for a reclassification operation.
      */

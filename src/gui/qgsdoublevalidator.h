@@ -46,6 +46,7 @@ class GUI_EXPORT QgsDoubleValidator : public QRegularExpressionValidator
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDoubleValidator.
      */

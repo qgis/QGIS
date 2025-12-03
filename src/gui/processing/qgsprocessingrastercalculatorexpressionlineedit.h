@@ -46,6 +46,7 @@ class GUI_EXPORT QgsProcessingRasterCalculatorExpressionLineEdit : public QWidge
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingRasterCalculatorExpressionLineEdit.
      * \param parent parent widget
@@ -106,6 +107,7 @@ class GUI_EXPORT QgsProcessingRasterCalculatorExpressionDialog : public QDialog,
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingRasterCalculatorExpressionDialog.
      */

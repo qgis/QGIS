@@ -37,6 +37,7 @@ class GUI_EXPORT QgsAttributeActionPropertiesDialog : public QDialog, private Ui
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAttributeActionPropertiesDialog.
      */

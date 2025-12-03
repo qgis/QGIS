@@ -140,6 +140,7 @@ to the terrain.
 
 
 
+
     QgsTextFormat textFormat() const;
 %Docstring
 Returns the text format to use for rendering text annotations in 3D.

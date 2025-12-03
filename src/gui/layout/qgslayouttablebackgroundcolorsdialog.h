@@ -41,6 +41,7 @@ class GUI_EXPORT QgsLayoutTableBackgroundColorsDialog : public QDialog, private 
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsLayoutTableBackgroundColorsDialog
      * \param table associated layout table

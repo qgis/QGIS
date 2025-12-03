@@ -31,6 +31,7 @@
 class ANALYSIS_EXPORT QgsGeometryCheckContext
 {
   public:
+
     /**
      * Creates a new QgsGeometryCheckContext.
      * \param precision The precision used to define geometry check tolerance. Tolerance is calculated as pow(10, -precision)

@@ -32,6 +32,7 @@ class ANALYSIS_EXPORT QgsNativeAlgorithms : public QgsProcessingProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNativeAlgorithms.
      */

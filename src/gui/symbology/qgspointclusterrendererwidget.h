@@ -38,6 +38,7 @@ class GUI_EXPORT QgsPointClusterRendererWidget : public QgsRendererWidget, priva
     Q_OBJECT
 
   public:
+
     /**
      * Returns a new QgsPointClusterRendererWidget.
      * \param layer associated vector layer

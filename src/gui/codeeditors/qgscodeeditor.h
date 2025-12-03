@@ -70,6 +70,7 @@ class GUI_EXPORT QgsCodeInterpreter
     virtual QString promptForState( int state ) const = 0;
 
   protected:
+
     /**
      * Pure virtual method for executing commands in the interpreter.
      *
@@ -604,6 +605,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void editingTimeout();
 
   protected:
+
     /**
      * Returns TRUE if a \a font is a fixed pitch font.
      */
@@ -614,6 +616,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void contextMenuEvent( QContextMenuEvent *event ) override;
     bool event( QEvent *event ) override;
     bool eventFilter( QObject *watched, QEvent *event ) override;
+
     /**
      * Called when the dialect specific code lexer needs to be initialized (or reinitialized).
      *

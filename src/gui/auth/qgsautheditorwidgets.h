@@ -34,6 +34,7 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
     Q_OBJECT
 
   public:
+
     /**
      * Construct a dialog for viewing available authentication method plugins
      * \param parent Parent widget
@@ -60,6 +61,7 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     Q_OBJECT
 
   public:
+
     /**
      * Construct a widget to contain various authentication editors
      * \param parent Parent widget

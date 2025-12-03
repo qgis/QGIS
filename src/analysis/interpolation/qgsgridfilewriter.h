@@ -36,6 +36,7 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsGridFileWriter
 {
   public:
+
     /**
      * Constructor for QgsGridFileWriter, for the specified \a interpolator.
      *

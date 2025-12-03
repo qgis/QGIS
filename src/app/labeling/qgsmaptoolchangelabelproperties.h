@@ -33,6 +33,7 @@ class APP_EXPORT QgsMapToolChangeLabelProperties : public QgsMapToolLabel
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
   protected:
+
     /**
      * Applies the label property changes
      * \param changes attribute map of changes

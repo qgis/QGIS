@@ -71,7 +71,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsAttributeForm() override;
 
-    /** Returns feature of attribute form. */
+    /**
+     * Returns feature of attribute form.
+     */
     const QgsFeature &feature() const { return mFeature; }
 
     /**

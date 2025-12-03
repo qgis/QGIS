@@ -34,6 +34,7 @@ namespace QgsWms
   class QgsMapRendererJobProxy
   {
     public:
+
       /**
        * Constructor for QgsMapRendererJobProxy. Does not take ownership of
        * \a featureFilterProvider.

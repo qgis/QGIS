@@ -30,6 +30,7 @@ class DockModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param parent parent object
@@ -100,6 +101,7 @@ class DockFilterModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param parent parent object

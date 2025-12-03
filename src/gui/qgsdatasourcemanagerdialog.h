@@ -50,6 +50,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     Q_OBJECT
 
   public:
+
     /**
      * QgsDataSourceManagerDialog constructor
       * \param browserModel instance of the (shared) browser model

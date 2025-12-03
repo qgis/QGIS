@@ -37,6 +37,7 @@ class QgsProject;
 class _3D_EXPORT QgsFlatTerrainSettings : public QgsAbstractTerrainSettings
 {
   public:
+
     /**
      * Creates a new instance of a QgsFlatTerrainSettings object.
      */

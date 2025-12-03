@@ -40,6 +40,7 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsCrsSelectionWidget, with the specified \a parent widget.
      *
@@ -146,6 +147,7 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
     void hasValidSelectionChanged( bool isValid );
 
   private:
+
     /**
      * CRS types
      */
@@ -186,6 +188,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsProjectionSelectionDialog.
      *

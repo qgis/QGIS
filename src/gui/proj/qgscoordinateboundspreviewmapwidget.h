@@ -30,6 +30,7 @@ class GUI_EXPORT QgsCoordinateBoundsPreviewMapWidget : public QgsMapCanvas
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCoordinateBoundsPreviewMapWidget.
      */

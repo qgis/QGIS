@@ -29,6 +29,7 @@
 class ANALYSIS_EXPORT QgsIDWInterpolator : public QgsInterpolator
 {
   public:
+
     /**
      * Constructor for QgsIDWInterpolator, with the specified \a layerData sources.
      */

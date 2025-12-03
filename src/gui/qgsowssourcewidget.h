@@ -38,6 +38,7 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsOWSSourceWidget with the specified \a provider key and \a parent widget.
      */

@@ -32,6 +32,7 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
 {
     Q_OBJECT
   public:
+
     /**
      * Construct map canvas snapping utils object
      *

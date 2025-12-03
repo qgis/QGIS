@@ -38,6 +38,7 @@ class GUI_EXPORT QgsRasterAttributeTableAddColumnDialog : public QDialog, privat
 {
     Q_OBJECT
   public:
+
     /**
      * Creates a new QgsRasterAttributeTableAddColumnDialog
      * \param attributeTable the raster attribute table

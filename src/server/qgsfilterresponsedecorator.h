@@ -34,6 +34,7 @@
 class QgsFilterResponseDecorator : public QgsServerResponse
 {
   public:
+
     /**
      * Constructor for QgsFilterResponseDecorator.
      * \param filters Map of filters to apply before terminating the response

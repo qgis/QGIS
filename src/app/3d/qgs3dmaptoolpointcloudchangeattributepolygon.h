@@ -28,6 +28,7 @@ class Qgs3DMapToolPointCloudChangeAttributePolygon : public Qgs3DMapToolPointClo
     Q_OBJECT
 
   public:
+
     /**
      * Tool types used by \a Qgs3DMapToolPolygon
      */

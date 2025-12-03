@@ -34,6 +34,7 @@ class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor
      * Modal busy indicator dialog with no buttons.

@@ -38,6 +38,7 @@ class GUI_EXPORT QgsNetworkLoggerTreeView : public QTreeView
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsNetworkLoggerTreeView, attached to the specified \a logger.
      */
@@ -90,6 +91,7 @@ class GUI_EXPORT QgsNetworkLoggerPanelWidget : public QgsDevToolWidget, private 
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNetworkLoggerPanelWidget, linked with the specified \a logger.
      */

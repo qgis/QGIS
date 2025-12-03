@@ -45,6 +45,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelGraphicsView, with the specified \a parent widget.
      */
@@ -165,6 +166,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     void pasteItems( PasteMode mode );
 
   public slots:
+
     /**
      * Snaps the selected items to the grid.
      */
@@ -249,11 +251,12 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     /**
      * Sets the scene rect used for scrollbar without disturbing the user
      * i.e:
-     *  - We grow the scene rect as the model grows
-     *  - We shrink only if the model scene rect is outside the current viewed viewport
-     * 
+     *
+     * - We grow the scene rect as the model grows
+     * - We shrink only if the model scene rect is outside the current viewed viewport
+     *
      * Called each time the view viewport moved or the model scene changed
-     * 
+     *
      * \since QGIS 4.0
      */
     void friendlySetSceneRect();

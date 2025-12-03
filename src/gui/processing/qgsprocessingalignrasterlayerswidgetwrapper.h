@@ -51,6 +51,7 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersPanelWidget : public QgsProcessin
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingAlignRasterLayersPanelWidget.
      */

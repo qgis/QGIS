@@ -189,6 +189,7 @@ class QgsGrassModuleStandardOptions : public QWidget, public QgsGrassModuleOptio
     void switchAdvanced();
 
   private:
+
     /**
      * Read and parse module options (--interface-description).
      * \param errors list to which possible errors are added

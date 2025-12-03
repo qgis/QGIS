@@ -32,6 +32,7 @@ class QgsFontOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsFontOpt
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsFontOptionsWidget with the specified \a parent widget.
      */
