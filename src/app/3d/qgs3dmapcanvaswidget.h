@@ -181,6 +181,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionUndo = nullptr;
     QAction *mActionRedo = nullptr;
     QAction *mEditingToolsAction = nullptr;
+    QAction *mActionNudgeLeft = nullptr;
+    QAction *mActionNudgeRight = nullptr;
+    QAction *mActionDynamicClipping = nullptr;
     QToolBar *mPointCloudEditingToolbar = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QObjectUniquePtr<QgsRubberBand> mViewFrustumHighlight;
@@ -205,7 +208,23 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mSpinChangeAttributeValueAction = nullptr;
     QString mChangeAttributePointFilter;
 
+    Qgs3DMapClippingToleranceWidgetSettingsAction *mClippingToleranceAction = nullptr;
+    double mClippingTolerance = 0.0;
+
     QMenu *mToolbarMenu = nullptr;
+};
+
+class Qgs3DMapClippingToleranceWidgetSettingsAction : public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+    Qgs3DMapClippingToleranceWidgetSettingsAction( QWidget *parent = nullptr );
+
+    QgsDoubleSpinBox *toleranceSpinBox() { return mToleranceWidget; }
+
+  private:
+    QgsDoubleSpinBox *mToleranceWidget = nullptr;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

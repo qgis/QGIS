@@ -265,6 +265,40 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mActionDisableClippingPlanes = mCameraMenu->addAction( QgsApplication::getThemeIcon( u"mActionEditCutDisabled.svg"_s ), tr( "Disable Cross Section" ), this, &Qgs3DMapCanvasWidget::disableCrossSection );
   mActionDisableClippingPlanes->setDisabled( true );
 
+  mClippingToleranceAction = new Qgs3DMapClippingToleranceWidgetSettingsAction( mCameraMenu );
+  mClippingToleranceAction->setDisabled( settingDynamicClipping->value() );
+  connect( mClippingToleranceAction->toleranceSpinBox(), qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
+    settingClippingTolerance->setValue( value );
+    updateClippingRubberBand();
+  } );
+  mCameraMenu->addAction( mClippingToleranceAction );
+
+  mActionDynamicClipping = new QAction( tr( "Use dynamic clipping" ), this );
+  mActionDynamicClipping->setCheckable( true );
+  mActionDynamicClipping->setChecked( settingDynamicClipping->value() );
+
+  mCameraMenu->addAction( mActionDynamicClipping );
+  connect( mActionDynamicClipping, &QAction::triggered, this, [this]( bool enabled ) {
+    setDynamicClipping( enabled );
+    settingDynamicClipping->setValue( enabled );
+    mClippingToleranceAction->setDisabled( enabled );
+  } );
+
+  mActionNudgeLeft = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowLeft.svg" ) ), tr( "Nudge Left" ), this );
+  mActionNudgeRight = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowRight.svg" ) ), tr( "Nudge Right" ), this );
+
+  mActionNudgeLeft->setDisabled( true );
+  mActionNudgeRight->setDisabled( true );
+
+  mActionNudgeLeft->setShortcut( QKeySequence( tr( "Q" ) ) );
+  mActionNudgeRight->setShortcut( QKeySequence( tr( "E" ) ) );
+
+  connect( mActionNudgeLeft, &QAction::triggered, this, &Qgs3DMapCanvasWidget::nudgeLeft );
+  connect( mActionNudgeRight, &QAction::triggered, this, &Qgs3DMapCanvasWidget::nudgeRight );
+
+  mCameraMenu->addAction( mActionNudgeLeft );
+  mCameraMenu->addAction( mActionNudgeRight );
+
   // Effects Menu
   mEffectsMenu = new QMenu( this );
 
@@ -1231,6 +1265,34 @@ void Qgs3DMapCanvasWidget::updateCheckedActionsFromMapSettings( const Qgs3DMapSe
   whileBlocking( mActionSync2DNavTo3D )->setChecked( mapSettings->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   whileBlocking( mActionSync3DNavTo2D )->setChecked( mapSettings->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   whileBlocking( mShowFrustumPolygon )->setChecked( mapSettings->viewFrustumVisualizationEnabled() );
+}
+
+//
+// Qgs3DMapClippingToleranceWidgetSettingsAction
+//
+
+Qgs3DMapClippingToleranceWidgetSettingsAction::Qgs3DMapClippingToleranceWidgetSettingsAction( QWidget *parent )
+  : QWidgetAction( parent )
+{
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 3, 2, 3, 2 );
+
+  mToleranceWidget = new QgsDoubleSpinBox();
+  mToleranceWidget->setClearValue( Qgs3DMapCanvasWidget::settingClippingTolerance->defaultValue() );
+  mToleranceWidget->setValue( Qgs3DMapCanvasWidget::settingClippingTolerance->value() );
+  mToleranceWidget->setKeyboardTracking( false );
+  mToleranceWidget->setMaximumWidth( QFontMetrics( mToleranceWidget->font() ).horizontalAdvance( '0' ) * 50 );
+  mToleranceWidget->setDecimals( 2 );
+  mToleranceWidget->setRange( 0, 9999999999 );
+  mToleranceWidget->setSingleStep( 1.0 );
+
+  QLabel *label = new QLabel( tr( "Tolerance" ) );
+  gLayout->addWidget( label, 0, 0 );
+  gLayout->addWidget( mToleranceWidget, 0, 1 );
+
+  QWidget *w = new QWidget();
+  w->setLayout( gLayout );
+  setDefaultWidget( w );
 }
 
 ClassValidator::ClassValidator( QWidget *parent )
