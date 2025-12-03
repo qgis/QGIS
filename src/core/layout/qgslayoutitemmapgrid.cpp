@@ -492,13 +492,45 @@ void QgsLayoutItemMapGrid::drawGridCrsTransform( QgsRenderContext &context, doub
   //draw lines
   if ( !calculateLinesOnly )
   {
+    int countLongitudeLines = 0;
+    int countLatitudeLines = 0;
+    for ( const GridLine &line : mGridLines )
+    {
+      switch ( line.coordinateType )
+      {
+        case Longitude:
+          countLongitudeLines++;
+          break;
+        case Latitude:
+          countLatitudeLines++;
+          break;
+      }
+    }
+
+    int latitudeLineIndex = 0;
+    int longitudeLineIndex = 0;
     if ( mGridStyle == QgsLayoutItemMapGrid::Solid )
     {
       QList< GridLine >::const_iterator gridIt = mGridLines.constBegin();
       for ( ; gridIt != mGridLines.constEnd(); ++gridIt )
       {
+        switch ( gridIt->coordinateType )
+        {
+          case Longitude:
+            longitudeLineIndex++;
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLongitudeLines, true ) );
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), longitudeLineIndex, true ) );
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), QStringLiteral( "x" ), true ) );
+            break;
+
+          case Latitude:
+            latitudeLineIndex++;
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLatitudeLines, true ) );
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), latitudeLineIndex, true ) );
+            context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), QStringLiteral( "y" ), true ) );
+            break;
+        }
         context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), gridIt->coordinate );
-        context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), gridIt->coordinateType == QgsLayoutItemMapGrid::AnnotationCoordinate::Longitude ? "x" : "y" );
         drawGridLine( scalePolygon( gridIt->line, dotsPerMM ), context );
       }
     }
@@ -709,6 +741,24 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
   QList< GridLine >::const_iterator vIt = mGridLines.constBegin();
   QList< GridLine >::const_iterator hIt = mGridLines.constBegin();
 
+  int countLongitudeLines = 0;
+  int countLatitudeLines = 0;
+  for ( const GridLine &line : mGridLines )
+  {
+    switch ( line.coordinateType )
+    {
+      case Longitude:
+        countLongitudeLines++;
+        break;
+      case Latitude:
+        countLatitudeLines++;
+        break;
+    }
+  }
+
+  int latitudeLineIndex = 0;
+  int longitudeLineIndex = 0;
+
   //simple approach: draw vertical lines first, then horizontal ones
   if ( mGridStyle == QgsLayoutItemMapGrid::Solid )
   {
@@ -721,6 +771,9 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
         continue;
       line = QLineF( vIt->line.first() * dotsPerMM, vIt->line.last() * dotsPerMM );
 
+      longitudeLineIndex++;
+      context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLongitudeLines, true ) );
+      context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), longitudeLineIndex, true ) );
       context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), vIt->coordinate );
       context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), "x" );
 
@@ -733,6 +786,9 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
         continue;
       line = QLineF( hIt->line.first() * dotsPerMM, hIt->line.last() * dotsPerMM );
 
+      latitudeLineIndex++;
+      context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLatitudeLines, true ) );
+      context.expressionContext().lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), latitudeLineIndex, true ) );
       context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_number" ), hIt->coordinate );
       context.expressionContext().lastScope()->setVariable( QStringLiteral( "grid_axis" ), "y" );
 
