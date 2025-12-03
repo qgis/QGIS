@@ -67,9 +67,6 @@ class QgsOapifSharedData final : public QObject, public QgsBackgroundCachedShare
     friend class QgsOapifPutFeatureRequest;
     friend class QgsOapifPatchFeatureRequest;
 
-    //! Datasource URI
-    QgsWFSDataSourceURI mURI;
-
     //! Page size. 0 = disabled
     long long mPageSize = 0;
 
@@ -136,8 +133,6 @@ class QgsOapifSharedData final : public QObject, public QgsBackgroundCachedShare
     void invalidateCacheBaseUnderLock() override;
 
     bool supportsLimitedFeatureCountDownloads() const override { return true; }
-
-    QString layerName() const override { return mURI.typeName(); }
 
     bool hasServerSideFilter() const override { return false; }
 
