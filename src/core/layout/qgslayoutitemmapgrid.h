@@ -1237,7 +1237,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     void drawCoordinateAnnotation( QgsRenderContext &context, GridLineAnnotation annot, const QString &annotationString, AnnotationCoordinate coordinateType, GridExtension *extension = nullptr ) const;
 
-    QString gridAnnotationString( double value, AnnotationCoordinate coord, QgsExpressionContext &expressionContext ) const;
+    QString gridAnnotationString( double value, AnnotationCoordinate coord, QgsExpressionContext &expressionContext, bool isGeographic ) const;
 
     /**
      * Computes the grid lines with associated coordinate value
