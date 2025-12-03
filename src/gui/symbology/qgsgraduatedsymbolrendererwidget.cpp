@@ -1046,6 +1046,10 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
   if ( mBlockUpdates || !mClassificationMethod )
     return;
 
+  mClassificationMethod->setLabelFormat( txtLegendFormat->text() );
+  mClassificationMethod->setLabelPrecision( spinPrecision->value() );
+  mClassificationMethod->setLabelTrimTrailingZeroes( cbxTrimTrailingZeroes->isChecked() );
+
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
   QString attrName = mExpressionWidget->currentField();
   int nclasses = spinGraduatedClasses->value();
