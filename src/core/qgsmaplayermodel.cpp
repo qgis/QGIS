@@ -13,15 +13,17 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <QIcon>
-
 #include "qgsmaplayermodel.h"
-#include "moc_qgsmaplayermodel.cpp"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsiconutils.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+
+#include <QIcon>
 #include <QMimeData>
+
+#include "moc_qgsmaplayermodel.cpp"
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent, QgsProject *project )
   : QAbstractItemModel( parent )

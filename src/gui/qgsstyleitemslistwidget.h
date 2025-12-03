@@ -18,10 +18,11 @@
 
 #include "ui_qgsstyleitemslistwidgetbase.h"
 
-#include "qgsstylemodel.h"
-#include <QWidget>
-#include <QStyledItemDelegate>
 #include "qgis_gui.h"
+#include "qgsstylemodel.h"
+
+#include <QStyledItemDelegate>
+#include <QWidget>
 
 class QgsStyle;
 class QMenu;

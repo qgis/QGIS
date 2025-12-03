@@ -9,7 +9,6 @@
 
 
 
-
 class QgsPlotToolPan : QgsPlotTool
 {
 %Docstring(signature="appended")

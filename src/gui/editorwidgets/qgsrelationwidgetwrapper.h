@@ -16,11 +16,10 @@
 #ifndef QGSRELATIONWIDGETWRAPPER_H
 #define QGSRELATIONWIDGETWRAPPER_H
 
-#include "qgswidgetwrapper.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsattributeeditorrelation.h"
-
+#include "qgswidgetwrapper.h"
 
 class QgsAbstractRelationEditorWidget;
 

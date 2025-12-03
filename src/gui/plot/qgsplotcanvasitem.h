@@ -18,9 +18,10 @@
 #ifndef QGSPLOTCANVASITEM_H
 #define QGSPLOTCANVASITEM_H
 
-#include <QGraphicsItem>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QGraphicsItem>
 
 class QgsPlotCanvas;
 

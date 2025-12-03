@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsgpsdeviceoptions.h"
-#include "moc_qgsgpsdeviceoptions.cpp"
-#include "qgsbabelgpsdevice.h"
+
 #include "qgsapplication.h"
 #include "qgsbabelformatregistry.h"
+#include "qgsbabelgpsdevice.h"
 #include "qgssettingsregistrycore.h"
 
 #include <QMessageBox>
+
+#include "moc_qgsgpsdeviceoptions.cpp"
 
 //
 // QgsGpsDeviceOptionsWidget

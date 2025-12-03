@@ -18,42 +18,43 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsbrowserdockwidget_p.h"
-#include "moc_qgsbrowserdockwidget_p.cpp"
 
 #include <memory>
 
-#include <QAbstractTextDocumentLayout>
-#include <QHeaderView>
-#include <QTreeView>
-#include <QMenu>
-#include <QToolButton>
-#include <QFileDialog>
-#include <QPlainTextDocumentLayout>
-#include <QSortFilterProxyModel>
-#include <QDesktopServices>
-#include <QDragEnterEvent>
-
+#include "qgsapplication.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgsattributetablemodel.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowsertreeview.h"
-#include "qgslogger.h"
-#include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsmeshlayer.h"
+#include "qgsdataitemguiprovider.h"
+#include "qgsdataitemguiproviderregistry.h"
+#include "qgsdirectoryitem.h"
 #include "qgsgui.h"
-#include "qgsnative.h"
+#include "qgslayeritem.h"
+#include "qgslogger.h"
 #include "qgsmaptoolpan.h"
+#include "qgsmeshlayer.h"
+#include "qgsnative.h"
+#include "qgspointcloudlayer.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgstiledscenelayer.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayercache.h"
 #include "qgsvectortilelayer.h"
-#include "qgsattributetablemodel.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsapplication.h"
-#include "qgsdataitemguiproviderregistry.h"
-#include "qgsdataitemguiprovider.h"
-#include "qgspointcloudlayer.h"
-#include "qgslayeritem.h"
-#include "qgsdirectoryitem.h"
-#include "qgstiledscenelayer.h"
+
+#include <QAbstractTextDocumentLayout>
+#include <QDesktopServices>
+#include <QDragEnterEvent>
+#include <QFileDialog>
+#include <QHeaderView>
+#include <QMenu>
+#include <QPlainTextDocumentLayout>
+#include <QSortFilterProxyModel>
+#include <QToolButton>
+#include <QTreeView>
+
+#include "moc_qgsbrowserdockwidget_p.cpp"
 
 /// @cond PRIVATE
 

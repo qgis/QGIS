@@ -12,6 +12,7 @@
 
 
 
+
 class QgsCodeInterpreter
 {
 %Docstring(signature="appended")
@@ -370,6 +371,7 @@ Convenience function to set the selection using linear indexes
 %End
 
     virtual void callTip();
+
 
     int wrapPosition( int line = -1 );
 %Docstring

@@ -15,19 +15,18 @@
 #ifndef QGSRUBBERBAND_H
 #define QGSRUBBERBAND_H
 
-#include "qgsmapcanvasitem.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsgeometry.h"
+#include "qgsmapcanvasitem.h"
 
 #include <QBrush>
-#include <QVector>
+#include <QObject>
 #include <QPen>
 #include <QPolygon>
-#include <QObject>
 #include <QSvgRenderer>
-
-#include "qgis_gui.h"
+#include <QVector>
 
 class QgsMapLayer;
 class QgsVectorLayer;

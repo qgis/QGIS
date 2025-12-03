@@ -17,9 +17,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgscoordinatetransform.h"
+#include "qgsgeometry.h"
 #include "qgslayertreefiltersettings.h"
 #include "qgsmapsettings.h"
-#include "qgsgeometry.h"
 #include "qgstaskmanager.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterdataprovider.h"

@@ -15,21 +15,21 @@
 
 #include "qgsvtpktiles.h"
 
-#include "qgslogger.h"
-#include "qgsrectangle.h"
-#include "qgsmessagelog.h"
-#include "qgsjsonutils.h"
-#include "qgsarcgisrestutils.h"
-#include "qgsziputils.h"
-#include "qgslayermetadata.h"
+#include <iostream>
+#include <zip.h>
 
+#include "qgsarcgisrestutils.h"
+#include "qgsjsonutils.h"
+#include "qgslayermetadata.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsrectangle.h"
+#include "qgsziputils.h"
+
+#include <QDomDocument>
 #include <QFile>
 #include <QImage>
-#include <QDomDocument>
 #include <QTextDocumentFragment>
-#include "zip.h"
-#include <iostream>
-
 
 QgsVtpkTiles::QgsVtpkTiles( const QString &filename )
   : mFilename( filename )

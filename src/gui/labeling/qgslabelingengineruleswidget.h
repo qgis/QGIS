@@ -15,10 +15,11 @@
 #ifndef QGSLABELINGENGINERULESWIDGET_H
 #define QGSLABELINGENGINERULESWIDGET_H
 
-#include "qgis_sip.h"
-#include "qgspanelwidget.h"
-#include "qgsguiutils.h"
 #include "ui_qgslabelingengineruleswidgetbase.h"
+
+#include "qgis_sip.h"
+#include "qgsguiutils.h"
+#include "qgspanelwidget.h"
 
 #include <QAbstractItemModel>
 #include <QDialog>

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsHistoryWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsGmlFeatureClass
 {
 %Docstring(signature="appended")

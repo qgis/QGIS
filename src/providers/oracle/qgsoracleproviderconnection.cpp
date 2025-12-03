@@ -14,19 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsoracleproviderconnection.h"
-#include "qgsoracleconn.h"
+
+#include "qgsapplication.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
-#include "qgssettings.h"
-#include "qgsoracleprovider.h"
 #include "qgsexception.h"
-#include "qgsapplication.h"
 #include "qgsfeedback.h"
-#include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
+#include "qgsoracleconn.h"
+#include "qgsoracleprovider.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
-#include <QSqlRecord>
 #include <QSqlField>
+#include <QSqlRecord>
 
 // read from QSettings and used in the provider connection
 const QStringList CONFIGURATION_PARAMETERS {

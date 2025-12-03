@@ -13,44 +13,46 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsfillsymbol.h"
+#include "qgsfontutils.h"
+#include "qgsgeometry.h"
+#include "qgslabelsink.h"
+#include "qgslinesymbol.h"
+#include "qgsmaplayer.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsmaprendererstagedrenderjob.h"
+#include "qgsmeshlayer.h"
+#include "qgsnullpainterdevice.h"
+#include "qgspallabeling.h"
+#include "qgspointcloudattributebyramprenderer.h"
+#include "qgspointcloudlayer.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QPainter>
-#include <QTime>
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
 #include <QApplication>
 #include <QDesktopServices>
-
-#include "qgsvectorlayer.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsapplication.h"
-#include "qgsfield.h"
-#include "qgis.h"
-#include "qgsmaprenderersequentialjob.h"
-#include "qgsmaprenderercustompainterjob.h"
-#include "qgsnullpainterdevice.h"
-#include "qgsmaplayer.h"
-#include "qgsreadwritecontext.h"
-#include "qgsproject.h"
-#include "qgsrenderedfeaturehandlerinterface.h"
-#include "qgsmaprendererstagedrenderjob.h"
-#include "qgspallabeling.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsfontutils.h"
-#include "qgsrasterlayer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsrasterlayertemporalproperties.h"
-#include "qgslinesymbol.h"
-#include "qgslabelsink.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudattributebyramprenderer.h"
-#include "qgsmeshlayer.h"
-#include "qgsfillsymbol.h"
-#include "qgsrasterlayerelevationproperties.h"
+#include <QObject>
+#include <QPainter>
+#include <QString>
+#include <QStringList>
+#include <QTime>
 
 /**
  * \ingroup UnitTests
@@ -1107,7 +1109,7 @@ void TestQgsMapRendererJob::testMapShading()
   shadingRenderer.setLightAltitude( 20 );
   shadingRenderer.setLightAzimuth( 60 );
   mapSettings.setElevationShadingRenderer( shadingRenderer );
-  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob = std::make_unique<QgsMapRendererSequentialJob>( mapSettings );
   renderJob->start();
   renderJob->waitForFinished();
   img = renderJob->renderedImage();
@@ -1116,7 +1118,7 @@ void TestQgsMapRendererJob::testMapShading()
   shadingRenderer.setHillshadingMultidirectional( true );
   shadingRenderer.setHillshadingZFactor( 5 );
   mapSettings.setElevationShadingRenderer( shadingRenderer );
-  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob = std::make_unique<QgsMapRendererSequentialJob>( mapSettings );
   renderJob->start();
   renderJob->waitForFinished();
   img = renderJob->renderedImage();
@@ -1126,7 +1128,7 @@ void TestQgsMapRendererJob::testMapShading()
   shadingRenderer.setActiveHillshading( false );
   shadingRenderer.setActiveEyeDomeLighting( true );
   mapSettings.setElevationShadingRenderer( shadingRenderer );
-  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob = std::make_unique<QgsMapRendererSequentialJob>( mapSettings );
   renderJob->start();
   renderJob->waitForFinished();
   img = renderJob->renderedImage();
@@ -1135,7 +1137,7 @@ void TestQgsMapRendererJob::testMapShading()
   shadingRenderer.setEyeDomeLightingDistance( 10 );
   shadingRenderer.setEyeDomeLightingStrength( 4000 );
   mapSettings.setElevationShadingRenderer( shadingRenderer );
-  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob = std::make_unique<QgsMapRendererSequentialJob>( mapSettings );
   renderJob->start();
   renderJob->waitForFinished();
   img = renderJob->renderedImage();
@@ -1149,7 +1151,7 @@ void TestQgsMapRendererJob::testMapShading()
   pointCloudLayer->renderer()->setRenderAsTriangles( true );
   mapSettings.setLayers( QList<QgsMapLayer *>() << pointCloudLayer.get() );
   mapSettings.setElevationShadingRenderer( shadingRenderer2 );
-  renderJob.reset( new QgsMapRendererSequentialJob( mapSettings ) );
+  renderJob = std::make_unique<QgsMapRendererSequentialJob>( mapSettings );
   renderJob->start();
   renderJob->waitForFinished();
   img = renderJob->renderedImage();

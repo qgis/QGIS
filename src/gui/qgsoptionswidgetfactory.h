@@ -16,10 +16,11 @@
 #ifndef QGSOPTIONSWIDGETFACTORY_H
 #define QGSOPTIONSWIDGETFACTORY_H
 
-#include <QListWidgetItem>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsoptionsdialoghighlightwidget.h"
+
+#include <QListWidgetItem>
 
 /**
  * \ingroup gui

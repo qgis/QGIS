@@ -19,26 +19,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswmsutils.h"
 #include "qgswmsgetcapabilities.h"
-#include "qgsserverprojectutils.h"
 
-#include "qgslayoutmanager.h"
-#include "qgslayoutatlas.h"
-#include "qgsprintlayout.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutitemhtml.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutpagecollection.h"
-#include "qgsmaplayertemporalproperties.h"
 #include "qgsexception.h"
 #include "qgsexpressionnodeimpl.h"
-#include "qgsvectorlayer.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutmanager.h"
+#include "qgslayoutpagecollection.h"
+#include "qgsmaplayerserverproperties.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsprintlayout.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
-#include "qgsmaplayerserverproperties.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
+#include "qgswmsutils.h"
 
 namespace QgsWms
 {

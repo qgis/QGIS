@@ -16,12 +16,13 @@
 #ifndef QGSCOLORRAMPIMPL_H
 #define QGSCOLORRAMPIMPL_H
 
+#include "qgis.h"
 #include "qgis_core.h"
+#include "qgscolorramp.h"
+#include "qgscolorscheme.h"
+
 #include <QColor>
 #include <QGradient>
-#include "qgis.h"
-#include "qgscolorscheme.h"
-#include "qgscolorramp.h"
 
 #ifndef SIP_RUN
 ///@cond PRIVATE

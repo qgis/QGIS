@@ -10,7 +10,6 @@
 
 
 
-
 class QgsRendererRasterPropertiesWidget : QgsMapLayerConfigWidget
 {
 %Docstring(signature="appended")

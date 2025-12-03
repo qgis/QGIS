@@ -11,19 +11,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <functional>
-
 #include "qgsauthoauth2config.h"
-#include "moc_qgsauthoauth2config.cpp"
+
+#include <functional>
+#include <nlohmann/json.hpp>
+
+#include "qgsapplication.h"
+#include "qgsjsonutils.h"
+#include "qgslogger.h"
+#include "qgsvariantutils.h"
 
 #include <QDir>
 
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsvariantutils.h"
-#include "qgsjsonutils.h"
-
-#include <nlohmann/json.hpp>
+#include "moc_qgsauthoauth2config.cpp"
 
 QgsAuthOAuth2Config::QgsAuthOAuth2Config( QObject *parent )
   : QObject( parent )

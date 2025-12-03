@@ -18,14 +18,16 @@
 #ifndef QGSRASTERBLOCK_H
 #define QGSRASTERBLOCK_H
 
+#include <limits>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <limits>
-#include <QImage>
-#include "qgis.h"
 #include "qgserror.h"
 #include "qgslogger.h"
 #include "qgsrasterrange.h"
+
+#include <QImage>
 
 class QgsRectangle;
 

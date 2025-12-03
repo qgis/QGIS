@@ -15,19 +15,21 @@
  ***************************************************************************/
 
 #include "qgsmaptooldigitizefeature.h"
-#include "moc_qgsmaptooldigitizefeature.cpp"
+
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsproject.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgssettingsentryimpl.h"
 
 #include <QSettings>
+
+#include "moc_qgsmaptooldigitizefeature.cpp"
 
 QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolCaptureLayerGeometry( canvas, cadDockWidget, mode )

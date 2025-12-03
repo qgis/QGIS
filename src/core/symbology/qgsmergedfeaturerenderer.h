@@ -15,14 +15,14 @@
 #ifndef QGSMERGEDFEATURERENDERER_H
 #define QGSMERGEDFEATURERENDERER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
-#include "qgsrenderer.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderer.h"
 
 /**
  * \ingroup core

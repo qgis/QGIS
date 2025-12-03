@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgslegendsettings.h"
-#include "qgsexpressioncontext.h"
+
 #include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
 #include "qgsrendercontext.h"
 
 #include <QPainter>

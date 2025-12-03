@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgspointcloudattributemodel.h"
-#include "moc_qgspointcloudattributemodel.cpp"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudindex.h"
+
 #include "qgsapplication.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudlayer.h"
 #include "qgsvariantutils.h"
+
+#include "moc_qgspointcloudattributemodel.cpp"
 
 QgsPointCloudAttributeModel::QgsPointCloudAttributeModel( QObject *parent )
   : QAbstractItemModel( parent )

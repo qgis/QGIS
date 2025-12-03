@@ -14,21 +14,22 @@
  ***************************************************************************/
 
 #include "qgsmaphittest.h"
-#include "moc_qgsmaphittest.cpp"
 
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"
-#include "qgsrendercontext.h"
-#include "qgsrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbollayerutils.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsmaplayerstyle.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsrasterlayerutils.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
+
+#include "moc_qgsmaphittest.cpp"
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon, const LayerFilterExpression &layerFilterExpression )
   : mSettings( QgsLayerTreeFilterSettings( settings ) )

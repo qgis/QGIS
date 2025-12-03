@@ -9,7 +9,6 @@
 
 
 
-
 class QgsHistoryProviderRegistry : QObject
 {
 %Docstring(signature="appended")

@@ -16,15 +16,15 @@
 #ifndef QGSMAPLAYERACTION_H
 #define QGSMAPLAYERACTION_H
 
-#include <QObject>
-#include "qgis_sip.h"
-#include <QList>
-#include <QMap>
-#include <QAction>
-#include <QPointer>
-
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QAction>
+#include <QList>
+#include <QMap>
+#include <QObject>
+#include <QPointer>
 
 class QgsFeature;
 class QgsMapLayer;

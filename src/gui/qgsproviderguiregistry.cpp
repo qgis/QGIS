@@ -17,22 +17,22 @@
 
 #include "qgsproviderguiregistry.h"
 
-#include <QString>
+#include "qgsgdalguiprovider.h"
+#include "qgslogger.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsmbtilesvectortileguiprovider.h"
+#include "qgsogrguiprovider.h"
+#include "qgspointcloudproviderguimetadata.h"
+#include "qgssensorthingsguiprovider.h"
+#include "qgstiledsceneproviderguimetadata.h"
+#include "qgsvectortileproviderguimetadata.h"
+#include "qgsvtpkvectortileguiprovider.h"
+
 #include <QDir>
 #include <QLibrary>
 #include <QRegularExpression>
+#include <QString>
 
-#include "qgslogger.h"
-#include "qgsgdalguiprovider.h"
-#include "qgsogrguiprovider.h"
-#include "qgsvectortileproviderguimetadata.h"
-#include "qgspointcloudproviderguimetadata.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
-
-#include "qgstiledsceneproviderguimetadata.h"
-#include "qgsmbtilesvectortileguiprovider.h"
-#include "qgsvtpkvectortileguiprovider.h"
-#include "qgssensorthingsguiprovider.h"
 #ifdef HAVE_EPT
 #include "qgseptproviderguimetadata.h"
 #endif

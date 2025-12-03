@@ -17,10 +17,9 @@
 #define QGSLABELINGENGINE_H
 
 #include "qgis_core.h"
-#include "qgsmapsettings.h"
-
 #include "qgsfeedback.h"
 #include "qgslabelobstaclesettings.h"
+#include "qgsmapsettings.h"
 
 class QgsLabelingEngine;
 class QgsLabelingResults;

@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsalgorithmangletonearest.h"
-#include "qgsspatialindex.h"
+
 #include "qgslinestring.h"
-#include "qgsvectorlayer.h"
-#include "qgsrenderer.h"
-#include "qgsstyleentityvisitor.h"
 #include "qgsmarkersymbol.h"
+#include "qgsrenderer.h"
+#include "qgsspatialindex.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

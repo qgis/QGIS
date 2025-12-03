@@ -14,6 +14,7 @@
 #define QGSNORTHARROWPLUGINGUI_H
 
 #include "ui_qgsdecorationnortharrowdialog.h"
+
 #include "qgis_app.h"
 
 class QgsDecorationNorthArrow;

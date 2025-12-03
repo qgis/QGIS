@@ -16,9 +16,9 @@
 #ifndef QGSSPATIALITEEXPRESSIONCOMPILER_H
 #define QGSSPATIALITEEXPRESSIONCOMPILER_H
 
-#include "qgssqliteexpressioncompiler.h"
 #include "qgsexpression.h"
 #include "qgsspatialitefeatureiterator.h"
+#include "qgssqliteexpressioncompiler.h"
 
 class QgsSpatialiteExpressionCompiler : public QgsSQLiteExpressionCompiler
 {

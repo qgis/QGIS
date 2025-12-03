@@ -20,9 +20,9 @@
 #include "qgis_core.h"
 #include "qgsstaclink.h"
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 
 /**
  * \ingroup core

@@ -21,8 +21,8 @@
 #include "ui_qgsanimationexportdialogbase.h"
 
 #include "qgisapp.h"
-#include "qgsrectangle.h"
 #include "qgshelp.h"
+#include "qgsrectangle.h"
 
 #include <QDialog>
 #include <QSize>
@@ -62,6 +62,13 @@ class APP_EXPORT QgsAnimationExportDialog : public QDialog, private Ui::QgsAnima
 
     //! Returns the duration of each individual frame
     QgsInterval frameInterval() const;
+
+    /**
+     * Returns the animation temporal range cumulative settings.
+     *
+     * \since QGIS 4.0
+     */
+    bool temporalRangeCumulative() const;
 
     //! configure a map settings object
     void applyMapSettings( QgsMapSettings &mapSettings );

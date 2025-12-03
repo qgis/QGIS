@@ -23,7 +23,6 @@
 #include <QRecursiveMutex>
 #include <QSqlDatabase>
 
-
 /**
  * \ingroup core
  * QSqlDatabase based implementation of QgsAuthConfigurationStorage.

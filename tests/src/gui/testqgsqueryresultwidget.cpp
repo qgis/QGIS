@@ -14,15 +14,15 @@
  ***************************************************************************/
 
 
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsqueryresultmodel.h"
+#include "qgsqueryresultwidget.h"
 #include "qgstest.h"
 
-#include "qgsqueryresultwidget.h"
-#include "qgsqueryresultmodel.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-#include <QApplication>
 #include <QAction>
+#include <QApplication>
 #include <QDialog>
 #include <QVBoxLayout>
 

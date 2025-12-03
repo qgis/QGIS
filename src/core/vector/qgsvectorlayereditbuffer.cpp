@@ -13,17 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorlayereditbuffer.h"
-#include "moc_qgsvectorlayereditbuffer.cpp"
 
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsvectorlayereditbuffergroup.h"
-#include "qgsvectorlayerundocommand.h"
+#include "qgsmessagelog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffergroup.h"
+#include "qgsvectorlayerundocommand.h"
 #include "qgsvectorlayerutils.h"
-#include "qgsmessagelog.h"
 
+#include "moc_qgsvectorlayereditbuffer.cpp"
 
 //! populate two lists (ks, vs) from map - in reverse order
 template <class Key, class T> void mapToReversedLists( const QMap< Key, T > &map, QList<Key> &ks, QList<T> &vs )

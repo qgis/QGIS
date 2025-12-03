@@ -15,14 +15,17 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeellipsecenter2points.h"
-#include "moc_qgsmaptoolshapeellipsecenter2points.cpp"
+
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include <memory>
-#include "qgsapplication.h"
+#include "qgspoint.h"
+
+#include "moc_qgsmaptoolshapeellipsecenter2points.cpp"
 
 const QString QgsMapToolShapeEllipseCenter2PointsMetadata::TOOL_ID = QStringLiteral( "ellipse-center-2-points" );
 

@@ -22,9 +22,8 @@
 
 #include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
-
-#include "qgsvectortilematrixset.h"
 #include "qgsvectortiledataprovider.h"
+#include "qgsvectortilematrixset.h"
 
 ///@cond PRIVATE
 

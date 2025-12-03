@@ -18,11 +18,11 @@
 #ifndef QGSSERVERFEATUREID_H
 #define QGSSERVERFEATUREID_H
 
-#include <QString>
-#include <QHash>
-
 #include "qgis_server.h"
 #include "qgsfield.h"
+
+#include <QHash>
+#include <QString>
 
 class QgsVectorDataProvider;
 class QgsFeature;

@@ -17,6 +17,7 @@
 #define QGSMAPLAYERSERVERPROPERTIESWIDGET
 
 #include "ui_qgsmaplayerserverpropertieswidgetbase.h"
+
 #include "qgis_gui.h"
 
 #define SIP_NO_FILE

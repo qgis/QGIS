@@ -13,10 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
-
 #include "qgsvertexmarker.h"
 
+#include <QPainter>
 
 QgsVertexMarker::QgsVertexMarker( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasItem( mapCanvas )

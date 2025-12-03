@@ -22,8 +22,8 @@
 
 #include "qgis_core.h"
 
-#include <QNetworkDiskCache>
 #include <QMutex>
+#include <QNetworkDiskCache>
 
 class QNetworkDiskCache;
 

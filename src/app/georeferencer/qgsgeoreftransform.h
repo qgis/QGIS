@@ -18,6 +18,7 @@
 #define QGSGEOREFTRANSFORM_H
 
 #include <gdal_alg.h>
+
 #include "qgis_app.h"
 #include "qgsgcptransformer.h"
 #include "qgsrasterchangecoords.h"

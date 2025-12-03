@@ -18,16 +18,15 @@
 #ifndef QGSDWGIMPORTER_H
 #define QGSDWGIMPORTER_H
 
-#include "drw_interface.h"
-
-#include <QCoreApplication>
-#include <QString>
-#include <QElapsedTimer>
-
 #include <ogr_api.h>
 
+#include "drw_interface.h"
 #include "qgsabstractgeometry.h"
 #include "qgsogrutils.h"
+
+#include <QCoreApplication>
+#include <QElapsedTimer>
+#include <QString>
 
 class QgsCompoundCurve;
 class QgsLineString;

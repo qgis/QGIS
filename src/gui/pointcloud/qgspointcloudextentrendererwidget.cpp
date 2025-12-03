@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgspointcloudextentrendererwidget.h"
-#include "moc_qgspointcloudextentrendererwidget.cpp"
+
 #include "qgscontrastenhancement.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudextentrenderer.h"
 #include "qgsdoublevalidator.h"
 #include "qgsfillsymbol.h"
+#include "qgspointcloudextentrenderer.h"
+#include "qgspointcloudlayer.h"
+
+#include "moc_qgspointcloudextentrendererwidget.cpp"
 
 ///@cond PRIVATE
 

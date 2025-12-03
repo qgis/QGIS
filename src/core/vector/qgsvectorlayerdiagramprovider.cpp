@@ -15,19 +15,18 @@
 
 #include "qgsvectorlayerdiagramprovider.h"
 
-#include "qgsgeometry.h"
-#include "qgslabelsearchtree.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerfeatureiterator.h"
 #include "diagram/qgsdiagram.h"
-#include "qgsgeos.h"
-#include "qgslabelingresults.h"
-#include "qgsrendercontext.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsscaleutils.h"
-
 #include "feature.h"
 #include "labelposition.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgeometry.h"
+#include "qgsgeos.h"
+#include "qgslabelingresults.h"
+#include "qgslabelsearchtree.h"
+#include "qgsrendercontext.h"
+#include "qgsscaleutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer *layer, bool ownFeatureLoop )
   : QgsAbstractLabelProvider( layer )

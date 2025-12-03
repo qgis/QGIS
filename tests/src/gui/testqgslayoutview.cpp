@@ -13,19 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include "qgslayoutview.h"
-#include "qgslayoutviewtool.h"
-#include "qgslayoutviewmouseevent.h"
-#include "qgslayoutitem.h"
-#include "qgslayoutviewrubberband.h"
-#include "qgslayoutitemregistry.h"
-#include "qgslayoutitemguiregistry.h"
-#include "qgslayoutitemwidget.h"
-#include "qgsproject.h"
 #include "qgslayout.h"
-#include <QtTest/QSignalSpy>
+#include "qgslayoutitem.h"
+#include "qgslayoutitemguiregistry.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutitemwidget.h"
+#include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
+#include "qgslayoutviewrubberband.h"
+#include "qgslayoutviewtool.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+
 #include <QSvgGenerator>
+#include <QtTest/QSignalSpy>
 
 class TestQgsLayoutView : public QObject
 {

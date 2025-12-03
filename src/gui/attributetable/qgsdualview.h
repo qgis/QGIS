@@ -16,16 +16,15 @@
 #ifndef QGSDUALVIEW_H
 #define QGSDUALVIEW_H
 
-#include <QStackedWidget>
-
 #include "ui_qgsdualviewbase.h"
 
-#include "qgsattributeeditorcontext.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsattributeform.h"
 #include "qgis_gui.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgsattributeform.h"
+#include "qgsattributetablefiltermodel.h"
 
 #include <QPointer>
+#include <QStackedWidget>
 #include <QUuid>
 
 class QgsFeatureRequest;

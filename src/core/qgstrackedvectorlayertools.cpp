@@ -15,10 +15,11 @@
  ***************************************************************************/
 
 #include "qgstrackedvectorlayertools.h"
-#include "moc_qgstrackedvectorlayertools.cpp"
+
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertoolscontext.h"
 
+#include "moc_qgstrackedvectorlayertools.cpp"
 
 bool QgsTrackedVectorLayerTools::addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, const QgsVectorLayerToolsContext &context ) const
 {

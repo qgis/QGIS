@@ -16,19 +16,21 @@
  ***************************************************************************/
 
 #include "qgssinglebandgrayrenderer.h"
-#include "qgscontrastenhancement.h"
-#include "qgsrastertransparency.h"
+
+#include <memory>
+
+#include "qgscolorrampimpl.h"
 #include "qgscolorramplegendnode.h"
 #include "qgscolorramplegendnodesettings.h"
+#include "qgscontrastenhancement.h"
+#include "qgsrastertransparency.h"
 #include "qgsreadwritecontext.h"
-#include "qgscolorrampimpl.h"
 #include "qgssldexportcontext.h"
 
+#include <QColor>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
-#include <QColor>
-#include <memory>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface *input, int grayBand )
   : QgsRasterRenderer( input, QStringLiteral( "singlebandgray" ) )

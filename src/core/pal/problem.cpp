@@ -27,18 +27,19 @@
  *
  */
 
-#include "pal.h"
-#include "layer.h"
-#include "feature.h"
-#include "labelposition.h"
 #include "problem.h"
-#include "util.h"
-#include "priorityqueue.h"
-#include "internalexception.h"
-#include "qgslabelingenginerule.h"
-#include <limits> //for std::numeric_limits<int>::max()
 
+#include <limits> //for std::numeric_limits<int>
+
+#include "feature.h"
+#include "internalexception.h"
+#include "labelposition.h"
+#include "layer.h"
+#include "pal.h"
+#include "priorityqueue.h"
 #include "qgslabelingengine.h"
+#include "qgslabelingenginerule.h"
+#include "util.h"
 
 using namespace pal;
 

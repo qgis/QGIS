@@ -16,13 +16,13 @@
 #ifndef QGSVECTORTILEBASICRENDERERWIDGET_H
 #define QGSVECTORTILEBASICRENDERERWIDGET_H
 
-#include "qgsmaplayerconfigwidget.h"
-
 #include "ui_qgsvectortilebasicrendererwidget.h"
 
 #include <memory>
-#include <QSortFilterProxyModel>
 
+#include "qgsmaplayerconfigwidget.h"
+
+#include <QSortFilterProxyModel>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

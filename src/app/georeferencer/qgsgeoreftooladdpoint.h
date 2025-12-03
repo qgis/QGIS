@@ -30,7 +30,7 @@ class QgsGeorefToolAddPoint : public QgsMapToolCapture
   public:
     explicit QgsGeorefToolAddPoint( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *advancedDigitizingDockWidget );
 
-    void pointCaptured( const QgsPoint &point );
+    void pointCaptured( const QgsPoint &point ) override;
 
   signals:
     void showCoordDialog( const QgsPointXY &sourceCoordinates );

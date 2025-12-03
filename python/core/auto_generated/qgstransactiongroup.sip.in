@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsTransactionGroup : QObject
 {
 %Docstring(signature="appended")

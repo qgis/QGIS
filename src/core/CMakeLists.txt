@@ -20,6 +20,7 @@ endif()
 set(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
 
+  ${CMAKE_SOURCE_DIR}/external/nanoarrow/src/nanoarrow.c
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/info.c
@@ -88,6 +89,8 @@ set(QGIS_CORE_SRCS
   gps/qgssatelliteinformation.cpp
   gps/qgsvectorlayergpslogger.cpp
 
+  multimedia/qgsvideoexporter.cpp
+
   plot/qgsbarchartplot.cpp
   plot/qgslinechartplot.cpp
   plot/qgspiechartplot.cpp
@@ -97,6 +100,7 @@ set(QGIS_CORE_SRCS
 
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
+  symbology/qgsblanksegmentutils.cpp
   symbology/qgscategorizedsymbolrenderer.cpp
   symbology/qgscolorbrewerpalette.cpp
   symbology/qgscombinedstylemodel.cpp
@@ -435,6 +439,7 @@ set(QGIS_CORE_SRCS
   qgsapplication.cpp
   qgsaggregatecalculator.cpp
   qgsanimatedicon.cpp
+  qgsarrowiterator.cpp
   qgspostgresstringutils.cpp
   qgsattributes.cpp
   qgsattributetableconfig.cpp
@@ -1130,6 +1135,7 @@ set(QGIS_CORE_HDRS
   qgsanimatedicon.h
   qgsapplication.h
   qgsarchive.h
+  qgsarrowiterator.h
   qgsattributes.h
   qgsattributetableconfig.h
   qgsauxiliarystorage.h
@@ -1728,6 +1734,8 @@ set(QGIS_CORE_HDRS
   mesh/qgsmeshlayerlabelprovider.h
   mesh/qgsmeshutils.h
 
+  multimedia/qgsvideoexporter.h
+
   painting/qgsgeometrypaintdevice.h
   painting/qgsmaskpaintdevice.h
   painting/qgsnullpainterdevice.h
@@ -2019,6 +2027,8 @@ set(QGIS_CORE_HDRS
 
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
+
+  symbology/qgsblanksegmentutils.h
   symbology/qgscategorizedsymbolrenderer.h
   symbology/qgscolorbrewerpalette.h
   symbology/qgscombinedstylemodel.h
@@ -2414,6 +2424,10 @@ if(WITH_INTERNAL_SPATIALINDEX)
   check_function_exists(memcpy HAVE_MEMCPY)
   check_function_exists(bcopy HAVE_BCOPY)
 
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_OPTIONS "-Wno-type-limits;-Wno-extra;-Wno-overloaded-virtual")
+  endif()
+
   if(HAVE_SRAND48)
     set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_FLAGS -DHAVE_SRAND48=1)
   else()
@@ -2550,6 +2564,7 @@ target_include_directories(qgis_core PUBLIC
   maprenderer
   mesh
   metadata
+  multimedia
   network
   numericformats
   painting
@@ -2584,6 +2599,7 @@ target_include_directories(qgis_core PUBLIC
   web
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
+  ${CMAKE_SOURCE_DIR}/external/nanoarrow/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/tinygltf
@@ -2605,6 +2621,8 @@ if (WITH_COPC)
     ${CMAKE_SOURCE_DIR}/src/core/providers/copc
     ${CMAKE_SOURCE_DIR}/src/core/providers/vpc)
 endif()
+
+find_package(${QT_VERSION_BASE} COMPONENTS Multimedia REQUIRED)
 
 GENERATE_EXPORT_HEADER(
   qgis_core
@@ -2664,6 +2682,7 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::Concurrent
   ${QT_VERSION_BASE}::Positioning
+  ${QT_VERSION_BASE}::Multimedia
   ${OPTIONAL_QTWEBKIT}
   ${QCA_LIBRARY}
   GEOS::geos_c
@@ -2673,10 +2692,15 @@ target_link_libraries(qgis_core
   ${LIBZIP_LIBRARY}
   $<TARGET_NAME_IF_EXISTS:protobuf::libprotobuf-lite>
   ${ZLIB_LIBRARIES}
-  exiv2lib
   PROJ::proj
   nlohmann_json::nlohmann_json
 )
+
+if(WITH_EXIV2)
+  target_link_libraries(qgis_core
+    exiv2lib
+  )
+endif()
 
 if(NOT WITH_INTERNAL_SPATIALINDEX)
   target_link_libraries(qgis_core ${SPATIALINDEX_LIBRARY})

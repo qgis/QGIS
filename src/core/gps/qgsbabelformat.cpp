@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsbabelformat.h"
+
 #include <QString>
 
 QgsAbstractBabelFormat::QgsAbstractBabelFormat( const QString &name )

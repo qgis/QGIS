@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgslayeritem.h"
-#include "moc_qgslayeritem.cpp"
+
+#include "qgsiconutils.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsvectorlayer.h"
-#include "qgsiconutils.h"
+
+#include "moc_qgslayeritem.cpp"
 
 QIcon QgsLayerItem::iconForWkbType( Qgis::WkbType type )
 {

@@ -19,8 +19,10 @@
 #define QGSINSTALLGRIDSHIFTDIALOG_H
 
 #include "ui_qgsinstallgridshiftdialog.h"
-#include <QDialog>
+
 #include "qgis_gui.h"
+
+#include <QDialog>
 
 #define SIP_NO_FILE
 

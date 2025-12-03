@@ -16,14 +16,14 @@
 #ifndef QGSGRAPHDIRECTOR_H
 #define QGSGRAPHDIRECTOR_H
 
-#include <QObject>
-#include <QVector>
-#include <QList>
-
+#include "qgis_analysis.h"
 #include "qgis_sip.h"
 #include "qgsfeedback.h"
 #include "qgsnetworkstrategy.h"
-#include "qgis_analysis.h"
+
+#include <QList>
+#include <QObject>
+#include <QVector>
 
 class QgsGraphBuilderInterface;
 class QgsPoint;

@@ -18,6 +18,7 @@
 #define MATHUTILS_H
 
 #include <cmath>
+
 #include "qgis_analysis.h"
 
 class QgsPoint;

@@ -16,9 +16,11 @@
 #ifndef QGSRASTERATTRIBUTETABLEDIALOG_H
 #define QGSRASTERATTRIBUTETABLEDIALOG_H
 
-#include <QDialog>
-#include "qgis_gui.h"
 #include "ui_qgsrasterattributetabledialogbase.h"
+
+#include "qgis_gui.h"
+
+#include <QDialog>
 
 #ifndef SIP_RUN
 class QgsRasterLayer;

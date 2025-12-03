@@ -18,8 +18,9 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QString>
+
 #include <QIcon>
+#include <QString>
 
 class QgsDevToolWidget;
 class QWidget;

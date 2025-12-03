@@ -13,68 +13,64 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDialogButtonBox>
-#include <QClipboard>
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QPlainTextEdit>
-#include <QProgressDialog>
-#include <QPushButton>
-#include <QTextStream>
-#include <QPen>
-#include <QStringList>
-#include <QList>
-#include <QUrl>
-#include <QActionGroup>
+#include "qgsgeorefmainwindow.h"
 
-#include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsmapcanvassnappingutils.h"
-#include "qgsmaptooladvanceddigitizing.h"
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsgui.h"
 #include "qgisapp.h"
-#include "qgssettingsregistrycore.h"
-
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutitemtexttable.h"
-#include "qgslayouttablecolumn.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutpagecollection.h"
-#include "qgsmapcanvas.h"
-#include "qgsmapcoordsdialog.h"
-#include "qgsmaptoolzoom.h"
-#include "qgsmaptoolpan.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsapplication.h"
+#include "qgscoordinateutils.h"
 #include "qgsdatasourceselectdialog.h"
-#include "qgssnappingwidget.h"
-
-#include "qgsproject.h"
-#include "qgsrasterlayer.h"
-#include "qgsproviderregistry.h"
-
+#include "qgsgcplistwidget.h"
+#include "qgsgeorefconfigdialog.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftooladdpoint.h"
 #include "qgsgeoreftooldeletepoint.h"
 #include "qgsgeoreftoolmovepoint.h"
-#include "qgscoordinateutils.h"
-
-#include "qgsgcplistwidget.h"
-
-#include "qgsgeorefconfigdialog.h"
-#include "qgsresidualplotitem.h"
-#include "qgstransformsettingsdialog.h"
-
-#include "qgsgeorefmainwindow.h"
-#include "moc_qgsgeorefmainwindow.cpp"
-#include "qgsmessagebar.h"
-#include "qgsvectorwarper.h"
-#include "qgsscreenhelper.h"
-#include "qgssettingsentryenumflag.h"
+#include "qgsgui.h"
 #include "qgslayoutexporter.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemtexttable.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayouttablecolumn.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapcanvassnappingutils.h"
+#include "qgsmapcoordsdialog.h"
+#include "qgsmaptooladvanceddigitizing.h"
+#include "qgsmaptoolpan.h"
+#include "qgsmaptoolzoom.h"
+#include "qgsmessagebar.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterlayer.h"
+#include "qgsresidualplotitem.h"
+#include "qgsscreenhelper.h"
+#include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssnappingwidget.h"
+#include "qgstransformsettingsdialog.h"
+#include "qgsvectorwarper.h"
+
+#include <QActionGroup>
+#include <QClipboard>
+#include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QList>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPen>
+#include <QPlainTextEdit>
+#include <QProgressDialog>
+#include <QPushButton>
+#include <QStringList>
+#include <QTextStream>
+#include <QUrl>
+
+#include "moc_qgsgeorefmainwindow.cpp"
 
 const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( QStringLiteral( "resampling-method" ), sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, QStringLiteral( "Last used georeferencer resampling method" ) );
 

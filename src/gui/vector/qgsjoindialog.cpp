@@ -16,18 +16,20 @@
  ***************************************************************************/
 
 #include "qgsjoindialog.h"
-#include "moc_qgsjoindialog.cpp"
+
+#include "qgsfieldcombobox.h"
+#include "qgshelp.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayercombobox.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
-#include "qgsmaplayercombobox.h"
-#include "qgsfieldcombobox.h"
-#include "qgshelp.h"
 
-#include <QStandardItemModel>
 #include <QPushButton>
+#include <QStandardItemModel>
+
+#include "moc_qgsjoindialog.cpp"
 
 QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alreadyJoinedLayers, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

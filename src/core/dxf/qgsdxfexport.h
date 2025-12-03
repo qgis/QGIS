@@ -18,12 +18,12 @@
 #ifndef QGSDXFEXPORT_H
 #define QGSDXFEXPORT_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsgeometry.h"
-#include "qgsmapsettings.h"
 #include "qgslabelsink.h"
+#include "qgsmapsettings.h"
 #include "qgsrendercontext.h"
 
 #include <QColor>

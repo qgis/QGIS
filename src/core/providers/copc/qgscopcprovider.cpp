@@ -15,18 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgscopcprovider.h"
-#include "moc_qgscopcprovider.cpp"
-#include "qgscopcpointcloudindex.h"
-#include "qgsruntimeprofiler.h"
+
+#include "qgis.h"
 #include "qgsapplication.h"
+#include "qgscopcpointcloudindex.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgsruntimeprofiler.h"
 #include "qgsthreadingutils.h"
 
 #include <QIcon>
+
+#include "moc_qgscopcprovider.cpp"
 
 ///@cond PRIVATE
 

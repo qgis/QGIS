@@ -14,27 +14,29 @@
  ***************************************************************************/
 
 #include "qgspointlocator.h"
-#include "moc_qgspointlocator.cpp"
 
+#include <spatialindex/SpatialIndex.h>
+
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscurvepolygon.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
-#include "qgswkbptr.h"
-#include "qgis.h"
-#include "qgslogger.h"
-#include "qgsrenderer.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayerfeatureiterator.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgslinestring.h"
-#include "qgscurvepolygon.h"
-#include "qgsrendercontext.h"
+#include "qgslogger.h"
 #include "qgspointlocatorinittask.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderer.h"
 #include "qgsspatialindexutils.h"
-#include <spatialindex/SpatialIndex.h>
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
+#include "qgswkbptr.h"
 
 #include <QLinkedListIterator>
 #include <QtConcurrent>
+
+#include "moc_qgspointlocator.cpp"
 
 using namespace SpatialIndex;
 
@@ -814,6 +816,7 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
 
 ////////////////////////////////////////////////////////////////////////////
 #include <QStack>
+#include <memory>
 
 /**
  * \ingroup core
@@ -925,7 +928,7 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 
   if ( context )
   {
-    mContext = std::unique_ptr<QgsRenderContext>( new QgsRenderContext( *context ) );
+    mContext = std::make_unique<QgsRenderContext>( *context );
     connect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
   }
 
@@ -971,7 +974,7 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
        || !mLayer->dataProvider()->isValid() )
     return false;
 
-  mSource.reset( new QgsVectorLayerFeatureSource( mLayer ) );
+  mSource = std::make_unique<QgsVectorLayerFeatureSource>( mLayer );
 
   if ( mContext )
   {

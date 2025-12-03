@@ -20,10 +20,11 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QGraphicsRectItem>
 #include "qgis_gui.h"
-#include "qgslayoutview.h"
 #include "qgslayout.h"
+#include "qgslayoutview.h"
+
+#include <QGraphicsRectItem>
 
 ///@cond PRIVATE
 

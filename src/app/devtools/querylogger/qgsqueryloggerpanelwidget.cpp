@@ -13,26 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsqueryloggerpanelwidget.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
+#include "qgsappquerylogger.h"
+#include "qgsdatabasequeryloggernode.h"
 #include "qgsguiutils.h"
 #include "qgsjsonutils.h"
-#include "qgsqueryloggerpanelwidget.h"
-#include "moc_qgsqueryloggerpanelwidget.cpp"
-#include "qgsdatabasequeryloggernode.h"
-#include "qgsappquerylogger.h"
 #include "qgssettings.h"
 
+#include <QCheckBox>
 #include <QFileDialog>
 #include <QFontDatabase>
+#include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
-#include <QToolButton>
-#include <QCheckBox>
 #include <QTextStream>
-#include <QHeaderView>
+#include <QToolButton>
 
-#include <nlohmann/json.hpp>
+#include "moc_qgsqueryloggerpanelwidget.cpp"
 
 //
 // QgsDatabaseQueryLoggerTreeView

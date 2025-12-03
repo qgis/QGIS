@@ -15,19 +15,21 @@
  ***************************************************************************/
 
 #include "qgsrasterattributetable.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsogrprovider.h"
+
+#include <cmath>
+#include <memory>
+#include <mutex>
+
 #include "qgsfileutils.h"
-#include "qgsrasterlayer.h"
+#include "qgsogrprovider.h"
 #include "qgspalettedrasterrenderer.h"
-#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgsrasterlayer.h"
 #include "qgsrastershader.h"
 #include "qgsrastershaderfunction.h"
+#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgsvectorfilewriter.h"
 
 #include <QLocale>
-
-#include <mutex>
-#include <cmath>
 
 ///@cond private
 std::once_flag usageInformationLoaderFlag;
@@ -1515,7 +1517,7 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
     std::unique_ptr<QgsColorRamp> ramp;
     if ( ! hasColor() )
     {
-      ramp.reset( new QgsRandomColorRamp() );
+      ramp = std::make_unique<QgsRandomColorRamp>( );
     }
     const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( this, classificationColumn, ramp.get() );
     if ( classes.isEmpty() )

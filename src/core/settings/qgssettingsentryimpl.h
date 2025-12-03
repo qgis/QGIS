@@ -111,7 +111,7 @@ class CORE_EXPORT QgsSettingsEntryVariant : public QgsSettingsEntryBaseTemplate<
 #endif
 
 
-    virtual Qgis::SettingsType settingsType() const override;
+    Qgis::SettingsType settingsType() const override;
 
     QVariant convertFromVariant( const QVariant &value ) const override SIP_FORCE {return value;}
 };
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsSettingsEntryString : public QgsSettingsEntryBaseTemplate<Q
     % End
 #endif
 
-    virtual Qgis::SettingsType settingsType() const override;
+    Qgis::SettingsType settingsType() const override;
 
     /**
      * Returns the string minimum length.
@@ -288,7 +288,7 @@ class CORE_EXPORT QgsSettingsEntryStringList : public QgsSettingsEntryBaseTempla
     % End
 #endif
 
-    virtual Qgis::SettingsType settingsType() const override;
+    Qgis::SettingsType settingsType() const override;
 
     QStringList convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 };
@@ -362,7 +362,7 @@ class CORE_EXPORT QgsSettingsEntryBool : public QgsSettingsEntryBaseTemplate<boo
 #endif
 
 
-    virtual Qgis::SettingsType settingsType() const override;
+    Qgis::SettingsType settingsType() const override;
 
     bool convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 };
@@ -451,7 +451,7 @@ class CORE_EXPORT QgsSettingsEntryInteger : public QgsSettingsEntryBaseTemplate<
     % End
 #endif
 
-    virtual Qgis::SettingsType settingsType() const override;
+    Qgis::SettingsType settingsType() const override;
 
     /**
      * Returns the minimum value.
@@ -531,7 +531,7 @@ class CORE_EXPORT QgsSettingsEntryInteger64 : public QgsSettingsEntryBaseTemplat
       , mMaxValue( maxValue )
     { }
 
-    virtual Qgis::SettingsType settingsType() const override;
+    Qgis::SettingsType settingsType() const override;
 
     /**
      * Returns the minimum value.
@@ -646,7 +646,7 @@ class CORE_EXPORT QgsSettingsEntryDouble : public QgsSettingsEntryBaseTemplate<d
 #endif
 
 
-    virtual Qgis::SettingsType settingsType() const override;
+    Qgis::SettingsType settingsType() const override;
 
     /**
      * Returns the minimum value.
@@ -757,7 +757,7 @@ class CORE_EXPORT QgsSettingsEntryColor : public QgsSettingsEntryBaseTemplate<QC
     % End
 #endif
 
-    virtual Qgis::SettingsType settingsType() const override;
+    Qgis::SettingsType settingsType() const override;
 
     /**
      * Returns TRUE if transparency is allowed for the color
@@ -856,7 +856,7 @@ class CORE_EXPORT QgsSettingsEntryVariantMap : public QgsSettingsEntryBaseTempla
     % End
 #endif
 
-    virtual Qgis::SettingsType settingsType() const override;
+    Qgis::SettingsType settingsType() const override;
 
     QVariantMap convertFromVariant( const QVariant &value ) const override SIP_FORCE;
 };

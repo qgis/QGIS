@@ -12,6 +12,7 @@
 
 
 
+
 class QgsQueryResultWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -50,7 +51,7 @@ Creates a QgsQueryResultWidget with the given ``connection``, ownership
 is transferred to the widget.
 %End
 
-    virtual ~QgsQueryResultWidget();
+    ~QgsQueryResultWidget();
 
     void setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
 %Docstring

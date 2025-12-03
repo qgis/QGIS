@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmmergevector.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsprocessingparameters.h"
+#include "qgsvectorlayer.h"
+
 ///@cond PRIVATE
 
 QString QgsMergeVectorAlgorithm::name() const

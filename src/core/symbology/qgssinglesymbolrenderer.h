@@ -15,8 +15,8 @@
 #ifndef QGSSINGLESYMBOLRENDERER_H
 #define QGSSINGLESYMBOLRENDERER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsrenderer.h"
 
 class QgsDataDefinedSizeLegend;

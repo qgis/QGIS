@@ -18,9 +18,9 @@
 #ifndef QGSWMSRENDERCONTEXT_H
 #define QGSWMSRENDERCONTEXT_H
 
-#include "qgswmsparameters.h"
 #include "qgsproject.h"
 #include "qgsserverinterface.h"
+#include "qgswmsparameters.h"
 
 namespace QgsWms
 {

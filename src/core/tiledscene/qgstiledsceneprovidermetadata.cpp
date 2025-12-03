@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgstiledsceneprovidermetadata.h"
-#include "moc_qgstiledsceneprovidermetadata.cpp"
-#include "qgstiledsceneconnection.h"
+
 #include "qgsapplication.h"
+#include "qgstiledsceneconnection.h"
 #include "qgstiledscenedataitems.h"
 
 #include <QIcon>
+
+#include "moc_qgstiledsceneprovidermetadata.cpp"
 
 ///@cond PRIVATE
 

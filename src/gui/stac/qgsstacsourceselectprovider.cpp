@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgsstacsourceselectprovider.h"
-#include "qgsstacsourceselect.h"
+
 #include "qgsapplication.h"
+#include "qgsstacsourceselect.h"
 
 QgsStacSourceSelectProvider::QgsStacSourceSelectProvider()
   : QgsSourceSelectProvider()

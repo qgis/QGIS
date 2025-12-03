@@ -17,9 +17,10 @@
 #define QGSFIELDCALCULATOR_H
 
 #include "ui_qgsfieldcalculatorbase.h"
-#include "qgshelp.h"
-#include "qgsfields.h"
+
 #include "qgis_gui.h"
+#include "qgsfields.h"
+#include "qgshelp.h"
 
 class QgsVectorLayer;
 class QgsMessageBar;

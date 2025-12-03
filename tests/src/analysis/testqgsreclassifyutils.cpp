@@ -15,10 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include "qgsreclassifyutils.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterfilewriter.h"
+#include "qgsreclassifyutils.h"
+#include "qgstest.h"
+
 #include <QTemporaryDir>
 
 class TestQgsReclassifyUtils : public QgsTest

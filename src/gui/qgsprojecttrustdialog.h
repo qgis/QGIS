@@ -18,10 +18,11 @@
 #define QGSPROJECTTRUSTDIALOG_H
 
 #include "ui_qgsprojecttrustdialog.h"
+
 #include "qgis_gui.h"
 #include "qgsguiutils.h"
-#include "qgsproject.h"
 #include "qgsobjectvisitor.h"
+#include "qgsproject.h"
 
 /**
  * \ingroup gui

@@ -14,26 +14,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSqlRecord>
-#include <QSqlField>
-
 #include "qgsmssqlproviderconnection.h"
-#include "qgsmssqlconnection.h"
-#include "qgsmssqldatabase.h"
-#include "qgsmssqlutils.h"
-#include "qgssettings.h"
-#include "qgsmssqlprovider.h"
-#include "qgsexception.h"
-#include "qgsapplication.h"
-#include "qgsmessagelog.h"
-#include "qgsfeedback.h"
-#include "qgsmssqlsqlquerybuilder.h"
-#include "qgsdbquerylog.h"
-#include "qgsdbquerylog_p.h"
-#include "qgsvectorlayer.h"
-#include <QIcon>
 
 #include <chrono>
+
+#include "qgsapplication.h"
+#include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
+#include "qgsexception.h"
+#include "qgsfeedback.h"
+#include "qgsmessagelog.h"
+#include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
+#include "qgsmssqlprovider.h"
+#include "qgsmssqlsqlquerybuilder.h"
+#include "qgsmssqlutils.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
+#include <QIcon>
+#include <QSqlField>
+#include <QSqlRecord>
 
 const QStringList QgsMssqlProviderConnection::EXTRA_CONNECTION_PARAMETERS {
   QStringLiteral( "geometryColumnsOnly" ),
@@ -87,6 +88,7 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
   mCapabilities = {
     Capability::DropVectorTable,
     Capability::CreateVectorTable,
+    Capability::RenameVectorTable,
     Capability::DropSchema,
     Capability::CreateSchema,
     Capability::ExecuteSql,
@@ -95,9 +97,11 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::Schemas,
     Capability::Spatial,
     Capability::TableExists,
+    Capability::RenameField,
     Capability::DeleteField,
     Capability::DeleteFieldCascade,
-    Capability::AddField
+    Capability::AddField,
+    Capability::MoveTableToSchema
   };
   mGeometryColumnCapabilities = {
     GeometryColumnCapability::Z,
@@ -144,6 +148,12 @@ void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const 
                               QgsMssqlUtils::quotedValue( name ), QgsMssqlUtils::quotedValue( schema ), QgsMssqlUtils::quotedIdentifier( name ), QgsMssqlUtils::quotedIdentifier( schema ) ) };
 
   executeSqlPrivate( sql );
+}
+
+void QgsMssqlProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
+{
+  executeSqlPrivate( QStringLiteral( "EXECUTE sp_rename '%1.%2', %3" )
+                       .arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( name ), QgsMssqlUtils::quotedValue( newName ) ) );
 }
 
 void QgsMssqlProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const
@@ -214,6 +224,11 @@ void QgsMssqlProviderConnection::dropVectorTable( const QString &schema, const Q
   dropTablePrivate( schema, name );
 }
 
+void QgsMssqlProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameVectorTable );
+  renameTablePrivate( schema, name, newName );
+}
 
 void QgsMssqlProviderConnection::createSchema( const QString &schemaName ) const
 {
@@ -563,6 +578,12 @@ QgsFields QgsMssqlProviderConnection::fields( const QString &schema, const QStri
   return details.attributeFields;
 }
 
+void QgsMssqlProviderConnection::renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const
+{
+  executeSqlPrivate( QStringLiteral( "EXECUTE sp_rename '%1.%2.%3', %4, 'COLUMN'" )
+                       .arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( tableName ), QgsMssqlUtils::quotedIdentifier( name ), QgsMssqlUtils::quotedValue( newName ) ) );
+}
+
 QStringList QgsMssqlProviderConnection::schemas() const
 {
   checkCapability( Capability::Schemas );
@@ -846,6 +867,12 @@ Qgis::DatabaseProviderTableImportCapabilities QgsMssqlProviderConnection::tableI
 QString QgsMssqlProviderConnection::defaultPrimaryKeyColumnName() const
 {
   return QStringLiteral( "qgs_fid" );
+}
+
+void QgsMssqlProviderConnection::moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const
+{
+  executeSqlPrivate( QStringLiteral( "ALTER SCHEMA %1 TRANSFER %2.%3" )
+                       .arg( QgsMssqlUtils::quotedIdentifier( targetSchema ), QgsMssqlUtils::quotedIdentifier( sourceSchema ), QgsMssqlUtils::quotedIdentifier( tableName ) ) );
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsMssqlProviderConnection::sqlOptions( const QString &layerSource )

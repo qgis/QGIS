@@ -18,10 +18,10 @@
 #ifndef QGSEPTPROVIDER_H
 #define QGSEPTPROVIDER_H
 
+#include <memory>
+
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
-
-#include <memory>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -36,7 +36,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
                     const QgsDataProvider::ProviderOptions &providerOptions,
                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
-    ~QgsEptProvider();
+    ~QgsEptProvider() override;
 
     Qgis::DataProviderFlags flags() const override;
     QgsCoordinateReferenceSystem crs() const override;

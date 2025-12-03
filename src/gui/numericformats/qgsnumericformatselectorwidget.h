@@ -16,11 +16,14 @@
 #ifndef QGSNUMERICFORMATSELECTORWIDGET_H
 #define QGSNUMERICFORMATSELECTORWIDGET_H
 
+#include "ui_qgsnumericformatselectorbase.h"
+
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsguiutils.h"
-#include "ui_qgsnumericformatselectorbase.h"
-#include <memory>
+
 #include <QDialog>
 
 class QgsNumericFormat;

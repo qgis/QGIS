@@ -16,31 +16,34 @@
  ***************************************************************************/
 
 #include "qgsprocessingutils.h"
-#include "moc_qgsprocessingutils.cpp"
-#include "qgsproject.h"
+
+#include "qgsannotationlayer.h"
 #include "qgsexception.h"
-#include "qgsprocessingcontext.h"
-#include "qgsvectorlayerexporter.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsmemoryproviderutils.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsvectorlayerfeatureiterator.h"
 #include "qgsexpressioncontextscopegenerator.h"
 #include "qgsfileutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsproviderregistry.h"
+#include "qgsmemoryproviderutils.h"
 #include "qgsmeshlayer.h"
 #include "qgspluginlayer.h"
-#include "qgsreferencedgeometry.h"
-#include "qgsrasterfilewriter.h"
-#include "qgsvectortilelayer.h"
 #include "qgspointcloudlayer.h"
-#include "qgsannotationlayer.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingparameters.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsreferencedgeometry.h"
 #include "qgstiledscenelayer.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerexporter.h"
+#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsvectortilelayer.h"
+
 #include <QRegularExpression>
 #include <QTextCodec>
 #include <QUuid>
+
+#include "moc_qgsprocessingutils.cpp"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {

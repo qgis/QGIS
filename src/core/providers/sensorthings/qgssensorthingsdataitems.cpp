@@ -13,13 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssensorthingsdataitems.h"
-#include "moc_qgssensorthingsdataitems.cpp"
+
+#include "qgsdataprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 #include "qgssensorthingsconnection.h"
 #include "qgssensorthingsprovider.h"
 #include "qgssensorthingsutils.h"
-#include "qgsdataprovider.h"
-#include "qgsproviderregistry.h"
+
+#include "moc_qgssensorthingsdataitems.cpp"
 
 ///@cond PRIVATE
 

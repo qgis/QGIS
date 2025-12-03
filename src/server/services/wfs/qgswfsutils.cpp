@@ -21,10 +21,11 @@
  ***************************************************************************/
 
 #include "qgswfsutils.h"
+
 #include "qgsogcutils.h"
+#include "qgsproject.h"
 #include "qgsserverprojectutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsproject.h"
 
 namespace QgsWfs
 {

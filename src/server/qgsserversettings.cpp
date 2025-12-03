@@ -17,12 +17,14 @@
  ***************************************************************************/
 
 #include "qgsserversettings.h"
-#include "moc_qgsserversettings.cpp"
+
 #include "qgsapplication.h"
 #include "qgsvariantutils.h"
 
-#include <QSettings>
 #include <QDir>
+#include <QSettings>
+
+#include "moc_qgsserversettings.cpp"
 
 QgsServerSettings::QgsServerSettings()
 {

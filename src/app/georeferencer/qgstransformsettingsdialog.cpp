@@ -13,18 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgstransformsettingsdialog.h"
+
+#include "qgscoordinatereferencesystem.h"
+#include "qgsfilewidget.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgssettingsentryimpl.h"
+#include "qgsvectorfilewriter.h"
+
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
 
-#include "qgsfilewidget.h"
-#include "qgstransformsettingsdialog.h"
 #include "moc_qgstransformsettingsdialog.cpp"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsgui.h"
-#include "qgshelp.h"
-#include "qgsvectorfilewriter.h"
-#include "qgssettingsentryimpl.h"
 
 const QgsSettingsEntryString *QgsTransformSettingsDialog::settingLastDestinationFolder = new QgsSettingsEntryString( QStringLiteral( "last-destination-folder" ), QgsGeoreferencerMainWindow::sTreeGeoreferencer, QString(), QObject::tr( "Last used folder for georeferencer destination files" ) );
 

@@ -13,15 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
-#include <QEnterEvent>
-#include <QLocale>
-
 #include "qgsadvanceddigitizingtools.h"
-#include "moc_qgsadvanceddigitizingtools.cpp"
+
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
 #include "qgsmapcanvas.h"
+
+#include <QEnterEvent>
+#include <QLocale>
+#include <QMouseEvent>
+
+#include "moc_qgsadvanceddigitizingtools.cpp"
 
 QgsAdvancedDigitizingTool::QgsAdvancedDigitizingTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QObject( canvas ? canvas->viewport() : nullptr )

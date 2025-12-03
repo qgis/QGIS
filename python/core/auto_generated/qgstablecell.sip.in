@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsTableCell
 {
 %Docstring(signature="appended")

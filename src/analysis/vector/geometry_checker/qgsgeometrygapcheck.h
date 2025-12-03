@@ -18,9 +18,9 @@
 #ifndef QGS_GEOMETRY_GAP_CHECK_H
 #define QGS_GEOMETRY_GAP_CHECK_H
 
+#include "qgsfeatureid.h"
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
-#include "qgsfeatureid.h"
 
 /**
  * \ingroup analysis

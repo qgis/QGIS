@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgsmetalroughmaterialsettings.h"
-#include "qgssymbollayerutils.h"
+
 #include "qgsmetalroughmaterial.h"
+#include "qgssymbollayerutils.h"
 
 QString QgsMetalRoughMaterialSettings::type() const
 {

@@ -13,23 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspostgresdataitems.h"
-#include "moc_qgspostgresdataitems.cpp"
 
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
+#include "qgsfieldsitem.h"
+#include "qgslogger.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresprojectstorage.h"
-#include "qgslogger.h"
-#include "qgsdatasourceuri.h"
-#include "qgsapplication.h"
-#include "qgsprojectstorageregistry.h"
-#include "qgssettings.h"
-#include "qgsprojectitem.h"
-#include "qgsfieldsitem.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsproject.h"
 #include "qgspostgresutils.h"
+#include "qgsproject.h"
+#include "qgsprojectitem.h"
+#include "qgsprojectstorageregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
+
+#include "moc_qgspostgresdataitems.cpp"
 
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -453,8 +454,8 @@ QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, con
                                   .arg( tr( "Last modified time" ), res.PQgetvalue( 0, 0 ), tr( "Last modified user" ), res.PQgetvalue( 0, 1 ), tr( "Comment" ), commentColumn.isEmpty() ? QString() : res.PQgetvalue( 0, 2 ) );
         setToolTip( tooltip );
       }
+      conn->unref();
     }
-    conn->unref();
   }
 }
 

@@ -15,11 +15,13 @@
 #ifndef QGSAPPQUERYLOGGER_H
 #define QGSAPPQUERYLOGGER_H
 
-#include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include <QElapsedTimer>
-#include "qgsdbquerylog.h"
 #include <memory>
+
+#include "qgsdbquerylog.h"
+
+#include <QAbstractItemModel>
+#include <QElapsedTimer>
+#include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 
 class QgsDevToolsModelNode;
@@ -137,7 +139,7 @@ class QueryCostDelegate : public QStyledItemDelegate
     Q_OBJECT
   public:
     explicit QueryCostDelegate( int sortRole, int totalCostRole, QObject *parent = nullptr );
-    ~QueryCostDelegate();
+    ~QueryCostDelegate() override;
 
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 

@@ -446,6 +446,7 @@ Constructor for :py:class:`QgsSettingsEntryByReference`.
 
     virtual Qgis::SettingsType settingsType() const = 0;
 
+
     T value( const QString &dynamicKeyPart = QString() ) const;
 %Docstring
 Returns settings value.

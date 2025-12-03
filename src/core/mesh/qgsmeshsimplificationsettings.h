@@ -18,11 +18,11 @@
 #ifndef QGSMESHSIMPLIFICATONSETTINGS_H
 #define QGSMESHSIMPLIFICATONSETTINGS_H
 
-#include <QDomElement>
-
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsreadwritecontext.h"
+
+#include <QDomElement>
 
 SIP_NO_FILE
 

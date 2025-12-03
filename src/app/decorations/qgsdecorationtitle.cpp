@@ -14,23 +14,24 @@
  ***************************************************************************/
 
 #include "qgsdecorationtitle.h"
-#include "moc_qgsdecorationtitle.cpp"
-#include "qgsdecorationtitledialog.h"
 
 #include "qgisapp.h"
+#include "qgscolorutils.h"
+#include "qgsdecorationtitledialog.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgscolorutils.h"
 #include "qgstextrenderer.h"
 
-#include <QPainter>
-#include <QMenu>
 #include <QDate>
 #include <QDomDocument>
 #include <QFile>
+#include <QMenu>
+#include <QPainter>
+
+#include "moc_qgsdecorationtitle.cpp"
 
 //non qt includes
 #include <cmath>

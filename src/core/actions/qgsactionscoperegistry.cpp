@@ -14,9 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsactionscoperegistry.h"
-#include "moc_qgsactionscoperegistry.cpp"
 
 #include "qgsexpressioncontext.h"
+
+#include "moc_qgsactionscoperegistry.cpp"
 
 QgsActionScopeRegistry::QgsActionScopeRegistry( QObject *parent )
   : QObject( parent )

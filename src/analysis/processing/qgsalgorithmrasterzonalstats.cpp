@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterzonalstats.h"
-#include "qgsstringutils.h"
-#include "qgsstatisticalsummary.h"
+
 #include "qgsrasterprojector.h"
+#include "qgsstatisticalsummary.h"
+#include "qgsstringutils.h"
 #include "qgsunittypes.h"
 
 ///@cond PRIVATE

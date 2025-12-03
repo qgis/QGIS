@@ -18,10 +18,10 @@
 #ifndef QGSMSSQLCONNECTION_H
 #define QGSMSSQLCONNECTION_H
 
-#include <QStringList>
-
 #include "qgsdatasourceuri.h"
 #include "qgsvectordataprovider.h"
+
+#include <QStringList>
 
 class QString;
 class QSqlDatabase;

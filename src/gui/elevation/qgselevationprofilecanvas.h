@@ -19,13 +19,14 @@
 #define QGSELEVATIONPROFILECANVAS_H
 
 #include "qgsconfig.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
-#include "qgsplotcanvas.h"
-#include "qgsmaplayer.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsprofilepoint.h"
 #include "qgslinesymbol.h"
+#include "qgsmaplayer.h"
+#include "qgsplotcanvas.h"
+#include "qgsprofilepoint.h"
 
 class QgsElevationProfilePlotItem;
 class QgsElevationProfileCrossHairsItem;

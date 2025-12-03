@@ -16,12 +16,14 @@
 
 
 #include "qgsauthconfigurationstorageregistry.h"
-#include "moc_qgsauthconfigurationstorageregistry.cpp"
+
 #include "qgsauthconfigurationstorage.h"
 #include "qgslogger.h"
 #include "qgsthreadingutils.h"
 
 #include <QMutexLocker>
+
+#include "moc_qgsauthconfigurationstorageregistry.cpp"
 
 QgsAuthConfigurationStorageRegistry::QgsAuthConfigurationStorageRegistry()
 {

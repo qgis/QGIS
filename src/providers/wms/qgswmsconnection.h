@@ -19,6 +19,7 @@
 #define QGSWMSCONNECTION_H
 
 #include "qgsowsconnection.h"
+
 #include <QStringList>
 
 /*!

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsPointDistanceRenderer: QgsFeatureRenderer
 {
 %Docstring(signature="appended")

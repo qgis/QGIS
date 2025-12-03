@@ -16,12 +16,11 @@
 #ifndef QGSGRASSPROVIDER_H
 #define QGSGRASSPROVIDER_H
 
-#include <QDateTime>
-
-#include "qgsvectordataprovider.h"
-
 #include "qgsgrassvectormap.h"
 #include "qgsgrassvectormaplayer.h"
+#include "qgsvectordataprovider.h"
+
+#include <QDateTime>
 
 class QgsFeature;
 class QgsField;
@@ -73,7 +72,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QgsFields fields() const override;
 
     //! Key (category) field index
-    int keyField();
+    int keyField() const;
 
     //! Restart reading features from previous select operation
     void rewind();
@@ -366,7 +365,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     int cidxGetMaxCat( int idx );
 
     //! Returns GRASS layer number
-    int grassLayer();
+    int grassLayer() const;
 
     /**
      * Returns GRASS layer number for given layer name or -1 if cannot

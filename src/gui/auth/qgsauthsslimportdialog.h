@@ -63,12 +63,13 @@
 #define QGSAUTHSSLIMPORTDIALOG_H
 
 #include "ui_qgsauthsslimportdialog.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 
-#include <QDialog>
 #include <QAbstractSocket>
+#include <QDialog>
 #include <QSslSocket>
-#include "qgis_gui.h"
 
 class QPushButton;
 class QSslSocket;

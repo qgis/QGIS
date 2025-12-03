@@ -13,18 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsprojectionselectionwidget.h"
+
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystemregistry.h"
+#include "qgsdatums.h"
+#include "qgshighlightablecombobox.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
+#include "qgsrecentcoordinatereferencesystemsmodel.h"
+#include "qgssettings.h"
+
 #include <QHBoxLayout>
 
-#include "qgsprojectionselectionwidget.h"
 #include "moc_qgsprojectionselectionwidget.cpp"
-#include "qgsapplication.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgsproject.h"
-#include "qgssettings.h"
-#include "qgshighlightablecombobox.h"
-#include "qgscoordinatereferencesystemregistry.h"
-#include "qgsrecentcoordinatereferencesystemsmodel.h"
-#include "qgsdatums.h"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

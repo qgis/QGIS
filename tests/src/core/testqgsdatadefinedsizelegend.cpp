@@ -13,11 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsfontutils.h"
 #include "qgsmarkersymbol.h"
+#include "qgstest.h"
 
 static QgsRenderContext _createRenderContext( double mupp, double dpi, double scale )
 {

@@ -16,13 +16,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswcsutils.h"
-#include "qgsserverprojectutils.h"
 #include "qgswcsdescribecoverage.h"
 
-#include "qgsproject.h"
 #include "qgsmaplayer.h"
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgsserverprojectutils.h"
+#include "qgswcsutils.h"
 
 namespace QgsWcs
 {

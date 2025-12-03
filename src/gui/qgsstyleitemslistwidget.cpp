@@ -15,15 +15,18 @@
 
 
 #include "qgsstyleitemslistwidget.h"
-#include "moc_qgsstyleitemslistwidget.cpp"
-#include "qgsstylemanagerdialog.h"
-#include "qgspanelwidget.h"
-#include "qgssettings.h"
+
 #include "qgsgui.h"
-#include "qgswindowmanagerinterface.h"
+#include "qgspanelwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
+#include "qgssettings.h"
+#include "qgsstylemanagerdialog.h"
+#include "qgswindowmanagerinterface.h"
+
 #include <QScrollBar>
+
+#include "moc_qgsstyleitemslistwidget.cpp"
 
 //
 // QgsReadOnlyStyleModel

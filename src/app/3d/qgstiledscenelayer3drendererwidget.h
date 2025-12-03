@@ -16,10 +16,10 @@
 #ifndef QGSTILEDSCENELAYER3DRENDERERWIDGET_H
 #define QGSTILEDSCENELAYER3DRENDERERWIDGET_H
 
+#include "ui_qgstiledscenelayer3dpropertieswidget.h"
+
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-
-#include "ui_qgstiledscenelayer3dpropertieswidget.h"
 
 class QgsTiledSceneLayer;
 

@@ -14,17 +14,20 @@
  ***************************************************************************/
 
 #include "qgsmeshelevationpropertieswidget.h"
-#include "moc_qgsmeshelevationpropertieswidget.cpp"
+
 #include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 #include "qgsmaplayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerelevationproperties.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsexpressioncontextutils.h"
-#include <QMenu>
+
 #include <QAction>
+#include <QMenu>
+
+#include "moc_qgsmeshelevationpropertieswidget.cpp"
 
 QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

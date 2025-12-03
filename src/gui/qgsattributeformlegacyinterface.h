@@ -16,10 +16,10 @@
 #ifndef QGSATTRIBUTEFORMLEGACYINTERFACE_H
 #define QGSATTRIBUTEFORMLEGACYINTERFACE_H
 
-#include <QString>
-
-#include "qgsattributeforminterface.h"
 #include "qgis_gui.h"
+#include "qgsattributeforminterface.h"
+
+#include <QString>
 
 #define SIP_NO_FILE
 

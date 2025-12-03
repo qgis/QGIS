@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsabstractmetadatabase.h"
+
 #include "qgsmaplayer.h"
 #include "qgstranslationcontext.h"
 

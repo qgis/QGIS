@@ -15,20 +15,21 @@
  ***************************************************************************/
 
 #include "qgsmeshtransformcoordinatesdockwidget.h"
-#include "moc_qgsmeshtransformcoordinatesdockwidget.cpp"
 
-#include "qgsgui.h"
+#include "qgsapplication.h"
+#include "qgscoordinateutils.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsmesheditor.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshadvancedediting.h"
-#include "qgsproject.h"
+#include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgscoordinateutils.h"
-#include "qgsapplication.h"
-#include "qgsterrainprovider.h"
+#include "qgsmeshadvancedediting.h"
+#include "qgsmesheditor.h"
+#include "qgsmeshlayer.h"
+#include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
+#include "qgsterrainprovider.h"
+
+#include "moc_qgsmeshtransformcoordinatesdockwidget.cpp"
 
 QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QWidget *parent )
   : QgsDockWidget( parent )

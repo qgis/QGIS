@@ -13,42 +13,43 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfileutils.h"
 #include "qgsfillsymbollayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgssldexportcontext.h"
-#include "qgssymbollayerutils.h"
-#include "qgsdxfexport.h"
-#include "qgsgeometry.h"
-#include "qgsimagecache.h"
-#include "qgsrendercontext.h"
-#include "qgsproject.h"
-#include "qgssvgcache.h"
-#include "qgscolorramp.h"
-#include "qgscolorrampimpl.h"
-#include "qgsunittypes.h"
-#include "qgsmessagelog.h"
-#include "qgsapplication.h"
-#include "qgsimageoperation.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgssymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfeedback.h"
-#include "qgsgeometryengine.h"
-#include "qgscolorutils.h"
 
-#include <QPainter>
-#include <QPagedPaintDevice>
-#include <QFile>
-#include <QSvgRenderer>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QtMath>
 #include <random>
 
+#include "qgsapplication.h"
+#include "qgscolorramp.h"
+#include "qgscolorrampimpl.h"
+#include "qgscolorutils.h"
+#include "qgsdxfexport.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeedback.h"
+#include "qgsfileutils.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
+#include "qgsimagecache.h"
+#include "qgsimageoperation.h"
+#include "qgslinestring.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmessagelog.h"
+#include "qgspolygon.h"
+#include "qgsproject.h"
+#include "qgsrendercontext.h"
+#include "qgssldexportcontext.h"
+#include "qgssvgcache.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
+
+#include <QDomDocument>
+#include <QDomElement>
+#include <QFile>
+#include <QPagedPaintDevice>
+#include <QPainter>
+#include <QSvgRenderer>
+#include <QtMath>
 
 QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::BrushStyle style, const QColor &strokeColor, Qt::PenStyle strokeStyle, double strokeWidth,
     Qt::PenJoinStyle penJoinStyle )
@@ -3849,7 +3850,7 @@ QgsSymbolLayer *QgsPointPatternFillSymbolLayer::create( const QVariantMap &prope
     // if we a creating a new point pattern fill from scratch, we default to a random seed
     // because seed based fills are just nicer for users vs seeing points jump around with every map refresh
     std::random_device rd;
-    std::mt19937 mt( seed == 0 ? rd() : seed );
+    std::mt19937 mt( static_cast< int >( rd() ) );
     std::uniform_int_distribution<> uniformDist( 1, 999999999 );
     seed = uniformDist( mt );
   }
@@ -5589,7 +5590,7 @@ QgsSymbolLayer *QgsRandomMarkerFillSymbolLayer::create( const QVariantMap &prope
     // if we a creating a new random marker fill from scratch, we default to a random seed
     // because seed based fills are just nicer for users vs seeing points jump around with every map refresh
     std::random_device rd;
-    std::mt19937 mt( seed == 0 ? rd() : seed );
+    std::mt19937 mt( static_cast< int >( rd() ) );
     std::uniform_int_distribution<> uniformDist( 1, 999999999 );
     seed = uniformDist( mt );
   }

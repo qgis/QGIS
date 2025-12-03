@@ -14,11 +14,11 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
-#include <memory>
+#include "qgstest.h"
 
 class TestQgsMessageBar : public QObject
 {

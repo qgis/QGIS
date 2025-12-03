@@ -89,19 +89,19 @@ Sets the editor ``context``
    the geometry of a referenced feature from this widget
 %End
 
-    bool embedForm();
+    bool embedForm() const;
 %Docstring
 determines if the form of the related feature will be shown
 %End
     void setEmbedForm( bool display );
 
-    bool readOnlySelector();
+    bool readOnlySelector() const;
 %Docstring
 determines if the drop-down is enabled
 %End
     void setReadOnlySelector( bool readOnly );
 
-    bool allowMapIdentification();
+    bool allowMapIdentification() const;
 %Docstring
 determines if the widget offers the possibility to select the related
 feature on the map (using a dedicated map tool)
@@ -113,7 +113,7 @@ feature on the map (using a dedicated map tool)
 Sets the fields for which filter comboboxes will be created
 %End
 
-    bool openFormButtonVisible();
+    bool openFormButtonVisible() const;
 %Docstring
 determines the open form button is visible in the widget
 %End

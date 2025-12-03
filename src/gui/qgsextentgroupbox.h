@@ -16,12 +16,11 @@
 #ifndef QGSEXTENTGROUPBOX_H
 #define QGSEXTENTGROUPBOX_H
 
-#include "qgscollapsiblegroupbox.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
-
+#include "qgscollapsiblegroupbox.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
-#include "qgis_gui.h"
 
 class QgsCoordinateReferenceSystem;
 class QgsMapLayer;

@@ -13,11 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include <cmath>
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgstest.h"
 #include "qgstilingscheme.h"
 
 /**

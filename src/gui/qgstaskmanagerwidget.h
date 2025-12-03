@@ -17,12 +17,13 @@
 #ifndef QGSTASKMANAGERWIDGET_H
 #define QGSTASKMANAGERWIDGET_H
 
-#include "qgsfloatingwidget.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsfloatingwidget.h"
 #include "qgstaskmanager.h"
+
 #include <QStyledItemDelegate>
 #include <QToolButton>
-#include "qgis_gui.h"
 
 class QgsTaskManager;
 class QgsTask;

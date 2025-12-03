@@ -19,10 +19,10 @@ email                : a.furieri@lqt.it
 
 extern "C"
 {
-#include <sys/types.h>
 #include <sqlite3.h>
-#include <spatialite/gaiageo.h>
+#include <sys/types.h>
 #include <spatialite.h>
+#include <spatialite/gaiageo.h>
 }
 
 #include "qgsvectordataprovider.h"
@@ -131,7 +131,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
      */
     // XXX For now we have disabled native transforms in the SpatiaLite
     //   (following the PostgreSQL provider example)
-    bool supportsNativeTransform()
+    bool supportsNativeTransform() const
     {
       return false;
     }
@@ -333,8 +333,6 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
     //! SpatiaLite minor version
     int mSpatialiteVersionMinor = 0;
 
-    //! Internal transaction handling (for addFeatures etc.)
-    int mSavepointId;
     static QAtomicInt sSavepointId;
 
     /**
@@ -388,7 +386,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 
     // QgsVectorDataProvider interface
   public:
-    virtual QString defaultValueClause( int fieldIndex ) const override;
+    QString defaultValueClause( int fieldIndex ) const override;
 
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
 };
@@ -405,7 +403,7 @@ class QgsSpatiaLiteProviderMetadata final : public QgsProviderMetadata
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
     bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
-    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
+    QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;

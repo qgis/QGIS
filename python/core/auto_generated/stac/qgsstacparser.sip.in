@@ -11,6 +11,7 @@
 
 
 
+
 class QgsStacParser
 {
 %Docstring(signature="appended")

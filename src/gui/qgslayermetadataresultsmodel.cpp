@@ -14,15 +14,18 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadataresultsmodel.h"
-#include "moc_qgslayermetadataresultsmodel.cpp"
-#include "qgsfeedback.h"
+
 #include "qgsapplication.h"
-#include "qgslayermetadataproviderregistry.h"
-#include "qgslayermetadataformatter.h"
+#include "qgsfeedback.h"
 #include "qgsiconutils.h"
-#include "qgsproviderregistry.h"
+#include "qgslayermetadataformatter.h"
+#include "qgslayermetadataproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
 #include <QIcon>
+
+#include "moc_qgslayermetadataresultsmodel.cpp"
 
 QgsLayerMetadataResultsModel::QgsLayerMetadataResultsModel( const QgsMetadataSearchContext &searchContext, QObject *parent )
   : QAbstractTableModel( parent )

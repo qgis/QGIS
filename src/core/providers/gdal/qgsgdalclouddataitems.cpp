@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgdalclouddataitems.h"
-#include "moc_qgsgdalclouddataitems.cpp"
-#include "qgsprovidermetadata.h"
-#include "qgsgdalcloudconnection.h"
-#include "qgsproviderregistry.h"
-#include "qgsgdalutils.h"
+
 #include "qgsfilebaseddataitemprovider.h"
+#include "qgsgdalcloudconnection.h"
+#include "qgsgdalutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
+#include "moc_qgsgdalclouddataitems.cpp"
 
 ///@cond PRIVATE
 

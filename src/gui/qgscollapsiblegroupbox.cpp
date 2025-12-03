@@ -16,17 +16,19 @@
  ***************************************************************************/
 
 #include "qgscollapsiblegroupbox.h"
-#include "moc_qgscollapsiblegroupbox.cpp"
+
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsvariantutils.h"
 
-#include <QToolButton>
 #include <QMouseEvent>
 #include <QPushButton>
-#include <QStyleOptionGroupBox>
 #include <QScrollArea>
+#include <QStyleOptionGroupBox>
+#include <QToolButton>
+
+#include "moc_qgscollapsiblegroupbox.cpp"
 
 const QString COLLAPSE_HIDE_BORDER_FIX = QStringLiteral( " QgsCollapsibleGroupBoxBasic { border: none; }" );
 

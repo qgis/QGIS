@@ -16,12 +16,11 @@
 #ifndef QGSMAPTOOLSHAPECIRCLEABSTRACT_H
 #define QGSMAPTOOLSHAPECIRCLEABSTRACT_H
 
-#include "qgsmaptoolshapeabstract.h"
-#include "qgscircle.h"
 #include "qgis_app.h"
+#include "qgscircle.h"
+#include "qgsmaptoolshapeabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 #include "qgspointlocator.h"
-
 
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
@@ -37,7 +36,7 @@ class APP_EXPORT QgsMapToolShapeCircleAbstract : public QgsMapToolShapeAbstract
     QgsMapToolShapeCircleAbstract( const QString &id, QgsMapToolCapture *parentTool )
       : QgsMapToolShapeAbstract( id, parentTool ) {}
 
-    virtual ~QgsMapToolShapeCircleAbstract() = default;
+    ~QgsMapToolShapeCircleAbstract() override = default;
 
     void clean() override;
 

@@ -18,8 +18,8 @@
 #ifndef QGSLAYOUTSERIALIZABLEOBJECT_H
 #define QGSLAYOUTSERIALIZABLEOBJECT_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgslayoutundocommand.h"
 
 class QDomElement;

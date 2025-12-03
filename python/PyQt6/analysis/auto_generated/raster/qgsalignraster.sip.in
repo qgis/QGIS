@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsAlignRaster
 {
 %Docstring(signature="appended")

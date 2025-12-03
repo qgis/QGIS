@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsinglesidedbuffer.h"
+
 #include "qgsprocessing.h"
 
 ///@cond PRIVATE

@@ -7,6 +7,8 @@
  ************************************************************************/
 
 
+
+
 class QgsDirectionalLightWidget : QWidget
 {
 %Docstring(signature="appended")

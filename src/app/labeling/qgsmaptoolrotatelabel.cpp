@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgsmaptoolrotatelabel.h"
-#include "moc_qgsmaptoolrotatelabel.cpp"
+
+#include "qgisapp.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
 #include "qgspallabeling.h"
 #include "qgspointrotationitem.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
-#include "qgisapp.h"
-#include "qgsmessagebar.h"
+
+#include "moc_qgsmaptoolrotatelabel.cpp"
 
 QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )

@@ -16,9 +16,10 @@
 #define QGSEMBEDDEDSYMBOLRENDERERWIDGET_H
 
 #include "ui_qgsembeddedsymbolrendererwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
-#include "qgis_gui.h"
 
 class QMenu;
 class QgsEmbeddedSymbolRenderer;

@@ -17,6 +17,7 @@
 #define QGSLAYERNOTESUTILS_H
 
 #include "qgis_core.h"
+
 #include <QString>
 
 class QgsMapLayer;

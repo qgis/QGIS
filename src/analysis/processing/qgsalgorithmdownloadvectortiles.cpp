@@ -18,8 +18,8 @@
 #include "qgsalgorithmdownloadvectortiles.h"
 
 #include "qgsmbtiles.h"
-#include "qgsvectortileloader.h"
 #include "qgsvectortilelayer.h"
+#include "qgsvectortileloader.h"
 #include "qgsziputils.h"
 
 ///@cond PRIVATE

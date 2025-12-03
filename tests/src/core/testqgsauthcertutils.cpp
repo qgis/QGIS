@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthcrypto.h"
 #include "qgsauthmanager.h"
 #include "qgstest.h"
-#include "qgsapplication.h"
-#include "qgsauthcrypto.h"
-#include "qgsauthcertutils.h"
 
 #include <QObject>
 #include <QSslKey>

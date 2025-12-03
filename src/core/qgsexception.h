@@ -21,11 +21,9 @@
 
 #define SIP_NO_FILE
 
-#include <QString>
-
 #include "qgis_core.h"
 
-
+#include <QString>
 
 /**
  * \ingroup core

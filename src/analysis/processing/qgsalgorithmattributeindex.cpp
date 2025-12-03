@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmattributeindex.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

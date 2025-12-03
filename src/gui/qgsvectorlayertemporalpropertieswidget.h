@@ -19,8 +19,9 @@
 #define QGSVECTORLAYERTEMPORALPROPERTIESWIDGET_H
 
 #include "ui_qgsvectorlayertemporalpropertieswidgetbase.h"
-#include "qgsexpressioncontextgenerator.h"
+
 #include "qgis_gui.h"
+#include "qgsexpressioncontextgenerator.h"
 
 class QgsVectorLayer;
 

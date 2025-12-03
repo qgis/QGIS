@@ -16,6 +16,7 @@
 #define QGSVECTORRENDERINGOPTIONS_H
 
 #include "ui_qgsvectorrenderingoptionsbase.h"
+
 #include "qgsoptionswidgetfactory.h"
 
 class QgsVectorRenderingOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsVectorRenderingOptionsWidgetBase

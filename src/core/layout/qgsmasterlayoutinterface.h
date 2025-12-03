@@ -18,9 +18,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QString>
-#include <QIcon>
+
 #include <QDomElement>
+#include <QIcon>
+#include <QString>
 
 class QgsProject;
 class QgsReadWriteContext;

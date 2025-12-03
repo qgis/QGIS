@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 #include "qgs3danimationexportdialog.h"
-#include "moc_qgs3danimationexportdialog.cpp"
-#include "qgsproject.h"
+
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsspinbox.h"
-#include "qgshelp.h"
 
-#include <QtGlobal>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QtGlobal>
+
+#include "moc_qgs3danimationexportdialog.cpp"
 
 Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog()
   : QDialog( nullptr )

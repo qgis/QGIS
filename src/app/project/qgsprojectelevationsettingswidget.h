@@ -16,9 +16,9 @@
 #ifndef QGSPROJECTELEVATIONSETTINGSWIDGET_H
 #define QGSPROJECTELEVATIONSETTINGSWIDGET_H
 
-#include "qgsoptionswidgetfactory.h"
-
 #include "ui_qgsprojectelevationsettingswidgetbase.h"
+
+#include "qgsoptionswidgetfactory.h"
 
 class QgsVectorLayer;
 class QgsElevationShadingRendererSettingsWidget;

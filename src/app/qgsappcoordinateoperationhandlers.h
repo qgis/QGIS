@@ -15,9 +15,10 @@
 #ifndef QGSAPPCOORDINATEOPERATIONHANDLERS_H
 #define QGSAPPCOORDINATEOPERATIONHANDLERS_H
 
-#include <QObject>
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatumtransform.h"
+
+#include <QObject>
 
 /**
  * Alerts users when a transform grids are required (or desired) for an operation between two

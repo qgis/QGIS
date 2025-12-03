@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmaddincrementalfield.h"
+
 #include "qgsfeaturerequest.h"
 
 ///@cond PRIVATE

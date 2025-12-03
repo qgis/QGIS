@@ -8,6 +8,7 @@
 
 
 
+
 class QgsDatabaseQueryLogEntry
 {
 %Docstring(signature="appended")

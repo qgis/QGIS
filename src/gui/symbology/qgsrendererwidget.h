@@ -15,13 +15,14 @@
 #ifndef QGSRENDERERWIDGET_H
 #define QGSRENDERERWIDGET_H
 
-#include <QWidget>
+#include "qgsexpressioncontextgenerator.h"
+#include "qgspanelwidget.h"
+#include "qgsrenderer.h"
+#include "qgssymbolwidgetcontext.h"
+
 #include <QMenu>
 #include <QStackedWidget>
-#include "qgspanelwidget.h"
-#include "qgssymbolwidgetcontext.h"
-#include "qgsrenderer.h"
-#include "qgsexpressioncontextgenerator.h"
+#include <QWidget>
 
 class QgsDataDefinedSizeLegend;
 class QgsDataDefinedSizeLegendWidget;

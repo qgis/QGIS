@@ -17,16 +17,16 @@
 #ifndef QGSORACLESOURCESELECT_H
 #define QGSORACLESOURCESELECT_H
 
+#include "qgsabstractdbsourceselect.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsoracleconnpool.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdbsourceselect.h"
 
-#include <QMap>
-#include <QPair>
 #include <QIcon>
 #include <QItemDelegate>
+#include <QMap>
+#include <QPair>
 
 class QPushButton;
 class QgsOracleColumnTypeTask;

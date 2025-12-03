@@ -20,11 +20,11 @@
 #define QGSWMTSUTILS_H
 
 #include "qgsmodule.h"
-#include "qgswmtsparameters.h"
-#include "qgswmtsserviceexception.h"
+#include "qgsrectangle.h"
 #include "qgsserversettings.h"
 #include "qgsunittypes.h"
-#include "qgsrectangle.h"
+#include "qgswmtsparameters.h"
+#include "qgswmtsserviceexception.h"
 
 #include <QDomDocument>
 

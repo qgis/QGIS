@@ -19,8 +19,6 @@
 #include "qgis_core.h"
 #include "qgsattributeeditorelement.h"
 
-
-
 /**
  * \ingroup core
  * \brief An attribute editor widget that will represent arbitrary text code.

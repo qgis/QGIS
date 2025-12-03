@@ -18,11 +18,11 @@
 
 #include "qgis_3d.h"
 #include "qgis_sip.h"
-
 #include "qgs3drendererregistry.h"
 #include "qgsabstractpointcloud3drenderer.h"
-#include "qgsmaplayerref.h"
 #include "qgsfeedback.h"
+#include "qgsmaplayerref.h"
+
 #include <QObject>
 
 class QgsPointCloudLayer;

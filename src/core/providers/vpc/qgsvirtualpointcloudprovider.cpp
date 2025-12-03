@@ -15,28 +15,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
-#include "qgslogger.h"
-#include "qgsproviderregistry.h"
 #include "qgsvirtualpointcloudprovider.h"
-#include "moc_qgsvirtualpointcloudprovider.cpp"
+
+#include <memory>
+#include <nlohmann/json.hpp>
+
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscoordinatetransform.h"
 #include "qgscopcpointcloudindex.h"
 #include "qgseptpointcloudindex.h"
-#include "qgspointcloudsubindex.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsmultipolygon.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudextentrenderer.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
+#include "qgspointcloudsubindex.h"
+#include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgsruntimeprofiler.h"
 #include "qgsthreadingutils.h"
-#include <nlohmann/json.hpp>
-#include "qgsgeometry.h"
-#include "qgsmultipolygon.h"
-#include "qgscoordinatetransform.h"
-#include "qgsnetworkaccessmanager.h"
 
 #include <QIcon>
+
+#include "moc_qgsvirtualpointcloudprovider.cpp"
 
 ///@cond PRIVATE
 
@@ -53,7 +57,7 @@ QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider(
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
-  mPolygonBounds.reset( new QgsGeometry( new QgsMultiPolygon() ) );
+  mPolygonBounds = std::make_unique<QgsGeometry>( new QgsMultiPolygon() );
 
   parseFile();
 }

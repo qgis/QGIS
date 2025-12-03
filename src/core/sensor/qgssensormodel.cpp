@@ -14,12 +14,12 @@
  ***************************************************************************/
 
 #include "qgssensormodel.h"
-#include "moc_qgssensormodel.cpp"
 
 #include "qgis.h"
-#include "qgssensormanager.h"
 #include "qgsabstractsensor.h"
+#include "qgssensormanager.h"
 
+#include "moc_qgssensormodel.cpp"
 
 QgsSensorModel::QgsSensorModel( QgsSensorManager *manager, QObject *parent )
   : QAbstractItemModel( parent )

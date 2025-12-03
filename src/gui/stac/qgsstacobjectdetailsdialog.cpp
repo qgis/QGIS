@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsstacobjectdetailsdialog.h"
-#include "moc_qgsstacobjectdetailsdialog.cpp"
-#include "qgsgui.h"
+
 #include "qgsapplication.h"
-#include "qgsstacitem.h"
 #include "qgsauthmanager.h"
+#include "qgsgui.h"
+#include "qgsstacitem.h"
 
 #include <QDesktopServices>
+
+#include "moc_qgsstacobjectdetailsdialog.cpp"
 
 ///@cond PRIVATE
 
@@ -70,7 +72,7 @@ void QgsStacObjectDetailsDialog::setContent( QString bodyHtml, QString thumbnail
   QString html = QStringLiteral( "<html>\n<head>\n" );
   html += QStringLiteral( "<style type=\"text/css\">%1</style>\n" ).arg( myStyle );
   html += QStringLiteral( "%1\n" ).arg( thumbnailHtml );
-  html += QStringLiteral( "</head>\n<body>\n" );
+  html += QLatin1String( "</head>\n<body>\n" );
   html += QStringLiteral( "%1\n" ).arg( bodyHtml );
   html += QLatin1String( "</body>\n</html>\n" );
   mWebView->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );

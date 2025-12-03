@@ -17,8 +17,8 @@
 
 #include "qgsbinarywidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 QgsBinaryWidgetFactory::QgsBinaryWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )

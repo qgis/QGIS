@@ -14,12 +14,12 @@
  ***************************************************************************/
 
 
+#include "qgsnewsfeedmodel.h"
+#include "qgsnewsfeedparser.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QSignalSpy>
-#include "qgsnewsfeedparser.h"
-#include "qgsnewsfeedmodel.h"
-
 
 class TestQgsNewsFeedParser : public QObject
 {

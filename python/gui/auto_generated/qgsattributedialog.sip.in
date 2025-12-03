@@ -43,11 +43,17 @@ setHighlight
 :param h: The highlight. Ownership is taken.
 %End
 
-    QgsAttributeForm *attributeForm();
+    QgsAttributeForm *attributeForm() const;
+%Docstring
+Returns the attribute form.
+%End
 
-    const QgsFeature *feature();
+    const QgsFeature *feature() const;
+%Docstring
+Returns the current feature of the attribute form.
+%End
 
-    bool editable();
+    bool editable() const;
 %Docstring
 Is this dialog editable?
 

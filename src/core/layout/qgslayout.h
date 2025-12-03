@@ -17,12 +17,13 @@
 #define QGSLAYOUT_H
 
 #include "qgis_core.h"
-#include <QGraphicsScene>
-#include "qgslayoutsnapper.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgslayoutgridsettings.h"
 #include "qgslayoutguidecollection.h"
+#include "qgslayoutsnapper.h"
 #include "qgsmasterlayoutinterface.h"
+
+#include <QGraphicsScene>
 
 class QgsLayoutItemMap;
 class QgsLayoutModel;

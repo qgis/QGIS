@@ -13,21 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssinglesymbolrendererwidget.h"
-#include "moc_qgssinglesymbolrendererwidget.cpp"
 
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsdatadefinedsizelegendwidget.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
-
-#include "qgslogger.h"
-#include "qgsvectorlayer.h"
-
 #include "qgssymbolselectordialog.h"
-#include "qgsmarkersymbol.h"
+#include "qgsvectorlayer.h"
 
 #include <QMenu>
 
+#include "moc_qgssinglesymbolrendererwidget.cpp"
 
 QgsRendererWidget *QgsSingleSymbolRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

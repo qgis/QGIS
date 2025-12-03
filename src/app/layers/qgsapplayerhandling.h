@@ -15,12 +15,13 @@
 #ifndef QGSAPPLAYERHANDLING_H
 #define QGSAPPLAYERHANDLING_H
 
+#include "qgsconfig.h"
+
 #include "qgis.h"
 #include "qgis_app.h"
-#include "qgsconfig.h"
+#include "qgslayertreeregistrybridge.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayerref.h"
-#include "qgslayertreeregistrybridge.h"
 
 #include <QObject>
 

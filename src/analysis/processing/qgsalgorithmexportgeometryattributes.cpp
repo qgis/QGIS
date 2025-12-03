@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmexportgeometryattributes.h"
-#include "qgsunittypes.h"
-#include "qgsgeometrycollection.h"
+
 #include "qgscurve.h"
+#include "qgsgeometrycollection.h"
+#include "qgsunittypes.h"
 
 ///@cond PRIVATE
 

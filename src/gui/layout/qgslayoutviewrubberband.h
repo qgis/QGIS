@@ -18,9 +18,10 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
 #include <QBrush>
-#include <QPen>
 #include <QObject>
+#include <QPen>
 
 class QgsLayoutView;
 class QGraphicsRectItem;

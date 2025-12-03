@@ -17,9 +17,10 @@
 #define QGSGROUPWMSDATADIALOG_H
 
 #include "ui_qgsgroupwmsdatadialogbase.h"
-#include "qgsguiutils.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsguiutils.h"
 
 /**
  * \ingroup gui

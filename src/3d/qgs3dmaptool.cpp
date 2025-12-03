@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgs3dmaptool.h"
-#include "moc_qgs3dmaptool.cpp"
 
 #include "qgs3dmapcanvas.h"
+
+#include "moc_qgs3dmaptool.cpp"
 
 Qgs3DMapTool::Qgs3DMapTool( Qgs3DMapCanvas *canvas )
   : QObject( canvas )

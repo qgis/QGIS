@@ -15,11 +15,13 @@
 #ifndef QGSLAYOUTITEMWIDGET_H
 #define QGSLAYOUTITEMWIDGET_H
 
+#include "ui_qgslayoutitemwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgslayoutitem.h"
 #include "qgslayoutobject.h"
 #include "qgspanelwidget.h"
-#include "qgslayoutitem.h"
-#include "ui_qgslayoutitemwidgetbase.h"
+
 #include <QObject>
 #include <QPointer>
 

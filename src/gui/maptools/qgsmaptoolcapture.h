@@ -17,15 +17,15 @@
 #define QGSMAPTOOLCAPTURE_H
 
 
-#include "qgsmaptooladvanceddigitizing.h"
-#include "qgspointlocator.h"
+#include "qgis_gui.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
+#include "qgsmaptooladvanceddigitizing.h"
+#include "qgspointlocator.h"
 #include "qobjectuniqueptr.h"
 
-#include <QPoint>
 #include <QList>
-#include "qgis_gui.h"
+#include <QPoint>
 
 class QgsRubberBand;
 class QgsSnapIndicator;

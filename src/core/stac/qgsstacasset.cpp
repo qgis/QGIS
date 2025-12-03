@@ -153,14 +153,14 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri( const QString &authcfg ) const
 QString QgsStacAsset::toHtml( const QString &assetId ) const
 {
   QString html = QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Asset" ) );
-  html += QStringLiteral( "<table class=\"list-view\">\n" );
+  html += QLatin1String( "<table class=\"list-view\">\n" );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "id" ), assetId );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "title" ), title() );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "description" ), description() );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n" ).arg( QStringLiteral( "url" ), href() );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "type" ), mediaType() );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "roles" ), roles().join( ',' ) );
-  html += QStringLiteral( "</table><br/>\n" );
+  html += QLatin1String( "</table><br/>\n" );
   return html;
 }
 

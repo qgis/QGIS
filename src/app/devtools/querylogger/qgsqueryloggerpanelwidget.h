@@ -15,8 +15,10 @@
 #ifndef QGSQUERYLOGGERPANELWIDGET_H
 #define QGSQUERYLOGGERPANELWIDGET_H
 
-#include "qgsdevtoolwidget.h"
 #include "ui_qgsqueryloggerpanelbase.h"
+
+#include "qgsdevtoolwidget.h"
+
 #include <QTreeView>
 
 class QgsAppQueryLogger;

@@ -20,33 +20,34 @@
 
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
-#include "qgsversion.h"
 #include "qgsserver.h"
+
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgscapabilitiescache.h"
+#include "qgscoordinatetransform.h"
+#include "qgsfilterresponsedecorator.h"
 #include "qgsfontutils.h"
-#include "qgsrequesthandler.h"
-#include "qgsproject.h"
-#include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkdiskcache.h"
-#include "qgsserverlogger.h"
-#include "qgsserverrequest.h"
-#include "qgsfilterresponsedecorator.h"
-#include "qgsservice.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
+#include "qgsrequesthandler.h"
+#include "qgsruntimeprofiler.h"
 #include "qgsserverapi.h"
 #include "qgsserverapicontext.h"
+#include "qgsserverlogger.h"
 #include "qgsserverparameters.h"
-#include "qgsapplication.h"
-#include "qgsruntimeprofiler.h"
-#include "qgscoordinatetransform.h"
+#include "qgsserverrequest.h"
+#include "qgsservice.h"
+#include "qgsversion.h"
 
 #include <QDomDocument>
+#include <QElapsedTimer>
 #include <QNetworkDiskCache>
 #include <QSettings>
-#include <QElapsedTimer>
 
 // TODO: remove, it's only needed by a single debug message
 #include <fcgi_stdio.h>

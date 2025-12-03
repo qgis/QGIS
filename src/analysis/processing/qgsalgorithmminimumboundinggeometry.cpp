@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmminimumboundinggeometry.h"
+
 #include "qgsmultipoint.h"
 
 ///@cond PRIVATE

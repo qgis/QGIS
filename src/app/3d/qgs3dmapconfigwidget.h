@@ -16,10 +16,11 @@
 #ifndef QGS3DMAPCONFIGWIDGET_H
 #define QGS3DMAPCONFIGWIDGET_H
 
-#include <QWidget>
+#include "ui_map3dconfigwidget.h"
 
-#include <ui_map3dconfigwidget.h>
 #include "qgis_app.h"
+
+#include <QWidget>
 
 class QCheckBox;
 class Qgs3DMapSettings;

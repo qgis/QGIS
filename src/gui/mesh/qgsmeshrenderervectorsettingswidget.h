@@ -17,12 +17,14 @@
 #define QGSMESHRENDERERVECTORSETTINGSWIDGET_H
 
 #include "ui_qgsmeshrenderervectorsettingswidgetbase.h"
-#include "qgis_gui.h"
-#include "qgsmeshrenderersettings.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsmeshdatasetgrouptreeview.h"
 
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshdatasetgrouptreeview.h"
+#include "qgsmeshrenderersettings.h"
+
 #include <QWidget>
 
 SIP_NO_FILE

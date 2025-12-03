@@ -14,43 +14,44 @@
  ***************************************************************************/
 
 
-#include <QFile>
-#include <QTextStream>
-#include <QDir>
-#include <QComboBox>
-#include <QGraphicsOpacityEffect>
-#include <QPropertyAnimation>
-#include <QMessageBox>
-#include <QVersionNumber>
-#include <QDateTime>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QFileDialog>
-#include <QMenu>
-
 #include "qgsexpressionbuilderwidget.h"
-#include "moc_qgsexpressionbuilderwidget.cpp"
-#include "qgslogger.h"
+
+#include "qgsapplication.h"
+#include "qgscodeeditorwidget.h"
 #include "qgsexpression.h"
+#include "qgsexpressionaddfunctionfiledialog.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionnodeimpl.h"
-#include "qgsapplication.h"
-#include "qgspythonrunner.h"
-#include "qgsgeometry.h"
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsrelation.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgsfieldformatter.h"
 #include "qgsexpressionstoredialog.h"
 #include "qgsexpressiontreeview.h"
-#include "qgscodeeditorwidget.h"
-#include "qgsexpressionaddfunctionfiledialog.h"
+#include "qgsfeature.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
+#include "qgspythonrunner.h"
+#include "qgsrelation.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
+#include <QComboBox>
+#include <QDateTime>
+#include <QDir>
+#include <QFile>
+#include <QFileDialog>
+#include <QGraphicsOpacityEffect>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPropertyAnimation>
+#include <QTextStream>
+#include <QVersionNumber>
+
+#include "moc_qgsexpressionbuilderwidget.cpp"
 
 bool formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &fieldName )
 {

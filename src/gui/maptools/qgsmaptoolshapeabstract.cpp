@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeabstract.h"
-#include "moc_qgsmaptoolshapeabstract.cpp"
+
 #include "qgsgeometryrubberband.h"
 
 #include <QKeyEvent>
 
+#include "moc_qgsmaptoolshapeabstract.cpp"
 
 QgsMapToolShapeAbstract::~QgsMapToolShapeAbstract()
 {

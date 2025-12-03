@@ -15,12 +15,14 @@
 #ifndef QGSLEGENDPATCHSHAPEBUTTON_H
 #define QGSLEGENDPATCHSHAPEBUTTON_H
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgslegendpatchshape.h"
-#include <QToolButton>
+
 #include <QPointer>
-#include <memory>
+#include <QToolButton>
 
 class QgsPanelWidget;
 class QgsMessageBar;

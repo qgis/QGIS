@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsphongmaterialwidget.h"
-#include "moc_qgsphongmaterialwidget.cpp"
 
-#include "qgsphongmaterialsettings.h"
 #include "qgis.h"
+#include "qgsphongmaterialsettings.h"
+
+#include "moc_qgsphongmaterialwidget.cpp"
 
 QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity )
   : QgsMaterialSettingsWidget( parent )

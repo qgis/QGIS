@@ -14,9 +14,12 @@
  ***************************************************************************/
 
 #include "qgssearchwidgettoolbutton.h"
-#include "moc_qgssearchwidgettoolbutton.cpp"
+
 #include "qgsapplication.h"
+
 #include <QMenu>
+
+#include "moc_qgssearchwidgettoolbutton.cpp"
 
 QgsSearchWidgetToolButton::QgsSearchWidgetToolButton( QWidget *parent )
   : QToolButton( parent )

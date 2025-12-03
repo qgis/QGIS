@@ -14,15 +14,15 @@
  ***************************************************************************/
 
 #include "qgstextdocument.h"
+
 #include "qgis.h"
 #include "qgsstringutils.h"
 #include "qgstextblock.h"
-#include "qgstextfragment.h"
 #include "qgstextformat.h"
+#include "qgstextfragment.h"
 
-#include <QTextDocument>
 #include <QTextBlock>
-
+#include <QTextDocument>
 
 QgsTextDocument::~QgsTextDocument() = default;
 

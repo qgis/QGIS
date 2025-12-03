@@ -15,13 +15,14 @@
 #ifndef QGSWFSSHAREDDATA_H
 #define QGSWFSSHAREDDATA_H
 
-#include "qgswfsfeatureiterator.h"
-#include "qgswfsrequest.h"
-#include "qgswfscapabilities.h"
-#include "qgsogcutils.h"
-
-#include "qgsbackgroundcachedshareddata.h"
 #include "qgsbackgroundcachedfeatureiterator.h"
+#include "qgsbackgroundcachedshareddata.h"
+#include "qgsogcutils.h"
+#include "qgswfscapabilities.h"
+#include "qgswfsrequest.h"
+
+class QgsFeatureDownloaderImpl;
+class QgsGmlStreamingParser;
 
 //! Class shared between provider and feature source
 class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData

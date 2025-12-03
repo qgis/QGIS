@@ -17,6 +17,8 @@
 
 #include <limits>
 
+const QString OAPIF_PROVIDER_DEFAULT_CRS = QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
+
 std::vector<QgsOAPIFJson::Link> QgsOAPIFJson::parseLinks( const json &jParent )
 {
   std::vector<Link> links;

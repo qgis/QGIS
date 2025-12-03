@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgsstacconnectiondialog.h"
-#include "moc_qgsstacconnectiondialog.cpp"
-#include "qgsstacconnection.h"
+
 #include "qgsgui.h"
+#include "qgsstacconnection.h"
+
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgsstacconnectiondialog.cpp"
 
 ///@cond PRIVATE
 

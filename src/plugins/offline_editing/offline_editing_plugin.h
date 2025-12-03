@@ -21,6 +21,7 @@
 
 #include "../qgisplugin.h"
 #include "qgsofflineediting.h"
+
 #include <QObject>
 
 class QAction;

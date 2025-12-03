@@ -17,10 +17,11 @@
 #define QGSLEGENDSYMBOLITEM_H
 
 #include <memory>
-#include <QString>
 
 #include "qgis.h"
 #include "qgis_core.h"
+
+#include <QString>
 
 class QgsDataDefinedSizeLegend;
 class QgsSymbol;

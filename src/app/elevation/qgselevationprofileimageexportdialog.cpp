@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgselevationprofileimageexportdialog.h"
-#include "moc_qgselevationprofileimageexportdialog.cpp"
-#include "qgsplot.h"
+
 #include "qgselevationprofileexportsettingswidget.h"
 #include "qgsgui.h"
+#include "qgsplot.h"
+
+#include "moc_qgselevationprofileimageexportdialog.cpp"
 
 QgsElevationProfileImageExportDialog::QgsElevationProfileImageExportDialog( QWidget *parent )
   : QDialog( parent )

@@ -14,30 +14,33 @@
  ***************************************************************************/
 
 #include "qgscodeeditorwidget.h"
-#include "moc_qgscodeeditorwidget.cpp"
-#include "qgscodeeditor.h"
-#include "qgsfilterlineedit.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
-#include "qgsguiutils.h"
-#include "qgsmessagebar.h"
-#include "qgsdecoratedscrollbar.h"
+#include "qgscodeeditor.h"
 #include "qgscodeeditorpython.h"
+#include "qgsdecoratedscrollbar.h"
+#include "qgsfilterlineedit.h"
+#include "qgsguiutils.h"
+#include "qgsjsonutils.h"
+#include "qgsmessagebar.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsjsonutils.h"
-#include "nlohmann/json.hpp"
 #include "qgssettings.h"
 
-#include <QVBoxLayout>
-#include <QToolButton>
 #include <QCheckBox>
-#include <QShortcut>
-#include <QGridLayout>
 #include <QDesktopServices>
-#include <QProcess>
-#include <QFileInfo>
 #include <QDir>
+#include <QFileInfo>
+#include <QGridLayout>
 #include <QNetworkRequest>
+#include <QProcess>
+#include <QShortcut>
+#include <QToolButton>
+#include <QVBoxLayout>
+
+#include "moc_qgscodeeditorwidget.cpp"
 
 QgsCodeEditorWidget::QgsCodeEditorWidget(
   QgsCodeEditor *editor,

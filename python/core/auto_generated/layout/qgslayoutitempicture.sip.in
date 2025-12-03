@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayoutItemPicture: QgsLayoutItem
 {
 %Docstring(signature="appended")

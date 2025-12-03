@@ -18,9 +18,9 @@
 #ifndef QGSWMTSSERVICEEXCEPTION_H
 #define QGSWMTSSERVICEEXCEPTION_H
 
-#include <QString>
-
 #include "qgsserverexception.h"
+
+#include <QString>
 
 namespace QgsWmts
 {

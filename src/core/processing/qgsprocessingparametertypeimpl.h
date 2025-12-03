@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include "qgis_sip.h"
 #include "qgsprocessingparametertype.h"
+
 #include <QCoreApplication>
 
 #define SIP_NO_FILE

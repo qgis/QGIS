@@ -17,17 +17,17 @@
 #define QQGSDATAPROVIDER_H
 
 #include "qgis_core.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsdataproviderelevationproperties.h"
+#include "qgsdatasourceuri.h"
+#include "qgserror.h"
+#include "qgslayermetadata.h"
+
 #include <QDateTime>
+#include <QMutex>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QMutex>
-
-#include "qgsdatasourceuri.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgslayermetadata.h"
-#include "qgserror.h"
-#include "qgsdataproviderelevationproperties.h"
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;

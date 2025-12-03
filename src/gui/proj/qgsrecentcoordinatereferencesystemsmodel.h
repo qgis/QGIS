@@ -17,14 +17,14 @@
 #ifndef QGSRECENTCOORDINATEREFERENCESYSTEMSMODEL_H
 #define QGSRECENTCOORDINATEREFERENCESYSTEMSMODEL_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgscoordinatereferencesystemmodel.h"
 
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
 #include <QIcon>
+#include <QSortFilterProxyModel>
 
 class QgsCoordinateReferenceSystem;
 

@@ -16,10 +16,11 @@
 #ifndef QGS_GCP_LIST_H
 #define QGS_GCP_LIST_H
 
-#include <QList>
-#include <QVector>
 #include "qgis_app.h"
 #include "qgsunittypes.h"
+
+#include <QList>
+#include <QVector>
 
 class QgsGeorefDataPoint;
 class QgsGcpPoint;

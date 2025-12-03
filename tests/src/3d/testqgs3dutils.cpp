@@ -13,24 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgs3d.h"
-#include "qgs3dutils.h"
-
-#include "qgsbox3d.h"
-#include "qgsray3d.h"
-
 #include "qgs3dexportobject.h"
 #include "qgs3dmapscene.h"
+#include "qgs3dutils.h"
+#include "qgsbox3d.h"
 #include "qgscameracontroller.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrasterlayer.h"
+#include "qgsray3d.h"
+#include "qgsraycastcontext.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
-#include "qgsraycastcontext.h"
 
 #include <QSize>
 #include <QtMath>
@@ -392,7 +389,7 @@ void TestQgs3DUtils::testExportToObj()
 
 
     QFile file( myTmpDir + "all_faces.obj" );
-    file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
+    QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
     QTextStream out( &file );
 
     out << "o " << object.name() << "\n";
@@ -431,7 +428,7 @@ void TestQgs3DUtils::testExportToObj()
     QCOMPARE( object.normals().size(), normalsData.size() );
 
     QFile file( myTmpDir + "sparse_faces.obj" );
-    file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
+    QVERIFY( file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate ) );
     QTextStream out( &file );
     out << "o " << object.name() << "\n";
     object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );

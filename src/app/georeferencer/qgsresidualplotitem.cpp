@@ -14,12 +14,16 @@
  ***************************************************************************/
 
 #include "qgsresidualplotitem.h"
-#include "moc_qgsresidualplotitem.cpp"
-#include "qgsgeorefdatapoint.h"
-#include "qgslayoututils.h"
-#include <QPainter>
+
 #include <cfloat>
 #include <cmath>
+
+#include "qgsgeorefdatapoint.h"
+#include "qgslayoututils.h"
+
+#include <QPainter>
+
+#include "moc_qgsresidualplotitem.cpp"
 
 QgsResidualPlotItem::QgsResidualPlotItem( QgsLayout *layout )
   : QgsLayoutItem( layout )

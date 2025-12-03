@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgscredentials.h"
-#include "moc_qgscredentials.cpp"
+
 #include "qgslogger.h"
 
-#include <QTextStream>
 #include <QIODevice>
+#include <QTextStream>
+
+#include "moc_qgscredentials.cpp"
 
 QgsCredentials *QgsCredentials::sInstance = nullptr;
 

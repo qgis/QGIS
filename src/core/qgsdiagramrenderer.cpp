@@ -14,24 +14,26 @@
  ***************************************************************************/
 #include "qgsdiagramrenderer.h"
 
-#include "qgscolorutils.h"
-#include "qgsdatadefinedsizelegend.h"
-#include "diagram/qgstextdiagram.h"
-#include "diagram/qgspiediagram.h"
+#include <memory>
+
 #include "diagram/qgshistogramdiagram.h"
+#include "diagram/qgspiediagram.h"
 #include "diagram/qgsstackedbardiagram.h"
 #include "diagram/qgsstackeddiagram.h"
-#include "qgsrendercontext.h"
-#include "qgslayertreemodellegendnode.h"
-#include "qgsfontutils.h"
-#include "qgssymbollayerutils.h"
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
+#include "diagram/qgstextdiagram.h"
 #include "qgsapplication.h"
+#include "qgscolorutils.h"
+#include "qgsdatadefinedsizelegend.h"
+#include "qgsfontutils.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
-#include "qgsunittypes.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
+#include "qgsrendercontext.h"
 #include "qgsscaleutils.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -658,28 +660,28 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
   const QString diagramType = elem.attribute( QStringLiteral( "diagramType" ) );
   if ( diagramType == QgsPieDiagram::DIAGRAM_NAME_PIE )
   {
-    mDiagram.reset( new QgsPieDiagram() );
+    mDiagram = std::make_unique<QgsPieDiagram>( );
   }
   else if ( diagramType == QgsTextDiagram::DIAGRAM_NAME_TEXT )
   {
-    mDiagram.reset( new QgsTextDiagram() );
+    mDiagram = std::make_unique<QgsTextDiagram>( );
   }
   else if ( diagramType == QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM )
   {
-    mDiagram.reset( new QgsHistogramDiagram() );
+    mDiagram = std::make_unique<QgsHistogramDiagram>( );
   }
   else if ( diagramType == QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR )
   {
-    mDiagram.reset( new QgsStackedBarDiagram() );
+    mDiagram = std::make_unique<QgsStackedBarDiagram>( );
   }
   else if ( diagramType == QgsStackedDiagram::DIAGRAM_NAME_STACKED )
   {
-    mDiagram.reset( new QgsStackedDiagram() );
+    mDiagram = std::make_unique<QgsStackedDiagram>( );
   }
   else
   {
     // unknown diagram type -- default to histograms
-    mDiagram.reset( new QgsHistogramDiagram() );
+    mDiagram = std::make_unique<QgsHistogramDiagram>( );
   }
   mShowAttributeLegend = ( elem.attribute( QStringLiteral( "attributeLegend" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
 }

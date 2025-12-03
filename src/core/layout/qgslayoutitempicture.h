@@ -19,6 +19,7 @@ email                : nyall dot dawson at gmail dot com
 
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
+
 #include <QFile>
 #include <QImage>
 #include <QSvgRenderer>

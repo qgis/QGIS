@@ -29,9 +29,9 @@
 
 #define SIP_NO_FILE
 
-#include <Qt3DRender/QAbstractTextureImage>
-
 #include "qgsrectangle.h"
+
+#include <Qt3DRender/QAbstractTextureImage>
 
 class QgsTerrainTextureGenerator;
 

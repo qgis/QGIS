@@ -15,16 +15,14 @@
 
 #include "qgswcsprovidergui.h"
 
-#include "qgswcsprovider.h"
-#include "qgswcssourceselect.h"
-#include "qgssourceselectprovider.h"
+#include "qgsmaplayer.h"
+#include "qgsowssourcewidget.h"
 #include "qgsproviderguimetadata.h"
 #include "qgsprovidersourcewidgetprovider.h"
-#include "qgsowssourcewidget.h"
+#include "qgssourceselectprovider.h"
 #include "qgswcsdataitemguiprovider.h"
-
-#include "qgsmaplayer.h"
-
+#include "qgswcsprovider.h"
+#include "qgswcssourceselect.h"
 
 //! Provider for WCS layers source select
 class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider

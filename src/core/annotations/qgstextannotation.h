@@ -18,9 +18,10 @@
 #ifndef QGSTEXTANNOTATION_H
 #define QGSTEXTANNOTATION_H
 
-#include "qgsannotation.h"
-#include <QTextDocument>
 #include "qgis_core.h"
+#include "qgsannotation.h"
+
+#include <QTextDocument>
 
 /**
  * \class QgsTextAnnotation

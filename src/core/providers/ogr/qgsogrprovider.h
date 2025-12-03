@@ -18,8 +18,8 @@ email                : sherman at mrcc.com
 #ifndef QGSOGRPROVIDER_H
 #define QGSOGRPROVIDER_H
 
-#include "qgsvectordataprovider.h"
 #include "qgsogrproviderutils.h"
+#include "qgsvectordataprovider.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
@@ -99,7 +99,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QString subsetStringHelpUrl() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     Qgis::WkbType wkbType() const override;
-    virtual size_t layerCount() const;
+    size_t layerCount() const;
     long long featureCount() const override;
     QgsFields fields() const override;
     QgsRectangle extent() const override;

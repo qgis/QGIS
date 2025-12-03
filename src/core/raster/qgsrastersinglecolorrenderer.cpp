@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsrastersinglecolorrenderer.h"
-#include "qgsrastertransparency.h"
+
 #include "qgscolorutils.h"
+#include "qgsrastertransparency.h"
 
 #include <QDomDocument>
 #include <QDomElement>

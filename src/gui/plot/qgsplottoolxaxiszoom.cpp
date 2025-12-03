@@ -16,10 +16,13 @@
  ***************************************************************************/
 
 #include "qgsplottoolxaxiszoom.h"
-#include "moc_qgsplottoolxaxiszoom.cpp"
-#include "qgsplotcanvas.h"
+
 #include "qgselevationprofilecanvas.h"
+#include "qgsplotcanvas.h"
+
 #include <QWheelEvent>
+
+#include "moc_qgsplottoolxaxiszoom.cpp"
 
 QgsPlotToolXAxisZoom::QgsPlotToolXAxisZoom( QgsElevationProfileCanvas *canvas )
   : QgsPlotToolZoom( canvas )

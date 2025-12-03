@@ -19,8 +19,8 @@
 #define CHECKDOCK_H
 
 #include "qgsdockwidget.h"
-
 #include "qgsgeometry.h"
+
 //#include "qgsvertexmarker.h"
 #include "qgsspatialindex.h"
 

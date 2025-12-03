@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsslopefilter.h"
+
 #include <cmath>
 
 QgsSlopeFilter::QgsSlopeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )

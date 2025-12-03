@@ -16,9 +16,9 @@
 #ifndef QGSMAPTOOLPOINTSYMBOL_H
 #define QGSMAPTOOLPOINTSYMBOL_H
 
-#include "qgsmaptooledit.h"
-#include "qgsfeature.h"
 #include "qgis_app.h"
+#include "qgsfeature.h"
+#include "qgsmaptooledit.h"
 
 class QgsMarkerSymbol;
 

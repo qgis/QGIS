@@ -18,12 +18,10 @@
 #ifndef QGSPOINTCLOUDRGBRENDERER_H
 #define QGSPOINTCLOUDRGBRENDERER_H
 
-#include "qgspointcloudrenderer.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
 #include "qgscontrastenhancement.h"
-
+#include "qgspointcloudrenderer.h"
 
 #ifndef SIP_RUN
 

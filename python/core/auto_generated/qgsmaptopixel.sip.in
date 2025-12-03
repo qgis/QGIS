@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMapToPixel
 {
 %Docstring(signature="appended")

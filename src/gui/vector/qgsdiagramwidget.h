@@ -21,8 +21,9 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgsmaplayerconfigwidget.h"
 #include "ui_qgsdiagramwidget.h"
+
+#include "qgsmaplayerconfigwidget.h"
 
 #include <QWidget>
 

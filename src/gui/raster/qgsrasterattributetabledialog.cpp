@@ -14,9 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetabledialog.h"
-#include "moc_qgsrasterattributetabledialog.cpp"
+
 #include "qgsrasterlayer.h"
 
+#include "moc_qgsrasterattributetabledialog.cpp"
 
 QgsRasterAttributeTableDialog::QgsRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, int bandNumber, QWidget *parent )
   : QDialog( parent )

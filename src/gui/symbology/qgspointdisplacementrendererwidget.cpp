@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgspointdisplacementrendererwidget.h"
-#include "moc_qgspointdisplacementrendererwidget.cpp"
+
+#include "qgsapplication.h"
+#include "qgsfields.h"
+#include "qgsmarkersymbol.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsrendererregistry.h"
-#include "qgsfields.h"
 #include "qgsstyle.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgsmarkersymbol.h"
+
+#include "moc_qgspointdisplacementrendererwidget.cpp"
 
 QgsRendererWidget *QgsPointDisplacementRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

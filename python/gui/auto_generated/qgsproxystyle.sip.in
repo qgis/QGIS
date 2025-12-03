@@ -8,6 +8,7 @@
 
 
 
+
 class QgsProxyStyle : QProxyStyle
 {
 %Docstring(signature="appended")

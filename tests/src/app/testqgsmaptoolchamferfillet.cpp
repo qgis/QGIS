@@ -13,17 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolchamferfillet.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
-
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
 
 /**
  * \ingroup UnitTests

@@ -16,20 +16,22 @@
  ***************************************************************************/
 
 #include "qgscoordinateutils.h"
-#include "moc_qgscoordinateutils.cpp"
+
+#include "qgis.h"
+#include "qgscoordinateformatter.h"
+#include "qgscoordinatenumericformat.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgscoordinatetransform.h"
-#include "qgsproject.h"
-#include "qgis.h"
 #include "qgsexception.h"
-#include "qgscoordinateformatter.h"
-#include "qgsrectangle.h"
+#include "qgsproject.h"
 #include "qgsprojectdisplaysettings.h"
-#include "qgscoordinatenumericformat.h"
+#include "qgsrectangle.h"
 
 #include <QLocale>
 #include <QRegularExpression>
+
+#include "moc_qgscoordinateutils.cpp"
 
 ///@cond NOT_STABLE_API
 

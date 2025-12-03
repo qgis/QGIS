@@ -16,9 +16,9 @@
 #ifndef QGSOGREXPRESSIONCOMPILER_H
 #define QGSOGREXPRESSIONCOMPILER_H
 
+#include "qgis_sip.h"
 #include "qgsogrfeatureiterator.h"
 #include "qgssqlexpressioncompiler.h"
-#include "qgis_sip.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

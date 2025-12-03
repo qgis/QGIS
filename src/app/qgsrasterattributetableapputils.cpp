@@ -15,12 +15,12 @@
  ***************************************************************************/
 #include "qgsrasterattributetableapputils.h"
 
-#include "qgsmaplayer.h"
-#include "qgsrasterlayer.h"
-#include "qgslayertreeview.h"
-#include "qgsrasterattributetabledialog.h"
-#include "qgsloadrasterattributetabledialog.h"
 #include "qgscreaterasterattributetabledialog.h"
+#include "qgslayertreeview.h"
+#include "qgsloadrasterattributetabledialog.h"
+#include "qgsmaplayer.h"
+#include "qgsrasterattributetabledialog.h"
+#include "qgsrasterlayer.h"
 
 void QgsRasterAttributeTableAppUtils::openRasterAttributeTable( QgsLayerTreeView *treeView )
 {

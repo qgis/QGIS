@@ -16,10 +16,10 @@
 #ifndef QGSSYMBOLRENDERCONTEXT_H
 #define QGSSYMBOLRENDERCONTEXT_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsmapunitscale.h"
+#include "qgis_core.h"
 #include "qgsfields.h"
+#include "qgsmapunitscale.h"
 
 class QgsRenderContext;
 class QgsFeature;

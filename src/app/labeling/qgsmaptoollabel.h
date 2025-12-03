@@ -18,13 +18,13 @@
 #ifndef QGSMAPTOOLLABEL_H
 #define QGSMAPTOOLLABEL_H
 
+#include "qgis_app.h"
+#include "qgscallout.h"
+#include "qgscalloutposition.h"
+#include "qgsdiagramrenderer.h"
+#include "qgslabelposition.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgspallabeling.h"
-#include "qgslabelposition.h"
-#include "qgscalloutposition.h"
-#include "qgscallout.h"
-#include "qgsdiagramrenderer.h"
-#include "qgis_app.h"
 
 class QgsRubberBand;
 
@@ -185,7 +185,7 @@ class APP_EXPORT QgsMapToolLabel : public QgsMapToolAdvancedDigitizing
     QVariant evaluateDataDefinedProperty( QgsPalLayerSettings::Property property, const QgsPalLayerSettings &labelSettings, const QgsFeature &feature, const QVariant &defaultValue ) const;
 
     //! Returns whether to preserve predefined rotation data during label pin/unpin operations
-    bool currentLabelPreserveRotation();
+    bool currentLabelPreserveRotation() const;
 
     /**
      * Gets data defined position of current label

@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscoordinateutils.h"
+#include "qgstest.h"
+
 #include <QLocale>
 #include <QString>
-
-#include "qgstest.h"
-#include "qgscoordinateutils.h"
 
 class TestQgsCoordinateUtils : public QObject
 {

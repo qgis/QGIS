@@ -15,13 +15,15 @@
  ***************************************************************************/
 
 #include "qgslayoutguidewidget.h"
-#include "moc_qgslayoutguidewidget.cpp"
-#include "qgslayout.h"
-#include "qgslayoutview.h"
+
 #include "qgsdoublespinbox.h"
-#include "qgslayoutunitscombobox.h"
+#include "qgslayout.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutunitscombobox.h"
+#include "qgslayoutview.h"
+
+#include "moc_qgslayoutguidewidget.cpp"
 
 QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, QgsLayoutView *layoutView )
   : QgsPanelWidget( parent )

@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 

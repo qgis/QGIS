@@ -15,17 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgslayoutitemmap.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgslayoutexporter.h"
-#include "qgslayoutgeopdfexporter.h"
-#include "qgsmapthemecollection.h"
 #include <gdal.h>
 
-#include <QObject>
+#include "qgsapplication.h"
+#include "qgslayoutexporter.h"
+#include "qgslayoutgeopdfexporter.h"
+#include "qgslayoutitemmap.h"
+#include "qgsmapthemecollection.h"
+#include "qgsproject.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QObject>
 
 class TestQgsLayoutGeospatialPdfExport : public QgsTest
 {

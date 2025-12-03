@@ -17,11 +17,11 @@
 
 #define SIP_NO_FILE
 
-#include "qgsfeatureiterator.h"
+#include "qgscoordinatetransform.h"
 #include "qgsexpressioncontext.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
-#include "qgscoordinatetransform.h"
 
 ///@cond PRIVATE
 

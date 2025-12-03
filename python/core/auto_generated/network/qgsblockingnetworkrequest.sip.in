@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsBlockingNetworkRequest : QObject
 {
 %Docstring(signature="appended")

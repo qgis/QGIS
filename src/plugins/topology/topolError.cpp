@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "topolError.h"
-#include "qgsmessagelog.h"
+
 #include "qgsfeatureiterator.h"
+#include "qgsmessagelog.h"
 #include "qgsvectorlayer.h"
 
 //TODO: tell dock to parse errorlist when feature is deleted

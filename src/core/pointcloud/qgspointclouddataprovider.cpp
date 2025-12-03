@@ -15,22 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgspointclouddataprovider.h"
-#include "moc_qgspointclouddataprovider.cpp"
-#include "qgspointcloudindex.h"
-#include "qgsgeometry.h"
-#include "qgspointcloudrequest.h"
-#include "qgsgeos.h"
-#include "qgspointcloudstatscalculator.h"
-#include "qgsthreadingutils.h"
-#include "qgscopcpointcloudindex.h"
 
 #include <mutex>
+
+#include "qgis.h"
+#include "qgscopcpointcloudindex.h"
+#include "qgsgeometry.h"
+#include "qgsgeos.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrequest.h"
+#include "qgspointcloudstatscalculator.h"
+#include "qgsthreadingutils.h"
+
 #include <QDebug>
+#include <QtConcurrent/QtConcurrentMap>
 #include <QtMath>
 
-#include <QtConcurrent/QtConcurrentMap>
+#include "moc_qgspointclouddataprovider.cpp"
 
 QgsPointCloudDataProvider::QgsPointCloudDataProvider(
   const QString &uri,

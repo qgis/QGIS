@@ -13,17 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
-#include "qgsgeometrycollection.h"
-#include "qgscurvepolygon.h"
 #include "qgsgeometrycheck.h"
-#include "moc_qgsgeometrycheck.cpp"
-#include "qgsgeometrycheckerror.h"
+
+#include "qgscurvepolygon.h"
 #include "qgsfeaturepool.h"
-#include "qgsvectorlayer.h"
+#include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrycheckerror.h"
+#include "qgsgeometrycollection.h"
 #include "qgsreadwritelocker.h"
 #include "qgsthreadingutils.h"
+#include "qgsvectorlayer.h"
 
+#include "moc_qgsgeometrycheck.cpp"
 
 QgsGeometryCheck::QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : mContext( context )

@@ -17,14 +17,14 @@
 #ifndef QGSHANACONNECTION_H
 #define QGSHANACONNECTION_H
 
-#include "qgscoordinatereferencesystem.h"
-#include "qgshanadatatypes.h"
-#include "qgsdatasourceuri.h"
-#include "qgshanatablemodel.h"
-#include "qgshanaresultset.h"
-#include "qgsvectordataprovider.h"
+#include <odbc/Forwards.h>
 
-#include "odbc/Forwards.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdatasourceuri.h"
+#include "qgshanadatatypes.h"
+#include "qgshanaresultset.h"
+#include "qgshanatablemodel.h"
+#include "qgsvectordataprovider.h"
 
 struct AttributeField
 {

@@ -35,13 +35,12 @@ class QgsProject;
 class QgsScaleWidget;
 
 
+#include "qgis_app.h"
 #include "qgssnappingconfig.h"
 
 #include <QMenu>
-#include <QWidget>
 #include <QSettings>
-
-#include "qgis_app.h"
+#include <QWidget>
 
 /**
   * A widget which lets the user defines settings for snapping on a project
@@ -189,7 +188,7 @@ class SnapTypeMenu : public QMenu
     SnapTypeMenu( const QString &title, QWidget *parent = nullptr )
       : QMenu( title, parent ) {}
 
-    void mouseReleaseEvent( QMouseEvent *e )
+    void mouseReleaseEvent( QMouseEvent *e ) override
     {
       QAction *action = activeAction();
       if ( action )

@@ -16,36 +16,38 @@
  ***************************************************************************/
 
 #include "qgslayoutitempicture.h"
-#include "moc_qgslayoutitempicture.cpp"
-#include "qgslayoutitemregistry.h"
+
+#include "qgscolorutils.h"
+#include "qgsimagecache.h"
 #include "qgslayout.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutnortharrowhandler.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
-#include "qgslayoutitemmap.h"
 #include "qgslayoututils.h"
+#include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsnetworkcontentfetcher.h"
 #include "qgspathresolver.h"
 #include "qgsproperty.h"
-#include "qgsnetworkcontentfetcher.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorutils.h"
-#include "qgssvgcache.h"
-#include "qgslogger.h"
 #include "qgsreadwritecontext.h"
-#include "qgsimagecache.h"
-#include "qgslayoutnortharrowhandler.h"
+#include "qgssvgcache.h"
+#include "qgssymbollayerutils.h"
 
+#include <QCoreApplication>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QEventLoop>
 #include <QFileInfo>
 #include <QImageReader>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPainter>
 #include <QSvgRenderer>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QEventLoop>
-#include <QCoreApplication>
 #include <QUrl>
+
+#include "moc_qgslayoutitempicture.cpp"
 
 QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
   : QgsLayoutItem( layout )

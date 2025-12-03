@@ -18,6 +18,7 @@
 #define QGGDALCREDENTIALOPTIONSWIDGET_H
 
 #include "ui_qgsgdalcredentialoptionswidgetbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsgdalutils.h"

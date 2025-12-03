@@ -15,11 +15,12 @@
 #ifndef QGSCOLORSWATCHGRID_H
 #define QGSCOLORSWATCHGRID_H
 
-#include "qgscolorscheme.h"
-#include <QWidget>
-#include <QWidgetAction>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgscolorscheme.h"
+
+#include <QWidget>
+#include <QWidgetAction>
 
 /**
  * \ingroup gui

@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmhillshade.h"
-#include "qgsrasterfilewriter.h"
+
 #include "qgshillshadefilter.h"
+#include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE
 

@@ -15,15 +15,14 @@
 #ifndef QGSRASTERTRANSPARENCYWIDGET_H
 #define QGSRASTERTRANSPARENCYWIDGET_H
 
-#include <QWidget>
-
 #include "ui_qgsrastertransparencywidget.h"
 
+#include "qgis_gui.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsrasterpipe.h"
 #include "qgssymbolwidgetcontext.h"
 
-#include "qgis_gui.h"
+#include <QWidget>
 
 class QgsRasterLayer;
 class QgsRasterRenderer;

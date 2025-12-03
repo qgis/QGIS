@@ -16,9 +16,10 @@
 #ifndef QGSEFFECTDRAWMODECOMBOBOX_H
 #define QGSEFFECTDRAWMODECOMBOBOX_H
 
-#include <QComboBox>
-#include "qgspainteffect.h"
 #include "qgis_gui.h"
+#include "qgspainteffect.h"
+
+#include <QComboBox>
 
 /**
  * \ingroup gui

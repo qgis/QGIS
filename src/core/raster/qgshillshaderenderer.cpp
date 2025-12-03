@@ -15,16 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QColor>
-
 #include "qgshillshaderenderer.h"
-#include "qgsrastertransparency.h"
-#include "qgsrasterinterface.h"
-#include "qgsrasterblock.h"
-#include "qgsrectangle.h"
-#include "qgsmessagelog.h"
-#include "qgssldexportcontext.h"
+
 #include <memory>
+
+#include "qgsmessagelog.h"
+#include "qgsrasterblock.h"
+#include "qgsrasterinterface.h"
+#include "qgsrastertransparency.h"
+#include "qgsrectangle.h"
+#include "qgssldexportcontext.h"
+
+#include <QColor>
 
 #ifdef HAVE_OPENCL
 #ifdef QGISDEBUG

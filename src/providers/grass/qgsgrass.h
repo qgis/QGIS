@@ -16,10 +16,10 @@
 #ifndef QGSGRASS_H
 #define QGSGRASS_H
 
+#include <setjmp.h>
+
 #include <QMutex>
 #include <QPen>
-
-#include <setjmp.h>
 
 // GRASS header files
 extern "C"
@@ -257,7 +257,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * Check if mapset is in search pat set by g.mapsets
      *  \returns true if in search path
      */
-    bool isMapsetInSearchPath( const QString &mapset );
+    bool isMapsetInSearchPath( const QString &mapset ) const;
 
     //! Add mapset to search path of currently open mapset
     void addMapsetToSearchPath( const QString &mapset, QString &error );

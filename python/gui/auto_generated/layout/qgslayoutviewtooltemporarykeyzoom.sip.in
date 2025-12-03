@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutViewToolTemporaryKeyZoom : QgsLayoutViewToolZoom
 {
 %Docstring(signature="appended")

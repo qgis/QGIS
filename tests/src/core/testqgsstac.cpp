@@ -18,13 +18,13 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
 #include "qgsstaccollectionlist.h"
 #include "qgsstaccontroller.h"
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
-#include "qgsproject.h"
 #include "qgstest.h"
 
 #include <QObject>

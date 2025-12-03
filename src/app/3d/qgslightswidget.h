@@ -16,12 +16,12 @@
 #ifndef QGSLIGHTSWIDGET_H
 #define QGSLIGHTSWIDGET_H
 
-#include <QWidget>
-
 #include "ui_qgslightswidget.h"
 
-#include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgspointlightsettings.h"
+
+#include <QWidget>
 
 class QgsLightsModel : public QAbstractListModel
 {

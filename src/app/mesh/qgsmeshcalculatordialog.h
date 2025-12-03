@@ -19,8 +19,9 @@
 #define QGSMESHCALCULATORDIALOG_H
 
 #include "ui_qgsmeshcalculatordialogbase.h"
-#include "qgsmeshcalculator.h"
+
 #include "qgis_app.h"
+#include "qgsmeshcalculator.h"
 
 class QgsMapCanvas;
 
@@ -36,7 +37,7 @@ class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCa
      * \param f window flags
      */
     QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer = nullptr, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
-    ~QgsMeshCalculatorDialog();
+    ~QgsMeshCalculatorDialog() override;
 
     //! Returns new mesh calculator created from dialog options
     std::unique_ptr<QgsMeshCalculator> calculator() const;

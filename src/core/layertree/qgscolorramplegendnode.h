@@ -18,8 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslayertreemodellegendnode.h"
 #include "qgscolorramplegendnodesettings.h"
+#include "qgslayertreemodellegendnode.h"
 
 class QgsColorRamp;
 

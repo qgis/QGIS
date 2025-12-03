@@ -15,21 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsmanageconnectionsdialog.h"
 #include "qgssensorthingssourceselect.h"
-#include "moc_qgssensorthingssourceselect.cpp"
+
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgssensorthingsconnection.h"
-#include "qgssensorthingsconnectionwidget.h"
 #include "qgssensorthingsconnectiondialog.h"
-#include "qgssensorthingssourcewidget.h"
+#include "qgssensorthingsconnectionwidget.h"
 #include "qgssensorthingsprovider.h"
+#include "qgssensorthingssourcewidget.h"
 #include "qgssensorthingssubseteditor.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgssensorthingssourceselect.cpp"
 
 ///@cond PRIVATE
 

@@ -20,11 +20,12 @@
 #ifndef QGSFIELDVALIDATOR_H
 #define QGSFIELDVALIDATOR_H
 
+#include "qgis_gui.h"
+#include "qgsfields.h"
+
+#include <QSettings>
 #include <QValidator>
 #include <QVariant>
-#include <QSettings>
-#include "qgsfields.h"
-#include "qgis_gui.h"
 
 /**
  * \ingroup gui

@@ -13,17 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QRegularExpression>
+#include "qgsclassificationmethod.h"
 
 #include "qgis.h"
-#include "qgsclassificationmethod.h"
-#include "qgsvectorlayerutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsgraduatedsymbolrenderer.h"
 #include "qgsapplication.h"
 #include "qgsclassificationmethodregistry.h"
-#include "qgsxmlutils.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include "qgsmessagelog.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
+#include "qgsxmlutils.h"
+
+#include <QRegularExpression>
 
 const int QgsClassificationMethod::MAX_PRECISION = 15;
 const int QgsClassificationMethod::MIN_PRECISION = -6;

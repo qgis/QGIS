@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgsbookmarklocatorfilter.h"
-#include "moc_qgsbookmarklocatorfilter.cpp"
-#include "qgisapp.h"
-#include "qgsfeedback.h"
-#include "qgsapplication.h"
 
+#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsfeedback.h"
+
+#include "moc_qgsbookmarklocatorfilter.cpp"
 
 QgsBookmarkLocatorFilter::QgsBookmarkLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

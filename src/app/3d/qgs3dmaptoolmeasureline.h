@@ -16,11 +16,10 @@
 #ifndef QGS3DMAPTOOLMEASURELINE_H
 #define QGS3DMAPTOOLMEASURELINE_H
 
-#include "qgs3dmaptool.h"
-#include "qgspoint.h"
-
 #include <memory>
 
+#include "qgs3dmaptool.h"
+#include "qgspoint.h"
 
 class Qgs3DMeasureDialog;
 class QgsRubberBand3D;

@@ -18,11 +18,11 @@
 #define QGSMESSAGEBARITEM_H
 
 #include "qgis.h"
-
-#include <QWidget>
-#include <QIcon>
-#include <QHBoxLayout>
 #include "qgis_gui.h"
+
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QWidget>
 
 class QTextBrowser;
 class QLabel;
@@ -181,7 +181,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
      * Returns the styleSheet which should be used to style a QgsMessageBar object when
      * this item is displayed.
      */
-    QString getStyleSheet() { return mStyleSheet; }
+    QString getStyleSheet() const { return mStyleSheet; }
 
   public slots:
 

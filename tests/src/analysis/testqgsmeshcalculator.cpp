@@ -12,17 +12,18 @@ Email                : zilolv at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <limits>
 #include <cmath>
+#include <limits>
+#include <memory>
 
-#include "qgsmeshcalculator.h"
+#include "qgsapplication.h"
 #include "qgsmeshcalcnode.h"
-#include "qgsmeshvirtualdatasetgroup.h"
+#include "qgsmeshcalculator.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
-#include "qgsapplication.h"
+#include "qgsmeshvirtualdatasetgroup.h"
 #include "qgsproject.h"
+#include "qgstest.h"
 
 Q_DECLARE_METATYPE( QgsMeshCalcNode::Operator )
 
@@ -221,7 +222,7 @@ void TestQgsMeshCalculator::calcWithVertexLayers()
   const QgsRectangle extent( 1000.000, 1000.000, 3000.000, 3000.000 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -239,7 +240,7 @@ void TestQgsMeshCalculator::calcWithFaceLayers()
   const QgsRectangle extent( 1000.000, 1000.000, 3000.000, 3000.000 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -257,7 +258,7 @@ void TestQgsMeshCalculator::calcWithMixedLayers()
   const QgsRectangle extent( 1000.000, 1000.000, 3000.000, 3000.000 );
 
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 
@@ -399,7 +400,7 @@ void TestQgsMeshCalculator::test_dataset_group_dependency()
   std::vector<std::unique_ptr<QgsMeshMemoryDatasetGroup>> memoryDatasetGroups( 4 );
   for ( int dsg = 0; dsg < 4; ++dsg )
   {
-    memoryDatasetGroups[dsg].reset( new QgsMeshMemoryDatasetGroup );
+    memoryDatasetGroups[dsg] = std::make_unique<QgsMeshMemoryDatasetGroup>();
     memoryDatasetGroups[dsg]->setDataType( QgsMeshDatasetGroupMetadata::DataOnVertices );
     memoryDatasetGroups[dsg]->setName( QString( "dataset_group_%1" ).arg( dsg ) );
     for ( int i = 0; i < 10; i++ )
@@ -433,7 +434,7 @@ void TestQgsMeshCalculator::test_dataset_group_dependency()
 
   for ( int i = 0; i < formulas.count(); ++i )
   {
-    virtualDatasetGroups[i].reset( new QgsMeshVirtualDatasetGroup( QString( "virtual_%1" ).arg( i ), formulas[i], mpMeshLayer, 0, 100000 ) );
+    virtualDatasetGroups[i] = std::make_unique<QgsMeshVirtualDatasetGroup>( QString( "virtual_%1" ).arg( i ), formulas[i], mpMeshLayer, 0, 100000 );
     virtualDatasetGroups[i]->initialize();
     QCOMPARE( sizes[i], virtualDatasetGroups[i]->datasetCount() );
     mpMeshLayer->addDatasets( virtualDatasetGroups[i].release() );

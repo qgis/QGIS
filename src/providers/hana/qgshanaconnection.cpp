@@ -14,10 +14,20 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
-#include "qgsexception.h"
-#include "qgsdatasourceuri.h"
 #include "qgshanaconnection.h"
-#include "moc_qgshanaconnection.cpp"
+
+#include <odbc/Connection.h>
+#include <odbc/DatabaseMetaDataUnicode.h>
+#include <odbc/Environment.h>
+#include <odbc/Exception.h>
+#include <odbc/PreparedStatement.h>
+#include <odbc/ResultSet.h>
+#include <odbc/ResultSetMetaDataUnicode.h>
+#include <odbc/Statement.h>
+
+#include "qgscredentials.h"
+#include "qgsdatasourceuri.h"
+#include "qgsexception.h"
 #include "qgshanaconnectionstringbuilder.h"
 #include "qgshanadatatypes.h"
 #include "qgshanadriver.h"
@@ -27,18 +37,10 @@
 #include "qgshanautils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgscredentials.h"
 #include "qgssettings.h"
 #include "qgsvariantutils.h"
 
-#include "odbc/Connection.h"
-#include "odbc/DatabaseMetaDataUnicode.h"
-#include "odbc/Environment.h"
-#include "odbc/Exception.h"
-#include "odbc/PreparedStatement.h"
-#include "odbc/ResultSet.h"
-#include "odbc/ResultSetMetaDataUnicode.h"
-#include "odbc/Statement.h"
+#include "moc_qgshanaconnection.cpp"
 
 using namespace NS_ODBC;
 

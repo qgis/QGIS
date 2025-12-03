@@ -16,9 +16,10 @@
 #ifndef QGSTILEDSCENELAYERPROPERTIES_H
 #define QGSTILEDSCENELAYERPROPERTIES_H
 
-#include "qgslayerpropertiesdialog.h"
 #include "ui_qgstiledscenelayerpropertiesbase.h"
+
 #include "qgis_app.h"
+#include "qgslayerpropertiesdialog.h"
 
 class QgsTiledSceneLayer;
 class QgsMessageBar;
@@ -31,9 +32,9 @@ class APP_EXPORT QgsTiledSceneLayerProperties : public QgsLayerPropertiesDialog,
     QgsTiledSceneLayerProperties( QgsTiledSceneLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
   protected slots:
-    void syncToLayer() FINAL;
-    void apply() FINAL;
-    void rollback() FINAL;
+    void syncToLayer() final;
+    void apply() final;
+    void rollback() final;
 
   private slots:
     void aboutToShowStyleMenu();

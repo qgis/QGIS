@@ -15,12 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsimageoperation.h"
-#include "qgscolorrampimpl.h"
-#include <QObject>
-#include "qgstest.h"
-#include "qgsrenderchecker.h"
 #include "qgsapplication.h"
+#include "qgscolorrampimpl.h"
+#include "qgsimageoperation.h"
+#include "qgsrenderchecker.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsImageOperation : public QgsTest
 {

@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgsannotationpictureitem.h"
+
 #include "qgsapplication.h"
-#include "qgsimagecache.h"
-#include "qgssvgcache.h"
-#include "qgsgeometry.h"
-#include "qgsrendercontext.h"
-#include "qgspainting.h"
-#include "qgssymbollayerutils.h"
 #include "qgscalloutsregistry.h"
+#include "qgsgeometry.h"
+#include "qgsimagecache.h"
+#include "qgspainting.h"
+#include "qgsrendercontext.h"
+#include "qgssvgcache.h"
+#include "qgssymbollayerutils.h"
 
 #include <QFileInfo>
 

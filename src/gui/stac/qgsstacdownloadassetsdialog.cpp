@@ -14,19 +14,21 @@
  ***************************************************************************/
 
 #include "qgsstacdownloadassetsdialog.h"
-#include "moc_qgsstacdownloadassetsdialog.cpp"
-#include "qgsgui.h"
-#include "qgsnetworkcontentfetchertask.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsmessagebar.h"
-#include "qgsapplication.h"
 
-#include <QTreeWidget>
-#include <QPushButton>
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgsmessagebar.h"
+#include "qgsnetworkcontentfetchertask.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+
 #include <QAction>
-#include <QMenu>
 #include <QClipboard>
+#include <QMenu>
+#include <QPushButton>
+#include <QTreeWidget>
+
+#include "moc_qgsstacdownloadassetsdialog.cpp"
 
 ///@cond PRIVATE
 

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmaddtablefield.h"
+
 #include "qgsvariantutils.h"
 
 ///@cond PRIVATE

@@ -15,13 +15,15 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircle3points.h"
-#include "moc_qgsmaptoolshapecircle3points.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+#include "qgspoint.h"
+
+#include "moc_qgsmaptoolshapecircle3points.cpp"
 
 const QString QgsMapToolShapeCircle3PointsMetadata::TOOL_ID = QStringLiteral( "circle-from-3-points" );
 

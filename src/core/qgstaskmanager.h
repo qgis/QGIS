@@ -18,16 +18,16 @@
 #ifndef QGSTASKMANAGER_H
 #define QGSTASKMANAGER_H
 
-#include <QObject>
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QMap>
+#include "qgsmaplayer.h"
+
+#include <QElapsedTimer>
 #include <QFuture>
+#include <QMap>
+#include <QObject>
 #include <QReadWriteLock>
 #include <QSemaphore>
-#include <QElapsedTimer>
-
-#include "qgis_core.h"
-#include "qgsmaplayer.h"
 
 class QgsTask;
 class QgsTaskRunnableWrapper;

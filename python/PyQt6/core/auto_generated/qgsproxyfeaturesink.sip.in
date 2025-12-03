@@ -9,7 +9,6 @@
 
 
 
-
 class QgsProxyFeatureSink : QgsFeatureSink
 {
 %Docstring(signature="appended")

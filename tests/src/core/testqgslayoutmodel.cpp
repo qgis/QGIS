@@ -15,18 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayout.h"
-#include "qgslayoutmodel.h"
-#include "qgslayoutitemmap.h"
 #include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgslayoutitemlabel.h"
+#include "qgslayout.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemmap.h"
 #include "qgslayoutitemshape.h"
-#include <QObject>
-#include <QMimeData>
+#include "qgslayoutmodel.h"
+#include "qgsproject.h"
 #include "qgstest.h"
+
 #include <QList>
+#include <QMimeData>
+#include <QObject>
 #include <QSignalSpy>
 
 class TestQgsLayoutModel : public QgsTest

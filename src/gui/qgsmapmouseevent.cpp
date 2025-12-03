@@ -15,10 +15,10 @@
 
 
 #include "qgsmapmouseevent.h"
-#include "qgsmapcanvas.h"
 
-#include "qgssnappingutils.h"
+#include "qgsmapcanvas.h"
 #include "qgssnappingconfig.h"
+#include "qgssnappingutils.h"
 
 QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QMouseEvent *event )
   : QMouseEvent( event->type(), event->pos(), event->button(), event->buttons(), event->modifiers() )

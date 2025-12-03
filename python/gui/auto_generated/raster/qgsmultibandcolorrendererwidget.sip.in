@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMultiBandColorRendererWidget : QgsRasterRendererWidget
 {
 %Docstring(signature="appended")

@@ -34,7 +34,7 @@ Creates a wrapper from the definition stored in a ``widget`` created by
 Constructor
 %End
 
-    virtual ~QgsSettingsEditorWidgetWrapper();
+    ~QgsSettingsEditorWidgetWrapper();
 
     virtual QString id() const = 0;
 %Docstring

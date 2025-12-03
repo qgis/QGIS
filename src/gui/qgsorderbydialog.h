@@ -17,13 +17,14 @@
 #ifndef QGSORDERBYDIALOG_H
 #define QGSORDERBYDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-
 #include "ui_qgsorderbydialogbase.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsfeaturerequest.h"
 #include "qgshelp.h"
-#include "qgis_gui.h"
+
+#include <QDialog>
 
 class QgsVectorLayer;
 

@@ -19,8 +19,8 @@
 #include "ui_qgs3dviewsmanagerdialog.h"
 
 #include <QDialog>
-#include <QStringListModel>
 #include <QDomElement>
+#include <QStringListModel>
 
 class Qgs3DMapCanvasDockWidget;
 

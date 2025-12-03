@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMapLayerDependency
 {
 %Docstring(signature="appended")

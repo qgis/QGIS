@@ -15,24 +15,26 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgsogrprovidermetadata.h"
-#include "moc_qgsogrprovidermetadata.cpp"
-#include "qgsogrprovider.h"
-#include "qgsgeopackagedataitems.h"
-#include "qgsmessagelog.h"
-#include "qgsogrtransaction.h"
-#include "qgsogrlayermetadataprovider.h"
-#include "qgslayermetadataproviderregistry.h"
-#include "qgsgeopackageprojectstorage.h"
+
 #include "qgsapplication.h"
-#include "qgsogrconnpool.h"
-#include "qgsprojectstorageregistry.h"
+#include "qgsgdalutils.h"
+#include "qgsgeopackagedataitems.h"
+#include "qgsgeopackageprojectstorage.h"
 #include "qgsgeopackageproviderconnection.h"
+#include "qgslayermetadataproviderregistry.h"
+#include "qgsmessagelog.h"
+#include "qgsogrconnpool.h"
 #include "qgsogrdbconnection.h"
+#include "qgsogrlayermetadataprovider.h"
+#include "qgsogrprovider.h"
+#include "qgsogrtransaction.h"
+#include "qgsprojectstorageregistry.h"
+#include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
-#include "qgsgdalutils.h"
-#include "qgsproviderregistry.h"
 #include "qgsvectorfilewriter.h"
+
+#include "moc_qgsogrprovidermetadata.cpp"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
@@ -1033,9 +1035,6 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       }
 
       QgsOgrLayer *sublayer = i == 0 ? firstLayer.get() : layer.get();
-      if ( !sublayer )
-        continue;
-
       const QString layerName = QString::fromUtf8( sublayer->name() );
       if ( !originalUriLayerName.isEmpty() && layerName != originalUriLayerName )
         continue;

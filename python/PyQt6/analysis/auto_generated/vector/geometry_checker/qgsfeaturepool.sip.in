@@ -32,7 +32,7 @@ Creates a new feature pool for ``layer``.
 
 Must be created on the same thread as ``layer``.
 %End
-    virtual ~QgsFeaturePool();
+    ~QgsFeaturePool();
 
     bool getFeature( QgsFeatureId id, QgsFeature &feature );
 %Docstring

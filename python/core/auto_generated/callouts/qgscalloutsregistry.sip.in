@@ -8,6 +8,7 @@
 
 
 
+
 class QgsCalloutWidget /External/;
 
 class QgsCalloutAbstractMetadata

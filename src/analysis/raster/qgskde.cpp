@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgskde.h"
-#include "qgsfeaturesource.h"
+
 #include "qgsfeatureiterator.h"
+#include "qgsfeaturesource.h"
 #include "qgsgeometry.h"
 
 #define NO_DATA -9999

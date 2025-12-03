@@ -17,12 +17,12 @@
 
 #include "qgis_app.h"
 #include "qgsbookmarkmanager.h"
-#include "qgsdataitemprovider.h"
 #include "qgscustomdrophandler.h"
+#include "qgsdatacollectionitem.h"
 #include "qgsdataitemguiprovider.h"
+#include "qgsdataitemprovider.h"
 #include "qgslayeritem.h"
 #include "qgsprojectitem.h"
-#include "qgsdatacollectionitem.h"
 
 /**
  * Custom data item for QLR files.

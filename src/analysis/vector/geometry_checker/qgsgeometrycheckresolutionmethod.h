@@ -16,8 +16,9 @@
 #ifndef QGSGEOMETRYCHECKRESOLUTIONMETHOD_H
 #define QGSGEOMETRYCHECKRESOLUTIONMETHOD_H
 
-#include <QString>
 #include "qgis_analysis.h"
+
+#include <QString>
 
 /**
  * \ingroup analysis

@@ -17,8 +17,8 @@
 #define QGSLAYERPROPERTIESDIALOG_H
 
 #include "qgsgui.h"
-#include "qgsoptionsdialogbase.h"
 #include "qgsmaplayerstyle.h"
+#include "qgsoptionsdialogbase.h"
 
 #include <QObject>
 #include <QPointer>

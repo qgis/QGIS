@@ -21,7 +21,6 @@
 
 #include "qgsdataitemguiprovider.h"
 
-
 class QgsSensorThingsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT

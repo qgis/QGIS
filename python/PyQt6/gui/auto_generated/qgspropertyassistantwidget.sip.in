@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsPropertyAssistantWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

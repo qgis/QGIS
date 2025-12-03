@@ -15,10 +15,11 @@
  ***************************************************************************/
 
 #include "MathUtils.h"
-#include "qgslogger.h"
-#include "qgspoint.h"
+
 #include "Vector3D.h"
 #include "qgsgeometryutils_base.h"
+#include "qgslogger.h"
+#include "qgspoint.h"
 
 bool MathUtils::calcBarycentricCoordinates( double x, double y, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *result )
 {

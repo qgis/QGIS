@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspdfrenderer.h"
+
 #ifdef HAVE_PDF4QT
 #include "pdfdocumentreader.h"
 #include "pdfrenderer.h"

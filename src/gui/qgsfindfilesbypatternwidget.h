@@ -17,6 +17,7 @@
 #define QGSFINDFILESBYPATTERNWIDGET_H
 
 #include "ui_qgsfindfilesbypatternwidget.h"
+
 #include "qgis_gui.h"
 
 #include <QDialog>

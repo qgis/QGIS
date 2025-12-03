@@ -16,13 +16,13 @@
 #ifndef QGSMAPLAYERMODEL_H
 #define QGSMAPLAYERMODEL_H
 
-#include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include <QStringList>
-#include <QIcon>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QAbstractItemModel>
+#include <QIcon>
+#include <QSortFilterProxyModel>
+#include <QStringList>
 
 class QgsMapLayer;
 class QgsProject;

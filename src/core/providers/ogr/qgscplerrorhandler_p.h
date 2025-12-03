@@ -16,7 +16,8 @@
 #ifndef QGSCPLERRORHANDLER_H
 #define QGSCPLERRORHANDLER_H
 
-#include "cpl_error.h"
+#include <cpl_error.h>
+
 #include "qgsmessagelog.h"
 
 /**

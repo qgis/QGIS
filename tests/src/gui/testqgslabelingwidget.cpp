@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgslabelingwidget.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbollayerreference.h"
 #include "qgsrulebasedlabeling.h"
+#include "qgssymbollayerreference.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsLabelingWidget : public QgsTest
 {

@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgsclassificationlogarithmic.h"
-#include "qgssymbollayerutils.h"
+
 #include "qgsapplication.h"
 #include "qgsprocessingcontext.h"
+#include "qgssymbollayerutils.h"
 
+#include <QObject>
 
 QgsClassificationLogarithmic::QgsClassificationLogarithmic()
   : QgsClassificationMethod( NoFlag, 0 )

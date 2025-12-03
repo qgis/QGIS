@@ -20,9 +20,9 @@
 
 #define SIP_NO_FILE
 
+#include "qgis_gui.h"
 #include "qgsabstractrelationeditorwidget.h"
 #include "qgsmaptoolshapeabstract.h"
-#include "qgis_gui.h"
 
 class QgsMapToolShapeMetadata;
 class QgsMapToolCapture;

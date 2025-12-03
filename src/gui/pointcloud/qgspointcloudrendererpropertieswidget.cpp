@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspointcloudrendererpropertieswidget.h"
-#include "moc_qgspointcloudrendererpropertieswidget.cpp"
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -34,6 +33,8 @@
 #include "qgssymbolwidgetcontext.h"
 #include "qgstextformatwidget.h"
 #include "qgsvirtualpointcloudprovider.h"
+
+#include "moc_qgspointcloudrendererpropertieswidget.cpp"
 
 static bool initPointCloudRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {

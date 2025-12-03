@@ -13,12 +13,14 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "qgsfieldmodel.h"
+
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoinbuffer.h"
+
 #include <QFont>
 #include <QIcon>
 
-#include "qgsfieldmodel.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerjoinbuffer.h"
 #include "moc_qgsfieldmodel.cpp"
 
 QgsFieldModel::QgsFieldModel( QObject *parent )

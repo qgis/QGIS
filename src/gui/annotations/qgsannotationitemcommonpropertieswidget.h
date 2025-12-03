@@ -15,10 +15,10 @@
 #ifndef QGSANNOTATIONITEMCOMMONPROPERTIESWIDGET_H
 #define QGSANNOTATIONITEMCOMMONPROPERTIESWIDGET_H
 
+#include "ui_qgsannotationcommonpropertieswidgetbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
-#include "ui_qgsannotationcommonpropertieswidgetbase.h"
 #include "qgssymbolwidgetcontext.h"
 
 class QgsAnnotationItem;

@@ -15,22 +15,23 @@
  ***************************************************************************/
 
 #include "qgsabstractgeopdfexporter.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgslogger.h"
-#include "qgsgeometry.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsfileutils.h"
 
+#include <cpl_string.h>
 #include <gdal.h>
-#include "cpl_string.h"
 
-#include <QMutex>
-#include <QMutexLocker>
+#include "qgscoordinatetransformcontext.h"
+#include "qgsfileutils.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsvectorfilewriter.h"
+
 #include <QDomDocument>
 #include <QDomElement>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QTextStream>
 #include <QTimeZone>
 #include <QUuid>
-#include <QTextStream>
 
 bool QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable()
 {

@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsFontTextureAtlas
 {
 %Docstring(signature="appended")

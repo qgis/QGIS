@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayouttablecolumn.h"
-#include "qgis.h"
+
 #include <memory>
+
+#include "qgis.h"
 
 QgsLayoutTableColumn::QgsLayoutTableColumn( const QString &heading )
   : mHeading( heading )

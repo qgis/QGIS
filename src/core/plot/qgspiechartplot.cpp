@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspiechartplot.h"
+
 #include "qgsapplication.h"
 #include "qgscolorrampimpl.h"
 #include "qgsexpressioncontextutils.h"
@@ -25,7 +26,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgstextrenderer.h"
 #include "qgsvectorlayerplotdatagatherer.h"
-
 
 QgsPieChartPlot::QgsPieChartPlot()
 {

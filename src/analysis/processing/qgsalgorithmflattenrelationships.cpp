@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmflattenrelationships.h"
+
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"

@@ -16,12 +16,13 @@
 #ifndef QGSMAPTOOLCHAMFERFILLET_H
 #define QGSMAPTOOLCHAMFERFILLET_H
 
-#include "qgsmaptooledit.h"
-#include "qgsgeometry.h"
-#include "qgis_app.h"
 #include "ui_qgschamferfilletuserinputwidget.h"
-#include "qgspointlocator.h"
+
+#include "qgis_app.h"
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgsmaptooledit.h"
+#include "qgspointlocator.h"
 
 class QGridLayout;
 

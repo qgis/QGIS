@@ -18,8 +18,8 @@
 #ifndef QGSLAYOUTMULTIFRAMEUNDOCOMMAND_H
 #define QGSLAYOUTMULTIFRAMEUNDOCOMMAND_H
 
-#include "qgslayoutundocommand.h"
 #include "qgis_core.h"
+#include "qgslayoutundocommand.h"
 
 class QgsLayout;
 class QgsLayoutMultiFrame;

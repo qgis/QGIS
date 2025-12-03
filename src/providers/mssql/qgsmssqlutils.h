@@ -16,9 +16,10 @@
 #ifndef QGSMSSQLUTILS_H
 #define QGSMSSQLUTILS_H
 
+#include "qgis.h"
+
 #include <QString>
 #include <QVariant>
-#include "qgis.h"
 
 class QgsField;
 

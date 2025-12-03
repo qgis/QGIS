@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsserverprojectutils.h"
-#include "qgsproject.h"
+
 #include "qgsmessagelog.h"
+#include "qgsproject.h"
 
 double QgsServerProjectUtils::ceilWithPrecision( double number, int places )
 {
@@ -456,7 +457,7 @@ QString QgsServerProjectUtils::serviceUrl( const QString &service, const QgsServ
   }
   else
   {
-    urlQUrl.setQuery( NULL );
+    urlQUrl.setQuery( nullptr );
   }
 
   return urlQUrl.url();

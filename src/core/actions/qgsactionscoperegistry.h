@@ -17,9 +17,10 @@
 #define QGSACTIONSCOPEREGISTRY_H
 
 #include "qgis_core.h"
+#include "qgsactionscope.h"
+
 #include <QObject>
 #include <QSet>
-#include "qgsactionscope.h"
 
 /**
  * \ingroup core

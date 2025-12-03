@@ -14,12 +14,16 @@
  ***************************************************************************/
 
 #include "qgsprofilerpanelwidget.h"
-#include "moc_qgsprofilerpanelwidget.cpp"
-#include "qgsruntimeprofiler.h"
-#include "qgslogger.h"
-#include "qgis.h"
-#include <QPainter>
+
 #include <cmath>
+
+#include "qgis.h"
+#include "qgslogger.h"
+#include "qgsruntimeprofiler.h"
+
+#include <QPainter>
+
+#include "moc_qgsprofilerpanelwidget.cpp"
 
 //
 // QgsProfilerPanelWidget

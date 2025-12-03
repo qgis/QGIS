@@ -10,7 +10,6 @@
 
 
 
-
 class QgsGeometryWidget : QWidget
 {
 %Docstring(signature="appended")

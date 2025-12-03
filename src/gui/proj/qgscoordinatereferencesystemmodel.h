@@ -17,14 +17,14 @@
 #ifndef QGSCOORDINATEREFERENCESYSTEMMODEL_H
 #define QGSCOORDINATEREFERENCESYSTEMMODEL_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgscoordinatereferencesystemregistry.h"
 
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
 #include <QIcon>
+#include <QSortFilterProxyModel>
 
 class QgsCoordinateReferenceSystem;
 class QgsCoordinateReferenceSystemModelGroupNode;
@@ -79,8 +79,10 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelNode
     /**
      * Adds a child \a node to this node, transferring ownership of the node
      * to this node.
+     *
+     * Returns the newly added node.
      */
-    void addChildNode( QgsCoordinateReferenceSystemModelNode *node );
+    QgsCoordinateReferenceSystemModelNode *addChildNode( std::unique_ptr< QgsCoordinateReferenceSystemModelNode > node );
 
     /**
      * Deletes all child nodes from this node.

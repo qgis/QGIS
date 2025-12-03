@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterdataprovider.h"
 #include "qgsrasternuller.h"
+
+#include "qgsrasterdataprovider.h"
 
 QgsRasterNuller::QgsRasterNuller( QgsRasterInterface *input )
   : QgsRasterInterface( input )

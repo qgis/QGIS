@@ -16,11 +16,11 @@
 #ifndef QGSPROVIDERSUBLAYERDETAILS_H
 #define QGSPROVIDERSUBLAYERDETAILS_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgswkbtypes.h"
+#include "qgis_core.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsmimedatautils.h"
+#include "qgswkbtypes.h"
 
 #include <QString>
 #include <QStringList>

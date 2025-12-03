@@ -20,10 +20,10 @@
 
 #define SIP_NO_FILE
 
-#include <QString>
-
-#include "qgsserverexception.h"
 #include "qgis_server.h"
+#include "qgsserverexception.h"
+
+#include <QString>
 
 /**
  * \ingroup server

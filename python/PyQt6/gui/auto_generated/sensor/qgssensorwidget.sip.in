@@ -9,7 +9,6 @@
 
 
 
-
 class QgsAbstractSensorWidget : QWidget
 {
 %Docstring(signature="appended")

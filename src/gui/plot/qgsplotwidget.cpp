@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 #include "qgsplotwidget.h"
-#include "moc_qgsplotwidget.cpp"
+
 #include "qgsapplication.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsbarchartplot.h"
 #include "qgscolorrampbutton.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbol.h"
 #include "qgslinechartplot.h"
 #include "qgslinesymbol.h"
-#include "qgsplotregistry.h"
-#include "qgsbarchartplot.h"
-#include "qgspiechartplot.h"
 #include "qgsnumericformatselectorwidget.h"
+#include "qgspiechartplot.h"
+#include "qgsplotregistry.h"
 
+#include "moc_qgsplotwidget.cpp"
 
 void QgsPlotWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {

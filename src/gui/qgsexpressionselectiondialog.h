@@ -17,11 +17,12 @@
 #define QGSEXPRESSIONSELECTIONDIALOG_H
 
 #include "ui_qgsexpressionselectiondialogbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgshelp.h"
 
 #include <QDialog>
-#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMessageBar;

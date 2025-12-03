@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDir>
-
 #include "qgslocalizeddatapathregistry.h"
+
 #include "qgis.h"
 #include "qgsreadwritelocker.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+
+#include <QDir>
 
 const QgsSettingsEntryStringList *QgsLocalizedDataPathRegistry::settingsLocalizedDataPaths = new QgsSettingsEntryStringList( QStringLiteral( "localized_data_paths" ), QgsSettingsTree::sTreeQgis, QStringList() );
 

@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgslayertreelocatorfilter.h"
-#include "moc_qgslayertreelocatorfilter.cpp"
+
+#include "qgisapp.h"
+#include "qgsiconutils.h"
 #include "qgslayertree.h"
 #include "qgsproject.h"
-#include "qgsiconutils.h"
-#include "qgisapp.h"
 
+#include "moc_qgslayertreelocatorfilter.cpp"
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

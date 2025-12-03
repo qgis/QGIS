@@ -15,17 +15,16 @@
 #ifndef QGSUSERPROFILEMANAGER_H
 #define QGSUSERPROFILEMANAGER_H
 
-#include <QSettings>
-#include <QFileSystemWatcher>
-
+#include <memory>
 
 #include "qgis.h"
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgserror.h"
 #include "qgsuserprofile.h"
 
-#include <memory>
+#include <QFileSystemWatcher>
+#include <QSettings>
 
 /**
  * \ingroup core
@@ -80,7 +79,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * Returns the path to the root profiles location.
      * \return The root path to the profiles folder.
      */
-    QString rootLocation() { return mRootProfilePath; }
+    QString rootLocation() const { return mRootProfilePath; }
 
     /**
      * Sets whether the manager should watch for the creation of new user profiles and emit

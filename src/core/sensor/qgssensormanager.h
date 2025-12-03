@@ -16,13 +16,13 @@
 #ifndef QGSSENSORMANAGER_H
 #define QGSSENSORMANAGER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsabstractsensor.h"
 
-#include <QObject>
 #include <QDomElement>
+#include <QObject>
 
 class QgsProject;
 

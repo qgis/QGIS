@@ -15,18 +15,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsconfig.h"
+
+#include <cpl_error.h>
+#include <iostream>
+#include <limits>
+
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsconfig.h"
 
 #include <QRegExp>
 #include <QSettings>
 #include <QTemporaryDir>
-
-#include <iostream>
-#include <limits>
-
-#include <cpl_error.h>
 
 void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
 {

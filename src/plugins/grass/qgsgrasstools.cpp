@@ -14,15 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgrasstools.h"
-#include "moc_qgsgrasstools.cpp"
-#include "qgsgrassmodule.h"
-#include "qgsgrassregion.h"
-#include "qgsgrass.h"
 #include "qgsconfig.h"
+#include "qgsgrasstools.h"
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
+#include "qgsgrass.h"
+#include "qgsgrassmodule.h"
+#include "qgsgrassregion.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 
@@ -33,6 +32,8 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QRegularExpression>
+
+#include "moc_qgsgrasstools.cpp"
 
 //
 // For experimental model view alternative ui by Tim

@@ -15,13 +15,13 @@
 
 
 #include "qgscodeeditorshell.h"
-#include "moc_qgscodeeditorshell.cpp"
 
-#include <QWidget>
-#include <QString>
 #include <QFont>
+#include <QString>
+#include <QWidget>
 #include <Qsci/qscilexerjson.h>
 
+#include "moc_qgscodeeditorshell.cpp"
 
 QgsCodeEditorShell::QgsCodeEditorShell( QWidget *parent, Mode mode, Qgis::ScriptLanguage language )
   : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding, mode )

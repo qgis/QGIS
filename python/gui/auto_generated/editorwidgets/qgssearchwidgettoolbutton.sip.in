@@ -8,6 +8,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include "qgssearchwidgettoolbutton.h"
 %End

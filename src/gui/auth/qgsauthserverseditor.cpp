@@ -14,22 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthserverseditor.h"
-#include "moc_qgsauthserverseditor.cpp"
 #include "ui_qgsauthserverseditor.h"
+#include "qgsauthserverseditor.h"
+
+#include "qgsapplication.h"
+#include "qgsauthcertificateinfo.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
 #include "qgsauthsslimportdialog.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgsvariantutils.h"
 
 #include <QMenu>
 #include <QMessageBox>
 
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsauthcertificateinfo.h"
-#include "qgsauthcertutils.h"
-#include "qgsauthmanager.h"
-#include "qgsauthguiutils.h"
-#include "qgslogger.h"
-#include "qgsvariantutils.h"
+#include "moc_qgsauthserverseditor.cpp"
 
 QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   : QWidget( parent )

@@ -15,11 +15,12 @@
 #ifndef QGSCOLORRAMPBUTTON_H
 #define QGSCOLORRAMPBUTTON_H
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
 #include <QToolButton>
-#include <memory>
 
 class QgsPanelWidget;
 class QgsColorRamp;

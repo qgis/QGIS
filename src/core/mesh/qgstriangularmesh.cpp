@@ -15,16 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QList>
 #include "qgstriangularmesh.h"
+
+#include "meshoptimizer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometry.h"
-#include "qgsrectangle.h"
 #include "qgslogger.h"
-#include "qgsmeshspatialindex.h"
 #include "qgsmeshlayerutils.h"
+#include "qgsmeshspatialindex.h"
 #include "qgsmeshutils.h"
-#include "meshoptimizer.h"
+#include "qgsrectangle.h"
+
+#include <QList>
 
 static void triangulateFaces( const QgsMeshFace &face,
                               int nativeIndex,

@@ -16,8 +16,8 @@
 #ifndef QGSHSTOREUTILS_H
 #define QGSHSTOREUTILS_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 /**
  * \ingroup core

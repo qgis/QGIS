@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgsprojectelevationsettingswidget.h"
-#include "moc_qgsprojectelevationsettingswidget.cpp"
+
 #include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgsterrainprovider.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgsrasterlayerelevationproperties.h"
 #include "qgselevationshadingrenderersettingswidget.h"
+#include "qgsproject.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgsprojectionselectionwidget.h"
+#include "qgsrasterlayerelevationproperties.h"
+#include "qgsterrainprovider.h"
+
+#include "moc_qgsprojectelevationsettingswidget.cpp"
 
 QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )

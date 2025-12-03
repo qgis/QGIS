@@ -17,14 +17,14 @@
 #ifndef QGSAUTHTRUSTEDCASDIALOG_H
 #define QGSAUTHTRUSTEDCASDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
 #include "ui_qgsauthtrustedcasdialog.h"
 
-#include <QSslCertificate>
-
-#include "qgsauthmanager.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthmanager.h"
+
+#include <QDialog>
+#include <QSslCertificate>
 
 class QgsMessageBar;
 

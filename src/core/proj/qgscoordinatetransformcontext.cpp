@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgscoordinatetransformcontext.h"
+
 #include "qgscoordinatetransformcontext_p.h"
-#include "qgssettings.h"
 #include "qgsprojutils.h"
+#include "qgssettings.h"
 
 QString crsToKey( const QgsCoordinateReferenceSystem &crs )
 {

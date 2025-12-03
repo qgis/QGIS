@@ -14,7 +14,9 @@
  ***************************************************************************/
 
 #include "qgsmodelundocommand.h"
+
 #include "qgsprocessingmodelalgorithm.h"
+
 ///@cond NOT_STABLE
 
 

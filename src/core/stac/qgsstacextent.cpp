@@ -15,7 +15,6 @@
 
 #include "qgsstacextent.h"
 
-
 void QgsStacExtent::setSpatialExtent( QgsBox3D extent )
 {
   mSpatialExtent = extent;

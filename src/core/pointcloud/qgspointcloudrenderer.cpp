@@ -16,19 +16,20 @@
  ***************************************************************************/
 
 #include "qgspointcloudrenderer.h"
-#include "qgspointcloudrendererregistry.h"
+
 #include "qgsapplication.h"
-#include "qgselevationmap.h"
-#include "qgssymbollayerutils.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudindex.h"
-#include "qgslogger.h"
 #include "qgscircle.h"
+#include "qgselevationmap.h"
+#include "qgslogger.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudrendererregistry.h"
+#include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 #include "qgsvirtualpointcloudprovider.h"
 
-#include <QThread>
 #include <QPointer>
+#include <QThread>
 
 QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset, QgsFeedback *feedback )
   : mRenderContext( context )

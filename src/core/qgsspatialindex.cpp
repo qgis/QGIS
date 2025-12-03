@@ -15,16 +15,17 @@
 
 #include "qgsspatialindex.h"
 
-#include "qgsgeometry.h"
+#include <spatialindex/SpatialIndex.h>
+
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
-#include "qgsrectangle.h"
-#include "qgslogger.h"
 #include "qgsfeaturesource.h"
 #include "qgsfeedback.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsrectangle.h"
 #include "qgsspatialindexutils.h"
 
-#include <spatialindex/SpatialIndex.h>
 #include <QMutex>
 #include <QMutexLocker>
 

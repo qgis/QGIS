@@ -18,11 +18,11 @@
 #ifndef QGSREMAPPINGPROXYFEATURESINK_H
 #define QGSREMAPPINGPROXYFEATURESINK_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgscoordinatetransform.h"
 #include "qgsfeaturesink.h"
 #include "qgsproperty.h"
-#include "qgscoordinatetransform.h"
 
 /**
  * \class QgsRemappingSinkDefinition

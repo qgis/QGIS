@@ -20,19 +20,20 @@
 #define QGSPROVIDERMETADATA_H
 
 
+#include <functional>
+#include <memory>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsabstractproviderconnection.h"
+#include "qgsdataprovider.h"
+#include "qgsfields.h"
+
+#include <QList>
+#include <QMap>
+#include <QPair>
 #include <QString>
 #include <QVariantMap>
-#include <QMap>
-#include <QList>
-#include <memory>
-#include <QPair>
-
-#include "qgis_sip.h"
-#include "qgsdataprovider.h"
-#include "qgis_core.h"
-#include <functional>
-#include "qgsabstractproviderconnection.h"
-#include "qgsfields.h"
 
 class QgsDataItem;
 class QgsDataItemProvider;
@@ -226,7 +227,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     SIP_SKIP Q_DECL_DEPRECATED QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
 
-    virtual ~QgsProviderMetadata();
+    ~QgsProviderMetadata() override;
 
     /**
      * This returns the unique key associated with the provider

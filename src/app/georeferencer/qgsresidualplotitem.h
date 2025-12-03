@@ -16,8 +16,8 @@
 #ifndef QGSRESIDUALPLOTITEM_H
 #define QGSRESIDUALPLOTITEM_H
 
-#include "qgslayoutitem.h"
 #include "qgsgcplist.h"
+#include "qgslayoutitem.h"
 #include "qgsrectangle.h"
 
 /**

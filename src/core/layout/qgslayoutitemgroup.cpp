@@ -15,12 +15,14 @@
  ***************************************************************************/
 
 #include "qgslayoutitemgroup.h"
-#include "moc_qgslayoutitemgroup.cpp"
-#include "qgslayoutitemregistry.h"
+
 #include "qgslayout.h"
-#include "qgslayoututils.h"
-#include "qgslayoutundostack.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoututils.h"
+
+#include "moc_qgslayoutitemgroup.cpp"
 
 QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
   : QgsLayoutItem( layout )

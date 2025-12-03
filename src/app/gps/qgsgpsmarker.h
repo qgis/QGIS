@@ -16,13 +16,12 @@
 #ifndef QGSGPSMARKER_H
 #define QGSGPSMARKER_H
 
-#include "qgsmapcanvasitem.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgspointxy.h"
+#include "qgsmapcanvasitem.h"
 #include "qgspointmarkeritem.h"
+#include "qgspointxy.h"
 
 #include <QObject>
-
 
 class QPainter;
 

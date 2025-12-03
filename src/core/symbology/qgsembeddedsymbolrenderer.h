@@ -15,8 +15,8 @@
 #ifndef QGSEMBEDDEDSYMBOLRENDERER_H
 #define QGSEMBEDDEDSYMBOLRENDERER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsrenderer.h"
 
 /**

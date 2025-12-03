@@ -10,7 +10,6 @@
 
 
 
-
 class QgsMapLayerStyle
 {
 %Docstring(signature="appended")

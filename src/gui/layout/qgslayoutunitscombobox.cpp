@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgslayoutunitscombobox.h"
-#include "moc_qgslayoutunitscombobox.cpp"
+
+#include "qgis.h"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgsunittypes.h"
-#include "qgis.h"
+
+#include "moc_qgslayoutunitscombobox.cpp"
 
 QgsLayoutUnitsComboBox::QgsLayoutUnitsComboBox( QWidget *parent )
   : QComboBox( parent )

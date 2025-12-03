@@ -11,6 +11,7 @@
 
 
 
+
 class QgsSettingsEntryGroup /Deprecated="Since 3.30. Use QgsSettingsTreeNode instead."/
 {
 %Docstring(signature="appended")

@@ -16,12 +16,14 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOS_H
 #define QGSGEOS_H
 
+#include "qgsconfig.h"
+
+#include <geos_c.h>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsgeometryengine.h"
 #include "qgsgeometry.h"
-#include "qgsconfig.h"
-#include <geos_c.h>
+#include "qgsgeometryengine.h"
 
 class QgsLineString;
 class QgsPolygon;

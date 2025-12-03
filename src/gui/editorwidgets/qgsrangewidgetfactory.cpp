@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgsrangewidgetfactory.h"
+
 #include "qgsrangeconfigdlg.h"
 #include "qgsrangewidgetwrapper.h"
 #include "qgsvectorlayer.h"
+
 #include <QDial>
 
 QgsRangeWidgetFactory::QgsRangeWidgetFactory( const QString &name, const QIcon &icon )

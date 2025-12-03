@@ -19,13 +19,13 @@
 #define QGSRECTANGLE_H
 
 #include <iosfwd>
-#include <QDomDocument>
-#include <QRectF>
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgspointxy.h"
 
+#include <QDomDocument>
+#include <QRectF>
 
 class QString;
 class QRectF;

@@ -14,16 +14,14 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstyle.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgsreadwritecontext.h"
-#include "qgsmaplayer.h"
-
 
 #include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsreadwritecontext.h"
 
 #include <QDomElement>
 #include <QTextStream>
-
 
 QgsMapLayerStyle::QgsMapLayerStyle( const QString &xmlData )
   : mXmlData( xmlData )

@@ -14,13 +14,11 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsproviderguimetadata.h"
-#include "qgssourceselectprovider.h"
-
 #include "qgsmssqldataitemguiprovider.h"
 #include "qgsmssqlprovider.h"
 #include "qgsmssqlsourceselect.h"
-
+#include "qgsproviderguimetadata.h"
+#include "qgssourceselectprovider.h"
 
 //! Provider for msssql raster source select
 class QgsMssqlSourceSelectProvider : public QgsSourceSelectProvider

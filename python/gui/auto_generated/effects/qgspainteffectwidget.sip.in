@@ -10,6 +10,7 @@
 
 
 
+
 class QgsPaintEffectWidget : QWidget
 {
 %Docstring(signature="appended")

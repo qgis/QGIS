@@ -16,10 +16,6 @@
 #ifndef QGSFIELDEXPRESSIONWIDGET_H
 #define QGSFIELDEXPRESSIONWIDGET_H
 
-#include <QColor>
-#include <QComboBox>
-#include <QToolButton>
-#include <QWidget>
 #include <memory>
 
 #include "qgis_gui.h"
@@ -28,6 +24,10 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfieldproxymodel.h"
 
+#include <QColor>
+#include <QComboBox>
+#include <QToolButton>
+#include <QWidget>
 
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void appendScope( QgsExpressionContextScope *scope SIP_TRANSFER );
 
     //! Returns the title used for the expression dialog
-    const QString expressionDialogTitle() { return mExpressionDialogTitle; }
+    QString expressionDialogTitle() const { return mExpressionDialogTitle; }
 
     //! setFilters allows filtering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );

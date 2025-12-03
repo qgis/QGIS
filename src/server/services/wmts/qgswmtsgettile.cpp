@@ -14,9 +14,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmtsutils.h"
-#include "qgswmtsparameters.h"
 #include "qgswmtsgettile.h"
+
+#include "qgswmtsparameters.h"
+#include "qgswmtsutils.h"
 
 #include <QImage>
 

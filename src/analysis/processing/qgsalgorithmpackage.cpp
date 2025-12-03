@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpackage.h"
+
 #include "qgsogrutils.h"
+#include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
-#include "qgssettings.h"
 
 #include <QLocale>
 

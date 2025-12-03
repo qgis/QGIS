@@ -13,19 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QKeyEvent>
-#include <QHeaderView>
+#include "qgsgcplistwidget.h"
+
+#include "qgsgcplist.h"
+#include "qgsgcplistmodel.h"
+#include "qgsgeorefdatapoint.h"
+#include "qgsgeorefdelegates.h"
+
 #include <QDoubleSpinBox>
+#include <QHeaderView>
+#include <QKeyEvent>
 #include <QLineEdit>
 #include <QMenu>
 #include <QSortFilterProxyModel>
 
-#include "qgsgeorefdelegates.h"
-#include "qgsgeorefdatapoint.h"
-#include "qgsgcplist.h"
-#include "qgsgcplistwidget.h"
 #include "moc_qgsgcplistwidget.cpp"
-#include "qgsgcplistmodel.h"
 
 QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
   : QgsTableView( parent )

@@ -16,12 +16,12 @@
 #ifndef QGSATTRIBUTETABLEVIEW_H
 #define QGSATTRIBUTETABLEVIEW_H
 
-#include <QAction>
+#include "qgis_gui.h"
+#include "qgsattributetableconfig.h"
 #include "qgsfeatureid.h"
 #include "qgstableview.h"
 
-#include "qgis_gui.h"
-#include "qgsattributetableconfig.h"
+#include <QAction>
 
 class QgsAttributeTableDelegate;
 class QgsAttributeTableFilterModel;

@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 
+#include "qgsdoublevalidator.h"
 #include "qgstest.h"
 
-#include "qgsdoublevalidator.h"
 #include <QLineEdit>
 
 class TestQgsDoubleValidator : public QObject

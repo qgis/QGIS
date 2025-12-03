@@ -15,8 +15,10 @@
 
 
 #include "qgslayoutcombobox.h"
-#include "moc_qgslayoutcombobox.cpp"
+
 #include "qgslayoutmodel.h"
+
+#include "moc_qgslayoutcombobox.cpp"
 
 QgsLayoutComboBox::QgsLayoutComboBox( QWidget *parent, QgsLayoutManager *manager )
   : QComboBox( parent )

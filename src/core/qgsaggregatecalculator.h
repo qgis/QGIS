@@ -19,11 +19,11 @@
 #define QGSAGGREGATECALCULATOR_H
 
 #include "qgis_core.h"
-#include "qgsstatisticalsummary.h"
-#include "qgsfeaturerequest.h"
-#include <QVariant>
 #include "qgsfeatureid.h"
+#include "qgsfeaturerequest.h"
+#include "qgsstatisticalsummary.h"
 
+#include <QVariant>
 
 class QgsFeatureIterator;
 class QgsExpression;
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsAggregateCalculator
     static QVariant calculateArrayAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
         QgsExpressionContext *context );
 
-    static QVariant calculate( Qgis::Aggregate aggregate, QgsFeatureIterator &fit, QMetaType::Type resultType, int userType,
+    static QVariant calculate( Qgis::Aggregate aggregate, QgsFeatureIterator &fit, QMetaType::Type resultType,
                                int attr, QgsExpression *expression,
                                const QString &delimiter,
                                QgsExpressionContext *context, bool *ok = nullptr, QString *error = nullptr );

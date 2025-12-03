@@ -15,15 +15,17 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperectanglecenter.h"
-#include "moc_qgsmaptoolshaperectanglecenter.cpp"
-#include "qgsgeometryrubberband.h"
-#include "qgspoint.h"
-#include "qgsmapmouseevent.h"
-#include "qgsmaptoolcapture.h"
-#include "qgsquadrilateral.h"
-#include "qgsapplication.h"
 
 #include <memory>
+
+#include "qgsapplication.h"
+#include "qgsgeometryrubberband.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptoolcapture.h"
+#include "qgspoint.h"
+#include "qgsquadrilateral.h"
+
+#include "moc_qgsmaptoolshaperectanglecenter.cpp"
 
 const QString QgsMapToolShapeRectangleCenterMetadata::TOOL_ID = QStringLiteral( "rectangle-from-center-and-a-point" );
 

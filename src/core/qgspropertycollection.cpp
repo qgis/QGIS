@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspropertycollection.h"
+
 #include "qgsproperty.h"
 #include "qgsxmlutils.h"
 

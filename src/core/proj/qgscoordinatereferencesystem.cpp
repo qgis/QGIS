@@ -16,41 +16,40 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatereferencesystem.h"
-#include "moc_qgscoordinatereferencesystem.cpp"
-#include "qgscoordinatereferencesystem_p.h"
-
-#include "qgscoordinatereferencesystem_legacy_p.h"
-#include "qgscoordinatereferencesystemregistry.h"
-#include "qgsellipsoidutils.h"
-#include "qgsreadwritelocker.h"
 
 #include <cmath>
+#include <proj.h>
+#include <proj_experimental.h>
+#include <sqlite3.h>
+
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem_legacy_p.h"
+#include "qgscoordinatereferencesystem_p.h"
+#include "qgscoordinatereferencesystemregistry.h"
+#include "qgscoordinatereferencesystemutils.h"
+#include "qgsdatums.h"
+#include "qgsellipsoidutils.h"
+#include "qgslocalec.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsogcutils.h"
+#include "qgsogrutils.h"
+#include "qgsprojectionfactors.h"
+#include "qgsprojoperation.h"
+#include "qgsprojutils.h"
+#include "qgsreadwritelocker.h"
+#include "qgssettings.h"
 
 #include <QDir>
-#include <QDomNode>
 #include <QDomElement>
+#include <QDomNode>
+#include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QTextStream>
-#include <QFile>
 
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgis.h" //const vals declared here
-#include "qgslocalec.h"
-#include "qgssettings.h"
-#include "qgsogrutils.h"
-#include "qgsdatums.h"
-#include "qgsogcutils.h"
-#include "qgsprojectionfactors.h"
-#include "qgsprojoperation.h"
-#include "qgscoordinatereferencesystemutils.h"
-
-#include <sqlite3.h>
-#include "qgsprojutils.h"
-#include <proj.h>
-#include <proj_experimental.h>
+#include "moc_qgscoordinatereferencesystem.cpp"
 
 //gdal and ogr includes (needed for == operator)
 #include <ogr_srs_api.h>

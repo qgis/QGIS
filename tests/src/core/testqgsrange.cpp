@@ -12,10 +12,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-
 #include "qgsrange.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsRange : public QObject
 {

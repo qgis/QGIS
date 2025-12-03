@@ -16,15 +16,15 @@
 #ifndef QGSADVANCEDDIGITIZINGFLOATER
 #define QGSADVANCEDDIGITIZINGFLOATER
 
-#include <QWidget>
-#include <QString>
-
 #include "ui_qgsadvanceddigitizingfloaterbase.h"
-#include "qgsadvanceddigitizingdockwidget.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 #include <QPointer>
+#include <QString>
+#include <QWidget>
 
 class QgsMapCanvas;
 class QgsAdvancedDigitizingDockWidget;

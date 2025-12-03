@@ -15,20 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsexpressioncontextutils.h"
-#include "qgsexpressionutils.h"
 #include "qgslayouttable.h"
-#include "moc_qgslayouttable.cpp"
-#include "qgslayoututils.h"
-#include "qgslayouttablecolumn.h"
-#include "qgscolorutils.h"
-#include "qgslayoutframe.h"
-#include "qgsfontutils.h"
-#include "qgslayoutpagecollection.h"
-#include "qgstextrenderer.h"
-#include "qgslayoutrendercontext.h"
 
 #include <set>
+
+#include "qgscolorutils.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionutils.h"
+#include "qgsfontutils.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayouttablecolumn.h"
+#include "qgslayoututils.h"
+#include "qgstextrenderer.h"
+
+#include "moc_qgslayouttable.cpp"
+
 //
 // QgsLayoutTableStyle
 //

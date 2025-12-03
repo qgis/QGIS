@@ -13,17 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnumericformatregistry.h"
-#include "qgsnumericformat.h"
 
-#include "qgsfallbacknumericformat.h"
 #include "qgsbasicnumericformat.h"
 #include "qgsbearingnumericformat.h"
+#include "qgscoordinatenumericformat.h"
 #include "qgscurrencynumericformat.h"
+#include "qgsexpressionbasednumericformat.h"
+#include "qgsfallbacknumericformat.h"
+#include "qgsfractionnumericformat.h"
+#include "qgsnumericformat.h"
 #include "qgspercentagenumericformat.h"
 #include "qgsscientificnumericformat.h"
-#include "qgsfractionnumericformat.h"
-#include "qgscoordinatenumericformat.h"
-#include "qgsexpressionbasednumericformat.h"
 #include "qgsxmlutils.h"
 
 QgsNumericFormatRegistry::QgsNumericFormatRegistry()

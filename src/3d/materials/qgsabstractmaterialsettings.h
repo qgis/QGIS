@@ -18,10 +18,10 @@
 
 #include "qgis_3d.h"
 #include "qgis_sip.h"
+#include "qgsmaterial.h"
+#include "qgspropertycollection.h"
 
 #include <QColor>
-#include "qgspropertycollection.h"
-#include "qgsmaterial.h"
 
 class QDomElement;
 class QgsReadWriteContext;

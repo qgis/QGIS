@@ -15,14 +15,13 @@
 
 #include "qgsvectorlayerundopassthroughcommand.h"
 
+#include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayereditbuffer.h"
-
 #include "qgslogger.h"
 #include "qgstransaction.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
 
 #include <QUuid>
 
@@ -398,7 +397,7 @@ void QgsVectorLayerUndoPassthroughCommandAddAttribute::undo()
     // isn't already gone
     if ( mBuffer->L->dataProvider()->fieldNameIndex( mField.name() ) != -1 )
     {
-      mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr );
+      ( void )mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr );
     }
     mBuffer->mAddedAttributes.removeAll( mField );
     mBuffer->updateLayerFields();

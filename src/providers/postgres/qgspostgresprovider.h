@@ -18,15 +18,16 @@
 #ifndef QGSPOSTGRESPROVIDER_H
 #define QGSPOSTGRESPROVIDER_H
 
-#include "qgsvectordataprovider.h"
-#include "qgsrectangle.h"
-#include "qgspostgresconn.h"
-#include "qgsfields.h"
-#include "qgsprovidermetadata.h"
-#include "qgsreferencedgeometry.h"
 #include <memory>
 #include <optional>
+
+#include "qgsfields.h"
+#include "qgspostgresconn.h"
 #include "qgspostgresutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsrectangle.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsvectordataprovider.h"
 
 class QgsFeature;
 class QgsField;
@@ -512,7 +513,7 @@ class QgsPostgresProviderMetadata final : public QgsProviderMetadata
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
     bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
-    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
+    QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;

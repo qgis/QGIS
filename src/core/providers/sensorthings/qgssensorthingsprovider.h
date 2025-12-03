@@ -18,9 +18,9 @@
 #ifndef QGSSENSORTHINGSPROVIDER_H
 #define QGSSENSORTHINGSPROVIDER_H
 
-#include "qgsvectordataprovider.h"
-#include "qgssensorthingsshareddata.h"
 #include "qgsprovidermetadata.h"
+#include "qgssensorthingsshareddata.h"
+#include "qgsvectordataprovider.h"
 
 #define SIP_NO_FILE
 ///@cond PRIVATE

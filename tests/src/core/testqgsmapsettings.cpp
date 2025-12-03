@@ -12,10 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <cmath>
+
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
-#include <cmath>
 
 //header for class being tested
 #include "qgsexpression.h"

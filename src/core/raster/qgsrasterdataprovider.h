@@ -23,25 +23,25 @@
 #ifndef QGSRASTERDATAPROVIDER_H
 #define QGSRASTERDATAPROVIDER_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
 #include <cmath>
 
-#include <QDateTime>
-#include <QVariant>
-#include <QImage>
-
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscolorrampshader.h"
 #include "qgsdataprovider.h"
-#include "qgsrasterattributetable.h"
 #include "qgsfields.h"
+#include "qgsrasterattributetable.h"
+#include "qgsrasterdataproviderelevationproperties.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
 #include "qgsrasterinterface.h"
+#include "qgsrasteriterator.h"
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"
 #include "qgsrectangle.h"
-#include "qgsrasteriterator.h"
-#include "qgsrasterdataprovidertemporalcapabilities.h"
-#include "qgsrasterdataproviderelevationproperties.h"
+
+#include <QDateTime>
+#include <QImage>
+#include <QVariant>
 
 class QImage;
 class QByteArray;

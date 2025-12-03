@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgsreferencedgeometry.h"
+
 #include <QObject>
 #include <QVector>
 

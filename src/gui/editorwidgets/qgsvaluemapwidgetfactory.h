@@ -16,8 +16,8 @@
 #ifndef QGSVALUEMAPWIDGETFACTORY_H
 #define QGSVALUEMAPWIDGETFACTORY_H
 
-#include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
 
 SIP_NO_FILE
 

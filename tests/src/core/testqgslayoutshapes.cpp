@@ -16,17 +16,17 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslayout.h"
 #include "qgslayoutitemshape.h"
 #include "qgsproject.h"
-#include "qgssymbol.h"
-#include "qgsfillsymbollayer.h"
 #include "qgsreadwritecontext.h"
-#include "qgsfillsymbol.h"
-#include "qgslayout.h"
-
-#include <QObject>
+#include "qgssymbol.h"
 #include "qgstest.h"
+
 #include <QColor>
+#include <QObject>
 #include <QPainter>
 
 class TestQgsLayoutShapes : public QgsTest

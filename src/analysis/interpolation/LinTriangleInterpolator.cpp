@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "LinTriangleInterpolator.h"
+
 #include "qgslogger.h"
 
 bool LinTriangleInterpolator::calcFirstDerX( double x, double y, Vector3D *vec )

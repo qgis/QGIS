@@ -27,6 +27,7 @@ set(QGIS_APP_SRCS
   qgsclipboard.cpp
   qgscustomization.cpp
   qgsdatumtransformtablewidget.cpp
+  qgscontributorsmapcanvas.cpp
   qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp

@@ -15,11 +15,12 @@
  ***************************************************************************/
 
 #include "qgslayertreefilterproxymodel.h"
-#include "moc_qgslayertreefilterproxymodel.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgssymbol.h"
+
+#include "moc_qgslayertreefilterproxymodel.cpp"
 
 QgsLayerTreeFilterProxyModel::QgsLayerTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )

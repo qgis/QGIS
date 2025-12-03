@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QIcon>
-
 #include "qgsclassificationmethodregistry.h"
+
+#include <QIcon>
 
 // classification methods
 #include "qgsclassificationcustom.h"

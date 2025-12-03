@@ -33,7 +33,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckContext
   public:
     /**
      * Creates a new QgsGeometryCheckContext.
-     * \param precision The precision used to define gemetry check tolerance. Tolerance is calculated as pow(10, -precision)
+     * \param precision The precision used to define geometry check tolerance. Tolerance is calculated as pow(10, -precision)
      * \param mapCrs The coordinate system in which calculations should be done
      * \param transformContext The coordinate transform context
      * \param mProject The project used to resolve additional layers

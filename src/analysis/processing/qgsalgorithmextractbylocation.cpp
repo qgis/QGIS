@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmextractbylocation.h"
+
 #include "qgsgeometryengine.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"

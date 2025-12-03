@@ -25,8 +25,8 @@
 
 #include <QObject>
 #include <QPointer>
-#include <qtypeinfo.h>
 #include <QtDebug>
+#include <qtypeinfo.h>
 
 class QVariant;
 

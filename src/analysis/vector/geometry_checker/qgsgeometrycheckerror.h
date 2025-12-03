@@ -19,7 +19,6 @@
 #define QGSGEOMETRYCHECKERROR_H
 
 #include "qgis_analysis.h"
-
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerutils.h"
 

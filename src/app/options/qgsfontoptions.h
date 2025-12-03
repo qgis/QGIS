@@ -16,8 +16,9 @@
 #define QGSFONTOPTIONS_H
 
 #include "ui_qgsfontoptionswidgetbase.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgscodeeditor.h"
+#include "qgsoptionswidgetfactory.h"
 
 /**
  * \ingroup app

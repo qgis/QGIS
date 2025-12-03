@@ -13,21 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshtmlannotationdialog.h"
-#include "moc_qgshtmlannotationdialog.cpp"
-#include "qgshtmlannotation.h"
-#include "qgsannotationwidget.h"
-#include "qgsmapcanvasannotationitem.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
+
 #include "qgsannotationmanager.h"
+#include "qgsannotationwidget.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgshtmlannotation.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QPushButton>
+
+#include "moc_qgshtmlannotationdialog.cpp"
 
 QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

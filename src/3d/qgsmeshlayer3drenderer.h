@@ -17,13 +17,11 @@
 #define QGSMESHLAYER3DRENDERER_H
 
 #include "qgis_3d.h"
-
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
-#include "qgsmesh3dsymbol.h"
-
-#include "qgsphongmaterialsettings.h"
 #include "qgsmaplayerref.h"
+#include "qgsmesh3dsymbol.h"
+#include "qgsphongmaterialsettings.h"
 
 #include <QObject>
 

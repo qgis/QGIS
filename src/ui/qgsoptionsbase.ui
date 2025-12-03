@@ -1013,7 +1013,7 @@
                   <item row="3" column="3">
                    <widget class="QToolButton" name="mBtnRemoveUntrustedProject">
                     <property name="toolTip">
-                     <string>Remove dnied project or folder</string>
+                     <string>Remove denied project or folder</string>
                     </property>
                     <property name="text">
                      <string/>

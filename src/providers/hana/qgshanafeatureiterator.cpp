@@ -14,21 +14,22 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshanafeatureiterator.h"
+
 #include "qgsexception.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
 #include "qgsgeometryfactory.h"
 #include "qgshanaconnection.h"
+#include "qgshanacrsutils.h"
 #include "qgshanaexception.h"
 #include "qgshanaexpressioncompiler.h"
-#include "qgshanafeatureiterator.h"
 #include "qgshanaprimarykeys.h"
 #include "qgshanaprovider.h"
-#include "qgshanacrsutils.h"
 #include "qgshanautils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
-#include "qgsgeometryengine.h"
 
 namespace
 {
@@ -150,7 +151,15 @@ bool QgsHanaFeatureIterator::close()
 
   if ( mResultSet )
   {
-    mResultSet->close();
+    try
+    {
+      mResultSet->close();
+    }
+    catch ( QgsHanaException &e )
+    {
+      QgsDebugError( QStringLiteral( "An error occurred while closing the HANA result set: %1" ).arg( e.what() ) );
+    }
+
     mResultSet.reset();
   }
 

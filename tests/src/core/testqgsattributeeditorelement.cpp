@@ -12,15 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QObject>
-
+#include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorfield.h"
-#include "qgsattributeeditorcontainer.h"
 #include "qgseditformconfig.h"
 #include "qgsfontutils.h"
-#include "qgstest.h"
 #include "qgssettings.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 /**
  * \ingroup UnitTests

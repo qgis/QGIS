@@ -18,10 +18,11 @@
 #ifndef QGSSPHERE_H
 #define QGSSPHERE_H
 
+#include <limits>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
-#include <limits>
 
 class QgsPoint;
 class QgsCircle;

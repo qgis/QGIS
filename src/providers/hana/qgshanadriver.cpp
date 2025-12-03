@@ -15,14 +15,15 @@
  *
  ***************************************************************************/
 #include "qgshanadriver.h"
+
+#include <odbc/Connection.h>
+#include <odbc/Environment.h>
+
 #include "qgslogger.h"
 
 #include <QDir>
 #include <QFileInfo>
 #include <QLibrary>
-
-#include "odbc/Connection.h"
-#include "odbc/Environment.h"
 
 using namespace NS_ODBC;
 

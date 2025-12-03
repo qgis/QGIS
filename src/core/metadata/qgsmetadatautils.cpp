@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmetadatautils.h"
+
 #include "qgslayermetadata.h"
 
 #include <QDomDocument>

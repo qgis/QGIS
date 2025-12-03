@@ -18,12 +18,13 @@
 #ifndef QGSRASTERHISTOGRAM
 #define QGSRASTERHISTOGRAM
 
+#include <limits>
+
 #include "qgis_core.h"
 #include "qgsrectangle.h"
+
 #include <QString>
 #include <QVector>
-
-#include <limits>
 
 /**
  * \ingroup core

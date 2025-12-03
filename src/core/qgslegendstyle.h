@@ -18,16 +18,16 @@
 #ifndef QGSLEGENDSTYLE_H
 #define QGSLEGENDSTYLE_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsreadwritecontext.h"
+#include "qgstextformat.h"
+
+#include <QDomDocument>
+#include <QDomElement>
 #include <QFont>
 #include <QMap>
 #include <QString>
-#include <QDomElement>
-#include <QDomDocument>
-
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include "qgstextformat.h"
-#include "qgsreadwritecontext.h"
 
 /**
  * \ingroup core

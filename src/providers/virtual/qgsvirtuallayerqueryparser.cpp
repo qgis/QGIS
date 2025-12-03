@@ -15,11 +15,12 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsvirtuallayerqueryparser.h"
-#include "qgsvirtuallayersqlitehelper.h"
-#include "qgsvirtuallayerblob.h"
-#include "qgslogger.h"
 
-#include "sqlite3.h"
+#include <sqlite3.h>
+
+#include "qgslogger.h"
+#include "qgsvirtuallayerblob.h"
+#include "qgsvirtuallayersqlitehelper.h"
 
 #include <QRegularExpression>
 #include <QtDebug>

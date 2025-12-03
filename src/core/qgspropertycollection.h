@@ -20,10 +20,10 @@
 #include "qgsexpressioncontext.h"
 #include "qgsproperty.h"
 
-#include <QString>
-#include <QVariant>
 #include <QColor>
 #include <QDateTime>
+#include <QString>
+#include <QVariant>
 
 class QDomElement;
 class QDomDocument;
@@ -502,7 +502,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     /**
      * Removes all collections from the stack.
      */
-    void clear() FINAL;
+    void clear() final;
 
     /**
      * Appends a collection to the end of the stack, and transfers ownership of the collection to the stack. Properties

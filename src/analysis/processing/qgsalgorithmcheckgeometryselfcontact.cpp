@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsalgorithmcheckgeometryselfcontact.h"
+
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerror.h"
 #include "qgsgeometryselfcontactcheck.h"
 #include "qgspoint.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataproviderfeaturepool.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

@@ -21,12 +21,12 @@
 #define QGSWFSPROVIDER_H
 
 #include "qgis.h"
-#include "qgsrectangle.h"
+#include "qgsbackgroundcachedfeatureiterator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsogcutils.h"
+#include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 #include "qgswfscapabilities.h"
-#include "qgsbackgroundcachedfeatureiterator.h"
 
 class QgsRectangle;
 class QgsWFSSharedData;

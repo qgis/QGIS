@@ -18,8 +18,8 @@
 #ifndef QGS_WFS3_HANDLERS_H
 #define QGS_WFS3_HANDLERS_H
 
-#include "qgsserverogcapihandler.h"
 #include "qgsfields.h"
+#include "qgsserverogcapihandler.h"
 
 class QgsFeatureRequest;
 class QgsServerOgcApi;

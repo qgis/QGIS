@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsreportsectionfieldgroup.h"
+
 #include "qgslayout.h"
 
 ///@cond NOT_STABLE

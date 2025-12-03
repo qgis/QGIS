@@ -8,6 +8,7 @@
 
 
 
+
 class QgsPaintEffectWidget /External/;
 
 class QgsPaintEffectAbstractMetadata

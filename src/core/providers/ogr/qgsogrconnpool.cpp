@@ -14,7 +14,9 @@
  ***************************************************************************/
 
 #include "qgsogrconnpool.h"
+
 #include "moc_qgsogrconnpool.cpp"
+
 ///@cond PRIVATE
 
 #include "qgslogger.h"

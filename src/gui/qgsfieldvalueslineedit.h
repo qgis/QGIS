@@ -15,19 +15,18 @@
 #ifndef QGSFIELDVALUESLINEEDIT_H
 #define QGSFIELDVALUESLINEEDIT_H
 
-#include "qgsfilterlineedit.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsfeedback.h"
+#include "qgsfilterlineedit.h"
 
-#include <QStringListModel>
-#include <QTreeView>
 #include <QFocusEvent>
 #include <QHeaderView>
-#include <QTimer>
-#include <QThread>
 #include <QMutex>
-
-#include "qgis_gui.h"
+#include <QStringListModel>
+#include <QThread>
+#include <QTimer>
+#include <QTreeView>
 
 class QgsFloatingWidget;
 class QgsVectorLayer;

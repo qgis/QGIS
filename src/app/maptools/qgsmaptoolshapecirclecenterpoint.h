@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLSHAPECIRCLECENTERPOINT_H
 #define QGSMAPTOOLSHAPECIRCLECENTERPOINT_H
 
-#include "qgsmaptoolshapecircleabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapecircleabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 
 class APP_EXPORT QgsMapToolShapeCircleCenterPointMetadata : public QgsMapToolShapeMetadata

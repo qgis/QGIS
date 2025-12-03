@@ -10,6 +10,7 @@
 
 
 
+
 class QgsHttpHeaderWidget : QWidget
 {
 %Docstring(signature="appended")

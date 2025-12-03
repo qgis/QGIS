@@ -17,11 +17,11 @@
 #define QGSDATETIMEEDITPLUGIN_H
 
 
+#include "qgis_customwidgets.h"
+
 #include <QtGlobal>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
-#include "qgis_customwidgets.h"
-
 
 class CUSTOMWIDGETS_EXPORT QgsDateTimeEditPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

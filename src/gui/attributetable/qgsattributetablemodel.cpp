@@ -13,34 +13,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsattributetablemodel.h"
-#include "moc_qgsattributetablemodel.cpp"
-
-#include "qgsactionmanager.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgsexpression.h"
-#include "qgsfeatureiterator.h"
-#include "qgsconditionalstyle.h"
-#include "qgsfields.h"
-#include "qgsfieldformatter.h"
-#include "qgslogger.h"
-#include "qgsmaplayeraction.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgsgui.h"
-#include "qgsexpressionnodeimpl.h"
-#include "qgsfieldmodel.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsstringutils.h"
-#include "qgsvectorlayerutils.h"
-#include "qgsvectorlayercache.h"
-
-#include <QVariant>
-#include <QUuid>
 
 #include <limits>
+
+#include "qgsactionmanager.h"
+#include "qgsapplication.h"
+#include "qgsconditionalstyle.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionnodeimpl.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsfieldmodel.h"
+#include "qgsfields.h"
+#include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsmaplayeraction.h"
+#include "qgsstringutils.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectorlayerutils.h"
+
+#include <QUuid>
+#include <QVariant>
+
+#include "moc_qgsattributetablemodel.cpp"
 
 QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent )
   : QAbstractTableModel( parent )
@@ -692,9 +693,13 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   {
     const unsigned long cacheIndex = role - static_cast<int>( CustomRole::Sort );
     if ( cacheIndex < mSortCaches.size() )
+    {
       return mSortCaches.at( cacheIndex ).sortCache.value( rowId );
+    }
     else
+    {
       return QVariant();
+    }
   }
 
   const QgsField field = mLayer->fields().at( fieldId );
@@ -735,6 +740,10 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     {
       const WidgetData &widgetData = getWidgetData( index.column() );
       QString tooltip = widgetData.fieldFormatter->representValue( mLayer, fieldId, widgetData.config, widgetData.cache, val );
+      if ( tooltip != val.toString() )
+      {
+        tooltip = tr( "%1 (%2)" ).arg( tooltip, val.toString() );
+      }
       if ( val.userType() == QMetaType::Type::QString && QgsStringUtils::isUrl( val.toString() ) )
       {
         tooltip = tr( "%1 (Ctrl+click to open)" ).arg( tooltip );

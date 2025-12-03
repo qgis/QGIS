@@ -17,15 +17,14 @@
 #define QGSQUICKMAPSETTINGS_H
 
 #include "qgis_quick.h"
-
-#include <QObject>
-
 #include "qgscoordinatetransformcontext.h"
 #include "qgsmaplayer.h"
 #include "qgsmapsettings.h"
 #include "qgspoint.h"
-#include "qgsrectangle.h"
 #include "qgsproject.h"
+#include "qgsrectangle.h"
+
+#include <QObject>
 
 /**
  * \ingroup quick

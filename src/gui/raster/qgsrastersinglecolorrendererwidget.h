@@ -22,8 +22,8 @@
 
 #include "ui_qgsrastersinglecolorrendererwidgetbase.h"
 
-#include "qgsrasterrendererwidget.h"
 #include "qgis_gui.h"
+#include "qgsrasterrendererwidget.h"
 
 /**
  * \brief Renderer widget for the single color renderer.

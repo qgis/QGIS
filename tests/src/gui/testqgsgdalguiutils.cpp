@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include "qgsgdalguiutils.h"
 #include "qgsapplication.h"
+#include "qgsgdalguiutils.h"
+#include "qgstest.h"
 
 class TestQgsGdalGuiUtils : public QObject
 {

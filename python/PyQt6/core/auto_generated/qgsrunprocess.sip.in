@@ -12,6 +12,7 @@
 
 
 
+
 class QgsRunProcess: QObject /NoDefaultCtors/
 {
 %Docstring(signature="appended")

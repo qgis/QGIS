@@ -24,6 +24,12 @@
 
 #include <QDomDocument>
 
+class QgsServerInterface;
+class QgsProject;
+class QgsServerRequest;
+class QgsServerResponse;
+class QgsServerSettings;
+
 namespace QgsWfs
 {
   namespace v1_0_0

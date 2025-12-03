@@ -16,15 +16,15 @@
 #ifndef QGSMESHEDITOR_H
 #define QGSMESHEDITOR_H
 
-#include <QObject>
-#include <QUndoCommand>
-#include <QPointer>
-
 #include "qgis.h"
-#include "qgsmeshdataset.h"
 #include "qgsmeshdataprovider.h"
-#include "qgstriangularmesh.h"
+#include "qgsmeshdataset.h"
 #include "qgstopologicalmesh.h"
+#include "qgstriangularmesh.h"
+
+#include <QObject>
+#include <QPointer>
+#include <QUndoCommand>
 
 class QgsMeshAdvancedEditing;
 
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     //! Constructor with a specific mesh \a nativeMesh and an associated triangular mesh \a triangularMesh
     QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangularMesh, QObject *parent = nullptr ); SIP_SKIP
-    ~QgsMeshEditor();
+    ~QgsMeshEditor() override;
 
     // TODO QGIS 5.0 -- fix this mess
 

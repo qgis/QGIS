@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 #include "qgsrelationreferencesearchwidgetwrapper.h"
-#include "moc_qgsrelationreferencesearchwidgetwrapper.cpp"
 
+#include "qgsapplication.h"
 #include "qgsfields.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgsrelationreferencewidget.h"
+#include "qgssettings.h"
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsrelationreferencewidget.h"
-#include "qgsrelationmanager.h"
-#include "qgssettings.h"
-#include "qgsapplication.h"
 
 #include <QStringListModel>
+
+#include "moc_qgsrelationreferencesearchwidgetwrapper.cpp"
 
 QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )

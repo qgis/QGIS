@@ -13,17 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgcplist.h"
 #include "qgsgcplistmodel.h"
-#include "moc_qgsgcplistmodel.cpp"
+
+#include <cmath>
+
 #include "qgis.h"
+#include "qgsdoublevalidator.h"
+#include "qgsgcplist.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
 #include "qgssettings.h"
-#include "qgsdoublevalidator.h"
 
-#include <cmath>
 #include <QLocale>
+
+#include "moc_qgsgcplistmodel.cpp"
 
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
   : QAbstractTableModel( parent )

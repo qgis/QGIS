@@ -18,17 +18,18 @@
 #ifndef QGSTILEDSCENELAYERRENDERER_H
 #define QGSTILEDSCENELAYERRENDERER_H
 
+#include <memory>
+
 #include "qgis_core.h"
-#include "qgsmaplayerrenderer.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsmaplayerrenderer.h"
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledsceneindex.h"
 
-#include <memory>
 #include <QElapsedTimer>
-#include <QSet>
-#include <QImage>
 #include <QHash>
+#include <QImage>
+#include <QSet>
 
 #define SIP_NO_FILE
 
@@ -63,7 +64,7 @@ class CORE_EXPORT QgsTiledSceneLayerRenderer: public QgsMapLayerRenderer
 
     //! Ctor
     explicit QgsTiledSceneLayerRenderer( QgsTiledSceneLayer *layer, QgsRenderContext &context );
-    ~QgsTiledSceneLayerRenderer();
+    ~QgsTiledSceneLayerRenderer() override;
 
     bool render() override;
     Qgis::MapLayerRendererFlags flags() const override;

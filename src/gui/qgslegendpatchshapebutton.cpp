@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 #include "qgslegendpatchshapebutton.h"
-#include "moc_qgslegendpatchshapebutton.cpp"
-#include "qgslegendpatchshapewidget.h"
-#include "qgis.h"
-#include "qgsguiutils.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
 
-#include <QMenu>
+#include "qgis.h"
+#include "qgsfillsymbol.h"
+#include "qgsguiutils.h"
+#include "qgslegendpatchshapewidget.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+
 #include <QBuffer>
+#include <QMenu>
+
+#include "moc_qgslegendpatchshapebutton.cpp"
 
 QgsLegendPatchShapeButton::QgsLegendPatchShapeButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )

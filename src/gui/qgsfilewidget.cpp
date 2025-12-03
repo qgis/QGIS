@@ -15,24 +15,25 @@
  ***************************************************************************/
 
 #include "qgsfilewidget.h"
-#include "moc_qgsfilewidget.cpp"
 
-#include <QLineEdit>
-#include <QToolButton>
-#include <QLabel>
-#include <QGridLayout>
-#include <QUrl>
-#include <QDropEvent>
-#include <QRegularExpression>
-
-#include "qgssettings.h"
+#include "qgsapplication.h"
+#include "qgsfileutils.h"
 #include "qgsfilterlineedit.h"
 #include "qgsfocuskeeper.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
-#include "qgsapplication.h"
-#include "qgsfileutils.h"
 #include "qgsmimedatautils.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+
+#include <QDropEvent>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QRegularExpression>
+#include <QToolButton>
+#include <QUrl>
+
+#include "moc_qgsfilewidget.cpp"
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
@@ -75,7 +76,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   setLayout( mLayout );
 }
 
-QString QgsFileWidget::filePath()
+QString QgsFileWidget::filePath() const
 {
   return mFilePath;
 }

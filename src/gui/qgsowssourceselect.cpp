@@ -18,39 +18,41 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h" // GEO_EPSG_CRS_ID
+#include "qgsowssourceselect.h"
+
+#include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdataprovider.h"
 #include "qgsdatasourceuri.h"
-#include "qgsprojectionselectiondialog.h"
+#include "qgsgui.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsmessageviewer.h"
 #include "qgsnewhttpconnection.h"
-#include "qgstreewidgetitem.h"
-#include "qgsproject.h"
-#include "qgsproviderregistry.h"
 #include "qgsowsconnection.h"
-#include "qgsdataprovider.h"
-#include "qgsowssourceselect.h"
-#include "moc_qgsowssourceselect.cpp"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
+#include "qgsproviderregistry.h"
 #include "qgssettings.h"
-#include "qgsgui.h"
+#include "qgstreewidgetitem.h"
 
 #include <QButtonGroup>
-#include <QFileDialog>
-#include <QRadioButton>
 #include <QDomDocument>
+#include <QFileDialog>
 #include <QHeaderView>
 #include <QImageReader>
 #include <QInputDialog>
 #include <QMap>
 #include <QMessageBox>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPicture>
+#include <QRadioButton>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QValidator>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QRegularExpression>
+
+#include "moc_qgsowssourceselect.cpp"
 
 QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )

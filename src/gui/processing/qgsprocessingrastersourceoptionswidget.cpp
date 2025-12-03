@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingrastersourceoptionswidget.h"
+
 #include "moc_qgsprocessingrastersourceoptionswidget.cpp"
 
 ///@cond NOT_STABLE

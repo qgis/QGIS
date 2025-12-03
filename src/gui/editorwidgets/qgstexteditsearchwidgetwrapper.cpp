@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgstexteditsearchwidgetwrapper.h"
-#include "moc_qgstexteditsearchwidgetwrapper.cpp"
 
 #include "qgsfields.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgstexteditsearchwidgetwrapper.cpp"
 
 QgsTextEditSearchWidgetWrapper::QgsTextEditSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsDefaultSearchWidgetWrapper( vl, fieldIdx, parent )

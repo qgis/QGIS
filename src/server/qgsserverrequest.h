@@ -19,10 +19,11 @@
 #ifndef QGSSERVERREQUEST_H
 #define QGSSERVERREQUEST_H
 
-#include <QUrl>
-#include <QMap>
 #include "qgis_server.h"
 #include "qgsserverparameters.h"
+
+#include <QMap>
+#include <QUrl>
 
 // Note about design: this interface must be passed along to Python and thus signatures methods must be
 // compatible with pyQGIS/pyQT api and rules.

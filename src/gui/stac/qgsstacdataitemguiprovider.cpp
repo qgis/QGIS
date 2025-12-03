@@ -14,19 +14,19 @@
  ***************************************************************************/
 
 #include "qgsstacdataitemguiprovider.h"
-#include "moc_qgsstacdataitemguiprovider.cpp"
 
 #include "qgsapplication.h"
-#include "qgsstaccontroller.h"
-#include "qgsstacdataitems.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsstacconnection.h"
 #include "qgsstacconnectiondialog.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsdataitemguiproviderutils.h"
-#include "qgsstacitem.h"
+#include "qgsstaccontroller.h"
+#include "qgsstacdataitems.h"
 #include "qgsstacdownloadassetsdialog.h"
+#include "qgsstacitem.h"
 #include "qgsstacobjectdetailsdialog.h"
 
+#include "moc_qgsstacdataitemguiprovider.cpp"
 
 ///@cond PRIVATE
 

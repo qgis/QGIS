@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLTRIMEXTENDFEATURE_H
 #define QGSMAPTOOLTRIMEXTENDFEATURE_H
 
-#include "qgsmaptooledit.h"
 #include "qgis_app.h"
+#include "qgsmaptooledit.h"
 #include "qgsrubberband.h"
 #include "qgssnappingconfig.h"
 

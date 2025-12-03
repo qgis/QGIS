@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QToolButton>
-#include <QObject>
-#include <QHeaderView>
-#include <QCheckBox>
-#include <QStandardItemModel>
 #include "qgis.h"
+
+#include <QCheckBox>
+#include <QHeaderView>
+#include <QObject>
+#include <QStandardItemModel>
+#include <QToolButton>
 
 Q_NOWARN_DEPRECATED_PUSH
 #include "qwt_compass.h"

@@ -397,8 +397,6 @@
   <tabstop>isFieldEditableCheckBox</tabstop>
   <tabstop>mEditableExpressionButton</tabstop>
   <tabstop>labelOnTopCheckBox</tabstop>
-  <tabstop>reuseLastValuesCheckBox</tabstop>
-  <tabstop>reuseLastValuesByDefaultCheckBox</tabstop>
   <tabstop>mWidgetTypeComboBox</tabstop>
   <tabstop>notNullCheckBox</tabstop>
   <tabstop>mCheckBoxEnforceNotNull</tabstop>
@@ -409,6 +407,10 @@
   <tabstop>mCheckBoxEnforceExpression</tabstop>
   <tabstop>mExpressionWidget</tabstop>
   <tabstop>mApplyDefaultValueOnUpdateCheckBox</tabstop>
+  <tabstop>mReuseLastValuePolicyComboBox</tabstop>
+  <tabstop>mSplitPolicyComboBox</tabstop>
+  <tabstop>mDuplicatePolicyComboBox</tabstop>
+  <tabstop>mMergePolicyComboBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

@@ -17,12 +17,14 @@
  ***************************************************************************/
 
 #include "qgsprovidermetadata.h"
-#include "moc_qgsprovidermetadata.cpp"
-#include "qgsdataprovider.h"
-#include "qgsmaplayer.h"
-#include "qgsexception.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsdataprovider.h"
+#include "qgsexception.h"
+#include "qgsmaplayer.h"
 #include "qgsprovidersublayerdetails.h"
+
+#include "moc_qgsprovidermetadata.cpp"
 
 QgsProviderMetadata::QgsProviderMetadata( QString const &key,
     QString const &description,

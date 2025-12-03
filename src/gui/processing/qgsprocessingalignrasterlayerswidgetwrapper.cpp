@@ -14,7 +14,13 @@
  ***************************************************************************/
 
 #include "qgsprocessingalignrasterlayerswidgetwrapper.h"
-#include "moc_qgsprocessingalignrasterlayerswidgetwrapper.cpp"
+
+#include "qgis.h"
+#include "qgspanelwidget.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameteralignrasterlayers.h"
+#include "qgsprocessingparameters.h"
+#include "qgsrasterfilewriter.h"
 
 #include <QBoxLayout>
 #include <QLineEdit>
@@ -23,12 +29,7 @@
 #include <QStandardItemModel>
 #include <QToolButton>
 
-#include "qgspanelwidget.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsprocessingparameteralignrasterlayers.h"
-#include "qgsrasterfilewriter.h"
-#include "qgis.h"
+#include "moc_qgsprocessingalignrasterlayerswidgetwrapper.cpp"
 
 /// @cond private
 

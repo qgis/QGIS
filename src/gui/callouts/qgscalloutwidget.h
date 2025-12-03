@@ -15,13 +15,14 @@
 #ifndef QGSCALLOUTWIDGET_H
 #define QGSCALLOUTWIDGET_H
 
-#include "qgspropertyoverridebutton.h"
 #include "qgis_sip.h"
-#include "qgssymbolwidgetcontext.h"
 #include "qgscallout.h"
+#include "qgspropertyoverridebutton.h"
+#include "qgssymbolwidgetcontext.h"
 #include "qgsvectorlayer.h"
-#include <QWidget>
+
 #include <QStandardItemModel>
+#include <QWidget>
 
 /**
  * \ingroup gui

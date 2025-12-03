@@ -17,9 +17,9 @@
 #define QGSFLATTERRAINGENERATOR_H
 
 #include "qgis_3d.h"
-
 #include "qgsterraingenerator.h"
 #include "qgsterraintileloader.h"
+
 #include <Qt3DExtras/QPlaneGeometry>
 
 #define SIP_NO_FILE

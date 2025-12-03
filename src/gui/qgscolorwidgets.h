@@ -16,10 +16,11 @@
 #ifndef QGSCOLORWIDGETS_H
 #define QGSCOLORWIDGETS_H
 
-#include <QWidgetAction>
-#include <QWidget>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QWidget>
+#include <QWidgetAction>
 
 class QColor;
 class QLineEdit;

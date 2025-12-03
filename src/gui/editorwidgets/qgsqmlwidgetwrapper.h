@@ -16,9 +16,9 @@
 #ifndef QGSQMLWIDGETWRAPPER_H
 #define QGSQMLWIDGETWRAPPER_H
 
-#include "qgswidgetwrapper.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgswidgetwrapper.h"
 
 #include <QQuickWidget>
 

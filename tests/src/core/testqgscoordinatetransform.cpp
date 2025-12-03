@@ -14,15 +14,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgscoordinatetransform.h"
 #include "qgsapplication.h"
-#include "qgsrectangle.h"
+#include "qgscoordinatetransform.h"
 #include "qgscoordinatetransformcontext.h"
-#include "qgsproject.h"
-#include <QObject>
-#include "qgstest.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
+#include "qgsrectangle.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsCoordinateTransform : public QObject
 {

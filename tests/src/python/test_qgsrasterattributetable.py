@@ -40,6 +40,10 @@ from utilities import unitTestDataPath
 start_app()
 
 
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return (maj) * 1000000 + (min) * 10000 + (rev) * 100
+
+
 def createTestRasters(cls, path):
 
     cls.temp_path = path
@@ -398,10 +402,16 @@ class TestQgsRasterAttributeTable(QgisTestCase):
         raster = QgsRasterLayer(self.uri_2x2_2_BANDS_INT16)
         self.assertTrue(raster.isValid())
         d = raster.dataProvider()
-        self.assertFalse(d.readNativeAttributeTable()[0])
+
+        # since GDAL 3.11, reading RAT from .vat.dbf is automatic. Older versions require
+        # it to be manually read
+        if int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 11, 0):
+            self.assertFalse(d.readNativeAttributeTable()[0])
+
         self.assertTrue(
             d.readFileBasedAttributeTable(1, self.uri_2x2_2_BANDS_INT16 + ".vat.dbf")[0]
         )
+
         rat = d.attributeTable(1)
         self.assertTrue(rat.isValid()[0])
         self.assertEqual(

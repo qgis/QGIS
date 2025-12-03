@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstiledscenerendererregistry.h"
+
 #include "qgstiledscenerenderer.h"
 
 // default renderers

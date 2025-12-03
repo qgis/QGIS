@@ -21,11 +21,14 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayoutelevationprofilewidgetbase.h"
-#include "qgslayoutitemwidget.h"
-#include "qgslayoutitemelevationprofile.h"
+
 #include <functional>
+
+#include "qgis_gui.h"
+#include "qgslayoutitemelevationprofile.h"
+#include "qgslayoutitemwidget.h"
+
 #include <QPointer>
 
 class QgsElevationProfileLayerTreeView;

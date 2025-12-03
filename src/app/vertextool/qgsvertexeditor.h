@@ -19,16 +19,16 @@
 #ifndef QGSVERTEXEDITOR_H
 #define QGSVERTEXEDITOR_H
 
+#include "qgis_app.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdockwidget.h"
+#include "qgspanelwidget.h"
+#include "qgspoint.h"
+#include "qgsvertexid.h"
+
 #include <QAbstractTableModel>
 #include <QItemSelection>
 #include <QStyledItemDelegate>
-
-#include "qgis_app.h"
-#include "qgsdockwidget.h"
-#include "qgspoint.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsvertexid.h"
-#include "qgspanelwidget.h"
 
 class QLabel;
 class QTableView;

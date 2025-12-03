@@ -17,13 +17,13 @@
 #ifndef QGSRENDERERPROPERTIESDIALOG_H
 #define QGSRENDERERPROPERTIESDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-
 #include "ui_qgsrendererpropsdialogbase.h"
 
-#include "qgsfeaturerequest.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsfeaturerequest.h"
+
+#include <QDialog>
 
 class QKeyEvent;
 

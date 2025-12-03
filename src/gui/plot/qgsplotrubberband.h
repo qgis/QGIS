@@ -21,10 +21,10 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
-#include <QPointF>
-#include <QObject>
 #include <QBrush>
+#include <QObject>
 #include <QPen>
+#include <QPointF>
 
 class QgsPlotCanvas;
 class QGraphicsRectItem;

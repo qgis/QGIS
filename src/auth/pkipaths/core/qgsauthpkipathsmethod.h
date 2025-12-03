@@ -17,13 +17,12 @@
 #ifndef QGSAUTHPKIPATHSMETHOD_H
 #define QGSAUTHPKIPATHSMETHOD_H
 
-#include <QObject>
-#include <QMutex>
-
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
 
+#include <QMutex>
+#include <QObject>
 
 class QgsAuthPkiPathsMethod : public QgsAuthMethod
 {

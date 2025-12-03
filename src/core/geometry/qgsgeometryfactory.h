@@ -20,10 +20,12 @@
 
 #define SIP_NO_FILE
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgswkbtypes.h"
+
 #include <QString>
-#include <memory>
 
 class QgsAbstractGeometry;
 class QgsLineString;

@@ -13,23 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsoptionsdialoghighlightwidgetsimpl.h"
+
+#include <functional>
+
+#include "qgsoptionsdialoghighlightwidget.h"
+
+#include <QAbstractItemModel>
 #include <QCheckBox>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QEvent>
 #include <QGroupBox>
 #include <QLabel>
-#include <QTreeView>
-#include <QTreeWidget>
-#include <QAbstractItemModel>
 #include <QTableView>
 #include <QTextDocumentFragment>
-
-#include "qgsoptionsdialoghighlightwidget.h"
-
-#include "qgsoptionsdialoghighlightwidgetsimpl.h"
-
-#include <functional>
+#include <QTreeView>
+#include <QTreeWidget>
 
 const int HIGHLIGHT_BACKGROUND_RED = 255;
 const int HIGHLIGHT_BACKGROUND_GREEN = 251;

@@ -20,10 +20,10 @@
 #ifndef QGSNETWORKCONTENTFETCHER_H
 #define QGSNETWORKCONTENTFETCHER_H
 
+#include "qgis_core.h"
+
 #include <QNetworkReply>
 #include <QUrl>
-
-#include "qgis_core.h"
 
 class QTextCodec;
 

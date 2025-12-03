@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgsalgorithmlayouttoimage.h"
+
 #include "qgslayout.h"
+#include "qgslayoutexporter.h"
 #include "qgslayoutitemmap.h"
 #include "qgsprintlayout.h"
 #include "qgsprocessingoutputs.h"
-#include "qgslayoutexporter.h"
+
 #include <QImageWriter>
 
 ///@cond PRIVATE

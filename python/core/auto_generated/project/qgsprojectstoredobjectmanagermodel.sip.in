@@ -8,6 +8,7 @@
 
 
 
+
 class QgsProjectStoredObjectManagerModelBase : QAbstractListModel
 {
 %Docstring(signature="appended")

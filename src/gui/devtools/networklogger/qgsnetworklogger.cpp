@@ -14,13 +14,16 @@
  ***************************************************************************/
 
 #include "qgsnetworklogger.h"
-#include "moc_qgsnetworklogger.cpp"
+
+#include "qgis.h"
 #include "qgsnetworkloggernode.h"
 #include "qgssettings.h"
-#include "qgis.h"
-#include <QThread>
+
 #include <QApplication>
+#include <QThread>
 #include <QUrlQuery>
+
+#include "moc_qgsnetworklogger.cpp"
 
 QgsNetworkLogger::QgsNetworkLogger( QgsNetworkAccessManager *manager, QObject *parent )
   : QAbstractItemModel( parent )

@@ -22,11 +22,11 @@
 
 #include "ui_qgsattributetypeedit.h"
 
+#include "qgis_gui.h"
 #include "qgseditorconfigwidget.h"
 #include "qgsfeature.h"
-#include "qgsvectordataprovider.h"
 #include "qgshelp.h"
-#include "qgis_gui.h"
+#include "qgsvectordataprovider.h"
 
 class QWidget;
 class QStandardItem;

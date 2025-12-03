@@ -16,22 +16,22 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayoutitemlabel.h"
+#include "qgsfontutils.h"
+#include "qgslayoutatlas.h"
 #include "qgslayoutitemhtml.h"
+#include "qgslayoutitemlabel.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutmultiframe.h"
-#include "qgsvectorlayer.h"
-#include "qgsmultirenderchecker.h"
-#include "qgsfontutils.h"
-#include "qgsproject.h"
-#include "qgsprintlayout.h"
-#include "qgslayoutatlas.h"
 #include "qgslayoutpagecollection.h"
-#include "qgslayoutreportcontext.h"
 #include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
+#include "qgsmultirenderchecker.h"
+#include "qgsprintlayout.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 #include <QObject>
-#include "qgstest.h"
 
 class TestQgsLayoutLabel : public QgsTest
 {

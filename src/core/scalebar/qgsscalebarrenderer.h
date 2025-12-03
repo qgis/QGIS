@@ -19,8 +19,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QRectF>
+
 #include <QList>
+#include <QRectF>
 
 class QgsRenderContext;
 class QgsScaleBarSettings;

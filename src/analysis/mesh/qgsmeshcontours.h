@@ -18,21 +18,22 @@
 #ifndef QGSMESHCONTOURS_H
 #define QGSMESHCONTOURS_H
 
+#include <limits>
+#include <memory>
+
+#include "qgis_analysis.h"
+#include "qgis_sip.h"
+#include "qgsfeature.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshrenderersettings.h"
+#include "qgstriangularmesh.h"
+
+#include <QList>
 #include <QMap>
+#include <QPair>
 #include <QString>
 #include <QStringList>
 #include <QVector>
-#include <QPair>
-#include <QList>
-#include <memory>
-#include <limits>
-
-#include "qgsmeshdataprovider.h"
-#include "qgsfeature.h"
-#include "qgis_analysis.h"
-#include "qgis_sip.h"
-#include "qgstriangularmesh.h"
-#include "qgsmeshrenderersettings.h"
 
 class QgsMeshLayer;
 class QgsPoint;

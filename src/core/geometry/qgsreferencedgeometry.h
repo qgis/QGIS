@@ -18,11 +18,11 @@
 #ifndef QGSREFERENCEDGEOMETRY_H
 #define QGSREFERENCEDGEOMETRY_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrectangle.h"
 #include "qgsgeometry.h"
+#include "qgsrectangle.h"
 
 /**
  * \class QgsReferencedGeometryBase

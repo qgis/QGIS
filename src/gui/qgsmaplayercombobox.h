@@ -16,12 +16,11 @@
 #ifndef QGSMAPLAYERCOMBOBOX_H
 #define QGSMAPLAYERCOMBOBOX_H
 
-#include <QComboBox>
-
-#include "qgsmaplayerproxymodel.h"
 #include "qgis_gui.h"
-
 #include "qgis_sip.h"
+#include "qgsmaplayerproxymodel.h"
+
+#include <QComboBox>
 
 class QgsMapLayer;
 class QgsVectorLayer;

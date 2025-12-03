@@ -220,6 +220,22 @@ class TestQgsSFCGAL(QgisTestCase):
         with self.assertRaises(QgsSfcgalException):
             invalid_polygon.approximateMedialAxis()
 
+    @unittest.skipIf(
+        not Qgis.hasSfcgal() or Qgis.sfcgalVersionInt() < 20300, "SFCGAL 2.3 required"
+    )
+    def test_primitive_cube(self):
+        cube = QgsSfcgalGeometry.createCube(5)
+        self.assertEqual(cube.wkbType(), Qgis.WkbType.PolyhedralSurfaceZ)
+        self.assertEqual(cube.geometryType(), "cube")
+
+        params = cube.primitiveParameters()
+        self.assertEqual(len(params), 1)
+        self.assertEqual(params[0][0], "size")
+        self.assertEqual(params[0][1], "double")
+
+        param = cube.primitiveParameter("size")
+        self.assertEqual(param, 5.0)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -13,24 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsattributesformproperties.h"
+
 #include "qgsactionmanager.h"
 #include "qgsaddtaborgroup.h"
-#include "qgsattributesformtreeviewindicatorprovider.h"
-#include "qgsattributesformproperties.h"
-#include "moc_qgsattributesformproperties.cpp"
-#include "qgsattributetypedialog.h"
-#include "qgsattributeformcontaineredit.h"
-#include "qgsattributewidgetedit.h"
-#include "qgsattributesforminitcode.h"
-#include "qgsattributesformtreeviewitemdelegate.h"
 #include "qgsapplication.h"
+#include "qgsattributeformcontaineredit.h"
+#include "qgsattributesforminitcode.h"
+#include "qgsattributesformtreeviewindicatorprovider.h"
+#include "qgsattributesformtreeviewitemdelegate.h"
+#include "qgsattributetypedialog.h"
+#include "qgsattributewidgetedit.h"
 #include "qgscodeeditor.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsgui.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsfieldcombobox.h"
+#include "qgsgui.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsxmlutils.h"
+
+#include "moc_qgsattributesformproperties.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

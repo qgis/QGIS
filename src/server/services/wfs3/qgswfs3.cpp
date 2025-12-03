@@ -17,8 +17,8 @@
 
 #include "qgsmodule.h"
 #include "qgsserverogcapi.h"
-#include "qgswfs3handlers.h"
 #include "qgsserverstatichandler.h"
+#include "qgswfs3handlers.h"
 
 /**
  * \ingroup server

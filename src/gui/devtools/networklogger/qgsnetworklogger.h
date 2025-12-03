@@ -17,12 +17,12 @@
 
 #define SIP_NO_FILE
 
-#include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include <QElapsedTimer>
-
 #include "qgis_gui.h"
 #include "qgsnetworkaccessmanager.h"
+
+#include <QAbstractItemModel>
+#include <QElapsedTimer>
+#include <QSortFilterProxyModel>
 
 class QgsDevToolsModelNode;
 class QgsNetworkLoggerRequestGroup;

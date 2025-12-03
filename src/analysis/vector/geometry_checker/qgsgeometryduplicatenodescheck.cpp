@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryduplicatenodescheck.h"
+
+#include "qgsfeaturepool.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
-#include "qgsgeometryduplicatenodescheck.h"
-#include "qgsgeometryutils.h"
-#include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsgeometryutils.h"
 
 QgsGeometryCheck::Result QgsGeometryDuplicateNodesCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {

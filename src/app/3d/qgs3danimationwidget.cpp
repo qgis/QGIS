@@ -14,21 +14,24 @@
  ***************************************************************************/
 
 #include "qgs3danimationwidget.h"
-#include "moc_qgs3danimationwidget.cpp"
 
-#include "qgs3danimationsettings.h"
-#include "qgsapplication.h"
-#include "qgscameracontroller.h"
+#include <memory>
+
 #include "qgs3danimationexportdialog.h"
+#include "qgs3danimationsettings.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgsapplication.h"
+#include "qgscameracontroller.h"
 #include "qgsfeedback.h"
 #include "qgsproxyprogresstask.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QTimer>
 #include <QProgressDialog>
+#include <QTimer>
+
+#include "moc_qgs3danimationwidget.cpp"
 
 Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   : QWidget( parent )
@@ -88,7 +91,7 @@ void Qgs3DAnimationWidget::setAnimation( const Qgs3DAnimationSettings &animSetti
 
 void Qgs3DAnimationWidget::initializeController( const Qgs3DAnimationSettings &animSettings )
 {
-  mAnimationSettings.reset( new Qgs3DAnimationSettings( animSettings ) );
+  mAnimationSettings = std::make_unique<Qgs3DAnimationSettings>( animSettings );
 
   sliderTime->setMaximum( animSettings.duration() * 100 );
 }

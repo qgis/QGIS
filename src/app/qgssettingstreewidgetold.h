@@ -42,10 +42,10 @@
 #define QGSSETTINGSTREEWIDGETOLD_H
 
 #include "qgssettings.h"
+
 #include <QIcon>
 #include <QTimer>
 #include <QTreeWidget>
-
 
 class QgsSettingsTreeWidgetOld : public QTreeWidget
 {

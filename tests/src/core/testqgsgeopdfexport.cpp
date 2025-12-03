@@ -15,11 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
 #include "qgsabstractgeopdfexporter.h"
-#include <QObject>
+#include "qgsapplication.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QObject>
 
 class TestGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
 {

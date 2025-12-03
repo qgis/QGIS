@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdxfpaintdevice.h"
+
 #include "qgsdxfpaintengine.h"
 #include "qgspoint.h"
 

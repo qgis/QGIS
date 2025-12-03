@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsexpressionaddfunctionfiledialog.h"
+
 #include "qgshelp.h"
-#include "moc_qgsexpressionaddfunctionfiledialog.cpp"
 
 #include <QPushButton>
 #include <QStandardItemModel>
+
+#include "moc_qgsexpressionaddfunctionfiledialog.cpp"
 
 QgsExpressionAddFunctionFileDialog::QgsExpressionAddFunctionFileDialog( bool enableProjectFunctions, QWidget *parent )
   : QDialog( parent )

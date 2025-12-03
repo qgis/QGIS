@@ -18,9 +18,9 @@
 
 #include "qgsmapunitscale.h"
 
-#include <QSharedDataPointer>
-#include <QPainter>
 #include <QDomElement>
+#include <QPainter>
+#include <QSharedDataPointer>
 
 class QgsTextShadowSettingsPrivate;
 class QgsVectorLayer;

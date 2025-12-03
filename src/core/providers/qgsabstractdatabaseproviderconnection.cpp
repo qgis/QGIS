@@ -14,16 +14,18 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "moc_qgsabstractdatabaseproviderconnection.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsexception.h"
-#include "qgsweakrelation.h"
-#include "qgsfeedback.h"
-#include "qgssqlstatement.h"
-#include "qgsprovidersqlquerybuilder.h"
 
-#include <QVariant>
+#include "qgsexception.h"
+#include "qgsfeedback.h"
+#include "qgsprovidersqlquerybuilder.h"
+#include "qgssqlstatement.h"
+#include "qgsvectorlayer.h"
+#include "qgsweakrelation.h"
+
 #include <QObject>
+#include <QVariant>
+
+#include "moc_qgsabstractdatabaseproviderconnection.cpp"
 
 QgsAbstractDatabaseProviderConnection::QgsAbstractDatabaseProviderConnection( const QString &name ):
   QgsAbstractProviderConnection( name )
@@ -1402,6 +1404,16 @@ void QgsAbstractDatabaseProviderConnection::setFieldDomainName( const QString &,
 void QgsAbstractDatabaseProviderConnection::addFieldDomain( const QgsFieldDomain &, const QString & ) const
 {
   checkCapability( Capability::AddFieldDomain );
+}
+
+void QgsAbstractDatabaseProviderConnection::updateFieldDomain( QgsFieldDomain *, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::EditFieldDomain );
+}
+
+void QgsAbstractDatabaseProviderConnection::deleteFieldDomain( const QString &, const QString & ) const
+{
+  checkCapability( Qgis::DatabaseProviderConnectionCapability2::DeleteFieldDomain );
 }
 
 void QgsAbstractDatabaseProviderConnection::setFieldAlias( const QString &, const QString &, const QString &, const QString & ) const

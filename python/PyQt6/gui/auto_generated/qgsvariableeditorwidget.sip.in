@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsVariableEditorWidget : QWidget
 {
 %Docstring(signature="appended")

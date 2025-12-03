@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsdemterrainsettings.h"
-#include "qgsrasterlayer.h"
-#include "qgsdemterraingenerator.h"
+
 #include "qgs3drendercontext.h"
+#include "qgsdemterraingenerator.h"
+#include "qgsrasterlayer.h"
 
 QgsAbstractTerrainSettings *QgsDemTerrainSettings::create()
 {

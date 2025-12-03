@@ -15,13 +15,14 @@
 #ifndef QGSFEATUREEXPRESSIONVALUESGATHERER_H
 #define QGSFEATUREEXPRESSIONVALUESGATHERER_H
 
-#include <QThread>
-#include <QMutex>
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsexpressioncontextutils.h"
+
+#include <QMutex>
+#include <QThread>
 
 #define SIP_NO_FILE
 

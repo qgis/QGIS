@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgsdatumtransformtablewidget.h"
-#include "moc_qgsdatumtransformtablewidget.cpp"
 
+#include "qgisapp.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformdialog.h"
-#include "qgisapp.h"
 #include "qgssettings.h"
+
+#include "moc_qgsdatumtransformtablewidget.cpp"
 
 QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
   : QAbstractTableModel( parent )

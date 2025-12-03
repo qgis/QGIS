@@ -15,10 +15,12 @@
 #ifndef QGSRELATIONADDPOLYMORPHICDIALOG_H
 #define QGSRELATIONADDPOLYMORPHICDIALOG_H
 
-#include <QDialog>
-#include "qgis_app.h"
 #include "ui_qgsrelationmanageraddpolymorphicdialogbase.h"
+
 #include "qgis.h"
+#include "qgis_app.h"
+
+#include <QDialog>
 
 class QgsPolymorphicRelation;
 

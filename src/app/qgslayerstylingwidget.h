@@ -15,22 +15,23 @@
 #ifndef QGSLAYERSTYLESDOCK_H
 #define QGSLAYERSTYLESDOCK_H
 
-#include <QToolButton>
-#include <QWidget>
-#include <QLabel>
-#include <QTabWidget>
-#include <QStackedWidget>
-#include <QDialogButtonBox>
+#include "ui_qgsmapstylingwidgetbase.h"
+
+#include "qgis_app.h"
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
+
 #include <QCheckBox>
-#include <QUndoCommand>
+#include <QDialogButtonBox>
 #include <QDomNode>
+#include <QLabel>
+#include <QStackedWidget>
+#include <QTabWidget>
 #include <QTime>
 #include <QTimer>
-
-#include "ui_qgsmapstylingwidgetbase.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
-#include "qgsmaplayerconfigwidget.h"
-#include "qgis_app.h"
+#include <QToolButton>
+#include <QUndoCommand>
+#include <QWidget>
 
 class QgsLabelingWidget;
 class QgsMaskingWidget;

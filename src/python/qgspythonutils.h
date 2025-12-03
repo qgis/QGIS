@@ -24,7 +24,6 @@
 #include <QString>
 #include <QStringList>
 
-
 class QgisInterface;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 class QgsServerInterface;

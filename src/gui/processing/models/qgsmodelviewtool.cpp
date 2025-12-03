@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtool.h"
-#include "moc_qgsmodelviewtool.cpp"
-#include "qgsmodelgraphicsview.h"
+
 #include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
 #include "qgsmodelviewmouseevent.h"
+
+#include "moc_qgsmodelviewtool.cpp"
 
 QgsModelViewTool::QgsModelViewTool( QgsModelGraphicsView *view, const QString &name )
   : QObject( view )

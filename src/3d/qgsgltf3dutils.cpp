@@ -16,9 +16,9 @@
 
 #include "qgsgltf3dutils.h"
 
-#include "qgsgltfutils.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgltfutils.h"
 #include "qgslogger.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgstexturematerial.h"
@@ -48,6 +48,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <QFile>
 #include <QFileInfo>
 #include <QMatrix4x4>
+#include <memory>
 
 ///@cond PRIVATE
 
@@ -427,7 +428,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
       *matrix = parentTransform * *matrix;
     else
     {
-      matrix.reset( new QMatrix4x4( parentTransform ) );
+      matrix = std::make_unique<QMatrix4x4>( parentTransform );
     }
   }
 

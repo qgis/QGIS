@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 
+#include "qgsfocuswatcher.h"
 #include "qgstest.h"
 
-#include "qgsfocuswatcher.h"
 #include <QApplication>
 #include <QLineEdit>
 #include <QSignalSpy>

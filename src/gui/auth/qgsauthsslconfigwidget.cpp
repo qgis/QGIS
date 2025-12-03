@@ -15,19 +15,19 @@
  ***************************************************************************/
 
 #include "qgsauthsslconfigwidget.h"
-#include "moc_qgsauthsslconfigwidget.cpp"
+
+#include "qgsapplication.h"
 #include "qgsauthcertificateinfo.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QUrl>
 
-#include "qgsauthguiutils.h"
-#include "qgsauthmanager.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-
+#include "moc_qgsauthsslconfigwidget.cpp"
 
 static const QString configFoundText_() { return QObject::tr( "Configuration loaded from database" ); }
 static const QString configNotFoundText_() { return QObject::tr( "Configuration not found in database" ); }

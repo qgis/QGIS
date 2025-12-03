@@ -16,10 +16,10 @@
 #ifndef QGSAUTHSETTINGSWIDGET_H
 #define QGSAUTHSETTINGSWIDGET_H
 
+#include "ui_qgsauthsettingswidget.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
-#include "ui_qgsauthsettingswidget.h"
 
 #include <QWidget>
 

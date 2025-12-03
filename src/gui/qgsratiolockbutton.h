@@ -18,11 +18,12 @@
 
 #include "qgsratiolockbutton.h"
 
-#include <QToolButton>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
 #include <QPointer>
+#include <QToolButton>
+
 class QDoubleSpinBox;
 
 /**

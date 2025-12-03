@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsaspectfilter.h"
+
 #include <cmath>
 
 QgsAspectFilter::QgsAspectFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )

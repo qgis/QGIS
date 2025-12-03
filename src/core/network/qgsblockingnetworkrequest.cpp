@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgsblockingnetworkrequest.h"
-#include "moc_qgsblockingnetworkrequest.cpp"
-#include "qgslogger.h"
+
 #include "qgsapplication.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsauthmanager.h"
-#include "qgsmessagelog.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsvariantutils.h"
-#include <QUrl>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QMutex>
-#include <QWaitCondition>
-#include <QNetworkCacheMetaData>
+
 #include <QAuthenticator>
 #include <QBuffer>
+#include <QMutex>
+#include <QNetworkCacheMetaData>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QUrl>
+#include <QWaitCondition>
+
+#include "moc_qgsblockingnetworkrequest.cpp"
 
 QgsBlockingNetworkRequest::QgsBlockingNetworkRequest( Qgis::NetworkRequestFlags flags )
   : mFlags( flags )

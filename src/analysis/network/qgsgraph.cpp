@@ -19,6 +19,7 @@
  */
 
 #include "qgsgraph.h"
+
 #include <QSet>
 
 int QgsGraph::addVertex( const QgsPointXY &pt )

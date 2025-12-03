@@ -17,6 +17,7 @@
 #define QGSLAYERTREEEMBEDDEDCONFIGWIDGET_H
 
 #include "ui_qgslayertreeembeddedconfigwidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
 

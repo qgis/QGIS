@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsnewauxiliaryfielddialog.h"
-#include "moc_qgsnewauxiliaryfielddialog.cpp"
+
+#include "qgsapplication.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsgui.h"
-#include "qgsapplication.h"
 #include "qgsvariantutils.h"
 
 #include <QMessageBox>
+
+#include "moc_qgsnewauxiliaryfielddialog.cpp"
 
 QgsNewAuxiliaryFieldDialog::QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinition &def, QgsVectorLayer *layer, bool nameOnly, QWidget *parent )
   : QDialog( parent )

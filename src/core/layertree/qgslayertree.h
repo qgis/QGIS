@@ -16,10 +16,10 @@
 #ifndef QGSLAYERTREE_H
 #define QGSLAYERTREE_H
 
-#include "qgslayertreenode.h"
+#include "qgslayertreecustomnode.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
-#include "qgslayertreecustomnode.h"
+#include "qgslayertreenode.h"
 
 /**
  * \ingroup core

@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsPresetColorRampWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

@@ -14,82 +14,78 @@
  ***************************************************************************/
 
 #include "qgs3dmapscene.h"
-#include "moc_qgs3dmapscene.cpp"
-
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QMesh>
-#include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QSceneLoader>
-#include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QPhongAlphaMaterial>
-#include <Qt3DExtras/QDiffuseSpecularMaterial>
-#include <Qt3DExtras/QSphereMesh>
-#include <Qt3DLogic/QFrameAction>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QRenderPass>
-#include <Qt3DRender/QRenderState>
-#include <Qt3DRender/QCullFace>
-#include <Qt3DRender/QDepthTest>
-#include <QSurface>
-#include <QUrl>
-#include <QtMath>
-
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
-#include <QTimer>
 
 #include "qgs3daxis.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
+#include "qgs3dmapexportsettings.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3dsceneexporter.h"
+#include "qgs3dutils.h"
 #include "qgsaabb.h"
 #include "qgsabstract3dengine.h"
-#include "qgsannotationlayer.h"
-#include "qgs3dmapsettings.h"
-#include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsambientocclusionrenderview.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationlayer3drenderer.h"
+#include "qgsapplication.h"
 #include "qgscameracontroller.h"
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
+#include "qgsdirectionallightsettings.h"
 #include "qgseventtracing.h"
+#include "qgsforwardrenderview.h"
+#include "qgsframegraph.h"
 #include "qgsgeotransform.h"
 #include "qgsglobechunkedentity.h"
+#include "qgslinematerial_p.h"
+#include "qgslogger.h"
+#include "qgsmaplayerelevationproperties.h"
+#include "qgsmaplayertemporalproperties.h"
 #include "qgsmaterial.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
+#include "qgsmessageoutput.h"
+#include "qgspoint3dbillboardmaterial.h"
 #include "qgspoint3dsymbol.h"
-#include "qgsrulebased3drenderer.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
+#include "qgspostprocessingentity.h"
+#include "qgsrulebased3drenderer.h"
+#include "qgsskyboxentity.h"
+#include "qgsskyboxsettings.h"
 #include "qgssourcecache.h"
 #include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
-#include "qgsannotationlayer3drenderer.h"
-#include "qgsdirectionallightsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
-#include "qgspoint3dbillboardmaterial.h"
-#include "qgsmaplayertemporalproperties.h"
-#include "qgsmaplayerelevationproperties.h"
-
-#include "qgslinematerial_p.h"
-#include "qgs3dsceneexporter.h"
-#include "qgs3dmapexportsettings.h"
-#include "qgsmessageoutput.h"
-#include "qgsframegraph.h"
-#include "qgsabstractterrainsettings.h"
-
-#include "qgsskyboxentity.h"
-#include "qgsskyboxsettings.h"
-
 #include "qgswindow3dengine.h"
-#include "qgspointcloudlayer.h"
-#include "qgsforwardrenderview.h"
-#include "qgsambientocclusionrenderview.h"
-#include "qgspostprocessingentity.h"
+
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
+#include <QSurface>
+#include <QTimer>
+#include <QUrl>
+#include <Qt3DExtras/QDiffuseSpecularMaterial>
+#include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DExtras/QPhongAlphaMaterial>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QSphereMesh>
+#include <Qt3DLogic/QFrameAction>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QMesh>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QRenderState>
+#include <Qt3DRender/QSceneLoader>
+#include <Qt3DRender/QTechnique>
+#include <QtMath>
+
+#include "moc_qgs3dmapscene.cpp"
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 

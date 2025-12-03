@@ -15,9 +15,9 @@
 
 #include "qgsraycastingutils.h"
 
-#include "qgsray3d.h"
 #include "qgsaabb.h"
 #include "qgslogger.h"
+#include "qgsray3d.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 

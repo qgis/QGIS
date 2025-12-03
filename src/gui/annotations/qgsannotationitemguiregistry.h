@@ -16,14 +16,16 @@
 #ifndef QGSANNOTATIONITEMGUIREGISTRY_H
 #define QGSANNOTATIONITEMGUIREGISTRY_H
 
+#include <functional>
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsannotationitemregistry.h"
 #include "qgsapplication.h"
 #include "qgspathresolver.h"
-#include "qgsannotationitemregistry.h"
-#include "qgis.h"
+
 #include <QIcon>
-#include <functional>
 
 class QgsAnnotationLayer;
 class QgsAnnotationItem;
@@ -343,7 +345,7 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
      * Returns a reference to the item group with matching \a id.
      * \see addItemGroup()
      */
-    const QgsAnnotationItemGuiGroup &itemGroup( const QString &id );
+    const QgsAnnotationItemGuiGroup &itemGroup( const QString &id ) const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not

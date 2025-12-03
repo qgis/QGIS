@@ -18,10 +18,10 @@
 #ifndef QGSPOINTCLOUDBLOCKREQUEST_H
 #define QGSPOINTCLOUDBLOCKREQUEST_H
 
-#include <QObject>
-
-#include "qgstiledownloadmanager.h"
 #include "qgspointcloudindex.h"
+#include "qgstiledownloadmanager.h"
+
+#include <QObject>
 
 #define SIP_NO_FILE
 
@@ -47,7 +47,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
                                const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect );
 
 
-    virtual ~QgsPointCloudBlockRequest() = 0;
+    ~QgsPointCloudBlockRequest() override = 0;
 
     /**
      * Returns the requested block. if the returned block is nullptr, that means the data request failed.
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     std::unique_ptr<QgsPointCloudBlock> takeBlock();
 
     //! Returns the error message string of the request
-    QString errorStr();
+    QString errorStr() const;
 
   signals:
     //! Emitted when the request processing has finished

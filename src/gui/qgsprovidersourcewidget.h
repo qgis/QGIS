@@ -17,9 +17,10 @@
 #ifndef QGSPROVIDERSOURCEWIDGET_H
 #define QGSPROVIDERSOURCEWIDGET_H
 
-#include <QWidget>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QWidget>
 
 class QgsMapCanvas;
 

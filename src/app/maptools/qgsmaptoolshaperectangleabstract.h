@@ -16,10 +16,10 @@
 #ifndef QGSMAPTOOLSHAPERECTANGLEABSTRACT_H
 #define QGSMAPTOOLSHAPERECTANGLEABSTRACT_H
 
+#include "qgis_app.h"
 #include "qgsmaptoolshapecircleabstract.h"
 #include "qgspolygon.h"
 #include "qgsquadrilateral.h"
-#include "qgis_app.h"
 
 class APP_EXPORT QgsMapToolShapeRectangleAbstract : public QgsMapToolShapeAbstract
 {

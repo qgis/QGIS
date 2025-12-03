@@ -12,17 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsapplication.h"
+#include "qgsbearingnumericformat.h"
+#include "qgsmapcanvas.h"
+#include "qgsnumericformat.h"
+#include "qgstest.h"
+
 #include <QCoreApplication>
 #include <QLocale>
 #include <QSignalSpy>
 #include <QTest>
-
-#include "qgstest.h"
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsnumericformat.h"
-#include "qgsbearingnumericformat.h"
 
 class TestQgsAdvancedDigitizingDockWidget : public QObject
 {

@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgsmaplayerutils.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransformcontext.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsprovidermetadata.h"
-#include "qgsproviderregistry.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
-#include "qgscoordinatetransform.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsrectangle.h"
+
 #include <QRegularExpression>
 
 QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext )
@@ -185,4 +187,31 @@ bool QgsMapLayerUtils::isOpenStreetMapLayer( QgsMapLayer *layer )
     }
   }
   return false;
+}
+
+QString QgsMapLayerUtils::layerTypeToString( Qgis::LayerType type )
+{
+  switch ( type )
+  {
+    case Qgis::LayerType::Vector:
+      return QObject::tr( "Vector" );
+    case Qgis::LayerType::Raster:
+      return QObject::tr( "Raster" );
+    case Qgis::LayerType::Mesh:
+      return QObject::tr( "Mesh" );
+    case Qgis::LayerType::PointCloud:
+      return QObject::tr( "Point Cloud" );
+    case Qgis::LayerType::Annotation:
+      return QObject::tr( "Annotation" );
+    case Qgis::LayerType::VectorTile:
+      return QObject::tr( "Vector Tile" );
+    case Qgis::LayerType::Plugin:
+      return QObject::tr( "Plugin" );
+    case Qgis::LayerType::Group:
+      return QObject::tr( "Group" );
+    case Qgis::LayerType::TiledScene:
+      return QObject::tr( "Tiled Scene" );
+  }
+  Q_ASSERT( false );
+  return QString();
 }

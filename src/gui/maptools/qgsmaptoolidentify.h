@@ -16,6 +16,7 @@
 #ifndef QGSMAPTOOLIDENTIFY_H
 #define QGSMAPTOOLIDENTIFY_H
 
+#include "qgis_gui.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsidentifycontext.h"
@@ -24,7 +25,6 @@
 
 #include <QObject>
 #include <QPointer>
-#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsVectorLayer;

@@ -17,13 +17,13 @@
 #ifndef QGSPROFILEREQUEST_H
 #define QGSPROFILEREQUEST_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsexpressioncontext.h"
-
-#include <memory>
 
 class QgsCurve;
 class QgsAbstractTerrainProvider;

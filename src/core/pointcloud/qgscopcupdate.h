@@ -16,11 +16,10 @@
 #ifndef QGSCOPCUPDATE_H
 #define QGSCOPCUPDATE_H
 
+#include "lazperf/header.hpp"
+#include "lazperf/vlr.hpp"
 #include "qgis_core.h"
 #include "qgspointcloudindex.h"
-
-#include <lazperf/header.hpp>
-#include <lazperf/vlr.hpp>
 
 #define SIP_NO_FILE
 

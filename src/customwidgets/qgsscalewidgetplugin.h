@@ -17,11 +17,11 @@
 #define QGSSCALEWIDGETPLUGIN_H
 
 
+#include "qgis_customwidgets.h"
+
 #include <QtGlobal>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
-#include "qgis_customwidgets.h"
-
 
 class CUSTOMWIDGETS_EXPORT QgsScaleWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

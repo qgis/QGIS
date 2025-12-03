@@ -13,14 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
-
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsmapsavedialog.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapsavedialog.h"
+#include "qgstest.h"
 
+#include <QObject>
 
 class TestQgsMapSaveDialog : public QgsTest
 {

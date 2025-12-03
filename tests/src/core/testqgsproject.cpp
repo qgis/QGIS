@@ -12,29 +12,28 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsarchive.h"
+#include "qgslayertree.h"
+#include "qgslayoutmanager.h"
+#include "qgsmaplayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgspathresolver.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbollayerutils.h"
 #include "qgstest.h"
+#include "qgsunittypes.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #include <QObject>
 #include <QSignalSpy>
 #include <QTimer>
-
-#include "qgsapplication.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgspathresolver.h"
-#include "qgsproject.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgslayertree.h"
-#include "qgssettings.h"
-#include "qgsunittypes.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgslayoutmanager.h"
-#include "qgsmarkersymbol.h"
-#include "qgsrasterlayer.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsarchive.h"
 
 class TestQgsProject : public QObject
 {
@@ -176,7 +175,7 @@ void TestQgsProject::testPathResolver()
 
   // test older style relative path - file must exist for this to work
   QTemporaryFile tmpFile;
-  tmpFile.open(); // fileName is not available until we open the file
+  QVERIFY( tmpFile.open() ); // fileName is not available until we open the file
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
   const QgsPathResolver tempRel( tmpName );
@@ -817,7 +816,7 @@ void TestQgsProject::testAttachmentsQgs()
   // Verify that attachment is exists after re-reading project
   {
     QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgs" ) );
-    projFile.open();
+    QVERIFY( projFile.open() );
 
     QgsProject p;
     QFile file;
@@ -846,12 +845,12 @@ void TestQgsProject::testAttachmentsQgs()
   // Verify that attachment paths can be used as layer filenames
   {
     QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgs" ) );
-    projFile.open();
+    QVERIFY( projFile.open() );
 
     QgsProject p;
     const QString fileName = p.createAttachedFile( "testlayer.gpx" );
     QFile file( fileName );
-    file.open( QIODevice::WriteOnly );
+    QVERIFY( file.open( QIODevice::WriteOnly ) );
     file.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
     file.write( "<gpx version=\"1.0\">" );
     file.write( "<name>Example gpx</name>" );
@@ -904,7 +903,7 @@ void TestQgsProject::testAttachmentsQgz()
   // Verify that attachment is exists after re-reading project
   {
     QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
-    projFile.open();
+    QVERIFY( projFile.open() );
 
     QgsProject p;
     QFile file;
@@ -929,12 +928,12 @@ void TestQgsProject::testAttachmentsQgz()
   // Verify that attachment paths can be used as layer filenames
   {
     QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
-    projFile.open();
+    QVERIFY( projFile.open() );
 
     QgsProject p;
     const QString fileName = p.createAttachedFile( "testlayer.gpx" );
     QFile file( fileName );
-    file.open( QIODevice::WriteOnly );
+    QVERIFY( file.open( QIODevice::WriteOnly ) );
     file.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
     file.write( "<gpx version=\"1.0\">" );
     file.write( "<name>Example gpx</name>" );
@@ -968,7 +967,7 @@ void TestQgsProject::testAttachmentIdentifier()
   // Verify attachment identifiers
   {
     QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgz" ) );
-    projFile.open();
+    QVERIFY( projFile.open() );
 
     QgsProject p;
     const QString attachmentFileName = p.createAttachedFile( "test.jpg" );
@@ -1097,7 +1096,7 @@ void TestQgsProject::testAsynchronousLayerLoading()
   QCOMPARE( project->mapLayers( false ).count(), layersCount );
 
   QTemporaryFile projFile( QDir::temp().absoluteFilePath( "XXXXXX_test.qgs" ) );
-  projFile.open();
+  QVERIFY( projFile.open() );
   QVERIFY( project->write( projFile.fileName() ) );
 
   project = std::make_unique<QgsProject>();

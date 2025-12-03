@@ -18,9 +18,8 @@
 #ifndef QGSMESHVIRTUALDATASETGROUP_H
 #define QGSMESHVIRTUALDATASETGROUP_H
 
-#include "qgsmeshdataset.h"
 #include "qgsmeshcalcnode.h"
-
+#include "qgsmeshdataset.h"
 #include "qgsmeshlayertemporalproperties.h"
 
 #define SIP_NO_FILE

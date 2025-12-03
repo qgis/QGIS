@@ -17,16 +17,15 @@
 #define QGSDOCKABLEWIDGETHELPER_H
 
 #include "qgis_gui.h"
+#include "qgsgui.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QDialog>
-#include <QToolButton>
-#include <QMainWindow>
 #include <QDomElement>
+#include <QMainWindow>
 #include <QPointer>
-
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgsgui.h"
+#include <QToolButton>
 
 #define SIP_NO_FILE
 
@@ -99,7 +98,7 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
       Options options = Options()
     );
 
-    ~QgsDockableWidgetHelper();
+    ~QgsDockableWidgetHelper() override;
 
     //! Returns if the widget is docked
     //! \since 3.42

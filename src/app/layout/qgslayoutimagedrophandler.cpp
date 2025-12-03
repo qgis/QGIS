@@ -14,15 +14,17 @@
  ***************************************************************************/
 
 #include "qgslayoutimagedrophandler.h"
-#include "moc_qgslayoutimagedrophandler.cpp"
-#include "qgslayoutdesignerinterface.h"
-#include "qgslayout.h"
-#include "qgslayoutview.h"
-#include "qgslayoutitempicture.h"
 
-#include <QImageReader>
+#include "qgslayout.h"
+#include "qgslayoutdesignerinterface.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutview.h"
+
 #include <QFileInfo>
+#include <QImageReader>
 #include <QMimeData>
+
+#include "moc_qgslayoutimagedrophandler.cpp"
 
 QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
   : QgsLayoutCustomDropHandler( parent )

@@ -8,6 +8,7 @@
 
 
 
+
 class QgsPointCloudRendererWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

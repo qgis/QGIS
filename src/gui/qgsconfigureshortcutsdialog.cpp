@@ -14,31 +14,32 @@
  ***************************************************************************/
 
 #include "qgsconfigureshortcutsdialog.h"
-#include "moc_qgsconfigureshortcutsdialog.cpp"
 
-#include "qgsshortcutsmanager.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgslogger.h"
 #include "qgsprojectversion.h"
+#include "qgssettings.h"
+#include "qgsshortcutsmanager.h"
 
-#include <QKeyEvent>
-#include <QKeySequence>
-#include <QMessageBox>
-#include <QShortcut>
+#include <QAction>
 #include <QDomDocument>
 #include <QFileDialog>
-#include <QTextStream>
+#include <QKeyEvent>
+#include <QKeySequence>
 #include <QMenu>
-#include <QAction>
+#include <QMessageBox>
 #include <QPdfWriter>
-#include <QTextDocument>
-#include <QTextCursor>
-#include <QTextTable>
-#include <QTextTableFormat>
-#include <QTextTableCellFormat>
+#include <QShortcut>
 #include <QTextCharFormat>
+#include <QTextCursor>
+#include <QTextDocument>
+#include <QTextStream>
+#include <QTextTable>
+#include <QTextTableCellFormat>
+#include <QTextTableFormat>
+
+#include "moc_qgsconfigureshortcutsdialog.cpp"
 
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsShortcutsManager *manager )
   : QDialog( parent )

@@ -14,21 +14,22 @@
  ***************************************************************************/
 
 #include "qgspointcloud3dsymbolwidget.h"
-#include "moc_qgspointcloud3dsymbolwidget.cpp"
 
-#include "qgspointcloudlayer.h"
-#include "qgspointcloud3dsymbol.h"
-#include "qgspointcloudlayer3drenderer.h"
 #include "qgsapplication.h"
-#include "qgspointcloudrenderer.h"
-#include "qgspointcloudattributebyramprenderer.h"
-#include "qgspointcloudrgbrenderer.h"
-#include "qgspointcloudclassifiedrenderer.h"
 #include "qgsdoublevalidator.h"
+#include "qgspointcloud3dsymbol.h"
+#include "qgspointcloudattributebyramprenderer.h"
+#include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudclassifiedrendererwidget.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
 #include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudrgbrenderer.h"
 #include "qgsstackedwidget.h"
 #include "qgsvirtualpointcloudprovider.h"
+
+#include "moc_qgspointcloud3dsymbolwidget.cpp"
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
@@ -471,7 +472,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( renderer2d->minimum(), renderer2d->maximum() );
       mBlockChangedSignals--;
     }
-    else if ( newSymbolType == QLatin1String( "rgb" ) )
+    else if ( newSymbolType == QLatin1String( "rgb" ) && mLayer->renderer()->type() == QLatin1String( "rgb" ) )
     {
       const QgsPointCloudRgbRenderer *renderer2d = qgis::down_cast<const QgsPointCloudRgbRenderer *>( mLayer->renderer() );
       mBlockChangedSignals++;
@@ -509,7 +510,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       ( void ) ( renderer2d );
       mBlockChangedSignals--;
     }
-    else if ( newSymbolType == QLatin1String( "classification" ) )
+    else if ( newSymbolType == QLatin1String( "classification" ) && mLayer->renderer()->type() == QLatin1String( "classified" ) )
     {
       mClassifiedRendererWidget->setFromRenderer( mLayer->renderer() );
     }

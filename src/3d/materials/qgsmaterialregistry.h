@@ -20,8 +20,8 @@
 #include "qgis_sip.h"
 
 #include <QDomElement>
-#include <QMap>
 #include <QIcon>
+#include <QMap>
 
 class QgsReadWriteContext;
 class QgsMaterialSettingsWidget SIP_EXTERNAL;

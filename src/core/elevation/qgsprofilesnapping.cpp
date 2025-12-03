@@ -14,4 +14,5 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsprofilesnapping.h"

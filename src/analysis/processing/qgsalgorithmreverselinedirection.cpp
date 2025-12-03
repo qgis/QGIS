@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmreverselinedirection.h"
+
 #include "qgscurve.h"
 #include "qgsgeometrycollection.h"
 

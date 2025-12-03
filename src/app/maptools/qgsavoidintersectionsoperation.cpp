@@ -13,16 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPushButton>
+#include "qgsavoidintersectionsoperation.h"
 
 #include "qgis.h"
 #include "qgisapp.h"
-#include "qgsavoidintersectionsoperation.h"
-#include "moc_qgsavoidintersectionsoperation.cpp"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+
+#include <QPushButton>
+
+#include "moc_qgsavoidintersectionsoperation.cpp"
 
 QgsAvoidIntersectionsOperation::Result QgsAvoidIntersectionsOperation::apply( QgsVectorLayer *layer, QgsFeatureId fid, QgsGeometry &geom, const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> &ignoreFeatures )
 {

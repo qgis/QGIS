@@ -13,24 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QClipboard>
-#include <QMenu>
+#include "qgswfsdataitems.h"
 
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
-#include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifcollection.h"
+#include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifprovider.h"
-#include "qgswfsconstants.h"
-#include "qgswfsconnection.h"
-#include "qgswfsgetcapabilities.h"
-#include "qgswfsdataitems.h"
-#include "moc_qgswfsdataitems.cpp"
-#include "qgswfsdatasourceuri.h"
-#include "qgswfsprovider.h"
-#include "qgssettings.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgswfsconnection.h"
+#include "qgswfsconstants.h"
+#include "qgswfsdatasourceuri.h"
+#include "qgswfsgetcapabilities.h"
+#include "qgswfsprovider.h"
+
+#include <QClipboard>
+#include <QMenu>
+
+#include "moc_qgswfsdataitems.cpp"
 
 #ifdef HAVE_GUI
 #include "qgswfssourceselect.h"
@@ -48,7 +50,16 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
 {
   const QgsSettings settings;
   const bool useCurrentViewExtent = settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool();
-  mUri = QgsWFSDataSourceURI::build( uri.uri( false ), featureType, crsString, QString(), QString(), useCurrentViewExtent );
+
+  const QStringList detailsParameters = { QStringLiteral( "wfs" ), parent->name() };
+  QString featureFormat = QgsOwsConnection::settingsDefaultFeatureFormat->value( detailsParameters );
+  if ( featureFormat.isEmpty() )
+  {
+    // Read from global default setting
+    featureFormat = QgsSettings().value( QStringLiteral( "qgis/lastFeatureFormatEncoding" ), QString() ).toString();
+  }
+
+  mUri = QgsWFSDataSourceURI::build( uri.uri( false ), featureType, crsString, QString(), QString(), useCurrentViewExtent, featureFormat );
   setState( Qgis::BrowserItemState::Populated );
   mIconName = QStringLiteral( "mIconWfs.svg" );
   mBaseUri = uri.param( QStringLiteral( "url" ) );

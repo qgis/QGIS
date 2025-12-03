@@ -15,19 +15,21 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerdigitizingproperties.h"
-#include "moc_qgsvectorlayerdigitizingproperties.cpp"
+
 #include "qgsanalysis.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgsdoublespinbox.h"
+#include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckfactory.h"
 #include "qgsgeometrycheckregistry.h"
-#include "qgsgeometrycheck.h"
 #include "qgsgeometryoptions.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsproject.h"
 #include "qgsunittypes.h"
 
 #include <QFormLayout>
+
+#include "moc_qgsvectorlayerdigitizingproperties.cpp"
 
 QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

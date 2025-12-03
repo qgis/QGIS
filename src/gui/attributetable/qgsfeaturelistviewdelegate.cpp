@@ -13,20 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfeaturelistviewdelegate.h"
-#include "moc_qgsfeaturelistviewdelegate.cpp"
-#include "qgsvectorlayer.h"
+
+#include "qgsapplication.h"
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturelistmodel.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayereditbuffer.h"
 #include "qgsfeatureselectionmodel.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
 
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QLabel>
 #include <QApplication>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QMouseEvent>
 #include <QObject>
+#include <QPushButton>
+
+#include "moc_qgsfeaturelistviewdelegate.cpp"
 
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
   : QItemDelegate( parent )

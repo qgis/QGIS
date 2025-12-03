@@ -17,9 +17,11 @@
 #define QGSLOADRASTERATTRIBUTETABLEDIALOG_H
 
 
-#include "qgis_gui.h"
-#include "qgis.h"
 #include "ui_qgsloadrasterattributetabledialogbase.h"
+
+#include "qgis.h"
+#include "qgis_gui.h"
+
 #include <QDialog>
 
 #define SIP_NO_FILE

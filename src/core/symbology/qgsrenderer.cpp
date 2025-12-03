@@ -14,32 +14,31 @@
  ***************************************************************************/
 
 #include "qgsrenderer.h"
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
 
-#include "qgssinglesymbolrenderer.h" // for default renderer
+#include <algorithm>
 
-#include "qgsrendererregistry.h"
-
-#include "qgsrendercontext.h"
+#include "qgsapplication.h"
 #include "qgsfeature.h"
+#include "qgslayertreemodellegendnode.h"
+#include "qgslinesymbol.h"
 #include "qgslogger.h"
-#include "qgsvectorlayer.h"
+#include "qgsmarkersymbol.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgspoint.h"
 #include "qgsproperty.h"
-#include "qgsapplication.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgslayertreemodellegendnode.h"
+#include "qgsrendercontext.h"
+#include "qgsrendererregistry.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgssldexportcontext.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
-#include <QDomElement>
 #include <QDomDocument>
+#include <QDomElement>
 #include <QPolygonF>
 #include <QThread>
-#include <algorithm>
 
 QgsPropertiesDefinition QgsFeatureRenderer::sPropertyDefinitions;
 

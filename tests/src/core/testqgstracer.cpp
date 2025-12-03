@@ -13,19 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include <qgsapplication.h>
-#include <qgsgeometry.h>
-#include <qgstracer.h>
-#include <qgsvectorlayer.h>
-#include "qgsproject.h"
+#include "qgsapplication.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgsgeometry.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgsmapsettings.h"
+#include "qgsproject.h"
 #include "qgssnappingutils.h"
 #include "qgssymbol.h"
+#include "qgstest.h"
+#include "qgstracer.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsTracer : public QObject
 {

@@ -16,17 +16,19 @@
  ***************************************************************************/
 
 #include "qgsgrouplayer.h"
-#include "moc_qgsgrouplayer.cpp"
-#include "qgsmaplayerfactory.h"
-#include "qgspainting.h"
-#include "qgsmaplayerlistutils_p.h"
+
+#include "qgsapplication.h"
 #include "qgsgrouplayerrenderer.h"
+#include "qgsmaplayerfactory.h"
+#include "qgsmaplayerlistutils_p.h"
 #include "qgsmaplayerref.h"
+#include "qgsmaplayerutils.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
-#include "qgsapplication.h"
-#include "qgsmaplayerutils.h"
+#include "qgspainting.h"
 #include "qgsthreadingutils.h"
+
+#include "moc_qgsgrouplayer.cpp"
 
 QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::Group, name )

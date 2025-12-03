@@ -20,12 +20,12 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QMap>
-#include <QDomElement>
-#include <QDomDocument>
-
-#include "qgsreadwritecontext.h"
 #include "qgspropertycollection.h"
+#include "qgsreadwritecontext.h"
+
+#include <QDomDocument>
+#include <QDomElement>
+#include <QMap>
 
 class QgsRelationManager;
 class QgsEditFormConfigPrivate;

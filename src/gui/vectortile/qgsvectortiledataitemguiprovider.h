@@ -21,7 +21,6 @@
 
 #include "qgsdataitemguiprovider.h"
 
-
 class QgsVectorTileDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT

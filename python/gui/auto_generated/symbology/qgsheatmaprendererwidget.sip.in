@@ -8,6 +8,7 @@
 
 
 
+
 class QgsHeatmapRendererWidget : QgsRendererWidget
 {
 %Docstring(signature="appended")

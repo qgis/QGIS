@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslabelsearchtree.h"
+
 #include "labelposition.h"
 
 QgsLabelSearchTree::QgsLabelSearchTree() = default;

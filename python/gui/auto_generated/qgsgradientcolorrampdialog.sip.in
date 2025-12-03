@@ -10,6 +10,7 @@
 
 
 
+
 class QgsGradientColorRampDialog : QDialog
 {
 %Docstring(signature="appended")

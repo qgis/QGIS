@@ -17,11 +17,12 @@
 #ifndef QGSCODEEDITOR_H
 #define QGSCODEEDITOR_H
 
-#include <QString>
-#include "qgscodeeditorcolorscheme.h"
 #include "qgis.h"
-#include "qgssettingstree.h"
+#include "qgscodeeditorcolorscheme.h"
 #include "qgspanelwidget.h"
+#include "qgssettingstree.h"
+
+#include <QString>
 
 // qscintilla includes
 #include <Qsci/qsciapis.h>
@@ -404,7 +405,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void setLinearSelection( int start, int end );
 
     // Override QsciScintilla::callTip to handle wrapping
-    virtual void callTip() override;
+    void callTip() override;
 
     /**
      * Returns the linear position of the start of the last wrapped part for the specified line, or

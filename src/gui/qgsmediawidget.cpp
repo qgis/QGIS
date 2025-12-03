@@ -15,16 +15,17 @@
  ***************************************************************************/
 
 #include "qgsmediawidget.h"
-#include "moc_qgsmediawidget.cpp"
+
 #include "qgsapplication.h"
 
-#include <QLabel>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QSlider>
+#include <QVBoxLayout>
 #include <QVideoWidget>
 
+#include "moc_qgsmediawidget.cpp"
 
 QgsMediaWidget::QgsMediaWidget( QWidget *parent )
   : QWidget( parent )

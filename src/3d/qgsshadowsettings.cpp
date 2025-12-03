@@ -15,10 +15,10 @@
 
 #include "qgsshadowsettings.h"
 
-#include <QDomDocument>
-
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
+
+#include <QDomDocument>
 
 QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
   : mRenderShadows( other.mRenderShadows )

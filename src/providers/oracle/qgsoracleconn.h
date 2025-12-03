@@ -18,22 +18,21 @@
 #ifndef QGSORACLECONN_H
 #define QGSORACLECONN_H
 
-#include <QString>
-#include <QStringList>
-#include <QVector>
-#include <QMap>
-#include <QSet>
-#include <QThread>
-#include <QVariant>
-#include <QDateTime>
-
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectordataprovider.h"
 
+#include <QDateTime>
+#include <QMap>
+#include <QRecursiveMutex>
+#include <QSet>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QRecursiveMutex>
+#include <QString>
+#include <QStringList>
+#include <QThread>
+#include <QVariant>
+#include <QVector>
 
 class QgsField;
 

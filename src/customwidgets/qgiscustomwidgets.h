@@ -21,7 +21,6 @@
 #include <QtUiPlugin/QDesignerCustomWidgetCollectionInterface>
 #include <qplugin.h>
 
-
 class QgisCustomWidgets : public QObject, public QDesignerCustomWidgetCollectionInterface
 {
     Q_OBJECT

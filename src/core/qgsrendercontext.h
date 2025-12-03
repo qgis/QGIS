@@ -18,26 +18,27 @@
 #ifndef QGSRENDERCONTEXT_H
 #define QGSRENDERCONTEXT_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include <QColor>
-#include <QPainter>
-#include <QPainterPath>
 #include <memory>
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsdistancearea.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturefilterprovider.h"
 #include "qgslabelsink.h"
 #include "qgsmaptopixel.h"
 #include "qgsmapunitscale.h"
-#include "qgsrectangle.h"
-#include "qgsvectorsimplifymethod.h"
-#include "qgsdistancearea.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgspathresolver.h"
-#include "qgstemporalrangeobject.h"
 #include "qgsmaskrendersettings.h"
+#include "qgspathresolver.h"
+#include "qgsrectangle.h"
+#include "qgstemporalrangeobject.h"
+#include "qgsvectorsimplifymethod.h"
+
+#include <QColor>
+#include <QPainter>
+#include <QPainterPath>
 
 class QPainter;
 class QgsAbstractGeometry;

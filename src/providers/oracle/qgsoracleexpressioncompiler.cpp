@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgsoracleexpressioncompiler.h"
-#include "qgssqlexpressioncompiler.h"
+
 #include "qgsexpressionnodeimpl.h"
+#include "qgssqlexpressioncompiler.h"
 
 QgsOracleExpressionCompiler::QgsOracleExpressionCompiler( QgsOracleFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields, Flags(), ignoreStaticNodes )

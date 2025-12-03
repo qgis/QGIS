@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgslocaldefaultsettings.h"
+
+#include <memory>
+
+#include "qgis.h"
 #include "qgsbearingnumericformat.h"
 #include "qgscoordinatenumericformat.h"
-#include "qgis.h"
 #include "qgsreadwritecontext.h"
 
 #include <QSettings>
-#include <memory>
 
 void QgsLocalDefaultSettings::setBearingFormat( const QgsBearingNumericFormat *format )
 {

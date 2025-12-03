@@ -15,12 +15,13 @@
 #ifndef QGSPOINTCLOUDRENDERERWIDGET_H
 #define QGSPOINTCLOUDRENDERERWIDGET_H
 
-#include <QWidget>
-#include <QMenu>
-#include <QStackedWidget>
 #include "qgis_sip.h"
 #include "qgspanelwidget.h"
 #include "qgssymbolwidgetcontext.h"
+
+#include <QMenu>
+#include <QStackedWidget>
+#include <QWidget>
 
 class QgsPointCloudLayer;
 class QgsStyle;

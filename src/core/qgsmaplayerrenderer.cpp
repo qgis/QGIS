@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerrenderer.h"
+
 #include "qgsrendereditemdetails.h"
 
 QgsMapLayerRenderer::~QgsMapLayerRenderer() = default;

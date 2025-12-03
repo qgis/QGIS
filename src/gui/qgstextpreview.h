@@ -15,11 +15,11 @@
 #ifndef QGSTEXTPREVIEW_H
 #define QGSTEXTPREVIEW_H
 
-#include "qgstextformat.h"
+#include "qgis_gui.h"
 #include "qgsrendercontext.h"
+#include "qgstextformat.h"
 
 #include <QLabel>
-#include "qgis_gui.h"
 
 class QgsScreenHelper;
 

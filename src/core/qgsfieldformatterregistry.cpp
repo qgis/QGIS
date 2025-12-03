@@ -15,19 +15,20 @@
  ***************************************************************************/
 
 #include "qgsfieldformatterregistry.h"
-#include "moc_qgsfieldformatterregistry.cpp"
-#include "qgsfieldformatter.h"
 
-#include "qgsvaluerelationfieldformatter.h"
-#include "qgsvaluemapfieldformatter.h"
+#include "qgscheckboxfieldformatter.h"
 #include "qgsdatetimefieldformatter.h"
-#include "qgsrelationreferencefieldformatter.h"
+#include "qgsfallbackfieldformatter.h"
+#include "qgsfieldformatter.h"
 #include "qgskeyvaluefieldformatter.h"
 #include "qgslistfieldformatter.h"
 #include "qgsrangefieldformatter.h"
-#include "qgscheckboxfieldformatter.h"
-#include "qgsfallbackfieldformatter.h"
 #include "qgsreadwritelocker.h"
+#include "qgsrelationreferencefieldformatter.h"
+#include "qgsvaluemapfieldformatter.h"
+#include "qgsvaluerelationfieldformatter.h"
+
+#include "moc_qgsfieldformatterregistry.cpp"
 
 QgsFieldFormatterRegistry::QgsFieldFormatterRegistry( QObject *parent )
   : QObject( parent )

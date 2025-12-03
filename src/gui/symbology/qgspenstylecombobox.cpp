@@ -14,17 +14,17 @@
  ***************************************************************************/
 
 #include "qgspenstylecombobox.h"
-#include "moc_qgspenstylecombobox.cpp"
 
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 
-#include <QList>
-#include <QPair>
-
 #include <QAbstractItemView>
+#include <QList>
 #include <QPainter>
+#include <QPair>
 #include <QPen>
+
+#include "moc_qgspenstylecombobox.cpp"
 
 QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget *parent )
   : QComboBox( parent )

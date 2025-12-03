@@ -16,6 +16,9 @@
  ***************************************************************************/
 
 #include "qgsrasterlayerutils.h"
+
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsrasterlayertemporalproperties.h"

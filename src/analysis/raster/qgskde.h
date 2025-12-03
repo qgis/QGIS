@@ -16,8 +16,9 @@
 #ifndef QGSKDE_H
 #define QGSKDE_H
 
-#include "qgsrectangle.h"
 #include "qgsogrutils.h"
+#include "qgsrectangle.h"
+
 #include <QString>
 
 // GDAL includes

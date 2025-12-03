@@ -15,10 +15,11 @@
  ***************************************************************************/
 
 #include "qgsprovidersourcewidgetproviderregistry.h"
-#include "qgsprovidersourcewidgetprovider.h"
-#include "qgsproviderguiregistry.h"
 
 #include <memory>
+
+#include "qgsproviderguiregistry.h"
+#include "qgsprovidersourcewidgetprovider.h"
 
 QgsProviderSourceWidgetProviderRegistry::QgsProviderSourceWidgetProviderRegistry() = default;
 

@@ -17,15 +17,17 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsdevtoolsmodelnode.h"
-#include <QElapsedTimer>
-#include <QVariant>
-#include <QColor>
-#include <QUrl>
-#include <memory>
 #include <deque>
+#include <memory>
+
+#include "qgis_gui.h"
+#include "qgsdevtoolsmodelnode.h"
+#include "qgsnetworkaccessmanager.h"
+
+#include <QColor>
+#include <QElapsedTimer>
+#include <QUrl>
+#include <QVariant>
 
 class QAction;
 
@@ -40,7 +42,7 @@ class GUI_EXPORT QgsNetworkLoggerRootNode final : public QgsDevToolsModelGroup
 {
   public:
     QgsNetworkLoggerRootNode();
-    QVariant data( int role = Qt::DisplayRole ) const override final;
+    QVariant data( int role = Qt::DisplayRole ) const final;
 
     /**
      * Removes a \a row from the root group.
@@ -99,7 +101,7 @@ class GUI_EXPORT QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGro
      */
     QgsNetworkLoggerRequestGroup( const QgsNetworkRequestParameters &request );
     QVariant data( int role = Qt::DisplayRole ) const override;
-    QList<QAction *> actions( QObject *parent ) override final;
+    QList<QAction *> actions( QObject *parent ) final;
     QVariant toVariant() const override;
 
     /**

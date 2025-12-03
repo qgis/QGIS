@@ -9,6 +9,7 @@
 
 
 
+
 class QgsCalloutPanelWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")

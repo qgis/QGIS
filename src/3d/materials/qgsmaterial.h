@@ -20,9 +20,9 @@
 
 #include "qgis_3d.h"
 
-#include <Qt3DRender/QMaterial>
 #include <QList>
 #include <QVector4D>
+#include <Qt3DRender/QMaterial>
 
 namespace Qt3DRender
 {

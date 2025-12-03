@@ -16,12 +16,12 @@
 #ifndef QGSDEFAULTSEARCHWIDGETWRAPPER_H
 #define QGSDEFAULTSEARCHWIDGETWRAPPER_H
 
-#include "qgssearchwidgetwrapper.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsfilterlineedit.h"
+#include "qgssearchwidgetwrapper.h"
 
 #include <QCheckBox>
-#include "qgis_gui.h"
 
 /**
  * \ingroup gui

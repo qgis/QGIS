@@ -17,14 +17,13 @@
 #define QGSMAPRENDERERCACHE_H
 
 #include "qgis_core.h"
-#include <QMap>
-#include <QImage>
-#include <QMutex>
-
-#include "qgsrectangle.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptopixel.h"
+#include "qgsrectangle.h"
 
+#include <QImage>
+#include <QMap>
+#include <QMutex>
 
 /**
  * \ingroup core

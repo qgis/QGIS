@@ -17,18 +17,21 @@
 #ifndef QGSELEVATIONPROFILEWIDGET_H
 #define QGSELEVATIONPROFILEWIDGET_H
 
-#include "qmenu.h"
-#include "qgsdockwidget.h"
-#include "qgis_app.h"
-#include "qgsgeometry.h"
-#include "qobjectuniqueptr.h"
-#include "qgselevationprofilelayertreeview.h"
 #include "ui_qgselevationprofileaddlayersdialogbase.h"
 
-#include <QWidgetAction>
-#include <QElapsedTimer>
-#include <QTimer>
+#include "qgis_app.h"
+#include "qgsdockwidget.h"
+#include "qgselevationprofilelayertreeview.h"
+#include "qgsgeometry.h"
+#include "qobjectuniqueptr.h"
 
+#include <QElapsedTimer>
+#include <QPointer>
+#include <QTimer>
+#include <QWidgetAction>
+#include <qmenu.h>
+
+class QgsElevationProfile;
 class QgsDockableWidgetHelper;
 class QgsMapCanvas;
 class QProgressBar;
@@ -99,15 +102,17 @@ class QgsElevationProfileWidget : public QWidget
     static const QgsSettingsEntryBool *settingShowSubsections;
     static const QgsSettingsEntryBool *settingShowScaleRatioInToolbar;
 
-    QgsElevationProfileWidget( const QString &name );
-    ~QgsElevationProfileWidget();
+    QgsElevationProfileWidget( QgsElevationProfile *profile, QgsMapCanvas *canvas );
+    ~QgsElevationProfileWidget() override;
+
+    /**
+     * Modifies an elevation \a profile to apply default QGIS app settings to it.
+     */
+    static void applyDefaultSettingsToProfile( QgsElevationProfile *profile );
+
+    QgsElevationProfile *profile();
 
     QgsDockableWidgetHelper *dockableWidgetHelper() { return mDockableWidgetHelper; }
-
-    void setCanvasName( const QString &name );
-    QString canvasName() const { return mCanvasName; }
-
-    void setMainCanvas( QgsMapCanvas *canvas );
 
     QgsElevationProfileCanvas *profileCanvas() { return mCanvas; }
 
@@ -124,7 +129,7 @@ class QgsElevationProfileWidget : public QWidget
     void addLayersInternal( const QList<QgsMapLayer *> &layers );
     void updateCanvasSources();
     void onTotalPendingJobsCountChanged( int count );
-    void setProfileCurve( const QgsGeometry &curve, bool resetView );
+    void setProfileCurve( const QgsGeometry &curve, bool resetView, bool storeCurve = true );
     void onCanvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
     void updatePlot();
     void scheduleUpdate();
@@ -142,9 +147,11 @@ class QgsElevationProfileWidget : public QWidget
     void editSubsectionsSymbology();
 
   private:
-    QgsElevationProfileCanvas *mCanvas = nullptr;
+    void setMainCanvas( QgsMapCanvas *canvas );
 
-    QString mCanvasName;
+    QgsElevationProfileCanvas *mCanvas = nullptr;
+    QPointer< QgsElevationProfile > mProfile;
+
     QgsMapCanvas *mMainCanvas = nullptr;
 
     QProgressBar *mProgressPendingJobs = nullptr;
@@ -188,7 +195,6 @@ class QgsElevationProfileWidget : public QWidget
     int mBlockScaleRatioChanges = 0;
     QgsElevationProfileScaleRatioWidgetSettingsAction *mScaleRatioSettingsAction = nullptr;
 
-    std::unique_ptr<QgsLayerTree> mLayerTree;
     QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
     QgsElevationProfileLayerTreeView *mLayerTreeView = nullptr;
 

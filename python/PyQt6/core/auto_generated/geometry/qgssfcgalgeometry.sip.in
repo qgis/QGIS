@@ -10,6 +10,7 @@
 
 
 
+
 class QgsSfcgalGeometry
 {
 %Docstring(signature="appended")
@@ -92,6 +93,9 @@ etc.)
 :return: type of the geometry as a WKB type (point / linestring /
          polygon etc.)
 
+:raises QgsNotSupportedException: when working with primitive and SFCGAL
+                                  is less than 2.3.
+
 :raises QgsSfcgalException: if an error was encountered during the
                             operation
 %End
@@ -104,7 +108,8 @@ Returns type of the geometry as a OGC string in CamelCase
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
 
-:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+:raises QgsNotSupportedException: when working with primitive and SFCGAL
+                                  is less than 2.3.
 
 :raises QgsSfcgalException: if an error was encountered during the
                             operation
@@ -330,11 +335,33 @@ Checks if ``geom`` is empty.
                             operation
 %End
 
-    double area() const;
+    double area( bool withDiscretization = false ) const;
 %Docstring
 Computes the area of ``geom``.
 
+:param withDiscretization: If true, the area is computed using the real
+                           discretization with radial segments. If
+                           false, the area is computed for a perfect
+                           primitive. Defaults to false.
+
 :return: geometry area
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    double volume( bool withDiscretization = false ) const;
+%Docstring
+Computes the volume of the primitive ``prim``.
+
+:param withDiscretization: If true, the volume is computed using the
+                           real discretization with radial segments. If
+                           false, the volume is computed for a perfect
+                           primitive. Defaults to false.
+
+:return: primitive volume
+
+\pre apply only on primitive
 
 :raises QgsSfcgalException: if an error was encountered during the
                             operation
@@ -347,6 +374,8 @@ Computes the max length of ``geom``.
 :return: geometry length
 
 This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+\pre apply only on geometry
 
 :raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
 
@@ -442,6 +471,22 @@ Scale this geometry by vector ``scaleFactor``.
                             operation
 %End
 
+    std::unique_ptr<QgsSfcgalGeometry> transform( const QMatrix4x4 &mat ) const;
+%Docstring
+Apply 3D matrix transform ``mat`` to geometry ``geom``
+
+:param mat: 4x4 transformation matrix (translation is defined of the 4th
+            column)
+:param errorMsg: Error message returned by SFGCAL
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
     bool intersects( const QgsAbstractGeometry *otherGeom ) const;
 %Docstring
 Checks if ``otherGeom`` intersects this.
@@ -466,7 +511,7 @@ Checks if ``otherGeom`` intersects this.
                             operation
 %End
 
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom )  const;
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom ) const;
 %Docstring
 Calculate the intersection of this and ``otherGeom``.
 
@@ -652,6 +697,78 @@ null pointer is returned.
 
 :raises QgsSfcgalException: if an error was encountered during the
                             operation
+%End
+
+
+
+    static std::unique_ptr<QgsSfcgalGeometry> createCube( double size );
+%Docstring
+Create a cube primitive
+
+:param size: the cube size
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    QList<std::pair<QString, QString>> primitiveParameters() const;
+%Docstring
+Returns the list of available parameter description for this primitive.
+
+Parameter description is a pair of string: name and type. Type can be
+one of int, double, :py:class:`QgsPoint`, :py:class:`QgsVector3D`
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    QVariant primitiveParameter( const QString &name ) const;
+%Docstring
+Returns the parameter value according to its ``name``
+
+:param name: parameter name
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    void primitiveSetParameter( const QString &name, const QVariant &value );
+%Docstring
+Updates parameter value
+
+:param name: parameter name
+:param value: new parameter value
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface() const;
+%Docstring
+Converts the current primitive to geometry. Works only with primitives.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    QMatrix4x4 primitiveTransform() const;
+%Docstring
+Returns the primitive transform matrix.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
 %End
 
   protected:

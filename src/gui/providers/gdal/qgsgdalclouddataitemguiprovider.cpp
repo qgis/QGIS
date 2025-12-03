@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 #include "qgsgdalclouddataitemguiprovider.h"
-#include "moc_qgsgdalclouddataitemguiprovider.cpp"
-#include "qgsgdalclouddataitems.h"
-#include "qgsgdalcloudconnection.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsdataitemguiproviderutils.h"
-#include "qgsgdalcloudconnectiondialog.h"
-#include "qgsgdalutils.h"
 
-#include <QMessageBox>
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsgdalcloudconnection.h"
+#include "qgsgdalcloudconnectiondialog.h"
+#include "qgsgdalclouddataitems.h"
+#include "qgsgdalutils.h"
+#include "qgsmanageconnectionsdialog.h"
+
 #include <QFileDialog>
+#include <QMessageBox>
+
+#include "moc_qgsgdalclouddataitemguiprovider.cpp"
 
 ///@cond PRIVATE
 

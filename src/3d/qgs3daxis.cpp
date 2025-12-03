@@ -14,30 +14,32 @@
  ***************************************************************************/
 
 #include "qgs3daxis.h"
-#include "moc_qgs3daxis.cpp"
 
+#include <ctime>
+
+#include "qgs3dmapscene.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3dwiredmesh_p.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgscoordinatereferencesystemutils.h"
+#include "qgsframegraph.h"
+#include "qgsterrainentity.h"
+#include "qgswindow3dengine.h"
+
+#include <QActionGroup>
+#include <QApplication>
+#include <QFontDatabase>
+#include <QScreen>
+#include <QWidget>
 #include <Qt3DCore/QTransform>
+#include <Qt3DExtras/QConeMesh>
 #include <Qt3DExtras/QCylinderMesh>
 #include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QConeMesh>
-#include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QSortPolicy>
-#include <QWidget>
-#include <QScreen>
-#include <QFontDatabase>
-#include <ctime>
-#include <QApplication>
-#include <QActionGroup>
+#include <Qt3DRender/qcameralens.h>
 
-#include "qgs3dmapsettings.h"
-#include "qgs3dmapscene.h"
-#include "qgsterrainentity.h"
-#include "qgscoordinatereferencesystemutils.h"
-#include "qgswindow3dengine.h"
-#include "qgs3dwiredmesh_p.h"
-#include "qgsframegraph.h"
-#include "qgsabstractterrainsettings.h"
+#include "moc_qgs3daxis.cpp"
 
 Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, Qgs3DMapScene *mapScene, //
                       QgsCameraController *cameraCtrl, Qgs3DMapSettings *map )

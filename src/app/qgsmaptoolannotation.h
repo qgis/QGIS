@@ -18,9 +18,9 @@
 #ifndef QGSMAPTOOLANNOTATION_H
 #define QGSMAPTOOLANNOTATION_H
 
-#include "qgsmaptool.h"
 #include "qgis_app.h"
 #include "qgsmapcanvasannotationitem.h"
+#include "qgsmaptool.h"
 
 class QgsAnnotation;
 

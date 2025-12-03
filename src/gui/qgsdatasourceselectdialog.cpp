@@ -15,24 +15,25 @@
  ***************************************************************************/
 
 #include "qgsdatasourceselectdialog.h"
-#include "moc_qgsdatasourceselectdialog.cpp"
 
 #include "qgis.h"
 #include "qgsbrowsermodel.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
-#include "qgssettings.h"
-#include "qgsnative.h"
 #include "qgslayeritem.h"
+#include "qgsnative.h"
+#include "qgssettings.h"
 
-#include <QPushButton>
-#include <QMenu>
+#include <QActionGroup>
 #include <QDesktopServices>
 #include <QDialogButtonBox>
-#include <QFileInfo>
-#include <QUrl>
-#include <QActionGroup>
 #include <QDir>
+#include <QFileInfo>
+#include <QMenu>
+#include <QPushButton>
+#include <QUrl>
+
+#include "moc_qgsdatasourceselectdialog.cpp"
 
 QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
   QgsBrowserGuiModel *browserModel,

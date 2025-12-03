@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsstacitemlistmodel.h"
-#include "moc_qgsstacitemlistmodel.cpp"
-#include "qgsstacitem.h"
-#include "qgsstaccollection.h"
+
 #include "qgsnetworkcontentfetcher.h"
+#include "qgsstaccollection.h"
+#include "qgsstacitem.h"
 
 #include <QAbstractItemView>
-#include <QScrollBar>
-#include <QPainter>
-#include <QApplication>
-#include <QTextDocument>
 #include <QAbstractTextDocumentLayout>
+#include <QApplication>
+#include <QPainter>
+#include <QScrollBar>
+#include <QTextDocument>
+
+#include "moc_qgsstacitemlistmodel.cpp"
 
 ///@cond PRIVATE
 

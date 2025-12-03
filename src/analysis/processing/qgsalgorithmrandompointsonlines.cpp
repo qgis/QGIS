@@ -17,9 +17,10 @@
 
 
 #include "qgsalgorithmrandompointsonlines.h"
-#include "qgsspatialindex.h"
 
 #include <random>
+
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 

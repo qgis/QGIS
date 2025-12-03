@@ -14,20 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <cpl_conv.h>
+#include <gdal.h>
+
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
+#include <QPainter>
+#include <QSignalSpy>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QPainter>
 #include <QTime>
-#include <QDesktopServices>
-#include <QSignalSpy>
-
-#include "cpl_conv.h"
-#include "gdal.h"
 
 //qgis includes...
 #include <qgsrasterlayer.h>
@@ -769,7 +770,7 @@ void TestQgsRasterLayer::palettedRendererConstantInt()
   GDALDriverH hGTiffDrv = GDALGetDriverByName( "GTiff" );
   Q_ASSERT( hGTiffDrv );
   const char *tempFileName = "/vsimem/temp.tif";
-  GDALDatasetH hDS = GDALCreate( hGTiffDrv, tempFileName, 1, 1, 1, GDT_Byte, NULL );
+  GDALDatasetH hDS = GDALCreate( hGTiffDrv, tempFileName, 1, 1, 1, GDT_Byte, nullptr );
   Q_ASSERT( hDS );
   GDALFillRaster( GDALGetRasterBand( hDS, 1 ), value, 0 );
   GDALClose( hDS );

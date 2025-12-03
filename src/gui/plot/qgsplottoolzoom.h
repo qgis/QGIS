@@ -18,9 +18,9 @@
 #ifndef QGSPLOTTOOLZOOM_H
 #define QGSPLOTTOOLZOOM_H
 
-#include "qgsplottool.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsplottool.h"
 
 class QgsPlotRectangularRubberBand;
 

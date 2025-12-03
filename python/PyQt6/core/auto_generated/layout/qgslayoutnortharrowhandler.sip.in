@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayoutNorthArrowHandler: QObject
 {
 %Docstring(signature="appended")

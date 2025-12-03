@@ -16,11 +16,12 @@
 #ifndef QGSELEVATIONMAP_H
 #define QGSELEVATIONMAP_H
 
+#include <memory>
+
 #include "qgis.h"
 #include "qgis_sip.h"
 
 #include <QImage>
-#include <memory>
 
 class QgsRasterBlock;
 

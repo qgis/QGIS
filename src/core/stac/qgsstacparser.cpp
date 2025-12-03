@@ -14,14 +14,14 @@
  ***************************************************************************/
 
 #include "qgsstacparser.h"
-#include "qgsstacitem.h"
+
+#include "qgsjsonutils.h"
+#include "qgslogger.h"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
 #include "qgsstaccollectionlist.h"
+#include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
-#include "qgsjsonutils.h"
-#include "qgslogger.h"
-
 
 void QgsStacParser::setData( const QByteArray &data )
 {

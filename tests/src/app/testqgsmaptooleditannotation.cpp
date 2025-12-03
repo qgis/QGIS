@@ -12,25 +12,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QCoreApplication>
-
-#include "qgstest.h"
-#include "qgsguiutils.h"
-#include "qgsmaptooledit.h"
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgslogger.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationpolygonitem.h"
-#include "qgsproject.h"
-#include "testqgsmaptoolutils.h"
-#include "qgsmapmouseevent.h"
-#include "qgspolygon.h"
+#include "qgsapplication.h"
+#include "qgsguiutils.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptooledit.h"
 #include "qgsmaptoolmodifyannotation.h"
-#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgspolygon.h"
+#include "qgsproject.h"
 #include "qgsrendereditemresults.h"
+#include "qgstest.h"
+#include "testqgsmaptoolutils.h"
 
+#include <QCoreApplication>
 #include <QSignalSpy>
 
 class TestQgsMapToolEditAnnotation : public QObject

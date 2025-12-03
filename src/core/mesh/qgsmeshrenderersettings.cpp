@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsmeshrenderersettings.h"
+
+#include "qgscolorramp.h"
 #include "qgscolorutils.h"
 #include "qgsunittypes.h"
-#include "qgscolorramp.h"
 
 bool QgsMeshRendererMeshSettings::isEnabled() const
 {

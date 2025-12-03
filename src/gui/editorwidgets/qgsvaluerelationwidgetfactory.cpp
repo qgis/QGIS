@@ -19,8 +19,8 @@
 #include "qgslogger.h"
 #include "qgsvaluerelationconfigdlg.h"
 #include "qgsvaluerelationsearchwidgetwrapper.h"
-#include "qgsvectorlayer.h"
 #include "qgsvaluerelationwidgetwrapper.h"
+#include "qgsvectorlayer.h"
 
 #include <QSettings>
 

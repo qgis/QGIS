@@ -14,24 +14,25 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsversionmigration.h"
-#include "qgssettings.h"
-#include "qgslogger.h"
-#include "qsettings.h"
-#include "qgsmessagelog.h"
+
 #include "qgsapplication.h"
-#include "qgssymbol.h"
-#include "qgsstyle.h"
-#include "qgssymbollayerutils.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsreadwritecontext.h"
+#include "qgssettings.h"
+#include "qgsstyle.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 #include "qgsuserprofilemanager.h"
 
-#include <QFile>
-#include <QTextStream>
 #include <QDir>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QDomDocument>
+#include <QFile>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QTextStream>
+#include <qsettings.h>
 
 std::unique_ptr<QgsVersionMigration> QgsVersionMigration::canMigrate( int fromVersion, int toVersion )
 {

@@ -12,13 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsfields.h"
 #include "qgstest.h"
+
 #include <QObject>
+#include <QSettings>
 #include <QString>
 #include <QStringList>
-#include <QSettings>
-
-#include "qgsfields.h"
 
 class TestQgsFields : public QObject
 {

@@ -18,12 +18,11 @@
 #ifndef QGSCIRCULARSTRING_H
 #define QGSCIRCULARSTRING_H
 
-#include <QVector>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscurve.h"
 
+#include <QVector>
 
 /**
  * \ingroup core
@@ -277,6 +276,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     bool hasCurvedSegments() const override;
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
+    double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const override;
     QgsCircularString *reversed() const override  SIP_FACTORY;
     QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
     QgsCircularString *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;

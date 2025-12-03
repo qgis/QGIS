@@ -14,41 +14,40 @@
  ***************************************************************************/
 
 #include "qgslayerpropertieswidget.h"
-#include "moc_qgslayerpropertieswidget.cpp"
+
+#include "qgsapplication.h"
+#include "qgsarrowsymbollayerwidget.h"
+#include "qgsellipsesymbollayerwidget.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsinterpolatedlinesymbollayerwidget.h"
+#include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmasksymbollayerwidget.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
+#include "qgspanelwidget.h"
+#include "qgsproject.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerregistry.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbollayerwidget.h"
+#include "qgstemporalcontroller.h"
+#include "qgsvectorfieldsymbollayerwidget.h"
+#include "qgsvectorlayer.h"
 
 #include <QFile>
-#include <QStandardItem>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPicture>
+#include <QStandardItem>
 
-#include "qgssymbollayer.h"
-#include "qgssymbollayerregistry.h"
-#include "qgspainteffectregistry.h"
-
-#include "qgsapplication.h"
-#include "qgslogger.h"
-
-#include "qgssymbollayerwidget.h"
-#include "qgsarrowsymbollayerwidget.h"
-#include "qgsellipsesymbollayerwidget.h"
-#include "qgsinterpolatedlinesymbollayerwidget.h"
-#include "qgsvectorfieldsymbollayerwidget.h"
-#include "qgssymbol.h" //for the unit
-#include "qgspanelwidget.h"
-#include "qgsmapcanvas.h"
-#include "qgspainteffect.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmasksymbollayerwidget.h"
-#include "qgstemporalcontroller.h"
-#include "qgssymbollayerutils.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbollayer.h"
+#include "moc_qgslayerpropertieswidget.cpp"
 
 static bool _initWidgetFunction( const QString &name, QgsSymbolLayerWidgetFunc f )
 {

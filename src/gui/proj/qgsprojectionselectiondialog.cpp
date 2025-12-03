@@ -15,17 +15,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsprojectionselectiondialog.h"
+
 #include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgssettings.h"
 
-#include "qgsprojectionselectiondialog.h"
-#include "moc_qgsprojectionselectiondialog.cpp"
-#include "qgshelp.h"
-#include <QDialogButtonBox>
 #include <QApplication>
-#include "qgsgui.h"
+#include <QDialogButtonBox>
 #include <QPushButton>
 
+#include "moc_qgsprojectionselectiondialog.cpp"
 
 //
 // QgsCrsSelectionWidget

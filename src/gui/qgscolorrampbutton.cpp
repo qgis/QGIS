@@ -14,27 +14,28 @@
  ***************************************************************************/
 
 #include "qgscolorrampbutton.h"
-#include "qgscolorramp.h"
-#include "qgslogger.h"
-#include "qgssymbollayerutils.h"
-#include "qgsstyle.h"
-#include "qgsguiutils.h"
 
-#include "qgsstylesavedialog.h"
-#include "qgsgradientcolorrampdialog.h"
-#include "qgslimitedrandomcolorrampdialog.h"
 #include "qgscolorbrewercolorrampdialog.h"
+#include "qgscolorramp.h"
 #include "qgscptcitycolorrampdialog.h"
+#include "qgsgradientcolorrampdialog.h"
+#include "qgsguiutils.h"
+#include "qgslimitedrandomcolorrampdialog.h"
+#include "qgslogger.h"
 #include "qgspresetcolorrampdialog.h"
-#include "moc_qgscolorrampbutton.cpp"
+#include "qgsstyle.h"
+#include "qgsstylesavedialog.h"
+#include "qgssymbollayerutils.h"
 
 #include <QAction>
 #include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
-#include <QMenu>
 #include <QPainter>
 #include <QPushButton>
+
+#include "moc_qgscolorrampbutton.cpp"
 
 QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )

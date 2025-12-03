@@ -20,13 +20,13 @@
 
 #define SIP_NO_FILE
 
-#include <QWidget>
-#include <QDialog>
+#include "ui_qgsprocessingrastercalculatorexpressiondialogbase.h"
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingrastercalculatorexpressiondialogbase.h"
 
+#include <QDialog>
+#include <QWidget>
 
 class QgsFilterLineEdit;
 class QToolButton;

@@ -16,8 +16,31 @@
  ***************************************************************************/
 
 
-#include <QClipboard>
+#include "qgsmapsavedialog.h"
+
+#include "qgis.h"
+#include "qgisapp.h"
+#include "qgsabstractgeopdfexporter.h"
+#include "qgsannotationlayer.h"
+#include "qgsapplication.h"
+#include "qgsdecorationitem.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsextentgroupbox.h"
+#include "qgsfileutils.h"
+#include "qgsguiutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaprenderertask.h"
+#include "qgsmapsettings.h"
+#include "qgsmapsettingsutils.h"
+#include "qgsmessagebar.h"
+#include "qgsmessageviewer.h"
+#include "qgsproject.h"
+#include "qgsscalecalculator.h"
+#include "qgssettings.h"
+
 #include <QCheckBox>
+#include <QClipboard>
 #include <QFileDialog>
 #include <QImage>
 #include <QList>
@@ -25,28 +48,7 @@
 #include <QSpinBox>
 #include <QUrl>
 
-#include "qgsmapsavedialog.h"
 #include "moc_qgsmapsavedialog.cpp"
-#include "qgsabstractgeopdfexporter.h"
-#include "qgsguiutils.h"
-#include "qgis.h"
-#include "qgisapp.h"
-#include "qgsscalecalculator.h"
-#include "qgsdecorationitem.h"
-#include "qgsexpressioncontext.h"
-#include "qgsextentgroupbox.h"
-#include "qgsmapsettings.h"
-#include "qgsmapsettingsutils.h"
-#include "qgsmaprenderertask.h"
-#include "qgsmessageviewer.h"
-#include "qgsproject.h"
-#include "qgssettings.h"
-#include "qgsmapcanvas.h"
-#include "qgsmessagebar.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsfileutils.h"
-#include "qgsannotationlayer.h"
 
 QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsMapDecoration *> &decorations, const QList<QgsAnnotation *> &annotations, DialogType type )
   : QDialog( parent )

@@ -358,7 +358,60 @@ Creates a new QgsShapeburstFillSymbolLayerWidget.
 
 
 
-class QgsMarkerLineSymbolLayerWidget : QgsSymbolLayerWidget
+class QgsTemplatedLineSymbolLayerWidget : QgsSymbolLayerWidget
+{
+%Docstring(signature="appended")
+A widget for controlling the properties of a templated line symbol layer
+(hash or markers).
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+    enum class TemplatedSymbolType
+    {
+      Hash,
+      Marker
+    };
+
+    QgsTemplatedLineSymbolLayerWidget( TemplatedSymbolType symbolType, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsTemplatedLineSymbolLayerWidget.
+
+:param symbolType: templated symbol type
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
+  public slots:
+
+    void setInterval( double val );
+%Docstring
+Set templated line interval
+
+:param val: interval value
+%End
+
+    void setOffsetAlongLine( double val );
+%Docstring
+Set offset along line
+
+:param val: offset along line value
+%End
+
+};
+
+class QgsMarkerLineSymbolLayerWidget : QgsTemplatedLineSymbolLayerWidget
 {
 %Docstring(signature="appended")
 A widget for controlling the properties of a
@@ -383,27 +436,9 @@ Creates a new QgsMarkerLineSymbolLayerWidget.
 
 :param vl: associated vector layer
 %End
-
-    virtual void setSymbolLayer( QgsSymbolLayer *layer );
-
-    virtual QgsSymbolLayer *symbolLayer();
-
-    virtual void setContext( const QgsSymbolWidgetContext &context );
-
-
-  public slots:
-
-    void setInterval( double val );
-    void setOffsetAlongLine( double val );
-
-  protected:
-
 };
 
-
-
-
-class QgsHashedLineSymbolLayerWidget : QgsSymbolLayerWidget
+class QgsHashedLineSymbolLayerWidget : QgsTemplatedLineSymbolLayerWidget
 {
 %Docstring(signature="appended")
 A widget for controlling the properties of a
@@ -430,14 +465,6 @@ Creates a new QgsHashedLineSymbolLayerWidget.
 
 :param vl: associated vector layer
 %End
-
-    virtual void setSymbolLayer( QgsSymbolLayer *layer );
-
-    virtual QgsSymbolLayer *symbolLayer();
-
-    virtual void setContext( const QgsSymbolWidgetContext &context );
-
-
 };
 
 

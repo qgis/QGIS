@@ -18,10 +18,11 @@
 #ifndef QGSBLENDMODECOMBOBOX_H
 #define QGSBLENDMODECOMBOBOX_H
 
-#include <QComboBox>
-#include "qgis_sip.h"
-#include <QPainter> // For QPainter::CompositionMode enum
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QComboBox>
+#include <QPainter>
 
 /**
  * \ingroup gui

@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgssensorthingsconnection.h"
 
-#include "qgsowsconnection.h"
 #include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsowsconnection.h"
 #include "qgssettingsentryimpl.h"
 
 ///@cond PRIVATE

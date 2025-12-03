@@ -13,17 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-#include <QString>
-#include <QVector>
-#include <QByteArray>
-
-#include "qgstest.h"
 #include "qgsapplication.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudblock.h"
 #include "qgspointcloudexpression.h"
+#include "qgstest.h"
 
+#include <QByteArray>
+#include <QObject>
+#include <QString>
+#include <QVector>
 
 template<typename T>
 bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value )

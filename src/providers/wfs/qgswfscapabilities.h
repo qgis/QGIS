@@ -15,9 +15,10 @@
 #ifndef QGSWFSCAPABILITIES_H
 #define QGSWFSCAPABILITIES_H
 
+#include "qgsrectangle.h"
+
 #include <QDomElement>
 #include <QSet>
-#include "qgsrectangle.h"
 
 //! Encapsultes WFS Capabilities
 class QgsWfsCapabilities

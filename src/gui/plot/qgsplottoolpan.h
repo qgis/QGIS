@@ -18,10 +18,9 @@
 #ifndef QGSPLOTTOOLPAN_H
 #define QGSPLOTTOOLPAN_H
 
-#include "qgsplottool.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
+#include "qgsplottool.h"
 
 /**
  * \ingroup gui

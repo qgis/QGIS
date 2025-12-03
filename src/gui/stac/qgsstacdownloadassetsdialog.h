@@ -19,8 +19,9 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include "qgsstacitem.h"
 #include "ui_qgsstacdownloadassetsdialog.h"
+
+#include "qgsstacitem.h"
 
 #include <QDialog>
 

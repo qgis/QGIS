@@ -15,26 +15,28 @@
  ***************************************************************************/
 
 #include "qgslayoutitem.h"
-#include "moc_qgslayoutitem.cpp"
+
+#include "qgsexpressioncontextutils.h"
+#include "qgsimageoperation.h"
 #include "qgslayout.h"
-#include "qgslayoututils.h"
-#include "qgspagesizeregistry.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitempage.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutmodel.h"
-#include "qgssymbollayerutils.h"
-#include "qgslayoutitemgroup.h"
-#include "qgspainting.h"
-#include "qgslayoutundostack.h"
 #include "qgslayoutpagecollection.h"
-#include "qgslayoutitempage.h"
-#include "qgsimageoperation.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgslayoutrendercontext.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoututils.h"
+#include "qgspagesizeregistry.h"
+#include "qgspainting.h"
 #include "qgssvgcache.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
+
+#include "moc_qgslayoutitem.cpp"
 
 #define CACHE_SIZE_LIMIT 5000
 

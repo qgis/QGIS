@@ -14,15 +14,17 @@
  ***************************************************************************/
 
 
-#include "qclipboard.h"
-#include "qaction.h"
-#include "qgsapplication.h"
 #include "qgsexpressionpreviewwidget.h"
-#include "moc_qgsexpressionpreviewwidget.cpp"
+
+#include "qgsapplication.h"
+#include "qgsfeaturepickerwidget.h"
 #include "qgsmessageviewer.h"
 #include "qgsvectorlayer.h"
-#include "qgsfeaturepickerwidget.h"
 
+#include <qaction.h>
+#include <qclipboard.h>
+
+#include "moc_qgsexpressionpreviewwidget.cpp"
 
 QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   : QWidget( parent )

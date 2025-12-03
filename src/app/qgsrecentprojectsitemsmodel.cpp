@@ -14,24 +14,25 @@
  ***************************************************************************/
 
 #include "qgsrecentprojectsitemsmodel.h"
-#include "moc_qgsrecentprojectsitemsmodel.cpp"
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
-#include "qgsprojectstorageregistry.h"
 #include "qgsprojectlistitemdelegate.h"
 #include "qgsprojectstorage.h"
-#include "qgsdatasourceuri.h"
+#include "qgsprojectstorageregistry.h"
 
-#include <QApplication>
 #include <QAbstractTextDocumentLayout>
-#include <QPixmap>
+#include <QApplication>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QPainter>
+#include <QPixmap>
 #include <QTextDocument>
-#include <QDir>
+
+#include "moc_qgsrecentprojectsitemsmodel.cpp"
 
 QgsRecentProjectItemsModel::QgsRecentProjectItemsModel( QObject *parent )
   : QAbstractListModel( parent )

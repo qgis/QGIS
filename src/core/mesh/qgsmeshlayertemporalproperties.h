@@ -21,7 +21,6 @@
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 
-
 /**
  * \class QgsMeshLayerTemporalProperties
  * \ingroup core

@@ -16,20 +16,22 @@
  ***************************************************************************/
 
 #include "qgssvgannotationdialog.h"
-#include "moc_qgssvgannotationdialog.cpp"
-#include "qgsannotationwidget.h"
-#include "qgssvgannotation.h"
-#include "qgsmapcanvasannotationitem.h"
-#include "qgsproject.h"
+
 #include "qgsannotationmanager.h"
+#include "qgsannotationwidget.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssvgannotation.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QPushButton>
+
+#include "moc_qgssvgannotationdialog.cpp"
 
 QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

@@ -12,18 +12,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsclassificationequalinterval.h"
+#include "qgsclassificationquantile.h"
+#include "qgsgraduatedsymbolrenderer.h"
+#include "qgsmarkersymbol.h"
+#include "qgssymbollayerutils.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
+
 #include <QObject>
+#include <QSettings>
 #include <QString>
 #include <QStringList>
-#include <QSettings>
-
-#include "qgsgraduatedsymbolrenderer.h"
-#include "qgsclassificationequalinterval.h"
-#include "qgssymbollayerutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsclassificationquantile.h"
-#include "qgsmarkersymbol.h"
 
 /**
  * \ingroup UnitTests

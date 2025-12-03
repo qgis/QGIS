@@ -18,11 +18,10 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QList>
 #include <QWidget>
-
-#include "qgsreferencedgeometry.h"
 
 class QLineEdit;
 class QToolButton;

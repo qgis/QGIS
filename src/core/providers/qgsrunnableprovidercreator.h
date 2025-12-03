@@ -16,10 +16,10 @@
 #ifndef QGSRUNNABLEPROVIDERCREATOR_H
 #define QGSRUNNABLEPROVIDERCREATOR_H
 
-#include <QRunnable>
-#include <QObject>
-
 #include "qgsdataprovider.h"
+
+#include <QObject>
+#include <QRunnable>
 
 #define SIP_NO_FILE
 

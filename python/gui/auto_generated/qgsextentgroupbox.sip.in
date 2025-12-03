@@ -9,7 +9,6 @@
 
 
 
-
 class QgsExtentGroupBox : QgsCollapsibleGroupBox
 {
 %Docstring(signature="appended")

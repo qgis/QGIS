@@ -9,7 +9,6 @@
 
 
 
-
 class QgsNumericFormatContext
 {
 %Docstring(signature="appended")

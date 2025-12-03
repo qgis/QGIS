@@ -18,14 +18,16 @@
 #ifndef QGSPROCESSINGWIDGETWRAPPER_H
 #define QGSPROCESSINGWIDGETWRAPPER_H
 
-#include <QObject>
-#include <QWidget>
-#include <QPointer>
 #include <memory>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsprocessinggui.h"
 #include "qgsvectorlayer.h"
+
+#include <QObject>
+#include <QPointer>
+#include <QWidget>
 
 class QgsProcessingParameterDefinition;
 class QgsProcessingContext;

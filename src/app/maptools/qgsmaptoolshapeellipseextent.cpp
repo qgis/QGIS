@@ -15,13 +15,15 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeellipseextent.h"
-#include "moc_qgsmaptoolshapeellipseextent.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+#include "qgspoint.h"
+
+#include "moc_qgsmaptoolshapeellipseextent.cpp"
 
 const QString QgsMapToolShapeEllipseExtentMetadata::TOOL_ID = QStringLiteral( "ellipse-from-extent" );
 

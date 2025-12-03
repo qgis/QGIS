@@ -19,16 +19,16 @@
 #define QGSMESHTRACERENDERER_H
 
 
-#include <QVector>
-#include <QSize>
-
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgstriangularmesh.h"
+#include "qgis_core.h"
+#include "qgsmaptopixel.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshvectorrenderer.h"
-#include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
+#include "qgstriangularmesh.h"
+
+#include <QSize>
+#include <QVector>
 
 class QgsMeshLayerInterpolator;
 class QgsMeshLayerRendererFeedback;
@@ -118,7 +118,7 @@ class QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpo
     QgsMeshVectorValueInterpolatorFromVertex( const QgsMeshVectorValueInterpolatorFromVertex &other );
 
     //! Clone the instance
-    virtual QgsMeshVectorValueInterpolatorFromVertex *clone() override;
+    QgsMeshVectorValueInterpolatorFromVertex *clone() override;
 
     QgsMeshVectorValueInterpolatorFromVertex &operator=( const QgsMeshVectorValueInterpolatorFromVertex &other );
 
@@ -151,7 +151,7 @@ class QgsMeshVectorValueInterpolatorFromFace: public QgsMeshVectorValueInterpola
     QgsMeshVectorValueInterpolatorFromFace( const QgsMeshVectorValueInterpolatorFromFace &other );
 
     //! Clone the instance
-    virtual QgsMeshVectorValueInterpolatorFromFace *clone() override;
+    QgsMeshVectorValueInterpolatorFromFace *clone() override;
 
     QgsMeshVectorValueInterpolatorFromFace &operator=( const QgsMeshVectorValueInterpolatorFromFace &other );
 

@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrypointinpolygoncheck.h"
+
 #include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
-#include "qgsgeometrypointinpolygoncheck.h"
-#include "qgsgeometryengine.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsgeometryengine.h"
 
 QgsGeometryCheck::Result QgsGeometryPointInPolygonCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {

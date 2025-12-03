@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
-
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
+
+#include <QObject>
+#include <QString>
 
 class TestQgsVectorLayerEditBuffer : public QObject
 {

@@ -14,12 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsqueryresultmodel.h"
-#include "moc_qgsqueryresultmodel.cpp"
-#include "qgsexpression.h"
+
 #include "qgsapplication.h"
+#include "qgsexpression.h"
 #include "qgsfileutils.h"
 
 #include <QFont>
+
+#include "moc_qgsqueryresultmodel.cpp"
 
 const int QgsQueryResultModel::FETCH_MORE_ROWS_COUNT = 400;
 

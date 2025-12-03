@@ -16,13 +16,13 @@
 #ifndef QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
 #define QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
 
-#include "qgssearchwidgetwrapper.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgssearchwidgetwrapper.h"
 #include "qgsvaluerelationfieldformatter.h"
 
 #include <QComboBox>
 #include <QLineEdit>
-#include "qgis_gui.h"
 
 class QgsValueRelationWidgetFactory;
 

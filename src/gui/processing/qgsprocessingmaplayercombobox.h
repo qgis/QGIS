@@ -18,11 +18,12 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include <QTreeView>
 #include "qgsfeatureid.h"
 #include "qgsmimedatautils.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessinggui.h"
+
+#include <QTreeView>
 
 class QgsMapLayerComboBox;
 class QToolButton;

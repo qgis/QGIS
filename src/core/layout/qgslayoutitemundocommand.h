@@ -18,8 +18,8 @@
 #ifndef QGSLAYOUTITEMUNDOCOMMAND_H
 #define QGSLAYOUTITEMUNDOCOMMAND_H
 
-#include "qgslayoutundocommand.h"
 #include "qgis_core.h"
+#include "qgslayoutundocommand.h"
 
 class QgsLayout;
 class QgsLayoutItem;

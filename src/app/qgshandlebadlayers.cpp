@@ -16,33 +16,35 @@
  ***************************************************************************/
 
 #include "qgshandlebadlayers.h"
-#include "moc_qgshandlebadlayers.cpp"
+
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgsauthconfigselect.h"
 #include "qgsdataprovider.h"
-#include "qgsguiutils.h"
-#include "qgslogger.h"
-#include "qgsproviderregistry.h"
-#include "qgsmessagebar.h"
-#include "qgssettings.h"
-#include "qgslayertreeregistrybridge.h"
-#include "qgsapplication.h"
 #include "qgsfileutils.h"
-#include "qgsprovidermetadata.h"
+#include "qgsguiutils.h"
+#include "qgslayertreeregistrybridge.h"
+#include "qgslogger.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmessagebar.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
 
+#include <QDialogButtonBox>
+#include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileDialog>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QProgressDialog>
 #include <QPushButton>
 #include <QToolButton>
-#include <QMessageBox>
-#include <QInputDialog>
-#include <QDialogButtonBox>
 #include <QUrl>
-#include <QDir>
-#include <QProgressDialog>
 #include <QUrlQuery>
+
+#include "moc_qgshandlebadlayers.cpp"
 
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {

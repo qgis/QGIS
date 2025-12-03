@@ -13,36 +13,37 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsbrowserwidget.h"
-#include "moc_qgsbrowserwidget.cpp"
+
+#include "qgsbrowserdockwidget_p.h"
+#include "qgsbrowserguimodel.h"
+#include "qgsbrowserproxymodel.h"
+#include "qgsbrowsertreeview.h"
+#include "qgsdataitemguiprovider.h"
+#include "qgsdataitemguiproviderregistry.h"
+#include "qgsdirectoryitem.h"
+#include "qgsgui.h"
+#include "qgslayeritem.h"
+#include "qgslogger.h"
+#include "qgsnative.h"
+#include "qgsnewnamedialog.h"
+#include "qgsproject.h"
+#include "qgsprojectitem.h"
+#include "qgsrasterlayer.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgswindowmanagerinterface.h"
 
 #include <QAbstractTextDocumentLayout>
-#include <QHeaderView>
-#include <QTreeView>
-#include <QMenu>
-#include <QToolButton>
+#include <QActionGroup>
 #include <QFileDialog>
+#include <QHeaderView>
+#include <QMenu>
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
-#include <QActionGroup>
+#include <QToolButton>
+#include <QTreeView>
 
-#include "qgsbrowserguimodel.h"
-#include "qgsbrowsertreeview.h"
-#include "qgslogger.h"
-#include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgssettings.h"
-#include "qgsnewnamedialog.h"
-#include "qgsbrowserproxymodel.h"
-#include "qgsgui.h"
-#include "qgswindowmanagerinterface.h"
-#include "qgsnative.h"
-#include "qgsdataitemguiproviderregistry.h"
-#include "qgsdataitemguiprovider.h"
-#include "qgsdirectoryitem.h"
-#include "qgslayeritem.h"
-#include "qgsprojectitem.h"
-#include "qgsbrowserdockwidget_p.h"
+#include "moc_qgsbrowserwidget.cpp"
 
 // browser layer properties dialog
 #include "qgsapplication.h"

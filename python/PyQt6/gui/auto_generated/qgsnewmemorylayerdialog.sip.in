@@ -9,6 +9,7 @@
 
 
 
+
 class QgsNewMemoryLayerDialog : QDialog
 {
 %Docstring(signature="appended")

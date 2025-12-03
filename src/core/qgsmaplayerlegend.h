@@ -17,10 +17,11 @@
 #define QGSMAPLAYERLEGEND_H
 
 #include <memory>
-#include <QObject>
 
 #include "qgis.h"
 #include "qgis_sip.h"
+
+#include <QObject>
 
 class QDomDocument;
 class QDomElement;

@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsweakrelation.h"
 #include "qgsrelation.h"
 #include "qgsrelationmanager.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "qgsweakrelation.h"
 
 class TestQgsWeakRelation : public QObject
 {

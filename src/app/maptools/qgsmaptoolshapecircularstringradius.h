@@ -17,10 +17,10 @@
 #ifndef QGSMAPTOOLSHAPECIRCULARSTRINGRADIUS_H
 #define QGSMAPTOOLSHAPECIRCULARSTRINGRADIUS_H
 
-#include "qgsmaptoolshapecircularstringabstract.h"
-#include "qgspoint.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapecircularstringabstract.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgspoint.h"
 
 class QDoubleSpinBox;
 

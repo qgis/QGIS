@@ -15,17 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprofileexporter.h"
-#include "moc_qgsprofileexporter.cpp"
-#include "qgsabstractprofilesource.h"
-#include "qgsabstractprofilegenerator.h"
-#include "qgsdxfexport.h"
-#include "qgsprofilerenderer.h"
-#include "qgsmemoryproviderutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorfilewriter.h"
 
-#include <QThread>
+#include "qgsabstractprofilegenerator.h"
+#include "qgsabstractprofilesource.h"
+#include "qgsdxfexport.h"
+#include "qgsmemoryproviderutils.h"
+#include "qgsprofilerenderer.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+
 #include <QFileInfo>
+#include <QThread>
+
+#include "moc_qgsprofileexporter.cpp"
 
 QgsProfileExporter::QgsProfileExporter( const QList<QgsAbstractProfileSource *> &sources, const QgsProfileRequest &request, Qgis::ProfileExportType type )
   : mType( type )

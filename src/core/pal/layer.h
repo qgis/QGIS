@@ -33,15 +33,17 @@
 #define SIP_NO_FILE
 
 
-#include "qgis_core.h"
-#include "pal.h" // for LineArrangementFlags enum
-#include "qgsgeos.h"
-#include "qgsgenericspatialindex.h"
-#include "qgslabelobstaclesettings.h"
-#include <QMutex>
-#include <QLinkedList>
-#include <QHash>
 #include <fstream>
+
+#include "pal.h"
+#include "qgis_core.h"
+#include "qgsgenericspatialindex.h"
+#include "qgsgeos.h"
+#include "qgslabelobstaclesettings.h"
+
+#include <QHash>
+#include <QLinkedList>
+#include <QMutex>
 
 class QgsLabelFeature;
 

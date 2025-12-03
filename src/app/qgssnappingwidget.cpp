@@ -14,7 +14,24 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssnappingwidget.h"
+
+#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsdoublespinbox.h"
+#include "qgslayertree.h"
+#include "qgslayertreegroup.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgsscalewidget.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssnappingconfig.h"
+#include "qgssnappinglayertreemodel.h"
+#include "qgsunittypes.h"
+
 #include <QAction>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QFont>
 #include <QHBoxLayout>
@@ -23,25 +40,10 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
-#include <QWidgetAction>
-#include <QCheckBox>
 #include <QTreeView>
+#include <QWidgetAction>
 
-#include "qgisapp.h"
-#include "qgsapplication.h"
-#include "qgsdoublespinbox.h"
-#include "qgslayertreegroup.h"
-#include "qgslayertree.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
-#include "qgssnappingconfig.h"
-#include "qgssnappinglayertreemodel.h"
-#include "qgssnappingwidget.h"
 #include "moc_qgssnappingwidget.cpp"
-#include "qgsunittypes.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsscalewidget.h"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

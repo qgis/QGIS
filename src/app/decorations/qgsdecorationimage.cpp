@@ -14,27 +14,27 @@
  ***************************************************************************/
 
 #include "qgsdecorationimage.h"
-#include "moc_qgsdecorationimage.cpp"
-#include "qgsdecorationimagedialog.h"
+
+#include <cassert>
+#include <cmath>
 
 #include "qgisapp.h"
+#include "qgscolorutils.h"
+#include "qgsdecorationimagedialog.h"
 #include "qgsimagecache.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
-#include "qgscolorutils.h"
-#include "qgssymbollayerutils.h"
-#include "qgssvgcache.h"
 #include "qgsmapsettings.h"
+#include "qgsproject.h"
+#include "qgssvgcache.h"
+#include "qgssymbollayerutils.h"
 
-#include <QPainter>
-#include <QMenu>
 #include <QDir>
 #include <QFile>
+#include <QMenu>
+#include <QPainter>
 #include <QSvgRenderer>
 
-#include <cmath>
-#include <cassert>
-
+#include "moc_qgsdecorationimage.cpp"
 
 QgsDecorationImage::QgsDecorationImage( QObject *parent )
   : QgsDecorationItem( parent )

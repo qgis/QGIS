@@ -16,8 +16,8 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSVERTEXID_H
 #define QGSVERTEXID_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 class QgsAbstractGeometry;
 
@@ -76,7 +76,7 @@ struct CORE_EXPORT QgsVertexId
    */
   bool vertexEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
-    return ringEqual( o ) && ( vertex >= 0 && o.ring == ring );
+    return ringEqual( o ) && ( vertex >= 0 && o.vertex == vertex );
   }
 
   /**

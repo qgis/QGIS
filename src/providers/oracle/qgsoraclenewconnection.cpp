@@ -15,19 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
-#include <QInputDialog>
-#include <QRegularExpressionValidator>
-
-#include "qgssettings.h"
 #include "qgsoraclenewconnection.h"
-#include "moc_qgsoraclenewconnection.cpp"
+
+#include "qgsdatasourceuri.h"
+#include "qgsoracleconnpool.h"
+#include "qgsoracleproviderconnection.h"
+#include "qgsoracletablemodel.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsoracleproviderconnection.h"
-#include "qgsdatasourceuri.h"
-#include "qgsoracletablemodel.h"
-#include "qgsoracleconnpool.h"
+#include "qgssettings.h"
+
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QRegularExpressionValidator>
+
+#include "moc_qgsoraclenewconnection.cpp"
 
 QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )

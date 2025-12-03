@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmextractbinary.h"
+
 #include "qgsfeaturerequest.h"
 
 ///@cond PRIVATE

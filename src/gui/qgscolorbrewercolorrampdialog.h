@@ -16,12 +16,14 @@
 #ifndef QGSCOLORBREWERCOLORRAMPDIALOG_H
 #define QGSCOLORBREWERCOLORRAMPDIALOG_H
 
-#include <QDialog>
-#include "qgspanelwidget.h"
-#include "qgscolorrampimpl.h"
 #include "ui_qgscolorbrewercolorrampwidgetbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgscolorrampimpl.h"
+#include "qgspanelwidget.h"
+
+#include <QDialog>
 
 class QgsColorBrewerColorRamp;
 class QDialogButtonBox;

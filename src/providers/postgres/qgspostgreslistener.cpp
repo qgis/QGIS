@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgspostgreslistener.h"
-#include "moc_qgspostgreslistener.cpp"
-#include "qgsdatasourceuri.h"
+
 #include "qgscredentials.h"
+#include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgspostgresconn.h"
+
+#include "moc_qgspostgreslistener.cpp"
 
 #ifdef Q_OS_WIN
 #include <winsock.h>

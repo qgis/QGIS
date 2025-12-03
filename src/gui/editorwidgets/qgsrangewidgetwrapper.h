@@ -16,11 +16,11 @@
 #ifndef QGSRANGEWIDGETWRAPPER_H
 #define QGSRANGEWIDGETWRAPPER_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
 
-#include <QSpinBox>
 #include <QDoubleSpinBox>
-#include "qgis_gui.h"
+#include <QSpinBox>
 
 SIP_NO_FILE
 
@@ -60,6 +60,15 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
      * A \a parent widget for this widget wrapper and the created widget can also be specified.
      */
     explicit QgsRangeWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent = nullptr );
+
+    /**
+     * Returns the default field precision to use for a \a field.
+     *
+     * This precision will be used by the widget if the user has not manually set a precision.
+     *
+     * \since QGIS 4.0
+     */
+    static int defaultFieldPrecision( const QgsField &field );
 
     // QgsEditorWidgetWrapper interface
   public:

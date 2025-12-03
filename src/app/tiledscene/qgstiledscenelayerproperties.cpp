@@ -14,21 +14,23 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayerproperties.h"
-#include "moc_qgstiledscenelayerproperties.cpp"
-#include "qgsmaplayerconfigwidget.h"
-#include "qgstiledscenelayer.h"
-#include "qgsmetadatawidget.h"
-#include "qgsapplication.h"
-#include "qgsmaplayerstyleguiutils.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsdatumtransformdialog.h"
 
-#include <QPushButton>
+#include "qgsapplication.h"
+#include "qgsdatumtransformdialog.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerstyleguiutils.h"
+#include "qgsmetadatawidget.h"
+#include "qgstiledscenelayer.h"
+
+#include <QDesktopServices>
+#include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QFileDialog>
-#include <QDesktopServices>
+#include <QPushButton>
+
+#include "moc_qgstiledscenelayerproperties.cpp"
 
 QgsTiledSceneLayerProperties::QgsTiledSceneLayerProperties( QgsTiledSceneLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
   : QgsLayerPropertiesDialog( layer, canvas, QStringLiteral( "QgsTiledSceneLayerProperties" ), parent, flags )

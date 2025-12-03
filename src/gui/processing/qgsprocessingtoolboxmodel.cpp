@@ -14,15 +14,19 @@
  ***************************************************************************/
 
 #include "qgsprocessingtoolboxmodel.h"
-#include "moc_qgsprocessingtoolboxmodel.cpp"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingrecentalgorithmlog.h"
-#include "qgsprocessingfavoritealgorithmmanager.h"
+
 #include <functional>
-#include <QPalette>
+
+#include "qgsapplication.h"
+#include "qgsprocessingfavoritealgorithmmanager.h"
+#include "qgsprocessingrecentalgorithmlog.h"
+#include "qgsprocessingregistry.h"
+#include "qgsvectorlayer.h"
+
 #include <QMimeData>
+#include <QPalette>
+
+#include "moc_qgsprocessingtoolboxmodel.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

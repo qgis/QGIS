@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLSHAPECIRCULARSTRINGABSTRACT_H
 #define QGSMAPTOOLSHAPECIRCULARSTRINGABSTRACT_H
 
-#include "qgsmaptoolshapeabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapeabstract.h"
 
 class QgsGeometryRubberBand;
 

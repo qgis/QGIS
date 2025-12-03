@@ -17,9 +17,10 @@
 #define QGSLAYERPROPERTIESWIDGET_H
 
 #include "ui_widget_layerproperties.h"
+
 #include "qgsexpressioncontext.h"
-#include "qgssymbolwidgetcontext.h"
 #include "qgssymbollayer.h"
+#include "qgssymbolwidgetcontext.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;

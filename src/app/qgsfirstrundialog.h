@@ -16,11 +16,12 @@
 #ifndef QGSFIRSTRUNDIALOG_H
 #define QGSFIRSTRUNDIALOG_H
 
-#include <QWidget>
-#include <QDialog>
+#include "ui_qgsfirstrundialog.h"
+
 #include "qgis_app.h"
 
-#include "ui_qgsfirstrundialog.h"
+#include <QDialog>
+#include <QWidget>
 
 class APP_EXPORT QgsFirstRunDialog : public QDialog, private Ui::QgsFirstRunDialog
 {

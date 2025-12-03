@@ -18,9 +18,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmsutils.h"
 #include "qgswmsgetfeatureinfo.h"
+
 #include "qgswmsrenderer.h"
+#include "qgswmsutils.h"
 
 namespace QgsWms
 {

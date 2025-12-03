@@ -15,7 +15,6 @@
 
 #include "qgsidentifycontext.h"
 
-
 void QgsIdentifyContext::setTemporalRange( const QgsDateTimeRange &range )
 {
   mTemporalRange = range;

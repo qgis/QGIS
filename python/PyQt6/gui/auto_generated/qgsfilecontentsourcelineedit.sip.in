@@ -9,6 +9,7 @@
 
 
 
+
 class QgsAbstractFileContentSourceLineEdit : QWidget /Abstract/
 {
 %Docstring(signature="appended")

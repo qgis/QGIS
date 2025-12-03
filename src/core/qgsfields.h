@@ -17,9 +17,9 @@
 #define QGSFIELDS_H
 
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfield.h"
 
 class QgsFieldsPrivate;

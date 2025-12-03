@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithminterpolatepoint.h"
-#include "qgsgeometrycollection.h"
+
 #include "qgscurve.h"
+#include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE
 

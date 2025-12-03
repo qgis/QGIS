@@ -95,7 +95,7 @@ Sets this to ``False`` to not automatically scroll parent QScrollArea to
 this widget's contents when expanded
 %End
 
-    bool scrollOnExpand();
+    bool scrollOnExpand() const;
 %Docstring
 If this is set to ``False`` the parent QScrollArea will not be
 automatically scrolled to this widget's contents when expanded
@@ -194,8 +194,18 @@ Set this to ``True`` to save/restore checked state
    only turn on mSaveCheckedState for groupboxes NOT used
    in multiple places or used as options for different parent objects
 %End
-    bool saveCollapsedState();
-    bool saveCheckedState();
+
+    bool saveCollapsedState() const;
+%Docstring
+Returns whether the collapsed state of this group box is saved and
+loaded persistently in :py:class:`QgsSettings`
+%End
+
+    bool saveCheckedState() const;
+%Docstring
+Returns whether the checked state of this group box is saved and loaded
+persistently in :py:class:`QgsSettings`
+%End
 
     void setSettingGroup( const QString &group );
 %Docstring

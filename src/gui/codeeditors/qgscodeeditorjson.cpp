@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include "qgscodeeditorjson.h"
-#include "moc_qgscodeeditorjson.cpp"
 
-#include <QWidget>
-#include <QString>
 #include <QFont>
+#include <QString>
+#include <QWidget>
 #include <Qsci/qscilexerjson.h>
 
+#include "moc_qgscodeeditorjson.cpp"
 
 QgsCodeEditorJson::QgsCodeEditorJson( QWidget *parent )
   : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding )

@@ -12,11 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include "qgsproject.h"
+#include "qgsconfig.h"
+
+#include <memory>
+
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerexporter.h"
-#include "qgsconfig.h"
+#include "qgsproject.h"
+#include "qgstest.h"
 
 class TestQgsPointCloudLayerExporter : public QObject
 {
@@ -57,7 +60,7 @@ void TestQgsPointCloudLayerExporter::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::registerOgrDrivers();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
 

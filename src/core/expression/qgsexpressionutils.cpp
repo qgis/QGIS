@@ -14,13 +14,16 @@
  ***************************************************************************/
 
 #include "qgsexpressionutils.h"
-#include "qgsvectorlayer.h"
+
+#include <memory>
+
 #include "qgscolorrampimpl.h"
-#include "qgsproviderregistry.h"
-#include "qgsvariantutils.h"
 #include "qgsproject.h"
-#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsproviderregistry.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 ///@cond PRIVATE
 
@@ -358,7 +361,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
   {
     if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
     {
-      featureSource.reset( new QgsVectorLayerFeatureSource( vl ) );
+      featureSource = std::make_unique<QgsVectorLayerFeatureSource>( vl );
     }
   }, foundLayer );
 

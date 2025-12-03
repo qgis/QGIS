@@ -12,6 +12,7 @@
 
 
 
+
 class QgsStyleItemsListWidget : QWidget
 {
 %Docstring(signature="appended")

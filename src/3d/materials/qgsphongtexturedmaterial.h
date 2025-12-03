@@ -62,7 +62,7 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     float shininess() const;
     float opacity() const;
 
-  public Q_SLOTS:
+  public slots:
     void setAmbient( const QColor &ambient );
 
     /**
@@ -76,7 +76,7 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     void setShininess( float shininess );
     void setOpacity( float opacity );
 
-  Q_SIGNALS:
+  signals:
     void ambientChanged( const QColor &ambient );
     void diffuseTextureChanged( Qt3DRender::QAbstractTexture *diffuseTexture );
     void diffuseTextureScaleChanged( float diffuseTextureScale );

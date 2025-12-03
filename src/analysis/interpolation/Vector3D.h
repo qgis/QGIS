@@ -18,6 +18,7 @@
 #define VECTOR3D_H
 
 #include <cmath>
+
 #include "qgis_analysis.h"
 
 #define SIP_NO_FILE

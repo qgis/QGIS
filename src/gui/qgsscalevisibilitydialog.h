@@ -16,10 +16,11 @@
 #ifndef QGSSCALEVISIBILITYDIALOG_H
 #define QGSSCALEVISIBILITYDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-#include <QGroupBox>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QDialog>
+#include <QGroupBox>
 
 class QgsMapCanvas;
 class QgsScaleRangeWidget;

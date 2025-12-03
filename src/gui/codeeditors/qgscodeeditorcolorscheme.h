@@ -18,9 +18,10 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QString>
-#include <QMap>
+
 #include <QColor>
+#include <QMap>
+#include <QString>
 
 /**
  * \ingroup gui

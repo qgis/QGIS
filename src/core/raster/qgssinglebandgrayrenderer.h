@@ -18,12 +18,12 @@
 #ifndef QGSSINGLEBANDGRAYRENDERER_H
 #define QGSSINGLEBANDGRAYRENDERER_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsrasterrenderer.h"
 #include "qgscolorramplegendnodesettings.h"
-
-#include <memory>
+#include "qgsrasterrenderer.h"
 
 class QgsContrastEnhancement;
 class QDomElement;

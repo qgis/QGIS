@@ -14,18 +14,18 @@
  ***************************************************************************/
 
 #include "qgssymbollevelsdialog.h"
-#include "moc_qgssymbollevelsdialog.cpp"
 
-#include "qgssymbollayerutils.h"
-#include "qgssymbollayer.h"
-#include "qgssymbol.h"
 #include "qgsguiutils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
 
-#include <QTableWidgetItem>
+#include <QDialogButtonBox>
 #include <QItemDelegate>
 #include <QSpinBox>
-#include <QDialogButtonBox>
+#include <QTableWidgetItem>
 
+#include "moc_qgssymbollevelsdialog.cpp"
 
 ////////////////
 

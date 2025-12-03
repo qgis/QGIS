@@ -14,12 +14,10 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsproviderguimetadata.h"
-#include "qgssourceselectprovider.h"
-
 #include "qgsgpxprovider.h"
 #include "qgsgpxsourceselect.h"
-
+#include "qgsproviderguimetadata.h"
+#include "qgssourceselectprovider.h"
 
 //! Provider for GPX source select
 class QgsGpxSourceSelectProvider : public QgsSourceSelectProvider

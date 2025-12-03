@@ -12,10 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QRegularExpression>
-
 #include "qgsbabelgpsdevice.h"
 
+#include <QRegularExpression>
 
 QgsBabelGpsDeviceFormat::QgsBabelGpsDeviceFormat( const QString &waypointDownloadCommand, const QString &waypointUploadCommand,
     const QString &routeDownloadCommand, const QString &routeUploadCommand,

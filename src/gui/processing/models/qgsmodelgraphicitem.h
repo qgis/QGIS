@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsmodelcomponentgraphicitem.h"
+
 #include <QGraphicsObject>
 #include <QPicture>
 

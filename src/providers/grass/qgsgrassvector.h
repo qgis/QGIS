@@ -17,12 +17,11 @@
 #ifndef QGSGRASSVECTOR_H
 #define QGSGRASSVECTOR_H
 
+#include "qgsfields.h"
+#include "qgsgrass.h"
+
 #include <QDateTime>
 #include <QObject>
-
-#include "qgsfields.h"
-
-#include "qgsgrass.h"
 
 class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
 {
@@ -35,7 +34,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
     QgsGrassObject grassObject() const { return mGrassObject; }
 
     //! Layer number (field)
-    int number() { return mNumber; }
+    int number() const { return mNumber; }
 
     //! Sets number of elements of given type.
     void setTypeCount( int type, int count ) { mTypeCounts[type] = count; }

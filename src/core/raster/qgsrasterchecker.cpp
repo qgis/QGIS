@@ -13,19 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsproviderregistry.h"
 #include "qgsrasterchecker.h"
+
+#include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 
-#include <QColor>
-#include <QPainter>
-#include <QImage>
-#include <QTime>
-#include <QCryptographicHash>
-#include <QByteArray>
-#include <QDebug>
 #include <QBuffer>
+#include <QByteArray>
+#include <QColor>
+#include <QCryptographicHash>
+#include <QDebug>
+#include <QImage>
+#include <QPainter>
+#include <QTime>
 
 QgsRasterChecker::QgsRasterChecker()
 {

@@ -14,32 +14,34 @@
  ***************************************************************************/
 
 #include "qgscolorbutton.h"
-#include "moc_qgscolorbutton.cpp"
-#include "qgscolordialog.h"
-#include "qgsapplication.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorswatchgrid.h"
-#include "qgscolorschemeregistry.h"
-#include "qgscolorwidgets.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsguiutils.h"
-#include "qgsgui.h"
-#include "qgscolortooltip_p.h"
 
-#include <QPainter>
-#include <QMouseEvent>
-#include <QMenu>
+#include "qgsapplication.h"
+#include "qgscolordialog.h"
+#include "qgscolorschemeregistry.h"
+#include "qgscolorswatchgrid.h"
+#include "qgscolortooltip_p.h"
+#include "qgscolorwidgets.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
+
+#include <QBuffer>
 #include <QClipboard>
 #include <QDrag>
+#include <QGridLayout>
+#include <QLabel>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QScreen>
 #include <QStyle>
 #include <QStyleOptionToolButton>
 #include <QWidgetAction>
-#include <QScreen>
-#include <QLabel>
-#include <QGridLayout>
-#include <QPushButton>
-#include <QBuffer>
+
+#include "moc_qgscolorbutton.cpp"
 
 QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSchemeRegistry *registry )
   : QToolButton( parent )

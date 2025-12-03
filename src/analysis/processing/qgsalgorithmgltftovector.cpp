@@ -16,13 +16,16 @@
  ***************************************************************************/
 
 #include "qgsalgorithmgltftovector.h"
+
+#include <memory>
+
 #include "qgsgltfutils.h"
+#include "qgslinestring.h"
 #include "qgsmatrix4x4.h"
-#include "qgsvector3d.h"
+#include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgsmultilinestring.h"
+#include "qgsvector3d.h"
 
 #include <QMatrix4x4>
 
@@ -344,7 +347,7 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
         *gltfLocalTransform = parentTransform * *gltfLocalTransform;
       else
       {
-        gltfLocalTransform.reset( new QMatrix4x4( parentTransform ) );
+        gltfLocalTransform = std::make_unique<QMatrix4x4>( parentTransform );
       }
     }
 

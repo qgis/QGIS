@@ -16,12 +16,13 @@
 #ifndef QGSCOLORRAMPLEGENDNODESETTINGS_H
 #define QGSCOLORRAMPLEGENDNODESETTINGS_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
 #include "qgstextformat.h"
+
 #include <QString>
-#include <memory>
 
 class QgsNumericFormat;
 class QgsReadWriteContext;

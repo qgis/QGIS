@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
+#include "qgscustomdrophandler.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolpan.h"
+#include "qgsproject.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsrenderchecker.h"
 #include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
 #include <QSignalSpy>
 #include <QtMath>
-
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsrenderchecker.h"
-#include "qgsvectordataprovider.h"
-#include "qgsmaptoolpan.h"
-#include "qgscustomdrophandler.h"
-#include "qgsreferencedgeometry.h"
 
 namespace QTest
 {
@@ -161,7 +161,7 @@ void TestQgsMapCanvas::testMagnification()
 
   QTemporaryFile tmpFile;
   tmpFile.setAutoRemove( false );
-  tmpFile.open(); // fileName is not available until open
+  QVERIFY( tmpFile.open() ); // fileName is not available until open
   const QString tmpName = tmpFile.fileName();
   tmpFile.close();
 

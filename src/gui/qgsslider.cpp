@@ -16,14 +16,17 @@
  ***************************************************************************/
 
 #include "qgsslider.h"
-#include "moc_qgsslider.cpp"
+
+#include <cmath>
+
 #include "qgslogger.h"
 #include "qgsvariantutils.h"
 
 #include <QPaintEvent>
 #include <QPainter>
 #include <QRect>
-#include <cmath>
+
+#include "moc_qgsslider.cpp"
 
 QgsSlider::QgsSlider( QWidget *parent )
   : QSlider( parent )

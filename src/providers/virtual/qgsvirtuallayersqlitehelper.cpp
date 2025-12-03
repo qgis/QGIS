@@ -14,13 +14,14 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 
-#include <QString>
-#include <QVariant>
+#include "qgsvirtuallayersqlitehelper.h"
 
 #include <stdexcept>
 
-#include "qgsvirtuallayersqlitehelper.h"
 #include "qgslogger.h"
+
+#include <QString>
+#include <QVariant>
 
 QgsScopedSqlite::QgsScopedSqlite( const QString &path, bool withExtension )
 {
@@ -201,7 +202,7 @@ namespace Sqlite
     return sqlite3_column_int( stmt_, i );
   }
 
-  qint64 Query::columnInt64( int i ) const
+  long long Query::columnInt64( int i ) const
   {
     return sqlite3_column_int64( stmt_, i );
   }

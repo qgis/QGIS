@@ -14,7 +14,6 @@
  ***************************************************************************/
 #include "qgscodeeditorcolorscheme.h"
 
-
 QgsCodeEditorColorScheme::QgsCodeEditorColorScheme( const QString &id, const QString &name )
   : mId( id )
   , mThemeName( name )

@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsambientocclusionblurentity.h"
-#include "moc_qgsambientocclusionblurentity.cpp"
 
 #include <Qt3DRender/QParameter>
+
+#include "moc_qgsambientocclusionblurentity.cpp"
 
 QgsAmbientOcclusionBlurEntity::QgsAmbientOcclusionBlurEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )

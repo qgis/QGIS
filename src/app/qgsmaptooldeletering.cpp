@@ -14,17 +14,17 @@
  ***************************************************************************/
 
 #include "qgsmaptooldeletering.h"
-#include "moc_qgsmaptooldeletering.cpp"
-
-#include "qgsmapcanvas.h"
-#include "qgsfeatureiterator.h"
-#include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
-#include "qgsrubberband.h"
-#include "qgsmapmouseevent.h"
 
 #include <limits>
 
+#include "qgsfeatureiterator.h"
+#include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsmaptooldeletering.cpp"
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )

@@ -15,14 +15,15 @@
 #ifndef QGSPROJECTDISPLAYSETTINGS_H
 #define QGSPROJECTDISPLAYSETTINGS_H
 
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
 
 #include <QObject>
 #include <QVector>
-#include <memory>
 
 class QDomElement;
 class QgsReadWriteContext;

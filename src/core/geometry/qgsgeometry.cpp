@@ -13,42 +13,41 @@ email                : morb at ozemail dot com dot au
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
+#include "qgsgeometry.h"
+
+#include <cmath>
 #include <cstdarg>
 #include <cstdio>
-#include <cmath>
+#include <geos_c.h>
+#include <limits>
 #include <nlohmann/json.hpp>
-#include <QCache>
 
 #include "qgis.h"
-#include "qgsgeometry.h"
-#include "moc_qgsgeometry.cpp"
 #include "qgsabstractgeometry.h"
+#include "qgscircle.h"
+#include "qgscurve.h"
 #include "qgsgeometryeditutils.h"
 #include "qgsgeometryfactory.h"
-
-#include <geos_c.h>
-
 #include "qgsgeometryutils.h"
-#include "qgsinternalgeometryengine.h"
-#include "qgsgeos.h"
-#include "qgsmaptopixel.h"
-#include "qgspointxy.h"
-#include "qgsrectangle.h"
-
-#include "qgsvectorlayer.h"
 #include "qgsgeometryvalidator.h"
-
+#include "qgsgeos.h"
+#include "qgsinternalgeometryengine.h"
+#include "qgslinestring.h"
+#include "qgsmaptopixel.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
 #include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgscircle.h"
-#include "qgscurve.h"
 #include "qgspolyhedralsurface.h"
+#include "qgsrectangle.h"
 #include "qgstriangle.h"
+#include "qgsvectorlayer.h"
+
+#include <QCache>
+
+#include "moc_qgsgeometry.cpp"
 
 struct QgsGeometryPrivate
 {

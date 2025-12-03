@@ -16,11 +16,11 @@
 #define QGSGRASSFEATUREITERATOR_H
 
 #include "qgsfeatureiterator.h"
-
-#include <QMutex>
-#include <QBitArray>
-
 #include "qgsgrassprovider.h"
+
+#include <QBitArray>
+#include <QMutex>
+
 //class QgsGrassProvider;
 class QgsGrassVectorMapLayer;
 

@@ -14,20 +14,21 @@
  ***************************************************************************/
 
 
-#include <QRect>
+#include "qgsmaptoolzoom.h"
+
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptopixel.h"
+#include "qgsrubberband.h"
+
 #include <QColor>
 #include <QCursor>
 #include <QPixmap>
+#include <QRect>
 
-#include "qgsmaptoolzoom.h"
 #include "moc_qgsmaptoolzoom.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsmaptopixel.h"
-#include "qgsrubberband.h"
-#include "qgslogger.h"
-#include "qgsmapmouseevent.h"
-#include "qgsapplication.h"
-
 
 QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut )
   : QgsMapTool( canvas )

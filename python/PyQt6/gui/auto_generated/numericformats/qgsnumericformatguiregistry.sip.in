@@ -10,6 +10,7 @@
 
 
 
+
 class QgsNumericFormatConfigurationWidgetFactory
 {
 %Docstring(signature="appended")

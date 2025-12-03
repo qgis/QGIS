@@ -16,9 +16,9 @@ email                : nyall dot dawson at gmail dot com
 #ifndef QGSMSSQLSQLQUERYBUILDER_H
 #define QGSMSSQLSQLQUERYBUILDER_H
 
-#include <QString>
-
 #include "qgsprovidersqlquerybuilder.h"
+
+#include <QString>
 
 class QgsMsSqlSqlQueryBuilder : public QgsProviderSqlQueryBuilder
 {

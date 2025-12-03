@@ -23,9 +23,9 @@
 #include "qgslayoutitemregistry.h"
 
 #include <QAbstractItemModel>
+#include <QSet>
 #include <QSortFilterProxyModel>
 #include <QStringList>
-#include <QSet>
 
 class QgsLayout;
 class QGraphicsItem;

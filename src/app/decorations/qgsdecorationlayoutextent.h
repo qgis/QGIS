@@ -18,14 +18,15 @@
 #ifndef QGSDECORATIONLAYOUTEXTENT_H
 #define QGSDECORATIONLAYOUTEXTENT_H
 
+#include <memory>
+
+#include "qgis_app.h"
 #include "qgsdecorationitem.h"
+#include "qgstextformat.h"
 
 #include <QColor>
 #include <QFont>
 #include <QObject>
-#include "qgis_app.h"
-#include "qgstextformat.h"
-#include <memory>
 
 class QgsDecorationLayoutExtentDialog;
 class QgsFillSymbol;

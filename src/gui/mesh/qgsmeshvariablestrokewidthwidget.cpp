@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgsmeshvariablestrokewidthwidget.h"
-#include "moc_qgsmeshvariablestrokewidthwidget.cpp"
+
+#include "qgssettings.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPointer>
 
-#include "qgssettings.h"
+#include "moc_qgsmeshvariablestrokewidthwidget.cpp"
 
 QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget(
   const QgsInterpolatedLineWidth &variableStrokeWidth,

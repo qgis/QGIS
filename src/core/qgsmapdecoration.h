@@ -19,6 +19,7 @@
 #define QGSMAPDECORATION_H
 
 #include "qgis_core.h"
+
 #include <QString>
 
 class QgsMapSettings;

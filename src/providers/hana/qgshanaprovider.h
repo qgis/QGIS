@@ -17,15 +17,15 @@
 #ifndef QGSHANAPROVIDER_H
 #define QGSHANAPROVIDER_H
 
+#include <odbc/Forwards.h>
+
 #include "qgsfields.h"
-#include "qgsprovidermetadata.h"
 #include "qgshanaconnection.h"
 #include "qgshanaprimarykeys.h"
+#include "qgsprovidermetadata.h"
 #include "qgsvectordataprovider.h"
 
 #include <QVersionNumber>
-
-#include "odbc/Forwards.h"
 
 class QgsFeature;
 class QgsField;

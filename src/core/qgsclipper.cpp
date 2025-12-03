@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsclipper.h"
+
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 

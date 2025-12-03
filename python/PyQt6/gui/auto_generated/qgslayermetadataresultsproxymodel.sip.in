@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsLayerMetadataResultsProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")

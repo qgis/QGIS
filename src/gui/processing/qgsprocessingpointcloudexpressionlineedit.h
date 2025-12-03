@@ -20,16 +20,16 @@
 
 #define SIP_NO_FILE
 
-#include <QWidget>
-#include <QDialog>
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QModelIndex>
+#include "ui_qgsprocessingpointcloudexpressiondialogbase.h"
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingpointcloudexpressiondialogbase.h"
 
+#include <QDialog>
+#include <QModelIndex>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QWidget>
 
 class QgsFilterLineEdit;
 class QToolButton;

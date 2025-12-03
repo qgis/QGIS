@@ -14,7 +14,10 @@
  ***************************************************************************/
 
 #include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
-#include "moc_qgsprocessingvectortilewriterlayerswidgetwrapper.cpp"
+
+#include "qgspanelwidget.h"
+#include "qgsprocessingparametervectortilewriterlayers.h"
+#include "qgsvectortilewriter.h"
 
 #include <QBoxLayout>
 #include <QLineEdit>
@@ -23,11 +26,7 @@
 #include <QStandardItemModel>
 #include <QToolButton>
 
-#include "qgspanelwidget.h"
-
-#include "qgsvectortilewriter.h"
-
-#include "qgsprocessingparametervectortilewriterlayers.h"
+#include "moc_qgsprocessingvectortilewriterlayerswidgetwrapper.cpp"
 
 /// @cond private
 

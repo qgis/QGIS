@@ -18,8 +18,8 @@
 #include "qgsalgorithmnetworkanalysisbase.h"
 
 #include "qgsgraphanalyzer.h"
-#include "qgsnetworkspeedstrategy.h"
 #include "qgsnetworkdistancestrategy.h"
+#include "qgsnetworkspeedstrategy.h"
 #include "qgsunittypes.h"
 
 ///@cond PRIVATE

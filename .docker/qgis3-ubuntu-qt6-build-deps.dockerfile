@@ -107,7 +107,8 @@ RUN  apt-get update \
 RUN  pip3 install --break-system-packages \
     future \
     capturer \
-    hdbcli
+    hdbcli \
+    pyarrow
 RUN  apt-get clean
 
 # Node.js and Yarn for server landingpage webapp
@@ -145,7 +146,7 @@ RUN  apt-get update \
      libgdal-dev \
      libproj-dev
 
-RUN 
+RUN
 FROM binary-for-oracle AS binary-only
 
 RUN  apt-get update \

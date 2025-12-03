@@ -15,18 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "moc_qgsgraphicsviewmousehandles.cpp"
+#include "qgsgraphicsviewmousehandles.h"
+
+#include <limits>
 
 #include "qgis.h"
-#include "qgsgraphicsviewmousehandles.h"
 #include "qgslayoututils.h"
 #include "qgsrendercontext.h"
 
-#include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
+#include <QGraphicsView>
 #include <QPainter>
 #include <QWidget>
-#include <limits>
+
+#include "moc_qgsgraphicsviewmousehandles.cpp"
 
 ///@cond PRIVATE
 

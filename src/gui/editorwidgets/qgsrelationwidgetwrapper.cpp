@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 #include "qgsrelationwidgetwrapper.h"
-#include "moc_qgsrelationwidgetwrapper.cpp"
 
-#include "qgsrelationeditorwidget.h"
-#include "qgsattributeeditorcontext.h"
-#include "qgsproject.h"
-#include "qgsrelationmanager.h"
 #include "qgsabstractrelationeditorwidget.h"
-#include "qgsrelationwidgetregistry.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgsgui.h"
+#include "qgsproject.h"
+#include "qgsrelationeditorwidget.h"
+#include "qgsrelationmanager.h"
+#include "qgsrelationwidgetregistry.h"
+
 #include <QWidget>
+
+#include "moc_qgsrelationwidgetwrapper.cpp"
 
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
   : QgsRelationWidgetWrapper( QStringLiteral( "relation_editor" ), vl, relation, editor, parent )
@@ -93,10 +95,12 @@ void QgsRelationWidgetWrapper::aboutToSave()
   // Calling isModified() will emit a beforeModifiedCheck()
   // signal that will make the embedded form to send any
   // outstanding widget changes to the edit buffer
-  mRelation.referencingLayer()->isModified();
+  ( void ) mRelation.referencingLayer()->isModified();
 
   if ( mNmRelation.isValid() )
-    mNmRelation.referencedLayer()->isModified();
+  {
+    ( void ) mNmRelation.referencedLayer()->isModified();
+  }
 }
 
 QgsRelation QgsRelationWidgetWrapper::relation() const

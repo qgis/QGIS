@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgssymbolselectordialog.h"
-#include "moc_qgssymbolselectordialog.cpp"
 
+#include "qgsexpressioncontextutils.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
-#include "qgssymbollayerutils.h"
 #include "qgssymbollayerregistry.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgssymbollayerutils.h"
+
+#include "moc_qgssymbolselectordialog.cpp"
 
 // the widgets
 #include "qgssymbolslistwidget.h"
@@ -48,6 +49,7 @@
 #include <QWidget>
 #include <QFile>
 #include <QStandardItem>
+#include <memory>
 
 /// @cond PRIVATE
 
@@ -170,7 +172,7 @@ class SymbolLayerItem : public QStandardItem
     }
 
     int type() const override { return SYMBOL_LAYER_ITEM_TYPE; }
-    bool isLayer() { return mIsLayer; }
+    bool isLayer() const { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol
     QgsSymbol *symbol()
@@ -566,7 +568,7 @@ void QgsSymbolSelectorWidget::layerChanged()
   if ( currentItem->isLayer() )
   {
     SymbolLayerItem *parent = static_cast<SymbolLayerItem *>( currentItem->parent() );
-    mDataDefineRestorer.reset( new DataDefinedRestorer( parent->symbol(), currentItem->layer() ) );
+    mDataDefineRestorer = std::make_unique<DataDefinedRestorer>( parent->symbol(), currentItem->layer() );
     QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
     layerProp->setDockMode( this->dockMode() );
     layerProp->setContext( mContext );

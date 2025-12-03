@@ -13,15 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QComboBox>
-#include <QDoubleSpinBox>
-
 #include "qgsgeopdflayertreemodel.h"
-#include "moc_qgsgeopdflayertreemodel.cpp"
+
+#include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
+
+#include <QComboBox>
+#include <QDoubleSpinBox>
+
+#include "moc_qgsgeopdflayertreemodel.cpp"
 
 QgsGeospatialPdfLayerTreeModel::QgsGeospatialPdfLayerTreeModel( const QList<QgsMapLayer *> &layers, QObject *parent )
   : QgsMapLayerModel( layers, parent )

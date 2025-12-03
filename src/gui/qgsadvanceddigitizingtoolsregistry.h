@@ -16,8 +16,8 @@
 #ifndef QGSADVANCEDDIGITIZINGTOOLSREGSITRY_H
 #define QGSADVANCEDDIGITIZINGTOOLSREGSITRY_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 #include <QIcon>
 #include <QMap>

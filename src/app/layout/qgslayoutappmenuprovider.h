@@ -18,6 +18,7 @@
 
 #include "qgis_sip.h"
 #include "qgslayoutview.h"
+
 #include <QObject>
 
 class QgsLayoutDesignerDialog;

@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgsrasterlayerelevationproperties.h"
-#include "moc_qgsrasterlayerelevationproperties.cpp"
-#include "qgsrasterlayer.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgslinesymbollayer.h"
-#include "qgsfillsymbollayer.h"
+
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsrasterlayer.h"
+#include "qgssymbollayerutils.h"
+
+#include "moc_qgsrasterlayerelevationproperties.cpp"
 
 QgsRasterLayerElevationProperties::QgsRasterLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )

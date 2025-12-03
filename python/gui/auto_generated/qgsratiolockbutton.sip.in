@@ -10,6 +10,7 @@
 
 
 
+
 class QgsRatioLockButton : QToolButton
 {
 %Docstring(signature="appended")

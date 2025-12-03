@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmeshdatasetgrouptreeview.h"
-#include "moc_qgsmeshdatasetgrouptreeview.cpp"
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -23,14 +22,15 @@
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
 
-#include <QList>
-#include <QItemSelectionModel>
-#include <QMouseEvent>
-#include <QMenu>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QHeaderView>
+#include <QItemSelectionModel>
+#include <QList>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMouseEvent>
 
+#include "moc_qgsmeshdatasetgrouptreeview.cpp"
 
 QgsMeshDatasetGroupTreeModel::QgsMeshDatasetGroupTreeModel( QObject *parent )
   : QAbstractItemModel( parent )

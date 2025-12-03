@@ -51,7 +51,7 @@ Appends a scope to the current expression context.
 .. versionadded:: 3.2
 %End
 
-    const QString expressionDialogTitle();
+    QString expressionDialogTitle() const;
 %Docstring
 Returns the title used for the expression dialog
 %End

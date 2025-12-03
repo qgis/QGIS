@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsRenderedItemResults
 {
 %Docstring(signature="appended")

@@ -16,19 +16,20 @@
  ***************************************************************************/
 
 #include "qgsmssqlconnection.h"
-#include "qgsmssqlprovider.h"
-#include "qgsmssqldatabase.h"
-#include "qgsmssqlutils.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
+
 #include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsmssqldatabase.h"
+#include "qgsmssqlprovider.h"
+#include "qgsmssqlutils.h"
+#include "qgssettings.h"
 #include "qgsvariantutils.h"
+
+#include <QFile>
+#include <QSet>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-#include <QSet>
-#include <QFile>
-
 
 bool QgsMssqlConnection::geometryColumnsOnly( const QString &name )
 {

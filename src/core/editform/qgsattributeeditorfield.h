@@ -19,7 +19,6 @@
 #include "qgis_core.h"
 #include "qgsattributeeditorelement.h"
 
-
 /**
  * \ingroup core
  * \brief This element will load a field's widget onto the form.

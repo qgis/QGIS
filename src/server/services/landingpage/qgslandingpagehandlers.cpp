@@ -16,16 +16,17 @@
  ***************************************************************************/
 
 #include "qgslandingpagehandlers.h"
-#include "qgslandingpageutils.h"
-#include "qgsserverinterface.h"
-#include "qgsserverresponse.h"
-#include "qgsserverprojectutils.h"
-#include "qgsvectorlayer.h"
-#include "qgslayertreenode.h"
-#include "qgslayertree.h"
 
-#include <QDir>
+#include "qgslandingpageutils.h"
+#include "qgslayertree.h"
+#include "qgslayertreenode.h"
+#include "qgsserverinterface.h"
+#include "qgsserverprojectutils.h"
+#include "qgsserverresponse.h"
+#include "qgsvectorlayer.h"
+
 #include <QCryptographicHash>
+#include <QDir>
 
 QgsLandingPageHandler::QgsLandingPageHandler( const QgsServerSettings *settings )
   : mSettings( settings )

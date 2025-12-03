@@ -15,9 +15,10 @@
 #ifndef QGSDOCUMENTATIONPANELWIDGET_H
 #define QGSDOCUMENTATIONPANELWIDGET_H
 
-#include "qgsdevtoolwidget.h"
 #include "qgsconfig.h"
 #include "ui_qgsdocumentationpanelbase.h"
+
+#include "qgsdevtoolwidget.h"
 
 #ifdef HAVE_WEBENGINE
 class QWebEngineView;

@@ -14,15 +14,17 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewnocrsindicator.h"
-#include "moc_qgslayertreeviewnocrsindicator.cpp"
-#include "qgslayertreeview.h"
+
+#include "qgisapp.h"
+#include "qgsannotationlayer.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
-#include "qgsvectorlayer.h"
-#include "qgisapp.h"
+#include "qgslayertreeview.h"
 #include "qgsprojectionselectiondialog.h"
-#include "qgsannotationlayer.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgslayertreeviewnocrsindicator.cpp"
 
 QgsLayerTreeViewNoCrsIndicatorProvider::QgsLayerTreeViewNoCrsIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

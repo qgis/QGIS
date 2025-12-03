@@ -18,16 +18,16 @@
 #ifndef QGSPOINTXY_H
 #define QGSPOINTXY_H
 
-#include "qgis_core.h"
-#include "qgsvector.h"
-#include "qgsgeometryutils_base.h"
+#include <iostream>
 
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgsgeometryutils_base.h"
+#include "qgsvector.h"
 
-#include <iostream>
-#include <QString>
-#include <QPoint>
 #include <QObject>
+#include <QPoint>
+#include <QString>
 #include <qglobal.h>
 
 class QgsPoint;

@@ -14,18 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDebug>
-#include <QObject>
-
-#include "cpl_string.h"
-#include "gdal.h"
-
 #include "qgspostgresrastershareddata.h"
-#include "qgspostgresrasterutils.h"
-#include "qgspostgresconn.h"
+
+#include <cpl_string.h>
+#include <gdal.h>
+
+#include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgspolygon.h"
-#include "qgslogger.h"
+#include "qgspostgresconn.h"
+#include "qgspostgresrasterutils.h"
+
+#include <QDebug>
+#include <QObject>
 
 QgsPostgresRasterSharedData::~QgsPostgresRasterSharedData() = default;
 

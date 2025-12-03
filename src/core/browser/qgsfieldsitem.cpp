@@ -16,14 +16,18 @@
  ***************************************************************************/
 
 #include "qgsfieldsitem.h"
-#include "moc_qgsfieldsitem.cpp"
-#include "qgsiconutils.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgslogger.h"
+
+#include <memory>
+
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
 #include "qgsfieldmodel.h"
+#include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsfieldsitem.cpp"
 
 QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
                               const QString &path,
@@ -111,7 +115,7 @@ QgsVectorLayer *QgsFieldsItem::layer()
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
       if ( conn )
       {
-        vl.reset( new QgsVectorLayer( conn->tableUri( mSchema, mTableName ), QStringLiteral( "temp_layer" ), providerKey() ) );
+        vl = std::make_unique<QgsVectorLayer>( conn->tableUri( mSchema, mTableName ), QStringLiteral( "temp_layer" ), providerKey() );
         if ( vl->isValid() )
         {
           return vl.release();

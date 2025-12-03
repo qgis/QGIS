@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgsfonttextureatlasgenerator.h"
+
 #include "qgscolorrampimpl.h"
+#include "qgspallabeling.h"
+#include "qgsrendercontext.h"
 #include "qgstextformat.h"
 #include "qgstextrenderer.h"
-#include "qgsrendercontext.h"
-#include "qgspallabeling.h"
+
 #include <QPainter>
-#include <QSet>
 #include <QRegularExpressionMatch>
+#include <QSet>
 
 // rectpack2D library
 #include <finders_interface.h>

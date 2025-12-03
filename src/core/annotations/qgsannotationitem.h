@@ -19,9 +19,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgscallout.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
-#include "qgscallout.h"
 
 class QgsFeedback;
 class QgsMarkerSymbol;

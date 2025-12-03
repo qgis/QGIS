@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaskpaintdevice.h"
+
 #include "qgspainting.h"
 
 ///@cond PRIVATE

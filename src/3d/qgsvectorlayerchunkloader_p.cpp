@@ -14,30 +14,32 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerchunkloader_p.h"
-#include "moc_qgsvectorlayerchunkloader_p.cpp"
+
+#include "qgs3dsymbolregistry.h"
 #include "qgs3dutils.h"
+#include "qgsabstract3dsymbol.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsabstractvectorlayer3drenderer.h"
+#include "qgsapplication.h"
+#include "qgschunknode.h"
+#include "qgseventtracing.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgeotransform.h"
 #include "qgsline3dsymbol.h"
+#include "qgslogger.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsray3d.h"
 #include "qgsraycastcontext.h"
 #include "qgsraycastingutils.h"
-#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
-#include "qgschunknode.h"
-#include "qgseventtracing.h"
-#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
-#include "qgsabstract3dsymbol.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgsexpressioncontextutils.h"
 
-#include <QtConcurrent>
 #include <Qt3DCore/QTransform>
+#include <QtConcurrent>
+
+#include "moc_qgsvectorlayerchunkloader_p.cpp"
 
 ///@cond PRIVATE
 

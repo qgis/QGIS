@@ -20,10 +20,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QString>
-#include <QObject>
-#include <QUuid>
 
+#include <QObject>
+#include <QString>
+#include <QUuid>
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

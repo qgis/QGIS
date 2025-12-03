@@ -16,16 +16,17 @@
 #ifndef QGSEFFECTSTACKPROPERTIESWIDGET_H
 #define QGSEFFECTSTACKPROPERTIESWIDGET_H
 
-#include "qgsdialog.h"
-#include "qgis_sip.h"
+#include "ui_qgseffectstackpropertieswidgetbase.h"
+
 #include "qgis.h"
-#include <QWidget>
-#include <QStandardItemModel>
-#include <QPicture>
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsdialog.h"
 #include "qgspanelwidget.h"
 
-#include "ui_qgseffectstackpropertieswidgetbase.h"
-#include "qgis_gui.h"
+#include <QPicture>
+#include <QStandardItemModel>
+#include <QWidget>
 
 class EffectItem;
 class QgsPaintEffect;

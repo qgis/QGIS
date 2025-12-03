@@ -13,16 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmodelarrowitem.h"
+
 #include <math.h>
 
-#include "qgsmodelarrowitem.h"
-#include "moc_qgsmodelarrowitem.cpp"
 #include "qgsapplication.h"
-#include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
-#include <QPainter>
+#include "qgsmodelgraphicsscene.h"
+
 #include <QApplication>
+#include <QPainter>
 #include <QPalette>
+
+#include "moc_qgsmodelarrowitem.cpp"
 
 ///@cond NOT_STABLE
 

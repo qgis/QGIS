@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspainting.h"
+
 #include "qgslogger.h"
 
 #include <QTransform>

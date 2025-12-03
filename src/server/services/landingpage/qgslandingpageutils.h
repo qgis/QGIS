@@ -16,13 +16,14 @@
 #ifndef QGSLANDINGPAGEUTILS_H
 #define QGSLANDINGPAGEUTILS_H
 
-#include <QMap>
-#include <QStringList>
-#include <QRegularExpression>
-
 #include <nlohmann/json_fwd.hpp>
-#include "qgsserversettings.h"
+
 #include "qgsserverrequest.h"
+#include "qgsserversettings.h"
+
+#include <QMap>
+#include <QRegularExpression>
+#include <QStringList>
 
 #ifndef SIP_RUN
 using namespace nlohmann;

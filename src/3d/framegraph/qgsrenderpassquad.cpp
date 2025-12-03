@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsrenderpassquad.h"
-#include "moc_qgsrenderpassquad.cpp"
 
 #include <random>
+
+#include "moc_qgsrenderpassquad.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>

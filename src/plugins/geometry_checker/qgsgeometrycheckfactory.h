@@ -15,8 +15,9 @@
 #ifndef QGS_GEOMETRY_CHECK_FACTORY_H
 #define QGS_GEOMETRY_CHECK_FACTORY_H
 
-#include "qgis.h"
 #include "ui_qgsgeometrycheckersetuptab.h"
+
+#include "qgis.h"
 
 class QgsGeometryCheckContext;
 class QgsGeometryCheck;

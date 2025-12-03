@@ -14,7 +14,6 @@
 
 
 
-
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring(signature="appended")

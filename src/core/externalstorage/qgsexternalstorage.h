@@ -16,9 +16,9 @@
 #ifndef QGSEXTERNALSTORAGE_H
 #define QGSEXTERNALSTORAGE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 #include <QObject>
 #include <QString>

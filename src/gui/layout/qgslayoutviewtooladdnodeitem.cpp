@@ -14,24 +14,27 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtooladdnodeitem.h"
-#include "moc_qgslayoutviewtooladdnodeitem.cpp"
+
 #include "qgsapplication.h"
-#include "qgslayoutview.h"
-#include "qgslayout.h"
-#include "qgslayoutitemregistry.h"
-#include "qgslayoutviewmouseevent.h"
-#include "qgslogger.h"
-#include "qgslayoutviewrubberband.h"
 #include "qgsgui.h"
+#include "qgslayout.h"
 #include "qgslayoutitemguiregistry.h"
-#include "qgslayoutnewitempropertiesdialog.h"
-#include "qgssettings.h"
-#include "qgslayoututils.h"
 #include "qgslayoutitemnodeitem.h"
-#include <QGraphicsRectItem>
-#include <QPen>
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutnewitempropertiesdialog.h"
+#include "qgslayoututils.h"
+#include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
+#include "qgslayoutviewrubberband.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+
 #include <QBrush>
+#include <QGraphicsRectItem>
 #include <QMouseEvent>
+#include <QPen>
+
+#include "moc_qgslayoutviewtooladdnodeitem.cpp"
 
 QgsLayoutViewToolAddNodeItem::QgsLayoutViewToolAddNodeItem( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Add item" ) )

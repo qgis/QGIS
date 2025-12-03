@@ -14,19 +14,21 @@
  ***************************************************************************/
 
 #include "qgsnominatimgeocoder.h"
+
 #include "qgsblockingnetworkrequest.h"
+#include "qgscoordinatetransform.h"
 #include "qgsgeocodercontext.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgscoordinatetransform.h"
+
 #include <QDateTime>
-#include <QUrl>
-#include <QUrlQuery>
+#include <QJsonArray>
+#include <QJsonDocument>
 #include <QMutex>
 #include <QNetworkRequest>
-#include <QJsonDocument>
-#include <QJsonArray>
+#include <QUrl>
+#include <QUrlQuery>
 
 QMutex QgsNominatimGeocoder::sMutex;
 typedef QMap< QUrl, QList< QgsGeocoderResult > > CachedGeocodeResult;

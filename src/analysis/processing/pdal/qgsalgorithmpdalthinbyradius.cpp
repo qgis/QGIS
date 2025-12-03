@@ -17,8 +17,8 @@
 
 #include "qgsalgorithmpdalthinbyradius.h"
 
-#include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
 
 ///@cond PRIVATE
 
@@ -50,6 +50,11 @@ QStringList QgsPdalThinByRadiusAlgorithm::tags() const
 QString QgsPdalThinByRadiusAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a thinned version of the point cloud by performing sampling by distance point." );
+}
+
+QString QgsPdalThinByRadiusAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a thinned version of a point cloud by performing sampling by distance point." );
 }
 
 QgsPdalThinByRadiusAlgorithm *QgsPdalThinByRadiusAlgorithm::createInstance() const

@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgstransformeffect.h"
+
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
+
 #include <QPicture>
 #include <QTransform>
 

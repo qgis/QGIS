@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 #include "qgslayoutmanager.h"
-#include "moc_qgslayoutmanager.cpp"
+
+#include "qgscompositionconverter.h"
 #include "qgslayout.h"
-#include "qgsproject.h"
 #include "qgslayoutundostack.h"
 #include "qgsprintlayout.h"
-#include "qgsreport.h"
-#include "qgscompositionconverter.h"
+#include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgsstyleentityvisitor.h"
+#include "qgsreport.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsstyleentityvisitor.h"
+
+#include "moc_qgslayoutmanager.cpp"
 
 QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   : QgsAbstractProjectStoredObjectManager( project )

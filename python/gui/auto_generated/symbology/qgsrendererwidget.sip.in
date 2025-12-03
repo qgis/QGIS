@@ -8,6 +8,7 @@
 
 
 
+
 class QgsRendererWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")

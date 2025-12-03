@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgsfieldvalueslineedit.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsfloatingwidget.h"
-#include "moc_qgsfieldvalueslineedit.cpp"
+#include "qgsvectorlayer.h"
 
 #include <QCompleter>
+#include <QHBoxLayout>
 #include <QStringListModel>
 #include <QTimer>
-#include <QHBoxLayout>
+
+#include "moc_qgsfieldvalueslineedit.cpp"
 
 QgsFieldValuesLineEdit::QgsFieldValuesLineEdit( QWidget *parent )
   : QgsFilterLineEdit( parent )

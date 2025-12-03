@@ -16,10 +16,10 @@
 #ifndef QGSEXPRESSIONSORTER_H
 #define QGSEXPRESSIONSORTER_H
 
-#include <QLocale>
-
 #include "qgsfeaturerequest.h"
 #include "qgsindexedfeature.h"
+
+#include <QLocale>
 
 /// @cond PRIVATE
 class QgsExpressionSorter

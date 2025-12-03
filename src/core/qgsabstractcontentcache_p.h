@@ -20,6 +20,7 @@
 
 #include "qgsabstractcontentcache.h"
 #include "qgssetrequestinitiator_p.h"
+
 #include <QRegularExpression>
 
 template<class T>

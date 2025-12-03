@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsprocessingfavoritealgorithmmanager.h"
+#include "qgsprocessingrecentalgorithmlog.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingtoolboxmodel.h"
-#include "qgsprocessingrecentalgorithmlog.h"
-#include "qgsprocessingfavoritealgorithmmanager.h"
 #include "qgsprocessingtoolboxtreeview.h"
 #include "qgssettings.h"
+#include "qgstest.h"
 
 #include <QtTest/QSignalSpy>
-#include "qgstest.h"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

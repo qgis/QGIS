@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsstorebadlayerinfo.h"
+
 #include <QDomElement>
 
 void QgsStoreBadLayerInfo::handleBadLayers( const QList<QDomNode> &layers )

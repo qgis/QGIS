@@ -19,13 +19,14 @@
 #define QGSSERVEREXCEPTION_H
 
 
-#include <QString>
-#include <QByteArray>
+#include <nlohmann/json.hpp>
 
-#include "qgsexception.h"
 #include "qgis_server.h"
 #include "qgis_sip.h"
-#include "nlohmann/json.hpp"
+#include "qgsexception.h"
+
+#include <QByteArray>
+#include <QString>
 
 #ifndef SIP_RUN
 using namespace nlohmann;

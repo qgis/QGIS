@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgstiledscenerenderer.h"
-#include "qgsunittypes.h"
+
 #include "qgsapplication.h"
 #include "qgstiledscenerendererregistry.h"
+#include "qgsunittypes.h"
 
 #include <QThread>
 

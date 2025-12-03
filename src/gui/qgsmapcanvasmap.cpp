@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmapcanvasmap.h"
+
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmapcanvasmap.h"
+#include "qgsmaplayer.h"
 #include "qgsmaprendererjob.h"
 #include "qgsmapsettings.h"
-#include "qgsmaplayer.h"
 
 #include <QPainter>
 

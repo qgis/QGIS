@@ -20,13 +20,13 @@
 
 #include <map>
 
-#include <QDir>
-#include <QString>
-#include <QStringList>
-#include <QMainWindow>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDir>
+#include <QMainWindow>
+#include <QString>
+#include <QStringList>
 
 class QgsProjectStorageGuiProvider;
 class QgsProviderGuiMetadata;

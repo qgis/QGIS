@@ -15,10 +15,10 @@
 #ifndef QGSAPPLAYERTREEVIEWMENUPROVIDER_H
 #define QGSAPPLAYERTREEVIEWMENUPROVIDER_H
 
-#include <QObject>
-
-#include "qgslayertreeview.h"
 #include "qgis.h"
+#include "qgslayertreeview.h"
+
+#include <QObject>
 
 class QAction;
 class QgsCoordinateReferenceSystem;

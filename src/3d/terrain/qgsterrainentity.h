@@ -29,11 +29,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgschunkedentity.h"
-#include "qgschunkqueuejob.h"
-
 #include <memory>
 
+#include "qgschunkedentity.h"
+#include "qgschunkqueuejob.h"
 
 namespace Qt3DCore
 {

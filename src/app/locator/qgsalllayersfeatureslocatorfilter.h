@@ -19,11 +19,10 @@
 #define QGSALLLAYERSFEATURESLOCATORFILTERS_H
 
 #include "qgis_app.h"
-#include "qgslocatorfilter.h"
 #include "qgsexpression.h"
 #include "qgsfeaturerequest.h"
+#include "qgslocatorfilter.h"
 #include "qgsvectorlayerfeatureiterator.h"
-
 
 class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
 {

@@ -13,22 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDialogButtonBox>
-#include <QDomElement>
-
 #include "qgslabelingwidget.h"
-#include "moc_qgslabelingwidget.cpp"
 
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgslabelengineconfigdialog.h"
+#include "qgslabelingengineruleswidget.h"
 #include "qgslabelinggui.h"
+#include "qgslabelobstaclesettingswidget.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsrulebasedlabelingwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgsproject.h"
-#include "qgsapplication.h"
-#include "qgslabelobstaclesettingswidget.h"
-#include "qgslabelingengineruleswidget.h"
-#include "qgsmapcanvas.h"
+
+#include <QDialogButtonBox>
+#include <QDomElement>
+
+#include "moc_qgslabelingwidget.cpp"
 
 QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -202,7 +205,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
       mSimpleSettings.reset();
       if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
       {
-        mSimpleSettings.reset( new QgsPalLayerSettings( mLayer->labeling()->settings() ) );
+        mSimpleSettings = std::make_unique<QgsPalLayerSettings>( mLayer->labeling()->settings() );
       }
       else if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
       {
@@ -213,7 +216,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
           if ( const QgsRuleBasedLabeling::Rule *firstChild = rootRule->children().value( 0 ) )
           {
             if ( firstChild->settings() )
-              mSimpleSettings.reset( new QgsPalLayerSettings( *firstChild->settings() ) );
+              mSimpleSettings = std::make_unique<QgsPalLayerSettings>( *firstChild->settings() );
           }
         }
       }

@@ -38,19 +38,20 @@
 **
 ****************************************************************************/
 
-#include <QHeaderView>
-#include <QEvent>
-
 #include "qgssettingstreewidgetold.h"
-#include "moc_qgssettingstreewidgetold.cpp"
-#include "qgsvariantdelegate.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
+
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgsvariantdelegate.h"
 
+#include <QEvent>
+#include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
+
+#include "moc_qgssettingstreewidgetold.cpp"
 
 QgsSettingsTreeWidgetOld::QgsSettingsTreeWidgetOld( QWidget *parent )
   : QTreeWidget( parent )

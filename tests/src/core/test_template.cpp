@@ -13,8 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
+
 //header for class being tested
 #include <[testClassLowerCaseName].h>
 

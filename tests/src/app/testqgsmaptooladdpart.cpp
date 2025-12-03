@@ -13,18 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptooladdpart.h"
 #include "qgsproject.h"
 #include "qgssettingsregistrycore.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
-
 
 /**
  * \ingroup UnitTests
@@ -130,44 +130,44 @@ void TestQgsMapToolAddPart::testAddPart()
   ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 5, 5 ),
     Qt::LeftButton
-  ) );
+  );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 6, 5 ),
     Qt::LeftButton
-  ) );
+  );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 6, 6 ),
     Qt::LeftButton
-  ) );
+  );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 5, 6 ),
     Qt::LeftButton
-  ) );
+  );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 5, 5 ),
     Qt::RightButton
-  ) );
+  );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
   const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4)),((5 5, 5 5, 6 5, 6 6, 5 6, 5 5)))";
@@ -187,36 +187,36 @@ void TestQgsMapToolAddPart::testAddPartClockWise()
   ) );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 15, 16 ),
     Qt::LeftButton
-  ) );
+  );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 16, 16 ),
     Qt::LeftButton
-  ) );
+  );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 16, 15 ),
     Qt::LeftButton
-  ) );
+  );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( 15, 15 ),
     Qt::RightButton
-  ) );
+  );
   mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
   const QString wkt = "MultiPolygon (((2 2, 4 2, 4 4, 2 4)),((5 5, 5 5, 6 5, 6 6, 5 6, 5 5)),((15 15, 16 15, 16 16, 15 16, 15 15)))";
@@ -254,20 +254,20 @@ void TestQgsMapToolAddPart::testAddPartToSingleGeometryLess()
       std::unique_ptr<QgsMapMouseEvent> event;
       for ( const QgsPoint &point : it.value() )
       {
-        event.reset( new QgsMapMouseEvent(
+        event = std::make_unique<QgsMapMouseEvent>(
           mCanvas,
           QEvent::MouseButtonRelease,
           mapToPoint( point.x(), point.y() ),
           Qt::LeftButton
-        ) );
+        );
         mCaptureTool->cadCanvasReleaseEvent( event.get() );
       }
-      event.reset( new QgsMapMouseEvent(
+      event = std::make_unique<QgsMapMouseEvent>(
         mCanvas,
         QEvent::MouseButtonRelease,
         mapToPoint( 0, 0 ),
         Qt::RightButton
-      ) );
+      );
       mCaptureTool->cadCanvasReleaseEvent( event.get() );
 
       QVERIFY2( !vl->getFeature( 1 ).geometry().isNull(), QString( "failed for %1" ).arg( geomType ).toLocal8Bit().data() );

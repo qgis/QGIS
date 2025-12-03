@@ -16,18 +16,17 @@
 #ifndef QGSEXPRESSIONBUILDER_H
 #define QGSEXPRESSIONBUILDER_H
 
-#include <QWidget>
-#include <QStandardItemModel>
-#include <QSortFilterProxyModel>
-
 #include "ui_qgsexpressionbuilder.h"
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-#include "qgsexpressioncontext.h"
+#include "qgis_sip.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
 #include "qgsexpressiontreeview.h"
 
+#include <QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QWidget>
 
 class QgsFields;
 class QgsExpressionHighlighter;

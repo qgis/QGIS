@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgssymbolbuffersettingswidget.h"
-#include "moc_qgssymbolbuffersettingswidget.cpp"
-#include "qgssymbol.h"
+
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
+#include "qgssymbol.h"
 
 #include <QDialogButtonBox>
+
+#include "moc_qgssymbolbuffersettingswidget.cpp"
 
 QgsSymbolBufferSettingsWidget::QgsSymbolBufferSettingsWidget( QWidget *parent )
   : QgsPanelWidget( parent )

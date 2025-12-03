@@ -24,62 +24,65 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgswmsprovider.h"
-#include "moc_qgswmsprovider.cpp"
-#include "qgscoordinatetransform.h"
-#include "qgswmsdataitems.h"
-#include "qgsdatasourceuri.h"
-#include "qgsfeaturestore.h"
-#include "qgsgeometry.h"
-#include "qgsrasteridentifyresult.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsmapsettings.h"
-#include "qgsmbtiles.h"
-#include "qgsmessageoutput.h"
-#include "qgsmessagelog.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
-#include "qgsnetworkreplyparser.h"
-#include "qgstilecache.h"
-#include "qgsgdalutils.h"
-#include "qgsgml.h"
-#include "qgsgmlschema.h"
-#include "qgswmscapabilities.h"
-#include "qgsexception.h"
-#include "qgssettings.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsogrutils.h"
-#include "qgsproviderregistry.h"
-#include "qgsruntimeprofiler.h"
-#include "qgstiledownloadmanager.h"
-#include "qgsproviderutils.h"
-#include "qgsprovidersublayerdetails.h"
-
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QNetworkProxy>
-#include <QUrl>
-#include <QImage>
-#include <QImageReader>
-#include <QPainter>
-#include <QEventLoop>
-#include <QTextCodec>
-#include <QThread>
-#include <QNetworkDiskCache>
-#include <QTimer>
-#include <QStringBuilder>
-#include <QUrlQuery>
-#include <QJsonArray>
-#include <QRegularExpression>
-#include <QRegularExpressionMatch>
 
 #include <ogr_api.h>
+
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgsdatasourceuri.h"
+#include "qgsexception.h"
+#include "qgsfeaturestore.h"
+#include "qgsgdalutils.h"
+#include "qgsgeometry.h"
+#include "qgsgml.h"
+#include "qgsgmlschema.h"
+#include "qgslogger.h"
+#include "qgsmapsettings.h"
+#include "qgsmbtiles.h"
+#include "qgsmessagelog.h"
+#include "qgsmessageoutput.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkreplyparser.h"
+#include "qgsogrutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsproviderutils.h"
+#include "qgsrasteridentifyresult.h"
+#include "qgsrectangle.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
+#include "qgstilecache.h"
+#include "qgstiledownloadmanager.h"
+#include "qgswmscapabilities.h"
+#include "qgswmsdataitems.h"
+
+#include <QEventLoop>
+#include <QImage>
+#include <QImageReader>
+#include <QJsonArray>
+#include <QNetworkDiskCache>
+#include <QNetworkProxy>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QPainter>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include <QStringBuilder>
+#include <QTextCodec>
+#include <QThread>
+#include <QTimer>
+#include <QUrl>
+#include <QUrlQuery>
+
+#include "moc_qgswmsprovider.cpp"
 
 #ifdef QGISDEBUG
 #include <QFile>
 #include <QDir>
+#include <memory>
 #endif
 
 #define ERR( message ) QGS_ERROR_MESSAGE( message, "WMS provider" )
@@ -873,7 +876,7 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
 
       // this is an ordinary WMS server, but the user requested tiled approach
       // so we will pretend it is a WMS-C server with just one tile matrix
-      tempTm.reset( new QgsWmtsTileMatrix );
+      tempTm = std::make_unique<QgsWmtsTileMatrix>();
       tempTm->topLeft = QgsPointXY( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
       tempTm->tileWidth = w;
       tempTm->tileHeight = h;
@@ -959,7 +962,7 @@ QImage QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     std::unique_ptr<QgsMbTiles> mbtilesReader;
     if ( mSettings.mIsMBTiles )
     {
-      mbtilesReader.reset( new QgsMbTiles( QUrl( mSettings.mBaseUrl ).path() ) );
+      mbtilesReader = std::make_unique<QgsMbTiles>( QUrl( mSettings.mBaseUrl ).path() );
       mbtilesReader->open();
     }
 
@@ -2336,7 +2339,7 @@ Qgis::RasterInterfaceCapabilities QgsWmsProvider::capabilities() const
     capability |= Qgis::RasterInterfaceCapability::Prefetch;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( capability ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "capability = %1" ).arg( static_cast<int>( capability ) ), 2 );
   return capability;
 }
 
@@ -4092,7 +4095,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
     return QImage();
 
   Q_ASSERT( !mLegendGraphicFetcher ); // or we could just remove it instead, hopefully will cancel download
-  mLegendGraphicFetcher.reset( new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url ) );
+  mLegendGraphicFetcher = std::make_unique<QgsWmsLegendDownloadHandler>( *QgsNetworkAccessManager::instance(), mSettings, url );
   if ( !mLegendGraphicFetcher )
     return QImage();
 
@@ -4932,7 +4935,7 @@ QgsCachedImageFetcher::QgsCachedImageFetcher( const QImage &img )
 
 void QgsCachedImageFetcher::start()
 {
-  QTimer::singleShot( 1, this, SLOT( send() ) );
+  QTimer::singleShot( 1, this, &QgsCachedImageFetcher::send );
 }
 
 

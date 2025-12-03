@@ -17,12 +17,11 @@
 #define QGS3DMAPSCENE_H
 
 #include "qgis_3d.h"
-
-#include <Qt3DCore/QEntity>
-
-#include "qgsrectangle.h"
 #include "qgscameracontroller.h"
+#include "qgsrectangle.h"
+
 #include <QVector4D>
+#include <Qt3DCore/QEntity>
 
 #ifndef SIP_RUN
 namespace Qt3DRender

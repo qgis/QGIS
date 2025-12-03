@@ -27,23 +27,25 @@
  *
  */
 
-#include "qgsgeometry.h"
 #include "pal.h"
-#include "layer.h"
+
 #include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"
-#include "labelposition.h"
-#include "problem.h"
-#include "pointset.h"
 #include "internalexception.h"
-#include "util.h"
+#include "labelposition.h"
+#include "layer.h"
 #include "palrtree.h"
+#include "pointset.h"
+#include "problem.h"
+#include "qgsgeometry.h"
 #include "qgslabelingengine.h"
-#include "qgsrendercontext.h"
-#include "qgssettingsentryimpl.h"
-#include "qgsruntimeprofiler.h"
 #include "qgslabelingenginerule.h"
+#include "qgsrendercontext.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssettingsentryimpl.h"
+#include "util.h"
+
 #if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<10 )
 #include "qgsmessagelog.h"
 #endif

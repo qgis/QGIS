@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgsdatacollectionitem.h"
-#include "moc_qgsdatacollectionitem.cpp"
+
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsapplication.h"
 #include "qgsdataitemproviderregistry.h"
+#include "qgslogger.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-#include "qgslogger.h"
 
 #include <QRegularExpression>
+
+#include "moc_qgsdatacollectionitem.cpp"
 
 QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem *parent,
     const QString &name,

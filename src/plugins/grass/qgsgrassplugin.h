@@ -19,6 +19,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgseditformconfig.h"
+
 #include <QObject>
 
 class QgsGrassTools;

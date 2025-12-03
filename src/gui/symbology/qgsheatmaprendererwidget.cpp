@@ -13,19 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsheatmaprendererwidget.h"
-#include "moc_qgsheatmaprendererwidget.cpp"
-#include "qgsheatmaprenderer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgstemporalcontroller.h"
-#include "qgsvectorlayer.h"
+
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
-#include "qgsstyle.h"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
 #include "qgscolorramplegendnodewidget.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsheatmaprenderer.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgsstyle.h"
+#include "qgstemporalcontroller.h"
+#include "qgsvectorlayer.h"
+
 #include <QGridLayout>
 #include <QLabel>
+
+#include "moc_qgsheatmaprendererwidget.cpp"
 
 QgsRendererWidget *QgsHeatmapRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

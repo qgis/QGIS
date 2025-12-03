@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsogrlayermetadataprovider.h"
+
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsfeedback.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsfeedback.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-
 
 QString QgsOgrLayerMetadataProvider::id() const
 {

@@ -29,10 +29,9 @@
 
 #define SIP_NO_FILE
 
-#include <Qt3DCore/QTransform>
-
 #include "qgsvector3d.h"
 
+#include <Qt3DCore/QTransform>
 
 /**
  * Specialized kind of QTransform that:

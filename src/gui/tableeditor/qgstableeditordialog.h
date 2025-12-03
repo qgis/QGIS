@@ -15,9 +15,11 @@
 #ifndef QGSTABLEEDITORDIALOG_H
 #define QGSTABLEEDITORDIALOG_H
 
+#include "ui_qgstableeditorbase.h"
+
 #include "qgis_gui.h"
 #include "qgstablecell.h"
-#include "ui_qgstableeditorbase.h"
+
 #include <QMainWindow>
 #include <QPointer>
 

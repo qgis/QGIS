@@ -19,13 +19,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswfsutils.h"
-#include "qgsserverprojectutils.h"
 #include "qgswfsdescribefeaturetypegml.h"
+
+#include "qgsproject.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
 #include "qgswfsdescribefeaturetype.h"
 #include "qgswfsparameters.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
+#include "qgswfsutils.h"
 
 using namespace QgsWfs;
 

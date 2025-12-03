@@ -14,9 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstabwidget.h"
-#include "moc_qgstabwidget.cpp"
 
 #include "qgslogger.h"
+
+#include "moc_qgstabwidget.cpp"
 
 QgsTabWidget::QgsTabWidget( QWidget *parent )
   : QTabWidget( parent )

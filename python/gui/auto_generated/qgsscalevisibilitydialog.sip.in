@@ -9,6 +9,7 @@
 
 
 
+
 class QgsScaleVisibilityDialog : QDialog
 {
 %Docstring(signature="appended")

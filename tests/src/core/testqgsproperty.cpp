@@ -15,14 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include "qgsproperty.h"
-#include "qgspropertycollection.h"
-#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgscolorrampimpl.h"
-#include "qgssymbollayerutils.h"
+#include "qgsproperty.h"
+#include "qgspropertycollection.h"
 #include "qgspropertytransformer.h"
+#include "qgssymbollayerutils.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
 #include <QObject>
 
 enum class PropertyKeys : int

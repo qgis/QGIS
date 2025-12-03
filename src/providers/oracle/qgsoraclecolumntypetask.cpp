@@ -16,11 +16,13 @@ email                : jef at norbit dot de
  ***************************************************************************/
 
 #include "qgsoraclecolumntypetask.h"
-#include "moc_qgsoraclecolumntypetask.cpp"
+
 #include "qgslogger.h"
 #include "qgsoracleconnpool.h"
 
 #include <QMetaType>
+
+#include "moc_qgsoraclecolumntypetask.cpp"
 
 QgsOracleColumnTypeTask::QgsOracleColumnTypeTask( const QString &name, const QString &limitToSchema, bool useEstimatedMetadata, bool allowGeometrylessTables )
   : QgsTask( tr( "Scanning tables for %1" ).arg( name ) )

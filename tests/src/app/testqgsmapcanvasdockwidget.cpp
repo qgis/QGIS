@@ -12,19 +12,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
-#include <QApplication>
-#include <QList>
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QDockWidget>
-#include <QSignalSpy>
-
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasdockwidget.h"
+#include "qgstest.h"
+
+#include <QApplication>
+#include <QDockWidget>
+#include <QList>
+#include <QObject>
+#include <QSignalSpy>
+#include <QString>
+#include <QStringList>
 
 /**
  * \ingroup UnitTests

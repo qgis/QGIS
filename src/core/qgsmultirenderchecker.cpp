@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgsmultirenderchecker.h"
+
+#include <mutex>
+
 #include "qgslayout.h"
 #include "qgslayoutexporter.h"
+
 #include <QDebug>
-#include <mutex>
 
 QgsMultiRenderChecker::QgsMultiRenderChecker()
 {

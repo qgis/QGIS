@@ -16,19 +16,21 @@
  ***************************************************************************/
 
 #include "qgstemporalcontrollerdockwidget.h"
-#include "moc_qgstemporalcontrollerdockwidget.cpp"
-#include "qgstemporalcontrollerwidget.h"
-#include "qgspanelwidgetstack.h"
+
 #include "qgsanimationexportdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapdecoration.h"
-#include "qgstemporalutils.h"
-#include "qgsproxyprogresstask.h"
 #include "qgsmessagebar.h"
+#include "qgspanelwidgetstack.h"
+#include "qgsproxyprogresstask.h"
+#include "qgstemporalcontrollerwidget.h"
+#include "qgstemporalutils.h"
 
-#include <QProgressDialog>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include <QUrl>
+
+#include "moc_qgstemporalcontrollerdockwidget.cpp"
 
 QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString &name, QWidget *parent )
   : QgsDockWidget( parent )
@@ -80,6 +82,7 @@ void QgsTemporalControllerDockWidget::exportAnimation()
 
     const QgsDateTimeRange animationRange = dlg->animationRange();
     const QgsInterval frameDuration = dlg->frameInterval();
+    const bool temporalRangeCumulative = dlg->temporalRangeCumulative();
     const QString outputDir = dlg->outputDirectory();
     const QString fileNameExpression = dlg->fileNameExpression();
 
@@ -107,6 +110,7 @@ void QgsTemporalControllerDockWidget::exportAnimation()
 
     QgsTemporalUtils::AnimationExportSettings animationSettings;
     animationSettings.frameDuration = frameDuration;
+    animationSettings.temporalRangeCumulative = temporalRangeCumulative;
     animationSettings.animationRange = animationRange;
     animationSettings.outputDirectory = outputDir;
     animationSettings.fileNameTemplate = fileNameExpression;

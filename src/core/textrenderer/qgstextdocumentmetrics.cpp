@@ -13,16 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstextdocumentmetrics.h"
+
 #include "qgis.h"
-#include "qgsstringutils.h"
-#include "qgstextblock.h"
-#include "qgstextfragment.h"
-#include "qgstextformat.h"
-#include "qgstextdocument.h"
-#include "qgsrendercontext.h"
-#include "qgstextrenderer.h"
 #include "qgsapplication.h"
 #include "qgsimagecache.h"
+#include "qgsrendercontext.h"
+#include "qgsstringutils.h"
+#include "qgstextblock.h"
+#include "qgstextdocument.h"
+#include "qgstextformat.h"
+#include "qgstextfragment.h"
+#include "qgstextrenderer.h"
 
 #include <QFontMetricsF>
 

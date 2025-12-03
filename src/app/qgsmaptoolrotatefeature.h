@@ -16,13 +16,13 @@
 #ifndef QGSMAPTOOLROTATEFEATURE_H
 #define QGSMAPTOOLROTATEFEATURE_H
 
-#include <QWidget>
-
+#include "qgis_app.h"
+#include "qgsfeatureid.h"
+#include "qgsgeometry.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsvertexmarker.h"
-#include "qgis_app.h"
-#include "qgsgeometry.h"
-#include "qgsfeatureid.h"
+
+#include <QWidget>
 
 class QgsDoubleSpinBox;
 class QHBoxLayout;

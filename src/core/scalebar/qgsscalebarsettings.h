@@ -17,13 +17,14 @@
 #ifndef QGSSCALEBARSETTINGS_H
 #define QGSSCALEBARSETTINGS_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgstextformat.h"
+
+#include <QBrush>
 #include <QColor>
 #include <QFont>
 #include <QPen>
-#include <QBrush>
 
 class QgsNumericFormat;
 class QgsLineSymbol;

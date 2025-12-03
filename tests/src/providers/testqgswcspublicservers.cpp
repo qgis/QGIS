@@ -13,28 +13,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QApplication>
-#include <QImage>
-#include <QObject>
-#include <QPainter>
-#include <QSet>
-#include <QString>
-#include <QStringList>
-#include <QTextStream>
-#include <QRegularExpression>
+#include "testqgswcspublicservers.h"
 
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
 #include "qgsmaprenderersequentialjob.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterlayer.h"
 #include "qgswcscapabilities.h"
-#include "testqgswcspublicservers.h"
-#include "qgsnetworkaccessmanager.h"
+
+#include <QApplication>
+#include <QImage>
+#include <QObject>
+#include <QPainter>
+#include <QRegularExpression>
+#include <QSet>
+#include <QString>
+#include <QStringList>
+#include <QTextStream>
 
 #ifdef Q_OS_WIN
 #include <fcntl.h> /*  _O_BINARY */

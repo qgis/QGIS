@@ -13,18 +13,19 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <QHBoxLayout>
+#include "qgsscalewidget.h"
 
 #include "qgsapplication.h"
-#include "qgsscalewidget.h"
-#include "moc_qgsscalewidget.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgslayoutmanager.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutmanager.h"
+#include "qgsmapcanvas.h"
 #include "qgsprintlayout.h"
+#include "qgsproject.h"
 
+#include <QHBoxLayout>
 #include <QMenu>
+
+#include "moc_qgsscalewidget.cpp"
 
 QgsScaleWidget::QgsScaleWidget( QWidget *parent )
   : QWidget( parent )

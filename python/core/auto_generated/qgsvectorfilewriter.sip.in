@@ -10,6 +10,7 @@
 
 
 
+
 class QgsVectorFileWriter : QgsFeatureSink
 {
 %Docstring(signature="appended")

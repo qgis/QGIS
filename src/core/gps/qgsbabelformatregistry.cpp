@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsbabelformatregistry.h"
+
 #include "qgsbabelformat.h"
 #include "qgsbabelgpsdevice.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
-#include <QString>
+
 #include <QRegularExpression>
+#include <QString>
 
 const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelWptDownload = new QgsSettingsEntryString( QStringLiteral( "wptdownload" ), sTreeBabelDevices );
 

@@ -16,10 +16,10 @@
 #ifndef QGSVALUERELATIONWIDGETFACTORY_H
 #define QGSVALUERELATIONWIDGETFACTORY_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetfactory.h"
 
 #include <QMap>
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 

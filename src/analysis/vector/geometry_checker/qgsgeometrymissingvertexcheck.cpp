@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgsgeometrymissingvertexcheck.h"
-#include "moc_qgsgeometrymissingvertexcheck.cpp"
 
+#include "qgsapplication.h"
+#include "qgscurve.h"
+#include "qgscurvepolygon.h"
 #include "qgsfeedback.h"
 #include "qgsgeometrycollection.h"
-#include "qgsmultipolygon.h"
-#include "qgscurvepolygon.h"
-#include "qgscurve.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometryutils.h"
-#include "qgsapplication.h"
+#include "qgsmultipolygon.h"
+
+#include "moc_qgsgeometrymissingvertexcheck.cpp"
 
 QgsGeometryMissingVertexCheck::QgsGeometryMissingVertexCheck( const QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration )
   : QgsGeometryCheck( context, geometryCheckConfiguration )

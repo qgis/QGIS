@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgsnetworkloggerwidgetfactory.h"
-#include "qgsnetworkloggerpanelwidget.h"
+
 #include "qgsapplication.h"
+#include "qgsnetworkloggerpanelwidget.h"
 
 QgsNetworkLoggerWidgetFactory::QgsNetworkLoggerWidgetFactory( QgsNetworkLogger *logger )
   : QgsDevToolWidgetFactory( QObject::tr( "Network Logger" ), QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/network_and_proxy.svg" ) ) )

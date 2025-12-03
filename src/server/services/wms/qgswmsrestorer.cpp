@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgswmsrestorer.h"
-#include "qgsmessagelog.h"
+
 #include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsmessagelog.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsreadwritecontext.h"
+#include "qgsvectorlayer.h"
 
 QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
 {

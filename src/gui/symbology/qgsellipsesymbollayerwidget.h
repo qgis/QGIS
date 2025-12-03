@@ -16,9 +16,10 @@
 #define QGSELLIPSESYMBOLLAYERWIDGET_H
 
 #include "ui_widget_ellipse.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgssymbollayerwidget.h"
-#include "qgis_gui.h"
 
 class QgsEllipseSymbolLayer;
 

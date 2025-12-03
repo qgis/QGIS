@@ -12,13 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QPainter>
+#include "qgsgeorefdatapoint.h"
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgcpcanvasitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
-#include "qgsgcpcanvasitem.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsgeorefdatapoint.h"
+
+#include <QPainter>
+
 #include "moc_qgsgeorefdatapoint.cpp"
 
 QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas, const QgsPointXY &sourceCoordinates, const QgsPointXY &destinationPoint, const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled )

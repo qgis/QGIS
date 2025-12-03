@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
+
 #include <QApplication>
 #include <QDir>
+#include <QObject>
 #include <QPainter>
+#include <QString>
+#include <QStringList>
 
 //qgis includes...
 #include <qgsmapsettings.h>

@@ -19,9 +19,10 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingparametertype.h"
+
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
 #include <QPointer>
+#include <QSortFilterProxyModel>
 
 class QgsVectorLayer;
 class QgsProcessingRegistry;

@@ -15,10 +15,12 @@
 #ifndef QGSEDITORWIDGETAUTOCONF_H
 #define QGSEDITORWIDGETAUTOCONF_H
 
-#include <QList>
-#include "qgis_sip.h"
-#include "qgis_gui.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QList>
 
 class QgsVectorLayer;
 class QgsEditorWidgetSetup;

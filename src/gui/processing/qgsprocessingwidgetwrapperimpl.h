@@ -20,15 +20,16 @@
 #define QGSPROCESSINGWIDGETWRAPPERIMPL_H
 
 #define SIP_NO_FILE
-#include "qgsprocessingwidgetwrapper.h"
-#include "qgsprocessingparameterdefinitionwidget.h"
+#include "qgshighlightablelineedit.h"
 #include "qgsmaptool.h"
-#include "qgsprocessingcontext.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudlayer.h"
+#include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelchildparametersource.h"
+#include "qgsprocessingparameterdefinitionwidget.h"
+#include "qgsprocessingwidgetwrapper.h"
 #include "qobjectuniqueptr.h"
-#include "qgshighlightablelineedit.h"
+
 #include <QAbstractButton>
 
 class QCheckBox;

@@ -27,6 +27,7 @@ set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
 set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
+set (WITH_EXIV2 TRUE CACHE BOOL "Determines whether exiv2 functionality should be added")
 set (WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
 set (SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
@@ -478,7 +479,10 @@ if(WITH_CORE)
   find_package(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
   message(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
-  find_package(exiv2 REQUIRED)
+  if(WITH_EXIV2)
+    set(HAVE_EXIV2 TRUE)
+    find_package(exiv2 REQUIRED)
+  endif()
 
   # optional
   if (WITH_SFCGAL)
@@ -618,7 +622,7 @@ if(WITH_CORE)
 
   find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
   if (BUILD_WITH_QT6)
-    find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
+    find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat SqlPrivate REQUIRED)
   endif()
 
   if (NOT IOS)

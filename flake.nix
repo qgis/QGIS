@@ -5,8 +5,6 @@
     #   extra-substituters = [ "https://example.cachix.org" ];
     #   extra-trusted-public-keys = [ "example.cachix.org-1:xxxx=" ];
 
-    # IFD is required for qgisVersion detection in nix/unwrapped.nix.
-    allow-import-from-derivation = true;
     bash-prompt = "\\[\\033[1m\\][qgis-dev]\\[\\033\[m\\]\\040\\w >\\040";
   };
 

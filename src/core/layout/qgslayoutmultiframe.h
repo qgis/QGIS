@@ -18,13 +18,14 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsapplication.h"
 #include "qgslayoutobject.h"
 #include "qgslayoutundocommand.h"
-#include "qgsapplication.h"
+
 #include <QIcon>
 #include <QObject>
-#include <QSizeF>
 #include <QPointF>
+#include <QSizeF>
 
 class QgsLayoutFrame;
 class QgsLayoutItem;

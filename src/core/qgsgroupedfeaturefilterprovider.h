@@ -18,8 +18,8 @@
 #ifndef QGSGROUPEDFEATUREFILTERPROVIDER_H
 #define QGSGROUPEDFEATUREFILTERPROVIDER_H
 
-#include "qgsfeaturefilterprovider.h"
 #include "qgis_core.h"
+#include "qgsfeaturefilterprovider.h"
 
 #include <QList>
 

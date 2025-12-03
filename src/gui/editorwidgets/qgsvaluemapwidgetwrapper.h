@@ -16,10 +16,10 @@
 #ifndef QGSVALUEMAPWIDGETWRAPPER_H
 #define QGSVALUEMAPWIDGETWRAPPER_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 

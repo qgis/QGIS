@@ -14,12 +14,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QString>
-#include <QIcon>
-
+#include "qgsapplication.h"
 #include "qgsgrassrasterprovider.h"
 #include "qgsprovidermetadata.h"
-#include "qgsapplication.h"
+
+#include <QIcon>
+#include <QString>
 
 static const QString PROVIDER_KEY = QStringLiteral( "grassraster" );
 static const QString PROVIDER_DESCRIPTION = QStringLiteral( "GRASS %1 raster provider" ).arg( GRASS_VERSION_MAJOR );

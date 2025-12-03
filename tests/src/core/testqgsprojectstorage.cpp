@@ -13,16 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgsauxiliarystorage.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsproject.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-
 
 class TestQgsProjectStorage : public QObject
 {

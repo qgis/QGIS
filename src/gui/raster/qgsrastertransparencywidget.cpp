@@ -12,29 +12,31 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QWidget>
-#include <QIntValidator>
-#include <QFile>
-#include <QTextStream>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QRegularExpression>
-
-#include "qgssettings.h"
 #include "qgsrastertransparencywidget.h"
-#include "moc_qgsrastertransparencywidget.cpp"
-#include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrastertransparency.h"
-#include "qgsmaptoolemitpoint.h"
-#include "qgsmapsettings.h"
-#include "qgsrectangle.h"
-#include "qgsmapcanvas.h"
-#include "qgsrasteridentifyresult.h"
+
 #include "qgsdoublevalidator.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapsettings.h"
+#include "qgsmaptoolemitpoint.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasteridentifyresult.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
+#include "qgsrastertransparency.h"
+#include "qgsrectangle.h"
+#include "qgssettings.h"
 #include "qgstemporalcontroller.h"
+
+#include <QFile>
+#include <QFileDialog>
+#include <QIntValidator>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QTextStream>
+#include <QWidget>
+
+#include "moc_qgsrastertransparencywidget.cpp"
 
 QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

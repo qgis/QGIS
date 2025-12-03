@@ -18,19 +18,20 @@
  ***************************************************************************/
 
 #include "qgsfieldvalidator.h"
-#include "moc_qgsfieldvalidator.cpp"
 
-#include <QValidator>
-#include <QRegularExpression>
-#include <QRegularExpressionValidator>
-#include <QDate>
-#include <QVariant>
-
-#include "qgssettings.h"
+#include "qgsapplication.h"
+#include "qgsfields.h"
 #include "qgslogger.h"
 #include "qgslonglongvalidator.h"
-#include "qgsfields.h"
-#include "qgsapplication.h"
+#include "qgssettings.h"
+
+#include <QDate>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QValidator>
+#include <QVariant>
+
+#include "moc_qgsfieldvalidator.cpp"
 
 QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat )
   : QValidator( parent )

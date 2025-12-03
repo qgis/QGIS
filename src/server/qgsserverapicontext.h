@@ -17,6 +17,7 @@
 #define QGSSERVERAPICONTEXT_H
 
 #include "qgis_server.h"
+
 #include <QString>
 
 class QgsServerResponse;

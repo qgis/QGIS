@@ -10,7 +10,6 @@
 
 
 
-
 class QgsMeshLayerTemporalProperties : QgsMapLayerTemporalProperties
 {
 %Docstring(signature="appended")

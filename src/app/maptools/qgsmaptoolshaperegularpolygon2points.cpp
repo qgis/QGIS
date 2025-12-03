@@ -15,12 +15,14 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperegularpolygon2points.h"
-#include "moc_qgsmaptoolshaperegularpolygon2points.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+#include "qgspoint.h"
+
+#include "moc_qgsmaptoolshaperegularpolygon2points.cpp"
 
 const QString QgsMapToolShapeRegularPolygon2PointsMetadata::TOOL_ID = QStringLiteral( "regular-polygon-from-2-points" );
 

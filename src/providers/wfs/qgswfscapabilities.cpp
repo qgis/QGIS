@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswfscapabilities.h"
+
 #include "qgsogcutils.h"
 #include "qgswfsutils.h"
 

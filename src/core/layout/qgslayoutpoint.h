@@ -18,9 +18,11 @@
 #ifndef QGSLAYOUTPOINT_H
 #define QGSLAYOUTPOINT_H
 
-#include "qgis_core.h"
-#include "qgis.h"
 #include "qgsconfig.h"
+
+#include "qgis.h"
+#include "qgis_core.h"
+
 #include <QPointF>
 
 /**

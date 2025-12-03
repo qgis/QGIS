@@ -31,9 +31,11 @@
 #ifndef QGSRICHTEXTEDITOR_H
 #define QGSRICHTEXTEDITOR_H
 
+#include "ui_qgsrichtexteditorbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "ui_qgsrichtexteditorbase.h"
+
 #include <QPointer>
 
 class QImage;

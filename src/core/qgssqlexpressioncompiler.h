@@ -19,8 +19,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
-#include "qgsfields.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgsfields.h"
 
 class QgsExpression;
 class QgsExpressionNode;

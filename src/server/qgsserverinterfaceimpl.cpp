@@ -18,6 +18,7 @@
 
 
 #include "qgsserverinterfaceimpl.h"
+
 #include "qgsconfigcache.h"
 
 //! Constructor

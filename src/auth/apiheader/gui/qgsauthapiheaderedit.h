@@ -17,12 +17,12 @@
 #ifndef QGSAUTHAPIHEADEREDIT_H
 #define QGSAUTHAPIHEADEREDIT_H
 
-#include <QWidget>
-#include "qgsauthmethodedit.h"
 #include "ui_qgsauthapiheaderedit.h"
 
 #include "qgsauthconfig.h"
+#include "qgsauthmethodedit.h"
 
+#include <QWidget>
 
 class QgsAuthApiHeaderEdit : public QgsAuthMethodEdit, private Ui::QgsAuthApiHeaderEdit
 {

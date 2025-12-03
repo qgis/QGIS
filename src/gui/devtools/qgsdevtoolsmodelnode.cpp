@@ -14,16 +14,19 @@
  ***************************************************************************/
 
 #include "qgsdevtoolsmodelnode.h"
-#include "qgis.h"
-#include <QUrlQuery>
-#include <QColor>
-#include <QBrush>
-#include <QFont>
-#include <QAction>
-#include <QDesktopServices>
-#include <QApplication>
-#include <QClipboard>
+
 #include <nlohmann/json.hpp>
+
+#include "qgis.h"
+
+#include <QAction>
+#include <QApplication>
+#include <QBrush>
+#include <QClipboard>
+#include <QColor>
+#include <QDesktopServices>
+#include <QFont>
+#include <QUrlQuery>
 
 //
 // QgsDevToolsModelNode

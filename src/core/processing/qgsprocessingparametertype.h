@@ -19,9 +19,10 @@
 #ifndef QGSPROCESSINGPARAMETERTYPE_H
 #define QGSPROCESSINGPARAMETERTYPE_H
 
-#include "qgsprocessingparameters.h"
 #include "qgis.h"
 #include "qgis_sip.h"
+#include "qgsprocessingparameters.h"
+
 #include <QObject>
 
 /**

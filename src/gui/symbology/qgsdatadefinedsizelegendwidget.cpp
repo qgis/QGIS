@@ -14,24 +14,25 @@
  ***************************************************************************/
 
 #include "qgsdatadefinedsizelegendwidget.h"
-#include "moc_qgsdatadefinedsizelegendwidget.cpp"
-
-#include <QInputDialog>
-#include <QStyledItemDelegate>
 
 #include "qgsdatadefinedsizelegend.h"
+#include "qgsdoublevalidator.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslinesymbol.h"
 #include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsdoublevalidator.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
+
+#include <QInputDialog>
+#include <QStyledItemDelegate>
+
+#include "moc_qgsdatadefinedsizelegendwidget.cpp"
 
 QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol, QgsMapCanvas *canvas, QWidget *parent )
   : QgsPanelWidget( parent )

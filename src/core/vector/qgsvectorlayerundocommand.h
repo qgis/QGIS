@@ -18,14 +18,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QUndoCommand>
-
-#include <QVariant>
-#include <QSet>
-#include <QList>
-
-#include "qgsfields.h"
 #include "qgsfeature.h"
+#include "qgsfields.h"
+
+#include <QList>
+#include <QSet>
+#include <QUndoCommand>
+#include <QVariant>
 
 class QgsGeometry;
 

@@ -10,7 +10,6 @@
 
 
 
-
 class QgsBusyIndicatorDialog : QDialog
 {
 %Docstring(signature="appended")

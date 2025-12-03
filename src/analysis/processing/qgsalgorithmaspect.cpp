@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmaspect.h"
-#include "qgsrasterfilewriter.h"
+
 #include "qgsaspectfilter.h"
+#include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE
 

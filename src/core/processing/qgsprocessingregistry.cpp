@@ -16,16 +16,18 @@
  ***************************************************************************/
 
 #include "qgsprocessingregistry.h"
-#include "moc_qgsprocessingregistry.cpp"
-#include "qgsvectorfilewriter.h"
-#include "qgsprocessingparametertypeimpl.h"
-#include "qgsprocessingparametermeshdataset.h"
-#include "qgsprocessingparametervectortilewriterlayers.h"
-#include "qgsprocessingparametertininputlayers.h"
-#include "qgsprocessingparameterfieldmap.h"
+
 #include "qgsprocessingparameteraggregate.h"
-#include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparameteralignrasterlayers.h"
+#include "qgsprocessingparameterdxflayers.h"
+#include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparametermeshdataset.h"
+#include "qgsprocessingparametertininputlayers.h"
+#include "qgsprocessingparametertypeimpl.h"
+#include "qgsprocessingparametervectortilewriterlayers.h"
+#include "qgsvectorfilewriter.h"
+
+#include "moc_qgsprocessingregistry.cpp"
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )

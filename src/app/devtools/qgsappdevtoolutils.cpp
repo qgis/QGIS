@@ -14,8 +14,8 @@
  ***************************************************************************/
 #include "qgsappdevtoolutils.h"
 
-#include "qgisapp.h"
 #include "qgis.h"
+#include "qgisapp.h"
 #include "qgsdevtoolwidgetfactory.h"
 
 QgsScopedDevToolWidgetFactory::QgsScopedDevToolWidgetFactory() = default;

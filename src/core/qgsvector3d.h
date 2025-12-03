@@ -16,8 +16,8 @@
 #ifndef QGSVECTOR3D_H
 #define QGSVECTOR3D_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 #include <QVector3D>
 

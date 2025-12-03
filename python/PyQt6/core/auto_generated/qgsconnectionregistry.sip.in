@@ -11,6 +11,7 @@
 
 
 
+
 class QgsConnectionRegistry : QObject
 {
 %Docstring(signature="appended")

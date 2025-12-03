@@ -18,18 +18,18 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QFutureWatcher>
-#include <QImage>
-#include <QPainter>
-#include <QObject>
-#include <QTime>
-#include <QElapsedTimer>
-#include <QPicture>
-
-#include "qgsrendercontext.h"
 #include "qgslabelsink.h"
 #include "qgsmapsettings.h"
 #include "qgsmaskidprovider.h"
+#include "qgsrendercontext.h"
+
+#include <QElapsedTimer>
+#include <QFutureWatcher>
+#include <QImage>
+#include <QObject>
+#include <QPainter>
+#include <QPicture>
+#include <QTime>
 
 class QPicture;
 

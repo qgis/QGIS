@@ -12,6 +12,7 @@
 
 
 
+
 class QgsSqliteUtils
 {
 %Docstring(signature="appended")

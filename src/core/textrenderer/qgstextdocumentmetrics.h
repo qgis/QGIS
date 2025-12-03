@@ -16,14 +16,14 @@
 #ifndef QGSTEXTDOCUMENTMETRICS_H
 #define QGSTEXTDOCUMENTMETRICS_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgstextdocument.h"
 
-#include <QVector>
-#include <QSizeF>
 #include <QRectF>
+#include <QSizeF>
+#include <QVector>
 
 class QgsRenderContext;
 class QgsTextFormat;

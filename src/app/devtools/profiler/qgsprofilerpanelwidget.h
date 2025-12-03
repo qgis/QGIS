@@ -15,11 +15,13 @@
 #ifndef QGSPROFILERPANELWIDGET_H
 #define QGSPROFILERPANELWIDGET_H
 
-#include "qgsdevtoolwidget.h"
 #include "ui_qgsprofilerpanelbase.h"
-#include <QTreeView>
-#include <QStyledItemDelegate>
+
+#include "qgsdevtoolwidget.h"
+
 #include <QSortFilterProxyModel>
+#include <QStyledItemDelegate>
+#include <QTreeView>
 
 class QgsRuntimeProfiler;
 
@@ -68,7 +70,7 @@ class CostDelegate : public QStyledItemDelegate
     Q_OBJECT
   public:
     explicit CostDelegate( quint32 sortRole, quint32 totalCostRole, QObject *parent = nullptr );
-    ~CostDelegate();
+    ~CostDelegate() override;
 
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 

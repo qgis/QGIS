@@ -16,8 +16,9 @@
 #define QGSRENDERINGOPTIONS_H
 
 #include "ui_qgsrenderingoptionsbase.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgscodeeditor.h"
+#include "qgsoptionswidgetfactory.h"
 
 class QgsBabelGpsDeviceFormat;
 

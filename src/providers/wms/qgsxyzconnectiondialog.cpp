@@ -14,13 +14,15 @@
  ***************************************************************************/
 
 #include "qgsxyzconnectiondialog.h"
-#include "moc_qgsxyzconnectiondialog.cpp"
-#include "qgsxyzconnection.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsxyzconnection.h"
 #include "qgsxyzsourcewidget.h"
 
 #include <QMessageBox>
+
+#include "moc_qgsxyzconnectiondialog.cpp"
 
 QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   : QDialog( parent )

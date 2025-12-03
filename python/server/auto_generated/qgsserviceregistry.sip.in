@@ -11,6 +11,7 @@
 
 
 
+
 class QgsServiceRegistry
 {
 %Docstring(signature="appended")

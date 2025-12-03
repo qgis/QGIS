@@ -17,8 +17,8 @@
 
 #include "qgsalgorithmpdalconvertformat.h"
 
-#include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
 
 ///@cond PRIVATE
 
@@ -29,7 +29,7 @@ QString QgsPdalConvertFormatAlgorithm::name() const
 
 QString QgsPdalConvertFormatAlgorithm::displayName() const
 {
-  return QObject::tr( "Convert format" );
+  return QObject::tr( "Convert point cloud format" );
 }
 
 QString QgsPdalConvertFormatAlgorithm::group() const

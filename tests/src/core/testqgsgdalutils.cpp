@@ -12,18 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QSettings>
-
 #include <gdal.h>
 
-#include "qgsgdalutils.h"
 #include "qgsapplication.h"
+#include "qgsgdalutils.h"
 #include "qgsrasterlayer.h"
+#include "qgstest.h"
 
+#include <QObject>
+#include <QSettings>
+#include <QString>
+#include <QStringList>
 
 class TestQgsGdalUtils : public QObject
 {

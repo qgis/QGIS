@@ -15,17 +15,16 @@
 #ifndef QGSARCGISRESTUTILS_H
 #define QGSARCGISRESTUTILS_H
 
-#include "qgswkbtypes.h"
-#include "qgscoordinatereferencesystem.h"
-
-#include "qgis_sip.h"
-
-#include <QStringList>
-#include <QVariant>
-#include <QTimeZone>
-
 #include <functional>
 #include <memory>
+
+#include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgswkbtypes.h"
+
+#include <QStringList>
+#include <QTimeZone>
+#include <QVariant>
 
 class QNetworkReply;
 class QgsNetworkAccessManager;

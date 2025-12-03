@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdiscoverrelationsdialog.h"
-#include "moc_qgsdiscoverrelationsdialog.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsrelationmanager.h"
+
 #include "qgshelp.h"
+#include "qgsrelationmanager.h"
+#include "qgsvectorlayer.h"
 
 #include <QPushButton>
+
+#include "moc_qgsdiscoverrelationsdialog.cpp"
 
 QgsDiscoverRelationsDialog::QgsDiscoverRelationsDialog( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers, QWidget *parent )
   : QDialog( parent )

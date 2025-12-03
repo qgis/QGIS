@@ -14,26 +14,25 @@
  ***************************************************************************/
 #include "qgsogrfeatureiterator.h"
 
-#include "qgsogrprovider.h"
-#include "qgsogrexpressioncompiler.h"
-#include "qgssqliteexpressioncompiler.h"
-
-#include "qgsogrutils.h"
-#include "qgscplhttpfetchoverrider.h"
-#include "qgsgeometry.h"
-#include "qgsexception.h"
-#include "qgswkbtypes.h"
-#include "qgsogrtransaction.h"
-#include "qgssymbol.h"
-#include "qgsgeometryengine.h"
-#include "qgsdbquerylog.h"
-#include "qgsdbquerylog_p.h"
-#include "qgssetrequestinitiator_p.h"
-
 #include <sqlite3.h>
 
-#include <QTextCodec>
+#include "qgscplhttpfetchoverrider.h"
+#include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
+#include "qgsexception.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
+#include "qgsogrexpressioncompiler.h"
+#include "qgsogrprovider.h"
+#include "qgsogrtransaction.h"
+#include "qgsogrutils.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgssqliteexpressioncompiler.h"
+#include "qgssymbol.h"
+#include "qgswkbtypes.h"
+
 #include <QFile>
+#include <QTextCodec>
 
 // using from provider:
 // - setRelevantFields(), mRelevantFieldsForNextFeature

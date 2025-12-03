@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 #include "qgsmaptoolchangelabelproperties.h"
-#include "moc_qgsmaptoolchangelabelproperties.cpp"
+
+#include "qgisapp.h"
 #include "qgslabelpropertydialog.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
-#include "qgisapp.h"
-#include "qgsmessagebar.h"
+
+#include "moc_qgsmaptoolchangelabelproperties.cpp"
 
 QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )

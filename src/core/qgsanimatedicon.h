@@ -16,12 +16,12 @@
 #ifndef QGSANIMATEDICON_H
 #define QGSANIMATEDICON_H
 
-#include <QObject>
-#include <QMovie>
+#include "qgis_core.h"
+
 #include <QIcon>
 #include <QMetaMethod>
-
-#include "qgis_core.h"
+#include <QMovie>
+#include <QObject>
 
 /**
  * \ingroup core

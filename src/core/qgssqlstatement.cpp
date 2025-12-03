@@ -15,14 +15,14 @@
  ***************************************************************************/
 
 #include "qgssqlstatement.h"
-#include "qgis.h"
-#include "qgsvariantutils.h"
-
-#include <QRegularExpression>
 
 #include <cmath>
 #include <limits>
 
+#include "qgis.h"
+#include "qgsvariantutils.h"
+
+#include <QRegularExpression>
 
 // from parser
 extern QgsSQLStatement::Node *parse( const QString &str, QString &parserErrorMsg, bool allowFragments );

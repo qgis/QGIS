@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 
+#include "qgssettings.h"
+
 #include <cstdlib>
 
+#include "qgssettingsproxy.h"
+#include "qgsvariantutils.h"
+
+#include <QDir>
 #include <QFileInfo>
 #include <QSettings>
-#include <QDir>
 
-#include "qgssettings.h"
 #include "moc_qgssettings.cpp"
-#include "qgsvariantutils.h"
-#include "qgssettingsproxy.h"
 
 Q_GLOBAL_STATIC( QString, sGlobalSettingsPath )
 

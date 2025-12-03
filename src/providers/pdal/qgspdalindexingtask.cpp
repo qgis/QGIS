@@ -14,20 +14,22 @@
  ***************************************************************************/
 
 #include "qgspdalindexingtask.h"
-#include "moc_qgspdalindexingtask.cpp"
 
-#include <vector>
 #include <string>
-#include <QDebug>
-#include <QThread>
-#include <QFileInfo>
-#include <QDir>
-#include <QProcessEnvironment>
-#include <QTemporaryDir>
+#include <vector>
 
-#include "qgsapplication.h"
 #include "QgisUntwine.hpp"
 #include "qgis.h"
+#include "qgsapplication.h"
+
+#include <QDebug>
+#include <QDir>
+#include <QFileInfo>
+#include <QProcessEnvironment>
+#include <QTemporaryDir>
+#include <QThread>
+
+#include "moc_qgspdalindexingtask.cpp"
 
 QgsPdalIndexingTask::QgsPdalIndexingTask( const QString &file, const QString &outputPath, const QString &name )
   : QgsTask( tr( "Creating indexed COPC (%1)" ).arg( name ) )

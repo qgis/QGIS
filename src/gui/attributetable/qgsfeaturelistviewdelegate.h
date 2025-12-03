@@ -15,9 +15,10 @@
 #ifndef QGSATTRIBUTELISTVIEWDELEGATE_H
 #define QGSATTRIBUTELISTVIEWDELEGATE_H
 
+#include "qgis_gui.h"
+
 #include <QItemDelegate>
 #include <QItemSelectionModel>
-#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsFeatureListModel;

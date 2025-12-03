@@ -9,7 +9,6 @@
 
 
 
-
 class QgsVectorLayer3DTilingSettings
 {
 %Docstring(signature="appended")

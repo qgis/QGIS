@@ -9,6 +9,7 @@
 
 
 
+
 class QgsScaleRangeWidget : QWidget
 {
 %Docstring(signature="appended")

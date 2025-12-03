@@ -18,10 +18,9 @@
 #ifndef QGSHTMLANNOTATION_H
 #define QGSHTMLANNOTATION_H
 
+#include "qgis_core.h"
 #include "qgsannotation.h"
 #include "qgsfeature.h"
-
-#include "qgis_core.h"
 
 class QgsWebPage;
 

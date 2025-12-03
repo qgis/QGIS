@@ -18,8 +18,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
-#include "qgsrectangle.h"
 #include "qgshttpheaders.h"
+#include "qgsrectangle.h"
 
 #include <QString>
 #include <QVariantMap>

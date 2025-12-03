@@ -18,12 +18,12 @@
 #ifndef QGSMESH3DENTITY_H
 #define QGSMESH3DENTITY_H
 
-#include <Qt3DCore/QEntity>
-
 #include "mesh/qgsmesh3dgeometry_p.h"
 #include "qgs3drendercontext.h"
 #include "qgsmesh3dsymbol.h"
 #include "qgsterraintileentity_p.h"
+
+#include <Qt3DCore/QEntity>
 
 ///@cond PRIVATE
 

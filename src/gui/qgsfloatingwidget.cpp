@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgsfloatingwidget.h"
-#include "moc_qgsfloatingwidget.cpp"
+
 #include <QEvent>
-#include <QStyleOption>
 #include <QPainter>
+#include <QStyleOption>
+
+#include "moc_qgsfloatingwidget.cpp"
 
 //
 // QgsFloatingWidget

@@ -27,11 +27,12 @@
  *
  */
 
+#include "priorityqueue.h"
+
 #include <cstdio>
 #include <memory>
 
 #include "internalexception.h"
-#include "priorityqueue.h"
 
 using namespace pal;
 

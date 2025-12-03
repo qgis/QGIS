@@ -21,19 +21,19 @@ email                : tim@linfiniti.com
 
 // includes
 #include "qgsdecorationnortharrow.h"
-#include "moc_qgsdecorationnortharrow.cpp"
-
-#include "qgsdecorationnortharrowdialog.h"
 
 #include "qgisapp.h"
 #include "qgsbearingutils.h"
 #include "qgscolorutils.h"
+#include "qgsdecorationnortharrowdialog.h"
 #include "qgsexception.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
-#include "qgssymbollayerutils.h"
-#include "qgssvgcache.h"
 #include "qgsmapsettings.h"
+#include "qgsproject.h"
+#include "qgssvgcache.h"
+#include "qgssymbollayerutils.h"
+
+#include "moc_qgsdecorationnortharrow.cpp"
 
 // qt includes
 #include <QPainter>

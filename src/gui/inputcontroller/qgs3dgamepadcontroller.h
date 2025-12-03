@@ -16,8 +16,9 @@
 #ifndef QGS3DGAMEPADCONTROLLER_H
 #define QGS3DGAMEPADCONTROLLER_H
 
-#include "qgis_sip.h"
 #include "qgsconfig.h"
+
+#include "qgis_sip.h"
 
 SIP_IF_MODULE( HAVE_QTGAMEPAD )
 

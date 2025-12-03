@@ -18,11 +18,12 @@
 #ifndef QGSFORMANNOTATION_H
 #define QGSFORMANNOTATION_H
 
-#include "qgsannotation.h"
-#include "qgis_sip.h"
-#include "qgsfeature.h"
-#include <QWidget>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsannotation.h"
+#include "qgsfeature.h"
+
+#include <QWidget>
 
 /**
  * \class QgsFormAnnotation

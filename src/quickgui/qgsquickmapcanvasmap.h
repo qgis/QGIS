@@ -16,16 +16,16 @@
 #ifndef QGSQUICKMAPCANVASMAP_H
 #define QGSQUICKMAPCANVASMAP_H
 
+#include <memory>
+
 #include "qgis_quick.h"
+#include "qgsmapsettings.h"
+#include "qgspoint.h"
 #include "qgsquickmapsettings.h"
 
 #include <QFutureSynchronizer>
 #include <QTimer>
 #include <QtQuick/QQuickItem>
-#include <qgsmapsettings.h>
-#include <qgspoint.h>
-
-#include <memory>
 
 class QgsMapRendererParallelJob;
 class QgsMapRendererCache;

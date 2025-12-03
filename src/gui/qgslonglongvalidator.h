@@ -21,9 +21,11 @@
 #define QGSLONGLONGVALIDATOR_H
 
 #include <limits>
-#include <QValidator>
-#include <QLocale>
+
 #include "qgis_gui.h"
+
+#include <QLocale>
+#include <QValidator>
 
 /**
  * \ingroup gui

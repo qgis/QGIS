@@ -16,29 +16,31 @@
  ***************************************************************************/
 
 
+#include "qgsbookmarks.h"
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsbookmarks.h"
-#include "moc_qgsbookmarks.cpp"
 #include "qgsbookmarkeditordialog.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsmessagelog.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
 #include "qgsbookmarkmanager.h"
 #include "qgsbookmarkmodel.h"
+#include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
 
+#include <QAbstractTableModel>
+#include <QDoubleSpinBox>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QModelIndex>
-#include <QDoubleSpinBox>
-#include <QAbstractTableModel>
 #include <QToolButton>
 #include <QUrl>
+
+#include "moc_qgsbookmarks.cpp"
 
 const int QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES = 6;
 

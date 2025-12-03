@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsattributesformtreeviewitemdelegate.h"
-#include "qgsattributesformview.h"
+
 #include "qgsattributesformtreeviewindicator.h"
-#include "moc_qgsattributesformtreeviewitemdelegate.cpp"
+#include "qgsattributesformview.h"
 
 #include <QHelpEvent>
 #include <QToolTip>
+
+#include "moc_qgsattributesformtreeviewitemdelegate.cpp"
 
 /// @cond PRIVATE
 

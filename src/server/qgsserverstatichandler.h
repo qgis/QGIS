@@ -16,8 +16,8 @@
 #ifndef QGSSERVERSTATICHANDLER_H
 #define QGSSERVERSTATICHANDLER_H
 
-#include "qgsserverogcapihandler.h"
 #include "qgis_server.h"
+#include "qgsserverogcapihandler.h"
 
 /**
  * \ingroup server

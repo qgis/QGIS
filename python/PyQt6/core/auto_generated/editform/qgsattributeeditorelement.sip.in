@@ -9,6 +9,7 @@
 
 
 
+
 class QgsAttributeEditorElement /Abstract/
 {
 %Docstring(signature="appended")

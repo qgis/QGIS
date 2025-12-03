@@ -16,13 +16,14 @@
 
 
 #include "qgsstylegroupselectiondialog.h"
-#include "moc_qgsstylegroupselectiondialog.cpp"
-#include "qgsstyle.h"
+
 #include "qgsgui.h"
+#include "qgsstyle.h"
 
-#include <QStandardItemModel>
 #include <QStandardItem>
+#include <QStandardItemModel>
 
+#include "moc_qgsstylegroupselectiondialog.cpp"
 
 QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWidget *parent )
   : QDialog( parent )

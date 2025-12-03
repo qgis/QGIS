@@ -14,13 +14,11 @@
  ***************************************************************************/
 
 #include "qgslinematerial_p.h"
-#include "moc_qgslinematerial_p.cpp"
 
 #include <QColor>
 #include <QSizeF>
 #include <QUrl>
 #include <QVector3D>
-
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QCamera>
@@ -29,6 +27,8 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QTechnique>
+
+#include "moc_qgslinematerial_p.cpp"
 
 /// @cond PRIVATE
 

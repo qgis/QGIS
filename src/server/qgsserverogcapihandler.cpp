@@ -14,23 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDateTime>
-#include <QFileInfo>
-#include <QDir>
-#include <QDebug>
+#include "qgsserverogcapihandler.h"
 
+#include <nlohmann/json.hpp>
+
+#include "inja/inja.hpp"
+#include "qgsjsonutils.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
-#include "qgsjsonutils.h"
+#include "qgsserverapiutils.h"
+#include "qgsserverinterface.h"
+#include "qgsserverresponse.h"
 #include "qgsvectorlayer.h"
 
-#include "qgsserverogcapihandler.h"
-#include "qgsserverapiutils.h"
-#include "qgsserverresponse.h"
-#include "qgsserverinterface.h"
-
-#include "nlohmann/json.hpp"
-#include "inja/inja.hpp"
+#include <QDateTime>
+#include <QDebug>
+#include <QDir>
+#include <QFileInfo>
 
 using namespace nlohmann;
 using namespace inja;

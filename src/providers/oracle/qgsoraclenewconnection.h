@@ -17,6 +17,7 @@
 #ifndef QGSORACLENEWCONNECTION_H
 #define QGSORACLENEWCONNECTION_H
 #include "ui_qgsoraclenewconnectionbase.h"
+
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 

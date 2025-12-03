@@ -21,8 +21,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsunittypes.h"
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsunittypes.h"
 
 /**
  * \class QgsPointCloudLayerElevationProperties

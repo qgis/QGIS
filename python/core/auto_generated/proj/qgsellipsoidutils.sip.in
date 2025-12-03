@@ -9,6 +9,7 @@
 
 
 
+
 class QgsEllipsoidUtils
 {
 %Docstring(signature="appended")

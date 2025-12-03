@@ -18,10 +18,11 @@
 #ifndef QGSSLIDER_H
 #define QGSSLIDER_H
 
-#include <QSlider>
-#include "qgis_sip.h"
-#include <QVariant>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QSlider>
+#include <QVariant>
 
 class QPaintEvent;
 

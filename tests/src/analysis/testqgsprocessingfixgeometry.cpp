@@ -17,8 +17,8 @@
 #include "qgsnativealgorithms.h"
 #include "qgsprocessingregistry.h"
 #include "qgstest.h"
-#include "qgswkbtypes.h"
 #include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
 
 class TestQgsProcessingFixGeometry : public QgsTest
 {

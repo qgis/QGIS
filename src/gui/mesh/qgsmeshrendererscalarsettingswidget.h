@@ -17,9 +17,10 @@
 #define QGSMESHRENDERERSCALARSETTINGSWIDGET_H
 
 #include "ui_qgsmeshrendererscalarsettingswidgetbase.h"
+
 #include "qgis_gui.h"
-#include "qgsmeshrenderersettings.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmeshrenderersettings.h"
 
 #include <QWidget>
 

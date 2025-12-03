@@ -10,8 +10,6 @@
 
 
 
-
-
 class QgsPointCloudRgbRenderer : QgsPointCloudRenderer
 {
 %Docstring(signature="appended")

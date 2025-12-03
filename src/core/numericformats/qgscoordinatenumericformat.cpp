@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgscoordinatenumericformat.h"
-#include "moc_qgscoordinatenumericformat.cpp"
+
+#include <iomanip>
+#include <iostream>
+#include <locale>
+#include <memory>
+
 #include "qgis.h"
 #include "qgscoordinateformatter.h"
 
-#include <memory>
-#include <iostream>
-#include <locale>
-#include <iomanip>
+#include "moc_qgscoordinatenumericformat.cpp"
 
 ///@cond PRIVATE
 namespace QgsGeographicCoordinateNumericFormat_ns

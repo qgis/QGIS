@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmextractlayoutmapextent.h"
-#include "layout/qgslayoutitemregistry.h"
-#include "layout/qgslayoutitemmap.h"
+
 #include "layout/qgslayout.h"
+#include "layout/qgslayoutitemmap.h"
+#include "layout/qgslayoutitemregistry.h"
 #include "layout/qgsprintlayout.h"
 #include "qgsprocessingoutputs.h"
 

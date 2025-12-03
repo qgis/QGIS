@@ -18,8 +18,9 @@
 #ifndef QGSGDALGUIUTILS_H
 #define QGSGDALGUIUTILS_H
 
-#include <QString>
 #include "qgis_gui.h"
+
+#include <QString>
 
 class QWidget;
 class QgsGdalOption;

@@ -18,7 +18,9 @@
 #define QGSREPORTORGANIZERWIDGET_H
 
 #include "ui_qgsreportorganizerwidgetbase.h"
+
 #include "qgspanelwidget.h"
+
 #include <QStyledItemDelegate>
 
 class QgsReportSectionModel;

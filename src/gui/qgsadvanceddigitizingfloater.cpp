@@ -13,16 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
-#include <QEnterEvent>
-#include <QLocale>
-
 #include "qgsadvanceddigitizingfloater.h"
-#include "moc_qgsadvanceddigitizingfloater.cpp"
+
+#include "qgsfocuswatcher.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
-#include "qgsfocuswatcher.h"
 #include "qgsunittypes.h"
+
+#include <QEnterEvent>
+#include <QLocale>
+#include <QMouseEvent>
+
+#include "moc_qgsadvanceddigitizingfloater.cpp"
 
 QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QWidget( canvas->viewport() )

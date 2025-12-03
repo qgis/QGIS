@@ -18,18 +18,19 @@
 #ifndef QGSPOSTGRESCONN_H
 #define QGSPOSTGRESCONN_H
 
-#include <QString>
-#include <QStringList>
-#include <QVector>
-#include <QMap>
-#include <QMutex>
+#include "qgsconfig.h"
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
-#include "qgswkbtypes.h"
-#include "qgsconfig.h"
-#include "qgsvectordataprovider.h"
 #include "qgsdbquerylog_p.h"
+#include "qgsvectordataprovider.h"
+#include "qgswkbtypes.h"
+
+#include <QMap>
+#include <QMutex>
+#include <QString>
+#include <QStringList>
+#include <QVector>
 
 extern "C"
 {

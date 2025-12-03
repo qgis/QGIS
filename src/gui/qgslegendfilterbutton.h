@@ -15,9 +15,10 @@
 #ifndef QGS_LEGEND_FILTER_BUTTON_H
 #define QGS_LEGEND_FILTER_BUTTON_H
 
-#include <QToolButton>
 #include "qgis_gui.h"
 #include "qgsexpressioncontext.h"
+
+#include <QToolButton>
 
 class QgsVectorLayer;
 class QgsExpressionContextGenerator;

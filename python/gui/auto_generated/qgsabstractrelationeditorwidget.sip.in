@@ -265,7 +265,8 @@ Duplicates features
 
 
 
-    void showEvent( QShowEvent * );
+    virtual void showEvent( QShowEvent * );
+
 %Docstring
 Refresh the UI when the widget becomes visible
 %End

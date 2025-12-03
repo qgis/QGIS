@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include <nlohmann/json.hpp>
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsjsonutils.h"
 #include "qgsoapifcreatefeaturerequest.h"
 #include "moc_qgsoapifcreatefeaturerequest.cpp"
-#include "qgsoapifprovider.h"
+#include "qgsoapifshareddata.h"
 
 QgsOapifCreateFeatureRequest::QgsOapifCreateFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )

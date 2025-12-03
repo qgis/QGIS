@@ -23,15 +23,17 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterize.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprovidermetadata.h"
-#include "qgsmaplayerutils.h"
-#include "qgsmapthemecollection.h"
-#include "qgsrasterfilewriter.h"
-#include "qgsmaprenderercustompainterjob.h"
-#include "gdal.h"
+
+#include <gdal.h>
+
 #include "qgsgdalutils.h"
 #include "qgslayertree.h"
+#include "qgsmaplayerutils.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmapthemecollection.h"
+#include "qgsprocessingparameters.h"
+#include "qgsprovidermetadata.h"
+#include "qgsrasterfilewriter.h"
 
 #include <QtConcurrent>
 

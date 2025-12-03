@@ -17,13 +17,13 @@
 #define QGSRENDERPASSQUAD_H
 
 #include <Qt3DCore/QEntity>
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QEffect>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QEffect>
 #include <Qt3DRender/QLayer>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTexture>
 
 #define SIP_NO_FILE
 

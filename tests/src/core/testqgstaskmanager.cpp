@@ -15,17 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstaskmanager.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
+#include <memory>
+
 #include "qgsapplication.h"
+#include "qgsproject.h"
 #include "qgsproxyprogresstask.h"
+#include "qgstaskmanager.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
 #include <QObject>
-#include <QThread>
 #include <QSignalSpy>
+#include <QThread>
 #include <QThreadPool>
 #include <QTimer>
-#include "qgstest.h"
 
 class TestTask : public QgsTask
 {
@@ -405,7 +408,7 @@ void TestQgsTaskManager::task()
   QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy2.last().at( 0 ).toInt() ), QgsTask::Terminated );
 
   //test that calling completed sets correct state
-  task.reset( new TestTask( QStringLiteral( "test_task_3" ) ) );
+  task = std::make_unique<TestTask>( QStringLiteral( "test_task_3" ) );
   QSignalSpy completeSpy( task.get(), &QgsTask::taskCompleted );
   QSignalSpy statusSpy3( task.get(), &QgsTask::statusChanged );
   task->start();
@@ -416,19 +419,19 @@ void TestQgsTaskManager::task()
   QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy3.last().at( 0 ).toInt() ), QgsTask::Complete );
 
   // test that canceling tasks which have not begin immediately ends them
-  task.reset( new TestTask( QStringLiteral( "test_task_4" ) ) );
+  task = std::make_unique<TestTask>( QStringLiteral( "test_task_4" ) );
   task->cancel(); // Queued task
   QCOMPARE( task->status(), QgsTask::Terminated );
-  task.reset( new TestTask( QStringLiteral( "test_task_5" ) ) );
+  task = std::make_unique<TestTask>( QStringLiteral( "test_task_5" ) );
   task->hold(); // OnHold task
   task->cancel();
   QCOMPARE( task->status(), QgsTask::Terminated );
 
   // test flags
-  task.reset( new TestTask( QStringLiteral( "test_task_6" ), QgsTask::Flags() ) );
+  task = std::make_unique<TestTask>( QStringLiteral( "test_task_6" ), QgsTask::Flags() );
   QVERIFY( !task->canCancel() );
   QVERIFY( !( task->flags() & QgsTask::CanCancel ) );
-  task.reset( new TestTask( QStringLiteral( "test_task_7" ), QgsTask::CanCancel ) );
+  task = std::make_unique<TestTask>( QStringLiteral( "test_task_7" ), QgsTask::CanCancel );
   QVERIFY( task->canCancel() );
   QVERIFY( task->flags() & QgsTask::CanCancel );
 }
@@ -445,7 +448,7 @@ void TestQgsTaskManager::taskResult()
   QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy.at( 1 ).at( 0 ).toInt() ), QgsTask::Complete );
   QCOMPARE( task->status(), QgsTask::Complete );
 
-  task.reset( new FailTask( QStringLiteral( "task_result_2" ) ) );
+  task = std::make_unique<FailTask>( QStringLiteral( "task_result_2" ) );
   QCOMPARE( task->status(), QgsTask::Queued );
   QSignalSpy statusSpy2( task.get(), &QgsTask::statusChanged );
 

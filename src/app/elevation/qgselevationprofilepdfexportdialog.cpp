@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgselevationprofilepdfexportdialog.h"
-#include "moc_qgselevationprofilepdfexportdialog.cpp"
-#include "qgsplot.h"
+
 #include "qgselevationprofileexportsettingswidget.h"
 #include "qgsgui.h"
 #include "qgslayoutitempage.h"
 #include "qgspagesizeregistry.h"
+#include "qgsplot.h"
+
+#include "moc_qgselevationprofilepdfexportdialog.cpp"
 
 QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget *parent )
   : QDialog( parent )

@@ -14,41 +14,42 @@
  ***************************************************************************/
 
 #include "qgsstyle.h"
-#include "moc_qgsstyle.cpp"
 
-#include "qgssymbol.h"
-#include "qgscolorramp.h"
-#include "qgssymbollayerregistry.h"
+#include <sqlite3.h>
+
+#include "qgs3dsymbolregistry.h"
+#include "qgsabstract3dsymbol.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsreadwritecontext.h"
-#include "qgssettings.h"
+#include "qgscolorramp.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 #include "qgslegendpatchshape.h"
 #include "qgslinestring.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgspolygon.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgslinesymbollayer.h"
-#include "qgsfillsymbollayer.h"
+#include "qgsreadwritecontext.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsabstract3dsymbol.h"
-#include "qgs3dsymbolregistry.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
+#include "qgssettings.h"
+#include "qgssqliteutils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerregistry.h"
 
+#include <QByteArray>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
 #include <QDomNodeList>
 #include <QFile>
-#include <QTextStream>
-#include <QByteArray>
 #include <QFileInfo>
+#include <QTextStream>
 
-#include <sqlite3.h>
-#include "qgssqliteutils.h"
+#include "moc_qgsstyle.cpp"
 
 #define STYLE_CURRENT_VERSION  "2"
 

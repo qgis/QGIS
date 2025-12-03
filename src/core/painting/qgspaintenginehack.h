@@ -14,9 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPaintEngine>
-
 #include "qgis_core.h"
+
+#include <QPaintEngine>
 
 /**
  * \ingroup core

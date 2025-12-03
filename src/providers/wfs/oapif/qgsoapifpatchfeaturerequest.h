@@ -16,11 +16,11 @@
 #ifndef QGSOAPIFPATCHFEATUREREQUEST_H
 #define QGSOAPIFPATCHFEATUREREQUEST_H
 
-#include <QObject>
-
+#include "qgsbasenetworkrequest.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfeature.h"
-#include "qgsbasenetworkrequest.h"
+
+#include <QObject>
 
 class QgsOapifSharedData;
 

@@ -18,9 +18,9 @@
 #ifndef QGSPOINTCLOUDEXTENTRENDERER_H
 #define QGSPOINTCLOUDEXTENTRENDERER_H
 
-#include "qgspointcloudrenderer.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgspointcloudrenderer.h"
 
 class QgsFillSymbol;
 

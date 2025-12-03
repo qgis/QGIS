@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnativealgorithms.h"
-#include "qgsprocessingregistry.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingregistry.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
@@ -25,7 +25,7 @@ class DummyFeedback : public QgsProcessingFeedback
     Q_OBJECT
 
   public:
-    void reportError( const QString &error, bool fatalError = false )
+    void reportError( const QString &error, bool fatalError = false ) override
     {
       Q_UNUSED( fatalError );
       mErrors.append( error );

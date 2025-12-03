@@ -15,10 +15,10 @@
 #ifndef QGSSPATIALITEFEATUREITERATOR_H
 #define QGSSPATIALITEFEATUREITERATOR_H
 
-#include "qgsfeatureiterator.h"
-#include "qgsfields.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdbquerylog.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
 
 extern "C"
 {

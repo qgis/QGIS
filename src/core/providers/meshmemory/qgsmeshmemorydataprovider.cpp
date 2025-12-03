@@ -17,11 +17,13 @@
 ///@cond PRIVATE
 
 #include "qgsmeshmemorydataprovider.h"
-#include "moc_qgsmeshmemorydataprovider.cpp"
-#include "qgsmeshdataprovidertemporalcapabilities.h"
+
 #include "qgsapplication.h"
+#include "qgsmeshdataprovidertemporalcapabilities.h"
 
 #include <QIcon>
+
+#include "moc_qgsmeshmemorydataprovider.cpp"
 
 #define TEXT_PROVIDER_KEY QStringLiteral( "mesh_memory" )
 #define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "Mesh memory provider" )

@@ -16,39 +16,39 @@
 #include "qgs3dutils.h"
 
 #include "qgs3dmapcanvas.h"
-#include "qgsapplication.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgsfeaturerequest.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfeature.h"
-#include "qgsabstractgeometry.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeedback.h"
-#include "qgsglobechunkedentity.h"
-#include "qgsoffscreen3dengine.h"
 #include "qgs3dmapscene.h"
 #include "qgsabstract3dengine.h"
-#include "qgsterraingenerator.h"
+#include "qgsabstractgeometry.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsapplication.h"
 #include "qgscameracontroller.h"
 #include "qgschunkedentity.h"
-#include "qgsterrainentity.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgspointcloudrenderer.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
+#include "qgsfeedback.h"
+#include "qgsglobechunkedentity.h"
+#include "qgslinestring.h"
+#include "qgsoffscreen3dengine.h"
 #include "qgspointcloud3dsymbol.h"
-#include "qgspointcloudlayer3drenderer.h"
-#include "qgspointcloudrgbrenderer.h"
 #include "qgspointcloudattributebyramprenderer.h"
 #include "qgspointcloudclassifiedrenderer.h"
-#include "qgsraycastresult.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudrgbrenderer.h"
+#include "qgspolygon.h"
 #include "qgsraycastcontext.h"
+#include "qgsraycastresult.h"
+#include "qgsterrainentity.h"
+#include "qgsterraingenerator.h"
+#include "qgsvectorlayer.h"
 
-#include <QtMath>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DRender/QRenderSettings>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DLogic/QFrameAction>
+#include <Qt3DRender/QRenderSettings>
+#include <QtMath>
 
 #if !defined( Q_OS_MAC )
 #include <GL/gl.h>
@@ -194,7 +194,7 @@ double Qgs3DUtils::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity )
   for ( Qt3DRender::QTexture2D *tex : entity->findChildren<Qt3DRender::QTexture2D *>() )
   {
     // TODO : lift the assumption that the texture is RGBA
-    usedGpuMemory += tex->width() * tex->height() * 4;
+    usedGpuMemory += static_cast< long long >( tex->width() ) * static_cast< long long >( tex->height() ) * 4;
   }
   return usedGpuMemory / 1024.0 / 1024.0;
 }

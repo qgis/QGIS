@@ -12,29 +12,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QThread>
-
 #include "qgssettingsregistrycore.h"
 
+#include "pal.h"
 #include "qgis.h"
-
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgssettings.h"
-
 #include "qgsbabelformatregistry.h"
+#include "qgsgpsdetector.h"
 #include "qgslayout.h"
 #include "qgslocator.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsowsconnection.h"
 #include "qgsprocessing.h"
-#include "qgsvectortileconnection.h"
-#include "qgsgpsdetector.h"
 #include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
+#include "qgssettings.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingsproxy.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectortileconnection.h"
 
-#include "pal.h"
+#include <QThread>
 
 const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( QStringLiteral( "default-snap-mode" ), QgsSettingsTree::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
 

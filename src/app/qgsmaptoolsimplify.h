@@ -16,14 +16,15 @@
 #ifndef QGSMAPTOOLSIMPLIFY_H
 #define QGSMAPTOOLSIMPLIFY_H
 
-#include "qgsmaptooledit.h"
 #include "ui_qgssimplifytolerancedialog.h"
 
-#include <QVector>
-#include "qgstolerance.h"
-#include "qgsgeometry.h"
 #include "qgis_app.h"
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgsmaptooledit.h"
+#include "qgstolerance.h"
+
+#include <QVector>
 
 class QgsRubberBand;
 class QgsMapToolSimplify;

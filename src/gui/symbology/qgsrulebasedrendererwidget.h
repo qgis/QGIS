@@ -16,10 +16,10 @@
 #ifndef QGSRULEBASEDRENDERERWIDGET_H
 #define QGSRULEBASEDRENDERERWIDGET_H
 
-#include "qgsrendererwidget.h"
 #include "qgis_sip.h"
-
+#include "qgsrendererwidget.h"
 #include "qgsrulebasedrenderer.h"
+
 class QMenu;
 class QgsSymbolSelectorWidget;
 

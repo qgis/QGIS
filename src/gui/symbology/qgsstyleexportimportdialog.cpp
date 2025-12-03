@@ -14,24 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsstyleexportimportdialog.h"
-#include "moc_qgsstyleexportimportdialog.cpp"
 #include "ui_qgsstyleexportimportdialogbase.h"
+#include "qgsstyleexportimportdialog.h"
 
 #include "qgsapplication.h"
-#include "qgsstyle.h"
-#include "qgssymbol.h"
-#include "qgsnetworkcontentfetchertask.h"
-#include "qgsstylegroupselectiondialog.h"
-#include "qgsguiutils.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
-#include "qgsstylemodel.h"
+#include "qgsguiutils.h"
+#include "qgsnetworkcontentfetchertask.h"
+#include "qgssettings.h"
+#include "qgsstyle.h"
+#include "qgsstylegroupselectiondialog.h"
 #include "qgsstylemanagerdialog.h"
+#include "qgsstylemodel.h"
+#include "qgssymbol.h"
 
-#include <QInputDialog>
 #include <QCloseEvent>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QMessageBox>
 #include <QNetworkReply>
 #include <QProgressDialog>
@@ -39,6 +38,8 @@
 #include <QStandardItemModel>
 #include <QTemporaryFile>
 #include <QUrl>
+
+#include "moc_qgsstyleexportimportdialog.cpp"
 
 QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent, Mode mode )
   : QDialog( parent )

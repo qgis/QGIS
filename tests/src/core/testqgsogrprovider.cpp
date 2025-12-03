@@ -387,7 +387,7 @@ void TestQgsOgrProvider::testThread()
   mutex.unlock();
 
   thread->wait();
-  qInstallMessageHandler( 0 );
+  qInstallMessageHandler( nullptr );
 }
 
 void TestQgsOgrProvider::testCsvFeatureAddition()

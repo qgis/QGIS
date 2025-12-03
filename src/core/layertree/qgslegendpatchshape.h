@@ -17,9 +17,9 @@ email                : nyall dot dawson at gmail dot com
 #ifndef QGSLEGENDPATCHSHAPE_H
 #define QGSLEGENDPATCHSHAPE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsgeometry.h"
 
 class QgsReadWriteContext;

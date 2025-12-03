@@ -14,15 +14,10 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerlegendwidget.h"
-#include "moc_qgsvectorlayerlegendwidget.cpp"
-
-#include <QBoxLayout>
-#include <QStandardItemModel>
-#include <QTreeView>
-#include <QTreeWidget>
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfilecontentsourcelineedit.h"
+#include "qgsfontbutton.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsrenderer.h"
@@ -30,7 +25,13 @@
 #include "qgssymbollayerutils.h"
 #include "qgstextformatwidget.h"
 #include "qgsvectorlayer.h"
-#include "qgsfontbutton.h"
+
+#include <QBoxLayout>
+#include <QStandardItemModel>
+#include <QTreeView>
+#include <QTreeWidget>
+
+#include "moc_qgsvectorlayerlegendwidget.cpp"
 
 QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   : QWidget( parent )

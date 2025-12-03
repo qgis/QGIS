@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsonlinedemterrainsettings.h"
-#include "qgsonlineterraingenerator.h"
+
 #include "qgis.h"
 #include "qgs3drendercontext.h"
+#include "qgsonlineterraingenerator.h"
 
 #include <QDomElement>
 

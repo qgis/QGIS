@@ -16,11 +16,11 @@
 #ifndef QGSTABWIDGET_H
 #define QGSTABWIDGET_H
 
-#include <QTabWidget>
-#include "qgstabbarproxystyle.h"
-#include "qgsattributeeditorelement.h"
-
 #include "qgis_gui.h"
+#include "qgsattributeeditorelement.h"
+#include "qgstabbarproxystyle.h"
+
+#include <QTabWidget>
 
 /**
  * \ingroup gui

@@ -17,12 +17,12 @@
 #define QGSSETTINGSTREEMODEL_H
 
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 #include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
 #include <QItemDelegate>
+#include <QSortFilterProxyModel>
 
 class QgsSettingsEntryBase;
 class QgsSettingsTreeNode;
@@ -178,7 +178,7 @@ class GUI_EXPORT QgsSettingsTreeModel : public QAbstractItemModel
     //! Constructor
     QgsSettingsTreeModel( QgsSettingsTreeNode *rootNode = nullptr, QObject *parent = nullptr );
 
-    ~QgsSettingsTreeModel();
+    ~QgsSettingsTreeModel() override;
 
     //! Apply pending changes in the model to the corresponding settings
     void applyChanges();

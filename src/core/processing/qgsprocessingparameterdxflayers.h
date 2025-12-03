@@ -16,10 +16,10 @@
 #ifndef QGSPROCESSINGPARAMETERDXFLAYERS_H
 #define QGSPROCESSINGPARAMETERDXFLAYERS_H
 
+#include "qgsdxfexport.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsdxfexport.h"
 
 /**
  * \brief A parameter for Processing algorithms that need a list of input vector

@@ -1444,31 +1444,31 @@
                 </layout>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QCheckBox" name="mEnableMapTips">
-                <property name="toolTip">
-                 <string>Indicates whether map tips are displayed for this layer or not</string>
-                </property>
-                <property name="text">
-                 <string>Enable map tips</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
               <item row="2" column="0">
-               <widget class="QGroupBox" name="mHtmlMapTipGroupBox">
+                <widget class="QGroupBox" name="mEnableMapTips">
+                 <property name="title">
+                  <string>Enable Map Tips</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="title">
-                 <string>HTML Map Tip</string>
-                </property>
                 <layout class="QVBoxLayout" name="verticalLayout_35">
+                 <item>
+                  <widget class="QLabel" name="labelMapTipInfo">
+                   <property name="text">
+                    <string>Map tips are shown when moving mouse over features of the currently selected layer when the 'Show Map Tips' action is toggled on. If no HTML code is set below, the feature display name is used.</string>
+                   </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
                  <item>
                   <widget class="QSplitter" name="mMapTipSplitter">
                    <property name="sizePolicy">
@@ -1590,15 +1590,64 @@
                      </size>
                     </property>
                     <property name="title">
-                     <string>Preview</string>
+                     <string>Map Tips Preview</string>
                     </property>
+                    <layout class="QVBoxLayout" name="mMapTipPreviewLayout">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                    </layout>
                    </widget>
                   </widget>
                  </item>
-                 <item>
-                  <widget class="QLabel" name="labelMapTipInfo">
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QGroupBox" name="featuresSortOrderGroupBox">
+                <property name="title">
+                 <string>Sort Order</string>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QGridLayout" name="featuresSortOrderLayout">
+                 <item row="0" column="0">
+                  <widget class="QgsFieldExpressionWidget" name="mFeaturesSortOrderExpressionWidget" native="true">
+                   <property name="focusPolicy">
+                    <enum>Qt::FocusPolicy::StrongFocus</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QToolButton" name="mFeaturesSortOrderDirectionButton">
+                   <property name="toolTip">
+                    <string>Sort direction</string>
+                   </property>
                    <property name="text">
-                    <string>The HTML map tips are shown when moving mouse over features of the currently selected layer when the 'Show Map Tips' action is toggled on. If no HTML code is set, the feature display name is used.</string>
+                    <string>…</string>
+                   </property>
+                   <property name="arrowType">
+                    <enum>Qt::UpArrow</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="2">
+                  <widget class="QLabel" name="labelfeaturesSortOrderInfo">
+                   <property name="text">
+                    <string>The sort order expression is used to sort features displayed in the attribute table's views as well as the relation editor widget.</string>
                    </property>
                    <property name="wordWrap">
                     <bool>true</bool>

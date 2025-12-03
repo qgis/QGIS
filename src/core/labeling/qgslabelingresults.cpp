@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgslabelingresults.h"
+
 #include "qgslabelsearchtree.h"
 #include "qgsmapsettings.h"
-
 
 QgsLabelingResults::QgsLabelingResults()
   : mLabelSearchTree( std::make_unique< QgsLabelSearchTree >() )

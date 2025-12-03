@@ -13,16 +13,18 @@ email                : jef at norbit dot de
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsgeometryvalidator.h"
-#include "moc_qgsgeometryvalidator.cpp"
-#include "qgsgeometry.h"
-#include "qgslogger.h"
-#include "qgsgeos.h"
-#include "qgsgeometrycollection.h"
-#include "qgscurvepolygon.h"
+
+#include "qgis.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
+#include "qgsgeos.h"
+#include "qgslogger.h"
 #include "qgsvertexid.h"
+
+#include "moc_qgsgeometryvalidator.cpp"
 
 QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry &geometry, QVector<QgsGeometry::Error> *errors, Qgis::GeometryValidationEngine method )
   : mGeometry( geometry )

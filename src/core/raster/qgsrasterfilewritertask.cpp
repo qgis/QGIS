@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsrasterfilewritertask.h"
-#include "moc_qgsrasterfilewritertask.cpp"
-#include "qgsrasterinterface.h"
+
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasterpipe.h"
+
+#include "moc_qgsrasterfilewritertask.cpp"
 
 // Deprecated!
 QgsRasterFileWriterTask::QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe, int columns, int rows,

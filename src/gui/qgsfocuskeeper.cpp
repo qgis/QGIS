@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgsfocuskeeper.h"
-#include "moc_qgsfocuskeeper.cpp"
 
 #include <QApplication>
 #include <QEvent>
 #include <QWidget>
+
+#include "moc_qgsfocuskeeper.cpp"
 
 QgsFocusKeeper::QgsFocusKeeper()
   : mWidgetToKeepFocused( QApplication::focusWidget() )

@@ -14,15 +14,17 @@
  ***************************************************************************/
 
 #include "qgsshortcutsmanager.h"
-#include "moc_qgsshortcutsmanager.cpp"
+
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgsapplication.h"
 
-#include <QShortcut>
-#include <QRegularExpression>
-#include <QWidgetAction>
 #include <QPalette>
+#include <QRegularExpression>
+#include <QShortcut>
+#include <QWidgetAction>
+
+#include "moc_qgsshortcutsmanager.cpp"
 
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settingsRoot )
   : QObject( parent )

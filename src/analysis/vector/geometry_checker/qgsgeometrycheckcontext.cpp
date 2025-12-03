@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckcontext.h"
+
 #include <QThread>
 
 QgsGeometryCheckContext::QgsGeometryCheckContext( int precision, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &transformContext, const QgsProject *project, const int uniqueIdFieldIndex )

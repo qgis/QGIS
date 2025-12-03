@@ -21,12 +21,12 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsreadwritecontext.h"
-#include "qgsrange.h"
 #include "qgspropertycollection.h"
+#include "qgsrange.h"
+#include "qgsreadwritecontext.h"
 
-#include <QObject>
 #include <QDomElement>
+#include <QObject>
 
 class QgsMapLayer;
 

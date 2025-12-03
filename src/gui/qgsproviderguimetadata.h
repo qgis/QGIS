@@ -18,11 +18,11 @@
 #ifndef QGSPROVIDERGUIMETADATA_H
 #define QGSPROVIDERGUIMETADATA_H
 
-#include <QList>
-#include <QMainWindow>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QList>
+#include <QMainWindow>
 
 class QgsDataItemGuiProvider;
 class QgsSourceSelectProvider;

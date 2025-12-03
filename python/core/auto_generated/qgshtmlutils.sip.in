@@ -9,6 +9,7 @@
 
 
 
+
 class QgsHtmlUtils
 {
 %Docstring(signature="appended")

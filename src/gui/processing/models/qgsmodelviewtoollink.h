@@ -16,14 +16,17 @@
 #ifndef QGSMODELVIEWTOOLLINK_H
 #define QGSMODELVIEWTOOLLINK_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgsmodelviewtool.h"
-#include "qgsmodelviewrubberband.h"
-#include "qgsmodelgraphicitem.h"
 #include <memory>
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsmodelviewtool.h"
+
 #define SIP_NO_FILE
+
+class QgsModelViewBezierRubberBand;
+class QgsModelDesignerSocketGraphicItem;
+class QgsProcessingModelComponent;
 
 /**
  * \ingroup gui
@@ -72,5 +75,10 @@ class GUI_EXPORT QgsModelViewToolLink : public QgsModelViewTool
 
     /* Used to return to select tool */
     QPointer<QgsModelViewTool> mPreviousViewTool;
+
+    // These two are populated when clicking on an input socket that is already connected
+    // We use them to restore the connection when aborting, or to skip the undo step when the same input is selected
+    QString mPreviousInputChildId;
+    int mPreviousInputSocketNumber = -1;
 };
 #endif // QGSMODELVIEWTOOLLINK_H

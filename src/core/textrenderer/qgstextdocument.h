@@ -16,13 +16,13 @@
 #ifndef QGSTEXTDOCUMENT_H
 #define QGSTEXTDOCUMENT_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsstringutils.h"
 #include "qgstextblock.h"
 
-#include <QVector>
 #include <QSizeF>
+#include <QVector>
 
 class QgsTextFragment;
 class QgsTextFormat;

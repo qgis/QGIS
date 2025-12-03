@@ -21,13 +21,13 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
-#include "qgsrectangle.h"
 #include "qgsmaptopixel.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
+#include "qgsrectangle.h"
 
-#include <QVector>
 #include <QSize>
+#include <QVector>
 
 ///@cond PRIVATE
 

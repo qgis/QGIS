@@ -19,9 +19,11 @@
 #define QGSCOLORRAMPLEGENDNODEWIDGET_H
 
 
-#include "qgis_gui.h"
 #include "ui_qgscolorramplegendnodewidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgscolorramplegendnodesettings.h"
+
 #include <QDialog>
 
 class QDialogButtonBox;

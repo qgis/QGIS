@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgssqliteutils.h"
+
+#include <cstdarg>
+#include <sqlite3.h>
+
 #include "qgsvariantutils.h"
 
-#include <sqlite3.h>
-#include <cstdarg>
-#include <QVariant>
 #include <QSet>
+#include <QVariant>
 
 // Temporary solution until GDAL Unique support is available
 #include <regex>
@@ -125,7 +127,7 @@ int sqlite3_database_unique_ptr::exec( const QString &sql, QString &errorMessage
 QSet<QString> QgsSqliteUtils::uniqueFields( sqlite3 *connection, const QString &tableName, QString &errorMessage )
 {
   QSet<QString> uniqueFieldsResults;
-  char *zErrMsg = 0;
+  char *zErrMsg = nullptr;
   std::vector<std::string> rows;
   const QByteArray tableNameUtf8 = tableName.toUtf8();
   QString sql = qgs_sqlite3_mprintf( "select sql from sqlite_master "
@@ -218,9 +220,8 @@ long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString 
   int resultCode = 0;
   sqlite3_statement_unique_ptr stmt { dsPtr.prepare( QStringLiteral( "SELECT seq FROM sqlite_sequence WHERE name = %1" )
                                       .arg( quotedTableName ), resultCode )};
-  if ( resultCode == SQLITE_OK )
+  if ( resultCode == SQLITE_OK && stmt.step() )
   {
-    stmt.step();
     result = sqlite3_column_int64( stmt.get(), 0 );
     // Try to create the sequence in case this is an empty layer
     if ( sqlite3_column_count( stmt.get() ) == 0 )

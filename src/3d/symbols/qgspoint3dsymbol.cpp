@@ -15,17 +15,17 @@
 
 #include "qgspoint3dsymbol.h"
 
-#include "qgs3dutils.h"
-#include "qgsreadwritecontext.h"
-#include "qgsxmlutils.h"
-#include "qgssymbollayerutils.h"
 #include "qgs3d.h"
-#include "qgsmaterialregistry.h"
 #include "qgs3dexportobject.h"
 #include "qgs3dsceneexporter.h"
+#include "qgs3dutils.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmaterialregistry.h"
+#include "qgsreadwritecontext.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
+#include "qgsxmlutils.h"
 
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {
@@ -41,10 +41,6 @@ QgsPoint3DSymbol::QgsPoint3DSymbol()
   : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )
 {
   setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
-
-  // our built-in 3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
-  // let's rotate them by default so that their Z axis goes "up" (like the rest of the scene)
-  mTransform.rotate( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) );
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other )

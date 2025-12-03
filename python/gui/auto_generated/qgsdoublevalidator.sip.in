@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsDoubleValidator : QRegularExpressionValidator
 {
 %Docstring(signature="appended")

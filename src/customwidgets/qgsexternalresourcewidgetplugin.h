@@ -17,11 +17,11 @@
 #define QGSEXTERNALRESOURCEWIDGETPLUGIN_H
 
 
+#include "qgis_customwidgets.h"
+
 #include <QtGlobal>
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
-#include "qgis_customwidgets.h"
-
 
 class CUSTOMWIDGETS_EXPORT QgsExternalResourceWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
 {

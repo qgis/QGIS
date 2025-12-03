@@ -19,13 +19,14 @@
 #ifndef QGSMSSQLDATAITEMS_H
 #define QGSMSSQLDATAITEMS_H
 
+#include "qgsconfig.h"
+
 #include "qgsconnectionsitem.h"
+#include "qgsdatabaseschemaitem.h"
 #include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
-#include "qgsmssqltablemodel.h"
-#include "qgsdatabaseschemaitem.h"
 #include "qgslayeritem.h"
-#include "qgsconfig.h"
+#include "qgsmssqltablemodel.h"
 
 class QgsMssqlGeomColumnTypeThread;
 

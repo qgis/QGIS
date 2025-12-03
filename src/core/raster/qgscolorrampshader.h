@@ -21,17 +21,18 @@ originally part of the larger QgsRasterLayer class
 #ifndef QGSCOLORRAMPSHADER_H
 #define QGSCOLORRAMPSHADER_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include <QColor>
-#include <QVector>
 #include <memory>
 
 #include "qgis.h"
-#include "qgsrastershaderfunction.h"
-#include "qgsrectangle.h"
-#include "qgsreadwritecontext.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscolorramplegendnodesettings.h"
+#include "qgsrastershaderfunction.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrectangle.h"
+
+#include <QColor>
+#include <QVector>
 
 class QgsColorRamp;
 class QgsRasterInterface;

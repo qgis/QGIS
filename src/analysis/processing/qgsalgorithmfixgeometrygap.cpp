@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfixgeometrygap.h"
+
 #include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgsgeometrygapcheck.h"
 #include "qgsvectordataproviderfeaturepool.h"
-#include "qgsgeometrycheckerror.h"
 
 ///@cond PRIVATE
 

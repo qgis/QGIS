@@ -17,13 +17,15 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
-#include <QElapsedTimer>
-#include <QVariant>
-#include <QColor>
-#include <QUrl>
-#include <memory>
 #include <deque>
+#include <memory>
+
+#include "qgis_gui.h"
+
+#include <QColor>
+#include <QElapsedTimer>
+#include <QUrl>
+#include <QVariant>
 
 class QAction;
 class QgsDevToolsModelGroup;
@@ -122,7 +124,7 @@ class GUI_EXPORT QgsDevToolsModelGroup : public QgsDevToolsModelNode
      */
     void clear();
 
-    int childCount() const override final { return mChildren.size(); }
+    int childCount() const final { return mChildren.size(); }
     QVariant data( int role = Qt::DisplayRole ) const override;
     QVariant toVariant() const override;
 
@@ -172,9 +174,9 @@ class GUI_EXPORT QgsDevToolsModelValueNode : public QgsDevToolsModelNode
      */
     QString value() const { return mValue; }
 
-    QVariant data( int role = Qt::DisplayRole ) const override final;
-    int childCount() const override final { return 0; }
-    QList<QAction *> actions( QObject *parent ) override final;
+    QVariant data( int role = Qt::DisplayRole ) const final;
+    int childCount() const final { return 0; }
+    QList<QAction *> actions( QObject *parent ) final;
 
   private:
     QString mKey;

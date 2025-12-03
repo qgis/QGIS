@@ -16,9 +16,9 @@
 #ifndef QGSLAYOUTVIEWMOUSEEVENT_H
 #define QGSLAYOUTVIEWMOUSEEVENT_H
 
-#include <QMouseEvent>
-
 #include "qgis_gui.h"
+
+#include <QMouseEvent>
 
 class QgsLayoutView;
 class QGraphicsLineItem;

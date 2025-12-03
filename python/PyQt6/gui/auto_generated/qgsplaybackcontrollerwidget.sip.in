@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsPlaybackControllerWidget : QWidget
 {
 %Docstring(signature="appended")

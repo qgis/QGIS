@@ -11,6 +11,7 @@
 
 
 
+
 class QgsPointClusterRendererWidget : QgsRendererWidget
 {
 %Docstring(signature="appended")

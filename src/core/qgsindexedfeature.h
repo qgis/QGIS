@@ -18,8 +18,9 @@
 
 #define SIP_NO_FILE
 
-#include <QVector>
 #include "qgsfeature.h"
+
+#include <QVector>
 
 /**
  * \ingroup core

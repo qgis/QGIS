@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgsappauthrequesthandler.h"
-#include "qgslogger.h"
-#include "qgsauthcertutils.h"
-#include "qgsapplication.h"
-#include "qgsauthmanager.h"
+
 #include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthmanager.h"
 #include "qgscredentials.h"
+#include "qgslogger.h"
 
 #include <QAuthenticator>
 #include <QDesktopServices>

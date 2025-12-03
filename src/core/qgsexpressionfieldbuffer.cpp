@@ -19,7 +19,6 @@
 
 #include "qgsvectorlayer.h"
 
-
 void QgsExpressionFieldBuffer::addExpression( const QString &exp, const QgsField &fld )
 {
   mExpressions << ExpressionField( exp, fld );

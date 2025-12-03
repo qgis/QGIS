@@ -15,8 +15,8 @@
 #ifndef QGSLINEARREFERENCINGSYMBOLLAYER_H
 #define QGSLINEARREFERENCINGSYMBOLLAYER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 #include "qgstextformat.h"
 

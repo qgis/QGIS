@@ -17,13 +17,14 @@
 #ifndef QGSMAPTOPIXEL
 #define QGSMAPTOPIXEL
 
+#include <cassert>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QTransform>
-#include "qgis.h"
 #include "qgspointxy.h"
 
-#include <cassert>
+#include <QTransform>
 
 class QPoint;
 

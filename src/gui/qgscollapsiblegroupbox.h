@@ -18,13 +18,13 @@
 #ifndef QGSCOLLAPSIBLEGROUPBOX_H
 #define QGSCOLLAPSIBLEGROUPBOX_H
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgssettings.h"
+
 #include <QGroupBox>
 #include <QPointer>
 #include <QToolButton>
-
-#include "qgis_sip.h"
-#include "qgssettings.h"
-#include "qgis_gui.h"
 
 class QMouseEvent;
 class QToolButton;
@@ -125,7 +125,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
 
     //! If this is set to FALSE the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
-    bool scrollOnExpand() { return mScrollOnExpand; }
+    bool scrollOnExpand() const { return mScrollOnExpand; }
 
   signals:
     //! Signal emitted when groupbox collapsed/expanded state is changed, and when first shown
@@ -223,8 +223,16 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
      * in multiple places or used as options for different parent objects
     */
     void setSaveCheckedState( bool save ) { mSaveCheckedState = save; }
-    bool saveCollapsedState() { return mSaveCollapsedState; }
-    bool saveCheckedState() { return mSaveCheckedState; }
+
+    /**
+     * Returns whether the collapsed state of this group box is saved and loaded persistently in QgsSettings
+     */
+    bool saveCollapsedState() const { return mSaveCollapsedState; }
+
+    /**
+     * Returns whether the checked state of this group box is saved and loaded persistently in QgsSettings
+     */
+    bool saveCheckedState() const { return mSaveCheckedState; }
 
     //! Sets this to a defined string to share save/restore states across different parent dialogs
     void setSettingGroup( const QString &group ) { mSettingGroup = group; }

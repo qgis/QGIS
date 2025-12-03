@@ -13,9 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorfieldsymbollayerwidget.h"
-#include "moc_qgsvectorfieldsymbollayerwidget.cpp"
+
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsvectorfieldsymbollayerwidget.cpp"
 
 QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )

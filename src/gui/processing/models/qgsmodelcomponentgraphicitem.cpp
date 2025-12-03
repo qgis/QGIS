@@ -14,30 +14,32 @@
  ***************************************************************************/
 
 #include "qgsmodelcomponentgraphicitem.h"
-#include "moc_qgsmodelcomponentgraphicitem.cpp"
-#include "qgsprocessingmodelcomponent.h"
-#include "qgsprocessingmodelparameter.h"
-#include "qgsprocessingmodelchildalgorithm.h"
-#include "qgsprocessingmodeloutput.h"
-#include "qgsprocessingmodelgroupbox.h"
-#include "qgsmodelgraphicsscene.h"
-#include "qgsapplication.h"
-#include "qgsmodelgraphicitem.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include "qgsmodelgraphicsview.h"
-#include "qgsmodelviewtool.h"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelgroupboxdefinitionwidget.h"
-#include "qgsmessagelog.h"
 
-#include <QSvgRenderer>
-#include <QPicture>
-#include <QPainter>
-#include <QGraphicsSceneHoverEvent>
+#include "qgsapplication.h"
+#include "qgsmessagelog.h"
+#include "qgsmodelgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelgroupboxdefinitionwidget.h"
+#include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewtool.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgsprocessingmodelcomponent.h"
+#include "qgsprocessingmodelgroupbox.h"
+#include "qgsprocessingmodeloutput.h"
+#include "qgsprocessingmodelparameter.h"
+
 #include <QApplication>
-#include <QPalette>
-#include <QMessageBox>
+#include <QGraphicsSceneHoverEvent>
 #include <QMenu>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPalette>
+#include <QPicture>
+#include <QSvgRenderer>
+
+#include "moc_qgsmodelcomponentgraphicitem.cpp"
 
 ///@cond NOT_STABLE
 

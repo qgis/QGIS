@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgshillshadefilter.h"
+
 #include <cmath>
 
 QgsHillshadeFilter::QgsHillshadeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat, double lightAzimuth, double lightAngle )

@@ -15,27 +15,29 @@
  ***************************************************************************/
 
 #include "qgslayoutitemregistry.h"
-#include "moc_qgslayoutitemregistry.cpp"
-#include "qgslayoutitemshape.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutitempolygon.h"
-#include "qgslayoutitempolyline.h"
-#include "qgslayoutitempage.h"
-#include "qgslayoutitempicture.h"
+
+#include "qgslayoutframe.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemchart.h"
+#include "qgslayoutitemelevationprofile.h"
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemhtml.h"
-#include "qgslayoutitemscalebar.h"
-#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemlegend.h"
 #include "qgslayoutitemmanualtable.h"
-#include "qgslayoutitemtexttable.h"
-#include "qgslayoutframe.h"
+#include "qgslayoutitemmap.h"
 #include "qgslayoutitemmarker.h"
-#include "qgslayoutitemelevationprofile.h"
-#include "qgslayoutitemchart.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutitempolygon.h"
+#include "qgslayoutitempolyline.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutitemtexttable.h"
 
 #include <QPainter>
+
+#include "moc_qgslayoutitemregistry.cpp"
 
 QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )
   : QObject( parent )

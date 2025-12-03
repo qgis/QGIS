@@ -18,7 +18,6 @@
 
 #include "qgsclassificationmethod.h"
 
-
 /**
  * \ingroup core
  * \brief A dummy implementation class method which does not compute any breaks.

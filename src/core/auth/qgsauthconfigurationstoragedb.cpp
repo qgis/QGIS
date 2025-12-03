@@ -14,19 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsauthconfigurationstoragedb.h"
-#include "moc_qgsauthconfigurationstoragedb.cpp"
 
-#include "qgslogger.h"
 #include "qgsauthcertutils.h"
-#include "qurl.h"
+#include "qgslogger.h"
 
-#include <QSqlError>
+#include <QCoreApplication>
 #include <QSqlDriver>
+#include <QSqlError>
 #include <QSqlQuery>
 #include <QThread>
-#include <QCoreApplication>
 #include <QUrlQuery>
+#include <qurl.h>
 
+#include "moc_qgsauthconfigurationstoragedb.cpp"
 
 QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QMap<QString, QVariant> &settings )
   : QgsAuthConfigurationStorage( settings )

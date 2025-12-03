@@ -18,10 +18,10 @@
 #ifndef QGS_LANDINGPAGE_HANDLERS_H
 #define QGS_LANDINGPAGE_HANDLERS_H
 
-#include "qgsserversettings.h"
-#include "qgsserverogcapihandler.h"
 #include "qgsfields.h"
+#include "qgsserverogcapihandler.h"
 #include "qgsserverrequest.h"
+#include "qgsserversettings.h"
 
 class QgsFeatureRequest;
 class QgsServerOgcApi;

@@ -16,9 +16,10 @@
 #ifndef QGSPERCENTAGEWIDGET_H
 #define QGSPERCENTAGEWIDGET_H
 
-#include <QWidget>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QWidget>
 
 class QgsDoubleSpinBox;
 class QSlider;

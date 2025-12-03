@@ -18,8 +18,8 @@
 #ifndef QGS3DALGORITHMS_H
 #define QGS3DALGORITHMS_H
 
-#include "qgis_3d.h"
 #include "qgis.h"
+#include "qgis_3d.h"
 #include "qgsprocessingprovider.h"
 
 /**

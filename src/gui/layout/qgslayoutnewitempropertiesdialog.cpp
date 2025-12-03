@@ -14,15 +14,17 @@
  ***************************************************************************/
 
 #include "qgslayoutnewitempropertiesdialog.h"
-#include "moc_qgslayoutnewitempropertiesdialog.cpp"
-#include "qgssettings.h"
+
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslayout.h"
 #include "qgslayoutpagecollection.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
 #include "qgslayoutrendercontext.h"
+#include "qgssettings.h"
 
 #include <QButtonGroup>
+
+#include "moc_qgslayoutnewitempropertiesdialog.cpp"
 
 QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )

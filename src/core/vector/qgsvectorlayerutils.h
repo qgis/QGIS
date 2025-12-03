@@ -17,9 +17,9 @@
 #define QGSVECTORLAYERUTILS_H
 
 #include "qgis_core.h"
+#include "qgsfeaturesink.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayerfeatureiterator.h"
-#include "qgsfeaturesink.h"
 
 class QgsFeatureRenderer;
 class QgsSymbolLayer;
@@ -134,6 +134,21 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \see getDoubleValues
      */
     static QList< QVariant > getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Fetches all unique values from a specified field name or expression. Null values or
+     * invalid expression results are skipped.
+     * \param layer vector layer to retrieve values from
+     * \param fieldOrExpression field name or an expression string evaluating to a double value
+     * \param ok will be set to FALSE if field or expression is invalid, otherwise TRUE
+     * \param selectedOnly set to TRUE to get values from selected features only
+     * \param limit Maximum number of unique values to return. Use -1 for no limit.
+     * \param feedback optional feedback object to allow cancellation
+     * \returns list of unique fetched values
+     * \see getValues
+     * \since QGIS 4.0
+     */
+    static QList< QVariant > uniqueValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok SIP_OUT, bool selectedOnly = false, int limit = -1, QgsFeedback *feedback = nullptr );
 
     /**
      * Fetches all double values from a specified field name or expression. Null values or

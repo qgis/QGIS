@@ -20,12 +20,12 @@
 
 #include <map>
 
-#include <QString>
-#include <QList>
-#include <QHash>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QHash>
+#include <QList>
+#include <QString>
 
 class QgsProjectStorageGuiProvider;
 class QgsProviderGuiRegistry;

@@ -17,8 +17,8 @@
 #ifndef QGSRELATIONSHIPSITEM_H
 #define QGSRELATIONSHIPSITEM_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsdataitem.h"
 #include "qgsweakrelation.h"
 

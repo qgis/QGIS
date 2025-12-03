@@ -18,9 +18,10 @@
 #ifndef QGSPREVIEWEFFECT_H
 #define QGSPREVIEWEFFECT_H
 
-#include <QGraphicsEffect>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QGraphicsEffect>
 
 /**
  * \ingroup gui

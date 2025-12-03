@@ -18,11 +18,11 @@
 
 #include "qgis_3d.h"
 #include "qgis_sip.h"
-#include <QString>
 
 #include <QDomElement>
-#include <QMap>
 #include <QIcon>
+#include <QMap>
+#include <QString>
 
 class QgsReadWriteContext;
 class QgsAbstractTerrainSettings;

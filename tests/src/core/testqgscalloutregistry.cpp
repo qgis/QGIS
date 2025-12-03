@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscalloutsregistry.h"
 #include "qgscallout.h"
+#include "qgscalloutsregistry.h"
 #include "qgsrendercontext.h"
+#include "qgstest.h"
 
 #include <QObject>
-#include "qgstest.h"
 
 //dummy callout for testing
 class DummyCallout : public QgsCallout

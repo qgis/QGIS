@@ -16,13 +16,12 @@
 #ifndef QGSAUTHAWSS3EDIT_H
 #define QGSAUTHAWSS3EDIT_H
 
-#include <QWidget>
-
-#include "qgsauthmethodedit.h"
 #include "ui_qgsauthawss3edit.h"
 
 #include "qgsauthconfig.h"
+#include "qgsauthmethodedit.h"
 
+#include <QWidget>
 
 class QgsAuthAwsS3Edit : public QgsAuthMethodEdit, private Ui::QgsAuthAwsS3Edit
 {

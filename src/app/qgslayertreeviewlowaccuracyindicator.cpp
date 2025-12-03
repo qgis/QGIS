@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewlowaccuracyindicator.h"
-#include "moc_qgslayertreeviewlowaccuracyindicator.cpp"
+
 #include "qgsdatums.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
 #include "qgsexception.h"
+#include "qgsgui.h"
+#include "qgssettings.h"
+
+#include "moc_qgslayertreeviewlowaccuracyindicator.cpp"
 
 QgsLayerTreeViewLowAccuracyIndicatorProvider::QgsLayerTreeViewLowAccuracyIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )

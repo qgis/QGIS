@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgsraycastresult.h"
-#include "qgsmaplayer.h"
 
+#include "qgsmaplayer.h"
 
 QgsRayCastResult::QgsRayCastResult()
 {

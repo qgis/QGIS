@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgsexpressioncalculatorlocatorfilter.h"
-#include "moc_qgsexpressioncalculatorlocatorfilter.cpp"
+
+#include "qgisapp.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsproject.h"
-#include "qgisapp.h"
 
 #include <QClipboard>
 
+#include "moc_qgsexpressioncalculatorlocatorfilter.cpp"
 
 QgsExpressionCalculatorLocatorFilter::QgsExpressionCalculatorLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

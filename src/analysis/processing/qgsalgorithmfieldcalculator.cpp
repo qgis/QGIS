@@ -17,6 +17,7 @@
 
 
 #include "qgsalgorithmfieldcalculator.h"
+
 #include "qgsexpressioncontextutils.h"
 #include "qgsvariantutils.h"
 

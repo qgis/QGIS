@@ -15,8 +15,8 @@
 #ifndef QGSWFSGETFEATURE_H
 #define QGSWFSGETFEATURE_H
 
-#include "qgswfsrequest.h"
 #include "qgswfscapabilities.h"
+#include "qgswfsrequest.h"
 
 //! Manages the QgsWFSGetFeature request
 class QgsWFSGetFeature : public QgsWfsRequest

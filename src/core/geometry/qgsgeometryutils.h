@@ -19,11 +19,11 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgspoint.h"
-#include "qgsvertexid.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils_base.h"
+#include "qgspoint.h"
 #include "qgsvector3d.h"
+#include "qgsvertexid.h"
 
 #include <QJsonArray>
 

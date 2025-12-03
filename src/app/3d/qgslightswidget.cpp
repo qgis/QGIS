@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgslightswidget.h"
-#include "moc_qgslightswidget.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
-#include <QMessageBox>
 #include <QMenu>
+#include <QMessageBox>
+
+#include "moc_qgslightswidget.cpp"
 
 QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   : QWidget( parent )

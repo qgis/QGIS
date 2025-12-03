@@ -27,7 +27,7 @@ struct QgsSpatialiteProviderResultIterator : public QgsAbstractDatabaseProviderC
 {
     QgsSpatialiteProviderResultIterator( gdal::dataset_unique_ptr hDS, OGRLayerH ogrLayer );
 
-    ~QgsSpatialiteProviderResultIterator();
+    ~QgsSpatialiteProviderResultIterator() override;
 
     void setFields( const QgsFields &fields );
 

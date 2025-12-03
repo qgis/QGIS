@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsprocessingoutputs.h"
+
 #include "qgsvariantutils.h"
 
-#include <QUrl>
 #include <QDir>
+#include <QUrl>
 
 QgsProcessingOutputDefinition::QgsProcessingOutputDefinition( const QString &name, const QString &description )
   : mName( name )

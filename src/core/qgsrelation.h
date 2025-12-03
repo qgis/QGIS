@@ -16,19 +16,17 @@
 #ifndef QGSRELATION_H
 #define QGSRELATION_H
 
-#include <QList>
-#include <QDomNode>
-#include <QPair>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsattributes.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrelationcontext.h"
-#include "qgsattributes.h"
 
-#include "qgis_sip.h"
+#include <QDomNode>
+#include <QList>
+#include <QPair>
 
 class QgsFeatureIterator;
-class QgsFeature;
 class QgsFeatureRequest;
 class QgsVectorLayer;
 class QgsRelationPrivate;

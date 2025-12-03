@@ -13,22 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QTreeWidget>
-#include <QVBoxLayout>
-#include <QPointer>
-#include <QScreen>
-
 #include "qgsmasksourceselectionwidget.h"
-#include "moc_qgsmasksourceselectionwidget.cpp"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "symbology/qgsrenderer.h"
-#include "qgsstyleentityvisitor.h"
-#include "symbology/qgssymbollayerutils.h"
+
 #include "qgsguiutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
+#include "qgsproject.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
+#include "symbology/qgsrenderer.h"
+#include "symbology/qgssymbollayerutils.h"
+
+#include <QPointer>
+#include <QScreen>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+
+#include "moc_qgsmasksourceselectionwidget.cpp"
 
 static void expandAll( QTreeWidgetItem *item )
 {

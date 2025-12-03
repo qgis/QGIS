@@ -18,11 +18,11 @@
 #ifndef QGSTOOLTIPCOMBOBOX_H
 #define QGSTOOLTIPCOMBOBOX_H
 
-#include <QComboBox>
-
-#include "qgis_sip.h"
-#include "qgis_gui.h"
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QComboBox>
 
 class QEvent;
 

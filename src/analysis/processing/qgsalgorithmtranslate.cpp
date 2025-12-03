@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtranslate.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

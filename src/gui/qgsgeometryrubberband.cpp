@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgsgeometryrubberband.h"
+
 #include "qgsabstractgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgsrendercontext.h"
 #include "qgspoint.h"
+#include "qgsrendercontext.h"
+
 #include <QPainter>
 
 QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType )

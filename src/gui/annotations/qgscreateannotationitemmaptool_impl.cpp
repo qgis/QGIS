@@ -14,32 +14,34 @@
  ***************************************************************************/
 
 #include "qgscreateannotationitemmaptool_impl.h"
-#include "moc_qgscreateannotationitemmaptool_impl.cpp"
-#include "qgsmapmouseevent.h"
-#include "qgsannotationpointtextitem.h"
-#include "qgsannotationmarkeritem.h"
-#include "qgsannotationlineitem.h"
-#include "qgsannotationpolygonitem.h"
-#include "qgsannotationlinetextitem.h"
-#include "qgsannotationrectangletextitem.h"
-#include "qgsannotationpictureitem.h"
-#include "qgsannotationlayer.h"
-#include "qgsstyle.h"
-#include "qgsmapcanvas.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
+
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationlineitem.h"
+#include "qgsannotationlinetextitem.h"
+#include "qgsannotationmarkeritem.h"
+#include "qgsannotationpictureitem.h"
+#include "qgsannotationpointtextitem.h"
+#include "qgsannotationpolygonitem.h"
+#include "qgsannotationrectangletextitem.h"
 #include "qgsapplication.h"
-#include "qgsrecentstylehandler.h"
 #include "qgscurvepolygon.h"
+#include "qgsfillsymbol.h"
+#include "qgsimagecache.h"
+#include "qgslinesymbol.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmarkersymbol.h"
+#include "qgsrecentstylehandler.h"
 #include "qgsrubberband.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsstyle.h"
 #include "qgssvgcache.h"
-#include "qgsimagecache.h"
 
 #include <QFileDialog>
 #include <QImageReader>
+
+#include "moc_qgscreateannotationitemmaptool_impl.cpp"
 
 ///@cond PRIVATE
 

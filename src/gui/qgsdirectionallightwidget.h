@@ -16,9 +16,11 @@
 #ifndef QGSDIRECTIONALLIGHTWIDGET_H
 #define QGSDIRECTIONALLIGHTWIDGET_H
 
-#include <QWidget>
 #include "ui_qgsdirectionallightwidget.h"
+
 #include "qgis_gui.h"
+
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -37,7 +39,7 @@ class GUI_EXPORT QgsDirectionalLightWidget : public QWidget, private Ui::QgsDire
   public:
     //! Constructor
     explicit QgsDirectionalLightWidget( QWidget *parent = nullptr );
-    ~QgsDirectionalLightWidget();
+    ~QgsDirectionalLightWidget() override;
 
     //! Sets the \a azimuth value (degree)
     void setAzimuth( double azimuth );

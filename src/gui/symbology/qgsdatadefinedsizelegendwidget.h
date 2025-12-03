@@ -16,15 +16,16 @@
 #ifndef QGSDATADEFINEDSIZELEGENDWIDGET_H
 #define QGSDATADEFINEDSIZELEGENDWIDGET_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-
-#include <memory>
 #include "ui_qgsdatadefinedsizelegendwidget.h"
 
-#include "qgspanelwidget.h"
+#include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsdoublevalidator.h"
+#include "qgspanelwidget.h"
 #include "qgsproperty.h"
+
 #include <QStyledItemDelegate>
 
 class QStandardItemModel;

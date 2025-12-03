@@ -15,21 +15,23 @@
  ***************************************************************************/
 
 #include "qgslayoutscalebarwidget.h"
-#include "moc_qgslayoutscalebarwidget.cpp"
+
+#include "qgsfillsymbol.h"
+#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
-#include "qgsscalebarrendererregistry.h"
-#include "qgslayout.h"
-#include "qgsnumericformatselectorwidget.h"
-#include "qgslayoutundostack.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoutundostack.h"
+#include "qgslinesymbol.h"
+#include "qgsnumericformatselectorwidget.h"
+#include "qgsscalebarrendererregistry.h"
 #include "qgsvectorlayer.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QWidget>
+
+#include "moc_qgslayoutscalebarwidget.cpp"
 
 QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBar )
   : QgsLayoutItemBaseWidget( nullptr, scaleBar )

@@ -16,15 +16,16 @@
  ***************************************************************************/
 
 #include "qgsgotolocatorfilter.h"
-#include "moc_qgsgotolocatorfilter.cpp"
-#include "qgsfeedback.h"
+
 #include "qgisapp.h"
-#include "qgsmapcanvas.h"
-#include "qgscoordinateutils.h"
 #include "qgscoordinatereferencesystemutils.h"
+#include "qgscoordinateutils.h"
+#include "qgsfeedback.h"
+#include "qgsmapcanvas.h"
 
 #include <QUrl>
 
+#include "moc_qgsgotolocatorfilter.cpp"
 
 QgsGotoLocatorFilter::QgsGotoLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmaffinetransform.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE

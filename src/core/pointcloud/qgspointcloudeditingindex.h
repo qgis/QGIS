@@ -16,8 +16,8 @@
 #ifndef QGSPOINTCLOUDEDITINGINDEX_H
 #define QGSPOINTCLOUDEDITINGINDEX_H
 
-#include "qgspointcloudindex.h"
 #include "qgis_core.h"
+#include "qgspointcloudindex.h"
 
 #define SIP_NO_FILE
 

@@ -16,10 +16,11 @@
 #ifndef QGSINTERPOLATEDLINESYMBOLLAYERWIDGET_H
 #define QGSINTERPOLATEDLINESYMBOLLAYERWIDGET_H
 
+#include "ui_qgsinterpolatedlinesymbollayerwidgetbase.h"
+
+#include "qgsinterpolatedlinerenderer.h"
 #include "qgsrendererwidget.h"
 #include "qgssymbollayerwidget.h"
-#include "qgsinterpolatedlinerenderer.h"
-#include "ui_qgsinterpolatedlinesymbollayerwidgetbase.h"
 
 /**
  * \ingroup gui

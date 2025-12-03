@@ -43,7 +43,6 @@ from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 from qgis.core import Qgis, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
 import sys
 import os
-import codecs
 import re
 import configparser
 import qgis.utils
@@ -790,7 +789,7 @@ class Plugins(QObject):
             global errorDetails
             cp = configparser.ConfigParser()
             try:
-                with codecs.open(metadataFile, "r", "utf8") as f:
+                with open(metadataFile, encoding="utf8") as f:
                     cp.read_file(f)
                 return cp.get("general", fct)
             except Exception as e:

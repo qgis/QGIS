@@ -19,12 +19,13 @@
 #ifndef QGSPROCESSINGMODELERPARAMETERWIDGET_H
 #define QGSPROCESSINGMODELERPARAMETERWIDGET_H
 
-#include <QWidget>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QPointer>
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelchildparametersource.h"
+
+#include <QPointer>
+#include <QWidget>
 
 class QgsProcessingParameterDefinition;
 class QgsAbstractProcessingParameterWidgetWrapper;

@@ -11,6 +11,7 @@
 
 
 
+
 class QgsCurveEditorWidget : QWidget
 {
 %Docstring(signature="appended")

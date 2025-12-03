@@ -13,13 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsfeaturerequest.h"
-
 #include "qgsbufferserverresponse.h"
+#include "qgsfeaturerequest.h"
+#include "qgsproject.h"
 #include "qgsserverinterfaceimpl.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "qgswfsgetfeature.h"
 
 /**

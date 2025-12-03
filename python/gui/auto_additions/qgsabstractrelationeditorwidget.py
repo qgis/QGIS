@@ -3,6 +3,7 @@ try:
     QgsAbstractRelationEditorWidget.__attribute_docs__ = {'relatedFeaturesChanged': 'Emit this signal, whenever the related features changed. This happens\nfor example when related features are added, removed, linked or\nunlinked.\n\n.. versionadded:: 3.22\n'}
     QgsAbstractRelationEditorWidget.__virtual_methods__ = ['setEditorContext', 'updateUi', 'setTitle', 'beforeSetRelationFeature', 'afterSetRelationFeature', 'beforeSetRelations', 'afterSetRelations']
     QgsAbstractRelationEditorWidget.__abstract_methods__ = ['config', 'setConfig', 'parentFormValueChanged']
+    QgsAbstractRelationEditorWidget.__overridden_methods__ = ['showEvent']
 except (NameError, AttributeError):
     pass
 try:

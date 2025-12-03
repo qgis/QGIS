@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutItemScaleBar: QgsLayoutItem
 {
 %Docstring(signature="appended")

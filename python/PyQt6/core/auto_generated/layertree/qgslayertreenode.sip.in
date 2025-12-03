@@ -106,6 +106,39 @@ Custom properties that have already been used within QGIS:
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    Py_ssize_t __len__() const;
+%Docstring
+Returns the number of children contained in the node.
+
+.. versionadded:: 4.0
+%End
+%MethodCode
+    sipRes = sipCpp->children().count();
+%End
+
+    SIP_PYOBJECT __getitem__( int index ) /TypeHint="QgsLayerTreeNode"/;
+%Docstring
+Returns the child node at the specified ``index``.
+
+:raises IndexError: if no child with the specified ``index`` exists.
+
+.. versionadded:: 4.0
+%End
+%MethodCode
+    const QList< QgsLayerTreeNode * > children = sipCpp->children();
+    const int count = children.count();
+    if ( a0 < 0 || a0 >= count )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      QgsLayerTreeNode *child = children.at( a0 );
+      sipRes = sipConvertFromType( child, sipType_QgsLayerTreeNode, NULL );
+    }
+%End
+
     NodeType nodeType() const;
 %Docstring
 Find out about type of the node. It is usually shorter to use

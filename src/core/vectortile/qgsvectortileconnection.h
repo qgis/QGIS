@@ -55,8 +55,8 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
     QgsVectorTileProviderConnection( const QString &name );
     QgsVectorTileProviderConnection( const QString &uri, const QVariantMap &configuration );
 
-    virtual void store( const QString &name ) const override;
-    virtual void remove( const QString &name ) const override;
+    void store( const QString &name ) const override;
+    void remove( const QString &name ) const override;
 
     /**
      * Vector tile service type.

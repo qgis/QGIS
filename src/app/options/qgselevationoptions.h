@@ -16,6 +16,7 @@
 #define QGSELEVATIONOPTIONS_H
 
 #include "ui_qgselevationoptionswidgetbase.h"
+
 #include "qgsoptionswidgetfactory.h"
 
 /**

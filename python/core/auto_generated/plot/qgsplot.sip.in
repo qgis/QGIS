@@ -10,6 +10,7 @@
 
 
 
+
 class QgsPlot
 {
 %Docstring(signature="appended")

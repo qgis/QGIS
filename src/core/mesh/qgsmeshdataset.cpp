@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgsmeshdataset.h"
+
+#include "qgis.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsrectangle.h"
-#include "qgis.h"
+
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 

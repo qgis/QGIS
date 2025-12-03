@@ -18,11 +18,12 @@
 #ifndef QGSGCPGEOMETRYTRANSFORMER_H
 #define QGSGCPGEOMETRYTRANSFORMER_H
 
-#include "qgis_analysis.h"
-#include "qgsgeometrytransformer.h"
-#include "qgsgcptransformer.h"
-#include "qgsfeedback.h"
 #include <memory>
+
+#include "qgis_analysis.h"
+#include "qgsfeedback.h"
+#include "qgsgcptransformer.h"
+#include "qgsgeometrytransformer.h"
 
 class QgsGeometry;
 

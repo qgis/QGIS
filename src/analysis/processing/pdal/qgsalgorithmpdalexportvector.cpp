@@ -17,8 +17,8 @@
 
 #include "qgsalgorithmpdalexportvector.h"
 
-#include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
 
 ///@cond PRIVATE
 
@@ -29,7 +29,7 @@ QString QgsPdalExportVectorAlgorithm::name() const
 
 QString QgsPdalExportVectorAlgorithm::displayName() const
 {
-  return QObject::tr( "Export to vector" );
+  return QObject::tr( "Export point cloud to vector" );
 }
 
 QString QgsPdalExportVectorAlgorithm::group() const

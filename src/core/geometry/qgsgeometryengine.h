@@ -17,8 +17,8 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSGEOMETRYENGINE_H
 
 #include "qgis_core.h"
-#include "qgslinestring.h"
 #include "qgsgeometry.h"
+#include "qgslinestring.h"
 #include "qgslogger.h"
 
 #include <QVector>

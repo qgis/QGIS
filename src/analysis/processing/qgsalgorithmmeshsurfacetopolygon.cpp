@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmmeshsurfacetopolygon.h"
-#include "qgsprocessingparametermeshdataset.h"
-#include "qgsmeshlayer.h"
-#include "qgspolygon.h"
+
+#include "qgsgeometryengine.h"
 #include "qgslinestring.h"
+#include "qgsmeshlayer.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
-#include "qgsgeometryengine.h"
+#include "qgspolygon.h"
+#include "qgsprocessingparametermeshdataset.h"
 
 #include <QTextStream>
 

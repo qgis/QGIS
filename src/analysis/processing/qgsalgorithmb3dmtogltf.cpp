@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmb3dmtogltf.h"
+
 #include "qgscesiumutils.h"
 #include "qgsgltfutils.h"
 

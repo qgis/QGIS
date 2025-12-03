@@ -14,15 +14,17 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsgeometryeditutils.h"
-#include "qgsfeatureiterator.h"
+
+#include <limits>
+
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
-#include "qgspolygon.h"
+#include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsgeometryengine.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometrycollection.h"
-#include <limits>
+#include "qgsgeometryengine.h"
+#include "qgspolygon.h"
+#include "qgsvectorlayer.h"
 
 Qgis::GeometryOperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, std::unique_ptr<QgsCurve> ring )
 {

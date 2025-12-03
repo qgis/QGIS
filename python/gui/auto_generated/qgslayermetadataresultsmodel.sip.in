@@ -12,6 +12,7 @@
 
 
 
+
 class QgsLayerMetadataResultsModel : QAbstractTableModel
 {
 %Docstring(signature="appended")

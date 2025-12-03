@@ -19,14 +19,14 @@
 #ifndef QGSPROCESSINGPARAMETERDEFINITIONWIDGET_H
 #define QGSPROCESSINGPARAMETERDEFINITIONWIDGET_H
 
-#include <QWidget>
-#include <QDialog>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsprocessingparameters.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsprocessingparameters.h"
 #include "qgsprocessingwidgetwrapper.h"
+
+#include <QDialog>
+#include <QWidget>
 
 class QgsProcessingContextGenerator;
 

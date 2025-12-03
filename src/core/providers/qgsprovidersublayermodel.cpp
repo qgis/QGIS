@@ -16,11 +16,14 @@
  ***************************************************************************/
 
 #include "qgsprovidersublayermodel.h"
-#include "moc_qgsprovidersublayermodel.cpp"
-#include "qgsprovidersublayerdetails.h"
-#include "qgsiconutils.h"
+
 #include "qgsapplication.h"
+#include "qgsiconutils.h"
+#include "qgsprovidersublayerdetails.h"
+
 #include <QLocale>
+
+#include "moc_qgsprovidersublayermodel.cpp"
 
 //
 // QgsProviderSublayerModelNode

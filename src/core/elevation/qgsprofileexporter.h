@@ -17,9 +17,9 @@
 #ifndef QGSPROFILEEXPORTER_H
 #define QGSPROFILEEXPORTER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgsprofilerequest.h"
 #include "qgstaskmanager.h"

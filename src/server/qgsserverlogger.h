@@ -19,13 +19,13 @@
 #define QGSSERVERLOGGER_H
 
 
+#include "qgis_server.h"
 #include "qgsmessagelog.h"
 
 #include <QFile>
 #include <QObject>
 #include <QString>
 #include <QTextStream>
-#include "qgis_server.h"
 
 /**
  * \ingroup server

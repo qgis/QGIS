@@ -16,15 +16,14 @@
 #ifndef QGSADVANCEDDIGITIZINGTOOLS
 #define QGSADVANCEDDIGITIZINGTOOLS
 
-#include <QWidget>
-#include <QString>
-
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsmapmouseevent.h"
 
 #include <QPointer>
+#include <QString>
+#include <QWidget>
 
 class QgsAdvancedDigitizingDockWidget;
 class QgsDoubleSpinBox;
@@ -126,7 +125,7 @@ class GUI_EXPORT QgsAdvancedDigitizingCirclesIntersectionTool : public QgsAdvanc
      * \param cadDockWidget The cadDockWidget to which the floater belongs
      */
     explicit QgsAdvancedDigitizingCirclesIntersectionTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
-    ~QgsAdvancedDigitizingCirclesIntersectionTool();
+    ~QgsAdvancedDigitizingCirclesIntersectionTool() override;
 
     QWidget *createWidget() override;
     void paint( QPainter *painter ) override;

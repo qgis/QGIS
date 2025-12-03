@@ -19,9 +19,9 @@
 
 
 #include "qgsaccesscontrolfilter.h"
-#include "qgsmessagelog.h"
-#include "qgsfeature.h"
 
+#include "qgsfeature.h"
+#include "qgsmessagelog.h"
 
 //! Constructor
 QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface *serverInterface )

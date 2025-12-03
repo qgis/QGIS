@@ -15,21 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
 #include "qgsrastercalculator.h"
+
+#include <cpl_string.h>
+#include <gdalwarper.h>
+
+#include "qgsfeedback.h"
+#include "qgsgdalutils.h"
+#include "qgsogrutils.h"
+#include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
 #include "qgsrasterprojector.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsproject.h"
 
 #include <QFile>
-
-#include <cpl_string.h>
-#include <gdalwarper.h>
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"

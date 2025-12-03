@@ -16,8 +16,8 @@
 #ifndef QGSRAYCASTINGUTILS_H
 #define QGSRAYCASTINGUTILS_H
 
-#include <QVector3D>
 #include <QMatrix4x4>
+#include <QVector3D>
 
 #define SIP_NO_FILE
 

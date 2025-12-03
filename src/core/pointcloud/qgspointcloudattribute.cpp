@@ -15,8 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgspointcloudattribute.h"
+
+#include "qgis.h"
 
 QgsPointCloudAttribute::QgsPointCloudAttribute() = default;
 

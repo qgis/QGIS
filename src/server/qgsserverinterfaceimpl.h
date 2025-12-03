@@ -22,9 +22,9 @@
 #define SIP_NO_FILE
 
 
-#include "qgsserverinterface.h"
 #include "qgscapabilitiescache.h"
 #include "qgsservercachemanager.h"
+#include "qgsserverinterface.h"
 
 /**
  * \ingroup server

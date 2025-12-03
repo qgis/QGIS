@@ -13,30 +13,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgsdxfexport.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsfontutils.h"
-#include "qgsmaplayerstyle.h"
-#include "qgsnullsymbolrenderer.h"
-#include "qgspallabeling.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgslinesymbollayer.h"
 #include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsfontutils.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgsmaplayerstyle.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmarkersymbollayer.h"
-#include "qgslinesymbol.h"
+#include "qgsnullsymbolrenderer.h"
+#include "qgspallabeling.h"
+#include "qgsproject.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgssymbollayerutils.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QBuffer>
-#include <QTemporaryFile>
 #include <QRegularExpression>
+#include <QTemporaryFile>
 
 Q_DECLARE_METATYPE( QgsDxfExport::HAlign )
 Q_DECLARE_METATYPE( QgsDxfExport::VAlign )
@@ -648,7 +647,7 @@ void TestQgsDxfExport::testMTextEscapeLineBreaks()
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
-  dxfFile.open( QIODevice::ReadOnly );
+  QVERIFY( dxfFile.open( QIODevice::ReadOnly ) );
   const QString fileContent = QTextStream( &dxfFile ).readAll();
   dxfFile.close();
   QVERIFY( fileContent.contains( "A\\~text\\~with\\~\\Pline\\~break" ) );

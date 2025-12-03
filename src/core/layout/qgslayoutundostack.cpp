@@ -16,10 +16,13 @@
  ***************************************************************************/
 
 #include "qgslayoutundostack.h"
-#include "moc_qgslayoutundostack.cpp"
+
 #include "qgslayout.h"
 #include "qgsproject.h"
+
 #include <QUndoStack>
+
+#include "moc_qgslayoutundostack.cpp"
 
 QgsLayoutUndoStack::QgsLayoutUndoStack( QgsLayout *layout )
   : mLayout( layout )

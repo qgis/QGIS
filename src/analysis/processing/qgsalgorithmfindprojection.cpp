@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfindprojection.h"
+
 #include "qgsgeometryengine.h"
 
 ///@cond PRIVATE

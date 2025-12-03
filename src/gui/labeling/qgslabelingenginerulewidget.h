@@ -15,13 +15,14 @@
 #ifndef QGSLABELINGENGINERULEWIDGET_H
 #define QGSLABELINGENGINERULEWIDGET_H
 
-#include "qgis_sip.h"
-#include "qgspanelwidget.h"
-#include "qgsguiutils.h"
 #include "ui_qgslabelingruleavoidoverlapwidgetbase.h"
-#include "ui_qgslabelingrulemindistancelabeltofeaturewidgetbase.h"
 #include "ui_qgslabelingrulemaxdistancelabeltofeaturewidgetbase.h"
+#include "ui_qgslabelingrulemindistancelabeltofeaturewidgetbase.h"
 #include "ui_qgslabelingrulemindistancelabeltolabelwidgetbase.h"
+
+#include "qgis_sip.h"
+#include "qgsguiutils.h"
+#include "qgspanelwidget.h"
 
 #include <QDialog>
 

@@ -27,8 +27,9 @@
 // version without notice, or even be removed.
 //
 
-#include "qgs3dmapsceneentity.h"
 #include <numeric>
+
+#include "qgs3dmapsceneentity.h"
 
 #define SIP_NO_FILE
 

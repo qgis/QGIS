@@ -14,8 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadatasourceselectprovider.h"
-#include "qgslayermetadatasearchwidget.h"
+
 #include "qgsapplication.h"
+#include "qgslayermetadatasearchwidget.h"
 
 QgsLayerMetadataSourceSelectProvider::QgsLayerMetadataSourceSelectProvider()
   : QgsSourceSelectProvider()

@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgscodeeditorexpression.h"
-#include "moc_qgscodeeditorexpression.cpp"
+
 #include "qgsexpression.h"
 
-#include <QString>
 #include <QFont>
+#include <QString>
+
+#include "moc_qgscodeeditorexpression.cpp"
 
 QgsCodeEditorExpression::QgsCodeEditorExpression( QWidget *parent )
   : QgsCodeEditor( parent )

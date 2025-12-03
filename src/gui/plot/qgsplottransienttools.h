@@ -18,9 +18,9 @@
 #ifndef QGSPLOTTRANSIENTTOOLS_H
 #define QGSPLOTTRANSIENTTOOLS_H
 
-#include "qgsplottool.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsplottool.h"
 #include "qgsplottoolzoom.h"
 
 /**

@@ -14,24 +14,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsautheditorwidgets.h"
-#include "moc_qgsautheditorwidgets.cpp"
-#include "qgsauthconfigurationstoragedb.h"
 #include "ui_qgsauthmethodplugins.h"
+#include "qgsautheditorwidgets.h"
+
+#include "qgsapplication.h"
+#include "qgsauthcertificatemanager.h"
+#include "qgsauthconfigurationstoragedb.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgsauthmethodmetadata.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgssettings.h"
 
 #include <QAction>
 #include <QMenu>
-#include <QWidget>
 #include <QTableWidget>
+#include <QWidget>
 
-#include "qgssettings.h"
-#include "qgsauthcertificatemanager.h"
-#include "qgsauthguiutils.h"
-#include "qgsauthmanager.h"
-#include "qgsapplication.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsauthmethodmetadata.h"
-
+#include "moc_qgsautheditorwidgets.cpp"
 
 QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
   : QDialog( parent )

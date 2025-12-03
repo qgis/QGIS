@@ -12,15 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgspanelwidget.h"
+
+#include "qgslogger.h"
+#include "qgssettings.h"
+
+#include <QDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
-#include <QDialog>
 #include <QVBoxLayout>
 
-#include "qgssettings.h"
-#include "qgspanelwidget.h"
 #include "moc_qgspanelwidget.cpp"
-#include "qgslogger.h"
 
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )
   : QWidget( parent )

@@ -16,9 +16,10 @@
 #ifndef QGSALIGNMENTCOMBOBOX_H
 #define QGSALIGNMENTCOMBOBOX_H
 
-#include <QComboBox>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QComboBox>
 
 /**
  * \ingroup gui

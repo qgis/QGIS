@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis_core.h"
+
 #include <QString>
 #include <QStringList>
-
-#include "qgis_core.h"
 
 #ifndef QGSSCALEUTILS_H
 #define QGSSCALEUTILS_H

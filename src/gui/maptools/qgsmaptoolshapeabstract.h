@@ -23,8 +23,8 @@
 #include "qgsabstractgeometry.h"
 #include "qgsmaptoolcapture.h"
 
-#include <QString>
 #include <QIcon>
+#include <QString>
 
 class QgsMapMouseEvent;
 class QgsVectorLayer;
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsMapToolShapeAbstract
       Q_ASSERT( parentTool );
     }
 
-    virtual ~QgsMapToolShapeAbstract();
+    ~QgsMapToolShapeAbstract() override;
 
     //! Returns the id of the shape tool (equivalent to the one from the metadata)
     QString id() const { return mId; }

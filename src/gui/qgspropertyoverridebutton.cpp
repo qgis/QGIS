@@ -14,26 +14,27 @@
  ***************************************************************************/
 
 #include "qgspropertyoverridebutton.h"
-#include "moc_qgspropertyoverridebutton.cpp"
 
 #include "qgsapplication.h"
-#include "qgsexpressionbuilderdialog.h"
+#include "qgsauxiliarystorage.h"
+#include "qgscolorbutton.h"
+#include "qgscolorschemeregistry.h"
 #include "qgsexpression.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsguiutils.h"
 #include "qgsmessageviewer.h"
-#include "qgsvectorlayer.h"
 #include "qgspanelwidget.h"
 #include "qgspropertyassistantwidget.h"
-#include "qgsauxiliarystorage.h"
-#include "qgscolorschemeregistry.h"
-#include "qgscolorbutton.h"
-#include "qgsguiutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QClipboard>
+#include <QGroupBox>
 #include <QMenu>
 #include <QMouseEvent>
 #include <QPointer>
-#include <QGroupBox>
 #include <QRegularExpression>
+
+#include "moc_qgspropertyoverridebutton.cpp"
 
 QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent, const QgsVectorLayer *layer )
   : QToolButton( parent )

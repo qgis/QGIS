@@ -20,8 +20,9 @@
 #include "qgis_sip.h"
 #include "qgsmasterlayoutinterface.h"
 #include "qgsprojectstoredobjectmanager.h"
-#include <QObject>
+
 #include <QAbstractListModel>
+#include <QObject>
 #include <QSortFilterProxyModel>
 
 class QgsProject;

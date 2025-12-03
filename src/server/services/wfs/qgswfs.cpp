@@ -21,13 +21,13 @@
  ***************************************************************************/
 
 #include "qgsmodule.h"
-#include "qgswfsutils.h"
+#include "qgswfsdescribefeaturetype.h"
 #include "qgswfsgetcapabilities.h"
 #include "qgswfsgetcapabilities_1_0_0.h"
 #include "qgswfsgetfeature.h"
-#include "qgswfsdescribefeaturetype.h"
 #include "qgswfstransaction.h"
 #include "qgswfstransaction_1_0_0.h"
+#include "qgswfsutils.h"
 
 #define QSTR_COMPARE( str, lit ) \
   ( str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0 )

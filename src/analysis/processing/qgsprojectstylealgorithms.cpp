@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprojectstylealgorithms.h"
+
 #include "qgsstyle.h"
 
 ///@cond PRIVATE

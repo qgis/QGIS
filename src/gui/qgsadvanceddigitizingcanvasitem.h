@@ -16,11 +16,10 @@
 #ifndef QGSADVANCEDDIGITIZINGCANVASITEM_H
 #define QGSADVANCEDDIGITIZINGCANVASITEM_H
 
-#include <QPen>
-
-#include "qgsmapcanvasitem.h"
 #include "qgis_gui.h"
+#include "qgsmapcanvasitem.h"
 
+#include <QPen>
 
 class QgsAdvancedDigitizingDockWidget;
 

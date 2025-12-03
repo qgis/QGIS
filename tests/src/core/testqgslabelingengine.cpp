@@ -13,29 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
+#include "pointset.h"
 #include "qgsapplication.h"
+#include "qgscallout.h"
+#include "qgsfillsymbol.h"
+#include "qgsfontutils.h"
 #include "qgslabelingengine.h"
-#include "qgsproject.h"
+#include "qgslabelingresults.h"
+#include "qgslinesymbol.h"
 #include "qgsmaprenderersequentialjob.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsnullsymbolrenderer.h"
+#include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrulebasedlabeling.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssymbol.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerdiagramprovider.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
-#include "qgsfontutils.h"
-#include "qgsnullsymbolrenderer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgssymbol.h"
-#include "pointset.h"
-#include "qgslabelingresults.h"
-#include "qgscallout.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfillsymbol.h"
 
 class TestQgsLabelingEngine : public QgsTest
 {

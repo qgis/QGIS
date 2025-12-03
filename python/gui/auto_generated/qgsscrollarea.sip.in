@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsScrollArea : QScrollArea
 {
 %Docstring(signature="appended")

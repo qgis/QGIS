@@ -17,9 +17,10 @@
 
 #include "qgis.h"
 #include "qgsmaplayerlistutils_p.h"
-#include <QObject>
-#include <QHash>
+
 #include <QDialog>
+#include <QHash>
+#include <QObject>
 #include <QPointer>
 
 class QAction;

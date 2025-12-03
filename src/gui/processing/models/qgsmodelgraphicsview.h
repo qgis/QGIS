@@ -18,10 +18,11 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "qgsprocessingcontext.h"
 #include "qgsmodelsnapper.h"
-#include <QGraphicsView>
+#include "qgsprocessingcontext.h"
+
 #include <QGraphicsRectItem>
+#include <QGraphicsView>
 
 class QgsModelViewTool;
 class QgsModelViewToolTemporaryKeyPan;
@@ -115,9 +116,15 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     void beginCommand( const QString &text );
 
     /**
-     * Ends a single undo command 
+     * Ends a single undo command
      */
     void endCommand();
+
+    /**
+     * Aborts pending undo command
+     * \since QGIS 4.0
+     */
+    void abortCommand();
 
 
     //! Clipboard operations
@@ -211,6 +218,12 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * Emitted when an undo command in the view has ended.
      */
     void commandEnded();
+
+    /**
+     * Emitted when an undo command in the view was aborted.
+     * \since QGIS 4.0
+     */
+    void commandAborted();
 
     /**
      * Emitted when the selected items should be deleted;

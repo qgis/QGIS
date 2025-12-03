@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 #include "qgswmsutils.h"
-#include "qgsproviderregistry.h"
 
+#include "qgsproviderregistry.h"
 
 bool QgsWmsUtils::isWmsLayer( QgsMapLayer *layer )
 {

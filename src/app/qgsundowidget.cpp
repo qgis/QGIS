@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsundowidget.h"
-#include "moc_qgsundowidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 
+#include "moc_qgsundowidget.cpp"
 
 QgsUndoWidget::QgsUndoWidget( QWidget *parent, QgsMapCanvas *mapCanvas )
   : QgsPanelWidget( parent )

@@ -21,8 +21,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsmaplayerelevationproperties.h"
 #include "qgslinesymbol.h"
+#include "qgsmaplayerelevationproperties.h"
 
 class QgsRasterLayer;
 

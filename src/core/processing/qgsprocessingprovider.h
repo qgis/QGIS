@@ -18,9 +18,10 @@
 #ifndef QGSPROCESSINGPROVIDER_H
 #define QGSPROCESSINGPROVIDER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsprocessingalgorithm.h"
+
 #include <QIcon>
 
 /**

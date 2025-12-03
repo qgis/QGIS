@@ -16,10 +16,10 @@
 #ifndef QGSMETALROUGHMATERIALWIDGET_H
 #define QGSMETALROUGHMATERIALWIDGET_H
 
-#include "qgsmaterialsettingswidget.h"
-#include "qgsabstractmaterialsettings.h"
+#include "ui_metalroughmaterialwidget.h"
 
-#include <ui_metalroughmaterialwidget.h>
+#include "qgsabstractmaterialsettings.h"
+#include "qgsmaterialsettingswidget.h"
 
 class QgsMetalRoughMaterialSettings;
 

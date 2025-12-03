@@ -13,28 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDesktopServices>
-#include <QKeyEvent>
-#include <QHeaderView>
-#include <QMenu>
-#include <QToolButton>
-#include <QHBoxLayout>
+#include "qgsattributetableview.h"
 
 #include "qgsactionmanager.h"
-#include "qgsattributetableview.h"
-#include "moc_qgsattributetableview.cpp"
-#include "qgsattributetablemodel.h"
 #include "qgsattributetabledelegate.h"
 #include "qgsattributetablefiltermodel.h"
+#include "qgsattributetablemodel.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeatureselectionmodel.h"
+#include "qgsgui.h"
+#include "qgsmaplayeraction.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsstringutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayercache.h"
 #include "qgsvectorlayerselectionmanager.h"
-#include "qgsfeatureselectionmodel.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgsfeatureiterator.h"
-#include "qgsstringutils.h"
-#include "qgsgui.h"
-#include "qgsmaplayeraction.h"
+
+#include <QDesktopServices>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QMenu>
+#include <QToolButton>
+
+#include "moc_qgsattributetableview.cpp"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QgsTableView( parent )

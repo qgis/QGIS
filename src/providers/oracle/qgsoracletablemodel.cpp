@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgsoracletablemodel.h"
-#include "moc_qgsoracletablemodel.cpp"
-#include "qgslogger.h"
+
 #include "qgsiconutils.h"
+#include "qgslogger.h"
+
+#include "moc_qgsoracletablemodel.cpp"
 
 QgsOracleTableModel::QgsOracleTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )

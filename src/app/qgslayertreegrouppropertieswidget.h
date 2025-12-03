@@ -16,9 +16,11 @@
 #ifndef QGSLAYERTREEGROUPPROPERTIESWIDGET_H
 #define QGSLAYERTREEGROUPPROPERTIESWIDGET_H
 
+#include "ui_qgslayertreegrouppropertieswidgetbase.h"
+
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
-#include "ui_qgslayertreegrouppropertieswidgetbase.h"
+
 #include <QPointer>
 
 class QgsAnnotationLayer;

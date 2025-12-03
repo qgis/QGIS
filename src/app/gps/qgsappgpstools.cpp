@@ -12,8 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgisapp.h"
 #include "qgsappgpstools.h"
+
+#include "qgisapp.h"
 #include "qgsappgpsdigitizing.h"
 
 QgsAppGpsTools::QgsAppGpsTools()

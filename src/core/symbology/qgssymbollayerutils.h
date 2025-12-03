@@ -17,19 +17,19 @@
 #ifndef QGSSYMBOLLAYERUTILS_H
 #define QGSSYMBOLLAYERUTILS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QMap>
-#include <QFont>
-#include <QColor>
-#include <QPainter>
-#include "qgis.h"
-#include "qgsmapunitscale.h"
-#include "qgscolorramp.h"
 #include "qgsarrowsymbollayer.h"
+#include "qgscolorramp.h"
+#include "qgsmapunitscale.h"
 #include "qgssymbol.h"
 
+#include <QColor>
 #include <QFile>
+#include <QFont>
+#include <QMap>
+#include <QPainter>
 
 #define FONTMARKER_CHR_FIX  "~!_#!#_!~"
 

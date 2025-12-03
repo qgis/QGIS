@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmextentfromlayer.h"
+
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 

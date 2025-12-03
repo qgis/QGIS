@@ -18,10 +18,10 @@
 #ifndef QGSANALYSIS_H
 #define QGSANALYSIS_H
 
+#include <memory>
+
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
-
-#include <memory>
 
 class QgsGeometryCheckRegistry;
 

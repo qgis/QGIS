@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgs3doptions.h"
-#include "moc_qgs3doptions.cpp"
+
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
-#include "qgis.h"
+
 #include <Qt3DRender/QCamera>
+
+#include "moc_qgs3doptions.cpp"
 
 //
 // Qgs3DOptionsWidget

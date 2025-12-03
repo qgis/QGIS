@@ -16,9 +16,9 @@
 #ifndef QGSRELATIONREFERENCEFACTORY_H
 #define QGSRELATIONREFERENCEFACTORY_H
 
+#include "qgis_gui.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetfactory.h"
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 

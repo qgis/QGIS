@@ -18,11 +18,11 @@
 #ifndef QGSWMSSERVICEEXCEPTION_H
 #define QGSWMSSERVICEEXCEPTION_H
 
-#include <QString>
-#include <QMetaEnum>
-
 #include "qgsserverexception.h"
 #include "qgswmsparameters.h"
+
+#include <QMetaEnum>
+#include <QString>
 
 namespace QgsWms
 {

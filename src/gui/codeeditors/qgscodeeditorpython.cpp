@@ -13,29 +13,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscodeeditorpython.h"
-#include "moc_qgscodeeditorpython.cpp"
-#include "qgslogger.h"
-#include "qgssymbollayerutils.h"
+
 #include "qgis.h"
-#include "qgspythonrunner.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
 #include "qgsprocessingutils.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
+#include "qgspythonrunner.h"
 #include "qgssettings.h"
-#include <QWidget>
-#include <QString>
-#include <QFont>
-#include <QUrl>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QTextStream>
-#include <Qsci/qscilexerpython.h>
-#include <QDesktopServices>
-#include <QKeyEvent>
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssymbollayerutils.h"
+
 #include <QAction>
+#include <QDesktopServices>
+#include <QFileInfo>
+#include <QFont>
+#include <QKeyEvent>
 #include <QMenu>
+#include <QMessageBox>
+#include <QString>
+#include <QTextStream>
+#include <QUrl>
+#include <QWidget>
+#include <Qsci/qscilexerpython.h>
+
+#include "moc_qgscodeeditorpython.cpp"
 
 const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs {
   { "(", ")" },

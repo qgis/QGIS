@@ -22,12 +22,13 @@
 #define SIP_NO_FILE
 
 
+#include <mutex>
+#include <thread>
+
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 
 #include <QBuffer>
-#include <thread>
-#include <mutex>
 
 /**
  * \ingroup server
@@ -77,7 +78,7 @@ class SERVER_EXPORT QgsFcgiServerResponse : public QgsServerResponse
      */
     QgsFcgiServerResponse( QgsServerRequest::Method method = QgsServerRequest::GetMethod );
 
-    virtual ~QgsFcgiServerResponse() override;
+    ~QgsFcgiServerResponse() override;
 
     void setHeader( const QString &key, const QString &value ) override;
 

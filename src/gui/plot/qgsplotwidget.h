@@ -18,11 +18,11 @@
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsnumericformat.h"
 #include "qgspanelwidget.h"
 #include "qgsplot.h"
 #include "qgspropertycollection.h"
 #include "qgspropertyoverridebutton.h"
-#include "qgsnumericformat.h"
 
 #include <QWidget>
 
@@ -110,8 +110,8 @@ class GUI_EXPORT QgsBarChartPlotWidget : public QgsPlotWidget, private Ui::QgsBa
      */
     QgsBarChartPlotWidget( QWidget *parent = nullptr );
 
-    virtual void setPlot( QgsPlot *plot ) override;
-    virtual QgsPlot *createPlot() override SIP_FACTORY;
+    void setPlot( QgsPlot *plot ) override;
+    QgsPlot *createPlot() override SIP_FACTORY;
 
     //! Creates a new bar chart plot configuration widget.
     static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsBarChartPlotWidget( parent ); }
@@ -151,8 +151,8 @@ class GUI_EXPORT QgsLineChartPlotWidget : public QgsPlotWidget, private Ui::QgsL
      */
     QgsLineChartPlotWidget( QWidget *parent = nullptr );
 
-    virtual void setPlot( QgsPlot *plot ) override;
-    virtual QgsPlot *createPlot() override SIP_FACTORY;
+    void setPlot( QgsPlot *plot ) override;
+    QgsPlot *createPlot() override SIP_FACTORY;
 
     //! Creates a new line chart plot configuration widget.
     static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsLineChartPlotWidget( parent ); }
@@ -191,8 +191,8 @@ class GUI_EXPORT QgsPieChartPlotWidget : public QgsPlotWidget, private Ui::QgsPi
      */
     QgsPieChartPlotWidget( QWidget *parent = nullptr );
 
-    virtual void setPlot( QgsPlot *plot ) override;
-    virtual QgsPlot *createPlot() override SIP_FACTORY;
+    void setPlot( QgsPlot *plot ) override;
+    QgsPlot *createPlot() override SIP_FACTORY;
 
     //! Creates a new line chart plot configuration widget.
     static QgsPlotWidget *create( QWidget *parent ) SIP_FACTORY { return new QgsPieChartPlotWidget( parent ); }

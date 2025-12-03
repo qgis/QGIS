@@ -19,8 +19,9 @@
 class QgsVectorLayerSelectionManager;
 
 #include "ui_qgsfeatureselectiondlg.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 #ifdef SIP_RUN
 // This is required for the ConvertToSubClassCode to work properly

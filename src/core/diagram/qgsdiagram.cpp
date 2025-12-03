@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdiagram.h"
+
 #include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 

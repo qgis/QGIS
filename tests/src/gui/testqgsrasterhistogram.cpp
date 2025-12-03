@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
+
 #include <QApplication>
 #include <QFileInfo>
-
+#include <QObject>
+#include <QString>
 #include <qwt_global.h>
 
 //qgis includes...

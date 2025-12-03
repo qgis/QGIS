@@ -17,28 +17,30 @@
  ***************************************************************************/
 
 #include "qgslayoutmapwidget.h"
-#include "moc_qgslayoutmapwidget.cpp"
-#include "qgssettingsregistrycore.h"
-#include "qgslayoutitemmap.h"
-#include "qgsproject.h"
-#include "qgsmapthemecollection.h"
-#include "qgslayout.h"
+
+#include "qgsbookmarkmodel.h"
+#include "qgsfillsymbol.h"
+#include "qgsguiutils.h"
 #include "qgslayertree.h"
-#include "qgsmapcanvas.h"
-#include "qgslayoutmapgridwidget.h"
-#include "qgslayoutundostack.h"
+#include "qgslayout.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutdesignerinterface.h"
-#include "qgsguiutils.h"
-#include "qgsbookmarkmodel.h"
-#include "qgsreferencedgeometry.h"
-#include "qgsprojectviewsettings.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutmapgridwidget.h"
+#include "qgslayoutundostack.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayermodel.h"
-#include "qgsfillsymbol.h"
+#include "qgsmapthemecollection.h"
+#include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsreferencedgeometry.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QMenu>
 #include <QMessageBox>
 #include <QStringListModel>
+
+#include "moc_qgslayoutmapwidget.cpp"
 
 QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *mapCanvas )
   : QgsLayoutItemBaseWidget( nullptr, item )

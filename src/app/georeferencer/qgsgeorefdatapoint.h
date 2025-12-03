@@ -17,9 +17,9 @@
 #define QGSGEOREFDATAPOINT_H
 
 #include "qgis_app.h"
-#include "qgsmapcanvasitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgcppoint.h"
+#include "qgsmapcanvasitem.h"
 
 class QgsGCPCanvasItem;
 class QgsCoordinateTransformContext;

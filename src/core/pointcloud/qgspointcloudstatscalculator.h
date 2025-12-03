@@ -19,16 +19,15 @@
 #define QGSPOINTCLOUDSTATSCALCULATOR_H
 
 #include "qgis_core.h"
-
-#include <QVariant>
-#include <QSet>
-#include <QFuture>
-#include <QFutureWatcher>
-#include <QEventLoop>
-
 #include "qgspointcloudindex.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudstatistics.h"
+
+#include <QEventLoop>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QSet>
+#include <QVariant>
 
 #define SIP_NO_FILE
 

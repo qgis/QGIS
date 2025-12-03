@@ -14,18 +14,21 @@
  ***************************************************************************/
 
 #include "qgsmaprendererparalleljob.h"
-#include "moc_qgsmaprendererparalleljob.cpp"
+
+#include <memory>
 
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
-#include "qgsmaplayerrenderer.h"
-#include "qgsproject.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsmaplayerrenderer.h"
+#include "qgsproject.h"
 
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
+
+#include "moc_qgsmaprendererparalleljob.cpp"
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )
@@ -59,7 +62,7 @@ void QgsMapRendererParallelJob::startPrivate()
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
-    mLabelingEngineV2.reset( new QgsDefaultLabelingEngine() );
+    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 

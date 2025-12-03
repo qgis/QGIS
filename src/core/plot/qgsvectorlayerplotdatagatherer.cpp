@@ -15,10 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "moc_qgsvectorlayerplotdatagatherer.cpp"
 #include "qgsvectorlayerplotdatagatherer.h"
+
 #include "qgsexpression.h"
 
+#include "moc_qgsvectorlayerplotdatagatherer.cpp"
 
 QgsVectorLayerXyPlotDataGatherer::QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAxisType xAxisType )
   : mXAxisType( xAxisType )

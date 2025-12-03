@@ -18,10 +18,11 @@
 //Disclaimer:This feature was developed by: Michael Minn, 2010
 
 #include "qgsalgorithmgrid.h"
+
 #include "qgslinestring.h"
-#include "qgswkbtypes.h"
-#include "qgsvectorlayer.h"
 #include "qgspolygon.h"
+#include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
 
 ///@cond PRIVATE
 

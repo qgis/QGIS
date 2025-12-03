@@ -20,6 +20,7 @@
 #ifdef WITH_BINDINGS
 #include "qgspythonrunner.h"
 #include "qgspythonutils.h"
+
 #endif
 
 #include "qgsprocessingfeedback.h"

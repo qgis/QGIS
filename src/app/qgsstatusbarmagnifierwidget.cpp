@@ -14,17 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsstatusbarmagnifierwidget.h"
+
+#include "qgsapplication.h"
+#include "qgsdoublespinbox.h"
+#include "qgsguiutils.h"
+#include "qgssettings.h"
+
 #include <QFont>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QToolButton>
 
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsstatusbarmagnifierwidget.h"
 #include "moc_qgsstatusbarmagnifierwidget.cpp"
-#include "qgsdoublespinbox.h"
-#include "qgsguiutils.h"
 
 QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
   : QWidget( parent )

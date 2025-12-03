@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprojecttrustdialog.h"
-#include "moc_qgsprojecttrustdialog.cpp"
+
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
@@ -30,6 +30,7 @@
 #include <QPushButton>
 #include <QSvgRenderer>
 
+#include "moc_qgsprojecttrustdialog.cpp"
 
 QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

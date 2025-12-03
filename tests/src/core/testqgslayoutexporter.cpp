@@ -16,15 +16,15 @@
  ***************************************************************************/
 
 #include "qgslayout.h"
-#include "qgstest.h"
-#include "qgsproject.h"
 #include "qgslayoutexporter.h"
 #include "qgslayoutitemlabel.h"
-#include "qgslayoutitemshape.h"
-#include "qgslayoutitemscalebar.h"
-#include "qgslayoutitemmap.h"
-#include "qgsvectorlayer.h"
 #include "qgslayoutitemlegend.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutitemshape.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsLayoutExporter : public QgsTest
 {

@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
 
 //qgis includes...
 #include "qgsrasterlayer.h"
@@ -62,6 +63,9 @@ class TestQgsMarkerLineSymbol : public QgsTest
     void pointNumVertex();
     void collectPoints_data();
     void collectPoints();
+    void parseBlankSegments_data();
+    void parseBlankSegments();
+    void parseBlankSegmentsMapUnits();
 
   private:
     bool render( const QString &fileName );
@@ -414,8 +418,71 @@ void TestQgsMarkerLineSymbol::collectPoints()
   QFETCH( QVector<QPointF>, expected );
 
   QVector<QPointF> dest;
-  QgsTemplatedLineSymbolLayerBase::collectOffsetPoints( input, dest, interval, initialOffset, initialLag, numberPointsRequired );
+  QgsTemplatedLineSymbolLayerBase::collectOffsetPoints( input, dest, interval, initialOffset, nullptr, initialLag, numberPointsRequired );
   QCOMPARE( dest, expected );
+}
+
+void TestQgsMarkerLineSymbol::parseBlankSegments_data()
+{
+  QTest::addColumn<QString>( "strBlankSegments" );
+  QTest::addColumn<QList<QList<QgsBlankSegmentUtils::BlankSegments>>>( "expectedBlankSegments" );
+  QTest::addColumn<bool>( "ok" );
+
+  QTest::newRow( "simple" ) << QStringLiteral( "(((1 2, 3 4)))" ) << QList<QList<QgsBlankSegmentUtils::BlankSegments>> { { { { 1, 2 }, { 3, 4 } } } } << true;
+  QTest::newRow( "multipart and ring" ) << QStringLiteral( "(((1.1 2.2, 3.3 4.4),(5 6, 7 8)),((9 10, 11 12),(13 14, 15 16)))" )
+                                        << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {
+                                             { { { 1.1, 2.2 }, { 3.3, 4.4 } }, { { 5, 6 }, { 7, 8 } } },
+                                             { { { 9, 10 }, { 11, 12 } }, { { 13, 14 }, { 15, 16 } }
+                                             }
+                                           }
+                                        << true;
+  QTest::newRow( "Empty ring" ) << QStringLiteral( "(((1 2),(),(3 4)))" ) << QList<QList<QgsBlankSegmentUtils::BlankSegments>> { { { { 1, 2 } }, {}, { { 3, 4 } } } }
+                                << true;
+
+  QTest::newRow( "Empty part" ) << QStringLiteral( "(((1 2),(),(3 4)),(),((5 6)))" )
+                                << QList<QList<QgsBlankSegmentUtils::BlankSegments>> { { { { 1, 2 } }, {}, { { 3, 4 } } }, { {} }, { { { 5, 6 } } } }
+                                << true;
+
+  QTest::newRow( "Empty part with extra ()" ) << QStringLiteral( "(((1 2),( ),(3 4)),(()),((5 6)))" )
+                                              << QList<QList<QgsBlankSegmentUtils::BlankSegments>> { { { { 1, 2 } }, {}, { { 3, 4 } } }, { {} }, { { { 5, 6 } } } }
+                                              << true;
+
+  QTest::newRow( "simple with tab" ) << QStringLiteral( "(((1		2, 3 4)))" ) << QList<QList<QgsBlankSegmentUtils::BlankSegments>> { { { { 1, 2 }, { 3, 4 } } } } << true;
+  QTest::newRow( "Error: text instead of number" ) << QStringLiteral( "(((test)))" ) << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: Distances not ordered" ) << QStringLiteral( "(((3 4,1 2)))" ) << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: start > end" ) << QStringLiteral( "(((2 1,3 4)))" ) << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: bad formatted number" ) << QStringLiteral( "(((1.a56 2)))" ) << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: too many number" ) << QStringLiteral( "(((1.56 2 3)))" ) << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: missing number" ) << QStringLiteral( "(((1.56,2)))" ) << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: Missing ')' parenthesis" ) << QStringLiteral( "(((1.56 2))" ) << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
+  QTest::newRow( "Error: Missing '(' parenthesis" ) << QStringLiteral( "(((1.56 2)),(1 5)))" ) << QList<QList<QgsBlankSegmentUtils::BlankSegments>> {} << false;
+}
+
+void TestQgsMarkerLineSymbol::parseBlankSegments()
+{
+  QFETCH( QString, strBlankSegments );
+  QFETCH( QList<QList<QgsBlankSegmentUtils::BlankSegments>>, expectedBlankSegments );
+  QFETCH( bool, ok );
+
+  QgsRenderContext rc;
+  QString error;
+  QList<QList<QgsBlankSegmentUtils::BlankSegments>> blanksegments = QgsBlankSegmentUtils::parseBlankSegments( strBlankSegments, rc, Qgis::RenderUnit::Pixels, error );
+
+  QCOMPARE( ok, error.isEmpty() );
+  QCOMPARE( blanksegments, expectedBlankSegments );
+}
+
+void TestQgsMarkerLineSymbol::parseBlankSegmentsMapUnits()
+{
+  QgsRenderContext rc;
+  QgsMapToPixel m2p( 2 );
+  rc.setMapToPixel( m2p );
+
+  QString error;
+  QList<QList<QgsBlankSegmentUtils::BlankSegments>> blanksegments = QgsBlankSegmentUtils::parseBlankSegments( QStringLiteral( "(((1 2, 3 4)))" ), rc, Qgis::RenderUnit::MapUnits, error );
+  QList<QList<QgsBlankSegmentUtils::BlankSegments>> expectedBlankSegments { { { { 0.5, 1 }, { 1.5, 2 } } } };
+  QVERIFY( error.isEmpty() );
+  QCOMPARE( blanksegments, expectedBlankSegments );
 }
 
 bool TestQgsMarkerLineSymbol::render( const QString &testType )

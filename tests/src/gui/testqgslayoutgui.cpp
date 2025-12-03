@@ -14,24 +14,22 @@
  ***************************************************************************/
 
 
-#include <QtTest/QTest>
-
-#include "qgsmapsettings.h"
-#include "qgslayout.h"
-#include "qgslayoutitemshape.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutmodel.h"
-#include "qgslayoutitemcombobox.h"
-#include "qgslayoutelevationprofilewidget.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerelevationproperties.h"
 #include "qgselevationprofilecanvas.h"
 #include "qgslayertree.h"
+#include "qgslayout.h"
+#include "qgslayoutelevationprofilewidget.h"
+#include "qgslayoutitemcombobox.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutmodel.h"
+#include "qgsmapsettings.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerelevationproperties.h"
 
 #include <QApplication>
 #include <QMainWindow>
 #include <QtTest/QSignalSpy>
-
+#include <QtTest/QTest>
 
 class TestQgsLayoutGui : public QObject
 {

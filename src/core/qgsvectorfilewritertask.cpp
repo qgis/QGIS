@@ -16,8 +16,12 @@
  ***************************************************************************/
 
 #include "qgsvectorfilewritertask.h"
-#include "moc_qgsvectorfilewritertask.cpp"
+
+#include <memory>
+
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsvectorfilewritertask.cpp"
 
 QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options, QgsFeatureSink::SinkFlags sinkFlags )
   : QgsTask( tr( "Saving %1" ).arg( fileName ), QgsTask::CanCancel )
@@ -34,7 +38,7 @@ QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const Q
   }
   if ( !mOptions.feedback )
   {
-    mOwnedFeedback.reset( new QgsFeedback() );
+    mOwnedFeedback = std::make_unique<QgsFeedback>( );
     mOptions.feedback = mOwnedFeedback.get();
   }
 

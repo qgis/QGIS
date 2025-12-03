@@ -25,7 +25,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilemvtutils.h"
 
-
 //! Helper class for writing of geometry commands
 struct MVTGeometryWriter
 {
@@ -75,7 +74,7 @@ struct MVTGeometryWriter
     cursor = pt;
   }
 
-  QPoint mapToTileCoordinates( double x, double y )
+  QPoint mapToTileCoordinates( double x, double y ) const
   {
     return QPoint( static_cast<int>( round( ( x - tileXMin ) * resolution / tileDX ) ),
                    static_cast<int>( round( ( tileYMax - y ) * resolution / tileDY ) ) );

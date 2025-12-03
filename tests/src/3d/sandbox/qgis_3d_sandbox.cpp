@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QApplication>
-
 #include "qgs3d.h"
 #include "qgs3ddebugwidget.h"
 #include "qgs3dmapcanvas.h"
@@ -37,12 +35,13 @@
 #include "qgsprojectviewsettings.h"
 #include "qgsterrainprovider.h"
 
+#include <QApplication>
+#include <QCommandLineParser>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QScreen>
 #include <QToolBar>
-#include <QCommandLineParser>
 
 /**
  * \param viewIdxStr empty for blank 3D view, number or string for loading from project by index/name

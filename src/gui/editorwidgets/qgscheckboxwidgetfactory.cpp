@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgscheckboxwidgetfactory.h"
+
+#include "qgscheckboxconfigdlg.h"
 #include "qgscheckboxsearchwidgetwrapper.h"
 #include "qgscheckboxwidgetwrapper.h"
-#include "qgscheckboxconfigdlg.h"
 
 QgsCheckboxWidgetFactory::QgsCheckboxWidgetFactory( const QString &name, const QIcon &icon )
   : QgsEditorWidgetFactory( name, icon )

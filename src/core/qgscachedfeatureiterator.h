@@ -17,10 +17,11 @@
 #define QGSCACHEDFEATUREITERATOR_H
 
 #include "qgis_core.h"
+#include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
-#include "qgscoordinatetransform.h"
 #include "qgsvectorlayercache.h"
+
 #include <QPointer>
 
 class QgsVectorLayerCache;

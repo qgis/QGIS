@@ -16,11 +16,13 @@
 #ifndef QGSTRANSACTIONGROUP_H
 #define QGSTRANSACTIONGROUP_H
 
+#include <memory>
+
 #include "qgis_core.h"
+#include "qgstransaction.h"
+
 #include <QObject>
 #include <QSet>
-#include <memory>
-#include "qgstransaction.h"
 
 class QgsVectorLayer;
 

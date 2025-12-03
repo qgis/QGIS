@@ -14,12 +14,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsserverstatichandler.h"
+
 #include "qgsmessagelog.h"
 #include "qgsserverresponse.h"
 
 #include <QFile>
 #include <QMimeDatabase>
-
 
 QgsServerStaticHandler::QgsServerStaticHandler( const QString &pathRegExp, const QString &staticPathSuffix )
   : mPathRegExp( pathRegExp )

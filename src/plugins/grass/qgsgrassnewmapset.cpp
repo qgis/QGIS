@@ -15,32 +15,32 @@
  ***************************************************************************/
 
 #include "qgsgrassnewmapset.h"
-#include "moc_qgsgrassnewmapset.cpp"
-#include "qgsgrassplugin.h"
-#include "qgsgrass.h"
-#include "qgis.h"
 
+#include "qgis.h"
 #include "qgisinterface.h"
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgsextentwidget.h"
+#include "qgsgrass.h"
+#include "qgsgrassplugin.h"
+#include "qgsgui.h"
+#include "qgslocalec.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsprojectionselectiontreewidget.h"
-#include "qgslocalec.h"
-#include "qgsexception.h"
 #include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgsextentwidget.h"
 
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegExp>
-#include <QTextStream>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QTextStream>
 
+#include "moc_qgsgrassnewmapset.cpp"
 
 extern "C"
 {
@@ -86,7 +86,6 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface, QgsGrassPlugin *plug
 
   connect( mCreateLocationRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mCreateLocationRadioButton_clicked );
   connect( mSelectLocationRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mSelectLocationRadioButton_clicked );
-  connect( mLocationComboBox, &QComboBox::editTextChanged, this, &QgsGrassNewMapset::mLocationComboBox_textChanged );
   connect( mLocationLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mLocationLineEdit_returnPressed );
   connect( mLocationLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mLocationLineEdit_textChanged );
   connect( mNoProjRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mNoProjRadioButton_clicked );
@@ -332,11 +331,6 @@ void QgsGrassNewMapset::checkLocation()
       }
     }
   }
-}
-
-void QgsGrassNewMapset::existingLocationChanged( const QString &text )
-{
-  Q_UNUSED( text )
 }
 
 void QgsGrassNewMapset::newLocationChanged()

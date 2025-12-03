@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
 #include "qgstextformat.h"
+
 #include <QFont>
 #include <QUrl>
 

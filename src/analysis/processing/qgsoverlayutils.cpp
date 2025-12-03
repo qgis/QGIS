@@ -15,10 +15,10 @@
 
 #include "qgsoverlayutils.h"
 
-#include "qgsgeometryengine.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeaturesource.h"
+#include "qgsgeometryengine.h"
 #include "qgsprocessingcontext.h"
 #include "qgsspatialindex.h"
 

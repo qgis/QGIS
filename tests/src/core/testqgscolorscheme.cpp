@@ -15,10 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscolorscheme.h"
-#include <QObject>
 #include <memory>
+
+#include "qgscolorscheme.h"
 #include "qgstest.h"
+
+#include <QObject>
 
 //dummy color scheme for testing
 class DummyColorScheme : public QgsColorScheme

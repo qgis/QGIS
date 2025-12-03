@@ -16,20 +16,19 @@
 #ifndef QGSSYMBOLSELECTORDIALOG_H
 #define QGSSYMBOLSELECTORDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-
 #include "ui_qgssymbolselectordialogbase.h"
 
-#include "qgspanelwidget.h"
-#include "qgssymbolwidgetcontext.h"
-#include "qgsproperty.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgshelp.h"
+#include "qgspanelwidget.h"
+#include "qgsproperty.h"
+#include "qgssymbolwidgetcontext.h"
 
-#include <QStandardItemModel>
+#include <QDialog>
 #include <QDialogButtonBox>
 #include <QPointer>
-#include "qgis_gui.h"
+#include <QStandardItemModel>
 
 class QgsStyle;
 class QgsSymbol;
@@ -62,16 +61,16 @@ class DataDefinedRestorer : public QObject
   private:
     QgsMarkerSymbol *mMarker = nullptr;
     const QgsMarkerSymbolLayer *mMarkerSymbolLayer = nullptr;
-    double mSize;
-    double mAngle;
+    double mSize = 0;
+    double mAngle = 0;
     QPointF mMarkerOffset;
     QgsProperty mDDSize;
     QgsProperty mDDAngle;
 
     QgsLineSymbol *mLine = nullptr;
     const QgsLineSymbolLayer *mLineSymbolLayer = nullptr;
-    double mWidth;
-    double mLineOffset;
+    double mWidth = 0;
+    double mLineOffset = 0;
     QgsProperty mDDWidth;
 
     void save();

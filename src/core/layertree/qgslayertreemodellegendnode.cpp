@@ -17,32 +17,35 @@
  ***************************************************************************/
 
 #include "qgslayertreemodellegendnode.h"
-#include "moc_qgslayertreemodellegendnode.cpp"
+
+#include <memory>
+#include <optional>
 
 #include "qgsdatadefinedsizelegend.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfileutils.h"
+#include "qgsimageoperation.h"
+#include "qgslayertreelayer.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
-#include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsimageoperation.h"
-#include "qgsvectorlayer.h"
+#include "qgsmarkersymbol.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsexpression.h"
-#include "qgstextrenderer.h"
+#include "qgsrenderer.h"
 #include "qgssettings.h"
-#include "qgsfileutils.h"
-#include "qgsmarkersymbol.h"
-#include "qgsvariantutils.h"
-#include "qgslayertreelayer.h"
+#include "qgssymbollayerutils.h"
 #include "qgstextdocument.h"
 #include "qgstextdocumentmetrics.h"
+#include "qgstextrenderer.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QBuffer>
-#include <optional>
+
+#include "moc_qgslayertreemodellegendnode.cpp"
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
   : QObject( parent )
@@ -199,7 +202,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   QgsRenderContext *context = ctx ? ctx->context : nullptr;
   if ( !context )
   {
-    tempContext.reset( new QgsRenderContext( QgsRenderContext::fromQPainter( ctx ? ctx->painter : nullptr ) ) );
+    tempContext = std::make_unique<QgsRenderContext>( QgsRenderContext::fromQPainter( ctx ? ctx->painter : nullptr ) );
     context = tempContext.get();
   }
 
@@ -1583,7 +1586,7 @@ void QgsDataDefinedSizeLegendNode::cacheImage() const
     std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
     if ( !context )
     {
-      context.reset( new QgsRenderContext );
+      context = std::make_unique<QgsRenderContext>( );
       Q_ASSERT( context ); // to make cppcheck happy
       context->setScaleFactor( 96 / 25.4 );
     }

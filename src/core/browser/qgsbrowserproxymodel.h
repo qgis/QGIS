@@ -15,9 +15,10 @@
 #ifndef QGSBROWSERPROXYMODEL_H
 #define QGSBROWSERPROXYMODEL_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
 #include <QSortFilterProxyModel>
 
 class QgsBrowserModel;

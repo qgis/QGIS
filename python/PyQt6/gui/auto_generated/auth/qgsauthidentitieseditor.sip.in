@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAuthIdentitiesEditor : QWidget
 {
 %Docstring(signature="appended")

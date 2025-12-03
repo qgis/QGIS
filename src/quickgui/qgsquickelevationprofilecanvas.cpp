@@ -16,18 +16,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsquickelevationprofilecanvas.h"
+
 #include "qgsabstractprofilegenerator.h"
 #include "qgsabstractprofilesource.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaplayerelevationproperties.h"
-#include "qgsmaplayerutils.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsmaplayerutils.h"
 #include "qgsplot.h"
 #include "qgsprofilerenderer.h"
 #include "qgsprofilerequest.h"
 #include "qgsprojectelevationproperties.h"
-#include "qgsquickelevationprofilecanvas.h"
-#include "moc_qgsquickelevationprofilecanvas.cpp"
 #include "qgsterrainprovider.h"
 
 #include <QQuickWindow>
@@ -36,6 +36,7 @@
 #include <QScreen>
 #include <QTimer>
 
+#include "moc_qgsquickelevationprofilecanvas.cpp"
 
 ///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DXyPlot

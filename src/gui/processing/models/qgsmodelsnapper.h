@@ -18,8 +18,8 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QPen>
 
+#include <QPen>
 
 #define SIP_NO_FILE
 

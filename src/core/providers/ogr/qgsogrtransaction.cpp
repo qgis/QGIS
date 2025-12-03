@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "qgsogrtransaction.h"
+
 #include "moc_qgsogrtransaction.cpp"
+
 ///@cond PRIVATE
 
 #include "qgsogrprovider.h"

@@ -15,10 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 
 #include <QString>

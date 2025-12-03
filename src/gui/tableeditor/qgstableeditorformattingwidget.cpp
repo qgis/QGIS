@@ -14,12 +14,15 @@
  ***************************************************************************/
 
 #include "qgstableeditorformattingwidget.h"
-#include "moc_qgstableeditorformattingwidget.cpp"
-#include "qgsnumericformatselectorwidget.h"
-#include "qgsnumericformat.h"
+
 #include "qgis.h"
+#include "qgsnumericformat.h"
+#include "qgsnumericformatselectorwidget.h"
 #include "qgsproperty.h"
+
 #include <QPointer>
+
+#include "moc_qgstableeditorformattingwidget.cpp"
 
 QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent )
   : QgsPanelWidget( parent )

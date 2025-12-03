@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dsymbolregistry.h"
+
 #include "qgsabstract3dsymbol.h"
 
 Qgs3DSymbolRegistry::Qgs3DSymbolRegistry()

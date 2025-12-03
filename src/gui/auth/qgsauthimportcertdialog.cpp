@@ -15,21 +15,20 @@
  ***************************************************************************/
 
 #include "qgsauthimportcertdialog.h"
-#include "moc_qgsauthimportcertdialog.cpp"
+
+#include "qgsapplication.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgssettings.h"
 
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QPushButton>
-
 #include <QtCrypto>
 
-#include "qgssettings.h"
-#include "qgsauthcertutils.h"
-#include "qgsauthguiutils.h"
-#include "qgsauthmanager.h"
-#include "qgsapplication.h"
-
+#include "moc_qgsauthimportcertdialog.cpp"
 
 QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent, QgsAuthImportCertDialog::CertFilter filter, QgsAuthImportCertDialog::CertInput input )
   : QDialog( parent )

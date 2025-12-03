@@ -14,20 +14,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
+#include <memory>
 
 #include "qgis.h"
-#include "qgstriangularmesh.h"
-#include "qgsmeshlayer.h"
-#include "qgsmesheditor.h"
-#include "qgsmeshadvancedediting.h"
-#include "qgstransformeffect.h"
-#include "qgsmeshforcebypolylines.h"
 #include "qgslinestring.h"
+#include "qgsmeshadvancedediting.h"
+#include "qgsmesheditor.h"
+#include "qgsmeshforcebypolylines.h"
+#include "qgsmeshlayer.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgsrasterlayer.h"
 #include "qgsterrainprovider.h"
-#include "qgsprojectelevationproperties.h"
+#include "qgstest.h"
+#include "qgstransformeffect.h"
+#include "qgstriangularmesh.h"
+
+#include <QObject>
 
 class TestQgsMeshEditor : public QObject
 {
@@ -100,12 +102,12 @@ void TestQgsMeshEditor::init()
   mDataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mDataDir += "/mesh";
   QString uri( mDataDir + "/quad_and_triangle.2dm" );
-  meshLayerQuadTriangle.reset( new QgsMeshLayer( uri, "Triangle and Quad", "mdal" ) );
+  meshLayerQuadTriangle = std::make_unique<QgsMeshLayer>( uri, "Triangle and Quad", "mdal" );
   QVERIFY( meshLayerQuadTriangle );
   QCOMPARE( meshLayerQuadTriangle->datasetGroupCount(), 1 );
 
   uri = QString( mDataDir + "/quad_flower_to_edit.2dm" );
-  meshLayerQuadFlower.reset( new QgsMeshLayer( uri, "Quad Flower", "mdal" ) );
+  meshLayerQuadFlower = std::make_unique<QgsMeshLayer>( uri, "Quad Flower", "mdal" );
   QVERIFY( meshLayerQuadFlower );
   QCOMPARE( meshLayerQuadFlower->datasetGroupCount(), 1 );
 }
@@ -1906,9 +1908,9 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   QFile expectedFile( QString( mDataDir + "/quad_flower_to_edit_expected.2dm" ) );
   QFile original( QString( mDataDir + "/quad_flower.2dm" ) );
 
-  alteredFile.open( QIODevice::ReadOnly );
-  original.open( QIODevice::ReadOnly );
-  expectedFile.open( QIODevice::ReadOnly );
+  QVERIFY( alteredFile.open( QIODevice::ReadOnly ) );
+  QVERIFY( original.open( QIODevice::ReadOnly ) );
+  QVERIFY( expectedFile.open( QIODevice::ReadOnly ) );
 
   QTextStream streamAltered( &alteredFile );
   QTextStream streamOriginal( &original );
@@ -1922,7 +1924,7 @@ void TestQgsMeshEditor::meshEditorFromMeshLayer_quadFlower()
   meshLayerQuadFlower->commitFrameEditing( transform, false );
   QVERIFY( meshLayerQuadFlower->meshEditor() == nullptr );
 
-  alteredFile.open( QIODevice::WriteOnly );
+  QVERIFY( alteredFile.open( QIODevice::WriteOnly ) );
   streamAltered << streamOriginal.readAll();
 }
 

@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLPAN_H
 #define QGSMAPTOOLPAN_H
 
-#include "qgsmaptool.h"
 #include "qgis_gui.h"
+#include "qgsmaptool.h"
 
 class QgsMapCanvas;
 
@@ -52,6 +52,13 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
      * \since QGIS 3.12
      */
     bool isDragging() const { return mDragging; }
+
+    /**
+     * Returns TRUE if a pinch operation is in progress.
+     *
+     * \since QGIS 4.0
+     */
+    bool isPinching() const { return mPinching; }
 
   signals:
 

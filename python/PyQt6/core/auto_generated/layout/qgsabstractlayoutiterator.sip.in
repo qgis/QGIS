@@ -8,6 +8,7 @@
 
 
 
+
 class QgsAbstractLayoutIterator
 {
 %Docstring(signature="appended")

@@ -16,23 +16,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
 #include "qgsmapoverviewcanvas.h"
-#include "moc_qgsmapoverviewcanvas.cpp"
-#include "qgsmaprenderersequentialjob.h"
-#include "qgsmaptopixel.h"
-#include "qgsprojectviewsettings.h"
-#include "qgslogger.h"
 
-#include <QPainter>
-#include <QPainterPath>
-#include <QPaintEvent>
-#include <QResizeEvent>
-#include <QMouseEvent>
 #include <limits>
 
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsmaptopixel.h"
+#include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
+
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPainterPath>
+#include <QResizeEvent>
+
+#include "moc_qgsmapoverviewcanvas.cpp"
 
 QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget *parent, QgsMapCanvas *mapCanvas )
   : QWidget( parent )

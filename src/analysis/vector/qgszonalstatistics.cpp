@@ -17,14 +17,14 @@
 
 #include "qgszonalstatistics.h"
 
+#include "processing/qgsrasteranalysisutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgsgeometry.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "processing/qgsrasteranalysisutils.h"
-#include "qgsrasterlayer.h"
-#include "qgsproject.h"
 
 #include <QFile>
 

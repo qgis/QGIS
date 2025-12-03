@@ -16,11 +16,11 @@
 #ifndef QGSLISTWIDGET_H
 #define QGSLISTWIDGET_H
 
+#include "qgis_gui.h"
 #include "qgstablewidgetbase.h"
+
 #include <QAbstractTableModel>
 #include <QVariant>
-#include "qgis_gui.h"
-
 
 #ifndef SIP_RUN
 ///@cond PRIVATE

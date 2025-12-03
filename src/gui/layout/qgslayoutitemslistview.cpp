@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 #include "qgslayoutitemslistview.h"
-#include "moc_qgslayoutitemslistview.cpp"
+
 #include "qgslayout.h"
-#include "qgslayoutmodel.h"
 #include "qgslayoutdesignerinterface.h"
-#include "qgslayoutview.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslayoutmodel.h"
+#include "qgslayoutview.h"
+
 #include <QHeaderView>
 #include <QMenu>
 #include <QMouseEvent>
 
+#include "moc_qgslayoutitemslistview.cpp"
 
 QgsLayoutItemsListViewModel::QgsLayoutItemsListViewModel( QgsLayoutModel *model, QObject *parent )
   : QSortFilterProxyModel( parent )

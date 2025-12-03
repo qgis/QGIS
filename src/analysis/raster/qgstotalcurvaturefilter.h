@@ -18,8 +18,8 @@
 #ifndef QGSTOTALCURVATUREFILTER_H
 #define QGSTOTALCURVATUREFILTER_H
 
-#include "qgsninecellfilter.h"
 #include "qgis_analysis.h"
+#include "qgsninecellfilter.h"
 
 /**
  * \ingroup analysis

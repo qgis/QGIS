@@ -20,9 +20,9 @@
 
 #include <memory>
 
+#include <QMutex>
 #include <QThread>
 #include <QWaitCondition>
-#include <QMutex>
 
 class QgsPostgresConn;
 

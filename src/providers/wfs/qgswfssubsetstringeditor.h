@@ -17,13 +17,13 @@
 #ifndef QGSWFSSUBSETSTRINGEDITOR_H
 #define QGSWFSSUBSETSTRINGEDITOR_H
 
-#include "qgssubsetstringeditorinterface.h"
-#include "qgsvectorlayer.h"
 #include "qgsguiutils.h"
 #include "qgssqlcomposerdialog.h"
-#include "qgswfsprovider.h"
+#include "qgssubsetstringeditorinterface.h"
+#include "qgsvectorlayer.h"
 #include "qgswfscapabilities.h"
 #include "qgswfsdatasourceuri.h"
+#include "qgswfsprovider.h"
 
 #include <QWidget>
 

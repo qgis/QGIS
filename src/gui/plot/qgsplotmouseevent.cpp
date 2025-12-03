@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsplotmouseevent.h"
+
 #include "qgsplotcanvas.h"
 
 QgsPlotMouseEvent::QgsPlotMouseEvent( QgsPlotCanvas *canvas, QMouseEvent *event )

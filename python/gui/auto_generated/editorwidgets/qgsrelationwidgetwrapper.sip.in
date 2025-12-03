@@ -9,7 +9,6 @@
 
 
 
-
 class QgsRelationWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring(signature="appended")

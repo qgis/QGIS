@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsowssourcewidget.h"
-#include "moc_qgsowssourcewidget.cpp"
-#include "qgsproviderregistry.h"
+
 #include "qgsmapcanvas.h"
+#include "qgsproviderregistry.h"
 
 #include <QNetworkRequest>
 
+#include "moc_qgsowssourcewidget.cpp"
 
 QgsOWSSourceWidget::QgsOWSSourceWidget( const QString &providerKey, QWidget *parent )
   : QgsProviderSourceWidget( parent )

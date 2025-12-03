@@ -15,9 +15,9 @@
 #ifndef QGSDEVTOOLWIDGET_H
 #define QGSDEVTOOLWIDGET_H
 
-#include "qgspanelwidget.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgspanelwidget.h"
 
 /**
  * \ingroup gui

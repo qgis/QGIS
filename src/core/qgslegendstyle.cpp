@@ -16,17 +16,18 @@
  ***************************************************************************/
 
 #include "qgslegendstyle.h"
-#include "qgsfontutils.h"
-#include "qgis.h"
-#include "qgsreadwritecontext.h"
-#include "qgspropertycollection.h"
 
+#include "qgis.h"
+#include "qgsfontutils.h"
+#include "qgspropertycollection.h"
+#include "qgsreadwritecontext.h"
+
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
 #include <QFont>
 #include <QMap>
 #include <QString>
-#include <QDomElement>
-#include <QDomDocument>
-#include <QDomNode>
 
 QgsLegendStyle::QgsLegendStyle()
 {

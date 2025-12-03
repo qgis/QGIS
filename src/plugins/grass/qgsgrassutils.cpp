@@ -13,17 +13,18 @@
 *******************************************************************/
 
 #include "qgsgrassutils.h"
-#include "moc_qgsgrassutils.cpp"
-#include "qgsgrassselect.h"
-#include "qgsgrass.h"
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
+#include "qgsgrass.h"
+#include "qgsgrassselect.h"
 #include "qgslogger.h"
 
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+
+#include "moc_qgsgrassutils.cpp"
 
 QString QgsGrassUtils::vectorLayerName( QString map, QString layer, int nLayers )
 {

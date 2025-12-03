@@ -16,12 +16,12 @@
 #ifndef QGSINTERPOLATEDLINERENDERER_H
 #define QGSINTERPOLATEDLINERENDERER_H
 
-#include <QDebug>
-
 #include "qgis.h"
 #include "qgscolorrampshader.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayer.h"
+
+#include <QDebug>
 
 class QgsLayerTreeLayer;
 class QgsRenderContext;

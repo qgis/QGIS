@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsColorDialog : QDialog
 {
 %Docstring(signature="appended")

@@ -16,6 +16,7 @@
 
 
 #include "qgspostgresrasterutils.h"
+
 #include "qgsmessagelog.h"
 
 QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo )

@@ -16,12 +16,11 @@
 #ifndef QGSPOINTCLOUDATTRIBUTECOMBOBOX_H
 #define QGSPOINTCLOUDATTRIBUTECOMBOBOX_H
 
-#include <QComboBox>
-
-#include "qgspointcloudattributemodel.h"
 #include "qgis_gui.h"
-
 #include "qgis_sip.h"
+#include "qgspointcloudattributemodel.h"
+
+#include <QComboBox>
 
 class QgsMapLayer;
 class QgsPointCloudLayer;

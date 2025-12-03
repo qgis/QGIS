@@ -15,10 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
 #include "qgsprevieweffect.h"
-#include "moc_qgsprevieweffect.cpp"
 
+#include <QPainter>
+
+#include "moc_qgsprevieweffect.cpp"
 
 QgsPreviewEffect::QgsPreviewEffect( QObject *parent )
   : QGraphicsEffect( parent )

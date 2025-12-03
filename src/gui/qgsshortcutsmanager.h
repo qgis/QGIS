@@ -16,11 +16,12 @@
 #ifndef QGSSHORTCUTSMANAGER_H
 #define QGSSHORTCUTSMANAGER_H
 
-#include <QHash>
-#include <QList>
-#include <QAction>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QAction>
+#include <QHash>
+#include <QList>
 
 class QShortcut;
 

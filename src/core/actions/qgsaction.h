@@ -16,16 +16,16 @@
 #ifndef QGSACTION_H
 #define QGSACTION_H
 
-#include "qgis_core.h"
+#include <memory>
+
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsexpressioncontext.h"
 
+#include <QIcon>
 #include <QSet>
 #include <QString>
-#include <QIcon>
 #include <QUuid>
-
-#include <memory>
 
 class QgsExpressionContextScope;
 

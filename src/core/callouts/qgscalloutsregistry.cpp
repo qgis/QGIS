@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgscalloutsregistry.h"
+
+#include "qgsapplication.h"
 #include "qgscallout.h"
 #include "qgsxmlutils.h"
-#include "qgsapplication.h"
 
 //
 // QgsCalloutAbstractMetadata

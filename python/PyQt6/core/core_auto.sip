@@ -6,6 +6,7 @@
 %Include auto_generated/qgsanimatedicon.sip
 %Include auto_generated/qgsapplication.sip
 %Include auto_generated/qgsarchive.sip
+%Include auto_generated/qgsarrowiterator.sip
 %Include auto_generated/qgsattributes.sip
 %Include auto_generated/qgsattributetableconfig.sip
 %Include auto_generated/qgsauxiliarystorage.sip
@@ -516,6 +517,7 @@
 %Include auto_generated/mesh/qgsmeshforcebypolylines.sip
 %Include auto_generated/mesh/qgsmeshlayerlabeling.sip
 %Include auto_generated/mesh/qgsmeshutils.sip
+%Include auto_generated/multimedia/qgsvideoexporter.sip
 %Include auto_generated/painting/qgsgeometrypaintdevice.sip
 %Include auto_generated/painting/qgsmaskpaintdevice.sip
 %Include auto_generated/painting/qgsnullpainterdevice.sip

@@ -14,16 +14,15 @@
  ***************************************************************************/
 
 #include "qgsvectorlayer3drendererwidget.h"
-#include "moc_qgsvectorlayer3drendererwidget.cpp"
 
+#include "qgs3dsymbolregistry.h"
+#include "qgsapplication.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgsrulebased3drendererwidget.h"
 #include "qgssymbol3dwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3dpropertieswidget.h"
 #include "qgsvectorlayer3drenderer.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
 #include "qgsvscrollarea.h"
 
 #include <QBoxLayout>
@@ -32,6 +31,7 @@
 #include <QLabel>
 #include <QStackedWidget>
 
+#include "moc_qgsvectorlayer3drendererwidget.cpp"
 
 QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -122,8 +122,9 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
 void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
+  if ( !vlayer || vlayer->geometryType() == Qgis::GeometryType::Null )
   {
+    setEnabled( false ); // hide 3d symbology
     return;
   }
   mLayer = layer;

@@ -12,8 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsproject.h"
 #include "qgsrelationcontext.h"
+
+#include "qgsproject.h"
 
 QgsRelationContext::QgsRelationContext( QgsProject *project )
   : mProject( project )

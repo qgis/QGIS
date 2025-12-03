@@ -13,13 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QHBoxLayout>
-#include <QToolButton>
-#include <QKeyEvent>
-
 #include "qgsfeaturepickerwidget.h"
-#include "qgsfilterlineedit.h"
+
 #include "qgsfeaturepickermodel.h"
+#include "qgsfilterlineedit.h"
+
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QToolButton>
+
 #include "moc_qgsfeaturepickerwidget.cpp"
 
 QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )

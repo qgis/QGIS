@@ -16,21 +16,23 @@
  ***************************************************************************/
 
 #include "qgslayoutlabelwidget.h"
-#include "moc_qgslayoutlabelwidget.cpp"
-#include "qgslayoutitemlabel.h"
-#include "qgslayout.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgslayoutitemmap.h"
-#include "qgsvectorlayer.h"
-#include "qgsprojoperation.h"
-#include "qgslayoutreportcontext.h"
-#include "qgsexpressionfinder.h"
 
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressionfinder.h"
+#include "qgslayout.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutreportcontext.h"
+#include "qgsprojoperation.h"
+#include "qgsvectorlayer.h"
+
+#include <QAction>
 #include <QColorDialog>
 #include <QFontDialog>
-#include <QWidget>
-#include <QAction>
 #include <QMenu>
+#include <QWidget>
+
+#include "moc_qgslayoutlabelwidget.cpp"
 
 QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   : QgsLayoutItemBaseWidget( nullptr, label )

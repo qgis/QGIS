@@ -13,28 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
-
-
 #include "qgsfieldcalculator.h"
-#include "moc_qgsfieldcalculator.cpp"
+
 #include "qgsdistancearea.h"
 #include "qgsexpression.h"
-#include "qgsfeatureiterator.h"
-#include "qgsproject.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
-#include "qgsproxyprogresstask.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayerjoinbuffer.h"
-#include "qgsvariantutils.h"
-#include "qgsfields.h"
 #include "qgsmessagebar.h"
+#include "qgsproject.h"
+#include "qgsproxyprogresstask.h"
+#include "qgsvariantutils.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
+#include <QMessageBox>
+
+#include "moc_qgsfieldcalculator.cpp"
 
 // FTC = FieldTypeCombo
 constexpr int FTC_TYPE_ROLE_IDX = 0;

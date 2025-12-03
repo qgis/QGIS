@@ -14,12 +14,15 @@
  ***************************************************************************/
 
 #include "qgsprocessinghelpeditorwidget.h"
-#include "moc_qgsprocessinghelpeditorwidget.cpp"
-#include "qgsprocessingmodelalgorithm.h"
+
 #include "qgsgui.h"
-#include <QTreeWidgetItem>
+#include "qgsprocessingmodelalgorithm.h"
+
 #include <QDialogButtonBox>
+#include <QTreeWidgetItem>
 #include <QVBoxLayout>
+
+#include "moc_qgsprocessinghelpeditorwidget.cpp"
 
 ///@cond NOT_STABLE
 

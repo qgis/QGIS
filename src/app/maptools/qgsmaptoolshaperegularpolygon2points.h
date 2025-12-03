@@ -17,9 +17,9 @@
 #ifndef QGSMAPTOOLSHAPEREGULARPOLYGON2POINTS_H
 #define QGSMAPTOOLSHAPEREGULARPOLYGON2POINTS_H
 
-#include "qgsmaptoolshaperegularpolygonabstract.h"
 #include "qgis_app.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgsmaptoolshaperegularpolygonabstract.h"
 
 class APP_EXPORT QgsMapToolShapeRegularPolygon2PointsMetadata : public QgsMapToolShapeMetadata
 {

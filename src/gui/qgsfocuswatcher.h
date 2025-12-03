@@ -16,9 +16,10 @@
 #ifndef QGSFOCUSWATCHER_H
 #define QGSFOCUSWATCHER_H
 
-#include <QObject>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QObject>
 
 /**
  * \ingroup gui

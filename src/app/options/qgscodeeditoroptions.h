@@ -16,8 +16,9 @@
 #define QGSCODEEDITOROPTIONS_H
 
 #include "ui_qgscodeditorsettings.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgscodeeditor.h"
+#include "qgsoptionswidgetfactory.h"
 
 class QgsCodeEditorShell;
 

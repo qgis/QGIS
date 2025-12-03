@@ -15,13 +15,13 @@
 
 #include "qgstextlabelfeature.h"
 
-#include "qgspallabeling.h"
 #include "qgsmaptopixel.h"
+#include "qgspallabeling.h"
+#include "qgsrendercontext.h"
+#include "qgstextblock.h"
 #include "qgstextcharacterformat.h"
 #include "qgstextfragment.h"
-#include "qgstextblock.h"
 #include "qgstextrenderer.h"
-#include "qgsrendercontext.h"
 
 QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
   : QgsLabelFeature( id, std::move( geometry ), size )

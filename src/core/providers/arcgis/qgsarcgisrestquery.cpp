@@ -14,22 +14,24 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestquery.h"
-#include "moc_qgsarcgisrestquery.cpp"
+
+#include "qgsapplication.h"
 #include "qgsarcgisrestutils.h"
+#include "qgsauthmanager.h"
 #include "qgsblockingnetworkrequest.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-#include "qgsmessagelog.h"
-#include "qgsauthmanager.h"
 #include "qgsvariantutils.h"
 
+#include <QImageReader>
+#include <QJsonParseError>
+#include <QRegularExpression>
 #include <QUrl>
 #include <QUrlQuery>
-#include <QImageReader>
-#include <QRegularExpression>
-#include <QJsonParseError>
+
+#include "moc_qgsarcgisrestquery.cpp"
 
 QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QString &urlPrefix )
 {

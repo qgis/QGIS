@@ -16,19 +16,22 @@
  ***************************************************************************/
 
 #include "qgslayoutmodel.h"
-#include "moc_qgslayoutmodel.cpp"
-#include "qgslayout.h"
+
 #include "qgsapplication.h"
-#include "qgslogger.h"
+#include "qgslayout.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslogger.h"
+
 #include <QApplication>
-#include <QGraphicsItem>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QGraphicsItem>
+#include <QIODevice>
+#include <QIcon>
 #include <QMimeData>
 #include <QSettings>
-#include <QIcon>
-#include <QIODevice>
+
+#include "moc_qgslayoutmodel.cpp"
 
 QgsLayoutModel::QgsLayoutModel( QgsLayout *layout, QObject *parent )
   : QAbstractItemModel( parent )

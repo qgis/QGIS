@@ -137,7 +137,7 @@ Applies current symbol to selected categories, or to all categories if
 none is selected
 %End
 
-    QList<QVariant> layerUniqueValues( const QString &attrName );
+ QList<QVariant> layerUniqueValues( const QString &attrName ) /Deprecated="Since 4.0. Use QgsVectorLayerUtils.uniqueValues instead."/;
 %Docstring
 Returns the list of unique values in the current widget's layer for
 attribute name ``attrName``.
@@ -145,6 +145,10 @@ attribute name ``attrName``.
 Called by :py:func:`~QgsCategorizedSymbolRendererWidget.addCategories`
 and
 :py:func:`~QgsCategorizedSymbolRendererWidget.deleteUnusedCategories`
+
+.. deprecated:: 4.0
+
+   Use :py:class:`QgsVectorLayerUtils`.uniqueValues instead.
 %End
 
     virtual QList<QgsSymbol *> selectedSymbols();

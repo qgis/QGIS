@@ -15,11 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojectelevationproperties.h"
-#include "moc_qgsprojectelevationproperties.cpp"
+
 #include "qgis.h"
 #include "qgsterrainprovider.h"
 
 #include <QDomElement>
+
+#include "moc_qgsprojectelevationproperties.cpp"
 
 QgsProjectElevationProperties::QgsProjectElevationProperties( QObject *parent )
   : QObject( parent )

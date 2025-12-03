@@ -16,10 +16,11 @@
 #ifndef QGSEDITFORMCONFIG_P_H
 #define QGSEDITFORMCONFIG_P_H
 
-#include <QMap>
-#include "qgsfields.h"
-#include "qgseditformconfig.h"
 #include "qgsattributeeditorcontainer.h"
+#include "qgseditformconfig.h"
+#include "qgsfields.h"
+
+#include <QMap>
 
 /// @cond PRIVATE
 

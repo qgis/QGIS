@@ -15,15 +15,17 @@
 
 
 #include "qgsmapcanvasitem.h"
+
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
-#include <QGraphicsScene>
-#include <QRect>
-#include <QPen>
+
 #include <QBrush>
+#include <QGraphicsScene>
 #include <QPainter>
-#include "qgslogger.h"
+#include <QPen>
+#include <QRect>
 
 QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas *mapCanvas )
   : mMapCanvas( mapCanvas )

@@ -16,18 +16,19 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshowhidelabels.h"
-#include "moc_qgsmaptoolshowhidelabels.cpp"
 
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
+#include "qgslabelingresults.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolselectutils.h"
-#include "qgsrubberband.h"
-#include "qgslogger.h"
-#include "qgslabelingresults.h"
 #include "qgsnewauxiliarylayerdialog.h"
+#include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsmaptoolshowhidelabels.cpp"
 
 QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )

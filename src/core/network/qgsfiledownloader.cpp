@@ -14,17 +14,20 @@
  ***************************************************************************/
 
 #include "qgsfiledownloader.h"
-#include "moc_qgsfiledownloader.cpp"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
+
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
-#include "qgsvariantutils.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgsvariantutils.h"
 
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkRequest>
+
+#include "moc_qgsfiledownloader.cpp"
+
 #ifndef QT_NO_SSL
 #include <QSslError>
 #endif

@@ -17,11 +17,12 @@
 #define QGSMESHRENDERERACTIVEDATASETWIDGET_H
 
 #include "ui_qgsmeshrendereractivedatasetwidgetbase.h"
+
 #include "qgis_gui.h"
 #include "qgsmeshdataprovider.h"
 
-#include <QWidget>
 #include <QIcon>
+#include <QWidget>
 
 SIP_NO_FILE
 

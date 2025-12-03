@@ -14,6 +14,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <cstdio>
+#include <cstdlib>
+
+#include "qgsapplication.h"
+
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>
@@ -22,11 +27,6 @@
 #include <QString>
 #include <QStringList>
 #include <QTimer>
-
-#include <cstdio>
-#include <cstdlib>
-
-#include "qgsapplication.h"
 
 #ifdef Q_OS_WIN
 #include <fcntl.h> /*  _O_BINARY */

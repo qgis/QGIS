@@ -17,7 +17,9 @@
 
 
 #include "qgsalgorithmapproximatemedialaxis.h"
+
 #include "qgsexception.h"
+
 #ifdef WITH_SFCGAL
 #include "qgssfcgalgeometry.h"
 #endif

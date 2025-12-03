@@ -16,10 +16,10 @@
 #ifndef QGSOAPIFCONFORMANCEREQUEST_H
 #define QGSOAPIFCONFORMANCEREQUEST_H
 
-#include <QObject>
-
-#include "qgsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
+
+#include <QObject>
 
 //! Manages the conformance request
 class QgsOapifConformanceRequest : public QgsBaseNetworkRequest

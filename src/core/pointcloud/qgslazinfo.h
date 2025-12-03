@@ -20,10 +20,9 @@
 
 #include <fstream>
 
-#include "qgspointcloudattribute.h"
-#include "qgscoordinatereferencesystem.h"
-
 #include "lazperf/header.hpp"
+#include "qgscoordinatereferencesystem.h"
+#include "qgspointcloudattribute.h"
 
 #define SIP_NO_FILE
 

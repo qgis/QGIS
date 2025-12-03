@@ -15,10 +15,12 @@
  ***************************************************************************/
 
 #include "qgsticksscalebarrenderer.h"
+
+#include "qgslinesymbol.h"
 #include "qgsscalebarsettings.h"
 #include "qgssymbol.h"
-#include "qgslinesymbol.h"
 #include "qgstextrenderer.h"
+
 #include <QPainter>
 
 QgsTicksScaleBarRenderer::QgsTicksScaleBarRenderer( QgsTicksScaleBarRenderer::TickPosition position )

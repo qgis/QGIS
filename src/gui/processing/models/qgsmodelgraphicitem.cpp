@@ -14,16 +14,19 @@
  ***************************************************************************/
 
 #include "qgsmodelgraphicitem.h"
-#include "qgsmodelcomponentgraphicitem.h"
-#include "moc_qgsmodelgraphicitem.cpp"
+
 #include "qgsapplication.h"
+#include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
-#include "qgsmodelviewtool.h"
 #include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewtool.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QSvgRenderer>
+
+#include "moc_qgsmodelgraphicitem.cpp"
 
 ///@cond NOT_STABLE
 

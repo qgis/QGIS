@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgsvscrollarea.h"
-#include "moc_qgsvscrollarea.cpp"
+
 #include <QEvent>
 #include <QScrollBar>
+
+#include "moc_qgsvscrollarea.cpp"
 
 QgsVScrollArea::QgsVScrollArea( QWidget *parent )
   : QgsScrollArea( parent )

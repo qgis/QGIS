@@ -16,11 +16,11 @@
 #ifndef QGSLAYERTREEMAPCANVASBRIDGE_H
 #define QGSLAYERTREEMAPCANVASBRIDGE_H
 
+#include "qgis_gui.h"
+#include "qgscoordinatereferencesystem.h"
+
 #include <QObject>
 #include <QStringList>
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMapLayer;

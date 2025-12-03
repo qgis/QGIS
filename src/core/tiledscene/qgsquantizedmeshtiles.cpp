@@ -16,9 +16,11 @@
 
 #include "qgsquantizedmeshtiles.h"
 
-#include "qgsexception.h"
 #include <algorithm>
 #include <cstddef>
+
+#include "qgsexception.h"
+
 #include <qdebug.h>
 #include <qglobal.h>
 #include <qstringliteral.h>

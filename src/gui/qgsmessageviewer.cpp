@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgsmessageviewer.h"
-#include "moc_qgsmessageviewer.cpp"
-#include "qgssettings.h"
+
 #include "qgsgui.h"
+#include "qgssettings.h"
+
+#include "moc_qgsmessageviewer.cpp"
 
 QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool deleteOnClose )
   : QDialog( parent, fl )

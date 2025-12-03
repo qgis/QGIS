@@ -17,8 +17,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QString>
+
 #include <QObject>
+#include <QString>
 
 class QgsValidityCheckContext;
 class QgsFeedback;

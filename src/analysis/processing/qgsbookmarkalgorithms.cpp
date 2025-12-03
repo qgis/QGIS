@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsbookmarkalgorithms.h"
+
 #include "qgsapplication.h"
 
 ///@cond PRIVATE

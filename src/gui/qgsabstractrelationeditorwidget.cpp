@@ -16,23 +16,24 @@
  ***************************************************************************/
 
 #include "qgsabstractrelationeditorwidget.h"
-#include "moc_qgsabstractrelationeditorwidget.cpp"
 
-#include "qgsfeatureiterator.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfeatureselectiondlg.h"
+#include "qgspolymorphicrelation.h"
+#include "qgsproject.h"
 #include "qgsrelation.h"
 #include "qgsrelationmanager.h"
-#include "qgspolymorphicrelation.h"
-#include "qgsvectorlayertools.h"
-#include "qgsproject.h"
 #include "qgstransactiongroup.h"
+#include "qgsvectorlayertools.h"
 #include "qgsvectorlayerutils.h"
 
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgsabstractrelationeditorwidget.cpp"
 
 QgsAbstractRelationEditorWidget::QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent )
   : QWidget( parent )

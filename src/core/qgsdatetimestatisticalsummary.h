@@ -19,8 +19,9 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsinterval.h"
-#include <QSet>
+
 #include <QDateTime>
+#include <QSet>
 #include <QVariantList>
 
 /***************************************************************************

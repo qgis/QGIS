@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include "qgsfontutils.h"
+#include "qgslayout.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutrendercontext.h"
 #include "qgslayoututils.h"
 #include "qgsproject.h"
-#include "qgslayoutitemmap.h"
-#include "qgsfontutils.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
-#include "qgslayout.h"
-#include "qgslayoutrendercontext.h"
 
 #include <QStyleOptionGraphicsItem>
 

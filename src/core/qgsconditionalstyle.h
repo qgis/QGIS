@@ -15,17 +15,18 @@
 #ifndef QGSCONDITIONALSTYLE_H
 #define QGSCONDITIONALSTYLE_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgsfield.h"
 
-#include <QObject>
-#include <QFont>
 #include <QColor>
-#include <QPixmap>
-#include <QDomNode>
 #include <QDomDocument>
+#include <QDomNode>
+#include <QFont>
 #include <QHash>
-#include <memory>
+#include <QObject>
+#include <QPixmap>
 
 class QgsConditionalStyle;
 class QgsReadWriteContext;

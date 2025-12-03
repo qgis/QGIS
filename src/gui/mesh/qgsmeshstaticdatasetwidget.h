@@ -15,11 +15,12 @@
 #ifndef QGSMESHSTATICDATASETWIDGET_H
 #define QGSMESHSTATICDATASETWIDGET_H
 
-#include <QAbstractListModel>
+#include "ui_qgsmeshstaticdatasetwidgetbase.h"
 
 #include "qgis_gui.h"
-#include "ui_qgsmeshstaticdatasetwidgetbase.h"
 #include "qgsmeshdataset.h"
+
+#include <QAbstractListModel>
 
 SIP_NO_FILE
 

@@ -16,14 +16,14 @@
 #ifndef QGSLAYERTREEREGISTRYBRIDGE_H
 #define QGSLAYERTREEREGISTRYBRIDGE_H
 
-#include <QObject>
-#include <QStringList>
-#include <QPointer>
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgslayertreegroup.h"
+
+#include <QObject>
+#include <QPointer>
+#include <QStringList>
 
 class QgsLayerTreeNode;
 class QgsMapLayer;

@@ -14,17 +14,17 @@
  ***************************************************************************/
 
 #include "qgspointlightsettings.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorutils.h"
+
 #include "qgs3dmapsettings.h"
+#include "qgscolorutils.h"
 #include "qgsgeotransform.h"
+#include "qgssymbollayerutils.h"
 
 #include <QDomDocument>
-
 #include <Qt3DCore/QEntity>
-#include <Qt3DRender/QPointLight>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSphereMesh>
+#include <Qt3DRender/QPointLight>
 
 Qgis::LightSourceType QgsPointLightSettings::type() const
 {

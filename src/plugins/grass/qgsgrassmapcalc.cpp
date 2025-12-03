@@ -14,19 +14,19 @@
  *************************************************************************/
 
 #include "qgsgrassmapcalc.h"
-#include "moc_qgsgrassmapcalc.cpp"
-#include "qgsgrassselect.h"
-#include "qgsgrass.h"
-
-#include "qgisinterface.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsgrassplugin.h"
 
 #include <cmath>
 
+#include "qgisinterface.h"
+#include "qgsapplication.h"
+#include "qgsgrass.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrassselect.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+
+#include <QActionGroup>
 #include <QDir>
 #include <QDomDocument>
 #include <QInputDialog>
@@ -34,7 +34,8 @@
 #include <QMouseEvent>
 #include <QTextStream>
 #include <QToolBar>
-#include <QActionGroup>
+
+#include "moc_qgsgrassmapcalc.cpp"
 
 QgsGrassMapcalc::QgsGrassMapcalc(
   QgsGrassTools *tools, QgsGrassModule *module,
@@ -1811,7 +1812,7 @@ void QgsGrassMapcalcConnector::setPoint( int index, QPoint point )
   QGraphicsLineItem::update();
 }
 
-QPoint QgsGrassMapcalcConnector::point( int index )
+QPoint QgsGrassMapcalcConnector::point( int index ) const
 {
   return ( mPoints[index] );
 }
@@ -1845,7 +1846,7 @@ void QgsGrassMapcalcConnector::selectEnd( QPoint point )
   QgsDebugMsgLevel( QString( "mSelectedEnd = %1" ).arg( mSelectedEnd ), 2 );
 }
 
-int QgsGrassMapcalcConnector::selectedEnd()
+int QgsGrassMapcalcConnector::selectedEnd() const
 {
   return mSelectedEnd;
 }

@@ -15,10 +15,9 @@
 
 #include "qgsambientocclusionsettings.h"
 
-#include <QDomDocument>
-
 #include "qgsreadwritecontext.h"
 
+#include <QDomDocument>
 
 QgsAmbientOcclusionSettings::QgsAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &other )
   : mEnabled( other.mEnabled )

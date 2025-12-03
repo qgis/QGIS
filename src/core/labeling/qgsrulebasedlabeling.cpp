@@ -13,10 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrulebasedlabeling.h"
+
 #include "qgsscaleutils.h"
-#include "qgssymbollayerutils.h"
-#include "qgsstyleentityvisitor.h"
 #include "qgssldexportcontext.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
 
 QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop )
   : QgsVectorLayerLabelProvider( layer, QString(), withFeatureLoop, nullptr )

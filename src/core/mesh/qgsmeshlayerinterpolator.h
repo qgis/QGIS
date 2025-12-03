@@ -26,11 +26,11 @@ class QgsMeshDatasetIndex;
 
 #include "qgis.h"
 #include "qgis_sip.h"
+#include "qgsmaplayerrenderer.h"
+#include "qgsrasterinterface.h"
+#include "qgstriangularmesh.h"
 
 #include <QSize>
-#include "qgsmaplayerrenderer.h"
-#include "qgstriangularmesh.h"
-#include "qgsrasterinterface.h"
 
 class QgsRenderContext;
 

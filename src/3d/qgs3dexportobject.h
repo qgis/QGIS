@@ -16,15 +16,15 @@
 #ifndef Qgs3DExportObject_H
 #define Qgs3DExportObject_H
 
+#include "qgis_3d.h"
+
+#include <QImage>
+#include <QMap>
+#include <QMatrix4x4>
 #include <QObject>
 #include <QTextStream>
 #include <QVector>
 #include <QVector3D>
-#include <QImage>
-#include <QMap>
-#include <QMatrix4x4>
-
-#include "qgis_3d.h"
 
 #define SIP_NO_FILE
 

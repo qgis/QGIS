@@ -14,15 +14,17 @@
  ***************************************************************************/
 
 #include "qgscolorwidgets.h"
-#include "moc_qgscolorwidgets.cpp"
+
 #include "qgsapplication.h"
-#include "qgssymbollayerutils.h"
-#include "qgssettings.h"
-#include "qgslogger.h"
-#include "qgsguiutils.h"
 #include "qgsdoublespinbox.h"
+#include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
 
 #include <QResizeEvent>
+
+#include "moc_qgscolorwidgets.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <QStyleOptionFrameV3>

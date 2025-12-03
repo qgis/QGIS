@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgssmartgroupeditordialog.h"
-#include "moc_qgssmartgroupeditordialog.cpp"
 
-#include "qgsstyle.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
+#include "qgsstyle.h"
 
-#include <QVariant>
 #include <QMessageBox>
+#include <QVariant>
+
+#include "moc_qgssmartgroupeditordialog.cpp"
 
 // -------------------------- //
 // Condition Widget functions //

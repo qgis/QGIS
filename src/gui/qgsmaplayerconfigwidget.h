@@ -15,13 +15,13 @@
 #ifndef QGSMAPLAYERCONFIGWIDGET_H
 #define QGSMAPLAYERCONFIGWIDGET_H
 
-#include <QWidget>
+#include "qgis_gui.h"
+#include "qgslayertreegroup.h"
+#include "qgspanelwidget.h"
+
 #include <QIcon>
 #include <QPointer>
-
-#include "qgspanelwidget.h"
-#include "qgslayertreegroup.h"
-#include "qgis_gui.h"
+#include <QWidget>
 
 class QgsMapCanvas;
 class QgsMapLayer;

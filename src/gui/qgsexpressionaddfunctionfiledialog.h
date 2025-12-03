@@ -17,9 +17,11 @@
 #define QGSEXPRESSIONADDFUNCTIONFILEDIALOG_H
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
-#include <QDialog>
 #include "ui_qgsexpressionaddfunctionfiledialogbase.h"
+
+#include "qgis_gui.h"
+
+#include <QDialog>
 
 /**
  * \ingroup gui

@@ -15,16 +15,18 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckerdialog.h"
-#include "moc_qgsgeometrycheckerdialog.cpp"
-#include "qgsgeometrycheckersetuptab.h"
-#include "qgsgeometrycheckerresulttab.h"
-#include "qgsgeometrychecker.h"
+
 #include "qgsfeaturepool.h"
-#include "qgssettings.h"
+#include "qgsgeometrychecker.h"
+#include "qgsgeometrycheckerresulttab.h"
+#include "qgsgeometrycheckersetuptab.h"
 #include "qgsgui.h"
+#include "qgssettings.h"
 
 #include <QCloseEvent>
 #include <QVBoxLayout>
+
+#include "moc_qgsgeometrycheckerdialog.cpp"
 
 QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidget *parent )
   : QDialog( parent )

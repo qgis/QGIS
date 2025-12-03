@@ -24,8 +24,8 @@
 #include "ui_qgsdiagrampropertiesbase.h"
 
 #include "qgis_gui.h"
-#include "qgsdiagramrenderer.h"
 #include "qgscolorschemelist.h"
+#include "qgsdiagramrenderer.h"
 #include "qgswidgetwrapper.h"
 
 #include <QDialog>

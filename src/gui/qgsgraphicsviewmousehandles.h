@@ -20,13 +20,14 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QGraphicsRectItem>
-#include <QObject>
-#include <QPointer>
 #include <memory>
 
 #include "qgis.h"
 #include "qgis_gui.h"
+
+#include <QGraphicsRectItem>
+#include <QObject>
+#include <QPointer>
 
 class QGraphicsView;
 class QInputEvent;

@@ -12,17 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QObject>
-
-
-#include "qgsproject.h"
-#include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorrelation.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsproject.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QObject>
 
 /**
  * \ingroup UnitTests

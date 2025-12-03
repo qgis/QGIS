@@ -20,8 +20,9 @@
 
 #include "qgis_app.h"
 #include "qgsdataitemguiprovider.h"
-#include "qgsweakrelation.h"
 #include "qgsmimedatautils.h"
+#include "qgsweakrelation.h"
+
 #include <QObject>
 
 class QgsDirectoryItem;

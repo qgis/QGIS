@@ -22,6 +22,7 @@
 #include "ui_qgsattributesforminitcode.h"
 
 #include "qgis_gui.h"
+
 #include <QWidget>
 
 class QDialog;

@@ -16,8 +16,11 @@
  ***************************************************************************/
 
 #include "qgspointcloudrgbrenderer.h"
-#include "qgspointcloudblock.h"
+
+#include <memory>
+
 #include "qgscontrastenhancement.h"
+#include "qgspointcloudblock.h"
 
 QgsPointCloudRgbRenderer::QgsPointCloudRgbRenderer()
 {
@@ -272,13 +275,13 @@ std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudRgbRenderer::pre
   auto data = std::make_unique< QgsPointCloudRgbRendererPreparedData >();
   data->redAttribute = mRedAttribute;
   if ( mRedContrastEnhancement )
-    data->redContrastEnhancement.reset( new QgsContrastEnhancement( *mRedContrastEnhancement ) );
+    data->redContrastEnhancement = std::make_unique<QgsContrastEnhancement>( *mRedContrastEnhancement );
   data->greenAttribute = mGreenAttribute;
   if ( mGreenContrastEnhancement )
-    data->greenContrastEnhancement.reset( new QgsContrastEnhancement( *mGreenContrastEnhancement ) );
+    data->greenContrastEnhancement = std::make_unique<QgsContrastEnhancement>( *mGreenContrastEnhancement );
   data->blueAttribute = mBlueAttribute;
   if ( mBlueContrastEnhancement )
-    data->blueContrastEnhancement.reset( new QgsContrastEnhancement( *mBlueContrastEnhancement ) );
+    data->blueContrastEnhancement = std::make_unique<QgsContrastEnhancement>( *mBlueContrastEnhancement );
 
   data->useRedContrastEnhancement = mRedContrastEnhancement && mRedContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
   data->useBlueContrastEnhancement = mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;

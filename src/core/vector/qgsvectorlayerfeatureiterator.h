@@ -15,18 +15,19 @@
 #ifndef QGSVECTORLAYERFEATUREITERATOR_H
 #define QGSVECTORLAYERFEATUREITERATOR_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsfeaturesource.h"
-#include "qgsexpressioncontextscopegenerator.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexpressioncontextscopegenerator.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturesource.h"
+#include "qgsfields.h"
 
 #include <QPointer>
 #include <QSet>
-#include <memory>
 
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap SIP_SKIP;
 

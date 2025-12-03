@@ -16,12 +16,14 @@
 #ifndef QGSSUBLAYERSDIALOG_H
 #define QGSSUBLAYERSDIALOG_H
 
-#include <QDialog>
-#include <QCheckBox>
 #include "ui_qgssublayersdialogbase.h"
-#include "qgis_sip.h"
-#include "qgis_gui.h"
+
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QCheckBox>
+#include <QDialog>
 
 /**
  * \ingroup gui

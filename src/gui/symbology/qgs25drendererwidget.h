@@ -17,9 +17,10 @@
 #define QGS25DRENDERERWIDGET_H
 
 #include "ui_qgs25drendererwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
-#include "qgis_gui.h"
 
 class Qgs25DRenderer;
 

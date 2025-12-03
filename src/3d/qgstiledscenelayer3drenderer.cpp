@@ -15,13 +15,11 @@
 
 #include "qgstiledscenelayer3drenderer.h"
 
+#include "qgs3dmapsettings.h"
+#include "qgstiledscenechunkloader_p.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenelayer.h"
-#include "qgstiledscenechunkloader_p.h"
 #include "qgstiledscenelayerelevationproperties.h"
-
-#include "qgs3dmapsettings.h"
-
 
 QgsTiledSceneLayer3DRendererMetadata::QgsTiledSceneLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "tiledscene" ) )

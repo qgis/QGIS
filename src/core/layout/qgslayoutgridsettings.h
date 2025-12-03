@@ -19,8 +19,9 @@
 #include "qgis_core.h"
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
-#include "qgslayoutundocommand.h"
 #include "qgslayoutserializableobject.h"
+#include "qgslayoutundocommand.h"
+
 #include <QPen>
 
 class QgsLayout;

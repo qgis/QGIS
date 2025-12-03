@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgsmaptoolreverseline.h"
-#include "moc_qgsmaptoolreverseline.cpp"
 
 #include "qgsfeatureiterator.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
-#include "qgsrubberband.h"
-#include "qgssnappingutils.h"
+#include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmulticurve.h"
+#include "qgsrubberband.h"
+#include "qgssnappingutils.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsmaptoolreverseline.cpp"
 
 QgsMapToolReverseLine::QgsMapToolReverseLine( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )

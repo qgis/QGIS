@@ -9,7 +9,6 @@
 
 
 
-
 class QgsUserProfileManager : QObject
 {
 %Docstring(signature="appended")
@@ -74,7 +73,7 @@ profile settings.
                             contains folders for each profile.
 %End
 
-    QString rootLocation();
+    QString rootLocation() const;
 %Docstring
 Returns the path to the root profiles location.
 

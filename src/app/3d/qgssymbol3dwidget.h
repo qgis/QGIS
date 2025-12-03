@@ -16,9 +16,11 @@
 #ifndef QGSSYMBOL3DWIDGET_H
 #define QGSSYMBOL3DWIDGET_H
 
-#include <QWidget>
 #include <memory>
+
 #include "qgsstyle.h"
+
+#include <QWidget>
 
 class QLabel;
 class QStackedWidget;

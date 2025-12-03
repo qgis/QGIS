@@ -13,20 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsprojectproperties.h"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
-#include "qgsprojectdisplaysettings.h"
 #include "qgsbearingnumericformat.h"
-#include "qgsrasterlayer.h"
-#include "qgsprojecttimesettings.h"
-#include "qgsprojectstylesettings.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsproject.h"
+#include "qgsprojectdisplaysettings.h"
+#include "qgsprojectproperties.h"
+#include "qgsprojectstylesettings.h"
+#include "qgsprojecttimesettings.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup UnitTests

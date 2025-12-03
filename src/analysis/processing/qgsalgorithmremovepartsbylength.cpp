@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsalgorithmremovepartsbylength.h"
-#include "qgsgeometrycollection.h"
+
 #include "qgscurve.h"
+#include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE
 

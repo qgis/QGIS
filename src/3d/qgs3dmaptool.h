@@ -16,9 +16,9 @@
 #ifndef QGS3DMAPTOOL_H
 #define QGS3DMAPTOOL_H
 
-#include <QObject>
-
 #include "qgis_3d.h"
+
+#include <QObject>
 
 class Qgs3DMapCanvas;
 class QMouseEvent;

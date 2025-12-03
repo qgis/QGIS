@@ -16,11 +16,13 @@
 #ifndef QGSPROCESSINGPARAMETERSWIDGET_H
 #define QGSPROCESSINGPARAMETERSWIDGET_H
 
+#include "ui_qgsprocessingparameterswidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingparameterswidgetbase.h"
-#include <QWidget>
 #include "qgsprocessingwidgetwrapper.h"
+
+#include <QWidget>
 
 class QgsProcessingAlgorithm;
 class QgsProcessingParameterDefinition;

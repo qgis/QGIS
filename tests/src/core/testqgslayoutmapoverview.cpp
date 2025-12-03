@@ -19,12 +19,13 @@
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemmapoverview.h"
-#include "qgsproject.h"
 #include "qgsmultibandcolorrenderer.h"
-#include "qgsrasterlayer.h"
+#include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
-#include <QObject>
+#include "qgsrasterlayer.h"
 #include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsLayoutMapOverview : public QgsTest
 {

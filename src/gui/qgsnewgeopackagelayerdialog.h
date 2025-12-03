@@ -18,10 +18,10 @@
 #define QGSNEWGEOPACKAGELAYERDIALOG_H
 
 #include "ui_qgsnewgeopackagelayerdialogbase.h"
-#include "qgsguiutils.h"
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsguiutils.h"
 
 /**
  * \ingroup gui

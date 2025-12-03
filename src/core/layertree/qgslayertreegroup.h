@@ -18,9 +18,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsgrouplayer.h"
 #include "qgslayertreenode.h"
 #include "qgsmaplayerref.h"
-#include "qgsgrouplayer.h"
 
 class QgsMapLayer;
 class QgsLayerTreeLayer;
@@ -420,7 +420,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     bool mWmsHasTimeDimension = false;
 
     //! Sets parent to NULLPTR and disconnects all external and forwarded signals
-    virtual void makeOrphan() override SIP_SKIP;
+    void makeOrphan() override SIP_SKIP;
 
   private:
 

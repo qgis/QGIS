@@ -16,13 +16,13 @@
 #ifndef QGSDATETIMESEARCHWIDGETWRAPPER_H
 #define QGSDATETIMESEARCHWIDGETWRAPPER_H
 
-#include "qgssearchwidgetwrapper.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgssearchwidgetwrapper.h"
 
 #include <QComboBox>
-#include <QListWidget>
 #include <QLineEdit>
-#include "qgis_gui.h"
+#include <QListWidget>
 
 class QgsDateTimeEditFactory;
 class QgsDateTimeEdit;

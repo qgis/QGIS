@@ -16,9 +16,10 @@
 #ifndef QGSSPINBOX_H
 #define QGSSPINBOX_H
 
-#include <QSpinBox>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QSpinBox>
 
 class QgsSpinBoxLineEdit;
 

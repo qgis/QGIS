@@ -18,13 +18,14 @@
 #define QGSMESSAGELOGVIEWER_H
 
 #include "ui_qgsmessagelogviewer.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
 #include "qgsmessagelog.h"
 
 #include <QMenu>
 #include <QString>
-#include "qgis_gui.h"
-#include "qgis_sip.h"
 
 class QStatusBar;
 class QCloseEvent;

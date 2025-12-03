@@ -19,10 +19,10 @@
 #define QGSPROJECTFILETRANSFORM_H
 
 #include "qgis_core.h"
-#include <QString>
-#include <QDomDocument>
 #include "qgsprojectversion.h"
 
+#include <QDomDocument>
+#include <QString>
 
 class QgsRasterLayer;
 class QgsMapLayer;

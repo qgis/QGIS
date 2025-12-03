@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfontutils.h"
+#include "qgsmapsettings.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
+#include <QApplication>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QIODevice>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QFile>
-#include <QIODevice>
-
-#include "qgstest.h"
-#include "qgsvectorlayer.h"
-#include "qgsfontutils.h"
-#include "qgsmapsettings.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>

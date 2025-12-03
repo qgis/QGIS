@@ -16,11 +16,12 @@
 #ifndef QGSPATHRESOLVER_H
 #define QGSPATHRESOLVER_H
 
+#include <functional>
+#include <vector>
+
 #include "qgis_core.h"
 
 #include <QString>
-#include <functional>
-#include <vector>
 
 /**
  * \ingroup core

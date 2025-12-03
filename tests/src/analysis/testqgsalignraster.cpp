@@ -13,18 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <gdal.h>
 
+#include "qgis.h"
 #include "qgsalignraster.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
-#include "qgis.h"
+#include "qgstest.h"
 
 #include <QDir>
-
-#include <gdal.h>
-
 
 static QString _tempFile( const QString &name )
 {

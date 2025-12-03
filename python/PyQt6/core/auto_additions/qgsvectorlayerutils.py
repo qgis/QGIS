@@ -4,6 +4,7 @@ QgsVectorLayerUtils.CascadedFeatureFlags = lambda flags=0: QgsVectorLayerUtils.C
 try:
     QgsVectorLayerUtils.getValuesIterator = staticmethod(QgsVectorLayerUtils.getValuesIterator)
     QgsVectorLayerUtils.getValues = staticmethod(QgsVectorLayerUtils.getValues)
+    QgsVectorLayerUtils.uniqueValues = staticmethod(QgsVectorLayerUtils.uniqueValues)
     QgsVectorLayerUtils.getDoubleValues = staticmethod(QgsVectorLayerUtils.getDoubleValues)
     QgsVectorLayerUtils.valueExists = staticmethod(QgsVectorLayerUtils.valueExists)
     QgsVectorLayerUtils.createUniqueValue = staticmethod(QgsVectorLayerUtils.createUniqueValue)

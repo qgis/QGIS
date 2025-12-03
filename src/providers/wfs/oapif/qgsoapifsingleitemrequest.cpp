@@ -13,16 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgsoapifsingleitemrequest.h"
-#include "moc_qgsoapifsingleitemrequest.cpp"
+
+#include <cpl_vsi.h>
+
+#include "qgslogger.h"
 #include "qgsoapifutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 
-#include "cpl_vsi.h"
-
 #include <QTextCodec>
+
+#include "moc_qgsoapifsingleitemrequest.cpp"
 
 QgsOapifSingleItemRequest::QgsOapifSingleItemRequest( const QgsDataSourceUri &baseUri, const QString &url )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )

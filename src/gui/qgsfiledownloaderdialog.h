@@ -16,8 +16,9 @@
 #ifndef QGSFILEDOWNLOADERDIALOG_H
 #define QGSFILEDOWNLOADERDIALOG_H
 
-#include <QProgressDialog>
 #include "qgis_gui.h"
+
+#include <QProgressDialog>
 
 class QgsFileDownloader;
 

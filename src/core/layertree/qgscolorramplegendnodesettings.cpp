@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgscolorramplegendnodesettings.h"
-#include "qgsnumericformat.h"
-#include "qgsbasicnumericformat.h"
-#include "qgsapplication.h"
-#include "qgsnumericformatregistry.h"
+
 #include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsbasicnumericformat.h"
+#include "qgsnumericformat.h"
+#include "qgsnumericformatregistry.h"
 
 QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings()
   : mNumericFormat( std::make_unique< QgsBasicNumericFormat >() )

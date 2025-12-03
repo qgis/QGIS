@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgselevationutils.h"
-#include "qgsproject.h"
+
 #include "qgsmaplayerelevationproperties.h"
+#include "qgsproject.h"
 #include "qgsrasterlayerelevationproperties.h"
 
 QgsDoubleRange QgsElevationUtils::calculateZRangeForProject( QgsProject *project )

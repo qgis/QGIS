@@ -18,16 +18,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswmsconnection.h"
+
 #include "../providers/wms/qgswmsprovider.h"
-#include "qgis.h" // GEO_EPSG_CRS_ID
+#include "qgis.h"
 #include "qgsdatasourceuri.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsowsconnection.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
-#include "qgswmsconnection.h"
-#include "moc_qgswmsconnection.cpp"
-#include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
-#include "qgsowsconnection.h"
+
+#include "moc_qgswmsconnection.cpp"
 
 static const QString SERVICE_WMS = QStringLiteral( "WMS" );
 

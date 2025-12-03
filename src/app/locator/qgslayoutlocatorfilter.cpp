@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgslayoutlocatorfilter.h"
-#include "moc_qgslayoutlocatorfilter.cpp"
-#include "qgsproject.h"
-#include "qgsmasterlayoutinterface.h"
-#include "qgslayoutmanager.h"
-#include "qgisapp.h"
 
+#include "qgisapp.h"
+#include "qgslayoutmanager.h"
+#include "qgsmasterlayoutinterface.h"
+#include "qgsproject.h"
+
+#include "moc_qgslayoutlocatorfilter.cpp"
 
 QgsLayoutLocatorFilter::QgsLayoutLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

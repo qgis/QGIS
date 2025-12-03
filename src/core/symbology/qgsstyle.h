@@ -16,19 +16,19 @@
 #ifndef QGSSTYLE_H
 #define QGSSTYLE_H
 
-#include "qgis_core.h"
+#include <sqlite3.h>
+
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgslegendpatchshape.h"
+#include "qgspallabeling.h"
+#include "qgssqliteutils.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextformat.h"
+
 #include <QMap>
 #include <QMultiMap>
 #include <QString>
-
-#include <sqlite3.h>
-
-#include "qgssqliteutils.h"
-#include "qgssymbollayerutils.h" // QgsStringMap
-#include "qgstextformat.h"
-#include "qgspallabeling.h"
-#include "qgslegendpatchshape.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;

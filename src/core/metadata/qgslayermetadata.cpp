@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayermetadata.h"
+
 #include "qgsmaplayer.h"
 #include "qgstranslationcontext.h"
 

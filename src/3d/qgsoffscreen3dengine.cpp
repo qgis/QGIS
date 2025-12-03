@@ -14,15 +14,15 @@
  ***************************************************************************/
 
 #include "qgsoffscreen3dengine.h"
-#include "moc_qgsoffscreen3dengine.cpp"
 
+#include "qgsforwardrenderview.h"
 #include "qgsframegraph.h"
+#include "qgsshadowrenderview.h"
 
 #include <QCoreApplication>
 #include <QOffscreenSurface>
-#include <QSurfaceFormat>
 #include <QOpenGLFunctions>
-
+#include <QSurfaceFormat>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DLogic/QLogicAspect>
 #include <Qt3DRender/QCamera>
@@ -30,14 +30,14 @@
 #include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QRenderTarget>
 #include <Qt3DRender/QRenderTargetOutput>
 #include <Qt3DRender/QRenderTargetSelector>
-#include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QViewport>
-#include "qgsshadowrenderview.h"
-#include "qgsforwardrenderview.h"
+
+#include "moc_qgsoffscreen3dengine.cpp"
 
 QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 {

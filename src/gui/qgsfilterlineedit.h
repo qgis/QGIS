@@ -18,10 +18,11 @@
 #ifndef QGSFILTERLINEEDIT_H
 #define QGSFILTERLINEEDIT_H
 
-#include <QLineEdit>
-#include <QIcon>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QIcon>
+#include <QLineEdit>
 
 class QToolButton;
 class QgsAnimatedIcon;

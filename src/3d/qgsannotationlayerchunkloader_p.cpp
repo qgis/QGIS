@@ -14,34 +14,36 @@
  ***************************************************************************/
 
 #include "qgsannotationlayerchunkloader_p.h"
-#include "moc_qgsannotationlayerchunkloader_p.cpp"
+
 #include "qgs3dutils.h"
-#include "qgsannotationitem.h"
-#include "qgstessellatedpolygongeometry.h"
-#include "qgschunknode.h"
-#include "qgseventtracing.h"
-#include "qgslogger.h"
-#include "qgsannotationlayer.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgsabstractterrainsettings.h"
+#include "qgsannotationitem.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationlinetextitem.h"
 #include "qgsannotationmarkeritem.h"
 #include "qgsannotationpointtextitem.h"
-#include "qgsannotationlinetextitem.h"
 #include "qgsannotationrectangletextitem.h"
 #include "qgsbillboardgeometry.h"
-#include "qgspoint3dbillboardmaterial.h"
+#include "qgschunknode.h"
+#include "qgseventtracing.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfonttextureatlasgenerator.h"
 #include "qgsgeos.h"
 #include "qgsgeotransform.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgstextureatlasgenerator.h"
-#include "qgsfonttextureatlasgenerator.h"
-#include "qgstextdocument.h"
-#include "qgslinevertexdata_p.h"
 #include "qgslinematerial_p.h"
+#include "qgslinevertexdata_p.h"
+#include "qgslogger.h"
 #include "qgsmarkersymbol.h"
+#include "qgspoint3dbillboardmaterial.h"
+#include "qgstessellatedpolygongeometry.h"
+#include "qgstextdocument.h"
+#include "qgstextureatlasgenerator.h"
 
-#include <QtConcurrent>
 #include <Qt3DCore/QTransform>
+#include <QtConcurrent>
+
+#include "moc_qgsannotationlayerchunkloader_p.cpp"
 
 ///@cond PRIVATE
 

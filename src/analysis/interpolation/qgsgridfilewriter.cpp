@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsgridfilewriter.h"
-#include "qgsinterpolator.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsfeedback.h"
-#include "qgsrasterfilewriter.h"
-#include "qgsrasterdataprovider.h"
+#include "qgsinterpolator.h"
 #include "qgsrasterblock.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsvectorlayer.h"
+
 #include <QFileInfo>
 
 QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows )

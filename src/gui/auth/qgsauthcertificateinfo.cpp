@@ -15,22 +15,23 @@
  ***************************************************************************/
 
 
-#include "qgsauthcertificateinfo.h"
-#include "moc_qgsauthcertificateinfo.cpp"
 #include "ui_qgsauthcertificateinfo.h"
-
-#include <QtCrypto>
-#include <QDialogButtonBox>
-#include <QLineEdit>
-#include <QPlainTextEdit>
-#include <QPushButton>
-#include <QTextEdit>
+#include "qgsauthcertificateinfo.h"
 
 #include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+
+#include <QDialogButtonBox>
+#include <QLineEdit>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QTextEdit>
+#include <QtCrypto>
+
+#include "moc_qgsauthcertificateinfo.cpp"
 
 QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert, bool manageCertTrust, QWidget *parent, const QList<QSslCertificate> &connectionCAs )
   : QWidget( parent )

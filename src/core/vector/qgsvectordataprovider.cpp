@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QTextCodec>
+#include "qgsvectordataprovider.h"
 
 #include <limits>
+#include <mutex>
 
-#include "qgsvectordataprovider.h"
-#include "moc_qgsvectordataprovider.cpp"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
+#include "qgsdataproviderelevationproperties.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
@@ -33,8 +33,10 @@
 #include "qgsmessagelog.h"
 #include "qgsogrproxytextcodec.h"
 #include "qgsthreadingutils.h"
-#include <mutex>
-#include "qgsdataproviderelevationproperties.h"
+
+#include <QTextCodec>
+
+#include "moc_qgsvectordataprovider.cpp"
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options,
     Qgis::DataProviderReadFlags flags )

@@ -16,9 +16,9 @@
 #ifndef QGSMBTILES_H
 #define QGSMBTILES_H
 
-#include "qgis_core.h"
+#include <sqlite3.h>
 
-#include "sqlite3.h"
+#include "qgis_core.h"
 #include "qgssqliteutils.h"
 
 #define SIP_NO_FILE

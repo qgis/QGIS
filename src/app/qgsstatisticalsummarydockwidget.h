@@ -15,15 +15,15 @@
 #ifndef QGSSTATISTICALSUMMARYDOCKWIDGET_H
 #define QGSSTATISTICALSUMMARYDOCKWIDGET_H
 
-#include <QMap>
 #include "ui_qgsstatisticalsummarybase.h"
 
+#include "qgis_app.h"
 #include "qgsdockwidget.h"
+#include "qgsexpressioncontextgenerator.h"
 #include "qgsfeatureiterator.h"
 #include "qgstaskmanager.h"
-#include "qgsexpressioncontextgenerator.h"
 
-#include "qgis_app.h"
+#include <QMap>
 
 class QMenu;
 class QgsBrowserGuiModel;

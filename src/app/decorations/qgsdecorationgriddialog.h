@@ -20,8 +20,10 @@
 #define QGSDECORATIONGRIDDIALOG_H
 
 #include "ui_qgsdecorationgriddialog.h"
-#include <QDialog>
+
 #include "qgis_app.h"
+
+#include <QDialog>
 
 class QgsDecorationGrid;
 class QgsLineSymbol;

@@ -92,7 +92,7 @@ Sets an expression context scope used to resolve underlying actions.
 Returns an expression context scope used to resolve underlying actions.
 %End
 
-    QList<QgsAction> menuActions();
+    QList<QgsAction> menuActions() const;
 %Docstring
 Returns menu actions
 

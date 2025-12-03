@@ -17,22 +17,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsvectorlayer.h"
 #include "qgsmaptooladdfeature.h"
-
-#include "testqgsmaptoolutils.h"
 #include "qgsmaptoolshapecircle2points.h"
-#include "qgsmaptoolshapecircle3points.h"
-#include "qgsmaptoolshapecirclecenterpoint.h"
-#include "qgsmaptoolshapecircle3tangents.h"
 #include "qgsmaptoolshapecircle2tangentspoint.h"
-
+#include "qgsmaptoolshapecircle3points.h"
+#include "qgsmaptoolshapecircle3tangents.h"
+#include "qgsmaptoolshapecirclecenterpoint.h"
+#include "qgssettingsregistrycore.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "testqgsmaptoolutils.h"
 
 class TestQgsMapToolCircle : public QObject
 {

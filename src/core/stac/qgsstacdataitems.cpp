@@ -14,17 +14,18 @@
  ***************************************************************************/
 
 #include "qgsstacdataitems.h"
-#include "moc_qgsstacdataitems.cpp"
-#include "qgsstacconnection.h"
-#include "qgsstaccontroller.h"
-#include "qgsstaccatalog.h"
-#include "qgsstacitem.h"
-#include "qgsstacitemcollection.h"
-#include "qgsstaccollection.h"
-#include "qgsstaccollectionlist.h"
+
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
+#include "qgsstaccatalog.h"
+#include "qgsstaccollection.h"
+#include "qgsstaccollectionlist.h"
+#include "qgsstacconnection.h"
+#include "qgsstaccontroller.h"
+#include "qgsstacitem.h"
+#include "qgsstacitemcollection.h"
 
+#include "moc_qgsstacdataitems.cpp"
 
 constexpr int MAX_DISPLAYED_ITEMS = 20;
 

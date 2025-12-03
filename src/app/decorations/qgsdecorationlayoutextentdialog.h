@@ -19,11 +19,14 @@
 #define QGSDECORATIONLAYOUTEXTENTDIALOG_H
 
 #include "ui_qgsdecorationlayoutextentdialog.h"
-#include <QDialog>
-#include "qgis_app.h"
-#include "qgstextformat.h"
-#include "qgshelp.h"
+
 #include <memory>
+
+#include "qgis_app.h"
+#include "qgshelp.h"
+#include "qgstextformat.h"
+
+#include <QDialog>
 
 class QgsDecorationLayoutExtent;
 class QgsFillSymbol;

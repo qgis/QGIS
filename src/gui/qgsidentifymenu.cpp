@@ -13,22 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
-
 #include "qgsidentifymenu.h"
-#include "moc_qgsidentifymenu.cpp"
-#include "qgsapplication.h"
-#include "qgshighlight.h"
-#include "qgsmapcanvas.h"
+
 #include "qgsactionmenu.h"
-#include "qgsvectorlayer.h"
-#include "qgslogger.h"
-#include "qgsgui.h"
+#include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
+#include "qgshighlight.h"
 #include "qgsiconutils.h"
-#include "qgsmapmouseevent.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayeraction.h"
 #include "qgsmaplayeractionregistry.h"
+#include "qgsmapmouseevent.h"
+#include "qgsvectorlayer.h"
+
+#include <QMouseEvent>
+
+#include "moc_qgsidentifymenu.cpp"
 
 //TODO 4.0 add explicitly qobject parent to constructor
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )

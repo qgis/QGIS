@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "qgsogrfilesourcewidget.h"
+
 #include "moc_qgsogrfilesourcewidget.cpp"
+
 ///@cond PRIVATE
 
 #include "qgsproviderregistry.h"

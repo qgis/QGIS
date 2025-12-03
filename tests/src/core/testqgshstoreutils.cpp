@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QString>
-#include "qgstest.h"
 #include "qgshstoreutils.h"
+#include "qgstest.h"
+
+#include <QString>
 
 class TestQgsHstoreUtils : public QObject
 {

@@ -18,9 +18,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QtGlobal>
-#include <QSet>
+
 #include <QConcatenateTablesProxyModel>
+#include <QSet>
+#include <QtGlobal>
 
 class QgsStyle;
 class QgsStyleModel;

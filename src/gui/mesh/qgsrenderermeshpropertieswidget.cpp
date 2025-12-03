@@ -14,15 +14,16 @@
  ***************************************************************************/
 
 #include "qgsrenderermeshpropertieswidget.h"
-#include "moc_qgsrenderermeshpropertieswidget.cpp"
 
 #include "qgis.h"
 #include "qgsmapcanvas.h"
 #include "qgsmeshlayer.h"
-#include "qgsmeshrendererscalarsettingswidget.h"
 #include "qgsmeshrendereractivedatasetwidget.h"
+#include "qgsmeshrendererscalarsettingswidget.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
+
+#include "moc_qgsrenderermeshpropertieswidget.cpp"
 
 QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfixgeometryangle.h"
+
+#include "qgsgeometryanglecheck.h"
 #include "qgsgeometrycheckerror.h"
 #include "qgsgeometrycheckerutils.h"
-#include "qgsgeometryanglecheck.h"
 #include "qgsvectordataproviderfeaturepool.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

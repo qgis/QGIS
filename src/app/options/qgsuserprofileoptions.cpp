@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssettings.h"
-#include "qgsapplication.h"
+#include "qgsuserprofileoptions.h"
+
 #include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgssettings.h"
 #include "qgsuserprofilemanager.h"
 
-#include "qgsuserprofileoptions.h"
 #include "moc_qgsuserprofileoptions.cpp"
 
 //

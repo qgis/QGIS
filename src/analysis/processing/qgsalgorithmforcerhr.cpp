@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsalgorithmforcerhr.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometrycollection.h"
+
 #include "qgscurvepolygon.h"
+#include "qgsgeometrycollection.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

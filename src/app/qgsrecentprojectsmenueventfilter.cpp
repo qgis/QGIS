@@ -14,25 +14,24 @@
  ***************************************************************************/
 
 #include "qgsrecentprojectsmenueventfilter.h"
-#include "moc_qgsrecentprojectsmenueventfilter.cpp"
 
 #include "qgsapplication.h"
 #include "qgsfocuskeeper.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgsprojectlistitemdelegate.h"
-#include "qgswelcomepage.h"
-
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsprojectstorageguiregistry.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgswelcomepage.h"
 
-#include <QMenu>
 #include <QAction>
 #include <QEvent>
+#include <QMenu>
 #include <QMouseEvent>
 
+#include "moc_qgsrecentprojectsmenueventfilter.cpp"
 
 QgsRecentProjectsMenuEventFilter::QgsRecentProjectsMenuEventFilter( QgsWelcomePage *welcomePage, QObject *parent )
   : QObject( parent ), mWelcomePage( welcomePage )

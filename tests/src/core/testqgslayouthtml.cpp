@@ -16,18 +16,18 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayoutitemhtml.h"
-#include "qgslayoutframe.h"
 #include "qgsfontutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsrelationmanager.h"
-#include "qgsvectordataprovider.h"
-#include "qgsproject.h"
 #include "qgslayout.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemhtml.h"
 #include "qgslayoutreportcontext.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QObject>
-#include "qgstest.h"
 
 class TestQgsLayoutHtml : public QgsTest
 {

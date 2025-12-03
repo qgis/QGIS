@@ -14,12 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QLineEdit>
-
 #include "qgslocaleawarenumericlineeditdelegate.h"
-#include "moc_qgslocaleawarenumericlineeditdelegate.cpp"
+
 #include "qgsdoublevalidator.h"
 #include "qgsguiutils.h"
+
+#include <QLineEdit>
+
+#include "moc_qgslocaleawarenumericlineeditdelegate.cpp"
 
 /// @cond PRIVATE
 

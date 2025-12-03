@@ -11,6 +11,7 @@
 
 
 
+
 class QgsOWSSourceSelect : QgsAbstractDataSourceWidget
 {
 %Docstring(signature="appended")

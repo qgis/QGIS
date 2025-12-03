@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgshanadataitems.h"
 #include "qgshanadataitemguiprovider.h"
-#include "qgshanasourceselect.h"
+#include "qgshanadataitems.h"
 #include "qgshanaprovider.h"
+#include "qgshanasourceselect.h"
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
 

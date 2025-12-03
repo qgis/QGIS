@@ -16,11 +16,12 @@
 #ifndef QGSLAYOUTVIEWTOOLZOOM_H
 #define QGSLAYOUTVIEWTOOLZOOM_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgslayoutviewtool.h"
-#include "qgslayoutviewrubberband.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgslayoutviewrubberband.h"
+#include "qgslayoutviewtool.h"
 
 /**
  * \ingroup gui

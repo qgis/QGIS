@@ -16,8 +16,8 @@
 #ifndef QGSLAYOUTVIEWTOOLPAN_H
 #define QGSLAYOUTVIEWTOOLPAN_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgslayoutviewtool.h"
 
 /**

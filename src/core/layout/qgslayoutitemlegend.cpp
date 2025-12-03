@@ -14,27 +14,33 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgslayoutitemlegend.h"
+
 #include <limits>
 
-#include "qgslayoutitemlegend.h"
-#include "moc_qgslayoutitemlegend.cpp"
-#include "qgslayoutitemregistry.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutmodel.h"
+#include "qgscolorutils.h"
+#include "qgsexpressioncontext.h"
 #include "qgslayertree.h"
-#include "qgslayertreemodel.h"
 #include "qgslayertreefilterproxymodel.h"
+#include "qgslayertreefiltersettings.h"
+#include "qgslayertreemodel.h"
+#include "qgslayertreemodellegendnode.h"
+#include "qgslayertreeutils.h"
+#include "qgslayout.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutmodel.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayoututils.h"
 #include "qgslegendrenderer.h"
 #include "qgslegendstyle.h"
 #include "qgslogger.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmapsettings.h"
 #include "qgsproject.h"
-#include "qgscolorutils.h"
-#include "qgslayertreeutils.h"
-#include "qgslayoututils.h"
-#include "qgslayout.h"
+#include "qgsreferencedgeometry.h"
 #include "qgsstyleentityvisitor.h"
-#include "qgslayertreemodellegendnode.h"
 #include "qgsvectorlayer.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
@@ -48,7 +54,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
-#include "qgsexpressioncontext.h"
+
+#include "moc_qgslayoutitemlegend.cpp"
 
 //
 // QgsLegendFilterProxyModel

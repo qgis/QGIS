@@ -47,13 +47,13 @@ Construct a dialog for importing identities
 :param parent: Parent widget
 %End
 
-    QgsAuthImportIdentityDialog::IdentityType identityType();
+    QgsAuthImportIdentityDialog::IdentityType identityType() const;
 %Docstring
 Gets identity type
 %End
 
 
-    const QgsPkiBundle pkiBundleToImport();
+    const QgsPkiBundle pkiBundleToImport() const;
 %Docstring
 Gets certificate/key bundle to be imported as a PKI bundle object
 %End

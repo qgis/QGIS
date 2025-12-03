@@ -19,14 +19,14 @@
 #ifndef QGS_GEOMETRY_CHECKER_H
 #define QGS_GEOMETRY_CHECKER_H
 
+#include "qgis_analysis.h"
+#include "qgsfeatureid.h"
+#include "qgsfeedback.h"
+
 #include <QFuture>
 #include <QList>
 #include <QMutex>
 #include <QStringList>
-
-#include "qgis_analysis.h"
-#include "qgsfeedback.h"
-#include "qgsfeatureid.h"
 
 typedef qint64 QgsFeatureId;
 class QgsGeometryCheckContext;

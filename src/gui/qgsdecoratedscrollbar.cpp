@@ -14,13 +14,16 @@
  ***************************************************************************/
 
 #include "qgsdecoratedscrollbar.h"
-#include "moc_qgsdecoratedscrollbar.cpp"
-#include <QAbstractScrollArea>
-#include <QScrollBar>
-#include <QPainter>
-#include <QEvent>
-#include <QStyleOptionSlider>
+
 #include <cmath>
+
+#include <QAbstractScrollArea>
+#include <QEvent>
+#include <QPainter>
+#include <QScrollBar>
+#include <QStyleOptionSlider>
+
+#include "moc_qgsdecoratedscrollbar.cpp"
 
 ///@cond PRIVATE
 

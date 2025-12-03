@@ -13,7 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgeopackagedataitems.h"
+
 #include "moc_qgsgeopackagedataitems.cpp"
+
 ///@cond PRIVATE
 
 #include "qgsgeopackagedataitems.h"

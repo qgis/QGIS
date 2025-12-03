@@ -15,11 +15,14 @@
  ***************************************************************************/
 
 #include "qgstextwidgetwrapper.h"
-#include "moc_qgstextwidgetwrapper.cpp"
-#include "qgsexpressioncontextutils.h"
+
 #include "qgsattributeform.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsvaluerelationfieldformatter.h"
+
 #include <QScreen>
+
+#include "moc_qgstextwidgetwrapper.cpp"
 
 QgsTextWidgetWrapper::QgsTextWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )

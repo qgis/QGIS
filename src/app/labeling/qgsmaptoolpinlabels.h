@@ -18,8 +18,8 @@
 #ifndef QGSMAPTOOLPINLABELS_H
 #define QGSMAPTOOLPINLABELS_H
 
-#include "qgsmaptoollabel.h"
 #include "qgis_app.h"
+#include "qgsmaptoollabel.h"
 
 class QgsRubberBand;
 class QgsLabelPosition;

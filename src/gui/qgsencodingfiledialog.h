@@ -16,9 +16,10 @@
 #ifndef QGSENCODINGFILEDIALOG_H
 #define QGSENCODINGFILEDIALOG_H
 
-#include <QFileDialog>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QFileDialog>
 
 class QComboBox;
 class QPushButton;
@@ -40,7 +41,7 @@ class GUI_EXPORT QgsEncodingFileDialog : public QFileDialog
     //! Adds a 'Cancel All' button for the user to click
     void addCancelAll();
     //! Returns TRUE if the user clicked 'Cancel All'
-    bool cancelAll();
+    bool cancelAll() const;
 
   public slots:
     void saveUsedEncoding();

@@ -16,10 +16,12 @@
 #ifndef QGSABSTRACTTERRAINSETTINGS_H
 #define QGSABSTRACTTERRAINSETTINGS_H
 
+#include <memory>
+
 #include "qgis_3d.h"
 #include "qgis_sip.h"
+
 #include <QString>
-#include <memory>
 
 class QDomElement;
 class QgsReadWriteContext;

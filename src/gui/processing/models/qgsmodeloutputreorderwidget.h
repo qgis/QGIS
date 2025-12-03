@@ -18,10 +18,12 @@
 
 #define SIP_NO_FILE
 
+#include "ui_qgsmodeloutputreorderwidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsmodeloutputreorderwidgetbase.h"
 #include "qgsprocessingmodeloutput.h"
+
 #include <QDialog>
 
 class QStandardItemModel;

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsetvariable.h"
+
 #include "qgsexpressioncontextutils.h"
 
 ///@cond PRIVATE

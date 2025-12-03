@@ -16,12 +16,16 @@
  ***************************************************************************/
 
 #include "qgslocator.h"
-#include "moc_qgslocator.cpp"
+
+#include <functional>
+#include <memory>
+
 #include "qgsmessagelog.h"
 #include "qgssettingsentryimpl.h"
 
 #include <QtConcurrent>
-#include <functional>
+
+#include "moc_qgslocator.cpp"
 
 const QgsSettingsEntryBool *QgsLocator::settingsLocatorFilterEnabled = new QgsSettingsEntryBool( QStringLiteral( "enabled" ), sTreeLocatorFilters, true, QObject::tr( "Locator filter enabled" ) );
 
@@ -145,7 +149,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   // to ensure that filters ALWAYS receive a valid feedback
   if ( !feedback )
   {
-    mOwnedFeedback.reset( new QgsFeedback() );
+    mOwnedFeedback = std::make_unique<QgsFeedback>( );
     feedback = mOwnedFeedback.get();
   }
   else

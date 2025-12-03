@@ -17,10 +17,10 @@
 
 // TODO: add SimpleCrypt or QgsAuthCrypto for (en|de)crypting client secret key
 
+#include "qgis.h"
+
 #include <QObject>
 #include <QVariantMap>
-
-#include "qgis.h"
 
 /**
  * The QgsAuthOAuth2Config class stores the configuration for OAuth2 authentication plugin

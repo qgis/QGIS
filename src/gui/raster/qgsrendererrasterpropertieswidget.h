@@ -15,15 +15,14 @@
 #ifndef QGSRENDERERRASTERPROPERTIESDIALOG_H
 #define QGSRENDERERRASTERPROPERTIESDIALOG_H
 
-#include <QObject>
-#include <QDialog>
-
 #include "ui_qgsrendererrasterpropswidgetbase.h"
 
+#include "qgis_gui.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsresamplingutils.h"
-#include "qgis_gui.h"
 
+#include <QDialog>
+#include <QObject>
 
 class QgsRasterLayer;
 class QgsMapCanvas;

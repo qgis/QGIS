@@ -17,13 +17,12 @@
 #ifndef QGSAUTHESRITOKENMETHOD_H
 #define QGSAUTHESRITOKENMETHOD_H
 
-#include <QObject>
-#include <QMutex>
-
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
 
+#include <QMutex>
+#include <QObject>
 
 class QgsAuthEsriTokenMethod : public QgsAuthMethod
 {

@@ -13,21 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QDir>
-#include <QDirIterator>
-#include <QMenu>
-#include <QFileDialog>
-#include <QHeaderView>
-
 #include "qgspostgresimportprojectdialog.h"
-#include "qgsproject.h"
-#include "qgsguiutils.h"
+
 #include "qgsapplication.h"
+#include "qgsguiutils.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresutils.h"
+#include "qgsproject.h"
+
+#include <QDir>
+#include <QDirIterator>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QMenu>
+#include <QVBoxLayout>
+
 #include "moc_qgspostgresimportprojectdialog.cpp"
 
 QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( const QString connectionName, const QString targetSchema, QWidget *parent )

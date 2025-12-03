@@ -15,10 +15,12 @@
 #ifndef QGSRELATIONADDDLG_H
 #define QGSRELATIONADDDLG_H
 
-#include <QDialog>
-#include "qgis_app.h"
 #include "ui_qgsrelationmanageradddialogbase.h"
+
 #include "qgis.h"
+#include "qgis_app.h"
+
+#include <QDialog>
 
 class QDialogButtonBox;
 class QComboBox;

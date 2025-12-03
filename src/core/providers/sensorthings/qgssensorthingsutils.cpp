@@ -14,20 +14,22 @@
  ***************************************************************************/
 
 #include "qgssensorthingsutils.h"
+
+#include <nlohmann/json.hpp>
+
+#include "qgsblockingnetworkrequest.h"
 #include "qgsfield.h"
 #include "qgsfields.h"
-#include "qgswkbtypes.h"
-#include "qgssetrequestinitiator_p.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsblockingnetworkrequest.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsrectangle.h"
-#include <QUrl>
+#include "qgssetrequestinitiator_p.h"
+#include "qgswkbtypes.h"
+
 #include <QNetworkRequest>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
-#include <nlohmann/json.hpp>
-
+#include <QUrl>
 
 //
 // QgsSensorThingsExpansionDefinition

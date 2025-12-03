@@ -20,9 +20,10 @@
 #define QGSMERGEATTRIBUTESDIALOG_H
 
 #include "ui_qgsmergeattributesdialogbase.h"
+
+#include "qgis_app.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
-#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;

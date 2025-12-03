@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmgeometrybyexpression.h"
+
 #include "qgsvariantutils.h"
 
 ///@cond PRIVATE

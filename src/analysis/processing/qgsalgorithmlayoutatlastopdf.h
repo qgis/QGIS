@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgslayoutexporter.h"
+#include "qgsprocessingalgorithm.h"
 
 class QgsLayoutAtlas;
 

@@ -15,22 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgstemporalcontrollerwidget.h"
-#include "moc_qgstemporalcontrollerwidget.cpp"
+
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsmaplayermodel.h"
-#include "qgsproject.h"
-#include "qgsprojecttimesettings.h"
-#include "qgstemporalmapsettingswidget.h"
-#include "qgstemporalutils.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
+#include "qgsproject.h"
+#include "qgsprojecttimesettings.h"
 #include "qgsrasterlayer.h"
+#include "qgstemporalmapsettingswidget.h"
+#include "qgstemporalutils.h"
 #include "qgsunittypes.h"
 
 #include <QAction>
 #include <QMenu>
 #include <QRegularExpression>
+
+#include "moc_qgstemporalcontrollerwidget.cpp"
 
 QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -125,7 +129,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
 
   mMapLayerModel = new QgsMapLayerModel( this );
 
-  mRangeMenu.reset( new QMenu( this ) );
+  mRangeMenu = std::make_unique<QMenu>( this );
 
   mRangeSetToAllLayersAction = new QAction( tr( "Set to Full Range" ), mRangeMenu.get() );
   mRangeSetToAllLayersAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRefresh.svg" ) ) );
@@ -138,7 +142,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
 
   mRangeMenu->addSeparator();
 
-  mRangeLayersSubMenu.reset( new QMenu( tr( "Set to Single Layer's Range" ), mRangeMenu.get() ) );
+  mRangeLayersSubMenu = std::make_unique<QMenu>( tr( "Set to Single Layer's Range" ), mRangeMenu.get() );
   mRangeLayersSubMenu->setEnabled( false );
   mRangeMenu->addMenu( mRangeLayersSubMenu.get() );
   connect( mRangeMenu.get(), &QMenu::aboutToShow, this, &QgsTemporalControllerWidget::aboutToShowRangeMenu );

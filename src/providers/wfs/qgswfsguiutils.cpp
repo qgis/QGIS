@@ -14,7 +14,9 @@
  ***************************************************************************/
 
 #include "qgswfsguiutils.h"
+
 #include "qgswfsgetcapabilities.h"
+
 #include <QMessageBox>
 
 void QgsWfsGuiUtils::displayErrorMessageOnFailedCapabilities( QgsWfsGetCapabilitiesRequest *request, QWidget *parent )

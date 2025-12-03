@@ -26,9 +26,11 @@ SIP_IF_MODULE( HAVE_SFCGAL_SIP )
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
-#include "qgspoint.h"
 #include "qgslinestring.h"
+#include "qgspoint.h"
 #include "qgssfcgalengine.h"
+
+#include <QtGui/qmatrix4x4.h>
 
 /**
  * Wraps SFCGAL geometry object.
@@ -45,7 +47,7 @@ class CORE_EXPORT QgsSfcgalGeometry
     QgsSfcgalGeometry();
 
     /**
-     * Constructor with SFCGAL shared ptr.
+     * Constructor with SFCGAL shared ptr \a sfcgalGeom.
      *
      * Will copy the shared ptr.
      */
@@ -112,6 +114,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \return type of the geometry as a WKB type (point / linestring / polygon etc.)
      *
+     * \throws QgsNotSupportedException when working with primitive and SFCGAL is less than 2.3.
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
     Qgis::WkbType wkbType() const SIP_THROW( QgsSfcgalException );
@@ -122,7 +125,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
      *
-     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
+     * \throws QgsNotSupportedException when working with primitive and SFCGAL is less than 2.3.
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
     QString geometryType() const SIP_THROW( QgsNotSupportedException, QgsSfcgalException ) SIP_HOLDGIL;
@@ -316,17 +319,35 @@ class CORE_EXPORT QgsSfcgalGeometry
 
     /**
      * Computes the area of \a geom.
+     * \param withDiscretization If true, the area is computed
+     * using the real discretization with radial segments. If false, the area is
+     * computed for a perfect primitive. Defaults to false.
      * \return geometry area
      *
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    double area() const SIP_THROW( QgsSfcgalException );
+    double area( bool withDiscretization = false ) const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Computes the volume of the primitive \a prim.
+     * \param withDiscretization If true, the volume is computed
+     * using the real discretization with radial segments. If false, the volume is
+     * computed for a perfect primitive. Defaults to false.
+     * \return primitive volume
+     *
+     * \pre apply only on primitive
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     */
+    double volume( bool withDiscretization = false ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Computes the max length of \a geom.
      * \return geometry length
      *
      * This method requires a QGIS build based on SFCGAL 2.1 or later.
+     *
+     * \pre apply only on geometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on SFCGAL 2.0.
      * \throws QgsSfcgalException if an error was encountered during the operation
@@ -407,6 +428,18 @@ class CORE_EXPORT QgsSfcgalGeometry
     std::unique_ptr<QgsSfcgalGeometry> rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint() ) const SIP_THROW( QgsSfcgalException );
 
     /**
+     * Apply 3D matrix transform \a mat to geometry \a geom
+     *
+     * \param mat 4x4 transformation matrix (translation is defined of the 4th column)
+     * \param errorMsg Error message returned by SFGCAL
+     * \return new geometry
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    std::unique_ptr<QgsSfcgalGeometry> transform( const QMatrix4x4 &mat ) const SIP_THROW( QgsSfcgalException );
+
+    /**
      * Checks if \a otherGeom intersects this.
      *
      * \param otherGeom geometry to perform the operation
@@ -434,7 +467,7 @@ class CORE_EXPORT QgsSfcgalGeometry
      *
      * \throws QgsSfcgalException if an error was encountered during the operation
      */
-    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom )  const SIP_THROW( QgsSfcgalException );
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom ) const SIP_THROW( QgsSfcgalException );
 
     /**
      * Calculate the intersection of this and \a otherGeom.
@@ -581,6 +614,69 @@ class CORE_EXPORT QgsSfcgalGeometry
      */
     std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const SIP_THROW( QgsSfcgalException );
 
+    // ============= PRIMITIVE
+
+    /**
+     * Constructor with SFCGAL shared ptr \a sfcgalPrim.
+     *
+     * Will copy the shared ptr.
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    SIP_SKIP QgsSfcgalGeometry( sfcgal::shared_prim sfcgalPrim, sfcgal::primitiveType type );
+
+    /**
+     * Create a cube primitive
+     * \param size the cube size
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    static std::unique_ptr<QgsSfcgalGeometry> createCube( double size ) SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Returns the list of available parameter description for this primitive.
+     *
+     * Parameter description is a pair of string: name and type. Type can be one of int, double, QgsPoint, QgsVector3D
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    QList<std::pair<QString, QString>> primitiveParameters() const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Returns the parameter value according to its \a name
+     *
+     * \param name parameter name
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    QVariant primitiveParameter( const QString &name ) const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Updates parameter value
+     *
+     * \param name parameter name
+     * \param value new parameter value
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    void primitiveSetParameter( const QString &name, const QVariant &value ) SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Converts the current primitive to geometry. Works only with primitives.
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface() const SIP_THROW( QgsSfcgalException );
+
+    /**
+     * Returns the primitive transform matrix.
+     *
+     * \throws QgsSfcgalException if an error was encountered during the operation
+     * \throws QgsNotSupportedException on QGIS builds based on SFCGAL < 2.3.
+     */
+    QMatrix4x4 primitiveTransform() const SIP_THROW( QgsSfcgalException );
+
   protected:
 
     /**
@@ -589,7 +685,21 @@ class CORE_EXPORT QgsSfcgalGeometry
     void clearCache() const;
 
   private:
+    //! \return mSfcgalGeom or geometry obtains from transformed mSfcgalPrim
+    sfcgal::shared_geom workingGeom() const;
+
     sfcgal::shared_geom mSfcgalGeom;
+    bool mIsPrimitive = false;
+
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+    void setPrimitiveTranslate( const QgsVector3D &translation );
+    void setPrimitiveScale( const QgsVector3D &scaleFactor, const QgsPoint &center );
+    void setPrimitiveRotation( double angle, const QgsVector3D &axisVector, const QgsPoint &center );
+
+    sfcgal::shared_prim mSfcgalPrim;
+    sfcgal::primitiveType mPrimType;
+    QMatrix4x4 mPrimTransform;
+#endif
 };
 
 

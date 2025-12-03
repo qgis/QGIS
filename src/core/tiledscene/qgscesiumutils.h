@@ -19,11 +19,12 @@
 #ifndef QGSCESIUMUTILS_H
 #define QGSCESIUMUTILS_H
 
+#include <nlohmann/json_fwd.hpp>
+
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsbox3d.h"
 #include "qgsvector3d.h"
-#include "qgis_sip.h"
-#include <nlohmann/json_fwd.hpp>
 
 #ifndef SIP_RUN
 using namespace nlohmann;

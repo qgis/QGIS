@@ -13,21 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsziputils.h"
+
 #include <fstream>
-
-#include <QFileInfo>
-#include <QDir>
-
-#include "zip.h"
-
+#include <iostream>
+#include <zip.h>
 #include <zlib.h>
 
-#include "qgsmessagelog.h"
-#include "qgsziputils.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 
-#include <iostream>
-
+#include <QDir>
+#include <QFileInfo>
 
 bool QgsZipUtils::isZipFile( const QString &filename )
 {

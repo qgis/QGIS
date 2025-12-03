@@ -18,16 +18,16 @@
 #ifndef QGSMESHCALCULATOR_H
 #define QGSMESHCALCULATOR_H
 
-#include <QString>
-#include <QVector>
-#include <QStringList>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsrectangle.h"
 #include "qgsgeometry.h"
 #include "qgsmeshdataset.h"
 #include "qgsprovidermetadata.h"
+#include "qgsrectangle.h"
+
+#include <QString>
+#include <QStringList>
+#include <QVector>
 
 class QgsMeshLayer;
 class QgsFeedback;

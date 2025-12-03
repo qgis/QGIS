@@ -15,17 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsblockingnetworkrequest.h"
 #include "qgsserverparameters.h"
-#include "moc_qgsserverparameters.cpp"
-#include "qgsserverexception.h"
+
+#include "qgsblockingnetworkrequest.h"
 #include "qgsmessagelog.h"
+#include "qgsserverexception.h"
 #include "qgsvariantutils.h"
-#include <QObject>
-#include <QUrl>
+
+#include <QEventLoop>
 #include <QNetworkReply>
 #include <QNetworkRequest>
-#include <QEventLoop>
+#include <QObject>
+#include <QUrl>
+
+#include "moc_qgsserverparameters.cpp"
 
 //
 // QgsServerParameterDefinition

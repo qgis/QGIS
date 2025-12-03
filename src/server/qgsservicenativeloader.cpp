@@ -17,15 +17,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QLibrary>
-#include <QDir>
-#include <QDebug>
-
 #include "qgsservicenativeloader.h"
-#include "qgsservicemodule.h"
-#include "qgsmessagelog.h"
-#include "qgis.h"
 
+#include "qgis.h"
+#include "qgsmessagelog.h"
+#include "qgsservicemodule.h"
+
+#include <QDebug>
+#include <QDir>
+#include <QLibrary>
 
 typedef void unloadHook_t( QgsServiceModule * );
 

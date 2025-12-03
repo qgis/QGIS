@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprojectutils.h"
+
 #include "qgsaction.h"
 #include "qgsactionmanager.h"
 #include "qgsapplication.h"

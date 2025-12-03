@@ -10,7 +10,6 @@
 
 
 
-
 class QgsPointCloudRenderContext
 {
 %Docstring(signature="appended")

@@ -14,7 +14,12 @@
  ***************************************************************************/
 
 #include "qgsmaptoolcapture.h"
-#include "moc_qgsmaptoolcapture.cpp"
+
+#include <algorithm>
+#include <memory>
+
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
@@ -23,27 +28,24 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsmapmouseevent.h"
-#include "qgspolygon.h"
-#include "qgsrubberband.h"
-#include "qgssnapindicator.h"
-#include "qgsvectorlayer.h"
-#include "qgsvertexmarker.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsapplication.h"
-#include "qgsproject.h"
 #include "qgsmaptoolcapturerubberband.h"
 #include "qgsmaptoolshapeabstract.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgspolygon.h"
+#include "qgsproject.h"
+#include "qgsrubberband.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssnapindicator.h"
 #include "qgssnappingutils.h"
-#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsvectorlayer.h"
+#include "qgsvertexmarker.h"
 
 #include <QAction>
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
-#include <algorithm>
-#include <memory>
 
+#include "moc_qgsmaptoolcapture.cpp"
 
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
@@ -52,7 +54,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 {
   mTempRubberBand.setParentOwner( canvas );
 
-  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+  mSnapIndicator = std::make_unique<QgsSnapIndicator>( canvas );
 
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
 

@@ -16,16 +16,16 @@
  ***************************************************************************/
 
 
-#include "qgsvectorlayer.h"
+#include "qgsdxfexport.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayerfeatureiterator.h"
-#include "qgsrenderer.h"
-#include "qgsvectorlayerlabeling.h"
 #include "qgslabelsink.h"
 #include "qgsmaplayerstyle.h"
 #include "qgsrendercontext.h"
-#include "qgsdxfexport.h"
+#include "qgsrenderer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsvectorlayerlabeling.h"
 
 /**
  * Holds information about each layer in a DXF job.

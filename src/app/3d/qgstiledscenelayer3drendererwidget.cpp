@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayer3drendererwidget.h"
-#include "moc_qgstiledscenelayer3drendererwidget.cpp"
 
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
 
 #include <QBoxLayout>
 
+#include "moc_qgstiledscenelayer3drendererwidget.cpp"
 
 QgsTiledSceneLayer3DPropertiesWidget::QgsTiledSceneLayer3DPropertiesWidget( QWidget *parent )
   : QWidget( parent )

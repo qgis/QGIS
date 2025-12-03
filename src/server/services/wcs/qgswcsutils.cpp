@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgswcsutils.h"
+
 #include "qgsconfigcache.h"
-#include "qgsserverprojectutils.h"
-#include "qgscoordinatetransform.h"
-#include "qgsproject.h"
-#include "qgsexception.h"
-#include "qgsrasterlayer.h"
-#include "qgsmapserviceexception.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgsmapserviceexception.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
+#include "qgsserverprojectutils.h"
 
 namespace QgsWcs
 {

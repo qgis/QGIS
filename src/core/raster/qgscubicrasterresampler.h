@@ -18,12 +18,12 @@
 #ifndef QGSCUBICRASTERRESAMPLER_H
 #define QGSCUBICRASTERRESAMPLER_H
 
-#include "qgsrasterresampler.h"
-#include "qgis_sip.h"
 #include "qgis.h"
-#include <QColor>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsrasterresampler.h"
+
+#include <QColor>
 
 /**
  * \ingroup core

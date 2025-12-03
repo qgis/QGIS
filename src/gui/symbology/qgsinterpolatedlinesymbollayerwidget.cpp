@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsinterpolatedlinesymbollayerwidget.h"
-#include "moc_qgsinterpolatedlinesymbollayerwidget.cpp"
 
-#include "qgsvectorlayer.h"
 #include "qgsdoublevalidator.h"
+#include "qgsvectorlayer.h"
 
+#include "moc_qgsinterpolatedlinesymbollayerwidget.cpp"
 
 QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent )
   : QgsSymbolLayerWidget( parent, layer )

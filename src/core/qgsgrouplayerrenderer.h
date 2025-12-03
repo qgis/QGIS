@@ -20,13 +20,15 @@
 
 #define SIP_NO_FILE
 
+#include <memory>
+#include <tuple>
+#include <vector>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmaplayerrenderer.h"
+
 #include <QPainter>
-#include <tuple>
-#include <vector>
-#include <memory>
 
 class QgsGroupLayer;
 class QgsFeedback;

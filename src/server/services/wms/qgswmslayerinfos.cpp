@@ -18,16 +18,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsserverprojectutils.h"
-#include "qgscoordinatetransform.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgswmslayerinfos.h"
-#include "qgsmessagelog.h"
-#include "qgsserverinterface.h"
-#include "qgsmaplayerstylemanager.h"
 
 #include <algorithm>
+
+#include "qgscoordinatetransform.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
+#include "qgsserverinterface.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
 
 QgsRectangle QgsWmsLayerInfos::transformExtent(
   const QgsRectangle &extent,

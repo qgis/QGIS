@@ -16,8 +16,8 @@
 #ifndef QGSGEOMETRYGENERATORSYMBOLLAYER_H
 #define QGSGEOMETRYGENERATORSYMBOLLAYER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 class QgsFillSymbol;

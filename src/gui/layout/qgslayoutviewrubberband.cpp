@@ -15,13 +15,16 @@
 
 
 #include "qgslayoutviewrubberband.h"
-#include "moc_qgslayoutviewrubberband.cpp"
+
 #include "qgslayout.h"
 #include "qgslayoutview.h"
 #include "qgsunittypes.h"
-#include <QGraphicsRectItem>
+
 #include <QGraphicsEllipseItem>
 #include <QGraphicsPolygonItem>
+#include <QGraphicsRectItem>
+
+#include "moc_qgslayoutviewrubberband.cpp"
 
 QgsLayoutViewRubberBand::QgsLayoutViewRubberBand( QgsLayoutView *view )
   : mView( view )

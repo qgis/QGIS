@@ -16,12 +16,12 @@
 #ifndef QGSKEYVALUEWIDGET_H
 #define QGSKEYVALUEWIDGET_H
 
-#include "qgstablewidgetbase.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgstablewidgetbase.h"
+
 #include <QAbstractTableModel>
 #include <QMap>
-#include "qgis_gui.h"
-
 
 #ifndef SIP_RUN
 ///@cond PRIVATE

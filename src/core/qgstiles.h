@@ -16,13 +16,12 @@
 #ifndef QGSTILES_H
 #define QGSTILES_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
-#include "qgis.h"
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsreadwritecontext.h"
+#include "qgsrectangle.h"
 
 class QgsRenderContext;
 

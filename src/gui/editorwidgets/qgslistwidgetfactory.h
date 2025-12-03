@@ -16,8 +16,8 @@
 #ifndef QGSLISTWIDGETFACTORY_H
 #define QGSLISTWIDGETFACTORY_H
 
-#include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
 
 SIP_NO_FILE
 

@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgs3dsceneexporter.h"
-#include "moc_qgs3dsceneexporter.cpp"
 
 #include <QVector>
-#include <Qt3DCore/QEntity>
 #include <Qt3DCore/QComponent>
+#include <Qt3DCore/QEntity>
 #include <Qt3DCore/QNode>
+
+#include "moc_qgs3dsceneexporter.cpp"
 
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>

@@ -18,14 +18,14 @@
 #ifndef QGSLOCATORFILTER_H
 #define QGSLOCATORFILTER_H
 
-#include <QIcon>
-#include <QString>
-#include <QVariant>
-
 #include "qgis_core.h"
 #include "qgslocatorcontext.h"
 #include "qgslogger.h"
 #include "qgssettingstree.h"
+
+#include <QIcon>
+#include <QString>
+#include <QVariant>
 
 class QgsFeedback;
 class QgsLocatorFilter;

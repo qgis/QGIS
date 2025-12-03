@@ -17,15 +17,16 @@
 
 #include "qgis_gui.h"
 #include "qgsfeature.h"
-#include "qgsrendercontext.h"
-#include "qgsmapcanvasitem.h"
 #include "qgsgeometry.h"
+#include "qgsmapcanvasitem.h"
+#include "qgsrendercontext.h"
+
 #include <QBrush>
 #include <QColor>
 #include <QList>
-#include <QPen>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPen>
 #include <QPointer>
 
 class QgsMapLayer;

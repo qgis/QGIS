@@ -29,15 +29,15 @@
 
 #define SIP_NO_FILE
 
-#include "qgsfieldconstraints.h"
-#include "qgseditorwidgetsetup.h"
-#include "qgsdefaultvalue.h"
-#include "qgsfield.h"
 #include "qgis.h"
+#include "qgsdefaultvalue.h"
+#include "qgseditorwidgetsetup.h"
+#include "qgsfield.h"
+#include "qgsfieldconstraints.h"
 
+#include <QSharedData>
 #include <QString>
 #include <QVariant>
-#include <QSharedData>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

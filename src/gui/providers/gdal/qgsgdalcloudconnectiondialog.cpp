@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgsgdalcloudconnectiondialog.h"
-#include "moc_qgsgdalcloudconnectiondialog.cpp"
+
+#include "qgsgdalcloudconnection.h"
+#include "qgsgdalcredentialoptionswidget.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsgdalcredentialoptionswidget.h"
-#include "qgsgdalcloudconnection.h"
 
-#include <QPushButton>
 #include <QMessageBox>
+#include <QPushButton>
+
+#include "moc_qgsgdalcloudconnectiondialog.cpp"
 
 ///@cond PRIVATE
 

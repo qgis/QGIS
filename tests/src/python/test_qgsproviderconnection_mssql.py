@@ -13,6 +13,7 @@ __copyright__ = "Copyright 2019, The QGIS Project"
 
 import os
 
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
     QgsDataSourceUri,
     QgsProviderRegistry,
@@ -22,6 +23,7 @@ from qgis.core import (
     QgsFields,
     QgsAbstractDatabaseProviderConnection,
     QgsProviderConnectionException,
+    QgsField,
 )
 from qgis.testing import unittest
 
@@ -445,6 +447,91 @@ class TestPyQgsProviderConnectionMssql(
         self.assertEqual(res_ds.schema(), "dest_schema")
         self.assertEqual(res_ds.geometryColumn(), "geometry")
         self.assertEqual(res_ds.keyColumn(), "pk")
+
+    def test_move_table_to_schema(self):
+        """Test that table can be moved to another schema."""
+
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.uri, {})
+
+        conn.executeSql("DROP TABLE IF EXISTS qgis_test.table_to_move")
+        conn.executeSql(
+            """CREATE TABLE qgis_test.table_to_move
+            (pk INTEGER PRIMARY KEY,cnt integer, name nvarchar(max), name2 nvarchar(max)
+        );"""
+        )
+
+        try:
+            conn.dropSchema("qgis_schema_test", True)
+        except QgsProviderConnectionException:
+            # likely schema does not exist
+            pass
+
+        conn.executeSql("CREATE SCHEMA qgis_schema_test;")
+
+        # test table exist
+        table = conn.table("qgis_test", "table_to_move")
+        self.assertEqual(table.tableName(), "table_to_move")
+
+        # test fail in move - target schema does not exist
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.moveTableToSchema(
+                "qgis_test",
+                "table_to_move",
+                "schema_test_non_existent",
+            )
+
+        # test fail in move - table does not exist
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.moveTableToSchema(
+                "qgis_test",
+                "table_to_move_non_existent",
+                "schema_test",
+            )
+
+        # move table to another schema
+        conn.moveTableToSchema(
+            "qgis_test",
+            "table_to_move",
+            "qgis_schema_test",
+        )
+
+        # test moved table exist in the schema
+        table = conn.table("qgis_schema_test", "table_to_move")
+        self.assertEqual(table.tableName(), "table_to_move")
+
+    def test_rename_field(self):
+        """Test rename fields"""
+        md = QgsProviderRegistry.instance().providerMetadata("mssql")
+        conn = md.createConnection(self.uri, {})
+
+        conn.dropVectorTable("qgis_test", "test_rename_field")
+
+        fields = QgsFields()
+        fields.append(QgsField("field1", QVariant.String))
+        fields.append(QgsField("field2", QVariant.String))
+        fields.append(QgsField("field3", QVariant.String))
+
+        conn.createVectorTable(
+            "qgis_test",
+            "test_rename_field",
+            fields,
+            Qgis.WkbType.PolygonZ,
+            QgsCoordinateReferenceSystem(),
+            True,
+            {},
+        )
+
+        fields = conn.fields("qgis_test", "test_rename_field")
+        self.assertEqual(fields.names(), ["qgs_fid", "field1", "field2", "field3"])
+
+        conn.renameField("qgis_test", "test_rename_field", "field1", "new_field1")
+
+        fields = conn.fields("qgis_test", "test_rename_field")
+        self.assertEqual(fields.names(), ["qgs_fid", "new_field1", "field2", "field3"])
+
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.renameField("qgis_test", "test_rename_field", "xxx", "yyy")
 
 
 if __name__ == "__main__":

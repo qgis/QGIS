@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgseventtracing.h"
 #include "qgspointcloudlayerundocommand.h"
-#include "qgspointcloudeditingindex.h"
+
 #include "qgscopcpointcloudindex.h"
+#include "qgseventtracing.h"
+#include "qgspointcloudeditingindex.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayereditutils.h"
 
 #include <QtConcurrentMap>
-
 
 QgsPointCloudLayerUndoCommand::QgsPointCloudLayerUndoCommand( QgsPointCloudLayer *layer )
   : mLayer( layer )

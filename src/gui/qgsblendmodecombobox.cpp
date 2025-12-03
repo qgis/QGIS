@@ -15,15 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsblendmodecombobox.h"
-#include "moc_qgsblendmodecombobox.cpp"
+
+#include "qgis.h"
 #include "qgspainting.h"
 
 #include <QAbstractItemView>
+#include <QLineEdit>
 #include <QLocale>
 #include <QSettings>
-#include <QLineEdit>
+
+#include "moc_qgsblendmodecombobox.cpp"
 
 QgsBlendModeComboBox::QgsBlendModeComboBox( QWidget *parent )
   : QComboBox( parent )

@@ -17,12 +17,12 @@
 #ifndef QGSAUTHQGSAUTHHMACSHA256EDIT_H
 #define QGSAUTHQGSAUTHHMACSHA256EDIT_H
 
-#include <QWidget>
-#include "qgsauthmethodedit.h"
 #include "ui_qgsauthmaptilerhmacsha256edit.h"
 
 #include "qgsauthconfig.h"
+#include "qgsauthmethodedit.h"
 
+#include <QWidget>
 
 class QgsAuthMapTilerHmacSha256Edit : public QgsAuthMethodEdit, private Ui::QgsAuthEsriTokenEdit
 {

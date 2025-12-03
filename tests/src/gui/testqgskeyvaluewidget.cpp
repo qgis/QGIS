@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 
+#include "editorwidgets/core/qgseditorwidgetwrapper.h"
+#include "editorwidgets/qgskeyvaluewidgetfactory.h"
+#include "qgsapplication.h"
+#include "qgskeyvaluewidget.h"
 #include "qgstest.h"
-#include <QSignalSpy>
 
-#include <editorwidgets/qgskeyvaluewidgetfactory.h>
-#include <qgskeyvaluewidget.h>
-#include <editorwidgets/core/qgseditorwidgetwrapper.h>
-#include <qgsapplication.h>
+#include <QSignalSpy>
 
 class TestQgsKeyValueWidget : public QObject
 {

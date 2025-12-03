@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrastersampling.h"
+
 #include "qgsmultipoint.h"
 
 ///@cond PRIVATE

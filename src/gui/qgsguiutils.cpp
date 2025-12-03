@@ -14,19 +14,18 @@
  ***************************************************************************/
 #include "qgsguiutils.h"
 
-#include "qgsapplication.h"
-#include "qgsfileutils.h"
-#include "qgssettings.h"
-#include "qgsencodingfiledialog.h"
-#include "qgslogger.h"
-#include "qgis_gui.h"
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgsapplication.h"
+#include "qgsencodingfiledialog.h"
+#include "qgsfileutils.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QApplication>
 #include <QFontDialog>
 #include <QImageWriter>
 #include <QRegularExpression>
-
 
 namespace QgsGuiUtils
 {

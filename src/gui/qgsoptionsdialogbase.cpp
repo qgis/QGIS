@@ -15,10 +15,21 @@
  ***************************************************************************/
 
 #include "qgsoptionsdialogbase.h"
-#include "moc_qgsoptionsdialogbase.cpp"
+
+#include <functional>
+
+#include "qgsapplication.h"
+#include "qgsfilterlineedit.h"
+#include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgsoptionsdialoghighlightwidget.h"
+#include "qgsoptionswidgetfactory.h"
+#include "qgsscrollarea.h"
+#include "qgsvariantutils.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QHeaderView>
 #include <QLayout>
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -27,20 +38,11 @@
 #include <QScrollBar>
 #include <QSplitter>
 #include <QStackedWidget>
-#include <QTimer>
 #include <QStandardItem>
+#include <QTimer>
 #include <QTreeView>
-#include <QHeaderView>
-#include <functional>
 
-#include "qgsfilterlineedit.h"
-#include "qgslogger.h"
-#include "qgsoptionsdialoghighlightwidget.h"
-#include "qgsoptionswidgetfactory.h"
-#include "qgsguiutils.h"
-#include "qgsapplication.h"
-#include "qgsvariantutils.h"
-#include "qgsscrollarea.h"
+#include "moc_qgsoptionsdialogbase.cpp"
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QDialog( parent, fl )

@@ -14,20 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthconfigeditor.h"
-#include "moc_qgsauthconfigeditor.cpp"
-#include "qgsauthconfigurationstoragedb.h"
 #include "ui_qgsauthconfigeditor.h"
+#include "qgsauthconfigeditor.h"
+
+#include "qgsapplication.h"
+#include "qgsauthconfigedit.h"
+#include "qgsauthconfigurationstoragedb.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgssettings.h"
 
 #include <QMenu>
 #include <QMessageBox>
 #include <QSqlTableModel>
 
-#include "qgssettings.h"
-#include "qgsauthmanager.h"
-#include "qgsauthconfigedit.h"
-#include "qgsauthguiutils.h"
-#include "qgsapplication.h"
+#include "moc_qgsauthconfigeditor.cpp"
 
 QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
   : QWidget( parent )

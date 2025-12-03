@@ -19,8 +19,9 @@
 #define QGSSCALEMETHODWIDGET_H
 
 #include "qgis.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
 #include <QWidget>
 
 class QLabel;

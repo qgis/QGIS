@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmcentroid.h"
+
 #include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE

@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnullsymbolrendererwidget.h"
-#include "moc_qgsnullsymbolrendererwidget.cpp"
 
 #include "qgsnullsymbolrenderer.h"
 #include "qgssymbol.h"
-#include <QLayout>
+
 #include <QLabel>
+#include <QLayout>
+
+#include "moc_qgsnullsymbolrendererwidget.cpp"
 
 QgsRendererWidget *QgsNullSymbolRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

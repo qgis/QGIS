@@ -17,8 +17,9 @@
 
 #define SIP_NO_FILE
 
-#include <QList>
 #include "palrtree.h"
+
+#include <QList>
 
 /**
  * \class pal::CostCalculator
@@ -30,6 +31,8 @@ namespace pal
   class Feats;
   class LabelPosition;
   class Pal;
+  class FeaturePart;
+  class PointSet;
 
   /**
    * \ingroup core

@@ -23,7 +23,6 @@
 #include "qgsgpsconnection.h"
 
 #include <QtCore/QPointer>
-
 #include <QtPositioning/QGeoPositionInfoSource>
 #include <QtPositioning/QGeoSatelliteInfo>
 #include <QtPositioning/QGeoSatelliteInfoSource>

@@ -15,10 +15,10 @@
 
 #include "qgsrasterchangecoords.h"
 
-#include "qgspoint.h"
-#include "qgsogrutils.h"
-
 #include <gdal.h>
+
+#include "qgsogrutils.h"
+#include "qgspoint.h"
 
 #include <QFile>
 

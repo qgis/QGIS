@@ -16,18 +16,20 @@
  ***************************************************************************/
 
 #include "qgsprocessingpointcloudexpressionlineedit.h"
-#include "moc_qgsprocessingpointcloudexpressionlineedit.cpp"
-#include "qgsgui.h"
+
 #include "qgsapplication.h"
 #include "qgsfilterlineedit.h"
-#include "qgspointcloudlayer.h"
+#include "qgsgui.h"
 #include "qgspointcloudexpression.h"
+#include "qgspointcloudlayer.h"
 
 #include <QHBoxLayout>
-#include <QToolButton>
 #include <QListView>
-#include <QPushButton>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QToolButton>
+
+#include "moc_qgsprocessingpointcloudexpressionlineedit.cpp"
 
 /// @cond PRIVATE
 

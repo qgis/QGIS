@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgslayoutobject.h"
-#include "moc_qgslayoutobject.cpp"
+
 #include "qgsexpressioncontextutils.h"
 #include "qgslayout.h"
 #include "qgslayoutreportcontext.h"
 
 #include <QPainter>
+
+#include "moc_qgslayoutobject.cpp"
 
 QgsPropertiesDefinition QgsLayoutObject::sPropertyDefinitions;
 

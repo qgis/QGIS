@@ -15,7 +15,6 @@
 
 #include "qgslabelingenginerule.h"
 
-
 //
 // QgsLabelingEngineContext
 //

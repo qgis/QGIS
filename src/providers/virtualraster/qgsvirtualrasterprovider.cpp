@@ -13,11 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvirtualrasterprovider.h"
-#include "moc_qgsvirtualrasterprovider.cpp"
-#include "qgsrastermatrix.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterprojector.h"
+
 #include "qgsapplication.h"
+#include "qgsrasterlayer.h"
+#include "qgsrastermatrix.h"
+#include "qgsrasterprojector.h"
+
+#include "moc_qgsvirtualrasterprovider.cpp"
 
 #define PROVIDER_KEY QStringLiteral( "virtualraster" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "Virtual Raster data provider" )
@@ -362,7 +364,7 @@ Qgis::RasterInterfaceCapabilities QgsVirtualRasterProvider::capabilities() const
   return capability;
 }
 
-QString QgsVirtualRasterProvider::formulaString()
+QString QgsVirtualRasterProvider::formulaString() const
 {
   return mFormulaString;
 }

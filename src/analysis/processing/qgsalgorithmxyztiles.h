@@ -21,10 +21,9 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
-
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmbtiles.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 

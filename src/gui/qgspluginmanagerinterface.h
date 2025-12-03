@@ -17,12 +17,12 @@
 #ifndef QGSPLUGINMANAGERINTERFACE_H
 #define QGSPLUGINMANAGERINTERFACE_H
 
+#include "qgis.h"
+#include "qgis_gui.h"
+
+#include <QMap>
 #include <QObject>
 #include <QString>
-#include <QMap>
-#include "qgis_gui.h"
-#include "qgis.h"
-
 
 /**
  * \ingroup gui

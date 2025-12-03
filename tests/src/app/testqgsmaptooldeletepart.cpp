@@ -13,18 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptooldeletepart.h"
 #include "qgsproject.h"
 #include "qgssettingsregistrycore.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
-
 
 /**
  * \ingroup UnitTests
@@ -150,12 +150,12 @@ void TestQgsMapToolDeletePart::click( double x, double y )
     Qt::LeftButton
   ) );
   mCaptureTool->canvasPressEvent( event.get() );
-  event.reset( new QgsMapMouseEvent(
+  event = std::make_unique<QgsMapMouseEvent>(
     mCanvas,
     QEvent::MouseButtonRelease,
     mapToPoint( x, y ),
     Qt::LeftButton
-  ) );
+  );
   mCaptureTool->canvasReleaseEvent( event.get() );
 }
 

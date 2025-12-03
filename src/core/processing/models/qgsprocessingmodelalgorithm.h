@@ -18,14 +18,14 @@
 #ifndef QGSPROCESSINGMODELALGORITHM_H
 #define QGSPROCESSINGMODELALGORITHM_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgis_core.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsprocessingmodelparameter.h"
+#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgsprocessingmodelchilddependency.h"
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qgsprocessingmodelgroupbox.h"
-#include "qgsprocessingmodelchilddependency.h"
+#include "qgsprocessingmodelparameter.h"
 
 ///@cond NOT_STABLE
 

@@ -13,13 +13,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgselevationshadingrenderersettingswidget.h"
-#include "moc_qgselevationshadingrenderersettingswidget.cpp"
 #include "ui_qgselevationshadingrenderersettingswidget.h"
+#include "qgselevationshadingrenderersettingswidget.h"
 
 #include "qgsapplication.h"
-#include "qgsproject.h"
 #include "qgselevationshadingrenderer.h"
+#include "qgsproject.h"
+
+#include "moc_qgselevationshadingrenderersettingswidget.cpp"
 
 QgsElevationShadingRendererSettingsWidget::QgsElevationShadingRendererSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

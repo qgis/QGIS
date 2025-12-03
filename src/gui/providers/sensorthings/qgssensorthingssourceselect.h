@@ -18,8 +18,9 @@
 #ifndef QGSSENSORTHINGSSOURCESELECT_H
 #define QGSSENSORTHINGSSOURCESELECT_H
 
-#include "qgsabstractdatasourcewidget.h"
 #include "ui_qgssensorthingssourceselectbase.h"
+
+#include "qgsabstractdatasourcewidget.h"
 
 class QgsSensorThingsSourceWidget;
 class QgsSensorThingsConnectionWidget;

@@ -17,16 +17,16 @@
 #define QGSMSSQLDATABASE_H
 
 
+#include <memory>
+
+#include "qgsdatasourceuri.h"
+#include "qgsfields.h"
+
 #include <QMap>
 #include <QMutex>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-
-#include <memory>
-
-#include "qgsfields.h"
-#include "qgsdatasourceuri.h"
 
 class QgsDataSourceUri;
 

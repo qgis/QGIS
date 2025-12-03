@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspolygon.h"
+
 #include "qgsapplication.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"

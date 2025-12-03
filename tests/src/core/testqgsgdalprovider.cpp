@@ -79,10 +79,12 @@ class TestQgsGdalProvider : public QgsTest
     void testGdalProviderAbsoluteRelativeUri();
     void testVsiCredentialOptions();
     void testVsiCredentialOptionsQuerySublayers();
+    void testGeolocation();
 
   private:
     QString mTestDataDir;
     bool mSupportsNetCDF;
+    bool mSupportsHdf5;
     QgsProviderMetadata *mGdalMetadata;
 };
 
@@ -98,6 +100,8 @@ void TestQgsGdalProvider::initTestCase()
   mGdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "gdal" ) );
 
   mSupportsNetCDF = static_cast<bool>( GDALGetDriverByName( "netcdf" ) );
+
+  mSupportsHdf5 = static_cast<bool>( GDALGetDriverByName( "hdf5" ) );
 
   // Disable creation of .aux.xml (stats) files during test run,
   // to avoid modifying .zip files.
@@ -1060,6 +1064,36 @@ void TestQgsGdalProvider::testVsiCredentialOptionsQuerySublayers()
 
   // cleanup
   VSIClearPathSpecificOptions( "/vsis3/cdn.proj.org" );
+#endif
+}
+
+void TestQgsGdalProvider::testGeolocation()
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
+  if ( !mSupportsHdf5 )
+  {
+    QSKIP( "HDF5 based tests require the HDF5 GDAL driver" );
+  }
+
+  QList<QgsProviderSublayerDetails> res;
+  std::unique_ptr<QgsRasterLayer> rl;
+  const QgsProviderSublayerDetails::LayerOptions options { QgsCoordinateTransformContext() };
+
+  // hdf-eos5 file
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/raster/dummy_HDFEOS_swath.h5" );
+  QCOMPARE( res.count(), 3 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "HDF5:\"%1/raster/dummy_HDFEOS_swath.h5\"://HDFEOS/SWATHS/MySwath/Data_Fields/MyDataField" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "HDF5" ) );
+  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+  QCOMPARE( rl->crs().authid(), QLatin1String( "EPSG:4326" ) );
+  QGSCOMPARENEAR( rl->extent().xMinimum(), -2.5, 0.1 );
+  QGSCOMPARENEAR( rl->extent().yMinimum(), -2.6, 0.1 );
+  QGSCOMPARENEAR( rl->extent().xMaximum(), 15.6, 0.1 );
+  QGSCOMPARENEAR( rl->extent().yMaximum(), 15.5, 0.1 );
 #endif
 }
 

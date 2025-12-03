@@ -10,7 +10,6 @@
 
 
 
-
 class QgsGraphBuilder : QgsGraphBuilderInterface /NoDefaultCtors/
 {
 %Docstring(signature="appended")

@@ -14,26 +14,24 @@
  ***************************************************************************/
 
 #include "qgs3dmaptoolidentify.h"
-#include "moc_qgs3dmaptoolidentify.cpp"
 
-#include <QScreen>
-
-#include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
+#include "qgsapplication.h"
+#include "qgscameracontroller.h"
+#include "qgscoordinateutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolidentifyaction.h"
+#include "qgspointcloudlayer.h"
+#include "qgsraycastcontext.h"
+#include "qgstiledscenelayer.h"
 #include "qgsvector3d.h"
 
-#include "qgisapp.h"
-#include "qgsmapcanvas.h"
-#include "qgscoordinateutils.h"
-#include "qgsmaptoolidentifyaction.h"
+#include <QScreen>
 
-#include "qgspointcloudlayer.h"
-#include "qgstiledscenelayer.h"
-#include "qgscameracontroller.h"
-#include "qgsraycastcontext.h"
-
+#include "moc_qgs3dmaptoolidentify.cpp"
 
 Qgs3DMapToolIdentify::Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )

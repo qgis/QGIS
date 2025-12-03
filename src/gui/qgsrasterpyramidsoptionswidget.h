@@ -19,8 +19,9 @@
 #define QGSRASTERPYRAMIDSOPTIONSWIDGET_H
 
 #include "ui_qgsrasterpyramidsoptionswidgetbase.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QCheckBox;
 

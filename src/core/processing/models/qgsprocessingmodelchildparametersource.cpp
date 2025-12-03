@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsprocessingmodelchildparametersource.h"
-#include "qgsprocessingparameters.h"
+
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingparameters.h"
 
 ///@cond NOT_STABLE
 
