@@ -803,7 +803,21 @@ void QgsPropertyOverrideButton::updateGui()
   setIcon( icon );
 
   // build full description for tool tip and popup dialog
-  mFullDescription = tr( "<b><u>Data defined override</u></b><br>" );
+  mFullDescription.clear();
+  if ( !mDefinition.description().isEmpty() )
+  {
+    mFullDescription += QStringLiteral( "<b><u>%1</b></u>" ).arg( mDefinition.description() );
+  }
+  if ( !mDefinition.comment().isEmpty() )
+  {
+    mFullDescription += QStringLiteral( "<p><i>%1</i></p>" ).arg( mDefinition.comment() );
+  }
+  else if ( !mFullDescription.isEmpty() )
+  {
+    mFullDescription += QStringLiteral( "<br>" );
+  }
+
+  mFullDescription += tr( "<b>Data defined override</b><br>" );
 
   mFullDescription += tr( "<b>Active: </b>%1&nbsp;&nbsp;&nbsp;<i>(ctrl|right-click toggles)</i><br>" ).arg( mProperty.isActive() ? tr( "yes" ) : tr( "no" ) );
 
