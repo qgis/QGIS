@@ -101,7 +101,6 @@ astyleit() {
 	$ASTYLE --options="$ASTYLEOPTS" "$1"
         modified=$1.unify_includes_modified
 	cp "$1" "$modified"
-	perl -i.sortinc -n scripts/unify_includes.pl "$modified"
 	scripts/doxygen_space.py "$modified"
 	diff "$1" "$modified" >/dev/null || mv "$modified" "$1"
 	rm -f "$modified"
