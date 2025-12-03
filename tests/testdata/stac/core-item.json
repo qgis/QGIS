@@ -129,6 +129,14 @@
         "data",
         "metadata"
       ]
+    },
+    "geoparquet-file": {
+      "href": "https://data.source.coop/severo/apache-parquet-testing/data/geospatial/crs-default.parquet",
+      "title": "GeoParquet File",
+      "type": "application/vnd.apache.parquet",
+      "roles": [
+        "data"
+      ]
     }
   }
 }
