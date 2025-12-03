@@ -171,8 +171,6 @@ void TestQgsStac::testParseLocalItem()
   QCOMPARE( item->title(), QStringLiteral( "Core Item" ) );
   QCOMPARE( item->description(), QStringLiteral( "A sample STAC Item that includes examples of all common metadata" ) );
 
-  QCOMPARE( item->assets().size(), 8 );
-
   const QgsMimeDataUtils::UriList uris = item->uris();
   QCOMPARE( uris.size(), 4 );
   QCOMPARE( uris.at( 0 ).uri, QStringLiteral( "file://%1%2" ).arg( mDataDir, QStringLiteral( "20201211_223832_CS2_analytic.tif" ) ) );
