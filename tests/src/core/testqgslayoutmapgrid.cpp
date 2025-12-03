@@ -66,6 +66,7 @@ class TestQgsLayoutMapGrid : public QgsTest
     void annotationFormats();              //various tests for annotation formats
     void descendingAnnotations();          //test descending annotation direction
     void dataDefinedDrawAnnotation();
+    void dataDefinedDrawAnnotationCountAndIndex();
 };
 
 void TestQgsLayoutMapGrid::initTestCase()
@@ -1232,6 +1233,50 @@ void TestQgsLayoutMapGrid::dataDefinedDrawAnnotation()
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_dd_draw_annotation" ), &l );
 }
 
+void TestQgsLayoutMapGrid::dataDefinedDrawAnnotationCountAndIndex()
+{
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:32633" ) );
+  QgsProject::instance()->setCrs( crs );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setBackgroundColor( QColor( 150, 100, 100 ) );
+  map->grid()->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
+  map->grid()->setAnnotationPrecision( 0 );
+  map->grid()->setIntervalX( 2000 );
+  map->grid()->setIntervalY( 2000 );
+  map->grid()->setGridLineWidth( 0.5 );
+  map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  map->updateBoundingRect();
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+
+  map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
+  map->grid()->setEnabled( true );
+  map->grid()->setStyle( QgsLayoutItemMapGrid::FrameAnnotationsOnly );
+  map->grid()->setAnnotationEnabled( true );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Left );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Right );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Top );
+  map->grid()->setAnnotationDirection( QgsLayoutItemMapGrid::VerticalDescending, QgsLayoutItemMapGrid::Bottom );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Left );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Right );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Top );
+  map->grid()->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, QgsLayoutItemMapGrid::Bottom );
+
+  map->grid()->setAnnotationFormat( QgsLayoutItemMapGrid::CustomFormat );
+  map->grid()->setAnnotationExpression( QStringLiteral( "@grid_index || '/' || @grid_count" ) );
+
+  map->grid()->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation, QgsProperty::fromExpression( QStringLiteral( "@grid_index > 1 and @grid_index < @grid_count" ) ) );
+  map->grid()->refresh();
+  map->updateBoundingRect();
+
+  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_grid_variables" ), &l );
+}
 
 QGSTEST_MAIN( TestQgsLayoutMapGrid )
 #include "testqgslayoutmapgrid.moc"

@@ -1229,9 +1229,42 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotations( QgsRenderContext &context,
   const bool forceWrap = ( geographic && it->coordinateType == QgsLayoutItemMapGrid::Longitude &&
                            ( mGridAnnotationFormat == QgsLayoutItemMapGrid::Decimal || mGridAnnotationFormat == QgsLayoutItemMapGrid::DecimalWithSuffix ) );
 
+  int countLongitudeLines = 0;
+  int countLatitudeLines = 0;
+  for ( const GridLine &line : mGridLines )
+  {
+    switch ( line.coordinateType )
+    {
+      case Longitude:
+        countLongitudeLines++;
+        break;
+      case Latitude:
+        countLatitudeLines++;
+        break;
+    }
+  }
+
+  int latitudeLineIndex = 0;
+  int longitudeLineIndex = 0;
   for ( ; it != mGridLines.constEnd(); ++it )
   {
     double value = it->coordinate;
+    switch ( it->coordinateType )
+    {
+      case Longitude:
+        longitudeLineIndex++;
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLongitudeLines, true ) );
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), longitudeLineIndex, true ) );
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), QStringLiteral( "x" ), true ) );
+        break;
+
+      case Latitude:
+        latitudeLineIndex++;
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_count" ), countLatitudeLines, true ) );
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_index" ), latitudeLineIndex, true ) );
+        gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), QStringLiteral( "y" ), true ) );
+        break;
+    }
 
     if ( forceWrap )
     {
@@ -1248,7 +1281,6 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotations( QgsRenderContext &context,
     }
 
     gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_number" ), value, true ) );
-    gridScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "grid_axis" ), it->coordinateType == QgsLayoutItemMapGrid::Longitude ? "x" : "y", true ) );
 
     if ( mDrawAnnotationProperty )
     {
