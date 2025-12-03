@@ -183,7 +183,7 @@ class QgsBackgroundCachedSharedData
     virtual bool hasGeometry() const = 0;
 
     //! Return layer name
-    virtual QString layerName() const = 0;
+    QString layerName() const { return mURI.typeName(); }
 
     //! Called when an error must be raised to the provider
     virtual void pushError( const QString &errorMsg ) const = 0;
@@ -192,7 +192,12 @@ class QgsBackgroundCachedSharedData
     Qgis::WkbType mWKBType = Qgis::WkbType::Unknown;
 
   protected:
+    friend class QgsXmlSchemaAnalyzer;
+
     //////////// Input members. Implementations should define them to meaningful values
+
+    //! Datasource URI
+    QgsWFSDataSourceURI mURI;
 
     //! Attribute fields of the layer
     QgsFields mFields;
@@ -226,6 +231,15 @@ class QgsBackgroundCachedSharedData
 
     //! Server filter expression
     QString mServerExpression;
+
+    //! Map a field name to the pair (xpath, isNestedContent)
+    QMap<QString, QPair<QString, bool>> mFieldNameToXPathAndIsNestedContentMap;
+
+    //! Map a namespace prefix to its URI
+    QMap<QString, QString> mNamespacePrefixToURIMap;
+
+    //! Namespace URL of the server (comes from DescribeFeatureDocument)
+    QString mApplicationNamespace;
 
     //////////// Methods
 
