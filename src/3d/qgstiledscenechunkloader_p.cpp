@@ -436,7 +436,7 @@ QList<QgsRayCastHit> QgsTiledSceneLayerChunkedEntity::rayIntersection( const Qgs
         int triangleIndex = -1;
         QgsGeoTransform *nodeGeoTransform = node->entity()->findChild<QgsGeoTransform *>();
         Q_ASSERT( nodeGeoTransform );
-        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, context.maximumDistance(), nodeGeoTransform->matrix(), nodeIntPoint, triangleIndex );
+        bool success = QgsRayCastingUtils::rayMeshIntersection( rend, ray, context, nodeGeoTransform->matrix(), nodeIntPoint, triangleIndex );
         if ( success )
         {
 #ifdef QGISDEBUG
