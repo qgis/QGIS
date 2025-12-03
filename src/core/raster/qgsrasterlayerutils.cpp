@@ -22,8 +22,6 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgsrasterlayertemporalproperties.h"
-#include "qgsexpressioncontext.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgsrectangle.h"
 #include "qgsthreadingutils.h"

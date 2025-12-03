@@ -29,7 +29,6 @@
 #include "qgsmimedatautils.h"
 #include "qgsproject.h"
 #include "qgsrendercontext.h"
-#include "qgslayertreefiltersettings.h"
 #include "qgslayoutitemlegend.h"
 #include "qgscolorramplegendnode.h"
 #include "qgssettingsregistrycore.h"
